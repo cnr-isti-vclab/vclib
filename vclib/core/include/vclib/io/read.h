@@ -139,8 +139,8 @@ inline Tokenizer readAndTokenizeNextNonEmptyLine(
     std::istream&     file,
     std::vector<char> separators = {' ', '\t'})
 {
-    std::string    line;
-    Tokenizer tokenizer;
+    std::string line;
+    Tokenizer   tokenizer;
 
     do {
         line      = readNextNonEmptyLine(file);
@@ -164,8 +164,8 @@ inline Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     std::istream&     file,
     std::vector<char> separators = {' ', '\t'})
 {
-    std::string    line;
-    Tokenizer tokenizer;
+    std::string line;
+    Tokenizer   tokenizer;
 
     do {
         line      = readNextNonEmptyLineNoThrow(file);
@@ -495,7 +495,7 @@ T readDouble(
 template<typename T>
 T readPrimitiveType(
     Tokenizer::iterator& token,
-    PrimitiveType::Enum       type,
+    PrimitiveType::Enum  type,
     std::endian  = std::endian::native,
     bool isColor = false)
 {
@@ -527,9 +527,9 @@ T readPrimitiveType(
 template<ElementConcept El>
 void readCustomComponent(
     Tokenizer::iterator& token,
-    El&                       elem,
-    const std::string&        cName,
-    PrimitiveType::Enum       type,
+    El&                  elem,
+    const std::string&   cName,
+    PrimitiveType::Enum  type,
     std::endian = std::endian::native)
 {
     std::type_index ti = elem.customComponentType(cName);

@@ -66,9 +66,9 @@ public:
      * types from which the Element inherits (Comps) that are Components (they
      * satisfy the ComponentConcept).
      */
-    using Components = FilterTypesByCondition<
-        comp::IsComponentPred,
-        TypeWrapper<Comps...>>::type;
+    using Components =
+        FilterTypesByCondition<comp::IsComponentPred, TypeWrapper<Comps...>>::
+            type;
 
     static const uint ELEMENT_ID = ELEM_ID;
 

@@ -50,8 +50,7 @@ class VerticalComponentsVectorTuple
 public:
     VerticalComponentsVectorTuple()
     {
-        (setComponentEnabled<Comp, !comp::IsOptionalComponent<Comp>>(),
-         ...);
+        (setComponentEnabled<Comp, !comp::IsOptionalComponent<Comp>>(), ...);
     }
 
     static constexpr uint componentsNumber() { return COMP_NUMBER; }

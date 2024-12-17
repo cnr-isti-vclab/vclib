@@ -88,7 +88,7 @@ public:
                     readAndTokenizeNextNonEmptyLine(file);
                 if (!error) {
                     Tokenizer::iterator token = spaceTokenizer.begin();
-                    headerLine                     = *token;
+                    headerLine                = *token;
                     if (headerLine == "format") {
                         token++;
                         if (*token == "ascii")
@@ -104,17 +104,17 @@ public:
                     else if (headerLine == "comment") {
                         token++;
                         if (token != spaceTokenizer.end()) {
-                            if (containsCaseInsensitive(
-                                    *token, "texture")) {
+                            if (containsCaseInsensitive(*token, "texture")) {
                                 ++token;
                                 if (token != spaceTokenizer.end()) {
                                     std::string textName = *token;
-                                    auto        it = findCaseInsensitive(
-                                        textName, "<this>");
+                                    auto        it =
+                                        findCaseInsensitive(textName, "<this>");
                                     if (it != textName.end()) {
                                         uint        pos = it - textName.begin();
-                                        std::string fn  = FileInfo::
-                                            fileNameWithoutExtension(filename);
+                                        std::string fn =
+                                            FileInfo::fileNameWithoutExtension(
+                                                filename);
                                         textName =
                                             textName.substr(0, pos) + fn +
                                             textName.substr(
@@ -589,9 +589,9 @@ public:
 private:
     PlyElement readElement(const Tokenizer& lineTokenizer) const
     {
-        PlyElement               e;
+        PlyElement          e;
         Tokenizer::iterator token = lineTokenizer.begin();
-        std::string              s     = *(++token);
+        std::string         s     = *(++token);
         if (s == "vertex") {
             e.type           = ply::VERTEX;
             e.numberElements = std::stoi(*(++token));
@@ -618,9 +618,9 @@ private:
 
     PlyProperty readProperty(const Tokenizer& lineTokenizer) const
     {
-        PlyProperty              p;
+        PlyProperty         p;
         Tokenizer::iterator token = lineTokenizer.begin();
-        std::string              type  = *(++token);
+        std::string         type  = *(++token);
         if (type == "list") {
             p.list               = true;
             std::string typeSize = *(++token);

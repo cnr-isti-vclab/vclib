@@ -256,8 +256,8 @@ void readPlyFaceTxt(
     MeshInfo&                     loadedInfo,
     const std::list<PlyProperty>& faceProperties)
 {
-    Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
-    Tokenizer::iterator token = spaceTokenizer.begin();
+    Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
+    Tokenizer::iterator token          = spaceTokenizer.begin();
     for (const PlyProperty& p : faceProperties) {
         if (token == spaceTokenizer.end()) {
             throw MalformedFileException("Unexpected end of line.");

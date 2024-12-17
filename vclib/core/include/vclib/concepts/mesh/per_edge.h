@@ -126,8 +126,7 @@ concept HasPerEdgeCustomComponents =
  */
 template<typename MeshType>
 concept HasPerEdgeMark =
-    HasEdges<MeshType> &&
-    edge::HasMark<typename RemoveRef<MeshType>::EdgeType>;
+    HasEdges<MeshType> && edge::HasMark<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge Normal component.

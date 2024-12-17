@@ -51,8 +51,7 @@ public:
      * @param[in] img: the image.
      * @param[in] path: the path of the texture file.
      */
-    Texture(const Image& img, const std::string& path) :
-            mImg(img), mPath(path)
+    Texture(const Image& img, const std::string& path) : mImg(img), mPath(path)
     {
     }
 

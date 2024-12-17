@@ -660,8 +660,7 @@ bool isWaterTight(const MeshType& m)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint numberHoles(const MeshType& m)
-    requires HasPerFaceAdjacentFaces<MeshType>
+uint numberHoles(const MeshType& m) requires HasPerFaceAdjacentFaces<MeshType>
 {
     requirePerFaceAdjacentFaces(m);
 

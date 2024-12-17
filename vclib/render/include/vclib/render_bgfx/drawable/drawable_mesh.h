@@ -35,7 +35,7 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class DrawableMesh : public DrawableMeshI, public MeshType
+class DrawableMeshBGFX : public DrawableMeshI, public MeshType
 {
     MeshRenderBuffers<MeshType> mMRB;
 
@@ -47,14 +47,14 @@ class DrawableMesh : public DrawableMeshI, public MeshType
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
-    DrawableMesh() = default;
+    DrawableMeshBGFX() = default;
 
-    DrawableMesh(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
+    DrawableMeshBGFX(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
     {
         updateBuffers();
     }
 
-    ~DrawableMesh() = default;
+    ~DrawableMeshBGFX() = default;
 
     void updateBuffers() override
     {
@@ -128,7 +128,7 @@ public:
 
     std::shared_ptr<DrawableObjectI> clone() const override
     {
-        return std::make_shared<DrawableMesh>(*this);
+        return std::make_shared<DrawableMeshBGFX>(*this);
     }
 
     void setVisibility(bool vis) override

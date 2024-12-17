@@ -944,7 +944,7 @@ SamplerType montecarloPoissonPointSampling(
     ScalarType samplePerAreaUnit = nSamples / area;
 
     for (const FaceType& f : m.faces()) {
-        ScalarType areaT = faceArea(f);
+        ScalarType areaT  = faceArea(f);
         int faceSampleNum = poissonRandomNumber(areaT * samplePerAreaUnit, gen);
 
         // for every sample p_i in T...

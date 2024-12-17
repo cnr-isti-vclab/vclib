@@ -492,7 +492,7 @@ void loadObj(
             readAndTokenizeNextNonEmptyLineNoThrow(inputObjStream);
         if (inputObjStream) {
             Tokenizer::iterator token  = tokens.begin();
-            std::string              header = *token++;
+            std::string         header = *token++;
             if (header == "mtllib" && !ignoreMtlLib) { // material file
                 // we load the material file if they are not ignored
                 std::string mtlfile =

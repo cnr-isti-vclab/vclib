@@ -35,7 +35,7 @@
 
 namespace vcl {
 
-class ViewerCanvas : public Canvas, public ViewerI
+class ViewerCanvasBGFX : public CanvasBGFX, public ViewerI
 {
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
@@ -46,13 +46,13 @@ class ViewerCanvas : public Canvas, public ViewerI
     DrawableTrackBall        mDrawTrackBall;
 
 public:
-    ViewerCanvas(
+    ViewerCanvasBGFX(
         void* winId,
         uint  width     = 1024,
         uint  height    = 768,
         void* displayId = nullptr);
 
-    ViewerCanvas(
+    ViewerCanvasBGFX(
         void*                                        winId,
         const std::shared_ptr<DrawableObjectVector>& v,
         uint                                         width     = 1024,

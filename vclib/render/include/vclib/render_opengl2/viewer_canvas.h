@@ -31,16 +31,16 @@
 
 namespace vcl {
 
-class ViewerCanvas : public vcl::Canvas, public ViewerI
+class ViewerCanvasOpenGL2 : public vcl::CanvasOpenGL2, public ViewerI
 {
 public:
-    ViewerCanvas(
+    ViewerCanvasOpenGL2(
         void* winId,
         uint  width     = 1024,
         uint  height    = 768,
         void* displayId = nullptr);
 
-    ViewerCanvas(
+    ViewerCanvasOpenGL2(
         void*                                        winId,
         const std::shared_ptr<DrawableObjectVector>& v,
         uint                                         width     = 1024,

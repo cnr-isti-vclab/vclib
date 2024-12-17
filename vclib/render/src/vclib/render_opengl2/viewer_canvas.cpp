@@ -28,29 +28,29 @@
 
 namespace vcl {
 
-ViewerCanvas::ViewerCanvas(
+ViewerCanvasOpenGL2::ViewerCanvasOpenGL2(
     void* winId,
     uint  width,
     uint  height,
     void* displayId) :
-        Canvas(winId, width, height, displayId), ViewerI(width, height)
+        vcl::CanvasOpenGL2(winId, width, height, displayId), ViewerI(width, height)
 {
     init(width, height);
 }
 
-ViewerCanvas::ViewerCanvas(
+ViewerCanvasOpenGL2::ViewerCanvasOpenGL2(
     void*                                        winId,
     const std::shared_ptr<DrawableObjectVector>& v,
     uint                                         width,
     uint                                         height,
-    void* displayId) : ViewerCanvas(winId, width, height, displayId)
+    void* displayId) : ViewerCanvasOpenGL2(winId, width, height, displayId)
 {
     setDrawableObjectVector(v);
 }
 
-void ViewerCanvas::init(uint width, uint height)
+void ViewerCanvasOpenGL2::init(uint width, uint height)
 {
-    Canvas::init(width, height);
+    CanvasOpenGL2::init(width, height);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
@@ -70,7 +70,7 @@ void ViewerCanvas::init(uint width, uint height)
     }
 }
 
-void ViewerCanvas::drawContent()
+void ViewerCanvasOpenGL2::drawContent()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -89,14 +89,14 @@ void ViewerCanvas::drawContent()
         obj->draw();
 }
 
-void ViewerCanvas::onResize(unsigned int width, unsigned int height)
+void ViewerCanvasOpenGL2::onResize(unsigned int width, unsigned int height)
 {
-    Canvas::onResize(width, height);
+    CanvasOpenGL2::onResize(width, height);
     DTB::resizeViewer(width, height);
     update();
 }
 
-void ViewerCanvas::onMouseDoubleClick(
+void ViewerCanvasOpenGL2::onMouseDoubleClick(
     MouseButton::Enum button,
     double            x,
     double            y)

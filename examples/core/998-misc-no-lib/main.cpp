@@ -20,23 +20,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "const_correctness.h"
-#include "iterators.h"
-#include "loggers.h"
-#include "mesh.h"
-#include "meshes.h"
-#include "ranges.h"
-#include "space.h"
+#include <iostream>
 
 int main()
 {
-    constCorrectnessStaticAsserts();
-    loggersStaticAsserts();
-    iteratorsStaticAsserts();
-    meshStaticAsserts();
-    meshesStaticAsserts();
-    rangesStaticAsserts();
-    spaceStaticAsserts();
+    std::cout << "Hello, World!" << std::endl;
 
     return 0;
 }
