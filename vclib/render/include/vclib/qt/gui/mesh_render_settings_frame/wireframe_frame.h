@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
-#define VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
+#ifndef VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
+#define VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
 
 #include "generic_mesh_render_settings_frame.h"
 
@@ -65,4 +65,4 @@ private slots:
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
+#endif // VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H

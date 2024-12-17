@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_VCG_IMPORT_H
-#define VCL_EXT_VCG_IMPORT_H
+#ifndef VCL_VCG_IMPORT_H
+#define VCL_VCG_IMPORT_H
 
 #include "type_mapping.h"
 
@@ -409,4 +409,4 @@ MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh)
 
 } // namespace vcl::vc
 
-#endif // VCL_EXT_VCG_IMPORT_H
+#endif // VCL_VCG_IMPORT_H

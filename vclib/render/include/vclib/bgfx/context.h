@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_CONTEXT_H
-#define VCL_BGFX_RENDER_CONTEXT_H
+#ifndef VCL_BGFX_CONTEXT_H
+#define VCL_BGFX_CONTEXT_H
 
 #include "context/callback.h"
 #include "context/font_manager.h"
@@ -169,4 +169,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_CONTEXT_H
+#endif // VCL_BGFX_CONTEXT_H

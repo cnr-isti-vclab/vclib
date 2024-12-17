@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_SYSTEM_NATIVE_WINDOW_HANDLE_H
-#define VCL_BGFX_RENDER_SYSTEM_NATIVE_WINDOW_HANDLE_H
+#ifndef VCL_BGFX_SYSTEM_NATIVE_WINDOW_HANDLE_H
+#define VCL_BGFX_SYSTEM_NATIVE_WINDOW_HANDLE_H
 
 namespace vcl {
 
@@ -56,4 +56,4 @@ void closeWindow(void* window, void* display = nullptr);
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_SYSTEM_NATIVE_WINDOW_HANDLE_H
+#endif // VCL_BGFX_SYSTEM_NATIVE_WINDOW_HANDLE_H

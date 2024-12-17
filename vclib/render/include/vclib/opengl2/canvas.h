@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_RENDER_CANVAS_H
-#define VCL_OPENGL2_RENDER_CANVAS_H
+#ifndef VCL_OPENGL2_CANVAS_H
+#define VCL_OPENGL2_CANVAS_H
 
 #include <vclib/types.h>
 
@@ -110,4 +110,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_RENDER_CANVAS_H
+#endif // VCL_OPENGL2_CANVAS_H

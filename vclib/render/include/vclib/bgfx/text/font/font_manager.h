@@ -25,8 +25,8 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-#ifndef FONT_MANAGER_H_HEADER_GUARD
-#define FONT_MANAGER_H_HEADER_GUARD
+#ifndef VCL_BGFX_TEXT_FONT_FONT_MANAGER_H
+#define VCL_BGFX_TEXT_FONT_FONT_MANAGER_H
 
 #include <bx/handlealloc.h>
 #include <bx/string.h>
@@ -245,4 +245,4 @@ private:
 
 } // namespace bgfx
 
-#endif // FONT_MANAGER_H_HEADER_GUARD
+#endif // VCL_BGFX_TEXT_FONT_FONT_MANAGER_H

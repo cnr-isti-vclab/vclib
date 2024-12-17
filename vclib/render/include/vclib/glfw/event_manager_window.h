@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H
-#define VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H
+#ifndef VCL_GLFW_EVENT_MANAGER_WINDOW_H
+#define VCL_GLFW_EVENT_MANAGER_WINDOW_H
 
 #include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/space/core/point.h>
@@ -112,4 +112,4 @@ private:
 
 } // namespace vcl::glfw
 
-#endif // VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H
+#endif // VCL_GLFW_EVENT_MANAGER_WINDOW_H

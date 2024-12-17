@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_READ_FRAMEBUFFER_REQUEST_H
-#define VCL_BGFX_RENDER_READ_FRAMEBUFFER_REQUEST_H
+#ifndef VCL_BGFX_READ_FRAMEBUFFER_REQUEST_H
+#define VCL_BGFX_READ_FRAMEBUFFER_REQUEST_H
 
 #include <bgfx/bgfx.h>
 #include <vclib/space/core/point.h>
@@ -105,4 +105,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_READ_FRAMEBUFFER_REQUEST_H
+#endif // VCL_BGFX_READ_FRAMEBUFFER_REQUEST_H
