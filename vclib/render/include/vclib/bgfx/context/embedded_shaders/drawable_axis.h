@@ -20,31 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_AXIS_H
+#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_AXIS_H
 
-#include <vclib/render/config.h>
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/drawable_mesh.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/drawable/drawable_mesh.h>
-#endif
+#include "embedded_shader.h"
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshBGFX<MeshType>;
-#endif
+template<>
+struct EmbeddedShader<VclProgram::DRAWABLE_AXIS>
+{
+    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+        bgfx::RendererType::Enum type);
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
-#endif
+    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
+        bgfx::RendererType::Enum type);
+};
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_AXIS_H

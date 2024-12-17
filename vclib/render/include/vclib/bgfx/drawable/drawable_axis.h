@@ -20,31 +20,72 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H
+#define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H
 
-#include <vclib/render/config.h>
+#include "mesh/mesh_render_buffers.h"
+#include "uniforms/drawable_axis_uniforms.h"
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/drawable_mesh.h>
-#endif
+#include <vclib/meshes/tri_mesh.h>
+#include <vclib/render/interfaces/drawable_object_i.h>
+#include <vclib/space/core/matrix.h>
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/drawable/drawable_mesh.h>
-#endif
+#include <vclib/bgfx/context.h>
+
+#include <bgfx/bgfx.h>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshBGFX<MeshType>;
-#endif
+class DrawableAxis : public DrawableObjectI
+{
+    bool mVisible = false;
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
-#endif
+    const vcl::Color mColors[3] = {
+        vcl::Color::Red,
+        vcl::Color::Green,
+        vcl::Color::Blue};
+
+    vcl::Matrix44f mMatrices[3] = {
+        vcl::Matrix44f::Zero(),
+        vcl::Matrix44f::Zero(),
+        vcl::Matrix44f::Zero()};
+
+    MeshRenderBuffers<vcl::TriMesh> mArrowBuffers[2]; // 0: cylinder, 1: cone
+
+    bgfx::ProgramHandle mProgram =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_AXIS);
+
+    mutable DrawableAxisUniforms mUniforms;
+
+public:
+    DrawableAxis(double size = 1, bool fromOrigin = false);
+
+    ~DrawableAxis() = default;
+
+    void setSize(double size);
+
+    // DrawableObject interface
+
+    void draw(uint viewId) const override;
+
+    Box3d boundingBox() const override { return Box3d(); }
+
+    std::shared_ptr<DrawableObjectI> clone() const override
+    {
+        return std::make_shared<DrawableAxis>(*this);
+    }
+
+    bool isVisible() const override { return mVisible; }
+
+    void setVisibility(bool vis) override { mVisible = vis; }
+
+private:
+    void updateMatrices(double size);
+
+    void createAxis(bool fromOrigin);
+};
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#endif // VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H

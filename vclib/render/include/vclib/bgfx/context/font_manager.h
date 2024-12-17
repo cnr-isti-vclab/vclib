@@ -20,31 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#ifndef VCL_BGFX_RENDER_TEXT_CONTEXT_FONT_MANAGER_H
+#define VCL_BGFX_RENDER_TEXT_CONTEXT_FONT_MANAGER_H
 
-#include <vclib/render/config.h>
+#include <vclib/bgfx/text/embedded_fonts.h>
+#include <vclib/bgfx/text/font/font_manager.h>
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/drawable_mesh.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/drawable/drawable_mesh.h>
-#endif
+#include <map>
+#include <string>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshBGFX<MeshType>;
-#endif
+class FontManager
+{
+    friend class TextManager;
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
-#endif
+    bgfx::FontManager                                            mFontManager;
+    std::map<std::string, bgfx::TrueTypeHandle>                  mTTMap;
+    std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> mFontMap;
+
+public:
+    FontManager();
+    ~FontManager();
+
+    FontManager(const FontManager&)            = delete;
+    FontManager& operator=(const FontManager&) = delete;
+    FontManager(FontManager&&)                 = delete;
+    FontManager& operator=(FontManager&&)      = delete;
+
+    void loadFont(VclFont::Enum font);
+    void loadFont(const FontData& fd, const std::string& fontName);
+
+    void loadFont(const std::string& filePath, const std::string& fontName);
+
+    bgfx::FontHandle getFontHandle(VclFont::Enum font, uint16_t fontSize);
+    bgfx::FontHandle getFontHandle(
+        const std::string& fontName,
+        uint16_t           fontSize);
+
+private:
+    bgfx::FontManager& getBGFXFontManager();
+
+    static bgfx::TrueTypeHandle loadTtf(
+        bgfx::FontManager& fontManager,
+        const char*        filePath);
+
+    static bgfx::TrueTypeHandle loadTtf(
+        bgfx::FontManager& fontManager,
+        const uint8_t*     data,
+        std::size_t        size);
+};
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#endif // VCL_BGFX_RENDER_TEXT_CONTEXT_FONT_MANAGER_H

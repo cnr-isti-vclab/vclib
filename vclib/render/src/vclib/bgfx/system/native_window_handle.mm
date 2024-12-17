@@ -20,64 +20,34 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#include <vclib/bgfx/system/native_window_handle.h>
 
-#include <bgfx/bgfx.h>
+#import <Cocoa/Cocoa.h>
 
-#include <vclib/bgfx/context/load_program.h>
-#include <vclib/space/core/color.h>
+namespace vcl::detail {
 
-struct Vertex
+void* cretateCocoaWindow(
+    const char* title,
+    int         width,
+    int         height,
+    bool        hidden)
 {
-    float    pos[2];
-    uint32_t abgr;
-};
-
-static const Vertex vertices[] {
-    {{-1.0f, -1.0f}, vcl::Color(vcl::Color::Red).abgr()  },
-    {{1.0f, -1.0f},  vcl::Color(vcl::Color::Green).abgr()},
-    {{0.0f, 1.0f},   vcl::Color(vcl::Color::Blue).abgr() },
-};
-
-inline void setUpBGFX(
-    bgfx::ViewId              viewId,
-    bgfx::VertexBufferHandle& vbh,
-    bgfx::ProgramHandle&      program)
-{
-    vcl::Color backgroundColor = vcl::Color::Black;
-
-    bgfx::setViewClear(
-        viewId,
-        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-        backgroundColor.rgba(),
-        1.0f,
-        0);
-
-    bgfx::VertexLayout layout;
-
-    layout.begin()
-        .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-        .end();
-
-    vbh = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertices, sizeof(vertices)), layout);
-
-    program = vcl::loadProgram(
-        "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
-
-    bgfx::touch(viewId);
+    NSRect rect = NSMakeRect(0, 0, width, height);
+    NSWindow* window = [
+        [NSWindow alloc]
+        initWithContentRect:rect
+                  styleMask:0
+                    backing:NSBackingStoreBuffered defer:NO
+    ];
+    NSString* appName = [NSString stringWithUTF8String: title];
+    [window setTitle:appName];
+    [window setBackgroundColor:[NSColor blackColor]];
+    return (void*) window;
 }
 
-inline void drawOnView(
-    bgfx::ViewId                    viewId,
-    const bgfx::VertexBufferHandle& vbh,
-    const bgfx::ProgramHandle&      program)
+void closeCocoaWindow(void* window)
 {
-    bgfx::setVertexBuffer(0, vbh);
-
-    bgfx::submit(viewId, program);
+    [(NSWindow*) window close];
 }
 
-#endif // COMMON_H
+} // namespace vcl::detail

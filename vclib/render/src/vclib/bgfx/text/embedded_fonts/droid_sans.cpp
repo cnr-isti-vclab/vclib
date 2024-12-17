@@ -20,31 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#include <vclib/bgfx/text/embedded_fonts/droid_sans.h>
 
-#include <vclib/render/config.h>
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/drawable_mesh.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/drawable/drawable_mesh.h>
-#endif
+#include <assets/fonts/droidsans.ttf.bin.h>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshBGFX<MeshType>;
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
-#endif
+FontData vcl::EmbeddedFont<VclFont::DROID_SANS>::embeddedFont()
+{
+    return {droidsans, sizeof(droidsans)};
+}
 
 } // namespace vcl
-
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H

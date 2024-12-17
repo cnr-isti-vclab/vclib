@@ -26,7 +26,7 @@
 #include "config.h"
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/render_bgfx/viewer_canvas.h>
+#include <vclib/bgfx/viewer_canvas.h>
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2

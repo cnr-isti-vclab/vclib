@@ -49,21 +49,21 @@ endforeach()
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
-        "include/vclib/render_bgfx/*.h")
+        "include/vclib/bgfx/*.h")
     list(APPEND HEADERS ${HEADERS_BGFX})
 
     file(GLOB_RECURSE SOURCES_BGFX CONFIGURE_DEPENDS
-        "src/vclib/render_bgfx/*.cpp")
+        "src/vclib/bgfx/*.cpp")
     list(APPEND SOURCES ${SOURCES_BGFX})
 
     if (APPLE)
         file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS
-            "src/vclib/render_bgfx/*.mm")
+            "src/vclib/bgfx/*.mm")
         list(APPEND SOURCES ${SOURCES_MM})
     endif()
 
     file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
-        "shaders/vclib/render_bgfx/*.sh" "shaders/vclib/render_bgfx/*.sc")
+        "shaders/vclib/bgfx/*.sh" "shaders/vclib/bgfx/*.sc")
     list(APPEND SHADERS ${SHADERS_BGFX})
 endif()
 

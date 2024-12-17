@@ -20,31 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#ifndef VCL_EXT_BGFX_DRAWABLE_AXIS_UNIFORMS_SH
+#define VCL_EXT_BGFX_DRAWABLE_AXIS_UNIFORMS_SH
 
-#include <vclib/render/config.h>
+#include <vclib/bgfx/shaders_common.sh>
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/drawable_mesh.h>
-#endif
+#include <vclib/bgfx/drawable/uniforms/camera_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/drawable_axis_uniforms.sh>
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/drawable/drawable_mesh.h>
-#endif
-
-namespace vcl {
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshBGFX<MeshType>;
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
-#endif
-
-} // namespace vcl
-
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#endif // VCL_EXT_BGFX_DRAWABLE_AXIS_UNIFORMS_SH
