@@ -20,58 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
-#define VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#define VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
 
-#include <vclib/render/interfaces/viewer_i.h>
+#include <vclib/render/config.h>
 
-#include <vclib/render_opengl2/canvas.h>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/render_bgfx/drawable/drawable_mesh.h>
+#endif
 
-#include <memory>
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <vclib/render_opengl2/drawable/drawable_mesh.h>
+#endif
 
 namespace vcl {
 
-class ViewerCanvasOpenGL2 : public vcl::CanvasOpenGL2, public ViewerI
-{
-public:
-    ViewerCanvasOpenGL2(
-        void* winId,
-        uint  width     = 1024,
-        uint  height    = 768,
-        void* displayId = nullptr);
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+template<MeshConcept MeshType>
+using DrawableMesh = DrawableMeshBGFX<MeshType>;
+#endif
 
-    ViewerCanvasOpenGL2(
-        void*                                        winId,
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width     = 1024,
-        uint                                         height    = 768,
-        void*                                        displayId = nullptr);
-
-    void init(uint width, uint height);
-
-    void toggleAxisVisibility() override
-    {
-        // todo
-    }
-
-    void toggleTrackBallVisibility() override
-    {
-        // todo
-    }
-
-protected:
-    void drawContent() override;
-
-    // events
-    void onResize(unsigned int width, unsigned int height) override;
-
-    void onMouseDoubleClick(MouseButton::Enum button, double x, double y)
-        override;
-
-private:
-    bool mReadRequested = false;
-};
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+template<MeshConcept MeshType>
+using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
+#endif
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H

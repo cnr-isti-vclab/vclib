@@ -65,23 +65,6 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     # file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
     #     "shaders/vclib/render_bgfx/*.sh" "shaders/vclib/render_bgfx/*.sc")
     # list(APPEND SHADERS ${SHADERS_BGFX})
-
-    # # required files that use bgfx
-    # set(LINK_FILES
-    #     include/vclib/render_bgfx/canvas.h
-    #     include/vclib/render_bgfx/viewer_canvas.h
-    #     include/vclib/render_bgfx/drawable/drawable_mesh.h)
-
-    # foreach(FILE ${LINK_FILES})
-    #     string(REPLACE "render_bgfx" "render" TARGET_FILE ${FILE})
-
-    #     get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
-    #     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})
-
-    #     file(CREATE_LINK
-    #         ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
-    #         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE} COPY_ON_ERROR)
-    # endforeach()
 endif()
 
 # if render engine is opengl2 - include sources that use opengl2
@@ -93,23 +76,6 @@ if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     # file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
     #     "src/vclib/render_opengl2/*.cpp")
     # list(APPEND SOURCES ${SOURCES_OPENGL2})
-
-    # # required files that use opengl2
-    # set(LINK_FILES
-    #     include/vclib/render_opengl2/canvas.h
-    #     include/vclib/render_opengl2/viewer_canvas.h
-    #     include/vclib/render_opengl2/drawable/drawable_mesh.h)
-
-    # foreach(FILE ${LINK_FILES})
-    #     string(REPLACE "render_opengl2" "render" TARGET_FILE ${FILE})
-
-    #     get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
-    #     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})
-
-    #     file(CREATE_LINK
-    #         ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
-    #         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE} COPY_ON_ERROR)
-    # endforeach()
 endif()
 
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")

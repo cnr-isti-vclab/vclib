@@ -68,7 +68,7 @@ namespace vcl {
  * - frame(): this function must be called by the derived classes at the end of
  * each frame, after all the opengl2 rendering commands have been issued;
  */
-class Canvas : public virtual vcl::EventManagerI
+class CanvasOpenGL2 : public virtual vcl::EventManagerI
 {
     using CallbackReadBuffer = std::function<void(std::vector<float>)>;
 
@@ -80,9 +80,9 @@ class Canvas : public virtual vcl::EventManagerI
     Point2i            mReadDepthPoint     = Point2i(-1, -1);
 
 public:
-    Canvas(void* winId, uint width, uint height, void* displayId = nullptr);
+    CanvasOpenGL2(void* winId, uint width, uint height, void* displayId = nullptr);
 
-    ~Canvas() {}
+    ~CanvasOpenGL2() {}
 
     void init(uint width, uint height);
 
