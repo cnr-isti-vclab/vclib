@@ -25,7 +25,7 @@
 
 #include <vclib/render/interfaces/viewer_i.h>
 
-#include <vclib/render_opengl2/canvas.h>
+#include <vclib/opengl2/canvas.h>
 
 #include <memory>
 

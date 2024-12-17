@@ -70,11 +70,11 @@ endif()
 # if render engine is opengl2 - include sources that use opengl2
 if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
-        "include/vclib/render_opengl2/*.h")
+        "include/vclib/opengl2/*.h")
     list(APPEND HEADERS ${HEADERS_OPENGL2})
 
     file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
-        "src/vclib/render_opengl2/*.cpp")
+        "src/vclib/opengl2/*.cpp")
     list(APPEND SOURCES ${SOURCES_OPENGL2})
 endif()
 

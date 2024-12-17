@@ -30,7 +30,7 @@
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/canvas.h>
+#include <vclib/opengl2/canvas.h>
 #endif
 
 namespace vcl {

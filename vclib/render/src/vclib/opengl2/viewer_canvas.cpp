@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render_opengl2/viewer_canvas.h>
+#include <vclib/opengl2/viewer_canvas.h>
 
 #include <vclib/math/min_max.h>
 #include <vclib/render/interfaces/drawable_mesh_i.h>
