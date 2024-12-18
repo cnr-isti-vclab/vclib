@@ -119,10 +119,6 @@ struct OcornutImguiContext
 		{
 			return;
 		}
-		// else
-		// {
-		// 	std::cerr << "Rendering imgui - " << dispWidth << "x" << dispHeight << std::endl;
-		// }
 
 		bgfx::setViewName(m_viewId, "ImGui");
 		bgfx::setViewMode(m_viewId, bgfx::ViewMode::Sequential);
@@ -140,6 +136,10 @@ struct OcornutImguiContext
 			bgfx::setViewTransform(m_viewId, NULL, ortho);
 			// the viewport is set using scaled coordinates
 			bgfx::setViewRect(m_viewId, 0, 0, uint16_t(dispWidth), uint16_t(dispHeight) );
+
+			// by doing this we use the projection space using non-scaled coordinates
+			// and the input should not be scaled, while the framebuffer space
+			// uses pixels
 		}
 
 		const ImVec2 clipPos   = _drawData->DisplayPos;       // (0,0) unless using multi-viewports
