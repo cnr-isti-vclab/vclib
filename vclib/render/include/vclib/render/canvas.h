@@ -45,5 +45,4 @@ using Canvas = CanvasOpenGL2;
 
 } // namespace vcl
 
-
 #endif // VCL_RENDER_CANVAS_H

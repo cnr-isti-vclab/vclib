@@ -25,7 +25,7 @@ def replace_headers_in_dir(folder_path):
     path = os.path.dirname(os.path.abspath(__file__))
 
     # Read in the file
-    with open(path + '/templates/header.txt', 'r') as file :
+    with open(path + '/templates/headings.txt', 'r') as file :
         header_string = file.read()
 
     for file_path in glob.glob(os.path.join(folder_path, '*')):
@@ -41,7 +41,7 @@ def replace_cmake_headers_in_dir(folder_path, recursive=True):
     path = os.path.dirname(os.path.abspath(__file__))
 
     # Read in the file
-    with open(path + '/templates/header.txt', 'r') as file :
+    with open(path + '/templates/headings.txt', 'r') as file :
         header_string = file.read()
         # replace the first char of the line with a #
         header_string = re.sub(r'^.', '#', header_string, flags=re.MULTILINE)
@@ -57,7 +57,7 @@ def replace_shader_headers_in_dir(folder_path):
     path = os.path.dirname(os.path.abspath(__file__))
 
     # Read in the file
-    with open(path + '/templates/header.txt', 'r') as file :
+    with open(path + '/templates/headings.txt', 'r') as file :
         header_string = file.read()
 
     for file_path in glob.glob(os.path.join(folder_path, '*')):

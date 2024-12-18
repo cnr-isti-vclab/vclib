@@ -45,5 +45,4 @@ using ViewerCanvas = ViewerCanvasOpenGL2;
 
 } // namespace vcl
 
-
 #endif // VCL_RENDER_VIEWER_CANVAS_H

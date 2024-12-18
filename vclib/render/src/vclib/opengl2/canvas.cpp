@@ -38,7 +38,10 @@ void CanvasOpenGL2::init(uint width, uint height)
     glClearColor(1.f, 1.f, 1.f, 1.0f);
 }
 
-bool CanvasOpenGL2::screenshot(const std::string& filename, uint width, uint height)
+bool CanvasOpenGL2::screenshot(
+    const std::string& filename,
+    uint               width,
+    uint               height)
 {
     (void) width;
     (void) height;

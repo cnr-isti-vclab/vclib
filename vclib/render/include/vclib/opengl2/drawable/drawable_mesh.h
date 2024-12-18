@@ -86,7 +86,8 @@ class DrawableMeshOpenGL2 : public DrawableMeshI, public MeshType
 public:
     DrawableMeshOpenGL2() = default;
 
-    DrawableMeshOpenGL2(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
+    DrawableMeshOpenGL2(const MeshType& mesh) :
+            DrawableMeshI(mesh), MeshType(mesh)
     {
         updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
