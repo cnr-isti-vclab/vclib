@@ -25,9 +25,9 @@
 
 #include <vclib/types.h>
 
-#include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/bgfx/read_framebuffer_request.h>
 #include <vclib/bgfx/text/text_view.h>
+#include <vclib/render/interfaces/event_manager_i.h>
 
 #include <optional>
 
