@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_CANVAS_H
-#define CONCEPTS_CANVAS_H
+#ifndef CONCEPTS_WINDOW_MANAGER_H
+#define CONCEPTS_WINDOW_MANAGER_H
 
 #include <vclib/types.h>
 
@@ -30,12 +30,18 @@
 namespace vcl {
 
 template<typename T>
-concept CanvasConcept = requires(T&& obj)
+concept WindowManagerConcept = requires(T&& obj)
 {
-    { obj.onResize(uint(), uint()) } -> std::same_as<void>;
-    { obj.frame() } -> std::same_as<void>;
+    { obj.windowTitle() } -> std::same_as<const std::string&()>;
+    { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
+
+    { obj.width() } -> std::same_as<uint()>;
+    { obj.height() } -> std::same_as<uint()>;
+
+    { obj.winId() } -> std::same_as<void*>;
+    { obj.displayId() } -> std::same_as<void*>;
 };
 
 } // namespace vcl
 
-#endif // CONCEPTS_CANVAS_H
+#endif // CONCEPTS_WINDOW_MANAGER_H
