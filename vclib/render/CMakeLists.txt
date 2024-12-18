@@ -85,6 +85,21 @@ if (TARGET vclib-3rd-glfw)
 
     file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
     list(APPEND SOURCES ${SOURCES_GLFW})
+
+    if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+        # todo - fix this hack
+        # for now, remove imgui from the opengl2 backend build
+        foreach(FILE ${HEADERS})
+            if (FILE MATCHES "imgui")
+                list(REMOVE_ITEM HEADERS ${FILE})
+            endif()
+        endforeach()
+        foreach(FILE ${SOURCES})
+            if (FILE MATCHES "imgui")
+                list(REMOVE_ITEM SOURCES ${FILE})
+            endif()
+        endforeach()
+    endif()
 endif()
 
 if (TARGET vclib-3rd-qt)
