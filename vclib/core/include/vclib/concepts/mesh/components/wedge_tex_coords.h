@@ -26,6 +26,7 @@
 #include "component.h"
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/space/tex_coord.h>
 
@@ -62,20 +63,22 @@ concept HasWedgeTexCoords = requires (
 
     { obj.textureIndex() } -> std::convertible_to<short>;
 
-    { obj.wedgeTexCoordBegin() } -> std::input_iterator;
-    { obj.wedgeTexCoordEnd() } -> std::input_iterator;
+    { obj.wedgeTexCoordBegin() } -> InputIterator<decltype(t)>;
+    { obj.wedgeTexCoordEnd() } -> InputIterator<decltype(t)>;
 
-    { obj.wedgeTexCoords() } -> vcl::RangeOf<decltype(t)>;
+    { obj.wedgeTexCoords() } -> InputRange<decltype(t)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.setWedgeTexCoord(uint(), t) } -> std::same_as<void>;
         { obj.setWedgeTexCoords(vec) } -> std::same_as<void>;
 
         { obj.textureIndex() } -> std::same_as<short&>;
 
-        { obj.wedgeTexCoordBegin() } -> std::output_iterator<decltype(t)>;
-        { obj.wedgeTexCoordEnd() } -> std::output_iterator<decltype(t)>;
+        { obj.wedgeTexCoordBegin() } -> OutputIterator<decltype(t)>;
+        { obj.wedgeTexCoordEnd() } -> OutputIterator<decltype(t)>;
+
+        { obj.wedgeTexCoords() } -> OutputRange<decltype(t)>;
     };
 };
 

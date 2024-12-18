@@ -54,7 +54,7 @@ class Plane
 
 public:
     using ScalarType = Scalar;
-    using PointType  = vcl::Point3<Scalar>;
+    using PointType  = Point3<Scalar>;
 
     /**
      * @brief Empty constructor. The plane is uninitialized.

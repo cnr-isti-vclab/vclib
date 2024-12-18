@@ -50,7 +50,7 @@ namespace vcl {
 template<typename MeshType>
 concept HasPerEdgeAdjacentEdges =
     HasEdges<MeshType> &&
-    vcl::edge::HasAdjacentEdges<typename MeshType::EdgeType>;
+    edge::HasAdjacentEdges<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge AdjacentFaces
@@ -66,7 +66,7 @@ concept HasPerEdgeAdjacentEdges =
 template<typename MeshType>
 concept HasPerEdgeAdjacentFaces =
     HasEdges<MeshType> &&
-    vcl::edge::HasAdjacentFaces<typename MeshType::EdgeType>;
+    edge::HasAdjacentFaces<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge BitFlags component.
@@ -80,7 +80,8 @@ concept HasPerEdgeAdjacentFaces =
  */
 template<typename MeshType>
 concept HasPerEdgeBitFlags =
-    HasEdges<MeshType> && vcl::edge::HasBitFlags<typename MeshType::EdgeType>;
+    HasEdges<MeshType> &&
+    edge::HasBitFlags<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge Color component.
@@ -94,7 +95,8 @@ concept HasPerEdgeBitFlags =
  */
 template<typename MeshType>
 concept HasPerEdgeColor =
-    HasEdges<MeshType> && vcl::edge::HasColor<typename MeshType::EdgeType>;
+    HasEdges<MeshType> &&
+    edge::HasColor<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge CustomComponents
@@ -110,7 +112,7 @@ concept HasPerEdgeColor =
 template<typename MeshType>
 concept HasPerEdgeCustomComponents =
     HasEdges<MeshType> &&
-    vcl::edge::HasCustomComponents<typename MeshType::EdgeType>;
+    edge::HasCustomComponents<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge Mark component.
@@ -124,7 +126,7 @@ concept HasPerEdgeCustomComponents =
  */
 template<typename MeshType>
 concept HasPerEdgeMark =
-    HasEdges<MeshType> && vcl::edge::HasMark<typename MeshType::EdgeType>;
+    HasEdges<MeshType> && edge::HasMark<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge Normal component.
@@ -138,7 +140,8 @@ concept HasPerEdgeMark =
  */
 template<typename MeshType>
 concept HasPerEdgeNormal =
-    HasEdges<MeshType> && vcl::edge::HasNormal<typename MeshType::EdgeType>;
+    HasEdges<MeshType> &&
+    edge::HasNormal<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge Quality component.
@@ -152,11 +155,12 @@ concept HasPerEdgeNormal =
  */
 template<typename MeshType>
 concept HasPerEdgeQuality =
-    HasEdges<MeshType> && vcl::edge::HasQuality<typename MeshType::EdgeType>;
+    HasEdges<MeshType> &&
+    edge::HasQuality<typename RemoveRef<MeshType>::EdgeType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Edge VertexPointers
- * component.
+ * @brief Concept that checks if a Mesh has the per Edge VertexReferences
+ * component (Pointers or Indices).
  *
  * Evaluates to true if VertexPointers is part of the Edge element, whether it
  * is horizontal, vertical or optional.
@@ -166,9 +170,9 @@ concept HasPerEdgeQuality =
  * @ingroup edge_mesh_concepts
  */
 template<typename MeshType>
-concept HasPerEdgeVertexPointers =
+concept HasPerEdgeVertexReferences =
     HasEdges<MeshType> &&
-    vcl::edge::HasVertexReferences<typename MeshType::EdgeType>;
+    edge::HasVertexReferences<typename RemoveRef<MeshType>::EdgeType>;
 
 } // namespace vcl
 

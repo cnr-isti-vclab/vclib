@@ -34,8 +34,7 @@ namespace vcl::mesh {
  */
 template<typename T>
 concept ElementContainerConcept =
-    std::is_base_of<ElementContainerTriggerer, RemoveRef<T>>::value &&
-    requires (T&& obj) {
+    IsElementContainerPred<T>::value && requires (T&& obj) {
         typename RemoveRef<T>::ElementType;
         typename RemoveRef<T>::ParentMeshType;
 

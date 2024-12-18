@@ -55,11 +55,11 @@ inline std::string readNextNonEmptyLine(std::istream& file)
         std::getline(file, line);
         if constexpr (THROW) {
             if (!file) {
-                throw vcl::MalformedFileException("Unexpected end of file.");
+                throw MalformedFileException("Unexpected end of file.");
             }
         }
         if (file && line.size() > 0) {
-            vcl::removeCarriageReturn(line);
+            removeCarriageReturn(line);
         }
     } while (file && line.size() == 0);
     return line;
@@ -92,7 +92,7 @@ inline std::ifstream openInputFileStream(
     fp.imbue(std::locale().classic());
 
     if (!fp.is_open()) {
-        throw vcl::CannotOpenFileException(filename);
+        throw CannotOpenFileException(filename);
     }
     return fp;
 }
@@ -135,16 +135,16 @@ inline std::string readNextNonEmptyLineNoThrow(std::istream& file)
  * @return the next non-empty line read from the stream, tokenized with the
  * given separator.
  */
-inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
+inline Tokenizer readAndTokenizeNextNonEmptyLine(
     std::istream&     file,
     std::vector<char> separators = {' ', '\t'})
 {
-    std::string    line;
-    vcl::Tokenizer tokenizer;
+    std::string line;
+    Tokenizer   tokenizer;
 
     do {
         line      = readNextNonEmptyLine(file);
-        tokenizer = vcl::Tokenizer(line, separators);
+        tokenizer = Tokenizer(line, separators);
     } while (tokenizer.begin() == tokenizer.end());
 
     return tokenizer;
@@ -160,16 +160,16 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
  * given separator. If the stream ends before a non-empty line is found, returns
  * an empty tokenizer.
  */
-inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
+inline Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     std::istream&     file,
     std::vector<char> separators = {' ', '\t'})
 {
-    std::string    line;
-    vcl::Tokenizer tokenizer;
+    std::string line;
+    Tokenizer   tokenizer;
 
     do {
         line      = readNextNonEmptyLineNoThrow(file);
-        tokenizer = vcl::Tokenizer(line, separators);
+        tokenizer = Tokenizer(line, separators);
     } while (file && tokenizer.begin() == tokenizer.end());
 
     return tokenizer;
@@ -429,44 +429,44 @@ void readCustomComponent(
 // read/txt
 
 template<typename T>
-T readChar(vcl::Tokenizer::iterator& token, std::endian = std::endian::native)
+T readChar(Tokenizer::iterator& token, std::endian = std::endian::native)
 {
     return std::stoi(*token++);
 }
 
 template<typename T>
-T readUChar(vcl::Tokenizer::iterator& token, std::endian = std::endian::native)
+T readUChar(Tokenizer::iterator& token, std::endian = std::endian::native)
 {
     return std::stoi(*token++);
 }
 
 template<typename T>
-T readShort(vcl::Tokenizer::iterator& token, std::endian = std::endian::native)
+T readShort(Tokenizer::iterator& token, std::endian = std::endian::native)
 {
     return std::stoi(*token++);
 }
 
 template<typename T>
-T readUShort(vcl::Tokenizer::iterator& token, std::endian = std::endian::native)
+T readUShort(Tokenizer::iterator& token, std::endian = std::endian::native)
 {
     return std::stoi(*token++);
 }
 
 template<typename T>
-T readInt(vcl::Tokenizer::iterator& token, std::endian = std::endian::native)
+T readInt(Tokenizer::iterator& token, std::endian = std::endian::native)
 {
     return std::stoi(*token++);
 }
 
 template<typename T>
-T readUInt(vcl::Tokenizer::iterator& token, std::endian = std::endian::native)
+T readUInt(Tokenizer::iterator& token, std::endian = std::endian::native)
 {
     return std::stoi(*token++);
 }
 
 template<typename T>
 T readFloat(
-    vcl::Tokenizer::iterator& token,
+    Tokenizer::iterator& token,
     std::endian  = std::endian::native,
     bool isColor = false)
 {
@@ -480,7 +480,7 @@ T readFloat(
 
 template<typename T>
 T readDouble(
-    vcl::Tokenizer::iterator& token,
+    Tokenizer::iterator& token,
     std::endian  = std::endian::native,
     bool isColor = false)
 {
@@ -494,8 +494,8 @@ T readDouble(
 
 template<typename T>
 T readPrimitiveType(
-    vcl::Tokenizer::iterator& token,
-    PrimitiveType::Enum       type,
+    Tokenizer::iterator& token,
+    PrimitiveType::Enum  type,
     std::endian  = std::endian::native,
     bool isColor = false)
 {
@@ -526,10 +526,10 @@ T readPrimitiveType(
 
 template<ElementConcept El>
 void readCustomComponent(
-    vcl::Tokenizer::iterator& token,
-    El&                       elem,
-    const std::string&        cName,
-    PrimitiveType::Enum       type,
+    Tokenizer::iterator& token,
+    El&                  elem,
+    const std::string&   cName,
+    PrimitiveType::Enum  type,
     std::endian = std::endian::native)
 {
     std::type_index ti = elem.customComponentType(cName);

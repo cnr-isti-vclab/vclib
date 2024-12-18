@@ -42,7 +42,7 @@ namespace vcl {
  */
 class Image
 {
-    vcl::Array2<uint32_t> mImg;
+    Array2<uint32_t> mImg;
 
 public:
     Image() {}
@@ -84,7 +84,7 @@ public:
             else {
                 for (uint i = 0; i < h; i++) {
                     for (uint j = 0; j < w; j++) {
-                        vcl::Color c(cdata[i * w + j], format);
+                        Color c(cdata[i * w + j], format);
                         mImg(i, j) = c.abgr();
                     }
                 }
@@ -104,9 +104,9 @@ public:
 
     std::size_t sizeInBytes() const { return mImg.rows() * mImg.cols() * 4; }
 
-    vcl::Color pixel(uint i, uint j) const
+    Color pixel(uint i, uint j) const
     {
-        return vcl::Color(static_cast<vcl::Color::ColorABGR>(mImg(i, j)));
+        return Color(static_cast<Color::ColorABGR>(mImg(i, j)));
     }
 
     const unsigned char* data() const

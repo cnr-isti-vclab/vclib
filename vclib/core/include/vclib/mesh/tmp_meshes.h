@@ -33,18 +33,12 @@ class TMPSimplePolyMesh;
 namespace tmpMesh {
 
 class TriVertex :
-        public vcl::Vertex<
-            TMPSimpleTriMesh,
-            vcl::vert::BitFlags,
-            vcl::vert::Coordinate3d>
+        public Vertex<TMPSimpleTriMesh, vert::BitFlags, vert::Coordinate3d>
 {
 };
 
 class PolyVertex :
-        public vcl::Vertex<
-            TMPSimplePolyMesh,
-            vcl::vert::BitFlags,
-            vcl::vert::Coordinate3d>
+        public Vertex<TMPSimplePolyMesh, vert::BitFlags, vert::Coordinate3d>
 {
 };
 
@@ -52,32 +46,32 @@ class TriFace;
 class PolyFace;
 
 class TriFace :
-        public vcl::Face<
+        public Face<
             TMPSimpleTriMesh,
-            vcl::face::TriangleBitFlags,
-            vcl::face::TriangleVertexPtrs<TriVertex, TriFace>>
+            face::TriangleBitFlags,
+            face::TriangleVertexPtrs<TriVertex, TriFace>>
 {
 };
 
 class PolyFace :
-        public vcl::Face<
+        public Face<
             TMPSimplePolyMesh,
-            vcl::face::PolygonBitFlags,
-            vcl::face::PolygonVertexPtrs<PolyVertex, PolyFace>>
+            face::PolygonBitFlags,
+            face::PolygonVertexPtrs<PolyVertex, PolyFace>>
 {
 };
 
 } // namespace tmpMesh
 
 class TMPSimpleTriMesh :
-        public vcl::Mesh<
+        public Mesh<
             mesh::VertexContainer<tmpMesh::TriVertex>,
             mesh::FaceContainer<tmpMesh::TriFace>>
 {
 };
 
 class TMPSimplePolyMesh :
-        public vcl::Mesh<
+        public Mesh<
             mesh::VertexContainer<tmpMesh::PolyVertex>,
             mesh::FaceContainer<tmpMesh::PolyFace>>
 {

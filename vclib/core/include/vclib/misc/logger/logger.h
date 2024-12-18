@@ -55,7 +55,7 @@ class Logger : public AbstractLogger
 
     uint mLineWidth = 80;
 
-    vcl::Timer mTimer;
+    Timer mTimer;
 
     // progress status members
     std::string mProgressMessage;

@@ -220,7 +220,7 @@ template<typename T>
 class NestedInitializerListsProcessor<T, 1>
 {
 public:
-    using InitializerList = vcl::NestedInitializerLists<T, 1>;
+    using InitializerList = NestedInitializerLists<T, 1>;
 
     static std::list<size_t> maxDimensionsLevels(InitializerList values)
     {

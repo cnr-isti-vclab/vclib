@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -70,21 +71,17 @@ concept HasVertexReferences = requires (
     { obj.indexOfEdge(&v, &v) } -> std::same_as<uint>;
     { obj.indexOfEdge(uint(), uint()) } -> std::same_as<uint>;
 
-    { obj.vertexBegin() } -> std::input_iterator;
-    { obj.vertexEnd() } -> std::input_iterator;
+    { obj.vertexBegin() } -> InputIterator<decltype(cVP)>;
+    { obj.vertexEnd() } -> InputIterator<decltype(cVP)>;
 
-    { obj.vertexIndexBegin() } -> std::input_iterator;
-    { obj.vertexIndexEnd() } -> std::input_iterator;
+    { obj.vertexIndexBegin() } -> InputIterator<uint>;
+    { obj.vertexIndexEnd() } -> InputIterator<uint>;
 
-    { obj.vertexIndices() } -> vcl::RangeOf<uint>;
-
-    // const requirements
-    requires !vcl::IsConst<T> || requires {
-        { obj.vertices() } -> vcl::RangeOf<decltype(cVP)>;
-    };
+    { obj.vertices() } -> InputRange<decltype(cVP)>;
+    { obj.vertexIndices() } -> InputRange<uint>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.vertex(uint()) } -> std::same_as<decltype(vP)>;
         { obj.vertexMod(int()) } -> std::same_as<decltype(vP)>;
 
@@ -101,10 +98,16 @@ concept HasVertexReferences = requires (
         { obj.setVertices(vecV) } -> std::same_as<void>;
         { obj.setVertices(vecU) } -> std::same_as<void>;
 
-        // { obj.vertexBegin() } -> std::output_iterator<decltype(vP)>;
-        // { obj.vertexEnd() } -> std::output_iterator<decltype(vP)>;
+        // for references components, the iterators returned by begin() and
+        // end() are input iterators because they do not allow to modify the
+        // content of the container (the only way to do that is by using the set
+        // member functions). However, they allow to modify the elements
+        // pointed by the iterators (const references components allow to
+        // iterate only trough const pointers instead).
+        { obj.vertexBegin() } -> InputIterator<decltype(vP)>;
+        { obj.vertexEnd() } -> InputIterator<decltype(vP)>;
 
-        { obj.vertices() } -> vcl::RangeOf<decltype(vP)>;
+        { obj.vertices() } -> InputRange<decltype(vP)>;
     };
 };
 

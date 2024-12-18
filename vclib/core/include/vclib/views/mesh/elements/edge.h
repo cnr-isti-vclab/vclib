@@ -28,14 +28,11 @@
 namespace vcl::views {
 namespace detail {
 
-template<typename T>
-concept CleanEdgeMeshConcept = EdgeMeshConcept<std::remove_cvref_t<T>>;
-
 struct EdgesView
 {
     constexpr EdgesView() = default;
 
-    template<CleanEdgeMeshConcept R>
+    template<EdgeMeshConcept R>
     friend constexpr auto operator|(R&& r, EdgesView)
     {
         return r.edges();

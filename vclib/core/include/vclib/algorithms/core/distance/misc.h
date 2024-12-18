@@ -221,12 +221,12 @@ auto boundedDistance(
     // consider it as a segment.
     if (triangle.normal().norm() == 0) {
         // Calculate the bounding box of the face.
-        Box3<ScalarType>     box = vcl::boundingBox(triangle);
+        Box3<ScalarType>     box = boundingBox(triangle);
         Segment3<ScalarType> s(box.min(), box.max());
         // If the diagonal of the bounding box is greater than zero, calculate
         // the distance between the query point and the segment.
         if (box.diagonal() > 0) {
-            dist = vcl::distance(p, s, closest);
+            dist = distance(p, s, closest);
         }
         else {
             // If the diagonal of the bounding box is zero, set the closest
@@ -301,7 +301,7 @@ auto boundedDistance(
         }
 
         const ScalarType EPS = ScalarType(0.000001);
-        ScalarType       b   = vcl::min(b0, b1, b2);
+        ScalarType       b   = min(b0, b1, b2);
         if (b < EPS * triangle.area()) {
             ScalarType bt;
             if (b == b0)

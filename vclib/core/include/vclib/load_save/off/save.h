@@ -58,10 +58,10 @@ void saveOff(
     uint vn = 0;
     uint fn = 0;
     uint en = 0;
-    if constexpr (vcl::HasVertices<MeshType>) {
+    if constexpr (HasVertices<MeshType>) {
         vn = m.vertexNumber();
     }
-    if constexpr (vcl::HasFaces<MeshType>) {
+    if constexpr (HasFaces<MeshType>) {
         fn = m.faceNumber();
     }
 
@@ -71,14 +71,14 @@ void saveOff(
     fp << std::endl; // remove last char (a space) and add a newline
 
     // vertices
-    if constexpr (vcl::HasVertices<MeshType>) {
+    if constexpr (HasVertices<MeshType>) {
         using VertexType = MeshType::VertexType;
         for (const VertexType& v : m.vertices()) {
             io::writeDouble(fp, v.coord().x(), false);
             io::writeDouble(fp, v.coord().y(), false);
             io::writeDouble(fp, v.coord().z(), false);
 
-            if constexpr (vcl::HasPerVertexColor<MeshType>) {
+            if constexpr (HasPerVertexColor<MeshType>) {
                 if (meshInfo.hasVertexColors()) {
                     io::writeInt(fp, v.color().red(), false);
                     io::writeInt(fp, v.color().green(), false);
@@ -86,14 +86,14 @@ void saveOff(
                     io::writeInt(fp, v.color().alpha(), false);
                 }
             }
-            if constexpr (vcl::HasPerVertexNormal<MeshType>) {
+            if constexpr (HasPerVertexNormal<MeshType>) {
                 if (meshInfo.hasVertexNormals()) {
                     io::writeDouble(fp, v.normal().x(), false);
                     io::writeDouble(fp, v.normal().y(), false);
                     io::writeDouble(fp, v.normal().z(), false);
                 }
             }
-            if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
+            if constexpr (HasPerVertexTexCoord<MeshType>) {
                 if (meshInfo.hasVertexTexCoords()) {
                     io::writeDouble(fp, v.texCoord().u(), false);
                     io::writeDouble(fp, v.texCoord().v(), false);
@@ -105,7 +105,7 @@ void saveOff(
     }
 
     // faces
-    if constexpr (vcl::HasFaces<MeshType>) {
+    if constexpr (HasFaces<MeshType>) {
         using VertexType = MeshType::VertexType;
         using FaceType   = MeshType::FaceType;
 
@@ -117,7 +117,7 @@ void saveOff(
             for (const VertexType* v : f.vertices()) {
                 io::writeInt(fp, vIndices[m.index(v)], false);
             }
-            if constexpr (vcl::HasPerFaceColor<MeshType>) {
+            if constexpr (HasPerFaceColor<MeshType>) {
                 if (meshInfo.hasFaceColors()) {
                     io::writeInt(fp, f.color().red(), false);
                     io::writeInt(fp, f.color().green(), false);

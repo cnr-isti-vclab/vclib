@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_VCG_CONCEPTS_H
-#define VCL_EXT_VCG_CONCEPTS_H
+#ifndef VCL_VCG_CONCEPTS_H
+#define VCL_VCG_CONCEPTS_H
 
 #include <vclib/types.h>
 
@@ -54,4 +54,4 @@ concept Point4Concept = T::Dimension == 4 && requires (T a) {
 
 } // namespace vcl::vc
 
-#endif // VCL_EXT_VCG_CONCEPTS_H
+#endif // VCL_VCG_CONCEPTS_H

@@ -30,14 +30,14 @@ namespace vcl {
 template<int N>
 class CellIterator
 {
-    vcl::Point<uint, N> mIt;
-    vcl::Point<uint, N> mFirst, mEnd;
+    Point<uint, N> mIt;
+    Point<uint, N> mFirst, mEnd;
 
 public:
     using difference_type   = ptrdiff_t;
-    using value_type        = vcl::Point<uint, N>;
-    using reference         = const vcl::Point<uint, N>&;
-    using pointer           = const vcl::Point<uint, N>*;
+    using value_type        = Point<uint, N>;
+    using reference         = const Point<uint, N>&;
+    using pointer           = const Point<uint, N>*;
     using iterator_category = std::forward_iterator_tag;
 
     CellIterator()
@@ -46,9 +46,8 @@ public:
         mFirst = mEnd = mIt;
     }
 
-    CellIterator(
-        const vcl::Point<uint, N>& first,
-        const vcl::Point<uint, N>& end) : mIt(first), mFirst(first), mEnd(end)
+    CellIterator(const Point<uint, N>& first, const Point<uint, N>& end) :
+            mIt(first), mFirst(first), mEnd(end)
     {
     }
 

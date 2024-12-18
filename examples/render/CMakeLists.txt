@@ -47,6 +47,10 @@ if (TARGET vclib-processing)
     add_subdirectory(800-processing-main-window)
 endif()
 
+if(TARGET vclib-3rd-imgui AND TARGET vclib-3rd-bgfx)
+    add_subdirectory(910-viewer-imgui)
+endif()
+
 add_subdirectory(999-misc)
 
 if (CAN_BUILD_VCLIB_EXAMPLES)
@@ -57,9 +61,4 @@ if (CAN_BUILD_VCLIB_EXAMPLES)
     add_subdirectory(9019-mesh-sampling)
     add_subdirectory(9021-mesh-sphere-intersection)
     add_subdirectory(9026-crease-edges-mesh)
-endif()
-
-
-if(TARGET vclib-3rd-imgui AND TARGET vclib-3rd-bgfx)
-    add_subdirectory(910-viewer-imgui)
 endif()

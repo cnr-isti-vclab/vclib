@@ -73,7 +73,7 @@ template<MeshConcept MeshType>
 typename MeshType::VertexType::CoordType scalarWeightedBarycenter(
     const MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexQuality(m);
 
     using VertexType  = MeshType::VertexType;
     using CoordType   = VertexType::CoordType;

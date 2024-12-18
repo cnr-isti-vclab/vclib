@@ -24,21 +24,18 @@
 #define VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
 
 #include <vclib/concepts/mesh.h>
+#include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
 
 namespace vcl::views {
 
 namespace detail {
 
-template<typename T>
-concept CleanAdjVerticesConcept =
-    comp::HasAdjacentVertices<std::remove_cvref_t<T>>;
-
 struct AdjVerticesView
 {
     constexpr AdjVerticesView() = default;
 
-    template<CleanAdjVerticesConcept R>
+    template<comp::HasAdjacentVertices R>
     friend constexpr auto operator|(R&& r, AdjVerticesView)
     {
         if constexpr (IsPointer<R>)

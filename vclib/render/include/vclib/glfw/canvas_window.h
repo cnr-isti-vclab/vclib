@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_CANVAS_WINDOW_H
-#define VCL_EXT_GLFW_CANVAS_WINDOW_H
+#ifndef VCL_GLFW_CANVAS_WINDOW_H
+#define VCL_GLFW_CANVAS_WINDOW_H
 
 #include "event_manager_window.h"
 
@@ -51,4 +51,4 @@ protected:
 
 } // namespace vcl::glfw
 
-#endif // VCL_EXT_GLFW_CANVAS_WINDOW_H
+#endif // VCL_GLFW_CANVAS_WINDOW_H

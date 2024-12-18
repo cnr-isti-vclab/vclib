@@ -127,7 +127,7 @@ void saveStl(
 
         for (const FaceType& f : m.faces()) {
             // For each triangle write the normal, the three coords and a short
-            auto n = vcl::faceNormal(f);
+            auto n = faceNormal(f);
 
             unsigned short attributes = 0;
 
@@ -151,7 +151,7 @@ void saveStl(
                     settings);
             }
             else {
-                std::vector<uint> tris = vcl::earCut(f);
+                std::vector<uint> tris = earCut(f);
                 for (uint i = 0; i < tris.size(); i += 3) {
                     detail::writeSTLTriangle(
                         fp,

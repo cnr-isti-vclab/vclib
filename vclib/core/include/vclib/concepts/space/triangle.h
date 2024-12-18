@@ -35,20 +35,24 @@ namespace vcl {
  * @ingroup space_concepts
  */
 template<typename T>
-concept TriangleConcept =
-    requires (T&& obj, typename RemoveRef<T>::ScalarType s) {
-        typename RemoveRef<T>::ScalarType;
-        typename RemoveRef<T>::PointType;
+concept TriangleConcept = requires (
+    T&&                               obj,
+    typename RemoveRef<T>::PointType  p,
+    typename RemoveRef<T>::ScalarType s) {
+    typename RemoveRef<T>::ScalarType;
+    typename RemoveRef<T>::PointType;
 
-        obj.DIM;
-        obj.size() == 3;
+    obj.DIM;
+    obj.size() == 3;
 
-        { obj.point(uint()) } -> PointConcept;
-        { obj.sideLength(uint()) } -> std::same_as<decltype(s)>;
-        { obj.barycenter() } -> PointConcept;
-        { obj.perimeter() } -> std::same_as<decltype(s)>;
-        { obj.area() } -> std::same_as<decltype(s)>;
-    };
+    RemoveRef<T>(p, p, p);
+
+    { obj.point(uint()) } -> PointConcept;
+    { obj.sideLength(uint()) } -> std::same_as<decltype(s)>;
+    { obj.barycenter() } -> PointConcept;
+    { obj.perimeter() } -> std::same_as<decltype(s)>;
+    { obj.area() } -> std::same_as<decltype(s)>;
+};
 
 template<typename T>
 concept Triangle2Concept = TriangleConcept<T> && RemoveRef<T>::DIM == 2;

@@ -157,8 +157,7 @@ public:
 
     template<Range Rng>
     uint addFace(Rng&& r) requires (
-        RangeOfConvertibleTo<Rng, typename Face::VertexType*> ||
-        RangeOfConvertibleTo<Rng, uint>)
+        InputRange<Rng, typename Face::VertexType*> || InputRange<Rng, uint>)
     {
         auto begin = std::ranges::begin(r);
         auto end   = std::ranges::end(r);
@@ -1164,7 +1163,7 @@ protected:
                         // other triangles will be added at the end of the
                         // container
                         std::vector<uint> tris =
-                            vcl::earCut(mf.vertices() | vcl::views::coords);
+                            earCut(mf.vertices() | views::coords);
                         FaceType& f = face(m.index(mf));
                         importTriPointersHelper(f, mf, base, mvbase, tris, 0);
 

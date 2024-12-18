@@ -33,39 +33,47 @@ namespace vcl {
  * @tparam T: The type to be tested for conformity to the SegmentConcept.
  */
 template<typename T>
-concept SegmentConcept =
-    requires (T&& obj, typename RemoveRef<T>::ScalarType s) {
-        typename RemoveRef<T>::PointType;
-        typename RemoveRef<T>::ScalarType;
-        obj.DIM;
-        { obj.p0() } -> PointConcept;
-        { obj.p1() } -> PointConcept;
-        { obj.midPoint() } -> PointConcept;
-        { obj.direction() } -> PointConcept;
-        { obj.normalizedDirection() } -> PointConcept;
-        { obj.length() } -> std::same_as<decltype(s)>;
-        { obj.squaredLength() } -> std::same_as<decltype(s)>;
+concept SegmentConcept = requires (
+    T&&                               obj,
+    typename RemoveRef<T>::PointType  p,
+    typename RemoveRef<T>::ScalarType s) {
+    typename RemoveRef<T>::PointType;
+    typename RemoveRef<T>::ScalarType;
 
-        { obj == obj } -> std::same_as<bool>;
-        { obj != obj } -> std::same_as<bool>;
+    obj.DIM;
 
-        { obj + obj } -> std::convertible_to<RemoveRef<T>>;
-        { obj - obj } -> std::convertible_to<RemoveRef<T>>;
-        { obj* s } -> std::convertible_to<RemoveRef<T>>;
-        { obj / s } -> std::convertible_to<RemoveRef<T>>;
+    RemoveRef<T>();
+    RemoveRef<T>(p, p);
 
-        // non const requirements
-        requires vcl::IsConst<T> || requires {
-            { obj.flip() } -> std::same_as<void>;
+    { obj.p0() } -> PointConcept;
+    { obj.p1() } -> PointConcept;
 
-            { obj = obj } -> std::same_as<T&>;
+    { obj.midPoint() } -> PointConcept;
+    { obj.direction() } -> PointConcept;
+    { obj.normalizedDirection() } -> PointConcept;
+    { obj.length() } -> std::same_as<decltype(s)>;
+    { obj.squaredLength() } -> std::same_as<decltype(s)>;
 
-            { obj += obj } -> std::same_as<T&>;
-            { obj -= obj } -> std::same_as<T&>;
-            { obj *= s } -> std::same_as<T&>;
-            { obj /= s } -> std::same_as<T&>;
-        };
+    { obj == obj } -> std::same_as<bool>;
+    { obj != obj } -> std::same_as<bool>;
+
+    { obj + obj } -> std::convertible_to<RemoveRef<T>>;
+    { obj - obj } -> std::convertible_to<RemoveRef<T>>;
+    { obj* s } -> std::convertible_to<RemoveRef<T>>;
+    { obj / s } -> std::convertible_to<RemoveRef<T>>;
+
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.flip() } -> std::same_as<void>;
+
+        { obj = obj } -> std::same_as<T&>;
+
+        { obj += obj } -> std::same_as<T&>;
+        { obj -= obj } -> std::same_as<T&>;
+        { obj *= s } -> std::same_as<T&>;
+        { obj /= s } -> std::same_as<T&>;
     };
+};
 
 /**
  * @brief A concept to check whether a type meets the requirements of a 2D

@@ -41,10 +41,10 @@ void readPlyTextures(
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
-    if constexpr (vcl::HasTexturePaths<MeshType>) {
+    if constexpr (HasTexturePaths<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
             mesh.pushTexturePath(str);
-            if constexpr (vcl::HasTextureImages<MeshType>) {
+            if constexpr (HasTextureImages<MeshType>) {
                 uint k = mesh.textureNumber() - 1;
                 if (settings.loadTextureImages) {
                     bool b =
@@ -66,12 +66,12 @@ void writePlyTextures(
     LogType&            log,
     const SaveSettings& settings)
 {
-    if constexpr (vcl::HasTexturePaths<MeshType>) {
+    if constexpr (HasTexturePaths<MeshType>) {
         uint k = 0;
         for (const std::string& str : mesh.texturePaths()) {
             header.pushTextureFileName(str);
             k++;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
+            if constexpr (HasTextureImages<MeshType>) {
                 if (settings.saveTextureImages) {
                     try {
                         mesh.texture(k).image().save(mesh.meshBasePath() + str);

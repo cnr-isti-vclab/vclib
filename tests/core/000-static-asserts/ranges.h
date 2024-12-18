@@ -51,12 +51,29 @@ void rangesStaticAsserts()
     static_assert(!RangeOf<const std::vector<int>&, uint>, "");
     static_assert(!RangeOf<std::vector<int>&&, uint>, "");
 
-    // range of convertible to
-    static_assert(RangeOfConvertibleTo<std::vector<int>, uint>, "");
-    static_assert(RangeOfConvertibleTo<const std::vector<int>, uint>, "");
-    static_assert(RangeOfConvertibleTo<std::vector<int>&, uint>, "");
-    static_assert(RangeOfConvertibleTo<const std::vector<int>&, uint>, "");
-    static_assert(RangeOfConvertibleTo<std::vector<int>&&, uint>, "");
+    // input ranges
+    static_assert(InputRange<std::vector<int>, int>, "");
+    static_assert(InputRange<const std::vector<int>, int>, "");
+    static_assert(InputRange<std::vector<int>&, int>, "");
+    static_assert(InputRange<const std::vector<int>&, int>, "");
+    static_assert(InputRange<std::vector<int>&&, int>, "");
+    static_assert(InputRange<std::vector<int>, uint>, "");
+    static_assert(InputRange<const std::vector<int>, uint>, "");
+    static_assert(InputRange<std::vector<int>&, uint>, "");
+    static_assert(InputRange<const std::vector<int>&, uint>, "");
+    static_assert(InputRange<std::vector<int>&&, uint>, "");
+
+    // output ranges
+    static_assert(OutputRange<std::vector<int>, int>, "");
+    static_assert(!OutputRange<const std::vector<int>, int>, "");
+    static_assert(OutputRange<std::vector<int>&, int>, "");
+    static_assert(!OutputRange<const std::vector<int>&, int>, "");
+    static_assert(OutputRange<std::vector<int>&&, int>, "");
+    static_assert(!OutputRange<std::vector<int>, uint>, "");
+    static_assert(!OutputRange<const std::vector<int>, uint>, "");
+    static_assert(!OutputRange<std::vector<int>&, uint>, "");
+    static_assert(!OutputRange<const std::vector<int>&, uint>, "");
+    static_assert(!OutputRange<std::vector<int>&&, uint>, "");
 }
 
 #endif // RANGES_H

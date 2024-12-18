@@ -9,15 +9,15 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
 #ifndef VCL_ALGORITHMS_CORE_POLYGON_CONVEX_HULL_H
@@ -69,7 +69,7 @@ void grahamScanOnContainer(
     // Skip points not at the left of first-last segment
     do {
         it1++;
-    } while (it1 != last && !vcl::areCounterClockwise(*first, *last, *it1));
+    } while (it1 != last && !areCounterClockwise(*first, *last, *it1));
 
     if (it1 != last) {
         // Initialize stack with the first element which could be in the convex
@@ -89,8 +89,8 @@ void grahamScanOnContainer(
         for (it1++; it1 != last; it1++) {
             // Skip point for which last element is on the right of
             // it1 - it2 segment
-            if (vcl::areCounterClockwise(*it1, *it2, *last)) {
-                while (!vcl::areCounterClockwise(*it2, *it3, *it1)) {
+            if (areCounterClockwise(*it1, *it2, *last)) {
+                while (!areCounterClockwise(*it2, *it3, *it1)) {
                     // Pop from stack
                     stack.pop_back();
 
@@ -168,7 +168,7 @@ auto convexHull(InputIterator first, InputIterator end)
     return convexHull;
 }
 
-template<vcl::Range InputContainer>
+template<Range InputContainer>
 auto convexHull(const InputContainer& container)
     requires Point2Concept<std::ranges::range_value_t<InputContainer>>
 {

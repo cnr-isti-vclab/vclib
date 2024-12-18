@@ -146,11 +146,11 @@ template<Point3IteratorConcept Iterator>
 std::vector<uint> earCut(Iterator begin, Iterator end)
 {
     // Project the 3D polygon onto a 2D plane defined by its normal.
-    auto poly2D = vcl::project(begin, end);
+    auto poly2D = project(begin, end);
 
     // Use the ear-cut algorithm to triangulate the polygon in the 2D plane
     // and return the result.
-    return vcl::earCut(poly2D.begin(), poly2D.end());
+    return earCut(poly2D.begin(), poly2D.end());
 }
 
 /**
@@ -163,7 +163,7 @@ std::vector<uint> earCut(Iterator begin, Iterator end)
  *
  * @ingroup core_polygon
  */
-template<vcl::Range R>
+template<Range R>
 std::vector<uint> earCut(R&& range)
 {
     return earCut(std::ranges::begin(range), std::ranges::end(range));
@@ -193,7 +193,7 @@ template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
     using CoordType = Face::VertexType::CoordType;
-    return vcl::earCut(polygon.vertices() | views::coords);
+    return earCut(polygon.vertices() | views::coords);
 }
 
 } // namespace vcl

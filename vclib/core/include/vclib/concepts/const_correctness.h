@@ -40,8 +40,8 @@ namespace vcl {
  * @ingroup util_concepts
  */
 template<typename T>
-concept IsConst = std::is_const_v<typename vcl::RemovePtr<T>> ||
-                  std::is_const_v<typename vcl::RemoveRef<T>>;
+concept IsConst =
+    std::is_const_v<RemovePtr<T>> || std::is_const_v<RemoveRef<T>>;
 
 } // namespace vcl
 

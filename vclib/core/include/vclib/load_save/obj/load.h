@@ -44,7 +44,7 @@ template<MeshConcept MeshType>
 using ObjNormalsMap = std::conditional_t<
     HasPerVertexNormal<MeshType>,
     std::map<uint, typename MeshType::VertexType::NormalType>,
-    std::map<uint, vcl::Point3d>>;
+    std::map<uint, Point3d>>;
 
 template<MeshConcept MeshType>
 void loadObjMaterials(
@@ -58,12 +58,12 @@ void loadObjMaterials(
     ObjMaterial mat;
 
     do {
-        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(stream);
+        Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(stream);
         if (stream) {
             // counter for texture images, used when mesh has no texture files
-            uint                     nt     = 0;
-            vcl::Tokenizer::iterator token  = tokens.begin();
-            std::string              header = *token++;
+            uint                nt     = 0;
+            Tokenizer::iterator token  = tokens.begin();
+            std::string         header = *token++;
             if (header == "newmtl") {
                 if (!matName.empty())
                     materialMap[matName] = mat;
@@ -171,12 +171,12 @@ void loadObjMaterials(
 
 template<MeshConcept MeshType>
 void readObjVertex(
-    MeshType&                 m,
-    vcl::Tokenizer::iterator& token,
-    MeshInfo&                 loadedInfo,
-    const vcl::Tokenizer&     tokens,
-    const ObjMaterial&        currentMaterial,
-    const LoadSettings&       settings)
+    MeshType&            m,
+    Tokenizer::iterator& token,
+    MeshInfo&            loadedInfo,
+    const Tokenizer&     tokens,
+    const ObjMaterial&   currentMaterial,
+    const LoadSettings&  settings)
 {
     // first, need to set that I'm loading vertices
     if (m.vertexNumber() == 0) {
@@ -223,7 +223,7 @@ void readObjVertexNormal(
     MeshType&                        m,
     detail::ObjNormalsMap<MeshType>& mapNormalsCache,
     uint                             vn,
-    vcl::Tokenizer::iterator&        token,
+    Tokenizer::iterator&             token,
     MeshInfo&                        loadedInfo,
     const LoadSettings&              settings)
 {
@@ -260,12 +260,12 @@ void readObjVertexNormal(
 
 template<FaceMeshConcept MeshType>
 void readObjFace(
-    MeshType&                          m,
-    MeshInfo&                          loadedInfo,
-    const vcl::Tokenizer&              tokens,
-    const std::vector<vcl::TexCoordd>& wedgeTexCoords,
-    const ObjMaterial&                 currentMaterial,
-    const LoadSettings&                settings)
+    MeshType&                     m,
+    MeshInfo&                     loadedInfo,
+    const Tokenizer&              tokens,
+    const std::vector<TexCoordd>& wedgeTexCoords,
+    const ObjMaterial&            currentMaterial,
+    const LoadSettings&           settings)
 {
     using FaceType = MeshType::FaceType;
 
@@ -275,14 +275,14 @@ void readObjFace(
     loadedInfo.updateMeshType(tokens.size() - 1);
 
     // actual read - load vertex indices and texcoords indices, if present
-    vcl::Tokenizer::iterator token = tokens.begin();
+    Tokenizer::iterator token = tokens.begin();
     ++token;
     vids.resize(tokens.size() - 1);
     wids.reserve(tokens.size() - 1);
     for (uint i = 0; i < tokens.size() - 1; ++i) {
-        vcl::Tokenizer subt(*token, '/', false);
-        auto           t = subt.begin();
-        vids[i]          = io::readUInt<uint>(t) - 1;
+        Tokenizer subt(*token, '/', false);
+        auto      t = subt.begin();
+        vids[i]     = io::readUInt<uint>(t) - 1;
         if (subt.size() > 1) {
             if (!t->empty()) {
                 wids.push_back(io::readUInt<uint>(t) - 1);
@@ -313,7 +313,7 @@ void readObjFace(
     if (!splitFace) { // no need to split face case
         for (uint i = 0; i < vids.size(); ++i) {
             if (vids[i] >= m.vertexNumber()) {
-                throw vcl::MalformedFileException(
+                throw MalformedFileException(
                     "Bad vertex index for face " + std::to_string(fid));
             }
             f.setVertex(i, vids[i]);
@@ -375,7 +375,7 @@ void readObjFace(
                     // in the face
                     for (uint i = 0; i < wids.size(); ++i) {
                         if (wids[i] >= wedgeTexCoords.size()) {
-                            throw vcl::MalformedFileException(
+                            throw MalformedFileException(
                                 "Bad texcoord index for face " +
                                 std::to_string(fid));
                         }
@@ -402,7 +402,7 @@ void readObjFace(
                             uint pos = it - vids.begin();
                             // check that the texcoord id is valid
                             if (wids[pos] >= wedgeTexCoords.size()) {
-                                throw vcl::MalformedFileException(
+                                throw MalformedFileException(
                                     "Bad texcoord index for face " +
                                     std::to_string(fid));
                             }
@@ -460,7 +460,7 @@ void loadObj(
     uint                            vn = 0; // number of vertex normals read
     // save array of texcoords, that are stored later (into wedges when loading
     // faces or into vertices as a fallback)
-    std::vector<vcl::TexCoordd> texCoords;
+    std::vector<TexCoordd> texCoords;
 
     // map of materials loaded
     std::map<std::string, detail::ObjMaterial> materialMap;
@@ -488,11 +488,11 @@ void loadObj(
 
     // cycle that reads line by line
     do {
-        vcl::Tokenizer tokens =
+        Tokenizer tokens =
             readAndTokenizeNextNonEmptyLineNoThrow(inputObjStream);
         if (inputObjStream) {
-            vcl::Tokenizer::iterator token  = tokens.begin();
-            std::string              header = *token++;
+            Tokenizer::iterator token  = tokens.begin();
+            std::string         header = *token++;
             if (header == "mtllib" && !ignoreMtlLib) { // material file
                 // we load the material file if they are not ignored
                 std::string mtlfile =
@@ -501,7 +501,7 @@ void loadObj(
                     detail::loadObjMaterials(
                         materialMap, m, mtlfile, loadedInfo, settings);
                 }
-                catch (vcl::CannotOpenFileException) {
+                catch (CannotOpenFileException) {
                     log.log(
                         "Cannot open material file " + mtlfile,
                         LogType::WARNING_LOG);
@@ -604,7 +604,7 @@ void loadObj(
 
     if constexpr (HasTextureImages<MeshType>) {
         if (settings.loadTextureImages) {
-            for (vcl::Texture& texture : m.textures()) {
+            for (Texture& texture : m.textures()) {
                 bool b =
                     texture.image().load(m.meshBasePath() + texture.path());
                 if (!b) {
@@ -835,7 +835,7 @@ void loadObj(
         f = openInputFileStream(stdmtlfile);
         mtlStreams.push_back(&f);
     }
-    catch (vcl::CannotOpenFileException) {
+    catch (CannotOpenFileException) {
         // nothing to do, this file was missing, but this was a fallback for
         // some type of files...
     }

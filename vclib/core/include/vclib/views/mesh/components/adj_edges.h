@@ -30,14 +30,11 @@ namespace vcl::views {
 
 namespace detail {
 
-template<typename T>
-concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
-
 struct AdjEdgesView
 {
     constexpr AdjEdgesView() = default;
 
-    template<CleanAdjEdgesConcept R>
+    template<comp::HasAdjacentEdges R>
     friend constexpr auto operator|(R&& r, AdjEdgesView)
     {
         if constexpr (IsPointer<R>)

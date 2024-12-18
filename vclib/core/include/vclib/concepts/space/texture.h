@@ -39,7 +39,7 @@ concept TextureConcept = requires (T&& obj) {
     { obj.image() } -> ImageConcept;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.path() } -> std::same_as<std::string&>;
     };
 };

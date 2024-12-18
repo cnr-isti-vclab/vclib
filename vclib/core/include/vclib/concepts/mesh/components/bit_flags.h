@@ -49,7 +49,7 @@ concept HasBitFlags = requires (T&& obj) {
     { obj.exportFlagsToVCGFormat() } -> std::same_as<int>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.selected() } -> BitProxyConcept;
         { obj.onBorder() } -> BitProxyConcept;
         { obj.selected() } -> BitProxyConcept;
@@ -74,7 +74,7 @@ concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T&& obj) {
     { obj.edgeFaux(uint()) } -> std::convertible_to<bool>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.edgeOnBorder(uint()) } -> BitProxyConcept;
         { obj.edgeSelected(uint()) } -> BitProxyConcept;
         { obj.edgeVisited(uint()) } -> BitProxyConcept;

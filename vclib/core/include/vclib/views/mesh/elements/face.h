@@ -28,14 +28,11 @@
 namespace vcl::views {
 namespace detail {
 
-template<typename T>
-concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_cvref_t<T>>;
-
 struct FacesView
 {
     constexpr FacesView() = default;
 
-    template<CleanFaceMeshConcept R>
+    template<FaceMeshConcept R>
     friend constexpr auto operator|(R&& r, FacesView)
     {
         return r.faces();

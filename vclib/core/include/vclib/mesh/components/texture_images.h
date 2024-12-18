@@ -39,13 +39,12 @@ namespace detail {
 
 struct TData
 {
-    std::vector<vcl::Texture> textures;
-    std::string               meshPath;
+    std::vector<Texture> textures;
+    std::string          meshPath;
 
     auto paths()
     {
-        return textures |
-               std::views::transform([](vcl::Texture& t) -> std::string& {
+        return textures | std::views::transform([](Texture& t) -> std::string& {
                    return t.path();
                });
     }
@@ -53,7 +52,7 @@ struct TData
     auto paths() const
     {
         return textures | std::views::transform(
-                              [](const vcl::Texture& t) -> const std::string& {
+                              [](const Texture& t) -> const std::string& {
                                   return t.path();
                               });
     }
@@ -114,11 +113,11 @@ public:
     /**
      * @brief Expose the type of the Texture.
      */
-    using TextureType = vcl::Texture;
+    using TextureType = Texture;
 
     // iterators
-    using TextureIterator      = std::vector<vcl::Texture>::iterator;
-    using ConstTextureIterator = std::vector<vcl::Texture>::const_iterator;
+    using TextureIterator      = std::vector<Texture>::iterator;
+    using ConstTextureIterator = std::vector<Texture>::const_iterator;
 
     using TexFileNamesIterator =
         decltype(std::declval<detail::TData>().pathBegin());
@@ -145,14 +144,14 @@ public:
      * relative to the mesh base path.
      * @param[in] i: The index of the texture.
      */
-    const vcl::Texture& texture(uint i) const { return texs()[i]; }
+    const Texture& texture(uint i) const { return texs()[i]; }
 
     /**
      * @brief Returns a reference to the i-th texture of the mesh.
      * The path of the texture is relative to the mesh base path.
      * @param[in] i: The index of the texture.
      */
-    vcl::Texture& texture(uint i) { return texs()[i]; }
+    Texture& texture(uint i) { return texs()[i]; }
 
     /**
      * @brief Returns the path of the i-th texture of the mesh. The path is
@@ -206,7 +205,7 @@ public:
      * @brief Adds a texture to the vector of textures.
      * @param[in] texture: The texture to add.
      */
-    void pushTexture(const vcl::Texture& texture) { texs().push_back(texture); }
+    void pushTexture(const Texture& texture) { texs().push_back(texture); }
 
     /**
      * @brief Adds a texture to the vector of textures. The image of the
@@ -220,7 +219,7 @@ public:
      */
     void pushTexturePath(const std::string& textPath)
     {
-        texs().push_back(vcl::Texture());
+        texs().push_back(Texture());
         texs().back().path() = textPath;
     }
 
@@ -417,12 +416,9 @@ protected:
 
 private:
     // members that allow to access the data
-    std::vector<vcl::Texture>& texs() { return Base::data().textures; }
+    std::vector<Texture>& texs() { return Base::data().textures; }
 
-    const std::vector<vcl::Texture>& texs() const
-    {
-        return Base::data().textures;
-    }
+    const std::vector<Texture>& texs() const { return Base::data().textures; }
 };
 
 } // namespace vcl::comp

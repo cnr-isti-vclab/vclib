@@ -55,6 +55,9 @@ concept BitProxyConcept = requires (T&& obj) {
  */
 template<typename T>
 concept BitSetConcept = requires (T&& obj) {
+    RemoveRef<T>();
+    RemoveRef<T>({uint(), uint()});
+
     { obj.size() } -> std::same_as<std::size_t>;
 
     { obj.at(uint()) } -> std::convertible_to<bool>;
@@ -68,7 +71,7 @@ concept BitSetConcept = requires (T&& obj) {
     { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.at(uint()) } -> BitProxyConcept;
         { obj[uint()] } -> BitProxyConcept;
 

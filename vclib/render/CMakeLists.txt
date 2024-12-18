@@ -49,119 +49,70 @@ endforeach()
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
-        "include/vclib/render_bgfx/*.h")
+        "include/vclib/bgfx/*.h")
     list(APPEND HEADERS ${HEADERS_BGFX})
 
     file(GLOB_RECURSE SOURCES_BGFX CONFIGURE_DEPENDS
-        "src/vclib/render_bgfx/*.cpp")
+        "src/vclib/bgfx/*.cpp")
     list(APPEND SOURCES ${SOURCES_BGFX})
 
     if (APPLE)
         file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS
-            "src/vclib/render_bgfx/*.mm")
+            "src/vclib/bgfx/*.mm")
         list(APPEND SOURCES ${SOURCES_MM})
     endif()
 
     file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
-        "shaders/vclib/render_bgfx/*.sh" "shaders/vclib/render_bgfx/*.sc")
+        "shaders/vclib/bgfx/*.sh" "shaders/vclib/bgfx/*.sc")
     list(APPEND SHADERS ${SHADERS_BGFX})
-
-    # required files that use bgfx
-    set(LINK_FILES
-        include/vclib/render_bgfx/canvas.h
-        include/vclib/render_bgfx/viewer_canvas.h
-        include/vclib/render_bgfx/drawable/drawable_mesh.h)
-
-    foreach(FILE ${LINK_FILES})
-        string(REPLACE "render_bgfx" "render" TARGET_FILE ${FILE})
-
-        get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
-        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})
-
-        file(CREATE_LINK
-            ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
-            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE} COPY_ON_ERROR)
-    endforeach()
 endif()
 
 # if render engine is opengl2 - include sources that use opengl2
 if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
-        "include/vclib/render_opengl2/*.h")
+        "include/vclib/opengl2/*.h")
     list(APPEND HEADERS ${HEADERS_OPENGL2})
 
     file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
-        "src/vclib/render_opengl2/*.cpp")
+        "src/vclib/opengl2/*.cpp")
     list(APPEND SOURCES ${SOURCES_OPENGL2})
-
-    # required files that use opengl2
-    set(LINK_FILES
-        include/vclib/render_opengl2/canvas.h
-        include/vclib/render_opengl2/viewer_canvas.h
-        include/vclib/render_opengl2/drawable/drawable_mesh.h)
-
-    foreach(FILE ${LINK_FILES})
-        string(REPLACE "render_opengl2" "render" TARGET_FILE ${FILE})
-
-        get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
-        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})
-
-        file(CREATE_LINK
-            ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
-            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE} COPY_ON_ERROR)
-    endforeach()
 endif()
 
-if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    if (TARGET vclib-3rd-glfw)
-        file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
-            "include/vclib/glfw/*.h")
-        list(APPEND HEADERS ${HEADERS_GLFW})
+if (TARGET vclib-3rd-glfw)
+    file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
+        "include/vclib/glfw/*.h")
+    list(APPEND HEADERS ${HEADERS_GLFW})
 
-        file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
-        list(APPEND SOURCES ${SOURCES_GLFW})
-    endif()
+    file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
+    list(APPEND SOURCES ${SOURCES_GLFW})
 
-    if (TARGET vclib-3rd-qt)
-        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
-        list(APPEND HEADERS ${HEADERS_QT})
-
-        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
-        list(APPEND SOURCES ${SOURCES_QT})
-
-        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
-        list(APPEND FORMS ${FORMS_QT})
-
-        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
+    if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+        # todo - fix this hack
+        # for now, remove imgui from the opengl2 backend build
+        foreach(FILE ${HEADERS})
+            if (FILE MATCHES "imgui")
+                list(REMOVE_ITEM HEADERS ${FILE})
+            endif()
+        endforeach()
+        foreach(FILE ${SOURCES})
+            if (FILE MATCHES "imgui")
+                list(REMOVE_ITEM SOURCES ${FILE})
+            endif()
+        endforeach()
     endif()
 endif()
 
-if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
-    list(APPEND HEADERS
-        include/vclib/glfw/canvas_window.h
-        include/vclib/glfw/event_manager_window.h
-        include/vclib/glfw/input.h
-        )
+if (TARGET vclib-3rd-qt)
+    file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
+    list(APPEND HEADERS ${HEADERS_QT})
 
-    list(APPEND SOURCES
-        src/vclib/glfw/canvas_window.cpp
-        src/vclib/glfw/event_manager_window.cpp
-        src/vclib/glfw/input.cpp
-        src/vclib/glfw/viewer_window.cpp
-        )
+    file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
+    list(APPEND SOURCES ${SOURCES_QT})
 
-    if (TARGET vclib-3rd-qt)
-        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
-        list(APPEND HEADERS ${HEADERS_QT})
+    file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
+    list(APPEND FORMS ${FORMS_QT})
 
-        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
-        list(APPEND SOURCES ${SOURCES_QT})
-
-        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
-        list(APPEND FORMS ${FORMS_QT})
-
-        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
-    endif()
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
 endif()
 
 # todo: this is a terrible hack

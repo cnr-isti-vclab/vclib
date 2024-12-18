@@ -158,7 +158,7 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void requireElementContainerCompactness(const MeshType& m)
 {
     if (!isElementContainerCompact<ELEM_ID>(m))
-        throw vcl::MissingCompactnessException(
+        throw MissingCompactnessException(
             elementEnumString<ELEM_ID>() +
             " Container of the Mesh is not compact.");
 }
@@ -194,7 +194,7 @@ template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 void requirePerElementComponent(const MeshType& m)
 {
     if (!isPerElementComponentAvailable<ELEM_ID, COMP_ID>(m)) {
-        throw vcl::MissingComponentException(
+        throw MissingComponentException(
             "Per " + std::string(elementEnumString<ELEM_ID>()) + " " +
             std::string(componentEnumString<COMP_ID>()) +
             " Component is not enabled.");

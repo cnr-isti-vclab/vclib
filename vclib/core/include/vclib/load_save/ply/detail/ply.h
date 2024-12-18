@@ -61,7 +61,7 @@ typedef enum {
     vertex2
 } PropertyName;
 
-using PropertyType = vcl::PrimitiveType;
+using PropertyType = PrimitiveType;
 
 } // namespace ply
 

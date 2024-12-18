@@ -345,7 +345,7 @@ public:
      * @param[in] r: range of edge pointers to set.
      */
     template<Range Rng>
-    void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, Edge*>
+    void setAdjEdges(Rng&& r) requires InputRange<Rng, Edge*>
     {
         Base::setElements(r);
     }
@@ -362,7 +362,7 @@ public:
      * @param[in] r: range of edges indices to set.
      */
     template<Range Rng>
-    void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
+    void setAdjEdges(Rng&& r) requires InputRange<Rng, uint>
     {
         Base::setElements(r);
     }

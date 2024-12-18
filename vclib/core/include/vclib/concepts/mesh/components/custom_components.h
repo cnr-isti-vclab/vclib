@@ -52,7 +52,7 @@ concept HasCustomComponents =
         { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.template customComponent<int>(str) } -> std::same_as<int&>;
         };
     };

@@ -52,7 +52,7 @@ namespace vcl {
  * @tparam It The iterator type.
  */
 template<typename It>
-requires (vcl::IsAnyPointer<typename std::iterator_traits<It>::value_type>)
+requires (IsAnyPointer<typename std::iterator_traits<It>::value_type>)
 class ConstPointerIterator
 {
     using Base = It;

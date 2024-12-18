@@ -37,6 +37,29 @@ template<typename T>
 concept IteratorConcept = std::input_or_output_iterator<T>;
 
 /**
+ * @brief The InputIterator concept is satisfied if T is an input iterator
+ * that implements the `operator*` returning a value convertible to V.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T, typename V>
+concept InputIterator =
+    std::input_iterator<T> && std::indirectly_readable<T> && requires (T i) {
+        { *i } -> std::convertible_to<V>;
+    };
+
+/**
+ * @brief The OutputIterator concept is satisfied if T is an output iterator
+ * that implements the `operator*` returning a reference to V.
+ *
+ * @see https://en.cppreference.com/w/cpp/iterator/output_iterator
+ *
+ * @ingroup util_concepts
+ */
+template<typename T, typename V>
+concept OutputIterator = std::output_iterator<T, V>;
+
+/**
  * @brief The IteratorOverClass concept is satisfied if T is an iterator having
  * its `value_type` that is a class.
  *

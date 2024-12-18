@@ -40,13 +40,13 @@ OutMeshType perElementMeshFilter(
 {
     using OutElemType = OutMeshType::template ElementType<ELEM_ID>;
 
-    std::string ccname = "birth" + vcl::elementEnumString<ELEM_ID>();
+    std::string ccname = "birth" + elementEnumString<ELEM_ID>();
 
     OutMeshType res;
     res.enableSameOptionalComponentsOf(m);
 
     // enable the custom component birth element
-    if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+    if constexpr (comp::HasCustomComponents<OutElemType>) {
         if (saveBirthIndicesInCustomComponent) {
             res.template addPerElementCustomComponent<ELEM_ID, uint>(ccname);
         }
@@ -59,7 +59,7 @@ OutMeshType perElementMeshFilter(
             // import all the components from the input mesh
             res.template element<ELEM_ID>(v).importFrom(birthV, false);
             // set the birth element
-            if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+            if constexpr (comp::HasCustomComponents<OutElemType>) {
                 if (saveBirthIndicesInCustomComponent) {
                     res.template element<ELEM_ID>(v)
                         .template customComponent<uint>(ccname) =
@@ -95,20 +95,20 @@ OutMeshType perElementMeshFilterWithVRefs(
     using InVertexType = InMeshType::VertexType;
     using OutElemType  = OutMeshType::template ElementType<ELEM_ID>;
 
-    std::string ccname = "birth" + vcl::elementEnumString<ELEM_ID>();
+    std::string ccname = "birth" + elementEnumString<ELEM_ID>();
 
     OutMeshType res;
     res.enableSameOptionalComponentsOf(m);
 
     // enable the custom component birthVertex
-    if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
+    if constexpr (HasPerVertexCustomComponents<OutMeshType>) {
         if (saveBirthIndicesInCustomComponent) {
             res.template addPerVertexCustomComponent<uint>("birthVertex");
         }
     }
 
     // enable the custom component birth element
-    if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+    if constexpr (comp::HasCustomComponents<OutElemType>) {
         if (saveBirthIndicesInCustomComponent) {
             res.template addPerElementCustomComponent<ELEM_ID, uint>(ccname);
         }
@@ -135,8 +135,7 @@ OutMeshType perElementMeshFilterWithVRefs(
                     uint ov = res.addVertex();
                     // import all the components from the input mesh
                     res.vertex(ov).importFrom(*v, false);
-                    if constexpr (vcl::HasPerVertexCustomComponents<
-                                      OutMeshType>) {
+                    if constexpr (HasPerVertexCustomComponents<OutMeshType>) {
                         // set the birth vertex
                         if (saveBirthIndicesInCustomComponent) {
                             res.vertex(ov).template customComponent<uint>(
@@ -164,7 +163,7 @@ OutMeshType perElementMeshFilterWithVRefs(
 
             res.template element<ELEM_ID>(f).setVertices(verts);
 
-            if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+            if constexpr (comp::HasCustomComponents<OutElemType>) {
                 // set the birth elements
                 if (saveBirthIndicesInCustomComponent) {
                     res.template element<ELEM_ID>(f)
@@ -301,7 +300,7 @@ OutMeshType perVertexSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    auto selView = m.vertices() | vcl::views::selection;
+    auto selView = m.vertices() | views::selection;
 
     return detail::
         perElementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
@@ -422,7 +421,7 @@ OutMeshType perFaceSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    auto selView = m.faces() | vcl::views::selection;
+    auto selView = m.faces() | views::selection;
 
     return detail::
         perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
@@ -543,7 +542,7 @@ OutMeshType perEdgeSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    auto selView = m.edges() | vcl::views::selection;
+    auto selView = m.edges() | views::selection;
 
     return detail::
         perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
@@ -594,7 +593,7 @@ OutMeshType perFaceEdgeMeshFilter(
     res.enableSameOptionalComponentsOf(m);
 
     // enable the custom component birthVertex
-    if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
+    if constexpr (HasPerVertexCustomComponents<OutMeshType>) {
         if (saveBirthIndicesInCustomComponent) {
             res.template addPerVertexCustomComponent<uint>("birthVertex");
         }
@@ -614,7 +613,7 @@ OutMeshType perFaceEdgeMeshFilter(
                     if (vertexMapping[m.index(v)] == UINT_NULL) {
                         uint ov = res.addVertex();
                         res.vertex(ov).importFrom(*v, false);
-                        if constexpr (vcl::HasPerVertexCustomComponents<
+                        if constexpr (HasPerVertexCustomComponents<
                                           OutMeshType>) {
                             if (saveBirthIndicesInCustomComponent) {
                                 res.vertex(ov).template customComponent<uint>(

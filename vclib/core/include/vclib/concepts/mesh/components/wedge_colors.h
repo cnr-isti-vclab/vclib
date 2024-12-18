@@ -25,6 +25,7 @@
 
 #include "component.h"
 
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/space/color.h>
 
@@ -59,18 +60,20 @@ concept HasWedgeColors = requires (
     { obj.wedgeColor(uint()) } -> ColorConcept;
     { obj.wedgeColorMod(int()) } -> ColorConcept;
 
-    { obj.wedgeColorBegin() } -> std::input_iterator;
-    { obj.wedgeColorEnd() } -> std::input_iterator;
+    { obj.wedgeColorBegin() } -> InputIterator<decltype(c)>;
+    { obj.wedgeColorEnd() } -> InputIterator<decltype(c)>;
 
-    { obj.wedgeColors() } -> vcl::RangeOf<decltype(c)>;
+    { obj.wedgeColors() } -> InputRange<decltype(c)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.setWedgeColor(uint(), c) } -> std::same_as<void>;
         { obj.setWedgeColors(vec) } -> std::same_as<void>;
 
-        { obj.wedgeColorBegin() } -> std::output_iterator<decltype(c)>;
-        { obj.wedgeColorEnd() } -> std::output_iterator<decltype(c)>;
+        { obj.wedgeColorBegin() } -> OutputIterator<decltype(c)>;
+        { obj.wedgeColorEnd() } -> OutputIterator<decltype(c)>;
+
+        { obj.wedgeColors() } -> OutputRange<decltype(c)>;
     };
 };
 

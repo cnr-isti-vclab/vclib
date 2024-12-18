@@ -54,7 +54,7 @@ add_subdirectory(025-grid)
 add_subdirectory(026-crease-edges-mesh)
 add_subdirectory(027-convex-hull)
 add_subdirectory(028-topology-patch)
-
+add_subdirectory(998-misc-no-lib)
 add_subdirectory(999-misc)
 
 

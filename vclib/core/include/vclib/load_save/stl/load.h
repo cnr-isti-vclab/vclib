@@ -196,11 +196,11 @@ void readStlAscii(
     fp.seekg(0, fp.beg);
     log.startProgress("Loading STL file", fsize);
 
-    vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(fp);
+    Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(fp);
     if (fp) {
         // cycle that reads a face starting from the actual tokenized line
         do {
-            vcl::Tokenizer::iterator token = tokens.begin();
+            Tokenizer::iterator token = tokens.begin();
             if (token != tokens.end() && *token == "facet") {
                 ++token; // skip the "facet" word
                 ++token; // skip the "normal" word

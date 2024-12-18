@@ -231,9 +231,9 @@ inline void readOffHeader(
     uint&         ne)
 {
     fileInfo.clear();
-    vcl::Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
-    vcl::Tokenizer::iterator token  = tokens.begin();
-    std::string              header = *token;
+    Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+    Tokenizer::iterator token  = tokens.begin();
+    std::string         header = *token;
 
     // the OFF string is in the header go on parsing it.
     if (header.rfind("OFF") != std::basic_string<char>::npos) {
@@ -245,15 +245,14 @@ inline void readOffHeader(
             else if (u > 0 && header[u - 1] == 'S' && header[u] == 'T')
                 fileInfo.setVertexTexCoords();
             else if (header[u] == '4')
-                throw vcl::MalformedFileException(
+                throw MalformedFileException(
                     "Unsupported Homogeneus components in OFF.");
             else if (header[u] == 'n')
-                throw vcl::MalformedFileException(
-                    "Unsupported High Dimension OFF.");
+                throw MalformedFileException("Unsupported High Dimension OFF.");
         }
     }
     else
-        throw vcl::MalformedFileException("Missing OFF header in file.");
+        throw MalformedFileException("Missing OFF header in file.");
 
     // If the file is slightly malformed and it has nvert and nface AFTER the
     // OFF string instead of in the next line we manage it here...
@@ -275,9 +274,7 @@ inline void readOffHeader(
     //    loadedInfo.setEdges();
 }
 
-inline vcl::Color readOffColor(
-    vcl::Tokenizer::iterator& token,
-    int                       nColorComponents)
+inline Color readOffColor(Tokenizer::iterator& token, int nColorComponents)
 {
     uint red, green, blue, alpha = 255;
 
@@ -310,7 +307,7 @@ inline vcl::Color readOffColor(
             alpha = a != -1 ? a * 255 : alpha;
         }
     }
-    return vcl::Color(red, green, blue, alpha);
+    return Color(red, green, blue, alpha);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
@@ -330,8 +327,8 @@ void readOffVertices(
     for (uint i = 0; i < nv; i++) {
         VertexType& v = mesh.vertex(i);
 
-        vcl::Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
-        vcl::Tokenizer::iterator token  = tokens.begin();
+        Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+        Tokenizer::iterator token  = tokens.begin();
 
         // Read 3 vertex coordinates
         for (unsigned int j = 0; j < 3; j++) {
@@ -339,8 +336,8 @@ void readOffVertices(
             v.coord()[j] = io::readDouble<double>(token);
         }
 
-        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-            if (vcl::isPerVertexNormalAvailable(mesh) &&
+        if constexpr (HasPerVertexNormal<MeshType>) {
+            if (isPerVertexNormalAvailable(mesh) &&
                 fileInfo.hasVertexNormals()) {
                 // Read 3 normal coordinates
                 for (unsigned int j = 0; j < 3; j++) {
@@ -359,9 +356,8 @@ void readOffVertices(
         const int  nColorComponents =
             (int) tokens.size() - nReadComponents - nTexCoords;
 
-        if constexpr (vcl::HasPerVertexColor<MeshType>) {
-            if (vcl::isPerVertexColorAvailable(mesh) &&
-                fileInfo.hasVertexColors()) {
+        if constexpr (HasPerVertexColor<MeshType>) {
+            if (isPerVertexColorAvailable(mesh) && fileInfo.hasVertexColors()) {
                 if (nColorComponents != 1 && nColorComponents != 3 &&
                     nColorComponents != 4)
                     throw MalformedFileException(
@@ -378,8 +374,8 @@ void readOffVertices(
             readOffColor(token, nColorComponents);
         }
 
-        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(mesh) &&
+        if constexpr (HasPerVertexTexCoord<MeshType>) {
+            if (isPerVertexTexCoordAvailable(mesh) &&
                 fileInfo.hasVertexTexCoords()) {
                 // Read 2 tex coordinates
                 for (unsigned int j = 0; j < 2; j++) {
@@ -415,8 +411,8 @@ void readOffFaces(
         log.startProgress("Reading faces", nf);
 
         for (uint fid = 0; fid < nf; ++fid) {
-            vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLine(file);
-            vcl::Tokenizer::iterator token = tokens.begin();
+            Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+            Tokenizer::iterator token  = tokens.begin();
             mesh.addFace();
             FaceType& f = mesh.face(mesh.faceNumber() - 1);
 
@@ -447,7 +443,7 @@ void readOffFaces(
             if (!splitFace) { // classic load, no split needed
                 for (uint i = 0; i < vids.size(); ++i) {
                     if (vids[i] >= mesh.vertexNumber()) {
-                        throw vcl::MalformedFileException(
+                        throw MalformedFileException(
                             "Bad vertex index for face " + std::to_string(i));
                     }
                     f.setVertex(i, vids[i]);

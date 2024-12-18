@@ -214,7 +214,7 @@ public:
      */
     template<Range Rng>
     void setWedgeTexCoords(Rng&& r)
-        requires RangeOfConvertibleTo<Rng, vcl::TexCoord<Scalar>>
+        requires InputRange<Rng, vcl::TexCoord<Scalar>>
     {
         texCoords().set(r);
     }
