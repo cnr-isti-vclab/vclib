@@ -48,56 +48,56 @@ endforeach()
 
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    # file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
-    #     "include/vclib/bgfx/*.h")
-    # list(APPEND HEADERS ${HEADERS_BGFX})
+    file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
+        "include/vclib/bgfx/*.h")
+    list(APPEND HEADERS ${HEADERS_BGFX})
 
-    # file(GLOB_RECURSE SOURCES_BGFX CONFIGURE_DEPENDS
-    #     "src/vclib/bgfx/*.cpp")
-    # list(APPEND SOURCES ${SOURCES_BGFX})
+    file(GLOB_RECURSE SOURCES_BGFX CONFIGURE_DEPENDS
+        "src/vclib/bgfx/*.cpp")
+    list(APPEND SOURCES ${SOURCES_BGFX})
 
-    # if (APPLE)
-    #     file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS
-    #         "src/vclib/bgfx/*.mm")
-    #     list(APPEND SOURCES ${SOURCES_MM})
-    # endif()
+    if (APPLE)
+        file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS
+            "src/vclib/bgfx/*.mm")
+        list(APPEND SOURCES ${SOURCES_MM})
+    endif()
 
-    # file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
-    #     "shaders/vclib/bgfx/*.sh" "shaders/vclib/bgfx/*.sc")
-    # list(APPEND SHADERS ${SHADERS_BGFX})
+    file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
+        "shaders/vclib/bgfx/*.sh" "shaders/vclib/bgfx/*.sc")
+    list(APPEND SHADERS ${SHADERS_BGFX})
 endif()
 
 # if render engine is opengl2 - include sources that use opengl2
 if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
-    # file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
-    #     "include/vclib/opengl2/*.h")
-    # list(APPEND HEADERS ${HEADERS_OPENGL2})
+    file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
+        "include/vclib/opengl2/*.h")
+    list(APPEND HEADERS ${HEADERS_OPENGL2})
 
-    # file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
-    #     "src/vclib/opengl2/*.cpp")
-    # list(APPEND SOURCES ${SOURCES_OPENGL2})
+    file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
+        "src/vclib/opengl2/*.cpp")
+    list(APPEND SOURCES ${SOURCES_OPENGL2})
 endif()
 
 if (TARGET vclib-3rd-glfw)
-    # file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
-    #     "include/vclib/glfw/*.h")
-    # list(APPEND HEADERS ${HEADERS_GLFW})
+    file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
+        "include/vclib/glfw/*.h")
+    list(APPEND HEADERS ${HEADERS_GLFW})
 
-    # file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
-    # list(APPEND SOURCES ${SOURCES_GLFW})
+    file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
+    list(APPEND SOURCES ${SOURCES_GLFW})
 endif()
 
 if (TARGET vclib-3rd-qt)
-    # file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
-    # list(APPEND HEADERS ${HEADERS_QT})
+    file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
+    list(APPEND HEADERS ${HEADERS_QT})
 
-    # file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
-    # list(APPEND SOURCES ${SOURCES_QT})
+    file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
+    list(APPEND SOURCES ${SOURCES_QT})
 
-    # file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
-    # list(APPEND FORMS ${FORMS_QT})
+    file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
+    list(APPEND FORMS ${FORMS_QT})
 
-    # source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
 endif()
 
 # todo: this is a terrible hack

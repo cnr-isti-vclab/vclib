@@ -36,7 +36,7 @@ if(TARGET vclib-3rd-glfw)
     endif()
 endif()
 
-# add_subdirectory(common)
+add_subdirectory(common)
 
 # add_subdirectory(00-hello-triangle)
 # add_subdirectory(01-viewer)
@@ -47,7 +47,7 @@ endif()
 #     add_subdirectory(800-processing-main-window)
 # endif()
 
-# add_subdirectory(999-misc)
+add_subdirectory(999-misc)
 
 # if (CAN_BUILD_VCLIB_EXAMPLES)
 #     # the following examples are the same of the ones in the core module,

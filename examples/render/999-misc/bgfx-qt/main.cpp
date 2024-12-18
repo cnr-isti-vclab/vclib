@@ -5,34 +5,34 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <vclib/qt/viewer_widget.h>
+// #include <vclib/qt/viewer_widget.h>
 
-template<typename T>
-class Basic : public vcl::qt::ViewerWidget
-{
-    T t = 42;
+// template<typename T>
+// class Basic : public vcl::qt::ViewerWidget
+// {
+//     T t = 42;
 
-public:
-    Basic(QWidget* parent = nullptr) : vcl::qt::ViewerWidget(parent)
-    {
-        // add a QPushButton
-        QPushButton* button = new QPushButton("Click me", this);
+// public:
+//     Basic(QWidget* parent = nullptr) : vcl::qt::ViewerWidget(parent)
+//     {
+//         // add a QPushButton
+//         QPushButton* button = new QPushButton("Click me", this);
 
-        // connect the button to a slot
-        connect(button, &QPushButton::clicked, this, &Basic::onButtonClicked);
+//         // connect the button to a slot
+//         connect(button, &QPushButton::clicked, this, &Basic::onButtonClicked);
 
-        // add the button to a layout
-        QVBoxLayout* layout = new QVBoxLayout(this);
-        layout->addWidget(button);
-        this->setLayout(layout);
-    }
+//         // add the button to a layout
+//         QVBoxLayout* layout = new QVBoxLayout(this);
+//         layout->addWidget(button);
+//         this->setLayout(layout);
+//     }
 
-    void f() { std::cout << "C::f()" << t << std::endl; }
+//     void f() { std::cout << "C::f()" << t << std::endl; }
 
-public slots:
+// public slots:
 
-    void onButtonClicked() { std::cout << "C::onButtonClicked()" << std::endl; }
-};
+//     void onButtonClicked() { std::cout << "C::onButtonClicked()" << std::endl; }
+// };
 
 template<template<typename> typename C, template<typename> typename E>
 class Minestrone : public C<Minestrone<C, E>>, public E<Minestrone<C, E>>
