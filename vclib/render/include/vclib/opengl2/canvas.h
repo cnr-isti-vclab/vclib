@@ -80,7 +80,11 @@ class CanvasOpenGL2 : public virtual vcl::EventManagerI
     Point2i            mReadDepthPoint     = Point2i(-1, -1);
 
 public:
-    CanvasOpenGL2(void* winId, uint width, uint height, void* displayId = nullptr);
+    CanvasOpenGL2(
+        void* winId,
+        uint  width,
+        uint  height,
+        void* displayId = nullptr);
 
     ~CanvasOpenGL2() {}
 

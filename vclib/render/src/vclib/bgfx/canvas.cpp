@@ -174,7 +174,10 @@ bool CanvasBGFX::readDepth(const Point2i& point, CallbackReadBuffer callback)
     return true;
 }
 
-bool CanvasBGFX::screenshot(const std::string& filename, uint width, uint height)
+bool CanvasBGFX::screenshot(
+    const std::string& filename,
+    uint               width,
+    uint               height)
 {
     if (!Context::instance().supportsReadback() // feature unsupported
         || mReadRequest != std::nullopt) {      // read already requested
