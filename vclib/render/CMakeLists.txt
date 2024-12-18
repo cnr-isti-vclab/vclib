@@ -78,56 +78,26 @@ if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     list(APPEND SOURCES ${SOURCES_OPENGL2})
 endif()
 
-if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    if (TARGET vclib-3rd-glfw)
-        file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
-            "include/vclib/glfw/*.h")
-        list(APPEND HEADERS ${HEADERS_GLFW})
+if (TARGET vclib-3rd-glfw)
+    file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
+        "include/vclib/glfw/*.h")
+    list(APPEND HEADERS ${HEADERS_GLFW})
 
-        file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
-        list(APPEND SOURCES ${SOURCES_GLFW})
-    endif()
-
-    if (TARGET vclib-3rd-qt)
-        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
-        list(APPEND HEADERS ${HEADERS_QT})
-
-        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
-        list(APPEND SOURCES ${SOURCES_QT})
-
-        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
-        list(APPEND FORMS ${FORMS_QT})
-
-        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
-    endif()
+    file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
+    list(APPEND SOURCES ${SOURCES_GLFW})
 endif()
 
-if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
-    list(APPEND HEADERS
-        include/vclib/glfw/canvas_window.h
-        include/vclib/glfw/event_manager_window.h
-        include/vclib/glfw/input.h
-        )
+if (TARGET vclib-3rd-qt)
+    file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
+    list(APPEND HEADERS ${HEADERS_QT})
 
-    list(APPEND SOURCES
-        src/vclib/glfw/canvas_window.cpp
-        src/vclib/glfw/event_manager_window.cpp
-        src/vclib/glfw/input.cpp
-        src/vclib/glfw/viewer_window.cpp
-        )
+    file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
+    list(APPEND SOURCES ${SOURCES_QT})
 
-    if (TARGET vclib-3rd-qt)
-        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
-        list(APPEND HEADERS ${HEADERS_QT})
+    file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
+    list(APPEND FORMS ${FORMS_QT})
 
-        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
-        list(APPEND SOURCES ${SOURCES_QT})
-
-        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
-        list(APPEND FORMS ${FORMS_QT})
-
-        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
-    endif()
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
 endif()
 
 # todo: this is a terrible hack
