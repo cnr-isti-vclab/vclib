@@ -8,10 +8,14 @@ def replace_year(string):
     current_year = datetime.datetime.now().year
     past_year = current_year - 1
     # look for the past year in the string and replace it with the current year
-    year = re.search(str(past_year), string).group()
-    # replace the year in the string
-    new_string = string.replace(year, str(current_year))
-    return new_string
+    srch = re.search(str(past_year), string)
+    if srch is not None:
+        year = re.search(str(past_year), string).group()
+        # replace the year in the string
+        new_string = string.replace(year, str(current_year))
+        return new_string
+    else:
+        return string
 
 def replace_header(file_path):
     # Read in the file
@@ -24,4 +28,4 @@ def replace_header(file_path):
         file.write(file_string)
 
 if __name__ == '__main__':
-    replace_header('templates/header.txt')
+    replace_header('templates/headings.txt')
