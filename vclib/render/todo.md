@@ -31,7 +31,7 @@
   - [X] implement BGFX ImGui Rendering backend
   - [X] fix BGFX ImGui backend scaling issues with GLFW (macOS + ???)
   - [X] start integration of ImGUI along GLFW
-  - [ ] fix input handling for ImGui on GLFW
+  - [X] fix input handling for ImGui on GLFW
   - [ ] add imgui opengl2 implementation
   - [ ] eradicate fonts from bgfx imgui backend
   - [X] fix trackball bug on Qt implementation (pan after wheel zoom)

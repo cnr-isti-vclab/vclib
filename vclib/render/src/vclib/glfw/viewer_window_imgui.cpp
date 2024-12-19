@@ -75,15 +75,12 @@ void ViewerWindowImgui::show()
     // main loop
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
+        // slow down rendering if window is minimized
         if (glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED) != 0)
         {
             ImGui_ImplGlfw_Sleep(10);
             continue;
         }
-        
-        // print imgui io display size and framebuffer scale
-        std::cout << "DisplaySize: " << io.DisplaySize.x << "x" << io.DisplaySize.y << std::endl;
-        std::cout << "FramebufferScale: " << io.DisplayFramebufferScale.x << "x" << io.DisplayFramebufferScale.y << std::endl;
 
         frame();
     }
@@ -117,5 +114,46 @@ void ViewerWindowImgui::draw()
 #endif
 }
 
+using Base = ViewerWindow;
+
+void ViewerWindowImgui::glfwKeyCallback(
+    GLFWwindow* win,
+    int key,
+    int scancode,
+    int action,
+    int mods)
+    {
+        const auto & io = ImGui::GetIO();
+        if (!io.WantCaptureKeyboard)
+            Base::glfwKeyCallback(win, key, scancode, action, mods);
+    }
+
+void ViewerWindowImgui::glfwMouseButtonCallback(
+    GLFWwindow* win,
+    int         button,
+    int         action,
+    int         mods)
+    {
+        const auto & io = ImGui::GetIO();
+        if (!io.WantCaptureMouse)
+            Base::glfwMouseButtonCallback(win, button, action, mods);
+    }
+
+void ViewerWindowImgui::glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
+{
+    const auto & io = ImGui::GetIO();
+    if (!io.WantCaptureMouse)
+        Base::glfwCursorPosCallback(nullptr, xpos, ypos);
+}
+
+void ViewerWindowImgui::glfwScrollCallback(
+    GLFWwindow*,
+    double xoffset,
+    double yoffset)
+{   
+    const auto & io = ImGui::GetIO();
+    if (!io.WantCaptureMouse)
+        Base::glfwScrollCallback(nullptr, xoffset, yoffset);
+}
 
 } // namespace vcl::glfw

@@ -51,6 +51,27 @@ public:
 
 protected:
     void draw() override;
+
+    // callback override to handle imgui events
+    void glfwKeyCallback(
+        GLFWwindow* win,
+        int key,
+        int scancode,
+        int action,
+        int mods) override;
+
+    void glfwMouseButtonCallback(
+        GLFWwindow* win,
+        int         button,
+        int         action,
+        int         mods) override;
+
+    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos) override;
+
+    void glfwScrollCallback(
+        GLFWwindow* win,
+        double xoffset,
+        double yoffset) override;
 };
 
 } // namespace vcl::glfw
