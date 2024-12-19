@@ -88,23 +88,11 @@ void ViewerWindowImgui::show()
             continue;
         }
 
-        // imgui frame
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-        ImGui_ImplOpenGL2_NewFrame();
-#elif defined(VCLIB_RENDER_BACKEND_BGFX)
-        ImGui_ImplBgfx_NewFrame();
-#endif
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // actual drwawing
         frame();
 
-        ImGui::Render();
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
-#elif defined(VCLIB_RENDER_BACKEND_BGFX)
-        ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
+        // swap buffers
+        glfwSwapBuffers(mWindow);
 #endif
     }
 
@@ -116,6 +104,29 @@ void ViewerWindowImgui::show()
 #endif
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+void ViewerWindowImgui::frame()
+{
+    // imgui frame
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+    ImGui_ImplOpenGL2_NewFrame();
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+    ImGui_ImplBgfx_NewFrame();
+#endif
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // actual drawing
+    ViewerWindow::frame();
+
+    // imgui rendering
+    ImGui::Render();
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+    ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+    ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
+#endif
 }
 
 using Base = ViewerWindow;

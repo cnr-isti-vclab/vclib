@@ -142,7 +142,7 @@ protected:
 
     void onResize(uint width, uint height) override;
 
-    void frame();
+    virtual void frame();
 
 private:
     // draw offscreen frame
