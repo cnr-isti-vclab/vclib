@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_EVENT_MANAGER_WIDGET_H
-#define VCL_QT_EVENT_MANAGER_WIDGET_H
+#ifndef VCL_QT_WIDGET_MANAGER_H
+#define VCL_QT_WIDGET_MANAGER_H
 
-#include <vclib/render/interfaces/event_manager_i.h>
+//#include <vclib/render/interfaces/event_manager_i.h>
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <QWidget>
@@ -33,13 +33,12 @@
 
 namespace vcl::qt {
 
-class EventManagerWidget :
+class WidgetManager :
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
-        public QWidget,
+        public QWidget
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-        public QOpenGLWidget,
+        public QOpenGLWidget
 #endif
-        public virtual vcl::EventManagerI
 {
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     using Base = QWidget;
@@ -48,15 +47,17 @@ class EventManagerWidget :
 #endif
 
 public:
-    explicit EventManagerWidget(
+    explicit WidgetManager(
         const std::string& windowTitle,
         uint               width  = 1024,
         uint               height = 768,
         QWidget*           parent = nullptr);
 
-    virtual ~EventManagerWidget() = default;
+    ~WidgetManager() = default;
 
-    virtual void update() override;
+    void* displayId() const;
+
+    void update();
 
     QPaintEngine* paintEngine() const override;
 
@@ -82,10 +83,8 @@ protected:
     void wheelEvent(QWheelEvent* event) override;
 
     static double pixelRatio();
-
-    void* displayId() const;
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_EVENT_MANAGER_WIDGET_H
+#endif // VCL_QT_WIDGET_MANAGER_H

@@ -20,17 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/event_manager_widget.h>
+#include <vclib/qt/widget_manager.h>
 
 #include <vclib/qt/input.h>
-#include <vclib/qt/message_hider.h>
 
 #include <QGuiApplication>
 #include <QMouseEvent>
 
 namespace vcl::qt {
 
-EventManagerWidget::EventManagerWidget(
+WidgetManager::WidgetManager(
     const std::string& windowTitle,
     uint               width,
     uint               height,
@@ -43,9 +42,6 @@ EventManagerWidget::EventManagerWidget(
 {
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     setAttribute(Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
-    // PaintOnScreen is bugged - prints unuseful warning messages
-    // we will hide it:
-    // vcl::qt::MessageHider::activate(); // TODO: check again if this is needed
     setAttribute(Qt::WA_DontCreateNativeAncestors);
     setAttribute(Qt::WA_NativeWindow);
 #endif
@@ -54,96 +50,7 @@ EventManagerWidget::EventManagerWidget(
     setWindowTitle(windowTitle.c_str());
 }
 
-void EventManagerWidget::update()
-{
-    Base::update();
-}
-
-QPaintEngine* EventManagerWidget::paintEngine() const
-{
-    return nullptr;
-}
-
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-void EventManagerWidget::resizeEvent(QResizeEvent* event)
-{
-    Base::resizeEvent(event);
-    onResize(width() * pixelRatio(), height() * pixelRatio());
-}
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-void EventManagerWidget::resizeGL(int w, int h)
-{
-    Base::resizeGL(w, h);
-    onResize(w * pixelRatio(), h * pixelRatio());
-}
-#endif
-
-void EventManagerWidget::keyPressEvent(QKeyEvent* event)
-{
-    setModifiers(vcl::qt::fromQt(event->modifiers()));
-
-    onKeyPress(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
-    Base::keyPressEvent(event);
-}
-
-void EventManagerWidget::keyReleaseEvent(QKeyEvent* event)
-{
-    setModifiers(vcl::qt::fromQt(event->modifiers()));
-
-    onKeyRelease(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
-    Base::keyReleaseEvent(event);
-}
-
-void EventManagerWidget::mouseMoveEvent(QMouseEvent* event)
-{
-    onMouseMove(
-        event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
-    Base::mouseMoveEvent(event);
-}
-
-void EventManagerWidget::mousePressEvent(QMouseEvent* event)
-{
-    onMouseMove(
-        event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
-    onMousePress(vcl::qt::fromQt(event->button()));
-    Base::mousePressEvent(event);
-}
-
-void EventManagerWidget::mouseReleaseEvent(QMouseEvent* event)
-{
-    onMouseMove(
-        event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
-    onMouseRelease(vcl::qt::fromQt(event->button()));
-    Base::mouseReleaseEvent(event);
-}
-
-void EventManagerWidget::mouseDoubleClickEvent(QMouseEvent* event)
-{
-    onMouseDoubleClick(
-        vcl::qt::fromQt(event->button()),
-        event->pos().x() * pixelRatio(),
-        event->pos().y() * pixelRatio());
-    Base::mouseDoubleClickEvent(event);
-}
-
-void EventManagerWidget::wheelEvent(QWheelEvent* event)
-{
-    // FIXME: this is not correct, define a proper equivalence
-    if (!event->pixelDelta().isNull())
-        onMouseScroll(event->pixelDelta().x(), event->pixelDelta().y());
-    else
-        onMouseScroll(event->angleDelta().x(), event->angleDelta().y());
-
-    Base::wheelEvent(event);
-}
-
-double EventManagerWidget::pixelRatio()
-{
-    auto app = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
-    return app->devicePixelRatio();
-}
-
-void* EventManagerWidget::displayId() const
+void* WidgetManager::displayId() const
 {
     void* displayID = nullptr;
 #ifdef Q_OS_LINUX
@@ -165,6 +72,95 @@ void* EventManagerWidget::displayId() const
     }
 #endif
     return displayID;
+}
+
+void WidgetManager::update()
+{
+    Base::update();
+}
+
+QPaintEngine* WidgetManager::paintEngine() const
+{
+    return nullptr;
+}
+
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
+void WidgetManager::resizeEvent(QResizeEvent* event)
+{
+    Base::resizeEvent(event);
+    // onResize(width() * pixelRatio(), height() * pixelRatio()); TODO
+}
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+void WidgetManager::resizeGL(int w, int h)
+{
+    Base::resizeGL(w, h);
+    onResize(w * pixelRatio(), h * pixelRatio());
+}
+#endif
+
+void WidgetManager::keyPressEvent(QKeyEvent* event)
+{
+    // setModifiers(vcl::qt::fromQt(event->modifiers())); TODO
+
+    // onKeyPress(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers())); TODO
+    Base::keyPressEvent(event);
+}
+
+void WidgetManager::keyReleaseEvent(QKeyEvent* event)
+{
+    // setModifiers(vcl::qt::fromQt(event->modifiers())); TODO
+
+    // onKeyRelease(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers())); TODO
+    Base::keyReleaseEvent(event);
+}
+
+void WidgetManager::mouseMoveEvent(QMouseEvent* event)
+{
+    // onMouseMove(
+    //     event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio()); TODO
+    Base::mouseMoveEvent(event);
+}
+
+void WidgetManager::mousePressEvent(QMouseEvent* event)
+{
+    // onMouseMove(
+    //     event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio()); TODO
+    // onMousePress(vcl::qt::fromQt(event->button())); TODO
+    Base::mousePressEvent(event);
+}
+
+void WidgetManager::mouseReleaseEvent(QMouseEvent* event)
+{
+    // onMouseMove(
+    //     event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio()); TODO
+    // onMouseRelease(vcl::qt::fromQt(event->button())); TODO
+    Base::mouseReleaseEvent(event);
+}
+
+void WidgetManager::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    // onMouseDoubleClick(
+    //     vcl::qt::fromQt(event->button()),
+    //     event->pos().x() * pixelRatio(),
+    //     event->pos().y() * pixelRatio()); TODO
+    Base::mouseDoubleClickEvent(event);
+}
+
+void WidgetManager::wheelEvent(QWheelEvent* event)
+{
+    // FIXME: this is not correct, define a proper equivalence
+    if (!event->pixelDelta().isNull())
+        ; // onMouseScroll(event->pixelDelta().x(), event->pixelDelta().y()); TODO
+    else
+        ; // onMouseScroll(event->angleDelta().x(), event->angleDelta().y()); TODO
+
+    Base::wheelEvent(event);
+}
+
+double WidgetManager::pixelRatio()
+{
+    auto app = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+    return app->devicePixelRatio();
 }
 
 } // namespace vcl::qt
