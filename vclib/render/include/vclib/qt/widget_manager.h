@@ -24,6 +24,7 @@
 #define VCL_QT_WIDGET_MANAGER_H
 
 //#include <vclib/render/interfaces/event_manager_i.h>
+#include <vclib/render/concepts/renderer.h>
 #include <vclib/qt/input.h>
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
@@ -37,6 +38,7 @@
 
 namespace vcl::qt {
 
+template<typename DerivedRenderer>
 class WidgetManager :
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
         public QWidget
@@ -44,6 +46,7 @@ class WidgetManager :
         public QOpenGLWidget
 #endif
 {
+    using DRT = DerivedRenderer;
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     using Base = QWidget;
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
@@ -51,24 +54,25 @@ class WidgetManager :
 #endif
 
 public:
-    explicit WidgetManager(
-        const std::string& windowTitle,
-        uint               width  = 1024,
-        uint               height = 768,
-        QWidget*           parent = nullptr) :
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-            QWidget(parent)
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-            QOpenGLWidget(parent)
-#endif
+    WidgetManager(QWidget* parent = nullptr) : Base(parent)
     {
+        static_assert(
+            RendererConcept<DRT>,
+            "The DerivedRenderer must satisfy the RendererConcept.");
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
         setAttribute(
             Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
         setAttribute(Qt::WA_DontCreateNativeAncestors);
         setAttribute(Qt::WA_NativeWindow);
 #endif
+    }
 
+    explicit WidgetManager(
+        const std::string& windowTitle,
+        uint               width  = 1024,
+        uint               height = 768,
+        QWidget*           parent = nullptr) : WidgetManager(parent)
+    {
         setGeometry(100, 100, width, height);
         setWindowTitle(windowTitle.c_str());
     }
@@ -205,6 +209,8 @@ private:
         // frame(); TODO
     }
 #endif
+
+    auto& derived() { return static_cast<DRT&>(*this); }
 };
 
 } // namespace vcl::qt

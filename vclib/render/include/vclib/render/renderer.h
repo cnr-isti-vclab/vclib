@@ -24,15 +24,24 @@
 #define RENDERER_H
 
 #include "concepts/canvas.h"
+#include "concepts/window_manager.h"
 
 namespace vcl {
 
 namespace detail {
 
-template<template<typename> typename CanvasT>
-class Renderer : private CanvasT<Renderer<CanvasT>>
+template<
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT>
+class Renderer : private CanvasT<Renderer<WindowManagerT, CanvasT>>
 {
-    using CanvasType = CanvasT<Renderer<CanvasT>>;
+    using WindowManagerType = WindowManagerT<Renderer<WindowManagerT, CanvasT>>;
+    using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT>>;
+
+    static_assert(
+        WindowManagerConcept<WindowManagerType>,
+        "The second template parameter type of the Renderer class must be a "
+        "class that satisfies the WindowManagerConcept.");
 
     static_assert(
         CanvasConcept<CanvasType>,
@@ -69,10 +78,12 @@ public:
 
 } // namespace detail
 
-template<template<typename> typename CanvasT>
-class Renderer : private detail::Renderer<CanvasT>
+template<
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT>
+class Renderer : private detail::Renderer<WindowManagerT, CanvasT>
 {
-    using Base = detail::Renderer<CanvasT>;
+    using Base = detail::Renderer<WindowManagerT, CanvasT>;
 
 public:
     Renderer() = default;

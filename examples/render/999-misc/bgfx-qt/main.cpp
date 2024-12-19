@@ -80,12 +80,13 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    vcl::Renderer<vcl::CanvasBGFX> r;
+    vcl::Renderer<vcl::qt::WidgetManager, vcl::CanvasBGFX> r;
 
-    static_assert(vcl::WindowManagerConcept<vcl::qt::WidgetManager>, "");
+    // does not compile, std::vector does not satisfy the WindowManagerConcept
+    // vcl::Renderer<vcl::qt::WidgetManager, std::vector> v0;
 
-    // vcl::Renderer<std::vector> v; <- does not compile, std::vector does not
-    //                                  satisfy the CanvasConcept
+    // does not compile, std::vector does not satisfy the CanvasConcept
+    // vcl::Renderer<std::vector, vcl::CanvasBGFX> v1;
 
     // Gesu M;
 
