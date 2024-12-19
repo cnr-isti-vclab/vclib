@@ -131,7 +131,7 @@ void CanvasBGFX::frame()
 {
     bgfx::setViewFrameBuffer(mViewId, mFbh);
     bgfx::touch(mViewId);
-    draw();
+    //draw(); // TODO: call draw of derived class
     mTextView.frame(mFbh);
 
     const bool newReadRequested =
@@ -144,7 +144,7 @@ void CanvasBGFX::frame()
         // submit the calls for blitting the offscreen depth buffer
         if (mReadRequest->submit()) {
             // solicit new frame
-            this->update();
+            // this->update(); // TODO: call update of derived class
         }
     }
     else {
@@ -157,7 +157,7 @@ void CanvasBGFX::frame()
         if (done)
             mReadRequest = std::nullopt;
         // solicit new frame
-        this->update();
+        // this->update(); // TODO: call update of derived class
     }
 }
 
@@ -219,7 +219,7 @@ void CanvasBGFX::offscreenFrame()
     // render changing the view
     auto tmpId = mViewId;
     mViewId    = mReadRequest->viewId();
-    drawContent();
+    // drawContent(); // TODO: call drawContent of derived class
     mViewId = tmpId;
 }
 

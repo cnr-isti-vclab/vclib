@@ -27,7 +27,7 @@
 
 #include <vclib/bgfx/read_framebuffer_request.h>
 #include <vclib/bgfx/text/text_view.h>
-#include <vclib/render/interfaces/event_manager_i.h>
+#include <vclib/render/input.h>
 
 #include <optional>
 
@@ -63,7 +63,7 @@ namespace vcl {
  * - onResize(width, height): this function must be called by the derived
  * classes whenever the window is resized.
  */
-class CanvasBGFX : public virtual vcl::EventManagerI
+class CanvasBGFX/* : public virtual vcl::EventManagerI*/
 {
 public:
     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
@@ -122,7 +122,7 @@ public:
         const std::string& text,
         const Color&       color = Color::Black);
 
-    void onKeyPress(Key::Enum key) override;
+    void onKeyPress(Key::Enum key)/* override*/;
 
     bool supportsReadback() const;
 
@@ -135,12 +135,13 @@ public:
         uint               width  = 0,
         uint               height = 0);
 
-protected:
-    virtual void draw() { drawContent(); };
+// protected:
+    // virtual void draw() { drawContent(); };
 
-    virtual void drawContent() = 0;
+    // virtual void drawContent() = 0;
 
-    void onResize(uint width, uint height) override;
+    /** Functions that will be hidden by renderer **/
+    void onResize(uint width, uint height)/* override*/;
 
     void frame();
 

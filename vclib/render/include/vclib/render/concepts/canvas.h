@@ -23,15 +23,14 @@
 #ifndef CONCEPTS_CANVAS_H
 #define CONCEPTS_CANVAS_H
 
-#include <vclib/types.h>
-
-#include <concepts>
+#include <vclib/concepts.h>
 
 namespace vcl {
 
 template<typename T>
 concept CanvasConcept = requires(T&& obj)
 {
+    { obj.size() } -> Point2Concept;
     { obj.onResize(uint(), uint()) } -> std::same_as<void>;
     { obj.frame() } -> std::same_as<void>;
 };
