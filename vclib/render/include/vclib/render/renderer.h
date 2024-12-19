@@ -20,30 +20,56 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_WINDOW_MANAGER_H
-#define CONCEPTS_WINDOW_MANAGER_H
+#ifndef RENDERER_H
+#define RENDERER_H
 
-#include <vclib/types.h>
-
-#include <concepts>
+#include "concepts/canvas.h"
 
 namespace vcl {
 
-template<typename T>
-concept WindowManagerConcept = requires(T&& obj)
+namespace detail {
+
+template<template<typename> typename CanvasT>
+class Renderer : private CanvasT<Renderer<CanvasT>>
 {
-    { obj.windowTitle() } -> std::same_as<const std::string&()>;
-    { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
+    using CanvasType = CanvasT<Renderer<CanvasT>>;
 
-    { obj.width() } -> std::same_as<uint()>;
-    { obj.height() } -> std::same_as<uint()>;
+    static_assert(CanvasConcept<CanvasType>, "");
 
-    { obj.winId() } -> std::same_as<void*>;
-    { obj.displayId() } -> std::same_as<void*>;
+public:
+    /*
+     * All the following member functions are public because must be called
+     * from the Base classes (e.g. the CanvasType).
+     * These member functions will be then hidden from the user by adding the
+     * private inheritance from this class outside the detail namespace.
+     */
 
-    { obj.update() }  -> std::same_as<void>;
+    void update()
+    {
+        // TODO: Implement update
+        // solecit new frame (by calling an update member function of the
+        // WindowManagerType).
+    }
+
+    void draw()
+    {
+        // TODO: call the draw function for every Drawer object.
+    }
+
+    void drawContent()
+    {
+        // TODO: call the drawContent function for every Drawer object.
+    }
+};
+
+} // namespace detail
+
+template<template<typename> typename CanvasT>
+class Renderer : private detail::Renderer<CanvasT>
+{
+    using Base = detail::Renderer<CanvasT>;
 };
 
 } // namespace vcl
 
-#endif // CONCEPTS_WINDOW_MANAGER_H
+#endif // RENDERER_H
