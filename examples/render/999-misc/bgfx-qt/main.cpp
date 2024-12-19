@@ -6,7 +6,9 @@
 #include <QWidget>
 
 #include <vclib/render/renderer.h>
+#include <vclib/render/concepts/window_manager.h>
 #include <vclib/bgfx/canvas.h>
+#include <vclib/qt/widget_manager.h>
 
 // #include <vclib/qt/viewer_widget.h>
 
@@ -79,6 +81,8 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
 
     vcl::Renderer<vcl::CanvasBGFX> r;
+
+    static_assert(vcl::WindowManagerConcept<vcl::qt::WidgetManager>, "");
 
     // vcl::Renderer<std::vector> v; <- does not compile, std::vector does not
     //                                  satisfy the CanvasConcept

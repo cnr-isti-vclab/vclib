@@ -188,6 +188,23 @@ protected:
         auto app = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
         return app->devicePixelRatio();
     }
+
+private:
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
+    void paintEvent(QPaintEvent* event) override
+    {
+        // frame(); TODO
+#if defined(__APPLE__) || defined(__linux__)
+        // bgfx::frame(); TODO // needed on unix systems
+#endif             // __APPLE__ || __linux__
+        QWidget::paintEvent(event);
+    }
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+    void paintGL() override
+    {
+        // frame(); TODO
+    }
+#endif
 };
 
 } // namespace vcl::qt
