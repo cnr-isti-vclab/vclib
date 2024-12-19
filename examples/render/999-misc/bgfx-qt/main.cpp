@@ -5,6 +5,9 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <vclib/render/renderer.h>
+#include <vclib/bgfx/canvas.h>
+
 // #include <vclib/qt/viewer_widget.h>
 
 // template<typename T>
@@ -34,50 +37,55 @@
 //     void onButtonClicked() { std::cout << "C::onButtonClicked()" << std::endl; }
 // };
 
-template<template<typename> typename C, template<typename> typename E>
-class Minestrone : public C<Minestrone<C, E>>, public E<Minestrone<C, E>>
-{
-public:
-    using EventManagerType = E<Minestrone<C, E>>;
+// template<template<typename> typename C, template<typename> typename E>
+// class Minestrone : public C<Minestrone<C, E>>, public E<Minestrone<C, E>>
+// {
+// public:
+//     using EventManagerType = E<Minestrone<C, E>>;
 
-    void foo() { C<Minestrone<C, E>>::drawWithInit(); };
-};
+//     void foo() { C<Minestrone<C, E>>::drawWithInit(); };
+// };
 
-template<class Derived>
-class Canvas
-{
-public:
-    void drawWithInit()
-    {
-        derived().init();
-        draw();
-    };
+// template<class Derived>
+// class Canvas
+// {
+// public:
+//     void drawWithInit()
+//     {
+//         derived().init();
+//         draw();
+//     };
 
-    virtual void draw() { std::cerr << "draw\n"; };
+//     virtual void draw() { std::cerr << "draw\n"; };
 
-private:
-    auto& derived() { return *static_cast<Derived*>(this); };
-};
+// private:
+//     auto& derived() { return *static_cast<Derived*>(this); };
+// };
 
-template<class Derived>
-class EventManager
-{
-public:
-    void init() { std::cerr << "init\n"; };
-};
+// template<class Derived>
+// class EventManager
+// {
+// public:
+//     void init() { std::cerr << "init\n"; };
+// };
 
-class Gesu : public Minestrone<Canvas, EventManager>
-{
-    virtual void draw() override { std::cerr << "Gesu::draw\n"; }
-};
+// class Gesu : public Minestrone<Canvas, EventManager>
+// {
+//     virtual void draw() override { std::cerr << "Gesu::draw\n"; }
+// };
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    Gesu M;
+    vcl::Renderer<vcl::CanvasBGFX> r;
 
-    M.foo();
+    // vcl::Renderer<std::vector> v; <- does not compile, std::vector does not
+    //                                  satisfy the CanvasConcept
+
+    // Gesu M;
+
+    // M.foo();
 
     // Basic<int> c;
 

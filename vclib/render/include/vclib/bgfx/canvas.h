@@ -100,6 +100,8 @@ private:
     bool mStatsEnabled = false;
 
 public:
+    CanvasBGFX() = default;
+
     CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr)
     {
         // save window id

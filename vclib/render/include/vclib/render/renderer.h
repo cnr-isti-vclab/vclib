@@ -40,6 +40,8 @@ class Renderer : private CanvasT<Renderer<CanvasT>>
         "class that satisfies the CanvasConcept.");
 
 public:
+    Renderer() = default;
+
     /*
      * All the following member functions are public because must be called
      * from the Base classes (e.g. the CanvasType).
@@ -71,6 +73,10 @@ template<template<typename> typename CanvasT>
 class Renderer : private detail::Renderer<CanvasT>
 {
     using Base = detail::Renderer<CanvasT>;
+
+public:
+    Renderer() = default;
+
 };
 
 } // namespace vcl
