@@ -21,7 +21,11 @@
  ****************************************************************************/
 
 
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <imgui_impl_opengl2.h>
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <vclib/bgfx/imgui/imgui_impl_bgfx.h>
+#endif
 #include <imgui_impl_glfw.h>
 #include <vclib/glfw/viewer_window_imgui.h>
 
@@ -53,8 +57,6 @@ ViewerWindowImgui::ViewerWindowImgui(void* parent) :
 
 void ViewerWindowImgui::show()
 {
-    // TODO: OpenGL 2 version
-
     // setup ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -68,9 +70,13 @@ void ViewerWindowImgui::show()
     ImGui::StyleColorsDark();
 
     // setup platform/renderer backends (GLFW and ImGui)
-    
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+    ImGui_ImplGlfw_InitForOpenGL(mWindow, true);
+    ImGui_ImplOpenGL2_Init();
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
     ImGui_ImplGlfw_InitForOther(mWindow, true);
     ImGui_ImplBgfx_Init();
+#endif
 
     // main loop
     while (!glfwWindowShouldClose(mWindow)) {
@@ -82,36 +88,34 @@ void ViewerWindowImgui::show()
             continue;
         }
 
+        // imgui frame
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        ImGui_ImplOpenGL2_NewFrame();
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+        ImGui_ImplBgfx_NewFrame();
+#endif
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // actual drwawing
         frame();
+
+        ImGui::Render();
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+        ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
+#endif
     }
 
     // cleanup
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+    ImGui_ImplOpenGL2_Shutdown();
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
     ImGui_ImplBgfx_Shutdown();
+#endif
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-}
-
-void ViewerWindowImgui::draw()
-{
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-    ViewerCanvas::draw();
-    glfwSwapBuffers(mWindow); // TODO: check
-#else // BGFX
-    // ImGui frame
-    ImGui_ImplBgfx_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    // ImGui demo window
-    ImGui::ShowDemoWindow();
-
-    // actual drawing
-    ViewerCanvas::draw();
-
-    // Rendering
-    ImGui::Render();
-    ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
-#endif
 }
 
 using Base = ViewerWindow;

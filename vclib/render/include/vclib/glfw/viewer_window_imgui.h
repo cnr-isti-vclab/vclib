@@ -50,8 +50,6 @@ public:
     void show() override;
 
 protected:
-    void draw() override;
-
     // callback override to handle imgui events
     void glfwKeyCallback(
         GLFWwindow* win,

@@ -23,10 +23,28 @@
 #include "common.h"
 
 #include <vclib/glfw/viewer_window_imgui.h>
+#include <imgui.h>
+
+class ImguiDemo : public vcl::glfw::ViewerWindowImgui
+{
+public:
+    ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
+    {
+    }
+
+    void draw() override
+    {
+        // imgui demo window
+        ImGui::ShowDemoWindow();
+
+        // draw the scene
+        ViewerWindowImgui::draw();
+    }
+};
 
 int main(int argc, char** argv)
 {
-    vcl::glfw::ViewerWindowImgui tw("Viewer GLFW");
+    ImguiDemo tw("Viewer GLFW");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
