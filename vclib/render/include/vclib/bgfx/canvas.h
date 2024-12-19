@@ -26,7 +26,9 @@
 #include <vclib/types.h>
 
 #include <vclib/bgfx/read_framebuffer_request.h>
+#include <vclib/bgfx/system/native_window_handle.h>
 #include <vclib/bgfx/text/text_view.h>
+#include <vclib/io/image.h>
 #include <vclib/render/input.h>
 
 #include <optional>
@@ -95,45 +97,135 @@ private:
     bool mStatsEnabled = false;
 
 public:
-    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr);
+    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr)
+    {
+        // save window id
+        mWinId = winId;
 
-    ~CanvasBGFX();
+               // on screen framebuffer
+        mViewId = Context::instance(mWinId, displayId).requestViewId();
+
+        mTextView.init(width, height);
+
+               // (re)create the framebuffers
+        CanvasBGFX::onResize(width, height);
+    }
+
+    ~CanvasBGFX()
+    {
+        // deallocate the framebuffers
+        if (bgfx::isValid(mFbh))
+            bgfx::destroy(mFbh);
+
+               // release the view id
+        auto& ctx = Context::instance();
+        if (ctx.isValidViewId(mViewId))
+            ctx.releaseViewId(mViewId);
+    }
 
     Point2<uint> size() const { return mSize; }
 
     bgfx::ViewId viewId() const { return mViewId; }
 
     // text
-    void enableText(bool b = true);
-    bool isTextEnabled() const;
+    void enableText(bool b = true) { mTextView.enableText(b); }
 
-    void setTextFont(VclFont::Enum font, uint fontSize);
-    void setTextFont(const std::string& fontName, uint fontSize);
+    bool isTextEnabled() const { return mTextView.isTextEnabled(); }
 
-    void clearText();
+    void setTextFont(VclFont::Enum font, uint fontSize)
+    {
+        mTextView.setTextFont(font, fontSize);
+    }
+
+    void setTextFont(const std::string& fontName, uint fontSize)
+    {
+        mTextView.setTextFont(fontName, fontSize);
+    }
+
+    void clearText()
+    {
+        mTextView.clearText();
+    }
 
     void appendStaticText(
         const Point2f&     pos,
         const std::string& text,
-        const Color&       color = Color::Black);
+        const Color&       color = Color::Black)
+    {
+        mTextView.appendStaticText(pos, text, color);
+    }
 
     void appendTransientText(
         const Point2f&     pos,
         const std::string& text,
-        const Color&       color = Color::Black);
+        const Color&       color = Color::Black)
+    {
+        mTextView.appendTransientText(pos, text, color);
+    }
 
-    void onKeyPress(Key::Enum key)/* override*/;
+    void onKeyPress(Key::Enum key)/* override*/
+    {
+        if (key == Key::F1) {
+            if (mStatsEnabled) {
+                mStatsEnabled = false;
+                bgfx::setDebug(BGFX_DEBUG_NONE);
+            }
+            else {
+                mStatsEnabled = true;
+                bgfx::setDebug(BGFX_DEBUG_STATS);
+            }
+        }
+    }
 
-    bool supportsReadback() const;
+    // bool supportsReadback() const; // TODO check: function never implemented?
 
     [[nodiscard]] bool readDepth(
         const Point2i&     point,
-        CallbackReadBuffer callback = nullptr);
+        CallbackReadBuffer callback = nullptr)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt         // read already requested
+            || point.x() < 0 || point.y() < 0       // point out of bounds
+            || point.x() >= mSize.x() || point.y() >= mSize.y()) {
+            return false;
+        }
+
+        mReadRequest.emplace(point, mSize, callback);
+        return true;
+    }
 
     bool screenshot(
         const std::string& filename,
         uint               width  = 0,
-        uint               height = 0);
+        uint               height = 0)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt) {      // read already requested
+            return false;
+        }
+
+               // get size
+        auto size = mSize;
+        if (width != 0 && height != 0)
+            size = {width, height};
+
+               // color data callback
+        CallbackReadBuffer callback = [=](const ReadData& data) {
+            assert(std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
+            const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
+
+                   // save rgb image data into file using stb depending on file
+            try {
+                vcl::saveImageData(filename, size.x(), size.y(), d.data());
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error saving image: " << e.what() << std::endl;
+            }
+        };
+
+        mReadRequest.emplace(size, callback);
+        return true;
+    }
 
 // protected:
     // virtual void draw() { drawContent(); };
@@ -141,13 +233,75 @@ public:
     // virtual void drawContent() = 0;
 
     /** Functions that will be hidden by renderer **/
-    void onResize(uint width, uint height)/* override*/;
+    void onResize(uint width, uint height)/* override*/
+    {
+        mSize = {width, height};
 
-    void frame();
+               // create window backbuffer
+        if (bgfx::isValid(mFbh))
+            bgfx::destroy(mFbh);
+
+        auto& ctx = Context::instance();
+        mFbh =
+            ctx.createFramebufferAndInitView(mWinId, mViewId, width, height, true);
+        // the canvas framebuffer is non valid for the default window
+        assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
+
+               // resize the text view
+        mTextView.resize(width, height);
+    }
+
+    void frame()
+    {
+        bgfx::setViewFrameBuffer(mViewId, mFbh);
+        bgfx::touch(mViewId);
+        //draw(); // TODO: call draw of derived class
+        mTextView.frame(mFbh);
+
+        const bool newReadRequested =
+            (mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
+
+        if (newReadRequested) {
+            // draw offscreen frame
+            offscreenFrame();
+            mCurrFrame = bgfx::frame();
+            // submit the calls for blitting the offscreen depth buffer
+            if (mReadRequest->submit()) {
+                // solicit new frame
+                // this->update(); // TODO: call update of derived class
+            }
+        }
+        else {
+            mCurrFrame = bgfx::frame();
+        }
+
+        if (mReadRequest != std::nullopt) {
+            // read depth data if available
+            const bool done = mReadRequest->performRead(mCurrFrame);
+            if (done)
+                mReadRequest = std::nullopt;
+            // solicit new frame
+            // this->update(); // TODO: call update of derived class
+        }
+    }
 
 private:
     // draw offscreen frame
-    void offscreenFrame();
+    void offscreenFrame()
+    {
+        assert(mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
+
+               // render offscren
+        bgfx::setViewFrameBuffer(
+            mReadRequest->viewId(), mReadRequest->frameBuffer());
+        bgfx::touch(mReadRequest->viewId());
+
+               // render changing the view
+        auto tmpId = mViewId;
+        mViewId    = mReadRequest->viewId();
+        // drawContent(); // TODO: call drawContent of derived class
+        mViewId = tmpId;
+    }
 };
 
 } // namespace vcl

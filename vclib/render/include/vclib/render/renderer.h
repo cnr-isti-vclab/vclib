@@ -34,7 +34,10 @@ class Renderer : private CanvasT<Renderer<CanvasT>>
 {
     using CanvasType = CanvasT<Renderer<CanvasT>>;
 
-    static_assert(CanvasConcept<CanvasType>, "");
+    static_assert(
+        CanvasConcept<CanvasType>,
+        "The first template parameter type of the Renderer class must be a "
+        "class that satisfies the CanvasConcept.");
 
 public:
     /*
