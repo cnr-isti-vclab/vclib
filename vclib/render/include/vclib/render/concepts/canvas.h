@@ -32,6 +32,8 @@ concept CanvasConcept = requires(T&& obj)
 {
     { obj.size() } -> Point2Concept;
     { obj.onResize(uint(), uint()) } -> std::same_as<void>;
+
+    { obj.viewId() } -> std::same_as<uint16_t>;
     { obj.frame() } -> std::same_as<void>;
 };
 

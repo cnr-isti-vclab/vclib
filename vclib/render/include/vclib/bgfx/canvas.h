@@ -65,8 +65,11 @@ namespace vcl {
  * - onResize(width, height): this function must be called by the derived
  * classes whenever the window is resized.
  */
+template<typename DerivedRenderer>
 class CanvasBGFX/* : public virtual vcl::EventManagerI*/
 {
+    using DRT = DerivedRenderer;
+
 public:
     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
     using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
@@ -102,12 +105,12 @@ public:
         // save window id
         mWinId = winId;
 
-               // on screen framebuffer
+        // on screen framebuffer
         mViewId = Context::instance(mWinId, displayId).requestViewId();
 
         mTextView.init(width, height);
 
-               // (re)create the framebuffers
+        // (re)create the framebuffers
         CanvasBGFX::onResize(width, height);
     }
 
@@ -117,7 +120,7 @@ public:
         if (bgfx::isValid(mFbh))
             bgfx::destroy(mFbh);
 
-               // release the view id
+        // release the view id
         auto& ctx = Context::instance();
         if (ctx.isValidViewId(mViewId))
             ctx.releaseViewId(mViewId);
@@ -204,17 +207,17 @@ public:
             return false;
         }
 
-               // get size
+        // get size
         auto size = mSize;
         if (width != 0 && height != 0)
             size = {width, height};
 
-               // color data callback
+        // color data callback
         CallbackReadBuffer callback = [=](const ReadData& data) {
             assert(std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
             const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
 
-                   // save rgb image data into file using stb depending on file
+            // save rgb image data into file using stb depending on file
             try {
                 vcl::saveImageData(filename, size.x(), size.y(), d.data());
             }
@@ -237,7 +240,7 @@ public:
     {
         mSize = {width, height};
 
-               // create window backbuffer
+        // create window backbuffer
         if (bgfx::isValid(mFbh))
             bgfx::destroy(mFbh);
 
@@ -247,7 +250,7 @@ public:
         // the canvas framebuffer is non valid for the default window
         assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
 
-               // resize the text view
+        // resize the text view
         mTextView.resize(width, height);
     }
 
@@ -268,7 +271,7 @@ public:
             // submit the calls for blitting the offscreen depth buffer
             if (mReadRequest->submit()) {
                 // solicit new frame
-                // this->update(); // TODO: call update of derived class
+                derived().update();
             }
         }
         else {
@@ -281,7 +284,7 @@ public:
             if (done)
                 mReadRequest = std::nullopt;
             // solicit new frame
-            // this->update(); // TODO: call update of derived class
+            derived().update();
         }
     }
 
@@ -291,17 +294,19 @@ private:
     {
         assert(mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
 
-               // render offscren
+        // render offscren
         bgfx::setViewFrameBuffer(
             mReadRequest->viewId(), mReadRequest->frameBuffer());
         bgfx::touch(mReadRequest->viewId());
 
-               // render changing the view
+        // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        // drawContent(); // TODO: call drawContent of derived class
+        derived().drawContent();
         mViewId = tmpId;
     }
+
+    auto& derived() { return static_cast<DRT&>(*this); }
 };
 
 } // namespace vcl
