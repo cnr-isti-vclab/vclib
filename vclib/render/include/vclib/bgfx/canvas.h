@@ -30,6 +30,7 @@
 #include <vclib/bgfx/text/text_view.h>
 #include <vclib/io/image.h>
 #include <vclib/render/input.h>
+#include <vclib/render/concepts/renderer.h>
 
 #include <optional>
 
@@ -100,9 +101,18 @@ private:
     bool mStatsEnabled = false;
 
 public:
-    CanvasBGFX() = default;
+    CanvasBGFX()
+    {
+        static_assert(
+            RendererConcept<DRT>,
+            "The DerivedRenderer must satisfy the RendererConcept.");
+    }
 
-    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr)
+    CanvasBGFX(
+        void* winId,
+        uint  width,
+        uint  height,
+        void* displayId = nullptr) : CanvasBGFX()
     {
         // save window id
         mWinId = winId;
