@@ -105,14 +105,21 @@ private:
      */
     void cnvDraw()
     {
-        (Drawers::draw(CanvasType::viewId()), ...);
+        // call the onDraw member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers*>(this)->onDraw(CanvasType::viewId()), ...);
     }
 
-    void cnvDrawContent() { (Drawers::drawContent(CanvasType::viewId()), ...); }
+    void cnvDrawContent()
+    {
+        // call the onDrawContent member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers*>(this)->onDrawContent(CanvasType::viewId()), ...);
+    }
 
     /***** Member functions called by WindowManagerType *****/
-
-    void wmFrame() { CanvasType::frame(); }
 
     /**
      * @brief The WindowManagerType calls this member function when the window
@@ -125,9 +132,15 @@ private:
      */
     void wmResize(uint width, uint height)
     {
-        CanvasType::resize(width, height);
-        // call the resize member function of each Drawer object
+        CanvasType::onResize(width, height);
+
+        // call the onResize member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers*>(this)->onResize(width, height), ...);
     }
+
+    void wmPaint() { CanvasType::onPaint(); }
 };
 
 } // namespace vcl

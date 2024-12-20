@@ -192,10 +192,7 @@ private:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override
     {
-        derived().wmFrame();
-#if defined(__APPLE__) || defined(__linux__)
-        // bgfx::frame(); TODO // needed on unix systems
-#endif             // __APPLE__ || __linux__
+        derived().wmPaint();
         QWidget::paintEvent(event);
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)

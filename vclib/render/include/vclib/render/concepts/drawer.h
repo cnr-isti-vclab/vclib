@@ -32,9 +32,9 @@ namespace vcl {
 template<typename T>
 concept DrawerConcept = requires(T&& obj)
 {
-    { obj.resize(uint(), uint()) } -> std::same_as<void>;
-    { obj.draw(uint()) } -> std::same_as<void>;
-    { obj.drawContent(uint()) } -> std::same_as<void>;
+    { obj.onResize(uint(), uint()) } -> std::same_as<void>;
+    { obj.onDraw(uint()) } -> std::same_as<void>;
+    { obj.onDrawContent(uint()) } -> std::same_as<void>;
 };
 
 } // namespace vcl

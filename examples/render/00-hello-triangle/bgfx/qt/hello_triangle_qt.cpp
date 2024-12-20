@@ -35,7 +35,12 @@ HelloTriangleQt::~HelloTriangleQt()
     bgfx::destroy(program);
 }
 
-void HelloTriangleQt::drawContent(uint viewId)
+void HelloTriangleQt::onResize(uint width, uint height)
+{
+    std::cout << "Resize: " << width << "; " << height << ". Nothing to do\n";
+}
+
+void HelloTriangleQt::onDrawContent(uint viewId)
 {
     drawOnView(viewId, vbh, program);
 }

@@ -116,7 +116,7 @@ public:
         mTextView.init(width, height);
 
         // (re)create the framebuffers
-        resize(width, height);
+        onResize(width, height);
     }
 
     ~CanvasBGFX()
@@ -235,13 +235,14 @@ public:
         return true;
     }
 
-// protected:
-    // virtual void draw() { drawContent(); };
-
-    // virtual void drawContent() = 0;
-
-    /** Functions that will be hidden by renderer **/
-    void resize(uint width, uint height) /* override*/
+    // using private inheritance on DerivedRenderer, no need to protect here
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window
+     * is resized.
+     * @param width
+     * @param height
+     */
+    void onResize(uint width, uint height)
     {
         mSize = {width, height};
 
@@ -259,10 +260,15 @@ public:
         mTextView.resize(width, height);
     }
 
-    void frame()
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window asks
+     * to repaint.
+     */
+    void onPaint()
     {
         bgfx::setViewFrameBuffer(mViewId, mFbh);
         bgfx::touch(mViewId);
+        // ask the derived frame to draw all the drawer objects:
         derived().cnvDraw();
         mTextView.frame(mFbh);
 
@@ -291,6 +297,11 @@ public:
             // solicit new frame
             derived().cnvUpdate();
         }
+
+        // this is probably required only when using Qt
+#if defined(__APPLE__) || defined(__linux__)
+        bgfx::frame(); // needed on unix systems
+#endif             // __APPLE__ || __linux__
     }
 
 private:

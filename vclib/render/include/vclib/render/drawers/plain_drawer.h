@@ -30,14 +30,14 @@ namespace vcl {
 class PlainDrawer
 {
 public:
-    virtual void resize(uint width, uint height) {}
+    virtual void onResize(uint width, uint height) {}
 
-    virtual void draw(uint viewId)
+    virtual void onDraw(uint viewId)
     {
-        drawContent(viewId);
+        onDrawContent(viewId);
     }
 
-    virtual void drawContent(uint viewId) {}
+    virtual void onDrawContent(uint viewId) {}
 };
 
 } // namespace vcl

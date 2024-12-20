@@ -38,7 +38,9 @@ public:
 
     ~HelloTriangleQt();
 
-    void drawContent(uint) override;
+    void onResize(uint width, uint height) override;
+
+    void onDrawContent(uint) override;
 
 private:
     bgfx::VertexBufferHandle vbh;

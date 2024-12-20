@@ -30,12 +30,12 @@ namespace vcl {
 template<typename T>
 concept CanvasConcept = requires(T&& obj)
 {
-    // { obj.init(uint(), uint()) } -> std::same_as<void>; // TODO required for opengl?
     { obj.size() } -> Point2Concept;
-    { obj.resize(uint(), uint()) } -> std::same_as<void>;
+    { obj.viewId() } -> std::convertible_to<uint>;
 
-    { obj.viewId() } -> std::same_as<uint16_t>;
-    { obj.frame() } -> std::same_as<void>;
+    // { obj.init(uint(), uint()) } -> std::same_as<void>; // TODO required for opengl?
+    { obj.onResize(uint(), uint()) } -> std::same_as<void>;
+    { obj.onPaint() } -> std::same_as<void>;
 };
 
 } // namespace vcl
