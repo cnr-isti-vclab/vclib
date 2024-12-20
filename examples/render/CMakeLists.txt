@@ -38,7 +38,9 @@ endif()
 
 add_subdirectory(common)
 
-add_subdirectory(00-hello-triangle)
+if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+    add_subdirectory(00-hello-triangle)
+endif()
 # add_subdirectory(01-viewer)
 # add_subdirectory(02-mesh-viewer)
 # add_subdirectory(03-viewer-with-text)
