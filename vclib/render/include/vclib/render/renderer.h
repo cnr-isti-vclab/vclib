@@ -24,8 +24,9 @@
 #define RENDERER_H
 
 #include "concepts/canvas.h"
-#include "concepts/drawer.h"
+#include "concepts/event_drawer.h"
 #include "concepts/window_manager.h"
+#include "input.h"
 
 namespace vcl {
 
@@ -58,6 +59,8 @@ class Renderer :
     static_assert(
         (DrawerConcept<Drawers> && ...),
         "All the Drawer types must satisfy the DrawerConcept.");
+
+    KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
 
 public:
     Renderer() :
@@ -101,7 +104,7 @@ private:
 
     /**
      * @brief The CanvasType is ready to draw, and asks the Renderer to call
-     * the draw function for every Drawer object.
+     * the 'onDraw(uint())' function for every Drawer object.
      */
     void cnvDraw()
     {
@@ -111,6 +114,13 @@ private:
         (static_cast<Drawers*>(this)->onDraw(CanvasType::viewId()), ...);
     }
 
+    /**
+     * @brief The CanvasType wants to draw only the content of the objects,
+     * without any decorator (e.g. axis, trackball, grid, etc.).
+     * This scenario is useful when the user wants to take a snapshot of the
+     * scene without any decoration. It asks the Renderer to call the
+     * 'onDrawContent(uint())' function for every Drawer object.
+     */
     void cnvDrawContent()
     {
         // call the onDrawContent member function of each Drawer object.
@@ -140,7 +150,62 @@ private:
         (static_cast<Drawers*>(this)->onResize(width, height), ...);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when the window
+     * triggers a paint event.
+     */
     void wmPaint() { CanvasType::onPaint(); }
+
+    /**
+     * @brief The WindowManagerType calls this member function when the current
+     * modifiers are updated.
+     */
+    void wmSetModifiers(const KeyModifiers& modifiers)
+    {
+        mKeyModifiers = modifiers;
+    }
+
+    /**
+     * @brief The WindowManagerType calls this member function when a key is
+     * pressed.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onKeyPress(Key::Enum, KeyModifiers)` member function.
+     *
+     * @param key
+     */
+    void wmKeyPress(Key::Enum key)
+    {
+        auto lambda = [&]<typename D>(auto* t){
+            if constexpr(EventDrawerConcept<D>){
+                static_cast<D*>(t)->onKeyPress(key, mKeyModifiers);
+            }
+        };
+
+        (lambda.template operator()<Drawers>(this), ...);
+    }
+
+    /**
+     * @brief The WindowManagerType calls this member function when a key is
+     * released.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onKeyRelease(Key::Enum, KeyModifiers)` member function.
+     *
+     * @param key
+     */
+    void wmKeyRelease(Key::Enum key)
+    {
+        auto lambda = [&]<typename D>(auto* t){
+            if constexpr(EventDrawerConcept<D>){
+                static_cast<D*>(t)->onKeyRelease(key, mKeyModifiers);
+            }
+        };
+
+        (lambda.template operator()<Drawers>(this), ...);
+    }
 };
 
 } // namespace vcl

@@ -119,23 +119,25 @@ protected:
     void resizeGL(int w, int h) override
     {
         Base::resizeGL(w, h);
-        // onResize(w * pixelRatio(), h * pixelRatio()); TODO
+        derived().wmResize(w * pixelRatio(), h * pixelRatio());
     }
 #endif
 
     void keyPressEvent(QKeyEvent* event) override
     {
-        // setModifiers(vcl::qt::fromQt(event->modifiers())); TODO
+        derived().wmSetModifiers(vcl::qt::fromQt(event->modifiers()));
 
-        // onKeyPress(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers())); TODO
+        derived().wmKeyPress(
+            vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyPressEvent(event);
     }
 
     void keyReleaseEvent(QKeyEvent* event) override
     {
-        // setModifiers(vcl::qt::fromQt(event->modifiers())); TODO
+        derived().wmSetModifiers(vcl::qt::fromQt(event->modifiers()));
 
-        // onKeyRelease(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers())); TODO
+        derived().wmKeyRelease(
+            vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyReleaseEvent(event);
     }
 
