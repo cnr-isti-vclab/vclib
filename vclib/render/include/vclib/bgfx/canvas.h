@@ -307,7 +307,7 @@ private:
         // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        derived().drawContent();
+        derived().cnvDrawContent();
         mViewId = tmpId;
     }
 

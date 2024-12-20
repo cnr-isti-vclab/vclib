@@ -20,22 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "hello_triangle_qt.h"
+#ifndef SIMPLE_DRAWER_H
+#define SIMPLE_DRAWER_H
 
-#include "../common.h"
+#include <vclib/types.h>
 
-HelloTriangleQt::HelloTriangleQt() : CanvasWidget("Hello Triangle Qt")
+namespace vcl {
+
+class SimpleDrawer
 {
-    setUpBGFX(viewId(), vbh, program);
-}
+public:
+    virtual void resize(uint width, uint height) {}
 
-HelloTriangleQt::~HelloTriangleQt()
-{
-    bgfx::destroy(vbh);
-    bgfx::destroy(program);
-}
+    virtual void draw(uint viewId)
+    {
+        drawContent(viewId);
+    }
 
-void HelloTriangleQt::drawContent(uint viewId)
-{
-    drawOnView(viewId, vbh, program);
-}
+    virtual void drawContent(uint viewId) {}
+};
+
+} // namespace vcl
+
+#endif // SIMPLE_DRAWER_H

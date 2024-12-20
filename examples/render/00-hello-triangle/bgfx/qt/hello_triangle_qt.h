@@ -23,16 +23,22 @@
 #ifndef HELLO_TRIANGLE_QT_H
 #define HELLO_TRIANGLE_QT_H
 
-#include <vclib/qt/canvas_widget.h>
+#include <vclib/bgfx/canvas.h>
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/drawers/simple_drawer.h>
+#include <vclib/render/renderer.h>
 
-class HelloTriangleQt : public vcl::qt::CanvasWidget
+using CanvasWidget =
+    vcl::Renderer<vcl::qt::WidgetManager, vcl::CanvasBGFX, vcl::SimpleDrawer>;
+
+class HelloTriangleQt : public CanvasWidget
 {
 public:
     HelloTriangleQt();
 
     ~HelloTriangleQt();
 
-    void drawContent() override;
+    void drawContent(uint) override;
 
 private:
     bgfx::VertexBufferHandle vbh;

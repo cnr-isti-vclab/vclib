@@ -24,22 +24,26 @@
 #define RENDERER_H
 
 #include "concepts/canvas.h"
+#include "concepts/drawer.h"
 #include "concepts/window_manager.h"
 
 namespace vcl {
 
 template<
     template<typename> typename WindowManagerT,
-    template<typename> typename CanvasT>
+    template<typename> typename CanvasT,
+    DrawerConcept... Drawers>
 class Renderer :
-        public WindowManagerT<Renderer<WindowManagerT, CanvasT>>,
-        private CanvasT<Renderer<WindowManagerT, CanvasT>>
+        public WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
+        private CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
+        public Drawers...
 {
-    friend class CanvasT<Renderer<WindowManagerT, CanvasT>>;
-    friend class WindowManagerT<Renderer<WindowManagerT, CanvasT>>;
+    friend class CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+    friend class WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
 
-    using WindowManagerType = WindowManagerT<Renderer<WindowManagerT, CanvasT>>;
-    using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT>>;
+    using WindowManagerType =
+        WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+    using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
 
     static_assert(
         WindowManagerConcept<WindowManagerType>,
@@ -74,6 +78,8 @@ public:
     {
     }
 
+    uint viewId() const { return CanvasType::viewId(); }
+
 private:
     /***** Member functions called by CanvasType *****/
 
@@ -94,15 +100,14 @@ private:
      */
     void cnvDraw()
     {
-        // TODO: call the draw function for every Drawer object.
+        (Drawers::draw(CanvasType::viewId()), ...);
     }
 
-    void cnvDrawContent()
-    {
-        // TODO: call the drawContent function for every Drawer object.
-    }
+    void cnvDrawContent() { (Drawers::drawContent(CanvasType::viewId()), ...); }
 
     /***** Member functions called by WindowManagerType *****/
+
+    void wmFrame() { CanvasType::frame(); }
 
     /**
      * @brief The WindowManagerType calls this member function when the window
