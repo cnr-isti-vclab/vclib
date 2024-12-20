@@ -103,11 +103,6 @@ public:
         return displayID;
     }
 
-    void update()
-    {
-        Base::update();
-    }
-
     QPaintEngine* paintEngine() const override
     {
         return nullptr;
@@ -118,7 +113,7 @@ protected:
     void resizeEvent(QResizeEvent* event) override
     {
         Base::resizeEvent(event);
-        // onResize(width() * pixelRatio(), height() * pixelRatio()); TODO
+        derived().wmResize(width() * pixelRatio(), height() * pixelRatio());
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void resizeGL(int w, int h) override

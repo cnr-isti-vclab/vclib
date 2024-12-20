@@ -28,13 +28,16 @@
 
 namespace vcl {
 
-namespace detail {
-
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT>
-class Renderer : private CanvasT<Renderer<WindowManagerT, CanvasT>>
+class Renderer :
+        public WindowManagerT<Renderer<WindowManagerT, CanvasT>>,
+        private CanvasT<Renderer<WindowManagerT, CanvasT>>
 {
+    friend class CanvasT<Renderer<WindowManagerT, CanvasT>>;
+    friend class WindowManagerT<Renderer<WindowManagerT, CanvasT>>;
+
     using WindowManagerType = WindowManagerT<Renderer<WindowManagerT, CanvasT>>;
     using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT>>;
 
@@ -51,43 +54,49 @@ class Renderer : private CanvasT<Renderer<WindowManagerT, CanvasT>>
 public:
     Renderer() = default;
 
-    /*
-     * All the following member functions are public because must be called
-     * from the Base classes (e.g. the CanvasType).
-     * These member functions will be then hidden from the user by adding the
-     * private inheritance from this class outside the detail namespace.
-     */
+private:
+    /***** Member functions called by CanvasType *****/
 
-    void update()
+    /**
+     * @brief The CanvasType solecits a new frame, and it asks the window
+     * manager to update the window.
+     */
+    void cnvUpdate()
     {
-        // TODO: Implement update
         // solecit new frame (by calling an update member function of the
         // WindowManagerType).
+        WindowManagerType::update();
     }
 
-    void draw()
+    /**
+     * @brief The CanvasType is ready to draw, and asks the Renderer to call
+     * the draw function for every Drawer object.
+     */
+    void cnvDraw()
     {
         // TODO: call the draw function for every Drawer object.
     }
 
-    void drawContent()
+    void cnvDrawContent()
     {
         // TODO: call the drawContent function for every Drawer object.
     }
-};
 
-} // namespace detail
+    /***** Member functions called by WindowManagerType *****/
 
-template<
-    template<typename> typename WindowManagerT,
-    template<typename> typename CanvasT>
-class Renderer : private detail::Renderer<WindowManagerT, CanvasT>
-{
-    using Base = detail::Renderer<WindowManagerT, CanvasT>;
-
-public:
-    Renderer() = default;
-
+    /**
+     * @brief The WindowManagerType calls this member function when the window
+     * is resized, telling the new width and height. The Renderer propagates
+     * the resize event to the CanvasType and to each Drawer object.
+     *
+     * @param width
+     * @param height
+     */
+    void wmResize(uint width, uint height)
+    {
+        CanvasType::resize(width, height);
+        // call the resize member function of each Drawer object
+    }
 };
 
 } // namespace vcl

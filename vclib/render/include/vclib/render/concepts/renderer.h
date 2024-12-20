@@ -32,9 +32,9 @@ concept RendererConcept = requires(T&& obj)
 {
     T();
 
-    { obj.update() } -> std::same_as<void>;
-    { obj.draw() } -> std::same_as<void>;
-    { obj.drawContent() } -> std::same_as<void>;
+    // { obj.update() } -> std::same_as<void>;
+    // { obj.draw() } -> std::same_as<void>;
+    // { obj.drawContent() } -> std::same_as<void>;
 };
 
 } // namespace vcl

@@ -123,7 +123,7 @@ public:
         mTextView.init(width, height);
 
         // (re)create the framebuffers
-        CanvasBGFX::onResize(width, height);
+        resize(width, height);
     }
 
     ~CanvasBGFX()
@@ -248,7 +248,7 @@ public:
     // virtual void drawContent() = 0;
 
     /** Functions that will be hidden by renderer **/
-    void onResize(uint width, uint height)/* override*/
+    void resize(uint width, uint height) /* override*/
     {
         mSize = {width, height};
 
@@ -270,7 +270,7 @@ public:
     {
         bgfx::setViewFrameBuffer(mViewId, mFbh);
         bgfx::touch(mViewId);
-        //draw(); // TODO: call draw of derived class
+        derived().cnvDraw();
         mTextView.frame(mFbh);
 
         const bool newReadRequested =
@@ -283,7 +283,7 @@ public:
             // submit the calls for blitting the offscreen depth buffer
             if (mReadRequest->submit()) {
                 // solicit new frame
-                derived().update();
+                derived().cnvUpdate();
             }
         }
         else {
@@ -296,7 +296,7 @@ public:
             if (done)
                 mReadRequest = std::nullopt;
             // solicit new frame
-            derived().update();
+            derived().cnvUpdate();
         }
     }
 
