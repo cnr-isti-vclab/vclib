@@ -20,14 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef SIMPLE_DRAWER_H
-#define SIMPLE_DRAWER_H
+#ifndef PLAIN_DRAWER_H
+#define PLAIN_DRAWER_H
 
 #include <vclib/types.h>
 
 namespace vcl {
 
-class SimpleDrawer
+class PlainDrawer
 {
 public:
     virtual void resize(uint width, uint height) {}
@@ -42,4 +42,4 @@ public:
 
 } // namespace vcl
 
-#endif // SIMPLE_DRAWER_H
+#endif // PLAIN_DRAWER_H

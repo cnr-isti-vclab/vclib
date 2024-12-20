@@ -25,11 +25,11 @@
 
 #include <vclib/bgfx/canvas.h>
 #include <vclib/qt/widget_manager.h>
-#include <vclib/render/drawers/simple_drawer.h>
+#include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/renderer.h>
 
 using CanvasWidget =
-    vcl::Renderer<vcl::qt::WidgetManager, vcl::CanvasBGFX, vcl::SimpleDrawer>;
+    vcl::Renderer<vcl::qt::WidgetManager, vcl::CanvasBGFX, vcl::PlainDrawer>;
 
 class HelloTriangleQt : public CanvasWidget
 {

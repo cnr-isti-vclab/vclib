@@ -36,7 +36,7 @@ template<
 class Renderer :
         public WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
         private CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
-        public Drawers...
+        protected Drawers...
 {
     friend class CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
     friend class WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
@@ -54,6 +54,10 @@ class Renderer :
         CanvasConcept<CanvasType>,
         "The first template parameter type of the Renderer class must be a "
         "class that satisfies the CanvasConcept.");
+
+    static_assert(
+        (DrawerConcept<Drawers> && ...),
+        "All the Drawer types must satisfy the DrawerConcept.");
 
 public:
     Renderer() :
@@ -78,6 +82,7 @@ public:
     {
     }
 
+protected:
     uint viewId() const { return CanvasType::viewId(); }
 
 private:
@@ -112,7 +117,8 @@ private:
     /**
      * @brief The WindowManagerType calls this member function when the window
      * is resized, telling the new width and height. The Renderer propagates
-     * the resize event to the CanvasType and to each Drawer object.
+     * the resize event to the CanvasType and to each Drawer object, by calling
+     * the `onResize(uint, uint)` member function.
      *
      * @param width
      * @param height
