@@ -80,7 +80,9 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    vcl::Renderer<vcl::qt::WidgetManager, vcl::CanvasBGFX> r;
+    vcl::Renderer<vcl::qt::WidgetManager, vcl::CanvasBGFX> r("prova");
+
+    r.show();
 
     // does not compile, std::vector does not satisfy the WindowManagerConcept
     // vcl::Renderer<vcl::qt::WidgetManager, std::vector> v0;

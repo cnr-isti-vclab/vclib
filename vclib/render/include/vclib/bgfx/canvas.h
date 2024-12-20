@@ -101,19 +101,12 @@ private:
     bool mStatsEnabled = false;
 
 public:
-    CanvasBGFX()
+    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr)
     {
         static_assert(
             RendererConcept<DRT>,
             "The DerivedRenderer must satisfy the RendererConcept.");
-    }
 
-    CanvasBGFX(
-        void* winId,
-        uint  width,
-        uint  height,
-        void* displayId = nullptr) : CanvasBGFX()
-    {
         // save window id
         mWinId = winId;
 

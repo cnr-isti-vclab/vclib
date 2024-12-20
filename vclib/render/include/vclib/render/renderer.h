@@ -52,7 +52,27 @@ class Renderer :
         "class that satisfies the CanvasConcept.");
 
 public:
-    Renderer() = default;
+    Renderer() :
+            WindowManagerType(), CanvasType(
+                                     (void*) WindowManagerType::winId(),
+                                     WindowManagerType::width(),
+                                     WindowManagerType::height(),
+                                     WindowManagerType::displayId())
+    {
+    }
+
+    Renderer(
+        const std::string& windowTitle,
+        uint               width  = 1024,
+        uint               height = 768) :
+            WindowManagerType(windowTitle, width, height),
+            CanvasType(
+                (void*) WindowManagerType::winId(),
+                width,
+                height,
+                WindowManagerType::displayId())
+    {
+    }
 
 private:
     /***** Member functions called by CanvasType *****/
