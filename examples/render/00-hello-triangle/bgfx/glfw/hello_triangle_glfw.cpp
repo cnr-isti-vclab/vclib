@@ -25,7 +25,7 @@
 #include "../common.h"
 
 HelloTriangleGLFW::HelloTriangleGLFW() :
-        vcl::glfw::CanvasWindow("Hello Triangle GLFW")
+        CanvasWindow("Hello Triangle GLFW")
 {
     setUpBGFX(viewId(), vbh, program);
 }
@@ -36,7 +36,12 @@ HelloTriangleGLFW::~HelloTriangleGLFW()
     bgfx::destroy(program);
 }
 
-void HelloTriangleGLFW::drawContent()
+void HelloTriangleGLFW::onResize(uint width, uint height)
+{
+    std::cout << "Resize: " << width << "; " << height << ". Nothing to do\n";
+}
+
+void HelloTriangleGLFW::onDrawContent(uint)
 {
     drawOnView(viewId(), vbh, program);
 }

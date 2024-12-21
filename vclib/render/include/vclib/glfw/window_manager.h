@@ -50,7 +50,7 @@ namespace vcl::glfw {
 
 namespace detail {
 
-void glfwErrorCallback(int error, const char* description)
+inline void glfwErrorCallback(int error, const char* description)
 {
     std::cerr << "GLFW error: " << error << ": " << description << std::endl;
 }
