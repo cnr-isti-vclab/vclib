@@ -20,25 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H
-#define VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H
+#ifndef VCL_RENDER_DRAWABLE_ABSTRACT_DRAWABLE_MESH_H
+#define VCL_RENDER_DRAWABLE_ABSTRACT_DRAWABLE_MESH_H
 
-#include "drawable_object_i.h"
+#include "drawable_object.h"
 
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 namespace vcl {
 
-class DrawableMeshI : public vcl::DrawableObjectI
+class AbstractDrawableMesh : public vcl::DrawableObject
 {
 protected:
     MeshRenderSettings mMRS;
 
 public:
-    DrawableMeshI() = default;
+    AbstractDrawableMesh() = default;
 
     template<MeshConcept MeshType>
-    DrawableMeshI(const MeshType& m) : mMRS(m)
+    AbstractDrawableMesh(const MeshType& m) : mMRS(m)
     {
     }
 
@@ -57,4 +57,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H
+#endif // VCL_RENDER_DRAWABLE_ABSTRACT_DRAWABLE_MESH_H
