@@ -5,6 +5,7 @@
   - [x] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
   - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
+  - [ ] 'friend class Type' should be 'friend Type'
 - Concepts:
   - [x] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types
