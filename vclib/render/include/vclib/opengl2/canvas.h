@@ -107,6 +107,8 @@ public:
         glClearColor(1.f, 1.f, 1.f, 1.0f);
     }
 
+    uint viewId() { return 0;}
+
     Point2<uint> size() const { return mSize; }
 
     bool screenshot(

@@ -24,7 +24,7 @@
 
 #include "../common.h"
 
-HelloTriangleQt::HelloTriangleQt() : vcl::qt::CanvasWidget("Hello Triangle Qt")
+HelloTriangleQt::HelloTriangleQt() : CanvasWidget("Hello Triangle Qt")
 {
 }
 
@@ -32,7 +32,7 @@ HelloTriangleQt::~HelloTriangleQt()
 {
 }
 
-void HelloTriangleQt::drawContent()
+void HelloTriangleQt::onDrawContent(uint)
 {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

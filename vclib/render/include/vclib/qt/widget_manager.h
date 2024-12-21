@@ -202,7 +202,7 @@ private:
         QWidget::paintEvent(event);
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void paintGL() override { derived().wmFrame(); }
+    void paintGL() override { derived().wmPaint(); }
 #endif
 
     auto& derived() { return static_cast<DRT&>(*this); }
