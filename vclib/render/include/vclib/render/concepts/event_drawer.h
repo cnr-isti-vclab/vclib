@@ -30,10 +30,27 @@
 namespace vcl {
 
 template<typename T>
-concept EventDrawerConcept = DrawerConcept<T> && requires(T&& obj)
-{
+concept EventDrawerConcept = DrawerConcept<T> && requires (T&& obj) {
     { obj.onKeyPress(Key::Enum(), KeyModifiers()) } -> std::same_as<void>;
     { obj.onKeyRelease(Key::Enum(), KeyModifiers()) } -> std::same_as<void>;
+    {
+        obj.onMouseMove(double(), double(), KeyModifiers())
+    } -> std::same_as<void>;
+    {
+        obj.onMousePress(
+            MouseButton::Enum(), double(), double(), KeyModifiers())
+    } -> std::same_as<void>;
+    {
+        obj.onMouseRelease(
+            MouseButton::Enum(), double(), double(), KeyModifiers())
+    } -> std::same_as<void>;
+    {
+        obj.onMouseDoubleClick(
+            MouseButton::Enum(), double(), double(), KeyModifiers())
+    } -> std::same_as<void>;
+    {
+        obj.onMouseScroll(double(), double(), KeyModifiers())
+    } -> std::same_as<void>;
 };
 
 } // namespace vcl

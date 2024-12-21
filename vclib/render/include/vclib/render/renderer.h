@@ -104,7 +104,7 @@ private:
 
     /**
      * @brief The CanvasType is ready to draw, and asks the Renderer to call
-     * the 'onDraw(uint())' function for every Drawer object.
+     * the `onDraw(uint())` function for every Drawer object.
      */
     void cnvDraw()
     {
@@ -119,7 +119,7 @@ private:
      * without any decorator (e.g. axis, trackball, grid, etc.).
      * This scenario is useful when the user wants to take a snapshot of the
      * scene without any decoration. It asks the Renderer to call the
-     * 'onDrawContent(uint())' function for every Drawer object.
+     * `onDrawContent(uint())` function for every Drawer object.
      */
     void cnvDrawContent()
     {
@@ -177,6 +177,10 @@ private:
      */
     void wmKeyPress(Key::Enum key)
     {
+        // call onKeyPress member function of each Drawer object, ONLY if the
+        // object is an EventDrawer (it satisfies the EventDrawerConcept).
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
         auto lambda = [&]<typename D>(auto* t){
             if constexpr(EventDrawerConcept<D>){
                 static_cast<D*>(t)->onKeyPress(key, mKeyModifiers);
@@ -198,9 +202,153 @@ private:
      */
     void wmKeyRelease(Key::Enum key)
     {
+        // call onKeyRelease member function of each Drawer object, ONLY if the
+        // object is an EventDrawer (it satisfies the EventDrawerConcept).
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
         auto lambda = [&]<typename D>(auto* t){
             if constexpr(EventDrawerConcept<D>){
                 static_cast<D*>(t)->onKeyRelease(key, mKeyModifiers);
+            }
+        };
+
+        (lambda.template operator()<Drawers>(this), ...);
+    }
+
+    /**
+     * @brief The WindowManagerType calls this member function when the mouse
+     * cursor is moved.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseMove(double, double, KeyModifiers)` member function.
+     *
+     * @param x
+     * @param y
+     */
+    void wmMouseMove(double x, double y)
+    {
+        // call onMouseMove member function of each Drawer object, ONLY if the
+        // object is an EventDrawer (it satisfies the EventDrawerConcept).
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        auto lambda = [&]<typename D>(auto* t){
+            if constexpr(EventDrawerConcept<D>){
+                static_cast<D*>(t)->onMouseMove(x, y, mKeyModifiers);
+            }
+        };
+
+        (lambda.template operator()<Drawers>(this), ...);
+    }
+
+    /**
+     * @brief The WindowManagerType calls this member function when a mouse
+     * button is pressed.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMousePress(MouseButton::Enum, double, double, KeyModifiers)` member
+     * function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
+    void wmMousePress(MouseButton::Enum button, double x, double y)
+    {
+        // call onMousePress member function of each Drawer object, ONLY if the
+        // object is an EventDrawer (it satisfies the EventDrawerConcept).
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        auto lambda = [&]<typename D>(auto* t){
+            if constexpr(EventDrawerConcept<D>){
+                static_cast<D*>(t)->onMousePress(button, x, y, mKeyModifiers);
+            }
+        };
+
+        (lambda.template operator()<Drawers>(this), ...);
+    }
+
+    /**
+     * @brief The WindowManagerType calls this member function when a mouse
+     * button is released.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseRelease(MouseButton::Enum, double, double, KeyModifiers)` member
+     * function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
+    void wmMouseRelease(MouseButton::Enum button, double x, double y)
+    {
+        // call onMouseRelease member function of each Drawer object, ONLY if
+        // the object is an EventDrawer (it satisfies the EventDrawerConcept).
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        auto lambda = [&]<typename D>(auto* t){
+            if constexpr(EventDrawerConcept<D>){
+                static_cast<D*>(t)->onMouseRelease(button, x, y, mKeyModifiers);
+            }
+        };
+
+        (lambda.template operator()<Drawers>(this), ...);
+    }
+
+    /**
+     * @brief The WindowManagerType calls this member function when a mouse
+     * button is double clicked.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseDoubleClick(MouseButton::Enum, double, double, KeyModifiers)`
+     * member function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
+    void wmMouseDoubleClick(MouseButton::Enum button, double x, double y)
+    {
+        // call onMouseDoubleClick member function of each Drawer object, ONLY
+        // if the object is an EventDrawer (it satisfies the
+        // EventDrawerConcept).
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the right
+        // VIRTUAL function of the Drawer object.
+        auto lambda = [&]<typename D>(auto* t){
+            if constexpr(EventDrawerConcept<D>){
+                static_cast<D*>(t)->onMouseDoubleClick(
+                    button, x, y, mKeyModifiers);
+            }
+        };
+
+        (lambda.template operator()<Drawers>(this), ...);
+    }
+
+    /**
+     * @brief The WindowManagerType calls this member function when the mouse
+     * wheel is scrolled.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseScroll(double, double, KeyModifiers)` member function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
+    void wmMouseScroll(double x, double y)
+    {
+        // call onMouseScroll member function of each Drawer object, ONLY if the
+        // object is an EventDrawer (it satisfies the EventDrawerConcept).
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the right
+        // VIRTUAL function of the Drawer object.
+        auto lambda = [&]<typename D>(auto* t){
+            if constexpr(EventDrawerConcept<D>){
+                static_cast<D*>(t)->onMouseScroll(
+                    x, y, mKeyModifiers);
             }
         };
 

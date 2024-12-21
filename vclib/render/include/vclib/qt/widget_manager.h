@@ -143,33 +143,35 @@ protected:
 
     void mouseMoveEvent(QMouseEvent* event) override
     {
-        // onMouseMove(
-        //     event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio()); TODO
+        derived().wmMouseMove(
+            event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
         Base::mouseMoveEvent(event);
     }
 
     void mousePressEvent(QMouseEvent* event) override
     {
-        // onMouseMove(
-        //     event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio()); TODO
-        // onMousePress(vcl::qt::fromQt(event->button())); TODO
+        derived().wmMousePress(
+            vcl::qt::fromQt(event->button()),
+            event->pos().x() * pixelRatio(),
+            event->pos().y() * pixelRatio());
         Base::mousePressEvent(event);
     }
 
     void mouseReleaseEvent(QMouseEvent* event) override
     {
-        // onMouseMove(
-        //     event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio()); TODO
-        // onMouseRelease(vcl::qt::fromQt(event->button())); TODO
+        derived().wmMouseRelease(
+            vcl::qt::fromQt(event->button()),
+            event->pos().x() * pixelRatio(),
+            event->pos().y() * pixelRatio());
         Base::mouseReleaseEvent(event);
     }
 
     void mouseDoubleClickEvent(QMouseEvent* event) override
     {
-        // onMouseDoubleClick(
-        //     vcl::qt::fromQt(event->button()),
-        //     event->pos().x() * pixelRatio(),
-        //     event->pos().y() * pixelRatio()); TODO
+        derived().wmMouseDoubleClick(
+            vcl::qt::fromQt(event->button()),
+            event->pos().x() * pixelRatio(),
+            event->pos().y() * pixelRatio());
         Base::mouseDoubleClickEvent(event);
     }
 
@@ -177,9 +179,11 @@ protected:
     {
         // FIXME: this is not correct, define a proper equivalence
         if (!event->pixelDelta().isNull())
-            ; // onMouseScroll(event->pixelDelta().x(), event->pixelDelta().y()); TODO
+            derived().wmMouseScroll(
+                event->pixelDelta().x(), event->pixelDelta().y());
         else
-            ; // onMouseScroll(event->angleDelta().x(), event->angleDelta().y()); TODO
+            derived().wmMouseScroll(
+                event->angleDelta().x(), event->angleDelta().y());
 
         Base::wheelEvent(event);
     }

@@ -36,6 +36,40 @@ public:
 
     virtual void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) {}
 
+    virtual void onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    {
+    }
+
+    virtual void onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+    }
+
+    virtual void onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+    }
+
+    virtual void onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+    }
+
+    virtual void onMouseScroll(
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+    }
 };
 
 } // namespace vcl
