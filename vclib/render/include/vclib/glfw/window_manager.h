@@ -57,9 +57,11 @@ void glfwErrorCallback(int error, const char* description)
 
 } // namespace detail
 
-
+template<typename DerivedRenderer>
 class WindowManager /*: public virtual vcl::EventManagerI*/
 {
+    using DRT = DerivedRenderer;
+
     std::string mTitle;
 
     // double click management
@@ -84,6 +86,10 @@ public:
         uint               width  = 1024,
         uint               height = 768) : mTitle(windowTitle)
     {
+        static_assert(
+            RendererConcept<DRT>,
+            "The DerivedRenderer must satisfy the RendererConcept.");
+
         glfwSetErrorCallback(detail::glfwErrorCallback);
         if (!glfwInit()) {
             std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -151,9 +157,15 @@ public:
     {
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
-            // frame(); TODO
+            derived().wmPaint();
         }
     }
+
+    // required by the WindowManagerConcept
+    // because when the Canvas draws, then it requires the WindowManger to
+    // update. Here is empty because the show() method does and manages
+    // internally the loop.
+    void update() {}
 
     float contentScaleX() const { return mScaleX; }
 
@@ -198,7 +210,7 @@ protected:
         int width,
         int height)
     {
-        // onResize(width, height); TODO
+        derived().wmResize(width, height);
     }
 
     virtual void glfwContentScaleCallback(
@@ -211,7 +223,7 @@ protected:
 
         int width, height;
         glfwGetFramebufferSize(mWindow, &width, &height);
-        // onResize(width, height); TODO
+        derived().wmResize(width, height);
     }
 
     virtual void glfwKeyCallback(
@@ -356,6 +368,10 @@ private:
                 self->glfwScrollCallback(window, xoffset, yoffset);
             });
     }
+
+    auto& derived() { return static_cast<DRT&>(*this); }
+
+    const auto& derived() const { return static_cast<const DRT&>(*this); }
 
     static int fixKeyboardMods(int key, int action, int mods)
     {

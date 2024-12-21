@@ -207,6 +207,8 @@ private:
 #endif
 
     auto& derived() { return static_cast<DRT&>(*this); }
+
+    const auto& derived() const { return static_cast<const DRT&>(*this); }
 };
 
 } // namespace vcl::qt
