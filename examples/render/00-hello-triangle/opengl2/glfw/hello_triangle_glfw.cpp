@@ -27,7 +27,7 @@
 #include <iostream>
 
 HelloTriangleGLFW::HelloTriangleGLFW() :
-        vcl::glfw::CanvasWindow("Hello Triangle GLFW")
+        CanvasWindow("Hello Triangle GLFW")
 {
 }
 
@@ -35,7 +35,12 @@ HelloTriangleGLFW::~HelloTriangleGLFW()
 {
 }
 
-void HelloTriangleGLFW::drawContent()
+void HelloTriangleGLFW::onResize(vcl::uint width, vcl::uint height)
+{
+    std::cout << "Resize: " << width << "; " << height << ". Nothing to do\n";
+}
+
+void HelloTriangleGLFW::onDrawContent(vcl::uint)
 {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

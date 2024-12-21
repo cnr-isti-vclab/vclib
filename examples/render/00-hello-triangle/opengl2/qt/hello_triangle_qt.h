@@ -38,7 +38,9 @@ public:
 
     ~HelloTriangleQt();
 
-    void onDrawContent(uint) override;
+    void onResize(uint width, uint height) override;
+
+    void onDrawContent(vcl::uint) override;
 };
 
 #endif // HELLO_TRIANGLE_QT_H

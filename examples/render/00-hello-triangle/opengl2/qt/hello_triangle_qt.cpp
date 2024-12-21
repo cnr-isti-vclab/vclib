@@ -32,7 +32,12 @@ HelloTriangleQt::~HelloTriangleQt()
 {
 }
 
-void HelloTriangleQt::onDrawContent(uint)
+void HelloTriangleQt::onResize(uint width, uint height)
+{
+    std::cout << "Resize: " << width << "; " << height << ". Nothing to do\n";
+}
+
+void HelloTriangleQt::onDrawContent(vcl::uint)
 {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

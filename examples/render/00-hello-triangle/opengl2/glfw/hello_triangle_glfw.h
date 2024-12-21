@@ -23,16 +23,24 @@
 #ifndef HELLO_TRIANGLE_GLFW_H
 #define HELLO_TRIANGLE_GLFW_H
 
-#include <vclib/glfw/canvas_window.h>
+#include <vclib/opengl2/canvas.h>
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/drawers/plain_drawer.h>
+#include <vclib/render/renderer.h>
 
-class HelloTriangleGLFW : public vcl::glfw::CanvasWindow
+using CanvasWindow =
+    vcl::Renderer<vcl::glfw::WindowManager, vcl::CanvasOpenGL2, vcl::PlainDrawer>;
+
+class HelloTriangleGLFW : public CanvasWindow
 {
 public:
     HelloTriangleGLFW();
 
     ~HelloTriangleGLFW();
 
-    void drawContent() override;
+    void onResize(vcl::uint width, vcl::uint height) override;
+
+    void onDrawContent(vcl::uint) override;
 };
 
 #endif // HELLO_TRIANGLE_GLFW_H
