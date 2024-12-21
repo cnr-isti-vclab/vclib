@@ -20,37 +20,55 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
-
-#include <vclib/render/interfaces/drawable_object_i.h>
-#include <vclib/space/core/box.h>
-#include <vclib/space/core/vector/polymorphic_object_vector.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
 namespace vcl {
 
-class DrawableObjectVector :
-        public PolymorphicObjectVector<DrawableObjectI>,
-        public DrawableObjectI
+void DrawableObjectVector::draw(uint viewId) const
 {
-    using Base = PolymorphicObjectVector<DrawableObjectI>;
+    if (isVisible()) {
+        for (const auto& p : *this) {
+            p->draw(viewId);
+        }
+    }
+}
 
-    bool mVisible = true;
+Box3d DrawableObjectVector::boundingBox() const
+{
+    Box3d bb;
+    if (Base::size() > 0) {
+        uint i = firstVisibleObject();
 
-public:
-    DrawableObjectVector() = default;
+        for (; i < Base::size(); i++) { // rest of the list
+            if (Base::at(i)->isVisible()) {
+                bb.add(Base::at(i)->boundingBox());
+            }
+        }
+    }
+    return bb;
+}
 
-    // DrawableObjectI interface
-    void                             draw(uint viewId) const;
-    Box3d                            boundingBox() const;
-    std::shared_ptr<DrawableObjectI> clone() const;
-    bool                             isVisible() const;
-    void                             setVisibility(bool vis);
+std::shared_ptr<DrawableObject> DrawableObjectVector::clone() const
+{
+    return std::make_shared<DrawableObjectVector>(*this);
+}
 
-private:
-    uint firstVisibleObject() const;
-};
+bool DrawableObjectVector::isVisible() const
+{
+    return mVisible;
+}
+
+void DrawableObjectVector::setVisibility(bool vis)
+{
+    mVisible = vis;
+}
+
+uint DrawableObjectVector::firstVisibleObject() const
+{
+    for (uint i = 0; i < Base::size(); i++)
+        if (Base::at(i)->isVisible())
+            return i;
+    return UINT_NULL;
+}
 
 } // namespace vcl
-
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H

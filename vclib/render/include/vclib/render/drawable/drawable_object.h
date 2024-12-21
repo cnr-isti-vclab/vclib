@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_I_H
-#define VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_I_H
+#ifndef VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
+#define VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
 
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/point.h>
@@ -30,7 +30,7 @@ namespace vcl {
 
 /**
  * @brief The DrawableObject class is the base class for all the objects that
- * can be rendered in a viewer.
+ * can be drawn in a 3D viewer.
  *
  * The DrawableObject class stores only an attribute that represents the name
  * of the object, that will be used to identify it in the viewer.
@@ -51,7 +51,7 @@ namespace vcl {
  * For more details about these member functions, check the documentation of
  * each one.
  */
-class DrawableObjectI
+class DrawableObject
 {
     std::string mName; /**< @brief Name of the object */
 
@@ -59,9 +59,9 @@ class DrawableObjectI
 
 public:
     /**< @brief Empty constructor */
-    DrawableObjectI() = default;
+    DrawableObject() = default;
 
-    virtual ~DrawableObjectI() {}
+    virtual ~DrawableObject() {}
 
     /**
      * @brief This member function is called after the initialization of the
@@ -90,15 +90,15 @@ public:
 
     /**
      * @brief This member function is used to create a new copy of the
-     * DrawableObjectI. Each derived class must implement this member function,
+     * DrawableObject. Each derived class must implement this member function,
      * that returns a shared pointer pointing to a copy of the current one. for
      * more details about this paradigm, check polimorphism clone in modern c++:
      * https://www.fluentcpp.com/2017/09/08/make-polymorphic-copy-modern-cpp/
      *
-     * @return A new dynamically allocated DrawableObjectI that is a copy of the
+     * @return A new dynamically allocated DrawableObject that is a copy of the
      * current one.
      */
-    virtual std::shared_ptr<DrawableObjectI> clone() const = 0;
+    virtual std::shared_ptr<DrawableObject> clone() const = 0;
 
     /**
      * @brief This member function is used to check if the object is visible.
@@ -141,4 +141,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_I_H
+#endif // VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
