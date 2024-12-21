@@ -61,7 +61,7 @@ DrawableDirectionalLight::DrawableDirectionalLight()
 
 DrawableDirectionalLight::DrawableDirectionalLight(
     const DrawableDirectionalLight& other) :
-        DrawableObjectI(other), mVisible(other.mVisible),
+        DrawableObject(other), mVisible(other.mVisible),
         mTransform(other.mTransform), mVertices(other.mVertices),
         mColor(other.mColor), mUniform(other.mUniform), mProgram(other.mProgram)
 {
@@ -135,7 +135,7 @@ Box3d DrawableDirectionalLight::boundingBox() const
     return Box3d();
 }
 
-std::shared_ptr<DrawableObjectI> DrawableDirectionalLight::clone() const
+std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() const
 {
     return std::make_shared<DrawableDirectionalLight>(*this);
 }
