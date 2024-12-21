@@ -64,9 +64,9 @@ void AbstractViewer::fitScene()
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
 
-void AbstractViewer::onKeyPress(Key::Enum key)
+void AbstractViewer::onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
 {
-    // DTB::setKeyModifiers(modifiers()); TODO
+    DTB::setKeyModifiers(modifiers);
 
     switch (key) {
     case Key::C:
@@ -87,33 +87,51 @@ void AbstractViewer::onKeyPress(Key::Enum key)
     // update(); TODO
 }
 
-void AbstractViewer::onKeyRelease(Key::Enum key)
+void AbstractViewer::onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
 {
-    // DTB::setKeyModifiers(modifiers()); TODO
+    DTB::setKeyModifiers(modifiers);
     DTB::keyRelease(key);
-    //update(); TODO
+    // update(); TODO
 }
 
-void AbstractViewer::onMouseMove(double x, double y)
+void AbstractViewer::onMouseMove(
+    double              x,
+    double              y,
+    const KeyModifiers& modifiers)
 {
+    DTB::setKeyModifiers(modifiers);
     DTB::moveMouse(x, y);
     // update(); TODO
 }
 
-void AbstractViewer::onMousePress(MouseButton::Enum button)
+void AbstractViewer::onMousePress(
+    MouseButton::Enum   button,
+    double              x,
+    double              y,
+    const KeyModifiers& modifiers)
 {
+    DTB::setKeyModifiers(modifiers);
     DTB::pressMouse(button);
     // update(); TODO
 }
 
-void AbstractViewer::onMouseRelease(MouseButton::Enum button)
+void AbstractViewer::onMouseRelease(
+    MouseButton::Enum   button,
+    double              x,
+    double              y,
+    const KeyModifiers& modifiers)
 {
+    DTB::setKeyModifiers(modifiers);
     DTB::releaseMouse(button);
     // update(); TODO
 }
 
-void AbstractViewer::onMouseScroll(double dx, double dy)
+void AbstractViewer::onMouseScroll(
+    double              dx,
+    double              dy,
+    const KeyModifiers& modifiers)
 {
+    DTB::setKeyModifiers(modifiers);
     DTB::scroll(dx, dy);
     // update(); TODO
 }

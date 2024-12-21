@@ -26,6 +26,7 @@
 #include "desktop_trackball.h"
 
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/drawers/event_drawer.h>
 
 #include <memory>
 
@@ -40,6 +41,7 @@ namespace vcl {
  * implementation.
  */
 class AbstractViewer :
+        public EventDrawer,
         public DesktopTrackBall<float> //, public virtual vcl::EventManagerI
 {
 protected:
@@ -71,17 +73,27 @@ public:
 
 protected:
     // events
-    void onKeyPress(Key::Enum key)/* override*/;
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override;
 
-    void onKeyRelease(Key::Enum key)/* override*/;
+    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override;
 
-    void onMouseMove(double x, double y)/* override*/;
+    void onMouseMove(double x, double y, const KeyModifiers& modifiers)
+        override;
 
-    void onMousePress(MouseButton::Enum button)/* override*/;
+    void onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override;
 
-    void onMouseRelease(MouseButton::Enum button)/* override*/;
+    void onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override;
 
-    void onMouseScroll(double dx, double dy)/* override*/;
+    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+        override;
 };
 
 } // namespace vcl
