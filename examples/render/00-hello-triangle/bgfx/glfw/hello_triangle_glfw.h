@@ -38,9 +38,9 @@ public:
 
     ~HelloTriangleGLFW();
 
-    void onResize(uint width, uint height) override;
+    void onResize(vcl::uint width, vcl::uint height) override;
 
-    void onDrawContent(uint) override;
+    void onDrawContent(vcl::uint) override;
 
 private:
     bgfx::VertexBufferHandle vbh;

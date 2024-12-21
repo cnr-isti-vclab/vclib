@@ -36,12 +36,12 @@ HelloTriangleGLFW::~HelloTriangleGLFW()
     bgfx::destroy(program);
 }
 
-void HelloTriangleGLFW::onResize(uint width, uint height)
+void HelloTriangleGLFW::onResize(vcl::uint width, vcl::uint height)
 {
     std::cout << "Resize: " << width << "; " << height << ". Nothing to do\n";
 }
 
-void HelloTriangleGLFW::onDrawContent(uint)
+void HelloTriangleGLFW::onDrawContent(vcl::uint)
 {
     drawOnView(viewId(), vbh, program);
 }
