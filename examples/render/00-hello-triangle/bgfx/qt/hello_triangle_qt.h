@@ -23,13 +23,13 @@
 #ifndef HELLO_TRIANGLE_QT_H
 #define HELLO_TRIANGLE_QT_H
 
-#include <vclib/bgfx/canvas.h>
+#include <vclib/render/canvas.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/renderer.h>
 
 using CanvasWidget =
-    vcl::Renderer<vcl::qt::WidgetManager, vcl::CanvasBGFX, vcl::PlainDrawer>;
+    vcl::Renderer<vcl::qt::WidgetManager, vcl::Canvas, vcl::PlainDrawer>;
 
 class HelloTriangleQt : public CanvasWidget
 {

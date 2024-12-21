@@ -36,11 +36,13 @@
 namespace vcl {
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
+template<typename DerivedRenderer>
+using Canvas = CanvasBGFX<DerivedRenderer>;
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
+template<typename DerivedRenderer>
+using Canvas = CanvasOpenGL2<DerivedRenderer>;
 #endif
 
 } // namespace vcl

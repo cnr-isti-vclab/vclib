@@ -39,8 +39,8 @@ class Renderer :
         private CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
         protected Drawers...
 {
-    friend class CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
-    friend class WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+    friend CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+    friend WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
 
     using WindowManagerType =
         WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;

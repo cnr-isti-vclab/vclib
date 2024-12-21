@@ -23,13 +23,13 @@
 #ifndef HELLO_TRIANGLE_GLFW_H
 #define HELLO_TRIANGLE_GLFW_H
 
-#include <vclib/opengl2/canvas.h>
+#include <vclib/render/canvas.h>
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/renderer.h>
 
 using CanvasWindow =
-    vcl::Renderer<vcl::glfw::WindowManager, vcl::CanvasOpenGL2, vcl::PlainDrawer>;
+    vcl::Renderer<vcl::glfw::WindowManager, vcl::Canvas, vcl::PlainDrawer>;
 
 class HelloTriangleGLFW : public CanvasWindow
 {
