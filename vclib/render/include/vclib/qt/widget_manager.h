@@ -23,9 +23,10 @@
 #ifndef VCL_QT_WIDGET_MANAGER_H
 #define VCL_QT_WIDGET_MANAGER_H
 
+#include "input.h"
+
 //#include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/concepts/renderer.h>
-#include <vclib/qt/input.h>
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <QWidget>
