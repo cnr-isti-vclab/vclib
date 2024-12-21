@@ -49,7 +49,8 @@ protected:
     // it could be owned by the viewer, or it could be shared with other
     // objects (e.g. the window that contains the viewer along with other
     // widgets)
-    std::shared_ptr<DrawableObjectVector> mDrawList;
+    std::shared_ptr<DrawableObjectVector> mDrawList =
+        std::make_shared<DrawableObjectVector>();
 
     using DTB = vcl::DesktopTrackBall<float>;
 
@@ -71,7 +72,6 @@ public:
 
     virtual void toggleTrackBallVisibility() = 0;
 
-protected:
     // events
     void onResize(unsigned int width, unsigned int height) override;
 

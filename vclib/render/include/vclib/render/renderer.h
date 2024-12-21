@@ -37,7 +37,7 @@ template<
 class Renderer :
         public WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
         private CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
-        protected Drawers...
+        public Drawers...
 {
     friend CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
     friend WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;

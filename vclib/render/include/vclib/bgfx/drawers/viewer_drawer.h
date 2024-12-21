@@ -64,7 +64,6 @@ public:
         mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
     }
 
-protected:
     void onDraw(uint) override;
 
     void onDrawContent(uint) override;

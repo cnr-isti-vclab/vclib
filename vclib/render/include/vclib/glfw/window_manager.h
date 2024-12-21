@@ -240,15 +240,16 @@ protected:
 #endif
 
         // GLFW modifiers are always set
-        // setModifiers(glfw::fromGLFW((glfw::KeyboardModifiers) mods)); TODO
+        derived().wmSetModifiers(
+            glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
         vcl::Key::Enum k = glfw::fromGLFW((glfw::Key) key);
 
         if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            // onKeyPress(k); TODO
+            derived().wmKeyPress(k);
         }
         else if (action == GLFW_RELEASE) {
-            // onKeyRelease(k); TODO
+            derived().wmKeyRelease(k);
         }
     }
 
@@ -258,37 +259,40 @@ protected:
         int         action,
         int         mods)
     {
-        glfw::MouseButton btn = (glfw::MouseButton) button;
+        vcl::MouseButton::Enum btn = glfw::fromGLFW((glfw::MouseButton) button);
 
-        // setModifiers(glfw::fromGLFW((glfw::KeyboardModifiers) mods)); TODO
+        derived().wmSetModifiers(
+            glfw::fromGLFW((glfw::KeyboardModifiers) mods));
+
+        Point2d      pos;
+        Point2f      scale;
+        glfwGetCursorPos(win, &pos.x(), &pos.y());
+#ifdef __APPLE__
+        // only macOS has coherent coordinates with content scale
+        pos.x() *= contentScaleX();
+        pos.y() *= contentScaleY();
+#endif
 
         if (action == GLFW_PRESS) {
             // handle double click
             const double timeSeconds = glfwGetTime();
-            Point2d      pos;
-            Point2f      scale;
-            glfwGetCursorPos(win, &pos.x(), &pos.y());
-#ifdef __APPLE__
-            // only macOS has coherent coordinates with content scale
-            pos.x() *= contentScaleX();
-            pos.y() *= contentScaleY();
-#endif
+
             if (timeSeconds - mLastPressedTime < DOUBLE_CLICK_TIME_SECS &&
                 button == mLastPressedButton &&
                 (mLastPressedPos - pos).norm() < DOUBLE_CLICK_DIST_PIXELS) {
                 mLastPressedTime   = 0.0;
                 mLastPressedButton = NO_BUTTON;
-                // onMouseDoubleClick(glfw::fromGLFW(btn), pos.x(), pos.y()); TODO
+                derived().wmMouseDoubleClick(btn, pos.x(), pos.y());
             }
             else {
                 mLastPressedTime   = timeSeconds;
                 mLastPressedButton = button;
                 mLastPressedPos    = pos;
-                // onMousePress(glfw::fromGLFW(btn)); TODO
+                derived().wmMousePress(btn, pos.x(), pos.y());
             }
         }
         else if (action == GLFW_RELEASE) {
-            // onMouseRelease(glfw::fromGLFW(btn)); TODO
+            derived().wmMouseRelease(btn, pos.x(), pos.y());
         }
     }
 
@@ -299,7 +303,7 @@ protected:
         xpos *= contentScaleX();
         ypos *= contentScaleY();
 #endif
-        // onMouseMove(xpos, ypos); TODO
+        derived().wmMouseMove(xpos, ypos);
     }
 
     virtual void glfwScrollCallback(
@@ -311,8 +315,9 @@ protected:
             // This is ok for macOS
             // TODO: check other platforms
             // TODO: check if content scale must be used
-            const double ToPixelFactor = 10;
-            // onMouseScroll(xoffset * ToPixelFactor, yoffset * ToPixelFactor); TODO
+            const double TO_PIXEL_FACTOR = 10;
+            derived().wmMouseScroll(
+                xoffset * TO_PIXEL_FACTOR, yoffset * TO_PIXEL_FACTOR);
         }
     }
 
