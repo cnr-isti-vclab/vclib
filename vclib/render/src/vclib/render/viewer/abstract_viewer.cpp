@@ -20,18 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/interfaces/viewer_i.h>
+#include <vclib/render/viewer/abstract_viewer.h>
 
 #include <iostream>
 
 namespace vcl {
 
-const DrawableObjectVector& ViewerI::drawableObjectVector() const
+const DrawableObjectVector& AbstractViewer::drawableObjectVector() const
 {
     return *mDrawList;
 }
 
-void ViewerI::setDrawableObjectVector(
+void AbstractViewer::setDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
     mDrawList = v;
@@ -42,14 +42,14 @@ void ViewerI::setDrawableObjectVector(
     fitScene();
 }
 
-uint ViewerI::pushDrawableObject(const DrawableObjectI& obj)
+uint AbstractViewer::pushDrawableObject(const DrawableObject& obj)
 {
     mDrawList->pushBack(obj);
     mDrawList->back()->init();
     return mDrawList->size() - 1;
 }
 
-void ViewerI::fitScene()
+void AbstractViewer::fitScene()
 {
     Point3f sceneCenter;
     float   sceneRadius = 1;
@@ -64,9 +64,9 @@ void ViewerI::fitScene()
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
 
-void ViewerI::onKeyPress(Key::Enum key)
+void AbstractViewer::onKeyPress(Key::Enum key)
 {
-    DTB::setKeyModifiers(modifiers());
+    // DTB::setKeyModifiers(modifiers()); TODO
 
     switch (key) {
     case Key::C:
@@ -84,38 +84,38 @@ void ViewerI::onKeyPress(Key::Enum key)
     }
 
     DTB::keyPress(key);
-    update();
+    // update(); TODO
 }
 
-void ViewerI::onKeyRelease(Key::Enum key)
+void AbstractViewer::onKeyRelease(Key::Enum key)
 {
-    DTB::setKeyModifiers(modifiers());
+    // DTB::setKeyModifiers(modifiers()); TODO
     DTB::keyRelease(key);
-    update();
+    //update(); TODO
 }
 
-void ViewerI::onMouseMove(double x, double y)
+void AbstractViewer::onMouseMove(double x, double y)
 {
     DTB::moveMouse(x, y);
-    update();
+    // update(); TODO
 }
 
-void ViewerI::onMousePress(MouseButton::Enum button)
+void AbstractViewer::onMousePress(MouseButton::Enum button)
 {
     DTB::pressMouse(button);
-    update();
+    // update(); TODO
 }
 
-void ViewerI::onMouseRelease(MouseButton::Enum button)
+void AbstractViewer::onMouseRelease(MouseButton::Enum button)
 {
     DTB::releaseMouse(button);
-    update();
+    // update(); TODO
 }
 
-void ViewerI::onMouseScroll(double dx, double dy)
+void AbstractViewer::onMouseScroll(double dx, double dy)
 {
     DTB::scroll(dx, dy);
-    update();
+    // update(); TODO
 }
 
-} // namespace vcl
+} // namespace vcl::detail

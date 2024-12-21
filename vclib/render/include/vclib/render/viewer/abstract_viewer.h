@@ -20,39 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_INTERFACES_VIEWER_I_H
-#define VCL_RENDER_INTERFACES_VIEWER_I_H
+#ifndef VCL_RENDER_VIEWER_ABSTRACT_VIEWER_H
+#define VCL_RENDER_VIEWER_ABSTRACT_VIEWER_H
 
-#include "event_manager_i.h"
+#include "desktop_trackball.h"
 
 #include <vclib/render/drawable/drawable_object_vector.h>
-#include <vclib/render/viewer/desktop_trackball.h>
 
 #include <memory>
 
 namespace vcl {
 
-class ViewerI :
-        public DesktopTrackBall<float>,
-        public virtual vcl::EventManagerI
+/**
+ * @brief The AbstractViewer class is a base class for all viewer
+ * implementations.
+ *
+ * It provides all the common functionalities of a viewer, but not the core
+ * rendering functionalities. It is meant to be subclassed by a concrete viewer
+ * implementation.
+ */
+class AbstractViewer :
+        public DesktopTrackBall<float> //, public virtual vcl::EventManagerI
 {
 protected:
-    // this Viewer does not normally own this drawList
+    // the list of drawable objects
+    // it could be owned by the viewer, or it could be shared with other
+    // objects (e.g. the window that contains the viewer along with other
+    // widgets)
     std::shared_ptr<DrawableObjectVector> mDrawList;
 
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-    ViewerI(uint width = 1024, uint height = 768) : DTB(width, height) {}
+    AbstractViewer(uint width = 1024, uint height = 768) : DTB(width, height) {}
 
-    ~ViewerI() = default;
+    ~AbstractViewer() = default;
 
     const DrawableObjectVector& drawableObjectVector() const;
 
     void setDrawableObjectVector(
         const std::shared_ptr<DrawableObjectVector>& v);
 
-    uint pushDrawableObject(const DrawableObjectI& obj);
+    uint pushDrawableObject(const DrawableObject& obj);
 
     void fitScene();
 
@@ -62,19 +71,19 @@ public:
 
 protected:
     // events
-    void onKeyPress(Key::Enum key) override;
+    void onKeyPress(Key::Enum key)/* override*/;
 
-    void onKeyRelease(Key::Enum key) override;
+    void onKeyRelease(Key::Enum key)/* override*/;
 
-    void onMouseMove(double x, double y) override;
+    void onMouseMove(double x, double y)/* override*/;
 
-    void onMousePress(MouseButton::Enum button) override;
+    void onMousePress(MouseButton::Enum button)/* override*/;
 
-    void onMouseRelease(MouseButton::Enum button) override;
+    void onMouseRelease(MouseButton::Enum button)/* override*/;
 
-    void onMouseScroll(double dx, double dy) override;
+    void onMouseScroll(double dx, double dy)/* override*/;
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_INTERFACES_VIEWER_I_H
+#endif // VCL_RENDER_VIEWER_ABSTRACT_VIEWER_H
