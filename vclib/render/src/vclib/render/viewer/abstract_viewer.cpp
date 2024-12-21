@@ -64,6 +64,12 @@ void AbstractViewer::fitScene()
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
 
+void AbstractViewer::onResize(unsigned int width, unsigned int height)
+{
+    DTB::resizeViewer(width, height);
+    // update(); TODO
+}
+
 void AbstractViewer::onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
 {
     DTB::setKeyModifiers(modifiers);

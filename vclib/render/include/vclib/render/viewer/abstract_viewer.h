@@ -73,6 +73,8 @@ public:
 
 protected:
     // events
+    void onResize(unsigned int width, unsigned int height) override;
+
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override;
 
     void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override;

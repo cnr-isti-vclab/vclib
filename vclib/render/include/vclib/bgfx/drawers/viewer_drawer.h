@@ -20,12 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_VIEWER_CANVAS_H
-#define VCL_BGFX_VIEWER_CANVAS_H
+#ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
+#define VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
 
-#include <vclib/render/interfaces/viewer_i.h>
+#include <vclib/render/viewer/abstract_viewer.h>
 
-#include <vclib/bgfx/canvas.h>
 #include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 #include <vclib/bgfx/drawable/drawable_trackball.h>
@@ -35,7 +34,7 @@
 
 namespace vcl {
 
-class ViewerCanvasBGFX : public CanvasBGFX, public ViewerI
+class ViewerDrawerBGFX : public AbstractViewer
 {
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
@@ -46,18 +45,14 @@ class ViewerCanvasBGFX : public CanvasBGFX, public ViewerI
     DrawableTrackBall        mDrawTrackBall;
 
 public:
-    ViewerCanvasBGFX(
-        void* winId,
+    ViewerDrawerBGFX(
         uint  width     = 1024,
-        uint  height    = 768,
-        void* displayId = nullptr);
+        uint  height    = 768);
 
-    ViewerCanvasBGFX(
-        void*                                        winId,
+    ViewerDrawerBGFX(
         const std::shared_ptr<DrawableObjectVector>& v,
         uint                                         width     = 1024,
-        uint                                         height    = 768,
-        void*                                        displayId = nullptr);
+        uint                                         height    = 768);
 
     void toggleAxisVisibility() override
     {
@@ -70,27 +65,16 @@ public:
     }
 
 protected:
-    void draw() override;
+    void onDraw(uint) override;
 
-    void drawContent() override;
+    void onDrawContent(uint) override;
 
     // events
-    void onResize(unsigned int width, unsigned int height) override;
-
-    void onKeyPress(Key::Enum key) override;
-
-    void onKeyRelease(Key::Enum key) override;
-
-    void onMouseMove(double x, double y) override;
-
-    void onMousePress(MouseButton::Enum button) override;
-
-    void onMouseRelease(MouseButton::Enum button) override;
-
-    void onMouseScroll(double dx, double dy) override;
-
-    void onMouseDoubleClick(MouseButton::Enum button, double x, double y)
-        override;
+    // void onMouseDoubleClick(
+    //     MouseButton::Enum   button,
+    //     double              x,
+    //     double              y,
+    //     const KeyModifiers& modifiers) override;
 
 private:
     bool mReadRequested = false;
@@ -122,4 +106,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_VIEWER_CANVAS_H
+#endif // VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
