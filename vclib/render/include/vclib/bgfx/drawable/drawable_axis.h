@@ -27,7 +27,7 @@
 #include "uniforms/drawable_axis_uniforms.h"
 
 #include <vclib/meshes/tri_mesh.h>
-#include <vclib/render/interfaces/drawable_object_i.h>
+#include <vclib/render/drawable/drawable_object.h>
 #include <vclib/space/core/matrix.h>
 
 #include <vclib/bgfx/context.h>
@@ -36,7 +36,7 @@
 
 namespace vcl {
 
-class DrawableAxis : public DrawableObjectI
+class DrawableAxis : public DrawableObject
 {
     bool mVisible = false;
 
@@ -71,7 +71,7 @@ public:
 
     Box3d boundingBox() const override { return Box3d(); }
 
-    std::shared_ptr<DrawableObjectI> clone() const override
+    std::shared_ptr<DrawableObject> clone() const override
     {
         return std::make_shared<DrawableAxis>(*this);
     }
