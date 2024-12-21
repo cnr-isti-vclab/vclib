@@ -24,7 +24,7 @@
 #define VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
 
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
-#include <vclib/render/interfaces/drawable_mesh_i.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/opengl2/drawable/draw_objects3.h>
 
@@ -77,7 +77,7 @@ inline void _check_gl_error(const char* file, int line)
 #define check_gl_error() _check_gl_error(__FILE__, __LINE__)
 
 template<MeshConcept MeshType>
-class DrawableMeshOpenGL2 : public DrawableMeshI, public MeshType
+class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
 {
     MeshRenderData<MeshType> mMRD;
 
@@ -87,7 +87,7 @@ public:
     DrawableMeshOpenGL2() = default;
 
     DrawableMeshOpenGL2(const MeshType& mesh) :
-            DrawableMeshI(mesh), MeshType(mesh)
+            AbstractDrawableMesh(mesh), MeshType(mesh)
     {
         updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
@@ -98,7 +98,7 @@ public:
     void updateBuffers() override
     {
         if constexpr (HasName<MeshType>) {
-            DrawableMeshI::name() = MeshType::name();
+            AbstractDrawableMesh::name() = MeshType::name();
         }
         unbindTextures();
         mMRD = MeshRenderData<MeshType>(*this);
@@ -190,7 +190,7 @@ public:
         return Box3d(mMRD.bbMin(), mMRD.bbMax());
     }
 
-    std::shared_ptr<DrawableObjectI> clone() const override
+    std::shared_ptr<DrawableObject> clone() const override
     {
         return std::make_shared<DrawableMeshOpenGL2>(*this);
     }
