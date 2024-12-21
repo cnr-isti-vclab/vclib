@@ -25,8 +25,9 @@
 
 #include <vclib/types.h>
 
-#include <vclib/render/interfaces/event_manager_i.h>
+//#include <vclib/render/interfaces/event_manager_i.h>
 
+#include <vclib/io/image.h>
 #include <vclib/space/core/point.h>
 
 #ifdef __APPLE__
@@ -68,7 +69,7 @@ namespace vcl {
  * - frame(): this function must be called by the derived classes at the end of
  * each frame, after all the opengl2 rendering commands have been issued;
  */
-class CanvasOpenGL2 : public virtual vcl::EventManagerI
+class CanvasOpenGL2/* : public virtual vcl::EventManagerI*/
 {
     using CallbackReadBuffer = std::function<void(std::vector<float>)>;
 
@@ -84,32 +85,123 @@ public:
         void* winId,
         uint  width,
         uint  height,
-        void* displayId = nullptr);
+        void* displayId = nullptr)
+    {
+        init(width, height);
+    }
 
     ~CanvasOpenGL2() {}
 
-    void init(uint width, uint height);
+    void init(uint width, uint height)
+    {
+        mSize = {width, height};
+        glViewport(0, 0, width, height);
+        glClearColor(1.f, 1.f, 1.f, 1.0f);
+    }
 
     Point2<uint> size() const { return mSize; }
 
     bool screenshot(
         const std::string& filename,
         uint               width  = 0,
-        uint               height = 0);
+        uint               height = 0)
+    {
+        (void) width;
+        (void) height;
 
-    bool readDepth(const Point2i& point, CallbackReadBuffer callback = nullptr);
+        std::vector<std::uint8_t> buffer(mSize.x() * mSize.y() * 4);
+        // read pixels
+        glReadPixels(
+            0,
+            0,
+            GLsizei(mSize.x()),
+            GLsizei(mSize.y()),
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            buffer.data());
+
+               // write image using stb
+        bool ret = true;
+        stbi_flip_vertically_on_write(1);
+        try {
+            saveImageData(filename, mSize.x(), mSize.y(), buffer.data());
+        }
+        catch (const std::exception& e) {
+            ret = false;
+        }
+        stbi_flip_vertically_on_write(0);
+
+        return ret;
+    }
+
+    bool readDepth(const Point2i& point, CallbackReadBuffer callback = nullptr)
+    {
+        if (point.x() < 0 || point.y() < 0 || // point out of bounds
+            point.x() >= mSize.x() || point.y() >= mSize.y()) {
+            return false;
+        }
+
+        mReadDepthPoint     = point;
+        mReadBufferCallback = callback;
+        return true;
+    }
 
 protected:
-    virtual void draw() { drawContent(); };
+    // virtual void draw() { drawContent(); };
 
-    virtual void drawContent() = 0;
+    // virtual void drawContent() = 0;
 
-    void onResize(uint width, uint height) override;
+    void onResize(uint width, uint height) /*override*/
+    {
+        mSize = {width, height};
+        glViewport(0, 0, width, height);
+    }
 
-    void frame();
+    void frame()
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+               // if depth requested, read it
+        if (mReadBufferCallback) {
+            // drawContent(); // TODO
+            readDepthData();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+        // draw(); // TODO
+    }
 
 private:
-    void readDepthData();
+    void readDepthData()
+    {
+        // get depth range
+        std::array<GLfloat, 2> depthRange = {0, 0};
+        glGetFloatv(GL_DEPTH_RANGE, depthRange.data());
+
+               // get viewport heigth only
+        GLint viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+
+               // read depth
+        GLfloat depth = depthRange[1];
+        glReadPixels(
+            GLint(mReadDepthPoint.x()),
+            GLint(viewport[3] - mReadDepthPoint.y() - 1),
+            1,
+            1,
+            GL_DEPTH_COMPONENT,
+            GL_FLOAT,
+            &depth);
+
+               // normalize depth into [0,1] interval
+        depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
+
+               // callback
+        mReadBufferCallback({depth});
+
+               // cleanup
+        mReadDepthPoint     = {-1, -1};
+        mReadBufferCallback = nullptr;
+    }
 };
 
 } // namespace vcl

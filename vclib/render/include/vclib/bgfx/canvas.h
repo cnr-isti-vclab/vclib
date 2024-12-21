@@ -67,7 +67,7 @@ namespace vcl {
  * classes whenever the window is resized.
  */
 template<typename DerivedRenderer>
-class CanvasBGFX/* : public virtual vcl::EventManagerI*/
+class CanvasBGFX
 {
     using DRT = DerivedRenderer;
 
