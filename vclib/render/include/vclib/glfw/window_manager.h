@@ -57,7 +57,8 @@ void glfwErrorCallback(int error, const char* description)
 
 } // namespace detail
 
-class EventManagerWindow /*: public virtual vcl::EventManagerI*/
+
+class WindowManager /*: public virtual vcl::EventManagerI*/
 {
     std::string mTitle;
 
@@ -78,7 +79,7 @@ protected:
     float       mScaleY = 1.0f;
 
 public:
-    EventManagerWindow(
+    WindowManager(
         const std::string& windowTitle,
         uint               width  = 1024,
         uint               height = 768) : mTitle(windowTitle)
@@ -122,7 +123,7 @@ public:
         setCallbacks();
     }
 
-    virtual ~EventManagerWindow() = default;
+    virtual ~WindowManager() = default;
 
     const std::string& windowTitle() const { return mTitle; }
 
@@ -309,7 +310,7 @@ private:
         // framebuffer size callback
         glfwSetFramebufferSizeCallback(
             mWindow, [](GLFWwindow* window, int width, int height) {
-                auto* self = static_cast<EventManagerWindow*>(
+                auto* self = static_cast<WindowManager*>(
                     glfwGetWindowUserPointer(window));
                 self->glfwFramebufferSizeCallback(window, width, height);
             });
@@ -317,7 +318,7 @@ private:
         // content scale callback
         glfwSetWindowContentScaleCallback(
             mWindow, [](GLFWwindow* window, float xscale, float yscale) {
-                auto* self = static_cast<EventManagerWindow*>(
+                auto* self = static_cast<WindowManager*>(
                     glfwGetWindowUserPointer(window));
                 self->glfwContentScaleCallback(window, xscale, yscale);
             });
@@ -326,7 +327,7 @@ private:
         glfwSetKeyCallback(
             mWindow,
             [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-                auto* self = static_cast<EventManagerWindow*>(
+                auto* self = static_cast<WindowManager*>(
                     glfwGetWindowUserPointer(window));
                 self->glfwKeyCallback(window, key, scancode, action, mods);
             });
@@ -334,7 +335,7 @@ private:
         // mouse position callback
         glfwSetCursorPosCallback(
             mWindow, [](GLFWwindow* window, double xpos, double ypos) {
-                auto* self = static_cast<EventManagerWindow*>(
+                auto* self = static_cast<WindowManager*>(
                     glfwGetWindowUserPointer(window));
                 self->glfwCursorPosCallback(window, xpos, ypos);
             });
@@ -342,7 +343,7 @@ private:
         // mouse button callback
         glfwSetMouseButtonCallback(
             mWindow, [](GLFWwindow* window, int button, int action, int mods) {
-                auto* self = static_cast<EventManagerWindow*>(
+                auto* self = static_cast<WindowManager*>(
                     glfwGetWindowUserPointer(window));
                 self->glfwMouseButtonCallback(window, button, action, mods);
             });
@@ -350,7 +351,7 @@ private:
         // scroll callback
         glfwSetScrollCallback(
             mWindow, [](GLFWwindow* window, double xoffset, double yoffset) {
-                auto* self = static_cast<EventManagerWindow*>(
+                auto* self = static_cast<WindowManager*>(
                     glfwGetWindowUserPointer(window));
                 self->glfwScrollCallback(window, xoffset, yoffset);
             });
