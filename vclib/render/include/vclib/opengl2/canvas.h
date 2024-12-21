@@ -28,6 +28,7 @@
 //#include <vclib/render/interfaces/event_manager_i.h>
 
 #include <vclib/io/image.h>
+#include <vclib/render/concepts/renderer.h>
 #include <vclib/space/core/point.h>
 
 #ifdef __APPLE__
@@ -69,8 +70,11 @@ namespace vcl {
  * - frame(): this function must be called by the derived classes at the end of
  * each frame, after all the opengl2 rendering commands have been issued;
  */
-class CanvasOpenGL2/* : public virtual vcl::EventManagerI*/
+template<typename DerivedRenderer>
+class CanvasOpenGL2
 {
+    using DRT = DerivedRenderer;
+
     using CallbackReadBuffer = std::function<void(std::vector<float>)>;
 
     void* mWinId = nullptr;
@@ -87,6 +91,10 @@ public:
         uint  height,
         void* displayId = nullptr)
     {
+        static_assert(
+            RendererConcept<DRT>,
+            "The DerivedRenderer must satisfy the RendererConcept.");
+
         init(width, height);
     }
 
@@ -120,7 +128,7 @@ public:
             GL_UNSIGNED_BYTE,
             buffer.data());
 
-               // write image using stb
+        // write image using stb
         bool ret = true;
         stbi_flip_vertically_on_write(1);
         try {
@@ -146,10 +154,7 @@ public:
         return true;
     }
 
-protected:
-    // virtual void draw() { drawContent(); };
-
-    // virtual void drawContent() = 0;
+    // using private inheritance on DerivedRenderer, no need to protect here
 
     void onResize(uint width, uint height) /*override*/
     {
@@ -157,17 +162,17 @@ protected:
         glViewport(0, 0, width, height);
     }
 
-    void frame()
+    void onPaint()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-               // if depth requested, read it
+        // if depth requested, read it
         if (mReadBufferCallback) {
-            // drawContent(); // TODO
+            derived().cnvDrawContent();
             readDepthData();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
-        // draw(); // TODO
+        derived().cnvDraw();
     }
 
 private:
@@ -177,11 +182,11 @@ private:
         std::array<GLfloat, 2> depthRange = {0, 0};
         glGetFloatv(GL_DEPTH_RANGE, depthRange.data());
 
-               // get viewport heigth only
+        // get viewport heigth only
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
 
-               // read depth
+        // read depth
         GLfloat depth = depthRange[1];
         glReadPixels(
             GLint(mReadDepthPoint.x()),
@@ -192,16 +197,18 @@ private:
             GL_FLOAT,
             &depth);
 
-               // normalize depth into [0,1] interval
+        // normalize depth into [0,1] interval
         depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
 
-               // callback
+        // callback
         mReadBufferCallback({depth});
 
-               // cleanup
+        // cleanup
         mReadDepthPoint     = {-1, -1};
         mReadBufferCallback = nullptr;
     }
+
+    auto& derived() { return static_cast<DRT&>(*this); }
 };
 
 } // namespace vcl
