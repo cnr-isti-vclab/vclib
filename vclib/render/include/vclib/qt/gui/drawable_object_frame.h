@@ -23,7 +23,7 @@
 #ifndef VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
 #define VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
 
-#include <vclib/render/interfaces/drawable_object_i.h>
+#include <vclib/render/drawable/drawable_object.h>
 
 #include <QFrame>
 
@@ -37,13 +37,13 @@ class DrawableObjectFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::DrawableObjectFrame*         mUI;
-    std::shared_ptr<DrawableObjectI> mObj;
+    Ui::DrawableObjectFrame*        mUI;
+    std::shared_ptr<DrawableObject> mObj;
 
 public:
     explicit DrawableObjectFrame(
-        const std::shared_ptr<DrawableObjectI>& obj,
-        QWidget*                                parent = nullptr);
+        const std::shared_ptr<DrawableObject>& obj,
+        QWidget*                               parent = nullptr);
     ~DrawableObjectFrame();
 
 signals:
