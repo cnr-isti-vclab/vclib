@@ -63,14 +63,7 @@ class Renderer :
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
 
 public:
-    Renderer() :
-            WindowManagerType(), CanvasType(
-                                     (void*) WindowManagerType::winId(),
-                                     WindowManagerType::width(),
-                                     WindowManagerType::height(),
-                                     WindowManagerType::displayId())
-    {
-    }
+    Renderer() : Renderer("Renderer", 1024, 768) {}
 
     Renderer(
         const std::string& windowTitle,
@@ -79,9 +72,12 @@ public:
             WindowManagerType(windowTitle, width, height),
             CanvasType(
                 (void*) WindowManagerType::winId(),
-                width,
-                height,
-                WindowManagerType::displayId())
+                width * WindowManagerType::dpiScale().x(),
+                height * WindowManagerType::dpiScale().y(),
+                WindowManagerType::displayId()),
+            Drawers(
+                width * WindowManagerType::dpiScale().x(),
+                height * WindowManagerType::dpiScale().y())...
     {
     }
 

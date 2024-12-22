@@ -32,6 +32,10 @@ namespace vcl {
 class EventDrawer : public PlainDrawer
 {
 public:
+    EventDrawer() = default;
+
+    EventDrawer(uint, uint) {}
+
     virtual void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) {}
 
     virtual void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) {}

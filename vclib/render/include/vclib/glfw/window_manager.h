@@ -167,9 +167,7 @@ public:
     // internally the loop.
     void update() {}
 
-    float contentScaleX() const { return mScaleX; }
-
-    float contentScaleY() const { return mScaleY; }
+    Point2f dpiScale() const { return Point2f(mScaleX, mScaleY); }
 
     void* winId()
     {
@@ -269,8 +267,8 @@ protected:
         glfwGetCursorPos(win, &pos.x(), &pos.y());
 #ifdef __APPLE__
         // only macOS has coherent coordinates with content scale
-        pos.x() *= contentScaleX();
-        pos.y() *= contentScaleY();
+        pos.x() *= dpiScale().x();
+        pos.y() *= dpiScale().y();
 #endif
 
         if (action == GLFW_PRESS) {
@@ -300,8 +298,8 @@ protected:
     {
 #ifdef __APPLE__
       // only macOS has coherent coordinates with content scale
-        xpos *= contentScaleX();
-        ypos *= contentScaleY();
+        xpos *= dpiScale().x();
+        ypos *= dpiScale().y();
 #endif
         derived().wmMouseMove(xpos, ypos);
     }

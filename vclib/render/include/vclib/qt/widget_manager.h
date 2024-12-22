@@ -27,6 +27,7 @@
 
 //#include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/concepts/renderer.h>
+#include <vclib/space/core/point.h>
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <QWidget>
@@ -79,6 +80,8 @@ public:
     }
 
     ~WidgetManager() = default;
+
+    Point2f dpiScale() const { return Point2f(pixelRatio(), pixelRatio()); }
 
     void* displayId() const
     {

@@ -30,6 +30,9 @@ namespace vcl {
 class PlainDrawer
 {
 public:
+    PlainDrawer() = default;
+    PlainDrawer(uint, uint) {}
+
     virtual void onResize(uint width, uint height) {}
 
     virtual void onDraw(uint viewId)

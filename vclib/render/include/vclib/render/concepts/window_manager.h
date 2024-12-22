@@ -23,7 +23,7 @@
 #ifndef CONCEPTS_WINDOW_MANAGER_H
 #define CONCEPTS_WINDOW_MANAGER_H
 
-#include <vclib/types.h>
+#include <vclib/concepts/space/point.h>
 
 #include <concepts>
 
@@ -37,6 +37,8 @@ concept WindowManagerConcept = requires(T&& obj)
 
     { obj.width() } -> std::convertible_to<uint>;
     { obj.height() } -> std::convertible_to<uint>;
+
+    { obj.dpiScale() } -> Point2Concept;
 
     obj.winId(); // todo: try to check return type, should be void*
     { obj.displayId() } -> std::same_as<void*>;
