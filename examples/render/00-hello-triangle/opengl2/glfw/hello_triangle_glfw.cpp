@@ -53,6 +53,4 @@ void HelloTriangleGLFW::onDrawContent(vcl::uint)
     glColor4ubv((GLubyte*) &(vertices[2].abgr));
     glVertex2fv((GLfloat*) &(vertices[2].pos));
     glEnd();
-
-    glfwSwapBuffers(mWindow);
 }

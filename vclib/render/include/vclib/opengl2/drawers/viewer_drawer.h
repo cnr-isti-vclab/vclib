@@ -20,32 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_VIEWER_CANVAS_H
-#define VCL_OPENGL2_VIEWER_CANVAS_H
+#ifndef VCL_OPENGL2_VIEWER_DRAWER_H
+#define VCL_OPENGL2_VIEWER_DRAWER_H
 
-#include <vclib/render/interfaces/viewer_i.h>
-
-#include <vclib/opengl2/canvas.h>
+#include <vclib/render/viewer/abstract_viewer.h>
 
 #include <memory>
 
 namespace vcl {
 
-class ViewerCanvasOpenGL2 : public vcl::CanvasOpenGL2, public ViewerI
+class ViewerDrawerOpenGL2 : public AbstractViewer
 {
-public:
-    ViewerCanvasOpenGL2(
-        void* winId,
-        uint  width     = 1024,
-        uint  height    = 768,
-        void* displayId = nullptr);
+    bool mReadRequested = false;
 
-    ViewerCanvasOpenGL2(
-        void*                                        winId,
+public:
+    ViewerDrawerOpenGL2(
+        uint  width     = 1024,
+        uint  height    = 768);
+
+    ViewerDrawerOpenGL2(
         const std::shared_ptr<DrawableObjectVector>& v,
         uint                                         width     = 1024,
-        uint                                         height    = 768,
-        void*                                        displayId = nullptr);
+        uint                                         height    = 768);
 
     void init(uint width, uint height);
 
@@ -59,19 +55,19 @@ public:
         // todo
     }
 
-protected:
-    void drawContent() override;
+    void onDrawContent(uint) override;
 
     // events
     void onResize(unsigned int width, unsigned int height) override;
 
-    void onMouseDoubleClick(MouseButton::Enum button, double x, double y)
-        override;
+   // void onMouseDoubleClick(
+   //     MouseButton::Enum   button,
+   //     double              x,
+   //     double              y,
+   //     const KeyModifiers& modifiers) override;
 
-private:
-    bool mReadRequested = false;
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_VIEWER_CANVAS_H
+#endif // VCL_OPENGL2_VIEWER_DRAWER_H

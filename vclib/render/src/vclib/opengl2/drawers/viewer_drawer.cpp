@@ -20,38 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/opengl2/viewer_canvas.h>
+#include <vclib/opengl2/drawers/viewer_drawer.h>
 
 #include <vclib/math/min_max.h>
-#include <vclib/render/interfaces/drawable_mesh_i.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/space/core/box.h>
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
+#endif
 
 namespace vcl {
 
-ViewerCanvasOpenGL2::ViewerCanvasOpenGL2(
-    void* winId,
+ViewerDrawerOpenGL2::ViewerDrawerOpenGL2(
     uint  width,
-    uint  height,
-    void* displayId) :
-        vcl::CanvasOpenGL2(winId, width, height, displayId),
-        ViewerI(width, height)
+    uint  height) :
+        AbstractViewer(width, height)
 {
     init(width, height);
 }
 
-ViewerCanvasOpenGL2::ViewerCanvasOpenGL2(
-    void*                                        winId,
+ViewerDrawerOpenGL2::ViewerDrawerOpenGL2(
     const std::shared_ptr<DrawableObjectVector>& v,
     uint                                         width,
-    uint                                         height,
-    void* displayId) : ViewerCanvasOpenGL2(winId, width, height, displayId)
+    uint height) : ViewerDrawerOpenGL2(width, height)
 {
     setDrawableObjectVector(v);
 }
 
-void ViewerCanvasOpenGL2::init(uint width, uint height)
+void ViewerDrawerOpenGL2::init(uint width, uint height)
 {
-    CanvasOpenGL2::init(width, height);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
@@ -71,7 +74,7 @@ void ViewerCanvasOpenGL2::init(uint width, uint height)
     }
 }
 
-void ViewerCanvasOpenGL2::drawContent()
+void ViewerDrawerOpenGL2::onDrawContent(uint)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -90,54 +93,54 @@ void ViewerCanvasOpenGL2::drawContent()
         obj->draw();
 }
 
-void ViewerCanvasOpenGL2::onResize(unsigned int width, unsigned int height)
+void ViewerDrawerOpenGL2::onResize(unsigned int width, unsigned int height)
 {
-    CanvasOpenGL2::onResize(width, height);
     DTB::resizeViewer(width, height);
-    update();
+    // update(); TODO
 }
 
-void ViewerCanvasOpenGL2::onMouseDoubleClick(
-    MouseButton::Enum button,
-    double            x,
-    double            y)
-{
-    // FIXME: code duplication for both OpenGL2 and BGFX
-    if (mReadRequested)
-        return;
+// void ViewerCanvasOpenGL2::onMouseDoubleClick(
+//     MouseButton::Enum   button,
+//     double              x,
+//     double              y,
+//     const KeyModifiers& modifiers)
+// {
+//     // FIXME: code duplication for both OpenGL2 and BGFX
+//     if (mReadRequested)
+//         return;
 
-    // get point
-    const Point2d p(x, y);
+//     // get point
+//     const Point2d p(x, y);
 
-    // get the homogeneous NDC flag
-    const bool homogeneousNDC = true;
+//     // get the homogeneous NDC flag
+//     const bool homogeneousNDC = true;
 
-    // create the callback
-    const auto    proj     = projectionMatrix();
-    const auto    view     = viewMatrix();
-    const Point4f vp       = {.0f, .0f, float(size().x()), float(size().y())};
-    auto          callback = [=, this](std::vector<float> data) {
-        mReadRequested = false;
+//     // create the callback
+//     const auto    proj     = projectionMatrix();
+//     const auto    view     = viewMatrix();
+//     const Point4f vp       = {.0f, .0f, float(size().x()), float(size().y())};
+//     auto          callback = [=, this](std::vector<float> data) {
+//         mReadRequested = false;
 
-        assert(data.size() == 1);
-        const float depth = data[0];
-        // if the depth is 1.0, the point is not in the scene
-        if (depth == 1.0f) {
-            return;
-        }
+//         assert(data.size() == 1);
+//         const float depth = data[0];
+//         // if the depth is 1.0, the point is not in the scene
+//         if (depth == 1.0f) {
+//             return;
+//         }
 
-        // unproject the point
-        const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-        auto          unproj = unproject(
-            p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
+//         // unproject the point
+//         const Point3f p2d(p.x(), vp[3] - p.y(), depth);
+//         auto          unproj = unproject(
+//             p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
 
-        this->focus(unproj);
-        this->update();
-    };
+//         this->focus(unproj);
+//         this->update();
+//     };
 
-    mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
-    if (mReadRequested)
-        update();
-}
+//     mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
+//     if (mReadRequested)
+//         update();
+// }
 
 } // namespace vcl

@@ -158,6 +158,7 @@ public:
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
             derived().wmPaint();
+            glfwSwapBuffers(mWindow);
         }
     }
 
