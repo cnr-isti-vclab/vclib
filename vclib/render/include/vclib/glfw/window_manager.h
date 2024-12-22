@@ -155,10 +155,13 @@ public:
 
     void show()
     {
+        derived().wmInit();
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
             derived().wmPaint();
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
             glfwSwapBuffers(mWindow);
+#endif
         }
     }
 

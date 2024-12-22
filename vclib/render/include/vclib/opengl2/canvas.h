@@ -95,16 +95,15 @@ public:
             RendererConcept<DRT>,
             "The DerivedRenderer must satisfy the RendererConcept.");
 
-        init(width, height);
+        mSize = {width, height};
     }
 
     ~CanvasOpenGL2() {}
 
-    void init(uint width, uint height)
+    void onInit()
     {
-        mSize = {width, height};
-        glViewport(0, 0, width, height);
-        glClearColor(1.f, 1.f, 1.f, 1.0f);
+        glViewport(0, 0, mSize.x(), mSize.y());
+        glClearColor(1.f, 1.f, 1.f, 1.f);
     }
 
     uint viewId() { return 0;}

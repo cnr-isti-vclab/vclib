@@ -131,6 +131,8 @@ public:
             ctx.releaseViewId(mViewId);
     }
 
+    void onInit() {}
+
     Point2<uint> size() const { return mSize; }
 
     bgfx::ViewId viewId() const { return mViewId; }

@@ -42,7 +42,6 @@ ViewerDrawerOpenGL2::ViewerDrawerOpenGL2(
     uint  height) :
         AbstractViewer(width, height)
 {
-    init(width, height);
 }
 
 ViewerDrawerOpenGL2::ViewerDrawerOpenGL2(
@@ -53,7 +52,7 @@ ViewerDrawerOpenGL2::ViewerDrawerOpenGL2(
     setDrawableObjectVector(v);
 }
 
-void ViewerDrawerOpenGL2::init(uint width, uint height)
+void ViewerDrawerOpenGL2::onInit()
 {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);

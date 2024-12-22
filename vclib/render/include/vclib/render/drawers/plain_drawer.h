@@ -33,12 +33,11 @@ public:
     PlainDrawer() = default;
     PlainDrawer(uint, uint) {}
 
+    virtual void onInit() {}
+
     virtual void onResize(uint width, uint height) {}
 
-    virtual void onDraw(uint viewId)
-    {
-        onDrawContent(viewId);
-    }
+    virtual void onDraw(uint viewId) { onDrawContent(viewId); }
 
     virtual void onDrawContent(uint viewId) {}
 };

@@ -127,6 +127,20 @@ protected:
     }
 #endif
 
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
+    void showEvent(QShowEvent* event) override
+    {
+        Base::showEvent(event);
+        derived().wmInit();
+    }
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+    void initializeGL() override
+    {
+        derived().wmInit();
+    }
+#endif
+
+
     void keyPressEvent(QKeyEvent* event) override
     {
         derived().wmSetModifiers(vcl::qt::fromQt(event->modifiers()));

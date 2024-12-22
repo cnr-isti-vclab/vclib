@@ -33,7 +33,7 @@ concept CanvasConcept = requires(T&& obj)
     { obj.size() } -> Point2Concept;
     { obj.viewId() } -> std::convertible_to<uint>;
 
-    // { obj.init(uint(), uint()) } -> std::same_as<void>; // TODO required for opengl?
+    { obj.onInit() } -> std::same_as<void>; // qt+opengl requires init
     { obj.onResize(uint(), uint()) } -> std::same_as<void>;
     { obj.onPaint() } -> std::same_as<void>;
 };
