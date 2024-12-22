@@ -24,7 +24,7 @@
 
 #include <QApplication>
 
-#include <vclib/bgfx/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/canvas.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/renderer.h>
@@ -32,7 +32,7 @@
 int main(int argc, char** argv)
 {
     using ViewerWidget =
-        vcl::Renderer<vcl::qt::WidgetManager, vcl::Canvas, vcl::ViewerDrawerBGFX>;
+        vcl::Renderer<vcl::qt::WidgetManager, vcl::Canvas, vcl::ViewerDrawer>;
 
     QApplication app(argc, argv);
 

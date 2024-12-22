@@ -20,48 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#ifndef VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
+#define VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
 
-#include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/canvas.h>
-#include <vclib/qt/widget_manager.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/config.h>
 
-#include <QApplication>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/drawers/viewer_drawer.h>
+#endif
 
-int main(int argc, char** argv)
-{
-    using ViewerWidget =
-        vcl::Renderer<vcl::qt::WidgetManager, vcl::Canvas, vcl::ViewerDrawer>;
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <vclib/opengl2/drawers/viewer_drawer.h>
+#endif
 
-    QApplication app(argc, argv);
+namespace vcl {
 
-    ViewerWidget tw("Viewer Qt");
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+using ViewerDrawer = ViewerDrawerBGFX;
+#endif
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+using ViewerDrawer = ViewerDrawerOpenGL2;
+#endif
 
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+} // namespace vcl
 
-    tw.fitScene();
-
-    tw.show();
-
-    // vcl::qt::ViewerWidget tw2("Viewer Qt");
-
-    // // load and set up a drawable mesh
-    // vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-    //     getDrawableMesh("greek_helmet.obj");
-
-    // // add the drawable mesh to the scene
-    // // the viewer will own **a copy** of the drawable mesh
-    // tw2.pushDrawableObject(drawable2);
-
-    // tw2.fitScene();
-
-    // tw2.show();
-
-    return app.exec();
-}
+#endif // VCL_RENDER_DRAWERS_VIEWER_DRAWER_H

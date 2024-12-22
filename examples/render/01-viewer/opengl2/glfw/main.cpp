@@ -22,7 +22,7 @@
 
 #include "common.h"
 
-#include <vclib/opengl2/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/canvas.h>
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/renderer.h>
@@ -30,7 +30,7 @@
 int main(int argc, char** argv)
 {
     using ViewerWindow =
-        vcl::Renderer<vcl::glfw::WindowManager, vcl::Canvas, vcl::ViewerDrawerOpenGL2>;
+        vcl::Renderer<vcl::glfw::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
 
     ViewerWindow tw("Viewer GLFW");
 
