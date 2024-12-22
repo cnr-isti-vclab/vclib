@@ -148,6 +148,7 @@ protected:
         derived().wmKeyPress(
             vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyPressEvent(event);
+        update();
     }
 
     void keyReleaseEvent(QKeyEvent* event) override
@@ -157,6 +158,7 @@ protected:
         derived().wmKeyRelease(
             vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyReleaseEvent(event);
+        update();
     }
 
     void mouseMoveEvent(QMouseEvent* event) override
@@ -164,6 +166,7 @@ protected:
         derived().wmMouseMove(
             event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
         Base::mouseMoveEvent(event);
+        update();
     }
 
     void mousePressEvent(QMouseEvent* event) override
@@ -173,6 +176,7 @@ protected:
             event->pos().x() * pixelRatio(),
             event->pos().y() * pixelRatio());
         Base::mousePressEvent(event);
+        update();
     }
 
     void mouseReleaseEvent(QMouseEvent* event) override
@@ -182,6 +186,7 @@ protected:
             event->pos().x() * pixelRatio(),
             event->pos().y() * pixelRatio());
         Base::mouseReleaseEvent(event);
+        update();
     }
 
     void mouseDoubleClickEvent(QMouseEvent* event) override
@@ -191,6 +196,7 @@ protected:
             event->pos().x() * pixelRatio(),
             event->pos().y() * pixelRatio());
         Base::mouseDoubleClickEvent(event);
+        update();
     }
 
     void wheelEvent(QWheelEvent* event) override
@@ -204,6 +210,7 @@ protected:
                 event->angleDelta().x(), event->angleDelta().y());
 
         Base::wheelEvent(event);
+        update();
     }
 
     static double pixelRatio()

@@ -117,6 +117,7 @@ void AbstractViewer::onMousePress(
     const KeyModifiers& modifiers)
 {
     DTB::setKeyModifiers(modifiers);
+    DTB::moveMouse(x, y);
     DTB::pressMouse(button);
     // update(); TODO
 }
@@ -128,6 +129,7 @@ void AbstractViewer::onMouseRelease(
     const KeyModifiers& modifiers)
 {
     DTB::setKeyModifiers(modifiers);
+    DTB::moveMouse(x, y);
     DTB::releaseMouse(button);
     // update(); TODO
 }
