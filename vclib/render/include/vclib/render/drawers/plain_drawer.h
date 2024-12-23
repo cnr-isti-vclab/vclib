@@ -27,6 +27,7 @@
 
 namespace vcl {
 
+template<typename DerivedRenderer>
 class PlainDrawer
 {
 public:
@@ -40,6 +41,13 @@ public:
     virtual void onDraw(uint viewId) { onDrawContent(viewId); }
 
     virtual void onDrawContent(uint viewId) {}
+
+protected:
+    using DRT = DerivedRenderer;
+
+    auto* derived() { return static_cast<DRT*>(this); }
+
+    const auto* derived() const { return static_cast<const DRT*>(this); }
 };
 
 } // namespace vcl

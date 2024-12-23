@@ -52,11 +52,11 @@ namespace vcl {
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
-    DrawerConcept... Drawers>
+    template<typename> typename... Drawers>
 class Renderer :
         public WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
         public CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
-        public Drawers...
+        public Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>...
 {
     using WindowManagerType =
         WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
@@ -73,7 +73,9 @@ class Renderer :
         "class that satisfies the CanvasConcept.");
 
     static_assert(
-        (DrawerConcept<Drawers> && ...),
+        (DrawerConcept<
+             Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>> &&
+         ...),
         "All the Drawer types must satisfy the DrawerConcept.");
 
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
@@ -105,7 +107,7 @@ public:
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y(),
                 WindowManagerType::displayId()),
-            Drawers(
+            Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>(
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y())...
     {
@@ -137,7 +139,7 @@ private:
         // call the onDraw member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers*>(this)->onDraw(CanvasType::viewId()), ...);
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onDraw(CanvasType::viewId()), ...);
     }
 
     /**
@@ -152,7 +154,7 @@ private:
         // call the onDrawContent member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers*>(this)->onDrawContent(CanvasType::viewId()), ...);
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onDrawContent(CanvasType::viewId()), ...);
     }
 
     /***** Member functions called by WindowManagerType *****/
@@ -166,7 +168,7 @@ private:
     void wmInit()
     {
         CanvasType::onInit();
-        (static_cast<Drawers*>(this)->onInit(), ...);
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onInit(), ...);
     }
 
     /**
@@ -185,7 +187,7 @@ private:
         // call the onResize member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers*>(this)->onResize(width, height), ...);
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onResize(width, height), ...);
     }
 
     /**
@@ -225,7 +227,10 @@ private:
             }
         };
 
-        (lambda.template operator()<Drawers>(this), ...);
+        (lambda.template
+         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
+             this),
+         ...);
     }
 
     /**
@@ -250,7 +255,10 @@ private:
             }
         };
 
-        (lambda.template operator()<Drawers>(this), ...);
+        (lambda.template
+         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
+             this),
+         ...);
     }
 
     /**
@@ -276,7 +284,10 @@ private:
             }
         };
 
-        (lambda.template operator()<Drawers>(this), ...);
+        (lambda.template
+         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
+             this),
+         ...);
     }
 
     /**
@@ -304,7 +315,10 @@ private:
             }
         };
 
-        (lambda.template operator()<Drawers>(this), ...);
+        (lambda.template
+         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
+             this),
+         ...);
     }
 
     /**
@@ -332,7 +346,10 @@ private:
             }
         };
 
-        (lambda.template operator()<Drawers>(this), ...);
+        (lambda.template
+         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
+             this),
+         ...);
     }
 
     /**
@@ -362,7 +379,10 @@ private:
             }
         };
 
-        (lambda.template operator()<Drawers>(this), ...);
+        (lambda.template
+         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
+             this),
+         ...);
     }
 
     /**
@@ -390,7 +410,10 @@ private:
             }
         };
 
-        (lambda.template operator()<Drawers>(this), ...);
+        (lambda.template
+         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
+             this),
+         ...);
     }
 };
 
@@ -406,7 +429,7 @@ private:
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
-    DrawerConcept... Drawers>
+    template<typename> typename... Drawers>
 class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
 {
     using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
@@ -430,7 +453,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
-    DrawerConcept... Drawers>
+    template<typename> typename... Drawers>
 class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
 {
     using WindowManagerType =
