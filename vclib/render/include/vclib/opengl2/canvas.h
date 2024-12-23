@@ -25,10 +25,9 @@
 
 #include <vclib/types.h>
 
-//#include <vclib/render/interfaces/event_manager_i.h>
-
 #include <vclib/io/image.h>
 #include <vclib/render/concepts/renderer.h>
+#include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/point.h>
 
 #ifdef __APPLE__
@@ -75,8 +74,13 @@ class CanvasOpenGL2
 {
     using DRT = DerivedRenderer;
 
-    using CallbackReadBuffer = std::function<void(std::vector<float>)>;
+protected:
+    using FloatData          = ReadBufferTypes::FloatData;
+    using ByteData           = ReadBufferTypes::ByteData;
+    using ReadData           = ReadBufferTypes::ReadData;
+    using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
+private:
     void* mWinId = nullptr;
 
     Point2<uint> mSize = {0, 0};
@@ -201,8 +205,10 @@ private:
         // normalize depth into [0,1] interval
         depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
 
+        ReadData rd = FloatData({depth});
+
         // callback
-        mReadBufferCallback({depth});
+        mReadBufferCallback(rd);
 
         // cleanup
         mReadDepthPoint     = {-1, -1};

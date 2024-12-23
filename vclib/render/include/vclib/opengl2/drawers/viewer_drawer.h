@@ -123,42 +123,43 @@ public:
     //     double              y,
     //     const KeyModifiers& modifiers) override
     // {
-    //     // FIXME: code duplication for both OpenGL2 and BGFX
-    //     if (mReadRequested)
+    // FIXME: code duplication for both OpenGL2 and BGFX
+    // if (mReadRequested)
+    //     return;
+
+    // // get point
+    // const Point2d p(x, y);
+
+    // // get the homogeneous NDC flag
+    // const bool homogeneousNDC = true;
+
+    // // create the callback
+    // const auto    proj     = projectionMatrix();
+    // const auto    view     = viewMatrix();
+    // const Point4f vp       = {.0f, .0f, float(size().x()), float(size().y())};
+    // auto          callback = [=, this](const ReadData& dt) {
+    //     mReadRequested = false;
+
+    //     const auto& data = std::get<FloatData>(dt);
+    //     assert(data.size() == 1);
+    //     const float depth = data[0];
+    //     // if the depth is 1.0, the point is not in the scene
+    //     if (depth == 1.0f) {
     //         return;
+    //     }
 
-    //     // get point
-    //     const Point2d p(x, y);
+    //            // unproject the point
+    //     const Point3f p2d(p.x(), vp[3] - p.y(), depth);
+    //     auto          unproj = unproject(
+    //         p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
 
-    //     // get the homogeneous NDC flag
-    //     const bool homogeneousNDC = true;
+    //     this->focus(unproj);
+    //     this->update();
+    // };
 
-    //     // create the callback
-    //     const auto    proj     = projectionMatrix();
-    //     const auto    view     = viewMatrix();
-    //     const Point4f vp       = {.0f, .0f, float(size().x()), float(size().y())};
-    //     auto          callback = [=, this](std::vector<float> data) {
-    //         mReadRequested = false;
-
-    //         assert(data.size() == 1);
-    //         const float depth = data[0];
-    //         // if the depth is 1.0, the point is not in the scene
-    //         if (depth == 1.0f) {
-    //             return;
-    //         }
-
-    //         // unproject the point
-    //         const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-    //         auto          unproj = unproject(
-    //             p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
-
-    //         this->focus(unproj);
-    //         this->update();
-    //     };
-
-    //     mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
-    //     if (mReadRequested)
-    //         update();
+    // mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
+    // if (mReadRequested)
+    //     update();
     // }
 
 };
