@@ -124,17 +124,6 @@ private:
     /***** Member functions called by CanvasType *****/
 
     /**
-     * @brief The CanvasType solecits a new frame, and it asks the window
-     * manager to update the window.
-     */
-    void cnvUpdate()
-    {
-        // solecit new frame (by calling an update member function of the
-        // WindowManagerType).
-        WindowManagerType::update();
-    }
-
-    /**
      * @brief The CanvasType is ready to draw, and asks the Renderer to call
      * the `onDraw(uint())` function for every Drawer object.
      */
@@ -431,6 +420,18 @@ private:
     vcl::Point2<uint> dCanvasSize() const { return CanvasType::size(); }
 
     /**
+     * @brief A Drawer object can request the frame buffer of the canvas.
+     *
+     * This function is called by the Drawer object to request the frame buffer
+     * of the canvas, that can be used to draw on it.
+     *
+     * @warning This function is supported only if the backend is bgfx.
+     *
+     * @return The frame buffer of the canvas.
+     */
+    auto dCanvasFrameBuffer() const { return CanvasType::frameBuffer(); }
+
+    /**
      * @brief A Drawer object can request the depth value at a specific point
      * on the canvas. This function is called by the Drawer object to request
      * the depth value at the specified point.
@@ -468,8 +469,6 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
     using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
 
     friend CanvasType;
-
-    static void update(Renderer* r) { r->cnvUpdate(); }
 
     static void draw(Renderer* r) { r->cnvDraw(); }
 
@@ -576,6 +575,11 @@ public: // TODO - remove this when C++26 is supported
     static Point2<uint> canvasSize(const Renderer* r)
     {
         return r->dCanvasSize();
+    }
+
+    static auto canvasFrameBuffer(const Renderer* r)
+    {
+        return r->dCanvasFrameBuffer();
     }
 
     [[nodiscard]] static bool readDepth(

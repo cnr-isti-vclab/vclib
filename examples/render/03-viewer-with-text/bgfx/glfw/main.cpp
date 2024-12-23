@@ -22,11 +22,21 @@
 
 #include "common.h"
 
-#include <vclib/glfw/viewer_window.h>
+#include <vclib/bgfx/drawers/text_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/canvas.h>
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/renderer.h>
 
 int main(int argc, char** argv)
 {
-    vcl::glfw::ViewerWindow tw("Viewer GLFW");
+    using ViewerWindow = vcl::Renderer<
+        vcl::glfw::WindowManager,
+        vcl::Canvas,
+        vcl::ViewerDrawer,
+        vcl::TextDrawer>;
+
+    ViewerWindow tw("Viewer GLFW");
 
     // load and set up a drawable mesh
     vcl::TriMesh                    m        = getMesh("greek_helmet.obj");

@@ -25,9 +25,9 @@
 
 #include <vclib/types.h>
 
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx/read_framebuffer_request.h>
 #include <vclib/bgfx/system/native_window_handle.h>
-#include <vclib/bgfx/text/text_view.h>
 #include <vclib/io/image.h>
 #include <vclib/render/input.h>
 #include <vclib/render/concepts/renderer.h>
@@ -95,8 +95,6 @@ private:
     // offscreen readback request
     std::optional<ReadFramebufferRequest> mReadRequest = std::nullopt;
 
-    TextView mTextView;
-
     // flags
     bool mStatsEnabled = false;
 
@@ -112,8 +110,6 @@ public:
 
         // on screen framebuffer
         mViewId = Context::instance(mWinId, displayId).requestViewId();
-
-        mTextView.init(width, height);
 
         // (re)create the framebuffers
         onResize(width, height);
@@ -136,42 +132,6 @@ public:
     Point2<uint> size() const { return mSize; }
 
     bgfx::ViewId viewId() const { return mViewId; }
-
-    // text
-    void enableText(bool b = true) { mTextView.enableText(b); }
-
-    bool isTextEnabled() const { return mTextView.isTextEnabled(); }
-
-    void setTextFont(VclFont::Enum font, uint fontSize)
-    {
-        mTextView.setTextFont(font, fontSize);
-    }
-
-    void setTextFont(const std::string& fontName, uint fontSize)
-    {
-        mTextView.setTextFont(fontName, fontSize);
-    }
-
-    void clearText()
-    {
-        mTextView.clearText();
-    }
-
-    void appendStaticText(
-        const Point2f&     pos,
-        const std::string& text,
-        const Color&       color = Color::Black)
-    {
-        mTextView.appendStaticText(pos, text, color);
-    }
-
-    void appendTransientText(
-        const Point2f&     pos,
-        const std::string& text,
-        const Color&       color = Color::Black)
-    {
-        mTextView.appendTransientText(pos, text, color);
-    }
 
     void onKeyPress(Key::Enum key)/* override*/
     {
@@ -201,6 +161,8 @@ public:
         mReadRequest.emplace(point, mSize, callback);
         return true;
     }
+
+    bgfx::FrameBufferHandle frameBuffer() const { return mFbh; }
 
     bool screenshot(
         const std::string& filename,
@@ -255,9 +217,6 @@ public:
             ctx.createFramebufferAndInitView(mWinId, mViewId, width, height, true);
         // the canvas framebuffer is non valid for the default window
         assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
-
-        // resize the text view
-        mTextView.resize(width, height);
     }
 
     /**
@@ -270,7 +229,6 @@ public:
         bgfx::touch(mViewId);
         // ask the derived frame to draw all the drawer objects:
         DRT::CNV::draw(derived());
-        mTextView.frame(mFbh);
 
         const bool newReadRequested =
             (mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
@@ -282,7 +240,7 @@ public:
             // submit the calls for blitting the offscreen depth buffer
             if (mReadRequest->submit()) {
                 // solicit new frame
-                DRT::CNV::update(derived());
+                derived()->update();
             }
         }
         else {
@@ -295,7 +253,7 @@ public:
             if (done)
                 mReadRequest = std::nullopt;
             // solicit new frame
-            DRT::CNV::update(derived());
+            derived()->update();
         }
 
         // this is probably required only when using Qt
