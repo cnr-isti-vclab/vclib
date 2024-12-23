@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
 #define VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
 
-#include <vclib/render/viewer/abstract_viewer.h>
+#include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
@@ -34,7 +34,7 @@
 
 namespace vcl {
 
-class ViewerDrawerBGFX : public AbstractViewer
+class ViewerDrawerBGFX : public AbstractViewerDrawer
 {
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
@@ -46,7 +46,7 @@ class ViewerDrawerBGFX : public AbstractViewer
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
-            AbstractViewer(width, height)
+            AbstractViewerDrawer(width, height)
     {
         mCameraUniforms.updateCamera(DTB::camera());
         mDirectionalLightUniforms.updateLight(DTB::light());

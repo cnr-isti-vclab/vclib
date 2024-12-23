@@ -20,18 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/viewer/abstract_viewer.h>
+#include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <iostream>
 
 namespace vcl {
 
-const DrawableObjectVector& AbstractViewer::drawableObjectVector() const
+const DrawableObjectVector& AbstractViewerDrawer::drawableObjectVector() const
 {
     return *mDrawList;
 }
 
-void AbstractViewer::setDrawableObjectVector(
+void AbstractViewerDrawer::setDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
     mDrawList = v;
@@ -42,14 +42,14 @@ void AbstractViewer::setDrawableObjectVector(
     fitScene();
 }
 
-uint AbstractViewer::pushDrawableObject(const DrawableObject& obj)
+uint AbstractViewerDrawer::pushDrawableObject(const DrawableObject& obj)
 {
     mDrawList->pushBack(obj);
     mDrawList->back()->init();
     return mDrawList->size() - 1;
 }
 
-void AbstractViewer::fitScene()
+void AbstractViewerDrawer::fitScene()
 {
     Point3f sceneCenter;
     float   sceneRadius = 1;
@@ -64,13 +64,13 @@ void AbstractViewer::fitScene()
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
 
-void AbstractViewer::onResize(unsigned int width, unsigned int height)
+void AbstractViewerDrawer::onResize(unsigned int width, unsigned int height)
 {
     DTB::resizeViewer(width, height);
     // update(); TODO
 }
 
-void AbstractViewer::onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
+void AbstractViewerDrawer::onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
 {
     DTB::setKeyModifiers(modifiers);
 
@@ -93,14 +93,14 @@ void AbstractViewer::onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
     // update(); TODO
 }
 
-void AbstractViewer::onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
+void AbstractViewerDrawer::onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
 {
     DTB::setKeyModifiers(modifiers);
     DTB::keyRelease(key);
     // update(); TODO
 }
 
-void AbstractViewer::onMouseMove(
+void AbstractViewerDrawer::onMouseMove(
     double              x,
     double              y,
     const KeyModifiers& modifiers)
@@ -110,7 +110,7 @@ void AbstractViewer::onMouseMove(
     // update(); TODO
 }
 
-void AbstractViewer::onMousePress(
+void AbstractViewerDrawer::onMousePress(
     MouseButton::Enum   button,
     double              x,
     double              y,
@@ -122,7 +122,7 @@ void AbstractViewer::onMousePress(
     // update(); TODO
 }
 
-void AbstractViewer::onMouseRelease(
+void AbstractViewerDrawer::onMouseRelease(
     MouseButton::Enum   button,
     double              x,
     double              y,
@@ -134,7 +134,7 @@ void AbstractViewer::onMouseRelease(
     // update(); TODO
 }
 
-void AbstractViewer::onMouseScroll(
+void AbstractViewerDrawer::onMouseScroll(
     double              dx,
     double              dy,
     const KeyModifiers& modifiers)

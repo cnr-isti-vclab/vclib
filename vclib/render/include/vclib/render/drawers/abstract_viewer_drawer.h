@@ -20,29 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_ABSTRACT_VIEWER_H
-#define VCL_RENDER_VIEWER_ABSTRACT_VIEWER_H
-
-#include "desktop_trackball.h"
+#ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
+#define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/viewer/desktop_trackball.h>
 
 #include <memory>
 
 namespace vcl {
 
 /**
- * @brief The AbstractViewer class is a base class for all viewer
+ * @brief The AbstractViewerDrawer class is a base class for all viewer drawers
  * implementations.
  *
  * It provides all the common functionalities of a viewer, but not the core
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
- * implementation.
+ * drawer implementation.
  */
-class AbstractViewer :
-        public EventDrawer,
-        public DesktopTrackBall<float> //, public virtual vcl::EventManagerI
+class AbstractViewerDrawer : public EventDrawer, public DesktopTrackBall<float>
 {
 protected:
     // the list of drawable objects
@@ -55,9 +52,12 @@ protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-    AbstractViewer(uint width = 1024, uint height = 768) : DTB(width, height) {}
+    AbstractViewerDrawer(uint width = 1024, uint height = 768) :
+            DTB(width, height)
+    {
+    }
 
-    ~AbstractViewer() = default;
+    ~AbstractViewerDrawer() = default;
 
     const DrawableObjectVector& drawableObjectVector() const;
 
@@ -100,4 +100,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_ABSTRACT_VIEWER_H
+#endif // VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H

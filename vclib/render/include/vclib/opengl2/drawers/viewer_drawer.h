@@ -23,7 +23,7 @@
 #ifndef VCL_OPENGL2_VIEWER_DRAWER_H
 #define VCL_OPENGL2_VIEWER_DRAWER_H
 
-#include <vclib/render/viewer/abstract_viewer.h>
+#include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <memory>
 
@@ -38,13 +38,13 @@
 
 namespace vcl {
 
-class ViewerDrawerOpenGL2 : public AbstractViewer
+class ViewerDrawerOpenGL2 : public AbstractViewerDrawer
 {
     bool mReadRequested = false;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
-            AbstractViewer(width, height)
+            AbstractViewerDrawer(width, height)
     {
     }
 
