@@ -30,16 +30,34 @@
 
 namespace vcl {
 
+/**
+ * @brief The Renderer class is a template class that combines a canvas, a
+ * window manager, and a set of drawers, allowing them to work together and
+ * communicate with each other.
+ *
+ * The Renderer class uses the Curiously Recurring Template Pattern (CRTP) to
+ * allow the derived classes to access the member functions of the Renderer
+ * class that propagate events from one derived class (e.g. the WindowManager)
+ * to another (e.g. the Canvas).
+ *
+ * Each derived class has a role:
+ * - The WindowManager class manages the window and the window events.
+ * - The Canvas class manages the render backend and the surface where the
+ *   drawers can draw.
+ * - The Drawer classes draws the content on the canvas.
+ *
+ * @tparam WindowManagerT The type of the window manager class. It must satisfy
+ * the WindowManagerConcept.
+ */
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
     DrawerConcept... Drawers>
 class Renderer :
         public WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
-        private CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
+        public CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
         public Drawers...
 {
-    friend CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
     friend WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
 
     using WindowManagerType =
@@ -62,6 +80,13 @@ class Renderer :
 
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
 
+    // hide CanvasType member functions
+    using CanvasType::size;
+    using CanvasType::viewId;
+    using CanvasType::onInit;
+    using CanvasType::onResize;
+    using CanvasType::onPaint;
+
 public:
     Renderer() : Renderer("Renderer", 1024, 768) {}
 
@@ -80,6 +105,24 @@ public:
                 height * WindowManagerType::dpiScale().y())...
     {
     }
+
+    // Attorneys (https://tinyurl.com/kp8m28je)
+
+    /**
+     * @brief The CNV inner class is an Attorney that allow access to some
+     * private member functions of the Renderer class to the CanvasType class.
+     *
+     * They can be called only by the CanvasType class in the following way:
+     *
+     * Renderer::CNV::update(static_cast<Renderer*>(this));
+     */
+    class CNV {
+        friend CanvasType;
+
+        static void update(Renderer* r) { r->cnvUpdate(); }
+        static void draw(Renderer* r) { r->cnvDraw(); }
+        static void drawContent(Renderer* r) { r->cnvDrawContent(); }
+    };
 
 protected:
     uint viewId() const { return CanvasType::viewId(); }

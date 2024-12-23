@@ -271,7 +271,7 @@ public:
         bgfx::setViewFrameBuffer(mViewId, mFbh);
         bgfx::touch(mViewId);
         // ask the derived frame to draw all the drawer objects:
-        derived().cnvDraw();
+        DRT::CNV::draw(derived());
         mTextView.frame(mFbh);
 
         const bool newReadRequested =
@@ -284,7 +284,7 @@ public:
             // submit the calls for blitting the offscreen depth buffer
             if (mReadRequest->submit()) {
                 // solicit new frame
-                derived().cnvUpdate();
+                DRT::CNV::update(derived());
             }
         }
         else {
@@ -297,7 +297,7 @@ public:
             if (done)
                 mReadRequest = std::nullopt;
             // solicit new frame
-            derived().cnvUpdate();
+            DRT::CNV::update(derived());
         }
 
         // this is probably required only when using Qt
@@ -320,11 +320,13 @@ private:
         // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        derived().cnvDrawContent();
+        DRT::CNV::drawContent(derived());
         mViewId = tmpId;
     }
 
-    auto& derived() { return static_cast<DRT&>(*this); }
+    auto* derived() { return static_cast<DRT*>(this); }
+
+    const auto* derived() const { return static_cast<const DRT*>(this); }
 };
 
 } // namespace vcl

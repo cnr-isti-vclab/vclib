@@ -169,11 +169,11 @@ public:
 
         // if depth requested, read it
         if (mReadBufferCallback) {
-            derived().cnvDrawContent();
+            DRT::CNV::drawContent(derived());
             readDepthData();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
-        derived().cnvDraw();
+        DRT::CNV::draw(derived());
     }
 
 private:
@@ -209,7 +209,9 @@ private:
         mReadBufferCallback = nullptr;
     }
 
-    auto& derived() { return static_cast<DRT&>(*this); }
+    auto* derived() { return static_cast<DRT*>(this); }
+
+    const auto* derived() const { return static_cast<const DRT*>(this); }
 };
 
 } // namespace vcl
