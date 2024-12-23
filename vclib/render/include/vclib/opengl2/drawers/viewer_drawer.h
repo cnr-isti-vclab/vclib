@@ -24,6 +24,7 @@
 #define VCL_OPENGL2_VIEWER_DRAWER_H
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
+#include <vclib/render/read_buffer_types.h>
 
 #include <memory>
 
@@ -41,8 +42,10 @@ namespace vcl {
 template<typename DerivedRenderer>
 class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderer>
 {
+    using DRT = DerivedRenderer;
     using AVD = AbstractViewerDrawer<DerivedRenderer>;
     using DTB = AVD::DTB;
+    using ScalarType = DTB::ScalarType;
 
     bool mReadRequested = false;
 
@@ -117,51 +120,57 @@ public:
         // update(); TODO
     }
 
-    // void onMouseDoubleClick(
-    //     MouseButton::Enum   button,
-    //     double              x,
-    //     double              y,
-    //     const KeyModifiers& modifiers) override
-    // {
-    // FIXME: code duplication for both OpenGL2 and BGFX
-    // if (mReadRequested)
-    //     return;
+    void onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        using ReadData          = ReadBufferTypes::ReadData;
+        using FloatData         = ReadBufferTypes::FloatData;
 
-    // // get point
-    // const Point2d p(x, y);
+        // FIXME: code duplication for both OpenGL2 and BGFX
+        if (mReadRequested)
+            return;
 
-    // // get the homogeneous NDC flag
-    // const bool homogeneousNDC = true;
+        // get point
+        const Point2d p(x, y);
 
-    // // create the callback
-    // const auto    proj     = projectionMatrix();
-    // const auto    view     = viewMatrix();
-    // const Point4f vp       = {.0f, .0f, float(size().x()), float(size().y())};
-    // auto          callback = [=, this](const ReadData& dt) {
-    //     mReadRequested = false;
+        // get the homogeneous NDC flag
+        const bool homogeneousNDC = true;
 
-    //     const auto& data = std::get<FloatData>(dt);
-    //     assert(data.size() == 1);
-    //     const float depth = data[0];
-    //     // if the depth is 1.0, the point is not in the scene
-    //     if (depth == 1.0f) {
-    //         return;
-    //     }
+        // create the callback
+        const auto    proj = DTB::projectionMatrix();
+        const auto    view = DTB::viewMatrix();
+        // viewport
+        auto size = DRT::D::canvasSize(AVD::derived());
 
-    //            // unproject the point
-    //     const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-    //     auto          unproj = unproject(
-    //         p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
+        const Point4f vp   = {.0f, .0f, float(size.x()), float(size.y())};
+        auto callback      = [=, this](const ReadData& dt) {
+            mReadRequested = false;
 
-    //     this->focus(unproj);
-    //     this->update();
-    // };
+            const auto& data = std::get<FloatData>(dt);
+            assert(data.size() == 1);
+            const float depth = data[0];
+            // if the depth is 1.0, the point is not in the scene
+            if (depth == 1.0f) {
+                return;
+            }
 
-    // mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
-    // if (mReadRequested)
-    //     update();
-    // }
+            // unproject the point
+            const Point3f p2d(p.x(), vp[3] - p.y(), depth);
+            auto          unproj = unproject(
+                p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
 
+            this->focus(unproj);
+            AVD::derived()->update();
+        };
+
+        mReadRequested =
+            DRT::D::readDepth(AVD::derived(), Point2i(p.x(), p.y()), callback);
+        if (mReadRequested)
+            AVD::derived()->update();
+    }
 };
 
 } // namespace vcl

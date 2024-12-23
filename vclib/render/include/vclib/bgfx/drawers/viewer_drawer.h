@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
 #define VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
 
+#include "../read_framebuffer_request.h"
+
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
@@ -37,8 +39,10 @@ namespace vcl {
 template<typename DerivedRenderer>
 class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderer>
 {
-    using AVD = AbstractViewerDrawer<DerivedRenderer>;
-    using DTB = AVD::DTB;
+    using DRT        = DerivedRenderer;
+    using AVD        = AbstractViewerDrawer<DerivedRenderer>;
+    using DTB        = AVD::DTB;
+    using ScalarType = DTB::ScalarType;
 
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
@@ -111,57 +115,60 @@ public:
     }
 
     // events
-    // void onMouseDoubleClick(
-    //     MouseButton::Enum   button,
-    //     double              x,
-    //     double              y,
-    //     const KeyModifiers& modifiers) override
-    // {
-    //     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
-    //     using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
-    //     using ReadData               = ReadFramebufferRequest::ReadData;
+    void onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        using ReadFramebufferRequest = detail::ReadFramebufferRequest;
+        using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
+        using ReadData               = ReadFramebufferRequest::ReadData;
 
-    //     // FIXME: code duplication for both OpenGL2 and BGFX
-    //     if (mReadRequested)
-    //         return;
+        // FIXME: code duplication for both OpenGL2 and BGFX
+        if (mReadRequested)
+            return;
 
-    //     // get point
-    //     const Point2d p(x, y);
+        // get point
+        const Point2d p(x, y);
 
-    //     // get the homogeneous NDC flag
-    //     const bool homogeneousNDC =
-    //         Context::instance().capabilites().homogeneousDepth;
+        // get the homogeneous NDC flag
+        const bool homogeneousNDC =
+            Context::instance().capabilites().homogeneousDepth;
 
-    //     // matrices
-    //     const auto proj = projectionMatrix();
-    //     const auto view = viewMatrix();
-    //     // viewport
-    //     const Point4f vp = {.0f, .0f, float(size().x()), float(size().y())};
-    //     // create the callback
-    //     auto callback = [=, this](const ReadData& data) {
-    //         assert(std::holds_alternative<std::vector<float>>(data));
-    //         const auto& d  = std::get<std::vector<float>>(data);
-    //         mReadRequested = false;
+        // matrices
+        const auto proj = DTB::projectionMatrix();
+        const auto view = DTB::viewMatrix();
+        // viewport
+        auto size = DRT::D::canvasSize(AVD::derived());
 
-    //         // if the depth is 1.0, the point is not in the scene
-    //         const float depth = d[0];
-    //         if (depth == 1.0f) {
-    //             return;
-    //         }
+        const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
+        // create the callback
+        auto callback = [=, this](const ReadData& data) {
+            assert(std::holds_alternative<std::vector<float>>(data));
+            const auto& d  = std::get<std::vector<float>>(data);
+            mReadRequested = false;
 
-    //         // unproject the point
-    //         const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-    //         const auto    unproj = unproject(
-    //             p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
+            // if the depth is 1.0, the point is not in the scene
+            const float depth = d[0];
+            if (depth == 1.0f) {
+                return;
+            }
 
-    //         this->focus(unproj);
-    //         // this->update(); TODO
-    //     };
+            // unproject the point
+            const Point3f p2d(p.x(), vp[3] - p.y(), depth);
+            const auto    unproj = unproject(
+                p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
 
-    //     mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
-    //     if (mReadRequested)
-    //         update();
-    // }
+            this->focus(unproj);
+            AVD::derived()->update();
+        };
+
+        mReadRequested =
+            DRT::D::readDepth(AVD::derived(), Point2i(p.x(), p.y()), callback);
+        if (mReadRequested)
+            AVD::derived()->update();
+    }
 
 private:
     bool mReadRequested = false;

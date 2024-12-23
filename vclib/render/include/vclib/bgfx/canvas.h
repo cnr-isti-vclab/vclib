@@ -187,8 +187,6 @@ public:
         }
     }
 
-    // bool supportsReadback() const; // TODO check: function never implemented?
-
     [[nodiscard]] bool readDepth(
         const Point2i&     point,
         CallbackReadBuffer callback = nullptr)

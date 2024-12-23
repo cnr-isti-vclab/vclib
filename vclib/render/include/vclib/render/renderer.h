@@ -27,6 +27,9 @@
 #include "concepts/event_drawer.h"
 #include "concepts/window_manager.h"
 #include "input.h"
+#include "read_buffer_types.h"
+
+#include <vclib/space/core/point.h>
 
 namespace vcl {
 
@@ -94,6 +97,7 @@ public:
     // Attorneys
     class CNV;
     class WM;
+    class D;
 
     Renderer() : Renderer("Renderer", 1024, 768) {}
 
@@ -415,6 +419,35 @@ private:
              this),
          ...);
     }
+
+    /***** Member functions called by Drawer objects *****/
+
+    /**
+     * @brief A Drawer object can request the size of the canvas. This function
+     * is called by the Drawer object to request the size of the canvas.
+     *
+     * @return The size of the canvas.
+     */
+    vcl::Point2<uint> dCanvasSize() const { return CanvasType::size(); }
+
+    /**
+     * @brief A Drawer object can request the depth value at a specific point
+     * on the canvas. This function is called by the Drawer object to request
+     * the depth value at the specified point.
+     *
+     * @param[in] point: The point on the canvas where the depth value must be
+     * read.
+     * @param[in] callback: The callback function that will be called when the
+     * depth value is read. TODO: explain the callback function signature.
+     *
+     * @return true if the depth value is successfully read, false otherwise.
+     */
+    [[nodiscard]] bool dReadDepth(
+        const Point2i&     point,
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
+    {
+        return CanvasType::readDepth(point, callback);
+    }
 };
 
 /*** Inner classes: Attorneys ***/
@@ -448,7 +481,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
  * private member functions of the Renderer class to the WindowManager
  * class.
  * They can be called only by the WindowManager class in the following way:
- * Renderer::WM::update(static_cast<Renderer*>(this));
+ * Renderer::WM::init(static_cast<Renderer*>(this));
  */
 template<
     template<typename> typename WindowManagerT,
@@ -518,6 +551,41 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
     {
         r->wmMouseScroll(x, y);
     }
+};
+
+/**
+ * @brief The Renderer::D inner class is an Attorney that allow access to some
+ * private member functions of the Renderer class to the Drawer
+ * classes.
+ * They can be called only by the Drawer classes in the following way:
+ * Renderer::D::canvasSize(static_cast<Renderer*>(this));
+ */
+template<
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT,
+    template<typename> typename... Drawers>
+class Renderer<WindowManagerT, CanvasT, Drawers...>::D
+{
+    // TODO: right now all the function in this inner class are public,
+    // because variadic friends are still not allowed in C++.
+    // It will allowed in C++26: https://stackoverflow.com/a/78246001/5851101
+    // As soon as this feature will be available on all the major compilers,
+    // the functions will be made private.
+    //friend Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>...;
+public: // TODO - remove this when C++26 is supported
+    static Point2<uint> canvasSize(const Renderer* r)
+    {
+        return r->dCanvasSize();
+    }
+
+    [[nodiscard]] static bool readDepth(
+        Renderer* r,
+        const Point2i&     point,
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
+    {
+        return r->dReadDepth(point, callback);
+    }
+
 };
 
 } // namespace vcl
