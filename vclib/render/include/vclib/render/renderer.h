@@ -64,12 +64,12 @@ class Renderer :
 
     static_assert(
         WindowManagerConcept<WindowManagerType>,
-        "The second template parameter type of the Renderer class must be a "
+        "The first template parameter type of the Renderer class must be a "
         "class that satisfies the WindowManagerConcept.");
 
     static_assert(
         CanvasConcept<CanvasType>,
-        "The first template parameter type of the Renderer class must be a "
+        "The second template parameter type of the Renderer class must be a "
         "class that satisfies the CanvasConcept.");
 
     static_assert(

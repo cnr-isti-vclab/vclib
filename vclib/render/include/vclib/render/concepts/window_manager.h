@@ -32,8 +32,8 @@ namespace vcl {
 template<typename T>
 concept WindowManagerConcept = requires(T&& obj)
 {
-    // { obj.windowTitle() } -> std::same_as<const std::string&()>;
-    // { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
+    { obj.windowTitle() } -> std::same_as<const std::string&>;
+    { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
 
     { obj.width() } -> std::convertible_to<uint>;
     { obj.height() } -> std::convertible_to<uint>;

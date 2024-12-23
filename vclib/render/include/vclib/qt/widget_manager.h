@@ -81,6 +81,16 @@ public:
 
     ~WidgetManager() = default;
 
+    const std::string& windowTitle() const
+    {
+        return QWidget::windowTitle().toStdString();
+    }
+
+    void setWindowTitle(const std::string& title)
+    {
+        QWidget::setWindowTitle(title.c_str());
+    }
+
     Point2f dpiScale() const { return Point2f(pixelRatio(), pixelRatio()); }
 
     void* displayId() const
