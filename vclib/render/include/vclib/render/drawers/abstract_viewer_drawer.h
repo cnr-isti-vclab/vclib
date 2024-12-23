@@ -59,43 +59,117 @@ public:
 
     ~AbstractViewerDrawer() = default;
 
-    const DrawableObjectVector& drawableObjectVector() const;
+    const DrawableObjectVector& drawableObjectVector() const
+    {
+        return *mDrawList;
+    }
 
     void setDrawableObjectVector(
-        const std::shared_ptr<DrawableObjectVector>& v);
+        const std::shared_ptr<DrawableObjectVector>& v)
+    {
+        mDrawList = v;
 
-    uint pushDrawableObject(const DrawableObject& obj);
+        for (auto obj : *mDrawList) {
+            obj->init();
+        }
+        fitScene();
+    }
 
-    void fitScene();
+    uint pushDrawableObject(const DrawableObject& obj)
+    {
+        mDrawList->pushBack(obj);
+        mDrawList->back()->init();
+        return mDrawList->size() - 1;
+    }
+
+    void fitScene()
+    {
+        Point3f sceneCenter;
+        float   sceneRadius = 1;
+
+        Box3d bb = mDrawList->boundingBox();
+
+        if (!bb.isNull()) {
+            sceneCenter = bb.center().cast<float>();
+            sceneRadius = bb.diagonal();
+        }
+
+        DTB::setTrackBall(sceneCenter, sceneRadius);
+    }
 
     virtual void toggleAxisVisibility() = 0;
 
     virtual void toggleTrackBallVisibility() = 0;
 
     // events
-    void onResize(unsigned int width, unsigned int height) override;
+    void onResize(unsigned int width, unsigned int height) override
+    {
+        DTB::resizeViewer(width, height);
+    }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override;
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        DTB::setKeyModifiers(modifiers);
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override;
+        switch (key) {
+        case Key::C:
+            std::cout << "(" << DTB::camera().eye() << ") "
+                      << "(" << DTB::camera().center() << ") "
+                      << "(" << DTB::camera().up() << ")\n";
+            std::cout << std::flush;
+            break;
+
+        case Key::A: toggleAxisVisibility(); break;
+
+        case Key::T: toggleTrackBallVisibility(); break;
+
+        default: break;
+        }
+
+        DTB::keyPress(key);
+    }
+
+    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        DTB::setKeyModifiers(modifiers);
+        DTB::keyRelease(key);
+    }
 
     void onMouseMove(double x, double y, const KeyModifiers& modifiers)
-        override;
+        override
+    {
+        DTB::setKeyModifiers(modifiers);
+        DTB::moveMouse(x, y);
+    }
 
     void onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers) override;
+        const KeyModifiers& modifiers) override
+    {
+        DTB::setKeyModifiers(modifiers);
+        DTB::moveMouse(x, y);
+        DTB::pressMouse(button);
+    }
 
     void onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers) override;
+        const KeyModifiers& modifiers) override
+    {
+        DTB::setKeyModifiers(modifiers);
+        DTB::moveMouse(x, y);
+        DTB::releaseMouse(button);
+    }
 
     void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
-        override;
+        override
+    {
+        DTB::setKeyModifiers(modifiers);
+        DTB::scroll(dx, dy);
+    }
 };
 
 } // namespace vcl
