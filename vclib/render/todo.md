@@ -33,7 +33,7 @@
   - [X] start integration of ImGUI along GLFW
   - [X] fix input handling for ImGui on GLFW
   - [X] add imgui opengl2 implementation
-  - [ ] eradicate fonts from bgfx imgui backend
+  - [X] eradicate fonts from bgfx imgui backend
   - [X] fix trackball bug on Qt implementation (pan after wheel zoom)
   - [X] fix event mapping for GLFW (it should be slightly different from Qt)
   - [X] solve trackball inconsistencies between motion and atomic operations
@@ -45,6 +45,7 @@
   - [X] make a uniform offscreen read buffer request for depth and color
   - [X] implement offscreen color rendering for the snapshot function
   - [X] implement 'offscreen' rendering on legacy OpenGL
+  - [ ] implement imgui platform backend for Qt
   - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown
   - [ ] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring
   - [ ] update documentation of Canvas & co.

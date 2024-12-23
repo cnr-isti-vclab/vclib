@@ -11,7 +11,7 @@
 #include <bx/math.h>
 #include <bx/timer.h>
 
-#include <iostream>
+// #include <iostream>
 // #include <dear-imgui/imgui.h>
 // #include <dear-imgui/imgui_internal.h>
 
@@ -33,19 +33,19 @@ inline bool checkAvailTransientBuffers(uint32_t _numVertices, const bgfx::Vertex
 }
 
 // From imgui_user.h
-namespace ImGui
-{
-    struct Font
-    {
-        enum Enum
-        {
-            Regular,
-            Mono,
+// namespace ImGui
+// {
+//     struct Font
+//     {
+//         enum Enum
+//         {
+//             Regular,
+//             Mono,
 
-            Count
-        };
-    };
-}
+//             Count
+//         };
+//     };
+// }
 
 #ifndef USE_ENTRY
 #	define USE_ENTRY 0
@@ -75,10 +75,10 @@ namespace ImGui
 #include <vclib/bgfx/imgui/vs_imgui_image.bin.h>
 #include <vclib/bgfx/imgui/fs_imgui_image.bin.h>
 
-#include <vclib/bgfx/imgui/roboto_regular.ttf.h>
-#include <vclib/bgfx/imgui/robotomono_regular.ttf.h>
-#include <vclib/bgfx/imgui/icons_kenney.ttf.h>
-#include <vclib/bgfx/imgui/icons_font_awesome.ttf.h>
+// #include <vclib/bgfx/imgui/roboto_regular.ttf.h>
+// #include <vclib/bgfx/imgui/robotomono_regular.ttf.h>
+// #include <vclib/bgfx/imgui/icons_kenney.ttf.h>
+// #include <vclib/bgfx/imgui/icons_font_awesome.ttf.h>
 
 static const bgfx::EmbeddedShader s_embeddedShaders[] =
 {
@@ -90,18 +90,18 @@ static const bgfx::EmbeddedShader s_embeddedShaders[] =
 	BGFX_EMBEDDED_SHADER_END()
 };
 
-struct FontRangeMerge
-{
-	const void* data;
-	size_t      size;
-	ImWchar     ranges[3];
-};
+// struct FontRangeMerge
+// {
+// 	const void* data;
+// 	size_t      size;
+// 	ImWchar     ranges[3];
+// };
 
-static FontRangeMerge s_fontRangeMerge[] =
-{
-	{ s_iconsKenneyTtf,      sizeof(s_iconsKenneyTtf),      { ICON_MIN_KI, ICON_MAX_KI, 0 } },
-	{ s_iconsFontAwesomeTtf, sizeof(s_iconsFontAwesomeTtf), { ICON_MIN_FA, ICON_MAX_FA, 0 } },
-};
+// static FontRangeMerge s_fontRangeMerge[] =
+// {
+// 	{ s_iconsKenneyTtf,      sizeof(s_iconsKenneyTtf),      { ICON_MIN_KI, ICON_MAX_KI, 0 } },
+// 	{ s_iconsFontAwesomeTtf, sizeof(s_iconsFontAwesomeTtf), { ICON_MIN_FA, ICON_MAX_FA, 0 } },
+// };
 
 // NO custom allocator
 // static void* memAlloc(size_t _size, void* _userData);
@@ -243,7 +243,8 @@ struct OcornutImguiContext
 		}
 	}
 
-	void create(float _fontSize)
+	// void create(float _fontSize)
+	void create()
 	{
 		IMGUI_CHECKVERSION();
 
@@ -421,33 +422,31 @@ struct OcornutImguiContext
 		uint8_t* data;
 		int32_t width;
 		int32_t height;
-		{
-			ImFontConfig config;
-			config.FontDataOwnedByAtlas = false;
-			config.MergeMode = false;
-			// TODO: when we remove fonts from the imgui_impl_bgfx.cpp move this outside 
-			config.RasterizerMultiply = 2.0f;
-//			config.MergeGlyphCenterV = true;
+// 		{
+// 			ImFontConfig config;
+// 			config.FontDataOwnedByAtlas = false;
+// 			config.MergeMode = false;
+// //			config.MergeGlyphCenterV = true;
 
-			const ImWchar* ranges = io.Fonts->GetGlyphRangesCyrillic();
-			m_font[ImGui::Font::Regular] = io.Fonts->AddFontFromMemoryTTF( (void*)s_robotoRegularTtf,     sizeof(s_robotoRegularTtf),     _fontSize,      &config, ranges);
-			m_font[ImGui::Font::Mono   ] = io.Fonts->AddFontFromMemoryTTF( (void*)s_robotoMonoRegularTtf, sizeof(s_robotoMonoRegularTtf), _fontSize-3.0f, &config, ranges);
+// 			const ImWchar* ranges = io.Fonts->GetGlyphRangesCyrillic();
+// 			m_font[ImGui::Font::Regular] = io.Fonts->AddFontFromMemoryTTF( (void*)s_robotoRegularTtf,     sizeof(s_robotoRegularTtf),     _fontSize,      &config, ranges);
+// 			m_font[ImGui::Font::Mono   ] = io.Fonts->AddFontFromMemoryTTF( (void*)s_robotoMonoRegularTtf, sizeof(s_robotoMonoRegularTtf), _fontSize-3.0f, &config, ranges);
 
-			config.MergeMode = true;
-			config.DstFont   = m_font[ImGui::Font::Regular];
+// 			config.MergeMode = true;
+// 			config.DstFont   = m_font[ImGui::Font::Regular];
 
-			for (uint32_t ii = 0; ii < BX_COUNTOF(s_fontRangeMerge); ++ii)
-			{
-				const FontRangeMerge& frm = s_fontRangeMerge[ii];
+// 			for (uint32_t ii = 0; ii < BX_COUNTOF(s_fontRangeMerge); ++ii)
+// 			{
+// 				const FontRangeMerge& frm = s_fontRangeMerge[ii];
 
-				io.Fonts->AddFontFromMemoryTTF( (void*)frm.data
-						, (int)frm.size
-						, _fontSize-3.0f
-						, &config
-						, frm.ranges
-						);
-			}
-		}
+// 				io.Fonts->AddFontFromMemoryTTF( (void*)frm.data
+// 						, (int)frm.size
+// 						, _fontSize-3.0f
+// 						, &config
+// 						, frm.ranges
+// 						);
+// 			}
+// 		}
 
 		io.Fonts->GetTexDataAsRGBA32(&data, &width, &height);
 
@@ -558,11 +557,11 @@ struct OcornutImguiContext
 		m_viewId = _viewId;
 	}
 
-	void endFrame()
-	{
-		ImGui::Render();
-		render(ImGui::GetDrawData() );
-	}
+	// void endFrame()
+	// {
+	// 	ImGui::Render();
+	// 	render(ImGui::GetDrawData() );
+	// }
 
 	ImGuiContext*       m_imgui;
 	// bx::AllocatorI*     m_allocator;
@@ -572,7 +571,7 @@ struct OcornutImguiContext
 	bgfx::TextureHandle m_texture;
 	bgfx::UniformHandle s_tex;
 	bgfx::UniformHandle u_imageLodEnabled;
-	ImFont* m_font[ImGui::Font::Count];
+	// ImFont* m_font[ImGui::Font::Count];
 	// int64_t m_last;
 	// int32_t m_lastScroll;
 	bgfx::ViewId m_viewId;
@@ -619,9 +618,9 @@ static OcornutImguiContext s_ctx;
 
 
 // General API *****************************************************************
-void ImGui_ImplBgfx_Init(float _fontSize)
+void ImGui_ImplBgfx_Init()
 {
-	s_ctx.create(_fontSize);
+	s_ctx.create();
 }
 
 void ImGui_ImplBgfx_Shutdown()
