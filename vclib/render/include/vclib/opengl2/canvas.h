@@ -26,6 +26,7 @@
 #include <vclib/types.h>
 
 #include <vclib/render/interfaces/event_manager_i.h>
+#include <vclib/render/read_buffer_types.h>
 
 #include <vclib/space/core/point.h>
 
@@ -70,8 +71,13 @@ namespace vcl {
  */
 class CanvasOpenGL2 : public virtual vcl::EventManagerI
 {
-    using CallbackReadBuffer = std::function<void(std::vector<float>)>;
+protected:
+    using FloatData          = ReadBufferTypes::FloatData;
+    using ByteData           = ReadBufferTypes::ByteData;
+    using ReadData           = ReadBufferTypes::ReadData;
+    using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
+private:
     void* mWinId = nullptr;
 
     Point2<uint> mSize = {0, 0};

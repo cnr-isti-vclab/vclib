@@ -116,9 +116,10 @@ void ViewerCanvasOpenGL2::onMouseDoubleClick(
     const auto    proj     = projectionMatrix();
     const auto    view     = viewMatrix();
     const Point4f vp       = {.0f, .0f, float(size().x()), float(size().y())};
-    auto          callback = [=, this](std::vector<float> data) {
+    auto          callback = [=, this](const ReadData& dt) {
         mReadRequested = false;
 
+        const auto& data = std::get<FloatData>(dt);
         assert(data.size() == 1);
         const float depth = data[0];
         // if the depth is 1.0, the point is not in the scene
