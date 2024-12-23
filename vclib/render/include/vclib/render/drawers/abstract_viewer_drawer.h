@@ -41,7 +41,6 @@ namespace vcl {
  */
 template<typename DerivedRenderer>
 class AbstractViewerDrawer :
-        public EventDrawer<DerivedRenderer>,
         public DesktopTrackBall<float>
 {
 protected:
@@ -105,12 +104,12 @@ public:
     virtual void toggleTrackBallVisibility() = 0;
 
     // events
-    void onResize(unsigned int width, unsigned int height) override
+    void onResize(unsigned int width, unsigned int height)
     {
         DTB::resizeViewer(width, height);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
     {
         DTB::setKeyModifiers(modifiers);
 
@@ -132,14 +131,13 @@ public:
         DTB::keyPress(key);
     }
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
     {
         DTB::setKeyModifiers(modifiers);
         DTB::keyRelease(key);
     }
 
     void onMouseMove(double x, double y, const KeyModifiers& modifiers)
-        override
     {
         DTB::setKeyModifiers(modifiers);
         DTB::moveMouse(x, y);
@@ -149,7 +147,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers) override
+        const KeyModifiers& modifiers)
     {
         DTB::setKeyModifiers(modifiers);
         DTB::moveMouse(x, y);
@@ -160,7 +158,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers) override
+        const KeyModifiers& modifiers)
     {
         DTB::setKeyModifiers(modifiers);
         DTB::moveMouse(x, y);
@@ -168,7 +166,6 @@ public:
     }
 
     void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
-        override
     {
         DTB::setKeyModifiers(modifiers);
         DTB::scroll(dx, dy);

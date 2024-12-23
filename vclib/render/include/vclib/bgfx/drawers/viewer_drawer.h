@@ -68,17 +68,14 @@ public:
         AVD::setDrawableObjectVector(v);
     }
 
-    void toggleAxisVisibility() override
+    void onInit()
     {
-        mAxis.setVisibility(!mAxis.isVisible());
+        mAxis.init();
+        mDirectionalLight.init();
+        mDrawTrackBall.init();
     }
 
-    void toggleTrackBallVisibility() override
-    {
-        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
-    }
-
-    void onDraw(uint viewId) override
+    void onDraw(uint viewId)
     {
         onDrawContent(viewId);
 
@@ -95,7 +92,7 @@ public:
         }
     }
 
-    void onDrawContent(uint viewId) override
+    void onDrawContent(uint viewId)
     {
         setDirectionalLightVisibility(
             DTB::currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
@@ -119,7 +116,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers) override
+        const KeyModifiers& modifiers)
     {
         using ReadFramebufferRequest = detail::ReadFramebufferRequest;
         using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
@@ -140,7 +137,7 @@ public:
         const auto proj = DTB::projectionMatrix();
         const auto view = DTB::viewMatrix();
         // viewport
-        auto size = DRT::D::canvasSize(AVD::derived());
+        auto size = DRT::D::canvasSize(derived());
 
         const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
         // create the callback
@@ -161,13 +158,23 @@ public:
                 p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
-            AVD::derived()->update();
+            derived()->update();
         };
 
         mReadRequested =
-            DRT::D::readDepth(AVD::derived(), Point2i(p.x(), p.y()), callback);
+            DRT::D::readDepth(derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
-            AVD::derived()->update();
+            derived()->update();
+    }
+
+    void toggleAxisVisibility() override
+    {
+        mAxis.setVisibility(!mAxis.isVisible());
+    }
+
+    void toggleTrackBallVisibility() override
+    {
+        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
     }
 
 private:
@@ -196,6 +203,10 @@ private:
         mDrawTrackBall.setTransform(v);
         mDrawTrackBall.updateDragging(DTB::isDragging());
     }
+
+    auto* derived() { return static_cast<DRT*>(this); }
+
+    const auto* derived() const { return static_cast<const DRT*>(this); }
 };
 
 } // namespace vcl

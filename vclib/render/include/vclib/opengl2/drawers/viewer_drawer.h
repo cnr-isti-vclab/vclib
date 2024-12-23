@@ -63,7 +63,7 @@ public:
         AVD::setDrawableObjectVector(v);
     }
 
-    void onInit() override
+    void onInit()
     {
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
@@ -84,17 +84,12 @@ public:
         }
     }
 
-    void toggleAxisVisibility() override
+    void onDraw(uint viewId)
     {
-        // todo
+        onDrawContent(viewId);
     }
 
-    void toggleTrackBallVisibility() override
-    {
-        // todo
-    }
-
-    void onDrawContent(uint) override
+    void onDrawContent(uint)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -114,7 +109,7 @@ public:
     }
 
     // events
-    void onResize(unsigned int width, unsigned int height) override
+    void onResize(unsigned int width, unsigned int height)
     {
         DTB::resizeViewer(width, height);
         // update(); TODO
@@ -124,7 +119,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers) override
+        const KeyModifiers& modifiers)
     {
         using ReadData          = ReadBufferTypes::ReadData;
         using FloatData         = ReadBufferTypes::FloatData;
@@ -143,7 +138,7 @@ public:
         const auto    proj = DTB::projectionMatrix();
         const auto    view = DTB::viewMatrix();
         // viewport
-        auto size = DRT::D::canvasSize(AVD::derived());
+        auto size = DRT::D::canvasSize(derived());
 
         const Point4f vp   = {.0f, .0f, float(size.x()), float(size.y())};
         auto callback      = [=, this](const ReadData& dt) {
@@ -163,14 +158,30 @@ public:
                 p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
-            AVD::derived()->update();
+            derived()->update();
         };
 
         mReadRequested =
-            DRT::D::readDepth(AVD::derived(), Point2i(p.x(), p.y()), callback);
+            DRT::D::readDepth(derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
-            AVD::derived()->update();
+            derived()->update();
     }
+
+    void toggleAxisVisibility() override
+    {
+      // todo
+    }
+
+    void toggleTrackBallVisibility() override
+    {
+      // todo
+    }
+
+private:
+    auto* derived() { return static_cast<DRT*>(this); }
+
+    const auto* derived() const { return static_cast<const DRT*>(this); }
+
 };
 
 } // namespace vcl
