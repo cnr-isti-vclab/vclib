@@ -36,11 +36,13 @@
 namespace vcl {
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-using ViewerDrawer = ViewerDrawerBGFX;
+template<typename DerivedRenderer>
+using ViewerDrawer = ViewerDrawerBGFX<DerivedRenderer>;
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using ViewerDrawer = ViewerDrawerOpenGL2;
+template<typename DerivedRenderer>
+using ViewerDrawer = ViewerDrawerOpenGL2<DerivedRenderer>;
 #endif
 
 } // namespace vcl

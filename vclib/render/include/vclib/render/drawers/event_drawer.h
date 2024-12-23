@@ -29,7 +29,8 @@
 
 namespace vcl {
 
-class EventDrawer : public PlainDrawer
+template<typename DerivedRenderer>
+class EventDrawer : public PlainDrawer<DerivedRenderer>
 {
 public:
     EventDrawer() = default;

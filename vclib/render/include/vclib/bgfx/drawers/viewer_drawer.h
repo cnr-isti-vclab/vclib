@@ -34,8 +34,12 @@
 
 namespace vcl {
 
-class ViewerDrawerBGFX : public AbstractViewerDrawer
+template<typename DerivedRenderer>
+class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderer>
 {
+    using AVD = AbstractViewerDrawer<DerivedRenderer>;
+    using DTB = AVD::DTB;
+
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
     MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
@@ -46,7 +50,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
-            AbstractViewerDrawer(width, height)
+            AVD(width, height)
     {
         mCameraUniforms.updateCamera(DTB::camera());
         mDirectionalLightUniforms.updateLight(DTB::light());
@@ -57,7 +61,7 @@ public:
         uint                                         width = 1024,
         uint height = 768) : ViewerDrawerBGFX(width, height)
     {
-        setDrawableObjectVector(v);
+        AVD::setDrawableObjectVector(v);
     }
 
     void toggleAxisVisibility() override
@@ -90,19 +94,19 @@ public:
     void onDrawContent(uint viewId) override
     {
         setDirectionalLightVisibility(
-            currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
+            DTB::currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
         updateDirectionalLight();
         updateDrawableTrackball();
 
         bgfx::setViewTransform(
-            viewId, viewMatrix().data(), projectionMatrix().data());
+            viewId, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 
         mCameraUniforms.updateCamera(DTB::camera());
         mCameraUniforms.bind();
 
         mDirectionalLightUniforms.bind();
 
-        for (auto obj : drawableObjectVector())
+        for (auto obj : AVD::drawableObjectVector())
             obj->draw(viewId);
     }
 
@@ -176,14 +180,14 @@ private:
     {
         auto v = DTB::lightGizmoMatrix();
         mDirectionalLight.updateRotation(v);
-        mDirectionalLightUniforms.updateLight(light());
+        mDirectionalLightUniforms.updateLight(DTB::light());
     }
 
     void updateDrawableTrackball()
     {
         auto v = DTB::gizmoMatrix();
         mDrawTrackBall.setTransform(v);
-        mDrawTrackBall.updateDragging(isDragging());
+        mDrawTrackBall.updateDragging(DTB::isDragging());
     }
 };
 

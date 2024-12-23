@@ -38,13 +38,17 @@
 
 namespace vcl {
 
-class ViewerDrawerOpenGL2 : public AbstractViewerDrawer
+template<typename DerivedRenderer>
+class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderer>
 {
+    using AVD = AbstractViewerDrawer<DerivedRenderer>;
+    using DTB = AVD::DTB;
+
     bool mReadRequested = false;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
-            AbstractViewerDrawer(width, height)
+            AVD(width, height)
     {
     }
 
@@ -53,7 +57,7 @@ public:
         uint                                         width = 1024,
         uint height = 768) : ViewerDrawerOpenGL2(width, height)
     {
-        setDrawableObjectVector(v);
+        AVD::setDrawableObjectVector(v);
     }
 
     void onInit() override
@@ -70,8 +74,8 @@ public:
         glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 
-        if (mDrawList) {
-            for (auto& obj : *mDrawList) {
+        if (AVD::mDrawList) {
+            for (auto& obj : *(AVD::mDrawList)) {
                 obj->init();
             }
         }
@@ -91,18 +95,18 @@ public:
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        auto         tmp = light().direction();
+        auto         tmp = DTB::light().direction();
         vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glMultMatrixf(projectionMatrix().data());
+        glMultMatrixf(DTB::projectionMatrix().data());
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
-        glMultMatrixf(viewMatrix().data());
+        glMultMatrixf(DTB::viewMatrix().data());
 
-        for (auto& obj : *mDrawList)
+        for (auto& obj : *(AVD::mDrawList))
             obj->draw();
     }
 

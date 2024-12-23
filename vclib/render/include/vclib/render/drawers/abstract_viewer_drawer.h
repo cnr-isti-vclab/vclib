@@ -39,7 +39,10 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-class AbstractViewerDrawer : public EventDrawer, public DesktopTrackBall<float>
+template<typename DerivedRenderer>
+class AbstractViewerDrawer :
+        public EventDrawer<DerivedRenderer>,
+        public DesktopTrackBall<float>
 {
 protected:
     // the list of drawable objects
