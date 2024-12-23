@@ -117,13 +117,14 @@ protected:
     void resizeEvent(QResizeEvent* event) override
     {
         Base::resizeEvent(event);
-        derived().wmResize(width() * pixelRatio(), height() * pixelRatio());
+        DRT::WM::resize(
+            derived(), width() * pixelRatio(), height() * pixelRatio());
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void resizeGL(int w, int h) override
     {
         Base::resizeGL(w, h);
-        derived().wmResize(w * pixelRatio(), h * pixelRatio());
+        DRT::WM::resize(derived(), w * pixelRatio(), h * pixelRatio());
     }
 #endif
 
@@ -131,21 +132,22 @@ protected:
     void showEvent(QShowEvent* event) override
     {
         Base::showEvent(event);
-        derived().wmInit();
+        DRT::WM::init(derived());
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void initializeGL() override
     {
-        derived().wmInit();
+        DRT::WM::init(derived());
     }
 #endif
 
 
     void keyPressEvent(QKeyEvent* event) override
     {
-        derived().wmSetModifiers(vcl::qt::fromQt(event->modifiers()));
+        DRT::WM::setModifiers(derived(), vcl::qt::fromQt(event->modifiers()));
 
-        derived().wmKeyPress(
+        DRT::WM::keyPress(
+            derived(),
             vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyPressEvent(event);
         update();
@@ -153,9 +155,10 @@ protected:
 
     void keyReleaseEvent(QKeyEvent* event) override
     {
-        derived().wmSetModifiers(vcl::qt::fromQt(event->modifiers()));
+        DRT::WM::setModifiers(derived(), vcl::qt::fromQt(event->modifiers()));
 
-        derived().wmKeyRelease(
+        DRT::WM::keyRelease(
+            derived(),
             vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyReleaseEvent(event);
         update();
@@ -163,15 +166,18 @@ protected:
 
     void mouseMoveEvent(QMouseEvent* event) override
     {
-        derived().wmMouseMove(
-            event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
+        DRT::WM::mouseMove(
+            derived(),
+            event->pos().x() * pixelRatio(),
+            event->pos().y() * pixelRatio());
         Base::mouseMoveEvent(event);
         update();
     }
 
     void mousePressEvent(QMouseEvent* event) override
     {
-        derived().wmMousePress(
+        DRT::WM::mousePress(
+            derived(),
             vcl::qt::fromQt(event->button()),
             event->pos().x() * pixelRatio(),
             event->pos().y() * pixelRatio());
@@ -181,7 +187,8 @@ protected:
 
     void mouseReleaseEvent(QMouseEvent* event) override
     {
-        derived().wmMouseRelease(
+        DRT::WM::mouseRelease(
+            derived(),
             vcl::qt::fromQt(event->button()),
             event->pos().x() * pixelRatio(),
             event->pos().y() * pixelRatio());
@@ -191,7 +198,8 @@ protected:
 
     void mouseDoubleClickEvent(QMouseEvent* event) override
     {
-        derived().wmMouseDoubleClick(
+        DRT::WM::mouseDoubleClick(
+            derived(),
             vcl::qt::fromQt(event->button()),
             event->pos().x() * pixelRatio(),
             event->pos().y() * pixelRatio());
@@ -203,11 +211,11 @@ protected:
     {
         // FIXME: this is not correct, define a proper equivalence
         if (!event->pixelDelta().isNull())
-            derived().wmMouseScroll(
-                event->pixelDelta().x(), event->pixelDelta().y());
+            DRT::WM::mouseScroll(
+                derived(), event->pixelDelta().x(), event->pixelDelta().y());
         else
-            derived().wmMouseScroll(
-                event->angleDelta().x(), event->angleDelta().y());
+            DRT::WM::mouseScroll(
+                derived(), event->angleDelta().x(), event->angleDelta().y());
 
         Base::wheelEvent(event);
         update();
@@ -223,16 +231,16 @@ private:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override
     {
-        derived().wmPaint();
+        DRT::WM::paint(derived());
         QWidget::paintEvent(event);
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void paintGL() override { derived().wmPaint(); }
+    void paintGL() override { DRT::WM::paint(derived()); }
 #endif
 
-    auto& derived() { return static_cast<DRT&>(*this); }
+    auto* derived() { return static_cast<DRT*>(this); }
 
-    const auto& derived() const { return static_cast<const DRT&>(*this); }
+    const auto* derived() const { return static_cast<const DRT*>(this); }
 };
 
 } // namespace vcl::qt

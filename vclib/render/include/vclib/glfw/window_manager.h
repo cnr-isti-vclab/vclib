@@ -58,7 +58,7 @@ inline void glfwErrorCallback(int error, const char* description)
 } // namespace detail
 
 template<typename DerivedRenderer>
-class WindowManager /*: public virtual vcl::EventManagerI*/
+class WindowManager
 {
     using DRT = DerivedRenderer;
 
@@ -155,10 +155,10 @@ public:
 
     void show()
     {
-        derived().wmInit();
+        DRT::WM::init(derived());
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
-            derived().wmPaint();
+            DRT::WM::paint(derived());
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
             glfwSwapBuffers(mWindow);
 #endif
@@ -212,7 +212,7 @@ protected:
         int width,
         int height)
     {
-        derived().wmResize(width, height);
+        DRT::WM::resize(derived(), width, height);
     }
 
     virtual void glfwContentScaleCallback(
@@ -225,7 +225,7 @@ protected:
 
         int width, height;
         glfwGetFramebufferSize(mWindow, &width, &height);
-        derived().wmResize(width, height);
+        DRT::WM::resize(derived(), width, height);
     }
 
     virtual void glfwKeyCallback(
@@ -242,16 +242,16 @@ protected:
 #endif
 
         // GLFW modifiers are always set
-        derived().wmSetModifiers(
-            glfw::fromGLFW((glfw::KeyboardModifiers) mods));
+        DRT::WM::setModifiers(
+            derived(), glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
         vcl::Key::Enum k = glfw::fromGLFW((glfw::Key) key);
 
         if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            derived().wmKeyPress(k);
+            DRT::WM::keyPress(derived(), k);
         }
         else if (action == GLFW_RELEASE) {
-            derived().wmKeyRelease(k);
+            DRT::WM::keyRelease(derived(), k);
         }
     }
 
@@ -263,8 +263,8 @@ protected:
     {
         vcl::MouseButton::Enum btn = glfw::fromGLFW((glfw::MouseButton) button);
 
-        derived().wmSetModifiers(
-            glfw::fromGLFW((glfw::KeyboardModifiers) mods));
+        DRT::WM::setModifiers(
+            derived(), glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
         Point2d      pos;
         Point2f      scale;
@@ -284,17 +284,17 @@ protected:
                 (mLastPressedPos - pos).norm() < DOUBLE_CLICK_DIST_PIXELS) {
                 mLastPressedTime   = 0.0;
                 mLastPressedButton = NO_BUTTON;
-                derived().wmMouseDoubleClick(btn, pos.x(), pos.y());
+                DRT::WM::mouseDoubleClick(derived(), btn, pos.x(), pos.y());
             }
             else {
                 mLastPressedTime   = timeSeconds;
                 mLastPressedButton = button;
                 mLastPressedPos    = pos;
-                derived().wmMousePress(btn, pos.x(), pos.y());
+                DRT::WM::mousePress(derived(), btn, pos.x(), pos.y());
             }
         }
         else if (action == GLFW_RELEASE) {
-            derived().wmMouseRelease(btn, pos.x(), pos.y());
+            DRT::WM::mouseRelease(derived(), btn, pos.x(), pos.y());
         }
     }
 
@@ -305,7 +305,7 @@ protected:
         xpos *= dpiScale().x();
         ypos *= dpiScale().y();
 #endif
-        derived().wmMouseMove(xpos, ypos);
+        DRT::WM::mouseMove(derived(), xpos, ypos);
     }
 
     virtual void glfwScrollCallback(
@@ -318,8 +318,10 @@ protected:
             // TODO: check other platforms
             // TODO: check if content scale must be used
             const double TO_PIXEL_FACTOR = 10;
-            derived().wmMouseScroll(
-                xoffset * TO_PIXEL_FACTOR, yoffset * TO_PIXEL_FACTOR);
+            DRT::WM::mouseScroll(
+                derived(),
+                xoffset * TO_PIXEL_FACTOR,
+                yoffset * TO_PIXEL_FACTOR);
         }
     }
 
@@ -376,9 +378,9 @@ private:
             });
     }
 
-    auto& derived() { return static_cast<DRT&>(*this); }
+    auto* derived() { return static_cast<DRT*>(this); }
 
-    const auto& derived() const { return static_cast<const DRT&>(*this); }
+    const auto* derived() const { return static_cast<const DRT*>(this); }
 
     static int fixKeyboardMods(int key, int action, int mods)
     {

@@ -58,8 +58,6 @@ class Renderer :
         public CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
         public Drawers...
 {
-    friend WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
-
     using WindowManagerType =
         WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
     using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
@@ -81,11 +79,14 @@ class Renderer :
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
 
     // hide CanvasType member functions
-    using CanvasType::size;
-    using CanvasType::viewId;
     using CanvasType::onInit;
+    using CanvasType::size;
     using CanvasType::onResize;
     using CanvasType::onPaint;
+
+    // hide WindowManagerType member functions
+    using WindowManagerType::displayId;
+    using WindowManagerType::winId;
 
 public:
     Renderer() : Renderer("Renderer", 1024, 768) {}
@@ -116,16 +117,91 @@ public:
      *
      * Renderer::CNV::update(static_cast<Renderer*>(this));
      */
-    class CNV {
+    class CNV
+    {
         friend CanvasType;
 
         static void update(Renderer* r) { r->cnvUpdate(); }
+
         static void draw(Renderer* r) { r->cnvDraw(); }
+
         static void drawContent(Renderer* r) { r->cnvDrawContent(); }
     };
 
+    /**
+     * @brief The WM inner class is an Attorney that allow access to some
+     * private member functions of the Renderer class to the WindowManager
+     * class.
+     *
+     * They can be called only by the WindowManager class in the following way:
+     *
+     * Renderer::WM::update(static_cast<Renderer*>(this));
+     */
+    class WM
+    {
+        friend WindowManagerType;
+
+        static void init(Renderer* r) { r->wmInit(); }
+
+        static void resize(Renderer* r, uint width, uint height)
+        {
+            r->wmResize(width, height);
+        }
+
+        static void paint(Renderer* r) { r->wmPaint(); }
+
+        static void setModifiers(Renderer* r, const KeyModifiers& modifiers)
+        {
+            r->wmSetModifiers(modifiers);
+        }
+
+        static void keyPress(Renderer* r, Key::Enum key) { r->wmKeyPress(key); }
+
+        static void keyRelease(Renderer* r, Key::Enum key)
+        {
+            r->wmKeyRelease(key);
+        }
+
+        static void mouseMove(Renderer* r, double x, double y)
+        {
+            r->wmMouseMove(x, y);
+        }
+
+        static void mousePress(
+            Renderer*         r,
+            MouseButton::Enum button,
+            double            x,
+            double            y)
+        {
+            r->wmMousePress(button, x, y);
+        }
+
+        static void mouseRelease(
+            Renderer*         r,
+            MouseButton::Enum button,
+            double            x,
+            double            y)
+        {
+            r->wmMouseRelease(button, x, y);
+        }
+
+        static void mouseDoubleClick(
+            Renderer*         r,
+            MouseButton::Enum button,
+            double            x,
+            double            y)
+        {
+            r->wmMouseDoubleClick(button, x, y);
+        }
+
+        static void mouseScroll(Renderer* r, double x, double y)
+        {
+            r->wmMouseScroll(x, y);
+        }
+    };
+
 protected:
-    uint viewId() const { return CanvasType::viewId(); }
+    using CanvasType::viewId;
 
 private:
     /***** Member functions called by CanvasType *****/
