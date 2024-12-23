@@ -45,14 +45,20 @@ class ViewerDrawerBGFX : public AbstractViewer
     DrawableTrackBall        mDrawTrackBall;
 
 public:
-    ViewerDrawerBGFX(
-        uint  width     = 1024,
-        uint  height    = 768);
+    ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
+            AbstractViewer(width, height)
+    {
+        mCameraUniforms.updateCamera(DTB::camera());
+        mDirectionalLightUniforms.updateLight(DTB::light());
+    }
 
     ViewerDrawerBGFX(
         const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width     = 1024,
-        uint                                         height    = 768);
+        uint                                         width = 1024,
+        uint height = 768) : ViewerDrawerBGFX(width, height)
+    {
+        setDrawableObjectVector(v);
+    }
 
     void toggleAxisVisibility() override
     {
@@ -64,16 +70,94 @@ public:
         mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
     }
 
-    void onDraw(uint) override;
+    void onDraw(uint viewId) override
+    {
+        onDrawContent(viewId);
 
-    void onDrawContent(uint) override;
+        if (mAxis.isVisible()) {
+            mAxis.draw(viewId);
+        }
+
+        if (mDirectionalLight.isVisible()) {
+            mDirectionalLight.draw(viewId);
+        }
+
+        if (mDrawTrackBall.isVisible()) {
+            mDrawTrackBall.draw(viewId);
+        }
+    }
+
+    void onDrawContent(uint viewId) override
+    {
+        setDirectionalLightVisibility(
+            currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
+        updateDirectionalLight();
+        updateDrawableTrackball();
+
+        bgfx::setViewTransform(
+            viewId, viewMatrix().data(), projectionMatrix().data());
+
+        mCameraUniforms.updateCamera(DTB::camera());
+        mCameraUniforms.bind();
+
+        mDirectionalLightUniforms.bind();
+
+        for (auto obj : drawableObjectVector())
+            obj->draw(viewId);
+    }
 
     // events
     // void onMouseDoubleClick(
     //     MouseButton::Enum   button,
     //     double              x,
     //     double              y,
-    //     const KeyModifiers& modifiers) override;
+    //     const KeyModifiers& modifiers) override
+    // {
+    //     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
+    //     using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
+    //     using ReadData               = ReadFramebufferRequest::ReadData;
+
+    //     // FIXME: code duplication for both OpenGL2 and BGFX
+    //     if (mReadRequested)
+    //         return;
+
+    //     // get point
+    //     const Point2d p(x, y);
+
+    //     // get the homogeneous NDC flag
+    //     const bool homogeneousNDC =
+    //         Context::instance().capabilites().homogeneousDepth;
+
+    //     // matrices
+    //     const auto proj = projectionMatrix();
+    //     const auto view = viewMatrix();
+    //     // viewport
+    //     const Point4f vp = {.0f, .0f, float(size().x()), float(size().y())};
+    //     // create the callback
+    //     auto callback = [=, this](const ReadData& data) {
+    //         assert(std::holds_alternative<std::vector<float>>(data));
+    //         const auto& d  = std::get<std::vector<float>>(data);
+    //         mReadRequested = false;
+
+    //         // if the depth is 1.0, the point is not in the scene
+    //         const float depth = d[0];
+    //         if (depth == 1.0f) {
+    //             return;
+    //         }
+
+    //         // unproject the point
+    //         const Point3f p2d(p.x(), vp[3] - p.y(), depth);
+    //         const auto    unproj = unproject(
+    //             p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
+
+    //         this->focus(unproj);
+    //         // this->update(); TODO
+    //     };
+
+    //     mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
+    //     if (mReadRequested)
+    //         update();
+    // }
 
 private:
     bool mReadRequested = false;
