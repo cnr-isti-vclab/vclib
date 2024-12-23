@@ -23,6 +23,7 @@
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
+#include <vclib/render/read_buffer_types.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/viewer/desktop_trackball.h>
@@ -43,6 +44,10 @@ template<typename DerivedRenderer>
 class AbstractViewerDrawer :
         public DesktopTrackBall<float>
 {
+    bool mReadRequested = false;
+
+    using DRT = DerivedRenderer;
+
 protected:
     // the list of drawable objects
     // it could be owned by the viewer, or it could be shared with other
@@ -170,6 +175,61 @@ public:
         DTB::setKeyModifiers(modifiers);
         DTB::scroll(dx, dy);
     }
+
+protected:
+    void readRequest(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers,
+        bool homogeneousNDC = true)
+    {
+        using ReadData = ReadBufferTypes::ReadData;
+        using FloatData = ReadBufferTypes::FloatData;
+
+        if (mReadRequested)
+            return;
+
+        // get point
+        const Point2d p(x, y);
+
+        // create the callback
+        const auto    proj = DTB::projectionMatrix();
+        const auto    view = DTB::viewMatrix();
+        // viewport
+        auto size = DRT::D::canvasSize(derived());
+
+        const Point4f vp   = {.0f, .0f, float(size.x()), float(size.y())};
+        auto callback      = [=, this](const ReadData& dt) {
+            mReadRequested = false;
+
+            const auto& data = std::get<FloatData>(dt);
+            assert(data.size() == 1);
+            const float depth = data[0];
+            // if the depth is 1.0, the point is not in the scene
+            if (depth == 1.0f) {
+                return;
+            }
+
+                   // unproject the point
+            const Point3f p2d(p.x(), vp[3] - p.y(), depth);
+            auto          unproj = unproject(
+                p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
+
+            this->focus(unproj);
+            derived()->update();
+        };
+
+        mReadRequested =
+            DRT::D::readDepth(derived(), Point2i(p.x(), p.y()), callback);
+        if (mReadRequested)
+            derived()->update();
+    }
+
+private:
+    auto* derived() { return static_cast<DRT*>(this); }
+
+    const auto* derived() const { return static_cast<const DRT*>(this); }
 };
 
 } // namespace vcl

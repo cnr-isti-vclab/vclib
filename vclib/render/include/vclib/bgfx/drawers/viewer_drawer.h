@@ -39,10 +39,8 @@ namespace vcl {
 template<typename DerivedRenderer>
 class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderer>
 {
-    using DRT        = DerivedRenderer;
     using AVD        = AbstractViewerDrawer<DerivedRenderer>;
     using DTB        = AVD::DTB;
-    using ScalarType = DTB::ScalarType;
 
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
@@ -118,53 +116,10 @@ public:
         double              y,
         const KeyModifiers& modifiers)
     {
-        using ReadFramebufferRequest = detail::ReadFramebufferRequest;
-        using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
-        using ReadData               = ReadFramebufferRequest::ReadData;
-
-        // FIXME: code duplication for both OpenGL2 and BGFX
-        if (mReadRequested)
-            return;
-
-        // get point
-        const Point2d p(x, y);
-
-        // get the homogeneous NDC flag
         const bool homogeneousNDC =
             Context::instance().capabilites().homogeneousDepth;
 
-        // matrices
-        const auto proj = DTB::projectionMatrix();
-        const auto view = DTB::viewMatrix();
-        // viewport
-        auto size = DRT::D::canvasSize(derived());
-
-        const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
-        // create the callback
-        auto callback = [=, this](const ReadData& data) {
-            assert(std::holds_alternative<std::vector<float>>(data));
-            const auto& d  = std::get<std::vector<float>>(data);
-            mReadRequested = false;
-
-            // if the depth is 1.0, the point is not in the scene
-            const float depth = d[0];
-            if (depth == 1.0f) {
-                return;
-            }
-
-            // unproject the point
-            const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-            const auto    unproj = unproject(
-                p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
-
-            this->focus(unproj);
-            derived()->update();
-        };
-
-        mReadRequested =
-            DRT::D::readDepth(derived(), Point2i(p.x(), p.y()), callback);
-        if (mReadRequested)
-            derived()->update();
+        AVD::readRequest(button, x, y, modifiers, homogeneousNDC);
     }
 
     void toggleAxisVisibility() override
@@ -178,8 +133,6 @@ public:
     }
 
 private:
-    bool mReadRequested = false;
-
     bool isDirectionalLightVisible() const
     {
         return mDirectionalLight.isVisible();
@@ -203,10 +156,6 @@ private:
         mDrawTrackBall.setTransform(v);
         mDrawTrackBall.updateDragging(DTB::isDragging());
     }
-
-    auto* derived() { return static_cast<DRT*>(this); }
-
-    const auto* derived() const { return static_cast<const DRT*>(this); }
 };
 
 } // namespace vcl

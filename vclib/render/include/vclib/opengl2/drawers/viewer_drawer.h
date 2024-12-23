@@ -42,12 +42,8 @@ namespace vcl {
 template<typename DerivedRenderer>
 class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderer>
 {
-    using DRT = DerivedRenderer;
     using AVD = AbstractViewerDrawer<DerivedRenderer>;
     using DTB = AVD::DTB;
-    using ScalarType = DTB::ScalarType;
-
-    bool mReadRequested = false;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
@@ -112,7 +108,6 @@ public:
     void onResize(unsigned int width, unsigned int height)
     {
         DTB::resizeViewer(width, height);
-        // update(); TODO
     }
 
     void onMouseDoubleClick(
@@ -121,50 +116,7 @@ public:
         double              y,
         const KeyModifiers& modifiers)
     {
-        using ReadData          = ReadBufferTypes::ReadData;
-        using FloatData         = ReadBufferTypes::FloatData;
-
-        // FIXME: code duplication for both OpenGL2 and BGFX
-        if (mReadRequested)
-            return;
-
-        // get point
-        const Point2d p(x, y);
-
-        // get the homogeneous NDC flag
-        const bool homogeneousNDC = true;
-
-        // create the callback
-        const auto    proj = DTB::projectionMatrix();
-        const auto    view = DTB::viewMatrix();
-        // viewport
-        auto size = DRT::D::canvasSize(derived());
-
-        const Point4f vp   = {.0f, .0f, float(size.x()), float(size.y())};
-        auto callback      = [=, this](const ReadData& dt) {
-            mReadRequested = false;
-
-            const auto& data = std::get<FloatData>(dt);
-            assert(data.size() == 1);
-            const float depth = data[0];
-            // if the depth is 1.0, the point is not in the scene
-            if (depth == 1.0f) {
-                return;
-            }
-
-            // unproject the point
-            const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-            auto          unproj = unproject(
-                p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
-
-            this->focus(unproj);
-            derived()->update();
-        };
-
-        mReadRequested =
-            DRT::D::readDepth(derived(), Point2i(p.x(), p.y()), callback);
-        if (mReadRequested)
-            derived()->update();
+        AVD::readRequest(button, x, y, modifiers);
     }
 
     void toggleAxisVisibility() override
@@ -176,12 +128,6 @@ public:
     {
       // todo
     }
-
-private:
-    auto* derived() { return static_cast<DRT*>(this); }
-
-    const auto* derived() const { return static_cast<const DRT*>(this); }
-
 };
 
 } // namespace vcl
