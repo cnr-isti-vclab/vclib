@@ -24,17 +24,32 @@
 #define CONCEPTS_CANVAS_H
 
 #include <vclib/concepts.h>
+#include <vclib/space/core/point.h>
 
 namespace vcl {
 
 template<typename T>
-concept CanvasConcept = requires(T&& obj)
-{
+concept CanvasConcept = requires (
+    T&&                                       obj,
+    void*                                     vPtr,
+    uint                                      u,
+    vcl::Point2i                              p,
+    typename RemoveRef<T>::CallbackReadBuffer cbrb,
+    std::string                               str) {
+    typename RemoveRef<T>::CallbackReadBuffer;
+
+    T(vPtr, u, u);
+    T(vPtr, u, u, vPtr);
+
     { obj.size() } -> Point2Concept;
     { obj.viewId() } -> std::convertible_to<uint>;
 
+    { obj.readDepth(p, cbrb) } -> std::same_as<bool>;
+    { obj.screenshot(str) } -> std::same_as<bool>;
+    { obj.screenshot(str, u, u) } -> std::same_as<bool>;
+
     { obj.onInit() } -> std::same_as<void>; // qt+opengl requires init
-    { obj.onResize(uint(), uint()) } -> std::same_as<void>;
+    { obj.onResize(u, u) } -> std::same_as<void>;
     { obj.onPaint() } -> std::same_as<void>;
 };
 

@@ -23,12 +23,11 @@
 #ifndef VCL_OPENGL2_CANVAS_H
 #define VCL_OPENGL2_CANVAS_H
 
-#include <vclib/types.h>
-
 #include <vclib/io/image.h>
 #include <vclib/render/concepts/renderer.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/point.h>
+#include <vclib/types.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -78,6 +77,8 @@ protected:
     using FloatData          = ReadBufferTypes::FloatData;
     using ByteData           = ReadBufferTypes::ByteData;
     using ReadData           = ReadBufferTypes::ReadData;
+
+public:
     using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
 private:
@@ -110,9 +111,23 @@ public:
         glClearColor(1.f, 1.f, 1.f, 1.f);
     }
 
-    uint viewId() { return 0;}
-
     Point2<uint> size() const { return mSize; }
+
+    uint viewId() { return 0; }
+
+    [[nodiscard]] bool readDepth(
+        const Point2i&     point,
+        CallbackReadBuffer callback = nullptr)
+    {
+        if (point.x() < 0 || point.y() < 0 || // point out of bounds
+            point.x() >= mSize.x() || point.y() >= mSize.y()) {
+            return false;
+        }
+
+        mReadDepthPoint     = point;
+        mReadBufferCallback = callback;
+        return true;
+    }
 
     bool screenshot(
         const std::string& filename,
@@ -147,26 +162,22 @@ public:
         return ret;
     }
 
-    bool readDepth(const Point2i& point, CallbackReadBuffer callback = nullptr)
-    {
-        if (point.x() < 0 || point.y() < 0 || // point out of bounds
-            point.x() >= mSize.x() || point.y() >= mSize.y()) {
-            return false;
-        }
-
-        mReadDepthPoint     = point;
-        mReadBufferCallback = callback;
-        return true;
-    }
-
-    // using private inheritance on DerivedRenderer, no need to protect here
-
-    void onResize(uint width, uint height) /*override*/
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window
+     * is resized.
+     * @param width
+     * @param height
+     */
+    void onResize(uint width, uint height)
     {
         mSize = {width, height};
         glViewport(0, 0, width, height);
     }
 
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window asks
+     * to repaint.
+     */
     void onPaint()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

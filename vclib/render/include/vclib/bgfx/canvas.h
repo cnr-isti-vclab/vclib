@@ -23,14 +23,14 @@
 #ifndef VCL_BGFX_CANVAS_H
 #define VCL_BGFX_CANVAS_H
 
-#include <vclib/types.h>
-
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/read_framebuffer_request.h>
 #include <vclib/bgfx/system/native_window_handle.h>
 #include <vclib/io/image.h>
 #include <vclib/render/input.h>
 #include <vclib/render/concepts/renderer.h>
+#include <vclib/render/read_buffer_types.h>
+#include <vclib/types.h>
 
 #include <optional>
 
@@ -70,11 +70,15 @@ template<typename DerivedRenderer>
 class CanvasBGFX
 {
     using DRT = DerivedRenderer;
+    using ReadFramebufferRequest = detail::ReadFramebufferRequest;
+
+protected:
+    using FloatData          = ReadBufferTypes::FloatData;
+    using ByteData           = ReadBufferTypes::ByteData;
+    using ReadData           = ReadBufferTypes::ReadData;
 
 public:
-    using ReadFramebufferRequest = detail::ReadFramebufferRequest;
-    using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
-    using ReadData               = ReadFramebufferRequest::ReadData;
+    using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
 private:
     void* mWinId = nullptr;
@@ -94,9 +98,6 @@ private:
 
     // offscreen readback request
     std::optional<ReadFramebufferRequest> mReadRequest = std::nullopt;
-
-    // flags
-    bool mStatsEnabled = false;
 
 public:
     CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr)
@@ -133,19 +134,7 @@ public:
 
     bgfx::ViewId viewId() const { return mViewId; }
 
-    void onKeyPress(Key::Enum key)/* override*/
-    {
-        if (key == Key::F1) {
-            if (mStatsEnabled) {
-                mStatsEnabled = false;
-                bgfx::setDebug(BGFX_DEBUG_NONE);
-            }
-            else {
-                mStatsEnabled = true;
-                bgfx::setDebug(BGFX_DEBUG_STATS);
-            }
-        }
-    }
+    bgfx::FrameBufferHandle frameBuffer() const { return mFbh; }
 
     [[nodiscard]] bool readDepth(
         const Point2i&     point,
@@ -161,8 +150,6 @@ public:
         mReadRequest.emplace(point, mSize, callback);
         return true;
     }
-
-    bgfx::FrameBufferHandle frameBuffer() const { return mFbh; }
 
     bool screenshot(
         const std::string& filename,
@@ -197,7 +184,6 @@ public:
         return true;
     }
 
-    // using private inheritance on DerivedRenderer, no need to protect here
     /**
      * @brief Automatically called by the DerivedRenderer when the window
      * is resized.

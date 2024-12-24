@@ -50,6 +50,9 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderer>
     DrawableDirectionalLight mDirectionalLight;
     DrawableTrackBall        mDrawTrackBall;
 
+    // flags
+    bool mStatsEnabled = false;
+
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             AVD(width, height)
@@ -110,6 +113,21 @@ public:
     }
 
     // events
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
+    {
+        if (key == Key::F1) {
+            if (mStatsEnabled) {
+                mStatsEnabled = false;
+                bgfx::setDebug(BGFX_DEBUG_NONE);
+            }
+            else {
+                mStatsEnabled = true;
+                bgfx::setDebug(BGFX_DEBUG_STATS);
+            }
+        }
+        AVD::onKeyPress(key, modifiers);
+    }
+
     void onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
