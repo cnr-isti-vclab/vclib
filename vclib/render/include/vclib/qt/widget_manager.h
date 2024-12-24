@@ -56,6 +56,8 @@ class WidgetManager :
 #endif
 
 public:
+    using ParentType = QWidget;
+
     WidgetManager(QWidget* parent = nullptr) : Base(parent)
     {
         static_assert(

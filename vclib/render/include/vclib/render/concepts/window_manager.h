@@ -30,21 +30,32 @@
 namespace vcl {
 
 template<typename T>
-concept WindowManagerConcept = requires(T&& obj)
-{
-    { obj.windowTitle() } -> std::same_as<const std::string&>;
-    { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
+concept WindowManagerConcept =
+    requires (
+        T&& obj,
+        typename RemoveRef<T>::ParentType* pPtr,
+        std::string s,
+        uint u) {
+        typename RemoveRef<T>::ParentType;
 
-    { obj.width() } -> std::convertible_to<uint>;
-    { obj.height() } -> std::convertible_to<uint>;
+        T();
+        T(pPtr);
+        T(s, u, u);
+        T(s, u, u, pPtr);
 
-    { obj.dpiScale() } -> Point2Concept;
+        { obj.windowTitle() } -> std::same_as<const std::string&>;
+        { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
 
-    obj.winId(); // todo: try to check return type, should be void*
-    { obj.displayId() } -> std::same_as<void*>;
+        { obj.width() } -> std::convertible_to<uint>;
+        { obj.height() } -> std::convertible_to<uint>;
 
-    { obj.update() }  -> std::same_as<void>;
-};
+        { obj.dpiScale() } -> Point2Concept;
+
+        obj.winId(); // todo: try to check return type, should be void*
+        { obj.displayId() } -> std::same_as<void*>;
+
+        { obj.update() } -> std::same_as<void>;
+    };
 
 } // namespace vcl
 

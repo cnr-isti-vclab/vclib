@@ -81,10 +81,23 @@ protected:
     float       mScaleY = 1.0f;
 
 public:
+    /**
+     * @brief The ParentType is the type of the parent class. It is used to
+     * initialize the base class (if any). In the GLFW WindowManager, the parent
+     * class is void and it is not managed.
+     */
+    using ParentType = void;
+
+    WindowManager(ParentType* parent = nullptr) :
+            WindowManager("", 1024, 768, parent)
+    {
+    }
+
     WindowManager(
         const std::string& windowTitle,
         uint               width  = 1024,
-        uint               height = 768) : mTitle(windowTitle)
+        uint               height = 768,
+        ParentType*        = nullptr) : mTitle(windowTitle)
     {
         static_assert(
             RendererConcept<DRT>,

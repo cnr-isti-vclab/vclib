@@ -28,14 +28,19 @@
 namespace vcl {
 
 template<typename T>
-concept RendererConcept = requires(T&& obj)
-{
-    T();
+concept RendererConcept =
+    requires (T&& obj, typename T::ParentType* pPtr, std::string s, uint u) {
+        typename RemoveRef<T>::ParentType;
 
-    // { obj.update() } -> std::same_as<void>;
-    // { obj.draw() } -> std::same_as<void>;
-    // { obj.drawContent() } -> std::same_as<void>;
-};
+        T();
+        T(pPtr);
+        T(s, u, u);
+        T(s, u, u, pPtr);
+
+        // { obj.update() } -> std::same_as<void>;
+        // { obj.draw() } -> std::same_as<void>;
+        // { obj.drawContent() } -> std::same_as<void>;
+    };
 
 } // namespace vcl
 

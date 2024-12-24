@@ -94,18 +94,24 @@ class Renderer :
     using WindowManagerType::winId;
 
 public:
+    using ParentType = WindowManagerType::ParentType;
+
     // Attorneys
     class CNV;
     class WM;
     class D;
 
-    Renderer() : Renderer("Renderer", 1024, 768) {}
+    Renderer(ParentType* parent = nullptr) :
+            Renderer("Renderer", 1024, 768, parent)
+    {
+    }
 
     Renderer(
         const std::string& windowTitle,
         uint               width  = 1024,
-        uint               height = 768) :
-            WindowManagerType(windowTitle, width, height),
+        uint               height = 768,
+        ParentType*        parent = nullptr) :
+            WindowManagerType(windowTitle, width, height, parent),
             CanvasType(
                 (void*) WindowManagerType::winId(),
                 width * WindowManagerType::dpiScale().x(),
