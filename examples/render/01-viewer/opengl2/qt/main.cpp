@@ -22,21 +22,15 @@
 
 #include "common.h"
 
-#include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/canvas.h>
-#include <vclib/qt/widget_manager.h>
-#include <vclib/render/renderer.h>
+#include <vclib/qt/viewer_widget.h>
 
 #include <QApplication>
 
 int main(int argc, char** argv)
 {
-    using ViewerWidget =
-        vcl::Renderer<vcl::qt::WidgetManager, vcl::Canvas, vcl::ViewerDrawer>;
-
     QApplication app(argc, argv);
 
-    ViewerWidget tw("Viewer Qt");
+    vcl::qt::ViewerWidget tw("Viewer Qt");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
