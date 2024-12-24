@@ -67,14 +67,14 @@ public:
         AVD::setDrawableObjectVector(v);
     }
 
-    void onInit(uint)
+    void onInit(uint) override
     {
         mAxis.init();
         mDirectionalLight.init();
         mDrawTrackBall.init();
     }
 
-    void onDraw(uint viewId)
+    void onDraw(uint viewId) override
     {
         onDrawContent(viewId);
 
@@ -91,7 +91,7 @@ public:
         }
     }
 
-    void onDrawContent(uint viewId)
+    void onDrawContent(uint viewId) override
     {
         setDirectionalLightVisibility(
             DTB::currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
@@ -110,8 +110,7 @@ public:
             obj->draw(viewId);
     }
 
-    // events
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         if (key == Key::F1) {
             if (mStatsEnabled) {
@@ -130,7 +129,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers)
+        const KeyModifiers& modifiers) override
     {
         const bool homogeneousNDC =
             Context::instance().capabilites().homogeneousDepth;

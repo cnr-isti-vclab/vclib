@@ -59,7 +59,7 @@ public:
         AVD::setDrawableObjectVector(v);
     }
 
-    void onInit(uint)
+    void onInit(uint) override
     {
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
@@ -80,12 +80,12 @@ public:
         }
     }
 
-    void onDraw(uint viewId)
+    void onDraw(uint viewId) override
     {
         onDrawContent(viewId);
     }
 
-    void onDrawContent(uint)
+    void onDrawContent(uint) override
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -105,7 +105,7 @@ public:
     }
 
     // events
-    void onResize(unsigned int width, unsigned int height)
+    void onResize(unsigned int width, unsigned int height) override
     {
         DTB::resizeViewer(width, height);
     }
@@ -114,7 +114,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers)
+        const KeyModifiers& modifiers) override
     {
         AVD::readRequest(button, x, y, modifiers);
     }

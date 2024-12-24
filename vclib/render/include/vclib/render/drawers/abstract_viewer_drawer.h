@@ -112,12 +112,12 @@ public:
     virtual void toggleTrackBallVisibility() = 0;
 
     // events
-    void onResize(unsigned int width, unsigned int height)
+    void onResize(unsigned int width, unsigned int height) override
     {
         DTB::resizeViewer(width, height);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         DTB::setKeyModifiers(modifiers);
 
@@ -139,13 +139,13 @@ public:
         DTB::keyPress(key);
     }
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
+    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
         DTB::setKeyModifiers(modifiers);
         DTB::keyRelease(key);
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
         DTB::setKeyModifiers(modifiers);
         DTB::moveMouse(x, y);
@@ -155,7 +155,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers)
+        const KeyModifiers& modifiers) override
     {
         DTB::setKeyModifiers(modifiers);
         DTB::moveMouse(x, y);
@@ -166,7 +166,7 @@ public:
         MouseButton::Enum   button,
         double              x,
         double              y,
-        const KeyModifiers& modifiers)
+        const KeyModifiers& modifiers) override
     {
         DTB::setKeyModifiers(modifiers);
         DTB::moveMouse(x, y);
@@ -174,6 +174,7 @@ public:
     }
 
     void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+        override
     {
         DTB::setKeyModifiers(modifiers);
         DTB::scroll(dx, dy);

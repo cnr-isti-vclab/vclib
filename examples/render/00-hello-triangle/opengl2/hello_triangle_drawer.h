@@ -25,8 +25,10 @@
 
 #include "common.h"
 
+#include <vclib/render/drawers/plain_drawer.h>
+
 template<typename DerivedDrawer>
-class HelloTriangleDrawer
+class HelloTriangleDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
 public:
     HelloTriangleDrawer(vcl::uint width = 1024, vcl::uint height = 768) {}
@@ -35,18 +37,13 @@ public:
     {
     }
 
-    void onInit(vcl::uint)
-    {
-
-    }
-
-    void onResize(vcl::uint width, vcl::uint height)
+    void onResize(vcl::uint width, vcl::uint height) override
     {
         std::cout << "Resize: " << width << "; " << height
                   << ". Nothing to do\n";
     }
 
-    void onDrawContent(vcl::uint)
+    void onDrawContent(vcl::uint) override
     {
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -59,11 +56,6 @@ public:
         glColor4ubv((GLubyte*) &(vertices[2].abgr));
         glVertex2fv((GLfloat*) &(vertices[2].pos));
         glEnd();
-    }
-
-    void onDraw(vcl::uint viewId)
-    {
-        onDrawContent(viewId);
     }
 };
 
