@@ -20,14 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "hello_triangle_qt.h"
+#include "../hello_triangle_drawer.h"
+
+#include <vclib/render/canvas.h>
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/renderer.h>
+
 #include <QApplication>
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    HelloTriangleQt tw;
+    using WidgetQt = vcl::
+        Renderer<vcl::qt::WidgetManager, vcl::Canvas, HelloTriangleDrawer>;
+
+    WidgetQt tw("Hello Triangle with Qt");
 
     tw.show();
 

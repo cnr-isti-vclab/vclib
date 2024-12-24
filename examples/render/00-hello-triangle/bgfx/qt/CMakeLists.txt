@@ -30,11 +30,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(HEADERS
     ../common.h
-    hello_triangle_qt.h)
+    ../hello_triangle_drawer.h)
 
 set(SOURCES
-    main.cpp
-    hello_triangle_qt.cpp)
+    main.cpp)
 
 set(SHADERS
     shaders/vs_vertex_shader.sc

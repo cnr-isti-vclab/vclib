@@ -20,27 +20,50 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "hello_triangle_qt.h"
+#ifndef HELLO_TRIANGLE_DRAWER_H
+#define HELLO_TRIANGLE_DRAWER_H
 
-#include "../common.h"
+#include "common.h"
 
-HelloTriangleQt::HelloTriangleQt() : CanvasWidget("Hello Triangle Qt")
+template<typename DerivedDrawer>
+class HelloTriangleDrawer
 {
-    setUpBGFX(viewId(), vbh, program);
-}
+public:
+    HelloTriangleDrawer(uint width = 1024, uint height = 768) {}
 
-HelloTriangleQt::~HelloTriangleQt()
-{
-    bgfx::destroy(vbh);
-    bgfx::destroy(program);
-}
+    ~HelloTriangleDrawer()
+    {
+        if (bgfx::isValid(vbh))
+            bgfx::destroy(vbh);
+        if (bgfx::isValid(program))
+            bgfx::destroy(program);
+    }
 
-void HelloTriangleQt::onResize(uint width, uint height)
-{
-    std::cout << "Resize: " << width << "; " << height << ". Nothing to do\n";
-}
+    void onInit(vcl::uint viewId)
+    {
+        setUpBGFX(viewId, vbh, program);
+    }
 
-void HelloTriangleQt::onDrawContent(uint viewId)
-{
-    drawOnView(viewId, vbh, program);
-}
+    void onResize(vcl::uint width, vcl::uint height)
+    {
+        std::cout << "Resize: " << width << "; " << height
+                  << ". Nothing to do\n";
+    }
+
+    void onDrawContent(vcl::uint viewId)
+    {
+        drawOnView(viewId, vbh, program);
+    }
+
+    void onDraw(vcl::uint viewId)
+    {
+        onDrawContent(viewId);
+    }
+
+private:
+    bgfx::VertexBufferHandle vbh;
+
+    bgfx::ProgramHandle program;
+};
+
+#endif // HELLO_TRIANGLE_DRAWER_H
