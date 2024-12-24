@@ -29,7 +29,7 @@ template<typename DerivedDrawer>
 class HelloTriangleDrawer
 {
 public:
-    HelloTriangleDrawer(uint width = 1024, uint height = 768) {}
+    HelloTriangleDrawer(vcl::uint width = 1024, vcl::uint height = 768) {}
 
     ~HelloTriangleDrawer()
     {
