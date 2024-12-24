@@ -105,17 +105,61 @@ public:
 
     ~CanvasOpenGL2() {}
 
+    Point2<uint> size() const { return mSize; }
+
+    uint viewId() { return 0; }
+
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window
+     * initializes.
+     * Initialization is requires in some backends+window manager combinations,
+     * and therefore it must be implemented (also if empty) in every Canvas
+     * class.
+     */
     void onInit()
     {
         glViewport(0, 0, mSize.x(), mSize.y());
         glClearColor(1.f, 1.f, 1.f, 1.f);
     }
 
-    Point2<uint> size() const { return mSize; }
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window
+     * is resized.
+     * @param width
+     * @param height
+     */
+    void onResize(uint width, uint height)
+    {
+        mSize = {width, height};
+        glViewport(0, 0, width, height);
+    }
 
-    uint viewId() { return 0; }
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window asks
+     * to repaint.
+     */
+    void onPaint()
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    [[nodiscard]] bool readDepth(
+        // if depth requested, read it
+        if (mReadBufferCallback) {
+            DRT::CNV::drawContent(derived());
+            readDepthData();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+        DRT::CNV::draw(derived());
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * to read the depth buffer at a specific point.
+     *
+     * @param point
+     * @param callback
+     * @return
+     */
+    [[nodiscard]] bool onReadDepth(
         const Point2i&     point,
         CallbackReadBuffer callback = nullptr)
     {
@@ -129,7 +173,16 @@ public:
         return true;
     }
 
-    bool screenshot(
+    /**
+     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * for a screenshot.
+     *
+     * @param filename
+     * @param width
+     * @param height
+     * @return
+     */
+    bool onScreenshot(
         const std::string& filename,
         uint               width  = 0,
         uint               height = 0)
@@ -162,34 +215,7 @@ public:
         return ret;
     }
 
-    /**
-     * @brief Automatically called by the DerivedRenderer when the window
-     * is resized.
-     * @param width
-     * @param height
-     */
-    void onResize(uint width, uint height)
-    {
-        mSize = {width, height};
-        glViewport(0, 0, width, height);
-    }
 
-    /**
-     * @brief Automatically called by the DerivedRenderer when the window asks
-     * to repaint.
-     */
-    void onPaint()
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // if depth requested, read it
-        if (mReadBufferCallback) {
-            DRT::CNV::drawContent(derived());
-            readDepthData();
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        }
-        DRT::CNV::draw(derived());
-    }
 
 private:
     void readDepthData()

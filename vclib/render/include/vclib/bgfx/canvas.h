@@ -128,61 +128,20 @@ public:
             ctx.releaseViewId(mViewId);
     }
 
-    void onInit() {}
-
     Point2<uint> size() const { return mSize; }
 
     bgfx::ViewId viewId() const { return mViewId; }
 
     bgfx::FrameBufferHandle frameBuffer() const { return mFbh; }
 
-    [[nodiscard]] bool readDepth(
-        const Point2i&     point,
-        CallbackReadBuffer callback = nullptr)
-    {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt         // read already requested
-            || point.x() < 0 || point.y() < 0       // point out of bounds
-            || point.x() >= mSize.x() || point.y() >= mSize.y()) {
-            return false;
-        }
-
-        mReadRequest.emplace(point, mSize, callback);
-        return true;
-    }
-
-    bool screenshot(
-        const std::string& filename,
-        uint               width  = 0,
-        uint               height = 0)
-    {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt) {      // read already requested
-            return false;
-        }
-
-        // get size
-        auto size = mSize;
-        if (width != 0 && height != 0)
-            size = {width, height};
-
-        // color data callback
-        CallbackReadBuffer callback = [=](const ReadData& data) {
-            assert(std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
-            const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
-
-            // save rgb image data into file using stb depending on file
-            try {
-                vcl::saveImageData(filename, size.x(), size.y(), d.data());
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Error saving image: " << e.what() << std::endl;
-            }
-        };
-
-        mReadRequest.emplace(size, callback);
-        return true;
-    }
+    /**
+     * @brief Automatically called by the DerivedRenderer when the window
+     * initializes.
+     * Initialization is requires in some backends+window manager combinations,
+     * and therefore it must be implemented (also if empty) in every Canvas
+     * class.
+     */
+    void onInit() {}
 
     /**
      * @brief Automatically called by the DerivedRenderer when the window
@@ -246,6 +205,71 @@ public:
 #if defined(__APPLE__) || defined(__linux__)
         bgfx::frame(); // needed on unix systems
 #endif             // __APPLE__ || __linux__
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * to read the depth buffer at a specific point.
+     *
+     * @param point
+     * @param callback
+     * @return
+     */
+    [[nodiscard]] bool onReadDepth(
+        const Point2i&     point,
+        CallbackReadBuffer callback = nullptr)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt         // read already requested
+            || point.x() < 0 || point.y() < 0       // point out of bounds
+            || point.x() >= mSize.x() || point.y() >= mSize.y()) {
+            return false;
+        }
+
+        mReadRequest.emplace(point, mSize, callback);
+        return true;
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * for a screenshot.
+     *
+     * @param filename
+     * @param width
+     * @param height
+     * @return
+     */
+    bool onScreenshot(
+        const std::string& filename,
+        uint               width  = 0,
+        uint               height = 0)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt) {      // read already requested
+            return false;
+        }
+
+        // get size
+        auto size = mSize;
+        if (width != 0 && height != 0)
+            size = {width, height};
+
+        // color data callback
+        CallbackReadBuffer callback = [=](const ReadData& data) {
+            assert(std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
+            const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
+
+            // save rgb image data into file using stb depending on file
+            try {
+                vcl::saveImageData(filename, size.x(), size.y(), d.data());
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error saving image: " << e.what() << std::endl;
+            }
+        };
+
+        mReadRequest.emplace(size, callback);
+        return true;
     }
 
 private:

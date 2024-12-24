@@ -84,14 +84,21 @@ class Renderer :
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
 
     // hide CanvasType member functions
-    using CanvasType::onInit;
     using CanvasType::size;
+    using CanvasType::onInit;
     using CanvasType::onResize;
     using CanvasType::onPaint;
+    using CanvasType::onReadDepth;
+    using CanvasType::onScreenshot;
 
     // hide WindowManagerType member functions
     using WindowManagerType::displayId;
     using WindowManagerType::winId;
+
+protected:
+    using CanvasType::viewId;
+
+    // TODO: find a way to hide the Drawer member functions here
 
 public:
     using ParentType = WindowManagerType::ParentType;
@@ -123,39 +130,7 @@ public:
     {
     }
 
-protected:
-    using CanvasType::viewId;
-
 private:
-    /***** Member functions called by CanvasType *****/
-
-    /**
-     * @brief The CanvasType is ready to draw, and asks the Renderer to call
-     * the `onDraw(uint())` function for every Drawer object.
-     */
-    void cnvDraw()
-    {
-        // call the onDraw member function of each Drawer object.
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onDraw(CanvasType::viewId()), ...);
-    }
-
-    /**
-     * @brief The CanvasType wants to draw only the content of the objects,
-     * without any decorator (e.g. axis, trackball, grid, etc.).
-     * This scenario is useful when the user wants to take a snapshot of the
-     * scene without any decoration. It asks the Renderer to call the
-     * `onDrawContent(uint())` function for every Drawer object.
-     */
-    void cnvDrawContent()
-    {
-        // call the onDrawContent member function of each Drawer object.
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onDrawContent(CanvasType::viewId()), ...);
-    }
-
     /***** Member functions called by WindowManagerType *****/
 
     /**
@@ -167,7 +142,10 @@ private:
     void wmInit()
     {
         CanvasType::onInit();
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onInit(), ...);
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
+             this)
+             ->onInit(),
+         ...);
     }
 
     /**
@@ -186,7 +164,10 @@ private:
         // call the onResize member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(this)->onResize(width, height), ...);
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
+             this)
+             ->onResize(width, height),
+         ...);
     }
 
     /**
@@ -415,6 +396,41 @@ private:
          ...);
     }
 
+    /***** Member functions called by CanvasType *****/
+
+    /**
+     * @brief The CanvasType is ready to draw, and asks the Renderer to call
+     * the `onDraw(uint())` function for every Drawer object.
+     */
+    void cnvDraw()
+    {
+        // call the onDraw member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
+             this)
+             ->onDraw(CanvasType::viewId()),
+         ...);
+    }
+
+    /**
+     * @brief The CanvasType wants to draw only the content of the objects,
+     * without any decorator (e.g. axis, trackball, grid, etc.).
+     * This scenario is useful when the user wants to take a snapshot of the
+     * scene without any decoration. It asks the Renderer to call the
+     * `onDrawContent(uint())` function for every Drawer object.
+     */
+    void cnvDrawContent()
+    {
+        // call the onDrawContent member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
+             this)
+             ->onDrawContent(CanvasType::viewId()),
+         ...);
+    }
+
     /***** Member functions called by Drawer objects *****/
 
     /**
@@ -453,7 +469,7 @@ private:
         const Point2i&     point,
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
-        return CanvasType::readDepth(point, callback);
+        return CanvasType::onReadDepth(point, callback);
     }
 };
 
