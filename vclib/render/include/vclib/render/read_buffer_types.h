@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef READ_BUFFER_TYPES_H
-#define READ_BUFFER_TYPES_H
+#ifndef VCL_RENDER_READ_BUFFER_TYPES_H
+#define VCL_RENDER_READ_BUFFER_TYPES_H
 
 #include <cstdint>
 #include <functional>
@@ -40,4 +40,4 @@ struct ReadBufferTypes
 
 } // namespace vcl
 
-#endif // READ_BUFFER_TYPES_H
+#endif // VCL_RENDER_READ_BUFFER_TYPES_H
