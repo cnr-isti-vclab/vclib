@@ -132,9 +132,9 @@ void MeshViewer::visibilityDrawableObjectChanged()
 {
     // get the selected drawable object
     uint i = mUI->drawVectorFrame->selectedDrawableObject();
-    auto m =
-        std::dynamic_pointer_cast<DrawableMeshI>(mListedDrawableObjects->at(i));
-    // if it is a DrawableMeshI, we must be sure that its render
+    auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+        mListedDrawableObjects->at(i));
+    // if it is a AbstractDrawableMesh, we must be sure that its render
     // settings are updated accordingly.
     if (m) {
         mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
@@ -150,17 +150,18 @@ void MeshViewer::visibilityDrawableObjectChanged()
 void MeshViewer::selectedDrawableObjectChanged(uint i)
 {
     // take the newly selected DrawableObject and check whether it is a
-    // DrawableMeshI
-    auto m =
-        std::dynamic_pointer_cast<DrawableMeshI>(mListedDrawableObjects->at(i));
+    // AbstractDrawableMesh
+    auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+        mListedDrawableObjects->at(i));
     if (m) {
-        // if it is a DrawableMeshI, update the RenderSettingsFrame, and
+        // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
         // set it enabled
         mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
         mUI->renderSettingsFrame->setEnabled(true);
     }
     else {
-        // it is not a DrawableMeshI, RenderSettingsFrame must be disabled
+        // it is not a AbstractDrawableMesh, RenderSettingsFrame must be
+        // disabled
         mUI->renderSettingsFrame->setEnabled(false);
     }
 }
@@ -178,13 +179,13 @@ void MeshViewer::renderSettingsUpdated()
     // The user changed the RenderSettings of the ith object.
     uint i = mUI->drawVectorFrame->selectedDrawableObject();
     if (mListedDrawableObjects->size() > 0) {
-        // The selected object must always be a DrawableMeshI, because the
-        // RenderSettingsFrame (which called this member function) is visible
-        // only when the selected Object is a DrawableMeshI
-        auto m = std::dynamic_pointer_cast<DrawableMeshI>(
+        // The selected object must always be a AbstractDrawableMesh, because
+        // the RenderSettingsFrame (which called this member function) is
+        // visible only when the selected Object is a AbstractDrawableMesh
+        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mListedDrawableObjects->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
-        // DrawableMeshI
+        // AbstractDrawableMesh
         m->setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
         mUI->viewer->update();
     }
@@ -203,7 +204,7 @@ void MeshViewer::updateGUI()
     uint selected = mUI->drawVectorFrame->selectedDrawableObject();
 
     if (selected != UINT_NULL) {
-        auto m = std::dynamic_pointer_cast<DrawableMeshI>(
+        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mListedDrawableObjects->at(selected));
         if (m) {
             mUI->renderSettingsFrame->setMeshRenderSettings(
