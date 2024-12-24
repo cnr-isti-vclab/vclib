@@ -106,7 +106,7 @@ public:
     // Attorneys
     class CNV;
     class WM;
-    class D;
+    class DRW;
 
     Renderer(ParentType* parent = nullptr) :
             Renderer("Renderer", 1024, 768, parent)
@@ -132,13 +132,8 @@ public:
 
 private:
     /***** Member functions called by WindowManagerType *****/
+    // Documentation is in the Renderer::WM inner class
 
-    /**
-     * @brief The WindowManagerType calls this member function when the window
-     * render backend is initialized. The Renderer propagates the init event to
-     * the CanvasType and to each Drawer object, by calling the `onInit(uint)`
-     * member function.
-     */
     void wmInit()
     {
         CanvasType::onInit();
@@ -148,15 +143,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when the window
-     * is resized, telling the new width and height. The Renderer propagates
-     * the resize event to the CanvasType and to each Drawer object, by calling
-     * the `onResize(uint, uint)` member function.
-     *
-     * @param width
-     * @param height
-     */
     void wmResize(uint width, uint height)
     {
         CanvasType::onResize(width, height);
@@ -170,31 +156,13 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when the window
-     * triggers a paint event.
-     */
     void wmPaint() { CanvasType::onPaint(); }
 
-    /**
-     * @brief The WindowManagerType calls this member function when the current
-     * modifiers are updated.
-     */
     void wmSetModifiers(const KeyModifiers& modifiers)
     {
         mKeyModifiers = modifiers;
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when a key is
-     * pressed.
-     *
-     * The event (along with the current key modifiers) is propagated to each
-     * Drawer object that is a EventDrawer object, by calling the
-     * `onKeyPress(Key::Enum, KeyModifiers)` member function.
-     *
-     * @param key
-     */
     void wmKeyPress(Key::Enum key)
     {
         // call onKeyPress member function of each Drawer object, ONLY if the
@@ -213,16 +181,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when a key is
-     * released.
-     *
-     * The event (along with the current key modifiers) is propagated to each
-     * Drawer object that is a EventDrawer object, by calling the
-     * `onKeyRelease(Key::Enum, KeyModifiers)` member function.
-     *
-     * @param key
-     */
     void wmKeyRelease(Key::Enum key)
     {
         // call onKeyRelease member function of each Drawer object, ONLY if the
@@ -241,17 +199,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when the mouse
-     * cursor is moved.
-     *
-     * The event (along with the current key modifiers) is propagated to each
-     * Drawer object that is a EventDrawer object, by calling the
-     * `onMouseMove(double, double, KeyModifiers)` member function.
-     *
-     * @param x
-     * @param y
-     */
     void wmMouseMove(double x, double y)
     {
         // call onMouseMove member function of each Drawer object, ONLY if the
@@ -270,19 +217,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when a mouse
-     * button is pressed.
-     *
-     * The event (along with the current key modifiers) is propagated to each
-     * Drawer object that is a EventDrawer object, by calling the
-     * `onMousePress(MouseButton::Enum, double, double, KeyModifiers)` member
-     * function.
-     *
-     * @param button
-     * @param x
-     * @param y
-     */
     void wmMousePress(MouseButton::Enum button, double x, double y)
     {
         // call onMousePress member function of each Drawer object, ONLY if the
@@ -301,19 +235,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when a mouse
-     * button is released.
-     *
-     * The event (along with the current key modifiers) is propagated to each
-     * Drawer object that is a EventDrawer object, by calling the
-     * `onMouseRelease(MouseButton::Enum, double, double, KeyModifiers)` member
-     * function.
-     *
-     * @param button
-     * @param x
-     * @param y
-     */
     void wmMouseRelease(MouseButton::Enum button, double x, double y)
     {
         // call onMouseRelease member function of each Drawer object, ONLY if
@@ -332,19 +253,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when a mouse
-     * button is double clicked.
-     *
-     * The event (along with the current key modifiers) is propagated to each
-     * Drawer object that is a EventDrawer object, by calling the
-     * `onMouseDoubleClick(MouseButton::Enum, double, double, KeyModifiers)`
-     * member function.
-     *
-     * @param button
-     * @param x
-     * @param y
-     */
     void wmMouseDoubleClick(MouseButton::Enum button, double x, double y)
     {
         // call onMouseDoubleClick member function of each Drawer object, ONLY
@@ -365,18 +273,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The WindowManagerType calls this member function when the mouse
-     * wheel is scrolled.
-     *
-     * The event (along with the current key modifiers) is propagated to each
-     * Drawer object that is a EventDrawer object, by calling the
-     * `onMouseScroll(double, double, KeyModifiers)` member function.
-     *
-     * @param button
-     * @param x
-     * @param y
-     */
     void wmMouseScroll(double x, double y)
     {
         // call onMouseScroll member function of each Drawer object, ONLY if the
@@ -397,11 +293,8 @@ private:
     }
 
     /***** Member functions called by CanvasType *****/
+    // Documentation is in the Renderer::CNV inner class
 
-    /**
-     * @brief The CanvasType is ready to draw, and asks the Renderer to call
-     * the `onDraw(uint())` function for every Drawer object.
-     */
     void cnvDraw()
     {
         // call the onDraw member function of each Drawer object.
@@ -413,13 +306,6 @@ private:
          ...);
     }
 
-    /**
-     * @brief The CanvasType wants to draw only the content of the objects,
-     * without any decorator (e.g. axis, trackball, grid, etc.).
-     * This scenario is useful when the user wants to take a snapshot of the
-     * scene without any decoration. It asks the Renderer to call the
-     * `onDrawContent(uint())` function for every Drawer object.
-     */
     void cnvDrawContent()
     {
         // call the onDrawContent member function of each Drawer object.
@@ -432,39 +318,12 @@ private:
     }
 
     /***** Member functions called by Drawer objects *****/
+    // Documentation is in the Renderer::DRW inner class
 
-    /**
-     * @brief A Drawer object can request the size of the canvas. This function
-     * is called by the Drawer object to request the size of the canvas.
-     *
-     * @return The size of the canvas.
-     */
     vcl::Point2<uint> dCanvasSize() const { return CanvasType::size(); }
 
-    /**
-     * @brief A Drawer object can request the frame buffer of the canvas.
-     *
-     * This function is called by the Drawer object to request the frame buffer
-     * of the canvas, that can be used to draw on it.
-     *
-     * @warning This function is supported only if the backend is bgfx.
-     *
-     * @return The frame buffer of the canvas.
-     */
     auto dCanvasFrameBuffer() const { return CanvasType::frameBuffer(); }
 
-    /**
-     * @brief A Drawer object can request the depth value at a specific point
-     * on the canvas. This function is called by the Drawer object to request
-     * the depth value at the specified point.
-     *
-     * @param[in] point: The point on the canvas where the depth value must be
-     * read.
-     * @param[in] callback: The callback function that will be called when the
-     * depth value is read. TODO: explain the callback function signature.
-     *
-     * @return true if the depth value is successfully read, false otherwise.
-     */
     [[nodiscard]] bool dReadDepth(
         const Point2i&     point,
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
@@ -475,27 +334,6 @@ private:
 
 /*** Inner classes: Attorneys ***/
 // (https://tinyurl.com/kp8m28je)
-
-/**
- * @brief The Renderer::CNV inner class is an Attorney that allow access to some
- * private member functions of the Renderer class to the CanvasType class.
- * They can be called only by the CanvasType class in the following way:
- * Renderer::CNV::update(static_cast<Renderer*>(this));
- */
-template<
-    template<typename> typename WindowManagerT,
-    template<typename> typename CanvasT,
-    template<typename> typename... Drawers>
-class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
-{
-    using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
-
-    friend CanvasType;
-
-    static void draw(Renderer* r) { r->cnvDraw(); }
-
-    static void drawContent(Renderer* r) { r->cnvDrawContent(); }
-};
 
 /**
  * @brief The Renderer::WM inner class is an Attorney that allow access to some
@@ -515,32 +353,99 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
 
     friend WindowManagerType;
 
+    /**
+     * @brief The WindowManagerType calls this member function when the window
+     * render backend is initialized. The Renderer propagates the init event to
+     * the CanvasType and to each Drawer object, by calling the `onInit(uint)`
+     * member function.
+     */
     static void init(Renderer* r) { r->wmInit(); }
 
+    /**
+     * @brief The WindowManagerType calls this member function when the window
+     * is resized, telling the new width and height. The Renderer propagates
+     * the resize event to the CanvasType and to each Drawer object, by calling
+     * the `onResize(uint, uint)` member function.
+     *
+     * @param width
+     * @param height
+     */
     static void resize(Renderer* r, uint width, uint height)
     {
         r->wmResize(width, height);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when the window
+     * triggers a paint event.
+     */
     static void paint(Renderer* r) { r->wmPaint(); }
 
+    /**
+     * @brief The WindowManagerType calls this member function when the current
+     * modifiers are updated.
+     */
     static void setModifiers(Renderer* r, const KeyModifiers& modifiers)
     {
         r->wmSetModifiers(modifiers);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when a key is
+     * pressed.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onKeyPress(Key::Enum, KeyModifiers)` member function.
+     *
+     * @param key
+     */
     static void keyPress(Renderer* r, Key::Enum key) { r->wmKeyPress(key); }
 
+    /**
+     * @brief The WindowManagerType calls this member function when a key is
+     * released.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onKeyRelease(Key::Enum, KeyModifiers)` member function.
+     *
+     * @param key
+     */
     static void keyRelease(Renderer* r, Key::Enum key)
     {
         r->wmKeyRelease(key);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when the mouse
+     * cursor is moved.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseMove(double, double, KeyModifiers)` member function.
+     *
+     * @param x
+     * @param y
+     */
     static void mouseMove(Renderer* r, double x, double y)
     {
         r->wmMouseMove(x, y);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when a mouse
+     * button is pressed.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMousePress(MouseButton::Enum, double, double, KeyModifiers)` member
+     * function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
     static void mousePress(
         Renderer*         r,
         MouseButton::Enum button,
@@ -550,6 +455,19 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
         r->wmMousePress(button, x, y);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when a mouse
+     * button is released.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseRelease(MouseButton::Enum, double, double, KeyModifiers)` member
+     * function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
     static void mouseRelease(
         Renderer*         r,
         MouseButton::Enum button,
@@ -559,6 +477,19 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
         r->wmMouseRelease(button, x, y);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when a mouse
+     * button is double clicked.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseDoubleClick(MouseButton::Enum, double, double, KeyModifiers)`
+     * member function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
     static void mouseDoubleClick(
         Renderer*         r,
         MouseButton::Enum button,
@@ -568,6 +499,18 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
         r->wmMouseDoubleClick(button, x, y);
     }
 
+    /**
+     * @brief The WindowManagerType calls this member function when the mouse
+     * wheel is scrolled.
+     *
+     * The event (along with the current key modifiers) is propagated to each
+     * Drawer object that is a EventDrawer object, by calling the
+     * `onMouseScroll(double, double, KeyModifiers)` member function.
+     *
+     * @param button
+     * @param x
+     * @param y
+     */
     static void mouseScroll(Renderer* r, double x, double y)
     {
         r->wmMouseScroll(x, y);
@@ -575,7 +518,39 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
 };
 
 /**
- * @brief The Renderer::D inner class is an Attorney that allow access to some
+ * @brief The Renderer::CNV inner class is an Attorney that allow access to some
+ * private member functions of the Renderer class to the CanvasType class.
+ * They can be called only by the CanvasType class in the following way:
+ * Renderer::CNV::update(static_cast<Renderer*>(this));
+ */
+template<
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT,
+    template<typename> typename... Drawers>
+class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
+{
+    using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+
+    friend CanvasType;
+
+    /**
+     * @brief The CanvasType is ready to draw, and asks the Renderer to call
+     * the `onDraw(uint())` function for every Drawer object.
+     */
+    static void draw(Renderer* r) { r->cnvDraw(); }
+
+    /**
+     * @brief The CanvasType wants to draw only the content of the objects,
+     * without any decorator (e.g. axis, trackball, grid, etc.).
+     * This scenario is useful when the user wants to take a snapshot of the
+     * scene without any decoration. It asks the Renderer to call the
+     * `onDrawContent(uint())` function for every Drawer object.
+     */
+    static void drawContent(Renderer* r) { r->cnvDrawContent(); }
+};
+
+/**
+ * @brief The Renderer::DRW inner class is an Attorney that allow access to some
  * private member functions of the Renderer class to the Drawer
  * classes.
  * They can be called only by the Drawer classes in the following way:
@@ -585,8 +560,10 @@ template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
     template<typename> typename... Drawers>
-class Renderer<WindowManagerT, CanvasT, Drawers...>::D
+class Renderer<WindowManagerT, CanvasT, Drawers...>::DRW
 {
+    /// @cond VCLIB_SHOW_DOCS
+
     // TODO: right now all the function in this inner class are public,
     // because variadic friends are still not allowed in C++.
     // It will allowed in C++26: https://stackoverflow.com/a/78246001/5851101
@@ -594,16 +571,47 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::D
     // the functions will be made private.
     //friend Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>...;
 public: // TODO - remove this when C++26 is supported
+
+    /**
+     * @brief A Drawer object can request the size of the canvas. This function
+     * is called by the Drawer object to request the size of the canvas.
+     *
+     * @return The size of the canvas.
+     *
+     * // TODO is this actually necessary???
+     */
     static Point2<uint> canvasSize(const Renderer* r)
     {
         return r->dCanvasSize();
     }
 
+    /**
+     * @brief A Drawer object can request the frame buffer of the canvas.
+     *
+     * This function is called by the Drawer object to request the frame buffer
+     * of the canvas, that can be used to draw on it.
+     *
+     * @warning This function is supported only if the backend is bgfx.
+     *
+     * @return The frame buffer of the canvas.
+     */
     static auto canvasFrameBuffer(const Renderer* r)
     {
         return r->dCanvasFrameBuffer();
     }
 
+    /**
+     * @brief A Drawer object can request the depth value at a specific point
+     * on the canvas. This function is called by the Drawer object to request
+     * the depth value at the specified point.
+     *
+     * @param[in] point: The point on the canvas where the depth value must be
+     * read.
+     * @param[in] callback: The callback function that will be called when the
+     * depth value is read. TODO: explain the callback function signature.
+     *
+     * @return true if the depth value is successfully read, false otherwise.
+     */
     [[nodiscard]] static bool readDepth(
         Renderer* r,
         const Point2i&     point,
@@ -612,6 +620,7 @@ public: // TODO - remove this when C++26 is supported
         return r->dReadDepth(point, callback);
     }
 
+    /// @endcond
 };
 
 } // namespace vcl

@@ -201,7 +201,7 @@ protected:
         const auto    proj = DTB::projectionMatrix();
         const auto    view = DTB::viewMatrix();
         // viewport
-        auto size = DRT::D::canvasSize(derived());
+        auto size = DRT::DRW::canvasSize(derived());
 
         const Point4f vp   = {.0f, .0f, float(size.x()), float(size.y())};
         auto callback      = [=, this](const ReadData& dt) {
@@ -225,7 +225,7 @@ protected:
         };
 
         mReadRequested =
-            DRT::D::readDepth(derived(), Point2i(p.x(), p.y()), callback);
+            DRT::DRW::readDepth(derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
             derived()->update();
     }

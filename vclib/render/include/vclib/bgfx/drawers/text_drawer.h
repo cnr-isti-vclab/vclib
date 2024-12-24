@@ -54,7 +54,7 @@ public:
 
     void onDraw(uint viewId) override final
     {
-        auto fbh = DRT::D::canvasFrameBuffer(derived());
+        auto fbh = DRT::DRW::canvasFrameBuffer(derived());
         mTextView.frame(fbh);
     }
 
