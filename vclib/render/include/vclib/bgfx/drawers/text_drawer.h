@@ -29,7 +29,7 @@
 namespace vcl {
 
 template<typename DerivedRenderer>
-class TextDrawer
+class TextDrawer : public PlainDrawer<DerivedRenderer>
 {
     using DRT = DerivedRenderer;
 
@@ -47,21 +47,15 @@ public:
         mTextView.init(width, height);
     }
 
-    void onInit(uint) {}
-
-    void onResize(uint width, uint height)
+    void onResize(uint width, uint height) override final
     {
         mTextView.resize(width, height);
     }
 
-    void onDraw(uint viewId)
+    void onDraw(uint viewId) override final
     {
         auto fbh = DRT::D::canvasFrameBuffer(derived());
         mTextView.frame(fbh);
-    }
-
-    void onDrawContent(uint)
-    {
     }
 
     // text

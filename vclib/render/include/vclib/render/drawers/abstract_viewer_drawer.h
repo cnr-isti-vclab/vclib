@@ -23,6 +23,8 @@
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
+#include "event_drawer.h"
+
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
@@ -42,7 +44,8 @@ namespace vcl {
  */
 template<typename DerivedRenderer>
 class AbstractViewerDrawer :
-        public DesktopTrackBall<float>
+        public DesktopTrackBall<float>,
+        public EventDrawer<DerivedRenderer>
 {
     bool mReadRequested = false;
 
