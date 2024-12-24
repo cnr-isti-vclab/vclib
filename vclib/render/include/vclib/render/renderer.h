@@ -136,7 +136,7 @@ private:
     /**
      * @brief The WindowManagerType calls this member function when the window
      * render backend is initialized. The Renderer propagates the init event to
-     * the CanvasType and to each Drawer object, by calling the `onInit()`
+     * the CanvasType and to each Drawer object, by calling the `onInit(uint)`
      * member function.
      */
     void wmInit()
@@ -144,7 +144,7 @@ private:
         CanvasType::onInit();
         (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
              this)
-             ->onInit(),
+             ->onInit(CanvasType::viewId()),
          ...);
     }
 

@@ -47,7 +47,7 @@ public:
         mTextView.init(width, height);
     }
 
-    void onInit() {}
+    void onInit(uint) {}
 
     void onResize(uint width, uint height)
     {

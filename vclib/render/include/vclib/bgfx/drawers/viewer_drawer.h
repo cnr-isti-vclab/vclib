@@ -23,8 +23,6 @@
 #ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
 #define VCL_BGFX_DRAWERS_VIEWER_DRAWER_H
 
-#include "../read_framebuffer_request.h"
-
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
@@ -69,7 +67,7 @@ public:
         AVD::setDrawableObjectVector(v);
     }
 
-    void onInit()
+    void onInit(uint)
     {
         mAxis.init();
         mDirectionalLight.init();

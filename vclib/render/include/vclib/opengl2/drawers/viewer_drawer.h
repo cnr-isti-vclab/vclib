@@ -59,7 +59,7 @@ public:
         AVD::setDrawableObjectVector(v);
     }
 
-    void onInit()
+    void onInit(uint)
     {
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);

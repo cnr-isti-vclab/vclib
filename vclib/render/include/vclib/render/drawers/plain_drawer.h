@@ -34,7 +34,7 @@ public:
     PlainDrawer() = default;
     PlainDrawer(uint, uint) {}
 
-    virtual void onInit() {}
+    virtual void onInit(uint viewId) {}
 
     virtual void onResize(uint width, uint height) {}
 
