@@ -18,10 +18,10 @@ public:
         // add a QPushButton
         QPushButton* button = new QPushButton("Click me", this);
 
-               // connect the button to a slot
+        // connect the button to a slot
         connect(button, &QPushButton::clicked, this, &Basic::onButtonClicked);
 
-               // add the button to a layout
+        // add the button to a layout
         QVBoxLayout* layout = new QVBoxLayout(this);
         layout->addWidget(button);
         this->setLayout(layout);
@@ -79,9 +79,9 @@ int main(int argc, char** argv)
 
     M.foo();
 
-           // Basic<int> c;
+    // Basic<int> c;
 
-           // c.show();
+    // c.show();
 
     return app.exec();
 }
