@@ -128,7 +128,7 @@ void MeshProcessingMainWindow::saveMeshAs()
         }
 
         uint i = mUI->meshViewer->selectedDrawableObject();
-        std::shared_ptr<DrawableObjectI> d = mMeshVector->at(i);
+        std::shared_ptr<DrawableObject> d = mMeshVector->at(i);
 
         std::shared_ptr<proc::MeshI> m = toMesh(d);
 
@@ -195,7 +195,7 @@ void MeshProcessingMainWindow::applyFilter(
             " seconds.");
 
     for (const auto& m : inputOutputMeshes) {
-        toDrawableMeshI(m)->updateBuffers();
+        toAbstractDrawableMesh(m)->updateBuffers();
     }
 
     for (const auto& m : outputMeshes) {
@@ -262,7 +262,7 @@ void MeshProcessingMainWindow::openFilterDialog(
     dock->show();
 }
 
-std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(
+std::shared_ptr<DrawableObject> MeshProcessingMainWindow::makeMeshDrawable(
     const std::shared_ptr<proc::MeshI>& mesh)
 {
     switch (mesh->type()) {
@@ -283,15 +283,15 @@ std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(
 }
 
 std::shared_ptr<proc::MeshI> MeshProcessingMainWindow::toMesh(
-    const std::shared_ptr<DrawableObjectI>& drawable)
+    const std::shared_ptr<DrawableObject>& drawable)
 {
     return std::dynamic_pointer_cast<proc::MeshI>(drawable);
 }
 
-std::shared_ptr<DrawableMeshI> MeshProcessingMainWindow::toDrawableMeshI(
+std::shared_ptr<AbstractDrawableMesh> MeshProcessingMainWindow::toAbstractDrawableMesh(
     const std::shared_ptr<proc::MeshI>& mesh)
 {
-    return std::dynamic_pointer_cast<DrawableMeshI>(mesh);
+    return std::dynamic_pointer_cast<AbstractDrawableMesh>(mesh);
 }
 
 } // namespace vcl::qt
