@@ -21,11 +21,13 @@
  ****************************************************************************/
 
 #include "canvas.h"
+#include "drawers.h"
 #include "window_manager.h"
 
 int main()
 {
     canvasStaticAsserts();
+    drawersStaticAsserts();
     windowManagerStaticAsserts();
 
     return 0;
