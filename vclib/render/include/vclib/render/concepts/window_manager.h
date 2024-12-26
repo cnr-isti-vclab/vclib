@@ -92,13 +92,13 @@ concept WindowManagerConcept =
         uint u) {
         typename RemoveRef<T>::ParentType;
 
-        T();
-        T(pPtr);
-        T(s, u, u);
-        T(s, u, u, pPtr);
+        RemoveRef<T>();
+        RemoveRef<T>(pPtr);
+        RemoveRef<T>(s, u, u);
+        RemoveRef<T>(s, u, u, pPtr);
 
         { obj.windowTitle() } -> std::same_as<const std::string&>;
-        { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
+
 
         { obj.width() } -> std::convertible_to<uint>;
         { obj.height() } -> std::convertible_to<uint>;
@@ -108,7 +108,12 @@ concept WindowManagerConcept =
         obj.winId(); // todo: try to check return type, should be void*
         { obj.displayId() } -> std::same_as<void*>;
 
-        { obj.update() } -> std::same_as<void>;
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
+
+            { obj.update() } -> std::same_as<void>;
+        };
     };
 
 } // namespace vcl

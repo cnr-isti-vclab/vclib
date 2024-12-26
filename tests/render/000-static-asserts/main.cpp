@@ -21,10 +21,12 @@
  ****************************************************************************/
 
 #include "canvas.h"
+#include "window_manager.h"
 
 int main()
 {
     canvasStaticAsserts();
+    windowManagerStaticAsserts();
 
     return 0;
 }

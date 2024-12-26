@@ -186,7 +186,7 @@ public:
 
     Point2f dpiScale() const { return Point2f(mScaleX, mScaleY); }
 
-    void* winId()
+    void* winId() const
     {
         void* nwh = nullptr;
 
@@ -205,7 +205,7 @@ public:
         return nwh;
     }
 
-    void* displayId()
+    void* displayId() const
     {
         void* ndt = nullptr;
 #ifdef __linux__

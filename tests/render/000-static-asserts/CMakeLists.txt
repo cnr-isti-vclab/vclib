@@ -27,6 +27,7 @@ project(vclib-test-${TEST_NAME})
 
 set(HEADERS
     canvas.h
+    window_manager.h
 )
 
 set(SOURCES
