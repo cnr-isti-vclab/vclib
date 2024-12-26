@@ -28,7 +28,61 @@
 #include <concepts>
 
 namespace vcl {
-
+/**
+ * @brief The WindowManagerConcept concept is used to check if a class satisfies
+ * the requirements of the WindowManager concept.
+ *
+ * Each class that satisfies this concept can be used as a window manager in the
+ * @ref vcl::Renderer class (first template parameter). The WindowManager class
+ * is responsible for managing the window and the window events.
+ *
+ * It is a class that is templated on the Renderer class (using the CRTP
+ * pattern). The class is then allowed to access the member functions of the
+ * public members of the @ref vcl::Renderer class and all the members of the
+ * @ref vcl::Renderer::WM inner class.
+ *
+ * Moreoever, to work correctly with the Renderer class, the Canvas class and
+ * the Drawer classes, **the WindowManager class should call for each event**
+ * (e.g. init, resize, mouseMove, ...) **the corresponding member function of
+ * the vcl::Renderer::WM inner class**. This is necessary to propagate the event
+ * to the Canvas and to the Drawer objects. This requirement is not modeled in
+ * this concept definition because any platform can have different event
+ * handling.
+ *
+ * @par Constructors
+ *
+ * The class must have the following constructors:
+ * - `WindowManagerType(ParentType* parent = nullptr)`: Default constructor that
+ * initializes the window manager with a parent object (if available).
+ * - `WindowManagerType(const std::string& windowTitle, uint width, uint height,
+ * ParentType* parent = nullptr)`: Constructor that initializes the window
+ * manager with the window title, the initial width and height of the window,
+ * and a parent object (if available).
+ *
+ * @par Inner types
+ *
+ * The class must have the following inner types:
+ * - `ParentType`: The type of the parent object of the window manager. This
+ * object is used to propagate events from the window manager to the parent
+ * object, if available. The parent object is necessary only on some platforms
+ * (e.g. Qt). If the parent object is not available, the type should be set to
+ * `void`.
+ *
+ * @par Member functions
+ *
+ * The class must have the following member functions:
+ * - `windowTitle() -> const std::string&`: Returns the title of the window.
+ * - `setWindowTitle(const std::string&) -> void`: Sets the title of the window.
+ * - `width() -> uint`: Returns the width of the window.
+ * - `height() -> uint`: Returns the height of the window.
+ * - `dpiScale() -> Point2Concept`: Returns the DPI scale of the window.
+ * - `winId() -> void*`: Returns the platform dependent identifier of the
+ * window.
+ * - `displayId() -> void*`: Returns the platform dependent identifier of the
+ * display where the window is placed. This parameter is required only on linux
+ * platforms, it can be left nullptr in other platforms.
+ * - `update() -> void`: Updates the window.
+ */
 template<typename T>
 concept WindowManagerConcept =
     requires (

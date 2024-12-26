@@ -28,6 +28,73 @@
 
 namespace vcl {
 
+/**
+ * @brief The CanvasConcept concept is used to check if a class satisfies the
+ * requirements of the Canvas concept.
+ *
+ * Each class that satisfies this concept can be used as a canvas in the
+ * @ref vcl::Renderer class (second template parameter). The Canvas class is
+ * responsible for managing the render backend and the surface where the Drawer
+ * objects can draw.
+ *
+ * It is a class that is templated on the Renderer class (using the CRTP
+ * pattern). The class is then allowed to access the member functions of the
+ * public members of the @ref vcl::Renderer class and all the members of the
+ * @ref vcl::Renderer::CNV inner class.
+ *
+ * @par Constructors
+ *
+ * The class must have the following constructors:
+ * - `CanvasType(void* winId, uint width, uint height)`: Constructor that
+ * initializes the canvas with the window id (the platform dependent
+ * identifier of the window where the canvas will be placed) and the initial
+ * size of the canvas.
+ * - `CanvasType(void* winId, uint width, uint height, void* displayId)`: Same
+ * as the previous constructor, but also takes the display id (the platform
+ * dependent identifier of the display where the window is placed - this
+ * parameter is required only on linux platforms, it can be left nullptr in
+ * other platforms).
+ *
+ * @par Inner types
+ *
+ * The class must have the following inner types:
+ * - `CallbackReadBuffer`: A type that represents the signature of the callback
+ * function that will be called when the depth value is read from the depth
+ * buffer of the Canvas. See the `onReadDepth` member function for more details.
+ *
+ * @par Member functions
+ *
+ * The class must have the following member functions:
+ * - `size() -> Point2Concept`: Returns the size of the canvas, as a Point2i
+ * object having the width as x() and height as y().
+ * - `viewId() -> uint`: Returns an unsigned integer that represents the view
+ * id of the canvas. The view id is used to identify the canvas when drawing
+ * content on it, and it is passed to the Drawer objects at each draw call.
+ * - `onInit() -> void`: Called when the canvas is initialized. This function
+ * is called by the Renderer class when the WindowManager of the vcl::Renderer
+ * is initialized. This function should contain all the initialization calls
+ * that cannot be done in the constructor (e.g. because the WindowManager
+ * could not guarantee the initialization of the backend context in the
+ * constructor).
+ * - `onResize(uint width, uint height) -> void`: Called when the canvas is
+ * resized. This function is called by the Renderer class when the WindowManager
+ * of the vcl::Renderer is resized. The function should resize the canvas to
+ * the new size.
+ * - `onPaint() -> void`: Called when the canvas must be repainted. This
+ * function is called by the Renderer class when the WindowManager of the
+ * vcl::Renderer is repainted. The function should draw the content of the
+ * canvas, by calling the vcl::Renderer::CNV::draw() member function of the
+ * Renderer class.
+ * - `onReadDepth(const vcl::Point2i& point, CallbackReadBuffer callback) ->
+ * bool`: Called when a Drawer object asks to read the depth value at the
+ * specified point on the canvas. The function should read the depth value at
+ * the specified point and call the callback function with the depth value.
+ * - `onScreenshot(const std::string& filename, uint width = 0, uint height = 0)
+ * -> bool`: Called when a Drawer object asks for a screenshot of the canvas.
+ * The function should take a screenshot of the canvas and save it to the
+ * specified filename. If the width and height are specified, the screenshot
+ * should be resized to the specified dimensions.
+ */
 template<typename T>
 concept CanvasConcept = requires (
     T&&                                       obj,
@@ -36,6 +103,7 @@ concept CanvasConcept = requires (
     vcl::Point2i                              p,
     typename RemoveRef<T>::CallbackReadBuffer cbrb,
     std::string                               str) {
+
     typename RemoveRef<T>::CallbackReadBuffer;
 
     T(vPtr, u, u);

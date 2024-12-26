@@ -337,10 +337,16 @@ private:
 
 /**
  * @brief The Renderer::WM inner class is an Attorney that allow access to some
- * private member functions of the Renderer class to the WindowManager
+ * private member functions of the Renderer class to the WindowManagerType
  * class.
- * They can be called only by the WindowManager class in the following way:
+ *
+ * The member functions of the Renderer::WM inner class can be called only by
+ * the WindowManagerType class. For example, to call the init member function,
+ * the WindowManagerType can call it in the following way:
+ *
+ * @code{.cpp}
  * Renderer::WM::init(static_cast<Renderer*>(this));
+ * @endcode
  */
 template<
     template<typename> typename WindowManagerT,
@@ -520,8 +526,14 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
 /**
  * @brief The Renderer::CNV inner class is an Attorney that allow access to some
  * private member functions of the Renderer class to the CanvasType class.
- * They can be called only by the CanvasType class in the following way:
+ *
+ * The member functions of the Renderer::CNV inner class can be called only by
+ * the CanvasType class. For example, to call the update member function,
+ * the CanvasType can call it in the following way:
+ *
+ * @code{.cpp}
  * Renderer::CNV::update(static_cast<Renderer*>(this));
+ * @endcode
  */
 template<
     template<typename> typename WindowManagerT,
@@ -553,8 +565,14 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
  * @brief The Renderer::DRW inner class is an Attorney that allow access to some
  * private member functions of the Renderer class to the Drawer
  * classes.
- * They can be called only by the Drawer classes in the following way:
- * Renderer::D::canvasSize(static_cast<Renderer*>(this));
+ *
+ * The member functions of the Renderer::DRW inner class can be called only by
+ * the Drawer classes. For example, to call the canvasFrameBuffer member
+ * function, the Drawer can call it in the following way:
+ *
+ * @code{.cpp}
+ * Renderer::DRW::canvasFrameBuffer(static_cast<Renderer*>(this));
+ * @endcode
  */
 template<
     template<typename> typename WindowManagerT,
@@ -562,8 +580,6 @@ template<
     template<typename> typename... Drawers>
 class Renderer<WindowManagerT, CanvasT, Drawers...>::DRW
 {
-    /// @cond VCLIB_SHOW_DOCS
-
     // TODO: right now all the function in this inner class are public,
     // because variadic friends are still not allowed in C++.
     // It will allowed in C++26: https://stackoverflow.com/a/78246001/5851101
@@ -619,8 +635,6 @@ public: // TODO - remove this when C++26 is supported
     {
         return r->dReadDepth(point, callback);
     }
-
-    /// @endcond
 };
 
 } // namespace vcl
