@@ -52,135 +52,139 @@ void drawersStaticAsserts()
 {
     using namespace vcl;
 
-    using RendererType = Renderer<WM, Canvas>;
+    using RendererTypePD = Renderer<WM, Canvas, PlainDrawer>;
+    using RendererTypeED = Renderer<WM, Canvas, EventDrawer>;
+    using RendererTypeVD = Renderer<WM, Canvas, ViewerDrawer>;
 
     static_assert(
-        DrawerConcept<PlainDrawer<RendererType>>,
+        DrawerConcept<PlainDrawer<RendererTypePD>>,
         "PlainDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const PlainDrawer<RendererType>>,
+        DrawerConcept<const PlainDrawer<RendererTypePD>>,
         "const PlainDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<PlainDrawer<RendererType>&>,
+        DrawerConcept<PlainDrawer<RendererTypePD>&>,
         "PlainDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const PlainDrawer<RendererType>&>,
+        DrawerConcept<const PlainDrawer<RendererTypePD>&>,
         "const PlainDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<PlainDrawer<RendererType>&&>,
+        DrawerConcept<PlainDrawer<RendererTypePD>&&>,
         "PlainDrawer&& does not satisfy the DrawerConcept");
 
     static_assert(
-        !EventDrawerConcept<PlainDrawer<RendererType>>,
+        !EventDrawerConcept<PlainDrawer<RendererTypePD>>,
         "PlainDrawer does satisfy the EventDrawerConcept");
     // static_assert(
-    //     !EventDrawerConcept<const PlainDrawer<RendererType>>,
+    //     !EventDrawerConcept<const PlainDrawer<RendererTypePD>>,
     //     "const PlainDrawer does satisfy the EventDrawerConcept");
     static_assert(
-        !EventDrawerConcept<PlainDrawer<RendererType>&>,
+        !EventDrawerConcept<PlainDrawer<RendererTypePD>&>,
         "PlainDrawer& does satisfy the EventDrawerConcept");
     // static_assert(
-    //     !EventDrawerConcept<const PlainDrawer<RendererType>&>,
+    //     !EventDrawerConcept<const PlainDrawer<RendererTypePD>&>,
     //     "const PlainDrawer& does satisfy the EventDrawerConcept");
     static_assert(
-        !EventDrawerConcept<PlainDrawer<RendererType>&&>,
+        !EventDrawerConcept<PlainDrawer<RendererTypePD>&&>,
         "PlainDrawer&& does satisfy the EventDrawerConcept");
 
     static_assert(
-        DrawerConcept<EventDrawer<RendererType>>,
+        DrawerConcept<EventDrawer<RendererTypeED>>,
         "EventDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const EventDrawer<RendererType>>,
+        DrawerConcept<const EventDrawer<RendererTypeED>>,
         "const EventDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<EventDrawer<RendererType>&>,
+        DrawerConcept<EventDrawer<RendererTypeED>&>,
         "EventDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const EventDrawer<RendererType>&>,
+        DrawerConcept<const EventDrawer<RendererTypeED>&>,
         "const EventDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<EventDrawer<RendererType>&&>,
+        DrawerConcept<EventDrawer<RendererTypeED>&&>,
         "EventDrawer&& does not satisfy the DrawerConcept");
 
     static_assert(
-        EventDrawerConcept<EventDrawer<RendererType>>,
+        EventDrawerConcept<EventDrawer<RendererTypeED>>,
         "EventDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const EventDrawer<RendererType>>,
+        EventDrawerConcept<const EventDrawer<RendererTypeED>>,
         "const EventDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<EventDrawer<RendererType>&>,
+        EventDrawerConcept<EventDrawer<RendererTypeED>&>,
         "EventDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const EventDrawer<RendererType>&>,
+        EventDrawerConcept<const EventDrawer<RendererTypeED>&>,
         "const EventDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<EventDrawer<RendererType>&&>,
+        EventDrawerConcept<EventDrawer<RendererTypeED>&&>,
         "EventDrawer&& does not satisfy the EventDrawerConcept");
 
     static_assert(
-        DrawerConcept<ViewerDrawer<RendererType>>,
+        DrawerConcept<ViewerDrawer<RendererTypeVD>>,
         "ViewerDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const ViewerDrawer<RendererType>>,
+        DrawerConcept<const ViewerDrawer<RendererTypeVD>>,
         "const ViewerDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<ViewerDrawer<RendererType>&>,
+        DrawerConcept<ViewerDrawer<RendererTypeVD>&>,
         "ViewerDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const ViewerDrawer<RendererType>&>,
+        DrawerConcept<const ViewerDrawer<RendererTypeVD>&>,
         "const ViewerDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<ViewerDrawer<RendererType>&&>,
+        DrawerConcept<ViewerDrawer<RendererTypeVD>&&>,
         "ViewerDrawer&& does not satisfy the DrawerConcept");
 
     static_assert(
-        EventDrawerConcept<ViewerDrawer<RendererType>>,
+        EventDrawerConcept<ViewerDrawer<RendererTypeVD>>,
         "ViewerDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const ViewerDrawer<RendererType>>,
+        EventDrawerConcept<const ViewerDrawer<RendererTypeVD>>,
         "const ViewerDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<ViewerDrawer<RendererType>&>,
+        EventDrawerConcept<ViewerDrawer<RendererTypeVD>&>,
         "ViewerDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const ViewerDrawer<RendererType>&>,
+        EventDrawerConcept<const ViewerDrawer<RendererTypeVD>&>,
         "const ViewerDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<ViewerDrawer<RendererType>&&>,
+        EventDrawerConcept<ViewerDrawer<RendererTypeVD>&&>,
         "ViewerDrawer&& does not satisfy the EventDrawerConcept");
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
+    using RendererTypeTD = Renderer<WM, Canvas, TextDrawer>;
+
     static_assert(
-        DrawerConcept<TextDrawer<RendererType>>,
+        DrawerConcept<TextDrawer<RendererTypeTD>>,
         "TextDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const TextDrawer<RendererType>>,
+        DrawerConcept<const TextDrawer<RendererTypeTD>>,
         "const TextDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<TextDrawer<RendererType>&>,
+        DrawerConcept<TextDrawer<RendererTypeTD>&>,
         "TextDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const TextDrawer<RendererType>&>,
+        DrawerConcept<const TextDrawer<RendererTypeTD>&>,
         "const TextDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<TextDrawer<RendererType>&&>,
+        DrawerConcept<TextDrawer<RendererTypeTD>&&>,
         "TextDrawer&& does not satisfy the DrawerConcept");
 
     static_assert(
-        !EventDrawerConcept<TextDrawer<RendererType>>,
+        !EventDrawerConcept<TextDrawer<RendererTypeTD>>,
         "TextDrawer does satisfy the EventDrawerConcept");
     // static_assert(
-    //     !EventDrawerConcept<const TextDrawer<RendererType>>,
+    //     !EventDrawerConcept<const TextDrawer<RendererTypeTD>>,
     //     "const TextDrawer does satisfy the EventDrawerConcept");
     static_assert(
-        !EventDrawerConcept<TextDrawer<RendererType>&>,
+        !EventDrawerConcept<TextDrawer<RendererTypeTD>&>,
         "TextDrawer& does satisfy the EventDrawerConcept");
     // static_assert(
-    //     !EventDrawerConcept<const TextDrawer<RendererType>&>,
+    //     !EventDrawerConcept<const TextDrawer<RendererTypeTD>&>,
     //     "const TextDrawer& does satisfy the EventDrawerConcept");
     static_assert(
-        !EventDrawerConcept<TextDrawer<RendererType>&&>,
+        !EventDrawerConcept<TextDrawer<RendererTypeTD>&&>,
         "TextDrawer&& does satisfy the EventDrawerConcept");
 #endif
 }
