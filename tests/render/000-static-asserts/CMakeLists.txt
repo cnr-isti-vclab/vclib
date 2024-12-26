@@ -28,6 +28,7 @@ project(vclib-test-${TEST_NAME})
 set(HEADERS
     canvas.h
     drawers.h
+    renderer.h
     window_manager.h
 )
 

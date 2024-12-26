@@ -22,12 +22,14 @@
 
 #include "canvas.h"
 #include "drawers.h"
+#include "renderer.h"
 #include "window_manager.h"
 
 int main()
 {
     canvasStaticAsserts();
     drawersStaticAsserts();
+    rendererStaticAsserts();
     windowManagerStaticAsserts();
 
     return 0;

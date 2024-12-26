@@ -29,17 +29,22 @@ namespace vcl {
 
 template<typename T>
 concept RendererConcept =
-    requires (T&& obj, typename T::ParentType* pPtr, std::string s, uint u) {
+    requires (
+        T&&                                obj,
+        typename RemoveRef<T>::ParentType* pPtr,
+        std::string                        s,
+        uint                               u) {
         typename RemoveRef<T>::ParentType;
 
-        T();
-        T(pPtr);
-        T(s, u, u);
-        T(s, u, u, pPtr);
+        RemoveRef<T>();
+        RemoveRef<T>(pPtr);
+        RemoveRef<T>(s, u, u);
+        RemoveRef<T>(s, u, u, pPtr);
 
-        // { obj.update() } -> std::same_as<void>;
-        // { obj.draw() } -> std::same_as<void>;
-        // { obj.drawContent() } -> std::same_as<void>;
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.update() } -> std::same_as<void>;
+        };
     };
 
 } // namespace vcl

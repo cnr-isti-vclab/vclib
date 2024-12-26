@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef VCL_RENDER_RENDERER_H
+#define VCL_RENDER_RENDERER_H
 
 #include "concepts/canvas.h"
 #include "concepts/event_drawer.h"
@@ -639,4 +639,4 @@ public: // TODO - remove this when C++26 is supported
 
 } // namespace vcl
 
-#endif // RENDERER_H
+#endif // VCL_RENDER_RENDERER_H
