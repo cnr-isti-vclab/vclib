@@ -25,10 +25,7 @@ find_package(glfw3 3 QUIET)
 if (VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
     message(STATUS "- GLFW - using system-provided library")
 
-    add_library(vclib-3rd-glfw INTERFACE)
-    target_link_libraries(vclib-3rd-glfw INTERFACE glfw)
-
-    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-glfw)
+    set(VCLIB_USES_GLFW TRUE)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
     message(STATUS "- GLFW - using downloaded source")
@@ -49,11 +46,17 @@ elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
 
     FetchContent_MakeAvailable(glfw3)
 
+    set(VCLIB_USES_GLFW TRUE)
+endif()
+
+if (VCLIB_USES_GLFW)
     add_library(vclib-3rd-glfw INTERFACE)
     target_link_libraries(vclib-3rd-glfw INTERFACE glfw)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-glfw)
 
+    target_compile_definitions(vclib-3rd-glfw INTERFACE
+        VCLIB_WITH_GLFW)
 else()
     message(STATUS "- GLFW - not found, skipping")
 endif()

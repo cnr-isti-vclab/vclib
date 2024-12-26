@@ -106,19 +106,22 @@ concept CanvasConcept = requires (
 
     typename RemoveRef<T>::CallbackReadBuffer;
 
-    T(vPtr, u, u);
-    T(vPtr, u, u, vPtr);
+    RemoveRef<T>(vPtr, u, u);
+    RemoveRef<T>(vPtr, u, u, vPtr);
 
     { obj.size() } -> Point2Concept;
     { obj.viewId() } -> std::convertible_to<uint>;
 
-    { obj.onInit() } -> std::same_as<void>; // qt+opengl requires init
-    { obj.onResize(u, u) } -> std::same_as<void>;
-    { obj.onPaint() } -> std::same_as<void>;
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.onInit() } -> std::same_as<void>; // qt+opengl requires init
+        { obj.onResize(u, u) } -> std::same_as<void>;
+        { obj.onPaint() } -> std::same_as<void>;
 
-    { obj.onReadDepth(p, cbrb) } -> std::same_as<bool>;
-    { obj.onScreenshot(str) } -> std::same_as<bool>;
-    { obj.onScreenshot(str, u, u) } -> std::same_as<bool>;
+        { obj.onReadDepth(p, cbrb) } -> std::same_as<bool>;
+        { obj.onScreenshot(str) } -> std::same_as<bool>;
+        { obj.onScreenshot(str, u, u) } -> std::same_as<bool>;
+    };
 };
 
 } // namespace vcl

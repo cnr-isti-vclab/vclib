@@ -107,7 +107,7 @@ public:
 
     Point2<uint> size() const { return mSize; }
 
-    uint viewId() { return 0; }
+    uint viewId() const { return 0; }
 
     /**
      * @brief Automatically called by the DerivedRenderer when the window

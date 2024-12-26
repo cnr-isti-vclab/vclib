@@ -20,40 +20,12 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
+cmake_minimum_required(VERSION 3.24)
+project(vclib-render-tests)
 
-if (VCLIB_ALLOW_SYSTEM_VCG AND (DEFINED VCG_INCLUDE_DIRS OR DEFINED VCG_DIR))
-    if (DEFINED VCG_DIR)
-        set(VCG_INCLUDE_DIRS ${VCG_DIR})
-    endif()
-    message(STATUS "- VCG - using system-provided library")
-    set(VCLIB_USES_VCG TRUE)
-else()
-    if (VCLIB_ALLOW_DOWNLOAD_VCG)
-        message(STATUS "- VCG - using downloaded source")
-        include(FetchContent)
-        FetchContent_Declare(
-            vcglib
-            GIT_REPOSITORY https://github.com/cnr-isti-vclab/vcglib.git
-            GIT_TAG        origin/devel) # TODO: change to next version of vcg
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-        FetchContent_MakeAvailable(vcglib)
-        set(VCG_INCLUDE_DIRS ${vcglib_SOURCE_DIR})
-        set(VCLIB_USES_VCG TRUE)
-    else()
-        message(STATUS "- VCG - not found, skipping")
-    endif()
+if (TARGET vclib-3rd-qt OR TARGET vclib-3rd-glfw)
+    add_subdirectory(000-static-asserts)
 endif()
 
-if (VCLIB_USES_VCG)
-    add_library(vclib-3rd-vcg INTERFACE)
-    target_include_directories(vclib-3rd-vcg INTERFACE
-        ${VCG_INCLUDE_DIRS})
-    set_target_properties(
-        vclib-3rd-vcg
-        PROPERTIES
-        VCG_INCLUDE_DIRS ${VCG_INCLUDE_DIRS})
-    target_compile_definitions(vclib-3rd-vcg INTERFACE
-        VCLIB_WITH_VCG)
-
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-vcg)
-endif()
