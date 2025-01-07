@@ -5,6 +5,8 @@
 
 #include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 
+#include <vclib/bgfx_imgui/imgui_shaders.h>
+
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
 #include <bx/allocator.h>
@@ -70,25 +72,25 @@ inline bool checkAvailTransientBuffers(uint32_t _numVertices, const bgfx::Vertex
 // #include "icons_kenney.ttf.h"
 // #include "icons_font_awesome.ttf.h"
 
-#include <vclib/bgfx_imgui/vs_ocornut_imgui.bin.h>
-#include <vclib/bgfx_imgui/fs_ocornut_imgui.bin.h>
-#include <vclib/bgfx_imgui/vs_imgui_image.bin.h>
-#include <vclib/bgfx_imgui/fs_imgui_image.bin.h>
+// #include <vclib/bgfx_imgui/vs_ocornut_imgui.bin.h>
+// #include <vclib/bgfx_imgui/fs_ocornut_imgui.bin.h>
+// #include <vclib/bgfx_imgui/vs_imgui_image.bin.h>
+// #include <vclib/bgfx_imgui/fs_imgui_image.bin.h>
 
 // #include <vclib/bgfx/imgui/roboto_regular.ttf.h>
 // #include <vclib/bgfx/imgui/robotomono_regular.ttf.h>
 // #include <vclib/bgfx/imgui/icons_kenney.ttf.h>
 // #include <vclib/bgfx/imgui/icons_font_awesome.ttf.h>
 
-static const bgfx::EmbeddedShader s_embeddedShaders[] =
-{
-	BGFX_EMBEDDED_SHADER(vs_ocornut_imgui),
-	BGFX_EMBEDDED_SHADER(fs_ocornut_imgui),
-	BGFX_EMBEDDED_SHADER(vs_imgui_image),
-	BGFX_EMBEDDED_SHADER(fs_imgui_image),
+// static const bgfx::EmbeddedShader s_embeddedShaders[] =
+// {
+// 	BGFX_EMBEDDED_SHADER(vs_ocornut_imgui),
+// 	BGFX_EMBEDDED_SHADER(fs_ocornut_imgui),
+// 	BGFX_EMBEDDED_SHADER(vs_imgui_image),
+// 	BGFX_EMBEDDED_SHADER(fs_imgui_image),
 
-	BGFX_EMBEDDED_SHADER_END()
-};
+// 	BGFX_EMBEDDED_SHADER_END()
+// };
 
 // struct FontRangeMerge
 // {
@@ -399,18 +401,20 @@ struct OcornutImguiContext
 #endif // USE_ENTRY
 
 		bgfx::RendererType::Enum type = bgfx::getRendererType();
-		m_program = bgfx::createProgram(
+		m_program = vcl::loadProgram(vcl::ImGuiShaders::ORCONUT_IMGUI, type);
+			/*bgfx::createProgram(
 			  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_ocornut_imgui")
 			, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_ocornut_imgui")
 			, true
-			);
+			);*/
 
 		u_imageLodEnabled = bgfx::createUniform("u_imageLodEnabled", bgfx::UniformType::Vec4);
-		m_imageProgram = bgfx::createProgram(
+		m_imageProgram = vcl::loadProgram(vcl::ImGuiShaders::IMGUI_IMAGE, type);
+			/*bgfx::createProgram(
 			  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_imgui_image")
 			, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_imgui_image")
 			, true
-			);
+			);*/
 
 		m_layout
 			.begin()
