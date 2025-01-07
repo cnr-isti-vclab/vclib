@@ -126,8 +126,10 @@ void CanvasOpenGL2::readDepthData()
     // normalize depth into [0,1] interval
     depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
 
+    ReadData rd = FloatData({depth});
+
     // callback
-    mReadBufferCallback({depth});
+    mReadBufferCallback(rd);
 
     // cleanup
     mReadDepthPoint     = {-1, -1};

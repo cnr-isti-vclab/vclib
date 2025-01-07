@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2024                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -19,3 +19,25 @@
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
+
+#ifndef VCL_RENDER_READ_BUFFER_TYPES_H
+#define VCL_RENDER_READ_BUFFER_TYPES_H
+
+#include <cstdint>
+#include <functional>
+#include <variant>
+#include <vector>
+
+namespace vcl {
+
+struct ReadBufferTypes
+{
+    using FloatData          = std::vector<float>;
+    using ByteData           = std::vector<uint8_t>;
+    using ReadData           = std::variant<FloatData, ByteData>;
+    using CallbackReadBuffer = std::function<void(const ReadData&)>;
+};
+
+} // namespace vcl
+
+#endif // VCL_RENDER_READ_BUFFER_TYPES_H

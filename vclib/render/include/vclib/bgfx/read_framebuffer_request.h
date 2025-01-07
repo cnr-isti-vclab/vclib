@@ -24,12 +24,8 @@
 #define VCL_BGFX_READ_FRAMEBUFFER_REQUEST_H
 
 #include <bgfx/bgfx.h>
+#include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/point.h>
-
-#include <cstdint>
-#include <functional>
-#include <variant>
-#include <vector>
 
 namespace vcl {
 
@@ -38,10 +34,10 @@ namespace detail {
 class ReadFramebufferRequest
 {
 public:
-    using FloatData          = std::vector<float>;
-    using ByteData           = std::vector<uint8_t>;
-    using ReadData           = std::variant<FloatData, ByteData>;
-    using CallbackReadBuffer = std::function<void(const ReadData&)>;
+    using FloatData          = ReadBufferTypes::FloatData;
+    using ByteData           = ReadBufferTypes::ByteData;
+    using ReadData           = ReadBufferTypes::ReadData;
+    using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
     // Read depth constructor
     ReadFramebufferRequest(
