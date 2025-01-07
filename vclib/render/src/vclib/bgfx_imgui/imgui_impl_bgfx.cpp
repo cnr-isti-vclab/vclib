@@ -3,7 +3,7 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-#include <vclib/bgfx/imgui/imgui_impl_bgfx.h>
+#include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
@@ -70,10 +70,10 @@ inline bool checkAvailTransientBuffers(uint32_t _numVertices, const bgfx::Vertex
 // #include "icons_kenney.ttf.h"
 // #include "icons_font_awesome.ttf.h"
 
-#include <vclib/bgfx/imgui/vs_ocornut_imgui.bin.h>
-#include <vclib/bgfx/imgui/fs_ocornut_imgui.bin.h>
-#include <vclib/bgfx/imgui/vs_imgui_image.bin.h>
-#include <vclib/bgfx/imgui/fs_imgui_image.bin.h>
+#include <vclib/bgfx_imgui/vs_ocornut_imgui.bin.h>
+#include <vclib/bgfx_imgui/fs_ocornut_imgui.bin.h>
+#include <vclib/bgfx_imgui/vs_imgui_image.bin.h>
+#include <vclib/bgfx_imgui/fs_imgui_image.bin.h>
 
 // #include <vclib/bgfx/imgui/roboto_regular.ttf.h>
 // #include <vclib/bgfx/imgui/robotomono_regular.ttf.h>

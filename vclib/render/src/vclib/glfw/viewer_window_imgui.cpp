@@ -24,7 +24,7 @@
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 #include <imgui_impl_opengl2.h>
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
-#include <vclib/bgfx/imgui/imgui_impl_bgfx.h>
+#include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 #endif
 #include <imgui_impl_glfw.h>
 #include <vclib/glfw/viewer_window_imgui.h>

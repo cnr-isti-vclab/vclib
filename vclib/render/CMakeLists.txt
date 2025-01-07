@@ -65,6 +65,20 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
         "shaders/vclib/bgfx/*.sh" "shaders/vclib/bgfx/*.sc")
     list(APPEND SHADERS ${SHADERS_BGFX})
+
+    if (TARGET vclib-3rd-imgui)
+        file(GLOB_RECURSE HEADERS_BGFX_IMGUI CONFIGURE_DEPENDS
+            "include/vclib/bgfx_imgui/*.h")
+        list(APPEND HEADERS ${HEADERS_BGFX_IMGUI})
+
+        file(GLOB_RECURSE SOURCES_BGFX_IMGUI CONFIGURE_DEPENDS
+            "src/vclib/bgfx_imgui/*.cpp")
+        list(APPEND SOURCES ${SOURCES_BGFX_IMGUI})
+
+        file(GLOB_RECURSE SHADERS_BGFX_IMGUI CONFIGURE_DEPENDS
+            "shaders/vclib/bgfx_imgui/*.sh" "shaders/vclib/bgfx_imgui/*.sc")
+        list(APPEND SHADERS ${SHADERS_BGFX_IMGUI})
+    endif()
 endif()
 
 # if render engine is opengl2 - include sources that use opengl2
