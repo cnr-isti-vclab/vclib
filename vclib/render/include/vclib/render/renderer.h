@@ -61,9 +61,8 @@ class Renderer :
         public CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
         public Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>...
 {
-    using WindowManagerType =
-        WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
-    using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+    using WindowManagerType = WindowManagerT<Renderer>;
+    using CanvasType = CanvasT<Renderer>;
 
     static_assert(
         WindowManagerConcept<WindowManagerType>,
@@ -76,9 +75,7 @@ class Renderer :
         "class that satisfies the CanvasConcept.");
 
     static_assert(
-        (DrawerConcept<
-             Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>> &&
-         ...),
+        (DrawerConcept<Drawers<Renderer>> && ...),
         "All the Drawer types must satisfy the DrawerConcept.");
 
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
@@ -124,7 +121,7 @@ public:
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y(),
                 WindowManagerType::displayId()),
-            Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>(
+            Drawers<Renderer>(
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y())...
     {
@@ -137,9 +134,7 @@ private:
     void wmInit()
     {
         CanvasType::onInit();
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
-             this)
-             ->onInit(CanvasType::viewId()),
+        (static_cast<Drawers<Renderer>*>(this)->onInit(CanvasType::viewId()),
          ...);
     }
 
@@ -150,10 +145,7 @@ private:
         // call the onResize member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
-             this)
-             ->onResize(width, height),
-         ...);
+        (static_cast<Drawers<Renderer>*>(this)->onResize(width, height), ...);
     }
 
     void wmPaint() { CanvasType::onPaint(); }
@@ -175,10 +167,7 @@ private:
             }
         };
 
-        (lambda.template
-         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
-             this),
-         ...);
+        (lambda.template operator()<Drawers<Renderer>>(this), ...);
     }
 
     void wmKeyRelease(Key::Enum key)
@@ -193,10 +182,7 @@ private:
             }
         };
 
-        (lambda.template
-         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
-             this),
-         ...);
+        (lambda.template operator()<Drawers<Renderer>>(this), ...);
     }
 
     void wmMouseMove(double x, double y)
@@ -211,10 +197,7 @@ private:
             }
         };
 
-        (lambda.template
-         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
-             this),
-         ...);
+        (lambda.template operator()<Drawers<Renderer>>(this), ...);
     }
 
     void wmMousePress(MouseButton::Enum button, double x, double y)
@@ -229,10 +212,7 @@ private:
             }
         };
 
-        (lambda.template
-         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
-             this),
-         ...);
+        (lambda.template operator()<Drawers<Renderer>>(this), ...);
     }
 
     void wmMouseRelease(MouseButton::Enum button, double x, double y)
@@ -247,10 +227,7 @@ private:
             }
         };
 
-        (lambda.template
-         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
-             this),
-         ...);
+        (lambda.template operator()<Drawers<Renderer>>(this), ...);
     }
 
     void wmMouseDoubleClick(MouseButton::Enum button, double x, double y)
@@ -267,10 +244,7 @@ private:
             }
         };
 
-        (lambda.template
-         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
-             this),
-         ...);
+        (lambda.template operator()<Drawers<Renderer>>(this), ...);
     }
 
     void wmMouseScroll(double x, double y)
@@ -286,10 +260,7 @@ private:
             }
         };
 
-        (lambda.template
-         operator()<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>>(
-             this),
-         ...);
+        (lambda.template operator()<Drawers<Renderer>>(this), ...);
     }
 
     /***** Member functions called by CanvasType *****/
@@ -300,9 +271,7 @@ private:
         // call the onDraw member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
-             this)
-             ->onDraw(CanvasType::viewId()),
+        (static_cast<Drawers<Renderer>*>(this)->onDraw(CanvasType::viewId()),
          ...);
     }
 
@@ -311,9 +280,8 @@ private:
         // call the onDrawContent member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>*>(
-             this)
-             ->onDrawContent(CanvasType::viewId()),
+        (static_cast<Drawers<Renderer>*>(this)->onDrawContent(
+             CanvasType::viewId()),
          ...);
     }
 
@@ -354,8 +322,7 @@ template<
     template<typename> typename... Drawers>
 class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
 {
-    using WindowManagerType =
-        WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+    using WindowManagerType = WindowManagerT<Renderer>;
 
     friend WindowManagerType;
 
@@ -541,7 +508,7 @@ template<
     template<typename> typename... Drawers>
 class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
 {
-    using CanvasType = CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>;
+    using CanvasType = CanvasT<Renderer>;
 
     friend CanvasType;
 
