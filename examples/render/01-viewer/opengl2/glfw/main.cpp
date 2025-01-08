@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#include "get_drawable_mesh.h"
 
 #include <vclib/glfw/viewer_window.h>
 
@@ -30,6 +30,9 @@ int main(int argc, char** argv)
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+
+    drawable.color() = vcl::Color::Yellow;
+    drawable.updateBuffers();
 
     auto mrs = drawable.renderSettings();
     mrs.setSurfaceColorPerMesh();

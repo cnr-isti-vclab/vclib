@@ -24,6 +24,7 @@ cmake_minimum_required(VERSION 3.24)
 project(common)
 
 set(HEADERS
+    get_drawable_mesh.h
     default_viewer.h)
 
 add_library(vclib-render-examples-common INTERFACE)

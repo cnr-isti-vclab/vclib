@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "common.h"
+#include "get_drawable_mesh.h"
 
 #include <vclib/glfw_imgui/viewer_window_imgui.h>
 #include <imgui.h>
