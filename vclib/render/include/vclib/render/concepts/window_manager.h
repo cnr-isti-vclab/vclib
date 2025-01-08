@@ -68,6 +68,14 @@ namespace vcl {
  * (e.g. Qt). If the parent object is not available, the type should be set to
  * `void`.
  *
+ * @par Static constants
+ *
+ * The class must have the following static constants:
+ * - `WINDOW_MANAGER_ID`: The ID of the window manager. It is used to identify
+ * the window manager implementation (if necessary) by the DerivedRenderer
+ * class. It must be a static constant of type `uint`. The value of the constant
+ * must be equal to one of the values of the @ref vcl::WindowManagerId struct.
+ *
  * @par Member functions
  *
  * The class must have the following member functions:
@@ -91,6 +99,8 @@ concept WindowManagerConcept =
         std::string s,
         uint u) {
         typename RemoveRef<T>::ParentType;
+
+        { RemoveRef<T>::WINDOW_MANAGER_ID } -> std::same_as<const uint&>;
 
         RemoveRef<T>();
         RemoveRef<T>(pPtr);

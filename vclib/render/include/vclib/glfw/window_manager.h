@@ -25,8 +25,8 @@
 
 #include "input.h"
 
-// #include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/concepts/renderer.h>
+#include <vclib/render/window_managers.h>
 #include <vclib/space/core/point.h>
 
 #if defined(__linux__)
@@ -83,10 +83,17 @@ protected:
 public:
     /**
      * @brief The ParentType is the type of the parent class. It is used to
-     * initialize the base class (if any). In the GLFW WindowManager, the parent
-     * class is void and it is not managed.
+     * initialize the base class (if any). In the glfw::WindowManager, the
+     * parent class is void and it is not managed.
      */
     using ParentType = void;
+
+    /**
+     * @brief The WINDOW_MANAGER_ID is the ID of the window manager. It is used
+     * to identify the window manager implementation (if necessary) by the
+     * DerivedRenderer class.
+     */
+    static const uint WINDOW_MANAGER_ID = WindowManagerId::GLFW_WINDOW;
 
     WindowManager(ParentType* parent = nullptr) :
             WindowManager("", 1024, 768, parent)

@@ -25,8 +25,8 @@
 
 #include "input.h"
 
-//#include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/concepts/renderer.h>
+#include <vclib/render/window_managers.h>
 #include <vclib/space/core/point.h>
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
@@ -56,7 +56,19 @@ class WidgetManager :
 #endif
 
 public:
+    /**
+     * @brief The ParentType is the type of the parent class. It is used to
+     * initialize the base class (if any). In the qt::WidgetManager, the parent
+     * class is the QWidget class.
+     */
     using ParentType = QWidget;
+
+    /**
+     * @brief The WINDOW_MANAGER_ID is the ID of the window manager. It is used
+     * to identify the window manager implementation (if necessary) by the
+     * DerivedRenderer class.
+     */
+    static const uint WINDOW_MANAGER_ID = WindowManagerId::QT_WIDGET;
 
     WidgetManager(QWidget* parent = nullptr) : Base(parent)
     {
