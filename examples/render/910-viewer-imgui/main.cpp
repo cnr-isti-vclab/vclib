@@ -22,7 +22,7 @@
 
 #include "common.h"
 
-#include <vclib/glfw/viewer_window_imgui.h>
+#include <vclib/glfw_imgui/viewer_window_imgui.h>
 #include <imgui.h>
 
 class ImguiDemo : public vcl::glfw::ViewerWindowImgui

@@ -27,7 +27,7 @@
 #include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 #endif
 #include <imgui_impl_glfw.h>
-#include <vclib/glfw/viewer_window_imgui.h>
+#include <vclib/glfw_imgui/viewer_window_imgui.h>
 
 namespace vcl::glfw {
 

@@ -20,7 +20,7 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-if (TARGET vclib-3rd-glfw)
+if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
     message(STATUS "- ImGui - using downloaded source")
 
     # ImGui (glfw + bgfx)
@@ -35,9 +35,13 @@ if (TARGET vclib-3rd-glfw)
     add_library(imgui STATIC
         ${IMGUI_SOURCES}
         ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp # TODO: std::string? check
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h
     )
+    if (TARGET vclib-3rd-glfw)
+        target_sources(imgui PRIVATE
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h)
+    endif()
+
     if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
         target_sources(imgui PRIVATE
             ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl2.cpp
@@ -61,7 +65,4 @@ if (TARGET vclib-3rd-glfw)
     target_link_libraries(vclib-3rd-imgui INTERFACE imgui)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-imgui)
-
-else()
-    message(STATUS "- ImGui - skipped (glfw3 not found)")
 endif()

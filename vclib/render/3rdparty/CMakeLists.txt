@@ -45,6 +45,9 @@ option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
 option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
 option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
 
+# ImGui
+option(VCLIB_ALLOW_DOWNLOAD_IMGUI "Allow use of downloaded ImGui source" ON)
+
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
 
 # === RENDER ENGINES (and optional libraries binded to them) === #

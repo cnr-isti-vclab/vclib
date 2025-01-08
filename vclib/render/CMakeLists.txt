@@ -99,6 +99,16 @@ if (TARGET vclib-3rd-glfw)
 
     file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
     list(APPEND SOURCES ${SOURCES_GLFW})
+
+    if (TARGET vclib-3rd-imgui)
+        file(GLOB_RECURSE HEADERS_GLFW_IMGUI CONFIGURE_DEPENDS
+            "include/vclib/glfw_imgui/*.h")
+        list(APPEND HEADERS ${HEADERS_GLFW_IMGUI})
+
+        file(GLOB_RECURSE SOURCES_GLFW_IMGUI CONFIGURE_DEPENDS
+            "src/vclib/glfw_imgui/*.cpp")
+        list(APPEND SOURCES ${SOURCES_GLFW_IMGUI})
+    endif()
 endif()
 
 if (TARGET vclib-3rd-qt)
