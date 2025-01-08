@@ -20,10 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#include "get_drawable_mesh.h"
+
+#include <vclib/qt/viewer_widget.h>
 
 #include <QApplication>
-#include <vclib/qt/viewer_widget.h>
 
 int main(int argc, char** argv)
 {
@@ -32,12 +33,12 @@ int main(int argc, char** argv)
     vcl::qt::ViewerWidget tw("Viewer Qt");
 
     // load and set up a drawable mesh
-    vcl::TriMesh                    m        = getMesh("greek_helmet.obj");
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh(m);
+    vcl::DrawableMesh<vcl::TriMesh> m =
+        getDrawableMesh<vcl::TriMesh>("greek_helmet.obj");
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+    tw.pushDrawableObject(m);
 
     tw.enableText();
 

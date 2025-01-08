@@ -30,12 +30,13 @@
 
 #include <vclib/render/drawable/drawable_mesh.h>
 
-inline vcl::DrawableMesh<vcl::TriMesh> getDrawableMesh(
+template<vcl::MeshConcept MeshType>
+inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     const std::string& filename = "bimba.obj")
 {
     // load a mesh:
-    vcl::TriMesh m =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
+    MeshType m =
+        vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
@@ -48,7 +49,7 @@ inline vcl::DrawableMesh<vcl::TriMesh> getDrawableMesh(
     vcl::MeshRenderSettings settings(m);
 
     // create a DrawableMesh object from the mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable(m);
+    vcl::DrawableMesh<MeshType> drawable(m);
 
     // set the settings to the drawable mesh
     drawable.setRenderSettings(settings);

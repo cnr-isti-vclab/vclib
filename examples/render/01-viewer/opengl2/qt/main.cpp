@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     vcl::qt::ViewerWidget tw("Viewer Qt");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
@@ -41,20 +41,6 @@ int main(int argc, char** argv)
     tw.fitScene();
 
     tw.show();
-
-    // vcl::qt::ViewerWidget tw2("Viewer Qt");
-
-    // // load and set up a drawable mesh
-    // vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-    //     getDrawableMesh("greek_helmet.obj");
-
-    // // add the drawable mesh to the scene
-    // // the viewer will own **a copy** of the drawable mesh
-    // tw2.pushDrawableObject(drawable2);
-
-    // tw2.fitScene();
-
-    // tw2.show();
 
     return app.exec();
 }

@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     vcl::qt::ViewerWidget tw("Viewer Qt");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh

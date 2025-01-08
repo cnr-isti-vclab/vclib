@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     vcl::glfw::ViewerWindow tw("Viewer GLFW");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     drawable.color() = vcl::Color::Yellow;
     drawable.updateBuffers();
@@ -46,20 +46,6 @@ int main(int argc, char** argv)
     tw.fitScene();
 
     tw.show();
-
-    // vcl::glfw::ViewerWindow tw2("Viewer GLFW");
-
-    // // load and set up a drawable mesh
-    // vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-    //     getDrawableMesh("greek_helmet.obj");
-
-    // // add the drawable mesh to the scene
-    // // the viewer will own **a copy** of the drawable mesh
-    // tw2.pushDrawableObject(drawable2);
-
-    // tw2.fitScene();
-
-    // tw2.show();
 
     return 0;
 }

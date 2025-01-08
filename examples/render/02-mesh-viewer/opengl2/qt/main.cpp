@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <QApplication>
+#include "get_drawable_mesh.h"
 
 #include <vclib/qt/mesh_viewer.h>
 
-#include "common.h"
+#include <QApplication>
 
 int main(int argc, char** argv)
 {
@@ -33,10 +33,21 @@ int main(int argc, char** argv)
     vcl::qt::MeshViewer mv;
 
     // load and set up a drawable mesh
-    auto drawable = getDrawableMesh<vcl::TriMesh>();
+    auto m = getDrawableMesh<vcl::TriMesh>("TextureDouble.ply");
+
+    m.enablePerFaceColor();
+    for (auto& f : m.faces()) {
+        if (f.index() % 3 == 0)
+            f.color() = vcl::Color::Red;
+        else if (f.index() % 3 == 1)
+            f.color() = vcl::Color::Green;
+        else
+            f.color() = vcl::Color::Blue;
+    }
+    m.updateBuffers();
 
     auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(drawable);
+    v->pushBack(m);
 
     mv.setDrawableObjectVector(v);
 
