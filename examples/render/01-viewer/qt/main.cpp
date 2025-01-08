@@ -22,11 +22,14 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/glfw/viewer_window.h>
+#include <QApplication>
+#include <vclib/qt/viewer_widget.h>
 
 int main(int argc, char** argv)
 {
-    vcl::glfw::ViewerWindow tw("Viewer GLFW");
+    QApplication app(argc, argv);
+
+    vcl::qt::ViewerWidget tw("Viewer Qt");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
@@ -47,5 +50,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }
