@@ -215,8 +215,6 @@ public:
         return ret;
     }
 
-
-
 private:
     void readDepthData()
     {

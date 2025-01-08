@@ -22,9 +22,8 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    add_subdirectory(bgfx)
+if (TARGET vclib-3rd-qt)
+    add_subdirectory(qt)
 endif()
-if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
-    add_subdirectory(opengl2)
-endif()
+
+
