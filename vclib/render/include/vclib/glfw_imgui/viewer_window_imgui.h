@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2024                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,32 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "hello_triangle_glfw.h"
+#ifndef VCL_EXT_GLFW_VIEWER_WINDOW_IMGUI_H
+#define VCL_EXT_GLFW_VIEWER_WINDOW_IMGUI_H
 
-#include "../common.h"
+#include <vclib/glfw/viewer_window.h>
 
-#include <iostream>
+namespace vcl::glfw {
 
-HelloTriangleGLFW::HelloTriangleGLFW() :
-        vcl::glfw::CanvasWindow("Hello Triangle GLFW")
+class ViewerWindowImgui : public ViewerWindow
 {
-}
+public:
+    ViewerWindowImgui(
+        const std::shared_ptr<DrawableObjectVector>& v,
+        const std::string& windowTitle = "Minimal Viewer",
+        uint               width       = 1024,
+        uint               height      = 768,
+        void*              parent      = nullptr);
 
-HelloTriangleGLFW::~HelloTriangleGLFW()
-{
-}
+    ViewerWindowImgui(
+        const std::string& windowTitle = "Minimal Viewer",
+        uint               width       = 1024,
+        uint               height      = 768,
+        void*              parent      = nullptr);
 
-void HelloTriangleGLFW::drawContent()
-{
-    glClearColor(0.f, 0.f, 0.f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    ViewerWindowImgui(void* parent);
 
-    glBegin(GL_TRIANGLES);
-    glColor4ubv((GLubyte*) &(vertices[0].abgr));
-    glVertex2fv((GLfloat*) &(vertices[0].pos));
-    glColor4ubv((GLubyte*) &(vertices[1].abgr));
-    glVertex2fv((GLfloat*) &(vertices[1].pos));
-    glColor4ubv((GLubyte*) &(vertices[2].abgr));
-    glVertex2fv((GLfloat*) &(vertices[2].pos));
-    glEnd();
-}
+    ~ViewerWindowImgui() override = default;
+
+    void show() override;
+
+protected:
+    // frame override to handle imgui rendering
+    void frame() override;
+
+    // callback override to handle imgui events
+    void glfwKeyCallback(
+        GLFWwindow* win,
+        int key,
+        int scancode,
+        int action,
+        int mods) override;
+
+    void glfwMouseButtonCallback(
+        GLFWwindow* win,
+        int         button,
+        int         action,
+        int         mods) override;
+
+    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos) override;
+
+    void glfwScrollCallback(
+        GLFWwindow* win,
+        double xoffset,
+        double yoffset) override;
+};
+
+} // namespace vcl::glfw
+
+#endif // VCL_EXT_GLFW_VIEWER_WINDOW_H

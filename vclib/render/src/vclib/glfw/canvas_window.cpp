@@ -51,6 +51,9 @@ void CanvasWindow::show()
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
         frame();
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        glfwSwapBuffers(mWindow);
+#endif
     }
 }
 

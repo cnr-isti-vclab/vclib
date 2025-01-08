@@ -49,13 +49,9 @@ public:
 
     ~ViewerWindow() override = default;
 
-    void show();
+    virtual void show();
 
 protected:
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-    void draw() override;
-#endif
-
     void onKeyPress(Key::Enum key) override;
 
     void onResize(uint width, uint height) override;
