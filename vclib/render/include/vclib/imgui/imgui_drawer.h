@@ -23,7 +23,7 @@
 #ifndef IMGUI_DRAWER_H
 #define IMGUI_DRAWER_H
 
-#include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/drawers/blocker_event_drawer.h>
 #include <vclib/render/window_managers.h>
 
 // Include the render backand imgui implementation

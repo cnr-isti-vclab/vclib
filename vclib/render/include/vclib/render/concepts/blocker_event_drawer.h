@@ -20,38 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_EVENT_DRAWER_H
-#define CONCEPTS_EVENT_DRAWER_H
+#ifndef CONCEPTS_BLOCKER_EVENT_DRAWER_H
+#define CONCEPTS_BLOCKER_EVENT_DRAWER_H
 
-#include "drawer.h"
+#include "event_drawer.h"
 
 #include <vclib/render/input.h>
 
 namespace vcl {
 
 template<typename T>
-concept EventDrawerConcept = DrawerConcept<T> && requires (T&& obj) {
-    RemoveRef<T>::CAN_BLOCK_EVENT_PROPAGATION;
+concept BlockerEventDrawerConcept =
+    EventDrawerConcept<T> && requires (T&& obj) {
+        requires RemoveRef<T>::CAN_BLOCK_EVENT_PROPAGATION == true;
 
-    // non const requirements
-    requires IsConst<T> || requires {
-        // note: we don't check return type on purpose here
-        // as BlockerEventDrawers can return a boolean value, while
-        // most EventDrawers do not return anything
-
-        obj.onKeyPress(Key::Enum(), KeyModifiers());
-        obj.onKeyRelease(Key::Enum(), KeyModifiers());
-        obj.onMouseMove(double(), double(), KeyModifiers());
-        obj.onMousePress(
-            MouseButton::Enum(), double(), double(), KeyModifiers());
-        obj.onMouseRelease(
-            MouseButton::Enum(), double(), double(), KeyModifiers());
-        obj.onMouseDoubleClick(
-            MouseButton::Enum(), double(), double(), KeyModifiers());
-        obj.onMouseScroll(double(), double(), KeyModifiers());
+        // non const requirements
+        requires IsConst<T> || requires {
+            {
+                obj.onKeyPress(Key::Enum(), KeyModifiers())
+            } -> std::same_as<bool>;
+            {
+                obj.onKeyRelease(Key::Enum(), KeyModifiers())
+            } -> std::same_as<bool>;
+            {
+                obj.onMouseMove(double(), double(), KeyModifiers())
+            } -> std::same_as<bool>;
+            {
+                obj.onMousePress(
+                    MouseButton::Enum(), double(), double(), KeyModifiers())
+            } -> std::same_as<bool>;
+            {
+                obj.onMouseRelease(
+                    MouseButton::Enum(), double(), double(), KeyModifiers())
+            } -> std::same_as<bool>;
+            {
+                obj.onMouseDoubleClick(
+                    MouseButton::Enum(), double(), double(), KeyModifiers())
+            } -> std::same_as<bool>;
+            {
+                obj.onMouseScroll(double(), double(), KeyModifiers())
+            } -> std::same_as<bool>;
+        };
     };
-};
 
 } // namespace vcl
 
-#endif // CONCEPTS_EVENT_DRAWER_H
+#endif // CONCEPTS_BLOCKER_EVENT_DRAWER_H

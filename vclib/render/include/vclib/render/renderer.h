@@ -23,6 +23,7 @@
 #ifndef VCL_RENDER_RENDERER_H
 #define VCL_RENDER_RENDERER_H
 
+#include "concepts/blocker_event_drawer.h"
 #include "concepts/canvas.h"
 #include "concepts/event_drawer.h"
 #include "concepts/window_manager.h"
@@ -152,7 +153,7 @@ private:
     {
         bool block = false;
         if constexpr(EventDrawerConcept<D>){
-            if constexpr (CanBlockEventDrawerConcept<D>) {
+            if constexpr (BlockerEventDrawerConcept<D>) {
                 block = lambda.template operator()<D>(this);
             } else {
                 lambda.template operator()<D>(this);

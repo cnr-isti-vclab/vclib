@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef EVENT_DRAWER_H
-#define EVENT_DRAWER_H
+#ifndef BLOCKER_EVENT_DRAWER_H
+#define BLOCKER_EVENT_DRAWER_H
 
 #include "plain_drawer.h"
 
@@ -30,65 +30,80 @@
 namespace vcl {
 
 /**
- * @brief The EventDrawer class is a base class for drawers that can handle
- * events.
+ * @brief Special EventDrawer class for the case where the drawer can request to
+ * block the event propagation.
  *
- * The EventDrawer class is a CRTP class that is templated on the derived
- * renderer class. It provides the interface for handling events produced by the
- * DerivedRenderer class.
+ * A drawer that inherits from this class can request to block the event
+ * propagation, and (if requested) the event will not be propagated to the other
+ * drawer arguments of the Renderer class.
+ *
+ * All the event functions of this class return a boolean value. If the function
+ * returns true, the DerivedRenderer will block event propagation to other
+ * drawers; otherwise, the event is propagated to the other drawers.
  *
  * @tparam DerivedRenderer The type of the derived renderer class.
  */
 template<typename DerivedRenderer>
-class EventDrawer : public PlainDrawer<DerivedRenderer>
+class BlockerEventDrawer : public PlainDrawer<DerivedRenderer>
 {
 public:
-    static const bool CAN_BLOCK_EVENT_PROPAGATION = false;
+    static const bool CAN_BLOCK_EVENT_PROPAGATION = true;
 
-    EventDrawer() = default;
+    BlockerEventDrawer() = default;
 
-    EventDrawer(uint, uint) {}
+    BlockerEventDrawer(uint, uint) {}
 
-    virtual void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) {}
-
-    virtual void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) {}
-
-    virtual void onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMousePress(
+    virtual bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMouseRelease(
+    virtual bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMouseDoubleClick(
+    virtual bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMouseScroll(
+    virtual bool onMouseScroll(
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 };
 
 } // namespace vcl
 
-#endif // EVENT_DRAWER_H
+#endif // BLOCKER_EVENT_DRAWER_H
