@@ -43,8 +43,10 @@ public:
         // draw the scene
         ParentDrawer::onDraw(viewId);
 
-        // imgui demo window
-        ImGui::ShowDemoWindow();
+        if (!ParentDrawer::isWindowMinimized()) {
+            // imgui demo window
+            ImGui::ShowDemoWindow();
+        }
     }
 };
 

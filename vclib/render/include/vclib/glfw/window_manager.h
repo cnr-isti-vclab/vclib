@@ -185,6 +185,16 @@ public:
         }
     }
 
+    /**
+     * @brief Returns true if the window is minimized (i.e. iconified), false
+     * otherwise.
+     * @return true if the window is minimized, false otherwise.
+     */
+    bool isMinimized() const
+    {
+        return glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED);
+    }
+
     // required by the WindowManagerConcept
     // because when the Canvas draws, then it requires the WindowManger to
     // update. Here is empty because the show() method does and manages

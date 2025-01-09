@@ -113,6 +113,8 @@ concept WindowManagerConcept =
         { obj.width() } -> std::convertible_to<uint>;
         { obj.height() } -> std::convertible_to<uint>;
 
+        { obj.isMinimized() } -> std::convertible_to<bool>;
+
         { obj.dpiScale() } -> Point2Concept;
 
         obj.winId(); // todo: try to check return type, should be void*

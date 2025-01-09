@@ -56,6 +56,20 @@ public:
 
     ImguiDrawer(uint, uint) : ImguiDrawer() {}
 
+    ~ImguiDrawer()
+    {
+        // cleanup
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        ImGui_ImplOpenGL2_Shutdown();
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+        ImGui_ImplBgfx_Shutdown();
+#endif
+        if constexpr (DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
+            ImGui_ImplGlfw_Shutdown();
+        }
+        ImGui::DestroyContext();
+    }
+
     virtual void onInit(uint viewId)
     {
         // setup ImGui context
@@ -91,7 +105,8 @@ public:
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_NewFrame();
 #endif
-        if constexpr (DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
+        if constexpr (
+            DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_NewFrame();
         }
         ImGui::NewFrame();
@@ -106,6 +121,12 @@ public:
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
 #endif
+    }
+
+protected:
+    bool isWindowMinimized() const
+    {
+        return derived()->isMinimized();
     }
 
 private:
