@@ -166,6 +166,11 @@ private:
         }
     }
 
+    // Base case when there are no drawers
+    void callEventFunForDrawers(auto lambda)
+    {
+    }
+
     /***** Member functions called by WindowManagerType *****/
     // Documentation is in the Renderer::WM inner class
 
