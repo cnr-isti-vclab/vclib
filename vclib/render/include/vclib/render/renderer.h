@@ -285,6 +285,14 @@ private:
          ...);
     }
 
+    void cnvPostDraw()
+    {
+        // call the onPostDraw member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers<Renderer>*>(this)->onPostDraw(), ...);
+    }
+
     /***** Member functions called by Drawer objects *****/
     // Documentation is in the Renderer::DRW inner class
 
@@ -528,6 +536,13 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
      * `onDrawContent(uint())` function for every Drawer object.
      */
     static void drawContent(Renderer* r) { r->cnvDrawContent(); }
+
+    /**
+     * @brief The CanvasType has finished drawing and has submitted the new
+     * frame, and asks the Renderer to call the `onPostDraw()` function for
+     * every Drawer object.
+     */
+    static void postDraw(Renderer* r) { r->cnvPostDraw(); }
 };
 
 /**

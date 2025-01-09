@@ -190,6 +190,13 @@ public:
         }
         else {
             mCurrFrame = bgfx::frame();
+
+            // this is required only when using Qt in macOS
+#if defined(__APPLE__)
+            bgfx::frame();
+#endif // __APPLE__
+
+            DRT::CNV::postDraw(derived());
         }
 
         if (mReadRequest != std::nullopt) {
@@ -200,11 +207,6 @@ public:
             // solicit new frame
             derived()->update();
         }
-
-        // this is probably required only when using Qt
-#if defined(__APPLE__) || defined(__linux__)
-        bgfx::frame(); // needed on unix systems
-#endif             // __APPLE__ || __linux__
     }
 
     /**

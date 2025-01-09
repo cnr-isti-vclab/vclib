@@ -45,6 +45,8 @@ public:
 
     virtual void onDrawContent(uint viewId) {}
 
+    virtual void onPostDraw() {}
+
 protected:
     auto* derived() { return static_cast<DRT*>(this); }
 
