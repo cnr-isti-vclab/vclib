@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_VIEWER_WINDOW_IMGUI_H
-#define VCL_EXT_GLFW_VIEWER_WINDOW_IMGUI_H
+#ifndef VCL_GLFW_IMGUI_VIEWER_WINDOW_IMGUI_H
+#define VCL_GLFW_IMGUI_VIEWER_WINDOW_IMGUI_H
 
 #include <vclib/glfw/viewer_window.h>
 
@@ -56,10 +56,10 @@ protected:
     // callback override to handle imgui events
     void glfwKeyCallback(
         GLFWwindow* win,
-        int key,
-        int scancode,
-        int action,
-        int mods) override;
+        int         key,
+        int         scancode,
+        int         action,
+        int         mods) override;
 
     void glfwMouseButtonCallback(
         GLFWwindow* win,
@@ -69,12 +69,10 @@ protected:
 
     void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos) override;
 
-    void glfwScrollCallback(
-        GLFWwindow* win,
-        double xoffset,
-        double yoffset) override;
+    void glfwScrollCallback(GLFWwindow* win, double xoffset, double yoffset)
+        override;
 };
 
 } // namespace vcl::glfw
 
-#endif // VCL_EXT_GLFW_VIEWER_WINDOW_H
+#endif // VCL_GLFW_IMGUI_VIEWER_WINDOW_IMGUI_H
