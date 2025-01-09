@@ -41,7 +41,7 @@
 namespace vcl::imgui {
 
 template<typename DerivedRenderer>
-class ImguiDrawer : public EventDrawer<DerivedRenderer>
+class ImguiDrawer : public EventDrawer<DerivedRenderer, true>
 {
 protected:
     using DRT = DerivedRenderer;

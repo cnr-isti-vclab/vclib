@@ -75,15 +75,15 @@ void drawersStaticAsserts()
     static_assert(
         !EventDrawerConcept<PlainDrawer<RendererTypePD>>,
         "PlainDrawer does satisfy the EventDrawerConcept");
-    // static_assert(
-    //     !EventDrawerConcept<const PlainDrawer<RendererTypePD>>,
-    //     "const PlainDrawer does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<const PlainDrawer<RendererTypePD>>,
+        "const PlainDrawer does satisfy the EventDrawerConcept");
     static_assert(
         !EventDrawerConcept<PlainDrawer<RendererTypePD>&>,
         "PlainDrawer& does satisfy the EventDrawerConcept");
-    // static_assert(
-    //     !EventDrawerConcept<const PlainDrawer<RendererTypePD>&>,
-    //     "const PlainDrawer& does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<const PlainDrawer<RendererTypePD>&>,
+        "const PlainDrawer& does satisfy the EventDrawerConcept");
     static_assert(
         !EventDrawerConcept<PlainDrawer<RendererTypePD>&&>,
         "PlainDrawer&& does satisfy the EventDrawerConcept");
@@ -174,15 +174,15 @@ void drawersStaticAsserts()
     static_assert(
         !EventDrawerConcept<TextDrawer<RendererTypeTD>>,
         "TextDrawer does satisfy the EventDrawerConcept");
-    // static_assert(
-    //     !EventDrawerConcept<const TextDrawer<RendererTypeTD>>,
-    //     "const TextDrawer does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<const TextDrawer<RendererTypeTD>>,
+        "const TextDrawer does satisfy the EventDrawerConcept");
     static_assert(
         !EventDrawerConcept<TextDrawer<RendererTypeTD>&>,
         "TextDrawer& does satisfy the EventDrawerConcept");
-    // static_assert(
-    //     !EventDrawerConcept<const TextDrawer<RendererTypeTD>&>,
-    //     "const TextDrawer& does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<const TextDrawer<RendererTypeTD>&>,
+        "const TextDrawer& does satisfy the EventDrawerConcept");
     static_assert(
         !EventDrawerConcept<TextDrawer<RendererTypeTD>&&>,
         "TextDrawer&& does satisfy the EventDrawerConcept");

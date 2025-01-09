@@ -30,7 +30,9 @@
 namespace vcl {
 
 template<typename T>
-concept EventDrawerConcept = DrawerConcept<T> && requires (T&& obj) {
+concept CantBlockEventDrawerConcept = DrawerConcept<T> && requires (T&& obj) {
+    requires RemoveRef<T>::CAN_BLOCK_EVENT_PROPAGATION == false;
+
     // non const requirements
     requires IsConst<T> || requires {
         { obj.onKeyPress(Key::Enum(), KeyModifiers()) } -> std::same_as<void>;
@@ -55,6 +57,39 @@ concept EventDrawerConcept = DrawerConcept<T> && requires (T&& obj) {
         } -> std::same_as<void>;
     };
 };
+
+template<typename T>
+concept CanBlockEventDrawerConcept = DrawerConcept<T> && requires (T&& obj) {
+    requires RemoveRef<T>::CAN_BLOCK_EVENT_PROPAGATION == true;
+
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.onKeyPress(Key::Enum(), KeyModifiers()) } -> std::same_as<bool>;
+        { obj.onKeyRelease(Key::Enum(), KeyModifiers()) } -> std::same_as<bool>;
+        {
+            obj.onMouseMove(double(), double(), KeyModifiers())
+        } -> std::same_as<bool>;
+        {
+            obj.onMousePress(
+                MouseButton::Enum(), double(), double(), KeyModifiers())
+        } -> std::same_as<bool>;
+        {
+            obj.onMouseRelease(
+                MouseButton::Enum(), double(), double(), KeyModifiers())
+        } -> std::same_as<bool>;
+        {
+            obj.onMouseDoubleClick(
+                MouseButton::Enum(), double(), double(), KeyModifiers())
+        } -> std::same_as<bool>;
+        {
+            obj.onMouseScroll(double(), double(), KeyModifiers())
+        } -> std::same_as<bool>;
+    };
+};
+
+template<typename T>
+concept EventDrawerConcept =
+    CanBlockEventDrawerConcept<T> || CantBlockEventDrawerConcept<T>;
 
 } // namespace vcl
 
