@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 #include <imgui_impl_opengl2.h>
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
@@ -36,8 +35,7 @@ ViewerWindowImgui::ViewerWindowImgui(
     const std::string&                           windowTitle,
     uint                                         width,
     uint                                         height,
-    void*) :
-        ViewerWindow(v, windowTitle, width, height)
+    void*) : ViewerWindow(v, windowTitle, width, height)
 {
 }
 
@@ -45,13 +43,11 @@ ViewerWindowImgui::ViewerWindowImgui(
     const std::string& windowTitle,
     uint               width,
     uint               height,
-    void*) :
-        vcl::glfw::ViewerWindow(windowTitle, width, height)
+    void*) : vcl::glfw::ViewerWindow(windowTitle, width, height)
 {
 }
 
-ViewerWindowImgui::ViewerWindowImgui(void* parent) :
-        ViewerWindow(parent)
+ViewerWindowImgui::ViewerWindowImgui(void* parent) : ViewerWindow(parent)
 {
 }
 
@@ -82,8 +78,7 @@ void ViewerWindowImgui::show()
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
         // slow down rendering if window is minimized
-        if (glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED) != 0)
-        {
+        if (glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED) != 0) {
             ImGui_ImplGlfw_Sleep(10);
             continue;
         }
@@ -133,30 +128,33 @@ using Base = ViewerWindow;
 
 void ViewerWindowImgui::glfwKeyCallback(
     GLFWwindow* win,
-    int key,
-    int scancode,
-    int action,
-    int mods)
-    {
-        const auto & io = ImGui::GetIO();
-        if (!io.WantCaptureKeyboard)
-            Base::glfwKeyCallback(win, key, scancode, action, mods);
-    }
+    int         key,
+    int         scancode,
+    int         action,
+    int         mods)
+{
+    const auto& io = ImGui::GetIO();
+    if (!io.WantCaptureKeyboard)
+        Base::glfwKeyCallback(win, key, scancode, action, mods);
+}
 
 void ViewerWindowImgui::glfwMouseButtonCallback(
     GLFWwindow* win,
     int         button,
     int         action,
     int         mods)
-    {
-        const auto & io = ImGui::GetIO();
-        if (!io.WantCaptureMouse)
-            Base::glfwMouseButtonCallback(win, button, action, mods);
-    }
-
-void ViewerWindowImgui::glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
 {
-    const auto & io = ImGui::GetIO();
+    const auto& io = ImGui::GetIO();
+    if (!io.WantCaptureMouse)
+        Base::glfwMouseButtonCallback(win, button, action, mods);
+}
+
+void ViewerWindowImgui::glfwCursorPosCallback(
+    GLFWwindow*,
+    double xpos,
+    double ypos)
+{
+    const auto& io = ImGui::GetIO();
     if (!io.WantCaptureMouse)
         Base::glfwCursorPosCallback(nullptr, xpos, ypos);
 }
@@ -165,8 +163,8 @@ void ViewerWindowImgui::glfwScrollCallback(
     GLFWwindow*,
     double xoffset,
     double yoffset)
-{   
-    const auto & io = ImGui::GetIO();
+{
+    const auto& io = ImGui::GetIO();
     if (!io.WantCaptureMouse)
         Base::glfwScrollCallback(nullptr, xoffset, yoffset);
 }

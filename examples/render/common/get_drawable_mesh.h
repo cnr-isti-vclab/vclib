@@ -35,8 +35,7 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     const std::string& filename = "bimba.obj")
 {
     // load a mesh:
-    MeshType m =
-        vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
+    MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
