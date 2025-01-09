@@ -123,6 +123,56 @@ public:
 #endif
     }
 
+    virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
+    {
+        return wantCapture(false);
+    }
+
+    virtual bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
+    {
+        return wantCapture(false);
+    }
+
+    virtual bool onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    {
+        return wantCapture();
+    }
+
+    virtual bool onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+        return wantCapture();
+    }
+
+    virtual bool onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+        return wantCapture();
+    }
+
+    virtual bool onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+        return wantCapture();
+    }
+
+    virtual bool onMouseScroll(
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+        return wantCapture();
+    }
+
 protected:
     bool isWindowMinimized() const
     {
@@ -133,6 +183,12 @@ private:
     auto* derived() { return static_cast<DRT*>(this); }
 
     const auto* derived() const { return static_cast<const DRT*>(this); }
+
+    bool wantCapture(bool mouse = true)
+    {
+        const auto& io = ImGui::GetIO();
+        return mouse ? io.WantCaptureMouse : io.WantCaptureKeyboard;
+    }
 };
 
 } // namespace vcl::imgui

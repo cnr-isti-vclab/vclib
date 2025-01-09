@@ -128,6 +128,43 @@ public:
     }
 
 private:
+    /**
+     * @brief Calls a lambda function - that represents an event - for every
+     * Drawer object listed in the template parameter pack.
+     *
+     * This function checks if the lambda function can be called for the D
+     * type, and if it can, it calls it. Then, it calls itself recursively for
+     * the other Drawer types in the list.
+     *
+     * This function will call the lambda function for each Drawer object in the
+     * template parameter pack, in the order they are listed, only if several
+     * conditions are satisfied:
+     * - The D type must satisfy the EventDrawerConcept: if it does not, the
+     *   lambda will not be called for that type.
+     * - If the D type satisfies the CanBlockEventDrawerConcept, the lambda
+     *   function will return a boolean value that will be used to block the
+     *   event propagation to the other drawers.
+     *
+     * @param lambda
+     */
+    template<typename D, typename ...Others>
+    void callEventFunForDrawers(auto lambda)
+    {
+        bool block = false;
+        if constexpr(EventDrawerConcept<D>){
+            if constexpr (CanBlockEventDrawerConcept<D>) {
+                block = lambda.template operator()<D>(this);
+            } else {
+                lambda.template operator()<D>(this);
+            }
+        }
+        if constexpr(sizeof...(Others) > 0){
+            if (!block) {
+                callEventFunForDrawers<Others...>(lambda);
+            }
+        }
+    }
+
     /***** Member functions called by WindowManagerType *****/
     // Documentation is in the Renderer::WM inner class
 
@@ -157,110 +194,103 @@ private:
 
     void wmKeyPress(Key::Enum key)
     {
-        // call onKeyPress member function of each Drawer object, ONLY if the
-        // object is an EventDrawer (it satisfies the EventDrawerConcept).
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
+        // given this object t and the type of a Drawer D, call the event member
+        // function of the Drawer object
         auto lambda = [&]<typename D>(auto* t){
-            if constexpr(EventDrawerConcept<D>){
-                static_cast<D*>(t)->onKeyPress(key, mKeyModifiers);
-            }
+            // NOTE: use static_cast<Drawers*>(this)->function() to call the
+            // right VIRTUAL function of the Drawer object.
+            return static_cast<D*>(t)->onKeyPress(key, mKeyModifiers);
         };
 
-        (lambda.template operator()<Drawers<Renderer>>(this), ...);
+               // call the lambda for all the drawers
+        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
     }
 
     void wmKeyRelease(Key::Enum key)
     {
-        // call onKeyRelease member function of each Drawer object, ONLY if the
-        // object is an EventDrawer (it satisfies the EventDrawerConcept).
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
+        // given this object t and the type of a Drawer D, call the event member
+        // function of the Drawer object
         auto lambda = [&]<typename D>(auto* t){
-            if constexpr(EventDrawerConcept<D>){
-                static_cast<D*>(t)->onKeyRelease(key, mKeyModifiers);
-            }
+            // NOTE: use static_cast<Drawers*>(this)->function() to call the
+            // right VIRTUAL function of the Drawer object.
+            return static_cast<D*>(t)->onKeyRelease(key, mKeyModifiers);
         };
 
-        (lambda.template operator()<Drawers<Renderer>>(this), ...);
+               // call the lambda for all the drawers
+        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
     }
 
     void wmMouseMove(double x, double y)
     {
-        // call onMouseMove member function of each Drawer object, ONLY if the
-        // object is an EventDrawer (it satisfies the EventDrawerConcept).
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
+        // given this object t and the type of a Drawer D, call the event member
+        // function of the Drawer object
         auto lambda = [&]<typename D>(auto* t){
-            if constexpr(EventDrawerConcept<D>){
-                static_cast<D*>(t)->onMouseMove(x, y, mKeyModifiers);
-            }
+            // NOTE: use static_cast<Drawers*>(this)->function() to call the
+            // right VIRTUAL function of the Drawer object.
+            return static_cast<D*>(t)->onMouseMove(x, y, mKeyModifiers);
         };
 
-        (lambda.template operator()<Drawers<Renderer>>(this), ...);
+        // call the lambda for all the drawers
+        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
     }
 
     void wmMousePress(MouseButton::Enum button, double x, double y)
     {
-        // call onMousePress member function of each Drawer object, ONLY if the
-        // object is an EventDrawer (it satisfies the EventDrawerConcept).
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
+        // given this object t and the type of a Drawer D, call the event member
+        // function of the Drawer object
         auto lambda = [&]<typename D>(auto* t){
-            if constexpr(EventDrawerConcept<D>){
-                static_cast<D*>(t)->onMousePress(button, x, y, mKeyModifiers);
-            }
+            // NOTE: use static_cast<Drawers*>(this)->function() to call the
+            // right VIRTUAL function of the Drawer object.
+            return static_cast<D*>(t)->onMousePress(
+                button, x, y, mKeyModifiers);
         };
 
-        (lambda.template operator()<Drawers<Renderer>>(this), ...);
+        // call the lambda for all the drawers
+        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
     }
 
     void wmMouseRelease(MouseButton::Enum button, double x, double y)
     {
-        // call onMouseRelease member function of each Drawer object, ONLY if
-        // the object is an EventDrawer (it satisfies the EventDrawerConcept).
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
+        // given this object t and the type of a Drawer D, call the event member
+        // function of the Drawer object
         auto lambda = [&]<typename D>(auto* t){
-            if constexpr(EventDrawerConcept<D>){
-                static_cast<D*>(t)->onMouseRelease(button, x, y, mKeyModifiers);
-            }
+            // NOTE: use static_cast<Drawers*>(this)->function() to call the
+            // right VIRTUAL function of the Drawer object.
+            return static_cast<D*>(t)->onMouseRelease(
+                button, x, y, mKeyModifiers);
         };
 
-        (lambda.template operator()<Drawers<Renderer>>(this), ...);
+        // call the lambda for all the drawers
+        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
     }
 
     void wmMouseDoubleClick(MouseButton::Enum button, double x, double y)
     {
-        // call onMouseDoubleClick member function of each Drawer object, ONLY
-        // if the object is an EventDrawer (it satisfies the
-        // EventDrawerConcept).
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the right
-        // VIRTUAL function of the Drawer object.
-        auto lambda = [&]<typename D>(auto* t){
-            if constexpr(EventDrawerConcept<D>){
-                static_cast<D*>(t)->onMouseDoubleClick(
-                    button, x, y, mKeyModifiers);
-            }
+        // given this object t and the type of a Drawer D, call the event member
+        // function of the Drawer object
+        auto lambda = [&]<typename D>(auto* t) {
+            // NOTE: use static_cast<Drawers*>(this)->function() to call the
+            // right VIRTUAL function of the Drawer object.
+            return static_cast<D*>(t)->onMouseDoubleClick(
+                button, x, y, mKeyModifiers);
         };
 
-        (lambda.template operator()<Drawers<Renderer>>(this), ...);
+        // call the lambda for all the drawers
+        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
     }
 
     void wmMouseScroll(double x, double y)
     {
-        // call onMouseScroll member function of each Drawer object, ONLY if the
-        // object is an EventDrawer (it satisfies the EventDrawerConcept).
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the right
-        // VIRTUAL function of the Drawer object.
-        auto lambda = [&]<typename D>(auto* t){
-            if constexpr(EventDrawerConcept<D>){
-                static_cast<D*>(t)->onMouseScroll(
-                    x, y, mKeyModifiers);
-            }
+        // given this object t and the type of a Drawer D, call the event member
+        // function of the Drawer object
+        auto lambda = [&]<typename D>(auto* t) {
+            // NOTE: use static_cast<Drawers*>(this)->function() to call the
+            // right VIRTUAL function of the Drawer object.
+            return static_cast<D*>(t)->onMouseScroll(x, y, mKeyModifiers);
         };
 
-        (lambda.template operator()<Drawers<Renderer>>(this), ...);
+        // call the lambda for all the drawers
+        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
     }
 
     /***** Member functions called by CanvasType *****/
