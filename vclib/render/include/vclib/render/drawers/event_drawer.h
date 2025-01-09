@@ -29,6 +29,8 @@
 
 namespace vcl {
 
+namespace detail {
+
 /**
  * @brief The EventDrawer class is a base class for all drawers that handle
  * events.
@@ -185,6 +187,14 @@ public:
         return false;
     }
 };
+
+} // namespace detail
+
+template<typename DerivedRenderer>
+using EventDrawer = detail::EventDrawer<DerivedRenderer, false>;
+
+template<typename DerivedRenderer>
+using BlockerEventDrawer = detail::EventDrawer<DerivedRenderer, true>;
 
 } // namespace vcl
 
