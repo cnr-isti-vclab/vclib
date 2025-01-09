@@ -38,7 +38,7 @@ class DemoImguiDrawer : public vcl::imgui::ImguiDrawer<DerivedRenderer>
 public:
     using ParentDrawer::ParentDrawer;
 
-    virtual void onDraw(uint viewId) override
+    virtual void onDraw(vcl::uint viewId) override
     {
         // draw the scene
         ParentDrawer::onDraw(viewId);
