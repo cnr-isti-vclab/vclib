@@ -226,6 +226,8 @@ public:
     }
 
 protected:
+    void* windowPtr() { return reinterpret_cast<void*>(mWindow); }
+
     // callbacks
     virtual void glfwFramebufferSizeCallback(
         GLFWwindow*,

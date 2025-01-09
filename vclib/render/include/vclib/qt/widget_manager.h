@@ -137,6 +137,12 @@ public:
     }
 
 protected:
+    void* windowPtr()
+    {
+        // TODO: probably ImGui Drawer needs something else here - QWidget*?
+        return reinterpret_cast<void*>(winId());
+    }
+
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
     {

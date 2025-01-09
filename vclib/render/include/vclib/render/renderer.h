@@ -288,6 +288,8 @@ private:
     /***** Member functions called by Drawer objects *****/
     // Documentation is in the Renderer::DRW inner class
 
+    void* dWindowPtr() { return WindowManagerType::windowPtr(); }
+
     vcl::Point2<uint> dCanvasSize() const { return CanvasType::size(); }
 
     auto dCanvasFrameBuffer() const { return CanvasType::frameBuffer(); }
@@ -554,6 +556,22 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::DRW
     // the functions will be made private.
     //friend Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>...;
 public: // TODO - remove this when C++26 is supported
+
+    /**
+     * @brief A Drawer object can request the window pointer of the window
+     * manager (the exact meaning of the window pointer depends on the window
+     * manager implementation).
+     *
+     * To get the window pointer, the Drawer object can call the `windowPtr()`
+     * function. To know the exact meaning of the window pointer, the Drawer
+     * object should refer to the documentation of the specific window manager
+     * implementation, and check the WINDOW_MANAGER_ID of the window manager,
+     * that is a static constant of the WindowManager class.
+     *
+     * @param r
+     * @return
+     */
+    static void* windowPtr(Renderer* r) { return r->dWindowPtr(); }
 
     /**
      * @brief A Drawer object can request the size of the canvas. This function
