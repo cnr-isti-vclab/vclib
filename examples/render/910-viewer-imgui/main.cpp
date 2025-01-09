@@ -22,28 +22,40 @@
 
 #include "get_drawable_mesh.h"
 
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/canvas.h>
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/renderer.h>
+
 #include <imgui.h>
-#include <vclib/glfw_imgui/viewer_window_imgui.h>
 
-class ImguiDemo : public vcl::glfw::ViewerWindowImgui
+template<typename DerivedRenderer>
+class DemoImguiDrawer : public vcl::imgui::ImguiDrawer<DerivedRenderer>
 {
-public:
-    ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
-    {
-    }
+    using ParentDrawer = vcl::imgui::ImguiDrawer<DerivedRenderer>;
 
-    void draw() override
+public:
+    using ParentDrawer::ParentDrawer;
+
+    virtual void onDraw(uint viewId) override
     {
+        // draw the scene
+        ParentDrawer::onDraw(viewId);
+
         // imgui demo window
         ImGui::ShowDemoWindow();
-
-        // draw the scene
-        ViewerWindowImgui::draw();
     }
 };
 
 int main(int argc, char** argv)
 {
+    using ImguiDemo = vcl::Renderer<
+        vcl::glfw::WindowManager,
+        vcl::Canvas,
+        DemoImguiDrawer,
+        vcl::ViewerDrawer>;
+
     ImguiDemo tw("Viewer GLFW");
 
     // load and set up a drawable mesh

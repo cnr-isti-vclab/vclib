@@ -48,7 +48,7 @@ if (TARGET vclib-processing)
 endif()
 
 if(TARGET vclib-3rd-imgui AND TARGET vclib-3rd-glfw)
-    #add_subdirectory(910-viewer-imgui)
+    add_subdirectory(910-viewer-imgui)
 endif()
 
 add_subdirectory(999-misc)
