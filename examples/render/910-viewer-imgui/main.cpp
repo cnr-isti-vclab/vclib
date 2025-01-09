@@ -31,9 +31,9 @@
 #include <imgui.h>
 
 template<typename DerivedRenderer>
-class DemoImguiDrawer : public vcl::imgui::ImguiDrawer<DerivedRenderer>
+class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderer>
 {
-    using ParentDrawer = vcl::imgui::ImguiDrawer<DerivedRenderer>;
+    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderer>;
 
 public:
     using ParentDrawer::ParentDrawer;
@@ -52,13 +52,13 @@ public:
 
 int main(int argc, char** argv)
 {
-    using ImguiDemo = vcl::Renderer<
+    using ImGuiDemo = vcl::Renderer<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        DemoImguiDrawer,
+        DemoImGuiDrawer,
         vcl::ViewerDrawer>;
 
-    ImguiDemo tw("Viewer GLFW");
+    ImGuiDemo tw("Viewer GLFW");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();

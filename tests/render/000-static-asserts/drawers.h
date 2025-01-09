@@ -351,71 +351,71 @@ void drawersStaticAsserts()
 #ifdef VCLIB_WITH_IMGUI
     using namespace vcl::imgui;
 
-    using RendererTypeID = Renderer<WMG, Canvas, ImguiDrawer>;
+    using RendererTypeID = Renderer<WMG, Canvas, ImGuiDrawer>;
 
     // ImguiDrawer
     static_assert(
-        DrawerConcept<ImguiDrawer<RendererTypeID>>,
+        DrawerConcept<ImGuiDrawer<RendererTypeID>>,
         "ImguiDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const ImguiDrawer<RendererTypeID>>,
+        DrawerConcept<const ImGuiDrawer<RendererTypeID>>,
         "const ImguiDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<ImguiDrawer<RendererTypeID>&>,
+        DrawerConcept<ImGuiDrawer<RendererTypeID>&>,
         "ImguiDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const ImguiDrawer<RendererTypeID>&>,
+        DrawerConcept<const ImGuiDrawer<RendererTypeID>&>,
         "const ImguiDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<ImguiDrawer<RendererTypeID>&&>,
+        DrawerConcept<ImGuiDrawer<RendererTypeID>&&>,
         "ImguiDrawer&& does not satisfy the DrawerConcept");
 
     static_assert(
-        EventDrawerConcept<ImguiDrawer<RendererTypeID>>,
+        EventDrawerConcept<ImGuiDrawer<RendererTypeID>>,
         "ImguiDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const ImguiDrawer<RendererTypeID>>,
+        EventDrawerConcept<const ImGuiDrawer<RendererTypeID>>,
         "const ImguiDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<ImguiDrawer<RendererTypeID>&>,
+        EventDrawerConcept<ImGuiDrawer<RendererTypeID>&>,
         "ImguiDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const ImguiDrawer<RendererTypeID>&>,
+        EventDrawerConcept<const ImGuiDrawer<RendererTypeID>&>,
         "const ImguiDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<ImguiDrawer<RendererTypeID>&&>,
+        EventDrawerConcept<ImGuiDrawer<RendererTypeID>&&>,
         "ImguiDrawer&& does not satisfy the EventDrawerConcept");
 
     static_assert(
-        CanBlockEventDrawerConcept<ImguiDrawer<RendererTypeID>>,
+        CanBlockEventDrawerConcept<ImGuiDrawer<RendererTypeID>>,
         "ImguiDrawer does not satisfy the CanBlockEventDrawerConcept");
     static_assert(
-        CanBlockEventDrawerConcept<const ImguiDrawer<RendererTypeID>>,
+        CanBlockEventDrawerConcept<const ImGuiDrawer<RendererTypeID>>,
         "const ImguiDrawer does not satisfy the CanBlockEventDrawerConcept");
     static_assert(
-        CanBlockEventDrawerConcept<ImguiDrawer<RendererTypeID>&>,
+        CanBlockEventDrawerConcept<ImGuiDrawer<RendererTypeID>&>,
         "ImguiDrawer& does not satisfy the CanBlockEventDrawerConcept");
     static_assert(
-        CanBlockEventDrawerConcept<const ImguiDrawer<RendererTypeID>&>,
+        CanBlockEventDrawerConcept<const ImGuiDrawer<RendererTypeID>&>,
         "const ImguiDrawer& does not satisfy the CanBlockEventDrawerConcept");
     static_assert(
-        CanBlockEventDrawerConcept<ImguiDrawer<RendererTypeID>&&>,
+        CanBlockEventDrawerConcept<ImGuiDrawer<RendererTypeID>&&>,
         "ImguiDrawer&& does not satisfy the CanBlockEventDrawerConcept");
 
     static_assert(
-        !CantBlockEventDrawerConcept<ImguiDrawer<RendererTypeID>>,
+        !CantBlockEventDrawerConcept<ImGuiDrawer<RendererTypeID>>,
         "ImguiDrawer does satisfy the CantBlockEventDrawerConcept");
     static_assert(
-        !CantBlockEventDrawerConcept<const ImguiDrawer<RendererTypeID>>,
+        !CantBlockEventDrawerConcept<const ImGuiDrawer<RendererTypeID>>,
         "const ImguiDrawer does satisfy the CantBlockEventDrawerConcept");
     static_assert(
-        !CantBlockEventDrawerConcept<ImguiDrawer<RendererTypeID>&>,
+        !CantBlockEventDrawerConcept<ImGuiDrawer<RendererTypeID>&>,
         "ImguiDrawer& does satisfy the CantBlockEventDrawerConcept");
     static_assert(
-        !CantBlockEventDrawerConcept<const ImguiDrawer<RendererTypeID>&>,
+        !CantBlockEventDrawerConcept<const ImGuiDrawer<RendererTypeID>&>,
         "const ImguiDrawer& does satisfy the CantBlockEventDrawerConcept");
     static_assert(
-        !CantBlockEventDrawerConcept<ImguiDrawer<RendererTypeID>&&>,
+        !CantBlockEventDrawerConcept<ImGuiDrawer<RendererTypeID>&&>,
         "ImguiDrawer&& does satisfy the CantBlockEventDrawerConcept");
 #endif
 }

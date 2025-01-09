@@ -41,22 +41,22 @@
 namespace vcl::imgui {
 
 template<typename DerivedRenderer>
-class ImguiDrawer : public EventDrawer<DerivedRenderer, true>
+class ImGuiDrawer : public EventDrawer<DerivedRenderer, true>
 {
 protected:
     using DRT = DerivedRenderer;
 
 public:
-    ImguiDrawer()
+    ImGuiDrawer()
     {
         static_assert(
             DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW,
             "ImGuiDrawer supports only GLFW window manager.");
     }
 
-    ImguiDrawer(uint, uint) : ImguiDrawer() {}
+    ImGuiDrawer(uint, uint) : ImGuiDrawer() {}
 
-    ~ImguiDrawer()
+    ~ImGuiDrawer()
     {
         // cleanup
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
