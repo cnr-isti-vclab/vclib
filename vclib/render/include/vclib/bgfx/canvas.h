@@ -81,7 +81,7 @@ private:
     // size of the canvas
     Point2<uint> mSize = {0, 0};
 
-    // TODO background color
+    vcl::Color mDefaultClearColor = vcl::Color::Black;
 
     // current frame
     uint32_t mCurrFrame = 0;
@@ -95,13 +95,20 @@ private:
     bool mStatsEnabled = false;
 
 public:
-    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr);
+    CanvasBGFX(
+        void* winId,
+        uint width,
+        uint height,
+        const Color& clearColor = vcl::Color::Black,
+        void* displayId = nullptr);
 
     ~CanvasBGFX();
 
     Point2<uint> size() const { return mSize; }
 
     bgfx::ViewId viewId() const { return mViewId; }
+
+    void setDefaultClearColor(const Color& color);
 
     // text
     void enableText(bool b = true);

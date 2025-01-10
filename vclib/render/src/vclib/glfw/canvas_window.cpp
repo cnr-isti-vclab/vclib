@@ -22,6 +22,8 @@
 
 #include <vclib/glfw/canvas_window.h>
 
+#include <vclib/space/core/color.h>
+
 namespace vcl::glfw {
 
 CanvasWindow::CanvasWindow(
@@ -33,6 +35,7 @@ CanvasWindow::CanvasWindow(
             winId(),
             width * contentScaleX(),
             height * contentScaleY(),
+            Color::Black,
             displayId())
 {
 }

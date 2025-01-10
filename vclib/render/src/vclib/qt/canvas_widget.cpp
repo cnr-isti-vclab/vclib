@@ -24,6 +24,7 @@
 
 #include <vclib/qt/input.h>
 #include <vclib/qt/message_hider.h>
+#include <vclib/space/core/color.h>
 
 #include <QApplication>
 #include <QMouseEvent>
@@ -40,6 +41,7 @@ CanvasWidget::CanvasWidget(
             (void*) winId(),
             width * EventManagerWidget::pixelRatio(),
             height * EventManagerWidget::pixelRatio(),
+            Color::Black,
             displayId())
 {
 }

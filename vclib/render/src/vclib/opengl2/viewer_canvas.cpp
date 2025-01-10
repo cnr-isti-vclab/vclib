@@ -33,7 +33,7 @@ ViewerCanvasOpenGL2::ViewerCanvasOpenGL2(
     uint  width,
     uint  height,
     void* displayId) :
-        vcl::CanvasOpenGL2(winId, width, height, displayId),
+        vcl::CanvasOpenGL2(winId, width, height, Color::White, displayId),
         ViewerI(width, height)
 {
     init(width, height);

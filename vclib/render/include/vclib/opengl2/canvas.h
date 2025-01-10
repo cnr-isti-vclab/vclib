@@ -28,6 +28,7 @@
 #include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/read_buffer_types.h>
 
+#include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
 
 #ifdef __APPLE__
@@ -82,6 +83,8 @@ private:
 
     Point2<uint> mSize = {0, 0};
 
+    vcl::Color mDefaultClearColor = vcl::Color::Black;
+
     CallbackReadBuffer mReadBufferCallback = nullptr;
     Point2i            mReadDepthPoint     = Point2i(-1, -1);
 
@@ -90,6 +93,7 @@ public:
         void* winId,
         uint  width,
         uint  height,
+        const Color& clearColor = vcl::Color::Black,
         void* displayId = nullptr);
 
     ~CanvasOpenGL2() {}
@@ -97,6 +101,8 @@ public:
     void init(uint width, uint height);
 
     Point2<uint> size() const { return mSize; }
+
+    void setDefaultClearColor(const Color& color);
 
     bool screenshot(
         const std::string& filename,
