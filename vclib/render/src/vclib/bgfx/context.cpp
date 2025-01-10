@@ -195,16 +195,15 @@ void Context::resetDefaultFramebuffer(
     bgfx::reset(width, height, BGFX_RESET_VSYNC, colorFormat);
 }
 
-static const uint32_t kDefaultClearColor   = 0xffffffff;
-static const float    kDefaultClearDepth   = 1.0f;
-static const uint8_t  kDefaultClearStencil = 0;
-
 bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
     void*                     winId,
     bgfx::ViewId              view,
     uint16_t                  width,
     uint16_t                  height,
     bool                      clear,
+    uint32_t                  clearColor,
+    float                     clearDepth,
+    uint8_t                   clearStencil,
     bgfx::TextureFormat::Enum colorFormat,
     bgfx::TextureFormat::Enum depthFormat)
 {
@@ -234,9 +233,9 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
         bgfx::setViewClear(
             view,
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
-            kDefaultClearColor,
-            kDefaultClearDepth,
-            kDefaultClearStencil);
+            clearColor,
+            clearDepth,
+            clearStencil);
     }
 
     bgfx::setViewRect(view, 0, 0, width, height);
@@ -250,11 +249,23 @@ bgfx::FrameBufferHandle Context::createOffscreenFramebufferAndInitView(
     uint16_t                  width,
     uint16_t                  height,
     bool                      clear,
+    uint32_t                  clearColor,
+    float                     clearDepth,
+    uint8_t                   clearStencil,
     bgfx::TextureFormat::Enum colorFormat,
     bgfx::TextureFormat::Enum depthFormat)
 {
     return createFramebufferAndInitView(
-        nullptr, view, width, height, clear, colorFormat, depthFormat);
+        nullptr,
+        view,
+        width,
+        height,
+        clear,
+        clearColor,
+        clearDepth,
+        clearStencil,
+        colorFormat,
+        depthFormat);
 }
 
 FontManager& Context::fontManager()

@@ -24,6 +24,7 @@
 #define CONCEPTS_CANVAS_H
 
 #include <vclib/concepts.h>
+#include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
 
 namespace vcl {
@@ -101,13 +102,15 @@ concept CanvasConcept = requires (
     void*                                     vPtr,
     uint                                      u,
     vcl::Point2i                              p,
+    vcl::Color                                c,
     typename RemoveRef<T>::CallbackReadBuffer cbrb,
     std::string                               str) {
 
     typename RemoveRef<T>::CallbackReadBuffer;
 
     RemoveRef<T>(vPtr, u, u);
-    RemoveRef<T>(vPtr, u, u, vPtr);
+    RemoveRef<T>(vPtr, u, u, c);
+    RemoveRef<T>(vPtr, u, u, c, vPtr);
 
     { obj.size() } -> Point2Concept;
     { obj.viewId() } -> std::convertible_to<uint>;

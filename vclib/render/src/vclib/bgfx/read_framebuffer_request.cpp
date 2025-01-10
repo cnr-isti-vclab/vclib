@@ -47,7 +47,7 @@ static Point2<uint16_t> getBlitDepthSize(Point2<uint> fbSize)
 
 static bgfx::TextureFormat::Enum getOffscreenColorFormat()
 {
-    return Context::DefaultColorFormat;
+    return Context::DEFAULT_COLOR_FORMAT;
 }
 
 static bgfx::TextureFormat::Enum getOffscreenDepthFormat()
@@ -73,7 +73,8 @@ static const uint64_t kBlitFormat =
 ReadFramebufferRequest::ReadFramebufferRequest(
     Point2i            queryDepthPoint,
     Point2<uint>       framebufferSize,
-    CallbackReadBuffer callback) :
+    CallbackReadBuffer callback,
+    const Color& clearColor) :
         type(DEPTH), point(queryDepthPoint), readCallback(callback)
 {
     blitSize = getBlitDepthSize(framebufferSize);
@@ -86,6 +87,9 @@ ReadFramebufferRequest::ReadFramebufferRequest(
         framebufferSize.x(),
         framebufferSize.y(),
         true,
+        clearColor.rgba(),
+        Context::DEFAULT_CLEAR_DEPTH,
+        Context::DEFAULT_CLEAR_STENCIL,
         getOffscreenColorFormat(),
         getOffscreenDepthFormat());
     assert(bgfx::isValid(offscreenFbh));
@@ -104,8 +108,8 @@ ReadFramebufferRequest::ReadFramebufferRequest(
 // read color constructor
 ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
-    CallbackReadBuffer callback) :
-        type(COLOR), point(0, 0), readCallback(callback)
+    CallbackReadBuffer callback,
+    const Color& clearColor) : type(COLOR), point(0, 0), readCallback(callback)
 {
     blitSize = framebufferSize.cast<uint16_t>();
 
@@ -113,7 +117,11 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     viewOffscreenId = ctx.requestViewId();
 
     offscreenFbh = ctx.createOffscreenFramebufferAndInitView(
-        viewOffscreenId, framebufferSize.x(), framebufferSize.y(), true);
+        viewOffscreenId,
+        framebufferSize.x(),
+        framebufferSize.y(),
+        true,
+        clearColor.rgba());
     assert(bgfx::isValid(offscreenFbh));
 
     // create the blit depth texture

@@ -90,7 +90,7 @@ private:
     // size of the canvas
     Point2<uint> mSize = {0, 0};
 
-    // TODO background color
+    vcl::Color mDefaultClearColor = vcl::Color::Black;
 
     // current frame
     uint32_t mCurrFrame = 0;
@@ -99,14 +99,17 @@ private:
     std::optional<ReadFramebufferRequest> mReadRequest = std::nullopt;
 
 public:
-    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr)
+    CanvasBGFX(
+        void*        winId,
+        uint         width,
+        uint         height,
+        const Color& clearColor = vcl::Color::Black,
+        void*        displayId  = nullptr) :
+            mWinId(winId), mDefaultClearColor(clearColor)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,
             "The DerivedRenderApp must satisfy the RenderAppConcept.");
-
-        // save window id
-        mWinId = winId;
 
         // on screen framebuffer
         mViewId = Context::instance(mWinId, displayId).requestViewId();
@@ -133,6 +136,12 @@ public:
 
     bgfx::FrameBufferHandle frameBuffer() const { return mFbh; }
 
+    void setDefaultClearColor(const Color& color)
+    {
+        mDefaultClearColor = color;
+        bgfx::setViewClear(mViewId, BGFX_CLEAR_COLOR, color.rgba());
+    }
+
     /**
      * @brief Automatically called by the DerivedRenderApp when the window
      * initializes.
@@ -157,8 +166,8 @@ public:
             bgfx::destroy(mFbh);
 
         auto& ctx = Context::instance();
-        mFbh =
-            ctx.createFramebufferAndInitView(mWinId, mViewId, width, height, true);
+        mFbh = ctx.createFramebufferAndInitView(
+            mWinId, mViewId, width, height, true, mDefaultClearColor.rgba());
         // the canvas framebuffer is non valid for the default window
         assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
     }
@@ -269,7 +278,7 @@ public:
             }
         };
 
-        mReadRequest.emplace(size, callback);
+        mReadRequest.emplace(size, callback, mDefaultClearColor);
         return true;
     }
 

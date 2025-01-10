@@ -59,6 +59,15 @@ class Context
     static std::mutex sMutex;
 
 public:
+    // default values, used for optional parameters
+    static constexpr uint32_t                  DEFAULT_CLEAR_COLOR = 0x00000000;
+    static constexpr float                     DEFAULT_CLEAR_DEPTH = 1.0f;
+    static constexpr uint8_t                   DEFAULT_CLEAR_STENCIL = 0;
+    static constexpr bgfx::TextureFormat::Enum DEFAULT_COLOR_FORMAT =
+        bgfx::TextureFormat::RGBA8;
+    static constexpr bgfx::TextureFormat::Enum DEFAULT_DEPTH_FORMAT =
+        bgfx::TextureFormat::D24S8;
+
     /**
      * @brief Return the context instance.
      *
@@ -107,12 +116,6 @@ public:
 
     void releaseViewId(bgfx::ViewId viewId);
 
-    static const bgfx::TextureFormat::Enum DefaultColorFormat =
-        bgfx::TextureFormat::RGBA8;
-
-    static const bgfx::TextureFormat::Enum DefaultDepthFormat =
-        bgfx::TextureFormat::D24S8;
-
     /**
      * @brief Create a framebuffer with with 2 attachments (color and depth)
      *
@@ -126,13 +129,13 @@ public:
     bgfx::FrameBufferHandle createFramebuffer(
         uint16_t                  width,
         uint16_t                  height,
-        bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat,
-        bgfx::TextureFormat::Enum depthFormat = DefaultDepthFormat);
+        bgfx::TextureFormat::Enum colorFormat = DEFAULT_COLOR_FORMAT,
+        bgfx::TextureFormat::Enum depthFormat = DEFAULT_DEPTH_FORMAT);
 
     void resetDefaultFramebuffer(
         uint16_t                  width,
         uint16_t                  height,
-        bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat);
+        bgfx::TextureFormat::Enum colorFormat = DEFAULT_COLOR_FORMAT);
 
     bgfx::FrameBufferHandle createFramebufferAndInitView(
         void*                     winId,
@@ -140,16 +143,22 @@ public:
         uint16_t                  width,
         uint16_t                  height,
         bool                      clear       = false,
-        bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat,
-        bgfx::TextureFormat::Enum depthFormat = DefaultDepthFormat);
+        uint32_t                  clearColor  = DEFAULT_CLEAR_COLOR,
+        float                     clearDepth  = DEFAULT_CLEAR_DEPTH,
+        uint8_t                   clearStencil = DEFAULT_CLEAR_STENCIL,
+        bgfx::TextureFormat::Enum colorFormat = DEFAULT_COLOR_FORMAT,
+        bgfx::TextureFormat::Enum depthFormat = DEFAULT_DEPTH_FORMAT);
 
     bgfx::FrameBufferHandle createOffscreenFramebufferAndInitView(
         bgfx::ViewId              view,
         uint16_t                  width,
         uint16_t                  height,
         bool                      clear       = false,
-        bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat,
-        bgfx::TextureFormat::Enum depthFormat = DefaultDepthFormat);
+        uint32_t                  clearColor  = DEFAULT_CLEAR_COLOR,
+        float                     clearDepth  = DEFAULT_CLEAR_DEPTH,
+        uint8_t                   clearStencil = DEFAULT_CLEAR_STENCIL,
+        bgfx::TextureFormat::Enum colorFormat = DEFAULT_COLOR_FORMAT,
+        bgfx::TextureFormat::Enum depthFormat = DEFAULT_DEPTH_FORMAT);
 
     FontManager& fontManager();
 

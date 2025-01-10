@@ -121,6 +121,7 @@ public:
                 (void*) WindowManagerType::winId(),
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y(),
+                Color::Black,
                 WindowManagerType::displayId()),
             Drawers<RenderApp>(
                 width * WindowManagerType::dpiScale().x(),

@@ -26,6 +26,7 @@
 #include <vclib/io/image.h>
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/read_buffer_types.h>
+#include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
 #include <vclib/types.h>
 
@@ -84,21 +85,23 @@ private:
 
     Point2<uint> mSize = {0, 0};
 
+    vcl::Color mDefaultClearColor = vcl::Color::Black;
+
     CallbackReadBuffer mReadBufferCallback = nullptr;
     Point2i            mReadDepthPoint     = Point2i(-1, -1);
 
 public:
     CanvasOpenGL2(
-        void* winId,
-        uint  width,
-        uint  height,
-        void* displayId = nullptr)
+        void*        winId,
+        uint         width,
+        uint         height,
+        const Color& clearColor = vcl::Color::Black,
+        void*        displayId  = nullptr) :
+            mWinId(winId), mSize(width, height), mDefaultClearColor(clearColor)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,
             "The DerivedRenderApp must satisfy the RenderAppConcept.");
-
-        mSize = {width, height};
     }
 
     ~CanvasOpenGL2() {}
@@ -106,6 +109,16 @@ public:
     Point2<uint> size() const { return mSize; }
 
     uint viewId() const { return 0; }
+
+    void setDefaultClearColor(const Color& color)
+    {
+        mDefaultClearColor = color;
+        glClearColor(
+            mDefaultClearColor.redF(),
+            mDefaultClearColor.greenF(),
+            mDefaultClearColor.blueF(),
+            mDefaultClearColor.alphaF());
+    }
 
     /**
      * @brief Automatically called by the DerivedRenderApp when the window
@@ -117,7 +130,11 @@ public:
     void onInit()
     {
         glViewport(0, 0, mSize.x(), mSize.y());
-        glClearColor(1.f, 1.f, 1.f, 1.f);
+        glClearColor(
+            mDefaultClearColor.redF(),
+            mDefaultClearColor.greenF(),
+            mDefaultClearColor.blueF(),
+            mDefaultClearColor.alphaF());
     }
 
     /**
