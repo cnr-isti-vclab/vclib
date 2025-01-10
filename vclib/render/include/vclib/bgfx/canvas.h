@@ -139,7 +139,10 @@ public:
     void setDefaultClearColor(const Color& color)
     {
         mDefaultClearColor = color;
-        bgfx::setViewClear(mViewId, BGFX_CLEAR_COLOR, color.rgba());
+        bgfx::setViewClear(
+            mViewId,
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            color.rgba());
     }
 
     /**

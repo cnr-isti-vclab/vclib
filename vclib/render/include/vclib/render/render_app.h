@@ -83,6 +83,7 @@ class RenderApp :
 
     // hide CanvasType member functions
     using CanvasType::size;
+    using CanvasType::setDefaultClearColor;
     using CanvasType::onInit;
     using CanvasType::onResize;
     using CanvasType::onPaint;
@@ -336,6 +337,11 @@ private:
     void* dWindowPtr() { return WindowManagerType::windowPtr(); }
 
     vcl::Point2<uint> dCanvasSize() const { return CanvasType::size(); }
+
+    void dSetCanvasDefaultClearColor(const Color& color)
+    {
+        CanvasType::setDefaultClearColor(color);
+    }
 
     auto dCanvasFrameBuffer() const { return CanvasType::frameBuffer(); }
 
@@ -641,6 +647,19 @@ public: // TODO - remove this when C++26 is supported
     static Point2<uint> canvasSize(const RenderApp* r)
     {
         return r->dCanvasSize();
+    }
+
+    /**
+     * @brief A Drawer object can set the default clear color of the canvas.
+     *
+     * This function is called by the Drawer object to set the default clear
+     * color of the canvas.
+     *
+     * @param color: The new default clear color of the canvas.
+     */
+    static void setCanvasDefaultClearColor(RenderApp* r, const Color& color)
+    {
+        r->dSetCanvasDefaultClearColor(color);
     }
 
     /**

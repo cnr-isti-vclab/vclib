@@ -110,6 +110,12 @@ public:
     virtual void toggleTrackBallVisibility() = 0;
 
     // events
+    void onInit(uint) override
+    {
+        DerivedRenderApp::DRW::setCanvasDefaultClearColor(
+            derived(), Color::White);
+    }
+
     void onResize(unsigned int width, unsigned int height) override
     {
         DTB::resizeViewer(width, height);

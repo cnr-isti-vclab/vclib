@@ -67,8 +67,9 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
-    void onInit(uint) override
+    void onInit(uint viewId) override
     {
+        ParentViewer::onInit(viewId);
         mAxis.init();
         mDirectionalLight.init();
         mDrawTrackBall.init();

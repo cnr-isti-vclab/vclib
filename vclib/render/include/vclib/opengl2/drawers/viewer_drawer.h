@@ -59,8 +59,9 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
-    void onInit(uint) override
+    void onInit(uint viewId) override
     {
+        ParentViewer::onInit(viewId);
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
         glEnable(GL_DEPTH_TEST);

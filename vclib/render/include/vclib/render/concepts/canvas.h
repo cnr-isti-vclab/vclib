@@ -71,6 +71,8 @@ namespace vcl {
  * - `viewId() -> uint`: Returns an unsigned integer that represents the view
  * id of the canvas. The view id is used to identify the canvas when drawing
  * content on it, and it is passed to the Drawer objects at each draw call.
+ * - `setDefaultClearColor(const Color& color) -> void`: Sets the default clear
+ * color of the canvas to the specified color.
  * - `onInit() -> void`: Called when the canvas is initialized. This function
  * is called by the RenderApp class when the WindowManager of the vcl::RenderApp
  * is initialized. This function should contain all the initialization calls
@@ -117,6 +119,8 @@ concept CanvasConcept = requires (
 
     // non const requirements
     requires IsConst<T> || requires {
+        { obj.setDefaultClearColor(c) } -> std::same_as<void>;
+
         { obj.onInit() } -> std::same_as<void>; // qt+opengl requires init
         { obj.onResize(u, u) } -> std::same_as<void>;
         { obj.onPaint() } -> std::same_as<void>;
