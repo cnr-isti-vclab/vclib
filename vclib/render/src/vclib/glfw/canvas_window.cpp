@@ -35,7 +35,6 @@ CanvasWindow::CanvasWindow(
             winId(),
             width * contentScaleX(),
             height * contentScaleY(),
-            Color::Black,
             displayId())
 {
 }

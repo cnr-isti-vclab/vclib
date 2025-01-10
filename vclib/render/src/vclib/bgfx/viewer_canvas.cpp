@@ -33,9 +33,10 @@ ViewerCanvasBGFX::ViewerCanvasBGFX(
     uint  width,
     uint  height,
     void* displayId) :
-        CanvasBGFX(winId, width, height, Color::White, displayId),
+        CanvasBGFX(winId, width, height, displayId),
         ViewerI(width, height)
 {
+    CanvasBGFX::setDefaultClearColor(Color::White);
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
 }

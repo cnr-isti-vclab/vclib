@@ -41,7 +41,6 @@ CanvasWidget::CanvasWidget(
             (void*) winId(),
             width * EventManagerWidget::pixelRatio(),
             height * EventManagerWidget::pixelRatio(),
-            Color::Black,
             displayId())
 {
 }

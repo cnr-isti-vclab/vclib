@@ -93,7 +93,6 @@ public:
         void* winId,
         uint  width,
         uint  height,
-        const Color& clearColor = vcl::Color::Black,
         void* displayId = nullptr);
 
     ~CanvasOpenGL2() {}

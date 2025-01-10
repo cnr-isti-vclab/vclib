@@ -26,12 +26,7 @@
 
 namespace vcl {
 
-CanvasOpenGL2::CanvasOpenGL2(
-    void*,
-    uint         width,
-    uint         height,
-    const Color& clearColor,
-    void*) : mDefaultClearColor(clearColor)
+CanvasOpenGL2::CanvasOpenGL2(void*, uint width, uint height, void*)
 {
     init(width, height);
 }

@@ -32,9 +32,8 @@ CanvasBGFX::CanvasBGFX(
     void*        winId,
     uint         width,
     uint         height,
-    const Color& clearColor,
     void*        displayId) :
-        mWinId(winId), mDefaultClearColor(clearColor)
+        mWinId(winId)
 {
     // on screen framebuffer
     mViewId = Context::instance(mWinId, displayId).requestViewId();
@@ -60,7 +59,10 @@ CanvasBGFX::~CanvasBGFX()
 void CanvasBGFX::setDefaultClearColor(const Color& color)
 {
     mDefaultClearColor = color;
-    bgfx::setViewClear(mViewId, BGFX_CLEAR_COLOR, color.rgba());
+    bgfx::setViewClear(
+        mViewId,
+        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+        color.rgba());
 }
 
 void CanvasBGFX::enableText(bool b)

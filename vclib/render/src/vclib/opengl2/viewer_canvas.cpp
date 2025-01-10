@@ -33,9 +33,10 @@ ViewerCanvasOpenGL2::ViewerCanvasOpenGL2(
     uint  width,
     uint  height,
     void* displayId) :
-        vcl::CanvasOpenGL2(winId, width, height, Color::White, displayId),
+        vcl::CanvasOpenGL2(winId, width, height, displayId),
         ViewerI(width, height)
 {
+    CanvasOpenGL2::setDefaultClearColor(Color::White);
     init(width, height);
 }
 
