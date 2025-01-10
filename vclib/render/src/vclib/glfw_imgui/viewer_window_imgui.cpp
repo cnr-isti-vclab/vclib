@@ -31,13 +31,15 @@
 
 namespace vcl::glfw {
 
+using Base = ViewerWindow;
+
 ViewerWindowImgui::ViewerWindowImgui(
     const std::shared_ptr<DrawableObjectVector>& v,
     const std::string&                           windowTitle,
     uint                                         width,
     uint                                         height,
     void*) :
-        ViewerWindow(v, windowTitle, width, height)
+        Base(v, windowTitle, width, height)
 {
 }
 
@@ -46,12 +48,12 @@ ViewerWindowImgui::ViewerWindowImgui(
     uint               width,
     uint               height,
     void*) :
-        vcl::glfw::ViewerWindow(windowTitle, width, height)
+        Base(windowTitle, width, height)
 {
 }
 
 ViewerWindowImgui::ViewerWindowImgui(void* parent) :
-        ViewerWindow(parent)
+        Base(parent)
 {
 }
 
@@ -118,7 +120,7 @@ void ViewerWindowImgui::frame()
     ImGui::NewFrame();
 
     // actual drawing
-    ViewerWindow::frame();
+    Base::frame();
 
     // imgui rendering
     ImGui::Render();
@@ -128,8 +130,6 @@ void ViewerWindowImgui::frame()
     ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
 #endif
 }
-
-using Base = ViewerWindow;
 
 void ViewerWindowImgui::glfwKeyCallback(
     GLFWwindow* win,
