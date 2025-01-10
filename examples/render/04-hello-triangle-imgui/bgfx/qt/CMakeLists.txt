@@ -22,9 +22,26 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-3rd-glfw)
-    add_subdirectory(glfw)
-endif()
-if (TARGET vclib-3rd-qt)
-    add_subdirectory(qt)
-endif()
+set(EXAMPLE_NAME 00-hello-triangle-qt)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
+
+set(HEADERS
+    ../common.h
+    ../hello_triangle_drawer.h)
+
+set(SOURCES
+    main.cpp)
+
+set(SHADERS
+    shaders/vs_vertex_shader.sc
+    shaders/fs_fragment_shader.sc
+    shaders/varying.def.sc)
+
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${HEADERS} ${SOURCES})
+
+target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})

@@ -42,6 +42,7 @@ add_subdirectory(00-hello-triangle)
 add_subdirectory(01-viewer)
 add_subdirectory(02-mesh-viewer)
 add_subdirectory(03-viewer-with-text)
+add_subdirectory(04-hello-triangle-imgui)
 
 if (TARGET vclib-processing)
     add_subdirectory(800-processing-main-window)

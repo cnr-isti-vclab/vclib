@@ -22,9 +22,10 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-3rd-glfw)
-    add_subdirectory(glfw)
-endif()
-if (TARGET vclib-3rd-qt)
-    add_subdirectory(qt)
+if (TARGET vclib-3rd-imgui)
+    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+        add_subdirectory(bgfx)
+    elseif (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+        add_subdirectory(opengl2)
+    endif()
 endif()
