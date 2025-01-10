@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef RENDER_APP_H
+#define RENDER_APP_H
 
 #include <vclib/render/canvas.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/widget_manager.h>
@@ -39,49 +39,49 @@
 #include <vclib/glfw/window_manager.h>
 #endif
 
-void rendererStaticAsserts()
+void renderAppStaticAsserts()
 {
     using namespace vcl;
 
 #ifdef VCLIB_WITH_QT
-    using RendererTypeQ = Renderer<qt::WidgetManager, Canvas>;
+    using RenderAppQ = RenderApp<qt::WidgetManager, Canvas>;
 
     static_assert(
-        RendererConcept<RendererTypeQ>,
-        "Renderer does not satisfy the RendererConcept");
+        RenderAppConcept<RenderAppQ>,
+        "RenderApp does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<const RendererTypeQ>,
-        "const Renderer does not satisfy the RendererConcept");
+        RenderAppConcept<const RenderAppQ>,
+        "const RenderApp does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<RendererTypeQ&>,
-        "Renderer& does not satisfy the RendererConcept");
+        RenderAppConcept<RenderAppQ&>,
+        "RenderApp& does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<const RendererTypeQ&>,
-        "const Renderer& does not satisfy the RendererConcept");
+        RenderAppConcept<const RenderAppQ&>,
+        "const RenderApp& does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<RendererTypeQ&&>,
-        "Renderer&& does not satisfy the RendererConcept");
+        RenderAppConcept<RenderAppQ&&>,
+        "RenderApp&& does not satisfy the RenderAppConcept");
 #endif
 
 #ifdef VCLIB_WITH_GLFW
-    using RendererTypeG = Renderer<glfw::WindowManager, Canvas>;
+    using RenderAppG = RenderApp<glfw::WindowManager, Canvas>;
 
     static_assert(
-        RendererConcept<RendererTypeG>,
-        "Renderer does not satisfy the RendererConcept");
+        RenderAppConcept<RenderAppG>,
+        "RenderApp does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<const RendererTypeG>,
-        "const Renderer does not satisfy the RendererConcept");
+        RenderAppConcept<const RenderAppG>,
+        "const RenderApp does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<RendererTypeG&>,
-        "Renderer& does not satisfy the RendererConcept");
+        RenderAppConcept<RenderAppG&>,
+        "RenderApp& does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<const RendererTypeG&>,
-        "const Renderer& does not satisfy the RendererConcept");
+        RenderAppConcept<const RenderAppG&>,
+        "const RenderApp& does not satisfy the RenderAppConcept");
     static_assert(
-        RendererConcept<RendererTypeG&&>,
-        "Renderer&& does not satisfy the RendererConcept");
+        RenderAppConcept<RenderAppG&&>,
+        "RenderApp&& does not satisfy the RenderAppConcept");
 #endif
 }
 
-#endif // RENDERER_H
+#endif // RENDER_APP_H

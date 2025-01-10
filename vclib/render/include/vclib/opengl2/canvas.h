@@ -24,7 +24,7 @@
 #define VCL_OPENGL2_CANVAS_H
 
 #include <vclib/io/image.h>
-#include <vclib/render/concepts/renderer.h>
+#include <vclib/render/concepts/render_app.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/point.h>
 #include <vclib/types.h>
@@ -68,11 +68,9 @@ namespace vcl {
  * - frame(): this function must be called by the derived classes at the end of
  * each frame, after all the opengl2 rendering commands have been issued;
  */
-template<typename DerivedRenderer>
+template<typename DerivedRenderApp>
 class CanvasOpenGL2
 {
-    using DRT = DerivedRenderer;
-
 protected:
     using FloatData          = ReadBufferTypes::FloatData;
     using ByteData           = ReadBufferTypes::ByteData;
@@ -97,8 +95,8 @@ public:
         void* displayId = nullptr)
     {
         static_assert(
-            RendererConcept<DRT>,
-            "The DerivedRenderer must satisfy the RendererConcept.");
+            RenderAppConcept<DerivedRenderApp>,
+            "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
         mSize = {width, height};
     }
@@ -110,7 +108,7 @@ public:
     uint viewId() const { return 0; }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when the window
+     * @brief Automatically called by the DerivedRenderApp when the window
      * initializes.
      * Initialization is requires in some backends+window manager combinations,
      * and therefore it must be implemented (also if empty) in every Canvas
@@ -123,7 +121,7 @@ public:
     }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when the window
+     * @brief Automatically called by the DerivedRenderApp when the window
      * is resized.
      * @param width
      * @param height
@@ -135,7 +133,7 @@ public:
     }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when the window asks
+     * @brief Automatically called by the DerivedRenderApp when the window asks
      * to repaint.
      */
     void onPaint()
@@ -144,16 +142,16 @@ public:
 
         // if depth requested, read it
         if (mReadBufferCallback) {
-            DRT::CNV::drawContent(derived());
+            DerivedRenderApp::CNV::drawContent(derived());
             readDepthData();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
-        DRT::CNV::draw(derived());
-        DRT::CNV::postDraw(derived());
+        DerivedRenderApp::CNV::draw(derived());
+        DerivedRenderApp::CNV::postDraw(derived());
     }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * to read the depth buffer at a specific point.
      *
      * @param point
@@ -175,7 +173,7 @@ public:
     }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * for a screenshot.
      *
      * @param filename
@@ -251,9 +249,12 @@ private:
         mReadBufferCallback = nullptr;
     }
 
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 };
 
 } // namespace vcl

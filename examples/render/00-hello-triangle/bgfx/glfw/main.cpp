@@ -24,12 +24,12 @@
 
 #include <vclib/render/canvas.h>
 #include <vclib/glfw/window_manager.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)
 {
     using WindowGLFW = vcl::
-        Renderer<vcl::glfw::WindowManager, vcl::Canvas, HelloTriangleDrawer>;
+        RenderApp<vcl::glfw::WindowManager, vcl::Canvas, HelloTriangleDrawer>;
 
     WindowGLFW tw("Hello Triangle with GLFW");
 

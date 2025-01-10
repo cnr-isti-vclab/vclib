@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_RENDERER_H
-#define CONCEPTS_RENDERER_H
+#ifndef CONCEPTS_RENDER_APP_H
+#define CONCEPTS_RENDER_APP_H
 
 #include <vclib/concepts.h>
 
 namespace vcl {
 
 template<typename T>
-concept RendererConcept =
+concept RenderAppConcept =
     requires (
         T&&                                obj,
         typename RemoveRef<T>::ParentType* pPtr,
@@ -49,4 +49,4 @@ concept RendererConcept =
 
 } // namespace vcl
 
-#endif // CONCEPTS_RENDERER_H
+#endif // CONCEPTS_RENDER_APP_H

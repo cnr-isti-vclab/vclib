@@ -35,16 +35,16 @@ namespace vcl {
  *
  * A drawer that inherits from this class can request to block the event
  * propagation, and (if requested) the event will not be propagated to the other
- * drawer arguments of the Renderer class.
+ * drawer arguments of the RenderApp class.
  *
  * All the event functions of this class return a boolean value. If the function
- * returns true, the DerivedRenderer will block event propagation to other
+ * returns true, the DerivedRenderApp will block event propagation to other
  * drawers; otherwise, the event is propagated to the other drawers.
  *
- * @tparam DerivedRenderer The type of the derived renderer class.
+ * @tparam DerivedRenderApp The type of the derived RenderApp class.
  */
-template<typename DerivedRenderer>
-class BlockerEventDrawer : public PlainDrawer<DerivedRenderer>
+template<typename DerivedRenderApp>
+class BlockerEventDrawer : public PlainDrawer<DerivedRenderApp>
 {
 public:
     static const bool CAN_BLOCK_EVENT_PROPAGATION = true;

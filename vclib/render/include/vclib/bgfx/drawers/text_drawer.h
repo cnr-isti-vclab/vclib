@@ -28,11 +28,9 @@
 
 namespace vcl {
 
-template<typename DerivedRenderer>
-class TextDrawer : public PlainDrawer<DerivedRenderer>
+template<typename DerivedRenderApp>
+class TextDrawer : public PlainDrawer<DerivedRenderApp>
 {
-    using DRT = DerivedRenderer;
-
     TextView mTextView;
 
 public:
@@ -54,7 +52,7 @@ public:
 
     void onDraw(uint viewId) override final
     {
-        auto fbh = DRT::DRW::canvasFrameBuffer(derived());
+        auto fbh = DerivedRenderApp::DRW::canvasFrameBuffer(derived());
         mTextView.frame(fbh);
     }
 
@@ -95,10 +93,12 @@ public:
     }
 
 private:
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
-
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 };
 
 } // namespace vcl

@@ -25,13 +25,13 @@
 
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 #include <vclib/qt/widget_manager.h>
 
 namespace vcl::qt {
 
 using ViewerWidget =
-    vcl::Renderer<vcl::qt::WidgetManager, vcl::Canvas, vcl::ViewerDrawer>;
+    vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, vcl::ViewerDrawer>;
 
 } // namespace vcl::qt
 

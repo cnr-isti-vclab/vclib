@@ -27,11 +27,11 @@
 
 namespace vcl {
 
-template<typename DerivedRenderer>
+template<typename DerivedRenderApp>
 class PlainDrawer
 {
 protected:
-    using DRT = DerivedRenderer;
+    using DRT = DerivedRenderApp;
 
 public:
     PlainDrawer() = default;

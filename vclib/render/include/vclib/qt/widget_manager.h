@@ -25,7 +25,7 @@
 
 #include "input.h"
 
-#include <vclib/render/concepts/renderer.h>
+#include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
 #include <vclib/space/core/point.h>
 
@@ -40,7 +40,7 @@
 
 namespace vcl::qt {
 
-template<typename DerivedRenderer>
+template<typename DerivedRenderApp>
 class WidgetManager :
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
         public QWidget
@@ -48,7 +48,6 @@ class WidgetManager :
         public QOpenGLWidget
 #endif
 {
-    using DRT = DerivedRenderer;
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     using Base = QWidget;
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
@@ -66,15 +65,15 @@ public:
     /**
      * @brief The WINDOW_MANAGER_ID is the ID of the window manager. It is used
      * to identify the window manager implementation (if necessary) by the
-     * DerivedRenderer class.
+     * DerivedRenderApp class.
      */
     static const uint WINDOW_MANAGER_ID = WindowManagerId::QT_WIDGET;
 
     WidgetManager(QWidget* parent = nullptr) : Base(parent)
     {
         static_assert(
-            RendererConcept<DRT>,
-            "The DerivedRenderer must satisfy the RendererConcept.");
+            RenderAppConcept<DerivedRenderApp>,
+            "The DerivedRenderApp must satisfy the RenderAppConcept.");
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
         setAttribute(
             Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
@@ -147,14 +146,15 @@ protected:
     void resizeEvent(QResizeEvent* event) override
     {
         Base::resizeEvent(event);
-        DRT::WM::resize(
+        DerivedRenderApp::WM::resize(
             derived(), width() * pixelRatio(), height() * pixelRatio());
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void resizeGL(int w, int h) override
     {
         Base::resizeGL(w, h);
-        DRT::WM::resize(derived(), w * pixelRatio(), h * pixelRatio());
+        DerivedRenderApp::WM::resize(
+            derived(), w * pixelRatio(), h * pixelRatio());
     }
 #endif
 
@@ -162,21 +162,22 @@ protected:
     void showEvent(QShowEvent* event) override
     {
         Base::showEvent(event);
-        DRT::WM::init(derived());
+        DerivedRenderApp::WM::init(derived());
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void initializeGL() override
     {
-        DRT::WM::init(derived());
+        DerivedRenderApp::WM::init(derived());
     }
 #endif
 
 
     void keyPressEvent(QKeyEvent* event) override
     {
-        DRT::WM::setModifiers(derived(), vcl::qt::fromQt(event->modifiers()));
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
 
-        DRT::WM::keyPress(
+        DerivedRenderApp::WM::keyPress(
             derived(),
             vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyPressEvent(event);
@@ -185,9 +186,10 @@ protected:
 
     void keyReleaseEvent(QKeyEvent* event) override
     {
-        DRT::WM::setModifiers(derived(), vcl::qt::fromQt(event->modifiers()));
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
 
-        DRT::WM::keyRelease(
+        DerivedRenderApp::WM::keyRelease(
             derived(),
             vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
         Base::keyReleaseEvent(event);
@@ -196,7 +198,7 @@ protected:
 
     void mouseMoveEvent(QMouseEvent* event) override
     {
-        DRT::WM::mouseMove(
+        DerivedRenderApp::WM::mouseMove(
             derived(),
             event->pos().x() * pixelRatio(),
             event->pos().y() * pixelRatio());
@@ -206,7 +208,7 @@ protected:
 
     void mousePressEvent(QMouseEvent* event) override
     {
-        DRT::WM::mousePress(
+        DerivedRenderApp::WM::mousePress(
             derived(),
             vcl::qt::fromQt(event->button()),
             event->pos().x() * pixelRatio(),
@@ -217,7 +219,7 @@ protected:
 
     void mouseReleaseEvent(QMouseEvent* event) override
     {
-        DRT::WM::mouseRelease(
+        DerivedRenderApp::WM::mouseRelease(
             derived(),
             vcl::qt::fromQt(event->button()),
             event->pos().x() * pixelRatio(),
@@ -228,7 +230,7 @@ protected:
 
     void mouseDoubleClickEvent(QMouseEvent* event) override
     {
-        DRT::WM::mouseDoubleClick(
+        DerivedRenderApp::WM::mouseDoubleClick(
             derived(),
             vcl::qt::fromQt(event->button()),
             event->pos().x() * pixelRatio(),
@@ -241,10 +243,10 @@ protected:
     {
         // FIXME: this is not correct, define a proper equivalence
         if (!event->pixelDelta().isNull())
-            DRT::WM::mouseScroll(
+            DerivedRenderApp::WM::mouseScroll(
                 derived(), event->pixelDelta().x(), event->pixelDelta().y());
         else
-            DRT::WM::mouseScroll(
+            DerivedRenderApp::WM::mouseScroll(
                 derived(), event->angleDelta().x(), event->angleDelta().y());
 
         Base::wheelEvent(event);
@@ -261,16 +263,19 @@ private:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override
     {
-        DRT::WM::paint(derived());
+        DerivedRenderApp::WM::paint(derived());
         QWidget::paintEvent(event);
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void paintGL() override { DRT::WM::paint(derived()); }
+    void paintGL() override { DerivedRenderApp::WM::paint(derived()); }
 #endif
 
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 };
 
 } // namespace vcl::qt

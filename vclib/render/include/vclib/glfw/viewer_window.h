@@ -26,12 +26,12 @@
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 namespace vcl::glfw {
 
 using ViewerWindow =
-    vcl::Renderer<vcl::glfw::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
+    vcl::RenderApp<vcl::glfw::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
 
 } // namespace vcl::glfw
 

@@ -33,14 +33,14 @@ namespace vcl {
  * requirements of the Canvas concept.
  *
  * Each class that satisfies this concept can be used as a canvas in the
- * @ref vcl::Renderer class (second template parameter). The Canvas class is
+ * @ref vcl::RenderApp class (second template parameter). The Canvas class is
  * responsible for managing the render backend and the surface where the Drawer
  * objects can draw.
  *
- * It is a class that is templated on the Renderer class (using the CRTP
+ * It is a class that is templated on the RenderApp class (using the CRTP
  * pattern). The class is then allowed to access the member functions of the
- * public members of the @ref vcl::Renderer class and all the members of the
- * @ref vcl::Renderer::CNV inner class.
+ * public members of the @ref vcl::RenderApp class and all the members of the
+ * @ref vcl::RenderApp::CNV inner class.
  *
  * @par Constructors
  *
@@ -71,20 +71,20 @@ namespace vcl {
  * id of the canvas. The view id is used to identify the canvas when drawing
  * content on it, and it is passed to the Drawer objects at each draw call.
  * - `onInit() -> void`: Called when the canvas is initialized. This function
- * is called by the Renderer class when the WindowManager of the vcl::Renderer
+ * is called by the RenderApp class when the WindowManager of the vcl::RenderApp
  * is initialized. This function should contain all the initialization calls
  * that cannot be done in the constructor (e.g. because the WindowManager
  * could not guarantee the initialization of the backend context in the
  * constructor).
  * - `onResize(uint width, uint height) -> void`: Called when the canvas is
- * resized. This function is called by the Renderer class when the WindowManager
- * of the vcl::Renderer is resized. The function should resize the canvas to
- * the new size.
+ * resized. This function is called by the RenderApp class when the
+ * WindowManager of the vcl::RenderApp is resized. The function should resize
+ * the canvas to the new size.
  * - `onPaint() -> void`: Called when the canvas must be repainted. This
- * function is called by the Renderer class when the WindowManager of the
- * vcl::Renderer is repainted. The function should draw the content of the
- * canvas, by calling the vcl::Renderer::CNV::draw() member function of the
- * Renderer class.
+ * function is called by the RenderApp class when the WindowManager of the
+ * vcl::RenderApp is repainted. The function should draw the content of the
+ * canvas, by calling the vcl::RenderApp::CNV::draw() member function of the
+ * RenderApp class.
  * - `onReadDepth(const vcl::Point2i& point, CallbackReadBuffer callback) ->
  * bool`: Called when a Drawer object asks to read the depth value at the
  * specified point on the canvas. The function should read the depth value at

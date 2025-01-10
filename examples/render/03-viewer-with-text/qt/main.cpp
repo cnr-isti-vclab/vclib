@@ -28,13 +28,13 @@
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/canvas.h>
 #include <vclib/qt/widget_manager.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 #include <QApplication>
 
 int main(int argc, char** argv)
 {
-    using ViewerWidget = vcl::Renderer<
+    using ViewerWidget = vcl::RenderApp<
         vcl::qt::WidgetManager,
         vcl::Canvas,
         vcl::ViewerDrawer,

@@ -25,7 +25,7 @@
 
 #include "input.h"
 
-#include <vclib/render/concepts/renderer.h>
+#include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
 #include <vclib/space/core/point.h>
 
@@ -57,11 +57,9 @@ inline void glfwErrorCallback(int error, const char* description)
 
 } // namespace detail
 
-template<typename DerivedRenderer>
+template<typename DerivedRenderApp>
 class WindowManager
 {
-    using DRT = DerivedRenderer;
-
     std::string mTitle;
 
     // double click management
@@ -91,7 +89,7 @@ public:
     /**
      * @brief The WINDOW_MANAGER_ID is the ID of the window manager. It is used
      * to identify the window manager implementation (if necessary) by the
-     * DerivedRenderer class.
+     * DerivedRenderApp class.
      */
     static const uint WINDOW_MANAGER_ID = WindowManagerId::GLFW_WINDOW;
 
@@ -107,8 +105,8 @@ public:
         ParentType*        = nullptr) : mTitle(windowTitle)
     {
         static_assert(
-            RendererConcept<DRT>,
-            "The DerivedRenderer must satisfy the RendererConcept.");
+            RenderAppConcept<DerivedRenderApp>,
+            "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
         glfwSetErrorCallback(detail::glfwErrorCallback);
         if (!glfwInit()) {
@@ -175,10 +173,10 @@ public:
 
     void show()
     {
-        DRT::WM::init(derived());
+        DerivedRenderApp::WM::init(derived());
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
-            DRT::WM::paint(derived());
+            DerivedRenderApp::WM::paint(derived());
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
             glfwSwapBuffers(mWindow);
 #endif
@@ -244,7 +242,7 @@ protected:
         int width,
         int height)
     {
-        DRT::WM::resize(derived(), width, height);
+        DerivedRenderApp::WM::resize(derived(), width, height);
     }
 
     virtual void glfwContentScaleCallback(
@@ -257,7 +255,7 @@ protected:
 
         int width, height;
         glfwGetFramebufferSize(mWindow, &width, &height);
-        DRT::WM::resize(derived(), width, height);
+        DerivedRenderApp::WM::resize(derived(), width, height);
     }
 
     virtual void glfwKeyCallback(
@@ -274,16 +272,16 @@ protected:
 #endif
 
         // GLFW modifiers are always set
-        DRT::WM::setModifiers(
+        DerivedRenderApp::WM::setModifiers(
             derived(), glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
         vcl::Key::Enum k = glfw::fromGLFW((glfw::Key) key);
 
         if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            DRT::WM::keyPress(derived(), k);
+            DerivedRenderApp::WM::keyPress(derived(), k);
         }
         else if (action == GLFW_RELEASE) {
-            DRT::WM::keyRelease(derived(), k);
+            DerivedRenderApp::WM::keyRelease(derived(), k);
         }
     }
 
@@ -295,7 +293,7 @@ protected:
     {
         vcl::MouseButton::Enum btn = glfw::fromGLFW((glfw::MouseButton) button);
 
-        DRT::WM::setModifiers(
+        DerivedRenderApp::WM::setModifiers(
             derived(), glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
         Point2d      pos;
@@ -316,17 +314,20 @@ protected:
                 (mLastPressedPos - pos).norm() < DOUBLE_CLICK_DIST_PIXELS) {
                 mLastPressedTime   = 0.0;
                 mLastPressedButton = NO_BUTTON;
-                DRT::WM::mouseDoubleClick(derived(), btn, pos.x(), pos.y());
+                DerivedRenderApp::WM::mouseDoubleClick(
+                    derived(), btn, pos.x(), pos.y());
             }
             else {
                 mLastPressedTime   = timeSeconds;
                 mLastPressedButton = button;
                 mLastPressedPos    = pos;
-                DRT::WM::mousePress(derived(), btn, pos.x(), pos.y());
+                DerivedRenderApp::WM::mousePress(
+                    derived(), btn, pos.x(), pos.y());
             }
         }
         else if (action == GLFW_RELEASE) {
-            DRT::WM::mouseRelease(derived(), btn, pos.x(), pos.y());
+            DerivedRenderApp::WM::mouseRelease(
+                derived(), btn, pos.x(), pos.y());
         }
     }
 
@@ -337,7 +338,7 @@ protected:
         xpos *= dpiScale().x();
         ypos *= dpiScale().y();
 #endif
-        DRT::WM::mouseMove(derived(), xpos, ypos);
+        DerivedRenderApp::WM::mouseMove(derived(), xpos, ypos);
     }
 
     virtual void glfwScrollCallback(
@@ -350,7 +351,7 @@ protected:
             // TODO: check other platforms
             // TODO: check if content scale must be used
             const double TO_PIXEL_FACTOR = 10;
-            DRT::WM::mouseScroll(
+            DerivedRenderApp::WM::mouseScroll(
                 derived(),
                 xoffset * TO_PIXEL_FACTOR,
                 yoffset * TO_PIXEL_FACTOR);
@@ -410,9 +411,12 @@ private:
             });
     }
 
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 
     static int fixKeyboardMods(int key, int action, int mods)
     {

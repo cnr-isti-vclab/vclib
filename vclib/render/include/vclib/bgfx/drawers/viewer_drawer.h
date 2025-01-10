@@ -34,11 +34,11 @@
 
 namespace vcl {
 
-template<typename DerivedRenderer>
-class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderer>
+template<typename DerivedRenderApp>
+class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 {
-    using AVD        = AbstractViewerDrawer<DerivedRenderer>;
-    using DTB        = AVD::DTB;
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
+    using DTB          = ParentViewer::DTB;
 
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
@@ -53,7 +53,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderer>
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
-            AVD(width, height)
+            ParentViewer(width, height)
     {
         mCameraUniforms.updateCamera(DTB::camera());
         mDirectionalLightUniforms.updateLight(DTB::light());
@@ -64,7 +64,7 @@ public:
         uint                                         width = 1024,
         uint height = 768) : ViewerDrawerBGFX(width, height)
     {
-        AVD::setDrawableObjectVector(v);
+        ParentViewer::setDrawableObjectVector(v);
     }
 
     void onInit(uint) override
@@ -106,7 +106,7 @@ public:
 
         mDirectionalLightUniforms.bind();
 
-        for (auto obj : AVD::drawableObjectVector())
+        for (auto obj : ParentViewer::drawableObjectVector())
             obj->draw(viewId);
     }
 
@@ -122,7 +122,7 @@ public:
                 bgfx::setDebug(BGFX_DEBUG_STATS);
             }
         }
-        AVD::onKeyPress(key, modifiers);
+        ParentViewer::onKeyPress(key, modifiers);
     }
 
     void onMouseDoubleClick(
@@ -134,7 +134,7 @@ public:
         const bool homogeneousNDC =
             Context::instance().capabilites().homogeneousDepth;
 
-        AVD::readRequest(button, x, y, modifiers, homogeneousNDC);
+        ParentViewer::readRequest(button, x, y, modifiers, homogeneousNDC);
     }
 
     void toggleAxisVisibility() override

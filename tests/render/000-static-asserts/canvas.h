@@ -24,7 +24,7 @@
 #define CANVAS_H
 
 #include <vclib/render/canvas.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/widget_manager.h>
@@ -44,22 +44,22 @@ void canvasStaticAsserts()
 {
     using namespace vcl;
 
-    using RendererType = Renderer<WM, Canvas>;
+    using RenderAppType = RenderApp<WM, Canvas>;
 
     static_assert(
-        CanvasConcept<Canvas<RendererType>>,
+        CanvasConcept<Canvas<RenderAppType>>,
         "Canvas does not satisfy the CanvasConcept");
     static_assert(
-        CanvasConcept<const Canvas<RendererType>>,
+        CanvasConcept<const Canvas<RenderAppType>>,
         "const Canvas does not satisfy the CanvasConcept");
     static_assert(
-        CanvasConcept<Canvas<RendererType>&>,
+        CanvasConcept<Canvas<RenderAppType>&>,
         "Canvas& does not satisfy the CanvasConcept");
     static_assert(
-        CanvasConcept<const Canvas<RendererType>&>,
+        CanvasConcept<const Canvas<RenderAppType>&>,
         "const Canvas& does not satisfy the CanvasConcept");
     static_assert(
-        CanvasConcept<Canvas<RendererType>&&>,
+        CanvasConcept<Canvas<RenderAppType>&&>,
         "Canvas&& does not satisfy the CanvasConcept");
 }
 

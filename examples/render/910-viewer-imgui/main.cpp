@@ -26,14 +26,14 @@
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/canvas.h>
 #include <vclib/glfw/window_manager.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 #include <imgui.h>
 
-template<typename DerivedRenderer>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderer>
+template<typename DerivedRenderApp>
+class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
 {
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderer>;
+    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
 
 public:
     using ParentDrawer::ParentDrawer;
@@ -52,7 +52,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    using ImGuiDemo = vcl::Renderer<
+    using ImGuiDemo = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
         DemoImGuiDrawer,

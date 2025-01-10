@@ -24,7 +24,7 @@
 #define WINDOW_MANAGER_H
 
 #include <vclib/render/canvas.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/widget_manager.h>
@@ -38,42 +38,42 @@ void windowManagerStaticAsserts()
     using namespace vcl;
 
 #ifdef VCLIB_WITH_QT
-    using RendererTypeQ = Renderer<qt::WidgetManager, Canvas>;
+    using RenderAppQ = RenderApp<qt::WidgetManager, Canvas>;
 
     static_assert(
-        WindowManagerConcept<qt::WidgetManager<RendererTypeQ>>,
+        WindowManagerConcept<qt::WidgetManager<RenderAppQ>>,
         "qt::WidgetManager does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<const qt::WidgetManager<RendererTypeQ>>,
+        WindowManagerConcept<const qt::WidgetManager<RenderAppQ>>,
         "const qt::WidgetManager does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<qt::WidgetManager<RendererTypeQ>&>,
+        WindowManagerConcept<qt::WidgetManager<RenderAppQ>&>,
         "qt::WidgetManager& does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<const qt::WidgetManager<RendererTypeQ>&>,
+        WindowManagerConcept<const qt::WidgetManager<RenderAppQ>&>,
         "const qt::WidgetManager& does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<qt::WidgetManager<RendererTypeQ>&&>,
+        WindowManagerConcept<qt::WidgetManager<RenderAppQ>&&>,
         "qt::WidgetManager&& does not satisfy the WindowManagerConcept");
 #endif
 
 #ifdef VCLIB_WITH_GLFW
-    using RendererTypeG = Renderer<glfw::WindowManager, Canvas>;
+    using RenderAppG = RenderApp<glfw::WindowManager, Canvas>;
 
     static_assert(
-        WindowManagerConcept<glfw::WindowManager<RendererTypeG>>,
+        WindowManagerConcept<glfw::WindowManager<RenderAppG>>,
         "glfw::WindowManager does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<const glfw::WindowManager<RendererTypeG>>,
+        WindowManagerConcept<const glfw::WindowManager<RenderAppG>>,
         "const glfw::WindowManager does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<glfw::WindowManager<RendererTypeG>&>,
+        WindowManagerConcept<glfw::WindowManager<RenderAppG>&>,
         "glfw::WindowManager& does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<const glfw::WindowManager<RendererTypeG>&>,
+        WindowManagerConcept<const glfw::WindowManager<RenderAppG>&>,
         "const glfw::WindowManager& does not satisfy the WindowManagerConcept");
     static_assert(
-        WindowManagerConcept<glfw::WindowManager<RendererTypeG>&&>,
+        WindowManagerConcept<glfw::WindowManager<RenderAppG>&&>,
         "glfw::WindowManager&& does not satisfy the WindowManagerConcept");
 #endif
 }

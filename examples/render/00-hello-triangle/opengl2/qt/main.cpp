@@ -24,7 +24,7 @@
 
 #include <vclib/render/canvas.h>
 #include <vclib/qt/widget_manager.h>
-#include <vclib/render/renderer.h>
+#include <vclib/render/render_app.h>
 
 #include <QApplication>
 
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
 
     using WidgetQt = vcl::
-        Renderer<vcl::qt::WidgetManager, vcl::Canvas, HelloTriangleDrawer>;
+        RenderApp<vcl::qt::WidgetManager, vcl::Canvas, HelloTriangleDrawer>;
 
     WidgetQt tw("Hello Triangle with Qt");
 

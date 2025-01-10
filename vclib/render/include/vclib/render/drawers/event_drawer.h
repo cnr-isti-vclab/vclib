@@ -34,13 +34,13 @@ namespace vcl {
  * events.
  *
  * The EventDrawer class is a CRTP class that is templated on the derived
- * renderer class. It provides the interface for handling events produced by the
- * DerivedRenderer class.
+ * RenderApp class. It provides the interface for handling events produced by
+ * the DerivedRenderApp class.
  *
- * @tparam DerivedRenderer The type of the derived renderer class.
+ * @tparam DerivedRenderApp The type of the derived RenderApp class.
  */
-template<typename DerivedRenderer>
-class EventDrawer : public PlainDrawer<DerivedRenderer>
+template<typename DerivedRenderApp>
+class EventDrawer : public PlainDrawer<DerivedRenderApp>
 {
 public:
     static const bool CAN_BLOCK_EVENT_PROPAGATION = false;

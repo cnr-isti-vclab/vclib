@@ -39,15 +39,15 @@
 
 namespace vcl {
 
-template<typename DerivedRenderer>
-class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderer>
+template<typename DerivedRenderApp>
+class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderApp>
 {
-    using AVD = AbstractViewerDrawer<DerivedRenderer>;
-    using DTB = AVD::DTB;
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
+    using DTB          = ParentViewer::DTB;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
-            AVD(width, height)
+            ParentViewer(width, height)
     {
     }
 
@@ -56,7 +56,7 @@ public:
         uint                                         width = 1024,
         uint height = 768) : ViewerDrawerOpenGL2(width, height)
     {
-        AVD::setDrawableObjectVector(v);
+        ParentViewer::setDrawableObjectVector(v);
     }
 
     void onInit(uint) override
@@ -73,8 +73,8 @@ public:
         glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 
-        if (AVD::mDrawList) {
-            for (auto& obj : *(AVD::mDrawList)) {
+        if (ParentViewer::mDrawList) {
+            for (auto& obj : *(ParentViewer::mDrawList)) {
                 obj->init();
             }
         }
@@ -100,7 +100,7 @@ public:
         glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
         glMultMatrixf(DTB::viewMatrix().data());
 
-        for (auto& obj : *(AVD::mDrawList))
+        for (auto& obj : *(ParentViewer::mDrawList))
             obj->draw();
     }
 
@@ -116,7 +116,7 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        AVD::readRequest(button, x, y, modifiers);
+        ParentViewer::readRequest(button, x, y, modifiers);
     }
 
     void toggleAxisVisibility() override

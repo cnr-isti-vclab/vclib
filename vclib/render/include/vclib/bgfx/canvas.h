@@ -28,7 +28,7 @@
 #include <vclib/bgfx/system/native_window_handle.h>
 #include <vclib/io/image.h>
 #include <vclib/render/input.h>
-#include <vclib/render/concepts/renderer.h>
+#include <vclib/render/concepts/render_app.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/types.h>
 
@@ -66,10 +66,9 @@ namespace vcl {
  * - onResize(width, height): this function must be called by the derived
  * classes whenever the window is resized.
  */
-template<typename DerivedRenderer>
+template<typename DerivedRenderApp>
 class CanvasBGFX
 {
-    using DRT = DerivedRenderer;
     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
 
 protected:
@@ -103,8 +102,8 @@ public:
     CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr)
     {
         static_assert(
-            RendererConcept<DRT>,
-            "The DerivedRenderer must satisfy the RendererConcept.");
+            RenderAppConcept<DerivedRenderApp>,
+            "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
         // save window id
         mWinId = winId;
@@ -135,7 +134,7 @@ public:
     bgfx::FrameBufferHandle frameBuffer() const { return mFbh; }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when the window
+     * @brief Automatically called by the DerivedRenderApp when the window
      * initializes.
      * Initialization is requires in some backends+window manager combinations,
      * and therefore it must be implemented (also if empty) in every Canvas
@@ -144,7 +143,7 @@ public:
     void onInit() {}
 
     /**
-     * @brief Automatically called by the DerivedRenderer when the window
+     * @brief Automatically called by the DerivedRenderApp when the window
      * is resized.
      * @param width
      * @param height
@@ -165,7 +164,7 @@ public:
     }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when the window asks
+     * @brief Automatically called by the DerivedRenderApp when the window asks
      * to repaint.
      */
     void onPaint()
@@ -173,7 +172,7 @@ public:
         bgfx::setViewFrameBuffer(mViewId, mFbh);
         bgfx::touch(mViewId);
         // ask the derived frame to draw all the drawer objects:
-        DRT::CNV::draw(derived());
+        DerivedRenderApp::CNV::draw(derived());
 
         const bool newReadRequested =
             (mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
@@ -196,7 +195,7 @@ public:
             bgfx::frame();
 #endif // __APPLE__
 
-            DRT::CNV::postDraw(derived());
+            DerivedRenderApp::CNV::postDraw(derived());
         }
 
         if (mReadRequest != std::nullopt) {
@@ -210,7 +209,7 @@ public:
     }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * to read the depth buffer at a specific point.
      *
      * @param point
@@ -233,7 +232,7 @@ public:
     }
 
     /**
-     * @brief Automatically called by the DerivedRenderer when a drawer asks
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * for a screenshot.
      *
      * @param filename
@@ -288,13 +287,16 @@ private:
         // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        DRT::CNV::drawContent(derived());
+        DerivedRenderApp::CNV::drawContent(derived());
         mViewId = tmpId;
     }
 
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 };
 
 } // namespace vcl

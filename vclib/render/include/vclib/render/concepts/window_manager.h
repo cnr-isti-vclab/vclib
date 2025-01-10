@@ -33,21 +33,21 @@ namespace vcl {
  * the requirements of the WindowManager concept.
  *
  * Each class that satisfies this concept can be used as a window manager in the
- * @ref vcl::Renderer class (first template parameter). The WindowManager class
+ * @ref vcl::RenderApp class (first template parameter). The WindowManager class
  * is responsible for managing the window and the window events.
  *
- * It is a class that is templated on the Renderer class (using the CRTP
+ * It is a class that is templated on the RenderApp class (using the CRTP
  * pattern). The class is then allowed to access the member functions of the
- * public members of the @ref vcl::Renderer class and all the members of the
- * @ref vcl::Renderer::WM inner class.
+ * public members of the @ref vcl::RenderApp class and all the members of the
+ * @ref vcl::RenderApp::WM inner class.
  *
- * Moreoever, to work correctly with the Renderer class, the Canvas class and
+ * Moreoever, to work correctly with the RenderApp class, the Canvas class and
  * the Drawer classes, **the WindowManager class should call for each event**
  * (e.g. init, resize, mouseMove, ...) **the corresponding member function of
- * the vcl::Renderer::WM inner class**. This is necessary to propagate the event
- * to the Canvas and to the Drawer objects. This requirement is not modeled in
- * this concept definition because any platform can have different event
- * handling.
+ * the vcl::RenderApp::WM inner class**. This is necessary to propagate the
+ * event to the Canvas and to the Drawer objects. This requirement is not
+ * modeled in this concept definition because any platform can have different
+ * event handling.
  *
  * @par Constructors
  *
@@ -72,7 +72,7 @@ namespace vcl {
  *
  * The class must have the following static constants:
  * - `WINDOW_MANAGER_ID`: The ID of the window manager. It is used to identify
- * the window manager implementation (if necessary) by the DerivedRenderer
+ * the window manager implementation (if necessary) by the DerivedRenderApp
  * class. It must be a static constant of type `uint`. The value of the constant
  * must be equal to one of the values of the @ref vcl::WindowManagerId struct.
  *

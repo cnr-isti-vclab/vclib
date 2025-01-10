@@ -28,7 +28,7 @@ project(vclib-test-${TEST_NAME})
 set(HEADERS
     canvas.h
     drawers.h
-    renderer.h
+    render_app.h
     window_manager.h
 )
 

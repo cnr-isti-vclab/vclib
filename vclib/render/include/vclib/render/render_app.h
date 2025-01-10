@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_RENDERER_H
-#define VCL_RENDER_RENDERER_H
+#ifndef VCL_RENDER_RENDER_APP_H
+#define VCL_RENDER_RENDER_APP_H
 
 #include "concepts/blocker_event_drawer.h"
 #include "concepts/canvas.h"
@@ -35,12 +35,12 @@
 namespace vcl {
 
 /**
- * @brief The Renderer class is a template class that combines a canvas, a
+ * @brief The RenderApp class is a template class that combines a canvas, a
  * window manager, and a set of drawers, allowing them to work together and
  * communicate with each other.
  *
- * The Renderer class uses the Curiously Recurring Template Pattern (CRTP) to
- * allow the derived classes to access the member functions of the Renderer
+ * The RenderApp class uses the Curiously Recurring Template Pattern (CRTP) to
+ * allow the derived classes to access the member functions of the RenderApp
  * class that propagate events from one derived class (e.g. the WindowManager)
  * to another (e.g. the Canvas).
  *
@@ -57,26 +57,26 @@ template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
     template<typename> typename... Drawers>
-class Renderer :
-        public WindowManagerT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
-        public CanvasT<Renderer<WindowManagerT, CanvasT, Drawers...>>,
-        public Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>...
+class RenderApp :
+        public WindowManagerT<RenderApp<WindowManagerT, CanvasT, Drawers...>>,
+        public CanvasT<RenderApp<WindowManagerT, CanvasT, Drawers...>>,
+        public Drawers<RenderApp<WindowManagerT, CanvasT, Drawers...>>...
 {
-    using WindowManagerType = WindowManagerT<Renderer>;
-    using CanvasType = CanvasT<Renderer>;
+    using WindowManagerType = WindowManagerT<RenderApp>;
+    using CanvasType = CanvasT<RenderApp>;
 
     static_assert(
         WindowManagerConcept<WindowManagerType>,
-        "The first template parameter type of the Renderer class must be a "
+        "The first template parameter type of the RenderApp class must be a "
         "class that satisfies the WindowManagerConcept.");
 
     static_assert(
         CanvasConcept<CanvasType>,
-        "The second template parameter type of the Renderer class must be a "
+        "The second template parameter type of the RenderApp class must be a "
         "class that satisfies the CanvasConcept.");
 
     static_assert(
-        (DrawerConcept<Drawers<Renderer>> && ...),
+        (DrawerConcept<Drawers<RenderApp>> && ...),
         "All the Drawer types must satisfy the DrawerConcept.");
 
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
@@ -106,12 +106,12 @@ public:
     class WM;
     class DRW;
 
-    Renderer(ParentType* parent = nullptr) :
-            Renderer("Renderer", 1024, 768, parent)
+    RenderApp(ParentType* parent = nullptr) :
+            RenderApp("RenderApp", 1024, 768, parent)
     {
     }
 
-    Renderer(
+    RenderApp(
         const std::string& windowTitle,
         uint               width  = 1024,
         uint               height = 768,
@@ -122,7 +122,7 @@ public:
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y(),
                 WindowManagerType::displayId()),
-            Drawers<Renderer>(
+            Drawers<RenderApp>(
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y())...
     {
@@ -172,12 +172,12 @@ private:
     }
 
     /***** Member functions called by WindowManagerType *****/
-    // Documentation is in the Renderer::WM inner class
+    // Documentation is in the RenderApp::WM inner class
 
     void wmInit()
     {
         CanvasType::onInit();
-        (static_cast<Drawers<Renderer>*>(this)->onInit(CanvasType::viewId()),
+        (static_cast<Drawers<RenderApp>*>(this)->onInit(CanvasType::viewId()),
          ...);
     }
 
@@ -188,7 +188,7 @@ private:
         // call the onResize member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer>*>(this)->onResize(width, height), ...);
+        (static_cast<Drawers<RenderApp>*>(this)->onResize(width, height), ...);
     }
 
     void wmPaint() { CanvasType::onPaint(); }
@@ -209,7 +209,7 @@ private:
         };
 
                // call the lambda for all the drawers
-        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
+        callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
     void wmKeyRelease(Key::Enum key)
@@ -223,7 +223,7 @@ private:
         };
 
                // call the lambda for all the drawers
-        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
+        callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
     void wmMouseMove(double x, double y)
@@ -237,7 +237,7 @@ private:
         };
 
         // call the lambda for all the drawers
-        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
+        callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
     void wmMousePress(MouseButton::Enum button, double x, double y)
@@ -252,7 +252,7 @@ private:
         };
 
         // call the lambda for all the drawers
-        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
+        callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
     void wmMouseRelease(MouseButton::Enum button, double x, double y)
@@ -267,7 +267,7 @@ private:
         };
 
         // call the lambda for all the drawers
-        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
+        callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
     void wmMouseDoubleClick(MouseButton::Enum button, double x, double y)
@@ -282,7 +282,7 @@ private:
         };
 
         // call the lambda for all the drawers
-        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
+        callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
     void wmMouseScroll(double x, double y)
@@ -296,18 +296,18 @@ private:
         };
 
         // call the lambda for all the drawers
-        callEventFunForDrawers<Drawers<Renderer>...>(lambda);
+        callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
     /***** Member functions called by CanvasType *****/
-    // Documentation is in the Renderer::CNV inner class
+    // Documentation is in the RenderApp::CNV inner class
 
     void cnvDraw()
     {
         // call the onDraw member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer>*>(this)->onDraw(CanvasType::viewId()),
+        (static_cast<Drawers<RenderApp>*>(this)->onDraw(CanvasType::viewId()),
          ...);
     }
 
@@ -316,7 +316,7 @@ private:
         // call the onDrawContent member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer>*>(this)->onDrawContent(
+        (static_cast<Drawers<RenderApp>*>(this)->onDrawContent(
              CanvasType::viewId()),
          ...);
     }
@@ -326,11 +326,11 @@ private:
         // call the onPostDraw member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<Renderer>*>(this)->onPostDraw(), ...);
+        (static_cast<Drawers<RenderApp>*>(this)->onPostDraw(), ...);
     }
 
     /***** Member functions called by Drawer objects *****/
-    // Documentation is in the Renderer::DRW inner class
+    // Documentation is in the RenderApp::DRW inner class
 
     void* dWindowPtr() { return WindowManagerType::windowPtr(); }
 
@@ -355,46 +355,46 @@ private:
 // (https://tinyurl.com/kp8m28je)
 
 /**
- * @brief The Renderer::WM inner class is an Attorney that allow access to some
- * private member functions of the Renderer class to the WindowManagerType
+ * @brief The RenderApp::WM inner class is an Attorney that allow access to some
+ * private member functions of the RenderApp class to the WindowManagerType
  * class.
  *
- * The member functions of the Renderer::WM inner class can be called only by
+ * The member functions of the RenderApp::WM inner class can be called only by
  * the WindowManagerType class. For example, to call the init member function,
  * the WindowManagerType can call it in the following way:
  *
  * @code{.cpp}
- * Renderer::WM::init(static_cast<Renderer*>(this));
+ * RenderApp::WM::init(static_cast<RenderApp*>(this));
  * @endcode
  */
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
     template<typename> typename... Drawers>
-class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
+class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
 {
-    using WindowManagerType = WindowManagerT<Renderer>;
+    using WindowManagerType = WindowManagerT<RenderApp>;
 
     friend WindowManagerType;
 
     /**
      * @brief The WindowManagerType calls this member function when the window
-     * render backend is initialized. The Renderer propagates the init event to
+     * render backend is initialized. The RenderApp propagates the init event to
      * the CanvasType and to each Drawer object, by calling the `onInit(uint)`
      * member function.
      */
-    static void init(Renderer* r) { r->wmInit(); }
+    static void init(RenderApp* r) { r->wmInit(); }
 
     /**
      * @brief The WindowManagerType calls this member function when the window
-     * is resized, telling the new width and height. The Renderer propagates
+     * is resized, telling the new width and height. The RenderApp propagates
      * the resize event to the CanvasType and to each Drawer object, by calling
      * the `onResize(uint, uint)` member function.
      *
      * @param width
      * @param height
      */
-    static void resize(Renderer* r, uint width, uint height)
+    static void resize(RenderApp* r, uint width, uint height)
     {
         r->wmResize(width, height);
     }
@@ -403,13 +403,13 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      * @brief The WindowManagerType calls this member function when the window
      * triggers a paint event.
      */
-    static void paint(Renderer* r) { r->wmPaint(); }
+    static void paint(RenderApp* r) { r->wmPaint(); }
 
     /**
      * @brief The WindowManagerType calls this member function when the current
      * modifiers are updated.
      */
-    static void setModifiers(Renderer* r, const KeyModifiers& modifiers)
+    static void setModifiers(RenderApp* r, const KeyModifiers& modifiers)
     {
         r->wmSetModifiers(modifiers);
     }
@@ -424,7 +424,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      *
      * @param key
      */
-    static void keyPress(Renderer* r, Key::Enum key) { r->wmKeyPress(key); }
+    static void keyPress(RenderApp* r, Key::Enum key) { r->wmKeyPress(key); }
 
     /**
      * @brief The WindowManagerType calls this member function when a key is
@@ -436,7 +436,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      *
      * @param key
      */
-    static void keyRelease(Renderer* r, Key::Enum key)
+    static void keyRelease(RenderApp* r, Key::Enum key)
     {
         r->wmKeyRelease(key);
     }
@@ -452,7 +452,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      * @param x
      * @param y
      */
-    static void mouseMove(Renderer* r, double x, double y)
+    static void mouseMove(RenderApp* r, double x, double y)
     {
         r->wmMouseMove(x, y);
     }
@@ -471,7 +471,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      * @param y
      */
     static void mousePress(
-        Renderer*         r,
+        RenderApp*         r,
         MouseButton::Enum button,
         double            x,
         double            y)
@@ -493,7 +493,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      * @param y
      */
     static void mouseRelease(
-        Renderer*         r,
+        RenderApp*         r,
         MouseButton::Enum button,
         double            x,
         double            y)
@@ -515,7 +515,7 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      * @param y
      */
     static void mouseDoubleClick(
-        Renderer*         r,
+        RenderApp*         r,
         MouseButton::Enum button,
         double            x,
         double            y)
@@ -535,82 +535,82 @@ class Renderer<WindowManagerT, CanvasT, Drawers...>::WM
      * @param x
      * @param y
      */
-    static void mouseScroll(Renderer* r, double x, double y)
+    static void mouseScroll(RenderApp* r, double x, double y)
     {
         r->wmMouseScroll(x, y);
     }
 };
 
 /**
- * @brief The Renderer::CNV inner class is an Attorney that allow access to some
- * private member functions of the Renderer class to the CanvasType class.
+ * @brief The RenderApp::CNV inner class is an Attorney that allow access to some
+ * private member functions of the RenderApp class to the CanvasType class.
  *
- * The member functions of the Renderer::CNV inner class can be called only by
+ * The member functions of the RenderApp::CNV inner class can be called only by
  * the CanvasType class. For example, to call the update member function,
  * the CanvasType can call it in the following way:
  *
  * @code{.cpp}
- * Renderer::CNV::update(static_cast<Renderer*>(this));
+ * RenderApp::CNV::update(static_cast<RenderApp*>(this));
  * @endcode
  */
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
     template<typename> typename... Drawers>
-class Renderer<WindowManagerT, CanvasT, Drawers...>::CNV
+class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
 {
-    using CanvasType = CanvasT<Renderer>;
+    using CanvasType = CanvasT<RenderApp>;
 
     friend CanvasType;
 
     /**
-     * @brief The CanvasType is ready to draw, and asks the Renderer to call
+     * @brief The CanvasType is ready to draw, and asks the RenderApp to call
      * the `onDraw(uint())` function for every Drawer object.
      */
-    static void draw(Renderer* r) { r->cnvDraw(); }
+    static void draw(RenderApp* r) { r->cnvDraw(); }
 
     /**
      * @brief The CanvasType wants to draw only the content of the objects,
      * without any decorator (e.g. axis, trackball, grid, etc.).
      * This scenario is useful when the user wants to take a snapshot of the
-     * scene without any decoration. It asks the Renderer to call the
+     * scene without any decoration. It asks the RenderApp to call the
      * `onDrawContent(uint())` function for every Drawer object.
      */
-    static void drawContent(Renderer* r) { r->cnvDrawContent(); }
+    static void drawContent(RenderApp* r) { r->cnvDrawContent(); }
 
     /**
      * @brief The CanvasType has finished drawing and has submitted the new
-     * frame, and asks the Renderer to call the `onPostDraw()` function for
+     * frame, and asks the RenderApp to call the `onPostDraw()` function for
      * every Drawer object.
      */
-    static void postDraw(Renderer* r) { r->cnvPostDraw(); }
+    static void postDraw(RenderApp* r) { r->cnvPostDraw(); }
 };
 
 /**
- * @brief The Renderer::DRW inner class is an Attorney that allow access to some
- * private member functions of the Renderer class to the Drawer
+ * @brief The RenderApp::DRW inner class is an Attorney that allow access to some
+ * private member functions of the RenderApp class to the Drawer
  * classes.
  *
- * The member functions of the Renderer::DRW inner class can be called only by
+ * The member functions of the RenderApp::DRW inner class can be called only by
  * the Drawer classes. For example, to call the canvasFrameBuffer member
  * function, the Drawer can call it in the following way:
  *
  * @code{.cpp}
- * Renderer::DRW::canvasFrameBuffer(static_cast<Renderer*>(this));
+ * RenderApp::DRW::canvasFrameBuffer(static_cast<RenderApp*>(this));
  * @endcode
  */
 template<
     template<typename> typename WindowManagerT,
     template<typename> typename CanvasT,
     template<typename> typename... Drawers>
-class Renderer<WindowManagerT, CanvasT, Drawers...>::DRW
+class RenderApp<WindowManagerT, CanvasT, Drawers...>::DRW
 {
     // TODO: right now all the function in this inner class are public,
     // because variadic friends are still not allowed in C++.
     // It will allowed in C++26: https://stackoverflow.com/a/78246001/5851101
     // As soon as this feature will be available on all the major compilers,
     // the functions will be made private.
-    //friend Drawers<Renderer<WindowManagerT, CanvasT, Drawers...>>...;
+    //friend Drawers<RenderApp<WindowManagerT, CanvasT, Drawers...>>...;
 public: // TODO - remove this when C++26 is supported
 
     /**
@@ -627,7 +627,7 @@ public: // TODO - remove this when C++26 is supported
      * @param r
      * @return
      */
-    static void* windowPtr(Renderer* r) { return r->dWindowPtr(); }
+    static void* windowPtr(RenderApp* r) { return r->dWindowPtr(); }
 
     /**
      * @brief A Drawer object can request the size of the canvas. This function
@@ -637,7 +637,7 @@ public: // TODO - remove this when C++26 is supported
      *
      * // TODO is this actually necessary???
      */
-    static Point2<uint> canvasSize(const Renderer* r)
+    static Point2<uint> canvasSize(const RenderApp* r)
     {
         return r->dCanvasSize();
     }
@@ -652,7 +652,7 @@ public: // TODO - remove this when C++26 is supported
      *
      * @return The frame buffer of the canvas.
      */
-    static auto canvasFrameBuffer(const Renderer* r)
+    static auto canvasFrameBuffer(const RenderApp* r)
     {
         return r->dCanvasFrameBuffer();
     }
@@ -670,7 +670,7 @@ public: // TODO - remove this when C++26 is supported
      * @return true if the depth value is successfully read, false otherwise.
      */
     [[nodiscard]] static bool readDepth(
-        Renderer* r,
+        RenderApp* r,
         const Point2i&     point,
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
@@ -689,7 +689,7 @@ public: // TODO - remove this when C++26 is supported
      * canvas will be used.
      */
     static void screenshot(
-        Renderer* r,
+        RenderApp* r,
         const std::string& filename,
         uint width = 0,
         uint height = 0)
@@ -700,4 +700,4 @@ public: // TODO - remove this when C++26 is supported
 
 } // namespace vcl
 
-#endif // VCL_RENDER_RENDERER_H
+#endif // VCL_RENDER_RENDER_APP_H

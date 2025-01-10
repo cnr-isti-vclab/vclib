@@ -40,17 +40,17 @@
 
 namespace vcl::imgui {
 
-template<typename DerivedRenderer>
-class ImGuiDrawer : public BlockerEventDrawer<DerivedRenderer>
+template<typename DerivedRenderApp>
+class ImGuiDrawer : public BlockerEventDrawer<DerivedRenderApp>
 {
 protected:
-    using DRT = DerivedRenderer;
+    using DRA = DerivedRenderApp;
 
 public:
     ImGuiDrawer()
     {
         static_assert(
-            DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW,
+            DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW,
             "ImGuiDrawer supports only GLFW window manager.");
     }
 
@@ -64,7 +64,7 @@ public:
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_Shutdown();
 #endif
-        if constexpr (DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
+        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_Shutdown();
         }
         ImGui::DestroyContext();
@@ -83,10 +83,10 @@ public:
         // setup ImGui style
         ImGui::StyleColorsDark();
 
-        if constexpr (DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
+        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             GLFWwindow* mWindow =
-                reinterpret_cast<GLFWwindow*>(DRT::DRW::windowPtr(derived()));
-            // setup platform/renderer backends (GLFW and ImGui)
+                reinterpret_cast<GLFWwindow*>(DRA::DRW::windowPtr(derived()));
+            // setup platform/RenderApp backends (GLFW and ImGui)
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
             ImGui_ImplGlfw_InitForOpenGL(mWindow, true);
             ImGui_ImplOpenGL2_Init();
@@ -106,7 +106,7 @@ public:
         ImGui_ImplBgfx_NewFrame();
 #endif
         if constexpr (
-            DRT::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
+            DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_NewFrame();
         }
         ImGui::NewFrame();
@@ -180,9 +180,9 @@ protected:
     }
 
 private:
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DRA*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
+    const auto* derived() const { return static_cast<const DRA*>(this); }
 
     bool wantCapture(bool mouse = true)
     {

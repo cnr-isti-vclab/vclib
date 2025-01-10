@@ -42,14 +42,12 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-template<typename DerivedRenderer>
+template<typename DerivedRenderApp>
 class AbstractViewerDrawer :
         public DesktopTrackBall<float>,
-        public EventDrawer<DerivedRenderer>
+        public EventDrawer<DerivedRenderApp>
 {
     bool mReadRequested = false;
-
-    using DRT = DerivedRenderer;
 
 protected:
     // the list of drawable objects
@@ -133,7 +131,8 @@ public:
 
         case Key::S:
             if (modifiers[KeyModifier::CONTROL])
-                DRT::DRW::screenshot(derived(), "viewer_screenshot.png");
+                DerivedRenderApp::DRW::screenshot(
+                    derived(), "viewer_screenshot.png");
             break;
 
         case Key::T: toggleTrackBallVisibility(); break;
@@ -206,7 +205,7 @@ protected:
         const auto    proj = DTB::projectionMatrix();
         const auto    view = DTB::viewMatrix();
         // viewport
-        auto size = DRT::DRW::canvasSize(derived());
+        auto size = DerivedRenderApp::DRW::canvasSize(derived());
 
         const Point4f vp   = {.0f, .0f, float(size.x()), float(size.y())};
         auto callback      = [=, this](const ReadData& dt) {
@@ -229,16 +228,19 @@ protected:
             derived()->update();
         };
 
-        mReadRequested =
-            DRT::DRW::readDepth(derived(), Point2i(p.x(), p.y()), callback);
+        mReadRequested = DerivedRenderApp::DRW::readDepth(
+            derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
             derived()->update();
     }
 
 private:
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 };
 
 } // namespace vcl
