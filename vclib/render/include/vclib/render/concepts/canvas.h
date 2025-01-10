@@ -111,8 +111,7 @@ concept CanvasConcept = requires (
     typename RemoveRef<T>::CallbackReadBuffer;
 
     RemoveRef<T>(vPtr, u, u);
-    RemoveRef<T>(vPtr, u, u, c);
-    RemoveRef<T>(vPtr, u, u, c, vPtr);
+    RemoveRef<T>(vPtr, u, u, vPtr);
 
     { obj.size() } -> Point2Concept;
     { obj.viewId() } -> std::convertible_to<uint>;

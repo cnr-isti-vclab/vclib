@@ -95,9 +95,8 @@ public:
         void*        winId,
         uint         width,
         uint         height,
-        const Color& clearColor = vcl::Color::Black,
         void*        displayId  = nullptr) :
-            mWinId(winId), mSize(width, height), mDefaultClearColor(clearColor)
+            mWinId(winId), mSize(width, height)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,
