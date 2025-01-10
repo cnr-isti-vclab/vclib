@@ -131,6 +131,11 @@ public:
 
         case Key::A: toggleAxisVisibility(); break;
 
+        case Key::S:
+            if (modifiers[KeyModifier::CONTROL])
+                DRT::DRW::screenshot(derived(), "viewer_screenshot.png");
+            break;
+
         case Key::T: toggleTrackBallVisibility(); break;
 
         default: break;

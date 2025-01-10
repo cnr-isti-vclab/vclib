@@ -344,6 +344,11 @@ private:
     {
         return CanvasType::onReadDepth(point, callback);
     }
+
+    void dScreenshot(const std::string& filename, uint width, uint height)
+    {
+        CanvasType::onScreenshot(filename, width, height);
+    }
 };
 
 /*** Inner classes: Attorneys ***/
@@ -670,6 +675,26 @@ public: // TODO - remove this when C++26 is supported
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
         return r->dReadDepth(point, callback);
+    }
+
+    /**
+     * @brief A Drawer object can request a screenshot of the canvas. This
+     * function is called by the Drawer object to request a screenshot of the
+     * canvas.
+     *
+     * @param[in] filename: The filename where the screenshot will be saved.
+     * @param[in] width: The width of the screenshot. If 0, the width of the
+     * canvas will be used.
+     * @param[in] height: The height of the screenshot. If 0, the height of the
+     * canvas will be used.
+     */
+    static void screenshot(
+        Renderer* r,
+        const std::string& filename,
+        uint width = 0,
+        uint height = 0)
+    {
+        r->dScreenshot(filename, width, height);
     }
 };
 
