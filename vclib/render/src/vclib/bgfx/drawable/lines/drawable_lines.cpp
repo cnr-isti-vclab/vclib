@@ -7,30 +7,29 @@
 
 #include <vclib/bgfx/context/load_program.h>
 
-namespace vcl {
-namespace lines {
+namespace vcl::lines {
 
-    std::unique_ptr<Lines> Lines::create(const std::vector<Point> &points, const float width, const float heigth, Types type) {
+    std::unique_ptr<DrawableLines> DrawableLines::create(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth, LinesTypes type) {
         const bgfx::Caps* caps = bgfx::getCaps();
 
         switch (type) {
-            case Types::CPU_GENERATED: {
+            case LinesTypes::CPU_GENERATED: {
                 return std::make_unique<CPUGeneratedLines>(points, width, heigth);
             }
 
-            case Types::GPU_GENERATED: {
+            case LinesTypes::GPU_GENERATED: {
                 const bool computeSupported  = !!(caps->supported & BGFX_CAPS_COMPUTE);
                 assert((void("GPU compute not supported"), computeSupported));
                 return std::make_unique<GPUGeneratedLines>(points, width, heigth);
             }
 
-            case Types::INSTANCING_BASED: {
+            case LinesTypes::INSTANCING_BASED: {
                 const bool instancingSupported = !!(caps->supported & BGFX_CAPS_INSTANCING);
                 assert((void("Instancing not supported"), instancingSupported));
                 return std::make_unique<InstancingBasedLines>(points, width, heigth);
             }
 
-            case Types::INDIRECT_BASED: {
+            case LinesTypes::INDIRECT_BASED: {
                 const bool computeSupported  = !!(caps->supported & BGFX_CAPS_COMPUTE);
                 const bool indirectSupported = !!(caps->supported & BGFX_CAPS_DRAW_INDIRECT);
                 const bool instancingSupported = !!(caps->supported & BGFX_CAPS_INSTANCING);
@@ -39,7 +38,7 @@ namespace lines {
                 return std::make_unique<IndirectBasedLines>(points, width, heigth);
             }
 
-            case Types::TEXTURE_BASED: {
+            case LinesTypes::TEXTURE_BASED: {
                 const bool computeSupported  = !!(caps->supported & BGFX_CAPS_COMPUTE);
                 const bool indirectSupported = !!(caps->supported & BGFX_CAPS_DRAW_INDIRECT);
                 const bool instancingSupported = !!(caps->supported & BGFX_CAPS_INSTANCING);
@@ -54,30 +53,22 @@ namespace lines {
         return nullptr;
     }
 
-    std::unique_ptr<Lines> Lines::create(bgfx::VertexBufferHandle vbh) {
+    std::unique_ptr<DrawableLines> DrawableLines::create(bgfx::VertexBufferHandle vbh) {
         /** ... */
         return nullptr;
     }
 
-    std::unique_ptr<Lines> Lines::create(bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ivh) {
+    std::unique_ptr<DrawableLines> DrawableLines::create(bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ivh) {
         /** ... */
         return nullptr;
     }
 
-    Lines::Lines(const float width, const float heigth, const std::string& vs_name,  const std::string& fs_name) {
-        setScreenSize(width, heigth);
-
+    DrawableLines::DrawableLines(const uint16_t width, const uint16_t heigth, const std::string& vs_name,  const std::string& fs_name) {
+        m_Settings = LinesSettings(width, heigth);
         m_Program = vcl::loadProgram(vs_name, fs_name);
-        m_UniformData1 = bgfx::createUniform("u_data1", bgfx::UniformType::Vec4);
-        m_UniformData2 = bgfx::createUniform("u_data2", bgfx::UniformType::Vec4);
-        m_UniformBorderColor = bgfx::createUniform("u_borderColor", bgfx::UniformType::Vec4);
     }
 
-    Lines::~Lines() {
-        bgfx::destroy(m_UniformData1);
-        bgfx::destroy(m_UniformData2);
-        bgfx::destroy(m_UniformBorderColor);
+    DrawableLines::~DrawableLines() {
         bgfx::destroy(m_Program);
-    }
-}
+    } 
 }

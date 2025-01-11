@@ -1,86 +1,40 @@
 #pragma once
-#include "lines_utils.h"
-#include <algorithm>
-#include <bgfx/bgfx.h>
 #include <vclib/render/interfaces/drawable_object_i.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <bgfx/bgfx.h>
+namespace vcl::lines {
 
-namespace vcl {
-    
-namespace lines {
+    class DrawableLines : public vcl::DrawableObjectI {
 
-class Lines : public DrawableObjectI
-{
-public:
-    static std::unique_ptr<Lines> create(
-        const std::vector<Point>& points,
-        const float               width,
-        const float               heigth,
-        Types                     type = Types::CPU_GENERATED);
+        public:
 
-    static std::unique_ptr<Lines> create(bgfx::VertexBufferHandle vbh);
+            static std::unique_ptr<DrawableLines> create(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth, LinesTypes type = LinesTypes::CPU_GENERATED);
 
-    static std::unique_ptr<Lines> create(
-        bgfx::VertexBufferHandle vbh,
-        bgfx::IndexBufferHandle  ivh);
+            static std::unique_ptr<DrawableLines> create(bgfx::VertexBufferHandle vbh);
 
-    Lines(
-        const float        width,
-        const float        heigth,
-        const std::string& vs_name,
-        const std::string& fs_name);
+            static std::unique_ptr<DrawableLines> create(bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ivh);
 
-    virtual ~Lines();
+            DrawableLines(const uint16_t width, const uint16_t heigth, const std::string& vs_name, const std::string& fs_name);
 
-    Box3d boundingBox() const override
-    {
-        return Box3d(Point3d(-1, -1, -1), Point3d(1, 1, 1));
-    }
+            virtual ~DrawableLines();
 
-    bool isVisible() const override { return m_Visible; }
+            vcl::Box3d boundingBox() const override { 
+                return vcl::Box3d(vcl::Point3d(-1,-1,-1), vcl::Point3d(1, 1, 1));
+            }
 
-    void setVisibility(bool vis) override { m_Visible = vis; }
+            bool isVisible() const override { return m_Visible; }
 
-    virtual void update(const std::vector<Point>& points) = 0;
+            void setVisibility(bool vis) override { m_Visible = vis; }
 
-    void setThickness(float thickness) { m_Data.thickness = thickness; }
+            LinesSettings& getSettings() { return m_Settings; }
 
-    void setLeftCap(const Caps& cap) { m_Data.leftCap = cap; }
+            virtual void update(const std::vector<LinesVertex> &points) = 0;
 
-    void setRigthCap(const Caps& cap) { m_Data.rigthCap = cap; }
+        protected: 
+            bgfx::ProgramHandle m_Program;
+            vcl::Box3d m_BoundingBox;
 
-    void setAntialias(float antialias) { m_Data.antialias = antialias; }
-
-    void setBorder(float border) { m_Data.border = border; }
-
-    void setBorderColor(const Color& color) { m_Data.borderColor = color; }
-
-    void setScreenSize(float width, float heigth)
-    {
-        m_Data.screenSize[0] = width;
-        m_Data.screenSize[1] = heigth;
-    }
-
-protected:
-    bgfx::ProgramHandle m_Program;
-    bgfx::UniformHandle m_UniformData1;
-    bgfx::UniformHandle m_UniformData2;
-    bgfx::UniformHandle m_UniformBorderColor;
-
-    struct LineData
-    {
-        float thickness = 5.0;
-        float antialias = 0.0;
-        float border    = 0.0;
-        float screenSize[2];
-        Caps  leftCap  = Caps::SQUARE_CAP;
-        Caps  rigthCap = Caps::SQUARE_CAP;
-        Color borderColor;
+            LinesSettings m_Settings;
+            bool m_Visible = true;
     };
-
-    LineData   m_Data;
-    Box3d m_BoundingBox;
-    bool       m_Visible = true;
-};
-
-} // namespace lines
-} // namespace vcl
+}

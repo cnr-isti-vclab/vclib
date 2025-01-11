@@ -30,4 +30,19 @@ vec4 calculatePointWithMVP(vec4 p, float screen_width, float screen_heigth) {
     return vec4(p_px.xy, NDC_p.z, NDC_p.w);
 }
 
+vec4 uintToVec4FloatColor(uint color) {
+    return vec4(
+        float((color >> uint(24)) & uint(0xFF)) / 255,
+        float((color >> uint(16)) & uint(0xFF)) / 255,
+        float((color >> uint(8))  & uint(0xFF)) / 255,
+        float( color              & uint(0xFF)) / 255
+    );
+}
+
+ivec2 calculateTextureCoord(uint index, uint maxTextureSize) {
+    uint Y = index / maxTextureSize;
+    uint X = index - (Y * maxTextureSize);
+    return ivec2(X, Y);
+}
+
 #endif

@@ -1,49 +1,42 @@
 #pragma once
-#include "../drawable_polylines.h"
+#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
 
-namespace vcl {
-namespace lines {
-class IndirectBasedPolylines : public Polylines
-{
-public:
-    IndirectBasedPolylines(
-        const std::vector<Point>& points,
-        const float               width,
-        const float               heigth);
+namespace vcl::lines {
+    class IndirectBasedPolylines : public DrawablePolylines {
+        public:
+            IndirectBasedPolylines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth);
 
-    ~IndirectBasedPolylines();
+            ~IndirectBasedPolylines();
 
-    std::shared_ptr<DrawableObjectI> clone() const override
-    {
-        return std::make_shared<IndirectBasedPolylines>(*this);
-    }
+            std::shared_ptr<DrawableObjectI> clone() const override {
+                return std::make_shared<IndirectBasedPolylines>(*this);
+            }
 
-    void draw(uint viewId) const override;
+            void draw(uint viewId) const override;
 
-    void update(const std::vector<Point>& points) override;
+            void update(const std::vector<LinesVertex> &points) override;
 
-private:
-    void allocatePointsBuffer();
+        private:
 
-    void generateIndirectBuffers();
+            void allocatePointsBuffer();
 
-    std::vector<float>    m_Vertices;
-    std::vector<uint32_t> m_Indices;
+            void generateIndirectBuffers();
 
-    bgfx::VertexBufferHandle m_Vbh;
-    bgfx::IndexBufferHandle  m_Ibh;
+            std::vector<float> m_Vertices;
+            std::vector<uint32_t> m_Indices;
 
-    bgfx::DynamicVertexBufferHandle m_PointsBuffer;
+            bgfx::VertexBufferHandle m_Vbh;
+            bgfx::IndexBufferHandle m_Ibh;
 
-    bgfx::IndirectBufferHandle m_SegmentsIndirectBuffer;
-    bgfx::IndirectBufferHandle m_JoinsIndirectBuffer;
+            bgfx::DynamicVertexBufferHandle m_PointsBuffer;
 
-    bgfx::ProgramHandle m_JoinsProgram;
-    bgfx::ProgramHandle m_ComputeIndirect;
-    bgfx::UniformHandle m_IndirectDataUniform;
+            bgfx::IndirectBufferHandle m_SegmentsIndirectBuffer;
+            bgfx::IndirectBufferHandle m_JoinsIndirectBuffer;
 
-    uint32_t m_PointsSize;
-};
+            bgfx::ProgramHandle m_JoinsProgram;
+            bgfx::ProgramHandle m_ComputeIndirect;            
+            bgfx::UniformHandle m_IndirectDataUniform;
 
-} // namespace lines
-} // namespace vcl
+            uint32_t m_PointsSize;
+    };
+}

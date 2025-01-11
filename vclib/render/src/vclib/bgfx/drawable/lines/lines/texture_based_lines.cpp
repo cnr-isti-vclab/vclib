@@ -1,17 +1,14 @@
 #include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 #include <vclib/bgfx/context/load_program.h>
 
-namespace vcl {
-namespace lines {
-    TextureBasedLines::TextureBasedLines(const std::vector<Point> &points, const float width, const float heigth, const uint32_t maxTextureSize) :
-        Lines(width, heigth, "lines/texture_based_lines/vs_texture_based_lines", "lines/texture_based_lines/fs_texture_based_lines"),
+namespace vcl::lines {
+    TextureBasedLines::TextureBasedLines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth, const uint32_t maxTextureSize) :
+        DrawableLines(width, heigth, "lines/texture_based_lines/vs_texture_based_lines", "lines/texture_based_lines/fs_texture_based_lines"),
         m_PointsSize(points.size()),
         m_MaxTextureSize(maxTextureSize)
     {
-
         m_IndirectBuffer = bgfx::createIndirectBuffer(1);
         m_IndirectDataUniform = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-        m_ComputeIndirect = bgfx::createProgram(vcl::loadShader("lines/texture_based_lines/cs_compute_indirect"), true);
         m_ComputeTexture = bgfx::createProgram(vcl::loadShader("lines/texture_based_lines/cs_compute_texture"), true);
 
         m_Vertices = {
@@ -41,10 +38,9 @@ namespace lines {
             bgfx::makeRef(&m_Indices[0], sizeof(uint32_t) * m_Indices.size()),
             BGFX_BUFFER_INDEX32
         );
-        generateIndirectBuffer();
 
         allocatePointsBuffer();
-        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(Point) * points.size()));
+        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(LinesVertex) * points.size()));
 
         allocateTextureBuffer();
         generateTextureBuffer();
@@ -56,18 +52,11 @@ namespace lines {
         bgfx::destroy(m_PointsBuffer); 
         bgfx::destroy(m_IndirectBuffer);
         bgfx::destroy(m_TextureBuffer);
-        bgfx::destroy(m_ComputeIndirect);
         bgfx::destroy(m_IndirectDataUniform);
     }
 
     void TextureBasedLines::draw(uint viewId) const {
-        float data1[] = {m_Data.screenSize[0], m_Data.screenSize[1], m_Data.thickness, static_cast<float>(m_Data.leftCap)};
-        bgfx::setUniform(m_UniformData1, data1);
-
-        float data2[] = {static_cast<float>(m_Data.rigthCap), m_Data.antialias, m_Data.border, 0};
-        bgfx::setUniform(m_UniformData2, data2);
-
-        bgfx::setUniform(m_UniformBorderColor, &m_Data.borderColor);
+        m_Settings.bindUniformLines();
 
         uint64_t state = 0
             | BGFX_STATE_WRITE_RGB
@@ -84,35 +73,25 @@ namespace lines {
         bgfx::submit(viewId, m_Program, m_IndirectBuffer, 0);
     }
 
-    void TextureBasedLines::update(const std::vector<Point> &Points) {
+    void TextureBasedLines::update(const std::vector<LinesVertex> &points) {
         int oldSize = m_PointsSize;
-        m_PointsSize = Points.size();
-        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&Points[0], sizeof(Point) * Points.size()));
+        m_PointsSize = points.size();
+        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(LinesVertex) * points.size()));
 
         if(oldSize < m_PointsSize) {
             allocateTextureBuffer();
-        }
-
-        if(oldSize != m_PointsSize) {
-            generateIndirectBuffer();
         }
         
         generateTextureBuffer();
     }
 
-    void TextureBasedLines::generateIndirectBuffer() {
-        float data[] = {static_cast<float>(m_PointsSize), 0, 0, 0};
-        bgfx::setUniform(m_IndirectDataUniform, data);
-		bgfx::setBuffer(0, m_IndirectBuffer, bgfx::Access::Write);
-		bgfx::dispatch(0, m_ComputeIndirect);
-    }
-
     void TextureBasedLines::generateTextureBuffer() {
-        float data[] = {static_cast<float>(m_MaxTextureSize), 0, 0, 0};
+        float data[] = {static_cast<float>(m_MaxTextureSize), static_cast<float>(m_PointsSize / 2), 0, 0};
         bgfx::setUniform(m_IndirectDataUniform, data);
 
         bgfx::setBuffer(0, m_PointsBuffer, bgfx::Access::Read);
         bgfx::setImage(1, m_TextureBuffer, 0, bgfx::Access::Write);
+		bgfx::setBuffer(2, m_IndirectBuffer, bgfx::Access::ReadWrite);
         bgfx::dispatch(0, m_ComputeTexture, (m_PointsSize / 2), 1, 1);
     }
 
@@ -131,8 +110,8 @@ namespace lines {
         layout
          .begin()
          .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
-         .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
-         .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Float)
+         .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Uint8)
+         .add(bgfx::Attrib::Normal,    3, bgfx::AttribType::Float)
          .end();
 
         m_PointsBuffer = bgfx::createDynamicVertexBuffer(
@@ -141,5 +120,4 @@ namespace lines {
         );
     }
 
-}
 }

@@ -1,48 +1,40 @@
 #pragma once
-#include "../drawable_polylines.h"
+#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
 
-namespace vcl {
-namespace lines {
+namespace vcl::lines {
+    class GPUGeneratedPolylines : public DrawablePolylines {
+        public:
+            GPUGeneratedPolylines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth);
 
-class GPUGeneratedPolylines : public Polylines
-{
-public:
-    GPUGeneratedPolylines(
-        const std::vector<Point>& points,
-        const float               width,
-        const float               heigth);
+            ~GPUGeneratedPolylines();
 
-    ~GPUGeneratedPolylines();
+            std::shared_ptr<DrawableObjectI> clone() const override {
+                return std::make_shared<GPUGeneratedPolylines>(*this);
+            }
 
-    std::shared_ptr<DrawableObjectI> clone() const override
-    {
-        return std::make_shared<GPUGeneratedPolylines>(*this);
-    }
+            void draw(uint viewId) const override;
 
-    void draw(uint viewId) const override;
+            void update(const std::vector<LinesVertex> &points) override;
 
-    void update(const std::vector<Point>& points) override;
+        private:
 
-private:
-    void generateBuffers();
+            void generateBuffers();
 
-    void allocateVertexBuffer();
+            void allocateVertexBuffer();
 
-    void allocateIndexBuffer();
+            void allocateIndexBuffer();
 
-    void allocatePointsBuffer();
+            void allocatePointsBuffer();
 
-    bgfx::DynamicVertexBufferHandle m_DVbh;
-    bgfx::DynamicIndexBufferHandle  m_SegmentsDIbh;
-    bgfx::DynamicIndexBufferHandle  m_JoinsDIbh;
+            bgfx::DynamicVertexBufferHandle m_DVbh;
+            bgfx::DynamicIndexBufferHandle m_SegmentsDIbh;
+            bgfx::DynamicIndexBufferHandle m_JoinsDIbh;
 
-    bgfx::DynamicVertexBufferHandle m_PointsBuffer;
+            bgfx::DynamicVertexBufferHandle m_PointsBuffer;
+            
+            bgfx::ProgramHandle m_ComputeProgram;
+            bgfx::UniformHandle m_NumWorksGroupUniform;
 
-    bgfx::ProgramHandle m_ComputeProgram;
-    bgfx::UniformHandle m_NumWorksGroupUniform;
-
-    uint32_t m_PointsSize;
-};
-
-} // namespace lines
-} // namespace vcl
+            uint32_t m_PointsSize;
+    };
+}

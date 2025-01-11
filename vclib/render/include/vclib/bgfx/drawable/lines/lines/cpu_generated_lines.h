@@ -1,41 +1,36 @@
-#pragma once
-#include "../drawable_lines.h"
+#pragma once 
+#include <vclib/bgfx/drawable/lines/drawable_lines.h>
 
-namespace vcl {
-namespace lines {
+namespace vcl::lines {
 
-class CPUGeneratedLines : public Lines
-{
-public:
-    CPUGeneratedLines(
-        const std::vector<Point>& points,
-        const float               width,
-        const float               heigth);
+    class CPUGeneratedLines : public DrawableLines {
 
-    ~CPUGeneratedLines();
+        public:
+            CPUGeneratedLines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth);
 
-    std::shared_ptr<DrawableObjectI> clone() const override
-    {
-        return std::make_shared<CPUGeneratedLines>(*this);
-    }
+            ~CPUGeneratedLines();
 
-    void draw(uint viewId) const override;
+            std::shared_ptr<DrawableObjectI> clone() const override {
+                return std::make_shared<CPUGeneratedLines>(*this);
+            }
 
-    void update(const std::vector<Point>& points) override;
+            void draw(uint viewId) const override;
 
-private:
-    void generateBuffers(const std::vector<Point> points);
+            void update(const std::vector<LinesVertex> &points) override;
 
-    void allocateVertexBuffer();
+        private:
+            void generateBuffers(const std::vector<LinesVertex> points);
 
-    void allocateIndexBuffer();
+            void allocateVertexBuffer();
 
-    std::vector<float>    m_Vertices;
-    std::vector<uint32_t> m_Indices;
+            void allocateIndexBuffer();
 
-    bgfx::DynamicVertexBufferHandle m_Vbh;
-    bgfx::DynamicIndexBufferHandle  m_Ibh;
-    uint32_t                        m_PointsSize;
-};
-} // namespace lines
-} // namespace vcl
+            std::vector<float> m_Vertices;
+            std::vector<uint32_t> m_Indices;
+
+            bgfx::DynamicVertexBufferHandle m_Vbh;
+            bgfx::DynamicIndexBufferHandle m_Ibh;
+            uint32_t m_PointsSize;
+
+    };
+}

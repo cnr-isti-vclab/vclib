@@ -80,22 +80,27 @@ vec4 calculatePolylinesUV(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickn
     return final_uv + (u * T * width_px * (activeCaps)) + (u * T * width_px * (activeJoin));
 }
 
-vec4 calculatePolylinesColor(vec2 uv, float thickness, float totalLength, float leftCap, float rightCap, float join, vec4 finalColor) {
+vec4 calculatePolylinesColor(vec2 uv, float thickness, float totalLength, float leftCap, float rigthCap, float join, vec4 finalColor, float is_start_end) {
   	float d = -1;
     float color = 0;
+    float width_px = thickness / 2;
 
     if(uv.x < 0) {
-        if(leftCap == 2 || join == 0)
-            d = length(vec2(uv.xy)) - (thickness/2);
-        color = 1;
+        float square_cap    = (width_px - max(abs(uv.x), abs(uv.y))) * (1 - sign(abs(leftCap - 1)));
+        float round_cap     = (width_px - length(uv))  			         * (1 - sign(abs(leftCap - 2)));
+        float triangle_cap  = (width_px - (abs(uv.x) + abs(uv.y)))   * (1 - sign(abs(leftCap - 3)));
 
+        d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(join)) + (width_px - length(uv)) * (1 - sign(sign(is_start_end) + sign(join)));
     } else if(uv.x > totalLength) {
-        if(rightCap == 2 || join == 0)
-            d = length(vec2(uv.xy) - vec2(totalLength, 0)) - (thickness/2);
-        color = 1;
-    } 
+        float square_cap    = (width_px - max(abs(uv.x - totalLength), abs(uv.y))) * (1 - sign(abs(rigthCap - 1)));
+        float round_cap     = (width_px - length(uv - vec2(totalLength, 0)))       * (1 - sign(abs(rigthCap - 2)));
+        float triangle_cap  = (width_px - (abs(uv.x - totalLength) + abs(uv.y)))   * (1 - sign(abs(rigthCap - 3)));
 
-	  if(d > 0)
+        d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(join)) + (width_px - length(uv - vec2(totalLength, 0))) * (1 - sign(sign(is_start_end) + sign(join)));
+    } else
+        d = width_px - abs(uv.y);
+
+	  if(d < 0)
 		    return vec4(0);
 	  else
 		    return finalColor;

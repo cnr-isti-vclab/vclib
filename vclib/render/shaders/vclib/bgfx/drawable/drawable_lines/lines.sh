@@ -43,41 +43,32 @@ vec4 calculateLinesColor(vec4 uv, float length_px, float thickness, float antial
 	vec4 final_border_color = (borderColor * sign(border)) + (color * (1 - sign(border)));
 
 	if(uv.x < 0) {
-		if(leftCap == 2)
-			d = width_px - length(uv);
+		float square_cap    = (width_px - max(abs(uv.x), abs(uv.y))) * (1 - sign(abs(leftCap - 1)));
+		float round_cap     = (width_px - length(uv))  			     * (1 - sign(abs(leftCap - 2)));
+		float triangle_cap  = (width_px - (abs(uv.x) + abs(uv.y)))   * (1 - sign(abs(leftCap - 3)));
+
+		d = square_cap + round_cap + triangle_cap;
 	} else if(uv.x > length_px) {
-		if(rigthCap == 2)
-			d = width_px - length(uv - vec4(length_px, 0, 0, 0));
+		float square_cap    = (width_px - max(abs(uv.x - length_px), abs(uv.y))) * (1 - sign(abs(rigthCap - 1)));
+		float round_cap     = (width_px - length(uv - vec4(length_px, 0, 0, 0))) * (1 - sign(abs(rigthCap - 2)));
+		float triangle_cap  = (width_px - (abs(uv.x - length_px) + abs(uv.y)))   * (1 - sign(abs(rigthCap - 3)));
+
+		d = square_cap + round_cap + triangle_cap;
 	} else
 		d = width_px - abs(uv.y);
 
 	if(d > antialias + border)
 		return color;
 
-	else if(d > 0) {
+	else if(d > antialias) {
+		return final_border_color;
+
+	} else if (d > 0) {
 		d /= 2;
 		return vec4(final_border_color.xyz, d);
 
-	} else if (d > border)
-		return final_border_color;
-
-	else {
-		if(uv.x < 0 && leftCap != 2) {
-
-			if(abs(uv.x) < (thickness / 2) && abs(uv.y) < (thickness / 2))
-				return color;
-			else
-                return final_border_color;
-
-		} else if(uv.x > length_px && rigthCap != 2) {
-
-			if(abs(uv.x - length_px) < (thickness / 2) && abs(uv.y) < (thickness / 2))
-				return color;
-			else
-                return final_border_color;
-
-		} else 
-            return vec4(0);
+	} else {
+		return vec4(0);
 	}
 }
 

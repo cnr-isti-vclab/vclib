@@ -1,10 +1,10 @@
 #include <vclib/bgfx/drawable/lines/lines/indirect_based_lines.h>
 #include <vclib/bgfx/context/load_program.h>
 
-namespace vcl {
-namespace lines {
-    IndirectBasedLines::IndirectBasedLines(const std::vector<Point> &points, const float width, const float heigth) :
-        Lines(width, heigth, "lines/indirect_based_lines/vs_indirect_based_lines", "lines/indirect_based_lines/fs_indirect_based_lines"),
+
+namespace vcl::lines {
+    IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth) :
+        DrawableLines(width, heigth, "lines/indirect_based_lines/vs_indirect_based_lines", "lines/indirect_based_lines/fs_indirect_based_lines"),
         m_PointsSize(points.size())
     {
         m_IndirectBuffer = bgfx::createIndirectBuffer(1);
@@ -41,7 +41,7 @@ namespace lines {
 
         generateIndirectBuffer();
         allocatePointsBuffer();
-        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(Point) * points.size()));
+        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(LinesVertex) * points.size()));
     }
 
     IndirectBasedLines::~IndirectBasedLines() {
@@ -57,7 +57,8 @@ namespace lines {
         layout
          .begin()
          .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
-         .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Float)
+         .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Uint8)
+         .add(bgfx::Attrib::Normal,    3, bgfx::AttribType::Float)
          .end();
 
         m_PointsBuffer = bgfx::createDynamicVertexBuffer(m_PointsSize, layout, 
@@ -73,13 +74,7 @@ namespace lines {
     }
 
     void IndirectBasedLines::draw(uint viewId) const {
-        float data1[] = {m_Data.screenSize[0], m_Data.screenSize[1], m_Data.thickness, static_cast<float>(m_Data.leftCap)};
-        bgfx::setUniform(m_UniformData1, data1);
-
-        float data2[] = {static_cast<float>(m_Data.rigthCap), m_Data.antialias, m_Data.border, 0};
-        bgfx::setUniform(m_UniformData2, data2);
-
-        bgfx::setUniform(m_UniformBorderColor, &m_Data.borderColor);
+        m_Settings.bindUniformLines();
 
         uint64_t state = 0
             | BGFX_STATE_WRITE_RGB
@@ -98,7 +93,7 @@ namespace lines {
         bgfx::submit(viewId, m_Program, m_IndirectBuffer, 0);
     }
 
-    void IndirectBasedLines::update(const std::vector<Point> &points) {
+    void IndirectBasedLines::update(const std::vector<LinesVertex> &points) {
         int oldSize = m_PointsSize;
         m_PointsSize = points.size();
 
@@ -106,7 +101,6 @@ namespace lines {
             generateIndirectBuffer();
         }
          
-        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(Point) * points.size()));
+        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(LinesVertex) * points.size()));
     }
-}
 }

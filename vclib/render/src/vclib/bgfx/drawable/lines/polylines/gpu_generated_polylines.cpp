@@ -1,10 +1,9 @@
 #include <vclib/bgfx/drawable/lines/polylines/gpu_generated_polylines.h>
 #include <vclib/bgfx/context/load_program.h>
 
-namespace vcl {
-namespace lines { 
-    GPUGeneratedPolylines::GPUGeneratedPolylines(const std::vector<Point> &points, const float width, const float heigth) :
-        Polylines(width, heigth, "polylines/cpu_generated_polylines/vs_cpu_generated_polylines", "polylines/cpu_generated_polylines/fs_cpu_generated_polylines"),
+namespace vcl::lines { 
+    GPUGeneratedPolylines::GPUGeneratedPolylines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth) :
+        DrawablePolylines(width, heigth, "polylines/cpu_generated_polylines/vs_cpu_generated_polylines", "polylines/cpu_generated_polylines/fs_cpu_generated_polylines"),
         m_PointsSize(points.size())
     {
         m_ComputeProgram = bgfx::createProgram(vcl::loadShader("polylines/gpu_generated_polylines/cs_compute_buffers"), true);
@@ -14,7 +13,7 @@ namespace lines {
         allocateVertexBuffer();
         allocateIndexBuffer();
 
-        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(Point) * points.size()));
+        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(LinesVertex) * points.size()));
         generateBuffers();  
     }
 
@@ -27,13 +26,7 @@ namespace lines {
     }
 
     void GPUGeneratedPolylines::draw(uint viewId) const {
-        float data1[] = {m_Data.screenSize[0], m_Data.screenSize[1], m_Data.miterLimit, m_Data.thickness};
-        bgfx::setUniform(m_UniformData1, data1);
-
-        float data2[] = {static_cast<float>(m_Data.leftCap), static_cast<float>(m_Data.rigthCap), static_cast<float>(m_Data.join), 0};
-        bgfx::setUniform(m_UniformData2, data2);
-        
-        bgfx::setUniform(m_UniformColor, &m_Data.color);
+        m_Settings.bindUniformPolylines();
 
         uint64_t state = 0
             | BGFX_STATE_WRITE_RGB
@@ -48,7 +41,7 @@ namespace lines {
         bgfx::setState(state);
         bgfx::submit(viewId, m_Program);
 
-        if(m_Data.join != 0) {
+        if(m_Settings.getJoin() != 0) {
             bgfx::setVertexBuffer(0, m_DVbh);
             bgfx::setIndexBuffer(m_JoinsDIbh);
             bgfx::setState(state);
@@ -56,7 +49,7 @@ namespace lines {
         }
     }
 
-    void GPUGeneratedPolylines::update(const std::vector<Point> &points) {
+    void GPUGeneratedPolylines::update(const std::vector<LinesVertex> &points) {
         int oldSize = m_PointsSize;
         m_PointsSize = points.size();
 
@@ -76,7 +69,7 @@ namespace lines {
             allocatePointsBuffer();
         }
 
-        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(Point) * points.size()));
+        bgfx::update(m_PointsBuffer, 0, bgfx::makeRef(&points[0], sizeof(LinesVertex) * points.size()));
         generateBuffers();
     }
 
@@ -85,9 +78,9 @@ namespace lines {
         bgfx::setUniform(m_NumWorksGroupUniform, data);
 
         bgfx::setBuffer(0, m_PointsBuffer, bgfx::Access::Read);
-        bgfx::setBuffer(1, m_DVbh, bgfx::Access::Write);
+        bgfx::setBuffer(1, m_DVbh,         bgfx::Access::Write);
         bgfx::setBuffer(2, m_SegmentsDIbh, bgfx::Access::Write);
-        bgfx::setBuffer(3, m_JoinsDIbh, bgfx::Access::Write);
+        bgfx::setBuffer(3, m_JoinsDIbh,    bgfx::Access::Write);
         bgfx::dispatch(0, m_ComputeProgram, m_PointsSize - 1, 1, 1);
     }
 
@@ -96,10 +89,11 @@ namespace lines {
         bgfx::VertexLayout layout;
         layout
             .begin()
-            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Uint8, true)
+            .add(bgfx::Attrib::Normal,    3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord2, 2, bgfx::AttribType::Float)
             .end();
         
@@ -126,7 +120,7 @@ namespace lines {
         layout
          .begin()
          .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-         .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
+         .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8)
          .end();
         
         m_PointsBuffer = bgfx::createDynamicVertexBuffer(
@@ -134,5 +128,4 @@ namespace lines {
             BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_ALLOW_RESIZE
         );
     }
-}
 }
