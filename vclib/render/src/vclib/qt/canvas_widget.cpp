@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -24,6 +24,7 @@
 
 #include <vclib/qt/input.h>
 #include <vclib/qt/message_hider.h>
+#include <vclib/space/core/color.h>
 
 #include <QApplication>
 #include <QMouseEvent>

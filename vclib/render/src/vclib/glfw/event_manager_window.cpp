@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -160,6 +160,11 @@ void* EventManagerWindow::displayId()
 #endif
 #endif
     return ndt;
+}
+
+GLFWwindow* EventManagerWindow::glfwWindow() const
+{
+    return mWindow;
 }
 
 void EventManagerWindow::glfwFramebufferSizeCallback(

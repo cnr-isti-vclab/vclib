@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2025                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -45,6 +45,10 @@ add_subdirectory(03-viewer-with-text)
 
 if (TARGET vclib-processing)
     add_subdirectory(800-processing-main-window)
+endif()
+
+if(TARGET vclib-3rd-imgui AND TARGET vclib-3rd-glfw)
+    add_subdirectory(910-viewer-imgui)
 endif()
 
 add_subdirectory(999-misc)

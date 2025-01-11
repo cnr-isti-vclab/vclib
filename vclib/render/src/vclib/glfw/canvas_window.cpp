@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -21,6 +21,8 @@
  ****************************************************************************/
 
 #include <vclib/glfw/canvas_window.h>
+
+#include <vclib/space/core/color.h>
 
 namespace vcl::glfw {
 
@@ -51,6 +53,9 @@ void CanvasWindow::show()
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
         frame();
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        glfwSwapBuffers(mWindow);
+#endif
     }
 }
 

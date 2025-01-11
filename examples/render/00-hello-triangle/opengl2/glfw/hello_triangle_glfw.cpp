@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -48,6 +48,4 @@ void HelloTriangleGLFW::drawContent()
     glColor4ubv((GLubyte*) &(vertices[2].abgr));
     glVertex2fv((GLfloat*) &(vertices[2].pos));
     glEnd();
-
-    glfwSwapBuffers(mWindow);
 }

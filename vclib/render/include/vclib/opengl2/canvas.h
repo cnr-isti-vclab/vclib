@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -28,6 +28,7 @@
 #include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/read_buffer_types.h>
 
+#include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
 
 #ifdef __APPLE__
@@ -82,6 +83,8 @@ private:
 
     Point2<uint> mSize = {0, 0};
 
+    vcl::Color mDefaultClearColor = vcl::Color::Black;
+
     CallbackReadBuffer mReadBufferCallback = nullptr;
     Point2i            mReadDepthPoint     = Point2i(-1, -1);
 
@@ -98,6 +101,8 @@ public:
 
     Point2<uint> size() const { return mSize; }
 
+    void setDefaultClearColor(const Color& color);
+
     bool screenshot(
         const std::string& filename,
         uint               width  = 0,
@@ -112,7 +117,7 @@ protected:
 
     void onResize(uint width, uint height) override;
 
-    void frame();
+    virtual void frame();
 
 private:
     void readDepthData();

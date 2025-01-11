@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -67,16 +67,13 @@ void ViewerWindow::show()
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
         frame();
-    }
-}
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-void ViewerWindow::draw()
-{
-    ViewerCanvas::draw();
-    glfwSwapBuffers(mWindow); // TODO: check
-}
+        // swap buffers
+        glfwSwapBuffers(mWindow);
 #endif
+    }
+}
 
 void ViewerWindow::onKeyPress(Key::Enum key)
 {
@@ -96,6 +93,9 @@ void ViewerWindow::onResize(unsigned int width, unsigned int height)
 {
     ViewerCanvas::onResize(width, height);
     frame();
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+    glfwSwapBuffers(mWindow);
+#endif
 }
 
 } // namespace vcl::glfw

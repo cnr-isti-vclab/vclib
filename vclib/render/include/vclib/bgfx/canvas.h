@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -81,7 +81,7 @@ private:
     // size of the canvas
     Point2<uint> mSize = {0, 0};
 
-    // TODO background color
+    vcl::Color mDefaultClearColor = vcl::Color::Black;
 
     // current frame
     uint32_t mCurrFrame = 0;
@@ -102,6 +102,8 @@ public:
     Point2<uint> size() const { return mSize; }
 
     bgfx::ViewId viewId() const { return mViewId; }
+
+    void setDefaultClearColor(const Color& color);
 
     // text
     void enableText(bool b = true);
@@ -142,7 +144,7 @@ protected:
 
     void onResize(uint width, uint height) override;
 
-    void frame();
+    virtual void frame();
 
 private:
     // draw offscreen frame

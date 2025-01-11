@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2025                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -24,6 +24,7 @@ cmake_minimum_required(VERSION 3.24)
 project(common)
 
 set(HEADERS
+    get_drawable_mesh.h
     default_viewer.h)
 
 add_library(vclib-render-examples-common INTERFACE)

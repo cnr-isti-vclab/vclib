@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -49,13 +49,9 @@ public:
 
     ~ViewerWindow() override = default;
 
-    void show();
+    virtual void show();
 
 protected:
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-    void draw() override;
-#endif
-
     void onKeyPress(Key::Enum key) override;
 
     void onResize(uint width, uint height) override;
