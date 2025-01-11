@@ -95,11 +95,7 @@ private:
     bool mStatsEnabled = false;
 
 public:
-    CanvasBGFX(
-        void* winId,
-        uint width,
-        uint height,
-        void* displayId = nullptr);
+    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr);
 
     ~CanvasBGFX();
 

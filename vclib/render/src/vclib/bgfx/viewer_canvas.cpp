@@ -33,8 +33,7 @@ ViewerCanvasBGFX::ViewerCanvasBGFX(
     uint  width,
     uint  height,
     void* displayId) :
-        CanvasBGFX(winId, width, height, displayId),
-        ViewerI(width, height)
+        CanvasBGFX(winId, width, height, displayId), ViewerI(width, height)
 {
     CanvasBGFX::setDefaultClearColor(Color::White);
     mCameraUniforms.updateCamera(DTB::camera());

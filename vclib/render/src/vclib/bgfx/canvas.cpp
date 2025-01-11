@@ -28,11 +28,7 @@
 
 namespace vcl {
 
-CanvasBGFX::CanvasBGFX(
-    void*        winId,
-    uint         width,
-    uint         height,
-    void*        displayId) :
+CanvasBGFX::CanvasBGFX(void* winId, uint width, uint height, void* displayId) :
         mWinId(winId)
 {
     // on screen framebuffer

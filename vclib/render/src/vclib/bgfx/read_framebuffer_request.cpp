@@ -74,7 +74,7 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     Point2i            queryDepthPoint,
     Point2<uint>       framebufferSize,
     CallbackReadBuffer callback,
-    const Color& clearColor) :
+    const Color&       clearColor) :
         type(DEPTH), point(queryDepthPoint), readCallback(callback)
 {
     blitSize = getBlitDepthSize(framebufferSize);
