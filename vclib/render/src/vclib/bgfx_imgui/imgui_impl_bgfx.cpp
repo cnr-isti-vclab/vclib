@@ -283,7 +283,7 @@ struct OcornutImguiContext
 		// NO style
 		// setupStyle(true);
 
-		io.BackendPlatformName = "imgui_impl_bgfx";
+		io.BackendRendererName = "imgui_impl_bgfx";
 		
 		io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;
 
