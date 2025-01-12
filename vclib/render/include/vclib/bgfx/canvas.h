@@ -27,8 +27,8 @@
 #include <vclib/bgfx/read_framebuffer_request.h>
 #include <vclib/bgfx/system/native_window_handle.h>
 #include <vclib/io/image.h>
-#include <vclib/render/input.h>
 #include <vclib/render/concepts/render_app.h>
+#include <vclib/render/input.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/types.h>
 
@@ -72,9 +72,9 @@ class CanvasBGFX
     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
 
 protected:
-    using FloatData          = ReadBufferTypes::FloatData;
-    using ByteData           = ReadBufferTypes::ByteData;
-    using ReadData           = ReadBufferTypes::ReadData;
+    using FloatData = ReadBufferTypes::FloatData;
+    using ByteData  = ReadBufferTypes::ByteData;
+    using ReadData  = ReadBufferTypes::ReadData;
 
 public:
     using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
@@ -100,11 +100,10 @@ private:
 
 public:
     CanvasBGFX(
-        void*        winId,
-        uint         width,
-        uint         height,
-        void*        displayId  = nullptr) :
-            mWinId(winId)
+        void* winId,
+        uint  width,
+        uint  height,
+        void* displayId = nullptr) : mWinId(winId)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,
@@ -168,7 +167,7 @@ public:
             bgfx::destroy(mFbh);
 
         auto& ctx = Context::instance();
-        mFbh = ctx.createFramebufferAndInitView(
+        mFbh      = ctx.createFramebufferAndInitView(
             mWinId, mViewId, width, height, true, mDefaultClearColor.rgba());
         // the canvas framebuffer is non valid for the default window
         assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
@@ -268,7 +267,8 @@ public:
 
         // color data callback
         CallbackReadBuffer callback = [=](const ReadData& data) {
-            assert(std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
+            assert(
+                std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
             const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
 
             // save rgb image data into file using stb depending on file
