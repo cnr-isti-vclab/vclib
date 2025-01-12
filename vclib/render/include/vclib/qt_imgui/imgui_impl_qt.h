@@ -2,60 +2,34 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#ifndef IMGUI_IMPL_QT_H
+#define IMGUI_IMPL_QT_H
 
-#include <vclib/glfw_imgui/viewer_window_imgui.h>
+#include <QWidget>
 #include <imgui.h>
+#ifndef IMGUI_DISABLE
 
-class ImguiDemo : public vcl::glfw::ViewerWindowImgui
-{
-public:
-    ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
-    {
-    }
+IMGUI_IMPL_API bool ImGui_ImplQt_Init(QWidget* widget);
+IMGUI_IMPL_API void ImGui_ImplQt_Shutdown();
+IMGUI_IMPL_API void ImGui_ImplQt_NewFrame();
 
-    void draw() override
-    {
-        // imgui demo window
-        ImGui::ShowDemoWindow();
-
-        // draw the scene
-        ViewerWindowImgui::draw();
-    }
-};
-
-int main(int argc, char** argv)
-{
-    ImguiDemo tw("Viewer GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
-}
+#endif // IMGUI_DISABLE
+#endif // IMGUI_IMPL_QT_H

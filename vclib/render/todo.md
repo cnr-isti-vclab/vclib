@@ -19,8 +19,8 @@
   - [ ] Mesh info rendered as text with bgfx
   - [ ] Draw cross in DrawableTrackball
   - [ ] Manage wireframe and points depth in shaders
-  - [ ] Better management of canvas and viewer classes - qt and glfw share a lot of code
-  - [ ] Implement picking (raytracing to get the triangle clicked by the mouse?)
+  - [X] Better management of canvas and viewer classes - qt and glfw share a lot of code (REFACTORING IN PROGRESS)
+  - [X] Implement picking (raytracing to get the triangle clicked by the mouse?) Already implemented using depth reading
   - [ ] Customizable background for canvas
   - [ ] check crash example 9015 mesh io stl (crashes if the bimba model (m1) is rendered)
   - [ ] Draw lines trough shader - Work in progress (BSc thesis)
@@ -45,7 +45,7 @@
   - [X] make a uniform offscreen read buffer request for depth and color
   - [X] implement offscreen color rendering for the snapshot function
   - [X] implement 'offscreen' rendering on legacy OpenGL
-  - [ ] implement imgui platform backend for Qt
+  - [X] implement imgui platform backend for Qt
   - [ ] solve key modifiers inconsistency when using imgui and glfw
   - [X] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown (SOLVED MISTERIOUSLY)
   - [X] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring (REFACTORING IN PROGRESS)
