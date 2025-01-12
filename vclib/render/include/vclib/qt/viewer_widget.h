@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -55,13 +55,14 @@ public:
 
     void onKeyPress(Key::Enum key) override;
 
-private:
+protected:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override;
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void paintGL() override;
 #endif
 
+private:
     void showScreenShotDialog();
 };
 
