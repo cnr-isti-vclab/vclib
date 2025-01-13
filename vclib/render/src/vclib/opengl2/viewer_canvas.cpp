@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -36,6 +36,7 @@ ViewerCanvasOpenGL2::ViewerCanvasOpenGL2(
         vcl::CanvasOpenGL2(winId, width, height, displayId),
         ViewerI(width, height)
 {
+    CanvasOpenGL2::setDefaultClearColor(Color::White);
     init(width, height);
 }
 

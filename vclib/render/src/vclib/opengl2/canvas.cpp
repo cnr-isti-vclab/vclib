@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -35,7 +35,21 @@ void CanvasOpenGL2::init(uint width, uint height)
 {
     mSize = {width, height};
     glViewport(0, 0, width, height);
-    glClearColor(1.f, 1.f, 1.f, 1.0f);
+    glClearColor(
+        mDefaultClearColor.redF(),
+        mDefaultClearColor.greenF(),
+        mDefaultClearColor.blueF(),
+        mDefaultClearColor.alphaF());
+}
+
+void CanvasOpenGL2::setDefaultClearColor(const Color& color)
+{
+    mDefaultClearColor = color;
+    glClearColor(
+        mDefaultClearColor.redF(),
+        mDefaultClearColor.greenF(),
+        mDefaultClearColor.blueF(),
+        mDefaultClearColor.alphaF());
 }
 
 bool CanvasOpenGL2::screenshot(

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -35,6 +35,7 @@ ViewerCanvasBGFX::ViewerCanvasBGFX(
     void* displayId) :
         CanvasBGFX(winId, width, height, displayId), ViewerI(width, height)
 {
+    CanvasBGFX::setDefaultClearColor(Color::White);
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
 }

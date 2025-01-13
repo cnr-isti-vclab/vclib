@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -25,6 +25,7 @@
 
 #include <bgfx/bgfx.h>
 #include <vclib/render/read_buffer_types.h>
+#include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
 
 namespace vcl {
@@ -43,12 +44,14 @@ public:
     ReadFramebufferRequest(
         Point2i            queryDepthPoint,
         Point2<uint>       framebufferSize,
-        CallbackReadBuffer callback);
+        CallbackReadBuffer callback,
+        const Color&       clearColor = Color::Black);
 
     // read color constructor
     ReadFramebufferRequest(
         Point2<uint>       framebufferSize,
-        CallbackReadBuffer callback);
+        CallbackReadBuffer callback,
+        const Color&       clearColor = Color::Black);
 
     ~ReadFramebufferRequest();
 

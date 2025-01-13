@@ -20,9 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#include "get_drawable_mesh.h"
 
 #include <vclib/glfw_imgui/viewer_window_imgui.h>
+
 #include <imgui.h>
 
 class ImguiDemo : public vcl::glfw::ViewerWindowImgui
@@ -47,7 +48,7 @@ int main(int argc, char** argv)
     ImguiDemo tw("Viewer ImGui GLFW");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh

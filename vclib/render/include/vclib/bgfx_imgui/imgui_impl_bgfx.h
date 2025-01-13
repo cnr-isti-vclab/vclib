@@ -3,8 +3,8 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-#ifndef IMGUI_IMPL_BGFX_H
-#define IMGUI_IMPL_BGFX_H
+#ifndef VCL_BGFX_IMGUI_IMGUI_IMPL_BGFX_H
+#define VCL_BGFX_IMGUI_IMGUI_IMPL_BGFX_H
 
 #include <bgfx/bgfx.h>
 #include <imgui.h>
@@ -137,4 +137,4 @@ namespace ImGui
 
 } // namespace ImGui
 
-#endif // IMGUI_IMPL_BGFX_H
+#endif // VCL_BGFX_IMGUI_IMGUI_IMPL_BGFX_H

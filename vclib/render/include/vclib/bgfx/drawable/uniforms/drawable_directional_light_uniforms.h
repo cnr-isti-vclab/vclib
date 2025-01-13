@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,8 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
 
-#include "shader_uniform.h"
-
+#include <vclib/bgfx/uniform.h>
 #include <vclib/space/core/color.h>
 
 namespace vcl {
@@ -33,7 +32,7 @@ class DrawableDirectionalLightUniforms
 {
     float mLightColor[4] = {1.0, 1.0, 0.0, 1.0};
 
-    ShaderUniform mLightColorUniform = ShaderUniform(
+    Uniform mLightColorUniform = Uniform(
         "u_drawableDirectionalLightColor",
         bgfx::UniformType::Vec4);
 

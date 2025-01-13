@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,8 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_CAMERA_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_CAMERA_UNIFORMS_H
 
-#include "shader_uniform.h"
-
+#include <vclib/bgfx/uniform.h>
 #include <vclib/render/viewer/camera.h>
 
 #include <bgfx/bgfx.h>
@@ -36,11 +35,11 @@ class CameraUniforms
     float mEye[4]     = {0.0, 0.0, 0.0, 0.0}; // eye[3] not used
     float mNearFar[4] = {0.0, 0.0, 0.0, 0.0}; // nearFar[2] and [3] not used
 
-    ShaderUniform mCameraEyeUniform =
-        ShaderUniform("u_cameraEyePosPack", bgfx::UniformType::Vec4);
+    Uniform mCameraEyeUniform =
+        Uniform("u_cameraEyePosPack", bgfx::UniformType::Vec4);
 
-    ShaderUniform mCameraNearFarUniform =
-        ShaderUniform("u_cameraNearFarPack", bgfx::UniformType::Vec4);
+    Uniform mCameraNearFarUniform =
+        Uniform("u_cameraNearFarPack", bgfx::UniformType::Vec4);
 
 public:
     CameraUniforms() {}

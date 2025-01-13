@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2025                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -22,14 +22,11 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 03-viewer-with-text-glfw)
+set(EXAMPLE_NAME 01-viewer-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
-
-set(HEADERS
-    common.h)
 
 set(SOURCES
     main.cpp)
@@ -37,4 +34,4 @@ set(SOURCES
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
-    SOURCES ${HEADERS} ${SOURCES})
+    SOURCES ${SOURCES})

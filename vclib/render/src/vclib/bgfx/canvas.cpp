@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -28,11 +28,9 @@
 
 namespace vcl {
 
-CanvasBGFX::CanvasBGFX(void* winId, uint width, uint height, void* displayId)
+CanvasBGFX::CanvasBGFX(void* winId, uint width, uint height, void* displayId) :
+        mWinId(winId)
 {
-    // save window id
-    mWinId = winId;
-
     // on screen framebuffer
     mViewId = Context::instance(mWinId, displayId).requestViewId();
 
@@ -52,6 +50,15 @@ CanvasBGFX::~CanvasBGFX()
     auto& ctx = Context::instance();
     if (ctx.isValidViewId(mViewId))
         ctx.releaseViewId(mViewId);
+}
+
+void CanvasBGFX::setDefaultClearColor(const Color& color)
+{
+    mDefaultClearColor = color;
+    bgfx::setViewClear(
+        mViewId,
+        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+        color.rgba());
 }
 
 void CanvasBGFX::enableText(bool b)
@@ -118,8 +125,8 @@ void CanvasBGFX::onResize(uint width, uint height)
         bgfx::destroy(mFbh);
 
     auto& ctx = Context::instance();
-    mFbh =
-        ctx.createFramebufferAndInitView(mWinId, mViewId, width, height, true);
+    mFbh      = ctx.createFramebufferAndInitView(
+        mWinId, mViewId, width, height, true, mDefaultClearColor.rgba());
     // the canvas framebuffer is non valid for the default window
     assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
 
@@ -203,7 +210,7 @@ bool CanvasBGFX::screenshot(
         }
     };
 
-    mReadRequest.emplace(size, callback);
+    mReadRequest.emplace(size, callback, mDefaultClearColor);
     return true;
 }
 

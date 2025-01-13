@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2025                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -22,9 +22,9 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    add_subdirectory(bgfx)
+if (TARGET vclib-3rd-qt)
+    add_subdirectory(qt)
 endif()
-if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
-    add_subdirectory(opengl2)
+if (TARGET vclib-3rd-glfw)
+    add_subdirectory(glfw)
 endif()

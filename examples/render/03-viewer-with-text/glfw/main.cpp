@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,28 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <QApplication>
+#include "get_drawable_mesh.h"
 
-#include <vclib/qt/mesh_viewer.h>
-
-#include "common.h"
+#include <vclib/glfw/viewer_window.h>
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
-
-    vcl::qt::MeshViewer mv;
+    vcl::glfw::ViewerWindow tw("Viewer GLFW");
 
     // load and set up a drawable mesh
-    auto drawable = getDrawableMesh<vcl::TriMesh>();
+    vcl::DrawableMesh<vcl::TriMesh> m =
+        getDrawableMesh<vcl::TriMesh>("greek_helmet.obj");
 
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(drawable);
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(m);
 
-    mv.setDrawableObjectVector(v);
+    tw.enableText();
 
-    mv.show();
-    mv.showMaximized();
+    tw.setTextFont(vcl::VclFont::DROID_SANS, 20);
+    tw.appendStaticText(
+        {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
+    tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
 
-    return app.exec();
+    tw.fitScene();
+
+    tw.show();
+
+    return 0;
 }

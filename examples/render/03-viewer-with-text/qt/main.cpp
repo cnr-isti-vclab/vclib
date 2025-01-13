@@ -20,40 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#include "get_drawable_mesh.h"
 
-#include <vclib/algorithms/mesh/update/color.h>
-#include <vclib/algorithms/mesh/update/normal.h>
-#include <vclib/load_save.h>
-#include <vclib/meshes/tri_mesh.h>
+#include <vclib/qt/viewer_widget.h>
 
-#include <vclib/render/drawable/drawable_mesh.h>
+#include <QApplication>
 
-inline vcl::DrawableMesh<vcl::TriMesh> getDrawableMesh(
-    const std::string& filename = "bimba.obj")
+int main(int argc, char** argv)
 {
-    // load a mesh:
-    vcl::TriMesh m =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
-    vcl::updatePerVertexAndFaceNormals(m);
+    QApplication app(argc, argv);
 
-    // enable the vertex color of the mesh and set it to gray
-    m.enablePerVertexColor();
-    vcl::setPerVertexColor(m, vcl::Color::Gray);
+    vcl::qt::ViewerWidget tw("Viewer Qt");
 
-    // create a MeshRenderSettings object, that allows to set the rendering
-    // options of the mesh
-    // default is what we want: color per vertex, smooth shading, no wireframe
-    vcl::MeshRenderSettings settings(m);
+    // load and set up a drawable mesh
+    vcl::DrawableMesh<vcl::TriMesh> m =
+        getDrawableMesh<vcl::TriMesh>("greek_helmet.obj");
 
-    // create a DrawableMesh object from the mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable(m);
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(m);
 
-    // set the settings to the drawable mesh
-    drawable.setRenderSettings(settings);
+    tw.enableText();
 
-    return drawable;
+    tw.setTextFont(vcl::VclFont::DROID_SANS, 20);
+    tw.appendStaticText(
+        {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
+    tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
+
+    tw.fitScene();
+
+    tw.show();
+
+    return app.exec();
 }
-
-#endif // COMMON_H

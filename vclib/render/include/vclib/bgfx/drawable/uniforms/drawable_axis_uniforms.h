@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,8 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
 
-#include "shader_uniform.h"
-
+#include <vclib/bgfx/uniform.h>
 #include <vclib/space/core/color.h>
 
 namespace vcl {
@@ -33,8 +32,8 @@ class DrawableAxisUniforms
 {
     float mAxisColor[4] = {1.0, 0.0, 0.0, 1.0};
 
-    ShaderUniform mAxisColorUniform =
-        ShaderUniform("u_axisColor", bgfx::UniformType::Vec4);
+    Uniform mAxisColorUniform =
+        Uniform("u_axisColor", bgfx::UniformType::Vec4);
 
 public:
     DrawableAxisUniforms() = default;

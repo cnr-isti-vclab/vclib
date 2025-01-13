@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2025                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -28,13 +28,10 @@ project(vclib-render-example-${EXAMPLE_NAME})
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
 
-set(HEADERS
-    common.h)
-
 set(SOURCES
     main.cpp)
 
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
-    SOURCES ${HEADERS} ${SOURCES})
+    SOURCES ${SOURCES})
