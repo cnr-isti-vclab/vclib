@@ -31,7 +31,7 @@
 #include <vclib/space/complex/tri_poly_index_bimap.h>
 #include <vclib/space/core/image.h>
 #include <vclib/space/core/texture.h>
-
+#include <vclib/bgfx/drawable/lines/drawable_lines.h>
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -39,10 +39,10 @@ class MeshRenderData
 {
     bool mDuplicatedVertices = false;
 
-    std::vector<float>    mVerts;
-    std::vector<uint32_t> mTris;
-    std::vector<uint32_t> mEdges;
-    std::vector<uint32_t> mWireframe;
+    std::vector<float>               mVerts;
+    std::vector<uint32_t>            mTris;
+    std::vector<uint32_t>            mEdges;
+    std::vector<lines::LinesVertex>  mWireframe;
 
     std::vector<float>    mVNormals;
     std::vector<uint32_t> mVColors;
@@ -181,11 +181,11 @@ public:
 
     uint edgeBufferSize() const { return mEdges.size(); }
 
-    const uint32_t* wireframeBufferData() const
+    const std::vector<lines::LinesVertex>* wireframeBufferData() const
     {
         if (mWireframe.empty())
             return nullptr;
-        return mWireframe.data();
+        return &mWireframe;
     }
 
     uint wireframeBufferSize() const { return mWireframe.size(); }
@@ -645,10 +645,23 @@ private:
 
             for (const auto& f : m.faces()) {
                 for (uint i = 0; i < f.vertexNumber(); ++i) {
+                    uint index0 = m.vertexIndexIfCompact(m.index(f.vertex(i)));
+                    uint index1 = m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1))));
                     mWireframe.push_back(
-                        m.vertexIndexIfCompact(m.index(f.vertex(i))));
+                        lines::LinesVertex(
+                            mVerts[index0 * 3], mVerts[(index0 * 3) + 1], mVerts[(index0 * 3) + 2],
+                            lines::LinesVertex::COLOR(1, 0, 0, 1),
+                            mVNormals[index0 * 3], mVNormals[(index0 * 3) + 1], mVNormals[(index0 * 3) + 2]
+                        )
+                    );
+
                     mWireframe.push_back(
-                        m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1)))));
+                        lines::LinesVertex(
+                            mVerts[index1 * 3], mVerts[(index1 * 3) + 1], mVerts[(index1 * 3) + 2],
+                            lines::LinesVertex::COLOR(1, 0, 0, 1),
+                            mVNormals[index1 * 3], mVNormals[(index1 * 3) + 1], mVNormals[(index1 * 3) + 2]
+                        )
+                    );
                 }
             }
         }

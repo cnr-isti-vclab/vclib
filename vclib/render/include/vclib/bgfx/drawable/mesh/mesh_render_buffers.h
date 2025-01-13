@@ -26,6 +26,9 @@
 #include "mesh_render_buffers_macros.h"
 
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
+#include <vclib/bgfx/drawable/lines/drawable_lines.h>
+#include <vclib/bgfx/drawable/lines/lines/cpu_generated_lines.h>
+
 
 #include <bgfx/bgfx.h>
 
@@ -35,6 +38,7 @@ template<MeshConcept MeshType>
 class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 {
     using Base = vcl::MeshRenderData<MeshType>;
+    uint16_t mScreenWidth, mScreenHeight;
 
     bgfx::VertexBufferHandle mVertexCoordBH   = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexNormalBH  = BGFX_INVALID_HANDLE;
@@ -52,15 +56,17 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
 
-    bgfx::IndexBufferHandle mWireframeIndexBH = BGFX_INVALID_HANDLE;
+    lines::CPUGeneratedLines mWireframeBH;
 
     std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
 
 public:
     MeshRenderBuffers() = default;
 
-    MeshRenderBuffers(const MeshType& mesh, uint buffersToFill = Base::ALL) :
-            Base(mesh, buffersToFill)
+    MeshRenderBuffers(const MeshType& mesh, const uint16_t width = 0, const uint16_t height = 0, uint buffersToFill = Base::ALL) :
+            Base(mesh, buffersToFill),
+            mScreenWidth(width),
+            mScreenHeight(height)
     {
         createBGFXBuffers();
     }
@@ -96,7 +102,7 @@ public:
         std::swap(mEdgeIndexBH, other.mEdgeIndexBH);
         std::swap(mEdgeNormalBH, other.mEdgeNormalBH);
         std::swap(mEdgeColorBH, other.mEdgeColorBH);
-        std::swap(mWireframeIndexBH, other.mWireframeIndexBH);
+        std::swap(mWireframeBH, other.mWireframeBH);
         std::swap(mTexturesH, other.mTexturesH);
     }
 
@@ -176,9 +182,11 @@ public:
                     bgfx::Access::Read);
             }
         }
-        else if (indexBufferToBind == Base::WIREFRAME) {
-            bgfx::setIndexBuffer(mWireframeIndexBH);
-        }
+    }
+
+    void drawWireframe(uint viewId) const 
+    {
+        mWireframeBH.draw(viewId);
     }
 
     void bindTextures() const
@@ -330,11 +338,7 @@ private:
 
         // wireframe index buffer
         if (Base::wireframeBufferData()) {
-            mWireframeIndexBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::wireframeBufferData(),
-                    Base::wireframeBufferSize() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32);
+            mWireframeBH = lines::CPUGeneratedLines(*Base::wireframeBufferData(), mScreenWidth, mScreenHeight);
         }
 
         // textures
@@ -402,9 +406,6 @@ private:
 
         if (bgfx::isValid(mEdgeColorBH))
             bgfx::destroy(mEdgeColorBH);
-
-        if (bgfx::isValid(mWireframeIndexBH))
-            bgfx::destroy(mWireframeIndexBH);
 
         for (auto [th, uh] : mTexturesH) {
             bgfx::destroy(th);

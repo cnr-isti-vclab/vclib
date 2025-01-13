@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     ImguiDemo tw("Viewer GLFW");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>("bimba.obj",tw.width(), tw.height());
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh

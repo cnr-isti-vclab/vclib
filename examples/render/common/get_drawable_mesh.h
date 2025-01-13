@@ -32,7 +32,7 @@
 
 template<vcl::MeshConcept MeshType>
 inline vcl::DrawableMesh<MeshType> getDrawableMesh(
-    const std::string& filename = "bimba.obj")
+    const std::string& filename = "bimba.obj", const uint16_t width = 0, const uint16_t heigth = 0)
 {
     // load a mesh:
     MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
@@ -46,9 +46,10 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     // options of the mesh
     // default is what we want: color per vertex, smooth shading, no wireframe
     vcl::MeshRenderSettings settings(m);
+    settings.setWireframeVisibility(true);
 
     // create a DrawableMesh object from the mesh
-    vcl::DrawableMesh<MeshType> drawable(m);
+    vcl::DrawableMesh<MeshType> drawable(m, width, heigth);
 
     // set the settings to the drawable mesh
     drawable.setRenderSettings(settings);

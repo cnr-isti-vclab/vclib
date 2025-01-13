@@ -14,6 +14,8 @@ namespace vcl::lines {
 
             static std::unique_ptr<DrawableLines> create(bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ivh);
 
+            DrawableLines() = default;
+
             DrawableLines(const uint16_t width, const uint16_t heigth, const std::string& vs_name, const std::string& fs_name);
 
             virtual ~DrawableLines();

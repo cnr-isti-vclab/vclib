@@ -5,7 +5,8 @@
 #include <vclib/bgfx/drawable/lines/lines/indirect_based_lines.h>
 #include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 
-#include <vclib/bgfx/context/load_program.h>
+#include <vclib/bgfx/context.h>
+
 
 namespace vcl::lines {
 
@@ -65,7 +66,8 @@ namespace vcl::lines {
 
     DrawableLines::DrawableLines(const uint16_t width, const uint16_t heigth, const std::string& vs_name,  const std::string& fs_name) {
         m_Settings = LinesSettings(width, heigth);
-        m_Program = vcl::loadProgram(vs_name, fs_name);
+        std::string name = "CPUGeneratedLines";
+        m_Program = Context::instance().programManager().loadProgram(name, vs_name, fs_name);
     }
 
     DrawableLines::~DrawableLines() {

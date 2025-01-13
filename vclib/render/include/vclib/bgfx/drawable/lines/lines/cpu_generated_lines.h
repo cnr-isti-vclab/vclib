@@ -6,6 +6,8 @@ namespace vcl::lines {
     class CPUGeneratedLines : public DrawableLines {
 
         public:
+            CPUGeneratedLines() = default;
+
             CPUGeneratedLines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth);
 
             ~CPUGeneratedLines();
