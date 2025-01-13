@@ -23,8 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
 
-#include "shader_uniform.h"
-
+#include <vclib/bgfx/uniform.h>
 #include <vclib/space/core/color.h>
 
 namespace vcl {
@@ -35,24 +34,24 @@ class DrawableTrackballUniforms
     // second component is uint: 1 if dragging, 0 otherwise
     std::array<float, 4> mTrackBallSettings;
 
-    ShaderUniform mTrackballSettingsUniform =
-        ShaderUniform("u_trackballSettingsPack", bgfx::UniformType::Vec4);
+    Uniform mTrackballSettingsUniform =
+        Uniform("u_trackballSettingsPack", bgfx::UniformType::Vec4);
 
 public:
     DrawableTrackballUniforms()
     {
-        mTrackBallSettings[0] = ShaderUniform::uintBitsToFloat(64);
-        mTrackBallSettings[1] = ShaderUniform::uintBitsToFloat(0);
+        mTrackBallSettings[0] = Uniform::uintBitsToFloat(64);
+        mTrackBallSettings[1] = Uniform::uintBitsToFloat(0);
     }
 
     void setNumberOfVerticesPerAxis(uint number)
     {
-        mTrackBallSettings[0] = ShaderUniform::uintBitsToFloat(number);
+        mTrackBallSettings[0] = Uniform::uintBitsToFloat(number);
     }
 
     void setDragging(bool dragging)
     {
-        mTrackBallSettings[1] = ShaderUniform::uintBitsToFloat((uint) dragging);
+        mTrackBallSettings[1] = Uniform::uintBitsToFloat((uint) dragging);
     }
 
     void bind() const
