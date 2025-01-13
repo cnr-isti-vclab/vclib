@@ -11,6 +11,7 @@
   - [ ] The DesktopTrackball should inherit from the Trackball
   - [ ] The AbstractViewer should not inherit from DesktopTrackball, but it should own it as a member.
 - BGFX
+  - [ ] Fix FIXME #1 on example-01-viewer-qt
   - [X] Library shaders should be built as headers
   - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
   - [ ] assets and shaders should be compiled in headers that are in paths like
