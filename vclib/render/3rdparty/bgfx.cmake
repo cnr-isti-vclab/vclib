@@ -70,9 +70,9 @@ elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 
     set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
     set(BGFX_OPENGL_VERSION 44)
-    if (TARGET vclib-3rd-wayland AND VCLIB_RENDER_WITH_WAYLAND)
-        add_definitions(-DWL_EGL_PLATFORM=1)
-    endif()
+
+    set(BGFX_WITH_WAYLAND ${VCLIB_RENDER_WITH_WAYLAND})
+
     add_subdirectory(${VCLIB_BGFX_DIR})
 
     add_library(vclib-3rd-bgfx INTERFACE)

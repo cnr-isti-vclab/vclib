@@ -20,35 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
-#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+#ifndef VCL_EXT_VIEWER_WIDGET_IMGUI_H
+#define VCL_EXT_VIEWER_WIDGET_IMGUI_H
 
-#include <vclib/bgfx/uniform.h>
-#include <vclib/space/core/color.h>
+#include <vclib/qt/viewer_widget.h>
 
-namespace vcl {
+namespace vcl::qt {
 
-class DrawableDirectionalLightUniforms
+class ViewerWidgetImgui : public ViewerWidget
 {
-    float mLightColor[4] = {1.0, 1.0, 0.0, 1.0};
-
-    Uniform mLightColorUniform =
-        Uniform("u_drawableDirectionalLightColor", bgfx::UniformType::Vec4);
-
 public:
-    DrawableDirectionalLightUniforms() = default;
+    ViewerWidgetImgui(
+        const std::shared_ptr<DrawableObjectVector>& v,
+        uint                                         width       = 1024,
+        uint                                         height      = 768,
+        const std::string&                           windowTitle = "",
+        QWidget*                                     parent      = nullptr);
 
-    void setColor(const vcl::Color& color)
-    {
-        mLightColor[0] = color.redF();
-        mLightColor[1] = color.greenF();
-        mLightColor[2] = color.blueF();
-        mLightColor[3] = color.alphaF();
-    }
+    ViewerWidgetImgui(
+        const std::string& windowTitle = "Minimal Viewer",
+        uint               width       = 1024,
+        uint               height      = 768,
+        QWidget*           parent      = nullptr);
 
-    void bind() const { mLightColorUniform.bind(mLightColor); }
+    ViewerWidgetImgui(QWidget* parent);
+
+    ~ViewerWidgetImgui();
+
+#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
+    void initializeGL() override;
+#endif
+
+protected:
+    virtual void initImGui();
+    virtual void shutdownImGui();
+
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
+    void paintEvent(QPaintEvent* event) override;
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+    void paintGL() override;
+#endif
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+#endif // VCL_EXT_VIEWER_WIDGET_IMGUI_H

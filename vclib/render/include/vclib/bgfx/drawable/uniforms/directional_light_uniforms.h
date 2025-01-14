@@ -23,8 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 
-#include "shader_uniform.h"
-
+#include <vclib/bgfx/uniform.h>
 #include <vclib/render/viewer/lights/directional_light.h>
 
 #include <bgfx/bgfx.h>
@@ -51,10 +50,10 @@ class DirectionalLightUniforms
     float mDir[4] = {0.0, 0.0, 1.0, 0.0}; // just first 3 components are used
     float mCol[4] = {1.0, 1.0, 1.0, 1.0}; // just first 3 components are used
 
-    ShaderUniform mLightDirUniform =
-        ShaderUniform("u_lightDirPack", bgfx::UniformType::Vec4);
-    ShaderUniform mLightColorUniform =
-        ShaderUniform("u_lightColorPack", bgfx::UniformType::Vec4);
+    Uniform mLightDirUniform =
+        Uniform("u_lightDirPack", bgfx::UniformType::Vec4);
+    Uniform mLightColorUniform =
+        Uniform("u_lightColorPack", bgfx::UniformType::Vec4);
 
 public:
     DirectionalLightUniforms() {}
