@@ -20,42 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef IMGUI_IMPL_QT_H
+#define IMGUI_IMPL_QT_H
 
+#include <QWidget>
 #include <imgui.h>
-#include <vclib/glfw_imgui/viewer_window_imgui.h>
+#ifndef IMGUI_DISABLE
 
-class ImguiDemo : public vcl::glfw::ViewerWindowImgui
-{
-public:
-    ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
-    {
-    }
+IMGUI_IMPL_API bool ImGui_ImplQt_Init(QWidget* widget);
+IMGUI_IMPL_API void ImGui_ImplQt_Shutdown();
+IMGUI_IMPL_API void ImGui_ImplQt_NewFrame();
 
-    void draw() override
-    {
-        // imgui demo window
-        ImGui::ShowDemoWindow();
-
-        // draw the scene
-        ViewerWindowImgui::draw();
-    }
-};
-
-int main(int argc, char** argv)
-{
-    ImguiDemo tw("Viewer GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
-}
+#endif // IMGUI_DISABLE
+#endif // IMGUI_IMPL_QT_H

@@ -20,52 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_VIEWER_WIDGET_H
-#define VCL_QT_VIEWER_WIDGET_H
+#include "get_drawable_mesh.h"
 
-#include "event_manager_widget.h"
+#include <vclib/glfw_imgui/viewer_window_imgui.h>
 
-#include <vclib/render/viewer_canvas.h>
+#include <imgui.h>
 
-namespace vcl::qt {
-
-class ViewerWidget : public EventManagerWidget, public vcl::ViewerCanvas
+class ImguiDemo : public vcl::glfw::ViewerWindowImgui
 {
 public:
-    ViewerWidget(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width       = 1024,
-        uint                                         height      = 768,
-        const std::string&                           windowTitle = "",
-        QWidget*                                     parent      = nullptr);
+    ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
+    {
+    }
 
-    ViewerWidget(
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        QWidget*           parent      = nullptr);
+    void draw() override
+    {
+        // imgui demo window
+        ImGui::ShowDemoWindow();
 
-    ViewerWidget(QWidget* parent);
-
-    virtual ~ViewerWidget() = default;
-
-#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void initializeGL() override;
-#endif
-
-    void onKeyPress(Key::Enum key) override;
-
-protected:
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    void paintEvent(QPaintEvent* event) override;
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void paintGL() override;
-#endif
-
-private:
-    void showScreenShotDialog();
+        // draw the scene
+        ViewerWindowImgui::draw();
+    }
 };
 
-} // namespace vcl::qt
+int main(int argc, char** argv)
+{
+    ImguiDemo tw("Viewer ImGui GLFW");
 
-#endif // VCL_QT_VIEWER_WIDGET_H
+    // load and set up a drawable mesh
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
+
+    tw.fitScene();
+
+    tw.show();
+
+    return 0;
+}
