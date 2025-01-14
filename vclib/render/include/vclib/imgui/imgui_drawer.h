@@ -37,6 +37,9 @@
 #ifdef VCLIB_WITH_GLFW
 #include <imgui_impl_glfw.h>
 #endif
+#ifdef VCLIB_WITH_QT
+#include <vclib/qt_imgui/imgui_impl_qt.h>
+#endif
 
 namespace vcl::imgui {
 
@@ -50,8 +53,9 @@ public:
     ImGuiDrawer()
     {
         static_assert(
-            DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW,
-            "ImGuiDrawer supports only GLFW window manager.");
+            DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW ||
+                DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET,
+            "ImGuiDrawer supports only GLFW or Qt window managers.");
     }
 
     ImGuiDrawer(uint, uint) : ImGuiDrawer() {}
@@ -66,6 +70,10 @@ public:
 #endif
         if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_Shutdown();
+        }
+        else if constexpr (
+            DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
+            ImGui_ImplQt_Shutdown();
         }
         ImGui::DestroyContext();
     }
@@ -95,6 +103,17 @@ public:
             ImGui_ImplBgfx_Init();
 #endif
         }
+        else if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
+            QWidget* mWindow =
+                reinterpret_cast<QWidget*>(DRA::DRW::windowPtr(derived()));
+            // setup platform/RenderApp backends (Qt and ImGui)
+            ImGui_ImplQt_Init(mWindow);
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+            ImGui_ImplOpenGL2_Init();
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+            ImGui_ImplBgfx_Init();
+#endif
+        }
     }
 
     virtual void onDraw(uint)
@@ -108,6 +127,10 @@ public:
         if constexpr (
             DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_NewFrame();
+        }
+        else if constexpr (
+            DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
+            ImGui_ImplQt_NewFrame();
         }
         ImGui::NewFrame();
     }

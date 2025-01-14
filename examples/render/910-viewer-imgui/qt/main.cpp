@@ -20,35 +20,60 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
-#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+#include "get_drawable_mesh.h"
 
-#include <vclib/bgfx/uniform.h>
-#include <vclib/space/core/color.h>
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/canvas.h>
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/render_app.h>
 
-namespace vcl {
+#include <imgui.h>
 
-class DrawableDirectionalLightUniforms
+#include <QApplication>
+
+template<typename DerivedRenderApp>
+class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
 {
-    float mLightColor[4] = {1.0, 1.0, 0.0, 1.0};
-
-    Uniform mLightColorUniform =
-        Uniform("u_drawableDirectionalLightColor", bgfx::UniformType::Vec4);
+    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
 
 public:
-    DrawableDirectionalLightUniforms() = default;
+    using ParentDrawer::ParentDrawer;
 
-    void setColor(const vcl::Color& color)
+    virtual void onDraw(vcl::uint viewId) override
     {
-        mLightColor[0] = color.redF();
-        mLightColor[1] = color.greenF();
-        mLightColor[2] = color.blueF();
-        mLightColor[3] = color.alphaF();
-    }
+        // draw the scene
+        ParentDrawer::onDraw(viewId);
 
-    void bind() const { mLightColorUniform.bind(mLightColor); }
+        if (!ParentDrawer::isWindowMinimized()) {
+            // imgui demo window
+            ImGui::ShowDemoWindow();
+        }
+    }
 };
 
-} // namespace vcl
+int main(int argc, char** argv)
+{
+    QApplication app(argc, argv);
 
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+    using ImGuiDemo = vcl::RenderApp<
+        vcl::qt::WidgetManager,
+        vcl::Canvas,
+        DemoImGuiDrawer,
+        vcl::ViewerDrawer>;
+
+    ImGuiDemo tw("Viewer ImGui Qt");
+
+    // load and set up a drawable mesh
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
+
+    tw.fitScene();
+
+    tw.show();
+
+    return app.exec();
+}

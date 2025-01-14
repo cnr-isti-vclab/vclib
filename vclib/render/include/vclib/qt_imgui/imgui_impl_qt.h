@@ -20,56 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef IMGUI_IMPL_QT_H
+#define IMGUI_IMPL_QT_H
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/canvas.h>
-#include <vclib/glfw/window_manager.h>
-#include <vclib/render/render_app.h>
-
+#include <QWidget>
 #include <imgui.h>
+#ifndef IMGUI_DISABLE
 
-template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
-{
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+IMGUI_IMPL_API bool ImGui_ImplQt_Init(QWidget* widget);
+IMGUI_IMPL_API void ImGui_ImplQt_Shutdown();
+IMGUI_IMPL_API void ImGui_ImplQt_NewFrame();
 
-public:
-    using ParentDrawer::ParentDrawer;
-
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
-
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
-};
-
-int main(int argc, char** argv)
-{
-    using ImGuiDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::ViewerDrawer>;
-
-    ImGuiDemo tw("Viewer GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
-}
+#endif // IMGUI_DISABLE
+#endif // IMGUI_IMPL_QT_H

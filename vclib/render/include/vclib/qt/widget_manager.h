@@ -138,8 +138,7 @@ public:
 protected:
     void* windowPtr()
     {
-        // TODO: probably ImGui Drawer needs something else here - QWidget*?
-        return reinterpret_cast<void*>(winId());
+        return reinterpret_cast<void*>(this);
     }
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
