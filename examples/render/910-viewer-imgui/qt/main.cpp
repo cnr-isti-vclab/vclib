@@ -48,6 +48,8 @@ public:
 
 int main(int argc, char** argv)
 {
+    // FIXME #2 - Crash when closing window on Ubuntu
+
     QApplication app(argc, argv);
 
     ImguiDemo tw("Viewer ImGui Qt");

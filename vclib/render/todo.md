@@ -10,6 +10,7 @@
   - [ ] Move BGFX from submodule to a CMake dependency
 - BGFX
   - [ ] Fix FIXME #1 on example-01-viewer-qt
+  - [ ] Fix FIXME #2 on example-910-viewer-imgui
   - [X] Library shaders should be built as headers
   - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
   - [ ] assets and shaders should be compiled in headers that are in paths like
