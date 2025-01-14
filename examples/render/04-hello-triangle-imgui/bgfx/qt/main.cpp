@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "../../demo_imgui_drawer.h"
 #include "../hello_triangle_drawer.h"
 
 #include <vclib/render/canvas.h>
@@ -32,10 +33,15 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    using WidgetQt = vcl::
-        RenderApp<vcl::qt::WidgetManager, vcl::Canvas, HelloTriangleDrawer>;
+    // FIXME #2: crash on linux when closing: derived()->update() in imgui_drawer.h
 
-    WidgetQt tw("Hello Triangle with Qt");
+    using WidgetQt = vcl::RenderApp<
+        vcl::qt::WidgetManager,
+        vcl::Canvas,
+        DemoImGuiDrawer,
+        HelloTriangleDrawer>;
+
+    WidgetQt tw("Hello Triangle ImGui with Qt");
 
     tw.show();
 

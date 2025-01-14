@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 00-hello-triangle-qt)
+set(EXAMPLE_NAME 04-hello-triangle-imgui-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings
@@ -30,7 +30,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(HEADERS
     ../common.h
-    ../hello_triangle_drawer.h)
+    ../hello_triangle_drawer.h
+    ../../demo_imgui_drawer.h)
 
 set(SOURCES
     main.cpp)

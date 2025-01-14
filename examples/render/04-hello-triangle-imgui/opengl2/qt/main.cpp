@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "../../demo_imgui_drawer.h"
 #include "../hello_triangle_drawer.h"
 
 #include <vclib/render/canvas.h>
@@ -32,8 +33,11 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    using WidgetQt = vcl::
-        RenderApp<vcl::qt::WidgetManager, vcl::Canvas, HelloTriangleDrawer>;
+    using WidgetQt = vcl::RenderApp<
+        vcl::qt::WidgetManager, // The WindowManager: Qt
+        vcl::Canvas,            // The default Canvas
+        DemoImGuiDrawer,        // A Drawer that draws the ImGui demo window
+        HelloTriangleDrawer>;   // The Drawer that draws the triangle
 
     WidgetQt tw("Hello Triangle with Qt");
 
