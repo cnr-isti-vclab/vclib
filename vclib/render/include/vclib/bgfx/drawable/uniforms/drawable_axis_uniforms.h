@@ -32,8 +32,7 @@ class DrawableAxisUniforms
 {
     float mAxisColor[4] = {1.0, 0.0, 0.0, 1.0};
 
-    Uniform mAxisColorUniform =
-        Uniform("u_axisColor", bgfx::UniformType::Vec4);
+    Uniform mAxisColorUniform = Uniform("u_axisColor", bgfx::UniformType::Vec4);
 
 public:
     DrawableAxisUniforms() = default;

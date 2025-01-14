@@ -52,6 +52,8 @@ if (VCLIB_USES_VCG)
         vclib-3rd-vcg
         PROPERTIES
         VCG_INCLUDE_DIRS ${VCG_INCLUDE_DIRS})
+    target_compile_definitions(vclib-3rd-vcg INTERFACE
+        VCLIB_WITH_VCG)
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-vcg)
 endif()

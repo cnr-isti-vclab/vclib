@@ -20,52 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_VIEWER_WIDGET_H
-#define VCL_QT_VIEWER_WIDGET_H
+#ifndef VIEWER_WIDGET_H
+#define VIEWER_WIDGET_H
 
-#include "event_manager_widget.h"
-
-#include <vclib/render/viewer_canvas.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/render_app.h>
+#include <vclib/qt/widget_manager.h>
 
 namespace vcl::qt {
 
-class ViewerWidget : public EventManagerWidget, public vcl::ViewerCanvas
-{
-public:
-    ViewerWidget(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width       = 1024,
-        uint                                         height      = 768,
-        const std::string&                           windowTitle = "",
-        QWidget*                                     parent      = nullptr);
-
-    ViewerWidget(
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        QWidget*           parent      = nullptr);
-
-    ViewerWidget(QWidget* parent);
-
-    virtual ~ViewerWidget() = default;
-
-#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void initializeGL() override;
-#endif
-
-    void onKeyPress(Key::Enum key) override;
-
-protected:
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    void paintEvent(QPaintEvent* event) override;
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void paintGL() override;
-#endif
-
-private:
-    void showScreenShotDialog();
-};
+using ViewerWidget =
+    vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, vcl::ViewerDrawer>;
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_VIEWER_WIDGET_H
+#endif // VIEWER_WIDGET_H

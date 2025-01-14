@@ -50,8 +50,7 @@ class DrawableMeshUniforms
         0.0,
         1.0};
 
-    Uniform mMeshColorUniform =
-        Uniform("u_meshColor", bgfx::UniformType::Vec4);
+    Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
 
     // ShaderUniform modelUH =
     //     ShaderUniform("u_model", bgfx::UniformType::Mat4);

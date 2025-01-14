@@ -65,4 +65,7 @@ if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
     target_link_libraries(vclib-3rd-imgui INTERFACE imgui)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-imgui)
+
+    target_compile_definitions(vclib-3rd-imgui INTERFACE
+        VCLIB_WITH_IMGUI)
 endif()

@@ -23,13 +23,12 @@
 #ifndef VCL_OPENGL2_CANVAS_H
 #define VCL_OPENGL2_CANVAS_H
 
-#include <vclib/types.h>
-
-#include <vclib/render/interfaces/event_manager_i.h>
+#include <vclib/io/image.h>
+#include <vclib/render/concepts/render_app.h>
 #include <vclib/render/read_buffer_types.h>
-
 #include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
+#include <vclib/types.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -70,12 +69,15 @@ namespace vcl {
  * - frame(): this function must be called by the derived classes at the end of
  * each frame, after all the opengl2 rendering commands have been issued;
  */
-class CanvasOpenGL2 : public virtual vcl::EventManagerI
+template<typename DerivedRenderApp>
+class CanvasOpenGL2
 {
 protected:
     using FloatData          = ReadBufferTypes::FloatData;
     using ByteData           = ReadBufferTypes::ByteData;
     using ReadData           = ReadBufferTypes::ReadData;
+
+public:
     using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
 private:
@@ -90,37 +92,185 @@ private:
 
 public:
     CanvasOpenGL2(
-        void* winId,
-        uint  width,
-        uint  height,
-        void* displayId = nullptr);
+        void*        winId,
+        uint         width,
+        uint         height,
+        void*        displayId  = nullptr) :
+            mWinId(winId), mSize(width, height)
+    {
+        static_assert(
+            RenderAppConcept<DerivedRenderApp>,
+            "The DerivedRenderApp must satisfy the RenderAppConcept.");
+    }
 
     ~CanvasOpenGL2() {}
 
-    void init(uint width, uint height);
-
     Point2<uint> size() const { return mSize; }
 
-    void setDefaultClearColor(const Color& color);
+    uint viewId() const { return 0; }
 
-    bool screenshot(
+    void setDefaultClearColor(const Color& color)
+    {
+        mDefaultClearColor = color;
+        glClearColor(
+            mDefaultClearColor.redF(),
+            mDefaultClearColor.greenF(),
+            mDefaultClearColor.blueF(),
+            mDefaultClearColor.alphaF());
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when the window
+     * initializes.
+     * Initialization is requires in some backends+window manager combinations,
+     * and therefore it must be implemented (also if empty) in every Canvas
+     * class.
+     */
+    void onInit()
+    {
+        glViewport(0, 0, mSize.x(), mSize.y());
+        glClearColor(
+            mDefaultClearColor.redF(),
+            mDefaultClearColor.greenF(),
+            mDefaultClearColor.blueF(),
+            mDefaultClearColor.alphaF());
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when the window
+     * is resized.
+     * @param width
+     * @param height
+     */
+    void onResize(uint width, uint height)
+    {
+        mSize = {width, height};
+        glViewport(0, 0, width, height);
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when the window asks
+     * to repaint.
+     */
+    void onPaint()
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // if depth requested, read it
+        if (mReadBufferCallback) {
+            DerivedRenderApp::CNV::drawContent(derived());
+            readDepthData();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+        DerivedRenderApp::CNV::draw(derived());
+        DerivedRenderApp::CNV::postDraw(derived());
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * to read the depth buffer at a specific point.
+     *
+     * @param point
+     * @param callback
+     * @return
+     */
+    [[nodiscard]] bool onReadDepth(
+        const Point2i&     point,
+        CallbackReadBuffer callback = nullptr)
+    {
+        if (point.x() < 0 || point.y() < 0 || // point out of bounds
+            point.x() >= mSize.x() || point.y() >= mSize.y()) {
+            return false;
+        }
+
+        mReadDepthPoint     = point;
+        mReadBufferCallback = callback;
+        return true;
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * for a screenshot.
+     *
+     * @param filename
+     * @param width
+     * @param height
+     * @return
+     */
+    bool onScreenshot(
         const std::string& filename,
         uint               width  = 0,
-        uint               height = 0);
+        uint               height = 0)
+    {
+        (void) width;
+        (void) height;
 
-    bool readDepth(const Point2i& point, CallbackReadBuffer callback = nullptr);
+        std::vector<std::uint8_t> buffer(mSize.x() * mSize.y() * 4);
+        // read pixels
+        glReadPixels(
+            0,
+            0,
+            GLsizei(mSize.x()),
+            GLsizei(mSize.y()),
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            buffer.data());
 
-protected:
-    virtual void draw() { drawContent(); };
+        // write image using stb
+        bool ret = true;
+        stbi_flip_vertically_on_write(1);
+        try {
+            saveImageData(filename, mSize.x(), mSize.y(), buffer.data());
+        }
+        catch (const std::exception& e) {
+            ret = false;
+        }
+        stbi_flip_vertically_on_write(0);
 
-    virtual void drawContent() = 0;
-
-    void onResize(uint width, uint height) override;
-
-    virtual void frame();
+        return ret;
+    }
 
 private:
-    void readDepthData();
+    void readDepthData()
+    {
+        // get depth range
+        std::array<GLfloat, 2> depthRange = {0, 0};
+        glGetFloatv(GL_DEPTH_RANGE, depthRange.data());
+
+        // get viewport heigth only
+        GLint viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+
+        // read depth
+        GLfloat depth = depthRange[1];
+        glReadPixels(
+            GLint(mReadDepthPoint.x()),
+            GLint(viewport[3] - mReadDepthPoint.y() - 1),
+            1,
+            1,
+            GL_DEPTH_COMPONENT,
+            GL_FLOAT,
+            &depth);
+
+        // normalize depth into [0,1] interval
+        depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
+
+        ReadData rd = FloatData({depth});
+
+        // callback
+        mReadBufferCallback(rd);
+
+        // cleanup
+        mReadDepthPoint     = {-1, -1};
+        mReadBufferCallback = nullptr;
+    }
+
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
+
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 };
 
 } // namespace vcl
