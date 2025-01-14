@@ -144,6 +144,7 @@ public:
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
 #endif
+        derived()->update();
     }
 
     virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
