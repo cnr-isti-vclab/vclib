@@ -23,6 +23,7 @@
 #ifndef IMGUI_DISABLE
 #include <vclib/qt_imgui/imgui_impl_qt.h>
 
+#include <QApplication>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QClipboard>
@@ -206,7 +207,7 @@ static void ImGui_ImplQt_UpdateMouseData()
 
     // (those braces are here to reduce diff with multi-viewports support in 'docking' branch)
     {
-        auto * widget = bd->Widget;
+        const auto * widget = bd->Widget;
         const bool is_focused = widget->hasFocus();
 
         if (is_focused)
@@ -248,6 +249,7 @@ static void ImGui_ImplQt_UpdateMouseCursor()
 
 class ImGuiQtEventFilter : public QObject
 {
+    using QObject::QObject;
 protected:
      bool eventFilter(QObject *obj, QEvent *event) override
      {

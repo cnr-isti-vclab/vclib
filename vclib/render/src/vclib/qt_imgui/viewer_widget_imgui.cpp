@@ -105,12 +105,12 @@ void ViewerWidgetImgui::initImGui()
 
 void ViewerWidgetImgui::shutdownImGui()
 {
-    ImGui_ImplQt_Shutdown();
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
     ImGui_ImplOpenGL2_Shutdown();
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
     ImGui_ImplBgfx_Shutdown();
 #endif
+    ImGui_ImplQt_Shutdown();
     ImGui::DestroyContext();
 }
 
