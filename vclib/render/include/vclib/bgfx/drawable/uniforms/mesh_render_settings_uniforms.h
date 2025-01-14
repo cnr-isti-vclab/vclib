@@ -53,11 +53,9 @@ class MeshRenderSettingsUniforms
     Uniform mDrawModeUniform =
         Uniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
 
-    Uniform mWidthUniform =
-        Uniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
+    Uniform mWidthUniform = Uniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
 
-    Uniform mColorUniform =
-        Uniform("u_mrsColorPack", bgfx::UniformType::Vec4);
+    Uniform mColorUniform = Uniform("u_mrsColorPack", bgfx::UniformType::Vec4);
 
 public:
     MeshRenderSettingsUniforms() {}
@@ -76,12 +74,12 @@ public:
         mWidthPack[1] = settings.wireframeWidth();
         mWidthPack[2] = settings.edgesWidth();
 
-        mColorPack[0] = Uniform::uintBitsToFloat(
-            settings.pointCloudUserColor().abgr());
+        mColorPack[0] =
+            Uniform::uintBitsToFloat(settings.pointCloudUserColor().abgr());
         mColorPack[1] =
             Uniform::uintBitsToFloat(settings.surfaceUserColor().abgr());
-        mColorPack[2] = Uniform::uintBitsToFloat(
-            settings.wireframeUserColor().abgr());
+        mColorPack[2] =
+            Uniform::uintBitsToFloat(settings.wireframeUserColor().abgr());
         mColorPack[3] =
             Uniform::uintBitsToFloat(settings.edgesUserColor().abgr());
     }
