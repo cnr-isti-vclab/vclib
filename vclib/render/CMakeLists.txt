@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2025                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -122,6 +122,16 @@ if (TARGET vclib-3rd-qt)
     list(APPEND FORMS ${FORMS_QT})
 
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
+
+    if (TARGET vclib-3rd-imgui)
+        file(GLOB_RECURSE HEADERS_QT_IMGUI CONFIGURE_DEPENDS
+            "include/vclib/qt_imgui/*.h")
+        list(APPEND HEADERS ${HEADERS_QT_IMGUI})
+
+        file(GLOB_RECURSE SOURCES_QT_IMGUI CONFIGURE_DEPENDS
+            "src/vclib/qt_imgui/*.cpp")
+        list(APPEND SOURCES ${SOURCES_QT_IMGUI})
+    endif()
 endif()
 
 # todo: this is a terrible hack

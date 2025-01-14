@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_SHADER_UNIFORM_H
-#define VCL_BGFX_DRAWABLE_UNIFORMS_SHADER_UNIFORM_H
+#ifndef VCL_BGFX_UNIFORM_H
+#define VCL_BGFX_UNIFORM_H
 
 #include <vclib/types.h>
 
@@ -31,31 +31,39 @@
 
 namespace vcl {
 
-class ShaderUniform
+/**
+ * @brief The Uniform class wraps a bgfx::UniformHandle and provides a simple
+ * interface to set the uniform data.
+ *
+ * It manages the lifetime of the bgfx::UniformHandle: each instance of this
+ * class creates a new bgfx::UniformHandle and destroys it when the instance
+ * goes out of scope.
+ */
+class Uniform
 {
     bgfx::UniformHandle     mUniformHandle = BGFX_INVALID_HANDLE;
     std::string             mUniformName;
     bgfx::UniformType::Enum mUniformType = bgfx::UniformType::Count;
 
 public:
-    ShaderUniform() = default;
+    Uniform() = default;
 
-    ShaderUniform(const std::string& name, bgfx::UniformType::Enum type) :
+    Uniform(const std::string& name, bgfx::UniformType::Enum type) :
             mUniformName(name), mUniformType(type)
     {
         mUniformHandle = bgfx::createUniform(name.c_str(), type);
     }
 
-    ShaderUniform(const ShaderUniform& oth) :
+    Uniform(const Uniform& oth) :
             mUniformName(oth.mUniformName), mUniformType(oth.mUniformType)
     {
         mUniformHandle =
             bgfx::createUniform(mUniformName.c_str(), mUniformType);
     }
 
-    ShaderUniform(ShaderUniform&& oth) { swap(oth); }
+    Uniform(Uniform&& oth) { swap(oth); }
 
-    ~ShaderUniform()
+    ~Uniform()
     {
         if (bgfx::isValid(mUniformHandle))
             bgfx::destroy(mUniformHandle);
@@ -72,14 +80,14 @@ public:
         bgfx::setUniform(mUniformHandle, data);
     }
 
-    void swap(ShaderUniform& oth)
+    void swap(Uniform& oth)
     {
         std::swap(mUniformHandle, oth.mUniformHandle);
         std::swap(mUniformName, oth.mUniformName);
         std::swap(mUniformType, oth.mUniformType);
     }
 
-    ShaderUniform& operator=(ShaderUniform oth)
+    Uniform& operator=(Uniform oth)
     {
         swap(oth);
         return *this;
@@ -100,4 +108,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_SHADER_UNIFORM_H
+#endif // VCL_BGFX_UNIFORM_H

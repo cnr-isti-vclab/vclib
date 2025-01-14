@@ -20,35 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
-#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+#include "get_drawable_mesh.h"
 
-#include <vclib/bgfx/uniform.h>
-#include <vclib/space/core/color.h>
+#include <vclib/glfw_imgui/viewer_window_imgui.h>
 
-namespace vcl {
+#include <imgui.h>
 
-class DrawableDirectionalLightUniforms
+class ImguiDemo : public vcl::glfw::ViewerWindowImgui
 {
-    float mLightColor[4] = {1.0, 1.0, 0.0, 1.0};
-
-    Uniform mLightColorUniform =
-        Uniform("u_drawableDirectionalLightColor", bgfx::UniformType::Vec4);
-
 public:
-    DrawableDirectionalLightUniforms() = default;
-
-    void setColor(const vcl::Color& color)
+    ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
     {
-        mLightColor[0] = color.redF();
-        mLightColor[1] = color.greenF();
-        mLightColor[2] = color.blueF();
-        mLightColor[3] = color.alphaF();
     }
 
-    void bind() const { mLightColorUniform.bind(mLightColor); }
+    void draw() override
+    {
+        // imgui demo window
+        ImGui::ShowDemoWindow();
+
+        // draw the scene
+        ViewerWindowImgui::draw();
+    }
 };
 
-} // namespace vcl
+int main(int argc, char** argv)
+{
+    ImguiDemo tw("Viewer ImGui GLFW");
 
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+    // load and set up a drawable mesh
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>("bimba.obj",tw.width(), tw.height());
+
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
+
+    tw.fitScene();
+
+    tw.show();
+
+    return 0;
+}

@@ -23,8 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 
-#include "shader_uniform.h"
-
+#include <vclib/bgfx/uniform.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 
 namespace vcl {
@@ -51,8 +50,7 @@ class DrawableMeshUniforms
         0.0,
         1.0};
 
-    ShaderUniform mMeshColorUniform =
-        ShaderUniform("u_meshColor", bgfx::UniformType::Vec4);
+    Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
 
     // ShaderUniform modelUH =
     //     ShaderUniform("u_model", bgfx::UniformType::Mat4);
