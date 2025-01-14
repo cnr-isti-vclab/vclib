@@ -189,6 +189,13 @@ public:
         mWireframeBH.draw(viewId);
     }
 
+    void setScreenSize(const uint16_t width, const uint16_t height) 
+    {
+        mScreenWidth = width;
+        mScreenHeight = height;
+        mWireframeBH.getSettings().setScreenSize(mScreenWidth, mScreenHeight);
+    }
+
     void bindTextures() const
     {
         uint i = VCL_MRB_TEXTURE0; // first slot available is VCL_MRB_TEXTURE0

@@ -13,8 +13,6 @@ namespace vcl::lines {
     }
 
     CPUGeneratedLines::~CPUGeneratedLines() {
-        bgfx::destroy(m_Vbh);
-        bgfx::destroy(m_Ibh);
     }
 
     void CPUGeneratedLines::update(const std::vector<LinesVertex> &points) {
@@ -101,10 +99,10 @@ namespace vcl::lines {
          .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
          .end();
 
-        m_Vbh = bgfx::createDynamicVertexBuffer(m_PointsSize * 4, layout, BGFX_BUFFER_ALLOW_RESIZE);
+        m_Vbh = bgfx::createDynamicVertexBuffer((m_PointsSize / 2) * 4, layout, BGFX_BUFFER_ALLOW_RESIZE);
     }
 
     void CPUGeneratedLines::allocateIndexBuffer() {
-        m_Ibh = bgfx::createDynamicIndexBuffer(m_PointsSize * 6, BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32);
+        m_Ibh = bgfx::createDynamicIndexBuffer((m_PointsSize / 2) * 6, BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32);
     }
 }

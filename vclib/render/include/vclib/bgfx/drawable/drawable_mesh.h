@@ -84,39 +84,39 @@ public:
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                              BGFX_STATE_BLEND_NORMAL;
 
-            if (mMRS.isSurfaceVisible()) {
-                mMRB.bindTextures(); // Bind textures before vertex buffers!!
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers();
-                bindUniforms(VCL_MRS_DRAWING_SURFACE);
+            // if (mMRS.isSurfaceVisible()) {
+            //     mMRB.bindTextures(); // Bind textures before vertex buffers!!
+            //     mMRB.bindVertexBuffers(mMRS);
+            //     mMRB.bindIndexBuffers();
+            //     bindUniforms(VCL_MRS_DRAWING_SURFACE);
 
-                bgfx::setState(state);
+            //     bgfx::setState(state);
 
-                bgfx::submit(viewId, mProgram);
-            }
+            //     bgfx::submit(viewId, mProgram);
+            // }
 
-            if (mMRS.isWireframeVisible()) { // TODO
+            if (mMRS.isWireframeVisible()) {
                 mMRB.drawWireframe(viewId);
             }
 
-            if (mMRS.isPointCloudVisible()) {
-                mMRB.bindVertexBuffers(mMRS);
-                bindUniforms(VCL_MRS_DRAWING_POINTS);
+            // if (mMRS.isPointCloudVisible()) {
+            //     mMRB.bindVertexBuffers(mMRS);
+            //     bindUniforms(VCL_MRS_DRAWING_POINTS);
 
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+            //     bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
-                bgfx::submit(viewId, mProgram);
-            }
+            //     bgfx::submit(viewId, mProgram);
+            // }
 
-            if (mMRS.isEdgesVisible()) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRB.EDGES);
-                bindUniforms(VCL_MRS_DRAWING_EDGES);
+            // if (mMRS.isEdgesVisible()) {
+            //     mMRB.bindVertexBuffers(mMRS);
+            //     mMRB.bindIndexBuffers(mMRB.EDGES);
+            //     bindUniforms(VCL_MRS_DRAWING_EDGES);
 
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
+            //     bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewId, mProgram);
-            }
+            //     bgfx::submit(viewId, mProgram);
+            // }
         }
     }
 
@@ -140,6 +140,13 @@ public:
     {
         DrawableMeshI::setRenderSettings(rs);
         mMeshRenderSettingsUniforms.updateSettings(rs);
+    }
+
+    void setScreenSize(const uint16_t width, const uint16_t height) 
+    {
+        mScreenWidth = width;
+        mScreenHeight = height;
+        mMRB.setScreenSize(mScreenWidth, mScreenHeight);
     }
 
 private:
