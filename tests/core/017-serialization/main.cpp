@@ -22,20 +22,30 @@
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/generators/catch_generators_adapters.hpp>
-#include <catch2/generators/catch_generators_random.hpp>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 #include <vclib/space.h>
 
+#include <random>
+
+template<typename Scalar>
+using DistrType = std::conditional_t<std::is_integral_v<Scalar>,
+                                     std::uniform_int_distribution<Scalar>,
+                                     std::uniform_real_distribution<Scalar>>;
+
 template<typename Scalar, unsigned int N>
 vcl::Point<Scalar, N> randomPoint()
 {
+    std::random_device rd;
+    std::mt19937       gen(rd());
+
+    DistrType<Scalar> dis((Scalar)-100, (Scalar)100);
+
     vcl::Point<Scalar, N> p;
     for (unsigned int i = 0; i < N; i++)
-        p[i] = GENERATE(take(1, random<Scalar>(-100, 100)));
+        p[i] = dis(gen);
     return p;
 }
 
@@ -59,9 +69,13 @@ vcl::Color randomColor()
 template<std::integral T>
 vcl::BitSet<T> randomBitSet()
 {
+    std::random_device rd;
+    std::mt19937       gen(rd());
+    std::uniform_int_distribution<> dis(0, 1);
+
     vcl::BitSet<T> bs;
     for (unsigned int i = 0; i < bs.size(); i++)
-        bs.set(i, GENERATE(take(1, random(0, 1))));
+        bs.set(i, dis(gen));
     return bs;
 }
 
@@ -169,13 +183,18 @@ TEST_CASE("Vector serialization")
     vcl::Vector<vcl::Color, -1> vecColor1;
     vcl::Vector<double, -1>     vecDouble1;
 
-    unsigned int randSizeCol = GENERATE(take(1, random(1, 10)));
-    unsigned int randSizeDbl = GENERATE(take(1, random(1, 10)));
+    std::random_device rd;
+    std::mt19937       gen(rd());
+    std::uniform_int_distribution<unsigned int> distInt(1, 10);
+    std::uniform_real_distribution<double>  distDouble(0.0, 1.0);
+
+    unsigned int randSizeCol = distInt(gen);
+    unsigned int randSizeDbl = distInt(gen);
     for (unsigned int i = 0; i < randSizeCol; i++)
         vecColor1.pushBack(randomColor());
 
     for (unsigned int i = 0; i < randSizeDbl; i++)
-        vecDouble1.pushBack(GENERATE(take(1, random(0.0, 1.0))));
+        vecDouble1.pushBack(distDouble(gen));
 
     std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
                                                  "/serialization/vectors.bin");
@@ -206,22 +225,24 @@ TEST_CASE("Array serialization")
     vcl::Array<double, 2> array2D1;
     vcl::Array<float, 3>  array3D1;
 
-    array2D1.resize(
-        GENERATE(take(1, random(1, 10))), GENERATE(take(1, random(1, 10))));
+    std::random_device rd;
+    std::mt19937       gen(rd());
+    std::uniform_int_distribution<unsigned int> distInt(1, 10);
+    std::uniform_real_distribution<double>  distFloat(0.0, 1.0);
+    std::uniform_real_distribution<double>  distDouble(0.0, 1.0);
 
-    array3D1.resize(
-        GENERATE(take(1, random(1, 10))),
-        GENERATE(take(1, random(1, 10))),
-        GENERATE(take(1, random(1, 10))));
+    array2D1.resize(distInt(gen), distInt(gen));
+
+    array3D1.resize(distInt(gen), distInt(gen), distInt(gen));
 
     for (unsigned int i = 0; i < array2D1.size(0); i++)
         for (unsigned int j = 0; j < array2D1.size(1); j++)
-            array2D1(i, j) = GENERATE(take(1, random(0.0f, 1.0f)));
+            array2D1(i, j) = distDouble(gen);
 
     for (unsigned int i = 0; i < array3D1.size(0); i++)
         for (unsigned int j = 0; j < array3D1.size(1); j++)
             for (unsigned int k = 0; k < array3D1.size(2); k++)
-                array3D1(i, j, k) = GENERATE(take(1, random(0.0f, 1.0f)));
+                array3D1(i, j, k) = distFloat(gen);
 
     std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
                                                  "/serialization/arrays.bin");
@@ -282,11 +303,16 @@ TEMPLATE_TEST_CASE("Matrix serialization", "", int, float, double)
 {
     using Scalar = TestType;
 
+    std::random_device rd;
+    std::mt19937       gen(rd());
+
+    DistrType<Scalar> dis(0.0, 1.0);
+
     vcl::Matrix<Scalar, 2, 2> mat1;
 
     for (unsigned int i = 0; i < 2; i++)
         for (unsigned int j = 0; j < 2; j++)
-            mat1(i, j) = GENERATE(take(1, random(0.0, 1.0)));
+            mat1(i, j) = dis(gen);
 
     std::ofstream fo =
         vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/mat.bin");

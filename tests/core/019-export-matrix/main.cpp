@@ -27,6 +27,8 @@
 #include <vclib/meshes.h>
 #include <vclib/views.h>
 
+#include <random>
+
 template<typename ScalarType>
 using EigenRowMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
@@ -42,6 +44,23 @@ using EigenColMatrix =
 template<typename ScalarType>
 using Eigen3ColMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, 3, Eigen::ColMajor>;
+
+// utility functions
+
+template<vcl::uint ELEM_ID>
+void randomSelection(auto& tm)
+{
+    std::random_device rd;
+    std::mt19937       gen(rd());
+    std::uniform_int_distribution<> dis(0, 1);
+
+    for (auto& el : tm.template elements<ELEM_ID>()) {
+        bool sel = dis(gen);
+        el.selected() = sel;
+    }
+}
+
+// test functions
 
 template<typename MatrixType>
 void testCoordsMatrix(const auto& tm)
@@ -73,6 +92,20 @@ void testTrianglesMatrix(const auto& tm)
         for (vcl::uint j = 0; j < 3; ++j) {
             REQUIRE(tris(i, j) == f.vertexIndex(j));
         }
+        ++i;
+    }
+}
+
+template<typename VectorType>
+void testVertexSelection(const auto& tm)
+{
+    auto sel = vcl::vertexSelectionVector<VectorType>(tm);
+
+    REQUIRE(sel.size() == tm.vertexNumber());
+
+    vcl::uint i = 0;
+    for (const auto& v : tm.vertices()) {
+        REQUIRE(sel[i] == v.selected());
         ++i;
     }
 }
@@ -126,6 +159,34 @@ TEMPLATE_TEST_CASE(
         }
         SECTION("vcl::Array2") {
             testTrianglesMatrix<vcl::Array2<vcl::uint>>(tm);
+        }
+    }
+
+    SECTION("Vertex selection...") {
+        randomSelection<vcl::ElemId::VERTEX>(tm);
+
+        SECTION("Eigen Vector<vcl::uint>") {
+            testVertexSelection<Eigen::VectorX<vcl::uint>>(tm);
+        }
+
+        SECTION("Eigen Vector<bool>") {
+            testVertexSelection<Eigen::VectorX<bool>>(tm);
+        }
+
+        SECTION("std vector<vcl::uint>") {
+            testVertexSelection<std::vector<vcl::uint>>(tm);
+        }
+
+        SECTION("std vector<char>") {
+            testVertexSelection<std::vector<char>>(tm);
+        }
+
+        SECTION("vcl::Vector<vcl::uint>") {
+            testVertexSelection<vcl::Vector<vcl::uint, -1>>(tm);
+        }
+
+        SECTION("vcl::Vector<char>") {
+            testVertexSelection<vcl::Vector<char, -1>>(tm);
         }
     }
 }

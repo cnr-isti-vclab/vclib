@@ -269,9 +269,7 @@ Vect elementSelectionVector(const MeshType& mesh)
 {
     Vect sV(mesh.template number<ELEM_ID>());
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>())
-        sV[i] = e.selected();
+    vcl::elementSelectionToBuffer<ELEM_ID>(mesh, sV.data());
     return sV;
 }
 

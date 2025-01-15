@@ -113,6 +113,39 @@ void trianglesToBuffer(
     }
 }
 
+/**
+ * @brief Export the selection status of the elements identified by `ELEM_ID` of
+ * a mesh to a buffer.
+ *
+ * This function exports the selection status of the elements identified by
+ * `ELEM_ID` of a mesh to a buffer. The buffer must be preallocated with the
+ * correct size (number of elements).
+ *
+ * Usage example with std::vector<bool>:
+ *
+ * @code{.cpp}
+ * std::vector<bool> vec(myMesh.elementNumber<ElemId::VERTEX>());
+ * vcl::elementSelectionToBuffer<ElemId::VERTEX>(myMesh, vec.data());
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
+{
+    uint i = 0;
+    for (const auto& e : mesh.template elements<ELEM_ID>()) {
+        buffer[i] = e.selected();
+        ++i;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
