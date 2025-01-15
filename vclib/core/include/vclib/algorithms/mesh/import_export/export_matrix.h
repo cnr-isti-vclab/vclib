@@ -108,29 +108,42 @@ template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
-
     Matrix fM(mesh.faceNumber(), 3);
 
-    uint i = 0;
-    for (const auto& f : mesh.faces()) {
-        // check if this face is greater than the cols of the matrix
-        if (f.vertexNumber() > fM.cols()) { // need to resize
-            uint oldCols = fM.cols();       // save old cols number
-            fM.conservativeResize(fM.rows(), f.vertexNumber());
-            // need to set to -1 all the previous rows that have been resized
-            for (uint k = 0; k < i; ++k) {
-                for (uint j = oldCols; j < fM.cols(); ++j)
-                    fM(k, j) = -1;
+    if constexpr (TriangleMeshConcept<MeshType>) {
+        MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+
+        // Eigen matrices can be column major
+        if constexpr (EigenMatrixConcept<Matrix>) {
+            if constexpr (!Matrix::IsRowMajor) {
+                stg = MatrixStorageType::COLUMN_MAJOR;
             }
         }
-        uint j = 0;
-        for (const auto* v : f.vertices()) {
-            fM(i, j) = mesh.index(v);
-            j++;
+
+        trianglesToBuffer(mesh, fM.data(), stg);
+    }
+    else {
+        uint i = 0;
+        for (const auto& f : mesh.faces()) {
+            // check if this face is greater than the cols of the matrix
+            if (f.vertexNumber() > fM.cols()) { // need to resize
+                uint oldCols = fM.cols();       // save old cols number
+                fM.conservativeResize(fM.rows(), f.vertexNumber());
+                // need to set to -1 all the previous rows that have been resized
+                for (uint k = 0; k < i; ++k) {
+                    for (uint j = oldCols; j < fM.cols(); ++j)
+                        fM(k, j) = -1;
+                }
+            }
+            uint j = 0;
+            for (const auto* v : f.vertices()) {
+                fM(i, j) = mesh.index(v);
+                j++;
+            }
+            for (; j < fM.cols(); ++j) // remaining vertices set to -1
+                fM(i, j) = -1;
+            ++i; // go to next face/row
         }
-        for (; j < fM.cols(); ++j) // remaining vertices set to -1
-            fM(i, j) = -1;
-        ++i; // go to next face/row
     }
     return fM;
 }

@@ -60,6 +60,23 @@ void testCoordsMatrix(const auto& tm)
     }
 }
 
+template<typename MatrixType>
+void testTrianglesMatrix(const auto& tm)
+{
+    auto tris = vcl::faceMatrix<MatrixType>(tm);
+
+    REQUIRE(tris.rows() == tm.faceNumber());
+    REQUIRE(tris.cols() == 3);
+
+    vcl::uint i = 0;
+    for (const auto& f : tm.faces()) {
+        for (vcl::uint j = 0; j < 3; ++j) {
+            REQUIRE(tris(i, j) == f.vertexIndex(j));
+        }
+        ++i;
+    }
+}
+
 TEMPLATE_TEST_CASE(
     "Export TriMesh to Matrix",
     "",
@@ -91,6 +108,24 @@ TEMPLATE_TEST_CASE(
         }
         SECTION("vcl::Array2") {
             testCoordsMatrix<vcl::Array2<ScalarType>>(tm);
+        }
+    }
+
+    SECTION("Triangles...") {
+        SECTION("Eigen Row Major") {
+            testTrianglesMatrix<EigenRowMatrix<vcl::uint>>(tm);
+        }
+        SECTION("Eigen 3 Row Major") {
+            testTrianglesMatrix<Eigen3RowMatrix<vcl::uint>>(tm);
+        }
+        SECTION("Eigen Col Major") {
+            testTrianglesMatrix<EigenColMatrix<vcl::uint>>(tm);
+        }
+        SECTION("Eigen 3 Col Major") {
+            testTrianglesMatrix<Eigen3ColMatrix<vcl::uint>>(tm);
+        }
+        SECTION("vcl::Array2") {
+            testTrianglesMatrix<vcl::Array2<vcl::uint>>(tm);
         }
     }
 }

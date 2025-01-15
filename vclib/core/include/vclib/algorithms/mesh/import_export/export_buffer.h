@@ -70,6 +70,49 @@ void vertexCoordsToBuffer(
     }
 }
 
+/**
+ * @brief Export into a buffer the vertex indices for each triangle of a Mesh.
+ *
+ * This function exports the vertex indices of the triangles of a mesh to a
+ * buffer. The buffer must be preallocated with the correct size (number of
+ * faces times 3). The function assumes that the input mesh is a triangle mesh
+ * (if there are polygonal faces, only the first three vertices are considered).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ */
+template<MeshConcept MeshType>
+void trianglesToBuffer(
+    const MeshType&         mesh,
+    auto*                   buffer,
+    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+{
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        uint i = 0;
+        for (const auto& f : mesh.faces()) {
+            buffer[i * 3 + 0] = f.vertexIndex(0);
+            buffer[i * 3 + 1] = f.vertexIndex(1);
+            buffer[i * 3 + 2] = f.vertexIndex(2);
+            ++i;
+        }
+    }
+    else {
+        uint i = 0;
+        for (const auto& f : mesh.faces()) {
+            buffer[0 * mesh.faceNumber() + i] = f.vertexIndex(0);
+            buffer[1 * mesh.faceNumber() + i] = f.vertexIndex(1);
+            buffer[2 * mesh.faceNumber() + i] = f.vertexIndex(2);
+            ++i;
+        }
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
