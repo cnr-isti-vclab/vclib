@@ -55,16 +55,16 @@ namespace vcl {
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& mesh)
 {
-    Matrix V(mesh.vertexNumber(), 3);
+    Matrix vM(mesh.vertexNumber(), 3);
 
     uint i = 0;
     for (const auto& v : mesh.vertices()) {
         for (uint j = 0; j < 3; ++j) {
-            V(i, j) = v.coord()[j];
+            vM(i, j) = v.coord()[j];
         }
         ++i;
     }
-    return V;
+    return vM;
 }
 
 /**
@@ -103,30 +103,30 @@ Matrix faceMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Matrix F(mesh.faceNumber(), 3);
+    Matrix fM(mesh.faceNumber(), 3);
 
     uint i = 0;
     for (const auto& f : mesh.faces()) {
         // check if this face is greater than the cols of the matrix
-        if (f.vertexNumber() > F.cols()) { // need to resize
-            uint oldCols = F.cols();       // save old cols number
-            F.conservativeResize(F.rows(), f.vertexNumber());
+        if (f.vertexNumber() > fM.cols()) { // need to resize
+            uint oldCols = fM.cols();       // save old cols number
+            fM.conservativeResize(fM.rows(), f.vertexNumber());
             // need to set to -1 all the previous rows that have been resized
             for (uint k = 0; k < i; ++k) {
-                for (uint j = oldCols; j < F.cols(); ++j)
-                    F(k, j) = -1;
+                for (uint j = oldCols; j < fM.cols(); ++j)
+                    fM(k, j) = -1;
             }
         }
         uint j = 0;
         for (const auto* v : f.vertices()) {
-            F(i, j) = mesh.index(v);
+            fM(i, j) = mesh.index(v);
             j++;
         }
-        for (; j < F.cols(); ++j) // remaining vertices set to -1
-            F(i, j) = -1;
+        for (; j < fM.cols(); ++j) // remaining vertices set to -1
+            fM(i, j) = -1;
         ++i; // go to next face/row
     }
-    return F;
+    return fM;
 }
 
 /**
@@ -164,14 +164,14 @@ Vect faceSizesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Vect F(mesh.faceNumber());
+    Vect fM(mesh.faceNumber());
 
     uint i = 0;
     for (const auto& f : mesh.faces()) {
-        F(i) = f.vertexNumber();
+        fM(i) = f.vertexNumber();
         ++i;
     }
-    return F;
+    return fM;
 }
 
 /**
@@ -207,15 +207,15 @@ Matrix edgeMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Matrix E(mesh.edgeNumber(), 2);
+    Matrix eM(mesh.edgeNumber(), 2);
 
     uint i = 0;
     for (const auto& e : mesh.edges()) {
-        E(i, 0) = mesh.index(e.vertex(0));
-        E(i, 1) = mesh.index(e.vertex(1));
+        eM(i, 0) = mesh.index(e.vertex(0));
+        eM(i, 1) = mesh.index(e.vertex(1));
         ++i; // go to next edge/row
     }
-    return E;
+    return eM;
 }
 
 /**
@@ -248,12 +248,12 @@ Matrix edgeMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
 {
-    Vect S(mesh.template number<ELEM_ID>());
+    Vect sV(mesh.template number<ELEM_ID>());
 
     uint i = 0;
     for (const auto& e : mesh.template elements<ELEM_ID>())
-        S[i] = e.selected();
-    return S;
+        sV[i] = e.selected();
+    return sV;
 }
 
 /**
@@ -351,16 +351,16 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    Matrix EN(mesh.template number<ELEM_ID>(), 3);
+    Matrix eNM(mesh.template number<ELEM_ID>(), 3);
 
     uint i = 0;
     for (const auto& e : mesh.template elements<ELEM_ID>()) {
         for (uint j = 0; j < 3; ++j) {
-            EN(i, j) = e.normal()[j];
+            eNM(i, j) = e.normal()[j];
         }
         ++i;
     }
-    return EN;
+    return eNM;
 }
 
 /**
@@ -455,16 +455,16 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
-    Matrix EC(mesh.template number<ELEM_ID>(), 4);
+    Matrix eCM(mesh.template number<ELEM_ID>(), 4);
 
     uint i = 0;
     for (const auto& e : mesh.template elements<ELEM_ID>()) {
         for (uint j = 0; j < 4; ++j) {
-            EC(i, j) = e.color()[j];
+            eCM(i, j) = e.color()[j];
         }
         ++i;
     }
-    return EC;
+    return eCM;
 }
 
 /**
@@ -560,15 +560,15 @@ Vect elementQualityVector(const MeshType& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
-    Vect EQ(mesh.template number<ELEM_ID>(), 3);
+    Vect eQV(mesh.template number<ELEM_ID>(), 3);
 
     uint i = 0;
     for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        EQ[i] = e.quality();
+        eQV[i] = e.quality();
         ++i;
     }
 
-    return EQ;
+    return eQV;
 }
 
 /**
