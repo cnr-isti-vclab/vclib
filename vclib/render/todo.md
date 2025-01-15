@@ -51,6 +51,7 @@
   - [X] implement offscreen color rendering for the snapshot function
   - [X] implement 'offscreen' rendering on legacy OpenGL
   - [X] implement imgui platform backend for Qt
+  - [ ] fix timings in imgui qt platform backend
   - [ ] solve key modifiers inconsistency when using imgui and glfw
   - [X] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown (SOLVED MISTERIOUSLY)
   - [X] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring (REFACTORING IN PROGRESS)

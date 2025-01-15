@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include "../../demo_imgui_drawer.h"
+#include "../../imgui_stats_drawer.h"
 #include "../hello_triangle_drawer.h"
 
 #include <vclib/render/canvas.h>
@@ -36,10 +37,11 @@ int main(int argc, char** argv)
     // FIXME #2: crash on linux when closing: derived()->update() in imgui_drawer.h
 
     using WidgetQt = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        HelloTriangleDrawer>;
+        vcl::qt::WidgetManager,   // The WindowManager: Qt
+        vcl::Canvas,              // The default Canvas
+        DemoImGuiDrawer,          // A Drawer that draws the ImGui demo window
+        HelloTriangleDrawer,      // The Drawer that draws the triangle
+        ImguiStatsDrawer>;        // A Drawer that draws the ImGui stats window
 
     WidgetQt tw("Hello Triangle ImGui with Qt");
 
