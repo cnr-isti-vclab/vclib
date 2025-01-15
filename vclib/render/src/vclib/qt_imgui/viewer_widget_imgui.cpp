@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt_imgui/viewer_widget_imgui.h>
 #include <vclib/qt_imgui/imgui_impl_qt.h>
+#include <vclib/qt_imgui/viewer_widget_imgui.h>
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 #include <imgui_impl_opengl2.h>
@@ -38,8 +38,7 @@ ViewerWidgetImgui::ViewerWidgetImgui(
     uint                                         width,
     uint                                         height,
     const std::string&                           windowTitle,
-    QWidget*                                     parent) :
-        ViewerWidget(v, width, height, windowTitle, parent)
+    QWidget* parent) : ViewerWidget(v, width, height, windowTitle, parent)
 {
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     initImGui();
@@ -50,16 +49,14 @@ ViewerWidgetImgui::ViewerWidgetImgui(
     const std::string& windowTitle,
     uint               width,
     uint               height,
-    QWidget*           parent) :
-        ViewerWidget(windowTitle, width, height, parent)
+    QWidget* parent) : ViewerWidget(windowTitle, width, height, parent)
 {
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     initImGui();
 #endif
 }
 
-ViewerWidgetImgui::ViewerWidgetImgui(QWidget* parent) :
-        ViewerWidget(parent)
+ViewerWidgetImgui::ViewerWidgetImgui(QWidget* parent) : ViewerWidget(parent)
 {
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     initImGui();
@@ -100,7 +97,6 @@ void ViewerWidgetImgui::initImGui()
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
     ImGui_ImplBgfx_Init();
 #endif
-
 }
 
 void ViewerWidgetImgui::shutdownImGui()

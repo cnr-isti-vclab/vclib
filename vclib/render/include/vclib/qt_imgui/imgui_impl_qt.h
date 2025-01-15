@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef IMGUI_IMPL_QT_H
-#define IMGUI_IMPL_QT_H
+#ifndef VCL_QT_IMGUI_IMGUI_IMPL_QT_H
+#define VCL_QT_IMGUI_IMGUI_IMPL_QT_H
 
 #include <QWidget>
 #include <imgui.h>
@@ -32,4 +32,4 @@ IMGUI_IMPL_API void ImGui_ImplQt_Shutdown();
 IMGUI_IMPL_API void ImGui_ImplQt_NewFrame();
 
 #endif // IMGUI_DISABLE
-#endif // IMGUI_IMPL_QT_H
+#endif // VCL_QT_IMGUI_IMGUI_IMPL_QT_H

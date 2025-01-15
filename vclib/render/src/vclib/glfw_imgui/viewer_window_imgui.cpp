@@ -37,8 +37,7 @@ ViewerWindowImgui::ViewerWindowImgui(
     const std::string&                           windowTitle,
     uint                                         width,
     uint                                         height,
-    void*) :
-        Base(v, windowTitle, width, height)
+    void*) : Base(v, windowTitle, width, height)
 {
 }
 
@@ -46,13 +45,11 @@ ViewerWindowImgui::ViewerWindowImgui(
     const std::string& windowTitle,
     uint               width,
     uint               height,
-    void*) :
-        Base(windowTitle, width, height)
+    void*) : Base(windowTitle, width, height)
 {
 }
 
-ViewerWindowImgui::ViewerWindowImgui(void* parent) :
-        Base(parent)
+ViewerWindowImgui::ViewerWindowImgui(void* parent) : Base(parent)
 {
 }
 
