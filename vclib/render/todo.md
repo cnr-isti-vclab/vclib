@@ -13,6 +13,7 @@
 - BGFX
   - [ ] Fix FIXME #1 on example-01-viewer-qt
   - [ ] Fix FIXME #2 on example-04-hello-triangle-imgui-qt
+  - [ ] Fix 2 Qt windows with BGFX canvas.
   - [X] Library shaders should be built as headers
   - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
   - [ ] assets and shaders should be compiled in headers that are in paths like

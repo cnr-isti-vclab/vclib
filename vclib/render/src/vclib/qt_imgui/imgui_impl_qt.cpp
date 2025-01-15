@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -24,14 +24,14 @@
 #include <vclib/qt_imgui/imgui_impl_qt.h>
 
 #include <QApplication>
+#include <QClipboard>
 #include <QEvent>
 #include <QKeyEvent>
-#include <QClipboard>
 
 #include <chrono>
 #include <iostream>
 
-using Clock = std::chrono::high_resolution_clock;
+using Clock     = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
 
 // forward declaration
@@ -40,7 +40,7 @@ class ImGuiQtEventFilter;
 // data stored within ImGui::GetIO().BackendPlatformUserData
 struct ImGui_ImplQt_Data
 {
-    QWidget *           Widget      = nullptr;
+    QWidget*            Widget      = nullptr;
     ImGuiQtEventFilter* EventFilter = nullptr;
     TimePoint           LastTime    = TimePoint(Clock::duration::zero());
 };
@@ -48,21 +48,22 @@ struct ImGui_ImplQt_Data
 static ImGui_ImplQt_Data* ImGui_ImplQt_GetBackendData()
 {
     return ImGui::GetCurrentContext() ?
-        (ImGui_ImplQt_Data*)ImGui::GetIO().BackendPlatformUserData : nullptr;
+               (ImGui_ImplQt_Data*) ImGui::GetIO().BackendPlatformUserData :
+               nullptr;
 }
 
 #ifndef QT_NO_CURSOR
 static constexpr Qt::CursorShape QtMouseCursors[ImGuiMouseCursor_COUNT] = {
-        Qt::ArrowCursor,        // ImGuiMouseCursor_Arrow
-        Qt::IBeamCursor,        // ImGuiMouseCursor_TextInput
-        Qt::SizeAllCursor,      // ImGuiMouseCursor_ResizeAll
-        Qt::SizeVerCursor,      // ImGuiMouseCursor_ResizeNS
-        Qt::SizeHorCursor,      // ImGuiMouseCursor_ResizeEW
-        Qt::SizeBDiagCursor,    // ImGuiMouseCursor_ResizeNESW
-        Qt::SizeFDiagCursor,    // ImGuiMouseCursor_ResizeNWSE
-        Qt::PointingHandCursor, // ImGuiMouseCursor_Hand
-        Qt::ForbiddenCursor,    // ImGuiMouseCursor_NotAllowed
-        };
+    Qt::ArrowCursor,        // ImGuiMouseCursor_Arrow
+    Qt::IBeamCursor,        // ImGuiMouseCursor_TextInput
+    Qt::SizeAllCursor,      // ImGuiMouseCursor_ResizeAll
+    Qt::SizeVerCursor,      // ImGuiMouseCursor_ResizeNS
+    Qt::SizeHorCursor,      // ImGuiMouseCursor_ResizeEW
+    Qt::SizeBDiagCursor,    // ImGuiMouseCursor_ResizeNESW
+    Qt::SizeFDiagCursor,    // ImGuiMouseCursor_ResizeNWSE
+    Qt::PointingHandCursor, // ImGuiMouseCursor_Hand
+    Qt::ForbiddenCursor,    // ImGuiMouseCursor_NotAllowed
+};
 #endif
 
 static int ImGui_ImplQt_MouseButtonToImGuiButton(int button)
@@ -187,87 +188,86 @@ static ImGuiKey ImGui_ImplQt_KeyToImGuiKey(int keycode)
 
 static void ImGui_ImplQt_UpdateKeyboardModifiers(Qt::KeyboardModifiers mods)
 {
-    ImGuiIO & io = ImGui::GetIO();
-    io.AddKeyEvent(ImGuiKey_ModCtrl,  mods.testFlag(Qt::ControlModifier));
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddKeyEvent(ImGuiKey_ModCtrl, mods.testFlag(Qt::ControlModifier));
     io.AddKeyEvent(ImGuiKey_ModShift, mods.testFlag(Qt::ShiftModifier));
-    io.AddKeyEvent(ImGuiKey_ModAlt,   mods.testFlag(Qt::AltModifier));
+    io.AddKeyEvent(ImGuiKey_ModAlt, mods.testFlag(Qt::AltModifier));
     io.AddKeyEvent(ImGuiKey_ModSuper, mods.testFlag(Qt::MetaModifier));
 }
 
 static void ImGui_ImplQt_UpdateFocusEvent(bool focused)
 {
-    ImGuiIO & io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
     io.AddFocusEvent(focused);
 }
 
 static void ImGui_ImplQt_UpdateMouseData()
 {
     ImGui_ImplQt_Data* bd = ImGui_ImplQt_GetBackendData();
-    ImGuiIO & io = ImGui::GetIO();
+    ImGuiIO&           io = ImGui::GetIO();
 
-    // (those braces are here to reduce diff with multi-viewports support in 'docking' branch)
+    // (those braces are here to reduce diff with multi-viewports support in
+    // 'docking' branch)
     {
-        const auto * widget = bd->Widget;
-        const bool is_focused = widget->hasFocus();
+        const auto* widget     = bd->Widget;
+        const bool  is_focused = widget->hasFocus();
 
-        if (is_focused)
-        {
-            // (Optional) Set OS mouse position from Dear ImGui if requested (rarely used, only when io.ConfigNavMoveSetMousePos is enabled by user)
+        if (is_focused) {
+            // (Optional) Set OS mouse position from Dear ImGui if requested
+            // (rarely used, only when io.ConfigNavMoveSetMousePos is enabled by
+            // user)
             if (io.WantSetMousePos)
                 QCursor::setPos(widget->mapToGlobal(
-                    QPoint((int)io.MousePos.x, (int)io.MousePos.y)));
+                    QPoint((int) io.MousePos.x, (int) io.MousePos.y)));
         }
     }
 }
 
 static void ImGui_ImplQt_UpdateMouseCursor()
 {
-    #ifndef QT_NO_CURSOR
-    ImGuiIO& io = ImGui::GetIO();
+#ifndef QT_NO_CURSOR
+    ImGuiIO&           io = ImGui::GetIO();
     ImGui_ImplQt_Data* bd = ImGui_ImplQt_GetBackendData();
 
     if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
         return;
 
     ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
-    // (those braces are here to reduce diff with multi-viewports support in 'docking' branch)
+    // (those braces are here to reduce diff with multi-viewports support in
+    // 'docking' branch)
     {
-        auto * widget = bd->Widget;
-        if (imgui_cursor == ImGuiMouseCursor_None || io.MouseDrawCursor)
-        {
+        auto* widget = bd->Widget;
+        if (imgui_cursor == ImGuiMouseCursor_None || io.MouseDrawCursor) {
             // hide mouse cursor if imgui is drawing it or if it wants no cursor
             widget->setCursor(Qt::BlankCursor);
         }
-        else
-        {
+        else {
             // show requested mouse cursor
             widget->setCursor(QtMouseCursors[imgui_cursor]);
         }
     }
-    #endif
+#endif
 }
 
 class ImGuiQtEventFilter : public QObject
 {
     using QObject::QObject;
+
 protected:
-     bool eventFilter(QObject *obj, QEvent *event) override
-     {
+    bool eventFilter(QObject* obj, QEvent* event) override
+    {
         static const bool BLOCK_EVENTS = false;
 
         ImGui_ImplQt_Data* bd = ImGui_ImplQt_GetBackendData();
         if (bd == nullptr)
             return false;
-        if (obj == bd->Widget)
-        {
+        if (obj == bd->Widget) {
             ImGuiIO& io = ImGui::GetIO();
-            switch (event->type())
-            {
+            switch (event->type()) {
             case QEvent::KeyPress:
-            case QEvent::KeyRelease:
-            {
+            case QEvent::KeyRelease: {
                 QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-                const bool press = (event->type() == QEvent::KeyPress);
+                const bool press    = (event->type() == QEvent::KeyPress);
                 ImGui_ImplQt_UpdateKeyboardModifiers(keyEvent->modifiers());
                 io.AddKeyEvent(
                     ImGui_ImplQt_KeyToImGuiKey(keyEvent->key()), press);
@@ -278,52 +278,44 @@ protected:
                 return BLOCK_EVENTS;
             }
             case QEvent::MouseButtonPress:
-            case QEvent::MouseButtonRelease:
-            {
+            case QEvent::MouseButtonRelease: {
                 QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-                const auto button = mouseEvent->button();
-                const bool press =
-                    (event->type() == QEvent::MouseButtonPress);
+                const auto   button     = mouseEvent->button();
+                const bool press = (event->type() == QEvent::MouseButtonPress);
                 io.AddMouseButtonEvent(
                     ImGui_ImplQt_MouseButtonToImGuiButton(button), press);
                 return BLOCK_EVENTS;
             }
-            case QEvent::MouseMove:
-            {
-                QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-                const QPointF pos = mouseEvent->position();
+            case QEvent::MouseMove: {
+                QMouseEvent*  mouseEvent = static_cast<QMouseEvent*>(event);
+                const QPointF pos        = mouseEvent->position();
                 io.AddMousePosEvent(pos.x(), pos.y());
                 return BLOCK_EVENTS;
             }
-            case QEvent::Wheel:
-            {
+            case QEvent::Wheel: {
                 QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
-                QPointF wheel(
+                QPointF      wheel(
                     wheelEvent->angleDelta().x() / 120.0f,
                     wheelEvent->angleDelta().y() / 120.0f);
                 io.AddMouseWheelEvent(wheel.x(), wheel.y());
                 return BLOCK_EVENTS;
             }
             case QEvent::FocusIn:
-            case QEvent::FocusOut:
-            {
-                ImGui_ImplQt_UpdateFocusEvent(
-                    event->type() == QEvent::FocusIn);
+            case QEvent::FocusOut: {
+                ImGui_ImplQt_UpdateFocusEvent(event->type() == QEvent::FocusIn);
                 return BLOCK_EVENTS;
             }
             case QEvent::Enter:
-            case QEvent::Leave:
-            {
+            case QEvent::Leave: {
                 ImGui_ImplQt_UpdateMouseData();
                 return BLOCK_EVENTS;
             }
-            default:
-                break;
+            default: break;
             }
         }
         // standard event processing
         return QObject::eventFilter(obj, event);
-     }
+    }
 };
 
 QByteArray gClipboardText;
@@ -334,49 +326,51 @@ bool ImGui_ImplQt_Init(QWidget* widget)
     if (QCoreApplication::instance() == nullptr)
         return false;
 
-    ImGuiIO & io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
 
-    // Setup backend capabilities flags
-    #ifndef QT_NO_CURSOR
-    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors; // We can honor GetMouseCursor() values (optional)
-    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;  // We can honor io.WantSetMousePos requests (optional, rarely used)
-    #endif
+// Setup backend capabilities flags
+#ifndef QT_NO_CURSOR
+    io.BackendFlags |=
+        ImGuiBackendFlags_HasMouseCursors; // We can honor GetMouseCursor()
+                                           // values (optional)
+    io.BackendFlags |=
+        ImGuiBackendFlags_HasSetMousePos; // We can honor io.WantSetMousePos
+                                          // requests (optional, rarely used)
+#endif
     io.BackendPlatformName = "imgui_impl_qt";
 
     // set clipboard functions
-    ImGuiPlatformIO & platform_io = ImGui::GetPlatformIO();
-    platform_io.Platform_SetClipboardTextFn =
-        [](ImGuiContext*, const char* text) {
-            auto * clipboard = QGuiApplication::clipboard();
-            if (clipboard != nullptr)
-                clipboard->setText(QString::fromUtf8(text));
-        };
-    platform_io.Platform_GetClipboardTextFn =
-        [](ImGuiContext*) -> const char* {
-            auto * clipboard = QGuiApplication::clipboard();
-            if (clipboard != nullptr) {
-                gClipboardText = clipboard->text().toUtf8();
-                return (const char *) gClipboardText.constData();
-            }
-            return nullptr;
-        };
+    ImGuiPlatformIO& platform_io            = ImGui::GetPlatformIO();
+    platform_io.Platform_SetClipboardTextFn = [](ImGuiContext*,
+                                                 const char* text) {
+        auto* clipboard = QGuiApplication::clipboard();
+        if (clipboard != nullptr)
+            clipboard->setText(QString::fromUtf8(text));
+    };
+    platform_io.Platform_GetClipboardTextFn = [](ImGuiContext*) -> const char* {
+        auto* clipboard = QGuiApplication::clipboard();
+        if (clipboard != nullptr) {
+            gClipboardText = clipboard->text().toUtf8();
+            return (const char*) gClipboardText.constData();
+        }
+        return nullptr;
+    };
 
     // Setup backend data
     ImGui_ImplQt_Data* bd = ImGui_ImplQt_GetBackendData();
-    if (bd == nullptr)
-    {
-        bd = IM_NEW(ImGui_ImplQt_Data)();
-        io.BackendPlatformUserData = (void*)bd;
+    if (bd == nullptr) {
+        bd                         = IM_NEW(ImGui_ImplQt_Data)();
+        io.BackendPlatformUserData = (void*) bd;
     }
     // store widget and install event filter
-    bd->Widget = widget; // TODO: handle multiple widgets
+    bd->Widget      = widget; // TODO: handle multiple widgets
     bd->EventFilter = new ImGuiQtEventFilter();
     widget->setMouseTracking(true);
     widget->installEventFilter(bd->EventFilter);
 
     // Set platform dependent data in viewport
-    ImGuiViewport* main_viewport = ImGui::GetMainViewport();
-    main_viewport->PlatformHandle = (void*)bd->Widget;
+    ImGuiViewport* main_viewport  = ImGui::GetMainViewport();
+    main_viewport->PlatformHandle = (void*) bd->Widget;
     // PlatformHandleRaw probably not needed
 
     return true;
@@ -387,8 +381,7 @@ void ImGui_ImplQt_Shutdown()
     ImGui_ImplQt_Data* bd = ImGui_ImplQt_GetBackendData();
     if (bd == nullptr)
         return;
-    if (bd->Widget != nullptr)
-    {
+    if (bd->Widget != nullptr) {
         bd->Widget->removeEventFilter(bd->EventFilter);
         delete bd->EventFilter;
     }
@@ -398,23 +391,24 @@ void ImGui_ImplQt_Shutdown()
 
 void ImGui_ImplQt_NewFrame()
 {
-    ImGuiIO & io = ImGui::GetIO();
-    ImGui_ImplQt_Data * bd = ImGui_ImplQt_GetBackendData();
-    IM_ASSERT(bd != nullptr &&
+    ImGuiIO&           io = ImGui::GetIO();
+    ImGui_ImplQt_Data* bd = ImGui_ImplQt_GetBackendData();
+    IM_ASSERT(
+        bd != nullptr &&
         "Platform backend not initialized! Did you call ImGui_ImplQt_Init()?");
-    
+
     // update display
-    const auto size = bd->Widget->size();
-    io.DisplaySize = ImVec2(float(size.width()), float(size.height()));
+    const auto size   = bd->Widget->size();
+    io.DisplaySize    = ImVec2(float(size.width()), float(size.height()));
     const float scale = bd->Widget->devicePixelRatio();
     if (size.width() > 0 && size.height() > 0)
         io.DisplayFramebufferScale = ImVec2(scale, scale);
 
     // update time
-    const auto now = Clock::now();
+    const auto now      = Clock::now();
     const auto duration = now - bd->LastTime;
-    io.DeltaTime = std::chrono::duration<float>(duration).count();
-    bd->LastTime = now;
+    io.DeltaTime        = std::chrono::duration<float>(duration).count();
+    bd->LastTime        = now;
 
     // update mouse and cursors
     ImGui_ImplQt_UpdateMouseData();
