@@ -27,8 +27,41 @@
 #include <vclib/meshes.h>
 #include <vclib/views.h>
 
+template<typename ScalarType>
+using EigenRowMatrix =
+    Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+
+template<typename ScalarType>
+using Eigen3RowMatrix =
+    Eigen::Matrix<ScalarType, Eigen::Dynamic, 3, Eigen::RowMajor>;
+
+template<typename ScalarType>
+using EigenColMatrix =
+    Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+
+template<typename ScalarType>
+using Eigen3ColMatrix =
+    Eigen::Matrix<ScalarType, Eigen::Dynamic, 3, Eigen::ColMajor>;
+
+template<typename MatrixType>
+void testCoordsMatrix(const auto& tm)
+{
+    auto verts = vcl::vertexMatrix<MatrixType>(tm);
+
+    REQUIRE(verts.rows() == tm.vertexNumber());
+    REQUIRE(verts.cols() == 3);
+
+    vcl::uint i = 0;
+    for (const auto& c : tm.vertices() | vcl::views::coords) {
+        REQUIRE(verts(i, 0) == c.x());
+        REQUIRE(verts(i, 1) == c.y());
+        REQUIRE(verts(i, 2) == c.z());
+        ++i;
+    }
+}
+
 TEMPLATE_TEST_CASE(
-    "Export TriMesh to Eigen Matrix",
+    "Export TriMesh to Matrix",
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
@@ -40,63 +73,24 @@ TEMPLATE_TEST_CASE(
     TriMesh tm =
         vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    THEN("Export coordinates in column major matrix works as expected")
-    {
-        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
-        using MatrixType = Eigen::
-            Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+    SECTION("Coordinates...") {
+        using ScalarType =
+            typename TriMesh::VertexType::CoordType::ScalarType;
 
-        auto verts = vcl::vertexMatrix<MatrixType>(tm);
-
-        REQUIRE(verts.rows() == tm.vertexNumber());
-        REQUIRE(verts.cols() == 3);
-
-        vcl::uint i = 0;
-        for (const auto& c : tm.vertices() | vcl::views::coords) {
-            REQUIRE(verts(i, 0) == c.x());
-            REQUIRE(verts(i, 1) == c.y());
-            REQUIRE(verts(i, 2) == c.z());
-            ++i;
+        SECTION("Eigen Row Major") {
+            testCoordsMatrix<EigenRowMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen 3 Row Major") {
+            testCoordsMatrix<Eigen3RowMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen Col Major") {
+            testCoordsMatrix<EigenColMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen 3 Col Major") {
+            testCoordsMatrix<Eigen3ColMatrix<ScalarType>>(tm);
+        }
+        SECTION("vcl::Array2") {
+            testCoordsMatrix<vcl::Array2<ScalarType>>(tm);
         }
     }
-
-    THEN("Export coordinates in row major matrix works as expected")
-    {
-        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
-        using MatrixType = Eigen::
-            Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
-
-        auto verts = vcl::vertexMatrix<MatrixType>(tm);
-
-        REQUIRE(verts.rows() == tm.vertexNumber());
-        REQUIRE(verts.cols() == 3);
-
-        vcl::uint i = 0;
-        for (const auto& c : tm.vertices() | vcl::views::coords) {
-            REQUIRE(verts(i, 0) == c.x());
-            REQUIRE(verts(i, 1) == c.y());
-            REQUIRE(verts(i, 2) == c.z());
-            ++i;
-        }
-    }
-
-    THEN("Export coordinates in vcl::Array2 works as expected")
-    {
-        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
-        using MatrixType = vcl::Array2<ScalarType>;
-
-        auto verts = vcl::vertexMatrix<MatrixType>(tm);
-
-        REQUIRE(verts.rows() == tm.vertexNumber());
-        REQUIRE(verts.cols() == 3);
-
-        vcl::uint i = 0;
-        for (const auto& c : tm.vertices() | vcl::views::coords) {
-            REQUIRE(verts(i, 0) == c.x());
-            REQUIRE(verts(i, 1) == c.y());
-            REQUIRE(verts(i, 2) == c.z());
-            ++i;
-        }
-    }
-
 }

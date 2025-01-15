@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
 
+#include "export_buffer.h"
+
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
 
@@ -57,13 +59,17 @@ Matrix vertexMatrix(const MeshType& mesh)
 {
     Matrix vM(mesh.vertexNumber(), 3);
 
-    uint i = 0;
-    for (const auto& v : mesh.vertices()) {
-        for (uint j = 0; j < 3; ++j) {
-            vM(i, j) = v.coord()[j];
+    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
         }
-        ++i;
     }
+
+    vertexCoordsToBuffer(mesh, vM.data(), stg);
+
     return vM;
 }
 
