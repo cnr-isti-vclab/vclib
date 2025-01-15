@@ -31,8 +31,8 @@
 class ImguiDemo : public vcl::qt::ViewerWidgetImgui
 {
 public:
-    ImguiDemo(const std::string& windowTitle)
-    : vcl::qt::ViewerWidgetImgui(windowTitle)
+    ImguiDemo(const std::string& windowTitle) :
+            vcl::qt::ViewerWidgetImgui(windowTitle)
     {
     }
 
