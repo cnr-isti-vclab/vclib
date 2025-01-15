@@ -560,7 +560,7 @@ Vect elementQualityVector(const MeshType& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
-    Vect eQV(mesh.template number<ELEM_ID>(), 3);
+    Vect eQV(mesh.template number<ELEM_ID>());
 
     uint i = 0;
     for (const auto& e : mesh.template elements<ELEM_ID>()) {
