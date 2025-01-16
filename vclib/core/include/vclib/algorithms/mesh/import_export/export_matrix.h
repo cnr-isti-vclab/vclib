@@ -129,7 +129,8 @@ Matrix faceMatrix(const MeshType& mesh)
             if (f.vertexNumber() > fM.cols()) { // need to resize
                 uint oldCols = fM.cols();       // save old cols number
                 fM.conservativeResize(fM.rows(), f.vertexNumber());
-                // need to set to -1 all the previous rows that have been resized
+                // need to set to -1 all the previous rows that have been
+                // resized
                 for (uint k = 0; k < i; ++k) {
                     for (uint j = oldCols; j < fM.cols(); ++j)
                         fM(k, j) = -1;

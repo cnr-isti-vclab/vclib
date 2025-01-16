@@ -31,9 +31,10 @@
 #include <random>
 
 template<typename Scalar>
-using DistrType = std::conditional_t<std::is_integral_v<Scalar>,
-                                     std::uniform_int_distribution<Scalar>,
-                                     std::uniform_real_distribution<Scalar>>;
+using DistrType = std::conditional_t<
+    std::is_integral_v<Scalar>,
+    std::uniform_int_distribution<Scalar>,
+    std::uniform_real_distribution<Scalar>>;
 
 template<typename Scalar, unsigned int N>
 vcl::Point<Scalar, N> randomPoint()
@@ -41,7 +42,7 @@ vcl::Point<Scalar, N> randomPoint()
     std::random_device rd;
     std::mt19937       gen(rd());
 
-    DistrType<Scalar> dis((Scalar)-100, (Scalar)100);
+    DistrType<Scalar> dis((Scalar) -100, (Scalar) 100);
 
     vcl::Point<Scalar, N> p;
     for (unsigned int i = 0; i < N; i++)
@@ -69,8 +70,8 @@ vcl::Color randomColor()
 template<std::integral T>
 vcl::BitSet<T> randomBitSet()
 {
-    std::random_device rd;
-    std::mt19937       gen(rd());
+    std::random_device              rd;
+    std::mt19937                    gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
 
     vcl::BitSet<T> bs;
@@ -183,10 +184,10 @@ TEST_CASE("Vector serialization")
     vcl::Vector<vcl::Color, -1> vecColor1;
     vcl::Vector<double, -1>     vecDouble1;
 
-    std::random_device rd;
-    std::mt19937       gen(rd());
+    std::random_device                          rd;
+    std::mt19937                                gen(rd());
     std::uniform_int_distribution<unsigned int> distInt(1, 10);
-    std::uniform_real_distribution<double>  distDouble(0.0, 1.0);
+    std::uniform_real_distribution<double>      distDouble(0.0, 1.0);
 
     unsigned int randSizeCol = distInt(gen);
     unsigned int randSizeDbl = distInt(gen);
@@ -225,11 +226,11 @@ TEST_CASE("Array serialization")
     vcl::Array<double, 2> array2D1;
     vcl::Array<float, 3>  array3D1;
 
-    std::random_device rd;
-    std::mt19937       gen(rd());
+    std::random_device                          rd;
+    std::mt19937                                gen(rd());
     std::uniform_int_distribution<unsigned int> distInt(1, 10);
-    std::uniform_real_distribution<double>  distFloat(0.0, 1.0);
-    std::uniform_real_distribution<double>  distDouble(0.0, 1.0);
+    std::uniform_real_distribution<double>      distFloat(0.0, 1.0);
+    std::uniform_real_distribution<double>      distDouble(0.0, 1.0);
 
     array2D1.resize(distInt(gen), distInt(gen));
 

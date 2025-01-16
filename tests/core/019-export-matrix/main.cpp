@@ -50,12 +50,12 @@ using Eigen3ColMatrix =
 template<vcl::uint ELEM_ID>
 void randomSelection(auto& tm)
 {
-    std::random_device rd;
-    std::mt19937       gen(rd());
+    std::random_device              rd;
+    std::mt19937                    gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
 
     for (auto& el : tm.template elements<ELEM_ID>()) {
-        bool sel = dis(gen);
+        bool sel      = dis(gen);
         el.selected() = sel;
     }
 }
@@ -105,7 +105,7 @@ void testVertexSelection(const auto& tm)
 
     vcl::uint i = 0;
     for (const auto& v : tm.vertices()) {
-        REQUIRE(sel[i] == v.selected());
+        REQUIRE((bool) sel[i] == v.selected());
         ++i;
     }
 }
@@ -123,69 +123,87 @@ TEMPLATE_TEST_CASE(
     TriMesh tm =
         vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    SECTION("Coordinates...") {
-        using ScalarType =
-            typename TriMesh::VertexType::CoordType::ScalarType;
+    SECTION("Coordinates...")
+    {
+        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
 
-        SECTION("Eigen Row Major") {
+        SECTION("Eigen Row Major")
+        {
             testCoordsMatrix<EigenRowMatrix<ScalarType>>(tm);
         }
-        SECTION("Eigen 3 Row Major") {
+        SECTION("Eigen 3 Row Major")
+        {
             testCoordsMatrix<Eigen3RowMatrix<ScalarType>>(tm);
         }
-        SECTION("Eigen Col Major") {
+        SECTION("Eigen Col Major")
+        {
             testCoordsMatrix<EigenColMatrix<ScalarType>>(tm);
         }
-        SECTION("Eigen 3 Col Major") {
+        SECTION("Eigen 3 Col Major")
+        {
             testCoordsMatrix<Eigen3ColMatrix<ScalarType>>(tm);
         }
-        SECTION("vcl::Array2") {
+        SECTION("vcl::Array2")
+        {
             testCoordsMatrix<vcl::Array2<ScalarType>>(tm);
         }
     }
 
-    SECTION("Triangles...") {
-        SECTION("Eigen Row Major") {
+    SECTION("Triangles...")
+    {
+        SECTION("Eigen Row Major")
+        {
             testTrianglesMatrix<EigenRowMatrix<vcl::uint>>(tm);
         }
-        SECTION("Eigen 3 Row Major") {
+        SECTION("Eigen 3 Row Major")
+        {
             testTrianglesMatrix<Eigen3RowMatrix<vcl::uint>>(tm);
         }
-        SECTION("Eigen Col Major") {
+        SECTION("Eigen Col Major")
+        {
             testTrianglesMatrix<EigenColMatrix<vcl::uint>>(tm);
         }
-        SECTION("Eigen 3 Col Major") {
+        SECTION("Eigen 3 Col Major")
+        {
             testTrianglesMatrix<Eigen3ColMatrix<vcl::uint>>(tm);
         }
-        SECTION("vcl::Array2") {
+        SECTION("vcl::Array2")
+        {
             testTrianglesMatrix<vcl::Array2<vcl::uint>>(tm);
         }
     }
 
-    SECTION("Vertex selection...") {
+    SECTION("Vertex selection...")
+    {
         randomSelection<vcl::ElemId::VERTEX>(tm);
 
-        SECTION("Eigen Vector<vcl::uint>") {
+        SECTION("Eigen Vector<vcl::uint>")
+        {
             testVertexSelection<Eigen::VectorX<vcl::uint>>(tm);
         }
 
-        SECTION("Eigen Vector<bool>") {
+        SECTION("Eigen Vector<bool>")
+        {
             testVertexSelection<Eigen::VectorX<bool>>(tm);
         }
 
-        SECTION("std vector<vcl::uint>") {
+        SECTION("std vector<vcl::uint>")
+        {
             testVertexSelection<std::vector<vcl::uint>>(tm);
         }
 
-        SECTION("std vector<char>") {
+        SECTION("std vector<char>")
+        {
             testVertexSelection<std::vector<char>>(tm);
         }
 
-        SECTION("vcl::Vector<vcl::uint>") {
+        SECTION("vcl::Vector<vcl::uint>")
+        {
             testVertexSelection<vcl::Vector<vcl::uint, -1>>(tm);
         }
 
-        SECTION("vcl::Vector<char>") {
+        SECTION("vcl::Vector<char>")
+        {
             testVertexSelection<vcl::Vector<char, -1>>(tm);
         }
     }
