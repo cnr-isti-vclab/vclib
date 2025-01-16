@@ -492,6 +492,48 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 }
 
 /**
+ * @brief Get a \#E Vector of integers containing the colors of the elements
+ * identified by `ELEM_ID` of a Mesh. The function is templated on the Vector
+ * itself. The color is packed in a single 32 bit value using the provided
+ * format.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-element colors.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi EC =
+ *     vcl::elementColorsVector<ElemId::VERTEX, Eigen::VectorXi>(
+ *         myMesh, Color::Format::RGBA);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @tparam ELEM_ID: the ID of the element.
+ * @param[in] mesh: input mesh
+ * @return \#E vector of integers (element colors)
+ */
+template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
+Vect elementColorsVector(const MeshType& mesh, Color::Format::Enum colorFormat)
+{
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    Vect eCV(mesh.template number<ELEM_ID>());
+
+    elementColorsToBuffer<ELEM_ID>(mesh, eCV.data(), colorFormat);
+
+    return eCV;
+}
+
+/**
  * @brief Get a \#V*4 Matrix of integers containing the colors of the vertices
  * of a Mesh. The function is templated on the Matrix itself.
  *
@@ -519,6 +561,40 @@ template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexColorsMatrix(const MeshType& mesh)
 {
     return elementColorsMatrix<ElemId::VERTEX, Matrix>(mesh);
+}
+
+/**
+ * @brief Get a \#V Vector of integers containing the colors of the vertices
+ * of a Mesh. The function is templated on the Vector itself. The color is
+ * packed in a single 32 bit value using the provided format.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-vertex colors.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi VC =
+ *     vcl::vertexColorsVector<Eigen::VectorXi>(
+ *         myMesh, Color::Format::RGBA);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V vector of integers (vertex colors)
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect vertexColorsVector(const MeshType& mesh, Color::Format::Enum colorFormat)
+{
+    return elementColorsVector<ElemId::VERTEX, Vect>(mesh, colorFormat);
 }
 
 /**
@@ -552,6 +628,40 @@ Matrix faceColorsMatrix(const MeshType& mesh)
 }
 
 /**
+ * @brief Get a \#F Vector of integers containing the colors of the faces
+ * of a Mesh. The function is templated on the Vector itself. The color is
+ * packed in a single 32 bit value using the provided format.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-vertex colors.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi FC =
+ *     vcl::faceColorsVector<Eigen::VectorXi>(
+ *         myMesh, Color::Format::RGBA);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#F vector of integers (face colors)
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect faceColorsVector(const MeshType& mesh, Color::Format::Enum colorFormat)
+{
+    return elementColorsVector<ElemId::FACE, Vect>(mesh, colorFormat);
+}
+
+/**
  * @brief Get a \#E Vector of scalars containing the quality of the elements
  * identified by `ELEM_ID` of a Mesh. The function is templated on the Vector
  * itself.
@@ -577,7 +687,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  *
  * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
- * @return \#V vector of scalars (element quality)
+ * @return \#E vector of scalars (element quality)
  */
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)

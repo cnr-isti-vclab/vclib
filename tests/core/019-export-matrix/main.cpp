@@ -199,6 +199,54 @@ void testVertColorsMatrix(const auto& tm)
     }
 }
 
+template<typename VectorType>
+void testVertColorsVector(const auto& tm)
+{
+    auto vertColors =
+        vcl::vertexColorsVector<VectorType>(tm, vcl::Color::Format::RGBA);
+
+    REQUIRE(vertColors.size() == tm.vertexNumber());
+
+    vcl::uint i = 0;
+    for (const auto& c : tm.vertices() | vcl::views::colors) {
+        REQUIRE(vertColors[i] == c.rgba());
+        ++i;
+    }
+}
+
+template<typename MatrixType>
+void testFaceColorsMatrix(const auto& tm)
+{
+    auto faceColors = vcl::faceColorsMatrix<MatrixType>(tm);
+
+    REQUIRE(faceColors.rows() == tm.faceNumber());
+    REQUIRE(faceColors.cols() == 4);
+
+    vcl::uint i = 0;
+    for (const auto& c : tm.faces() | vcl::views::colors) {
+        REQUIRE(faceColors(i, 0) == c.red());
+        REQUIRE(faceColors(i, 1) == c.green());
+        REQUIRE(faceColors(i, 2) == c.blue());
+        REQUIRE(faceColors(i, 3) == c.alpha());
+        ++i;
+    }
+}
+
+template<typename VectorType>
+void testFaceColorsVector(const auto& tm)
+{
+    auto faceColors =
+        vcl::faceColorsVector<VectorType>(tm, vcl::Color::Format::RGBA);
+
+    REQUIRE(faceColors.size() == tm.faceNumber());
+
+    vcl::uint i = 0;
+    for (const auto& c : tm.faces() | vcl::views::colors) {
+        REQUIRE(faceColors[i] == c.rgba());
+        ++i;
+    }
+}
+
 TEMPLATE_TEST_CASE(
     "Export TriMesh to Matrix",
     "",
@@ -411,6 +459,56 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Array2")
         {
             testVertColorsMatrix<vcl::Array2<uint8_t>>(tm);
+        }
+        SECTION("Eigen Vector<vcl::uint>")
+        {
+            testVertColorsVector<Eigen::VectorX<vcl::uint>>(tm);
+        }
+        SECTION("std vector<vcl::uint>")
+        {
+            testVertColorsVector<std::vector<vcl::uint>>(tm);
+        }
+        SECTION("vcl::Vector<vcl::uint>")
+        {
+            testVertColorsVector<vcl::Vector<vcl::uint, -1>>(tm);
+        }
+    }
+
+    SECTION("Face Colors...")
+    {
+        randomColor<vcl::ElemId::FACE>(tm);
+
+        SECTION("Eigen Row Major")
+        {
+            testFaceColorsMatrix<EigenRowMatrix<uint8_t>>(tm);
+        }
+        SECTION("Eigen 3 Row Major")
+        {
+            testFaceColorsMatrix<Eigen4RowMatrix<uint8_t>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testFaceColorsMatrix<EigenColMatrix<uint8_t>>(tm);
+        }
+        SECTION("Eigen 3 Col Major")
+        {
+            testFaceColorsMatrix<Eigen4ColMatrix<uint8_t>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testFaceColorsMatrix<vcl::Array2<uint8_t>>(tm);
+        }
+        SECTION("Eigen Vector<vcl::uint>")
+        {
+            testFaceColorsVector<Eigen::VectorX<vcl::uint>>(tm);
+        }
+        SECTION("std vector<vcl::uint>")
+        {
+            testFaceColorsVector<std::vector<vcl::uint>>(tm);
+        }
+        SECTION("vcl::Vector<vcl::uint>")
+        {
+            testFaceColorsVector<vcl::Vector<vcl::uint, -1>>(tm);
         }
     }
 }
