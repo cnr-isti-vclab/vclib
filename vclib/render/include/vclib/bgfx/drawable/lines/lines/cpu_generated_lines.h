@@ -10,8 +10,8 @@ namespace vcl::lines {
         std::vector<float>                  mVertices;
         std::vector<uint32_t>               mIndexes;
 
-        bgfx::DynamicVertexBufferHandle     mVerticesBH;
-        bgfx::DynamicIndexBufferHandle      mIndexesBH;
+        bgfx::DynamicVertexBufferHandle     mVerticesBH     = BGFX_INVALID_HANDLE;
+        bgfx::DynamicIndexBufferHandle      mIndexesBH      = BGFX_INVALID_HANDLE;
 
         public:
             CPUGeneratedLines() = default;

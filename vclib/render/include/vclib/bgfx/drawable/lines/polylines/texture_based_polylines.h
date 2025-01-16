@@ -10,19 +10,19 @@ namespace vcl::lines {
         std::vector<float>                  mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
         std::vector<uint32_t>               mIndexes = {0, 3, 1, 0, 2, 3};
 
-        bgfx::VertexBufferHandle            mVerticesBH;
-        bgfx::IndexBufferHandle             mIndexesBH;
-        bgfx::DynamicVertexBufferHandle     mPointsBH;
+        bgfx::VertexBufferHandle            mVerticesBH             = BGFX_INVALID_HANDLE;
+        bgfx::IndexBufferHandle             mIndexesBH              = BGFX_INVALID_HANDLE;
+        bgfx::DynamicVertexBufferHandle     mPointsBH               = BGFX_INVALID_HANDLE;
 
-        bgfx::IndirectBufferHandle          mSegmentsIndirectBH;
-        bgfx::IndirectBufferHandle          mJoinesIndirectBH;
+        bgfx::IndirectBufferHandle          mSegmentsIndirectBH     = BGFX_INVALID_HANDLE;
+        bgfx::IndirectBufferHandle          mJoinesIndirectBH       = BGFX_INVALID_HANDLE;
 
-        bgfx::TextureHandle                 mSegmentsTextureBH;
-        bgfx::TextureHandle                 mJoinesTextureBH;
+        bgfx::TextureHandle                 mSegmentsTextureBH      = BGFX_INVALID_HANDLE;
+        bgfx::TextureHandle                 mJoinesTextureBH        = BGFX_INVALID_HANDLE;
             
-        bgfx::ProgramHandle                 mJoinesPH;      
-        bgfx::ProgramHandle                 mComputeTexturePH; 
-        bgfx::UniformHandle                 mComputeDataUH;        
+        bgfx::ProgramHandle                 mJoinesPH               = BGFX_INVALID_HANDLE;      
+        bgfx::ProgramHandle                 mComputeTexturePH       = BGFX_INVALID_HANDLE; 
+        bgfx::UniformHandle                 mComputeDataUH          = BGFX_INVALID_HANDLE;        
 
         public:
             TextureBasedPolylines() = default;

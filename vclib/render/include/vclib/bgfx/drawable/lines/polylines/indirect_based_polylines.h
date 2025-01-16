@@ -8,15 +8,15 @@ namespace vcl::lines {
         std::vector<float>                  mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
         std::vector<uint32_t>               mIndexes = {0, 3, 1, 0, 2, 3};
 
-        bgfx::VertexBufferHandle            mVerticesBH;
-        bgfx::IndexBufferHandle             mIndexesBH;
-        bgfx::DynamicVertexBufferHandle     mPointsBH;
-        bgfx::IndirectBufferHandle          mSegmentsIndirectBH;
-        bgfx::IndirectBufferHandle          mJoinesIndirectBH;
+        bgfx::VertexBufferHandle            mVerticesBH             = BGFX_INVALID_HANDLE;
+        bgfx::IndexBufferHandle             mIndexesBH              = BGFX_INVALID_HANDLE;
+        bgfx::DynamicVertexBufferHandle     mPointsBH               = BGFX_INVALID_HANDLE;
+        bgfx::IndirectBufferHandle          mSegmentsIndirectBH     = BGFX_INVALID_HANDLE;
+        bgfx::IndirectBufferHandle          mJoinesIndirectBH       = BGFX_INVALID_HANDLE;
 
-        bgfx::ProgramHandle                 mJoinesPH;
-        bgfx::ProgramHandle                 mComputeIndirectPH;            
-        bgfx::UniformHandle                 mComputeIndirectDataUH;
+        bgfx::ProgramHandle                 mJoinesPH               = BGFX_INVALID_HANDLE;
+        bgfx::ProgramHandle                 mComputeIndirectPH      = BGFX_INVALID_HANDLE;            
+        bgfx::UniformHandle                 mComputeIndirectDataUH  = BGFX_INVALID_HANDLE;
 
         public:
             IndirectBasedPolylines() = default;

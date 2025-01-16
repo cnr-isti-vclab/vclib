@@ -55,19 +55,17 @@ namespace vcl::lines {
     }
 
     DrawableLines::DrawableLines(const std::string& vs_name,  const std::string& fs_name) {
-        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_MESH);
+        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_CPU_GENERATED_LINES);
         assert(bgfx::isValid(mLinesPH));
     }
 
     DrawableLines::DrawableLines(const DrawableLines& other) {
-        mLinesPH = other.mLinesPH;
-        mSettings = other.mSettings;
+        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_CPU_GENERATED_LINES);
         assert(bgfx::isValid(mLinesPH));
     }
 
     DrawableLines::DrawableLines(DrawableLines&& other) {
-        mLinesPH = other.mLinesPH;
-        mSettings = other.mSettings;
+        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_CPU_GENERATED_LINES);
         assert(bgfx::isValid(mLinesPH));
     }
 

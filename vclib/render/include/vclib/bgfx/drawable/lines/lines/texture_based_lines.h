@@ -10,15 +10,15 @@ namespace vcl::lines {
         std::vector<uint32_t>               mIndexes = {0, 1, 2, 1, 3, 2};
         std::vector<LinesVertex>            mPoints;
 
-        bgfx::TextureHandle                 mTextureBH;
-        bgfx::DynamicVertexBufferHandle     mPointsBH;
-        bgfx::ProgramHandle                 mComputeTexturePH;
+        bgfx::TextureHandle                 mTextureBH          = BGFX_INVALID_HANDLE;
+        bgfx::DynamicVertexBufferHandle     mPointsBH           = BGFX_INVALID_HANDLE;
+        bgfx::ProgramHandle                 mComputeTexturePH   = BGFX_INVALID_HANDLE;
 
-        bgfx::IndirectBufferHandle          mIndirectBH;      
-        bgfx::UniformHandle                 mIndirectDataUH;
+        bgfx::IndirectBufferHandle          mIndirectBH         = BGFX_INVALID_HANDLE;      
+        bgfx::UniformHandle                 mIndirectDataUH     = BGFX_INVALID_HANDLE;
 
-        bgfx::VertexBufferHandle            mVerticesBH;
-        bgfx::IndexBufferHandle             mIndexesBH;
+        bgfx::VertexBufferHandle            mVerticesBH         = BGFX_INVALID_HANDLE;
+        bgfx::IndexBufferHandle             mIndexesBH          = BGFX_INVALID_HANDLE;
 
         public:
             TextureBasedLines() = default;

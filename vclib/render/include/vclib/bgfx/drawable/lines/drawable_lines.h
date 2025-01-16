@@ -35,7 +35,7 @@ namespace vcl::lines {
         protected: 
             bool mVisible = true;
 
-            bgfx::ProgramHandle         mLinesPH;
             LinesSettings               mSettings;
+            bgfx::ProgramHandle         mLinesPH = BGFX_INVALID_HANDLE;
     };
 }

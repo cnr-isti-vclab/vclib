@@ -10,10 +10,10 @@ namespace vcl::lines {
         bgfx::InstanceDataBuffer    mSegmentsInstanceDB;
         bgfx::InstanceDataBuffer    mJoinsInstanceDB;
 
-        bgfx::VertexBufferHandle    mVerticesBH;
-        bgfx::IndexBufferHandle     mIndexesBH;
+        bgfx::VertexBufferHandle    mVerticesBH           = BGFX_INVALID_HANDLE;
+        bgfx::IndexBufferHandle     mIndexesBH            = BGFX_INVALID_HANDLE;
 
-        bgfx::ProgramHandle         mJoinesPH;
+        bgfx::ProgramHandle         mJoinesPH             = BGFX_INVALID_HANDLE;
 
         public:
             InstancingBasedPolylines() = default;

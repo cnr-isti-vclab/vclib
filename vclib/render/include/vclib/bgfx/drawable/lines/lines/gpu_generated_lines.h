@@ -6,10 +6,10 @@ namespace vcl::lines {
 
         std::vector<LinesVertex>            mPoints;
 
-        bgfx::DynamicIndexBufferHandle      mIndexesBH;
-        bgfx::DynamicVertexBufferHandle     mVerticesBH;
-        bgfx::DynamicVertexBufferHandle     mPointsBH;
-        bgfx::ProgramHandle                 mComputeVerticesPH;
+        bgfx::DynamicIndexBufferHandle      mIndexesBH          = BGFX_INVALID_HANDLE;
+        bgfx::DynamicVertexBufferHandle     mVerticesBH         = BGFX_INVALID_HANDLE;
+        bgfx::DynamicVertexBufferHandle     mPointsBH           = BGFX_INVALID_HANDLE;
+        bgfx::ProgramHandle                 mComputeVerticesPH  = BGFX_INVALID_HANDLE;
 
         public:
             GPUGeneratedLines() = default;
