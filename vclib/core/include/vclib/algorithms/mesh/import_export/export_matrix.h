@@ -367,17 +367,19 @@ Vect faceSelectionVector(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
-
     Matrix eNM(mesh.template number<ELEM_ID>(), 3);
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        for (uint j = 0; j < 3; ++j) {
-            eNM(i, j) = e.normal()[j];
+    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
         }
-        ++i;
     }
+
+    elementNormalsToBuffer<ELEM_ID>(mesh, eNM.data(), stg);
+
     return eNM;
 }
 

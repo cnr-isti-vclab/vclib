@@ -110,6 +110,54 @@ void testVertexSelection(const auto& tm)
     }
 }
 
+template<typename VectorType>
+void testFaceSelection(const auto& tm)
+{
+    auto sel = vcl::faceSelectionVector<VectorType>(tm);
+
+    REQUIRE(sel.size() == tm.faceNumber());
+
+    vcl::uint i = 0;
+    for (const auto& f : tm.faces()) {
+        REQUIRE((bool) sel[i] == f.selected());
+        ++i;
+    }
+}
+
+template<typename MatrixType>
+void testVertNormalsMatrix(const auto& tm)
+{
+    auto vertNormals = vcl::vertexNormalsMatrix<MatrixType>(tm);
+
+    REQUIRE(vertNormals.rows() == tm.vertexNumber());
+    REQUIRE(vertNormals.cols() == 3);
+
+    vcl::uint i = 0;
+    for (const auto& n : tm.vertices() | vcl::views::normals) {
+        REQUIRE(vertNormals(i, 0) == n.x());
+        REQUIRE(vertNormals(i, 1) == n.y());
+        REQUIRE(vertNormals(i, 2) == n.z());
+        ++i;
+    }
+}
+
+template<typename MatrixType>
+void testFaceNormalsMatrix(const auto& tm)
+{
+    auto faceNormals = vcl::faceNormalsMatrix<MatrixType>(tm);
+
+    REQUIRE(faceNormals.rows() == tm.faceNumber());
+    REQUIRE(faceNormals.cols() == 3);
+
+    vcl::uint i = 0;
+    for (const auto& n : tm.faces() | vcl::views::normals) {
+        REQUIRE(faceNormals(i, 0) == n.x());
+        REQUIRE(faceNormals(i, 1) == n.y());
+        REQUIRE(faceNormals(i, 2) == n.z());
+        ++i;
+    }
+}
+
 TEMPLATE_TEST_CASE(
     "Export TriMesh to Matrix",
     "",
@@ -205,6 +253,97 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Vector<char>")
         {
             testVertexSelection<vcl::Vector<char, -1>>(tm);
+        }
+    }
+
+    SECTION("Face selection...")
+    {
+        randomSelection<vcl::ElemId::FACE>(tm);
+
+        SECTION("Eigen Vector<vcl::uint>")
+        {
+            testFaceSelection<Eigen::VectorX<vcl::uint>>(tm);
+        }
+
+        SECTION("Eigen Vector<bool>")
+        {
+            testFaceSelection<Eigen::VectorX<bool>>(tm);
+        }
+
+        SECTION("std vector<vcl::uint>")
+        {
+            testFaceSelection<std::vector<vcl::uint>>(tm);
+        }
+
+        SECTION("std vector<char>")
+        {
+            testFaceSelection<std::vector<char>>(tm);
+        }
+
+        SECTION("vcl::Vector<vcl::uint>")
+        {
+            testFaceSelection<vcl::Vector<vcl::uint, -1>>(tm);
+        }
+
+        SECTION("vcl::Vector<char>")
+        {
+            testFaceSelection<vcl::Vector<char, -1>>(tm);
+        }
+    }
+
+    SECTION("Vertex Normals...")
+    {
+        using ScalarType = typename TriMesh::VertexType::NormalType::ScalarType;
+
+        vcl::updatePerVertexNormals(tm);
+
+        SECTION("Eigen Row Major")
+        {
+            testVertNormalsMatrix<EigenRowMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen 3 Row Major")
+        {
+            testVertNormalsMatrix<Eigen3RowMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testVertNormalsMatrix<EigenColMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen 3 Col Major")
+        {
+            testVertNormalsMatrix<Eigen3ColMatrix<ScalarType>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testVertNormalsMatrix<vcl::Array2<ScalarType>>(tm);
+        }
+    }
+
+    SECTION("Face Normals...")
+    {
+        using ScalarType = typename TriMesh::FaceType::NormalType::ScalarType;
+
+        vcl::updatePerFaceNormals(tm);
+
+        SECTION("Eigen Row Major")
+        {
+            testFaceNormalsMatrix<EigenRowMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen 3 Row Major")
+        {
+            testFaceNormalsMatrix<Eigen3RowMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testFaceNormalsMatrix<EigenColMatrix<ScalarType>>(tm);
+        }
+        SECTION("Eigen 3 Col Major")
+        {
+            testFaceNormalsMatrix<Eigen3ColMatrix<ScalarType>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testFaceNormalsMatrix<vcl::Array2<ScalarType>>(tm);
         }
     }
 }

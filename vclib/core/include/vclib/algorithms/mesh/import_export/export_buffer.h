@@ -61,10 +61,11 @@ void vertexCoordsToBuffer(
     }
     else {
         uint i = 0;
+        const uint VERT_NUM = mesh.vertexNumber();
         for (const auto& c : mesh.vertices() | views::coords) {
-            buffer[0 * mesh.vertexNumber() + i] = c.x();
-            buffer[1 * mesh.vertexNumber() + i] = c.y();
-            buffer[2 * mesh.vertexNumber() + i] = c.z();
+            buffer[0 * VERT_NUM + i] = c.x();
+            buffer[1 * VERT_NUM + i] = c.y();
+            buffer[2 * VERT_NUM + i] = c.z();
             ++i;
         }
     }
@@ -104,10 +105,11 @@ void trianglesToBuffer(
     }
     else {
         uint i = 0;
+        const uint FACE_NUM = mesh.faceNumber();
         for (const auto& f : mesh.faces()) {
-            buffer[0 * mesh.faceNumber() + i] = f.vertexIndex(0);
-            buffer[1 * mesh.faceNumber() + i] = f.vertexIndex(1);
-            buffer[2 * mesh.faceNumber() + i] = f.vertexIndex(2);
+            buffer[0 * FACE_NUM + i] = f.vertexIndex(0);
+            buffer[1 * FACE_NUM + i] = f.vertexIndex(1);
+            buffer[2 * FACE_NUM + i] = f.vertexIndex(2);
             ++i;
         }
     }
@@ -228,6 +230,102 @@ template<EdgeMeshConcept MeshType>
 void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
 {
     elementSelectionToBuffer<ElemId::EDGE>(mesh, buffer);
+}
+
+/**
+ * @brief Export the element normals identified by `ELEM_ID` of a mesh to a
+ * buffer.
+ *
+ * This function exports the element normals identified by `ELEM_ID` of a mesh
+ * to a buffer. The buffer must be preallocated with the correct size (number of
+ * elements times 3).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementNormalsToBuffer(
+    const MeshType&         mesh,
+    auto*                   buffer,
+    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+{
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
+
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        uint i = 0;
+        for (const auto& n :
+             mesh.template elements<ELEM_ID>() | views::normals) {
+            buffer[i * 3 + 0] = n.x();
+            buffer[i * 3 + 1] = n.y();
+            buffer[i * 3 + 2] = n.z();
+            ++i;
+        }
+    }
+    else {
+        uint       i        = 0;
+        const uint ELEM_NUM = mesh.template number<ELEM_ID>();
+        for (const auto& n :
+             mesh.template elements<ELEM_ID>() | views::normals) {
+            buffer[0 * ELEM_NUM + i] = n.x();
+            buffer[1 * ELEM_NUM + i] = n.y();
+            buffer[2 * ELEM_NUM + i] = n.z();
+            ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export the vertex normals of a mesh to a buffer.
+ *
+ * This function exports the vertex normals of a mesh to a buffer. The buffer
+ * must be preallocated with the correct size (number of vertices times 3).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ */
+template<MeshConcept MeshType>
+void vertexNormalsToBuffer(
+    const MeshType&         mesh,
+    auto*                   buffer,
+    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+{
+    elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage);
+}
+
+/**
+ * @brief Export the face normals of a mesh to a buffer.
+ *
+ * This function exports the face normals of a mesh to a buffer. The buffer must
+ * be preallocated with the correct size (number of faces times 3).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ */
+template<FaceMeshConcept MeshType>
+void faceNormalsToBuffer(
+    const MeshType&         mesh,
+    auto*                   buffer,
+    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+{
+    elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage);
 }
 
 } // namespace vcl
