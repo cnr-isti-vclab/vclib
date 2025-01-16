@@ -365,7 +365,7 @@ void elementColorsToBuffer(
             buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
             buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
             buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
-            buffer[i * 4 + 2] = R_INT ? c.alpha() : c.alphaF();
+            buffer[i * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
             ++i;
         }
     }

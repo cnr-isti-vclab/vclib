@@ -477,13 +477,17 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 
     Matrix eCM(mesh.template number<ELEM_ID>(), 4);
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        for (uint j = 0; j < 4; ++j) {
-            eCM(i, j) = e.color()[j];
+    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
         }
-        ++i;
     }
+
+    elementColorsToBuffer<ELEM_ID>(mesh, eCM.data(), stg);
+
     return eCM;
 }
 

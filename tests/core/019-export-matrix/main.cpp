@@ -38,12 +38,20 @@ using Eigen3RowMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, 3, Eigen::RowMajor>;
 
 template<typename ScalarType>
+using Eigen4RowMatrix =
+    Eigen::Matrix<ScalarType, Eigen::Dynamic, 4, Eigen::RowMajor>;
+
+template<typename ScalarType>
 using EigenColMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
 
 template<typename ScalarType>
 using Eigen3ColMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, 3, Eigen::ColMajor>;
+
+template<typename ScalarType>
+using Eigen4ColMatrix =
+    Eigen::Matrix<ScalarType, Eigen::Dynamic, 4, Eigen::ColMajor>;
 
 // utility functions
 
@@ -57,6 +65,21 @@ void randomSelection(auto& tm)
     for (auto& el : tm.template elements<ELEM_ID>()) {
         bool sel      = dis(gen);
         el.selected() = sel;
+    }
+}
+
+template<vcl::uint ELEM_ID>
+void randomColor(auto& tm)
+{
+    std::random_device              rd;
+    std::mt19937                    gen(rd());
+    std::uniform_int_distribution<> dis(0, 255);
+
+    tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::COLOR>();
+
+    for (auto& el : tm.template elements<ELEM_ID>()) {
+        bool sel      = dis(gen);
+        el.color() = vcl::Color(dis(gen), dis(gen), dis(gen), dis(gen));
     }
 }
 
@@ -154,6 +177,24 @@ void testFaceNormalsMatrix(const auto& tm)
         REQUIRE(faceNormals(i, 0) == n.x());
         REQUIRE(faceNormals(i, 1) == n.y());
         REQUIRE(faceNormals(i, 2) == n.z());
+        ++i;
+    }
+}
+
+template<typename MatrixType>
+void testVertColorsMatrix(const auto& tm)
+{
+    auto vertColors = vcl::vertexColorsMatrix<MatrixType>(tm);
+
+    REQUIRE(vertColors.rows() == tm.vertexNumber());
+    REQUIRE(vertColors.cols() == 4);
+
+    vcl::uint i = 0;
+    for (const auto& c : tm.vertices() | vcl::views::colors) {
+        REQUIRE(vertColors(i, 0) == c.red());
+        REQUIRE(vertColors(i, 1) == c.green());
+        REQUIRE(vertColors(i, 2) == c.blue());
+        REQUIRE(vertColors(i, 3) == c.alpha());
         ++i;
     }
 }
@@ -344,6 +385,32 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Array2")
         {
             testFaceNormalsMatrix<vcl::Array2<ScalarType>>(tm);
+        }
+    }
+
+    SECTION("Vertex Colors...")
+    {
+        randomColor<vcl::ElemId::VERTEX>(tm);
+
+        SECTION("Eigen Row Major")
+        {
+            testVertColorsMatrix<EigenRowMatrix<uint8_t>>(tm);
+        }
+        SECTION("Eigen 3 Row Major")
+        {
+            testVertColorsMatrix<Eigen4RowMatrix<uint8_t>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testVertColorsMatrix<EigenColMatrix<uint8_t>>(tm);
+        }
+        SECTION("Eigen 3 Col Major")
+        {
+            testVertColorsMatrix<Eigen4ColMatrix<uint8_t>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testVertColorsMatrix<vcl::Array2<uint8_t>>(tm);
         }
     }
 }
