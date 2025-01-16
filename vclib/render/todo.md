@@ -13,7 +13,7 @@
 - BGFX
   - [ ] Fix FIXME #1 on example-01-viewer-qt
   - [ ] Fix FIXME #2 on example-04-hello-triangle-imgui-qt
-  - [ ] Fix 2 Qt windows with BGFX canvas.
+  - [X] Fix 2 Qt windows with BGFX canvas.
   - [X] Library shaders should be built as headers
   - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
   - [ ] assets and shaders should be compiled in headers that are in paths like
@@ -51,6 +51,7 @@
   - [X] implement offscreen color rendering for the snapshot function
   - [X] implement 'offscreen' rendering on legacy OpenGL
   - [X] implement imgui platform backend for Qt
+  - [X] check BGFX framebuffer creation for multiple windows and offscreen rendering
   - [ ] fix timings in imgui qt platform backend
   - [ ] solve key modifiers inconsistency when using imgui and glfw
   - [X] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown (SOLVED MISTERIOUSLY)
