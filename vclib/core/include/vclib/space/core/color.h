@@ -48,6 +48,25 @@ class Color : public Point4<uint8_t>
 {
 public:
     /**
+     * @brief Color representation enumeration.
+     *
+     * The color representation enumeration is used to convert the color from/to
+     * different representations. The notation used tells the range of the
+     * components in the representation.
+     *
+     * For example, the INT_0_255 format means that the components are integers
+     * in the range [0-255], while the FLOAT_0_1 format means that the
+     * components are floating points in the range [0-1].
+     *
+     * This enumeration is not used directly in this class, but it is useful
+     * in conversion functions that ask for the representation of the color.
+     */
+    struct Representation
+    {
+        enum Enum {INT_0_255, FLOAT_0_1};
+    };
+
+    /**
      * @brief Color format enumeration.
      *
      * The color format enumeration is used to convert the color from/to
@@ -268,6 +287,11 @@ public:
     uint32_t abgr() const
     {
         return *reinterpret_cast<const uint32_t*>(Point::data());
+    }
+
+    uint32_t argb() const
+    {
+        return (alpha() << 24) | (red() << 16) | (green() << 8) | blue();
     }
 
     uint32_t rgba() const

@@ -328,6 +328,108 @@ void faceNormalsToBuffer(
     elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage);
 }
 
+/**
+ * @brief Export the element colors identified by `ELEM_ID` of a mesh to a
+ * buffer having a value for each color component (RGBA).
+ *
+ * This function exports the element colors identified by `ELEM_ID` of a mesh
+ * to a buffer. The buffer must be preallocated with the correct size (number of
+ * elements times 4).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ * @param representation
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementColorsToBuffer(
+    const MeshType&             mesh,
+    auto*                       buffer,
+    MatrixStorageType::Enum     storage = MatrixStorageType::ROW_MAJOR,
+    Color::Representation::Enum representation =
+        Color::Representation::INT_0_255)
+{
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    const bool R_INT = representation == Color::Representation::INT_0_255;
+
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        uint i = 0;
+        for (const auto& c :
+             mesh.template elements<ELEM_ID>() | views::colors) {
+            buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
+            buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
+            buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
+            buffer[i * 4 + 2] = R_INT ? c.alpha() : c.alphaF();
+            ++i;
+        }
+    }
+    else {
+        uint       i        = 0;
+        const uint ELEM_NUM = mesh.template number<ELEM_ID>();
+        for (const auto& c :
+             mesh.template elements<ELEM_ID>() | views::colors) {
+            buffer[0 * ELEM_NUM + i] = R_INT ? c.red() : c.redF();
+            buffer[1 * ELEM_NUM + i] = R_INT ? c.green() : c.greenF();
+            buffer[2 * ELEM_NUM + i] = R_INT ? c.blue() : c.blueF();
+            buffer[3 * ELEM_NUM + i] = R_INT ? c.alpha() : c.alphaF();
+            ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export the element colors identified by `ELEM_ID` of a mesh to a
+ * buffer having a value for each color (the color is packed in a single 32 bit
+ * value using the provided format).
+ *
+ * This function exports the element colors identified by `ELEM_ID` of a mesh to
+ * a buffer. The buffer must be preallocated with the correct size (number of
+ * elements).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element indices of the mesh. This scenario is possible when
+ * the mesh has deleted elements. To be sure to have a direct correspondence,
+ * compact the element container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param colorFormat
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementColorsToBuffer(
+    const MeshType&             mesh,
+    auto*                       buffer,
+    Color::Format::Enum         colorFormat)
+{
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    uint i = 0;
+    for (const auto& c :
+         mesh.template elements<ELEM_ID>() | views::colors) {
+        switch(colorFormat){
+        case Color::Format::ABGR:
+            buffer[i] = c.abgr();
+            break;
+        case Color::Format::ARGB:
+            buffer[i] = c.argb();
+            break;
+        case Color::Format::RGBA:
+            buffer[i] = c.rgba();
+            break;
+        case Color::Format::BGRA:
+            buffer[i] = c.bgra();
+            break;
+        }
+        ++i;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
