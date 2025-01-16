@@ -22,8 +22,9 @@
 
 #include "get_drawable_mesh.h"
 
-#include <QApplication>
 #include <vclib/qt/viewer_widget.h>
+
+#include <QApplication>
 
 int main(int argc, char** argv)
 {

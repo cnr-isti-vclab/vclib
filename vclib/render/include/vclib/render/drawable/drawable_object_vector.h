@@ -23,29 +23,30 @@
 #ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
 #define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
 
-#include <vclib/render/interfaces/drawable_object_i.h>
+#include "drawable_object.h"
+
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 namespace vcl {
 
 class DrawableObjectVector :
-        public PolymorphicObjectVector<DrawableObjectI>,
-        public DrawableObjectI
+        public PolymorphicObjectVector<DrawableObject>,
+        public DrawableObject
 {
-    using Base = PolymorphicObjectVector<DrawableObjectI>;
+    using Base = PolymorphicObjectVector<DrawableObject>;
 
     bool mVisible = true;
 
 public:
     DrawableObjectVector() = default;
 
-    // DrawableObjectI interface
-    void                             draw(uint viewId) const;
-    Box3d                            boundingBox() const;
-    std::shared_ptr<DrawableObjectI> clone() const;
-    bool                             isVisible() const;
-    void                             setVisibility(bool vis);
+    // DrawableObject interface
+    void                            draw(uint viewId) const;
+    Box3d                           boundingBox() const;
+    std::shared_ptr<DrawableObject> clone() const;
+    bool                            isVisible() const;
+    void                            setVisibility(bool vis);
 
 private:
     uint firstVisibleObject() const;

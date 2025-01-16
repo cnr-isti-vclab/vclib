@@ -22,37 +22,47 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/qt_imgui/viewer_widget_imgui.h>
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/canvas.h>
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/render_app.h>
 
 #include <imgui.h>
 
 #include <QApplication>
 
-class ImguiDemo : public vcl::qt::ViewerWidgetImgui
+template<typename DerivedRenderApp>
+class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
 {
+    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+
 public:
-    ImguiDemo(const std::string& windowTitle) :
-            vcl::qt::ViewerWidgetImgui(windowTitle)
-    {
-    }
+    using ParentDrawer::ParentDrawer;
 
-    void draw() override
+    virtual void onDraw(vcl::uint viewId) override
     {
-        // imgui demo window
-        ImGui::ShowDemoWindow();
-
         // draw the scene
-        ViewerWidgetImgui::draw();
+        ParentDrawer::onDraw(viewId);
+
+        if (!ParentDrawer::isWindowMinimized()) {
+            // imgui demo window
+            ImGui::ShowDemoWindow();
+        }
     }
 };
 
 int main(int argc, char** argv)
 {
-    // FIXME #2 - Crash when closing window on Ubuntu
-
     QApplication app(argc, argv);
 
-    ImguiDemo tw("Viewer ImGui Qt");
+    using ImGuiDemo = vcl::RenderApp<
+        vcl::qt::WidgetManager,
+        vcl::Canvas,
+        DemoImGuiDrawer,
+        vcl::ViewerDrawer>;
+
+    ImGuiDemo tw("Viewer ImGui Qt");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
