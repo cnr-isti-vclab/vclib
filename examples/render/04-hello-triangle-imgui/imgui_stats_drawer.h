@@ -15,6 +15,8 @@
     #include <OpenGL/gl.h>
     #else
     #ifdef _WIN32
+    // dirty trick to avoid including headers distributed by Khronos
+    #define GL_SHADING_LANGUAGE_VERSION 0x8B8C
     #include <windows.h>
     #endif
     #include <GL/gl.h>
