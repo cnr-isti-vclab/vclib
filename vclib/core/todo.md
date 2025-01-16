@@ -25,6 +25,9 @@
     - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:
     - [ ] MeshInfo should not use its own enums for elements and components
+- Views:
+  - [ ] Add elements<ELEM_ID> view 
+  - [ ] Move indices view from views/mesh/elements/element.h to views/mesh/indices.h
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Iterators:

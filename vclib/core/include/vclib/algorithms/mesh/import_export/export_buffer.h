@@ -146,6 +146,90 @@ void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
     }
 }
 
+/**
+ * @brief Export the selection status of the vertices of a mesh to a buffer.
+ *
+ * This function exports the selection status of the vertices of a mesh to a
+ * buffer. The buffer must be preallocated with the correct size (number of
+ * elements).
+ *
+ * Usage example with std::vector<bool>:
+ *
+ * @code{.cpp}
+ * std::vector<bool> vec(myMesh.vertexNumber());
+ * vcl::vertexSelectionToBuffer(myMesh, vec.data());
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ */
+template<MeshConcept MeshType>
+void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
+{
+    elementSelectionToBuffer<ElemId::VERTEX>(mesh, buffer);
+}
+
+/**
+ * @brief Export the selection status of the faces of a mesh to a buffer.
+ *
+ * This function exports the selection status of the faces of a mesh to a
+ * buffer. The buffer must be preallocated with the correct size (number of
+ * elements).
+ *
+ * Usage example with std::vector<bool>:
+ *
+ * @code{.cpp}
+ * std::vector<bool> vec(myMesh.faceNumber());
+ * vcl::faceSelectionToBuffer(myMesh, vec.data());
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
+{
+    elementSelectionToBuffer<ElemId::FACE>(mesh, buffer);
+}
+
+/**
+ * @brief Export the selection status of the edges of a mesh to a buffer.
+ *
+ * This function exports the selection status of the edges of a mesh to a
+ * buffer. The buffer must be preallocated with the correct size (number of
+ * elements).
+ *
+ * Usage example with std::vector<bool>:
+ *
+ * @code{.cpp}
+ * std::vector<bool> vec(myMesh.edgeNumber());
+ * vcl::edgeSelectionToBuffer(myMesh, vec.data());
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ */
+template<EdgeMeshConcept MeshType>
+void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
+{
+    elementSelectionToBuffer<ElemId::EDGE>(mesh, buffer);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
