@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 910-viewer-imgui-qt)
+set(EXAMPLE_NAME 06-viewer-imgui-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings
