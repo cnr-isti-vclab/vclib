@@ -60,6 +60,17 @@ struct PrimitiveType
 };
 
 /**
+ * @brief A simple type that enumerates the main storage types for matrices (row
+ * or column major).
+ *
+ * @ingroup types
+ */
+struct MatrixStorageType
+{
+    enum Enum { ROW_MAJOR, COLUMN_MAJOR };
+};
+
+/**
  * @brief A simple utility class to represent a pointer with a value.
  *
  * Useful for iterators that return a pointer to a value, but the value is

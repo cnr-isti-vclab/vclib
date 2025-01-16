@@ -46,6 +46,7 @@ concept ColorConcept = requires (
     uint8_t                             u8,
     float                               f,
     typename RemoveRef<T>::Format::Enum fr) {
+    typename RemoveRef<T>::Representation;
     typename RemoveRef<T>::Format;
     typename RemoveRef<T>::ColorABGR;
     typename RemoveRef<T>::ColorMap;
