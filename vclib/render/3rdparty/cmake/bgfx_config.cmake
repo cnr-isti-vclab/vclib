@@ -342,10 +342,8 @@ function(build_bgfx_shaders_to_headers)
 
         if(NOT "${TYPE}" STREQUAL "")
             if ("${TYPE}" STREQUAL "COMPUTE")
-                message("===========if============")
                 set(VARYING_DEF_PATH)
             else()
-                message("===========else============")
                 set(VARYING_DEF_PATH "${ABSOLUTE_DIR_PATH}/varying.def.sc")
             endif()
             _bgfx_compile_shader_to_header(

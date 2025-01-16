@@ -3,36 +3,72 @@
 
 
 namespace vcl::lines {
-    CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth) :
-        DrawableLines(width, heigth, "lines/cpu_generated_lines/vs_cpu_generated_lines", "lines/cpu_generated_lines/fs_cpu_generated_lines"),
-        m_PointsSize(points.size())
+    CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex> &points) :
+        DrawableLines("lines/cpu_generated_lines/vs_cpu_generated_lines", "lines/cpu_generated_lines/fs_cpu_generated_lines"),
+        mPointsSize(points.size())
     {
         allocateVertexBuffer();
         allocateIndexBuffer();
         generateBuffers(points);
     }
 
+    CPUGeneratedLines::CPUGeneratedLines(const CPUGeneratedLines& other) : DrawableLines(other) {
+        mPointsSize = other.mPointsSize;
+        mIndexes = other.mIndexes;
+        mVertices = other.mVertices;
+
+        allocateIndexBuffer();
+        bgfx::update(mIndexesBH, 0, bgfx::makeRef(&mIndexes[0], sizeof(uint32_t) * mIndexes.size()));
+
+        allocateVertexBuffer();
+        bgfx::update(mVerticesBH, 0, bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
+    }
+
+    CPUGeneratedLines::CPUGeneratedLines(CPUGeneratedLines&& other) : DrawableLines(other) {
+        swap(other);
+    }
+
     CPUGeneratedLines::~CPUGeneratedLines() {
+        if(bgfx::isValid(mVerticesBH))
+            bgfx::destroy(mVerticesBH);
+
+        if(bgfx::isValid(mIndexesBH))
+            bgfx::destroy(mIndexesBH);
+    }
+
+    CPUGeneratedLines& CPUGeneratedLines::operator=(CPUGeneratedLines other) {
+        swap(other);
+        return *this;
+    }
+
+    void CPUGeneratedLines::swap(CPUGeneratedLines& other) {
+        std::swap(mPointsSize, other.mPointsSize);
+        std::swap(mIndexesBH, other.mIndexesBH);
+        std::swap(mVerticesBH, other.mVerticesBH);
+    }
+
+    std::shared_ptr<vcl::DrawableObjectI> CPUGeneratedLines::clone() const {
+        return std::make_shared<CPUGeneratedLines>(*this);
     }
 
     void CPUGeneratedLines::update(const std::vector<LinesVertex> &points) {
-        m_Vertices.clear();
-        m_Indices.clear();
+        mVertices.clear();
+        mIndexes.clear();
 
-        if(m_PointsSize > points.size()) {
-            bgfx::destroy(m_Vbh);
-            bgfx::destroy(m_Ibh);
+        if(mPointsSize > points.size()) {
+            bgfx::destroy(mVerticesBH);
+            bgfx::destroy(mIndexesBH);
 
             allocateVertexBuffer();
             allocateIndexBuffer();
         }
 
-        m_PointsSize = points.size();
+        mPointsSize = points.size();
         generateBuffers(points);
     }
 
     void CPUGeneratedLines::draw(uint viewId) const {
-        m_Settings.bindUniformLines();
+        mSettings.bindUniformLines();
 
         uint64_t state = 0
             | BGFX_STATE_WRITE_RGB
@@ -42,10 +78,10 @@ namespace vcl::lines {
             | UINT64_C(0)
             | BGFX_STATE_BLEND_ALPHA;
 
-        bgfx::setVertexBuffer(0, m_Vbh);
-        bgfx::setIndexBuffer(m_Ibh);
+        bgfx::setVertexBuffer(0, mVerticesBH);
+        bgfx::setIndexBuffer(mIndexesBH);
         bgfx::setState(state);
-        bgfx::submit(viewId, m_Program);
+        bgfx::submit(viewId, mLinesPH);
     }
 
     void CPUGeneratedLines::generateBuffers(const std::vector<LinesVertex> points) {
@@ -55,37 +91,37 @@ namespace vcl::lines {
 
                 for(uint j = 0; j < 2; j++) {
 
-                    m_Vertices.push_back(points[i - 1].X);
-                    m_Vertices.push_back(points[i - 1].Y);
-                    m_Vertices.push_back(points[i - 1].Z);
+                    mVertices.push_back(points[i - 1].X);
+                    mVertices.push_back(points[i - 1].Y);
+                    mVertices.push_back(points[i - 1].Z);
                     
-                    m_Vertices.push_back(points[i].X);
-                    m_Vertices.push_back(points[i].Y);
-                    m_Vertices.push_back(points[i].Z);
+                    mVertices.push_back(points[i].X);
+                    mVertices.push_back(points[i].Y);
+                    mVertices.push_back(points[i].Z);
 
-                    m_Vertices.push_back(points[i - (1 - k)].getReverseColor());
+                    mVertices.push_back(points[i - (1 - k)].getReverseColor());
 
-                    m_Vertices.push_back(points[i - (1 - k)].xN);
-                    m_Vertices.push_back(points[i - (1 - k)].yN);
-                    m_Vertices.push_back(points[i - (1 - k)].zN);
+                    mVertices.push_back(points[i - (1 - k)].xN);
+                    mVertices.push_back(points[i - (1 - k)].yN);
+                    mVertices.push_back(points[i - (1 - k)].zN);
 
-                    m_Vertices.push_back(k);
-                    m_Vertices.push_back(j);
+                    mVertices.push_back(k);
+                    mVertices.push_back(j);
                 }
             }
 
             uint32_t index = (4 * (i / 2));
-            m_Indices.push_back(index);
-            m_Indices.push_back(index + 3);
-            m_Indices.push_back(index + 1);
+            mIndexes.push_back(index);
+            mIndexes.push_back(index + 3);
+            mIndexes.push_back(index + 1);
 
-            m_Indices.push_back(index);
-            m_Indices.push_back(index + 2);
-            m_Indices.push_back(index + 3);
+            mIndexes.push_back(index);
+            mIndexes.push_back(index + 2);
+            mIndexes.push_back(index + 3);
         }
 
-        bgfx::update(m_Vbh, 0, bgfx::makeRef(&m_Vertices[0], sizeof(float) * m_Vertices.size()));
-        bgfx::update(m_Ibh, 0, bgfx::makeRef(&m_Indices[0], sizeof(uint32_t) * m_Indices.size()));
+        bgfx::update(mVerticesBH, 0, bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
+        bgfx::update(mIndexesBH, 0, bgfx::makeRef(&mIndexes[0], sizeof(uint32_t) * mIndexes.size()));
     }
 
     void CPUGeneratedLines::allocateVertexBuffer() {
@@ -99,10 +135,16 @@ namespace vcl::lines {
          .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
          .end();
 
-        m_Vbh = bgfx::createDynamicVertexBuffer((m_PointsSize / 2) * 4, layout, BGFX_BUFFER_ALLOW_RESIZE);
+        mVerticesBH = bgfx::createDynamicVertexBuffer(
+            (mPointsSize / 2) * 4, layout, 
+            BGFX_BUFFER_ALLOW_RESIZE
+        );
     }
 
     void CPUGeneratedLines::allocateIndexBuffer() {
-        m_Ibh = bgfx::createDynamicIndexBuffer((m_PointsSize / 2) * 6, BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32);
+        mIndexesBH = bgfx::createDynamicIndexBuffer(
+            (mPointsSize / 2) * 6, 
+            BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32
+        );
     }
 }

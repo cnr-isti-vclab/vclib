@@ -38,7 +38,6 @@ template<MeshConcept MeshType>
 class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 {
     using Base = vcl::MeshRenderData<MeshType>;
-    uint16_t mScreenWidth, mScreenHeight;
 
     bgfx::VertexBufferHandle mVertexCoordBH   = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexNormalBH  = BGFX_INVALID_HANDLE;
@@ -63,10 +62,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 public:
     MeshRenderBuffers() = default;
 
-    MeshRenderBuffers(const MeshType& mesh, const uint16_t width = 0, const uint16_t height = 0, uint buffersToFill = Base::ALL) :
-            Base(mesh, buffersToFill),
-            mScreenWidth(width),
-            mScreenHeight(height)
+    MeshRenderBuffers(const MeshType& mesh, uint buffersToFill = Base::ALL) : Base(mesh, buffersToFill)
     {
         createBGFXBuffers();
     }
@@ -187,13 +183,6 @@ public:
     void drawWireframe(uint viewId) const 
     {
         mWireframeBH.draw(viewId);
-    }
-
-    void setScreenSize(const uint16_t width, const uint16_t height) 
-    {
-        mScreenWidth = width;
-        mScreenHeight = height;
-        mWireframeBH.getSettings().setScreenSize(mScreenWidth, mScreenHeight);
     }
 
     void bindTextures() const
@@ -345,7 +334,7 @@ private:
 
         // wireframe index buffer
         if (Base::wireframeBufferData()) {
-            mWireframeBH = lines::CPUGeneratedLines(*Base::wireframeBufferData(), mScreenWidth, mScreenHeight);
+            mWireframeBH = lines::CPUGeneratedLines(*Base::wireframeBufferData());
         }
 
         // textures

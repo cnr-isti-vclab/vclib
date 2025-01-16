@@ -4,14 +4,29 @@
 namespace vcl::lines {
     class GPUGeneratedLines : public DrawableLines {
 
-        public:
-            GPUGeneratedLines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth);
+        std::vector<LinesVertex>            mPoints;
 
+        bgfx::DynamicIndexBufferHandle      mIndexesBH;
+        bgfx::DynamicVertexBufferHandle     mVerticesBH;
+        bgfx::DynamicVertexBufferHandle     mPointsBH;
+        bgfx::ProgramHandle                 mComputeVerticesPH;
+
+        public:
+            GPUGeneratedLines() = default;
+
+            GPUGeneratedLines(const std::vector<LinesVertex> &points);
+
+            GPUGeneratedLines(const GPUGeneratedLines& other);
+
+            GPUGeneratedLines(GPUGeneratedLines&& other);
+            
             ~GPUGeneratedLines();
 
-            std::shared_ptr<DrawableObjectI> clone() const override {
-                return std::make_shared<GPUGeneratedLines>(*this);
-            };
+            GPUGeneratedLines& operator=(GPUGeneratedLines other);
+
+            void swap(GPUGeneratedLines& other);
+
+            std::shared_ptr<vcl::DrawableObjectI> clone() const override;
 
             void draw(uint viewId) const override;
 
@@ -25,13 +40,5 @@ namespace vcl::lines {
             void allocateIndexBuffer();
 
             void allocatePointsBuffer();
-
-            bgfx::DynamicIndexBufferHandle m_DIbh;
-            bgfx::DynamicVertexBufferHandle m_DVbh;
-            bgfx::DynamicVertexBufferHandle m_PointsBuffer;
-            
-            bgfx::ProgramHandle m_ComputeProgram;
-
-            uint32_t m_PointsSize;
     };
 }

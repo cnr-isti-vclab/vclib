@@ -1,20 +1,67 @@
 #include <vclib/bgfx/drawable/lines/polylines/cpu_generated_polylines.h>
 
 namespace vcl::lines {
-    CPUGeneratedPolylines::CPUGeneratedPolylines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth) :
-        DrawablePolylines(width, heigth, "polylines/cpu_generated_polylines/vs_cpu_generated_polylines", "polylines/cpu_generated_polylines/fs_cpu_generated_polylines")
+    CPUGeneratedPolylines::CPUGeneratedPolylines(const std::vector<LinesVertex> &points) :
+        DrawablePolylines("polylines/cpu_generated_polylines/vs_cpu_generated_polylines", "polylines/cpu_generated_polylines/fs_cpu_generated_polylines"),
+        mPointsSize(points.size())
     {
+        allocateVertexBuffer();
+        allocateIndexesBuffer();
         generateBuffers(points);
     }
 
+    CPUGeneratedPolylines::CPUGeneratedPolylines(const CPUGeneratedPolylines& other) : DrawablePolylines(other) {
+        mPointsSize = other.mPointsSize;
+        mVertices = other.mVertices;
+        mJoinsIndexes = other.mJoinsIndexes;
+        mSegmentsIndexes = other.mSegmentsIndexes;
+
+        allocateVertexBuffer();
+        allocateIndexesBuffer();
+
+        bgfx::update(mVerticesBH, 0, bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
+        bgfx::update(mSegmentsIndexesBH, 0, bgfx::makeRef(&mSegmentsIndexes[0], sizeof(uint32_t) * mSegmentsIndexes.size()));
+        bgfx::update(mJoinsIndexesBH, 0, bgfx::makeRef(&mJoinsIndexes[0], sizeof(uint32_t) * mJoinsIndexes.size()));
+    }
+
+    CPUGeneratedPolylines::CPUGeneratedPolylines(CPUGeneratedPolylines&& other) : DrawablePolylines(other) {
+        swap(other);
+    }
+
     CPUGeneratedPolylines::~CPUGeneratedPolylines() {
-        bgfx::destroy(m_Vbh);
-        bgfx::destroy(m_SegmentsIbh);
-        bgfx::destroy(m_JoinsIbh);
+        if(bgfx::isValid(mVerticesBH))
+            bgfx::destroy(mVerticesBH);
+        
+        if(bgfx::isValid(mSegmentsIndexesBH))
+            bgfx::destroy(mSegmentsIndexesBH);
+
+        if(bgfx::isValid(mJoinsIndexesBH))
+            bgfx::destroy(mJoinsIndexesBH);
+    }
+
+    CPUGeneratedPolylines& CPUGeneratedPolylines::operator=(CPUGeneratedPolylines other) {
+        swap(other);
+        return *this;
+    }
+
+    void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other) {
+        std::swap(mPointsSize, other.mPointsSize);
+
+        std::swap(mVertices, other.mVertices);
+        std::swap(mSegmentsIndexes, other.mSegmentsIndexes);
+        std::swap(mJoinsIndexes, other.mJoinsIndexes);
+
+        std::swap(mVerticesBH, other.mVerticesBH);
+        std::swap(mSegmentsIndexesBH, other.mSegmentsIndexesBH);
+        std::swap(mJoinsIndexesBH, other.mJoinsIndexesBH);
+    }
+
+    std::shared_ptr<vcl::DrawableObjectI> CPUGeneratedPolylines::clone() const {
+        return std::make_shared<CPUGeneratedPolylines>(*this);
     }
 
     void CPUGeneratedPolylines::draw(uint viewId) const {
-        m_Settings.bindUniformPolylines();
+        mSettings.bindUniformPolylines();
 
         uint64_t state = 0
             | BGFX_STATE_WRITE_RGB
@@ -24,28 +71,34 @@ namespace vcl::lines {
             | UINT64_C(0)
             | BGFX_STATE_BLEND_ALPHA;
 
-        bgfx::setVertexBuffer(0, m_Vbh);
-        bgfx::setIndexBuffer(m_SegmentsIbh);
+        bgfx::setVertexBuffer(0, mVerticesBH);
+        bgfx::setIndexBuffer(mSegmentsIndexesBH);
         bgfx::setState(state);
-        bgfx::submit(viewId, m_Program);
+        bgfx::submit(viewId, mLinesPH);
 
-        if(m_Settings.getJoin() != 0) {
-            bgfx::setVertexBuffer(0, m_Vbh);
-            bgfx::setIndexBuffer(m_JoinsIbh);
+        if(mSettings.getJoin() != 0) {
+            bgfx::setVertexBuffer(0, mVerticesBH);
+            bgfx::setIndexBuffer(mJoinsIndexesBH);
             bgfx::setState(state);
-            bgfx::submit(viewId, m_Program);
+            bgfx::submit(viewId, mLinesPH);
         }
     }
 
     void CPUGeneratedPolylines::update(const std::vector<LinesVertex> &points) {
-        bgfx::destroy(m_Vbh);
-        bgfx::destroy(m_SegmentsIbh);
-        bgfx::destroy(m_JoinsIbh);
+        mVertices.clear();
+        mSegmentsIndexes.clear();
+        mJoinsIndexes.clear();
 
-        m_Vertices.clear();
-        m_SegmentsIndices.clear();
-        m_JoinsIndices.clear();
+        if(mPointsSize > points.size()){
+            bgfx::destroy(mVerticesBH);
+            bgfx::destroy(mSegmentsIndexesBH);
+            bgfx::destroy(mJoinsIndexesBH);
 
+            allocateVertexBuffer();
+            allocateIndexesBuffer();
+        }
+
+        mPointsSize = points.size();
         generateBuffers(points);
     }
 
@@ -60,48 +113,53 @@ namespace vcl::lines {
                     uint prev_index = curr_index - (curr_index == 0 ? 0 : 1);
                     uint next_index = curr_index + (curr_index == points.size() - 1 ? 0 : 1);
 
-                    m_Vertices.push_back(points[prev_index].X);
-                    m_Vertices.push_back(points[prev_index].Y);
-                    m_Vertices.push_back(points[prev_index].Z);
+                    mVertices.push_back(points[prev_index].X);
+                    mVertices.push_back(points[prev_index].Y);
+                    mVertices.push_back(points[prev_index].Z);
 
-                    m_Vertices.push_back(points[curr_index].X);
-                    m_Vertices.push_back(points[curr_index].Y);
-                    m_Vertices.push_back(points[curr_index].Z);
+                    mVertices.push_back(points[curr_index].X);
+                    mVertices.push_back(points[curr_index].Y);
+                    mVertices.push_back(points[curr_index].Z);
 
-                    m_Vertices.push_back(points[next_index].X);
-                    m_Vertices.push_back(points[next_index].Y);
-                    m_Vertices.push_back(points[next_index].Z);
+                    mVertices.push_back(points[next_index].X);
+                    mVertices.push_back(points[next_index].Y);
+                    mVertices.push_back(points[next_index].Z);
 
-                    m_Vertices.push_back(points[curr_index].getReverseColor());
+                    mVertices.push_back(points[curr_index].getReverseColor());
 
-                    m_Vertices.push_back(points[curr_index].xN);
-                    m_Vertices.push_back(points[curr_index].yN);
-                    m_Vertices.push_back(points[curr_index].zN);
+                    mVertices.push_back(points[curr_index].xN);
+                    mVertices.push_back(points[curr_index].yN);
+                    mVertices.push_back(points[curr_index].zN);
 
-                    m_Vertices.push_back(static_cast<float>(k));
-                    m_Vertices.push_back(static_cast<float>(j));
+                    mVertices.push_back(static_cast<float>(k));
+                    mVertices.push_back(static_cast<float>(j));
                 }
             }
 
-            m_SegmentsIndices.push_back((i * 4));
-            m_SegmentsIndices.push_back((i * 4) + 3);
-            m_SegmentsIndices.push_back((i * 4) + 1);
+            mSegmentsIndexes.push_back((i * 4));
+            mSegmentsIndexes.push_back((i * 4) + 3);
+            mSegmentsIndexes.push_back((i * 4) + 1);
 
-            m_SegmentsIndices.push_back((i * 4));
-            m_SegmentsIndices.push_back((i * 4) + 2);
-            m_SegmentsIndices.push_back((i * 4) + 3);
+            mSegmentsIndexes.push_back((i * 4));
+            mSegmentsIndexes.push_back((i * 4) + 2);
+            mSegmentsIndexes.push_back((i * 4) + 3);
 
             if(i != points.size() - 2) {
-                m_JoinsIndices.push_back((i * 4) + 3);
-                m_JoinsIndices.push_back((i * 4) + 4);
-                m_JoinsIndices.push_back((i * 4) + 5);
+                mJoinsIndexes.push_back((i * 4) + 3);
+                mJoinsIndexes.push_back((i * 4) + 4);
+                mJoinsIndexes.push_back((i * 4) + 5);
 
-                m_JoinsIndices.push_back((i * 4) + 4);
-                m_JoinsIndices.push_back((i * 4) + 2);
-                m_JoinsIndices.push_back((i * 4) + 5);
+                mJoinsIndexes.push_back((i * 4) + 4);
+                mJoinsIndexes.push_back((i * 4) + 2);
+                mJoinsIndexes.push_back((i * 4) + 5);
             }
         }
+        bgfx::update(mVerticesBH, 0, bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
+        bgfx::update(mSegmentsIndexesBH, 0, bgfx::makeRef(&mSegmentsIndexes[0], sizeof(uint32_t) * mSegmentsIndexes.size()));
+        bgfx::update(mJoinsIndexesBH, 0, bgfx::makeRef(&mJoinsIndexes[0], sizeof(uint32_t) * mJoinsIndexes.size()));
+    }
 
+    void CPUGeneratedPolylines::allocateVertexBuffer() {
         bgfx::VertexLayout layout;
         layout
             .begin()
@@ -113,20 +171,21 @@ namespace vcl::lines {
             .add(bgfx::Attrib::TexCoord2, 2, bgfx::AttribType::Float)
             .end();
 
-        m_Vbh = bgfx::createVertexBuffer(
-            bgfx::makeRef(&m_Vertices[0], sizeof(float) * m_Vertices.size()),
-            layout
+        mVerticesBH = bgfx::createDynamicVertexBuffer(
+            (mPointsSize - 1) * 4, layout, 
+            BGFX_BUFFER_ALLOW_RESIZE
+        );
+    }
+
+    void CPUGeneratedPolylines::allocateIndexesBuffer() {
+        mSegmentsIndexesBH = bgfx::createDynamicIndexBuffer(
+            (mPointsSize - 1) * 6, 
+            BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32
         );
 
-        m_SegmentsIbh = bgfx::createIndexBuffer(
-            bgfx::makeRef(&m_SegmentsIndices[0], sizeof(uint32_t) * m_SegmentsIndices.size()),
-            BGFX_BUFFER_INDEX32
+        mJoinsIndexesBH = bgfx::createDynamicIndexBuffer(
+            (mPointsSize - 2) * 6, 
+            BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32
         );
-
-        if(m_JoinsIndices.size() != 0)
-            m_JoinsIbh = bgfx::createIndexBuffer(
-                bgfx::makeRef(&m_JoinsIndices[0], sizeof(uint32_t) * m_JoinsIndices.size()),
-                BGFX_BUFFER_INDEX32
-            );
     }
 }

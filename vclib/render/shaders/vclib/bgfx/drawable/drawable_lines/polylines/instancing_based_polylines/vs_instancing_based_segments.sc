@@ -17,21 +17,22 @@ uniform vec4 u_data;
 #define normal1                 vec3(i_data4.y, i_data4.z, i_data4.w)
 
 void main() {
-    uint screenSize = floatBitsToUint(u_data.x);
+    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
-    uint caps_join = floatBitsToUint(u_data.w);
+    uint caps_join_color = floatBitsToUint(u_data.w);
     
-    float u_screenWidth  = float((screenSize >> uint(16)) & uint(0xFFFF));
-    float u_screenHeigth = float(screenSize & uint(0xFFFF));
+    float u_screenWidth  = u_viewRect.z;
+    float u_screenHeigth = u_viewRect.w;
 
     float u_thickness    = float((thickness_antialias_border_miterlimit >> uint(24)) & uint(0xFF));
     float u_antialias    = float((thickness_antialias_border_miterlimit >> uint(16)) & uint(0xFF));
     float u_border       = float((thickness_antialias_border_miterlimit >> uint(8))  & uint(0xFF));
     float u_miter_limit  = float(thickness_antialias_border_miterlimit               & uint(0xFF));
     
-    float u_leftCap      = float((caps_join >> uint(4))  & uint(0x3));
-    float u_rigthCap     = float((caps_join >> uint(2))  & uint(0x3));
-    float u_join         = float(caps_join               & uint(0x3));
+    float u_leftCap      = float((caps_join_color >> uint(6)) & uint(0x3));
+    float u_rigthCap     = float((caps_join_color >> uint(4)) & uint(0x3));
+    float u_join         = float((caps_join_color >> uint(2)) & uint(0x3));
+    float u_color_to_use = float((caps_join_color)            & uint(0x3));
 
     vec4 prev = ((1 - a_uv.x) * a_prev) + (a_uv.x * a_curr);
     vec4 curr = ((1 - a_uv.x) * a_curr) + (a_uv.x * a_next);
@@ -41,7 +42,7 @@ void main() {
     vec4 curr_px = calculatePointWithMVP(curr, u_screenWidth, u_screenHeigth);
     vec4 next_px = calculatePointWithMVP(next, u_screenWidth, u_screenHeigth);
 
-    v_color = (color0 * (1 - a_uv.x)) + (color1 * a_uv.x);
+    v_color = (((color0 * (1 - a_uv.x)) + (color1 * a_uv.x)) * (1 - sign(u_color_to_use))) + (u_general_color * sign(u_color_to_use));
     v_normal = (normal0 * (1 - a_uv.x)) + (normal1 * a_uv.x);
     v_length = length(((next_px - curr_px) * (1 - a_uv.x)) + ((curr_px - prev_px) * (a_uv.x)));
 

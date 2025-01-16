@@ -91,7 +91,6 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
             vcl::loadShader(
                 EmbeddedShader<
                     VclProgram::DRAWABLE_CPU_GENERATED_LINES>::fragmentEmbeddedShader(type)));
-        
 
     case VclProgram::DRAWABLE_AXIS:
         return vcl::createProgram(

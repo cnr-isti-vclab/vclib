@@ -15,21 +15,22 @@ uniform vec4 u_data;
 #define normal                  vec3(i_data3.xyz)
 
 void main() {
-    uint screenSize = floatBitsToUint(u_data.x);
+    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
-    uint caps_join = floatBitsToUint(u_data.w);
+    uint caps_join_color = floatBitsToUint(u_data.w);
     
-    float u_screenWidth  = float((screenSize >> uint(16)) & uint(0xFFFF));
-    float u_screenHeigth = float(screenSize & uint(0xFFFF));
+    float u_screenWidth  = u_viewRect.z;
+    float u_screenHeigth = u_viewRect.w;
 
     float u_thickness    = float((thickness_antialias_border_miterlimit >> uint(24)) & uint(0xFF));
     float u_antialias    = float((thickness_antialias_border_miterlimit >> uint(16)) & uint(0xFF));
     float u_border       = float((thickness_antialias_border_miterlimit >> uint(8))  & uint(0xFF));
     float u_miter_limit  = float(thickness_antialias_border_miterlimit               & uint(0xFF));
     
-    float u_leftCap      = float((caps_join >> uint(4))  & uint(0x3));
-    float u_rigthCap     = float((caps_join >> uint(2))  & uint(0x3));
-    float u_join         = float(caps_join               & uint(0x3));
+    float u_leftCap      = float((caps_join_color >> uint(6)) & uint(0x3));
+    float u_rigthCap     = float((caps_join_color >> uint(4)) & uint(0x3));
+    float u_join         = float((caps_join_color >> uint(2)) & uint(0x3));
+    float u_color_to_use = float((caps_join_color)            & uint(0x3));
 
     vec4 prev_px = calculatePointWithMVP(a_prev, u_screenWidth, u_screenHeigth);
     vec4 curr_px = calculatePointWithMVP(a_curr, u_screenWidth, u_screenHeigth);

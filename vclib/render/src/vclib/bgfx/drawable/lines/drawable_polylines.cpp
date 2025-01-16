@@ -5,28 +5,28 @@
 #include <vclib/bgfx/drawable/lines/polylines/indirect_based_polylines.h>
 #include <vclib/bgfx/drawable/lines/polylines/texture_based_polylines.h>
 
-#include <vclib/bgfx/context/load_program.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-    std::unique_ptr<DrawablePolylines> DrawablePolylines::create(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth, LinesTypes type) {
+    std::unique_ptr<DrawablePolylines> DrawablePolylines::create(const std::vector<LinesVertex> &points, LinesTypes type) {
         const bgfx::Caps* caps = bgfx::getCaps();
         
         switch (type) {
             case LinesTypes::CPU_GENERATED: {
-                return std::make_unique<CPUGeneratedPolylines>(points, width, heigth);
+                return std::make_unique<CPUGeneratedPolylines>(points);
             }
 
             case LinesTypes::GPU_GENERATED: {
                 bool computeSupported  = !!(caps->supported & BGFX_CAPS_COMPUTE);
                 assert((void("GPU compute not supported"), computeSupported));
-                return std::make_unique<GPUGeneratedPolylines>(points, width, heigth);
+                return std::make_unique<GPUGeneratedPolylines>(points);
             }
 
             case LinesTypes::INSTANCING_BASED: {
                 const bool instancingSupported = !!(caps->supported & BGFX_CAPS_INSTANCING);
                 assert((void("Instancing not supported"), instancingSupported));
-                return std::make_unique<InstancingBasedPolylines>(points, width, heigth);
+                return std::make_unique<InstancingBasedPolylines>(points);
             }
 
             case LinesTypes::INDIRECT_BASED: {
@@ -35,7 +35,7 @@ namespace vcl::lines {
                 const bool instancingSupported = !!(caps->supported & BGFX_CAPS_INSTANCING);
 
                 assert((void("Instancing or compute are not supported"), instancingSupported && computeSupported && indirectSupported));
-                return std::make_unique<IndirectBasedPolylines>(points, width, heigth);
+                return std::make_unique<IndirectBasedPolylines>(points);
             }
             case LinesTypes::TEXTURE_BASED: {
                 const bool computeSupported  = !!(caps->supported & BGFX_CAPS_COMPUTE);
@@ -44,29 +44,32 @@ namespace vcl::lines {
                 const bool textureSupported = !!(caps->supported & BGFX_CAPS_TEXTURE_2D_ARRAY);
 
                 assert((void("Instancing or compute or indirect or texture are not supported"), instancingSupported && computeSupported && indirectSupported && textureSupported));
-                return std::make_unique<TextureBasedPolylines>(points, width, heigth, caps->limits.maxTextureSize);
+                return std::make_unique<TextureBasedPolylines>(points, caps->limits.maxTextureSize);
             }
         }
         assert((void("Lines type is incorrect"), true));
-        return nullptr;
+        throw std::invalid_argument("Invalid enum case");
     }
 
-    std::unique_ptr<DrawablePolylines> DrawablePolylines::create(bgfx::VertexBufferHandle vbh) {
-        /** ... */
-        return nullptr;
+    DrawablePolylines::DrawablePolylines(const std::string& vs_name,  const std::string& fs_name) {
+        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_MESH);
+        assert(bgfx::isValid(mLinesPH));
     }
 
-    std::unique_ptr<DrawablePolylines> DrawablePolylines::create(bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ivh) {
-        /** ... */
-        return nullptr;
+    DrawablePolylines::DrawablePolylines(const DrawablePolylines& other) {
+        mLinesPH = other.mLinesPH;
+        mSettings = other.mSettings;
+        assert(bgfx::isValid(mLinesPH));
     }
 
-    DrawablePolylines::DrawablePolylines(const uint16_t width, const uint16_t heigth, const std::string& vs_name,  const std::string& fs_name) {
-        m_Program = vcl::loadProgram(vs_name, fs_name);
-        m_Settings = LinesSettings(width, heigth);
+    DrawablePolylines::DrawablePolylines(DrawablePolylines&& other) {
+        mLinesPH = other.mLinesPH;
+        mSettings = other.mSettings;
+        assert(bgfx::isValid(mLinesPH));
     }
 
     DrawablePolylines::~DrawablePolylines() {
-        bgfx::destroy(m_Program);
+        if(bgfx::isValid(mLinesPH))
+            bgfx::destroy(mLinesPH);
     }
 }

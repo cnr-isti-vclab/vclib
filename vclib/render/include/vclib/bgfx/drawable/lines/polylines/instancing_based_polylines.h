@@ -3,14 +3,34 @@
 
 namespace vcl::lines {
     class InstancingBasedPolylines : public DrawablePolylines {
+
+        std::vector<float>          mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
+        std::vector<uint32_t>       mIndexes = {0, 3, 1, 0, 2, 3};
+
+        bgfx::InstanceDataBuffer    mSegmentsInstanceDB;
+        bgfx::InstanceDataBuffer    mJoinsInstanceDB;
+
+        bgfx::VertexBufferHandle    mVerticesBH;
+        bgfx::IndexBufferHandle     mIndexesBH;
+
+        bgfx::ProgramHandle         mJoinesPH;
+
         public:
-            InstancingBasedPolylines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth);
+            InstancingBasedPolylines() = default;
+
+            InstancingBasedPolylines(const std::vector<LinesVertex> &points);
+
+            InstancingBasedPolylines(const InstancingBasedPolylines& other);
+
+            InstancingBasedPolylines(InstancingBasedPolylines&& other);
 
             ~InstancingBasedPolylines();
 
-            std::shared_ptr<DrawableObjectI> clone() const override {
-                return std::make_shared<InstancingBasedPolylines>(*this);
-            }
+            InstancingBasedPolylines& operator=(InstancingBasedPolylines other);
+
+            void swap(InstancingBasedPolylines& other);
+
+            std::shared_ptr<vcl::DrawableObjectI> clone() const override;
 
             void draw(uint viewId) const override;
 
@@ -19,16 +39,8 @@ namespace vcl::lines {
         private:
             void generateInstanceBuffer(const std::vector<LinesVertex> &points);
 
-            bgfx::InstanceDataBuffer m_IDBSegments;
-            bgfx::InstanceDataBuffer m_IDBJoins;
+            void allocateVerticesBuffer();
 
-            std::vector<float> m_Vertices;
-            std::vector<uint32_t> m_Indices;
-
-            bgfx::VertexBufferHandle m_Vbh;
-            bgfx::IndexBufferHandle m_Ibh;
-
-            bgfx::ProgramHandle m_JoinsProgram;
-
+            void allocateIndexesBuffer();
     };
 }

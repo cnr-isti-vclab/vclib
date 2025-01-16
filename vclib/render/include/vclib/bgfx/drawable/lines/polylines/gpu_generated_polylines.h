@@ -3,14 +3,33 @@
 
 namespace vcl::lines {
     class GPUGeneratedPolylines : public DrawablePolylines {
+
+        std::vector<LinesVertex>            mPoints;
+
+        bgfx::DynamicVertexBufferHandle     mPointsBH;
+        bgfx::DynamicVertexBufferHandle     mVertexBH;
+        bgfx::DynamicIndexBufferHandle      mSegmentsIndexesBH;
+        bgfx::DynamicIndexBufferHandle      mJoinesIndexesBH;
+            
+        bgfx::ProgramHandle                 mComputeVertexPH;
+        bgfx::UniformHandle                 mComputeDataUH;
+
         public:
-            GPUGeneratedPolylines(const std::vector<LinesVertex> &points, const uint16_t width, const uint16_t heigth);
+            GPUGeneratedPolylines() = default;
+
+            GPUGeneratedPolylines(const std::vector<LinesVertex> &points);
+
+            GPUGeneratedPolylines(const GPUGeneratedPolylines& other);
+
+            GPUGeneratedPolylines(GPUGeneratedPolylines&& other);
 
             ~GPUGeneratedPolylines();
 
-            std::shared_ptr<DrawableObjectI> clone() const override {
-                return std::make_shared<GPUGeneratedPolylines>(*this);
-            }
+            GPUGeneratedPolylines& operator=(GPUGeneratedPolylines other);
+
+            void swap(GPUGeneratedPolylines& other);
+
+            std::shared_ptr<vcl::DrawableObjectI> clone() const override;
 
             void draw(uint viewId) const override;
 
@@ -25,16 +44,5 @@ namespace vcl::lines {
             void allocateIndexBuffer();
 
             void allocatePointsBuffer();
-
-            bgfx::DynamicVertexBufferHandle m_DVbh;
-            bgfx::DynamicIndexBufferHandle m_SegmentsDIbh;
-            bgfx::DynamicIndexBufferHandle m_JoinsDIbh;
-
-            bgfx::DynamicVertexBufferHandle m_PointsBuffer;
-            
-            bgfx::ProgramHandle m_ComputeProgram;
-            bgfx::UniformHandle m_NumWorksGroupUniform;
-
-            uint32_t m_PointsSize;
     };
 }

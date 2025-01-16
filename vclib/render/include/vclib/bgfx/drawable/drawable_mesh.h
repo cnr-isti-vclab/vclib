@@ -37,7 +37,6 @@ namespace vcl {
 template<MeshConcept MeshType>
 class DrawableMeshBGFX : public DrawableMeshI, public MeshType
 {
-    uint16_t mScreenWidth, mScreenHeight;
     MeshRenderBuffers<MeshType> mMRB;
 
     bgfx::ProgramHandle mProgram =
@@ -50,11 +49,9 @@ class DrawableMeshBGFX : public DrawableMeshI, public MeshType
 public:
     DrawableMeshBGFX() = default;
 
-    DrawableMeshBGFX(const MeshType& mesh, const uint16_t width = 0, const uint16_t height = 0) : 
+    DrawableMeshBGFX(const MeshType& mesh) : 
         DrawableMeshI(mesh), 
-        MeshType(mesh),
-        mScreenWidth(width),
-        mScreenHeight(height)
+        MeshType(mesh)
     {
         updateBuffers();
     }
@@ -67,7 +64,7 @@ public:
             DrawableMeshI::name() = MeshType::name();
         }
 
-        mMRB = MeshRenderBuffers<MeshType>(*this, mScreenWidth, mScreenHeight);
+        mMRB = MeshRenderBuffers<MeshType>(*this);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
         mMeshUniforms.update(mMRB);
@@ -140,13 +137,6 @@ public:
     {
         DrawableMeshI::setRenderSettings(rs);
         mMeshRenderSettingsUniforms.updateSettings(rs);
-    }
-
-    void setScreenSize(const uint16_t width, const uint16_t height) 
-    {
-        mScreenWidth = width;
-        mScreenHeight = height;
-        mMRB.setScreenSize(mScreenWidth, mScreenHeight);
     }
 
 private:
