@@ -60,7 +60,7 @@ class Context
 
 public:
     // default values, used for optional parameters
-    static constexpr uint32_t                  DEFAULT_CLEAR_COLOR = 0x00000000;
+    static constexpr uint32_t                  DEFAULT_CLEAR_COLOR = 0x000000ff;
     static constexpr float                     DEFAULT_CLEAR_DEPTH = 1.0f;
     static constexpr uint8_t                   DEFAULT_CLEAR_STENCIL = 0;
     static constexpr bgfx::TextureFormat::Enum DEFAULT_COLOR_FORMAT =
@@ -126,7 +126,7 @@ public:
      *
      * @return The handle of the created framebuffer.
      */
-    bgfx::FrameBufferHandle createFramebuffer(
+    bgfx::FrameBufferHandle createOffscreenFramebuffer(
         uint16_t                  width,
         uint16_t                  height,
         bgfx::TextureFormat::Enum colorFormat = DEFAULT_COLOR_FORMAT,
