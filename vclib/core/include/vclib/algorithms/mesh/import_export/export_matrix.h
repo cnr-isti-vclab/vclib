@@ -696,11 +696,7 @@ Vect elementQualityVector(const MeshType& mesh)
 
     Vect eQV(mesh.template number<ELEM_ID>());
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        eQV[i] = e.quality();
-        ++i;
-    }
+    elementQualityToBuffer<ELEM_ID>(mesh, eQV.data());
 
     return eQV;
 }

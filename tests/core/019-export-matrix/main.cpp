@@ -78,8 +78,22 @@ void randomColor(auto& tm)
     tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::COLOR>();
 
     for (auto& el : tm.template elements<ELEM_ID>()) {
-        bool sel      = dis(gen);
         el.color() = vcl::Color(dis(gen), dis(gen), dis(gen), dis(gen));
+    }
+}
+
+template<vcl::uint ELEM_ID>
+void randomQuality(auto& tm)
+{
+    std::random_device              rd;
+    std::mt19937                    gen(rd());
+    std::uniform_real_distribution<> dis(-100, 100);
+
+    tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::QUALITY>();
+
+    for (auto& el : tm.template elements<ELEM_ID>()) {
+        double qual  = dis(gen);
+        el.quality() = qual;
     }
 }
 
@@ -120,7 +134,7 @@ void testTrianglesMatrix(const auto& tm)
 }
 
 template<typename VectorType>
-void testVertexSelection(const auto& tm)
+void testVertexSelectionVector(const auto& tm)
 {
     auto sel = vcl::vertexSelectionVector<VectorType>(tm);
 
@@ -134,7 +148,7 @@ void testVertexSelection(const auto& tm)
 }
 
 template<typename VectorType>
-void testFaceSelection(const auto& tm)
+void testFaceSelectionVector(const auto& tm)
 {
     auto sel = vcl::faceSelectionVector<VectorType>(tm);
 
@@ -247,6 +261,34 @@ void testFaceColorsVector(const auto& tm)
     }
 }
 
+template<typename VectorType>
+void testVertexQualityVector(const auto& tm)
+{
+    auto qual = vcl::vertexQualityVector<VectorType>(tm);
+
+    REQUIRE(qual.size() == tm.vertexNumber());
+
+    vcl::uint i = 0;
+    for (const auto& v : tm.vertices()) {
+        REQUIRE(qual[i] == v.quality());
+        ++i;
+    }
+}
+
+template<typename VectorType>
+void testFaceQualityVector(const auto& tm)
+{
+    auto qual = vcl::faceQualityVector<VectorType>(tm);
+
+    REQUIRE(qual.size() == tm.faceNumber());
+
+    vcl::uint i = 0;
+    for (const auto& f : tm.faces()) {
+        REQUIRE(qual[i] == f.quality());
+        ++i;
+    }
+}
+
 TEMPLATE_TEST_CASE(
     "Export TriMesh to Matrix",
     "",
@@ -316,32 +358,32 @@ TEMPLATE_TEST_CASE(
 
         SECTION("Eigen Vector<vcl::uint>")
         {
-            testVertexSelection<Eigen::VectorX<vcl::uint>>(tm);
+            testVertexSelectionVector<Eigen::VectorX<vcl::uint>>(tm);
         }
 
         SECTION("Eigen Vector<bool>")
         {
-            testVertexSelection<Eigen::VectorX<bool>>(tm);
+            testVertexSelectionVector<Eigen::VectorX<bool>>(tm);
         }
 
         SECTION("std vector<vcl::uint>")
         {
-            testVertexSelection<std::vector<vcl::uint>>(tm);
+            testVertexSelectionVector<std::vector<vcl::uint>>(tm);
         }
 
         SECTION("std vector<char>")
         {
-            testVertexSelection<std::vector<char>>(tm);
+            testVertexSelectionVector<std::vector<char>>(tm);
         }
 
         SECTION("vcl::Vector<vcl::uint>")
         {
-            testVertexSelection<vcl::Vector<vcl::uint, -1>>(tm);
+            testVertexSelectionVector<vcl::Vector<vcl::uint, -1>>(tm);
         }
 
         SECTION("vcl::Vector<char>")
         {
-            testVertexSelection<vcl::Vector<char, -1>>(tm);
+            testVertexSelectionVector<vcl::Vector<char, -1>>(tm);
         }
     }
 
@@ -351,32 +393,32 @@ TEMPLATE_TEST_CASE(
 
         SECTION("Eigen Vector<vcl::uint>")
         {
-            testFaceSelection<Eigen::VectorX<vcl::uint>>(tm);
+            testFaceSelectionVector<Eigen::VectorX<vcl::uint>>(tm);
         }
 
         SECTION("Eigen Vector<bool>")
         {
-            testFaceSelection<Eigen::VectorX<bool>>(tm);
+            testFaceSelectionVector<Eigen::VectorX<bool>>(tm);
         }
 
         SECTION("std vector<vcl::uint>")
         {
-            testFaceSelection<std::vector<vcl::uint>>(tm);
+            testFaceSelectionVector<std::vector<vcl::uint>>(tm);
         }
 
         SECTION("std vector<char>")
         {
-            testFaceSelection<std::vector<char>>(tm);
+            testFaceSelectionVector<std::vector<char>>(tm);
         }
 
         SECTION("vcl::Vector<vcl::uint>")
         {
-            testFaceSelection<vcl::Vector<vcl::uint, -1>>(tm);
+            testFaceSelectionVector<vcl::Vector<vcl::uint, -1>>(tm);
         }
 
         SECTION("vcl::Vector<char>")
         {
-            testFaceSelection<vcl::Vector<char, -1>>(tm);
+            testFaceSelectionVector<vcl::Vector<char, -1>>(tm);
         }
     }
 
@@ -460,11 +502,11 @@ TEMPLATE_TEST_CASE(
         {
             testVertColorsMatrix<vcl::Array2<uint8_t>>(tm);
         }
-        SECTION("Eigen Vector<vcl::uint>")
+        SECTION("Eigen::Vector<vcl::uint>")
         {
             testVertColorsVector<Eigen::VectorX<vcl::uint>>(tm);
         }
-        SECTION("std vector<vcl::uint>")
+        SECTION("std::vector<vcl::uint>")
         {
             testVertColorsVector<std::vector<vcl::uint>>(tm);
         }
@@ -498,17 +540,57 @@ TEMPLATE_TEST_CASE(
         {
             testFaceColorsMatrix<vcl::Array2<uint8_t>>(tm);
         }
-        SECTION("Eigen Vector<vcl::uint>")
+        SECTION("Eigen::Vector<vcl::uint>")
         {
             testFaceColorsVector<Eigen::VectorX<vcl::uint>>(tm);
         }
-        SECTION("std vector<vcl::uint>")
+        SECTION("std::vector<vcl::uint>")
         {
             testFaceColorsVector<std::vector<vcl::uint>>(tm);
         }
         SECTION("vcl::Vector<vcl::uint>")
         {
             testFaceColorsVector<vcl::Vector<vcl::uint, -1>>(tm);
+        }
+    }
+
+    SECTION("Vertex Quality...")
+    {
+        using ScalarType = typename TriMesh::VertexType::QualityType;
+
+        randomQuality<vcl::ElemId::VERTEX>(tm);
+
+        SECTION("Eigen::Vector")
+        {
+            testVertexQualityVector<Eigen::VectorX<ScalarType>>(tm);
+        }
+        SECTION("std::vector")
+        {
+            testVertexQualityVector<std::vector<ScalarType>>(tm);
+        }
+        SECTION("vcl::Vector")
+        {
+            testVertexQualityVector<vcl::Vector<ScalarType, -1>>(tm);
+        }
+    }
+
+    SECTION("Face Quality...")
+    {
+        using ScalarType = typename TriMesh::FaceType::QualityType;
+
+        randomQuality<vcl::ElemId::FACE>(tm);
+
+        SECTION("Eigen::Vector")
+        {
+            testFaceQualityVector<Eigen::VectorX<ScalarType>>(tm);
+        }
+        SECTION("std::vector")
+        {
+            testFaceQualityVector<std::vector<ScalarType>>(tm);
+        }
+        SECTION("vcl::Vector")
+        {
+            testFaceQualityVector<vcl::Vector<ScalarType, -1>>(tm);
         }
     }
 }

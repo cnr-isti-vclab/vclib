@@ -430,6 +430,183 @@ void elementColorsToBuffer(
     }
 }
 
+/**
+ * @brief Export the vertex colors of a mesh to a buffer having a value for each
+ * color component (RGBA).
+ *
+ * This function exports the vertex colors of a mesh to a buffer. The buffer
+ * must be preallocated with the correct size (number of vertices times 4).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ * @param representation
+ */
+template<MeshConcept MeshType>
+void vertexColorsToBuffer(
+    const MeshType&             mesh,
+    auto*                       buffer,
+    MatrixStorageType::Enum     storage = MatrixStorageType::ROW_MAJOR,
+    Color::Representation::Enum representation =
+    Color::Representation::INT_0_255)
+{
+    elementColorsToBuffer<ElemId::VERTEX>(mesh, buffer, storage, representation);
+}
+
+/**
+ * @brief Export the vertex colors of a mesh to a buffer having a value for each
+ * color (the color is packed in a single 32 bit value using the provided
+ * format).
+ *
+ * This function exports the vertex colors of a mesh to a buffer. The buffer
+ * must be preallocated with the correct size (number of vertices).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible when
+ * the mesh has deleted vertices. To be sure to have a direct correspondence,
+ * compact the vertex container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param colorFormat
+ */
+template<MeshConcept MeshType>
+void vertexColorsToBuffer(
+    const MeshType&             mesh,
+    auto*                       buffer,
+    Color::Format::Enum         colorFormat)
+{
+    elementColorsToBuffer<ElemId::VERTEX>(mesh, buffer, colorFormat);
+}
+
+/**
+ * @brief Export the face colors of a mesh to a buffer having a value for each
+ * color component (RGBA).
+ *
+ * This function exports the face colors of a mesh to a buffer. The buffer
+ * must be preallocated with the correct size (number of faces times 4).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ * @param representation
+ */
+template<MeshConcept MeshType>
+void faceColorsToBuffer(
+    const MeshType&             mesh,
+    auto*                       buffer,
+    MatrixStorageType::Enum     storage = MatrixStorageType::ROW_MAJOR,
+    Color::Representation::Enum representation =
+    Color::Representation::INT_0_255)
+{
+    elementColorsToBuffer<ElemId::FACE>(mesh, buffer, storage, representation);
+}
+
+/**
+ * @brief Export the face colors of a mesh to a buffer having a value for each
+ * color (the color is packed in a single 32 bit value using the provided
+ * format).
+ *
+ * This function exports the face colors of a mesh to a buffer. The buffer
+ * must be preallocated with the correct size (number of faces).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param colorFormat
+ */
+template<MeshConcept MeshType>
+void faceColorsToBuffer(
+    const MeshType&             mesh,
+    auto*                       buffer,
+    Color::Format::Enum         colorFormat)
+{
+    elementColorsToBuffer<ElemId::FACE>(mesh, buffer, colorFormat);
+}
+
+/**
+ * @brief Export the element quality identified by `ELEM_ID` of a mesh to a
+ * buffer.
+ *
+ * This function exports the element quality identified by `ELEM_ID` of a mesh
+ * to a buffer. The buffer must be preallocated with the correct size (number of
+ * elements).
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the element indices of the mesh. This scenario is possible when
+ * the mesh has deleted elements. To be sure to have a direct correspondence,
+ * compact the element container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param colorFormat
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementQualityToBuffer(const MeshType& mesh, auto* buffer)
+{
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
+
+    uint i = 0;
+    for (const auto& q : mesh.template elements<ELEM_ID>() | views::quality) {
+        buffer[i] = q;
+        ++i;
+    }
+}
+
+/**
+ * @brief Export the vertex quality of a mesh to a buffer.
+ *
+ * This function exports the vertex quality of a mesh to a buffer. The buffer
+ * must be preallocated with the correct size (number of vertices).
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the vertex indices of the mesh. This scenario is possible when
+ * the mesh has deleted vertices. To be sure to have a direct correspondence,
+ * compact the vertex container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ */
+template<MeshConcept MeshType>
+void vertexQualityToBuffer(const MeshType& mesh, auto* buffer)
+{
+    elementQualityToBuffer<ElemId::VERTEX>(mesh, buffer);
+}
+
+/**
+ * @brief Export the face quality of a mesh to a buffer.
+ *
+ * This function exports the face quality of a mesh to a buffer. The buffer
+ * must be preallocated with the correct size (number of faces).
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ */
+template<MeshConcept MeshType>
+void faceQualityToBuffer(const MeshType& mesh, auto* buffer)
+{
+    elementQualityToBuffer<ElemId::FACE>(mesh, buffer);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
