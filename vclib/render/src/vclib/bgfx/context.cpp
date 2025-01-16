@@ -147,11 +147,11 @@ bool Context::isValidViewId(bgfx::ViewId viewId) const
     return viewId <= capabilites().limits.maxViews;
 }
 
-static const uint64_t kRenderBufferflags =
+static const uint64_t kMRTRenderBufferflags =
     0 | BGFX_TEXTURE_RT | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
     BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
 
-bgfx::FrameBufferHandle Context::createFramebuffer(
+bgfx::FrameBufferHandle Context::createOffscreenFramebuffer(
     uint16_t                  width,
     uint16_t                  height,
     bgfx::TextureFormat::Enum colorFormat,
@@ -167,7 +167,7 @@ bgfx::FrameBufferHandle Context::createFramebuffer(
         false,
         1,
         colorFormat,
-        kRenderBufferflags);
+        kMRTRenderBufferflags);
 
     fbtextures[1] = bgfx::createTexture2D(
         uint16_t(width),
@@ -175,7 +175,7 @@ bgfx::FrameBufferHandle Context::createFramebuffer(
         false,
         1,
         depthFormat,
-        kRenderBufferflags);
+        kMRTRenderBufferflags);
 
     assert(bgfx::isValid(fbtextures[0]));
     assert(bgfx::isValid(fbtextures[1]));
@@ -223,14 +223,16 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
         resetDefaultFramebuffer(width, height, colorFormat);
     }
     else {
-        // create framebuffer
-        if (offscreen) {
-            fbh = createFramebuffer(width, height, colorFormat, depthFormat);
-        }
-        else { // TODO: why it does not accepts attachments when onscreen?
+        if (offscreen)
+            // create offscreen framebuffer
+            fbh = createOffscreenFramebuffer
+                (width, height, colorFormat, depthFormat);
+        else
+            // create framebuffer for the given window
             fbh = bgfx::createFrameBuffer(
                 winId, width, height, colorFormat, depthFormat);
-        }
+        
+        assert(bgfx::isValid(fbh));
     }
     // set view on framebuffer even if it must be done every frame
     bgfx::setViewFrameBuffer(view, fbh);
