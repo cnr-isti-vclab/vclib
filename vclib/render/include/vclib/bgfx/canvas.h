@@ -179,6 +179,13 @@ public:
      */
     void onPaint()
     {
+        bgfx::setViewFrameBuffer(mViewId, mFbh);
+        bgfx::touch(mViewId);
+
+        // ask the derived frame to draw all the drawer objects:
+        DerivedRenderApp::CNV::draw(derived());
+        DerivedRenderApp::CNV::postDraw(derived());
+
         const bool newReadRequested =
             (mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
 
@@ -193,20 +200,7 @@ public:
             }
         }
         else {
-            bgfx::setViewFrameBuffer(mViewId, mFbh);
-            bgfx::touch(mViewId);
-
-            // ask the derived frame to draw all the drawer objects:
-            DerivedRenderApp::CNV::draw(derived());
-
             mCurrFrame = bgfx::frame();
-
-            // this is required only when using Qt in macOS
-#if defined(__APPLE__)
-            bgfx::frame();
-#endif // __APPLE__
-
-            DerivedRenderApp::CNV::postDraw(derived());
         }
 
         if (mReadRequest != std::nullopt) {
@@ -217,6 +211,11 @@ public:
             // solicit new frame
             derived()->update();
         }
+
+        // this is required only when using Qt in macOS
+#if defined(__APPLE__)
+        bgfx::frame();
+#endif // __APPLE__
     }
 
     /**

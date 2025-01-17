@@ -212,8 +212,9 @@ protected:
         // viewport
         auto size = DerivedRenderApp::DRW::canvasSize(derived());
 
-        const Point4f vp       = {.0f, .0f, float(size.x()), float(size.y())};
-        auto          callback = [=, this](const ReadData& dt) {
+        const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
+
+        auto callback = [=, this](const ReadData& dt) {
             mReadRequested = false;
 
             const auto& data = std::get<FloatData>(dt);
