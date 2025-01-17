@@ -20,6 +20,9 @@ namespace vcl::lines {
         bgfx::VertexBufferHandle            mVerticesBH         = BGFX_INVALID_HANDLE;
         bgfx::IndexBufferHandle             mIndexesBH          = BGFX_INVALID_HANDLE;
 
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::DRAWABLE_CPU_GENERATED_LINES);
+
         public:
             TextureBasedLines() = default;
 

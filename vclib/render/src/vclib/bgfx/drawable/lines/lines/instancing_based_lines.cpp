@@ -2,7 +2,6 @@
 
 namespace vcl::lines {
     InstancingBasedLines::InstancingBasedLines(const std::vector<LinesVertex> &points) :
-        DrawableLines("lines/instancing_based_lines/vs_instancing_based_lines", "lines/instancing_based_lines/fs_instancing_based_lines"),
         mPoints(points)
     {
         allocateVerticesBuffer();
@@ -35,6 +34,10 @@ namespace vcl::lines {
     }
 
     void InstancingBasedLines::swap(InstancingBasedLines& other) {
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
+
         std::swap(mPoints, other.mPoints);
 
         std::swap(mVerticesBH, other.mVerticesBH);

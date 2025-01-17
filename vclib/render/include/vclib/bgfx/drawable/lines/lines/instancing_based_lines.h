@@ -12,6 +12,9 @@ namespace vcl::lines {
         bgfx::IndexBufferHandle     mIndexesBH      = BGFX_INVALID_HANDLE;
         bgfx::InstanceDataBuffer    mInstanceDB;
 
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::DRAWABLE_CPU_GENERATED_LINES);
+
         public:
             InstancingBasedLines() = default;
 

@@ -5,8 +5,6 @@
 #include <vclib/bgfx/drawable/lines/polylines/indirect_based_polylines.h>
 #include <vclib/bgfx/drawable/lines/polylines/texture_based_polylines.h>
 
-#include <vclib/bgfx/context.h>
-
 namespace vcl::lines {
 
     std::unique_ptr<DrawablePolylines> DrawablePolylines::create(const std::vector<LinesVertex> &points, LinesTypes type) {
@@ -49,27 +47,5 @@ namespace vcl::lines {
         }
         assert((void("Lines type is incorrect"), true));
         throw std::invalid_argument("Invalid enum case");
-    }
-
-    DrawablePolylines::DrawablePolylines(const std::string& vs_name,  const std::string& fs_name) {
-        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_MESH);
-        assert(bgfx::isValid(mLinesPH));
-    }
-
-    DrawablePolylines::DrawablePolylines(const DrawablePolylines& other) {
-        mLinesPH = other.mLinesPH;
-        mSettings = other.mSettings;
-        assert(bgfx::isValid(mLinesPH));
-    }
-
-    DrawablePolylines::DrawablePolylines(DrawablePolylines&& other) {
-        mLinesPH = other.mLinesPH;
-        mSettings = other.mSettings;
-        assert(bgfx::isValid(mLinesPH));
-    }
-
-    DrawablePolylines::~DrawablePolylines() {
-        if(bgfx::isValid(mLinesPH))
-            bgfx::destroy(mLinesPH);
     }
 }

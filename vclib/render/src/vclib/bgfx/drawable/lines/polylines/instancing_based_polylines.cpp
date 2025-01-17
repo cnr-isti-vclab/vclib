@@ -3,7 +3,6 @@
 
 namespace vcl::lines {
     InstancingBasedPolylines::InstancingBasedPolylines(const std::vector<LinesVertex> &points) :
-        DrawablePolylines("polylines/instancing_based_polylines/vs_instancing_based_segments", "polylines/instancing_based_polylines/fs_instancing_based_polylines"),
         mJoinesPH(vcl::loadProgram("polylines/instancing_based_polylines/vs_instancing_based_joins", "polylines/instancing_based_polylines/fs_instancing_based_polylines"))
     {
         allocateVerticesBuffer();
@@ -49,6 +48,10 @@ namespace vcl::lines {
     }
 
     void InstancingBasedPolylines::swap(InstancingBasedPolylines& other) {
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
+        
         std::swap(mSegmentsInstanceDB, other.mSegmentsInstanceDB);
         std::swap(mJoinsInstanceDB, other.mJoinsInstanceDB);
 

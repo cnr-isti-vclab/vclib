@@ -2,7 +2,6 @@
 
 namespace vcl::lines {
     CPUGeneratedPolylines::CPUGeneratedPolylines(const std::vector<LinesVertex> &points) :
-        DrawablePolylines("polylines/cpu_generated_polylines/vs_cpu_generated_polylines", "polylines/cpu_generated_polylines/fs_cpu_generated_polylines"),
         mPointsSize(points.size())
     {
         allocateVertexBuffer();
@@ -45,6 +44,10 @@ namespace vcl::lines {
     }
 
     void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other) {
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
+
         std::swap(mPointsSize, other.mPointsSize);
 
         std::swap(mVertices, other.mVertices);

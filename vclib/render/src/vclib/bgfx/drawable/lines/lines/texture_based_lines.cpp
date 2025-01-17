@@ -3,7 +3,6 @@
 
 namespace vcl::lines {
     TextureBasedLines::TextureBasedLines(const std::vector<LinesVertex> &points, const uint32_t maxTextureSize) :
-        DrawableLines("lines/texture_based_lines/vs_texture_based_lines", "lines/texture_based_lines/fs_texture_based_lines"),
         mMaxTextureSize(maxTextureSize),
         mPoints(points),
         mIndirectBH(bgfx::createIndirectBuffer(1)),
@@ -68,7 +67,9 @@ namespace vcl::lines {
     }
 
     void TextureBasedLines::swap(TextureBasedLines& other) {
-        // std::swap((DrawableLines&)*this, (DrawableLines&)other);
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
 
         std::swap(mMaxTextureSize, other.mMaxTextureSize);
         std::swap(mPoints, other.mPoints);

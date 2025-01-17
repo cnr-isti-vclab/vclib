@@ -3,7 +3,6 @@
 
 namespace vcl::lines { 
     GPUGeneratedPolylines::GPUGeneratedPolylines(const std::vector<LinesVertex> &points) :
-        DrawablePolylines("polylines/cpu_generated_polylines/vs_cpu_generated_polylines", "polylines/cpu_generated_polylines/fs_cpu_generated_polylines"),
         mPoints(points),
         mComputeVertexPH(bgfx::createProgram(vcl::loadShader("polylines/gpu_generated_polylines/cs_compute_buffers"), true)),
         mComputeDataUH(bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4))
@@ -59,6 +58,10 @@ namespace vcl::lines {
     }
  
     void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other) {
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
+
         std::swap(mPoints, other.mPoints);
 
         std::swap(mPointsBH, other.mPointsBH);

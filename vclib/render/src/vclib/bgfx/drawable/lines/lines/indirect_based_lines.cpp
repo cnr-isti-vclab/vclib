@@ -4,7 +4,6 @@
 
 namespace vcl::lines {
     IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex> &points) :
-        DrawableLines("lines/indirect_based_lines/vs_indirect_based_lines", "lines/indirect_based_lines/fs_indirect_based_lines"),
         mPoints(points),
         mIndirectBH(bgfx::createIndirectBuffer(1)),
         mIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
@@ -59,6 +58,10 @@ namespace vcl::lines {
     }
 
     void IndirectBasedLines::swap(IndirectBasedLines& other) {
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
+
         std::swap(mVerticesBH, other.mVerticesBH);
         std::swap(mIndexesBH, other.mIndexesBH);
         std::swap(mPointsBH, other.mPointsBH);

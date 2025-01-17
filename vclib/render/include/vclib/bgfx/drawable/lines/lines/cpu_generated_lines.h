@@ -13,6 +13,10 @@ namespace vcl::lines {
         bgfx::DynamicVertexBufferHandle     mVerticesBH     = BGFX_INVALID_HANDLE;
         bgfx::DynamicIndexBufferHandle      mIndexesBH      = BGFX_INVALID_HANDLE;
 
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::DRAWABLE_CPU_GENERATED_LINES);
+
+
         public:
             CPUGeneratedLines() = default;
 

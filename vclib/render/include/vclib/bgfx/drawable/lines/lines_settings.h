@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <bgfx/bgfx.h>
 #include <vclib/bgfx/drawable/lines/lines_utils.h>
+#include <vclib/bgfx/uniform.h>
 
 namespace vcl::lines {
 
@@ -39,7 +40,7 @@ namespace vcl::lines {
             Joins mJoin;
             ColorToUse mColorToUse;
 
-            bgfx::UniformHandle mDataUH;
+            Uniform mDataUH;
 
         public:
 
@@ -55,12 +56,7 @@ namespace vcl::lines {
                 mJoin(Joins::ROUND_JOIN),
                 mColorToUse(ColorToUse::GENERAL_COLOR)
             {
-                mDataUH = bgfx::createUniform("u_data", bgfx::UniformType::Vec4);
-            }
-
-            ~LinesSettings() {
-                if(bgfx::isValid(mDataUH))
-                    bgfx::destroy(mDataUH);
+                mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);
             }
 
             Joins getJoin() const { return mJoin; }
@@ -101,7 +97,7 @@ namespace vcl::lines {
                     static_cast<uint8_t>(mColorToUse)  
                 );
                 uint32_t data[] = {mGeneralColor, thickness_antialias_border_caps_color, mBorderColor, 0};
-                bgfx::setUniform(mDataUH, data);
+                mDataUH.bind(data);
             }
 
             void bindUniformPolylines() const {
@@ -122,7 +118,7 @@ namespace vcl::lines {
                 );
 
                 uint32_t data[] = {mGeneralColor, thickness_antialias_border_miterlimit, mBorderColor, caps_join_color};
-                bgfx::setUniform(mDataUH, data);
+                mDataUH.bind(data);
             }
     };
 }

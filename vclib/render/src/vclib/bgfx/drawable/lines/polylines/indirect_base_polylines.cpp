@@ -3,7 +3,6 @@
 
 namespace vcl::lines {
     IndirectBasedPolylines::IndirectBasedPolylines(const std::vector<LinesVertex> &points) :
-        DrawablePolylines("polylines/indirect_based_polylines/vs_indirect_based_segments", "polylines/indirect_based_polylines/fs_indirect_based_polylines"),
         mPoints(points),
         mJoinesIndirectBH(bgfx::createIndirectBuffer(1)),
         mSegmentsIndirectBH(bgfx::createIndirectBuffer(1)),
@@ -68,6 +67,10 @@ namespace vcl::lines {
     }
 
     void IndirectBasedPolylines::swap(IndirectBasedPolylines& other) {
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
+
         std::swap(mPoints, other.mPoints);
         
         std::swap(mVerticesBH, other.mVerticesBH);

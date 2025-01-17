@@ -13,6 +13,9 @@ namespace vcl::lines {
         bgfx::DynamicIndexBufferHandle     mSegmentsIndexesBH   = BGFX_INVALID_HANDLE;
         bgfx::DynamicIndexBufferHandle     mJoinsIndexesBH      = BGFX_INVALID_HANDLE;
 
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::DRAWABLE_CPU_GENERATED_LINES);
+
         public:
             CPUGeneratedPolylines() = default;
 

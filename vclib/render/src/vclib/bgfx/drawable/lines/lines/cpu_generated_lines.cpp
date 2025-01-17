@@ -4,7 +4,6 @@
 
 namespace vcl::lines {
     CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex> &points) :
-        DrawableLines("lines/cpu_generated_lines/vs_cpu_generated_lines", "lines/cpu_generated_lines/fs_cpu_generated_lines"),
         mPointsSize(points.size())
     {
         allocateVertexBuffer();

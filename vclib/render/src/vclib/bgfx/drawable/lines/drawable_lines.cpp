@@ -5,9 +5,6 @@
 #include <vclib/bgfx/drawable/lines/lines/indirect_based_lines.h>
 #include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 
-#include <vclib/bgfx/context.h>
-
-
 namespace vcl::lines {
 
     std::unique_ptr<DrawableLines> DrawableLines::create(const std::vector<LinesVertex> &points, LinesTypes type) {
@@ -53,24 +50,4 @@ namespace vcl::lines {
         assert((void("Lines type is incorrect"), true));
         throw std::invalid_argument("Invalid enum case");
     }
-
-    DrawableLines::DrawableLines(const std::string& vs_name,  const std::string& fs_name) {
-        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_CPU_GENERATED_LINES);
-        assert(bgfx::isValid(mLinesPH));
-    }
-
-    DrawableLines::DrawableLines(const DrawableLines& other) {
-        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_CPU_GENERATED_LINES);
-        assert(bgfx::isValid(mLinesPH));
-    }
-
-    DrawableLines::DrawableLines(DrawableLines&& other) {
-        mLinesPH = Context::instance().programManager().getProgram(VclProgram::DRAWABLE_CPU_GENERATED_LINES);
-        assert(bgfx::isValid(mLinesPH));
-    }
-
-    DrawableLines::~DrawableLines() {
-        if(bgfx::isValid(mLinesPH))
-            bgfx::destroy(mLinesPH);
-    } 
 }

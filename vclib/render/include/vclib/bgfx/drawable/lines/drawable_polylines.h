@@ -1,7 +1,7 @@
 #pragma once
 #include <vclib/render/interfaces/drawable_object_i.h>
 #include <vclib/bgfx/drawable/lines/lines_settings.h>
-
+#include <vclib/bgfx/context.h>
 #include <bgfx/bgfx.h>
 
 namespace vcl::lines {
@@ -12,13 +12,7 @@ namespace vcl::lines {
             
             DrawablePolylines() = default;
 
-            DrawablePolylines(const std::string& vs_name, const std::string& fs_name);
-
-            DrawablePolylines(const DrawablePolylines& other);
-
-            DrawablePolylines(DrawablePolylines&& other);
-
-            virtual ~DrawablePolylines();
+            virtual ~DrawablePolylines() = default;
 
             vcl::Box3d boundingBox() const override { 
                 return vcl::Box3d(vcl::Point3d(-1,-1,-1), vcl::Point3d(1, 1, 1));
@@ -34,8 +28,6 @@ namespace vcl::lines {
 
         protected: 
             bool mVisible = true;
-            
-            LinesSettings               mSettings;
-            bgfx::ProgramHandle         mLinesPH = BGFX_INVALID_HANDLE;
+            LinesSettings mSettings;
     };
 }
