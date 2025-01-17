@@ -71,6 +71,59 @@ void setReferencedVertices(
 } // namespace detail
 
 /**
+ * @brief Count the number of references to vertices in the mesh faces.
+ *
+ * If the mesh is a TriangleMesh, the number of references is equal to the
+ * number of faces times 3. Otherwise, the function counts the number of
+ * references to vertices in each face of the mesh.
+ *
+ * @param[in] mesh: The input mesh. It must satisfy the MeshConcept.
+ * @return The number of references to vertices in the mesh faces.
+ */
+uint countPerFaceVertexReferences(const MeshConcept auto& mesh)
+{
+    using MeshType = decltype(mesh);
+
+    uint nRefs = 0;
+
+    if constexpr (FaceMeshConcept<MeshType>) {
+        if constexpr (TriangleMeshConcept<MeshType>) {
+            return mesh.faceNumber() * 3;
+        }
+        else {
+            for (const auto& f : mesh.faces()) {
+                nRefs += f.vertexNumber();
+            }
+        }
+    }
+
+    return nRefs;
+}
+
+/**
+ * @brief Counts the number of resulting triangles if the input mesh would be
+ * triangulated by splitting each face into triangles.
+ *
+ * @param[in] mesh: The input mesh. It must satisfy the MeshConcept.
+ * @return The number of resulting triangles if the input mesh would be
+ * triangulated by splitting each face into triangles.
+ */
+uint countTriangulatedTriangles(const MeshConcept auto& mesh)
+{
+    using MeshType = decltype(mesh);
+
+    uint nTris = 0;
+
+    if constexpr (FaceMeshConcept<MeshType>) {
+        for (const auto& f : mesh.faces()) {
+            nTris += f.vertexNumber() - 2;
+        }
+    }
+
+    return nTris;
+}
+
+/**
  * @brief Returns a Container of values interpreted as booleans telling, for
  * each vertex of the mesh, if it is referenced.
  *

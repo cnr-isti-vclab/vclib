@@ -31,7 +31,8 @@ namespace vcl {
 /**
  * @brief Export the vertex coordinates of a mesh to a buffer.
  *
- * This function exports the vertex coordinates of a mesh to a buffer. The
+ * This function exports the vertex coordinates of a mesh to a buffer. Vertices
+ * are stored in the buffer following the order they appear in the mesh.  The
  * buffer must be preallocated with the correct size (number of vertices times
  * the number of coordinates per vertex).
  *
@@ -75,9 +76,10 @@ void vertexCoordsToBuffer(
  * @brief Export into a buffer the vertex indices for each triangle of a Mesh.
  *
  * This function exports the vertex indices of the triangles of a mesh to a
- * buffer. The buffer must be preallocated with the correct size (number of
- * faces times 3). The function assumes that the input mesh is a triangle mesh
- * (if there are polygonal faces, only the first three vertices are considered).
+ * buffer. Indices are stored following the order the faces appear in the mesh.
+ * The buffer must be preallocated with the correct size (number of faces times
+ * 3). The function assumes that the input mesh is a triangle mesh (if there are
+ * polygonal faces, only the first three vertices are considered).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible
@@ -120,8 +122,9 @@ void trianglesToBuffer(
  * a mesh to a buffer.
  *
  * This function exports the selection status of the elements identified by
- * `ELEM_ID` of a mesh to a buffer. The buffer must be preallocated with the
- * correct size (number of elements).
+ * `ELEM_ID` of a mesh to a buffer. Values are stored in the buffer following
+ * the order the elements appear in the mesh. The buffer must be preallocated
+ * with the correct size (number of elements).
  *
  * Usage example with std::vector<bool>:
  *
@@ -152,8 +155,9 @@ void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @brief Export the selection status of the vertices of a mesh to a buffer.
  *
  * This function exports the selection status of the vertices of a mesh to a
- * buffer. The buffer must be preallocated with the correct size (number of
- * elements).
+ * buffer. Values are stored in the buffer following the order the vertices
+ * appear in the mesh. The buffer must be preallocated with the correct size
+ * (number of elements).
  *
  * Usage example with std::vector<bool>:
  *
@@ -180,7 +184,8 @@ void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @brief Export the selection status of the faces of a mesh to a buffer.
  *
  * This function exports the selection status of the faces of a mesh to a
- * buffer. The buffer must be preallocated with the correct size (number of
+ * buffer. Values are stored in the buffer following the order the faces appear
+ * in the mesh. The buffer must be preallocated with the correct size (number of
  * elements).
  *
  * Usage example with std::vector<bool>:
@@ -208,7 +213,8 @@ void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @brief Export the selection status of the edges of a mesh to a buffer.
  *
  * This function exports the selection status of the edges of a mesh to a
- * buffer. The buffer must be preallocated with the correct size (number of
+ * buffer. Values are stored in the buffer following the order the edges appear
+ * in the mesh. The buffer must be preallocated with the correct size (number of
  * elements).
  *
  * Usage example with std::vector<bool>:
@@ -237,8 +243,9 @@ void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * buffer.
  *
  * This function exports the element normals identified by `ELEM_ID` of a mesh
- * to a buffer. The buffer must be preallocated with the correct size (number of
- * elements times 3).
+ * to a buffer. Normals are stored in the buffer following the order the
+ * elements appear in the mesh. The buffer must be preallocated with the correct
+ * size (number of elements times 3).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the element indices of the mesh. This scenario is possible
@@ -283,8 +290,10 @@ void elementNormalsToBuffer(
 /**
  * @brief Export the vertex normals of a mesh to a buffer.
  *
- * This function exports the vertex normals of a mesh to a buffer. The buffer
- * must be preallocated with the correct size (number of vertices times 3).
+ * This function exports the vertex normals of a mesh to a buffer. Normals are
+ * stored in the buffer following the order the vertices appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of vertices times
+ * 3).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -307,8 +316,9 @@ void vertexNormalsToBuffer(
 /**
  * @brief Export the face normals of a mesh to a buffer.
  *
- * This function exports the face normals of a mesh to a buffer. The buffer must
- * be preallocated with the correct size (number of faces times 3).
+ * This function exports the face normals of a mesh to a buffer. Normals are
+ * stored in the buffer following the order the faces appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of faces times 3).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible when
@@ -333,8 +343,9 @@ void faceNormalsToBuffer(
  * buffer having a value for each color component (RGBA).
  *
  * This function exports the element colors identified by `ELEM_ID` of a mesh
- * to a buffer. The buffer must be preallocated with the correct size (number of
- * elements times 4).
+ * to a buffer. Colors are stored in the buffer following the order the elements
+ * appear in the mesh. The buffer must be preallocated with the correct size
+ * (number of elements times 4).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the element indices of the mesh. This scenario is possible
@@ -389,8 +400,9 @@ void elementColorsToBuffer(
  * value using the provided format).
  *
  * This function exports the element colors identified by `ELEM_ID` of a mesh to
- * a buffer. The buffer must be preallocated with the correct size (number of
- * elements).
+ * a buffer. Colors are stored in the buffer following the order the elements
+ * appear in the mesh. The buffer must be preallocated with the correct size
+ * (number of elements).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the element indices of the mesh. This scenario is possible when
@@ -425,8 +437,10 @@ void elementColorsToBuffer(
  * @brief Export the vertex colors of a mesh to a buffer having a value for each
  * color component (RGBA).
  *
- * This function exports the vertex colors of a mesh to a buffer. The buffer
- * must be preallocated with the correct size (number of vertices times 4).
+ * This function exports the vertex colors of a mesh to a buffer. Colors are
+ * stored in the buffer following the order the vertices appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of vertices times
+ * 4).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -455,8 +469,9 @@ void vertexColorsToBuffer(
  * color (the color is packed in a single 32 bit value using the provided
  * format).
  *
- * This function exports the vertex colors of a mesh to a buffer. The buffer
- * must be preallocated with the correct size (number of vertices).
+ * This function exports the vertex colors of a mesh to a buffer. Colors are
+ * stored in the buffer following the order the vertices appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of vertices).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible when
@@ -480,8 +495,9 @@ void vertexColorsToBuffer(
  * @brief Export the face colors of a mesh to a buffer having a value for each
  * color component (RGBA).
  *
- * This function exports the face colors of a mesh to a buffer. The buffer
- * must be preallocated with the correct size (number of faces times 4).
+ * This function exports the face colors of a mesh to a buffer. Colors are
+ * stored in the buffer following the order the faces appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of faces times 4).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible
@@ -509,8 +525,9 @@ void faceColorsToBuffer(
  * color (the color is packed in a single 32 bit value using the provided
  * format).
  *
- * This function exports the face colors of a mesh to a buffer. The buffer
- * must be preallocated with the correct size (number of faces).
+ * This function exports the face colors of a mesh to a buffer. Colors are
+ * stored in the buffer following the order the faces appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of faces).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible when
@@ -535,8 +552,9 @@ void faceColorsToBuffer(
  * buffer.
  *
  * This function exports the element quality identified by `ELEM_ID` of a mesh
- * to a buffer. The buffer must be preallocated with the correct size (number of
- * elements).
+ * to a buffer. Quality values are stored in the buffer following the order the
+ * elements appear in the mesh. The buffer must be preallocated with the correct
+ * size (number of elements).
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the element indices of the mesh. This scenario is possible when
@@ -562,8 +580,10 @@ void elementQualityToBuffer(const MeshType& mesh, auto* buffer)
 /**
  * @brief Export the vertex quality of a mesh to a buffer.
  *
- * This function exports the vertex quality of a mesh to a buffer. The buffer
- * must be preallocated with the correct size (number of vertices).
+ * This function exports the vertex quality of a mesh to a buffer. Quality
+ * values are stored in the buffer following the order the vertices appear in
+ * the mesh. The buffer must be preallocated with the correct size (number of
+ * vertices).
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the vertex indices of the mesh. This scenario is possible when
@@ -582,8 +602,9 @@ void vertexQualityToBuffer(const MeshType& mesh, auto* buffer)
 /**
  * @brief Export the face quality of a mesh to a buffer.
  *
- * This function exports the face quality of a mesh to a buffer. The buffer
- * must be preallocated with the correct size (number of faces).
+ * This function exports the face quality of a mesh to a buffer. Quality values
+ * are stored in the buffer following the order the faces appear in the mesh.
+ * The buffer must be preallocated with the correct size (number of faces).
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the face indices of the mesh. This scenario is possible when
