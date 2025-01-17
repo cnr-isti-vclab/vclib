@@ -23,7 +23,7 @@
 #ifndef VCL_LOAD_SAVE_OFF_LOAD_H
 #define VCL_LOAD_SAVE_OFF_LOAD_H
 
-#include <vclib/algorithms/mesh/polygon.h>
+#include <vclib/algorithms/mesh/face_topology.h>
 #include <vclib/exceptions/io.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/read.h>

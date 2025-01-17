@@ -30,7 +30,6 @@
 #include "mesh/filter.h"
 #include "mesh/import_export.h"
 #include "mesh/point_sampling.h"
-#include "mesh/polygon.h"
 #include "mesh/shuffle.h"
 #include "mesh/smooth.h"
 #include "mesh/sort.h"

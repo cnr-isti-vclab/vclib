@@ -25,7 +25,7 @@
 
 #include "header.h"
 
-#include <vclib/algorithms/mesh/polygon.h>
+#include <vclib/algorithms/mesh/face_topology.h>
 #include <vclib/exceptions/io.h>
 #include <vclib/io/file_type.h>
 #include <vclib/io/read.h>
