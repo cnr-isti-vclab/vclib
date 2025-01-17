@@ -557,11 +557,11 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
  * some private member functions of the RenderApp class to the CanvasType class.
  *
  * The member functions of the RenderApp::CNV inner class can be called only by
- * the CanvasType class. For example, to call the update member function,
+ * the CanvasType class. For example, to call the draw member function,
  * the CanvasType can call it in the following way:
  *
  * @code{.cpp}
- * RenderApp::CNV::update(static_cast<RenderApp*>(this));
+ * RenderApp::CNV::draw(static_cast<RenderApp*>(this));
  * @endcode
  */
 template<
