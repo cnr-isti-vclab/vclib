@@ -22,4 +22,6 @@ void main() {
 		discard;
 	else
 		gl_FragColor = color;
+
+    gl_FragDepth = gl_FragCoord.z - 0.00005;
 }

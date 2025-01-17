@@ -48,7 +48,7 @@ namespace vcl::lines {
                 mAntialias(0),
                 mBorder(0),
                 mBorderColor(LinesVertex::COLOR(0, 0, 0, 1)),
-                mGeneralColor(LinesVertex::COLOR(1, 0, 0, 1)),
+                mGeneralColor(LinesVertex::COLOR(0, 0, 0, 1)),
                 mMiterLimit(mThickness * 2),
                 mLeftCap(Caps::ROUND_CAP),
                 mRigthCap(Caps::ROUND_CAP),

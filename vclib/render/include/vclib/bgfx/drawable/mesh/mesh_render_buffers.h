@@ -98,8 +98,9 @@ public:
         std::swap(mEdgeIndexBH, other.mEdgeIndexBH);
         std::swap(mEdgeNormalBH, other.mEdgeNormalBH);
         std::swap(mEdgeColorBH, other.mEdgeColorBH);
-        std::swap(mWireframeBH, other.mWireframeBH);
         std::swap(mTexturesH, other.mTexturesH);
+
+        mWireframeBH.swap(other.mWireframeBH);
     }
 
     void update(const MeshType& mesh)
@@ -335,6 +336,7 @@ private:
         // wireframe index buffer
         if (Base::wireframeBufferData()) {
             mWireframeBH = lines::CPUGeneratedLines(*Base::wireframeBufferData());
+            mWireframeBH.getSettings().setThickness(2);
         }
 
         // textures

@@ -68,7 +68,7 @@ namespace vcl::lines {
     }
 
     void TextureBasedLines::swap(TextureBasedLines& other) {
-        // std::swap((Lines&)*this, (Lines&)other);
+        // std::swap((DrawableLines&)*this, (DrawableLines&)other);
 
         std::swap(mMaxTextureSize, other.mMaxTextureSize);
         std::swap(mPoints, other.mPoints);

@@ -42,9 +42,17 @@ namespace vcl::lines {
     }
 
     void CPUGeneratedLines::swap(CPUGeneratedLines& other) {
+        std::swap(mLinesPH, other.mLinesPH);
+        std::swap(mSettings, other.mSettings);
+        std::swap(mVisible, other.mVisible);
+        
         std::swap(mPointsSize, other.mPointsSize);
+        
         std::swap(mIndexesBH, other.mIndexesBH);
         std::swap(mVerticesBH, other.mVerticesBH);
+
+        std::swap(mVertices, other.mVertices);
+        std::swap(mIndexes, other.mIndexes);
     }
 
     std::shared_ptr<vcl::DrawableObjectI> CPUGeneratedLines::clone() const {

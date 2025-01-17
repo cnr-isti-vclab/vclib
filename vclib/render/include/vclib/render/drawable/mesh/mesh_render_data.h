@@ -631,44 +631,41 @@ private:
 
     void fillWireframe(const MeshType& m)
     {
-        // if constexpr (vcl::HasFaces<MeshType>) {
-        //     using FaceType = MeshType::FaceType;
-        //     if constexpr (FaceType::VERTEX_NUMBER < 0) {
-        //         // assuming faces are triangles; if they are not, reallocation
-        //         // during push_back will be possible
-        //         mWireframe.reserve(6 * m.faceNumber()); // 2 indices * 3 edges
-        //     }
-        //     else {
-        //         mWireframe.reserve(
-        //             2 * FaceType::VERTEX_NUMBER * m.faceNumber());
-        //     }
+        if constexpr (vcl::HasFaces<MeshType>) {
+            using FaceType = MeshType::FaceType;
+            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+                // assuming faces are triangles; if they are not, reallocation
+                // during push_back will be possible
+                mWireframe.reserve(6 * m.faceNumber()); // 2 indices * 3 edges
+            }
+            else {
+                mWireframe.reserve(
+                    2 * FaceType::VERTEX_NUMBER * m.faceNumber());
+            }
 
-        //     for (const auto& f : m.faces()) {
-        //         for (uint i = 0; i < f.vertexNumber(); ++i) {
-        //             uint index0 = m.vertexIndexIfCompact(m.index(f.vertex(i)));
-        //             uint index1 = m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1))));
+            for (const auto& f : m.faces()) {
+                for (uint i = 0; i < f.vertexNumber(); ++i) {
+                    uint index0 = m.vertexIndexIfCompact(m.index(f.vertex(i)));
+                    uint index1 = m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1))));
                     
-        //             mWireframe.push_back(
-        //                 lines::LinesVertex(
-        //                     mVerts[index0 * 3], mVerts[(index0 * 3) + 1], mVerts[(index0 * 3) + 2],
-        //                     lines::LinesVertex::COLOR(1, 0, 0, 1),
-        //                     mVNormals[index0 * 3], mVNormals[(index0 * 3) + 1], mVNormals[(index0 * 3) + 2]
-        //                 )
-        //             );
+                    mWireframe.push_back(
+                        lines::LinesVertex(
+                            mVerts[index0 * 3], mVerts[(index0 * 3) + 1], mVerts[(index0 * 3) + 2],
+                            lines::LinesVertex::COLOR(1, 0, 0, 1),
+                            mVNormals[index0 * 3], mVNormals[(index0 * 3) + 1], mVNormals[(index0 * 3) + 2]
+                        )
+                    );
 
-        //             mWireframe.push_back(
-        //                 lines::LinesVertex(
-        //                     mVerts[index1 * 3], mVerts[(index1 * 3) + 1], mVerts[(index1 * 3) + 2],
-        //                     lines::LinesVertex::COLOR(1, 0, 0, 1),
-        //                     mVNormals[index1 * 3], mVNormals[(index1 * 3) + 1], mVNormals[(index1 * 3) + 2]
-        //                 )
-        //             );
-        //         }
-        //     }
-        // }
-        mWireframe.push_back(lines::LinesVertex(0.0, 0.0f, 0.0f, lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)));
-        mWireframe.push_back(lines::LinesVertex(0.5, 0.5f, 0.0f, lines::LinesVertex::COLOR(1.0, 1.0, 0.0, 1.0)));
-        
+                    mWireframe.push_back(
+                        lines::LinesVertex(
+                            mVerts[index1 * 3], mVerts[(index1 * 3) + 1], mVerts[(index1 * 3) + 2],
+                            lines::LinesVertex::COLOR(1, 0, 0, 1),
+                            mVNormals[index1 * 3], mVNormals[(index1 * 3) + 1], mVNormals[(index1 * 3) + 2]
+                        )
+                    );
+                }
+            }
+        }
     }
 
     void fillTextures(const MeshType& m)

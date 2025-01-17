@@ -28,6 +28,8 @@
 
 class ImguiDemo : public vcl::glfw::ViewerWindowImgui
 {
+std::shared_ptr<vcl::DrawableMesh<vcl::TriMesh>> mesh;
+
 public:
     ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
     {
