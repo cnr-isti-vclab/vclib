@@ -22,8 +22,10 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/glfw/window_manager.h>
+// imgui drawer must be included before the window manager...
 #include <vclib/imgui/imgui_drawer.h>
+
+#include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
