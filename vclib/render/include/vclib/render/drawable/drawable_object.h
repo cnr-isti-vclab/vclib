@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
-#define VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
+#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
+#define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/point.h>
@@ -141,4 +141,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
+#endif // VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H

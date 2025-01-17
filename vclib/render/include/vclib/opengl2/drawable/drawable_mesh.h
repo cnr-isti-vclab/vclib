@@ -23,8 +23,8 @@
 #ifndef VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
 #define VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
 
-#include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/render/drawable/mesh/mesh_render_data.h>
 
 #include <vclib/opengl2/drawable/draw_objects3.h>
 

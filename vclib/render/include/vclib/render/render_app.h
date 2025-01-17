@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -54,16 +54,19 @@ namespace vcl {
  * the WindowManagerConcept.
  */
 template<
-    template<typename> typename WindowManagerT,
-    template<typename> typename CanvasT,
-    template<typename> typename... Drawers>
+    template<typename>
+    typename WindowManagerT,
+    template<typename>
+    typename CanvasT,
+    template<typename>
+    typename... Drawers>
 class RenderApp :
         public WindowManagerT<RenderApp<WindowManagerT, CanvasT, Drawers...>>,
         public CanvasT<RenderApp<WindowManagerT, CanvasT, Drawers...>>,
         public Drawers<RenderApp<WindowManagerT, CanvasT, Drawers...>>...
 {
     using WindowManagerType = WindowManagerT<RenderApp>;
-    using CanvasType = CanvasT<RenderApp>;
+    using CanvasType        = CanvasT<RenderApp>;
 
     static_assert(
         WindowManagerConcept<WindowManagerType>,
@@ -82,13 +85,13 @@ class RenderApp :
     KeyModifiers mKeyModifiers = {KeyModifier::NO_MODIFIER};
 
     // hide CanvasType member functions
-    using CanvasType::size;
-    using CanvasType::setDefaultClearColor;
     using CanvasType::onInit;
-    using CanvasType::onResize;
     using CanvasType::onPaint;
     using CanvasType::onReadDepth;
+    using CanvasType::onResize;
     using CanvasType::onScreenshot;
+    using CanvasType::setDefaultClearColor;
+    using CanvasType::size;
 
     // hide WindowManagerType member functions
     using WindowManagerType::displayId;
@@ -149,18 +152,19 @@ private:
      *
      * @param lambda
      */
-    template<typename D, typename ...Others>
+    template<typename D, typename... Others>
     void callEventFunForDrawers(auto lambda)
     {
         bool block = false;
-        if constexpr(EventDrawerConcept<D>){
+        if constexpr (EventDrawerConcept<D>) {
             if constexpr (BlockerEventDrawerConcept<D>) {
                 block = lambda.template operator()<D>(this);
-            } else {
+            }
+            else {
                 lambda.template operator()<D>(this);
             }
         }
-        if constexpr(sizeof...(Others) > 0){
+        if constexpr (sizeof...(Others) > 0) {
             if (!block) {
                 callEventFunForDrawers<Others...>(lambda);
             }
@@ -168,9 +172,7 @@ private:
     }
 
     // Base case when there are no drawers
-    void callEventFunForDrawers(auto lambda)
-    {
-    }
+    void callEventFunForDrawers(auto lambda) {}
 
     /***** Member functions called by WindowManagerType *****/
     // Documentation is in the RenderApp::WM inner class
@@ -203,13 +205,13 @@ private:
     {
         // given this object t and the type of a Drawer D, call the event member
         // function of the Drawer object
-        auto lambda = [&]<typename D>(auto* t){
+        auto lambda = [&]<typename D>(auto* t) {
             // NOTE: use static_cast<Drawers*>(this)->function() to call the
             // right VIRTUAL function of the Drawer object.
             return static_cast<D*>(t)->onKeyPress(key, mKeyModifiers);
         };
 
-               // call the lambda for all the drawers
+        // call the lambda for all the drawers
         callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
@@ -217,13 +219,13 @@ private:
     {
         // given this object t and the type of a Drawer D, call the event member
         // function of the Drawer object
-        auto lambda = [&]<typename D>(auto* t){
+        auto lambda = [&]<typename D>(auto* t) {
             // NOTE: use static_cast<Drawers*>(this)->function() to call the
             // right VIRTUAL function of the Drawer object.
             return static_cast<D*>(t)->onKeyRelease(key, mKeyModifiers);
         };
 
-               // call the lambda for all the drawers
+        // call the lambda for all the drawers
         callEventFunForDrawers<Drawers<RenderApp>...>(lambda);
     }
 
@@ -231,7 +233,7 @@ private:
     {
         // given this object t and the type of a Drawer D, call the event member
         // function of the Drawer object
-        auto lambda = [&]<typename D>(auto* t){
+        auto lambda = [&]<typename D>(auto* t) {
             // NOTE: use static_cast<Drawers*>(this)->function() to call the
             // right VIRTUAL function of the Drawer object.
             return static_cast<D*>(t)->onMouseMove(x, y, mKeyModifiers);
@@ -245,7 +247,7 @@ private:
     {
         // given this object t and the type of a Drawer D, call the event member
         // function of the Drawer object
-        auto lambda = [&]<typename D>(auto* t){
+        auto lambda = [&]<typename D>(auto* t) {
             // NOTE: use static_cast<Drawers*>(this)->function() to call the
             // right VIRTUAL function of the Drawer object.
             return static_cast<D*>(t)->onMousePress(
@@ -260,7 +262,7 @@ private:
     {
         // given this object t and the type of a Drawer D, call the event member
         // function of the Drawer object
-        auto lambda = [&]<typename D>(auto* t){
+        auto lambda = [&]<typename D>(auto* t) {
             // NOTE: use static_cast<Drawers*>(this)->function() to call the
             // right VIRTUAL function of the Drawer object.
             return static_cast<D*>(t)->onMouseRelease(
@@ -345,7 +347,7 @@ private:
     auto dCanvasFrameBuffer() const { return CanvasType::frameBuffer(); }
 
     [[nodiscard]] bool dReadDepth(
-        const Point2i&     point,
+        const Point2i&                      point,
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
         return CanvasType::onReadDepth(point, callback);
@@ -374,9 +376,12 @@ private:
  * @endcode
  */
 template<
-    template<typename> typename WindowManagerT,
-    template<typename> typename CanvasT,
-    template<typename> typename... Drawers>
+    template<typename>
+    typename WindowManagerT,
+    template<typename>
+    typename CanvasT,
+    template<typename>
+    typename... Drawers>
 class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
 {
     using WindowManagerType = WindowManagerT<RenderApp>;
@@ -477,7 +482,7 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
      * @param y
      */
     static void mousePress(
-        RenderApp*         r,
+        RenderApp*        r,
         MouseButton::Enum button,
         double            x,
         double            y)
@@ -499,7 +504,7 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
      * @param y
      */
     static void mouseRelease(
-        RenderApp*         r,
+        RenderApp*        r,
         MouseButton::Enum button,
         double            x,
         double            y)
@@ -521,7 +526,7 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
      * @param y
      */
     static void mouseDoubleClick(
-        RenderApp*         r,
+        RenderApp*        r,
         MouseButton::Enum button,
         double            x,
         double            y)
@@ -548,8 +553,8 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
 };
 
 /**
- * @brief The RenderApp::CNV inner class is an Attorney that allow access to some
- * private member functions of the RenderApp class to the CanvasType class.
+ * @brief The RenderApp::CNV inner class is an Attorney that allow access to
+ * some private member functions of the RenderApp class to the CanvasType class.
  *
  * The member functions of the RenderApp::CNV inner class can be called only by
  * the CanvasType class. For example, to call the update member function,
@@ -560,9 +565,12 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
  * @endcode
  */
 template<
-    template<typename> typename WindowManagerT,
-    template<typename> typename CanvasT,
-    template<typename> typename... Drawers>
+    template<typename>
+    typename WindowManagerT,
+    template<typename>
+    typename CanvasT,
+    template<typename>
+    typename... Drawers>
 class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
 {
     using CanvasType = CanvasT<RenderApp>;
@@ -593,9 +601,8 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
 };
 
 /**
- * @brief The RenderApp::DRW inner class is an Attorney that allow access to some
- * private member functions of the RenderApp class to the Drawer
- * classes.
+ * @brief The RenderApp::DRW inner class is an Attorney that allow access to
+ * some private member functions of the RenderApp class to the Drawer classes.
  *
  * The member functions of the RenderApp::DRW inner class can be called only by
  * the Drawer classes. For example, to call the canvasFrameBuffer member
@@ -606,9 +613,12 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
  * @endcode
  */
 template<
-    template<typename> typename WindowManagerT,
-    template<typename> typename CanvasT,
-    template<typename> typename... Drawers>
+    template<typename>
+    typename WindowManagerT,
+    template<typename>
+    typename CanvasT,
+    template<typename>
+    typename... Drawers>
 class RenderApp<WindowManagerT, CanvasT, Drawers...>::DRW
 {
     // TODO: right now all the function in this inner class are public,
@@ -616,9 +626,9 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::DRW
     // It will allowed in C++26: https://stackoverflow.com/a/78246001/5851101
     // As soon as this feature will be available on all the major compilers,
     // the functions will be made private.
-    //friend Drawers<RenderApp<WindowManagerT, CanvasT, Drawers...>>...;
-public: // TODO - remove this when C++26 is supported
+    // friend Drawers<RenderApp<WindowManagerT, CanvasT, Drawers...>>...;
 
+public: // TODO - remove this when C++26 is supported
     /**
      * @brief A Drawer object can request the window pointer of the window
      * manager (the exact meaning of the window pointer depends on the window
@@ -689,8 +699,8 @@ public: // TODO - remove this when C++26 is supported
      * @return true if the depth value is successfully read, false otherwise.
      */
     [[nodiscard]] static bool readDepth(
-        RenderApp* r,
-        const Point2i&     point,
+        RenderApp*                          r,
+        const Point2i&                      point,
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
         return r->dReadDepth(point, callback);
@@ -708,10 +718,10 @@ public: // TODO - remove this when C++26 is supported
      * canvas will be used.
      */
     static void screenshot(
-        RenderApp* r,
+        RenderApp*         r,
         const std::string& filename,
-        uint width = 0,
-        uint height = 0)
+        uint               width  = 0,
+        uint               height = 0)
     {
         r->dScreenshot(filename, width, height);
     }

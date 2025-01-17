@@ -49,7 +49,8 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 public:
     DrawableMeshBGFX() = default;
 
-    DrawableMeshBGFX(const MeshType& mesh) : AbstractDrawableMesh(mesh), MeshType(mesh)
+    DrawableMeshBGFX(const MeshType& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(mesh)
     {
         updateBuffers();
     }

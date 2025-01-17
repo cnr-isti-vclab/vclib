@@ -63,7 +63,7 @@ public:
      */
     struct Representation
     {
-        enum Enum {INT_0_255, FLOAT_0_1};
+        enum Enum { INT_0_255, FLOAT_0_1 };
     };
 
     /**

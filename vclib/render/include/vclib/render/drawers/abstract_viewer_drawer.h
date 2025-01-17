@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -25,9 +25,9 @@
 
 #include "event_drawer.h"
 
-#include <vclib/render/read_buffer_types.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/read_buffer_types.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 
 #include <memory>
@@ -72,8 +72,7 @@ public:
         return *mDrawList;
     }
 
-    void setDrawableObjectVector(
-        const std::shared_ptr<DrawableObjectVector>& v)
+    void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
     {
         mDrawList = v;
 
@@ -196,9 +195,9 @@ protected:
         double              x,
         double              y,
         const KeyModifiers& modifiers,
-        bool homogeneousNDC = true)
+        bool                homogeneousNDC = true)
     {
-        using ReadData = ReadBufferTypes::ReadData;
+        using ReadData  = ReadBufferTypes::ReadData;
         using FloatData = ReadBufferTypes::FloatData;
 
         if (mReadRequested)
@@ -208,13 +207,13 @@ protected:
         const Point2d p(x, y);
 
         // create the callback
-        const auto    proj = DTB::projectionMatrix();
-        const auto    view = DTB::viewMatrix();
+        const auto proj = DTB::projectionMatrix();
+        const auto view = DTB::viewMatrix();
         // viewport
         auto size = DerivedRenderApp::DRW::canvasSize(derived());
 
-        const Point4f vp   = {.0f, .0f, float(size.x()), float(size.y())};
-        auto callback      = [=, this](const ReadData& dt) {
+        const Point4f vp       = {.0f, .0f, float(size.x()), float(size.y())};
+        auto          callback = [=, this](const ReadData& dt) {
             mReadRequested = false;
 
             const auto& data = std::get<FloatData>(dt);

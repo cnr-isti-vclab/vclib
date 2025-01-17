@@ -20,13 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VIEWER_WIDGET_H
-#define VIEWER_WIDGET_H
+#ifndef VCL_QT_VIEWER_WIDGET_H
+#define VCL_QT_VIEWER_WIDGET_H
 
+#include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
-#include <vclib/qt/widget_manager.h>
 
 namespace vcl::qt {
 
@@ -35,4 +35,4 @@ using ViewerWidget =
 
 } // namespace vcl::qt
 
-#endif // VIEWER_WIDGET_H
+#endif // VCL_QT_VIEWER_WIDGET_H

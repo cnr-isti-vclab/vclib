@@ -251,7 +251,7 @@ uint removeUnreferencedVertices(MeshType& m)
     // Generate a vector of boolean flags indicating whether each vertex is
     // referenced by any of the mesh's elements.
 
-    uint              n = 0;
+    uint              n           = 0;
     std::vector<bool> refVertices = referencedVertices<std::vector<bool>>(m, n);
 
     // need to mark as deleted vertices only if the number of unreferenced is

@@ -41,10 +41,7 @@ public:
             bgfx::destroy(program);
     }
 
-    void onInit(vcl::uint viewId) override
-    {
-        setUpBGFX(viewId, vbh, program);
-    }
+    void onInit(vcl::uint viewId) override { setUpBGFX(viewId, vbh, program); }
 
     void onResize(vcl::uint width, vcl::uint height) override
     {
@@ -57,10 +54,7 @@ public:
         drawOnView(viewId, vbh, program);
     }
 
-    void onDraw(vcl::uint viewId) override
-    {
-        onDrawContent(viewId);
-    }
+    void onDraw(vcl::uint viewId) override { onDrawContent(viewId); }
 
 private:
     bgfx::VertexBufferHandle vbh;

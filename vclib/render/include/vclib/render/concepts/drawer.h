@@ -20,16 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_DRAWER_H
-#define CONCEPTS_DRAWER_H
+#ifndef VCL_RENDER_CONCEPTS_DRAWER_H
+#define VCL_RENDER_CONCEPTS_DRAWER_H
 
 #include <vclib/concepts.h>
 
 namespace vcl {
 
 template<typename T>
-concept DrawerConcept = requires(T&& obj)
-{
+concept DrawerConcept = requires (T&& obj) {
     RemoveRef<T>();
     RemoveRef<T>(uint(), uint());
 
@@ -45,4 +44,4 @@ concept DrawerConcept = requires(T&& obj)
 
 } // namespace vcl
 
-#endif // CONCEPTS_DRAWER_H
+#endif // VCL_RENDER_CONCEPTS_DRAWER_H

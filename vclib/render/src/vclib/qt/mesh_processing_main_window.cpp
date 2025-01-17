@@ -288,8 +288,8 @@ std::shared_ptr<proc::MeshI> MeshProcessingMainWindow::toMesh(
     return std::dynamic_pointer_cast<proc::MeshI>(drawable);
 }
 
-std::shared_ptr<AbstractDrawableMesh> MeshProcessingMainWindow::toAbstractDrawableMesh(
-    const std::shared_ptr<proc::MeshI>& mesh)
+std::shared_ptr<AbstractDrawableMesh> MeshProcessingMainWindow::
+    toAbstractDrawableMesh(const std::shared_ptr<proc::MeshI>& mesh)
 {
     return std::dynamic_pointer_cast<AbstractDrawableMesh>(mesh);
 }

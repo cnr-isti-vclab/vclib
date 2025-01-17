@@ -22,10 +22,10 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/canvas.h>
 #include <vclib/glfw/window_manager.h>
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 #include <imgui.h>

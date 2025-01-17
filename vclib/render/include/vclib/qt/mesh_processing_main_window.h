@@ -27,8 +27,8 @@
 
 #include <vclib/processing/action_manager.h>
 #include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
 namespace vcl::qt {
 

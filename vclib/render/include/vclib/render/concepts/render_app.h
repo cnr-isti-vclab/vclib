@@ -20,33 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_RENDER_APP_H
-#define CONCEPTS_RENDER_APP_H
+#ifndef VCL_RENDER_CONCEPTS_RENDER_APP_H
+#define VCL_RENDER_CONCEPTS_RENDER_APP_H
 
 #include <vclib/concepts.h>
 
 namespace vcl {
 
 template<typename T>
-concept RenderAppConcept =
-    requires (
-        T&&                                obj,
-        typename RemoveRef<T>::ParentType* pPtr,
-        std::string                        s,
-        uint                               u) {
-        typename RemoveRef<T>::ParentType;
+concept RenderAppConcept = requires (
+    T&&                                obj,
+    typename RemoveRef<T>::ParentType* pPtr,
+    std::string                        s,
+    uint                               u) {
+    typename RemoveRef<T>::ParentType;
 
-        RemoveRef<T>();
-        RemoveRef<T>(pPtr);
-        RemoveRef<T>(s, u, u);
-        RemoveRef<T>(s, u, u, pPtr);
+    RemoveRef<T>();
+    RemoveRef<T>(pPtr);
+    RemoveRef<T>(s, u, u);
+    RemoveRef<T>(s, u, u, pPtr);
 
-        // non const requirements
-        requires IsConst<T> || requires {
-            { obj.update() } -> std::same_as<void>;
-        };
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.update() } -> std::same_as<void>;
     };
+};
 
 } // namespace vcl
 
-#endif // CONCEPTS_RENDER_APP_H
+#endif // VCL_RENDER_CONCEPTS_RENDER_APP_H

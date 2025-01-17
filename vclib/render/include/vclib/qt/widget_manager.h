@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -130,16 +130,10 @@ public:
         return displayID;
     }
 
-    QPaintEngine* paintEngine() const override
-    {
-        return nullptr;
-    }
+    QPaintEngine* paintEngine() const override { return nullptr; }
 
 protected:
-    void* windowPtr()
-    {
-        return reinterpret_cast<void*>(this);
-    }
+    void* windowPtr() { return reinterpret_cast<void*>(this); }
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
@@ -164,12 +158,8 @@ protected:
         DerivedRenderApp::WM::init(derived());
     }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    void initializeGL() override
-    {
-        DerivedRenderApp::WM::init(derived());
-    }
+    void initializeGL() override { DerivedRenderApp::WM::init(derived()); }
 #endif
-
 
     void keyPressEvent(QKeyEvent* event) override
     {

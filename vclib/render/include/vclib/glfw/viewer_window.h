@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VIEWER_WINDOW_H
-#define VIEWER_WINDOW_H
+#ifndef VCL_GLFW_VIEWER_WINDOW_H
+#define VCL_GLFW_VIEWER_WINDOW_H
 
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
@@ -35,4 +35,4 @@ using ViewerWindow =
 
 } // namespace vcl::glfw
 
-#endif // VIEWER_WINDOW_H
+#endif // VCL_GLFW_VIEWER_WINDOW_H

@@ -73,9 +73,9 @@ template<typename DerivedRenderApp>
 class CanvasOpenGL2
 {
 protected:
-    using FloatData          = ReadBufferTypes::FloatData;
-    using ByteData           = ReadBufferTypes::ByteData;
-    using ReadData           = ReadBufferTypes::ReadData;
+    using FloatData = ReadBufferTypes::FloatData;
+    using ByteData  = ReadBufferTypes::ByteData;
+    using ReadData  = ReadBufferTypes::ReadData;
 
 public:
     using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
@@ -92,11 +92,10 @@ private:
 
 public:
     CanvasOpenGL2(
-        void*        winId,
-        uint         width,
-        uint         height,
-        void*        displayId  = nullptr) :
-            mWinId(winId), mSize(width, height)
+        void* winId,
+        uint  width,
+        uint  height,
+        void* displayId = nullptr) : mWinId(winId), mSize(width, height)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,

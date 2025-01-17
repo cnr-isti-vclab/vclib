@@ -102,7 +102,7 @@ Container referencedVertices(
 {
     using VertexType = MeshType::VertexType;
 
-    uint              nRefs = 0;
+    uint nRefs = 0;
 
     Container refVertices(mesh.vertexContainerSize(), false);
 

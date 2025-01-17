@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -33,9 +33,7 @@ class HelloTriangleDrawer : public vcl::PlainDrawer<DerivedDrawer>
 public:
     HelloTriangleDrawer(vcl::uint width = 1024, vcl::uint height = 768) {}
 
-    ~HelloTriangleDrawer()
-    {
-    }
+    ~HelloTriangleDrawer() {}
 
     void onResize(vcl::uint width, vcl::uint height) override
     {

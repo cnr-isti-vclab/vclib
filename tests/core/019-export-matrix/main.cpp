@@ -85,8 +85,8 @@ void randomColor(auto& tm)
 template<vcl::uint ELEM_ID>
 void randomQuality(auto& tm)
 {
-    std::random_device              rd;
-    std::mt19937                    gen(rd());
+    std::random_device               rd;
+    std::mt19937                     gen(rd());
     std::uniform_real_distribution<> dis(-100, 100);
 
     tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::QUALITY>();
