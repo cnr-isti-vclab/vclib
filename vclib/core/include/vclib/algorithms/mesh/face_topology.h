@@ -71,7 +71,7 @@ void addTriangleFacesFromPolygon(
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;
 
-           // from the ids, create a polygon of coordinates
+    // from the ids, create a polygon of coordinates
     std::vector<CoordType> polCoords(polygon.size());
     for (uint i = 0; i < polygon.size(); ++i) {
         if (polygon[i] >= m.vertexContainerSize()) {
@@ -86,12 +86,12 @@ void addTriangleFacesFromPolygon(
         polCoords[i] = m.vertex(polygon[i]).coord();
     }
 
-           // compute earcut of the polygons
+    // compute earcut of the polygons
     std::vector<uint> tris = earCut(polCoords);
 
-           // faux edges management: create a set of unordered edges of the polygon
-           // note: we use indices from 0 to polygon.size() because that are the output
-           // indices given by the earcut algorithm
+    // faux edges management: create a set of unordered edges of the polygon
+    // note: we use indices from 0 to polygon.size() because that are the output
+    // indices given by the earcut algorithm
     std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>>
         unorderedEdges;
     for (uint i = 0; i < polygon.size(); ++i)
@@ -101,7 +101,7 @@ void addTriangleFacesFromPolygon(
         f.resizeVertices(3);
     }
 
-           // set the first triangle of the loaded polygon
+    // set the first triangle of the loaded polygon
     for (uint i = 0; i < f.vertexNumber(); ++i) {
         f.setVertex(i, polygon[tris[i]]);
     }
@@ -118,7 +118,7 @@ void addTriangleFacesFromPolygon(
             f.edgeFaux(2) = true;
     }
 
-           // remaining triangles, need to create more faces in the mesh
+    // remaining triangles, need to create more faces in the mesh
     for (uint i = 3; i < tris.size(); i += 3) {
         uint ff = m.addFace();
 
