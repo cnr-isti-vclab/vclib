@@ -68,6 +68,8 @@ void writePlyEdges(
                 io::writeProperty(file, 0, p.type, format);
             }
         }
+        if (!format.isBinary)
+            file << std::endl;
     }
 }
 
