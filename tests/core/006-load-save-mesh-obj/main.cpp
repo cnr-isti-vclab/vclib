@@ -43,7 +43,11 @@ std::istringstream objPolyCube()
         "f 5 6 8 7\n"
         "f 7 8 2 1\n"
         "f 2 8 6 4\n"
-        "f 7 1 3 5\n";
+        "f 7 1 3 5\n"
+        "l 1 5\n"
+        "l 2 6\n"
+        "l 3 7\n"
+        "l 4 8\n";
 
     std::istringstream ss(s);
     return ss;
@@ -73,7 +77,11 @@ std::istringstream objTriCube()
         "f 2 8 6\n"
         "f 2 6 4\n"
         "f 7 1 3\n"
-        "f 7 3 5\n";
+        "f 7 3 5\n"
+        "l 1 5\n"
+        "l 2 6\n"
+        "l 3 7\n"
+        "l 4 8\n";
 
     std::istringstream ss(s);
     return ss;
@@ -135,11 +143,21 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.faceNumber() == 12);
     }
 
-    SECTION("EdgeMesh")
+    SECTION("EdgeMesh - PolyCube")
     {
         EdgeMesh em;
-        vcl::loadObj(em, VCLIB_EXAMPLE_MESHES_PATH "/bunny_edge_sections.obj");
-        REQUIRE(em.vertexNumber() == 586);
-        REQUIRE(em.edgeNumber() == 586);
+        auto     ss = objPolyCube();
+        vcl::loadObj(em, ss, {});
+        REQUIRE(em.vertexNumber() == 8);
+        REQUIRE(em.edgeNumber() == 4);
+    }
+
+    SECTION("EdgeMesh - TriCube")
+    {
+        EdgeMesh pm;
+        auto     ss = objTriCube();
+        vcl::loadObj(pm, ss, {});
+        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.edgeNumber() == 4);
     }
 }
