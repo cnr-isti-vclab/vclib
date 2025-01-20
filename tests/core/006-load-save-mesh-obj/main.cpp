@@ -79,10 +79,12 @@ std::istringstream objTriCube()
     return ss;
 }
 
-using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
-using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
+using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using MeshesIndexed =
+    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
+using MeshesIndexedf = std::
+    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
 
 // Test to load obj from a istringstream
 TEMPLATE_TEST_CASE(
@@ -93,8 +95,9 @@ TEMPLATE_TEST_CASE(
     MeshesIndexed,
     MeshesIndexedf)
 {
-    using TriMesh  = typename TestType::first_type;
-    using PolyMesh = typename TestType::second_type;
+    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using PolyMesh = std::tuple_element_t<1, TestType>;
+    using EdgeMesh = std::tuple_element_t<2, TestType>;
 
     SECTION("TriMesh - PolyCube")
     {
@@ -130,5 +133,13 @@ TEMPLATE_TEST_CASE(
         vcl::loadObj(pm, ss, {});
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 12);
+    }
+
+    SECTION("EdgeMesh")
+    {
+        EdgeMesh em;
+        vcl::loadObj(em, VCLIB_EXAMPLE_MESHES_PATH "/bunny_edge_sections.obj");
+        REQUIRE(em.vertexNumber() == 586);
+        REQUIRE(em.edgeNumber() == 586);
     }
 }
