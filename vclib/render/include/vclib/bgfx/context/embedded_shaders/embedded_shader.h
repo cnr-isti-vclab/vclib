@@ -37,7 +37,19 @@ struct VclProgram
         DRAWABLE_AXIS,
         DRAWABLE_DIRECTIONAL_LIGHT,
         DRAWABLE_TRACKBALL,
-        DRAWABLE_CPU_GENERATED_LINES,
+
+        LINES_CPU_GENERATED,
+        LINES_GPU_GENERATED,
+        LINES_INSTANCING_BASED,
+        LINES_INDIRECT_BASED,
+        LINES_TEXTURE_BASED,
+
+        POLYLINES_CPU_GENERATED,
+        POLYLINES_GPU_GENERATED,
+        POLYLINES_INSTANCING_BASED,
+        POLYLINES_INDIRECT_BASED,
+        POLYLINES_TEXTURE_BASED,
+
         FONT_BASIC,
         FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
         FONT_DISTANCE_FIELD_DROP_SHADOW,
@@ -56,7 +68,19 @@ struct VclProgram
             "DrawableAxis",
             "DrawableDirectionalLight",
             "DrawableTrackball",
-            "DrawableCPUGeneratedLines",
+
+            "LinesCPUGenerated",
+            "LinesGPUGenerated",
+            "LinesInstancingBased",
+            "LinesIndirectBased",
+            "LinesTextureBased",
+
+            "PolylinesLinesCPUGenerated",
+            "PolylinesLinesGPUGenerated",
+            "PolylinesLinesInstancingBased",
+            "PolylinesLinesIndirectBased",
+            "PolylinesLinesTextureBased",
+
             "FontBasic",
             "FontDistanceFieldDropShadowImage",
             "FontDistanceFieldDropShadow",

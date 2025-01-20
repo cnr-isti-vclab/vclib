@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/context/embedded_shaders/drawable_cpu_generated_lines.h>
+#include <vclib/bgfx/context/embedded_shaders/lines_cpu_generated.h>
 
 #include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/fs_cpu_generated_lines.sc.glsl.bin.h>
 #include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/vs_cpu_generated_lines.sc.glsl.bin.h>
@@ -42,7 +42,7 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_CPU_GENERATED_LINES>::
+bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::LINES_CPU_GENERATED>::
     vertexEmbeddedShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
@@ -65,7 +65,7 @@ bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_CPU_GENERATE
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_CPU_GENERATED_LINES>::
+bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::LINES_CPU_GENERATED>::
     fragmentEmbeddedShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
@@ -88,7 +88,7 @@ bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_CPU_GENERATE
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_CPU_GENERATED_LINES>::
+bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::LINES_CPU_GENERATED>::
     computeEmbeddedShader(bgfx::RendererType::Enum type)
 {
     static_assert(true, "Invalid shader type for cpu generaterd lines");

@@ -28,6 +28,7 @@
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/bgfx/drawable/lines/drawable_lines.h>
 #include <vclib/bgfx/drawable/lines/lines/cpu_generated_lines.h>
+#include <vclib/bgfx/drawable/lines/lines/gpu_generated_lines.h>
 
 
 #include <bgfx/bgfx.h>
@@ -55,7 +56,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
 
-    lines::CPUGeneratedLines mWireframeBH;
+    lines::GPUGeneratedLines mWireframeBH;
 
     std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
 
@@ -335,7 +336,7 @@ private:
 
         // wireframe index buffer
         if (Base::wireframeBufferData()) {
-            mWireframeBH = lines::CPUGeneratedLines(*Base::wireframeBufferData());
+            mWireframeBH = lines::GPUGeneratedLines(*Base::wireframeBufferData());
             mWireframeBH.getSettings().setThickness(2);
         }
 

@@ -12,7 +12,7 @@ namespace vcl::lines {
         bgfx::ProgramHandle                 mComputeVerticesPH  = BGFX_INVALID_HANDLE;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::DRAWABLE_CPU_GENERATED_LINES);
+                                            VclProgram::LINES_CPU_GENERATED);
 
         public:
             GPUGeneratedLines() = default;

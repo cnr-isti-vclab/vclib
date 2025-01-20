@@ -13,7 +13,7 @@ namespace vcl::lines {
         bgfx::InstanceDataBuffer    mInstanceDB;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::DRAWABLE_CPU_GENERATED_LINES);
+                                            VclProgram::LINES_INSTANCING_BASED);
 
         public:
             InstancingBasedLines() = default;

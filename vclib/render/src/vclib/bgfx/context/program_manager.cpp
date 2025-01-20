@@ -83,14 +83,19 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
                 EmbeddedShader<
                     VclProgram::DRAWABLE_MESH>::fragmentEmbeddedShader(type)));
 
-    case VclProgram::DRAWABLE_CPU_GENERATED_LINES:
+    case VclProgram::LINES_CPU_GENERATED:
         return vcl::createProgram(
             vcl::loadShader(
-                EmbeddedShader<VclProgram::DRAWABLE_CPU_GENERATED_LINES>::vertexEmbeddedShader(
+                EmbeddedShader<VclProgram::LINES_CPU_GENERATED>::vertexEmbeddedShader(
                     type)),
             vcl::loadShader(
                 EmbeddedShader<
-                    VclProgram::DRAWABLE_CPU_GENERATED_LINES>::fragmentEmbeddedShader(type)));
+                    VclProgram::LINES_CPU_GENERATED>::fragmentEmbeddedShader(type)));
+
+    case VclProgram::LINES_GPU_GENERATED:
+        return bgfx::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::LINES_GPU_GENERATED>::computeEmbeddedShader(type)));
 
     case VclProgram::DRAWABLE_AXIS:
         return vcl::createProgram(

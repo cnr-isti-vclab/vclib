@@ -15,7 +15,7 @@ namespace vcl::lines {
         bgfx::UniformHandle                 mComputeDataUH      = BGFX_INVALID_HANDLE;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::DRAWABLE_CPU_GENERATED_LINES);
+                                            VclProgram::POLYLINES_CPU_GENERATED);
 
         public:
             GPUGeneratedPolylines() = default;

@@ -4,8 +4,9 @@
 namespace vcl::lines {
     GPUGeneratedLines::GPUGeneratedLines(const std::vector<LinesVertex> &points) : 
         mPoints(points),
-        mComputeVerticesPH(bgfx::createProgram(vcl::loadShader("lines/gpu_generated_lines/cs_compute_buffers"), true))
+        mComputeVerticesPH(Context::instance().programManager().getProgram(VclProgram::LINES_GPU_GENERATED))
     {
+        assert(bgfx::isValid(mComputeVerticesPH));
         allocateVertexBuffer();
         allocateIndexBuffer();
         allocatePointsBuffer();
@@ -16,7 +17,8 @@ namespace vcl::lines {
 
     GPUGeneratedLines::GPUGeneratedLines(const GPUGeneratedLines& other) : DrawableLines(other) {
         mPoints = other.mPoints;
-        mComputeVerticesPH = bgfx::createProgram(vcl::loadShader("lines/gpu_generated_lines/cs_compute_buffers"), true);
+        mComputeVerticesPH = Context::instance().programManager().getProgram(VclProgram::LINES_GPU_GENERATED);
+        assert(bgfx::isValid(mComputeVerticesPH));
 
         allocateIndexBuffer();
         allocateVertexBuffer();
