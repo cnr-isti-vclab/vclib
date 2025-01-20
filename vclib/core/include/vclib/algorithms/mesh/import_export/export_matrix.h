@@ -39,7 +39,7 @@ namespace vcl {
  * Usage example with an Eigen Matrix:
  *
  * @code{.cpp}
- * Eigen::MatrixX3d V = vcl::vertexMatrix<Eigen::MatrixX3d>(myMesh);
+ * Eigen::MatrixX3d V = vcl::vertexCoordsMatrix<Eigen::MatrixX3d>(myMesh);
  * @endif
  *
  * @note This function does not guarantee that the rows of the matrix
@@ -55,7 +55,7 @@ namespace vcl {
  * @return \#V*3 matrix of scalars (vertex coordinates)
  */
 template<MatrixConcept Matrix, MeshConcept MeshType>
-Matrix vertexMatrix(const MeshType& mesh)
+Matrix vertexCoordsMatrix(const MeshType& mesh)
 {
     Matrix vM(mesh.vertexNumber(), 3);
 
@@ -105,7 +105,7 @@ Matrix vertexMatrix(const MeshType& mesh)
  * @return \#F*max(size(F)) matrix of vertex indices
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix faceMatrix(const MeshType& mesh)
+Matrix faceIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
     Matrix fM(mesh.faceNumber(), 3);
@@ -120,7 +120,7 @@ Matrix faceMatrix(const MeshType& mesh)
             }
         }
 
-        trianglesToBuffer(mesh, fM.data(), stg);
+        triangleIndicesToBuffer(mesh, fM.data(), stg);
     }
     else {
         uint i = 0;
@@ -223,18 +223,23 @@ Vect faceSizesVector(const MeshType& mesh)
  * @return \#E*2 matrix of integers (edge indices)
  */
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
-Matrix edgeMatrix(const MeshType& mesh)
+Matrix edgeIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
     Matrix eM(mesh.edgeNumber(), 2);
 
-    uint i = 0;
-    for (const auto& e : mesh.edges()) {
-        eM(i, 0) = mesh.index(e.vertex(0));
-        eM(i, 1) = mesh.index(e.vertex(1));
-        ++i; // go to next edge/row
+    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
+        }
     }
+
+    edgeIndicesToBuffer(mesh, eM.data(), stg);
+
     return eM;
 }
 

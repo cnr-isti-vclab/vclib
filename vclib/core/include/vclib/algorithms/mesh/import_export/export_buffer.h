@@ -90,8 +90,8 @@ void vertexCoordsToBuffer(
  * @param buffer
  * @param storage
  */
-template<MeshConcept MeshType>
-void trianglesToBuffer(
+template<FaceMeshConcept MeshType>
+void triangleIndicesToBuffer(
     const MeshType&         mesh,
     auto*                   buffer,
     MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
@@ -112,6 +112,48 @@ void trianglesToBuffer(
             buffer[0 * FACE_NUM + i] = f.vertexIndex(0);
             buffer[1 * FACE_NUM + i] = f.vertexIndex(1);
             buffer[2 * FACE_NUM + i] = f.vertexIndex(2);
+            ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export into a buffer the vertex indices for each edge of a Mesh.
+ *
+ * This function exports the vertex indices of the edges of a mesh to a
+ * buffer. Indices are stored following the order the edges appear in the mesh.
+ * The buffer must be preallocated with the correct size (number of edges times
+ * 2).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ * @param storage
+ */
+template<EdgeMeshConcept MeshType>
+void edgeIndicesToBuffer(
+    const MeshType& mesh,
+    auto* buffer,
+    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+{
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        uint i = 0;
+        for (const auto& e : mesh.edges()) {
+            buffer[i * 2 + 0] = e.vertexIndex(0);
+            buffer[i * 2 + 1] = e.vertexIndex(1);
+            ++i;
+        }
+    }
+    else {
+        uint       i        = 0;
+        const uint EDGE_NUM = mesh.edgeNumber();
+        for (const auto& e : mesh.edges()) {
+            buffer[0 * EDGE_NUM + i] = e.vertexIndex(0);
+            buffer[1 * EDGE_NUM + i] = e.vertexIndex(1);
             ++i;
         }
     }

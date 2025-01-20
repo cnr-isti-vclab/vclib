@@ -102,7 +102,7 @@ void randomQuality(auto& tm)
 template<typename MatrixType>
 void testCoordsMatrix(const auto& tm)
 {
-    auto verts = vcl::vertexMatrix<MatrixType>(tm);
+    auto verts = vcl::vertexCoordsMatrix<MatrixType>(tm);
 
     REQUIRE(verts.rows() == tm.vertexNumber());
     REQUIRE(verts.cols() == 3);
@@ -119,7 +119,7 @@ void testCoordsMatrix(const auto& tm)
 template<typename MatrixType>
 void testTrianglesMatrix(const auto& tm)
 {
-    auto tris = vcl::faceMatrix<MatrixType>(tm);
+    auto tris = vcl::faceIndicesMatrix<MatrixType>(tm);
 
     REQUIRE(tris.rows() == tm.faceNumber());
     REQUIRE(tris.cols() == 3);
