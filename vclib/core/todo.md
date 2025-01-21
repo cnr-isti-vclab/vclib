@@ -5,7 +5,7 @@
   - [x] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
   - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
-  - [ ] 'friend class Type' should be 'friend Type'
+  - [x] 'friend class Type' should be 'friend Type'
   - [x] implement swap functions in this way (but keep swap member function): https://stackoverflow.com/a/5695855/5851101
 - Concepts:
   - [x] add constructor constraints on all concepts

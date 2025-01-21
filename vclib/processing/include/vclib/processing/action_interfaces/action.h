@@ -48,7 +48,7 @@ struct ActionType
 
 class Action
 {
-    friend class ActionManager;
+    friend ActionManager;
 
     /**
      * @brief A pointer to the manager that contains the action.
