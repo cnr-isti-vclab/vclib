@@ -106,6 +106,20 @@ public:
         bindTextures();
     }
 
+    void swap(DrawableMeshOpenGL2& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mMRD, other.mMRD);
+        swap(mTextID, other.mTextID);
+    }
+
+    friend void swap(DrawableMeshOpenGL2& a, DrawableMeshOpenGL2& b)
+    {
+        a.swap(b);
+    }
+
     // DrawableObject implementation
 
     void init() override { bindTextures(); }
