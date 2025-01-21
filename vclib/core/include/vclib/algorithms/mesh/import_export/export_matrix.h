@@ -186,11 +186,8 @@ Vect faceSizesVector(const MeshType& mesh)
 
     Vect fM(mesh.faceNumber());
 
-    uint i = 0;
-    for (const auto& f : mesh.faces()) {
-        fM(i) = f.vertexNumber();
-        ++i;
-    }
+    faceSizesToBuffer(mesh, fM.data());
+
     return fM;
 }
 

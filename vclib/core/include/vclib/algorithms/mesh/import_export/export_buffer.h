@@ -118,6 +118,40 @@ void triangleIndicesToBuffer(
 }
 
 /**
+ * @brief Export into a buffer the sizes of the faces of a Mesh, and return the
+ * sum of the sizes.
+ *
+ * This function could be useful when dealing with polygonal meshes: it exports
+ * the sizes of the faces of a mesh to a buffer. Sizes are stored following the
+ * order the faces appear in the mesh. The buffer must be preallocated with the
+ * correct size (number of faces).
+ *
+ * The return value is the sum of the sizes of the faces. This value is useful
+ * when you need to allocate a buffer to store the vertex indices of the faces
+ * (its size is the sum of the face sizes).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param mesh
+ * @param buffer
+ */
+template<FaceMeshConcept MeshType>
+uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
+{
+    uint sum = 0;
+    uint i = 0;
+    for (const auto& f : mesh.faces()) {
+        buffer[i] = f.vertexNumber();
+        sum += f.vertexNumber();
+        ++i;
+    }
+    return sum;
+}
+
+/**
  * @brief Export into a buffer the vertex indices for each edge of a Mesh.
  *
  * This function exports the vertex indices of the edges of a mesh to a

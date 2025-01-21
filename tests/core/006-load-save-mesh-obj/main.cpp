@@ -143,6 +143,24 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.faceNumber() == 12);
     }
 
+    SECTION("TriMesh - Rhombicosidodecahedron")
+    {
+        TriMesh pm;
+        vcl::loadObj(
+            pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj");
+        REQUIRE(pm.vertexNumber() == 60);
+        REQUIRE(pm.faceNumber() == 116);
+    }
+
+    SECTION("PolyMesh - Rhombicosidodecahedron")
+    {
+        PolyMesh pm;
+        vcl::loadObj(
+            pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj");
+        REQUIRE(pm.vertexNumber() == 60);
+        REQUIRE(pm.faceNumber() == 62);
+    }
+
     SECTION("EdgeMesh - PolyCube")
     {
         EdgeMesh em;

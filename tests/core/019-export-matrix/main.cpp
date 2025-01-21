@@ -134,6 +134,20 @@ void testTrianglesMatrix(const auto& tm)
 }
 
 template<typename VectorType>
+void testFaceSizesVector(const auto& pm)
+{
+    auto sizes = vcl::faceSizesVector<VectorType>(pm);
+
+    REQUIRE(sizes.size() == pm.faceNumber());
+
+    vcl::uint i = 0;
+    for (const auto& f : pm.faces()) {
+        REQUIRE(sizes[i] == f.vertexNumber());
+        ++i;
+    }
+}
+
+template<typename VectorType>
 void testVertexSelectionVector(const auto& tm)
 {
     auto sel = vcl::vertexSelectionVector<VectorType>(tm);
@@ -289,18 +303,29 @@ void testFaceQualityVector(const auto& tm)
     }
 }
 
+using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using MeshesIndexed =
+    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
+using MeshesIndexedf = std::
+    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
+
 TEMPLATE_TEST_CASE(
     "Export TriMesh to Matrix",
     "",
-    vcl::TriMesh,
-    vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
-    using TriMesh = TestType;
+    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using PolyMesh = std::tuple_element_t<1, TestType>;
+    using EdgeMesh = std::tuple_element_t<2, TestType>;
 
     TriMesh tm =
         vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    PolyMesh pm = vcl::loadObj<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                         "/rhombicosidodecahedron.obj");
 
     SECTION("Coordinates...")
     {
@@ -349,6 +374,24 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Array2")
         {
             testTrianglesMatrix<vcl::Array2<vcl::uint>>(tm);
+        }
+    }
+
+    SECTION("Face sizes...")
+    {
+        SECTION("Eigen Vector<vcl::uint>")
+        {
+            testFaceSizesVector<Eigen::VectorX<vcl::uint>>(pm);
+        }
+
+        SECTION("std vector<vcl::uint>")
+        {
+            testFaceSizesVector<std::vector<vcl::uint>>(pm);
+        }
+
+        SECTION("vcl::Vector<vcl::uint>")
+        {
+            testFaceSizesVector<vcl::Vector<vcl::uint, -1>>(pm);
         }
     }
 
