@@ -71,13 +71,18 @@ public:
 
     void swap(DrawableMeshBGFX& other)
     {
+        using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        mMRB.swap(other.mMRB);
-        std::swap(mProgram, other.mProgram);
-        std::swap(mMeshUniforms, other.mMeshUniforms);
-        std::swap(
-            mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+        swap(mMRB, other.mMRB);
+        swap(mProgram, other.mProgram);
+        swap(mMeshUniforms, other.mMeshUniforms);
+        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+    }
+
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b)
+    {
+        a.swap(b);
     }
 
     // DrawableObject implementation

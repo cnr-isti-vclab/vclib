@@ -485,7 +485,7 @@ public:
 
     /**
      * @brief Swaps this mesh with the other input Mesh m2.
-     * @param m2: the Mesh to swap with this Mesh.
+     * @param[in] m2: the Mesh to swap with this Mesh.
      */
     void swap(Mesh& m2)
     {
@@ -517,6 +517,16 @@ public:
         (updateReferencesOfContainerType<Args>(m1, m2Bases), ...);
         (updateReferencesOfContainerType<Args>(m2, m1Bases), ...);
     }
+
+    /**
+     * @brief Specializes the swap function to allow the swapping of two Mesh
+     * objects.
+     *
+     * Swaps the content of the two Mesh objects. Calls `a.swap(b)`.
+     * @param[in] a: The first Mesh object.
+     * @param[in] b: The second Mesh object.
+     */
+    friend void swap(Mesh& a, Mesh& b) { a.swap(b); }
 
     /**
      * @brief Assignment operator of the Mesh.

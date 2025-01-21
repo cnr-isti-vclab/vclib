@@ -57,8 +57,9 @@ public:
 protected:
     void swap(AbstractDrawableMesh& other)
     {
+        using std::swap;
         vcl::DrawableObject::swap(other);
-        std::swap(mMRS, other.mMRS);
+        swap(mMRS, other.mMRS);
     }
 };
 

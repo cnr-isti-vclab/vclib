@@ -150,8 +150,9 @@ protected:
      */
     void swap(DrawableObject& other)
     {
-        std::swap(mName, other.mName);
-        std::swap(mInfo, other.mInfo);
+        using std::swap;
+        swap(mName, other.mName);
+        swap(mInfo, other.mInfo);
     }
 };
 
