@@ -136,8 +136,8 @@ void triangleIndicesToBuffer(
  */
 template<EdgeMeshConcept MeshType>
 void edgeIndicesToBuffer(
-    const MeshType& mesh,
-    auto* buffer,
+    const MeshType&         mesh,
+    auto*                   buffer,
     MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {

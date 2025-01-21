@@ -323,7 +323,7 @@ void saveObj(
 
     if constexpr (HasEdges<MeshType>) {
         using VertexType = MeshType::VertexType;
-        using EdgeType = MeshType::EdgeType;
+        using EdgeType   = MeshType::EdgeType;
 
         fp << std::endl << "# Edges" << std::endl;
 

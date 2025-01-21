@@ -425,11 +425,11 @@ void readObjFace(
 
 template<EdgeMeshConcept MeshType>
 void readObjEdge(
-    MeshType&                     m,
-    MeshInfo&                     loadedInfo,
-    const Tokenizer&              tokens,
-    const ObjMaterial&            currentMaterial,
-    const LoadSettings&           settings)
+    MeshType&           m,
+    MeshInfo&           loadedInfo,
+    const Tokenizer&    tokens,
+    const ObjMaterial&  currentMaterial,
+    const LoadSettings& settings)
 {
     using EdgeType = MeshType::EdgeType;
 
