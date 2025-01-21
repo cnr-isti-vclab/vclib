@@ -101,6 +101,33 @@ uint countPerFaceVertexReferences(const MeshConcept auto& mesh)
 }
 
 /**
+ * @brief Returns the largest face size in the mesh.
+ *
+ * If the mesh is a TriangleMesh, the function returns 3. Otherwise, the
+ * function returns the size of the largest face in the mesh.
+ *
+ * @param[in] mesh: The input mesh. It must satisfy the MeshConcept.
+ * @return The largest face size in the mesh.
+ */
+uint largestFaceSize(const MeshConcept auto& mesh)
+{
+    using MeshType = decltype(mesh);
+
+    uint maxFaceSize = 0;
+
+    if constexpr (TriangleMeshConcept<MeshType>) {
+        return 3;
+    }
+    else if constexpr (FaceMeshConcept<MeshType>) {
+        for (const auto& f : mesh.faces()) {
+            maxFaceSize = std::max(maxFaceSize, f.vertexNumber());
+        }
+    }
+
+    return maxFaceSize;
+}
+
+/**
  * @brief Counts the number of resulting triangles if the input mesh would be
  * triangulated by splitting each face into triangles.
  *
