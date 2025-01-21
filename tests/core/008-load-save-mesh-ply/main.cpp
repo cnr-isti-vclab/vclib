@@ -39,6 +39,9 @@ std::istringstream plyPolyCube()
         "property float z\n"
         "element face 6\n"
         "property list uchar int vertex_indices\n"
+        "element edge 4\n"
+        "property int vertex1\n"
+        "property int vertex2\n"
         "end_header\n"
         "-0.500000 -0.500000 0.500000\n"
         "0.500000 -0.500000 0.500000\n"
@@ -53,7 +56,11 @@ std::istringstream plyPolyCube()
         "4 4 5 7 6\n"
         "4 6 7 1 0\n"
         "4 1 7 5 3\n"
-        "4 6 0 2 4\n";
+        "4 6 0 2 4\n"
+        "0 4\n"
+        "1 5\n"
+        "2 6\n"
+        "3 7\n";
 
     std::istringstream ss(s);
     return ss;
@@ -73,6 +80,9 @@ std::istringstream plyTriCube()
         "property float z\n"
         "element face 12\n"
         "property list uchar int vertex_indices\n"
+        "element edge 4\n"
+        "property int vertex1\n"
+        "property int vertex2\n"
         "end_header\n"
         "-0.500000 -0.500000 0.500000\n"
         "0.500000 -0.500000 0.500000\n"
@@ -93,16 +103,22 @@ std::istringstream plyTriCube()
         "3 1 7 3\n"
         "3 7 5 3\n"
         "3 5 7 6\n"
-        "3 7 5 4\n";
+        "3 7 5 4\n"
+        "0 4\n"
+        "1 5\n"
+        "2 6\n"
+        "3 7\n";
 
     std::istringstream ss(s);
     return ss;
 }
 
-using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
-using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
+using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using MeshesIndexed  =
+    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
+using MeshesIndexedf = std::
+    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
 
 // Test to load obj from a istringstream
 TEMPLATE_TEST_CASE(
@@ -113,8 +129,9 @@ TEMPLATE_TEST_CASE(
     MeshesIndexed,
     MeshesIndexedf)
 {
-    using TriMesh  = typename TestType::first_type;
-    using PolyMesh = typename TestType::second_type;
+    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using PolyMesh = std::tuple_element_t<1, TestType>;
+    using EdgeMesh = std::tuple_element_t<2, TestType>;
 
     SECTION("TriMesh - PolyCube")
     {
@@ -150,5 +167,23 @@ TEMPLATE_TEST_CASE(
         vcl::loadPly(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 12);
+    }
+
+    SECTION("EdgeMesh - PolyCube")
+    {
+        EdgeMesh em;
+        auto     ss = plyPolyCube();
+        vcl::loadPly(em, ss);
+        REQUIRE(em.vertexNumber() == 8);
+        REQUIRE(em.edgeNumber() == 4);
+    }
+
+    SECTION("EdgeMesh - TriCube")
+    {
+        EdgeMesh pm;
+        auto     ss = plyTriCube();
+        vcl::loadPly(pm, ss);
+        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.edgeNumber() == 4);
     }
 }

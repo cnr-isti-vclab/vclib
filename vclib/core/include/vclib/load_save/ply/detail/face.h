@@ -74,7 +74,7 @@ void setPlyFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             if (vids[i] >= m.vertexNumber()) {
                 throw MalformedFileException(
-                    "Bad vertex index for face " + std::to_string(i));
+                    "Bad vertex index for face " + std::to_string(f.index()));
             }
             f.setVertex(i, vids[i]);
         }
