@@ -69,6 +69,17 @@ public:
         mMeshUniforms.update(mMRB);
     }
 
+    void swap(DrawableMeshBGFX& other)
+    {
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        mMRB.swap(other.mMRB);
+        std::swap(mProgram, other.mProgram);
+        std::swap(mMeshUniforms, other.mMeshUniforms);
+        std::swap(
+            mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+    }
+
     // DrawableObject implementation
 
     void init() override {}

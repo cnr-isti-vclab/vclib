@@ -137,6 +137,22 @@ public:
      * @param[in] info: The info of the object.
      */
     std::string& info() { return mInfo; }
+
+protected:
+    /**
+     * @brief Utility swap function that allows to swap the content of two
+     * DrawableObject instances.
+     *
+     * It is meant to be used by the derived classes to implement the swap
+     * member function (see the copy and swap idiom).
+     *
+     * @param[in] other: The other DrawableObject to swap with.
+     */
+    void swap(DrawableObject& other)
+    {
+        std::swap(mName, other.mName);
+        std::swap(mInfo, other.mInfo);
+    }
 };
 
 } // namespace vcl
