@@ -14,7 +14,7 @@ namespace vcl::lines {
         bgfx::DynamicIndexBufferHandle      mIndexesBH      = BGFX_INVALID_HANDLE;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::LINES_CPU_GENERATED);
+                                            VclProgram::LINES_CPU_GENERATED_VSFS);
 
 
         public:

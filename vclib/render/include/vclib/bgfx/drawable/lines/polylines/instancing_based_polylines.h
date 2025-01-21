@@ -16,7 +16,7 @@ namespace vcl::lines {
         bgfx::ProgramHandle         mJoinesPH             = BGFX_INVALID_HANDLE;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::POLYLINES_INSTANCING_BASED);
+                                            VclProgram::POLYLINES_INSTANCING_BASED_VSFS);
 
         public:
             InstancingBasedPolylines() = default;

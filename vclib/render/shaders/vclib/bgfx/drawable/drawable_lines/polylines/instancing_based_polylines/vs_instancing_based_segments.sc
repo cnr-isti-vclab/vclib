@@ -44,7 +44,7 @@ void main() {
 
     v_color = (((color0 * (1 - a_uv.x)) + (color1 * a_uv.x)) * (1 - sign(u_color_to_use))) + (u_general_color * sign(u_color_to_use));
     v_normal = (normal0 * (1 - a_uv.x)) + (normal1 * a_uv.x);
-    v_length = length(((next_px - curr_px) * (1 - a_uv.x)) + ((curr_px - prev_px) * (a_uv.x)));
+    v_length = length(((next_px.xyz - curr_px.xyz) * (1 - a_uv.x)) + ((curr_px.xyz - prev_px.xyz) * (a_uv.x)));
 
     v_uv = calculatePolylinesUV(prev, curr, next, a_uv, u_thickness, v_length, u_leftCap, u_rigthCap, u_join);
 

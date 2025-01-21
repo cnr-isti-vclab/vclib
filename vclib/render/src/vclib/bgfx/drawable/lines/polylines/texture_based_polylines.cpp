@@ -7,8 +7,8 @@ namespace vcl::lines {
         mJoinesIndirectBH(bgfx::createIndirectBuffer(1)),
         mSegmentsIndirectBH(bgfx::createIndirectBuffer(1)),
         mComputeDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
-        mJoinesPH(vcl::loadProgram("polylines/texture_based_polylines/vs_texture_based_joins", "polylines/texture_based_polylines/fs_texture_based_polylines")),
-        mComputeTexturePH(bgfx::createProgram(vcl::loadShader("polylines/texture_based_polylines/cs_compute_texture"), true))
+        mJoinesPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS)),
+        mComputeTexturePH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_CS))
     {
         allocateVerticesBuffer();
         allocateIndexesBuffer();
@@ -25,8 +25,8 @@ namespace vcl::lines {
         mJoinesIndirectBH = bgfx::createIndirectBuffer(1);
         mSegmentsIndirectBH = bgfx::createIndirectBuffer(1);
         mComputeDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-        mJoinesPH = vcl::loadProgram("polylines/texture_based_polylines/vs_texture_based_joins", "polylines/texture_based_polylines/fs_texture_based_polylines");
-        mComputeTexturePH = bgfx::createProgram(vcl::loadShader("polylines/texture_based_polylines/cs_compute_texture"), true);
+        mJoinesPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS);
+        mComputeTexturePH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_CS);
 
         allocateVerticesBuffer();
         allocateIndexesBuffer();

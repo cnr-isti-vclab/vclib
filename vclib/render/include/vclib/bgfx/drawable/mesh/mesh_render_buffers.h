@@ -29,7 +29,9 @@
 #include <vclib/bgfx/drawable/lines/drawable_lines.h>
 #include <vclib/bgfx/drawable/lines/lines/cpu_generated_lines.h>
 #include <vclib/bgfx/drawable/lines/lines/gpu_generated_lines.h>
-
+#include <vclib/bgfx/drawable/lines/lines/instancing_based_lines.h>
+#include <vclib/bgfx/drawable/lines/lines/indirect_based_lines.h>
+#include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 
 #include <bgfx/bgfx.h>
 
@@ -56,7 +58,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
 
-    lines::GPUGeneratedLines mWireframeBH;
+    lines::TextureBasedLines mWireframeBH;
 
     std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
 
@@ -336,8 +338,9 @@ private:
 
         // wireframe index buffer
         if (Base::wireframeBufferData()) {
-            mWireframeBH = lines::GPUGeneratedLines(*Base::wireframeBufferData());
-            mWireframeBH.getSettings().setThickness(2);
+            const bgfx::Caps* caps = bgfx::getCaps();
+            mWireframeBH = lines::TextureBasedLines(*Base::wireframeBufferData(), caps->limits.maxTextureSize);
+            mWireframeBH.getSettings().setThickness(5);
         }
 
         // textures

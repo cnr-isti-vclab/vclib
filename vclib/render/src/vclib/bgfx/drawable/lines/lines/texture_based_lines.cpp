@@ -7,7 +7,7 @@ namespace vcl::lines {
         mPoints(points),
         mIndirectBH(bgfx::createIndirectBuffer(1)),
         mIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
-        mComputeTexturePH(bgfx::createProgram(vcl::loadShader("lines/texture_based_lines/cs_compute_texture"), true))
+        mComputeTexturePH(Context::instance().programManager().getProgram(VclProgram::LINES_TEXTURE_BASED_CS))
     {
         allocateIndexesBuffer();
         allocateVerticesBuffer();
@@ -23,7 +23,7 @@ namespace vcl::lines {
         mMaxTextureSize = other.mMaxTextureSize;
         mIndirectBH = bgfx::createIndirectBuffer(1);
         mIndirectDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-        mComputeTexturePH = bgfx::createProgram(vcl::loadShader("lines/texture_based_lines/cs_compute_texture"), true);
+        mComputeTexturePH = Context::instance().programManager().getProgram(VclProgram::LINES_TEXTURE_BASED_CS);
 
         allocateIndexesBuffer();
         allocateVerticesBuffer();

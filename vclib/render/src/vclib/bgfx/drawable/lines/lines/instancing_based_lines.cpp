@@ -75,9 +75,10 @@ namespace vcl::lines {
 
     void InstancingBasedLines::generateInstanceDataBuffer() {
         const uint16_t stride = sizeof(float) * 16;
+        uint size = (mPoints.size() / 2);
 
-        uint32_t linesNum = bgfx::getAvailInstanceDataBuffer((mPoints.size() / 2), stride);
-        bgfx::allocInstanceDataBuffer(&mInstanceDB, linesNum, stride);
+        uint32_t linesNum = bgfx::getAvailInstanceDataBuffer(size, stride);
+        bgfx::allocInstanceDataBuffer(&mInstanceDB, size, stride);
 
         uint8_t* data = mInstanceDB.data;
         for(uint32_t i = 1; i < mPoints.size(); i+=2) {

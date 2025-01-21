@@ -5,7 +5,7 @@
 
 vec4 calculateLines(vec4 p0_px, vec4 p1_px, vec2 uv, float length_px, float thickness, float antialias, float border, 
                     float screen_width, float screen_heigth, float leftCap, float rigthCap) {
-    vec4 T = normalize(p1_px - p0_px);
+    vec4 T = vec4(normalize(p1_px.xy - p0_px.xy).xy, 0, 0);
     vec4 N = vec4(-T.y, T.x, 0.0, 0.0);
     
     float u = 2.0 * uv.x - 1.0;

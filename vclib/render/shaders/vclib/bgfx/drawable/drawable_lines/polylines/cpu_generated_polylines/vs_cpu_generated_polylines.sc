@@ -33,7 +33,7 @@ void main() {
     vec4 next_px = calculatePointWithMVP(vec4(a_next, 0.0), u_screenWidth, u_screenHeigth);
 
     v_color = (a_color0 * (1 - sign(u_color_to_use))) + (u_general_color * sign(u_color_to_use));
-    v_length = length(((next_px - curr_px) * (1 - a_uv.x)) + ((curr_px - prev_px) * (a_uv.x)));
+    v_length = length(((next_px.xyz - curr_px.xyz) * (1 - a_uv.x)) + ((curr_px.xyz - prev_px.xyz) * (a_uv.x)));
 
     v_uv = calculatePolylinesUV(vec4(a_prev, 0.0), vec4(a_curr, 0), vec4(a_next, 0), a_uv, u_thickness, v_length, u_leftCap, u_rigthCap, u_join);
 

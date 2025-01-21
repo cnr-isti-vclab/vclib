@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_LINES_CPU_GENERATED_H
-#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_LINES_CPU_GENERATED_H
+#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_LINES_INDIRECT_BASED_VSFS_H
+#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_LINES_INDIRECT_BASED_VSFS_H
 
 #include "embedded_shader.h"
 
 namespace vcl {
 
 template<>
-struct EmbeddedShader<VclProgram::LINES_CPU_GENERATED>
+struct EmbeddedShader<VclProgram::LINES_INDIRECT_BASED_VSFS>
 {
     static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
         bgfx::RendererType::Enum type);
@@ -42,4 +42,4 @@ struct EmbeddedShader<VclProgram::LINES_CPU_GENERATED>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_LINES_CPU_GENERATED_H
+#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_LINES_INDIRECT_BASED_VSFS_H

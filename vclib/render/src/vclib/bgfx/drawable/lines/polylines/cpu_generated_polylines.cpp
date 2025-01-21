@@ -4,6 +4,7 @@ namespace vcl::lines {
     CPUGeneratedPolylines::CPUGeneratedPolylines(const std::vector<LinesVertex> &points) :
         mPointsSize(points.size())
     {
+        assert(bgfx::isValid(mLinesPH));
         allocateVertexBuffer();
         allocateIndexesBuffer();
         generateBuffers(points);

@@ -83,19 +83,153 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
                 EmbeddedShader<
                     VclProgram::DRAWABLE_MESH>::fragmentEmbeddedShader(type)));
 
-    case VclProgram::LINES_CPU_GENERATED:
+
+    case VclProgram::LINES_CPU_GENERATED_VSFS:
         return vcl::createProgram(
             vcl::loadShader(
-                EmbeddedShader<VclProgram::LINES_CPU_GENERATED>::vertexEmbeddedShader(
+                EmbeddedShader<VclProgram::LINES_CPU_GENERATED_VSFS>::vertexEmbeddedShader(
                     type)),
             vcl::loadShader(
                 EmbeddedShader<
-                    VclProgram::LINES_CPU_GENERATED>::fragmentEmbeddedShader(type)));
+                    VclProgram::LINES_CPU_GENERATED_VSFS>::fragmentEmbeddedShader(type)));
 
-    case VclProgram::LINES_GPU_GENERATED:
-        return bgfx::createProgram(
+
+    case VclProgram::LINES_GPU_GENERATED_CS:
+        return vcl::createProgram(
             vcl::loadShader(
-                EmbeddedShader<VclProgram::LINES_GPU_GENERATED>::computeEmbeddedShader(type)));
+                EmbeddedShader<VclProgram::LINES_GPU_GENERATED_CS>::computeEmbeddedShader(type)));
+
+
+    case VclProgram::LINES_INSTANCING_BASED_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::LINES_INSTANCING_BASED_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::LINES_INSTANCING_BASED_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::LINES_INDIRECT_BASED_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::LINES_INDIRECT_BASED_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::LINES_INDIRECT_BASED_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::LINES_INDIRECT_BASED_CS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::LINES_INDIRECT_BASED_CS>::computeEmbeddedShader(type)));
+
+
+    case VclProgram::LINES_TEXTURE_BASED_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::LINES_TEXTURE_BASED_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::LINES_TEXTURE_BASED_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::LINES_TEXTURE_BASED_CS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::LINES_TEXTURE_BASED_CS>::computeEmbeddedShader(type)));
+
+
+
+
+    case VclProgram::POLYLINES_CPU_GENERATED_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_CPU_GENERATED_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::POLYLINES_CPU_GENERATED_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_GPU_GENERATED_CS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_GPU_GENERATED_CS>::computeEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_INSTANCING_BASED_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_INSTANCING_BASED_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::POLYLINES_INSTANCING_BASED_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_INDIRECT_BASED_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_INDIRECT_BASED_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::POLYLINES_INDIRECT_BASED_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_INDIRECT_BASED_CS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_INDIRECT_BASED_CS>::computeEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_TEXTURE_BASED_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_TEXTURE_BASED_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::POLYLINES_TEXTURE_BASED_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS>::vertexEmbeddedShader(
+                    type)),
+            vcl::loadShader(
+                EmbeddedShader<
+                    VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS>::fragmentEmbeddedShader(type)));
+
+
+    case VclProgram::POLYLINES_TEXTURE_BASED_CS:
+        return vcl::createProgram(
+            vcl::loadShader(
+                EmbeddedShader<VclProgram::POLYLINES_TEXTURE_BASED_CS>::computeEmbeddedShader(type)));
 
     case VclProgram::DRAWABLE_AXIS:
         return vcl::createProgram(

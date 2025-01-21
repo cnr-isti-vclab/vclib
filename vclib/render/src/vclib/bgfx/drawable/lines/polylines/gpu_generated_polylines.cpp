@@ -4,7 +4,7 @@
 namespace vcl::lines { 
     GPUGeneratedPolylines::GPUGeneratedPolylines(const std::vector<LinesVertex> &points) :
         mPoints(points),
-        mComputeVertexPH(bgfx::createProgram(vcl::loadShader("polylines/gpu_generated_polylines/cs_compute_buffers"), true)),
+        mComputeVertexPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_GPU_GENERATED_CS)),
         mComputeDataUH(bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4))
     {
         allocatePointsBuffer();
@@ -17,7 +17,7 @@ namespace vcl::lines {
 
     GPUGeneratedPolylines::GPUGeneratedPolylines(const GPUGeneratedPolylines& other) : DrawablePolylines(other) {
         mPoints = other.mPoints;
-        mComputeVertexPH = bgfx::createProgram(vcl::loadShader("polylines/gpu_generated_polylines/cs_compute_buffers"), true);
+        mComputeVertexPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_GPU_GENERATED_CS);
         mComputeDataUH = bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4);
 
         allocatePointsBuffer();

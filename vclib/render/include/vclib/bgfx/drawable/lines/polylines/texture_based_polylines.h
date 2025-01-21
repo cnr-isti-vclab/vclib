@@ -25,7 +25,7 @@ namespace vcl::lines {
         bgfx::UniformHandle                 mComputeDataUH          = BGFX_INVALID_HANDLE;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::POLYLINES_TEXTURE_BASED);
+                                            VclProgram::POLYLINES_TEXTURE_BASED_VSFS);
 
         public:
             TextureBasedPolylines() = default;

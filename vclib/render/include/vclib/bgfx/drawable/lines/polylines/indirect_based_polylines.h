@@ -19,7 +19,7 @@ namespace vcl::lines {
         bgfx::UniformHandle                 mComputeIndirectDataUH  = BGFX_INVALID_HANDLE;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::POLYLINES_INDIRECT_BASED);
+                                            VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
 
         public:
             IndirectBasedPolylines() = default;

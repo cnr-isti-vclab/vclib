@@ -21,7 +21,7 @@ namespace vcl::lines {
         bgfx::IndexBufferHandle             mIndexesBH          = BGFX_INVALID_HANDLE;
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::LINES_TEXTURE_BASED);
+                                            VclProgram::LINES_TEXTURE_BASED_VSFS);
 
         public:
             TextureBasedLines() = default;
