@@ -436,7 +436,10 @@ public:
 
     bool hasEdgeNormals() const { return hasPerElementComponent(EDGE, NORMAL); }
 
-    bool hasEdgeQuality() const { return hasPerElementComponent(EDGE, QUALITY); }
+    bool hasEdgeQuality() const
+    {
+        return hasPerElementComponent(EDGE, QUALITY);
+    }
 
     bool hasEdgeCustomComponents() const
     {

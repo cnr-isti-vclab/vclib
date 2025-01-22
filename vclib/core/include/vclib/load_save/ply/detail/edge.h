@@ -38,7 +38,7 @@ void readPlyEdgeProperty(
     PlyProperty p,
     std::endian end = std::endian::little)
 {
-    bool              hasBeenRead = false;
+    bool hasBeenRead = false;
     // loading vertex indices in case of list
     if (p.name == ply::vertex_indices) {
         std::vector<uint> vids; // contains the vertex ids of the actual edge
@@ -56,12 +56,12 @@ void readPlyEdgeProperty(
         e.setVertex(1u, vids[1]);
     }
     if (p.name == ply::vertex1) { // loading vertex1 index
-        uint v0 = io::readPrimitiveType<uint>(file, p.type, end);
+        uint v0     = io::readPrimitiveType<uint>(file, p.type, end);
         hasBeenRead = true;
         e.setVertex(0u, v0);
     }
     if (p.name == ply::vertex2) { // loading vertex2 index
-        uint v1 = io::readPrimitiveType<uint>(file, p.type, end);
+        uint v1     = io::readPrimitiveType<uint>(file, p.type, end);
         hasBeenRead = true;
         e.setVertex(1u, v1);
     }

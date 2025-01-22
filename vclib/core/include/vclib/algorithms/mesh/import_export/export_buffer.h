@@ -142,7 +142,7 @@ template<FaceMeshConcept MeshType>
 uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
 {
     uint sum = 0;
-    uint i = 0;
+    uint i   = 0;
     for (const auto& f : mesh.faces()) {
         buffer[i] = f.vertexNumber();
         sum += f.vertexNumber();

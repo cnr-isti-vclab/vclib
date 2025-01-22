@@ -80,10 +80,7 @@ public:
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
     }
 
-    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b)
-    {
-        a.swap(b);
-    }
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
 
     // DrawableObject implementation
 
