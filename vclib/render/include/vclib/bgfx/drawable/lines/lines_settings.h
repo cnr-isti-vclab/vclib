@@ -47,7 +47,7 @@ namespace vcl::lines {
             LinesSettings() : 
                 mThickness(5),
                 mAntialias(0),
-                mBorder(0),
+                mBorder(1),
                 mBorderColor(LinesVertex::COLOR(0, 0, 0, 1)),
                 mGeneralColor(LinesVertex::COLOR(0, 0, 0, 1)),
                 mMiterLimit(mThickness * 2),

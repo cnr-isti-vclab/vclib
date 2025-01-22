@@ -29,22 +29,35 @@
 
 #include <imgui.h>
 
-class ImguiDemo : public vcl::glfw::ViewerWindowImgui
+class ImguiDemo : public vcl::glfw::ViewerWindow
 {
-std::shared_ptr<vcl::DrawableMesh<vcl::TriMesh>> mesh;
+// std::shared_ptr<vcl::DrawableMesh<vcl::TriMesh>> mesh;
+std::unique_ptr<vcl::lines::DrawableLines> line;
 
 public:
-    ImguiDemo(const std::string& windowTitle) : ViewerWindowImgui(windowTitle)
+    ImguiDemo(const std::string& windowTitle) : ViewerWindow(windowTitle)
     {
+        std::vector<vcl::lines::LinesVertex> points = {
+            vcl::lines::LinesVertex(0.0, 0.0f, 0.0f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)),
+            vcl::lines::LinesVertex(0.5, 0.5f, 0.0f, vcl::lines::LinesVertex::COLOR(1.0, 1.0, 0.0, 1.0)),
+            vcl::lines::LinesVertex(1.0f, -1.0f, 0.0f, vcl::lines::LinesVertex::COLOR(0.0, 0.0, 0.0, 1.0)),
+            vcl::lines::LinesVertex(1.0f, 1.0f, 0.25f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)),
+            vcl::lines::LinesVertex(1.5f, -1.0f, 0.0f, vcl::lines::LinesVertex::COLOR(1.0, 0.0, 0.5, 1.0)),
+            vcl::lines::LinesVertex(1.5f, 0.5f, 0.5f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 1.0, 1.0)),
+        }; 
+
+        line = vcl::lines::DrawableLines::create(points, vcl::lines::LinesTypes::INSTANCING_BASED);
+        line->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR); 
     }
 
     void draw() override
     {
         // imgui demo window
-        ImGui::ShowDemoWindow();
+        //ImGui::ShowDemoWindow();
 
         // draw the scene
-        ViewerWindowImgui::draw();
+        ViewerWindow::draw();
+        line->draw(viewId());
     }
 };
 
@@ -53,20 +66,20 @@ int main(int argc, char** argv)
     ImguiDemo tw("Viewer ImGui GLFW");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    // vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+    // tw.pushDrawableObject(drawable);
 
-    std::vector<vcl::lines::LinesVertex> points = {
-        vcl::lines::LinesVertex(0.0, 0.0f, 0.0f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)),
-        vcl::lines::LinesVertex(0.5, 0.5f, 0.0f, vcl::lines::LinesVertex::COLOR(1.0, 1.0, 0.0, 1.0)),
-        vcl::lines::LinesVertex(1.0f, -1.0f, 0.0f, vcl::lines::LinesVertex::COLOR(0.0, 0.0, 0.0, 1.0)),
-        vcl::lines::LinesVertex(1.0f, 1.0f, 0.25f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)),
-        vcl::lines::LinesVertex(1.5f, -1.0f, 0.0f, vcl::lines::LinesVertex::COLOR(1.0, 0.0, 0.5, 1.0)),
-        vcl::lines::LinesVertex(1.5f, 0.5f, 0.5f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 1.0, 1.0)),
-    }; 
+    // std::vector<vcl::lines::LinesVertex> points = {
+    //     vcl::lines::LinesVertex(0.0, 0.0f, 0.0f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)),
+    //     vcl::lines::LinesVertex(0.5, 0.5f, 0.0f, vcl::lines::LinesVertex::COLOR(1.0, 1.0, 0.0, 1.0)),
+    //     vcl::lines::LinesVertex(1.0f, -1.0f, 0.0f, vcl::lines::LinesVertex::COLOR(0.0, 0.0, 0.0, 1.0)),
+    //     vcl::lines::LinesVertex(1.0f, 1.0f, 0.25f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)),
+    //     vcl::lines::LinesVertex(1.5f, -1.0f, 0.0f, vcl::lines::LinesVertex::COLOR(1.0, 0.0, 0.5, 1.0)),
+    //     vcl::lines::LinesVertex(1.5f, 0.5f, 0.5f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 1.0, 1.0)),
+    // }; 
 
     // auto line = vcl::lines::DrawableLines::create(points, vcl::lines::LinesTypes::INSTANCING_BASED);
     // line->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR); 
