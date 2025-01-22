@@ -52,8 +52,7 @@ void vertexCoordsToBuffer(
     MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        uint i = 0;
-        for (const auto& c : mesh.vertices() | views::coords) {
+        for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
             buffer[i * 3 + 0] = c.x();
             buffer[i * 3 + 1] = c.y();
             buffer[i * 3 + 2] = c.z();
@@ -61,9 +60,8 @@ void vertexCoordsToBuffer(
         }
     }
     else {
-        uint       i        = 0;
         const uint VERT_NUM = mesh.vertexNumber();
-        for (const auto& c : mesh.vertices() | views::coords) {
+        for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
             buffer[0 * VERT_NUM + i] = c.x();
             buffer[1 * VERT_NUM + i] = c.y();
             buffer[2 * VERT_NUM + i] = c.z();
@@ -99,8 +97,7 @@ void triangleIndicesToBuffer(
     MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        uint i = 0;
-        for (const auto& f : mesh.faces()) {
+        for (uint i = 0; const auto& f : mesh.faces()) {
             buffer[i * 3 + 0] = f.vertexIndex(0);
             buffer[i * 3 + 1] = f.vertexIndex(1);
             buffer[i * 3 + 2] = f.vertexIndex(2);
@@ -108,9 +105,8 @@ void triangleIndicesToBuffer(
         }
     }
     else {
-        uint       i        = 0;
         const uint FACE_NUM = mesh.faceNumber();
-        for (const auto& f : mesh.faces()) {
+        for (uint i = 0; const auto& f : mesh.faces()) {
             buffer[0 * FACE_NUM + i] = f.vertexIndex(0);
             buffer[1 * FACE_NUM + i] = f.vertexIndex(1);
             buffer[2 * FACE_NUM + i] = f.vertexIndex(2);
@@ -145,8 +141,7 @@ template<FaceMeshConcept MeshType>
 uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
 {
     uint sum = 0;
-    uint i   = 0;
-    for (const auto& f : mesh.faces()) {
+    for (uint i = 0; const auto& f : mesh.faces()) {
         buffer[i] = f.vertexNumber();
         sum += f.vertexNumber();
         ++i;
@@ -197,8 +192,7 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
 template<FaceMeshConcept MeshType>
 void faceIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    uint i = 0;
-    for (const auto& f : mesh.faces()) {
+    for (uint i = 0; const auto& f : mesh.faces()) {
         for (const auto* v : f.vertices()) {
             buffer[i] = mesh.index(v);
             ++i;
@@ -246,8 +240,7 @@ void faceIndicesToBuffer(
     MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        uint i = 0;
-        for (const auto& f : mesh.faces()) {
+        for (uint i = 0; const auto& f : mesh.faces()) {
             uint j = 0;
             for (const auto* v : f.vertices()) {
                 buffer[i * largestFaceSize + j] = mesh.index(v);
@@ -259,9 +252,8 @@ void faceIndicesToBuffer(
         }
     }
     else {
-        uint       i        = 0;
         const uint FACE_NUM = mesh.faceNumber();
-        for (const auto& f : mesh.faces()) {
+        for (uint i = 0; const auto& f : mesh.faces()) {
             uint j = 0;
             for (const auto* v : f.vertices()) {
                 buffer[j * FACE_NUM + i] = mesh.index(v);
@@ -298,17 +290,15 @@ void edgeIndicesToBuffer(
     MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        uint i = 0;
-        for (const auto& e : mesh.edges()) {
+        for (uint i = 0; const auto& e : mesh.edges()) {
             buffer[i * 2 + 0] = e.vertexIndex(0);
             buffer[i * 2 + 1] = e.vertexIndex(1);
             ++i;
         }
     }
     else {
-        uint       i        = 0;
         const uint EDGE_NUM = mesh.edgeNumber();
-        for (const auto& e : mesh.edges()) {
+        for (uint i = 0; const auto& e : mesh.edges()) {
             buffer[0 * EDGE_NUM + i] = e.vertexIndex(0);
             buffer[1 * EDGE_NUM + i] = e.vertexIndex(1);
             ++i;
@@ -343,8 +333,7 @@ void edgeIndicesToBuffer(
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
 {
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>()) {
+    for (uint i = 0; const auto& e : mesh.template elements<ELEM_ID>()) {
         buffer[i] = e.selected();
         ++i;
     }
@@ -464,9 +453,8 @@ void elementNormalsToBuffer(
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        uint i = 0;
-        for (const auto& n :
-             mesh.template elements<ELEM_ID>() | views::normals) {
+        for (uint i = 0; const auto& n :
+                         mesh.template elements<ELEM_ID>() | views::normals) {
             buffer[i * 3 + 0] = n.x();
             buffer[i * 3 + 1] = n.y();
             buffer[i * 3 + 2] = n.z();
@@ -474,10 +462,9 @@ void elementNormalsToBuffer(
         }
     }
     else {
-        uint       i        = 0;
         const uint ELEM_NUM = mesh.template number<ELEM_ID>();
-        for (const auto& n :
-             mesh.template elements<ELEM_ID>() | views::normals) {
+        for (uint i = 0; const auto& n :
+                         mesh.template elements<ELEM_ID>() | views::normals) {
             buffer[0 * ELEM_NUM + i] = n.x();
             buffer[1 * ELEM_NUM + i] = n.y();
             buffer[2 * ELEM_NUM + i] = n.z();
@@ -570,9 +557,8 @@ void elementColorsToBuffer(
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        uint i = 0;
-        for (const auto& c :
-             mesh.template elements<ELEM_ID>() | views::colors) {
+        for (uint i = 0; const auto& c :
+                         mesh.template elements<ELEM_ID>() | views::colors) {
             buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
             buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
             buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
@@ -581,10 +567,9 @@ void elementColorsToBuffer(
         }
     }
     else {
-        uint       i        = 0;
         const uint ELEM_NUM = mesh.template number<ELEM_ID>();
-        for (const auto& c :
-             mesh.template elements<ELEM_ID>() | views::colors) {
+        for (uint i = 0; const auto& c :
+                         mesh.template elements<ELEM_ID>() | views::colors) {
             buffer[0 * ELEM_NUM + i] = R_INT ? c.red() : c.redF();
             buffer[1 * ELEM_NUM + i] = R_INT ? c.green() : c.greenF();
             buffer[2 * ELEM_NUM + i] = R_INT ? c.blue() : c.blueF();
@@ -621,8 +606,8 @@ void elementColorsToBuffer(
 {
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
-    uint i = 0;
-    for (const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
+    for (uint        i = 0;
+         const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
         switch (colorFormat) {
         case Color::Format::ABGR: buffer[i] = c.abgr(); break;
         case Color::Format::ARGB: buffer[i] = c.argb(); break;
@@ -771,8 +756,8 @@ void elementQualityToBuffer(const MeshType& mesh, auto* buffer)
 {
     requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
-    uint i = 0;
-    for (const auto& q : mesh.template elements<ELEM_ID>() | views::quality) {
+    for (uint        i = 0;
+         const auto& q : mesh.template elements<ELEM_ID>() | views::quality) {
         buffer[i] = q;
         ++i;
     }
