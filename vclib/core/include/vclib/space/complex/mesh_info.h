@@ -79,10 +79,8 @@ public:
      * @brief Enum used to describe the type of the Mesh - by default, the value
      * is set to UNKNOWN.
      */
-    struct MeshType
-    {
-        enum Enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH, UNKNOWN };
-    };
+    enum class MeshType { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH, UNKNOWN };
+
 
     /**
      * @brief Enum used to describe the type of Elements that can be found in a
@@ -113,7 +111,7 @@ public:
     /**
      * @brief Enum used to describe the type of Data stored in a component
      */
-    using DataType = PrimitiveType::Enum;
+    using DataType = PrimitiveType;
 
     /**
      * @brief The CustomComponent struct is a simple structure that describes a
@@ -144,7 +142,7 @@ private:
         mPerElemCustomComponents;
 
     // Mesh Type
-    MeshType::Enum mType = MeshType::UNKNOWN;
+    MeshType mType = MeshType::UNKNOWN;
 
 public:
     /**
@@ -481,7 +479,7 @@ public:
 
     void setPolygonMesh() { mType = MeshType::POLYGON_MESH; }
 
-    void setMeshType(MeshType::Enum t) { mType = t; }
+    void setMeshType(MeshType t) { mType = t; }
 
     void setElement(Element el, bool b = true) { mElements[el] = b; }
 

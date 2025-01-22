@@ -54,7 +54,7 @@ void updateCurvature(MeshType& m)
     vcl::Histogramd h = vcl::vertexQualityHistogram(m);
 
     vcl::setPerVertexColorFromQuality(
-        m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
+        m, vcl::Color::ColorMap::RedBlue, h.percentile(0.1), h.percentile(0.9));
 
     std::cout << "Curvature range: " << h.minRangeValue() << " "
               << h.maxRangeValue() << "\n";

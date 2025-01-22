@@ -1,7 +1,7 @@
 # VCLib ToDo list
 
 - General:
-  - [ ] Enumerations should be declared in a struct to avoid name collisions
+  - [ ] Enumerations should be declared as enum classes
   - [x] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
   - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided

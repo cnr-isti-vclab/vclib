@@ -61,7 +61,9 @@ public:
     {
         std::pair<MeshParameter, BitSet<short>> par;
         par.first  = MeshParameter("input_output", "Input/Output Mesh", "");
-        par.second = BitSet<short>({MeshIType::TRI_MESH, MeshIType::POLY_MESH});
+        par.second = BitSet<short>(
+            {toUnderlying(MeshIType::TRI_MESH),
+             toUnderlying(MeshIType::POLY_MESH)});
 
         return {par};
     }

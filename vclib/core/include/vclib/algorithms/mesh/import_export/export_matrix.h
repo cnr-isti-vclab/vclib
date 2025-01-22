@@ -60,7 +60,7 @@ Matrix vertexCoordsMatrix(const MeshType& mesh)
 {
     Matrix vM(mesh.vertexNumber(), 3);
 
-    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
 
     // Eigen matrices can be column major
     if constexpr (EigenMatrixConcept<Matrix>) {
@@ -199,9 +199,9 @@ Matrix faceIndicesMatrix(const MeshType& mesh)
 
     Matrix fM(mesh.faceNumber(), fMaxSize);
 
-    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
 
-           // Eigen matrices can be column major
+    // Eigen matrices can be column major
     if constexpr (EigenMatrixConcept<Matrix>) {
         if constexpr (!Matrix::IsRowMajor) {
             stg = MatrixStorageType::COLUMN_MAJOR;
@@ -248,7 +248,7 @@ Matrix edgeIndicesMatrix(const MeshType& mesh)
 
     Matrix eM(mesh.edgeNumber(), 2);
 
-    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
 
     // Eigen matrices can be column major
     if constexpr (EigenMatrixConcept<Matrix>) {
@@ -393,7 +393,7 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
 {
     Matrix eNM(mesh.template number<ELEM_ID>(), 3);
 
-    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
 
     // Eigen matrices can be column major
     if constexpr (EigenMatrixConcept<Matrix>) {
@@ -501,7 +501,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 
     Matrix eCM(mesh.template number<ELEM_ID>(), 4);
 
-    MatrixStorageType::Enum stg = MatrixStorageType::ROW_MAJOR;
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
 
     // Eigen matrices can be column major
     if constexpr (EigenMatrixConcept<Matrix>) {
@@ -546,7 +546,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
  * @return \#E vector of integers (element colors)
  */
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
-Vect elementColorsVector(const MeshType& mesh, Color::Format::Enum colorFormat)
+Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
@@ -616,7 +616,7 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
  * @return \#V vector of integers (vertex colors)
  */
 template<typename Vect, MeshConcept MeshType>
-Vect vertexColorsVector(const MeshType& mesh, Color::Format::Enum colorFormat)
+Vect vertexColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
     return elementColorsVector<ElemId::VERTEX, Vect>(mesh, colorFormat);
 }
@@ -680,7 +680,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  * @return \#F vector of integers (face colors)
  */
 template<typename Vect, MeshConcept MeshType>
-Vect faceColorsVector(const MeshType& mesh, Color::Format::Enum colorFormat)
+Vect faceColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
     return elementColorsVector<ElemId::FACE, Vect>(mesh, colorFormat);
 }

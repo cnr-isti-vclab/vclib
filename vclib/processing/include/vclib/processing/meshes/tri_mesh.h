@@ -35,7 +35,7 @@ class TriMesh : public MeshI, public TriMeshT<ProcScalarType, INDEXED_MESHES>
 public:
     TriMesh() = default;
 
-    MeshIType::Enum type() const override { return MeshIType::TRI_MESH; }
+    MeshIType type() const override { return MeshIType::TRI_MESH; }
 
     std::string typeName() const override { return "TriMesh"; }
 };

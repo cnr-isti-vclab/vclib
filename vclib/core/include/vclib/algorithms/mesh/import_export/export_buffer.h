@@ -47,9 +47,9 @@ namespace vcl {
  */
 template<MeshConcept MeshType>
 void vertexCoordsToBuffer(
-    const MeshType&         mesh,
-    auto*                   buffer,
-    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
@@ -92,9 +92,9 @@ void vertexCoordsToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void triangleIndicesToBuffer(
-    const MeshType&         mesh,
-    auto*                   buffer,
-    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (uint i = 0; const auto& f : mesh.faces()) {
@@ -234,10 +234,10 @@ void faceIndicesToBuffer(const MeshType& mesh, auto* buffer)
  */
 template<FaceMeshConcept MeshType>
 void faceIndicesToBuffer(
-    const MeshType&         mesh,
-    auto*                   buffer,
-    uint                    largestFaceSize,
-    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    uint              largestFaceSize,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (uint i = 0; const auto& f : mesh.faces()) {
@@ -285,9 +285,9 @@ void faceIndicesToBuffer(
  */
 template<EdgeMeshConcept MeshType>
 void edgeIndicesToBuffer(
-    const MeshType&         mesh,
-    auto*                   buffer,
-    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (uint i = 0; const auto& e : mesh.edges()) {
@@ -446,9 +446,9 @@ void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
-    const MeshType&         mesh,
-    auto*                   buffer,
-    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
@@ -492,9 +492,9 @@ void elementNormalsToBuffer(
  */
 template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
-    const MeshType&         mesh,
-    auto*                   buffer,
-    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage);
 }
@@ -517,9 +517,9 @@ void vertexNormalsToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
-    const MeshType&         mesh,
-    auto*                   buffer,
-    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage);
 }
@@ -546,11 +546,10 @@ void faceNormalsToBuffer(
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsToBuffer(
-    const MeshType&             mesh,
-    auto*                       buffer,
-    MatrixStorageType::Enum     storage = MatrixStorageType::ROW_MAJOR,
-    Color::Representation::Enum representation =
-        Color::Representation::INT_0_255)
+    const MeshType&       mesh,
+    auto*                 buffer,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255)
 {
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
@@ -600,19 +599,20 @@ void elementColorsToBuffer(
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsToBuffer(
-    const MeshType&     mesh,
-    auto*               buffer,
-    Color::Format::Enum colorFormat)
+    const MeshType& mesh,
+    auto*           buffer,
+    Color::Format   colorFormat)
 {
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
     for (uint        i = 0;
          const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
         switch (colorFormat) {
-        case Color::Format::ABGR: buffer[i] = c.abgr(); break;
-        case Color::Format::ARGB: buffer[i] = c.argb(); break;
-        case Color::Format::RGBA: buffer[i] = c.rgba(); break;
-        case Color::Format::BGRA: buffer[i] = c.bgra(); break;
+            using enum Color::Format;
+        case ABGR: buffer[i] = c.abgr(); break;
+        case ARGB: buffer[i] = c.argb(); break;
+        case RGBA: buffer[i] = c.rgba(); break;
+        case BGRA: buffer[i] = c.bgra(); break;
         }
         ++i;
     }
@@ -640,11 +640,10 @@ void elementColorsToBuffer(
  */
 template<MeshConcept MeshType>
 void vertexColorsToBuffer(
-    const MeshType&             mesh,
-    auto*                       buffer,
-    MatrixStorageType::Enum     storage = MatrixStorageType::ROW_MAJOR,
-    Color::Representation::Enum representation =
-        Color::Representation::INT_0_255)
+    const MeshType&       mesh,
+    auto*                 buffer,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255)
 {
     elementColorsToBuffer<ElemId::VERTEX>(
         mesh, buffer, storage, representation);
@@ -670,9 +669,9 @@ void vertexColorsToBuffer(
  */
 template<MeshConcept MeshType>
 void vertexColorsToBuffer(
-    const MeshType&     mesh,
-    auto*               buffer,
-    Color::Format::Enum colorFormat)
+    const MeshType& mesh,
+    auto*           buffer,
+    Color::Format   colorFormat)
 {
     elementColorsToBuffer<ElemId::VERTEX>(mesh, buffer, colorFormat);
 }
@@ -698,11 +697,10 @@ void vertexColorsToBuffer(
  */
 template<MeshConcept MeshType>
 void faceColorsToBuffer(
-    const MeshType&             mesh,
-    auto*                       buffer,
-    MatrixStorageType::Enum     storage = MatrixStorageType::ROW_MAJOR,
-    Color::Representation::Enum representation =
-        Color::Representation::INT_0_255)
+    const MeshType&       mesh,
+    auto*                 buffer,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255)
 {
     elementColorsToBuffer<ElemId::FACE>(mesh, buffer, storage, representation);
 }
@@ -727,9 +725,9 @@ void faceColorsToBuffer(
  */
 template<MeshConcept MeshType>
 void faceColorsToBuffer(
-    const MeshType&     mesh,
-    auto*               buffer,
-    Color::Format::Enum colorFormat)
+    const MeshType& mesh,
+    auto*           buffer,
+    Color::Format   colorFormat)
 {
     elementColorsToBuffer<ElemId::FACE>(mesh, buffer, colorFormat);
 }

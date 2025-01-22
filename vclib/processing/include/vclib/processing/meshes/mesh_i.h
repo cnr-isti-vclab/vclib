@@ -27,14 +27,11 @@
 
 namespace vcl::proc {
 
-struct MeshIType
-{
-    enum Enum {
-        TRI_MESH,
-        POLY_MESH,
+enum class MeshIType {
+    TRI_MESH,
+    POLY_MESH,
 
-        COUNT
-    };
+    COUNT
 };
 
 class MeshI
@@ -43,7 +40,7 @@ public:
     MeshI()          = default;
     virtual ~MeshI() = default;
 
-    virtual MeshIType::Enum type() const = 0;
+    virtual MeshIType type() const = 0;
 
     virtual std::string typeName() const = 0;
 

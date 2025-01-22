@@ -48,7 +48,7 @@ public:
         setUintValue(value);
     }
 
-    ParameterType::Enum type() const override { return ParameterType::ENUM; }
+    ParameterType type() const override { return ParameterType::ENUM; }
 
     std::shared_ptr<Parameter> clone() const override
     {

@@ -43,7 +43,7 @@ public:
     {
     }
 
-    ParameterType::Enum type() const override { return ParameterType::MESH; }
+    ParameterType type() const override { return ParameterType::MESH; }
 
     std::shared_ptr<Parameter> clone() const override
     {
