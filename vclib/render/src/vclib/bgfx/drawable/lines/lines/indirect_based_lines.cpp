@@ -9,6 +9,7 @@ namespace vcl::lines {
         mIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
         mComputeIndirectPH(Context::instance().programManager().getProgram(VclProgram::LINES_INDIRECT_BASED_CS))
     {
+        assert(bgfx::isValid(mComputeIndirectPH));
         allocateVerticesBuffer();
         allocateIndexesBuffer();
 
@@ -22,6 +23,8 @@ namespace vcl::lines {
         mIndirectBH = bgfx::createIndirectBuffer(1);
         mComputeIndirectPH = Context::instance().programManager().getProgram(VclProgram::LINES_INDIRECT_BASED_CS);
         mIndirectDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
+
+        assert(bgfx::isValid(mComputeIndirectPH));
 
         allocateVerticesBuffer();
         allocateIndexesBuffer();
@@ -62,9 +65,12 @@ namespace vcl::lines {
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
 
+        std::swap(mPoints, other.mPoints);
+
         std::swap(mVerticesBH, other.mVerticesBH);
         std::swap(mIndexesBH, other.mIndexesBH);
         std::swap(mPointsBH, other.mPointsBH);
+        
         std::swap(mIndirectBH, other.mIndirectBH);
         std::swap(mComputeIndirectPH, other.mComputeIndirectPH);
         std::swap(mIndirectDataUH, other.mIndirectDataUH);
@@ -132,7 +138,7 @@ namespace vcl::lines {
         
         bgfx::setBuffer(1, mPointsBH, bgfx::Access::Read);
 
-        bgfx::setState(BGFX_STATE_DEFAULT);
+        bgfx::setState(state);
         bgfx::submit(viewId, mLinesPH, mIndirectBH, 0);
     }
 

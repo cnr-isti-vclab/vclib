@@ -10,6 +10,8 @@ namespace vcl::lines {
         mJoinesPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS)),
         mComputeTexturePH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_CS))
     {
+        assert(bgfx::isValid(mComputeTexturePH));
+
         allocateVerticesBuffer();
         allocateIndexesBuffer();
         allocateTextureBuffer();
@@ -27,6 +29,8 @@ namespace vcl::lines {
         mComputeDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
         mJoinesPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS);
         mComputeTexturePH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_CS);
+
+        assert(bgfx::isValid(mComputeTexturePH));
 
         allocateVerticesBuffer();
         allocateIndexesBuffer();

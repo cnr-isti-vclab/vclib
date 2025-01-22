@@ -142,8 +142,6 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
                 EmbeddedShader<VclProgram::LINES_TEXTURE_BASED_CS>::computeEmbeddedShader(type)));
 
 
-
-
     case VclProgram::POLYLINES_CPU_GENERATED_VSFS:
         return vcl::createProgram(
             vcl::loadShader(

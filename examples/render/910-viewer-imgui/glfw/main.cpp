@@ -53,11 +53,11 @@ int main(int argc, char** argv)
     ImguiDemo tw("Viewer ImGui GLFW");
 
     // load and set up a drawable mesh
-    // vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
-    // tw.pushDrawableObject(drawable);
+    tw.pushDrawableObject(drawable);
 
     std::vector<vcl::lines::LinesVertex> points = {
         vcl::lines::LinesVertex(0.0, 0.0f, 0.0f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 0.0, 1.0)),
@@ -68,14 +68,14 @@ int main(int argc, char** argv)
         vcl::lines::LinesVertex(1.5f, 0.5f, 0.5f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 1.0, 1.0)),
     }; 
 
-    // auto line = vcl::lines::DrawableLines::create(points, vcl::lines::LinesTypes::INSTANCING_BASED);
-    // line->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR);
-    // tw.pushDrawableObject(*line);
+    auto line = vcl::lines::DrawableLines::create(points, vcl::lines::LinesTypes::INDIRECT_BASED);
+    line->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR); 
+    tw.pushDrawableObject(*line);
 
-    auto polyline = vcl::lines::DrawablePolylines::create(points, vcl::lines::LinesTypes::TEXTURE_BASED);
-    polyline->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR);
-    tw.pushDrawableObject(*polyline);
-
+    // auto polyline = vcl::lines::DrawablePolylines::create(points, vcl::lines::LinesTypes::TEXTURE_BASED);
+    // polyline->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR);
+    // tw.pushDrawableObject(*polyline);
+ 
     tw.fitScene();
 
     tw.show();
