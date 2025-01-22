@@ -3,8 +3,7 @@
 
 namespace vcl::lines {
     GPUGeneratedLines::GPUGeneratedLines(const std::vector<LinesVertex> &points) : 
-        mPoints(points),
-        mComputeVerticesPH(Context::instance().programManager().getProgram(VclProgram::LINES_GPU_GENERATED_CS))
+        mPoints(points)
     {
         assert(bgfx::isValid(mComputeVerticesPH));
         allocateVertexBuffer();
@@ -17,7 +16,6 @@ namespace vcl::lines {
 
     GPUGeneratedLines::GPUGeneratedLines(const GPUGeneratedLines& other) : DrawableLines(other) {
         mPoints = other.mPoints;
-        mComputeVerticesPH = Context::instance().programManager().getProgram(VclProgram::LINES_GPU_GENERATED_CS);
         assert(bgfx::isValid(mComputeVerticesPH));
 
         allocateIndexBuffer();
@@ -49,7 +47,6 @@ namespace vcl::lines {
     }
 
     void GPUGeneratedLines::swap(GPUGeneratedLines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
 
@@ -57,7 +54,6 @@ namespace vcl::lines {
         std::swap(mVerticesBH, other.mVerticesBH);
         std::swap(mPoints, other.mPoints);
         std::swap(mPointsBH, other.mPointsBH);
-        std::swap(mComputeVerticesPH, other.mComputeVerticesPH);
     }
 
     std::shared_ptr<vcl::DrawableObjectI> GPUGeneratedLines::clone() const {

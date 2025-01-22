@@ -6,8 +6,7 @@ namespace vcl::lines {
     IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex> &points) :
         mPoints(points),
         mIndirectBH(bgfx::createIndirectBuffer(1)),
-        mIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
-        mComputeIndirectPH(Context::instance().programManager().getProgram(VclProgram::LINES_INDIRECT_BASED_CS))
+        mIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
     {
         assert(bgfx::isValid(mComputeIndirectPH));
         allocateVerticesBuffer();
@@ -21,7 +20,6 @@ namespace vcl::lines {
     IndirectBasedLines::IndirectBasedLines(const IndirectBasedLines& other) : DrawableLines(other) {
         mPoints = other.mPoints;
         mIndirectBH = bgfx::createIndirectBuffer(1);
-        mComputeIndirectPH = Context::instance().programManager().getProgram(VclProgram::LINES_INDIRECT_BASED_CS);
         mIndirectDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
 
         assert(bgfx::isValid(mComputeIndirectPH));
@@ -51,8 +49,8 @@ namespace vcl::lines {
         if(bgfx::isValid(mIndirectBH))
             bgfx::destroy(mIndirectBH);
 
-        if(bgfx::isValid(mComputeIndirectPH))
-            bgfx::destroy(mComputeIndirectPH);
+        if(bgfx::isValid(mIndirectDataUH)) 
+            bgfx::destroy(mIndirectDataUH);
     }
 
     IndirectBasedLines& IndirectBasedLines::operator=(IndirectBasedLines other) {
@@ -61,7 +59,6 @@ namespace vcl::lines {
     }
 
     void IndirectBasedLines::swap(IndirectBasedLines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
 
@@ -72,7 +69,6 @@ namespace vcl::lines {
         std::swap(mPointsBH, other.mPointsBH);
         
         std::swap(mIndirectBH, other.mIndirectBH);
-        std::swap(mComputeIndirectPH, other.mComputeIndirectPH);
         std::swap(mIndirectDataUH, other.mIndirectDataUH);
     }
 

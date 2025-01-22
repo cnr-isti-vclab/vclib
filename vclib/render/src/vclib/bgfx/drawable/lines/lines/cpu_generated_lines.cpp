@@ -41,7 +41,6 @@ namespace vcl::lines {
     }
 
     void CPUGeneratedLines::swap(CPUGeneratedLines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
         

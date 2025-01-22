@@ -6,8 +6,7 @@ namespace vcl::lines {
         mMaxTextureSize(maxTextureSize),
         mPoints(points),
         mIndirectBH(bgfx::createIndirectBuffer(1)),
-        mIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
-        mComputeTexturePH(Context::instance().programManager().getProgram(VclProgram::LINES_TEXTURE_BASED_CS))
+        mIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
     {
         allocateIndexesBuffer();
         allocateVerticesBuffer();
@@ -23,7 +22,6 @@ namespace vcl::lines {
         mMaxTextureSize = other.mMaxTextureSize;
         mIndirectBH = bgfx::createIndirectBuffer(1);
         mIndirectDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-        mComputeTexturePH = Context::instance().programManager().getProgram(VclProgram::LINES_TEXTURE_BASED_CS);
 
         allocateIndexesBuffer();
         allocateVerticesBuffer();
@@ -67,7 +65,6 @@ namespace vcl::lines {
     }
 
     void TextureBasedLines::swap(TextureBasedLines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
 
@@ -76,7 +73,6 @@ namespace vcl::lines {
 
         std::swap(mTextureBH, other.mTextureBH);
         std::swap(mPointsBH, other.mPointsBH);
-        std::swap(mComputeTexturePH, other.mComputeTexturePH);
 
         std::swap(mIndirectBH, other.mIndirectBH);
         std::swap(mIndirectDataUH, other.mIndirectDataUH);

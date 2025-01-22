@@ -68,9 +68,15 @@ int main(int argc, char** argv)
         vcl::lines::LinesVertex(1.5f, 0.5f, 0.5f, vcl::lines::LinesVertex::COLOR(0.0, 1.0, 1.0, 1.0)),
     }; 
 
-    auto line = vcl::lines::DrawableLines::create(points, vcl::lines::LinesTypes::INDIRECT_BASED);
-    line->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR); 
-    tw.pushDrawableObject(*line);
+    // auto line = vcl::lines::DrawableLines::create(points, vcl::lines::LinesTypes::INSTANCING_BASED);
+    // line->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR); 
+    // tw.pushDrawableObject(*line);
+
+    // vcl::lines::IndirectBasedLines line = vcl::lines::IndirectBasedLines(points);
+    // line.getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR); 
+    // tw.pushDrawableObject(line);
+    // tw.pushDrawableObject(drawable);
+
 
     // auto polyline = vcl::lines::DrawablePolylines::create(points, vcl::lines::LinesTypes::TEXTURE_BASED);
     // polyline->getSettings().setColorToUse(vcl::lines::ColorToUse::PER_VERTEX_COLOR);

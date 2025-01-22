@@ -3,16 +3,18 @@
 
 namespace vcl::lines {
     class GPUGeneratedLines : public DrawableLines {
+        
+        bgfx::ProgramHandle mComputeVerticesPH = Context::instance().programManager().getProgram(
+                                                    VclProgram::LINES_GPU_GENERATED_CS);
+
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::LINES_CPU_GENERATED_VSFS);
 
         std::vector<LinesVertex>            mPoints;
 
         bgfx::DynamicIndexBufferHandle      mIndexesBH          = BGFX_INVALID_HANDLE;
         bgfx::DynamicVertexBufferHandle     mVerticesBH         = BGFX_INVALID_HANDLE;
         bgfx::DynamicVertexBufferHandle     mPointsBH           = BGFX_INVALID_HANDLE;
-        bgfx::ProgramHandle                 mComputeVerticesPH  = BGFX_INVALID_HANDLE;
-
-        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::LINES_CPU_GENERATED_VSFS);
 
         public:
             GPUGeneratedLines() = default;

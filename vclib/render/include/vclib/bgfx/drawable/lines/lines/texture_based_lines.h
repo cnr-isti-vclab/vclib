@@ -4,15 +4,19 @@
 namespace vcl::lines {
     class TextureBasedLines : public DrawableLines {
 
-        uint32_t mMaxTextureSize;
+        bgfx::ProgramHandle mComputeTexturePH = Context::instance().programManager().getProgram(
+                                                    VclProgram::LINES_TEXTURE_BASED_CS);
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::LINES_TEXTURE_BASED_VSFS);
 
-        std::vector<float>                  mVertices = {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
-        std::vector<uint32_t>               mIndexes = {0, 1, 2, 1, 3, 2};
+        static inline const std::vector<float>                  mVertices = {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+        static inline const std::vector<uint32_t>               mIndexes = {0, 1, 2, 1, 3, 2};
+        
+        uint32_t mMaxTextureSize;
         std::vector<LinesVertex>            mPoints;
 
         bgfx::TextureHandle                 mTextureBH          = BGFX_INVALID_HANDLE;
         bgfx::DynamicVertexBufferHandle     mPointsBH           = BGFX_INVALID_HANDLE;
-        bgfx::ProgramHandle                 mComputeTexturePH   = BGFX_INVALID_HANDLE;
 
         bgfx::IndirectBufferHandle          mIndirectBH         = BGFX_INVALID_HANDLE;      
         bgfx::UniformHandle                 mIndirectDataUH     = BGFX_INVALID_HANDLE;
@@ -20,8 +24,6 @@ namespace vcl::lines {
         bgfx::VertexBufferHandle            mVerticesBH         = BGFX_INVALID_HANDLE;
         bgfx::IndexBufferHandle             mIndexesBH          = BGFX_INVALID_HANDLE;
 
-        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::LINES_TEXTURE_BASED_VSFS);
 
         public:
             TextureBasedLines() = default;
