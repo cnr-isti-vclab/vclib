@@ -79,6 +79,7 @@ enum class MatrixStorageType { ROW_MAJOR, COLUMN_MAJOR };
  * @param[in] e: The enum value.
  * @return The value casted to the underlying type of the enum.
  */
+// TODO: remove from c++23 (std::to_underlying)
 template<typename E>
 constexpr typename std::underlying_type<E>::type toUnderlying(E e) noexcept
 {

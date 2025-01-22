@@ -152,10 +152,10 @@ void testFaceVector(const auto& pm)
 {
     auto faces = vcl::faceIndicesVector<VectorType>(pm);
 
-    uint nIndices = countPerFaceVertexReferences(pm);
+    vcl::uint nIndices = countPerFaceVertexReferences(pm);
     REQUIRE(faces.size() == nIndices);
 
-    uint i = 0;
+    vcl::uint i = 0;
     for (const auto& f : pm.faces()) {
         for (const auto* v : f.vertices()) {
             REQUIRE(faces[i] == pm.index(v));
