@@ -41,9 +41,9 @@ namespace vcl {
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
  */
 template<MeshConcept MeshType>
 void vertexCoordsToBuffer(
@@ -82,13 +82,15 @@ void vertexCoordsToBuffer(
  * polygonal faces, only the first three vertices are considered).
  *
  * @note This function does not guarantee that the rows of the matrix
- * correspond to the face indices of the mesh. This scenario is possible
- * when the mesh has deleted faces. To be sure to have a direct
- * correspondence, compact the face container before calling this function.
+ * correspond to the face indices of the mesh. Moreover, it is not guaranteed
+ * that the vertex indices stored in the buffer correspond to the vertex indices
+ * of the mesh. This scenario is possible when the mesh has deleted faces or
+ * vertices. To be sure to have a direct correspondence, compact the face and
+ * vertex container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
  */
 template<FaceMeshConcept MeshType>
 void triangleIndicesToBuffer(
@@ -135,8 +137,9 @@ void triangleIndicesToBuffer(
  * when the mesh has deleted faces. To be sure to have a direct
  * correspondence, compact the face container before calling this function.
  *
- * @param mesh
- * @param buffer
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @return sum of the sizes of the faces
  */
 template<FaceMeshConcept MeshType>
 uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
@@ -152,6 +155,126 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
 }
 
 /**
+ * @brief Export into a buffer the vertex indices for each face of a Mesh. Faces
+ * can be polygons.
+ *
+ * This function exports the vertex indices of the polygonal faces of a mesh to
+ * a buffer. Indices are stored consecutively in the buffer, following the order
+ * the faces appear in the mesh. The buffer must be preallocated with the
+ * correct size (sum of the sizes of the faces).
+ *
+ * You can use the function @ref vcl::faceSizesToBuffer to get the sizes of the
+ * faces and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * std::vector<uint> faceSizes(myMesh.faceNumber());
+ * uint sum = vcl::faceSizesToBuffer(myMesh, sizes.data());
+ * std::vector<uint> faceIndices(sum);
+ * vcl::faceIndicesToBuffer(myMesh, faceIndices.data());
+ *
+ * // read indices for each face
+ * uint offset = 0;
+ * for (uint i = 0; i < myMesh.faceNumber(); ++i) {
+ *     uint size = faceSizes[i];
+ *     for (uint j = 0; j < size; ++j) {
+ *         uint vIdx = faceIndices[offset + j];
+ *         // do something with the vertex index
+ *     }
+ *     offset += size;
+ * }
+ * @endcode
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. Moreover, it is not guaranteed
+ * that the vertex indices stored in the buffer correspond to the vertex indices
+ * of the mesh. This scenario is possible when the mesh has deleted faces or
+ * vertices. To be sure to have a direct correspondence, compact the face and
+ * vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceIndicesToBuffer(const MeshType& mesh, auto* buffer)
+{
+    uint i = 0;
+    for (const auto& f : mesh.faces()) {
+        for (const auto* v : f.vertices()) {
+            buffer[i] = mesh.index(v);
+            ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export into a buffer the vertex indices for each face of a Mesh. Faces
+ * can be polygons.
+ *
+ * This function exports the vertex indices of the polygonal faces of a mesh to
+ * a buffer. Indices are stored following the order the faces appear in the
+ * mesh. The buffer must be preallocated with the correct size (number of faces
+ * times the size of the largest face size). For each face that has less
+ * vertices than the largest face size, the remaining indices are set to -1.
+ *
+ * You can use the function @ref vcl::largestFaceSize to get the largest face
+ * size and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * uint lfs = vcl::largestFaceSize(myMesh);
+ * Eigen::MatrixXi faceIndices(myMesh.faceNumber(), lfs);
+ * vcl::faceIndicesToBuffer(
+ *     myMesh, faceIndices.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
+ * @endcode
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. Moreover, it is not guaranteed
+ * that the vertex indices stored in the buffer correspond to the vertex indices
+ * of the mesh. This scenario is possible when the mesh has deleted faces or
+ * vertices. To be sure to have a direct correspondence, compact the face and
+ * vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] largestFaceSize: size of the largest face in the mesh
+ * @param[in] storage: storage type of the matrix (row or column major)
+ */
+template<FaceMeshConcept MeshType>
+void faceIndicesToBuffer(
+    const MeshType&         mesh,
+    auto*                   buffer,
+    uint                    largestFaceSize,
+    MatrixStorageType::Enum storage = MatrixStorageType::ROW_MAJOR)
+{
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        uint i = 0;
+        for (const auto& f : mesh.faces()) {
+            uint j = 0;
+            for (const auto* v : f.vertices()) {
+                buffer[i * largestFaceSize + j] = mesh.index(v);
+                ++j;
+            }
+            for (; j < largestFaceSize; ++j) // remaining vertices set to -1
+                buffer[i * largestFaceSize + j] = -1;
+            ++i;
+        }
+    }
+    else {
+        uint       i        = 0;
+        const uint FACE_NUM = mesh.faceNumber();
+        for (const auto& f : mesh.faces()) {
+            uint j = 0;
+            for (const auto* v : f.vertices()) {
+                buffer[j * FACE_NUM + i] = mesh.index(v);
+                ++j;
+            }
+            for (; j < largestFaceSize; ++j) // remaining vertices set to -1
+                buffer[j * FACE_NUM + i] = -1;
+            ++i;
+        }
+    }
+}
+
+/**
  * @brief Export into a buffer the vertex indices for each edge of a Mesh.
  *
  * This function exports the vertex indices of the edges of a mesh to a
@@ -164,9 +287,9 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
  * when the mesh has deleted edges. To be sure to have a direct
  * correspondence, compact the edge container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
  */
 template<EdgeMeshConcept MeshType>
 void edgeIndicesToBuffer(
@@ -214,8 +337,8 @@ void edgeIndicesToBuffer(
  * when the mesh has deleted elements. To be sure to have a direct
  * correspondence, compact the element container before calling this function.
  *
- * @param mesh
- * @param buffer
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -247,8 +370,8 @@ void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
  *
- * @param mesh
- * @param buffer
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
  */
 template<MeshConcept MeshType>
 void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -276,8 +399,8 @@ void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * when the mesh has deleted faces. To be sure to have a direct
  * correspondence, compact the face container before calling this function.
  *
- * @param mesh
- * @param buffer
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
  */
 template<FaceMeshConcept MeshType>
 void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -305,8 +428,8 @@ void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * when the mesh has deleted edges. To be sure to have a direct
  * correspondence, compact the edge container before calling this function.
  *
- * @param mesh
- * @param buffer
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
  */
 template<EdgeMeshConcept MeshType>
 void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -328,9 +451,9 @@ void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * when the mesh has deleted elements. To be sure to have a direct
  * correspondence, compact the element container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
@@ -376,9 +499,9 @@ void elementNormalsToBuffer(
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
  */
 template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
@@ -401,9 +524,9 @@ void vertexNormalsToBuffer(
  * the mesh has deleted faces. To be sure to have a direct correspondence,
  * compact the face container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
  */
 template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
@@ -428,10 +551,11 @@ void faceNormalsToBuffer(
  * when the mesh has deleted elements. To be sure to have a direct
  * correspondence, compact the element container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
- * @param representation
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] representation: representation of the color components (integer or
+ * float)
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsToBuffer(
@@ -485,9 +609,9 @@ void elementColorsToBuffer(
  * the mesh has deleted elements. To be sure to have a direct correspondence,
  * compact the element container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param colorFormat
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] colorFormat: format of the color components
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsToBuffer(
@@ -523,10 +647,11 @@ void elementColorsToBuffer(
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
- * @param representation
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] representation: representation of the color components (integer or
+ * float)
  */
 template<MeshConcept MeshType>
 void vertexColorsToBuffer(
@@ -554,9 +679,9 @@ void vertexColorsToBuffer(
  * the mesh has deleted vertices. To be sure to have a direct correspondence,
  * compact the vertex container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param colorFormat
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] colorFormat: format of the color components
  */
 template<MeshConcept MeshType>
 void vertexColorsToBuffer(
@@ -580,10 +705,11 @@ void vertexColorsToBuffer(
  * when the mesh has deleted faces. To be sure to have a direct
  * correspondence, compact the face container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param storage
- * @param representation
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] representation: representation of the color components (integer or
+ * float)
  */
 template<MeshConcept MeshType>
 void faceColorsToBuffer(
@@ -610,9 +736,9 @@ void faceColorsToBuffer(
  * the mesh has deleted faces. To be sure to have a direct correspondence,
  * compact the face container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param colorFormat
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] colorFormat: format of the color components
  */
 template<MeshConcept MeshType>
 void faceColorsToBuffer(
@@ -637,9 +763,8 @@ void faceColorsToBuffer(
  * the mesh has deleted elements. To be sure to have a direct correspondence,
  * compact the element container before calling this function.
  *
- * @param mesh
- * @param buffer
- * @param colorFormat
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementQualityToBuffer(const MeshType& mesh, auto* buffer)
@@ -666,8 +791,8 @@ void elementQualityToBuffer(const MeshType& mesh, auto* buffer)
  * the mesh has deleted vertices. To be sure to have a direct correspondence,
  * compact the vertex container before calling this function.
  *
- * @param mesh
- * @param buffer
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
  */
 template<MeshConcept MeshType>
 void vertexQualityToBuffer(const MeshType& mesh, auto* buffer)
@@ -687,8 +812,8 @@ void vertexQualityToBuffer(const MeshType& mesh, auto* buffer)
  * the mesh has deleted faces. To be sure to have a direct correspondence,
  * compact the face container before calling this function.
  *
- * @param mesh
- * @param buffer
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
  */
 template<MeshConcept MeshType>
 void faceQualityToBuffer(const MeshType& mesh, auto* buffer)

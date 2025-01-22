@@ -148,6 +148,45 @@ void testFaceSizesVector(const auto& pm)
 }
 
 template<typename VectorType>
+void testFaceVector(const auto& pm)
+{
+    auto faces = vcl::faceIndicesVector<VectorType>(pm);
+
+    uint nIndices = countPerFaceVertexReferences(pm);
+    REQUIRE(faces.size() == nIndices);
+
+    uint i = 0;
+    for (const auto& f : pm.faces()) {
+        for (const auto* v : f.vertices()) {
+            REQUIRE(faces[i] == pm.index(v));
+            ++i;
+        }
+    }
+}
+
+template<typename MatrixType>
+void testFaceMatrix(const auto& pm)
+{
+    auto faces = vcl::faceIndicesMatrix<MatrixType>(pm);
+
+    REQUIRE(faces.rows() == pm.faceNumber());
+    REQUIRE(faces.cols() == vcl::largestFaceSize(pm));
+
+    vcl::uint i = 0;
+    for (const auto& f : pm.faces()) {
+        vcl::uint j = 0;
+        for (j = 0; j < f.vertexNumber(); ++j) {
+            REQUIRE(faces(i, j) == f.vertexIndex(j));
+        }
+        for (; j < faces.cols(); ++j) {
+            REQUIRE(faces(i, j) == -1);
+        }
+
+        ++i;
+    }
+}
+
+template<typename VectorType>
 void testVertexSelectionVector(const auto& tm)
 {
     auto sel = vcl::vertexSelectionVector<VectorType>(tm);
@@ -374,6 +413,47 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Array2")
         {
             testTrianglesMatrix<vcl::Array2<vcl::uint>>(tm);
+        }
+    }
+
+    SECTION("Faces...")
+    {
+        SECTION("Eigen Row Major")
+        {
+            testFaceMatrix<EigenRowMatrix<vcl::uint>>(tm);
+            testFaceMatrix<EigenRowMatrix<vcl::uint>>(pm);
+        }
+        SECTION("Eigen 3 Row Major")
+        {
+            testFaceMatrix<Eigen3RowMatrix<vcl::uint>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testFaceMatrix<EigenColMatrix<vcl::uint>>(tm);
+            testFaceMatrix<EigenColMatrix<vcl::uint>>(pm);
+        }
+        SECTION("Eigen 3 Col Major")
+        {
+            testFaceMatrix<Eigen3ColMatrix<vcl::uint>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testFaceMatrix<vcl::Array2<vcl::uint>>(tm);
+            testFaceMatrix<vcl::Array2<vcl::uint>>(pm);
+        }
+        SECTION("Eigen Vector<vcl::uint>")
+        {
+            testFaceVector<Eigen::VectorX<vcl::uint>>(pm);
+        }
+
+        SECTION("std vector<vcl::uint>")
+        {
+            testFaceVector<std::vector<vcl::uint>>(pm);
+        }
+
+        SECTION("vcl::Vector<vcl::uint>")
+        {
+            testFaceVector<vcl::Vector<vcl::uint, -1>>(pm);
         }
     }
 

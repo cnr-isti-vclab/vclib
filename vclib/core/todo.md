@@ -36,6 +36,7 @@
   - [ ] move bipartite graph iterators from space to iterators (see space todo list)
 - IO:
   - [ ] Manage read and write colors from integral to non integral types
+  - [ ] Ply read/write code for some components should be the same for every element (no code duplication)
 - Algorithms:
   - [x] Separate Mesh algorithms from core(?) algorithms
   - [ ] Take views arguments instead of vectors- allows to be more general on algorithms
