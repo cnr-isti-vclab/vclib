@@ -60,7 +60,7 @@ namespace vcl::lines {
         std::swap(mJoinsIndexesBH, other.mJoinsIndexesBH);
     }
 
-    std::shared_ptr<vcl::DrawableObjectI> CPUGeneratedPolylines::clone() const {
+    std::shared_ptr<vcl::DrawableObject> CPUGeneratedPolylines::clone() const {
         return std::make_shared<CPUGeneratedPolylines>(*this);
     }
 

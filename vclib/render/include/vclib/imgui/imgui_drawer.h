@@ -71,10 +71,12 @@ public:
         if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_Shutdown();
         }
+#ifdef VCLIB_WITH_QT
         else if constexpr (
             DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
             ImGui_ImplQt_Shutdown();
         }
+#endif
         ImGui::DestroyContext();
     }
 
@@ -103,6 +105,7 @@ public:
             ImGui_ImplBgfx_Init();
 #endif
         }
+#ifdef VCLIB_WITH_QT
         else if constexpr (
             DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
             QWidget* mWindow =
@@ -115,6 +118,7 @@ public:
             ImGui_ImplBgfx_Init();
 #endif
         }
+#endif
     }
 
     virtual void onDraw(uint)
@@ -128,10 +132,12 @@ public:
         if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_NewFrame();
         }
+#ifdef VCLIB_WITH_QT
         else if constexpr (
             DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
             ImGui_ImplQt_NewFrame();
         }
+#endif
         ImGui::NewFrame();
     }
 

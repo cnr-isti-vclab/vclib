@@ -53,7 +53,7 @@ namespace vcl::lines {
         std::swap(mIndexes, other.mIndexes);
     }
 
-    std::shared_ptr<vcl::DrawableObjectI> CPUGeneratedLines::clone() const {
+    std::shared_ptr<vcl::DrawableObject> CPUGeneratedLines::clone() const {
         return std::make_shared<CPUGeneratedLines>(*this);
     }
 

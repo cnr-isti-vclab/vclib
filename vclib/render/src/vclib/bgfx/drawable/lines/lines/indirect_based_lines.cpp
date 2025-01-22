@@ -72,7 +72,7 @@ namespace vcl::lines {
         std::swap(mIndirectDataUH, other.mIndirectDataUH);
     }
 
-    std::shared_ptr<vcl::DrawableObjectI> IndirectBasedLines::clone() const {
+    std::shared_ptr<vcl::DrawableObject> IndirectBasedLines::clone() const {
         return std::make_shared<IndirectBasedLines>(*this);
     }
 

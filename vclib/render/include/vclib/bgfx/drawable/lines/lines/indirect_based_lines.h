@@ -37,7 +37,7 @@ namespace vcl::lines {
 
             void swap(IndirectBasedLines& other);
 
-            std::shared_ptr<vcl::DrawableObjectI> clone() const override;
+            std::shared_ptr<vcl::DrawableObject> clone() const override;
 
             void draw(uint viewId) const override;
 

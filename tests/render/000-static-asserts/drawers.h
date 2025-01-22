@@ -248,6 +248,7 @@ void drawersStaticAssertsWM()
         "ViewerDrawer&& does satisfy the BlockerEventDrawerConcept");
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
+#ifdef VCLIB_WITH_QT
     using RenderAppTD = RenderApp<WMQ, Canvas, TextDrawer>;
 
     // TextDrawer
@@ -282,6 +283,7 @@ void drawersStaticAssertsWM()
     static_assert(
         !EventDrawerConcept<TextDrawer<RenderAppTD>&&>,
         "TextDrawer&& does satisfy the EventDrawerConcept");
+#endif
 #endif
 }
 
