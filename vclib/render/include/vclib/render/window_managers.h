@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef WINDOW_MANAGERS_H
-#define WINDOW_MANAGERS_H
+#ifndef VCL_RENDER_WINDOW_MANAGERS_H
+#define VCL_RENDER_WINDOW_MANAGERS_H
 
 namespace vcl {
 
@@ -45,4 +45,4 @@ struct WindowManagerId
 
 } // namespace vcl
 
-#endif // WINDOW_MANAGERS_H
+#endif // VCL_RENDER_WINDOW_MANAGERS_H

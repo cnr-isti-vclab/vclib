@@ -66,11 +66,11 @@ public:
      * (4 bytes) is stored.
      */
     Image(
-        const void*         data,
-        uint                w,
-        uint                h,
-        bool                yFlip  = false,
-        Color::Format::Enum format = Color::Format::ABGR)
+        const void*   data,
+        uint          w,
+        uint          h,
+        bool          yFlip  = false,
+        Color::Format format = Color::Format::ABGR)
     {
         if (data) {
             mImg.resize(h, w);

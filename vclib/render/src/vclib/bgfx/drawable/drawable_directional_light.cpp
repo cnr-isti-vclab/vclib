@@ -90,13 +90,14 @@ DrawableDirectionalLight& DrawableDirectionalLight::operator=(
 
 void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
 {
-    std::swap(mVisible, other.mVisible);
+    using std::swap;
+    swap(mVisible, other.mVisible);
     mVertices.swap(other.mVertices);
-    std::swap(mColor, other.mColor);
-    std::swap(mUniform, other.mUniform);
-    std::swap(mProgram, other.mProgram);
-    std::swap(mTransform, other.mTransform);
-    std::swap(mVertexCoordBH, other.mVertexCoordBH);
+    swap(mColor, other.mColor);
+    swap(mUniform, other.mUniform);
+    swap(mProgram, other.mProgram);
+    swap(mTransform, other.mTransform);
+    swap(mVertexCoordBH, other.mVertexCoordBH);
 }
 
 void DrawableDirectionalLight::updateRotation(const Matrix44f& rot)

@@ -67,11 +67,11 @@ using PropertyType = PrimitiveType;
 
 struct PlyProperty
 {
-    ply::PropertyName       name;
-    ply::PropertyType::Enum type;
-    bool                    list = false;
-    ply::PropertyType::Enum listSizeType;
-    std::string unknownPropertyName; // when a property is not recognized
+    ply::PropertyName name;
+    ply::PropertyType type;
+    bool              list = false;
+    ply::PropertyType listSizeType;
+    std::string       unknownPropertyName; // when a property is not recognized
 };
 
 struct PlyElement

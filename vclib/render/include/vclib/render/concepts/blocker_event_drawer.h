@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_BLOCKER_EVENT_DRAWER_H
-#define CONCEPTS_BLOCKER_EVENT_DRAWER_H
+#ifndef VCL_RENDER_CONCEPTS_BLOCKER_EVENT_DRAWER_H
+#define VCL_RENDER_CONCEPTS_BLOCKER_EVENT_DRAWER_H
 
 #include "event_drawer.h"
 
@@ -65,4 +65,4 @@ concept BlockerEventDrawerConcept =
 
 } // namespace vcl
 
-#endif // CONCEPTS_BLOCKER_EVENT_DRAWER_H
+#endif // VCL_RENDER_CONCEPTS_BLOCKER_EVENT_DRAWER_H

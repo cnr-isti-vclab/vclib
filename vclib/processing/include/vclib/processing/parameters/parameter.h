@@ -33,27 +33,24 @@
 
 namespace vcl::proc {
 
-struct ParameterType
-{
-    enum Enum {
-        // native parameters - the std::any mValue member is one of these types
-        INT,
-        UINT,
-        SCALAR,
-        BOOL,
-        STRING,
-        COLOR,
-        POINT3,
+enum class ParameterType {
+    // native parameters - the std::any mValue member is one of these types
+    INT,
+    UINT,
+    SCALAR,
+    BOOL,
+    STRING,
+    COLOR,
+    POINT3,
 
-        // special parameters - they store native parameters, but they add
-        // additional information or functionalities
-        ENUM,    // enum is an int that can be converted to a string
-        USCALAR, // uscalar is a scalar that is guaranteed to be positive
+    // special parameters - they store native parameters, but they add
+    // additional information or functionalities
+    ENUM,    // enum is an int that can be converted to a string
+    USCALAR, // uscalar is a scalar that is guaranteed to be positive
 
-        MESH, // mesh is a special parameter that stores the index of a mesh
+    MESH, // mesh is a special parameter that stores the index of a mesh
 
-        COUNT
-    };
+    COUNT
 };
 
 class Parameter
@@ -71,7 +68,7 @@ public:
 
     virtual ~Parameter() = default;
 
-    virtual ParameterType::Enum type() const = 0;
+    virtual ParameterType type() const = 0;
 
     virtual std::shared_ptr<Parameter> clone() const = 0;
 
@@ -193,7 +190,7 @@ protected:
     }
 
 private:
-    void checkParameterType(ParameterType::Enum t) const
+    void checkParameterType(ParameterType t) const
     {
         if (nativeType() != nativeType(t)) {
             throw std::runtime_error(
@@ -205,13 +202,13 @@ private:
         }
     }
 
-    ParameterType::Enum nativeType() const
+    ParameterType nativeType() const
     {
-        ParameterType::Enum t = type();
+        ParameterType t = type();
         return nativeType(t);
     }
 
-    static ParameterType::Enum nativeType(ParameterType::Enum t)
+    static ParameterType nativeType(ParameterType t)
     {
         switch (t) {
         case vcl::proc::ParameterType::ENUM: return ParameterType::UINT;
@@ -221,7 +218,7 @@ private:
         }
     }
 
-    static std::string parameterTypeToString(ParameterType::Enum t)
+    static std::string parameterTypeToString(ParameterType t)
     {
         switch (t) {
         case ParameterType::UINT: return "uint";

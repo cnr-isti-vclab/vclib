@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef TEXT_DRAWER_H
-#define TEXT_DRAWER_H
+#ifndef VCL_BGFX_DRAWERS_TEXT_DRAWER_H
+#define VCL_BGFX_DRAWERS_TEXT_DRAWER_H
 
 #include <vclib/bgfx/text/text_view.h>
 #include <vclib/render/drawers/plain_drawer.h>
@@ -34,7 +34,7 @@ class TextDrawer : public PlainDrawer<DerivedRenderApp>
     TextView mTextView;
 
 public:
-    TextDrawer() : TextDrawer(1,1) {}
+    TextDrawer() : TextDrawer(1, 1) {}
 
     TextDrawer(uint width, uint height)
     {
@@ -71,10 +71,7 @@ public:
         mTextView.setTextFont(fontName, fontSize);
     }
 
-    void clearText()
-    {
-        mTextView.clearText();
-    }
+    void clearText() { mTextView.clearText(); }
 
     void appendStaticText(
         const Point2f&     pos,
@@ -103,4 +100,4 @@ private:
 
 } // namespace vcl
 
-#endif // TEXT_DRAWER_H
+#endif // VCL_BGFX_DRAWERS_TEXT_DRAWER_H

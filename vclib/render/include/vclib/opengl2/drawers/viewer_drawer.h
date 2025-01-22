@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_VIEWER_DRAWER_H
-#define VCL_OPENGL2_VIEWER_DRAWER_H
+#ifndef VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
+#define VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 #include <vclib/render/read_buffer_types.h>
@@ -81,10 +81,7 @@ public:
         }
     }
 
-    void onDraw(uint viewId) override
-    {
-        onDrawContent(viewId);
-    }
+    void onDraw(uint viewId) override { onDrawContent(viewId); }
 
     void onDrawContent(uint) override
     {
@@ -122,15 +119,15 @@ public:
 
     void toggleAxisVisibility() override
     {
-      // todo
+        // todo
     }
 
     void toggleTrackBallVisibility() override
     {
-      // todo
+        // todo
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_VIEWER_DRAWER_H
+#endif // VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H

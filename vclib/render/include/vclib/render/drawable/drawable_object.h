@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
-#define VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
+#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
+#define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/point.h>
@@ -137,8 +137,25 @@ public:
      * @param[in] info: The info of the object.
      */
     std::string& info() { return mInfo; }
+
+protected:
+    /**
+     * @brief Utility swap function that allows to swap the content of two
+     * DrawableObject instances.
+     *
+     * It is meant to be used by the derived classes to implement the swap
+     * member function (see the copy and swap idiom).
+     *
+     * @param[in] other: The other DrawableObject to swap with.
+     */
+    void swap(DrawableObject& other)
+    {
+        using std::swap;
+        swap(mName, other.mName);
+        swap(mInfo, other.mInfo);
+    }
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_H
+#endif // VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H

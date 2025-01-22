@@ -23,9 +23,9 @@
 #include "get_drawable_mesh.h"
 
 #include <vclib/bgfx/drawers/text_drawer.h>
-#include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/canvas.h>
 #include <vclib/glfw/window_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)

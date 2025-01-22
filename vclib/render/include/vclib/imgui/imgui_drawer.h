@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef IMGUI_DRAWER_H
-#define IMGUI_DRAWER_H
+#ifndef VCL_IMGUI_IMGUI_DRAWER_H
+#define VCL_IMGUI_IMGUI_DRAWER_H
 
 #include <vclib/render/drawers/blocker_event_drawer.h>
 #include <vclib/render/window_managers.h>
@@ -103,7 +103,8 @@ public:
             ImGui_ImplBgfx_Init();
 #endif
         }
-        else if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
+        else if constexpr (
+            DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
             QWidget* mWindow =
                 reinterpret_cast<QWidget*>(DRA::DRW::windowPtr(derived()));
             // setup platform/RenderApp backends (Qt and ImGui)
@@ -124,8 +125,7 @@ public:
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_NewFrame();
 #endif
-        if constexpr (
-            DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
+        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_NewFrame();
         }
         else if constexpr (
@@ -198,10 +198,7 @@ public:
     }
 
 protected:
-    bool isWindowMinimized() const
-    {
-        return derived()->isMinimized();
-    }
+    bool isWindowMinimized() const { return derived()->isMinimized(); }
 
 private:
     auto* derived() { return static_cast<DRA*>(this); }
@@ -217,4 +214,4 @@ private:
 
 } // namespace vcl::imgui
 
-#endif // IMGUI_DRAWER_H
+#endif // VCL_IMGUI_IMGUI_DRAWER_H

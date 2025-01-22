@@ -22,8 +22,8 @@
 
 #include "../hello_triangle_drawer.h"
 
-#include <vclib/render/canvas.h>
 #include <vclib/qt/widget_manager.h>
+#include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
 #include <QApplication>

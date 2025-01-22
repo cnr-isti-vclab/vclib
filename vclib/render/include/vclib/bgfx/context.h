@@ -55,8 +55,8 @@ class Context
         bgfx::RendererType::Count;
 
     // singleton
-    static Context*   sInstancePtr;
-    static std::mutex sMutex;
+    inline static Context*   sInstancePtr = nullptr;
+    inline static std::mutex sMutex;
 
 public:
     // default values, used for optional parameters

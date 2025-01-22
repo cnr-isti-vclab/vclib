@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -33,8 +33,8 @@
 #include <vclib/glfw/window_manager.h>
 #endif
 
-#include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 
 #ifdef VCLIB_WITH_IMGUI
@@ -185,13 +185,15 @@ void drawersStaticAssertsWM()
         "BlockerEventDrawer does not satisfy the BlockerEventDrawerConcept");
     static_assert(
         BlockerEventDrawerConcept<const BlockerEventDrawer<RenderAppBED>>,
-        "const BlockerEventDrawer does not satisfy the BlockerEventDrawerConcept");
+        "const BlockerEventDrawer does not satisfy the "
+        "BlockerEventDrawerConcept");
     static_assert(
         BlockerEventDrawerConcept<BlockerEventDrawer<RenderAppBED>&>,
         "BlockerEventDrawer& does not satisfy the BlockerEventDrawerConcept");
     static_assert(
         BlockerEventDrawerConcept<const BlockerEventDrawer<RenderAppBED>&>,
-        "const BlockerEventDrawer& does not satisfy the BlockerEventDrawerConcept");
+        "const BlockerEventDrawer& does not satisfy the "
+        "BlockerEventDrawerConcept");
     static_assert(
         BlockerEventDrawerConcept<BlockerEventDrawer<RenderAppBED>&&>,
         "BlockerEventDrawer&& does not satisfy the BlockerEventDrawerConcept");

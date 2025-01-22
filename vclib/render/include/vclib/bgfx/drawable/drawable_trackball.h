@@ -25,8 +25,8 @@
 
 #include "uniforms/drawable_trackball_uniforms.h"
 
-#include <vclib/render/drawable/trackball/trackball_render_data.h>
 #include <vclib/render/drawable/drawable_object.h>
+#include <vclib/render/drawable/trackball/trackball_render_data.h>
 #include <vclib/space/core/matrix.h>
 
 #include <vclib/bgfx/context.h>

@@ -70,8 +70,8 @@ public:
      */
     void setVertices(VertexType* v0, VertexType* v1)
     {
-        VRefs::setVertex(0, v0);
-        VRefs::setVertex(1, v1);
+        VRefs::setVertex(0u, v0);
+        VRefs::setVertex(1u, v1);
     }
 
     /**
@@ -82,8 +82,8 @@ public:
      */
     void setVertices(uint vi0, uint vi1)
     {
-        VRefs::setVertex(0, vi0);
-        VRefs::setVertex(1, vi1);
+        VRefs::setVertex(0u, vi0);
+        VRefs::setVertex(1u, vi1);
     }
 };
 

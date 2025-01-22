@@ -79,10 +79,8 @@ public:
      * @brief Enum used to describe the type of the Mesh - by default, the value
      * is set to UNKNOWN.
      */
-    struct MeshType
-    {
-        enum Enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH, UNKNOWN };
-    };
+    enum class MeshType { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH, UNKNOWN };
+
 
     /**
      * @brief Enum used to describe the type of Elements that can be found in a
@@ -113,7 +111,7 @@ public:
     /**
      * @brief Enum used to describe the type of Data stored in a component
      */
-    using DataType = PrimitiveType::Enum;
+    using DataType = PrimitiveType;
 
     /**
      * @brief The CustomComponent struct is a simple structure that describes a
@@ -144,7 +142,7 @@ private:
         mPerElemCustomComponents;
 
     // Mesh Type
-    MeshType::Enum mType = MeshType::UNKNOWN;
+    MeshType mType = MeshType::UNKNOWN;
 
 public:
     /**
@@ -434,6 +432,18 @@ public:
 
     bool hasEdgeColors() const { return hasPerElementComponent(EDGE, COLOR); }
 
+    bool hasEdgeNormals() const { return hasPerElementComponent(EDGE, NORMAL); }
+
+    bool hasEdgeQuality() const
+    {
+        return hasPerElementComponent(EDGE, QUALITY);
+    }
+
+    bool hasEdgeCustomComponents() const
+    {
+        return hasPerElementComponent(EDGE, CUSTOM_COMPONENTS);
+    }
+
     bool hasTextures() const { return hasPerElementComponent(MESH, TEXTURES); }
 
     /*
@@ -469,7 +479,7 @@ public:
 
     void setPolygonMesh() { mType = MeshType::POLYGON_MESH; }
 
-    void setMeshType(MeshType::Enum t) { mType = t; }
+    void setMeshType(MeshType t) { mType = t; }
 
     void setElement(Element el, bool b = true) { mElements[el] = b; }
 
@@ -557,6 +567,21 @@ public:
         setElementComponents(EDGE, COLOR, b, t);
     }
 
+    void setEdgeNormals(bool b = true, DataType t = PrimitiveType::FLOAT)
+    {
+        setElementComponents(EDGE, NORMAL, b, t);
+    }
+
+    void setEdgeQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
+    {
+        setElementComponents(EDGE, QUALITY, b, t);
+    }
+
+    void setEdgeCustomComponents(bool b = true)
+    {
+        setElementComponents(EDGE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
+    }
+
     void setTextures(bool b = true)
     {
         setElementComponents(MESH, TEXTURES, b, PrimitiveType::NONE);
@@ -590,6 +615,13 @@ public:
     }
 
     void clearFaceCustomComponents() { clearElementCustomComponents(FACE); }
+
+    void addEdgeCustomComponent(const std::string& name, DataType t)
+    {
+        addElementCustomComponent(EDGE, name, t);
+    }
+
+    void clearEdgeCustomComponents() { clearElementCustomComponents(EDGE); }
 
     /*
      * Getter Component type functions : they are used mostly by save functions
@@ -651,6 +683,16 @@ public:
         return elementComponentType(EDGE, COLOR);
     }
 
+    DataType edgeNormalsType() const
+    {
+        return elementComponentType(EDGE, NORMAL);
+    }
+
+    DataType edgeQualityType() const
+    {
+        return elementComponentType(EDGE, QUALITY);
+    }
+
     const std::vector<CustomComponent>& vertexCustomComponents() const
     {
         return mPerElemCustomComponents[VERTEX];
@@ -659,6 +701,11 @@ public:
     const std::vector<CustomComponent>& faceCustomComponents() const
     {
         return mPerElemCustomComponents[FACE];
+    }
+
+    const std::vector<CustomComponent>& edgeCustomComponents() const
+    {
+        return mPerElemCustomComponents[EDGE];
     }
 
     /**
@@ -803,6 +850,12 @@ void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
     addPerElementCustomComponent<ElemId::FACE>(m, cc);
 }
 
+template<EdgeMeshConcept MeshType>
+void addPerEdgeCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
+{
+    addPerElementCustomComponent<ElemId::EDGE>(m, cc);
+}
+
 /**
  * @brief Enables all the components that are in the file mesh info and that may
  * be enabled in the mesh. If these components are not available in the mesh,
@@ -855,40 +908,81 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
         info.setVertices(false);
     }
 
-    if (info.hasFaces()) {
-        if (info.hasFaceColors()) {
-            if (!enableIfPerFaceColorOptional(m)) {
-                info.setFaceColors(false);
-            }
-        }
-        if (info.hasFaceNormals()) {
-            if (!enableIfPerFaceNormalOptional(m)) {
-                info.setFaceNormals(false);
-            }
-        }
-        if (info.hasFaceQuality()) {
-            if (!enableIfPerFaceQualityOptional(m)) {
-                info.setFaceQuality(false);
-            }
-        }
-        if (info.hasFaceWedgeTexCoords()) {
-            if (!enableIfPerFaceWedgeTexCoordsOptional(m)) {
-                info.setFaceWedgeTexCoords(false);
-            }
-        }
-        if (info.hasFaceCustomComponents()) {
-            if constexpr (HasPerFaceCustomComponents<MeshType>) {
-                for (const auto& cc : info.faceCustomComponents()) {
-                    addPerFaceCustomComponent(m, cc);
+    if constexpr (HasFaces<MeshType>) {
+        if (info.hasFaces()) {
+            if (info.hasFaceColors()) {
+                if (!enableIfPerFaceColorOptional(m)) {
+                    info.setFaceColors(false);
                 }
             }
-            else {
-                info.clearFaceCustomComponents();
+            if (info.hasFaceNormals()) {
+                if (!enableIfPerFaceNormalOptional(m)) {
+                    info.setFaceNormals(false);
+                }
             }
+            if (info.hasFaceQuality()) {
+                if (!enableIfPerFaceQualityOptional(m)) {
+                    info.setFaceQuality(false);
+                }
+            }
+            if (info.hasFaceWedgeTexCoords()) {
+                if (!enableIfPerFaceWedgeTexCoordsOptional(m)) {
+                    info.setFaceWedgeTexCoords(false);
+                }
+            }
+            if (info.hasFaceCustomComponents()) {
+                if constexpr (HasPerFaceCustomComponents<MeshType>) {
+                    for (const auto& cc : info.faceCustomComponents()) {
+                        addPerFaceCustomComponent(m, cc);
+                    }
+                }
+                else {
+                    info.clearFaceCustomComponents();
+                }
+            }
+        }
+        else {
+            info.setFaces(false);
         }
     }
     else {
         info.setFaces(false);
+    }
+
+    if constexpr (HasEdges<MeshType>) {
+        if (info.hasEdges()) {
+            if (info.hasEdgeColors()) {
+                if (!enableIfPerEdgeColorOptional(m)) {
+                    info.setEdgeColors(false);
+                }
+            }
+            if (info.hasEdgeNormals()) {
+                if (!enableIfPerEdgeNormalOptional(m)) {
+                    info.setEdgeNormals(false);
+                }
+            }
+            if (info.hasEdgeQuality()) {
+                if (!enableIfPerEdgeQualityOptional(m)) {
+                    info.setEdgeQuality(false);
+                }
+            }
+            if (info.hasEdgeCustomComponents()) {
+                if constexpr (HasPerEdgeCustomComponents<MeshType>) {
+                    for (const auto& cc : info.edgeCustomComponents()) {
+                        addPerEdgeCustomComponent(m, cc);
+                    }
+                }
+                else {
+                    info.clearEdgeCustomComponents();
+                }
+            }
+        }
+        else {
+            info.setEdges(false);
+        }
+    }
+    else {
+        info.setEdges(false);
     }
 }
 

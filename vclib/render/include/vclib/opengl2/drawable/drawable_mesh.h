@@ -23,8 +23,8 @@
 #ifndef VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
 #define VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
 
-#include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/render/drawable/mesh/mesh_render_data.h>
 
 #include <vclib/opengl2/drawable/draw_objects3.h>
 
@@ -104,6 +104,20 @@ public:
         mMRD = MeshRenderData<MeshType>(*this);
         mMRS.setRenderCapabilityFrom(*this);
         bindTextures();
+    }
+
+    void swap(DrawableMeshOpenGL2& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mMRD, other.mMRD);
+        swap(mTextID, other.mTextID);
+    }
+
+    friend void swap(DrawableMeshOpenGL2& a, DrawableMeshOpenGL2& b)
+    {
+        a.swap(b);
     }
 
     // DrawableObject implementation

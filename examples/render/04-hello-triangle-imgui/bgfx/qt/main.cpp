@@ -24,8 +24,8 @@
 #include "../../imgui_stats_drawer.h"
 #include "../hello_triangle_drawer.h"
 
-#include <vclib/render/canvas.h>
 #include <vclib/qt/widget_manager.h>
+#include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
 #include <QApplication>
@@ -34,7 +34,8 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    // FIXME #2: crash on linux when closing: derived()->update() in imgui_drawer.h
+    // FIXME #2: crash on linux when closing: derived()->update() in
+    // imgui_drawer.h
 
     using WidgetQt = vcl::RenderApp<
         vcl::qt::WidgetManager,   // The WindowManager: Qt

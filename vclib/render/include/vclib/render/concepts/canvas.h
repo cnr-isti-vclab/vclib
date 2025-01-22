@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CONCEPTS_CANVAS_H
-#define CONCEPTS_CANVAS_H
+#ifndef VCL_RENDER_CONCEPTS_CANVAS_H
+#define VCL_RENDER_CONCEPTS_CANVAS_H
 
 #include <vclib/concepts.h>
 #include <vclib/space/core/color.h>
@@ -107,7 +107,6 @@ concept CanvasConcept = requires (
     vcl::Color                                c,
     typename RemoveRef<T>::CallbackReadBuffer cbrb,
     std::string                               str) {
-
     typename RemoveRef<T>::CallbackReadBuffer;
 
     RemoveRef<T>(vPtr, u, u);
@@ -132,4 +131,4 @@ concept CanvasConcept = requires (
 
 } // namespace vcl
 
-#endif // CONCEPTS_CANVAS_H
+#endif // VCL_RENDER_CONCEPTS_CANVAS_H

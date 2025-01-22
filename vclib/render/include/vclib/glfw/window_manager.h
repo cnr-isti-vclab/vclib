@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2024                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -102,7 +102,7 @@ public:
         const std::string& windowTitle,
         uint               width  = 1024,
         uint               height = 768,
-        ParentType*        = nullptr) : mTitle(windowTitle)
+        ParentType*               = nullptr) : mTitle(windowTitle)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,
@@ -237,10 +237,7 @@ protected:
     void* windowPtr() { return reinterpret_cast<void*>(mWindow); }
 
     // callbacks
-    virtual void glfwFramebufferSizeCallback(
-        GLFWwindow*,
-        int width,
-        int height)
+    virtual void glfwFramebufferSizeCallback(GLFWwindow*, int width, int height)
     {
         DerivedRenderApp::WM::resize(derived(), width, height);
     }
@@ -296,8 +293,8 @@ protected:
         DerivedRenderApp::WM::setModifiers(
             derived(), glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
-        Point2d      pos;
-        Point2f      scale;
+        Point2d pos;
+        Point2f scale;
         glfwGetCursorPos(win, &pos.x(), &pos.y());
 #ifdef __APPLE__
         // only macOS has coherent coordinates with content scale
@@ -334,17 +331,14 @@ protected:
     virtual void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
     {
 #ifdef __APPLE__
-      // only macOS has coherent coordinates with content scale
+        // only macOS has coherent coordinates with content scale
         xpos *= dpiScale().x();
         ypos *= dpiScale().y();
 #endif
         DerivedRenderApp::WM::mouseMove(derived(), xpos, ypos);
     }
 
-    virtual void glfwScrollCallback(
-        GLFWwindow*,
-        double xoffset,
-        double yoffset)
+    virtual void glfwScrollCallback(GLFWwindow*, double xoffset, double yoffset)
     {
         {
             // This is ok for macOS
@@ -380,7 +374,11 @@ private:
         // key callback
         glfwSetKeyCallback(
             mWindow,
-            [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+            [](GLFWwindow* window,
+               int         key,
+               int         scancode,
+               int         action,
+               int         mods) {
                 auto* self = static_cast<WindowManager*>(
                     glfwGetWindowUserPointer(window));
                 self->glfwKeyCallback(window, key, scancode, action, mods);

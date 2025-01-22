@@ -40,7 +40,7 @@ public:
     {
     }
 
-    ParameterType::Enum type() const override { return ParameterType::UINT; }
+    ParameterType type() const override { return ParameterType::UINT; }
 
     std::shared_ptr<Parameter> clone() const override
     {

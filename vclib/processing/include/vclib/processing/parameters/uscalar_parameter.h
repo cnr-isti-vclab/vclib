@@ -41,7 +41,7 @@ public:
         setScalarValue(value);
     }
 
-    ParameterType::Enum type() const override { return ParameterType::USCALAR; }
+    ParameterType type() const override { return ParameterType::USCALAR; }
 
     std::shared_ptr<Parameter> clone() const override
     {

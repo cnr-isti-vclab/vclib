@@ -85,8 +85,8 @@ void randomColor(auto& tm)
 template<vcl::uint ELEM_ID>
 void randomQuality(auto& tm)
 {
-    std::random_device              rd;
-    std::mt19937                    gen(rd());
+    std::random_device               rd;
+    std::mt19937                     gen(rd());
     std::uniform_real_distribution<> dis(-100, 100);
 
     tm.template enablePerElementComponent<ELEM_ID, vcl::CompId::QUALITY>();
@@ -102,7 +102,7 @@ void randomQuality(auto& tm)
 template<typename MatrixType>
 void testCoordsMatrix(const auto& tm)
 {
-    auto verts = vcl::vertexMatrix<MatrixType>(tm);
+    auto verts = vcl::vertexCoordsMatrix<MatrixType>(tm);
 
     REQUIRE(verts.rows() == tm.vertexNumber());
     REQUIRE(verts.cols() == 3);
@@ -119,7 +119,7 @@ void testCoordsMatrix(const auto& tm)
 template<typename MatrixType>
 void testTrianglesMatrix(const auto& tm)
 {
-    auto tris = vcl::faceMatrix<MatrixType>(tm);
+    auto tris = vcl::faceIndicesMatrix<MatrixType>(tm);
 
     REQUIRE(tris.rows() == tm.faceNumber());
     REQUIRE(tris.cols() == 3);
@@ -129,6 +129,59 @@ void testTrianglesMatrix(const auto& tm)
         for (vcl::uint j = 0; j < 3; ++j) {
             REQUIRE(tris(i, j) == f.vertexIndex(j));
         }
+        ++i;
+    }
+}
+
+template<typename VectorType>
+void testFaceSizesVector(const auto& pm)
+{
+    auto sizes = vcl::faceSizesVector<VectorType>(pm);
+
+    REQUIRE(sizes.size() == pm.faceNumber());
+
+    vcl::uint i = 0;
+    for (const auto& f : pm.faces()) {
+        REQUIRE(sizes[i] == f.vertexNumber());
+        ++i;
+    }
+}
+
+template<typename VectorType>
+void testFaceVector(const auto& pm)
+{
+    auto faces = vcl::faceIndicesVector<VectorType>(pm);
+
+    vcl::uint nIndices = countPerFaceVertexReferences(pm);
+    REQUIRE(faces.size() == nIndices);
+
+    vcl::uint i = 0;
+    for (const auto& f : pm.faces()) {
+        for (const auto* v : f.vertices()) {
+            REQUIRE(faces[i] == pm.index(v));
+            ++i;
+        }
+    }
+}
+
+template<typename MatrixType>
+void testFaceMatrix(const auto& pm)
+{
+    auto faces = vcl::faceIndicesMatrix<MatrixType>(pm);
+
+    REQUIRE(faces.rows() == pm.faceNumber());
+    REQUIRE(faces.cols() == vcl::largestFaceSize(pm));
+
+    vcl::uint i = 0;
+    for (const auto& f : pm.faces()) {
+        vcl::uint j = 0;
+        for (j = 0; j < f.vertexNumber(); ++j) {
+            REQUIRE(faces(i, j) == f.vertexIndex(j));
+        }
+        for (; j < faces.cols(); ++j) {
+            REQUIRE(faces(i, j) == -1);
+        }
+
         ++i;
     }
 }
@@ -289,18 +342,29 @@ void testFaceQualityVector(const auto& tm)
     }
 }
 
+using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using MeshesIndexed =
+    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
+using MeshesIndexedf = std::
+    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
+
 TEMPLATE_TEST_CASE(
     "Export TriMesh to Matrix",
     "",
-    vcl::TriMesh,
-    vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
-    using TriMesh = TestType;
+    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using PolyMesh = std::tuple_element_t<1, TestType>;
+    using EdgeMesh = std::tuple_element_t<2, TestType>;
 
     TriMesh tm =
         vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    PolyMesh pm = vcl::loadObj<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                         "/rhombicosidodecahedron.obj");
 
     SECTION("Coordinates...")
     {
@@ -349,6 +413,65 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Array2")
         {
             testTrianglesMatrix<vcl::Array2<vcl::uint>>(tm);
+        }
+    }
+
+    SECTION("Faces...")
+    {
+        SECTION("Eigen Row Major")
+        {
+            testFaceMatrix<EigenRowMatrix<vcl::uint>>(tm);
+            testFaceMatrix<EigenRowMatrix<vcl::uint>>(pm);
+        }
+        SECTION("Eigen 3 Row Major")
+        {
+            testFaceMatrix<Eigen3RowMatrix<vcl::uint>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testFaceMatrix<EigenColMatrix<vcl::uint>>(tm);
+            testFaceMatrix<EigenColMatrix<vcl::uint>>(pm);
+        }
+        SECTION("Eigen 3 Col Major")
+        {
+            testFaceMatrix<Eigen3ColMatrix<vcl::uint>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testFaceMatrix<vcl::Array2<vcl::uint>>(tm);
+            testFaceMatrix<vcl::Array2<vcl::uint>>(pm);
+        }
+        SECTION("Eigen Vector<vcl::uint>")
+        {
+            testFaceVector<Eigen::VectorX<vcl::uint>>(pm);
+        }
+
+        SECTION("std vector<vcl::uint>")
+        {
+            testFaceVector<std::vector<vcl::uint>>(pm);
+        }
+
+        SECTION("vcl::Vector<vcl::uint>")
+        {
+            testFaceVector<vcl::Vector<vcl::uint, -1>>(pm);
+        }
+    }
+
+    SECTION("Face sizes...")
+    {
+        SECTION("Eigen Vector<vcl::uint>")
+        {
+            testFaceSizesVector<Eigen::VectorX<vcl::uint>>(pm);
+        }
+
+        SECTION("std vector<vcl::uint>")
+        {
+            testFaceSizesVector<std::vector<vcl::uint>>(pm);
+        }
+
+        SECTION("vcl::Vector<vcl::uint>")
+        {
+            testFaceSizesVector<vcl::Vector<vcl::uint, -1>>(pm);
         }
     }
 

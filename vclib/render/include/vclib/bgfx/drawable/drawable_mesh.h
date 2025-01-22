@@ -49,7 +49,8 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 public:
     DrawableMeshBGFX() = default;
 
-    DrawableMeshBGFX(const MeshType& mesh) : AbstractDrawableMesh(mesh), MeshType(mesh)
+    DrawableMeshBGFX(const MeshType& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(mesh)
     {
         updateBuffers();
     }
@@ -67,6 +68,19 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
         mMeshUniforms.update(mMRB);
     }
+
+    void swap(DrawableMeshBGFX& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mMRB, other.mMRB);
+        swap(mProgram, other.mProgram);
+        swap(mMeshUniforms, other.mMeshUniforms);
+        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+    }
+
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
 
     // DrawableObject implementation
 

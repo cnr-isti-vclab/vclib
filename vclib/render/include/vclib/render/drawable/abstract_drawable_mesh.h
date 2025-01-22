@@ -53,6 +53,14 @@ public:
     inline bool isVisible() const { return mMRS.isVisible(); }
 
     inline void setVisibility(bool vis) { mMRS.setVisibility(vis); }
+
+protected:
+    void swap(AbstractDrawableMesh& other)
+    {
+        using std::swap;
+        vcl::DrawableObject::swap(other);
+        swap(mMRS, other.mMRS);
+    }
 };
 
 } // namespace vcl

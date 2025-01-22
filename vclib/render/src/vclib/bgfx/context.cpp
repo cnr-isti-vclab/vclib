@@ -29,9 +29,6 @@
 
 namespace vcl {
 
-Context*   Context::sInstancePtr = nullptr;
-std::mutex Context::sMutex;
-
 void Context::init(void* windowHandle, void* displayHandle)
 {
     std::lock_guard<std::mutex> lock(sMutex);

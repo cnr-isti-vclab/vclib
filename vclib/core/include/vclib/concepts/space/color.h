@@ -39,13 +39,13 @@ namespace vcl {
  */
 template<typename T>
 concept ColorConcept = requires (
-    T&&                                 obj,
-    typename RemoveRef<T>::ColorABGR    cABGR,
-    uint32_t                            u32,
-    uint16_t                            u16,
-    uint8_t                             u8,
-    float                               f,
-    typename RemoveRef<T>::Format::Enum fr) {
+    T&&                              obj,
+    typename RemoveRef<T>::ColorABGR cABGR,
+    uint32_t                         u32,
+    uint16_t                         u16,
+    uint8_t                          u8,
+    float                            f,
+    typename RemoveRef<T>::Format    fr) {
     typename RemoveRef<T>::Representation;
     typename RemoveRef<T>::Format;
     typename RemoveRef<T>::ColorABGR;

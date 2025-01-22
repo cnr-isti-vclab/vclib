@@ -1,11 +1,12 @@
 # VCLib ToDo list
 
 - General:
-  - [ ] Enumerations should be declared in a struct to avoid name collisions
+  - [ ] Enumerations should be declared as enum classes
   - [x] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
   - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
-  - [ ] 'friend class Type' should be 'friend Type'
+  - [x] 'friend class Type' should be 'friend Type'
+  - [x] implement swap functions in this way (but keep swap member function): https://stackoverflow.com/a/5695855/5851101
 - Concepts:
   - [x] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types
@@ -35,6 +36,7 @@
   - [ ] move bipartite graph iterators from space to iterators (see space todo list)
 - IO:
   - [ ] Manage read and write colors from integral to non integral types
+  - [ ] Ply read/write code for some components should be the same for every element (no code duplication)
 - Algorithms:
   - [x] Separate Mesh algorithms from core(?) algorithms
   - [ ] Take views arguments instead of vectors- allows to be more general on algorithms

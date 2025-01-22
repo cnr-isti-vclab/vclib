@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef PLAIN_DRAWER_H
-#define PLAIN_DRAWER_H
+#ifndef VCL_RENDER_DRAWERS_PLAIN_DRAWER_H
+#define VCL_RENDER_DRAWERS_PLAIN_DRAWER_H
 
 #include <vclib/types.h>
 
@@ -35,6 +35,7 @@ protected:
 
 public:
     PlainDrawer() = default;
+
     PlainDrawer(uint, uint) {}
 
     virtual void onInit(uint viewId) {}
@@ -55,4 +56,4 @@ protected:
 
 } // namespace vcl
 
-#endif // PLAIN_DRAWER_H
+#endif // VCL_RENDER_DRAWERS_PLAIN_DRAWER_H

@@ -67,6 +67,11 @@ public:
 
     void swap(DrawableDirectionalLight& other);
 
+    friend void swap(DrawableDirectionalLight& a, DrawableDirectionalLight& b)
+    {
+        a.swap(b);
+    }
+
     void updateRotation(const vcl::Matrix44f& rot);
 
     const vcl::Color& linesColor() const { return mColor; }

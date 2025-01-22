@@ -495,7 +495,21 @@ public:
             return it - begin();
     }
 
+    /**
+     * @brief Swaps the contents of the container with those of other.
+     * @param[in] other: Another Vector container of the same type.
+     */
     void swap(Vector& other) { mContainer.swap(other.mContainer); }
+
+    /**
+     * Specializes the swap function to allow the swapping of two Vector
+     * objects.
+     *
+     * Swaps the content of the two Vector objects. Calls `a.swap(b)`.
+     * @param[in] a: The first Vector object.
+     * @param[in] b: The second Vector object.
+     */
+    friend void swap(Vector& a, Vector& b) { a.swap(b); }
 
     /* Member functions specific for dynamic vector */
 

@@ -366,10 +366,10 @@ T readDouble(
  */
 template<typename T>
 T readPrimitiveType(
-    std::istream&       file,
-    PrimitiveType::Enum type,
-    std::endian         end     = std::endian::native,
-    bool                isColor = false)
+    std::istream& file,
+    PrimitiveType type,
+    std::endian   end     = std::endian::native,
+    bool          isColor = false)
 {
     T p;
     switch (type) {
@@ -391,11 +391,11 @@ T readPrimitiveType(
 
 template<ElementConcept El>
 void readCustomComponent(
-    std::istream&       file,
-    El&                 elem,
-    const std::string&  cName,
-    PrimitiveType::Enum type,
-    std::endian         end = std::endian::native)
+    std::istream&      file,
+    El&                elem,
+    const std::string& cName,
+    PrimitiveType      type,
+    std::endian        end = std::endian::native)
 {
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))
@@ -495,7 +495,7 @@ T readDouble(
 template<typename T>
 T readPrimitiveType(
     Tokenizer::iterator& token,
-    PrimitiveType::Enum  type,
+    PrimitiveType        type,
     std::endian  = std::endian::native,
     bool isColor = false)
 {
@@ -529,7 +529,7 @@ void readCustomComponent(
     Tokenizer::iterator& token,
     El&                  elem,
     const std::string&   cName,
-    PrimitiveType::Enum  type,
+    PrimitiveType        type,
     std::endian = std::endian::native)
 {
     std::type_index ti = elem.customComponentType(cName);
