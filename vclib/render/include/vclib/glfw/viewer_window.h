@@ -23,39 +23,15 @@
 #ifndef VCL_GLFW_VIEWER_WINDOW_H
 #define VCL_GLFW_VIEWER_WINDOW_H
 
-#include "event_manager_window.h"
-
-#include <vclib/render/viewer_canvas.h>
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/render_app.h>
 
 namespace vcl::glfw {
 
-class ViewerWindow : public EventManagerWindow, public vcl::ViewerCanvas
-{
-public:
-    ViewerWindow(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        void*              parent      = nullptr);
-
-    ViewerWindow(
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        void*              parent      = nullptr);
-
-    ViewerWindow(void* parent);
-
-    ~ViewerWindow() override = default;
-
-    virtual void show();
-
-protected:
-    void onKeyPress(Key::Enum key) override;
-
-    void onResize(uint width, uint height) override;
-};
+using ViewerWindow =
+    vcl::RenderApp<vcl::glfw::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
 
 } // namespace vcl::glfw
 

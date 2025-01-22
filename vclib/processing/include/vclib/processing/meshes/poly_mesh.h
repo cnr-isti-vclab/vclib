@@ -35,7 +35,7 @@ class PolyMesh : public MeshI, public PolyMeshT<ProcScalarType, INDEXED_MESHES>
 public:
     PolyMesh() = default;
 
-    MeshIType::Enum type() const override { return MeshIType::POLY_MESH; }
+    MeshIType type() const override { return MeshIType::POLY_MESH; }
 
     std::string typeName() const override { return "PolyMesh"; }
 };

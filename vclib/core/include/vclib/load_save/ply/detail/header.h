@@ -477,7 +477,7 @@ public:
             if (info.hasFaceQuality()) {
                 PlyProperty fs;
                 fs.name = ply::quality;
-                fs.type = (ply::PropertyType::Enum) info.faceQualityType();
+                fs.type = (ply::PropertyType) info.faceQualityType();
                 fElem.properties.push_back(fs);
             }
             if (info.hasFaceWedgeTexCoords()) {
@@ -486,7 +486,7 @@ public:
                 tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
                 tc.type =
-                    (ply::PropertyType::Enum) info.faceWedgeTexCoordsType();
+                    (ply::PropertyType) info.faceWedgeTexCoordsType();
                 tn.name = ply::texnumber;
                 tn.type = PrimitiveType::USHORT;
                 fElem.properties.push_back(tc);
@@ -498,7 +498,7 @@ public:
                         PlyProperty pp;
                         pp.name                = ply::unknown;
                         pp.unknownPropertyName = cc.name;
-                        pp.type = (ply::PropertyType::Enum) cc.type;
+                        pp.type = (ply::PropertyType) cc.type;
                         fElem.properties.push_back(pp);
                     }
                 }
@@ -687,9 +687,9 @@ private:
         return pn;
     }
 
-    ply::PropertyType::Enum stringToType(const std::string& type) const
+    ply::PropertyType stringToType(const std::string& type) const
     {
-        ply::PropertyType::Enum pt = ply::PropertyType::UCHAR;
+        ply::PropertyType pt = ply::PropertyType::UCHAR;
         if (type == "char")
             pt = ply::PropertyType::CHAR;
         if (type == "uchar")
@@ -734,7 +734,7 @@ private:
         }
     }
 
-    std::string typeToString(ply::PropertyType::Enum t) const
+    std::string typeToString(ply::PropertyType t) const
     {
         switch (t) {
         case ply::PropertyType::CHAR: return "char";

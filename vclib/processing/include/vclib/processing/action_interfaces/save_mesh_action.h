@@ -98,7 +98,7 @@ protected:
         const
     {
         auto supportedMeshTypes = supportedInputMeshType();
-        if (!supportedMeshTypes[mesh.type()]) {
+        if (!supportedMeshTypes[toUnderlying(mesh.type())]) {
             throw std::runtime_error(
                 "The action " + name() + " does not support the " +
                 mesh.typeName() + " type.");

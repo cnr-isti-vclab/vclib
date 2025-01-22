@@ -88,23 +88,26 @@ public:
 
     void swap(MeshRenderBuffers& other)
     {
-        std::swap((Base&) *this, (Base&) other);
-        std::swap(mVertexCoordBH, other.mVertexCoordBH);
-        std::swap(mVertexNormalBH, other.mVertexNormalBH);
-        std::swap(mVertexColorBH, other.mVertexColorBH);
-        std::swap(mVertexUVBH, other.mVertexUVBH);
-        std::swap(mVertexWedgeUVBH, other.mVertexWedgeUVBH);
-        std::swap(mTriangleIndexBH, other.mTriangleIndexBH);
-        std::swap(mTriangleNormalBH, other.mTriangleNormalBH);
-        std::swap(mTriangleColorBH, other.mTriangleColorBH);
-        std::swap(mTriangleTextureIndexBH, other.mTriangleTextureIndexBH);
-        std::swap(mEdgeIndexBH, other.mEdgeIndexBH);
-        std::swap(mEdgeNormalBH, other.mEdgeNormalBH);
-        std::swap(mEdgeColorBH, other.mEdgeColorBH);
-        std::swap(mTexturesH, other.mTexturesH);
+        using std::swap;
+        swap((Base&) *this, (Base&) other);
+        swap(mVertexCoordBH, other.mVertexCoordBH);
+        swap(mVertexNormalBH, other.mVertexNormalBH);
+        swap(mVertexColorBH, other.mVertexColorBH);
+        swap(mVertexUVBH, other.mVertexUVBH);
+        swap(mVertexWedgeUVBH, other.mVertexWedgeUVBH);
+        swap(mTriangleIndexBH, other.mTriangleIndexBH);
+        swap(mTriangleNormalBH, other.mTriangleNormalBH);
+        swap(mTriangleColorBH, other.mTriangleColorBH);
+        swap(mTriangleTextureIndexBH, other.mTriangleTextureIndexBH);
+        swap(mEdgeIndexBH, other.mEdgeIndexBH);
+        swap(mEdgeNormalBH, other.mEdgeNormalBH);
+        swap(mEdgeColorBH, other.mEdgeColorBH);
+        swap(mTexturesH, other.mTexturesH);
 
-        mWireframeBH.swap(other.mWireframeBH);
+         mWireframeBH.swap(other.mWireframeBH);
     }
+
+    friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
 
     void update(const MeshType& mesh)
     {

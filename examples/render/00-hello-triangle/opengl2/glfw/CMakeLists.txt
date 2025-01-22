@@ -30,11 +30,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(HEADERS
     ../common.h
-    hello_triangle_glfw.h)
+    ../hello_triangle_drawer.h)
 
 set(SOURCES
-    main.cpp
-    hello_triangle_glfw.cpp)
+    main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render

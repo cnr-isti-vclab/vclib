@@ -25,7 +25,7 @@
 
 #include "uniforms/drawable_directional_light_uniforms.h"
 
-#include <vclib/render/interfaces/drawable_object_i.h>
+#include <vclib/render/drawable/drawable_object.h>
 #include <vclib/render/viewer/lights/directional_light.h>
 #include <vclib/space/core/matrix.h>
 
@@ -35,7 +35,7 @@
 
 namespace vcl {
 
-class DrawableDirectionalLight : public DrawableObjectI
+class DrawableDirectionalLight : public DrawableObject
 {
     bool mVisible = false;
 
@@ -67,6 +67,11 @@ public:
 
     void swap(DrawableDirectionalLight& other);
 
+    friend void swap(DrawableDirectionalLight& a, DrawableDirectionalLight& b)
+    {
+        a.swap(b);
+    }
+
     void updateRotation(const vcl::Matrix44f& rot);
 
     const vcl::Color& linesColor() const { return mColor; }
@@ -79,7 +84,7 @@ public:
 
     Box3d boundingBox() const override;
 
-    std::shared_ptr<DrawableObjectI> clone() const override;
+    std::shared_ptr<DrawableObject> clone() const override;
 
     bool isVisible() const override { return mVisible; }
 

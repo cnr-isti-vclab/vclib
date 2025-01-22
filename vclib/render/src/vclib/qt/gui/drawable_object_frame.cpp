@@ -24,13 +24,11 @@
 
 #include "ui_drawable_object_frame.h"
 
-#include <vclib/render/interfaces/drawable_mesh_i.h>
-
 namespace vcl::qt {
 
 DrawableObjectFrame::DrawableObjectFrame(
-    const std::shared_ptr<DrawableObjectI>& obj,
-    QWidget*                                parent) :
+    const std::shared_ptr<DrawableObject>& obj,
+    QWidget*                               parent) :
         QFrame(parent), mUI(new Ui::DrawableObjectFrame), mObj(obj)
 {
     mUI->setupUi(this);

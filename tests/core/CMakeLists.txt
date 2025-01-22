@@ -44,5 +44,6 @@ add_subdirectory(015-mesh-copy-and-append)
 add_subdirectory(016-mesh-crease-edges)
 add_subdirectory(017-serialization)
 add_subdirectory(018-polygon)
+add_subdirectory(019-export-matrix)
 
 

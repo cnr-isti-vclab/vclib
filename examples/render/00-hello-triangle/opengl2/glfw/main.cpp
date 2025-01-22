@@ -20,11 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "hello_triangle_glfw.h"
+#include "../hello_triangle_drawer.h"
+
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)
 {
-    HelloTriangleGLFW tw;
+    using WindowGLFW = vcl::
+        RenderApp<vcl::glfw::WindowManager, vcl::Canvas, HelloTriangleDrawer>;
+
+    WindowGLFW tw("Hello Triangle with GLFW");
 
     tw.show();
 

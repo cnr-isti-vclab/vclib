@@ -25,6 +25,7 @@
 
 #include <vclib/bgfx/text/embedded_fonts.h>
 #include <vclib/bgfx/text/font/font_manager.h>
+#include <vclib/bgfx/text/text_manager.h>
 
 #include <map>
 #include <string>
@@ -33,7 +34,7 @@ namespace vcl {
 
 class FontManager
 {
-    friend class TextManager;
+    friend TextManager;
 
     bgfx::FontManager                                            mFontManager;
     std::map<std::string, bgfx::TrueTypeHandle>                  mTTMap;

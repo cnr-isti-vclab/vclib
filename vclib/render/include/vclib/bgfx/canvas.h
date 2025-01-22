@@ -23,11 +23,14 @@
 #ifndef VCL_BGFX_CANVAS_H
 #define VCL_BGFX_CANVAS_H
 
-#include <vclib/types.h>
-
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx/read_framebuffer_request.h>
-#include <vclib/bgfx/text/text_view.h>
-#include <vclib/render/interfaces/event_manager_i.h>
+#include <vclib/bgfx/system/native_window_handle.h>
+#include <vclib/io/image.h>
+#include <vclib/render/concepts/render_app.h>
+#include <vclib/render/input.h>
+#include <vclib/render/read_buffer_types.h>
+#include <vclib/types.h>
 
 #include <optional>
 
@@ -63,12 +66,18 @@ namespace vcl {
  * - onResize(width, height): this function must be called by the derived
  * classes whenever the window is resized.
  */
-class CanvasBGFX : public virtual vcl::EventManagerI
+template<typename DerivedRenderApp>
+class CanvasBGFX
 {
-public:
     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
-    using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
-    using ReadData               = ReadFramebufferRequest::ReadData;
+
+protected:
+    using FloatData = ReadBufferTypes::FloatData;
+    using ByteData  = ReadBufferTypes::ByteData;
+    using ReadData  = ReadBufferTypes::ReadData;
+
+public:
+    using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
 private:
     void* mWinId = nullptr;
@@ -89,66 +98,216 @@ private:
     // offscreen readback request
     std::optional<ReadFramebufferRequest> mReadRequest = std::nullopt;
 
-    TextView mTextView;
-
-    // flags
-    bool mStatsEnabled = false;
-
 public:
-    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr);
+    CanvasBGFX(
+        void* winId,
+        uint  width,
+        uint  height,
+        void* displayId = nullptr) : mWinId(winId)
+    {
+        static_assert(
+            RenderAppConcept<DerivedRenderApp>,
+            "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
-    ~CanvasBGFX();
+        // on screen framebuffer
+        mViewId = Context::instance(mWinId, displayId).requestViewId();
+
+        // (re)create the framebuffers
+        onResize(width, height);
+    }
+
+    ~CanvasBGFX()
+    {
+        // deallocate the framebuffers
+        if (bgfx::isValid(mFbh))
+            bgfx::destroy(mFbh);
+
+        // release the view id
+        auto& ctx = Context::instance();
+        if (ctx.isValidViewId(mViewId))
+            ctx.releaseViewId(mViewId);
+    }
 
     Point2<uint> size() const { return mSize; }
 
     bgfx::ViewId viewId() const { return mViewId; }
 
-    void setDefaultClearColor(const Color& color);
+    bgfx::FrameBufferHandle frameBuffer() const { return mFbh; }
 
-    // text
-    void enableText(bool b = true);
-    bool isTextEnabled() const;
+    void setDefaultClearColor(const Color& color)
+    {
+        mDefaultClearColor = color;
+        bgfx::setViewClear(
+            mViewId,
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            color.rgba());
+    }
 
-    void setTextFont(VclFont::Enum font, uint fontSize);
-    void setTextFont(const std::string& fontName, uint fontSize);
+    /**
+     * @brief Automatically called by the DerivedRenderApp when the window
+     * initializes.
+     * Initialization is requires in some backends+window manager combinations,
+     * and therefore it must be implemented (also if empty) in every Canvas
+     * class.
+     */
+    void onInit() {}
 
-    void clearText();
+    /**
+     * @brief Automatically called by the DerivedRenderApp when the window
+     * is resized.
+     * @param width
+     * @param height
+     */
+    void onResize(uint width, uint height)
+    {
+        mSize = {width, height};
 
-    void appendStaticText(
-        const Point2f&     pos,
-        const std::string& text,
-        const Color&       color = Color::Black);
+        // create window backbuffer
+        if (bgfx::isValid(mFbh))
+            bgfx::destroy(mFbh);
 
-    void appendTransientText(
-        const Point2f&     pos,
-        const std::string& text,
-        const Color&       color = Color::Black);
+        auto& ctx = Context::instance();
+        mFbh      = ctx.createFramebufferAndInitView(
+            mWinId, mViewId, width, height, true, mDefaultClearColor.rgba());
+        // the canvas framebuffer is non valid for the default window
+        assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
+    }
 
-    void onKeyPress(Key::Enum key) override;
+    /**
+     * @brief Automatically called by the DerivedRenderApp when the window asks
+     * to repaint.
+     */
+    void onPaint()
+    {
+        bgfx::setViewFrameBuffer(mViewId, mFbh);
+        bgfx::touch(mViewId);
 
-    bool supportsReadback() const;
+        // ask the derived frame to draw all the drawer objects:
+        DerivedRenderApp::CNV::draw(derived());
+        DerivedRenderApp::CNV::postDraw(derived());
 
-    [[nodiscard]] bool readDepth(
+        const bool newReadRequested =
+            (mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
+
+        if (newReadRequested) {
+            // draw offscreen frame
+            offscreenFrame();
+            mCurrFrame = bgfx::frame();
+            // submit the calls for blitting the offscreen depth buffer
+            if (mReadRequest->submit()) {
+                // solicit new frame
+                derived()->update();
+            }
+        }
+        else {
+            mCurrFrame = bgfx::frame();
+        }
+
+        if (mReadRequest != std::nullopt) {
+            // read depth data if available
+            const bool done = mReadRequest->performRead(mCurrFrame);
+            if (done)
+                mReadRequest = std::nullopt;
+            // solicit new frame
+            derived()->update();
+        }
+
+        // this is required only when using Qt in macOS
+#if defined(__APPLE__)
+        bgfx::frame();
+#endif // __APPLE__
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * to read the depth buffer at a specific point.
+     *
+     * @param point
+     * @param callback
+     * @return
+     */
+    [[nodiscard]] bool onReadDepth(
         const Point2i&     point,
-        CallbackReadBuffer callback = nullptr);
+        CallbackReadBuffer callback = nullptr)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt         // read already requested
+            || point.x() < 0 || point.y() < 0       // point out of bounds
+            || point.x() >= mSize.x() || point.y() >= mSize.y()) {
+            return false;
+        }
 
-    bool screenshot(
+        mReadRequest.emplace(point, mSize, callback);
+        return true;
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * for a screenshot.
+     *
+     * @param filename
+     * @param width
+     * @param height
+     * @return
+     */
+    bool onScreenshot(
         const std::string& filename,
         uint               width  = 0,
-        uint               height = 0);
+        uint               height = 0)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt) {      // read already requested
+            return false;
+        }
 
-protected:
-    virtual void draw() { drawContent(); };
+        // get size
+        auto size = mSize;
+        if (width != 0 && height != 0)
+            size = {width, height};
 
-    virtual void drawContent() = 0;
+        // color data callback
+        CallbackReadBuffer callback = [=](const ReadData& data) {
+            assert(
+                std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
+            const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
 
-    void onResize(uint width, uint height) override;
+            // save rgb image data into file using stb depending on file
+            try {
+                vcl::saveImageData(filename, size.x(), size.y(), d.data());
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error saving image: " << e.what() << std::endl;
+            }
+        };
 
-    virtual void frame();
+        mReadRequest.emplace(size, callback, mDefaultClearColor);
+        return true;
+    }
 
 private:
     // draw offscreen frame
-    void offscreenFrame();
+    void offscreenFrame()
+    {
+        assert(mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
+
+        // render offscren
+        bgfx::setViewFrameBuffer(
+            mReadRequest->viewId(), mReadRequest->frameBuffer());
+        bgfx::touch(mReadRequest->viewId());
+
+        // render changing the view
+        auto tmpId = mViewId;
+        mViewId    = mReadRequest->viewId();
+        DerivedRenderApp::CNV::drawContent(derived());
+        mViewId = tmpId;
+    }
+
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
+
+    const auto* derived() const
+    {
+        return static_cast<const DerivedRenderApp*>(this);
+    }
 };
 
 } // namespace vcl

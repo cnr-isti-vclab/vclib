@@ -29,9 +29,6 @@
 
 namespace vcl {
 
-Context*   Context::sInstancePtr = nullptr;
-std::mutex Context::sMutex;
-
 void Context::init(void* windowHandle, void* displayHandle)
 {
     std::lock_guard<std::mutex> lock(sMutex);
@@ -224,7 +221,13 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
     }
     else {
         // create framebuffer
-        fbh = createFramebuffer(width, height, colorFormat, depthFormat);
+        if (offscreen) {
+            fbh = createFramebuffer(width, height, colorFormat, depthFormat);
+        }
+        else { // TODO: why it does not accepts attachments when onscreen?
+            fbh = bgfx::createFrameBuffer(
+                winId, width, height, colorFormat, depthFormat);
+        }
     }
     // set view on framebuffer even if it must be done every frame
     bgfx::setViewFrameBuffer(view, fbh);

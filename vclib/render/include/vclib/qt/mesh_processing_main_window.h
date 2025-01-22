@@ -27,8 +27,8 @@
 
 #include <vclib/processing/action_manager.h>
 #include <vclib/qt/gui/text_edit_logger.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
-#include <vclib/render/interfaces/drawable_mesh_i.h>
 
 namespace vcl::qt {
 
@@ -70,13 +70,13 @@ private:
     void openFilterDialog(
         const std::shared_ptr<proc::FilterMeshAction>& action);
 
-    static std::shared_ptr<vcl::DrawableObjectI> makeMeshDrawable(
+    static std::shared_ptr<vcl::DrawableObject> makeMeshDrawable(
         const std::shared_ptr<proc::MeshI>& mesh);
 
     static std::shared_ptr<vcl::proc::MeshI> toMesh(
-        const std::shared_ptr<vcl::DrawableObjectI>& drawable);
+        const std::shared_ptr<vcl::DrawableObject>& drawable);
 
-    static std::shared_ptr<vcl::DrawableMeshI> toDrawableMeshI(
+    static std::shared_ptr<vcl::AbstractDrawableMesh> toAbstractDrawableMesh(
         const std::shared_ptr<vcl::proc::MeshI>& mesh);
 
     template<MeshConcept MeshType>

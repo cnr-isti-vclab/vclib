@@ -25,6 +25,7 @@
 
 #include <vclib/algorithms/core/polygon/ear_cut.h>
 #include <vclib/algorithms/mesh/sort.h>
+#include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/complex/mesh_pos.h>
 
@@ -57,73 +58,6 @@ public:
         return (a->coord() == b->coord()) ? (a < b) : (a->coord() < b->coord());
     }
 };
-
-template<typename Cont, typename MeshType>
-void setReferencedVerticesOnVector(
-    const MeshType&    m,
-    std::vector<bool>& refs,
-    uint&              nRefs)
-{
-    // check if the Cont container of the Mesh has vertex pointers
-    if constexpr (comp::HasVertexReferences<typename Cont::ElementType>) {
-        // if there are still some vertices non-referenced
-        if (nRefs < m.vertexNumber()) {
-            constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
-            // for eache element of the Cont container
-            for (const auto& el : m.template elements<ELEM_ID>()) {
-                // for each vertex of the element
-                for (uint vi : el.vertexIndices()) {
-                    assert(vi != UINT_NULL);
-                    if (!refs[vi]) {
-                        // set the vertex as referenced
-                        refs[vi] = true;
-                        nRefs++;
-                    }
-                }
-            }
-        }
-    }
-}
-
-template<typename MeshType, typename... Cont>
-void setReferencedVerticesOnVector(
-    const MeshType&    m,
-    std::vector<bool>& refs,
-    uint&              nRefs,
-    TypeWrapper<Cont...>)
-{
-    // call the setReferencedVerticesOnVector function for each container of the
-    // mesh
-    (setReferencedVerticesOnVector<Cont>(m, refs, nRefs), ...);
-}
-
-/**
- * @brief unreferencedVerticesVectorBool returns a vector of boolean telling,
- * for each vertex of the Mesh m, if it is referenced by any other Element of
- * the Mesh.
- *
- * The size of the vector will be == to the vertexContainerSize of m, and all
- * the deleted vertices are marked as unreferenced by default.
- *
- * @param m
- * @return
- */
-template<typename MeshType>
-std::vector<bool> unreferencedVerticesVectorBool(
-    const MeshType& m,
-    uint&           nUnref)
-{
-    using VertexType = MeshType::VertexType;
-
-    uint              nRefs = 0;
-    std::vector<bool> referredVertices(m.vertexContainerSize(), false);
-
-    setReferencedVerticesOnVector(
-        m, referredVertices, nRefs, typename MeshType::Containers());
-    nUnref = m.vertexNumber() - nRefs;
-
-    return referredVertices;
-}
 
 /**
  * @brief The SortedIndexContainer class stores a sorted container of indices of
@@ -285,10 +219,8 @@ template<MeshConcept MeshType>
 uint numberUnreferencedVertices(const MeshType& m)
 {
     uint nV = 0;
-    // Generate a vector of boolean flags indicating whether each vertex is
-    // referenced by any of the mesh's elements.
-    std::vector<bool> referredVertices =
-        detail::unreferencedVerticesVectorBool(m, nV);
+    // store the number of unref vertices into nV
+    referencedVertices<std::vector<bool>>(m, nV);
 
     return nV;
 }
@@ -319,9 +251,8 @@ uint removeUnreferencedVertices(MeshType& m)
     // Generate a vector of boolean flags indicating whether each vertex is
     // referenced by any of the mesh's elements.
 
-    uint              n = 0;
-    std::vector<bool> referredVertices =
-        detail::unreferencedVerticesVectorBool(m, n);
+    uint              n           = 0;
+    std::vector<bool> refVertices = referencedVertices<std::vector<bool>>(m, n);
 
     // need to mark as deleted vertices only if the number of unreferenced is
     // less than vn
@@ -331,7 +262,7 @@ uint removeUnreferencedVertices(MeshType& m)
         // Iterate over all vertices in the mesh, and mark any unreferenced
         // vertex as deleted.
         for (const VertexType& v : m.vertices()) {
-            if (!referredVertices[m.index(v)]) {
+            if (!refVertices[m.index(v)]) {
                 m.deleteVertex(m.index(v));
             }
             else {

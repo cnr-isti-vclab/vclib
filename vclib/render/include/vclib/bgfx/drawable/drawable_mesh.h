@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_H
 
-#include <vclib/render/interfaces/drawable_mesh_i.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
@@ -35,7 +35,7 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class DrawableMeshBGFX : public DrawableMeshI, public MeshType
+class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 {
     MeshRenderBuffers<MeshType> mMRB;
 
@@ -49,9 +49,8 @@ class DrawableMeshBGFX : public DrawableMeshI, public MeshType
 public:
     DrawableMeshBGFX() = default;
 
-    DrawableMeshBGFX(const MeshType& mesh) : 
-        DrawableMeshI(mesh), 
-        MeshType(mesh)
+    DrawableMeshBGFX(const MeshType& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(mesh)
     {
         updateBuffers();
     }
@@ -61,7 +60,7 @@ public:
     void updateBuffers() override
     {
         if constexpr (HasName<MeshType>) {
-            DrawableMeshI::name() = MeshType::name();
+            AbstractDrawableMesh::name() = MeshType::name();
         }
 
         mMRB = MeshRenderBuffers<MeshType>(*this);
@@ -69,6 +68,19 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
         mMeshUniforms.update(mMRB);
     }
+
+    void swap(DrawableMeshBGFX& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mMRB, other.mMRB);
+        swap(mProgram, other.mProgram);
+        swap(mMeshUniforms, other.mMeshUniforms);
+        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+    }
+
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
 
     // DrawableObject implementation
 
@@ -122,20 +134,20 @@ public:
         return Box3d(mMRB.bbMin(), mMRB.bbMax());
     }
 
-    std::shared_ptr<DrawableObjectI> clone() const override
+    std::shared_ptr<DrawableObject> clone() const override
     {
         return std::make_shared<DrawableMeshBGFX>(*this);
     }
 
     void setVisibility(bool vis) override
     {
-        DrawableMeshI::setVisibility(vis);
+        AbstractDrawableMesh::setVisibility(vis);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
-        DrawableMeshI::setRenderSettings(rs);
+        AbstractDrawableMesh::setRenderSettings(rs);
         mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 

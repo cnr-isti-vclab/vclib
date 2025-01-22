@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     vcl::qt::MeshViewer mv;
 
     // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>("TextureDouble.ply");
+    auto m = getDrawableMesh<vcl::TriMesh>();
 
     m.enablePerFaceColor();
     for (auto& f : m.faces()) {

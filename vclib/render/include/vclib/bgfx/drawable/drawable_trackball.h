@@ -25,15 +25,15 @@
 
 #include "uniforms/drawable_trackball_uniforms.h"
 
+#include <vclib/render/drawable/drawable_object.h>
 #include <vclib/render/drawable/trackball/trackball_render_data.h>
-#include <vclib/render/interfaces/drawable_object_i.h>
 #include <vclib/space/core/matrix.h>
 
 #include <vclib/bgfx/context.h>
 
 namespace vcl {
 
-class DrawableTrackBall : public DrawableObjectI, protected TrackballRenderData
+class DrawableTrackBall : public DrawableObject, protected TrackballRenderData
 {
     bool mVisible = true;
 
@@ -64,7 +64,7 @@ public:
 
     Box3d boundingBox() const override { return Box3d(); }
 
-    std::shared_ptr<DrawableObjectI> clone() const override
+    std::shared_ptr<DrawableObject> clone() const override
     {
         return std::make_shared<DrawableTrackBall>(*this);
     }

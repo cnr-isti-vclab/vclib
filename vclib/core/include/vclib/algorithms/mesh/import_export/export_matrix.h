@@ -23,6 +23,9 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
 
+#include "export_buffer.h"
+
+#include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
 
@@ -37,7 +40,7 @@ namespace vcl {
  * Usage example with an Eigen Matrix:
  *
  * @code{.cpp}
- * Eigen::MatrixX3d V = vcl::vertexMatrix<Eigen::MatrixX3d>(myMesh);
+ * Eigen::MatrixX3d V = vcl::vertexCoordsMatrix<Eigen::MatrixX3d>(myMesh);
  * @endif
  *
  * @note This function does not guarantee that the rows of the matrix
@@ -53,80 +56,22 @@ namespace vcl {
  * @return \#V*3 matrix of scalars (vertex coordinates)
  */
 template<MatrixConcept Matrix, MeshConcept MeshType>
-Matrix vertexMatrix(const MeshType& mesh)
+Matrix vertexCoordsMatrix(const MeshType& mesh)
 {
-    Matrix V(mesh.vertexNumber(), 3);
+    Matrix vM(mesh.vertexNumber(), 3);
 
-    uint i = 0;
-    for (const auto& v : mesh.vertices()) {
-        for (uint j = 0; j < 3; ++j) {
-            V(i, j) = v.coord()[j];
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
         }
-        ++i;
     }
-    return V;
-}
 
-/**
- * @brief Get a \#F*max(size(F)) Matrix of integers containing the vertex
- * indices for each face of a Mesh.
- *
- * If the mesh is polygonal, the matrix will have a number of rows equal to the
- * greatest polygon of the mesh, and unused values will be set to -1.
- *
- * This function works with every Matrix type that satisfies the MatrixConcept.
- *
- * Usage example with Eigen Matrix:
- *
- * @code{.cpp}
- * Eigen::MatrixXi F = vcl::faceMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
- *
- * @throws vcl::MissingCompactnessException if the vertex container is not
- * compact.
- *
- * @note This function does not guarantee that the rows of the matrix
- * correspond to the face indices of the mesh. This scenario is possible
- * when the mesh has deleted faces. To be sure to have a direct
- * correspondence, compact the face container before calling this function.
- *
- * @tparam Matrix: type of the matrix to be returned, it must satisfy the
- * MatrixConcept.
- * @tparam MeshType: type of the input mesh, it must satisfy the
- * FaceMeshConcept.
- *
- * @param[in] mesh: input mesh
- * @return \#F*max(size(F)) matrix of vertex indices
- */
-template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix faceMatrix(const MeshType& mesh)
-{
-    requireVertexContainerCompactness(mesh);
+    vertexCoordsToBuffer(mesh, vM.data(), stg);
 
-    Matrix F(mesh.faceNumber(), 3);
-
-    uint i = 0;
-    for (const auto& f : mesh.faces()) {
-        // check if this face is greater than the cols of the matrix
-        if (f.vertexNumber() > F.cols()) { // need to resize
-            uint oldCols = F.cols();       // save old cols number
-            F.conservativeResize(F.rows(), f.vertexNumber());
-            // need to set to -1 all the previous rows that have been resized
-            for (uint k = 0; k < i; ++k) {
-                for (uint j = oldCols; j < F.cols(); ++j)
-                    F(k, j) = -1;
-            }
-        }
-        uint j = 0;
-        for (const auto* v : f.vertices()) {
-            F(i, j) = mesh.index(v);
-            j++;
-        }
-        for (; j < F.cols(); ++j) // remaining vertices set to -1
-            F(i, j) = -1;
-        ++i; // go to next face/row
-    }
-    return F;
+    return vM;
 }
 
 /**
@@ -164,14 +109,108 @@ Vect faceSizesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Vect F(mesh.faceNumber());
+    Vect fM(mesh.faceNumber());
 
-    uint i = 0;
-    for (const auto& f : mesh.faces()) {
-        F(i) = f.vertexNumber();
-        ++i;
+    faceSizesToBuffer(mesh, fM.data());
+
+    return fM;
+}
+
+/**
+ * @brief Get a \#(sum of face sizes) Vector of integers containing the vertex
+ * indices for each face of a Mesh.
+ *
+ * This function exports the vertex indices of the polygonal faces of a mesh in
+ * the returned vector. Indices are stored consecutively in the vector,
+ * following the order the faces appear in the mesh.
+ *
+ * You can use the function @ref vcl::faceSizesVector to get the sizes of the
+ * faces and inspect the vector accordingly. Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi FSizes = vcl::faceSizesVector<Eigen::VectorXi>(myMesh);
+ * Eigen::VectorXi F = vcl::faceIndicesVector<Eigen::VectorXi>(myMesh);
+ * // read indices for each face
+ * uint offset = 0;
+ * for (uint i = 0; i < FSizes.size(); ++i) {
+ *     uint size = FSizes[i];
+ *     for (uint j = 0; j < size; ++j) {
+ *         uint vIdx = F[offset + j];
+ *         // do something with the vertex index
+ *     }
+ *     offset += size;
+ * }
+ * @endcode
+ *
+ * @param[in] mesh: input mesh
+ * @return \#(sum of face sizes) vector of vertex indices
+ */
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceIndicesVector(const MeshType& mesh)
+{
+    requireVertexContainerCompactness(mesh);
+
+    uint nIndices = countPerFaceVertexReferences(mesh);
+
+    Vect fV(nIndices);
+
+    faceIndicesToBuffer(mesh, fV.data());
+
+    return fV;
+}
+
+/**
+ * @brief Get a \#F*max(size(F)) Matrix of integers containing the vertex
+ * indices for each face of a Mesh.
+ *
+ * If the mesh is polygonal, the matrix will have a number of rows equal to the
+ * greatest polygon of the mesh, and unused values will be set to -1.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi F = vcl::faceMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#F*max(size(F)) matrix of vertex indices
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceIndicesMatrix(const MeshType& mesh)
+{
+    requireVertexContainerCompactness(mesh);
+
+    uint fMaxSize = largestFaceSize(mesh);
+
+    Matrix fM(mesh.faceNumber(), fMaxSize);
+
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
+        }
     }
-    return F;
+
+    faceIndicesToBuffer(mesh, fM.data(), fMaxSize, stg);
+
+    return fM;
 }
 
 /**
@@ -203,19 +242,24 @@ Vect faceSizesVector(const MeshType& mesh)
  * @return \#E*2 matrix of integers (edge indices)
  */
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
-Matrix edgeMatrix(const MeshType& mesh)
+Matrix edgeIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Matrix E(mesh.edgeNumber(), 2);
+    Matrix eM(mesh.edgeNumber(), 2);
 
-    uint i = 0;
-    for (const auto& e : mesh.edges()) {
-        E(i, 0) = mesh.index(e.vertex(0));
-        E(i, 1) = mesh.index(e.vertex(1));
-        ++i; // go to next edge/row
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
+        }
     }
-    return E;
+
+    edgeIndicesToBuffer(mesh, eM.data(), stg);
+
+    return eM;
 }
 
 /**
@@ -248,12 +292,10 @@ Matrix edgeMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
 {
-    Vect S(mesh.template number<ELEM_ID>());
+    Vect sV(mesh.template number<ELEM_ID>());
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>())
-        S[i] = e.selected();
-    return S;
+    vcl::elementSelectionToBuffer<ELEM_ID>(mesh, sV.data());
+    return sV;
 }
 
 /**
@@ -349,18 +391,20 @@ Vect faceSelectionVector(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
+    Matrix eNM(mesh.template number<ELEM_ID>(), 3);
 
-    Matrix EN(mesh.template number<ELEM_ID>(), 3);
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        for (uint j = 0; j < 3; ++j) {
-            EN(i, j) = e.normal()[j];
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
         }
-        ++i;
     }
-    return EN;
+
+    elementNormalsToBuffer<ELEM_ID>(mesh, eNM.data(), stg);
+
+    return eNM;
 }
 
 /**
@@ -455,16 +499,62 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
-    Matrix EC(mesh.template number<ELEM_ID>(), 4);
+    Matrix eCM(mesh.template number<ELEM_ID>(), 4);
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        for (uint j = 0; j < 4; ++j) {
-            EC(i, j) = e.color()[j];
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
         }
-        ++i;
     }
-    return EC;
+
+    elementColorsToBuffer<ELEM_ID>(mesh, eCM.data(), stg);
+
+    return eCM;
+}
+
+/**
+ * @brief Get a \#E Vector of integers containing the colors of the elements
+ * identified by `ELEM_ID` of a Mesh. The function is templated on the Vector
+ * itself. The color is packed in a single 32 bit value using the provided
+ * format.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-element colors.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi EC =
+ *     vcl::elementColorsVector<ElemId::VERTEX, Eigen::VectorXi>(
+ *         myMesh, Color::Format::RGBA);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @tparam ELEM_ID: the ID of the element.
+ * @param[in] mesh: input mesh
+ * @return \#E vector of integers (element colors)
+ */
+template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
+Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
+{
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    Vect eCV(mesh.template number<ELEM_ID>());
+
+    elementColorsToBuffer<ELEM_ID>(mesh, eCV.data(), colorFormat);
+
+    return eCV;
 }
 
 /**
@@ -498,6 +588,40 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
 }
 
 /**
+ * @brief Get a \#V Vector of integers containing the colors of the vertices
+ * of a Mesh. The function is templated on the Vector itself. The color is
+ * packed in a single 32 bit value using the provided format.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-vertex colors.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi VC =
+ *     vcl::vertexColorsVector<Eigen::VectorXi>(
+ *         myMesh, Color::Format::RGBA);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V vector of integers (vertex colors)
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect vertexColorsVector(const MeshType& mesh, Color::Format colorFormat)
+{
+    return elementColorsVector<ElemId::VERTEX, Vect>(mesh, colorFormat);
+}
+
+/**
  * @brief Get a \#F*4 Matrix of integers containing the colors of the faces of
  * a Mesh. The function is templated on the Matrix itself.
  *
@@ -528,6 +652,40 @@ Matrix faceColorsMatrix(const MeshType& mesh)
 }
 
 /**
+ * @brief Get a \#F Vector of integers containing the colors of the faces
+ * of a Mesh. The function is templated on the Vector itself. The color is
+ * packed in a single 32 bit value using the provided format.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-vertex colors.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi FC =
+ *     vcl::faceColorsVector<Eigen::VectorXi>(
+ *         myMesh, Color::Format::RGBA);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#F vector of integers (face colors)
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect faceColorsVector(const MeshType& mesh, Color::Format colorFormat)
+{
+    return elementColorsVector<ElemId::FACE, Vect>(mesh, colorFormat);
+}
+
+/**
  * @brief Get a \#E Vector of scalars containing the quality of the elements
  * identified by `ELEM_ID` of a Mesh. The function is templated on the Vector
  * itself.
@@ -553,22 +711,18 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  *
  * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
- * @return \#V vector of scalars (element quality)
+ * @return \#E vector of scalars (element quality)
  */
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
-    Vect EQ(mesh.template number<ELEM_ID>(), 3);
+    Vect eQV(mesh.template number<ELEM_ID>());
 
-    uint i = 0;
-    for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        EQ[i] = e.quality();
-        ++i;
-    }
+    elementQualityToBuffer<ELEM_ID>(mesh, eQV.data());
 
-    return EQ;
+    return eQV;
 }
 
 /**

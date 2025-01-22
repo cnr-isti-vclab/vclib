@@ -82,10 +82,13 @@ public:
 
     void swap(Uniform& oth)
     {
-        std::swap(mUniformHandle, oth.mUniformHandle);
-        std::swap(mUniformName, oth.mUniformName);
-        std::swap(mUniformType, oth.mUniformType);
+        using std::swap;
+        swap(mUniformHandle, oth.mUniformHandle);
+        swap(mUniformName, oth.mUniformName);
+        swap(mUniformType, oth.mUniformType);
     }
+
+    friend void swap(Uniform& a, Uniform& b) { a.swap(b); }
 
     Uniform& operator=(Uniform oth)
     {

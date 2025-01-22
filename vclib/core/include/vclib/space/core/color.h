@@ -48,6 +48,22 @@ class Color : public Point4<uint8_t>
 {
 public:
     /**
+     * @brief Color representation enumeration.
+     *
+     * The color representation enumeration is used to convert the color from/to
+     * different representations. The notation used tells the range of the
+     * components in the representation.
+     *
+     * For example, the INT_0_255 format means that the components are integers
+     * in the range [0-255], while the FLOAT_0_1 format means that the
+     * components are floating points in the range [0-1].
+     *
+     * This enumeration is not used directly in this class, but it is useful
+     * in conversion functions that ask for the representation of the color.
+     */
+    enum class Representation { INT_0_255, FLOAT_0_1 };
+
+    /**
      * @brief Color format enumeration.
      *
      * The color format enumeration is used to convert the color from/to
@@ -58,10 +74,8 @@ public:
      * represents the alpha, the second byte represents the blue, the third byte
      * represents the green and the fourth byte represents the red.
      */
-    struct Format
-    {
-        enum Enum { ABGR, ARGB, RGBA, BGRA };
-    };
+    enum class Format { ABGR, ARGB, RGBA, BGRA };
+
 
     /**
      * @brief ABGR enum with some standard colors.
@@ -107,7 +121,7 @@ public:
     /**
      * @brief List of Color Maps supported by the vcl::Color
      */
-    enum ColorMap { RedBlue, Parula, GreyShade };
+    enum class ColorMap { RedBlue, Parula, GreyShade };
 
     /**
      * @brief Default constructor.
@@ -117,7 +131,7 @@ public:
 
     Color(ColorABGR cc) { *reinterpret_cast<uint32_t*>(Point::data()) = cc; }
 
-    Color(uint32_t cc, Format::Enum format) { set(cc, format); }
+    Color(uint32_t cc, Format format) { set(cc, format); }
 
     /**
      * @brief Color constructor.
@@ -270,6 +284,11 @@ public:
         return *reinterpret_cast<const uint32_t*>(Point::data());
     }
 
+    uint32_t argb() const
+    {
+        return (alpha() << 24) | (red() << 16) | (green() << 8) | blue();
+    }
+
     uint32_t rgba() const
     {
         return (red() << 24) | (green() << 16) | (blue() << 8) | alpha();
@@ -356,7 +375,7 @@ public:
         w() = alpha;
     }
 
-    void set(uint32_t cc, Format::Enum fmt = Format::ABGR)
+    void set(uint32_t cc, Format fmt = Format::ABGR)
     {
         switch (fmt) {
         case Format::ARGB: setArgb(cc); break;
@@ -837,9 +856,10 @@ inline Color colorFromIntervalGreyShade(float min, float max, float value)
 inline Color colorFromInterval(float value, Color::ColorMap cm)
 {
     switch (cm) {
-    case Color::RedBlue: return colorFromIntervalRedBlue(value);
-    case Color::Parula: return colorFromIntervalParula(value);
-    case Color::GreyShade: return colorFromIntervalGreyShade(value);
+        using enum Color::ColorMap;
+    case RedBlue: return colorFromIntervalRedBlue(value);
+    case Parula: return colorFromIntervalParula(value);
+    case GreyShade: return colorFromIntervalGreyShade(value);
     default: assert(0); return Color::Gray;
     }
 }

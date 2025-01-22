@@ -54,10 +54,37 @@ constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
  *
  * @ingroup types
  */
-struct PrimitiveType
-{
-    enum Enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, NONE };
+enum class PrimitiveType {
+    CHAR,
+    UCHAR,
+    SHORT,
+    USHORT,
+    INT,
+    UINT,
+    FLOAT,
+    DOUBLE,
+    NONE
 };
+
+/**
+ * @brief A simple type that enumerates the main storage types for matrices (row
+ * or column major).
+ *
+ * @ingroup types
+ */
+enum class MatrixStorageType { ROW_MAJOR, COLUMN_MAJOR };
+
+/**
+ * @brief Returns the underlying type of an enum.
+ * @param[in] e: The enum value.
+ * @return The value casted to the underlying type of the enum.
+ */
+// TODO: remove from c++23 (std::to_underlying)
+template<typename E>
+constexpr typename std::underlying_type<E>::type toUnderlying(E e) noexcept
+{
+    return static_cast<typename std::underlying_type<E>::type>(e);
+}
 
 /**
  * @brief A simple utility class to represent a pointer with a value.

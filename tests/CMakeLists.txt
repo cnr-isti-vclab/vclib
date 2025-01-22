@@ -33,6 +33,9 @@ option(VCLIB_CORE_BUILD_TESTS
 option(VCLIB_EXTERNAL_BUILD_TESTS
     "If true, the tests of VCLib-external will be built." ON)
 
+option(VCLIB_RENDER_BUILD_TESTS
+    "If true, the tests of VCLib-render will be built." ON)
+
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 ### Catch2
@@ -45,6 +48,10 @@ endif()
 
 if (VCLIB_BUILD_MODULE_EXTERNAL AND VCLIB_EXTERNAL_BUILD_TESTS)
     add_subdirectory(external)
+endif()
+
+if (VCLIB_BUILD_MODULE_RENDER AND VCLIB_RENDER_BUILD_TESTS)
+    add_subdirectory(render)
 endif()
 
 # if (VCLIB_BUILD_MODULE_PROCESSING)
