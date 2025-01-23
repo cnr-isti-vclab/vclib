@@ -78,7 +78,7 @@ public:
 
     void setLinesColor(const vcl::Color& c);
 
-    // DrawableObjectI interface
+    // DrawableObject interface
 
     void draw(uint viewId) const override;
 
