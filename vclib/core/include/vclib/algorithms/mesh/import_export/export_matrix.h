@@ -214,6 +214,55 @@ Matrix faceIndicesMatrix(const MeshType& mesh)
 }
 
 /**
+ * @brief Get a \#T*3 Matrix of integers containing the vertex indices for each
+ * triangle obtained by the triangulation of the faces of a Mesh.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi F = vcl::triangulatedFacesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] indexMap: map from triangle index to face index
+ * @return \#T*3 matrix of vertex indices
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix triangulatedFaceIndicesMatrix(
+    const MeshType&    mesh,
+    TriPolyIndexBiMap& indexMap = detail::indexMap)
+{
+    requireVertexContainerCompactness(mesh);
+
+    uint tNumber = vcl::countTriangulatedTriangles(mesh);
+
+    Matrix tM(tNumber, 3);
+
+    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (EigenMatrixConcept<Matrix>) {
+        if constexpr (!Matrix::IsRowMajor) {
+            stg = MatrixStorageType::COLUMN_MAJOR;
+        }
+    }
+
+    triangulatedFaceIndicesToBuffer(mesh, tM.data(), indexMap, stg, tNumber);
+
+    return tM;
+}
+
+/**
  * @brief Get a \#E*2 Matrix of integers containing the indices of the vertices
  * of the edges of a Mesh. The function is templated on the Matrix itself.
  *
