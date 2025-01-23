@@ -37,9 +37,9 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 {
     using Base = vcl::MeshRenderData<MeshType>;
 
-    VertexBuffer mVertexBuffer;
-    bgfx::VertexBufferHandle mVertexNormalBH  = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle mVertexColorBH   = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertexCoordsBuffer;
+    VertexBuffer mVertexNormalsBuffer;
+    VertexBuffer mVertexColorsBuffer;
     bgfx::VertexBufferHandle mVertexUVBH      = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexWedgeUVBH = BGFX_INVALID_HANDLE;
 
@@ -86,9 +86,9 @@ public:
     {
         using std::swap;
         swap((Base&) *this, (Base&) other);
-        swap(mVertexBuffer, other.mVertexBuffer);
-        swap(mVertexNormalBH, other.mVertexNormalBH);
-        swap(mVertexColorBH, other.mVertexColorBH);
+        swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
+        swap(mVertexNormalsBuffer, other.mVertexNormalsBuffer);
+        swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
         swap(mVertexUVBH, other.mVertexUVBH);
         swap(mVertexWedgeUVBH, other.mVertexWedgeUVBH);
         swap(mTriangleIndexBH, other.mTriangleIndexBH);
@@ -115,15 +115,9 @@ public:
     {
         // bgfx allows a maximum number of 4 vertex streams...
 
-        mVertexBuffer.bind(0);
-
-        if (bgfx::isValid(mVertexNormalBH)) { // vertex normals
-            bgfx::setVertexBuffer(1, mVertexNormalBH);
-        }
-
-        if (bgfx::isValid(mVertexColorBH)) { // vertex colors
-            bgfx::setVertexBuffer(2, mVertexColorBH);
-        }
+        mVertexCoordsBuffer.bind(0);
+        mVertexNormalsBuffer.bind(1);
+        mVertexColorsBuffer.bind(2);
 
         if (mrs.isSurfaceColorPerVertexTexcoords()) {
             if (bgfx::isValid(mVertexUVBH)) { // vertex UVs
@@ -197,40 +191,27 @@ public:
 private:
     void createBGFXBuffers()
     {
-        mVertexBuffer.set(
+        mVertexCoordsBuffer.set(
             Base::vertexBufferData(),
-            Base::vertexBufferSize(),
+            Base::vertexNumber() * 3,
             bgfx::Attrib::Position,
             3,
             bgfx::AttribType::Float);
 
-        // vertex buffer (normals)
-        if (Base::vertexNormalBufferData()) {
-            bgfx::VertexLayout vnlayout;
-            vnlayout.begin()
-                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-                .end();
+        mVertexNormalsBuffer.set(
+            Base::vertexNormalBufferData(),
+            Base::vertexNumber() * 3,
+            bgfx::Attrib::Normal,
+            3,
+            bgfx::AttribType::Float);
 
-            mVertexNormalBH = bgfx::createVertexBuffer(
-                bgfx::makeRef(
-                    Base::vertexNormalBufferData(),
-                    Base::vertexBufferSize() * sizeof(float)),
-                vnlayout);
-        }
-
-        // vertex buffer (colors)
-        if (Base::vertexColorBufferData()) {
-            bgfx::VertexLayout vclayout;
-            vclayout.begin()
-                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-                .end();
-
-            mVertexColorBH = bgfx::createVertexBuffer(
-                bgfx::makeRef(
-                    Base::vertexColorBufferData(),
-                    Base::vertexNumber() * sizeof(uint32_t)),
-                vclayout);
-        }
+        mVertexColorsBuffer.set(
+            Base::vertexColorBufferData(),
+            Base::vertexNumber() * 4,
+            bgfx::Attrib::Color0,
+            4,
+            bgfx::AttribType::Uint8,
+            true);
 
         // vertex buffer (UVs)
         if (Base::vertexTexCoordsBufferData()) {
@@ -366,12 +347,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mVertexNormalBH))
-            bgfx::destroy(mVertexNormalBH);
-
-        if (bgfx::isValid(mVertexColorBH))
-            bgfx::destroy(mVertexColorBH);
-
         if (bgfx::isValid(mVertexUVBH))
             bgfx::destroy(mVertexUVBH);
 

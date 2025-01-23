@@ -75,11 +75,12 @@ public:
         bgfx::Attrib::Enum     attrib,
         uint                   numElements,
         bgfx::AttribType::Enum attribType,
+        bool                   normalize = false,
         bgfx::ReleaseFn        releaseFn = nullptr,
         uint64_t               flags     = BGFX_BUFFER_NONE)
     {
         bgfx::VertexLayout layout;
-        layout.begin().add(attrib, numElements, attribType).end();
+        layout.begin().add(attrib, numElements, attribType, normalize).end();
 
         set(layout,
             bgfx::makeRef(
