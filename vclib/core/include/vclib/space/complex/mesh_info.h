@@ -81,7 +81,6 @@ public:
      */
     enum class MeshType { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH, UNKNOWN };
 
-
     /**
      * @brief Enum used to describe the type of Elements that can be found in a
      * file.

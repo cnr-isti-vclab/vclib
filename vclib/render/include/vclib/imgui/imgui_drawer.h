@@ -67,15 +67,14 @@ public:
         ImGui_ImplOpenGL2_Shutdown();
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_Shutdown();
-#endif  // VCLIB_RENDER_BACKEND_*
+#endif // VCLIB_RENDER_BACKEND_*
 #ifdef VCLIB_WITH_GLFW
         if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
             ImGui_ImplGlfw_Shutdown();
         }
 #endif // VCLIB_WITH_GLFW
 #ifdef VCLIB_WITH_QT
-        if constexpr (
-            DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
+        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
             ImGui_ImplQt_Shutdown();
         }
 #endif // VCLIB_WITH
@@ -108,10 +107,9 @@ public:
             ImGui_ImplBgfx_Init();
 #endif // VCLIB_RENDER_BACKEND_*
         }
-# endif // VCLIB_WITH_GLFW
+#endif // VCLIB_WITH_GLFW
 #ifdef VCLIB_WITH_QT
-        if constexpr (
-            DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
+        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
             QWidget* mWindow =
                 reinterpret_cast<QWidget*>(DRA::DRW::windowPtr(derived()));
             // setup platform/RenderApp backends (Qt and ImGui)
@@ -139,8 +137,7 @@ public:
         }
 #endif // VCLIB_WITH_GLFW
 #ifdef VCLIB_WITH_QT
-        if constexpr (
-            DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
+        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
             ImGui_ImplQt_NewFrame();
         }
 #endif // VCLIB_WITH_QT
