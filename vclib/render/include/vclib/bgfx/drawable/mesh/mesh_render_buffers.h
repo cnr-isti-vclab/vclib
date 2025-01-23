@@ -58,7 +58,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
 
-    lines::InstancingBasedLines mWireframeBH;
+    lines::CPUGeneratedLines mWireframeBH;
 
     std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
 
@@ -74,6 +74,7 @@ public:
     {
         // each object has its own bgfx buffers
         createBGFXBuffers();
+        mWireframeBH.setSettings(*other.mWireframeBH.getSettings());
     }
 
     MeshRenderBuffers(MeshRenderBuffers&& other) { swap(other); }
@@ -104,7 +105,7 @@ public:
         swap(mEdgeColorBH, other.mEdgeColorBH);
         swap(mTexturesH, other.mTexturesH);
 
-         mWireframeBH.swap(other.mWireframeBH);
+        mWireframeBH.swap(other.mWireframeBH);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -184,6 +185,28 @@ public:
                     mEdgeNormalBH,
                     bgfx::Access::Read);
             }
+        }
+    }
+
+    void setWireframeSettings(const MeshRenderSettings& settings) 
+    {
+        lines::LinesSettings *wireframeSettings = mWireframeBH.getSettings();
+        wireframeSettings->setThickness(settings.wireframeWidth());
+
+        if(settings.isWireframeColorUserDefined()) {
+            vcl::Color generalColor = settings.wireframeUserColor();
+            wireframeSettings->setGeneralColor(lines::LinesVertex::COLOR(generalColor.redF(), generalColor.greenF(), generalColor.blueF(), generalColor.alphaF()));
+            wireframeSettings->setColorToUse(lines::ColorToUse::GENERAL_COLOR);
+        }
+
+        if(settings.isWireframeColorPerMesh()) {
+            const float* colorPerMesh = Base::meshColorBufferData();
+            wireframeSettings->setGeneralColor(lines::LinesVertex::COLOR(colorPerMesh[0], colorPerMesh[1], colorPerMesh[2], colorPerMesh[3]));
+            wireframeSettings->setColorToUse(lines::ColorToUse::GENERAL_COLOR);
+        }
+
+        if(settings.isWireframeColorPerVertex()) {
+            wireframeSettings->setColorToUse(lines::ColorToUse::PER_VERTEX_COLOR);
         }
     }
 
@@ -341,9 +364,7 @@ private:
 
         // wireframe index buffer
         if (Base::wireframeBufferData()) {
-            const bgfx::Caps* caps = bgfx::getCaps();
-            mWireframeBH = lines::InstancingBasedLines(*Base::wireframeBufferData());
-            mWireframeBH.getSettings().setThickness(5);
+            mWireframeBH = lines::CPUGeneratedLines(*Base::wireframeBufferData());
         }
 
         // textures

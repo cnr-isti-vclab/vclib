@@ -36,6 +36,8 @@ namespace vcl::lines {
     void InstancingBasedPolylines::swap(InstancingBasedPolylines& other) {
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
+
+        std::swap(mPoints, other.mPoints);
         
         std::swap(mSegmentsInstanceDB, other.mSegmentsInstanceDB);
         std::swap(mJoinsInstanceDB, other.mJoinsInstanceDB);

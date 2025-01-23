@@ -22,12 +22,14 @@ namespace vcl::lines {
 
             void setVisibility(bool vis) override { mVisible = vis; }
 
-            LinesSettings& getSettings() { return mSettings; }
+            LinesSettings* getSettings() const { return &mSettings; }
+
+            void setSettings(const LinesSettings settings) { mSettings = settings; }
 
             virtual void update(const std::vector<LinesVertex> &points) = 0;
 
         protected: 
             bool mVisible = true;
-            LinesSettings mSettings;
+            mutable LinesSettings mSettings;
     };
 }

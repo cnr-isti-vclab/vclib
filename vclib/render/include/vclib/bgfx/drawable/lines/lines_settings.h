@@ -54,7 +54,7 @@ namespace vcl::lines {
                 mLeftCap(Caps::ROUND_CAP),
                 mRigthCap(Caps::ROUND_CAP),
                 mJoin(Joins::ROUND_JOIN),
-                mColorToUse(ColorToUse::GENERAL_COLOR)
+                mColorToUse(ColorToUse::PER_VERTEX_COLOR)
             {
                 mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);
             }

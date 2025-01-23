@@ -4,6 +4,9 @@
 namespace vcl::lines {
 
     class CPUGeneratedLines : public DrawableLines {
+        
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::LINES_CPU_GENERATED_VSFS);
 
         uint32_t mPointsSize;
 
@@ -12,10 +15,6 @@ namespace vcl::lines {
 
         bgfx::DynamicVertexBufferHandle     mVerticesBH     = BGFX_INVALID_HANDLE;
         bgfx::DynamicIndexBufferHandle      mIndexesBH      = BGFX_INVALID_HANDLE;
-
-        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::LINES_CPU_GENERATED_VSFS);
-
 
         public:
             CPUGeneratedLines() = default;
