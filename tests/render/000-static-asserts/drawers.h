@@ -247,62 +247,10 @@ void drawersStaticAssertsWM()
         !BlockerEventDrawerConcept<ViewerDrawer<RenderAppVD>&&>,
         "ViewerDrawer&& does satisfy the BlockerEventDrawerConcept");
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-    using RenderAppTD = RenderApp<WMQ, Canvas, TextDrawer>;
-
-    // TextDrawer
-    static_assert(
-        DrawerConcept<TextDrawer<RenderAppTD>>,
-        "TextDrawer does not satisfy the DrawerConcept");
-    static_assert(
-        DrawerConcept<const TextDrawer<RenderAppTD>>,
-        "const TextDrawer does not satisfy the DrawerConcept");
-    static_assert(
-        DrawerConcept<TextDrawer<RenderAppTD>&>,
-        "TextDrawer& does not satisfy the DrawerConcept");
-    static_assert(
-        DrawerConcept<const TextDrawer<RenderAppTD>&>,
-        "const TextDrawer& does not satisfy the DrawerConcept");
-    static_assert(
-        DrawerConcept<TextDrawer<RenderAppTD>&&>,
-        "TextDrawer&& does not satisfy the DrawerConcept");
-
-    static_assert(
-        !EventDrawerConcept<TextDrawer<RenderAppTD>>,
-        "TextDrawer does satisfy the EventDrawerConcept");
-    static_assert(
-        !EventDrawerConcept<const TextDrawer<RenderAppTD>>,
-        "const TextDrawer does satisfy the EventDrawerConcept");
-    static_assert(
-        !EventDrawerConcept<TextDrawer<RenderAppTD>&>,
-        "TextDrawer& does satisfy the EventDrawerConcept");
-    static_assert(
-        !EventDrawerConcept<const TextDrawer<RenderAppTD>&>,
-        "const TextDrawer& does satisfy the EventDrawerConcept");
-    static_assert(
-        !EventDrawerConcept<TextDrawer<RenderAppTD>&&>,
-        "TextDrawer&& does satisfy the EventDrawerConcept");
-#endif
-}
-
-void drawersStaticAsserts()
-{
-    using namespace vcl;
-
-    // static asserts for each window manager
-#ifdef VCLIB_WITH_QT
-    drawersStaticAssertsWM<WMQ>();
-#endif
-
-#if VCLIB_WITH_GLFW
-    drawersStaticAssertsWM<WMG>();
-#endif
-
-    // static assers for drawers that work with specific window managers
 #ifdef VCLIB_WITH_IMGUI
     using namespace vcl::imgui;
 
-    using RenderAppID = RenderApp<WMG, Canvas, ImGuiDrawer>;
+    using RenderAppID = RenderApp<WM, Canvas, ImGuiDrawer>;
 
     // ImguiDrawer
     static_assert(
@@ -352,6 +300,57 @@ void drawersStaticAsserts()
     static_assert(
         BlockerEventDrawerConcept<ImGuiDrawer<RenderAppID>&&>,
         "ImguiDrawer&& does not satisfy the BlockerEventDrawerConcept");
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+    using RenderAppTD = RenderApp<WM, Canvas, TextDrawer>;
+
+    // TextDrawer
+    static_assert(
+        DrawerConcept<TextDrawer<RenderAppTD>>,
+        "TextDrawer does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<const TextDrawer<RenderAppTD>>,
+        "const TextDrawer does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<TextDrawer<RenderAppTD>&>,
+        "TextDrawer& does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<const TextDrawer<RenderAppTD>&>,
+        "const TextDrawer& does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<TextDrawer<RenderAppTD>&&>,
+        "TextDrawer&& does not satisfy the DrawerConcept");
+
+    static_assert(
+        !EventDrawerConcept<TextDrawer<RenderAppTD>>,
+        "TextDrawer does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<const TextDrawer<RenderAppTD>>,
+        "const TextDrawer does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<TextDrawer<RenderAppTD>&>,
+        "TextDrawer& does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<const TextDrawer<RenderAppTD>&>,
+        "const TextDrawer& does satisfy the EventDrawerConcept");
+    static_assert(
+        !EventDrawerConcept<TextDrawer<RenderAppTD>&&>,
+        "TextDrawer&& does satisfy the EventDrawerConcept");
+#endif
+}
+
+void drawersStaticAsserts()
+{
+    using namespace vcl;
+
+    // static asserts for each window manager
+#ifdef VCLIB_WITH_QT
+    drawersStaticAssertsWM<WMQ>();
+#endif
+
+#if VCLIB_WITH_GLFW
+    drawersStaticAssertsWM<WMG>();
 #endif
 }
 
