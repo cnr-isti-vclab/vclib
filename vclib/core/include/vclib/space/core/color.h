@@ -76,7 +76,6 @@ public:
      */
     enum class Format { ABGR, ARGB, RGBA, BGRA };
 
-
     /**
      * @brief ABGR enum with some standard colors.
      *

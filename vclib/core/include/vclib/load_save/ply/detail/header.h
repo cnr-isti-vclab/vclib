@@ -485,8 +485,7 @@ public:
                 tc.list         = true;
                 tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
-                tc.type =
-                    (ply::PropertyType) info.faceWedgeTexCoordsType();
+                tc.type = (ply::PropertyType) info.faceWedgeTexCoordsType();
                 tn.name = ply::texnumber;
                 tn.type = PrimitiveType::USHORT;
                 fElem.properties.push_back(tc);
@@ -498,7 +497,7 @@ public:
                         PlyProperty pp;
                         pp.name                = ply::unknown;
                         pp.unknownPropertyName = cc.name;
-                        pp.type = (ply::PropertyType) cc.type;
+                        pp.type                = (ply::PropertyType) cc.type;
                         fElem.properties.push_back(pp);
                     }
                 }

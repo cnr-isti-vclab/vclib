@@ -27,6 +27,7 @@
 #include <vclib/mesh/requirements.h>
 
 #include "foo_component.h"
+#include "bar_component.h"
 
 /*
  * This file defines a FooMesh class that uses the FooComponent in the Vertex

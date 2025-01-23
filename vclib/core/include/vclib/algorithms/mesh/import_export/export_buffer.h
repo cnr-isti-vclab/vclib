@@ -23,10 +23,18 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
 
+#include <vclib/algorithms/core/polygon/ear_cut.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/complex/tri_poly_index_bimap.h>
 #include <vclib/views/mesh.h>
 
 namespace vcl {
+
+namespace detail {
+
+inline static TriPolyIndexBiMap indexMap;
+
+} // namespace detail
 
 /**
  * @brief Export the vertex coordinates of a mesh to a buffer.
@@ -262,6 +270,100 @@ void faceIndicesToBuffer(
             for (; j < largestFaceSize; ++j) // remaining vertices set to -1
                 buffer[j * FACE_NUM + i] = -1;
             ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export into a buffer the vertex indices for each triangle computed
+ * by triangulating the faces of a Mesh.
+ *
+ * This function exports the vertex indices of the triangles computed by
+ * triangulating the faces of a mesh to a buffer. Indices are stored following
+ * the order the faces appear in the mesh. The buffer must be preallocated with
+ * the correct size (number of *resulting triangles* times 3).
+ *
+ * You can use the function @ref vcl::countTriangulatedTriangles to get the
+ * number of resulting triangles and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * uint numTris = vcl::countTriangulatedTriangles(myMesh);
+ * Eigen::MatrixXi triIndices(numTris, 3);
+ * vcl::TriPolyIndexBiMap indexMap;
+ * vcl::triangulatedFaceIndicesToBuffer(
+ *     myMesh, triIndices.data(), indexMap, MatrixStorageType::COLUMN_MAJOR,
+ *     numTris);
+ * @endcode
+ *
+ * The input indexMap is used to map each triangle to the face index. If the
+ * storage of the buffer is column major, the number of resulting triangles
+ * (that should be known when calling this function) should be given as input.
+ * If the number of resulting triangles is not given, the function will compute
+ * it again.
+ *
+ * @note This function does not guarantee that the vertex indices stored in the
+ * buffer correspond to the vertex indices of the mesh. This scenario is
+ * possible when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[out] indexMap: map from triangle index to face index
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] numTriangles: number of resulting triangles (necessary only if
+ * the storage is column major)
+ */
+template<FaceMeshConcept MeshType>
+void triangulatedFaceIndicesToBuffer(
+    const MeshType&    mesh,
+    auto*              buffer,
+    TriPolyIndexBiMap& indexMap = detail::indexMap,
+    MatrixStorageType  storage = MatrixStorageType::ROW_MAJOR,
+    uint               numTriangles = UINT_NULL)
+{
+    // there will be at least a triangle for each polygon
+    indexMap.clear();
+    indexMap.reserve(mesh.faceNumber(), mesh.faceContainerSize());
+
+    if constexpr (TriangleMeshConcept<MeshType>) {
+        // construct the indexMap, which maps each triangle to the face index
+        for (uint t = 0; const auto& f : mesh.faces()) {
+            // map the ith triangle to the f face
+            indexMap.insert(t, f.index());
+            ++t;
+        }
+
+        return triangleIndicesToBuffer(mesh, buffer, storage);
+    }
+    else {
+        // if the user did not give the number of triangles, and the buffer
+        // storage is column major, we need to compute the number of resulting
+        // triangles
+        if (numTriangles == UINT_NULL &&
+            storage == MatrixStorageType::COLUMN_MAJOR &&
+            mesh.faceNumber() > 0) {
+            numTriangles = countTriangulatedTriangles(mesh);
+        }
+        for (uint t = 0; const auto& f : mesh.faces()) {
+            std::vector<uint> vind = vcl::earCut(f);
+
+            // for each triangle of the triangulation (t is the triangle index)
+            for (uint vi = 0; vi < vind.size(); vi += 3) {
+                // map the t-th triangle to the f polygonal face
+                indexMap.insert(t, f.index());
+
+                if (storage == MatrixStorageType::ROW_MAJOR) {
+                    buffer[t * 3 + 0] = f.vertexIndex(vind[vi + 0]);
+                    buffer[t * 3 + 1] = f.vertexIndex(vind[vi + 1]);
+                    buffer[t * 3 + 2] = f.vertexIndex(vind[vi + 2]);
+                }
+                else {
+                    buffer[0 * numTriangles + t] = f.vertexIndex(vind[vi + 0]);
+                    buffer[1 * numTriangles + t] = f.vertexIndex(vind[vi + 1]);
+                    buffer[2 * numTriangles + t] = f.vertexIndex(vind[vi + 2]);
+                }
+                ++t;
+            }
         }
     }
 }

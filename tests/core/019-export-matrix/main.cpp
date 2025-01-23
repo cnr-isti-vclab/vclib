@@ -107,8 +107,7 @@ void testCoordsMatrix(const auto& tm)
     REQUIRE(verts.rows() == tm.vertexNumber());
     REQUIRE(verts.cols() == 3);
 
-    vcl::uint i = 0;
-    for (const auto& c : tm.vertices() | vcl::views::coords) {
+    for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::coords) {
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
         REQUIRE(verts(i, 2) == c.z());
@@ -124,8 +123,7 @@ void testTrianglesMatrix(const auto& tm)
     REQUIRE(tris.rows() == tm.faceNumber());
     REQUIRE(tris.cols() == 3);
 
-    vcl::uint i = 0;
-    for (const auto& f : tm.faces()) {
+    for (vcl::uint i = 0; const auto& f : tm.faces()) {
         for (vcl::uint j = 0; j < 3; ++j) {
             REQUIRE(tris(i, j) == f.vertexIndex(j));
         }
@@ -140,8 +138,7 @@ void testFaceSizesVector(const auto& pm)
 
     REQUIRE(sizes.size() == pm.faceNumber());
 
-    vcl::uint i = 0;
-    for (const auto& f : pm.faces()) {
+    for (vcl::uint i = 0; const auto& f : pm.faces()) {
         REQUIRE(sizes[i] == f.vertexNumber());
         ++i;
     }
@@ -155,8 +152,7 @@ void testFaceVector(const auto& pm)
     vcl::uint nIndices = countPerFaceVertexReferences(pm);
     REQUIRE(faces.size() == nIndices);
 
-    vcl::uint i = 0;
-    for (const auto& f : pm.faces()) {
+    for (vcl::uint i = 0; const auto& f : pm.faces()) {
         for (const auto* v : f.vertices()) {
             REQUIRE(faces[i] == pm.index(v));
             ++i;
@@ -172,8 +168,7 @@ void testFaceMatrix(const auto& pm)
     REQUIRE(faces.rows() == pm.faceNumber());
     REQUIRE(faces.cols() == vcl::largestFaceSize(pm));
 
-    vcl::uint i = 0;
-    for (const auto& f : pm.faces()) {
+    for (vcl::uint i = 0; const auto& f : pm.faces()) {
         vcl::uint j = 0;
         for (j = 0; j < f.vertexNumber(); ++j) {
             REQUIRE(faces(i, j) == f.vertexIndex(j));
@@ -186,6 +181,29 @@ void testFaceMatrix(const auto& pm)
     }
 }
 
+template<typename MatrixType>
+void testTriangulatedFaceMatrix(const auto& pm)
+{
+    vcl::TriPolyIndexBiMap indexMap;
+    auto tris = vcl::triangulatedFaceIndicesMatrix<MatrixType>(pm, indexMap);
+
+    vcl::uint tNumber = countTriangulatedTriangles(pm);
+
+    REQUIRE(tris.rows() == tNumber);
+    REQUIRE(tris.cols() == 3);
+
+    for (vcl::uint i = 0; i < 3; ++i) {
+        // polygon associated to ith triangle
+        vcl::uint fIdx = indexMap.polygon(i);
+        const auto& f   = pm.face(fIdx);
+
+        for (vcl::uint j = 0; j < 3; ++j) {
+            REQUIRE(f.containsVertex(tris(i, j)));
+        }
+        ++i;
+    }
+}
+
 template<typename VectorType>
 void testVertexSelectionVector(const auto& tm)
 {
@@ -193,8 +211,7 @@ void testVertexSelectionVector(const auto& tm)
 
     REQUIRE(sel.size() == tm.vertexNumber());
 
-    vcl::uint i = 0;
-    for (const auto& v : tm.vertices()) {
+    for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         REQUIRE((bool) sel[i] == v.selected());
         ++i;
     }
@@ -207,8 +224,7 @@ void testFaceSelectionVector(const auto& tm)
 
     REQUIRE(sel.size() == tm.faceNumber());
 
-    vcl::uint i = 0;
-    for (const auto& f : tm.faces()) {
+    for (vcl::uint i = 0; const auto& f : tm.faces()) {
         REQUIRE((bool) sel[i] == f.selected());
         ++i;
     }
@@ -222,8 +238,7 @@ void testVertNormalsMatrix(const auto& tm)
     REQUIRE(vertNormals.rows() == tm.vertexNumber());
     REQUIRE(vertNormals.cols() == 3);
 
-    vcl::uint i = 0;
-    for (const auto& n : tm.vertices() | vcl::views::normals) {
+    for (vcl::uint i = 0; const auto& n : tm.vertices() | vcl::views::normals) {
         REQUIRE(vertNormals(i, 0) == n.x());
         REQUIRE(vertNormals(i, 1) == n.y());
         REQUIRE(vertNormals(i, 2) == n.z());
@@ -239,8 +254,7 @@ void testFaceNormalsMatrix(const auto& tm)
     REQUIRE(faceNormals.rows() == tm.faceNumber());
     REQUIRE(faceNormals.cols() == 3);
 
-    vcl::uint i = 0;
-    for (const auto& n : tm.faces() | vcl::views::normals) {
+    for (vcl::uint i = 0; const auto& n : tm.faces() | vcl::views::normals) {
         REQUIRE(faceNormals(i, 0) == n.x());
         REQUIRE(faceNormals(i, 1) == n.y());
         REQUIRE(faceNormals(i, 2) == n.z());
@@ -256,8 +270,7 @@ void testVertColorsMatrix(const auto& tm)
     REQUIRE(vertColors.rows() == tm.vertexNumber());
     REQUIRE(vertColors.cols() == 4);
 
-    vcl::uint i = 0;
-    for (const auto& c : tm.vertices() | vcl::views::colors) {
+    for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::colors) {
         REQUIRE(vertColors(i, 0) == c.red());
         REQUIRE(vertColors(i, 1) == c.green());
         REQUIRE(vertColors(i, 2) == c.blue());
@@ -274,8 +287,7 @@ void testVertColorsVector(const auto& tm)
 
     REQUIRE(vertColors.size() == tm.vertexNumber());
 
-    vcl::uint i = 0;
-    for (const auto& c : tm.vertices() | vcl::views::colors) {
+    for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::colors) {
         REQUIRE(vertColors[i] == c.rgba());
         ++i;
     }
@@ -289,8 +301,7 @@ void testFaceColorsMatrix(const auto& tm)
     REQUIRE(faceColors.rows() == tm.faceNumber());
     REQUIRE(faceColors.cols() == 4);
 
-    vcl::uint i = 0;
-    for (const auto& c : tm.faces() | vcl::views::colors) {
+    for (vcl::uint i = 0; const auto& c : tm.faces() | vcl::views::colors) {
         REQUIRE(faceColors(i, 0) == c.red());
         REQUIRE(faceColors(i, 1) == c.green());
         REQUIRE(faceColors(i, 2) == c.blue());
@@ -307,8 +318,7 @@ void testFaceColorsVector(const auto& tm)
 
     REQUIRE(faceColors.size() == tm.faceNumber());
 
-    vcl::uint i = 0;
-    for (const auto& c : tm.faces() | vcl::views::colors) {
+    for (vcl::uint i = 0; const auto& c : tm.faces() | vcl::views::colors) {
         REQUIRE(faceColors[i] == c.rgba());
         ++i;
     }
@@ -321,8 +331,7 @@ void testVertexQualityVector(const auto& tm)
 
     REQUIRE(qual.size() == tm.vertexNumber());
 
-    vcl::uint i = 0;
-    for (const auto& v : tm.vertices()) {
+    for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         REQUIRE(qual[i] == v.quality());
         ++i;
     }
@@ -335,8 +344,7 @@ void testFaceQualityVector(const auto& tm)
 
     REQUIRE(qual.size() == tm.faceNumber());
 
-    vcl::uint i = 0;
-    for (const auto& f : tm.faces()) {
+    for (vcl::uint i = 0; const auto& f : tm.faces()) {
         REQUIRE(qual[i] == f.quality());
         ++i;
     }
@@ -472,6 +480,30 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Vector<vcl::uint>")
         {
             testFaceSizesVector<vcl::Vector<vcl::uint, -1>>(pm);
+        }
+    }
+
+    SECTION("Triangulated Faces...")
+    {
+        SECTION("Eigen Row Major")
+        {
+            testTriangulatedFaceMatrix<EigenRowMatrix<vcl::uint>>(pm);
+        }
+        SECTION("Eigen 3 Row Major")
+        {
+            testTriangulatedFaceMatrix<Eigen3RowMatrix<vcl::uint>>(pm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testTriangulatedFaceMatrix<EigenColMatrix<vcl::uint>>(pm);
+        }
+        SECTION("Eigen 3 Col Major")
+        {
+            testTriangulatedFaceMatrix<Eigen3ColMatrix<vcl::uint>>(pm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testTriangulatedFaceMatrix<vcl::Array2<vcl::uint>>(pm);
         }
     }
 

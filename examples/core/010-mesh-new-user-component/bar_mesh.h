@@ -20,48 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef BAR_MESH_H
+#define BAR_MESH_H
 
-#include <vclib/load_save.h>
-#include <vclib/meshes.h>
-#include <vclib/misc/timer.h>
+#include <vclib/mesh/mesh.h>
+#include <vclib/mesh/requirements.h>
 
-int main()
+#include "bar_component.h"
+
+/*
+ * This file defines a BarMesh class that uses the optional BarComponent in the
+ * Vertex Element.
+ */
+
+class BarMesh;
+
+namespace barmesh {
+
+class Vertex;
+
+class Face;
+
+class Vertex :
+        public vcl::Vertex<
+            BarMesh,
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3d,
+            vcl::vert::Normal3d,
+            vcl::vert::Color,
+            OptionalBarComponent<Vertex>> // the optional BarComponent
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                                "/TextureDouble.ply");
+};
 
-    vcl::PolyMesh pm;
+class Face :
+        public vcl::Face<
+            BarMesh,
+            vcl::face::TriangleBitFlags,
+            vcl::face::TriangleVertexPtrs<Vertex, Face>,
+            vcl::face::Normal3d>
+{
+};
 
-    vcl::Timer t("import");
-    pm.enableSameOptionalComponentsOf(m);
-    pm.importFrom(m);
-    t.stopAndPrint();
+} // namespace barmesh
 
-    assert(pm.isPerFaceWedgeTexCoordsEnabled());
+class BarMesh :
+        public vcl::Mesh<
+            vcl::mesh::VertexContainer<barmesh::Vertex>,
+            vcl::mesh::FaceContainer<barmesh::Face>,
+            vcl::mesh::BoundingBox3d>
+{
+public:
+    using ScalarType = double;
+};
 
-    vcl::save(pm, VCLIB_RESULTS_PATH "/TextureDouble_converted.obj");
-
-    pm =
-        vcl::loadPly<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
-
-    m.clear();
-    m.disableAllPerFaceOptionalComponents();
-    m.disableAllPerVertexOptionalComponents();
-    m.enableSameOptionalComponentsOf(pm);
-    m.importFrom(pm);
-
-    vcl::SaveSettings s;
-    s.binary = false;
-
-    vcl::save(m, VCLIB_RESULTS_PATH "/cube_from_poly.ply", s);
-
-    pm = vcl::loadObj<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                         "/rhombicosidodecahedron.obj");
-
-    m.importFrom(pm);
-
-    vcl::save(m, VCLIB_RESULTS_PATH "/tri_rhombicosidodecahedron.ply", s);
-
-    return 0;
-}
+#endif // BAR_MESH_H
