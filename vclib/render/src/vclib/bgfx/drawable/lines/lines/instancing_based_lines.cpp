@@ -6,14 +6,12 @@ namespace vcl::lines {
     {
         allocateVerticesBuffer();
         allocateIndexesBuffer();
-        generateInstanceDataBuffer();
     }
 
     InstancingBasedLines::InstancingBasedLines(const InstancingBasedLines& other) : DrawableLines(other) {
         mPoints = other.mPoints;
         allocateVerticesBuffer();
         allocateIndexesBuffer();
-        generateInstanceDataBuffer();
     }
 
     InstancingBasedLines::InstancingBasedLines(InstancingBasedLines&& other) : DrawableLines(other) {
@@ -50,6 +48,7 @@ namespace vcl::lines {
     }
 
     void InstancingBasedLines::draw(uint viewId) const {
+        generateInstanceDataBuffer();
         mSettings.bindUniformLines();
 
         uint64_t state = 0
@@ -70,10 +69,9 @@ namespace vcl::lines {
 
     void InstancingBasedLines::update(const std::vector<LinesVertex> &points) {
         mPoints = points;
-        generateInstanceDataBuffer();
     }
 
-    void InstancingBasedLines::generateInstanceDataBuffer() {
+    void InstancingBasedLines::generateInstanceDataBuffer() const {
         const uint16_t stride = sizeof(float) * 16;
         uint size = (mPoints.size() / 2);
 

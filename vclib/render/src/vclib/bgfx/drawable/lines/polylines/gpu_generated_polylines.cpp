@@ -4,7 +4,6 @@
 namespace vcl::lines { 
     GPUGeneratedPolylines::GPUGeneratedPolylines(const std::vector<LinesVertex> &points) :
         mPoints(points),
-        mComputeVertexPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_GPU_GENERATED_CS)),
         mComputeDataUH(bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4))
     {
         allocatePointsBuffer();
@@ -17,7 +16,6 @@ namespace vcl::lines {
 
     GPUGeneratedPolylines::GPUGeneratedPolylines(const GPUGeneratedPolylines& other) : DrawablePolylines(other) {
         mPoints = other.mPoints;
-        mComputeVertexPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_GPU_GENERATED_CS);
         mComputeDataUH = bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4);
 
         allocatePointsBuffer();
@@ -33,6 +31,9 @@ namespace vcl::lines {
     }
 
     GPUGeneratedPolylines::~GPUGeneratedPolylines() {
+        if(bgfx::isValid(mPointsBH))
+            bgfx::destroy(mPointsBH);
+
         if(bgfx::isValid(mVertexBH))
             bgfx::destroy(mVertexBH);
         
@@ -41,12 +42,6 @@ namespace vcl::lines {
 
         if(bgfx::isValid(mJoinesIndexesBH))
             bgfx::destroy(mJoinesIndexesBH);
-
-        if(bgfx::isValid(mPointsBH))
-            bgfx::destroy(mPointsBH);
-
-        if(bgfx::isValid(mComputeVertexPH))
-            bgfx::destroy(mComputeVertexPH);
 
         if(bgfx::isValid(mComputeDataUH))
             bgfx::destroy(mComputeDataUH);
@@ -58,7 +53,6 @@ namespace vcl::lines {
     }
  
     void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
 
@@ -66,10 +60,10 @@ namespace vcl::lines {
 
         std::swap(mPointsBH, other.mPointsBH);
         std::swap(mVertexBH, other.mVertexBH);
+        
         std::swap(mSegmentsIndexesBH, other.mSegmentsIndexesBH);
         std::swap(mJoinesIndexesBH, other.mJoinesIndexesBH);
 
-        std::swap(mComputeVertexPH, other.mComputeVertexPH);
         std::swap(mComputeDataUH, other.mComputeDataUH);
     }
 

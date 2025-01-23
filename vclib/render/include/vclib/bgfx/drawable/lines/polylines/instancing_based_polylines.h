@@ -3,20 +3,24 @@
 
 namespace vcl::lines {
     class InstancingBasedPolylines : public DrawablePolylines {
-
-        std::vector<float>          mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
-        std::vector<uint32_t>       mIndexes = {0, 3, 1, 0, 2, 3};
-
-        bgfx::InstanceDataBuffer    mSegmentsInstanceDB;
-        bgfx::InstanceDataBuffer    mJoinsInstanceDB;
-
-        bgfx::VertexBufferHandle    mVerticesBH           = BGFX_INVALID_HANDLE;
-        bgfx::IndexBufferHandle     mIndexesBH            = BGFX_INVALID_HANDLE;
-
-        bgfx::ProgramHandle         mJoinesPH             = BGFX_INVALID_HANDLE;
+        
+        bgfx::ProgramHandle mJoinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS);
 
         bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
                                             VclProgram::POLYLINES_INSTANCING_BASED_VSFS);
+
+
+        static const inline std::vector<float>          mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
+        static const inline std::vector<uint32_t>       mIndexes = {0, 3, 1, 0, 2, 3};
+
+        std::vector<LinesVertex>                        mPoints;
+
+        mutable bgfx::InstanceDataBuffer                mSegmentsInstanceDB;
+        mutable bgfx::InstanceDataBuffer                mJoinsInstanceDB;
+
+        bgfx::VertexBufferHandle                        mVerticesBH           = BGFX_INVALID_HANDLE;
+        bgfx::IndexBufferHandle                         mIndexesBH            = BGFX_INVALID_HANDLE;
 
         public:
             InstancingBasedPolylines() = default;
@@ -40,7 +44,7 @@ namespace vcl::lines {
             void update(const std::vector<LinesVertex> &points) override;
 
         private:
-            void generateInstanceBuffer(const std::vector<LinesVertex> &points);
+            void generateInstanceBuffer() const;
 
             void allocateVerticesBuffer();
 

@@ -45,7 +45,6 @@ namespace vcl::lines {
     }
 
     void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
 

@@ -6,9 +6,7 @@ namespace vcl::lines {
         mPoints(points),
         mJoinesIndirectBH(bgfx::createIndirectBuffer(1)),
         mSegmentsIndirectBH(bgfx::createIndirectBuffer(1)),
-        mComputeIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
-        mComputeIndirectPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_INDIRECT_BASED_CS)),
-        mJoinesPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS))
+        mComputeIndirectDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
     {
         allocateIndexesBuffers();
         allocateVerticesBuffer();
@@ -23,8 +21,6 @@ namespace vcl::lines {
         mJoinesIndirectBH = bgfx::createIndirectBuffer(1);
         mSegmentsIndirectBH = bgfx::createIndirectBuffer(1);
         mComputeIndirectDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-        mComputeIndirectPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_INDIRECT_BASED_CS);
-        mJoinesPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS);
 
         allocateIndexesBuffers();
         allocateVerticesBuffer();
@@ -54,9 +50,6 @@ namespace vcl::lines {
         if(bgfx::isValid(mJoinesIndirectBH))
             bgfx::destroy(mJoinesIndirectBH);
 
-        if(bgfx::isValid(mComputeIndirectPH))
-            bgfx::destroy(mComputeIndirectPH);
-
         if(bgfx::isValid(mComputeIndirectDataUH))
             bgfx::destroy(mComputeIndirectDataUH);
     }
@@ -67,7 +60,6 @@ namespace vcl::lines {
     }
 
     void IndirectBasedPolylines::swap(IndirectBasedPolylines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
 
@@ -76,11 +68,10 @@ namespace vcl::lines {
         std::swap(mVerticesBH, other.mVerticesBH);
         std::swap(mIndexesBH, other.mIndexesBH);
         std::swap(mPointsBH, other.mPointsBH);
+
         std::swap(mSegmentsIndirectBH, other.mSegmentsIndirectBH);
         std::swap(mJoinesIndirectBH, other.mJoinesIndirectBH);
 
-        std::swap(mJoinesPH, other.mJoinesPH);
-        std::swap(mComputeIndirectPH, other.mComputeIndirectPH);
         std::swap(mComputeIndirectDataUH, other.mComputeIndirectDataUH);
     }
 

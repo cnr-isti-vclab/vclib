@@ -6,9 +6,7 @@ namespace vcl::lines {
         mPoints(points), mMaxTextureSize(maxTextureSize),
         mJoinesIndirectBH(bgfx::createIndirectBuffer(1)),
         mSegmentsIndirectBH(bgfx::createIndirectBuffer(1)),
-        mComputeDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4)),
-        mJoinesPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS)),
-        mComputeTexturePH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_CS))
+        mComputeDataUH(bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
     {
         assert(bgfx::isValid(mComputeTexturePH));
 
@@ -27,8 +25,6 @@ namespace vcl::lines {
         mJoinesIndirectBH = bgfx::createIndirectBuffer(1);
         mSegmentsIndirectBH = bgfx::createIndirectBuffer(1);
         mComputeDataUH = bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-        mJoinesPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS);
-        mComputeTexturePH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_TEXTURE_BASED_CS);
 
         assert(bgfx::isValid(mComputeTexturePH));
 
@@ -52,14 +48,13 @@ namespace vcl::lines {
         if(bgfx::isValid(mIndexesBH))
             bgfx::destroy(mIndexesBH);
 
+
         if(bgfx::isValid(mSegmentsIndirectBH))
             bgfx::destroy(mSegmentsIndirectBH);
 
         if(bgfx::isValid(mJoinesIndirectBH))
             bgfx::destroy(mJoinesIndirectBH);
 
-        if(bgfx::isValid(mJoinesPH))
-            bgfx::destroy(mJoinesPH);
 
         if(bgfx::isValid(mComputeDataUH))
             bgfx::destroy(mComputeDataUH);
@@ -72,9 +67,6 @@ namespace vcl::lines {
 
         if(bgfx::isValid(mPointsBH))
             bgfx::destroy(mPointsBH);
-
-        if(bgfx::isValid(mComputeTexturePH))
-            bgfx::destroy(mComputeTexturePH);
     }
 
     TextureBasedPolylines& TextureBasedPolylines::operator=(TextureBasedPolylines other) {
@@ -83,7 +75,6 @@ namespace vcl::lines {
     }
 
     void TextureBasedPolylines::swap(TextureBasedPolylines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
     
@@ -100,8 +91,6 @@ namespace vcl::lines {
         std::swap(mSegmentsTextureBH, other.mSegmentsTextureBH);
         std::swap(mJoinesTextureBH, other.mJoinesTextureBH);
 
-        std::swap(mJoinesPH, other.mJoinesPH);
-        std::swap(mComputeTexturePH, other.mComputeTexturePH);
         std::swap(mComputeDataUH, other.mComputeDataUH);
     }
 

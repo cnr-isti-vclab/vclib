@@ -4,11 +4,21 @@
 namespace vcl::lines {
     class TextureBasedPolylines : public DrawablePolylines {
 
-        uint32_t mMaxTextureSize;
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::POLYLINES_TEXTURE_BASED_VSFS);
+
+        bgfx::ProgramHandle mJoinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS);
+
+        bgfx::ProgramHandle mComputeTexturePH = Context::instance().programManager().getProgram(
+                                                    VclProgram::POLYLINES_TEXTURE_BASED_CS);
+
+
+        static const inline std::vector<uint32_t>    mIndexes = {0, 3, 1, 0, 2, 3};
+        static const inline std::vector<float>       mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
         
+        uint32_t mMaxTextureSize;
         std::vector<LinesVertex>            mPoints;
-        std::vector<float>                  mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
-        std::vector<uint32_t>               mIndexes = {0, 3, 1, 0, 2, 3};
 
         bgfx::VertexBufferHandle            mVerticesBH             = BGFX_INVALID_HANDLE;
         bgfx::IndexBufferHandle             mIndexesBH              = BGFX_INVALID_HANDLE;
@@ -20,12 +30,7 @@ namespace vcl::lines {
         bgfx::TextureHandle                 mSegmentsTextureBH      = BGFX_INVALID_HANDLE;
         bgfx::TextureHandle                 mJoinesTextureBH        = BGFX_INVALID_HANDLE;
             
-        bgfx::ProgramHandle                 mJoinesPH               = BGFX_INVALID_HANDLE;      
-        bgfx::ProgramHandle                 mComputeTexturePH       = BGFX_INVALID_HANDLE; 
         bgfx::UniformHandle                 mComputeDataUH          = BGFX_INVALID_HANDLE;
-
-        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::POLYLINES_TEXTURE_BASED_VSFS);
 
         public:
             TextureBasedPolylines() = default;

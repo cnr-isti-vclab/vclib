@@ -3,10 +3,21 @@
 
 namespace vcl::lines {
     class IndirectBasedPolylines : public DrawablePolylines {
+        
+        bgfx::ProgramHandle mJoinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS);
 
+        bgfx::ProgramHandle mComputeIndirectPH = Context::instance().programManager().getProgram(
+                                                    VclProgram::POLYLINES_INDIRECT_BASED_CS);
+
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
+                                            
+
+        static const inline std::vector<float>            mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
+        static const inline std::vector<uint32_t>         mIndexes = {0, 3, 1, 0, 2, 3};
+        
         std::vector<LinesVertex>            mPoints;
-        std::vector<float>                  mVertices = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
-        std::vector<uint32_t>               mIndexes = {0, 3, 1, 0, 2, 3};
 
         bgfx::VertexBufferHandle            mVerticesBH             = BGFX_INVALID_HANDLE;
         bgfx::IndexBufferHandle             mIndexesBH              = BGFX_INVALID_HANDLE;
@@ -14,12 +25,8 @@ namespace vcl::lines {
         bgfx::IndirectBufferHandle          mSegmentsIndirectBH     = BGFX_INVALID_HANDLE;
         bgfx::IndirectBufferHandle          mJoinesIndirectBH       = BGFX_INVALID_HANDLE;
 
-        bgfx::ProgramHandle                 mJoinesPH               = BGFX_INVALID_HANDLE;
-        bgfx::ProgramHandle                 mComputeIndirectPH      = BGFX_INVALID_HANDLE;            
         bgfx::UniformHandle                 mComputeIndirectDataUH  = BGFX_INVALID_HANDLE;
 
-        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
 
         public:
             IndirectBasedPolylines() = default;

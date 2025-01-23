@@ -3,19 +3,23 @@
 
 namespace vcl::lines {
     class GPUGeneratedPolylines : public DrawablePolylines {
+        
+        bgfx::ProgramHandle mComputeVertexPH = Context::instance().programManager().getProgram(
+                                                    VclProgram::POLYLINES_GPU_GENERATED_CS);
+
+        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
+                                            VclProgram::POLYLINES_CPU_GENERATED_VSFS);
+
 
         std::vector<LinesVertex>            mPoints;
 
         bgfx::DynamicVertexBufferHandle     mPointsBH           = BGFX_INVALID_HANDLE;
         bgfx::DynamicVertexBufferHandle     mVertexBH           = BGFX_INVALID_HANDLE;
+        
         bgfx::DynamicIndexBufferHandle      mSegmentsIndexesBH  = BGFX_INVALID_HANDLE;
         bgfx::DynamicIndexBufferHandle      mJoinesIndexesBH    = BGFX_INVALID_HANDLE;
             
-        bgfx::ProgramHandle                 mComputeVertexPH    = BGFX_INVALID_HANDLE;
         bgfx::UniformHandle                 mComputeDataUH      = BGFX_INVALID_HANDLE;
-
-        bgfx::ProgramHandle mLinesPH = Context::instance().programManager().getProgram(
-                                            VclProgram::POLYLINES_CPU_GENERATED_VSFS);
 
         public:
             GPUGeneratedPolylines() = default;

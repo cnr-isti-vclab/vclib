@@ -58,7 +58,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
 
-    lines::GPUGeneratedLines mWireframeBH;
+    lines::InstancingBasedLines mWireframeBH;
 
     std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
 
@@ -342,7 +342,7 @@ private:
         // wireframe index buffer
         if (Base::wireframeBufferData()) {
             const bgfx::Caps* caps = bgfx::getCaps();
-            mWireframeBH = lines::GPUGeneratedLines(*Base::wireframeBufferData());
+            mWireframeBH = lines::InstancingBasedLines(*Base::wireframeBufferData());
             mWireframeBH.getSettings().setThickness(5);
         }
 

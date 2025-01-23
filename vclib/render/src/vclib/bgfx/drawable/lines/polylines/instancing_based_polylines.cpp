@@ -3,31 +3,17 @@
 
 namespace vcl::lines {
     InstancingBasedPolylines::InstancingBasedPolylines(const std::vector<LinesVertex> &points) :
-        mJoinesPH(Context::instance().programManager().getProgram(VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS))
+        mPoints(points)
     {
         allocateVerticesBuffer();
         allocateIndexesBuffer();
-        generateInstanceBuffer(points);
     }
 
     InstancingBasedPolylines::InstancingBasedPolylines(const InstancingBasedPolylines& other) : DrawablePolylines(other) {
-        mJoinesPH = Context::instance().programManager().getProgram(VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS);
+        mPoints = other.mPoints;
+        
         allocateVerticesBuffer();
         allocateIndexesBuffer();
-
-        uint32_t linesNumSegments = bgfx::getAvailInstanceDataBuffer(other.mSegmentsInstanceDB.num, other.mSegmentsInstanceDB.stride);
-        bgfx::allocInstanceDataBuffer(&mSegmentsInstanceDB, linesNumSegments, other.mSegmentsInstanceDB.stride);
-
-        for(uint32_t i = 0; i < other.mSegmentsInstanceDB.size; i++) {
-            mSegmentsInstanceDB.data[i] = other.mSegmentsInstanceDB.data[i];
-        }
-
-        uint32_t linesNumJoins = bgfx::getAvailInstanceDataBuffer(other.mJoinsInstanceDB.num, other.mJoinsInstanceDB.stride);
-        bgfx::allocInstanceDataBuffer(&mJoinsInstanceDB, linesNumSegments, other.mJoinsInstanceDB.stride);
-
-        for(uint32_t i = 0; i < other.mJoinsInstanceDB.size; i++) {
-            mJoinsInstanceDB.data[i] = other.mJoinsInstanceDB.data[i];
-        }
     }
 
     InstancingBasedPolylines::InstancingBasedPolylines(InstancingBasedPolylines&& other) : DrawablePolylines(other) {
@@ -48,7 +34,6 @@ namespace vcl::lines {
     }
 
     void InstancingBasedPolylines::swap(InstancingBasedPolylines& other) {
-        std::swap(mLinesPH, other.mLinesPH);
         std::swap(mSettings, other.mSettings);
         std::swap(mVisible, other.mVisible);
         
@@ -57,8 +42,6 @@ namespace vcl::lines {
 
         std::swap(mVerticesBH, other.mVerticesBH);
         std::swap(mIndexesBH, other.mIndexesBH);
-
-        std::swap(mJoinesPH, other.mJoinesPH);
     }
 
     std::shared_ptr<vcl::DrawableObject> InstancingBasedPolylines::clone() const {
@@ -66,6 +49,7 @@ namespace vcl::lines {
     }
 
     void InstancingBasedPolylines::draw(uint viewId) const {
+        generateInstanceBuffer();
         mSettings.bindUniformPolylines();
 
         uint64_t state = 0
@@ -92,17 +76,17 @@ namespace vcl::lines {
     }
 
     void InstancingBasedPolylines::update(const std::vector<LinesVertex> &points) {
-        generateInstanceBuffer(points);
+        mPoints = points;
     }
 
-    void InstancingBasedPolylines::generateInstanceBuffer(const std::vector<LinesVertex> &points) {
+    void InstancingBasedPolylines::generateInstanceBuffer() const {
         const uint16_t strideSegments = sizeof(float) * 20;
-        uint32_t linesNumSegments = bgfx::getAvailInstanceDataBuffer(points.size() - 1, strideSegments);
+        uint32_t linesNumSegments = bgfx::getAvailInstanceDataBuffer(mPoints.size() - 1, strideSegments);
         bgfx::allocInstanceDataBuffer(&mSegmentsInstanceDB, linesNumSegments, strideSegments);
 
         const uint16_t strideJoins = sizeof(float) * 16;
-        if(points.size() > 2) {
-            uint32_t linesNumJoins = bgfx::getAvailInstanceDataBuffer(points.size() - 2, strideJoins);
+        if(mPoints.size() > 2) {
+            uint32_t linesNumJoins = bgfx::getAvailInstanceDataBuffer(mPoints.size() - 2, strideJoins);
             bgfx::allocInstanceDataBuffer(&mJoinsInstanceDB, linesNumJoins, strideJoins);
         } 
 
@@ -111,64 +95,64 @@ namespace vcl::lines {
 
         for(uint32_t i = 0; i < linesNumSegments; i++) {
             float* prevSegments = reinterpret_cast<float*>(dataSegments);
-            prevSegments[0] = points[i - !!i].X;
-            prevSegments[1] = points[i - !!i].Y;
-            prevSegments[2] = points[i - !!i].Z;
-            prevSegments[3] = points[i].xN;
+            prevSegments[0] = mPoints[i - !!i].X;
+            prevSegments[1] = mPoints[i - !!i].Y;
+            prevSegments[2] = mPoints[i - !!i].Z;
+            prevSegments[3] = mPoints[i].xN;
 
             float* currSegments = (float*)&dataSegments[16];
-            currSegments[0] = points[i].X;
-            currSegments[1] = points[i].Y;
-            currSegments[2] = points[i].Z;
+            currSegments[0] = mPoints[i].X;
+            currSegments[1] = mPoints[i].Y;
+            currSegments[2] = mPoints[i].Z;
 
             uint32_t* color0 = (uint32_t*)&dataSegments[28];
-            color0[0] = points[i].getUintColor();
+            color0[0] = mPoints[i].getUintColor();
 
             float* nextSegments = (float*)&dataSegments[32];
-            nextSegments[0] = points[i + 1].X;
-            nextSegments[1] = points[i + 1].Y;
-            nextSegments[2] = points[i + 1].Z;
+            nextSegments[0] = mPoints[i + 1].X;
+            nextSegments[1] = mPoints[i + 1].Y;
+            nextSegments[2] = mPoints[i + 1].Z;
 
             uint32_t* color1 = (uint32_t*)&dataSegments[44];
-            color1[0] = points[i + 1].getUintColor();
+            color1[0] = mPoints[i + 1].getUintColor();
 
             float* next_nextSegments = (float*)&dataSegments[48];
-            next_nextSegments[0] = points[i + 1 + (!!(linesNumSegments - 1 - i))].X;
-            next_nextSegments[1] = points[i + 1 + (!!(linesNumSegments - 1 - i))].Y;
-            next_nextSegments[2] = points[i + 1 + (!!(linesNumSegments - 1 - i))].Z;
-            next_nextSegments[3] = points[i].yN;
+            next_nextSegments[0] = mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].X;
+            next_nextSegments[1] = mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].Y;
+            next_nextSegments[2] = mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].Z;
+            next_nextSegments[3] = mPoints[i].yN;
 
             float* normalSegments = (float*)&dataSegments[64];
-            normalSegments[0] = points[i].zN;
-            normalSegments[1] = points[i + 1].xN;
-            normalSegments[2] = points[i + 1].yN;
-            normalSegments[3] = points[i + 1].zN;
+            normalSegments[0] = mPoints[i].zN;
+            normalSegments[1] = mPoints[i + 1].xN;
+            normalSegments[2] = mPoints[i + 1].yN;
+            normalSegments[3] = mPoints[i + 1].zN;
 
             if(i > 0) {
                 float* prevJoin = reinterpret_cast<float*>(dataJoins);
-                prevJoin[0] = points[i - 1].X;
-                prevJoin[1] = points[i - 1].Y;
-                prevJoin[2] = points[i - 1].Z;
+                prevJoin[0] = mPoints[i - 1].X;
+                prevJoin[1] = mPoints[i - 1].Y;
+                prevJoin[2] = mPoints[i - 1].Z;
                 prevJoin[3] = 0.0f;
 
                 float* currJoin = (float*)&dataJoins[16];
-                currJoin[0] = points[i].X;
-                currJoin[1] = points[i].Y;
-                currJoin[2] = points[i].Z;
+                currJoin[0] = mPoints[i].X;
+                currJoin[1] = mPoints[i].Y;
+                currJoin[2] = mPoints[i].Z;
 
                 uint32_t* colorJoin = (uint32_t*)&dataJoins[28];
-                colorJoin[0] = points[i].getUintColor();
+                colorJoin[0] = mPoints[i].getUintColor();
 
                 float* nextJoin = (float*)&dataJoins[32];
-                nextJoin[0] = points[i + 1].X;
-                nextJoin[1] = points[i + 1].Y;
-                nextJoin[2] = points[i + 1].Z;
+                nextJoin[0] = mPoints[i + 1].X;
+                nextJoin[1] = mPoints[i + 1].Y;
+                nextJoin[2] = mPoints[i + 1].Z;
                 nextJoin[3] = 0.0f;
 
                 float* normalJoin = (float*)&dataJoins[48];
-                normalJoin[0] = points[i].xN;
-                normalJoin[1] = points[i].yN;
-                normalJoin[2] = points[i].zN;
+                normalJoin[0] = mPoints[i].xN;
+                normalJoin[1] = mPoints[i].yN;
+                normalJoin[2] = mPoints[i].zN;
                 normalJoin[3] = 0;
 
                 dataJoins+=strideJoins;
