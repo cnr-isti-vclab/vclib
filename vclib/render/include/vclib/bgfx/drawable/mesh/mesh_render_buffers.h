@@ -25,6 +25,7 @@
 
 #include "mesh_render_buffers_macros.h"
 
+#include <vclib/bgfx/buffers.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 
 #include <bgfx/bgfx.h>
@@ -36,7 +37,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 {
     using Base = vcl::MeshRenderData<MeshType>;
 
-    bgfx::VertexBufferHandle mVertexCoordBH   = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertexBuffer;
     bgfx::VertexBufferHandle mVertexNormalBH  = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexColorBH   = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexUVBH      = BGFX_INVALID_HANDLE;
@@ -85,7 +86,7 @@ public:
     {
         using std::swap;
         swap((Base&) *this, (Base&) other);
-        swap(mVertexCoordBH, other.mVertexCoordBH);
+        swap(mVertexBuffer, other.mVertexBuffer);
         swap(mVertexNormalBH, other.mVertexNormalBH);
         swap(mVertexColorBH, other.mVertexColorBH);
         swap(mVertexUVBH, other.mVertexUVBH);
@@ -114,7 +115,7 @@ public:
     {
         // bgfx allows a maximum number of 4 vertex streams...
 
-        bgfx::setVertexBuffer(0, mVertexCoordBH);
+        mVertexBuffer.bind(0);
 
         if (bgfx::isValid(mVertexNormalBH)) { // vertex normals
             bgfx::setVertexBuffer(1, mVertexNormalBH);
@@ -196,17 +197,12 @@ public:
 private:
     void createBGFXBuffers()
     {
-        // vertex buffer (positions)
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-            .end();
-
-        mVertexCoordBH = bgfx::createVertexBuffer(
-            bgfx::makeRef(
-                Base::vertexBufferData(),
-                Base::vertexBufferSize() * sizeof(float)),
-            layout);
+        mVertexBuffer.set(
+            Base::vertexBufferData(),
+            Base::vertexBufferSize(),
+            bgfx::Attrib::Position,
+            3,
+            bgfx::AttribType::Float);
 
         // vertex buffer (normals)
         if (Base::vertexNormalBufferData()) {
@@ -370,9 +366,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mVertexCoordBH))
-            bgfx::destroy(mVertexCoordBH);
-
         if (bgfx::isValid(mVertexNormalBH))
             bgfx::destroy(mVertexNormalBH);
 
