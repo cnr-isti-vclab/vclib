@@ -47,13 +47,13 @@ template<typename T>
 concept HasBarComponent = requires (T&& obj) {
     // accessors to the bar component, for const and non-const objects
     { obj.bar() } -> std::convertible_to<double>;
-    { obj.barVector() } -> std::convertible_to<std::vector<uint>>;
+    { obj.barVector() } -> std::convertible_to<std::vector<vcl::uint>>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
         // non-const accessors, return references
         { obj.bar() } -> std::same_as<double&>;
-        { obj.barVector() } -> std::same_as<std::vector<uint>&>;
+        { obj.barVector() } -> std::same_as<std::vector<vcl::uint>&>;
     };
 };
 
@@ -66,7 +66,7 @@ concept HasOptionalColor =
 
 // define a constant uint that identifies the component (same idea used for
 // COMPONENT_ID in the FooComponent)
-inline static const uint BAR_COMPONENT = vcl::CompId::COMPONENTS_NUMBER + 1;
+inline static const vcl::uint BAR_COMPONENT = vcl::CompId::COMPONENTS_NUMBER + 1;
 
 namespace detail {
 
@@ -76,7 +76,7 @@ namespace detail {
 struct BarData
 {
     double bar;
-    std::vector<uint> barVector;
+    std::vector<vcl::uint> barVector;
 };
 
 } // namespace detail
@@ -152,9 +152,9 @@ public:
 
     double bar() const { return Base::data().bar; }
 
-    std::vector<uint>& barVector() { return Base::data().barVector; }
+    std::vector<vcl::uint>& barVector() { return Base::data().barVector; }
 
-    const std::vector<uint>& barVector() const
+    const std::vector<vcl::uint>& barVector() const
     {
         return Base::data().barVector;
     }
