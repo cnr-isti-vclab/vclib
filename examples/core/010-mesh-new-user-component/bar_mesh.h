@@ -20,23 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef FOO_MESH_H
-#define FOO_MESH_H
+#ifndef BAR_MESH_H
+#define BAR_MESH_H
 
 #include <vclib/mesh/mesh.h>
 #include <vclib/mesh/requirements.h>
 
-#include "foo_component.h"
 #include "bar_component.h"
 
 /*
- * This file defines a FooMesh class that uses the FooComponent in the Vertex
- * Element.
+ * This file defines a BarMesh class that uses the optional BarComponent in the
+ * Vertex Element.
  */
 
-class FooMesh;
+class BarMesh;
 
-namespace foomesh {
+namespace barmesh {
 
 class Vertex;
 
@@ -44,34 +43,34 @@ class Face;
 
 class Vertex :
         public vcl::Vertex<
-            FooMesh,
+            BarMesh,
             vcl::vert::BitFlags,
             vcl::vert::Coordinate3d,
             vcl::vert::Normal3d,
             vcl::vert::Color,
-            FooComponent>
+            OptionalBarComponent<Vertex>> // the optional BarComponent
 {
 };
 
 class Face :
         public vcl::Face<
-            FooMesh,
+            BarMesh,
             vcl::face::TriangleBitFlags,
             vcl::face::TriangleVertexPtrs<Vertex, Face>,
             vcl::face::Normal3d>
 {
 };
 
-} // namespace foomesh
+} // namespace barmesh
 
-class FooMesh :
+class BarMesh :
         public vcl::Mesh<
-            vcl::mesh::VertexContainer<foomesh::Vertex>,
-            vcl::mesh::FaceContainer<foomesh::Face>,
+            vcl::mesh::VertexContainer<barmesh::Vertex>,
+            vcl::mesh::FaceContainer<barmesh::Face>,
             vcl::mesh::BoundingBox3d>
 {
 public:
     using ScalarType = double;
 };
 
-#endif // FOO_MESH_H
+#endif // BAR_MESH_H

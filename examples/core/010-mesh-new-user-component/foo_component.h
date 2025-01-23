@@ -23,6 +23,8 @@
 #ifndef FOO_COMPONENT_H
 #define FOO_COMPONENT_H
 
+#include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/mesh/components/component.h>
 #include <vclib/types.h>
 
 /*
@@ -36,12 +38,15 @@
 // the concept should just check if the element/mesh has the member functions
 // that are part of the component class.
 template<typename T>
-concept HasFooComponent = requires (T t, const T& ct) {
-    // accessor to the foo component, returns int&
-    { t.foo() } -> std::same_as<int&>;
+concept HasFooComponent = requires (T&& obj) {
+    // accessor to the foo component, for const and non-const objects
+    { obj.foo() } -> std::convertible_to<int>;
 
-    // const accessor to the foo component
-    { ct.foo() } -> std::same_as<int>;
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        // non-const accessor, returns int&
+        { obj.foo() } -> std::same_as<int&>;
+    };
 };
 
 // class of the Foo component
@@ -77,6 +82,21 @@ private:
     // the data that you want to store in a component
     int data;
 };
+
+namespace vcl {
+
+// specialize the ComponentString for the FooComponent
+template<>
+struct ComponentString<FooComponent::COMPONENT_ID>
+{
+    const char* str = "FooComponent";
+};
+
+} // namespace vcl
+
+static_assert(
+    vcl::comp::ComponentConcept<FooComponent>,
+    "Make sure that the FooComponent satisfies the ComponentConcept.");
 
 static_assert(
     HasFooComponent<FooComponent>,
