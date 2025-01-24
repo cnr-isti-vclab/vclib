@@ -20,19 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "canvas.h"
-#include "drawable_object.h"
-#include "drawers.h"
-#include "render_app.h"
-#include "window_manager.h"
+#ifndef VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
+#define VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
 
-int main()
-{
-    canvasStaticAsserts();
-    drawableObjectStaticAsserts();
-    drawersStaticAsserts();
-    renderAppStaticAsserts();
-    windowManagerStaticAsserts();
+#include <vclib/concepts.h>
 
-    return 0;
-}
+namespace vcl {
+
+template<typename T>
+concept DrawableObjectConcept = requires (T&& obj, uint u) {
+    { obj.draw(u) } -> std::same_as<void>;
+    { obj.boundingBox() } -> Box3Concept;
+    obj.clone();
+    { obj.isVisible() } -> std::same_as<bool>;
+    { obj.name() } -> std::convertible_to<std::string>;
+    { obj.info() } -> std::convertible_to<std::string>;
+
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.init() } -> std::same_as<void>;
+        { obj.setVisibility(bool()) } -> std::same_as<void>;
+        { obj.name() } -> std::same_as<std::string&>;
+        { obj.info() } -> std::same_as<std::string&>;
+    };
+};
+
+} // namespace vcl
+
+#endif // VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H

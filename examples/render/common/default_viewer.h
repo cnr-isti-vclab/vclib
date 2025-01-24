@@ -24,6 +24,7 @@
 #define VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/render/concepts/drawable_object.h>
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
 #include <QApplication>
@@ -36,6 +37,47 @@
 #include <vclib/glfw/viewer_window.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #endif
+
+template<vcl::MeshConcept MeshType>
+void pushMeshOnVector(
+    std::shared_ptr<vcl::DrawableObjectVector>& vector,
+    const MeshType&                             mesh)
+{
+    if constexpr (vcl::DrawableObjectConcept<MeshType>)
+        vector->pushBack(mesh);
+    else
+        vector->pushBack(vcl::DrawableMesh<MeshType>(mesh));
+}
+
+auto defaultViewer()
+{
+#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
+    return vcl::qt::MeshViewer();
+#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
+    return vcl::glfw::ViewerWindow ;
+#endif
+}
+
+template<vcl::MeshConcept... MeshTypes>
+void showMeshesOnViewer(
+    int    argc,
+    char** argv,
+    auto&  viewer,
+    const MeshTypes&... meshes)
+{
+    std::shared_ptr<vcl::DrawableObjectVector> vector =
+        std::make_shared<vcl::DrawableObjectVector>();
+
+    (pushMeshOnVector(vector, meshes), ...);
+
+    viewer.setDrawableObjectVector(vector);
+
+#if VCLIB_RENDER_EXAMPLES_WITH_GLFW
+    viewer.fitScene();
+#endif
+
+    viewer.show();
+}
 
 template<vcl::MeshConcept... MeshTypes>
 int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
@@ -50,18 +92,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
     vcl::glfw::ViewerWindow viewer;
 #endif
 
-    std::shared_ptr<vcl::DrawableObjectVector> vector =
-        std::make_shared<vcl::DrawableObjectVector>();
-
-    (vector->pushBack(vcl::DrawableMesh<MeshTypes>(meshes)), ...);
-
-    viewer.setDrawableObjectVector(vector);
-
-#if VCLIB_RENDER_EXAMPLES_WITH_GLFW
-    viewer.fitScene();
-#endif
-
-    viewer.show();
+    showMeshesOnViewer(argc, argv, viewer, meshes...);
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();

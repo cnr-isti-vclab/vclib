@@ -20,19 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "canvas.h"
-#include "drawable_object.h"
-#include "drawers.h"
-#include "render_app.h"
-#include "window_manager.h"
+#include <default_viewer.h>
+#include <get_drawable_mesh.h>
 
-int main()
+#include <vclib/qt/viewer_widget.h>
+
+#include <QApplication>
+
+int main(int argc, char** argv)
 {
-    canvasStaticAsserts();
-    drawableObjectStaticAsserts();
-    drawersStaticAsserts();
-    renderAppStaticAsserts();
-    windowManagerStaticAsserts();
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    QApplication application(argc, argv);
+#endif
 
+    auto viewer = defaultViewer();
+
+    const bool TEXCOORDS_PER_VERTEX = false;
+
+    if (TEXCOORDS_PER_VERTEX) {
+        vcl::DrawableMesh<vcl::TriMesh> drawable =
+            getDrawableMesh<vcl::TriMesh>("VertTextureDouble.ply");
+        auto mrs = drawable.renderSettings();
+        mrs.setSurfaceShadingFlat();
+        mrs.setSurfaceColorPerVertexTexcoords();
+        drawable.setRenderSettings(mrs);
+        showMeshesOnViewer(argc, argv, viewer, drawable);
+    }
+    else {
+        vcl::DrawableMesh<vcl::TriMesh> drawable =
+            getDrawableMesh<vcl::TriMesh>("TextureDouble.ply");
+        auto mrs = drawable.renderSettings();
+        mrs.setSurfaceShadingFlat();
+        mrs.setSurfaceColorPerWedgeTexcoords();
+        drawable.setRenderSettings(mrs);
+        showMeshesOnViewer(argc, argv, viewer, drawable);
+    }
+
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    viewer.showMaximized();
+    return application.exec();
+#else
+    (void) argc; // unused
+    (void) argv;
     return 0;
+#endif
 }

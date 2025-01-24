@@ -56,6 +56,8 @@ endif()
 add_subdirectory(999-misc)
 
 if (CAN_BUILD_VCLIB_EXAMPLES)
+    add_subdirectory(06-test-texcoords)
+
     # the following examples are the same of the ones in the core module,
     # but they add a viewer at the end in order to visualize the results
     add_subdirectory(9015-mesh-io-stl)
