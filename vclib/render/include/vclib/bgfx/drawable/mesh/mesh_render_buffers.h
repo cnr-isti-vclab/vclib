@@ -132,10 +132,10 @@ public:
         if (indexBufferToBind == Base::TRIANGLES) {
             mTriangleIndexBuffer.bind();
 
-            mTriangleNormalBuffer.bindForCompute(
+            mTriangleNormalBuffer.bind(
                 VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-            mTriangleColorBuffer.bindForCompute(
+            mTriangleColorBuffer.bind(
                 VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 
             if (bgfx::isValid(mTriangleTextureIndexBH)) { // tri texture indices
@@ -186,55 +186,69 @@ private:
             3,
             bgfx::AttribType::Float);
 
-        mVertexNormalsBuffer.set(
-            Base::vertexNormalBufferData(),
-            Base::vertexNumber() * 3,
-            bgfx::Attrib::Normal,
-            3,
-            bgfx::AttribType::Float);
+        // vertex buffer (normals)
+        if (Base::vertexNormalBufferData()) {
+            mVertexNormalsBuffer.set(
+                Base::vertexNormalBufferData(),
+                Base::vertexNumber() * 3,
+                bgfx::Attrib::Normal,
+                3,
+                bgfx::AttribType::Float);
+        }
 
-        mVertexColorsBuffer.set(
-            Base::vertexColorBufferData(),
-            Base::vertexNumber() * 4,
-            bgfx::Attrib::Color0,
-            4,
-            bgfx::AttribType::Uint8,
-            true);
+        // vertex buffer (colors)
+        if (Base::vertexColorBufferData()) {
+            mVertexColorsBuffer.set(
+                Base::vertexColorBufferData(),
+                Base::vertexNumber() * 4,
+                bgfx::Attrib::Color0,
+                4,
+                bgfx::AttribType::Uint8,
+                true);
+        }
 
-        mVertexUVBuffer.set(
-            Base::vertexTexCoordsBufferData(),
-            Base::vertexNumber() * 2,
-            bgfx::Attrib::TexCoord0,
-            2,
-            bgfx::AttribType::Float);
+        // vertex buffer (UVs)
+        if (Base::vertexTexCoordsBufferData()) {
+            mVertexUVBuffer.set(
+                Base::vertexTexCoordsBufferData(),
+                Base::vertexNumber() * 2,
+                bgfx::Attrib::TexCoord0,
+                2,
+                bgfx::AttribType::Float);
+        }
 
         // vertex wedges buffer (duplicated vertices)
-        mVertexWedgeUVBuffer.set(
-            Base::wedgeTexCoordsBufferData(),
-            Base::vertexNumber() * 2,
-            bgfx::Attrib::TexCoord1,
-            2,
-            bgfx::AttribType::Float);
+        if (Base::wedgeTexCoordsBufferData()) {
+            mVertexWedgeUVBuffer.set(
+                Base::wedgeTexCoordsBufferData(),
+                Base::vertexNumber() * 2,
+                bgfx::Attrib::TexCoord1,
+                2,
+                bgfx::AttribType::Float);
+        }
 
         // triangle index buffer
         if (Base::triangleBufferData()) {
             mTriangleIndexBuffer.set(
                 Base::triangleBufferData(),
-                Base::triangleBufferSize(),
-                PrimitiveType::UINT);
+                Base::triangleBufferSize());
         }
 
         // triangle normal buffer
-        mTriangleNormalBuffer.set(
-            Base::triangleNormalBufferData(),
-            Base::triangleNumber() * 3,
-            PrimitiveType::FLOAT, BGFX_BUFFER_COMPUTE_READ);
+        if (Base::triangleNormalBufferData()) {
+            mTriangleNormalBuffer.setForCompute(
+                Base::triangleNormalBufferData(),
+                Base::triangleNumber() * 3,
+                PrimitiveType::FLOAT);
+        }
 
         // triangle color buffer
-        mTriangleColorBuffer.set(
-            Base::triangleColorBufferData(),
-            Base::triangleNumber(),
-            PrimitiveType::UINT, BGFX_BUFFER_COMPUTE_READ);
+        if (Base::triangleColorBufferData()) {
+            mTriangleColorBuffer.setForCompute(
+                Base::triangleColorBufferData(),
+                Base::triangleNumber(),
+                PrimitiveType::UINT);
+        }
 
         // triangle wedge UV buffer
         if (Base::wedgeTexCoordsBufferData()) {

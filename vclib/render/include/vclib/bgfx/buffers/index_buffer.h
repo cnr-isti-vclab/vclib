@@ -72,10 +72,21 @@ public:
     void set(
         const void*   bufferIndices,
         const uint    bufferSize,
-        PrimitiveType type,
-        uint64_t      flags = BGFX_BUFFER_NONE)
+        bool          is32Bit = true)
     {
-        flags |= flagsForType(type);
+        uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
+        uint size = is32Bit ? 4 : 2;
+        set(bgfx::makeRef(bufferIndices, bufferSize * size), flags);
+    }
+
+    void setForCompute(
+        const void*   bufferIndices,
+        const uint    bufferSize,
+        PrimitiveType type,
+        bgfx::Access::Enum access = bgfx::Access::Read)
+    {
+        uint64_t flags = flagsForType(type);
+        flags |= flagsForAccess(access);
         set(bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type)), flags);
     }
 
@@ -84,16 +95,16 @@ public:
         mIndexBufferHandle = bgfx::createIndexBuffer(indices, flags);
     }
 
-    void bind() const
-    {
-        bgfx::setIndexBuffer(mIndexBufferHandle);
-    }
-
-    void bindForCompute(
-        uint8_t            stage,
+    void bind(
+        uint               stage  = UINT_NULL,
         bgfx::Access::Enum access = bgfx::Access::Read) const
     {
-        bgfx::setBuffer(stage, mIndexBufferHandle, access);
+        if (stage == UINT_NULL || stage >= 255) {
+            bgfx::setIndexBuffer(mIndexBufferHandle);
+        }
+        else {
+            bgfx::setBuffer(stage, mIndexBufferHandle, access);
+        }
     }
 
 private:
@@ -106,6 +117,16 @@ private:
             return BGFX_BUFFER_COMPUTE_FORMAT_32X1 |
                    BGFX_BUFFER_COMPUTE_TYPE_FLOAT;
         case PrimitiveType::DOUBLE: assert(0); // not supported
+        default: return BGFX_BUFFER_NONE;
+        }
+    }
+
+    static uint64_t flagsForAccess(bgfx::Access::Enum access)
+    {
+        switch (access) {
+        case bgfx::Access::Read: return BGFX_BUFFER_COMPUTE_READ;
+        case bgfx::Access::Write: return BGFX_BUFFER_COMPUTE_WRITE;
+        case bgfx::Access::ReadWrite: return BGFX_BUFFER_COMPUTE_READ_WRITE;
         default: return BGFX_BUFFER_NONE;
         }
     }
