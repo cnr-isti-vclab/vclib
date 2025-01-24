@@ -45,7 +45,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
-    bgfx::IndexBufferHandle mTriangleColorBH  = BGFX_INVALID_HANDLE;
+    IndexBuffer mTriangleColorBuffer;
 
     bgfx::IndexBufferHandle mTriangleTextureIndexBH = BGFX_INVALID_HANDLE;
 
@@ -93,7 +93,7 @@ public:
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
-        swap(mTriangleColorBH, other.mTriangleColorBH);
+        swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mTriangleTextureIndexBH, other.mTriangleTextureIndexBH);
         swap(mEdgeIndexBH, other.mEdgeIndexBH);
         swap(mEdgeNormalBH, other.mEdgeNormalBH);
@@ -132,15 +132,11 @@ public:
         if (indexBufferToBind == Base::TRIANGLES) {
             mTriangleIndexBuffer.bind();
 
-            if (bgfx::isValid(mTriangleColorBH)) { // triangle colors
-                bgfx::setBuffer(
-                    VCL_MRB_PRIMITIVE_COLOR_BUFFER,
-                    mTriangleColorBH,
-                    bgfx::Access::Read);
-            }
-
             mTriangleNormalBuffer.bindForCompute(
                 VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+
+            mTriangleColorBuffer.bindForCompute(
+                VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 
             if (bgfx::isValid(mTriangleTextureIndexBH)) { // tri texture indices
                 bgfx::setBuffer(
@@ -235,13 +231,10 @@ private:
             PrimitiveType::FLOAT, BGFX_BUFFER_COMPUTE_READ);
 
         // triangle color buffer
-        if (Base::triangleColorBufferData()) {
-            mTriangleColorBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::triangleColorBufferData(),
-                    Base::triangleNumber() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
-        }
+        mTriangleColorBuffer.set(
+            Base::triangleColorBufferData(),
+            Base::triangleNumber(),
+            PrimitiveType::UINT, BGFX_BUFFER_COMPUTE_READ);
 
         // triangle wedge UV buffer
         if (Base::wedgeTexCoordsBufferData()) {
@@ -321,9 +314,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mTriangleColorBH))
-            bgfx::destroy(mTriangleColorBH);
-
         if (bgfx::isValid(mTriangleTextureIndexBH))
             bgfx::destroy(mTriangleTextureIndexBH);
 
