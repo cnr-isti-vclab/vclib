@@ -172,7 +172,7 @@ private:
             Base::vertexNumber() * 3,
             bgfx::Attrib::Position,
             3,
-            bgfx::AttribType::Float);
+            PrimitiveType::FLOAT);
 
         // vertex buffer (normals)
         if (Base::vertexNormalBufferData()) {
@@ -181,7 +181,7 @@ private:
                 Base::vertexNumber() * 3,
                 bgfx::Attrib::Normal,
                 3,
-                bgfx::AttribType::Float);
+                PrimitiveType::FLOAT);
         }
 
         // vertex buffer (colors)
@@ -191,7 +191,7 @@ private:
                 Base::vertexNumber() * 4,
                 bgfx::Attrib::Color0,
                 4,
-                bgfx::AttribType::Uint8,
+                PrimitiveType::UCHAR,
                 true);
         }
 
@@ -202,7 +202,7 @@ private:
                 Base::vertexNumber() * 2,
                 bgfx::Attrib::TexCoord0,
                 2,
-                bgfx::AttribType::Float);
+                PrimitiveType::FLOAT);
         }
 
         // vertex wedges buffer (duplicated vertices)
@@ -212,7 +212,7 @@ private:
                 Base::vertexNumber() * 2,
                 bgfx::Attrib::TexCoord1,
                 2,
-                bgfx::AttribType::Float);
+                PrimitiveType::FLOAT);
         }
 
         // triangle index buffer

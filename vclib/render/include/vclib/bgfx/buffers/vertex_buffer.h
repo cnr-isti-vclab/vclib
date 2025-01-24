@@ -34,6 +34,7 @@ namespace vcl {
 class VertexBuffer
 {
     bgfx::VertexBufferHandle mVertexBufferHandle = BGFX_INVALID_HANDLE;
+    bool mCompute = false;
 
 public:
     VertexBuffer() = default;
@@ -43,6 +44,7 @@ public:
     VertexBuffer(VertexBuffer&& other) noexcept
     {
         mVertexBufferHandle = other.mVertexBufferHandle;
+        mCompute = other.mCompute;
         other.mVertexBufferHandle = BGFX_INVALID_HANDLE;
     }
 
@@ -57,6 +59,7 @@ public:
     VertexBuffer& operator=(VertexBuffer&& other) noexcept
     {
         mVertexBufferHandle = other.mVertexBufferHandle;
+        mCompute = other.mCompute;
         other.mVertexBufferHandle = BGFX_INVALID_HANDLE;
         return *this;
     }
@@ -65,56 +68,99 @@ public:
     {
         using std::swap;
         swap(mVertexBufferHandle, other.mVertexBufferHandle);
+        swap(mCompute, other.mCompute);
     }
 
     friend void swap(VertexBuffer& a, VertexBuffer& b) { a.swap(b); }
 
     void set(
-        const void*            bufferData,
-        const uint             bufferSize,
-        bgfx::Attrib::Enum     attrib,
-        uint                   numElements,
-        bgfx::AttribType::Enum attribType,
-        bool                   normalize = false,
-        bgfx::ReleaseFn        releaseFn = nullptr,
-        uint64_t               flags     = BGFX_BUFFER_NONE)
+        const void*        bufferData,
+        const uint         bufferSize,
+        bgfx::Attrib::Enum attrib,
+        uint               numElements,
+        PrimitiveType      type,
+        bool               normalize = false,
+        bgfx::ReleaseFn    releaseFn = nullptr)
     {
         bgfx::VertexLayout layout;
-        layout.begin().add(attrib, numElements, attribType, normalize).end();
+        layout.begin().add(attrib, numElements, attribType(type), normalize).end();
 
         set(layout,
             bgfx::makeRef(
-                bufferData, bufferSize * attribTypeSize(attribType), releaseFn),
+                bufferData,
+                bufferSize * sizeOf(type),
+                releaseFn));
+    }
+
+    void setForCompute(
+        const void*        bufferData,
+        const uint         bufferSize,
+        bgfx::Attrib::Enum attrib,
+        uint               numElements,
+        PrimitiveType      type,
+        bool               normalize = false,
+        bgfx::Access::Enum access    = bgfx::Access::Read,
+        bgfx::ReleaseFn    releaseFn = nullptr)
+    {
+        uint64_t flags = flagsForAccess(access);
+
+        bgfx::VertexLayout layout;
+        layout.begin()
+            .add(attrib, numElements, attribType(type), normalize)
+            .end();
+
+        set(layout,
+            bgfx::makeRef(
+                bufferData, bufferSize * sizeOf(type), releaseFn),
+            true,
             flags);
     }
 
     void set(
         const bgfx::VertexLayout& layout,
         const bgfx::Memory* vertices,
+        bool compute = false,
         uint64_t flags = BGFX_BUFFER_NONE)
     {
         if (bgfx::isValid(mVertexBufferHandle))
             bgfx::destroy(mVertexBufferHandle);
 
         mVertexBufferHandle = bgfx::createVertexBuffer(vertices, layout, flags);
+        mCompute = compute;
     }
 
-    void bind(uint stream) const
+    void bind(uint stream, bgfx::Access::Enum access = bgfx::Access::Read) const
     {
-        if (bgfx::isValid(mVertexBufferHandle))
-            bgfx::setVertexBuffer(stream, mVertexBufferHandle);
+        if (bgfx::isValid(mVertexBufferHandle)) {
+            if (!mCompute)
+                bgfx::setVertexBuffer(stream, mVertexBufferHandle);
+            else
+                bgfx::setBuffer(stream, mVertexBufferHandle, access);
+        }
     }
 
-    static int attribTypeSize(bgfx::AttribType::Enum type)
+private:
+    static uint64_t flagsForAccess(bgfx::Access::Enum access)
     {
-        switch(type)
-        {
-            case bgfx::AttribType::Uint8: return 1;
-            case bgfx::AttribType::Uint10: return 2;
-            case bgfx::AttribType::Int16: return 2;
-            case bgfx::AttribType::Half: return 2;
-            case bgfx::AttribType::Float: return 4;
-            default: return 0;
+        switch (access) {
+        case bgfx::Access::Read: return BGFX_BUFFER_COMPUTE_READ;
+        case bgfx::Access::Write: return BGFX_BUFFER_COMPUTE_WRITE;
+        case bgfx::Access::ReadWrite: return BGFX_BUFFER_COMPUTE_READ_WRITE;
+        default: return BGFX_BUFFER_NONE;
+        }
+    }
+
+    static bgfx::AttribType::Enum attribType(PrimitiveType type)
+    {
+        switch (type) {
+        case PrimitiveType::CHAR:
+        case PrimitiveType::UCHAR: return bgfx::AttribType::Uint8;
+        case PrimitiveType::SHORT:
+        case PrimitiveType::USHORT: return bgfx::AttribType::Int16;
+        case PrimitiveType::FLOAT: return bgfx::AttribType::Float;
+        default:
+            assert(0); // not supported
+            return bgfx::AttribType::Count;
         }
     }
 };
