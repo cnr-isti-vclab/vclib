@@ -50,8 +50,8 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     IndexBuffer mTriangleTextureIndexBuffer;
 
     IndexBuffer mEdgeIndexBuffer;
-    bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
+    IndexBuffer mEdgeNormalBuffer;
+    IndexBuffer mEdgeColorBuffer;
 
     bgfx::IndexBufferHandle mWireframeIndexBH = BGFX_INVALID_HANDLE;
 
@@ -96,8 +96,8 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mTriangleTextureIndexBuffer, other.mTriangleTextureIndexBuffer);
         swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
-        swap(mEdgeNormalBH, other.mEdgeNormalBH);
-        swap(mEdgeColorBH, other.mEdgeColorBH);
+        swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
+        swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
         swap(mWireframeIndexBH, other.mWireframeIndexBH);
         swap(mTexturesH, other.mTexturesH);
     }
@@ -144,19 +144,11 @@ public:
         else if (indexBufferToBind == Base::EDGES) {
             mEdgeIndexBuffer.bind();
 
-            if (bgfx::isValid(mEdgeColorBH)) { // edge colors
-                bgfx::setBuffer(
-                    VCL_MRB_PRIMITIVE_COLOR_BUFFER,
-                    mEdgeColorBH,
-                    bgfx::Access::Read);
-            }
+            mEdgeNormalBuffer.bind(
+                VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-            if (bgfx::isValid(mEdgeNormalBH)) { // edge normals
-                bgfx::setBuffer(
-                    VCL_MRB_PRIMITIVE_NORMAL_BUFFER,
-                    mEdgeNormalBH,
-                    bgfx::Access::Read);
-            }
+            mEdgeColorBuffer.bind(
+                VCL_MRB_PRIMITIVE_COLOR_BUFFER);
         }
         else if (indexBufferToBind == Base::WIREFRAME) {
             bgfx::setIndexBuffer(mWireframeIndexBH);
@@ -264,21 +256,18 @@ private:
 
         // edge normal buffer
         if (Base::edgeNormalBufferData()) {
-            mEdgeNormalBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::edgeNormalBufferData(),
-                    Base::edgeNumber() * 3 * sizeof(float)),
-                BGFX_BUFFER_COMPUTE_FORMAT_32X1 | BGFX_BUFFER_COMPUTE_READ |
-                    BGFX_BUFFER_COMPUTE_TYPE_FLOAT);
+            mEdgeNormalBuffer.setForCompute(
+                Base::edgeNormalBufferData(),
+                Base::edgeNumber() * 3,
+                PrimitiveType::FLOAT);
         }
 
         // edge color buffer
         if (Base::edgeColorBufferData()) {
-            mEdgeColorBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::edgeColorBufferData(),
-                    Base::edgeNumber() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
+            mEdgeColorBuffer.setForCompute(
+                Base::edgeColorBufferData(),
+                Base::edgeNumber(),
+                PrimitiveType::UINT);
         }
 
         // wireframe index buffer
@@ -320,12 +309,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mEdgeNormalBH))
-            bgfx::destroy(mEdgeNormalBH);
-
-        if (bgfx::isValid(mEdgeColorBH))
-            bgfx::destroy(mEdgeColorBH);
-
         if (bgfx::isValid(mWireframeIndexBH))
             bgfx::destroy(mWireframeIndexBH);
 
