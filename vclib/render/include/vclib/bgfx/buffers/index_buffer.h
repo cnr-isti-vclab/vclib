@@ -99,11 +99,13 @@ public:
         uint               stage  = UINT_NULL,
         bgfx::Access::Enum access = bgfx::Access::Read) const
     {
-        if (stage == UINT_NULL || stage >= 255) {
-            bgfx::setIndexBuffer(mIndexBufferHandle);
-        }
-        else {
-            bgfx::setBuffer(stage, mIndexBufferHandle, access);
+        if (bgfx::isValid(mIndexBufferHandle)) {
+            if (stage == UINT_NULL) {
+                bgfx::setIndexBuffer(mIndexBufferHandle);
+            }
+            else {
+                bgfx::setBuffer(stage, mIndexBufferHandle, access);
+            }
         }
     }
 
