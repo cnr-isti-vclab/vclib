@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_BUFFERS_H
 #define VCL_BGFX_BUFFERS_H
 
+#include "buffers/index_buffer.h"
 #include "buffers/vertex_buffer.h"
 
 #endif // VCL_BGFX_BUFFERS_H

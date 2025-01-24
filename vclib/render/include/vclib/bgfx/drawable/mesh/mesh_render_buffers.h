@@ -43,7 +43,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
 
-    bgfx::IndexBufferHandle mTriangleIndexBH  = BGFX_INVALID_HANDLE;
+    IndexBuffer mTriangleIndexBuffer;
     bgfx::IndexBufferHandle mTriangleNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mTriangleColorBH  = BGFX_INVALID_HANDLE;
 
@@ -91,7 +91,7 @@ public:
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
-        swap(mTriangleIndexBH, other.mTriangleIndexBH);
+        swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBH, other.mTriangleNormalBH);
         swap(mTriangleColorBH, other.mTriangleColorBH);
         swap(mTriangleTextureIndexBH, other.mTriangleTextureIndexBH);
@@ -130,7 +130,7 @@ public:
     void bindIndexBuffers(uint indexBufferToBind = Base::TRIANGLES) const
     {
         if (indexBufferToBind == Base::TRIANGLES) {
-            bgfx::setIndexBuffer(mTriangleIndexBH);
+            mTriangleIndexBuffer.bind();
 
             if (bgfx::isValid(mTriangleColorBH)) { // triangle colors
                 bgfx::setBuffer(
@@ -226,11 +226,10 @@ private:
 
         // triangle index buffer
         if (Base::triangleBufferData()) {
-            mTriangleIndexBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::triangleBufferData(),
-                    Base::triangleBufferSize() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32);
+            mTriangleIndexBuffer.set(
+                Base::triangleBufferData(),
+                Base::triangleBufferSize(),
+                PrimitiveType::UINT);
         }
 
         // triangle normal buffer
@@ -330,9 +329,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mTriangleIndexBH))
-            bgfx::destroy(mTriangleIndexBH);
-
         if (bgfx::isValid(mTriangleNormalBH))
             bgfx::destroy(mTriangleNormalBH);
 
