@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "foo_mesh.h"
 #include "bar_mesh.h"
+#include "foo_mesh.h"
 
 #include <vclib/meshes/tri_mesh.h>
 
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     bm.enablePerElementComponent<vcl::ElemId::VERTEX, BAR_COMPONENT>();
 
     for (auto& v : bm.vertices()) {
-        v.bar() = bm.index(v) + 42;
+        v.bar()       = bm.index(v) + 42;
         v.barVector() = {1, 2, 3};
     }
 

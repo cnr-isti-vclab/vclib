@@ -317,8 +317,8 @@ template<FaceMeshConcept MeshType>
 void triangulatedFaceIndicesToBuffer(
     const MeshType&    mesh,
     auto*              buffer,
-    TriPolyIndexBiMap& indexMap = detail::indexMap,
-    MatrixStorageType  storage = MatrixStorageType::ROW_MAJOR,
+    TriPolyIndexBiMap& indexMap     = detail::indexMap,
+    MatrixStorageType  storage      = MatrixStorageType::ROW_MAJOR,
     uint               numTriangles = UINT_NULL)
 {
     // there will be at least a triangle for each polygon

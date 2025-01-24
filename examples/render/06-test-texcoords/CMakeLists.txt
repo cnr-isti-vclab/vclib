@@ -22,23 +22,16 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME 000-static-asserts)
-project(vclib-test-${TEST_NAME})
+set(EXAMPLE_NAME 06-test-texcoords)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-set(HEADERS
-    drawable_object.h
-    canvas.h
-    drawers.h
-    render_app.h
-    window_manager.h
-)
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
-    main.cpp
-)
+    main.cpp)
 
-vclib_add_test(
-    ${TEST_NAME}
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
-    SOURCES ${HEADERS} ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+    SOURCES ${SOURCES})
