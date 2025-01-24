@@ -106,6 +106,7 @@ public:
     using Base::contains;
     using Base::data;
     using Base::erase;
+    using Base::empty;
     using Base::fill;
     using Base::find;
     using Base::front;
