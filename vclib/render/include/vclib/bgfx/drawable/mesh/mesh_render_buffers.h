@@ -44,7 +44,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     VertexBuffer mVertexWedgeUVBuffer;
 
     IndexBuffer mTriangleIndexBuffer;
-    bgfx::IndexBufferHandle mTriangleNormalBH = BGFX_INVALID_HANDLE;
+    IndexBuffer mTriangleNormalBuffer;
     bgfx::IndexBufferHandle mTriangleColorBH  = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mTriangleTextureIndexBH = BGFX_INVALID_HANDLE;
@@ -92,7 +92,7 @@ public:
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
-        swap(mTriangleNormalBH, other.mTriangleNormalBH);
+        swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBH, other.mTriangleColorBH);
         swap(mTriangleTextureIndexBH, other.mTriangleTextureIndexBH);
         swap(mEdgeIndexBH, other.mEdgeIndexBH);
@@ -139,12 +139,8 @@ public:
                     bgfx::Access::Read);
             }
 
-            if (bgfx::isValid(mTriangleNormalBH)) { // triangle normals
-                bgfx::setBuffer(
-                    VCL_MRB_PRIMITIVE_NORMAL_BUFFER,
-                    mTriangleNormalBH,
-                    bgfx::Access::Read);
-            }
+            mTriangleNormalBuffer.bindForCompute(
+                VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
             if (bgfx::isValid(mTriangleTextureIndexBH)) { // tri texture indices
                 bgfx::setBuffer(
@@ -233,14 +229,10 @@ private:
         }
 
         // triangle normal buffer
-        if (Base::triangleNormalBufferData()) {
-            mTriangleNormalBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::triangleNormalBufferData(),
-                    Base::triangleNumber() * 3 * sizeof(float)),
-                BGFX_BUFFER_COMPUTE_FORMAT_32X1 | BGFX_BUFFER_COMPUTE_READ |
-                    BGFX_BUFFER_COMPUTE_TYPE_FLOAT);
-        }
+        mTriangleNormalBuffer.set(
+            Base::triangleNormalBufferData(),
+            Base::triangleNumber() * 3,
+            PrimitiveType::FLOAT, BGFX_BUFFER_COMPUTE_READ);
 
         // triangle color buffer
         if (Base::triangleColorBufferData()) {
@@ -329,9 +321,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mTriangleNormalBH))
-            bgfx::destroy(mTriangleNormalBH);
-
         if (bgfx::isValid(mTriangleColorBH))
             bgfx::destroy(mTriangleColorBH);
 

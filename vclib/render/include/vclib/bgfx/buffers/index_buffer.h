@@ -91,7 +91,7 @@ public:
 
     void bindForCompute(
         uint8_t            stage,
-        bgfx::Access::Enum access = bgfx::Access::Read)
+        bgfx::Access::Enum access = bgfx::Access::Read) const
     {
         bgfx::setBuffer(stage, mIndexBufferHandle, access);
     }
