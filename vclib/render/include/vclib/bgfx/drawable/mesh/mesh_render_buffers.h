@@ -49,7 +49,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 
     IndexBuffer mTriangleTextureIndexBuffer;
 
-    bgfx::IndexBufferHandle mEdgeIndexBH  = BGFX_INVALID_HANDLE;
+    IndexBuffer mEdgeIndexBuffer;
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
 
@@ -95,7 +95,7 @@ public:
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mTriangleTextureIndexBuffer, other.mTriangleTextureIndexBuffer);
-        swap(mEdgeIndexBH, other.mEdgeIndexBH);
+        swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
         swap(mEdgeNormalBH, other.mEdgeNormalBH);
         swap(mEdgeColorBH, other.mEdgeColorBH);
         swap(mWireframeIndexBH, other.mWireframeIndexBH);
@@ -142,7 +142,7 @@ public:
                 VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
         }
         else if (indexBufferToBind == Base::EDGES) {
-            bgfx::setIndexBuffer(mEdgeIndexBH);
+            mEdgeIndexBuffer.bind();
 
             if (bgfx::isValid(mEdgeColorBH)) { // edge colors
                 bgfx::setBuffer(
@@ -258,11 +258,8 @@ private:
 
         // edge index buffer
         if (Base::edgeBufferData()) {
-            mEdgeIndexBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::edgeBufferData(),
-                    Base::edgeBufferSize() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32);
+            mEdgeIndexBuffer.set(
+                Base::edgeBufferData(), Base::edgeBufferSize());
         }
 
         // edge normal buffer
@@ -323,9 +320,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mEdgeIndexBH))
-            bgfx::destroy(mEdgeIndexBH);
-
         if (bgfx::isValid(mEdgeNormalBH))
             bgfx::destroy(mEdgeNormalBH);
 
