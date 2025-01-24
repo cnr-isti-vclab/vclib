@@ -49,12 +49,15 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 
     IndexBuffer mTriangleTextureIndexBuffer;
 
+    // TODO: manage wireframe with proper lines
     IndexBuffer mEdgeIndexBuffer;
     IndexBuffer mEdgeNormalBuffer;
     IndexBuffer mEdgeColorBuffer;
 
+    // TODO: manage wireframe with proper lines
     bgfx::IndexBufferHandle mWireframeIndexBH = BGFX_INVALID_HANDLE;
 
+    // TODO: manage with a TextureUnit class
     std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
 
 public:

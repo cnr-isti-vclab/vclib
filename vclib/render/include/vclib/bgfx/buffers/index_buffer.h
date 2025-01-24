@@ -70,24 +70,27 @@ public:
     friend void swap(IndexBuffer& a, IndexBuffer& b) { a.swap(b); }
 
     void set(
-        const void*   bufferIndices,
-        const uint    bufferSize,
-        bool          is32Bit = true)
+        const void*     bufferIndices,
+        const uint      bufferSize,
+        bool            is32Bit   = true,
+        bgfx::ReleaseFn releaseFn = nullptr)
     {
         uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
         uint size = is32Bit ? 4 : 2;
-        set(bgfx::makeRef(bufferIndices, bufferSize * size), flags);
+        set(bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn), flags);
     }
 
     void setForCompute(
         const void*   bufferIndices,
         const uint    bufferSize,
         PrimitiveType type,
-        bgfx::Access::Enum access = bgfx::Access::Read)
+        bgfx::Access::Enum access = bgfx::Access::Read,
+        bgfx::ReleaseFn releaseFn = nullptr)
     {
         uint64_t flags = flagsForType(type);
         flags |= flagsForAccess(access);
-        set(bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type)), flags);
+        set(bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type), releaseFn),
+            flags);
     }
 
     void set(const bgfx::Memory* indices, uint64_t flags = BGFX_BUFFER_NONE)
