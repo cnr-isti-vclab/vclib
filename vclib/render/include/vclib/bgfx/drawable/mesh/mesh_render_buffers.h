@@ -47,7 +47,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     IndexBuffer mTriangleNormalBuffer;
     IndexBuffer mTriangleColorBuffer;
 
-    bgfx::IndexBufferHandle mTriangleTextureIndexBH = BGFX_INVALID_HANDLE;
+    IndexBuffer mTriangleTextureIndexBuffer;
 
     bgfx::IndexBufferHandle mEdgeIndexBH  = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
@@ -94,7 +94,7 @@ public:
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
-        swap(mTriangleTextureIndexBH, other.mTriangleTextureIndexBH);
+        swap(mTriangleTextureIndexBuffer, other.mTriangleTextureIndexBuffer);
         swap(mEdgeIndexBH, other.mEdgeIndexBH);
         swap(mEdgeNormalBH, other.mEdgeNormalBH);
         swap(mEdgeColorBH, other.mEdgeColorBH);
@@ -138,12 +138,8 @@ public:
             mTriangleColorBuffer.bind(
                 VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 
-            if (bgfx::isValid(mTriangleTextureIndexBH)) { // tri texture indices
-                bgfx::setBuffer(
-                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER,
-                    mTriangleTextureIndexBH,
-                    bgfx::Access::Read);
-            }
+            mTriangleTextureIndexBuffer.bind(
+                VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
         }
         else if (indexBufferToBind == Base::EDGES) {
             bgfx::setIndexBuffer(mEdgeIndexBH);
@@ -254,11 +250,10 @@ private:
         if (Base::wedgeTexCoordsBufferData()) {
             assert(Base::wedgeTextureIDsBufferData());
 
-            mTriangleTextureIndexBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::wedgeTextureIDsBufferData(),
-                    Base::triangleNumber() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
+            mTriangleTextureIndexBuffer.setForCompute(
+                Base::wedgeTextureIDsBufferData(),
+                Base::triangleNumber(),
+                PrimitiveType::UINT);
         }
 
         // edge index buffer
@@ -328,9 +323,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mTriangleTextureIndexBH))
-            bgfx::destroy(mTriangleTextureIndexBH);
-
         if (bgfx::isValid(mEdgeIndexBH))
             bgfx::destroy(mEdgeIndexBH);
 
