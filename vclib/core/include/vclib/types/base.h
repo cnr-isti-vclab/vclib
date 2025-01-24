@@ -24,9 +24,10 @@
 #define VCL_TYPES_BASE_H
 
 #include <cassert>
-#include <concepts>
+#include <cstdint>
 #include <limits>
-#include <numeric>
+#include <memory>
+#include <type_traits>
 
 namespace vcl {
 
@@ -73,6 +74,27 @@ enum class PrimitiveType {
  * @ingroup types
  */
 enum class MatrixStorageType { ROW_MAJOR, COLUMN_MAJOR };
+
+/**
+ * @brief Returns the size in bytes of a primitive type.
+ * @param[in] type: The primitive type.
+ * @return The size in bytes of the primitive type.
+ */
+// TODO: from c++23 use fixed width floating-point types
+constexpr int sizeOf(PrimitiveType type) noexcept
+{
+    switch (type) {
+        case PrimitiveType::CHAR: return sizeof(char);
+        case PrimitiveType::UCHAR: return sizeof(unsigned char);
+        case PrimitiveType::SHORT: return sizeof(int16_t);
+        case PrimitiveType::USHORT: return sizeof(uint16_t);
+        case PrimitiveType::INT: return sizeof(int32_t);
+        case PrimitiveType::UINT: return sizeof(uint32_t);
+        case PrimitiveType::FLOAT: return sizeof(float);
+        case PrimitiveType::DOUBLE: return sizeof(double);
+        default: return 0;
+    }
+}
 
 /**
  * @brief Returns the underlying type of an enum.
