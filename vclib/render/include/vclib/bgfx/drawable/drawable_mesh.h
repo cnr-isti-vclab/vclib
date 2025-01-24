@@ -47,6 +47,8 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
+    using AbstractDrawableMesh::name;
+
     DrawableMeshBGFX() = default;
 
     DrawableMeshBGFX(const MeshType& mesh) :

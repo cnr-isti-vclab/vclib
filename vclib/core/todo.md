@@ -62,3 +62,5 @@
   - [ ] look for a json header only library that is compatible with c++20 modules
 - Documentation:
   - [ ] How to implement a user component
+- Examples: 
+  - [ ] Create an example for new custom element (similar to 010-mesh-new-user-component)

@@ -20,12 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "bar_mesh.h"
 #include "foo_mesh.h"
 
 #include <vclib/meshes/tri_mesh.h>
 
 int main(int argc, char** argv)
 {
+    // A mesh with a Vertex that has a FooComponent
     FooMesh m;
 
     m.addVertices(10);
@@ -42,4 +44,27 @@ int main(int argc, char** argv)
 
     // reverse importFrom, to assert that everything builds correctly
     m.importFrom(tm);
+
+    // A mesh with a Vertex that has a optional BarComponent
+    BarMesh bm;
+
+    bm.addVertices(10);
+
+    // enable the bar component in the vertices
+    bm.enablePerElementComponent<vcl::ElemId::VERTEX, BAR_COMPONENT>();
+
+    for (auto& v : bm.vertices()) {
+        v.bar()       = bm.index(v) + 42;
+        v.barVector() = {1, 2, 3};
+    }
+
+    for (auto& v : bm.vertices()) {
+        std::cout << "Vertex: " << v.index() << std::endl;
+        std::cout << "Bar: " << v.bar() << std::endl;
+        std::cout << "Bar vector: ";
+        for (auto i : v.barVector()) {
+            std::cout << i << ' ';
+        }
+        std::cout << std::endl;
+    }
 }

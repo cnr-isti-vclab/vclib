@@ -20,19 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "canvas.h"
-#include "drawable_object.h"
-#include "drawers.h"
-#include "render_app.h"
-#include "window_manager.h"
+#ifndef DRAWABLE_OBJECT_H
+#define DRAWABLE_OBJECT_H
 
-int main()
+#include <vclib/meshes.h>
+#include <vclib/render/concepts/drawable_object.h>
+#include <vclib/render/drawable/drawable_mesh.h>
+
+void drawableObjectStaticAsserts()
 {
-    canvasStaticAsserts();
-    drawableObjectStaticAsserts();
-    drawersStaticAsserts();
-    renderAppStaticAsserts();
-    windowManagerStaticAsserts();
+    using namespace vcl;
 
-    return 0;
+    static_assert(
+        DrawableObjectConcept<DrawableMesh<TriMesh>>,
+        "DrawableMesh does not satisfy the DrawableObjectConcept");
+    static_assert(
+        DrawableObjectConcept<const DrawableMesh<TriMesh>>,
+        "const DrawableMesh does not satisfy the DrawableObjectConcept");
+    static_assert(
+        DrawableObjectConcept<DrawableMesh<TriMesh>&>,
+        "DrawableMesh& does not satisfy the DrawableObjectConcept");
+    static_assert(
+        DrawableObjectConcept<const DrawableMesh<TriMesh>&>,
+        "const DrawableMesh& does not satisfy the DrawableObjectConcept");
+    static_assert(
+        DrawableObjectConcept<DrawableMesh<TriMesh>&&>,
+        "DrawableMesh&& does not satisfy the DrawableObjectConcept");
 }
+
+#endif // DRAWABLE_OBJECT_H

@@ -20,19 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "canvas.h"
-#include "drawable_object.h"
-#include "drawers.h"
-#include "render_app.h"
-#include "window_manager.h"
+#ifndef BAR_MESH_H
+#define BAR_MESH_H
 
-int main()
+#include <vclib/mesh/mesh.h>
+#include <vclib/mesh/requirements.h>
+
+#include "bar_component.h"
+
+/*
+ * This file defines a BarMesh class that uses the optional BarComponent in the
+ * Vertex Element.
+ */
+
+class BarMesh;
+
+namespace barmesh {
+
+class Vertex;
+
+class Face;
+
+class Vertex :
+        public vcl::Vertex<
+            BarMesh,
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3d,
+            vcl::vert::Normal3d,
+            vcl::vert::Color,
+            OptionalBarComponent<Vertex>> // the optional BarComponent
 {
-    canvasStaticAsserts();
-    drawableObjectStaticAsserts();
-    drawersStaticAsserts();
-    renderAppStaticAsserts();
-    windowManagerStaticAsserts();
+};
 
-    return 0;
-}
+class Face :
+        public vcl::Face<
+            BarMesh,
+            vcl::face::TriangleBitFlags,
+            vcl::face::TriangleVertexPtrs<Vertex, Face>,
+            vcl::face::Normal3d>
+{
+};
+
+} // namespace barmesh
+
+class BarMesh :
+        public vcl::Mesh<
+            vcl::mesh::VertexContainer<barmesh::Vertex>,
+            vcl::mesh::FaceContainer<barmesh::Face>,
+            vcl::mesh::BoundingBox3d>
+{
+public:
+    using ScalarType = double;
+};
+
+#endif // BAR_MESH_H

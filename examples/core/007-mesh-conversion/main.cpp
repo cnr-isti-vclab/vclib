@@ -56,5 +56,12 @@ int main()
 
     vcl::save(m, VCLIB_RESULTS_PATH "/cube_from_poly.ply", s);
 
+    pm = vcl::loadObj<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                     "/rhombicosidodecahedron.obj");
+
+    m.importFrom(pm);
+
+    vcl::save(m, VCLIB_RESULTS_PATH "/tri_rhombicosidodecahedron.ply", s);
+
     return 0;
 }

@@ -84,6 +84,8 @@ class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
     std::vector<uint> mTextID;
 
 public:
+    using AbstractDrawableMesh::name;
+
     DrawableMeshOpenGL2() = default;
 
     DrawableMeshOpenGL2(const MeshType& mesh) :

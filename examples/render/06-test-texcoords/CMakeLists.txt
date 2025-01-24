@@ -21,45 +21,17 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(EXAMPLE_NAME 06-test-texcoords)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-if (TARGET vclib-3rd-qt)
-    add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-    set(CAN_BUILD_VCLIB_EXAMPLES true)
-endif()
-if(TARGET vclib-3rd-glfw)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
-    endif()
-endif()
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(common)
+set(SOURCES
+    main.cpp)
 
-add_subdirectory(00-hello-triangle)
-add_subdirectory(01-viewer)
-add_subdirectory(02-mesh-viewer)
-add_subdirectory(03-viewer-with-text)
-add_subdirectory(04-hello-triangle-imgui)
-add_subdirectory(05-two-window-viewers)
-add_subdirectory(06-viewer-imgui)
-
-if (TARGET vclib-processing)
-    add_subdirectory(800-processing-main-window)
-endif()
-
-add_subdirectory(999-misc)
-
-if (CAN_BUILD_VCLIB_EXAMPLES)
-    add_subdirectory(06-test-texcoords)
-
-    # the following examples are the same of the ones in the core module,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(9015-mesh-io-stl)
-    add_subdirectory(9018-mesh-principal-curvature)
-    add_subdirectory(9019-mesh-sampling)
-    add_subdirectory(9021-mesh-sphere-intersection)
-    add_subdirectory(9026-crease-edges-mesh)
-endif()
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${SOURCES})

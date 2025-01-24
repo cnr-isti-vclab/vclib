@@ -26,6 +26,7 @@
 #include <vclib/mesh/mesh.h>
 #include <vclib/mesh/requirements.h>
 
+#include "bar_component.h"
 #include "foo_component.h"
 
 /*
