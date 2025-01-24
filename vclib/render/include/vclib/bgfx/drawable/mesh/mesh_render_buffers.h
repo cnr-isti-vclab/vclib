@@ -40,7 +40,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     VertexBuffer mVertexCoordsBuffer;
     VertexBuffer mVertexNormalsBuffer;
     VertexBuffer mVertexColorsBuffer;
-    bgfx::VertexBufferHandle mVertexUVBH      = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertexUVBuffer;
     bgfx::VertexBufferHandle mVertexWedgeUVBH = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mTriangleIndexBH  = BGFX_INVALID_HANDLE;
@@ -89,7 +89,7 @@ public:
         swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
         swap(mVertexNormalsBuffer, other.mVertexNormalsBuffer);
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
-        swap(mVertexUVBH, other.mVertexUVBH);
+        swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBH, other.mVertexWedgeUVBH);
         swap(mTriangleIndexBH, other.mTriangleIndexBH);
         swap(mTriangleNormalBH, other.mTriangleNormalBH);
@@ -120,9 +120,7 @@ public:
         mVertexColorsBuffer.bind(2);
 
         if (mrs.isSurfaceColorPerVertexTexcoords()) {
-            if (bgfx::isValid(mVertexUVBH)) { // vertex UVs
-                bgfx::setVertexBuffer(3, mVertexUVBH);
-            }
+            mVertexUVBuffer.bind(3);
         }
         else if (mrs.isSurfaceColorPerWedgeTexcoords()) {
             if (bgfx::isValid(mVertexWedgeUVBH)) { // vertex wedge UVs
@@ -213,19 +211,12 @@ private:
             bgfx::AttribType::Uint8,
             true);
 
-        // vertex buffer (UVs)
-        if (Base::vertexTexCoordsBufferData()) {
-            bgfx::VertexLayout uvlayout;
-            uvlayout.begin()
-                .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-                .end();
-
-            mVertexUVBH = bgfx::createVertexBuffer(
-                bgfx::makeRef(
-                    Base::vertexTexCoordsBufferData(),
-                    Base::vertexNumber() * 2 * sizeof(float)),
-                uvlayout);
-        }
+        mVertexUVBuffer.set(
+            Base::vertexTexCoordsBufferData(),
+            Base::vertexNumber() * 2,
+            bgfx::Attrib::TexCoord0,
+            2,
+            bgfx::AttribType::Float);
 
         // vertex wedges buffer (duplicated vertices)
         if (Base::wedgeTexCoordsBufferData()) {
@@ -347,9 +338,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mVertexUVBH))
-            bgfx::destroy(mVertexUVBH);
-
         if (bgfx::isValid(mVertexWedgeUVBH))
             bgfx::destroy(mVertexWedgeUVBH);
 
