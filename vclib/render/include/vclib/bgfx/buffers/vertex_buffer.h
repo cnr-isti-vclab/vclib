@@ -31,39 +31,79 @@
 
 namespace vcl {
 
+/**
+ * @brief The VertexBuffer manages the lifetime of a bgfx::VertexBufferHandle.
+ *
+ * It provides an interface to set the vertex buffer data and bind it to the
+ * rendering pipeline. The vertex buffer can be used for rendering or for
+ * compute shaders.
+ *
+ * @note A VertexBuffer can be moved but not copied (a copy would require to
+ * create a new bgfx::VertexBufferHandle, that can be done only having access
+ * to the data). Any class that contains a VertexBuffer should implement the
+ * copy constructor and the copy assignment operator.
+ */
 class VertexBuffer
 {
     bgfx::VertexBufferHandle mVertexBufferHandle = BGFX_INVALID_HANDLE;
     bool mCompute = false;
 
 public:
+    /**
+     * @brief Empty constructor.
+     *
+     * It creates an invalid VertexBuffer object.
+     */
     VertexBuffer() = default;
 
+    // Copying a VertexBuffer is not allowed
     VertexBuffer(const VertexBuffer& other) = delete;
 
+    /**
+     * @brief Move constructor.
+     *
+     * The other VertexBuffer is left in an invalid state.
+     *
+     * @param[in] other: the other VertexBuffer object.
+     */
     VertexBuffer(VertexBuffer&& other) noexcept
     {
-        mVertexBufferHandle = other.mVertexBufferHandle;
-        mCompute = other.mCompute;
-        other.mVertexBufferHandle = BGFX_INVALID_HANDLE;
+        swap(other);
     }
 
+    /**
+     * @brief Destructor.
+     *
+     * If the VertexBuffer is valid, the bgfx::VertexBufferHandle is destroyed.
+     */
     ~VertexBuffer()
     {
         if (bgfx::isValid(mVertexBufferHandle))
             bgfx::destroy(mVertexBufferHandle);
     }
 
+    // Copying a VertexBuffer is not allowed
     VertexBuffer& operator=(const VertexBuffer& other) = delete;
 
+    /**
+     * @brief Move assignment operator.
+     *
+     * The other VertexBuffer is left in an invalid state.
+     *
+     * @param[in] other: the other VertexBuffer object.
+     * @return a reference to this object.
+     */
     VertexBuffer& operator=(VertexBuffer&& other) noexcept
     {
-        mVertexBufferHandle = other.mVertexBufferHandle;
-        mCompute = other.mCompute;
-        other.mVertexBufferHandle = BGFX_INVALID_HANDLE;
+        swap(other);
         return *this;
     }
 
+    /**
+     * @brief Swap the content of this object with another VertexBuffer object.
+     *
+     * @param[in] other: the other VertexBuffer object.
+     */
     void swap(VertexBuffer& other)
     {
         using std::swap;
@@ -73,6 +113,38 @@ public:
 
     friend void swap(VertexBuffer& a, VertexBuffer& b) { a.swap(b); }
 
+    /**
+     * @brief Check if the VertexBuffer is valid.
+     *
+     * @return true if the VertexBuffer is valid, false otherwise.
+     */
+    bool isValid() const { return bgfx::isValid(mVertexBufferHandle); }
+
+    /**
+     * @brief Check if the VertexBuffer is used for compute shaders.
+     *
+     * @return true if the VertexBuffer is used for compute shaders, false
+     * otherwise.
+     */
+    bool isCompute() const { return mCompute; }
+
+    /**
+     * @brief Set the vertex buffer data for rendering.
+     *
+     * @note The data must be available for two bgfx::frame calls, then it is
+     * safe to release the data. If you cannot guarantee this, you must provide
+     * a release function that will be called automatically when the data is no
+     * longer needed.
+     *
+     * @param[in] bufferData: the data to be copied in the vertex buffer.
+     * @param[in] bufferSize: the size of the bufferData.
+     * @param[in] attrib: the attribute to which the data refers.
+     * @param[in] numElements: the number of elements for each vertex.
+     * @param[in] type: the type of the elements.
+     * @param[in] normalize: if true, the data is normalized.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     */
     void set(
         const void*        bufferData,
         const uint         bufferSize,
@@ -92,6 +164,24 @@ public:
                 releaseFn));
     }
 
+    /**
+     * @brief Set the vertex buffer data for compute shaders.
+     *
+     * @note The data must be available for two bgfx::frame calls, then it is
+     * safe to release the data. If you cannot guarantee this, you must provide
+     * a release function that will be called automatically when the data is no
+     * longer needed.
+     *
+     * @param[in] bufferData: the data to be copied in the vertex buffer.
+     * @param[in] bufferSize: the size of the bufferData.
+     * @param[in] attrib: the attribute to which the data refers.
+     * @param[in] numElements: the number of elements for each vertex.
+     * @param[in] type: the type of the elements.
+     * @param[in] normalize: if true, the data is normalized.
+     * @param[in] access: the access type for the buffer.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     */
     void setForCompute(
         const void*        bufferData,
         const uint         bufferSize,
@@ -116,19 +206,34 @@ public:
             flags);
     }
 
+    /**
+     * @brief Set the vertex buffer data.
+     *
+     * @param[in] layout: the vertex layout.
+     * @param[in] data: the memory containing the data.
+     * @param[in] compute: if true, the buffer is used for compute shaders.
+     * @param[in] flags: the flags for the buffer.
+     */
     void set(
         const bgfx::VertexLayout& layout,
-        const bgfx::Memory* vertices,
+        const bgfx::Memory* data,
         bool compute = false,
         uint64_t flags = BGFX_BUFFER_NONE)
     {
         if (bgfx::isValid(mVertexBufferHandle))
             bgfx::destroy(mVertexBufferHandle);
 
-        mVertexBufferHandle = bgfx::createVertexBuffer(vertices, layout, flags);
+        mVertexBufferHandle = bgfx::createVertexBuffer(data, layout, flags);
         mCompute = compute;
     }
 
+    /**
+     * @brief Bind the vertex buffer to the rendering pipeline.
+     *
+     * @param[in] stream: the stream (or stage, in case of compute) to which the
+     * vertex buffer is bound.
+     * @param[in] access: the access type for the buffer (only for compute).
+     */
     void bind(uint stream, bgfx::Access::Enum access = bgfx::Access::Read) const
     {
         if (bgfx::isValid(mVertexBufferHandle)) {
