@@ -26,6 +26,7 @@
 #include "uniforms/drawable_trackball_uniforms.h"
 
 #include <vclib/algorithms/core/create.h>
+#include <vclib/bgfx/buffers.h>
 #include <vclib/math/transform.h>
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/space/core/matrix.h>
@@ -42,8 +43,8 @@ class DrawableTrackBall : public DrawableObject
 
     bool mVisible = true;
 
-    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertexCoordsBuffer;
+    IndexBuffer mEdgeIndexBuffer;
 
     // TODO: can we be sure that this is called after the context initialization
     // triggered by a window?
@@ -63,11 +64,57 @@ public:
         createBuffers();
     }
 
+    DrawableTrackBall(const DrawableTrackBall& other) :
+        mVisible(other.mVisible),
+        mProgram(other.mProgram),
+        mUniforms(other.mUniforms),
+        mTransform(other.mTransform)
+    {
+        // copy all the members that can be copied, and then re-create the
+        // buffers
+        createBuffers();
+    }
+
+    // default move constructor - buffers can be moved
+    DrawableTrackBall(DrawableTrackBall&& other) = default;
+
+    // default destructor - buffers are destroyed by their destructor
     ~DrawableTrackBall() = default;
 
+    /**
+     * @brief Swap the content of this object with another DrawableTrackBall
+     * object.
+     *
+     * @param[in] other: the other DrawableTrackBall object.
+     */
+    void swap(DrawableTrackBall& other)
+    {
+        using std::swap;
+        swap(mVisible, other.mVisible);
+        swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
+        swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
+        swap(mProgram, other.mProgram);
+        swap(mUniforms, other.mUniforms);
+        swap(mTransform, other.mTransform);
+    }
+
+    friend void swap(DrawableTrackBall& a, DrawableTrackBall& b) { a.swap(b); }
+
+    /**
+     * @brief Update the dragging status of the trackball.
+     * @param[in] isDragging: true if the trackball is being dragged, false
+     * otherwise.
+     */
     void updateDragging(bool isDragging) { mUniforms.setDragging(isDragging); }
 
     void setTransform(const vcl::Matrix44f& mtx) { mTransform = mtx; }
+
+    // copy and swap idiom
+    DrawableTrackBall& operator=(DrawableTrackBall other)
+    {
+        swap(other);
+        return *this;
+    }
 
     // DrawableObject interface
 
@@ -80,8 +127,8 @@ public:
                     BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
                     BGFX_STATE_BLEND_NORMAL);
 
-                bgfx::setVertexBuffer(0, mVertexCoordBH);
-                bgfx::setIndexBuffer(mEdgeIndexBH);
+                mVertexCoordsBuffer.bind(0);
+                mEdgeIndexBuffer.bind();
 
                 bgfx::setTransform(mTransform.data());
 
@@ -107,20 +154,16 @@ private:
     void createBuffers()
     {
         // vertex buffer
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-            .end();
+        mVertexCoordsBuffer.set(
+            TRACKBALL_DATA.first.data(),
+            TRACKBALL_DATA.first.size() * 3,
+            bgfx::Attrib::Position,
+            3,
+            PrimitiveType::FLOAT);
 
-        mVertexCoordBH = bgfx::createVertexBuffer(
-            bgfx::makeRef(
-                TRACKBALL_DATA.first.data(),
-                TRACKBALL_DATA.first.size() * 3 * sizeof(float)),
-            layout);
-
-        mEdgeIndexBH = bgfx::createIndexBuffer(bgfx::makeRef(
-            TRACKBALL_DATA.second.data(),
-            TRACKBALL_DATA.second.size() * sizeof(uint16_t)));
+        // edge index buffer
+        mEdgeIndexBuffer.set(
+            TRACKBALL_DATA.second.data(), TRACKBALL_DATA.second.size(), false);
     }
 };
 
