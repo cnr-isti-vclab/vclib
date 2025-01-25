@@ -26,6 +26,7 @@
 #include "uniforms/drawable_trackball_uniforms.h"
 
 #include <vclib/algorithms/core/create.h>
+#include <vclib/math/transform.h>
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/space/core/matrix.h>
 
@@ -35,7 +36,7 @@ namespace vcl {
 
 class DrawableTrackBall : public DrawableObject
 {
-    inline static const uint N_POINTS       = 128;
+    inline static const uint N_POINTS = 128;
     inline static const auto TRACKBALL_DATA =
         createTrackBall<float, uint16_t>(1.0, N_POINTS);
 
@@ -55,18 +56,41 @@ class DrawableTrackBall : public DrawableObject
     vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
 
 public:
-    // TODO: manage copy and swap
-    DrawableTrackBall();
+    DrawableTrackBall()
+    {
+        mUniforms.setNumberOfVerticesPerAxis(N_POINTS);
 
-    ~DrawableTrackBall();
+        createBuffers();
+    }
 
-    void updateDragging(bool isDragging);
+    ~DrawableTrackBall() = default;
 
-    void setTransform(const vcl::Matrix44f& mtx);
+    void updateDragging(bool isDragging) { mUniforms.setDragging(isDragging); }
+
+    void setTransform(const vcl::Matrix44f& mtx) { mTransform = mtx; }
 
     // DrawableObject interface
 
-    void draw(uint viewId) const override;
+    void draw(uint viewId) const override
+    {
+        if (isVisible()) {
+            if (bgfx::isValid(mProgram)) {
+                bgfx::setState(
+                    0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
+                    BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
+                    BGFX_STATE_BLEND_NORMAL);
+
+                bgfx::setVertexBuffer(0, mVertexCoordBH);
+                bgfx::setIndexBuffer(mEdgeIndexBH);
+
+                bgfx::setTransform(mTransform.data());
+
+                mUniforms.bind();
+
+                bgfx::submit(viewId, mProgram);
+            }
+        }
+    }
 
     Box3d boundingBox() const override { return Box3d(); }
 
@@ -80,7 +104,24 @@ public:
     void setVisibility(bool vis) override { mVisible = vis; }
 
 private:
-    void createBuffers();
+    void createBuffers()
+    {
+        // vertex buffer
+        bgfx::VertexLayout layout;
+        layout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .end();
+
+        mVertexCoordBH = bgfx::createVertexBuffer(
+            bgfx::makeRef(
+                TRACKBALL_DATA.first.data(),
+                TRACKBALL_DATA.first.size() * 3 * sizeof(float)),
+            layout);
+
+        mEdgeIndexBH = bgfx::createIndexBuffer(bgfx::makeRef(
+            TRACKBALL_DATA.second.data(),
+            TRACKBALL_DATA.second.size() * sizeof(uint16_t)));
+    }
 };
 
 } // namespace vcl
