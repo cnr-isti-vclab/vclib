@@ -25,16 +25,20 @@
 
 #include "uniforms/drawable_trackball_uniforms.h"
 
+#include <vclib/algorithms/core/create.h>
 #include <vclib/render/drawable/drawable_object.h>
-#include <vclib/render/drawable/trackball/trackball_render_data.h>
 #include <vclib/space/core/matrix.h>
 
 #include <vclib/bgfx/context.h>
 
 namespace vcl {
 
-class DrawableTrackBall : public DrawableObject, protected TrackballRenderData
+class DrawableTrackBall : public DrawableObject
 {
+    inline static const uint N_POINTS       = 128;
+    inline static const auto TRACKBALL_DATA =
+        createTrackBall<float, uint16_t>(1.0, N_POINTS);
+
     bool mVisible = true;
 
     bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
@@ -48,15 +52,17 @@ class DrawableTrackBall : public DrawableObject, protected TrackballRenderData
 
     DrawableTrackballUniforms mUniforms;
 
-public:
-    using TrackballRenderData::setTransform;
+    vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
 
+public:
     // TODO: manage copy and swap
     DrawableTrackBall();
 
     ~DrawableTrackBall();
 
     void updateDragging(bool isDragging);
+
+    void setTransform(const vcl::Matrix44f& mtx);
 
     // DrawableObject interface
 

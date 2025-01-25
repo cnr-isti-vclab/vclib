@@ -42,8 +42,7 @@ MeshType createAxisCylinder(double unitLength, bool fromOrigin = false)
     const double firstSphereRadius  = unitLength * 0.02;
     const double commonSphereRadius = unitLength * 0.008;
 
-    MeshType cylinder =
-        vcl::createCylinder<MeshType>(cylRadius, cylLength);
+    MeshType cylinder = vcl::createCylinder<MeshType>(cylRadius, cylLength);
 
     if (fromOrigin) {
         vcl::translate(cylinder, vcl::Point3d(0, unitLength * 0.5, 0));
@@ -66,14 +65,13 @@ MeshType createAxisConeSpheres(double unitLength, bool fromOrigin = false)
     const double firstSphereRadius  = unitLength * 0.02;
     const double commonSphereRadius = unitLength * 0.008;
 
-    MeshType coneSpheres =
-        vcl::createCone<MeshType>(coneRadius, 0, coneLength);
-    double transl = unitLength + (coneLength * 0.5);
+    MeshType coneSpheres = vcl::createCone<MeshType>(coneRadius, 0, coneLength);
+    double   transl      = unitLength + (coneLength * 0.5);
     vcl::translate(coneSpheres, vcl::Point3d(0, transl, 0));
 
     if (!fromOrigin) {
         vcl::Sphered s(vcl::Point3d(0, -1, 0), firstSphereRadius);
-        MeshType sp = vcl::createSphere<MeshType>(s);
+        MeshType     sp = vcl::createSphere<MeshType>(s);
         coneSpheres.append(sp);
     }
 
@@ -81,7 +79,7 @@ MeshType createAxisConeSpheres(double unitLength, bool fromOrigin = false)
         const double step = unitLength * 0.1;
         const double x    = step + i * step;
         vcl::Sphered s(vcl::Point3d(0, x, 0), commonSphereRadius);
-        MeshType sp = vcl::createSphere<MeshType>(s);
+        MeshType     sp = vcl::createSphere<MeshType>(s);
         coneSpheres.append(sp);
         if (!fromOrigin) {
             s.center().y() = -x;
@@ -92,7 +90,7 @@ MeshType createAxisConeSpheres(double unitLength, bool fromOrigin = false)
 
     const double rad = fromOrigin ? firstSphereRadius : commonSphereRadius;
     vcl::Sphered s   = vcl::Sphered(vcl::Point3d(0, 0, 0), rad);
-    MeshType sp  = vcl::createSphere<MeshType>(s);
+    MeshType     sp  = vcl::createSphere<MeshType>(s);
     coneSpheres.append(sp);
 
     vcl::updatePerVertexNormals(coneSpheres);

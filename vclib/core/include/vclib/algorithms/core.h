@@ -25,6 +25,7 @@
 
 #include "core/bounding_box.h"
 #include "core/box.h"
+#include "core/create.h"
 #include "core/distance.h"
 #include "core/fitting.h"
 #include "core/intersection.h"

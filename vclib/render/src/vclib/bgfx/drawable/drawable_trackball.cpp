@@ -27,9 +27,9 @@
 
 namespace vcl {
 
-DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(128)
+DrawableTrackBall::DrawableTrackBall()
 {
-    mUniforms.setNumberOfVerticesPerAxis(128);
+    mUniforms.setNumberOfVerticesPerAxis(N_POINTS);
 
     createBuffers();
 }
@@ -46,6 +46,11 @@ void DrawableTrackBall::updateDragging(bool isDragging)
     mUniforms.setDragging(isDragging);
 }
 
+void DrawableTrackBall::setTransform(const Matrix44f& mtx)
+{
+    mTransform = mtx;
+}
+
 void DrawableTrackBall::draw(uint viewId) const
 {
     if (isVisible()) {
@@ -58,7 +63,7 @@ void DrawableTrackBall::draw(uint viewId) const
             bgfx::setVertexBuffer(0, mVertexCoordBH);
             bgfx::setIndexBuffer(mEdgeIndexBH);
 
-            bgfx::setTransform(transformData());
+            bgfx::setTransform(mTransform.data());
 
             mUniforms.bind();
 
@@ -76,11 +81,14 @@ void DrawableTrackBall::createBuffers()
         .end();
 
     mVertexCoordBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertexBufferData(), vertexNumber() * 3 * sizeof(float)),
+        bgfx::makeRef(
+            TRACKBALL_DATA.first.data(),
+            TRACKBALL_DATA.first.size() * 3 * sizeof(float)),
         layout);
 
-    mEdgeIndexBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(edgeBufferData(), edgeNumber() * sizeof(uint16_t)));
+    mEdgeIndexBH = bgfx::createIndexBuffer(bgfx::makeRef(
+        TRACKBALL_DATA.second.data(),
+        TRACKBALL_DATA.second.size() * sizeof(uint16_t)));
 }
 
 } // namespace vcl
