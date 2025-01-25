@@ -84,15 +84,15 @@ enum class MatrixStorageType { ROW_MAJOR, COLUMN_MAJOR };
 constexpr int sizeOf(PrimitiveType type) noexcept
 {
     switch (type) {
-        case PrimitiveType::CHAR: return sizeof(char);
-        case PrimitiveType::UCHAR: return sizeof(unsigned char);
-        case PrimitiveType::SHORT: return sizeof(int16_t);
-        case PrimitiveType::USHORT: return sizeof(uint16_t);
-        case PrimitiveType::INT: return sizeof(int32_t);
-        case PrimitiveType::UINT: return sizeof(uint32_t);
-        case PrimitiveType::FLOAT: return sizeof(float);
-        case PrimitiveType::DOUBLE: return sizeof(double);
-        default: return 0;
+    case PrimitiveType::CHAR: return sizeof(char);
+    case PrimitiveType::UCHAR: return sizeof(unsigned char);
+    case PrimitiveType::SHORT: return sizeof(int16_t);
+    case PrimitiveType::USHORT: return sizeof(uint16_t);
+    case PrimitiveType::INT: return sizeof(int32_t);
+    case PrimitiveType::UINT: return sizeof(uint32_t);
+    case PrimitiveType::FLOAT: return sizeof(float);
+    case PrimitiveType::DOUBLE: return sizeof(double);
+    default: return 0;
     }
 }
 
