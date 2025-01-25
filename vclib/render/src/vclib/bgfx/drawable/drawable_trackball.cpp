@@ -46,6 +46,11 @@ void DrawableTrackBall::updateDragging(bool isDragging)
     mUniforms.setDragging(isDragging);
 }
 
+void DrawableTrackBall::setTransform(const Matrix44f& mtx)
+{
+    mTransform = mtx;
+}
+
 void DrawableTrackBall::draw(uint viewId) const
 {
     if (isVisible()) {
@@ -58,7 +63,7 @@ void DrawableTrackBall::draw(uint viewId) const
             bgfx::setVertexBuffer(0, mVertexCoordBH);
             bgfx::setIndexBuffer(mEdgeIndexBH);
 
-            bgfx::setTransform(transformData());
+            bgfx::setTransform(mTransform.data());
 
             mUniforms.bind();
 

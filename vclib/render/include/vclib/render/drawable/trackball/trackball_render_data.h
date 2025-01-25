@@ -33,8 +33,6 @@ class TrackballRenderData
     std::vector<vcl::Point3f> mVertices;
     std::vector<uint16_t>     mEdges;
 
-    vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
-
 public:
     TrackballRenderData(uint pointsPerCircle = 64);
 
@@ -45,10 +43,6 @@ public:
     const float* vertexBufferData() const;
 
     const uint16_t* edgeBufferData() const;
-
-    const float* transformData() const;
-
-    void setTransform(const vcl::Matrix44f& mtx);
 };
 
 } // namespace vcl

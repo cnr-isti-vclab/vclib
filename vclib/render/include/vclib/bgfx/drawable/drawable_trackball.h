@@ -48,15 +48,17 @@ class DrawableTrackBall : public DrawableObject, protected TrackballRenderData
 
     DrawableTrackballUniforms mUniforms;
 
-public:
-    using TrackballRenderData::setTransform;
+    vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
 
+public:
     // TODO: manage copy and swap
     DrawableTrackBall();
 
     ~DrawableTrackBall();
 
     void updateDragging(bool isDragging);
+
+    void setTransform(const vcl::Matrix44f& mtx);
 
     // DrawableObject interface
 

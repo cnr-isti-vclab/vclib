@@ -82,14 +82,4 @@ const uint16_t* TrackballRenderData::edgeBufferData() const
     return mEdges.data();
 }
 
-const float* TrackballRenderData::transformData() const
-{
-    return mTransform.data();
-}
-
-void TrackballRenderData::setTransform(const Matrix44f& mtx)
-{
-    mTransform = mtx;
-}
-
 } // namespace vcl
