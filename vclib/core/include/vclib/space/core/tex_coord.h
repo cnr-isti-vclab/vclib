@@ -52,6 +52,16 @@ class TexCoord : public Point2<Scalar>
 public:
     using Base::Base;
 
+    // inherit Base operators
+    using Base::operator+;
+    using Base::operator-;
+    using Base::operator*;
+    using Base::operator/;
+    using Base::operator+=;
+    using Base::operator-=;
+    using Base::operator*=;
+    using Base::operator/=;
+
     Scalar u() const { return Base::x(); }
 
     Scalar v() const { return Base::y(); }
