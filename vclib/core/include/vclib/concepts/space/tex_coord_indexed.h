@@ -20,50 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef VCL_CONCEPTS_SPACE_TEX_COORD_INDEXED_H
+#define VCL_CONCEPTS_SPACE_TEX_COORD_INDEXED_H
 
-#include "space/array.h"
-#include "space/bit_set.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/tex_coord_indexed.h"
-#include "space/texture.h"
+#include "tex_coord.h"
 
-void spaceStaticAsserts()
-{
-    arrayStaticAsserts();
-    bitSetStaticAsserts();
-    boxStaticAsserts();
-    colorStaticAsserts();
-    imageStaticAsserts();
-    matrixStaticAsserts();
-    planeStaticAsserts();
-    pointStaticAsserts();
-    polygonStaticAsserts();
-    principalCurvatureStaticAsserts();
-    samplerStaticAsserts();
-    segmentStaticAsserts();
-    sphereStaticAsserts();
-    texCoordStaticAsserts();
-    texCoordIndexedStaticAsserts();
-    textureStaticAsserts();
+namespace vcl {
 
-    using namespace vcl;
+/**
+ * @brief A concept representing a Texture Coordinate with an index.
+ *
+ * @tparam T: The type to be tested for conformity to the TexCoordIndexedConcept.
+ */
+template<typename T>
+concept TexCoordIndexedConcept =
+    TexCoordConcept<T> && requires (
+                              T&&                                obj,
+                              ushort                             u,
+                              ushort&                            uR,
+                              typename RemoveRef<T>::ScalarType  s) {
+        typename RemoveRef<T>::ScalarType;
 
-    // bitset
-    static_assert(
-        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-}
+        RemoveRef<T>();
+        RemoveRef<T>(s, s, u);
 
-#endif // SPACE_H
+        { obj.index() } -> std::convertible_to<decltype(u)>;
+
+        { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
+
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.index() } -> std::same_as<decltype(uR)>;
+            { obj.set(s, s, u) } -> std::same_as<void>;
+        };
+    };
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_TEX_COORD_INDEXED_H

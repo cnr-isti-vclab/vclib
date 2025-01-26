@@ -31,7 +31,7 @@ namespace vcl {
 /**
  * @brief A concept representing a Texture Coordinate.
  *
- * @tparam T: The type to be tested for conformity to the BoxConcept.
+ * @tparam T: The type to be tested for conformity to the TexCoordConcept.
  */
 template<typename T>
 concept TexCoordConcept = requires (

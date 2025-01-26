@@ -49,6 +49,7 @@ class TexCoordIndexed : public TexCoord<Scalar>
 
 public:
     using Base::Base;
+    using Base::set;
 
     using Base::operator();
     using Base::operator[];
@@ -86,6 +87,12 @@ public:
 
     ushort& index() { return mIndex; }
 
+    void set(const Scalar& s1, const Scalar& s2, ushort index)
+    {
+        Base::set(s1, s2);
+        mIndex = index;
+    }
+
     void serialize(std::ostream& os) const
     {
         Base::serialize(os);
@@ -101,6 +108,12 @@ public:
     // operators
     auto operator<=>(const TexCoordIndexed& t1) const = default;
 };
+
+/* Specialization Aliases */
+
+using TexCoordIndexedi = TexCoordIndexed<int>;
+using TexCoordIndexedf = TexCoordIndexed<float>;
+using TexCoordIndexedd = TexCoordIndexed<double>;
 
 } // namespace vcl
 
