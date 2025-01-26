@@ -27,54 +27,49 @@
 
 namespace vcl {
 
+/**
+ * @brief The TexCoord class represents a 2-dimensional texture coordinate
+ * containing two scalar values.
+ *
+ * The TexCoord class template represents a 2-dimensional texture coordinate
+ * containing two scalar values. The scalar type of the texture coordinates is a
+ * template parameter of the class.
+ *
+ * The class is a specialization of the Point2 class template, where the two
+ * components of the texture coordinate are named `u` and `v`. The class adds
+ * setter member functions for setting the `u` and `v` components of the texture
+ * coordinate, with an additional assert that the values are in the range [0,
+ * 1].
+ *
+ * @tparam Scalar: The scalar type of the texture coordinate components.
+ *
+ * @ingroup space_core
+ */
 template<typename Scalar>
-class TexCoord
+class TexCoord : public Point2<Scalar>
 {
-    template<typename S>
-    friend class TexCoord;
-
-    Point2<Scalar> mCoord;
-
+    using Base = Point2<Scalar>;
 public:
-    using ScalarType = Scalar;
+    using Base::Base;
 
-    TexCoord() = default;
+    Scalar u() const { return Base::x(); }
 
-    TexCoord(const Scalar& s1, const Scalar& s2) : mCoord(s1, s2) {}
+    Scalar v() const { return Base::y(); }
 
-    TexCoord(const Point2<Scalar>& p) : mCoord(p) {}
+    Scalar& u() { return Base::x(); }
 
-    template<typename S>
-    auto cast() const
-    {
-        if constexpr (std::is_same<Scalar, S>::value) {
-            return *this;
-        }
-        else {
-            TexCoord<S> tmp;
-            tmp.mCoord = mCoord.template cast<S>();
-            return tmp;
-        }
-    }
-
-    Scalar u() const { return mCoord.x(); }
-
-    Scalar v() const { return mCoord.y(); }
-
-    Scalar& u() { return mCoord.x(); }
-
-    Scalar& v() { return mCoord.y(); }
+    Scalar& v() { return Base::y(); }
 
     void setU(Scalar s)
     {
         assert(s >= 0 && s <= 1);
-        mCoord.x() = s;
+        Base::x() = s;
     }
 
     void setV(Scalar s)
     {
         assert(s >= 0 && s <= 1);
-        mCoord.y() = s;
+        Base::y() = s;
     }
 
     void set(Scalar u, Scalar v)
@@ -82,21 +77,6 @@ public:
         setU(u);
         setV(v);
     }
-
-    void serialize(std::ostream& os) const { mCoord.serialize(os); }
-
-    void deserialize(std::istream& is) { mCoord.deserialize(is); }
-
-    // operators
-    Scalar& operator()(uint i) { return mCoord[i]; }
-
-    const Scalar& operator()(uint i) const { return mCoord[i]; }
-
-    Scalar& operator[](uint i) { return mCoord[i]; }
-
-    const Scalar& operator[](uint i) const { return mCoord[i]; }
-
-    bool operator==(const TexCoord& t1) const = default;
 };
 
 /* Specialization Aliases */
