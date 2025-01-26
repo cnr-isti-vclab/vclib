@@ -52,7 +52,7 @@ namespace vcl::comp {
  *
  * @code{.cpp}
  * auto t = f.wedgeTexCoord(0);
- * short tid = f.textureIndex();
+ * ushort tid = f.textureIndex();
  * @endcode
  *
  * @note This component is *Tied To Vertex Number*: it means that the size of
@@ -85,7 +85,7 @@ class WedgeTexCoords :
             CompId::WEDGE_TEX_COORDS,
             vcl::TexCoord<Scalar>,
             N,
-            short,
+            ushort,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT,
@@ -96,7 +96,7 @@ class WedgeTexCoords :
         CompId::WEDGE_TEX_COORDS,
         vcl::TexCoord<Scalar>,
         N,
-        short,
+        ushort,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT,
@@ -225,7 +225,7 @@ public:
      *
      * @return A reference to the texture index.
      */
-    short& textureIndex() { return Base::additionalData(); }
+    ushort& textureIndex() { return Base::additionalData(); }
 
     /**
      * @brief Returns the texture index used to identify the texture on which
@@ -233,7 +233,7 @@ public:
      *
      * @return The texture index.
      */
-    short textureIndex() const { return Base::additionalData(); }
+    ushort textureIndex() const { return Base::additionalData(); }
 
     /* Iterator Member functions */
 
