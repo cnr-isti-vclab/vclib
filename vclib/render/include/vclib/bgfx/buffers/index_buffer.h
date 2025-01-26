@@ -46,7 +46,7 @@ namespace vcl {
 class IndexBuffer
 {
     bgfx::IndexBufferHandle mIndexBufferHandle = BGFX_INVALID_HANDLE;
-    bool mCompute = false;
+    bool                    mCompute           = false;
 
 public:
     /**
@@ -66,10 +66,7 @@ public:
      *
      * @param[in] other: the other IndexBuffer object.
      */
-    IndexBuffer(IndexBuffer&& other) noexcept
-    {
-        swap(other);
-    }
+    IndexBuffer(IndexBuffer&& other) noexcept { swap(other); }
 
     /**
      * @brief Destructor.
@@ -149,7 +146,7 @@ public:
         bgfx::ReleaseFn releaseFn = nullptr)
     {
         uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
-        uint size = is32Bit ? 4 : 2;
+        uint     size  = is32Bit ? 4 : 2;
         set(bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn),
             false,
             flags);
@@ -171,11 +168,11 @@ public:
      * no longer needed.
      */
     void setForCompute(
-        const void*   bufferIndices,
-        const uint    bufferSize,
-        PrimitiveType type,
-        bgfx::Access::Enum access = bgfx::Access::Read,
-        bgfx::ReleaseFn releaseFn = nullptr)
+        const void*        bufferIndices,
+        const uint         bufferSize,
+        PrimitiveType      type,
+        bgfx::Access::Enum access    = bgfx::Access::Read,
+        bgfx::ReleaseFn    releaseFn = nullptr)
     {
         uint64_t flags = flagsForType(type);
         flags |= flagsForAccess(access);
@@ -197,7 +194,7 @@ public:
         uint64_t            flags   = BGFX_BUFFER_NONE)
     {
         mIndexBufferHandle = bgfx::createIndexBuffer(indices, flags);
-        mCompute = compute;
+        mCompute           = compute;
     }
 
     /**

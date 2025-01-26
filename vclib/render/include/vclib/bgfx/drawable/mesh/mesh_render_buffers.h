@@ -135,11 +135,9 @@ public:
         if (indexBufferToBind == Base::TRIANGLES) {
             mTriangleIndexBuffer.bind();
 
-            mTriangleNormalBuffer.bind(
-                VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+            mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-            mTriangleColorBuffer.bind(
-                VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+            mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 
             mTriangleTextureIndexBuffer.bind(
                 VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
@@ -147,11 +145,9 @@ public:
         else if (indexBufferToBind == Base::EDGES) {
             mEdgeIndexBuffer.bind();
 
-            mEdgeNormalBuffer.bind(
-                VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+            mEdgeNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-            mEdgeColorBuffer.bind(
-                VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+            mEdgeColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
         }
         else if (indexBufferToBind == Base::WIREFRAME) {
             bgfx::setIndexBuffer(mWireframeIndexBH);
@@ -221,8 +217,7 @@ private:
         // triangle index buffer
         if (Base::triangleBufferData()) {
             mTriangleIndexBuffer.set(
-                Base::triangleBufferData(),
-                Base::triangleBufferSize());
+                Base::triangleBufferData(), Base::triangleBufferSize());
         }
 
         // triangle normal buffer

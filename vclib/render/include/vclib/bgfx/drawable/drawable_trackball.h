@@ -44,7 +44,7 @@ class DrawableTrackBall : public DrawableObject
     bool mVisible = true;
 
     VertexBuffer mVertexCoordsBuffer;
-    IndexBuffer mEdgeIndexBuffer;
+    IndexBuffer  mEdgeIndexBuffer;
 
     // TODO: can we be sure that this is called after the context initialization
     // triggered by a window?
@@ -65,10 +65,8 @@ public:
     }
 
     DrawableTrackBall(const DrawableTrackBall& other) :
-        mVisible(other.mVisible),
-        mProgram(other.mProgram),
-        mUniforms(other.mUniforms),
-        mTransform(other.mTransform)
+            mVisible(other.mVisible), mProgram(other.mProgram),
+            mUniforms(other.mUniforms), mTransform(other.mTransform)
     {
         // copy all the members that can be copied, and then re-create the
         // buffers

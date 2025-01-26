@@ -46,7 +46,7 @@ namespace vcl {
 class VertexBuffer
 {
     bgfx::VertexBufferHandle mVertexBufferHandle = BGFX_INVALID_HANDLE;
-    bool mCompute = false;
+    bool                     mCompute            = false;
 
 public:
     /**
@@ -66,10 +66,7 @@ public:
      *
      * @param[in] other: the other VertexBuffer object.
      */
-    VertexBuffer(VertexBuffer&& other) noexcept
-    {
-        swap(other);
-    }
+    VertexBuffer(VertexBuffer&& other) noexcept { swap(other); }
 
     /**
      * @brief Destructor.
@@ -155,13 +152,12 @@ public:
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
         bgfx::VertexLayout layout;
-        layout.begin().add(attrib, numElements, attribType(type), normalize).end();
+        layout.begin()
+            .add(attrib, numElements, attribType(type), normalize)
+            .end();
 
         set(layout,
-            bgfx::makeRef(
-                bufferData,
-                bufferSize * sizeOf(type),
-                releaseFn));
+            bgfx::makeRef(bufferData, bufferSize * sizeOf(type), releaseFn));
     }
 
     /**
@@ -200,8 +196,7 @@ public:
             .end();
 
         set(layout,
-            bgfx::makeRef(
-                bufferData, bufferSize * sizeOf(type), releaseFn),
+            bgfx::makeRef(bufferData, bufferSize * sizeOf(type), releaseFn),
             true,
             flags);
     }
@@ -216,15 +211,15 @@ public:
      */
     void set(
         const bgfx::VertexLayout& layout,
-        const bgfx::Memory* data,
-        bool compute = false,
-        uint64_t flags = BGFX_BUFFER_NONE)
+        const bgfx::Memory*       data,
+        bool                      compute = false,
+        uint64_t                  flags   = BGFX_BUFFER_NONE)
     {
         if (bgfx::isValid(mVertexBufferHandle))
             bgfx::destroy(mVertexBufferHandle);
 
         mVertexBufferHandle = bgfx::createVertexBuffer(data, layout, flags);
-        mCompute = compute;
+        mCompute            = compute;
     }
 
     /**
