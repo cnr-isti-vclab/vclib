@@ -46,7 +46,7 @@ concept TexCoordConcept = requires (
     { obj.u() } -> std::convertible_to<decltype(s)>;
     { obj.v() } -> std::convertible_to<decltype(s)>;
 
-    { obj == obj } -> std::same_as<bool>;
+    { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
 
     { obj(uint()) } -> std::convertible_to<decltype(s)>;
     { obj[uint()] } -> std::convertible_to<decltype(s)>;

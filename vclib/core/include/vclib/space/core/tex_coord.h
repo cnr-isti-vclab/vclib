@@ -45,41 +45,55 @@ namespace vcl {
  *
  * @ingroup space_core
  */
+// TODO: TexCoord should inherit from Point2
 template<typename Scalar>
-class TexCoord : public Point2<Scalar>
+class TexCoord
 {
-    using Base = Point2<Scalar>;
+    template<typename S>
+    friend class TexCoord;
+
+    Point2<Scalar> mCoord;
+
 public:
-    using Base::Base;
+    using ScalarType = Scalar;
 
-    // inherit Base operators
-    using Base::operator+;
-    using Base::operator-;
-    using Base::operator*;
-    using Base::operator/;
-    using Base::operator+=;
-    using Base::operator-=;
-    using Base::operator*=;
-    using Base::operator/=;
+    TexCoord() = default;
 
-    Scalar u() const { return Base::x(); }
+    TexCoord(const Scalar& s1, const Scalar& s2) : mCoord(s1, s2) {}
 
-    Scalar v() const { return Base::y(); }
+    TexCoord(const Point2<Scalar>& p) : mCoord(p) {}
 
-    Scalar& u() { return Base::x(); }
+    template<typename S>
+    auto cast() const
+    {
+        if constexpr (std::is_same<Scalar, S>::value) {
+            return *this;
+        }
+        else {
+            TexCoord<S> tmp;
+            tmp.mCoord = mCoord.template cast<S>();
+            return tmp;
+        }
+    }
 
-    Scalar& v() { return Base::y(); }
+    Scalar u() const { return mCoord.x(); }
+
+    Scalar v() const { return mCoord.y(); }
+
+    Scalar& u() { return mCoord.x(); }
+
+    Scalar& v() { return mCoord.y(); }
 
     void setU(Scalar s)
     {
         assert(s >= 0 && s <= 1);
-        Base::x() = s;
+        mCoord.x() = s;
     }
 
     void setV(Scalar s)
     {
         assert(s >= 0 && s <= 1);
-        Base::y() = s;
+        mCoord.y() = s;
     }
 
     void set(Scalar u, Scalar v)
@@ -87,6 +101,21 @@ public:
         setU(u);
         setV(v);
     }
+
+    void serialize(std::ostream& os) const { mCoord.serialize(os); }
+
+    void deserialize(std::istream& is) { mCoord.deserialize(is); }
+
+    // operators
+    Scalar& operator()(uint i) { return mCoord[i]; }
+
+    const Scalar& operator()(uint i) const { return mCoord[i]; }
+
+    Scalar& operator[](uint i) { return mCoord[i]; }
+
+    const Scalar& operator[](uint i) const { return mCoord[i]; }
+
+    auto operator<=>(const TexCoord& t1) const = default;
 };
 
 /* Specialization Aliases */
