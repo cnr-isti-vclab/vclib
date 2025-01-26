@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     }
     else {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
-            getDrawableMesh<vcl::TriMesh>("TextureDouble.ply");
+            getDrawableMesh<vcl::TriMesh>("TextureDouble.obj");
         auto mrs = drawable.renderSettings();
         mrs.setSurfaceShadingFlat();
         mrs.setSurfaceColorPerWedgeTexcoords();

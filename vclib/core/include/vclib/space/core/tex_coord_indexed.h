@@ -43,6 +43,9 @@ namespace vcl {
 template<typename Scalar>
 class TexCoordIndexed : public TexCoord<Scalar>
 {
+    template<typename S>
+    friend class TexCoordIndexed;
+
     using Base = TexCoord<Scalar>;
 
     ushort mIndex = 0;
@@ -77,8 +80,7 @@ public:
             return *this;
         }
         else {
-            TexCoordIndexed<S> tmp = Base::template cast<S>();
-            tmp.mIndex = mIndex;
+            TexCoordIndexed<S> tmp(Base::template cast<S>(), mIndex);
             return tmp;
         }
     }
