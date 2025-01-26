@@ -24,6 +24,9 @@
 #define VCL_ALGORITHMS_MESH_STAT_TOPOLOGY_H
 
 #include <vclib/concepts/mesh.h>
+#include <vclib/mesh/requirements.h>
+
+#include <map>
 
 namespace vcl {
 
@@ -67,6 +70,25 @@ void setReferencedVertices(
     // mesh
     (setReferencedVertices<Cont>(mesh, refs, nRefs), ...);
 }
+
+// struct to store the information of the wedge texcoords
+template<typename WedgeTexCoordType>
+struct WedgeTexCoordsInfo {
+    WedgeTexCoordType texCoord;
+    ushort texCoordIndex;
+
+    bool operator<(const WedgeTexCoordsInfo& other) const
+    {
+        if (texCoordIndex == other.texCoordIndex) {
+            return texCoord < other.texCoord;
+        }
+        return texCoordIndex < other.texCoordIndex;
+    }
+};
+
+static inline std::list<uint> dummyUintList;
+static inline std::list<std::list<std::pair<uint, uint>>> dummyListOfLists;
+static inline std::vector<std::pair<uint, uint>> dummyVectorOfPairs;
 
 } // namespace detail
 
@@ -202,6 +224,130 @@ Container referencedVertices(
     nUnref = mesh.vertexNumber() - nRefs;
 
     return refVertices;
+}
+
+/**
+ * @brief This function counts the number of vertices that must be duplicated in
+ * a mesh to have a unique texcoord per vertex, by checking the texcoords of the
+ * wedges of the mesh faces.
+ *
+ * The function returns the number of vertices that must be duplicated (i.e.,
+ * added to the mesh) to have a unique texcoord per vertex. The function also
+ * returns a vector that tells, for each vertex, the pair face/wedge index in
+ * the face that must be kept for the vertex, the list of vertices to duplicate,
+ * and the list of faces that must be reassigned to the duplicated vertices.
+ *
+ * @param[in] mesh: The input mesh. It must satisfy the FaceMeshConcept and must
+ * have per-face wedge texcoords.
+ * @param[out] vertWedgeMap: A vector that tells, for each vertex, the pair
+ * face/wedge index in the face that must be kept for the vertex (it allows to
+ * index the texcoords of the vertex).
+ * @param[out] vertsToDuplicate: a list of vertices that must be duplicated
+ * (each element of the list is the index of the vertex to duplicate).
+ * @param[out] facesToReassign: a list of lists of pairs face/wedge index in the
+ * face that must be reassigned to the duplicated vertices (each list of pairs
+ * is the list of faces that must be reassigned to the corresponding duplicated
+ * vertex). The list contains a list for each vertex to duplicate.
+ * @return The number of vertices that must be duplicated.
+ */
+template<FaceMeshConcept MeshType>
+uint countVerticesToDuplicateByWedgeTexCoords(
+    const MeshType&                    mesh,
+    std::vector<std::pair<uint, uint>> vertWedgeMap =
+        detail::dummyVectorOfPairs,
+    std::list<uint>& vertsToDuplicate = detail::dummyUintList,
+    std::list<std::list<std::pair<uint, uint>>>& facesToReassign =
+        detail::dummyListOfLists)
+{
+    vcl::requirePerFaceWedgeTexCoords(mesh);
+
+    using WedgeTexCoordType = MeshType::FaceType::WedgeTexCoordType;
+    using WedgeTexCoordsInfo = detail::WedgeTexCoordsInfo<WedgeTexCoordType>;
+
+    // list of faces that reference a wedge texcoord, with the index of the
+    // vertex in the face
+    using FaceList = std::list<std::pair<uint, uint>>;
+
+    vertWedgeMap.resize(mesh.vertexContainerSize());
+    vertsToDuplicate.clear();
+    facesToReassign.clear();
+
+    uint count = 0;
+
+    // for each vertex, I'll store a map of WedgeTexCoordsInfo
+    // each element of the map represent a unique wedge texcoord(the texcoord
+    // itself and the index of the texcoord), and for each element it maps a
+    // list of faces that reference the texcoord
+    std::vector<std::map<WedgeTexCoordsInfo, FaceList>> wedges(
+        mesh.vertexContainerSize());
+
+    for(const auto& f : mesh.faces()) {
+        for(uint i = 0; i < f.vertexNumber(); ++i) {
+            uint vi = f.vertexIndex(i);
+
+            // check if the i-th wedge texcoord of the face already exists
+            WedgeTexCoordsInfo wi = {f.wedgeTexCoord(i), f.textureIndex()};
+            auto it = wedges[vi].find(wi);
+            if(it == wedges[vi].end()) { // if it doesn't exist, add it
+                // if there was already a texcoord for the vertex, it means that
+                // the vertex will be duplicated
+                if (!wedges[vi].empty()) {
+                    count++;
+                }
+                wedges[vi][wi].emplace_back(f.index(), i);
+            }
+            else {
+                // if it exists, add the face to the list of faces that
+                // reference the texcoord
+                it->second.emplace_back(f.index(), i);
+            }
+        }
+    }
+
+    // for each vertex, check if there are multiple texcoords
+    // note: here we will modify the maps for convenience: at the end of this
+    // loop, the info will be contained in the two lists vertsToDuplicate and
+    // facesToReassign (the wedges vector of map will be inconsistent)
+    for (uint vi = 0; auto& map : wedges) {
+        if (map.size() > 1) {
+            // there are multiple texcoords for the vertex vi, so it will be
+            // duplicated
+
+            // remove from the map the element having the higher number of
+            // faces referencing the texcoord (we do this to reassign the less
+            // number of faces)
+            auto it = std::max_element(
+                map.begin(),
+                map.end(),
+                [](const auto& a, const auto& b) {
+                    return a.second.size() < b.second.size();
+                });
+            // store the reference of the texcoord to keep (pair face/vertex
+            // index in the face)
+            vertWedgeMap[vi] = it->second.front();
+            map.erase(it);
+
+            // store the vertex to duplicate, and the faces to reassign
+            for (auto& [wi, fl] : map) {
+                vertsToDuplicate.push_back(vi);
+                facesToReassign.push_back(std::move(fl));
+            }
+
+        }
+        else {
+            if (map.size() == 1) {
+                // there is only one texcoord for the vertex vi, so store its
+                // reference (pair face/vertex index in the face)
+                vertWedgeMap[vi] = map.begin()->second.front();
+            }
+            else { // the vertex was unreferenced
+                vertWedgeMap[vi] = {UINT_NULL, UINT_NULL};
+            }
+        }
+        ++vi;
+    }
+
+    return count;
 }
 
 } // namespace vcl
