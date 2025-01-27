@@ -39,8 +39,12 @@ int main(int argc, char** argv)
     ViewerWindow tw("Viewer GLFW");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> m =
-        getDrawableMesh<vcl::TriMesh>("greek_helmet.obj");
+    vcl::DrawableMesh<vcl::PolyMesh> m =
+        getDrawableMesh<vcl::PolyMesh>("greek_helmet.obj");
+
+    auto mrs = m.renderSettings();
+    mrs.setSurfaceShadingFlat();
+    m.setRenderSettings(mrs);
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
