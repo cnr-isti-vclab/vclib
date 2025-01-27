@@ -42,12 +42,12 @@ class DrawableAxis : public DrawableObject
     inline static const std::pair<vcl::TriMesh, vcl::TriMesh> AXIS_MESHES =
         vcl::createAxisDisjoint<vcl::TriMesh>();
 
-    bool mVisible = false;
-
-    const vcl::Color mColors[3] = {
+    static inline const vcl::Color AXIS_COLORS[3] = {
         vcl::Color::Red,
         vcl::Color::Green,
         vcl::Color::Blue};
+
+    bool mVisible = false;
 
     vcl::Matrix44f mMatrices[3] = {
         vcl::Matrix44f::Zero(),
