@@ -201,16 +201,15 @@ function(_add_bgfx_shader FILE DIR TARGET)
         endif()
 
         # essl
-        if(NOT "${TYPE}" STREQUAL "COMPUTE")
-            set(ESSL_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/essl/${DIR}/${FILENAME}.bin)
-            _bgfx_shaderc_parse(
-                ESSL ${COMMON} 
-                ANDROID PROFILE ${ESSL_PROFILE} 
-                OUTPUT ${ESSL_OUTPUT}
-                INCLUDES ${BGFX_SHADER_INCLUDE_PATH})
-            list(APPEND OUTPUTS "ESSL")
-            set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}ESSL, ")
-        endif()
+        set(ESSL_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/essl/${DIR}/${FILENAME}.bin)
+        _bgfx_shaderc_parse(
+            ESSL ${COMMON}
+            ANDROID PROFILE ${ESSL_PROFILE}
+            OUTPUT ${ESSL_OUTPUT}
+            INCLUDES ${BGFX_SHADER_INCLUDE_PATH})
+        list(APPEND OUTPUTS "ESSL")
+        set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}ESSL, ")
+
 
         # glsl
         set(GLSL_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/glsl/${DIR}/${FILENAME}.bin)
@@ -232,18 +231,16 @@ function(_add_bgfx_shader FILE DIR TARGET)
         set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}GLSL, ")
 
         # spirv
-        if(NOT "${TYPE}" STREQUAL "COMPUTE")
-            set(SPIRV_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/spirv/${DIR}/${FILENAME}.bin)
-            _bgfx_shaderc_parse(
-                SPIRV ${COMMON} LINUX PROFILE 
-                ${SPIRV_PROFILE} 
-                OUTPUT ${SPIRV_OUTPUT}
-                INCLUDES ${BGFX_SHADER_INCLUDE_PATH})
-            list(APPEND OUTPUTS "SPIRV")
-            set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}SPIRV")
-            set(OUTPUT_FILES "")
-            set(COMMANDS "")
-        endif()
+        set(SPIRV_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/spirv/${DIR}/${FILENAME}.bin)
+        _bgfx_shaderc_parse(
+            SPIRV ${COMMON} LINUX PROFILE
+            ${SPIRV_PROFILE}
+            OUTPUT ${SPIRV_OUTPUT}
+            INCLUDES ${BGFX_SHADER_INCLUDE_PATH})
+        list(APPEND OUTPUTS "SPIRV")
+        set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}SPIRV")
+        set(OUTPUT_FILES "")
+        set(COMMANDS "")
 
         foreach(OUT ${OUTPUTS})
             list(APPEND OUTPUT_FILES ${${OUT}_OUTPUT})
