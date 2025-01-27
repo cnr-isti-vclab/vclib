@@ -73,9 +73,10 @@ void setReferencedVertices(
 
 // struct to store the information of the wedge texcoords
 template<typename WedgeTexCoordType>
-struct WedgeTexCoordsInfo {
+struct WedgeTexCoordsInfo
+{
     WedgeTexCoordType texCoord;
-    ushort texCoordIndex;
+    ushort            texCoordIndex;
 
     bool operator<(const WedgeTexCoordsInfo& other) const
     {
@@ -86,9 +87,9 @@ struct WedgeTexCoordsInfo {
     }
 };
 
-static inline std::list<uint> dummyUintList;
+static inline std::list<uint>                             dummyUintList;
 static inline std::list<std::list<std::pair<uint, uint>>> dummyListOfLists;
-static inline std::vector<std::pair<uint, uint>> dummyVectorOfPairs;
+static inline std::vector<std::pair<uint, uint>>          dummyVectorOfPairs;
 
 } // namespace detail
 
@@ -261,7 +262,7 @@ uint countVerticesToDuplicateByWedgeTexCoords(
 {
     vcl::requirePerFaceWedgeTexCoords(mesh);
 
-    using WedgeTexCoordType = MeshType::FaceType::WedgeTexCoordType;
+    using WedgeTexCoordType  = MeshType::FaceType::WedgeTexCoordType;
     using WedgeTexCoordsInfo = detail::WedgeTexCoordsInfo<WedgeTexCoordType>;
 
     // list of faces that reference a wedge texcoord, with the index of the
@@ -281,14 +282,14 @@ uint countVerticesToDuplicateByWedgeTexCoords(
     std::vector<std::map<WedgeTexCoordsInfo, FaceList>> wedges(
         mesh.vertexContainerSize());
 
-    for(const auto& f : mesh.faces()) {
-        for(uint i = 0; i < f.vertexNumber(); ++i) {
+    for (const auto& f : mesh.faces()) {
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
             uint vi = f.vertexIndex(i);
 
             // check if the i-th wedge texcoord of the face already exists
             WedgeTexCoordsInfo wi = {f.wedgeTexCoord(i), f.textureIndex()};
-            auto it = wedges[vi].find(wi);
-            if(it == wedges[vi].end()) { // if it doesn't exist, add it
+            auto               it = wedges[vi].find(wi);
+            if (it == wedges[vi].end()) { // if it doesn't exist, add it
                 // if there was already a texcoord for the vertex, it means that
                 // the vertex will be duplicated
                 if (!wedges[vi].empty()) {
@@ -317,9 +318,7 @@ uint countVerticesToDuplicateByWedgeTexCoords(
             // faces referencing the texcoord (we do this to reassign the less
             // number of faces)
             auto it = std::max_element(
-                map.begin(),
-                map.end(),
-                [](const auto& a, const auto& b) {
+                map.begin(), map.end(), [](const auto& a, const auto& b) {
                     return a.second.size() < b.second.size();
                 });
             // store the reference of the texcoord to keep (pair face/vertex
@@ -332,7 +331,6 @@ uint countVerticesToDuplicateByWedgeTexCoords(
                 vertsToDuplicate.push_back(vi);
                 facesToReassign.push_back(std::move(fl));
             }
-
         }
         else {
             if (map.size() == 1) {

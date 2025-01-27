@@ -57,6 +57,7 @@ template<typename Scalar, uint N>
 class Point : public Eigen::Matrix<Scalar, N, 1>
 {
     using Base = Eigen::Matrix<Scalar, N, 1>;
+
 public:
     using BaseMatrixType = Base;
 
