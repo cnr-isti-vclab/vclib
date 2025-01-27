@@ -285,24 +285,24 @@ private:
         }
 
         // triangle index buffer
-        // if constexpr (vcl::HasFaces<MeshType>) {
-        //     uint numTris = vcl::countTriangulatedTriangles(mesh);
+        if constexpr (vcl::HasFaces<MeshType>) {
+            uint numTris = vcl::countTriangulatedTriangles(mesh);
 
-        //     auto [buffer, releaseFn] =
-        //         getAllocatedBufferAndReleaseFn<uint32_t>(
-        //             numTris * 3);
+            auto [buffer, releaseFn] =
+                getAllocatedBufferAndReleaseFn<uint32_t>(
+                    numTris * 3);
 
-        //     triangulatedFaceIndicesToBuffer(
-        //         mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR, numTris);
+            triangulatedFaceIndicesToBuffer(
+                mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR, numTris);
 
-        //     mTriangleIndexBuffer.set(
-        //         buffer, numTris * 3, true, releaseFn);
-        // }
-        // WAS:
-        if (Base::triangleBufferData()) {
             mTriangleIndexBuffer.set(
-                Base::triangleBufferData(), Base::triangleBufferSize());
+                buffer, numTris * 3, true, releaseFn);
         }
+        // WAS:
+        // if (Base::triangleBufferData()) {
+        //     mTriangleIndexBuffer.set(
+        //         Base::triangleBufferData(), Base::triangleBufferSize());
+        // }
 
         // triangle normal buffer
         if (Base::triangleNormalBufferData()) {
