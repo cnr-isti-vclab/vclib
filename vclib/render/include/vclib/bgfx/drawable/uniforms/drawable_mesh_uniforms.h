@@ -59,12 +59,14 @@ public:
     DrawableMeshUniforms() = default;
 
     template<MeshConcept MeshType>
-    void update(const MeshRenderData<MeshType>& mrb)
+    void update(const MeshType& m)
     {
-        std::copy(
-            mrb.meshColorBufferData(),
-            mrb.meshColorBufferData() + 4,
-            mMeshColor);
+        if constexpr (HasColor<MeshType>) {
+            mMeshColor[0] = m.color().redF();
+            mMeshColor[1] = m.color().greenF();
+            mMeshColor[2] = m.color().blueF();
+            mMeshColor[3] = m.color().alphaF();
+        }
     }
 
     void bind() const

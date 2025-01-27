@@ -68,7 +68,7 @@ public:
         mMRB = MeshRenderBuffers<MeshType>(*this);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
-        mMeshUniforms.update(mMRB);
+        mMeshUniforms.update(*this);
     }
 
     void swap(DrawableMeshBGFX& other)
