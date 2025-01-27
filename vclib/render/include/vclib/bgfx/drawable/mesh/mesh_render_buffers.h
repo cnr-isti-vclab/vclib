@@ -175,6 +175,7 @@ private:
         using enum MeshBufferId;
 
         TriPolyIndexBiMap indexMap;
+        uint numTris = 0;
 
         // vertex buffer (coords)
         {
@@ -286,7 +287,7 @@ private:
 
         // triangle index buffer
         if constexpr (vcl::HasFaces<MeshType>) {
-            uint numTris = vcl::countTriangulatedTriangles(mesh);
+            numTris = vcl::countTriangulatedTriangles(mesh);
 
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint32_t>(
@@ -305,12 +306,32 @@ private:
         // }
 
         // triangle normal buffer
-        if (Base::triangleNormalBufferData()) {
-            mTriangleNormalBuffer.setForCompute(
-                Base::triangleNormalBufferData(),
-                Base::triangleNumber() * 3,
-                PrimitiveType::FLOAT);
+        if constexpr (vcl::HasPerFaceNormal<MeshType>) {
+            if (mBuffersToFill[toUnderlying(TRI_NORMALS)]) {
+                if (vcl::isPerFaceNormalAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<float>(
+                            numTris * 3);
+
+                    triangulatedFaceNormalsToBuffer(
+                        mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR);
+
+                    mTriangleNormalBuffer.setForCompute(
+                        buffer,
+                        numTris * 3,
+                        PrimitiveType::FLOAT,
+                        bgfx::Access::Read,
+                        releaseFn);
+                }
+            }
         }
+        // WAS:
+        // if (Base::triangleNormalBufferData()) {
+        //     mTriangleNormalBuffer.setForCompute(
+        //         Base::triangleNormalBufferData(),
+        //         Base::triangleNumber() * 3,
+        //         PrimitiveType::FLOAT);
+        // }
 
         // triangle color buffer
         if (Base::triangleColorBufferData()) {
