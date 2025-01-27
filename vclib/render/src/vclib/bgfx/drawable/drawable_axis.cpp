@@ -48,7 +48,7 @@ void DrawableAxis::draw(uint viewId) const
             for (uint i = 0; i < 3; i++) {
                 for (uint j = 0; j < 2; j++) {
                     if (j == 0) // cylinders
-                        mUniforms.setColor(mColors[i]);
+                        mUniforms.setColor(AXIS_COLORS[i]);
                     else // rest (cone, spheres...)
                         mUniforms.setColor(vcl::Color::White);
                     mUniforms.bind();
