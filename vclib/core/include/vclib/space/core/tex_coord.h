@@ -27,6 +27,25 @@
 
 namespace vcl {
 
+/**
+ * @brief The TexCoord class represents a 2-dimensional texture coordinate
+ * containing two scalar values.
+ *
+ * The TexCoord class template represents a 2-dimensional texture coordinate
+ * containing two scalar values. The scalar type of the texture coordinates is a
+ * template parameter of the class.
+ *
+ * The class is a specialization of the Point2 class template, where the two
+ * components of the texture coordinate are named `u` and `v`. The class adds
+ * setter member functions for setting the `u` and `v` components of the texture
+ * coordinate, with an additional assert that the values are in the range [0,
+ * 1].
+ *
+ * @tparam Scalar: The scalar type of the texture coordinate components.
+ *
+ * @ingroup space_core
+ */
+// TODO: TexCoord should inherit from Point2
 template<typename Scalar>
 class TexCoord
 {
@@ -96,7 +115,7 @@ public:
 
     const Scalar& operator[](uint i) const { return mCoord[i]; }
 
-    bool operator==(const TexCoord& t1) const = default;
+    auto operator<=>(const TexCoord& t1) const = default;
 };
 
 /* Specialization Aliases */

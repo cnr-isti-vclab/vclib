@@ -20,67 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/drawable/drawable_trackball.h>
+#ifndef VCL_BGFX_BUFFERS_H
+#define VCL_BGFX_BUFFERS_H
 
-#include <vclib/algorithms/core/polygon/create.h>
-#include <vclib/math/transform.h>
+#include "buffers/index_buffer.h"
+#include "buffers/vertex_buffer.h"
 
-namespace vcl {
-
-DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(128)
-{
-    mUniforms.setNumberOfVerticesPerAxis(128);
-
-    createBuffers();
-}
-
-DrawableTrackBall::~DrawableTrackBall()
-{
-    if (bgfx::isValid(mVertexCoordBH)) {
-        bgfx::destroy(mVertexCoordBH);
-    }
-}
-
-void DrawableTrackBall::updateDragging(bool isDragging)
-{
-    mUniforms.setDragging(isDragging);
-}
-
-void DrawableTrackBall::draw(uint viewId) const
-{
-    if (isVisible()) {
-        if (bgfx::isValid(mProgram)) {
-            bgfx::setState(
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
-                BGFX_STATE_BLEND_NORMAL);
-
-            bgfx::setVertexBuffer(0, mVertexCoordBH);
-            bgfx::setIndexBuffer(mEdgeIndexBH);
-
-            bgfx::setTransform(transformData());
-
-            mUniforms.bind();
-
-            bgfx::submit(viewId, mProgram);
-        }
-    }
-}
-
-void DrawableTrackBall::createBuffers()
-{
-    // vertex buffer
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .end();
-
-    mVertexCoordBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertexBufferData(), vertexNumber() * 3 * sizeof(float)),
-        layout);
-
-    mEdgeIndexBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(edgeBufferData(), edgeNumber() * sizeof(uint16_t)));
-}
-
-} // namespace vcl
+#endif // VCL_BGFX_BUFFERS_H

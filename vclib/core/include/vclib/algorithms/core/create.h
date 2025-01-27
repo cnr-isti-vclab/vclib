@@ -20,76 +20,68 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/drawable/trackball/trackball_render_data.h>
+#ifndef VCL_ALGORITHMS_CORE_CREATE_H
+#define VCL_ALGORITHMS_CORE_CREATE_H
 
-#include <vclib/algorithms/core/polygon/create.h>
-#include <vclib/math/transform.h>
+#include "polygon/create.h"
 
 namespace vcl {
 
-TrackballRenderData::TrackballRenderData(uint pointsPerCircle)
+/**
+ * @brief Returns a pair of vectors containing the vertices and edges of a 3D
+ * Trackball, composed of three circles in the x, y, and z planes.
+ *
+ * @tparam ScalarType: the type of scalar used for the 3D vertices.
+ * @tparam UintType: the type of integer used for the edge indices.
+ *
+ * @param[in] scale: the scale of the trackball.
+ * @param[in] pointsPerCircle: the number of points per circle.
+ * @return a pair of vectors containing the vertices and edges of the trackball.
+ */
+template<typename ScalarType = float, std::integral UintType = uint16_t>
+std::pair<std::vector<vcl::Point3<ScalarType>>, std::vector<UintType>>
+createTrackBall(ScalarType scale = 1.0, uint pointsPerCircle = 64)
 {
-    vcl::Polygon2f circle =
-        vcl::createCircle<vcl::Polygon2f>(pointsPerCircle, 1.0f);
+    using PointType = vcl::Point3<ScalarType>;
 
-    mVertices.reserve(pointsPerCircle * 3);
+    std::vector<PointType> vertices;
+    std::vector<UintType>  edges;
+
+    vcl::Polygon2<ScalarType> circle =
+        vcl::createCircle<vcl::Polygon2<ScalarType>>(pointsPerCircle, 1.0);
+
+    vertices.reserve(pointsPerCircle * 3);
 
     // x
     uint first = 0;
     for (uint i = 0; i < circle.size(); ++i) {
         const auto& p = circle.point(i);
-        mVertices.push_back(vcl::Point3f(0, p.x(), p.y()));
-        mEdges.push_back(i + first);
-        mEdges.push_back((i + 1) % circle.size() + first);
+        vertices.push_back(PointType(0, p.x(), p.y()));
+        edges.push_back(i + first);
+        edges.push_back((i + 1) % circle.size() + first);
     }
 
     // y
     first = circle.size();
     for (uint i = 0; i < circle.size(); ++i) {
         const auto& p = circle.point(i);
-        mVertices.push_back(vcl::Point3f(p.x(), 0, p.y()));
-        mEdges.push_back(i + first);
-        mEdges.push_back((i + 1) % circle.size() + first);
+        vertices.push_back(PointType(p.x(), 0, p.y()));
+        edges.push_back(i + first);
+        edges.push_back((i + 1) % circle.size() + first);
     }
 
     // z
     first = 2 * circle.size();
     for (uint i = 0; i < circle.size(); ++i) {
         const auto& p = circle.point(i);
-        mVertices.push_back(vcl::Point3f(p.x(), p.y(), 0));
-        mEdges.push_back(i + first);
-        mEdges.push_back((i + 1) % circle.size() + first);
+        vertices.push_back(PointType(p.x(), p.y(), 0));
+        edges.push_back(i + first);
+        edges.push_back((i + 1) % circle.size() + first);
     }
-}
 
-uint TrackballRenderData::vertexNumber() const
-{
-    return mVertices.size();
-}
-
-uint TrackballRenderData::edgeNumber() const
-{
-    return mEdges.size();
-}
-
-const float* TrackballRenderData::vertexBufferData() const
-{
-    return mVertices.front().data();
-}
-
-const uint16_t* TrackballRenderData::edgeBufferData() const
-{
-    return mEdges.data();
-}
-
-const float* TrackballRenderData::transformData() const
-{
-    return mTransform.data();
-}
-
-void TrackballRenderData::setTransform(const Matrix44f& mtx)
-{
-    mTransform = mtx;
+    return std::make_pair(std::move(vertices), std::move(edges));
 }
 
 } // namespace vcl
+
+#endif // VCL_ALGORITHMS_CORE_CREATE_H

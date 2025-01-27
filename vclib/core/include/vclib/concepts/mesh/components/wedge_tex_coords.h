@@ -61,7 +61,7 @@ concept HasWedgeTexCoords = requires (
     { obj.wedgeTexCoord(uint()) } -> TexCoordConcept;
     { obj.wedgeTexCoordMod(int()) } -> TexCoordConcept;
 
-    { obj.textureIndex() } -> std::convertible_to<short>;
+    { obj.textureIndex() } -> std::convertible_to<ushort>;
 
     { obj.wedgeTexCoordBegin() } -> InputIterator<decltype(t)>;
     { obj.wedgeTexCoordEnd() } -> InputIterator<decltype(t)>;
@@ -73,7 +73,7 @@ concept HasWedgeTexCoords = requires (
         { obj.setWedgeTexCoord(uint(), t) } -> std::same_as<void>;
         { obj.setWedgeTexCoords(vec) } -> std::same_as<void>;
 
-        { obj.textureIndex() } -> std::same_as<short&>;
+        { obj.textureIndex() } -> std::same_as<ushort&>;
 
         { obj.wedgeTexCoordBegin() } -> OutputIterator<decltype(t)>;
         { obj.wedgeTexCoordEnd() } -> OutputIterator<decltype(t)>;

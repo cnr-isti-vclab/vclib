@@ -746,3 +746,30 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.face(5).adjFace(3) == &pm.face(3));
     }
 }
+
+TEMPLATE_TEST_CASE(
+    "Wedge Driven Vertex Duplication",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
+{
+    using TriMesh = TestType;
+
+    TriMesh tm1 =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
+
+    THEN("Test the number of vertices to duplicate")
+    {
+        REQUIRE(vcl::countVerticesToDuplicateByWedgeTexCoords(tm1) == 0);
+    }
+
+    TriMesh tm2 =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
+
+    THEN("Test the number of vertices to duplicate")
+    {
+        REQUIRE(vcl::countVerticesToDuplicateByWedgeTexCoords(tm2) == 8);
+    }
+}
