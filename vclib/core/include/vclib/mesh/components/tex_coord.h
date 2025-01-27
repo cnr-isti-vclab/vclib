@@ -26,7 +26,7 @@
 #include "bases/component.h"
 
 #include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/space/core/tex_coord.h>
+#include <vclib/space/core/tex_coord_indexed.h>
 
 namespace vcl::comp {
 
@@ -34,7 +34,7 @@ namespace vcl::comp {
  * @brief The TexCoord class represents a component that stores a texture
  * coordinate.
  *
- * It exposes a vcl::TexCoord object, that stores a texture coordinate and an
+ * It exposes a vcl::TexCoordIndexed object, that stores a texture coordinate and an
  * id of the texture to use.
  *
  * For example, if you have a Vertex Element `v` with the TexCoord component,
@@ -59,7 +59,7 @@ class TexCoord :
         public Component<
             TexCoord<Scalar, ParentElemType, OPT>,
             CompId::TEX_COORD,
-            vcl::TexCoord<Scalar>,
+            vcl::TexCoordIndexed<Scalar>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -67,7 +67,7 @@ class TexCoord :
     using Base = Component<
         TexCoord<Scalar, ParentElemType, OPT>,
         CompId::TEX_COORD,
-        vcl::TexCoord<Scalar>,
+        vcl::TexCoordIndexed<Scalar>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
@@ -76,7 +76,7 @@ public:
     /**
      * @brief Expose the type of the TexCoord.
      */
-    using TexCoordType = vcl::TexCoord<Scalar>;
+    using TexCoordType = vcl::TexCoordIndexed<Scalar>;
 
     /* Constructors */
 

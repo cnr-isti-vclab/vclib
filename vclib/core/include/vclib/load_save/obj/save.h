@@ -40,7 +40,10 @@ namespace vcl {
 namespace detail {
 
 template<VertexConcept VertexType, MeshConcept MeshType>
-ObjMaterial objMaterialFromVertex(const VertexType& v, const MeshInfo& fi)
+ObjMaterial objMaterialFromVertex(
+    const VertexType& v,
+    const MeshType&   m,
+    const MeshInfo&   fi)
 {
     ObjMaterial mat;
     if constexpr (HasPerVertexColor<MeshType>) {
@@ -49,6 +52,14 @@ ObjMaterial objMaterialFromVertex(const VertexType& v, const MeshInfo& fi)
             mat.Kd.x()   = v.color().redF();
             mat.Kd.y()   = v.color().greenF();
             mat.Kd.z()   = v.color().blueF();
+        }
+    }
+    if constexpr(HasPerVertexTexCoord<MeshType>) {
+        if (fi.hasVertexTexCoords()) {
+            mat.hasTexture = true;
+            if constexpr (HasTexturePaths<MeshType>) {
+                mat.map_Kd = m.texturePath(v.texCoord().index());
+            }
         }
     }
     return mat;
@@ -117,7 +128,7 @@ void writeElementObjMaterial(
 
     if constexpr (EL_IS_VERTEX) {
         mat = objMaterialFromVertex<typename MeshType::VertexType, MeshType>(
-            e, fi);
+            e, m, fi);
     }
     if constexpr (EL_IS_FACE) {
         mat = objMaterialFromFace(e, m, fi);

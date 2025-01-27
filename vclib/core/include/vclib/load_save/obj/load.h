@@ -263,7 +263,7 @@ void readObjFace(
     MeshType&                     m,
     MeshInfo&                     loadedInfo,
     const Tokenizer&              tokens,
-    const std::vector<TexCoordd>& wedgeTexCoords,
+    const std::vector<TexCoordIndexedd>& wedgeTexCoords,
     const ObjMaterial&            currentMaterial,
     const LoadSettings&           settings)
 {
@@ -380,7 +380,7 @@ void readObjFace(
                                 std::to_string(fid));
                         }
                         f.wedgeTexCoord(i) =
-                            wedgeTexCoords[wids[i]]
+                            ((vcl::TexCoordd)wedgeTexCoords[wids[i]])
                                 .cast<typename FaceType::WedgeTexCoordType::
                                           ScalarType>();
                         if (currentMaterial.hasTexture) {
@@ -409,7 +409,7 @@ void readObjFace(
                             // set the wedge texcoord in the same position of
                             // the vertex
                             f.wedgeTexCoord(i) =
-                                wedgeTexCoords[wids[pos]]
+                                ((vcl::TexCoordd)wedgeTexCoords[wids[pos]])
                                     .cast<typename FaceType::WedgeTexCoordType::
                                               ScalarType>();
                             if (currentMaterial.hasTexture) {
@@ -507,7 +507,7 @@ void loadObj(
     uint                            vn = 0; // number of vertex normals read
     // save array of texcoords, that are stored later (into wedges when loading
     // faces or into vertices as a fallback)
-    std::vector<TexCoordd> texCoords;
+    std::vector<TexCoordIndexedd> texCoords;
 
     // map of materials loaded
     std::map<std::string, detail::ObjMaterial> materialMap;
@@ -588,9 +588,12 @@ void loadObj(
                 HasPerFaceWedgeTexCoords<MeshType>) {
                 if (header == "vt") {
                     // save the texcoord for later
-                    TexCoordd tf;
+                    TexCoordIndexedd tf;
                     for (uint i = 0; i < 2; ++i) {
                         tf[i] = io::readDouble<double>(token);
+                    }
+                    if (currentMaterial.hasTexture) {
+                        tf.index() = currentMaterial.mapId;
                     }
                     texCoords.push_back(tf);
                 }

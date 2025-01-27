@@ -125,6 +125,21 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.faceNumber() == 12);
     }
 
+    SECTION("TriMesh - Wedge TextureDouble")
+    {
+        TriMesh tm;
+        vcl::loadObj(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj");
+        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.faceNumber() == 4);
+        REQUIRE(tm.textureNumber() == 2);
+        REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
+        for(const auto& f : tm.faces())
+        {
+            // first two faces have texture index 0, the other two have index 1
+            REQUIRE(f.textureIndex() == f.index() / 2);
+        }
+    }
+
     SECTION("PolyMesh - PolyCube")
     {
         PolyMesh pm;
