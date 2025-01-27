@@ -108,7 +108,7 @@ public:
 
             if (mMRS.isWireframeVisible()) {
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRB.WIREFRAME);
+                mMRB.bindIndexBuffers(MeshBufferId::WIREFRAME);
                 bindUniforms(VCL_MRS_DRAWING_WIREFRAME);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
@@ -127,7 +127,7 @@ public:
 
             if (mMRS.isEdgesVisible()) {
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRB.EDGES);
+                mMRB.bindIndexBuffers(MeshBufferId::EDGES);
                 bindUniforms(VCL_MRS_DRAWING_EDGES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);

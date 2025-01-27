@@ -63,7 +63,9 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 public:
     MeshRenderBuffers() = default;
 
-    MeshRenderBuffers(const MeshType& mesh, uint buffersToFill = Base::ALL) :
+    MeshRenderBuffers(
+        const MeshType& mesh,
+        BuffersToFill   buffersToFill = BUFFERS_TO_FILL_ALL) :
             Base(mesh, buffersToFill)
     {
         createBGFXBuffers();
@@ -130,9 +132,10 @@ public:
         }
     }
 
-    void bindIndexBuffers(uint indexBufferToBind = Base::TRIANGLES) const
+    void bindIndexBuffers(
+        MeshBufferId indexBufferToBind = MeshBufferId::TRIANGLES) const
     {
-        if (indexBufferToBind == Base::TRIANGLES) {
+        if (indexBufferToBind == MeshBufferId::TRIANGLES) {
             mTriangleIndexBuffer.bind();
 
             mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
@@ -142,14 +145,14 @@ public:
             mTriangleTextureIndexBuffer.bind(
                 VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
         }
-        else if (indexBufferToBind == Base::EDGES) {
+        else if (indexBufferToBind == MeshBufferId::EDGES) {
             mEdgeIndexBuffer.bind();
 
             mEdgeNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
             mEdgeColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
         }
-        else if (indexBufferToBind == Base::WIREFRAME) {
+        else if (indexBufferToBind == MeshBufferId::WIREFRAME) {
             bgfx::setIndexBuffer(mWireframeIndexBH);
         }
     }

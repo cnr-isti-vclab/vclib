@@ -85,15 +85,14 @@ void DrawableAxis::updateMatrices(double size)
 
 void DrawableAxis::createAxis()
 {
-    mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(
-        AXIS_MESHES.first,
-        MeshRenderBuffers<vcl::TriMesh>::VERT_NORMALS |
-            MeshRenderBuffers<vcl::TriMesh>::TRIANGLES);
+    BuffersToFill btf = {
+        toUnderlying(MeshBufferId::VERTICES),
+        toUnderlying(MeshBufferId::VERT_NORMALS),
+        toUnderlying(MeshBufferId::TRIANGLES)};
 
-    mArrowBuffers[1] = MeshRenderBuffers<vcl::TriMesh>(
-        AXIS_MESHES.second,
-        MeshRenderBuffers<vcl::TriMesh>::VERT_NORMALS |
-            MeshRenderBuffers<vcl::TriMesh>::TRIANGLES);
+    mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.first, btf);
+
+    mArrowBuffers[1] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.second, btf);
 }
 
 } // namespace vcl
