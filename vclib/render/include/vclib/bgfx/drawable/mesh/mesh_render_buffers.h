@@ -37,6 +37,8 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 {
     using Base = vcl::MeshRenderData<MeshType>;
 
+    BuffersToFill mBuffersToFill = BUFFERS_TO_FILL_ALL;
+
     VertexBuffer mVertexCoordsBuffer;
     VertexBuffer mVertexNormalsBuffer;
     VertexBuffer mVertexColorsBuffer;
@@ -66,22 +68,20 @@ public:
     MeshRenderBuffers(
         const MeshType& mesh,
         BuffersToFill   buffersToFill = BUFFERS_TO_FILL_ALL) :
-            Base(mesh, buffersToFill)
+            Base(mesh, buffersToFill), mBuffersToFill(buffersToFill)
     {
-        createBGFXBuffers();
+        createBGFXBuffers(mesh);
     }
 
-    MeshRenderBuffers(const MeshRenderBuffers& other) : Base(other)
-    {
-        // each object has its own bgfx buffers
-        createBGFXBuffers();
-    }
+    MeshRenderBuffers(const MeshRenderBuffers& other) = delete;
 
     MeshRenderBuffers(MeshRenderBuffers&& other) { swap(other); }
 
     ~MeshRenderBuffers() { destroyBGFXBuffers(); }
 
-    MeshRenderBuffers& operator=(MeshRenderBuffers other)
+    MeshRenderBuffers& operator=(const MeshRenderBuffers& other) = delete;
+
+    MeshRenderBuffers& operator=(MeshRenderBuffers&& other)
     {
         swap(other);
         return *this;
@@ -91,6 +91,7 @@ public:
     {
         using std::swap;
         swap((Base&) *this, (Base&) other);
+        swap(mBuffersToFill, other.mBuffersToFill);
         swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
         swap(mVertexNormalsBuffer, other.mVertexNormalsBuffer);
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
@@ -113,7 +114,7 @@ public:
     {
         Base::update(mesh);
         destroyBGFXBuffers();
-        createBGFXBuffers();
+        createBGFXBuffers(mesh);
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -167,7 +168,7 @@ public:
     }
 
 private:
-    void createBGFXBuffers()
+    void createBGFXBuffers(const MeshType& mesh)
     {
         mVertexCoordsBuffer.set(
             Base::vertexBufferData(),

@@ -37,6 +37,8 @@ protected:
 public:
     AbstractDrawableMesh() = default;
 
+    AbstractDrawableMesh(const AbstractDrawableMesh& other) = default;
+
     template<MeshConcept MeshType>
     AbstractDrawableMesh(const MeshType& m) : mMRS(m)
     {

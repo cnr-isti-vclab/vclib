@@ -57,7 +57,28 @@ public:
         updateBuffers();
     }
 
+    DrawableMeshBGFX(const DrawableMeshBGFX& drawableMesh) :
+            AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
+            MeshType(drawableMesh),
+            mMeshRenderSettingsUniforms(
+                drawableMesh.mMeshRenderSettingsUniforms),
+            mMeshUniforms(drawableMesh.mMeshUniforms)
+    {
+        if constexpr (HasName<MeshType>) {
+            AbstractDrawableMesh::name() = drawableMesh.name();
+        }
+        mMRB.update(*this);
+    }
+
+    DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh) { swap(drawableMesh); }
+
     ~DrawableMeshBGFX() = default;
+
+    DrawableMeshBGFX& operator=(DrawableMeshBGFX drawableMesh)
+    {
+        swap(drawableMesh);
+        return *this;
+    }
 
     void updateBuffers() override
     {
@@ -65,7 +86,7 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        mMRB = MeshRenderBuffers<MeshType>(*this);
+        mMRB.update(*this);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
         mMeshUniforms.update(mMRB);
