@@ -116,7 +116,9 @@ public:
             return mPolyToTri[polygonIndex + 1] - mPolyToTri[polygonIndex];
         }
         else {
-            return mPolyToTri.size() - mPolyToTri[polygonIndex];
+            // total number of triangles minus the first triangle index of the
+            // polygon
+            return mTriToPoly.size() - mPolyToTri[polygonIndex];
         }
     }
 

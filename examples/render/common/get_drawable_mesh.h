@@ -26,7 +26,7 @@
 #include <vclib/algorithms/mesh/update/color.h>
 #include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/load_save.h>
-#include <vclib/meshes/tri_mesh.h>
+#include <vclib/meshes.h>
 
 #include <vclib/render/drawable/drawable_mesh.h>
 
