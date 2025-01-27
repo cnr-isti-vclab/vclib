@@ -627,6 +627,62 @@ void faceNormalsToBuffer(
 }
 
 /**
+ * @brief Export into a buffer the normals for each triangle computed by
+ * triangulating the faces of a Mesh.
+ *
+ * This function exports the normals of the triangles computed by
+ * triangulating the faces of a mesh to a buffer. Normals are stored following
+ * the order the faces appear in the mesh. The buffer must be preallocated with
+ * the correct size (number of *resulting triangles* times 3).
+ *
+ * The function requires an already computed index map, which maps each triangle
+ * to the face index and vice versa. You can use the @ref
+ * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * resulting triangles and allocate the buffer accordingly.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] indexMap: map from triangle index to face index
+ * @param[in] storage: storage type of the matrix (row or column major)
+ */
+template<FaceMeshConcept MeshType>
+void triangulatedFaceNormalsToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    const TriPolyIndexBiMap& indexMap,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+{
+    requirePerElementComponent<ElemId::FACE, CompId::NORMAL>(mesh);
+
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        for (const auto& f : mesh.faces()) {
+            const auto& n = f.normal();
+            uint first = indexMap.triangleBegin(f.index());
+            uint last = first + indexMap.triangleNumber(f.index());
+            for (uint t = first; t < last; ++t) {
+                buffer[t * 3 + 0] = n.x();
+                buffer[t * 3 + 1] = n.y();
+                buffer[t * 3 + 2] = n.z();
+            }
+        }
+    }
+    else {
+        const uint FACE_NUM = indexMap.triangleNumber();
+        for (const auto& f : mesh.faces()) {
+            const auto& n = f.normal();
+            uint first = indexMap.triangleBegin(f.index());
+            uint last = first + indexMap.triangleNumber(f.index());
+            for (uint t = first; t < last; ++t) {
+                buffer[0 * FACE_NUM + t] = n.x();
+                buffer[1 * FACE_NUM + t] = n.y();
+                buffer[2 * FACE_NUM + t] = n.z();
+            }
+        }
+    }
+}
+
+/**
  * @brief Export the element colors identified by `ELEM_ID` of a mesh to a
  * buffer having a value for each color component (RGBA).
  *
