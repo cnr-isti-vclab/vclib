@@ -25,6 +25,8 @@
 
 #include "mesh_render_buffers_macros.h"
 
+#include <vclib/algorithms/mesh/import_export/export_buffer.h>
+#include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 
@@ -170,33 +172,97 @@ public:
 private:
     void createBGFXBuffers(const MeshType& mesh)
     {
-        mVertexCoordsBuffer.set(
-            Base::vertexBufferData(),
-            Base::vertexNumber() * 3,
-            bgfx::Attrib::Position,
-            3,
-            PrimitiveType::FLOAT);
+        using enum MeshBufferId;
+
+        TriPolyIndexBiMap indexMap;
+
+        // vertex buffer (coords)
+        {
+            auto [buffer, releaseFn] =
+                getAllocatedBufferAndReleaseFn<float>(mesh.vertexNumber() * 3);
+
+            vertexCoordsToBuffer(mesh, buffer);
+
+            mVertexCoordsBuffer.set(
+                buffer,
+                mesh.vertexNumber() * 3,
+                bgfx::Attrib::Position,
+                3,
+                PrimitiveType::FLOAT,
+                false,
+                releaseFn);
+            // WAS:
+            // mVertexCoordsBuffer.set(
+            //     Base::vertexBufferData(),
+            //     Base::vertexNumber() * 3,
+            //     bgfx::Attrib::Position,
+            //     3,
+            //     PrimitiveType::FLOAT);
+        }
 
         // vertex buffer (normals)
-        if (Base::vertexNormalBufferData()) {
-            mVertexNormalsBuffer.set(
-                Base::vertexNormalBufferData(),
-                Base::vertexNumber() * 3,
-                bgfx::Attrib::Normal,
-                3,
-                PrimitiveType::FLOAT);
+        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
+            if (mBuffersToFill[toUnderlying(VERT_NORMALS)]) {
+                if (vcl::isPerVertexNormalAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<float>(
+                            mesh.vertexNumber() * 3);
+
+                    vertexNormalsToBuffer(mesh, buffer);
+
+                    mVertexNormalsBuffer.set(
+                        buffer,
+                        mesh.vertexNumber() * 3,
+                        bgfx::Attrib::Normal,
+                        3,
+                        PrimitiveType::FLOAT,
+                        false,
+                        releaseFn);
+                }
+            }
         }
+        // WAS:
+        // if (Base::vertexNormalBufferData()) {
+        //     mVertexNormalsBuffer.set(
+        //         Base::vertexNormalBufferData(),
+        //         Base::vertexNumber() * 3,
+        //         bgfx::Attrib::Normal,
+        //         3,
+        //         PrimitiveType::FLOAT);
+        // }
 
         // vertex buffer (colors)
-        if (Base::vertexColorBufferData()) {
-            mVertexColorsBuffer.set(
-                Base::vertexColorBufferData(),
-                Base::vertexNumber() * 4,
-                bgfx::Attrib::Color0,
-                4,
-                PrimitiveType::UCHAR,
-                true);
+        if constexpr (vcl::HasPerVertexColor<MeshType>) {
+            if (mBuffersToFill[toUnderlying(VERT_COLORS)]) {
+                if (vcl::isPerVertexColorAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<uint32_t>(
+                            mesh.vertexNumber());
+
+                    vertexColorsToBuffer(mesh, buffer, Color::Format::ABGR);
+
+                    mVertexColorsBuffer.set(
+                        buffer,
+                        mesh.vertexNumber() * 4,
+                        bgfx::Attrib::Color0,
+                        4,
+                        PrimitiveType::UCHAR,
+                        true,
+                        releaseFn);
+
+                }
+            }
         }
+        // WAS:
+        // if (Base::vertexColorBufferData()) {
+        //     mVertexColorsBuffer.set(
+        //         Base::vertexColorBufferData(),
+        //         Base::vertexNumber() * 4,
+        //         bgfx::Attrib::Color0,
+        //         4,
+        //         PrimitiveType::UCHAR,
+        //         true);
+        // }
 
         // vertex buffer (UVs)
         if (Base::vertexTexCoordsBufferData()) {
@@ -219,6 +285,20 @@ private:
         }
 
         // triangle index buffer
+        // if constexpr (vcl::HasFaces<MeshType>) {
+        //     uint numTris = vcl::countTriangulatedTriangles(mesh);
+
+        //     auto [buffer, releaseFn] =
+        //         getAllocatedBufferAndReleaseFn<uint32_t>(
+        //             numTris * 3);
+
+        //     triangulatedFaceIndicesToBuffer(
+        //         mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR, numTris);
+
+        //     mTriangleIndexBuffer.set(
+        //         buffer, numTris * 3, true, releaseFn);
+        // }
+        // WAS:
         if (Base::triangleBufferData()) {
             mTriangleIndexBuffer.set(
                 Base::triangleBufferData(), Base::triangleBufferSize());
@@ -320,6 +400,18 @@ private:
         }
         mTexturesH.clear();
     }
+
+    template<typename T>
+    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(
+        uint size)
+    {
+        T* buffer = new T[size];
+
+        return std::make_pair(buffer, [](void* ptr, void*) {
+            delete[] static_cast<T*>(ptr);
+        });
+    }
+
 };
 
 } // namespace vcl
