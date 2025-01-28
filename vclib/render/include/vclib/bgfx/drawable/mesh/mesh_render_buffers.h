@@ -417,7 +417,7 @@ private:
                     const uint NUM_TRIS = indexMap.triangleNumber();
 
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<uint32_t>(NUM_TRIS);
+                        getAllocatedBufferAndReleaseFn<uint>(NUM_TRIS);
 
                     triangulatedFaceColorsToBuffer(
                         mesh, buffer, indexMap, Color::Format::ABGR);
@@ -472,22 +472,64 @@ private:
 
     void createEdgeNormalsBuffer(const MeshType& mesh)
     {
-        if (Base::edgeNormalBufferData()) {
-            mEdgeNormalBuffer.setForCompute(
-                Base::edgeNormalBufferData(),
-                Base::edgeNumber() * 3,
-                PrimitiveType::FLOAT);
+        using enum MeshBufferId;
+
+        if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
+            if (mBuffersToFill[toUnderlying(EDGE_NORMALS)]) {
+                if (vcl::isPerEdgeNormalAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<float>(
+                            mesh.edgeNumber() * 3);
+
+                    edgeNormalsToBuffer(mesh, buffer);
+
+                    mEdgeNormalBuffer.setForCompute(
+                        buffer,
+                        mesh.edgeNumber() * 3,
+                        PrimitiveType::FLOAT,
+                        bgfx::Access::Read,
+                        releaseFn);
+                }
+            }
         }
+        // WAS:
+        // if (Base::edgeNormalBufferData()) {
+        //     mEdgeNormalBuffer.setForCompute(
+        //         Base::edgeNormalBufferData(),
+        //         Base::edgeNumber() * 3,
+        //         PrimitiveType::FLOAT);
+        // }
     }
 
     void createEdgeColorsBuffer(const MeshType& mesh)
     {
-        if (Base::edgeColorBufferData()) {
-            mEdgeColorBuffer.setForCompute(
-                Base::edgeColorBufferData(),
-                Base::edgeNumber(),
-                PrimitiveType::UINT);
+        using enum MeshBufferId;
+
+        if constexpr (vcl::HasPerEdgeColor<MeshType>) {
+            if (mBuffersToFill[toUnderlying(EDGE_COLORS)]) {
+                if (vcl::isPerEdgeColorAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<uint>(
+                            mesh.edgeNumber());
+
+                    edgeColorsToBuffer(mesh, buffer, Color::Format::ABGR);
+
+                    mEdgeColorBuffer.setForCompute(
+                        buffer,
+                        mesh.edgeNumber(),
+                        PrimitiveType::UINT,
+                        bgfx::Access::Read,
+                        releaseFn);
+                }
+            }
         }
+        // WAS:
+        // if (Base::edgeColorBufferData()) {
+        //     mEdgeColorBuffer.setForCompute(
+        //         Base::edgeColorBufferData(),
+        //         Base::edgeNumber(),
+        //         PrimitiveType::UINT);
+        // }
     }
 
     void createWireframeIndicesBuffer(const MeshType& mesh)
