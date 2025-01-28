@@ -177,31 +177,70 @@ private:
         TriPolyIndexBiMap indexMap;
         uint numTris = 0;
 
-        // vertex buffer (coords)
-        {
-            auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<float>(mesh.vertexNumber() * 3);
-
-            vertexCoordsToBuffer(mesh, buffer);
-
-            mVertexCoordsBuffer.set(
-                buffer,
-                mesh.vertexNumber() * 3,
-                bgfx::Attrib::Position,
-                3,
-                PrimitiveType::FLOAT,
-                false,
-                releaseFn);
-            // WAS:
-            // mVertexCoordsBuffer.set(
-            //     Base::vertexBufferData(),
-            //     Base::vertexNumber() * 3,
-            //     bgfx::Attrib::Position,
-            //     3,
-            //     PrimitiveType::FLOAT);
-        }
+        // vertex buffer (coordinates)
+        createVertexCoordsBuffer(mesh);
 
         // vertex buffer (normals)
+        createVertexNormalsBuffer(mesh);
+
+        // vertex buffer (colors)
+        createVertexColorsBuffer(mesh);
+
+        // vertex buffer (UVs)
+        createVertexTexCoordsBuffer(mesh);
+
+        // vertex wedges buffer (duplicated vertices)
+        createVertexWedgeTexCoordsBuffer(mesh);
+
+        // triangle index buffer
+        createTriangleIndicesBuffer(mesh, indexMap);
+
+        // triangle normal buffer
+        createTriangleNormalsBuffer(mesh, indexMap);
+
+        // triangle color buffer
+        createTriangleColorsBuffer(mesh, indexMap);
+
+        // triangle wedge texture indices buffer
+        createTriangleWedgeTextureIndicesBuffer(mesh, indexMap);
+
+        // edge index buffer
+        createEdgeIndicesBuffer(mesh);
+
+        // edge normal buffer
+        createEdgeNormalsBuffer(mesh);
+
+        // edge color buffer
+        createEdgeColorsBuffer(mesh);
+
+        // wireframe index buffer
+        createWireframeIndicesBuffer(mesh);
+
+        // textures
+        createTextureUnits(mesh);
+    }
+
+    void createVertexCoordsBuffer(const MeshType& mesh)
+    {
+        auto [buffer, releaseFn] =
+            getAllocatedBufferAndReleaseFn<float>(mesh.vertexNumber() * 3);
+
+        vertexCoordsToBuffer(mesh, buffer);
+
+        mVertexCoordsBuffer.set(
+            buffer,
+            mesh.vertexNumber() * 3,
+            bgfx::Attrib::Position,
+            3,
+            PrimitiveType::FLOAT,
+            false,
+            releaseFn);
+    }
+
+    void createVertexNormalsBuffer(const MeshType& mesh)
+    {
+        using enum MeshBufferId;
+
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_NORMALS)]) {
                 if (vcl::isPerVertexNormalAvailable(mesh)) {
@@ -231,8 +270,12 @@ private:
         //         3,
         //         PrimitiveType::FLOAT);
         // }
+    }
 
-        // vertex buffer (colors)
+    void createVertexColorsBuffer(const MeshType& mesh)
+    {
+        using enum MeshBufferId;
+
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_COLORS)]) {
                 if (vcl::isPerVertexColorAvailable(mesh)) {
@@ -264,8 +307,10 @@ private:
         //         PrimitiveType::UCHAR,
         //         true);
         // }
+    }
 
-        // vertex buffer (UVs)
+    void createVertexTexCoordsBuffer(const MeshType& mesh)
+    {
         if (Base::vertexTexCoordsBufferData()) {
             mVertexUVBuffer.set(
                 Base::vertexTexCoordsBufferData(),
@@ -274,8 +319,10 @@ private:
                 2,
                 PrimitiveType::FLOAT);
         }
+    }
 
-        // vertex wedges buffer (duplicated vertices)
+    void createVertexWedgeTexCoordsBuffer(const MeshType& mesh)
+    {
         if (Base::wedgeTexCoordsBufferData()) {
             mVertexWedgeUVBuffer.set(
                 Base::wedgeTexCoordsBufferData(),
@@ -284,41 +331,55 @@ private:
                 2,
                 PrimitiveType::FLOAT);
         }
+    }
 
-        // triangle index buffer
+    void createTriangleIndicesBuffer(
+        const MeshType&    mesh,
+        TriPolyIndexBiMap& indexMap)
+    {
+        using enum MeshBufferId;
+
         if constexpr (vcl::HasFaces<MeshType>) {
-            numTris = vcl::countTriangulatedTriangles(mesh);
+            const uint NUM_TRIS = vcl::countTriangulatedTriangles(mesh);
 
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint32_t>(
-                    numTris * 3);
+                    NUM_TRIS * 3);
 
             triangulatedFaceIndicesToBuffer(
-                mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR, numTris);
+                mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR, NUM_TRIS);
 
             mTriangleIndexBuffer.set(
-                buffer, numTris * 3, true, releaseFn);
+                buffer, NUM_TRIS * 3, true, releaseFn);
         }
         // WAS:
         // if (Base::triangleBufferData()) {
         //     mTriangleIndexBuffer.set(
         //         Base::triangleBufferData(), Base::triangleBufferSize());
         // }
+    }
 
-        // triangle normal buffer
+    void createTriangleNormalsBuffer(
+        const MeshType&          mesh,
+        const TriPolyIndexBiMap& indexMap)
+    {
+        using enum MeshBufferId;
+
         if constexpr (vcl::HasPerFaceNormal<MeshType>) {
             if (mBuffersToFill[toUnderlying(TRI_NORMALS)]) {
                 if (vcl::isPerFaceNormalAvailable(mesh)) {
+                    const uint NUM_TRIS = indexMap.triangleNumber();
+
                     auto [buffer, releaseFn] =
                         getAllocatedBufferAndReleaseFn<float>(
-                            numTris * 3);
+                            NUM_TRIS * 3);
 
                     triangulatedFaceNormalsToBuffer(
                         mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR);
 
                     mTriangleNormalBuffer.setForCompute(
                         buffer,
-                        numTris * 3,
+                        NUM_TRIS * 3,
                         PrimitiveType::FLOAT,
                         bgfx::Access::Read,
                         releaseFn);
@@ -332,20 +393,28 @@ private:
         //         Base::triangleNumber() * 3,
         //         PrimitiveType::FLOAT);
         // }
+    }
 
-        // triangle color buffer
+    void createTriangleColorsBuffer(
+        const MeshType&          mesh,
+        const TriPolyIndexBiMap& indexMap)
+    {
+        using enum MeshBufferId;
+
         if constexpr (vcl::HasPerFaceColor<MeshType>) {
             if (mBuffersToFill[toUnderlying(TRI_COLORS)]) {
                 if (vcl::isPerFaceColorAvailable(mesh)) {
+                    const uint NUM_TRIS = indexMap.triangleNumber();
+
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<uint32_t>(numTris);
+                        getAllocatedBufferAndReleaseFn<uint32_t>(NUM_TRIS);
 
                     triangulatedFaceColorsToBuffer(
                         mesh, buffer, indexMap, Color::Format::ABGR);
 
                     mTriangleColorBuffer.setForCompute(
                         buffer,
-                        numTris,
+                        NUM_TRIS,
                         PrimitiveType::UINT,
                         bgfx::Access::Read,
                         releaseFn);
@@ -359,40 +428,50 @@ private:
         //         Base::triangleNumber(),
         //         PrimitiveType::UINT);
         // }
+    }
 
-        // triangle wedge UV buffer
-        if (Base::wedgeTexCoordsBufferData()) {
-            assert(Base::wedgeTextureIDsBufferData());
-
+    void createTriangleWedgeTextureIndicesBuffer(
+        const MeshType&          mesh,
+        const TriPolyIndexBiMap& indexMap)
+    {
+        if (Base::wedgeTextureIDsBufferData()) {
             mTriangleTextureIndexBuffer.setForCompute(
                 Base::wedgeTextureIDsBufferData(),
                 Base::triangleNumber(),
                 PrimitiveType::UINT);
         }
+    }
 
-        // edge index buffer
+    void createEdgeIndicesBuffer(const MeshType& mesh)
+    {
         if (Base::edgeBufferData()) {
             mEdgeIndexBuffer.set(
                 Base::edgeBufferData(), Base::edgeBufferSize());
         }
+    }
 
-        // edge normal buffer
+    void createEdgeNormalsBuffer(const MeshType& mesh)
+    {
         if (Base::edgeNormalBufferData()) {
             mEdgeNormalBuffer.setForCompute(
                 Base::edgeNormalBufferData(),
                 Base::edgeNumber() * 3,
                 PrimitiveType::FLOAT);
         }
+    }
 
-        // edge color buffer
+    void createEdgeColorsBuffer(const MeshType& mesh)
+    {
         if (Base::edgeColorBufferData()) {
             mEdgeColorBuffer.setForCompute(
                 Base::edgeColorBufferData(),
                 Base::edgeNumber(),
                 PrimitiveType::UINT);
         }
+    }
 
-        // wireframe index buffer
+    void createWireframeIndicesBuffer(const MeshType& mesh)
+    {
         if (Base::wireframeBufferData()) {
             mWireframeIndexBH = bgfx::createIndexBuffer(
                 bgfx::makeRef(
@@ -400,8 +479,10 @@ private:
                     Base::wireframeBufferSize() * sizeof(uint32_t)),
                 BGFX_BUFFER_INDEX32);
         }
+    }
 
-        // textures
+    void createTextureUnits(const MeshType& mesh)
+    {
         if (Base::textureNumber() > 0) {
             mTexturesH.reserve(Base::textureNumber());
 
