@@ -683,6 +683,31 @@ void triangulatedFaceNormalsToBuffer(
 }
 
 /**
+ * @brief Export the edge normals of a mesh to a buffer.
+ *
+ * This function exports the edge normals of a mesh to a buffer. Normals are
+ * stored in the buffer following the order the edges appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of edges times 3).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the edge indices of the mesh. This scenario is possible when
+ * the mesh has deleted edges. To be sure to have a direct correspondence,
+ * compact the edge container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ */
+template<FaceMeshConcept MeshType>
+void edgeNormalsToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+{
+    elementNormalsToBuffer<ElemId::EDGE>(mesh, buffer, storage);
+}
+
+/**
  * @brief Export the element colors identified by `ELEM_ID` of a mesh to a
  * buffer having a value for each color component (RGBA).
  *
@@ -927,6 +952,33 @@ void triangulatedFaceColorsToBuffer(
 }
 
 /**
+ * @brief Export the face colors of a mesh to a buffer having a value for each
+ * color (the color is packed in a single 32 bit value using the provided
+ * format).
+ *
+ * This function exports the face colors of a mesh to a buffer. Colors are
+ * stored in the buffer following the order the faces appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of faces).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] colorFormat: format of the color components
+ */
+template<MeshConcept MeshType>
+void faceColorsToBuffer(
+    const MeshType& mesh,
+    auto*           buffer,
+    Color::Format   colorFormat)
+{
+    elementColorsToBuffer<ElemId::FACE>(mesh, buffer, colorFormat);
+}
+
+/**
  * @brief Export the colors for each triangle computed by triangulating the
  * faces of a Mesh to a buffer having a value for each color (the color is
  * packed in a single 32 bit value using the provided format)..
@@ -973,30 +1025,59 @@ void triangulatedFaceColorsToBuffer(
 }
 
 /**
- * @brief Export the face colors of a mesh to a buffer having a value for each
+ * @brief Export the edge colors of a mesh to a buffer having a value for each
+ * color component (RGBA).
+ *
+ * This function exports the edge colors of a mesh to a buffer. Colors are
+ * stored in the buffer following the order the edges appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of edges times 4).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] representation: representation of the color components (integer or
+ * float)
+ */
+template<MeshConcept MeshType>
+void edgeColorsToBuffer(
+    const MeshType&       mesh,
+    auto*                 buffer,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255)
+{
+    elementColorsToBuffer<ElemId::EDGE>(mesh, buffer, storage, representation);
+}
+
+/**
+ * @brief Export the edge colors of a mesh to a buffer having a value for each
  * color (the color is packed in a single 32 bit value using the provided
  * format).
  *
- * This function exports the face colors of a mesh to a buffer. Colors are
- * stored in the buffer following the order the faces appear in the mesh. The
- * buffer must be preallocated with the correct size (number of faces).
+ * This function exports the edge colors of a mesh to a buffer. Colors are
+ * stored in the buffer following the order the edges appear in the mesh. The
+ * buffer must be preallocated with the correct size (number of edges).
  *
  * @note This function does not guarantee that the rows of the matrix
- * correspond to the face indices of the mesh. This scenario is possible when
- * the mesh has deleted faces. To be sure to have a direct correspondence,
- * compact the face container before calling this function.
+ * correspond to the edge indices of the mesh. This scenario is possible when
+ * the mesh has deleted edges. To be sure to have a direct correspondence,
+ * compact the edge container before calling this function.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] colorFormat: format of the color components
  */
 template<MeshConcept MeshType>
-void faceColorsToBuffer(
+void edgeColorsToBuffer(
     const MeshType& mesh,
     auto*           buffer,
     Color::Format   colorFormat)
 {
-    elementColorsToBuffer<ElemId::FACE>(mesh, buffer, colorFormat);
+    elementColorsToBuffer<ElemId::EDGE>(mesh, buffer, colorFormat);
 }
 
 /**
@@ -1067,6 +1148,27 @@ void vertexQualityToBuffer(const MeshType& mesh, auto* buffer)
  */
 template<MeshConcept MeshType>
 void faceQualityToBuffer(const MeshType& mesh, auto* buffer)
+{
+    elementQualityToBuffer<ElemId::FACE>(mesh, buffer);
+}
+
+/**
+ * @brief Export the edge quality of a mesh to a buffer.
+ *
+ * This function exports the edge quality of a mesh to a buffer. Quality values
+ * are stored in the buffer following the order the edges appear in the mesh.
+ * The buffer must be preallocated with the correct size (number of edges).
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the edge indices of the mesh. This scenario is possible when
+ * the mesh has deleted edges. To be sure to have a direct correspondence,
+ * compact the edge container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ */
+template<MeshConcept MeshType>
+void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
 {
     elementQualityToBuffer<ElemId::FACE>(mesh, buffer);
 }
