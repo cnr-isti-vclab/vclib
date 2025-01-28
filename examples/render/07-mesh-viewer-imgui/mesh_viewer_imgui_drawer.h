@@ -99,40 +99,91 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         const auto settings = drawable.renderSettings();
         auto newSettings = settings;
 
-        // // points
-        // ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-        // if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
-        // {
-        //     if (ImGui::BeginTabItem("Points"))
-        //     {
-        //         ImGui::BeginDisabled(!newSettings.canPointCloudBeVisible());
-        //         ImGui::Checkbox("Visible",
-        //             [&]{return newSettings.isPointCloudVisible();},
-        //             [&](bool vis){newSettings.setPointCloudVisibility(vis);}
-        //         );
+        // points
+        ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+        if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+        {
+            // points
+            if (ImGui::BeginTabItem("Points"))
+            {
+                ImGui::BeginDisabled(!newSettings.canPointBeVisible());
+
+                // visibility
+                ImGui::Checkbox("Visible",
+                    [&]{return newSettings.isPointVisible();},
+                    [&](bool vis){newSettings.setPointVisibility(vis);}
+                );
+
+                // shape
+                ImGui::Text("Shape:");
+                ImGui::SameLine();
+                // TODO: implement point shape in render settings
+                ImGui::BeginDisabled(true);
+                ImGui::RadioButton("Circle",
+                    [&]{return false;},
+                    [&](bool v){}
+                );
+                ImGui::EndDisabled();
+                ImGui::SameLine();
+                ImGui::BeginDisabled(false);
+                ImGui::RadioButton("Pixel",
+                    [&]{return true;},
+                    [&](bool v){}
+                );
+                ImGui::EndDisabled();
+
+                // shading
+                ImGui::Text("Shading:");
+                ImGui::SameLine();
+                ImGui::BeginDisabled(!newSettings.canPointShadingBePerVertex());
+                ImGui::RadioButton("Vertex",
+                    [&]{return newSettings.isPointShadingPerVertex();},
+                    [&](bool v){if (v) newSettings.setPointShadingPerVertex();}
+                );
+                ImGui::SameLine();
+                ImGui::EndDisabled();
+                ImGui::RadioButton("None",
+                    [&]{return newSettings.isPointShadingNone();},
+                    [&](bool vis){if (vis) newSettings.setPointShadingNone();}
+                );
+
+                // color
+                ImGui::Text("Color:");
+                ImGui::SameLine();
+                // if (ImGui::BeginCombo("", const char *preview_value))
+                // ImGui::BeginDisabled(!newSettings.canPointColorBePerVertex());
+
+                // point size
+                // ImGui::SliderFloat("Width",
+                //     [&]{return newSettings.pointWidth();},
+                //     [&](float w){newSettings.setPointWidth(w);}
+                // );
 
 
-        //         ImGui::EndDisabled();
+                ImGui::EndDisabled();
 
-        //         ImGui::EndTabItem();
-        //     }
-        //     if (ImGui::BeginTabItem("Broccoli"))
-        //     {
-        //         ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-        //         ImGui::EndTabItem();
-        //     }
-        //     if (ImGui::BeginTabItem("Cucumber"))
-        //     {
-        //         ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
-        //         ImGui::EndTabItem();
-        //     }
-        //     ImGui::EndTabBar();
-        // }
-        ImGui::BeginDisabled(!newSettings.canPointCloudBeVisible());
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Surface"))
+            {
+                // TODO
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Wireframe")) // are we sure?
+            {
+                // TODO
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+
+        ImGui::SeparatorText("OLD");
+
+        ImGui::BeginDisabled(!newSettings.canPointBeVisible());
         ImGui::Checkbox("Points",
-            [&]{return newSettings.isPointCloudVisible();},
+            [&]{return newSettings.isPointVisible();},
             [&](bool vis){newSettings.setPointWidth(3);
-                newSettings.setPointCloudVisibility(vis);}
+                newSettings.setPointVisibility(vis);}
         );
         ImGui::EndDisabled();
 
