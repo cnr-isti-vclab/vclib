@@ -334,12 +334,31 @@ private:
         // }
 
         // triangle color buffer
-        if (Base::triangleColorBufferData()) {
-            mTriangleColorBuffer.setForCompute(
-                Base::triangleColorBufferData(),
-                Base::triangleNumber(),
-                PrimitiveType::UINT);
+        if constexpr (vcl::HasPerFaceColor<MeshType>) {
+            if (mBuffersToFill[toUnderlying(TRI_COLORS)]) {
+                if (vcl::isPerFaceColorAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<uint32_t>(numTris);
+
+                    triangulatedFaceColorsToBuffer(
+                        mesh, buffer, indexMap, Color::Format::ABGR);
+
+                    mTriangleColorBuffer.setForCompute(
+                        buffer,
+                        numTris,
+                        PrimitiveType::UINT,
+                        bgfx::Access::Read,
+                        releaseFn);
+                }
+            }
         }
+        // WAS:
+        // if (Base::triangleColorBufferData()) {
+        //     mTriangleColorBuffer.setForCompute(
+        //         Base::triangleColorBufferData(),
+        //         Base::triangleNumber(),
+        //         PrimitiveType::UINT);
+        // }
 
         // triangle wedge UV buffer
         if (Base::wedgeTexCoordsBufferData()) {
