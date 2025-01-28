@@ -130,7 +130,7 @@ public:
     {
         if (mMRS.isVisible()) {
             if (mMRS.isWireframeVisible()) {
-                if (mMRS.isPointCloudVisible()) {
+                if (mMRS.isPointVisible()) {
                     glDisable(GL_LIGHTING);
                     glShadeModel(GL_FLAT);
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -178,7 +178,7 @@ public:
                 }
             }
             else { // no wireframe
-                if (mMRS.isPointCloudVisible()) {
+                if (mMRS.isPointVisible()) {
                     glDisable(GL_LIGHTING);
                     renderPass();
                 }
@@ -226,19 +226,19 @@ private:
         const float*    vertTexCoords   = mMRD.vertexTexCoordsBufferData();
         const float*    wedgTexCoords   = mMRD.wedgeTexCoordsBufferData();
 
-        if (mMRS.isPointCloudVisible()) {
+        if (mMRS.isPointVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(3, GL_FLOAT, 0, coords);
 
-            if (mMRS.isPointCloudColorPerVertex()) {
+            if (mMRS.isPointColorPerVertex()) {
                 glEnableClientState(GL_COLOR_ARRAY);
                 glColorPointer(4, GL_UNSIGNED_BYTE, 0, vertexColors);
             }
-            else if (mMRS.isPointCloudColorPerMesh()) {
+            else if (mMRS.isPointColorPerMesh()) {
                 glColor4fv(mMRD.meshColorBufferData());
             }
-            else if (mMRS.isPointCloudColorUserDefined()) {
-                glColor4fv(mMRS.pointCloudUserColorData());
+            else if (mMRS.isPointColorUserDefined()) {
+                glColor4fv(mMRS.pointUserColorData());
             }
 
             glPointSize(mMRS.pointWidth());
