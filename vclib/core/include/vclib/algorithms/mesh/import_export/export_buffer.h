@@ -32,6 +32,33 @@ namespace vcl {
 
 namespace detail {
 
+// returns a non-empty vector if the vertex container is not compact and the
+// user wants compact indices
+std::vector<uint> vertCompactIndices(const auto& mesh, bool wantCompact)
+{
+    std::vector<uint> vertCompIndices;
+
+    bool isCompact = mesh.vertexNumber() == mesh.vertexContainerSize();
+
+    if (wantCompact && !isCompact)
+        vertCompIndices = mesh.vertexCompactIndices();
+    return vertCompIndices;
+}
+
+// lambda to get the vertex index of a face (considering compact vertex indices)
+auto vIndexLambda(const auto& mesh, const std::vector<uint>& vertCompIndices)
+{
+    // lambda to get the vertex index of a face (considering compact indices)
+    auto vIndex = [&vertCompIndices](const auto& f, uint i) {
+        if (vertCompIndices.size() > 0)
+            return vertCompIndices[f.vertexIndex(i)];
+        else
+            return f.vertexIndex(i);
+    };
+
+    return vIndex;
+}
+
 inline static TriPolyIndexBiMap indexMap;
 
 } // namespace detail
@@ -87,37 +114,52 @@ void vertexCoordsToBuffer(
  * 3). The function assumes that the input mesh is a triangle mesh (if there are
  * polygonal faces, only the first three vertices are considered).
  *
+ * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
+ * function stores the vertex indices as if the vertex container of the mesh is
+ * compact. This means that, if the mesh has deleted vertices, the vertex
+ * indices stored in the buffer may not correspond to the vertex indices of the
+ * mesh. If you want to store the actual vertex indices in the input mesh, set
+ * `getIndicesAsIfContainerCompact` to false.
+ *
  * @note This function does not guarantee that the rows of the matrix
- * correspond to the face indices of the mesh. Moreover, it is not guaranteed
- * that the vertex indices stored in the buffer correspond to the vertex indices
- * of the mesh. This scenario is possible when the mesh has deleted faces or
- * vertices. To be sure to have a direct correspondence, compact the face and
- * vertex container before calling this function.
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] getIndicesAsIfContainerCompact: if true, the function will
+ * store the vertex indices as if the vertex container of the mesh is compact.
+ * If false, the actual vertex indices in the input mesh will be stored.
  */
 template<FaceMeshConcept MeshType>
 void triangleIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    bool              getIndicesAsIfContainerCompact = true)
 {
+    const std::vector<uint> vertCompIndices =
+        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
+
+    // lambda to get the vertex index of a face (considering compact indices)
+    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
+
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (uint i = 0; const auto& f : mesh.faces()) {
-            buffer[i * 3 + 0] = f.vertexIndex(0);
-            buffer[i * 3 + 1] = f.vertexIndex(1);
-            buffer[i * 3 + 2] = f.vertexIndex(2);
+            buffer[i * 3 + 0] = vIndex(f, 0);
+            buffer[i * 3 + 1] = vIndex(f, 1);
+            buffer[i * 3 + 2] = vIndex(f, 2);
             ++i;
         }
     }
     else {
         const uint FACE_NUM = mesh.faceNumber();
         for (uint i = 0; const auto& f : mesh.faces()) {
-            buffer[0 * FACE_NUM + i] = f.vertexIndex(0);
-            buffer[1 * FACE_NUM + i] = f.vertexIndex(1);
-            buffer[2 * FACE_NUM + i] = f.vertexIndex(2);
+            buffer[0 * FACE_NUM + i] = vIndex(f, 0);
+            buffer[1 * FACE_NUM + i] = vIndex(f, 1);
+            buffer[2 * FACE_NUM + i] = vIndex(f, 2);
             ++i;
         }
     }
@@ -187,22 +229,39 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
  * }
  * @endcode
  *
+ * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
+ * function stores the vertex indices as if the vertex container of the mesh is
+ * compact. This means that, if the mesh has deleted vertices, the vertex
+ * indices stored in the buffer may not correspond to the vertex indices of the
+ * mesh. If you want to store the actual vertex indices in the input mesh, set
+ * `getIndicesAsIfContainerCompact` to false.
+ *
  * @note This function does not guarantee that the rows of the matrix
- * correspond to the face indices of the mesh. Moreover, it is not guaranteed
- * that the vertex indices stored in the buffer correspond to the vertex indices
- * of the mesh. This scenario is possible when the mesh has deleted faces or
- * vertices. To be sure to have a direct correspondence, compact the face and
- * vertex container before calling this function.
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] getIndicesAsIfContainerCompact: if true, the function will
+ * store the vertex indices as if the vertex container of the mesh is compact.
+ * If false, the actual vertex indices in the input mesh will be stored.
  */
 template<FaceMeshConcept MeshType>
-void faceIndicesToBuffer(const MeshType& mesh, auto* buffer)
+void faceIndicesToBuffer(
+    const MeshType& mesh,
+    auto*           buffer,
+    bool            getIndicesAsIfContainerCompact = true)
 {
+    const std::vector<uint> vertCompIndices =
+        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
+
+    // lambda to get the vertex index of a face (considering compact indices)
+    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
+
     for (uint i = 0; const auto& f : mesh.faces()) {
-        for (const auto* v : f.vertices()) {
-            buffer[i] = mesh.index(v);
+        for (uint j = 0; j < f.vertexNumber(); ++j) {
+            buffer[i] = vIndex(f, j);
             ++i;
         }
     }
@@ -228,32 +287,45 @@ void faceIndicesToBuffer(const MeshType& mesh, auto* buffer)
  *     myMesh, faceIndices.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
  *
+ * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
+ * function stores the vertex indices as if the vertex container of the mesh is
+ * compact. This means that, if the mesh has deleted vertices, the vertex
+ * indices stored in the buffer may not correspond to the vertex indices of the
+ * mesh. If you want to store the actual vertex indices in the input mesh, set
+ * `getIndicesAsIfContainerCompact` to false.
+ *
  * @note This function does not guarantee that the rows of the matrix
- * correspond to the face indices of the mesh. Moreover, it is not guaranteed
- * that the vertex indices stored in the buffer correspond to the vertex indices
- * of the mesh. This scenario is possible when the mesh has deleted faces or
- * vertices. To be sure to have a direct correspondence, compact the face and
- * vertex container before calling this function.
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] largestFaceSize: size of the largest face in the mesh
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] getIndicesAsIfContainerCompact: if true, the function will
+ * store the vertex indices as if the vertex container of the mesh is compact.
+ * If false, the actual vertex indices in the input mesh will be stored.
  */
 template<FaceMeshConcept MeshType>
 void faceIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     uint              largestFaceSize,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    bool              getIndicesAsIfContainerCompact = true)
 {
+    const std::vector<uint> vertCompIndices =
+        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
+
+    // lambda to get the vertex index of a face (considering compact indices)
+    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
+
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (uint i = 0; const auto& f : mesh.faces()) {
             uint j = 0;
-            for (const auto* v : f.vertices()) {
-                buffer[i * largestFaceSize + j] = mesh.index(v);
-                ++j;
-            }
+            for (; j < f.vertexNumber(); ++j)
+                buffer[i * largestFaceSize + j] = vIndex(f, j);
             for (; j < largestFaceSize; ++j) // remaining vertices set to -1
                 buffer[i * largestFaceSize + j] = -1;
             ++i;
@@ -263,10 +335,8 @@ void faceIndicesToBuffer(
         const uint FACE_NUM = mesh.faceNumber();
         for (uint i = 0; const auto& f : mesh.faces()) {
             uint j = 0;
-            for (const auto* v : f.vertices()) {
-                buffer[j * FACE_NUM + i] = mesh.index(v);
-                ++j;
-            }
+            for (; j < f.vertexNumber(); ++j)
+                buffer[j * FACE_NUM + i] = vIndex(f, j);
             for (; j < largestFaceSize; ++j) // remaining vertices set to -1
                 buffer[j * FACE_NUM + i] = -1;
             ++i;
@@ -301,10 +371,12 @@ void faceIndicesToBuffer(
  * If the number of resulting triangles is not given, the function will compute
  * it again.
  *
- * @note This function does not guarantee that the vertex indices stored in the
- * buffer correspond to the vertex indices of the mesh. This scenario is
- * possible when the mesh has deleted vertices. To be sure to have a direct
- * correspondence, compact the vertex container before calling this function.
+ * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
+ * function stores the vertex indices as if the vertex container of the mesh is
+ * compact. This means that, if the mesh has deleted vertices, the vertex
+ * indices stored in the buffer may not correspond to the vertex indices of the
+ * mesh. If you want to store the actual vertex indices in the input mesh, set
+ * `getIndicesAsIfContainerCompact` to false.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
@@ -312,6 +384,9 @@ void faceIndicesToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numTriangles: number of resulting triangles (necessary only if
  * the storage is column major)
+ * @param[in] getIndicesAsIfContainerCompact: if true, the function will
+ * store the vertex indices as if the vertex container of the mesh is compact.
+ * If false, the actual vertex indices in the input mesh will be stored.
  */
 template<FaceMeshConcept MeshType>
 void triangulatedFaceIndicesToBuffer(
@@ -319,8 +394,15 @@ void triangulatedFaceIndicesToBuffer(
     auto*              buffer,
     TriPolyIndexBiMap& indexMap     = detail::indexMap,
     MatrixStorageType  storage      = MatrixStorageType::ROW_MAJOR,
-    uint               numTriangles = UINT_NULL)
+    uint               numTriangles = UINT_NULL,
+    bool               getIndicesAsIfContainerCompact = true)
 {
+    const std::vector<uint> vertCompIndices =
+        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
+
+    // lambda to get the vertex index of a face (considering compact indices)
+    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
+
     // there will be at least a triangle for each polygon
     indexMap.clear();
     indexMap.reserve(mesh.faceNumber(), mesh.faceContainerSize());
@@ -333,7 +415,8 @@ void triangulatedFaceIndicesToBuffer(
             ++t;
         }
 
-        return triangleIndicesToBuffer(mesh, buffer, storage);
+        return triangleIndicesToBuffer(
+            mesh, buffer, storage, getIndicesAsIfContainerCompact);
     }
     else {
         // if the user did not give the number of triangles, and the buffer
@@ -353,14 +436,14 @@ void triangulatedFaceIndicesToBuffer(
                 indexMap.insert(t, f.index());
 
                 if (storage == MatrixStorageType::ROW_MAJOR) {
-                    buffer[t * 3 + 0] = f.vertexIndex(vind[vi + 0]);
-                    buffer[t * 3 + 1] = f.vertexIndex(vind[vi + 1]);
-                    buffer[t * 3 + 2] = f.vertexIndex(vind[vi + 2]);
+                    buffer[t * 3 + 0] = vIndex(f, vind[vi + 0]);
+                    buffer[t * 3 + 1] = vIndex(f, vind[vi + 1]);
+                    buffer[t * 3 + 2] = vIndex(f, vind[vi + 2]);
                 }
                 else {
-                    buffer[0 * numTriangles + t] = f.vertexIndex(vind[vi + 0]);
-                    buffer[1 * numTriangles + t] = f.vertexIndex(vind[vi + 1]);
-                    buffer[2 * numTriangles + t] = f.vertexIndex(vind[vi + 2]);
+                    buffer[0 * numTriangles + t] = vIndex(f, vind[vi + 0]);
+                    buffer[1 * numTriangles + t] = vIndex(f, vind[vi + 1]);
+                    buffer[2 * numTriangles + t] = vIndex(f, vind[vi + 2]);
                 }
                 ++t;
             }
@@ -376,6 +459,13 @@ void triangulatedFaceIndicesToBuffer(
  * The buffer must be preallocated with the correct size (number of edges times
  * 2).
  *
+ * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
+ * function stores the vertex indices as if the vertex container of the mesh is
+ * compact. This means that, if the mesh has deleted vertices, the vertex
+ * indices stored in the buffer may not correspond to the vertex indices of the
+ * mesh. If you want to store the actual vertex indices in the input mesh, set
+ * `getIndicesAsIfContainerCompact` to false.
+ *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the edge indices of the mesh. This scenario is possible
  * when the mesh has deleted edges. To be sure to have a direct
@@ -384,25 +474,35 @@ void triangulatedFaceIndicesToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] getIndicesAsIfContainerCompact: if true, the function will
+ * store the vertex indices as if the vertex container of the mesh is compact.
+ * If false, the actual vertex indices in the input mesh will be stored.
  */
 template<EdgeMeshConcept MeshType>
 void edgeIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    bool              getIndicesAsIfContainerCompact = true)
 {
+    const std::vector<uint> vertCompIndices =
+        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
+
+    // lambda to get the vertex index of a edge (considering compact indices)
+    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
+
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (uint i = 0; const auto& e : mesh.edges()) {
-            buffer[i * 2 + 0] = e.vertexIndex(0);
-            buffer[i * 2 + 1] = e.vertexIndex(1);
+            buffer[i * 2 + 0] = vIndex(e, 0);
+            buffer[i * 2 + 1] = vIndex(e, 1);
             ++i;
         }
     }
     else {
         const uint EDGE_NUM = mesh.edgeNumber();
         for (uint i = 0; const auto& e : mesh.edges()) {
-            buffer[0 * EDGE_NUM + i] = e.vertexIndex(0);
-            buffer[1 * EDGE_NUM + i] = e.vertexIndex(1);
+            buffer[0 * EDGE_NUM + i] = vIndex(e, 0);
+            buffer[1 * EDGE_NUM + i] = vIndex(e, 1);
             ++i;
         }
     }
