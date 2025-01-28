@@ -24,6 +24,13 @@
 
 namespace vcl {
 
+void DrawableObjectVector::init()
+{
+    for (auto& p : *this) {
+        p->init();
+    }
+}
+
 void DrawableObjectVector::draw(uint viewId) const
 {
     if (isVisible()) {
