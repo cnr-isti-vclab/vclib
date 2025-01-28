@@ -1273,6 +1273,77 @@ void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
     elementQualityToBuffer<ElemId::FACE>(mesh, buffer);
 }
 
+/**
+ * @brief Export the vertex texcoords of a mesh to a buffer.
+ *
+ * This function exports the vertex texcoords of a mesh to a buffer. Texcoords
+ * are stored in the buffer following the order the vertices appear in the mesh.
+ * The buffer must be preallocated with the correct size (number of vertices
+ * times 2).
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ */
+template<MeshConcept MeshType>
+void vertexTexCoordsToBuffer(
+    const MeshType& mesh,
+    auto*           buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+{
+    requirePerVertexComponent<CompId::TEX_COORD>(mesh);
+
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        for (uint i = 0; const auto& t :
+                         mesh.vertices() | views::texCoords) {
+            buffer[i * 2 + 0] = t.x();
+            buffer[i * 2 + 1] = t.y();
+            ++i;
+        }
+    }
+    else {
+        const uint VERT_NUM = mesh.vertexNumber();
+        for (uint i = 0; const auto& t :
+                         mesh.vertices() | views::texCoords) {
+            buffer[0 * VERT_NUM + i] = t.x();
+            buffer[1 * VERT_NUM + i] = t.y();
+            ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export the vertex texcoord indices of a mesh to a buffer.
+ *
+ * This function exports the vertex texcoord indices of a mesh to a buffer.
+ * Indices are stored in the buffer following the order the vertices appear in
+ * the mesh. The buffer must be preallocated with the correct size (number of
+ * vertices).
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ */
+template<MeshConcept MeshType>
+void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
+{
+    requirePerVertexComponent<CompId::TEX_COORD>(mesh);
+
+    for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
+        buffer[i] = t.index();
+        ++i;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
