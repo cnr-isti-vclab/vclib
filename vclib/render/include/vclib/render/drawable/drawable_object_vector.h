@@ -42,6 +42,7 @@ public:
     DrawableObjectVector() = default;
 
     // DrawableObject interface
+    void                            init();
     void                            draw(uint viewId) const;
     Box3d                           boundingBox() const;
     std::shared_ptr<DrawableObject> clone() const;
