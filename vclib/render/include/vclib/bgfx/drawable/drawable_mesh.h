@@ -135,7 +135,7 @@ public:
                 bgfx::submit(viewId, mProgram);
             }
 
-            if (mMRS.isPointCloudVisible()) {
+            if (mMRS.isPointVisible()) {
                 mMRB.bindVertexBuffers(mMRS);
                 bindUniforms(VCL_MRS_DRAWING_POINTS);
 
