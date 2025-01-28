@@ -26,6 +26,8 @@
 #include <imgui.h>
 #include <functional>
 
+#include <vclib/space/core/color.h>
+
 namespace ImGui {
 
 inline bool Checkbox(
@@ -64,6 +66,23 @@ inline bool SliderFloat(
     const bool ret = ImGui::SliderFloat(label, &value, vMin, vMax);
     if (ret) {
         set(value);
+    }
+    return ret;
+}
+
+inline bool ColorEdit4(
+    const char* label,
+    std::function<vcl::Color()> get,
+    std::function<void(vcl::Color)> set,
+    ImGuiColorEditFlags flags)
+{
+    // TODO: use float based color
+    vcl::Color c = get();
+    float color[4] = {c.redF(), c.greenF(), c.blueF(), c.alphaF()};
+    const bool ret = ImGui::ColorEdit4(label, color, flags);
+    if (ret) {
+        c.setRgbF(color[0], color[1], color[2], color[3]);
+        set(c);
     }
     return ret;
 }
