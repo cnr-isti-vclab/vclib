@@ -52,6 +52,22 @@ inline bool RadioButton(
     return ret;
 }
 
+inline bool SliderFloat(
+    const char* label,
+    std::function<float()> get,
+    std::function<void(float)> set,
+    float vMin,
+    float vMax)
+{
+    
+    float value = get();
+    const bool ret = ImGui::SliderFloat(label, &value, vMin, vMax);
+    if (ret) {
+        set(value);
+    }
+    return ret;
+}
+
 } // namespace ImGui
 
 #endif // VCL_IMGUI_HELPERS_H
