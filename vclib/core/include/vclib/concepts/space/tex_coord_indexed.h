@@ -20,40 +20,42 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef VCL_CONCEPTS_SPACE_TEX_COORD_INDEXED_H
+#define VCL_CONCEPTS_SPACE_TEX_COORD_INDEXED_H
 
-#include <vclib/algorithms/mesh/update/color.h>
-#include <vclib/algorithms/mesh/update/normal.h>
-#include <vclib/load_save.h>
-#include <vclib/meshes.h>
+#include "tex_coord.h"
 
-#include <vclib/render/drawable/drawable_mesh.h>
+namespace vcl {
 
-template<vcl::MeshConcept MeshType>
-inline vcl::DrawableMesh<MeshType> getDrawableMesh(
-    const std::string& filename = "bimba.obj")
-{
-    // load a mesh:
-    MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
-    vcl::updatePerVertexAndFaceNormals(m);
+/**
+ * @brief A concept representing a Texture Coordinate with an index.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * TexCoordIndexedConcept.
+ */
+template<typename T>
+concept TexCoordIndexedConcept =
+    TexCoordConcept<T> && requires (
+                              T&&                               obj,
+                              ushort                            u,
+                              ushort&                           uR,
+                              typename RemoveRef<T>::ScalarType s) {
+        typename RemoveRef<T>::ScalarType;
 
-    // enable the vertex color of the mesh and set it to gray
-    m.enablePerVertexColor();
-    vcl::setPerVertexColor(m, vcl::Color::Gray);
+        RemoveRef<T>();
+        RemoveRef<T>(s, s, u);
 
-    // create a MeshRenderSettings object, that allows to set the rendering
-    // options of the mesh
-    // default is what we want: color per vertex, smooth shading, no wireframe
-    vcl::MeshRenderSettings settings(m);
+        { obj.index() } -> std::convertible_to<decltype(u)>;
 
-    // create a DrawableMesh object from the mesh
-    vcl::DrawableMesh<MeshType> drawable(m);
+        { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
 
-    // set the settings to the drawable mesh
-    drawable.setRenderSettings(settings);
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.index() } -> std::same_as<decltype(uR)>;
+            { obj.set(s, s, u) } -> std::same_as<void>;
+        };
+    };
 
-    return drawable;
-}
+} // namespace vcl
 
-#endif // COMMON_H
+#endif // VCL_CONCEPTS_SPACE_TEX_COORD_INDEXED_H

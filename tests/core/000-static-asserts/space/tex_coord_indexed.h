@@ -20,40 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef TEX_COORD_INDEXED_H
+#define TEX_COORD_INDEXED_H
 
-#include <vclib/algorithms/mesh/update/color.h>
-#include <vclib/algorithms/mesh/update/normal.h>
-#include <vclib/load_save.h>
-#include <vclib/meshes.h>
+#include <vclib/space.h>
 
-#include <vclib/render/drawable/drawable_mesh.h>
-
-template<vcl::MeshConcept MeshType>
-inline vcl::DrawableMesh<MeshType> getDrawableMesh(
-    const std::string& filename = "bimba.obj")
+void texCoordIndexedStaticAsserts()
 {
-    // load a mesh:
-    MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
-    vcl::updatePerVertexAndFaceNormals(m);
+    using namespace vcl;
 
-    // enable the vertex color of the mesh and set it to gray
-    m.enablePerVertexColor();
-    vcl::setPerVertexColor(m, vcl::Color::Gray);
-
-    // create a MeshRenderSettings object, that allows to set the rendering
-    // options of the mesh
-    // default is what we want: color per vertex, smooth shading, no wireframe
-    vcl::MeshRenderSettings settings(m);
-
-    // create a DrawableMesh object from the mesh
-    vcl::DrawableMesh<MeshType> drawable(m);
-
-    // set the settings to the drawable mesh
-    drawable.setRenderSettings(settings);
-
-    return drawable;
+    // TexCoord concept
+    static_assert(
+        TexCoordIndexedConcept<TexCoordIndexedf>,
+        "TexCoordIndexedf does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<const TexCoordIndexedf>,
+        "const TexCoordIndexedf does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<TexCoordIndexedf&>,
+        "TexCoordIndexedf& does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<const TexCoordIndexedf&>,
+        "const TexCoordIndexedf& does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<TexCoordIndexedf&&>,
+        "TexCoordIndexedf&& does not satisfy the TexCoordIndexedConcept");
 }
 
-#endif // COMMON_H
+#endif // TEX_COORD_INDEXED_H

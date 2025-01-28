@@ -20,40 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H
+#define VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H
 
-#include <vclib/algorithms/mesh/update/color.h>
-#include <vclib/algorithms/mesh/update/normal.h>
-#include <vclib/load_save.h>
-#include <vclib/meshes.h>
+#include <vclib/space/core/bit_set.h>
+#include <vclib/types.h>
 
-#include <vclib/render/drawable/drawable_mesh.h>
+namespace vcl {
 
-template<vcl::MeshConcept MeshType>
-inline vcl::DrawableMesh<MeshType> getDrawableMesh(
-    const std::string& filename = "bimba.obj")
+enum class MeshBufferId : uint {
+    VERTICES,
+    VERT_NORMALS,
+    VERT_COLORS,
+    VERT_TEXCOORDS,
+
+    TRIANGLES,
+    TRI_NORMALS,
+    TRI_COLORS,
+    WEDGE_TEXCOORDS,
+
+    WIREFRAME,
+
+    EDGES,
+    EDGE_COLORS,
+    EDGE_NORMALS,
+
+    TEXTURES,
+
+    COUNT,
+};
+
+namespace detail {
+using BuffersToFillUnderlyingType = ushort;
+} // namespace detail
+
+static_assert(
+    sizeof(detail::BuffersToFillUnderlyingType) < (uint) MeshBufferId::COUNT,
+    "BuffersToFill is not able to store all MeshBufferID values");
+
+using BuffersToFill = vcl::BitSet<detail::BuffersToFillUnderlyingType>;
+
+namespace detail {
+
+inline BuffersToFill buffersToFillAll()
 {
-    // load a mesh:
-    MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
-    vcl::updatePerVertexAndFaceNormals(m);
-
-    // enable the vertex color of the mesh and set it to gray
-    m.enablePerVertexColor();
-    vcl::setPerVertexColor(m, vcl::Color::Gray);
-
-    // create a MeshRenderSettings object, that allows to set the rendering
-    // options of the mesh
-    // default is what we want: color per vertex, smooth shading, no wireframe
-    vcl::MeshRenderSettings settings(m);
-
-    // create a DrawableMesh object from the mesh
-    vcl::DrawableMesh<MeshType> drawable(m);
-
-    // set the settings to the drawable mesh
-    drawable.setRenderSettings(settings);
-
-    return drawable;
+    BuffersToFill all;
+    all.set();
+    return all;
 }
 
-#endif // COMMON_H
+} // namespace detail
+
+const inline BuffersToFill BUFFERS_TO_FILL_NONE = BuffersToFill();
+
+const inline BuffersToFill BUFFERS_TO_FILL_ALL = detail::buffersToFillAll();
+
+} // namespace vcl
+
+#endif // VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H
