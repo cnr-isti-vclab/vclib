@@ -191,7 +191,7 @@ private:
             createVertexTexCoordsBuffer(mesh);
 
             // vertex wedges buffer (duplicated vertices)
-            createVertexWedgeTexCoordsBuffer(mesh);
+            createWedgeTexCoordsBuffer(mesh);
 
             if (mBuffersToFill[toUnderlying(TRIANGLES)]) {
                 // triangle index buffer
@@ -204,7 +204,7 @@ private:
                 createTriangleColorsBuffer(mesh, indexMap);
 
                 // triangle wedge texture indices buffer
-                createTriangleWedgeTextureIndicesBuffer(mesh, indexMap);
+                createWedgeTextureIndicesBuffer(mesh, indexMap);
             }
 
             if (mBuffersToFill[toUnderlying(EDGES)]) {
@@ -331,7 +331,7 @@ private:
         }
     }
 
-    void createVertexWedgeTexCoordsBuffer(const MeshType& mesh)
+    void createWedgeTexCoordsBuffer(const MeshType& mesh)
     {
         if (Base::wedgeTexCoordsBufferData()) {
             mVertexWedgeUVBuffer.set(
@@ -440,7 +440,7 @@ private:
         // }
     }
 
-    void createTriangleWedgeTextureIndicesBuffer(
+    void createWedgeTextureIndicesBuffer(
         const MeshType&          mesh,
         const TriPolyIndexBiMap& indexMap)
     {
