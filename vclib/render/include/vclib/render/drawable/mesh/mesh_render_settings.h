@@ -89,6 +89,10 @@ public:
 
     // rendering options capability of the mesh
 
+    bool operator==(const MeshRenderSettings&) const = default;
+
+    bool operator!=(const MeshRenderSettings&) const = default;
+
     bool canBeVisible() const
     {
         return mDrawModeCapability0 & VCL_MRS_DRAW_MESH;
