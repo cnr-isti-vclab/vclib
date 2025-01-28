@@ -29,6 +29,10 @@
 #include <imgui.h>
 #include "imgui_helpers.h"
 
+#include <numeric>
+#include <algorithm>
+#include <iterator>
+
 template<typename DerivedRenderApp>
 class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
@@ -87,6 +91,116 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         }
     }
 
+    static void drawMeshPointSettings(
+        const vcl::DrawableMesh<vcl::TriMesh>& drawable,
+        vcl::MeshRenderSettings& settings)
+    {
+        ImGui::BeginDisabled(!settings.canPointBeVisible());
+
+        // visibility
+        ImGui::Checkbox("Visible",
+            [&]{return settings.isPointVisible();},
+            [&](bool vis){settings.setPointVisibility(vis);}
+        );
+
+        // shape
+        ImGui::Text("Shape:");
+        ImGui::SameLine();
+        // TODO: implement point shape enum? in render settings
+        ImGui::BeginDisabled(true);
+        ImGui::RadioButton("Circle",
+            [&]{return false;},
+            [&](bool v){}
+        );
+        ImGui::EndDisabled();
+        ImGui::SameLine();
+        ImGui::BeginDisabled(false);
+        ImGui::RadioButton("Pixel",
+            [&]{return true;},
+            [&](bool v){}
+        );
+        ImGui::EndDisabled();
+
+        // shading
+        ImGui::Text("Shading:");
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canPointShadingBePerVertex());
+        ImGui::RadioButton("Vertex",
+            [&]{return settings.isPointShadingPerVertex();},
+            [&](bool v){if (v) settings.setPointShadingPerVertex();}
+        );
+        ImGui::SameLine();
+        ImGui::EndDisabled();
+        ImGui::RadioButton("None",
+            [&]{return settings.isPointShadingNone();},
+            [&](bool vis){if (vis) settings.setPointShadingNone();}
+        );
+
+        // color
+        // TODO: implement color enum? in render settings
+        ImGui::Text("Color:");
+        ImGui::SameLine();
+        const char* pointColorNames[] = { "Vertex", "Mesh", "User" };
+        const std::array<bool,3> colorSelected = {
+            settings.isPointColorPerVertex(),
+            settings.isPointColorPerMesh(),
+            settings.isPointColorUserDefined()
+        };
+
+        assert(std::accumulate(
+            std::begin(colorSelected),
+            std::end(colorSelected), 0) == 1);
+        int idx = std::distance( std::begin(colorSelected),
+            std::find(std::begin(colorSelected),
+                        std::end(colorSelected),
+                        true));
+        assert(idx >= 0 && idx < 3);
+        
+        if (ImGui::BeginCombo("##ComboPointColor",
+            pointColorNames[idx]))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(pointColorNames); n++)
+            {
+                const bool selected = (n == idx);
+            
+                switch (n) {
+                case 0:
+                    ImGui::BeginDisabled(!settings.canPointColorBePerVertex());
+                    if (ImGui::Selectable(pointColorNames[n], selected))
+                        settings.setPointColorPerVertex();      
+                    ImGui::EndDisabled();
+                    break;
+                case 1:
+                    ImGui::BeginDisabled(!settings.canPointColorBePerMesh());
+                    if (ImGui::Selectable(pointColorNames[n], selected))
+                        settings.setPointColorPerMesh();
+                    ImGui::EndDisabled();
+                    break;
+                case 2:
+                    if (ImGui::Selectable(pointColorNames[n], selected))
+                        settings.setPointColorUserDefined();
+                    break;
+                default:
+                    assert(false);
+                    break;
+                }
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+        // point size
+        ImGui::SliderFloat("Size",
+            [&]{return settings.pointWidth();},
+            [&](float v){settings.setPointWidth(v);},
+            1.0f,
+            10.0f);
+        
+
+        ImGui::EndDisabled();
+    }
+
     static void drawMeshSettings(vcl::DrawableMesh<vcl::TriMesh>& drawable)
     {
         ImGui::Separator();
@@ -106,62 +220,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             // points
             if (ImGui::BeginTabItem("Points"))
             {
-                ImGui::BeginDisabled(!newSettings.canPointBeVisible());
-
-                // visibility
-                ImGui::Checkbox("Visible",
-                    [&]{return newSettings.isPointVisible();},
-                    [&](bool vis){newSettings.setPointVisibility(vis);}
-                );
-
-                // shape
-                ImGui::Text("Shape:");
-                ImGui::SameLine();
-                // TODO: implement point shape in render settings
-                ImGui::BeginDisabled(true);
-                ImGui::RadioButton("Circle",
-                    [&]{return false;},
-                    [&](bool v){}
-                );
-                ImGui::EndDisabled();
-                ImGui::SameLine();
-                ImGui::BeginDisabled(false);
-                ImGui::RadioButton("Pixel",
-                    [&]{return true;},
-                    [&](bool v){}
-                );
-                ImGui::EndDisabled();
-
-                // shading
-                ImGui::Text("Shading:");
-                ImGui::SameLine();
-                ImGui::BeginDisabled(!newSettings.canPointShadingBePerVertex());
-                ImGui::RadioButton("Vertex",
-                    [&]{return newSettings.isPointShadingPerVertex();},
-                    [&](bool v){if (v) newSettings.setPointShadingPerVertex();}
-                );
-                ImGui::SameLine();
-                ImGui::EndDisabled();
-                ImGui::RadioButton("None",
-                    [&]{return newSettings.isPointShadingNone();},
-                    [&](bool vis){if (vis) newSettings.setPointShadingNone();}
-                );
-
-                // color
-                ImGui::Text("Color:");
-                ImGui::SameLine();
-                // if (ImGui::BeginCombo("", const char *preview_value))
-                // ImGui::BeginDisabled(!newSettings.canPointColorBePerVertex());
-
-                // point size
-                // ImGui::SliderFloat("Width",
-                //     [&]{return newSettings.pointWidth();},
-                //     [&](float w){newSettings.setPointWidth(w);}
-                // );
-
-
-                ImGui::EndDisabled();
-
+                drawMeshPointSettings(drawable, newSettings);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Surface"))
@@ -182,8 +241,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::BeginDisabled(!newSettings.canPointBeVisible());
         ImGui::Checkbox("Points",
             [&]{return newSettings.isPointVisible();},
-            [&](bool vis){newSettings.setPointWidth(3);
-                newSettings.setPointVisibility(vis);}
+            [&](bool vis){newSettings.setPointVisibility(vis);}
         );
         ImGui::EndDisabled();
 
