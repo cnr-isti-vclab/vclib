@@ -444,10 +444,20 @@ private:
 
     void createEdgeIndicesBuffer(const MeshType& mesh)
     {
-        if (Base::edgeBufferData()) {
+        if constexpr(vcl::HasEdges<MeshType>) {
+            auto [buffer, releaseFn] =
+                getAllocatedBufferAndReleaseFn<uint>(mesh.edgeNumber() * 2);
+
+            edgeIndicesToBuffer(mesh, buffer);
+
             mEdgeIndexBuffer.set(
-                Base::edgeBufferData(), Base::edgeBufferSize());
+                 buffer, mesh.edgeNumber() * 2);
         }
+        // WAS:
+        // if (Base::edgeBufferData()) {
+        //     mEdgeIndexBuffer.set(
+        //         Base::edgeBufferData(), Base::edgeBufferSize());
+        // }
     }
 
     void createEdgeNormalsBuffer(const MeshType& mesh)
