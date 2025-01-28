@@ -28,6 +28,19 @@
 #include <vclib/space/complex/tri_poly_index_bimap.h>
 #include <vclib/views/mesh.h>
 
+/**
+ * @defgroup export_buffer Export Mesh to Buffer Algorithms
+ *
+ * @ingroup import_export
+ *
+ * @brief List Export Mesh to Buffer algorithms.
+ *
+ * They allow to export mesh data to pre-allocated buffers.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh/import_export.h>`
+ */
+
 namespace vcl {
 
 namespace detail {
@@ -79,6 +92,8 @@ inline static TriPolyIndexBiMap indexMap;
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexCoordsToBuffer(
@@ -132,6 +147,8 @@ void vertexCoordsToBuffer(
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void triangleIndicesToBuffer(
@@ -186,6 +203,8 @@ void triangleIndicesToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @return sum of the sizes of the faces
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
@@ -246,6 +265,8 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void faceIndicesToBuffer(
@@ -306,6 +327,8 @@ void faceIndicesToBuffer(
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void faceIndicesToBuffer(
@@ -387,6 +410,8 @@ void faceIndicesToBuffer(
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void triangulatedFaceIndicesToBuffer(
@@ -477,6 +502,8 @@ void triangulatedFaceIndicesToBuffer(
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ *
+ * @ingroup export_buffer
  */
 template<EdgeMeshConcept MeshType>
 void edgeIndicesToBuffer(
@@ -531,6 +558,8 @@ void edgeIndicesToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -563,6 +592,8 @@ void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -592,6 +623,8 @@ void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -621,6 +654,8 @@ void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<EdgeMeshConcept MeshType>
 void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
@@ -645,6 +680,8 @@ void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ *
+ * @ingroup export_buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
@@ -691,6 +728,8 @@ void elementNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
@@ -716,6 +755,8 @@ void vertexNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
@@ -745,6 +786,8 @@ void faceNormalsToBuffer(
  * @param[out] buffer: preallocated buffer
  * @param[in] indexMap: map from triangle index to face index
  * @param[in] storage: storage type of the matrix (row or column major)
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void triangulatedFaceNormalsToBuffer(
@@ -797,6 +840,8 @@ void triangulatedFaceNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ *
+ * @ingroup export_buffer
  */
 template<EdgeMeshConcept MeshType>
 void edgeNormalsToBuffer(
@@ -826,6 +871,8 @@ void edgeNormalsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ *
+ * @ingroup export_buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsToBuffer(
@@ -879,6 +926,8 @@ void elementColorsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] colorFormat: format of the color components
+ *
+ * @ingroup export_buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsToBuffer(
@@ -920,6 +969,8 @@ void elementColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexColorsToBuffer(
@@ -949,6 +1000,8 @@ void vertexColorsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] colorFormat: format of the color components
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexColorsToBuffer(
@@ -977,6 +1030,8 @@ void vertexColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void faceColorsToBuffer(
@@ -1009,6 +1064,8 @@ void faceColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void triangulatedFaceColorsToBuffer(
@@ -1068,6 +1125,8 @@ void triangulatedFaceColorsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] colorFormat: format of the color components
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void faceColorsToBuffer(
@@ -1098,6 +1157,8 @@ void faceColorsToBuffer(
  * @param[out] buffer: preallocated buffer
  * @param[in] indexMap: map from triangle index to face index
  * @param[in] colorFormat: format of the color components
+ *
+ * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
 void triangulatedFaceColorsToBuffer(
@@ -1142,6 +1203,8 @@ void triangulatedFaceColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ *
+ * @ingroup export_buffer
  */
 template<EdgeMeshConcept MeshType>
 void edgeColorsToBuffer(
@@ -1170,6 +1233,8 @@ void edgeColorsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] colorFormat: format of the color components
+ *
+ * @ingroup export_buffer
  */
 template<EdgeMeshConcept MeshType>
 void edgeColorsToBuffer(
@@ -1196,6 +1261,8 @@ void edgeColorsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
 void elementQualityToBuffer(const MeshType& mesh, auto* buffer)
@@ -1224,6 +1291,8 @@ void elementQualityToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexQualityToBuffer(const MeshType& mesh, auto* buffer)
@@ -1245,6 +1314,8 @@ void vertexQualityToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void faceQualityToBuffer(const MeshType& mesh, auto* buffer)
@@ -1266,6 +1337,8 @@ void faceQualityToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
@@ -1289,6 +1362,8 @@ void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexTexCoordsToBuffer(
@@ -1332,6 +1407,8 @@ void vertexTexCoordsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)

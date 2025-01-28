@@ -29,6 +29,19 @@
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
 
+/**
+ * @defgroup export_matrix Export Mesh to Matrix Algorithms
+ *
+ * @ingroup import_export
+ *
+ * @brief List Export Mesh to Matrix algorithms.
+ *
+ * They allow to export mesh data to matrices.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh/import_export.h>`
+ */
+
 namespace vcl {
 
 /**
@@ -54,6 +67,8 @@ namespace vcl {
  *
  * @param[in] mesh: input mesh
  * @return \#V*3 matrix of scalars (vertex coordinates)
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexCoordsMatrix(const MeshType& mesh)
@@ -103,6 +118,8 @@ Matrix vertexCoordsMatrix(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#F vector of integers (face sizes)
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSizesVector(const MeshType& mesh)
@@ -144,6 +161,8 @@ Vect faceSizesVector(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#(sum of face sizes) vector of vertex indices
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceIndicesVector(const MeshType& mesh)
@@ -189,6 +208,8 @@ Vect faceIndicesVector(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#F*max(size(F)) matrix of vertex indices
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceIndicesMatrix(const MeshType& mesh)
@@ -236,6 +257,8 @@ Matrix faceIndicesMatrix(const MeshType& mesh)
  * @param[in] mesh: input mesh
  * @param[out] indexMap: map from triangle index to face index
  * @return \#T*3 matrix of vertex indices
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix triangulatedFaceIndicesMatrix(
@@ -289,6 +312,8 @@ Matrix triangulatedFaceIndicesMatrix(
  *
  * @param[in] mesh: input mesh
  * @return \#E*2 matrix of integers (edge indices)
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix edgeIndicesMatrix(const MeshType& mesh)
@@ -337,6 +362,8 @@ Matrix edgeIndicesMatrix(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#E vector of booleans or integers (element selection)
+ *
+ * @ingroup export_matrix
  */
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
@@ -371,6 +398,8 @@ Vect elementSelectionVector(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#V vector of booleans or integers (vertex selection)
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, MeshConcept MeshType>
 Vect vertexSelectionVector(const MeshType& mesh)
@@ -403,6 +432,8 @@ Vect vertexSelectionVector(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#F vector of booleans or integers (face selection)
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSelectionVector(const MeshType& mesh)
@@ -436,6 +467,8 @@ Vect faceSelectionVector(const MeshType& mesh)
  * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
  * @return \#E*3 matrix of scalars (element normals)
+ *
+ * @ingroup export_matrix
  */
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
@@ -479,6 +512,8 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#V*3 matrix of scalars (vertex normals)
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& mesh)
@@ -509,6 +544,8 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#F*3 matrix of scalars (face normals)
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceNormalsMatrix(const MeshType& mesh)
@@ -542,6 +579,8 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
  * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
  * @return \#E*4 matrix of integers (element colors)
+ *
+ * @ingroup export_matrix
  */
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
@@ -593,6 +632,8 @@ Matrix elementColorsMatrix(const MeshType& mesh)
  * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
  * @return \#E vector of integers (element colors)
+ *
+ * @ingroup export_matrix
  */
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
@@ -629,6 +670,8 @@ Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
  *
  * @param[in] mesh: input mesh
  * @return \#V*4 matrix of integers (vertex colors)
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexColorsMatrix(const MeshType& mesh)
@@ -663,6 +706,8 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#V vector of integers (vertex colors)
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, MeshConcept MeshType>
 Vect vertexColorsVector(const MeshType& mesh, Color::Format colorFormat)
@@ -693,6 +738,8 @@ Vect vertexColorsVector(const MeshType& mesh, Color::Format colorFormat)
  *
  * @param[in] mesh: input mesh
  * @return \#F*4 matrix of integers (face colors)
+ *
+ * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceColorsMatrix(const MeshType& mesh)
@@ -727,6 +774,8 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#F vector of integers (face colors)
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, MeshConcept MeshType>
 Vect faceColorsVector(const MeshType& mesh, Color::Format colorFormat)
@@ -761,6 +810,8 @@ Vect faceColorsVector(const MeshType& mesh, Color::Format colorFormat)
  * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
  * @return \#E vector of scalars (element quality)
+ *
+ * @ingroup export_matrix
  */
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
@@ -798,6 +849,8 @@ Vect elementQualityVector(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#V vector of scalars (vertex quality)
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, MeshConcept MeshType>
 Vect vertexQualityVector(const MeshType& mesh)
@@ -829,6 +882,8 @@ Vect vertexQualityVector(const MeshType& mesh)
  *
  * @param[in] mesh: input mesh
  * @return \#F vector of scalars (face quality)
+ *
+ * @ingroup export_matrix
  */
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceQualityVector(const MeshType& mesh)

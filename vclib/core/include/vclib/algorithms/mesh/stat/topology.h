@@ -345,6 +345,10 @@ uint countVerticesToDuplicateByWedgeTexCoords(
         ++vi;
     }
 
+    assert(vertWedgeMap.size() == mesh.vertexContainerSize());
+    assert(vertsToDuplicate.size() == count);
+    assert(facesToReassign.size() == count);
+
     return count;
 }
 

@@ -28,6 +28,19 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/polygon.h>
 
+/**
+ * @defgroup import_matrix Import Mesh from Matrix Algorithms
+ *
+ * @ingroup import_export
+ *
+ * @brief List Import Mesh from Matrix algorithms.
+ *
+ * They allow to import mesh data from matrices.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh/import_export.h>`
+ */
+
 namespace vcl {
 
 namespace detail {
