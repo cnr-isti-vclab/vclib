@@ -156,6 +156,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                         true));
         assert(idx >= 0 && idx < 3);
         
+        ImGui::SetNextItemWidth(-50);
         if (ImGui::BeginCombo("##ComboPointColor",
             pointColorNames[idx]))
         {
@@ -189,14 +190,26 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             }
             ImGui::EndCombo();
         }
+        // user color picker
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.isPointColorUserDefined());
+        ImGui::ColorEdit4("##PointColor",
+            [&]{return settings.pointUserColor();},
+            [&](vcl::Color c){settings.setPointUserColor(c);},
+            ImGuiColorEditFlags_NoInputs
+        );
+        ImGui::EndDisabled();
 
         // point size
-        ImGui::SliderFloat("Size",
+        ImGui::Text("Size:");
+        // set the width of the window minus the width of the label
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(-10);
+        ImGui::SliderFloat("##PointSize",
             [&]{return settings.pointWidth();},
             [&](float v){settings.setPointWidth(v);},
             1.0f,
             10.0f);
-        
 
         ImGui::EndDisabled();
     }
