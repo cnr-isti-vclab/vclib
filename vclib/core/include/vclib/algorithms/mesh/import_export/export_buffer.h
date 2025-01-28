@@ -798,7 +798,7 @@ void triangulatedFaceNormalsToBuffer(
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  */
-template<FaceMeshConcept MeshType>
+template<EdgeMeshConcept MeshType>
 void edgeNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
@@ -978,7 +978,7 @@ void vertexColorsToBuffer(
  * @param[in] representation: representation of the color components (integer or
  * float)
  */
-template<MeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 void faceColorsToBuffer(
     const MeshType&       mesh,
     auto*                 buffer,
@@ -1069,7 +1069,7 @@ void triangulatedFaceColorsToBuffer(
  * @param[out] buffer: preallocated buffer
  * @param[in] colorFormat: format of the color components
  */
-template<MeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 void faceColorsToBuffer(
     const MeshType& mesh,
     auto*           buffer,
@@ -1143,7 +1143,7 @@ void triangulatedFaceColorsToBuffer(
  * @param[in] representation: representation of the color components (integer or
  * float)
  */
-template<MeshConcept MeshType>
+template<EdgeMeshConcept MeshType>
 void edgeColorsToBuffer(
     const MeshType&       mesh,
     auto*                 buffer,
@@ -1171,7 +1171,7 @@ void edgeColorsToBuffer(
  * @param[out] buffer: preallocated buffer
  * @param[in] colorFormat: format of the color components
  */
-template<MeshConcept MeshType>
+template<EdgeMeshConcept MeshType>
 void edgeColorsToBuffer(
     const MeshType& mesh,
     auto*           buffer,
