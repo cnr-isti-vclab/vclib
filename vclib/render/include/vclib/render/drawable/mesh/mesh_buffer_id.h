@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_MESH_BUFFER_ID_H
-#define VCL_RENDER_DRAWABLE_MESH_MESH_MESH_BUFFER_ID_H
+#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H
+#define VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H
 
 #include <vclib/space/core/bit_set.h>
 #include <vclib/types.h>
@@ -62,7 +62,8 @@ using BuffersToFill = vcl::BitSet<detail::BuffersToFillUnderlyingType>;
 
 namespace detail {
 
-inline BuffersToFill buffersToFillAll() {
+inline BuffersToFill buffersToFillAll()
+{
     BuffersToFill all;
     all.set();
     return all;
@@ -76,4 +77,4 @@ const inline BuffersToFill BUFFERS_TO_FILL_ALL = detail::buffersToFillAll();
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_MESH_MESH_MESH_BUFFER_ID_H
+#endif // VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H

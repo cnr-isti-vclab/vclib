@@ -34,8 +34,8 @@ namespace vcl::comp {
  * @brief The TexCoord class represents a component that stores a texture
  * coordinate.
  *
- * It exposes a vcl::TexCoordIndexed object, that stores a texture coordinate and an
- * id of the texture to use.
+ * It exposes a vcl::TexCoordIndexed object, that stores a texture coordinate
+ * and an id of the texture to use.
  *
  * For example, if you have a Vertex Element `v` with the TexCoord component,
  * you'll be able to access to this component member functions from `v`:

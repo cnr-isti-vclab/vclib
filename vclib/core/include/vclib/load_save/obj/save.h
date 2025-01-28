@@ -54,7 +54,7 @@ ObjMaterial objMaterialFromVertex(
             mat.Kd.z()   = v.color().blueF();
         }
     }
-    if constexpr(HasPerVertexTexCoord<MeshType>) {
+    if constexpr (HasPerVertexTexCoord<MeshType>) {
         if (fi.hasVertexTexCoords()) {
             mat.hasTexture = true;
             if constexpr (HasTexturePaths<MeshType>) {

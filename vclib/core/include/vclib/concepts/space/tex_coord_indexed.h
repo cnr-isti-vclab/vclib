@@ -30,15 +30,16 @@ namespace vcl {
 /**
  * @brief A concept representing a Texture Coordinate with an index.
  *
- * @tparam T: The type to be tested for conformity to the TexCoordIndexedConcept.
+ * @tparam T: The type to be tested for conformity to the
+ * TexCoordIndexedConcept.
  */
 template<typename T>
 concept TexCoordIndexedConcept =
     TexCoordConcept<T> && requires (
-                              T&&                                obj,
-                              ushort                             u,
-                              ushort&                            uR,
-                              typename RemoveRef<T>::ScalarType  s) {
+                              T&&                               obj,
+                              ushort                            u,
+                              ushort&                           uR,
+                              typename RemoveRef<T>::ScalarType s) {
         typename RemoveRef<T>::ScalarType;
 
         RemoveRef<T>();

@@ -648,18 +648,18 @@ void faceNormalsToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void triangulatedFaceNormalsToBuffer(
-    const MeshType&   mesh,
-    auto*             buffer,
+    const MeshType&          mesh,
+    auto*                    buffer,
     const TriPolyIndexBiMap& indexMap,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR)
 {
     requirePerElementComponent<ElemId::FACE, CompId::NORMAL>(mesh);
 
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (const auto& f : mesh.faces()) {
-            const auto& n = f.normal();
-            uint first = indexMap.triangleBegin(f.index());
-            uint last = first + indexMap.triangleNumber(f.index());
+            const auto& n     = f.normal();
+            uint        first = indexMap.triangleBegin(f.index());
+            uint        last  = first + indexMap.triangleNumber(f.index());
             for (uint t = first; t < last; ++t) {
                 buffer[t * 3 + 0] = n.x();
                 buffer[t * 3 + 1] = n.y();
@@ -670,9 +670,9 @@ void triangulatedFaceNormalsToBuffer(
     else {
         const uint FACE_NUM = indexMap.triangleNumber();
         for (const auto& f : mesh.faces()) {
-            const auto& n = f.normal();
-            uint first = indexMap.triangleBegin(f.index());
-            uint last = first + indexMap.triangleNumber(f.index());
+            const auto& n     = f.normal();
+            uint        first = indexMap.triangleBegin(f.index());
+            uint        last  = first + indexMap.triangleNumber(f.index());
             for (uint t = first; t < last; ++t) {
                 buffer[0 * FACE_NUM + t] = n.x();
                 buffer[1 * FACE_NUM + t] = n.y();
