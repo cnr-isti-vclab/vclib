@@ -48,6 +48,7 @@ class MeshRenderData
     std::vector<float>    mVNormals;
     std::vector<uint32_t> mVColors;
     std::vector<float>    mVTexCoords;
+    std::vector<uint32_t> mVTexIds;
 
     std::vector<float>    mTNormals;
     std::vector<uint32_t> mTColors;
@@ -114,6 +115,7 @@ public:
         mTNormals.clear();
         mTColors.clear();
         mVTexCoords.clear();
+        mVTexIds.clear();
         mWTexCoords.clear();
         mWTexIds.clear();
         mENormals.clear();
@@ -212,6 +214,13 @@ public:
         if (mVTexCoords.empty())
             return nullptr;
         return mVTexCoords.data();
+    }
+
+    const uint32_t* vertexTextureIDsBufferData() const
+    {
+        if (mVTexIds.empty())
+            return nullptr;
+        return mVTexIds.data();
     }
 
     const float* wedgeTexCoordsBufferData() const
@@ -330,6 +339,7 @@ private:
             if (buffersToFill[toUnderlying(VERT_TEXCOORDS)]) {
                 if (vcl::isPerVertexTexCoordAvailable(m)) {
                     mVTexCoords.reserve(vn * 2);
+                    mVTexIds.reserve(vn);
                 }
             }
         }
@@ -363,6 +373,7 @@ private:
                     if (vcl::isPerVertexTexCoordAvailable(m)) {
                         mVTexCoords.push_back(v.texCoord().u());
                         mVTexCoords.push_back(v.texCoord().v());
+                        mVTexIds.push_back(v.texCoord().index());
                     }
                 }
             }
