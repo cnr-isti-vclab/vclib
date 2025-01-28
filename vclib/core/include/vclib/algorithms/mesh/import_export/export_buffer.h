@@ -648,18 +648,18 @@ void faceNormalsToBuffer(
  */
 template<FaceMeshConcept MeshType>
 void triangulatedFaceNormalsToBuffer(
-    const MeshType&   mesh,
-    auto*             buffer,
+    const MeshType&          mesh,
+    auto*                    buffer,
     const TriPolyIndexBiMap& indexMap,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR)
 {
     requirePerElementComponent<ElemId::FACE, CompId::NORMAL>(mesh);
 
     if (storage == MatrixStorageType::ROW_MAJOR) {
         for (const auto& f : mesh.faces()) {
-            const auto& n = f.normal();
-            uint first = indexMap.triangleBegin(f.index());
-            uint last = first + indexMap.triangleNumber(f.index());
+            const auto& n     = f.normal();
+            uint        first = indexMap.triangleBegin(f.index());
+            uint        last  = first + indexMap.triangleNumber(f.index());
             for (uint t = first; t < last; ++t) {
                 buffer[t * 3 + 0] = n.x();
                 buffer[t * 3 + 1] = n.y();
@@ -670,9 +670,9 @@ void triangulatedFaceNormalsToBuffer(
     else {
         const uint FACE_NUM = indexMap.triangleNumber();
         for (const auto& f : mesh.faces()) {
-            const auto& n = f.normal();
-            uint first = indexMap.triangleBegin(f.index());
-            uint last = first + indexMap.triangleNumber(f.index());
+            const auto& n     = f.normal();
+            uint        first = indexMap.triangleBegin(f.index());
+            uint        last  = first + indexMap.triangleNumber(f.index());
             for (uint t = first; t < last; ++t) {
                 buffer[0 * FACE_NUM + t] = n.x();
                 buffer[1 * FACE_NUM + t] = n.y();
@@ -861,6 +861,115 @@ void faceColorsToBuffer(
     Color::Representation representation = Color::Representation::INT_0_255)
 {
     elementColorsToBuffer<ElemId::FACE>(mesh, buffer, storage, representation);
+}
+
+/**
+ * @brief Export into a buffer the color values (RGBA) for each triangle
+ * computed by triangulating the faces of a Mesh.
+ *
+ * This function exports the colors of the triangles computed by
+ * triangulating the faces of a mesh to a buffer. Colors are stored following
+ * the order the faces appear in the mesh. The buffer must be preallocated with
+ * the correct size (number of *resulting triangles* times 4).
+ *
+ * The function requires an already computed index map, which maps each triangle
+ * to the face index and vice versa. You can use the @ref
+ * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * resulting triangles and allocate the buffer accordingly.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] indexMap: map from triangle index to face index
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] representation: representation of the color components (integer or
+ * float)
+ */
+template<FaceMeshConcept MeshType>
+void triangulatedFaceColorsToBuffer(
+    const MeshType&          mesh,
+    auto*                    buffer,
+    const TriPolyIndexBiMap& indexMap,
+    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255)
+{
+    requirePerElementComponent<ElemId::FACE, CompId::COLOR>(mesh);
+
+    const bool R_INT = representation == Color::Representation::INT_0_255;
+
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        for (const auto& f : mesh.faces()) {
+            const auto& c     = f.color();
+            uint        first = indexMap.triangleBegin(f.index());
+            uint        last  = first + indexMap.triangleNumber(f.index());
+            for (uint t = first; t < last; ++t) {
+                buffer[t * 4 + 0] = R_INT ? c.red() : c.redF();
+                buffer[t * 4 + 1] = R_INT ? c.green() : c.greenF();
+                buffer[t * 4 + 2] = R_INT ? c.blue() : c.blueF();
+                buffer[t * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
+            }
+        }
+    }
+    else {
+        const uint FACE_NUM = indexMap.triangleNumber();
+        for (const auto& f : mesh.faces()) {
+            const auto& c     = f.color();
+            uint        first = indexMap.triangleBegin(f.index());
+            uint        last  = first + indexMap.triangleNumber(f.index());
+            for (uint t = first; t < last; ++t) {
+                buffer[0 * FACE_NUM + t] = R_INT ? c.red() : c.redF();
+                buffer[1 * FACE_NUM + t] = R_INT ? c.green() : c.greenF();
+                buffer[2 * FACE_NUM + t] = R_INT ? c.blue() : c.blueF();
+                buffer[3 * FACE_NUM + t] = R_INT ? c.alpha() : c.alphaF();
+            }
+        }
+    }
+}
+
+/**
+ * @brief Export the colors for each triangle computed by triangulating the
+ * faces of a Mesh to a buffer having a value for each color (the color is
+ * packed in a single 32 bit value using the provided format)..
+ *
+ * This function exports the colors of the triangles computed by
+ * triangulating the faces of a mesh to a buffer. Colors are stored following
+ * the order the faces appear in the mesh. The buffer must be preallocated with
+ * the correct size (number of *resulting triangles*).
+ *
+ * The function requires an already computed index map, which maps each triangle
+ * to the face index and vice versa. You can use the @ref
+ * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * resulting triangles and allocate the buffer accordingly.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] indexMap: map from triangle index to face index
+ * @param[in] colorFormat: format of the color components
+ */
+template<FaceMeshConcept MeshType>
+void triangulatedFaceColorsToBuffer(
+    const MeshType&          mesh,
+    auto*                    buffer,
+    const TriPolyIndexBiMap& indexMap,
+    Color::Format            colorFormat)
+{
+    requirePerElementComponent<ElemId::FACE, CompId::COLOR>(mesh);
+
+    for (const auto& f : mesh.faces()) {
+        const auto& c     = f.color();
+        uint        first = indexMap.triangleBegin(f.index());
+        uint        last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            switch (colorFormat) {
+                using enum Color::Format;
+            case ABGR: buffer[t] = c.abgr(); break;
+            case ARGB: buffer[t] = c.argb(); break;
+            case RGBA: buffer[t] = c.rgba(); break;
+            case BGRA: buffer[t] = c.bgra(); break;
+            }
+        }
+    }
 }
 
 /**

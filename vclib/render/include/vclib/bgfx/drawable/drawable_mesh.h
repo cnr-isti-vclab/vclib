@@ -178,10 +178,7 @@ public:
         }
     }
 
-    Box3d boundingBox() const override
-    {
-        return mBoundingBox;
-    }
+    Box3d boundingBox() const override { return mBoundingBox; }
 
     std::shared_ptr<DrawableObject> clone() const override
     {

@@ -180,19 +180,13 @@ public:
      * @brief Returns the number of triangles stored in the BiMap.
      * @return the number of triangles stored in the BiMap.
      */
-    uint triangleNumber() const
-    {
-        return mTriToPoly.size();
-    }
+    uint triangleNumber() const { return mTriToPoly.size(); }
 
     /**
      * @brief Returns the number of polygons stored in the BiMap.
      * @return the number of polygons stored in the BiMap.
      */
-    uint polygonNumber() const
-    {
-        return mPolyToTri.size();
-    }
+    uint polygonNumber() const { return mPolyToTri.size(); }
 };
 
 } // namespace vcl

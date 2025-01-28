@@ -260,12 +260,12 @@ void readObjVertexNormal(
 
 template<FaceMeshConcept MeshType>
 void readObjFace(
-    MeshType&                     m,
-    MeshInfo&                     loadedInfo,
-    const Tokenizer&              tokens,
+    MeshType&                            m,
+    MeshInfo&                            loadedInfo,
+    const Tokenizer&                     tokens,
     const std::vector<TexCoordIndexedd>& wedgeTexCoords,
-    const ObjMaterial&            currentMaterial,
-    const LoadSettings&           settings)
+    const ObjMaterial&                   currentMaterial,
+    const LoadSettings&                  settings)
 {
     using FaceType = MeshType::FaceType;
 
@@ -380,7 +380,7 @@ void readObjFace(
                                 std::to_string(fid));
                         }
                         f.wedgeTexCoord(i) =
-                            ((vcl::TexCoordd)wedgeTexCoords[wids[i]])
+                            ((vcl::TexCoordd) wedgeTexCoords[wids[i]])
                                 .cast<typename FaceType::WedgeTexCoordType::
                                           ScalarType>();
                         if (currentMaterial.hasTexture) {
@@ -409,7 +409,7 @@ void readObjFace(
                             // set the wedge texcoord in the same position of
                             // the vertex
                             f.wedgeTexCoord(i) =
-                                ((vcl::TexCoordd)wedgeTexCoords[wids[pos]])
+                                ((vcl::TexCoordd) wedgeTexCoords[wids[pos]])
                                     .cast<typename FaceType::WedgeTexCoordType::
                                               ScalarType>();
                             if (currentMaterial.hasTexture) {
