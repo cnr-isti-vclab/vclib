@@ -177,47 +177,57 @@ private:
         TriPolyIndexBiMap indexMap;
         uint numTris = 0;
 
-        // vertex buffer (coordinates)
-        createVertexCoordsBuffer(mesh);
+        if (mBuffersToFill[toUnderlying(VERTICES)]) {
+            // vertex buffer (coordinates)
+            createVertexCoordsBuffer(mesh);
 
-        // vertex buffer (normals)
-        createVertexNormalsBuffer(mesh);
+            // vertex buffer (normals)
+            createVertexNormalsBuffer(mesh);
 
-        // vertex buffer (colors)
-        createVertexColorsBuffer(mesh);
+            // vertex buffer (colors)
+            createVertexColorsBuffer(mesh);
 
-        // vertex buffer (UVs)
-        createVertexTexCoordsBuffer(mesh);
+            // vertex buffer (UVs)
+            createVertexTexCoordsBuffer(mesh);
 
-        // vertex wedges buffer (duplicated vertices)
-        createVertexWedgeTexCoordsBuffer(mesh);
+            // vertex wedges buffer (duplicated vertices)
+            createVertexWedgeTexCoordsBuffer(mesh);
 
-        // triangle index buffer
-        createTriangleIndicesBuffer(mesh, indexMap);
+            if (mBuffersToFill[toUnderlying(TRIANGLES)]) {
+                // triangle index buffer
+                createTriangleIndicesBuffer(mesh, indexMap);
 
-        // triangle normal buffer
-        createTriangleNormalsBuffer(mesh, indexMap);
+                // triangle normal buffer
+                createTriangleNormalsBuffer(mesh, indexMap);
 
-        // triangle color buffer
-        createTriangleColorsBuffer(mesh, indexMap);
+                // triangle color buffer
+                createTriangleColorsBuffer(mesh, indexMap);
 
-        // triangle wedge texture indices buffer
-        createTriangleWedgeTextureIndicesBuffer(mesh, indexMap);
+                // triangle wedge texture indices buffer
+                createTriangleWedgeTextureIndicesBuffer(mesh, indexMap);
+            }
 
-        // edge index buffer
-        createEdgeIndicesBuffer(mesh);
+            if (mBuffersToFill[toUnderlying(EDGES)]) {
+                // edge index buffer
+                createEdgeIndicesBuffer(mesh);
 
-        // edge normal buffer
-        createEdgeNormalsBuffer(mesh);
+                // edge normal buffer
+                createEdgeNormalsBuffer(mesh);
 
-        // edge color buffer
-        createEdgeColorsBuffer(mesh);
+                // edge color buffer
+                createEdgeColorsBuffer(mesh);
+            }
 
-        // wireframe index buffer
-        createWireframeIndicesBuffer(mesh);
+            if (mBuffersToFill[toUnderlying(WIREFRAME)]) {
+                // wireframe index buffer
+                createWireframeIndicesBuffer(mesh);
+            }
 
-        // textures
-        createTextureUnits(mesh);
+            if (mBuffersToFill[toUnderlying(TEXTURES)]) {
+                // textures
+                createTextureUnits(mesh);
+            }
+        }
     }
 
     void createVertexCoordsBuffer(const MeshType& mesh)
