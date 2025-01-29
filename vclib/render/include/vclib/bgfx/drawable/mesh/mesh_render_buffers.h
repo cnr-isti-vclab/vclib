@@ -25,6 +25,7 @@
 
 #include "mesh_render_buffers_macros.h"
 
+#include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/bgfx/buffers.h>
@@ -174,28 +175,38 @@ private:
     {
         using enum MeshBufferId;
 
+        std::vector<std::pair<uint, uint>> vwm;
+        std::list<uint> vtd;
+        std::list<std::list<std::pair<uint, uint>>> ftr;
+
+        if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+            if (mesh.isPerFaceWedgeTexCoordsEnabled()) {
+                countVerticesToDuplicateByWedgeTexCoords(mesh, vwm, vtd, ftr);
+            }
+        }
+
         TriPolyIndexBiMap indexMap;
         uint numTris = 0;
 
         if (mBuffersToFill[toUnderlying(VERTICES)]) {
             // vertex buffer (coordinates)
-            createVertexCoordsBuffer(mesh);
+            createVertexCoordsBuffer(mesh, vwm, vtd, ftr);
 
             // vertex buffer (normals)
-            createVertexNormalsBuffer(mesh);
+            createVertexNormalsBuffer(mesh, vwm, vtd, ftr);
 
             // vertex buffer (colors)
-            createVertexColorsBuffer(mesh);
+            createVertexColorsBuffer(mesh, vwm, vtd, ftr);
 
             // vertex buffer (UVs)
-            createVertexTexCoordsBuffer(mesh);
+            createVertexTexCoordsBuffer(mesh, vwm, vtd, ftr);
 
             // vertex wedges buffer (duplicated vertices)
-            createWedgeTexCoordsBuffer(mesh);
+            createWedgeTexCoordsBuffer(mesh, vwm, vtd, ftr);
 
             if (mBuffersToFill[toUnderlying(TRIANGLES)]) {
                 // triangle index buffer
-                createTriangleIndicesBuffer(mesh, indexMap);
+                createTriangleIndicesBuffer(mesh, vwm, vtd, ftr, indexMap);
 
                 // triangle normal buffer
                 createTriangleNormalsBuffer(mesh, indexMap);
@@ -230,16 +241,23 @@ private:
         }
     }
 
-    void createVertexCoordsBuffer(const MeshType& mesh)
+    void createVertexCoordsBuffer(
+        const MeshType& mesh,
+        const auto&     vmw,
+        const auto&     vtd,
+        const auto&     ftr)
     {
+        uint nv = mesh.vertexNumber() + vtd.size();
+
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(mesh.vertexNumber() * 3);
+            getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         vertexCoordsToBuffer(mesh, buffer);
+        appendDuplicateVertexCoordsToBuffer(mesh, vtd, buffer);
 
         mVertexCoordsBuffer.set(
             buffer,
-            mesh.vertexNumber() * 3,
+            nv * 3,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
@@ -247,22 +265,28 @@ private:
             releaseFn);
     }
 
-    void createVertexNormalsBuffer(const MeshType& mesh)
+    void createVertexNormalsBuffer(
+        const MeshType& mesh,
+        const auto&     vmw,
+        const auto&     vtd,
+        const auto&     ftr)
     {
         using enum MeshBufferId;
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_NORMALS)]) {
                 if (vcl::isPerVertexNormalAvailable(mesh)) {
+                    uint nv = mesh.vertexNumber() + vtd.size();
+
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<float>(
-                            mesh.vertexNumber() * 3);
+                        getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
                     vertexNormalsToBuffer(mesh, buffer);
+                    appendDuplicateVertexNormalsToBuffer(mesh, vtd, buffer);
 
                     mVertexNormalsBuffer.set(
                         buffer,
-                        mesh.vertexNumber() * 3,
+                        nv * 3,
                         bgfx::Attrib::Normal,
                         3,
                         PrimitiveType::FLOAT,
@@ -282,22 +306,29 @@ private:
         // }
     }
 
-    void createVertexColorsBuffer(const MeshType& mesh)
+    void createVertexColorsBuffer(
+        const MeshType& mesh,
+        const auto&     vmw,
+        const auto&     vtd,
+        const auto&     ftr)
     {
         using enum MeshBufferId;
 
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_COLORS)]) {
                 if (vcl::isPerVertexColorAvailable(mesh)) {
+                    uint nv = mesh.vertexNumber() + vtd.size();
+
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<uint32_t>(
-                            mesh.vertexNumber());
+                        getAllocatedBufferAndReleaseFn<uint>(nv);
 
                     vertexColorsToBuffer(mesh, buffer, Color::Format::ABGR);
+                    appendDuplicateVertexColorsToBuffer(
+                        mesh, vtd, buffer, Color::Format::ABGR);
 
                     mVertexColorsBuffer.set(
                         buffer,
-                        mesh.vertexNumber() * 4,
+                        nv * 4,
                         bgfx::Attrib::Color0,
                         4,
                         PrimitiveType::UCHAR,
@@ -319,7 +350,11 @@ private:
         // }
     }
 
-    void createVertexTexCoordsBuffer(const MeshType& mesh)
+    void createVertexTexCoordsBuffer(
+        const MeshType& mesh,
+        const auto&     vmw,
+        const auto&     vtd,
+        const auto&     ftr)
     {
         if (Base::vertexTexCoordsBufferData()) {
             mVertexUVBuffer.set(
@@ -331,7 +366,11 @@ private:
         }
     }
 
-    void createWedgeTexCoordsBuffer(const MeshType& mesh)
+    void createWedgeTexCoordsBuffer(
+        const MeshType& mesh,
+        const auto&     vmw,
+        const auto&     vtd,
+        const auto&     ftr)
     {
         if (Base::wedgeTexCoordsBufferData()) {
             mVertexWedgeUVBuffer.set(
@@ -345,6 +384,9 @@ private:
 
     void createTriangleIndicesBuffer(
         const MeshType&    mesh,
+        const auto&        vmw,
+        const auto&        vtd,
+        const auto&        ftr,
         TriPolyIndexBiMap& indexMap)
     {
         using enum MeshBufferId;
@@ -353,11 +395,13 @@ private:
             const uint NUM_TRIS = vcl::countTriangulatedTriangles(mesh);
 
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint32_t>(
+                getAllocatedBufferAndReleaseFn<uint>(
                     NUM_TRIS * 3);
 
             triangulatedFaceIndicesToBuffer(
                 mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR, NUM_TRIS);
+            replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
+                mesh, vtd, ftr, indexMap, buffer);
 
             mTriangleIndexBuffer.set(
                 buffer, NUM_TRIS * 3, true, releaseFn);
