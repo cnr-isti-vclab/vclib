@@ -750,6 +750,15 @@ void MeshRenderSettings::setDefaultSettingsFromCapability()
             else {
                 setSurfaceColorUserDefined();
             }
+            // wireframe shading
+            if (canWireframeShadingBePerVertex()) {
+                setWireframeShadingPerVertex();
+            }
+            else {
+                setWireframeShadingNone();
+            }
+            // wireframe color (defaults to user defined)
+            setWireframeColorUserDefined();
         }
 
         if (canPointBeVisible()) {
