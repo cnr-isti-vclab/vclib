@@ -106,7 +106,7 @@ void testCoordsMatrix(
     const auto& vtd,
     const auto& ftr)
 {
-    uint nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint nRows = tm.vertexNumber() + vtd.size();
     MatrixType verts(nRows, 3);
 
     auto stg = vcl::matrixStorageType<MatrixType>();
@@ -124,7 +124,7 @@ void testCoordsMatrix(
     }
 
     // following vertices are duplicates (same as the vtd indices)
-    for (uint vd : vtd) {
+    for (vcl::uint vd : vtd) {
         const auto& c = tm.vertex(vd).coord();
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
@@ -154,10 +154,10 @@ TEMPLATE_TEST_CASE(
     TriMesh tm =
         vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
 
-    std::vector<std::pair<uint, uint>> vertWedgeMap;
-    std::list<uint> vertsToDuplicate;
-    std::list<std::list<std::pair<uint, uint>>> facesToReassign;
-    uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
+    std::vector<std::pair<vcl::uint, vcl::uint>> vertWedgeMap;
+    std::list<vcl::uint> vertsToDuplicate;
+    std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
+    vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
         tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
     SECTION("Append duplicated vertex coordinates...")
