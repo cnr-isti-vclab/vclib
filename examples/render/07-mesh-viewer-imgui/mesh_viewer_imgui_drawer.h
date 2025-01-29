@@ -38,7 +38,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
     using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
-    int mSelectIndex = 0;
+    int mMeshIndex = 0;
 
     void drawMeshList()
     {
@@ -71,11 +71,11 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 ImGui::TableSetColumnIndex(1);
 
                 // row selection
-                bool isSelected = (mSelectIndex == meshId - 1);
+                bool isSelected = (mMeshIndex == meshId - 1);
                 if (ImGui::Selectable(drawable.name().c_str(), isSelected,
                     ImGuiSelectableFlags_SpanAllColumns))
                 {
-                    mSelectIndex = meshId - 1;
+                    mMeshIndex = meshId - 1;
                 }
                 // tooltip with info
                 if (!drawable.info().empty() &&
@@ -92,7 +92,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
     }
 
     static void drawMeshPointSettings(
-        const vcl::DrawableMesh<vcl::TriMesh>& drawable,
+        const vcl::AbstractDrawableMesh& drawable,
         vcl::MeshRenderSettings& settings)
     {
         ImGui::BeginDisabled(!settings.canPointBeVisible());
@@ -215,7 +215,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
     }
 
     static void drawMeshSurfaceSettings(
-        const vcl::DrawableMesh<vcl::TriMesh>& drawable,
+        const vcl::AbstractDrawableMesh& drawable,
         vcl::MeshRenderSettings& settings)
     {
         ImGui::BeginDisabled(!settings.canSurfaceBeVisible());
@@ -227,6 +227,11 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         );
 
         // shading
+        assert((
+            settings.isSurfaceShadingSmooth() +
+            settings.isSurfaceShadingFlat() +
+            settings.isSurfaceShadingNone()
+        ) == 1);
         ImGui::Text("Shading:");
         ImGui::SameLine();
         ImGui::RadioButton("Smooth",
@@ -335,7 +340,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
     }
 
     static void drawMeshWireframeSettings(
-        const vcl::DrawableMesh<vcl::TriMesh>& drawable,
+        const vcl::AbstractDrawableMesh& drawable,
         vcl::MeshRenderSettings& settings)
     {
         ImGui::BeginDisabled(!settings.canSurfaceBeVisible());
@@ -426,15 +431,114 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::EndDisabled();
     }
 
-    static void drawMeshSettings(vcl::DrawableMesh<vcl::TriMesh>& drawable)
+    static void drawMeshEdgeSettings(
+        const vcl::AbstractDrawableMesh& drawable,
+        vcl::MeshRenderSettings& settings)
+    {
+        ImGui::BeginDisabled(!settings.canEdgesBeVisible());
+
+        // visibility
+        ImGui::Checkbox("Visible",
+            [&]{return settings.isEdgesVisible();},
+            [&](bool v){settings.setEdgesVisibility(v);}
+        );
+
+        // shading
+        assert((
+            settings.isEdgesShadingSmooth() +
+            settings.isEdgesShadingFlat() +
+            settings.isEdgesShadingNone()
+        ) == 1);
+        ImGui::Text("Shading:");
+        ImGui::SameLine();
+        ImGui::RadioButton("Smooth",
+            [&]{return settings.isEdgesShadingSmooth();},
+            [&](bool v){if (v) settings.setEdgesShadingSmooth();}
+        );
+        ImGui::SameLine();
+        ImGui::RadioButton("Flat",
+            [&]{return settings.isEdgesShadingFlat();},
+            [&](bool v){if (v) settings.setEdgesShadingFlat();}
+        );
+        ImGui::RadioButton("None",
+            [&]{return settings.isEdgesShadingNone();},
+            [&](bool vis){if (vis) settings.setEdgesShadingNone();}
+        );
+
+
+        // color
+        ImGui::Text("Color:");
+        ImGui::SameLine();
+        const char* edgeColorNames[] = { "Vertex", "Edge", "Mesh", "User" };
+        const std::array<bool,4> colorSelected = {
+            settings.isEdgesColorPerVertex(),
+            settings.isEdgesColorPerEdge(),
+            settings.isEdgesColorPerMesh(),
+            settings.isEdgesColorUserDefined()
+        };
+        assert(std::accumulate(
+            std::begin(colorSelected),
+            std::end(colorSelected), 0) == 1);
+        int idx = std::distance( std::begin(colorSelected),
+            std::find(std::begin(colorSelected),
+                        std::end(colorSelected),
+                        true));
+        assert(idx >= 0 && idx < 4);
+        ImGui::SetNextItemWidth(-40);
+        if (ImGui::BeginCombo("##ComboEdgeColor",
+            edgeColorNames[idx]))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(edgeColorNames); n++)
+            {
+                const bool selected = (n == idx);
+            
+                switch (n) {
+                case 0:
+                    ImGui::BeginDisabled(!settings.canEdgesColorBePerVertex());
+                    if (ImGui::Selectable(edgeColorNames[n], selected))
+                        settings.setEdgesColorPerVertex();
+                    ImGui::EndDisabled();
+                    break;
+                case 1:
+                    ImGui::BeginDisabled(!settings.canEdgesColorBePerEdge());
+                    if (ImGui::Selectable(edgeColorNames[n], selected))
+                        settings.setEdgesColorPerEdge();
+                    ImGui::EndDisabled();
+                    break;
+                case 2:
+                    ImGui::BeginDisabled(!settings.canEdgesColorBePerMesh());
+                    if (ImGui::Selectable(edgeColorNames[n], selected))
+                        settings.setEdgesColorPerMesh();
+                    ImGui::EndDisabled();
+                    break;
+                case 3:
+                    if (ImGui::Selectable(edgeColorNames[n], selected))
+                        settings.setEdgesColorUserDefined();
+                    break;
+                default:
+                    assert(false);
+                    break;
+                }
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            // color picker
+            ImGui::SameLine();
+            ImGui::BeginDisabled(!settings.isEdgesColorUserDefined());
+            ImGui::ColorEdit4("##EdgeUserColor",
+                [&]{return settings.edgesUserColor();},
+                [&](vcl::Color c){settings.setEdgesUserColor(c);},
+                ImGuiColorEditFlags_NoInputs
+            );
+            ImGui::EndCombo();
+        }
+        ImGui::EndDisabled();
+    }
+
+    static void drawMeshSettings(vcl::AbstractDrawableMesh& drawable)
     {
         ImGui::Separator();
-        ImGui::Text("Vertices: %d", drawable.vertexNumber());
-        ImGui::Text("Faces: %d", drawable.faceNumber());
-        
-        ImGui::Separator();
         // mesh settings
-        ImGui::Text("Mesh Settings");
         const auto settings = drawable.renderSettings();
         auto newSettings = settings;
 
@@ -443,21 +547,36 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
         {
             // points
-            if (ImGui::BeginTabItem("Points"))
+            if (newSettings.canPointBeVisible() &&
+                ImGui::BeginTabItem("Points"))
             {
                 drawMeshPointSettings(drawable, newSettings);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Surface"))
+
+            // surface + wireframe
+            if (newSettings.canSurfaceBeVisible())
             {
-                drawMeshSurfaceSettings(drawable, newSettings);
+                if (ImGui::BeginTabItem("Surface"))
+                {
+                    drawMeshSurfaceSettings(drawable, newSettings);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Wireframe"))
+                {
+                    drawMeshWireframeSettings(drawable, newSettings);
+                    ImGui::EndTabItem();
+                }
+            }
+
+            // edges
+            if (newSettings.canEdgesBeVisible() &&
+                ImGui::BeginTabItem("Edges"))
+            {
+                drawMeshEdgeSettings(drawable, newSettings);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Wireframe"))
-            {
-                drawMeshWireframeSettings(drawable, newSettings);
-                ImGui::EndTabItem();
-            }
+            
             ImGui::EndTabBar();
         }
 
@@ -479,14 +598,17 @@ public:
         ImGui::Begin("Meshes");
         
         // mesh table
-        drawMeshList();
-
-
+        {
+            ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+            ImGui::BeginChild("##ListContainer", ImVec2(ImGui::GetContentRegionAvail().x, 260), ImGuiChildFlags_None, window_flags);
+            drawMeshList();
+            ImGui::EndChild();
+        }
 
         // drawable mesh info and settings for selected mesh
-        if (mSelectIndex >= 0 && mSelectIndex < Base::mDrawList->size())
+        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size())
         {
-            auto drawable = std::dynamic_pointer_cast<vcl::DrawableMesh<vcl::TriMesh>>(Base::mDrawList->at(mSelectIndex));
+            auto drawable = std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(Base::mDrawList->at(mMeshIndex));
             if (drawable)
             {
                 drawMeshSettings(*drawable);
