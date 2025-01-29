@@ -615,7 +615,6 @@ public:
             }
         }
 
-        ImGui::ShowDemoWindow();
         ImGui::End();
     }
 };
