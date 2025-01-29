@@ -160,11 +160,7 @@ bool MeshRenderSettings::setPointWidth(float width)
     }
 }
 
-bool MeshRenderSettings::setPointUserColor(
-    float r,
-    float g,
-    float b,
-    float a)
+bool MeshRenderSettings::setPointUserColor(float r, float g, float b, float a)
 {
     if (canPointBeVisible()) {
         mPointUserColor[0] = r;
@@ -754,6 +750,15 @@ void MeshRenderSettings::setDefaultSettingsFromCapability()
             else {
                 setSurfaceColorUserDefined();
             }
+            // wireframe shading
+            if (canWireframeShadingBePerVertex()) {
+                setWireframeShadingPerVertex();
+            }
+            else {
+                setWireframeShadingNone();
+            }
+            // wireframe color (defaults to user defined)
+            setWireframeColorUserDefined();
         }
 
         if (canPointBeVisible()) {

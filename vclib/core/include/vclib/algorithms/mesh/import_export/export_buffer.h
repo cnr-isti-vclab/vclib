@@ -92,6 +92,8 @@ inline static TriPolyIndexBiMap indexMap;
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of vertices in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -99,24 +101,23 @@ template<MeshConcept MeshType>
 void vertexCoordsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    uint rowNumber = UINT_NULL)
 {
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+    const uint VERT_NUM =
+        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
+    for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = c.x();
             buffer[i * 3 + 1] = c.y();
             buffer[i * 3 + 2] = c.z();
-            ++i;
         }
-    }
-    else {
-        const uint VERT_NUM = mesh.vertexNumber();
-        for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+        else {
             buffer[0 * VERT_NUM + i] = c.x();
             buffer[1 * VERT_NUM + i] = c.y();
             buffer[2 * VERT_NUM + i] = c.z();
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -147,6 +148,8 @@ void vertexCoordsToBuffer(
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of faces in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -155,7 +158,8 @@ void triangleIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    bool              getIndicesAsIfContainerCompact = true)
+    bool              getIndicesAsIfContainerCompact = true,
+    uint              rowNumber = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -163,22 +167,21 @@ void triangleIndicesToBuffer(
     // lambda to get the vertex index of a face (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& f : mesh.faces()) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = vIndex(f, 0);
             buffer[i * 3 + 1] = vIndex(f, 1);
             buffer[i * 3 + 2] = vIndex(f, 2);
-            ++i;
         }
-    }
-    else {
-        const uint FACE_NUM = mesh.faceNumber();
-        for (uint i = 0; const auto& f : mesh.faces()) {
+        else {
             buffer[0 * FACE_NUM + i] = vIndex(f, 0);
             buffer[1 * FACE_NUM + i] = vIndex(f, 1);
             buffer[2 * FACE_NUM + i] = vIndex(f, 2);
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -327,6 +330,8 @@ void faceIndicesToBuffer(
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of faces in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -336,7 +341,8 @@ void faceIndicesToBuffer(
     auto*             buffer,
     uint              largestFaceSize,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    bool              getIndicesAsIfContainerCompact = true)
+    bool              getIndicesAsIfContainerCompact = true,
+    uint              rowNumber = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -344,26 +350,25 @@ void faceIndicesToBuffer(
     // lambda to get the vertex index of a face (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& f : mesh.faces()) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             uint j = 0;
             for (; j < f.vertexNumber(); ++j)
                 buffer[i * largestFaceSize + j] = vIndex(f, j);
             for (; j < largestFaceSize; ++j) // remaining vertices set to -1
                 buffer[i * largestFaceSize + j] = -1;
-            ++i;
         }
-    }
-    else {
-        const uint FACE_NUM = mesh.faceNumber();
-        for (uint i = 0; const auto& f : mesh.faces()) {
+        else {
             uint j = 0;
             for (; j < f.vertexNumber(); ++j)
                 buffer[j * FACE_NUM + i] = vIndex(f, j);
             for (; j < largestFaceSize; ++j) // remaining vertices set to -1
                 buffer[j * FACE_NUM + i] = -1;
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -502,6 +507,8 @@ void triangulatedFaceIndicesToBuffer(
  * @param[in] getIndicesAsIfContainerCompact: if true, the function will
  * store the vertex indices as if the vertex container of the mesh is compact.
  * If false, the actual vertex indices in the input mesh will be stored.
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of edges in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -510,7 +517,8 @@ void edgeIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    bool              getIndicesAsIfContainerCompact = true)
+    bool              getIndicesAsIfContainerCompact = true,
+    uint              rowNumber = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -518,20 +526,19 @@ void edgeIndicesToBuffer(
     // lambda to get the vertex index of a edge (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& e : mesh.edges()) {
+    const uint EDGE_NUM =
+        rowNumber == UINT_NULL ? mesh.edgeNumber() : rowNumber;
+
+    for (uint i = 0; const auto& e : mesh.edges()) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 2 + 0] = vIndex(e, 0);
             buffer[i * 2 + 1] = vIndex(e, 1);
-            ++i;
         }
-    }
-    else {
-        const uint EDGE_NUM = mesh.edgeNumber();
-        for (uint i = 0; const auto& e : mesh.edges()) {
+        else {
             buffer[0 * EDGE_NUM + i] = vIndex(e, 0);
             buffer[1 * EDGE_NUM + i] = vIndex(e, 1);
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -680,6 +687,8 @@ void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of elements in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -687,28 +696,28 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& n :
-                         mesh.template elements<ELEM_ID>() | views::normals) {
+    const uint ELEM_NUM = rowNumber == UINT_NULL ?
+                              mesh.template number<ELEM_ID>() :
+                              rowNumber;
+
+    for (uint        i = 0;
+         const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = n.x();
             buffer[i * 3 + 1] = n.y();
             buffer[i * 3 + 2] = n.z();
-            ++i;
         }
-    }
-    else {
-        const uint ELEM_NUM = mesh.template number<ELEM_ID>();
-        for (uint i = 0; const auto& n :
-                         mesh.template elements<ELEM_ID>() | views::normals) {
+        else {
             buffer[0 * ELEM_NUM + i] = n.x();
             buffer[1 * ELEM_NUM + i] = n.y();
             buffer[2 * ELEM_NUM + i] = n.z();
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -728,6 +737,8 @@ void elementNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of vertices in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -735,9 +746,10 @@ template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage);
+    elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage, rowNumber);
 }
 
 /**
@@ -755,6 +767,8 @@ void vertexNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of faces in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -762,9 +776,10 @@ template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage);
+    elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage, rowNumber);
 }
 
 /**
@@ -786,6 +801,8 @@ void faceNormalsToBuffer(
  * @param[out] buffer: preallocated buffer
  * @param[in] indexMap: map from triangle index to face index
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of triangles in the map) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -794,29 +811,25 @@ void triangulatedFaceNormalsToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap,
-    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType        storage   = MatrixStorageType::ROW_MAJOR,
+    uint                     rowNumber = UINT_NULL)
 {
     requirePerElementComponent<ElemId::FACE, CompId::NORMAL>(mesh);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (const auto& f : mesh.faces()) {
-            const auto& n     = f.normal();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
+
+    for (const auto& f : mesh.faces()) {
+        const auto& n     = f.normal();
+        uint        first = indexMap.triangleBegin(f.index());
+        uint        last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            if (storage == MatrixStorageType::ROW_MAJOR) {
                 buffer[t * 3 + 0] = n.x();
                 buffer[t * 3 + 1] = n.y();
                 buffer[t * 3 + 2] = n.z();
             }
-        }
-    }
-    else {
-        const uint FACE_NUM = indexMap.triangleNumber();
-        for (const auto& f : mesh.faces()) {
-            const auto& n     = f.normal();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+            else {
                 buffer[0 * FACE_NUM + t] = n.x();
                 buffer[1 * FACE_NUM + t] = n.y();
                 buffer[2 * FACE_NUM + t] = n.z();
@@ -840,6 +853,8 @@ void triangulatedFaceNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of edges in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -847,9 +862,10 @@ template<EdgeMeshConcept MeshType>
 void edgeNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::EDGE>(mesh, buffer, storage);
+    elementNormalsToBuffer<ElemId::EDGE>(mesh, buffer, storage, rowNumber);
 }
 
 /**
@@ -871,6 +887,8 @@ void edgeNormalsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of elements in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -879,32 +897,32 @@ void elementColorsToBuffer(
     const MeshType&       mesh,
     auto*                 buffer,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
-    Color::Representation representation = Color::Representation::INT_0_255)
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
 {
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& c :
-                         mesh.template elements<ELEM_ID>() | views::colors) {
+    const uint ELEM_NUM = rowNumber == UINT_NULL ?
+                              mesh.template number<ELEM_ID>() :
+                              rowNumber;
+
+    for (uint        i = 0;
+         const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
             buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
             buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
             buffer[i * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
-            ++i;
         }
-    }
-    else {
-        const uint ELEM_NUM = mesh.template number<ELEM_ID>();
-        for (uint i = 0; const auto& c :
-                         mesh.template elements<ELEM_ID>() | views::colors) {
+        else {
             buffer[0 * ELEM_NUM + i] = R_INT ? c.red() : c.redF();
             buffer[1 * ELEM_NUM + i] = R_INT ? c.green() : c.greenF();
             buffer[2 * ELEM_NUM + i] = R_INT ? c.blue() : c.blueF();
             buffer[3 * ELEM_NUM + i] = R_INT ? c.alpha() : c.alphaF();
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -969,6 +987,8 @@ void elementColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of vertices in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -977,10 +997,11 @@ void vertexColorsToBuffer(
     const MeshType&       mesh,
     auto*                 buffer,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
-    Color::Representation representation = Color::Representation::INT_0_255)
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
 {
     elementColorsToBuffer<ElemId::VERTEX>(
-        mesh, buffer, storage, representation);
+        mesh, buffer, storage, representation, rowNumber);
 }
 
 /**
@@ -1030,6 +1051,8 @@ void vertexColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of faces in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -1038,9 +1061,11 @@ void faceColorsToBuffer(
     const MeshType&       mesh,
     auto*                 buffer,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
-    Color::Representation representation = Color::Representation::INT_0_255)
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
 {
-    elementColorsToBuffer<ElemId::FACE>(mesh, buffer, storage, representation);
+    elementColorsToBuffer<ElemId::FACE>(
+        mesh, buffer, storage, representation, rowNumber);
 }
 
 /**
@@ -1064,6 +1089,8 @@ void faceColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of triangles in the map) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -1072,33 +1099,29 @@ void triangulatedFaceColorsToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap,
-    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR,
-    Color::Representation representation = Color::Representation::INT_0_255)
+    MatrixStorageType        storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation    representation = Color::Representation::INT_0_255,
+    uint                     rowNumber      = UINT_NULL)
 {
     requirePerElementComponent<ElemId::FACE, CompId::COLOR>(mesh);
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (const auto& f : mesh.faces()) {
-            const auto& c     = f.color();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
+
+    for (const auto& f : mesh.faces()) {
+        const auto& c     = f.color();
+        uint        first = indexMap.triangleBegin(f.index());
+        uint        last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            if (storage == MatrixStorageType::ROW_MAJOR) {
                 buffer[t * 4 + 0] = R_INT ? c.red() : c.redF();
                 buffer[t * 4 + 1] = R_INT ? c.green() : c.greenF();
                 buffer[t * 4 + 2] = R_INT ? c.blue() : c.blueF();
                 buffer[t * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
             }
-        }
-    }
-    else {
-        const uint FACE_NUM = indexMap.triangleNumber();
-        for (const auto& f : mesh.faces()) {
-            const auto& c     = f.color();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+            else {
                 buffer[0 * FACE_NUM + t] = R_INT ? c.red() : c.redF();
                 buffer[1 * FACE_NUM + t] = R_INT ? c.green() : c.greenF();
                 buffer[2 * FACE_NUM + t] = R_INT ? c.blue() : c.blueF();
@@ -1203,6 +1226,8 @@ void triangulatedFaceColorsToBuffer(
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] representation: representation of the color components (integer or
  * float)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of edges in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -1211,9 +1236,11 @@ void edgeColorsToBuffer(
     const MeshType&       mesh,
     auto*                 buffer,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
-    Color::Representation representation = Color::Representation::INT_0_255)
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
 {
-    elementColorsToBuffer<ElemId::EDGE>(mesh, buffer, storage, representation);
+    elementColorsToBuffer<ElemId::EDGE>(
+        mesh, buffer, storage, representation, rowNumber);
 }
 
 /**
@@ -1362,33 +1389,33 @@ void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of vertices in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
 void vertexTexCoordsToBuffer(
-    const MeshType& mesh,
-    auto*           buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
     requirePerVertexComponent<CompId::TEX_COORD>(mesh);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& t :
-                         mesh.vertices() | views::texCoords) {
-            buffer[i * 2 + 0] = t.x();
-            buffer[i * 2 + 1] = t.y();
-            ++i;
+    const uint VERT_NUM =
+        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
+
+    for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
+            buffer[i * 2 + 0] = t.u();
+            buffer[i * 2 + 1] = t.v();
         }
-    }
-    else {
-        const uint VERT_NUM = mesh.vertexNumber();
-        for (uint i = 0; const auto& t :
-                         mesh.vertices() | views::texCoords) {
-            buffer[0 * VERT_NUM + i] = t.x();
-            buffer[1 * VERT_NUM + i] = t.y();
-            ++i;
+        else {
+            buffer[0 * VERT_NUM + i] = t.u();
+            buffer[1 * VERT_NUM + i] = t.v();
         }
+        ++i;
     }
 }
 
