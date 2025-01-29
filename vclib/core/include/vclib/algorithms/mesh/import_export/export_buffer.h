@@ -104,23 +104,20 @@ void vertexCoordsToBuffer(
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
     uint rowNumber = UINT_NULL)
 {
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+    const uint VERT_NUM =
+        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
+    for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = c.x();
             buffer[i * 3 + 1] = c.y();
             buffer[i * 3 + 2] = c.z();
-            ++i;
         }
-    }
-    else {
-        const uint VERT_NUM =
-            rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
-        for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+        else {
             buffer[0 * VERT_NUM + i] = c.x();
             buffer[1 * VERT_NUM + i] = c.y();
             buffer[2 * VERT_NUM + i] = c.z();
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -170,23 +167,21 @@ void triangleIndicesToBuffer(
     // lambda to get the vertex index of a face (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& f : mesh.faces()) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = vIndex(f, 0);
             buffer[i * 3 + 1] = vIndex(f, 1);
             buffer[i * 3 + 2] = vIndex(f, 2);
-            ++i;
         }
-    }
-    else {
-        const uint FACE_NUM =
-            rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
-        for (uint i = 0; const auto& f : mesh.faces()) {
+        else {
             buffer[0 * FACE_NUM + i] = vIndex(f, 0);
             buffer[1 * FACE_NUM + i] = vIndex(f, 1);
             buffer[2 * FACE_NUM + i] = vIndex(f, 2);
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -355,27 +350,25 @@ void faceIndicesToBuffer(
     // lambda to get the vertex index of a face (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& f : mesh.faces()) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             uint j = 0;
             for (; j < f.vertexNumber(); ++j)
                 buffer[i * largestFaceSize + j] = vIndex(f, j);
             for (; j < largestFaceSize; ++j) // remaining vertices set to -1
                 buffer[i * largestFaceSize + j] = -1;
-            ++i;
         }
-    }
-    else {
-        const uint FACE_NUM =
-            rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
-        for (uint i = 0; const auto& f : mesh.faces()) {
+        else {
             uint j = 0;
             for (; j < f.vertexNumber(); ++j)
                 buffer[j * FACE_NUM + i] = vIndex(f, j);
             for (; j < largestFaceSize; ++j) // remaining vertices set to -1
                 buffer[j * FACE_NUM + i] = -1;
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -533,21 +526,19 @@ void edgeIndicesToBuffer(
     // lambda to get the vertex index of a edge (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& e : mesh.edges()) {
+    const uint EDGE_NUM =
+        rowNumber == UINT_NULL ? mesh.edgeNumber() : rowNumber;
+
+    for (uint i = 0; const auto& e : mesh.edges()) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 2 + 0] = vIndex(e, 0);
             buffer[i * 2 + 1] = vIndex(e, 1);
-            ++i;
         }
-    }
-    else {
-        const uint EDGE_NUM =
-            rowNumber == UINT_NULL ? mesh.edgeNumber() : rowNumber;
-        for (uint i = 0; const auto& e : mesh.edges()) {
+        else {
             buffer[0 * EDGE_NUM + i] = vIndex(e, 0);
             buffer[1 * EDGE_NUM + i] = vIndex(e, 1);
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -710,26 +701,23 @@ void elementNormalsToBuffer(
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& n :
-                         mesh.template elements<ELEM_ID>() | views::normals) {
+    const uint ELEM_NUM = rowNumber == UINT_NULL ?
+                              mesh.template number<ELEM_ID>() :
+                              rowNumber;
+
+    for (uint        i = 0;
+         const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = n.x();
             buffer[i * 3 + 1] = n.y();
             buffer[i * 3 + 2] = n.z();
-            ++i;
         }
-    }
-    else {
-        const uint ELEM_NUM = rowNumber == UINT_NULL ?
-                                  mesh.template number<ELEM_ID>() :
-                                  rowNumber;
-        for (uint i = 0; const auto& n :
-                         mesh.template elements<ELEM_ID>() | views::normals) {
+        else {
             buffer[0 * ELEM_NUM + i] = n.x();
             buffer[1 * ELEM_NUM + i] = n.y();
             buffer[2 * ELEM_NUM + i] = n.z();
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -828,26 +816,20 @@ void triangulatedFaceNormalsToBuffer(
 {
     requirePerElementComponent<ElemId::FACE, CompId::NORMAL>(mesh);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (const auto& f : mesh.faces()) {
-            const auto& n     = f.normal();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
+
+    for (const auto& f : mesh.faces()) {
+        const auto& n     = f.normal();
+        uint        first = indexMap.triangleBegin(f.index());
+        uint        last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            if (storage == MatrixStorageType::ROW_MAJOR) {
                 buffer[t * 3 + 0] = n.x();
                 buffer[t * 3 + 1] = n.y();
                 buffer[t * 3 + 2] = n.z();
             }
-        }
-    }
-    else {
-        const uint FACE_NUM =
-            rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
-        for (const auto& f : mesh.faces()) {
-            const auto& n     = f.normal();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+            else {
                 buffer[0 * FACE_NUM + t] = n.x();
                 buffer[1 * FACE_NUM + t] = n.y();
                 buffer[2 * FACE_NUM + t] = n.z();
@@ -922,28 +904,25 @@ void elementColorsToBuffer(
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& c :
-                         mesh.template elements<ELEM_ID>() | views::colors) {
+    const uint ELEM_NUM = rowNumber == UINT_NULL ?
+                              mesh.template number<ELEM_ID>() :
+                              rowNumber;
+
+    for (uint        i = 0;
+         const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
             buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
             buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
             buffer[i * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
-            ++i;
         }
-    }
-    else {
-        const uint ELEM_NUM = rowNumber == UINT_NULL ?
-                                  mesh.template number<ELEM_ID>() :
-                                  rowNumber;
-        for (uint i = 0; const auto& c :
-                         mesh.template elements<ELEM_ID>() | views::colors) {
+        else {
             buffer[0 * ELEM_NUM + i] = R_INT ? c.red() : c.redF();
             buffer[1 * ELEM_NUM + i] = R_INT ? c.green() : c.greenF();
             buffer[2 * ELEM_NUM + i] = R_INT ? c.blue() : c.blueF();
             buffer[3 * ELEM_NUM + i] = R_INT ? c.alpha() : c.alphaF();
-            ++i;
         }
+        ++i;
     }
 }
 
@@ -1128,27 +1107,21 @@ void triangulatedFaceColorsToBuffer(
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (const auto& f : mesh.faces()) {
-            const auto& c     = f.color();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
+
+    for (const auto& f : mesh.faces()) {
+        const auto& c     = f.color();
+        uint        first = indexMap.triangleBegin(f.index());
+        uint        last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            if (storage == MatrixStorageType::ROW_MAJOR) {
                 buffer[t * 4 + 0] = R_INT ? c.red() : c.redF();
                 buffer[t * 4 + 1] = R_INT ? c.green() : c.greenF();
                 buffer[t * 4 + 2] = R_INT ? c.blue() : c.blueF();
                 buffer[t * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
             }
-        }
-    }
-    else {
-        const uint FACE_NUM =
-            rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
-        for (const auto& f : mesh.faces()) {
-            const auto& c     = f.color();
-            uint        first = indexMap.triangleBegin(f.index());
-            uint        last  = first + indexMap.triangleNumber(f.index());
-            for (uint t = first; t < last; ++t) {
+            else {
                 buffer[0 * FACE_NUM + t] = R_INT ? c.red() : c.redF();
                 buffer[1 * FACE_NUM + t] = R_INT ? c.green() : c.greenF();
                 buffer[2 * FACE_NUM + t] = R_INT ? c.blue() : c.blueF();
@@ -1430,21 +1403,19 @@ void vertexTexCoordsToBuffer(
 {
     requirePerVertexComponent<CompId::TEX_COORD>(mesh);
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
+    const uint VERT_NUM =
+        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
+
+    for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 2 + 0] = t.u();
             buffer[i * 2 + 1] = t.v();
-            ++i;
         }
-    }
-    else {
-        const uint VERT_NUM =
-            rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
-        for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
+        else {
             buffer[0 * VERT_NUM + i] = t.u();
             buffer[1 * VERT_NUM + i] = t.v();
-            ++i;
         }
+        ++i;
     }
 }
 
