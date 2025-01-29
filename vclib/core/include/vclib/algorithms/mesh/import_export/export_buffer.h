@@ -1448,6 +1448,181 @@ void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
     }
 }
 
+/**
+ * @brief Export wedge texture coordinates to a buffer of the duplicated
+ * vertex texture coordinates.
+ *
+ * Given the list of vertices to duplicate, this function exports to the given
+ * buffer the wedge texture coordinates as if they were vertex texture
+ * coordinates, and appending only the texture coordinates of the vertices to
+ * duplicate.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 2);
+ * exportWedgeTexCoordsAsDuplicatedVertexTexCoords(mesh, vertWedgeMap,
+ *     facesToReassign, buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices times 2).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the wedge texture coordinates.
+ * @param[in] vertWedgeMap: The map from non-duplicated vertex index to face
+ * index and wedge index in the face.
+ * @param[in] facesToReassign: The list of lists of pairs face/vertex index in
+ * the face that must be reassigned to the duplicated vertices. Each list of
+ * pairs is the list of faces that must be reassigned to the corresponding
+ * duplicated vertex.
+ * @param[out] buffer: The buffer where to export the vertex wedge texture
+ * coordinates.
+ * @param[in] storage: The storage type of the matrix (row or column major).
+ *
+ * @ingroup append_replace_to_buffer
+ */
+template<FaceMeshConcept MeshType>
+void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
+    const MeshType&                                     mesh,
+    const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
+    const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
+                      facesToReassign,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+{
+    vcl::requirePerFaceWedgeTexCoords(mesh);
+
+    const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
+
+    // first export the texcoords of the non-duplicated vertices, using the
+    // vertWedgeMap to get the texcoord index in the face
+    uint vi = 0; // current vertex (or current row in the matrix)
+    for (const auto& v : mesh.vertices()) {
+        uint fInd = vertWedgeMap[vi].first;
+        uint wInd = vertWedgeMap[vi].second;
+        const auto& w = mesh.face(fInd).wedgeTexCoord(wInd);
+        if (storage == MatrixStorageType::ROW_MAJOR) {
+            buffer[vi * 2 + 0] = w.u();
+            buffer[vi * 2 + 1] = w.v();
+        }
+        else {
+            buffer[0 * VERT_NUM + vi] = w.u();
+            buffer[1 * VERT_NUM + vi] = w.v();
+        }
+        ++vi;
+    }
+
+    // then append the texcoords of the duplicated vertices, that can be found
+    // by looking into the any of the facesToReassign element lists
+    for (const auto& list : facesToReassign) {
+        assert(list.begin() != list.end());
+        const auto& p = list.front();
+        uint fInd = p.first;
+        uint wInd = p.second;
+
+        const auto& w = mesh.face(fInd).wedgeTexCoord(wInd);
+        if (storage == MatrixStorageType::ROW_MAJOR) {
+            buffer[vi * 2 + 0] = w.u();
+            buffer[vi * 2 + 1] = w.v();
+        }
+        else {
+            buffer[0 * VERT_NUM + vi] = w.u();
+            buffer[1 * VERT_NUM + vi] = w.v();
+        }
+        ++vi;
+    }
+}
+
+/**
+ * @brief Export wedge texture coordinate indices to a buffer of the duplicated
+ * vertex texture coordinate indices.
+ *
+ * Given the list of vertices to duplicate, this function exports to the given
+ * buffer the wedge texture indices as if they were vertex texture
+ * indices, and appending only the texture indices of the vertices to
+ * duplicate.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
+ * exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(mesh,
+ *     vertWedgeMap, facesToReassign, buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the wedge texture coordinate
+ * indices.
+ * @param[in] vertWedgeMap: The map from non-duplicated vertex index to face
+ * index and wedge index in the face.
+ * @param[in] facesToReassign: The list of lists of pairs face/vertex index in
+ * the face that must be reassigned to the duplicated vertices. Each list of
+ * pairs is the list of faces that must be reassigned to the corresponding
+ * duplicated vertex.
+ * @param[out] buffer: The buffer where to export the vertex wedge texture
+ * coordinate indices.
+ *
+ * @ingroup append_replace_to_buffer
+ */
+template<FaceMeshConcept MeshType>
+void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
+    const MeshType&                                     mesh,
+    const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
+    const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
+          facesToReassign,
+    auto*             buffer)
+{
+    vcl::requirePerFaceWedgeTexCoords(mesh);
+
+    const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
+
+    // first export the tex indices of the non-duplicated vertices, using the
+    // vertWedgeMap to get the texcoord index in the face
+    uint vi = 0; // current vertex (or current row in the matrix)
+    for (const auto& v : mesh.vertices()) {
+        uint fInd = vertWedgeMap[vi].first;
+        ushort ti = mesh.face(fInd).textureIndex();
+        buffer[vi] = ti;
+        ++vi;
+    }
+
+    // then append the tex indices of the duplicated vertices, that can be found
+    // by looking into the any of the facesToReassign element lists
+    for (const auto& list : facesToReassign) {
+        assert(list.begin() != list.end());
+        const auto& p = list.front();
+        uint fInd = p.first;
+
+        ushort ti = mesh.face(fInd).textureIndex();
+        buffer[vi] = ti;
+        ++vi;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H

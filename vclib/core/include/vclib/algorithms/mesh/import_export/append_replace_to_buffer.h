@@ -79,7 +79,7 @@ namespace vcl {
  * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer(mesh.vertexNumber() + nV * 3);
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
  * vertexCoordsToBuffer(mesh, buffer.data());
  * appendDuplicateVertexCoordsToBuffer(mesh, vertsToDuplicate, buffer.data());
  * @endcode
@@ -87,7 +87,7 @@ namespace vcl {
  * @note The buffer must be preallocated with the correct size (total number of
  * vertices times 3).
  *
- * @tparam MeshType The type of the mesh.
+ * @tparam MeshType: The type of the mesh.
  *
  * @param[in] mesh: The mesh from which take the coordinates.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
@@ -108,26 +108,22 @@ void appendDuplicateVertexCoordsToBuffer(
     if (vertsToDuplicate.empty())
         return;
 
-    if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-            const auto& coord = mesh.vertex(v).coord();
+    const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+
+    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+        const auto& coord = mesh.vertex(v).coord();
+        if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = coord.x();
             buffer[i * 3 + 1] = coord.y();
             buffer[i * 3 + 2] = coord.z();
-
-            ++i;
         }
-    }
-    else {
-        const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
-        for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-            const auto& coord = mesh.vertex(v).coord();
+        else {
             buffer[0 * VERT_NUM + i] = coord.x();
             buffer[1 * VERT_NUM + i] = coord.y();
             buffer[2 * VERT_NUM + i] = coord.z();
-
-            ++i;
         }
+
+        ++i;
     }
 }
 
@@ -160,7 +156,7 @@ void appendDuplicateVertexCoordsToBuffer(
  *    faceToReassign, buffer.data(), lfs);
  * @endcode
  *
- * @tparam MeshType The type of the mesh.
+ * @tparam MeshType: The type of the mesh.
  *
  * @param[in] mesh: The input mesh.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
@@ -238,7 +234,7 @@ void replaceFaceIndicesByVertexDuplicationToBuffer(
  *    vertsToDuplicate, faceToReassign, indexMap, buffer.data());
  * @endcode
  *
- * @tparam MeshType The type of the mesh.
+ * @tparam MeshType: The type of the mesh.
  *
  * @param[in] mesh: The input mesh.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
@@ -249,6 +245,7 @@ void replaceFaceIndicesByVertexDuplicationToBuffer(
  * duplicated vertex.
  * @param[in] indexMap: The map from triangle index to face index.
  * @param[out] buffer: The buffer where to replace the vertex indices.
+ * @param[in] storage: The storage type of the matrix (row or column major).
  *
  * @ingroup append_replace_to_buffer
  */
@@ -258,7 +255,8 @@ void replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
     const std::list<uint>&                             vertsToDuplicate,
     const std::list<std::list<std::pair<uint, uint>>>& facesToReassign,
     const TriPolyIndexBiMap&                           indexMap,
-    auto*                                              buffer)
+    auto*                                              buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     // no vertices have been duplicated, do nothing
     if (vertsToDuplicate.empty())
@@ -269,7 +267,7 @@ void replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
     uint vFirst = mesh.vertexNumber();
     uint vLast  = mesh.vertexNumber() + vertsToDuplicate.size();
 
-    // only row major supported
+    const uint FACE_NUM = indexMap.triangleNumber();
 
     // the facesToReassign lists for each vertex contain pairs that in the
     // second element store the index of the vertex in the face. However, the
@@ -289,8 +287,15 @@ void replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
             uint tEnd   = tBegin + indexMap.triangleNumber(f.first);
             for (uint t = tBegin; t < tEnd; ++t) { // look into the triangles
                 for (uint j = 0; j < 3; ++j) { // for each vertex of triangle
-                    if (buffer[t * 3 + j] == vert) {
-                        buffer[t * 3 + j] = vi;
+                    if (storage == MatrixStorageType::ROW_MAJOR) {
+                        if (buffer[t * 3 + j] == vert) {
+                            buffer[t * 3 + j] = vi;
+                        }
+                    }
+                    else {
+                        if (buffer[j * FACE_NUM + t] == vert) {
+                            buffer[j * FACE_NUM + t] = vi;
+                        }
                     }
                 }
             }
@@ -300,14 +305,14 @@ void replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
 }
 
 /**
- * @brief Append the coordinates of the duplicated vertices to the given buffer.
+ * @brief Append the selection of the duplicated vertices to the given buffer.
  *
  * Given the list of vertices to duplicate, this function appends to the given
- * buffer the coordinates of the vertices listed in the input list.
+ * buffer the selection of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
  * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
- * vertexCoordsToBuffer function:
+ * vertexSelectionToBuffer function:
  *
  * @code{.cpp}
  *
@@ -318,20 +323,21 @@ void replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
  * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer(mesh.vertexNumber() + nV * 3);
- * vertexCoordsToBuffer(mesh, buffer.data());
+ * std::vector<uint> buffer(mesh.vertexNumber() + nV);
+ * vertexSelectionToBuffer(mesh, buffer.data());
  * appendDuplicateVertexCoordsToBuffer(mesh, vertsToDuplicate, buffer.data());
  * @endcode
  *
  * @note The buffer must be preallocated with the correct size (total number of
- * vertices times 3).
+ * vertices).
  *
- * @tparam MeshType The type of the mesh.
+ * @tparam MeshType: The type of the mesh.
  *
- * @param[in] mesh: The mesh from which take the coordinates.
+ * @param[in] mesh: The mesh from which take the selection.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
- * @param[out] buffer: The buffer where to append the duplicated vertices.
+ * @param[out] buffer: The buffer where to append the duplicated vertex
+ * selection.
  *
  * @ingroup append_replace_to_buffer
  */
@@ -345,18 +351,55 @@ void appendDuplicateVertexSelectionToBuffer(
     if (vertsToDuplicate.empty())
         return;
 
-    // only row major supported
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).selected();
         ++i;
     }
 }
 
+/**
+ * @brief Append the normals of the duplicated vertices to the given buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the normals of the vertices listed in the input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexNormalsToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
+ * vertexNormalsToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexNormalsToBuffer(mesh, vertsToDuplicate, buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices times 3).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the normals.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex normals.
+ * @param[in] storage: The storage type of the matrix (row or column major).
+ *
+ * @ingroup append_replace_to_buffer
+ */
 template<MeshConcept MeshType>
 void appendDuplicateVertexNormalsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer)
+    auto*                  buffer,
+    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
 {
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
@@ -364,22 +407,69 @@ void appendDuplicateVertexNormalsToBuffer(
 
     requirePerVertexNormal(mesh);
 
-    // only row major supported
+    const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& normal = mesh.vertex(v).normal();
-        buffer[i * 3 + 0] = normal.x();
-        buffer[i * 3 + 1] = normal.y();
-        buffer[i * 3 + 2] = normal.z();
+        if (storage == MatrixStorageType::ROW_MAJOR) {
+            buffer[i * 3 + 0] = normal.x();
+            buffer[i * 3 + 1] = normal.y();
+            buffer[i * 3 + 2] = normal.z();
+        }
+        else {
+            buffer[0 * VERT_NUM + i] = normal.x();
+            buffer[1 * VERT_NUM + i] = normal.y();
+            buffer[2 * VERT_NUM + i] = normal.z();
+        }
         ++i;
     }
 }
 
+/**
+ * @brief Append the colors of the duplicated vertices to the given buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the colors of the vertices listed in the input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexColorsToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<uint> buffer((mesh.vertexNumber() + nV) * 4);
+ * vertexColorsToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexColorsToBuffer(mesh, vertsToDuplicate, buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices times 4).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the colors.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex colors.
+ * @param[in] representation: The representation of the color in the buffer.
+ * @param[in] storage: The storage type of the matrix (row or column major).
+ *
+ * @ingroup append_replace_to_buffer
+ */
 template<MeshConcept MeshType>
 void appendDuplicateVertexColorsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
-    Color::Representation  representation = Color::Representation::INT_0_255)
+    Color::Representation  representation = Color::Representation::INT_0_255,
+    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
 {
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
@@ -388,18 +478,65 @@ void appendDuplicateVertexColorsToBuffer(
     requirePerVertexColor(mesh);
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
+    const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
 
-    // only row major supported
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& c = mesh.vertex(v).color();
-        buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
-        buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
-        buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
-        buffer[i * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
+        if (storage == MatrixStorageType::ROW_MAJOR) {
+            buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
+            buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
+            buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
+            buffer[i * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
+        }
+        else {
+            buffer[0 * VERT_NUM + i] = R_INT ? c.red() : c.redF();
+            buffer[1 * VERT_NUM + i] = R_INT ? c.green() : c.greenF();
+            buffer[2 * VERT_NUM + i] = R_INT ? c.blue() : c.blueF();
+            buffer[3 * VERT_NUM + i] = R_INT ? c.alpha() : c.alphaF();
+        }
         ++i;
     }
 }
 
+/**
+ * @brief Append the color (packed in a single 32 bit value using the provided
+ * format) of the duplicated vertices to the given buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the color (packed in a single 32 bit value using the provided format)
+ * of the vertices listed in the input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexColorToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer(mesh.vertexNumber() + nV);
+ * vertexColorToBuffer(mesh, buffer.data(), Color::Format::RGBA);
+ * appendDuplicateVertexColorToBuffer(mesh, vertsToDuplicate, buffer.data(),
+ *     Color::Format::RGBA);
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the colors.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex color.
+ *
+ * @ingroup append_replace_to_buffer
+ */
 template<MeshConcept MeshType>
 void adppendDuplicateVertexColorsToBuffer(
     const MeshType&        mesh,
@@ -413,7 +550,6 @@ void adppendDuplicateVertexColorsToBuffer(
 
     requirePerVertexColor(mesh);
 
-    // only row major supported
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& c = mesh.vertex(v).color();
         switch (colorFormat) {
@@ -427,6 +563,42 @@ void adppendDuplicateVertexColorsToBuffer(
     }
 }
 
+/**
+ * @brief Append the quality of the duplicated vertices to the given buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the quality of the vertices listed in the input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexQualityToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer(mesh.vertexNumber() + nV);
+ * vertexQualityToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexQualityToBuffer(mesh, vertsToDuplicate, buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the quality.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex quality.
+ *
+ * @ingroup append_replace_to_buffer
+ */
 template<MeshConcept MeshType>
 void appendDuplicateVertexQualityToBuffer(
     const MeshType&        mesh,
@@ -439,18 +611,59 @@ void appendDuplicateVertexQualityToBuffer(
 
     requirePerVertexQuality(mesh);
 
-    // only row major supported
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).quality();
         ++i;
     }
 }
 
+/**
+ * @brief Append the texture coordinates of the duplicated vertices to the given
+ * buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the vertex texture coordinates of the vertices listed in the input
+ * list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexTexCoordsToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 2);
+ * vertexTexCoordsToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexTexCoordsToBuffer(mesh, vertsToDuplicate,
+ *     buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices times 2).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the vertex texture coordinates.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex texture
+ * coordinates.
+ * @param[in] storage: The storage type of the matrix (row or column major).
+ *
+ * @ingroup append_replace_to_buffer
+ */
 template<MeshConcept MeshType>
 void appendDuplicateVertexTexCoordsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
-    auto*                  buffer)
+    auto*                  buffer,
+    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
 {
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
@@ -458,15 +671,63 @@ void appendDuplicateVertexTexCoordsToBuffer(
 
     requirePerVertexTexCoord(mesh);
 
-    // only row major supported
+    const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& t = mesh.vertex(v).texCoord();
-        buffer[i * 2 + 0] = t.u();
-        buffer[i * 2 + 1] = t.v();
+        if (storage == MatrixStorageType::ROW_MAJOR) {
+            buffer[i * 2 + 0] = t.u();
+            buffer[i * 2 + 1] = t.v();
+        }
+        else {
+            buffer[0 * VERT_NUM + i] = t.u();
+            buffer[1 * VERT_NUM + i] = t.v();
+        }
         ++i;
     }
 }
 
+/**
+ * @brief Append the texture coordinate indices of the duplicated vertices to
+ * the given buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the vertex texture coordinate indices of the vertices listed in the
+ * input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexTexCoordIndicesToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
+ * vertexTexCoordIndicesToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexTexCoordIndicesToBuffer(mesh, vertsToDuplicate,
+ *     buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the vertex texture coordinate
+ * indices.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex texture
+ * coordinate indices.
+ *
+ * @ingroup append_replace_to_buffer
+ */
 template<MeshConcept MeshType>
 void appendDuplicateVertexTexCoordIndicesToBuffer(
     const MeshType&        mesh,
@@ -479,7 +740,6 @@ void appendDuplicateVertexTexCoordIndicesToBuffer(
 
     requirePerVertexTexCoord(mesh);
 
-    // only row major supported
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).texCoord().index();
         ++i;
