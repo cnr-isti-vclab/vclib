@@ -253,8 +253,8 @@ Container referencedVertices(
  */
 template<FaceMeshConcept MeshType>
 uint countVerticesToDuplicateByWedgeTexCoords(
-    const MeshType&                    mesh,
-    std::vector<std::pair<uint, uint>> vertWedgeMap =
+    const MeshType&                     mesh,
+    std::vector<std::pair<uint, uint>>& vertWedgeMap =
         detail::dummyVectorOfPairs,
     std::list<uint>& vertsToDuplicate = detail::dummyUintList,
     std::list<std::list<std::pair<uint, uint>>>& facesToReassign =
@@ -282,6 +282,7 @@ uint countVerticesToDuplicateByWedgeTexCoords(
     std::vector<std::map<WedgeTexCoordsInfo, FaceList>> wedges(
         mesh.vertexContainerSize());
 
+    // TODO: use compacted indices instead of f.index() in this loop
     for (const auto& f : mesh.faces()) {
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             uint vi = f.vertexIndex(i);
@@ -344,6 +345,10 @@ uint countVerticesToDuplicateByWedgeTexCoords(
         }
         ++vi;
     }
+
+    assert(vertWedgeMap.size() == mesh.vertexContainerSize());
+    assert(vertsToDuplicate.size() == count);
+    assert(facesToReassign.size() == count);
 
     return count;
 }

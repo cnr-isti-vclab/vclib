@@ -770,6 +770,22 @@ TEMPLATE_TEST_CASE(
 
     THEN("Test the number of vertices to duplicate")
     {
-        REQUIRE(vcl::countVerticesToDuplicateByWedgeTexCoords(tm2) == 8);
+        // adding two unref vertices to the cube, just to differentiate
+        // the number of vertices to duplicate
+        tm2.addVertex({0.0, 0.0, 0.0});
+        tm2.addVertex({2.0, 2.0, 2.0});
+
+        std::vector<std::pair<vcl::uint, vcl::uint>> vertWedgeMap;
+        std::list<vcl::uint> vertsToDuplicate;
+        std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
+
+        vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
+            tm2, vertWedgeMap, vertsToDuplicate, facesToReassign);
+
+        REQUIRE(tm2.vertexNumber() == 10);
+        REQUIRE(nV == 8);
+        REQUIRE(vertWedgeMap.size() == tm2.vertexNumber());
+        REQUIRE(vertsToDuplicate.size() == nV);
+        REQUIRE(facesToReassign.size() == nV);
     }
 }

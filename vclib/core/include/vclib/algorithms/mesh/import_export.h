@@ -23,8 +23,22 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
 
+#include "import_export/append_replace_to_buffer.h"
 #include "import_export/export_buffer.h"
 #include "import_export/export_matrix.h"
 #include "import_export/import_matrix.h"
+
+/**
+ * @defgroup import_export Import/Export Mesh Algorithms
+ *
+ * @ingroup algorithms_mesh
+ *
+ * @brief List of Import/Export Mesh algorithms.
+ *
+ * They allow to import and export mesh data from/to different formats.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh/import_export.h>`
+ */
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
