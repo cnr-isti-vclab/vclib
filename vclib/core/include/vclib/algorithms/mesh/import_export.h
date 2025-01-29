@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
 
+#include "import_export/append_replace_to_buffer.h"
 #include "import_export/export_buffer.h"
 #include "import_export/export_matrix.h"
 #include "import_export/import_matrix.h"

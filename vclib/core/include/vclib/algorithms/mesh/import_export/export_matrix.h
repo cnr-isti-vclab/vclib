@@ -28,6 +28,7 @@
 #include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/core/matrix.h>
 
 /**
  * @defgroup export_matrix Export Mesh to Matrix Algorithms
@@ -75,14 +76,7 @@ Matrix vertexCoordsMatrix(const MeshType& mesh)
 {
     Matrix vM(mesh.vertexNumber(), 3);
 
-    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
-
-    // Eigen matrices can be column major
-    if constexpr (EigenMatrixConcept<Matrix>) {
-        if constexpr (!Matrix::IsRowMajor) {
-            stg = MatrixStorageType::COLUMN_MAJOR;
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<Matrix>();
 
     vertexCoordsToBuffer(mesh, vM.data(), stg);
 
@@ -220,14 +214,7 @@ Matrix faceIndicesMatrix(const MeshType& mesh)
 
     Matrix fM(mesh.faceNumber(), fMaxSize);
 
-    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
-
-    // Eigen matrices can be column major
-    if constexpr (EigenMatrixConcept<Matrix>) {
-        if constexpr (!Matrix::IsRowMajor) {
-            stg = MatrixStorageType::COLUMN_MAJOR;
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<Matrix>();
 
     faceIndicesToBuffer(mesh, fM.data(), fMaxSize, stg);
 
@@ -271,14 +258,7 @@ Matrix triangulatedFaceIndicesMatrix(
 
     Matrix tM(tNumber, 3);
 
-    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
-
-    // Eigen matrices can be column major
-    if constexpr (EigenMatrixConcept<Matrix>) {
-        if constexpr (!Matrix::IsRowMajor) {
-            stg = MatrixStorageType::COLUMN_MAJOR;
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<Matrix>();
 
     triangulatedFaceIndicesToBuffer(mesh, tM.data(), indexMap, stg, tNumber);
 
@@ -322,14 +302,7 @@ Matrix edgeIndicesMatrix(const MeshType& mesh)
 
     Matrix eM(mesh.edgeNumber(), 2);
 
-    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
-
-    // Eigen matrices can be column major
-    if constexpr (EigenMatrixConcept<Matrix>) {
-        if constexpr (!Matrix::IsRowMajor) {
-            stg = MatrixStorageType::COLUMN_MAJOR;
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<Matrix>();
 
     edgeIndicesToBuffer(mesh, eM.data(), stg);
 
@@ -475,14 +448,7 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
 {
     Matrix eNM(mesh.template number<ELEM_ID>(), 3);
 
-    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
-
-    // Eigen matrices can be column major
-    if constexpr (EigenMatrixConcept<Matrix>) {
-        if constexpr (!Matrix::IsRowMajor) {
-            stg = MatrixStorageType::COLUMN_MAJOR;
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<Matrix>();
 
     elementNormalsToBuffer<ELEM_ID>(mesh, eNM.data(), stg);
 
@@ -589,14 +555,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 
     Matrix eCM(mesh.template number<ELEM_ID>(), 4);
 
-    MatrixStorageType stg = MatrixStorageType::ROW_MAJOR;
-
-    // Eigen matrices can be column major
-    if constexpr (EigenMatrixConcept<Matrix>) {
-        if constexpr (!Matrix::IsRowMajor) {
-            stg = MatrixStorageType::COLUMN_MAJOR;
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<Matrix>();
 
     elementColorsToBuffer<ELEM_ID>(mesh, eCM.data(), stg);
 
