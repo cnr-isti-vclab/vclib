@@ -1072,8 +1072,8 @@ void triangulatedFaceColorsToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap,
-    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR,
-    Color::Representation representation = Color::Representation::INT_0_255)
+    MatrixStorageType        storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation    representation = Color::Representation::INT_0_255)
 {
     requirePerElementComponent<ElemId::FACE, CompId::COLOR>(mesh);
 
@@ -1367,15 +1367,14 @@ void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
  */
 template<MeshConcept MeshType>
 void vertexTexCoordsToBuffer(
-    const MeshType& mesh,
-    auto*           buffer,
+    const MeshType&   mesh,
+    auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
     requirePerVertexComponent<CompId::TEX_COORD>(mesh);
 
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        for (uint i = 0; const auto& t :
-                         mesh.vertices() | views::texCoords) {
+        for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
             buffer[i * 2 + 0] = t.x();
             buffer[i * 2 + 1] = t.y();
             ++i;
@@ -1383,8 +1382,7 @@ void vertexTexCoordsToBuffer(
     }
     else {
         const uint VERT_NUM = mesh.vertexNumber();
-        for (uint i = 0; const auto& t :
-                         mesh.vertices() | views::texCoords) {
+        for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
             buffer[0 * VERT_NUM + i] = t.x();
             buffer[1 * VERT_NUM + i] = t.y();
             ++i;

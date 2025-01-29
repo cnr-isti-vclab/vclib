@@ -216,10 +216,7 @@ public:
 
     bool isVisible() const { return mDrawMode0 & VCL_MRS_DRAW_MESH; }
 
-    bool isPointVisible() const
-    {
-        return mDrawMode0 & VCL_MRS_DRAW_POINTS;
-    }
+    bool isPointVisible() const { return mDrawMode0 & VCL_MRS_DRAW_POINTS; }
 
     bool isPointShadingNone() const
     {

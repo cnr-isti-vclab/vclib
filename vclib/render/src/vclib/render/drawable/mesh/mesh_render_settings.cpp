@@ -160,11 +160,7 @@ bool MeshRenderSettings::setPointWidth(float width)
     }
 }
 
-bool MeshRenderSettings::setPointUserColor(
-    float r,
-    float g,
-    float b,
-    float a)
+bool MeshRenderSettings::setPointUserColor(float r, float g, float b, float a)
 {
     if (canPointBeVisible()) {
         mPointUserColor[0] = r;
