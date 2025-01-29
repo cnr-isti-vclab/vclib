@@ -191,7 +191,7 @@ void testVertexSelectionVector(
 
     // following vertices are duplicates (same as the vtd indices)
     for (vcl::uint vd : vtd) {
-        REQUIRE(sel[i] == tm.vertex(vd).selected());
+        REQUIRE((bool) sel[i] == tm.vertex(vd).selected());
         ++i;
     }
 }
