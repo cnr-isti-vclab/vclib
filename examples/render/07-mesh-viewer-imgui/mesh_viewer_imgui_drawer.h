@@ -156,7 +156,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                         true));
         assert(idx >= 0 && idx < 3);
         
-        ImGui::SetNextItemWidth(-50);
+        ImGui::SetNextItemWidth(-40);
         if (ImGui::BeginCombo("##ComboPointColor",
             pointColorNames[idx]))
         {
@@ -168,7 +168,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 case 0:
                     ImGui::BeginDisabled(!settings.canPointColorBePerVertex());
                     if (ImGui::Selectable(pointColorNames[n], selected))
-                        settings.setPointColorPerVertex();      
+                        settings.setPointColorPerVertex();
                     ImGui::EndDisabled();
                     break;
                 case 1:
@@ -214,6 +214,218 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::EndDisabled();
     }
 
+    static void drawMeshSurfaceSettings(
+        const vcl::DrawableMesh<vcl::TriMesh>& drawable,
+        vcl::MeshRenderSettings& settings)
+    {
+        ImGui::BeginDisabled(!settings.canSurfaceBeVisible());
+
+        // visibility
+        ImGui::Checkbox("Visible",
+            [&]{return settings.isSurfaceVisible();},
+            [&](bool vis){settings.setSurfaceVisibility(vis);}
+        );
+
+        // shading
+        ImGui::Text("Shading:");
+        ImGui::SameLine();
+        ImGui::RadioButton("Smooth",
+            [&]{return settings.isSurfaceShadingSmooth();},
+            [&](bool vis){if (vis) settings.setSurfaceShadingSmooth();}
+        );
+        ImGui::SameLine();
+        ImGui::RadioButton("Flat",
+            [&]{return settings.isSurfaceShadingFlat();},
+            [&](bool vis){if (vis) settings.setSurfaceShadingFlat();}
+        );
+        ImGui::SameLine();
+        ImGui::RadioButton("None",
+            [&]{return settings.isSurfaceShadingNone();},
+            [&](bool vis){if (vis) settings.setSurfaceShadingNone();}
+        );
+
+        // color
+        // TODO: implement color enum? in render settings
+        ImGui::Text("Color:");
+        ImGui::SameLine();
+        const char* surfColorNames[] = {
+            "Vertex", "Face", "Mesh", "PerVertexTex", "PerWedgeTex", "User" };
+        const std::array<bool,6> colorSelected = {
+            settings.isSurfaceColorPerVertex(),
+            settings.isSurfaceColorPerFace(),
+            settings.isSurfaceColorPerMesh(),
+            settings.isSurfaceColorPerVertexTexcoords(),
+            settings.isSurfaceColorPerWedgeTexcoords(),
+            settings.isSurfaceColorUserDefined()
+        };
+        assert(std::accumulate(
+            std::begin(colorSelected),
+            std::end(colorSelected), 0) == 1);
+        int idx = std::distance( std::begin(colorSelected),
+            std::find(std::begin(colorSelected),
+                        std::end(colorSelected),
+                        true));
+        assert(idx >= 0 && idx < 6);
+        ImGui::SetNextItemWidth(-40);
+        if (ImGui::BeginCombo("##ComboSurfColor",
+            surfColorNames[idx]))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(surfColorNames); n++)
+            {
+                const bool selected = (n == idx);
+            
+                switch (n) {
+                case 0:
+                    ImGui::BeginDisabled(!settings.canSurfaceColorBePerVertex());
+                    if (ImGui::Selectable(surfColorNames[n], selected))
+                        settings.setSurfaceColorPerVertex();      
+                    ImGui::EndDisabled();
+                    break;
+                case 1:
+                    ImGui::BeginDisabled(!settings.canSurfaceColorBePerFace());
+                    if (ImGui::Selectable(surfColorNames[n], selected))
+                        settings.setSurfaceColorPerFace();
+                    ImGui::EndDisabled();
+                    break;
+                case 2:
+                    ImGui::BeginDisabled(!settings.canSurfaceColorBePerMesh());
+                    if (ImGui::Selectable(surfColorNames[n], selected))
+                        settings.setSurfaceColorPerMesh();
+                    ImGui::EndDisabled();
+                    break;
+                case 3:
+                    ImGui::BeginDisabled(
+                        !settings.canSurfaceColorBePerVertexTexcoords());
+                    if (ImGui::Selectable(surfColorNames[n], selected))
+                        settings.setSurfaceColorPerVertexTexcoords();
+                    ImGui::EndDisabled();
+                    break;
+                case 4:
+                    ImGui::BeginDisabled(
+                        !settings.canSurfaceColorBePerWedgeTexcoords());
+                    if (ImGui::Selectable(surfColorNames[n], selected))
+                        settings.setSurfaceColorPerWedgeTexcoords();
+                    ImGui::EndDisabled();
+                    break;
+                case 5:
+                    if (ImGui::Selectable(surfColorNames[n], selected))
+                        settings.setSurfaceColorUserDefined();
+                    break;
+                default:
+                    assert(false);
+                    break;
+                }
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        // user color picker
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.isSurfaceColorUserDefined());
+        ImGui::ColorEdit4("##SurfUserColor",
+            [&]{return settings.surfaceUserColor();},
+            [&](vcl::Color c){settings.setSurfaceUserColor(c);},
+            ImGuiColorEditFlags_NoInputs
+        );
+        ImGui::EndDisabled();
+
+
+        ImGui::EndDisabled();
+    }
+
+    static void drawMeshWireframeSettings(
+        const vcl::DrawableMesh<vcl::TriMesh>& drawable,
+        vcl::MeshRenderSettings& settings)
+    {
+        ImGui::BeginDisabled(!settings.canSurfaceBeVisible());
+
+        // visibility
+        ImGui::Checkbox("Visible",
+            [&]{return settings.isWireframeVisible();},
+            [&](bool v){settings.setWireframeVisibility(v);}
+        );
+
+        // shading
+        assert(settings.isWireframeShadingPerVertex() != 
+            settings.isWireframeShadingNone());
+        ImGui::Text("Shading:");
+        ImGui::SameLine();
+        ImGui::RadioButton("Vertex",
+            [&]{return settings.isWireframeShadingPerVertex();},
+            [&](bool vis){if (vis) settings.setWireframeShadingPerVertex();}
+        );
+        ImGui::SameLine();
+        ImGui::RadioButton("None",
+            [&]{return settings.isWireframeShadingNone();},
+            [&](bool vis){if (vis) settings.setWireframeShadingNone();}
+        );
+
+        // color
+        // TODO: implement color enum? in render settings
+        ImGui::Text("Color:");
+        ImGui::SameLine();
+        const char* wireColorNames[] = { "Vertex", "Mesh", "User" };
+        const std::array<bool,3> colorSelected = {
+            settings.isWireframeColorPerVertex(),
+            settings.isWireframeColorPerMesh(),
+            settings.isWireframeColorUserDefined()
+        };
+        assert(std::accumulate(
+            std::begin(colorSelected),
+            std::end(colorSelected), 0) == 1);
+        int idx = std::distance( std::begin(colorSelected),
+            std::find(std::begin(colorSelected),
+                        std::end(colorSelected),
+                        true));
+        assert(idx >= 0 && idx < 3);
+        ImGui::SetNextItemWidth(-40);
+        if (ImGui::BeginCombo("##ComboWireColor",
+            wireColorNames[idx]))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(wireColorNames); n++)
+            {
+                const bool selected = (n == idx);
+            
+                switch (n) {
+                case 0:
+                    ImGui::BeginDisabled(!settings.canWireframeColorBePerVertex());
+                    if (ImGui::Selectable(wireColorNames[n], selected))
+                        settings.setWireframeColorPerVertex();
+                    ImGui::EndDisabled();
+                    break;
+                case 1:
+                    ImGui::BeginDisabled(!settings.canWireframeColorBePerMesh());
+                    if (ImGui::Selectable(wireColorNames[n], selected))
+                        settings.setWireframeColorPerMesh();
+                    ImGui::EndDisabled();
+                    break;
+                case 2:
+                    if (ImGui::Selectable(wireColorNames[n], selected))
+                        settings.setWireframeColorUserDefined();
+                    break;
+                default:
+                    assert(false);
+                    break;
+                }
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        // user color picker
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.isWireframeColorUserDefined());
+        ImGui::ColorEdit4("##WireUserColor",
+            [&]{return settings.wireframeUserColor();},
+            [&](vcl::Color c){settings.setWireframeUserColor(c);},
+            ImGuiColorEditFlags_NoInputs
+        );
+        ImGui::EndDisabled();
+
+        ImGui::EndDisabled();
+    }
+
     static void drawMeshSettings(vcl::DrawableMesh<vcl::TriMesh>& drawable)
     {
         ImGui::Separator();
@@ -238,68 +450,16 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             }
             if (ImGui::BeginTabItem("Surface"))
             {
-                // TODO
+                drawMeshSurfaceSettings(drawable, newSettings);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Wireframe")) // are we sure?
+            if (ImGui::BeginTabItem("Wireframe"))
             {
-                // TODO
+                drawMeshWireframeSettings(drawable, newSettings);
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
         }
-
-        ImGui::SeparatorText("OLD");
-
-        ImGui::BeginDisabled(!newSettings.canPointBeVisible());
-        ImGui::Checkbox("Points",
-            [&]{return newSettings.isPointVisible();},
-            [&](bool vis){newSettings.setPointVisibility(vis);}
-        );
-        ImGui::EndDisabled();
-
-        ImGui::SameLine();
-
-        // edges
-        ImGui::BeginDisabled(!newSettings.canEdgesBeVisible());
-        ImGui::Checkbox("Edges",
-            [&]{return newSettings.isWireframeVisible();},
-            [&](bool vis){newSettings.setWireframeVisibility(vis);}
-        );
-        ImGui::EndDisabled();
-
-        // surface
-        ImGui::BeginDisabled(!newSettings.canSurfaceBeVisible());
-        {
-            ImGui::Checkbox("Surface",
-                [&]{return newSettings.isSurfaceVisible();},
-                [&](bool vis){newSettings.setSurfaceVisibility(vis);}
-            );
-            // surface shading
-            
-            ImGui::Text("Shading");
-            ImGui::SameLine();
-            // radio buttons
-            // ImGui::RadioButton("None",
-            //     [&]{return newSettings.isSurfaceShadingNone();},
-            //     [&](bool vis){newSettings.setSurfaceShadingNone();}
-            // );
-            ImGui::RadioButton("Flat",
-                [&]{return newSettings.isSurfaceShadingFlat();},
-                [&](bool vis){if (vis) newSettings.setSurfaceShadingFlat();}
-            );
-            ImGui::SameLine();
-            ImGui::RadioButton("Smooth",
-                [&]{return newSettings.isSurfaceShadingSmooth();},
-                [&](bool vis){if (vis) newSettings.setSurfaceShadingSmooth();}
-            );
-            ImGui::Checkbox("Wireframe",
-                [&]{return newSettings.isWireframeVisible();},
-                [&](bool vis){newSettings.setWireframeVisibility(vis);}
-            );
-        }
-
-        ImGui::EndDisabled();
 
         if (newSettings != settings)
         {
