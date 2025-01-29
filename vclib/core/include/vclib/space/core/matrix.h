@@ -26,4 +26,32 @@
 #include "matrix/affine.h"
 #include "matrix/matrix.h"
 
+namespace vcl {
+
+/**
+ * @brief Get the storage type of a matrix.
+ *
+ * @tparam MatrixType: The type of the matrix, it must satisfy the
+ * MatrixConcept.
+ * @return The storage type of the matrix.
+ *
+ * @ingroup space_core
+ */
+template<MatrixConcept MatrixType>
+vcl::MatrixStorageType matrixStorageType()
+{
+    vcl::MatrixStorageType stg = vcl::MatrixStorageType::ROW_MAJOR;
+
+    // Eigen matrices can be column major
+    if constexpr (vcl::EigenMatrixConcept<MatrixType>) {
+        if constexpr (!MatrixType::IsRowMajor) {
+            stg = vcl::MatrixStorageType::COLUMN_MAJOR;
+        }
+    }
+
+    return stg;
+}
+
+} // namespace vcl
+
 #endif // VCL_SPACE_CORE_MATRIX_H
