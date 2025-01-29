@@ -538,7 +538,7 @@ void appendDuplicateVertexColorsToBuffer(
  * @ingroup append_replace_to_buffer
  */
 template<MeshConcept MeshType>
-void adppendDuplicateVertexColorsToBuffer(
+void appendDuplicateVertexColorsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
