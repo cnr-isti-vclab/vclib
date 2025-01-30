@@ -748,7 +748,7 @@ void triangulatedFaceNormalsToBuffer(
     MatrixStorageType        storage   = MatrixStorageType::ROW_MAJOR,
     uint                     rowNumber = UINT_NULL)
 {
-    requirePerElementComponent<ElemId::FACE, CompId::NORMAL>(mesh);
+    requirePerFaceNormal(mesh);
 
     const uint FACE_NUM =
         rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
@@ -1036,7 +1036,7 @@ void triangulatedFaceColorsToBuffer(
     Color::Representation    representation = Color::Representation::INT_0_255,
     uint                     rowNumber      = UINT_NULL)
 {
-    requirePerElementComponent<ElemId::FACE, CompId::COLOR>(mesh);
+    requirePerFaceColor(mesh);
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
@@ -1334,7 +1334,7 @@ void vertexTexCoordsToBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
-    requirePerVertexComponent<CompId::TEX_COORD>(mesh);
+    requirePerVertexTexCoord(mesh);
 
     const uint VERT_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
@@ -1373,7 +1373,7 @@ void vertexTexCoordsToBuffer(
 template<MeshConcept MeshType>
 void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    requirePerVertexComponent<CompId::TEX_COORD>(mesh);
+    requirePerVertexTexCoord(mesh);
 
     for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
         buffer[i] = t.index();
@@ -1534,7 +1534,7 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
-    vcl::requirePerFaceWedgeTexCoords(mesh);
+    requirePerFaceWedgeTexCoords(mesh);
 
     const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
 
@@ -1629,7 +1629,7 @@ void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
           facesToReassign,
     auto* buffer)
 {
-    vcl::requirePerFaceWedgeTexCoords(mesh);
+    requirePerFaceWedgeTexCoords(mesh);
 
     const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
 
