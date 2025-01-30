@@ -101,8 +101,8 @@ template<MeshConcept MeshType>
 void vertexCoordsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint rowNumber = UINT_NULL)
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
     const uint VERT_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
@@ -159,7 +159,7 @@ void triangleIndicesToBuffer(
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
     bool              getIndicesAsIfContainerCompact = true,
-    uint              rowNumber = UINT_NULL)
+    uint              rowNumber                      = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -342,7 +342,7 @@ void faceIndicesToBuffer(
     uint              largestFaceSize,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
     bool              getIndicesAsIfContainerCompact = true,
-    uint              rowNumber = UINT_NULL)
+    uint              rowNumber                      = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -518,7 +518,7 @@ void edgeIndicesToBuffer(
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
     bool              getIndicesAsIfContainerCompact = true,
-    uint              rowNumber = UINT_NULL)
+    uint              rowNumber                      = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -696,14 +696,13 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    const uint ELEM_NUM = rowNumber == UINT_NULL ?
-                              mesh.template number<ELEM_ID>() :
-                              rowNumber;
+    const uint ELEM_NUM =
+        rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     for (uint        i = 0;
          const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
@@ -746,7 +745,7 @@ template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage, rowNumber);
@@ -776,7 +775,7 @@ template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage, rowNumber);
@@ -904,9 +903,8 @@ void elementColorsToBuffer(
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    const uint ELEM_NUM = rowNumber == UINT_NULL ?
-                              mesh.template number<ELEM_ID>() :
-                              rowNumber;
+    const uint ELEM_NUM =
+        rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     for (uint        i = 0;
          const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
@@ -1398,7 +1396,7 @@ template<MeshConcept MeshType>
 void vertexTexCoordsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     requirePerVertexComponent<CompId::TEX_COORD>(mesh);
@@ -1509,9 +1507,9 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
     // vertWedgeMap to get the texcoord index in the face
     uint vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
-        uint fInd = vertWedgeMap[vi].first;
-        uint wInd = vertWedgeMap[vi].second;
-        const auto& w = mesh.face(fInd).wedgeTexCoord(wInd);
+        uint        fInd = vertWedgeMap[vi].first;
+        uint        wInd = vertWedgeMap[vi].second;
+        const auto& w    = mesh.face(fInd).wedgeTexCoord(wInd);
         if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[vi * 2 + 0] = w.u();
             buffer[vi * 2 + 1] = w.v();
@@ -1527,9 +1525,9 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
     // by looking into the any of the facesToReassign element lists
     for (const auto& list : facesToReassign) {
         assert(list.begin() != list.end());
-        const auto& p = list.front();
-        uint fInd = p.first;
-        uint wInd = p.second;
+        const auto& p    = list.front();
+        uint        fInd = p.first;
+        uint        wInd = p.second;
 
         const auto& w = mesh.face(fInd).wedgeTexCoord(wInd);
         if (storage == MatrixStorageType::ROW_MAJOR) {
@@ -1594,7 +1592,7 @@ void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
     const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
     const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
           facesToReassign,
-    auto*             buffer)
+    auto* buffer)
 {
     vcl::requirePerFaceWedgeTexCoords(mesh);
 
@@ -1604,9 +1602,9 @@ void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
     // vertWedgeMap to get the texcoord index in the face
     uint vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
-        uint fInd = vertWedgeMap[vi].first;
-        ushort ti = mesh.face(fInd).textureIndex();
-        buffer[vi] = ti;
+        uint   fInd = vertWedgeMap[vi].first;
+        ushort ti   = mesh.face(fInd).textureIndex();
+        buffer[vi]  = ti;
         ++vi;
     }
 
@@ -1614,10 +1612,10 @@ void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
     // by looking into the any of the facesToReassign element lists
     for (const auto& list : facesToReassign) {
         assert(list.begin() != list.end());
-        const auto& p = list.front();
-        uint fInd = p.first;
+        const auto& p    = list.front();
+        uint        fInd = p.first;
 
-        ushort ti = mesh.face(fInd).textureIndex();
+        ushort ti  = mesh.face(fInd).textureIndex();
         buffer[vi] = ti;
         ++vi;
     }

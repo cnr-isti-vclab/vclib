@@ -106,7 +106,7 @@ void testCoordsMatrix(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
     MatrixType verts(nRows, 3);
 
     auto stg = vcl::matrixStorageType<MatrixType>();
@@ -140,10 +140,10 @@ void testTriangleMatrix(
     const auto& vtd,
     const auto& ftr)
 {
-    using MeshType = vcl::RemoveRef<decltype(tm)>;
+    using MeshType   = vcl::RemoveRef<decltype(tm)>;
     using ScalarType = MeshType::VertexType::CoordType::ScalarType;
 
-    vcl::uint nVerts = tm.vertexNumber() + vtd.size();
+    vcl::uint               nVerts = tm.vertexNumber() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
     vcl::vertexCoordsToBuffer(tm, verts.data());
     vcl::appendDuplicateVertexCoordsToBuffer(tm, vtd, verts.data());
@@ -176,7 +176,7 @@ void testVertexSelectionVector(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
     VectorType sel(nRows);
 
     vcl::vertexSelectionToBuffer(tm, sel.data());
@@ -217,8 +217,8 @@ TEMPLATE_TEST_CASE(
     TriMesh tm =
         vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
 
-    std::vector<std::pair<vcl::uint, vcl::uint>> vertWedgeMap;
-    std::list<vcl::uint> vertsToDuplicate;
+    std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
+    std::list<vcl::uint>                                  vertsToDuplicate;
     std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
     vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
         tm, vertWedgeMap, vertsToDuplicate, facesToReassign);

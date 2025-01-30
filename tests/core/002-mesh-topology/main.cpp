@@ -775,8 +775,8 @@ TEMPLATE_TEST_CASE(
         tm2.addVertex({0.0, 0.0, 0.0});
         tm2.addVertex({2.0, 2.0, 2.0});
 
-        std::vector<std::pair<vcl::uint, vcl::uint>> vertWedgeMap;
-        std::list<vcl::uint> vertsToDuplicate;
+        std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
+        std::list<vcl::uint>                                  vertsToDuplicate;
         std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
 
         vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
