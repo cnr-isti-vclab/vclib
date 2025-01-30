@@ -24,7 +24,7 @@
 
 namespace vcl {
 
-Color MeshRenderSettings::pointCloudUserColor() const
+Color MeshRenderSettings::pointUserColor() const
 {
     vcl::Color c;
     c.setRedF(mPointUserColor[0]);
@@ -72,9 +72,9 @@ bool MeshRenderSettings::setVisibility(bool b)
     }
 }
 
-bool MeshRenderSettings::setPointCloudVisibility(bool b)
+bool MeshRenderSettings::setPointVisibility(bool b)
 {
-    if (canPointCloudBeVisible()) {
+    if (canPointBeVisible()) {
         if (b)
             mDrawMode0 |= VCL_MRS_DRAW_POINTS;
         else
@@ -86,9 +86,9 @@ bool MeshRenderSettings::setPointCloudVisibility(bool b)
     }
 }
 
-bool MeshRenderSettings::setPointCloudShadingNone()
+bool MeshRenderSettings::setPointShadingNone()
 {
-    if (canPointCloudBeVisible()) {
+    if (canPointBeVisible()) {
         mDrawMode0 |= VCL_MRS_POINTS_SHADING_NONE;
         mDrawMode0 &= ~VCL_MRS_POINTS_SHADING_VERT;
         return true;
@@ -98,9 +98,9 @@ bool MeshRenderSettings::setPointCloudShadingNone()
     }
 }
 
-bool MeshRenderSettings::setPointCloudShadingPerVertex()
+bool MeshRenderSettings::setPointShadingPerVertex()
 {
-    if (canPointCloudBeVisible()) {
+    if (canPointBeVisible()) {
         mDrawMode0 &= ~VCL_MRS_POINTS_SHADING_NONE;
         mDrawMode0 |= VCL_MRS_POINTS_SHADING_VERT;
         return true;
@@ -110,7 +110,7 @@ bool MeshRenderSettings::setPointCloudShadingPerVertex()
     }
 }
 
-bool MeshRenderSettings::setPointCloudColorPerVertex()
+bool MeshRenderSettings::setPointColorPerVertex()
 {
     if (canSurfaceColorBePerVertex()) {
         mDrawMode0 |= VCL_MRS_POINTS_COLOR_VERTEX;
@@ -123,7 +123,7 @@ bool MeshRenderSettings::setPointCloudColorPerVertex()
     }
 }
 
-bool MeshRenderSettings::setPointCloudColorPerMesh()
+bool MeshRenderSettings::setPointColorPerMesh()
 {
     if (canSurfaceColorBePerMesh()) {
         mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_VERTEX;
@@ -136,9 +136,9 @@ bool MeshRenderSettings::setPointCloudColorPerMesh()
     }
 }
 
-bool MeshRenderSettings::setPointCloudColorUserDefined()
+bool MeshRenderSettings::setPointColorUserDefined()
 {
-    if (canPointCloudBeVisible()) {
+    if (canPointBeVisible()) {
         mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_VERTEX;
         mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_MESH;
         mDrawMode0 |= VCL_MRS_POINTS_COLOR_USER;
@@ -151,7 +151,7 @@ bool MeshRenderSettings::setPointCloudColorUserDefined()
 
 bool MeshRenderSettings::setPointWidth(float width)
 {
-    if (canPointCloudBeVisible()) {
+    if (canPointBeVisible()) {
         mPointWidth = width;
         return true;
     }
@@ -160,13 +160,9 @@ bool MeshRenderSettings::setPointWidth(float width)
     }
 }
 
-bool MeshRenderSettings::setPointCloudUserColor(
-    float r,
-    float g,
-    float b,
-    float a)
+bool MeshRenderSettings::setPointUserColor(float r, float g, float b, float a)
 {
-    if (canPointCloudBeVisible()) {
+    if (canPointBeVisible()) {
         mPointUserColor[0] = r;
         mPointUserColor[1] = g;
         mPointUserColor[2] = b;
@@ -178,9 +174,9 @@ bool MeshRenderSettings::setPointCloudUserColor(
     }
 }
 
-bool MeshRenderSettings::setPointCloudUserColor(const Color& c)
+bool MeshRenderSettings::setPointUserColor(const Color& c)
 {
-    if (canPointCloudBeVisible()) {
+    if (canPointBeVisible()) {
         mPointUserColor[0] = c.redF();
         mPointUserColor[1] = c.greenF();
         mPointUserColor[2] = c.blueF();
@@ -754,20 +750,29 @@ void MeshRenderSettings::setDefaultSettingsFromCapability()
             else {
                 setSurfaceColorUserDefined();
             }
-        }
-
-        if (canPointCloudBeVisible()) {
-            if (!canSurfaceBeVisible())
-                setPointCloudVisibility(true);
-            setPointCloudShadingNone();
-            if (canPointCloudShadingBePerVertex()) {
-                setPointCloudShadingPerVertex();
-            }
-            if (canPointCloudColorBePerVertex()) {
-                setPointCloudColorPerVertex();
+            // wireframe shading
+            if (canWireframeShadingBePerVertex()) {
+                setWireframeShadingPerVertex();
             }
             else {
-                setPointCloudColorUserDefined();
+                setWireframeShadingNone();
+            }
+            // wireframe color (defaults to user defined)
+            setWireframeColorUserDefined();
+        }
+
+        if (canPointBeVisible()) {
+            if (!canSurfaceBeVisible())
+                setPointVisibility(true);
+            setPointShadingNone();
+            if (canPointShadingBePerVertex()) {
+                setPointShadingPerVertex();
+            }
+            if (canPointColorBePerVertex()) {
+                setPointColorPerVertex();
+            }
+            else {
+                setPointColorUserDefined();
             }
         }
 

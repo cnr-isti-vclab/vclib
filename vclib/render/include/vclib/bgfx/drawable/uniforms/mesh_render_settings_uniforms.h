@@ -75,7 +75,7 @@ public:
         mWidthPack[2] = settings.edgesWidth();
 
         mColorPack[0] =
-            Uniform::uintBitsToFloat(settings.pointCloudUserColor().abgr());
+            Uniform::uintBitsToFloat(settings.pointUserColor().abgr());
         mColorPack[1] =
             Uniform::uintBitsToFloat(settings.surfaceUserColor().abgr());
         mColorPack[2] =

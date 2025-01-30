@@ -94,22 +94,22 @@ public:
         return mDrawModeCapability0 & VCL_MRS_DRAW_MESH;
     }
 
-    bool canPointCloudBeVisible() const
+    bool canPointBeVisible() const
     {
         return mDrawModeCapability0 & VCL_MRS_DRAW_POINTS;
     }
 
-    bool canPointCloudShadingBePerVertex() const
+    bool canPointShadingBePerVertex() const
     {
         return mDrawModeCapability0 & VCL_MRS_POINTS_SHADING_VERT;
     }
 
-    bool canPointCloudColorBePerVertex() const
+    bool canPointColorBePerVertex() const
     {
         return mDrawModeCapability0 & VCL_MRS_POINTS_COLOR_VERTEX;
     }
 
-    bool canPointCloudColorBePerMesh() const
+    bool canPointColorBePerMesh() const
     {
         return mDrawModeCapability0 & VCL_MRS_POINTS_COLOR_MESH;
     }
@@ -216,41 +216,38 @@ public:
 
     bool isVisible() const { return mDrawMode0 & VCL_MRS_DRAW_MESH; }
 
-    bool isPointCloudVisible() const
-    {
-        return mDrawMode0 & VCL_MRS_DRAW_POINTS;
-    }
+    bool isPointVisible() const { return mDrawMode0 & VCL_MRS_DRAW_POINTS; }
 
-    bool isPointCloudShadingNone() const
+    bool isPointShadingNone() const
     {
         return mDrawMode0 & VCL_MRS_POINTS_SHADING_NONE;
     }
 
-    bool isPointCloudShadingPerVertex() const
+    bool isPointShadingPerVertex() const
     {
         return mDrawMode0 & VCL_MRS_POINTS_SHADING_VERT;
     }
 
-    bool isPointCloudColorPerVertex() const
+    bool isPointColorPerVertex() const
     {
         return mDrawMode0 & VCL_MRS_POINTS_COLOR_VERTEX;
     }
 
-    bool isPointCloudColorPerMesh() const
+    bool isPointColorPerMesh() const
     {
         return mDrawMode0 & VCL_MRS_POINTS_COLOR_MESH;
     }
 
-    bool isPointCloudColorUserDefined() const
+    bool isPointColorUserDefined() const
     {
         return mDrawMode0 & VCL_MRS_POINTS_COLOR_USER;
     }
 
     float pointWidth() const { return mPointWidth; }
 
-    vcl::Color pointCloudUserColor() const;
+    vcl::Color pointUserColor() const;
 
-    const float* pointCloudUserColorData() const { return mPointUserColor; }
+    const float* pointUserColorData() const { return mPointUserColor; }
 
     bool isSurfaceVisible() const { return mDrawMode0 & VCL_MRS_DRAW_SURF; }
 
@@ -388,23 +385,23 @@ public:
 
     bool setVisibility(bool b);
 
-    bool setPointCloudVisibility(bool b);
+    bool setPointVisibility(bool b);
 
-    bool setPointCloudShadingNone();
+    bool setPointShadingNone();
 
-    bool setPointCloudShadingPerVertex();
+    bool setPointShadingPerVertex();
 
-    bool setPointCloudColorPerVertex();
+    bool setPointColorPerVertex();
 
-    bool setPointCloudColorPerMesh();
+    bool setPointColorPerMesh();
 
-    bool setPointCloudColorUserDefined();
+    bool setPointColorUserDefined();
 
     bool setPointWidth(float width);
 
-    bool setPointCloudUserColor(float r, float g, float b, float a = 1);
+    bool setPointUserColor(float r, float g, float b, float a = 1);
 
-    bool setPointCloudUserColor(const vcl::Color& c);
+    bool setPointUserColor(const vcl::Color& c);
 
     bool setSurfaceVisibility(bool b);
 

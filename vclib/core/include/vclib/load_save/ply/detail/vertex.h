@@ -91,6 +91,15 @@ void readPlyVertexProperty(
             }
         }
     }
+    if (p.name == ply::texnumber) {
+        if constexpr (HasPerVertexTexCoord<MeshType>) {
+            if (isPerVertexTexCoordAvailable(mesh)) {
+                v.texCoord().index() =
+                    io::readPrimitiveType<ushort>(file, p.type, end);
+                hasBeenRead = true;
+            }
+        }
+    }
     if (p.name == ply::unknown) {
         if constexpr (HasPerVertexCustomComponents<MeshType>) {
             if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName)) {
@@ -190,6 +199,13 @@ void writePlyVertices(
                 if constexpr (HasPerVertexTexCoord<MeshType>) {
                     const uint a = p.name - ply::texture_u;
                     io::writeProperty(file, v.texCoord()[a], p.type, format);
+                    hasBeenWritten = true;
+                }
+            }
+            if (p.name == ply::texnumber) {
+                if constexpr (HasPerVertexTexCoord<MeshType>) {
+                    io::writeProperty(
+                        file, v.texCoord().index(), p.type, format);
                     hasBeenWritten = true;
                 }
             }

@@ -20,37 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_TRACKBALL_TRACKBALL_RENDER_DATA_H
-#define VCL_RENDER_DRAWABLE_TRACKBALL_TRACKBALL_RENDER_DATA_H
+#ifndef TEX_COORD_INDEXED_H
+#define TEX_COORD_INDEXED_H
 
-#include <vclib/space/core/matrix.h>
-#include <vclib/space/core/point.h>
+#include <vclib/space.h>
 
-namespace vcl {
-
-class TrackballRenderData
+void texCoordIndexedStaticAsserts()
 {
-    std::vector<vcl::Point3f> mVertices;
-    std::vector<uint16_t>     mEdges;
+    using namespace vcl;
 
-    vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
+    // TexCoord concept
+    static_assert(
+        TexCoordIndexedConcept<TexCoordIndexedf>,
+        "TexCoordIndexedf does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<const TexCoordIndexedf>,
+        "const TexCoordIndexedf does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<TexCoordIndexedf&>,
+        "TexCoordIndexedf& does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<const TexCoordIndexedf&>,
+        "const TexCoordIndexedf& does not satisfy the TexCoordIndexedConcept");
+    static_assert(
+        TexCoordIndexedConcept<TexCoordIndexedf&&>,
+        "TexCoordIndexedf&& does not satisfy the TexCoordIndexedConcept");
+}
 
-public:
-    TrackballRenderData(uint pointsPerCircle = 64);
-
-    uint vertexNumber() const;
-
-    uint edgeNumber() const;
-
-    const float* vertexBufferData() const;
-
-    const uint16_t* edgeBufferData() const;
-
-    const float* transformData() const;
-
-    void setTransform(const vcl::Matrix44f& mtx);
-};
-
-} // namespace vcl
-
-#endif // VCL_RENDER_DRAWABLE_TRACKBALL_TRACKBALL_RENDER_DATA_H
+#endif // TEX_COORD_INDEXED_H

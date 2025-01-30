@@ -38,30 +38,31 @@ endif()
 
 add_subdirectory(common)
 
+add_subdirectory(00-hello-triangle)
+add_subdirectory(01-viewer)
+add_subdirectory(02-mesh-viewer)
+add_subdirectory(03-viewer-with-text)
+add_subdirectory(04-hello-triangle-imgui)
+add_subdirectory(05-two-window-viewers)
 
-#add_subdirectory(00-hello-triangle)
-#add_subdirectory(01-viewer)
-#add_subdirectory(02-mesh-viewer)
-#add_subdirectory(03-viewer-with-text)
-#add_subdirectory(04-hello-triangle-imgui)
-#add_subdirectory(05-two-window-viewers)
-
-# if (TARGET vclib-processing)
-#     add_subdirectory(800-processing-main-window)
-# endif()
+if (TARGET vclib-processing)
+    add_subdirectory(800-processing-main-window)
+endif()
 
 if(TARGET vclib-3rd-imgui)
     add_subdirectory(910-viewer-imgui)
 endif()
 
-# add_subdirectory(999-misc)
+add_subdirectory(999-misc)
 
-# if (CAN_BUILD_VCLIB_EXAMPLES)
-#     # the following examples are the same of the ones in the core module,
-#     # but they add a viewer at the end in order to visualize the results
-#     add_subdirectory(9015-mesh-io-stl)
-#     add_subdirectory(9018-mesh-principal-curvature)
-#     add_subdirectory(9019-mesh-sampling)
-#     add_subdirectory(9021-mesh-sphere-intersection)
-#     add_subdirectory(9026-crease-edges-mesh)
-# endif()
+if (CAN_BUILD_VCLIB_EXAMPLES)
+    add_subdirectory(06-test-texcoords)
+
+    # the following examples are the same of the ones in the core module,
+    # but they add a viewer at the end in order to visualize the results
+    add_subdirectory(9015-mesh-io-stl)
+    add_subdirectory(9018-mesh-principal-curvature)
+    add_subdirectory(9019-mesh-sampling)
+    add_subdirectory(9021-mesh-sphere-intersection)
+    add_subdirectory(9026-crease-edges-mesh)
+endif()

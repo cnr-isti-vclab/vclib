@@ -56,8 +56,10 @@ namespace vcl {
 template<typename Scalar, uint N>
 class Point : public Eigen::Matrix<Scalar, N, 1>
 {
-public:
     using Base = Eigen::Matrix<Scalar, N, 1>;
+
+public:
+    using BaseMatrixType = Base;
 
     // inherit Base operators
     using Base::operator+;

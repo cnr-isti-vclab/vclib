@@ -92,7 +92,7 @@ void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
         mUI->tabWidget->setEnabled(false);
     }
 
-    mUI->tabWidget->setTabVisible(POINTS_FRAME, mMRS.canPointCloudBeVisible());
+    mUI->tabWidget->setTabVisible(POINTS_FRAME, mMRS.canPointBeVisible());
     mUI->tabWidget->setTabVisible(SURFACE_FRAME, mMRS.canSurfaceBeVisible());
     mUI->tabWidget->setTabVisible(WIREFRAME_FRAME, mMRS.canSurfaceBeVisible());
     mUI->tabWidget->setTabVisible(EDGES_FRAME, mMRS.canEdgesBeVisible());
@@ -104,7 +104,7 @@ void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
         else if (mMRS.canEdgesBeVisible()) { // second priority: edges
             mUI->tabWidget->setCurrentIndex(EDGES_FRAME);
         }
-        else if (mMRS.canPointCloudBeVisible()) { // third priority: points
+        else if (mMRS.canPointBeVisible()) { // third priority: points
             mUI->tabWidget->setCurrentIndex(POINTS_FRAME);
         }
     }

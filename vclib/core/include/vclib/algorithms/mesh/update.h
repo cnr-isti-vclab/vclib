@@ -34,7 +34,7 @@
 #include "update/transform.h"
 
 /**
- * @defgroup update Mesh Update Algorithms
+ * @defgroup update Update Mesh Algorithms
  *
  * @ingroup algorithms_mesh
  *

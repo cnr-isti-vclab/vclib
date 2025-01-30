@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include "canvas.h"
+#include "drawable_object.h"
 #include "drawers.h"
 #include "render_app.h"
 #include "window_manager.h"
@@ -28,6 +29,7 @@
 int main()
 {
     canvasStaticAsserts();
+    drawableObjectStaticAsserts();
     drawersStaticAsserts();
     renderAppStaticAsserts();
     windowManagerStaticAsserts();

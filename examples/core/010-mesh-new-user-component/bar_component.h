@@ -66,7 +66,8 @@ concept HasOptionalColor =
 
 // define a constant uint that identifies the component (same idea used for
 // COMPONENT_ID in the FooComponent)
-inline static const vcl::uint BAR_COMPONENT = vcl::CompId::COMPONENTS_NUMBER + 1;
+inline static const vcl::uint BAR_COMPONENT =
+    vcl::CompId::COMPONENTS_NUMBER + 1;
 
 namespace detail {
 
@@ -75,7 +76,7 @@ namespace detail {
 // the only important thing is to have all the data wrapped in a single type
 struct BarData
 {
-    double bar;
+    double                 bar;
     std::vector<vcl::uint> barVector;
 };
 
@@ -168,7 +169,7 @@ protected:
         // the bar component
         if constexpr (HasBarComponent<Element>) { // compile time check
             if (isBarComponentAvailableOn(e)) {   // runtime check
-                bar() = e.bar();
+                bar()       = e.bar();
                 barVector() = e.barVector();
             }
         }

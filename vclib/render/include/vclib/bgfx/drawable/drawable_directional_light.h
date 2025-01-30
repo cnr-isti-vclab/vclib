@@ -29,6 +29,7 @@
 #include <vclib/render/viewer/lights/directional_light.h>
 #include <vclib/space/core/matrix.h>
 
+#include <vclib/bgfx/buffers/vertex_buffer.h>
 #include <vclib/bgfx/context.h>
 
 #include <bgfx/bgfx.h>
@@ -44,7 +45,7 @@ class DrawableDirectionalLight : public DrawableObject
     std::vector<float> mVertices; // vertices of the drawn lines
     vcl::Color         mColor = vcl::Color::Yellow; // color of the lines
 
-    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertexCoordBuffer;
 
     DrawableDirectionalLightUniforms mUniform;
 

@@ -26,9 +26,9 @@
 
 namespace vcl {
 
-DrawableAxis::DrawableAxis(double size, bool fromOrigin)
+DrawableAxis::DrawableAxis(double size)
 {
-    createAxis(fromOrigin);
+    createAxis();
 
     updateMatrices(size);
 }
@@ -48,7 +48,7 @@ void DrawableAxis::draw(uint viewId) const
             for (uint i = 0; i < 3; i++) {
                 for (uint j = 0; j < 2; j++) {
                     if (j == 0) // cylinders
-                        mUniforms.setColor(mColors[i]);
+                        mUniforms.setColor(AXIS_COLORS[i]);
                     else // rest (cone, spheres...)
                         mUniforms.setColor(vcl::Color::White);
                     mUniforms.bind();
@@ -83,67 +83,16 @@ void DrawableAxis::updateMatrices(double size)
     mMatrices[2](3, 3) = 1;
 }
 
-void DrawableAxis::createAxis(bool fromOrigin)
+void DrawableAxis::createAxis()
 {
-    const double unitLength = 1.0;
+    BuffersToFill btf = {
+        toUnderlying(MeshBufferId::VERTICES),
+        toUnderlying(MeshBufferId::VERT_NORMALS),
+        toUnderlying(MeshBufferId::TRIANGLES)};
 
-    const double cylLength = fromOrigin ? unitLength : unitLength * 2;
-    const double cylRadius = cylLength * 0.0025;
+    mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.first, btf);
 
-    const double coneRadius = cylRadius * 10;
-    const double coneLength = cylLength * 0.1;
-
-    const double firstSphereRadius  = unitLength * 0.02;
-    const double commonSphereRadius = unitLength * 0.008;
-
-    vcl::TriMesh cylinder =
-        vcl::createCylinder<vcl::TriMesh>(cylRadius, cylLength);
-    if (fromOrigin) {
-        vcl::translate(cylinder, vcl::Point3d(0, unitLength * 0.5, 0));
-    }
-
-    vcl::updatePerVertexNormals(cylinder);
-
-    vcl::TriMesh rest =
-        vcl::createCone<vcl::TriMesh>(coneRadius, 0, coneLength);
-    double transl = unitLength + (coneLength * 0.5);
-    vcl::translate(rest, vcl::Point3d(0, transl, 0));
-
-    if (!fromOrigin) {
-        vcl::Sphered s(vcl::Point3d(0, -1, 0), firstSphereRadius);
-        vcl::TriMesh sp = vcl::createSphere<vcl::TriMesh>(s);
-        rest.append(sp);
-    }
-
-    for (uint i = 0; i < 9; ++i) {
-        const double step = unitLength * 0.1;
-        const double x    = step + i * step;
-        vcl::Sphered s(vcl::Point3d(0, x, 0), commonSphereRadius);
-        vcl::TriMesh sp = vcl::createSphere<vcl::TriMesh>(s);
-        rest.append(sp);
-        if (!fromOrigin) {
-            s.center().y() = -x;
-            sp             = vcl::createSphere<vcl::TriMesh>(s);
-            rest.append(sp);
-        }
-    }
-
-    const double rad = fromOrigin ? firstSphereRadius : commonSphereRadius;
-    vcl::Sphered s   = vcl::Sphered(vcl::Point3d(0, 0, 0), rad);
-    vcl::TriMesh sp  = vcl::createSphere<vcl::TriMesh>(s);
-    rest.append(sp);
-
-    vcl::updatePerVertexNormals(rest);
-
-    mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(
-        cylinder,
-        MeshRenderBuffers<vcl::TriMesh>::VERT_NORMALS |
-            MeshRenderBuffers<vcl::TriMesh>::TRIANGLES);
-
-    mArrowBuffers[1] = MeshRenderBuffers<vcl::TriMesh>(
-        rest,
-        MeshRenderBuffers<vcl::TriMesh>::VERT_NORMALS |
-            MeshRenderBuffers<vcl::TriMesh>::TRIANGLES);
+    mArrowBuffers[1] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.second, btf);
 }
 
 } // namespace vcl

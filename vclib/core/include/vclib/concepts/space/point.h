@@ -38,12 +38,14 @@ namespace vcl {
  */
 template<typename T>
 concept PointConcept = requires (
-    T&&                                obj,
-    typename RemoveRef<T>::ScalarType  s,
-    typename RemoveRef<T>::ScalarType& sR,
-    typename RemoveRef<T>::Base&       baseObjR) {
+    T&&                                    obj,
+    typename RemoveRef<T>::ScalarType      s,
+    typename RemoveRef<T>::ScalarType&     sR,
+    typename RemoveRef<T>::BaseMatrixType& baseObjR) {
+    // inner types
     typename RemoveRef<T>::ScalarType;
-    typename RemoveRef<T>::Base;
+    typename RemoveRef<T>::BaseMatrixType;
+
     obj.DIM;
 
     RemoveRef<T>();

@@ -20,67 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/drawable/drawable_trackball.h>
+#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H
+#define VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H
 
-#include <vclib/algorithms/core/polygon/create.h>
-#include <vclib/math/transform.h>
+#include <vclib/space/core/bit_set.h>
+#include <vclib/types.h>
 
 namespace vcl {
 
-DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(128)
-{
-    mUniforms.setNumberOfVerticesPerAxis(128);
+enum class MeshBufferId : uint {
+    VERTICES,
+    VERT_NORMALS,
+    VERT_COLORS,
+    VERT_TEXCOORDS,
 
-    createBuffers();
+    TRIANGLES,
+    TRI_NORMALS,
+    TRI_COLORS,
+    WEDGE_TEXCOORDS,
+
+    WIREFRAME,
+
+    EDGES,
+    EDGE_COLORS,
+    EDGE_NORMALS,
+
+    TEXTURES,
+
+    COUNT,
+};
+
+namespace detail {
+using BuffersToFillUnderlyingType = ushort;
+} // namespace detail
+
+static_assert(
+    sizeof(detail::BuffersToFillUnderlyingType) < (uint) MeshBufferId::COUNT,
+    "BuffersToFill is not able to store all MeshBufferID values");
+
+using BuffersToFill = vcl::BitSet<detail::BuffersToFillUnderlyingType>;
+
+namespace detail {
+
+inline BuffersToFill buffersToFillAll()
+{
+    BuffersToFill all;
+    all.set();
+    return all;
 }
 
-DrawableTrackBall::~DrawableTrackBall()
-{
-    if (bgfx::isValid(mVertexCoordBH)) {
-        bgfx::destroy(mVertexCoordBH);
-    }
-}
+} // namespace detail
 
-void DrawableTrackBall::updateDragging(bool isDragging)
-{
-    mUniforms.setDragging(isDragging);
-}
+const inline BuffersToFill BUFFERS_TO_FILL_NONE = BuffersToFill();
 
-void DrawableTrackBall::draw(uint viewId) const
-{
-    if (isVisible()) {
-        if (bgfx::isValid(mProgram)) {
-            bgfx::setState(
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
-                BGFX_STATE_BLEND_NORMAL);
-
-            bgfx::setVertexBuffer(0, mVertexCoordBH);
-            bgfx::setIndexBuffer(mEdgeIndexBH);
-
-            bgfx::setTransform(transformData());
-
-            mUniforms.bind();
-
-            bgfx::submit(viewId, mProgram);
-        }
-    }
-}
-
-void DrawableTrackBall::createBuffers()
-{
-    // vertex buffer
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .end();
-
-    mVertexCoordBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertexBufferData(), vertexNumber() * 3 * sizeof(float)),
-        layout);
-
-    mEdgeIndexBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(edgeBufferData(), edgeNumber() * sizeof(uint16_t)));
-}
+const inline BuffersToFill BUFFERS_TO_FILL_ALL = detail::buffersToFillAll();
 
 } // namespace vcl
+
+#endif // VCL_RENDER_DRAWABLE_MESH_MESH_BUFFER_ID_H

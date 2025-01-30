@@ -23,6 +23,7 @@
   - Components:
     - [ ] references to elements should be available using ELEM_ID
   - Mesh:
+    - [ ] append() should also take a rvalue reference and move it
     - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:
     - [ ] MeshInfo should not use its own enums for elements and components

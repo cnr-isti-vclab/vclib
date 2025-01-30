@@ -91,16 +91,16 @@ PointsFrame::~PointsFrame()
 
 void PointsFrame::updateFrameFromSettings()
 {
-    if (mMRS.canPointCloudBeVisible()) {
+    if (mMRS.canPointBeVisible()) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isPointCloudVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isPointVisible());
 
         mUI->shadingVertexRadioButton->setEnabled(
-            mMRS.canPointCloudShadingBePerVertex());
+            mMRS.canPointShadingBePerVertex());
         mUI->shadingVertexRadioButton->setChecked(
-            mMRS.isPointCloudShadingPerVertex());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isPointCloudShadingNone());
+            mMRS.isPointShadingPerVertex());
+        mUI->shadingNoneRadioButton->setChecked(mMRS.isPointShadingNone());
 
         // todo
         mUI->shapePixelRadioButton->setChecked(true);
@@ -123,7 +123,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
 
     // color per vertex
     QStandardItem* item = model->item(P_VERT);
-    if (mMRS.canPointCloudColorBePerVertex()) {
+    if (mMRS.canPointColorBePerVertex()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -132,29 +132,29 @@ void PointsFrame::updateColorComboBoxFromSettings()
 
     // color per mesh
     item = model->item(P_MESH);
-    if (mMRS.canPointCloudColorBePerMesh()) {
+    if (mMRS.canPointColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    if (mMRS.isPointCloudColorPerVertex())
+    if (mMRS.isPointColorPerVertex())
         mUI->colorComboBox->setCurrentIndex(P_VERT);
-    if (mMRS.isPointCloudColorPerMesh())
+    if (mMRS.isPointColorPerMesh())
         mUI->colorComboBox->setCurrentIndex(P_MESH);
-    if (mMRS.isPointCloudColorUserDefined())
+    if (mMRS.isPointColorUserDefined())
         mUI->colorComboBox->setCurrentIndex(P_USER);
 
-    mUI->userColorFrame->setEnabled(mMRS.isPointCloudColorUserDefined());
-    vcl::Color vc = mMRS.pointCloudUserColor();
+    mUI->userColorFrame->setEnabled(mMRS.isPointColorUserDefined());
+    vcl::Color vc = mMRS.pointUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
 }
 
 void PointsFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setPointCloudVisibility(arg1 == Qt::Checked);
+    mMRS.setPointVisibility(arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
@@ -171,7 +171,7 @@ void PointsFrame::onShapePixelToggled(bool checked)
 void PointsFrame::onShadingVertexToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointCloudShadingPerVertex();
+        mMRS.setPointShadingPerVertex();
         emit settingsUpdated();
     }
 }
@@ -179,7 +179,7 @@ void PointsFrame::onShadingVertexToggled(bool checked)
 void PointsFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointCloudShadingNone();
+        mMRS.setPointShadingNone();
         emit settingsUpdated();
     }
 }
@@ -187,9 +187,9 @@ void PointsFrame::onShadingNoneToggled(bool checked)
 void PointsFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case P_VERT: mMRS.setPointCloudColorPerVertex(); break;
-    case P_MESH: mMRS.setPointCloudColorPerMesh(); break;
-    case P_USER: mMRS.setPointCloudColorUserDefined(); break;
+    case P_VERT: mMRS.setPointColorPerVertex(); break;
+    case P_MESH: mMRS.setPointColorPerMesh(); break;
+    case P_USER: mMRS.setPointColorUserDefined(); break;
     }
     mUI->userColorFrame->setEnabled(index == P_USER);
     emit settingsUpdated();
@@ -203,7 +203,7 @@ void PointsFrame::onColorDialogButtonClicked()
     if (color.isValid()) {
         setButtonBackGround(mUI->colorDialogPushButton, color);
 
-        mMRS.setPointCloudUserColor(
+        mMRS.setPointUserColor(
             color.redF(), color.greenF(), color.blueF(), color.alphaF());
         emit settingsUpdated();
     }

@@ -26,6 +26,7 @@
 #include "mesh/mesh_render_buffers.h"
 #include "uniforms/drawable_axis_uniforms.h"
 
+#include <vclib/algorithms/mesh/create.h>
 #include <vclib/meshes/tri_mesh.h>
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/space/core/matrix.h>
@@ -38,12 +39,15 @@ namespace vcl {
 
 class DrawableAxis : public DrawableObject
 {
-    bool mVisible = false;
+    inline static const std::pair<vcl::TriMesh, vcl::TriMesh> AXIS_MESHES =
+        vcl::createAxisDisjoint<vcl::TriMesh>();
 
-    const vcl::Color mColors[3] = {
+    static inline const vcl::Color AXIS_COLORS[3] = {
         vcl::Color::Red,
         vcl::Color::Green,
         vcl::Color::Blue};
+
+    bool mVisible = false;
 
     vcl::Matrix44f mMatrices[3] = {
         vcl::Matrix44f::Zero(),
@@ -59,7 +63,7 @@ class DrawableAxis : public DrawableObject
     mutable DrawableAxisUniforms mUniforms;
 
 public:
-    DrawableAxis(double size = 1, bool fromOrigin = false);
+    DrawableAxis(double size = 1);
 
     ~DrawableAxis() = default;
 
@@ -83,7 +87,7 @@ public:
 private:
     void updateMatrices(double size);
 
-    void createAxis(bool fromOrigin);
+    void createAxis();
 };
 
 } // namespace vcl

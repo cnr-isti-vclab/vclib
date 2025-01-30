@@ -746,3 +746,46 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.face(5).adjFace(3) == &pm.face(3));
     }
 }
+
+TEMPLATE_TEST_CASE(
+    "Wedge Driven Vertex Duplication",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
+{
+    using TriMesh = TestType;
+
+    TriMesh tm1 =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
+
+    THEN("Test the number of vertices to duplicate")
+    {
+        REQUIRE(vcl::countVerticesToDuplicateByWedgeTexCoords(tm1) == 0);
+    }
+
+    TriMesh tm2 =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
+
+    THEN("Test the number of vertices to duplicate")
+    {
+        // adding two unref vertices to the cube, just to differentiate
+        // the number of vertices to duplicate
+        tm2.addVertex({0.0, 0.0, 0.0});
+        tm2.addVertex({2.0, 2.0, 2.0});
+
+        std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
+        std::list<vcl::uint>                                  vertsToDuplicate;
+        std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
+
+        vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
+            tm2, vertWedgeMap, vertsToDuplicate, facesToReassign);
+
+        REQUIRE(tm2.vertexNumber() == 10);
+        REQUIRE(nV == 8);
+        REQUIRE(vertWedgeMap.size() == tm2.vertexNumber());
+        REQUIRE(vertsToDuplicate.size() == nV);
+        REQUIRE(facesToReassign.size() == nV);
+    }
+}

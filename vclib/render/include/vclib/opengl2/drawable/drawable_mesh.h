@@ -84,6 +84,8 @@ class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
     std::vector<uint> mTextID;
 
 public:
+    using AbstractDrawableMesh::name;
+
     DrawableMeshOpenGL2() = default;
 
     DrawableMeshOpenGL2(const MeshType& mesh) :
@@ -128,7 +130,7 @@ public:
     {
         if (mMRS.isVisible()) {
             if (mMRS.isWireframeVisible()) {
-                if (mMRS.isPointCloudVisible()) {
+                if (mMRS.isPointVisible()) {
                     glDisable(GL_LIGHTING);
                     glShadeModel(GL_FLAT);
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -176,7 +178,7 @@ public:
                 }
             }
             else { // no wireframe
-                if (mMRS.isPointCloudVisible()) {
+                if (mMRS.isPointVisible()) {
                     glDisable(GL_LIGHTING);
                     renderPass();
                 }
@@ -224,19 +226,19 @@ private:
         const float*    vertTexCoords   = mMRD.vertexTexCoordsBufferData();
         const float*    wedgTexCoords   = mMRD.wedgeTexCoordsBufferData();
 
-        if (mMRS.isPointCloudVisible()) {
+        if (mMRS.isPointVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(3, GL_FLOAT, 0, coords);
 
-            if (mMRS.isPointCloudColorPerVertex()) {
+            if (mMRS.isPointColorPerVertex()) {
                 glEnableClientState(GL_COLOR_ARRAY);
                 glColorPointer(4, GL_UNSIGNED_BYTE, 0, vertexColors);
             }
-            else if (mMRS.isPointCloudColorPerMesh()) {
+            else if (mMRS.isPointColorPerMesh()) {
                 glColor4fv(mMRD.meshColorBufferData());
             }
-            else if (mMRS.isPointCloudColorUserDefined()) {
-                glColor4fv(mMRS.pointCloudUserColorData());
+            else if (mMRS.isPointColorUserDefined()) {
+                glColor4fv(mMRS.pointUserColorData());
             }
 
             glPointSize(mMRS.pointWidth());
@@ -381,60 +383,38 @@ private:
                 }
             }
             else if (mMRS.isSurfaceColorPerVertexTexcoords()) {
-                if (mMRS.isSurfaceShadingSmooth()) {
-                    short texture = mTextID[0];
+                glShadeModel(GL_SMOOTH);
+                int n_tris = nt;
+                for (int tid = 0; tid < n_tris; ++tid) {
+                    int   tid_ptr  = 3 * tid;
+                    int   vid0     = triangles[tid_ptr + 0];
+                    int   vid1     = triangles[tid_ptr + 1];
+                    int   vid2     = triangles[tid_ptr + 2];
+                    int   vid0_ptr = 3 * vid0;
+                    int   vid1_ptr = 3 * vid1;
+                    int   vid2_ptr = 3 * vid2;
+                    short texture =
+                        mTextID[mMRD.vertexTextureIDsBufferData()[vid0]];
                     glBindTexture(GL_TEXTURE_2D, texture);
+                    glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
-                    glEnableClientState(GL_VERTEX_ARRAY);
-                    glVertexPointer(3, GL_FLOAT, 0, coords);
-
-                    glEnableClientState(GL_NORMAL_ARRAY);
-                    glNormalPointer(GL_FLOAT, 0, vertexNormals);
-
-                    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-                    glTexCoordPointer(2, GL_FLOAT, 0, vertTexCoords);
-
-                    glDrawElements(
-                        GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
-
-                    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-                    glDisableClientState(GL_NORMAL_ARRAY);
-                    glDisableClientState(GL_VERTEX_ARRAY);
+                    glTexCoord2f(
+                        vertTexCoords[vid0 * 2 + 0],
+                        vertTexCoords[vid0 * 2 + 1]);
+                    glNormal3fv(&(vertexNormals[vid0_ptr]));
+                    glVertex3fv(&(coords[vid0_ptr]));
+                    glTexCoord2f(
+                        vertTexCoords[vid1 * 2 + 0],
+                        vertTexCoords[vid1 * 2 + 1]);
+                    glNormal3fv(&(vertexNormals[vid1_ptr]));
+                    glVertex3fv(&(coords[vid1_ptr]));
+                    glTexCoord2f(
+                        vertTexCoords[vid2 * 2 + 0],
+                        vertTexCoords[vid2 * 2 + 1]);
+                    glNormal3fv(&(vertexNormals[vid2_ptr]));
+                    glVertex3fv(&(coords[vid2_ptr]));
+                    glEnd();
                     glBindTexture(GL_TEXTURE_2D, 0);
-                }
-                else {
-                    glShadeModel(GL_SMOOTH);
-                    int n_tris = nt;
-                    for (int tid = 0; tid < n_tris; ++tid) {
-                        int   tid_ptr  = 3 * tid;
-                        int   vid0     = triangles[tid_ptr + 0];
-                        int   vid1     = triangles[tid_ptr + 1];
-                        int   vid2     = triangles[tid_ptr + 2];
-                        int   vid0_ptr = 3 * vid0;
-                        int   vid1_ptr = 3 * vid1;
-                        int   vid2_ptr = 3 * vid2;
-                        short texture  = mTextID[0];
-                        glBindTexture(GL_TEXTURE_2D, texture);
-                        glBegin(GL_TRIANGLES);
-                        glColor4f(1, 1, 1, 1);
-                        glTexCoord2f(
-                            vertTexCoords[vid0 * 2 + 0],
-                            vertTexCoords[vid0 * 2 + 1]);
-                        glNormal3fv(&(vertexNormals[vid0_ptr]));
-                        glVertex3fv(&(coords[vid0_ptr]));
-                        glTexCoord2f(
-                            vertTexCoords[vid1 * 2 + 0],
-                            vertTexCoords[vid1 * 2 + 1]);
-                        glNormal3fv(&(vertexNormals[vid1_ptr]));
-                        glVertex3fv(&(coords[vid1_ptr]));
-                        glTexCoord2f(
-                            vertTexCoords[vid2 * 2 + 0],
-                            vertTexCoords[vid2 * 2 + 1]);
-                        glNormal3fv(&(vertexNormals[vid2_ptr]));
-                        glVertex3fv(&(coords[vid2_ptr]));
-                        glEnd();
-                        glBindTexture(GL_TEXTURE_2D, 0);
-                    }
                 }
             }
             else if (mMRS.isSurfaceColorPerWedgeTexcoords()) {
