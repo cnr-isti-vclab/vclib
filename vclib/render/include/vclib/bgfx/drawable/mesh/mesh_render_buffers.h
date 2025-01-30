@@ -356,14 +356,37 @@ private:
         const auto&     vtd,
         const auto&     ftr)
     {
-        if (Base::vertexTexCoordsBufferData()) {
-            mVertexUVBuffer.set(
-                Base::vertexTexCoordsBufferData(),
-                Base::vertexNumber() * 2,
-                bgfx::Attrib::TexCoord0,
-                2,
-                PrimitiveType::FLOAT);
+        using enum MeshBufferId;
+
+        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
+            if (mBuffersToFill[toUnderlying(VERT_TEXCOORDS)]) {
+                if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<float>(
+                            mesh.vertexNumber() * 2);
+
+                    vertexTexCoordsToBuffer(mesh, buffer);
+
+                    mVertexUVBuffer.set(
+                        buffer,
+                        mesh.vertexNumber() * 2,
+                        bgfx::Attrib::TexCoord0,
+                        2,
+                        PrimitiveType::FLOAT,
+                        false,
+                        releaseFn);
+                }
+            }
         }
+        // WAS:
+        // if (Base::vertexTexCoordsBufferData()) {
+        //     mVertexUVBuffer.set(
+        //         Base::vertexTexCoordsBufferData(),
+        //         Base::vertexNumber() * 2,
+        //         bgfx::Attrib::TexCoord0,
+        //         2,
+        //         PrimitiveType::FLOAT);
+        // }
     }
 
     void createWedgeTexCoordsBuffer(
@@ -372,14 +395,39 @@ private:
         const auto&     vtd,
         const auto&     ftr)
     {
-        if (Base::wedgeTexCoordsBufferData()) {
-            mVertexWedgeUVBuffer.set(
-                Base::wedgeTexCoordsBufferData(),
-                Base::vertexNumber() * 2,
-                bgfx::Attrib::TexCoord1,
-                2,
-                PrimitiveType::FLOAT);
+        using enum MeshBufferId;
+
+        if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+            if (mBuffersToFill[toUnderlying(WEDGE_TEXCOORDS)]) {
+                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<float>(
+                            mesh.vertexNumber() * 2);
+
+                    exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
+                        mesh, vmw, ftr, buffer);
+
+                    mVertexWedgeUVBuffer.set(
+                        buffer,
+                        mesh.vertexNumber() * 2,
+                        bgfx::Attrib::TexCoord1,
+                        2,
+                        PrimitiveType::FLOAT,
+                        false,
+                        releaseFn);
+                }
+            }
         }
+
+        // WAS:
+        // if (Base::wedgeTexCoordsBufferData()) {
+        //     mVertexWedgeUVBuffer.set(
+        //         Base::wedgeTexCoordsBufferData(),
+        //         Base::vertexNumber() * 2,
+        //         bgfx::Attrib::TexCoord1,
+        //         2,
+        //         PrimitiveType::FLOAT);
+        // }
     }
 
     void createTriangleIndicesBuffer(
