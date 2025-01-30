@@ -102,7 +102,7 @@ void appendDuplicateVertexCoordsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
 {
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
@@ -469,7 +469,7 @@ void appendDuplicateVertexColorsToBuffer(
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
     Color::Representation  representation = Color::Representation::INT_0_255,
-    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+    MatrixStorageType      storage        = MatrixStorageType::ROW_MAJOR)
 {
     // no vertices to duplicate, do nothing
     if (vertsToDuplicate.empty())
@@ -477,7 +477,7 @@ void appendDuplicateVertexColorsToBuffer(
 
     requirePerVertexColor(mesh);
 
-    const bool R_INT = representation == Color::Representation::INT_0_255;
+    const bool R_INT    = representation == Color::Representation::INT_0_255;
     const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
