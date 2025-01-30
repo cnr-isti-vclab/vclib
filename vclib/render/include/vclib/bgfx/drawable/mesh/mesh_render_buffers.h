@@ -404,7 +404,7 @@ private:
                         getAllocatedBufferAndReleaseFn<float>(
                             mesh.vertexNumber() * 2);
 
-                    exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
+                    wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
                         mesh, vmw, ftr, buffer);
 
                     mVertexWedgeUVBuffer.set(
