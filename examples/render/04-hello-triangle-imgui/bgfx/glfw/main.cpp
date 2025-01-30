@@ -21,8 +21,8 @@
  ****************************************************************************/
 
 #include "../../demo_imgui_drawer.h"
-#include "../../imgui_stats_drawer.h"
 #include "../hello_triangle_drawer.h"
+#include <vclib/imgui/imgui_stats_drawer.h>
 
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         vcl::Canvas,              // The default Canvas
         DemoImGuiDrawer,          // A Drawer that draws the ImGui demo window
         HelloTriangleDrawer,     // The Drawer that draws the triangle
-        ImguiStatsDrawer>;          // A Drawer that draws the ImGui stats window
+        vcl::imgui::ImguiStatsDrawer>;          // A Drawer that draws the ImGui stats window
     WindowGLFW tw("Hello Triangle ImGui with GLFW");
 
     tw.show();

@@ -21,8 +21,8 @@
  ****************************************************************************/
 
 #include "../../demo_imgui_drawer.h"
-#include "../../imgui_stats_drawer.h"
 #include "../hello_triangle_drawer.h"
+#include <vclib/imgui/imgui_stats_drawer.h>
 
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>

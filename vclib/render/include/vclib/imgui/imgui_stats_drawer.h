@@ -1,5 +1,27 @@
-#ifndef VCL_RENDER_IMGUI_STATS_DRAWER_H
-#define VCL_RENDER_IMGUI_STATS_DRAWER_H
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2025                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
+#ifndef VCL_IMGUI_IMGUI_STATS_DRAWER_H
+#define VCL_IMGUI_IMGUI_STATS_DRAWER_H
 
 #include <vclib/render/drawers/plain_drawer.h>
 #include <imgui.h>
@@ -15,13 +37,15 @@
     #include <OpenGL/gl.h>
     #else
     #ifdef _WIN32
-    // dirty trick to avoid including headers distributed by Khronos
+    // dirty trick to avoid including all headers distributed by Khronos
     #define GL_SHADING_LANGUAGE_VERSION 0x8B8C
     #include <windows.h>
     #endif
     #include <GL/gl.h>
     #endif
 #endif
+
+namespace vcl::imgui {
 
 template<typename DerivedDrawer>
 class ImguiStatsDrawer : public vcl::PlainDrawer<DerivedDrawer>
@@ -121,12 +145,21 @@ public:
         ImGui::Separator();
 
         // Update frame times
-        std::rotate(mFrameTimes.begin(), mFrameTimes.begin() + 1, mFrameTimes.end());
+        std::rotate(
+            mFrameTimes.begin(),
+            mFrameTimes.begin() + 1,
+            mFrameTimes.end());
         mFrameTimes.back() = io.Framerate;
 
         // Display ImGui information
-        ImGui::Text("Display size: %g x %g", io.DisplaySize.x, io.DisplaySize.y);
-        ImGui::Text("Framebuffer scale: %g x %g", io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+        ImGui::Text(
+            "Display size: %g x %g",
+            io.DisplaySize.x,
+            io.DisplaySize.y);
+        ImGui::Text(
+            "Framebuffer scale: %g x %g",
+            io.DisplayFramebufferScale.x,
+            io.DisplayFramebufferScale.y);
         ImGui::Separator();
 
         // Display framerate plot
@@ -141,4 +174,6 @@ public:
     }
 };
 
-#endif // VCL_RENDER_IMGUI_STATS_DRAWER_H
+} // namespace vcl::imgui
+
+#endif // VCL_IMGUI_IMGUI_STATS_DRAWER_H
