@@ -342,15 +342,17 @@ private:
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_TEXCOORDS)]) {
                 if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+                    uint nv = mesh.vertexNumber() + vtd.size();
+
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<float>(
-                            mesh.vertexNumber() * 2);
+                        getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
                     vertexTexCoordsToBuffer(mesh, buffer);
+                    appendDuplicateVertexTexCoordsToBuffer(mesh, vtd, buffer);
 
                     mVertexUVBuffer.set(
                         buffer,
-                        mesh.vertexNumber() * 2,
+                        nv * 2,
                         bgfx::Attrib::TexCoord0,
                         2,
                         PrimitiveType::FLOAT,
@@ -372,16 +374,17 @@ private:
         if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (mBuffersToFill[toUnderlying(WEDGE_TEXCOORDS)]) {
                 if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+                    uint nv = mesh.vertexNumber() + vtd.size();
+
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<float>(
-                            mesh.vertexNumber() * 2);
+                        getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
                     wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
                         mesh, vmw, ftr, buffer);
 
                     mVertexWedgeUVBuffer.set(
                         buffer,
-                        mesh.vertexNumber() * 2,
+                        nv * 2,
                         bgfx::Attrib::TexCoord1,
                         2,
                         PrimitiveType::FLOAT,
