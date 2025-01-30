@@ -295,15 +295,6 @@ private:
                 }
             }
         }
-        // WAS:
-        // if (Base::vertexNormalBufferData()) {
-        //     mVertexNormalsBuffer.set(
-        //         Base::vertexNormalBufferData(),
-        //         Base::vertexNumber() * 3,
-        //         bgfx::Attrib::Normal,
-        //         3,
-        //         PrimitiveType::FLOAT);
-        // }
     }
 
     void createVertexColorsBuffer(
@@ -338,16 +329,6 @@ private:
                 }
             }
         }
-        // WAS:
-        // if (Base::vertexColorBufferData()) {
-        //     mVertexColorsBuffer.set(
-        //         Base::vertexColorBufferData(),
-        //         Base::vertexNumber() * 4,
-        //         bgfx::Attrib::Color0,
-        //         4,
-        //         PrimitiveType::UCHAR,
-        //         true);
-        // }
     }
 
     void createVertexTexCoordsBuffer(
@@ -378,15 +359,6 @@ private:
                 }
             }
         }
-        // WAS:
-        // if (Base::vertexTexCoordsBufferData()) {
-        //     mVertexUVBuffer.set(
-        //         Base::vertexTexCoordsBufferData(),
-        //         Base::vertexNumber() * 2,
-        //         bgfx::Attrib::TexCoord0,
-        //         2,
-        //         PrimitiveType::FLOAT);
-        // }
     }
 
     void createWedgeTexCoordsBuffer(
@@ -418,16 +390,6 @@ private:
                 }
             }
         }
-
-        // WAS:
-        // if (Base::wedgeTexCoordsBufferData()) {
-        //     mVertexWedgeUVBuffer.set(
-        //         Base::wedgeTexCoordsBufferData(),
-        //         Base::vertexNumber() * 2,
-        //         bgfx::Attrib::TexCoord1,
-        //         2,
-        //         PrimitiveType::FLOAT);
-        // }
     }
 
     void createTriangleIndicesBuffer(
@@ -454,11 +416,6 @@ private:
             mTriangleIndexBuffer.set(
                 buffer, NUM_TRIS * 3, true, releaseFn);
         }
-        // WAS:
-        // if (Base::triangleBufferData()) {
-        //     mTriangleIndexBuffer.set(
-        //         Base::triangleBufferData(), Base::triangleBufferSize());
-        // }
     }
 
     void createTriangleNormalsBuffer(
@@ -488,13 +445,6 @@ private:
                 }
             }
         }
-        // WAS:
-        // if (Base::triangleNormalBufferData()) {
-        //     mTriangleNormalBuffer.setForCompute(
-        //         Base::triangleNormalBufferData(),
-        //         Base::triangleNumber() * 3,
-        //         PrimitiveType::FLOAT);
-        // }
     }
 
     void createTriangleColorsBuffer(
@@ -523,24 +473,33 @@ private:
                 }
             }
         }
-        // WAS:
-        // if (Base::triangleColorBufferData()) {
-        //     mTriangleColorBuffer.setForCompute(
-        //         Base::triangleColorBufferData(),
-        //         Base::triangleNumber(),
-        //         PrimitiveType::UINT);
-        // }
     }
 
     void createWedgeTextureIndicesBuffer(
         const MeshType&          mesh,
         const TriPolyIndexBiMap& indexMap)
     {
-        if (Base::wedgeTextureIDsBufferData()) {
-            mTriangleTextureIndexBuffer.setForCompute(
-                Base::wedgeTextureIDsBufferData(),
-                Base::triangleNumber(),
-                PrimitiveType::UINT);
+        using enum MeshBufferId;
+
+        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+            if (mBuffersToFill[toUnderlying(WEDGE_TEXCOORDS)]) {
+                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+                    const uint NUM_TRIS = indexMap.triangleNumber();
+
+                    auto [buffer, releaseFn] =
+                        getAllocatedBufferAndReleaseFn<uint>(NUM_TRIS);
+
+                    triangulatedFaceWedgeTexCoordIndicesToBuffer(
+                        mesh, buffer, indexMap);
+
+                    mTriangleTextureIndexBuffer.setForCompute(
+                        buffer,
+                        NUM_TRIS,
+                        PrimitiveType::UINT,
+                        bgfx::Access::Read,
+                        releaseFn);
+                }
+            }
         }
     }
 
@@ -555,11 +514,6 @@ private:
             mEdgeIndexBuffer.set(
                  buffer, mesh.edgeNumber() * 2);
         }
-        // WAS:
-        // if (Base::edgeBufferData()) {
-        //     mEdgeIndexBuffer.set(
-        //         Base::edgeBufferData(), Base::edgeBufferSize());
-        // }
     }
 
     void createEdgeNormalsBuffer(const MeshType& mesh)
@@ -584,13 +538,6 @@ private:
                 }
             }
         }
-        // WAS:
-        // if (Base::edgeNormalBufferData()) {
-        //     mEdgeNormalBuffer.setForCompute(
-        //         Base::edgeNormalBufferData(),
-        //         Base::edgeNumber() * 3,
-        //         PrimitiveType::FLOAT);
-        // }
     }
 
     void createEdgeColorsBuffer(const MeshType& mesh)
@@ -615,13 +562,6 @@ private:
                 }
             }
         }
-        // WAS:
-        // if (Base::edgeColorBufferData()) {
-        //     mEdgeColorBuffer.setForCompute(
-        //         Base::edgeColorBufferData(),
-        //         Base::edgeNumber(),
-        //         PrimitiveType::UINT);
-        // }
     }
 
     void createWireframeIndicesBuffer(const MeshType& mesh)
