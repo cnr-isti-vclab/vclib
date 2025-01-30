@@ -1715,6 +1715,8 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
+    using TexCoordType = typename MeshType::FaceType::WedgeTexCoordType;
+
     requirePerFaceWedgeTexCoords(mesh);
 
     const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
@@ -1723,9 +1725,14 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
     // vertWedgeMap to get the texcoord index in the face
     uint vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
+        TexCoordType w;
         uint        fInd = vertWedgeMap[vi].first;
         uint        wInd = vertWedgeMap[vi].second;
-        const auto& w    = mesh.face(fInd).wedgeTexCoord(wInd);
+
+        // check if the vi is referenced
+        if (fInd != UINT_NULL && wInd != UINT_NULL) {
+            w = mesh.face(fInd).wedgeTexCoord(wInd);
+        }
         if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[vi * 2 + 0] = w.u();
             buffer[vi * 2 + 1] = w.v();
