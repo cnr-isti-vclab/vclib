@@ -1382,6 +1382,85 @@ void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
 }
 
 /**
+ * @brief Export the vertex texture indices of a mesh into a buffer that has
+ * a texture index for each face of the mesh (as if the indices were wedge
+ * texcoord indices).
+ *
+ * This function exports the vertex texture indices of a mesh to a buffer. The
+ * indices are stored in the buffer following the order the faces appear in the
+ * mesh. The buffer must be preallocated with the correct size (number of
+ * faces).
+ *
+ * For each face, the function takes the texture index of the first vertex of
+ * the face and stores it in the buffer.
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void vertexTexCoordIndicesAsFaceWedgeTexCoordIndicesToBuffer(
+    const MeshType&          mesh,
+    auto*                    buffer)
+{
+    requirePerVertexTexCoord(mesh);
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        ushort ti = f.vertex(0)->texCoord()->index();
+        buffer[i] = ti;
+        ++i;
+    }
+}
+
+/**
+ * @brief Export the vertex texture indices of a mesh into a buffer that has
+ * a texture index for each triangle of the mesh (as if the indices were wedge
+ * texcoord indices).
+ *
+ * This function exports the vertex texture indices of a mesh to a buffer. The
+ * indices are stored in the buffer following the order the faces appear in the
+ * mesh. The buffer must be preallocated with the correct size (number of
+ * triangles).
+ *
+ * For each triangle computed from the triangulation of a face, the function
+ * takes the texture index of the first vertex of the face that contains the
+ * triangle and stores it in the buffer.
+ *
+ * The function requires an already computed index map, which maps each triangle
+ * to the face index and vice versa. You can use the @ref
+ * vcl::triangulatedFaceIndicesToBuffer function to get the index map.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] indexMap: map from triangle index to face index
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void vertexTexCoordIndicesAsTriangulatedFaceWedgeTexCoordIndicesToBuffer(
+    const MeshType&          mesh,
+    auto*                    buffer,
+    const TriPolyIndexBiMap& indexMap)
+{
+    requirePerVertexTexCoord(mesh);
+
+    for (const auto& f : mesh.faces()) {
+        ushort ti = f.vertex(0)->texCoord()->index();
+        uint   first = indexMap.triangleBegin(f.index());
+        uint   last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            buffer[t] = ti;
+        }
+    }
+}
+
+/**
  * @brief Export into a buffer the per face wedge texture coordinates of a mesh.
  * Faces can be polygons, and the number of output columns in the buffer can be
  * controlled by the user with the `largestFaceSize` parameter.
@@ -1482,6 +1561,44 @@ void faceWedgeTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
 }
 
 /**
+ * @brief Export into a buffer the per triangle wedge texture indices of a mesh.
+ * Triangles are computed by triangulating the faces of the mesh.
+ *
+ * This function exports the per triangle wedge texture coordinate indices of a
+ * mesh to a buffer. Texture coordinate indices are stored in the buffer
+ * following the order the faces appear in the mesh. The buffer must be
+ * preallocated with the correct size (number of triangles).
+ *
+ * The function requires an already computed index map, which maps each triangle
+ * to the face index and vice versa. You can use the @ref
+ * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * resulting triangles and allocate the buffer accordingly.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] indexMap: map from triangle index to face index
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void triangulatedFaceWedgeTexCoordIndicesToBuffer(
+    const MeshType&          mesh,
+    auto*                    buffer,
+    const TriPolyIndexBiMap& indexMap)
+{
+    requirePerFaceWedgeTexCoords(mesh);
+
+    for (const auto& f : mesh.faces()) {
+        uint first = indexMap.triangleBegin(f.index());
+        uint last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            buffer[t] = f.textureIndex();
+        }
+    }
+}
+
+/**
  * @brief Export wedge texture coordinates to a buffer of the duplicated
  * vertex texture coordinates.
  *
@@ -1503,7 +1620,7 @@ void faceWedgeTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexNumber() + nV) * 2);
- * exportWedgeTexCoordsAsDuplicatedVertexTexCoords(mesh, vertWedgeMap,
+ * wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(mesh, vertWedgeMap,
  *     facesToReassign, buffer.data());
  * @endcode
  *
@@ -1526,7 +1643,7 @@ void faceWedgeTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * @ingroup append_replace_to_buffer
  */
 template<FaceMeshConcept MeshType>
-void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
+void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
     const MeshType&                                     mesh,
     const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
     const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
@@ -1599,7 +1716,7 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
- * exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(mesh,
+ * wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(mesh,
  *     vertWedgeMap, facesToReassign, buffer.data());
  * @endcode
  *
@@ -1622,7 +1739,7 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
  * @ingroup append_replace_to_buffer
  */
 template<FaceMeshConcept MeshType>
-void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
+void wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(
     const MeshType&                                     mesh,
     const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
     const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
