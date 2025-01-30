@@ -101,8 +101,8 @@ template<MeshConcept MeshType>
 void vertexCoordsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint rowNumber = UINT_NULL)
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
     const uint VERT_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
@@ -116,70 +116,6 @@ void vertexCoordsToBuffer(
             buffer[0 * VERT_NUM + i] = c.x();
             buffer[1 * VERT_NUM + i] = c.y();
             buffer[2 * VERT_NUM + i] = c.z();
-        }
-        ++i;
-    }
-}
-
-/**
- * @brief Export into a buffer the vertex indices for each triangle of a Mesh.
- *
- * This function exports the vertex indices of the triangles of a mesh to a
- * buffer. Indices are stored following the order the faces appear in the mesh.
- * The buffer must be preallocated with the correct size (number of faces times
- * 3). The function assumes that the input mesh is a triangle mesh (if there are
- * polygonal faces, only the first three vertices are considered).
- *
- * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
- * function stores the vertex indices as if the vertex container of the mesh is
- * compact. This means that, if the mesh has deleted vertices, the vertex
- * indices stored in the buffer may not correspond to the vertex indices of the
- * mesh. If you want to store the actual vertex indices in the input mesh, set
- * `getIndicesAsIfContainerCompact` to false.
- *
- * @note This function does not guarantee that the rows of the matrix
- * correspond to the face indices of the mesh. This scenario is possible when
- * the mesh has deleted faces. To be sure to have a direct correspondence,
- * compact the face container before calling this function.
- *
- * @param[in] mesh: input mesh
- * @param[out] buffer: preallocated buffer
- * @param[in] storage: storage type of the matrix (row or column major)
- * @param[in] getIndicesAsIfContainerCompact: if true, the function will
- * store the vertex indices as if the vertex container of the mesh is compact.
- * If false, the actual vertex indices in the input mesh will be stored.
- * @param[in] rowNumber: number of rows of the matrix (if different from the
- * number of faces in the mesh) - used only when storage is column major
- *
- * @ingroup export_buffer
- */
-template<FaceMeshConcept MeshType>
-void triangleIndicesToBuffer(
-    const MeshType&   mesh,
-    auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    bool              getIndicesAsIfContainerCompact = true,
-    uint              rowNumber = UINT_NULL)
-{
-    const std::vector<uint> vertCompIndices =
-        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
-
-    // lambda to get the vertex index of a face (considering compact indices)
-    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
-
-    const uint FACE_NUM =
-        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
-
-    for (uint i = 0; const auto& f : mesh.faces()) {
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 3 + 0] = vIndex(f, 0);
-            buffer[i * 3 + 1] = vIndex(f, 1);
-            buffer[i * 3 + 2] = vIndex(f, 2);
-        }
-        else {
-            buffer[0 * FACE_NUM + i] = vIndex(f, 0);
-            buffer[1 * FACE_NUM + i] = vIndex(f, 1);
-            buffer[2 * FACE_NUM + i] = vIndex(f, 2);
         }
         ++i;
     }
@@ -293,16 +229,18 @@ void faceIndicesToBuffer(
 
 /**
  * @brief Export into a buffer the vertex indices for each face of a Mesh. Faces
- * can be polygons.
+ * can be polygons, and the number of output columns can be set by the user with
+ * the `largestFaceSize` parameter.
  *
  * This function exports the vertex indices of the polygonal faces of a mesh to
  * a buffer. Indices are stored following the order the faces appear in the
  * mesh. The buffer must be preallocated with the correct size (number of faces
- * times the size of the largest face size). For each face that has less
- * vertices than the largest face size, the remaining indices are set to -1.
+ * times `largestFaceSize`). For each face that has less vertices than the
+ * largest face size, the remaining indices are set to -1.
  *
- * You can use the function @ref vcl::largestFaceSize to get the largest face
- * size and allocate the buffer accordingly:
+ * For triangle meshes, you can set `largestFaceSize` to 3. For polygonal
+ * meshes, you can use the function @ref vcl::largestFaceSize to get the largest
+ * face size and allocate the buffer accordingly:
  *
  * @code{.cpp}
  * uint lfs = vcl::largestFaceSize(myMesh);
@@ -342,7 +280,7 @@ void faceIndicesToBuffer(
     uint              largestFaceSize,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
     bool              getIndicesAsIfContainerCompact = true,
-    uint              rowNumber = UINT_NULL)
+    uint              rowNumber                      = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -354,19 +292,16 @@ void faceIndicesToBuffer(
         rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            uint j = 0;
-            for (; j < f.vertexNumber(); ++j)
-                buffer[i * largestFaceSize + j] = vIndex(f, j);
-            for (; j < largestFaceSize; ++j) // remaining vertices set to -1
-                buffer[i * largestFaceSize + j] = -1;
-        }
-        else {
-            uint j = 0;
-            for (; j < f.vertexNumber(); ++j)
-                buffer[j * FACE_NUM + i] = vIndex(f, j);
-            for (; j < largestFaceSize; ++j) // remaining vertices set to -1
-                buffer[j * FACE_NUM + i] = -1;
+        for (uint j = 0; j < largestFaceSize; ++j) {
+            uint index = i * largestFaceSize + j;
+            if (storage == MatrixStorageType::COLUMN_MAJOR)
+                index = j * FACE_NUM + i;
+            if (j < f.vertexNumber()) {
+                buffer[index] = vIndex(f, j);
+            }
+            else {
+                buffer[index] = -1;
+            }
         }
         ++i;
     }
@@ -445,8 +380,8 @@ void triangulatedFaceIndicesToBuffer(
             ++t;
         }
 
-        return triangleIndicesToBuffer(
-            mesh, buffer, storage, getIndicesAsIfContainerCompact);
+        return faceIndicesToBuffer(
+            mesh, buffer, 3, storage, getIndicesAsIfContainerCompact);
     }
     else {
         // if the user did not give the number of triangles, and the buffer
@@ -518,7 +453,7 @@ void edgeIndicesToBuffer(
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
     bool              getIndicesAsIfContainerCompact = true,
-    uint              rowNumber = UINT_NULL)
+    uint              rowNumber                      = UINT_NULL)
 {
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
@@ -543,13 +478,76 @@ void edgeIndicesToBuffer(
 }
 
 /**
- * @brief Export the selection status of the elements identified by `ELEM_ID` of
- * a mesh to a buffer.
+ * @brief Export into a buffer the vertex indices for each edge that composes
+ * the wireframe of the Mesh (i.e., the edges of the faces).
+ *
+ * This function exports the vertex indices of the wireframe edges of a mesh to
+ * a buffer. Indices are stored following the order the edges appear in the
+ * faces. The buffer must be preallocated with the correct size (number of
+ * references to vertices in the mesh faces times 2 - see @ref
+ * countPerFaceVertexReferences).
+ *
+ * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
+ * function stores the vertex indices as if the vertex container of the mesh is
+ * compact. This means that, if the mesh has deleted vertices, the vertex
+ * indices stored in the buffer may not correspond to the vertex indices of the
+ * mesh. If you want to store the actual vertex indices in the input mesh, set
+ * `getIndicesAsIfContainerCompact` to false.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] getIndicesAsIfContainerCompact: if true, the function will
+ * store the vertex indices as if the vertex container of the mesh is compact.
+ * If false, the actual vertex indices in the input mesh will be stored.
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of references to vertices in the mesh faces times 2) - used only when
+ * storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void wireframeIndicesToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    bool              getIndicesAsIfContainerCompact = true,
+    uint              rowNumber                      = UINT_NULL)
+{
+    const std::vector<uint> vertCompIndices =
+        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
+
+    // lambda to get the vertex index of a edge (considering compact indices)
+    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
+
+    const uint EDGE_NUM =
+        rowNumber == UINT_NULL ? countPerFaceVertexReferences(mesh) : rowNumber;
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        for (uint j = 0; j < f.vertexNumber(); ++j) {
+            uint v0 = vIndex(f, j);
+            uint v1 = vIndex(f, (j + 1) % f.vertexNumber());
+            if (storage == MatrixStorageType::ROW_MAJOR) {
+                buffer[i * 2 + 0] = v0;
+                buffer[i * 2 + 1] = v1;
+            }
+            else {
+                buffer[0 * EDGE_NUM + i] = v0;
+                buffer[1 * EDGE_NUM + i] = v1;
+            }
+            ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export the selection status of the elements identified by
+ * `ELEM_ID` of a mesh to a buffer.
  *
  * This function exports the selection status of the elements identified by
- * `ELEM_ID` of a mesh to a buffer. Values are stored in the buffer following
- * the order the elements appear in the mesh. The buffer must be preallocated
- * with the correct size (number of elements).
+ * `ELEM_ID` of a mesh to a buffer. Values are stored in the buffer
+ * following the order the elements appear in the mesh. The buffer must be
+ * preallocated with the correct size (number of elements).
  *
  * Usage example with std::vector<bool>:
  *
@@ -561,7 +559,8 @@ void edgeIndicesToBuffer(
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the element indices of the mesh. This scenario is possible
  * when the mesh has deleted elements. To be sure to have a direct
- * correspondence, compact the element container before calling this function.
+ * correspondence, compact the element container before calling this
+ * function.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
@@ -696,14 +695,13 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    const uint ELEM_NUM = rowNumber == UINT_NULL ?
-                              mesh.template number<ELEM_ID>() :
-                              rowNumber;
+    const uint ELEM_NUM =
+        rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     for (uint        i = 0;
          const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
@@ -746,7 +744,7 @@ template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage, rowNumber);
@@ -776,7 +774,7 @@ template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage, rowNumber);
@@ -814,7 +812,7 @@ void triangulatedFaceNormalsToBuffer(
     MatrixStorageType        storage   = MatrixStorageType::ROW_MAJOR,
     uint                     rowNumber = UINT_NULL)
 {
-    requirePerElementComponent<ElemId::FACE, CompId::NORMAL>(mesh);
+    requirePerFaceNormal(mesh);
 
     const uint FACE_NUM =
         rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
@@ -904,9 +902,8 @@ void elementColorsToBuffer(
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    const uint ELEM_NUM = rowNumber == UINT_NULL ?
-                              mesh.template number<ELEM_ID>() :
-                              rowNumber;
+    const uint ELEM_NUM =
+        rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     for (uint        i = 0;
          const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
@@ -1103,7 +1100,7 @@ void triangulatedFaceColorsToBuffer(
     Color::Representation    representation = Color::Representation::INT_0_255,
     uint                     rowNumber      = UINT_NULL)
 {
-    requirePerElementComponent<ElemId::FACE, CompId::COLOR>(mesh);
+    requirePerFaceColor(mesh);
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
@@ -1398,10 +1395,10 @@ template<MeshConcept MeshType>
 void vertexTexCoordsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
-    requirePerVertexComponent<CompId::TEX_COORD>(mesh);
+    requirePerVertexTexCoord(mesh);
 
     const uint VERT_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
@@ -1440,11 +1437,228 @@ void vertexTexCoordsToBuffer(
 template<MeshConcept MeshType>
 void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    requirePerVertexComponent<CompId::TEX_COORD>(mesh);
+    requirePerVertexTexCoord(mesh);
 
     for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
         buffer[i] = t.index();
         ++i;
+    }
+}
+
+/**
+ * @brief Export the vertex texture indices of a mesh into a buffer that has
+ * a texture index for each face of the mesh (as if the indices were wedge
+ * texcoord indices).
+ *
+ * This function exports the vertex texture indices of a mesh to a buffer. The
+ * indices are stored in the buffer following the order the faces appear in the
+ * mesh. The buffer must be preallocated with the correct size (number of
+ * faces).
+ *
+ * For each face, the function takes the texture index of the first vertex of
+ * the face and stores it in the buffer.
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void vertexTexCoordIndicesAsFaceWedgeTexCoordIndicesToBuffer(
+    const MeshType& mesh,
+    auto*           buffer)
+{
+    requirePerVertexTexCoord(mesh);
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        ushort ti = f.vertex(0)->texCoord()->index();
+        buffer[i] = ti;
+        ++i;
+    }
+}
+
+/**
+ * @brief Export the vertex texture indices of a mesh into a buffer that has
+ * a texture index for each triangle of the mesh (as if the indices were wedge
+ * texcoord indices).
+ *
+ * This function exports the vertex texture indices of a mesh to a buffer. The
+ * indices are stored in the buffer following the order the faces appear in the
+ * mesh. The buffer must be preallocated with the correct size (number of
+ * triangles).
+ *
+ * For each triangle computed from the triangulation of a face, the function
+ * takes the texture index of the first vertex of the face that contains the
+ * triangle and stores it in the buffer.
+ *
+ * The function requires an already computed index map, which maps each triangle
+ * to the face index and vice versa. You can use the @ref
+ * vcl::triangulatedFaceIndicesToBuffer function to get the index map.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] indexMap: map from triangle index to face index
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void vertexTexCoordIndicesAsTriangulatedFaceWedgeTexCoordIndicesToBuffer(
+    const MeshType&          mesh,
+    auto*                    buffer,
+    const TriPolyIndexBiMap& indexMap)
+{
+    requirePerVertexTexCoord(mesh);
+
+    for (const auto& f : mesh.faces()) {
+        ushort ti    = f.vertex(0)->texCoord()->index();
+        uint   first = indexMap.triangleBegin(f.index());
+        uint   last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            buffer[t] = ti;
+        }
+    }
+}
+
+/**
+ * @brief Export into a buffer the per face wedge texture coordinates of a mesh.
+ * Faces can be polygons, and the number of output columns in the buffer can be
+ * controlled by the user with the `largestFaceSize` parameter.
+ *
+ * This function exports the per face wedge texture coordinates of a mesh to a
+ * buffer. Texture coordinates are stored in the buffer following the order the
+ * faces appear in the mesh. The buffer must be preallocated with the correct
+ * size (number of faces times `largestFaceSize` times 2). For each face that
+ * has less wedge texcoords than `largestFaceSize`, the remaining columns are
+ * filled with 0.
+ *
+ * For triangle meshes, you can set `largestFaceSize` to 3. For polygonal
+ * meshes, you can use the function @ref vcl::largestFaceSize to get the largest
+ * face size and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * uint lfs = vcl::largestFaceSize(myMesh);
+ * Eigen::MatrixXi faceIndices(myMesh.faceNumber(), lfs * 2);
+ * vcl::faceWedgeTexCoordsToBuffer(
+ *     myMesh, faceIndices.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
+ * @endcode
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] largestFaceSize: size of the largest face in the mesh
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of faces in the mesh) - used only when storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceWedgeTexCoordsToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    uint              largestFaceSize = 3,
+    MatrixStorageType storage         = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber       = UINT_NULL)
+{
+    requirePerFaceWedgeTexCoords(mesh);
+
+    const uint FACE_NUM =
+        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        for (uint j = 0; j < largestFaceSize * 2; ++j) {
+            uint fi    = j / 2;
+            uint index = i * largestFaceSize * 2 + j;
+            if (storage == MatrixStorageType::COLUMN_MAJOR)
+                index = j * FACE_NUM + i;
+            if (fi < f.wedgeTexCoordsNumber()) {
+                const auto& w = f.wedgeTexCoord(fi);
+                if (j % 2 == 0)
+                    buffer[index] = w.u();
+                else
+                    buffer[index] = w.v();
+            }
+            else {
+                buffer[index] = 0;
+            }
+        }
+        ++i;
+    }
+}
+
+/**
+ * @brief Export into a buffer the per face wedge texture indices of a mesh.
+ *
+ * This function exports the per face wedge texture coordinate indices of a mesh
+ * to a buffer. Texture coordinate indices are stored in the buffer following
+ * the order the faces appear in the mesh. The buffer must be preallocated with
+ * the correct size (number of faces).
+ *
+ * @note This function does not guarantee that the rows of the buffer
+ * correspond to the face indices of the mesh. This scenario is possible when
+ * the mesh has deleted faces. To be sure to have a direct correspondence,
+ * compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceWedgeTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
+{
+    requirePerFaceWedgeTexCoords(mesh);
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        buffer[i] = f.textureIndex();
+        ++i;
+    }
+}
+
+/**
+ * @brief Export into a buffer the per triangle wedge texture indices of a mesh.
+ * Triangles are computed by triangulating the faces of the mesh.
+ *
+ * This function exports the per triangle wedge texture coordinate indices of a
+ * mesh to a buffer. Texture coordinate indices are stored in the buffer
+ * following the order the faces appear in the mesh. The buffer must be
+ * preallocated with the correct size (number of triangles).
+ *
+ * The function requires an already computed index map, which maps each triangle
+ * to the face index and vice versa. You can use the @ref
+ * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * resulting triangles and allocate the buffer accordingly.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] indexMap: map from triangle index to face index
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void triangulatedFaceWedgeTexCoordIndicesToBuffer(
+    const MeshType&          mesh,
+    auto*                    buffer,
+    const TriPolyIndexBiMap& indexMap)
+{
+    requirePerFaceWedgeTexCoords(mesh);
+
+    for (const auto& f : mesh.faces()) {
+        uint first = indexMap.triangleBegin(f.index());
+        uint last  = first + indexMap.triangleNumber(f.index());
+        for (uint t = first; t < last; ++t) {
+            buffer[t] = f.textureIndex();
+        }
     }
 }
 
@@ -1470,7 +1684,7 @@ void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexNumber() + nV) * 2);
- * exportWedgeTexCoordsAsDuplicatedVertexTexCoords(mesh, vertWedgeMap,
+ * wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(mesh, vertWedgeMap,
  *     facesToReassign, buffer.data());
  * @endcode
  *
@@ -1493,7 +1707,7 @@ void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * @ingroup append_replace_to_buffer
  */
 template<FaceMeshConcept MeshType>
-void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
+void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
     const MeshType&                                     mesh,
     const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
     const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
@@ -1501,7 +1715,9 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
-    vcl::requirePerFaceWedgeTexCoords(mesh);
+    using TexCoordType = typename MeshType::FaceType::WedgeTexCoordType;
+
+    requirePerFaceWedgeTexCoords(mesh);
 
     const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
 
@@ -1509,9 +1725,14 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
     // vertWedgeMap to get the texcoord index in the face
     uint vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
-        uint fInd = vertWedgeMap[vi].first;
-        uint wInd = vertWedgeMap[vi].second;
-        const auto& w = mesh.face(fInd).wedgeTexCoord(wInd);
+        TexCoordType w;
+        uint        fInd = vertWedgeMap[vi].first;
+        uint        wInd = vertWedgeMap[vi].second;
+
+        // check if the vi is referenced
+        if (fInd != UINT_NULL && wInd != UINT_NULL) {
+            w = mesh.face(fInd).wedgeTexCoord(wInd);
+        }
         if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[vi * 2 + 0] = w.u();
             buffer[vi * 2 + 1] = w.v();
@@ -1527,9 +1748,9 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
     // by looking into the any of the facesToReassign element lists
     for (const auto& list : facesToReassign) {
         assert(list.begin() != list.end());
-        const auto& p = list.front();
-        uint fInd = p.first;
-        uint wInd = p.second;
+        const auto& p    = list.front();
+        uint        fInd = p.first;
+        uint        wInd = p.second;
 
         const auto& w = mesh.face(fInd).wedgeTexCoord(wInd);
         if (storage == MatrixStorageType::ROW_MAJOR) {
@@ -1566,7 +1787,7 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
- * exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(mesh,
+ * wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(mesh,
  *     vertWedgeMap, facesToReassign, buffer.data());
  * @endcode
  *
@@ -1589,14 +1810,14 @@ void exportWedgeTexCoordsAsDuplicatedVertexTexCoords(
  * @ingroup append_replace_to_buffer
  */
 template<FaceMeshConcept MeshType>
-void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
+void wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(
     const MeshType&                                     mesh,
     const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
     const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
           facesToReassign,
-    auto*             buffer)
+    auto* buffer)
 {
-    vcl::requirePerFaceWedgeTexCoords(mesh);
+    requirePerFaceWedgeTexCoords(mesh);
 
     const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
 
@@ -1604,9 +1825,9 @@ void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
     // vertWedgeMap to get the texcoord index in the face
     uint vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
-        uint fInd = vertWedgeMap[vi].first;
-        ushort ti = mesh.face(fInd).textureIndex();
-        buffer[vi] = ti;
+        uint   fInd = vertWedgeMap[vi].first;
+        ushort ti   = mesh.face(fInd).textureIndex();
+        buffer[vi]  = ti;
         ++vi;
     }
 
@@ -1614,10 +1835,10 @@ void exportWedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndices(
     // by looking into the any of the facesToReassign element lists
     for (const auto& list : facesToReassign) {
         assert(list.begin() != list.end());
-        const auto& p = list.front();
-        uint fInd = p.first;
+        const auto& p    = list.front();
+        uint        fInd = p.first;
 
-        ushort ti = mesh.face(fInd).textureIndex();
+        ushort ti  = mesh.face(fInd).textureIndex();
         buffer[vi] = ti;
         ++vi;
     }
