@@ -60,7 +60,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     IndexBuffer mEdgeColorBuffer;
 
     // TODO: manage wireframe with proper lines
-    bgfx::IndexBufferHandle mWireframeIndexBH = BGFX_INVALID_HANDLE;
+    IndexBuffer mWireframeIndexBuffer;
 
     // TODO: manage with a TextureUnit class
     std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
@@ -107,7 +107,7 @@ public:
         swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
         swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
         swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
-        swap(mWireframeIndexBH, other.mWireframeIndexBH);
+        swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
         swap(mTexturesH, other.mTexturesH);
     }
 
@@ -157,7 +157,7 @@ public:
             mEdgeColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
         }
         else if (indexBufferToBind == MeshBufferId::WIREFRAME) {
-            bgfx::setIndexBuffer(mWireframeIndexBH);
+            mWireframeIndexBuffer.bind();
         }
     }
 
@@ -566,13 +566,27 @@ private:
 
     void createWireframeIndicesBuffer(const MeshType& mesh)
     {
-        if (Base::wireframeBufferData()) {
-            mWireframeIndexBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    Base::wireframeBufferData(),
-                    Base::wireframeBufferSize() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32);
+        using enum MeshBufferId;
+
+        if constexpr (vcl::HasFaces<MeshType>) {
+            const uint NUM_EDGES = vcl::countPerFaceVertexReferences(mesh);
+
+            auto [buffer, releaseFn] =
+                getAllocatedBufferAndReleaseFn<uint>(NUM_EDGES * 2);
+
+            wireframeIndicesToBuffer(mesh, buffer);
+
+            mWireframeIndexBuffer.set(buffer, NUM_EDGES *2, true, releaseFn);
         }
+
+        // WAS:
+        // if (Base::wireframeBufferData()) {
+        //     mWireframeIndexBH = bgfx::createIndexBuffer(
+        //         bgfx::makeRef(
+        //             Base::wireframeBufferData(),
+        //             Base::wireframeBufferSize() * sizeof(uint)),
+        //         BGFX_BUFFER_INDEX32);
+        // }
     }
 
     void createTextureUnits(const MeshType& mesh)
@@ -606,9 +620,6 @@ private:
 
     void destroyBGFXBuffers()
     {
-        if (bgfx::isValid(mWireframeIndexBH))
-            bgfx::destroy(mWireframeIndexBH);
-
         for (auto [th, uh] : mTexturesH) {
             bgfx::destroy(th);
             bgfx::destroy(uh);
