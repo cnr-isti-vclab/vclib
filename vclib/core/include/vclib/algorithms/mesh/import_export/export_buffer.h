@@ -478,13 +478,76 @@ void edgeIndicesToBuffer(
 }
 
 /**
- * @brief Export the selection status of the elements identified by `ELEM_ID` of
- * a mesh to a buffer.
+ * @brief Export into a buffer the vertex indices for each edge that composes
+ * the wireframe of the Mesh (i.e., the edges of the faces).
+ *
+ * This function exports the vertex indices of the wireframe edges of a mesh to
+ * a buffer. Indices are stored following the order the edges appear in the
+ * faces. The buffer must be preallocated with the correct size (number of
+ * references to vertices in the mesh faces times 2 - see @ref
+ * countPerFaceVertexReferences).
+ *
+ * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
+ * function stores the vertex indices as if the vertex container of the mesh is
+ * compact. This means that, if the mesh has deleted vertices, the vertex
+ * indices stored in the buffer may not correspond to the vertex indices of the
+ * mesh. If you want to store the actual vertex indices in the input mesh, set
+ * `getIndicesAsIfContainerCompact` to false.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] getIndicesAsIfContainerCompact: if true, the function will
+ * store the vertex indices as if the vertex container of the mesh is compact.
+ * If false, the actual vertex indices in the input mesh will be stored.
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of references to vertices in the mesh faces times 2) - used only when
+ * storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void wireframeIndicesToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    bool              getIndicesAsIfContainerCompact = true,
+    uint              rowNumber                      = UINT_NULL)
+{
+    const std::vector<uint> vertCompIndices =
+        detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
+
+    // lambda to get the vertex index of a edge (considering compact indices)
+    auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
+
+    const uint EDGE_NUM =
+        rowNumber == UINT_NULL ? countPerFaceVertexReferences(mesh) : rowNumber;
+
+    for (uint i = 0; const auto& f : mesh.faces()) {
+        for (uint j = 0; j < f.vertexNumber(); ++j) {
+            uint v0 = vIndex(f, j);
+            uint v1 = vIndex(f, (j + 1) % f.vertexNumber());
+            if (storage == MatrixStorageType::ROW_MAJOR) {
+                buffer[i * 2 + 0] = v0;
+                buffer[i * 2 + 1] = v1;
+            }
+            else {
+                buffer[0 * EDGE_NUM + i] = v0;
+                buffer[1 * EDGE_NUM + i] = v1;
+            }
+            ++i;
+        }
+    }
+}
+
+/**
+ * @brief Export the selection status of the elements identified by
+ * `ELEM_ID` of a mesh to a buffer.
  *
  * This function exports the selection status of the elements identified by
- * `ELEM_ID` of a mesh to a buffer. Values are stored in the buffer following
- * the order the elements appear in the mesh. The buffer must be preallocated
- * with the correct size (number of elements).
+ * `ELEM_ID` of a mesh to a buffer. Values are stored in the buffer
+ * following the order the elements appear in the mesh. The buffer must be
+ * preallocated with the correct size (number of elements).
  *
  * Usage example with std::vector<bool>:
  *
@@ -496,7 +559,8 @@ void edgeIndicesToBuffer(
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the element indices of the mesh. This scenario is possible
  * when the mesh has deleted elements. To be sure to have a direct
- * correspondence, compact the element container before calling this function.
+ * correspondence, compact the element container before calling this
+ * function.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
@@ -1406,8 +1470,8 @@ void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  */
 template<FaceMeshConcept MeshType>
 void vertexTexCoordIndicesAsFaceWedgeTexCoordIndicesToBuffer(
-    const MeshType&          mesh,
-    auto*                    buffer)
+    const MeshType& mesh,
+    auto*           buffer)
 {
     requirePerVertexTexCoord(mesh);
 
@@ -1451,7 +1515,7 @@ void vertexTexCoordIndicesAsTriangulatedFaceWedgeTexCoordIndicesToBuffer(
     requirePerVertexTexCoord(mesh);
 
     for (const auto& f : mesh.faces()) {
-        ushort ti = f.vertex(0)->texCoord()->index();
+        ushort ti    = f.vertex(0)->texCoord()->index();
         uint   first = indexMap.triangleBegin(f.index());
         uint   last  = first + indexMap.triangleNumber(f.index());
         for (uint t = first; t < last; ++t) {
@@ -1512,7 +1576,7 @@ void faceWedgeTexCoordsToBuffer(
 
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < largestFaceSize * 2; ++j) {
-            uint fi = j / 2;
+            uint fi    = j / 2;
             uint index = i * largestFaceSize * 2 + j;
             if (storage == MatrixStorageType::COLUMN_MAJOR)
                 index = j * FACE_NUM + i;
