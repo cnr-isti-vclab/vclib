@@ -105,28 +105,28 @@ function(_bgfx_compile_shader_to_header)
 
             # if VARYINGDEF is not empty
             if(NOT "${ARGS_VARYING_DEF}" STREQUAL "")
-            _bgfx_shaderc_parse(
-                CLI #
-                ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
-                FILE ${SHADER_FILE_ABSOLUTE}
-                OUTPUT ${OUTPUT}
-                PROFILE ${PROFILE}
-                O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
-                VARYINGDEF ${ARGS_VARYING_DEF}
-                INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
-                BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
-                )
+                _bgfx_shaderc_parse(
+                    CLI #
+                    ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
+                    FILE ${SHADER_FILE_ABSOLUTE}
+                    OUTPUT ${OUTPUT}
+                    PROFILE ${PROFILE}
+                    O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
+                    VARYINGDEF ${ARGS_VARYING_DEF}
+                    INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
+                    BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
+                    )
             else()
-            _bgfx_shaderc_parse(
-                CLI #
-                ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
-                FILE ${SHADER_FILE_ABSOLUTE}
-                OUTPUT ${OUTPUT}
-                PROFILE ${PROFILE}
-                O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
-                INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
-                BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
-            )
+                _bgfx_shaderc_parse(
+                    CLI #
+                    ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
+                    FILE ${SHADER_FILE_ABSOLUTE}
+                    OUTPUT ${OUTPUT}
+                    PROFILE ${PROFILE}
+                    O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
+                    INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
+                    BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
+                )
             endif()
 
             list(APPEND OUTPUTS ${OUTPUT})
