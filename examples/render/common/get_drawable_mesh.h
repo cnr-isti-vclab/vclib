@@ -41,18 +41,11 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     // enable the vertex color of the mesh and set it to gray
     m.enablePerVertexColor();
     vcl::setPerVertexColor(m, vcl::Color::Gray);
-    m.color() = vcl::Color::Blue;
 
     // create a MeshRenderSettings object, that allows to set the rendering
     // options of the mesh
     // default is what we want: color per vertex, smooth shading, no wireframe
     vcl::MeshRenderSettings settings(m);
-    settings.setWireframeVisibility(true);
-    settings.setSurfaceVisibility(false);
-    settings.setWireframeWidth(5);
-    // settings.setWireframeColorPerMesh();
-    // settings.setWireframeColorUserDefined();
-    // settings.setWireframeUserColor(0, 1, 1, 1);
 
     // create a DrawableMesh object from the mesh
     vcl::DrawableMesh<MeshType> drawable(m);
