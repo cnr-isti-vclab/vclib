@@ -1,7 +1,30 @@
-#ifndef POLYLINES
-#define POLYLINES
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2025                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
+#ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_SH
+#define VCL_BGFX_DRAWABLE_LINES_POLYLINES_SH
 
 #include <bgfx_shader.sh>
+
 #include "utils.sh"
 
 vec4 calculatePolylines(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickness, float miter_limit, 
@@ -24,11 +47,13 @@ vec4 calculatePolylines(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thicknes
     
       p = curr + (v * half_thickness * N1) + (u * T1 * half_thickness * sign(leftCap));
 
-    } else if (is_end) {
+    }
+    else if (is_end) {
 
       p = curr + (v * half_thickness * N0) + (u * T0 * half_thickness * sign(rightCap));
 
-    } else {
+    }
+    else {
 
         vec4 miter_direction = normalize(N0 + N1);
         float cos_theta = dot(miter_direction, N1);
@@ -81,29 +106,32 @@ vec4 calculatePolylinesUV(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickn
 }
 
 vec4 calculatePolylinesColor(vec2 uv, float thickness, float totalLength, float leftCap, float rigthCap, float join, vec4 finalColor, float is_start_end) {
-  	float d = -1;
+    float d = -1;
     float color = 0;
     float width_px = thickness / 2;
 
     if(uv.x < 0) {
         float square_cap    = (width_px - max(abs(uv.x), abs(uv.y))) * (1 - sign(abs(leftCap - 1)));
-        float round_cap     = (width_px - length(uv))  			         * (1 - sign(abs(leftCap - 2)));
+        float round_cap     = (width_px - length(uv))                * (1 - sign(abs(leftCap - 2)));
         float triangle_cap  = (width_px - (abs(uv.x) + abs(uv.y)))   * (1 - sign(abs(leftCap - 3)));
 
         d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(join)) + (width_px - length(uv)) * (1 - sign(sign(is_start_end) + sign(join)));
-    } else if(uv.x > totalLength) {
+    }
+    else if(uv.x > totalLength) {
         float square_cap    = (width_px - max(abs(uv.x - totalLength), abs(uv.y))) * (1 - sign(abs(rigthCap - 1)));
         float round_cap     = (width_px - length(uv - vec2(totalLength, 0)))       * (1 - sign(abs(rigthCap - 2)));
         float triangle_cap  = (width_px - (abs(uv.x - totalLength) + abs(uv.y)))   * (1 - sign(abs(rigthCap - 3)));
 
         d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(join)) + (width_px - length(uv - vec2(totalLength, 0))) * (1 - sign(sign(is_start_end) + sign(join)));
-    } else
+    }
+    else {
         d = width_px - abs(uv.y);
+    }
 
-	  if(d < 0)
-		    return vec4(0);
-	  else
-		    return finalColor;
+    if(d < 0)
+        return vec4(0);
+    else
+        return finalColor;
 }
 
-#endif
+#endif // VCL_BGFX_DRAWABLE_LINES_POLYLINES_SH

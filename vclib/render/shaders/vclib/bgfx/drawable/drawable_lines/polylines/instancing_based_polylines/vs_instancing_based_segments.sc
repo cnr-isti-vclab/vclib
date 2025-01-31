@@ -1,7 +1,30 @@
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2025                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
 $input a_position, i_data0, i_data1, i_data2, i_data3, i_data4
 $output v_color, v_uv, v_length, v_normal, v_is_start_end
 
 #include <bgfx_compute.sh>
+
 #include "../../polylines.sh"
 
 uniform vec4 u_data;
