@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     auto viewer = defaultViewer();
 
     const bool TEXCOORDS_PER_VERTEX = false;
-    const bool USE_BUNNY = true;
+    const bool USE_BUNNY            = true;
 
     if constexpr (TEXCOORDS_PER_VERTEX) {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
@@ -47,8 +47,7 @@ int main(int argc, char** argv)
         drawable.setRenderSettings(mrs);
         showMeshesOnViewer(argc, argv, viewer, drawable);
     }
-    else if constexpr(USE_BUNNY)
-    {
+    else if constexpr (USE_BUNNY) {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
             getDrawableMesh<vcl::TriMesh>("bunny_textured.ply");
         auto mrs = drawable.renderSettings();
@@ -56,7 +55,7 @@ int main(int argc, char** argv)
         drawable.setRenderSettings(mrs);
         showMeshesOnViewer(argc, argv, viewer, drawable);
     }
-    else{
+    else {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
             getDrawableMesh<vcl::TriMesh>("TextureDouble.obj");
         auto mrs = drawable.renderSettings();

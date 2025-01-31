@@ -1726,8 +1726,8 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
     uint vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
         TexCoordType w;
-        uint        fInd = vertWedgeMap[vi].first;
-        uint        wInd = vertWedgeMap[vi].second;
+        uint         fInd = vertWedgeMap[vi].first;
+        uint         wInd = vertWedgeMap[vi].second;
 
         // check if the vi is referenced
         if (fInd != UINT_NULL && wInd != UINT_NULL) {
