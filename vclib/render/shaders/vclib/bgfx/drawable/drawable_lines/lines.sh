@@ -41,7 +41,7 @@ vec4 calculateLines(vec4 p0_px, vec4 p1_px, vec2 uv, float length_px, float thic
     p = screenToClip(p, screen_width, screen_heigth);
 
     float z = ((1 - uv.x) * (p0_px.z)) + (uv.x * (p1_px.z));
-	float w = ((1 - uv.x) * (p0_px.w)) + (uv.x * (p1_px.w));
+    float w = ((1 - uv.x) * (p0_px.w)) + (uv.x * (p1_px.w));
     return vec4(p.xy * w, z, w); 
 }
 

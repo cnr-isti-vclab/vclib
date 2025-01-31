@@ -86,5 +86,4 @@ void main() {
             joinsIndexBuffer[(gl_WorkGroupID.x * 6) + 5]  = (gl_WorkGroupID.x * 4) + 5;
         }
     }
-
 }

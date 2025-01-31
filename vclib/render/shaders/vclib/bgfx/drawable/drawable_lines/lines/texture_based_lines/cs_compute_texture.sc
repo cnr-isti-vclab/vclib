@@ -52,5 +52,5 @@ void main() {
     imageStore(textureBuffer, calculateTextureCoord((gl_WorkGroupID.x * 4) + 3, maxTextureSize), vec4(normal1.xyz, 0));
     
     if(gl_WorkGroupID.x == 0)
-	    drawIndexedIndirect(indirectBuffer, 0, 6, floor(instancingNum), 0, 0, 0);
+        drawIndexedIndirect(indirectBuffer, 0, 6, floor(instancingNum), 0, 0, 0);
 } 
