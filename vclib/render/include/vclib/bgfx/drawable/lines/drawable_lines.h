@@ -1,35 +1,67 @@
-#pragma once
-#include <vclib/render/drawable/drawable_object.h>
-#include <vclib/bgfx/drawable/lines/lines_settings.h>
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2025                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
+#ifndef VCL_BGFX_DRAWABLE_LINES_DRAWABLE_LINES_H
+#define VCL_BGFX_DRAWABLE_LINES_DRAWABLE_LINES_H
+
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/render/drawable/drawable_object.h>
+
 #include <bgfx/bgfx.h>
+
 namespace vcl::lines {
-    class DrawableLines : public vcl::DrawableObject {
 
-        public:
+class DrawableLines : public vcl::DrawableObject
+{
+public:
+    static std::unique_ptr<DrawableLines> create(
+        const std::vector<LinesVertex>& points,
+        LinesTypes                      type = LinesTypes::CPU_GENERATED);
 
-            static std::unique_ptr<DrawableLines> create(const std::vector<LinesVertex> &points, LinesTypes type = LinesTypes::CPU_GENERATED);
-            
-            DrawableLines() = default;
+    DrawableLines() = default;
 
-            virtual ~DrawableLines() = default;
+    virtual ~DrawableLines() = default;
 
-            vcl::Box3d boundingBox() const override { 
-                return vcl::Box3d(vcl::Point3d(-1,-1,-1), vcl::Point3d(1, 1, 1));
-            }
+    vcl::Box3d boundingBox() const override
+    {
+        return vcl::Box3d(vcl::Point3d(-1, -1, -1), vcl::Point3d(1, 1, 1));
+    }
 
-            bool isVisible() const override { return mVisible; }
+    bool isVisible() const override { return mVisible; }
 
-            void setVisibility(bool vis) override { mVisible = vis; }
+    void setVisibility(bool vis) override { mVisible = vis; }
 
-            LinesSettings* getSettings() const { return &mSettings; }
+    LinesSettings* getSettings() const { return &mSettings; }
 
-            void setSettings(const LinesSettings settings) { mSettings = settings; }
+    void setSettings(const LinesSettings settings) { mSettings = settings; }
 
-            virtual void update(const std::vector<LinesVertex> &points) = 0;
+    virtual void update(const std::vector<LinesVertex>& points) = 0;
 
-        protected: 
-            bool mVisible = true;
-            mutable LinesSettings mSettings;
-    };
-}
+protected:
+    bool                  mVisible = true;
+    mutable LinesSettings mSettings;
+};
+
+} // namespace vcl::lines
+
+#endif // VCL_BGFX_DRAWABLE_LINES_DRAWABLE_LINES_H
