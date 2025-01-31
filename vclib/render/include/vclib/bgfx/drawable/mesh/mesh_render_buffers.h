@@ -29,6 +29,7 @@
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/texture_unit.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 
 #include <bgfx/bgfx.h>
@@ -62,8 +63,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     // TODO: manage wireframe with proper lines
     IndexBuffer mWireframeIndexBuffer;
 
-    // TODO: manage with a TextureUnit class
-    std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
+    std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
 public:
     MeshRenderBuffers() = default;
@@ -108,7 +108,7 @@ public:
         swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
         swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
         swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
-        swap(mTexturesH, other.mTexturesH);
+        swap(mTextureUnits, other.mTextureUnits);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -164,8 +164,8 @@ public:
     void bindTextures() const
     {
         uint i = VCL_MRB_TEXTURE0; // first slot available is VCL_MRB_TEXTURE0
-        for (auto [th, uh] : mTexturesH) {
-            bgfx::setTexture(i, uh, th);
+        for (const auto& ptr : mTextureUnits) {
+            ptr->bind(i);
             i++;
         }
     }
@@ -595,39 +595,43 @@ private:
     void createTextureUnits(const MeshType& mesh)
     {
         if (Base::textureNumber() > 0) {
-            mTexturesH.reserve(Base::textureNumber());
+            mTextureUnits.reserve(Base::textureNumber());
 
             for (uint i = 0; i < Base::textureNumber(); ++i) {
                 vcl::Point2i tSize = Base::textureSize(i);
 
-                uint tBufSize = tSize.x() * tSize.y() * 4;
+                auto tu = std::make_unique<TextureUnit>();
+                tu->set(
+                    Base::textureBufferData(i),
+                    tSize,
+                    "s_tex" + std::to_string(i));
 
-                auto th = bgfx::createTexture2D(
-                    tSize.x(),
-                    tSize.y(),
-                    false,
-                    1,
-                    bgfx::TextureFormat::RGBA8,
-                    0,
-                    bgfx::makeRef(Base::textureBufferData(i), tBufSize));
+                mTextureUnits.push_back(std::move(tu));
 
-                std::string uniformName = "s_tex" + std::to_string(i);
+                // uint tBufSize = tSize.x() * tSize.y() * 4;
 
-                auto uh = bgfx::createUniform(
-                    uniformName.c_str(), bgfx::UniformType::Sampler);
+                // auto th = bgfx::createTexture2D(
+                //     tSize.x(),
+                //     tSize.y(),
+                //     false,
+                //     1,
+                //     bgfx::TextureFormat::RGBA8,
+                //     0,
+                //     bgfx::makeRef(Base::textureBufferData(i), tBufSize));
 
-                mTexturesH.push_back(std::make_pair(th, uh));
+                // std::string uniformName = "s_tex" + std::to_string(i);
+
+                // auto uh = bgfx::createUniform(
+                //     uniformName.c_str(), bgfx::UniformType::Sampler);
+
+                // mTexturesH.push_back(std::make_pair(th, uh));
             }
         }
     }
 
     void destroyBGFXBuffers()
     {
-        for (auto [th, uh] : mTexturesH) {
-            bgfx::destroy(th);
-            bgfx::destroy(uh);
-        }
-        mTexturesH.clear();
+        mTextureUnits.clear();
     }
 
     template<typename T>

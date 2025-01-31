@@ -123,7 +123,7 @@ public:
 #endif // VCLIB_WITH_QT
     }
 
-    virtual void onDraw(uint)
+    virtual void onDraw(uint viewId)
     {
         // imgui frame
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
@@ -142,6 +142,8 @@ public:
         }
 #endif // VCLIB_WITH_QT
         ImGui::NewFrame();
+
+        this->onDrawContent(viewId);
     }
 
     virtual void onPostDraw()
