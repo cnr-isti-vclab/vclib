@@ -23,6 +23,7 @@
 #ifndef VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
 #define VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
 
+#include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 
@@ -79,6 +80,8 @@ inline void _check_gl_error(const char* file, int line)
 template<MeshConcept MeshType>
 class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
 {
+    Box3d mBoundingBox;
+
     MeshRenderData<MeshType> mMRD;
 
     std::vector<uint> mTextID;
@@ -102,6 +105,22 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = MeshType::name();
         }
+
+        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
+        if constexpr (vcl::HasBoundingBox<MeshType>) {
+            if (this->MeshType::boundingBox().isNull()) {
+                bbToInitialize = true;
+            }
+            else {
+                mBoundingBox =
+                    this->MeshType::boundingBox().template cast<double>();
+            }
+        }
+
+        if (bbToInitialize) {
+            mBoundingBox = vcl::boundingBox(*this);
+        }
+
         unbindTextures();
         mMRD = MeshRenderData<MeshType>(*this);
         mMRS.setRenderCapabilityFrom(*this);
@@ -113,6 +132,7 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
+        swap(mBoundingBox, other.mBoundingBox);
         swap(mMRD, other.mMRD);
         swap(mTextID, other.mTextID);
     }
@@ -196,14 +216,14 @@ public:
                 }
             }
             if (mMRS.isBboxEnabled()) {
-                drawBox3(mMRD.bbMin(), mMRD.bbMax(), vcl::Color(0, 0, 0));
+                drawBox3(mBoundingBox.min(), mBoundingBox.max(), vcl::Color(0, 0, 0));
             }
         }
     }
 
     Box3d boundingBox() const override
     {
-        return Box3d(mMRD.bbMin(), mMRD.bbMax());
+        return mBoundingBox;
     }
 
     std::shared_ptr<DrawableObject> clone() const override
@@ -394,7 +414,7 @@ private:
                     int   vid1_ptr = 3 * vid1;
                     int   vid2_ptr = 3 * vid2;
                     short texture =
-                        mTextID[mMRD.vertexTextureIDsBufferData()[vid0]];
+                        mTextID[mMRD.vertexTextureIDsBufferData()[tid]];
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
