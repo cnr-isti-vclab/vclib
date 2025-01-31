@@ -581,50 +581,46 @@ private:
 
             mWireframeIndexBuffer.set(buffer, NUM_EDGES *2, true, releaseFn);
         }
-
-        // WAS:
-        // if (Base::wireframeBufferData()) {
-        //     mWireframeIndexBH = bgfx::createIndexBuffer(
-        //         bgfx::makeRef(
-        //             Base::wireframeBufferData(),
-        //             Base::wireframeBufferSize() * sizeof(uint)),
-        //         BGFX_BUFFER_INDEX32);
-        // }
     }
 
     void createTextureUnits(const MeshType& mesh)
     {
-        if (Base::textureNumber() > 0) {
-            mTextureUnits.reserve(Base::textureNumber());
+        if constexpr (vcl::HasTexturePaths<MeshType>) {
+            mTextureUnits.reserve(mesh.textureNumber());
+            for (uint i = 0; i < mesh.textureNumber(); ++i) {
+                vcl::Image txt;
+                if constexpr (vcl::HasTextureImages<MeshType>) {
+                    if (mesh.texture(i).image().isNull()) {
+                        txt = vcl::Image(
+                            mesh.meshBasePath() + mesh.texturePath(i));
+                    }
+                    else {
+                        txt = mesh.texture(i).image();
+                    }
+                }
+                else {
+                    txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
+                }
+                txt.mirror();
 
-            for (uint i = 0; i < Base::textureNumber(); ++i) {
-                vcl::Point2i tSize = Base::textureSize(i);
+                const uint size = txt.width() * txt.height();
+
+                auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(
+                    size);
+
+                const uint* tdata = reinterpret_cast<const uint*>(txt.data());
+
+                std::copy(tdata, tdata + size, buffer);
 
                 auto tu = std::make_unique<TextureUnit>();
                 tu->set(
-                    Base::textureBufferData(i),
-                    tSize,
-                    "s_tex" + std::to_string(i));
+                    buffer,
+                    vcl::Point2i(txt.width(), txt.height()),
+                    "s_tex" + std::to_string(i),
+                    false,
+                    releaseFn);
 
                 mTextureUnits.push_back(std::move(tu));
-
-                // uint tBufSize = tSize.x() * tSize.y() * 4;
-
-                // auto th = bgfx::createTexture2D(
-                //     tSize.x(),
-                //     tSize.y(),
-                //     false,
-                //     1,
-                //     bgfx::TextureFormat::RGBA8,
-                //     0,
-                //     bgfx::makeRef(Base::textureBufferData(i), tBufSize));
-
-                // std::string uniformName = "s_tex" + std::to_string(i);
-
-                // auto uh = bgfx::createUniform(
-                //     uniformName.c_str(), bgfx::UniformType::Sampler);
-
-                // mTexturesH.push_back(std::make_pair(th, uh));
             }
         }
     }
