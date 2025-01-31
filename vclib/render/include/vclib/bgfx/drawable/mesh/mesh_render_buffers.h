@@ -30,17 +30,17 @@
 #include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/texture_unit.h>
-#include <vclib/render/drawable/mesh/mesh_render_data.h>
+#include <vclib/render/drawable/mesh/mesh_buffer_id.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
+#include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
+class MeshRenderBuffers
 {
-    using Base = vcl::MeshRenderData<MeshType>;
-
     BuffersToFill mBuffersToFill = BUFFERS_TO_FILL_ALL;
 
     VertexBuffer mVertexCoordsBuffer;
@@ -71,7 +71,7 @@ public:
     MeshRenderBuffers(
         const MeshType& mesh,
         BuffersToFill   buffersToFill = BUFFERS_TO_FILL_ALL) :
-            Base(mesh, buffersToFill), mBuffersToFill(buffersToFill)
+            mBuffersToFill(buffersToFill)
     {
         createBGFXBuffers(mesh);
     }
@@ -93,7 +93,6 @@ public:
     void swap(MeshRenderBuffers& other)
     {
         using std::swap;
-        swap((Base&) *this, (Base&) other);
         swap(mBuffersToFill, other.mBuffersToFill);
         swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
         swap(mVertexNormalsBuffer, other.mVertexNormalsBuffer);
@@ -115,7 +114,6 @@ public:
 
     void update(const MeshType& mesh)
     {
-        Base::update(mesh);
         destroyBGFXBuffers();
         createBGFXBuffers(mesh);
     }
