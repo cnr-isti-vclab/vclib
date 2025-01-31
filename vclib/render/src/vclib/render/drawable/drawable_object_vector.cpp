@@ -35,7 +35,8 @@ void DrawableObjectVector::draw(uint viewId) const
 {
     if (isVisible()) {
         for (const auto& p : *this) {
-            p->draw(viewId);
+            if (p->isVisible())
+                p->draw(viewId);
         }
     }
 }

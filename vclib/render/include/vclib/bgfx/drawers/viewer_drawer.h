@@ -107,8 +107,7 @@ public:
 
         mDirectionalLightUniforms.bind();
 
-        for (auto obj : ParentViewer::drawableObjectVector())
-            obj->draw(viewId);
+        ParentViewer::drawableObjectVector().draw(viewId);
     }
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
