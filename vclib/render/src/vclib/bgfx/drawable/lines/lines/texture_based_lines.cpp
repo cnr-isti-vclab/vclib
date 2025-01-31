@@ -90,9 +90,6 @@ TextureBasedLines::~TextureBasedLines()
 
     if (bgfx::isValid(mIndirectDataUH))
         bgfx::destroy(mIndirectDataUH);
-
-    if (bgfx::isValid(mComputeTexturePH))
-        bgfx::destroy(mComputeTexturePH);
 }
 
 TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines other)
