@@ -60,7 +60,29 @@ public:
         updateBuffers();
     }
 
+    DrawableMeshBGFX(const DrawableMeshBGFX& drawableMesh) :
+            AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
+            MeshType(drawableMesh),
+            mBoundingBox(drawableMesh.mBoundingBox),
+            mMeshRenderSettingsUniforms(
+                drawableMesh.mMeshRenderSettingsUniforms)
+    {
+        if constexpr (HasName<MeshType>) {
+            AbstractDrawableMesh::name() = drawableMesh.name();
+        }
+        mMRB.update(*this);
+        mMeshUniforms.update(*this);
+    }
+
+    DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh) { swap(drawableMesh); }
+
     ~DrawableMeshBGFX() = default;
+
+    DrawableMeshBGFX& operator=(DrawableMeshBGFX drawableMesh)
+    {
+        swap(drawableMesh);
+        return *this;
+    }
 
     void updateBuffers() override
     {
@@ -83,7 +105,7 @@ public:
             mBoundingBox = vcl::boundingBox(*this);
         }
 
-        mMRB = MeshRenderBuffers<MeshType>(*this);
+        mMRB.update(*this);
         mMRS.setRenderCapabilityFrom(*this);
         mMRB.setWireframeSettings(mMRS);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);

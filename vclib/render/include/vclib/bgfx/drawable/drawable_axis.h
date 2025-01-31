@@ -65,7 +65,41 @@ class DrawableAxis : public DrawableObject
 public:
     DrawableAxis(double size = 1);
 
+    DrawableAxis(const DrawableAxis& other) :
+        mVisible(other.mVisible),
+        mUniforms(other.mUniforms)
+    {
+        for (uint i = 0; i < 3; i++) {
+            mMatrices[i] = other.mMatrices[i];
+        }
+
+        createAxis();
+    }
+
+    DrawableAxis(DrawableAxis&& other) { swap(other); }
+
     ~DrawableAxis() = default;
+
+    DrawableAxis& operator=(DrawableAxis other)
+    {
+        swap(other);
+        return *this;
+    }
+
+    void swap(DrawableAxis& other)
+    {
+        using std::swap;
+        swap(mVisible, other.mVisible);
+        swap(mUniforms, other.mUniforms);
+        for (uint i = 0; i < 3; i++) {
+            swap(mMatrices[i], other.mMatrices[i]);
+        }
+        for (uint i = 0; i < 2; i++) {
+            mArrowBuffers[i].swap(other.mArrowBuffers[i]);
+        }
+    }
+
+    friend void swap(DrawableAxis& a, DrawableAxis& b) { a.swap(b); }
 
     void setSize(double size);
 
