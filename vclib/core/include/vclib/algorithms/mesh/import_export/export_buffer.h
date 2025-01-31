@@ -1515,7 +1515,7 @@ void vertexTexCoordIndicesAsTriangulatedFaceWedgeTexCoordIndicesToBuffer(
     requirePerVertexTexCoord(mesh);
 
     for (const auto& f : mesh.faces()) {
-        ushort ti    = f.vertex(0)->texCoord()->index();
+        ushort ti    = f.vertex(0)->texCoord().index();
         uint   first = indexMap.triangleBegin(f.index());
         uint   last  = first + indexMap.triangleNumber(f.index());
         for (uint t = first; t < last; ++t) {
