@@ -65,13 +65,13 @@ public:
             MeshType(drawableMesh),
             mBoundingBox(drawableMesh.mBoundingBox),
             mMeshRenderSettingsUniforms(
-                drawableMesh.mMeshRenderSettingsUniforms),
-            mMeshUniforms(drawableMesh.mMeshUniforms)
+                drawableMesh.mMeshRenderSettingsUniforms)
     {
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
         mMRB.update(*this);
+        mMeshUniforms.update(*this);
     }
 
     DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh) { swap(drawableMesh); }

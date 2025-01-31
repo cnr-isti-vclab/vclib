@@ -11,7 +11,7 @@
   - [ ] The DesktopTrackball should inherit from the Trackball
   - [ ] The AbstractViewer should not inherit from DesktopTrackball, but it should own it as a member.
 - BGFX
-  - [ ] Fix FIXME #1 on example-01-viewer-qt
+  - [X] Fix FIXME #1 on example-01-viewer-qt
   - [ ] Fix FIXME #2 on example-04-hello-triangle-imgui-qt
   - [ ] Fix 2 Qt windows with BGFX canvas.
   - [X] Library shaders should be built as headers
