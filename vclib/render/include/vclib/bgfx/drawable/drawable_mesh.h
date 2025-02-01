@@ -28,7 +28,6 @@
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 #include <bgfx/bgfx.h>
@@ -46,7 +45,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH);
 
-    DrawableMeshUniforms               mMeshUniforms;
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
@@ -70,7 +68,6 @@ public:
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
         mMRB.update(*this);
-        mMeshUniforms.update(*this);
     }
 
     DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh) { swap(drawableMesh); }
@@ -107,7 +104,6 @@ public:
         mMRB.update(*this);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
-        mMeshUniforms.update(*this);
     }
 
     void swap(DrawableMeshBGFX& other)
@@ -118,7 +114,6 @@ public:
         swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
         swap(mProgram, other.mProgram);
-        swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
     }
 
@@ -201,7 +196,7 @@ private:
     {
         mMeshRenderSettingsUniforms.updatePrimitive(primitive);
         mMeshRenderSettingsUniforms.bind();
-        mMeshUniforms.bind();
+        mMRB.bindUniforms();
     }
 };
 

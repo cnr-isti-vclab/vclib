@@ -29,6 +29,7 @@
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/render/drawable/mesh/mesh_buffer_id.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
@@ -64,6 +65,8 @@ class MeshRenderBuffers
     IndexBuffer mWireframeIndexBuffer;
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
+
+    DrawableMeshUniforms mMeshUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -108,6 +111,7 @@ public:
         swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
         swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
         swap(mTextureUnits, other.mTextureUnits);
+        swap(mMeshUniforms, other.mMeshUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -166,6 +170,11 @@ public:
             ptr->bind(i);
             i++;
         }
+    }
+
+    void bindUniforms() const
+    {
+        mMeshUniforms.bind();
     }
 
 private:
@@ -237,6 +246,8 @@ private:
                 createTextureUnits(mesh);
             }
         }
+
+        mMeshUniforms.update(mesh);
     }
 
     void createVertexCoordsBuffer(
