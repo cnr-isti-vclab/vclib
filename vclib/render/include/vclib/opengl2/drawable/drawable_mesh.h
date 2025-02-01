@@ -216,15 +216,15 @@ public:
                 }
             }
             if (mMRS.isBboxEnabled()) {
-                drawBox3(mBoundingBox.min(), mBoundingBox.max(), vcl::Color(0, 0, 0));
+                drawBox3(
+                    mBoundingBox.min(),
+                    mBoundingBox.max(),
+                    vcl::Color(0, 0, 0));
             }
         }
     }
 
-    Box3d boundingBox() const override
-    {
-        return mBoundingBox;
-    }
+    Box3d boundingBox() const override { return mBoundingBox; }
 
     std::shared_ptr<DrawableObject> clone() const override
     {

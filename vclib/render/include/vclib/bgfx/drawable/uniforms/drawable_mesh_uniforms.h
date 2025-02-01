@@ -58,6 +58,10 @@ class DrawableMeshUniforms
 public:
     DrawableMeshUniforms() = default;
 
+    const float* currentMeshColor() const { return mMeshColor; }
+
+    const float* currentModelMatrix() const { return mModelMatrix; }
+
     template<MeshConcept MeshType>
     void update(const MeshType& m)
     {
