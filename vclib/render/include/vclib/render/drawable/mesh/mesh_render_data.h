@@ -576,32 +576,6 @@ private:
             mWireframe.resize(NUM_EDGES * 2);
 
             wireframeIndicesToBuffer(mesh, mWireframe.data());
-
-            // for (const auto& f : m.faces()) {
-            //    for (uint i = 0; i < f.vertexNumber(); ++i) {
-            //       uint index0 = m.vertexIndexIfCompact(m.index(f.vertex(i)));
-            //        uint index1 = m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1))));
-            //        
-            //        vcl::Color c0(mVColors[index0], vcl::Color::Format::ABGR);
-            //        vcl::Color c1(mVColors[index1], vcl::Color::Format::ABGR);
-
-            //        mWireframe.push_back(
-            //            lines::LinesVertex(
-            //                mVerts[index0 * 3], mVerts[(index0 * 3) + 1], mVerts[(index0 * 3) + 2],
-            //                lines::LinesVertex::COLOR(c0.redF(), c0.greenF(), c0.blueF(), c0.alphaF()),
-            //                mVNormals[index0 * 3], mVNormals[(index0 * 3) + 1], mVNormals[(index0 * 3) + 2]
-            //            )
-            //        );
-
-            //        mWireframe.push_back(
-            //            lines::LinesVertex(
-            //                mVerts[index1 * 3], mVerts[(index1 * 3) + 1], mVerts[(index1 * 3) + 2],
-            //                lines::LinesVertex::COLOR(c1.redF(), c1.greenF(), c1.blueF(), c1.alphaF()),
-            //                mVNormals[index1 * 3], mVNormals[(index1 * 3) + 1], mVNormals[(index1 * 3) + 2]
-            //            )
-            //        );
-            //    }
-            // }
         }
     }
 

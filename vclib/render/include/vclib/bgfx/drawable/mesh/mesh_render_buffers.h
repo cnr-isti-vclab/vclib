@@ -601,19 +601,49 @@ private:
         using enum MeshBufferId;
 
         if constexpr (vcl::HasFaces<MeshType>) {
-            // const uint NUM_EDGES = vcl::countPerFaceVertexReferences(mesh);
+            // TODO: DATA DUPLICATION
+            // Heavy refactoring needed here
+            std::vector<lines::LinesVertex> wireframe;
+            wireframe.reserve(mesh.faceNumber() * 3);
+            for (const auto& f : mesh.faces()) {
+                for (uint i = 0; i < f.vertexNumber(); ++i) {
+                    const auto& p0 = f.vertex(i)->coord();
+                    const auto& p1 = f.vertexMod((i + 1))->coord();
+                    const vcl::Color& c0 = f.vertex(i)->color();
+                    const vcl::Color& c1 = f.vertexMod((i + 1))->color();
+                    // TODO: NORMALS CAN ALSO NOT BE AVAILABLE
+                    const auto& n0 = f.vertex(i)->normal();
+                    const auto& n1 = f.vertexMod((i + 1))->normal();
+
+                    wireframe.push_back(lines::LinesVertex(
+                        p0.x(), p0.y(), p0.z(),
+                        lines::LinesVertex::COLOR(
+                            c0.redF(), c0.greenF(), c0.blueF(), c0.alphaF()),
+                        n0.x(), n0.y(), n0.z()));
+
+                    wireframe.push_back(lines::LinesVertex(
+                        p1.x(), p1.y(), p1.z(),
+                        lines::LinesVertex::COLOR(
+                            c1.redF(), c1.greenF(), c1.blueF(), c1.alphaF()),
+                        n1.x(), n1.y(), n1.z()));
+                }
+            }
+            // wireframe index buffer
+            mWireframeBH =
+                lines::CPUGeneratedLines(wireframe);
+
+            // TODO: Should Be:
+            // const uint NUM_EDGES =
+            // vcl::countPerFaceVertexReferences(mesh);
 
             // auto [buffer, releaseFn] =
             //    getAllocatedBufferAndReleaseFn<uint>(NUM_EDGES * 2);
 
             // wireframeIndicesToBuffer(mesh, buffer);
 
-            // mWireframeIndexBuffer.set(buffer, NUM_EDGES *2, true, releaseFn);
+            // mWireframeIndexBuffer.set(buffer, NUM_EDGES *2, true,
+            // releaseFn);
         }
-        // WAS:
-        // wireframe index buffer
-        // if (Base::wireframeBufferData()) {
-        //    mWireframeBH = lines::CPUGeneratedLines(*Base::wireframeBufferData());
     }
 
     void createTextureUnits(const MeshType& mesh)

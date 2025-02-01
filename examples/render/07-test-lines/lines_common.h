@@ -54,7 +54,7 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
 
     std::vector<vcl::lines::LinesVertex> points;
 
-    for (vcl::uint i = 0; i < nLines * 2; i++)
+    for (vcl::uint i = 0; i < nLines; i++)
         pushRandomLine(points);
 
     for (vcl::uint i = 0; i < 5; ++i) {
