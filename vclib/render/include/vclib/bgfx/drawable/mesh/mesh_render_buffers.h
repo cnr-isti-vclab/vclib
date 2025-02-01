@@ -178,10 +178,9 @@ public:
         }
 
         if(settings.isWireframeColorPerMesh()) {
-            // TODO
-            // const float* colorPerMesh = Base::meshColorBufferData();
-            // wireframeSettings->setGeneralColor(lines::LinesVertex::COLOR(colorPerMesh[0], colorPerMesh[1], colorPerMesh[2], colorPerMesh[3]));
-            // wireframeSettings->setColorToUse(lines::ColorToUse::GENERAL_COLOR);
+            const float* colorPerMesh = mMeshUniforms.currentMeshColor();
+            wireframeSettings->setGeneralColor(lines::LinesVertex::COLOR(colorPerMesh[0], colorPerMesh[1], colorPerMesh[2], colorPerMesh[3]));
+            wireframeSettings->setColorToUse(lines::ColorToUse::GENERAL_COLOR);
         }
 
         if(settings.isWireframeColorPerVertex()) {
