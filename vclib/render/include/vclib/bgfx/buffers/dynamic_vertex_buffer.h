@@ -23,11 +23,7 @@
 #ifndef VCL_BGFX_BUFFERS_DYNAMIC_VERTEX_BUFFER_H
 #define VCL_BGFX_BUFFERS_DYNAMIC_VERTEX_BUFFER_H
 
-#include <vclib/types.h>
-
-#include <bgfx/bgfx.h>
-
-#include <utility>
+#include "generic_buffer.h"
 
 namespace vcl {
 
@@ -47,9 +43,10 @@ namespace vcl {
  * access to the data). Any class that contains a DynamicVertexBuffer should
  * implement the copy constructor and the copy assignment operator.
  */
-class DynamicVertexBuffer
+class DynamicVertexBuffer :
+        public GenericBuffer<bgfx::DynamicVertexBufferHandle>
 {
-    bgfx::DynamicVertexBufferHandle mVertexBufferHandle = BGFX_INVALID_HANDLE;
+    using Base = GenericBuffer<bgfx::DynamicVertexBufferHandle>;
 
 public:
     /**
@@ -59,79 +56,18 @@ public:
      */
     DynamicVertexBuffer() = default;
 
-    // Copying a DynamicVertexBuffer is not allowed
-    DynamicVertexBuffer(const DynamicVertexBuffer& other) = delete;
-
-    /**
-     * @brief Move constructor.
-     *
-     * The other DynamicVertexBuffer is left in an invalid state.
-     *
-     * @param[in] other: the other DynamicVertexBuffer object.
-     */
-    DynamicVertexBuffer(DynamicVertexBuffer&& other) noexcept { swap(other); }
-
-    /**
-     * @brief Destructor.
-     *
-     * If the DynamicVertexBuffer is valid, the bgfx::DynamicVertexBufferHandle
-     * is destroyed.
-     */
-    ~DynamicVertexBuffer()
-    {
-        if (bgfx::isValid(mVertexBufferHandle))
-            bgfx::destroy(mVertexBufferHandle);
-    }
-
-    // Copying a DynamicVertexBuffer is not allowed
-    DynamicVertexBuffer& operator=(const DynamicVertexBuffer& other) = delete;
-
-    /**
-     * @brief Move assignment operator.
-     *
-     * The other DynamicVertexBuffer is left in an invalid state.
-     *
-     * @param[in] other: the other DynamicVertexBuffer object.
-     * @return a reference to this object.
-     */
-    DynamicVertexBuffer& operator=(DynamicVertexBuffer&& other) noexcept
-    {
-        swap(other);
-        return *this;
-    }
-
-    /**
-     * @brief Swap the content of this object with another DynamicVertexBuffer object.
-     *
-     * @param[in] other: the other DynamicVertexBuffer object.
-     */
-    void swap(DynamicVertexBuffer& other)
-    {
-        using std::swap;
-        swap(mVertexBufferHandle, other.mVertexBufferHandle);
-    }
-
-    friend void swap(DynamicVertexBuffer& a, DynamicVertexBuffer& b) { a.swap(b); }
-
-    /**
-     * @brief Check if the DynamicVertexBuffer is valid.
-     *
-     * @return true if the DynamicVertexBuffer is valid, false otherwise.
-     */
-    bool isValid() const { return bgfx::isValid(mVertexBufferHandle); }
-
     void create(
         uint                      size,
         const bgfx::VertexLayout& layout,
         ushort                    flags = BGFX_BUFFER_NONE)
     {
-        mVertexBufferHandle = bgfx::createDynamicVertexBuffer(size, layout, flags);
+        mHandle = bgfx::createDynamicVertexBuffer(size, layout, flags);
     }
 
     void update(uint startIndex, const bgfx::Memory* data)
     {
-        if (bgfx::isValid(mVertexBufferHandle)) {
-            bgfx::update(mVertexBufferHandle, startIndex, data);
+        if (bgfx::isValid(mHandle)) {
+            bgfx::update(mHandle, startIndex, data);
         }
     }
 
@@ -142,23 +78,8 @@ public:
      */
     void bind(uint stream) const
     {
-        if (bgfx::isValid(mVertexBufferHandle)) {
-            bgfx::setVertexBuffer(stream, mVertexBufferHandle);
-        }
-    }
-
-private:
-    static bgfx::AttribType::Enum attribType(PrimitiveType type)
-    {
-        switch (type) {
-        case PrimitiveType::CHAR:
-        case PrimitiveType::UCHAR: return bgfx::AttribType::Uint8;
-        case PrimitiveType::SHORT:
-        case PrimitiveType::USHORT: return bgfx::AttribType::Int16;
-        case PrimitiveType::FLOAT: return bgfx::AttribType::Float;
-        default:
-            assert(0); // not supported
-            return bgfx::AttribType::Count;
+        if (bgfx::isValid(mHandle)) {
+            bgfx::setVertexBuffer(stream, mHandle);
         }
     }
 };

@@ -23,11 +23,7 @@
 #ifndef VCL_BGFX_BUFFERS_VERTEX_BUFFER_H
 #define VCL_BGFX_BUFFERS_VERTEX_BUFFER_H
 
-#include <vclib/types.h>
-
-#include <bgfx/bgfx.h>
-
-#include <utility>
+#include "generic_buffer.h"
 
 namespace vcl {
 
@@ -43,10 +39,11 @@ namespace vcl {
  * to the data). Any class that contains a VertexBuffer should implement the
  * copy constructor and the copy assignment operator.
  */
-class VertexBuffer
+class VertexBuffer : public GenericBuffer<bgfx::VertexBufferHandle>
 {
-    bgfx::VertexBufferHandle mVertexBufferHandle = BGFX_INVALID_HANDLE;
-    bool                     mCompute            = false;
+    using Base = GenericBuffer<bgfx::VertexBufferHandle>;
+
+    bool mCompute = false;
 
 public:
     /**
@@ -56,46 +53,6 @@ public:
      */
     VertexBuffer() = default;
 
-    // Copying a VertexBuffer is not allowed
-    VertexBuffer(const VertexBuffer& other) = delete;
-
-    /**
-     * @brief Move constructor.
-     *
-     * The other VertexBuffer is left in an invalid state.
-     *
-     * @param[in] other: the other VertexBuffer object.
-     */
-    VertexBuffer(VertexBuffer&& other) noexcept { swap(other); }
-
-    /**
-     * @brief Destructor.
-     *
-     * If the VertexBuffer is valid, the bgfx::VertexBufferHandle is destroyed.
-     */
-    ~VertexBuffer()
-    {
-        if (bgfx::isValid(mVertexBufferHandle))
-            bgfx::destroy(mVertexBufferHandle);
-    }
-
-    // Copying a VertexBuffer is not allowed
-    VertexBuffer& operator=(const VertexBuffer& other) = delete;
-
-    /**
-     * @brief Move assignment operator.
-     *
-     * The other VertexBuffer is left in an invalid state.
-     *
-     * @param[in] other: the other VertexBuffer object.
-     * @return a reference to this object.
-     */
-    VertexBuffer& operator=(VertexBuffer&& other) noexcept
-    {
-        swap(other);
-        return *this;
-    }
-
     /**
      * @brief Swap the content of this object with another VertexBuffer object.
      *
@@ -104,18 +61,11 @@ public:
     void swap(VertexBuffer& other)
     {
         using std::swap;
-        swap(mVertexBufferHandle, other.mVertexBufferHandle);
+        Base::swap(other);
         swap(mCompute, other.mCompute);
     }
 
     friend void swap(VertexBuffer& a, VertexBuffer& b) { a.swap(b); }
-
-    /**
-     * @brief Check if the VertexBuffer is valid.
-     *
-     * @return true if the VertexBuffer is valid, false otherwise.
-     */
-    bool isValid() const { return bgfx::isValid(mVertexBufferHandle); }
 
     /**
      * @brief Check if the VertexBuffer is used for compute shaders.
@@ -215,11 +165,11 @@ public:
         bool                      compute = false,
         uint64_t                  flags   = BGFX_BUFFER_NONE)
     {
-        if (bgfx::isValid(mVertexBufferHandle))
-            bgfx::destroy(mVertexBufferHandle);
+        if (bgfx::isValid(mHandle))
+            bgfx::destroy(mHandle);
 
-        mVertexBufferHandle = bgfx::createVertexBuffer(data, layout, flags);
-        mCompute            = compute;
+        mHandle  = bgfx::createVertexBuffer(data, layout, flags);
+        mCompute = compute;
     }
 
     /**
@@ -231,36 +181,11 @@ public:
      */
     void bind(uint stream, bgfx::Access::Enum access = bgfx::Access::Read) const
     {
-        if (bgfx::isValid(mVertexBufferHandle)) {
+        if (bgfx::isValid(mHandle)) {
             if (!mCompute)
-                bgfx::setVertexBuffer(stream, mVertexBufferHandle);
+                bgfx::setVertexBuffer(stream, mHandle);
             else
-                bgfx::setBuffer(stream, mVertexBufferHandle, access);
-        }
-    }
-
-private:
-    static uint64_t flagsForAccess(bgfx::Access::Enum access)
-    {
-        switch (access) {
-        case bgfx::Access::Read: return BGFX_BUFFER_COMPUTE_READ;
-        case bgfx::Access::Write: return BGFX_BUFFER_COMPUTE_WRITE;
-        case bgfx::Access::ReadWrite: return BGFX_BUFFER_COMPUTE_READ_WRITE;
-        default: return BGFX_BUFFER_NONE;
-        }
-    }
-
-    static bgfx::AttribType::Enum attribType(PrimitiveType type)
-    {
-        switch (type) {
-        case PrimitiveType::CHAR:
-        case PrimitiveType::UCHAR: return bgfx::AttribType::Uint8;
-        case PrimitiveType::SHORT:
-        case PrimitiveType::USHORT: return bgfx::AttribType::Int16;
-        case PrimitiveType::FLOAT: return bgfx::AttribType::Float;
-        default:
-            assert(0); // not supported
-            return bgfx::AttribType::Count;
+                bgfx::setBuffer(stream, mHandle, access);
         }
     }
 };
