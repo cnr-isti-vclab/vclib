@@ -173,8 +173,8 @@ private:
     {
         using enum MeshBufferId;
 
-        std::vector<std::pair<uint, uint>> vwm;
-        std::list<uint> vtd;
+        std::vector<std::pair<uint, uint>>          vwm;
+        std::list<uint>                             vtd;
         std::list<std::list<std::pair<uint, uint>>> ftr;
 
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
@@ -184,7 +184,7 @@ private:
         }
 
         TriPolyIndexBiMap indexMap;
-        uint numTris = 0;
+        uint              numTris = 0;
 
         if (mBuffersToFill[toUnderlying(VERTICES)]) {
             // vertex buffer (coordinates)
@@ -323,7 +323,6 @@ private:
                         PrimitiveType::UCHAR,
                         true,
                         releaseFn);
-
                 }
             }
         }
@@ -369,7 +368,7 @@ private:
     {
         using enum MeshBufferId;
 
-        if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (mBuffersToFill[toUnderlying(WEDGE_TEXCOORDS)]) {
                 if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                     uint nv = mesh.vertexNumber() + vtd.size();
@@ -406,16 +405,14 @@ private:
             const uint NUM_TRIS = vcl::countTriangulatedTriangles(mesh);
 
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(
-                    NUM_TRIS * 3);
+                getAllocatedBufferAndReleaseFn<uint>(NUM_TRIS * 3);
 
             triangulatedFaceIndicesToBuffer(
                 mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR, NUM_TRIS);
             replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
                 mesh, vtd, ftr, indexMap, buffer);
 
-            mTriangleIndexBuffer.set(
-                buffer, NUM_TRIS * 3, true, releaseFn);
+            mTriangleIndexBuffer.set(buffer, NUM_TRIS * 3, true, releaseFn);
         }
     }
 
@@ -431,8 +428,7 @@ private:
                     const uint NUM_TRIS = indexMap.triangleNumber();
 
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<float>(
-                            NUM_TRIS * 3);
+                        getAllocatedBufferAndReleaseFn<float>(NUM_TRIS * 3);
 
                     triangulatedFaceNormalsToBuffer(
                         mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR);
@@ -506,14 +502,13 @@ private:
 
     void createEdgeIndicesBuffer(const MeshType& mesh)
     {
-        if constexpr(vcl::HasEdges<MeshType>) {
+        if constexpr (vcl::HasEdges<MeshType>) {
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint>(mesh.edgeNumber() * 2);
 
             edgeIndicesToBuffer(mesh, buffer);
 
-            mEdgeIndexBuffer.set(
-                 buffer, mesh.edgeNumber() * 2);
+            mEdgeIndexBuffer.set(buffer, mesh.edgeNumber() * 2);
         }
     }
 
@@ -549,8 +544,7 @@ private:
             if (mBuffersToFill[toUnderlying(EDGE_COLORS)]) {
                 if (vcl::isPerEdgeColorAvailable(mesh)) {
                     auto [buffer, releaseFn] =
-                        getAllocatedBufferAndReleaseFn<uint>(
-                            mesh.edgeNumber());
+                        getAllocatedBufferAndReleaseFn<uint>(mesh.edgeNumber());
 
                     edgeColorsToBuffer(mesh, buffer, Color::Format::ABGR);
 
@@ -577,7 +571,7 @@ private:
 
             wireframeIndicesToBuffer(mesh, buffer);
 
-            mWireframeIndexBuffer.set(buffer, NUM_EDGES *2, true, releaseFn);
+            mWireframeIndexBuffer.set(buffer, NUM_EDGES * 2, true, releaseFn);
         }
     }
 
@@ -603,8 +597,8 @@ private:
 
                 const uint size = txt.width() * txt.height();
 
-                auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(
-                    size);
+                auto [buffer, releaseFn] =
+                    getAllocatedBufferAndReleaseFn<uint>(size);
 
                 const uint* tdata = reinterpret_cast<const uint*>(txt.data());
 
@@ -623,14 +617,10 @@ private:
         }
     }
 
-    void destroyBGFXBuffers()
-    {
-        mTextureUnits.clear();
-    }
+    void destroyBGFXBuffers() { mTextureUnits.clear(); }
 
     template<typename T>
-    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(
-        uint size)
+    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
     {
         T* buffer = new T[size];
 
@@ -638,7 +628,6 @@ private:
             delete[] static_cast<T*>(ptr);
         });
     }
-
 };
 
 } // namespace vcl

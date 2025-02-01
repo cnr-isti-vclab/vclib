@@ -110,11 +110,11 @@ public:
     }
 
     void set(
-        const void*               data,
-        const vcl::Point2i&       sizes,
-        const std::string&        samplerName,
-        bool                      hasMips = false,
-        bgfx::ReleaseFn           releaseFn = nullptr)
+        const void*         data,
+        const vcl::Point2i& sizes,
+        const std::string&  samplerName,
+        bool                hasMips   = false,
+        bgfx::ReleaseFn     releaseFn = nullptr)
     {
         set(bgfx::makeRef(data, sizes.x() * sizes.y() * 4, releaseFn),
             sizes,
@@ -124,13 +124,13 @@ public:
     }
 
     void set(
-        const bgfx::Memory* texture,
-        const vcl::Point2i& sizes,
-        const std::string& samplerName,
-        bool hasMips,
-        uint nLayers,
+        const bgfx::Memory*       texture,
+        const vcl::Point2i&       sizes,
+        const std::string&        samplerName,
+        bool                      hasMips,
+        uint                      nLayers,
         bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
-        uint flags = BGFX_TEXTURE_NONE)
+        uint                      flags  = BGFX_TEXTURE_NONE)
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
@@ -149,7 +149,6 @@ public:
             bgfx::setTexture(stage, mUniformHandle, mTextureHandle);
         }
     }
-
 };
 
 } // namespace vcl

@@ -81,8 +81,8 @@ public:
 
         clear();
 
-        std::vector<std::pair<uint, uint>> vwm;
-        std::list<uint> vtd;
+        std::vector<std::pair<uint, uint>>          vwm;
+        std::list<uint>                             vtd;
         std::list<std::list<std::pair<uint, uint>>> ftr;
 
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
@@ -92,7 +92,7 @@ public:
         }
 
         TriPolyIndexBiMap indexMap;
-        uint numTris = 0;
+        uint              numTris = 0;
 
         fillMeshAttribs(mesh);
 
@@ -403,7 +403,7 @@ private:
     {
         using enum MeshBufferId;
 
-        if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (mBuffersToFill[toUnderlying(WEDGE_TEXCOORDS)]) {
                 if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                     uint nv = mesh.vertexNumber() + vtd.size();
@@ -528,7 +528,7 @@ private:
 
     void createEdgeIndicesBuffer(const MeshType& mesh)
     {
-        if constexpr(vcl::HasEdges<MeshType>) {
+        if constexpr (vcl::HasEdges<MeshType>) {
             mEdges.resize(mesh.edgeNumber() * 2);
 
             edgeIndicesToBuffer(mesh, mEdges.data());

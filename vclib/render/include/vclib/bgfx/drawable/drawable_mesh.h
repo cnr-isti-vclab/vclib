@@ -62,8 +62,7 @@ public:
 
     DrawableMeshBGFX(const DrawableMeshBGFX& drawableMesh) :
             AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
-            MeshType(drawableMesh),
-            mBoundingBox(drawableMesh.mBoundingBox),
+            MeshType(drawableMesh), mBoundingBox(drawableMesh.mBoundingBox),
             mMeshRenderSettingsUniforms(
                 drawableMesh.mMeshRenderSettingsUniforms)
     {
