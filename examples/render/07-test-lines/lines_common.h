@@ -23,6 +23,9 @@
 #ifndef LINES_COMMON_H
 #define LINES_COMMON_H
 
+#include <vclib/bgfx/drawable/lines/lines/cpu_generated_lines.h>
+#include <vclib/bgfx/drawable/lines/lines/gpu_generated_lines.h>
+
 #include <vclib/bgfx/drawable/lines/drawable_lines.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
@@ -57,17 +60,30 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
     for (vcl::uint i = 0; i < nLines; i++)
         pushRandomLine(points);
 
+    auto cpuLines = std::make_shared<vcl::lines::DrawableCPULines>(points);
+    auto gpuLines = std::make_shared<vcl::lines::DrawableGPULines>(points);
+    auto instancingLines = std::make_shared<vcl::lines::DrawableInstancingLines>(points);
+    auto indirectLines = std::make_shared<vcl::lines::DrawableIndirectLines>(points);
+    auto textureLines = std::make_shared<vcl::lines::DrawableTextureLines>(points);
+
+    cpuLines->getSettings()->setColorToUse(
+        vcl::lines::ColorToUse::PER_VERTEX_COLOR);
+    gpuLines->getSettings()->setColorToUse(
+        vcl::lines::ColorToUse::PER_VERTEX_COLOR);
+    instancingLines->getSettings()->setColorToUse(
+        vcl::lines::ColorToUse::PER_VERTEX_COLOR);
+    indirectLines->getSettings()->setColorToUse(
+        vcl::lines::ColorToUse::PER_VERTEX_COLOR);
+    textureLines->getSettings()->setColorToUse(
+        vcl::lines::ColorToUse::PER_VERTEX_COLOR);
+
+    vec.pushBack(*cpuLines.get());
+    vec.pushBack(*gpuLines.get());
+    vec.pushBack(*instancingLines.get());
+    vec.pushBack(*indirectLines.get());
+    vec.pushBack(*textureLines.get());
+
     for (vcl::uint i = 0; i < 5; ++i) {
-        vcl::lines::LinesTypes type = static_cast<vcl::lines::LinesTypes>(
-            vcl::toUnderlying(vcl::lines::LinesTypes::CPU_GENERATED) + i);
-
-        auto line = vcl::lines::DrawableLines::create(
-            points, type);
-        line->getSettings()->setColorToUse(
-            vcl::lines::ColorToUse::PER_VERTEX_COLOR);
-
-        vec.pushBack(*line.get());
-
         vec.at(i)->setVisibility(false);
     }
 

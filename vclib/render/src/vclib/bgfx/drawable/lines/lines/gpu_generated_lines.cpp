@@ -20,14 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/lines/gpu_generated_lines.h>
+
+#include <vclib/bgfx/context/load_program.h>
 
 namespace vcl::lines {
 
 GPUGeneratedLines::GPUGeneratedLines(const std::vector<LinesVertex>& points) :
         mPoints(points)
 {
+    checkCaps();
     assert(bgfx::isValid(mComputeVerticesPH));
     allocateVertexBuffer();
     allocateIndexBuffer();
@@ -40,25 +42,7 @@ GPUGeneratedLines::GPUGeneratedLines(const std::vector<LinesVertex>& points) :
     generateBuffers();
 }
 
-GPUGeneratedLines::GPUGeneratedLines(const GPUGeneratedLines& other) :
-        DrawableLines(other)
-{
-    mPoints = other.mPoints;
-    assert(bgfx::isValid(mComputeVerticesPH));
-
-    allocateIndexBuffer();
-    allocateVertexBuffer();
-    allocatePointsBuffer();
-
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
-    generateBuffers();
-}
-
-GPUGeneratedLines::GPUGeneratedLines(GPUGeneratedLines&& other) :
-        DrawableLines(other)
+GPUGeneratedLines::GPUGeneratedLines(GPUGeneratedLines&& other)
 {
     swap(other);
 }
@@ -75,7 +59,7 @@ GPUGeneratedLines::~GPUGeneratedLines()
         bgfx::destroy(mPointsBH);
 }
 
-GPUGeneratedLines& GPUGeneratedLines::operator=(GPUGeneratedLines other)
+GPUGeneratedLines& GPUGeneratedLines::operator=(GPUGeneratedLines&& other)
 {
     swap(other);
     return *this;
@@ -84,17 +68,11 @@ GPUGeneratedLines& GPUGeneratedLines::operator=(GPUGeneratedLines other)
 void GPUGeneratedLines::swap(GPUGeneratedLines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mIndexesBH, other.mIndexesBH);
     std::swap(mVerticesBH, other.mVerticesBH);
     std::swap(mPoints, other.mPoints);
     std::swap(mPointsBH, other.mPointsBH);
-}
-
-std::shared_ptr<vcl::DrawableObject> GPUGeneratedLines::clone() const
-{
-    return std::make_shared<GPUGeneratedLines>(*this);
 }
 
 void GPUGeneratedLines::draw(uint viewId) const

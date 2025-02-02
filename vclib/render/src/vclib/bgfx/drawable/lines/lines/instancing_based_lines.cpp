@@ -26,20 +26,12 @@ namespace vcl::lines {
 InstancingBasedLines::InstancingBasedLines(
     const std::vector<LinesVertex>& points) : mPoints(points)
 {
+    checkCaps();
     allocateVerticesBuffer();
     allocateIndexesBuffer();
 }
 
-InstancingBasedLines::InstancingBasedLines(const InstancingBasedLines& other) :
-        DrawableLines(other)
-{
-    mPoints = other.mPoints;
-    allocateVerticesBuffer();
-    allocateIndexesBuffer();
-}
-
-InstancingBasedLines::InstancingBasedLines(InstancingBasedLines&& other) :
-        DrawableLines(other)
+InstancingBasedLines::InstancingBasedLines(InstancingBasedLines&& other)
 {
     swap(other);
 }
@@ -54,7 +46,7 @@ InstancingBasedLines::~InstancingBasedLines()
 }
 
 InstancingBasedLines& InstancingBasedLines::operator=(
-    InstancingBasedLines other)
+    InstancingBasedLines&& other)
 {
     swap(other);
     return *this;
@@ -64,18 +56,12 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
 {
     std::swap(mLinesPH, other.mLinesPH);
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mPoints, other.mPoints);
 
     std::swap(mVerticesBH, other.mVerticesBH);
     std::swap(mIndexesBH, other.mIndexesBH);
     std::swap(mInstanceDB, other.mInstanceDB);
-}
-
-std::shared_ptr<vcl::DrawableObject> InstancingBasedLines::clone() const
-{
-    return std::make_shared<InstancingBasedLines>(*this);
 }
 
 void InstancingBasedLines::draw(uint viewId) const

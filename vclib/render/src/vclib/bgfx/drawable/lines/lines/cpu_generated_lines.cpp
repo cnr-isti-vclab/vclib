@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/lines/cpu_generated_lines.h>
+
+#include <vclib/bgfx/context/load_program.h>
 
 namespace vcl::lines {
 CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex>& points) :
@@ -32,28 +33,7 @@ CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex>& points) :
     generateBuffers(points);
 }
 
-CPUGeneratedLines::CPUGeneratedLines(const CPUGeneratedLines& other) :
-        DrawableLines(other)
-{
-    mPointsSize = other.mPointsSize;
-    mIndexes    = other.mIndexes;
-    mVertices   = other.mVertices;
-
-    allocateIndexBuffer();
-    bgfx::update(
-        mIndexesBH,
-        0,
-        bgfx::makeRef(&mIndexes[0], sizeof(uint32_t) * mIndexes.size()));
-
-    allocateVertexBuffer();
-    bgfx::update(
-        mVerticesBH,
-        0,
-        bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
-}
-
-CPUGeneratedLines::CPUGeneratedLines(CPUGeneratedLines&& other) :
-        DrawableLines(other)
+CPUGeneratedLines::CPUGeneratedLines(CPUGeneratedLines&& other)
 {
     swap(other);
 }
@@ -67,7 +47,7 @@ CPUGeneratedLines::~CPUGeneratedLines()
         bgfx::destroy(mIndexesBH);
 }
 
-CPUGeneratedLines& CPUGeneratedLines::operator=(CPUGeneratedLines other)
+CPUGeneratedLines& CPUGeneratedLines::operator=(CPUGeneratedLines&& other)
 {
     swap(other);
     return *this;
@@ -76,7 +56,6 @@ CPUGeneratedLines& CPUGeneratedLines::operator=(CPUGeneratedLines other)
 void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mPointsSize, other.mPointsSize);
 
@@ -85,11 +64,6 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 
     std::swap(mVertices, other.mVertices);
     std::swap(mIndexes, other.mIndexes);
-}
-
-std::shared_ptr<vcl::DrawableObject> CPUGeneratedLines::clone() const
-{
-    return std::make_shared<CPUGeneratedLines>(*this);
 }
 
 void CPUGeneratedLines::update(const std::vector<LinesVertex>& points)

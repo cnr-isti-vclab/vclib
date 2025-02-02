@@ -32,6 +32,7 @@ TextureBasedLines::TextureBasedLines(
         mIndirectDataUH(
             bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
 {
+    checkCaps();
     allocateIndexesBuffer();
     allocateVerticesBuffer();
     allocatePointsBuffer();
@@ -44,29 +45,7 @@ TextureBasedLines::TextureBasedLines(
     generateTextureBuffer();
 }
 
-TextureBasedLines::TextureBasedLines(const TextureBasedLines& other) :
-        DrawableLines(other)
-{
-    mPoints         = other.mPoints;
-    mMaxTextureSize = other.mMaxTextureSize;
-    mIndirectBH     = bgfx::createIndirectBuffer(1);
-    mIndirectDataUH =
-        bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-
-    allocateIndexesBuffer();
-    allocateVerticesBuffer();
-    allocatePointsBuffer();
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
-
-    allocateTextureBuffer();
-    generateTextureBuffer();
-}
-
-TextureBasedLines::TextureBasedLines(TextureBasedLines&& other) :
-        DrawableLines(other)
+TextureBasedLines::TextureBasedLines(TextureBasedLines&& other)
 {
     swap(other);
 }
@@ -92,7 +71,7 @@ TextureBasedLines::~TextureBasedLines()
         bgfx::destroy(mIndirectDataUH);
 }
 
-TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines other)
+TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines&& other)
 {
     swap(other);
     return *this;
@@ -101,7 +80,6 @@ TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines other)
 void TextureBasedLines::swap(TextureBasedLines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mMaxTextureSize, other.mMaxTextureSize);
     std::swap(mPoints, other.mPoints);
@@ -114,11 +92,6 @@ void TextureBasedLines::swap(TextureBasedLines& other)
 
     std::swap(mVerticesBH, other.mVerticesBH);
     std::swap(mIndexesBH, other.mIndexesBH);
-}
-
-std::shared_ptr<vcl::DrawableObject> TextureBasedLines::clone() const
-{
-    return std::make_shared<TextureBasedLines>(*this);
 }
 
 void TextureBasedLines::draw(uint viewId) const

@@ -23,19 +23,22 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_INSTANCING_BASED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_INSTANCING_BASED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/drawable_lines.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class InstancingBasedLines : public DrawableLines
+class InstancingBasedLines
 {
+    static inline const std::vector<float> mVertices =
+        {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+    static inline const std::vector<uint32_t> mIndexes = {0, 1, 2, 1, 3, 2};
+
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::LINES_INSTANCING_BASED_VSFS);
 
-    static inline const std::vector<float> mVertices =
-        {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
-    static inline const std::vector<uint32_t> mIndexes = {0, 1, 2, 1, 3, 2};
+    mutable LinesSettings mSettings;
 
     std::vector<LinesVertex>         mPoints;
     mutable bgfx::InstanceDataBuffer mInstanceDB;
@@ -44,25 +47,29 @@ class InstancingBasedLines : public DrawableLines
     bgfx::IndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
 
 public:
-    InstancingBasedLines() = default;
+    InstancingBasedLines() { checkCaps(); }
 
     InstancingBasedLines(const std::vector<LinesVertex>& points);
 
-    InstancingBasedLines(const InstancingBasedLines& other);
+    InstancingBasedLines(const InstancingBasedLines& other) = delete;
 
     InstancingBasedLines(InstancingBasedLines&& other);
 
     ~InstancingBasedLines();
 
-    InstancingBasedLines& operator=(InstancingBasedLines other);
+    InstancingBasedLines& operator=(const InstancingBasedLines& other) = delete;
+
+    InstancingBasedLines& operator=(InstancingBasedLines&& other);
 
     void swap(InstancingBasedLines& other);
 
-    std::shared_ptr<vcl::DrawableObject> clone() const override;
+    LinesSettings* getSettings() const { return &mSettings; }
 
-    void draw(uint viewId) const override;
+    void setSettings(const LinesSettings settings) { mSettings = settings; }
 
-    void update(const std::vector<LinesVertex>& points) override;
+    void draw(uint viewId) const;
+
+    void update(const std::vector<LinesVertex>& points);
 
 private:
     void generateInstanceDataBuffer() const;
@@ -70,6 +77,17 @@ private:
     void allocateVerticesBuffer();
 
     void allocateIndexesBuffer();
+
+    void checkCaps() const
+    {
+        const bgfx::Caps* caps = bgfx::getCaps();
+        const bool instancingSupported =
+            bool(caps->supported & BGFX_CAPS_INSTANCING);
+
+        if (!instancingSupported) {
+            throw std::runtime_error("Instancing or compute are not supported");
+        }
+    }
 };
 
 } // namespace vcl::lines

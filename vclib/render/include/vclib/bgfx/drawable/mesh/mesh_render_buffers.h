@@ -31,10 +31,6 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/drawable/lines/drawable_lines.h>
 #include <vclib/bgfx/drawable/lines/lines/cpu_generated_lines.h>
-#include <vclib/bgfx/drawable/lines/lines/gpu_generated_lines.h>
-#include <vclib/bgfx/drawable/lines/lines/instancing_based_lines.h>
-#include <vclib/bgfx/drawable/lines/lines/indirect_based_lines.h>
-#include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/render/drawable/mesh/mesh_buffer_id.h>
@@ -67,7 +63,7 @@ class MeshRenderBuffers
     IndexBuffer mEdgeNormalBuffer;
     IndexBuffer mEdgeColorBuffer;
 
-    lines::CPUGeneratedLines mWireframeBH;
+    lines::GPUGeneratedLines mWireframeBH;
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
@@ -630,8 +626,8 @@ private:
                 }
             }
             // wireframe index buffer
-            mWireframeBH =
-                lines::CPUGeneratedLines(wireframe);
+            decltype(mWireframeBH) wir(wireframe);
+            mWireframeBH.swap(wir);
 
             // TODO: Should Be:
             // const uint NUM_EDGES =

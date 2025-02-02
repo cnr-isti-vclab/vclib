@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/lines/indirect_based_lines.h>
+
+#include <vclib/bgfx/context/load_program.h>
 
 namespace vcl::lines {
 
@@ -30,6 +31,7 @@ IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex>& points) :
         mIndirectDataUH(
             bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
 {
+    checkCaps();
     assert(bgfx::isValid(mComputeIndirectPH));
     allocateVerticesBuffer();
     allocateIndexesBuffer();
@@ -42,29 +44,7 @@ IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex>& points) :
         bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
 }
 
-IndirectBasedLines::IndirectBasedLines(const IndirectBasedLines& other) :
-        DrawableLines(other)
-{
-    mPoints     = other.mPoints;
-    mIndirectBH = bgfx::createIndirectBuffer(1);
-    mIndirectDataUH =
-        bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-
-    assert(bgfx::isValid(mComputeIndirectPH));
-
-    allocateVerticesBuffer();
-    allocateIndexesBuffer();
-    allocatePointsBuffer();
-    generateIndirectBuffer();
-
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
-}
-
-IndirectBasedLines::IndirectBasedLines(IndirectBasedLines&& other) :
-        DrawableLines(other)
+IndirectBasedLines::IndirectBasedLines(IndirectBasedLines&& other)
 {
     swap(other);
 }
@@ -87,7 +67,7 @@ IndirectBasedLines::~IndirectBasedLines()
         bgfx::destroy(mIndirectDataUH);
 }
 
-IndirectBasedLines& IndirectBasedLines::operator=(IndirectBasedLines other)
+IndirectBasedLines& IndirectBasedLines::operator=(IndirectBasedLines&& other)
 {
     swap(other);
     return *this;
@@ -96,7 +76,6 @@ IndirectBasedLines& IndirectBasedLines::operator=(IndirectBasedLines other)
 void IndirectBasedLines::swap(IndirectBasedLines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mPoints, other.mPoints);
 
@@ -106,11 +85,6 @@ void IndirectBasedLines::swap(IndirectBasedLines& other)
 
     std::swap(mIndirectBH, other.mIndirectBH);
     std::swap(mIndirectDataUH, other.mIndirectDataUH);
-}
-
-std::shared_ptr<vcl::DrawableObject> IndirectBasedLines::clone() const
-{
-    return std::make_shared<IndirectBasedLines>(*this);
 }
 
 void IndirectBasedLines::allocatePointsBuffer()

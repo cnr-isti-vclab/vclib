@@ -23,17 +23,20 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_CPU_GENERATED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_CPU_GENERATED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/drawable_lines.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class CPUGeneratedLines : public DrawableLines
+class CPUGeneratedLines
 {
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::LINES_CPU_GENERATED_VSFS);
 
-    uint32_t mPointsSize;
+    mutable LinesSettings mSettings;
+
+    uint32_t mPointsSize = 0;
 
     std::vector<float>    mVertices;
     std::vector<uint32_t> mIndexes;
@@ -46,21 +49,25 @@ public:
 
     CPUGeneratedLines(const std::vector<LinesVertex>& points);
 
-    CPUGeneratedLines(const CPUGeneratedLines& other);
+    CPUGeneratedLines(const CPUGeneratedLines& other) = delete;
 
     CPUGeneratedLines(CPUGeneratedLines&& other);
 
     ~CPUGeneratedLines();
 
-    CPUGeneratedLines& operator=(CPUGeneratedLines other);
+    CPUGeneratedLines& operator=(const CPUGeneratedLines& other) = delete;
+
+    CPUGeneratedLines& operator=(CPUGeneratedLines&& other);
 
     void swap(CPUGeneratedLines& other);
 
-    std::shared_ptr<vcl::DrawableObject> clone() const override;
+    LinesSettings* getSettings() const { return &mSettings; }
 
-    void draw(uint viewId) const override;
+    void setSettings(const LinesSettings settings) { mSettings = settings; }
 
-    void update(const std::vector<LinesVertex>& points) override;
+    void draw(uint viewId) const;
+
+    void update(const std::vector<LinesVertex>& points);
 
 private:
     void generateBuffers(const std::vector<LinesVertex> points);
