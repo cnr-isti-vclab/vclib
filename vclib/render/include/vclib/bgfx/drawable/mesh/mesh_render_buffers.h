@@ -172,10 +172,7 @@ public:
         }
     }
 
-    void bindUniforms() const
-    {
-        mMeshUniforms.bind();
-    }
+    void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
     void createBGFXBuffers(const MeshType& mesh)
