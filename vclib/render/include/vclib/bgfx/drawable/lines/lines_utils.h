@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_UTILS_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_UTILS_H
 
+#include <bit>
 #include <cmath>
 #include <cstdint>
 
