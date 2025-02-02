@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_BUFFERS_H
 #define VCL_BGFX_BUFFERS_H
 
+#include "buffers/dynamic_index_buffer.h"
 #include "buffers/dynamic_vertex_buffer.h"
 #include "buffers/index_buffer.h"
 #include "buffers/vertex_buffer.h"
