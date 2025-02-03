@@ -31,6 +31,7 @@ GPUGeneratedPolylines::GPUGeneratedPolylines(
         mComputeDataUH(
             bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4))
 {
+    checkCaps();
     allocatePointsBuffer();
     allocateVertexBuffer();
     allocateIndexBuffer();
@@ -42,26 +43,7 @@ GPUGeneratedPolylines::GPUGeneratedPolylines(
     generateBuffers();
 }
 
-GPUGeneratedPolylines::GPUGeneratedPolylines(
-    const GPUGeneratedPolylines& other) : DrawablePolylines(other)
-{
-    mPoints = other.mPoints;
-    mComputeDataUH =
-        bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4);
-
-    allocatePointsBuffer();
-    allocateVertexBuffer();
-    allocateIndexBuffer();
-
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
-    generateBuffers();
-}
-
-GPUGeneratedPolylines::GPUGeneratedPolylines(GPUGeneratedPolylines&& other) :
-        DrawablePolylines(other)
+GPUGeneratedPolylines::GPUGeneratedPolylines(GPUGeneratedPolylines&& other)
 {
     swap(other);
 }
@@ -85,7 +67,7 @@ GPUGeneratedPolylines::~GPUGeneratedPolylines()
 }
 
 GPUGeneratedPolylines& GPUGeneratedPolylines::operator=(
-    GPUGeneratedPolylines other)
+    GPUGeneratedPolylines&& other)
 {
     swap(other);
     return *this;
@@ -94,7 +76,6 @@ GPUGeneratedPolylines& GPUGeneratedPolylines::operator=(
 void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mPoints, other.mPoints);
 
@@ -105,11 +86,6 @@ void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
     std::swap(mJoinesIndexesBH, other.mJoinesIndexesBH);
 
     std::swap(mComputeDataUH, other.mComputeDataUH);
-}
-
-std::shared_ptr<vcl::DrawableObject> GPUGeneratedPolylines::clone() const
-{
-    return std::make_shared<GPUGeneratedPolylines>(*this);
 }
 
 void GPUGeneratedPolylines::draw(uint viewId) const

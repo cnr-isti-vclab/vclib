@@ -32,35 +32,7 @@ CPUGeneratedPolylines::CPUGeneratedPolylines(
     generateBuffers(points);
 }
 
-CPUGeneratedPolylines::CPUGeneratedPolylines(
-    const CPUGeneratedPolylines& other) : DrawablePolylines(other)
-{
-    mPointsSize      = other.mPointsSize;
-    mVertices        = other.mVertices;
-    mJoinsIndexes    = other.mJoinsIndexes;
-    mSegmentsIndexes = other.mSegmentsIndexes;
-
-    allocateVertexBuffer();
-    allocateIndexesBuffer();
-
-    bgfx::update(
-        mVerticesBH,
-        0,
-        bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
-    bgfx::update(
-        mSegmentsIndexesBH,
-        0,
-        bgfx::makeRef(
-            &mSegmentsIndexes[0], sizeof(uint32_t) * mSegmentsIndexes.size()));
-    bgfx::update(
-        mJoinsIndexesBH,
-        0,
-        bgfx::makeRef(
-            &mJoinsIndexes[0], sizeof(uint32_t) * mJoinsIndexes.size()));
-}
-
-CPUGeneratedPolylines::CPUGeneratedPolylines(CPUGeneratedPolylines&& other) :
-        DrawablePolylines(other)
+CPUGeneratedPolylines::CPUGeneratedPolylines(CPUGeneratedPolylines&& other)
 {
     swap(other);
 }
@@ -78,7 +50,7 @@ CPUGeneratedPolylines::~CPUGeneratedPolylines()
 }
 
 CPUGeneratedPolylines& CPUGeneratedPolylines::operator=(
-    CPUGeneratedPolylines other)
+    CPUGeneratedPolylines&& other)
 {
     swap(other);
     return *this;
@@ -87,7 +59,6 @@ CPUGeneratedPolylines& CPUGeneratedPolylines::operator=(
 void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mPointsSize, other.mPointsSize);
 
@@ -98,11 +69,6 @@ void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
     std::swap(mVerticesBH, other.mVerticesBH);
     std::swap(mSegmentsIndexesBH, other.mSegmentsIndexesBH);
     std::swap(mJoinsIndexesBH, other.mJoinsIndexesBH);
-}
-
-std::shared_ptr<vcl::DrawableObject> CPUGeneratedPolylines::clone() const
-{
-    return std::make_shared<CPUGeneratedPolylines>(*this);
 }
 
 void CPUGeneratedPolylines::draw(uint viewId) const

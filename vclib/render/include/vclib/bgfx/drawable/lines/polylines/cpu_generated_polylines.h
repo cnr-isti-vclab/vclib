@@ -23,15 +23,18 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_CPU_GENERATED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_CPU_GENERATED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class CPUGeneratedPolylines : public DrawablePolylines
+class CPUGeneratedPolylines
 {
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_CPU_GENERATED_VSFS);
+
+    LinesSettings mSettings;
 
     uint32_t              mPointsSize;
     std::vector<float>    mVertices;
@@ -47,21 +50,26 @@ public:
 
     CPUGeneratedPolylines(const std::vector<LinesVertex>& points);
 
-    CPUGeneratedPolylines(const CPUGeneratedPolylines& other);
+    CPUGeneratedPolylines(const CPUGeneratedPolylines& other) = delete;
 
     CPUGeneratedPolylines(CPUGeneratedPolylines&& other);
 
     ~CPUGeneratedPolylines();
 
-    CPUGeneratedPolylines& operator=(CPUGeneratedPolylines other);
+    CPUGeneratedPolylines& operator=(const CPUGeneratedPolylines& other) =
+        delete;
+
+    CPUGeneratedPolylines& operator=(CPUGeneratedPolylines&& other);
 
     void swap(CPUGeneratedPolylines& other);
 
-    std::shared_ptr<vcl::DrawableObject> clone() const override;
+    LinesSettings& settings() { return mSettings; }
 
-    void draw(uint viewId) const override;
+    const LinesSettings& settings() const { return mSettings; }
 
-    void update(const std::vector<LinesVertex>& points) override;
+    void draw(uint viewId) const;
+
+    void update(const std::vector<LinesVertex>& points);
 
 private:
     void generateBuffers(const std::vector<LinesVertex> points);

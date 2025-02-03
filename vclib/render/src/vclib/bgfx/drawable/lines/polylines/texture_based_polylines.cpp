@@ -34,6 +34,7 @@ TextureBasedPolylines::TextureBasedPolylines(
         mComputeDataUH(
             bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
 {
+    checkCaps();
     assert(bgfx::isValid(mComputeTexturePH));
 
     allocateVerticesBuffer();
@@ -48,32 +49,7 @@ TextureBasedPolylines::TextureBasedPolylines(
     generateTextureBuffer();
 }
 
-TextureBasedPolylines::TextureBasedPolylines(
-    const TextureBasedPolylines& other) : DrawablePolylines(other)
-{
-    mPoints             = other.mPoints;
-    mMaxTextureSize     = other.mMaxTextureSize;
-    mJoinesIndirectBH   = bgfx::createIndirectBuffer(1);
-    mSegmentsIndirectBH = bgfx::createIndirectBuffer(1);
-    mComputeDataUH =
-        bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-
-    assert(bgfx::isValid(mComputeTexturePH));
-
-    allocateVerticesBuffer();
-    allocateIndexesBuffer();
-    allocateTextureBuffer();
-    allocatePointsBuffer();
-
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
-    generateTextureBuffer();
-}
-
-TextureBasedPolylines::TextureBasedPolylines(TextureBasedPolylines&& other) :
-        DrawablePolylines(other)
+TextureBasedPolylines::TextureBasedPolylines(TextureBasedPolylines&& other)
 {
     swap(other);
 }
@@ -106,7 +82,7 @@ TextureBasedPolylines::~TextureBasedPolylines()
 }
 
 TextureBasedPolylines& TextureBasedPolylines::operator=(
-    TextureBasedPolylines other)
+    TextureBasedPolylines&& other)
 {
     swap(other);
     return *this;
@@ -115,7 +91,6 @@ TextureBasedPolylines& TextureBasedPolylines::operator=(
 void TextureBasedPolylines::swap(TextureBasedPolylines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mMaxTextureSize, other.mMaxTextureSize);
     std::swap(mPoints, other.mPoints);
@@ -131,11 +106,6 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
     std::swap(mJoinesTextureBH, other.mJoinesTextureBH);
 
     std::swap(mComputeDataUH, other.mComputeDataUH);
-}
-
-std::shared_ptr<vcl::DrawableObject> TextureBasedPolylines::clone() const
-{
-    return std::make_shared<TextureBasedPolylines>(*this);
 }
 
 void TextureBasedPolylines::draw(uint viewId) const

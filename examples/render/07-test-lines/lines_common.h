@@ -23,9 +23,6 @@
 #ifndef LINES_COMMON_H
 #define LINES_COMMON_H
 
-#include <vclib/bgfx/drawable/lines/lines/cpu_generated_lines.h>
-#include <vclib/bgfx/drawable/lines/lines/gpu_generated_lines.h>
-
 #include <vclib/bgfx/drawable/lines/drawable_lines.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 

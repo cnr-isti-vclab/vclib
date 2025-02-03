@@ -23,11 +23,12 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_TEXTURE_BASED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_TEXTURE_BASED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class TextureBasedPolylines : public DrawablePolylines
+class TextureBasedPolylines
 {
     static const inline std::vector<float>    VERTICES =
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
@@ -45,6 +46,8 @@ class TextureBasedPolylines : public DrawablePolylines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_TEXTURE_BASED_CS);
 
+    LinesSettings mSettings;
+
     uint32_t                 mMaxTextureSize;
     std::vector<LinesVertex> mPoints;
 
@@ -61,27 +64,32 @@ class TextureBasedPolylines : public DrawablePolylines
     bgfx::UniformHandle mComputeDataUH = BGFX_INVALID_HANDLE;
 
 public:
-    TextureBasedPolylines() = default;
+    TextureBasedPolylines() { checkCaps(); }
 
     TextureBasedPolylines(
         const std::vector<LinesVertex>& points,
-        const uint32_t                  maxTextureSize);
+        const uint32_t maxTextureSize = bgfx::getCaps()->limits.maxTextureSize);
 
-    TextureBasedPolylines(const TextureBasedPolylines& other);
+    TextureBasedPolylines(const TextureBasedPolylines& other) = delete;
 
     TextureBasedPolylines(TextureBasedPolylines&& other);
 
     ~TextureBasedPolylines();
 
-    TextureBasedPolylines& operator=(TextureBasedPolylines other);
+    TextureBasedPolylines& operator=(const TextureBasedPolylines& other) =
+        delete;
+
+    TextureBasedPolylines& operator=(TextureBasedPolylines&& other);
 
     void swap(TextureBasedPolylines& other);
 
-    std::shared_ptr<vcl::DrawableObject> clone() const override;
+    LinesSettings& settings() { return mSettings; }
 
-    void draw(uint viewId) const override;
+    const LinesSettings& settings() const { return mSettings; }
 
-    void update(const std::vector<LinesVertex>& points) override;
+    void draw(uint viewId) const;
+
+    void update(const std::vector<LinesVertex>& points);
 
 private:
     void generateTextureBuffer();
@@ -93,6 +101,25 @@ private:
     void allocateVerticesBuffer();
 
     void allocateIndexesBuffer();
+
+    void checkCaps() const
+    {
+        const bgfx::Caps* caps = bgfx::getCaps();
+        const bool computeSupported = bool(caps->supported & BGFX_CAPS_COMPUTE);
+        const bool indirectSupported =
+            bool(caps->supported & BGFX_CAPS_DRAW_INDIRECT);
+        const bool instancingSupported =
+            bool(caps->supported & BGFX_CAPS_INSTANCING);
+        const bool textureSupported =
+            bool(caps->supported & BGFX_CAPS_TEXTURE_2D_ARRAY);
+
+        if (!(instancingSupported && computeSupported && indirectSupported &&
+              textureSupported)) {
+            throw std::runtime_error(
+                "Instancing or compute or indirect or texture are not "
+                "supported");
+        }
+    }
 };
 
 } // namespace vcl::lines

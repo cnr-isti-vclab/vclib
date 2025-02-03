@@ -23,11 +23,12 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_GPU_GENERATED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_GPU_GENERATED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class GPUGeneratedPolylines : public DrawablePolylines
+class GPUGeneratedPolylines
 {
     bgfx::ProgramHandle mComputeVertexPH =
         Context::instance().programManager().getProgram(
@@ -36,6 +37,8 @@ class GPUGeneratedPolylines : public DrawablePolylines
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_CPU_GENERATED_VSFS);
+
+    LinesSettings mSettings;
 
     std::vector<LinesVertex> mPoints;
 
@@ -48,25 +51,30 @@ class GPUGeneratedPolylines : public DrawablePolylines
     bgfx::UniformHandle mComputeDataUH = BGFX_INVALID_HANDLE;
 
 public:
-    GPUGeneratedPolylines() = default;
+    GPUGeneratedPolylines() { checkCaps(); }
 
     GPUGeneratedPolylines(const std::vector<LinesVertex>& points);
 
-    GPUGeneratedPolylines(const GPUGeneratedPolylines& other);
+    GPUGeneratedPolylines(const GPUGeneratedPolylines& other) = delete;
 
     GPUGeneratedPolylines(GPUGeneratedPolylines&& other);
 
     ~GPUGeneratedPolylines();
 
-    GPUGeneratedPolylines& operator=(GPUGeneratedPolylines other);
+    GPUGeneratedPolylines& operator=(const GPUGeneratedPolylines& other) =
+        delete;
+
+    GPUGeneratedPolylines& operator=(GPUGeneratedPolylines&& other);
 
     void swap(GPUGeneratedPolylines& other);
 
-    std::shared_ptr<vcl::DrawableObject> clone() const override;
+    LinesSettings& settings() { return mSettings; }
 
-    void draw(uint viewId) const override;
+    const LinesSettings& settings() const { return mSettings; }
 
-    void update(const std::vector<LinesVertex>& points) override;
+    void draw(uint viewId) const;
+
+    void update(const std::vector<LinesVertex>& points);
 
 private:
     void generateBuffers();
@@ -76,6 +84,15 @@ private:
     void allocateIndexBuffer();
 
     void allocatePointsBuffer();
+
+    void checkCaps() const
+    {
+        const bgfx::Caps* caps = bgfx::getCaps();
+        const bool computeSupported = bool(caps->supported & BGFX_CAPS_COMPUTE);
+        if (!computeSupported) {
+            throw std::runtime_error("GPU compute not supported");
+        }
+    }
 };
 
 } // namespace vcl::lines

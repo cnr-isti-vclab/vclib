@@ -32,6 +32,7 @@ IndirectBasedPolylines::IndirectBasedPolylines(
         mComputeIndirectDataUH(
             bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
 {
+    checkCaps();
     allocateIndexesBuffers();
     allocateVerticesBuffer();
     generateIndirectBuffers();
@@ -43,28 +44,7 @@ IndirectBasedPolylines::IndirectBasedPolylines(
         bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
 }
 
-IndirectBasedPolylines::IndirectBasedPolylines(
-    const IndirectBasedPolylines& other) : DrawablePolylines(other)
-{
-    mPoints             = other.mPoints;
-    mJoinesIndirectBH   = bgfx::createIndirectBuffer(1);
-    mSegmentsIndirectBH = bgfx::createIndirectBuffer(1);
-    mComputeIndirectDataUH =
-        bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4);
-
-    allocateIndexesBuffers();
-    allocateVerticesBuffer();
-    generateIndirectBuffers();
-
-    allocatePointsBuffer();
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
-}
-
-IndirectBasedPolylines::IndirectBasedPolylines(IndirectBasedPolylines&& other) :
-        DrawablePolylines(other)
+IndirectBasedPolylines::IndirectBasedPolylines(IndirectBasedPolylines&& other)
 {
     swap(other);
 }
@@ -91,7 +71,7 @@ IndirectBasedPolylines::~IndirectBasedPolylines()
 }
 
 IndirectBasedPolylines& IndirectBasedPolylines::operator=(
-    IndirectBasedPolylines other)
+    IndirectBasedPolylines&& other)
 {
     swap(other);
     return *this;
@@ -100,7 +80,6 @@ IndirectBasedPolylines& IndirectBasedPolylines::operator=(
 void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mPoints, other.mPoints);
 
@@ -112,11 +91,6 @@ void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
     std::swap(mJoinesIndirectBH, other.mJoinesIndirectBH);
 
     std::swap(mComputeIndirectDataUH, other.mComputeIndirectDataUH);
-}
-
-std::shared_ptr<vcl::DrawableObject> IndirectBasedPolylines::clone() const
-{
-    return std::make_shared<IndirectBasedPolylines>(*this);
 }
 
 void IndirectBasedPolylines::draw(uint viewId) const

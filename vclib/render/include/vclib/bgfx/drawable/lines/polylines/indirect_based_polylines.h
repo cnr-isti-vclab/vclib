@@ -23,11 +23,12 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_INDIRECT_BASED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_INDIRECT_BASED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class IndirectBasedPolylines : public DrawablePolylines
+class IndirectBasedPolylines
 {
     static const inline std::vector<float> VERTICES =
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
@@ -45,6 +46,8 @@ class IndirectBasedPolylines : public DrawablePolylines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
 
+    LinesSettings mSettings;
+
     std::vector<LinesVertex> mPoints;
 
     bgfx::VertexBufferHandle        mVerticesBH         = BGFX_INVALID_HANDLE;
@@ -56,25 +59,29 @@ class IndirectBasedPolylines : public DrawablePolylines
     bgfx::UniformHandle mComputeIndirectDataUH = BGFX_INVALID_HANDLE;
 
 public:
-    IndirectBasedPolylines() = default;
+    IndirectBasedPolylines() { checkCaps(); }
 
     IndirectBasedPolylines(const std::vector<LinesVertex>& points);
 
-    IndirectBasedPolylines(const IndirectBasedPolylines& other);
+    IndirectBasedPolylines(const IndirectBasedPolylines& other) = delete;
 
     IndirectBasedPolylines(IndirectBasedPolylines&& other);
 
     ~IndirectBasedPolylines();
 
-    IndirectBasedPolylines& operator=(IndirectBasedPolylines other);
+    IndirectBasedPolylines& operator=(const IndirectBasedPolylines& other) = delete;
+
+    IndirectBasedPolylines& operator=(IndirectBasedPolylines&& other);
 
     void swap(IndirectBasedPolylines& other);
 
-    std::shared_ptr<vcl::DrawableObject> clone() const override;
+    LinesSettings& settings() { return mSettings; }
 
-    void draw(uint viewId) const override;
+    const LinesSettings& settings() const { return mSettings; }
 
-    void update(const std::vector<LinesVertex>& points) override;
+    void draw(uint viewId) const;
+
+    void update(const std::vector<LinesVertex>& points);
 
 private:
     void generateIndirectBuffers();
@@ -84,6 +91,20 @@ private:
     void allocateVerticesBuffer();
 
     void allocateIndexesBuffers();
+
+    void checkCaps() const
+    {
+        const bgfx::Caps* caps = bgfx::getCaps();
+        const bool computeSupported = bool(caps->supported & BGFX_CAPS_COMPUTE);
+        const bool indirectSupported =
+            bool(caps->supported & BGFX_CAPS_DRAW_INDIRECT);
+        const bool instancingSupported =
+            bool(caps->supported & BGFX_CAPS_INSTANCING);
+
+        if (!(instancingSupported && computeSupported && indirectSupported)) {
+            throw std::runtime_error("Instancing or compute are not supported");
+        }
+    }
 };
 
 } // namespace vcl::lines

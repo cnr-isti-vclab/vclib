@@ -23,11 +23,12 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
+#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class InstancingBasedPolylines : public DrawablePolylines
+class InstancingBasedPolylines
 {
     static const inline std::vector<float> VERTICES =
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
@@ -41,6 +42,8 @@ class InstancingBasedPolylines : public DrawablePolylines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INSTANCING_BASED_VSFS);
 
+    LinesSettings mSettings;
+
     std::vector<LinesVertex> mPoints;
 
     mutable bgfx::InstanceDataBuffer mSegmentsInstanceDB;
@@ -50,25 +53,30 @@ class InstancingBasedPolylines : public DrawablePolylines
     bgfx::IndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
 
 public:
-    InstancingBasedPolylines() = default;
+    InstancingBasedPolylines() { checkCaps(); }
 
     InstancingBasedPolylines(const std::vector<LinesVertex>& points);
 
-    InstancingBasedPolylines(const InstancingBasedPolylines& other);
+    InstancingBasedPolylines(const InstancingBasedPolylines& other) = delete;
 
     InstancingBasedPolylines(InstancingBasedPolylines&& other);
 
     ~InstancingBasedPolylines();
 
-    InstancingBasedPolylines& operator=(InstancingBasedPolylines other);
+    InstancingBasedPolylines& operator=(const InstancingBasedPolylines& other) =
+        delete;
+
+    InstancingBasedPolylines& operator=(InstancingBasedPolylines&& other);
 
     void swap(InstancingBasedPolylines& other);
 
-    std::shared_ptr<vcl::DrawableObject> clone() const override;
+    LinesSettings& settings() { return mSettings; }
 
-    void draw(uint viewId) const override;
+    const LinesSettings& settings() const { return mSettings; }
 
-    void update(const std::vector<LinesVertex>& points) override;
+    void draw(uint viewId) const;
+
+    void update(const std::vector<LinesVertex>& points);
 
 private:
     void generateInstanceBuffer() const;
@@ -76,6 +84,17 @@ private:
     void allocateVerticesBuffer();
 
     void allocateIndexesBuffer();
+
+    void checkCaps() const
+    {
+        const bgfx::Caps* caps = bgfx::getCaps();
+        const bool instancingSupported =
+            bool(caps->supported & BGFX_CAPS_INSTANCING);
+
+        if (!instancingSupported) {
+            throw std::runtime_error("Instancing or compute are not supported");
+        }
+    }
 };
 
 } // namespace vcl::lines

@@ -27,21 +27,13 @@ namespace vcl::lines {
 InstancingBasedPolylines::InstancingBasedPolylines(
     const std::vector<LinesVertex>& points) : mPoints(points)
 {
+    checkCaps();
     allocateVerticesBuffer();
     allocateIndexesBuffer();
 }
 
 InstancingBasedPolylines::InstancingBasedPolylines(
-    const InstancingBasedPolylines& other) : DrawablePolylines(other)
-{
-    mPoints = other.mPoints;
-
-    allocateVerticesBuffer();
-    allocateIndexesBuffer();
-}
-
-InstancingBasedPolylines::InstancingBasedPolylines(
-    InstancingBasedPolylines&& other) : DrawablePolylines(other)
+    InstancingBasedPolylines&& other)
 {
     swap(other);
 }
@@ -56,7 +48,7 @@ InstancingBasedPolylines::~InstancingBasedPolylines()
 }
 
 InstancingBasedPolylines& InstancingBasedPolylines::operator=(
-    InstancingBasedPolylines other)
+    InstancingBasedPolylines&& other)
 {
     swap(other);
     return *this;
@@ -65,7 +57,6 @@ InstancingBasedPolylines& InstancingBasedPolylines::operator=(
 void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 {
     std::swap(mSettings, other.mSettings);
-    std::swap(mVisible, other.mVisible);
 
     std::swap(mPoints, other.mPoints);
 
@@ -74,11 +65,6 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 
     std::swap(mVerticesBH, other.mVerticesBH);
     std::swap(mIndexesBH, other.mIndexesBH);
-}
-
-std::shared_ptr<vcl::DrawableObject> InstancingBasedPolylines::clone() const
-{
-    return std::make_shared<InstancingBasedPolylines>(*this);
 }
 
 void InstancingBasedPolylines::draw(uint viewId) const

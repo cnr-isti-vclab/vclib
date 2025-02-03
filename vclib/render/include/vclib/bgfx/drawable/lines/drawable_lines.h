@@ -62,7 +62,7 @@ public:
 
     DrawableLines(DrawableLines&& other) { swap(other); }
 
-    virtual ~DrawableLines() = default;
+    ~DrawableLines() = default;
 
     DrawableLines& operator=(DrawableLines other)
     {
