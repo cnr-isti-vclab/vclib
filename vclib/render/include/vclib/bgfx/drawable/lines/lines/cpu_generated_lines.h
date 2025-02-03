@@ -35,9 +35,6 @@ class CPUGeneratedLines : public Lines
             VclProgram::LINES_CPU_GENERATED_VSFS);
     uint mPointsSize = 0;
 
-    std::vector<float> mVertices;
-    std::vector<uint>  mIndexes;
-
     bgfx::DynamicVertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
     bgfx::DynamicIndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
 

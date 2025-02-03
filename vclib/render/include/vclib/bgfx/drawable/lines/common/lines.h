@@ -58,6 +58,17 @@ protected:
     {
         mSettings.bindUniformPolylines();
     }
+
+    template<typename T>
+    static std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(
+        uint size)
+    {
+        T* buffer = new T[size];
+
+        return std::make_pair(buffer, [](void* ptr, void*) {
+            delete[] static_cast<T*>(ptr);
+        });
+    }
 };
 
 } // namespace vcl::lines

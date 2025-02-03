@@ -61,16 +61,10 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 
     std::swap(mIndexesBH, other.mIndexesBH);
     std::swap(mVerticesBH, other.mVerticesBH);
-
-    std::swap(mVertices, other.mVertices);
-    std::swap(mIndexes, other.mIndexes);
 }
 
 void CPUGeneratedLines::update(const std::vector<LinesVertex>& points)
 {
-    mVertices.clear();
-    mIndexes.clear();
-
     if (mPointsSize > points.size()) {
         bgfx::destroy(mVerticesBH);
         bgfx::destroy(mIndexesBH);
@@ -99,46 +93,61 @@ void CPUGeneratedLines::draw(uint viewId) const
 
 void CPUGeneratedLines::generateBuffers(const std::vector<LinesVertex> points)
 {
+    //std::vector<float> vertices;
+    //std::vector<uint>  indices;
+
+    uint bufferVertsSize = points.size() * 4 * 12;
+
+    uint bufferIndsSize = points.size() * 6;
+
+    auto [vertices, vReleaseFn] =
+        getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
+
+    auto [indices, iReleaseFn] =
+        getAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
+
+    uint vi = 0;
+    uint ii = 0;
     for (uint i = 1; i < points.size(); i += 2) {
         for (uint k = 0; k < 2; k++) {
             for (uint j = 0; j < 2; j++) {
-                mVertices.push_back(points[i - 1].X);
-                mVertices.push_back(points[i - 1].Y);
-                mVertices.push_back(points[i - 1].Z);
+                vertices[vi++] = points[i - 1].X;
+                vertices[vi++] = points[i - 1].Y;
+                vertices[vi++] = points[i - 1].Z;
 
-                mVertices.push_back(points[i].X);
-                mVertices.push_back(points[i].Y);
-                mVertices.push_back(points[i].Z);
+                vertices[vi++] = points[i].X;
+                vertices[vi++] = points[i].Y;
+                vertices[vi++] = points[i].Z;
 
-                mVertices.push_back(points[i - (1 - k)].getReverseColor());
+                vertices[vi++] = points[i - (1 - k)].getReverseColor();
 
-                mVertices.push_back(points[i - (1 - k)].xN);
-                mVertices.push_back(points[i - (1 - k)].yN);
-                mVertices.push_back(points[i - (1 - k)].zN);
+                vertices[vi++] = points[i - (1 - k)].xN;
+                vertices[vi++] = points[i - (1 - k)].yN;
+                vertices[vi++] = points[i - (1 - k)].zN;
 
-                mVertices.push_back(k);
-                mVertices.push_back(j);
+                vertices[vi++] = k;
+                vertices[vi++] = j;
             }
         }
 
         uint index = (4 * (i / 2));
-        mIndexes.push_back(index);
-        mIndexes.push_back(index + 3);
-        mIndexes.push_back(index + 1);
+        indices[ii++] = index;
+        indices[ii++] = index + 3;
+        indices[ii++] = index + 1;
 
-        mIndexes.push_back(index);
-        mIndexes.push_back(index + 2);
-        mIndexes.push_back(index + 3);
+        indices[ii++] = index;
+        indices[ii++] = index + 2;
+        indices[ii++] = index + 3;
     }
 
     bgfx::update(
         mVerticesBH,
         0,
-        bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
+        bgfx::makeRef(vertices, sizeof(float) * bufferVertsSize, vReleaseFn));
     bgfx::update(
         mIndexesBH,
         0,
-        bgfx::makeRef(&mIndexes[0], sizeof(uint) * mIndexes.size()));
+        bgfx::makeRef(indices, sizeof(uint) * bufferIndsSize, iReleaseFn));
 }
 
 void CPUGeneratedLines::allocateVertexBuffer()
