@@ -23,7 +23,8 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_SETTINGS_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_SETTINGS_H
 
-#include <vclib/bgfx/drawable/lines/lines_utils.h>
+#include "lines_utils.h"
+
 #include <vclib/bgfx/uniform.h>
 
 #include <bgfx/bgfx.h>

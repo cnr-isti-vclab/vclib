@@ -29,8 +29,6 @@
 #include "lines/indirect_based_lines.h"
 #include "lines/texture_based_lines.h"
 
-#include "lines_utils.h"
-
 #include <vclib/bgfx/context.h>
 #include <vclib/render/drawable/drawable_object.h>
 

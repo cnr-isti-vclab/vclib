@@ -75,7 +75,7 @@ GPUGeneratedPolylines& GPUGeneratedPolylines::operator=(
 
 void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mPoints, other.mPoints);
 
@@ -90,7 +90,7 @@ void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
 
 void GPUGeneratedPolylines::draw(uint viewId) const
 {
-    mSettings.bindUniformPolylines();
+    bindSettingsUniformPolylines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -101,7 +101,7 @@ void GPUGeneratedPolylines::draw(uint viewId) const
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH);
 
-    if (mSettings.getJoin() != 0) {
+    if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVertexBH);
         bgfx::setIndexBuffer(mJoinesIndexesBH);
         bgfx::setState(state);

@@ -23,23 +23,22 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_CPU_GENERATED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_CPU_GENERATED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
+
 #include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class CPUGeneratedPolylines
+class CPUGeneratedPolylines : public Lines
 {
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_CPU_GENERATED_VSFS);
 
-    LinesSettings mSettings;
-
-    uint32_t              mPointsSize;
+    uint              mPointsSize;
     std::vector<float>    mVertices;
-    std::vector<uint32_t> mSegmentsIndexes;
-    std::vector<uint32_t> mJoinsIndexes;
+    std::vector<uint> mSegmentsIndexes;
+    std::vector<uint> mJoinsIndexes;
 
     bgfx::DynamicVertexBufferHandle mVerticesBH        = BGFX_INVALID_HANDLE;
     bgfx::DynamicIndexBufferHandle  mSegmentsIndexesBH = BGFX_INVALID_HANDLE;
@@ -62,10 +61,6 @@ public:
     CPUGeneratedPolylines& operator=(CPUGeneratedPolylines&& other);
 
     void swap(CPUGeneratedPolylines& other);
-
-    LinesSettings& settings() { return mSettings; }
-
-    const LinesSettings& settings() const { return mSettings; }
 
     void draw(uint viewId) const;
 

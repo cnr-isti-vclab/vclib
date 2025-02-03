@@ -29,8 +29,6 @@
 #include "polylines/instancing_based_polylines.h"
 #include "polylines/texture_based_polylines.h"
 
-#include "lines_utils.h"
-
 #include <vclib/bgfx/context.h>
 #include <vclib/render/drawable/drawable_object.h>
 
@@ -46,10 +44,6 @@ class DrawablePolylines : public vcl::DrawableObject
     bool                     mVisible = true;
 
 public:
-    // static std::unique_ptr<DrawablePolylines> create(
-    //     const std::vector<LinesVertex>& points,
-    //     LinesTypes                      type = LinesTypes::CPU_GENERATED);
-
     DrawablePolylines() = default;
 
     DrawablePolylines(const std::vector<LinesVertex>& points) : mPoints(points)

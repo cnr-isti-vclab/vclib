@@ -23,16 +23,17 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_INDIRECT_BASED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_INDIRECT_BASED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
+
 #include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class IndirectBasedPolylines
+class IndirectBasedPolylines : public Lines
 {
     static const inline std::vector<float> VERTICES =
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
-    static const inline std::vector<uint32_t> INDICES = {0, 3, 1, 0, 2, 3};
+    static const inline std::vector<uint> INDICES = {0, 3, 1, 0, 2, 3};
 
     bgfx::ProgramHandle mJoinesPH =
         Context::instance().programManager().getProgram(
@@ -45,8 +46,6 @@ class IndirectBasedPolylines
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
-
-    LinesSettings mSettings;
 
     std::vector<LinesVertex> mPoints;
 
@@ -74,10 +73,6 @@ public:
     IndirectBasedPolylines& operator=(IndirectBasedPolylines&& other);
 
     void swap(IndirectBasedPolylines& other);
-
-    LinesSettings& settings() { return mSettings; }
-
-    const LinesSettings& settings() const { return mSettings; }
 
     void draw(uint viewId) const;
 

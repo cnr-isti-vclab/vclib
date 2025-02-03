@@ -20,56 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_LINES_CPU_GENERATED_LINES_H
-#define VCL_BGFX_DRAWABLE_LINES_LINES_CPU_GENERATED_LINES_H
+#ifndef VCL_BGFX_DRAWABLE_LINES_LINES_LINES_H
+#define VCL_BGFX_DRAWABLE_LINES_LINES_LINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
-#include <vclib/bgfx/context.h>
+#include "lines_settings.h"
 
 namespace vcl::lines {
 
-class CPUGeneratedLines : public Lines
+class Lines
 {
-    bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_CPU_GENERATED_VSFS);
-    uint mPointsSize = 0;
-
-    std::vector<float> mVertices;
-    std::vector<uint>  mIndexes;
-
-    bgfx::DynamicVertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
+    LinesSettings mSettings;
 
 public:
-    CPUGeneratedLines() = default;
+    // TODO: remove this getter
+    // add proper methots to set the settings that apply for lines
+    // do then a similar class for polylines
+    LinesSettings& settings() { return mSettings; }
 
-    CPUGeneratedLines(const std::vector<LinesVertex>& points);
+    const LinesSettings& settings() const { return mSettings; }
 
-    CPUGeneratedLines(const CPUGeneratedLines& other) = delete;
+    void swap(Lines& other)
+    {
+        using std::swap;
 
-    CPUGeneratedLines(CPUGeneratedLines&& other);
+        swap(mSettings, other.mSettings);
+    }
 
-    ~CPUGeneratedLines();
+    friend void swap(Lines& a, Lines& b) { a.swap(b); }
 
-    CPUGeneratedLines& operator=(const CPUGeneratedLines& other) = delete;
+protected:
+    void bindSettingsUniformLines() const
+    {
+        mSettings.bindUniformLines();
+    }
 
-    CPUGeneratedLines& operator=(CPUGeneratedLines&& other);
-
-    void swap(CPUGeneratedLines& other);
-
-    void draw(uint viewId) const;
-
-    void update(const std::vector<LinesVertex>& points);
-
-private:
-    void generateBuffers(const std::vector<LinesVertex> points);
-
-    void allocateVertexBuffer();
-
-    void allocateIndexBuffer();
+    void bindSettingsUniformPolylines() const
+    {
+        mSettings.bindUniformPolylines();
+    }
 };
 
 } // namespace vcl::lines
 
-#endif // VCL_BGFX_DRAWABLE_LINES_LINES_CPU_GENERATED_LINES_H
+#endif // VCL_BGFX_DRAWABLE_LINES_LINES_LINES_H

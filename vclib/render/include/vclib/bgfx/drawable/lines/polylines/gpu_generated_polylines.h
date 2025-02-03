@@ -23,12 +23,13 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_GPU_GENERATED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_GPU_GENERATED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
+
 #include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class GPUGeneratedPolylines
+class GPUGeneratedPolylines : public Lines
 {
     bgfx::ProgramHandle mComputeVertexPH =
         Context::instance().programManager().getProgram(
@@ -37,8 +38,6 @@ class GPUGeneratedPolylines
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_CPU_GENERATED_VSFS);
-
-    LinesSettings mSettings;
 
     std::vector<LinesVertex> mPoints;
 
@@ -67,10 +66,6 @@ public:
     GPUGeneratedPolylines& operator=(GPUGeneratedPolylines&& other);
 
     void swap(GPUGeneratedPolylines& other);
-
-    LinesSettings& settings() { return mSettings; }
-
-    const LinesSettings& settings() const { return mSettings; }
 
     void draw(uint viewId) const;
 

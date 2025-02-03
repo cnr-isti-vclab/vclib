@@ -23,22 +23,21 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_INSTANCING_BASED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_INSTANCING_BASED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
+
 #include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class InstancingBasedLines
+class InstancingBasedLines : public Lines
 {
     static inline const std::vector<float> VERTICES =
         {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
-    static inline const std::vector<uint32_t> INDICES = {0, 1, 2, 1, 3, 2};
+    static inline const std::vector<uint> INDICES = {0, 1, 2, 1, 3, 2};
 
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::LINES_INSTANCING_BASED_VSFS);
-
-    mutable LinesSettings mSettings;
 
     std::vector<LinesVertex>         mPoints;
     mutable bgfx::InstanceDataBuffer mInstanceDB;
@@ -62,10 +61,6 @@ public:
     InstancingBasedLines& operator=(InstancingBasedLines&& other);
 
     void swap(InstancingBasedLines& other);
-
-    LinesSettings& settings() { return mSettings; }
-
-    const LinesSettings& settings() const { return mSettings; }
 
     void draw(uint viewId) const;
 

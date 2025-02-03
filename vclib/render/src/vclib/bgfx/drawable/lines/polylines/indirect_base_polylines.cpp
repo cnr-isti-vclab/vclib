@@ -79,7 +79,7 @@ IndirectBasedPolylines& IndirectBasedPolylines::operator=(
 
 void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mPoints, other.mPoints);
 
@@ -95,7 +95,7 @@ void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
 
 void IndirectBasedPolylines::draw(uint viewId) const
 {
-    mSettings.bindUniformPolylines();
+    bindSettingsUniformPolylines();
 
     float indirectData[] = {static_cast<float>(mPoints.size() - 1), 0, 0, 0};
     bgfx::setUniform(mComputeIndirectDataUH, indirectData);
@@ -110,7 +110,7 @@ void IndirectBasedPolylines::draw(uint viewId) const
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirectBH, 0);
 
-    if (mSettings.getJoin() != 0) {
+    if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVerticesBH);
         bgfx::setIndexBuffer(mIndexesBH);
         bgfx::setBuffer(1, mPointsBH, bgfx::Access::Read);
@@ -173,7 +173,7 @@ void IndirectBasedPolylines::allocateVerticesBuffer()
 void IndirectBasedPolylines::allocateIndexesBuffers()
 {
     mIndexesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint32_t) * INDICES.size()),
+        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
 

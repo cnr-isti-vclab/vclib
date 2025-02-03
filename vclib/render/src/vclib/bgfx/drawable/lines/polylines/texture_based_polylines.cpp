@@ -27,7 +27,7 @@ namespace vcl::lines {
 
 TextureBasedPolylines::TextureBasedPolylines(
     const std::vector<LinesVertex>& points,
-    const uint32_t                  maxTextureSize) :
+    const uint                  maxTextureSize) :
         mPoints(points), mMaxTextureSize(maxTextureSize),
         mJoinesIndirectBH(bgfx::createIndirectBuffer(1)),
         mSegmentsIndirectBH(bgfx::createIndirectBuffer(1)),
@@ -90,7 +90,7 @@ TextureBasedPolylines& TextureBasedPolylines::operator=(
 
 void TextureBasedPolylines::swap(TextureBasedPolylines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mMaxTextureSize, other.mMaxTextureSize);
     std::swap(mPoints, other.mPoints);
@@ -110,7 +110,7 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
 
 void TextureBasedPolylines::draw(uint viewId) const
 {
-    mSettings.bindUniformPolylines();
+    bindSettingsUniformPolylines();
 
     float indirectData[] = {
         static_cast<float>(mPoints.size() - 1),
@@ -134,7 +134,7 @@ void TextureBasedPolylines::draw(uint viewId) const
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirectBH, 0);
 
-    if (mSettings.getJoin() != 0 && mPoints.size() > 2) {
+    if (settings().getJoin() != 0 && mPoints.size() > 2) {
         bgfx::setVertexBuffer(0, mVerticesBH);
         bgfx::setIndexBuffer(mIndexesBH);
         bgfx::setImage(
@@ -240,7 +240,7 @@ void TextureBasedPolylines::allocateVerticesBuffer()
 void TextureBasedPolylines::allocateIndexesBuffer()
 {
     mIndexesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint32_t) * INDICES.size()),
+        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
 

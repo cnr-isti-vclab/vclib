@@ -67,7 +67,7 @@ GPUGeneratedLines& GPUGeneratedLines::operator=(GPUGeneratedLines&& other)
 
 void GPUGeneratedLines::swap(GPUGeneratedLines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mIndexesBH, other.mIndexesBH);
     std::swap(mVerticesBH, other.mVerticesBH);
@@ -77,7 +77,7 @@ void GPUGeneratedLines::swap(GPUGeneratedLines& other)
 
 void GPUGeneratedLines::draw(uint viewId) const
 {
-    mSettings.bindUniformLines();
+    bindSettingsUniformLines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |

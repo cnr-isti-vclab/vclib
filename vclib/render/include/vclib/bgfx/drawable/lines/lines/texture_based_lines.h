@@ -23,16 +23,17 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_TEXTURE_BASED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_TEXTURE_BASED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
+
 #include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class TextureBasedLines
+class TextureBasedLines : public Lines
 {
     static inline const std::vector<float> VERTICES =
         {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
-    static inline const std::vector<uint32_t> INDICES = {0, 1, 2, 1, 3, 2};
+    static inline const std::vector<uint> INDICES = {0, 1, 2, 1, 3, 2};
 
     bgfx::ProgramHandle mComputeTexturePH =
         Context::instance().programManager().getProgram(
@@ -41,9 +42,7 @@ class TextureBasedLines
         Context::instance().programManager().getProgram(
             VclProgram::LINES_TEXTURE_BASED_VSFS);
 
-    mutable LinesSettings mSettings;
-
-    uint32_t                 mMaxTextureSize;
+    uint                 mMaxTextureSize;
     std::vector<LinesVertex> mPoints;
 
     bgfx::TextureHandle             mTextureBH = BGFX_INVALID_HANDLE;
@@ -60,7 +59,7 @@ public:
 
     TextureBasedLines(
         const std::vector<LinesVertex>& points,
-        const uint32_t maxTextureSize = bgfx::getCaps()->limits.maxTextureSize);
+        const uint maxTextureSize = bgfx::getCaps()->limits.maxTextureSize);
 
     TextureBasedLines(const TextureBasedLines& other) = delete;
 
@@ -73,10 +72,6 @@ public:
     TextureBasedLines& operator=(TextureBasedLines&& other);
 
     void swap(TextureBasedLines& other);
-
-    LinesSettings& settings() { return mSettings; }
-
-    const LinesSettings& settings() const { return mSettings; }
 
     void draw(uint viewId) const;
 

@@ -54,8 +54,9 @@ InstancingBasedLines& InstancingBasedLines::operator=(
 
 void InstancingBasedLines::swap(InstancingBasedLines& other)
 {
+    Lines::swap(other);
+
     std::swap(mLinesPH, other.mLinesPH);
-    std::swap(mSettings, other.mSettings);
 
     std::swap(mPoints, other.mPoints);
 
@@ -66,8 +67,9 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
 
 void InstancingBasedLines::draw(uint viewId) const
 {
+    bindSettingsUniformLines();
+
     generateInstanceDataBuffer();
-    mSettings.bindUniformLines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -91,17 +93,17 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
     const uint16_t stride = sizeof(float) * 16;
     uint           size   = (mPoints.size() / 2);
 
-    uint32_t linesNum = bgfx::getAvailInstanceDataBuffer(size, stride);
+    uint linesNum = bgfx::getAvailInstanceDataBuffer(size, stride);
     bgfx::allocInstanceDataBuffer(&mInstanceDB, size, stride);
 
     uint8_t* data = mInstanceDB.data;
-    for (uint32_t i = 1; i < mPoints.size(); i += 2) {
+    for (uint i = 1; i < mPoints.size(); i += 2) {
         float* p0 = reinterpret_cast<float*>(data);
         p0[0]     = mPoints[i - 1].X;
         p0[1]     = mPoints[i - 1].Y;
         p0[2]     = mPoints[i - 1].Z;
 
-        uint32_t* color0 = (uint32_t*) &data[12];
+        uint* color0 = (uint*) &data[12];
         color0[0]        = mPoints[i - 1].getUintColor();
 
         float* p1 = (float*) &data[16];
@@ -109,7 +111,7 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
         p1[1]     = mPoints[i].Y;
         p1[2]     = mPoints[i].Z;
 
-        uint32_t* color1 = (uint32_t*) &data[28];
+        uint* color1 = (uint*) &data[28];
         color1[0]        = mPoints[i].getUintColor();
 
         float* n0 = (float*) &data[32];
@@ -142,7 +144,7 @@ void InstancingBasedLines::allocateVerticesBuffer()
 void InstancingBasedLines::allocateIndexesBuffer()
 {
     mIndexesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint32_t) * INDICES.size()),
+        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
 

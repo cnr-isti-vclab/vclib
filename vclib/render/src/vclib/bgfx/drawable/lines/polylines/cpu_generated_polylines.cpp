@@ -58,7 +58,7 @@ CPUGeneratedPolylines& CPUGeneratedPolylines::operator=(
 
 void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mPointsSize, other.mPointsSize);
 
@@ -73,7 +73,7 @@ void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
 
 void CPUGeneratedPolylines::draw(uint viewId) const
 {
-    mSettings.bindUniformPolylines();
+    bindSettingsUniformPolylines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -84,7 +84,7 @@ void CPUGeneratedPolylines::draw(uint viewId) const
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH);
 
-    if (mSettings.getJoin() != 0) {
+    if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVerticesBH);
         bgfx::setIndexBuffer(mJoinsIndexesBH);
         bgfx::setState(state);
@@ -171,12 +171,12 @@ void CPUGeneratedPolylines::generateBuffers(
         mSegmentsIndexesBH,
         0,
         bgfx::makeRef(
-            &mSegmentsIndexes[0], sizeof(uint32_t) * mSegmentsIndexes.size()));
+            &mSegmentsIndexes[0], sizeof(uint) * mSegmentsIndexes.size()));
     bgfx::update(
         mJoinsIndexesBH,
         0,
         bgfx::makeRef(
-            &mJoinsIndexes[0], sizeof(uint32_t) * mJoinsIndexes.size()));
+            &mJoinsIndexes[0], sizeof(uint) * mJoinsIndexes.size()));
 }
 
 void CPUGeneratedPolylines::allocateVertexBuffer()

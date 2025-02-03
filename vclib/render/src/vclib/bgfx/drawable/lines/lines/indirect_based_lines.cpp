@@ -75,7 +75,7 @@ IndirectBasedLines& IndirectBasedLines::operator=(IndirectBasedLines&& other)
 
 void IndirectBasedLines::swap(IndirectBasedLines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mPoints, other.mPoints);
 
@@ -116,7 +116,7 @@ void IndirectBasedLines::allocateVerticesBuffer()
 void IndirectBasedLines::allocateIndexesBuffer()
 {
     mIndexesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint32_t) * INDICES.size()),
+        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
 
@@ -130,7 +130,7 @@ void IndirectBasedLines::generateIndirectBuffer()
 
 void IndirectBasedLines::draw(uint viewId) const
 {
-    mSettings.bindUniformLines();
+    bindSettingsUniformLines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |

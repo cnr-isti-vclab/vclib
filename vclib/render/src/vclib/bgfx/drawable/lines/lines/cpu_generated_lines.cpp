@@ -55,7 +55,7 @@ CPUGeneratedLines& CPUGeneratedLines::operator=(CPUGeneratedLines&& other)
 
 void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mPointsSize, other.mPointsSize);
 
@@ -85,7 +85,7 @@ void CPUGeneratedLines::update(const std::vector<LinesVertex>& points)
 
 void CPUGeneratedLines::draw(uint viewId) const
 {
-    mSettings.bindUniformLines();
+    bindSettingsUniformLines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -121,7 +121,7 @@ void CPUGeneratedLines::generateBuffers(const std::vector<LinesVertex> points)
             }
         }
 
-        uint32_t index = (4 * (i / 2));
+        uint index = (4 * (i / 2));
         mIndexes.push_back(index);
         mIndexes.push_back(index + 3);
         mIndexes.push_back(index + 1);
@@ -138,7 +138,7 @@ void CPUGeneratedLines::generateBuffers(const std::vector<LinesVertex> points)
     bgfx::update(
         mIndexesBH,
         0,
-        bgfx::makeRef(&mIndexes[0], sizeof(uint32_t) * mIndexes.size()));
+        bgfx::makeRef(&mIndexes[0], sizeof(uint) * mIndexes.size()));
 }
 
 void CPUGeneratedLines::allocateVertexBuffer()

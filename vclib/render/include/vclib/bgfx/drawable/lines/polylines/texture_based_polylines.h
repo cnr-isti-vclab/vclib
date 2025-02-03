@@ -23,16 +23,17 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_TEXTURE_BASED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_TEXTURE_BASED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/lines_settings.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
+
 #include <vclib/bgfx/context.h>
 
 namespace vcl::lines {
 
-class TextureBasedPolylines
+class TextureBasedPolylines : public Lines
 {
     static const inline std::vector<float>    VERTICES =
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
-    static const inline std::vector<uint32_t> INDICES = {0, 3, 1, 0, 2, 3};
+    static const inline std::vector<uint> INDICES = {0, 3, 1, 0, 2, 3};
 
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
@@ -46,9 +47,7 @@ class TextureBasedPolylines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_TEXTURE_BASED_CS);
 
-    LinesSettings mSettings;
-
-    uint32_t                 mMaxTextureSize;
+    uint                 mMaxTextureSize;
     std::vector<LinesVertex> mPoints;
 
     bgfx::VertexBufferHandle        mVerticesBH = BGFX_INVALID_HANDLE;
@@ -68,7 +67,7 @@ public:
 
     TextureBasedPolylines(
         const std::vector<LinesVertex>& points,
-        const uint32_t maxTextureSize = bgfx::getCaps()->limits.maxTextureSize);
+        const uint maxTextureSize = bgfx::getCaps()->limits.maxTextureSize);
 
     TextureBasedPolylines(const TextureBasedPolylines& other) = delete;
 
@@ -82,10 +81,6 @@ public:
     TextureBasedPolylines& operator=(TextureBasedPolylines&& other);
 
     void swap(TextureBasedPolylines& other);
-
-    LinesSettings& settings() { return mSettings; }
-
-    const LinesSettings& settings() const { return mSettings; }
 
     void draw(uint viewId) const;
 

@@ -26,7 +26,7 @@
 namespace vcl::lines {
 TextureBasedLines::TextureBasedLines(
     const std::vector<LinesVertex>& points,
-    const uint32_t                  maxTextureSize) :
+    const uint                  maxTextureSize) :
         mMaxTextureSize(maxTextureSize), mPoints(points),
         mIndirectBH(bgfx::createIndirectBuffer(1)),
         mIndirectDataUH(
@@ -79,7 +79,7 @@ TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines&& other)
 
 void TextureBasedLines::swap(TextureBasedLines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mMaxTextureSize, other.mMaxTextureSize);
     std::swap(mPoints, other.mPoints);
@@ -96,7 +96,7 @@ void TextureBasedLines::swap(TextureBasedLines& other)
 
 void TextureBasedLines::draw(uint viewId) const
 {
-    mSettings.bindUniformLines();
+    bindSettingsUniformLines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -185,7 +185,7 @@ void TextureBasedLines::allocateVerticesBuffer()
 void TextureBasedLines::allocateIndexesBuffer()
 {
     mIndexesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint32_t) * INDICES.size()),
+        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
 

@@ -56,7 +56,7 @@ InstancingBasedPolylines& InstancingBasedPolylines::operator=(
 
 void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 {
-    std::swap(mSettings, other.mSettings);
+    Lines::swap(other);
 
     std::swap(mPoints, other.mPoints);
 
@@ -69,8 +69,9 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 
 void InstancingBasedPolylines::draw(uint viewId) const
 {
+    bindSettingsUniformPolylines();
+
     generateInstanceBuffer();
-    mSettings.bindUniformPolylines();
 
     uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                      BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -82,7 +83,7 @@ void InstancingBasedPolylines::draw(uint viewId) const
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH);
 
-    if (mSettings.getJoin() != 0) {
+    if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVerticesBH);
         bgfx::setIndexBuffer(mIndexesBH);
         bgfx::setInstanceDataBuffer(&mJoinsInstanceDB);
@@ -99,14 +100,14 @@ void InstancingBasedPolylines::update(const std::vector<LinesVertex>& points)
 void InstancingBasedPolylines::generateInstanceBuffer() const
 {
     const uint16_t strideSegments = sizeof(float) * 20;
-    uint32_t       linesNumSegments =
+    uint       linesNumSegments =
         bgfx::getAvailInstanceDataBuffer(mPoints.size() - 1, strideSegments);
     bgfx::allocInstanceDataBuffer(
         &mSegmentsInstanceDB, linesNumSegments, strideSegments);
 
     const uint16_t strideJoins = sizeof(float) * 16;
     if (mPoints.size() > 2) {
-        uint32_t linesNumJoins =
+        uint linesNumJoins =
             bgfx::getAvailInstanceDataBuffer(mPoints.size() - 2, strideJoins);
         bgfx::allocInstanceDataBuffer(
             &mJoinsInstanceDB, linesNumJoins, strideJoins);
@@ -115,7 +116,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
     uint8_t* dataSegments = mSegmentsInstanceDB.data;
     uint8_t* dataJoins    = mJoinsInstanceDB.data;
 
-    for (uint32_t i = 0; i < linesNumSegments; i++) {
+    for (uint i = 0; i < linesNumSegments; i++) {
         float* prevSegments = reinterpret_cast<float*>(dataSegments);
         prevSegments[0]     = mPoints[i - !!i].X;
         prevSegments[1]     = mPoints[i - !!i].Y;
@@ -127,7 +128,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         currSegments[1]     = mPoints[i].Y;
         currSegments[2]     = mPoints[i].Z;
 
-        uint32_t* color0 = (uint32_t*) &dataSegments[28];
+        uint* color0 = (uint*) &dataSegments[28];
         color0[0]        = mPoints[i].getUintColor();
 
         float* nextSegments = (float*) &dataSegments[32];
@@ -135,7 +136,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         nextSegments[1]     = mPoints[i + 1].Y;
         nextSegments[2]     = mPoints[i + 1].Z;
 
-        uint32_t* color1 = (uint32_t*) &dataSegments[44];
+        uint* color1 = (uint*) &dataSegments[44];
         color1[0]        = mPoints[i + 1].getUintColor();
 
         float* next_nextSegments = (float*) &dataSegments[48];
@@ -165,7 +166,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
             currJoin[1]     = mPoints[i].Y;
             currJoin[2]     = mPoints[i].Z;
 
-            uint32_t* colorJoin = (uint32_t*) &dataJoins[28];
+            uint* colorJoin = (uint*) &dataJoins[28];
             colorJoin[0]        = mPoints[i].getUintColor();
 
             float* nextJoin = (float*) &dataJoins[32];
@@ -201,7 +202,7 @@ void InstancingBasedPolylines::allocateVerticesBuffer()
 void InstancingBasedPolylines::allocateIndexesBuffer()
 {
     mIndexesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint32_t) * INDICES.size()),
+        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
 
