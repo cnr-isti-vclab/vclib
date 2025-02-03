@@ -43,6 +43,8 @@ struct LinesVertex
     float color;
     float xN, yN, zN;
 
+    LinesVertex() = default;
+
     LinesVertex(
         float    x,
         float    y,

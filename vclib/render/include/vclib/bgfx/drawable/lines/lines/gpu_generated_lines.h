@@ -39,7 +39,7 @@ class GPUGeneratedLines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::LINES_CPU_GENERATED_VSFS);
 
-    std::vector<LinesVertex> mPoints;
+    uint mPointsSize = 0;
 
     bgfx::DynamicIndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
@@ -74,6 +74,8 @@ private:
     void allocateIndexBuffer();
 
     void allocatePointsBuffer();
+
+    void setPointsBuffer(const std::vector<LinesVertex>& points);
 
     void checkCaps() const
     {
