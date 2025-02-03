@@ -61,7 +61,7 @@ void main() {
 
     v_color = color;
     v_normal = normal;
-    v_uv = vec4(0);
+    v_uv = vec4(0,0,0,0);
     v_length = 0;
 
     bool is_start = false;

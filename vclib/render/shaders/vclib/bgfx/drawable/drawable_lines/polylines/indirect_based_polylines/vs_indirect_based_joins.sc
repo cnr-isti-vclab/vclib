@@ -68,7 +68,7 @@ void main() {
 
     v_color = uintToVec4FloatColor(floatBitsToUint(color(index)));
     v_normal = normal(index);
-    v_uv = vec4(0);
+    v_uv = vec4(0,0,0,0);
     v_length = 0;
 
     bool is_start = false;

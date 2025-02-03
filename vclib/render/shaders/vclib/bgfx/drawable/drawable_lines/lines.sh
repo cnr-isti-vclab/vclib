@@ -94,7 +94,7 @@ vec4 calculateLinesColor(vec4 uv, float length_px, float thickness, float antial
         return vec4(final_border_color.xyz, d);
     }
     else {
-        return vec4(0);
+        return vec4(0,0,0,0);
     }
 }
 
