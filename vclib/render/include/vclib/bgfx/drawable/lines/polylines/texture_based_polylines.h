@@ -29,6 +29,10 @@ namespace vcl::lines {
 
 class TextureBasedPolylines : public DrawablePolylines
 {
+    static const inline std::vector<float>    VERTICES =
+        {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
+    static const inline std::vector<uint32_t> INDICES = {0, 3, 1, 0, 2, 3};
+
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_TEXTURE_BASED_VSFS);
@@ -40,10 +44,6 @@ class TextureBasedPolylines : public DrawablePolylines
     bgfx::ProgramHandle mComputeTexturePH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_TEXTURE_BASED_CS);
-
-    static const inline std::vector<uint32_t> mIndexes = {0, 3, 1, 0, 2, 3};
-    static const inline std::vector<float>    mVertices =
-        {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
 
     uint32_t                 mMaxTextureSize;
     std::vector<LinesVertex> mPoints;

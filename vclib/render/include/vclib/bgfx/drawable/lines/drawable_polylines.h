@@ -33,6 +33,10 @@ namespace vcl::lines {
 
 class DrawablePolylines : public vcl::DrawableObject
 {
+protected:
+    bool          mVisible = true;
+    LinesSettings mSettings;
+
 public:
     static std::unique_ptr<DrawablePolylines> create(
         const std::vector<LinesVertex>& points,
@@ -54,10 +58,6 @@ public:
     LinesSettings& getSettings() { return mSettings; }
 
     virtual void update(const std::vector<LinesVertex>& points) = 0;
-
-protected:
-    bool          mVisible = true;
-    LinesSettings mSettings;
 };
 
 } // namespace vcl::lines

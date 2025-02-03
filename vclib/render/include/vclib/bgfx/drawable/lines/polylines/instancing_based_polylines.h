@@ -29,6 +29,10 @@ namespace vcl::lines {
 
 class InstancingBasedPolylines : public DrawablePolylines
 {
+    static const inline std::vector<float> VERTICES =
+        {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
+    static const inline std::vector<uint32_t> INDICES = {0, 3, 1, 0, 2, 3};
+
     bgfx::ProgramHandle mJoinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS);
@@ -36,10 +40,6 @@ class InstancingBasedPolylines : public DrawablePolylines
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INSTANCING_BASED_VSFS);
-
-    static const inline std::vector<float> mVertices =
-        {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
-    static const inline std::vector<uint32_t> mIndexes = {0, 3, 1, 0, 2, 3};
 
     std::vector<LinesVertex> mPoints;
 

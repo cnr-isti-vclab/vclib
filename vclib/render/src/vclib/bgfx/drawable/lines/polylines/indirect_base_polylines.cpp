@@ -193,13 +193,13 @@ void IndirectBasedPolylines::allocateVerticesBuffer()
         .end();
 
     mVerticesBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()), layout);
+        bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
 }
 
 void IndirectBasedPolylines::allocateIndexesBuffers()
 {
     mIndexesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&mIndexes[0], sizeof(uint32_t) * mIndexes.size()),
+        bgfx::makeRef(&INDICES[0], sizeof(uint32_t) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
 
