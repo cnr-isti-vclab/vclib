@@ -27,7 +27,7 @@
 namespace vcl::lines {
 
 IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex>& points) :
-        mPoints(points), mIndirectBH(bgfx::createIndirectBuffer(1)),
+        mPointsSize(points.size()), mIndirectBH(bgfx::createIndirectBuffer(1)),
         mIndirectDataUH(
             bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
 {
@@ -38,10 +38,7 @@ IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex>& points) :
 
     generateIndirectBuffer();
     allocatePointsBuffer();
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
+    setPointsBuffer(points);
 }
 
 IndirectBasedLines::IndirectBasedLines(IndirectBasedLines&& other)
@@ -77,7 +74,7 @@ void IndirectBasedLines::swap(IndirectBasedLines& other)
 {
     Lines::swap(other);
 
-    std::swap(mPoints, other.mPoints);
+    std::swap(mPointsSize, other.mPointsSize);
 
     std::swap(mVerticesBH, other.mVerticesBH);
     std::swap(mIndexesBH, other.mIndexesBH);
@@ -97,7 +94,7 @@ void IndirectBasedLines::allocatePointsBuffer()
         .end();
 
     mPointsBH = bgfx::createDynamicVertexBuffer(
-        mPoints.size(),
+        mPointsSize,
         layout,
         BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_ALLOW_RESIZE);
 }
@@ -122,7 +119,7 @@ void IndirectBasedLines::allocateIndexesBuffer()
 
 void IndirectBasedLines::generateIndirectBuffer()
 {
-    float data[] = {static_cast<float>(mPoints.size() / 2), 0, 0, 0};
+    float data[] = {static_cast<float>(mPointsSize / 2), 0, 0, 0};
     bgfx::setUniform(mIndirectDataUH, data);
     bgfx::setBuffer(0, mIndirectBH, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeIndirectPH);
@@ -147,17 +144,27 @@ void IndirectBasedLines::draw(uint viewId) const
 
 void IndirectBasedLines::update(const std::vector<LinesVertex>& points)
 {
-    int oldSize = mPoints.size();
-    mPoints     = points;
+    int oldSize = mPointsSize;
+    mPointsSize     = points.size();
 
-    if (oldSize != mPoints.size()) {
+    if (oldSize != mPointsSize) {
         generateIndirectBuffer();
     }
+
+    setPointsBuffer(points);
+}
+
+void IndirectBasedLines::setPointsBuffer(const std::vector<LinesVertex>& points)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<LinesVertex>(points.size());
+
+    std::copy(points.begin(), points.end(), buffer);
 
     bgfx::update(
         mPointsBH,
         0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
+        bgfx::makeRef(buffer, sizeof(LinesVertex) * points.size(), releaseFn));
 }
 
 } // namespace vcl::lines

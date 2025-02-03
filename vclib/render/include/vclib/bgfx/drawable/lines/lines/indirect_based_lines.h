@@ -42,7 +42,7 @@ class IndirectBasedLines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::LINES_INDIRECT_BASED_VSFS);
 
-    std::vector<LinesVertex> mPoints;
+    uint mPointsSize = 0;
 
     bgfx::VertexBufferHandle        mVerticesBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle         mIndexesBH  = BGFX_INVALID_HANDLE;
@@ -80,6 +80,8 @@ private:
     void allocateIndexesBuffer();
 
     void generateIndirectBuffer();
+
+    void setPointsBuffer(const std::vector<LinesVertex>& points);
 
     void checkCaps() const
     {
