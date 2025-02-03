@@ -43,8 +43,7 @@ namespace vcl {
  * access to the data). Any class that contains a DynamicIndexBuffer should
  * implement the copy constructor and the copy assignment operator.
  */
-class DynamicIndexBuffer :
-        public GenericBuffer<bgfx::DynamicIndexBufferHandle>
+class DynamicIndexBuffer : public GenericBuffer<bgfx::DynamicIndexBufferHandle>
 {
     using Base = GenericBuffer<bgfx::DynamicIndexBufferHandle>;
 
@@ -56,9 +55,7 @@ public:
      */
     DynamicIndexBuffer() = default;
 
-    void create(
-        uint                      size,
-        ushort                    flags = BGFX_BUFFER_NONE)
+    void create(uint size, ushort flags = BGFX_BUFFER_NONE)
     {
         mHandle = bgfx::createDynamicIndexBuffer(size, flags);
     }
