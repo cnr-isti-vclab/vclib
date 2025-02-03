@@ -57,7 +57,7 @@ public:
             mPoints(other.mPoints), mLines(other.mPoints),
             mVisible(other.mVisible)
     {
-        mLines.setSettings(*other.getSettings());
+        mLines.settings() = other.settings();
     }
 
     DrawableLines(DrawableLines&& other) { swap(other); }
@@ -84,12 +84,9 @@ public:
         first.swap(second);
     }
 
-    LinesSettings* getSettings() const { return mLines.getSettings(); }
+    const LinesSettings& settings() const { return mLines.settings(); }
 
-    void setSettings(const LinesSettings settings)
-    {
-        mLines.setSettings(settings);
-    }
+    LinesSettings& settings() { return mLines.settings(); }
 
     void update(const std::vector<LinesVertex>& points)
     {

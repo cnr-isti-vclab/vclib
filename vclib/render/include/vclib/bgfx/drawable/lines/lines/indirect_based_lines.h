@@ -69,9 +69,9 @@ public:
 
     void swap(IndirectBasedLines& other);
 
-    LinesSettings* getSettings() const { return &mSettings; }
+    LinesSettings& settings() { return mSettings; }
 
-    void setSettings(const LinesSettings settings) { mSettings = settings; }
+    const LinesSettings& settings() const { return mSettings; }
 
 
     void draw(uint viewId) const;

@@ -162,25 +162,33 @@ public:
         }
     }
 
-    void setWireframeSettings(const MeshRenderSettings& settings) 
+    void setWireframeSettings(const MeshRenderSettings& settings)
     {
-        lines::LinesSettings *wireframeSettings = mWireframeBH.getSettings();
-        wireframeSettings->setThickness(settings.wireframeWidth());
+        lines::LinesSettings& wSettings = mWireframeBH.settings();
+        wSettings.setThickness(settings.wireframeWidth());
 
-        if(settings.isWireframeColorUserDefined()) {
+        if (settings.isWireframeColorUserDefined()) {
             vcl::Color generalColor = settings.wireframeUserColor();
-            wireframeSettings->setGeneralColor(lines::LinesVertex::COLOR(generalColor.redF(), generalColor.greenF(), generalColor.blueF(), generalColor.alphaF()));
-            wireframeSettings->setColorToUse(lines::ColorToUse::GENERAL_COLOR);
+            wSettings.setGeneralColor(lines::LinesVertex::COLOR(
+                generalColor.redF(),
+                generalColor.greenF(),
+                generalColor.blueF(),
+                generalColor.alphaF()));
+            wSettings.setColorToUse(lines::ColorToUse::GENERAL_COLOR);
         }
 
-        if(settings.isWireframeColorPerMesh()) {
+        if (settings.isWireframeColorPerMesh()) {
             const float* colorPerMesh = mMeshUniforms.currentMeshColor();
-            wireframeSettings->setGeneralColor(lines::LinesVertex::COLOR(colorPerMesh[0], colorPerMesh[1], colorPerMesh[2], colorPerMesh[3]));
-            wireframeSettings->setColorToUse(lines::ColorToUse::GENERAL_COLOR);
+            wSettings.setGeneralColor(lines::LinesVertex::COLOR(
+                colorPerMesh[0],
+                colorPerMesh[1],
+                colorPerMesh[2],
+                colorPerMesh[3]));
+            wSettings.setColorToUse(lines::ColorToUse::GENERAL_COLOR);
         }
 
-        if(settings.isWireframeColorPerVertex()) {
-            wireframeSettings->setColorToUse(lines::ColorToUse::PER_VERTEX_COLOR);
+        if (settings.isWireframeColorPerVertex()) {
+            wSettings.setColorToUse(lines::ColorToUse::PER_VERTEX_COLOR);
         }
     }
 

@@ -63,15 +63,15 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
     auto indirectLines = std::make_shared<vcl::lines::DrawableIndirectLines>(points);
     auto textureLines = std::make_shared<vcl::lines::DrawableTextureLines>(points);
 
-    cpuLines->getSettings()->setColorToUse(
+    cpuLines->settings().setColorToUse(
         vcl::lines::ColorToUse::PER_VERTEX_COLOR);
-    gpuLines->getSettings()->setColorToUse(
+    gpuLines->settings().setColorToUse(
         vcl::lines::ColorToUse::PER_VERTEX_COLOR);
-    instancingLines->getSettings()->setColorToUse(
+    instancingLines->settings().setColorToUse(
         vcl::lines::ColorToUse::PER_VERTEX_COLOR);
-    indirectLines->getSettings()->setColorToUse(
+    indirectLines->settings().setColorToUse(
         vcl::lines::ColorToUse::PER_VERTEX_COLOR);
-    textureLines->getSettings()->setColorToUse(
+    textureLines->settings().setColorToUse(
         vcl::lines::ColorToUse::PER_VERTEX_COLOR);
 
     vec.pushBack(*cpuLines.get());
