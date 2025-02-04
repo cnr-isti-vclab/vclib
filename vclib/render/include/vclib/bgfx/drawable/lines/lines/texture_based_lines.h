@@ -42,8 +42,8 @@ class TextureBasedLines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::LINES_TEXTURE_BASED_VSFS);
 
-    uint                 mMaxTextureSize;
-    std::vector<LinesVertex> mPoints;
+    uint mMaxTextureSize;
+    uint mPointsSize = 0;
 
     bgfx::TextureHandle             mTextureBH = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mPointsBH  = BGFX_INVALID_HANDLE;
@@ -87,6 +87,8 @@ private:
     void allocateVerticesBuffer();
 
     void allocateIndexesBuffer();
+
+    void setPointsBuffer(const std::vector<LinesVertex>& points);
 
     void checkCaps() const
     {
