@@ -47,8 +47,8 @@ class TextureBasedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_TEXTURE_BASED_CS);
 
-    uint                 mMaxTextureSize;
-    std::vector<LinesVertex> mPoints;
+    uint mMaxTextureSize;
+    uint mPointsSize = 0;
 
     bgfx::VertexBufferHandle        mVerticesBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle         mIndexesBH  = BGFX_INVALID_HANDLE;
@@ -96,6 +96,8 @@ private:
     void allocateVerticesBuffer();
 
     void allocateIndexesBuffer();
+
+    void setPointsBuffer(const std::vector<LinesVertex>& points);
 
     void checkCaps() const
     {
