@@ -47,7 +47,7 @@ class IndirectBasedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
 
-    std::vector<LinesVertex> mPoints;
+    uint mPointsSize = 0;
 
     bgfx::VertexBufferHandle        mVerticesBH         = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle         mIndexesBH          = BGFX_INVALID_HANDLE;
@@ -86,6 +86,8 @@ private:
     void allocateVerticesBuffer();
 
     void allocateIndexesBuffers();
+
+    void setPointsBuffer(const std::vector<LinesVertex>& points);
 
     void checkCaps() const
     {
