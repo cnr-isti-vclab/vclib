@@ -62,10 +62,6 @@ void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
 
     std::swap(mPointsSize, other.mPointsSize);
 
-    std::swap(mVertices, other.mVertices);
-    std::swap(mSegmentsIndexes, other.mSegmentsIndexes);
-    std::swap(mJoinsIndexes, other.mJoinsIndexes);
-
     std::swap(mVerticesBH, other.mVerticesBH);
     std::swap(mSegmentsIndexesBH, other.mSegmentsIndexesBH);
     std::swap(mJoinsIndexesBH, other.mJoinsIndexesBH);
@@ -94,10 +90,6 @@ void CPUGeneratedPolylines::draw(uint viewId) const
 
 void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
 {
-    mVertices.clear();
-    mSegmentsIndexes.clear();
-    mJoinsIndexes.clear();
-
     if (mPointsSize > points.size()) {
         bgfx::destroy(mVerticesBH);
         bgfx::destroy(mSegmentsIndexesBH);
@@ -114,7 +106,25 @@ void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
 void CPUGeneratedPolylines::generateBuffers(
     const std::vector<LinesVertex> points)
 {
+    uint bufferVertsSize = (points.size() - 1) * 4 * 15;
+    uint bufferSegmetIndicesSize = (points.size() - 1) * 6;
+    uint bufferJoinsIndicesSize = (points.size() - 2) * 6;
+
+    auto [vertices, vReleaseFn] =
+        getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
+
+    auto [segmIndices, siReleaseFn] =
+        getAllocatedBufferAndReleaseFn<uint>(bufferSegmetIndicesSize);
+
+    auto [joinIndices, jiReleaseFn] =
+        getAllocatedBufferAndReleaseFn<uint>(bufferJoinsIndicesSize);
+
+    uint vi = 0;
+    uint si = 0;
+    uint ji = 0;
+
     for (uint i = 0; i < points.size() - 1; i++) {
+
         for (uint k = 0; k < 2; k++) {
             for (uint j = 0; j < 2; j++) {
                 uint curr_index = i + k;
@@ -122,61 +132,61 @@ void CPUGeneratedPolylines::generateBuffers(
                 uint next_index =
                     curr_index + (curr_index == points.size() - 1 ? 0 : 1);
 
-                mVertices.push_back(points[prev_index].X);
-                mVertices.push_back(points[prev_index].Y);
-                mVertices.push_back(points[prev_index].Z);
+                vertices[vi++] = points[prev_index].X;
+                vertices[vi++] = points[prev_index].Y;
+                vertices[vi++] = points[prev_index].Z;
 
-                mVertices.push_back(points[curr_index].X);
-                mVertices.push_back(points[curr_index].Y);
-                mVertices.push_back(points[curr_index].Z);
+                vertices[vi++] = points[curr_index].X;
+                vertices[vi++] = points[curr_index].Y;
+                vertices[vi++] = points[curr_index].Z;
 
-                mVertices.push_back(points[next_index].X);
-                mVertices.push_back(points[next_index].Y);
-                mVertices.push_back(points[next_index].Z);
+                vertices[vi++] = points[next_index].X;
+                vertices[vi++] = points[next_index].Y;
+                vertices[vi++] = points[next_index].Z;
 
-                mVertices.push_back(points[curr_index].getReverseColor());
+                vertices[vi++] = points[curr_index].getReverseColor();
 
-                mVertices.push_back(points[curr_index].xN);
-                mVertices.push_back(points[curr_index].yN);
-                mVertices.push_back(points[curr_index].zN);
+                vertices[vi++] = points[curr_index].xN;
+                vertices[vi++] = points[curr_index].yN;
+                vertices[vi++] = points[curr_index].zN;
 
-                mVertices.push_back(static_cast<float>(k));
-                mVertices.push_back(static_cast<float>(j));
+                vertices[vi++] = static_cast<float>(k);
+                vertices[vi++] = static_cast<float>(j);
             }
         }
 
-        mSegmentsIndexes.push_back((i * 4));
-        mSegmentsIndexes.push_back((i * 4) + 3);
-        mSegmentsIndexes.push_back((i * 4) + 1);
+        segmIndices[si++] = (i * 4);
+        segmIndices[si++] = (i * 4) + 3;
+        segmIndices[si++] = (i * 4) + 1;
 
-        mSegmentsIndexes.push_back((i * 4));
-        mSegmentsIndexes.push_back((i * 4) + 2);
-        mSegmentsIndexes.push_back((i * 4) + 3);
+        segmIndices[si++] = (i * 4);
+        segmIndices[si++] = (i * 4) + 2;
+        segmIndices[si++] = (i * 4) + 3;
 
         if (i != points.size() - 2) {
-            mJoinsIndexes.push_back((i * 4) + 3);
-            mJoinsIndexes.push_back((i * 4) + 4);
-            mJoinsIndexes.push_back((i * 4) + 5);
+            joinIndices[ji++] = (i * 4) + 3;
+            joinIndices[ji++] = (i * 4) + 4;
+            joinIndices[ji++] = (i * 4) + 5;
 
-            mJoinsIndexes.push_back((i * 4) + 4);
-            mJoinsIndexes.push_back((i * 4) + 2);
-            mJoinsIndexes.push_back((i * 4) + 5);
+            joinIndices[ji++] = (i * 4) + 4;
+            joinIndices[ji++] = (i * 4) + 2;
+            joinIndices[ji++] = (i * 4) + 5;
         }
     }
     bgfx::update(
         mVerticesBH,
         0,
-        bgfx::makeRef(&mVertices[0], sizeof(float) * mVertices.size()));
+        bgfx::makeRef(vertices, sizeof(float) * bufferVertsSize, vReleaseFn));
     bgfx::update(
         mSegmentsIndexesBH,
         0,
         bgfx::makeRef(
-            &mSegmentsIndexes[0], sizeof(uint) * mSegmentsIndexes.size()));
+            segmIndices, sizeof(uint) * bufferSegmetIndicesSize, siReleaseFn));
     bgfx::update(
         mJoinsIndexesBH,
         0,
         bgfx::makeRef(
-            &mJoinsIndexes[0], sizeof(uint) * mJoinsIndexes.size()));
+            joinIndices, sizeof(uint) * bufferJoinsIndicesSize, jiReleaseFn));
 }
 
 void CPUGeneratedPolylines::allocateVertexBuffer()

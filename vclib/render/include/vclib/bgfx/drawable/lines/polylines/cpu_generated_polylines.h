@@ -35,10 +35,7 @@ class CPUGeneratedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_CPU_GENERATED_VSFS);
 
-    uint              mPointsSize;
-    std::vector<float>    mVertices;
-    std::vector<uint> mSegmentsIndexes;
-    std::vector<uint> mJoinsIndexes;
+    uint               mPointsSize;
 
     bgfx::DynamicVertexBufferHandle mVerticesBH        = BGFX_INVALID_HANDLE;
     bgfx::DynamicIndexBufferHandle  mSegmentsIndexesBH = BGFX_INVALID_HANDLE;
