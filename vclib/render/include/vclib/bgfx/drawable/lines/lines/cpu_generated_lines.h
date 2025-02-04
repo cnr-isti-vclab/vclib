@@ -36,7 +36,7 @@ class CPUGeneratedLines : public Lines
     uint mPointsSize = 0;
 
     bgfx::DynamicVertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
+    bgfx::DynamicIndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
 
 public:
     CPUGeneratedLines() = default;

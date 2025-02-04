@@ -52,7 +52,7 @@ class TextureBasedLines : public Lines
     bgfx::UniformHandle        mIndirectDataUH = BGFX_INVALID_HANDLE;
 
     bgfx::VertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
 
 public:
     TextureBasedLines() { checkCaps(); }
@@ -86,7 +86,7 @@ private:
 
     void allocateVerticesBuffer();
 
-    void allocateIndexesBuffer();
+    void allocateIndicesBuffer();
 
     void setPointsBuffer(const std::vector<LinesVertex>& points);
 

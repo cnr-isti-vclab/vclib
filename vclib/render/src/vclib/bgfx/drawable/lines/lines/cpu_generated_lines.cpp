@@ -43,8 +43,8 @@ CPUGeneratedLines::~CPUGeneratedLines()
     if (bgfx::isValid(mVerticesBH))
         bgfx::destroy(mVerticesBH);
 
-    if (bgfx::isValid(mIndexesBH))
-        bgfx::destroy(mIndexesBH);
+    if (bgfx::isValid(mIndicesBH))
+        bgfx::destroy(mIndicesBH);
 }
 
 CPUGeneratedLines& CPUGeneratedLines::operator=(CPUGeneratedLines&& other)
@@ -59,7 +59,7 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 
     std::swap(mPointsSize, other.mPointsSize);
 
-    std::swap(mIndexesBH, other.mIndexesBH);
+    std::swap(mIndicesBH, other.mIndicesBH);
     std::swap(mVerticesBH, other.mVerticesBH);
 }
 
@@ -67,7 +67,7 @@ void CPUGeneratedLines::update(const std::vector<LinesVertex>& points)
 {
     if (mPointsSize > points.size()) {
         bgfx::destroy(mVerticesBH);
-        bgfx::destroy(mIndexesBH);
+        bgfx::destroy(mIndicesBH);
 
         allocateVertexBuffer();
         allocateIndexBuffer();
@@ -86,7 +86,7 @@ void CPUGeneratedLines::draw(uint viewId) const
                      UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
 
     bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndexesBH);
+    bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH);
 }
@@ -141,7 +141,7 @@ void CPUGeneratedLines::generateBuffers(const std::vector<LinesVertex> points)
         0,
         bgfx::makeRef(vertices, sizeof(float) * bufferVertsSize, vReleaseFn));
     bgfx::update(
-        mIndexesBH,
+        mIndicesBH,
         0,
         bgfx::makeRef(indices, sizeof(uint) * bufferIndsSize, iReleaseFn));
 }
@@ -163,7 +163,7 @@ void CPUGeneratedLines::allocateVertexBuffer()
 
 void CPUGeneratedLines::allocateIndexBuffer()
 {
-    mIndexesBH = bgfx::createDynamicIndexBuffer(
+    mIndicesBH = bgfx::createDynamicIndexBuffer(
         (mPointsSize / 2) * 6, BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32);
 }
 

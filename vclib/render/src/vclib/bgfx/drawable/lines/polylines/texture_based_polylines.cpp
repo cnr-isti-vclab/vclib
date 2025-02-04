@@ -38,7 +38,7 @@ TextureBasedPolylines::TextureBasedPolylines(
     assert(bgfx::isValid(mComputeTexturePH));
 
     allocateVerticesBuffer();
-    allocateIndexesBuffer();
+    allocateIndicesBuffer();
     allocateTextureBuffer();
     allocatePointsBuffer();
 
@@ -56,8 +56,8 @@ TextureBasedPolylines::~TextureBasedPolylines()
     if (bgfx::isValid(mVerticesBH))
         bgfx::destroy(mVerticesBH);
 
-    if (bgfx::isValid(mIndexesBH))
-        bgfx::destroy(mIndexesBH);
+    if (bgfx::isValid(mIndicesBH))
+        bgfx::destroy(mIndicesBH);
 
     if (bgfx::isValid(mSegmentsIndirectBH))
         bgfx::destroy(mSegmentsIndirectBH);
@@ -93,7 +93,7 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
     std::swap(mPointsSize, other.mPointsSize);
 
     std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mIndexesBH, other.mIndexesBH);
+    std::swap(mIndicesBH, other.mIndicesBH);
     std::swap(mPointsBH, other.mPointsBH);
 
     std::swap(mSegmentsIndirectBH, other.mSegmentsIndirectBH);
@@ -121,7 +121,7 @@ void TextureBasedPolylines::draw(uint viewId) const
                      UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
 
     bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndexesBH);
+    bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setImage(
         0,
         mSegmentsTextureBH,
@@ -133,7 +133,7 @@ void TextureBasedPolylines::draw(uint viewId) const
 
     if (settings().getJoin() != 0 && mPointsSize > 2) {
         bgfx::setVertexBuffer(0, mVerticesBH);
-        bgfx::setIndexBuffer(mIndexesBH);
+        bgfx::setIndexBuffer(mIndicesBH);
         bgfx::setImage(
             0,
             mJoinesTextureBH,
@@ -231,9 +231,9 @@ void TextureBasedPolylines::allocateVerticesBuffer()
         bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
 }
 
-void TextureBasedPolylines::allocateIndexesBuffer()
+void TextureBasedPolylines::allocateIndicesBuffer()
 {
-    mIndexesBH = bgfx::createIndexBuffer(
+    mIndicesBH = bgfx::createIndexBuffer(
         bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }

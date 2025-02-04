@@ -28,7 +28,7 @@ InstancingBasedLines::InstancingBasedLines(
 {
     checkCaps();
     allocateVerticesBuffer();
-    allocateIndexesBuffer();
+    allocateIndicesBuffer();
 }
 
 InstancingBasedLines::InstancingBasedLines(InstancingBasedLines&& other)
@@ -41,8 +41,8 @@ InstancingBasedLines::~InstancingBasedLines()
     if (bgfx::isValid(mVerticesBH))
         bgfx::destroy(mVerticesBH);
 
-    if (bgfx::isValid(mIndexesBH))
-        bgfx::destroy(mIndexesBH);
+    if (bgfx::isValid(mIndicesBH))
+        bgfx::destroy(mIndicesBH);
 }
 
 InstancingBasedLines& InstancingBasedLines::operator=(
@@ -61,7 +61,7 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
     std::swap(mPoints, other.mPoints);
 
     std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mIndexesBH, other.mIndexesBH);
+    std::swap(mIndicesBH, other.mIndicesBH);
     std::swap(mInstanceDB, other.mInstanceDB);
 }
 
@@ -76,7 +76,7 @@ void InstancingBasedLines::draw(uint viewId) const
                      UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
 
     bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndexesBH);
+    bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setInstanceDataBuffer(&mInstanceDB);
 
     bgfx::setState(state);
@@ -141,9 +141,9 @@ void InstancingBasedLines::allocateVerticesBuffer()
         bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
 }
 
-void InstancingBasedLines::allocateIndexesBuffer()
+void InstancingBasedLines::allocateIndicesBuffer()
 {
-    mIndexesBH = bgfx::createIndexBuffer(
+    mIndicesBH = bgfx::createIndexBuffer(
         bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }

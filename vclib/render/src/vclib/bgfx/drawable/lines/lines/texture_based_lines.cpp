@@ -33,7 +33,7 @@ TextureBasedLines::TextureBasedLines(
             bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
 {
     checkCaps();
-    allocateIndexesBuffer();
+    allocateIndicesBuffer();
     allocateVerticesBuffer();
     allocatePointsBuffer();
     setPointsBuffer(points);
@@ -52,8 +52,8 @@ TextureBasedLines::~TextureBasedLines()
     if (bgfx::isValid(mVerticesBH))
         bgfx::destroy(mVerticesBH);
 
-    if (bgfx::isValid(mIndexesBH))
-        bgfx::destroy(mIndexesBH);
+    if (bgfx::isValid(mIndicesBH))
+        bgfx::destroy(mIndicesBH);
 
     if (bgfx::isValid(mPointsBH))
         bgfx::destroy(mPointsBH);
@@ -88,7 +88,7 @@ void TextureBasedLines::swap(TextureBasedLines& other)
     std::swap(mIndirectDataUH, other.mIndirectDataUH);
 
     std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mIndexesBH, other.mIndexesBH);
+    std::swap(mIndicesBH, other.mIndicesBH);
 }
 
 void TextureBasedLines::draw(uint viewId) const
@@ -100,7 +100,7 @@ void TextureBasedLines::draw(uint viewId) const
                      UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
 
     bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndexesBH);
+    bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setImage(
         0, mTextureBH, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA32F);
     bgfx::setState(state);
@@ -176,9 +176,9 @@ void TextureBasedLines::allocateVerticesBuffer()
         bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
 }
 
-void TextureBasedLines::allocateIndexesBuffer()
+void TextureBasedLines::allocateIndicesBuffer()
 {
-    mIndexesBH = bgfx::createIndexBuffer(
+    mIndicesBH = bgfx::createIndexBuffer(
         bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }

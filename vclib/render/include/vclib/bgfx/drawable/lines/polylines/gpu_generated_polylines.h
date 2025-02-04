@@ -44,8 +44,8 @@ class GPUGeneratedPolylines : public Lines
     bgfx::DynamicVertexBufferHandle mPointsBH = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mVertexBH = BGFX_INVALID_HANDLE;
 
-    bgfx::DynamicIndexBufferHandle mSegmentsIndexesBH = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle mJoinesIndexesBH   = BGFX_INVALID_HANDLE;
+    bgfx::DynamicIndexBufferHandle mSegmentsIndicesBH = BGFX_INVALID_HANDLE;
+    bgfx::DynamicIndexBufferHandle mJoinesIndicesBH   = BGFX_INVALID_HANDLE;
 
     bgfx::UniformHandle mComputeDataUH = BGFX_INVALID_HANDLE;
 

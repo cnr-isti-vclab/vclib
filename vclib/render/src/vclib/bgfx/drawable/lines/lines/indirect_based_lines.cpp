@@ -34,7 +34,7 @@ IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex>& points) :
     checkCaps();
     assert(bgfx::isValid(mComputeIndirectPH));
     allocateVerticesBuffer();
-    allocateIndexesBuffer();
+    allocateIndicesBuffer();
 
     generateIndirectBuffer();
     allocatePointsBuffer();
@@ -51,8 +51,8 @@ IndirectBasedLines::~IndirectBasedLines()
     if (bgfx::isValid(mVerticesBH))
         bgfx::destroy(mVerticesBH);
 
-    if (bgfx::isValid(mIndexesBH))
-        bgfx::destroy(mIndexesBH);
+    if (bgfx::isValid(mIndicesBH))
+        bgfx::destroy(mIndicesBH);
 
     if (bgfx::isValid(mPointsBH))
         bgfx::destroy(mPointsBH);
@@ -77,7 +77,7 @@ void IndirectBasedLines::swap(IndirectBasedLines& other)
     std::swap(mPointsSize, other.mPointsSize);
 
     std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mIndexesBH, other.mIndexesBH);
+    std::swap(mIndicesBH, other.mIndicesBH);
     std::swap(mPointsBH, other.mPointsBH);
 
     std::swap(mIndirectBH, other.mIndirectBH);
@@ -110,9 +110,9 @@ void IndirectBasedLines::allocateVerticesBuffer()
         bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
 }
 
-void IndirectBasedLines::allocateIndexesBuffer()
+void IndirectBasedLines::allocateIndicesBuffer()
 {
-    mIndexesBH = bgfx::createIndexBuffer(
+    mIndicesBH = bgfx::createIndexBuffer(
         bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }
@@ -134,7 +134,7 @@ void IndirectBasedLines::draw(uint viewId) const
                      UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
 
     bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndexesBH);
+    bgfx::setIndexBuffer(mIndicesBH);
 
     bgfx::setBuffer(1, mPointsBH, bgfx::Access::Read);
 

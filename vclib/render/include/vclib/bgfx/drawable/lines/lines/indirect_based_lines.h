@@ -45,7 +45,7 @@ class IndirectBasedLines : public Lines
     uint mPointsSize = 0;
 
     bgfx::VertexBufferHandle        mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle         mIndexesBH  = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle         mIndicesBH  = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mPointsBH   = BGFX_INVALID_HANDLE;
 
     bgfx::IndirectBufferHandle mIndirectBH     = BGFX_INVALID_HANDLE;
@@ -77,7 +77,7 @@ private:
 
     void allocateVerticesBuffer();
 
-    void allocateIndexesBuffer();
+    void allocateIndicesBuffer();
 
     void generateIndirectBuffer();
 

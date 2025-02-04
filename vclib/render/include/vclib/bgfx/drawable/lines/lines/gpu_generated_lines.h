@@ -41,7 +41,7 @@ class GPUGeneratedLines : public Lines
 
     uint mPointsSize = 0;
 
-    bgfx::DynamicIndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
+    bgfx::DynamicIndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mPointsBH   = BGFX_INVALID_HANDLE;
 

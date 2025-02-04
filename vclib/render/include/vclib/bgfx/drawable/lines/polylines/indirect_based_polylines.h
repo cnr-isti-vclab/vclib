@@ -50,7 +50,7 @@ class IndirectBasedPolylines : public Lines
     uint mPointsSize = 0;
 
     bgfx::VertexBufferHandle        mVerticesBH         = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle         mIndexesBH          = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle         mIndicesBH          = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mPointsBH           = BGFX_INVALID_HANDLE;
     bgfx::IndirectBufferHandle      mSegmentsIndirectBH = BGFX_INVALID_HANDLE;
     bgfx::IndirectBufferHandle      mJoinesIndirectBH   = BGFX_INVALID_HANDLE;
@@ -85,7 +85,7 @@ private:
 
     void allocateVerticesBuffer();
 
-    void allocateIndexesBuffers();
+    void allocateIndicesBuffers();
 
     void setPointsBuffer(const std::vector<LinesVertex>& points);
 

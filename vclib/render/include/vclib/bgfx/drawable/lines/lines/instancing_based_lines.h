@@ -43,7 +43,7 @@ class InstancingBasedLines : public Lines
     mutable bgfx::InstanceDataBuffer mInstanceDB;
 
     bgfx::VertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mIndexesBH  = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
 
 public:
     InstancingBasedLines() { checkCaps(); }
@@ -71,7 +71,7 @@ private:
 
     void allocateVerticesBuffer();
 
-    void allocateIndexesBuffer();
+    void allocateIndicesBuffer();
 
     void checkCaps() const
     {

@@ -28,7 +28,7 @@ CPUGeneratedPolylines::CPUGeneratedPolylines(
 {
     assert(bgfx::isValid(mLinesPH));
     allocateVertexBuffer();
-    allocateIndexesBuffer();
+    allocateIndicesBuffer();
     generateBuffers(points);
 }
 
@@ -42,11 +42,11 @@ CPUGeneratedPolylines::~CPUGeneratedPolylines()
     if (bgfx::isValid(mVerticesBH))
         bgfx::destroy(mVerticesBH);
 
-    if (bgfx::isValid(mSegmentsIndexesBH))
-        bgfx::destroy(mSegmentsIndexesBH);
+    if (bgfx::isValid(mSegmentsIndicesBH))
+        bgfx::destroy(mSegmentsIndicesBH);
 
-    if (bgfx::isValid(mJoinsIndexesBH))
-        bgfx::destroy(mJoinsIndexesBH);
+    if (bgfx::isValid(mJoinsIndicesBH))
+        bgfx::destroy(mJoinsIndicesBH);
 }
 
 CPUGeneratedPolylines& CPUGeneratedPolylines::operator=(
@@ -63,8 +63,8 @@ void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
     std::swap(mPointsSize, other.mPointsSize);
 
     std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mSegmentsIndexesBH, other.mSegmentsIndexesBH);
-    std::swap(mJoinsIndexesBH, other.mJoinsIndexesBH);
+    std::swap(mSegmentsIndicesBH, other.mSegmentsIndicesBH);
+    std::swap(mJoinsIndicesBH, other.mJoinsIndicesBH);
 }
 
 void CPUGeneratedPolylines::draw(uint viewId) const
@@ -76,13 +76,13 @@ void CPUGeneratedPolylines::draw(uint viewId) const
                      UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
 
     bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mSegmentsIndexesBH);
+    bgfx::setIndexBuffer(mSegmentsIndicesBH);
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH);
 
     if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVerticesBH);
-        bgfx::setIndexBuffer(mJoinsIndexesBH);
+        bgfx::setIndexBuffer(mJoinsIndicesBH);
         bgfx::setState(state);
         bgfx::submit(viewId, mLinesPH);
     }
@@ -92,11 +92,11 @@ void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
 {
     if (mPointsSize > points.size()) {
         bgfx::destroy(mVerticesBH);
-        bgfx::destroy(mSegmentsIndexesBH);
-        bgfx::destroy(mJoinsIndexesBH);
+        bgfx::destroy(mSegmentsIndicesBH);
+        bgfx::destroy(mJoinsIndicesBH);
 
         allocateVertexBuffer();
-        allocateIndexesBuffer();
+        allocateIndicesBuffer();
     }
 
     mPointsSize = points.size();
@@ -178,12 +178,12 @@ void CPUGeneratedPolylines::generateBuffers(
         0,
         bgfx::makeRef(vertices, sizeof(float) * bufferVertsSize, vReleaseFn));
     bgfx::update(
-        mSegmentsIndexesBH,
+        mSegmentsIndicesBH,
         0,
         bgfx::makeRef(
             segmIndices, sizeof(uint) * bufferSegmetIndicesSize, siReleaseFn));
     bgfx::update(
-        mJoinsIndexesBH,
+        mJoinsIndicesBH,
         0,
         bgfx::makeRef(
             joinIndices, sizeof(uint) * bufferJoinsIndicesSize, jiReleaseFn));
@@ -205,12 +205,12 @@ void CPUGeneratedPolylines::allocateVertexBuffer()
         (mPointsSize - 1) * 4, layout, BGFX_BUFFER_ALLOW_RESIZE);
 }
 
-void CPUGeneratedPolylines::allocateIndexesBuffer()
+void CPUGeneratedPolylines::allocateIndicesBuffer()
 {
-    mSegmentsIndexesBH = bgfx::createDynamicIndexBuffer(
+    mSegmentsIndicesBH = bgfx::createDynamicIndexBuffer(
         (mPointsSize - 1) * 6, BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32);
 
-    mJoinsIndexesBH = bgfx::createDynamicIndexBuffer(
+    mJoinsIndicesBH = bgfx::createDynamicIndexBuffer(
         (mPointsSize - 2) * 6, BGFX_BUFFER_ALLOW_RESIZE | BGFX_BUFFER_INDEX32);
 }
 

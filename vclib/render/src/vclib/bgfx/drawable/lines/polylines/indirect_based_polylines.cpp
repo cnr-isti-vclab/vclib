@@ -34,7 +34,7 @@ IndirectBasedPolylines::IndirectBasedPolylines(
             bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
 {
     checkCaps();
-    allocateIndexesBuffers();
+    allocateIndicesBuffers();
     allocateVerticesBuffer();
     generateIndirectBuffers();
 
@@ -52,8 +52,8 @@ IndirectBasedPolylines::~IndirectBasedPolylines()
     if (bgfx::isValid(mVerticesBH))
         bgfx::destroy(mVerticesBH);
 
-    if (bgfx::isValid(mIndexesBH))
-        bgfx::destroy(mIndexesBH);
+    if (bgfx::isValid(mIndicesBH))
+        bgfx::destroy(mIndicesBH);
 
     if (bgfx::isValid(mPointsBH))
         bgfx::destroy(mPointsBH);
@@ -82,7 +82,7 @@ void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
     std::swap(mPointsSize, other.mPointsSize);
 
     std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mIndexesBH, other.mIndexesBH);
+    std::swap(mIndicesBH, other.mIndicesBH);
     std::swap(mPointsBH, other.mPointsBH);
 
     std::swap(mSegmentsIndirectBH, other.mSegmentsIndirectBH);
@@ -103,14 +103,14 @@ void IndirectBasedPolylines::draw(uint viewId) const
                      UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
 
     bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndexesBH);
+    bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setBuffer(1, mPointsBH, bgfx::Access::Read);
     bgfx::setState(state);
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirectBH, 0);
 
     if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVerticesBH);
-        bgfx::setIndexBuffer(mIndexesBH);
+        bgfx::setIndexBuffer(mIndicesBH);
         bgfx::setBuffer(1, mPointsBH, bgfx::Access::Read);
         bgfx::setState(state);
         bgfx::submit(viewId, mJoinesPH, mJoinesIndirectBH, 0);
@@ -165,9 +165,9 @@ void IndirectBasedPolylines::allocateVerticesBuffer()
         bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
 }
 
-void IndirectBasedPolylines::allocateIndexesBuffers()
+void IndirectBasedPolylines::allocateIndicesBuffers()
 {
-    mIndexesBH = bgfx::createIndexBuffer(
+    mIndicesBH = bgfx::createIndexBuffer(
         bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
         BGFX_BUFFER_INDEX32);
 }

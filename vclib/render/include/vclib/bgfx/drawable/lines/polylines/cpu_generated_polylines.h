@@ -38,8 +38,8 @@ class CPUGeneratedPolylines : public Lines
     uint               mPointsSize;
 
     bgfx::DynamicVertexBufferHandle mVerticesBH        = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle  mSegmentsIndexesBH = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle  mJoinsIndexesBH    = BGFX_INVALID_HANDLE;
+    bgfx::DynamicIndexBufferHandle  mSegmentsIndicesBH = BGFX_INVALID_HANDLE;
+    bgfx::DynamicIndexBufferHandle  mJoinsIndicesBH    = BGFX_INVALID_HANDLE;
 
 public:
     CPUGeneratedPolylines() = default;
@@ -68,7 +68,7 @@ private:
 
     void allocateVertexBuffer();
 
-    void allocateIndexesBuffer();
+    void allocateIndicesBuffer();
 };
 
 } // namespace vcl::lines
