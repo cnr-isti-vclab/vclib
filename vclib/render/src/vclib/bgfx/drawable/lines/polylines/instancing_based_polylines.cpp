@@ -123,23 +123,23 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         prevSegments[2]     = mPoints[i - !!i].Z;
         prevSegments[3]     = mPoints[i].xN;
 
-        float* currSegments = (float*) &dataSegments[16];
+        float* currSegments = reinterpret_cast<float*>(&dataSegments[16]);
         currSegments[0]     = mPoints[i].X;
         currSegments[1]     = mPoints[i].Y;
         currSegments[2]     = mPoints[i].Z;
 
-        uint* color0 = (uint*) &dataSegments[28];
+        uint* color0 = reinterpret_cast<uint*>(&dataSegments[28]);
         color0[0]        = mPoints[i].getUintColor();
 
-        float* nextSegments = (float*) &dataSegments[32];
+        float* nextSegments = reinterpret_cast<float*>(&dataSegments[32]);
         nextSegments[0]     = mPoints[i + 1].X;
         nextSegments[1]     = mPoints[i + 1].Y;
         nextSegments[2]     = mPoints[i + 1].Z;
 
-        uint* color1 = (uint*) &dataSegments[44];
+        uint* color1 = reinterpret_cast<uint*>(&dataSegments[44]);
         color1[0]        = mPoints[i + 1].getUintColor();
 
-        float* next_nextSegments = (float*) &dataSegments[48];
+        float* next_nextSegments = reinterpret_cast<float*>(&dataSegments[48]);
         next_nextSegments[0] =
             mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].X;
         next_nextSegments[1] =
@@ -148,7 +148,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
             mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].Z;
         next_nextSegments[3] = mPoints[i].yN;
 
-        float* normalSegments = (float*) &dataSegments[64];
+        float* normalSegments = reinterpret_cast<float*>(&dataSegments[64]);
         normalSegments[0]     = mPoints[i].zN;
         normalSegments[1]     = mPoints[i + 1].xN;
         normalSegments[2]     = mPoints[i + 1].yN;
@@ -161,21 +161,21 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
             prevJoin[2]     = mPoints[i - 1].Z;
             prevJoin[3]     = 0.0f;
 
-            float* currJoin = (float*) &dataJoins[16];
+            float* currJoin = reinterpret_cast<float*>(&dataJoins[16]);
             currJoin[0]     = mPoints[i].X;
             currJoin[1]     = mPoints[i].Y;
             currJoin[2]     = mPoints[i].Z;
 
-            uint* colorJoin = (uint*) &dataJoins[28];
+            uint* colorJoin = reinterpret_cast<uint*>(&dataJoins[28]);
             colorJoin[0]        = mPoints[i].getUintColor();
 
-            float* nextJoin = (float*) &dataJoins[32];
+            float* nextJoin = reinterpret_cast<float*>(&dataJoins[32]);
             nextJoin[0]     = mPoints[i + 1].X;
             nextJoin[1]     = mPoints[i + 1].Y;
             nextJoin[2]     = mPoints[i + 1].Z;
             nextJoin[3]     = 0.0f;
 
-            float* normalJoin = (float*) &dataJoins[48];
+            float* normalJoin = reinterpret_cast<float*>(&dataJoins[48]);
             normalJoin[0]     = mPoints[i].xN;
             normalJoin[1]     = mPoints[i].yN;
             normalJoin[2]     = mPoints[i].zN;

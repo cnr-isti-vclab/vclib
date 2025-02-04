@@ -103,24 +103,24 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
         p0[1]     = mPoints[i - 1].Y;
         p0[2]     = mPoints[i - 1].Z;
 
-        uint* color0 = (uint*) &data[12];
-        color0[0]        = mPoints[i - 1].getUintColor();
+        uint* color0 = reinterpret_cast<uint*>(&data[12]);
+        color0[0]    = mPoints[i - 1].getUintColor();
 
-        float* p1 = (float*) &data[16];
+        float* p1 = reinterpret_cast<float*>(&data[16]);
         p1[0]     = mPoints[i].X;
         p1[1]     = mPoints[i].Y;
         p1[2]     = mPoints[i].Z;
 
-        uint* color1 = (uint*) &data[28];
-        color1[0]        = mPoints[i].getUintColor();
+        uint* color1 = reinterpret_cast<uint*>(&data[28]);
+        color1[0]    = mPoints[i].getUintColor();
 
-        float* n0 = (float*) &data[32];
+        float* n0 = reinterpret_cast<float*>(&data[32]);
         n0[0]     = mPoints[i - 1].xN;
         n0[1]     = mPoints[i - 1].yN;
         n0[2]     = mPoints[i - 1].zN;
         n0[3]     = 0;
 
-        float* n1 = (float*) &data[48];
+        float* n1 = reinterpret_cast<float*>(&data[48]);
         n1[0]     = mPoints[i].xN;
         n1[1]     = mPoints[i].yN;
         n1[2]     = mPoints[i].zN;
