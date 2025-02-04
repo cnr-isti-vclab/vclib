@@ -27,7 +27,7 @@ namespace vcl::lines {
 
 GPUGeneratedPolylines::GPUGeneratedPolylines(
     const std::vector<LinesVertex>& points) :
-        mPoints(points),
+        mPointsSize(points.size()),
         mComputeDataUH(
             bgfx::createUniform("u_numWorksGroups", bgfx::UniformType::Vec4))
 {
@@ -36,10 +36,7 @@ GPUGeneratedPolylines::GPUGeneratedPolylines(
     allocateVertexBuffer();
     allocateIndexBuffer();
 
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
+    setPointsBuffer(points);
     generateBuffers();
 }
 
@@ -77,7 +74,7 @@ void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
 {
     Lines::swap(other);
 
-    std::swap(mPoints, other.mPoints);
+    std::swap(mPointsSize, other.mPointsSize);
 
     std::swap(mPointsBH, other.mPointsBH);
     std::swap(mVertexBH, other.mVertexBH);
@@ -111,42 +108,39 @@ void GPUGeneratedPolylines::draw(uint viewId) const
 
 void GPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
 {
-    int oldSize = mPoints.size();
-    mPoints     = points;
+    int oldSize = mPointsSize;
+    mPointsSize = points.size();
 
-    if (oldSize != mPoints.size()) {
+    if (oldSize != mPointsSize) {
         bgfx::destroy(mSegmentsIndexesBH);
         bgfx::destroy(mJoinesIndexesBH);
         allocateIndexBuffer();
     }
 
-    if (oldSize < mPoints.size()) {
+    if (oldSize < mPointsSize) {
         bgfx::destroy(mVertexBH);
         allocateVertexBuffer();
     }
 
-    if (oldSize > mPoints.size()) {
+    if (oldSize > mPointsSize) {
         bgfx::destroy(mPointsBH);
         allocatePointsBuffer();
     }
 
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(&mPoints[0], sizeof(LinesVertex) * mPoints.size()));
+    setPointsBuffer(points);
     generateBuffers();
 }
 
 void GPUGeneratedPolylines::generateBuffers()
 {
-    float data[] = {static_cast<float>(mPoints.size() - 1), 0, 0, 0};
+    float data[] = {static_cast<float>(mPointsSize - 1), 0, 0, 0};
     bgfx::setUniform(mComputeDataUH, data);
 
     bgfx::setBuffer(0, mPointsBH, bgfx::Access::Read);
     bgfx::setBuffer(1, mVertexBH, bgfx::Access::Write);
     bgfx::setBuffer(2, mSegmentsIndexesBH, bgfx::Access::Write);
     bgfx::setBuffer(3, mJoinesIndexesBH, bgfx::Access::Write);
-    bgfx::dispatch(0, mComputeVertexPH, mPoints.size() - 1, 1, 1);
+    bgfx::dispatch(0, mComputeVertexPH, mPointsSize - 1, 1, 1);
 }
 
 void GPUGeneratedPolylines::allocateVertexBuffer()
@@ -162,7 +156,7 @@ void GPUGeneratedPolylines::allocateVertexBuffer()
         .end();
 
     mVertexBH = bgfx::createDynamicVertexBuffer(
-        (mPoints.size() - 1) * 4,
+        (mPointsSize - 1) * 4,
         layout,
         BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_ALLOW_RESIZE);
 }
@@ -170,12 +164,12 @@ void GPUGeneratedPolylines::allocateVertexBuffer()
 void GPUGeneratedPolylines::allocateIndexBuffer()
 {
     mSegmentsIndexesBH = bgfx::createDynamicIndexBuffer(
-        ((mPoints.size() - 1) * 6),
+        ((mPointsSize - 1) * 6),
         BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_ALLOW_RESIZE |
             BGFX_BUFFER_INDEX32);
 
     mJoinesIndexesBH = bgfx::createDynamicIndexBuffer(
-        ((mPoints.size() - 2) * 6),
+        ((mPointsSize - 2) * 6),
         BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_ALLOW_RESIZE |
             BGFX_BUFFER_INDEX32);
 }
@@ -189,9 +183,23 @@ void GPUGeneratedPolylines::allocatePointsBuffer()
         .end();
 
     mPointsBH = bgfx::createDynamicVertexBuffer(
-        mPoints.size(),
+        mPointsSize,
         layout,
         BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_ALLOW_RESIZE);
+}
+
+void GPUGeneratedPolylines::setPointsBuffer(
+    const std::vector<LinesVertex>& points)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<LinesVertex>(points.size());
+
+    std::copy(points.begin(), points.end(), buffer);
+
+    bgfx::update(
+        mPointsBH,
+        0,
+        bgfx::makeRef(buffer, sizeof(LinesVertex) * points.size(), releaseFn));
 }
 
 } // namespace vcl::lines

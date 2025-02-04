@@ -39,7 +39,7 @@ class GPUGeneratedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_CPU_GENERATED_VSFS);
 
-    std::vector<LinesVertex> mPoints;
+    uint mPointsSize = 0;
 
     bgfx::DynamicVertexBufferHandle mPointsBH = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mVertexBH = BGFX_INVALID_HANDLE;
@@ -79,6 +79,8 @@ private:
     void allocateIndexBuffer();
 
     void allocatePointsBuffer();
+
+    void setPointsBuffer(const std::vector<LinesVertex>& points);
 
     void checkCaps() const
     {
