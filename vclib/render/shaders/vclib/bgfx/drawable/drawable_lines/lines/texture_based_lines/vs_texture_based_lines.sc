@@ -61,7 +61,7 @@ void main() {
     vec4 p1_px = calculatePointWithMVP(p1, u_screenWidth, u_screenHeigth);
     
     v_color = (((color0 * (1 - uv.x)) + (color1 * uv.x)) * (1 - sign(u_color_to_use))) + (u_general_color * sign(u_color_to_use));
-    v_normal = ((normal0 * (1 - uv.x)) + (normal1 * uv.x));
+    v_normal = ((normal0 * (1 - uv.x)) + (normal1 * uv.x)).xyz;
     v_length = length(p1_px.xyz - p0_px.xyz);
     v_uv = calculateLinesUV(p0_px, p1_px, uv, v_length, u_thickness, u_antialias, u_border, u_leftCap, u_rigthCap);
     gl_Position = calculateLines(p0_px, p1_px, uv, v_length, u_thickness, u_antialias, u_border, u_screenWidth, u_screenHeigth, u_leftCap, u_rigthCap);

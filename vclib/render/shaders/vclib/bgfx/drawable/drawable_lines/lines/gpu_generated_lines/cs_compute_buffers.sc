@@ -38,8 +38,8 @@ void main() {
 
     vec3 p0        = p((gl_WorkGroupID.x * 2));
     vec3 p1        = p((gl_WorkGroupID.x * 2) + 1);
-    float color    = color((gl_WorkGroupID.x * 2) + (1 - ((gl_LocalInvocationID.x + 1) % 2)));
-    vec3 normal    = normal((gl_WorkGroupID.x * 2) + (1 - ((gl_LocalInvocationID.x + 1) % 2)));
+    float color    = color((gl_WorkGroupID.x * 2) + (1 - ((uint)(gl_LocalInvocationID.x + 1) % 2)));
+    vec3 normal    = normal((gl_WorkGroupID.x * 2) + (1 - ((uint)(gl_LocalInvocationID.x + 1) % 2)));
 
     vertexBuffer[baseIndex]     = p0.x;
     vertexBuffer[baseIndex + 1] = p0.y;

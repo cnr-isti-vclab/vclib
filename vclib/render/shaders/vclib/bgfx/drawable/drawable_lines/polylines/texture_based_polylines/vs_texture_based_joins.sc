@@ -67,7 +67,7 @@ void main() {
     vec4 next_px = calculatePointWithMVP(next, u_screenWidth, u_screenHeigth);
 
     v_color = color;
-    v_normal = normal;
+    v_normal = normal.xyz;
     v_uv = vec4(0,0,0,0);
     v_length = 0;
     
