@@ -263,7 +263,7 @@ private:
 
         mVertexCoordsBuffer.set(
             buffer,
-            nv * 3,
+            nv,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
@@ -292,7 +292,7 @@ private:
 
                     mVertexNormalsBuffer.set(
                         buffer,
-                        nv * 3,
+                        nv,
                         bgfx::Attrib::Normal,
                         3,
                         PrimitiveType::FLOAT,
@@ -325,7 +325,7 @@ private:
 
                     mVertexColorsBuffer.set(
                         buffer,
-                        nv * 4,
+                        nv,
                         bgfx::Attrib::Color0,
                         4,
                         PrimitiveType::UCHAR,
@@ -357,7 +357,7 @@ private:
 
                     mVertexUVBuffer.set(
                         buffer,
-                        nv * 2,
+                        nv,
                         bgfx::Attrib::TexCoord0,
                         2,
                         PrimitiveType::FLOAT,
@@ -389,7 +389,7 @@ private:
 
                     mVertexWedgeUVBuffer.set(
                         buffer,
-                        nv * 2,
+                        nv,
                         bgfx::Attrib::TexCoord1,
                         2,
                         PrimitiveType::FLOAT,

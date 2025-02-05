@@ -142,7 +142,7 @@ void DrawableDirectionalLight::createVertexBuffer()
 {
     mVertexCoordBuffer.set(
         mVertices.data(),
-        mVertices.size(),
+        mVertices.size() / 3,
         bgfx::Attrib::Position,
         3,
         PrimitiveType::FLOAT);

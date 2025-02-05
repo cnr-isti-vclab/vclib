@@ -48,6 +48,8 @@ class DynamicVertexBuffer :
 {
     using Base = GenericBuffer<bgfx::DynamicVertexBufferHandle>;
 
+    bool mCompute = false;
+
 public:
     /**
      * @brief Empty constructor.
@@ -56,12 +58,81 @@ public:
      */
     DynamicVertexBuffer() = default;
 
-    void create(
-        uint                      size,
-        const bgfx::VertexLayout& layout,
-        ushort                    flags = BGFX_BUFFER_NONE)
+    /**
+     * @brief Swap the content of this object with another DynamicVertexBuffer
+     * object.
+     *
+     * @param[in] other: the other DynamicVertexBuffer object.
+     */
+    void swap(DynamicVertexBuffer& other)
     {
-        mHandle = bgfx::createDynamicVertexBuffer(size, layout, flags);
+        using std::swap;
+        Base::swap(other);
+        swap(mCompute, other.mCompute);
+    }
+
+    friend void swap(DynamicVertexBuffer& a, DynamicVertexBuffer& b)
+    {
+        a.swap(b);
+    }
+
+    /**
+     * @brief Check if the VertexBuffer is used for compute shaders.
+     *
+     * @return true if the VertexBuffer is used for compute shaders, false
+     * otherwise.
+     */
+    bool isCompute() const { return mCompute; }
+
+    void set(
+        uint               vertNum,
+        bgfx::Attrib::Enum attrib,
+        uint               numElements,
+        PrimitiveType      type,
+        bool               normalize = false,
+        uint64_t           flags = BGFX_BUFFER_ALLOW_RESIZE)
+    {
+        bgfx::VertexLayout layout;
+        layout.begin()
+            .add(attrib, numElements, attribType(type), normalize)
+            .end();
+
+        set(vertNum, layout, flags);
+    }
+
+    /**
+     * @brief Set the dynamic vertex buffer data for rendering.
+     *
+     * @param[in] vertNum: the number of vertices in the buffer.
+     * @param[in] layout: the vertex layout.
+     * @param[in] compute: if true, the buffer is used for compute shaders.
+     * @param[in] flags: the flags for the buffer.
+     */
+    void set(
+        uint                      vertNum,
+        const bgfx::VertexLayout& layout,
+        uint64_t                  flags = BGFX_BUFFER_ALLOW_RESIZE)
+    {
+        if (bgfx::isValid(mHandle))
+            bgfx::destroy(mHandle);
+
+        mHandle  = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
+        mCompute = false;
+    }
+
+    void setForCompute(
+        uint                      vertNum,
+        const bgfx::VertexLayout& layout,
+        bgfx::Access::Enum        access = bgfx::Access::Read,
+        uint64_t                  flags  = BGFX_BUFFER_ALLOW_RESIZE)
+    {
+        if (bgfx::isValid(mHandle))
+            bgfx::destroy(mHandle);
+
+        flags |= flagsForAccess(access);
+
+        mHandle = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
+        mCompute = true;
     }
 
     void update(uint startIndex, const bgfx::Memory* data)
@@ -74,12 +145,17 @@ public:
     /**
      * @brief Bind the dynamic vertex buffer to the rendering pipeline.
      *
-     * @param[in] stream: the stream to which the vertex buffer is bound.
+     * @param[in] stream: the stream (or stage, in case of compute) to which the
+     * dynamic vertex buffer is bound.
+     * @param[in] access: the access type for the buffer (only for compute).
      */
-    void bind(uint stream) const
+    void bind(uint stream, bgfx::Access::Enum access = bgfx::Access::Read) const
     {
         if (bgfx::isValid(mHandle)) {
-            bgfx::setVertexBuffer(stream, mHandle);
+            if (!mCompute)
+                bgfx::setVertexBuffer(stream, mHandle);
+            else
+                bgfx::setBuffer(stream, mHandle, access);
         }
     }
 };
