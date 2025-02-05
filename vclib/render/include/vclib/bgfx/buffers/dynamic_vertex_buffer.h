@@ -88,45 +88,70 @@ public:
      * @brief Creates the dynamic vertex buffer data for rendering, with the
      * layout given by the vertex attributes and without any data.
      *
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
+     *
      * @param[in] vertNum: the number of vertices in the buffer.
      * @param[in] attrib: the attribute to which the data of the buffer refers.
      * @param[in] attribNumPerVertex: the number of attributes per vertex.
      * @param[in] attribType: the type of the attributes.
      * @param[in] normalize: if true, the data is normalized.
-     * @param[in] flags: the flags for the buffer.
+     * @param[in] allowResize: if true, the buffer can be resized.
      */
     void create(
         uint               vertNum,
         bgfx::Attrib::Enum attrib,
         uint               attribNumPerVertex,
         PrimitiveType      attribType,
-        bool               normalize = false,
-        uint64_t           flags = BGFX_BUFFER_ALLOW_RESIZE)
+        bool               normalize   = false,
+        bool               allowResize = true)
     {
+        uint64_t flags =
+            allowResize ? BGFX_BUFFER_ALLOW_RESIZE : BGFX_BUFFER_NONE;
+
         bgfx::VertexLayout layout;
         layout.begin()
             .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
             .end();
 
-        create(vertNum, layout, flags);
+        create(vertNum, layout, true, flags);
     }
-
+    /**
+     * @brief Creates the dynamic vertex buffer data for rendering, with the
+     * layout given by the vertex attributes and with the given data.
+     *
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
+     *
+     * @param[in] bufferData: the data to be copied in the vertex buffer.
+     * @param[in] vertNum: the number of vertices in the buffer.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
+     * @param[in] normalize: if true, the data is normalized.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     * @param[in] allowResize: if true, the buffer can be resized.
+     */
     void create(
         const void*        bufferData,
         uint               vertNum,
         bgfx::Attrib::Enum attrib,
         uint               attribNumPerVertex,
         PrimitiveType      attribType,
-        bool               normalize = false,
-        uint64_t           flags     = BGFX_BUFFER_ALLOW_RESIZE,
-        bgfx::ReleaseFn    releaseFn = nullptr)
+        bool               normalize   = false,
+        bgfx::ReleaseFn    releaseFn   = nullptr,
+        bool               allowResize = true)
     {
+        uint64_t flags =
+            allowResize ? BGFX_BUFFER_ALLOW_RESIZE : BGFX_BUFFER_NONE;
+
         bgfx::VertexLayout layout;
         layout.begin()
             .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
             .end();
 
-        create(vertNum, layout, flags);
+        create(vertNum, layout, false, flags);
         update(bufferData, vertNum, attribNumPerVertex, attribType, 0, releaseFn);
     }
 
@@ -143,7 +168,7 @@ public:
         uint                      vertNum,
         const bgfx::VertexLayout& layout,
         bool                      compute = false,
-        uint64_t                  flags = BGFX_BUFFER_ALLOW_RESIZE)
+        uint64_t                  flags   = BGFX_BUFFER_NONE)
     {
         if (bgfx::isValid(mHandle))
             bgfx::destroy(mHandle);
@@ -152,6 +177,22 @@ public:
         mCompute = compute;
     }
 
+    /**
+     * @brief Updates the dynamic vertex buffer with the given data.
+     *
+     * If the buffer is not valid, the data is not updated.
+     * If the buffer was created with the allowResize flag set to true, the
+     * buffer can be resized to fit the new data. Otherwise, only the data that
+     * fits the buffer is updated.
+     *
+     * @param[in] bufferData: the data to be copied in the vertex buffer.
+     * @param[in] vertNum: the number of vertices in the buffer.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
+     * @param[in] startIndex: the index of the first vertex to be updated.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     */
     void update(
         const void*     bufferData,
         uint            vertNum,
