@@ -23,9 +23,9 @@
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>
 
-#include <vclib/qt/viewer_widget.h>
-
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
 #include <QApplication>
+#endif
 
 int main(int argc, char** argv)
 {
