@@ -124,7 +124,7 @@ protected:
         }
     }
 
-    static bgfx::AttribType::Enum attribType(PrimitiveType type)
+    static bgfx::AttribType::Enum attributeType(PrimitiveType type)
     {
         switch (type) {
         case PrimitiveType::CHAR:

@@ -85,9 +85,9 @@ public:
      *
      * @param[in] bufferData: the data to be copied in the vertex buffer.
      * @param[in] vertNum: the number of vertices in the buffer.
-     * @param[in] attrib: the attribute to which the data refers.
-     * @param[in] elemNumPerVertex: the number of elements for each vertex.
-     * @param[in] type: the type of the elements.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
      * @param[in] normalize: if true, the data is normalized.
      * @param[in] releaseFn: the release function to be called when the data is
      * no longer needed.
@@ -96,21 +96,21 @@ public:
         const void*        bufferData,
         uint               vertNum,
         bgfx::Attrib::Enum attrib,
-        uint               elemNumPerVertex,
-        PrimitiveType      type,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
         bool               normalize = false,
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, elemNumPerVertex, attribType(type), normalize)
+            .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
             .end();
 
-        set(layout,
-            bgfx::makeRef(
+        set(bgfx::makeRef(
                 bufferData,
-                vertNum * elemNumPerVertex * sizeOf(type),
-                releaseFn));
+                vertNum * attribNumPerVertex * sizeOf(attribType),
+                releaseFn),
+            layout);
     }
 
     /**
@@ -123,9 +123,9 @@ public:
      *
      * @param[in] bufferData: the data to be copied in the vertex buffer.
      * @param[in] vertNum: the number of vertices in the buffer.
-     * @param[in] attrib: the attribute to which the data refers.
-     * @param[in] numElements: the number of elements for each vertex.
-     * @param[in] type: the type of the elements.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
      * @param[in] normalize: if true, the data is normalized.
      * @param[in] access: the access type for the buffer.
      * @param[in] releaseFn: the release function to be called when the data is
@@ -135,8 +135,8 @@ public:
         const void*        bufferData,
         const uint         vertNum,
         bgfx::Attrib::Enum attrib,
-        uint               elemNumPerVertex,
-        PrimitiveType      type,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
         bool               normalize = false,
         bgfx::Access::Enum access    = bgfx::Access::Read,
         bgfx::ReleaseFn    releaseFn = nullptr)
@@ -145,14 +145,18 @@ public:
 
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, elemNumPerVertex, attribType(type), normalize)
+            .add(
+                attrib,
+                attribNumPerVertex,
+                attributeType(attribType),
+                normalize)
             .end();
 
-        set(layout,
-            bgfx::makeRef(
+        set(bgfx::makeRef(
                 bufferData,
-                vertNum * elemNumPerVertex * sizeOf(type),
+                vertNum * attribNumPerVertex * sizeOf(attribType),
                 releaseFn),
+            layout,
             true,
             flags);
     }
@@ -166,8 +170,8 @@ public:
      * @param[in] flags: the flags for the buffer.
      */
     void set(
-        const bgfx::VertexLayout& layout,
         const bgfx::Memory*       data,
+        const bgfx::VertexLayout& layout,
         bool                      compute = false,
         uint64_t                  flags   = BGFX_BUFFER_NONE)
     {
