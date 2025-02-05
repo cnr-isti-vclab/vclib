@@ -154,7 +154,7 @@ private:
         // vertex buffer
         mVertexCoordsBuffer.set(
             TRACKBALL_DATA.first.data(),
-            TRACKBALL_DATA.first.size() * 3,
+            TRACKBALL_DATA.first.size(),
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT);
