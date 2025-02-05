@@ -140,7 +140,7 @@ std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() const
 
 void DrawableDirectionalLight::createVertexBuffer()
 {
-    mVertexCoordBuffer.set(
+    mVertexCoordBuffer.create(
         mVertices.data(),
         mVertices.size() / 3,
         bgfx::Attrib::Position,

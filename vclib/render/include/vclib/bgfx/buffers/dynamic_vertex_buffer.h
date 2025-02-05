@@ -84,55 +84,88 @@ public:
      */
     bool isCompute() const { return mCompute; }
 
-    void set(
+    /**
+     * @brief Creates the dynamic vertex buffer data for rendering, with the
+     * layout given by the vertex attributes and without any data.
+     *
+     * @param[in] vertNum: the number of vertices in the buffer.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
+     * @param[in] normalize: if true, the data is normalized.
+     * @param[in] flags: the flags for the buffer.
+     */
+    void create(
         uint               vertNum,
         bgfx::Attrib::Enum attrib,
-        uint               numElements,
-        PrimitiveType      type,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
         bool               normalize = false,
         uint64_t           flags = BGFX_BUFFER_ALLOW_RESIZE)
     {
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, numElements, attribType(type), normalize)
+            .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
             .end();
 
-        set(vertNum, layout, flags);
+        create(vertNum, layout, flags);
+    }
+
+    void create(
+        const void*        bufferData,
+        uint               vertNum,
+        bgfx::Attrib::Enum attrib,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
+        bool               normalize = false,
+        uint64_t           flags     = BGFX_BUFFER_ALLOW_RESIZE,
+        bgfx::ReleaseFn    releaseFn = nullptr)
+    {
+        bgfx::VertexLayout layout;
+        layout.begin()
+            .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
+            .end();
+
+        create(vertNum, layout, flags);
+        update(bufferData, vertNum, attribNumPerVertex, attribType, 0, releaseFn);
     }
 
     /**
-     * @brief Set the dynamic vertex buffer data for rendering.
+     * @brief Creates the dynamic vertex buffer data for rendering, with the
+     * given layout and without any data.
      *
      * @param[in] vertNum: the number of vertices in the buffer.
      * @param[in] layout: the vertex layout.
      * @param[in] compute: if true, the buffer is used for compute shaders.
      * @param[in] flags: the flags for the buffer.
      */
-    void set(
+    void create(
         uint                      vertNum,
         const bgfx::VertexLayout& layout,
+        bool                      compute = false,
         uint64_t                  flags = BGFX_BUFFER_ALLOW_RESIZE)
     {
         if (bgfx::isValid(mHandle))
             bgfx::destroy(mHandle);
 
         mHandle  = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
-        mCompute = false;
+        mCompute = compute;
     }
 
-    void setForCompute(
-        uint                      vertNum,
-        const bgfx::VertexLayout& layout,
-        bgfx::Access::Enum        access = bgfx::Access::Read,
-        uint64_t                  flags  = BGFX_BUFFER_ALLOW_RESIZE)
+    void update(
+        const void*     bufferData,
+        uint            vertNum,
+        uint            attribNumPerVertex,
+        PrimitiveType   attribType,
+        uint            startIndex = 0,
+        bgfx::ReleaseFn releaseFn  = nullptr)
     {
-        if (bgfx::isValid(mHandle))
-            bgfx::destroy(mHandle);
+        const bgfx::Memory* data = bgfx::makeRef(
+            bufferData,
+            vertNum * attribNumPerVertex * sizeOf(attribType),
+            releaseFn);
 
-        flags |= flagsForAccess(access);
-
-        mHandle = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
-        mCompute = true;
+        update(startIndex, data);
     }
 
     void update(uint startIndex, const bgfx::Memory* data)

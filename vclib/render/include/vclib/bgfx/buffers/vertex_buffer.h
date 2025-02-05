@@ -76,7 +76,10 @@ public:
     bool isCompute() const { return mCompute; }
 
     /**
-     * @brief Set the vertex buffer data for rendering.
+     * @brief Creates the vertex buffer and sets the data for rendering.
+     *
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
      *
      * @note The data must be available for two bgfx::frame calls, then it is
      * safe to release the data. If you cannot guarantee this, you must provide
@@ -85,36 +88,43 @@ public:
      *
      * @param[in] bufferData: the data to be copied in the vertex buffer.
      * @param[in] vertNum: the number of vertices in the buffer.
-     * @param[in] attrib: the attribute to which the data refers.
-     * @param[in] elemNumPerVertex: the number of elements for each vertex.
-     * @param[in] type: the type of the elements.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
      * @param[in] normalize: if true, the data is normalized.
      * @param[in] releaseFn: the release function to be called when the data is
      * no longer needed.
      */
-    void set(
+    void create(
         const void*        bufferData,
         uint               vertNum,
         bgfx::Attrib::Enum attrib,
-        uint               elemNumPerVertex,
-        PrimitiveType      type,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
         bool               normalize = false,
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, elemNumPerVertex, attribType(type), normalize)
+            .add(
+                attrib,
+                attribNumPerVertex,
+                attributeType(attribType),
+                normalize)
             .end();
 
-        set(layout,
-            bgfx::makeRef(
+        create(bgfx::makeRef(
                 bufferData,
-                vertNum * elemNumPerVertex * sizeOf(type),
-                releaseFn));
+                vertNum * attribNumPerVertex * sizeOf(attribType),
+                releaseFn),
+            layout);
     }
 
     /**
-     * @brief Set the vertex buffer data for compute shaders.
+     * @brief Creates the vertex buffer and sets the data for compute shaders.
+     *
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
      *
      * @note The data must be available for two bgfx::frame calls, then it is
      * safe to release the data. If you cannot guarantee this, you must provide
@@ -123,20 +133,20 @@ public:
      *
      * @param[in] bufferData: the data to be copied in the vertex buffer.
      * @param[in] vertNum: the number of vertices in the buffer.
-     * @param[in] attrib: the attribute to which the data refers.
-     * @param[in] numElements: the number of elements for each vertex.
-     * @param[in] type: the type of the elements.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
      * @param[in] normalize: if true, the data is normalized.
      * @param[in] access: the access type for the buffer.
      * @param[in] releaseFn: the release function to be called when the data is
      * no longer needed.
      */
-    void setForCompute(
+    void createForCompute(
         const void*        bufferData,
         const uint         vertNum,
         bgfx::Attrib::Enum attrib,
-        uint               elemNumPerVertex,
-        PrimitiveType      type,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
         bool               normalize = false,
         bgfx::Access::Enum access    = bgfx::Access::Read,
         bgfx::ReleaseFn    releaseFn = nullptr)
@@ -145,29 +155,36 @@ public:
 
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, elemNumPerVertex, attribType(type), normalize)
+            .add(
+                attrib,
+                attribNumPerVertex,
+                attributeType(attribType),
+                normalize)
             .end();
 
-        set(layout,
-            bgfx::makeRef(
+        create(bgfx::makeRef(
                 bufferData,
-                vertNum * elemNumPerVertex * sizeOf(type),
+                vertNum * attribNumPerVertex * sizeOf(attribType),
                 releaseFn),
+            layout,
             true,
             flags);
     }
 
     /**
-     * @brief Set the vertex buffer data.
+     * @brief Creates the vertex buffer and sets the data.
      *
-     * @param[in] layout: the vertex layout.
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
+     *
      * @param[in] data: the memory containing the data.
+     * @param[in] layout: the vertex layout.
      * @param[in] compute: if true, the buffer is used for compute shaders.
      * @param[in] flags: the flags for the buffer.
      */
-    void set(
-        const bgfx::VertexLayout& layout,
+    void create(
         const bgfx::Memory*       data,
+        const bgfx::VertexLayout& layout,
         bool                      compute = false,
         uint64_t                  flags   = BGFX_BUFFER_NONE)
     {
@@ -180,6 +197,8 @@ public:
 
     /**
      * @brief Bind the vertex buffer to the rendering pipeline.
+     *
+     * If the buffer is invalid, it is not bound.
      *
      * @param[in] stream: the stream (or stage, in case of compute) to which the
      * vertex buffer is bound.
