@@ -95,7 +95,7 @@ public:
      * @param[in] normalize: if true, the data is normalized.
      * @param[in] flags: the flags for the buffer.
      */
-    void set(
+    void create(
         uint               vertNum,
         bgfx::Attrib::Enum attrib,
         uint               attribNumPerVertex,
@@ -108,10 +108,10 @@ public:
             .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
             .end();
 
-        set(vertNum, layout, flags);
+        create(vertNum, layout, flags);
     }
 
-    void set(
+    void create(
         const void*        bufferData,
         uint               vertNum,
         bgfx::Attrib::Enum attrib,
@@ -126,7 +126,7 @@ public:
             .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
             .end();
 
-        set(vertNum, layout, flags);
+        create(vertNum, layout, flags);
         update(bufferData, vertNum, attribNumPerVertex, attribType, 0, releaseFn);
     }
 
@@ -139,7 +139,7 @@ public:
      * @param[in] compute: if true, the buffer is used for compute shaders.
      * @param[in] flags: the flags for the buffer.
      */
-    void set(
+    void create(
         uint                      vertNum,
         const bgfx::VertexLayout& layout,
         bool                      compute = false,

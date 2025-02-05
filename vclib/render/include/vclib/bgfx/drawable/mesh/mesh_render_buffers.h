@@ -261,7 +261,7 @@ private:
         vertexCoordsToBuffer(mesh, buffer);
         appendDuplicateVertexCoordsToBuffer(mesh, vtd, buffer);
 
-        mVertexCoordsBuffer.set(
+        mVertexCoordsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Position,
@@ -290,7 +290,7 @@ private:
                     vertexNormalsToBuffer(mesh, buffer);
                     appendDuplicateVertexNormalsToBuffer(mesh, vtd, buffer);
 
-                    mVertexNormalsBuffer.set(
+                    mVertexNormalsBuffer.create(
                         buffer,
                         nv,
                         bgfx::Attrib::Normal,
@@ -323,7 +323,7 @@ private:
                     appendDuplicateVertexColorsToBuffer(
                         mesh, vtd, buffer, Color::Format::ABGR);
 
-                    mVertexColorsBuffer.set(
+                    mVertexColorsBuffer.create(
                         buffer,
                         nv,
                         bgfx::Attrib::Color0,
@@ -355,7 +355,7 @@ private:
                     vertexTexCoordsToBuffer(mesh, buffer);
                     appendDuplicateVertexTexCoordsToBuffer(mesh, vtd, buffer);
 
-                    mVertexUVBuffer.set(
+                    mVertexUVBuffer.create(
                         buffer,
                         nv,
                         bgfx::Attrib::TexCoord0,
@@ -387,7 +387,7 @@ private:
                     wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
                         mesh, vmw, ftr, buffer);
 
-                    mVertexWedgeUVBuffer.set(
+                    mVertexWedgeUVBuffer.create(
                         buffer,
                         nv,
                         bgfx::Attrib::TexCoord1,
@@ -420,7 +420,7 @@ private:
             replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
                 mesh, vtd, ftr, indexMap, buffer);
 
-            mTriangleIndexBuffer.set(buffer, NUM_TRIS * 3, true, releaseFn);
+            mTriangleIndexBuffer.create(buffer, NUM_TRIS * 3, true, releaseFn);
         }
     }
 
@@ -441,7 +441,7 @@ private:
                     triangulatedFaceNormalsToBuffer(
                         mesh, buffer, indexMap, MatrixStorageType::ROW_MAJOR);
 
-                    mTriangleNormalBuffer.setForCompute(
+                    mTriangleNormalBuffer.createForCompute(
                         buffer,
                         NUM_TRIS * 3,
                         PrimitiveType::FLOAT,
@@ -469,7 +469,7 @@ private:
                     triangulatedFaceColorsToBuffer(
                         mesh, buffer, indexMap, Color::Format::ABGR);
 
-                    mTriangleColorBuffer.setForCompute(
+                    mTriangleColorBuffer.createForCompute(
                         buffer,
                         NUM_TRIS,
                         PrimitiveType::UINT,
@@ -497,7 +497,7 @@ private:
                     triangulatedFaceWedgeTexCoordIndicesToBuffer(
                         mesh, buffer, indexMap);
 
-                    mTriangleTextureIndexBuffer.setForCompute(
+                    mTriangleTextureIndexBuffer.createForCompute(
                         buffer,
                         NUM_TRIS,
                         PrimitiveType::UINT,
@@ -516,7 +516,7 @@ private:
 
             edgeIndicesToBuffer(mesh, buffer);
 
-            mEdgeIndexBuffer.set(buffer, mesh.edgeNumber() * 2);
+            mEdgeIndexBuffer.create(buffer, mesh.edgeNumber() * 2);
         }
     }
 
@@ -533,7 +533,7 @@ private:
 
                     edgeNormalsToBuffer(mesh, buffer);
 
-                    mEdgeNormalBuffer.setForCompute(
+                    mEdgeNormalBuffer.createForCompute(
                         buffer,
                         mesh.edgeNumber() * 3,
                         PrimitiveType::FLOAT,
@@ -556,7 +556,7 @@ private:
 
                     edgeColorsToBuffer(mesh, buffer, Color::Format::ABGR);
 
-                    mEdgeColorBuffer.setForCompute(
+                    mEdgeColorBuffer.createForCompute(
                         buffer,
                         mesh.edgeNumber(),
                         PrimitiveType::UINT,
@@ -579,7 +579,7 @@ private:
 
             wireframeIndicesToBuffer(mesh, buffer);
 
-            mWireframeIndexBuffer.set(buffer, NUM_EDGES * 2, true, releaseFn);
+            mWireframeIndexBuffer.create(buffer, NUM_EDGES * 2, true, releaseFn);
         }
     }
 

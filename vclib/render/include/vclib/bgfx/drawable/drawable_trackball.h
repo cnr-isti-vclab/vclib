@@ -152,7 +152,7 @@ private:
     void createBuffers()
     {
         // vertex buffer
-        mVertexCoordsBuffer.set(
+        mVertexCoordsBuffer.create(
             TRACKBALL_DATA.first.data(),
             TRACKBALL_DATA.first.size(),
             bgfx::Attrib::Position,
@@ -160,7 +160,7 @@ private:
             PrimitiveType::FLOAT);
 
         // edge index buffer
-        mEdgeIndexBuffer.set(
+        mEdgeIndexBuffer.create(
             TRACKBALL_DATA.second.data(), TRACKBALL_DATA.second.size(), false);
     }
 };

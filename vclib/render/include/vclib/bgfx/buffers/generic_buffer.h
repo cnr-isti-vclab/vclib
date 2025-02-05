@@ -94,9 +94,9 @@ public:
     }
 
     /**
-     * @brief Swap the content of this object with another GenericBuffer object.
+     * @brief Swap the content of this object with another Buffer object.
      *
-     * @param[in] other: the other GenericBuffer object.
+     * @param[in] other: the other Buffer object.
      */
     void swap(GenericBuffer& other)
     {
@@ -107,9 +107,9 @@ public:
     friend void swap(GenericBuffer& a, GenericBuffer& b) { a.swap(b); }
 
     /**
-     * @brief Check if the GenericBuffer is valid.
+     * @brief Check if the Buffer is valid.
      *
-     * @return true if the GenericBuffer is valid, false otherwise.
+     * @return true if the Buffer is valid, false otherwise.
      */
     bool isValid() const { return bgfx::isValid(mHandle); }
 
