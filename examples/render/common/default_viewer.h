@@ -54,7 +54,7 @@ auto defaultViewer()
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
     return vcl::qt::MeshViewer();
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
-    return vcl::glfw::ViewerWindow;
+    return vcl::glfw::ViewerWindow();
 #endif
 }
 

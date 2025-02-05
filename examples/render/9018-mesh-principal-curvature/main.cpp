@@ -22,6 +22,11 @@
 
 #include <default_viewer.h>
 
+// conflict Eigen with X11.h
+#ifdef Success
+#undef Success
+#endif
+
 #include "mesh_curvature.h"
 
 int main(int argc, char** argv)
