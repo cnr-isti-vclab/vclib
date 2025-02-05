@@ -47,6 +47,14 @@ protected:
 
 public:
     /**
+     * @brief Check if the Buffer is valid.
+     *
+     * @return true if the Buffer is valid, false otherwise.
+     */
+    bool isValid() const { return bgfx::isValid(mHandle); }
+
+protected:
+    /**
      * @brief Empty constructor.
      *
      * It creates an invalid GenericBuffer object.
@@ -105,13 +113,6 @@ public:
     }
 
     friend void swap(GenericBuffer& a, GenericBuffer& b) { a.swap(b); }
-
-    /**
-     * @brief Check if the Buffer is valid.
-     *
-     * @return true if the Buffer is valid, false otherwise.
-     */
-    bool isValid() const { return bgfx::isValid(mHandle); }
 
 protected:
     static uint64_t flagsForAccess(bgfx::Access::Enum access)
