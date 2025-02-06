@@ -26,9 +26,8 @@
 namespace vcl::lines {
 
 TextureBasedPolylines::TextureBasedPolylines(
-    const std::vector<LinesVertex>& points,
-    const uint                  maxTextureSize) :
-        mPointsSize(points.size()), mMaxTextureSize(maxTextureSize),
+    const std::vector<LinesVertex>& points) :
+        mPointsSize(points.size()),
         mJoinesIndirectBH(bgfx::createIndirectBuffer(1)),
         mSegmentsIndirectBH(bgfx::createIndirectBuffer(1)),
         mComputeDataUH(
@@ -89,7 +88,6 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
 {
     Lines::swap(other);
 
-    std::swap(mMaxTextureSize, other.mMaxTextureSize);
     std::swap(mPointsSize, other.mPointsSize);
 
     std::swap(mVerticesBH, other.mVerticesBH);

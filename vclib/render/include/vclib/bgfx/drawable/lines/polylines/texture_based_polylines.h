@@ -31,7 +31,7 @@ namespace vcl::lines {
 
 class TextureBasedPolylines : public Lines
 {
-    static const inline std::vector<float>    VERTICES =
+    static const inline std::vector<float> VERTICES =
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
     static const inline std::vector<uint> INDICES = {0, 3, 1, 0, 2, 3};
 
@@ -47,7 +47,8 @@ class TextureBasedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_TEXTURE_BASED_CS);
 
-    uint mMaxTextureSize;
+    const uint mMaxTextureSize = bgfx::getCaps()->limits.maxTextureSize;
+
     uint mPointsSize = 0;
 
     bgfx::VertexBufferHandle        mVerticesBH = BGFX_INVALID_HANDLE;
@@ -65,9 +66,7 @@ class TextureBasedPolylines : public Lines
 public:
     TextureBasedPolylines() { checkCaps(); }
 
-    TextureBasedPolylines(
-        const std::vector<LinesVertex>& points,
-        const uint maxTextureSize = bgfx::getCaps()->limits.maxTextureSize);
+    TextureBasedPolylines(const std::vector<LinesVertex>& points);
 
     TextureBasedPolylines(const TextureBasedPolylines& other) = delete;
 

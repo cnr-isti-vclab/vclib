@@ -42,7 +42,8 @@ class TextureBasedLines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::LINES_TEXTURE_BASED_VSFS);
 
-    uint mMaxTextureSize;
+    const uint mMaxTextureSize = bgfx::getCaps()->limits.maxTextureSize;
+
     uint mPointsSize = 0;
 
     bgfx::TextureHandle             mTextureBH = BGFX_INVALID_HANDLE;
@@ -57,9 +58,7 @@ class TextureBasedLines : public Lines
 public:
     TextureBasedLines() { checkCaps(); }
 
-    TextureBasedLines(
-        const std::vector<LinesVertex>& points,
-        const uint maxTextureSize = bgfx::getCaps()->limits.maxTextureSize);
+    TextureBasedLines(const std::vector<LinesVertex>& points);
 
     TextureBasedLines(const TextureBasedLines& other) = delete;
 
