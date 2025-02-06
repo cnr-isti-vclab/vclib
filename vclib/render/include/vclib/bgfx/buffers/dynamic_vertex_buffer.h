@@ -111,11 +111,16 @@ public:
 
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
+            .add(
+                attrib,
+                attribNumPerVertex,
+                attributeType(attribType),
+                normalize)
             .end();
 
         create(vertNum, layout, true, flags);
     }
+
     /**
      * @brief Creates the dynamic vertex buffer data for rendering, with the
      * layout given by the vertex attributes and with the given data.
@@ -148,11 +153,16 @@ public:
 
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
+            .add(
+                attrib,
+                attribNumPerVertex,
+                attributeType(attribType),
+                normalize)
             .end();
 
         create(vertNum, layout, false, flags);
-        update(bufferData, vertNum, attribNumPerVertex, attribType, 0, releaseFn);
+        update(
+            bufferData, vertNum, attribNumPerVertex, attribType, 0, releaseFn);
     }
 
     /**

@@ -579,7 +579,8 @@ private:
 
             wireframeIndicesToBuffer(mesh, buffer);
 
-            mWireframeIndexBuffer.create(buffer, NUM_EDGES * 2, true, releaseFn);
+            mWireframeIndexBuffer.create(
+                buffer, NUM_EDGES * 2, true, releaseFn);
         }
     }
 

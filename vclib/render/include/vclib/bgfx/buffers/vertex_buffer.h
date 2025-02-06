@@ -113,7 +113,8 @@ public:
                 normalize)
             .end();
 
-        create(bgfx::makeRef(
+        create(
+            bgfx::makeRef(
                 bufferData,
                 vertNum * attribNumPerVertex * sizeOf(attribType),
                 releaseFn),
@@ -162,7 +163,8 @@ public:
                 normalize)
             .end();
 
-        create(bgfx::makeRef(
+        create(
+            bgfx::makeRef(
                 bufferData,
                 vertNum * attribNumPerVertex * sizeOf(attribType),
                 releaseFn),
