@@ -20,13 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_BUFFERS_H
-#define VCL_BGFX_BUFFERS_H
+#ifndef VCL_BGFX_BUFFERS_INDIRECT_BUFFER_H
+#define VCL_BGFX_BUFFERS_INDIRECT_BUFFER_H
 
-#include "buffers/dynamic_index_buffer.h"
-#include "buffers/dynamic_vertex_buffer.h"
-#include "buffers/index_buffer.h"
-#include "buffers/indirect_buffer.h"
-#include "buffers/vertex_buffer.h"
+#include "generic_buffer.h"
 
-#endif // VCL_BGFX_BUFFERS_H
+class IndirectBuffer : public vcl::GenericBuffer<bgfx::IndirectBufferHandle>
+{
+    using Base = vcl::GenericBuffer<bgfx::IndirectBufferHandle>;
+
+public:
+    using Base::swap;
+
+    /**
+     * @brief Empty constructor.
+     *
+     * It creates an invalid IndirectBuffer object.
+     */
+    IndirectBuffer() = default;
+
+    /**
+     * @brief Creates the indirect buffer with the given number of indirect
+     * calls.
+     *
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
+     *
+     * @param[in] num: the number of indirect calls.
+     */
+    void create(uint num)
+    {
+        if (bgfx::isValid(mHandle))
+            bgfx::destroy(mHandle);
+
+        mHandle = bgfx::createIndirectBuffer(num);
+    }
+
+    /**
+     * @brief Returns the handle of the indirect buffer.
+     * @return the handle of the indirect buffer.
+     */
+    bgfx::IndirectBufferHandle handle() const { return mHandle; }
+
+    void bind(uint stage, bgfx::Access::Enum access) const
+    {
+        if (bgfx::isValid(mHandle))
+            bgfx::setBuffer(stage, mHandle, access);
+    }
+};
+
+#endif // VCL_BGFX_BUFFERS_INDIRECT_BUFFER_H
