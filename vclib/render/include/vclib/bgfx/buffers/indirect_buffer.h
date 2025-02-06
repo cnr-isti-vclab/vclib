@@ -25,9 +25,11 @@
 
 #include "generic_buffer.h"
 
-class IndirectBuffer : public vcl::GenericBuffer<bgfx::IndirectBufferHandle>
+namespace vcl {
+
+class IndirectBuffer : public GenericBuffer<bgfx::IndirectBufferHandle>
 {
-    using Base = vcl::GenericBuffer<bgfx::IndirectBufferHandle>;
+    using Base = GenericBuffer<bgfx::IndirectBufferHandle>;
 
 public:
     using Base::swap;
@@ -68,5 +70,7 @@ public:
             bgfx::setBuffer(stage, mHandle, access);
     }
 };
+
+} // namespace vcl
 
 #endif // VCL_BGFX_BUFFERS_INDIRECT_BUFFER_H
