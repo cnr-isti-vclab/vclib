@@ -48,7 +48,7 @@ class TextureBasedLines : public Lines
     IndexBuffer  mIndices;
 
     VertexBuffer mPoints;
-    bgfx::TextureHandle mTextureBH = BGFX_INVALID_HANDLE;
+    TextureBuffer mTexture;
 
     IndirectBuffer mIndirect;
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
@@ -58,13 +58,9 @@ public:
 
     TextureBasedLines(const std::vector<LinesVertex>& points);
 
-    TextureBasedLines(TextureBasedLines&& other);
-
-    ~TextureBasedLines();
-
-    TextureBasedLines& operator=(TextureBasedLines&& other);
-
     void swap(TextureBasedLines& other);
+
+    friend void swap(TextureBasedLines& a, TextureBasedLines& b) { a.swap(b); }
 
     void draw(uint viewId) const;
 

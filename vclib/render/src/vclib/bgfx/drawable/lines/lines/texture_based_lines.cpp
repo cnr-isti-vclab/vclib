@@ -48,23 +48,6 @@ TextureBasedLines::TextureBasedLines(const std::vector<LinesVertex>& points) :
     allocateAndGenerateTextureBuffer(points.size());
 }
 
-TextureBasedLines::TextureBasedLines(TextureBasedLines&& other)
-{
-    swap(other);
-}
-
-TextureBasedLines::~TextureBasedLines()
-{
-    if (bgfx::isValid(mTextureBH))
-        bgfx::destroy(mTextureBH);
-}
-
-TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines&& other)
-{
-    swap(other);
-    return *this;
-}
-
 void TextureBasedLines::swap(TextureBasedLines& other)
 {
     using std::swap;
@@ -74,7 +57,7 @@ void TextureBasedLines::swap(TextureBasedLines& other)
     swap(mIndices, other.mIndices);
 
     swap(mPoints, other.mPoints);
-    swap(mTextureBH, other.mTextureBH);
+    swap(mTexture, other.mTexture);
 
     swap(mIndirect, other.mIndirect);
     swap(mIndirectData, other.mIndirectData);
@@ -86,8 +69,7 @@ void TextureBasedLines::draw(uint viewId) const
 
     mVertices.bind(0);
     mIndices.bind();
-    bgfx::setImage(
-        0, mTextureBH, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA32F);
+    mTexture.bind(0, bgfx::Access::Read);
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH, mIndirect.handle(), 0);
 }
@@ -122,19 +104,11 @@ void TextureBasedLines::allocateAndSetPointsBuffer(
 
 void TextureBasedLines::allocateAndGenerateTextureBuffer(uint pointSize)
 {
-    if (bgfx::isValid(mTextureBH))
-        bgfx::destroy(mTextureBH);
-
     uint16_t Y = (pointSize * 3) / (mMaxTextureSize + 1);
     uint16_t X = Y == 0 ? (pointSize * 3) : mMaxTextureSize;
 
-    mTextureBH = bgfx::createTexture2D(
-        X,
-        Y + 1,
-        false,
-        1,
-        bgfx::TextureFormat::RGBA32F,
-        BGFX_TEXTURE_COMPUTE_WRITE);
+    mTexture.create(
+        X, Y + 1, bgfx::TextureFormat::RGBA32F, BGFX_TEXTURE_COMPUTE_WRITE);
 
     float data[] = {
                     static_cast<float>(mMaxTextureSize),
@@ -144,7 +118,7 @@ void TextureBasedLines::allocateAndGenerateTextureBuffer(uint pointSize)
     mIndirectData.bind(data);
 
     mPoints.bind(0);
-    bgfx::setImage(1, mTextureBH, 0, bgfx::Access::Write);
+    mTexture.bind(1, bgfx::Access::Write);
     mIndirect.bind(2, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeTexturePH, (pointSize / 2), 1, 1);
 }
