@@ -100,11 +100,8 @@ void GPUGeneratedLines::allocateVertexBuffer(uint pointsSize)
 
     const uint sz = pointsSize * 4 * 12;
 
-    auto [buffer, releaseFn] =
-        getAllocatedBufferAndReleaseFn<float>(sz);
-
     mVertices.create(
-        bgfx::makeRef(buffer, sizeof(float) * sz, releaseFn),
+        bgfx::makeRef(nullptr, sizeof(float) * sz),
         layout,
         BGFX_BUFFER_COMPUTE_WRITE,
         true);
@@ -114,11 +111,8 @@ void GPUGeneratedLines::allocateIndexBuffer(uint pointsSize)
 {
     const uint sz = (pointsSize / 2) * 6;
 
-    auto [buffer, releaseFn] =
-        getAllocatedBufferAndReleaseFn<uint>(sz);
-
     mIndices.create(
-        bgfx::makeRef(buffer, sizeof(uint) * sz, releaseFn),
+        bgfx::makeRef(nullptr, sizeof(uint) * sz),
         BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_INDEX32,
         true);
 }
