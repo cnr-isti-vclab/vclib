@@ -23,8 +23,9 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_CPU_GENERATED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_CPU_GENERATED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
 
 namespace vcl::lines {
 
@@ -33,38 +34,22 @@ class CPUGeneratedLines : public Lines
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
             VclProgram::LINES_CPU_GENERATED_VSFS);
-    uint mPointsSize = 0;
 
-    bgfx::DynamicVertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertices;
+    IndexBuffer  mIndices;
 
 public:
     CPUGeneratedLines() = default;
 
     CPUGeneratedLines(const std::vector<LinesVertex>& points);
 
-    CPUGeneratedLines(const CPUGeneratedLines& other) = delete;
-
-    CPUGeneratedLines(CPUGeneratedLines&& other);
-
-    ~CPUGeneratedLines();
-
-    CPUGeneratedLines& operator=(const CPUGeneratedLines& other) = delete;
-
-    CPUGeneratedLines& operator=(CPUGeneratedLines&& other);
-
     void swap(CPUGeneratedLines& other);
+
+    friend void swap(CPUGeneratedLines& a, CPUGeneratedLines& b) { a.swap(b); }
 
     void draw(uint viewId) const;
 
     void update(const std::vector<LinesVertex>& points);
-
-private:
-    void generateBuffers(const std::vector<LinesVertex> points);
-
-    void allocateVertexBuffer();
-
-    void allocateIndexBuffer();
 };
 
 } // namespace vcl::lines
