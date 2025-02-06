@@ -24,21 +24,28 @@
 #include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 
 namespace vcl::lines {
-TextureBasedLines::TextureBasedLines(
-    const std::vector<LinesVertex>& points) :
-        mPointsSize(points.size()),
-        mIndirectBH(bgfx::createIndirectBuffer(1)),
-        mIndirectDataUH(
-            bgfx::createUniform("u_IndirectData", bgfx::UniformType::Vec4))
+TextureBasedLines::TextureBasedLines()
 {
     checkCaps();
-    allocateIndicesBuffer();
-    allocateVerticesBuffer();
-    allocatePointsBuffer();
-    setPointsBuffer(points);
 
-    allocateTextureBuffer();
-    generateTextureBuffer();
+    mVertices.create(
+        VERTICES.data(),
+        VERTICES.size(),
+        bgfx::Attrib::Position,
+        2,
+        PrimitiveType::FLOAT);
+
+    mIndices.create(INDICES.data(), INDICES.size());
+
+    mIndirect.create(1);
+}
+
+TextureBasedLines::TextureBasedLines(const std::vector<LinesVertex>& points) :
+        TextureBasedLines()
+{
+    allocateAndSetPointsBuffer(points);
+
+    allocateAndGenerateTextureBuffer(points.size());
 }
 
 TextureBasedLines::TextureBasedLines(TextureBasedLines&& other)
@@ -48,23 +55,8 @@ TextureBasedLines::TextureBasedLines(TextureBasedLines&& other)
 
 TextureBasedLines::~TextureBasedLines()
 {
-    if (bgfx::isValid(mVerticesBH))
-        bgfx::destroy(mVerticesBH);
-
-    if (bgfx::isValid(mIndicesBH))
-        bgfx::destroy(mIndicesBH);
-
-    if (bgfx::isValid(mPointsBH))
-        bgfx::destroy(mPointsBH);
-
-    if (bgfx::isValid(mIndirectBH))
-        bgfx::destroy(mIndirectBH);
-
     if (bgfx::isValid(mTextureBH))
         bgfx::destroy(mTextureBH);
-
-    if (bgfx::isValid(mIndirectDataUH))
-        bgfx::destroy(mIndirectDataUH);
 }
 
 TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines&& other)
@@ -75,76 +67,39 @@ TextureBasedLines& TextureBasedLines::operator=(TextureBasedLines&& other)
 
 void TextureBasedLines::swap(TextureBasedLines& other)
 {
+    using std::swap;
     Lines::swap(other);
 
-    std::swap(mPointsSize, other.mPointsSize);
+    swap(mVertices, other.mVertices);
+    swap(mIndices, other.mIndices);
 
-    std::swap(mTextureBH, other.mTextureBH);
-    std::swap(mPointsBH, other.mPointsBH);
+    swap(mPoints, other.mPoints);
+    swap(mTextureBH, other.mTextureBH);
 
-    std::swap(mIndirectBH, other.mIndirectBH);
-    std::swap(mIndirectDataUH, other.mIndirectDataUH);
-
-    std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mIndicesBH, other.mIndicesBH);
+    swap(mIndirect, other.mIndirect);
+    swap(mIndirectData, other.mIndirectData);
 }
 
 void TextureBasedLines::draw(uint viewId) const
 {
     bindSettingsUniformLines();
 
-    bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndicesBH);
+    mVertices.bind(0);
+    mIndices.bind();
     bgfx::setImage(
         0, mTextureBH, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA32F);
     bgfx::setState(drawState());
-    bgfx::submit(viewId, mLinesPH, mIndirectBH, 0);
+    bgfx::submit(viewId, mLinesPH, mIndirect.handle(), 0);
 }
 
 void TextureBasedLines::update(const std::vector<LinesVertex>& points)
 {
-    int oldSize = mPointsSize;
-    mPointsSize     = points.size();
-
-    setPointsBuffer(points);
-
-    if (oldSize < mPointsSize) {
-        allocateTextureBuffer();
-    }
-
-    generateTextureBuffer();
+    allocateAndSetPointsBuffer(points);
+    allocateAndGenerateTextureBuffer(points.size());
 }
 
-void TextureBasedLines::generateTextureBuffer()
-{
-    float data[] = {
-        static_cast<float>(mMaxTextureSize),
-        static_cast<float>(mPointsSize / 2),
-        0,
-        0};
-    bgfx::setUniform(mIndirectDataUH, data);
-
-    bgfx::setBuffer(0, mPointsBH, bgfx::Access::Read);
-    bgfx::setImage(1, mTextureBH, 0, bgfx::Access::Write);
-    bgfx::setBuffer(2, mIndirectBH, bgfx::Access::ReadWrite);
-    bgfx::dispatch(0, mComputeTexturePH, (mPointsSize / 2), 1, 1);
-}
-
-void TextureBasedLines::allocateTextureBuffer()
-{
-    uint16_t Y = (mPointsSize * 3) / (mMaxTextureSize + 1);
-    uint16_t X = Y == 0 ? (mPointsSize * 3) : mMaxTextureSize;
-
-    mTextureBH = bgfx::createTexture2D(
-        X,
-        Y + 1,
-        false,
-        1,
-        bgfx::TextureFormat::RGBA32F,
-        BGFX_TEXTURE_COMPUTE_WRITE);
-}
-
-void TextureBasedLines::allocatePointsBuffer()
+void TextureBasedLines::allocateAndSetPointsBuffer(
+    const std::vector<LinesVertex>& points)
 {
     bgfx::VertexLayout layout;
     layout.begin()
@@ -153,41 +108,45 @@ void TextureBasedLines::allocatePointsBuffer()
         .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
         .end();
 
-    mPointsBH = bgfx::createDynamicVertexBuffer(
-        mPointsSize,
-        layout,
-        BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_ALLOW_RESIZE);
-}
-
-void TextureBasedLines::allocateVerticesBuffer()
-{
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-        .end();
-
-    mVerticesBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
-}
-
-void TextureBasedLines::allocateIndicesBuffer()
-{
-    mIndicesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
-        BGFX_BUFFER_INDEX32);
-}
-
-void TextureBasedLines::setPointsBuffer(const std::vector<LinesVertex>& points)
-{
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<LinesVertex>(points.size());
 
     std::copy(points.begin(), points.end(), buffer);
 
-    bgfx::update(
-        mPointsBH,
-        0,
-        bgfx::makeRef(buffer, sizeof(LinesVertex) * points.size(), releaseFn));
+    mPoints.create(
+        bgfx::makeRef(buffer, sizeof(LinesVertex) * points.size(), releaseFn),
+        layout,
+        BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_ALLOW_RESIZE,
+        true);
+}
+
+void TextureBasedLines::allocateAndGenerateTextureBuffer(uint pointSize)
+{
+    if (bgfx::isValid(mTextureBH))
+        bgfx::destroy(mTextureBH);
+
+    uint16_t Y = (pointSize * 3) / (mMaxTextureSize + 1);
+    uint16_t X = Y == 0 ? (pointSize * 3) : mMaxTextureSize;
+
+    mTextureBH = bgfx::createTexture2D(
+        X,
+        Y + 1,
+        false,
+        1,
+        bgfx::TextureFormat::RGBA32F,
+        BGFX_TEXTURE_COMPUTE_WRITE);
+
+    float data[] = {
+                    static_cast<float>(mMaxTextureSize),
+                    static_cast<float>(pointSize / 2),
+                    0,
+                    0};
+    mIndirectData.bind(data);
+
+    mPoints.bind(0);
+    bgfx::setImage(1, mTextureBH, 0, bgfx::Access::Write);
+    mIndirect.bind(2, bgfx::Access::Write);
+    bgfx::dispatch(0, mComputeTexturePH, (pointSize / 2), 1, 1);
 }
 
 } // namespace vcl::lines

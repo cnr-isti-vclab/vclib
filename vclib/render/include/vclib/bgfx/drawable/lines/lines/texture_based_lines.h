@@ -23,9 +23,9 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_TEXTURE_BASED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_TEXTURE_BASED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
-
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
 
 namespace vcl::lines {
 
@@ -44,29 +44,23 @@ class TextureBasedLines : public Lines
 
     const uint mMaxTextureSize = bgfx::getCaps()->limits.maxTextureSize;
 
-    uint mPointsSize = 0;
+    VertexBuffer mVertices;
+    IndexBuffer  mIndices;
 
-    bgfx::TextureHandle             mTextureBH = BGFX_INVALID_HANDLE;
-    bgfx::DynamicVertexBufferHandle mPointsBH  = BGFX_INVALID_HANDLE;
+    VertexBuffer mPoints;
+    bgfx::TextureHandle mTextureBH = BGFX_INVALID_HANDLE;
 
-    bgfx::IndirectBufferHandle mIndirectBH     = BGFX_INVALID_HANDLE;
-    bgfx::UniformHandle        mIndirectDataUH = BGFX_INVALID_HANDLE;
-
-    bgfx::VertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
+    IndirectBuffer mIndirect;
+    Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:
-    TextureBasedLines() { checkCaps(); }
+    TextureBasedLines();
 
     TextureBasedLines(const std::vector<LinesVertex>& points);
-
-    TextureBasedLines(const TextureBasedLines& other) = delete;
 
     TextureBasedLines(TextureBasedLines&& other);
 
     ~TextureBasedLines();
-
-    TextureBasedLines& operator=(const TextureBasedLines& other) = delete;
 
     TextureBasedLines& operator=(TextureBasedLines&& other);
 
@@ -77,18 +71,6 @@ public:
     void update(const std::vector<LinesVertex>& points);
 
 private:
-    void generateTextureBuffer();
-
-    void allocateTextureBuffer();
-
-    void allocatePointsBuffer();
-
-    void allocateVerticesBuffer();
-
-    void allocateIndicesBuffer();
-
-    void setPointsBuffer(const std::vector<LinesVertex>& points);
-
     void checkCaps() const
     {
         const bgfx::Caps* caps = bgfx::getCaps();
@@ -107,6 +89,10 @@ private:
                 "supported");
         }
     }
+
+    void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
+
+    void allocateAndGenerateTextureBuffer(uint pointSize);
 };
 
 } // namespace vcl::lines

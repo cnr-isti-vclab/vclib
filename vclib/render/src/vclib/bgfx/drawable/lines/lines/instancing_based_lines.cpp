@@ -49,8 +49,6 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
 
     Lines::swap(other);
 
-    swap(mLinesPH, other.mLinesPH);
-
     swap(mPoints, other.mPoints);
 
     swap(mVertices, other.mVertices);
