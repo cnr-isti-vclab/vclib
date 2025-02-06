@@ -46,25 +46,15 @@ class IndirectBasedLines : public Lines
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
 
-    bgfx::DynamicVertexBufferHandle mPointsBH   = BGFX_INVALID_HANDLE;
+    VertexBuffer mPoints;
 
-    bgfx::IndirectBufferHandle mIndirectBH     = BGFX_INVALID_HANDLE;
+    IndirectBuffer mIndirect;
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:
     IndirectBasedLines();
 
     IndirectBasedLines(const std::vector<LinesVertex>& points);
-
-    IndirectBasedLines(const IndirectBasedLines& other) = delete;
-
-    IndirectBasedLines(IndirectBasedLines&& other);
-
-    ~IndirectBasedLines();
-
-    IndirectBasedLines& operator=(const IndirectBasedLines& other) = delete;
-
-    IndirectBasedLines& operator=(IndirectBasedLines&& other);
 
     void swap(IndirectBasedLines& other);
 
