@@ -41,9 +41,6 @@ GPUGeneratedLines::GPUGeneratedLines(GPUGeneratedLines&& other)
 
 GPUGeneratedLines::~GPUGeneratedLines()
 {
-    if (bgfx::isValid(mVerticesBH))
-        bgfx::destroy(mVerticesBH);
-
     if (bgfx::isValid(mIndicesBH))
         bgfx::destroy(mIndicesBH);
 }
@@ -60,7 +57,7 @@ void GPUGeneratedLines::swap(GPUGeneratedLines& other)
 
     std::swap(mPoints, other.mPoints);
 
-    std::swap(mVerticesBH, other.mVerticesBH);
+    std::swap(mVertices, other.mVertices);
     std::swap(mIndicesBH, other.mIndicesBH);
 }
 
@@ -68,7 +65,7 @@ void GPUGeneratedLines::draw(uint viewId) const
 {
     bindSettingsUniformLines();
 
-    bgfx::setVertexBuffer(0, mVerticesBH);
+    mVertices.bind(0);
     bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH);
@@ -78,8 +75,6 @@ void GPUGeneratedLines::update(const std::vector<LinesVertex>& points)
 {
     allocateAndSetPointsBuffer(points);
 
-    if (bgfx::isValid(mVerticesBH))
-        bgfx::destroy(mVerticesBH);
     allocateVertexBuffer(points.size());
 
     if (bgfx::isValid(mIndicesBH))
@@ -122,10 +117,14 @@ void GPUGeneratedLines::allocateVertexBuffer(uint pointsSize)
         .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
         .end();
 
-    mVerticesBH = bgfx::createDynamicVertexBuffer(
-        (pointsSize / 2) * 4,
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<float>(pointsSize * 4 * 12);
+
+    mVertices.create(
+        bgfx::makeRef(buffer, sizeof(float) * pointsSize * 4 * 12, releaseFn),
         layout,
-        BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_ALLOW_RESIZE);
+        BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_ALLOW_RESIZE,
+        true);
 }
 
 void GPUGeneratedLines::allocateIndexBuffer(uint pointsSize)
@@ -140,10 +139,12 @@ void GPUGeneratedLines::generateBuffers(uint pointsSize)
 {
     assert(mPoints.isCompute());
     mPoints.bind(0);
-    //bgfx::setBuffer(0, mPointsBH, bgfx::Access::Read);
-    bgfx::setBuffer(1, mVerticesBH, bgfx::Access::Write);
+    mVertices.bind(1, bgfx::Access::Write);
     bgfx::setBuffer(2, mIndicesBH, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeVerticesPH, (pointsSize / 2), 1, 1);
+    // after the dispatch, the buffer is ready to be used in the rendering
+    // pipeline
+    mVertices.setCompute(false);
 }
 
 } // namespace vcl::lines
