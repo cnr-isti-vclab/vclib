@@ -94,7 +94,7 @@ void CPUGeneratedLines::draw(uint viewId) const
 void CPUGeneratedLines::generateBuffers(const std::vector<LinesVertex> points)
 {
     uint bufferVertsSize = points.size() * 4 * 12;
-    uint bufferIndsSize = points.size() * 6;
+    uint bufferIndsSize = (points.size() / 2) * 6;
 
     auto [vertices, vReleaseFn] =
         getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
