@@ -23,9 +23,10 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_INDIRECT_BASED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_INDIRECT_BASED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
-
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
+#include <vclib/bgfx/uniform.h>
 
 namespace vcl::lines {
 
@@ -42,17 +43,16 @@ class IndirectBasedLines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::LINES_INDIRECT_BASED_VSFS);
 
-    uint mPointsSize = 0;
+    VertexBuffer mVertices;
+    IndexBuffer  mIndices;
 
-    bgfx::VertexBufferHandle        mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle         mIndicesBH  = BGFX_INVALID_HANDLE;
     bgfx::DynamicVertexBufferHandle mPointsBH   = BGFX_INVALID_HANDLE;
 
     bgfx::IndirectBufferHandle mIndirectBH     = BGFX_INVALID_HANDLE;
-    bgfx::UniformHandle        mIndirectDataUH = BGFX_INVALID_HANDLE;
+    Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:
-    IndirectBasedLines() { checkCaps(); }
+    IndirectBasedLines();
 
     IndirectBasedLines(const std::vector<LinesVertex>& points);
 
@@ -68,21 +68,16 @@ public:
 
     void swap(IndirectBasedLines& other);
 
+    friend void swap(IndirectBasedLines& a, IndirectBasedLines& b)
+    {
+        a.swap(b);
+    }
+
     void draw(uint viewId) const;
 
     void update(const std::vector<LinesVertex>& points);
 
 private:
-    void allocatePointsBuffer();
-
-    void allocateVerticesBuffer();
-
-    void allocateIndicesBuffer();
-
-    void generateIndirectBuffer();
-
-    void setPointsBuffer(const std::vector<LinesVertex>& points);
-
     void checkCaps() const
     {
         const bgfx::Caps* caps = bgfx::getCaps();
@@ -96,6 +91,10 @@ private:
             throw std::runtime_error("Instancing or compute are not supported");
         }
     }
+
+    void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
+
+    void generateIndirectBuffer(uint pointSize);
 };
 
 } // namespace vcl::lines
