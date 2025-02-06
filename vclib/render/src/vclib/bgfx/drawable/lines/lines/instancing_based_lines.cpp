@@ -97,7 +97,7 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
     bgfx::allocInstanceDataBuffer(&mInstanceDB, size, stride);
 
     uint8_t* data = mInstanceDB.data;
-    for (uint i = 1; i < linesNum; i += 2) {
+    for (uint i = 1; i < mPoints.size(); i += 2) {
         float* p0 = reinterpret_cast<float*>(data);
         p0[0]     = mPoints[i - 1].X;
         p0[1]     = mPoints[i - 1].Y;
