@@ -27,6 +27,7 @@
 #include "buffers/dynamic_vertex_buffer.h"
 #include "buffers/index_buffer.h"
 #include "buffers/indirect_buffer.h"
+#include "buffers/texture_buffer.h"
 #include "buffers/vertex_buffer.h"
 
 #endif // VCL_BGFX_BUFFERS_H
