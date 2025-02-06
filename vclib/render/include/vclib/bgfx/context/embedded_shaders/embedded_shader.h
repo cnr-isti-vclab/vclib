@@ -33,79 +33,77 @@ namespace vcl {
 struct VclProgram
 {
     enum Enum {
-        DRAWABLE_MESH,
         DRAWABLE_AXIS,
         DRAWABLE_DIRECTIONAL_LIGHT,
+        DRAWABLE_MESH,
         DRAWABLE_TRACKBALL,
 
-        LINES_CPU_GENERATED_VSFS,
-
-        LINES_GPU_GENERATED_CS,
-
-        LINES_INSTANCING_BASED_VSFS,
-
-        LINES_INDIRECT_BASED_VSFS,
-        LINES_INDIRECT_BASED_CS,
-
-        LINES_TEXTURE_BASED_VSFS,
-        LINES_TEXTURE_BASED_CS,
-
-
-        POLYLINES_CPU_GENERATED_VSFS,
-        
-        POLYLINES_GPU_GENERATED_CS,
-
-        POLYLINES_INSTANCING_BASED_VSFS,
-        POLYLINES_INSTANCING_BASED_JOINS_VSFS,
-
-        POLYLINES_INDIRECT_BASED_VSFS,
-        POLYLINES_INDIRECT_BASED_JOINS_VSFS,
-        POLYLINES_INDIRECT_BASED_CS,
-
-        POLYLINES_TEXTURE_BASED_VSFS,
-        POLYLINES_TEXTURE_BASED_JOINS_VSFS,
-        POLYLINES_TEXTURE_BASED_CS,
-
-
         FONT_BASIC,
-        FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
+        FONT_DISTANCE_FIELD,
         FONT_DISTANCE_FIELD_DROP_SHADOW,
+        FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
+        FONT_DISTANCE_FIELD_OUTLINE,
         FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
         FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-        FONT_DISTANCE_FIELD_OUTLINE,
         FONT_DISTANCE_FIELD_SUBPIXEL,
-        FONT_DISTANCE_FIELD,
+
+        LINES_CPU_GENERATED_VSFS,
+        LINES_GPU_GENERATED_CS,
+        LINES_INDIRECT_BASED_CS,
+        LINES_INDIRECT_BASED_VSFS,
+        LINES_INSTANCING_BASED_VSFS,
+        LINES_TEXTURE_BASED_CS,
+        LINES_TEXTURE_BASED_VSFS,
+
+        POLYLINES_CPU_GENERATED_VSFS,
+        POLYLINES_GPU_GENERATED_CS,
+        POLYLINES_INDIRECT_BASED_CS,
+        POLYLINES_INDIRECT_BASED_JOINS_VSFS,
+        POLYLINES_INDIRECT_BASED_VSFS,
+        POLYLINES_INSTANCING_BASED_VSFS,
+        POLYLINES_INSTANCING_BASED_JOINS_VSFS,
+        POLYLINES_TEXTURE_BASED_CS,
+        POLYLINES_TEXTURE_BASED_JOINS_VSFS,
+        POLYLINES_TEXTURE_BASED_VSFS,
+
 
         COUNT
     };
 
     static inline const std::array<std::string, VclProgram::COUNT>
         programNames = {
-            "DrawableMesh",
             "DrawableAxis",
             "DrawableDirectionalLight",
+            "DrawableMesh",
             "DrawableTrackball",
+
+            "FontBasic",
+            "FontDistanceField",
+            "FontDistanceFieldDropShadow",
+            "FontDistanceFieldDropShadowImage",
+            "FontDistanceFieldOutline",
+            "FontDistanceFieldOutlineDropShadowImage",
+            "FontDistanceFieldOutlineImage",
+            "FontDistanceFieldSubpixel",
 
             "LinesCPUGenerated",
             "LinesGPUGenerated",
+            "LinesIndirectBasedCS",
+            "LinesIndirectBasedVSFS",
             "LinesInstancingBased",
-            "LinesIndirectBased",
-            "LinesTextureBased",
+            "LinesTextureBasedCS",
+            "LinesTextureBasedVSFS",
 
             "PolylinesLinesCPUGenerated",
             "PolylinesLinesGPUGenerated",
+            "PolylinesLinesIndirectBasedCS",
+            "PolylinesLinesIndirectBasedJoins",
+            "PolylinesLinesIndirectBasedVSFS",
             "PolylinesLinesInstancingBased",
-            "PolylinesLinesIndirectBased",
-            "PolylinesLinesTextureBased",
-
-            "FontBasic",
-            "FontDistanceFieldDropShadowImage",
-            "FontDistanceFieldDropShadow",
-            "FontDistanceFieldOutlineDropShadowImage",
-            "FontDistanceFieldOutlineImage",
-            "FontDistanceFieldOutline",
-            "FontDistanceFieldSubpixel",
-            "FontDistanceField",
+            "PolylinesLinesInstancingBasedJoins",
+            "PolylinesLinesTextureBasedCS",
+            "PolylinesLinesTextureBasedJoins",
+            "PolylinesLinesTextureBasedVSFS"
     };
 };
 
