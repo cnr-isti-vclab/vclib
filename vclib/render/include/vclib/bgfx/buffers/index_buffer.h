@@ -76,6 +76,14 @@ public:
     bool isCompute() const { return mCompute; }
 
     /**
+     * @brief Set if the IndexBuffer is used for compute shaders.
+     *
+     * @param[in] compute: if true, the IndexBuffer is used for compute
+     * shaders.
+     */
+    void setCompute(bool compute) { mCompute = compute; }
+
+    /**
      * @brief Creates the index buffer and sets the data for rendering.
      *
      * If the buffer is already created (@ref isValid() returns `true`), it is

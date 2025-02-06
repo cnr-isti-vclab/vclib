@@ -76,6 +76,14 @@ public:
     bool isCompute() const { return mCompute; }
 
     /**
+     * @brief Set if the VertexBuffer is used for compute shaders.
+     *
+     * @param[in] compute: if true, the VertexBuffer is used for compute
+     * shaders.
+     */
+    void setCompute(bool compute) { mCompute = compute; }
+
+    /**
      * @brief Creates the vertex buffer and sets the data for rendering.
      *
      * If the buffer is already created (@ref isValid() returns `true`), it is
