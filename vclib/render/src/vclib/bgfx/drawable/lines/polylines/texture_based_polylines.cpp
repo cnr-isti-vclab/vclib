@@ -116,10 +116,6 @@ void TextureBasedPolylines::draw(uint viewId) const
         0};
     bgfx::setUniform(mComputeDataUH, indirectData);
 
-    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                     BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                     UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
-
     bgfx::setVertexBuffer(0, mVerticesBH);
     bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setImage(
@@ -128,7 +124,7 @@ void TextureBasedPolylines::draw(uint viewId) const
         0,
         bgfx::Access::Read,
         bgfx::TextureFormat::RGBA32F);
-    bgfx::setState(state);
+    bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirectBH, 0);
 
     if (settings().getJoin() != 0 && mPointsSize > 2) {
@@ -140,7 +136,7 @@ void TextureBasedPolylines::draw(uint viewId) const
             0,
             bgfx::Access::Read,
             bgfx::TextureFormat::RGBA32F);
-        bgfx::setState(state);
+        bgfx::setState(drawState());
         bgfx::submit(viewId, mJoinesPH, mJoinesIndirectBH, 0);
     }
 }

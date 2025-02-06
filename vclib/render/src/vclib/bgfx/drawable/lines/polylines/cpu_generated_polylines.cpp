@@ -71,19 +71,15 @@ void CPUGeneratedPolylines::draw(uint viewId) const
 {
     bindSettingsUniformPolylines();
 
-    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                     BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                     UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
-
     bgfx::setVertexBuffer(0, mVerticesBH);
     bgfx::setIndexBuffer(mSegmentsIndicesBH);
-    bgfx::setState(state);
+    bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH);
 
     if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVerticesBH);
         bgfx::setIndexBuffer(mJoinsIndicesBH);
-        bgfx::setState(state);
+        bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH);
     }
 }

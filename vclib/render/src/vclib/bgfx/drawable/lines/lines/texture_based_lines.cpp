@@ -95,15 +95,11 @@ void TextureBasedLines::draw(uint viewId) const
 {
     bindSettingsUniformLines();
 
-    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                     BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                     UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
-
     bgfx::setVertexBuffer(0, mVerticesBH);
     bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setImage(
         0, mTextureBH, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA32F);
-    bgfx::setState(state);
+    bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH, mIndirectBH, 0);
 }
 

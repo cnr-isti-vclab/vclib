@@ -98,21 +98,17 @@ void IndirectBasedPolylines::draw(uint viewId) const
     float indirectData[] = {static_cast<float>(mPointsSize - 1), 0, 0, 0};
     bgfx::setUniform(mComputeIndirectDataUH, indirectData);
 
-    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                     BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                     UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
-
     bgfx::setVertexBuffer(0, mVerticesBH);
     bgfx::setIndexBuffer(mIndicesBH);
     bgfx::setBuffer(1, mPointsBH, bgfx::Access::Read);
-    bgfx::setState(state);
+    bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirectBH, 0);
 
     if (settings().getJoin() != 0) {
         bgfx::setVertexBuffer(0, mVerticesBH);
         bgfx::setIndexBuffer(mIndicesBH);
         bgfx::setBuffer(1, mPointsBH, bgfx::Access::Read);
-        bgfx::setState(state);
+        bgfx::setState(drawState());
         bgfx::submit(viewId, mJoinesPH, mJoinesIndirectBH, 0);
     }
 }
