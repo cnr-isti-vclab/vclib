@@ -57,6 +57,9 @@ public:
 
     void create(uint size, ushort flags = BGFX_BUFFER_NONE)
     {
+        if (bgfx::isValid(mHandle)) {
+            bgfx::destroy(mHandle);
+        }
         mHandle = bgfx::createDynamicIndexBuffer(size, flags);
     }
 

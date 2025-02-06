@@ -111,11 +111,16 @@ public:
 
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
+            .add(
+                attrib,
+                attribNumPerVertex,
+                attributeType(attribType),
+                normalize)
             .end();
 
-        create(vertNum, layout, true, flags);
+        create(vertNum, layout, flags);
     }
+
     /**
      * @brief Creates the dynamic vertex buffer data for rendering, with the
      * layout given by the vertex attributes and with the given data.
@@ -148,11 +153,16 @@ public:
 
         bgfx::VertexLayout layout;
         layout.begin()
-            .add(attrib, attribNumPerVertex, attributeType(attribType), normalize)
+            .add(
+                attrib,
+                attribNumPerVertex,
+                attributeType(attribType),
+                normalize)
             .end();
 
-        create(vertNum, layout, false, flags);
-        update(bufferData, vertNum, attribNumPerVertex, attribType, 0, releaseFn);
+        create(vertNum, layout, flags);
+        update(
+            bufferData, vertNum, attribNumPerVertex, attribType, 0, releaseFn);
     }
 
     /**
@@ -161,14 +171,14 @@ public:
      *
      * @param[in] vertNum: the number of vertices in the buffer.
      * @param[in] layout: the vertex layout.
-     * @param[in] compute: if true, the buffer is used for compute shaders.
      * @param[in] flags: the flags for the buffer.
+     * @param[in] compute: if true, the buffer is used for compute shaders.
      */
     void create(
         uint                      vertNum,
         const bgfx::VertexLayout& layout,
-        bool                      compute = false,
-        uint64_t                  flags   = BGFX_BUFFER_NONE)
+        uint64_t                  flags   = BGFX_BUFFER_NONE,
+        bool                      compute = false)
     {
         if (bgfx::isValid(mHandle))
             bgfx::destroy(mHandle);

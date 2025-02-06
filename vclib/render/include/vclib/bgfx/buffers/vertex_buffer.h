@@ -113,7 +113,8 @@ public:
                 normalize)
             .end();
 
-        create(bgfx::makeRef(
+        create(
+            bgfx::makeRef(
                 bufferData,
                 vertNum * attribNumPerVertex * sizeOf(attribType),
                 releaseFn),
@@ -162,13 +163,14 @@ public:
                 normalize)
             .end();
 
-        create(bgfx::makeRef(
+        create(
+            bgfx::makeRef(
                 bufferData,
                 vertNum * attribNumPerVertex * sizeOf(attribType),
                 releaseFn),
             layout,
-            true,
-            flags);
+            flags,
+            true);
     }
 
     /**
@@ -179,14 +181,14 @@ public:
      *
      * @param[in] data: the memory containing the data.
      * @param[in] layout: the vertex layout.
-     * @param[in] compute: if true, the buffer is used for compute shaders.
      * @param[in] flags: the flags for the buffer.
+     * @param[in] compute: if true, the buffer is used for compute shaders.
      */
     void create(
         const bgfx::Memory*       data,
         const bgfx::VertexLayout& layout,
-        bool                      compute = false,
-        uint64_t                  flags   = BGFX_BUFFER_NONE)
+        uint64_t                  flags   = BGFX_BUFFER_NONE,
+        bool                      compute = false)
     {
         if (bgfx::isValid(mHandle))
             bgfx::destroy(mHandle);

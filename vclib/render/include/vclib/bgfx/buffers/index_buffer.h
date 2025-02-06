@@ -100,9 +100,8 @@ public:
     {
         uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
         uint     size  = is32Bit ? 4 : 2;
-        create(bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn),
-            false,
-            flags);
+        create(
+            bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn), flags);
     }
 
     /**
@@ -132,9 +131,10 @@ public:
     {
         uint64_t flags = flagsForType(type);
         flags |= flagsForAccess(access);
-        create(bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type), releaseFn),
-            true,
-            flags);
+        create(
+            bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type), releaseFn),
+            flags,
+            true);
     }
 
     /**
@@ -144,13 +144,13 @@ public:
      * destroyed and a new one is created.
      *
      * @param[in] indices: the memory containing the data.
-     * @param[in] compute: if true, the buffer is used for compute shaders.
      * @param[in] flags: the flags for the buffer.
+     * @param[in] compute: if true, the buffer is used for compute shaders.
      */
     void create(
         const bgfx::Memory* indices,
-        bool                compute = false,
-        uint64_t            flags   = BGFX_BUFFER_NONE)
+        uint64_t flags   = BGFX_BUFFER_NONE,
+        bool     compute = false)
     {
         mHandle  = bgfx::createIndexBuffer(indices, flags);
         mCompute = compute;
