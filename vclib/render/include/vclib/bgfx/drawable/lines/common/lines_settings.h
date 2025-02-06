@@ -55,31 +55,22 @@ enum ColorToUse {
 class LinesSettings
 {
 private:
-    uint8_t  mThickness;
-    uint8_t  mAntialias;
-    uint8_t  mBorder;
-    uint32_t mBorderColor;
-    uint32_t mGeneralColor;
-    uint8_t  mMiterLimit;
+    uint8_t  mThickness = 5;
+    uint8_t  mAntialias = 0;
+    uint8_t  mBorder = 0;
+    uint32_t mBorderColor = LinesVertex::COLOR(0, 0, 0, 1);
+    uint32_t mGeneralColor = LinesVertex::COLOR(0, 0, 0, 1);
+    uint8_t  mMiterLimit = mThickness * 2;
 
-    Caps       mLeftCap;
-    Caps       mRigthCap;
-    Joins      mJoin;
-    ColorToUse mColorToUse;
+    Caps       mLeftCap = Caps::ROUND_CAP;
+    Caps       mRigthCap = Caps::ROUND_CAP;
+    Joins      mJoin = Joins::ROUND_JOIN;
+    ColorToUse mColorToUse = ColorToUse::PER_VERTEX_COLOR;
 
-    Uniform mDataUH;
+    Uniform mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);
 
 public:
-    LinesSettings() :
-            mThickness(5), mAntialias(0), mBorder(0),
-            mBorderColor(LinesVertex::COLOR(0, 0, 0, 1)),
-            mGeneralColor(LinesVertex::COLOR(0, 0, 0, 1)),
-            mMiterLimit(mThickness * 2), mLeftCap(Caps::ROUND_CAP),
-            mRigthCap(Caps::ROUND_CAP), mJoin(Joins::ROUND_JOIN),
-            mColorToUse(ColorToUse::PER_VERTEX_COLOR)
-    {
-        mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);
-    }
+    LinesSettings() = default;
 
     Joins getJoin() const { return mJoin; }
 
