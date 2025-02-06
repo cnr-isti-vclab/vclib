@@ -23,9 +23,9 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_LINES_INSTANCING_BASED_LINES_H
 #define VCL_BGFX_DRAWABLE_LINES_LINES_INSTANCING_BASED_LINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
-
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
 
 namespace vcl::lines {
 
@@ -39,26 +39,17 @@ class InstancingBasedLines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::LINES_INSTANCING_BASED_VSFS);
 
-    std::vector<LinesVertex>         mPoints;
+    std::vector<LinesVertex> mPoints;
+
+    VertexBuffer mVertices;
+    IndexBuffer  mIndices;
+
     mutable bgfx::InstanceDataBuffer mInstanceDB;
 
-    bgfx::VertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
-
 public:
-    InstancingBasedLines() { checkCaps(); }
+    InstancingBasedLines();
 
     InstancingBasedLines(const std::vector<LinesVertex>& points);
-
-    InstancingBasedLines(const InstancingBasedLines& other) = delete;
-
-    InstancingBasedLines(InstancingBasedLines&& other);
-
-    ~InstancingBasedLines();
-
-    InstancingBasedLines& operator=(const InstancingBasedLines& other) = delete;
-
-    InstancingBasedLines& operator=(InstancingBasedLines&& other);
 
     void swap(InstancingBasedLines& other);
 
@@ -67,12 +58,6 @@ public:
     void update(const std::vector<LinesVertex>& points);
 
 private:
-    void generateInstanceDataBuffer() const;
-
-    void allocateVerticesBuffer();
-
-    void allocateIndicesBuffer();
-
     void checkCaps() const
     {
         const bgfx::Caps* caps = bgfx::getCaps();
@@ -83,6 +68,8 @@ private:
             throw std::runtime_error("Instancing or compute are not supported");
         }
     }
+
+    void generateInstanceDataBuffer() const;
 };
 
 } // namespace vcl::lines

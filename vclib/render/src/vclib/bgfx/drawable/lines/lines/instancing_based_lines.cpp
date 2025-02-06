@@ -23,46 +23,39 @@
 #include <vclib/bgfx/drawable/lines/lines/instancing_based_lines.h>
 
 namespace vcl::lines {
-InstancingBasedLines::InstancingBasedLines(
-    const std::vector<LinesVertex>& points) : mPoints(points)
+InstancingBasedLines::InstancingBasedLines()
 {
     checkCaps();
-    allocateVerticesBuffer();
-    allocateIndicesBuffer();
+
+    mVertices.create(
+        VERTICES.data(),
+        VERTICES.size(),
+        bgfx::Attrib::Position,
+        2,
+        PrimitiveType::FLOAT);
+
+    mIndices.create(INDICES.data(), INDICES.size());
 }
 
-InstancingBasedLines::InstancingBasedLines(InstancingBasedLines&& other)
+InstancingBasedLines::InstancingBasedLines(
+    const std::vector<LinesVertex>& points) : InstancingBasedLines()
 {
-    swap(other);
-}
-
-InstancingBasedLines::~InstancingBasedLines()
-{
-    if (bgfx::isValid(mVerticesBH))
-        bgfx::destroy(mVerticesBH);
-
-    if (bgfx::isValid(mIndicesBH))
-        bgfx::destroy(mIndicesBH);
-}
-
-InstancingBasedLines& InstancingBasedLines::operator=(
-    InstancingBasedLines&& other)
-{
-    swap(other);
-    return *this;
+    update(points);
 }
 
 void InstancingBasedLines::swap(InstancingBasedLines& other)
 {
+    using std::swap;
+
     Lines::swap(other);
 
-    std::swap(mLinesPH, other.mLinesPH);
+    swap(mLinesPH, other.mLinesPH);
 
-    std::swap(mPoints, other.mPoints);
+    swap(mPoints, other.mPoints);
 
-    std::swap(mVerticesBH, other.mVerticesBH);
-    std::swap(mIndicesBH, other.mIndicesBH);
-    std::swap(mInstanceDB, other.mInstanceDB);
+    swap(mVertices, other.mVertices);
+    swap(mIndices, other.mIndices);
+    swap(mInstanceDB, other.mInstanceDB);
 }
 
 void InstancingBasedLines::draw(uint viewId) const
@@ -71,8 +64,8 @@ void InstancingBasedLines::draw(uint viewId) const
 
     generateInstanceDataBuffer();
 
-    bgfx::setVertexBuffer(0, mVerticesBH);
-    bgfx::setIndexBuffer(mIndicesBH);
+    mVertices.bind(0);
+    mIndices.bind();
     bgfx::setInstanceDataBuffer(&mInstanceDB);
 
     bgfx::setState(drawState());
@@ -124,24 +117,6 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
 
         data += stride;
     }
-}
-
-void InstancingBasedLines::allocateVerticesBuffer()
-{
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-        .end();
-
-    mVerticesBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(&VERTICES[0], sizeof(float) * VERTICES.size()), layout);
-}
-
-void InstancingBasedLines::allocateIndicesBuffer()
-{
-    mIndicesBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(&INDICES[0], sizeof(uint) * INDICES.size()),
-        BGFX_BUFFER_INDEX32);
 }
 
 } // namespace vcl::lines
