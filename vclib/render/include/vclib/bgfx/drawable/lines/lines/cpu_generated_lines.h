@@ -47,9 +47,9 @@ public:
 
     friend void swap(CPUGeneratedLines& a, CPUGeneratedLines& b) { a.swap(b); }
 
-    void draw(uint viewId) const;
-
     void update(const std::vector<LinesVertex>& points);
+
+    void draw(uint viewId) const;
 };
 
 } // namespace vcl::lines

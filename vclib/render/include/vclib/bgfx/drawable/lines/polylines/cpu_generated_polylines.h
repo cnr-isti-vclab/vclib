@@ -23,9 +23,9 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_CPU_GENERATED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_CPU_GENERATED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
-
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
 
 namespace vcl::lines {
 
@@ -35,40 +35,20 @@ class CPUGeneratedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_CPU_GENERATED_VSFS);
 
-    uint               mPointsSize;
-
-    bgfx::DynamicVertexBufferHandle mVerticesBH        = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle  mSegmentsIndicesBH = BGFX_INVALID_HANDLE;
-    bgfx::DynamicIndexBufferHandle  mJoinsIndicesBH    = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertices;
+    IndexBuffer  mSegmentIndices;
+    IndexBuffer  mJoinIndices;
 
 public:
     CPUGeneratedPolylines() = default;
 
     CPUGeneratedPolylines(const std::vector<LinesVertex>& points);
 
-    CPUGeneratedPolylines(const CPUGeneratedPolylines& other) = delete;
-
-    CPUGeneratedPolylines(CPUGeneratedPolylines&& other);
-
-    ~CPUGeneratedPolylines();
-
-    CPUGeneratedPolylines& operator=(const CPUGeneratedPolylines& other) =
-        delete;
-
-    CPUGeneratedPolylines& operator=(CPUGeneratedPolylines&& other);
-
     void swap(CPUGeneratedPolylines& other);
-
-    void draw(uint viewId) const;
 
     void update(const std::vector<LinesVertex>& points);
 
-private:
-    void generateBuffers(const std::vector<LinesVertex> points);
-
-    void allocateVertexBuffer();
-
-    void allocateIndicesBuffer();
+    void draw(uint viewId) const;
 };
 
 } // namespace vcl::lines
