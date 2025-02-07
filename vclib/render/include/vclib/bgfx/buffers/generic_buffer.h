@@ -53,6 +53,17 @@ public:
      */
     bool isValid() const { return bgfx::isValid(mHandle); }
 
+    /**
+     * @brief Destroy the Buffer.
+     */
+    void destroy()
+    {
+        if (bgfx::isValid(mHandle)) {
+            bgfx::destroy(mHandle);
+            mHandle = BGFX_INVALID_HANDLE;
+        }
+    }
+
 protected:
     /**
      * @brief Empty constructor.
@@ -80,8 +91,7 @@ protected:
      */
     ~GenericBuffer()
     {
-        if (bgfx::isValid(mHandle))
-            bgfx::destroy(mHandle);
+        destroy();
     }
 
     // Copying a GenericBuffer is not allowed
