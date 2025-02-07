@@ -87,6 +87,10 @@ public:
     /**
      * @brief Bind the texture buffer to the compute shader.
      *
+     * If the texture buffer is valid, it is bound to the compute shader with
+     * the specified stage and the given access type (Read, Write, Read Write).
+     * If the texture buffer is not valid, nothing happens.
+     *
      * @param[in] stage: the stage to which the buffer is bound.
      * @param[in] access: the access type for the buffer.
      * @param[in] mipLevel: the mip level of the texture.
