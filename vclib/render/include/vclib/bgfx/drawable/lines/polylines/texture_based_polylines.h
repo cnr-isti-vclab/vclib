@@ -23,9 +23,9 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_TEXTURE_BASED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_TEXTURE_BASED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
-
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
 
 namespace vcl::lines {
 
@@ -51,53 +51,34 @@ class TextureBasedPolylines : public Lines
 
     uint mPointsSize = 0;
 
-    bgfx::VertexBufferHandle        mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle         mIndicesBH  = BGFX_INVALID_HANDLE;
-    bgfx::DynamicVertexBufferHandle mPointsBH   = BGFX_INVALID_HANDLE;
+    VertexBuffer mVertices;
+    IndexBuffer  mIndices;
 
-    bgfx::IndirectBufferHandle mSegmentsIndirectBH = BGFX_INVALID_HANDLE;
-    bgfx::IndirectBufferHandle mJoinesIndirectBH   = BGFX_INVALID_HANDLE;
+    VertexBuffer mPoints;
+    TextureBuffer mSegmentsTexture;
+    TextureBuffer mJointsTexture;
 
-    bgfx::TextureHandle mSegmentsTextureBH = BGFX_INVALID_HANDLE;
-    bgfx::TextureHandle mJoinesTextureBH   = BGFX_INVALID_HANDLE;
-
-    bgfx::UniformHandle mComputeDataUH = BGFX_INVALID_HANDLE;
+    IndirectBuffer mSegmentsIndirect;
+    IndirectBuffer mJointsIndirect;
+    Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:
-    TextureBasedPolylines() { checkCaps(); }
+    TextureBasedPolylines();
 
     TextureBasedPolylines(const std::vector<LinesVertex>& points);
 
-    TextureBasedPolylines(const TextureBasedPolylines& other) = delete;
-
-    TextureBasedPolylines(TextureBasedPolylines&& other);
-
-    ~TextureBasedPolylines();
-
-    TextureBasedPolylines& operator=(const TextureBasedPolylines& other) =
-        delete;
-
-    TextureBasedPolylines& operator=(TextureBasedPolylines&& other);
-
     void swap(TextureBasedPolylines& other);
+
+    friend void swap(TextureBasedPolylines& a, TextureBasedPolylines& b)
+    {
+        a.swap(b);
+    }
 
     void draw(uint viewId) const;
 
     void update(const std::vector<LinesVertex>& points);
 
 private:
-    void generateTextureBuffer();
-
-    void allocateTextureBuffer();
-
-    void allocatePointsBuffer();
-
-    void allocateVerticesBuffer();
-
-    void allocateIndicesBuffer();
-
-    void setPointsBuffer(const std::vector<LinesVertex>& points);
-
     void checkCaps() const
     {
         const bgfx::Caps* caps = bgfx::getCaps();
@@ -116,6 +97,10 @@ private:
                 "supported");
         }
     }
+
+    void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
+
+    void allocateAndGenerateTextureBuffer(uint pointSize);
 };
 
 } // namespace vcl::lines

@@ -44,9 +44,7 @@ TextureBasedLines::TextureBasedLines()
 TextureBasedLines::TextureBasedLines(const std::vector<LinesVertex>& points) :
         TextureBasedLines()
 {
-    allocateAndSetPointsBuffer(points);
-
-    allocateAndGenerateTextureBuffer(points.size());
+    update(points);
 }
 
 void TextureBasedLines::swap(TextureBasedLines& other)
