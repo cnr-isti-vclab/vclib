@@ -23,6 +23,7 @@
 #include <vclib/bgfx/drawable/lines/polylines/cpu_generated_polylines.h>
 
 namespace vcl::lines {
+
 CPUGeneratedPolylines::CPUGeneratedPolylines(
     const std::vector<LinesVertex>& points)
 {

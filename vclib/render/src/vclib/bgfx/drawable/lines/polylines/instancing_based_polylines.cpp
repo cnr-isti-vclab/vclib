@@ -24,6 +24,7 @@
 #include <vclib/bgfx/drawable/lines/polylines/instancing_based_polylines.h>
 
 namespace vcl::lines {
+
 InstancingBasedPolylines::InstancingBasedPolylines()
 {
     checkCaps();

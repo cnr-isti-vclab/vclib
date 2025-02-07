@@ -24,6 +24,7 @@
 #include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 
 namespace vcl::lines {
+
 TextureBasedLines::TextureBasedLines()
 {
     checkCaps();

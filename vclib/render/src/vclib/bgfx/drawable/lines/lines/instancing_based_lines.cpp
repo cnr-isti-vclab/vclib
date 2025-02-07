@@ -23,6 +23,7 @@
 #include <vclib/bgfx/drawable/lines/lines/instancing_based_lines.h>
 
 namespace vcl::lines {
+
 InstancingBasedLines::InstancingBasedLines()
 {
     checkCaps();
