@@ -22,7 +22,7 @@
 
 #include <vclib/bgfx/drawable/lines/lines/instancing_based_lines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 InstancingBasedLines::InstancingBasedLines()
 {
@@ -120,4 +120,4 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
     }
 }
 
-} // namespace vcl::lines
+} // namespace vcl

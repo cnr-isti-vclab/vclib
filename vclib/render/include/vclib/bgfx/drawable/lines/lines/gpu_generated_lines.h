@@ -27,7 +27,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/lines/common/lines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 class GPUGeneratedLines : public Lines
 {
@@ -81,6 +81,6 @@ private:
     void generateVerticesAndIndicesBuffers(uint pointsSize);
 };
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_LINES_GPU_GENERATED_LINES_H

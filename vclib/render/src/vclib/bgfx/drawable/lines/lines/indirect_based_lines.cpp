@@ -24,7 +24,7 @@
 
 #include <vclib/bgfx/context/load_program.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 IndirectBasedLines::IndirectBasedLines()
 {
@@ -111,4 +111,4 @@ void IndirectBasedLines::generateIndirectBuffer(uint pointSize)
     bgfx::dispatch(0, mComputeIndirectPH);
 }
 
-} // namespace vcl::lines
+} // namespace vcl

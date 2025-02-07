@@ -24,7 +24,7 @@
 
 #include <vclib/bgfx/context/load_program.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex>& points)
 {
@@ -123,4 +123,4 @@ void CPUGeneratedLines::draw(uint viewId) const
     bgfx::submit(viewId, mLinesPH);
 }
 
-} // namespace vcl::lines
+} // namespace vcl

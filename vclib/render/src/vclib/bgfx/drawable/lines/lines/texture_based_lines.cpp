@@ -23,7 +23,7 @@
 #include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/lines/texture_based_lines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 TextureBasedLines::TextureBasedLines()
 {
@@ -122,4 +122,4 @@ void TextureBasedLines::allocateAndGenerateTextureBuffer(uint pointSize)
     bgfx::dispatch(0, mComputeTexturePH, (pointSize / 2), 1, 1);
 }
 
-} // namespace vcl::lines
+} // namespace vcl

@@ -23,7 +23,7 @@
 #include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/polylines/indirect_based_polylines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 IndirectBasedPolylines::IndirectBasedPolylines()
 {
@@ -75,7 +75,7 @@ void IndirectBasedPolylines::draw(uint viewId) const
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
 
-    if (settings().getJoin() != Joins::ROUND_JOIN) {
+    if (settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
         mVertices.bind(0);
         mIndices.bind();
         mPoints.bind(1, bgfx::Access::Read);
@@ -125,4 +125,4 @@ void IndirectBasedPolylines::generateIndirectBuffers(uint pointSize)
     mIndirectData.bind(data);
 }
 
-} // namespace vcl::lines
+} // namespace vcl

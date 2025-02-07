@@ -23,7 +23,7 @@
 #include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/polylines/gpu_generated_polylines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 GPUGeneratedPolylines::GPUGeneratedPolylines()
 {
@@ -61,7 +61,7 @@ void GPUGeneratedPolylines::draw(uint viewId) const
     bgfx::submit(viewId, mLinesPH);
 
     // mJoinIndices is valid only if there are more than 2 points
-    if (mJoinIndices.isValid() && settings().getJoin() != Joins::ROUND_JOIN) {
+    if (mJoinIndices.isValid() && settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
         mVertices.bind(0);
         mJoinIndices.bind();
         bgfx::setState(drawState());
@@ -167,4 +167,4 @@ void GPUGeneratedPolylines::generateVerticesAndIndicesBuffers(uint pointSize)
     mJoinIndices.setCompute(false);
 }
 
-} // namespace vcl::lines
+} // namespace vcl

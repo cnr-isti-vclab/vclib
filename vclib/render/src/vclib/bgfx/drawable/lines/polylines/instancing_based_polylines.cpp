@@ -23,7 +23,7 @@
 #include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/polylines/instancing_based_polylines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 InstancingBasedPolylines::InstancingBasedPolylines()
 {
@@ -72,7 +72,7 @@ void InstancingBasedPolylines::draw(uint viewId) const
         bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH);
 
-        if (settings().getJoin() != Joins::ROUND_JOIN) {
+        if (settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
             mVertices.bind(0);
             mIndices.bind();
             bgfx::setInstanceDataBuffer(&mJoinsInstanceDB);
@@ -178,4 +178,4 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
     }
 }
 
-} // namespace vcl::lines
+} // namespace vcl

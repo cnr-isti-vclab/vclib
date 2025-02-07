@@ -34,7 +34,7 @@
 
 #include <bgfx/bgfx.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 template<typename LinesImplementation = CPUGeneratedLines>
 class DrawableLines : public vcl::DrawableObject
@@ -82,9 +82,9 @@ public:
         first.swap(second);
     }
 
-    const LinesSettings& settings() const { return mLines.settings(); }
+    const LineSettings& settings() const { return mLines.settings(); }
 
-    LinesSettings& settings() { return mLines.settings(); }
+    LineSettings& settings() { return mLines.settings(); }
 
     void update(const std::vector<LinesVertex>& points)
     {
@@ -116,6 +116,6 @@ using DrawableIndirectLines = DrawableLines<IndirectBasedLines>;
 using DrawableInstancingLines = DrawableLines<InstancingBasedLines>;
 using DrawableTextureLines = DrawableLines<TextureBasedLines>;
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_DRAWABLE_LINES_H

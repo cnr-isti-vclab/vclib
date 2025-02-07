@@ -27,7 +27,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/lines/common/lines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 class TextureBasedLines : public Lines
 {
@@ -91,6 +91,6 @@ private:
     void allocateAndGenerateTextureBuffer(uint pointSize);
 };
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_LINES_TEXTURE_BASED_LINES_H

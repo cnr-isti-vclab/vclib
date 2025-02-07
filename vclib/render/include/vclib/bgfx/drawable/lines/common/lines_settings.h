@@ -31,28 +31,28 @@
 
 #include <cassert>
 
-namespace vcl::lines {
+namespace vcl {
 
-enum class Caps {
+enum class LineCap {
     BUTT_CAP     = 0x00000000, // No extra space on caps
     SQUARE_CAP   = 0x00000001, // Extra space with square shape
     ROUND_CAP    = 0x00000002, // Extra space with round shape
     TRIANGLE_CAP = 0x00000003  // Extra space with triangle
 };
 
-enum class Joins {
+enum class PolyLineJoin {
     ROUND_JOIN = 0x00000000, // Join with round shape
     BEVEL_JOIN = 0x00000001, // Join with square shape
     MITER_JOIN = 0x00000002, // Join with a miter
 };
 
-enum class ColorToUse {
+enum class LineColorToUse {
     PER_VERTEX_COLOR = 0x00000000, // Select color form vertex color
     PER_EDGE_COLOR   = 0x00000001, // Select color from edge buffer color
     GENERAL_COLOR    = 0x00000002  // Use general color in uniform data
 };
 
-class LinesSettings
+class LineSettings
 {
 private:
     uint8_t  mThickness = 5;
@@ -62,17 +62,17 @@ private:
     uint32_t mGeneralColor = LinesVertex::COLOR(0, 0, 0, 1);
     uint8_t  mMiterLimit = mThickness * 2;
 
-    Caps       mLeftCap = Caps::ROUND_CAP;
-    Caps       mRigthCap = Caps::ROUND_CAP;
-    Joins      mJoin = Joins::ROUND_JOIN;
-    ColorToUse mColorToUse = ColorToUse::PER_VERTEX_COLOR;
+    LineCap       mLeftCap = LineCap::ROUND_CAP;
+    LineCap       mRigthCap = LineCap::ROUND_CAP;
+    PolyLineJoin      mJoin = PolyLineJoin::ROUND_JOIN;
+    LineColorToUse mColorToUse = LineColorToUse::PER_VERTEX_COLOR;
 
     Uniform mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);
 
 public:
-    LinesSettings() = default;
+    LineSettings() = default;
 
-    Joins getJoin() const { return mJoin; }
+    PolyLineJoin getJoin() const { return mJoin; }
 
     void setThickness(uint8_t thickness) { mThickness = thickness; }
 
@@ -96,13 +96,13 @@ public:
         mMiterLimit = miterLimit;
     }
 
-    void setLeftCap(Caps cap) { mLeftCap = cap; }
+    void setLeftCap(LineCap cap) { mLeftCap = cap; }
 
-    void setRigthCap(Caps cap) { mRigthCap = cap; }
+    void setRigthCap(LineCap cap) { mRigthCap = cap; }
 
-    void setJoin(Joins join) { mJoin = join; }
+    void setJoin(PolyLineJoin join) { mJoin = join; }
 
-    void setColorToUse(ColorToUse colorToUse) { mColorToUse = colorToUse; }
+    void setColorToUse(LineColorToUse colorToUse) { mColorToUse = colorToUse; }
 
 public:
     void bindUniformLines() const
@@ -141,6 +141,6 @@ public:
     }
 };
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif

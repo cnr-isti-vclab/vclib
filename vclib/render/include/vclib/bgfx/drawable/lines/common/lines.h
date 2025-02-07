@@ -25,19 +25,19 @@
 
 #include "lines_settings.h"
 
-namespace vcl::lines {
+namespace vcl {
 
 class Lines
 {
-    LinesSettings mSettings;
+    LineSettings mSettings;
 
 public:
     // TODO: remove this getter
     // add proper methots to set the settings that apply for lines
     // do then a similar class for polylines
-    LinesSettings& settings() { return mSettings; }
+    LineSettings& settings() { return mSettings; }
 
-    const LinesSettings& settings() const { return mSettings; }
+    const LineSettings& settings() const { return mSettings; }
 
     void swap(Lines& other)
     {
@@ -78,6 +78,6 @@ protected:
     }
 };
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_LINES_LINES_H

@@ -34,7 +34,7 @@
 
 #include <bgfx/bgfx.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 template<typename PolylinesImplementation = CPUGeneratedPolylines>
 class DrawablePolylines : public vcl::DrawableObject
@@ -81,9 +81,9 @@ public:
         first.swap(second);
     }
 
-    LinesSettings& settings() { return mPolylines.settings(); }
+    LineSettings& settings() { return mPolylines.settings(); }
 
-    const LinesSettings& settings() const
+    const LineSettings& settings() const
     {
         return mPolylines.settings();
     }
@@ -119,6 +119,6 @@ using DrawableIndirectPolylines = DrawablePolylines<IndirectBasedPolylines>;
 using DrawableInstancingPolylines = DrawablePolylines<InstancingBasedPolylines>;
 using DrawableTexturePolylines = DrawablePolylines<TextureBasedPolylines>;
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_DRAWABLE_POLYLINES_H

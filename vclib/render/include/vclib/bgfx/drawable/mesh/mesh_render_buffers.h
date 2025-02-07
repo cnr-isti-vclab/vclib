@@ -63,7 +63,7 @@ class MeshRenderBuffers
     IndexBuffer mEdgeNormalBuffer;
     IndexBuffer mEdgeColorBuffer;
 
-    lines::GPUGeneratedLines mWireframeBH;
+    GPUGeneratedLines mWireframeBH;
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
@@ -164,31 +164,31 @@ public:
 
     void setWireframeSettings(const MeshRenderSettings& settings)
     {
-        lines::LinesSettings& wSettings = mWireframeBH.settings();
+        LineSettings& wSettings = mWireframeBH.settings();
         wSettings.setThickness(settings.wireframeWidth());
 
         if (settings.isWireframeColorUserDefined()) {
             vcl::Color generalColor = settings.wireframeUserColor();
-            wSettings.setGeneralColor(lines::LinesVertex::COLOR(
+            wSettings.setGeneralColor(LinesVertex::COLOR(
                 generalColor.redF(),
                 generalColor.greenF(),
                 generalColor.blueF(),
                 generalColor.alphaF()));
-            wSettings.setColorToUse(lines::ColorToUse::GENERAL_COLOR);
+            wSettings.setColorToUse(LineColorToUse::GENERAL_COLOR);
         }
 
         if (settings.isWireframeColorPerMesh()) {
             const float* colorPerMesh = mMeshUniforms.currentMeshColor();
-            wSettings.setGeneralColor(lines::LinesVertex::COLOR(
+            wSettings.setGeneralColor(LinesVertex::COLOR(
                 colorPerMesh[0],
                 colorPerMesh[1],
                 colorPerMesh[2],
                 colorPerMesh[3]));
-            wSettings.setColorToUse(lines::ColorToUse::GENERAL_COLOR);
+            wSettings.setColorToUse(LineColorToUse::GENERAL_COLOR);
         }
 
         if (settings.isWireframeColorPerVertex()) {
-            wSettings.setColorToUse(lines::ColorToUse::PER_VERTEX_COLOR);
+            wSettings.setColorToUse(LineColorToUse::PER_VERTEX_COLOR);
         }
     }
 
@@ -608,7 +608,7 @@ private:
         if constexpr (vcl::HasFaces<MeshType>) {
             // TODO: DATA DUPLICATION
             // Heavy refactoring needed here
-            std::vector<lines::LinesVertex> wireframe;
+            std::vector<LinesVertex> wireframe;
             wireframe.reserve(mesh.faceNumber() * 3);
             for (const auto& f : mesh.faces()) {
                 for (uint i = 0; i < f.vertexNumber(); ++i) {
@@ -620,15 +620,15 @@ private:
                     const auto& n0 = f.vertex(i)->normal();
                     const auto& n1 = f.vertexMod((i + 1))->normal();
 
-                    wireframe.push_back(lines::LinesVertex(
+                    wireframe.push_back(LinesVertex(
                         p0.x(), p0.y(), p0.z(),
-                        lines::LinesVertex::COLOR(
+                        LinesVertex::COLOR(
                             c0.redF(), c0.greenF(), c0.blueF(), c0.alphaF()),
                         n0.x(), n0.y(), n0.z()));
 
-                    wireframe.push_back(lines::LinesVertex(
+                    wireframe.push_back(LinesVertex(
                         p1.x(), p1.y(), p1.z(),
-                        lines::LinesVertex::COLOR(
+                        LinesVertex::COLOR(
                             c1.redF(), c1.greenF(), c1.blueF(), c1.alphaF()),
                         n1.x(), n1.y(), n1.z()));
                 }

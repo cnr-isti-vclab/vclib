@@ -23,7 +23,7 @@
 #include <vclib/bgfx/context/load_program.h>
 #include <vclib/bgfx/drawable/lines/polylines/texture_based_polylines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 TextureBasedPolylines::TextureBasedPolylines()
 {
@@ -80,7 +80,7 @@ void TextureBasedPolylines::draw(uint viewId) const
         bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
 
                // mJoinsTexture is valid only if there are more than 2 points
-        if (mJoinsTexture.isValid() && settings().getJoin() != Joins::ROUND_JOIN) {
+        if (mJoinsTexture.isValid() && settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
             mVertices.bind(0);
             mIndices.bind();
             mJoinsTexture.bind(0, bgfx::Access::Read);
@@ -179,4 +179,4 @@ void TextureBasedPolylines::allocateAndGenerateTextureBuffer(uint pointSize)
     mIndirectData.bind(indirectData);
 }
 
-} // namespace vcl::lines
+} // namespace vcl

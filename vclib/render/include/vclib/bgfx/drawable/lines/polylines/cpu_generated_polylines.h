@@ -27,7 +27,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/lines/common/lines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 class CPUGeneratedPolylines : public Lines
 {
@@ -51,6 +51,6 @@ public:
     void draw(uint viewId) const;
 };
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_POLYLINES_CPU_GENERATED_POLYLINES_H

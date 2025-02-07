@@ -24,7 +24,7 @@
 
 #include <vclib/bgfx/context/load_program.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 GPUGeneratedLines::GPUGeneratedLines(const std::vector<LinesVertex>& points)
 {
@@ -136,4 +136,4 @@ void GPUGeneratedLines::generateVerticesAndIndicesBuffers(uint pointsSize)
     mIndices.setCompute(false);
 }
 
-} // namespace vcl::lines
+} // namespace vcl

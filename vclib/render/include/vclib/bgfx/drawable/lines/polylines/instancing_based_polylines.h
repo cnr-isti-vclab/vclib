@@ -27,7 +27,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/lines/common/lines.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 class InstancingBasedPolylines : public Lines
 {
@@ -77,6 +77,6 @@ private:
     void generateInstanceBuffer() const;
 };
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H

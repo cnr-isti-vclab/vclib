@@ -28,7 +28,7 @@
 #include <vclib/bgfx/drawable/lines/common/lines.h>
 #include <vclib/bgfx/uniform.h>
 
-namespace vcl::lines {
+namespace vcl {
 
 class IndirectBasedLines : public Lines
 {
@@ -87,6 +87,6 @@ private:
     void generateIndirectBuffer(uint pointSize);
 };
 
-} // namespace vcl::lines
+} // namespace vcl
 
 #endif // VCL_BGFX_DRAWABLE_LINES_LINES_INDIRECT_BASED_LINES_H
