@@ -60,7 +60,8 @@ void GPUGeneratedPolylines::draw(uint viewId) const
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH);
 
-    if (settings().getJoin() != 0) {
+    // mJoinIndices is valid only if there are more than 2 points
+    if (mJoinIndices.isValid() && settings().getJoin() != 0) {
         mVertices.bind(0);
         mJoinIndices.bind();
         bgfx::setState(drawState());
@@ -130,10 +131,15 @@ void GPUGeneratedPolylines::allocateIndexBuffer(uint pointSize)
         BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_INDEX32,
         true);
 
-    mJoinIndices.create(
-        bgfx::makeRef(nullptr, sizeof(uint) * szJoin),
-        BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_INDEX32,
-        true);
+    if (pointSize > 2) {
+        mJoinIndices.create(
+            bgfx::makeRef(nullptr, sizeof(uint) * szJoin),
+            BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_INDEX32,
+            true);
+    }
+    else {
+        mJoinIndices.destroy();
+    }
 }
 
 void GPUGeneratedPolylines::generateVerticesAndIndicesBuffers(uint pointSize)
