@@ -35,7 +35,7 @@ class InstancingBasedPolylines : public Lines
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
     static const inline std::vector<uint> INDICES = {0, 3, 1, 0, 2, 3};
 
-    bgfx::ProgramHandle mJoinesPH =
+    bgfx::ProgramHandle mJoinsPH =
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS);
 

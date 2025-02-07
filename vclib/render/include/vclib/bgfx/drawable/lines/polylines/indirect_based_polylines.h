@@ -53,7 +53,7 @@ class IndirectBasedPolylines : public Lines
     VertexBuffer mPoints;
 
     IndirectBuffer mSegmentsIndirect;
-    IndirectBuffer mJointsIndirect;
+    IndirectBuffer mJoinsIndirect;
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:

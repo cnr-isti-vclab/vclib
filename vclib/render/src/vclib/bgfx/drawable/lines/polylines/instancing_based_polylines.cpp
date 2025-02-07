@@ -76,7 +76,7 @@ void InstancingBasedPolylines::draw(uint viewId) const
         mIndices.bind();
         bgfx::setInstanceDataBuffer(&mJoinsInstanceDB);
         bgfx::setState(drawState());
-        bgfx::submit(viewId, mJoinesPH);
+        bgfx::submit(viewId, mJoinsPH);
     }
 }
 
