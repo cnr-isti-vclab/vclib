@@ -49,8 +49,6 @@ class TextureBasedPolylines : public Lines
 
     const uint mMaxTextureSize = bgfx::getCaps()->limits.maxTextureSize;
 
-    uint mPointsSize = 0;
-
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
 
