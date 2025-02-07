@@ -61,7 +61,7 @@ void GPUGeneratedPolylines::draw(uint viewId) const
     bgfx::submit(viewId, mLinesPH);
 
     // mJoinIndices is valid only if there are more than 2 points
-    if (mJoinIndices.isValid() && settings().getJoin() != 0) {
+    if (mJoinIndices.isValid() && settings().getJoin() != Joins::ROUND_JOIN) {
         mVertices.bind(0);
         mJoinIndices.bind();
         bgfx::setState(drawState());

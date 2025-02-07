@@ -72,7 +72,7 @@ void InstancingBasedPolylines::draw(uint viewId) const
         bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH);
 
-        if (settings().getJoin() != 0) {
+        if (settings().getJoin() != Joins::ROUND_JOIN) {
             mVertices.bind(0);
             mIndices.bind();
             bgfx::setInstanceDataBuffer(&mJoinsInstanceDB);

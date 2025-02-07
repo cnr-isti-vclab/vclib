@@ -75,7 +75,7 @@ void IndirectBasedPolylines::draw(uint viewId) const
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
 
-    if (settings().getJoin() != 0) {
+    if (settings().getJoin() != Joins::ROUND_JOIN) {
         mVertices.bind(0);
         mIndices.bind();
         mPoints.bind(1, bgfx::Access::Read);

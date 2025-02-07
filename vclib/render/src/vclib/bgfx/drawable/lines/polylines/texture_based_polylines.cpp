@@ -80,7 +80,7 @@ void TextureBasedPolylines::draw(uint viewId) const
         bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
 
                // mJoinsTexture is valid only if there are more than 2 points
-        if (settings().getJoin() != 0 && mJoinsTexture.isValid()) {
+        if (mJoinsTexture.isValid() && settings().getJoin() != Joins::ROUND_JOIN) {
             mVertices.bind(0);
             mIndices.bind();
             mJoinsTexture.bind(0, bgfx::Access::Read);

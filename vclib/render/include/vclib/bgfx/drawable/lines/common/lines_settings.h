@@ -33,20 +33,20 @@
 
 namespace vcl::lines {
 
-enum Caps {
+enum class Caps {
     BUTT_CAP     = 0x00000000, // No extra space on caps
     SQUARE_CAP   = 0x00000001, // Extra space with square shape
     ROUND_CAP    = 0x00000002, // Extra space with round shape
     TRIANGLE_CAP = 0x00000003  // Extra space with triangle
 };
 
-enum Joins {
+enum class Joins {
     ROUND_JOIN = 0x00000000, // Join with round shape
     BEVEL_JOIN = 0x00000001, // Join with square shape
     MITER_JOIN = 0x00000002, // Join with a miter
 };
 
-enum ColorToUse {
+enum class ColorToUse {
     PER_VERTEX_COLOR = 0x00000000, // Select color form vertex color
     PER_EDGE_COLOR   = 0x00000001, // Select color from edge buffer color
     GENERAL_COLOR    = 0x00000002  // Use general color in uniform data
