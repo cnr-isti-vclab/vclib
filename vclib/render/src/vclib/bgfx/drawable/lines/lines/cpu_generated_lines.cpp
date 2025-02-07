@@ -43,68 +43,74 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 
 void CPUGeneratedLines::update(const std::vector<LinesVertex>& points)
 {
-    // generate memory buffers
-    uint bufferVertsSize = points.size() * 4 * 12;
-    uint bufferIndsSize = (points.size() / 2) * 6;
+    if (points.size() > 1) {
+        // generate memory buffers
+        uint bufferVertsSize = points.size() * 4 * 12;
+        uint bufferIndsSize = (points.size() / 2) * 6;
 
-    auto [vertices, vReleaseFn] =
-        getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
+        auto [vertices, vReleaseFn] =
+            getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
 
-    auto [indices, iReleaseFn] =
-        getAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
+        auto [indices, iReleaseFn] =
+            getAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
 
-    uint vi = 0;
-    uint ii = 0;
-    for (uint i = 1; i < points.size(); i += 2) {
-        for (uint k = 0; k < 2; k++) {
-            for (uint j = 0; j < 2; j++) {
-                vertices[vi++] = points[i - 1].X;
-                vertices[vi++] = points[i - 1].Y;
-                vertices[vi++] = points[i - 1].Z;
+        uint vi = 0;
+        uint ii = 0;
+        for (uint i = 1; i < points.size(); i += 2) {
+            for (uint k = 0; k < 2; k++) {
+                for (uint j = 0; j < 2; j++) {
+                    vertices[vi++] = points[i - 1].X;
+                    vertices[vi++] = points[i - 1].Y;
+                    vertices[vi++] = points[i - 1].Z;
 
-                vertices[vi++] = points[i].X;
-                vertices[vi++] = points[i].Y;
-                vertices[vi++] = points[i].Z;
+                    vertices[vi++] = points[i].X;
+                    vertices[vi++] = points[i].Y;
+                    vertices[vi++] = points[i].Z;
 
-                vertices[vi++] = points[i - (1 - k)].getReverseColor();
+                    vertices[vi++] = points[i - (1 - k)].getReverseColor();
 
-                vertices[vi++] = points[i - (1 - k)].xN;
-                vertices[vi++] = points[i - (1 - k)].yN;
-                vertices[vi++] = points[i - (1 - k)].zN;
+                    vertices[vi++] = points[i - (1 - k)].xN;
+                    vertices[vi++] = points[i - (1 - k)].yN;
+                    vertices[vi++] = points[i - (1 - k)].zN;
 
-                vertices[vi++] = k;
-                vertices[vi++] = j;
+                    vertices[vi++] = k;
+                    vertices[vi++] = j;
+                }
             }
+
+            uint index = (4 * (i / 2));
+            indices[ii++] = index;
+            indices[ii++] = index + 3;
+            indices[ii++] = index + 1;
+
+            indices[ii++] = index;
+            indices[ii++] = index + 2;
+            indices[ii++] = index + 3;
         }
 
-        uint index = (4 * (i / 2));
-        indices[ii++] = index;
-        indices[ii++] = index + 3;
-        indices[ii++] = index + 1;
+               // create vertex buffer
+        bgfx::VertexLayout layout;
+        layout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
+            .end();
 
-        indices[ii++] = index;
-        indices[ii++] = index + 2;
-        indices[ii++] = index + 3;
+        mVertices.create(
+            bgfx::makeRef(vertices, sizeof(float) * bufferVertsSize, vReleaseFn),
+            layout);
+
+               // create index buffer
+        mIndices.create(
+            bgfx::makeRef(indices, sizeof(uint) * bufferIndsSize, iReleaseFn),
+            BGFX_BUFFER_INDEX32);
     }
-
-    // create vertex buffer
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-        .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
-        .end();
-
-    mVertices.create(
-        bgfx::makeRef(vertices, sizeof(float) * bufferVertsSize, vReleaseFn),
-        layout);
-
-    // create index buffer
-    mIndices.create(
-        bgfx::makeRef(indices, sizeof(uint) * bufferIndsSize, iReleaseFn),
-        BGFX_BUFFER_INDEX32);
+    else {
+        mVertices.destroy();
+        mIndices.destroy();
+    }
 }
 
 void CPUGeneratedLines::draw(uint viewId) const

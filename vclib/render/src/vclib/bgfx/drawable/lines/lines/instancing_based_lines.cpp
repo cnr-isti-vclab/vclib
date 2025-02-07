@@ -59,16 +59,18 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
 
 void InstancingBasedLines::draw(uint viewId) const
 {
-    bindSettingsUniformLines();
+    if (mPoints.size() > 1) {
+        bindSettingsUniformLines();
 
-    generateInstanceDataBuffer();
+        generateInstanceDataBuffer();
 
-    mVertices.bind(0);
-    mIndices.bind();
-    bgfx::setInstanceDataBuffer(&mInstanceDB);
+        mVertices.bind(0);
+        mIndices.bind();
+        bgfx::setInstanceDataBuffer(&mInstanceDB);
 
-    bgfx::setState(drawState());
-    bgfx::submit(viewId, mLinesPH);
+        bgfx::setState(drawState());
+        bgfx::submit(viewId, mLinesPH);
+    }
 }
 
 void InstancingBasedLines::update(const std::vector<LinesVertex>& points)

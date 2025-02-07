@@ -56,12 +56,19 @@ void GPUGeneratedLines::draw(uint viewId) const
 
 void GPUGeneratedLines::update(const std::vector<LinesVertex>& points)
 {
-    allocateAndSetPointsBuffer(points);
-    allocateVertexBuffer(points.size());
-    allocateIndexBuffer(points.size());
-    // buffers are set for the compute stage
-    generateVerticesAndIndicesBuffers(points.size());
-    // here buffers are computed and ready for rendering
+    if (points.size() > 1) {
+        allocateAndSetPointsBuffer(points);
+        allocateVertexBuffer(points.size());
+        allocateIndexBuffer(points.size());
+        // buffers are set for the compute stage
+        generateVerticesAndIndicesBuffers(points.size());
+        // here buffers are computed and ready for rendering
+    }
+    else {
+        mPoints.destroy();
+        mVertices.destroy();
+        mIndices.destroy();
+    }
 }
 
 void GPUGeneratedLines::allocateAndSetPointsBuffer(
