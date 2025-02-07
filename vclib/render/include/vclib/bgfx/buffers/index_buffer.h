@@ -157,8 +157,8 @@ public:
      */
     void create(
         const bgfx::Memory* indices,
-        uint64_t flags   = BGFX_BUFFER_NONE,
-        bool     compute = false)
+        uint64_t            flags   = BGFX_BUFFER_NONE,
+        bool                compute = false)
     {
         mHandle  = bgfx::createIndexBuffer(indices, flags);
         mCompute = compute;
