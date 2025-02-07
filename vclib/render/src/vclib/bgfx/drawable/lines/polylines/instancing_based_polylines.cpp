@@ -61,22 +61,24 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 
 void InstancingBasedPolylines::draw(uint viewId) const
 {
-    bindSettingsUniformPolylines();
+    if (mPoints.size() > 1) {
+        bindSettingsUniformPolylines();
 
-    generateInstanceBuffer();
+        generateInstanceBuffer();
 
-    mVertices.bind(0);
-    mIndices.bind();
-    bgfx::setInstanceDataBuffer(&mSegmentsInstanceDB);
-    bgfx::setState(drawState());
-    bgfx::submit(viewId, mLinesPH);
-
-    if (settings().getJoin() != 0) {
         mVertices.bind(0);
         mIndices.bind();
-        bgfx::setInstanceDataBuffer(&mJoinsInstanceDB);
+        bgfx::setInstanceDataBuffer(&mSegmentsInstanceDB);
         bgfx::setState(drawState());
-        bgfx::submit(viewId, mJoinsPH);
+        bgfx::submit(viewId, mLinesPH);
+
+        if (settings().getJoin() != 0) {
+            mVertices.bind(0);
+            mIndices.bind();
+            bgfx::setInstanceDataBuffer(&mJoinsInstanceDB);
+            bgfx::setState(drawState());
+            bgfx::submit(viewId, mJoinsPH);
+        }
     }
 }
 

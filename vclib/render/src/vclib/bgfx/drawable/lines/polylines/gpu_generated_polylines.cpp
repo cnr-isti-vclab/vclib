@@ -71,12 +71,20 @@ void GPUGeneratedPolylines::draw(uint viewId) const
 
 void GPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
 {
-    allocateAndSetPointsBuffer(points);
-    allocateVertexBuffer(points.size());
-    allocateIndexBuffer(points.size());
-    // buffers are set for the compute stage
-    generateVerticesAndIndicesBuffers(points.size());
-    // here buffers are computed and ready for rendering
+    if (points.size() > 1) {
+        allocateAndSetPointsBuffer(points);
+        allocateVertexBuffer(points.size());
+        allocateIndexBuffer(points.size());
+        // buffers are set for the compute stage
+        generateVerticesAndIndicesBuffers(points.size());
+        // here buffers are computed and ready for rendering
+    }
+    else {
+        mPoints.destroy();
+        mVertices.destroy();
+        mSegmentIndices.destroy();
+        mJoinIndices.destroy();
+    }
 }
 
 void GPUGeneratedPolylines::allocateAndSetPointsBuffer(

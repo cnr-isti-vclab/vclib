@@ -70,28 +70,39 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
 
 void TextureBasedPolylines::draw(uint viewId) const
 {
-    bindSettingsUniformPolylines();
+    if (mVertices.isValid()) {
+        bindSettingsUniformPolylines();
 
-    mVertices.bind(0);
-    mIndices.bind();
-    mSegmentsTexture.bind(0, bgfx::Access::Read);
-    bgfx::setState(drawState());
-    bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
-
-    // mJoinsTexture is valid only if there are more than 2 points
-    if (settings().getJoin() != 0 && mJoinsTexture.isValid()) {
         mVertices.bind(0);
         mIndices.bind();
-        mJoinsTexture.bind(0, bgfx::Access::Read);
+        mSegmentsTexture.bind(0, bgfx::Access::Read);
         bgfx::setState(drawState());
-        bgfx::submit(viewId, mJoinsPH, mJoinsIndirect.handle(), 0);
+        bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
+
+               // mJoinsTexture is valid only if there are more than 2 points
+        if (settings().getJoin() != 0 && mJoinsTexture.isValid()) {
+            mVertices.bind(0);
+            mIndices.bind();
+            mJoinsTexture.bind(0, bgfx::Access::Read);
+            bgfx::setState(drawState());
+            bgfx::submit(viewId, mJoinsPH, mJoinsIndirect.handle(), 0);
+        }
     }
 }
 
 void TextureBasedPolylines::update(const std::vector<LinesVertex>& points)
 {
-    allocateAndSetPointsBuffer(points);
-    allocateAndGenerateTextureBuffer(points.size());
+    if (points.size() > 1) {
+        allocateAndSetPointsBuffer(points);
+        allocateAndGenerateTextureBuffer(points.size());
+    }
+    else {
+        mPoints.destroy();
+        mVertices.destroy();
+        mIndices.destroy();
+        mSegmentsTexture.destroy();
+        mJoinsTexture.destroy();
+    }
 }
 
 void TextureBasedPolylines::allocateAndSetPointsBuffer(
