@@ -99,7 +99,7 @@ void IndirectBasedLines::allocateAndSetPointsBuffer(
     mPoints.create(
         bgfx::makeRef(buffer, sizeof(LinesVertex) * points.size(), releaseFn),
         layout,
-        BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_ALLOW_RESIZE,
+        BGFX_BUFFER_COMPUTE_READ,
         true);
 }
 
