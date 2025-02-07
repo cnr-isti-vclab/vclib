@@ -23,9 +23,9 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H
 
-#include <vclib/bgfx/drawable/lines/common/lines.h>
-
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines/common/lines.h>
 
 namespace vcl::lines {
 
@@ -45,27 +45,16 @@ class InstancingBasedPolylines : public Lines
 
     std::vector<LinesVertex> mPoints;
 
+    VertexBuffer mVertices;
+    IndexBuffer  mIndices;
+
     mutable bgfx::InstanceDataBuffer mSegmentsInstanceDB;
     mutable bgfx::InstanceDataBuffer mJoinsInstanceDB;
 
-    bgfx::VertexBufferHandle mVerticesBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mIndicesBH  = BGFX_INVALID_HANDLE;
-
 public:
-    InstancingBasedPolylines() { checkCaps(); }
+    InstancingBasedPolylines();
 
     InstancingBasedPolylines(const std::vector<LinesVertex>& points);
-
-    InstancingBasedPolylines(const InstancingBasedPolylines& other) = delete;
-
-    InstancingBasedPolylines(InstancingBasedPolylines&& other);
-
-    ~InstancingBasedPolylines();
-
-    InstancingBasedPolylines& operator=(const InstancingBasedPolylines& other) =
-        delete;
-
-    InstancingBasedPolylines& operator=(InstancingBasedPolylines&& other);
 
     void swap(InstancingBasedPolylines& other);
 
@@ -74,12 +63,6 @@ public:
     void update(const std::vector<LinesVertex>& points);
 
 private:
-    void generateInstanceBuffer() const;
-
-    void allocateVerticesBuffer();
-
-    void allocateIndicesBuffer();
-
     void checkCaps() const
     {
         const bgfx::Caps* caps = bgfx::getCaps();
@@ -90,6 +73,8 @@ private:
             throw std::runtime_error("Instancing or compute are not supported");
         }
     }
+
+    void generateInstanceBuffer() const;
 };
 
 } // namespace vcl::lines
