@@ -22,6 +22,7 @@
 
 $input v_color, v_uv, v_length, v_normal
 
+#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/lines.sh>
 
 #include <bgfx_shader.sh>
@@ -30,7 +31,7 @@ uniform vec4 u_data;
 
 void main() {
     uint thickness_antialias_border_caps = floatBitsToUint(u_data.y);
-    vec4 u_borderColor   = uintToVec4FloatColor(floatBitsToUint(u_data.z));
+    vec4 u_borderColor   = uintABGRToVec4Color(floatBitsToUint(u_data.z));
 
     float u_thickness    = float((thickness_antialias_border_caps >> uint(24)) & uint(0xFF));
     float u_antialias    = float((thickness_antialias_border_caps >> uint(16)) & uint(0xFF));

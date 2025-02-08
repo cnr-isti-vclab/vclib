@@ -23,6 +23,7 @@
 $input a_position, i_data0, i_data1, i_data2, i_data3
 $output v_color, v_uv, v_length, v_normal
 
+#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/lines.sh>
 
 #include <bgfx_shader.sh>
@@ -31,14 +32,14 @@ uniform vec4 u_data;
 
 #define p0                    vec4(i_data0.xyz, 0.0)
 #define p1                    vec4(i_data1.xyz, 0.0)
-#define color0                uintToVec4FloatColor(floatBitsToUint(i_data0.w))
-#define color1                uintToVec4FloatColor(floatBitsToUint(i_data1.w))
+#define color0                uintABGRToVec4Color(floatBitsToUint(i_data0.w))
+#define color1                uintABGRToVec4Color(floatBitsToUint(i_data1.w))
 #define normal0               i_data2
 #define normal1               i_data3
 #define uv                    a_position
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintABGRToVec4Color(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_caps = floatBitsToUint(u_data.y);
     
     float u_screenWidth  = u_viewRect.z;

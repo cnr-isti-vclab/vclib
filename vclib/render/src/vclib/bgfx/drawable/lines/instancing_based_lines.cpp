@@ -94,7 +94,7 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
         p0[2]     = mPoints[i - 1].Z;
 
         uint* color0 = reinterpret_cast<uint*>(&data[12]);
-        color0[0]    = mPoints[i - 1].getRGBAColor();
+        color0[0]    = mPoints[i - 1].getABGRColor();
 
         float* p1 = reinterpret_cast<float*>(&data[16]);
         p1[0]     = mPoints[i].X;
@@ -102,7 +102,7 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
         p1[2]     = mPoints[i].Z;
 
         uint* color1 = reinterpret_cast<uint*>(&data[28]);
-        color1[0]    = mPoints[i].getRGBAColor();
+        color1[0]    = mPoints[i].getABGRColor();
 
         float* n0 = reinterpret_cast<float*>(&data[32]);
         n0[0]     = mPoints[i - 1].xN;

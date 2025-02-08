@@ -23,6 +23,7 @@
 $input a_position, i_data0, i_data1, i_data2, i_data3, i_data4
 $output v_color, v_uv, v_length, v_normal, v_is_start_end
 
+#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/polylines.sh>
 
 #include <bgfx_compute.sh>
@@ -34,13 +35,13 @@ uniform vec4 u_data;
 #define a_curr                  vec4(i_data1.xyz, 0.0)
 #define a_next                  vec4(i_data2.xyz, 0.0)
 #define a_nextnext              vec4(i_data3.xyz, 0.0)
-#define color0                  uintToVec4FloatColor(floatBitsToUint(i_data1.w))
-#define color1                  uintToVec4FloatColor(floatBitsToUint(i_data2.w))
+#define color0                  uintABGRToVec4Color(floatBitsToUint(i_data1.w))
+#define color1                  uintABGRToVec4Color(floatBitsToUint(i_data2.w))
 #define normal0                 vec3(i_data0.w, i_data3.w, i_data4.x)
 #define normal1                 vec3(i_data4.y, i_data4.z, i_data4.w)
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintABGRToVec4Color(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
     uint caps_joint_color = floatBitsToUint(u_data.w);
     
