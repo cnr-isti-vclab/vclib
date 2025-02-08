@@ -40,7 +40,7 @@ uniform vec4 u_IndirectData;
 #define u_maxInstanceSize       u_IndirectData.x
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
     uint caps_joint_color = floatBitsToUint(u_data.w);
     
@@ -62,8 +62,8 @@ void main() {
     vec4 a_next = p(gl_InstanceID + 1);
     vec4 a_nextnext = p(gl_InstanceID + 1 + sign(u_maxInstanceSize - 1 - gl_InstanceID));
 
-    vec4 color0 = uintToVec4FloatColor(floatBitsToUint(color(gl_InstanceID)));
-    vec4 color1 = uintToVec4FloatColor(floatBitsToUint(color(gl_InstanceID + 1)));
+    vec4 color0 = uintRGBAToVec4FloatColor(floatBitsToUint(color(gl_InstanceID)));
+    vec4 color1 = uintRGBAToVec4FloatColor(floatBitsToUint(color(gl_InstanceID + 1)));
 
     vec3 normal0 = normal(gl_InstanceID);
     vec3 normal1 = normal(gl_InstanceID + 1);

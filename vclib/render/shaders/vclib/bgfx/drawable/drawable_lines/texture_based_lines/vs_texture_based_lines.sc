@@ -36,7 +36,7 @@ uniform vec4 u_IndirectData;
 IMAGE2D_RO(textureBuffer, rgba32f, 0);
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_caps = floatBitsToUint(u_data.y);
     
     float u_screenWidth  = u_viewRect.z;
@@ -54,8 +54,8 @@ void main() {
     vec4 normal0     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 2, maxTextureSize));
     vec4 normal1     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 3, maxTextureSize));
 
-    vec4 color0 = uintToVec4FloatColor(floatBitsToUint(p0.w));
-    vec4 color1 = uintToVec4FloatColor(floatBitsToUint(p1.w));
+    vec4 color0 = uintRGBAToVec4FloatColor(floatBitsToUint(p0.w));
+    vec4 color1 = uintRGBAToVec4FloatColor(floatBitsToUint(p1.w));
 
     vec4 p0_px = calculatePointWithMVP(p0, u_screenWidth, u_screenHeigth);
     vec4 p1_px = calculatePointWithMVP(p1, u_screenWidth, u_screenHeigth);

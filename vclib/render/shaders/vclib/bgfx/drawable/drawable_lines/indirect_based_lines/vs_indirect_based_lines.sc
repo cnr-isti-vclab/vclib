@@ -38,7 +38,7 @@ uniform vec4 u_data;
 #define uv                    a_position
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_caps = floatBitsToUint(u_data.y);
     
     float u_screenWidth  = u_viewRect.z;
@@ -53,7 +53,7 @@ void main() {
 
     vec4 p0      = p((gl_InstanceID * 2));
     vec4 p1      = p((gl_InstanceID * 2) + 1);
-    vec4 color   = uintToVec4FloatColor(floatBitsToUint(color((gl_InstanceID * 2) + (1 * uv.x))));
+    vec4 color   = uintRGBAToVec4FloatColor(floatBitsToUint(color((gl_InstanceID * 2) + (1 * uv.x))));
     vec3 normal0 = normal(gl_InstanceID * 2);
     vec3 normal1 = normal((gl_InstanceID * 2) + 1);
 

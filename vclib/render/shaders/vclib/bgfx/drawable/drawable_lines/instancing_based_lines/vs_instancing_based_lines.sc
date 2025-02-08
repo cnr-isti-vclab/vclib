@@ -23,7 +23,6 @@
 $input a_position, i_data0, i_data1, i_data2, i_data3
 $output v_color, v_uv, v_length, v_normal
 
-#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/lines.sh>
 
 #include <bgfx_shader.sh>

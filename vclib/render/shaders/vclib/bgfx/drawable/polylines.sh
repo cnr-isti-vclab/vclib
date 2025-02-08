@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_SH
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_SH
 
+#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/utils.sh>
 
 #include <bgfx_shader.sh>

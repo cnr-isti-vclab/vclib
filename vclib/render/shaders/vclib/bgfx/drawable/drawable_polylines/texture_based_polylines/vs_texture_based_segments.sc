@@ -37,7 +37,7 @@ uniform vec4 u_IndirectData;
 #define a_uv                    a_position 
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
     uint caps_joint_color = floatBitsToUint(u_data.w);
     
@@ -64,8 +64,8 @@ void main() {
     vec4 a_curr     = vec4(element1.xyz, 0);
     vec4 a_next     = vec4(element2.xyz, 0);
     vec4 a_nextnext = vec4(element3.xyz, 0);
-    vec4 color0     = uintToVec4FloatColor(floatBitsToUint(element3.w));
-    vec4 color1     = uintToVec4FloatColor(floatBitsToUint(element4.w));
+    vec4 color0     = uintRGBAToVec4FloatColor(floatBitsToUint(element3.w));
+    vec4 color1     = uintRGBAToVec4FloatColor(floatBitsToUint(element4.w));
     vec3 normal0    = vec3(element0.w, element1.w, element2.w);
     vec3 normal1    = vec3(element4.xyz);
 

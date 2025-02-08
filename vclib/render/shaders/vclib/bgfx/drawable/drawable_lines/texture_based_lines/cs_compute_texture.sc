@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/utils.sh>
 
 #include <bgfx_compute.sh>

@@ -38,7 +38,7 @@ uniform vec4 u_data;
 #define a_uv                    a_position 
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
     uint caps_joint_color = floatBitsToUint(u_data.w);
     
@@ -66,7 +66,7 @@ void main() {
     vec4 curr_px = calculatePointWithMVP(curr, u_screenWidth, u_screenHeigth);
     vec4 next_px = calculatePointWithMVP(next, u_screenWidth, u_screenHeigth);
 
-    v_color = uintToVec4FloatColor(floatBitsToUint(color(index)));
+    v_color = uintRGBAToVec4FloatColor(floatBitsToUint(color(index)));
     v_normal = normal(index);
     v_uv = vec4(0,0,0,0);
     v_length = 0;

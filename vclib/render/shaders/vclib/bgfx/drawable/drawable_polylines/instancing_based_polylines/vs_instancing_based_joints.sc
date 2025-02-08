@@ -23,7 +23,6 @@
 $input a_position, i_data0, i_data1, i_data2, i_data3
 $output v_color, v_uv, v_length, v_normal, v_is_start_end
 
-#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/polylines.sh>
 
 #include <bgfx_compute.sh>

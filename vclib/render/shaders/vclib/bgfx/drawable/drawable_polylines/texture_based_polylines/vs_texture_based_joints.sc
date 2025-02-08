@@ -37,7 +37,7 @@ uniform vec4 u_IndirectData;
 #define a_uv                    a_position 
 
 void main() {
-    vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
     uint caps_joint_color = floatBitsToUint(u_data.w);
     
@@ -58,7 +58,7 @@ void main() {
     vec4 curr    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 1, maxTextureSize));
     vec4 next    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 2, maxTextureSize));
     vec4 normal  = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 2) + 3, maxTextureSize));
-    vec4 color   = uintToVec4FloatColor(floatBitsToUint(curr.w));
+    vec4 color   = uintRGBAToVec4FloatColor(floatBitsToUint(curr.w));
     
     curr.w = 0;
 

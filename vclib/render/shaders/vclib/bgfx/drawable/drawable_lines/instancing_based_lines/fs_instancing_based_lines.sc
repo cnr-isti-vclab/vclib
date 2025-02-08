@@ -22,7 +22,6 @@
 
 $input v_color, v_uv, v_length, v_normal
 
-#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/lines.sh>
 
 #include <bgfx_shader.sh>
