@@ -89,10 +89,7 @@ protected:
      *
      * If the GenericBuffer is valid, the bgfx Buffer Handle is destroyed.
      */
-    ~GenericBuffer()
-    {
-        destroy();
-    }
+    ~GenericBuffer() { destroy(); }
 
     // Copying a GenericBuffer is not allowed
     GenericBuffer& operator=(const GenericBuffer& other) = delete;

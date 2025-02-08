@@ -84,7 +84,7 @@ void main()
             light = computeLight(u_lightDir, u_lightColor, normal);
         }
 
-        color = uintToVec4Color(floatBitsToUint(u_userPointColorFloat));
+        color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
 
         if (bool(drawMode0 & VCL_MRS_POINTS_COLOR_VERTEX)) {
             color = v_color;
@@ -118,7 +118,7 @@ void main()
         }
 
         /***** compute color ******/
-        color = uintToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
+        color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
         if (bool(drawMode0 & VCL_MRS_SURF_COLOR_VERTEX)) {
             color = v_color;
@@ -127,7 +127,7 @@ void main()
             color = u_meshColor;
         }
         if (bool(drawMode0 & VCL_MRS_SURF_COLOR_FACE)) {
-            color = uintToVec4Color(primitiveColors[gl_PrimitiveID]);
+            color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
         }
         if (bool(drawMode0 & VCL_MRS_SURF_TEX_VERTEX)) {
             color = getColorFromTexture(0, v_texcoord0);
@@ -142,7 +142,7 @@ void main()
             light = computeLight(u_lightDir, u_lightColor, normal);
         }
 
-        color = uintToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
+        color = uintABGRToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
 
         if (bool(drawMode0 & VCL_MRS_WIREFRAME_COLOR_VERT)) {
             color = v_color;
@@ -175,7 +175,7 @@ void main()
         }
 
         /***** compute color ******/
-        color = uintToVec4Color(floatBitsToUint(u_userEdgesColorFloat));
+        color = uintABGRToVec4Color(floatBitsToUint(u_userEdgesColorFloat));
 
         if (bool(drawMode1 & VCL_MRS_EDGES_COLOR_VERTEX)) {
             color = v_color;
@@ -184,7 +184,7 @@ void main()
             color = u_meshColor;
         }
         if (bool(drawMode1 & VCL_MRS_EDGES_COLOR_EDGE)) {
-            color = uintToVec4Color(primitiveColors[gl_PrimitiveID]);
+            color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
         }
         depthOffset = 0.00005;
     }
