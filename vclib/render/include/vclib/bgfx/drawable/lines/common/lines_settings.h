@@ -40,10 +40,10 @@ enum class LineCap {
     TRIANGLE_CAP = 0x00000003  // Extra space with triangle
 };
 
-enum class PolyLineJoin {
-    ROUND_JOIN = 0x00000000, // Join with round shape
-    BEVEL_JOIN = 0x00000001, // Join with square shape
-    MITER_JOIN = 0x00000002, // Join with a miter
+enum class PolyLineJoint {
+    ROUND_JOINT = 0x00000000, // Joint with round shape
+    BEVEL_JOINT = 0x00000001, // Joint with square shape
+    MITER_JOINT = 0x00000002, // Joint with a miter
 };
 
 enum class LineColorToUse {
@@ -62,9 +62,9 @@ private:
     uint32_t mGeneralColor = LinesVertex::COLOR(0, 0, 0, 1);
     uint8_t  mMiterLimit = mThickness * 2;
 
-    LineCap       mLeftCap = LineCap::ROUND_CAP;
-    LineCap       mRigthCap = LineCap::ROUND_CAP;
-    PolyLineJoin      mJoin = PolyLineJoin::ROUND_JOIN;
+    LineCap        mLeftCap    = LineCap::ROUND_CAP;
+    LineCap        mRigthCap   = LineCap::ROUND_CAP;
+    PolyLineJoint  mJoint      = PolyLineJoint::ROUND_JOINT;
     LineColorToUse mColorToUse = LineColorToUse::PER_VERTEX_COLOR;
 
     Uniform mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);
@@ -72,7 +72,7 @@ private:
 public:
     LineSettings() = default;
 
-    PolyLineJoin getJoin() const { return mJoin; }
+    PolyLineJoint getJoint() const { return mJoint; }
 
     void setThickness(uint8_t thickness) { mThickness = thickness; }
 
@@ -100,7 +100,7 @@ public:
 
     void setRigthCap(LineCap cap) { mRigthCap = cap; }
 
-    void setJoin(PolyLineJoin join) { mJoin = join; }
+    void setJoint(PolyLineJoint joint) { mJoint = joint; }
 
     void setColorToUse(LineColorToUse colorToUse) { mColorToUse = colorToUse; }
 
@@ -126,17 +126,17 @@ public:
             (0 | mThickness << 24 | mAntialias << 16 | mBorder << 8 |
              mMiterLimit);
 
-        uint32_t caps_join_color =
+        uint32_t caps_joint_color =
             (0 | static_cast<uint8_t>(mLeftCap) << 6 |
              static_cast<uint8_t>(mRigthCap) << 4 |
-             static_cast<uint8_t>(mJoin) << 2 |
+             static_cast<uint8_t>(mJoint) << 2 |
              static_cast<uint8_t>(mColorToUse));
 
         uint32_t data[] = {
             mGeneralColor,
             thickness_antialias_border_miterlimit,
             mBorderColor,
-            caps_join_color};
+            caps_joint_color};
         mDataUH.bind(data);
     }
 };

@@ -39,7 +39,7 @@ void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
 
     swap(mVertices, other.mVertices);
     swap(mSegmentIndices, other.mSegmentIndices);
-    swap(mJoinIndices, other.mJoinIndices);
+    swap(mJointIndices, other.mJointIndices);
 }
 
 void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
@@ -47,7 +47,7 @@ void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
     if (points.size() > 1) {
         uint bufferVertsSize = (points.size() - 1) * 4 * 15;
         uint bufferSegmetIndicesSize = (points.size() - 1) * 6;
-        uint bufferJoinsIndicesSize = (points.size() - 2) * 6;
+        uint bufferJointsIndicesSize = (points.size() - 2) * 6;
 
         auto [vertices, vReleaseFn] =
             getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
@@ -55,8 +55,8 @@ void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
         auto [segmIndices, siReleaseFn] =
             getAllocatedBufferAndReleaseFn<uint>(bufferSegmetIndicesSize);
 
-        auto [joinIndices, jiReleaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(bufferJoinsIndicesSize);
+        auto [jointIndices, jiReleaseFn] =
+            getAllocatedBufferAndReleaseFn<uint>(bufferJointsIndicesSize);
 
         uint vi = 0;
         uint si = 0;
@@ -102,13 +102,13 @@ void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
             segmIndices[si++] = (i * 4) + 3;
 
             if (points.size() > 2 && i != points.size() - 2) {
-                joinIndices[ji++] = (i * 4) + 3;
-                joinIndices[ji++] = (i * 4) + 4;
-                joinIndices[ji++] = (i * 4) + 5;
+                jointIndices[ji++] = (i * 4) + 3;
+                jointIndices[ji++] = (i * 4) + 4;
+                jointIndices[ji++] = (i * 4) + 5;
 
-                joinIndices[ji++] = (i * 4) + 4;
-                joinIndices[ji++] = (i * 4) + 2;
-                joinIndices[ji++] = (i * 4) + 5;
+                jointIndices[ji++] = (i * 4) + 4;
+                jointIndices[ji++] = (i * 4) + 2;
+                jointIndices[ji++] = (i * 4) + 5;
             }
         }
 
@@ -135,14 +135,14 @@ void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
             BGFX_BUFFER_INDEX32);
 
         if (points.size() > 2) {
-            mJoinIndices.create(
+            mJointIndices.create(
                 bgfx::makeRef(
-                    joinIndices, sizeof(uint) * bufferJoinsIndicesSize, jiReleaseFn),
+                    jointIndices, sizeof(uint) * bufferJointsIndicesSize, jiReleaseFn),
                 BGFX_BUFFER_INDEX32);
         }
         else {
-            delete[] joinIndices;
-            mJoinIndices.destroy();
+            delete[] jointIndices;
+            mJointIndices.destroy();
         }
     }
 }
@@ -156,10 +156,10 @@ void CPUGeneratedPolylines::draw(uint viewId) const
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH);
 
-    // mJoinIndices is valid only if there are more than 2 points
-    if (mJoinIndices.isValid() && settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
+    // mJointIndices is valid only if there are more than 2 points
+    if (mJointIndices.isValid() && settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
         mVertices.bind(0);
-        mJoinIndices.bind();
+        mJointIndices.bind();
         bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH);
     }

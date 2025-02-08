@@ -45,12 +45,12 @@
 #include "embedded_shaders/polylines_cpu_generated_vsfs.h"
 #include "embedded_shaders/polylines_gpu_generated_cs.h"
 #include "embedded_shaders/polylines_indirect_based_cs.h"
-#include "embedded_shaders/polylines_indirect_based_joins_vsfs.h"
+#include "embedded_shaders/polylines_indirect_based_joints_vsfs.h"
 #include "embedded_shaders/polylines_indirect_based_vsfs.h"
-#include "embedded_shaders/polylines_instancing_based_joins_vsfs.h"
+#include "embedded_shaders/polylines_instancing_based_joints_vsfs.h"
 #include "embedded_shaders/polylines_instancing_based_vsfs.h"
 #include "embedded_shaders/polylines_texture_based_cs.h"
-#include "embedded_shaders/polylines_texture_based_joins_vsfs.h"
+#include "embedded_shaders/polylines_texture_based_joints_vsfs.h"
 #include "embedded_shaders/polylines_texture_based_vsfs.h"
 
 #endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H

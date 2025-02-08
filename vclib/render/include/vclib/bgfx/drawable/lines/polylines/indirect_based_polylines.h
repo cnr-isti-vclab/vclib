@@ -43,9 +43,9 @@ class IndirectBasedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
 
-    bgfx::ProgramHandle mJoinsPH =
+    bgfx::ProgramHandle mJointsPH =
         Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS);
+            VclProgram::POLYLINES_INDIRECT_BASED_JOINTS_VSFS);
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
@@ -53,7 +53,7 @@ class IndirectBasedPolylines : public Lines
     VertexBuffer mPoints;
 
     IndirectBuffer mSegmentsIndirect;
-    IndirectBuffer mJoinsIndirect;
+    IndirectBuffer mJointsIndirect;
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:

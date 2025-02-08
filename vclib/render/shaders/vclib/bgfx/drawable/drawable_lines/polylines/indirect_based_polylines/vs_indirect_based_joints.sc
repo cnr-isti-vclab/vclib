@@ -21,25 +21,26 @@
  ****************************************************************************/
 
 $input a_position
-$output v_color, v_uv, v_length, v_normal, v_is_start_end
+$output v_color, v_uv, v_length, v_is_start_end, v_normal
 
 #include <bgfx_compute.sh>
 
 #include "../../polylines.sh"
 
-IMAGE2D_RO(textureBuffer, rgba32f, 0);
+BUFFER_RO(pointsBuffer, float, 1);
+
+#define p(pos)        vec4(pointsBuffer[((pos) * 7) + 0], pointsBuffer[((pos) * 7) + 1], pointsBuffer[((pos) * 7) + 2], 0)
+#define color(pos)    pointsBuffer[((pos) * 7) + 3]
+#define normal(pos)   vec3(pointsBuffer[((pos) * 7) + 4], pointsBuffer[((pos) * 7) + 5], pointsBuffer[((pos) * 7) + 6])
 
 uniform vec4 u_data;
-uniform vec4 u_IndirectData;
 
-#define maxInstancingNum        u_IndirectData.x
-#define maxTextureSize          u_IndirectData.y
 #define a_uv                    a_position 
 
 void main() {
     vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
-    uint caps_join_color = floatBitsToUint(u_data.w);
+    uint caps_joint_color = floatBitsToUint(u_data.w);
     
     float u_screenWidth  = u_viewRect.z;
     float u_screenHeigth = u_viewRect.w;
@@ -49,30 +50,29 @@ void main() {
     float u_border       = float((thickness_antialias_border_miterlimit >> uint(8))  & uint(0xFF));
     float u_miter_limit  = float(thickness_antialias_border_miterlimit               & uint(0xFF));
     
-    float u_leftCap      = float((caps_join_color >> uint(6)) & uint(0x3));
-    float u_rigthCap     = float((caps_join_color >> uint(4)) & uint(0x3));
-    float u_join         = float((caps_join_color >> uint(2)) & uint(0x3));
-    float u_color_to_use = float((caps_join_color)            & uint(0x3));
+    float u_leftCap      = float((caps_joint_color >> uint(6)) & uint(0x3));
+    float u_rigthCap     = float((caps_joint_color >> uint(4)) & uint(0x3));
+    float u_joint        = float((caps_joint_color >> uint(2)) & uint(0x3));
+    float u_color_to_use = float((caps_joint_color)            & uint(0x3));
 
-    vec4 prev    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4), maxTextureSize));
-    vec4 curr    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 1, maxTextureSize));
-    vec4 next    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 2, maxTextureSize));
-    vec4 normal  = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 2) + 3, maxTextureSize));
-    vec4 color   = uintToVec4FloatColor(floatBitsToUint(curr.w));
+    uint index = gl_InstanceID + 1;
     
-    curr.w = 0;
+    vec4 prev = p(index - 1);
+    vec4 curr = p(index);
+    vec4 next = p(index + 1);
+
 
     vec4 prev_px = calculatePointWithMVP(prev, u_screenWidth, u_screenHeigth);
     vec4 curr_px = calculatePointWithMVP(curr, u_screenWidth, u_screenHeigth);
     vec4 next_px = calculatePointWithMVP(next, u_screenWidth, u_screenHeigth);
 
-    v_color = color;
-    v_normal = normal.xyz;
+    v_color = uintToVec4FloatColor(floatBitsToUint(color(index)));
+    v_normal = normal(index);
     v_uv = vec4(0,0,0,0);
     v_length = 0;
-    
+
     bool is_start = false;
     bool is_end = false;
     v_is_start_end = 1;
-    gl_Position = calculatePolylines(prev_px, curr_px, next_px, a_uv, u_thickness, u_miter_limit, u_screenWidth, u_screenHeigth, u_leftCap, u_rigthCap, u_join, is_start, is_end);
+    gl_Position = calculatePolylines(prev_px, curr_px, next_px, a_uv, u_thickness, u_miter_limit, u_screenWidth, u_screenHeigth, u_leftCap, u_rigthCap, u_joint, is_start, is_end);
 }

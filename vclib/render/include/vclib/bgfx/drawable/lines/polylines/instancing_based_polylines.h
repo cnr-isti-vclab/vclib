@@ -35,9 +35,9 @@ class InstancingBasedPolylines : public Lines
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
     static const inline std::vector<uint> INDICES = {0, 3, 1, 0, 2, 3};
 
-    bgfx::ProgramHandle mJoinsPH =
+    bgfx::ProgramHandle mJointsPH =
         Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS);
+            VclProgram::POLYLINES_INSTANCING_BASED_JOINTS_VSFS);
 
     bgfx::ProgramHandle mLinesPH =
         Context::instance().programManager().getProgram(
@@ -49,7 +49,7 @@ class InstancingBasedPolylines : public Lines
     IndexBuffer  mIndices;
 
     mutable bgfx::InstanceDataBuffer mSegmentsInstanceDB;
-    mutable bgfx::InstanceDataBuffer mJoinsInstanceDB;
+    mutable bgfx::InstanceDataBuffer mJointsInstanceDB;
 
 public:
     InstancingBasedPolylines();

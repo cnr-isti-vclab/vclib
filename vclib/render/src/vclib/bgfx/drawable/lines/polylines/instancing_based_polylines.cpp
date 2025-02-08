@@ -56,7 +56,7 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
     swap(mSegmentsInstanceDB, other.mSegmentsInstanceDB);
-    swap(mJoinsInstanceDB, other.mJoinsInstanceDB);
+    swap(mJointsInstanceDB, other.mJointsInstanceDB);
 }
 
 void InstancingBasedPolylines::draw(uint viewId) const
@@ -72,12 +72,12 @@ void InstancingBasedPolylines::draw(uint viewId) const
         bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH);
 
-        if (settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
+        if (settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
             mVertices.bind(0);
             mIndices.bind();
-            bgfx::setInstanceDataBuffer(&mJoinsInstanceDB);
+            bgfx::setInstanceDataBuffer(&mJointsInstanceDB);
             bgfx::setState(drawState());
-            bgfx::submit(viewId, mJoinsPH);
+            bgfx::submit(viewId, mJointsPH);
         }
     }
 }
@@ -95,16 +95,16 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
     bgfx::allocInstanceDataBuffer(
         &mSegmentsInstanceDB, linesNumSegments, strideSegments);
 
-    const uint16_t strideJoins = sizeof(float) * 16;
+    const uint16_t strideJoints = sizeof(float) * 16;
     if (mPoints.size() > 2) {
-        uint linesNumJoins =
-            bgfx::getAvailInstanceDataBuffer(mPoints.size() - 2, strideJoins);
+        uint linesNumJoints =
+            bgfx::getAvailInstanceDataBuffer(mPoints.size() - 2, strideJoints);
         bgfx::allocInstanceDataBuffer(
-            &mJoinsInstanceDB, linesNumJoins, strideJoins);
+            &mJointsInstanceDB, linesNumJoints, strideJoints);
     }
 
     uint8_t* dataSegments = mSegmentsInstanceDB.data;
-    uint8_t* dataJoins    = mJoinsInstanceDB.data;
+    uint8_t* dataJoints   = mJointsInstanceDB.data;
 
     for (uint i = 0; i < linesNumSegments; i++) {
         float* prevSegments = reinterpret_cast<float*>(dataSegments);
@@ -145,33 +145,33 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         normalSegments[3]     = mPoints[i + 1].zN;
 
         if (i > 0) {
-            float* prevJoin = reinterpret_cast<float*>(dataJoins);
-            prevJoin[0]     = mPoints[i - 1].X;
-            prevJoin[1]     = mPoints[i - 1].Y;
-            prevJoin[2]     = mPoints[i - 1].Z;
-            prevJoin[3]     = 0.0f;
+            float* prevJoint = reinterpret_cast<float*>(dataJoints);
+            prevJoint[0]     = mPoints[i - 1].X;
+            prevJoint[1]     = mPoints[i - 1].Y;
+            prevJoint[2]     = mPoints[i - 1].Z;
+            prevJoint[3]     = 0.0f;
 
-            float* currJoin = reinterpret_cast<float*>(&dataJoins[16]);
-            currJoin[0]     = mPoints[i].X;
-            currJoin[1]     = mPoints[i].Y;
-            currJoin[2]     = mPoints[i].Z;
+            float* currJoint = reinterpret_cast<float*>(&dataJoints[16]);
+            currJoint[0]     = mPoints[i].X;
+            currJoint[1]     = mPoints[i].Y;
+            currJoint[2]     = mPoints[i].Z;
 
-            uint* colorJoin = reinterpret_cast<uint*>(&dataJoins[28]);
-            colorJoin[0]        = mPoints[i].getUintColor();
+            uint* colorJoint = reinterpret_cast<uint*>(&dataJoints[28]);
+            colorJoint[0]        = mPoints[i].getUintColor();
 
-            float* nextJoin = reinterpret_cast<float*>(&dataJoins[32]);
-            nextJoin[0]     = mPoints[i + 1].X;
-            nextJoin[1]     = mPoints[i + 1].Y;
-            nextJoin[2]     = mPoints[i + 1].Z;
-            nextJoin[3]     = 0.0f;
+            float* nextJoint = reinterpret_cast<float*>(&dataJoints[32]);
+            nextJoint[0]     = mPoints[i + 1].X;
+            nextJoint[1]     = mPoints[i + 1].Y;
+            nextJoint[2]     = mPoints[i + 1].Z;
+            nextJoint[3]     = 0.0f;
 
-            float* normalJoin = reinterpret_cast<float*>(&dataJoins[48]);
-            normalJoin[0]     = mPoints[i].xN;
-            normalJoin[1]     = mPoints[i].yN;
-            normalJoin[2]     = mPoints[i].zN;
-            normalJoin[3]     = 0;
+            float* normalJoint = reinterpret_cast<float*>(&dataJoints[48]);
+            normalJoint[0]     = mPoints[i].xN;
+            normalJoint[1]     = mPoints[i].yN;
+            normalJoint[2]     = mPoints[i].zN;
+            normalJoint[3]     = 0;
 
-            dataJoins += strideJoins;
+            dataJoints += strideJoints;
         }
 
         dataSegments += strideSegments;

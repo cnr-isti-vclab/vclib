@@ -58,12 +58,12 @@ struct VclProgram
         POLYLINES_CPU_GENERATED_VSFS,
         POLYLINES_GPU_GENERATED_CS,
         POLYLINES_INDIRECT_BASED_CS,
-        POLYLINES_INDIRECT_BASED_JOINS_VSFS,
+        POLYLINES_INDIRECT_BASED_JOINTS_VSFS,
         POLYLINES_INDIRECT_BASED_VSFS,
         POLYLINES_INSTANCING_BASED_VSFS,
-        POLYLINES_INSTANCING_BASED_JOINS_VSFS,
+        POLYLINES_INSTANCING_BASED_JOINTS_VSFS,
         POLYLINES_TEXTURE_BASED_CS,
-        POLYLINES_TEXTURE_BASED_JOINS_VSFS,
+        POLYLINES_TEXTURE_BASED_JOINTS_VSFS,
         POLYLINES_TEXTURE_BASED_VSFS,
 
 
@@ -97,12 +97,12 @@ struct VclProgram
             "PolylinesLinesCPUGenerated",
             "PolylinesLinesGPUGenerated",
             "PolylinesLinesIndirectBasedCS",
-            "PolylinesLinesIndirectBasedJoins",
+            "PolylinesLinesIndirectBasedJoints",
             "PolylinesLinesIndirectBasedVSFS",
             "PolylinesLinesInstancingBased",
-            "PolylinesLinesInstancingBasedJoins",
+            "PolylinesLinesInstancingBasedJoints",
             "PolylinesLinesTextureBasedCS",
-            "PolylinesLinesTextureBasedJoins",
+            "PolylinesLinesTextureBasedJoints",
             "PolylinesLinesTextureBasedVSFS"
     };
 };

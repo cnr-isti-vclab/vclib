@@ -168,14 +168,14 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
                     VclProgram::POLYLINES_INSTANCING_BASED_VSFS>::fragmentEmbeddedShader(type)));
 
 
-    case VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS:
+    case VclProgram::POLYLINES_INSTANCING_BASED_JOINTS_VSFS:
         return vcl::createProgram(
             vcl::loadShader(
-                EmbeddedShader<VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS>::vertexEmbeddedShader(
+                EmbeddedShader<VclProgram::POLYLINES_INSTANCING_BASED_JOINTS_VSFS>::vertexEmbeddedShader(
                     type)),
             vcl::loadShader(
                 EmbeddedShader<
-                    VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS>::fragmentEmbeddedShader(type)));
+                    VclProgram::POLYLINES_INSTANCING_BASED_JOINTS_VSFS>::fragmentEmbeddedShader(type)));
 
 
     case VclProgram::POLYLINES_INDIRECT_BASED_VSFS:
@@ -188,14 +188,14 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
                     VclProgram::POLYLINES_INDIRECT_BASED_VSFS>::fragmentEmbeddedShader(type)));
 
 
-    case VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS:
+    case VclProgram::POLYLINES_INDIRECT_BASED_JOINTS_VSFS:
         return vcl::createProgram(
             vcl::loadShader(
-                EmbeddedShader<VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS>::vertexEmbeddedShader(
+                EmbeddedShader<VclProgram::POLYLINES_INDIRECT_BASED_JOINTS_VSFS>::vertexEmbeddedShader(
                     type)),
             vcl::loadShader(
                 EmbeddedShader<
-                    VclProgram::POLYLINES_INDIRECT_BASED_JOINS_VSFS>::fragmentEmbeddedShader(type)));
+                    VclProgram::POLYLINES_INDIRECT_BASED_JOINTS_VSFS>::fragmentEmbeddedShader(type)));
 
 
     case VclProgram::POLYLINES_INDIRECT_BASED_CS:
@@ -214,14 +214,14 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
                     VclProgram::POLYLINES_TEXTURE_BASED_VSFS>::fragmentEmbeddedShader(type)));
 
 
-    case VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS:
+    case VclProgram::POLYLINES_TEXTURE_BASED_JOINTS_VSFS:
         return vcl::createProgram(
             vcl::loadShader(
-                EmbeddedShader<VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS>::vertexEmbeddedShader(
+                EmbeddedShader<VclProgram::POLYLINES_TEXTURE_BASED_JOINTS_VSFS>::vertexEmbeddedShader(
                     type)),
             vcl::loadShader(
                 EmbeddedShader<
-                    VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS>::fragmentEmbeddedShader(type)));
+                    VclProgram::POLYLINES_TEXTURE_BASED_JOINTS_VSFS>::fragmentEmbeddedShader(type)));
 
 
     case VclProgram::POLYLINES_TEXTURE_BASED_CS:

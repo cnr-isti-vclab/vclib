@@ -39,9 +39,9 @@ class TextureBasedPolylines : public Lines
         Context::instance().programManager().getProgram(
             VclProgram::POLYLINES_TEXTURE_BASED_VSFS);
 
-    bgfx::ProgramHandle mJoinsPH =
+    bgfx::ProgramHandle mJointsPH =
         Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_TEXTURE_BASED_JOINS_VSFS);
+            VclProgram::POLYLINES_TEXTURE_BASED_JOINTS_VSFS);
 
     bgfx::ProgramHandle mComputeTexturePH =
         Context::instance().programManager().getProgram(
@@ -54,10 +54,10 @@ class TextureBasedPolylines : public Lines
 
     VertexBuffer mPoints;
     TextureBuffer mSegmentsTexture;
-    TextureBuffer mJoinsTexture;
+    TextureBuffer mJointsTexture;
 
     IndirectBuffer mSegmentsIndirect;
-    IndirectBuffer mJoinsIndirect;
+    IndirectBuffer mJointsIndirect;
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:

@@ -40,7 +40,7 @@ IndirectBasedPolylines::IndirectBasedPolylines()
     mIndices.create(INDICES.data(), INDICES.size());
 
     mSegmentsIndirect.create(1);
-    mJoinsIndirect.create(1);
+    mJointsIndirect.create(1);
 }
 
 IndirectBasedPolylines::IndirectBasedPolylines(
@@ -60,7 +60,7 @@ void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
     swap(mPoints, other.mPoints);
 
     swap(mSegmentsIndirect, other.mSegmentsIndirect);
-    swap(mJoinsIndirect, other.mJoinsIndirect);
+    swap(mJointsIndirect, other.mJointsIndirect);
 
     swap(mIndirectData, other.mIndirectData);
 }
@@ -75,12 +75,12 @@ void IndirectBasedPolylines::draw(uint viewId) const
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
 
-    if (settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
+    if (settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
         mVertices.bind(0);
         mIndices.bind();
         mPoints.bind(1, bgfx::Access::Read);
         bgfx::setState(drawState());
-        bgfx::submit(viewId, mJoinsPH, mJoinsIndirect.handle(), 0);
+        bgfx::submit(viewId, mJointsPH, mJointsIndirect.handle(), 0);
     }
 }
 
@@ -118,7 +118,7 @@ void IndirectBasedPolylines::generateIndirectBuffers(uint pointSize)
     mIndirectData.bind(data);
 
     mSegmentsIndirect.bind(0, bgfx::Access::Write);
-    mJoinsIndirect.bind(1, bgfx::Access::Write);
+    mJointsIndirect.bind(1, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeIndirectPH);
 
     data[0] = static_cast<float>(pointSize - 1);

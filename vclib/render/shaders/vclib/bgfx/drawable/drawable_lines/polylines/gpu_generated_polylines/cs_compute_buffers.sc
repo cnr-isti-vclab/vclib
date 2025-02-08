@@ -25,7 +25,7 @@
 BUFFER_RO(pointsBuffer,              float,  0);
 BUFFER_WO(vertexBuffer,              float,  1);
 BUFFER_WO(segmentsIndexBuffer,       uint,   2);
-BUFFER_WO(joinsIndexBuffer,          uint,   3);
+BUFFER_WO(jointsIndexBuffer,         uint,   3);
 
 uniform vec4 u_numWorksGroups;
 #define numWorksGroups u_numWorksGroups.x
@@ -77,13 +77,13 @@ void main() {
         segmentsIndexBuffer[(gl_WorkGroupID.x * 6) + 5] = (gl_WorkGroupID.x * 4) + 3;
 
         if(gl_WorkGroupID.x != numWorksGroups - 1) {
-            joinsIndexBuffer[(gl_WorkGroupID.x * 6)]      = (gl_WorkGroupID.x * 4) + 3;
-            joinsIndexBuffer[(gl_WorkGroupID.x * 6) + 1]  = (gl_WorkGroupID.x * 4) + 4;
-            joinsIndexBuffer[(gl_WorkGroupID.x * 6) + 2]  = (gl_WorkGroupID.x * 4) + 5;
+            jointsIndexBuffer[(gl_WorkGroupID.x * 6)]      = (gl_WorkGroupID.x * 4) + 3;
+            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 1]  = (gl_WorkGroupID.x * 4) + 4;
+            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 2]  = (gl_WorkGroupID.x * 4) + 5;
 
-            joinsIndexBuffer[(gl_WorkGroupID.x * 6) + 3]  = (gl_WorkGroupID.x * 4) + 4;
-            joinsIndexBuffer[(gl_WorkGroupID.x * 6) + 4]  = (gl_WorkGroupID.x * 4) + 2;
-            joinsIndexBuffer[(gl_WorkGroupID.x * 6) + 5]  = (gl_WorkGroupID.x * 4) + 5;
+            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 3]  = (gl_WorkGroupID.x * 4) + 4;
+            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 4]  = (gl_WorkGroupID.x * 4) + 2;
+            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 5]  = (gl_WorkGroupID.x * 4) + 5;
         }
     }
 }

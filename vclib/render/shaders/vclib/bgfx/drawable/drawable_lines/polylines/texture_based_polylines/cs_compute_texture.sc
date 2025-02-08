@@ -26,9 +26,9 @@
 
 BUFFER_RO(pointsBuffer,             float,    0);
 IMAGE2D_WO(textureBufferSegments,   rgba32f,  1);
-IMAGE2D_WO(textureBufferJoins,      rgba32f,  2);
+IMAGE2D_WO(textureBufferJoints,     rgba32f,  2);
 BUFFER_WO(segmentsIndirectBuffer,   uvec4,    3);
-BUFFER_WO(joinsIndirectBuffer,      uvec4,    4);
+BUFFER_WO(jointsIndirectBuffer,     uvec4,    4);
 
 uniform vec4 u_IndirectData;
 #define maxTextureSize          u_IndirectData.x
@@ -64,14 +64,14 @@ void main() {
         color0  = color(gl_WorkGroupID.x);
         normal0 = normal(gl_WorkGroupID.x);
 
-        imageStore(textureBufferJoins, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4),     maxTextureSize), vec4(prev.xyz, 0));
-        imageStore(textureBufferJoins, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4) + 1, maxTextureSize), vec4(curr.xyz, color0));
-        imageStore(textureBufferJoins, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4) + 2, maxTextureSize), vec4(next.xyz, 0));
-        imageStore(textureBufferJoins, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4) + 3, maxTextureSize), vec4(normal0.xyz, 0));
+        imageStore(textureBufferJoints, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4),     maxTextureSize), vec4(prev.xyz, 0));
+        imageStore(textureBufferJoints, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4) + 1, maxTextureSize), vec4(curr.xyz, color0));
+        imageStore(textureBufferJoints, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4) + 2, maxTextureSize), vec4(next.xyz, 0));
+        imageStore(textureBufferJoints, calculateTextureCoord(((gl_WorkGroupID.x - 1) * 4) + 3, maxTextureSize), vec4(normal0.xyz, 0));
     }
 
     if(gl_WorkGroupID.x == 0) {
         drawIndexedIndirect(segmentsIndirectBuffer, 0, 6, maxInstanceSize, 0, 0, 0);
-        drawIndexedIndirect(joinsIndirectBuffer,    0, 6, maxInstanceSize - 1, 0, 0, 0);
+        drawIndexedIndirect(jointsIndirectBuffer,   0, 6, maxInstanceSize - 1, 0, 0, 0);
     }
 }

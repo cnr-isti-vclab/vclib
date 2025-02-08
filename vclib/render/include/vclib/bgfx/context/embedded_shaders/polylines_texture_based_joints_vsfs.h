@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_POLYLINES_INSTANCING_BASED_JOINS_VSFS_H
-#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_POLYLINES_INSTANCING_BASED_JOINS_VSFS_H
+#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_POLYLINES_TEXTURE_BASED_JOINTS_VSFS_H
+#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_POLYLINES_TEXTURE_BASED_JOINTS_VSFS_H
 
 #include "embedded_shader.h"
 
 namespace vcl {
 
 template<>
-struct EmbeddedShader<VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS>
+struct EmbeddedShader<VclProgram::POLYLINES_TEXTURE_BASED_JOINTS_VSFS>
 {
     static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
         bgfx::RendererType::Enum type);
@@ -42,4 +42,4 @@ struct EmbeddedShader<VclProgram::POLYLINES_INSTANCING_BASED_JOINS_VSFS>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_POLYLINES_INSTANCING_BASED_JOINS_VSFS_H
+#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_POLYLINES_TEXTURE_BASED_JOINTS_VSFS_H

@@ -37,7 +37,7 @@ class CPUGeneratedPolylines : public Lines
 
     VertexBuffer mVertices;
     IndexBuffer  mSegmentIndices;
-    IndexBuffer  mJoinIndices;
+    IndexBuffer  mJointIndices;
 
 public:
     CPUGeneratedPolylines() = default;

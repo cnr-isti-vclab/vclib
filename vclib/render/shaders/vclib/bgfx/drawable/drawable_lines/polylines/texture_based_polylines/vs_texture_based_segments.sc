@@ -39,7 +39,7 @@ uniform vec4 u_IndirectData;
 void main() {
     vec4 u_general_color = uintToVec4FloatColor(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
-    uint caps_join_color = floatBitsToUint(u_data.w);
+    uint caps_joint_color = floatBitsToUint(u_data.w);
     
     float u_screenWidth  = u_viewRect.z;
     float u_screenHeigth = u_viewRect.w;
@@ -49,10 +49,10 @@ void main() {
     float u_border       = float((thickness_antialias_border_miterlimit >> uint(8))  & uint(0xFF));
     float u_miter_limit  = float(thickness_antialias_border_miterlimit               & uint(0xFF));
     
-    float u_leftCap      = float((caps_join_color >> uint(6)) & uint(0x3));
-    float u_rigthCap     = float((caps_join_color >> uint(4)) & uint(0x3));
-    float u_join         = float((caps_join_color >> uint(2)) & uint(0x3));
-    float u_color_to_use = float((caps_join_color)            & uint(0x3));
+    float u_leftCap      = float((caps_joint_color >> uint(6)) & uint(0x3));
+    float u_rigthCap     = float((caps_joint_color >> uint(4)) & uint(0x3));
+    float u_joint        = float((caps_joint_color >> uint(2)) & uint(0x3));
+    float u_color_to_use = float((caps_joint_color)            & uint(0x3));
 
     vec4 element0     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 5), maxTextureSize));
     vec4 element1     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 5) + 1, maxTextureSize));
@@ -81,11 +81,11 @@ void main() {
     v_normal = (normal0 * (1 - a_uv.x)) + (normal1 * a_uv.x);
     v_length = length(((next_px.xyz - curr_px.xyz) * (1 - a_uv.x)) + ((curr_px.xyz - prev_px.xyz) * (a_uv.x)));
 
-    v_uv = calculatePolylinesUV(prev, curr, next, a_uv, u_thickness, v_length, u_leftCap, u_rigthCap, u_join);
+    v_uv = calculatePolylinesUV(prev, curr, next, a_uv, u_thickness, v_length, u_leftCap, u_rigthCap, u_joint);
     
     bool is_start = curr.x == prev.x && curr.y == prev.y;
     bool is_end = curr.x == next.x && curr.y == next.y;
     v_is_start_end = (sign(length(curr - prev)) * (1 - a_uv.x)) + (sign(length(curr-next)) * a_uv.x);
-    gl_Position = calculatePolylines(prev_px, curr_px, next_px, a_uv, u_thickness, u_miter_limit, u_screenWidth, u_screenHeigth, u_leftCap, u_rigthCap, u_join, is_start, is_end);
+    gl_Position = calculatePolylines(prev_px, curr_px, next_px, a_uv, u_thickness, u_miter_limit, u_screenWidth, u_screenHeigth, u_leftCap, u_rigthCap, u_joint, is_start, is_end);
 }
 

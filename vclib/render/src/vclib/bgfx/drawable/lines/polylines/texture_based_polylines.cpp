@@ -40,7 +40,7 @@ TextureBasedPolylines::TextureBasedPolylines()
     mIndices.create(INDICES.data(), INDICES.size());
 
     mSegmentsIndirect.create(1);
-    mJoinsIndirect.create(1);
+    mJointsIndirect.create(1);
 }
 
 TextureBasedPolylines::TextureBasedPolylines(
@@ -60,10 +60,10 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
     swap(mPoints, other.mPoints);
 
     swap(mSegmentsIndirect, other.mSegmentsIndirect);
-    swap(mJoinsIndirect, other.mJoinsIndirect);
+    swap(mJointsIndirect, other.mJointsIndirect);
 
     swap(mSegmentsTexture, other.mSegmentsTexture);
-    swap(mJoinsTexture, other.mJoinsTexture);
+    swap(mJointsTexture, other.mJointsTexture);
 
     swap(mIndirectData, other.mIndirectData);
 }
@@ -79,13 +79,13 @@ void TextureBasedPolylines::draw(uint viewId) const
         bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
 
-               // mJoinsTexture is valid only if there are more than 2 points
-        if (mJoinsTexture.isValid() && settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
+        // mJointsTexture is valid only if there are more than 2 points
+        if (mJointsTexture.isValid() && settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
             mVertices.bind(0);
             mIndices.bind();
-            mJoinsTexture.bind(0, bgfx::Access::Read);
+            mJointsTexture.bind(0, bgfx::Access::Read);
             bgfx::setState(drawState());
-            bgfx::submit(viewId, mJoinsPH, mJoinsIndirect.handle(), 0);
+            bgfx::submit(viewId, mJointsPH, mJointsIndirect.handle(), 0);
         }
     }
 }
@@ -101,7 +101,7 @@ void TextureBasedPolylines::update(const std::vector<LinesVertex>& points)
         mVertices.destroy();
         mIndices.destroy();
         mSegmentsTexture.destroy();
-        mJoinsTexture.destroy();
+        mJointsTexture.destroy();
     }
 }
 
@@ -141,18 +141,18 @@ void TextureBasedPolylines::allocateAndGenerateTextureBuffer(uint pointSize)
 
     // Joints texture is valid only if there are more than 2 points
     if (pointSize > 2) {
-        uint16_t Y_Joins = ((pointSize - 2) * 4) / (mMaxTextureSize + 1);
-        uint16_t X_Joins =
-            Y_Joins == 0 ? ((pointSize - 2) * 4) : mMaxTextureSize;
+        uint16_t Y_Joints = ((pointSize - 2) * 4) / (mMaxTextureSize + 1);
+        uint16_t X_Joints =
+            Y_Joints == 0 ? ((pointSize - 2) * 4) : mMaxTextureSize;
 
-        mJoinsTexture.create(
-            X_Joins,
-            Y_Joins + 1,
+        mJointsTexture.create(
+            X_Joints,
+            Y_Joints + 1,
             bgfx::TextureFormat::RGBA32F,
             BGFX_TEXTURE_COMPUTE_WRITE);
     }
     else {
-        mJoinsTexture.destroy();
+        mJointsTexture.destroy();
     }
 
     float data[] = {
@@ -164,9 +164,9 @@ void TextureBasedPolylines::allocateAndGenerateTextureBuffer(uint pointSize)
 
     mPoints.bind(0);
     mSegmentsTexture.bind(1, bgfx::Access::Write);
-    mJoinsTexture.bind(2, bgfx::Access::Write);
+    mJointsTexture.bind(2, bgfx::Access::Write);
     mSegmentsIndirect.bind(3, bgfx::Access::Write);
-    mJoinsIndirect.bind(4, bgfx::Access::Write);
+    mJointsIndirect.bind(4, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeTexturePH, pointSize - 1, 1, 1);
 
     // now, bind uniform for draw

@@ -28,7 +28,7 @@
 #include "utils.sh"
 
 vec4 calculatePolylines(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickness, float miter_limit, 
-                        float screen_width, float screen_heigth, float leftCap, float rightCap, float join,
+                        float screen_width, float screen_heigth, float leftCap, float rightCap, float joint,
                         bool is_start, bool is_end) {
     float half_thickness = thickness / 2.0;
 
@@ -70,7 +70,7 @@ vec4 calculatePolylines(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thicknes
         float t = smoothstep(min_threshold, max_threshold, total_width);
 
         vec4 final_miter;
-        if (join == 2) {
+        if (joint == 2) {
           final_miter = mix(miter, miter_plane, t);
         } else {
           final_miter =  miter_plane;
@@ -83,14 +83,14 @@ vec4 calculatePolylines(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thicknes
           }
         #endif
 
-        p = curr + (v * final_miter) + (u * half_thickness * ((T1 * (1-uv.x)) + (T0 * uv.x)) * (1 - sign(join)));
+        p = curr + (v * final_miter) + (u * half_thickness * ((T1 * (1-uv.x)) + (T0 * uv.x)) * (1 - sign(joint)));
     } 
 
     p = screenToClip(p, screen_width, screen_heigth);
     return vec4(p.xy, curr.z / curr.w, 1.0);
 }
 
-vec4 calculatePolylinesUV(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickness, float length_px, float leftCap, float rigthCap, float join) {
+vec4 calculatePolylinesUV(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickness, float length_px, float leftCap, float rigthCap, float joint) {
     vec4 T = vec4(1.0, 0.0, 0.0, 0.0);
     vec4 N = vec4(0.0, 1.0, 0.0, 0.0);
 
@@ -101,11 +101,11 @@ vec4 calculatePolylinesUV(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickn
 
     vec4 final_uv = (uv.x * length_px * T) + (v * N * width_px);
     float activeCaps = sign(leftCap) * (1 - sign(length(curr - prev))) + sign(rigthCap) * (1 - sign(length(next - curr)));
-    float activeJoin = (1 - sign(join)) * sign(length(curr - prev)) * sign(length(next - curr));
-    return final_uv + (u * T * width_px * (activeCaps)) + (u * T * width_px * (activeJoin));
+    float activeJoint = (1 - sign(joint)) * sign(length(curr - prev)) * sign(length(next - curr));
+    return final_uv + (u * T * width_px * (activeCaps)) + (u * T * width_px * (activeJoint));
 }
 
-vec4 calculatePolylinesColor(vec2 uv, float thickness, float totalLength, float leftCap, float rigthCap, float join, vec4 finalColor, float is_start_end) {
+vec4 calculatePolylinesColor(vec2 uv, float thickness, float totalLength, float leftCap, float rigthCap, float joint, vec4 finalColor, float is_start_end) {
     float d = -1;
     float color = 0;
     float width_px = thickness / 2;
@@ -115,14 +115,14 @@ vec4 calculatePolylinesColor(vec2 uv, float thickness, float totalLength, float 
         float round_cap     = (width_px - length(uv))                * (1 - sign(abs(leftCap - 2)));
         float triangle_cap  = (width_px - (abs(uv.x) + abs(uv.y)))   * (1 - sign(abs(leftCap - 3)));
 
-        d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(join)) + (width_px - length(uv)) * (1 - sign(sign(is_start_end) + sign(join)));
+        d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(joint)) + (width_px - length(uv)) * (1 - sign(sign(is_start_end) + sign(joint)));
     }
     else if(uv.x > totalLength) {
         float square_cap    = (width_px - max(abs(uv.x - totalLength), abs(uv.y))) * (1 - sign(abs(rigthCap - 1)));
         float round_cap     = (width_px - length(uv - vec2(totalLength, 0)))       * (1 - sign(abs(rigthCap - 2)));
         float triangle_cap  = (width_px - (abs(uv.x - totalLength) + abs(uv.y)))   * (1 - sign(abs(rigthCap - 3)));
 
-        d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(join)) + (width_px - length(uv - vec2(totalLength, 0))) * (1 - sign(sign(is_start_end) + sign(join)));
+        d = (square_cap + round_cap + triangle_cap) * sign(sign(is_start_end) + sign(joint)) + (width_px - length(uv - vec2(totalLength, 0))) * (1 - sign(sign(is_start_end) + sign(joint)));
     }
     else {
         d = width_px - abs(uv.y);

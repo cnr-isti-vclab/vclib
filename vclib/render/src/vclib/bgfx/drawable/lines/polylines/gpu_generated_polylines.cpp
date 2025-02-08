@@ -46,7 +46,7 @@ void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
     swap(mVertices, other.mVertices);
 
     swap(mSegmentIndices, other.mSegmentIndices);
-    swap(mJoinIndices, other.mJoinIndices);
+    swap(mJointIndices, other.mJointIndices);
 
     swap(mComputeData, other.mComputeData);
 }
@@ -60,10 +60,10 @@ void GPUGeneratedPolylines::draw(uint viewId) const
     bgfx::setState(drawState());
     bgfx::submit(viewId, mLinesPH);
 
-    // mJoinIndices is valid only if there are more than 2 points
-    if (mJoinIndices.isValid() && settings().getJoin() != PolyLineJoin::ROUND_JOIN) {
+    // mJointIndices is valid only if there are more than 2 points
+    if (mJointIndices.isValid() && settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
         mVertices.bind(0);
-        mJoinIndices.bind();
+        mJointIndices.bind();
         bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH);
     }
@@ -83,7 +83,7 @@ void GPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
         mPoints.destroy();
         mVertices.destroy();
         mSegmentIndices.destroy();
-        mJoinIndices.destroy();
+        mJointIndices.destroy();
     }
 }
 
@@ -131,8 +131,8 @@ void GPUGeneratedPolylines::allocateVertexBuffer(uint pointSize)
 
 void GPUGeneratedPolylines::allocateIndexBuffer(uint pointSize)
 {
-    const uint szSeg = (pointSize - 1) * 6;
-    const uint szJoin = (pointSize - 2) * 6;
+    const uint szSeg   = (pointSize - 1) * 6;
+    const uint szJoint = (pointSize - 2) * 6;
 
     mSegmentIndices.create(
         bgfx::makeRef(nullptr, sizeof(uint) * szSeg),
@@ -140,13 +140,13 @@ void GPUGeneratedPolylines::allocateIndexBuffer(uint pointSize)
         true);
 
     if (pointSize > 2) {
-        mJoinIndices.create(
-            bgfx::makeRef(nullptr, sizeof(uint) * szJoin),
+        mJointIndices.create(
+            bgfx::makeRef(nullptr, sizeof(uint) * szJoint),
             BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_INDEX32,
             true);
     }
     else {
-        mJoinIndices.destroy();
+        mJointIndices.destroy();
     }
 }
 
@@ -158,13 +158,13 @@ void GPUGeneratedPolylines::generateVerticesAndIndicesBuffers(uint pointSize)
     mPoints.bind(0);
     mVertices.bind(1, bgfx::Access::Write);
     mSegmentIndices.bind(2, bgfx::Access::Write);
-    mJoinIndices.bind(3, bgfx::Access::Write);
+    mJointIndices.bind(3, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeVertexPH, pointSize - 1, 1, 1);
     // after the dispatch, the vert and indices buffers are ready to be used in
     // the rendering pipeline
     mVertices.setCompute(false);
     mSegmentIndices.setCompute(false);
-    mJoinIndices.setCompute(false);
+    mJointIndices.setCompute(false);
 }
 
 } // namespace vcl
