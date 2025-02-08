@@ -24,9 +24,6 @@
 #define VCL_BGFX_DRAWABLE_LINES_POLYLINES_SH
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/utils.sh>
-
-#include <bgfx_shader.sh>
 
 vec4 calculatePolylines(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickness, float miter_limit, 
                         float screen_width, float screen_heigth, float leftCap, float rightCap, float joint,

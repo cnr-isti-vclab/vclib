@@ -25,8 +25,6 @@ $output v_color, v_uv, v_length, v_normal
 
 #include <vclib/bgfx/drawable/lines.sh>
 
-#include <bgfx_compute.sh>
-
 BUFFER_RO(pointsBuffer, float, 1);
 
 #define p(pos)        vec4(pointsBuffer[((pos) * 7) + 0], pointsBuffer[((pos) * 7) + 1], pointsBuffer[((pos) * 7) + 2], 0)

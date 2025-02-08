@@ -25,8 +25,6 @@ $output v_color, v_uv, v_length, v_normal, v_is_start_end
 
 #include <vclib/bgfx/drawable/polylines.sh>
 
-#include <bgfx_compute.sh>
-
 IMAGE2D_RO(textureBuffer, rgba32f, 0);
 
 uniform vec4 u_data;

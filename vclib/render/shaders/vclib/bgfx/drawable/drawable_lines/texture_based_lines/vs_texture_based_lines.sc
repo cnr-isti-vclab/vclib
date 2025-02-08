@@ -25,8 +25,6 @@ $output v_color, v_uv, v_length, v_normal
 
 #include <vclib/bgfx/drawable/lines.sh>
 
-#include <bgfx_compute.sh>
-
 uniform vec4 u_data;
 uniform vec4 u_IndirectData;
 

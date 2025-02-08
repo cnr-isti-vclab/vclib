@@ -24,8 +24,6 @@ $input v_color, v_uv, v_length, v_normal, v_is_start_end
 
 #include <vclib/bgfx/drawable/polylines.sh>
 
-#include <bgfx_shader.sh>
-
 uniform vec4 u_data;
 
 void main() {

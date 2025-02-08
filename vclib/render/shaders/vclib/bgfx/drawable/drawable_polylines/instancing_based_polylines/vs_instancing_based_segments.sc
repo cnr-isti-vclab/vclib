@@ -25,8 +25,6 @@ $output v_color, v_uv, v_length, v_normal, v_is_start_end
 
 #include <vclib/bgfx/drawable/polylines.sh>
 
-#include <bgfx_compute.sh>
-
 uniform vec4 u_data;
 
 #define a_uv                    a_position

@@ -21,9 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/utils.sh>
-
-#include <bgfx_compute.sh>
 
 BUFFER_RO(pointsBuffer,             float,    0);
 IMAGE2D_WO(textureBufferSegments,   rgba32f,  1);

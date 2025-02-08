@@ -22,8 +22,6 @@
 
 #include <vclib/bgfx/drawable/lines.sh>
 
-#include <bgfx_compute.sh>
-
 BUFFER_RO(pointsBuffer,      float,  0);
 BUFFER_WO(vertexBuffer,      float,  1);
 BUFFER_WO(indexBuffer,       uint,   2);

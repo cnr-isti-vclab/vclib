@@ -24,7 +24,6 @@
 #define VCL_BGFX_DRAWABLE_LINES_LINES_SH
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/utils.sh>
 
 vec4 calculateLines(vec4 p0_px, vec4 p1_px, vec2 uv, float length_px, float thickness, float antialias, float border, 
                     float screen_width, float screen_heigth, float leftCap, float rigthCap) {
