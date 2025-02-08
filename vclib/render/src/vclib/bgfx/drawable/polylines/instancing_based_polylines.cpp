@@ -61,7 +61,7 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 void InstancingBasedPolylines::draw(uint viewId) const
 {
     if (mPoints.size() > 1) {
-        bindSettingsUniformPolylines();
+        bindSettingsUniform();
 
         generateInstanceBuffer();
 

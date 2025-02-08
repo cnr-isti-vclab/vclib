@@ -20,40 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_CPU_GENERATED_LINES_H
-#define VCL_BGFX_DRAWABLE_LINES_CPU_GENERATED_LINES_H
+#ifndef VCL_BGFX_DRAWABLE_POLYLINES_POLYLINE_SETTINGS_H
+#define VCL_BGFX_DRAWABLE_POLYLINES_POLYLINE_SETTINGS_H
 
-#include "line_settings.h"
-
-#include <vclib/bgfx/buffers.h>
-#include <vclib/bgfx/context.h>
-#include <vclib/bgfx/drawable/lines_common/lines.h>
+#include <vclib/bgfx/drawable/lines/line_settings.h>
 
 namespace vcl {
 
-class CPUGeneratedLines : public Lines<LineSettings>
-{
-    bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_CPU_GENERATED_VSFS);
+enum class PolyLineJoint {
+    ROUND_JOINT = 0x00000000, // Joint with round shape
+    BEVEL_JOINT = 0x00000001, // Joint with square shape
+    MITER_JOINT = 0x00000002, // Joint with a miter
+};
 
-    VertexBuffer mVertices;
-    IndexBuffer  mIndices;
+class PolylineSettings : public LineSettings
+{
+private:
+    uint8_t  mMiterLimit = mThickness * 2;
+
+    PolyLineJoint  mJoint      = PolyLineJoint::ROUND_JOINT;
 
 public:
-    CPUGeneratedLines() = default;
+    PolylineSettings() = default;
 
-    CPUGeneratedLines(const std::vector<LinesVertex>& points);
+    PolyLineJoint getJoint() const { return mJoint; }
 
-    void swap(CPUGeneratedLines& other);
+    void setMiterLimit(uint8_t miterLimit)
+    {
+        if (miterLimit < mThickness)
+            assert(
+                (void("Miter limit must be greatest then thickness * 2"),
+                 false));
+        mMiterLimit = miterLimit;
+    }
 
-    friend void swap(CPUGeneratedLines& a, CPUGeneratedLines& b) { a.swap(b); }
+    void setJoint(PolyLineJoint joint) { mJoint = joint; }
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void bindUniform() const
+    {
+        uint32_t thickness_antialias_border_miterlimit =
+            (0 | mThickness << 24 | mAntialias << 16 | mBorder << 8 |
+             mMiterLimit);
 
-    void draw(uint viewId) const;
+        uint32_t caps_joint_color =
+            (0 | static_cast<uint8_t>(mLeftCap) << 6 |
+             static_cast<uint8_t>(mRigthCap) << 4 |
+             static_cast<uint8_t>(mJoint) << 2 |
+             static_cast<uint8_t>(mColorToUse));
+
+        uint32_t data[] = {
+            mGeneralColor,
+            thickness_antialias_border_miterlimit,
+            mBorderColor,
+            caps_joint_color};
+        mDataUH.bind(data);
+    }
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_LINES_CPU_GENERATED_LINES_H
+#endif // VCL_BGFX_DRAWABLE_POLYLINES_POLYLINE_SETTINGS_H

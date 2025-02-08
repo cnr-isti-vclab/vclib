@@ -20,8 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H
-#define VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H
+#ifndef VCL_BGFX_DRAWABLE_POLYLINES_INSTANCING_BASED_POLYLINES_H
+#define VCL_BGFX_DRAWABLE_POLYLINES_INSTANCING_BASED_POLYLINES_H
+
+#include "polyline_settings.h"
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
@@ -29,7 +31,7 @@
 
 namespace vcl {
 
-class InstancingBasedPolylines : public Lines
+class InstancingBasedPolylines : public Lines<PolylineSettings>
 {
     static const inline std::vector<float> VERTICES =
         {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
@@ -79,4 +81,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_LINES_POLYLINES_INSTANCING_BASED_POLYLINES_H
+#endif // VCL_BGFX_DRAWABLE_POLYLINES_INSTANCING_BASED_POLYLINES_H

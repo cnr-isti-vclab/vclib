@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_LINES_SETTINGS_H
-#define VCL_BGFX_DRAWABLE_LINES_LINES_SETTINGS_H
+#ifndef VCL_BGFX_DRAWABLE_LINES_LINE_SETTINGS_H
+#define VCL_BGFX_DRAWABLE_LINES_LINE_SETTINGS_H
 
-#include "lines_utils.h"
+#include <vclib/bgfx/drawable/lines_common/lines_utils.h>
 
 #include <vclib/bgfx/uniform.h>
 
@@ -40,12 +40,6 @@ enum class LineCap {
     TRIANGLE_CAP = 0x00000003  // Extra space with triangle
 };
 
-enum class PolyLineJoint {
-    ROUND_JOINT = 0x00000000, // Joint with round shape
-    BEVEL_JOINT = 0x00000001, // Joint with square shape
-    MITER_JOINT = 0x00000002, // Joint with a miter
-};
-
 enum class LineColorToUse {
     PER_VERTEX_COLOR = 0x00000000, // Select color form vertex color
     PER_EDGE_COLOR   = 0x00000001, // Select color from edge buffer color
@@ -54,25 +48,21 @@ enum class LineColorToUse {
 
 class LineSettings
 {
-private:
+protected:
     uint8_t  mThickness = 5;
     uint8_t  mAntialias = 0;
     uint8_t  mBorder = 0;
     uint32_t mBorderColor = LinesVertex::COLOR(0, 0, 0, 1);
     uint32_t mGeneralColor = LinesVertex::COLOR(0, 0, 0, 1);
-    uint8_t  mMiterLimit = mThickness * 2;
 
     LineCap        mLeftCap    = LineCap::ROUND_CAP;
     LineCap        mRigthCap   = LineCap::ROUND_CAP;
-    PolyLineJoint  mJoint      = PolyLineJoint::ROUND_JOINT;
     LineColorToUse mColorToUse = LineColorToUse::PER_VERTEX_COLOR;
 
     Uniform mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);
 
 public:
     LineSettings() = default;
-
-    PolyLineJoint getJoint() const { return mJoint; }
 
     void setThickness(uint8_t thickness) { mThickness = thickness; }
 
@@ -87,25 +77,13 @@ public:
         mGeneralColor = generalColor;
     }
 
-    void setMiterLimit(uint8_t miterLimit)
-    {
-        if (miterLimit < mThickness)
-            assert(
-                (void("Miter limit must be greatest then thickness * 2"),
-                 false));
-        mMiterLimit = miterLimit;
-    }
-
     void setLeftCap(LineCap cap) { mLeftCap = cap; }
 
     void setRigthCap(LineCap cap) { mRigthCap = cap; }
 
-    void setJoint(PolyLineJoint joint) { mJoint = joint; }
-
     void setColorToUse(LineColorToUse colorToUse) { mColorToUse = colorToUse; }
 
-public:
-    void bindUniformLines() const
+    void bindUniform() const
     {
         uint32_t thickness_antialias_border_caps_color =
             (0 | mThickness << 24 | mAntialias << 16 | mBorder << 8 |
@@ -119,28 +97,8 @@ public:
             0};
         mDataUH.bind(data);
     }
-
-    void bindUniformPolylines() const
-    {
-        uint32_t thickness_antialias_border_miterlimit =
-            (0 | mThickness << 24 | mAntialias << 16 | mBorder << 8 |
-             mMiterLimit);
-
-        uint32_t caps_joint_color =
-            (0 | static_cast<uint8_t>(mLeftCap) << 6 |
-             static_cast<uint8_t>(mRigthCap) << 4 |
-             static_cast<uint8_t>(mJoint) << 2 |
-             static_cast<uint8_t>(mColorToUse));
-
-        uint32_t data[] = {
-            mGeneralColor,
-            thickness_antialias_border_miterlimit,
-            mBorderColor,
-            caps_joint_color};
-        mDataUH.bind(data);
-    }
 };
 
 } // namespace vcl
 
-#endif
+#endif // VCL_BGFX_DRAWABLE_LINES_LINE_SETTINGS_H

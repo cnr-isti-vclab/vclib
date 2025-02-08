@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_DRAWABLE_POLYLINES_H
-#define VCL_BGFX_DRAWABLE_LINES_DRAWABLE_POLYLINES_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_POLYLINES_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_POLYLINES_H
 
 #include "polylines/cpu_generated_polylines.h"
 #include "polylines/gpu_generated_polylines.h"
@@ -81,9 +81,9 @@ public:
         first.swap(second);
     }
 
-    LineSettings& settings() { return mPolylines.settings(); }
+    PolylineSettings& settings() { return mPolylines.settings(); }
 
-    const LineSettings& settings() const
+    const PolylineSettings& settings() const
     {
         return mPolylines.settings();
     }
@@ -121,4 +121,4 @@ using DrawableTexturePolylines = DrawablePolylines<TextureBasedPolylines>;
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_LINES_DRAWABLE_POLYLINES_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_POLYLINES_H

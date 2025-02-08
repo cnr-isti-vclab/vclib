@@ -20,24 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_LINES_LINES_H
-#define VCL_BGFX_DRAWABLE_LINES_LINES_LINES_H
+#ifndef VCL_BGFX_DRAWABLE_LINES_COMMON_LINES_H
+#define VCL_BGFX_DRAWABLE_LINES_COMMON_LINES_H
 
-#include "lines_settings.h"
+#include <vclib/types.h>
+
+#include <bgfx/bgfx.h>
 
 namespace vcl {
 
+template<typename Settings>
 class Lines
 {
-    LineSettings mSettings;
+    Settings mSettings;
 
 public:
     // TODO: remove this getter
     // add proper methots to set the settings that apply for lines
     // do then a similar class for polylines
-    LineSettings& settings() { return mSettings; }
+    Settings& settings() { return mSettings; }
 
-    const LineSettings& settings() const { return mSettings; }
+    const Settings& settings() const { return mSettings; }
 
     void swap(Lines& other)
     {
@@ -49,14 +52,9 @@ public:
     friend void swap(Lines& a, Lines& b) { a.swap(b); }
 
 protected:
-    void bindSettingsUniformLines() const
+    void bindSettingsUniform() const
     {
-        mSettings.bindUniformLines();
-    }
-
-    void bindSettingsUniformPolylines() const
-    {
-        mSettings.bindUniformPolylines();
+        mSettings.bindUniform();
     }
 
     static uint64_t drawState()
@@ -80,4 +78,4 @@ protected:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_LINES_LINES_LINES_H
+#endif // VCL_BGFX_DRAWABLE_LINES_COMMON_LINES_H

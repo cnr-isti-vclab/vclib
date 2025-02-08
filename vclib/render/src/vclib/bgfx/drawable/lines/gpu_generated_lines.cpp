@@ -46,7 +46,7 @@ void GPUGeneratedLines::swap(GPUGeneratedLines& other)
 
 void GPUGeneratedLines::draw(uint viewId) const
 {
-    bindSettingsUniformLines();
+    bindSettingsUniform();
 
     mVertices.bind(0);
     mIndices.bind();

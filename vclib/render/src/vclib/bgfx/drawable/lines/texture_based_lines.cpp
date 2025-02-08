@@ -63,7 +63,7 @@ void TextureBasedLines::swap(TextureBasedLines& other)
 
 void TextureBasedLines::draw(uint viewId) const
 {
-    bindSettingsUniformLines();
+    bindSettingsUniform();
 
     mVertices.bind(0);
     mIndices.bind();

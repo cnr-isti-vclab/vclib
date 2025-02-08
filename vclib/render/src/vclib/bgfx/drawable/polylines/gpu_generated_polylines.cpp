@@ -52,7 +52,7 @@ void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
 
 void GPUGeneratedPolylines::draw(uint viewId) const
 {
-    bindSettingsUniformPolylines();
+    bindSettingsUniform();
 
     mVertices.bind(0);
     mSegmentIndices.bind();

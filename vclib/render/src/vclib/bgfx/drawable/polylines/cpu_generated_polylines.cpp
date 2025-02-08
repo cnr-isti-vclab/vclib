@@ -150,7 +150,7 @@ void CPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
 
 void CPUGeneratedPolylines::draw(uint viewId) const
 {
-    bindSettingsUniformPolylines();
+    bindSettingsUniform();
 
     mVertices.bind(0);
     mSegmentIndices.bind();

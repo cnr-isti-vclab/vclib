@@ -60,7 +60,7 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
 void InstancingBasedLines::draw(uint viewId) const
 {
     if (mPoints.size() > 1) {
-        bindSettingsUniformLines();
+        bindSettingsUniform();
 
         generateInstanceDataBuffer();
 

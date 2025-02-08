@@ -64,7 +64,7 @@ void IndirectBasedLines::swap(IndirectBasedLines& other)
 
 void IndirectBasedLines::draw(uint viewId) const
 {
-    bindSettingsUniformLines();
+    bindSettingsUniform();
 
     mVertices.bind(0);
     mIndices.bind();

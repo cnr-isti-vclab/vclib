@@ -116,7 +116,7 @@ void CPUGeneratedLines::setPoints(const std::vector<LinesVertex>& points)
 
 void CPUGeneratedLines::draw(uint viewId) const
 {
-    bindSettingsUniformLines();
+    bindSettingsUniform();
 
     mVertices.bind(0);
     mIndices.bind();

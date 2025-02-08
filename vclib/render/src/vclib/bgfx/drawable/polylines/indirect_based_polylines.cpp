@@ -66,7 +66,7 @@ void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
 
 void IndirectBasedPolylines::draw(uint viewId) const
 {
-    bindSettingsUniformPolylines();
+    bindSettingsUniform();
 
     mVertices.bind(0);
     mIndices.bind();

@@ -20,8 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_POLYLINES_GPU_GENERATED_POLYLINES_H
-#define VCL_BGFX_DRAWABLE_LINES_POLYLINES_GPU_GENERATED_POLYLINES_H
+#ifndef VCL_BGFX_DRAWABLE_POLYLINES_GPU_GENERATED_POLYLINES_H
+#define VCL_BGFX_DRAWABLE_POLYLINES_GPU_GENERATED_POLYLINES_H
+
+#include "polyline_settings.h"
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
@@ -29,7 +31,7 @@
 
 namespace vcl {
 
-class GPUGeneratedPolylines : public Lines
+class GPUGeneratedPolylines : public Lines<PolylineSettings>
 {
     bgfx::ProgramHandle mComputeVertexPH =
         Context::instance().programManager().getProgram(
@@ -91,4 +93,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_LINES_POLYLINES_GPU_GENERATED_POLYLINES_H
+#endif // VCL_BGFX_DRAWABLE_POLYLINES_GPU_GENERATED_POLYLINES_H

@@ -20,17 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_LINES_INDIRECT_BASED_LINES_H
-#define VCL_BGFX_DRAWABLE_LINES_LINES_INDIRECT_BASED_LINES_H
+#ifndef VCL_BGFX_DRAWABLE_LINES_INDIRECT_BASED_LINES_H
+#define VCL_BGFX_DRAWABLE_LINES_INDIRECT_BASED_LINES_H
+
+#include "line_settings.h"
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/lines_common/lines.h>
-#include <vclib/bgfx/uniform.h>
 
 namespace vcl {
 
-class IndirectBasedLines : public Lines
+class IndirectBasedLines : public Lines<LineSettings>
 {
     static inline const std::vector<float> VERTICES =
         {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
@@ -89,4 +90,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_LINES_LINES_INDIRECT_BASED_LINES_H
+#endif // VCL_BGFX_DRAWABLE_LINES_INDIRECT_BASED_LINES_H

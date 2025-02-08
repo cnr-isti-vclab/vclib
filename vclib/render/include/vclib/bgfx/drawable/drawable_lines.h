@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_LINES_DRAWABLE_LINES_H
-#define VCL_BGFX_DRAWABLE_LINES_DRAWABLE_LINES_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
 
 #include "lines/cpu_generated_lines.h"
 #include "lines/gpu_generated_lines.h"
@@ -118,4 +118,4 @@ using DrawableTextureLines = DrawableLines<TextureBasedLines>;
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_LINES_DRAWABLE_LINES_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H

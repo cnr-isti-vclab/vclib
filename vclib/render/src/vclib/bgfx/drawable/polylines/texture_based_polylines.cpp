@@ -70,7 +70,7 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
 void TextureBasedPolylines::draw(uint viewId) const
 {
     if (mVertices.isValid()) {
-        bindSettingsUniformPolylines();
+        bindSettingsUniform();
 
         mVertices.bind(0);
         mIndices.bind();
