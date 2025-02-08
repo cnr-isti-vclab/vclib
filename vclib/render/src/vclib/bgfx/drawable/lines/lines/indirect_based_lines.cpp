@@ -46,7 +46,7 @@ IndirectBasedLines::IndirectBasedLines()
 IndirectBasedLines::IndirectBasedLines(const std::vector<LinesVertex>& points) :
         IndirectBasedLines()
 {
-    update(points);
+    setPoints(points);
 }
 
 void IndirectBasedLines::swap(IndirectBasedLines& other)
@@ -75,7 +75,7 @@ void IndirectBasedLines::draw(uint viewId) const
     bgfx::submit(viewId, mLinesPH, mIndirect.handle(), 0);
 }
 
-void IndirectBasedLines::update(const std::vector<LinesVertex>& points)
+void IndirectBasedLines::setPoints(const std::vector<LinesVertex>& points)
 {
     generateIndirectBuffer(points.size());
     allocateAndSetPointsBuffer(points);

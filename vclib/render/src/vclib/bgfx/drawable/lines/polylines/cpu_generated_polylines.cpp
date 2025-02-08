@@ -28,7 +28,7 @@ CPUGeneratedPolylines::CPUGeneratedPolylines(
     const std::vector<LinesVertex>& points)
 {
     assert(bgfx::isValid(mLinesPH));
-    update(points);
+    setPoints(points);
 }
 
 void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
@@ -42,7 +42,7 @@ void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
     swap(mJointIndices, other.mJointIndices);
 }
 
-void CPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
+void CPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
 {
     if (points.size() > 1) {
         uint bufferVertsSize = (points.size() - 1) * 4 * 15;

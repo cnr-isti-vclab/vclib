@@ -86,9 +86,9 @@ public:
 
     LineSettings& settings() { return mLines.settings(); }
 
-    void update(const std::vector<LinesVertex>& points)
+    void setPoints(const std::vector<LinesVertex>& points)
     {
-        mLines.update(points);
+        mLines.setPoints(points);
     }
 
     // DrawableObject interface

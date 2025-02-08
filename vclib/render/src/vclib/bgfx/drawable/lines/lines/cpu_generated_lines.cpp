@@ -28,7 +28,7 @@ namespace vcl {
 
 CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex>& points)
 {
-    update(points);
+    setPoints(points);
 }
 
 void CPUGeneratedLines::swap(CPUGeneratedLines& other)
@@ -41,7 +41,7 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
     swap(mIndices, other.mIndices);
 }
 
-void CPUGeneratedLines::update(const std::vector<LinesVertex>& points)
+void CPUGeneratedLines::setPoints(const std::vector<LinesVertex>& points)
 {
     if (points.size() > 1) {
         // generate memory buffers

@@ -88,10 +88,10 @@ public:
         return mPolylines.settings();
     }
 
-    void update(const std::vector<LinesVertex>& points)
+    void setPoints(const std::vector<LinesVertex>& points)
     {
         mPoints = points;
-        mPolylines.update(points);
+        mPolylines.setPoints(points);
     }
 
     // DrawableObject interface

@@ -47,7 +47,7 @@ public:
 
     friend void swap(CPUGeneratedLines& a, CPUGeneratedLines& b) { a.swap(b); }
 
-    void update(const std::vector<LinesVertex>& points);
+    void setPoints(const std::vector<LinesVertex>& points);
 
     void draw(uint viewId) const;
 };

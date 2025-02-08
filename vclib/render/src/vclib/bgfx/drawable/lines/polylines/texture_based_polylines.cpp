@@ -46,7 +46,7 @@ TextureBasedPolylines::TextureBasedPolylines()
 TextureBasedPolylines::TextureBasedPolylines(
     const std::vector<LinesVertex>& points) : TextureBasedPolylines()
 {
-    update(points);
+    setPoints(points);
 }
 
 void TextureBasedPolylines::swap(TextureBasedPolylines& other)
@@ -90,7 +90,7 @@ void TextureBasedPolylines::draw(uint viewId) const
     }
 }
 
-void TextureBasedPolylines::update(const std::vector<LinesVertex>& points)
+void TextureBasedPolylines::setPoints(const std::vector<LinesVertex>& points)
 {
     if (points.size() > 1) {
         allocateAndSetPointsBuffer(points);

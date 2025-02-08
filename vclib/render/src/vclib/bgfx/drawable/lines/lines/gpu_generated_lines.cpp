@@ -31,7 +31,7 @@ GPUGeneratedLines::GPUGeneratedLines(const std::vector<LinesVertex>& points)
     checkCaps();
     assert(bgfx::isValid(mComputeVerticesPH));
 
-    update(points);
+    setPoints(points);
 }
 
 void GPUGeneratedLines::swap(GPUGeneratedLines& other)
@@ -54,7 +54,7 @@ void GPUGeneratedLines::draw(uint viewId) const
     bgfx::submit(viewId, mLinesPH);
 }
 
-void GPUGeneratedLines::update(const std::vector<LinesVertex>& points)
+void GPUGeneratedLines::setPoints(const std::vector<LinesVertex>& points)
 {
     if (points.size() > 1) {
         allocateAndSetPointsBuffer(points);

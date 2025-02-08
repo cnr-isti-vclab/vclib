@@ -634,7 +634,7 @@ private:
                 }
             }
             // wireframe index buffer
-            mWireframeBH.update(wireframe);
+            mWireframeBH.setPoints(wireframe);
 
             // TODO: Should Be:
             // const uint NUM_EDGES =

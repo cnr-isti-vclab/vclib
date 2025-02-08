@@ -42,7 +42,7 @@ InstancingBasedPolylines::InstancingBasedPolylines()
 InstancingBasedPolylines::InstancingBasedPolylines(
     const std::vector<LinesVertex>& points) : InstancingBasedPolylines()
 {
-    update(points);
+    setPoints(points);
 }
 
 void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
@@ -82,7 +82,7 @@ void InstancingBasedPolylines::draw(uint viewId) const
     }
 }
 
-void InstancingBasedPolylines::update(const std::vector<LinesVertex>& points)
+void InstancingBasedPolylines::setPoints(const std::vector<LinesVertex>& points)
 {
     mPoints = points;
 }

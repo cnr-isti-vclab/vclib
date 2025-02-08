@@ -41,7 +41,7 @@ InstancingBasedLines::InstancingBasedLines()
 InstancingBasedLines::InstancingBasedLines(
     const std::vector<LinesVertex>& points) : InstancingBasedLines()
 {
-    update(points);
+    setPoints(points);
 }
 
 void InstancingBasedLines::swap(InstancingBasedLines& other)
@@ -73,7 +73,7 @@ void InstancingBasedLines::draw(uint viewId) const
     }
 }
 
-void InstancingBasedLines::update(const std::vector<LinesVertex>& points)
+void InstancingBasedLines::setPoints(const std::vector<LinesVertex>& points)
 {
     mPoints = points;
 }

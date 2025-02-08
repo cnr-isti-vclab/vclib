@@ -46,7 +46,7 @@ IndirectBasedPolylines::IndirectBasedPolylines()
 IndirectBasedPolylines::IndirectBasedPolylines(
     const std::vector<LinesVertex>& points) : IndirectBasedPolylines()
 {
-    update(points);
+    setPoints(points);
 }
 
 void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
@@ -84,7 +84,7 @@ void IndirectBasedPolylines::draw(uint viewId) const
     }
 }
 
-void IndirectBasedPolylines::update(const std::vector<LinesVertex>& points)
+void IndirectBasedPolylines::setPoints(const std::vector<LinesVertex>& points)
 {
     generateIndirectBuffers(points.size());
     allocateAndSetPointsBuffer(points);

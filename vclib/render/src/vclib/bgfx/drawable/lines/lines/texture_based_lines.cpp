@@ -44,7 +44,7 @@ TextureBasedLines::TextureBasedLines()
 TextureBasedLines::TextureBasedLines(const std::vector<LinesVertex>& points) :
         TextureBasedLines()
 {
-    update(points);
+    setPoints(points);
 }
 
 void TextureBasedLines::swap(TextureBasedLines& other)
@@ -73,7 +73,7 @@ void TextureBasedLines::draw(uint viewId) const
     bgfx::submit(viewId, mLinesPH, mIndirect.handle(), 0);
 }
 
-void TextureBasedLines::update(const std::vector<LinesVertex>& points)
+void TextureBasedLines::setPoints(const std::vector<LinesVertex>& points)
 {
     allocateAndSetPointsBuffer(points);
     allocateAndGenerateTextureBuffer(points.size());

@@ -33,7 +33,7 @@ GPUGeneratedPolylines::GPUGeneratedPolylines()
 GPUGeneratedPolylines::GPUGeneratedPolylines(
     const std::vector<LinesVertex>& points) : Lines()
 {
-    update(points);
+    setPoints(points);
 }
 
 void GPUGeneratedPolylines::swap(GPUGeneratedPolylines& other)
@@ -69,7 +69,7 @@ void GPUGeneratedPolylines::draw(uint viewId) const
     }
 }
 
-void GPUGeneratedPolylines::update(const std::vector<LinesVertex>& points)
+void GPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
 {
     if (points.size() > 1) {
         allocateAndSetPointsBuffer(points);

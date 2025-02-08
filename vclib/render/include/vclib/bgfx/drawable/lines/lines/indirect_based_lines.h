@@ -65,7 +65,7 @@ public:
 
     void draw(uint viewId) const;
 
-    void update(const std::vector<LinesVertex>& points);
+    void setPoints(const std::vector<LinesVertex>& points);
 
 private:
     void checkCaps() const
