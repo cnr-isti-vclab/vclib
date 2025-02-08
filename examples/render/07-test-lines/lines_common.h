@@ -23,7 +23,7 @@
 #ifndef LINES_COMMON_H
 #define LINES_COMMON_H
 
-#include <vclib/bgfx/drawable/lines/drawable_lines.h>
+#include <vclib/bgfx/drawable/drawable_lines.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <random>

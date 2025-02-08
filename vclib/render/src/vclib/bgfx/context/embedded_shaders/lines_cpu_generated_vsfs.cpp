@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/context/embedded_shaders/lines_cpu_generated_vsfs.h>
 
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/fs_cpu_generated_lines.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/vs_cpu_generated_lines.sc.glsl.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/fs_cpu_generated_lines.sc.glsl.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/vs_cpu_generated_lines.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/fs_cpu_generated_lines.sc.essl.bin.h>
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/vs_cpu_generated_lines.sc.essl.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/fs_cpu_generated_lines.sc.essl.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/vs_cpu_generated_lines.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/fs_cpu_generated_lines.sc.spv.bin.h>
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/vs_cpu_generated_lines.sc.spv.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/fs_cpu_generated_lines.sc.spv.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/vs_cpu_generated_lines.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/fs_cpu_generated_lines.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/vs_cpu_generated_lines.sc.dx11.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/fs_cpu_generated_lines.sc.dx11.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/vs_cpu_generated_lines.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/fs_cpu_generated_lines.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_lines/lines/cpu_generated_lines/vs_cpu_generated_lines.sc.mtl.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/fs_cpu_generated_lines.sc.mtl.bin.h>
+#include <shaders/drawable/drawable_lines/cpu_generated_lines/vs_cpu_generated_lines.sc.mtl.bin.h>
 
 #endif // __APPLE__
 

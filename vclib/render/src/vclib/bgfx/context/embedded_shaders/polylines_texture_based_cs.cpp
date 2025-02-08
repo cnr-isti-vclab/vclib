@@ -22,18 +22,18 @@
 
 #include <vclib/bgfx/context/embedded_shaders/polylines_texture_based_cs.h>
 
-#include <shaders/drawable/drawable_lines/polylines/texture_based_polylines/cs_compute_texture.sc.400.bin.h>
+#include <shaders/drawable/drawable_polylines/texture_based_polylines/cs_compute_texture.sc.400.bin.h>
 
-#include <shaders/drawable/drawable_lines/polylines/texture_based_polylines/cs_compute_texture.sc.essl.bin.h>
+#include <shaders/drawable/drawable_polylines/texture_based_polylines/cs_compute_texture.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_lines/polylines/texture_based_polylines/cs_compute_texture.sc.spv.bin.h>
+#include <shaders/drawable/drawable_polylines/texture_based_polylines/cs_compute_texture.sc.spv.bin.h>
 
 #ifdef _WIN32
-#include <shaders/drawable/drawable_lines/polylines/texture_based_polylines/cs_compute_texture.sc.dx11.bin.h>
+#include <shaders/drawable/drawable_polylines/texture_based_polylines/cs_compute_texture.sc.dx11.bin.h>
 
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_lines/polylines/texture_based_polylines/cs_compute_texture.sc.mtl.bin.h>
+#include <shaders/drawable/drawable_polylines/texture_based_polylines/cs_compute_texture.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

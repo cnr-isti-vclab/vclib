@@ -22,16 +22,16 @@
 
 #include <vclib/bgfx/context/embedded_shaders/polylines_gpu_generated_cs.h>
 
-#include <shaders/drawable/drawable_lines/polylines/gpu_generated_polylines/cs_compute_buffers.sc.400.bin.h>
+#include <shaders/drawable/drawable_polylines/gpu_generated_polylines/cs_compute_buffers.sc.400.bin.h>
 
-#include <shaders/drawable/drawable_lines/polylines/gpu_generated_polylines/cs_compute_buffers.sc.essl.bin.h>
+#include <shaders/drawable/drawable_polylines/gpu_generated_polylines/cs_compute_buffers.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_lines/polylines/gpu_generated_polylines/cs_compute_buffers.sc.spv.bin.h>
+#include <shaders/drawable/drawable_polylines/gpu_generated_polylines/cs_compute_buffers.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_lines/polylines/gpu_generated_polylines/cs_compute_buffers.sc.dx11.bin.h>
+#include <shaders/drawable/drawable_polylines/gpu_generated_polylines/cs_compute_buffers.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_lines/polylines/gpu_generated_polylines/cs_compute_buffers.sc.mtl.bin.h>
+#include <shaders/drawable/drawable_polylines/gpu_generated_polylines/cs_compute_buffers.sc.mtl.bin.h>
 
 #endif // __APPLE__
 

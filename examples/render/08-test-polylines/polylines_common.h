@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef LINES_COMMON_H
-#define LINES_COMMON_H
+#ifndef POLYLINES_COMMON_H
+#define POLYLINES_COMMON_H
 
-#include <vclib/bgfx/drawable/lines/drawable_polylines.h>
+#include <vclib/bgfx/drawable/drawable_polylines.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <random>
@@ -89,4 +89,4 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
     return vec;
 }
 
-#endif // LINES_COMMON_H
+#endif // POLYLINES_COMMON_H

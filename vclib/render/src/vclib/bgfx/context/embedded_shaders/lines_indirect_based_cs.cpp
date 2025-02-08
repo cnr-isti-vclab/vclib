@@ -22,18 +22,18 @@
 
 #include <vclib/bgfx/context/embedded_shaders/lines_indirect_based_cs.h>
 
-#include <shaders/drawable/drawable_lines/lines/indirect_based_lines/cs_compute_indirect.sc.400.bin.h>
+#include <shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.400.bin.h>
 
-#include <shaders/drawable/drawable_lines/lines/indirect_based_lines/cs_compute_indirect.sc.essl.bin.h>
+#include <shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_lines/lines/indirect_based_lines/cs_compute_indirect.sc.spv.bin.h>
+#include <shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.spv.bin.h>
 
 #ifdef _WIN32
-#include <shaders/drawable/drawable_lines/lines/indirect_based_lines/cs_compute_indirect.sc.dx11.bin.h>
+#include <shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.dx11.bin.h>
 
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_lines/lines/indirect_based_lines/cs_compute_indirect.sc.mtl.bin.h>
+#include <shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
