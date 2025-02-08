@@ -82,7 +82,8 @@ void CPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
                     vertices[vi++] = points[next_index].Y;
                     vertices[vi++] = points[next_index].Z;
 
-                    vertices[vi++] = points[curr_index].getReverseColor();
+                    vertices[vi++] = std::bit_cast<float>(
+                        points[curr_index].getABGRColor());
 
                     vertices[vi++] = points[curr_index].xN;
                     vertices[vi++] = points[curr_index].yN;

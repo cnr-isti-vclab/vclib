@@ -50,15 +50,16 @@ struct LinesVertex
     {
     }
 
-    uint32_t getUintColor() const { return std::bit_cast<uint32_t>(color); }
+    uint32_t getRGBAColor() const { return std::bit_cast<uint32_t>(color); }
 
-    float getReverseColor() const
+    uint32_t getABGRColor() const
     {
-        uint32_t int_color = getUintColor();
+        uint32_t uint_color = getRGBAColor();
 
-        return std::bit_cast<float>(
-            ((int_color & 0xFF000000) >> 24) | ((int_color & 0x00FF0000) >> 8) |
-            ((int_color & 0x0000FF00) << 8) | ((int_color & 0x000000FF) << 24));
+        return ((uint_color & 0xFF000000) >> 24) |
+               ((uint_color & 0x00FF0000) >> 8) |
+               ((uint_color & 0x0000FF00) << 8) |
+               ((uint_color & 0x000000FF) << 24);
     }
 
     static inline uint32_t COLOR(float r, float g, float b, float a)

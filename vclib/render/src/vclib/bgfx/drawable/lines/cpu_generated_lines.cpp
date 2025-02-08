@@ -67,7 +67,8 @@ void CPUGeneratedLines::setPoints(const std::vector<LinesVertex>& points)
                     vertices[vi++] = points[i].Y;
                     vertices[vi++] = points[i].Z;
 
-                    vertices[vi++] = points[i - (1 - k)].getReverseColor();
+                    vertices[vi++] = std::bit_cast<float>(
+                        points[i - (1 - k)].getABGRColor());
 
                     vertices[vi++] = points[i - (1 - k)].xN;
                     vertices[vi++] = points[i - (1 - k)].yN;

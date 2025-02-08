@@ -118,7 +118,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         currSegments[2]     = mPoints[i].Z;
 
         uint* color0 = reinterpret_cast<uint*>(&dataSegments[28]);
-        color0[0]        = mPoints[i].getUintColor();
+        color0[0]        = mPoints[i].getRGBAColor();
 
         float* nextSegments = reinterpret_cast<float*>(&dataSegments[32]);
         nextSegments[0]     = mPoints[i + 1].X;
@@ -126,7 +126,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         nextSegments[2]     = mPoints[i + 1].Z;
 
         uint* color1 = reinterpret_cast<uint*>(&dataSegments[44]);
-        color1[0]        = mPoints[i + 1].getUintColor();
+        color1[0]        = mPoints[i + 1].getRGBAColor();
 
         float* next_nextSegments = reinterpret_cast<float*>(&dataSegments[48]);
         next_nextSegments[0] =
@@ -156,7 +156,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
             currJoint[2]     = mPoints[i].Z;
 
             uint* colorJoint = reinterpret_cast<uint*>(&dataJoints[28]);
-            colorJoint[0]        = mPoints[i].getUintColor();
+            colorJoint[0]        = mPoints[i].getRGBAColor();
 
             float* nextJoint = reinterpret_cast<float*>(&dataJoints[32]);
             nextJoint[0]     = mPoints[i + 1].X;
