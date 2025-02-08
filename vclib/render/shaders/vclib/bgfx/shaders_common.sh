@@ -26,7 +26,12 @@
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-vec4 uintToVec4Color(uint color)
+/**
+ * @brief Convert an uint color in ABGR format to a vec4 float color.
+ * @param[in] color: The input color.
+ * @return The output color.
+ */
+vec4 uintABGRToVec4Color(uint color)
 {
     return vec4(
         float(color & uint(0x000000FF)) / 255.0,
