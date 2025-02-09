@@ -226,9 +226,14 @@ public:
 
     Box3d boundingBox() const override { return mBoundingBox; }
 
-    std::shared_ptr<DrawableObject> clone() const override
+    std::shared_ptr<DrawableObject> clone() const& override
     {
         return std::make_shared<DrawableMeshOpenGL2>(*this);
+    }
+
+    std::shared_ptr<DrawableObject> clone() && override
+    {
+        return std::make_shared<DrawableMeshOpenGL2>(std::move(*this));
     }
 
 private:

@@ -89,6 +89,13 @@ public:
         return mDrawList->size() - 1;
     }
 
+    uint pushDrawableObject(DrawableObject&& obj)
+    {
+        mDrawList->pushBack(std::move(obj));
+        mDrawList->back()->init();
+        return mDrawList->size() - 1;
+    }
+
     void fitScene()
     {
         Point3f sceneCenter;

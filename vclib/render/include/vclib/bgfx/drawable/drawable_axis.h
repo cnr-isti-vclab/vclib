@@ -108,9 +108,14 @@ public:
 
     Box3d boundingBox() const override { return Box3d(); }
 
-    std::shared_ptr<DrawableObject> clone() const override
+    std::shared_ptr<DrawableObject> clone() const& override
     {
         return std::make_shared<DrawableAxis>(*this);
+    }
+
+    std::shared_ptr<DrawableObject> clone() && override
+    {
+        return std::make_shared<DrawableAxis>(std::move(*this));
     }
 
     bool isVisible() const override { return mVisible; }
