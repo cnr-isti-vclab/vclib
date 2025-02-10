@@ -53,10 +53,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH_SURFACE);
 
-    bgfx::ProgramHandle mProgramWireframe =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_WIREFRAME);
-
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:

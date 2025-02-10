@@ -62,7 +62,7 @@ class MeshRenderBuffers
     IndexBuffer mEdgeNormalBuffer;
     IndexBuffer mEdgeColorBuffer;
 
-    GPUGeneratedLines mWireframeBH;
+    GPUGeneratedLines mWireframeLines;
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
@@ -110,7 +110,7 @@ public:
         swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
         swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
 
-        mWireframeBH.swap(other.mWireframeBH);
+        mWireframeLines.swap(other.mWireframeLines);
         swap(mTextureUnits, other.mTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
     }
@@ -163,7 +163,7 @@ public:
 
     void setWireframeSettings(const MeshRenderSettings& settings)
     {
-        LineSettings& wSettings = mWireframeBH.settings();
+        LineSettings& wSettings = mWireframeLines.settings();
         wSettings.setThickness(settings.wireframeWidth());
 
         if (settings.isWireframeColorUserDefined()) {
@@ -193,7 +193,7 @@ public:
 
     void drawWireframe(uint viewId) const 
     {
-        mWireframeBH.draw(viewId);
+        mWireframeLines.draw(viewId);
     }
 
     void bindTextures() const
@@ -633,7 +633,7 @@ private:
                 }
             }
             // wireframe index buffer
-            mWireframeBH.setPoints(wireframe);
+            mWireframeLines.setPoints(wireframe);
 
             // TODO: Should Be:
             // const uint NUM_EDGES =

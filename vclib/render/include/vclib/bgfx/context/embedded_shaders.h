@@ -28,7 +28,6 @@
 #include "embedded_shaders/drawable_mesh_edges.h"
 #include "embedded_shaders/drawable_mesh_points.h"
 #include "embedded_shaders/drawable_mesh_surface.h"
-#include "embedded_shaders/drawable_mesh_wireframe.h"
 #include "embedded_shaders/drawable_trackball.h"
 #include "embedded_shaders/font_basic.h"
 #include "embedded_shaders/font_distance_field.h"

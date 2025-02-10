@@ -96,14 +96,6 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
             vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
                             fragmentEmbeddedShader(type)));
 
-    case VclProgram::DRAWABLE_MESH_WIREFRAME:
-        return vcl::createProgram(
-            vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_WIREFRAME>::
-                            vertexEmbeddedShader(type)),
-            vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_WIREFRAME>::
-                            fragmentEmbeddedShader(type)));
-
-
     case VclProgram::LINES_CPU_GENERATED_VSFS:
         return vcl::createProgram(
             vcl::loadShader(
