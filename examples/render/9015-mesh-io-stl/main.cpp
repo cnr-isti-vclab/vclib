@@ -40,5 +40,5 @@ int main(int argc, char** argv)
     vcl::updatePerVertexNormals(m2);
     vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);
 
-    return showMeshesOnDefaultViewer(argc, argv, m1, m2);
+    return showMeshesOnDefaultViewer(argc, argv, std::move(m1), std::move(m2));
 }

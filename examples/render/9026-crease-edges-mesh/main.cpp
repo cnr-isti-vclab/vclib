@@ -46,5 +46,5 @@ int main(int argc, char** argv)
             edge.color() = vcl::Color::Blue;
     }
 
-    return showMeshesOnDefaultViewer(argc, argv, c, e);
+    return showMeshesOnDefaultViewer(argc, argv, std::move(c), std::move(e));
 }

@@ -36,5 +36,5 @@ int main(int argc, char** argv)
 
     updateCurvature(m);
 
-    return showMeshesOnDefaultViewer(argc, argv, m);
+    return showMeshesOnDefaultViewer(argc, argv, std::move(m));
 }

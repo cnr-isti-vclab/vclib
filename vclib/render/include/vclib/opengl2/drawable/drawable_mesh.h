@@ -98,6 +98,13 @@ public:
         mMRS.setDefaultSettingsFromCapability();
     }
 
+    DrawableMeshOpenGL2(MeshType&& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
+    {
+        updateBuffers();
+        mMRS.setDefaultSettingsFromCapability();
+    }
+
     ~DrawableMeshOpenGL2() = default;
 
     void updateBuffers() override

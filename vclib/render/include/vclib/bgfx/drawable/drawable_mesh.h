@@ -58,6 +58,12 @@ public:
         updateBuffers();
     }
 
+    DrawableMeshBGFX(MeshType&& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
+    {
+        updateBuffers();
+    }
+
     DrawableMeshBGFX(const DrawableMeshBGFX& drawableMesh) :
             AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
             MeshType(drawableMesh), mBoundingBox(drawableMesh.mBoundingBox),
