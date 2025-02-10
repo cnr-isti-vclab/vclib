@@ -381,7 +381,7 @@ public:
     void set(uint i, T&& e)
     {
         assert(i < size());
-        mContainer[i] =std::move(e);
+        mContainer[i] = std::move(e);
     }
 
     /**
