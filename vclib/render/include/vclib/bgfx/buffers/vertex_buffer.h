@@ -112,21 +112,28 @@ public:
         bool               normalize = false,
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(
-                attrib,
-                attribNumPerVertex,
-                attributeType(attribType),
-                normalize)
-            .end();
+        if (vertNum != 0) {
+            bgfx::VertexLayout layout;
+            layout.begin()
+                .add(
+                    attrib,
+                    attribNumPerVertex,
+                    attributeType(attribType),
+                    normalize)
+                .end();
 
-        create(
-            bgfx::makeRef(
-                bufferData,
-                vertNum * attribNumPerVertex * sizeOf(attribType),
-                releaseFn),
-            layout);
+            create(
+                bgfx::makeRef(
+                    bufferData,
+                    vertNum * attribNumPerVertex * sizeOf(attribType),
+                    releaseFn),
+                layout);
+        }
+        else {
+            if (releaseFn)
+                releaseFn((void*)bufferData, nullptr);
+            destroy();
+        }
     }
 
     /**
@@ -160,25 +167,32 @@ public:
         bgfx::Access::Enum access    = bgfx::Access::Read,
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
-        uint64_t flags = flagsForAccess(access);
+        if (vertNum != 0) {
+            uint64_t flags = flagsForAccess(access);
 
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(
-                attrib,
-                attribNumPerVertex,
-                attributeType(attribType),
-                normalize)
-            .end();
+            bgfx::VertexLayout layout;
+            layout.begin()
+                .add(
+                    attrib,
+                    attribNumPerVertex,
+                    attributeType(attribType),
+                    normalize)
+                .end();
 
-        create(
-            bgfx::makeRef(
-                bufferData,
-                vertNum * attribNumPerVertex * sizeOf(attribType),
-                releaseFn),
-            layout,
-            flags,
-            true);
+            create(
+                bgfx::makeRef(
+                    bufferData,
+                    vertNum * attribNumPerVertex * sizeOf(attribType),
+                    releaseFn),
+                layout,
+                flags,
+                true);
+        }
+        else {
+            if (releaseFn)
+                releaseFn((void*)bufferData, nullptr);
+            destroy();
+        }
     }
 
     /**

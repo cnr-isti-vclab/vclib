@@ -74,14 +74,13 @@ public:
         uint                      nLayers = 1,
         const bgfx::Memory*       data    = nullptr)
     {
-        if (bgfx::isValid(mHandle)) {
-            bgfx::destroy(mHandle);
-        }
+        destroy();
 
         mFormat = format;
 
-        mHandle = bgfx::createTexture2D(
-            width, height, hasMips, nLayers, format, flags, data);
+        if (width != 0 && height != 0)
+            mHandle = bgfx::createTexture2D(
+                width, height, hasMips, nLayers, format, flags, data);
     }
 
     /**
