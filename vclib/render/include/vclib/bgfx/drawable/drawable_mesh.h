@@ -45,6 +45,10 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH);
 
+    bgfx::ProgramHandle mProgramEdges =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_MESH_EDGES);
+
     bgfx::ProgramHandle mProgramPoints =
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH_POINTS);
@@ -148,15 +152,7 @@ public:
                          BGFX_STATE_BLEND_NORMAL;
 
         if (bgfx::isValid(mProgram)) {
-            if (mMRS.isEdgesVisible()) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(MeshBufferId::EDGES);
-                bindUniforms(VCL_MRS_DRAWING_EDGES);
 
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
-
-                bgfx::submit(viewId, mProgram);
-            }
         }
 
         if (mMRS.isPointVisible()) {
@@ -192,6 +188,18 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
                 bgfx::submit(viewId, mProgramWireframe);
+            }
+        }
+
+        if (mMRS.isEdgesVisible()) {
+            if (bgfx::isValid(mProgramEdges)) {
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(MeshBufferId::EDGES);
+                bindUniforms(VCL_MRS_DRAWING_EDGES);
+
+                bgfx::setState(state | BGFX_STATE_PT_LINES);
+
+                bgfx::submit(viewId, mProgramEdges);
             }
         }
     }
