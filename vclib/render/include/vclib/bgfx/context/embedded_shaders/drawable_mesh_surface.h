@@ -20,23 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
-#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
+#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_MESH_SURFACE_H
+#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_MESH_SURFACE_H
 
-#include "embedded_shaders/drawable_axis.h"
-#include "embedded_shaders/drawable_directional_light.h"
-#include "embedded_shaders/drawable_mesh_edges.h"
-#include "embedded_shaders/drawable_mesh_points.h"
-#include "embedded_shaders/drawable_mesh_surface.h"
-#include "embedded_shaders/drawable_mesh_wireframe.h"
-#include "embedded_shaders/drawable_trackball.h"
-#include "embedded_shaders/font_basic.h"
-#include "embedded_shaders/font_distance_field.h"
-#include "embedded_shaders/font_distance_field_drop_shadow.h"
-#include "embedded_shaders/font_distance_field_drop_shadow_image.h"
-#include "embedded_shaders/font_distance_field_outline.h"
-#include "embedded_shaders/font_distance_field_outline_drop_shadow_image.h"
-#include "embedded_shaders/font_distance_field_outline_image.h"
-#include "embedded_shaders/font_distance_field_subpixel.h"
+#include "embedded_shader.h"
 
-#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
+namespace vcl {
+
+template<>
+struct EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>
+{
+    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_MESH_SURFACE_H

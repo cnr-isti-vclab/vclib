@@ -20,23 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
-#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
+$input v_position, v_normal, v_color
 
-#include "embedded_shaders/drawable_axis.h"
-#include "embedded_shaders/drawable_directional_light.h"
-#include "embedded_shaders/drawable_mesh_edges.h"
-#include "embedded_shaders/drawable_mesh_points.h"
-#include "embedded_shaders/drawable_mesh_surface.h"
-#include "embedded_shaders/drawable_mesh_wireframe.h"
-#include "embedded_shaders/drawable_trackball.h"
-#include "embedded_shaders/font_basic.h"
-#include "embedded_shaders/font_distance_field.h"
-#include "embedded_shaders/font_distance_field_drop_shadow.h"
-#include "embedded_shaders/font_distance_field_drop_shadow_image.h"
-#include "embedded_shaders/font_distance_field_outline.h"
-#include "embedded_shaders/font_distance_field_outline_drop_shadow_image.h"
-#include "embedded_shaders/font_distance_field_outline_image.h"
-#include "embedded_shaders/font_distance_field_subpixel.h"
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
-#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
+void main()
+{
+    uint drawMode0 = floatBitsToUint(u_drawMode0Float);
+
+    // depth offset - avoid z-fighting
+    float depthOffset = 0.0;
+
+    // if not drawing mesh, discard
+    if (!bool(drawMode0 & VCL_MRS_DRAW_MESH)) {
+        discard;
+    }
+
+    // color
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+
+    /***** compute light ******/
+    // default values - no shading
+    vec3 specular = vec3(0.0, 0.0, 0.0);
+    vec4 light = vec4(1, 1, 1, 1);
+
+    vec3 normal = normalize(v_normal);
+
+    // shading
+    if (!bool(drawMode0 & VCL_MRS_WIREFRAME_SHADING_NONE)) {
+        light = computeLight(u_lightDir, u_lightColor, normal);
+    }
+
+    color = uintABGRToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
+
+    if (bool(drawMode0 & VCL_MRS_WIREFRAME_COLOR_VERT)) {
+        color = v_color;
+    }
+    if (bool(drawMode0 & VCL_MRS_WIREFRAME_COLOR_MESH)) {
+        color = u_meshColor;
+    }
+    depthOffset = 0.00005;
+
+    gl_FragColor = light * color + vec4(specular, 0);
+    gl_FragDepth = gl_FragCoord.z - depthOffset;
+}

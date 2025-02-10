@@ -20,23 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
-#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
+$input a_position, a_normal, a_color0
+$output v_position, v_normal, v_color
 
-#include "embedded_shaders/drawable_axis.h"
-#include "embedded_shaders/drawable_directional_light.h"
-#include "embedded_shaders/drawable_mesh_edges.h"
-#include "embedded_shaders/drawable_mesh_points.h"
-#include "embedded_shaders/drawable_mesh_surface.h"
-#include "embedded_shaders/drawable_mesh_wireframe.h"
-#include "embedded_shaders/drawable_trackball.h"
-#include "embedded_shaders/font_basic.h"
-#include "embedded_shaders/font_distance_field.h"
-#include "embedded_shaders/font_distance_field_drop_shadow.h"
-#include "embedded_shaders/font_distance_field_drop_shadow_image.h"
-#include "embedded_shaders/font_distance_field_outline.h"
-#include "embedded_shaders/font_distance_field_outline_drop_shadow_image.h"
-#include "embedded_shaders/font_distance_field_outline_image.h"
-#include "embedded_shaders/font_distance_field_subpixel.h"
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
-#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_H
+void main()
+{
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
+    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
+
+    // default case - color is taken from buffer
+    v_color = a_color0;
+}
