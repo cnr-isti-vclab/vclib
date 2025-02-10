@@ -142,6 +142,13 @@ public:
     void pushBack(const PointT& point) { mPoints.push_back(point); }
 
     /**
+     * @brief Adds a point to the back of the polygon.
+     *
+     * @param[in] point: the point to add to the polygon.
+     */
+    void pushBack(PointT&& point) { mPoints.push_back(std::move(point)); }
+
+    /**
      * @brief Returns the point at index i in the polygon.
      *
      * @param[in] i: the index of the point to return.

@@ -106,10 +106,17 @@ public:
         bool            is32Bit   = true,
         bgfx::ReleaseFn releaseFn = nullptr)
     {
-        uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
-        uint     size  = is32Bit ? 4 : 2;
-        create(
-            bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn), flags);
+        if (bufferSize != 0) {
+            uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
+            uint     size  = is32Bit ? 4 : 2;
+            create(
+                bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn), flags);
+        }
+        else {
+            if (releaseFn)
+                releaseFn((void*)bufferIndices, nullptr);
+            destroy();
+        }
     }
 
     /**
@@ -137,12 +144,19 @@ public:
         bgfx::Access::Enum access    = bgfx::Access::Read,
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
-        uint64_t flags = flagsForType(type);
-        flags |= flagsForAccess(access);
-        create(
-            bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type), releaseFn),
-            flags,
-            true);
+        if (bufferSize != 0) {
+            uint64_t flags = flagsForType(type);
+            flags |= flagsForAccess(access);
+            create(
+                bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type), releaseFn),
+                flags,
+                true);
+        }
+        else {
+            if (releaseFn)
+                releaseFn((void*)bufferIndices, nullptr);
+            destroy();
+        }
     }
 
     /**

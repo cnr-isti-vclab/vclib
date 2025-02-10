@@ -100,9 +100,14 @@ public:
         return vcl::Box3d(vcl::Point3d(-1, -1, -1), vcl::Point3d(1, 1, 1));
     }
 
-    std::shared_ptr<DrawableObject> clone() const override
+    std::shared_ptr<DrawableObject> clone() const& override
     {
         return std::make_shared<DrawableLines>(*this);
+    }
+
+    std::shared_ptr<DrawableObject> clone() && override
+    {
+        return std::make_shared<DrawableLines>(std::move(*this));
     }
 
     bool isVisible() const override { return mVisible; }

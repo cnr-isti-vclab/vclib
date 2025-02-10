@@ -98,6 +98,13 @@ public:
         mMRS.setDefaultSettingsFromCapability();
     }
 
+    DrawableMeshOpenGL2(MeshType&& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
+    {
+        updateBuffers();
+        mMRS.setDefaultSettingsFromCapability();
+    }
+
     ~DrawableMeshOpenGL2() = default;
 
     void updateBuffers() override
@@ -226,9 +233,14 @@ public:
 
     Box3d boundingBox() const override { return mBoundingBox; }
 
-    std::shared_ptr<DrawableObject> clone() const override
+    std::shared_ptr<DrawableObject> clone() const& override
     {
         return std::make_shared<DrawableMeshOpenGL2>(*this);
+    }
+
+    std::shared_ptr<DrawableObject> clone() && override
+    {
+        return std::make_shared<DrawableMeshOpenGL2>(std::move(*this));
     }
 
 private:

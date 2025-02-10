@@ -41,12 +41,14 @@
 template<vcl::MeshConcept MeshType>
 void pushMeshOnVector(
     std::shared_ptr<vcl::DrawableObjectVector>& vector,
-    const MeshType&                             mesh)
+    MeshType&&                                  mesh)
 {
     if constexpr (vcl::DrawableObjectConcept<MeshType>)
-        vector->pushBack(mesh);
-    else
-        vector->pushBack(vcl::DrawableMesh<MeshType>(mesh));
+        vector->pushBack(std::forward<MeshType>(mesh));
+    else {
+        using DrawableMesh = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
+        vector->pushBack(DrawableMesh(std::forward<MeshType>(mesh)));
+    }
 }
 
 auto defaultViewer()
@@ -63,12 +65,12 @@ void showMeshesOnViewer(
     int    argc,
     char** argv,
     auto&  viewer,
-    const MeshTypes&... meshes)
+    MeshTypes&&... meshes)
 {
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    (pushMeshOnVector(vector, meshes), ...);
+    (pushMeshOnVector(vector, std::forward<MeshTypes>(meshes)), ...);
 
     viewer.setDrawableObjectVector(vector);
 
@@ -80,7 +82,7 @@ void showMeshesOnViewer(
 }
 
 template<vcl::MeshConcept... MeshTypes>
-int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
+int showMeshesOnDefaultViewer(int argc, char** argv, MeshTypes&&... meshes)
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     QApplication application(argc, argv);
@@ -92,7 +94,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
     vcl::glfw::ViewerWindow viewer;
 #endif
 
-    showMeshesOnViewer(argc, argv, viewer, meshes...);
+    showMeshesOnViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();

@@ -58,6 +58,12 @@ public:
         updateBuffers();
     }
 
+    DrawableMeshBGFX(MeshType&& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
+    {
+        updateBuffers();
+    }
+
     DrawableMeshBGFX(const DrawableMeshBGFX& drawableMesh) :
             AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
             MeshType(drawableMesh), mBoundingBox(drawableMesh.mBoundingBox),
@@ -169,9 +175,14 @@ public:
 
     Box3d boundingBox() const override { return mBoundingBox; }
 
-    std::shared_ptr<DrawableObject> clone() const override
+    std::shared_ptr<DrawableObject> clone() const& override
     {
         return std::make_shared<DrawableMeshBGFX>(*this);
+    }
+
+    std::shared_ptr<DrawableObject> clone() && override
+    {
+        return std::make_shared<DrawableMeshBGFX>(std::move(*this));
     }
 
     void setVisibility(bool vis) override

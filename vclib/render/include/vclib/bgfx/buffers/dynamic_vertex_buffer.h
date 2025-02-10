@@ -180,10 +180,10 @@ public:
         uint64_t                  flags   = BGFX_BUFFER_NONE,
         bool                      compute = false)
     {
-        if (bgfx::isValid(mHandle))
-            bgfx::destroy(mHandle);
+        destroy();
 
-        mHandle  = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
+        if (vertNum != 0)
+            mHandle  = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
         mCompute = compute;
     }
 
@@ -211,12 +211,18 @@ public:
         uint            startIndex = 0,
         bgfx::ReleaseFn releaseFn  = nullptr)
     {
-        const bgfx::Memory* data = bgfx::makeRef(
-            bufferData,
-            vertNum * attribNumPerVertex * sizeOf(attribType),
-            releaseFn);
+        if (vertNum != 0) {
+            const bgfx::Memory* data = bgfx::makeRef(
+                bufferData,
+                vertNum * attribNumPerVertex * sizeOf(attribType),
+                releaseFn);
 
-        update(startIndex, data);
+            update(startIndex, data);
+        }
+        else {
+            if (releaseFn)
+                releaseFn((void*)bufferData, nullptr);
+        }
     }
 
     void update(uint startIndex, const bgfx::Memory* data)

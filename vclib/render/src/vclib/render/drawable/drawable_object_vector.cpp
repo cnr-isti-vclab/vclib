@@ -56,9 +56,14 @@ Box3d DrawableObjectVector::boundingBox() const
     return bb;
 }
 
-std::shared_ptr<DrawableObject> DrawableObjectVector::clone() const
+std::shared_ptr<DrawableObject> DrawableObjectVector::clone() const&
 {
     return std::make_shared<DrawableObjectVector>(*this);
+}
+
+std::shared_ptr<DrawableObject> DrawableObjectVector::clone() &&
+{
+    return std::make_shared<DrawableObjectVector>(std::move(*this));
 }
 
 bool DrawableObjectVector::isVisible() const
