@@ -33,36 +33,38 @@ namespace vcl {
 struct VclProgram
 {
     enum Enum {
-        DRAWABLE_MESH,
         DRAWABLE_AXIS,
         DRAWABLE_DIRECTIONAL_LIGHT,
+        DRAWABLE_MESH,
         DRAWABLE_TRACKBALL,
+
         FONT_BASIC,
-        FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
+        FONT_DISTANCE_FIELD,
         FONT_DISTANCE_FIELD_DROP_SHADOW,
+        FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
+        FONT_DISTANCE_FIELD_OUTLINE,
         FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
         FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-        FONT_DISTANCE_FIELD_OUTLINE,
         FONT_DISTANCE_FIELD_SUBPIXEL,
-        FONT_DISTANCE_FIELD,
 
         COUNT
     };
 
     static inline const std::array<std::string, VclProgram::COUNT>
         programNames = {
-            "DrawableMesh",
             "DrawableAxis",
             "DrawableDirectionalLight",
-            "DrawableTrackball"
+            "DrawableMesh",
+            "DrawableTrackball",
+
             "FontBasic",
-            "FontDistanceFieldDropShadowImage",
+            "FontDistanceField",
             "FontDistanceFieldDropShadow",
+            "FontDistanceFieldDropShadowImage",
+            "FontDistanceFieldOutline",
             "FontDistanceFieldOutlineDropShadowImage",
             "FontDistanceFieldOutlineImage",
-            "FontDistanceFieldOutline",
             "FontDistanceFieldSubpixel",
-            "FontDistanceField",
     };
 };
 

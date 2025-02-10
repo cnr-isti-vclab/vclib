@@ -22,6 +22,11 @@
 
 #include <default_viewer.h>
 
+// conflict Eigen with X11.h
+#ifdef Success
+#undef Success
+#endif
+
 #include "mesh_curvature.h"
 
 int main(int argc, char** argv)
@@ -31,5 +36,5 @@ int main(int argc, char** argv)
 
     updateCurvature(m);
 
-    return showMeshesOnDefaultViewer(argc, argv, m);
+    return showMeshesOnDefaultViewer(argc, argv, std::move(m));
 }

@@ -111,9 +111,23 @@ public:
      */
     uint triangleNumber(uint polygonIndex) const
     {
+        // be sure that the current polygon index is valid and the polygon
+        // has not been deleted in the mesh
         assert(polygonIndex < mPolyToTri.size());
-        if (polygonIndex < mPolyToTri.size() - 1) {
-            return mPolyToTri[polygonIndex + 1] - mPolyToTri[polygonIndex];
+        assert(mPolyToTri[polygonIndex] != UINT_NULL);
+
+        // we need to manage the case in which the polygon was deleted: some
+        // values in the mPolyToTri vector could be UINT_NULL. In this case,
+        // we just need to jump to the next polygon index having a valid value
+
+        // look for the next polygon index having value != UINT_NULL
+        uint pnext = polygonIndex + 1;
+        while (pnext < mPolyToTri.size() && mPolyToTri[pnext] == UINT_NULL) {
+            pnext++;
+        }
+
+        if (pnext < mPolyToTri.size()) { // there is a next polygon index
+            return mPolyToTri[pnext] - mPolyToTri[polygonIndex];
         }
         else {
             // total number of triangles minus the first triangle index of the

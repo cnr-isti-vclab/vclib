@@ -133,16 +133,21 @@ Box3d DrawableDirectionalLight::boundingBox() const
     return Box3d();
 }
 
-std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() const
+std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() const&
 {
     return std::make_shared<DrawableDirectionalLight>(*this);
 }
 
+std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() &&
+{
+    return std::make_shared<DrawableDirectionalLight>(std::move(*this));
+}
+
 void DrawableDirectionalLight::createVertexBuffer()
 {
-    mVertexCoordBuffer.set(
+    mVertexCoordBuffer.create(
         mVertices.data(),
-        mVertices.size(),
+        mVertices.size() / 3,
         bgfx::Attrib::Position,
         3,
         PrimitiveType::FLOAT);

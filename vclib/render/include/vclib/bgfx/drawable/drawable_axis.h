@@ -65,7 +65,40 @@ class DrawableAxis : public DrawableObject
 public:
     DrawableAxis(double size = 1);
 
+    DrawableAxis(const DrawableAxis& other) :
+            mVisible(other.mVisible), mUniforms(other.mUniforms)
+    {
+        for (uint i = 0; i < 3; i++) {
+            mMatrices[i] = other.mMatrices[i];
+        }
+
+        createAxis();
+    }
+
+    DrawableAxis(DrawableAxis&& other) { swap(other); }
+
     ~DrawableAxis() = default;
+
+    DrawableAxis& operator=(DrawableAxis other)
+    {
+        swap(other);
+        return *this;
+    }
+
+    void swap(DrawableAxis& other)
+    {
+        using std::swap;
+        swap(mVisible, other.mVisible);
+        swap(mUniforms, other.mUniforms);
+        for (uint i = 0; i < 3; i++) {
+            swap(mMatrices[i], other.mMatrices[i]);
+        }
+        for (uint i = 0; i < 2; i++) {
+            mArrowBuffers[i].swap(other.mArrowBuffers[i]);
+        }
+    }
+
+    friend void swap(DrawableAxis& a, DrawableAxis& b) { a.swap(b); }
 
     void setSize(double size);
 
@@ -75,9 +108,14 @@ public:
 
     Box3d boundingBox() const override { return Box3d(); }
 
-    std::shared_ptr<DrawableObject> clone() const override
+    std::shared_ptr<DrawableObject> clone() const& override
     {
         return std::make_shared<DrawableAxis>(*this);
+    }
+
+    std::shared_ptr<DrawableObject> clone() && override
+    {
+        return std::make_shared<DrawableAxis>(std::move(*this));
     }
 
     bool isVisible() const override { return mVisible; }

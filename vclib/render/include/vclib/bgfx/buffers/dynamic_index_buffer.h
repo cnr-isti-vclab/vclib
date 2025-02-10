@@ -20,68 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/drawable/drawable_object_vector.h>
+#ifndef VCL_BGFX_BUFFERS_DYNAMIC_INDEX_BUFFER_H
+#define VCL_BGFX_BUFFERS_DYNAMIC_INDEX_BUFFER_H
+
+#include "generic_buffer.h"
 
 namespace vcl {
 
-void DrawableObjectVector::init()
+/**
+ * @brief The DynamicIndexBuffer manages the lifetime of a
+ * bgfx::DynamicIndexBufferHandle.
+ *
+ * It provides an interface to set the dynamic index buffer data and bind it to
+ * the rendering pipeline. The dynamic index buffer can be used for rendering
+ * or for compute shaders.
+ *
+ * @todo provide here the differences between a index buffer and a dynamic
+ * index buffer.
+ *
+ * @note A DynamicIndexBuffer can be moved but not copied (a copy would require
+ * to create a new bgfx::DynamicIndexBufferHandle, that can be done only having
+ * access to the data). Any class that contains a DynamicIndexBuffer should
+ * implement the copy constructor and the copy assignment operator.
+ */
+class DynamicIndexBuffer : public GenericBuffer<bgfx::DynamicIndexBufferHandle>
 {
-    for (auto& p : *this) {
-        p->init();
-    }
-}
+    using Base = GenericBuffer<bgfx::DynamicIndexBufferHandle>;
 
-void DrawableObjectVector::draw(uint viewId) const
-{
-    if (isVisible()) {
-        for (const auto& p : *this) {
-            if (p->isVisible())
-                p->draw(viewId);
+public:
+    /**
+     * @brief Empty constructor.
+     *
+     * It creates an invalid DynamicIndexBuffer object.
+     */
+    DynamicIndexBuffer() = default;
+
+    void create(uint size, ushort flags = BGFX_BUFFER_NONE)
+    {
+        destroy();
+        if (size != 0)
+            mHandle = bgfx::createDynamicIndexBuffer(size, flags);
+    }
+
+    void update(uint startIndex, const bgfx::Memory* data)
+    {
+        if (bgfx::isValid(mHandle)) {
+            bgfx::update(mHandle, startIndex, data);
         }
     }
-}
 
-Box3d DrawableObjectVector::boundingBox() const
-{
-    Box3d bb;
-    if (Base::size() > 0) {
-        uint i = firstVisibleObject();
-
-        for (; i < Base::size(); i++) { // rest of the list
-            if (Base::at(i)->isVisible()) {
-                bb.add(Base::at(i)->boundingBox());
-            }
+    /**
+     * @brief Bind the dynamic index buffer to the rendering pipeline.
+     */
+    void bind() const
+    {
+        if (bgfx::isValid(mHandle)) {
+            bgfx::setIndexBuffer(mHandle);
         }
     }
-    return bb;
-}
-
-std::shared_ptr<DrawableObject> DrawableObjectVector::clone() const&
-{
-    return std::make_shared<DrawableObjectVector>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableObjectVector::clone() &&
-{
-    return std::make_shared<DrawableObjectVector>(std::move(*this));
-}
-
-bool DrawableObjectVector::isVisible() const
-{
-    return mVisible;
-}
-
-void DrawableObjectVector::setVisibility(bool vis)
-{
-    mVisible = vis;
-}
-
-uint DrawableObjectVector::firstVisibleObject() const
-{
-    for (uint i = 0; i < Base::size(); i++)
-        if (Base::at(i)->isVisible())
-            return i;
-    return UINT_NULL;
-}
+};
 
 } // namespace vcl
+
+#endif // VCL_BGFX_BUFFERS_DYNAMIC_INDEX_BUFFER_H

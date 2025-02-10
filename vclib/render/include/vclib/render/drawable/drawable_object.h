@@ -95,10 +95,44 @@ public:
      * more details about this paradigm, check polimorphism clone in modern c++:
      * https://www.fluentcpp.com/2017/09/08/make-polymorphic-copy-modern-cpp/
      *
-     * @return A new dynamically allocated DrawableObject that is a copy of the
-     * current one.
+     * Generally, if your class that inherits from DrawableObject is called
+     * MyObject, the clone member function should be implemented as follows:
+     *
+     * @code{.cpp}
+     * std::shared_ptr<DrawableObject> MyObject::clone() const&
+     * {
+     *    return std::make_shared<MyObject>(*this);
+     * }
+     * @endcode
+     *
+     * @return A shared pointers that points to a new DrawableObject that is a
+     * copy of the current one.
      */
-    virtual std::shared_ptr<DrawableObject> clone() const = 0;
+    virtual std::shared_ptr<DrawableObject> clone() const& = 0;
+
+    /**
+     * @brief This member function is used to create a new DrawableObject that
+     * is a moved from the current one. This object will be destroyed after the
+     * call of this function.
+     * Each derived class must implement this member function,
+     * that returns a shared pointer pointing to the moved object. For
+     * more details about this paradigm, check polimorphism clone in modern c++:
+     * https://www.fluentcpp.com/2017/09/08/make-polymorphic-copy-modern-cpp/
+     *
+     * Generally, if your class that inherits from DrawableObject is called
+     * MyObject, the clone member function should be implemented as follows:
+     *
+     * @code{.cpp}
+     * std::shared_ptr<DrawableObject> MyObject::clone() &&
+     * {
+     *    return std::make_shared<MyObject>(std::move(*this));
+     * }
+     * @endcode
+     *
+     * @return A shared pointers that points to a new DrawableObject that is a
+     * moved from the current one.
+     */
+    virtual std::shared_ptr<DrawableObject> clone() && = 0;
 
     /**
      * @brief This member function is used to check if the object is visible.

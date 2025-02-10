@@ -47,5 +47,6 @@ int main(int argc, char** argv)
             vcl::Color::LightRed;
     }
 
-    return showMeshesOnDefaultViewer(argc, argv, m, samples);
+    return showMeshesOnDefaultViewer(
+        argc, argv, std::move(m), std::move(samples));
 }

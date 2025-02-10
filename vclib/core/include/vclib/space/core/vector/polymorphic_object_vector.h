@@ -35,7 +35,7 @@ namespace vcl {
  *
  * The PolymorphicObjectVector class is a container that stores a collection of
  * polymorphic objects, having a common base class T. The class is designed to
- * work with objects that are clonable, i.e., that implement the Clonable
+ * work with objects that are cloneable, i.e., that implement the Cloneable
  * concept (they must implement a member function `clone()` that returns a
  * shared pointer that points to a newly created object).
  *
@@ -53,7 +53,7 @@ namespace vcl {
  * have a dynamic size, and it will use a vector to store the elements.
  *
  * @tparam T: The base class of the polymorphic objects stored in the container.
- * The class T must implement the Clonable concept.
+ * The class T must implement the Cloneable concept.
  * @tparam N: the size of the container. If `N` is greater than or equal to
  * zero, the container will have a fixed size of `N` elements, and it will use
  * an array to store the elements. If `N` is less than zero, the container will
@@ -355,12 +355,12 @@ public:
      * @brief Resize the Vector to the specified size.
      *
      * Resizes the Vector to the specified size `n` by resizing the underlying
-     * `std::vector`. This member function is only available if the size of the
-     * Vector is not known at compile-time, as specified by the concept
-     * requirement `requires (N < 0)`.
+     * `std::vector`. If the new size is greater than the current size, the new
+     * elements are initialized with a clone of the value `v`.
      *
-     * If the new size is greater than the current size, the new elements are
-     * initialized with a clone of the value `v`.
+     * This member function is only available if the size of the Vector is not
+     * known at compile-time, as specified by the concept requirement `requires
+     * (N < 0)`.
      *
      * @param[in] n: The new size of the Vector.
      * @param[in] v: The value to use to fill the new elements of the Vector.
@@ -383,23 +383,45 @@ public:
      * @brief Add an element to the end of the Vector.
      *
      * Adds the clone of the  element `v` to the end of the Vector by calling
-     * the `push_back()` member function of the underlying `std::vector`. This
-     * member function is only available if the size of the Vector is not known
-     * at compile-time, as specified by the concept requirement `requires (N <
-     * 0)`.
+     * the `push_back()` member function of the underlying `std::vector`.
+     *
+     * This member function is only available if the size of the Vector is not
+     * known at compile-time, as specified by the concept requirement `requires
+     * (N < 0)`.
      *
      * @param[in] v: The value to add to the end of the Vector.
      */
     void pushBack(const T& v) requires (N < 0) { Base::pushBack(v.clone()); }
 
     /**
+     * @brief Add an element to the end of the Vector.
+     *
+     * Adds the clone of the  element `v` to the end of the Vector by calling
+     * the `push_back()` member function of the underlying `std::vector`.
+     * If the Cloneable type T implements the move clone, the element is moved
+     * into the vector.
+     *
+     * This member function is only available if the size of the Vector is not
+     * known at compile-time, as specified by the concept requirement `requires
+     * (N < 0)`.
+     *
+     * @param[in] v: The value to add to the end of the Vector.
+     */
+    void pushBack(T&& v) requires (N < 0)
+    {
+        Base::pushBack(std::move(v).clone());
+    }
+
+    /**
      * @brief Insert an element at the specified position in the Vector.
      *
      * Inserts the clone of the element `v` at the position specified by `i` in
      * the Vector by calling the `insert()` member function of the underlying
-     * `std::vector`. This member function is only available if the size of the
-     * Vector is not known at compile-time, as specified by the concept
-     * requirement `requires (N < 0)`.
+     * `std::vector`.
+     *
+     * This member function is only available if the size of the Vector is not
+     * known at compile-time, as specified by the concept requirement `requires
+     * (N < 0)`.
      *
      * @param[in] i: The index at which to insert the element.
      * @param[in] v: The value to insert into the Vector.
@@ -408,6 +430,28 @@ public:
     {
         assert(i < Base::size() + 1);
         Base::insert(Base::begin() + i, v.clone());
+    }
+
+    /**
+     * @brief Insert an element at the specified position in the Vector.
+     *
+     * Inserts the clone of the element `v` at the position specified by `i` in
+     * the Vector by calling the `insert()` member function of the underlying
+     * `std::vector`.
+     * If the Cloneable type T implements the move clone, the element is moved
+     * into the vector.
+     *
+     * This member function is only available if the size of the Vector is not
+     * known at compile-time, as specified by the concept requirement `requires
+     * (N < 0)`.
+     *
+     * @param[in] i: The index at which to insert the element.
+     * @param[in] v: The value to insert into the Vector.
+     */
+    void insert(uint i, T&& v) requires (N < 0)
+    {
+        assert(i < Base::size() + 1);
+        Base::insert(Base::begin() + i, std::move(v).clone());
     }
 
     /**

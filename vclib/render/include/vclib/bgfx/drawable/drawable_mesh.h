@@ -28,7 +28,6 @@
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 #include <bgfx/bgfx.h>
@@ -46,7 +45,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH);
 
-    DrawableMeshUniforms               mMeshUniforms;
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
@@ -60,7 +58,33 @@ public:
         updateBuffers();
     }
 
+    DrawableMeshBGFX(MeshType&& mesh) :
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
+    {
+        updateBuffers();
+    }
+
+    DrawableMeshBGFX(const DrawableMeshBGFX& drawableMesh) :
+            AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
+            MeshType(drawableMesh), mBoundingBox(drawableMesh.mBoundingBox),
+            mMeshRenderSettingsUniforms(
+                drawableMesh.mMeshRenderSettingsUniforms)
+    {
+        if constexpr (HasName<MeshType>) {
+            AbstractDrawableMesh::name() = drawableMesh.name();
+        }
+        mMRB.update(*this);
+    }
+
+    DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh) { swap(drawableMesh); }
+
     ~DrawableMeshBGFX() = default;
+
+    DrawableMeshBGFX& operator=(DrawableMeshBGFX drawableMesh)
+    {
+        swap(drawableMesh);
+        return *this;
+    }
 
     void updateBuffers() override
     {
@@ -83,10 +107,9 @@ public:
             mBoundingBox = vcl::boundingBox(*this);
         }
 
-        mMRB = MeshRenderBuffers<MeshType>(*this);
+        mMRB.update(*this);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
-        mMeshUniforms.update(*this);
     }
 
     void swap(DrawableMeshBGFX& other)
@@ -97,7 +120,6 @@ public:
         swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
         swap(mProgram, other.mProgram);
-        swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
     }
 
@@ -158,9 +180,14 @@ public:
 
     Box3d boundingBox() const override { return mBoundingBox; }
 
-    std::shared_ptr<DrawableObject> clone() const override
+    std::shared_ptr<DrawableObject> clone() const& override
     {
         return std::make_shared<DrawableMeshBGFX>(*this);
+    }
+
+    std::shared_ptr<DrawableObject> clone() && override
+    {
+        return std::make_shared<DrawableMeshBGFX>(std::move(*this));
     }
 
     void setVisibility(bool vis) override
@@ -180,7 +207,7 @@ private:
     {
         mMeshRenderSettingsUniforms.updatePrimitive(primitive);
         mMeshRenderSettingsUniforms.bind();
-        mMeshUniforms.bind();
+        mMRB.bindUniforms();
     }
 };
 
