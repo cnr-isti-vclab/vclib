@@ -36,6 +36,7 @@ struct VclProgram
         DRAWABLE_AXIS,
         DRAWABLE_DIRECTIONAL_LIGHT,
         DRAWABLE_MESH,
+        DRAWABLE_MESH_POINTS,
         DRAWABLE_TRACKBALL,
 
         FONT_BASIC,
@@ -55,6 +56,7 @@ struct VclProgram
             "DrawableAxis",
             "DrawableDirectionalLight",
             "DrawableMesh",
+            "DrawableMeshPoints",
             "DrawableTrackball",
 
             "FontBasic",

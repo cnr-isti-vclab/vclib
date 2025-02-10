@@ -45,6 +45,10 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH);
 
+    bgfx::ProgramHandle mProgramPoints =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_MESH_POINTS);
+
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
@@ -131,11 +135,11 @@ public:
 
     void draw(uint viewId) const override
     {
-        if (bgfx::isValid(mProgram)) {
-            uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                             BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                             BGFX_STATE_BLEND_NORMAL;
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
+                         BGFX_STATE_BLEND_NORMAL;
 
+        if (bgfx::isValid(mProgram)) {
             if (mMRS.isSurfaceVisible()) {
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
@@ -156,16 +160,6 @@ public:
 
                 bgfx::submit(viewId, mProgram);
             }
-
-            if (mMRS.isPointVisible()) {
-                mMRB.bindVertexBuffers(mMRS);
-                bindUniforms(VCL_MRS_DRAWING_POINTS);
-
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-                bgfx::submit(viewId, mProgram);
-            }
-
             if (mMRS.isEdgesVisible()) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::EDGES);
@@ -174,6 +168,17 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
                 bgfx::submit(viewId, mProgram);
+            }
+        }
+
+        if (mMRS.isPointVisible()) {
+            if (bgfx::isValid(mProgramPoints)) {
+                mMRB.bindVertexBuffers(mMRS);
+                bindUniforms(VCL_MRS_DRAWING_POINTS);
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+
+                bgfx::submit(viewId, mProgramPoints);
             }
         }
     }
