@@ -41,9 +41,21 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 
     MeshRenderBuffers<MeshType> mMRB;
 
-    bgfx::ProgramHandle mProgram =
+    bgfx::ProgramHandle mProgramEdges =
         Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH);
+            VclProgram::DRAWABLE_MESH_EDGES);
+
+    bgfx::ProgramHandle mProgramPoints =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_MESH_POINTS);
+
+    bgfx::ProgramHandle mProgramSurface =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_MESH_SURFACE);
+
+    bgfx::ProgramHandle mProgramWireframe =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_MESH_WIREFRAME);
 
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
@@ -120,7 +132,6 @@ public:
         MeshType::swap(other);
         swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
-        swap(mProgram, other.mProgram);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
     }
 
@@ -132,12 +143,23 @@ public:
 
     void draw(uint viewId) const override
     {
-        if (bgfx::isValid(mProgram)) {
-            uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                             BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                             BGFX_STATE_BLEND_NORMAL;
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
+                         BGFX_STATE_BLEND_NORMAL;
 
-            if (mMRS.isSurfaceVisible()) {
+        if (mMRS.isPointVisible()) {
+            if (bgfx::isValid(mProgramPoints)) {
+                mMRB.bindVertexBuffers(mMRS);
+                bindUniforms(VCL_MRS_DRAWING_POINTS);
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+
+                bgfx::submit(viewId, mProgramPoints);
+            }
+        }
+
+        if (mMRS.isSurfaceVisible()) {
+            if (bgfx::isValid(mProgramSurface)) {
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers();
@@ -145,30 +167,23 @@ public:
 
                 bgfx::setState(state);
 
-                bgfx::submit(viewId, mProgram);
+                bgfx::submit(viewId, mProgramSurface);
             }
+        }
 
-            if (mMRS.isWireframeVisible()) {
-                mMRB.drawWireframe(viewId);
-            }
+        if (mMRS.isWireframeVisible()) {
+            mMRB.drawWireframe(viewId);
+        }
 
-            if (mMRS.isPointVisible()) {
-                mMRB.bindVertexBuffers(mMRS);
-                bindUniforms(VCL_MRS_DRAWING_POINTS);
-
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-                bgfx::submit(viewId, mProgram);
-            }
-
-            if (mMRS.isEdgesVisible()) {
+        if (mMRS.isEdgesVisible()) {
+            if (bgfx::isValid(mProgramEdges)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::EDGES);
                 bindUniforms(VCL_MRS_DRAWING_EDGES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewId, mProgram);
+                bgfx::submit(viewId, mProgramEdges);
             }
         }
     }
