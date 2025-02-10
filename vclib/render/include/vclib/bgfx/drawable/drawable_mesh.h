@@ -41,10 +41,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 
     MeshRenderBuffers<MeshType> mMRB;
 
-    bgfx::ProgramHandle mProgram =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH);
-
     bgfx::ProgramHandle mProgramEdges =
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH_EDGES);
@@ -135,7 +131,6 @@ public:
         MeshType::swap(other);
         swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
-        swap(mProgram, other.mProgram);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
     }
 
@@ -150,10 +145,6 @@ public:
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
-
-        if (bgfx::isValid(mProgram)) {
-
-        }
 
         if (mMRS.isPointVisible()) {
             if (bgfx::isValid(mProgramPoints)) {

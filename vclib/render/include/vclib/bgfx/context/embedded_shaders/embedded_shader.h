@@ -35,7 +35,6 @@ struct VclProgram
     enum Enum {
         DRAWABLE_AXIS,
         DRAWABLE_DIRECTIONAL_LIGHT,
-        DRAWABLE_MESH,
         DRAWABLE_MESH_EDGES,
         DRAWABLE_MESH_POINTS,
         DRAWABLE_MESH_SURFACE,
@@ -58,7 +57,6 @@ struct VclProgram
         programNames = {
             "DrawableAxis",
             "DrawableDirectionalLight",
-            "DrawableMesh",
             "DrawableMeshEdges",
             "DrawableMeshPoints",
             "DrawableMeshSurface",

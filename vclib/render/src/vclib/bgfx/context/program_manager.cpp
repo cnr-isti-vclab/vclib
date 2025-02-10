@@ -74,14 +74,6 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
     bgfx::RendererType::Enum type)
 {
     switch (program) {
-    case VclProgram::DRAWABLE_MESH:
-        return vcl::createProgram(
-            vcl::loadShader(
-                EmbeddedShader<VclProgram::DRAWABLE_MESH>::vertexEmbeddedShader(
-                    type)),
-            vcl::loadShader(
-                EmbeddedShader<
-                    VclProgram::DRAWABLE_MESH>::fragmentEmbeddedShader(type)));
 
     case VclProgram::DRAWABLE_MESH_EDGES:
         return vcl::createProgram(

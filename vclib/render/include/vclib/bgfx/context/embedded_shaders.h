@@ -25,7 +25,6 @@
 
 #include "embedded_shaders/drawable_axis.h"
 #include "embedded_shaders/drawable_directional_light.h"
-#include "embedded_shaders/drawable_mesh.h"
 #include "embedded_shaders/drawable_mesh_points.h"
 #include "embedded_shaders/drawable_trackball.h"
 #include "embedded_shaders/font_basic.h"
