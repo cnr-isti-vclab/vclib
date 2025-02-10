@@ -90,6 +90,13 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
             vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_POINTS>::
                                 fragmentEmbeddedShader(type)));
 
+    case VclProgram::DRAWABLE_MESH_SURFACE:
+        return vcl::createProgram(
+            vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
+                            vertexEmbeddedShader(type)),
+            vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
+                            fragmentEmbeddedShader(type)));
+
     case VclProgram::DRAWABLE_AXIS:
         return vcl::createProgram(
             vcl::loadShader(

@@ -49,6 +49,10 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance().programManager().getProgram(
             VclProgram::DRAWABLE_MESH_POINTS);
 
+    bgfx::ProgramHandle mProgramSurface =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_MESH_SURFACE);
+
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
@@ -140,17 +144,6 @@ public:
                          BGFX_STATE_BLEND_NORMAL;
 
         if (bgfx::isValid(mProgram)) {
-            if (mMRS.isSurfaceVisible()) {
-                mMRB.bindTextures(); // Bind textures before vertex buffers!!
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers();
-                bindUniforms(VCL_MRS_DRAWING_SURFACE);
-
-                bgfx::setState(state);
-
-                bgfx::submit(viewId, mProgram);
-            }
-
             if (mMRS.isWireframeVisible()) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::WIREFRAME);
@@ -179,6 +172,19 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
                 bgfx::submit(viewId, mProgramPoints);
+            }
+        }
+
+        if (mMRS.isSurfaceVisible()) {
+            if (bgfx::isValid(mProgramSurface)) {
+                mMRB.bindTextures(); // Bind textures before vertex buffers!!
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers();
+                bindUniforms(VCL_MRS_DRAWING_SURFACE);
+
+                bgfx::setState(state);
+
+                bgfx::submit(viewId, mProgramSurface);
             }
         }
     }
