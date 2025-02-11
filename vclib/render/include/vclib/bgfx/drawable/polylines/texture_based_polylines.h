@@ -40,17 +40,17 @@ class TextureBasedPolylines : public Lines<PolylineSettings>
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::POLYLINES_TEXTURE_BASED_VSFS>();
+            .getProgram<VertFragProgram::POLYLINES_TEXTURE>();
 
     bgfx::ProgramHandle mJointsPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::POLYLINES_TEXTURE_BASED_JOINTS_VSFS>();
+            .getProgram<VertFragProgram::POLYLINES_TEXTURE_JOINTS>();
 
     bgfx::ProgramHandle mComputeTexturePH =
         Context::instance()
             .programManager()
-            .getComputeProgram<ComputeProgram::POLYLINES_TEXTURE_BASED_CS>();
+            .getComputeProgram<ComputeProgram::POLYLINES_TEXTURE>();
 
     const uint mMaxTextureSize = bgfx::getCaps()->limits.maxTextureSize;
 

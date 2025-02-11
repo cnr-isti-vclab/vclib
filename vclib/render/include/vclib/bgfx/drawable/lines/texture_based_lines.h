@@ -40,11 +40,11 @@ class TextureBasedLines : public Lines<LineSettings>
     bgfx::ProgramHandle mComputeTexturePH =
         Context::instance()
             .programManager()
-            .getComputeProgram<ComputeProgram::LINES_TEXTURE_BASED_CS>();
+            .getComputeProgram<ComputeProgram::LINES_TEXTURE>();
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::LINES_TEXTURE_BASED_VSFS>();
+            .getProgram<VertFragProgram::LINES_TEXTURE>();
 
     const uint mMaxTextureSize = bgfx::getCaps()->limits.maxTextureSize;
 

@@ -40,18 +40,18 @@ class IndirectBasedPolylines : public Lines<PolylineSettings>
     bgfx::ProgramHandle mComputeIndirectPH =
         Context::instance()
             .programManager()
-            .getComputeProgram<ComputeProgram::POLYLINES_INDIRECT_BASED_CS>();
+            .getComputeProgram<ComputeProgram::POLYLINES_INDIRECT>();
 
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::POLYLINES_INDIRECT_BASED_VSFS>();
+            .getProgram<VertFragProgram::POLYLINES_INDIRECT>();
 
     bgfx::ProgramHandle mJointsPH =
         Context::instance()
             .programManager()
             .getProgram<
-                VertFragProgram::POLYLINES_INDIRECT_BASED_JOINTS_VSFS>();
+                VertFragProgram::POLYLINES_INDIRECT_JOINTS>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;

@@ -36,7 +36,7 @@ class CPUGeneratedLines : public Lines<LineSettings>
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::LINES_CPU_GENERATED_VSFS>();
+            .getProgram<VertFragProgram::LINES>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;

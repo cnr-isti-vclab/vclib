@@ -36,12 +36,12 @@ class GPUGeneratedLines : public Lines<LineSettings>
     bgfx::ProgramHandle mComputeVerticesPH =
         Context::instance()
             .programManager()
-            .getComputeProgram<ComputeProgram::LINES_GPU_GENERATED_CS>();
+            .getComputeProgram<ComputeProgram::LINES>();
 
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::LINES_CPU_GENERATED_VSFS>();
+            .getProgram<VertFragProgram::LINES>();
 
     // buffer containing the input points - will be the input of the compute
     // shader

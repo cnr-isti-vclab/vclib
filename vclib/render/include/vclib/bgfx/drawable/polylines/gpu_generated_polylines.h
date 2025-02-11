@@ -36,12 +36,12 @@ class GPUGeneratedPolylines : public Lines<PolylineSettings>
     bgfx::ProgramHandle mComputeVertexPH =
         Context::instance()
             .programManager()
-            .getComputeProgram<ComputeProgram::POLYLINES_GPU_GENERATED_CS>();
+            .getComputeProgram<ComputeProgram::POLYLINES>();
 
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::POLYLINES_CPU_GENERATED_VSFS>();
+            .getProgram<VertFragProgram::POLYLINES>();
 
     // buffer containing the input points - will be the input of the compute
     // shader

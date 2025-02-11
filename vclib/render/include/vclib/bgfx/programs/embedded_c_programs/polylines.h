@@ -20,40 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
-#define VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_POLYLINES_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_POLYLINES_H
 
-#include "polyline_settings.h"
-
-#include <vclib/bgfx/buffers.h>
-#include <vclib/bgfx/context.h>
-#include <vclib/bgfx/drawable/lines_common/lines.h>
+#include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
-class CPUGeneratedPolylines : public Lines<PolylineSettings>
+template<>
+struct ComputeLoader<ComputeProgram::POLYLINES>
 {
-    bgfx::ProgramHandle mLinesPH =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::POLYLINES>();
-
-    VertexBuffer mVertices;
-    IndexBuffer  mSegmentIndices;
-    IndexBuffer  mJointIndices;
-
-public:
-    CPUGeneratedPolylines() = default;
-
-    CPUGeneratedPolylines(const std::vector<LinesVertex>& points);
-
-    void swap(CPUGeneratedPolylines& other);
-
-    void setPoints(const std::vector<LinesVertex>& points);
-
-    void draw(uint viewId) const;
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_POLYLINES_H

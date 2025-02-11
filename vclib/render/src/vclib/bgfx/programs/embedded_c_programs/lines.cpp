@@ -20,40 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
-#define VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
+#include <vclib/bgfx/programs/embedded_c_programs/lines.h>
 
-#include "polyline_settings.h"
+#include <shaders/drawable/drawable_lines/gpu_generated_lines/cs_compute_buffers.sc.400.bin.h>
 
-#include <vclib/bgfx/buffers.h>
-#include <vclib/bgfx/context.h>
-#include <vclib/bgfx/drawable/lines_common/lines.h>
+#include <shaders/drawable/drawable_lines/gpu_generated_lines/cs_compute_buffers.sc.essl.bin.h>
+
+#include <shaders/drawable/drawable_lines/gpu_generated_lines/cs_compute_buffers.sc.spv.bin.h>
+#ifdef _WIN32
+#include <shaders/drawable/drawable_lines/gpu_generated_lines/cs_compute_buffers.sc.dx11.bin.h>
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <shaders/drawable/drawable_lines/gpu_generated_lines/cs_compute_buffers.sc.mtl.bin.h>
+
+#endif // __APPLE__
 
 namespace vcl {
 
-class CPUGeneratedPolylines : public Lines<PolylineSettings>
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::LINES>::
+    computeShader(bgfx::RendererType::Enum type)
 {
-    bgfx::ProgramHandle mLinesPH =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::POLYLINES>();
-
-    VertexBuffer mVertices;
-    IndexBuffer  mSegmentIndices;
-    IndexBuffer  mJointIndices;
-
-public:
-    CPUGeneratedPolylines() = default;
-
-    CPUGeneratedPolylines(const std::vector<LinesVertex>& points);
-
-    void swap(CPUGeneratedPolylines& other);
-
-    void setPoints(const std::vector<LinesVertex>& points);
-
-    void draw(uint viewId) const;
-};
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_compute_buffers_essl, sizeof(cs_compute_buffers_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_compute_buffers_400, sizeof(cs_compute_buffers_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_compute_buffers_spv, sizeof(cs_compute_buffers_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_compute_buffers_dx11, sizeof(cs_compute_buffers_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_compute_buffers_mtl, sizeof(cs_compute_buffers_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
+}
 
 } // namespace vcl
-
-#endif // VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H

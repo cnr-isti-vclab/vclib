@@ -23,11 +23,11 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
 
-#include "embedded_c_programs/lines_gpu_generated_cs.h"
-#include "embedded_c_programs/lines_indirect_based_cs.h"
-#include "embedded_c_programs/lines_texture_based_cs.h"
-#include "embedded_c_programs/polylines_gpu_generated_cs.h"
-#include "embedded_c_programs/polylines_indirect_based_cs.h"
-#include "embedded_c_programs/polylines_texture_based_cs.h"
+#include "embedded_c_programs/lines.h"
+#include "embedded_c_programs/lines_indirect.h"
+#include "embedded_c_programs/lines_texture.h"
+#include "embedded_c_programs/polylines.h"
+#include "embedded_c_programs/polylines_indirect.h"
+#include "embedded_c_programs/polylines_texture.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H

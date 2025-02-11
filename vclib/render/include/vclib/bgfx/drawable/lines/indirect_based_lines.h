@@ -40,11 +40,11 @@ class IndirectBasedLines : public Lines<LineSettings>
     bgfx::ProgramHandle mComputeIndirectPH =
         Context::instance()
             .programManager()
-            .getComputeProgram<ComputeProgram::LINES_INDIRECT_BASED_CS>();
+            .getComputeProgram<ComputeProgram::LINES_INDIRECT>();
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::LINES_INDIRECT_BASED_VSFS>();
+            .getProgram<VertFragProgram::LINES_INDIRECT>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;

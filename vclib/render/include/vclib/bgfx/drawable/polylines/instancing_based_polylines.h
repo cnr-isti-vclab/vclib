@@ -41,12 +41,12 @@ class InstancingBasedPolylines : public Lines<PolylineSettings>
         Context::instance()
             .programManager()
             .getProgram<
-                VertFragProgram::POLYLINES_INSTANCING_BASED_JOINTS_VSFS>();
+                VertFragProgram::POLYLINES_INSTANCING_JOINTS>();
 
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::POLYLINES_INSTANCING_BASED_VSFS>();
+            .getProgram<VertFragProgram::POLYLINES_INSTANCING>();
 
     std::vector<LinesVertex> mPoints;
 
