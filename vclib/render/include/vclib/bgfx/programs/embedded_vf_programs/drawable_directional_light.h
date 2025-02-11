@@ -23,20 +23,17 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_DIRECTIONAL_LIGHT_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_DIRECTIONAL_LIGHT_H
 
-#include <vclib/bgfx/programs/loader.h>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
 template<>
-struct Loader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>
+struct VertFragLoader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>
 {
-    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+    static bgfx::EmbeddedShader::Data vertexShader(
         bgfx::RendererType::Enum type);
 
-    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
-        bgfx::RendererType::Enum type);
-
-    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
+    static bgfx::EmbeddedShader::Data fragmentShader(
         bgfx::RendererType::Enum type);
 };
 

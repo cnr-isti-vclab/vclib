@@ -41,8 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
-    vertexEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -79,8 +79,8 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
     }
 }
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
-    fragmentEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
+    fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -115,13 +115,6 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
 #endif
     default: return {type, nullptr, 0};
     }
-}
-
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
-    computeEmbeddedShader(bgfx::RendererType::Enum type)
-{
-    static_assert(true, "Invalid shader type for Drawable Directional Light");
-    return {type, nullptr, 0};
 }
 
 } // namespace vcl

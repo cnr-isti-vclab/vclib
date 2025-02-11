@@ -20,23 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
+#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_LOADER_H
+#define VCL_BGFX_PROGRAMS_VERT_FRAG_LOADER_H
 
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#include "vert_frag_program.h"
+
+#include <bgfx/embedded_shader.h>
 
 namespace vcl {
 
-template<>
-struct VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE>
+template<VertFragProgram PROGRAM = VertFragProgram::COUNT>
+struct VertFragLoader
 {
     static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
+        bgfx::RendererType::Enum type)
+    {
+        static_assert(true, "Invalid program");
+        switch (type) {
+        case bgfx::RendererType::OpenGLES: return {type, nullptr, 0};
+        case bgfx::RendererType::OpenGL: return {type, nullptr, 0};
+        case bgfx::RendererType::Vulkan: return {type, nullptr, 0};
+#ifdef _WIN32
+        case bgfx::RendererType::Direct3D11: return {type, nullptr, 0};
+        case bgfx::RendererType::Direct3D12: return {type, nullptr, 0};
+#endif
+#ifdef __APPLE__
+        case bgfx::RendererType::Metal: return {type, nullptr, 0};
+#endif
+        default: return {type, nullptr, 0};
+        }
+    }
 
     static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
+        bgfx::RendererType::Enum type)
+    {
+        static_assert(true, "Invalid program");
+        switch (type) {
+        case bgfx::RendererType::OpenGLES: return {type, nullptr, 0};
+        case bgfx::RendererType::OpenGL: return {type, nullptr, 0};
+        case bgfx::RendererType::Vulkan: return {type, nullptr, 0};
+#ifdef _WIN32
+        case bgfx::RendererType::Direct3D11: return {type, nullptr, 0};
+        case bgfx::RendererType::Direct3D12: return {type, nullptr, 0};
+#endif
+#ifdef __APPLE__
+        case bgfx::RendererType::Metal: return {type, nullptr, 0};
+#endif
+        default: return {type, nullptr, 0};
+        }
+    }
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
+#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_LOADER_H

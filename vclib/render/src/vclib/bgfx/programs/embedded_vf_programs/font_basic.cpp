@@ -41,7 +41,7 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_BASIC>::vertexEmbeddedShader(
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_BASIC>::vertexShader(
     bgfx::RendererType::Enum type)
 {
     switch (type) {
@@ -64,8 +64,8 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_BASIC>::vertexEmbeddedSh
     }
 }
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_BASIC>::
-    fragmentEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_BASIC>::
+    fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -85,13 +85,6 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_BASIC>::
 #endif
     default: return {type, nullptr, 0};
     }
-}
-
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_BASIC>::
-    computeEmbeddedShader(bgfx::RendererType::Enum type)
-{
-    static_assert(true, "Invalid shader type for Font Basic");
-    return {type, nullptr, 0};
 }
 
 } // namespace vcl

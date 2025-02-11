@@ -23,20 +23,17 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_H
 
-#include <vclib/bgfx/programs/loader.h>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
 template<>
-struct Loader<VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE>
+struct VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE>
 {
-    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+    static bgfx::EmbeddedShader::Data vertexShader(
         bgfx::RendererType::Enum type);
 
-    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
-        bgfx::RendererType::Enum type);
-
-    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
+    static bgfx::EmbeddedShader::Data fragmentShader(
         bgfx::RendererType::Enum type);
 };
 

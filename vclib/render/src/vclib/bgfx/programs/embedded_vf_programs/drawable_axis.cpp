@@ -41,8 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_AXIS>::
-    vertexEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_AXIS>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -64,8 +64,8 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_AXIS>::
     }
 }
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_AXIS>::
-    fragmentEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_AXIS>::
+    fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -85,13 +85,6 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_AXIS>::
 #endif
     default: return {type, nullptr, 0};
     }
-}
-
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_AXIS>::
-    computeEmbeddedShader(bgfx::RendererType::Enum type)
-{
-    static_assert(true, "Invalid shader type for Drawable Axis");
-    return {type, nullptr, 0};
 }
 
 } // namespace vcl

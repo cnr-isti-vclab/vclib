@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 #define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 
+#include <vclib/bgfx/programs/embedded_compute_programs.h>
 #include <vclib/bgfx/programs/embedded_vf_programs.h>
 #include <vclib/bgfx/programs/load_program.h>
 #include <vclib/types.h>
@@ -35,18 +36,22 @@ class ProgramManager
 {
     bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
 
-    std::array<bgfx::ProgramHandle, toUnderlying(VertFragProgram::COUNT)> mPrograms;
+    std::array<bgfx::ProgramHandle, toUnderlying(VertFragProgram::COUNT)>
+        mVFPrograms;
+
+    std::array<bgfx::ProgramHandle, toUnderlying(ComputeProgram::COUNT)>
+        mCPrograms;
 
 public:
     ProgramManager(bgfx::RendererType::Enum renderType) :
             mRenderType(renderType)
     {
-        mPrograms.fill(BGFX_INVALID_HANDLE);
+        mVFPrograms.fill(BGFX_INVALID_HANDLE);
     }
 
     ~ProgramManager()
     {
-        for (const auto& program : mPrograms) {
+        for (const auto& program : mVFPrograms) {
             if (bgfx::isValid(program)) {
                 bgfx::destroy(program);
             }
@@ -57,15 +62,25 @@ public:
     bgfx::ProgramHandle getProgram()
     {
         uint p = toUnderlying(PROGRAM);
-        if (!bgfx::isValid(mPrograms[p])) {
-            mPrograms[p] = vcl::createProgram(
-                vcl::loadShader(Loader<PROGRAM>::vertexEmbeddedShader(
+        if (!bgfx::isValid(mVFPrograms[p])) {
+            mVFPrograms[p] = vcl::createProgram(
+                vcl::loadShader(VertFragLoader<PROGRAM>::vertexShader(
                     mRenderType)),
                 vcl::loadShader(
-                    Loader<PROGRAM>::fragmentEmbeddedShader(
+                    VertFragLoader<PROGRAM>::fragmentShader(
                         mRenderType)));
         }
-        return mPrograms[p];
+        return mVFPrograms[p];
+    }
+
+    template<ComputeProgram PROGRAM>
+    bgfx::ProgramHandle getComputeProgram()
+    {
+        uint p = toUnderlying(PROGRAM);
+        if (!bgfx::isValid(mCPrograms[p])) {
+            // TODO - use ComputeLoader
+        }
+        return mCPrograms[p];
     }
 };
 

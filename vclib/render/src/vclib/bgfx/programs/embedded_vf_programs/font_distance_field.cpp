@@ -41,8 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_DISTANCE_FIELD>::
-    vertexEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -79,8 +79,8 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_DISTANCE_FIELD>::
     }
 }
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_DISTANCE_FIELD>::
-    fragmentEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD>::
+    fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -115,13 +115,6 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_DISTANCE_FIELD>::
 #endif
     default: return {type, nullptr, 0};
     }
-}
-
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::FONT_DISTANCE_FIELD>::
-    computeEmbeddedShader(bgfx::RendererType::Enum type)
-{
-    static_assert(true, "Invalid shader type for Font Basic");
-    return {type, nullptr, 0};
 }
 
 } // namespace vcl

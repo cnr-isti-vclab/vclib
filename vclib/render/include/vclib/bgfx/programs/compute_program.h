@@ -20,23 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
-
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
 
 namespace vcl {
 
-template<>
-struct VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE>
+enum class ComputeProgram
 {
-    static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
-
-    static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
+    COUNT
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
+#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H

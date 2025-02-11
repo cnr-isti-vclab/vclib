@@ -41,8 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_TRACKBALL>::
-    vertexEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_TRACKBALL>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -75,8 +75,8 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_TRACKBALL>::
     }
 }
 
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_TRACKBALL>::
-    fragmentEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_TRACKBALL>::
+    fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -108,13 +108,6 @@ bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_TRACKBALL>::
 #endif
     default: return {type, nullptr, 0};
     }
-}
-
-bgfx::EmbeddedShader::Data Loader<VertFragProgram::DRAWABLE_TRACKBALL>::
-    computeEmbeddedShader(bgfx::RendererType::Enum type)
-{
-    static_assert(true, "Invalid shader type for Drawable Trackball");
-    return {type, nullptr, 0};
 }
 
 } // namespace vcl
