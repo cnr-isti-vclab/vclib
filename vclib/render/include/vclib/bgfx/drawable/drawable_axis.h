@@ -58,7 +58,7 @@ class DrawableAxis : public DrawableObject
 
     bgfx::ProgramHandle mProgram = Context::instance()
                                        .programManager()
-                                       .getProgram<VclProgram::DRAWABLE_AXIS>();
+                                       .getProgram<VertFragProgram::DRAWABLE_AXIS>();
 
     mutable DrawableAxisUniforms mUniforms;
 

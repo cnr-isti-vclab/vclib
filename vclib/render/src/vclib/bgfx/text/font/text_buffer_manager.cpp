@@ -896,7 +896,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 	switch (bc.fontType)
 	{
 	case FONT_TYPE_ALPHA:
-        program = progMan.getProgram<vcl::VclProgram::FONT_BASIC>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_BASIC>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -905,7 +905,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE:
 	{
-        program = progMan.getProgram<vcl::VclProgram::FONT_DISTANCE_FIELD>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_DISTANCE_FIELD>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -917,7 +917,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 	}
 
 	case FONT_TYPE_DISTANCE_SUBPIXEL:
-        program = progMan.getProgram<vcl::VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_DISTANCE_FIELD_SUBPIXEL>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_FACTOR, BGFX_STATE_BLEND_INV_SRC_COLOR)
@@ -927,7 +927,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_OUTLINE:
 	{
-        program = progMan.getProgram<vcl::VclProgram::FONT_DISTANCE_FIELD_OUTLINE>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -940,7 +940,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_OUTLINE_IMAGE:
 	{
-        program = progMan.getProgram<vcl::VclProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -953,7 +953,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_DROP_SHADOW:
 	{
-        program = progMan.getProgram<vcl::VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -970,7 +970,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_DROP_SHADOW_IMAGE:
 	{
-        program = progMan.getProgram<vcl::VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -987,7 +987,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_OUTLINE_DROP_SHADOW_IMAGE:
 	{
-        program = progMan.getProgram<vcl::VclProgram::FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE>();
+        program = progMan.getProgram<vcl::VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE>();
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)

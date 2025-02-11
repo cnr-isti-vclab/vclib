@@ -23,10 +23,8 @@
 #ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 #define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 
-#include "embedded_program.h"
-
-#include <vclib/bgfx/context/embedded_programs.h>
-#include <vclib/bgfx/context/load_program.h>
+#include <vclib/bgfx/programs/embedded_vf_programs.h>
+#include <vclib/bgfx/programs/load_program.h>
 #include <vclib/types.h>
 
 #include <array>
@@ -37,7 +35,7 @@ class ProgramManager
 {
     bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
 
-    std::array<bgfx::ProgramHandle, toUnderlying(VclProgram::COUNT)> mPrograms;
+    std::array<bgfx::ProgramHandle, toUnderlying(VertFragProgram::COUNT)> mPrograms;
 
 public:
     ProgramManager(bgfx::RendererType::Enum renderType) :
@@ -55,16 +53,16 @@ public:
         }
     }
 
-    template<VclProgram PROGRAM>
+    template<VertFragProgram PROGRAM>
     bgfx::ProgramHandle getProgram()
     {
         uint p = toUnderlying(PROGRAM);
         if (!bgfx::isValid(mPrograms[p])) {
             mPrograms[p] = vcl::createProgram(
-                vcl::loadShader(EmbeddedProgram<PROGRAM>::vertexEmbeddedShader(
+                vcl::loadShader(Loader<PROGRAM>::vertexEmbeddedShader(
                     mRenderType)),
                 vcl::loadShader(
-                    EmbeddedProgram<PROGRAM>::fragmentEmbeddedShader(
+                    Loader<PROGRAM>::fragmentEmbeddedShader(
                         mRenderType)));
         }
         return mPrograms[p];

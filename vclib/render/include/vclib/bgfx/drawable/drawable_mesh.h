@@ -44,22 +44,22 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     bgfx::ProgramHandle mProgramEdges =
         Context::instance()
             .programManager()
-            .getProgram<VclProgram::DRAWABLE_MESH_EDGES>();
+            .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES>();
 
     bgfx::ProgramHandle mProgramPoints =
         Context::instance()
             .programManager()
-            .getProgram<VclProgram::DRAWABLE_MESH_POINTS>();
+            .getProgram<VertFragProgram::DRAWABLE_MESH_POINTS>();
 
     bgfx::ProgramHandle mProgramSurface =
         Context::instance()
             .programManager()
-            .getProgram<VclProgram::DRAWABLE_MESH_SURFACE>();
+            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
 
     bgfx::ProgramHandle mProgramWireframe =
         Context::instance()
             .programManager()
-            .getProgram<VclProgram::DRAWABLE_MESH_WIREFRAME>();
+            .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME>();
 
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 

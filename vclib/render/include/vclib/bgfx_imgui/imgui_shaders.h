@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_IMGUI_IMGUI_SHADERS_H
 #define VCL_BGFX_IMGUI_IMGUI_SHADERS_H
 
-#include <vclib/bgfx/context/load_program.h>
+#include <vclib/bgfx/programs/load_program.h>
 
 #include <bgfx_imgui/fs_imgui_image.sc.glsl.bin.h>
 #include <bgfx_imgui/vs_imgui_image.sc.glsl.bin.h>

@@ -51,7 +51,7 @@ class DrawableTrackBall : public DrawableObject
     bgfx::ProgramHandle mProgram =
         Context::instance()
             .programManager()
-            .getProgram<VclProgram::DRAWABLE_TRACKBALL>();
+            .getProgram<VertFragProgram::DRAWABLE_TRACKBALL>();
 
     DrawableTrackballUniforms mUniforms;
 

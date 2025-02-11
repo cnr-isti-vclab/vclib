@@ -54,7 +54,7 @@ class DrawableDirectionalLight : public DrawableObject
     bgfx::ProgramHandle mProgram =
         Context::instance()
             .programManager()
-            .getProgram<VclProgram::DRAWABLE_DIRECTIONAL_LIGHT>();
+            .getProgram<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>();
 
 public:
     DrawableDirectionalLight();

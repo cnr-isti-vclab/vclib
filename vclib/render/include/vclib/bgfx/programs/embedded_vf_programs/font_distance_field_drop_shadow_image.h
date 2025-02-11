@@ -20,64 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE_H
 
-#include <bgfx/bgfx.h>
+#include <vclib/bgfx/programs/loader.h>
 
-#include <vclib/bgfx/programs/load_program.h>
-#include <vclib/space/core/color.h>
+namespace vcl {
 
-struct Vertex
+template<>
+struct Loader<VertFragProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE>
 {
-    float    pos[2];
-    uint32_t abgr;
+    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
+        bgfx::RendererType::Enum type);
 };
 
-static const Vertex vertices[] {
-    {{-1.0f, -1.0f}, vcl::Color(vcl::Color::Red).abgr()  },
-    {{1.0f, -1.0f},  vcl::Color(vcl::Color::Green).abgr()},
-    {{0.0f, 1.0f},   vcl::Color(vcl::Color::Blue).abgr() },
-};
+} // namespace vcl
 
-inline void setUpBGFX(
-    bgfx::ViewId              viewId,
-    bgfx::VertexBufferHandle& vbh,
-    bgfx::ProgramHandle&      program)
-{
-    vcl::Color backgroundColor = vcl::Color::Black;
-
-    bgfx::setViewClear(
-        viewId,
-        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-        backgroundColor.rgba(),
-        1.0f,
-        0);
-
-    bgfx::VertexLayout layout;
-
-    layout.begin()
-        .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-        .end();
-
-    vbh = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertices, sizeof(vertices)), layout);
-
-    program = vcl::loadProgram(
-        "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
-
-    bgfx::touch(viewId);
-}
-
-inline void drawOnView(
-    bgfx::ViewId                    viewId,
-    const bgfx::VertexBufferHandle& vbh,
-    const bgfx::ProgramHandle&      program)
-{
-    bgfx::setVertexBuffer(0, vbh);
-
-    bgfx::submit(viewId, program);
-}
-
-#endif // COMMON_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE_H
