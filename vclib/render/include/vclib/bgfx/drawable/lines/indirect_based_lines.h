@@ -38,11 +38,13 @@ class IndirectBasedLines : public Lines<LineSettings>
     static inline const std::vector<uint> INDICES = {0, 1, 2, 1, 3, 2};
 
     bgfx::ProgramHandle mComputeIndirectPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_INDIRECT_BASED_CS);
+        Context::instance()
+            .programManager()
+            .getComputeProgram<ComputeProgram::LINES_INDIRECT_BASED_CS>();
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_INDIRECT_BASED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::LINES_INDIRECT_BASED_VSFS>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;

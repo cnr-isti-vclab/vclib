@@ -38,11 +38,13 @@ class TextureBasedLines : public Lines<LineSettings>
     static inline const std::vector<uint> INDICES = {0, 1, 2, 1, 3, 2};
 
     bgfx::ProgramHandle mComputeTexturePH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_TEXTURE_BASED_CS);
+        Context::instance()
+            .programManager()
+            .getComputeProgram<ComputeProgram::LINES_TEXTURE_BASED_CS>();
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_TEXTURE_BASED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::LINES_TEXTURE_BASED_VSFS>();
 
     const uint mMaxTextureSize = bgfx::getCaps()->limits.maxTextureSize;
 

@@ -38,16 +38,20 @@ class IndirectBasedPolylines : public Lines<PolylineSettings>
     static const inline std::vector<uint> INDICES = {0, 3, 1, 0, 2, 3};
 
     bgfx::ProgramHandle mComputeIndirectPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_INDIRECT_BASED_CS);
+        Context::instance()
+            .programManager()
+            .getComputeProgram<ComputeProgram::POLYLINES_INDIRECT_BASED_CS>();
 
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_INDIRECT_BASED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::POLYLINES_INDIRECT_BASED_VSFS>();
 
     bgfx::ProgramHandle mJointsPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_INDIRECT_BASED_JOINTS_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<
+                VertFragProgram::POLYLINES_INDIRECT_BASED_JOINTS_VSFS>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
@@ -77,7 +81,7 @@ public:
 private:
     void checkCaps() const
     {
-        const bgfx::Caps* caps = bgfx::getCaps();
+        const bgfx::Caps* caps      = bgfx::getCaps();
         const bool computeSupported = bool(caps->supported & BGFX_CAPS_COMPUTE);
         const bool indirectSupported =
             bool(caps->supported & BGFX_CAPS_DRAW_INDIRECT);

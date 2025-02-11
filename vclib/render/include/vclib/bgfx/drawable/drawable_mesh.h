@@ -42,16 +42,19 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     MeshRenderBuffers<MeshType> mMRB;
 
     bgfx::ProgramHandle mProgramEdges =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_EDGES);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES>();
 
     bgfx::ProgramHandle mProgramPoints =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_POINTS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_POINTS>();
 
     bgfx::ProgramHandle mProgramSurface =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_SURFACE);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
 
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 

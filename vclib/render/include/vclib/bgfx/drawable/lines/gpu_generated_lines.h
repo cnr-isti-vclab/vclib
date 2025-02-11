@@ -34,12 +34,14 @@ namespace vcl {
 class GPUGeneratedLines : public Lines<LineSettings>
 {
     bgfx::ProgramHandle mComputeVerticesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_GPU_GENERATED_CS);
+        Context::instance()
+            .programManager()
+            .getComputeProgram<ComputeProgram::LINES_GPU_GENERATED_CS>();
 
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_CPU_GENERATED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::LINES_CPU_GENERATED_VSFS>();
 
     // buffer containing the input points - will be the input of the compute
     // shader

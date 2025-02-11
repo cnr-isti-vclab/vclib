@@ -34,8 +34,9 @@ namespace vcl {
 class CPUGeneratedPolylines : public Lines<PolylineSettings>
 {
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_CPU_GENERATED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::POLYLINES_CPU_GENERATED_VSFS>();
 
     VertexBuffer mVertices;
     IndexBuffer  mSegmentIndices;

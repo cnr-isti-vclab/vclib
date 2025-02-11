@@ -38,12 +38,15 @@ class InstancingBasedPolylines : public Lines<PolylineSettings>
     static const inline std::vector<uint> INDICES = {0, 3, 1, 0, 2, 3};
 
     bgfx::ProgramHandle mJointsPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_INSTANCING_BASED_JOINTS_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<
+                VertFragProgram::POLYLINES_INSTANCING_BASED_JOINTS_VSFS>();
 
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::POLYLINES_INSTANCING_BASED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::POLYLINES_INSTANCING_BASED_VSFS>();
 
     std::vector<LinesVertex> mPoints;
 
@@ -68,7 +71,7 @@ private:
     void checkCaps() const
     {
         const bgfx::Caps* caps = bgfx::getCaps();
-        const bool instancingSupported =
+        const bool        instancingSupported =
             bool(caps->supported & BGFX_CAPS_INSTANCING);
 
         if (!instancingSupported) {

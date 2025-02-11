@@ -22,8 +22,6 @@
 
 #include <vclib/bgfx/drawable/lines/cpu_generated_lines.h>
 
-#include <vclib/bgfx/context/load_program.h>
-
 namespace vcl {
 
 CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex>& points)

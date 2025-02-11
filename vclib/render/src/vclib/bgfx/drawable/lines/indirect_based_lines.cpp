@@ -22,8 +22,6 @@
 
 #include <vclib/bgfx/drawable/lines/indirect_based_lines.h>
 
-#include <vclib/bgfx/context/load_program.h>
-
 namespace vcl {
 
 IndirectBasedLines::IndirectBasedLines()

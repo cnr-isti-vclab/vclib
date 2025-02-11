@@ -38,8 +38,9 @@ class InstancingBasedLines : public Lines<LineSettings>
     static inline const std::vector<uint> INDICES = {0, 1, 2, 1, 3, 2};
 
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_INSTANCING_BASED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::LINES_INSTANCING_BASED_VSFS>();
 
     std::vector<LinesVertex> mPoints;
 

@@ -34,8 +34,9 @@ namespace vcl {
 class CPUGeneratedLines : public Lines<LineSettings>
 {
     bgfx::ProgramHandle mLinesPH =
-        Context::instance().programManager().getProgram(
-            VclProgram::LINES_CPU_GENERATED_VSFS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::LINES_CPU_GENERATED_VSFS>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
