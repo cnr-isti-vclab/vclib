@@ -51,22 +51,9 @@ class Context
     FontManager*    mFontManager    = nullptr;
     ProgramManager* mProgramManager = nullptr;
 
-    /**
-     * @brief The default renderer backend used by bgfx.
-     *
-     * By default, the value is `bgfx::RendererType::Count` (which means that
-     * bgfx will choose the renderer type based on the platform).
-     */
     inline static bgfx::RendererType::Enum sRenderType =
         bgfx::RendererType::Count;
 
-    /**
-     * @brief Reset flags used by the default frame buffer.
-     *
-     * By default, the value is `BGFX_RESET_VSYNC`.
-     *
-     * @see https://bkaradzic.github.io/bgfx/bgfx.html#_CPPv4N4bgfx10ResolutionE
-     */
     inline static uint sResetFlags = BGFX_RESET_VSYNC;
 
     // singleton
@@ -108,6 +95,8 @@ public:
     static bgfx::RendererType::Enum renderType();
 
     static void setRenderType(bgfx::RendererType::Enum renderType);
+
+    static void setResetFlags(uint flags);
 
     static void setDebugVerbosity(bool verbose);
 
