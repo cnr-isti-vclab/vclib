@@ -5,15 +5,15 @@
     and should be included only if vclib-processing target is available
   - [X] Manage polygonal meshes by DrawableMesh
   - [X] Fix build failure when the build directory is in the same directory as the source
-  - [ ] Add the possibility to check if BGFX is available in the system
-    - [ ] Devcontainers should have BGFX installed
+  - [X] Add the possibility to check if BGFX is available in the system
+    - [X] Devcontainers should have BGFX installed
   - [ ] Move BGFX from submodule to a CMake dependency
   - [ ] The DesktopTrackball should inherit from the Trackball
   - [ ] The AbstractViewer should not inherit from DesktopTrackball, but it should own it as a member.
 - BGFX
   - [X] Fix FIXME #1 on example-01-viewer-qt
   - [ ] Fix FIXME #2 on example-04-hello-triangle-imgui-qt
-  - [ ] Fix 2 Qt windows with BGFX canvas.
+  - [X] Fix 2 Qt windows with BGFX canvas.
   - [ ] Add possibility to update a subset of buffers for DrawableMesh
   - [X] Library shaders should be built as headers
   - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
@@ -28,7 +28,7 @@
   - [X] Better management of canvas and viewer classes - qt and glfw share a lot of code (REFACTORING IN PROGRESS)
   - [X] Implement picking (raytracing to get the triangle clicked by the mouse?) Already implemented using depth reading
   - [ ] Customizable background for canvas
-  - [ ] check crash example 9015 mesh io stl (crashes if the bimba model (m1) is rendered)
+  - [X] check crash example 9015 mesh io stl (crashes if the bimba model (m1) is rendered)
   - [ ] Draw lines trough shader - Work in progress (BSc thesis)
   - [X] check retina resolution on macOS + GLFW
   - [X] fix trackball initial scale using GLFW

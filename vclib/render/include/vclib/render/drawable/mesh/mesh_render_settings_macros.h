@@ -27,13 +27,6 @@
  * These macros are used both on the library and on the shader side.
  */
 
-// macros used to tell the shader which elements we are drawing
-
-#define VCL_MRS_DRAWING_POINTS    uint(1 << 0)
-#define VCL_MRS_DRAWING_SURFACE   uint(1 << 1)
-#define VCL_MRS_DRAWING_WIREFRAME uint(1 << 2)
-#define VCL_MRS_DRAWING_EDGES     uint(1 << 3)
-
 /* uint mDrawMode0 */
 
 #define VCL_MRS_DRAW_MESH uint(1 << 0) // mesh visibility

@@ -74,13 +74,12 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
     bgfx::RendererType::Enum type)
 {
     switch (program) {
-
     case VclProgram::DRAWABLE_MESH_EDGES:
         return vcl::createProgram(
             vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_EDGES>::
-                            vertexEmbeddedShader(type)),
+                                vertexEmbeddedShader(type)),
             vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_EDGES>::
-                            fragmentEmbeddedShader(type)));
+                                fragmentEmbeddedShader(type)));
 
     case VclProgram::DRAWABLE_MESH_POINTS:
         return vcl::createProgram(
@@ -92,9 +91,9 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
     case VclProgram::DRAWABLE_MESH_SURFACE:
         return vcl::createProgram(
             vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
-                            vertexEmbeddedShader(type)),
+                                vertexEmbeddedShader(type)),
             vcl::loadShader(EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
-                            fragmentEmbeddedShader(type)));
+                                fragmentEmbeddedShader(type)));
 
     case VclProgram::LINES_CPU_GENERATED_VSFS:
         return vcl::createProgram(

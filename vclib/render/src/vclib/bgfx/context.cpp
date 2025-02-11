@@ -95,6 +95,21 @@ void Context::setRenderType(bgfx::RendererType::Enum renderType)
     sRenderType = renderType;
 }
 
+/**
+ * @brief Set the reset flags used by the default frame buffer.
+ *
+ * If this function is not called before the context is initialized, the reset
+ * flags are set by default to `BGFX_RESET_VSYNC`.
+ *
+ * @see https://bkaradzic.github.io/bgfx/bgfx.html#_CPPv4N4bgfx10ResolutionE
+ *
+ * @param[in] flags : the reset flags.
+ */
+void Context::setResetFlags(uint flags)
+{
+    sResetFlags = flags;
+}
+
 void Context::setDebugVerbosity(bool verbose)
 {
     instance().mCallBack.setDebugVerbosity(verbose);
@@ -188,8 +203,7 @@ void Context::resetDefaultFramebuffer(
     uint16_t                  height,
     bgfx::TextureFormat::Enum colorFormat)
 {
-    // TODO: manage the reset flags elsewhere
-    bgfx::reset(width, height, BGFX_RESET_VSYNC, colorFormat);
+    bgfx::reset(width, height, sResetFlags, colorFormat);
 }
 
 bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
@@ -317,7 +331,7 @@ Context::Context(void* windowHandle, void* displayHandle)
     init.platformData.ndt  = mDisplayHandle;
     init.resolution.width  = 1;
     init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_VSYNC;
+    init.resolution.reset  = sResetFlags;
     init.callback          = &mCallBack;
     bgfx::init(init);
 

@@ -41,8 +41,9 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
-    vertexEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::
+    EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::vertexEmbeddedShader(
+        bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -64,8 +65,9 @@ bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
-    fragmentEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::
+    EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -87,8 +89,9 @@ bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::
-    computeEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::
+    EmbeddedShader<VclProgram::DRAWABLE_MESH_SURFACE>::computeEmbeddedShader(
+        bgfx::RendererType::Enum type)
 {
     static_assert(true, "Invalid shader type for Drawable Mesh Surface");
     return {type, nullptr, 0};
