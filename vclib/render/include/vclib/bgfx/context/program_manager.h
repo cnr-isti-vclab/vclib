@@ -47,11 +47,18 @@ public:
             mRenderType(renderType)
     {
         mVFPrograms.fill(BGFX_INVALID_HANDLE);
+        mCPrograms.fill(BGFX_INVALID_HANDLE);
     }
 
     ~ProgramManager()
     {
         for (const auto& program : mVFPrograms) {
+            if (bgfx::isValid(program)) {
+                bgfx::destroy(program);
+            }
+        }
+
+        for (const auto& program : mCPrograms) {
             if (bgfx::isValid(program)) {
                 bgfx::destroy(program);
             }
