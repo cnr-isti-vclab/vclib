@@ -49,8 +49,9 @@ class DrawableTrackBall : public DrawableObject
     // TODO: can we be sure that this is called after the context initialization
     // triggered by a window?
     bgfx::ProgramHandle mProgram =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_TRACKBALL);
+        Context::instance()
+            .programManager()
+            .getProgram<VclProgram::DRAWABLE_TRACKBALL>();
 
     DrawableTrackballUniforms mUniforms;
 

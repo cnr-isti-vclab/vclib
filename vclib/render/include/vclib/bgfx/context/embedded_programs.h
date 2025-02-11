@@ -20,57 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
-#define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
+#ifndef VCL_BGFX_CONTEXT_EMBEDDED_PROGRAMS_H
+#define VCL_BGFX_CONTEXT_EMBEDDED_PROGRAMS_H
 
-#include "embedded_program.h"
+#include "embedded_programs/drawable_axis.h"
+#include "embedded_programs/drawable_directional_light.h"
+#include "embedded_programs/drawable_mesh_edges.h"
+#include "embedded_programs/drawable_mesh_points.h"
+#include "embedded_programs/drawable_mesh_surface.h"
+#include "embedded_programs/drawable_mesh_wireframe.h"
+#include "embedded_programs/drawable_trackball.h"
+#include "embedded_programs/font_basic.h"
+#include "embedded_programs/font_distance_field.h"
+#include "embedded_programs/font_distance_field_drop_shadow.h"
+#include "embedded_programs/font_distance_field_drop_shadow_image.h"
+#include "embedded_programs/font_distance_field_outline.h"
+#include "embedded_programs/font_distance_field_outline_drop_shadow_image.h"
+#include "embedded_programs/font_distance_field_outline_image.h"
+#include "embedded_programs/font_distance_field_subpixel.h"
 
-#include <vclib/bgfx/context/embedded_programs.h>
-#include <vclib/bgfx/context/load_program.h>
-#include <vclib/types.h>
-
-#include <array>
-
-namespace vcl {
-
-class ProgramManager
-{
-    bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
-
-    std::array<bgfx::ProgramHandle, toUnderlying(VclProgram::COUNT)> mPrograms;
-
-public:
-    ProgramManager(bgfx::RendererType::Enum renderType) :
-            mRenderType(renderType)
-    {
-        mPrograms.fill(BGFX_INVALID_HANDLE);
-    }
-
-    ~ProgramManager()
-    {
-        for (const auto& program : mPrograms) {
-            if (bgfx::isValid(program)) {
-                bgfx::destroy(program);
-            }
-        }
-    }
-
-    template<VclProgram PROGRAM>
-    bgfx::ProgramHandle getProgram()
-    {
-        uint p = toUnderlying(PROGRAM);
-        if (!bgfx::isValid(mPrograms[p])) {
-            mPrograms[p] = vcl::createProgram(
-                vcl::loadShader(EmbeddedProgram<PROGRAM>::vertexEmbeddedShader(
-                    mRenderType)),
-                vcl::loadShader(
-                    EmbeddedProgram<PROGRAM>::fragmentEmbeddedShader(
-                        mRenderType)));
-        }
-        return mPrograms[p];
-    }
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
+#endif // VCL_BGFX_CONTEXT_EMBEDDED_PROGRAMS_H

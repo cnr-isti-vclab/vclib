@@ -20,57 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
-#define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
+#ifndef VCL_BGFX_CONTEXT_EMBEDDED_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
+#define VCL_BGFX_CONTEXT_EMBEDDED_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
 
-#include "embedded_program.h"
-
-#include <vclib/bgfx/context/embedded_programs.h>
-#include <vclib/bgfx/context/load_program.h>
-#include <vclib/types.h>
-
-#include <array>
+#include <vclib/bgfx/context/embedded_program.h>
 
 namespace vcl {
 
-class ProgramManager
+template<>
+struct EmbeddedProgram<VclProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE>
 {
-    bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
+    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+        bgfx::RendererType::Enum type);
 
-    std::array<bgfx::ProgramHandle, toUnderlying(VclProgram::COUNT)> mPrograms;
+    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type);
 
-public:
-    ProgramManager(bgfx::RendererType::Enum renderType) :
-            mRenderType(renderType)
-    {
-        mPrograms.fill(BGFX_INVALID_HANDLE);
-    }
-
-    ~ProgramManager()
-    {
-        for (const auto& program : mPrograms) {
-            if (bgfx::isValid(program)) {
-                bgfx::destroy(program);
-            }
-        }
-    }
-
-    template<VclProgram PROGRAM>
-    bgfx::ProgramHandle getProgram()
-    {
-        uint p = toUnderlying(PROGRAM);
-        if (!bgfx::isValid(mPrograms[p])) {
-            mPrograms[p] = vcl::createProgram(
-                vcl::loadShader(EmbeddedProgram<PROGRAM>::vertexEmbeddedShader(
-                    mRenderType)),
-                vcl::loadShader(
-                    EmbeddedProgram<PROGRAM>::fragmentEmbeddedShader(
-                        mRenderType)));
-        }
-        return mPrograms[p];
-    }
+    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
+#endif // VCL_BGFX_CONTEXT_EMBEDDED_PROGRAMS_FONT_DISTANCE_FIELD_OUTLINE_IMAGE_H
