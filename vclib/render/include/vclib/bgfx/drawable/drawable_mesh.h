@@ -146,10 +146,11 @@ public:
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
 
+        bindUniforms();
+
         if (mMRS.isPointVisible()) {
             if (bgfx::isValid(mProgramPoints)) {
                 mMRB.bindVertexBuffers(mMRS);
-                bindUniforms(VCL_MRS_DRAWING_POINTS);
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
@@ -162,7 +163,6 @@ public:
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers();
-                bindUniforms(VCL_MRS_DRAWING_SURFACE);
 
                 bgfx::setState(state);
 
@@ -174,7 +174,6 @@ public:
             if (bgfx::isValid(mProgramWireframe)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::WIREFRAME);
-                bindUniforms(VCL_MRS_DRAWING_WIREFRAME);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -186,7 +185,6 @@ public:
             if (bgfx::isValid(mProgramEdges)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::EDGES);
-                bindUniforms(VCL_MRS_DRAWING_EDGES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -220,9 +218,8 @@ public:
     }
 
 private:
-    void bindUniforms(uint primitive) const
+    void bindUniforms() const
     {
-        mMeshRenderSettingsUniforms.updatePrimitive(primitive);
         mMeshRenderSettingsUniforms.bind();
         mMRB.bindUniforms();
     }

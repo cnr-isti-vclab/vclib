@@ -42,7 +42,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
-    MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
     DrawableAxis             mAxis;
     DrawableDirectionalLight mDirectionalLight;
