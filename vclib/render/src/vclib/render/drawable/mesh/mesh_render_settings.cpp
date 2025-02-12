@@ -61,10 +61,7 @@ Color MeshRenderSettings::edgesUserColor() const
 bool MeshRenderSettings::setVisibility(bool b)
 {
     if (canBeVisible()) {
-        if (b)
-            mDrawMode0 |= VCL_MRS_DRAW_MESH;
-        else
-            mDrawMode0 &= ~VCL_MRS_DRAW_MESH;
+        mDrawMode.visible = b;
         return true;
     }
     else {

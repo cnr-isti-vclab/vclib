@@ -29,8 +29,6 @@
 
 /* uint mDrawMode0 */
 
-#define VCL_MRS_DRAW_MESH uint(1 << 0) // mesh visibility
-
 // points
 #define VCL_MRS_DRAW_POINTS         uint(1 << 1) // point visibility
 #define VCL_MRS_POINTS_PIXEL        uint(1 << 2) // draw points as pixels

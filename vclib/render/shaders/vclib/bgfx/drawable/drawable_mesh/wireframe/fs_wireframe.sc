@@ -32,11 +32,6 @@ void main()
     // depth offset - avoid z-fighting
     float depthOffset = 0.0;
 
-    // if not drawing mesh, discard
-    if (!bool(drawMode0 & VCL_MRS_DRAW_MESH)) {
-        discard;
-    }
-
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 

@@ -26,6 +26,7 @@
 #include "mesh_render_info_macros.h"
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/core/bit_set.h>
 #include <vclib/space/core/color.h>
 
 namespace vcl {
@@ -59,6 +60,19 @@ namespace vcl {
  */
 class MeshRenderSettings
 {
+    struct Info {
+        bool visible;
+
+        // settings for each primitive
+        BitSet8 points;
+        BitSet16 surface;
+        BitSet8 wireframe;
+        BitSet8 edges;
+    };
+
+    Info mCapability;
+    Info mDrawMode;
+
     // draw integers controlled using macros (same macros used also in shaders)
 
     // draw mode 0: general visibility, points, surface and wireframe
@@ -95,7 +109,7 @@ public:
 
     bool canBeVisible() const
     {
-        return mDrawModeCapability0 & VCL_MRS_DRAW_MESH;
+        return mCapability.visible;
     }
 
     bool canPointBeVisible() const
@@ -218,7 +232,7 @@ public:
 
     uint drawModeCapability1() const { return mDrawModeCapability1; }
 
-    bool isVisible() const { return mDrawMode0 & VCL_MRS_DRAW_MESH; }
+    bool isVisible() const { return mDrawMode.visible; }
 
     bool isPointVisible() const { return mDrawMode0 & VCL_MRS_DRAW_POINTS; }
 
@@ -479,7 +493,7 @@ public:
         mDrawModeCapability0 = 0;
 
         if (m.vertexNumber() > 0) {
-            mDrawModeCapability0 |= VCL_MRS_DRAW_MESH;
+            mCapability.visible = true;
 
             // -- Points --
             mDrawModeCapability0 |= VCL_MRS_DRAW_POINTS;
