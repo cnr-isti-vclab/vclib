@@ -41,8 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_BASIC>::vertexShader(
-    bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::FONT_BASIC>::vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -64,8 +64,8 @@ bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_BASIC>::vertexSh
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_BASIC>::
-    fragmentShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::FONT_BASIC>::fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:

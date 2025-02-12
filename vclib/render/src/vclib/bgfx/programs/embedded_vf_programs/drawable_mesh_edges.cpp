@@ -41,8 +41,9 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_EDGES>::
-    vertexShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_EDGES>::vertexShader(bgfx::RendererType::Enum
+                                                            type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -64,7 +65,8 @@ bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_EDGES>:
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_EDGES>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_EDGES>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {

@@ -40,8 +40,8 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
     using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
     using DTB          = ParentViewer::DTB;
 
-    CameraUniforms             mCameraUniforms;
-    DirectionalLightUniforms   mDirectionalLightUniforms;
+    CameraUniforms           mCameraUniforms;
+    DirectionalLightUniforms mDirectionalLightUniforms;
 
     DrawableAxis             mAxis;
     DrawableDirectionalLight mDirectionalLight;

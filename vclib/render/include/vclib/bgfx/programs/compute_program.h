@@ -25,10 +25,7 @@
 
 namespace vcl {
 
-enum class ComputeProgram
-{
-    COUNT
-};
+enum class ComputeProgram { COUNT };
 
 } // namespace vcl
 
