@@ -519,9 +519,9 @@ public:
 
             // -- Points --
             setPointsCapability(MeshRenderInfo::Points::VISIBLE);
+            setPointsCapability(MeshRenderInfo::Points::SHAPE_PIXEL);
+            setPointsCapability(MeshRenderInfo::Points::SHAPE_CIRCLE);
             mDrawModeCapability0 |= VCL_MRS_POINTS_SHADING_NONE;
-            mDrawModeCapability0 |= VCL_MRS_POINTS_PIXEL;
-            mDrawModeCapability0 |= VCL_MRS_POINTS_CIRCLE;
             mDrawModeCapability0 |= VCL_MRS_POINTS_COLOR_USER;
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
