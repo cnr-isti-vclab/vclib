@@ -131,7 +131,7 @@ public:
         }
         else {
             if (releaseFn)
-                releaseFn((void*)bufferData, nullptr);
+                releaseFn((void*) bufferData, nullptr);
             destroy();
         }
     }
@@ -190,7 +190,7 @@ public:
         }
         else {
             if (releaseFn)
-                releaseFn((void*)bufferData, nullptr);
+                releaseFn((void*) bufferData, nullptr);
             destroy();
         }
     }

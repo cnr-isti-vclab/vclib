@@ -23,39 +23,71 @@
 #ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 #define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 
-#include "embedded_shaders/embedded_shader.h"
+#include <vclib/bgfx/programs/embedded_compute_programs.h>
+#include <vclib/bgfx/programs/embedded_vf_programs.h>
+#include <vclib/bgfx/programs/load_program.h>
+#include <vclib/types.h>
 
-#include <map>
-#include <string>
+#include <array>
 
 namespace vcl {
 
 class ProgramManager
 {
     bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
-    std::map<std::string, bgfx::ProgramHandle> mPrograms;
+
+    std::array<bgfx::ProgramHandle, toUnderlying(VertFragProgram::COUNT)>
+        mVFPrograms;
+
+    std::array<bgfx::ProgramHandle, toUnderlying(ComputeProgram::COUNT)>
+        mCPrograms;
 
 public:
     ProgramManager(bgfx::RendererType::Enum renderType) :
             mRenderType(renderType)
     {
+        mVFPrograms.fill(BGFX_INVALID_HANDLE);
+        mCPrograms.fill(BGFX_INVALID_HANDLE);
     }
 
-    ~ProgramManager();
+    ~ProgramManager()
+    {
+        for (const auto& program : mVFPrograms) {
+            if (bgfx::isValid(program)) {
+                bgfx::destroy(program);
+            }
+        }
 
-    bgfx::ProgramHandle getProgram(VclProgram::Enum program);
+        for (const auto& program : mCPrograms) {
+            if (bgfx::isValid(program)) {
+                bgfx::destroy(program);
+            }
+        }
+    }
 
-    bgfx::ProgramHandle getProgram(const std::string& name) const;
+    template<VertFragProgram PROGRAM>
+    bgfx::ProgramHandle getProgram()
+    {
+        uint p = toUnderlying(PROGRAM);
+        if (!bgfx::isValid(mVFPrograms[p])) {
+            mVFPrograms[p] = vcl::createProgram(
+                vcl::loadShader(
+                    VertFragLoader<PROGRAM>::vertexShader(mRenderType)),
+                vcl::loadShader(
+                    VertFragLoader<PROGRAM>::fragmentShader(mRenderType)));
+        }
+        return mVFPrograms[p];
+    }
 
-    bgfx::ProgramHandle loadProgram(
-        const std::string& name,
-        const std::string& vs,
-        const std::string& fs);
-
-private:
-    static bgfx::ProgramHandle loadProgram(
-        VclProgram::Enum         program,
-        bgfx::RendererType::Enum type);
+    template<ComputeProgram PROGRAM>
+    bgfx::ProgramHandle getComputeProgram()
+    {
+        uint p = toUnderlying(PROGRAM);
+        if (!bgfx::isValid(mCPrograms[p])) {
+            // TODO - use ComputeLoader
+        }
+        return mCPrograms[p];
+    }
 };
 
 } // namespace vcl

@@ -54,6 +54,8 @@ class Context
     inline static bgfx::RendererType::Enum sRenderType =
         bgfx::RendererType::Count;
 
+    inline static uint sResetFlags = BGFX_RESET_VSYNC;
+
     // singleton
     inline static Context*   sInstancePtr = nullptr;
     inline static std::mutex sMutex;
@@ -93,6 +95,8 @@ public:
     static bgfx::RendererType::Enum renderType();
 
     static void setRenderType(bgfx::RendererType::Enum renderType);
+
+    static void setResetFlags(uint flags);
 
     static void setDebugVerbosity(bool verbose);
 

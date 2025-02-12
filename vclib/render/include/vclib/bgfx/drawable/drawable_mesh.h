@@ -42,20 +42,24 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     MeshRenderBuffers<MeshType> mMRB;
 
     bgfx::ProgramHandle mProgramEdges =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_EDGES);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES>();
 
     bgfx::ProgramHandle mProgramPoints =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_POINTS);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_POINTS>();
 
     bgfx::ProgramHandle mProgramSurface =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_SURFACE);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
 
     bgfx::ProgramHandle mProgramWireframe =
-        Context::instance().programManager().getProgram(
-            VclProgram::DRAWABLE_MESH_WIREFRAME);
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME>();
 
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
@@ -146,10 +150,11 @@ public:
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
 
+        bindUniforms();
+
         if (mMRS.isPointVisible()) {
             if (bgfx::isValid(mProgramPoints)) {
                 mMRB.bindVertexBuffers(mMRS);
-                bindUniforms(VCL_MRS_DRAWING_POINTS);
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
@@ -162,7 +167,6 @@ public:
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers();
-                bindUniforms(VCL_MRS_DRAWING_SURFACE);
 
                 bgfx::setState(state);
 
@@ -174,7 +178,6 @@ public:
             if (bgfx::isValid(mProgramWireframe)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::WIREFRAME);
-                bindUniforms(VCL_MRS_DRAWING_WIREFRAME);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -186,7 +189,6 @@ public:
             if (bgfx::isValid(mProgramEdges)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::EDGES);
-                bindUniforms(VCL_MRS_DRAWING_EDGES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -220,9 +222,8 @@ public:
     }
 
 private:
-    void bindUniforms(uint primitive) const
+    void bindUniforms() const
     {
-        mMeshRenderSettingsUniforms.updatePrimitive(primitive);
         mMeshRenderSettingsUniforms.bind();
         mMRB.bindUniforms();
     }

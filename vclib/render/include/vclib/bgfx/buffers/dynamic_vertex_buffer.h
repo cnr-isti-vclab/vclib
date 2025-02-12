@@ -183,7 +183,7 @@ public:
         destroy();
 
         if (vertNum != 0)
-            mHandle  = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
+            mHandle = bgfx::createDynamicVertexBuffer(vertNum, layout, flags);
         mCompute = compute;
     }
 
@@ -221,7 +221,7 @@ public:
         }
         else {
             if (releaseFn)
-                releaseFn((void*)bufferData, nullptr);
+                releaseFn((void*) bufferData, nullptr);
         }
     }
 

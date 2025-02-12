@@ -110,11 +110,12 @@ public:
             uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
             uint     size  = is32Bit ? 4 : 2;
             create(
-                bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn), flags);
+                bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn),
+                flags);
         }
         else {
             if (releaseFn)
-                releaseFn((void*)bufferIndices, nullptr);
+                releaseFn((void*) bufferIndices, nullptr);
             destroy();
         }
     }
@@ -148,13 +149,14 @@ public:
             uint64_t flags = flagsForType(type);
             flags |= flagsForAccess(access);
             create(
-                bgfx::makeRef(bufferIndices, bufferSize * sizeOf(type), releaseFn),
+                bgfx::makeRef(
+                    bufferIndices, bufferSize * sizeOf(type), releaseFn),
                 flags,
                 true);
         }
         else {
             if (releaseFn)
-                releaseFn((void*)bufferIndices, nullptr);
+                releaseFn((void*) bufferIndices, nullptr);
             destroy();
         }
     }
