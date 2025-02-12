@@ -41,7 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE>::
     vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
@@ -79,7 +80,8 @@ bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD_O
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::FONT_DISTANCE_FIELD_OUTLINE>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {

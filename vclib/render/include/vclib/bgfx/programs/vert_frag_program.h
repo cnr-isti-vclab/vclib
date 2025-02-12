@@ -25,8 +25,7 @@
 
 namespace vcl {
 
-enum class VertFragProgram
-{
+enum class VertFragProgram {
     DRAWABLE_AXIS,
     DRAWABLE_DIRECTIONAL_LIGHT,
     DRAWABLE_MESH_EDGES,

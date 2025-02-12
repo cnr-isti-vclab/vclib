@@ -41,7 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
     vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
@@ -79,7 +80,8 @@ bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_DIRECTIONAL_
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {

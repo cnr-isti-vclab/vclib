@@ -71,11 +71,10 @@ public:
         uint p = toUnderlying(PROGRAM);
         if (!bgfx::isValid(mVFPrograms[p])) {
             mVFPrograms[p] = vcl::createProgram(
-                vcl::loadShader(VertFragLoader<PROGRAM>::vertexShader(
-                    mRenderType)),
                 vcl::loadShader(
-                    VertFragLoader<PROGRAM>::fragmentShader(
-                        mRenderType)));
+                    VertFragLoader<PROGRAM>::vertexShader(mRenderType)),
+                vcl::loadShader(
+                    VertFragLoader<PROGRAM>::fragmentShader(mRenderType)));
         }
         return mVFPrograms[p];
     }

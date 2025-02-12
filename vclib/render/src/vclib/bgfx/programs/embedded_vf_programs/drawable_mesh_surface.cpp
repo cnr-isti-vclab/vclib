@@ -41,7 +41,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_SURFACE>::
     vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
@@ -64,7 +65,8 @@ bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_SURFACE>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
