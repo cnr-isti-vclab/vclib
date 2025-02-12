@@ -45,10 +45,10 @@ void main()
 
     color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
 
-    if (bool(drawMode0 & VCL_MRS_POINTS_COLOR_VERTEX)) {
+    if (bool(drawMode0 & (1 << VCL_MRS_POINTS_COLOR_VERTEX))) {
         color = v_color;
     }
-    else if (bool(drawMode0 & VCL_MRS_POINTS_COLOR_MESH)) {
+    else if (bool(drawMode0 & (1 << VCL_MRS_POINTS_COLOR_MESH))) {
         color = u_meshColor;
     }
 

@@ -136,7 +136,7 @@ public:
 
     bool canPointColorBePerVertex() const
     {
-        return mDrawModeCapability0 & VCL_MRS_POINTS_COLOR_VERTEX;
+        return canPoint(MeshRenderInfo::Points::COLOR_VERTEX);
     }
 
     bool canPointColorBePerMesh() const
@@ -268,17 +268,17 @@ public:
 
     bool isPointColorPerVertex() const
     {
-        return mDrawMode0 & VCL_MRS_POINTS_COLOR_VERTEX;
+        return pointsDrawMode(MeshRenderInfo::Points::COLOR_VERTEX);
     }
 
     bool isPointColorPerMesh() const
     {
-        return mDrawMode0 & VCL_MRS_POINTS_COLOR_MESH;
+        return pointsDrawMode(MeshRenderInfo::Points::COLOR_MESH);
     }
 
     bool isPointColorUserDefined() const
     {
-        return mDrawMode0 & VCL_MRS_POINTS_COLOR_USER;
+        return pointsDrawMode(MeshRenderInfo::Points::COLOR_USER);
     }
 
     float pointWidth() const { return mPointWidth; }
@@ -532,12 +532,12 @@ public:
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (vcl::isPerVertexColorAvailable(m)) {
-                    mDrawModeCapability0 |= VCL_MRS_POINTS_COLOR_VERTEX;
+                    setPointsCapability(MeshRenderInfo::Points::COLOR_VERTEX);
                 }
             }
 
             if constexpr (vcl::HasColor<MeshType>) {
-                mDrawModeCapability0 |= VCL_MRS_POINTS_COLOR_MESH;
+                setPointsCapability(MeshRenderInfo::Points::COLOR_MESH);
             }
 
             // -- Surface and Wireframe --

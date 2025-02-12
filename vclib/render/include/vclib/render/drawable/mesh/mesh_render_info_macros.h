@@ -35,9 +35,9 @@
 #define VCL_MRS_POINTS_CIRCLE       2 // draw points as circles
 #define VCL_MRS_POINTS_SHADING_NONE 3 // no shading
 #define VCL_MRS_POINTS_SHADING_VERT 4 // vertex normal shading
-#define VCL_MRS_POINTS_COLOR_VERTEX uint(1 << 6) // vert colors for points
-#define VCL_MRS_POINTS_COLOR_MESH   uint(1 << 7) // mesh color for points
-#define VCL_MRS_POINTS_COLOR_USER   uint(1 << 8) // user color for points
+#define VCL_MRS_POINTS_COLOR_VERTEX 5 // vert colors for points
+#define VCL_MRS_POINTS_COLOR_MESH   6 // mesh color for points
+#define VCL_MRS_POINTS_COLOR_USER   7 // user color for points
 
 // surface
 #define VCL_MRS_DRAW_SURF           uint(1 << 10) // surface visibility

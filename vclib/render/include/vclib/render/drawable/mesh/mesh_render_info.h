@@ -47,14 +47,14 @@ auto constexpr makeExclusiveReangesArray(auto... args) {
 
 struct MeshRenderInfo {
     enum class Points {
-        VISIBLE = VCL_MRS_DRAW_POINTS,
-        SHAPE_PIXEL = VCL_MRS_POINTS_PIXEL,
+        VISIBLE      = VCL_MRS_DRAW_POINTS,
+        SHAPE_PIXEL  = VCL_MRS_POINTS_PIXEL,
         SHAPE_CIRCLE = VCL_MRS_POINTS_CIRCLE,
         SHADING_NONE = VCL_MRS_POINTS_SHADING_NONE,
-        SHADING_VERT,
-        COLOR_VERTEX,
-        COLOR_MESH,
-        COLOR_USER,
+        SHADING_VERT = VCL_MRS_POINTS_SHADING_VERT,
+        COLOR_VERTEX = VCL_MRS_POINTS_COLOR_VERTEX,
+        COLOR_MESH   = VCL_MRS_POINTS_COLOR_MESH,
+        COLOR_USER   = VCL_MRS_POINTS_COLOR_USER,
 
         COUNT
     };

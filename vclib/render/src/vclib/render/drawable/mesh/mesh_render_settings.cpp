@@ -127,10 +127,11 @@ bool MeshRenderSettings::setPointShadingPerVertex()
 
 bool MeshRenderSettings::setPointColorPerVertex()
 {
+    // return setPoint(MeshRenderInfo::Points::COLOR_VERTEX);
     if (canSurfaceColorBePerVertex()) {
-        mDrawMode0 |= VCL_MRS_POINTS_COLOR_VERTEX;
-        mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_MESH;
-        mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_USER;
+        mDrawMode0 |= (1 << VCL_MRS_POINTS_COLOR_VERTEX);
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_COLOR_MESH);
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_COLOR_USER);
         return true;
     }
     else {
@@ -140,10 +141,11 @@ bool MeshRenderSettings::setPointColorPerVertex()
 
 bool MeshRenderSettings::setPointColorPerMesh()
 {
+    // return setPoint(MeshRenderInfo::Points::COLOR_MESH);
     if (canSurfaceColorBePerMesh()) {
-        mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_VERTEX;
-        mDrawMode0 |= VCL_MRS_POINTS_COLOR_MESH;
-        mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_USER;
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_COLOR_VERTEX);
+        mDrawMode0 |= (1 << VCL_MRS_POINTS_COLOR_MESH);
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_COLOR_USER);
         return true;
     }
     else {
@@ -153,10 +155,11 @@ bool MeshRenderSettings::setPointColorPerMesh()
 
 bool MeshRenderSettings::setPointColorUserDefined()
 {
+    // return setPoint(MeshRenderInfo::Points::COLOR_USER);
     if (canPointBeVisible()) {
-        mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_VERTEX;
-        mDrawMode0 &= ~VCL_MRS_POINTS_COLOR_MESH;
-        mDrawMode0 |= VCL_MRS_POINTS_COLOR_USER;
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_COLOR_VERTEX);
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_COLOR_MESH);
+        mDrawMode0 |= (1 << VCL_MRS_POINTS_COLOR_USER);
         return true;
     }
     else {
