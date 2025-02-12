@@ -68,6 +68,13 @@ class MeshRenderSettings
         BitSet16 surface;
         BitSet8 wireframe;
         BitSet8 edges;
+
+        bool operator==(const Info& o) const
+        {
+            return visible == o.visible && points == o.points &&
+                   surface == o.surface && wireframe == o.wireframe &&
+                   edges == o.edges;
+        }
     };
 
     Info mCapability;
