@@ -107,6 +107,18 @@ public:
         u.i = bits;
         return u.f;
     }
+
+    static uint floatToUintBits(float f)
+    {
+        union
+        {
+            uint  i;
+            float f;
+        } u;
+
+        u.f = f;
+        return u.i;
+    }
 };
 
 } // namespace vcl

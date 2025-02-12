@@ -22,6 +22,8 @@
 
 #include "get_drawable_mesh.h"
 
+#include <vclib/algorithms/mesh/update/transform.h>
+#include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/qt/mesh_viewer.h>
 
 #include <QApplication>
@@ -48,6 +50,19 @@ int main(int argc, char** argv)
 
     auto v = std::make_shared<vcl::DrawableObjectVector>();
     v->pushBack(m);
+
+    // load and set up a drawable mesh
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+
+    drawable.name() = "bimba_scaled";
+
+    // update the mesh to be displayed in the scene
+    const auto bb = vcl::boundingBox(drawable);
+    vcl::scale(drawable, 0.5f);
+    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
+
+    drawable.updateBuffers();
+    v->pushBack(std::move(drawable));
 
     mv.setDrawableObjectVector(v);
 

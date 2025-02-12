@@ -64,8 +64,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
-    using AbstractDrawableMesh::name;
-
     DrawableMeshBGFX() = default;
 
     DrawableMeshBGFX(const MeshType& mesh) :
@@ -128,6 +126,16 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
+    std::string& name() override
+    {
+        return MeshType::name();
+    }
+
+    const std::string& name() const override
+    {
+        return MeshType::name();
+    }
+
     void swap(DrawableMeshBGFX& other)
     {
         using std::swap;
@@ -150,11 +158,10 @@ public:
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
 
-        bindUniforms();
-
         if (mMRS.isPointVisible()) {
             if (bgfx::isValid(mProgramPoints)) {
                 mMRB.bindVertexBuffers(mMRS);
+                bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
@@ -167,6 +174,7 @@ public:
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers();
+                bindUniforms();
 
                 bgfx::setState(state);
 
@@ -178,6 +186,7 @@ public:
             if (bgfx::isValid(mProgramWireframe)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::WIREFRAME);
+                bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -189,6 +198,7 @@ public:
             if (bgfx::isValid(mProgramEdges)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::EDGES);
+                bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
