@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
 
-#include "mesh_render_settings_macros.h"
+#include "mesh_render_info_macros.h"
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/color.h>

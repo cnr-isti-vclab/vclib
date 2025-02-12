@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_MACROS_H
-#define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_MACROS_H
+#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_MACROS_H
+#define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_MACROS_H
 
 /**
  * These macros are used both on the library and on the shader side.
@@ -76,4 +76,4 @@
 #define VCL_MRS_EDGES_COLOR_USER     uint(1 << 6) // user color for edges
 #define VCL_MRS_EDGES_COLOR_MESH     uint(1 << 7) // mesh color for edges
 
-#endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_MACROS_H
+#endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_MACROS_H

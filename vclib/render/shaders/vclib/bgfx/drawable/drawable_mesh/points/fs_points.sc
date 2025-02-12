@@ -23,8 +23,6 @@
 $input v_position, v_normal, v_color
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
-#include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
 void main()
 {
