@@ -94,6 +94,24 @@ bool MeshRenderSettings::setPoint(MeshRenderInfo::Points p, bool b = true)
     }
 }
 
+bool MeshRenderSettings::setSurface(MeshRenderInfo::Surface s, bool b)
+{
+    // TODO
+    return false;
+}
+
+bool MeshRenderSettings::setWireframe(MeshRenderInfo::Wireframe w, bool b)
+{
+    // TODO
+    return false;
+}
+
+bool MeshRenderSettings::setEdges(MeshRenderInfo::Edges e, bool b)
+{
+    // TODO
+    return false;
+}
+
 bool MeshRenderSettings::setPointVisibility(bool b)
 {
     return setPoint(MeshRenderInfo::Points::VISIBLE, b);

@@ -66,8 +66,8 @@ class MeshRenderSettings
         // settings for each primitive
         BitSet16 points;
         BitSet16 surface;
-        BitSet8  wireframe;
-        BitSet8  edges;
+        BitSet16 wireframe;
+        BitSet16 edges;
 
         bool operator==(const Info& o) const
         {
@@ -235,6 +235,15 @@ public:
     }
 
     // rendering options getters
+
+    std::pair<uint, uint> drawMode() const
+    {
+        uint drawMode0 = mDrawMode.points.underlying();
+        drawMode0 |= mDrawMode.surface.underlying() << 16;
+        uint drawMode1 = mDrawMode.wireframe.underlying();
+        drawMode1 |= mDrawMode.edges.underlying() << 16;
+        return {drawMode0, drawMode1};
+    }
 
     uint drawMode0() const { return mDrawMode0; }
 
@@ -424,6 +433,12 @@ public:
     bool setVisibility(bool b);
 
     bool setPoint(MeshRenderInfo::Points p, bool b);
+
+    bool setSurface(MeshRenderInfo::Surface s, bool b);
+
+    bool setWireframe(MeshRenderInfo::Wireframe w, bool b);
+
+    bool setEdges(MeshRenderInfo::Edges e, bool b);
 
     bool setPointVisibility(bool b);
 
@@ -669,6 +684,78 @@ private:
     {
         assert(p < MeshRenderInfo::Points::COUNT);
         mDrawMode.points[toUnderlying(p)] = b;
+    }
+
+    bool surfaceCapability(MeshRenderInfo::Surface p) const
+    {
+        assert(p < MeshRenderInfo::Surface::COUNT);
+        return mCapability.surface[toUnderlying(p)];
+    }
+
+    bool surfaceDrawMode(MeshRenderInfo::Surface p) const
+    {
+        assert(p < MeshRenderInfo::Surface::COUNT);
+        return mDrawMode.surface[toUnderlying(p)];
+    }
+
+    void setSurfaceCapability(MeshRenderInfo::Surface p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Surface::COUNT);
+        mCapability.surface[toUnderlying(p)] = b;
+    }
+
+    void setSurfaceDrawMode(MeshRenderInfo::Surface p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Surface::COUNT);
+        mDrawMode.surface[toUnderlying(p)] = b;
+    }
+
+    bool wireframeCapability(MeshRenderInfo::Wireframe p) const
+    {
+        assert(p < MeshRenderInfo::Wireframe::COUNT);
+        return mCapability.wireframe[toUnderlying(p)];
+    }
+
+    bool wireframeDrawMode(MeshRenderInfo::Wireframe p) const
+    {
+        assert(p < MeshRenderInfo::Wireframe::COUNT);
+        return mDrawMode.wireframe[toUnderlying(p)];
+    }
+
+    void setWireframeCapability(MeshRenderInfo::Wireframe p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Wireframe::COUNT);
+        mCapability.wireframe[toUnderlying(p)] = b;
+    }
+
+    void setWireframeDrawMode(MeshRenderInfo::Wireframe p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Wireframe::COUNT);
+        mDrawMode.wireframe[toUnderlying(p)] = b;
+    }
+
+    bool edgesCapability(MeshRenderInfo::Edges p) const
+    {
+        assert(p < MeshRenderInfo::Edges::COUNT);
+        return mCapability.edges[toUnderlying(p)];
+    }
+
+    bool edgesDrawMode(MeshRenderInfo::Edges p) const
+    {
+        assert(p < MeshRenderInfo::Edges::COUNT);
+        return mDrawMode.edges[toUnderlying(p)];
+    }
+
+    void setEdgesCapability(MeshRenderInfo::Edges p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Edges::COUNT);
+        mCapability.edges[toUnderlying(p)] = b;
+    }
+
+    void setEdgesDrawMode(MeshRenderInfo::Edges p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Edges::COUNT);
+        mDrawMode.edges[toUnderlying(p)] = b;
     }
 };
 

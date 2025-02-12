@@ -26,8 +26,6 @@ $input v_position, v_normal, v_color
 
 void main()
 {
-    uint drawMode0 = floatBitsToUint(u_drawMode0Float);
-
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -39,16 +37,16 @@ void main()
     vec3 normal = normalize(v_normal);
 
     // if per vert shading
-    if (bool(drawMode0 & (1 << VCL_MRS_POINTS_SHADING_VERT))) {
+    if (bool(u_pointsMode & (1 << VCL_MRS_POINTS_SHADING_VERT))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
     }
 
     color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
 
-    if (bool(drawMode0 & (1 << VCL_MRS_POINTS_COLOR_VERTEX))) {
+    if (bool(u_pointsMode & (1 << VCL_MRS_POINTS_COLOR_VERTEX))) {
         color = v_color;
     }
-    else if (bool(drawMode0 & (1 << VCL_MRS_POINTS_COLOR_MESH))) {
+    else if (bool(u_pointsMode & (1 << VCL_MRS_POINTS_COLOR_MESH))) {
         color = u_meshColor;
     }
 

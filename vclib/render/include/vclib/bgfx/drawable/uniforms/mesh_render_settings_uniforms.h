@@ -62,6 +62,8 @@ public:
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
+        auto [d0, d1] = settings.drawMode();
+        // TODO
         mDrawPack[0] = Uniform::uintBitsToFloat(settings.drawMode0());
         mDrawPack[1] = Uniform::uintBitsToFloat(settings.drawMode1());
 

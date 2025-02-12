@@ -79,6 +79,11 @@ struct MeshRenderInfo {
         COUNT
     };
 
+    constexpr static auto surfaceExclusiveRange(auto value)
+    {
+        return getExclusiveRange(value, SURFACE_EXCLUSIVE_RANGES);
+    }
+
     enum class Wireframe {
         VISIBLE = 0,
         SHADING_NONE,
@@ -89,6 +94,11 @@ struct MeshRenderInfo {
 
         COUNT
     };
+
+    constexpr static auto wireframeExclusiveRange(auto value)
+    {
+        return getExclusiveRange(value, WIREFRAME_EXCLUSIVE_RANGES);
+    }
 
     enum class Edges {
         VISIBLE = 0,
@@ -103,12 +113,32 @@ struct MeshRenderInfo {
         COUNT
     };
 
+    constexpr static auto edgesExclusiveRange(auto value)
+    {
+        return getExclusiveRange(value, EDGES_EXCLUSIVE_RANGES);
+    }
+
 private:
     inline static constexpr auto const POINTS_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Points>(
             Points::SHAPE_PIXEL, Points::SHAPE_CIRCLE,
             Points::SHADING_NONE, Points::SHADING_VERT,
             Points::COLOR_VERTEX, Points::COLOR_USER);
+
+    inline static constexpr auto const SURFACE_EXCLUSIVE_RANGES =
+        detail::makeExclusiveReangesArray<Surface>(
+            Surface::SHADING_NONE, Surface::SHADING_SMOOTH,
+            Surface::COLOR_FACE, Surface::COLOR_WEDGE_TEX);
+
+    inline static constexpr auto const WIREFRAME_EXCLUSIVE_RANGES =
+        detail::makeExclusiveReangesArray<Wireframe>(
+            Wireframe::SHADING_NONE, Wireframe::SHADING_VERT,
+            Wireframe::COLOR_VERTEX, Wireframe::COLOR_USER);
+
+    inline static constexpr auto const EDGES_EXCLUSIVE_RANGES =
+        detail::makeExclusiveReangesArray<Edges>(
+            Edges::SHADING_NONE, Edges::SHADING_SMOOTH,
+            Edges::COLOR_VERTEX, Edges::COLOR_MESH);
 
     constexpr static auto getExclusiveRange(auto value, const auto& array)
     {
