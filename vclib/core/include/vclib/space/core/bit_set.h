@@ -243,6 +243,12 @@ public:
     }
 
     /**
+     * @brief Returns the underlying integral value of the BitSet
+     * @return the underlying integral value of the BitSet
+     */
+    T underlying() const { return mBits; }
+
+    /**
      * @brief Serializes the BitSet to the given output stream.
      * @param[in] os: The output stream.
      */
