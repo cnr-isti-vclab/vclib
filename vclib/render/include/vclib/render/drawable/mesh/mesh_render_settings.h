@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
 
-#include "mesh_render_info_macros.h"
+#include "mesh_render_info.h"
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/bit_set.h>
@@ -112,9 +112,14 @@ public:
         return mCapability.visible;
     }
 
+    bool canPoint(MeshRenderInfo::Points p) const
+    {
+        return pointsCapability(p);
+    }
+
     bool canPointBeVisible() const
     {
-        return mDrawModeCapability0 & VCL_MRS_DRAW_POINTS;
+        return canPoint(MeshRenderInfo::Points::VISIBLE);
     }
 
     bool canPointShadingBePerVertex() const
@@ -234,7 +239,15 @@ public:
 
     bool isVisible() const { return mDrawMode.visible; }
 
-    bool isPointVisible() const { return mDrawMode0 & VCL_MRS_DRAW_POINTS; }
+    bool isPoint(MeshRenderInfo::Points p) const
+    {
+        return pointsDrawMode(p);
+    }
+
+    bool isPointVisible() const
+    {
+        return pointsDrawMode(MeshRenderInfo::Points::VISIBLE);
+    }
 
     bool isPointShadingNone() const
     {
@@ -403,6 +416,8 @@ public:
 
     bool setVisibility(bool b);
 
+    bool setPoint(MeshRenderInfo::Points p, bool b);
+
     bool setPointVisibility(bool b);
 
     bool setPointShadingNone();
@@ -496,7 +511,7 @@ public:
             mCapability.visible = true;
 
             // -- Points --
-            mDrawModeCapability0 |= VCL_MRS_DRAW_POINTS;
+            setPointsCapability(MeshRenderInfo::Points::VISIBLE);
             mDrawModeCapability0 |= VCL_MRS_POINTS_SHADING_NONE;
             mDrawModeCapability0 |= VCL_MRS_POINTS_PIXEL;
             mDrawModeCapability0 |= VCL_MRS_POINTS_CIRCLE;
@@ -623,6 +638,31 @@ public:
     }
 
     void setDefaultSettingsFromCapability();
+
+private:
+    bool pointsCapability(MeshRenderInfo::Points p) const
+    {
+        assert(p < MeshRenderInfo::Points::COUNT);
+        return mCapability.points[toUnderlying(p)];
+    }
+
+    bool pointsDrawMode(MeshRenderInfo::Points p) const
+    {
+        assert(p < MeshRenderInfo::Points::COUNT);
+        return mDrawMode.points[toUnderlying(p)];
+    }
+
+    void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Points::COUNT);
+        mCapability.points[toUnderlying(p)] = b;
+    }
+
+    void setPointsDrawMode(MeshRenderInfo::Points p, bool b = true)
+    {
+        assert(p < MeshRenderInfo::Points::COUNT);
+        mDrawMode.points[toUnderlying(p)] = b;
+    }
 };
 
 } // namespace vcl

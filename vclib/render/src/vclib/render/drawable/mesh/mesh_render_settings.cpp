@@ -69,18 +69,28 @@ bool MeshRenderSettings::setVisibility(bool b)
     }
 }
 
-bool MeshRenderSettings::setPointVisibility(bool b)
+bool MeshRenderSettings::setPoint(MeshRenderInfo::Points p, bool b = true)
 {
-    if (canPointBeVisible()) {
-        if (b)
-            mDrawMode0 |= VCL_MRS_DRAW_POINTS;
-        else
-            mDrawMode0 &= ~VCL_MRS_DRAW_POINTS;
+    if (canPoint(p)) {
+        auto rng = MeshRenderInfo::pointsExclusiveRange(p);
+        if (rng.first == rng.second) {
+            mDrawMode.points[rng.first] = b;
+        }
+        else {
+            for (auto i = rng.first; i < rng.second; ++i) {
+                mDrawMode.points[i] = toUnderlying(p) == i;
+            }
+        }
         return true;
     }
     else {
         return false;
     }
+}
+
+bool MeshRenderSettings::setPointVisibility(bool b)
+{
+    return setPoint(MeshRenderInfo::Points::VISIBLE, b);
 }
 
 bool MeshRenderSettings::setPointShadingNone()

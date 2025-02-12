@@ -25,11 +25,29 @@
 
 #include "mesh_render_info_macros.h"
 
+#include <vclib/types.h>
+
+#include <array>
+
 namespace vcl {
+
+namespace detail {
+
+template<typename Enum>
+auto constexpr makeExclusiveReangesArray(auto... args) {
+    std::array<Enum, sizeof...(args)> array;
+
+    std::size_t i = 0;
+    ((array[i++] = args), ...);
+
+    return array;
+};
+
+} // namespace detail
 
 struct MeshRenderInfo {
     enum class Points {
-        DRAW = 0,
+        VISIBLE = 0,
         SHAPE_PIXEL,
         SHAPE_CIRCLE,
         SHADING_NONE,
@@ -41,8 +59,13 @@ struct MeshRenderInfo {
         COUNT
     };
 
+    constexpr static auto pointsExclusiveRange(auto value)
+    {
+        return getExclusiveRange(value, POINTS_EXCLUSIVE_RANGES);
+    }
+
     enum class Surface {
-        DRAW = 0,
+        VISIBLE = 0,
         SHADING_NONE,
         SHADING_FLAT,
         SHADING_SMOOTH,
@@ -57,7 +80,7 @@ struct MeshRenderInfo {
     };
 
     enum class Wireframe {
-        DRAW = 0,
+        VISIBLE = 0,
         SHADING_NONE,
         SHADING_VERT,
         COLOR_VERTEX,
@@ -68,7 +91,7 @@ struct MeshRenderInfo {
     };
 
     enum class Edges {
-        DRAW = 0,
+        VISIBLE = 0,
         SHADING_NONE,
         SHADING_FLAT,
         SHADING_SMOOTH,
@@ -79,6 +102,25 @@ struct MeshRenderInfo {
 
         COUNT
     };
+
+private:
+    inline static constexpr auto const POINTS_EXCLUSIVE_RANGES =
+        detail::makeExclusiveReangesArray<Points>(
+            Points::SHAPE_PIXEL, Points::SHAPE_CIRCLE,
+            Points::SHADING_NONE, Points::SHADING_VERT,
+            Points::COLOR_VERTEX, Points::COLOR_USER);
+
+    constexpr static auto getExclusiveRange(auto value, const auto& array)
+    {
+        for (uint i = 0; i < array.size(); i+=2) {
+            if (toUnderlying(value) >= toUnderlying(array[i]) &&
+                toUnderlying(value) <= toUnderlying(array[i+1])) {
+                return std::pair(
+                    toUnderlying(array[i]), toUnderlying(array[i + 1]));
+            }
+        }
+        return std::pair(toUnderlying(value), toUnderlying(value));
+    }
 };
 
 } // namespace vcl
