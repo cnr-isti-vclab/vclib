@@ -64,10 +64,10 @@ class MeshRenderSettings
         bool visible;
 
         // settings for each primitive
-        BitSet8 points;
+        BitSet16 points;
         BitSet16 surface;
-        BitSet8 wireframe;
-        BitSet8 edges;
+        BitSet8  wireframe;
+        BitSet8  edges;
 
         bool operator==(const Info& o) const
         {
@@ -131,7 +131,7 @@ public:
 
     bool canPointShadingBePerVertex() const
     {
-        return mDrawModeCapability0 & VCL_MRS_POINTS_SHADING_VERT;
+        return canPoint(MeshRenderInfo::Points::SHADING_VERT);
     }
 
     bool canPointColorBePerVertex() const
@@ -258,12 +258,12 @@ public:
 
     bool isPointShadingNone() const
     {
-        return mDrawMode0 & VCL_MRS_POINTS_SHADING_NONE;
+        return pointsDrawMode(MeshRenderInfo::Points::SHADING_NONE);
     }
 
     bool isPointShadingPerVertex() const
     {
-        return mDrawMode0 & VCL_MRS_POINTS_SHADING_VERT;
+        return pointsDrawMode(MeshRenderInfo::Points::SHADING_VERT);
     }
 
     bool isPointColorPerVertex() const
@@ -521,12 +521,12 @@ public:
             setPointsCapability(MeshRenderInfo::Points::VISIBLE);
             setPointsCapability(MeshRenderInfo::Points::SHAPE_PIXEL);
             setPointsCapability(MeshRenderInfo::Points::SHAPE_CIRCLE);
-            mDrawModeCapability0 |= VCL_MRS_POINTS_SHADING_NONE;
+            setPointsCapability(MeshRenderInfo::Points::SHADING_NONE);
             mDrawModeCapability0 |= VCL_MRS_POINTS_COLOR_USER;
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (vcl::isPerVertexNormalAvailable(m)) {
-                    mDrawModeCapability0 |= VCL_MRS_POINTS_SHADING_VERT;
+                    setPointsCapability(MeshRenderInfo::Points::SHADING_VERT);
                 }
             }
 

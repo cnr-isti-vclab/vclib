@@ -30,11 +30,11 @@
 /* uint mDrawMode0 */
 
 // points
-//#define VCL_MRS_DRAW_POINTS         uint(1 << 1) // point visibility
-//#define VCL_MRS_POINTS_PIXEL        uint(1 << 2) // draw points as pixels
-//#define VCL_MRS_POINTS_CIRCLE       uint(1 << 3) // draw points as circles
-#define VCL_MRS_POINTS_SHADING_NONE uint(1 << 4) // no shading
-#define VCL_MRS_POINTS_SHADING_VERT uint(1 << 5) // vertex normal shading
+#define VCL_MRS_DRAW_POINTS         0 // point visibility
+#define VCL_MRS_POINTS_PIXEL        1 // draw points as pixels
+#define VCL_MRS_POINTS_CIRCLE       2 // draw points as circles
+#define VCL_MRS_POINTS_SHADING_NONE 3 // no shading
+#define VCL_MRS_POINTS_SHADING_VERT 4 // vertex normal shading
 #define VCL_MRS_POINTS_COLOR_VERTEX uint(1 << 6) // vert colors for points
 #define VCL_MRS_POINTS_COLOR_MESH   uint(1 << 7) // mesh color for points
 #define VCL_MRS_POINTS_COLOR_USER   uint(1 << 8) // user color for points

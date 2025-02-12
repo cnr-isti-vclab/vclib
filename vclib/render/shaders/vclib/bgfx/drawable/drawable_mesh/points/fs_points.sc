@@ -39,7 +39,7 @@ void main()
     vec3 normal = normalize(v_normal);
 
     // if per vert shading
-    if (bool(drawMode0 & VCL_MRS_POINTS_SHADING_VERT)) {
+    if (bool(drawMode0 & (1 << VCL_MRS_POINTS_SHADING_VERT))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
     }
 

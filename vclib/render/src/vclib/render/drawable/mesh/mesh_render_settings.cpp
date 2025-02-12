@@ -71,12 +71,18 @@ bool MeshRenderSettings::setVisibility(bool b)
 
 bool MeshRenderSettings::setPoint(MeshRenderInfo::Points p, bool b = true)
 {
-    if (canPoint(p)) {
+    if (canPoint(p)) { // if the capability allows it
+        // get the range of the mutual exclusive settings for p
         auto rng = MeshRenderInfo::pointsExclusiveRange(p);
+        // if there are no mutual exclusive settings
         if (rng.first == rng.second) {
+            // the setting could be true or false
+            // e.g. VISIBLE
             mDrawMode.points[rng.first] = b;
         }
         else {
+            // only one setting in the range can be true
+            // e.g. the range SHAPE_*
             for (auto i = rng.first; i < rng.second; ++i) {
                 mDrawMode.points[i] = toUnderlying(p) == i;
             }
@@ -95,9 +101,10 @@ bool MeshRenderSettings::setPointVisibility(bool b)
 
 bool MeshRenderSettings::setPointShadingNone()
 {
+    // return setPoint(MeshRenderInfo::Points::SHADING_NONE);
     if (canPointBeVisible()) {
-        mDrawMode0 |= VCL_MRS_POINTS_SHADING_NONE;
-        mDrawMode0 &= ~VCL_MRS_POINTS_SHADING_VERT;
+        mDrawMode0 |= (1 << VCL_MRS_POINTS_SHADING_NONE);
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_SHADING_VERT);
         return true;
     }
     else {
@@ -107,9 +114,10 @@ bool MeshRenderSettings::setPointShadingNone()
 
 bool MeshRenderSettings::setPointShadingPerVertex()
 {
+    // return setPoint(MeshRenderInfo::Points::SHADING_VERT);
     if (canPointBeVisible()) {
-        mDrawMode0 &= ~VCL_MRS_POINTS_SHADING_NONE;
-        mDrawMode0 |= VCL_MRS_POINTS_SHADING_VERT;
+        mDrawMode0 &= ~(1 << VCL_MRS_POINTS_SHADING_NONE);
+        mDrawMode0 |= (1 << VCL_MRS_POINTS_SHADING_VERT);
         return true;
     }
     else {
