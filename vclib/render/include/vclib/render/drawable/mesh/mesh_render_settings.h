@@ -60,35 +60,10 @@ namespace vcl {
  */
 class MeshRenderSettings
 {
-    struct Info {
-        bool visible;
+    using MRI = MeshRenderInfo;
 
-        // settings for each primitive
-        BitSet16 points;
-        BitSet16 surface;
-        BitSet16 wireframe;
-        BitSet16 edges;
-
-        bool operator==(const Info& o) const
-        {
-            return visible == o.visible && points == o.points &&
-                   surface == o.surface && wireframe == o.wireframe &&
-                   edges == o.edges;
-        }
-    };
-
-    Info mCapability;
-    Info mDrawMode;
-
-    // draw integers controlled using macros (same macros used also in shaders)
-
-    // draw mode 0: general visibility, points, surface and wireframe
-    uint mDrawModeCapability0 = 0;
-    uint mDrawMode0           = 0;
-
-    // draw mode 1: edges, ... (to be implemented)
-    uint mDrawModeCapability1 = 0;
-    uint mDrawMode1           = 0;
+    MeshRenderInfo mCapability; // capabilities of the mesh
+    MeshRenderInfo mDrawMode; // current rendering settings
 
     float mPointWidth        = 3;
     float mPointUserColor[4] = {1, 1, 0, 1}; // todo: change to uint
@@ -121,173 +96,176 @@ public:
 
     bool canPoint(MeshRenderInfo::Points p) const
     {
-        return pointsCapability(p);
+        assert(p < MeshRenderInfo::Points::COUNT);
+        return mCapability.points[toUnderlying(p)];
     }
 
     bool canPointBeVisible() const
     {
-        return canPoint(MeshRenderInfo::Points::VISIBLE);
+        return canPoint(MRI::Points::VISIBLE);
     }
 
     bool canPointShadingBePerVertex() const
     {
-        return canPoint(MeshRenderInfo::Points::SHADING_VERT);
+        return canPoint(MRI::Points::SHADING_VERT);
     }
 
     bool canPointColorBePerVertex() const
     {
-        return canPoint(MeshRenderInfo::Points::COLOR_VERTEX);
+        return canPoint(MRI::Points::COLOR_VERTEX);
     }
 
     bool canPointColorBePerMesh() const
     {
-        return mDrawModeCapability0 & VCL_MRS_POINTS_COLOR_MESH;
+        return canPoint(MRI::Points::COLOR_MESH);
+    }
+
+    bool canSurface(MeshRenderInfo::Surface s) const
+    {
+        assert(s < MRI::Surface::COUNT);
+        return mCapability.surface[toUnderlying(s)];
     }
 
     bool canSurfaceBeVisible() const
     {
-        return mDrawModeCapability0 & VCL_MRS_DRAW_SURF;
+        return canSurface(MRI::Surface::VISIBLE);
     }
 
     bool canSurfaceShadingBeFlat() const
     {
-        return mDrawModeCapability0 & VCL_MRS_SURF_SHADING_FLAT;
+        return canSurface(MRI::Surface::SHADING_FLAT);
     }
 
     bool canSurfaceShadingBeSmooth() const
     {
-        return mDrawModeCapability0 & VCL_MRS_SURF_SHADING_SMOOTH;
+        return canSurface(MRI::Surface::SHADING_SMOOTH);
     }
 
     bool canSurfaceColorBePerFace() const
     {
-        return mDrawModeCapability0 & VCL_MRS_SURF_COLOR_FACE;
+        return canSurface(MRI::Surface::COLOR_FACE);
     }
 
     bool canSurfaceColorBePerVertex() const
     {
-        return mDrawModeCapability0 & VCL_MRS_SURF_COLOR_VERTEX;
+        return canSurface(MRI::Surface::COLOR_VERTEX);
     }
 
     bool canSurfaceColorBePerMesh() const
     {
-        return mDrawModeCapability0 & VCL_MRS_SURF_COLOR_MESH;
+        return canSurface(MRI::Surface::COLOR_MESH);
     }
 
     bool canSurfaceColorBePerVertexTexcoords() const
     {
-        return mDrawModeCapability0 & VCL_MRS_SURF_TEX_VERTEX;
+        return canSurface(MRI::Surface::COLOR_VERTEX_TEX);
     }
 
     bool canSurfaceColorBePerWedgeTexcoords() const
     {
-        return mDrawModeCapability0 & VCL_MRS_SURF_TEX_WEDGE;
+        return canSurface(MRI::Surface::COLOR_WEDGE_TEX);
+    }
+
+    bool canWireframe(MeshRenderInfo::Wireframe w) const
+    {
+        assert(w < MRI::Wireframe::COUNT);
+        return mCapability.wireframe[toUnderlying(w)];
     }
 
     bool canWireframeShadingBePerVertex() const
     {
-        return mDrawModeCapability0 & VCL_MRS_WIREFRAME_SHADING_VERT;
+        return canWireframe(MRI::Wireframe::SHADING_VERT);
     }
 
     bool canWireframeColorBePerVertex() const
     {
-        return mDrawModeCapability0 & VCL_MRS_WIREFRAME_COLOR_VERT;
+        return canWireframe(MRI::Wireframe::COLOR_VERTEX);
     }
 
     bool canWireframeColorBePerMesh() const
     {
-        return mDrawModeCapability0 & VCL_MRS_WIREFRAME_COLOR_MESH;
+        return canWireframe(MRI::Wireframe::COLOR_MESH);
     }
 
-    bool canBoundingBoxBeVisible() const
+    bool canEdges(MeshRenderInfo::Edges e) const
     {
-        return mDrawModeCapability0 & VCL_MRS_DRAW_BOUNDINGBOX;
+        assert(e < MRI::Edges::COUNT);
+        return mCapability.edges[toUnderlying(e)];
     }
 
     bool canEdgesBeVisible() const
     {
-        return mDrawModeCapability1 & VCL_MRS_DRAW_EDGES;
+        return canEdges(MRI::Edges::VISIBLE);
     }
 
     bool canEdgesShadingBeSmooth() const
     {
-        return mDrawModeCapability1 & VCL_MRS_EDGES_SHADING_SMOOTH;
+        return canEdges(MRI::Edges::SHADING_SMOOTH);
     }
 
     bool canEdgesShadingBeFlat() const
     {
-        return mDrawModeCapability1 & VCL_MRS_EDGES_SHADING_FLAT;
+        return canEdges(MRI::Edges::SHADING_FLAT);
     }
 
     bool canEdgesColorBePerVertex() const
     {
-        return mDrawModeCapability1 & VCL_MRS_EDGES_COLOR_VERTEX;
+        return canEdges(MRI::Edges::COLOR_VERTEX);
     }
 
     bool canEdgesColorBePerEdge() const
     {
-        return mDrawModeCapability1 & VCL_MRS_EDGES_COLOR_EDGE;
+        return canEdges(MRI::Edges::COLOR_EDGE);
     }
 
     bool canEdgesColorBePerMesh() const
     {
-        return mDrawModeCapability1 & VCL_MRS_EDGES_COLOR_MESH;
+        return canEdges(MRI::Edges::COLOR_MESH);
     }
 
     // rendering options getters
 
-    std::pair<uint, uint> drawMode() const
+    MeshRenderInfo drawMode() const
     {
-        uint drawMode0 = mDrawMode.points.underlying();
-        drawMode0 |= mDrawMode.surface.underlying() << 16;
-        uint drawMode1 = mDrawMode.wireframe.underlying();
-        drawMode1 |= mDrawMode.edges.underlying() << 16;
-        return {drawMode0, drawMode1};
+        return mDrawMode;
     }
-
-    uint drawMode0() const { return mDrawMode0; }
-
-    uint drawMode1() const { return mDrawMode1; }
-
-    uint drawModeCapability0() const { return mDrawModeCapability0; }
-
-    uint drawModeCapability1() const { return mDrawModeCapability1; }
 
     bool isVisible() const { return mDrawMode.visible; }
 
     bool isPoint(MeshRenderInfo::Points p) const
     {
-        return pointsDrawMode(p);
+        assert(p < MRI::Points::COUNT);
+        return mDrawMode.points[toUnderlying(p)];
     }
 
     bool isPointVisible() const
     {
-        return pointsDrawMode(MeshRenderInfo::Points::VISIBLE);
+        return isPoint(MRI::Points::VISIBLE);
     }
 
     bool isPointShadingNone() const
     {
-        return pointsDrawMode(MeshRenderInfo::Points::SHADING_NONE);
+        return isPoint(MRI::Points::SHADING_NONE);
     }
 
     bool isPointShadingPerVertex() const
     {
-        return pointsDrawMode(MeshRenderInfo::Points::SHADING_VERT);
+        return isPoint(MRI::Points::SHADING_VERT);
     }
 
     bool isPointColorPerVertex() const
     {
-        return pointsDrawMode(MeshRenderInfo::Points::COLOR_VERTEX);
+        return isPoint(MRI::Points::COLOR_VERTEX);
     }
 
     bool isPointColorPerMesh() const
     {
-        return pointsDrawMode(MeshRenderInfo::Points::COLOR_MESH);
+        return isPoint(MRI::Points::COLOR_MESH);
     }
 
     bool isPointColorUserDefined() const
     {
-        return pointsDrawMode(MeshRenderInfo::Points::COLOR_USER);
+        return isPoint(MRI::Points::COLOR_USER);
     }
 
     float pointWidth() const { return mPointWidth; }
@@ -296,85 +274,100 @@ public:
 
     const float* pointUserColorData() const { return mPointUserColor; }
 
-    bool isSurfaceVisible() const { return mDrawMode0 & VCL_MRS_DRAW_SURF; }
+    bool isSurface(MeshRenderInfo::Surface s) const
+    {
+        assert(s < MRI::Surface::COUNT);
+        return mDrawMode.surface[toUnderlying(s)];
+    }
+
+    bool isSurfaceVisible() const
+    {
+        return isSurface(MRI::Surface::VISIBLE);
+    }
 
     bool isSurfaceShadingNone() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_SHADING_NONE;
+        return isSurface(MRI::Surface::SHADING_NONE);
     }
 
     bool isSurfaceShadingFlat() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_SHADING_FLAT;
+        return isSurface(MRI::Surface::SHADING_FLAT);
     }
 
     bool isSurfaceShadingSmooth() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_SHADING_SMOOTH;
+        return isSurface(MeshRenderInfo::Surface::SHADING_SMOOTH);
     }
 
     bool isSurfaceColorPerFace() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_COLOR_FACE;
+        return isSurface(MRI::Surface::COLOR_FACE);
     }
 
     bool isSurfaceColorPerVertex() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_COLOR_VERTEX;
+        return isSurface(MRI::Surface::COLOR_VERTEX);
     }
 
     bool isSurfaceColorPerMesh() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_COLOR_MESH;
+        return isSurface(MRI::Surface::COLOR_MESH);
     }
 
     bool isSurfaceColorUserDefined() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_COLOR_USER;
+        return isSurface(MRI::Surface::COLOR_USER);
     }
 
     bool isSurfaceColorPerVertexTexcoords() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_TEX_VERTEX;
+        return isSurface(MRI::Surface::COLOR_VERTEX_TEX);
     }
 
     bool isSurfaceColorPerWedgeTexcoords() const
     {
-        return mDrawMode0 & VCL_MRS_SURF_TEX_WEDGE;
+        return isSurface(MRI::Surface::COLOR_WEDGE_TEX);
     }
 
     vcl::Color surfaceUserColor() const;
 
     const uint* surfaceUserColorData() const { return &mSurfUserColor; }
 
+    bool isWireframe(MeshRenderInfo::Wireframe w) const
+    {
+        assert(w < MRI::Wireframe::COUNT);
+        return mDrawMode.wireframe[toUnderlying(w)];
+    }
+
     bool isWireframeVisible() const
     {
-        return mDrawMode0 & VCL_MRS_DRAW_WIREFRAME;
+        return isWireframe(MRI::Wireframe::VISIBLE);
     }
 
     bool isWireframeShadingNone() const
     {
-        return mDrawMode0 & VCL_MRS_WIREFRAME_SHADING_NONE;
+        return isWireframe(MRI::Wireframe::SHADING_NONE);
     }
 
     bool isWireframeShadingPerVertex() const
     {
-        return mDrawMode0 & VCL_MRS_WIREFRAME_SHADING_VERT;
+        return isWireframe(MRI::Wireframe::SHADING_VERT);
     }
 
     bool isWireframeColorPerVertex() const
     {
-        return mDrawMode0 & VCL_MRS_WIREFRAME_COLOR_VERT;
+        return isWireframe(MRI::Wireframe::COLOR_VERTEX);
     }
 
     bool isWireframeColorPerMesh() const
     {
-        return mDrawMode0 & VCL_MRS_WIREFRAME_COLOR_MESH;
+        return isWireframe(MRI::Wireframe::COLOR_MESH);
     }
 
     bool isWireframeColorUserDefined() const
     {
-        return mDrawMode0 & VCL_MRS_WIREFRAME_COLOR_USER;
+        return isWireframe(MRI::Wireframe::COLOR_USER);
     }
 
     int wireframeWidth() const { return mWrfWidth; }
@@ -383,43 +376,50 @@ public:
 
     const float* wireframeUserColorData() const { return mWrfUserColor; }
 
-    bool isBboxEnabled() const { return mDrawMode0 & VCL_MRS_DRAW_BOUNDINGBOX; }
+    bool isEdges(MeshRenderInfo::Edges e) const
+    {
+        assert(e < MRI::Edges::COUNT);
+        return mDrawMode.edges[toUnderlying(e)];
+    }
 
-    bool isEdgesVisible() const { return mDrawMode1 & VCL_MRS_DRAW_EDGES; }
+    bool isEdgesVisible() const
+    {
+        return isEdges(MRI::Edges::VISIBLE);
+    }
 
     bool isEdgesShadingNone() const
     {
-        return mDrawMode1 & VCL_MRS_EDGES_SHADING_NONE;
+        return isEdges(MRI::Edges::SHADING_NONE);
     }
 
     bool isEdgesShadingSmooth() const
     {
-        return mDrawMode1 & VCL_MRS_EDGES_SHADING_SMOOTH;
+        return isEdges(MRI::Edges::SHADING_SMOOTH);
     }
 
     bool isEdgesShadingFlat() const
     {
-        return mDrawMode1 & VCL_MRS_EDGES_SHADING_FLAT;
+        return isEdges(MRI::Edges::SHADING_FLAT);
     }
 
     bool isEdgesColorPerVertex() const
     {
-        return mDrawMode1 & VCL_MRS_EDGES_COLOR_VERTEX;
+        return isEdges(MRI::Edges::COLOR_VERTEX);
     }
 
     bool isEdgesColorPerEdge() const
     {
-        return mDrawMode1 & VCL_MRS_EDGES_COLOR_EDGE;
+        return isEdges(MRI::Edges::COLOR_EDGE);
     }
 
     bool isEdgesColorPerMesh() const
     {
-        return mDrawMode1 & VCL_MRS_EDGES_COLOR_MESH;
+        return isEdges(MRI::Edges::COLOR_MESH);
     }
 
     bool isEdgesColorUserDefined() const
     {
-        return mDrawMode1 & VCL_MRS_EDGES_COLOR_USER;
+        return isEdges(MRI::Edges::COLOR_USER);
     }
 
     int edgesWidth() const { return mEdgesWidth; }
@@ -432,25 +432,37 @@ public:
 
     bool setVisibility(bool b);
 
-    bool setPoint(MeshRenderInfo::Points p, bool b);
+    bool setPoint(MeshRenderInfo::Points p, bool b = true);
 
-    bool setSurface(MeshRenderInfo::Surface s, bool b);
+    bool setPointVisibility(bool b)
+    {
+        return setPoint(MRI::Points::VISIBLE, b);
+    }
 
-    bool setWireframe(MeshRenderInfo::Wireframe w, bool b);
+    bool setPointShadingNone()
+    {
+        return setPoint(MRI::Points::SHADING_NONE);
+    }
 
-    bool setEdges(MeshRenderInfo::Edges e, bool b);
+    bool setPointShadingPerVertex()
+    {
+        return setPoint(MRI::Points::SHADING_VERT);
+    }
 
-    bool setPointVisibility(bool b);
+    bool setPointColorPerVertex()
+    {
+        return setPoint(MRI::Points::COLOR_VERTEX);
+    }
 
-    bool setPointShadingNone();
+    bool setPointColorPerMesh()
+    {
+        return setPoint(MRI::Points::COLOR_MESH);
+    }
 
-    bool setPointShadingPerVertex();
-
-    bool setPointColorPerVertex();
-
-    bool setPointColorPerMesh();
-
-    bool setPointColorUserDefined();
+    bool setPointColorUserDefined()
+    {
+        return setPoint(MRI::Points::COLOR_USER);
+    }
 
     bool setPointWidth(float width);
 
@@ -458,196 +470,309 @@ public:
 
     bool setPointUserColor(const vcl::Color& c);
 
-    bool setSurfaceVisibility(bool b);
+    bool setSurface(MeshRenderInfo::Surface s, bool b = true);
 
-    bool setSurfaceShadingNone();
+    bool setSurfaceVisibility(bool b)
+    {
+        return setSurface(MRI::Surface::VISIBLE, b);
+    }
 
-    bool setSurfaceShadingFlat();
+    /**
+     * @brief Unsets the shading of the surface (no light).
+     * Unsets automatically all the other shading options.
+     */
+    bool setSurfaceShadingNone()
+    {
+        return setSurface(MRI::Surface::SHADING_NONE);
+    }
 
-    bool setSurfaceShadingSmooth();
+    /**
+     * @brief Sets (if capability allows it) the shading of the surface flat
+     * (using triangle normals). Unsets automatically all the other shading
+     * options.
+     */
+    bool setSurfaceShadingFlat()
+    {
+        return setSurface(MRI::Surface::SHADING_FLAT);
+    }
 
-    bool setSurfaceColorPerVertex();
+    /**
+     * @brief Sets (if capability allows it) the shading of the surface smooth
+     * (using vertex normals). Unsets automatically all the other shading
+     * options.
+     */
+    bool setSurfaceShadingSmooth()
+    {
+        return setSurface(MRI::Surface::SHADING_SMOOTH);
+    }
 
-    bool setSurfaceColorPerFace();
+    /**
+     * @brief Set (if capability allows it) the surface coloring per vertex
+     * (using the vertex colors). Unsets automatically all the other surface
+     * colorizations.
+     */
+    bool setSurfaceColorPerVertex()
+    {
+        return setSurface(MRI::Surface::COLOR_VERTEX);
+    }
 
-    bool setSurfaceColorPerMesh();
+    /**
+     * @brief Set (if capability allows it) the surface coloring per face (using
+     * the face colors). Unsets automatically all the other surface
+     * colorizations.
+     */
+    bool setSurfaceColorPerFace()
+    {
+        return setSurface(MRI::Surface::COLOR_FACE);
+    }
 
-    bool setSurfaceColorUserDefined();
+    /**
+     * @brief Set (if capability allows it) the surface coloring per mesh (using
+     * the mesh color). Unsets automatically all the other surface
+     * colorizations.
+     */
+    bool setSurfaceColorPerMesh()
+    {
+        return setSurface(MRI::Surface::COLOR_MESH);
+    }
 
-    bool setSurfaceColorPerVertexTexcoords();
+    /**
+     * @brief Set the surface coloring by the user defined color.
+     * To set the user defined color, you can use the
+     * @ref setSurfaceColorUserDefined() function. Unsets automatically all the
+     * other surface colorizations.
+     */
+    bool setSurfaceColorUserDefined()
+    {
+        return setSurface(MRI::Surface::COLOR_USER);
+    }
 
-    bool setSurfaceColorPerWedgeTexcoords();
+    /**
+     * @brief Set (if capability allows it) the surface color using the per
+     * vertex texcoords. Unsets automatically all the other surface
+     * colorizations.
+     */
+    bool setSurfaceColorPerVertexTexcoords()
+    {
+        return setSurface(MRI::Surface::COLOR_VERTEX_TEX);
+    }
+
+    /**
+     * @brief Set (if capability allows it) the surface color using the per
+     * wedge texcoords. Unsets automatically all the other surface
+     * colorizations.
+     */
+    bool setSurfaceColorPerWedgeTexcoords()
+    {
+        return setSurface(MRI::Surface::COLOR_WEDGE_TEX);
+    }
 
     bool setSurfaceUserColor(float r, float g, float b, float a = 1);
 
     bool setSurfaceUserColor(const vcl::Color& c);
 
-    bool setWireframeVisibility(bool b);
+    bool setWireframe(MeshRenderInfo::Wireframe w, bool b = true);
 
-    bool setWireframeShadingNone();
+    bool setWireframeVisibility(bool b)
+    {
+        return setWireframe(MRI::Wireframe::VISIBLE, b);
+    }
 
-    bool setWireframeShadingPerVertex();
+    bool setWireframeShadingNone()
+    {
+        return setWireframe(MRI::Wireframe::SHADING_NONE);
+    }
 
-    bool setWireframeColorPerVertex();
+    bool setWireframeShadingPerVertex()
+    {
+        return setWireframe(MRI::Wireframe::SHADING_VERT);
+    }
 
-    bool setWireframeColorPerMesh();
+    bool setWireframeColorPerVertex()
+    {
+        return setWireframe(MRI::Wireframe::COLOR_VERTEX);
+    }
 
-    bool setWireframeColorUserDefined();
+    bool setWireframeColorPerMesh()
+    {
+        return setWireframe(MRI::Wireframe::COLOR_MESH);
+    }
+
+    bool setWireframeColorUserDefined()
+    {
+        return setWireframe(MRI::Wireframe::COLOR_USER);
+    }
 
     bool setWireframeUserColor(float r, float g, float b, float a = 1);
 
-    bool setWireframeWidth(int width);
-
     bool setWireframeUserColor(const vcl::Color& c);
 
-    bool setBoundingBoxVisibility(bool b);
+    bool setWireframeWidth(int width);
 
-    bool setEdgesVisibility(bool b);
+    bool setEdges(MeshRenderInfo::Edges e, bool b = true);
 
-    bool setEdgesShadingNone();
+    bool setEdgesVisibility(bool b)
+    {
+        return setEdges(MRI::Edges::VISIBLE, b);
+    }
 
-    bool setEdgesShadingSmooth();
+    bool setEdgesShadingNone()
+    {
+        return setEdges(MRI::Edges::SHADING_NONE);
+    }
 
-    bool setEdgesShadingFlat();
+    bool setEdgesShadingSmooth()
+    {
+        return setEdges(MRI::Edges::SHADING_SMOOTH);
+    }
 
-    bool setEdgesColorPerVertex();
+    bool setEdgesShadingFlat()
+    {
+        return setEdges(MRI::Edges::SHADING_FLAT);
+    }
 
-    bool setEdgesColorPerEdge();
+    bool setEdgesColorPerVertex()
+    {
+        return setEdges(MRI::Edges::COLOR_VERTEX);
+    }
 
-    bool setEdgesColorPerMesh();
+    bool setEdgesColorPerEdge()
+    {
+        return setEdges(MRI::Edges::COLOR_EDGE);
+    }
 
-    bool setEdgesColorUserDefined();
+    bool setEdgesColorPerMesh()
+    {
+        return setEdges(MRI::Edges::COLOR_MESH);
+    }
 
-    bool setEdgesWidth(int width);
+    bool setEdgesColorUserDefined()
+    {
+        return setEdges(MRI::Edges::COLOR_USER);
+    }
 
     bool setEdgesUserColor(float r, float g, float b, float a = 1);
 
     bool setEdgesUserColor(const vcl::Color& c);
 
+    bool setEdgesWidth(int width);
+
     template<MeshConcept MeshType>
     void setRenderCapabilityFrom(const MeshType& m)
     {
-        mDrawModeCapability0 = 0;
+        mCapability.reset();
 
         if (m.vertexNumber() > 0) {
             mCapability.visible = true;
 
             // -- Points --
-            setPointsCapability(MeshRenderInfo::Points::VISIBLE);
-            setPointsCapability(MeshRenderInfo::Points::SHAPE_PIXEL);
-            setPointsCapability(MeshRenderInfo::Points::SHAPE_CIRCLE);
-            setPointsCapability(MeshRenderInfo::Points::SHADING_NONE);
-            mDrawModeCapability0 |= VCL_MRS_POINTS_COLOR_USER;
+            setPointsCapability(MRI::Points::VISIBLE);
+            setPointsCapability(MRI::Points::SHAPE_PIXEL);
+            setPointsCapability(MRI::Points::SHAPE_CIRCLE);
+            setPointsCapability(MRI::Points::SHADING_NONE);
+            setPointsCapability(MRI::Points::COLOR_USER);
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (vcl::isPerVertexNormalAvailable(m)) {
-                    setPointsCapability(MeshRenderInfo::Points::SHADING_VERT);
+                    setPointsCapability(MRI::Points::SHADING_VERT);
                 }
             }
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (vcl::isPerVertexColorAvailable(m)) {
-                    setPointsCapability(MeshRenderInfo::Points::COLOR_VERTEX);
+                    setPointsCapability(MRI::Points::COLOR_VERTEX);
                 }
             }
 
             if constexpr (vcl::HasColor<MeshType>) {
-                setPointsCapability(MeshRenderInfo::Points::COLOR_MESH);
+                setPointsCapability(MRI::Points::COLOR_MESH);
             }
 
             // -- Surface and Wireframe --
             if constexpr (vcl::HasFaces<MeshType>) {
                 if (m.faceNumber() > 0) {
-                    mDrawModeCapability0 |= VCL_MRS_DRAW_SURF;
-                    mDrawModeCapability0 |= VCL_MRS_SURF_SHADING_NONE;
-                    mDrawModeCapability0 |= VCL_MRS_SURF_COLOR_USER;
-                    mDrawModeCapability0 |= VCL_MRS_DRAW_WIREFRAME;
-                    mDrawModeCapability0 |= VCL_MRS_WIREFRAME_SHADING_NONE;
-                    mDrawModeCapability0 |= VCL_MRS_WIREFRAME_COLOR_USER;
+                    setSurfaceCapability(MRI::Surface::VISIBLE);
+                    setSurfaceCapability(MRI::Surface::SHADING_NONE);
+                    setSurfaceCapability(MRI::Surface::COLOR_USER);
+                    setWireframeCapability(MRI::Wireframe::VISIBLE);
+                    setWireframeCapability(MRI::Wireframe::SHADING_NONE);
+                    setWireframeCapability(MRI::Wireframe::COLOR_USER);
 
                     if constexpr (vcl::HasColor<MeshType>) {
-                        mDrawModeCapability0 |= VCL_MRS_SURF_COLOR_MESH;
-                        mDrawModeCapability0 |= VCL_MRS_WIREFRAME_COLOR_MESH;
+                        setSurfaceCapability(MRI::Surface::COLOR_MESH);
+                        setWireframeCapability(MRI::Wireframe::COLOR_MESH);
                     }
 
                     if constexpr (vcl::HasPerFaceNormal<MeshType>) {
                         if (vcl::isPerFaceNormalAvailable(m)) {
-                            mDrawModeCapability0 |= VCL_MRS_SURF_SHADING_FLAT;
+                            setSurfaceCapability(MRI::Surface::SHADING_FLAT);
                         }
                     }
 
                     if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                         if (vcl::isPerVertexNormalAvailable(m)) {
-                            mDrawModeCapability0 |= VCL_MRS_SURF_SHADING_SMOOTH;
-                            mDrawModeCapability0 |=
-                                VCL_MRS_WIREFRAME_SHADING_VERT;
+                            setSurfaceCapability(MRI::Surface::SHADING_SMOOTH);
+                            setWireframeCapability(MRI::Wireframe::SHADING_VERT);
                         }
                     }
 
                     if constexpr (vcl::HasPerFaceColor<MeshType>) {
                         if (vcl::isPerFaceColorAvailable(m))
-                            mDrawModeCapability0 |= VCL_MRS_SURF_COLOR_FACE;
+                            setSurfaceCapability(MRI::Surface::COLOR_FACE);
                     }
 
                     if constexpr (vcl::HasPerVertexColor<MeshType>) {
                         if (vcl::isPerVertexColorAvailable(m)) {
-                            mDrawModeCapability0 |= VCL_MRS_SURF_COLOR_VERTEX;
-                            mDrawModeCapability0 |=
-                                VCL_MRS_WIREFRAME_COLOR_VERT;
+                            setSurfaceCapability(MRI::Surface::COLOR_VERTEX);
+                            setWireframeCapability(MRI::Wireframe::COLOR_VERTEX);
                         }
                     }
 
                     if constexpr (vcl::HasTexturePaths<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m))
-                                mDrawModeCapability0 |= VCL_MRS_SURF_TEX_VERTEX;
+                                setSurfaceCapability(MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m))
-                                mDrawModeCapability0 |= VCL_MRS_SURF_TEX_WEDGE;
+                                setSurfaceCapability(MRI::Surface::COLOR_WEDGE_TEX);
                         }
                     }
                 }
             }
 
-            // -- Bounding Box --
-            if constexpr (vcl::HasBoundingBox<MeshType>) {
-                mDrawModeCapability0 |= VCL_MRS_DRAW_BOUNDINGBOX;
-            }
-
             // -- Edges --
             if constexpr (vcl::HasEdges<MeshType>) {
                 if (m.edgeNumber() > 0) {
-                    mDrawModeCapability1 |= VCL_MRS_DRAW_EDGES;
-                    mDrawModeCapability1 |= VCL_MRS_EDGES_SHADING_NONE;
-                    mDrawModeCapability1 |= VCL_MRS_EDGES_COLOR_USER;
+                    setEdgesCapability(MRI::Edges::VISIBLE);
+                    setEdgesCapability(MRI::Edges::SHADING_NONE);
+                    setEdgesCapability(MRI::Edges::COLOR_USER);
 
                     if constexpr (vcl::HasColor<MeshType>) {
-                        mDrawModeCapability1 |= VCL_MRS_EDGES_COLOR_MESH;
+                        setEdgesCapability(MRI::Edges::COLOR_MESH);
                     }
 
                     if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                         if (vcl::isPerVertexNormalAvailable(m)) {
-                            mDrawModeCapability1 |=
-                                VCL_MRS_EDGES_SHADING_SMOOTH;
+                            setEdgesCapability(MRI::Edges::SHADING_SMOOTH);
                         }
                     }
 
                     if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
                         if (vcl::isPerEdgeNormalAvailable(m)) {
-                            mDrawModeCapability1 |= VCL_MRS_EDGES_SHADING_FLAT;
+                            setEdgesCapability(MRI::Edges::SHADING_FLAT);
                         }
                     }
 
                     if constexpr (vcl::HasPerEdgeColor<MeshType>) {
                         if (vcl::isPerEdgeColorAvailable(m))
-                            mDrawModeCapability1 |= VCL_MRS_EDGES_COLOR_EDGE;
+                            setEdgesCapability(MRI::Edges::COLOR_EDGE);
                     }
 
                     if constexpr (vcl::HasPerVertexColor<MeshType>) {
                         if (vcl::isPerVertexColorAvailable(m)) {
-                            mDrawModeCapability1 |= VCL_MRS_EDGES_COLOR_VERTEX;
+                            setEdgesCapability(MRI::Edges::COLOR_VERTEX);
                         }
                     }
                 }
@@ -655,106 +780,57 @@ public:
         }
 
         // make sure that the previous draw mode satisfies the new capabilites
-        mDrawMode0 &= mDrawModeCapability0;
-        mDrawMode1 &= mDrawModeCapability1;
+        mDrawMode &= mCapability;
     }
 
     void setDefaultSettingsFromCapability();
 
 private:
-    bool pointsCapability(MeshRenderInfo::Points p) const
-    {
-        assert(p < MeshRenderInfo::Points::COUNT);
-        return mCapability.points[toUnderlying(p)];
-    }
-
-    bool pointsDrawMode(MeshRenderInfo::Points p) const
-    {
-        assert(p < MeshRenderInfo::Points::COUNT);
-        return mDrawMode.points[toUnderlying(p)];
-    }
-
     void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Points::COUNT);
+        assert(p < MRI::Points::COUNT);
         mCapability.points[toUnderlying(p)] = b;
     }
 
     void setPointsDrawMode(MeshRenderInfo::Points p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Points::COUNT);
+        assert(p < MRI::Points::COUNT);
         mDrawMode.points[toUnderlying(p)] = b;
-    }
-
-    bool surfaceCapability(MeshRenderInfo::Surface p) const
-    {
-        assert(p < MeshRenderInfo::Surface::COUNT);
-        return mCapability.surface[toUnderlying(p)];
-    }
-
-    bool surfaceDrawMode(MeshRenderInfo::Surface p) const
-    {
-        assert(p < MeshRenderInfo::Surface::COUNT);
-        return mDrawMode.surface[toUnderlying(p)];
     }
 
     void setSurfaceCapability(MeshRenderInfo::Surface p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Surface::COUNT);
+        assert(p < MRI::Surface::COUNT);
         mCapability.surface[toUnderlying(p)] = b;
     }
 
     void setSurfaceDrawMode(MeshRenderInfo::Surface p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Surface::COUNT);
+        assert(p < MRI::Surface::COUNT);
         mDrawMode.surface[toUnderlying(p)] = b;
-    }
-
-    bool wireframeCapability(MeshRenderInfo::Wireframe p) const
-    {
-        assert(p < MeshRenderInfo::Wireframe::COUNT);
-        return mCapability.wireframe[toUnderlying(p)];
-    }
-
-    bool wireframeDrawMode(MeshRenderInfo::Wireframe p) const
-    {
-        assert(p < MeshRenderInfo::Wireframe::COUNT);
-        return mDrawMode.wireframe[toUnderlying(p)];
     }
 
     void setWireframeCapability(MeshRenderInfo::Wireframe p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Wireframe::COUNT);
+        assert(p < MRI::Wireframe::COUNT);
         mCapability.wireframe[toUnderlying(p)] = b;
     }
 
-    void setWireframeDrawMode(MeshRenderInfo::Wireframe p, bool b = true)
+    void setWireframeDrawMode(MRI::Wireframe p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Wireframe::COUNT);
+        assert(p < MRI::Wireframe::COUNT);
         mDrawMode.wireframe[toUnderlying(p)] = b;
-    }
-
-    bool edgesCapability(MeshRenderInfo::Edges p) const
-    {
-        assert(p < MeshRenderInfo::Edges::COUNT);
-        return mCapability.edges[toUnderlying(p)];
-    }
-
-    bool edgesDrawMode(MeshRenderInfo::Edges p) const
-    {
-        assert(p < MeshRenderInfo::Edges::COUNT);
-        return mDrawMode.edges[toUnderlying(p)];
     }
 
     void setEdgesCapability(MeshRenderInfo::Edges p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Edges::COUNT);
+        assert(p < MRI::Edges::COUNT);
         mCapability.edges[toUnderlying(p)] = b;
     }
 
     void setEdgesDrawMode(MeshRenderInfo::Edges p, bool b = true)
     {
-        assert(p < MeshRenderInfo::Edges::COUNT);
+        assert(p < MRI::Edges::COUNT);
         mDrawMode.edges[toUnderlying(p)] = b;
     }
 };

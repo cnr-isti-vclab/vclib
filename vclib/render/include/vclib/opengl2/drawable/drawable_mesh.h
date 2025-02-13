@@ -224,12 +224,6 @@ public:
                     }
                 }
             }
-            if (mMRS.isBboxEnabled()) {
-                drawBox3(
-                    mBoundingBox.min(),
-                    mBoundingBox.max(),
-                    vcl::Color(0, 0, 0));
-            }
         }
     }
 

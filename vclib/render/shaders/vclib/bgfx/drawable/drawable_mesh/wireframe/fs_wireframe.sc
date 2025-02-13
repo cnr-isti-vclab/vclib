@@ -27,8 +27,6 @@ $input v_position, v_normal, v_color
 
 void main()
 {
-    uint drawMode0 = floatBitsToUint(u_drawMode0Float);
-
     // depth offset - avoid z-fighting
     float depthOffset = 0.0;
 
@@ -43,16 +41,16 @@ void main()
     vec3 normal = normalize(v_normal);
 
     // shading
-    if (!bool(drawMode0 & VCL_MRS_WIREFRAME_SHADING_NONE)) {
+    if (!bool(u_wireframeMode & (1 << VCL_MRS_WIREFRAME_SHADING_NONE))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
     }
 
     color = uintABGRToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
 
-    if (bool(drawMode0 & VCL_MRS_WIREFRAME_COLOR_VERT)) {
+    if (bool(u_wireframeMode & (1 << VCL_MRS_WIREFRAME_COLOR_VERT))) {
         color = v_color;
     }
-    if (bool(drawMode0 & VCL_MRS_WIREFRAME_COLOR_MESH)) {
+    if (bool(u_wireframeMode & (1 << VCL_MRS_WIREFRAME_COLOR_MESH))) {
         color = u_meshColor;
     }
     depthOffset = 0.00005;

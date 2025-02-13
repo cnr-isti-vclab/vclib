@@ -27,8 +27,6 @@
  * These macros are used both on the library and on the shader side.
  */
 
-/* uint mDrawMode0 */
-
 // points
 #define VCL_MRS_DRAW_POINTS         0 // point visibility
 #define VCL_MRS_POINTS_PIXEL        1 // draw points as pixels
@@ -40,38 +38,36 @@
 #define VCL_MRS_POINTS_COLOR_USER   7 // user color for points
 
 // surface
-#define VCL_MRS_DRAW_SURF           uint(1 << 10) // surface visibility
-#define VCL_MRS_SURF_SHADING_NONE   uint(1 << 11) // no shading
-#define VCL_MRS_SURF_SHADING_FLAT   uint(1 << 12) // flat shading
-#define VCL_MRS_SURF_SHADING_SMOOTH uint(1 << 13) // smooth shading
-#define VCL_MRS_SURF_COLOR_FACE     uint(1 << 14) // face color for surface
-#define VCL_MRS_SURF_COLOR_VERTEX   uint(1 << 15) // vert color for surface
-#define VCL_MRS_SURF_COLOR_MESH     uint(1 << 16) // mesh color for surface
-#define VCL_MRS_SURF_COLOR_USER     uint(1 << 17) // user color for surface
-#define VCL_MRS_SURF_TEX_VERTEX     uint(1 << 18) // per vertex texcoords
-#define VCL_MRS_SURF_TEX_WEDGE      uint(1 << 19) // per wedge texcoords
+#define VCL_MRS_DRAW_SURF           0 // surface visibility
+#define VCL_MRS_SURF_SHADING_NONE   1 // no shading
+#define VCL_MRS_SURF_SHADING_FLAT   2 // flat shading
+#define VCL_MRS_SURF_SHADING_SMOOTH 3 // smooth shading
+#define VCL_MRS_SURF_COLOR_VERTEX   4 // vert color for surface
+#define VCL_MRS_SURF_COLOR_FACE     5 // face color for surface
+#define VCL_MRS_SURF_TEX_VERTEX     6 // per vertex texcoords
+#define VCL_MRS_SURF_TEX_WEDGE      7 // per wedge texcoords
+#define VCL_MRS_SURF_COLOR_MESH     8 // mesh color for surface
+#define VCL_MRS_SURF_COLOR_USER     9 // user color for surface
+
 
 // wireframe
-#define VCL_MRS_DRAW_WIREFRAME         uint(1 << 20) // draw wireframe
-#define VCL_MRS_WIREFRAME_SHADING_NONE uint(1 << 21) // no shading
-#define VCL_MRS_WIREFRAME_SHADING_VERT uint(1 << 22) // vertex normal shading
-#define VCL_MRS_WIREFRAME_COLOR_VERT   uint(1 << 23) // vert color for wireframe
-#define VCL_MRS_WIREFRAME_COLOR_USER   uint(1 << 24) // user color for wireframe
-#define VCL_MRS_WIREFRAME_COLOR_MESH   uint(1 << 25) // mesh color for wireframe
+#define VCL_MRS_DRAW_WIREFRAME         0 // draw wireframe
+#define VCL_MRS_WIREFRAME_SHADING_NONE 1 // no shading
+#define VCL_MRS_WIREFRAME_SHADING_VERT 2 // vertex normal shading
+#define VCL_MRS_WIREFRAME_COLOR_VERT   3 // vert color for wireframe
+#define VCL_MRS_WIREFRAME_COLOR_MESH   4 // mesh color for wireframe
+#define VCL_MRS_WIREFRAME_COLOR_USER   5 // user color for wireframe
 
-// bounding box - TODO: remove this
-#define VCL_MRS_DRAW_BOUNDINGBOX uint(1 << 31) // bounding box visibility
-
-/* uint mDrawMode1 */
 
 // edges
-#define VCL_MRS_DRAW_EDGES           uint(1 << 0) // draw edges
-#define VCL_MRS_EDGES_SHADING_NONE   uint(1 << 1) // no shading
-#define VCL_MRS_EDGES_SHADING_FLAT   uint(1 << 2) // edge normal shading
-#define VCL_MRS_EDGES_SHADING_SMOOTH uint(1 << 3) // vertex normal shading
-#define VCL_MRS_EDGES_COLOR_VERTEX   uint(1 << 4) // vert color for edges
-#define VCL_MRS_EDGES_COLOR_EDGE     uint(1 << 5) // edge color for edges
-#define VCL_MRS_EDGES_COLOR_USER     uint(1 << 6) // user color for edges
-#define VCL_MRS_EDGES_COLOR_MESH     uint(1 << 7) // mesh color for edges
+#define VCL_MRS_DRAW_EDGES           0 // draw edges
+#define VCL_MRS_EDGES_SHADING_NONE   1 // no shading
+#define VCL_MRS_EDGES_SHADING_FLAT   2 // edge normal shading
+#define VCL_MRS_EDGES_SHADING_SMOOTH 3 // vertex normal shading
+#define VCL_MRS_EDGES_COLOR_VERTEX   4 // vert color for edges
+#define VCL_MRS_EDGES_COLOR_EDGE     5 // edge color for edges
+#define VCL_MRS_EDGES_COLOR_MESH     6 // mesh color for edges
+#define VCL_MRS_EDGES_COLOR_USER     7 // user color for edges
+
 
 #endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_MACROS_H
