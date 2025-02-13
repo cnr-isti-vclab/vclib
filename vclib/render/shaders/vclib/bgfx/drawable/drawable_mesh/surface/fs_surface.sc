@@ -69,7 +69,7 @@ void main()
     vec3 normal = normalize(v_normal);
 
     // if flat shading, compute normal of face
-    if (bool(u_surfaceMode & (1 << VCL_MRS_SURF_SHADING_FLAT))) {
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_FLAT))) {
         normal = vec3(
             primitiveNormals[gl_PrimitiveID * 3],
             primitiveNormals[gl_PrimitiveID * 3 + 1],
@@ -79,7 +79,7 @@ void main()
     }
 
     // if flat or smooth shading, compute light
-    if (!bool(u_surfaceMode & (1 << VCL_MRS_SURF_SHADING_NONE))) {
+    if (!bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_NONE))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
         specular = computeSpecular(
@@ -93,19 +93,19 @@ void main()
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
-    if (bool(u_surfaceMode & (1 << VCL_MRS_SURF_COLOR_VERTEX))) {
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERTEX))) {
         color = v_color;
     }
-    if (bool(u_surfaceMode & (1 << VCL_MRS_SURF_COLOR_MESH))) {
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
         color = u_meshColor;
     }
-    if (bool(u_surfaceMode & (1 << VCL_MRS_SURF_COLOR_FACE))) {
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
         color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
     }
-    if (bool(u_surfaceMode & (1 << VCL_MRS_SURF_TEX_VERTEX))) {
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
         color = getColorFromTexture(0, v_texcoord0);
     }
-    if (bool(u_surfaceMode & (1 << VCL_MRS_SURF_TEX_WEDGE))) {
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
     }
 
