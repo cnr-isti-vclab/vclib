@@ -63,10 +63,10 @@ public:
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
         auto mri = settings.drawMode();
-        uint d0 = mri.points.underlying();
-        d0 |= mri.surface.underlying() << 16;
-        uint d1 = mri.wireframe.underlying();
-        d1 |= mri.edges.underlying() << 16;
+        uint d0 = mri.points().underlying();
+        d0 |= mri.surface().underlying() << 16;
+        uint d1 = mri.wireframe().underlying();
+        d1 |= mri.edges().underlying() << 16;
 
         mDrawPack[0] = Uniform::uintBitsToFloat(d0);
         mDrawPack[1] = Uniform::uintBitsToFloat(d1);

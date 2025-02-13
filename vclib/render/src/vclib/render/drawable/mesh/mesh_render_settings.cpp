@@ -61,7 +61,7 @@ Color MeshRenderSettings::edgesUserColor() const
 bool MeshRenderSettings::setVisibility(bool b)
 {
     if (canBeVisible()) {
-        mDrawMode.visible = b;
+        mDrawMode.visible() = b;
         return true;
     }
     else {
@@ -78,13 +78,13 @@ bool MeshRenderSettings::setPoint(MeshRenderInfo::Points p, bool b)
         if (rng.first == rng.second) {
             // the setting could be true or false
             // e.g. VISIBLE
-            mDrawMode.points[rng.first] = b;
+            mDrawMode.points()[rng.first] = b;
         }
         else {
             // only one setting in the range can be true
             // e.g. the range SHAPE_*
             for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.points[i] = toUnderlying(p) == i;
+                mDrawMode.points()[i] = toUnderlying(p) == i;
             }
         }
         return true;
@@ -142,13 +142,13 @@ bool MeshRenderSettings::setSurface(MeshRenderInfo::Surface s, bool b)
         if (rng.first == rng.second) {
             // the setting could be true or false
             // e.g. VISIBLE
-            mDrawMode.surface[rng.first] = b;
+            mDrawMode.surface()[rng.first] = b;
         }
         else {
             // only one setting in the range can be true
             // e.g. the range COLOR_*
             for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.surface[i] = toUnderlying(s) == i;
+                mDrawMode.surface()[i] = toUnderlying(s) == i;
             }
         }
         return true;
@@ -194,13 +194,13 @@ bool MeshRenderSettings::setWireframe(MeshRenderInfo::Wireframe w, bool b)
         if (rng.first == rng.second) {
             // the setting could be true or false
             // e.g. VISIBLE
-            mDrawMode.wireframe[rng.first] = b;
+            mDrawMode.wireframe()[rng.first] = b;
         }
         else {
             // only one setting in the range can be true
             // e.g. the range COLOR_*
             for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.wireframe[i] = toUnderlying(w) == i;
+                mDrawMode.wireframe()[i] = toUnderlying(w) == i;
             }
         }
         return true;
@@ -262,13 +262,13 @@ bool MeshRenderSettings::setEdges(MeshRenderInfo::Edges e, bool b)
         if (rng.first == rng.second) {
             // the setting could be true or false
             // e.g. VISIBLE
-            mDrawMode.edges[rng.first] = b;
+            mDrawMode.edges()[rng.first] = b;
         }
         else {
             // only one setting in the range can be true
             // e.g. the range COLOR_*
             for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.edges[i] = toUnderlying(e) == i;
+                mDrawMode.edges()[i] = toUnderlying(e) == i;
             }
         }
         return true;

@@ -69,6 +69,13 @@ public:
         COUNT
     };
 
+private:
+    bool mVisible;
+
+    // settings for each primitive
+    std::array<BitSet16, toUnderlying(Primitive::COUNT)> mSettings;
+
+public:
     enum class Points {
         VISIBLE      = VCL_MRS_DRAW_POINTS,
         SHAPE_PIXEL  = VCL_MRS_POINTS_PIXEL,
@@ -121,57 +128,74 @@ public:
         COUNT
     };
 
-    bool visible;
+    bool visible() const { return mVisible; }
 
-    // settings for each primitive
-    BitSet16 points;
-    BitSet16 surface;
-    BitSet16 wireframe;
-    BitSet16 edges;
+    bool& visible() { return mVisible; }
+
+    template<Primitive PRIMTIVE>
+    BitSet16 settings() const
+    {
+        return mSettings[toUnderlying(PRIMTIVE)];
+    }
+
+    template<Primitive PRIMTIVE>
+    BitSet16& settings()
+    {
+        return mSettings[toUnderlying(PRIMTIVE)];
+    }
+
+    BitSet16 points() const { return settings<Primitive::POINTS>(); }
+
+    BitSet16& points() { return settings<Primitive::POINTS>(); }
+
+    BitSet16 surface() const { return settings<Primitive::SURFACE>(); }
+
+    BitSet16& surface() { return settings<Primitive::SURFACE>(); }
+
+    BitSet16 wireframe() const { return settings<Primitive::WIREFRAME>(); }
+
+    BitSet16& wireframe() { return settings<Primitive::WIREFRAME>(); }
+
+    BitSet16 edges() const { return settings<Primitive::EDGES>(); }
+
+    BitSet16& edges() { return settings<Primitive::EDGES>(); }
 
     void reset()
     {
-        visible = false;
-        points.reset();
-        surface.reset();
-        wireframe.reset();
-        edges.reset();
+        mVisible = false;
+        for (auto& s : mSettings)
+            s.reset();
     }
 
     bool operator==(const MeshRenderInfo& o) const
     {
-        return visible == o.visible && points == o.points &&
-               surface == o.surface && wireframe == o.wireframe &&
-               edges == o.edges;
+        return mVisible == o.mVisible && mSettings == o.mSettings;
     }
 
     MeshRenderInfo& operator&=(const MeshRenderInfo& o)
     {
-        visible &= o.visible;
-        points &= o.points;
-        surface &= o.surface;
-        wireframe &= o.wireframe;
-        edges &= o.edges;
+        mVisible &= o.mVisible;
+        for (const auto& [s, os] : std::views::zip(mSettings, o.mSettings)) {
+            s &= os;
+        }
         return *this;
     }
 
     MeshRenderInfo& operator|=(const MeshRenderInfo& o)
     {
-        visible |= o.visible;
-        points |= o.points;
-        surface |= o.surface;
-        wireframe |= o.wireframe;
-        edges |= o.edges;
+        mVisible |= o.mVisible;
+        for (const auto& [s, os] : std::views::zip(mSettings, o.mSettings)) {
+            s |= os;
+        }
         return *this;
     }
 
     MeshRenderInfo& operator^=(const MeshRenderInfo& o)
     {
-        visible ^= o.visible;
-        points ^= o.points;
-        surface ^= o.surface;
-        wireframe ^= o.wireframe;
-        edges ^= o.edges;
+        mVisible ^= o.mVisible;
+        for (const auto& [s, os] : std::views::zip(mSettings, o.mSettings)) {
+            s ^= os;
+        }
         return *this;
     }
 

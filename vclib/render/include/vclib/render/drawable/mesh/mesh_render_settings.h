@@ -91,13 +91,13 @@ public:
 
     bool canBeVisible() const
     {
-        return mCapability.visible;
+        return mCapability.visible();
     }
 
     bool canPoint(MeshRenderInfo::Points p) const
     {
         assert(p < MeshRenderInfo::Points::COUNT);
-        return mCapability.points[toUnderlying(p)];
+        return mCapability.points()[toUnderlying(p)];
     }
 
     bool canPointBeVisible() const
@@ -123,7 +123,7 @@ public:
     bool canSurface(MeshRenderInfo::Surface s) const
     {
         assert(s < MRI::Surface::COUNT);
-        return mCapability.surface[toUnderlying(s)];
+        return mCapability.surface()[toUnderlying(s)];
     }
 
     bool canSurfaceBeVisible() const
@@ -169,7 +169,7 @@ public:
     bool canWireframe(MeshRenderInfo::Wireframe w) const
     {
         assert(w < MRI::Wireframe::COUNT);
-        return mCapability.wireframe[toUnderlying(w)];
+        return mCapability.wireframe()[toUnderlying(w)];
     }
 
     bool canWireframeShadingBePerVertex() const
@@ -190,7 +190,7 @@ public:
     bool canEdges(MeshRenderInfo::Edges e) const
     {
         assert(e < MRI::Edges::COUNT);
-        return mCapability.edges[toUnderlying(e)];
+        return mCapability.edges()[toUnderlying(e)];
     }
 
     bool canEdgesBeVisible() const
@@ -230,12 +230,12 @@ public:
         return mDrawMode;
     }
 
-    bool isVisible() const { return mDrawMode.visible; }
+    bool isVisible() const { return mDrawMode.visible(); }
 
     bool isPoint(MeshRenderInfo::Points p) const
     {
         assert(p < MRI::Points::COUNT);
-        return mDrawMode.points[toUnderlying(p)];
+        return mDrawMode.points()[toUnderlying(p)];
     }
 
     bool isPointVisible() const
@@ -277,7 +277,7 @@ public:
     bool isSurface(MeshRenderInfo::Surface s) const
     {
         assert(s < MRI::Surface::COUNT);
-        return mDrawMode.surface[toUnderlying(s)];
+        return mDrawMode.surface()[toUnderlying(s)];
     }
 
     bool isSurfaceVisible() const
@@ -337,7 +337,7 @@ public:
     bool isWireframe(MeshRenderInfo::Wireframe w) const
     {
         assert(w < MRI::Wireframe::COUNT);
-        return mDrawMode.wireframe[toUnderlying(w)];
+        return mDrawMode.wireframe()[toUnderlying(w)];
     }
 
     bool isWireframeVisible() const
@@ -379,7 +379,7 @@ public:
     bool isEdges(MeshRenderInfo::Edges e) const
     {
         assert(e < MRI::Edges::COUNT);
-        return mDrawMode.edges[toUnderlying(e)];
+        return mDrawMode.edges()[toUnderlying(e)];
     }
 
     bool isEdgesVisible() const
@@ -663,7 +663,7 @@ public:
         mCapability.reset();
 
         if (m.vertexNumber() > 0) {
-            mCapability.visible = true;
+            mCapability.visible() = true;
 
             // -- Points --
             setPointsCapability(MRI::Points::VISIBLE);
@@ -789,49 +789,68 @@ private:
     void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
     {
         assert(p < MRI::Points::COUNT);
-        mCapability.points[toUnderlying(p)] = b;
+        mCapability.points()[toUnderlying(p)] = b;
     }
 
     void setPointsDrawMode(MeshRenderInfo::Points p, bool b = true)
     {
         assert(p < MRI::Points::COUNT);
-        mDrawMode.points[toUnderlying(p)] = b;
+        mDrawMode.points()[toUnderlying(p)] = b;
     }
 
     void setSurfaceCapability(MeshRenderInfo::Surface p, bool b = true)
     {
         assert(p < MRI::Surface::COUNT);
-        mCapability.surface[toUnderlying(p)] = b;
+        mCapability.surface()[toUnderlying(p)] = b;
     }
 
     void setSurfaceDrawMode(MeshRenderInfo::Surface p, bool b = true)
     {
         assert(p < MRI::Surface::COUNT);
-        mDrawMode.surface[toUnderlying(p)] = b;
+        mDrawMode.surface()[toUnderlying(p)] = b;
     }
 
     void setWireframeCapability(MeshRenderInfo::Wireframe p, bool b = true)
     {
         assert(p < MRI::Wireframe::COUNT);
-        mCapability.wireframe[toUnderlying(p)] = b;
+        mCapability.wireframe()[toUnderlying(p)] = b;
     }
 
     void setWireframeDrawMode(MRI::Wireframe p, bool b = true)
     {
         assert(p < MRI::Wireframe::COUNT);
-        mDrawMode.wireframe[toUnderlying(p)] = b;
+        mDrawMode.wireframe()[toUnderlying(p)] = b;
     }
 
     void setEdgesCapability(MeshRenderInfo::Edges p, bool b = true)
     {
         assert(p < MRI::Edges::COUNT);
-        mCapability.edges[toUnderlying(p)] = b;
+        mCapability.edges()[toUnderlying(p)] = b;
     }
 
     void setEdgesDrawMode(MeshRenderInfo::Edges p, bool b = true)
     {
         assert(p < MRI::Edges::COUNT);
-        mDrawMode.edges[toUnderlying(p)] = b;
+        mDrawMode.edges()[toUnderlying(p)] = b;
+    }
+
+    template<MeshRenderInfo::Primitive PRIMITIVE>
+    void setExclusiveValue(auto value, bool b)
+    {
+        auto rng = MRI::exclusiveRange<PRIMITIVE>(value);
+        // if there are no mutual exclusive settings
+        if (rng.first == rng.second) {
+            // the setting could be true or false
+            // e.g. VISIBLE
+            mDrawMode.settings<PRIMITIVE>()[rng.first] = b;
+        }
+        else {
+            // only one setting in the range can be true
+            // e.g. the range SHAPE_*
+            for (auto i = rng.first; i <= rng.second; ++i) {
+                mDrawMode.settings<PRIMITIVE>()[i] = toUnderlying(value) == i;
+            }
+        }
     }
 };
 
