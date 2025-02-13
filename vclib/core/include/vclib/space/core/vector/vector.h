@@ -648,10 +648,7 @@ public:
      *
      * @return `true` if the container size is 0, `false` otherwise.
      */
-    bool empty() const noexcept
-    {
-        return mContainer.empty();
-    }
+    bool empty() const noexcept { return mContainer.empty(); }
 
     /**
      * @brief Remove the element at the specified index from the Vector.

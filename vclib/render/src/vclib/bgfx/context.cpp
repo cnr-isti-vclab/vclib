@@ -236,13 +236,13 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
     else {
         if (offscreen)
             // create offscreen framebuffer
-            fbh = createOffscreenFramebuffer
-                (width, height, colorFormat, depthFormat);
+            fbh = createOffscreenFramebuffer(
+                width, height, colorFormat, depthFormat);
         else
             // create framebuffer for the given window
             fbh = bgfx::createFrameBuffer(
                 winId, width, height, colorFormat, depthFormat);
-        
+
         assert(bgfx::isValid(fbh));
     }
     // set view on framebuffer even if it must be done every frame

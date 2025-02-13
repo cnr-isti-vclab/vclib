@@ -132,15 +132,9 @@ public:
         bindTextures();
     }
 
-    std::string& name() override
-    {
-        return MeshType::name();
-    }
+    std::string& name() override { return MeshType::name(); }
 
-    const std::string& name() const override
-    {
-        return MeshType::name();
-    }
+    const std::string& name() const override { return MeshType::name(); }
 
     void swap(DrawableMeshOpenGL2& other)
     {

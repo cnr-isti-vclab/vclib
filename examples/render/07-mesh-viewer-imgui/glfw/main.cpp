@@ -22,12 +22,12 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/imgui/imgui_drawer.h>
 #include "../mesh_viewer_imgui_drawer.h"
-#include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/render/canvas.h>
+#include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/glfw/window_manager.h>
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
 #include <imgui.h>
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     const auto bb = vcl::boundingBox(drawable);
     vcl::scale(drawable, 0.5f);
     vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
-    
+
     tw.pushDrawableObject(drawable);
 
     tw.fitScene();

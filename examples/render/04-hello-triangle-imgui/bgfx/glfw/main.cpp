@@ -42,8 +42,9 @@ int main(int argc, char** argv)
         vcl::glfw::WindowManager, // The WindowManager: GLFW
         vcl::Canvas,              // The default Canvas
         DemoImGuiDrawer,          // A Drawer that draws the ImGui demo window
-        HelloTriangleDrawer,     // The Drawer that draws the triangle
-        vcl::imgui::ImguiStatsDrawer>;          // A Drawer that draws the ImGui stats window
+        HelloTriangleDrawer,      // The Drawer that draws the triangle
+        vcl::imgui::ImguiStatsDrawer>; // A Drawer that draws the ImGui stats
+                                       // window
     WindowGLFW tw("Hello Triangle ImGui with GLFW");
 
     tw.show();

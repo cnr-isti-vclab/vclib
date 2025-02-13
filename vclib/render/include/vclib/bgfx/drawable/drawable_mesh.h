@@ -126,15 +126,9 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
-    std::string& name() override
-    {
-        return MeshType::name();
-    }
+    std::string& name() override { return MeshType::name(); }
 
-    const std::string& name() const override
-    {
-        return MeshType::name();
-    }
+    const std::string& name() const override { return MeshType::name(); }
 
     void swap(DrawableMeshBGFX& other)
     {

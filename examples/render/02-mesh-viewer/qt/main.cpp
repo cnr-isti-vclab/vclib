@@ -22,8 +22,8 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
+#include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/qt/mesh_viewer.h>
 
 #include <QApplication>

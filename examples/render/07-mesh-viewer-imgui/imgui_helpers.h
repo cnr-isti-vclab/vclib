@@ -23,31 +23,31 @@
 #ifndef VCL_IMGUI_HELPERS_H
 #define VCL_IMGUI_HELPERS_H
 
-#include <imgui.h>
 #include <functional>
+#include <imgui.h>
 
 #include <vclib/space/core/color.h>
 
 namespace ImGui {
 
 inline bool Checkbox(
-    const char* label,
-    std::function<bool()> get,
+    const char*               label,
+    std::function<bool()>     get,
     std::function<void(bool)> set)
 {
-    bool value = get();
-    const bool ret = ImGui::Checkbox(label, &value);
+    bool       value = get();
+    const bool ret   = ImGui::Checkbox(label, &value);
     set(value);
     return ret;
 }
 
 inline bool RadioButton(
-    const char* label,
-    std::function<bool()> get,
+    const char*               label,
+    std::function<bool()>     get,
     std::function<void(bool)> set)
 {
-    bool value = get();
-    const bool ret = ImGui::RadioButton(label, value);
+    bool       value = get();
+    const bool ret   = ImGui::RadioButton(label, value);
     if (ret) {
         set(true);
     }
@@ -55,15 +55,14 @@ inline bool RadioButton(
 }
 
 inline bool SliderFloat(
-    const char* label,
-    std::function<float()> get,
+    const char*                label,
+    std::function<float()>     get,
     std::function<void(float)> set,
-    float vMin,
-    float vMax)
+    float                      vMin,
+    float                      vMax)
 {
-    
-    float value = get();
-    const bool ret = ImGui::SliderFloat(label, &value, vMin, vMax);
+    float      value = get();
+    const bool ret   = ImGui::SliderFloat(label, &value, vMin, vMax);
     if (ret) {
         set(value);
     }
@@ -71,15 +70,15 @@ inline bool SliderFloat(
 }
 
 inline bool ColorEdit4(
-    const char* label,
-    std::function<vcl::Color()> get,
+    const char*                     label,
+    std::function<vcl::Color()>     get,
     std::function<void(vcl::Color)> set,
-    ImGuiColorEditFlags flags)
+    ImGuiColorEditFlags             flags)
 {
     // TODO: use float based color
-    vcl::Color c = get();
-    float color[4] = {c.redF(), c.greenF(), c.blueF(), c.alphaF()};
-    const bool ret = ImGui::ColorEdit4(label, color, flags);
+    vcl::Color c        = get();
+    float      color[4] = {c.redF(), c.greenF(), c.blueF(), c.alphaF()};
+    const bool ret      = ImGui::ColorEdit4(label, color, flags);
     if (ret) {
         c.setRgbF(color[0], color[1], color[2], color[3]);
         set(c);
