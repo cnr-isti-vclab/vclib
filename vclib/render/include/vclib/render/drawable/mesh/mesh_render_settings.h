@@ -94,10 +94,16 @@ public:
         return mCapability.visible();
     }
 
+    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
+    bool can(Enum val) const
+    {
+        assert(val < Enum::COUNT);
+        return mCapability.settings<PRIMITIVE>()[toUnderlying(val)];
+    }
+
     bool canPoint(MeshRenderInfo::Points p) const
     {
-        assert(p < MeshRenderInfo::Points::COUNT);
-        return mCapability.points()[toUnderlying(p)];
+        return can<MRI::Primitive::POINTS>(p);
     }
 
     bool canPointBeVisible() const
@@ -122,8 +128,7 @@ public:
 
     bool canSurface(MeshRenderInfo::Surface s) const
     {
-        assert(s < MRI::Surface::COUNT);
-        return mCapability.surface()[toUnderlying(s)];
+        return can<MRI::Primitive::SURFACE>(s);
     }
 
     bool canSurfaceBeVisible() const
@@ -168,8 +173,7 @@ public:
 
     bool canWireframe(MeshRenderInfo::Wireframe w) const
     {
-        assert(w < MRI::Wireframe::COUNT);
-        return mCapability.wireframe()[toUnderlying(w)];
+        return can<MRI::Primitive::WIREFRAME>(w);
     }
 
     bool canWireframeShadingBePerVertex() const
@@ -189,8 +193,7 @@ public:
 
     bool canEdges(MeshRenderInfo::Edges e) const
     {
-        assert(e < MRI::Edges::COUNT);
-        return mCapability.edges()[toUnderlying(e)];
+        return can<MRI::Primitive::EDGES>(e);
     }
 
     bool canEdgesBeVisible() const
@@ -230,12 +233,18 @@ public:
         return mDrawMode;
     }
 
+    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
+    bool is(Enum val) const
+    {
+        assert(val < Enum::COUNT);
+        return mDrawMode.settings<PRIMITIVE>()[toUnderlying(val)];
+    }
+
     bool isVisible() const { return mDrawMode.visible(); }
 
     bool isPoint(MeshRenderInfo::Points p) const
     {
-        assert(p < MRI::Points::COUNT);
-        return mDrawMode.points()[toUnderlying(p)];
+        return is<MRI::Primitive::POINTS>(p);
     }
 
     bool isPointVisible() const
@@ -276,8 +285,7 @@ public:
 
     bool isSurface(MeshRenderInfo::Surface s) const
     {
-        assert(s < MRI::Surface::COUNT);
-        return mDrawMode.surface()[toUnderlying(s)];
+        return is<MRI::Primitive::SURFACE>(s);
     }
 
     bool isSurfaceVisible() const
@@ -336,8 +344,7 @@ public:
 
     bool isWireframe(MeshRenderInfo::Wireframe w) const
     {
-        assert(w < MRI::Wireframe::COUNT);
-        return mDrawMode.wireframe()[toUnderlying(w)];
+        return is<MRI::Primitive::WIREFRAME>(w);
     }
 
     bool isWireframeVisible() const
@@ -378,8 +385,7 @@ public:
 
     bool isEdges(MeshRenderInfo::Edges e) const
     {
-        assert(e < MRI::Edges::COUNT);
-        return mDrawMode.edges()[toUnderlying(e)];
+        return is<MRI::Primitive::EDGES>(e);
     }
 
     bool isEdgesVisible() const
@@ -432,7 +438,36 @@ public:
 
     bool setVisibility(bool b);
 
-    bool setPoint(MeshRenderInfo::Points p, bool b = true);
+    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
+    bool set(Enum val, bool b = true)
+    {
+        if (can<PRIMITIVE>(val)) { // if the capability allows it
+            // get the range of the mutual exclusive settings for val
+            auto rng = MRI::exclusiveRange<PRIMITIVE>(val);
+            // if there are no mutual exclusive settings
+            if (rng.first == rng.second) {
+                // the setting could be true or false
+                // e.g. VISIBLE
+                mDrawMode.settings<PRIMITIVE>()[rng.first] = b;
+            }
+            else {
+                // only one setting in the range can be true
+                // e.g. the range SHADING_*
+                for (auto i = rng.first; i <= rng.second; ++i) {
+                    mDrawMode.settings<PRIMITIVE>()[i] = toUnderlying(val) == i;
+                }
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    bool setPoint(MeshRenderInfo::Points p, bool b = true)
+    {
+        return set<MRI::Primitive::POINTS>(p, b);
+    }
 
     bool setPointVisibility(bool b)
     {
@@ -470,7 +505,10 @@ public:
 
     bool setPointUserColor(const vcl::Color& c);
 
-    bool setSurface(MeshRenderInfo::Surface s, bool b = true);
+    bool setSurface(MeshRenderInfo::Surface s, bool b = true)
+    {
+        return set<MRI::Primitive::SURFACE>(s, b);
+    }
 
     bool setSurfaceVisibility(bool b)
     {
@@ -571,7 +609,10 @@ public:
 
     bool setSurfaceUserColor(const vcl::Color& c);
 
-    bool setWireframe(MeshRenderInfo::Wireframe w, bool b = true);
+    bool setWireframe(MeshRenderInfo::Wireframe w, bool b = true)
+    {
+        return set<MRI::Primitive::WIREFRAME>(w, b);
+    }
 
     bool setWireframeVisibility(bool b)
     {
@@ -609,7 +650,10 @@ public:
 
     bool setWireframeWidth(int width);
 
-    bool setEdges(MeshRenderInfo::Edges e, bool b = true);
+    bool setEdges(MeshRenderInfo::Edges e, bool b = true)
+    {
+        return set<MRI::Primitive::EDGES>(e, b);
+    }
 
     bool setEdgesVisibility(bool b)
     {
@@ -832,25 +876,6 @@ private:
     {
         assert(p < MRI::Edges::COUNT);
         mDrawMode.edges()[toUnderlying(p)] = b;
-    }
-
-    template<MeshRenderInfo::Primitive PRIMITIVE>
-    void setExclusiveValue(auto value, bool b)
-    {
-        auto rng = MRI::exclusiveRange<PRIMITIVE>(value);
-        // if there are no mutual exclusive settings
-        if (rng.first == rng.second) {
-            // the setting could be true or false
-            // e.g. VISIBLE
-            mDrawMode.settings<PRIMITIVE>()[rng.first] = b;
-        }
-        else {
-            // only one setting in the range can be true
-            // e.g. the range SHAPE_*
-            for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.settings<PRIMITIVE>()[i] = toUnderlying(value) == i;
-            }
-        }
     }
 };
 

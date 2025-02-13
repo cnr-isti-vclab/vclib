@@ -69,31 +69,6 @@ bool MeshRenderSettings::setVisibility(bool b)
     }
 }
 
-bool MeshRenderSettings::setPoint(MeshRenderInfo::Points p, bool b)
-{
-    if (canPoint(p)) { // if the capability allows it
-        // get the range of the mutual exclusive settings for p
-        auto rng = MRI::pointsExclusiveRange(p);
-        // if there are no mutual exclusive settings
-        if (rng.first == rng.second) {
-            // the setting could be true or false
-            // e.g. VISIBLE
-            mDrawMode.points()[rng.first] = b;
-        }
-        else {
-            // only one setting in the range can be true
-            // e.g. the range SHAPE_*
-            for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.points()[i] = toUnderlying(p) == i;
-            }
-        }
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 bool MeshRenderSettings::setPointWidth(float width)
 {
     if (canPointBeVisible()) {
@@ -133,31 +108,6 @@ bool MeshRenderSettings::setPointUserColor(const Color& c)
     }
 }
 
-bool MeshRenderSettings::setSurface(MeshRenderInfo::Surface s, bool b)
-{
-    if (canSurface(s)) { // if the capability allows it
-        // get the range of the mutual exclusive settings for s
-        auto rng = MRI::surfaceExclusiveRange(s);
-        // if there are no mutual exclusive settings
-        if (rng.first == rng.second) {
-            // the setting could be true or false
-            // e.g. VISIBLE
-            mDrawMode.surface()[rng.first] = b;
-        }
-        else {
-            // only one setting in the range can be true
-            // e.g. the range COLOR_*
-            for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.surface()[i] = toUnderlying(s) == i;
-            }
-        }
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 bool MeshRenderSettings::setSurfaceUserColor(float r, float g, float b, float a)
 {
     if (canSurfaceBeVisible()) {
@@ -178,31 +128,6 @@ bool MeshRenderSettings::setSurfaceUserColor(const Color& c)
 {
     if (canSurfaceBeVisible()) {
         mSurfUserColor = c.abgr();
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-bool MeshRenderSettings::setWireframe(MeshRenderInfo::Wireframe w, bool b)
-{
-    if (canWireframe(w)) { // if the capability allows it
-        // get the range of the mutual exclusive settings for w
-        auto rng = MRI::wireframeExclusiveRange(w);
-        // if there are no mutual exclusive settings
-        if (rng.first == rng.second) {
-            // the setting could be true or false
-            // e.g. VISIBLE
-            mDrawMode.wireframe()[rng.first] = b;
-        }
-        else {
-            // only one setting in the range can be true
-            // e.g. the range COLOR_*
-            for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.wireframe()[i] = toUnderlying(w) == i;
-            }
-        }
         return true;
     }
     else {
@@ -246,31 +171,6 @@ bool MeshRenderSettings::setWireframeWidth(int width)
 {
     if (canSurfaceBeVisible()) {
         mWrfWidth = width;
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-bool MeshRenderSettings::setEdges(MeshRenderInfo::Edges e, bool b)
-{
-    if (canEdges(e)) { // if the capability allows it
-        // get the range of the mutual exclusive settings for e
-        auto rng = MRI::edgesExclusiveRange(e);
-        // if there are no mutual exclusive settings
-        if (rng.first == rng.second) {
-            // the setting could be true or false
-            // e.g. VISIBLE
-            mDrawMode.edges()[rng.first] = b;
-        }
-        else {
-            // only one setting in the range can be true
-            // e.g. the range COLOR_*
-            for (auto i = rng.first; i <= rng.second; ++i) {
-                mDrawMode.edges()[i] = toUnderlying(e) == i;
-            }
-        }
         return true;
     }
     else {
