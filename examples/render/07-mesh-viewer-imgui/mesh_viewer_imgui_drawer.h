@@ -106,7 +106,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::Checkbox(
             "Visible",
             [&] {
-                return settings.isPoint(VISIBLE);
+                return settings.isPoints(VISIBLE);
             },
             [&](bool vis) {
                 settings.setPoint(VISIBLE, vis);
@@ -143,7 +143,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::RadioButton(
             "Vertex",
             [&] {
-                return settings.isPointShadingPerVertex();
+                return settings.isPoints(SHADING_VERT);
             },
             [&](bool v) {
                 if (v)
@@ -154,7 +154,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::RadioButton(
             "None",
             [&] {
-                return settings.isPointShadingNone();
+                return settings.isPoints(SHADING_NONE);
             },
             [&](bool vis) {
                 if (vis)
@@ -167,9 +167,9 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::SameLine();
         const char* pointColorNames[]           = {"Vertex", "Mesh", "User"};
         const std::array<bool, 3> colorSelected = {
-            settings.isPointColorPerVertex(),
-            settings.isPointColorPerMesh(),
-            settings.isPointColorUserDefined()};
+            settings.isPoints(COLOR_VERTEX),
+            settings.isPoints(COLOR_MESH),
+            settings.isPoints(COLOR_USER)};
 
         assert(
             std::accumulate(
@@ -211,7 +211,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         }
         // user color picker
         ImGui::SameLine();
-        ImGui::BeginDisabled(!settings.isPointColorUserDefined());
+        ImGui::BeginDisabled(!settings.isPoints(COLOR_USER));
         ImGui::ColorEdit4(
             "##PointColor",
             [&] {
@@ -254,7 +254,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::Checkbox(
             "Visible",
             [&] {
-                return settings.isSurfaceVisible();
+                return settings.isSurface(VISIBLE);
             },
             [&](bool vis) {
                 settings.setSurfaceVisibility(vis);
@@ -262,15 +262,15 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 
         // shading
         assert(
-            (settings.isSurfaceShadingSmooth() +
-             settings.isSurfaceShadingFlat() +
-             settings.isSurfaceShadingNone()) == 1);
+            (settings.isSurface(SHADING_SMOOTH) +
+             settings.isSurface(SHADING_FLAT) +
+             settings.isSurface(SHADING_NONE)) == 1);
         ImGui::Text("Shading:");
         ImGui::SameLine();
         ImGui::RadioButton(
             "Smooth",
             [&] {
-                return settings.isSurfaceShadingSmooth();
+                return settings.isSurface(SHADING_SMOOTH);
             },
             [&](bool vis) {
                 if (vis)
@@ -280,7 +280,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::RadioButton(
             "Flat",
             [&] {
-                return settings.isSurfaceShadingFlat();
+                return settings.isSurface(SHADING_FLAT);
             },
             [&](bool vis) {
                 if (vis)
@@ -290,7 +290,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::RadioButton(
             "None",
             [&] {
-                return settings.isSurfaceShadingNone();
+                return settings.isSurface(SHADING_NONE);
             },
             [&](bool vis) {
                 if (vis)
@@ -304,12 +304,12 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         const char* surfColorNames[] = {
             "Vertex", "Face", "Mesh", "PerVertexTex", "PerWedgeTex", "User"};
         const std::array<bool, 6> colorSelected = {
-            settings.isSurfaceColorPerVertex(),
-            settings.isSurfaceColorPerFace(),
-            settings.isSurfaceColorPerMesh(),
-            settings.isSurfaceColorPerVertexTexcoords(),
-            settings.isSurfaceColorPerWedgeTexcoords(),
-            settings.isSurfaceColorUserDefined()};
+            settings.isSurface(COLOR_VERTEX),
+            settings.isSurface(COLOR_FACE),
+            settings.isSurface(COLOR_MESH),
+            settings.isSurface(COLOR_VERTEX_TEX),
+            settings.isSurface(COLOR_WEDGE_TEX),
+            settings.isSurface(COLOR_USER)};
         assert(
             std::accumulate(
                 std::begin(colorSelected), std::end(colorSelected), 0) == 1);
@@ -370,7 +370,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         }
         // user color picker
         ImGui::SameLine();
-        ImGui::BeginDisabled(!settings.isSurfaceColorUserDefined());
+        ImGui::BeginDisabled(!settings.isSurface(COLOR_USER));
         ImGui::ColorEdit4(
             "##SurfUserColor",
             [&] {
@@ -397,7 +397,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::Checkbox(
             "Visible",
             [&] {
-                return settings.isWireframeVisible();
+                return settings.isWireframe(VISIBLE);
             },
             [&](bool v) {
                 settings.setWireframeVisibility(v);
@@ -405,14 +405,14 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 
         // shading
         assert(
-            settings.isWireframeShadingPerVertex() !=
-            settings.isWireframeShadingNone());
+            settings.isWireframe(SHADING_VERT) !=
+            settings.isWireframe(SHADING_NONE));
         ImGui::Text("Shading:");
         ImGui::SameLine();
         ImGui::RadioButton(
             "Vertex",
             [&] {
-                return settings.isWireframeShadingPerVertex();
+                return settings.isWireframe(SHADING_VERT);
             },
             [&](bool vis) {
                 if (vis)
@@ -422,7 +422,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::RadioButton(
             "None",
             [&] {
-                return settings.isWireframeShadingNone();
+                return settings.isWireframe(SHADING_NONE);
             },
             [&](bool vis) {
                 if (vis)
@@ -435,9 +435,9 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::SameLine();
         const char*               wireColorNames[] = {"Vertex", "Mesh", "User"};
         const std::array<bool, 3> colorSelected    = {
-            settings.isWireframeColorPerVertex(),
-            settings.isWireframeColorPerMesh(),
-            settings.isWireframeColorUserDefined()};
+            settings.isWireframe(COLOR_VERTEX),
+            settings.isWireframe(COLOR_MESH),
+            settings.isWireframe(COLOR_USER)};
         assert(
             std::accumulate(
                 std::begin(colorSelected), std::end(colorSelected), 0) == 1);
@@ -479,7 +479,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         }
         // user color picker
         ImGui::SameLine();
-        ImGui::BeginDisabled(!settings.isWireframeColorUserDefined());
+        ImGui::BeginDisabled(!settings.isWireframe(COLOR_USER));
         ImGui::ColorEdit4(
             "##WireUserColor",
             [&] {
@@ -506,7 +506,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::Checkbox(
             "Visible",
             [&] {
-                return settings.isEdgesVisible();
+                return settings.isEdges(VISIBLE);
             },
             [&](bool v) {
                 settings.setEdgesVisibility(v);
@@ -514,14 +514,14 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 
         // shading
         assert(
-            (settings.isEdgesShadingSmooth() + settings.isEdgesShadingFlat() +
-             settings.isEdgesShadingNone()) == 1);
+            (settings.isEdges(SHADING_SMOOTH) + settings.isEdges(SHADING_FLAT) +
+             settings.isEdges(SHADING_NONE)) == 1);
         ImGui::Text("Shading:");
         ImGui::SameLine();
         ImGui::RadioButton(
             "Smooth",
             [&] {
-                return settings.isEdgesShadingSmooth();
+                return settings.isEdges(SHADING_SMOOTH);
             },
             [&](bool v) {
                 if (v)
@@ -531,7 +531,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::RadioButton(
             "Flat",
             [&] {
-                return settings.isEdgesShadingFlat();
+                return settings.isEdges(SHADING_FLAT);
             },
             [&](bool v) {
                 if (v)
@@ -540,7 +540,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::RadioButton(
             "None",
             [&] {
-                return settings.isEdgesShadingNone();
+                return settings.isEdges(SHADING_NONE);
             },
             [&](bool vis) {
                 if (vis)
@@ -552,10 +552,10 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         ImGui::SameLine();
         const char* edgeColorNames[] = {"Vertex", "Edge", "Mesh", "User"};
         const std::array<bool, 4> colorSelected = {
-            settings.isEdgesColorPerVertex(),
-            settings.isEdgesColorPerEdge(),
-            settings.isEdgesColorPerMesh(),
-            settings.isEdgesColorUserDefined()};
+            settings.isEdges(COLOR_VERTEX),
+            settings.isEdges(COLOR_EDGE),
+            settings.isEdges(COLOR_MESH),
+            settings.isEdges(COLOR_USER)};
         assert(
             std::accumulate(
                 std::begin(colorSelected), std::end(colorSelected), 0) == 1);
@@ -599,7 +599,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             }
             // color picker
             ImGui::SameLine();
-            ImGui::BeginDisabled(!settings.isEdgesColorUserDefined());
+            ImGui::BeginDisabled(!settings.isEdges(COLOR_USER));
             ImGui::ColorEdit4(
                 "##EdgeUserColor",
                 [&] {

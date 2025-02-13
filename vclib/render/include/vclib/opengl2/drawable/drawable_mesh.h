@@ -80,6 +80,8 @@ inline void _check_gl_error(const char* file, int line)
 template<MeshConcept MeshType>
 class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
 {
+    using MRI = MeshRenderInfo;
+
     Box3d mBoundingBox;
 
     MeshRenderData<MeshType> mMRD;
@@ -158,8 +160,8 @@ public:
     void draw(uint) const override
     {
         if (mMRS.isVisible()) {
-            if (mMRS.isWireframeVisible()) {
-                if (mMRS.isPointVisible()) {
+            if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
+                if (mMRS.isPoints(MRI::Points::VISIBLE)) {
                     glDisable(GL_LIGHTING);
                     glShadeModel(GL_FLAT);
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -167,8 +169,8 @@ public:
                     renderPass();
                     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
-                if (mMRS.isSurfaceVisible()) {
-                    if (mMRS.isSurfaceShadingFlat()) {
+                if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
+                    if (mMRS.isSurface(MRI::Surface::SHADING_FLAT)) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_FLAT);
                         glDepthRange(0.01, 1.0);
@@ -182,7 +184,7 @@ public:
                         glDepthFunc(GL_LESS);
                         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                     }
-                    else if (mMRS.isSurfaceShadingSmooth()) {
+                    else if (mMRS.isSurface(MRI::Surface::SHADING_SMOOTH)) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_SMOOTH);
                         glDepthRange(0.01, 1.0);
@@ -207,17 +209,17 @@ public:
                 }
             }
             else { // no wireframe
-                if (mMRS.isPointVisible()) {
+                if (mMRS.isPoints(MRI::Points::VISIBLE)) {
                     glDisable(GL_LIGHTING);
                     renderPass();
                 }
-                if (mMRS.isSurfaceVisible()) {
-                    if (mMRS.isSurfaceShadingFlat()) {
+                if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
+                    if (mMRS.isSurface(MRI::Surface::SHADING_FLAT)) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_FLAT);
                         renderPass();
                     }
-                    else if (mMRS.isSurfaceShadingSmooth()) {
+                    else if (mMRS.isSurface(MRI::Surface::SHADING_SMOOTH)) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_SMOOTH);
                         renderPass();
@@ -254,18 +256,18 @@ private:
         const float*    vertTexCoords   = mMRD.vertexTexCoordsBufferData();
         const float*    wedgTexCoords   = mMRD.wedgeTexCoordsBufferData();
 
-        if (mMRS.isPointVisible()) {
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(3, GL_FLOAT, 0, coords);
 
-            if (mMRS.isPointColorPerVertex()) {
+            if (mMRS.isPoints(MRI::Points::COLOR_VERTEX)) {
                 glEnableClientState(GL_COLOR_ARRAY);
                 glColorPointer(4, GL_UNSIGNED_BYTE, 0, vertexColors);
             }
-            else if (mMRS.isPointColorPerMesh()) {
+            else if (mMRS.isPoints(MRI::Points::COLOR_MESH)) {
                 glColor4fv(mMRD.meshColorBufferData());
             }
-            else if (mMRS.isPointColorUserDefined()) {
+            else if (mMRS.isPoints(MRI::Points::COLOR_USER)) {
                 glColor4fv(mMRS.pointUserColorData());
             }
 
@@ -277,9 +279,9 @@ private:
             glDisableClientState(GL_VERTEX_ARRAY);
         }
 
-        if (mMRS.isSurfaceVisible()) {
+        if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             // Old fashioned, verbose and slow rendering.
-            if (mMRS.isSurfaceColorPerFace()) {
+            if (mMRS.isSurface(MRI::Surface::COLOR_FACE)) {
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
                     int tid_ptr  = 3 * tid;
@@ -290,7 +292,7 @@ private:
                     int vid1_ptr = 3 * vid1;
                     int vid2_ptr = 3 * vid2;
 
-                    if (mMRS.isSurfaceShadingSmooth()) {
+                    if (mMRS.isSurface(MRI::Surface::SHADING_SMOOTH)) {
                         glBegin(GL_TRIANGLES);
                         glColor4ubv((GLubyte*) &(triangleColors[tid]));
                         glNormal3fv(&(vertexNormals[vid0_ptr]));
@@ -314,8 +316,8 @@ private:
                     }
                 }
             }
-            else if (mMRS.isSurfaceColorPerVertex()) {
-                if (mMRS.isSurfaceShadingSmooth()) {
+            else if (mMRS.isSurface(MRI::Surface::COLOR_VERTEX)) {
+                if (mMRS.isSurface(MRI::Surface::SHADING_SMOOTH)) {
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glVertexPointer(3, GL_FLOAT, 0, coords);
 
@@ -359,16 +361,16 @@ private:
                 }
             }
             else if (
-                mMRS.isSurfaceColorPerMesh() ||
-                mMRS.isSurfaceColorUserDefined()) {
-                if (mMRS.isSurfaceShadingSmooth()) {
+                mMRS.isSurface(MRI::Surface::COLOR_MESH) ||
+                mMRS.isSurface(MRI::Surface::COLOR_USER)) {
+                if (mMRS.isSurface(MRI::Surface::SHADING_SMOOTH)) {
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glVertexPointer(3, GL_FLOAT, 0, coords);
 
                     glEnableClientState(GL_NORMAL_ARRAY);
                     glNormalPointer(GL_FLOAT, 0, vertexNormals);
 
-                    if (mMRS.isSurfaceColorPerMesh()) {
+                    if (mMRS.isSurface(MRI::Surface::COLOR_MESH)) {
                         glColor4fv(mMRD.meshColorBufferData());
                     }
                     else {
@@ -383,7 +385,7 @@ private:
                     glDisableClientState(GL_VERTEX_ARRAY);
                 }
                 else {
-                    if (mMRS.isSurfaceColorPerMesh()) {
+                    if (mMRS.isSurface(MRI::Surface::COLOR_MESH)) {
                         glColor4fv(mMRD.meshColorBufferData());
                     }
                     else {
@@ -410,7 +412,7 @@ private:
                     }
                 }
             }
-            else if (mMRS.isSurfaceColorPerVertexTexcoords()) {
+            else if (mMRS.isSurface(MRI::Surface::COLOR_VERTEX_TEX)) {
                 glShadeModel(GL_SMOOTH);
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
@@ -445,7 +447,7 @@ private:
                     glBindTexture(GL_TEXTURE_2D, 0);
                 }
             }
-            else if (mMRS.isSurfaceColorPerWedgeTexcoords()) {
+            else if (mMRS.isSurface(MRI::Surface::COLOR_WEDGE_TEX)) {
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
                     int   tid_ptr  = 3 * tid;
@@ -481,13 +483,13 @@ private:
             }
         }
 
-        if (mMRS.isWireframeVisible()) {
+        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(3, GL_FLOAT, 0, coords);
 
             glLineWidth(mMRS.wireframeWidth());
 
-            if (mMRS.isWireframeColorPerMesh()) {
+            if (mMRS.isWireframe(MRI::Wireframe::COLOR_MESH)) {
                 glColor4fv(mMRD.meshColorBufferData());
             }
             else {

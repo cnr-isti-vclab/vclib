@@ -229,33 +229,33 @@ public:
 private:
     inline static constexpr const auto POINTS_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Points>(
-            Points::SHAPE_PIXEL,
-            Points::SHAPE_CIRCLE,
-            Points::SHADING_NONE,
-            Points::SHADING_VERT,
-            Points::COLOR_VERTEX,
-            Points::COLOR_USER);
+            Points::SHAPE_PIXEL,  // first
+            Points::SHAPE_CIRCLE, // last
+            Points::SHADING_NONE, // first
+            Points::SHADING_VERT, // last
+            Points::COLOR_VERTEX, // first
+            Points::COLOR_USER);  // last
 
     inline static constexpr const auto SURFACE_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Surface>(
-            Surface::SHADING_NONE,
-            Surface::SHADING_SMOOTH,
-            Surface::COLOR_VERTEX,
-            Surface::COLOR_USER);
+            Surface::SHADING_NONE,   // first
+            Surface::SHADING_SMOOTH, // last
+            Surface::COLOR_VERTEX,   // first
+            Surface::COLOR_USER);    // last
 
     inline static constexpr const auto WIREFRAME_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Wireframe>(
-            Wireframe::SHADING_NONE,
-            Wireframe::SHADING_VERT,
-            Wireframe::COLOR_VERTEX,
-            Wireframe::COLOR_USER);
+            Wireframe::SHADING_NONE, // first
+            Wireframe::SHADING_VERT, // last
+            Wireframe::COLOR_VERTEX, // first
+            Wireframe::COLOR_USER);  // last
 
     inline static constexpr const auto EDGES_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Edges>(
-            Edges::SHADING_NONE,
-            Edges::SHADING_SMOOTH,
-            Edges::COLOR_VERTEX,
-            Edges::COLOR_USER);
+            Edges::SHADING_NONE,   // first
+            Edges::SHADING_SMOOTH, // last
+            Edges::COLOR_VERTEX,   // first
+            Edges::COLOR_USER);    // last
 
     template<Primitive PRIMITIVE>
     inline static constexpr auto& exclusiveRanges()

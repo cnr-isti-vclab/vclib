@@ -88,13 +88,13 @@ void EdgesFrame::updateFrameFromSettings()
     if (mMRS.canEdges(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isEdgesVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isEdges(VISIBLE));
         mUI->shadingSmoothRadioButton->setEnabled(
             mMRS.canEdges(SHADING_SMOOTH));
-        mUI->shadingSmoothRadioButton->setChecked(mMRS.isEdgesShadingSmooth());
+        mUI->shadingSmoothRadioButton->setChecked(mMRS.isEdges(SHADING_SMOOTH));
         mUI->shadingFlatRadioButton->setEnabled(mMRS.canEdges(SHADING_FLAT));
-        mUI->shadingFlatRadioButton->setChecked(mMRS.isEdgesShadingFlat());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isEdgesShadingNone());
+        mUI->shadingFlatRadioButton->setChecked(mMRS.isEdges(SHADING_FLAT));
+        mUI->shadingNoneRadioButton->setChecked(mMRS.isEdges(SHADING_NONE));
 
         updateColorComboBoxFromSettings();
         mUI->sizeSlider->setValue(mMRS.edgesWidth());
@@ -134,16 +134,16 @@ void EdgesFrame::updateColorComboBoxFromSettings()
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    if (mMRS.isEdgesColorPerVertex())
+    if (mMRS.isEdges(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(E_VERTEX);
-    if (mMRS.isEdgesColorPerEdge())
+    if (mMRS.isEdges(COLOR_EDGE))
         mUI->colorComboBox->setCurrentIndex(E_EDGES);
-    if (mMRS.isEdgesColorPerMesh())
+    if (mMRS.isEdges(COLOR_MESH))
         mUI->colorComboBox->setCurrentIndex(E_MESH);
-    if (mMRS.isEdgesColorUserDefined())
+    if (mMRS.isEdges(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(E_USER);
 
-    mUI->userColorFrame->setEnabled(mMRS.isEdgesColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isEdges(COLOR_USER));
     vcl::Color vc = mMRS.edgesUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);

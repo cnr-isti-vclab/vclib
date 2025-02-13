@@ -83,11 +83,20 @@ public:
         setDefaultSettingsFromCapability();
     }
 
-    // rendering options capability of the mesh
+    /**
+     * @brief Returns the current draw mode as a MeshRenderInfo object.
+     * @return
+     */
+    MeshRenderInfo drawMode() const
+    {
+        return mDrawMode;
+    }
 
     bool operator==(const MeshRenderSettings&) const = default;
 
     bool operator!=(const MeshRenderSettings&) const = default;
+
+    // rendering option capabilities of the mesh
 
     bool canBeVisible() const
     {
@@ -121,12 +130,9 @@ public:
         return can<MRI::Primitive::EDGES>(e);
     }
 
-    // rendering options getters
+    // rendering option getters
 
-    MeshRenderInfo drawMode() const
-    {
-        return mDrawMode;
-    }
+    bool isVisible() const { return mDrawMode.visible(); }
 
     template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
     bool is(Enum val) const
@@ -135,41 +141,9 @@ public:
         return mDrawMode.settings<PRIMITIVE>()[toUnderlying(val)];
     }
 
-    bool isVisible() const { return mDrawMode.visible(); }
-
-    bool isPoint(MeshRenderInfo::Points p) const
+    bool isPoints(MeshRenderInfo::Points p) const
     {
         return is<MRI::Primitive::POINTS>(p);
-    }
-
-    bool isPointVisible() const
-    {
-        return isPoint(MRI::Points::VISIBLE);
-    }
-
-    bool isPointShadingNone() const
-    {
-        return isPoint(MRI::Points::SHADING_NONE);
-    }
-
-    bool isPointShadingPerVertex() const
-    {
-        return isPoint(MRI::Points::SHADING_VERT);
-    }
-
-    bool isPointColorPerVertex() const
-    {
-        return isPoint(MRI::Points::COLOR_VERTEX);
-    }
-
-    bool isPointColorPerMesh() const
-    {
-        return isPoint(MRI::Points::COLOR_MESH);
-    }
-
-    bool isPointColorUserDefined() const
-    {
-        return isPoint(MRI::Points::COLOR_USER);
     }
 
     float pointWidth() const { return mPointWidth; }
@@ -183,56 +157,6 @@ public:
         return is<MRI::Primitive::SURFACE>(s);
     }
 
-    bool isSurfaceVisible() const
-    {
-        return isSurface(MRI::Surface::VISIBLE);
-    }
-
-    bool isSurfaceShadingNone() const
-    {
-        return isSurface(MRI::Surface::SHADING_NONE);
-    }
-
-    bool isSurfaceShadingFlat() const
-    {
-        return isSurface(MRI::Surface::SHADING_FLAT);
-    }
-
-    bool isSurfaceShadingSmooth() const
-    {
-        return isSurface(MeshRenderInfo::Surface::SHADING_SMOOTH);
-    }
-
-    bool isSurfaceColorPerFace() const
-    {
-        return isSurface(MRI::Surface::COLOR_FACE);
-    }
-
-    bool isSurfaceColorPerVertex() const
-    {
-        return isSurface(MRI::Surface::COLOR_VERTEX);
-    }
-
-    bool isSurfaceColorPerMesh() const
-    {
-        return isSurface(MRI::Surface::COLOR_MESH);
-    }
-
-    bool isSurfaceColorUserDefined() const
-    {
-        return isSurface(MRI::Surface::COLOR_USER);
-    }
-
-    bool isSurfaceColorPerVertexTexcoords() const
-    {
-        return isSurface(MRI::Surface::COLOR_VERTEX_TEX);
-    }
-
-    bool isSurfaceColorPerWedgeTexcoords() const
-    {
-        return isSurface(MRI::Surface::COLOR_WEDGE_TEX);
-    }
-
     vcl::Color surfaceUserColor() const;
 
     const uint* surfaceUserColorData() const { return &mSurfUserColor; }
@@ -240,36 +164,6 @@ public:
     bool isWireframe(MeshRenderInfo::Wireframe w) const
     {
         return is<MRI::Primitive::WIREFRAME>(w);
-    }
-
-    bool isWireframeVisible() const
-    {
-        return isWireframe(MRI::Wireframe::VISIBLE);
-    }
-
-    bool isWireframeShadingNone() const
-    {
-        return isWireframe(MRI::Wireframe::SHADING_NONE);
-    }
-
-    bool isWireframeShadingPerVertex() const
-    {
-        return isWireframe(MRI::Wireframe::SHADING_VERT);
-    }
-
-    bool isWireframeColorPerVertex() const
-    {
-        return isWireframe(MRI::Wireframe::COLOR_VERTEX);
-    }
-
-    bool isWireframeColorPerMesh() const
-    {
-        return isWireframe(MRI::Wireframe::COLOR_MESH);
-    }
-
-    bool isWireframeColorUserDefined() const
-    {
-        return isWireframe(MRI::Wireframe::COLOR_USER);
     }
 
     int wireframeWidth() const { return mWrfWidth; }
@@ -283,53 +177,13 @@ public:
         return is<MRI::Primitive::EDGES>(e);
     }
 
-    bool isEdgesVisible() const
-    {
-        return isEdges(MRI::Edges::VISIBLE);
-    }
-
-    bool isEdgesShadingNone() const
-    {
-        return isEdges(MRI::Edges::SHADING_NONE);
-    }
-
-    bool isEdgesShadingSmooth() const
-    {
-        return isEdges(MRI::Edges::SHADING_SMOOTH);
-    }
-
-    bool isEdgesShadingFlat() const
-    {
-        return isEdges(MRI::Edges::SHADING_FLAT);
-    }
-
-    bool isEdgesColorPerVertex() const
-    {
-        return isEdges(MRI::Edges::COLOR_VERTEX);
-    }
-
-    bool isEdgesColorPerEdge() const
-    {
-        return isEdges(MRI::Edges::COLOR_EDGE);
-    }
-
-    bool isEdgesColorPerMesh() const
-    {
-        return isEdges(MRI::Edges::COLOR_MESH);
-    }
-
-    bool isEdgesColorUserDefined() const
-    {
-        return isEdges(MRI::Edges::COLOR_USER);
-    }
-
     int edgesWidth() const { return mEdgesWidth; }
 
     vcl::Color edgesUserColor() const;
 
     const uint* edgesUserColorData() const { return &mEdgesUserColor; }
 
-    // rendering options setters
+    // rendering option setters
 
     bool setVisibility(bool b);
 

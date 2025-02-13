@@ -82,12 +82,12 @@ void WireframeFrame::updateFrameFromSettings()
     if (mMRS.canWireframe(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isWireframeVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isWireframe(VISIBLE));
         mUI->shadingVertexRadioButton->setEnabled(
             mMRS.canWireframe(SHADING_VERT));
         mUI->shadingVertexRadioButton->setChecked(
-            mMRS.isWireframeShadingPerVertex());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isWireframeShadingNone());
+            mMRS.isWireframe(SHADING_VERT));
+        mUI->shadingNoneRadioButton->setChecked(mMRS.isWireframe(SHADING_NONE));
 
         updateColorComboBoxFromSettings();
         mUI->sizeSlider->setValue(mMRS.wireframeWidth());
@@ -118,14 +118,14 @@ void WireframeFrame::updateColorComboBoxFromSettings()
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
-    if (mMRS.isWireframeColorPerVertex())
+    if (mMRS.isWireframe(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(W_VERTEX);
-    if (mMRS.isWireframeColorPerMesh())
+    if (mMRS.isWireframe(COLOR_MESH))
         mUI->colorComboBox->setCurrentIndex(W_MESH);
-    if (mMRS.isWireframeColorUserDefined())
+    if (mMRS.isWireframe(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(W_USER);
 
-    mUI->userColorFrame->setEnabled(mMRS.isWireframeColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isWireframe(COLOR_USER));
     vcl::Color vc = mMRS.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);

@@ -94,13 +94,13 @@ void PointsFrame::updateFrameFromSettings()
     if (mMRS.canPoints(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isPointVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isPoints(VISIBLE));
 
         mUI->shadingVertexRadioButton->setEnabled(
             mMRS.canPoints(SHADING_VERT));
         mUI->shadingVertexRadioButton->setChecked(
-            mMRS.isPointShadingPerVertex());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isPointShadingNone());
+            mMRS.isPoints(SHADING_VERT));
+        mUI->shadingNoneRadioButton->setChecked(mMRS.isPoints(SHADING_NONE));
 
         // todo
         mUI->shapePixelRadioButton->setChecked(true);
@@ -139,14 +139,14 @@ void PointsFrame::updateColorComboBoxFromSettings()
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    if (mMRS.isPointColorPerVertex())
+    if (mMRS.isPoints(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(P_VERT);
-    if (mMRS.isPointColorPerMesh())
+    if (mMRS.isPoints(COLOR_MESH))
         mUI->colorComboBox->setCurrentIndex(P_MESH);
-    if (mMRS.isPointColorUserDefined())
+    if (mMRS.isPoints(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(P_USER);
 
-    mUI->userColorFrame->setEnabled(mMRS.isPointColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isPoints(COLOR_USER));
     vcl::Color vc = mMRS.pointUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);

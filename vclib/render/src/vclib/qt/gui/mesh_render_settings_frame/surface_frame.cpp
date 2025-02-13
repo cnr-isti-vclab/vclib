@@ -82,7 +82,7 @@ void SurfaceFrame::updateFrameFromSettings()
     if (mMRS.canSurface(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isSurfaceVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isSurface(VISIBLE));
         uptateShadingRadioButtonsFromSettings();
         updateColorComboBoxFromSettings();
     }
@@ -100,9 +100,9 @@ void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
     if (!mMRS.canSurface(SHADING_FLAT)) {
         mUI->shadingFlatRadioButton->setEnabled(false);
     }
-    mUI->shadingNoneRadioButton->setChecked(mMRS.isSurfaceShadingNone());
-    mUI->shadingFlatRadioButton->setChecked(mMRS.isSurfaceShadingFlat());
-    mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurfaceShadingSmooth());
+    mUI->shadingNoneRadioButton->setChecked(mMRS.isSurface(SHADING_NONE));
+    mUI->shadingFlatRadioButton->setChecked(mMRS.isSurface(SHADING_FLAT));
+    mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurface(SHADING_SMOOTH));
 }
 
 void SurfaceFrame::updateColorComboBoxFromSettings()
@@ -146,19 +146,19 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    if (mMRS.isSurfaceColorPerVertex())
+    if (mMRS.isSurface(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(SC_VERT);
-    if (mMRS.isSurfaceColorPerFace())
+    if (mMRS.isSurface(COLOR_FACE))
         mUI->colorComboBox->setCurrentIndex(SC_FACE);
-    if (mMRS.isSurfaceColorPerMesh())
+    if (mMRS.isSurface(COLOR_MESH))
         mUI->colorComboBox->setCurrentIndex(SC_MESH);
-    if (mMRS.isSurfaceColorPerVertexTexcoords())
+    if (mMRS.isSurface(COLOR_VERTEX_TEX))
         mUI->colorComboBox->setCurrentIndex(SC_VERT_TEX);
-    if (mMRS.isSurfaceColorPerWedgeTexcoords())
+    if (mMRS.isSurface(COLOR_WEDGE_TEX))
         mUI->colorComboBox->setCurrentIndex(SC_WEDG_TEX);
-    if (mMRS.isSurfaceColorUserDefined())
+    if (mMRS.isSurface(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(SC_USER);
-    mUI->userColorFrame->setEnabled(mMRS.isSurfaceColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isSurface(COLOR_USER));
     vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
