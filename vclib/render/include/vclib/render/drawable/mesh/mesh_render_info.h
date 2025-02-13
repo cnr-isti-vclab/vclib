@@ -60,6 +60,9 @@ auto constexpr makeExclusiveReangesArray(auto... args)
 class MeshRenderInfo
 {
 public:
+    /**
+     * @brief List of primitives for which settings can be stored.
+     */
     enum class Primitive {
         POINTS = 0,
         SURFACE,
@@ -76,6 +79,9 @@ private:
     std::array<BitSet16, toUnderlying(Primitive::COUNT)> mSettings;
 
 public:
+    /**
+     * @brief List of possible settings for the points primitive.
+     */
     enum class Points {
         VISIBLE      = VCL_MRS_DRAW_POINTS,
         SHAPE_PIXEL  = VCL_MRS_POINTS_PIXEL,
@@ -89,6 +95,9 @@ public:
         COUNT
     };
 
+    /**
+     * @brief List of possible settings for the surface primitive.
+     */
     enum class Surface {
         VISIBLE          = VCL_MRS_DRAW_SURF,
         SHADING_NONE     = VCL_MRS_SURF_SHADING_NONE,
@@ -104,6 +113,9 @@ public:
         COUNT
     };
 
+    /**
+     * @brief List of possible settings for the wireframe primitive.
+     */
     enum class Wireframe {
         VISIBLE      = VCL_MRS_DRAW_WIREFRAME,
         SHADING_NONE = VCL_MRS_WIREFRAME_SHADING_NONE,
@@ -115,6 +127,9 @@ public:
         COUNT
     };
 
+    /**
+     * @brief List of possible settings for the edges primitive.
+     */
     enum class Edges {
         VISIBLE        = VCL_MRS_DRAW_EDGES,
         SHADING_NONE   = VCL_MRS_EDGES_SHADING_NONE,
@@ -128,38 +143,91 @@ public:
         COUNT
     };
 
+    /**
+     * @brief Returns the visibility status of the mesh.
+     * @return the visibility status of the mesh.
+     */
     bool visible() const { return mVisible; }
 
+    /**
+     * @brief Sets the visibility status of the mesh.
+     * @return the visibility status of the mesh.
+     */
     bool& visible() { return mVisible; }
 
+    /**
+     * @brief Returns the settings for a given primitive.
+     * @tparam PRIMTIVE: the primitive for which to get the settings.
+     * @return the settings for the given primitive.
+     */
     template<Primitive PRIMTIVE>
     BitSet16 settings() const
     {
         return mSettings[toUnderlying(PRIMTIVE)];
     }
 
+    /**
+     * @brief Returns the settings for a given primitive.
+     * @tparam PRIMTIVE: the primitive for which to get the settings.
+     * @return the settings for the given primitive.
+     */
     template<Primitive PRIMTIVE>
     BitSet16& settings()
     {
         return mSettings[toUnderlying(PRIMTIVE)];
     }
 
+    /**
+     * @brief Returns the settings for the points primitive.
+     * @return the settings for the points primitive.
+     */
     BitSet16 points() const { return settings<Primitive::POINTS>(); }
 
+    /**
+     * @brief Returns the settings for the points primitive.
+     * @return the settings for the points primitive.
+     */
     BitSet16& points() { return settings<Primitive::POINTS>(); }
 
+    /**
+     * @brief Returns the settings for the surface primitive.
+     * @return the settings for the surface primitive.
+     */
     BitSet16 surface() const { return settings<Primitive::SURFACE>(); }
 
+    /**
+     * @brief Returns the settings for the surface primitive.
+     * @return the settings for the surface primitive.
+     */
     BitSet16& surface() { return settings<Primitive::SURFACE>(); }
 
+    /**
+     * @brief Returns the settings for the wireframe primitive.
+     * @return the settings for the wireframe primitive.
+     */
     BitSet16 wireframe() const { return settings<Primitive::WIREFRAME>(); }
 
+    /**
+     * @brief Returns the settings for the wireframe primitive.
+     * @return the settings for the wireframe primitive.
+     */
     BitSet16& wireframe() { return settings<Primitive::WIREFRAME>(); }
 
+    /**
+     * @brief Returns the settings for the edges primitive.
+     * @return the settings for the edges primitive.
+     */
     BitSet16 edges() const { return settings<Primitive::EDGES>(); }
 
+    /**
+     * @brief Returns the settings for the edges primitive.
+     * @return the settings for the edges primitive.
+     */
     BitSet16& edges() { return settings<Primitive::EDGES>(); }
 
+    /**
+     * @brief Resets all the settings of the mesh.
+     */
     void reset()
     {
         mVisible = false;
@@ -199,6 +267,25 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Given a primitive and a setting, returns pair representing the
+     * range in the primitive enumeration of the mutual exclusive settings for
+     * the given setting.
+     *
+     * If the given value does not belong to any range, the function returns a
+     * pair having the same value as first and second element.
+     *
+     * E.g. for a Points primitive, if the setting given is COLOR_USER, the
+     * function returns a pair having as first value the first setting of the
+     * Points enumeration that starts with COLOR_ and as second value the last
+     * setting of the Points enumeration that starts with COLOR_.
+     *
+     * @tparam PRIMITIVE: the primitive for which to get the exclusive range.
+     *
+     * @param[in] value: the option to query.
+     * @return a pair representing the range of the mutual exclusive settings
+     * for the given value.
+     */
     template<Primitive PRIMITIVE>
     constexpr static auto exclusiveRange(auto value)
     {
@@ -206,21 +293,85 @@ public:
         return getExclusiveRange(value, ranges);
     }
 
+    /**
+     * @brief Returns pair representing the range in the Points enumeration of
+     * the mutual exclusive settings for the given setting.
+     *
+     * If the given value does not belong to any range, the function returns a
+     * pair having the same value as first and second element.
+     *
+     * E.g. if the setting given is COLOR_USER, the function returns a pair
+     * having as first value the first setting of the Points enumeration that
+     * starts with COLOR_ and as second value the last setting of the Points
+     * enumeration that starts with COLOR_.
+     *
+     * @param[in] value: the option to query.
+     * @return a pair representing the range of the mutual exclusive settings
+     * for the given value.
+     */
     constexpr static auto pointsExclusiveRange(auto value)
     {
         return exclusiveRange<Primitive::POINTS>(value);
     }
 
+    /**
+     * @brief Returns pair representing the range in the Surface enumeration of
+     * the mutual exclusive settings for the given setting.
+     *
+     * If the given value does not belong to any range, the function returns a
+     * pair having the same value as first and second element.
+     *
+     * E.g. if the setting given is COLOR_USER, the function returns a pair
+     * having as first value the first setting of the Surface enumeration that
+     * starts with COLOR_ and as second value the last setting of the Surface
+     * enumeration that starts with COLOR_.
+     *
+     * @param[in] value: the option to query.
+     * @return a pair representing the range of the mutual exclusive settings
+     * for the given value.
+     */
     constexpr static auto surfaceExclusiveRange(auto value)
     {
         return exclusiveRange<Primitive::SURFACE>(value);
     }
 
+    /**
+     * @brief Returns pair representing the range in the Wireframe enumeration of
+     * the mutual exclusive settings for the given setting.
+     *
+     * If the given value does not belong to any range, the function returns a
+     * pair having the same value as first and second element.
+     *
+     * E.g. if the setting given is COLOR_USER, the function returns a pair
+     * having as first value the first setting of the Wireframe enumeration that
+     * starts with COLOR_ and as second value the last setting of the Wireframe
+     * enumeration that starts with COLOR_.
+     *
+     * @param[in] value: the option to query.
+     * @return a pair representing the range of the mutual exclusive settings
+     * for the given value.
+     */
     constexpr static auto wireframeExclusiveRange(auto value)
     {
         return exclusiveRange<Primitive::WIREFRAME>(value);
     }
 
+    /**
+     * @brief Returns pair representing the range in the Edges enumeration of
+     * the mutual exclusive settings for the given setting.
+     *
+     * If the given value does not belong to any range, the function returns a
+     * pair having the same value as first and second element.
+     *
+     * E.g. if the setting given is COLOR_USER, the function returns a pair
+     * having as first value the first setting of the Edges enumeration that
+     * starts with COLOR_ and as second value the last setting of the Edges
+     * enumeration that starts with COLOR_.
+     *
+     * @param[in] value: the option to query.
+     * @return a pair representing the range of the mutual exclusive settings
+     * for the given value.
+     */
     constexpr static auto edgesExclusiveRange(auto value)
     {
         return exclusiveRange<Primitive::EDGES>(value);

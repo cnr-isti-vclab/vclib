@@ -33,8 +33,9 @@ namespace vcl {
 
 /**
  * @brief The MeshRenderSettings class allows an easy management of render
- * settings of a Mesh. This class stores the rendering status of a Mesh and the
- * rendering capability of a Mesh.
+ * settings of a Mesh. This class stores the rendering status of a Mesh, the
+ * rendering capability of a Mesh and a series of other data like user colors
+ * used for the mesh primitives.
  *
  * Render capabilities store what can be actually rendered of a vcl::Mesh (e.g.
  * it will be possible to render the surface of the mesh if the Mesh has Faces,
@@ -45,18 +46,26 @@ namespace vcl {
  * render capabilities.
  *
  * An instance of this class must be initialized with a vcl::Mesh at first, in
- * order to initialize the Render capabilites. Render settings won't be possible
+ * order to initialize the render capabilites. Render settings won't be possible
  * to set if this class is not first initialized using a vcl::Mesh, trough the
  * constructor or the `setRenderCapabilityFrom()` member function.
  *
- * Render capabilities can be get by calling the member functions `can*()` of
- * this class.
+ * Render capabilities can be get by calling the member functions `can*()` for
+ * each primitive, and providing the according enum value for the option to
+ * query.
  *
- * The memeber functions `is*()` allow to get the current render status.
+ * The memeber functions `is*()` allow to get the current render status for
+ * each primitive, providing the according enum value for the option to query.
  *
- * The render status can be modified using the `set*()` member functions, that
- * return a boolean indicating if the operation has been performed (if the
- * capabilities allows it, the operation will be always performed).
+ * The render status can be modified using the `set*()` member functions for
+ * each primitive. They return a boolean indicating if the operation has been
+ * performed (if the capabilities allows it, the operation will be always
+ * performed).
+ *
+ * The `set*()` functions are guaranteed to keep the state of the draw mode
+ * consistent. This means that if the user sets an option that belongs to a
+ * range (e.g. SHADING_*), the other options of the range will be automatically
+ * set to false.
  */
 class MeshRenderSettings
 {
@@ -74,8 +83,25 @@ class MeshRenderSettings
     uint  mEdgesUserColor    = 0xFF000000; // abgr
 
 public:
+    /**
+     * @brief Construct a new MeshRenderSettings object with capabilities set to
+     * false.
+     *
+     * An object created with this constructor will not be able to set any
+     * rendering option until the `setRenderCapabilityFrom()` member function is
+     * called.
+     */
     MeshRenderSettings() = default;
 
+    /**
+     * @brief Construct a new MeshRenderSettings object from a Mesh.
+     *
+     * This constructor initializes the render capabilities from the given Mesh
+     * object. The render settings are then set to the default values.
+     *
+     * @tparam MeshType: the type of the Mesh object.
+     * @param m: the Mesh object to initialize the render capabilities.
+     */
     template<MeshConcept MeshType>
     MeshRenderSettings(const MeshType& m)
     {
@@ -85,7 +111,7 @@ public:
 
     /**
      * @brief Returns the current draw mode as a MeshRenderInfo object.
-     * @return
+     * @return the current draw mode as a MeshRenderInfo object.
      */
     MeshRenderInfo drawMode() const
     {
@@ -98,11 +124,26 @@ public:
 
     // rendering option capabilities of the mesh
 
+    /**
+     * @brief Returns whether the mesh can be visible.
+     * @return `true` if the mesh can be visible, `false` otherwise.
+     */
     bool canBeVisible() const
     {
         return mCapability.visible();
     }
 
+    /**
+     * @brief Returns the capability of a given option for the given primitive.
+     *
+     * The primitive is a template parameter that specifies the primitive to
+     * query. The Enum parameter specifies the option to query.
+     *
+     * @tparam PRIMTIVE: the primitive for which to get the capability.
+     *
+     * @param[in] val: the option to query.
+     * @return `true` if the option can be set, `false` otherwise.
+     */
     template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
     bool can(Enum val) const
     {
@@ -110,21 +151,47 @@ public:
         return mCapability.settings<PRIMITIVE>()[toUnderlying(val)];
     }
 
+    /**
+     * @brief Returns the capability of a given option for the points primitive.
+     *
+     * @param[in] p: the points option to query.
+     * @return `true` if the option can be set, `false` otherwise.
+     */
     bool canPoints(MeshRenderInfo::Points p) const
     {
         return can<MRI::Primitive::POINTS>(p);
     }
 
+    /**
+     * @brief Returns the capability of a given option for the surface
+     * primitive.
+     *
+     * @param[in] s: the surface option to query.
+     * @return `true` if the option can be set, `false` otherwise.
+     */
     bool canSurface(MeshRenderInfo::Surface s) const
     {
         return can<MRI::Primitive::SURFACE>(s);
     }
 
+    /**
+     * @brief Returns the capability of a given option for the wireframe
+     * primitive.
+     *
+     * @param[in] w: the wireframe option to query.
+     * @return `true` if the option can be set, `false` otherwise.
+     */
     bool canWireframe(MeshRenderInfo::Wireframe w) const
     {
         return can<MRI::Primitive::WIREFRAME>(w);
     }
 
+    /**
+     * @brief Returns the capability of a given option for the edges primitive.
+     *
+     * @param[in] e: the edges option to query.
+     * @return `true` if the option can be set, `false` otherwise.
+     */
     bool canEdges(MeshRenderInfo::Edges e) const
     {
         return can<MRI::Primitive::EDGES>(e);
@@ -132,8 +199,23 @@ public:
 
     // rendering option getters
 
+    /**
+     * @brief Returns whether the mesh is visible.
+     * @return `true` if the mesh is visible, `false` otherwise.
+     */
     bool isVisible() const { return mDrawMode.visible(); }
 
+    /**
+     * @brief Returns whether the given option for the given primitive is set.
+     *
+     * The primitive is a template parameter that specifies the primitive to
+     * query. The Enum parameter specifies the option to query.
+     *
+     * @tparam PRIMTIVE: the primitive for which to get the option.
+     *
+     * @param[in] val: the option to query.
+     * @return `true` if the option is set, `false` otherwise.
+     */
     template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
     bool is(Enum val) const
     {
@@ -141,6 +223,12 @@ public:
         return mDrawMode.settings<PRIMITIVE>()[toUnderlying(val)];
     }
 
+    /**
+     * @brief Returns whether the given points option is set.
+     *
+     * @param[in] p: the points option to query.
+     * @return `true` if the option is set, `false` otherwise.
+     */
     bool isPoints(MeshRenderInfo::Points p) const
     {
         return is<MRI::Primitive::POINTS>(p);
@@ -152,6 +240,12 @@ public:
 
     const float* pointUserColorData() const { return mPointUserColor; }
 
+    /**
+     * @brief Returns whether the given surface option is set.
+     *
+     * @param[in] s: the surface option to query.
+     * @return `true` if the option is set, `false` otherwise.
+     */
     bool isSurface(MeshRenderInfo::Surface s) const
     {
         return is<MRI::Primitive::SURFACE>(s);
@@ -161,6 +255,12 @@ public:
 
     const uint* surfaceUserColorData() const { return &mSurfUserColor; }
 
+    /**
+     * @brief Returns whether the given wireframe option is set.
+     *
+     * @param[in] w: the wireframe option to query.
+     * @return `true` if the option is set, `false` otherwise.
+     */
     bool isWireframe(MeshRenderInfo::Wireframe w) const
     {
         return is<MRI::Primitive::WIREFRAME>(w);
@@ -172,6 +272,12 @@ public:
 
     const float* wireframeUserColorData() const { return mWrfUserColor; }
 
+    /**
+     * @brief Returns whether the given edges option is set.
+     *
+     * @param[in] e: the edges option to query.
+     * @return `true` if the option is set, `false` otherwise.
+     */
     bool isEdges(MeshRenderInfo::Edges e) const
     {
         return is<MRI::Primitive::EDGES>(e);
@@ -185,8 +291,38 @@ public:
 
     // rendering option setters
 
+    /**
+     * @brief Sets the visibility of the mesh.
+     *
+     * The visibility status can be set only if the capability allows it.
+     *
+     * @param[in] b: the visibility status to set.
+     * @return `true` if the visibility status has been set, `false` otherwise.
+     */
     bool setVisibility(bool b);
 
+    /**
+     * @brief Sets given the shading option of the given primitive.
+     *
+     * The primitive is a template parameter that specifies the primitive to
+     * query. The Enum parameter specifies the option to query.
+     *
+     * If the capability does not allow to set the given option, the function
+     * does nothing and it returns `false`. Otherwise, it returns `true`.
+     *
+     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * parameter will be used to set the option to the primitive.
+     *
+     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * considered. The given option is set to `true`, and all the other options
+     * of the range are automatically set to `false`.
+     *
+     * @tparam PRIMTIVE: the primitive for which to set the option.
+     *
+     * @param[in] val: the primitive option to set
+     * @param[in] b: boolean value to set to the option (if it is not a range).
+     * @return `true` if the option has been set, false otherwise.
+     */
     template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
     bool set(Enum val, bool b = true)
     {
@@ -214,7 +350,7 @@ public:
     }
 
     /**
-     * @brief Sets the shading option of the points.
+     * @brief Sets the given shading option of the points.
      *
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
@@ -242,7 +378,7 @@ public:
     bool setPointsUserColor(const vcl::Color& c);
 
     /**
-     * @brief Sets the shading option of the surface.
+     * @brief Sets the given shading option of the surface.
      *
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
@@ -268,7 +404,7 @@ public:
     bool setSurfaceUserColor(const vcl::Color& c);
 
     /**
-     * @brief Sets the shading option of the wireframe.
+     * @brief Sets the given shading option of the wireframe.
      *
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
@@ -296,7 +432,7 @@ public:
     bool setWireframeWidth(int width);
 
     /**
-     * @brief Sets the shading option of the edges.
+     * @brief Sets the given shading option of the edges.
      *
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
