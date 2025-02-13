@@ -644,6 +644,13 @@ public:
     }
 
     /**
+     * @brief Returns whether the vector is empty (i.e. whether its size is 0).
+     *
+     * @return `true` if the container size is 0, `false` otherwise.
+     */
+    bool empty() const noexcept { return mContainer.empty(); }
+
+    /**
      * @brief Remove the element at the specified index from the Vector.
      *
      * Removes the element at the position specified by `i` in the Vector by

@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 910-viewer-imgui-glfw)
+set(EXAMPLE_NAME 07-mesh-viewer-imgui-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings

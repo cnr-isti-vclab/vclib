@@ -20,54 +20,72 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_IMGUI_HELPERS_H
+#define VCL_IMGUI_HELPERS_H
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/algorithms/mesh/update/transform.h>
-#include <vclib/qt/mesh_viewer.h>
+#include <functional>
+#include <imgui.h>
 
-#include <QApplication>
+#include <vclib/space/core/color.h>
 
-int main(int argc, char** argv)
+namespace ImGui {
+
+inline bool Checkbox(
+    const char*               label,
+    std::function<bool()>     get,
+    std::function<void(bool)> set)
 {
-    QApplication app(argc, argv);
-
-    vcl::qt::MeshViewer mv;
-
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
-
-    m.enablePerFaceColor();
-    for (auto& f : m.faces()) {
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
-    }
-    m.updateBuffers();
-
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(m);
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.name() = "bimba_scaled";
-
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
-
-    drawable.updateBuffers();
-    v->pushBack(std::move(drawable));
-
-    mv.setDrawableObjectVector(v);
-
-    mv.show();
-    mv.showMaximized();
-
-    return app.exec();
+    bool       value = get();
+    const bool ret   = ImGui::Checkbox(label, &value);
+    set(value);
+    return ret;
 }
+
+inline bool RadioButton(
+    const char*               label,
+    std::function<bool()>     get,
+    std::function<void(bool)> set)
+{
+    bool       value = get();
+    const bool ret   = ImGui::RadioButton(label, value);
+    if (ret) {
+        set(true);
+    }
+    return ret;
+}
+
+inline bool SliderFloat(
+    const char*                label,
+    std::function<float()>     get,
+    std::function<void(float)> set,
+    float                      vMin,
+    float                      vMax)
+{
+    float      value = get();
+    const bool ret   = ImGui::SliderFloat(label, &value, vMin, vMax);
+    if (ret) {
+        set(value);
+    }
+    return ret;
+}
+
+inline bool ColorEdit4(
+    const char*                     label,
+    std::function<vcl::Color()>     get,
+    std::function<void(vcl::Color)> set,
+    ImGuiColorEditFlags             flags)
+{
+    // TODO: use float based color
+    vcl::Color c        = get();
+    float      color[4] = {c.redF(), c.greenF(), c.blueF(), c.alphaF()};
+    const bool ret      = ImGui::ColorEdit4(label, color, flags);
+    if (ret) {
+        c.setRgbF(color[0], color[1], color[2], color[3]);
+        set(c);
+    }
+    return ret;
+}
+
+} // namespace ImGui
+
+#endif // VCL_IMGUI_HELPERS_H

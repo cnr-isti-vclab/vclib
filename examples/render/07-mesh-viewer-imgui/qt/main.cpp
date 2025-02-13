@@ -20,54 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "../mesh_viewer_imgui_drawer.h"
 #include "get_drawable_mesh.h"
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/algorithms/mesh/update/transform.h>
-#include <vclib/qt/mesh_viewer.h>
+#include <vclib/imgui/imgui_drawer.h>
+
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/render_app.h>
 
 #include <QApplication>
+
+using ViewerWidget = vcl::RenderApp<
+    vcl::qt::WidgetManager,
+    vcl::Canvas,
+    vcl::imgui::ImGuiDrawer,
+    MeshViewerDrawerImgui>;
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    vcl::qt::MeshViewer mv;
-
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
-
-    m.enablePerFaceColor();
-    for (auto& f : m.faces()) {
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
-    }
-    m.updateBuffers();
-
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(m);
+    ViewerWidget tw("Mesh Viewer ImGui Qt");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
-    drawable.name() = "bimba_scaled";
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
 
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
+    tw.fitScene();
 
-    drawable.updateBuffers();
-    v->pushBack(std::move(drawable));
-
-    mv.setDrawableObjectVector(v);
-
-    mv.show();
-    mv.showMaximized();
+    tw.show();
 
     return app.exec();
 }

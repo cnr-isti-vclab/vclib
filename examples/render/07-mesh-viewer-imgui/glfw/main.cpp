@@ -22,52 +22,45 @@
 
 #include "get_drawable_mesh.h"
 
+#include "../mesh_viewer_imgui_drawer.h"
+
+#include <vclib/imgui/imgui_drawer.h>
+
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/algorithms/mesh/update/transform.h>
-#include <vclib/qt/mesh_viewer.h>
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/render_app.h>
 
-#include <QApplication>
+#include <imgui.h>
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    using ImguiMeshViewer = vcl::RenderApp<
+        vcl::glfw::WindowManager,
+        vcl::Canvas,
+        vcl::imgui::ImGuiDrawer,
+        MeshViewerDrawerImgui>;
 
-    vcl::qt::MeshViewer mv;
-
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
-
-    m.enablePerFaceColor();
-    for (auto& f : m.faces()) {
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
-    }
-    m.updateBuffers();
-
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(m);
+    ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
-    drawable.name() = "bimba_scaled";
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
 
     // update the mesh to be displayed in the scene
     const auto bb = vcl::boundingBox(drawable);
     vcl::scale(drawable, 0.5f);
     vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
 
-    drawable.updateBuffers();
-    v->pushBack(std::move(drawable));
+    tw.pushDrawableObject(drawable);
 
-    mv.setDrawableObjectVector(v);
+    tw.fitScene();
 
-    mv.show();
-    mv.showMaximized();
+    tw.show();
 
-    return app.exec();
+    return 0;
 }

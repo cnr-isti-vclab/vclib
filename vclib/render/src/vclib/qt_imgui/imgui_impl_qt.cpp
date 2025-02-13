@@ -29,7 +29,6 @@
 #include <QKeyEvent>
 
 #include <chrono>
-#include <iostream>
 
 using Clock     = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
@@ -405,7 +404,10 @@ void ImGui_ImplQt_NewFrame()
         io.DisplayFramebufferScale = ImVec2(scale, scale);
 
     // update time
-    const auto now      = Clock::now();
+    const auto now = Clock::now();
+    if (bd->LastTime == TimePoint(Clock::duration::zero())) {
+        bd->LastTime = now - std::chrono::milliseconds(16);
+    }
     const auto duration = now - bd->LastTime;
     io.DeltaTime        = std::chrono::duration<float>(duration).count();
     bd->LastTime        = now;

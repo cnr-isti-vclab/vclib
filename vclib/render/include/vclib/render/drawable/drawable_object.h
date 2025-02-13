@@ -150,14 +150,14 @@ public:
      * @brief Returns the name of the object.
      * @return The name of the object.
      */
-    const std::string& name() const { return mName; }
+    virtual const std::string& name() const { return mName; }
 
     /**
      * @brief Returns a reference of the name of the object, that allows to
      * modify it.
      * @param[in] name: The name of the object.
      */
-    std::string& name() { return mName; }
+    virtual std::string& name() { return mName; }
 
     /**
      * @brief Returns the info of the object.
