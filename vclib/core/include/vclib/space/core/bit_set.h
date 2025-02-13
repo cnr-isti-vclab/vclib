@@ -249,6 +249,95 @@ public:
     T underlying() const { return mBits; }
 
     /**
+     * @brief Returns a BitSet that is the result of the bitwise AND between
+     * this BitSet and another BitSet.
+     *
+     * @param[in] other: the other BitSet
+     * @return the result of the bitwise AND between this BitSet and another
+     * BitSet.
+     */
+    BitSet<T> operator&(const BitSet<T>& other) const
+    {
+        return BitSet<T>(mBits & other.mBits);
+    }
+
+    /**
+     * @brief Returns a BitSet that is the result of the bitwise OR between
+     * this BitSet and another BitSet.
+     *
+     * @param[in] other: the other BitSet
+     * @return the result of the bitwise OR between this BitSet and another
+     * BitSet.
+     */
+    BitSet<T> operator|(const BitSet<T>& other) const
+    {
+        return BitSet<T>(mBits | other.mBits);
+    }
+
+    /**
+     * @brief Returns a BitSet that is the result of the bitwise XOR between
+     * this BitSet and another BitSet.
+     *
+     * @param[in] other: the other BitSet
+     * @return the result of the bitwise XOR between this BitSet and another
+     * BitSet.
+     */
+    BitSet<T> operator^(const BitSet<T>& other) const
+    {
+        return BitSet<T>(mBits ^ other.mBits);
+    }
+
+    /**
+     * @brief Returns a BitSet that is the result of the bitwise NOT of this
+     * BitSet.
+     *
+     * @return the result of the bitwise NOT of this BitSet.
+     */
+    BitSet<T> operator~() const
+    {
+        return BitSet<T>(~mBits);
+    }
+
+    /**
+     * @brief Compound assignment operator that performs the bitwise AND between
+     * this BitSet and another BitSet.
+     *
+     * @param[in] other: the other BitSet
+     * @return `*this`
+     */
+    BitSet<T>& operator&=(const BitSet<T>& other)
+    {
+        mBits &= other.mBits;
+        return *this;
+    }
+
+    /**
+     * @brief Compound assignment operator that performs the bitwise OR between
+     * this BitSet and another BitSet.
+     *
+     * @param[in] other: the other BitSet
+     * @return `*this`
+     */
+    BitSet<T>& operator|=(const BitSet<T>& other)
+    {
+        mBits |= other.mBits;
+        return *this;
+    }
+
+    /**
+     * @brief Compound assignment operator that performs the bitwise XOR between
+     * this BitSet and another BitSet.
+     *
+     * @param[in] other: the other BitSet
+     * @return `*this`
+     */
+    BitSet<T>& operator^=(const BitSet<T>& other)
+    {
+        mBits ^= other.mBits;
+        return *this;
+    }
+
+    /**
      * @brief Serializes the BitSet to the given output stream.
      * @param[in] os: The output stream.
      */
