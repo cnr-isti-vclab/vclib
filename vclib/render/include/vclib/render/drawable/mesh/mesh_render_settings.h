@@ -101,29 +101,9 @@ public:
         return mCapability.settings<PRIMITIVE>()[toUnderlying(val)];
     }
 
-    bool canPoint(MeshRenderInfo::Points p) const
+    bool canPoints(MeshRenderInfo::Points p) const
     {
         return can<MRI::Primitive::POINTS>(p);
-    }
-
-    bool canPointBeVisible() const
-    {
-        return canPoint(MRI::Points::VISIBLE);
-    }
-
-    bool canPointShadingBePerVertex() const
-    {
-        return canPoint(MRI::Points::SHADING_VERT);
-    }
-
-    bool canPointColorBePerVertex() const
-    {
-        return canPoint(MRI::Points::COLOR_VERTEX);
-    }
-
-    bool canPointColorBePerMesh() const
-    {
-        return canPoint(MRI::Points::COLOR_MESH);
     }
 
     bool canSurface(MeshRenderInfo::Surface s) const
@@ -131,99 +111,14 @@ public:
         return can<MRI::Primitive::SURFACE>(s);
     }
 
-    bool canSurfaceBeVisible() const
-    {
-        return canSurface(MRI::Surface::VISIBLE);
-    }
-
-    bool canSurfaceShadingBeFlat() const
-    {
-        return canSurface(MRI::Surface::SHADING_FLAT);
-    }
-
-    bool canSurfaceShadingBeSmooth() const
-    {
-        return canSurface(MRI::Surface::SHADING_SMOOTH);
-    }
-
-    bool canSurfaceColorBePerFace() const
-    {
-        return canSurface(MRI::Surface::COLOR_FACE);
-    }
-
-    bool canSurfaceColorBePerVertex() const
-    {
-        return canSurface(MRI::Surface::COLOR_VERTEX);
-    }
-
-    bool canSurfaceColorBePerMesh() const
-    {
-        return canSurface(MRI::Surface::COLOR_MESH);
-    }
-
-    bool canSurfaceColorBePerVertexTexcoords() const
-    {
-        return canSurface(MRI::Surface::COLOR_VERTEX_TEX);
-    }
-
-    bool canSurfaceColorBePerWedgeTexcoords() const
-    {
-        return canSurface(MRI::Surface::COLOR_WEDGE_TEX);
-    }
-
     bool canWireframe(MeshRenderInfo::Wireframe w) const
     {
         return can<MRI::Primitive::WIREFRAME>(w);
     }
 
-    bool canWireframeShadingBePerVertex() const
-    {
-        return canWireframe(MRI::Wireframe::SHADING_VERT);
-    }
-
-    bool canWireframeColorBePerVertex() const
-    {
-        return canWireframe(MRI::Wireframe::COLOR_VERTEX);
-    }
-
-    bool canWireframeColorBePerMesh() const
-    {
-        return canWireframe(MRI::Wireframe::COLOR_MESH);
-    }
-
     bool canEdges(MeshRenderInfo::Edges e) const
     {
         return can<MRI::Primitive::EDGES>(e);
-    }
-
-    bool canEdgesBeVisible() const
-    {
-        return canEdges(MRI::Edges::VISIBLE);
-    }
-
-    bool canEdgesShadingBeSmooth() const
-    {
-        return canEdges(MRI::Edges::SHADING_SMOOTH);
-    }
-
-    bool canEdgesShadingBeFlat() const
-    {
-        return canEdges(MRI::Edges::SHADING_FLAT);
-    }
-
-    bool canEdgesColorBePerVertex() const
-    {
-        return canEdges(MRI::Edges::COLOR_VERTEX);
-    }
-
-    bool canEdgesColorBePerEdge() const
-    {
-        return canEdges(MRI::Edges::COLOR_EDGE);
-    }
-
-    bool canEdgesColorBePerMesh() const
-    {
-        return canEdges(MRI::Edges::COLOR_MESH);
     }
 
     // rendering options getters
@@ -856,6 +751,14 @@ private:
     {
         setCapability<MRI::Primitive::EDGES>(e, b);
     }
+
+    void setDefaultPointSettingsFromCapability();
+
+    void setDefaultSurfaceSettingsFromCapability();
+
+    void setDefaultWireframeSettingsFromCapability();
+
+    void setDefaultEdgeSettingsFromCapability();
 };
 
 } // namespace vcl

@@ -79,7 +79,7 @@ SurfaceFrame::~SurfaceFrame()
 
 void SurfaceFrame::updateFrameFromSettings()
 {
-    if (mMRS.canSurfaceBeVisible()) {
+    if (mMRS.canSurface(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isSurfaceVisible());
@@ -94,10 +94,10 @@ void SurfaceFrame::updateFrameFromSettings()
 
 void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
 {
-    if (!mMRS.canSurfaceShadingBeSmooth()) {
+    if (!mMRS.canSurface(SHADING_SMOOTH)) {
         mUI->shadingSmoothRadioButton->setEnabled(false);
     }
-    if (!mMRS.canSurfaceShadingBeFlat()) {
+    if (!mMRS.canSurface(SHADING_FLAT)) {
         mUI->shadingFlatRadioButton->setEnabled(false);
     }
     mUI->shadingNoneRadioButton->setChecked(mMRS.isSurfaceShadingNone());
@@ -111,35 +111,35 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(SC_VERT);
-    if (mMRS.canSurfaceColorBePerVertex()) {
+    if (mMRS.canSurface(COLOR_VERTEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_FACE);
-    if (mMRS.canSurfaceColorBePerFace()) {
+    if (mMRS.canSurface(COLOR_FACE)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_MESH);
-    if (mMRS.canSurfaceColorBePerMesh()) {
+    if (mMRS.canSurface(COLOR_MESH)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_VERT_TEX);
-    if (mMRS.canSurfaceColorBePerVertexTexcoords()) {
+    if (mMRS.canSurface(COLOR_VERTEX_TEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_WEDG_TEX);
-    if (mMRS.canSurfaceColorBePerWedgeTexcoords()) {
+    if (mMRS.canSurface(COLOR_WEDGE_TEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {

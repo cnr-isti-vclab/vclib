@@ -91,13 +91,13 @@ PointsFrame::~PointsFrame()
 
 void PointsFrame::updateFrameFromSettings()
 {
-    if (mMRS.canPointBeVisible()) {
+    if (mMRS.canPoints(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isPointVisible());
 
         mUI->shadingVertexRadioButton->setEnabled(
-            mMRS.canPointShadingBePerVertex());
+            mMRS.canPoints(SHADING_VERT));
         mUI->shadingVertexRadioButton->setChecked(
             mMRS.isPointShadingPerVertex());
         mUI->shadingNoneRadioButton->setChecked(mMRS.isPointShadingNone());
@@ -123,7 +123,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
 
     // color per vertex
     QStandardItem* item = model->item(P_VERT);
-    if (mMRS.canPointColorBePerVertex()) {
+    if (mMRS.canPoints(COLOR_VERTEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -132,7 +132,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
 
     // color per mesh
     item = model->item(P_MESH);
-    if (mMRS.canPointColorBePerMesh()) {
+    if (mMRS.canPoints(COLOR_MESH)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {

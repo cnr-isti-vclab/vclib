@@ -79,12 +79,12 @@ WireframeFrame::~WireframeFrame()
 
 void WireframeFrame::updateFrameFromSettings()
 {
-    if (mMRS.canSurfaceBeVisible()) {
+    if (mMRS.canWireframe(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isWireframeVisible());
         mUI->shadingVertexRadioButton->setEnabled(
-            mMRS.canWireframeShadingBePerVertex());
+            mMRS.canWireframe(SHADING_VERT));
         mUI->shadingVertexRadioButton->setChecked(
             mMRS.isWireframeShadingPerVertex());
         mUI->shadingNoneRadioButton->setChecked(mMRS.isWireframeShadingNone());
@@ -104,7 +104,7 @@ void WireframeFrame::updateColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(W_VERTEX);
-    if (mMRS.canWireframeColorBePerVertex()) {
+    if (mMRS.canWireframe(COLOR_VERTEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -112,7 +112,7 @@ void WireframeFrame::updateColorComboBoxFromSettings()
     }
 
     item = model->item(W_MESH);
-    if (mMRS.canWireframeColorBePerMesh()) {
+    if (mMRS.canWireframe(COLOR_MESH)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {

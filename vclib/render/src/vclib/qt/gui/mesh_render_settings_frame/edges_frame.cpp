@@ -85,14 +85,14 @@ EdgesFrame::~EdgesFrame()
 
 void EdgesFrame::updateFrameFromSettings()
 {
-    if (mMRS.canEdgesBeVisible()) {
+    if (mMRS.canEdges(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isEdgesVisible());
         mUI->shadingSmoothRadioButton->setEnabled(
-            mMRS.canEdgesShadingBeSmooth());
+            mMRS.canEdges(SHADING_SMOOTH));
         mUI->shadingSmoothRadioButton->setChecked(mMRS.isEdgesShadingSmooth());
-        mUI->shadingFlatRadioButton->setEnabled(mMRS.canEdgesShadingBeFlat());
+        mUI->shadingFlatRadioButton->setEnabled(mMRS.canEdges(SHADING_FLAT));
         mUI->shadingFlatRadioButton->setChecked(mMRS.isEdgesShadingFlat());
         mUI->shadingNoneRadioButton->setChecked(mMRS.isEdgesShadingNone());
 
@@ -111,7 +111,7 @@ void EdgesFrame::updateColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(E_VERTEX);
-    if (mMRS.canEdgesColorBePerVertex()) {
+    if (mMRS.canEdges(COLOR_VERTEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -119,7 +119,7 @@ void EdgesFrame::updateColorComboBoxFromSettings()
     }
 
     item = model->item(E_EDGES);
-    if (mMRS.canEdgesColorBePerEdge()) {
+    if (mMRS.canEdges(COLOR_EDGE)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -127,7 +127,7 @@ void EdgesFrame::updateColorComboBoxFromSettings()
     }
 
     item = model->item(E_MESH);
-    if (mMRS.canEdgesColorBePerMesh()) {
+    if (mMRS.canEdges(COLOR_MESH)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
