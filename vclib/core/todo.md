@@ -10,7 +10,7 @@
 - Concepts:
   - [x] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types
-  - [ ] complete space data structures concepts
+  - [x] complete space data structures concepts
   - [x] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
   - [x] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
@@ -34,7 +34,6 @@
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Iterators:
   - [ ] make just one StaticGridIterator class that can be both const and non-const (avoid code duplication)
-  - [ ] move bipartite graph iterators from space to iterators (see space todo list)
 - IO:
   - [ ] Manage read and write colors from integral to non integral types
   - [ ] Ply read/write code for some components should be the same for every element (no code duplication)
@@ -44,7 +43,7 @@
     - [ ] core/fitting
     - [ ] core/stat
   - [x] Implement exporter to VCG
-  - [ ] Implement importer/exporter from buffer
+  - [x] Implement importer/exporter from buffer
   - [ ] Shuffle algorithms should be all made using views
   - [ ] Shuffle algorithms should take as input a random_device instead of a boolean 'deterministic', and they should log the seed at debug level
   - [ ] Smooth algorithms should be made using loggers
@@ -54,7 +53,6 @@
 - Space:
   - [ ] add assert(!isNull()) on Box member functions like volume()
   - [ ] improve documentation for Grid data structures
-  - [ ] move bipartite graph iterators from space to iterators (see iterators todo list)
 - Misc:
   - [ ] implement non-static member functions for FileInfo class
   - [ ] implement Range helper types (e.g. RangeType<R> that returns the type iterated in the range)

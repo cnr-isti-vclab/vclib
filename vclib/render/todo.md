@@ -16,7 +16,6 @@
   - [X] Fix 2 Qt windows with BGFX canvas.
   - [ ] Add possibility to update a subset of buffers for DrawableMesh
   - [X] Library shaders should be built as headers
-  - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
   - [ ] assets and shaders should be compiled in headers that are in paths like
     'vclib/assets/' and 'vclib/shaders/' (right now they are in 'assets/' and 'shaders/')
   - [X] the first window used by the context to create the bgfx backend context should be
