@@ -830,52 +830,31 @@ public:
     void setDefaultSettingsFromCapability();
 
 private:
+    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
+    void setCapability(Enum val, bool b = true)
+    {
+        assert(val < Enum::COUNT);
+        mCapability.settings<PRIMITIVE>()[toUnderlying(val)] = b;
+    }
+
     void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
     {
-        assert(p < MRI::Points::COUNT);
-        mCapability.points()[toUnderlying(p)] = b;
+        setCapability<MRI::Primitive::POINTS>(p, b);
     }
 
-    void setPointsDrawMode(MeshRenderInfo::Points p, bool b = true)
+    void setSurfaceCapability(MeshRenderInfo::Surface s, bool b = true)
     {
-        assert(p < MRI::Points::COUNT);
-        mDrawMode.points()[toUnderlying(p)] = b;
+        setCapability<MRI::Primitive::SURFACE>(s, b);
     }
 
-    void setSurfaceCapability(MeshRenderInfo::Surface p, bool b = true)
+    void setWireframeCapability(MeshRenderInfo::Wireframe w, bool b = true)
     {
-        assert(p < MRI::Surface::COUNT);
-        mCapability.surface()[toUnderlying(p)] = b;
+        setCapability<MRI::Primitive::WIREFRAME>(w, b);
     }
 
-    void setSurfaceDrawMode(MeshRenderInfo::Surface p, bool b = true)
+    void setEdgesCapability(MeshRenderInfo::Edges e, bool b = true)
     {
-        assert(p < MRI::Surface::COUNT);
-        mDrawMode.surface()[toUnderlying(p)] = b;
-    }
-
-    void setWireframeCapability(MeshRenderInfo::Wireframe p, bool b = true)
-    {
-        assert(p < MRI::Wireframe::COUNT);
-        mCapability.wireframe()[toUnderlying(p)] = b;
-    }
-
-    void setWireframeDrawMode(MRI::Wireframe p, bool b = true)
-    {
-        assert(p < MRI::Wireframe::COUNT);
-        mDrawMode.wireframe()[toUnderlying(p)] = b;
-    }
-
-    void setEdgesCapability(MeshRenderInfo::Edges p, bool b = true)
-    {
-        assert(p < MRI::Edges::COUNT);
-        mCapability.edges()[toUnderlying(p)] = b;
-    }
-
-    void setEdgesDrawMode(MeshRenderInfo::Edges p, bool b = true)
-    {
-        assert(p < MRI::Edges::COUNT);
-        mDrawMode.edges()[toUnderlying(p)] = b;
+        setCapability<MRI::Primitive::EDGES>(e, b);
     }
 };
 
