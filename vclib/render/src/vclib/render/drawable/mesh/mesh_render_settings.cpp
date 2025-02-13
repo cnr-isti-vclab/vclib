@@ -69,7 +69,7 @@ bool MeshRenderSettings::setVisibility(bool b)
     }
 }
 
-bool MeshRenderSettings::setPointWidth(float width)
+bool MeshRenderSettings::setPointsWidth(float width)
 {
     if (canPoints(MRI::Points::VISIBLE)) {
         mPointWidth = width;
@@ -80,7 +80,7 @@ bool MeshRenderSettings::setPointWidth(float width)
     }
 }
 
-bool MeshRenderSettings::setPointUserColor(float r, float g, float b, float a)
+bool MeshRenderSettings::setPointsUserColor(float r, float g, float b, float a)
 {
     if (canPoints(MRI::Points::VISIBLE)) {
         mPointUserColor[0] = r;
@@ -94,7 +94,7 @@ bool MeshRenderSettings::setPointUserColor(float r, float g, float b, float a)
     }
 }
 
-bool MeshRenderSettings::setPointUserColor(const Color& c)
+bool MeshRenderSettings::setPointsUserColor(const Color& c)
 {
     if (canPoints(MRI::Points::VISIBLE)) {
         mPointUserColor[0] = c.redF();
@@ -236,16 +236,16 @@ void MeshRenderSettings::setDefaultPointSettingsFromCapability()
 
     if (canPoints(VISIBLE)) {
         if (!canSurface(MRI::Surface::VISIBLE))
-            setPointVisibility(true);
-        setPointShadingNone();
+            setPoints(VISIBLE, true);
+        setPoints(SHADING_NONE);
         if (canPoints(SHADING_VERT)) {
-            setPointShadingPerVertex();
+            setPoints(SHADING_VERT);
         }
         if (canPoints(COLOR_VERTEX)) {
-            setPointColorPerVertex();
+            setPoints(COLOR_VERTEX);
         }
         else {
-            setPointColorUserDefined();
+            setPoints(COLOR_USER);
         }
     }
 }
@@ -255,35 +255,35 @@ void MeshRenderSettings::setDefaultSurfaceSettingsFromCapability()
     using enum MRI::Surface;
 
     if (canSurface(VISIBLE)) {
-        setSurfaceVisibility(true);
+        setSurface(VISIBLE, true);
         // shading
         if (canSurface(SHADING_SMOOTH)) {
-            setSurfaceShadingSmooth();
+            setSurface(SHADING_SMOOTH);
         }
         else if (canSurface(SHADING_FLAT)) {
-            setSurfaceShadingFlat();
+            setSurface(SHADING_FLAT);
         }
         else {
-            setSurfaceShadingNone();
+            setSurface(SHADING_NONE);
         }
         // color
         if (canSurface(COLOR_VERTEX)) {
-            setSurfaceColorPerVertex();
+            setSurface(COLOR_VERTEX);
         }
         else if (canSurface(COLOR_FACE)) {
-            setSurfaceColorPerFace();
+            setSurface(COLOR_FACE);
         }
         else if (canSurface(COLOR_WEDGE_TEX)) {
-            setSurfaceColorPerWedgeTexcoords();
+            setSurface(COLOR_WEDGE_TEX);
         }
         else if (canSurface(COLOR_VERTEX_TEX)) {
-            setSurfaceColorPerVertexTexcoords();
+            setSurface(COLOR_VERTEX_TEX);
         }
         else if (canSurface(COLOR_MESH)) {
-            setSurfaceColorPerMesh();
+            setSurface(COLOR_MESH);
         }
         else {
-            setSurfaceColorUserDefined();
+            setSurface(COLOR_USER);
         }
     }
 }
@@ -294,13 +294,13 @@ void MeshRenderSettings::setDefaultWireframeSettingsFromCapability()
 
     if (canWireframe(VISIBLE)) {
         if (canWireframe(SHADING_VERT)) {
-            setWireframeShadingPerVertex();
+            setWireframe(SHADING_VERT);
         }
         else {
-            setWireframeShadingNone();
+            setWireframe(SHADING_NONE);
         }
         // wireframe color (defaults to user defined)
-        setWireframeColorUserDefined();
+        setWireframe(COLOR_USER);
     }
 }
 
@@ -309,26 +309,26 @@ void MeshRenderSettings::setDefaultEdgeSettingsFromCapability()
     using enum MRI::Edges;
 
     if (canEdges(VISIBLE)) {
-        setEdgesVisibility(true);
+        setEdges(VISIBLE, true);
 
         if (canEdges(SHADING_SMOOTH)) {
-            setEdgesShadingSmooth();
+            setEdges(SHADING_SMOOTH);
         }
         else if (canEdges(SHADING_FLAT)) {
-            setEdgesShadingFlat();
+            setEdges(SHADING_FLAT);
         }
         else {
-            setEdgesShadingNone();
+            setEdges(SHADING_NONE);
         }
 
         if (canEdges(COLOR_VERTEX)) {
-            setEdgesColorPerVertex();
+            setEdges(COLOR_VERTEX);
         }
         else if (canEdges(COLOR_EDGE)) {
-            setEdgesColorPerEdge();
+            setEdges(COLOR_EDGE);
         }
         else {
-            setEdgesColorUserDefined();
+            setEdges(COLOR_USER);
         }
     }
 }

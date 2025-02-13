@@ -109,7 +109,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 return settings.isPoints(VISIBLE);
             },
             [&](bool vis) {
-                settings.setPoint(VISIBLE, vis);
+                settings.setPoints(VISIBLE, vis);
             });
 
         // shape
@@ -147,7 +147,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool v) {
                 if (v)
-                    settings.setPointShadingPerVertex();
+                    settings.setPoints(SHADING_VERT);
             });
         ImGui::SameLine();
         ImGui::EndDisabled();
@@ -158,7 +158,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool vis) {
                 if (vis)
-                    settings.setPointShadingNone();
+                    settings.setPoints(SHADING_NONE);
             });
 
         // color
@@ -189,18 +189,18 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 case 0:
                     ImGui::BeginDisabled(!settings.canPoints(COLOR_VERTEX));
                     if (ImGui::Selectable(pointColorNames[n], selected))
-                        settings.setPointColorPerVertex();
+                        settings.setPoints(COLOR_VERTEX);
                     ImGui::EndDisabled();
                     break;
                 case 1:
                     ImGui::BeginDisabled(!settings.canPoints(COLOR_MESH));
                     if (ImGui::Selectable(pointColorNames[n], selected))
-                        settings.setPointColorPerMesh();
+                        settings.setPoints(COLOR_MESH);
                     ImGui::EndDisabled();
                     break;
                 case 2:
                     if (ImGui::Selectable(pointColorNames[n], selected))
-                        settings.setPointColorUserDefined();
+                        settings.setPoints(COLOR_USER);
                     break;
                 default: assert(false); break;
                 }
@@ -218,7 +218,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 return settings.pointUserColor();
             },
             [&](vcl::Color c) {
-                settings.setPointUserColor(c);
+                settings.setPointsUserColor(c);
             },
             ImGuiColorEditFlags_NoInputs);
         ImGui::EndDisabled();
@@ -234,7 +234,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 return settings.pointWidth();
             },
             [&](float v) {
-                settings.setPointWidth(v);
+                settings.setPointsWidth(v);
             },
             1.0f,
             10.0f);
@@ -257,7 +257,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 return settings.isSurface(VISIBLE);
             },
             [&](bool vis) {
-                settings.setSurfaceVisibility(vis);
+                settings.setSurface(VISIBLE, vis);
             });
 
         // shading
@@ -274,7 +274,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool vis) {
                 if (vis)
-                    settings.setSurfaceShadingSmooth();
+                    settings.setSurface(SHADING_SMOOTH);
             });
         ImGui::SameLine();
         ImGui::RadioButton(
@@ -284,7 +284,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool vis) {
                 if (vis)
-                    settings.setSurfaceShadingFlat();
+                    settings.setSurface(SHADING_FLAT);
             });
         ImGui::SameLine();
         ImGui::RadioButton(
@@ -294,7 +294,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool vis) {
                 if (vis)
-                    settings.setSurfaceShadingNone();
+                    settings.setSurface(SHADING_NONE);
             });
 
         // color
@@ -328,38 +328,38 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                     ImGui::BeginDisabled(
                         !settings.canSurface(COLOR_VERTEX));
                     if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurfaceColorPerVertex();
+                        settings.setSurface(COLOR_VERTEX);
                     ImGui::EndDisabled();
                     break;
                 case 1:
                     ImGui::BeginDisabled(!settings.canSurface(COLOR_FACE));
                     if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurfaceColorPerFace();
+                        settings.setSurface(COLOR_FACE);
                     ImGui::EndDisabled();
                     break;
                 case 2:
                     ImGui::BeginDisabled(!settings.canSurface(COLOR_MESH));
                     if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurfaceColorPerMesh();
+                        settings.setSurface(COLOR_MESH);
                     ImGui::EndDisabled();
                     break;
                 case 3:
                     ImGui::BeginDisabled(
                         !settings.canSurface(COLOR_VERTEX_TEX));
                     if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurfaceColorPerVertexTexcoords();
+                        settings.setSurface(COLOR_VERTEX_TEX);
                     ImGui::EndDisabled();
                     break;
                 case 4:
                     ImGui::BeginDisabled(
                         !settings.canSurface(COLOR_WEDGE_TEX));
                     if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurfaceColorPerWedgeTexcoords();
+                        settings.setSurface(COLOR_WEDGE_TEX);
                     ImGui::EndDisabled();
                     break;
                 case 5:
                     if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurfaceColorUserDefined();
+                        settings.setSurface(COLOR_USER);
                     break;
                 default: assert(false); break;
                 }
@@ -400,7 +400,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 return settings.isWireframe(VISIBLE);
             },
             [&](bool v) {
-                settings.setWireframeVisibility(v);
+                settings.setWireframe(VISIBLE, v);
             });
 
         // shading
@@ -416,7 +416,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool vis) {
                 if (vis)
-                    settings.setWireframeShadingPerVertex();
+                    settings.setWireframe(SHADING_VERT);
             });
         ImGui::SameLine();
         ImGui::RadioButton(
@@ -426,7 +426,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool vis) {
                 if (vis)
-                    settings.setWireframeShadingNone();
+                    settings.setWireframe(SHADING_NONE);
             });
 
         // color
@@ -456,19 +456,19 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                     ImGui::BeginDisabled(
                         !settings.canWireframe(COLOR_VERTEX));
                     if (ImGui::Selectable(wireColorNames[n], selected))
-                        settings.setWireframeColorPerVertex();
+                        settings.setWireframe(COLOR_VERTEX);
                     ImGui::EndDisabled();
                     break;
                 case 1:
                     ImGui::BeginDisabled(
                         !settings.canWireframe(COLOR_MESH));
                     if (ImGui::Selectable(wireColorNames[n], selected))
-                        settings.setWireframeColorPerMesh();
+                        settings.setWireframe(COLOR_MESH);
                     ImGui::EndDisabled();
                     break;
                 case 2:
                     if (ImGui::Selectable(wireColorNames[n], selected))
-                        settings.setWireframeColorUserDefined();
+                        settings.setWireframe(COLOR_USER);
                     break;
                 default: assert(false); break;
                 }
@@ -509,7 +509,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 return settings.isEdges(VISIBLE);
             },
             [&](bool v) {
-                settings.setEdgesVisibility(v);
+                settings.setEdges(VISIBLE, v);
             });
 
         // shading
@@ -525,7 +525,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool v) {
                 if (v)
-                    settings.setEdgesShadingSmooth();
+                    settings.setEdges(SHADING_SMOOTH);
             });
         ImGui::SameLine();
         ImGui::RadioButton(
@@ -535,7 +535,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool v) {
                 if (v)
-                    settings.setEdgesShadingFlat();
+                    settings.setEdges(SHADING_FLAT);
             });
         ImGui::RadioButton(
             "None",
@@ -544,7 +544,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             },
             [&](bool vis) {
                 if (vis)
-                    settings.setEdgesShadingNone();
+                    settings.setEdges(SHADING_NONE);
             });
 
         // color
@@ -573,24 +573,24 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                 case 0:
                     ImGui::BeginDisabled(!settings.canEdges(COLOR_VERTEX));
                     if (ImGui::Selectable(edgeColorNames[n], selected))
-                        settings.setEdgesColorPerVertex();
+                        settings.setEdges(COLOR_VERTEX);
                     ImGui::EndDisabled();
                     break;
                 case 1:
                     ImGui::BeginDisabled(!settings.canEdges(COLOR_EDGE));
                     if (ImGui::Selectable(edgeColorNames[n], selected))
-                        settings.setEdgesColorPerEdge();
+                        settings.setEdges(COLOR_EDGE);
                     ImGui::EndDisabled();
                     break;
                 case 2:
                     ImGui::BeginDisabled(!settings.canEdges(COLOR_MESH));
                     if (ImGui::Selectable(edgeColorNames[n], selected))
-                        settings.setEdgesColorPerMesh();
+                        settings.setEdges(COLOR_MESH);
                     ImGui::EndDisabled();
                     break;
                 case 3:
                     if (ImGui::Selectable(edgeColorNames[n], selected))
-                        settings.setEdgesColorUserDefined();
+                        settings.setEdges(COLOR_USER);
                     break;
                 default: assert(false); break;
                 }

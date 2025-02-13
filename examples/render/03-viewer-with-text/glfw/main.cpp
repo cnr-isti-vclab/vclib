@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         getDrawableMesh<vcl::PolyMesh>("greek_helmet.obj");
 
     auto mrs = m.renderSettings();
-    mrs.setSurfaceShadingFlat();
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
     m.setRenderSettings(mrs);
 
     // add the drawable mesh to the scene

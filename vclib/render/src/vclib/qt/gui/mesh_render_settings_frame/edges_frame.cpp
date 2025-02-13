@@ -151,14 +151,14 @@ void EdgesFrame::updateColorComboBoxFromSettings()
 
 void EdgesFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setEdgesVisibility(arg1 == Qt::Checked);
+    mMRS.setEdges(VISIBLE, arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
 void EdgesFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
-        mMRS.setEdgesShadingSmooth();
+        mMRS.setEdges(SHADING_SMOOTH);
         emit settingsUpdated();
     }
 }
@@ -166,7 +166,7 @@ void EdgesFrame::onShadingSmoothToggled(bool checked)
 void EdgesFrame::onShadingFlatToggled(bool checked)
 {
     if (checked) {
-        mMRS.setEdgesShadingFlat();
+        mMRS.setEdges(SHADING_FLAT);
         emit settingsUpdated();
     }
 }
@@ -174,7 +174,7 @@ void EdgesFrame::onShadingFlatToggled(bool checked)
 void EdgesFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setEdgesShadingNone();
+        mMRS.setEdges(SHADING_NONE);
         emit settingsUpdated();
     }
 }
@@ -182,10 +182,10 @@ void EdgesFrame::onShadingNoneToggled(bool checked)
 void EdgesFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case E_VERTEX: mMRS.setEdgesColorPerVertex(); break;
-    case E_EDGES: mMRS.setEdgesColorPerEdge(); break;
-    case E_MESH: mMRS.setEdgesColorPerMesh(); break;
-    case E_USER: mMRS.setEdgesColorUserDefined(); break;
+    case E_VERTEX: mMRS.setEdges(COLOR_VERTEX); break;
+    case E_EDGES: mMRS.setEdges(COLOR_EDGE); break;
+    case E_MESH: mMRS.setEdges(COLOR_MESH); break;
+    case E_USER: mMRS.setEdges(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == E_USER);
     emit settingsUpdated();

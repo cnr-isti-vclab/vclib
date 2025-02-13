@@ -133,14 +133,14 @@ void WireframeFrame::updateColorComboBoxFromSettings()
 
 void WireframeFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setWireframeVisibility(arg1 == Qt::Checked);
+    mMRS.setWireframe(VISIBLE, arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
 void WireframeFrame::onShadingVertexToggled(bool checked)
 {
     if (checked) {
-        mMRS.setWireframeShadingPerVertex();
+        mMRS.setWireframe(SHADING_VERT);
         emit settingsUpdated();
     }
 }
@@ -148,7 +148,7 @@ void WireframeFrame::onShadingVertexToggled(bool checked)
 void WireframeFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setWireframeShadingNone();
+        mMRS.setWireframe(SHADING_NONE);
         emit settingsUpdated();
     }
 }
@@ -156,9 +156,9 @@ void WireframeFrame::onShadingNoneToggled(bool checked)
 void WireframeFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case W_VERTEX: mMRS.setWireframeColorPerVertex(); break;
-    case W_MESH: mMRS.setWireframeColorPerMesh(); break;
-    case W_USER: mMRS.setWireframeColorUserDefined(); break;
+    case W_VERTEX: mMRS.setWireframe(COLOR_VERTEX); break;
+    case W_MESH: mMRS.setWireframe(COLOR_MESH); break;
+    case W_USER: mMRS.setWireframe(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == W_USER);
     emit settingsUpdated();

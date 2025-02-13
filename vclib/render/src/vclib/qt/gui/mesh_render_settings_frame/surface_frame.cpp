@@ -166,14 +166,14 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
 
 void SurfaceFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setSurfaceVisibility(arg1 == Qt::Checked);
+    mMRS.setSurface(VISIBLE, arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
 void SurfaceFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
-        mMRS.setSurfaceShadingSmooth();
+        mMRS.setSurface(SHADING_SMOOTH);
         emit settingsUpdated();
     }
 }
@@ -181,7 +181,7 @@ void SurfaceFrame::onShadingSmoothToggled(bool checked)
 void SurfaceFrame::onShadingFlatToggled(bool checked)
 {
     if (checked) {
-        mMRS.setSurfaceShadingFlat();
+        mMRS.setSurface(SHADING_FLAT);
         emit settingsUpdated();
     }
 }
@@ -189,7 +189,7 @@ void SurfaceFrame::onShadingFlatToggled(bool checked)
 void SurfaceFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setSurfaceShadingNone();
+        mMRS.setSurface(SHADING_NONE);
         emit settingsUpdated();
     }
 }
@@ -197,12 +197,12 @@ void SurfaceFrame::onShadingNoneToggled(bool checked)
 void SurfaceFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case SC_FACE: mMRS.setSurfaceColorPerFace(); break;
-    case SC_VERT: mMRS.setSurfaceColorPerVertex(); break;
-    case SC_MESH: mMRS.setSurfaceColorPerMesh(); break;
-    case SC_VERT_TEX: mMRS.setSurfaceColorPerVertexTexcoords(); break;
-    case SC_WEDG_TEX: mMRS.setSurfaceColorPerWedgeTexcoords(); break;
-    case SC_USER: mMRS.setSurfaceColorUserDefined(); break;
+    case SC_FACE: mMRS.setSurface(COLOR_FACE); break;
+    case SC_VERT: mMRS.setSurface(COLOR_VERTEX); break;
+    case SC_MESH: mMRS.setSurface(COLOR_MESH); break;
+    case SC_VERT_TEX: mMRS.setSurface(COLOR_VERTEX_TEX); break;
+    case SC_WEDG_TEX: mMRS.setSurface(COLOR_WEDGE_TEX); break;
+    case SC_USER: mMRS.setSurface(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == SC_USER);
     emit settingsUpdated();

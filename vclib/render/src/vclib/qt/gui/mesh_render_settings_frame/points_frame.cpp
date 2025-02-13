@@ -154,7 +154,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
 
 void PointsFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setPointVisibility(arg1 == Qt::Checked);
+    mMRS.setPoints(VISIBLE, arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
@@ -171,7 +171,7 @@ void PointsFrame::onShapePixelToggled(bool checked)
 void PointsFrame::onShadingVertexToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointShadingPerVertex();
+        mMRS.setPoints(SHADING_VERT);
         emit settingsUpdated();
     }
 }
@@ -179,7 +179,7 @@ void PointsFrame::onShadingVertexToggled(bool checked)
 void PointsFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointShadingNone();
+        mMRS.setPoints(SHADING_NONE);
         emit settingsUpdated();
     }
 }
@@ -187,9 +187,9 @@ void PointsFrame::onShadingNoneToggled(bool checked)
 void PointsFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case P_VERT: mMRS.setPointColorPerVertex(); break;
-    case P_MESH: mMRS.setPointColorPerMesh(); break;
-    case P_USER: mMRS.setPointColorUserDefined(); break;
+    case P_VERT: mMRS.setPoints(COLOR_VERTEX); break;
+    case P_MESH: mMRS.setPoints(COLOR_MESH); break;
+    case P_USER: mMRS.setPoints(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == P_USER);
     emit settingsUpdated();
@@ -203,7 +203,7 @@ void PointsFrame::onColorDialogButtonClicked()
     if (color.isValid()) {
         setButtonBackGround(mUI->colorDialogPushButton, color);
 
-        mMRS.setPointUserColor(
+        mMRS.setPointsUserColor(
             color.redF(), color.greenF(), color.blueF(), color.alphaF());
         emit settingsUpdated();
     }
@@ -211,7 +211,7 @@ void PointsFrame::onColorDialogButtonClicked()
 
 void PointsFrame::onSizeChanged(int value)
 {
-    mMRS.setPointWidth(value);
+    mMRS.setPointsWidth(value);
     emit settingsUpdated();
 }
 

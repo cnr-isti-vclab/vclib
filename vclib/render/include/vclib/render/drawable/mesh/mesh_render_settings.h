@@ -213,184 +213,80 @@ public:
         }
     }
 
-    bool setPoint(MeshRenderInfo::Points p, bool b = true)
+    /**
+     * @brief Sets the shading option of the points.
+     *
+     * If the capability does not allow to set the given option, the function
+     * does nothing and it returns `false`. Otherwise, it returns `true`.
+     *
+     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * parameter will be used to set the option to the points.
+     *
+     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * considered. The given option is set to `true`, and all the other options
+     * of the range are automatically set to `false`.
+     *
+     * @param[in] p: the points option to set
+     * @param[in] b: boolean value to set to the option (if it is not a range).
+     * @return `true` if the option has been set, false otherwise.
+     */
+    bool setPoints(MeshRenderInfo::Points p, bool b = true)
     {
         return set<MRI::Primitive::POINTS>(p, b);
     }
 
-    bool setPointVisibility(bool b)
-    {
-        return setPoint(MRI::Points::VISIBLE, b);
-    }
+    bool setPointsWidth(float width);
 
-    bool setPointShadingNone()
-    {
-        return setPoint(MRI::Points::SHADING_NONE);
-    }
+    bool setPointsUserColor(float r, float g, float b, float a = 1);
 
-    bool setPointShadingPerVertex()
-    {
-        return setPoint(MRI::Points::SHADING_VERT);
-    }
+    bool setPointsUserColor(const vcl::Color& c);
 
-    bool setPointColorPerVertex()
-    {
-        return setPoint(MRI::Points::COLOR_VERTEX);
-    }
-
-    bool setPointColorPerMesh()
-    {
-        return setPoint(MRI::Points::COLOR_MESH);
-    }
-
-    bool setPointColorUserDefined()
-    {
-        return setPoint(MRI::Points::COLOR_USER);
-    }
-
-    bool setPointWidth(float width);
-
-    bool setPointUserColor(float r, float g, float b, float a = 1);
-
-    bool setPointUserColor(const vcl::Color& c);
-
+    /**
+     * @brief Sets the shading option of the surface.
+     *
+     * If the capability does not allow to set the given option, the function
+     * does nothing and it returns `false`. Otherwise, it returns `true`.
+     *
+     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * parameter will be used to set the option to the surface.
+     *
+     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * considered. The given option is set to `true`, and all the other options
+     * of the range are automatically set to `false`.
+     *
+     * @param[in] s: the surface option to set
+     * @param[in] b: boolean value to set to the option (if it is not a range).
+     * @return `true` if the option has been set, false otherwise.
+     */
     bool setSurface(MeshRenderInfo::Surface s, bool b = true)
     {
         return set<MRI::Primitive::SURFACE>(s, b);
-    }
-
-    bool setSurfaceVisibility(bool b)
-    {
-        return setSurface(MRI::Surface::VISIBLE, b);
-    }
-
-    /**
-     * @brief Unsets the shading of the surface (no light).
-     * Unsets automatically all the other shading options.
-     */
-    bool setSurfaceShadingNone()
-    {
-        return setSurface(MRI::Surface::SHADING_NONE);
-    }
-
-    /**
-     * @brief Sets (if capability allows it) the shading of the surface flat
-     * (using triangle normals). Unsets automatically all the other shading
-     * options.
-     */
-    bool setSurfaceShadingFlat()
-    {
-        return setSurface(MRI::Surface::SHADING_FLAT);
-    }
-
-    /**
-     * @brief Sets (if capability allows it) the shading of the surface smooth
-     * (using vertex normals). Unsets automatically all the other shading
-     * options.
-     */
-    bool setSurfaceShadingSmooth()
-    {
-        return setSurface(MRI::Surface::SHADING_SMOOTH);
-    }
-
-    /**
-     * @brief Set (if capability allows it) the surface coloring per vertex
-     * (using the vertex colors). Unsets automatically all the other surface
-     * colorizations.
-     */
-    bool setSurfaceColorPerVertex()
-    {
-        return setSurface(MRI::Surface::COLOR_VERTEX);
-    }
-
-    /**
-     * @brief Set (if capability allows it) the surface coloring per face (using
-     * the face colors). Unsets automatically all the other surface
-     * colorizations.
-     */
-    bool setSurfaceColorPerFace()
-    {
-        return setSurface(MRI::Surface::COLOR_FACE);
-    }
-
-    /**
-     * @brief Set (if capability allows it) the surface coloring per mesh (using
-     * the mesh color). Unsets automatically all the other surface
-     * colorizations.
-     */
-    bool setSurfaceColorPerMesh()
-    {
-        return setSurface(MRI::Surface::COLOR_MESH);
-    }
-
-    /**
-     * @brief Set the surface coloring by the user defined color.
-     * To set the user defined color, you can use the
-     * @ref setSurfaceColorUserDefined() function. Unsets automatically all the
-     * other surface colorizations.
-     */
-    bool setSurfaceColorUserDefined()
-    {
-        return setSurface(MRI::Surface::COLOR_USER);
-    }
-
-    /**
-     * @brief Set (if capability allows it) the surface color using the per
-     * vertex texcoords. Unsets automatically all the other surface
-     * colorizations.
-     */
-    bool setSurfaceColorPerVertexTexcoords()
-    {
-        return setSurface(MRI::Surface::COLOR_VERTEX_TEX);
-    }
-
-    /**
-     * @brief Set (if capability allows it) the surface color using the per
-     * wedge texcoords. Unsets automatically all the other surface
-     * colorizations.
-     */
-    bool setSurfaceColorPerWedgeTexcoords()
-    {
-        return setSurface(MRI::Surface::COLOR_WEDGE_TEX);
     }
 
     bool setSurfaceUserColor(float r, float g, float b, float a = 1);
 
     bool setSurfaceUserColor(const vcl::Color& c);
 
+    /**
+     * @brief Sets the shading option of the wireframe.
+     *
+     * If the capability does not allow to set the given option, the function
+     * does nothing and it returns `false`. Otherwise, it returns `true`.
+     *
+     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * parameter will be used to set the option to the wireframe.
+     *
+     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * considered. The given option is set to `true`, and all the other options
+     * of the range are automatically set to `false`.
+     *
+     * @param[in] w: the wireframe option to set
+     * @param[in] b: boolean value to set to the option (if it is not a range).
+     * @return `true` if the option has been set, false otherwise.
+     */
     bool setWireframe(MeshRenderInfo::Wireframe w, bool b = true)
     {
         return set<MRI::Primitive::WIREFRAME>(w, b);
-    }
-
-    bool setWireframeVisibility(bool b)
-    {
-        return setWireframe(MRI::Wireframe::VISIBLE, b);
-    }
-
-    bool setWireframeShadingNone()
-    {
-        return setWireframe(MRI::Wireframe::SHADING_NONE);
-    }
-
-    bool setWireframeShadingPerVertex()
-    {
-        return setWireframe(MRI::Wireframe::SHADING_VERT);
-    }
-
-    bool setWireframeColorPerVertex()
-    {
-        return setWireframe(MRI::Wireframe::COLOR_VERTEX);
-    }
-
-    bool setWireframeColorPerMesh()
-    {
-        return setWireframe(MRI::Wireframe::COLOR_MESH);
-    }
-
-    bool setWireframeColorUserDefined()
-    {
-        return setWireframe(MRI::Wireframe::COLOR_USER);
     }
 
     bool setWireframeUserColor(float r, float g, float b, float a = 1);
@@ -399,49 +295,26 @@ public:
 
     bool setWireframeWidth(int width);
 
+    /**
+     * @brief Sets the shading option of the edges.
+     *
+     * If the capability does not allow to set the given option, the function
+     * does nothing and it returns `false`. Otherwise, it returns `true`.
+     *
+     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * parameter will be used to set the option to the edges.
+     *
+     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * considered. The given option is set to `true`, and all the other options
+     * of the range are automatically set to `false`.
+     *
+     * @param[in] e: the edges option to set
+     * @param[in] b: boolean value to set to the option (if it is not a range).
+     * @return `true` if the option has been set, false otherwise.
+     */
     bool setEdges(MeshRenderInfo::Edges e, bool b = true)
     {
         return set<MRI::Primitive::EDGES>(e, b);
-    }
-
-    bool setEdgesVisibility(bool b)
-    {
-        return setEdges(MRI::Edges::VISIBLE, b);
-    }
-
-    bool setEdgesShadingNone()
-    {
-        return setEdges(MRI::Edges::SHADING_NONE);
-    }
-
-    bool setEdgesShadingSmooth()
-    {
-        return setEdges(MRI::Edges::SHADING_SMOOTH);
-    }
-
-    bool setEdgesShadingFlat()
-    {
-        return setEdges(MRI::Edges::SHADING_FLAT);
-    }
-
-    bool setEdgesColorPerVertex()
-    {
-        return setEdges(MRI::Edges::COLOR_VERTEX);
-    }
-
-    bool setEdgesColorPerEdge()
-    {
-        return setEdges(MRI::Edges::COLOR_EDGE);
-    }
-
-    bool setEdgesColorPerMesh()
-    {
-        return setEdges(MRI::Edges::COLOR_MESH);
-    }
-
-    bool setEdgesColorUserDefined()
-    {
-        return setEdges(MRI::Edges::COLOR_USER);
     }
 
     bool setEdgesUserColor(float r, float g, float b, float a = 1);
