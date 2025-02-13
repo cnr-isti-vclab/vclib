@@ -60,6 +60,15 @@ auto constexpr makeExclusiveReangesArray(auto... args)
 class MeshRenderInfo
 {
 public:
+    enum class Primitive {
+        POINTS = 0,
+        SURFACE,
+        WIREFRAME,
+        EDGES,
+
+        COUNT
+    };
+
     enum class Points {
         VISIBLE      = VCL_MRS_DRAW_POINTS,
         SHAPE_PIXEL  = VCL_MRS_POINTS_PIXEL,
@@ -166,24 +175,31 @@ public:
         return *this;
     }
 
+    template<Primitive PRIMITIVE>
+    constexpr static auto exclusiveRange(auto value)
+    {
+        const auto& ranges = exclusiveRanges<PRIMITIVE>();
+        return getExclusiveRange(value, ranges);
+    }
+
     constexpr static auto pointsExclusiveRange(auto value)
     {
-        return getExclusiveRange(value, POINTS_EXCLUSIVE_RANGES);
+        return exclusiveRange<Primitive::POINTS>(value);
     }
 
     constexpr static auto surfaceExclusiveRange(auto value)
     {
-        return getExclusiveRange(value, SURFACE_EXCLUSIVE_RANGES);
+        return exclusiveRange<Primitive::SURFACE>(value);
     }
 
     constexpr static auto wireframeExclusiveRange(auto value)
     {
-        return getExclusiveRange(value, WIREFRAME_EXCLUSIVE_RANGES);
+        return exclusiveRange<Primitive::WIREFRAME>(value);
     }
 
     constexpr static auto edgesExclusiveRange(auto value)
     {
-        return getExclusiveRange(value, EDGES_EXCLUSIVE_RANGES);
+        return exclusiveRange<Primitive::EDGES>(value);
     }
 
 private:
@@ -216,6 +232,26 @@ private:
             Edges::SHADING_SMOOTH,
             Edges::COLOR_VERTEX,
             Edges::COLOR_USER);
+
+    template<Primitive PRIMITIVE>
+    inline static constexpr auto& exclusiveRanges()
+    {
+        if constexpr (PRIMITIVE == Primitive::POINTS) {
+            return POINTS_EXCLUSIVE_RANGES;
+        }
+        else if constexpr (PRIMITIVE == Primitive::SURFACE) {
+            return SURFACE_EXCLUSIVE_RANGES;
+        }
+        else if constexpr (PRIMITIVE == Primitive::WIREFRAME) {
+            return WIREFRAME_EXCLUSIVE_RANGES;
+        }
+        else if constexpr (PRIMITIVE == Primitive::EDGES) {
+            return EDGES_EXCLUSIVE_RANGES;
+        }
+        else {
+            static_assert(PRIMITIVE, "Unknown Primitive");
+        }
+    }
 
     constexpr static auto getExclusiveRange(auto value, const auto& array)
     {
