@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 07-test-lines-qt)
+set(EXAMPLE_NAME 09-test-polylines-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings

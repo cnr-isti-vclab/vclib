@@ -48,8 +48,8 @@ add_subdirectory(06-viewer-imgui)
 add_subdirectory(07-mesh-viewer-imgui)
 
 
-add_subdirectory(07-test-lines)
-add_subdirectory(08-test-polylines)
+add_subdirectory(08-test-lines)
+add_subdirectory(09-test-polylines)
 
 if (TARGET vclib-processing)
     add_subdirectory(800-processing-main-window)
