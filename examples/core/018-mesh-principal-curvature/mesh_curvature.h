@@ -23,12 +23,12 @@
 #ifndef MESH_CURVATURE_H
 #define MESH_CURVATURE_H
 
-#include <iostream>
-
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 #include <vclib/misc/timer.h>
+
+#include <iostream>
 
 template<vcl::MeshConcept MeshType>
 void updateCurvature(MeshType& m)

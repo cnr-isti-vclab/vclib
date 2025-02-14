@@ -22,6 +22,7 @@
 
 #include "../../demo_imgui_drawer.h"
 #include "../hello_triangle_drawer.h"
+
 #include <vclib/imgui/imgui_stats_drawer.h>
 
 #include <vclib/qt/widget_manager.h>

@@ -23,9 +23,9 @@
 #ifndef RANGES_H
 #define RANGES_H
 
-#include <vector>
-
 #include <vclib/concepts/ranges/range.h>
+
+#include <vector>
 
 void rangesStaticAsserts()
 {

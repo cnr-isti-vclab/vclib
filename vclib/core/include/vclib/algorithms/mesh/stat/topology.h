@@ -87,9 +87,9 @@ struct WedgeTexCoordsInfo
     }
 };
 
-static inline std::list<uint>                             dummyUintList;
-static inline std::list<std::list<std::pair<uint, uint>>> dummyListOfLists;
-static inline std::vector<std::pair<uint, uint>>          dummyVectorOfPairs;
+inline std::list<uint>                             dummyUintList;
+inline std::list<std::list<std::pair<uint, uint>>> dummyListOfLists;
+inline std::vector<std::pair<uint, uint>>          dummyVectorOfPairs;
 
 } // namespace detail
 

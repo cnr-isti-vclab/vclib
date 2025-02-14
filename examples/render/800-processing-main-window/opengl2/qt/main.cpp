@@ -20,9 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <QApplication>
-
 #include <vclib/qt/mesh_processing_main_window.h>
+
+#include <QApplication>
 
 int main(int argc, char** argv)
 {

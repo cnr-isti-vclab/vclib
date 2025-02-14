@@ -20,9 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <default_viewer.h>
-
 #include "crease_edges_mesh.h"
+
+#include <default_viewer.h>
 
 int main(int argc, char** argv)
 {

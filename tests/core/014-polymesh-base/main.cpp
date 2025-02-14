@@ -20,9 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/meshes.h>
+
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <vclib/meshes.h>
 
 TEMPLATE_TEST_CASE(
     "PolyMesh Usage - An empty PolyMesh",

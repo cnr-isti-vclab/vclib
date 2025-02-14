@@ -43,7 +43,7 @@ struct VclFont
         COUNT
     };
 
-    static inline const std::array<std::string, VclFont::COUNT> fontNames = {
+    inline static const std::array<std::string, VclFont::COUNT> FONT_NAMES = {
         "DroidSans",
     };
 };
