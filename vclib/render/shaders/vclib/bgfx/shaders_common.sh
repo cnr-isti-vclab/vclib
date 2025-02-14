@@ -26,6 +26,8 @@
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#define posToBitFlag(pos) (1u << pos)
+
 /**
  * @brief Convert an uint color in ABGR format to a vec4 float color.
  * @param[in] color: The input color.

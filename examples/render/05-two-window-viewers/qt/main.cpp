@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 
     auto mrs = drawable.renderSettings();
     // mrs.setSurfaceColorPerMesh();
-    mrs.setSurfaceShadingFlat();
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
     drawable.setRenderSettings(mrs);
 
     // add the drawable mesh to the scene
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 
     viewer1.show();
 
-    mrs.setSurfaceShadingSmooth();
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_SMOOTH);
     drawable.setRenderSettings(mrs);
 
     // add the drawable mesh to the scene

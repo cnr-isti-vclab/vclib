@@ -148,11 +148,13 @@ public:
 
     void draw(uint viewId) const override
     {
+        using MRI = MeshRenderInfo;
+
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
 
-        if (mMRS.isPointVisible()) {
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             if (bgfx::isValid(mProgramPoints)) {
                 mMRB.bindVertexBuffers(mMRS);
                 bindUniforms();
@@ -163,7 +165,7 @@ public:
             }
         }
 
-        if (mMRS.isSurfaceVisible()) {
+        if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             if (bgfx::isValid(mProgramSurface)) {
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
@@ -176,7 +178,7 @@ public:
             }
         }
 
-        if (mMRS.isWireframeVisible()) {
+        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             if (bgfx::isValid(mProgramWireframe)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::WIREFRAME);
@@ -188,7 +190,7 @@ public:
             }
         }
 
-        if (mMRS.isEdgesVisible()) {
+        if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             if (bgfx::isValid(mProgramEdges)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(MeshBufferId::EDGES);

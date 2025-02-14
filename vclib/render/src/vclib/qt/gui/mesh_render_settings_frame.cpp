@@ -81,6 +81,8 @@ void MeshRenderSettingsFrame::setMeshRenderSettings(
 
 void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
 {
+    using MRI = MeshRenderInfo;
+
     for (auto* frame : frames) {
         frame->updateFrameFromSettings();
     }
@@ -92,19 +94,23 @@ void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
         mUI->tabWidget->setEnabled(false);
     }
 
-    mUI->tabWidget->setTabVisible(POINTS_FRAME, mMRS.canPointBeVisible());
-    mUI->tabWidget->setTabVisible(SURFACE_FRAME, mMRS.canSurfaceBeVisible());
-    mUI->tabWidget->setTabVisible(WIREFRAME_FRAME, mMRS.canSurfaceBeVisible());
-    mUI->tabWidget->setTabVisible(EDGES_FRAME, mMRS.canEdgesBeVisible());
+    mUI->tabWidget->setTabVisible(
+        POINTS_FRAME, mMRS.canPoints(MRI::Points::VISIBLE));
+    mUI->tabWidget->setTabVisible(
+        SURFACE_FRAME, mMRS.canSurface(MRI::Surface::VISIBLE));
+    mUI->tabWidget->setTabVisible(
+        WIREFRAME_FRAME, mMRS.canWireframe(MRI::Wireframe::VISIBLE));
+    mUI->tabWidget->setTabVisible(
+        EDGES_FRAME, mMRS.canEdges(MRI::Edges::VISIBLE));
 
     if (changeCurrentTab) {
-        if (mMRS.canSurfaceBeVisible()) { // high priority: surface
+        if (mMRS.canSurface(MRI::Surface::VISIBLE)) { // high priority: surface
             mUI->tabWidget->setCurrentIndex(SURFACE_FRAME);
         }
-        else if (mMRS.canEdgesBeVisible()) { // second priority: edges
+        else if (mMRS.canEdges(MRI::Edges::VISIBLE)) { // second priority: edges
             mUI->tabWidget->setCurrentIndex(EDGES_FRAME);
         }
-        else if (mMRS.canPointBeVisible()) { // third priority: points
+        else if (mMRS.canPoints(MRI::Points::VISIBLE)) { // lowest: points
             mUI->tabWidget->setCurrentIndex(POINTS_FRAME);
         }
     }
