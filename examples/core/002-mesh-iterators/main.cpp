@@ -20,13 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <iostream>
-
+#include <vclib/algorithms/mesh/update.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-
-#include <vclib/algorithms/mesh/update.h>
 #include <vclib/views/mesh.h>
+
+#include <iostream>
 
 int main()
 {

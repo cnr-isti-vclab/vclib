@@ -22,10 +22,11 @@
 
 #include "vclib/algorithms/core/polygon/geometry.h"
 #include "vclib/misc/logger/null_logger.h"
-#include <iostream>
 
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
+
+#include <iostream>
 
 int main()
 {

@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/algorithms/core.h>
+#include <vclib/space/core.h>
+
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators_adapters.hpp>
 #include <catch2/generators/catch_generators_random.hpp>
 
 #include <random>
-
-#include <vclib/algorithms/core.h>
-#include <vclib/space/core.h>
 
 template<typename Scalar, unsigned int N>
 vcl::Point<Scalar, N> randomPoint()

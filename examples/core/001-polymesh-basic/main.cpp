@@ -20,8 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <iostream>
-
 #include <vclib/algorithms/mesh/smooth.h>
 #include <vclib/algorithms/mesh/update/flag.h>
 #include <vclib/load_save.h>

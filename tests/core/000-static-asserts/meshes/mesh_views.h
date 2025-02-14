@@ -1,10 +1,10 @@
 #ifndef MESH_VIEWS_H
 #define MESH_VIEWS_H
 
-#include <ranges>
-
 #include <vclib/views/mesh.h>
 #include <vclib/views/pointers.h>
+
+#include <ranges>
 
 template<typename MeshType>
 void meshViewsStaticAsserts()

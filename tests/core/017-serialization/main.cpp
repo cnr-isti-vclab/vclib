@@ -20,13 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <catch2/catch_template_test_macros.hpp>
-#include <catch2/catch_test_macros.hpp>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 #include <vclib/space.h>
+
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <random>
 
