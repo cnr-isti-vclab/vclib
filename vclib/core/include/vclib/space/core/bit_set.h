@@ -293,10 +293,7 @@ public:
      *
      * @return the result of the bitwise NOT of this BitSet.
      */
-    BitSet<T> operator~() const
-    {
-        return BitSet<T>(~mBits);
-    }
+    BitSet<T> operator~() const { return BitSet<T>(~mBits); }
 
     /**
      * @brief Compound assignment operator that performs the bitwise AND between
