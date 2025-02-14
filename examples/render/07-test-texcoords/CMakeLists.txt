@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 06-test-texcoords)
+set(EXAMPLE_NAME 07-test-texcoords)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings
