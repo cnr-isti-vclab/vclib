@@ -397,6 +397,7 @@ public:
             PointType  center     = boundingBox(*qvv).center();
 
             // we first look just on the cells where the query value lies
+
             // here, we will store also the looking interval where we need to
             // look
             Boxui currentIntervalBox;
@@ -442,12 +443,15 @@ public:
                     dist   = tmp;
                 }
 
-                centerDist += cellDiag;
                 end = result != static_cast<const DerivedGrid*>(this)->end();
                 end |= (centerDist > maxDist);
                 end |=
                     (center - centerDist < GridType::min() &&
                      center + centerDist > GridType::max());
+
+                // update the centerDist for the next loop (after computing the
+                // end loop condition!!)
+                centerDist += cellDiag;
             } while (!end);
         }
 
