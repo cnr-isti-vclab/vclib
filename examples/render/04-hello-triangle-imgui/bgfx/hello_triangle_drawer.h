@@ -27,8 +27,8 @@
 
 #include <vclib/render/drawers/plain_drawer.h>
 
-template<typename DerivedDrawer>
-class HelloTriangleDrawer : public vcl::PlainDrawer<DerivedDrawer>
+template<typename DerivedRenderApp>
+class HelloTriangleDrawer : public vcl::PlainDrawer<DerivedRenderApp>
 {
 public:
     HelloTriangleDrawer(vcl::uint width = 1024, vcl::uint height = 768) {}
