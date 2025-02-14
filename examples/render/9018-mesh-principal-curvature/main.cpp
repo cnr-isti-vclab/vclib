@@ -20,14 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <default_viewer.h>
-
-// conflict Eigen with X11.h
-#ifdef Success
-#undef Success
-#endif
-
 #include "mesh_curvature.h"
+
+#include <default_viewer.h>
 
 int main(int argc, char** argv)
 {

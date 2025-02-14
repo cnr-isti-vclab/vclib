@@ -72,7 +72,7 @@ auto vIndexLambda(const auto& mesh, const std::vector<uint>& vertCompIndices)
     return vIndex;
 }
 
-inline static TriPolyIndexBiMap indexMap;
+inline TriPolyIndexBiMap indexMap;
 
 } // namespace detail
 

@@ -43,7 +43,7 @@ FontManager::~FontManager()
 
 void FontManager::loadFont(VclFont::Enum font)
 {
-    if (mTTMap.find(VclFont::fontNames[font]) == mTTMap.end()) {
+    if (mTTMap.find(VclFont::FONT_NAMES[font]) == mTTMap.end()) {
         FontData fd;
         switch (font) {
         case VclFont::DROID_SANS:
@@ -52,7 +52,7 @@ void FontManager::loadFont(VclFont::Enum font)
         default: return;
         }
         bgfx::TrueTypeHandle handle = loadTtf(mFontManager, fd.data, fd.size);
-        mTTMap[VclFont::fontNames[font]] = handle;
+        mTTMap[VclFont::FONT_NAMES[font]] = handle;
     }
 }
 
@@ -78,7 +78,7 @@ bgfx::FontHandle FontManager::getFontHandle(
     VclFont::Enum font,
     uint16_t      fontSize)
 {
-    std::string fontName = VclFont::fontNames[font];
+    std::string fontName = VclFont::FONT_NAMES[font];
     auto        it       = mFontMap.find({fontName, fontSize});
     if (it != mFontMap.end()) {
         return it->second;

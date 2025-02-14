@@ -20,8 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <iostream>
-
 #include "load_bimba_and_bunny.h"
 
 int main()

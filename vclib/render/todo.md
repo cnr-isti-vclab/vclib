@@ -16,7 +16,6 @@
   - [X] Fix 2 Qt windows with BGFX canvas.
   - [ ] Add possibility to update a subset of buffers for DrawableMesh
   - [X] Library shaders should be built as headers
-  - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
   - [ ] assets and shaders should be compiled in headers that are in paths like
     'vclib/assets/' and 'vclib/shaders/' (right now they are in 'assets/' and 'shaders/')
   - [X] the first window used by the context to create the bgfx backend context should be
@@ -60,3 +59,5 @@
   - [X] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring (REFACTORING IN PROGRESS)
   - [ ] update documentation of Canvas & co.
   - [ ] implement screenshot custom size (split rendering into multiple tiles)
+  - [ ] move MeshViewerImguiDrawer into library
+  - [ ] move example 07 mesh-viewer-imgui in example 02

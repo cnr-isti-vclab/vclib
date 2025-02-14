@@ -23,10 +23,10 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <bgfx/bgfx.h>
-
 #include <vclib/bgfx/programs/load_program.h>
 #include <vclib/space/core/color.h>
+
+#include <bgfx/bgfx.h>
 
 struct Vertex
 {

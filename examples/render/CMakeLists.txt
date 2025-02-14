@@ -27,34 +27,33 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 if (TARGET vclib-3rd-qt)
     add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-    set(CAN_BUILD_VCLIB_EXAMPLES true)
+    set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
 endif()
 if(TARGET vclib-3rd-glfw)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
+    if (NOT CAN_BUILD_VCLIB_RENDER_EXAMPLES)
         add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
+        set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
     endif()
 endif()
 
-add_subdirectory(common)
+if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
+    add_subdirectory(common)
 
-add_subdirectory(00-hello-triangle)
-add_subdirectory(01-viewer)
-add_subdirectory(02-mesh-viewer)
-add_subdirectory(03-viewer-with-text)
-add_subdirectory(04-hello-triangle-imgui)
-add_subdirectory(05-two-window-viewers)
-add_subdirectory(06-viewer-imgui)
-add_subdirectory(07-mesh-viewer-imgui)
+    add_subdirectory(00-hello-triangle)
+    add_subdirectory(01-viewer)
+    add_subdirectory(02-mesh-viewer)
+    add_subdirectory(03-viewer-with-text)
+    add_subdirectory(04-hello-triangle-imgui)
+    add_subdirectory(05-two-window-viewers)
+    add_subdirectory(06-viewer-imgui)
+    add_subdirectory(07-mesh-viewer-imgui) # TODO: move in 02-mesh-viewer
+    add_subdirectory(07-test-texcoords)
 
-if (TARGET vclib-processing)
-    add_subdirectory(800-processing-main-window)
-endif()
+    if (TARGET vclib-processing)
+        add_subdirectory(800-processing-main-window)
+    endif()
 
-add_subdirectory(999-misc)
-
-if (CAN_BUILD_VCLIB_EXAMPLES)
-    add_subdirectory(06-test-texcoords)
+    add_subdirectory(999-misc)
 
     # the following examples are the same of the ones in the core module,
     # but they add a viewer at the end in order to visualize the results
