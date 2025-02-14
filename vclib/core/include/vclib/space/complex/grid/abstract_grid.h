@@ -391,9 +391,9 @@ public:
         if (qvv) {
             typename GridType::ScalarType maxDist = dist;
 
-            const ScalarType cellDiag = GridType::cellDiagonal();
+            const ScalarType cellSize = GridType::length(0);
 
-            ScalarType centerDist = cellDiag;
+            ScalarType centerDist = cellSize;
             PointType  center     = boundingBox(*qvv).center();
 
             // we first look just on the cells where the query value lies
@@ -410,7 +410,7 @@ public:
             currentIntervalBox.add(GridType::cell(bb.max()));
 
             // looking just on cells where query lies
-            ScalarType tmp = cellDiag;
+            ScalarType tmp = cellSize;
             result = closestInCells(qv, tmp, currentIntervalBox, distFunction);
 
             // we have found (maybe) the closest value contained in the cell(s)
@@ -451,7 +451,7 @@ public:
 
                 // update the centerDist for the next loop (after computing the
                 // end loop condition!!)
-                centerDist += cellDiag;
+                centerDist += cellSize;
             } while (!end);
         }
 
