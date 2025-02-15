@@ -391,9 +391,9 @@ public:
         if (qvv) {
             typename GridType::ScalarType maxDist = dist;
 
-            const ScalarType cellSize = GridType::length(0);
+            const ScalarType cellDiagonal = GridType::cellDiagonal();
 
-            ScalarType centerDist = cellSize;
+            ScalarType centerDist = cellDiagonal;
             PointType  center     = boundingBox(*qvv).center();
 
             // we first look just on the cells where the query value lies
@@ -410,7 +410,7 @@ public:
             currentIntervalBox.add(GridType::cell(bb.max()));
 
             // looking just on cells where query lies
-            ScalarType tmp = cellSize;
+            ScalarType tmp = cellDiagonal;
             result = closestInCells(qv, tmp, currentIntervalBox, distFunction);
 
             // we have found (maybe) the closest value contained in the cell(s)
@@ -451,7 +451,7 @@ public:
 
                 // update the centerDist for the next loop (after computing the
                 // end loop condition!!)
-                centerDist += cellSize;
+                centerDist += cellDiagonal;
             } while (!end);
         }
 
@@ -803,8 +803,8 @@ private:
 
         // for each cell in the interval
         for (const KeyType& c :
-             GridType::cells(interval.min(), interval.max())) {
-            if (!ignore.isInsideOpenBox(c)) {
+            GridType::cells(interval.min(), interval.max())) {
+            if (!ignore.isInsideStrict(c)) {
                 // p is a pair of iterators
                 const auto& p =
                     static_cast<const DerivedGrid*>(this)->valuesInCell(c);

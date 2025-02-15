@@ -173,6 +173,26 @@ public:
     }
 
     /**
+     * @brief Checks whether a given point is inside the box or not, bounds
+     * excluded.
+     *
+     * A point is considered inside the box if its coordinates are greater than
+     * the corresponding minimum point and less than the corresponding maximum
+     * point for each dimension.
+     *
+     * @param[in] p: The point to be checked.
+     * @return True if the point is inside the box, false otherwise.
+     */
+    bool isInsideStrict(const PointT& p) const
+    {
+        for (uint i = 0; i < PointT::DIM; ++i) {
+            if (p[i] <= mMin[i] || p[i] >= mMax[i])
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * @brief Checks if a point is inside the open box (max bound excluded);
      * e.g. p in [min, max).
      *
