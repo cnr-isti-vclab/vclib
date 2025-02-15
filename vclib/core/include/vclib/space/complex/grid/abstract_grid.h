@@ -393,17 +393,18 @@ public:
 
             const ScalarType cellDiagonal = GridType::cellDiagonal();
 
+            // bbox of query value
+            typename GridType::BBoxType bb = boundingBox(*qvv);
+
             ScalarType centerDist = cellDiagonal;
-            PointType  center     = boundingBox(*qvv).center();
+            PointType  center     = bb.center();
 
             // we first look just on the cells where the query value lies
 
             // here, we will store also the looking interval where we need to
             // look
             Boxui currentIntervalBox;
-
-            // bbox of query value
-            typename GridType::BBoxType bb = boundingBox(*qvv);
+            Boxui lastIntervalBox = currentIntervalBox;
             // first cell where look for closest
             currentIntervalBox.add(GridType::cell(bb.min()));
             // last cell where look for closest
@@ -415,44 +416,63 @@ public:
 
             // we have found (maybe) the closest value contained in the cell(s)
             // where the query value lies (if the cells were empty, we did not
-            // found nothing). we now have to expand the search on adjacent
-            // cells starting from the center of the query value and expanding
-            // until we find a value
+            // found nothing).
 
-            // now we start with the actual search, including all the cells in
-            // the current interval
-
+            // if we found a value, we update the dist, which becames the
+            // max dist value. We will use it for the final search of the
+            // closest value
             if (result != static_cast<const DerivedGrid*>(this)->end()) {
                 dist       = tmp;
                 centerDist = dist;
             }
+            else {
+                // we did not find any value in the cells where the query value
+                // lies. We need to look in the neighborhood cells and increase
+                // the looking distance until we find a value or we reach the
+                // max distance
 
-            bool end = false;
+                bool end = false;
 
-            do {
-                Boxui lastIntervalBox = currentIntervalBox;
-                currentIntervalBox.add(GridType::cell(center - centerDist));
-                currentIntervalBox.add(GridType::cell(center + centerDist));
+                do {
+                    lastIntervalBox = currentIntervalBox;
+                    currentIntervalBox.add(GridType::cell(center - centerDist));
+                    currentIntervalBox.add(GridType::cell(center + centerDist));
 
-                ScalarType tmp    = centerDist;
-                ResType    winner = closestInCells(
-                    qv, tmp, currentIntervalBox, distFunction, lastIntervalBox);
+                    result = closestInCells(
+                        qv,
+                        dist,
+                        currentIntervalBox,
+                        distFunction,
+                        lastIntervalBox);
 
-                if (winner != static_cast<const DerivedGrid*>(this)->end()) {
-                    result = winner;
-                    dist   = tmp;
+                    end =
+                        result != static_cast<const DerivedGrid*>(this)->end();
+                    end |= (centerDist > maxDist);
+                    end |=
+                        (center - centerDist < GridType::min() &&
+                         center + centerDist > GridType::max());
+
+                    // update the centerDist for the next loop (after computing
+                    // the end loop condition!!)
+                    centerDist += cellDiagonal;
+                } while (!end);
+            }
+
+            if (result != static_cast<const DerivedGrid*>(this)->end()) {
+                // last check: look in all the cells inside the sphere of radius
+                // dist, in case there is a closest value
+                currentIntervalBox.add(GridType::cell(center - dist));
+                currentIntervalBox.add(GridType::cell(center + dist));
+                auto r = closestInCells(
+                    qv,
+                    dist,
+                    currentIntervalBox,
+                    distFunction,
+                    lastIntervalBox);
+                if (r != static_cast<const DerivedGrid*>(this)->end()) {
+                    result = r;
                 }
-
-                end = result != static_cast<const DerivedGrid*>(this)->end();
-                end |= (centerDist > maxDist);
-                end |=
-                    (center - centerDist < GridType::min() &&
-                     center + centerDist > GridType::max());
-
-                // update the centerDist for the next loop (after computing the
-                // end loop condition!!)
-                centerDist += cellDiagonal;
-            } while (!end);
+            }
         }
 
         return result;
@@ -803,7 +823,7 @@ private:
 
         // for each cell in the interval
         for (const KeyType& c :
-            GridType::cells(interval.min(), interval.max())) {
+             GridType::cells(interval.min(), interval.max())) {
             if (!ignore.isInsideStrict(c)) {
                 // p is a pair of iterators
                 const auto& p =
