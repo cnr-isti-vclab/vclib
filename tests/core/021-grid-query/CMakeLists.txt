@@ -21,31 +21,14 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-core-tests)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(TEST_NAME 021-grid-query)
+project(vclib-test-${TEST_NAME})
 
-add_subdirectory(000-static-asserts)
-add_subdirectory(001-trimesh-base)
-add_subdirectory(002-mesh-topology)
-add_subdirectory(003-mesh-conversions)
-add_subdirectory(004-mesh-custom-components)
-add_subdirectory(005-mesh-new-user-component)
-add_subdirectory(006-load-save-mesh-obj)
-add_subdirectory(007-load-save-mesh-off)
-add_subdirectory(008-load-save-mesh-ply)
-add_subdirectory(009-load-save-mesh-stl)
-add_subdirectory(010-mesh-clean)
-add_subdirectory(011-mesh-filter)
-add_subdirectory(012-kd-tree)
-add_subdirectory(013-mesh-update-normal)
-add_subdirectory(014-polymesh-base)
-add_subdirectory(015-mesh-copy-and-append)
-add_subdirectory(016-mesh-crease-edges)
-add_subdirectory(017-serialization)
-add_subdirectory(018-polygon)
-add_subdirectory(019-export-matrix)
-add_subdirectory(020-append-buffer)
-add_subdirectory(021-grid-query)
+set(SOURCES
+    main.cpp)
 
-
+vclib_add_test(
+    ${TEST_NAME}
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})
