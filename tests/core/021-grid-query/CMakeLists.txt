@@ -25,10 +25,15 @@ cmake_minimum_required(VERSION 3.24)
 set(TEST_NAME 021-grid-query)
 project(vclib-test-${TEST_NAME})
 
+set(HEADERS
+    common.h
+    k_nearest.h
+    nearest.h)
+
 set(SOURCES
     main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
-    SOURCES ${SOURCES}
+    SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})

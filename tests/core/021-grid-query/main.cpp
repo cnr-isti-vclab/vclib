@@ -20,170 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms.h>
-#include <vclib/load_save.h>
-#include <vclib/meshes.h>
-#include <vclib/miscellaneous.h>
-#include <vclib/space.h>
-
-#include <catch2/catch_template_test_macros.hpp>
-#include <catch2/catch_test_macros.hpp>
-
-#include <random>
-
-template<vcl::FaceMeshConcept MeshType>
-constexpr std::string meshName()
-{
-    constexpr bool indexed = MeshType::FaceType::INDEXED;
-    using ScalarType       = MeshType::VertexType::CoordType::ScalarType;
-
-    std::string name;
-    if constexpr (vcl::HasTriangles<MeshType>)
-        name = "Tri";
-    else
-        name = "Poly";
-
-    name += "Mesh";
-
-    if constexpr (indexed)
-        name += "Indexed";
-
-    if constexpr (std::same_as<ScalarType, float>)
-        name += "f";
-
-    return name;
-}
-
-template<vcl::Box3Concept BoxType>
-auto randomPoints(vcl::uint n, const BoxType& bbox)
-{
-    using ScalarType = BoxType::PointType::ScalarType;
-    using DistrType  = std::uniform_real_distribution<ScalarType>;
-
-    std::vector<vcl::Point3<ScalarType>> points(n);
-
-    ScalarType ext = bbox.diagonal() * 0.1;
-
-    std::random_device rd;
-    auto               seed = rd();
-
-    std::cerr << "Random seed: " << seed << std::endl;
-
-    std::mt19937 gen(seed);
-    DistrType    disX(bbox.min().x() - ext, bbox.max().x() + ext);
-    DistrType    disY(bbox.min().y() - ext, bbox.max().y() + ext);
-    DistrType    disZ(bbox.min().z() - ext, bbox.max().z() + ext);
-
-    for (vcl::uint i = 0; i < n; i++)
-        points[i] = vcl::Point3<ScalarType>(disX(gen), disY(gen), disZ(gen));
-
-    return points;
-}
-
-template<
-    template<typename, typename>
-    typename Grid,
-    vcl::FaceMeshConcept MeshType>
-auto computeGrid(const MeshType& mesh)
-{
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
-    using FaceType   = MeshType::FaceType;
-
-    return Grid<const FaceType*, ScalarType>(
-        mesh.faces() | vcl::views::constAddrOf);
-}
-
-template<vcl::FaceMeshConcept MeshType, typename PointType>
-auto bruteforceNearestFaces(
-    const MeshType&               mesh,
-    const std::vector<PointType>& points)
-{
-    using ScalarType = PointType::ScalarType;
-    using FaceType   = MeshType::FaceType;
-
-    auto distFun = vcl::distFunction<PointType, FaceType>();
-
-    std::vector<vcl::uint>  nearest(points.size());
-    std::vector<ScalarType> dists(
-        points.size(), std::numeric_limits<ScalarType>::max());
-
-    vcl::Timer t(
-        "Computing brute force distances for " + meshName<MeshType>() + ")");
-    for (vcl::uint i = 0; const auto& p : points) {
-        for (const auto& f : mesh.faces()) {
-            ScalarType dist = distFun(p, f);
-            if (dist < dists[i]) {
-                dists[i]   = dist;
-                nearest[i] = mesh.index(f);
-            }
-        }
-        ++i;
-    }
-    t.stopAndPrint();
-
-    return std::make_pair(nearest, dists);
-}
-
-template<typename Grid, typename PointType>
-auto gridNearestFaces(
-    const Grid&                   grid,
-    const std::vector<PointType>& points,
-    const std::string&            meshName,
-    const std::string&            gridName)
-{
-    using ScalarType = PointType::ScalarType;
-    vcl::Timer t("Computing nearests - " + meshName + " - " + gridName);
-    t.start();
-    std::vector<vcl::uint>  nearestGrid(points.size());
-    std::vector<ScalarType> dists(
-        points.size(), std::numeric_limits<ScalarType>::max());
-    for (vcl::uint i = 0; i < points.size(); i++) {
-        auto it        = grid.closestValue(points[i], dists[i]);
-        nearestGrid[i] = it->second->index();
-    }
-    t.stopAndPrint();
-    return std::make_pair(nearestGrid, dists);
-}
-
-template<template<typename, typename> typename Grid, typename MeshType>
-void closestPointTest(
-    const MeshType&    mesh,
-    const auto&        points,
-    const std::string& gridName)
-{
-    auto [nearest, dists] = bruteforceNearestFaces(mesh, points);
-
-    vcl::Timer t(meshName<MeshType>() + ": Computing " + gridName);
-    auto       grid = computeGrid<Grid>(mesh);
-    t.stopAndPrint();
-
-    auto [nearestGrid, distsGrid] =
-        gridNearestFaces(grid, points, meshName<MeshType>(), gridName);
-
-    for (vcl::uint i = 0; i < points.size(); i++) {
-        if (dists[i] != distsGrid[i]) {
-            std::cerr << "Error point " << i << std::endl;
-            std::cerr << "coord: \n" << points[i] << std::endl;
-            std::cerr << "cell: \n";
-            std::cerr << grid.cell(points[i]) << std::endl;
-            std::cerr << " dist: " << dists[i] << " distGrid: " << distsGrid[i]
-                      << std::endl;
-            std::cerr << "computed closest: " << nearest[i]
-                      << " grid closest: " << nearestGrid[i] << std::endl;
-        }
-        REQUIRE(dists[i] == distsGrid[i]);
-    }
-}
+#include "nearest.h"
+#include "k_nearest.h"
 
 using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
 using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
-template<typename ValueType, typename ScalarType>
-using HSGrid3 = vcl::HashTableGrid3<ValueType, ScalarType>;
-
-TEMPLATE_TEST_CASE("Query Grids...", "", Meshes)
+TEMPLATE_TEST_CASE("Closest faces to points...", "", Meshes)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -192,24 +37,28 @@ TEMPLATE_TEST_CASE("Query Grids...", "", Meshes)
 
     const uint N_POINTS_TEST = 1000;
 
+    const std::string MESH_PATH = VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj";
+
     SECTION("TriMesh")
     {
         using PointType = TriMesh::VertexType::CoordType;
 
-        TriMesh tm = load<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        std::size_t        seed = std::random_device()();
+
+        TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
         vcl::updateBoundingBox(tm);
 
         std::vector<PointType> points =
-            randomPoints(N_POINTS_TEST, tm.boundingBox());
+            randomPoints(N_POINTS_TEST, tm.boundingBox(), seed);
 
         SECTION("HashTableGrid")
         {
-            closestPointTest<HSGrid3>(tm, points, "HashTableGrid");
+            closestFacesTest<HSGrid3>(tm, points, "HashTableGrid");
         }
 
         SECTION("StaticGrid")
         {
-            closestPointTest<StaticGrid3>(tm, points, "StaticGrid");
+            closestFacesTest<vcl::StaticGrid3>(tm, points, "StaticGrid");
         }
     }
 
@@ -217,20 +66,82 @@ TEMPLATE_TEST_CASE("Query Grids...", "", Meshes)
     {
         using PointType = PolyMesh::VertexType::CoordType;
 
-        PolyMesh pm = load<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        std::size_t        seed = std::random_device()();
+
+        PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
         vcl::updateBoundingBox(pm);
 
         std::vector<PointType> points =
-            randomPoints(N_POINTS_TEST, pm.boundingBox());
+            randomPoints(N_POINTS_TEST, pm.boundingBox(), seed);
 
         SECTION("HashTableGrid")
         {
-            closestPointTest<HSGrid3>(pm, points, "HashTableGrid");
+            closestFacesTest<HSGrid3>(pm, points, "HashTableGrid");
         }
 
         SECTION("StaticGrid")
         {
-            closestPointTest<StaticGrid3>(pm, points, "StaticGrid");
+            closestFacesTest<vcl::StaticGrid3>(pm, points, "StaticGrid");
         }
     }
 }
+
+// TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
+// {
+//     using TriMesh  = std::tuple_element_t<0, TestType>;
+//     using PolyMesh = std::tuple_element_t<1, TestType>;
+
+//     using namespace vcl;
+
+//     const uint N_POINTS_TEST = 10;
+
+//     const uint K_NEAREST = 5;
+
+//     const std::string MESH_PATH = VCLIB_EXAMPLE_MESHES_PATH "/bone.ply";
+
+//     SECTION("TriMesh")
+//     {
+//         using PointType = TriMesh::VertexType::CoordType;
+
+//         std::size_t        seed = 0;
+
+//         TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
+//         vcl::updateBoundingBox(tm);
+
+//         std::vector<PointType> points =
+//             randomPoints(N_POINTS_TEST, tm.boundingBox(), seed);
+
+//         SECTION("HashTableGrid")
+//         {
+//             kNearestFacesTest<HSGrid3>(tm, points, K_NEAREST, "HashTableGrid");
+//         }
+
+//         SECTION("StaticGrid")
+//         {
+//             kNearestFacesTest<vcl::StaticGrid3>(tm, points, K_NEAREST, "StaticGrid");
+//         }
+//     }
+
+//     SECTION("PolyMesh")
+//     {
+//         using PointType = PolyMesh::VertexType::CoordType;
+
+//         std::size_t        seed = std::random_device()();
+
+//         PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
+//         vcl::updateBoundingBox(pm);
+
+//         std::vector<PointType> points =
+//             randomPoints(N_POINTS_TEST, pm.boundingBox(), seed);
+
+//         SECTION("HashTableGrid")
+//         {
+//             kNearestFacesTest<HSGrid3>(pm, points, K_NEAREST, "HashTableGrid");
+//         }
+
+//         SECTION("StaticGrid")
+//         {
+//             kNearestFacesTest<vcl::StaticGrid3>(pm, points, K_NEAREST, "StaticGrid");
+//         }
+//     }
+// }
