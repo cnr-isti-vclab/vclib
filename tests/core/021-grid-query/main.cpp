@@ -35,7 +35,7 @@ template<vcl::FaceMeshConcept MeshType>
 constexpr std::string meshName()
 {
     constexpr bool indexed = MeshType::FaceType::INDEXED;
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+    using ScalarType       = MeshType::VertexType::CoordType::ScalarType;
 
     std::string name;
     if constexpr (vcl::HasTriangles<MeshType>)
@@ -58,21 +58,21 @@ template<vcl::Box3Concept BoxType>
 auto randomPoints(vcl::uint n, const BoxType& bbox)
 {
     using ScalarType = BoxType::PointType::ScalarType;
-    using DistrType = std::uniform_real_distribution<ScalarType>;
+    using DistrType  = std::uniform_real_distribution<ScalarType>;
 
     std::vector<vcl::Point3<ScalarType>> points(n);
 
     ScalarType ext = bbox.diagonal() * 0.1;
 
     std::random_device rd;
-    auto seed = rd();
+    auto               seed = rd();
 
     std::cerr << "Random seed: " << seed << std::endl;
 
-    std::mt19937       gen(seed);
-    DistrType disX(bbox.min().x() - ext, bbox.max().x() + ext);
-    DistrType disY(bbox.min().y() - ext, bbox.max().y() + ext);
-    DistrType disZ(bbox.min().z() - ext, bbox.max().z() + ext);
+    std::mt19937 gen(seed);
+    DistrType    disX(bbox.min().x() - ext, bbox.max().x() + ext);
+    DistrType    disY(bbox.min().y() - ext, bbox.max().y() + ext);
+    DistrType    disZ(bbox.min().z() - ext, bbox.max().z() + ext);
 
     for (vcl::uint i = 0; i < n; i++)
         points[i] = vcl::Point3<ScalarType>(disX(gen), disY(gen), disZ(gen));
@@ -81,12 +81,13 @@ auto randomPoints(vcl::uint n, const BoxType& bbox)
 }
 
 template<
-    template<typename, typename> typename Grid,
+    template<typename, typename>
+    typename Grid,
     vcl::FaceMeshConcept MeshType>
 auto computeGrid(const MeshType& mesh)
 {
     using ScalarType = MeshType::VertexType::CoordType::ScalarType;
-    using FaceType = MeshType::FaceType;
+    using FaceType   = MeshType::FaceType;
 
     return Grid<const FaceType*, ScalarType>(
         mesh.faces() | vcl::views::constAddrOf);
@@ -94,15 +95,15 @@ auto computeGrid(const MeshType& mesh)
 
 template<vcl::FaceMeshConcept MeshType, typename PointType>
 auto bruteforceNearestFaces(
-    const MeshType& mesh,
-    const std::vector<PointType>&     points)
+    const MeshType&               mesh,
+    const std::vector<PointType>& points)
 {
     using ScalarType = PointType::ScalarType;
-    using FaceType = MeshType::FaceType;
+    using FaceType   = MeshType::FaceType;
 
     auto distFun = vcl::distFunction<PointType, FaceType>();
 
-    std::vector<vcl::uint> nearest(points.size());
+    std::vector<vcl::uint>  nearest(points.size());
     std::vector<ScalarType> dists(
         points.size(), std::numeric_limits<ScalarType>::max());
 
@@ -112,7 +113,7 @@ auto bruteforceNearestFaces(
         for (const auto& f : mesh.faces()) {
             ScalarType dist = distFun(p, f);
             if (dist < dists[i]) {
-                dists[i] = dist;
+                dists[i]   = dist;
                 nearest[i] = mesh.index(f);
             }
         }
@@ -125,20 +126,19 @@ auto bruteforceNearestFaces(
 
 template<typename Grid, typename PointType>
 auto gridNearestFaces(
-    const Grid& grid,
+    const Grid&                   grid,
     const std::vector<PointType>& points,
-    const std::string& meshName,
-    const std::string& gridName)
+    const std::string&            meshName,
+    const std::string&            gridName)
 {
     using ScalarType = PointType::ScalarType;
-    vcl::Timer t(
-        "Computing nearests - " + meshName + " - " + gridName);
+    vcl::Timer t("Computing nearests - " + meshName + " - " + gridName);
     t.start();
-    std::vector<vcl::uint> nearestGrid(points.size());
+    std::vector<vcl::uint>  nearestGrid(points.size());
     std::vector<ScalarType> dists(
         points.size(), std::numeric_limits<ScalarType>::max());
     for (vcl::uint i = 0; i < points.size(); i++) {
-        auto it = grid.closestValue(points[i], dists[i]);
+        auto it        = grid.closestValue(points[i], dists[i]);
         nearestGrid[i] = it->second->index();
     }
     t.stopAndPrint();
@@ -146,12 +146,15 @@ auto gridNearestFaces(
 }
 
 template<template<typename, typename> typename Grid, typename MeshType>
-void closestPointTest(const MeshType& mesh, const auto& points, const std::string& gridName)
+void closestPointTest(
+    const MeshType&    mesh,
+    const auto&        points,
+    const std::string& gridName)
 {
     auto [nearest, dists] = bruteforceNearestFaces(mesh, points);
 
     vcl::Timer t(meshName<MeshType>() + ": Computing " + gridName);
-    auto grid = computeGrid<Grid>(mesh);
+    auto       grid = computeGrid<Grid>(mesh);
     t.stopAndPrint();
 
     auto [nearestGrid, distsGrid] =
@@ -163,8 +166,8 @@ void closestPointTest(const MeshType& mesh, const auto& points, const std::strin
             std::cerr << "coord: \n" << points[i] << std::endl;
             std::cerr << "cell: \n";
             std::cerr << grid.cell(points[i]) << std::endl;
-            std::cerr << " dist: " << dists[i]
-                      << " distGrid: " << distsGrid[i] << std::endl;
+            std::cerr << " dist: " << dists[i] << " distGrid: " << distsGrid[i]
+                      << std::endl;
             std::cerr << "computed closest: " << nearest[i]
                       << " grid closest: " << nearestGrid[i] << std::endl;
         }
@@ -172,20 +175,15 @@ void closestPointTest(const MeshType& mesh, const auto& points, const std::strin
     }
 }
 
-using Meshes = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
-using MeshesIndexed =
-    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::
-    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
+using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
+using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
+using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
 template<typename ValueType, typename ScalarType>
 using HSGrid3 = vcl::HashTableGrid3<ValueType, ScalarType>;
 
-TEMPLATE_TEST_CASE(
-    "Query Grids...",
-    "",
-    Meshes)
+TEMPLATE_TEST_CASE("Query Grids...", "", Meshes)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
