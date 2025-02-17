@@ -157,24 +157,24 @@ public:
 
     /**
      * @brief Returns the settings for a given primitive.
-     * @tparam PRIMTIVE: the primitive for which to get the settings.
+     * @tparam PRIMITIVE: the primitive for which to get the settings.
      * @return the settings for the given primitive.
      */
-    template<Primitive PRIMTIVE>
+    template<Primitive PRIMITIVE>
     BitSet16 settings() const
     {
-        return mSettings[toUnderlying(PRIMTIVE)];
+        return mSettings[toUnderlying(PRIMITIVE)];
     }
 
     /**
      * @brief Returns the settings for a given primitive.
-     * @tparam PRIMTIVE: the primitive for which to get the settings.
+     * @tparam PRIMITIVE: the primitive for which to get the settings.
      * @return the settings for the given primitive.
      */
-    template<Primitive PRIMTIVE>
+    template<Primitive PRIMITIVE>
     BitSet16& settings()
     {
-        return mSettings[toUnderlying(PRIMTIVE)];
+        return mSettings[toUnderlying(PRIMITIVE)];
     }
 
     /**
