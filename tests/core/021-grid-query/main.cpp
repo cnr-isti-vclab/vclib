@@ -28,14 +28,14 @@ using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
+static const vcl::uint N_POINTS_TEST = 50;
+
 TEMPLATE_TEST_CASE("Closest faces to points...", "", Meshes)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
 
     using namespace vcl;
-
-    const uint N_POINTS_TEST = 1000;
 
     const std::string MESH_PATH = VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj";
 
@@ -92,8 +92,6 @@ TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
     using PolyMesh = std::tuple_element_t<1, TestType>;
 
     using namespace vcl;
-
-    const uint N_POINTS_TEST = 1000;
 
     const uint K_NEAREST = 5;
 

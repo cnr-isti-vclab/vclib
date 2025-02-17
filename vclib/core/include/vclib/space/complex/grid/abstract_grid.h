@@ -159,13 +159,13 @@ public:
 
     bool cellEmpty(const KeyType& k) const
     {
-        auto p = static_cast<const DerivedGrid*>(this)->valuesInCell(k);
+        auto p = derived()->valuesInCell(k);
         return p.first == p.second;
     }
 
     std::size_t countInCell(const KeyType& k) const
     {
-        auto p = static_cast<const DerivedGrid*>(this)->valuesInCell(k);
+        auto p = derived()->valuesInCell(k);
         return std::distance(p.first, p.second);
     }
 
@@ -214,15 +214,13 @@ public:
                 for (const auto& cell : GridType::cells(bmin, bmax)) {
                     if (mIntersectsFun(
                             GridType::cellBox(cell), dereferencePtr(v))) {
-                        ins |= static_cast<DerivedGrid*>(this)->insertInCell(
-                            cell, v);
+                        ins |= derived()->insertInCell(cell, v);
                     }
                 }
             }
             else {
                 for (const auto& cell : GridType::cells(bmin, bmax)) {
-                    ins |=
-                        static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+                    ins |= derived()->insertInCell(cell, v);
                 }
             }
             return ins;
@@ -285,7 +283,7 @@ public:
 
             bool found = false;
             for (const auto& cell : GridType::cells(bmin, bmax)) {
-                found |= static_cast<DerivedGrid*>(this)->eraseInCell(cell, v);
+                found |= derived()->eraseInCell(cell, v);
             }
             return found;
         }
@@ -295,10 +293,10 @@ public:
     bool eraseAllInCell(const KeyType& k)
     {
         bool  res = false;
-        auto& p   = static_cast<DerivedGrid*>(this)->valuesInCell(k);
+        auto& p   = derived()->valuesInCell(k);
         // for each value contained in the cell
         for (auto it = p.first; it != p.second; ++it) {
-            res |= static_cast<DerivedGrid*>(this)->eraseInCell(k, it->second);
+            res |= derived()->eraseInCell(k, it->second);
         }
         return res;
     }
@@ -330,8 +328,7 @@ public:
         // for each cell in the interval
         for (const KeyType& c : GridType::cells(first, last)) {
             // p is a pair of iterators
-            const auto& p =
-                static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+            const auto& p = derived()->valuesInCell(c);
             // for each value contained in the cell
             for (auto it = p.first; it != p.second; ++it) {
                 if (valueIsInSpehere(it, s)) {
@@ -362,8 +359,7 @@ public:
         // for each cell in the interval
         for (const KeyType& c : GridType::cells(first, last)) {
             // p is a pair of iterators
-            const auto& p =
-                static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+            const auto& p = derived()->valuesInCell(c);
             // for each value contained in the cell
             for (auto it = p.first; it != p.second; ++it) {
                 if (valueIsInSpehere(it, s)) {
@@ -386,7 +382,7 @@ public:
 
         using QVT         = RemoveCVRefAndPointer<QueryValueType>;
         const QVT* qvv    = addressOfObj(qv);
-        ResType    result = static_cast<const DerivedGrid*>(this)->end();
+        ResType    result = derived()->end();
 
         if (qvv) {
             typename GridType::ScalarType maxDist = dist;
@@ -421,7 +417,7 @@ public:
             // if we found a value, we update the dist, which becames the
             // max dist value. We will use it for the final search of the
             // closest value
-            if (result != static_cast<const DerivedGrid*>(this)->end()) {
+            if (result != derived()->end()) {
                 dist       = tmp;
                 centerDist = dist;
             }
@@ -445,8 +441,7 @@ public:
                         distFunction,
                         lastIntervalBox);
 
-                    end =
-                        result != static_cast<const DerivedGrid*>(this)->end();
+                    end = result != derived()->end();
                     end |= (centerDist > maxDist);
                     end |=
                         (center - centerDist < GridType::min() &&
@@ -458,7 +453,7 @@ public:
                 } while (!end);
             }
 
-            if (result != static_cast<const DerivedGrid*>(this)->end()) {
+            if (result != derived()->end()) {
                 // last check: look in all the cells inside the sphere of radius
                 // dist, in case there is a closest value
                 currentIntervalBox.add(GridType::cell(center - dist));
@@ -469,7 +464,7 @@ public:
                     currentIntervalBox,
                     distFunction,
                     lastIntervalBox);
-                if (r != static_cast<const DerivedGrid*>(this)->end()) {
+                if (r != derived()->end()) {
                     result = r;
                 }
             }
@@ -576,8 +571,7 @@ public:
                      currentIntervalBox.min(), currentIntervalBox.max())) {
                 if (!ignore.isInside(c)) {
                     // get the values of the cell c
-                    const auto& p =
-                        static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+                    const auto& p = derived()->valuesInCell(c);
                     // for each value contained in the cell c
                     for (auto it = p.first; it != p.second; ++it) {
                         auto tmp = distFunction(qv, dereferencePtr(it->second));
@@ -777,6 +771,13 @@ private:
         }
     };
 
+    DerivedGrid* derived() { return static_cast<DerivedGrid*>(this); }
+
+    const DerivedGrid* derived() const
+    {
+        return static_cast<const DerivedGrid*>(this);
+    }
+
     // std::deque<ValueType> values;
 
     /**
@@ -819,15 +820,14 @@ private:
         const Boxui&                             ignore = Boxui()) const
     {
         using ResType = DerivedGrid::ConstIterator;
-        ResType res   = static_cast<const DerivedGrid*>(this)->end();
+        ResType res   = derived()->end();
 
         // for each cell in the interval
         for (const KeyType& c :
              GridType::cells(interval.min(), interval.max())) {
             if (!ignore.isInsideStrict(c)) {
                 // p is a pair of iterators
-                const auto& p =
-                    static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+                const auto& p = derived()->valuesInCell(c);
                 // for each value contained in the cell
                 for (auto it = p.first; it != p.second; ++it) {
                     auto tmp =
@@ -876,9 +876,7 @@ private:
                 for (const KeyType& c : GridType::cells(
                          currentIntervalBox.min(), currentIntervalBox.max())) {
                     if (!ignore.isInside(c)) {
-                        const auto& p =
-                            static_cast<const DerivedGrid*>(this)->valuesInCell(
-                                c);
+                        const auto& p = derived()->valuesInCell(c);
 
                         // for each value contained in the cell
                         for (auto it = p.first; it != p.second; ++it) {
