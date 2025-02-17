@@ -46,8 +46,7 @@ auto bruteforceNearestFaces(
     std::vector<ScalarType> dists(
         points.size(), std::numeric_limits<ScalarType>::max());
 
-    vcl::Timer t(
-        "Computing brute force distances for " + meshName<MeshType>());
+    vcl::Timer t("Computing brute force distances for " + meshName<MeshType>());
     for (vcl::uint i = 0; const auto& p : points) {
         for (const auto& f : mesh.faces()) {
             ScalarType dist = distFun(p, f);

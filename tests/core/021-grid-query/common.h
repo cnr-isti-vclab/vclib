@@ -57,9 +57,9 @@ constexpr std::string meshName()
 
 template<vcl::Box3Concept BoxType>
 auto randomPoints(
-    vcl::uint                n,
-    const BoxType&           bbox,
-    std::size_t seed = std::random_device()())
+    vcl::uint      n,
+    const BoxType& bbox,
+    std::size_t    seed = std::random_device()())
 {
     using ScalarType = BoxType::PointType::ScalarType;
     using DistrType  = std::uniform_real_distribution<ScalarType>;
