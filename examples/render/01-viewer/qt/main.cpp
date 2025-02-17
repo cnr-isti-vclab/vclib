@@ -38,8 +38,8 @@ int main(int argc, char** argv)
     drawable.color() = vcl::Color::Yellow;
 
     auto mrs = drawable.renderSettings();
-    mrs.setSurfaceColorPerMesh();
-    mrs.setSurfaceShadingFlat();
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
     drawable.setRenderSettings(mrs);
 
     // add the drawable mesh to the scene

@@ -130,10 +130,10 @@ public:
         mVertexNormalsBuffer.bind(1);
         mVertexColorsBuffer.bind(2);
 
-        if (mrs.isSurfaceColorPerVertexTexcoords()) {
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
             mVertexUVBuffer.bind(3);
         }
-        else if (mrs.isSurfaceColorPerWedgeTexcoords()) {
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
             mVertexWedgeUVBuffer.bind(3);
         }
     }

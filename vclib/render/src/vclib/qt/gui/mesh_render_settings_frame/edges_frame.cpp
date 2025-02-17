@@ -29,6 +29,8 @@
 
 namespace vcl::qt {
 
+using enum MeshRenderInfo::Edges;
+
 EdgesFrame::EdgesFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
         mUI(new Ui::EdgesFrame)
@@ -85,16 +87,16 @@ EdgesFrame::~EdgesFrame()
 
 void EdgesFrame::updateFrameFromSettings()
 {
-    if (mMRS.canEdgesBeVisible()) {
+    if (mMRS.canEdges(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isEdgesVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isEdges(VISIBLE));
         mUI->shadingSmoothRadioButton->setEnabled(
-            mMRS.canEdgesShadingBeSmooth());
-        mUI->shadingSmoothRadioButton->setChecked(mMRS.isEdgesShadingSmooth());
-        mUI->shadingFlatRadioButton->setEnabled(mMRS.canEdgesShadingBeFlat());
-        mUI->shadingFlatRadioButton->setChecked(mMRS.isEdgesShadingFlat());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isEdgesShadingNone());
+            mMRS.canEdges(SHADING_SMOOTH));
+        mUI->shadingSmoothRadioButton->setChecked(mMRS.isEdges(SHADING_SMOOTH));
+        mUI->shadingFlatRadioButton->setEnabled(mMRS.canEdges(SHADING_FLAT));
+        mUI->shadingFlatRadioButton->setChecked(mMRS.isEdges(SHADING_FLAT));
+        mUI->shadingNoneRadioButton->setChecked(mMRS.isEdges(SHADING_NONE));
 
         updateColorComboBoxFromSettings();
         mUI->sizeSlider->setValue(mMRS.edgesWidth());
@@ -111,7 +113,7 @@ void EdgesFrame::updateColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(E_VERTEX);
-    if (mMRS.canEdgesColorBePerVertex()) {
+    if (mMRS.canEdges(COLOR_VERTEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -119,7 +121,7 @@ void EdgesFrame::updateColorComboBoxFromSettings()
     }
 
     item = model->item(E_EDGES);
-    if (mMRS.canEdgesColorBePerEdge()) {
+    if (mMRS.canEdges(COLOR_EDGE)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -127,23 +129,23 @@ void EdgesFrame::updateColorComboBoxFromSettings()
     }
 
     item = model->item(E_MESH);
-    if (mMRS.canEdgesColorBePerMesh()) {
+    if (mMRS.canEdges(COLOR_MESH)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    if (mMRS.isEdgesColorPerVertex())
+    if (mMRS.isEdges(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(E_VERTEX);
-    if (mMRS.isEdgesColorPerEdge())
+    if (mMRS.isEdges(COLOR_EDGE))
         mUI->colorComboBox->setCurrentIndex(E_EDGES);
-    if (mMRS.isEdgesColorPerMesh())
+    if (mMRS.isEdges(COLOR_MESH))
         mUI->colorComboBox->setCurrentIndex(E_MESH);
-    if (mMRS.isEdgesColorUserDefined())
+    if (mMRS.isEdges(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(E_USER);
 
-    mUI->userColorFrame->setEnabled(mMRS.isEdgesColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isEdges(COLOR_USER));
     vcl::Color vc = mMRS.edgesUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
@@ -151,14 +153,14 @@ void EdgesFrame::updateColorComboBoxFromSettings()
 
 void EdgesFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setEdgesVisibility(arg1 == Qt::Checked);
+    mMRS.setEdges(VISIBLE, arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
 void EdgesFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
-        mMRS.setEdgesShadingSmooth();
+        mMRS.setEdges(SHADING_SMOOTH);
         emit settingsUpdated();
     }
 }
@@ -166,7 +168,7 @@ void EdgesFrame::onShadingSmoothToggled(bool checked)
 void EdgesFrame::onShadingFlatToggled(bool checked)
 {
     if (checked) {
-        mMRS.setEdgesShadingFlat();
+        mMRS.setEdges(SHADING_FLAT);
         emit settingsUpdated();
     }
 }
@@ -174,7 +176,7 @@ void EdgesFrame::onShadingFlatToggled(bool checked)
 void EdgesFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setEdgesShadingNone();
+        mMRS.setEdges(SHADING_NONE);
         emit settingsUpdated();
     }
 }
@@ -182,10 +184,10 @@ void EdgesFrame::onShadingNoneToggled(bool checked)
 void EdgesFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case E_VERTEX: mMRS.setEdgesColorPerVertex(); break;
-    case E_EDGES: mMRS.setEdgesColorPerEdge(); break;
-    case E_MESH: mMRS.setEdgesColorPerMesh(); break;
-    case E_USER: mMRS.setEdgesColorUserDefined(); break;
+    case E_VERTEX: mMRS.setEdges(COLOR_VERTEX); break;
+    case E_EDGES: mMRS.setEdges(COLOR_EDGE); break;
+    case E_MESH: mMRS.setEdges(COLOR_MESH); break;
+    case E_USER: mMRS.setEdges(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == E_USER);
     emit settingsUpdated();
