@@ -115,7 +115,6 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         // shape
         ImGui::Text("Shape:");
         ImGui::SameLine();
-        // TODO: implement point shape enum? in render settings
         ImGui::BeginDisabled(true);
         ImGui::RadioButton(
             "Circle",
@@ -162,7 +161,6 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             });
 
         // color
-        // TODO: implement color enum? in render settings
         ImGui::Text("Color:");
         ImGui::SameLine();
         const char* pointColorNames[]           = {"Vertex", "Mesh", "User"};
@@ -298,7 +296,6 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             });
 
         // color
-        // TODO: implement color enum? in render settings
         ImGui::Text("Color:");
         ImGui::SameLine();
         const char* surfColorNames[] = {
@@ -430,7 +427,6 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             });
 
         // color
-        // TODO: implement color enum? in render settings
         ImGui::Text("Color:");
         ImGui::SameLine();
         const char*               wireColorNames[] = {"Vertex", "Mesh", "User"};
