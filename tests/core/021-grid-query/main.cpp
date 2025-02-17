@@ -117,11 +117,11 @@ TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
             "HashTableGrid");
         }
 
-        // SECTION("StaticGrid")
-        // {
-        //     kNearestFacesTest<vcl::StaticGrid3>(tm, points, K_NEAREST,
-        //     "StaticGrid");
-        // }
+        SECTION("StaticGrid")
+        {
+            kNearestFacesTest<vcl::StaticGrid3>(tm, points, K_NEAREST,
+            "StaticGrid");
+        }
     }
 
     SECTION("PolyMesh")
@@ -142,10 +142,10 @@ TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
             "HashTableGrid");
         }
 
-        // SECTION("StaticGrid")
-        // {
-        //     kNearestFacesTest<vcl::StaticGrid3>(pm, points, K_NEAREST,
-        //     "StaticGrid");
-        // }
+        SECTION("StaticGrid")
+        {
+            kNearestFacesTest<vcl::StaticGrid3>(pm, points, K_NEAREST,
+            "StaticGrid");
+        }
     }
 }
