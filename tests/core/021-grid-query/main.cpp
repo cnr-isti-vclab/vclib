@@ -86,66 +86,66 @@ TEMPLATE_TEST_CASE("Closest faces to points...", "", Meshes)
     }
 }
 
-// TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
-// {
-//     using TriMesh  = std::tuple_element_t<0, TestType>;
-//     using PolyMesh = std::tuple_element_t<1, TestType>;
+TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
+{
+    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using PolyMesh = std::tuple_element_t<1, TestType>;
 
-//     using namespace vcl;
+    using namespace vcl;
 
-//     const uint N_POINTS_TEST = 10;
+    const uint N_POINTS_TEST = 1000;
 
-//     const uint K_NEAREST = 5;
+    const uint K_NEAREST = 5;
 
-//     const std::string MESH_PATH = VCLIB_EXAMPLE_MESHES_PATH "/bone.ply";
+    const std::string MESH_PATH = VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj";
 
-//     SECTION("TriMesh")
-//     {
-//         using PointType = TriMesh::VertexType::CoordType;
+    SECTION("TriMesh")
+    {
+        using PointType = TriMesh::VertexType::CoordType;
 
-//         std::size_t        seed = 0;
+        std::size_t        seed = std::random_device()();
 
-//         TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
-//         vcl::updateBoundingBox(tm);
+        TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
+        vcl::updateBoundingBox(tm);
 
-//         std::vector<PointType> points =
-//             randomPoints(N_POINTS_TEST, tm.boundingBox(), seed);
+        std::vector<PointType> points =
+            randomPoints(N_POINTS_TEST, tm.boundingBox(), seed);
 
-//         SECTION("HashTableGrid")
-//         {
-//             kNearestFacesTest<HSGrid3>(tm, points, K_NEAREST,
-//             "HashTableGrid");
-//         }
+        SECTION("HashTableGrid")
+        {
+            kNearestFacesTest<HSGrid3>(tm, points, K_NEAREST,
+            "HashTableGrid");
+        }
 
-//         SECTION("StaticGrid")
-//         {
-//             kNearestFacesTest<vcl::StaticGrid3>(tm, points, K_NEAREST,
-//             "StaticGrid");
-//         }
-//     }
+        // SECTION("StaticGrid")
+        // {
+        //     kNearestFacesTest<vcl::StaticGrid3>(tm, points, K_NEAREST,
+        //     "StaticGrid");
+        // }
+    }
 
-//     SECTION("PolyMesh")
-//     {
-//         using PointType = PolyMesh::VertexType::CoordType;
+    SECTION("PolyMesh")
+    {
+        using PointType = PolyMesh::VertexType::CoordType;
 
-//         std::size_t        seed = std::random_device()();
+        std::size_t        seed = std::random_device()();
 
-//         PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
-//         vcl::updateBoundingBox(pm);
+        PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
+        vcl::updateBoundingBox(pm);
 
-//         std::vector<PointType> points =
-//             randomPoints(N_POINTS_TEST, pm.boundingBox(), seed);
+        std::vector<PointType> points =
+            randomPoints(N_POINTS_TEST, pm.boundingBox(), seed);
 
-//         SECTION("HashTableGrid")
-//         {
-//             kNearestFacesTest<HSGrid3>(pm, points, K_NEAREST,
-//             "HashTableGrid");
-//         }
+        SECTION("HashTableGrid")
+        {
+            kNearestFacesTest<HSGrid3>(pm, points, K_NEAREST,
+            "HashTableGrid");
+        }
 
-//         SECTION("StaticGrid")
-//         {
-//             kNearestFacesTest<vcl::StaticGrid3>(pm, points, K_NEAREST,
-//             "StaticGrid");
-//         }
-//     }
-// }
+        // SECTION("StaticGrid")
+        // {
+        //     kNearestFacesTest<vcl::StaticGrid3>(pm, points, K_NEAREST,
+        //     "StaticGrid");
+        // }
+    }
+}

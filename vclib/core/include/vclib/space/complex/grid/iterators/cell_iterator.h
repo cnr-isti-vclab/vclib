@@ -42,7 +42,7 @@ public:
 
     CellIterator()
     {
-        mIt.setConstant(-1);
+        mIt.setConstant(UINT_NULL);
         mFirst = mEnd = mIt;
     }
 
@@ -62,14 +62,14 @@ public:
     CellIterator operator++()
     {
         uint d = N - 1;
-        while (d != -1 && mIt(d) == mEnd(d) - 1) {
+        while (d != UINT_NULL && mIt(d) == mEnd(d) - 1) {
             mIt(d) = mFirst(d);
             d--;
         }
         if (d != -1)
             mIt(d)++;
         else
-            mIt.setConstant(-1);
+            mIt.setConstant(UINT_NULL);
         return *this;
     }
 

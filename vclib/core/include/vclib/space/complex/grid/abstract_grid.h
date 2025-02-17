@@ -548,7 +548,7 @@ public:
 
         KClosestSet set = valuesInCellNeighborhood(qv, n, distFunction, ignore);
 
-        auto it = set.size() >= n ? std::next(set.begin(), n) : set.end();
+        auto it = set.size() >= n ? std::next(set.begin(), n - 1) : set.end();
         // if we didn't found n values, it means that there aren't n values in
         // the grid - nothing to do
         if (it != set.end()) {
@@ -559,7 +559,7 @@ public:
             typename GridType::BBoxType bb = boundingBox(*qvv);
             // we need to be sure that there are no values that are closest
             // w.r.t. the n-th that we have already found by looking in the cell
-            // neighborhood we extend the bb with the distance of the n-th
+            // neighborhood. we extend the bb with the distance of the n-th
             // closest found value
             bb.min() -= it->first;
             bb.max() += it->first;
@@ -574,7 +574,7 @@ public:
             // for all the cells in the current interval box
             for (const KeyType& c : GridType::cells(
                      currentIntervalBox.min(), currentIntervalBox.max())) {
-                if (!ignore.isInsideOpenBox(c)) {
+                if (!ignore.isInside(c)) {
                     // get the values of the cell c
                     const auto& p =
                         static_cast<const DerivedGrid*>(this)->valuesInCell(c);
@@ -875,7 +875,7 @@ private:
                 // for each cell in the interval
                 for (const KeyType& c : GridType::cells(
                          currentIntervalBox.min(), currentIntervalBox.max())) {
-                    if (!ignore.isInsideOpenBox(c)) {
+                    if (!ignore.isInside(c)) {
                         const auto& p =
                             static_cast<const DerivedGrid*>(this)->valuesInCell(
                                 c);
