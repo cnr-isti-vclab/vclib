@@ -43,13 +43,13 @@ auto bruteForceKNearestFaces(
 
     auto distFun = vcl::distFunction<PointType, FaceType>();
 
-    std::vector<std::vector<std::pair<uint, ScalarType>>> nearestAndDists(
+    std::vector<std::vector<std::pair<vcl::uint, ScalarType>>> nearestAndDists(
         points.size());
 
     vcl::Timer t("Computing brute force kn faces for " + meshName<MeshType>());
 
     for (vcl::uint i = 0; const auto& p : points) {
-        std::vector<std::pair<uint, ScalarType>> facesAndDists(
+        std::vector<std::pair<vcl::uint, ScalarType>> facesAndDists(
             mesh.faceNumber());
 
         vcl::uint j = 0;
@@ -65,7 +65,7 @@ auto bruteForceKNearestFaces(
                 return a.second < b.second;
             });
 
-        nearestAndDists[i] = std::vector<std::pair<uint, ScalarType>>(
+        nearestAndDists[i] = std::vector<std::pair<vcl::uint, ScalarType>>(
             facesAndDists.begin(), facesAndDists.begin() + k);
 
         ++i;
@@ -80,7 +80,7 @@ auto gridKNearestFaces(
     const Grid&                   grid,
     const MeshType&               mesh,
     const std::vector<PointType>& points,
-    uint                          k,
+    vcl::uint                     k,
     const std::string&            gridName)
 {
     using FaceType   = MeshType::FaceType;
@@ -91,7 +91,7 @@ auto gridKNearestFaces(
     vcl::Timer t(
         "Computing k nearests - " + meshName<MeshType>() + " - " + gridName);
     t.start();
-    std::vector<std::vector<std::pair<uint, ScalarType>>> nearestGrid(
+    std::vector<std::vector<std::pair<vcl::uint, ScalarType>>> nearestGrid(
         points.size());
     for (vcl::uint i = 0; i < points.size(); i++) {
         auto vec = grid.kClosestValues(points[i], k);
@@ -110,7 +110,7 @@ template<template<typename, typename> typename Grid, typename MeshType>
 void kNearestFacesTest(
     const MeshType&    mesh,
     const auto&        points,
-    const uint         k,
+    const vcl::uint    k,
     const std::string& gridName)
 {
     auto nearestAndDists = bruteForceKNearestFaces(mesh, points, k);
