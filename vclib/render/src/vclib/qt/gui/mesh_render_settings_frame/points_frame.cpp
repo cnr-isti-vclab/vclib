@@ -29,6 +29,8 @@
 
 namespace vcl::qt {
 
+using enum MeshRenderInfo::Points;
+
 PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
         mUI(new Ui::PointsFrame)

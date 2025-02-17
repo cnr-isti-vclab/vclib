@@ -29,6 +29,8 @@
 
 namespace vcl::qt {
 
+using enum MeshRenderInfo::Wireframe;
+
 WireframeFrame::WireframeFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
         mUI(new Ui::WireframeFrame)

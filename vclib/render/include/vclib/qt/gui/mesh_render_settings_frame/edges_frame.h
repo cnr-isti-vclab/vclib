@@ -39,8 +39,6 @@ class EdgesFrame : public GenericMeshRenderSettingsFrame
 {
     Q_OBJECT
 
-    using enum vcl::MeshRenderInfo::Edges;
-
     Ui::EdgesFrame* mUI;
 
 public:

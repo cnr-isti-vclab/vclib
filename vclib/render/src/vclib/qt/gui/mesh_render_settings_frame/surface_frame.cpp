@@ -29,6 +29,8 @@
 
 namespace vcl::qt {
 
+using enum MeshRenderInfo::Surface;
+
 SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
         mUI(new Ui::SurfaceFrame)

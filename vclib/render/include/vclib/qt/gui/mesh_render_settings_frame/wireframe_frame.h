@@ -39,8 +39,6 @@ class WireframeFrame : public GenericMeshRenderSettingsFrame
 {
     Q_OBJECT
 
-    using enum MeshRenderInfo::Wireframe;
-
     Ui::WireframeFrame* mUI;
 
 public:

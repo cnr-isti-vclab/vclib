@@ -39,8 +39,6 @@ class SurfaceFrame : public GenericMeshRenderSettingsFrame
 {
     Q_OBJECT
 
-    using enum MeshRenderInfo::Surface;
-
     Ui::SurfaceFrame* mUI;
 
 public:

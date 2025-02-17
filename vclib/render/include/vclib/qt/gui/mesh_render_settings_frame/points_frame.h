@@ -39,8 +39,6 @@ class PointsFrame : public GenericMeshRenderSettingsFrame
 {
     Q_OBJECT
 
-    using enum MeshRenderInfo::Points;
-
     Ui::PointsFrame* mUI;
 
 public:

@@ -29,6 +29,8 @@
 
 namespace vcl::qt {
 
+using enum MeshRenderInfo::Edges;
+
 EdgesFrame::EdgesFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
         mUI(new Ui::EdgesFrame)

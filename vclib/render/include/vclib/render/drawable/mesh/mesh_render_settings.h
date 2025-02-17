@@ -75,10 +75,10 @@ class MeshRenderSettings
     MeshRenderInfo mDrawMode; // current rendering settings
 
     float mPointWidth        = 3;
-    float mPointUserColor[4] = {1, 1, 0, 1}; // todo: change to uint
+    float mPointUserColor[4] = {1, 1, 0, 1}; // TODO: change to uint?
     uint  mSurfUserColor     = 0xFF808080;   // abgr
     int   mWrfWidth          = 1;
-    float mWrfUserColor[4]   = {0, 0, 0, 1}; // todo: change to uint
+    float mWrfUserColor[4]   = {0, 0, 0, 1}; // TODO: change to uint?
     int   mEdgesWidth        = 1;
     uint  mEdgesUserColor    = 0xFF000000; // abgr
 
@@ -787,6 +787,8 @@ private:
     {
         using enum MRI::Points;
 
+        mDrawMode.points().reset();
+
         if (canPoints(VISIBLE)) {
             if (!canSurface(MRI::Surface::VISIBLE))
                 setPoints(VISIBLE, true);
@@ -806,6 +808,8 @@ private:
     void setDefaultSurfaceSettingsFromCapability()
     {
         using enum MRI::Surface;
+
+        mDrawMode.surface().reset();
 
         if (canSurface(VISIBLE)) {
             setSurface(VISIBLE, true);
@@ -845,6 +849,8 @@ private:
     {
         using enum MRI::Wireframe;
 
+        mDrawMode.wireframe().reset();
+
         if (canWireframe(VISIBLE)) {
             if (canWireframe(SHADING_VERT)) {
                 setWireframe(SHADING_VERT);
@@ -860,6 +866,8 @@ private:
     void setDefaultEdgeSettingsFromCapability()
     {
         using enum MRI::Edges;
+
+        mDrawMode.edges().reset();
 
         if (canEdges(VISIBLE)) {
             setEdges(VISIBLE, true);
