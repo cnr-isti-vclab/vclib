@@ -60,6 +60,30 @@ auto constexpr makeExclusiveReangesArray(auto... args)
 class MeshRenderInfo
 {
 public:
+    enum class Buffers : uint {
+        VERTICES,
+        VERT_NORMALS,
+        VERT_COLORS,
+        VERT_TEXCOORDS,
+
+        TRIANGLES,
+        TRI_NORMALS,
+        TRI_COLORS,
+        WEDGE_TEXCOORDS,
+
+        WIREFRAME,
+
+        EDGES,
+        EDGE_COLORS,
+        EDGE_NORMALS,
+
+        TEXTURES,
+
+        MESH_UNIFORMS,
+
+        COUNT,
+    };
+
     /**
      * @brief List of primitives for which settings can be stored.
      */
@@ -73,12 +97,32 @@ public:
     };
 
 private:
+    using BuffersBitSetUnderlyingType = ushort;
+
+    static_assert(
+        sizeof(BuffersBitSetUnderlyingType) < (uint) Buffers::COUNT,
+        "BuffersBitSet is not able to store all enum Buffers values");
+
     bool mVisible;
 
     // settings for each primitive
     std::array<BitSet16, toUnderlying(Primitive::COUNT)> mSettings;
 
 public:
+    using BuffersBitSet = vcl::BitSet<BuffersBitSetUnderlyingType>;
+
+private:
+    static BuffersBitSet buffersAll() {
+        BuffersBitSet all;
+        all.set();
+        return all;
+    }
+
+public:
+    static const inline BuffersBitSet BUFFERS_NONE = BuffersBitSet();
+
+    static const inline BuffersBitSet BUFFERS_ALL = buffersAll();
+
     /**
      * @brief List of possible settings for the points primitive.
      */

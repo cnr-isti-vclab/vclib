@@ -31,7 +31,6 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
-#include <vclib/render/drawable/mesh/mesh_buffer_id.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/space/core/image.h>
 
@@ -42,7 +41,9 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshRenderBuffers
 {
-    BuffersToFill mBuffersToFill = BUFFERS_TO_FILL_ALL;
+    using MRI = MeshRenderInfo;
+
+    MRI::BuffersBitSet mBuffersToFill = MRI::BUFFERS_ALL;
 
     VertexBuffer mVertexCoordsBuffer;
     VertexBuffer mVertexNormalsBuffer;
@@ -72,8 +73,8 @@ public:
     MeshRenderBuffers() = default;
 
     MeshRenderBuffers(
-        const MeshType& mesh,
-        BuffersToFill   buffersToFill = BUFFERS_TO_FILL_ALL) :
+        const MeshType&    mesh,
+        MRI::BuffersBitSet buffersToFill = MRI::BUFFERS_ALL) :
             mBuffersToFill(buffersToFill)
     {
         createBGFXBuffers(mesh);
@@ -139,9 +140,11 @@ public:
     }
 
     void bindIndexBuffers(
-        MeshBufferId indexBufferToBind = MeshBufferId::TRIANGLES) const
+        MRI::Buffers indexBufferToBind = MRI::Buffers::TRIANGLES) const
     {
-        if (indexBufferToBind == MeshBufferId::TRIANGLES) {
+        using enum MRI::Buffers;
+
+        if (indexBufferToBind == TRIANGLES) {
             mTriangleIndexBuffer.bind();
 
             mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
@@ -151,14 +154,14 @@ public:
             mTriangleTextureIndexBuffer.bind(
                 VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
         }
-        else if (indexBufferToBind == MeshBufferId::EDGES) {
+        else if (indexBufferToBind == EDGES) {
             mEdgeIndexBuffer.bind();
 
             mEdgeNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
             mEdgeColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
         }
-        else if (indexBufferToBind == MeshBufferId::WIREFRAME) {
+        else if (indexBufferToBind == WIREFRAME) {
             mWireframeIndexBuffer.bind();
         }
     }
@@ -177,7 +180,7 @@ public:
 private:
     void createBGFXBuffers(const MeshType& mesh)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         std::vector<std::pair<uint, uint>>          vwm;
         std::list<uint>                             vtd;
@@ -277,7 +280,7 @@ private:
         const auto&     vtd,
         const auto&     ftr)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_NORMALS)]) {
@@ -309,7 +312,7 @@ private:
         const auto&     vtd,
         const auto&     ftr)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_COLORS)]) {
@@ -342,7 +345,7 @@ private:
         const auto&     vtd,
         const auto&     ftr)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             if (mBuffersToFill[toUnderlying(VERT_TEXCOORDS)]) {
@@ -374,7 +377,7 @@ private:
         const auto&     vtd,
         const auto&     ftr)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (mBuffersToFill[toUnderlying(WEDGE_TEXCOORDS)]) {
@@ -407,7 +410,7 @@ private:
         const auto&        ftr,
         TriPolyIndexBiMap& indexMap)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasFaces<MeshType>) {
             const uint NUM_TRIS = vcl::countTriangulatedTriangles(mesh);
@@ -428,7 +431,7 @@ private:
         const MeshType&          mesh,
         const TriPolyIndexBiMap& indexMap)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerFaceNormal<MeshType>) {
             if (mBuffersToFill[toUnderlying(TRI_NORMALS)]) {
@@ -456,7 +459,7 @@ private:
         const MeshType&          mesh,
         const TriPolyIndexBiMap& indexMap)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerFaceColor<MeshType>) {
             if (mBuffersToFill[toUnderlying(TRI_COLORS)]) {
@@ -484,7 +487,7 @@ private:
         const MeshType&          mesh,
         const TriPolyIndexBiMap& indexMap)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (mBuffersToFill[toUnderlying(WEDGE_TEXCOORDS)]) {
@@ -522,7 +525,7 @@ private:
 
     void createEdgeNormalsBuffer(const MeshType& mesh)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
             if (mBuffersToFill[toUnderlying(EDGE_NORMALS)]) {
@@ -546,7 +549,7 @@ private:
 
     void createEdgeColorsBuffer(const MeshType& mesh)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasPerEdgeColor<MeshType>) {
             if (mBuffersToFill[toUnderlying(EDGE_COLORS)]) {
@@ -569,7 +572,7 @@ private:
 
     void createWireframeIndicesBuffer(const MeshType& mesh)
     {
-        using enum MeshBufferId;
+        using enum MRI::Buffers;
 
         if constexpr (vcl::HasFaces<MeshType>) {
             const uint NUM_EDGES = vcl::countPerFaceVertexReferences(mesh);

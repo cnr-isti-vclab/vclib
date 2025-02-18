@@ -181,7 +181,7 @@ public:
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             if (bgfx::isValid(mProgramWireframe)) {
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(MeshBufferId::WIREFRAME);
+                mMRB.bindIndexBuffers(MRI::Buffers::WIREFRAME);
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
@@ -193,7 +193,7 @@ public:
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             if (bgfx::isValid(mProgramEdges)) {
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(MeshBufferId::EDGES);
+                mMRB.bindIndexBuffers(MRI::Buffers::EDGES);
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);

@@ -85,10 +85,13 @@ void DrawableAxis::updateMatrices(double size)
 
 void DrawableAxis::createAxis()
 {
-    BuffersToFill btf = {
-        toUnderlying(MeshBufferId::VERTICES),
-        toUnderlying(MeshBufferId::VERT_NORMALS),
-        toUnderlying(MeshBufferId::TRIANGLES)};
+    using MRI = MeshRenderInfo;
+    using enum MRI::Buffers;
+
+    MRI::BuffersBitSet btf = {
+        toUnderlying(VERTICES),
+        toUnderlying(VERT_NORMALS),
+        toUnderlying(TRIANGLES)};
 
     mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.first, btf);
 
