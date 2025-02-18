@@ -23,6 +23,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <vclib/algorithms.h>
 #include <vclib/meshes.h>
 #include <vclib/space.h>
 #include <vclib/views.h>
@@ -79,6 +80,56 @@ auto randomPoints(
         points[i] = vcl::Point3<ScalarType>(disX(gen), disY(gen), disZ(gen));
 
     return points;
+}
+
+template<vcl::MeshConcept MeshType>
+auto randomSpheres(
+    vcl::uint       n,
+    const MeshType& mesh,
+    std::size_t     seed = std::random_device()())
+{
+    using PointType       = MeshType::VertexType::CoordType;
+    using ScalarType      = PointType::ScalarType;
+
+    using VertDistrType   = std::uniform_int_distribution<vcl::uint>;
+    using NoiseDistrType  = std::uniform_real_distribution<ScalarType>;
+    using RadiusDistrType = std::normal_distribution<ScalarType>;
+
+    std::vector<vcl::Sphere<ScalarType>> spheres(n);
+
+    auto bbox = vcl::boundingBox(mesh);
+
+    ScalarType ext = bbox.diagonal() * 0.01;
+
+    std::cerr << "Random seed: " << seed << std::endl;
+
+    std::mt19937    gen(seed);
+
+    VertDistrType  disV(0, mesh.vertexNumber());
+    NoiseDistrType disX(-ext, ext);
+    NoiseDistrType disY(-ext, ext);
+    NoiseDistrType disZ(-ext, ext);
+
+    // parameters of normal distribution for radius of the sphere
+    double mu = bbox.diagonal() / 5;
+    double sigma = mu / 3; // less probability that the radius is negative
+
+    RadiusDistrType disR(mu, sigma);
+
+    for (vcl::uint i = 0; i < n; i++) {
+        // random vertex coordinate pertubated will be the center of the sphere
+        PointType p = mesh.vertex(disV(gen)).coord();
+        p += PointType(disX(gen), disY(gen), disZ(gen));
+
+        // random radius with normal distribution
+        ScalarType radius = disR(gen);
+        if (radius < 0)
+            radius = 0;
+
+        spheres[i] = vcl::Sphere<ScalarType>(p, radius);
+    }
+
+    return spheres;
 }
 
 template<

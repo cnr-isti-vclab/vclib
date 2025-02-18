@@ -28,7 +28,8 @@ project(vclib-test-${TEST_NAME})
 set(HEADERS
     common.h
     k_nearest.h
-    nearest.h)
+    nearest.h
+    sphere.h)
 
 set(SOURCES
     main.cpp)

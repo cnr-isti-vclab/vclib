@@ -22,6 +22,7 @@
 
 #include "k_nearest.h"
 #include "nearest.h"
+#include "sphere.h"
 
 using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
 using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
@@ -142,6 +143,66 @@ TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
         {
             kNearestFacesTest<vcl::StaticGrid3>(
                 pm, points, K_NEAREST, "StaticGrid");
+        }
+    }
+}
+
+TEMPLATE_TEST_CASE("Faces in spheres...", "", Meshes)
+{
+    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using PolyMesh = std::tuple_element_t<1, TestType>;
+
+    using namespace vcl;
+
+    const std::string MESH_PATH = VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj";
+
+    SECTION("TriMesh")
+    {
+        using PointType  = TriMesh::VertexType::CoordType;
+        using ScalarType = PointType::ScalarType;
+        using SphereType = Sphere<ScalarType>;
+
+        std::size_t seed = std::random_device()();
+
+        TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
+        vcl::updateBoundingBox(tm);
+
+        std::vector<SphereType> spheres =
+            randomSpheres(N_POINTS_TEST, tm, seed);
+
+        SECTION("HashTableGrid")
+        {
+            facesInSpheresTest<HSGrid3>(tm, spheres, "HashTableGrid");
+        }
+
+        SECTION("StaticGrid")
+        {
+            facesInSpheresTest<vcl::StaticGrid3>(tm, spheres, "StaticGrid");
+        }
+    }
+
+    SECTION("PolyMesh")
+    {
+        using PointType  = PolyMesh::VertexType::CoordType;
+        using ScalarType = PointType::ScalarType;
+        using SphereType = Sphere<ScalarType>;
+
+        std::size_t seed = std::random_device()();
+
+        PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
+        vcl::updateBoundingBox(pm);
+
+        std::vector<SphereType> spheres =
+            randomSpheres(N_POINTS_TEST, pm, seed);
+
+        SECTION("HashTableGrid")
+        {
+            facesInSpheresTest<HSGrid3>(pm, spheres, "HashTableGrid");
+        }
+
+        SECTION("StaticGrid")
+        {
+            facesInSpheresTest<vcl::StaticGrid3>(pm, spheres, "StaticGrid");
         }
     }
 }
