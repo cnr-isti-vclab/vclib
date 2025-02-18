@@ -29,9 +29,15 @@ using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
-static const vcl::uint N_POINTS_TEST = 200;
+static const vcl::uint N_POINTS_TEST = 50;
 
-TEMPLATE_TEST_CASE("Closest faces to points...", "", Meshes)
+TEMPLATE_TEST_CASE(
+    "Closest faces to points...",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -87,7 +93,13 @@ TEMPLATE_TEST_CASE("Closest faces to points...", "", Meshes)
     }
 }
 
-TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
+TEMPLATE_TEST_CASE(
+    "K nearest faces to points...",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -147,7 +159,13 @@ TEMPLATE_TEST_CASE("K nearest faces to points...", "", Meshes)
     }
 }
 
-TEMPLATE_TEST_CASE("Faces in spheres...", "", Meshes)
+TEMPLATE_TEST_CASE(
+    "Faces in spheres...",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;

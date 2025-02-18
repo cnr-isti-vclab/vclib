@@ -789,16 +789,18 @@ private:
         const Iterator&                              it,
         const Sphere<typename GridType::ScalarType>& s) const
     {
+        using PointType = GridType::PointType;
+
         const VT* vv = addressOfObj(it->second);
 
         bool test = false;
         if constexpr (PointConcept<VT> || VertexConcept<VT>) {
-            typename GridType::PointType p;
+            const PointType* p;
             if constexpr (PointConcept<VT>)
-                p = *vv;
+                p = vv;
             else
-                p = vv->coord();
-            test = vv && s.isInside(p);
+                p = &(vv->coord());
+            test = vv && s.isInside(*p);
         }
         else { // check if the bbox of the value intersects the sphere
             test = vv && s.intersects(boundingBox(*vv));
