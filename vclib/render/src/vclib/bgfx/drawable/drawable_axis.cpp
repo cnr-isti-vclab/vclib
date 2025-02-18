@@ -88,10 +88,7 @@ void DrawableAxis::createAxis()
     using MRI = MeshRenderInfo;
     using enum MRI::Buffers;
 
-    MRI::BuffersBitSet btf = {
-        toUnderlying(VERTICES),
-        toUnderlying(VERT_NORMALS),
-        toUnderlying(TRIANGLES)};
+    MRI::BuffersBitSet btf = {VERTICES, VERT_NORMALS, TRIANGLES};
 
     mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.first, btf);
 
