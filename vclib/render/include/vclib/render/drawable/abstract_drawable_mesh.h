@@ -24,8 +24,7 @@
 #define VCL_RENDER_DRAWABLE_ABSTRACT_DRAWABLE_MESH_H
 
 #include "drawable_object.h"
-
-#include <vclib/render/drawable/mesh/mesh_render_settings.h>
+#include "mesh/mesh_render_settings.h"
 
 namespace vcl {
 
@@ -46,7 +45,9 @@ public:
 
     const MeshRenderSettings& renderSettings() const { return mMRS; }
 
-    virtual void updateBuffers() = 0;
+    virtual void updateBuffers(
+        MeshRenderInfo::BuffersBitSet buffersToUpdate =
+            MeshRenderInfo::BUFFERS_ALL) = 0;
 
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
 

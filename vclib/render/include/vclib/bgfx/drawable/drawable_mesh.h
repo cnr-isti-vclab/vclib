@@ -37,6 +37,8 @@ namespace vcl {
 template<MeshConcept MeshType>
 class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 {
+    using MRI = MeshRenderInfo;
+
     Box3d mBoundingBox;
 
     MeshRenderBuffers<MeshType> mMRB;
@@ -100,7 +102,8 @@ public:
         return *this;
     }
 
-    void updateBuffers() override
+    void updateBuffers(
+        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = MeshType::name();
@@ -121,7 +124,7 @@ public:
             mBoundingBox = vcl::boundingBox(*this);
         }
 
-        mMRB.update(*this);
+        mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
@@ -148,8 +151,6 @@ public:
 
     void draw(uint viewId) const override
     {
-        using MRI = MeshRenderInfo;
-
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;

@@ -37,6 +37,8 @@ int main(int argc, char** argv)
     // load and set up a drawable mesh
     auto m = getDrawableMesh<vcl::TriMesh>();
 
+    using enum vcl::MeshRenderInfo::Buffers;
+
     m.enablePerFaceColor();
     for (auto& f : m.faces()) {
         if (f.index() % 3 == 0)
@@ -46,10 +48,10 @@ int main(int argc, char** argv)
         else
             f.color() = vcl::Color::Blue;
     }
-    m.updateBuffers();
+    m.updateBuffers({TRI_COLORS});
 
     auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(m);
+    v->pushBack(std::move(m));
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
@@ -61,7 +63,7 @@ int main(int argc, char** argv)
     vcl::scale(drawable, 0.5f);
     vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
 
-    drawable.updateBuffers();
+    drawable.updateBuffers({VERTICES, VERT_NORMALS});
     v->pushBack(std::move(drawable));
 
     mv.setDrawableObjectVector(v);

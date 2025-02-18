@@ -107,7 +107,8 @@ public:
 
     ~DrawableMeshOpenGL2() = default;
 
-    void updateBuffers() override
+    void updateBuffers(
+        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = MeshType::name();
@@ -129,7 +130,7 @@ public:
         }
 
         unbindTextures();
-        mMRD = MeshRenderData<MeshType>(*this);
+        mMRD.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         bindTextures();
     }
