@@ -29,7 +29,7 @@ using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
-static const vcl::uint N_POINTS_TEST = 50;
+static const vcl::uint N_POINTS_TEST = 200;
 
 TEMPLATE_TEST_CASE("Closest faces to points...", "", Meshes)
 {
