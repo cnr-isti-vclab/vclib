@@ -890,7 +890,7 @@ private:
                 for (uint i = 0; i < currentIntervalBox.min().DIM; ++i) {
                     if (currentIntervalBox.min()(i) != 0)
                         currentIntervalBox.min()(i)--;
-                    if (currentIntervalBox.max()(i) != GridType::cellNumber(i))
+                    if (currentIntervalBox.max()(i) != GridType::cellNumber(i) - 1)
                         currentIntervalBox.max()(i)++;
                 }
             }
