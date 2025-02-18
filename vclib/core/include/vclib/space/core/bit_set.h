@@ -351,6 +351,10 @@ public:
     /// @private
     template<typename U>
     friend std::ostream& operator<<(std::ostream& os, const BitSet<U>& bs);
+
+private:
+    // constructor to initialize the BitSet with a given integral value
+    BitSet(T bits) : mBits(bits) {}
 };
 
 /**
