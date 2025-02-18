@@ -49,7 +49,6 @@
 #define VCL_MRS_SURF_COLOR_MESH     8 // mesh color for surface
 #define VCL_MRS_SURF_COLOR_USER     9 // user color for surface
 
-
 // wireframe
 #define VCL_MRS_DRAW_WIREFRAME         0 // draw wireframe
 #define VCL_MRS_WIREFRAME_SHADING_NONE 1 // no shading
@@ -57,7 +56,6 @@
 #define VCL_MRS_WIREFRAME_COLOR_VERT   3 // vert color for wireframe
 #define VCL_MRS_WIREFRAME_COLOR_MESH   4 // mesh color for wireframe
 #define VCL_MRS_WIREFRAME_COLOR_USER   5 // user color for wireframe
-
 
 // edges
 #define VCL_MRS_DRAW_EDGES           0 // draw edges
@@ -68,6 +66,5 @@
 #define VCL_MRS_EDGES_COLOR_EDGE     5 // edge color for edges
 #define VCL_MRS_EDGES_COLOR_MESH     6 // mesh color for edges
 #define VCL_MRS_EDGES_COLOR_USER     7 // user color for edges
-
 
 #endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_MACROS_H

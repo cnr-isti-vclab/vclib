@@ -322,8 +322,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 
                 switch (n) {
                 case 0:
-                    ImGui::BeginDisabled(
-                        !settings.canSurface(COLOR_VERTEX));
+                    ImGui::BeginDisabled(!settings.canSurface(COLOR_VERTEX));
                     if (ImGui::Selectable(surfColorNames[n], selected))
                         settings.setSurface(COLOR_VERTEX);
                     ImGui::EndDisabled();
@@ -348,8 +347,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
                     ImGui::EndDisabled();
                     break;
                 case 4:
-                    ImGui::BeginDisabled(
-                        !settings.canSurface(COLOR_WEDGE_TEX));
+                    ImGui::BeginDisabled(!settings.canSurface(COLOR_WEDGE_TEX));
                     if (ImGui::Selectable(surfColorNames[n], selected))
                         settings.setSurface(COLOR_WEDGE_TEX);
                     ImGui::EndDisabled();
@@ -449,15 +447,13 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 
                 switch (n) {
                 case 0:
-                    ImGui::BeginDisabled(
-                        !settings.canWireframe(COLOR_VERTEX));
+                    ImGui::BeginDisabled(!settings.canWireframe(COLOR_VERTEX));
                     if (ImGui::Selectable(wireColorNames[n], selected))
                         settings.setWireframe(COLOR_VERTEX);
                     ImGui::EndDisabled();
                     break;
                 case 1:
-                    ImGui::BeginDisabled(
-                        !settings.canWireframe(COLOR_MESH));
+                    ImGui::BeginDisabled(!settings.canWireframe(COLOR_MESH));
                     if (ImGui::Selectable(wireColorNames[n], selected))
                         settings.setWireframe(COLOR_MESH);
                     ImGui::EndDisabled();

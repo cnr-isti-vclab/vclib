@@ -72,7 +72,7 @@ class MeshRenderSettings
     using MRI = MeshRenderInfo;
 
     MeshRenderInfo mCapability; // capabilities of the mesh
-    MeshRenderInfo mDrawMode; // current rendering settings
+    MeshRenderInfo mDrawMode;   // current rendering settings
 
     float mPointWidth        = 3;
     float mPointUserColor[4] = {1, 1, 0, 1}; // TODO: change to uint?
@@ -113,10 +113,7 @@ public:
      * @brief Returns the current draw mode as a MeshRenderInfo object.
      * @return the current draw mode as a MeshRenderInfo object.
      */
-    MeshRenderInfo drawMode() const
-    {
-        return mDrawMode;
-    }
+    MeshRenderInfo drawMode() const { return mDrawMode; }
 
     bool operator==(const MeshRenderSettings&) const = default;
 
@@ -128,10 +125,7 @@ public:
      * @brief Returns whether the mesh can be visible.
      * @return `true` if the mesh can be visible, `false` otherwise.
      */
-    bool canBeVisible() const
-    {
-        return mCapability.visible();
-    }
+    bool canBeVisible() const { return mCapability.visible(); }
 
     /**
      * @brief Returns the capability of a given option for the given primitive.
@@ -670,7 +664,8 @@ public:
                     if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                         if (vcl::isPerVertexNormalAvailable(m)) {
                             setSurfaceCapability(MRI::Surface::SHADING_SMOOTH);
-                            setWireframeCapability(MRI::Wireframe::SHADING_VERT);
+                            setWireframeCapability(
+                                MRI::Wireframe::SHADING_VERT);
                         }
                     }
 
@@ -682,19 +677,22 @@ public:
                     if constexpr (vcl::HasPerVertexColor<MeshType>) {
                         if (vcl::isPerVertexColorAvailable(m)) {
                             setSurfaceCapability(MRI::Surface::COLOR_VERTEX);
-                            setWireframeCapability(MRI::Wireframe::COLOR_VERTEX);
+                            setWireframeCapability(
+                                MRI::Wireframe::COLOR_VERTEX);
                         }
                     }
 
                     if constexpr (vcl::HasTexturePaths<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m))
-                                setSurfaceCapability(MRI::Surface::COLOR_VERTEX_TEX);
+                                setSurfaceCapability(
+                                    MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m))
-                                setSurfaceCapability(MRI::Surface::COLOR_WEDGE_TEX);
+                                setSurfaceCapability(
+                                    MRI::Surface::COLOR_WEDGE_TEX);
                         }
                     }
                 }

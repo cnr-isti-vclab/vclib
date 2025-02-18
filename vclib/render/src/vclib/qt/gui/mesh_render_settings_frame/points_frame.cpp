@@ -98,10 +98,8 @@ void PointsFrame::updateFrameFromSettings()
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isPoints(VISIBLE));
 
-        mUI->shadingVertexRadioButton->setEnabled(
-            mMRS.canPoints(SHADING_VERT));
-        mUI->shadingVertexRadioButton->setChecked(
-            mMRS.isPoints(SHADING_VERT));
+        mUI->shadingVertexRadioButton->setEnabled(mMRS.canPoints(SHADING_VERT));
+        mUI->shadingVertexRadioButton->setChecked(mMRS.isPoints(SHADING_VERT));
         mUI->shadingNoneRadioButton->setChecked(mMRS.isPoints(SHADING_NONE));
 
         // todo

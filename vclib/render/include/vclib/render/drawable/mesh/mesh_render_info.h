@@ -336,8 +336,8 @@ public:
     }
 
     /**
-     * @brief Returns pair representing the range in the Wireframe enumeration of
-     * the mutual exclusive settings for the given setting.
+     * @brief Returns pair representing the range in the Wireframe enumeration
+     * of the mutual exclusive settings for the given setting.
      *
      * If the given value does not belong to any range, the function returns a
      * pair having the same value as first and second element.
