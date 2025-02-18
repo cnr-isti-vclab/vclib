@@ -123,7 +123,9 @@ void kNearestFacesTest(
 
     for (vcl::uint i = 0; i < points.size(); i++) {
         for (vcl::uint j = 0; j < k; j++) {
-            if (nearestAndDists[i][j].second != nearestGrid[i][j].second) {
+            auto distGrid = nearestGrid[i][j].second;
+            auto dist     = nearestAndDists[i][j].second;
+            if (!vcl::epsilonEquals(dist, distGrid)) {
                 std::cerr << "Error point " << i << std::endl;
                 std::cerr << "Point: " << points[i] << std::endl;
                 std::cerr << j << " closest\n";
@@ -134,7 +136,7 @@ void kNearestFacesTest(
                           << " FaceGrid: " << nearestGrid[i][j].first
                           << std::endl;
             }
-            REQUIRE(nearestAndDists[i][j].second == nearestGrid[i][j].second);
+            REQUIRE(vcl::epsilonEquals(dist, distGrid));
         }
     }
 }

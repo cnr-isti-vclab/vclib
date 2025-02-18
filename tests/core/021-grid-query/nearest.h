@@ -99,7 +99,7 @@ void closestFacesTest(
         gridNearestFaces(grid, points, meshName<MeshType>(), gridName);
 
     for (vcl::uint i = 0; i < points.size(); i++) {
-        if (dists[i] != distsGrid[i]) {
+        if (!vcl::epsilonEquals(dists[i], distsGrid[i])) {
             std::cerr << "Error point " << i << std::endl;
             std::cerr << "coord: \n" << points[i] << std::endl;
             std::cerr << "cell: \n";
@@ -109,7 +109,7 @@ void closestFacesTest(
             std::cerr << "computed closest: " << nearest[i]
                       << " grid closest: " << nearestGrid[i] << std::endl;
         }
-        REQUIRE(dists[i] == distsGrid[i]);
+        REQUIRE(vcl::epsilonEquals(dists[i], distsGrid[i]));
     }
 }
 
