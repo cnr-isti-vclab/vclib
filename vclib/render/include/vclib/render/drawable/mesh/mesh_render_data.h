@@ -63,38 +63,17 @@ class MeshRenderData
     // and the triangle faces
     TriPolyIndexBiMap mIndexMap;
 
-protected:
     MRI::BuffersBitSet mBuffersToFill = MRI::BUFFERS_ALL;
 
-    MeshRenderData() = default;
-
-    MeshRenderData(
-        const MeshType&    mesh,
-        MRI::BuffersBitSet buffersToFill = MRI::BUFFERS_ALL) :
-            mBuffersToFill(buffersToFill)
-    {
-        preUpdate(mesh);
-    }
-
-    void swap(MeshRenderData& other)
-    {
-        using std::swap;
-        swap(mNumVerts, other.mNumVerts);
-        swap(mNumTris, other.mNumTris);
-        swap(mVertWedgeMap, other.mVertWedgeMap);
-        swap(mVertsToDuplicate, other.mVertsToDuplicate);
-        swap(mFacesToReassign, other.mFacesToReassign);
-        swap(mIndexMap, other.mIndexMap);
-        swap(mBuffersToFill, other.mBuffersToFill);
-    }
-
-    void preUpdate(
+public:
+    void update(
         const MeshType&    mesh,
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL)
     {
         using enum MRI::Buffers;
 
         MRI::BuffersBitSet btu = mBuffersToFill & buffersToUpdate;
+
 
         if (btu[toUnderlying(VERTICES)] || btu[toUnderlying(WEDGE_TEXCOORDS)] ||
             btu[toUnderlying(TRIANGLES)]) {
@@ -121,13 +100,152 @@ protected:
             if (btu[toUnderlying(WIREFRAME)])
                 nWireframeLines = countPerFaceVertexReferences(mesh);
         }
+
+        if (btu[toUnderlying(VERTICES)]) {
+            // vertex buffer (coordinates)
+            createVertexCoordsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(VERT_NORMALS)]) {
+            // vertex buffer (normals)
+            createVertexNormalsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(VERT_COLORS)]) {
+            // vertex buffer (colors)
+            createVertexColorsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(VERT_TEXCOORDS)]) {
+            // vertex buffer (UVs)
+            createVertexTexCoordsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
+            // vertex wedges buffer (duplicated vertices)
+            createWedgeTexCoordsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(TRIANGLES)]) {
+            // triangle index buffer
+            createTriangleIndicesBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(TRI_NORMALS)]) {
+            // triangle normal buffer
+            createTriangleNormalsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(TRI_COLORS)]) {
+            // triangle color buffer
+            createTriangleColorsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(VERT_TEXCOORDS)]) {
+            // triangle vertex texture indices buffer
+            createVertexTextureIndicesBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
+            // triangle wedge texture indices buffer
+            createWedgeTextureIndicesBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(EDGES)]) {
+            // edge index buffer
+            createEdgeIndicesBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(EDGE_NORMALS)]) {
+            // edge normal buffer
+            createEdgeNormalsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(EDGE_COLORS)]) {
+            // edge color buffer
+            createEdgeColorsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(WIREFRAME)]) {
+            // wireframe index buffer
+            createWireframeIndicesBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(TEXTURES)]) {
+            // textures
+            createTextureUnits(mesh);
+        }
+
+        if (btu[toUnderlying(MESH_UNIFORMS)]) {
+            // mesh uniforms
+            createMeshUniforms(mesh);
+        }
     }
+
+protected:
+    MeshRenderData() = default;
+
+    MeshRenderData(MRI::BuffersBitSet buffersToFill) :
+            mBuffersToFill(buffersToFill)
+    {
+    }
+
+    void swap(MeshRenderData& other)
+    {
+        using std::swap;
+        swap(mNumVerts, other.mNumVerts);
+        swap(mNumTris, other.mNumTris);
+        swap(mVertWedgeMap, other.mVertWedgeMap);
+        swap(mVertsToDuplicate, other.mVertsToDuplicate);
+        swap(mFacesToReassign, other.mFacesToReassign);
+        swap(mIndexMap, other.mIndexMap);
+        swap(mBuffersToFill, other.mBuffersToFill);
+    }
+
+    // functions that must be used by derived classes to allocate the buffers
 
     uint numVerts() const { return mNumVerts; }
 
     uint numTris() const { return mNumTris; }
 
     uint numWireframeLines() const { return nWireframeLines; }
+
+    // functions that must be implemented by the derived classes to create the
+    // buffers
+
+    virtual void createVertexCoordsBuffer(const MeshType&) = 0;
+
+    virtual void createVertexNormalsBuffer(const MeshType&) = 0;
+
+    virtual void createVertexColorsBuffer(const MeshType&) {}
+
+    virtual void createVertexTexCoordsBuffer(const MeshType&) {}
+
+    virtual void createWedgeTexCoordsBuffer(const MeshType&) {}
+
+    virtual void createTriangleIndicesBuffer(const MeshType&) = 0;
+
+    virtual void createTriangleNormalsBuffer(const MeshType&) {}
+
+    virtual void createTriangleColorsBuffer(const MeshType&) {}
+
+    virtual void createVertexTextureIndicesBuffer(const MeshType&) {}
+
+    virtual void createWedgeTextureIndicesBuffer(const MeshType&) {}
+
+    virtual void createEdgeIndicesBuffer(const MeshType&) {}
+
+    virtual void createEdgeNormalsBuffer(const MeshType&) {}
+
+    virtual void createEdgeColorsBuffer(const MeshType&) {}
+
+    virtual void createWireframeIndicesBuffer(const MeshType&) {}
+
+    virtual void createTextureUnits(const MeshType&) {}
+
+    virtual void createMeshUniforms(const MeshType&) {}
+
+    // utility functions to fill the buffers
 
     void fillVertexCoords(const MeshType& mesh, auto* data)
     {

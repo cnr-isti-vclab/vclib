@@ -72,9 +72,9 @@ public:
     MeshRenderBuffers(
         const MeshType&    mesh,
         MRI::BuffersBitSet buffersToFill = MRI::BUFFERS_ALL) :
-            Base(mesh, buffersToFill)
+            Base(buffersToFill)
     {
-        createBGFXBuffers(mesh, buffersToFill);
+        Base::update(mesh, buffersToFill);
     }
 
     MeshRenderBuffers(const MeshRenderBuffers& other) = delete;
@@ -111,13 +111,6 @@ public:
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
-
-    void update(
-        const MeshType&    mesh,
-        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL)
-    {
-        createBGFXBuffers(mesh, buffersToUpdate);
-    }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
@@ -174,93 +167,7 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
-    void createBGFXBuffers(
-        const MeshType&    mesh,
-        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL)
-    {
-        using enum MRI::Buffers;
-
-        Base::preUpdate(mesh, buffersToUpdate);
-
-        MRI::BuffersBitSet btu = Base::mBuffersToFill & buffersToUpdate;
-
-        if (btu[toUnderlying(VERTICES)]) {
-            // vertex buffer (coordinates)
-            createVertexCoordsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(VERT_NORMALS)]) {
-            // vertex buffer (normals)
-            createVertexNormalsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(VERT_COLORS)]) {
-            // vertex buffer (colors)
-            createVertexColorsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(VERT_TEXCOORDS)]) {
-            // vertex buffer (UVs)
-            createVertexTexCoordsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
-            // vertex wedges buffer (duplicated vertices)
-            createWedgeTexCoordsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TRIANGLES)]) {
-            // triangle index buffer
-            createTriangleIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TRI_NORMALS)]) {
-            // triangle normal buffer
-            createTriangleNormalsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TRI_COLORS)]) {
-            // triangle color buffer
-            createTriangleColorsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
-            // triangle wedge texture indices buffer
-            createWedgeTextureIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(EDGES)]) {
-            // edge index buffer
-            createEdgeIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(EDGE_NORMALS)]) {
-            // edge normal buffer
-            createEdgeNormalsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(EDGE_COLORS)]) {
-            // edge color buffer
-            createEdgeColorsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(WIREFRAME)]) {
-            // wireframe index buffer
-            createWireframeIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TEXTURES)]) {
-            // textures
-            createTextureUnits(mesh);
-        }
-
-        if (btu[toUnderlying(MESH_UNIFORMS)]) {
-            // mesh uniforms
-            mMeshUniforms.update(mesh);
-        }
-    }
-
-    void createVertexCoordsBuffer(const MeshType& mesh)
+    void createVertexCoordsBuffer(const MeshType& mesh) override final
     {
         uint nv = Base::numVerts();
 
@@ -279,7 +186,7 @@ private:
             releaseFn);
     }
 
-    void createVertexNormalsBuffer(const MeshType& mesh)
+    void createVertexNormalsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -304,7 +211,7 @@ private:
         }
     }
 
-    void createVertexColorsBuffer(const MeshType& mesh)
+    void createVertexColorsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -329,7 +236,7 @@ private:
         }
     }
 
-    void createVertexTexCoordsBuffer(const MeshType& mesh)
+    void createVertexTexCoordsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -354,7 +261,7 @@ private:
         }
     }
 
-    void createWedgeTexCoordsBuffer(const MeshType& mesh)
+    void createWedgeTexCoordsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -379,7 +286,7 @@ private:
         }
     }
 
-    void createTriangleIndicesBuffer(const MeshType& mesh)
+    void createTriangleIndicesBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -395,7 +302,7 @@ private:
         }
     }
 
-    void createTriangleNormalsBuffer(const MeshType& mesh)
+    void createTriangleNormalsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -418,7 +325,7 @@ private:
         }
     }
 
-    void createTriangleColorsBuffer(const MeshType& mesh)
+    void createTriangleColorsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -441,7 +348,7 @@ private:
         }
     }
 
-    void createWedgeTextureIndicesBuffer(const MeshType& mesh)
+    void createWedgeTextureIndicesBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -464,7 +371,7 @@ private:
         }
     }
 
-    void createEdgeIndicesBuffer(const MeshType& mesh)
+    void createEdgeIndicesBuffer(const MeshType& mesh) override final
     {
         if constexpr (vcl::HasEdges<MeshType>) {
             auto [buffer, releaseFn] =
@@ -476,7 +383,7 @@ private:
         }
     }
 
-    void createEdgeNormalsBuffer(const MeshType& mesh)
+    void createEdgeNormalsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -498,7 +405,7 @@ private:
         }
     }
 
-    void createEdgeColorsBuffer(const MeshType& mesh)
+    void createEdgeColorsBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -519,7 +426,7 @@ private:
         }
     }
 
-    void createWireframeIndicesBuffer(const MeshType& mesh)
+    void createWireframeIndicesBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
 
@@ -536,7 +443,7 @@ private:
         }
     }
 
-    void createTextureUnits(const MeshType& mesh)
+    void createTextureUnits(const MeshType& mesh) override final
     {
         if constexpr (vcl::HasTexturePaths<MeshType>) {
             mTextureUnits.clear();
@@ -577,6 +484,11 @@ private:
                 mTextureUnits.push_back(std::move(tu));
             }
         }
+    }
+
+    void createMeshUniforms(const MeshType& mesh) override final
+    {
+        mMeshUniforms.update(mesh);
     }
 
     template<typename T>
