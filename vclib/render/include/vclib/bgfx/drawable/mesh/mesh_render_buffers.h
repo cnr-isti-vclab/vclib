@@ -25,12 +25,10 @@
 
 #include "mesh_render_buffers_macros.h"
 
-#include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
-#include <vclib/algorithms/mesh/import_export/export_buffer.h>
-#include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
+#include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/space/core/image.h>
 
@@ -39,11 +37,10 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class MeshRenderBuffers
+class MeshRenderBuffers : public MeshRenderData<MeshType>
 {
+    using Base = MeshRenderData<MeshType>;
     using MRI = MeshRenderInfo;
-
-    MRI::BuffersBitSet mBuffersToFill = MRI::BUFFERS_ALL;
 
     VertexBuffer mVertexCoordsBuffer;
     VertexBuffer mVertexNormalsBuffer;
@@ -69,37 +66,13 @@ class MeshRenderBuffers
 
     DrawableMeshUniforms mMeshUniforms;
 
-    // data used when vertices are duplicated for per-face wedge texcoords:
-
-    // vector that tells, for each non-duplicated vertex, which wedges it
-    // belongs to each pair is the face index and the wedge index in the face
-    // allows to access the wedge texcoords for each non-duplicated vertex
-    std::vector<std::pair<uint, uint>> mVertWedgeMap;
-
-    // the list of vertices that has been duplicated (each element of the list
-    // is the index of the vertex to duplicate)
-    std::list<uint> mVertsToDuplicate;
-
-    // a list that tells, for each duplicated vertex, the list of faces that
-    // must be reassigned to the corresponding duplicated vertex
-    // each duplicated vertex has a list of pairs face/vertex index in the face
-    // that must be/have been reassigned to the duplicated vertex
-    std::list<std::list<std::pair<uint, uint>>> mFacesToReassign;
-
-    // data used to manage the mapping beteween the original polygonal faces
-    // and the triangle faces
-
-    // map that stores the correspondence between the original polygonal faces
-    // and the triangle faces
-    TriPolyIndexBiMap mIndexMap;
-
 public:
     MeshRenderBuffers() = default;
 
     MeshRenderBuffers(
         const MeshType&    mesh,
         MRI::BuffersBitSet buffersToFill = MRI::BUFFERS_ALL) :
-            mBuffersToFill(buffersToFill)
+            Base(mesh, buffersToFill)
     {
         createBGFXBuffers(mesh, buffersToFill);
     }
@@ -107,8 +80,6 @@ public:
     MeshRenderBuffers(const MeshRenderBuffers& other) = delete;
 
     MeshRenderBuffers(MeshRenderBuffers&& other) { swap(other); }
-
-    ~MeshRenderBuffers() { destroyBGFXBuffers(); }
 
     MeshRenderBuffers& operator=(const MeshRenderBuffers& other) = delete;
 
@@ -121,7 +92,7 @@ public:
     void swap(MeshRenderBuffers& other)
     {
         using std::swap;
-        swap(mBuffersToFill, other.mBuffersToFill);
+        Base::swap(other);
         swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
         swap(mVertexNormalsBuffer, other.mVertexNormalsBuffer);
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
@@ -137,10 +108,6 @@ public:
         swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
         swap(mTextureUnits, other.mTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
-        swap(mVertWedgeMap, other.mVertWedgeMap);
-        swap(mVertsToDuplicate, other.mVertsToDuplicate);
-        swap(mFacesToReassign, other.mFacesToReassign);
-        swap(mIndexMap, other.mIndexMap);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -149,7 +116,6 @@ public:
         const MeshType&    mesh,
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL)
     {
-        destroyBGFXBuffers(buffersToUpdate);
         createBGFXBuffers(mesh, buffersToUpdate);
     }
 
@@ -214,24 +180,9 @@ private:
     {
         using enum MRI::Buffers;
 
-        MRI::BuffersBitSet btu = mBuffersToFill & buffersToUpdate;
+        Base::preUpdate(mesh, buffersToUpdate);
 
-        if (btu[toUnderlying(VERTICES)] || btu[toUnderlying(WEDGE_TEXCOORDS)] ||
-            btu[toUnderlying(TRIANGLES)]) {
-            mVertWedgeMap.clear();
-            mVertsToDuplicate.clear();
-            mFacesToReassign.clear();
-
-            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                if (mesh.isPerFaceWedgeTexCoordsEnabled()) {
-                    countVerticesToDuplicateByWedgeTexCoords(
-                        mesh,
-                        mVertWedgeMap,
-                        mVertsToDuplicate,
-                        mFacesToReassign);
-                }
-            }
-        }
+        MRI::BuffersBitSet btu = Base::mBuffersToFill & buffersToUpdate;
 
         if (btu[toUnderlying(VERTICES)]) {
             // vertex buffer (coordinates)
@@ -311,13 +262,12 @@ private:
 
     void createVertexCoordsBuffer(const MeshType& mesh)
     {
-        uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+        uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
             getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
-        vertexCoordsToBuffer(mesh, buffer);
-        appendDuplicateVertexCoordsToBuffer(mesh, mVertsToDuplicate, buffer);
+        Base::fillVertexCoords(mesh, buffer);
 
         mVertexCoordsBuffer.create(
             buffer,
@@ -335,14 +285,12 @@ private:
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (vcl::isPerVertexNormalAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+                uint nv = Base::numVerts();
 
                 auto [buffer, releaseFn] =
                     getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
-                vertexNormalsToBuffer(mesh, buffer);
-                appendDuplicateVertexNormalsToBuffer(
-                    mesh, mVertsToDuplicate, buffer);
+                Base::fillVertexNormals(mesh, buffer);
 
                 mVertexNormalsBuffer.create(
                     buffer,
@@ -362,14 +310,12 @@ private:
 
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (vcl::isPerVertexColorAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+                uint nv = Base::numVerts();
 
                 auto [buffer, releaseFn] =
                     getAllocatedBufferAndReleaseFn<uint>(nv);
 
-                vertexColorsToBuffer(mesh, buffer, Color::Format::ABGR);
-                appendDuplicateVertexColorsToBuffer(
-                    mesh, mVertsToDuplicate, buffer, Color::Format::ABGR);
+                Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
                 mVertexColorsBuffer.create(
                     buffer,
@@ -389,14 +335,12 @@ private:
 
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             if (vcl::isPerVertexTexCoordAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+                uint nv = Base::numVerts();
 
                 auto [buffer, releaseFn] =
                     getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
-                vertexTexCoordsToBuffer(mesh, buffer);
-                appendDuplicateVertexTexCoordsToBuffer(
-                    mesh, mVertsToDuplicate, buffer);
+                Base::fillVertexTexCoords(mesh, buffer);
 
                 mVertexUVBuffer.create(
                     buffer,
@@ -416,13 +360,12 @@ private:
 
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+                uint nv = Base::numVerts();
 
                 auto [buffer, releaseFn] =
                     getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
-                wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
-                    mesh, mVertWedgeMap, mFacesToReassign, buffer);
+                Base::fillWedgeTexCoords(mesh, buffer);
 
                 mVertexWedgeUVBuffer.create(
                     buffer,
@@ -441,21 +384,14 @@ private:
         using enum MRI::Buffers;
 
         if constexpr (vcl::HasFaces<MeshType>) {
-            const uint NUM_TRIS = vcl::countTriangulatedTriangles(mesh);
+            uint nt = Base::numTris();
 
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(NUM_TRIS * 3);
+                getAllocatedBufferAndReleaseFn<uint>(nt * 3);
 
-            triangulatedFaceIndicesToBuffer(
-                mesh,
-                buffer,
-                mIndexMap,
-                MatrixStorageType::ROW_MAJOR,
-                NUM_TRIS);
-            replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
-                mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
+            Base::fillTriangleIndices(mesh, buffer);
 
-            mTriangleIndexBuffer.create(buffer, NUM_TRIS * 3, true, releaseFn);
+            mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
         }
     }
 
@@ -465,17 +401,16 @@ private:
 
         if constexpr (vcl::HasPerFaceNormal<MeshType>) {
             if (vcl::isPerFaceNormalAvailable(mesh)) {
-                const uint NUM_TRIS = mIndexMap.triangleNumber();
+                uint nt = Base::numTris();
 
                 auto [buffer, releaseFn] =
-                    getAllocatedBufferAndReleaseFn<float>(NUM_TRIS * 3);
+                    getAllocatedBufferAndReleaseFn<float>(nt * 3);
 
-                triangulatedFaceNormalsToBuffer(
-                    mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR);
+                Base::fillTriangleNormals(mesh, buffer);
 
                 mTriangleNormalBuffer.createForCompute(
                     buffer,
-                    NUM_TRIS * 3,
+                    nt * 3,
                     PrimitiveType::FLOAT,
                     bgfx::Access::Read,
                     releaseFn);
@@ -489,17 +424,16 @@ private:
 
         if constexpr (vcl::HasPerFaceColor<MeshType>) {
             if (vcl::isPerFaceColorAvailable(mesh)) {
-                const uint NUM_TRIS = mIndexMap.triangleNumber();
+                uint nt = Base::numTris();
 
                 auto [buffer, releaseFn] =
-                    getAllocatedBufferAndReleaseFn<uint>(NUM_TRIS);
+                    getAllocatedBufferAndReleaseFn<uint>(nt);
 
-                triangulatedFaceColorsToBuffer(
-                    mesh, buffer, mIndexMap, Color::Format::ABGR);
+                Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
                 mTriangleColorBuffer.createForCompute(
                     buffer,
-                    NUM_TRIS,
+                    nt,
                     PrimitiveType::UINT,
                     bgfx::Access::Read,
                     releaseFn);
@@ -513,17 +447,16 @@ private:
 
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                const uint NUM_TRIS = mIndexMap.triangleNumber();
+                uint nt = Base::numTris();
 
                 auto [buffer, releaseFn] =
-                    getAllocatedBufferAndReleaseFn<uint>(NUM_TRIS);
+                    getAllocatedBufferAndReleaseFn<uint>(nt);
 
-                triangulatedFaceWedgeTexCoordIndicesToBuffer(
-                    mesh, buffer, mIndexMap);
+                Base::fillWedgeTextureIndices(mesh, buffer);
 
                 mTriangleTextureIndexBuffer.createForCompute(
                     buffer,
-                    NUM_TRIS,
+                    nt,
                     PrimitiveType::UINT,
                     bgfx::Access::Read,
                     releaseFn);
@@ -537,7 +470,7 @@ private:
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint>(mesh.edgeNumber() * 2);
 
-            edgeIndicesToBuffer(mesh, buffer);
+            Base::fillEdgeIndices(mesh, buffer);
 
             mEdgeIndexBuffer.create(buffer, mesh.edgeNumber() * 2);
         }
@@ -553,7 +486,7 @@ private:
                     getAllocatedBufferAndReleaseFn<float>(
                         mesh.edgeNumber() * 3);
 
-                edgeNormalsToBuffer(mesh, buffer);
+                Base::fillEdgeNormals(mesh, buffer);
 
                 mEdgeNormalBuffer.createForCompute(
                     buffer,
@@ -574,7 +507,7 @@ private:
                 auto [buffer, releaseFn] =
                     getAllocatedBufferAndReleaseFn<uint>(mesh.edgeNumber());
 
-                edgeColorsToBuffer(mesh, buffer, Color::Format::ABGR);
+                Base::fillEdgeColors(mesh, buffer, Color::Format::ABGR);
 
                 mEdgeColorBuffer.createForCompute(
                     buffer,
@@ -591,21 +524,22 @@ private:
         using enum MRI::Buffers;
 
         if constexpr (vcl::HasFaces<MeshType>) {
-            const uint NUM_EDGES = vcl::countPerFaceVertexReferences(mesh);
+            const uint nw = Base::numWireframeLines();
 
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(NUM_EDGES * 2);
+                getAllocatedBufferAndReleaseFn<uint>(nw * 2);
 
-            wireframeIndicesToBuffer(mesh, buffer);
+            Base::fillWireframeIndices(mesh, buffer);
 
             mWireframeIndexBuffer.create(
-                buffer, NUM_EDGES * 2, true, releaseFn);
+                buffer, nw * 2, true, releaseFn);
         }
     }
 
     void createTextureUnits(const MeshType& mesh)
     {
         if constexpr (vcl::HasTexturePaths<MeshType>) {
+            mTextureUnits.clear();
             mTextureUnits.reserve(mesh.textureNumber());
             for (uint i = 0; i < mesh.textureNumber(); ++i) {
                 vcl::Image txt;
@@ -643,15 +577,6 @@ private:
                 mTextureUnits.push_back(std::move(tu));
             }
         }
-    }
-
-    void destroyBGFXBuffers(
-        MRI::BuffersBitSet buffersToDestroy = MRI::BUFFERS_ALL)
-    {
-        using enum MRI::Buffers;
-
-        if (buffersToDestroy[toUnderlying(TEXTURES)])
-            mTextureUnits.clear();
     }
 
     template<typename T>
