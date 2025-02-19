@@ -88,8 +88,8 @@ auto randomSpheres(
     const MeshType& mesh,
     std::size_t     seed = std::random_device()())
 {
-    using PointType       = MeshType::VertexType::CoordType;
-    using ScalarType      = PointType::ScalarType;
+    using PointType  = MeshType::VertexType::CoordType;
+    using ScalarType = PointType::ScalarType;
 
     using VertDistrType   = std::uniform_int_distribution<vcl::uint>;
     using NoiseDistrType  = std::uniform_real_distribution<ScalarType>;
@@ -103,7 +103,7 @@ auto randomSpheres(
 
     std::cerr << "Random seed: " << seed << std::endl;
 
-    std::mt19937    gen(seed);
+    std::mt19937 gen(seed);
 
     VertDistrType  disV(0, mesh.vertexNumber());
     NoiseDistrType disX(-ext, ext);
@@ -111,7 +111,7 @@ auto randomSpheres(
     NoiseDistrType disZ(-ext, ext);
 
     // parameters of normal distribution for radius of the sphere
-    double mu = bbox.diagonal() / 5;
+    double mu    = bbox.diagonal() / 5;
     double sigma = mu / 3; // less probability that the radius is negative
 
     RadiusDistrType disR(mu, sigma);

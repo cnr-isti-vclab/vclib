@@ -112,7 +112,8 @@ public:
     using BuffersBitSet = vcl::BitSet<BuffersBitSetUnderlyingType>;
 
 private:
-    static BuffersBitSet buffersAll() {
+    static BuffersBitSet buffersAll()
+    {
         BuffersBitSet all;
         all.set();
         return all;

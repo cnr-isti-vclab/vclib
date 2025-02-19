@@ -44,9 +44,10 @@ auto bruteforceFacesInSpheres(
         return s.intersects(vcl::boundingBox(f));
     };
 
-    std::vector<std::vector<vcl::uint>>  facesInSpheres(spheres.size());
+    std::vector<std::vector<vcl::uint>> facesInSpheres(spheres.size());
 
-    vcl::Timer t("Computing brute force faces in sphere for " + meshName<MeshType>());
+    vcl::Timer t(
+        "Computing brute force faces in sphere for " + meshName<MeshType>());
     for (vcl::uint i = 0; const auto& s : spheres) {
         for (const auto& f : mesh.faces()) {
             intersFunction(s, f);
@@ -71,9 +72,9 @@ auto gridFacesInSpheres(
     using ScalarType = SphereType::ScalarType;
     vcl::Timer t("Computing nearests - " + meshName + " - " + gridName);
     t.start();
-    std::vector<std::vector<vcl::uint>>  facesInSpheresGrid(spheres.size());
+    std::vector<std::vector<vcl::uint>> facesInSpheresGrid(spheres.size());
     for (vcl::uint i = 0; i < spheres.size(); i++) {
-        auto vec        = grid.valuesInSphere(spheres[i]);
+        auto vec = grid.valuesInSphere(spheres[i]);
         facesInSpheresGrid[i].resize(vec.size());
         for (vcl::uint j = 0; auto& it : vec) {
             facesInSpheresGrid[i][j] = it->second->index();
@@ -96,7 +97,8 @@ void facesInSpheresTest(
     auto       grid = computeGrid<Grid>(mesh);
     t.stopAndPrint();
 
-    auto vsG = gridFacesInSpheres(grid, spheres, meshName<MeshType>(), gridName);
+    auto vsG =
+        gridFacesInSpheres(grid, spheres, meshName<MeshType>(), gridName);
 
     for (vcl::uint i = 0; i < spheres.size(); i++) {
         if (vsBF[i].size() != vsG[i].size()) {
