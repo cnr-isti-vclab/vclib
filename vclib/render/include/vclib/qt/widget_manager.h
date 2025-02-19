@@ -135,6 +135,7 @@ public:
 protected:
     void* windowPtr() { return reinterpret_cast<void*>(this); }
 
+#ifdef Q_OS_MACOS
     // current pixel ratio
     // values > 0 are used to detect changes in pixel ratio
     double mCurrentPixelRatio = -1.0; 
@@ -174,6 +175,7 @@ protected:
 
         return QWidget::event(event);
     }
+#endif
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
