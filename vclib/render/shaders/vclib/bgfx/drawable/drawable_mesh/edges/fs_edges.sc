@@ -31,8 +31,6 @@ BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal o
 
 void main()
 {
-    uint drawMode1 = floatBitsToUint(u_drawMode1Float);
-
     // depth offset - avoid z-fighting
     float depthOffset = 0.0;
 
@@ -47,7 +45,7 @@ void main()
     vec3 normal = normalize(v_normal);
 
     // if flat shading, compute normal of face
-    if (bool(drawMode1 & VCL_MRS_EDGES_SHADING_FLAT)) {
+    if (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_SHADING_FLAT))) {
         normal = vec3(
             primitiveNormals[gl_PrimitiveID * 3],
             primitiveNormals[gl_PrimitiveID * 3 + 1],
@@ -56,7 +54,7 @@ void main()
     }
 
     // if flat or smooth shading, compute light
-    if (!bool(drawMode1 & VCL_MRS_EDGES_SHADING_NONE)) {
+    if (!bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_SHADING_NONE))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
         specular = computeSpecular(
@@ -70,13 +68,13 @@ void main()
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userEdgesColorFloat));
 
-    if (bool(drawMode1 & VCL_MRS_EDGES_COLOR_VERTEX)) {
+    if (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_COLOR_VERTEX))) {
         color = v_color;
     }
-    if (bool(drawMode1 & VCL_MRS_EDGES_COLOR_MESH)) {
+    if (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_COLOR_MESH))) {
         color = u_meshColor;
     }
-    if (bool(drawMode1 & VCL_MRS_EDGES_COLOR_EDGE)) {
+    if (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_COLOR_EDGE))) {
         color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
     }
     depthOffset = 0.00005;

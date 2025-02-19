@@ -27,8 +27,10 @@ uniform vec4 u_mrsDrawPack;
 uniform vec4 u_mrsWidthPack;
 uniform vec4 u_mrsColorPack;
 
-#define u_drawMode0Float u_mrsDrawPack.x
-#define u_drawMode1Float u_mrsDrawPack.y
+#define u_pointsMode floatBitsToUint(u_mrsDrawPack.x)
+#define u_surfaceMode (floatBitsToUint(u_mrsDrawPack.x) >> 16)
+#define u_wireframeMode floatBitsToUint(u_mrsDrawPack.y)
+#define u_edgesMode (floatBitsToUint(u_mrsDrawPack.y) >> 16)
 
 #define u_pointWidth u_mrsWidthPack.x
 #define u_wireframeWidth u_mrsWidthPack.y

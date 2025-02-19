@@ -27,6 +27,7 @@
     - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:
     - [ ] MeshInfo should not use its own enums for elements and components
+    - [ ] Add function to get MeshType name (see test 21)
 - Views:
   - [ ] Add elements<ELEM_ID> view 
   - [ ] Move indices view from views/mesh/elements/element.h to views/mesh/indices.h

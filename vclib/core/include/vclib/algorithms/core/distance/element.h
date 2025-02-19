@@ -121,6 +121,15 @@ auto boundedDistance(
         return boundedDistance(p, tw, maxDist, closest, signedDist);
     }
     else {
+        if (f.vertexNumber() == 3) {
+            TriangleWrapper tw(
+                f.vertex(0)->coord(),
+                f.vertex(1)->coord(),
+                f.vertex(2)->coord());
+
+            return boundedDistance(p, tw, maxDist, closest, signedDist);
+        }
+
         ScalarType minDist = maxDist;
 
         std::vector<uint> tris = earCut(f);

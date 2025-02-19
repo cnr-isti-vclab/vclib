@@ -42,8 +42,8 @@ int main(int argc, char** argv)
         vcl::DrawableMesh<vcl::TriMesh> drawable =
             getDrawableMesh<vcl::TriMesh>("VertTextureDouble.ply");
         auto mrs = drawable.renderSettings();
-        mrs.setSurfaceShadingFlat();
-        mrs.setSurfaceColorPerVertexTexcoords();
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX);
         drawable.setRenderSettings(mrs);
         showMeshesOnViewer(argc, argv, viewer, drawable);
     }
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
         vcl::DrawableMesh<vcl::TriMesh> drawable =
             getDrawableMesh<vcl::TriMesh>("bunny_textured.ply");
         auto mrs = drawable.renderSettings();
-        mrs.setSurfaceColorPerWedgeTexcoords();
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
         drawable.setRenderSettings(mrs);
         showMeshesOnViewer(argc, argv, viewer, drawable);
     }
@@ -59,8 +59,8 @@ int main(int argc, char** argv)
         vcl::DrawableMesh<vcl::TriMesh> drawable =
             getDrawableMesh<vcl::TriMesh>("TextureDouble.obj");
         auto mrs = drawable.renderSettings();
-        mrs.setSurfaceShadingFlat();
-        mrs.setSurfaceColorPerWedgeTexcoords();
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
         drawable.setRenderSettings(mrs);
         showMeshesOnViewer(argc, argv, viewer, drawable);
     }

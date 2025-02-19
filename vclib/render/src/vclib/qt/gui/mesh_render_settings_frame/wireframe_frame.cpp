@@ -29,6 +29,8 @@
 
 namespace vcl::qt {
 
+using enum MeshRenderInfo::Wireframe;
+
 WireframeFrame::WireframeFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
         mUI(new Ui::WireframeFrame)
@@ -79,15 +81,15 @@ WireframeFrame::~WireframeFrame()
 
 void WireframeFrame::updateFrameFromSettings()
 {
-    if (mMRS.canSurfaceBeVisible()) {
+    if (mMRS.canWireframe(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isWireframeVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isWireframe(VISIBLE));
         mUI->shadingVertexRadioButton->setEnabled(
-            mMRS.canWireframeShadingBePerVertex());
+            mMRS.canWireframe(SHADING_VERT));
         mUI->shadingVertexRadioButton->setChecked(
-            mMRS.isWireframeShadingPerVertex());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isWireframeShadingNone());
+            mMRS.isWireframe(SHADING_VERT));
+        mUI->shadingNoneRadioButton->setChecked(mMRS.isWireframe(SHADING_NONE));
 
         updateColorComboBoxFromSettings();
         mUI->sizeSlider->setValue(mMRS.wireframeWidth());
@@ -104,7 +106,7 @@ void WireframeFrame::updateColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(W_VERTEX);
-    if (mMRS.canWireframeColorBePerVertex()) {
+    if (mMRS.canWireframe(COLOR_VERTEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -112,20 +114,20 @@ void WireframeFrame::updateColorComboBoxFromSettings()
     }
 
     item = model->item(W_MESH);
-    if (mMRS.canWireframeColorBePerMesh()) {
+    if (mMRS.canWireframe(COLOR_MESH)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
-    if (mMRS.isWireframeColorPerVertex())
+    if (mMRS.isWireframe(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(W_VERTEX);
-    if (mMRS.isWireframeColorPerMesh())
+    if (mMRS.isWireframe(COLOR_MESH))
         mUI->colorComboBox->setCurrentIndex(W_MESH);
-    if (mMRS.isWireframeColorUserDefined())
+    if (mMRS.isWireframe(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(W_USER);
 
-    mUI->userColorFrame->setEnabled(mMRS.isWireframeColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isWireframe(COLOR_USER));
     vcl::Color vc = mMRS.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
@@ -133,14 +135,14 @@ void WireframeFrame::updateColorComboBoxFromSettings()
 
 void WireframeFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setWireframeVisibility(arg1 == Qt::Checked);
+    mMRS.setWireframe(VISIBLE, arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
 void WireframeFrame::onShadingVertexToggled(bool checked)
 {
     if (checked) {
-        mMRS.setWireframeShadingPerVertex();
+        mMRS.setWireframe(SHADING_VERT);
         emit settingsUpdated();
     }
 }
@@ -148,7 +150,7 @@ void WireframeFrame::onShadingVertexToggled(bool checked)
 void WireframeFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setWireframeShadingNone();
+        mMRS.setWireframe(SHADING_NONE);
         emit settingsUpdated();
     }
 }
@@ -156,9 +158,9 @@ void WireframeFrame::onShadingNoneToggled(bool checked)
 void WireframeFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case W_VERTEX: mMRS.setWireframeColorPerVertex(); break;
-    case W_MESH: mMRS.setWireframeColorPerMesh(); break;
-    case W_USER: mMRS.setWireframeColorUserDefined(); break;
+    case W_VERTEX: mMRS.setWireframe(COLOR_VERTEX); break;
+    case W_MESH: mMRS.setWireframe(COLOR_MESH); break;
+    case W_USER: mMRS.setWireframe(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == W_USER);
     emit settingsUpdated();

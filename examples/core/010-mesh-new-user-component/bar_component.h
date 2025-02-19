@@ -66,8 +66,7 @@ concept HasOptionalColor =
 
 // define a constant uint that identifies the component (same idea used for
 // COMPONENT_ID in the FooComponent)
-inline const vcl::uint BAR_COMPONENT =
-    vcl::CompId::COMPONENTS_NUMBER + 1;
+inline const vcl::uint BAR_COMPONENT = vcl::CompId::COMPONENTS_NUMBER + 1;
 
 namespace detail {
 

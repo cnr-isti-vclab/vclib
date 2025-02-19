@@ -82,17 +82,19 @@ using RemoveConstFromPointer = std::conditional_t<
 
 /**
  * @brief Utility function that applies the unary operator '*' to the argument
- * only if the object is a pointer.
+ * only if the object is a pointer, and returns a reference to the object
+ * itself.
  *
- * @param obj
- * @return obj if it is not a pointer, or *obj if it is a pointer.
+ * @param[in] obj: The object to dereference.
+ * @return a reference to obj if it is not a pointer, or a reference to *obj if
+ * it is a pointer.
  *
  * @ingroup types
  */
 template<typename T>
-auto dereferencePtr(T&& obj)
+auto& dereferencePtr(T&& obj)
 {
-    if constexpr (std::is_pointer_v<std::remove_reference_t<T>>) {
+    if constexpr (std::is_pointer_v<RemoveRef<T>>) {
         return *obj;
     }
     else {
@@ -113,7 +115,7 @@ auto dereferencePtr(T&& obj)
 template<typename T>
 auto addressOfObj(T& obj)
 {
-    if constexpr (std::is_pointer_v<std::remove_reference_t<T>>) {
+    if constexpr (std::is_pointer_v<RemoveRef<T>>) {
         return obj;
     }
     else {

@@ -105,8 +105,14 @@
         </item>
         <item>
          <widget class="QPushButton" name="colorDialogPushButton">
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

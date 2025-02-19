@@ -36,13 +36,13 @@ int main(int argc, char** argv)
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
-    // FIXME #1: Fix crash on Windows/DirectX when updating buffers
-    // drawable.color() = vcl::Color::Yellow;
-    // drawable.updateBuffers();
+    using enum vcl::MeshRenderInfo::Buffers;
+    drawable.color() = vcl::Color::Yellow;
+    drawable.updateBuffers({MESH_UNIFORMS});
 
     auto mrs = drawable.renderSettings();
-    // mrs.setSurfaceColorPerMesh();
-    mrs.setSurfaceShadingFlat();
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
     drawable.setRenderSettings(mrs);
 
     // add the drawable mesh to the scene
@@ -53,7 +53,8 @@ int main(int argc, char** argv)
 
     viewer1.show();
 
-    mrs.setSurfaceShadingSmooth();
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_SMOOTH);
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX);
     drawable.setRenderSettings(mrs);
 
     // add the drawable mesh to the scene

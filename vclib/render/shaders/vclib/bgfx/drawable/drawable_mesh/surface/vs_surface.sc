@@ -24,7 +24,6 @@ $input a_position, a_normal, a_color0, a_texcoord0, a_texcoord1
 $output v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
 void main()
 {

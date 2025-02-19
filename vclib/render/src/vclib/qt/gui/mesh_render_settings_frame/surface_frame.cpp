@@ -29,6 +29,8 @@
 
 namespace vcl::qt {
 
+using enum MeshRenderInfo::Surface;
+
 SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
         mUI(new Ui::SurfaceFrame)
@@ -79,10 +81,10 @@ SurfaceFrame::~SurfaceFrame()
 
 void SurfaceFrame::updateFrameFromSettings()
 {
-    if (mMRS.canSurfaceBeVisible()) {
+    if (mMRS.canSurface(VISIBLE)) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isSurfaceVisible());
+        mUI->visibilityCheckBox->setChecked(mMRS.isSurface(VISIBLE));
         uptateShadingRadioButtonsFromSettings();
         updateColorComboBoxFromSettings();
     }
@@ -94,15 +96,15 @@ void SurfaceFrame::updateFrameFromSettings()
 
 void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
 {
-    if (!mMRS.canSurfaceShadingBeSmooth()) {
+    if (!mMRS.canSurface(SHADING_SMOOTH)) {
         mUI->shadingSmoothRadioButton->setEnabled(false);
     }
-    if (!mMRS.canSurfaceShadingBeFlat()) {
+    if (!mMRS.canSurface(SHADING_FLAT)) {
         mUI->shadingFlatRadioButton->setEnabled(false);
     }
-    mUI->shadingNoneRadioButton->setChecked(mMRS.isSurfaceShadingNone());
-    mUI->shadingFlatRadioButton->setChecked(mMRS.isSurfaceShadingFlat());
-    mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurfaceShadingSmooth());
+    mUI->shadingNoneRadioButton->setChecked(mMRS.isSurface(SHADING_NONE));
+    mUI->shadingFlatRadioButton->setChecked(mMRS.isSurface(SHADING_FLAT));
+    mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurface(SHADING_SMOOTH));
 }
 
 void SurfaceFrame::updateColorComboBoxFromSettings()
@@ -111,54 +113,54 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(SC_VERT);
-    if (mMRS.canSurfaceColorBePerVertex()) {
+    if (mMRS.canSurface(COLOR_VERTEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_FACE);
-    if (mMRS.canSurfaceColorBePerFace()) {
+    if (mMRS.canSurface(COLOR_FACE)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_MESH);
-    if (mMRS.canSurfaceColorBePerMesh()) {
+    if (mMRS.canSurface(COLOR_MESH)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_VERT_TEX);
-    if (mMRS.canSurfaceColorBePerVertexTexcoords()) {
+    if (mMRS.canSurface(COLOR_VERTEX_TEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_WEDG_TEX);
-    if (mMRS.canSurfaceColorBePerWedgeTexcoords()) {
+    if (mMRS.canSurface(COLOR_WEDGE_TEX)) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    if (mMRS.isSurfaceColorPerVertex())
+    if (mMRS.isSurface(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(SC_VERT);
-    if (mMRS.isSurfaceColorPerFace())
+    if (mMRS.isSurface(COLOR_FACE))
         mUI->colorComboBox->setCurrentIndex(SC_FACE);
-    if (mMRS.isSurfaceColorPerMesh())
+    if (mMRS.isSurface(COLOR_MESH))
         mUI->colorComboBox->setCurrentIndex(SC_MESH);
-    if (mMRS.isSurfaceColorPerVertexTexcoords())
+    if (mMRS.isSurface(COLOR_VERTEX_TEX))
         mUI->colorComboBox->setCurrentIndex(SC_VERT_TEX);
-    if (mMRS.isSurfaceColorPerWedgeTexcoords())
+    if (mMRS.isSurface(COLOR_WEDGE_TEX))
         mUI->colorComboBox->setCurrentIndex(SC_WEDG_TEX);
-    if (mMRS.isSurfaceColorUserDefined())
+    if (mMRS.isSurface(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(SC_USER);
-    mUI->userColorFrame->setEnabled(mMRS.isSurfaceColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isSurface(COLOR_USER));
     vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
@@ -166,14 +168,14 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
 
 void SurfaceFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setSurfaceVisibility(arg1 == Qt::Checked);
+    mMRS.setSurface(VISIBLE, arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
 void SurfaceFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
-        mMRS.setSurfaceShadingSmooth();
+        mMRS.setSurface(SHADING_SMOOTH);
         emit settingsUpdated();
     }
 }
@@ -181,7 +183,7 @@ void SurfaceFrame::onShadingSmoothToggled(bool checked)
 void SurfaceFrame::onShadingFlatToggled(bool checked)
 {
     if (checked) {
-        mMRS.setSurfaceShadingFlat();
+        mMRS.setSurface(SHADING_FLAT);
         emit settingsUpdated();
     }
 }
@@ -189,7 +191,7 @@ void SurfaceFrame::onShadingFlatToggled(bool checked)
 void SurfaceFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setSurfaceShadingNone();
+        mMRS.setSurface(SHADING_NONE);
         emit settingsUpdated();
     }
 }
@@ -197,12 +199,12 @@ void SurfaceFrame::onShadingNoneToggled(bool checked)
 void SurfaceFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case SC_FACE: mMRS.setSurfaceColorPerFace(); break;
-    case SC_VERT: mMRS.setSurfaceColorPerVertex(); break;
-    case SC_MESH: mMRS.setSurfaceColorPerMesh(); break;
-    case SC_VERT_TEX: mMRS.setSurfaceColorPerVertexTexcoords(); break;
-    case SC_WEDG_TEX: mMRS.setSurfaceColorPerWedgeTexcoords(); break;
-    case SC_USER: mMRS.setSurfaceColorUserDefined(); break;
+    case SC_FACE: mMRS.setSurface(COLOR_FACE); break;
+    case SC_VERT: mMRS.setSurface(COLOR_VERTEX); break;
+    case SC_MESH: mMRS.setSurface(COLOR_MESH); break;
+    case SC_VERT_TEX: mMRS.setSurface(COLOR_VERTEX_TEX); break;
+    case SC_WEDG_TEX: mMRS.setSurface(COLOR_WEDGE_TEX); break;
+    case SC_USER: mMRS.setSurface(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == SC_USER);
     emit settingsUpdated();
