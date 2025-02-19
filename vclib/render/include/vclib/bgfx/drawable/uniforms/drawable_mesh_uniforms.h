@@ -24,7 +24,7 @@
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 
 #include <vclib/bgfx/uniform.h>
-#include <vclib/render/drawable/mesh/mesh_render_data.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 

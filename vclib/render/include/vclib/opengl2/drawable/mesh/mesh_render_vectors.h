@@ -20,16 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
-#define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
-
-#include "mesh_render_info.h"
+#ifndef VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
+#define VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 
 #include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/math/min_max.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/render/drawable/mesh/mesh_render_info.h>
 #include <vclib/space/complex/tri_poly_index_bimap.h>
 #include <vclib/space/core/image.h>
 #include <vclib/space/core/texture.h>
@@ -37,7 +36,7 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class MeshRenderData
+class MeshRenderVectors
 {
     using MRI = MeshRenderInfo;
 
@@ -88,9 +87,9 @@ class MeshRenderData
     TriPolyIndexBiMap mIndexMap;
 
 public:
-    MeshRenderData() = default;
+    MeshRenderVectors() = default;
 
-    MeshRenderData(
+    MeshRenderVectors(
         const MeshType&    m,
         MRI::BuffersBitSet buffersToFill = MRI::BUFFERS_ALL) :
             mBuffersToFill(buffersToFill)
@@ -645,4 +644,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
+#endif // VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
