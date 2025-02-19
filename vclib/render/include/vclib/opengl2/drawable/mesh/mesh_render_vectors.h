@@ -356,7 +356,9 @@ private:
     void createEdgeIndicesBuffer(const MeshType& mesh) override final
     {
         if constexpr (vcl::HasEdges<MeshType>) {
-            mEdges.resize(mesh.edgeNumber() * 2);
+            uint ne = Base::numEdges();
+
+            mEdges.resize(ne * 2);
 
             Base::fillEdgeIndices(mesh, mEdges.data());
         }
@@ -366,7 +368,9 @@ private:
     {
         if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
             if (vcl::isPerEdgeNormalAvailable(mesh)) {
-                mENormals.resize(mesh.edgeNumber() * 3);
+                uint ne = Base::numEdges();
+
+                mENormals.resize(ne * 3);
 
                 Base::fillEdgeNormals(mesh, mENormals.data());
             }
@@ -377,7 +381,9 @@ private:
     {
         if constexpr (vcl::HasPerEdgeColor<MeshType>) {
             if (vcl::isPerEdgeColorAvailable(mesh)) {
-                mEColors.resize(mesh.edgeNumber());
+                uint ne = Base::numEdges();
+
+                mEColors.resize(ne);
 
                 Base::fillEdgeColors(
                     mesh, mEColors.data(), Color::Format::ABGR);

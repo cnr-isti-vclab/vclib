@@ -26,8 +26,8 @@
 #include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
-#include <vclib/render/drawable/mesh/mesh_render_info.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/render/drawable/mesh/mesh_render_info.h>
 #include <vclib/space/complex/tri_poly_index_bimap.h>
 
 namespace vcl {
@@ -39,6 +39,7 @@ class MeshRenderData
 
     uint mNumVerts       = 0;
     uint mNumTris        = 0;
+    uint mNumEdges       = 0;
     uint nWireframeLines = 0;
 
     // vector that tells, for each non-duplicated vertex, which wedges it
@@ -74,7 +75,6 @@ public:
 
         MRI::BuffersBitSet btu = mBuffersToFill & buffersToUpdate;
 
-
         if (btu[toUnderlying(VERTICES)] || btu[toUnderlying(WEDGE_TEXCOORDS)] ||
             btu[toUnderlying(TRIANGLES)]) {
             mVertWedgeMap.clear();
@@ -99,6 +99,11 @@ public:
                 mNumTris = countTriangulatedTriangles(mesh);
             if (btu[toUnderlying(WIREFRAME)])
                 nWireframeLines = countPerFaceVertexReferences(mesh);
+        }
+
+        if constexpr (HasEdges<MeshType>) {
+            if (btu[toUnderlying(EDGES)])
+                mNumEdges = mesh.edgeNumber();
         }
 
         if (btu[toUnderlying(VERTICES)]) {
@@ -208,6 +213,8 @@ protected:
 
     uint numTris() const { return mNumTris; }
 
+    uint numEdges() const { return mNumEdges; }
+
     uint numWireframeLines() const { return nWireframeLines; }
 
     // functions that must be implemented by the derived classes to create the
@@ -250,29 +257,25 @@ protected:
     void fillVertexCoords(const MeshType& mesh, auto* data)
     {
         vertexCoordsToBuffer(mesh, data);
-        appendDuplicateVertexCoordsToBuffer(
-            mesh, mVertsToDuplicate, data);
+        appendDuplicateVertexCoordsToBuffer(mesh, mVertsToDuplicate, data);
     }
 
     void fillVertexNormals(const MeshType& mesh, auto* data)
     {
         vertexNormalsToBuffer(mesh, data);
-        appendDuplicateVertexNormalsToBuffer(
-            mesh, mVertsToDuplicate, data);
+        appendDuplicateVertexNormalsToBuffer(mesh, mVertsToDuplicate, data);
     }
 
     void fillVertexColors(const MeshType& mesh, auto* data, Color::Format fmt)
     {
         vertexColorsToBuffer(mesh, data, fmt);
-        appendDuplicateVertexColorsToBuffer(
-            mesh, mVertsToDuplicate, data, fmt);
+        appendDuplicateVertexColorsToBuffer(mesh, mVertsToDuplicate, data, fmt);
     }
 
     void fillVertexTexCoords(const MeshType& mesh, auto* data)
     {
         vertexTexCoordsToBuffer(mesh, data);
-        appendDuplicateVertexTexCoordsToBuffer(
-            mesh, mVertsToDuplicate, data);
+        appendDuplicateVertexTexCoordsToBuffer(mesh, mVertsToDuplicate, data);
     }
 
     void fillWedgeTexCoords(const MeshType& mesh, auto* data)
@@ -284,11 +287,7 @@ protected:
     void fillTriangleIndices(const MeshType& mesh, auto* data)
     {
         triangulatedFaceIndicesToBuffer(
-            mesh,
-            data,
-            mIndexMap,
-            MatrixStorageType::ROW_MAJOR,
-            mNumTris);
+            mesh, data, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
         replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
             mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, data);
     }
@@ -296,16 +295,12 @@ protected:
     void fillTriangleNormals(const MeshType& mesh, auto* data)
     {
         triangulatedFaceNormalsToBuffer(
-            mesh,
-            data,
-            mIndexMap,
-            MatrixStorageType::ROW_MAJOR);
+            mesh, data, mIndexMap, MatrixStorageType::ROW_MAJOR);
     }
 
     void fillTriangleColors(const MeshType& mesh, auto* data, Color::Format fmt)
     {
-        triangulatedFaceColorsToBuffer(
-            mesh, data, mIndexMap, fmt);
+        triangulatedFaceColorsToBuffer(mesh, data, mIndexMap, fmt);
     }
 
     void fillVertexTextureIndices(const MeshType& mesh, auto* data)
@@ -316,8 +311,7 @@ protected:
 
     void fillWedgeTextureIndices(const MeshType& mesh, auto* data)
     {
-        triangulatedFaceWedgeTexCoordIndicesToBuffer(
-            mesh, data, mIndexMap);
+        triangulatedFaceWedgeTexCoordIndicesToBuffer(mesh, data, mIndexMap);
     }
 
     void fillEdgeIndices(const MeshType& mesh, auto* data)

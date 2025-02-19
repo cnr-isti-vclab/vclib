@@ -374,12 +374,14 @@ private:
     void createEdgeIndicesBuffer(const MeshType& mesh) override final
     {
         if constexpr (vcl::HasEdges<MeshType>) {
+            uint ne = Base::numEdges();
+
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(mesh.edgeNumber() * 2);
+                getAllocatedBufferAndReleaseFn<uint>(ne * 2);
 
             Base::fillEdgeIndices(mesh, buffer);
 
-            mEdgeIndexBuffer.create(buffer, mesh.edgeNumber() * 2);
+            mEdgeIndexBuffer.create(buffer, ne * 2);
         }
     }
 
@@ -389,15 +391,17 @@ private:
 
         if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
             if (vcl::isPerEdgeNormalAvailable(mesh)) {
+                uint ne = Base::numEdges();
+
                 auto [buffer, releaseFn] =
                     getAllocatedBufferAndReleaseFn<float>(
-                        mesh.edgeNumber() * 3);
+                        ne * 3);
 
                 Base::fillEdgeNormals(mesh, buffer);
 
                 mEdgeNormalBuffer.createForCompute(
                     buffer,
-                    mesh.edgeNumber() * 3,
+                    ne * 3,
                     PrimitiveType::FLOAT,
                     bgfx::Access::Read,
                     releaseFn);
@@ -411,14 +415,16 @@ private:
 
         if constexpr (vcl::HasPerEdgeColor<MeshType>) {
             if (vcl::isPerEdgeColorAvailable(mesh)) {
+                uint ne = Base::numEdges();
+
                 auto [buffer, releaseFn] =
-                    getAllocatedBufferAndReleaseFn<uint>(mesh.edgeNumber());
+                    getAllocatedBufferAndReleaseFn<uint>(ne);
 
                 Base::fillEdgeColors(mesh, buffer, Color::Format::ABGR);
 
                 mEdgeColorBuffer.createForCompute(
                     buffer,
-                    mesh.edgeNumber(),
+                    ne,
                     PrimitiveType::UINT,
                     bgfx::Access::Read,
                     releaseFn);
