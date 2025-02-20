@@ -36,11 +36,15 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-class MeshRenderVectors : public MeshRenderData<MeshType>
+template<MeshConcept Mesh>
+class MeshRenderVectors :
+        public MeshRenderData<MeshRenderVectors<Mesh>>
 {
-    using Base = MeshRenderData<MeshType>;
-    using MRI = MeshRenderInfo;
+    using MeshType = Mesh;
+    using Base = MeshRenderData<MeshRenderVectors<MeshType>>;
+    using MRI  = MeshRenderInfo;
+
+    friend Base;
 
     std::vector<float>    mVerts;
     std::vector<float>    mVNormals;
@@ -226,7 +230,7 @@ public:
     }
 
 private:
-    void createVertexCoordsBuffer(const MeshType& mesh) override final
+    void createVertexCoordsBuffer(const MeshType& mesh)
     {
         uint nv = Base::numVerts();
 
@@ -235,179 +239,133 @@ private:
         Base::fillVertexCoords(mesh, mVerts.data());
     }
 
-    void createVertexNormalsBuffer(const MeshType& mesh) override final
+    void createVertexNormalsBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-            if (vcl::isPerVertexNormalAvailable(mesh)) {
-                uint nv = Base::numVerts();
+        uint nv = Base::numVerts();
 
-                mVNormals.resize(nv * 3);
+        mVNormals.resize(nv * 3);
 
-                Base::fillVertexNormals(mesh, mVNormals.data());
-            }
-        }
+        Base::fillVertexNormals(mesh, mVNormals.data());
     }
 
-    void createVertexColorsBuffer(const MeshType& mesh) override final
+    void createVertexColorsBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasPerVertexColor<MeshType>) {
-            if (vcl::isPerVertexColorAvailable(mesh)) {
-                uint nv = Base::numVerts();
+        uint nv = Base::numVerts();
 
-                mVColors.resize(nv);
+        mVColors.resize(nv);
 
-                Base::fillVertexColors(
-                    mesh, mVColors.data(), Color::Format::ABGR);
-            }
-        }
+        Base::fillVertexColors(mesh, mVColors.data(), Color::Format::ABGR);
     }
 
-    void createVertexTexCoordsBuffer(const MeshType& mesh) override final
+    void createVertexTexCoordsBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(mesh)) {
-                uint nv = Base::numVerts();
+        uint nv = Base::numVerts();
 
-                mVTexCoords.resize(nv * 2);
+        mVTexCoords.resize(nv * 2);
 
-                Base::fillVertexTexCoords(mesh, mVTexCoords.data());
-            }
-        }
+        Base::fillVertexTexCoords(mesh, mVTexCoords.data());
     }
 
-    void createWedgeTexCoordsBuffer(const MeshType& mesh) override final
+    void createWedgeTexCoordsBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-            if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                uint nv = Base::numVerts();
+        uint nv = Base::numVerts();
 
-                mWTexCoords.resize(nv * 2);
+        mWTexCoords.resize(nv * 2);
 
-                Base::fillWedgeTexCoords(mesh, mWTexCoords.data());
-            }
-        }
+        Base::fillWedgeTexCoords(mesh, mWTexCoords.data());
     }
 
-    void createTriangleIndicesBuffer(const MeshType& mesh) override final
+    void createTriangleIndicesBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasFaces<MeshType>) {
+        uint nt = Base::numTris();
+
+        mTris.resize(nt * 3);
+
+        Base::fillTriangleIndices(mesh, mTris.data());
+    }
+
+    void createTriangleNormalsBuffer(const MeshType& mesh)
+    {
+        uint nt = Base::numTris();
+
+        mTNormals.resize(nt * 3);
+
+        Base::fillTriangleNormals(mesh, mTNormals.data());
+    }
+
+    void createTriangleColorsBuffer(const MeshType& mesh)
+    {
+        uint nt = Base::numTris();
+
+        mTColors.resize(nt);
+
+        Base::fillTriangleColors(
+            mesh, mTColors.data(), Color::Format::ABGR);
+    }
+
+    void createVertexTextureIndicesBuffer(const MeshType& mesh)
+    {
+        if (vcl::isPerVertexTexCoordAvailable(mesh)) {
             uint nt = Base::numTris();
 
-            mTris.resize(nt * 3);
+            mVTexIds.resize(nt);
 
-            Base::fillTriangleIndices(mesh, mTris.data());
+            Base::fillVertexTextureIndices(mesh, mVTexIds.data());
         }
     }
 
-    void createTriangleNormalsBuffer(const MeshType& mesh) override final
+    void createWedgeTextureIndicesBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasPerFaceNormal<MeshType>) {
-            if (vcl::isPerFaceNormalAvailable(mesh)) {
-                uint nt = Base::numTris();
+        uint nt = Base::numTris();
 
-                mTNormals.resize(nt * 3);
+        mWTexIds.resize(nt);
 
-                Base::fillTriangleNormals(mesh, mTNormals.data());
-            }
-        }
+        Base::fillWedgeTextureIndices(mesh, mWTexIds.data());
     }
 
-    void createTriangleColorsBuffer(const MeshType& mesh) override final
+    void createEdgeIndicesBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasPerFaceColor<MeshType>) {
-            if (vcl::isPerFaceColorAvailable(mesh)) {
-                uint nt = Base::numTris();
+        uint ne = Base::numEdges();
 
-                mTColors.resize(nt);
+        mEdges.resize(ne * 2);
 
-                Base::fillTriangleColors(
-                    mesh, mTColors.data(), Color::Format::ABGR);
-            }
-        }
+        Base::fillEdgeIndices(mesh, mEdges.data());
     }
 
-    void createVertexTextureIndicesBuffer(const MeshType& mesh) override final
+    void createEdgeNormalsBuffer(const MeshType& mesh)
     {
-        if constexpr (
-            vcl::HasFaces<MeshType> && vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(mesh)) {
-                uint nt = Base::numTris();
+        uint ne = Base::numEdges();
 
-                mVTexIds.resize(nt);
+        mENormals.resize(ne * 3);
 
-                Base::fillVertexTextureIndices(mesh, mVTexIds.data());
-            }
-        }
+        Base::fillEdgeNormals(mesh, mENormals.data());
     }
 
-    void createWedgeTextureIndicesBuffer(const MeshType& mesh) override final
+    void createEdgeColorsBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-            if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                uint nt = Base::numTris();
+        uint ne = Base::numEdges();
 
-                mWTexIds.resize(nt);
+        mEColors.resize(ne);
 
-                Base::fillWedgeTextureIndices(mesh, mWTexIds.data());
-            }
-        }
+        Base::fillEdgeColors(
+            mesh, mEColors.data(), Color::Format::ABGR);
     }
 
-    void createEdgeIndicesBuffer(const MeshType& mesh) override final
+    void createWireframeIndicesBuffer(const MeshType& mesh)
     {
-        if constexpr (vcl::HasEdges<MeshType>) {
-            uint ne = Base::numEdges();
+        const uint nw = Base::numWireframeLines();
 
-            mEdges.resize(ne * 2);
+        mWireframe.resize(nw * 2);
 
-            Base::fillEdgeIndices(mesh, mEdges.data());
-        }
+        Base::fillWireframeIndices(mesh, mWireframe.data());
     }
 
-    void createEdgeNormalsBuffer(const MeshType& mesh) override final
-    {
-        if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
-            if (vcl::isPerEdgeNormalAvailable(mesh)) {
-                uint ne = Base::numEdges();
-
-                mENormals.resize(ne * 3);
-
-                Base::fillEdgeNormals(mesh, mENormals.data());
-            }
-        }
-    }
-
-    void createEdgeColorsBuffer(const MeshType& mesh) override final
-    {
-        if constexpr (vcl::HasPerEdgeColor<MeshType>) {
-            if (vcl::isPerEdgeColorAvailable(mesh)) {
-                uint ne = Base::numEdges();
-
-                mEColors.resize(ne);
-
-                Base::fillEdgeColors(
-                    mesh, mEColors.data(), Color::Format::ABGR);
-            }
-        }
-    }
-
-    void createWireframeIndicesBuffer(const MeshType& mesh) override final
-    {
-        if constexpr (vcl::HasFaces<MeshType>) {
-            const uint nw = Base::numWireframeLines();
-
-            mWireframe.resize(nw * 2);
-
-            Base::fillWireframeIndices(mesh, mWireframe.data());
-        }
-    }
-
-    void createTextureUnits(const MeshType& mesh) override final
+    void createTextureUnits(const MeshType& mesh)
     {
         mTextures.clear();
         if constexpr (vcl::HasTextureImages<MeshType>) {
             for (const vcl::Texture& t : mesh.textures()) {
-                if (t.image().isNull()) {
+                if (t.image().isNull()) { // the texture has not been loaded
                     vcl::Image txt(mesh.meshBasePath() + t.path());
                     txt.mirror();
                     mTextures.push_back(txt);
@@ -418,7 +376,7 @@ private:
                 }
             }
         }
-        else if constexpr (vcl::HasTexturePaths<MeshType>) {
+        else {
             for (uint i = 0; i < mesh.textureNumber(); ++i) {
                 vcl::Image txt(mesh.meshBasePath() + mesh.texturePath(i));
                 txt.mirror();
@@ -427,7 +385,7 @@ private:
         }
     }
 
-    void createMeshUniforms(const MeshType& m) override final
+    void createMeshUniforms(const MeshType& m)
     {
         if constexpr (vcl::HasColor<MeshType>) {
             mMeshColor[0] = m.color().redF();
