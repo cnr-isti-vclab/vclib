@@ -175,7 +175,6 @@ protected:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
     {
-        std::cerr << "Resize: ratio " << pixelRatio() << std::endl;
         Base::resizeEvent(event);
         DerivedRenderApp::WM::resize(
             derived(), width() * pixelRatio(), height() * pixelRatio());
@@ -235,12 +234,6 @@ protected:
 
     void mousePressEvent(QMouseEvent* event) override
     {
-        // on right press print device pixel ratio
-        if (event->button() == Qt::RightButton)
-        {
-            std::cerr << "DevicePixelRatio: " << pixelRatio() << std::endl;
-        }
-
         DerivedRenderApp::WM::mousePress(
             derived(),
             vcl::qt::fromQt(event->button()),
