@@ -182,7 +182,6 @@ protected:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
     {
-        std::cerr << "Resize: ratio " << pixelRatio() << std::endl;
         Base::resizeEvent(event);
         DerivedRenderApp::WM::resize(
             derived(), width() * pixelRatio(), height() * pixelRatio());
