@@ -49,10 +49,6 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(07-mesh-viewer-imgui) # TODO: move in 02-mesh-viewer
     add_subdirectory(07-test-texcoords)
 
-    if (TARGET vclib-processing)
-        add_subdirectory(800-processing-main-window)
-    endif()
-
     add_subdirectory(999-misc)
 
     # the following examples are the same of the ones in the core module,
