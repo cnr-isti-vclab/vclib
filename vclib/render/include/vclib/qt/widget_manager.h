@@ -136,6 +136,8 @@ protected:
     void* windowPtr() { return reinterpret_cast<void*>(this); }
 
 #ifdef Q_OS_MACOS
+    // TODO: eventually choose if checking for pixel ratio every update
+
     // current pixel ratio
     // values > 0 are used to detect changes in pixel ratio
     double mCurrentPixelRatio = -1.0; 
