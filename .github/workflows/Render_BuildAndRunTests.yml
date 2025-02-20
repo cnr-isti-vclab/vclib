@@ -22,7 +22,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         cache: 'true'
-        version: '6.6.*'
+        version: '6.8.2'
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
