@@ -59,5 +59,5 @@
   - [X] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring (REFACTORING IN PROGRESS)
   - [ ] update documentation of Canvas & co.
   - [ ] implement screenshot custom size (split rendering into multiple tiles)
-  - [ ] move MeshViewerImguiDrawer into library
+  - [X] move MeshViewerImguiDrawer into library
   - [ ] move example 07 mesh-viewer-imgui in example 02
