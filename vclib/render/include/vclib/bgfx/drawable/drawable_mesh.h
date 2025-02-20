@@ -170,7 +170,7 @@ public:
             if (bgfx::isValid(mProgramSurface)) {
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers();
+                mMRB.bindIndexBuffers(mMRS);
                 bindUniforms();
 
                 bgfx::setState(state);
@@ -182,7 +182,7 @@ public:
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             if (bgfx::isValid(mProgramWireframe)) {
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(MRI::Buffers::WIREFRAME);
+                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
@@ -194,7 +194,7 @@ public:
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             if (bgfx::isValid(mProgramEdges)) {
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(MRI::Buffers::EDGES);
+                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
