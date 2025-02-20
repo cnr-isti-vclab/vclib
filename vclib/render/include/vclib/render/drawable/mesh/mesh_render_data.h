@@ -305,7 +305,7 @@ protected:
 
     void fillVertexTextureIndices(const MeshType& mesh, auto* data)
     {
-        vertexTexCoordIndicesAsTriangulatedFaceWedgeTexCoordIndicesToBuffer(
+        vertexTexCoordIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
             mesh, data, mIndexMap);
     }
 

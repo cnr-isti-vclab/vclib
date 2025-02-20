@@ -103,7 +103,7 @@ void main()
         color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
-        color = getColorFromTexture(0, v_texcoord0);
+        color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord0);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);

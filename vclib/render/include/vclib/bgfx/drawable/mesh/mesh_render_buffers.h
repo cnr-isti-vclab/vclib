@@ -52,7 +52,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshType>
     IndexBuffer mTriangleNormalBuffer;
     IndexBuffer mTriangleColorBuffer;
 
-    IndexBuffer mTriangleTextureIndexBuffer;
+    IndexBuffer mVertexTextureIndexBuffer;
+    IndexBuffer mWedgeTextureIndexBuffer;
 
     // TODO: manage wireframe with proper lines
     IndexBuffer mEdgeIndexBuffer;
@@ -101,7 +102,8 @@ public:
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
-        swap(mTriangleTextureIndexBuffer, other.mTriangleTextureIndexBuffer);
+        swap(mVertexTextureIndexBuffer, other.mVertexTextureIndexBuffer);
+        swap(mWedgeTextureIndexBuffer, other.mWedgeTextureIndexBuffer);
         swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
         swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
         swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
@@ -129,6 +131,7 @@ public:
     }
 
     void bindIndexBuffers(
+        const MeshRenderSettings& mrs,
         MRI::Buffers indexBufferToBind = MRI::Buffers::TRIANGLES) const
     {
         using enum MRI::Buffers;
@@ -140,8 +143,15 @@ public:
 
             mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 
-            mTriangleTextureIndexBuffer.bind(
-                VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
+            if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+                mVertexTextureIndexBuffer.bind(
+                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
+            }
+            else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+                mWedgeTextureIndexBuffer.bind(
+                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
+            }
+
         }
         else if (indexBufferToBind == EDGES) {
             mEdgeIndexBuffer.bind();
@@ -348,6 +358,29 @@ private:
         }
     }
 
+    void createVertexTextureIndicesBuffer(const MeshType& mesh) override final
+    {
+        using enum MRI::Buffers;
+
+        if constexpr(HasFaces<MeshType> && HasPerVertexTexCoord<MeshType>) {
+            if (isPerVertexTexCoordAvailable(mesh)) {
+                uint nt = Base::numTris();
+
+                auto [buffer, releaseFn] =
+                    getAllocatedBufferAndReleaseFn<uint>(nt);
+
+                Base::fillVertexTextureIndices(mesh, buffer);
+
+                mVertexTextureIndexBuffer.createForCompute(
+                    buffer,
+                    nt,
+                    PrimitiveType::UINT,
+                    bgfx::Access::Read,
+                    releaseFn);
+            }
+        }
+    }
+
     void createWedgeTextureIndicesBuffer(const MeshType& mesh) override final
     {
         using enum MRI::Buffers;
@@ -361,7 +394,7 @@ private:
 
                 Base::fillWedgeTextureIndices(mesh, buffer);
 
-                mTriangleTextureIndexBuffer.createForCompute(
+                mWedgeTextureIndexBuffer.createForCompute(
                     buffer,
                     nt,
                     PrimitiveType::UINT,
