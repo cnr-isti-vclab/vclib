@@ -181,7 +181,7 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
-    void createVertexCoordsBuffer(const MeshType& mesh)
+    void setVertexCoordsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -200,7 +200,7 @@ private:
             releaseFn);
     }
 
-    void createVertexNormalsBuffer(const MeshType& mesh)
+    void setVertexNormalsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -219,7 +219,7 @@ private:
             releaseFn);
     }
 
-    void createVertexColorsBuffer(const MeshType& mesh)
+    void setVertexColorsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -237,7 +237,7 @@ private:
             releaseFn);
     }
 
-    void createVertexTexCoordsBuffer(const MeshType& mesh)
+    void setVertexTexCoordsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -256,7 +256,7 @@ private:
             releaseFn);
     }
 
-    void createWedgeTexCoordsBuffer(const MeshType& mesh)
+    void setWedgeTexCoordsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -275,7 +275,7 @@ private:
             releaseFn);
     }
 
-    void createTriangleIndicesBuffer(const MeshType& mesh)
+    void setTriangleIndicesBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -286,7 +286,7 @@ private:
         mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
     }
 
-    void createTriangleNormalsBuffer(const MeshType& mesh)
+    void setTriangleNormalsBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -303,7 +303,7 @@ private:
             releaseFn);
     }
 
-    void createTriangleColorsBuffer(const MeshType& mesh)
+    void setTriangleColorsBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -320,7 +320,7 @@ private:
             releaseFn);
     }
 
-    void createVertexTextureIndicesBuffer(const MeshType& mesh)
+    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -332,7 +332,7 @@ private:
             buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
-    void createWedgeTextureIndicesBuffer(const MeshType& mesh)
+    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -344,7 +344,7 @@ private:
             buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
-    void createEdgeIndicesBuffer(const MeshType& mesh)
+    void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
         uint ne = Base::numEdges();
 
@@ -356,7 +356,7 @@ private:
         mEdgeIndexBuffer.create(buffer, ne * 2);
     }
 
-    void createEdgeNormalsBuffer(const MeshType& mesh)
+    void setEdgeNormalsBuffer(const MeshType& mesh) // override
     {
         uint ne = Base::numEdges();
 
@@ -374,7 +374,7 @@ private:
             releaseFn);
     }
 
-    void createEdgeColorsBuffer(const MeshType& mesh)
+    void setEdgeColorsBuffer(const MeshType& mesh) // override
     {
         uint ne = Base::numEdges();
 
@@ -391,7 +391,7 @@ private:
             releaseFn);
     }
 
-    void createWireframeIndicesBuffer(const MeshType& mesh)
+    void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
         const uint nw = Base::numWireframeLines();
 
@@ -402,7 +402,7 @@ private:
         mWireframeIndexBuffer.create(buffer, nw * 2, true, releaseFn);
     }
 
-    void createTextureUnits(const MeshType& mesh)
+    void setTextureUnits(const MeshType& mesh) // override
     {
         mTextureUnits.clear();
         mTextureUnits.reserve(mesh.textureNumber());
@@ -443,7 +443,7 @@ private:
         }
     }
 
-    void createMeshUniforms(const MeshType& mesh)
+    void setMeshUniforms(const MeshType& mesh) // override
     {
         mMeshUniforms.update(mesh);
     }

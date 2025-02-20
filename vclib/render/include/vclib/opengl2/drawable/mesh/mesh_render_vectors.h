@@ -230,7 +230,7 @@ public:
     }
 
 private:
-    void createVertexCoordsBuffer(const MeshType& mesh)
+    void setVertexCoordsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -239,7 +239,7 @@ private:
         Base::fillVertexCoords(mesh, mVerts.data());
     }
 
-    void createVertexNormalsBuffer(const MeshType& mesh)
+    void setVertexNormalsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -248,7 +248,7 @@ private:
         Base::fillVertexNormals(mesh, mVNormals.data());
     }
 
-    void createVertexColorsBuffer(const MeshType& mesh)
+    void setVertexColorsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -257,7 +257,7 @@ private:
         Base::fillVertexColors(mesh, mVColors.data(), Color::Format::ABGR);
     }
 
-    void createVertexTexCoordsBuffer(const MeshType& mesh)
+    void setVertexTexCoordsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -266,7 +266,7 @@ private:
         Base::fillVertexTexCoords(mesh, mVTexCoords.data());
     }
 
-    void createWedgeTexCoordsBuffer(const MeshType& mesh)
+    void setWedgeTexCoordsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
@@ -275,7 +275,7 @@ private:
         Base::fillWedgeTexCoords(mesh, mWTexCoords.data());
     }
 
-    void createTriangleIndicesBuffer(const MeshType& mesh)
+    void setTriangleIndicesBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -284,7 +284,7 @@ private:
         Base::fillTriangleIndices(mesh, mTris.data());
     }
 
-    void createTriangleNormalsBuffer(const MeshType& mesh)
+    void setTriangleNormalsBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -293,7 +293,7 @@ private:
         Base::fillTriangleNormals(mesh, mTNormals.data());
     }
 
-    void createTriangleColorsBuffer(const MeshType& mesh)
+    void setTriangleColorsBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -303,7 +303,7 @@ private:
             mesh, mTColors.data(), Color::Format::ABGR);
     }
 
-    void createVertexTextureIndicesBuffer(const MeshType& mesh)
+    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
     {
         if (vcl::isPerVertexTexCoordAvailable(mesh)) {
             uint nt = Base::numTris();
@@ -314,7 +314,7 @@ private:
         }
     }
 
-    void createWedgeTextureIndicesBuffer(const MeshType& mesh)
+    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
@@ -323,7 +323,7 @@ private:
         Base::fillWedgeTextureIndices(mesh, mWTexIds.data());
     }
 
-    void createEdgeIndicesBuffer(const MeshType& mesh)
+    void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
         uint ne = Base::numEdges();
 
@@ -332,7 +332,7 @@ private:
         Base::fillEdgeIndices(mesh, mEdges.data());
     }
 
-    void createEdgeNormalsBuffer(const MeshType& mesh)
+    void setEdgeNormalsBuffer(const MeshType& mesh) // override
     {
         uint ne = Base::numEdges();
 
@@ -341,7 +341,7 @@ private:
         Base::fillEdgeNormals(mesh, mENormals.data());
     }
 
-    void createEdgeColorsBuffer(const MeshType& mesh)
+    void setEdgeColorsBuffer(const MeshType& mesh) // override
     {
         uint ne = Base::numEdges();
 
@@ -351,7 +351,7 @@ private:
             mesh, mEColors.data(), Color::Format::ABGR);
     }
 
-    void createWireframeIndicesBuffer(const MeshType& mesh)
+    void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
         const uint nw = Base::numWireframeLines();
 
@@ -360,7 +360,7 @@ private:
         Base::fillWireframeIndices(mesh, mWireframe.data());
     }
 
-    void createTextureUnits(const MeshType& mesh)
+    void setTextureUnits(const MeshType& mesh) // override
     {
         mTextures.clear();
         if constexpr (vcl::HasTextureImages<MeshType>) {
@@ -385,7 +385,7 @@ private:
         }
     }
 
-    void createMeshUniforms(const MeshType& m)
+    void setMeshUniforms(const MeshType& m) // override
     {
         if constexpr (vcl::HasColor<MeshType>) {
             mMeshColor[0] = m.color().redF();
