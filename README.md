@@ -14,14 +14,6 @@ All the modules can be found in the [vclib](vclib) directory, and can be built s
 
 By default, the library is built with the `Core` module only, but you can enable the other modules by setting the `VCLIB_BUILD_MODULE_<module>` CMake variable to `ON`.
 
-## Disclaimer
-
-I designed and developed this library mostly for personal use and to study new features of C++17 and C++20.
-Most of the features of this library are poorly tested: I maintain the library during my free time.
-
-If you appreciate this work, or you think it could be improved, let me know by opening a thread in the discussion tab!
-Looking forward for your feedback!
-
 ## Install
 
 The core module of library is header only, therefore to install it you just need to add the `vclib/core/include` directory in your
