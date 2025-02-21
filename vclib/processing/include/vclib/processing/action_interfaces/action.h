@@ -39,6 +39,7 @@ class Action
 public:
     enum class Type {
         IO_IMAGE_ACTION = 0,
+        IO_MESH_ACTION,
         // LOAD_MESH_ACTION,
         // SAVE_MESH_ACTION,
         // FILTER_MESH_ACTION,
@@ -64,7 +65,7 @@ public:
      *
      * @return A shared pointer to the new instance of the action.
      */
-    virtual std::shared_ptr<Action> clone() const = 0;
+    [[nodiscard]] virtual std::shared_ptr<Action> clone() const = 0;
 
     /**
      * @brief Returns the name of the action.

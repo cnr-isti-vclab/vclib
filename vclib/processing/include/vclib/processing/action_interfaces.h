@@ -25,6 +25,7 @@
 
 #include "action_interfaces/action.h"
 #include "action_interfaces/io_image_action.h"
+#include "action_interfaces/io_mesh_action.h"
 
 // #include "action_interfaces/filter_mesh_action.h"
 

@@ -41,15 +41,13 @@ public:
         BOTH
     };
 
-    Type type() const final { return Type::IO_IMAGE_ACTION; }
-
-    /* *********************************************************** *
-     * Members that must/may be implemented by the derived classes *
-     * *********************************************************** */
+    /* ******************************************************************** *
+     * Member functions that must/may be implemented by the derived classes *
+     * ******************************************************************** */
 
     // From Action class
 
-    virtual std::shared_ptr<Action> clone() const = 0;
+    [[nodiscard]] virtual std::shared_ptr<Action> clone() const = 0;
 
     virtual std::string name() const = 0;
 
@@ -124,6 +122,12 @@ public:
         // save images, but it does not implement the save method.
         assert(0);
     }
+
+    /* ************************************ *
+     * Member functions already implemented *
+     * ************************************ */
+
+    Type type() const final { return Type::IO_IMAGE_ACTION; }
 };
 
 } // namespace vcl::proc
