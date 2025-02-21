@@ -20,25 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H
-#define VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H
+#ifndef VCL_PROCESSING_ACTIONS_H
+#define VCL_PROCESSING_ACTIONS_H
 
-#include "load_image/base_load_image_action.h"
-
-#include <memory>
-#include <vector>
+// #include "actions/filter_mesh.h"
+#include "actions/io_image.h"
+// #include "actions/load_mesh.h"
+// #include "actions/save_mesh.h"
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibLoadImageActions()
+std::vector<std::shared_ptr<Action>> vclibActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    vec.push_back(BaseLoadImageAction().clone());
+    // Load actions
+    auto ioImgVector = ioImageActions();
+    vec.insert(vec.end(), ioImgVector.begin(), ioImgVector.end());
+
+    // auto loadMeshActions = vclibLoadMeshActions();
+    // vec.insert(vec.end(), loadMeshActions.begin(), loadMeshActions.end());
+
+    // auto saveMeshActions = vclibSaveMeshActions();
+    // vec.insert(vec.end(), saveMeshActions.begin(), saveMeshActions.end());
+
+    // // Filter actions
+    // auto filterMeshActions = vclibFilterMeshActions();
+    // vec.insert(vec.end(), filterMeshActions.begin(), filterMeshActions.end());
 
     return vec;
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H
+#endif // VCL_PROCESSING_ACTIONS_H

@@ -47,6 +47,12 @@ public:
      * Members that must/may be implemented by the derived classes *
      * *********************************************************** */
 
+    // From Action class
+
+    virtual std::shared_ptr<Action> clone() const = 0;
+
+    virtual std::string name() const = 0;
+
     /**
      * @brief Returns the type of support for input/output operations.
      *
@@ -82,7 +88,7 @@ public:
      */
     virtual Image load(
         const std::string& filename,
-        AbstractLogger&    log = logger())
+        AbstractLogger&    log = logger()) const
     {
         if (ioSupport() == IOSupport::SAVE) {
             throw std::runtime_error(
@@ -108,7 +114,7 @@ public:
     virtual void save(
         const std::string& filename,
         const Image&       image,
-        AbstractLogger&    log = logger())
+        AbstractLogger&    log = logger()) const
     {
         if (ioSupport() == IOSupport::LOAD) {
             throw std::runtime_error(

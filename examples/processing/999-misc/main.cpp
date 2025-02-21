@@ -53,4 +53,9 @@ int main()
         }
         ++i;
     }
+
+    BaseIOImage ioImage;
+
+    auto img = ioImage.load(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble_A.png");
+    ioImage.save(VCLIB_RESULTS_PATH "/TextureDoubleSaved.jpeg", img);
 }

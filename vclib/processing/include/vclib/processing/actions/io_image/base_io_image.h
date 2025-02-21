@@ -20,22 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_SAVE_IMAGE_H
-#define VCL_PROCESSING_ACTIONS_SAVE_IMAGE_H
+#ifndef VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_IO_IMAGE_H
+#define VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_IO_IMAGE_H
 
-#include "save_image/base_save_image_action.h"
+#include <vclib/processing/action_interfaces/io_image_action.h>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibSaveImageActions()
+class BaseIOImage : public IOImageAction
 {
-    std::vector<std::shared_ptr<Action>> vec;
+public:
+    std::string name() const final { return "Base IO Image"; }
 
-    vec.push_back(BaseSaveImageAction().clone());
+    std::shared_ptr<Action> clone() const final
+    {
+        return std::make_shared<BaseIOImage>(*this);
+    }
 
-    return vec;
-}
+    IOSupport ioSupport() const final { return IOSupport::BOTH; }
+
+    std::vector<FileFormat> supportedFormats() const final
+    {
+        std::vector<FileFormat> formats;
+        formats.push_back(FileFormat("png", "Portable Network Graphics"));
+        formats.push_back(FileFormat("bmp", "Bitmap"));
+        formats.push_back(FileFormat("tga", "Truevision TGA"));
+        formats.push_back(
+            FileFormat({"jpg", "jpeg"}, "Joint Photographic Experts Group"));
+
+        return formats;
+    }
+
+    Image load(const std::string& filename, AbstractLogger& log = logger())
+        const final
+    {
+        Image img(filename);
+        if (img.isNull()) {
+            throw std::runtime_error("Error loading image from " + filename);
+        }
+        return img;
+    }
+
+    void save(
+        const std::string& filename,
+        const Image&       image,
+        AbstractLogger&    log = logger()) const final
+    {
+        assert(!image.isNull());
+        image.save(filename);
+    }
+};
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_SAVE_IMAGE_H
+#endif // VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_IO_IMAGE_H
