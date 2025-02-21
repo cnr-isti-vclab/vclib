@@ -192,7 +192,6 @@ public:
                 mWedgeTextureIndexBuffer.bind(
                     VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
             }
-
         }
         else if (indexBufferToBind == EDGES) {
             mEdgeIndexBuffer.bind();
@@ -526,7 +525,7 @@ private:
     {
         using enum MRI::Buffers;
 
-        if constexpr(HasFaces<MeshType> && HasPerVertexTexCoord<MeshType>) {
+        if constexpr (HasFaces<MeshType> && HasPerVertexTexCoord<MeshType>) {
             if (isPerVertexTexCoordAvailable(mesh)) {
                 const uint NUM_TRIS = mIndexMap.triangleNumber();
 
