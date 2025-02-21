@@ -38,7 +38,8 @@ class Action
 
 public:
     enum class Type {
-        LOAD_IMAGE_ACTION = 0,
+        IO_IMAGE_ACTION = 0,
+        LOAD_IMAGE_ACTION,
         SAVE_IMAGE_ACTION,
         // LOAD_MESH_ACTION,
         // SAVE_MESH_ACTION,
