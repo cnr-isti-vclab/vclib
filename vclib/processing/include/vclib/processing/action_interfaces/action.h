@@ -32,10 +32,9 @@
 
 namespace vcl::proc {
 
-template<LoggerConcept LogType = ConsoleLogger>
 class Action
 {
-    inline static LogType log;
+    inline static ConsoleLogger log;
 
 public:
     enum class Type {
@@ -58,7 +57,7 @@ public:
     virtual Type type() const = 0;
 
 protected:
-    static LogType& logger() { return log; }
+    static ConsoleLogger& logger() { return log; }
 
 private:
     // members used by the action manager

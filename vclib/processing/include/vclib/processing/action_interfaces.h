@@ -24,10 +24,12 @@
 #define VCL_PROCESSING_ACTION_INTERFACES_H
 
 #include "action_interfaces/action.h"
+#include "action_interfaces/images/load_image_action.h"
+#include "action_interfaces/images/save_image_action.h"
+
 // #include "action_interfaces/filter_mesh_action.h"
-// #include "action_interfaces/load_image_action.h"
+
 // #include "action_interfaces/load_mesh_action.h"
-// #include "action_interfaces/save_image_action.h"
 // #include "action_interfaces/save_mesh_action.h"
 
 #endif // VCL_PROCESSING_ACTION_INTERFACES_H

@@ -23,7 +23,7 @@
 #ifndef VCL_PROCESSING_ACTION_INTERFACES_SAVE_IMAGE_ACTION_H
 #define VCL_PROCESSING_ACTION_INTERFACES_SAVE_IMAGE_ACTION_H
 
-#include "action.h"
+#include <vclib/processing/action_interfaces/action.h>
 
 #include <vclib/io/file_format.h>
 #include <vclib/space/core/image.h>
@@ -35,9 +35,9 @@ namespace vcl::proc {
 class SaveImageAction : public Action
 {
 public:
-    uint type() const final { return ActionType::SAVE_IMAGE_ACTION; }
+    Type type() const final { return Type::SAVE_IMAGE_ACTION; }
 
-    virtual std::vector<FileFormat> formats() const = 0;
+    virtual std::vector<FileFormat> supportedFormats() const = 0;
 
     virtual void save(
         const std::string& filename,

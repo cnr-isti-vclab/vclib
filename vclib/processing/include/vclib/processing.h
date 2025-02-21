@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_H
 #define VCL_PROCESSING_H
 
+#include "processing/action_interfaces.h"
 #include "processing/parameter_vector.h"
 #include "processing/parameters.h"
 
