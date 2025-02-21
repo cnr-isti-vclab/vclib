@@ -72,8 +72,10 @@ public:
 
     bool matchExtension(const std::string& extension) const
     {
+        auto e = extension;
+        clearExtension(e);
         for (const auto& ext : mExtensions) {
-            if (ext == extension) {
+            if (ext == e) {
                 return true;
             }
         }
