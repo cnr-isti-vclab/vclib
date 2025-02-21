@@ -20,13 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INTERFACES_H
-#define VCL_PROCESSING_ACTION_INTERFACES_H
+#ifndef VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
+#define VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
 
-#include "action_interfaces/filter_mesh_action.h"
-#include "action_interfaces/load_image_action.h"
-#include "action_interfaces/load_mesh_action.h"
-#include "action_interfaces/save_image_action.h"
-#include "action_interfaces/save_mesh_action.h"
+#include <vclib/misc/logger.h>
+#include <vclib/misc/string.h>
+#include <vclib/types.h>
 
-#endif // VCL_PROCESSING_ACTION_INTERFACES_H
+#include <algorithm>
+#include <memory>
+
+namespace vcl::proc {
+
+template<LoggerConcept LogType = ConsoleLogger>
+class Action
+{
+    inline static LogType log;
+
+public:
+    enum class Type {
+        LOAD_IMAGE_ACTION = 0,
+        SAVE_IMAGE_ACTION,
+        // LOAD_MESH_ACTION,
+        // SAVE_MESH_ACTION,
+        // FILTER_MESH_ACTION,
+
+        COUNT
+    };
+
+    Action()          = default;
+    virtual ~Action() = default;
+
+    virtual std::shared_ptr<Action> clone() const = 0;
+
+    virtual std::string name() const = 0;
+
+    virtual Type type() const = 0;
+
+protected:
+    static LogType& logger() { return log; }
+
+private:
+    // members used by the action manager
+    std::string identifier() const { return identifierFromName(name()); }
+
+    static std::string identifierFromName(const std::string& name)
+    {
+        std::string n = name;
+
+        std::replace(n.begin(), n.end(), ' ', '_');
+        n = vcl::toLower(n);
+
+        return n;
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
