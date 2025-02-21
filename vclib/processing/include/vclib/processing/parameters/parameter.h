@@ -23,7 +23,6 @@
 #ifndef VCL_PROCESSING_PARAMETERS_PARAMETER_H
 #define VCL_PROCESSING_PARAMETERS_PARAMETER_H
 
-#include <vclib/processing/settings.h>
 #include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
 
@@ -62,7 +61,7 @@ class Parameter
     std::string mCategory;
 
 public:
-    using Scalar = ProcScalarType;
+    using Scalar = double;
 
     Parameter() = default;
 
@@ -75,7 +74,7 @@ public:
     const std::string& name() const { return mName; }
 
     template<typename ValueType>
-    const ValueType& value() const
+    ValueType value() const
     {
         return std::any_cast<ValueType>(mValue);
     }
@@ -164,16 +163,16 @@ public:
         return std::any_cast<const vcl::Color&>(mValue);
     }
 
-    void setPoint3Value(const Point3<ProcScalarType>& v)
+    void setPoint3Value(const Point3<Scalar>& v)
     {
         checkParameterType(ParameterType::POINT3);
-        std::any_cast<Point3<ProcScalarType>&>(mValue) = v;
+        std::any_cast<Point3<Scalar>&>(mValue) = v;
     }
 
-    const Point3<ProcScalarType>& point3Value() const
+    const Point3<Scalar>& point3Value() const
     {
         checkParameterType(ParameterType::POINT3);
-        return std::any_cast<const Point3<ProcScalarType>&>(mValue);
+        return std::any_cast<const Point3<Scalar>&>(mValue);
     }
 
 protected:

@@ -20,19 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_H
-#define VCL_PROCESSING_H
+#include <vclib/processing.h>
 
-#include "processing/action_manager.h"
-#include "processing/actions.h"
-#include "processing/meshes.h"
+int main()
+{
+    using namespace vcl::proc;
 
-/**
- * @defgroup processing Processing
- *
- * @brief List of classes and functions that allow to perform high level
- * processing, without the need to interact with the underlying data structures
- * and algorithms.
- */
+    ParameterVector parameters;
 
-#endif // VCL_PROCESSING_H
+    parameters.pushBack(BoolParameter("bool", true));
+    parameters.pushBack(IntParameter("int", 42));
+    parameters.pushBack(UintParameter("uint", 42));
+
+    for (uint i = 0; const auto& p : parameters) {
+        std::cout << i << ": ";
+        switch (p->type()) {
+        case ParameterType::BOOL:
+            std::cout << "Bool parameter: " << p->name();
+            std::cout << "; Value: " << p->value<bool>() << std::endl;
+            break;
+        case ParameterType::INT:
+            std::cout << "Int parameter: " << p->name();
+            std::cout << "; Value: " << p->value<int>() << std::endl;
+            break;
+        case ParameterType::UINT:
+            std::cout << "Uint parameter: " << p->name();
+            std::cout << "; Value: " << p->value<uint>() << std::endl;
+            break;
+        default:
+            std::cout << "Unknown parameter type: " << p->name() << std::endl;
+            break;
+        }
+        ++i;
+    }
+}
