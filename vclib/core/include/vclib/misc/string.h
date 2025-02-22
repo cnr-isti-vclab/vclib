@@ -94,14 +94,14 @@ inline bool containsCaseInsensitive(
     return findCaseInsensitive(input, substr) != input.end();
 }
 
-inline std::string toLower(const std::string& s)
+inline constexpr std::string toLower(const std::string& s)
 {
     std::string ret(s);
     std::transform(s.begin(), s.end(), ret.begin(), ::tolower);
     return ret;
 }
 
-inline std::string toUpper(const std::string& s)
+inline constexpr std::string toUpper(const std::string& s)
 {
     std::string ret(s);
     std::transform(s.begin(), s.end(), ret.begin(), [](unsigned char c) {

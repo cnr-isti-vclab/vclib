@@ -20,19 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_LOAD_SAVE_H
-#define VCL_LOAD_SAVE_H
+#ifndef VCL_LOAD_SAVE_FORMATS_H
+#define VCL_LOAD_SAVE_FORMATS_H
 
-#include "load_save/capability.h"
-#include "load_save/load.h"
-#include "load_save/formats.h"
-#include "load_save/save.h"
+#include <vclib/exceptions/io.h>
+#include <vclib/io/file_format.h>
 
-/**
- * @defgroup load_save Load/Save functions
- *
- * @brief List of functions that allow to load from file or save to a file an
- * input Mesh.
- */
+namespace vcl {
 
-#endif // VCL_LOAD_SAVE_H
+constexpr FileFormat objFileFormat()
+{
+    return FileFormat("obj", "OBJ Wavefront .obj");
+}
+
+constexpr FileFormat offFileFormat()
+{
+    return FileFormat("off", "OFF Object File Format .off");
+}
+
+constexpr FileFormat plyFileFormat()
+{
+    return FileFormat("ply", "PLY Polygon File Format .ply");
+}
+
+constexpr FileFormat stlFileFormat()
+{
+    return FileFormat("stl", "STL Stereolithography .stl");
+}
+
+FileFormat fileFormat(const std::string& format)
+{
+    std::string ext = toLower(format);
+    if (ext == "obj") {
+        return objFileFormat();
+    }
+    else if (ext == "off") {
+        return offFileFormat();
+    }
+    else if (ext == "ply") {
+        return plyFileFormat();
+    }
+    else if (ext == "stl") {
+        return stlFileFormat();
+    }
+    else {
+        throw UnknownFileFormatException(ext);
+    }
+}
+
+} // namespace vcl
+
+#endif // VCL_LOAD_SAVE_FORMATS_H
