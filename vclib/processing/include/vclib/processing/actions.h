@@ -25,6 +25,7 @@
 
 // #include "actions/filter_mesh.h"
 #include "actions/io_image.h"
+#include "actions/io_mesh.h"
 // #include "actions/load_mesh.h"
 // #include "actions/save_mesh.h"
 

@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <vclib/processing.h>
+#include <vclib/meshes.h>
 
 int main()
 {
@@ -58,4 +59,11 @@ int main()
 
     auto img = ioImage.load(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble_A.png");
     ioImage.save(VCLIB_RESULTS_PATH "/TextureDoubleSaved.jpeg", img);
+
+    BaseIOMesh<vcl::TriMesh> ioMesh;
+
+    std::cerr << ioMesh.name() << std::endl;
+
+    auto mesh = ioMesh.load(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    ioMesh.save(VCLIB_RESULTS_PATH "/bunny.ply", mesh);
 }

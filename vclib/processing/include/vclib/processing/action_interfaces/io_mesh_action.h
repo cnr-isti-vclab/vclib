@@ -37,11 +37,7 @@ template<MeshConcept MeshType>
 class IOMeshAction : public Action
 {
 public:
-    enum class IOSupport {
-        LOAD,
-        SAVE,
-        BOTH
-    };
+    enum class IOSupport { LOAD, SAVE, BOTH };
 
     /* ******************************************************************** *
      * Member functions that must/may be implemented by the derived classes *
@@ -89,9 +85,14 @@ public:
      * You should override this method if your load function requires
      * parameters.
      *
-     * @return The parameters for loading the mesh.
+     * @param[in] format: the file format for which the parameters are requested
+     *
+     * @return The parameters for loading the mesh with the given file format.
      */
-    virtual ParameterVector parametersLoad() const { return ParameterVector(); }
+    virtual ParameterVector parametersLoad(const FileFormat& format) const
+    {
+        return ParameterVector();
+    }
 
     /**
      * @brief Returns the parameters to save the mesh.
@@ -101,9 +102,14 @@ public:
      * You should override this method if your save function requires
      * parameters.
      *
-     * @return The parameters for saving the mesh.
+     * @param[in] format: the file format for which the parameters are requested
+     *
+     * @return The parameters for saving the mesh with the given file format.
      */
-    virtual ParameterVector parametersSave() const { return ParameterVector(); }
+    virtual ParameterVector parametersSave(const FileFormat& format) const
+    {
+        return ParameterVector();
+    }
 
     /**
      * @brief Loads a mesh from the given file.
@@ -113,6 +119,7 @@ public:
      * IOSupport::BOTH.
      *
      * @param[in] filename: the file to read from
+     * @param[in] format: the file format of the file to read from
      * @param[in] parameters: the parameters for loading the mesh
      * @param[out] loadedInfo: the information loaded from the file
      * @param[in] log: the logger to use
@@ -120,6 +127,7 @@ public:
      */
     virtual MeshType load(
         const std::string&     filename,
+        const FileFormat&      format,
         const ParameterVector& parameters,
         vcl::MeshInfo&         loadedInfo,
         AbstractLogger&        log = logger()) const
@@ -132,6 +140,7 @@ public:
         // This should never be reached - the action declared that is able to
         // load images, but it does not implement the load method.
         assert(0);
+        return MeshType();
     };
 
     /**
@@ -142,6 +151,7 @@ public:
      * IOSupport::BOTH.
      *
      * @param[in] filename: the file to write to
+     * @param[in] format: the file format of the file to write to
      * @param[in] mesh: the mesh to save
      * @param[in] info: the information of the mesh to save in the file
      * @param[in] parameters: the parameters for saving the mesh
@@ -149,10 +159,20 @@ public:
      */
     virtual void save(
         const std::string&     filename,
+        const FileFormat&      format,
         const MeshType&        mesh,
         const MeshInfo&        info,
         const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const = 0;
+        AbstractLogger&        log = logger()) const
+    {
+        if (ioSupport() == IOSupport::LOAD) {
+            throw std::runtime_error(
+                "The action " + name() + " does not support saving meshes.");
+        }
+        // This should never be reached - the action declared that is able to
+        // save images, but it does not implement the save method.
+        assert(0);
+    }
 
     /* ************************************ *
      * Member functions already implemented *
@@ -166,24 +186,27 @@ public:
         AbstractLogger&        log = logger()) const
     {
         MeshInfo info;
-        auto     mesh = load(filename, parameters, info, log);
+        FileFormat format(FileInfo::extension(filename));
+        auto     mesh = load(filename, format, parameters, info, log);
         return mesh;
     }
 
-    MeshType load(
-        const std::string& filename,
-        AbstractLogger&    log = logger()) const
+    MeshType load(const std::string& filename, AbstractLogger& log = logger())
+        const
     {
-        return load(filename, parametersLoad(), log);
+        FileFormat format(FileInfo::extension(filename));
+        return load(filename, parametersLoad(format), log);
     }
 
     void save(
-        const std::string& filename,
-        const MeshType&    mesh,
-        AbstractLogger&    log = logger()) const
+        const std::string&     filename,
+        const MeshType&        mesh,
+        const MeshInfo&        info,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
     {
-        auto ext = FileInfo::extension(filename);
-        save(filename, mesh, ext, parametersSave(), log);
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, format, mesh, info, parameters, log);
     }
 
     void save(
@@ -192,7 +215,8 @@ public:
         const MeshInfo&    info,
         AbstractLogger&    log = logger()) const
     {
-        save(filename, mesh, info, parametersSave(), log);
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, mesh, info, parametersSave(format), log);
     }
 
     void save(
@@ -201,8 +225,17 @@ public:
         const ParameterVector& parameters,
         AbstractLogger&        log = logger()) const
     {
-        auto ext = FileInfo::extension(filename);
-        save(filename, mesh, formatCapability(ext), parameters, log);
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, mesh, formatCapability(format), parameters, log);
+    }
+
+    void save(
+        const std::string& filename,
+        const MeshType&    mesh,
+        AbstractLogger&    log = logger()) const
+    {
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, mesh, parametersSave(format), log);
     }
 
 protected:
@@ -219,10 +252,10 @@ protected:
         vcl::updateBoundingBox(mesh);
     }
 
-    MeshInfo formatCapability(const std::string& format) const
+    MeshInfo formatCapability(const FileFormat& format) const
     {
         for (const auto& [f, info] : supportedFormats()) {
-            if (f.matchExtension(format)) {
+            if (f == format) {
                 return info;
             }
         }

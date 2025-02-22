@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_IO_IMAGE_H
-#define VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_IO_IMAGE_H
+#ifndef VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
+#define VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
 
 #include <vclib/processing/action_interfaces/io_image_action.h>
 
@@ -73,4 +73,4 @@ public:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_IO_IMAGE_H
+#endif // VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H

@@ -91,11 +91,11 @@ public:
         if (ioSupport() == IOSupport::SAVE) {
             throw std::runtime_error(
                 "The action " + name() + " does not support loading images.");
-            return Image();
         }
         // This should never be reached - the action declared that is able to
         // load images, but it does not implement the load method.
         assert(0);
+        return Image();
     }
 
     /**

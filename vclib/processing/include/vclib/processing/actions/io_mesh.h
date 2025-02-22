@@ -20,66 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
-#define VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
+#ifndef VCL_PROCESSING_ACTIONS_IO_MESH_H
+#define VCL_PROCESSING_ACTIONS_IO_MESH_H
 
-#include <vclib/processing/action_interfaces/save_mesh_action.h>
-#include <vclib/processing/functions.h>
-#include <vclib/processing/meshes.h>
-#include <vclib/processing/parameters.h>
+#include "io_mesh/base_io_mesh.h"
 
-#include <vclib/load_save/off/capability.h>
-#include <vclib/load_save/off/save.h>
+#include <memory>
+#include <vector>
 
 namespace vcl::proc {
 
-class OffSaveMeshAction : public SaveMeshAction
+std::vector<std::shared_ptr<Action>> ioMeshActions()
 {
-public:
-    using SaveMeshAction::save;
+    std::vector<std::shared_ptr<Action>> vec;
 
-    std::string name() const override { return "Save Off Mesh"; }
+    // vec.push_back(BaseIOMesh().clone());
 
-    std::shared_ptr<Action> clone() const override
-    {
-        return std::make_shared<OffSaveMeshAction>(*this);
-    }
-
-    std::vector<FileFormat> formats() const override
-    {
-        return {FileFormat("off", "OFF Object File Format")};
-    }
-
-    MeshInfo formatCapability() const override { return offFormatCapability(); }
-
-    void save(
-        const std::string&     filename,
-        const MeshI&           mesh,
-        const MeshInfo&        info,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const override
-    {
-        // transform saveOff to a lambda function
-        auto fun = [&](auto&& m) {
-            saveOff(m, filename, info, parameters);
-        };
-
-        callFunctionForSupportedMeshTypes(mesh, fun);
-    }
-
-private:
-    void saveOff(
-        const MeshConcept auto& mesh,
-        const std::string&      filename,
-        const MeshInfo&         info,
-        const ParameterVector&) const
-    {
-        vcl::SaveSettings settings;
-        settings.info = info;
-        vcl::saveOff(mesh, filename, settings);
-    }
-};
+    return vec;
+}
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
+#endif // VCL_PROCESSING_ACTIONS_IO_MESH_H
