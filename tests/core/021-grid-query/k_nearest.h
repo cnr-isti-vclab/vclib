@@ -46,7 +46,8 @@ auto bruteForceKNearestFaces(
     std::vector<std::vector<std::pair<vcl::uint, ScalarType>>> nearestAndDists(
         points.size());
 
-    vcl::Timer t("Computing brute force kn faces for " + meshName<MeshType>());
+    vcl::Timer t(
+        "Computing brute force kn faces for " + vcl::meshTypeName<MeshType>());
 
     for (vcl::uint i = 0; const auto& p : points) {
         std::vector<std::pair<vcl::uint, ScalarType>> facesAndDists(
@@ -89,7 +90,8 @@ auto gridKNearestFaces(
     auto distFun = vcl::distFunction<PointType, FaceType>();
 
     vcl::Timer t(
-        "Computing k nearests - " + meshName<MeshType>() + " - " + gridName);
+        "Computing k nearests - " + vcl::meshTypeName<MeshType>() + " - " +
+        gridName);
     t.start();
     std::vector<std::vector<std::pair<vcl::uint, ScalarType>>> nearestGrid(
         points.size());
@@ -115,7 +117,7 @@ void kNearestFacesTest(
 {
     auto nearestAndDists = bruteForceKNearestFaces(mesh, points, k);
 
-    vcl::Timer t(meshName<MeshType>() + ": Computing " + gridName);
+    vcl::Timer t(vcl::meshTypeName<MeshType>() + ": Computing " + gridName);
     auto       grid = computeGrid<Grid>(mesh);
     t.stopAndPrint();
 

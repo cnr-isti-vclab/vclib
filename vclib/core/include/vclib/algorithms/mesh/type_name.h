@@ -20,33 +20,55 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_MESH_H
-#define VCL_ALGORITHMS_MESH_H
+#ifndef VCL_ALGORITHMS_MESH_TYPE_NAME_H
+#define VCL_ALGORITHMS_MESH_TYPE_NAME_H
 
-#include "mesh/clean.h"
-#include "mesh/create.h"
-#include "mesh/distance.h"
-#include "mesh/face_topology.h"
-#include "mesh/filter.h"
-#include "mesh/import_export.h"
-#include "mesh/point_sampling.h"
-#include "mesh/shuffle.h"
-#include "mesh/smooth.h"
-#include "mesh/sort.h"
-#include "mesh/stat.h"
-#include "mesh/type_name.h"
-#include "mesh/update.h"
+#include <vclib/concepts/mesh.h>
+
+namespace vcl {
 
 /**
- * @defgroup algorithms_mesh Mesh Algorithms
+ * @brief Returns the name of the mesh type as a string.
+ * @return the name of the mesh type as a string.
  *
- * @brief List of Mesh algorithms.
- *
- * In this module, you can find the mesh algorithms of VCLib, that involve
- * operations on meshes, like cleaning, filtering, and smoothing.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh.h>`
+ * @ingroup algorithms_mesh
  */
+template<MeshConcept MeshType>
+constexpr std::string meshTypeName()
+{
+    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
 
-#endif // VCL_ALGORITHMS_MESH_H
+    std::string name;
+
+    if constexpr (!HasFaces<MeshType> && !HasEdges<MeshType>) {
+        name = "PointCloud";
+    }
+    else {
+        constexpr bool indexed = MeshType::FaceType::INDEXED;
+
+        if constexpr (vcl::HasTriangles<MeshType>)
+            name = "Tri";
+        else if constexpr (vcl::HasQuads<MeshType>)
+            name = "Quad";
+        else
+            name = "Poly";
+
+        if constexpr (vcl::HasEdges<MeshType>)
+            name += "Edge";
+
+        name += "Mesh";
+
+        if constexpr (indexed)
+            name += "Indexed";
+    }
+
+    if constexpr (std::same_as<ScalarType, float>)
+        name += "f";
+
+    return name;
+}
+
+
+} // namespace vcl
+
+#endif // VCL_ALGORITHMS_MESH_TYPE_NAME_H
