@@ -26,9 +26,9 @@ in your `cmake` project. CMake will create a target called `vclib`, that you can
 VCLib requires recent compiler versions in order to build the newly features of the C++20 language, that have been recently integrated in the major compilers.
 
 VCLib currently builds with the following compilers:
-  - GCC 11.3 (default in Ubuntu 22.04)
-  - CLang 16 (default in XCode 15.0 on MacOS)
-  - MSVC 19.36 (last version in Visual Studio 2022)
+  - GCC 13.3 (default in Ubuntu 24.04)
+  - CLang 16 (XCode 15.0 on MacOS)
+  - MSVC 19.36 (Visual Studio 2022)
 
 There is no guarantee that old compiler versions are capable to build the library.
 
