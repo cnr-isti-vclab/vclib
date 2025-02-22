@@ -33,7 +33,7 @@ int main()
     parameters.pushBack(IntParameter("int", 42));
     parameters.pushBack(UintParameter("uint", 42));
 
-    for (uint i = 0; const auto& p : parameters) {
+    for (vcl::uint i = 0; const auto& p : parameters) {
         std::cout << i << ": ";
         switch (p->type()) {
         case ParameterType::BOOL:
@@ -46,7 +46,7 @@ int main()
             break;
         case ParameterType::UINT:
             std::cout << "Uint parameter: " << p->name();
-            std::cout << "; Value: " << p->value<uint>() << std::endl;
+            std::cout << "; Value: " << p->value<vcl::uint>() << std::endl;
             break;
         default:
             std::cout << "Unknown parameter type: " << p->name() << std::endl;
