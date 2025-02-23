@@ -20,34 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_H
+#define VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_H
 
-#include "actions/filter_mesh.h"
-#include "actions/io_image.h"
-#include "actions/io_mesh.h"
+#include "generate/convex_hull_filter.h"
+
+#include <vclib/meshes.h>
+
+#include <memory>
+#include <vector>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibActions()
+std::vector<std::shared_ptr<Action>> generateFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    // IO Image actions
-    auto ioImgVector = ioImageActions();
-    vec.insert(vec.end(), ioImgVector.begin(), ioImgVector.end());
-
-    // IO Mesh actions
-    auto ioMeshVector = ioMeshActions();
-    vec.insert(vec.end(), ioMeshVector.begin(), ioMeshVector.end());
-
-    // // Filter Mesh actions
-    auto filterMeshVector = filterMeshActions();
-    vec.insert(vec.end(), filterMeshVector.begin(), filterMeshVector.end());
+    vec.push_back(ConvexHullFilter<vcl::TriMesh>().clone());
 
     return vec;
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_H
+#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_H

@@ -25,6 +25,8 @@
 
 #include "io_mesh/base_io_mesh.h"
 
+#include <vclib/meshes.h>
+
 #include <memory>
 #include <vector>
 
@@ -34,7 +36,8 @@ std::vector<std::shared_ptr<Action>> ioMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    // vec.push_back(BaseIOMesh().clone());
+    vec.push_back(BaseIOMesh<vcl::TriEdgeMesh>().clone());
+    //vec.push_back(BaseIOMesh<vcl::PolyEdgeMesh>().clone());
 
     return vec;
 }

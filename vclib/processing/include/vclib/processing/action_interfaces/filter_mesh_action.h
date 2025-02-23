@@ -47,7 +47,7 @@ public:
         COUNT,
     };
 
-    using CategoryBitSet = BitSet<Category>;
+    using CategoryBitSet = BitSet<uint>;
 
     /* ******************************************************************** *
      * Member functions that must/may be implemented by the derived classes *
@@ -77,13 +77,18 @@ public:
     virtual std::string description() const = 0;
 
     /**
-     * @brief Returns a vector indicating the number of input meshes that the
-     * filter requires, and their description.
+     * @brief Returns a vector indicating the input meshes that the filter
+     * requires, and their description.
      *
      * Input meshes are the meshes that the filter will use to perform its
      * operation, but that will not be modified (they will be const, and the
      * applyFilter function will receive them in a const vector of const
      * meshes).
+     *
+     * The UintParameter objects in the returned vector must contain the name
+     * and description of the input meshes. The uint value contained in the
+     * UintParameter object won't be used. The number of input mesh requires is
+     * the size of the returned vector.
      *
      * @return The input meshes for the filter.
      */
@@ -97,6 +102,11 @@ public:
      * its operation, and that will be modified (they will be non-const, and the
      * applyFilter function will receive them in a const vector of non-const
      * meshes).
+     *
+     * The UintParameter objects in the returned vector must contain the name
+     * and description of the input/output meshes. The uint value contained in
+     * the UintParameter object won't be used. The number of input/output mesh
+     * requires is the size of the returned vector.
      *
      * @return The input/output meshes for the filter.
      */
@@ -112,11 +122,240 @@ public:
      *
      * @return The parameters for the filter.
      */
-    virtual ParameterVector parameters() const
+    virtual ParameterVector parameters() const { return ParameterVector(); }
+
+protected:
+    /**
+     * @brief Executes the filter to the input meshes and/or input/output
+     * meshes, filling eventual output meshes, and returning the output values
+     * of the filter, if any.
+     *
+     * This method is the one that actually executes the filter, and must be
+     * implemented by the derived classes.
+     *
+     * It won't be called directly by the user or the manager, but by the
+     * execute method of the base class. You don't need to check the consistency
+     * of the input vectors, as this will be done by the execute method of the
+     * base class.
+     *
+     * @param[in] inputMeshes: The input meshes. These meshes will not be
+     * modified by the filter. They will be passed to the function as a const
+     * vector of const pointers to meshes, which guarantees that the meshes
+     * of the vector will not be modified.
+     * @param[in/out] inputOutputMeshes: The input/output meshes. These meshes
+     * can be used as input and can be modified by the filter. They will be
+     * passed to the function as a vector of pointers to meshes, which
+     * guarantees that the vector cannot be modified, but the meshes pointed by
+     * the elements of the vector can be modified.
+     * @param[our] outputMeshes: The output meshes. These meshes will be filled
+     * by the filter, if any. The filter will create new meshes and will add
+     * them to the vector. The vector will be empty when the function
+     * is called, and the filter will fill it with the output meshes.
+     * @param[in] parameters: The parameters of the filter.
+     * @param[in] log: The logger to use
+     * @return The output values of the filter, if any.
+     */
+    virtual OutputValues executeFilter(
+        const std::vector<const MeshType*>& inputMeshes,
+        const std::vector<MeshType*>&       inputOutputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        const ParameterVector&              parameters,
+        AbstractLogger&                     log = logger()) const = 0;
+
+public:
+    /* ************************************ *
+     * Member functions already implemented *
+     * ************************************ */
+
+    Type type() const final { return Type::FILTER_MESH_ACTION; }
+
+    /// execute overrides
+
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        const std::vector<MeshType*>&       inputOutputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        const ParameterVector&              parameters,
+        AbstractLogger&                     log = logger()) const
     {
-        return ParameterVector();
+        checkInputVectors(inputMeshes, inputOutputMeshes);
+        return executeFilter(
+            inputMeshes, inputOutputMeshes, outputMeshes, parameters, log);
     }
 
+    // without parameters override
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        const std::vector<MeshType*>&       inputOutputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        AbstractLogger&                     log = logger()) const
+    {
+        return execute(
+            inputMeshes, inputOutputMeshes, outputMeshes, parameters(), log);
+    }
+
+    // without inputOutputMeshes override
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        const ParameterVector&              parameters,
+        AbstractLogger&                     log = logger()) const
+    {
+        checkInputOutputMeshes(0);
+        return execute(inputMeshes, {}, outputMeshes, parameters, log);
+    }
+
+    // without inputOutputMeshes and parameters override
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        AbstractLogger&                     log = logger()) const
+    {
+        return execute(inputMeshes, outputMeshes, parameters(), log);
+    }
+
+    // TODO: add more overrides here:
+    // no outputMeshes
+    // no outputMeshes and parameters
+
+    // without inputOutputMeshes and outputMeshes override
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        const ParameterVector&              parameters,
+        AbstractLogger&                     log = logger()) const
+    {
+        std::vector<MeshType> outputMeshes;
+        auto out = execute(inputMeshes, outputMeshes, parameters, log);
+        warnOutputMeshesVector(outputMeshes, log);
+        return out;
+    }
+
+    // without inputOutputMeshes, outputMeshes and parameters override
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        AbstractLogger&                     log = logger()) const
+    {
+        return execute(inputMeshes, parameters(), log);
+    }
+
+    //TODO: add more overrides here:
+    // no inputMeshes
+    // no inputMeshes and parameters
+    // no inputMeshes and outputMeshes
+    // no inputMeshes, outputMeshes and parameters
+
+    // one inputMesh override
+    OutputValues execute(
+        const MeshType&               inputMesh,
+        const std::vector<MeshType*>& inputOutputMeshes,
+        std::vector<MeshType>&        outputMeshes,
+        const ParameterVector&        parameters,
+        AbstractLogger&               log = logger()) const
+    {
+        checkInputMeshes(1);
+        return execute(
+            {&inputMesh}, inputOutputMeshes, outputMeshes, parameters, log);
+    }
+
+    // one inputMesh without parameters override
+    OutputValues execute(
+        const MeshType&               inputMesh,
+        const std::vector<MeshType*>& inputOutputMeshes,
+        std::vector<MeshType>&        outputMeshes,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute(
+            inputMesh,
+            inputOutputMeshes,
+            outputMeshes,
+            parameters(),
+            log);
+    }
+
+    // one inputMesh without inputOutputMeshes override
+    OutputValues execute(
+        const MeshType&               inputMesh,
+        std::vector<MeshType>&        outputMeshes,
+        const ParameterVector&        parameters,
+        AbstractLogger&               log = logger()) const
+    {
+        checkInputOutputMeshes(0);
+        return execute(
+            inputMesh, {}, outputMeshes, parameters, log);
+    }
+
+    // one inputMesh without inputOutputMeshes and parameters override
+    OutputValues execute(
+        const MeshType&               inputMesh,
+        std::vector<MeshType>&        outputMeshes,
+        AbstractLogger&               log = logger()) const
+    {
+        checkInputOutputMeshes(0);
+        return execute(
+            inputMesh, {}, outputMeshes, parameters(), log);
+    }
+
+    // one inputMesh without inputOutputMeshes, and outputMeshes override
+    OutputValues execute(
+        const MeshType&               inputMesh,
+        const ParameterVector&        parameters,
+        AbstractLogger&               log = logger()) const
+    {
+        std::vector<MeshType> outputMeshes;
+        auto out = execute(inputMesh, outputMeshes, parameters, log);
+        warnOutputMeshesVector(outputMeshes, log);
+        return out;
+    }
+
+    // one inputMesh without inputOutputMeshes, outputMeshes and parameters
+    OutputValues execute(
+        const MeshType&               inputMesh,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute(inputMesh, parameters(), log);
+    }
+
+private:
+    void checkInputMeshes(uint provided) const
+    {
+        uint n = inputMeshes().size();
+        if (n != provided) {
+            throw std::runtime_error(
+                "The action " + name() + " requires " + std::to_string(n) +
+                " input meshes, but " + std::to_string(provided) +
+                " was provided. Use a different execute overload.");
+        }
+    }
+
+    void checkInputOutputMeshes(uint provided) const
+    {
+        uint n = inputOutputMeshes().size();
+        if (n != provided) {
+            throw std::runtime_error(
+                "The action " + name() + " requires " + std::to_string(n) +
+                " input/output meshes, but " + std::to_string(provided) +
+                " was provided. Use a different execute overload.");
+        }
+    }
+
+    void warnOutputMeshesVector(
+        const std::vector<MeshType>& outputMeshes,
+        AbstractLogger&              log) const
+    {
+        if (!outputMeshes.empty()) {
+            log.log("The action " + name() + " returned output meshes, but an "
+                "outputMeshes vector was not provided to the execute function.",
+                log.WARNING_LOG);
+        }
+    }
+
+    void checkInputVectors(
+        const std::vector<const MeshType*>& inputMeshes,
+        const std::vector<MeshType*>&       inputOutputMeshes) const
+    {
+        checkInputMeshes(inputMeshes.size());
+        checkInputOutputMeshes(inputOutputMeshes.size());
+    }
 };
 
 } // namespace vcl::proc

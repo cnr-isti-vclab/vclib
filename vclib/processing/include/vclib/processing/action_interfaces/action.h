@@ -40,9 +40,7 @@ public:
     enum class Type {
         IO_IMAGE_ACTION = 0,
         IO_MESH_ACTION,
-        // LOAD_MESH_ACTION,
-        // SAVE_MESH_ACTION,
-        // FILTER_MESH_ACTION,
+        FILTER_MESH_ACTION,
 
         COUNT
     };

@@ -65,5 +65,12 @@ int main()
     std::cerr << ioMesh.name() << std::endl;
 
     auto mesh = ioMesh.load(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-    ioMesh.save(VCLIB_RESULTS_PATH "/bunny.ply", mesh);
+
+    ConvexHullFilter<vcl::TriMesh> convexHullFilter;
+
+    std::vector<vcl::TriMesh> out;
+
+    convexHullFilter.execute(mesh, out);
+
+    ioMesh.save(VCLIB_RESULTS_PATH "/bunny_ch.ply", out.front());
 }
