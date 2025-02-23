@@ -24,8 +24,8 @@
 #define VCL_LOAD_SAVE_H
 
 #include "load_save/capability.h"
-#include "load_save/load.h"
 #include "load_save/formats.h"
+#include "load_save/load.h"
 #include "load_save/save.h"
 
 /**

@@ -68,7 +68,6 @@ constexpr std::string meshTypeName()
     return name;
 }
 
-
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_TYPE_NAME_H
