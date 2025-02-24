@@ -77,8 +77,7 @@ int main()
     CreateConeFilter<vcl::TriMesh> createConeFilter;
 
     out.clear();
-    std::vector<const vcl::TriMesh*> in;
-    createConeFilter.execute(in, out);
+    createConeFilter.execute(out);
 
     ioMesh.save(VCLIB_RESULTS_PATH "/cone.ply", out.front());
 

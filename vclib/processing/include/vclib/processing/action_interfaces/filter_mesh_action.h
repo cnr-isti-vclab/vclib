@@ -27,8 +27,8 @@
 #include <vclib/processing/parameter_vector.h>
 #include <vclib/processing/parameters.h>
 
-#include <vclib/algorithms/mesh/update.h>
 #include <vclib/algorithms/mesh/type_name.h>
+#include <vclib/algorithms/mesh/update.h>
 #include <vclib/io/file_format.h>
 #include <vclib/io/file_info.h>
 #include <vclib/space/complex/mesh_info.h>
@@ -215,10 +215,6 @@ public:
         return execute(inputMeshes, outputMeshes, parameters(), log);
     }
 
-    // TODO: add more overrides here:
-    // no outputMeshes
-    // no outputMeshes and parameters
-
     // without inputOutputMeshes and outputMeshes override
     OutputValues execute(
         const std::vector<const MeshType*>& inputMeshes,
@@ -239,11 +235,60 @@ public:
         return execute(inputMeshes, parameters(), log);
     }
 
-    //TODO: add more overrides here:
-    // no inputMeshes
-    // no inputMeshes and parameters
-    // no inputMeshes and outputMeshes
-    // no inputMeshes, outputMeshes and parameters
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        std::vector<MeshType>&        outputMeshes,
+        const ParameterVector&        parameters,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute({}, inputOutputMeshes, outputMeshes, parameters, log);
+    }
+
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        std::vector<MeshType>&        outputMeshes,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute(inputOutputMeshes, outputMeshes, parameters(), log);
+    }
+
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        const ParameterVector&        parameters,
+        AbstractLogger&               log = logger()) const
+    {
+        std::vector<MeshType> outputMeshes;
+        auto out = execute(inputOutputMeshes, outputMeshes, parameters, log);
+        warnOutputMeshesVector(outputMeshes, log);
+        return out;
+    }
+
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute(inputOutputMeshes, parameters(), log);
+    }
+
+    OutputValues execute(
+        std::vector<MeshType>& outputMeshes,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
+    {
+        return execute(
+            std::vector<const MeshType*>(),
+            std::vector<MeshType*>(),
+            outputMeshes,
+            parameters,
+            log);
+    }
+
+    OutputValues execute(
+        std::vector<MeshType>& outputMeshes,
+        AbstractLogger&        log = logger()) const
+    {
+        return execute(outputMeshes, parameters(), log);
+    }
 
     // one inputMesh override
     OutputValues execute(
@@ -266,41 +311,34 @@ public:
         AbstractLogger&               log = logger()) const
     {
         return execute(
-            inputMesh,
-            inputOutputMeshes,
-            outputMeshes,
-            parameters(),
-            log);
+            inputMesh, inputOutputMeshes, outputMeshes, parameters(), log);
     }
 
     // one inputMesh without inputOutputMeshes override
     OutputValues execute(
-        const MeshType&               inputMesh,
-        std::vector<MeshType>&        outputMeshes,
-        const ParameterVector&        parameters,
-        AbstractLogger&               log = logger()) const
+        const MeshType&        inputMesh,
+        std::vector<MeshType>& outputMeshes,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
     {
-        checkInputOutputMeshes(0);
         return execute(
-            inputMesh, {}, outputMeshes, parameters, log);
+            inputMesh, std::vector<MeshType*>(), outputMeshes, parameters, log);
     }
 
     // one inputMesh without inputOutputMeshes and parameters override
     OutputValues execute(
-        const MeshType&               inputMesh,
-        std::vector<MeshType>&        outputMeshes,
-        AbstractLogger&               log = logger()) const
+        const MeshType&        inputMesh,
+        std::vector<MeshType>& outputMeshes,
+        AbstractLogger&        log = logger()) const
     {
-        checkInputOutputMeshes(0);
-        return execute(
-            inputMesh, {}, outputMeshes, parameters(), log);
+        return execute(inputMesh, outputMeshes, parameters(), log);
     }
 
     // one inputMesh without inputOutputMeshes, and outputMeshes override
     OutputValues execute(
-        const MeshType&               inputMesh,
-        const ParameterVector&        parameters,
-        AbstractLogger&               log = logger()) const
+        const MeshType&        inputMesh,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
     {
         std::vector<MeshType> outputMeshes;
         auto out = execute(inputMesh, outputMeshes, parameters, log);
@@ -310,8 +348,8 @@ public:
 
     // one inputMesh without inputOutputMeshes, outputMeshes and parameters
     OutputValues execute(
-        const MeshType&               inputMesh,
-        AbstractLogger&               log = logger()) const
+        const MeshType& inputMesh,
+        AbstractLogger& log = logger()) const
     {
         return execute(inputMesh, parameters(), log);
     }
@@ -350,8 +388,11 @@ private:
         AbstractLogger&              log) const
     {
         if (!outputMeshes.empty()) {
-            log.log("The action " + name() + " returned output meshes, but an "
-                "outputMeshes vector was not provided to the execute function.",
+            log.log(
+                "The action " + name() +
+                    " returned output meshes, but an "
+                    "outputMeshes vector was not provided to the execute "
+                    "function.",
                 log.WARNING_LOG);
         }
     }

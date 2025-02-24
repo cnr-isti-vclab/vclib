@@ -33,6 +33,7 @@ template<MeshConcept MeshType>
 class ConvexHullFilter : public FilterMeshAction<MeshType>
 {
     using Base = FilterMeshAction<MeshType>;
+
 public:
     std::shared_ptr<Action> clone() const final
     {
