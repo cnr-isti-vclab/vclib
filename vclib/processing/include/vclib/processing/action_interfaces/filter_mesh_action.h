@@ -28,6 +28,7 @@
 #include <vclib/processing/parameters.h>
 
 #include <vclib/algorithms/mesh/update.h>
+#include <vclib/algorithms/mesh/type_name.h>
 #include <vclib/io/file_format.h>
 #include <vclib/io/file_info.h>
 #include <vclib/space/complex/mesh_info.h>
@@ -313,6 +314,12 @@ public:
         AbstractLogger&               log = logger()) const
     {
         return execute(inputMesh, parameters(), log);
+    }
+
+protected:
+    std::string identifier() const final
+    {
+        return identifierFromName(name() + " " + vcl::meshTypeName<MeshType>());
     }
 
 private:

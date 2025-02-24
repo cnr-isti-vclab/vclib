@@ -26,33 +26,34 @@
 #include <vclib/processing/action_interfaces/filter_mesh_action.h>
 #include <vclib/processing/parameters.h>
 
-#include <vclib/algorithms/mesh/create/cone.h>
-#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/algorithms/mesh.h>
 
 namespace vcl::proc {
 
-class CreateConeFilter : public FilterMeshAction
+template<MeshConcept MeshType>
+class CreateConeFilter : public FilterMeshAction<MeshType>
 {
+    using Base = FilterMeshAction<MeshType>;
 public:
-    std::shared_ptr<Action> clone() const override
+    std::shared_ptr<Action> clone() const final
     {
         return std::make_shared<CreateConeFilter>(*this);
     }
 
-    std::string name() const override { return "Create Cone"; }
+    std::string name() const final { return "Create Cone"; }
 
-    std::string description() const override { return "Creates a cone mesh."; }
+    std::string description() const final { return "Creates a cone mesh."; }
 
     vcl::BitSet<uint> categories() const override
     {
-        return vcl::BitSet<uint>({CREATE});
+        return {Base::Category::CREATE};
     }
 
-    MeshParamVector inputMeshParameters() const final { return {}; }
+    std::vector<UintParameter> inputMeshes() const final { return {}; }
 
-    MeshParamVector inputOutputMeshParameters() const final { return {}; }
+    std::vector<UintParameter> inputOutputMeshes() const final { return {}; }
 
-    ParameterVector parameters() const override
+    ParameterVector parameters() const final
     {
         ParameterVector params;
 
@@ -66,26 +67,26 @@ public:
         return params;
     }
 
-    virtual OutputValues applyFilter(
-        const MeshVector,
-        const std::vector<std::shared_ptr<MeshI>>&,
-        MeshVector&            outputMeshes,
+    virtual OutputValues executeFilter(
+        const std::vector<const MeshType*>&,
+        const std::vector<MeshType*>&,
+        std::vector<MeshType>& outputMeshes,
         const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const override
+        AbstractLogger&        log = Base::logger()) const final
     {
         auto bottomRadius = parameters.get("bottom_radius")->scalarValue();
         auto topRadius    = parameters.get("top_radius")->scalarValue();
         auto height       = parameters.get("height")->scalarValue();
         auto subdivisions = parameters.get("subdivisions")->uintValue();
 
-        auto meshPtr = std::make_shared<TriMesh>(vcl::createCone<TriMesh>(
-            bottomRadius, topRadius, height, subdivisions));
+        auto cone = vcl::createCone<MeshType>(
+            bottomRadius, topRadius, height, subdivisions);
 
-        vcl::updatePerVertexAndFaceNormals(*meshPtr);
+        vcl::updatePerVertexAndFaceNormals(cone);
 
-        meshPtr->name() = "Cone";
+        cone.name() = "Cone";
 
-        outputMeshes.pushBack(meshPtr);
+        outputMeshes.push_back(std::move(cone));
 
         return OutputValues();
     }

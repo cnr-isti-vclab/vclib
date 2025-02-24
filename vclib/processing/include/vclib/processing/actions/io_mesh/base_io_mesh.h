@@ -41,10 +41,7 @@ public:
     using Base::load;
     using Base::save;
 
-    std::string name() const final
-    {
-        return "Base IO " + vcl::meshTypeName<MeshType>();
-    }
+    std::string name() const final { return "Base IO"; }
 
     std::shared_ptr<Action> clone() const final
     {

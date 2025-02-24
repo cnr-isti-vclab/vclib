@@ -73,4 +73,14 @@ int main()
     convexHullFilter.execute(mesh, out);
 
     ioMesh.save(VCLIB_RESULTS_PATH "/bunny_ch.ply", out.front());
+
+    CreateConeFilter<vcl::TriMesh> createConeFilter;
+
+    out.clear();
+    std::vector<const vcl::TriMesh*> in;
+    createConeFilter.execute(in, out);
+
+    ioMesh.save(VCLIB_RESULTS_PATH "/cone.ply", out.front());
+
+    return 0;
 }

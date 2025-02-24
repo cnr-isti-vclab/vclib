@@ -20,30 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_H
-#define VCL_PROCESSING_ACTIONS_FILTER_MESH_H
+#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H
+#define VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H
 
-#include "filter_mesh/create.h"
-#include "filter_mesh/generate.h"
+#include "create/create_cone_filter.h"
+
+#include <vclib/meshes.h>
 
 #include <memory>
 #include <vector>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> filterMeshActions()
+std::vector<std::shared_ptr<Action>> createFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    auto c = createFilterMeshActions();
-    vec.insert(vec.begin(), c.begin(), c.end());
-
-    auto g = generateFilterMeshActions();
-    vec.insert(vec.begin(), g.begin(), g.end());
+    vec.push_back(CreateConeFilter<vcl::TriMesh>().clone());
 
     return vec;
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_H
+#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H

@@ -86,9 +86,11 @@ public:
 protected:
     static ConsoleLogger& logger() { return log; }
 
-private:
     // members used by the action manager
-    std::string identifier() const { return identifierFromName(name()); }
+    virtual std::string identifier() const
+    {
+        return identifierFromName(name());
+    }
 
     static std::string identifierFromName(const std::string& name)
     {
