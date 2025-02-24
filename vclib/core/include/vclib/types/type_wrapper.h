@@ -27,6 +27,8 @@
 
 namespace vcl {
 
+// TODO: write documentation for all the functions and classes in this file
+
 /**
  * @brief A simple structure that wraps a list of variadic templates, without
  * instantiating anything. Useful when you need to wrap a list of types, and
@@ -45,29 +47,34 @@ struct TypeWrapper
  *
  * @ingroup types
  */
+// note: specialization from variadic_templates.h
 template<typename... Args>
 struct FirstType<TypeWrapper<Args...>>
 {
     using type = std::tuple_element<0, std::tuple<Args...>>::type;
 };
 
+// note: specialization from variadic_templates.h
 template<typename... Args>
 uint indexInTypePack(std::type_index ti, TypeWrapper<Args...>)
 {
     return indexInTypePack<Args...>(ti);
 }
 
+// note: specialization from variadic_templates.h
 template<typename T, typename... Us>
 struct IndexInTypes<T, TypeWrapper<Us...>>
 {
     static constexpr uint value = indexInTypePack<T, Us...>();
 };
 
+// note: specialization from variadic_templates.h
 template<typename... Args>
 struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
 {
 };
 
+// note: specialization from variadic_templates.h
 template<typename... T>
 struct ForEachType<TypeWrapper<T...>> : public ForEachType<T...>
 {

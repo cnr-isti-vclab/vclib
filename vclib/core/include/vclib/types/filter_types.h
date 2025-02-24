@@ -27,6 +27,8 @@
 
 namespace vcl {
 
+// TODO: write documentation for all the functions and classes in this file
+
 namespace detail {
 
 template<typename, typename>
