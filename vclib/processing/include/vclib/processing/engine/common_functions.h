@@ -20,31 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H
-#define VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H
+#ifndef VCL_PROCESSING_ENGINE_COMMON_FUNCTIONS_H
+#define VCL_PROCESSING_ENGINE_COMMON_FUNCTIONS_H
 
-#include "create/create_cone_filter.h"
-
-#include <vclib/processing/engine.h>
-
-#include <vclib/meshes.h>
-
-#include <memory>
-#include <vector>
+#include <vclib/processing/engine/action_interfaces/action.h>
+#include <vclib/processing/engine/settings.h>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> createFilterMeshActions()
+/**
+ * @brief Given a list of actions given in a TemplatedTypeWrapper, this function
+ * fills the given vector with the action instances that can be instantiated for
+ * all the supported mesh types in the processing module.
+ *
+ * @param[in/out] vec: vector to fill with the action instances
+ */
+template<template<typename> typename... Actions>
+void fillActionsForSupportedMeshTypes(
+    std::vector<std::shared_ptr<Action>>& vec,
+    TemplatedTypeWrapper<Actions...>)
 {
-    std::vector<std::shared_ptr<Action>> vec;
+    // lambda called for each mesh type
+    auto fMesh = [&]<typename MeshType>() {
+        // lambda called for each action
+        auto fAct = [&]<template<typename> typename Act>() {
+            // if the action can be instantiated with the mesh type
+            if constexpr (IsInstantiable<Act, MeshType>) {
+                vec.push_back(std::make_shared<Act<MeshType>>());
+            }
+        };
 
-    using Actions = TemplatedTypeWrapper<CreateConeFilter>;
+        // call the lambda for each action
+        (fAct.template operator()<Actions>(), ...);
+    };
 
-    fillActionsForSupportedMeshTypes(vec, Actions());
-
-    return vec;
+    // call the lambda for each mesh type
+    vcl::ForEachType<MeshTypes>::apply(fMesh);
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H
+#endif // VCL_PROCESSING_ENGINE_COMMON_FUNCTIONS_H

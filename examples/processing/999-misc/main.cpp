@@ -55,6 +55,8 @@ int main()
         ++i;
     }
 
+    auto vec = filterMeshActions();
+
     BaseIOImage ioImage;
 
     auto img = ioImage.load(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble_A.png");

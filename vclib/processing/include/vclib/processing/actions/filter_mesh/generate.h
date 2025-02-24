@@ -25,6 +25,8 @@
 
 #include "generate/convex_hull_filter.h"
 
+#include <vclib/processing/engine.h>
+
 #include <vclib/meshes.h>
 
 #include <memory>
@@ -36,7 +38,9 @@ std::vector<std::shared_ptr<Action>> generateFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    vec.push_back(ConvexHullFilter<vcl::TriMesh>().clone());
+    using Actions = TemplatedTypeWrapper<ConvexHullFilter>;
+
+    fillActionsForSupportedMeshTypes(vec, Actions());
 
     return vec;
 }

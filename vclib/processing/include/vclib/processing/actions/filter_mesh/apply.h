@@ -25,6 +25,8 @@
 
 #include "apply/laplacian_smoothing_filter.h"
 
+#include <vclib/processing/engine.h>
+
 #include <vclib/meshes.h>
 
 #include <memory>
@@ -36,7 +38,9 @@ std::vector<std::shared_ptr<Action>> applyFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    vec.push_back(LaplacianSmoothingFilter<vcl::TriMesh>().clone());
+    using Actions = TemplatedTypeWrapper<LaplacianSmoothingFilter>;
+
+    fillActionsForSupportedMeshTypes(vec, Actions());
 
     return vec;
 }
