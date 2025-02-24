@@ -32,7 +32,7 @@ class UscalarParameter : public Parameter
 public:
     UscalarParameter(
         const std::string& name,
-        Scalar             value,
+        ScalarType         value,
         const std::string& description = "",
         const std::string& tooltip     = "",
         const std::string& category    = "") :
@@ -48,14 +48,14 @@ public:
         return std::make_shared<UscalarParameter>(*this);
     }
 
-    void setScalarValue(Scalar value) override
+    void setScalarValue(ScalarType value) override
     {
         checkScalarValue(value);
         Parameter::setScalarValue(value);
     }
 
 private:
-    void checkScalarValue(Scalar value) const
+    void checkScalarValue(ScalarType value) const
     {
         if (value < 0.0)
             throw std::runtime_error(

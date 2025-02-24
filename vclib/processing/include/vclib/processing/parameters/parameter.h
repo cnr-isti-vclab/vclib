@@ -23,6 +23,8 @@
 #ifndef VCL_PROCESSING_PARAMETERS_PARAMETER_H
 #define VCL_PROCESSING_PARAMETERS_PARAMETER_H
 
+#include <vclib/processing/settings.h>
+
 #include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
 
@@ -61,8 +63,6 @@ class Parameter
     std::string mCategory;
 
 public:
-    using Scalar = double;
-
     Parameter() = default;
 
     virtual ~Parameter() = default;
@@ -127,16 +127,16 @@ public:
         return std::any_cast<int>(mValue);
     }
 
-    virtual void setScalarValue(Scalar v)
+    virtual void setScalarValue(ScalarType v)
     {
         checkParameterType(ParameterType::SCALAR);
-        std::any_cast<Scalar&>(mValue) = v;
+        std::any_cast<ScalarType&>(mValue) = v;
     }
 
-    Scalar scalarValue() const
+    ScalarType scalarValue() const
     {
         checkParameterType(ParameterType::SCALAR);
-        return std::any_cast<Scalar>(mValue);
+        return std::any_cast<ScalarType>(mValue);
     }
 
     virtual void setStringValue(const std::string& v)
@@ -163,16 +163,16 @@ public:
         return std::any_cast<const vcl::Color&>(mValue);
     }
 
-    void setPoint3Value(const Point3<Scalar>& v)
+    void setPoint3Value(const Point3<ScalarType>& v)
     {
         checkParameterType(ParameterType::POINT3);
-        std::any_cast<Point3<Scalar>&>(mValue) = v;
+        std::any_cast<Point3<ScalarType>&>(mValue) = v;
     }
 
-    const Point3<Scalar>& point3Value() const
+    const Point3<ScalarType>& point3Value() const
     {
         checkParameterType(ParameterType::POINT3);
-        return std::any_cast<const Point3<Scalar>&>(mValue);
+        return std::any_cast<const Point3<ScalarType>&>(mValue);
     }
 
 protected:

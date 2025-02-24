@@ -27,6 +27,7 @@
 #include "processing/actions.h"
 #include "processing/parameter_vector.h"
 #include "processing/parameters.h"
+#include "processing/settings.h"
 
 /**
  * @defgroup processing Processing

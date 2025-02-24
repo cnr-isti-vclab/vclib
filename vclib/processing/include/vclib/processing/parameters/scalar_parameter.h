@@ -32,7 +32,7 @@ class ScalarParameter : public Parameter
 public:
     ScalarParameter(
         const std::string& name,
-        Scalar             value,
+        ScalarType         value,
         const std::string& description = "",
         const std::string& tooltip     = "",
         const std::string& category    = "") :

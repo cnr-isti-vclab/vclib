@@ -20,25 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_H
-#define VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_H
+#ifndef VCL_PROCESSING_SETTINGS_H
+#define VCL_PROCESSING_SETTINGS_H
 
-#include "generate/convex_hull_filter.h"
-
-#include <memory>
-#include <vector>
+#include <vclib/meshes.h>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibGenerateFilterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
+/**
+ * @brief Scalar type used in the processing module.
+ */
+using ScalarType = double;
 
-    vec.push_back(ConvexHullFilter().clone());
+/**
+ * @brief Flag that indicates if the meshes are indexed.
+ */
+constexpr bool INDEXED_MESHES = false;
 
-    return vec;
-}
+/**
+ * @brief List of supported mesh types supported by the processing module.
+ */
+using MeshTypes = TypeWrapper<
+    vcl::TriEdgeMeshT<ScalarType, INDEXED_MESHES>,
+    vcl::PolyEdgeMeshT<ScalarType, INDEXED_MESHES>>;
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_H
+#endif // VCL_PROCESSING_SETTINGS_H
