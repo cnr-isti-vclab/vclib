@@ -20,31 +20,59 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_TYPES_TYPE_WRAPPER_H
+#define VCL_TYPES_TYPE_WRAPPER_H
 
-#include "types/const_correctness.h"
-#include "types/filter_types.h"
-#include "types/inheritance.h"
-#include "types/mesh_components.h"
-#include "types/mesh_containers.h"
-#include "types/mesh_elements.h"
-#include "types/pointers.h"
-#include "types/type_wrapper.h"
-#include "types/variadic_templates.h"
-#include "types/view.h"
+#include "variadic_templates.h"
+
+namespace vcl {
 
 /**
- * @defgroup types VCLib Types Module
+ * @brief A simple structure that wraps a list of variadic templates, without
+ * instantiating anything. Useful when you need to wrap a list of types, and
+ * consider them as a single type.
  *
- * @brief The Types module defines all the utility definitions, types, classes
- * and type traits that are common in the library.
- *
- * This module does not depend on any other module of the library, and it is
- * used by all the other modules to define the types that are used in the
- * library.
- *
- * You can access all the types of VCLib by including `#include <vclib/types.h>`
+ * @ingroup types
  */
+template<typename... Args>
+struct TypeWrapper
+{
+    static constexpr uint size() { return sizeof...(Args); }
+};
 
-#endif // VCL_TYPES_H
+/**
+ * @copydoc FirstType
+ *
+ * @ingroup types
+ */
+template<typename... Args>
+struct FirstType<TypeWrapper<Args...>>
+{
+    using type = std::tuple_element<0, std::tuple<Args...>>::type;
+};
+
+template<typename... Args>
+uint indexInTypePack(std::type_index ti, TypeWrapper<Args...>)
+{
+    return indexInTypePack<Args...>(ti);
+}
+
+template<typename T, typename... Us>
+struct IndexInTypes<T, TypeWrapper<Us...>>
+{
+    static constexpr uint value = indexInTypePack<T, Us...>();
+};
+
+template<typename... Args>
+struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
+{
+};
+
+template<typename... T>
+struct ForEachType<TypeWrapper<T...>> : public ForEachType<T...>
+{
+};
+
+} // namespace vcl
+
+#endif // VCL_TYPES_TYPE_WRAPPER_H
