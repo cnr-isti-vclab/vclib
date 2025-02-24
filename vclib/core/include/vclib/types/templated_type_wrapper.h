@@ -20,32 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
+#define VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
 
-#include "types/const_correctness.h"
-#include "types/filter_types.h"
-#include "types/inheritance.h"
-#include "types/mesh_components.h"
-#include "types/mesh_containers.h"
-#include "types/mesh_elements.h"
-#include "types/pointers.h"
-#include "types/templated_type_wrapper.h"
-#include "types/type_wrapper.h"
-#include "types/variadic_templates.h"
-#include "types/view.h"
+#include "variadic_templates.h"
 
-/**
- * @defgroup types VCLib Types Module
- *
- * @brief The Types module defines all the utility definitions, types, classes
- * and type traits that are common in the library.
- *
- * This module does not depend on any other module of the library, and it is
- * used by all the other modules to define the types that are used in the
- * library.
- *
- * You can access all the types of VCLib by including `#include <vclib/types.h>`
- */
+namespace vcl {
 
-#endif // VCL_TYPES_H
+template<template <typename...> typename... Args>
+struct TemplatedTypeWrapper
+{
+    static constexpr uint size() { return sizeof...(Args); }
+};
+
+// note: specialization from variadic_templates.h
+template<template <typename...> typename... Args>
+struct FirstType<TemplatedTypeWrapper<Args...>>
+{
+    template<typename... T>
+    using type = std::tuple_element<0, std::tuple<Args<T>...>>::type;
+};
+
+} // namespace vcl
+
+#endif // VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
