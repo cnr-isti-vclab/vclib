@@ -20,34 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_H
-#define VCL_PROCESSING_ACTIONS_FILTER_MESH_H
+#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_H
+#define VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_H
 
-#include "filter_mesh/apply.h"
-#include "filter_mesh/create.h"
-#include "filter_mesh/generate.h"
+#include "apply/laplacian_smoothing_filter.h"
+
+#include <vclib/meshes.h>
 
 #include <memory>
 #include <vector>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> filterMeshActions()
+std::vector<std::shared_ptr<Action>> applyFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    auto a = applyFilterMeshActions();
-    vec.insert(vec.begin(), a.begin(), a.end());
-
-    auto c = createFilterMeshActions();
-    vec.insert(vec.begin(), c.begin(), c.end());
-
-    auto g = generateFilterMeshActions();
-    vec.insert(vec.begin(), g.begin(), g.end());
+    vec.push_back(LaplacianSmoothingFilter<vcl::TriMesh>().clone());
 
     return vec;
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_H
+#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_H

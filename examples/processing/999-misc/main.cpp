@@ -70,7 +70,7 @@ int main()
 
     std::vector<vcl::TriMesh> out;
 
-    convexHullFilter.execute(mesh, out);
+    convexHullFilter.execute({&std::as_const(mesh)}, out);
 
     ioMesh.save(VCLIB_RESULTS_PATH "/bunny_ch.ply", out.front());
 
@@ -80,6 +80,15 @@ int main()
     createConeFilter.execute(out);
 
     ioMesh.save(VCLIB_RESULTS_PATH "/cone.ply", out.front());
+
+    LaplacianSmoothingFilter<vcl::TriMesh> laplacianSmoothingFilter;
+
+    auto params = laplacianSmoothingFilter.parameters();
+    params.get("smoothing_steps")->setUintValue(10);
+
+    laplacianSmoothingFilter.execute(std::vector<vcl::TriMesh*>{&mesh}, params);
+
+    ioMesh.save(VCLIB_RESULTS_PATH "/bunny_smoothed.ply", mesh);
 
     return 0;
 }
