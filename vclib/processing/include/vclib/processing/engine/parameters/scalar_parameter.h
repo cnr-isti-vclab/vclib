@@ -20,49 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_PARAMETERS_USCALAR_PARAMETER_H
-#define VCL_PROCESSING_PARAMETERS_USCALAR_PARAMETER_H
+#ifndef VCL_PROCESSING_ENGINE_PARAMETERS_SCALAR_PARAMETER_H
+#define VCL_PROCESSING_ENGINE_PARAMETERS_SCALAR_PARAMETER_H
 
 #include "parameter.h"
 
 namespace vcl::proc {
 
-class UscalarParameter : public Parameter
+class ScalarParameter : public Parameter
 {
 public:
-    UscalarParameter(
+    ScalarParameter(
         const std::string& name,
         ScalarType         value,
         const std::string& description = "",
         const std::string& tooltip     = "",
         const std::string& category    = "") :
-            Parameter(name, 0.0, description, tooltip, category)
+            Parameter(name, value, description, tooltip, category)
     {
-        setScalarValue(value);
     }
 
-    ParameterType type() const override { return ParameterType::USCALAR; }
+    ParameterType type() const override { return ParameterType::SCALAR; }
 
     std::shared_ptr<Parameter> clone() const override
     {
-        return std::make_shared<UscalarParameter>(*this);
-    }
-
-    void setScalarValue(ScalarType value) override
-    {
-        checkScalarValue(value);
-        Parameter::setScalarValue(value);
-    }
-
-private:
-    void checkScalarValue(ScalarType value) const
-    {
-        if (value < 0.0)
-            throw std::runtime_error(
-                "UscalarParameter: value cannot be negative");
+        return std::make_shared<ScalarParameter>(*this);
     }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_PARAMETERS_USCALAR_PARAMETER_H
+#endif // VCL_PROCESSING_ENGINE_PARAMETERS_SCALAR_PARAMETER_H

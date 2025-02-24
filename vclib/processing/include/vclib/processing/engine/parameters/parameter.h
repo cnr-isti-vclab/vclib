@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_PARAMETERS_PARAMETER_H
-#define VCL_PROCESSING_PARAMETERS_PARAMETER_H
+#ifndef VCL_PROCESSING_ENGINE_PARAMETERS_PARAMETER_H
+#define VCL_PROCESSING_ENGINE_PARAMETERS_PARAMETER_H
 
-#include <vclib/processing/settings.h>
+#include <vclib/processing/engine/settings.h>
 
 #include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
@@ -237,4 +237,4 @@ private:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_PARAMETERS_PARAMETER_H
+#endif // VCL_PROCESSING_ENGINE_PARAMETERS_PARAMETER_H

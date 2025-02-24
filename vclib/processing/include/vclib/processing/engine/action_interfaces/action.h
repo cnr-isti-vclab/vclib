@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
-#define VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_ACTION_H
 
 #include <vclib/misc/logger.h>
 #include <vclib/misc/string.h>
@@ -105,4 +105,4 @@ protected:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_ACTION_H

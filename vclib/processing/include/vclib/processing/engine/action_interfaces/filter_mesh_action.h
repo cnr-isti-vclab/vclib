@@ -20,12 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INTERFACES_FILTER_MESH_ACTION_H
-#define VCL_PROCESSING_ACTION_INTERFACES_FILTER_MESH_ACTION_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_MESH_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_MESH_ACTION_H
 
-#include <vclib/processing/action_interfaces/action.h>
-#include <vclib/processing/parameter_vector.h>
-#include <vclib/processing/parameters.h>
+#include "action.h"
+
+#include <vclib/processing/engine/parameter_vector.h>
+#include <vclib/processing/engine/parameters.h>
 
 #include <vclib/algorithms/mesh/type_name.h>
 #include <vclib/algorithms/mesh/update.h>
@@ -344,4 +345,4 @@ private:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTION_INTERFACES_FILTER_MESH_ACTION_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_MESH_ACTION_H

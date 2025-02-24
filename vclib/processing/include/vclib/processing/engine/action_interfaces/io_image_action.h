@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INTERFACES_IO_IMAGE_ACTION_H
-#define VCL_PROCESSING_ACTION_INTERFACES_IO_IMAGE_ACTION_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H
 
-#include <vclib/processing/action_interfaces/action.h>
+#include "action.h"
 
 #include <vclib/io/file_format.h>
 #include <vclib/space/core/image.h>
@@ -132,4 +132,4 @@ public:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTION_INTERFACES_IO_IMAGE_ACTION_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H

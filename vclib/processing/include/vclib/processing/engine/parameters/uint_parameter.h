@@ -20,61 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_CONVEX_HULL_FILTER_H
-#define VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_CONVEX_HULL_FILTER_H
+#ifndef VCL_PROCESSING_ENGINE_PARAMETERS_UINT_PARAMETER_H
+#define VCL_PROCESSING_ENGINE_PARAMETERS_UINT_PARAMETER_H
 
-#include <vclib/processing/engine.h>
-
-#include <vclib/algorithms/mesh/convex_hull.h>
+#include "parameter.h"
 
 namespace vcl::proc {
 
-template<MeshConcept MeshType>
-class ConvexHullFilter : public FilterMeshAction<MeshType>
+class UintParameter : public Parameter
 {
-    using Base = FilterMeshAction<MeshType>;
-
 public:
-    std::shared_ptr<Action> clone() const final
+    UintParameter(
+        const std::string& name,
+        uint               value,
+        const std::string& description = "",
+        const std::string& tooltip     = "",
+        const std::string& category    = "") :
+            Parameter(name, value, description, tooltip, category)
     {
-        return std::make_shared<ConvexHullFilter>(*this);
     }
 
-    std::string name() const final { return "Convex Hull"; }
+    ParameterType type() const override { return ParameterType::UINT; }
 
-    std::string description() const final
+    std::shared_ptr<Parameter> clone() const override
     {
-        return "Generates a convex hull mesh from a set of 3D points.";
-    }
-
-    Base::CategoryBitSet categories() const final
-    {
-        return {Base::Category::RECONSTRUCTION};
-    }
-
-    std::vector<UintParameter> inputMeshes() const final
-    {
-        return {UintParameter("input", 0, "Input Mesh", "")};
-    }
-
-    std::vector<UintParameter> inputOutputMeshes() const final { return {}; }
-
-    ParameterVector parameters() const final { return {}; }
-
-    virtual OutputValues executeFilter(
-        const std::vector<const MeshType*>& inputMeshes,
-        const std::vector<MeshType*>&       inputOutputMeshes,
-        std::vector<MeshType>&              outputMeshes,
-        const ParameterVector&              parameters,
-        AbstractLogger&                     log = Base::logger()) const final
-    {
-        const MeshType& input = *inputMeshes.front();
-        outputMeshes.push_back(
-            convexHull<MeshType>(input.vertices() | vcl::views::coords, log));
-        return OutputValues();
+        return std::make_shared<UintParameter>(*this);
     }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_CONVEX_HULL_FILTER_H
+#endif // VCL_PROCESSING_ENGINE_PARAMETERS_UINT_PARAMETER_H

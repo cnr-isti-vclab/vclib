@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_PARAMETERS_H
-#define VCL_PROCESSING_PARAMETERS_H
+#ifndef VCL_PROCESSING_ENGINE_PARAMETERS_H
+#define VCL_PROCESSING_ENGINE_PARAMETERS_H
 
 #include "parameters/bool_parameter.h"
 #include "parameters/enum_parameter.h"
@@ -31,4 +31,4 @@
 #include "parameters/uint_parameter.h"
 #include "parameters/uscalar_parameter.h"
 
-#endif // VCL_PROCESSING_PARAMETERS_H
+#endif // VCL_PROCESSING_ENGINE_PARAMETERS_H

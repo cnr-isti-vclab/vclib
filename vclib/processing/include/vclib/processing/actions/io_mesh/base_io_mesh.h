@@ -23,8 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_IO_MESH_BASE_IO_MESH_H
 #define VCL_PROCESSING_ACTIONS_IO_MESH_BASE_IO_MESH_H
 
-#include <vclib/processing/action_interfaces/io_mesh_action.h>
-#include <vclib/processing/parameters.h>
+#include <vclib/processing/engine.h>
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/load_save.h>

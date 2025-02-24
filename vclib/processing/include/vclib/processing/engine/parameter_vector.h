@@ -20,34 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_PARAMETERS_SCALAR_PARAMETER_H
-#define VCL_PROCESSING_PARAMETERS_SCALAR_PARAMETER_H
+#ifndef VCL_PROCESSING_ENGINE_PARAMETER_VECTOR_H
+#define VCL_PROCESSING_ENGINE_PARAMETER_VECTOR_H
 
-#include "parameter.h"
+#include "parameters/parameter.h"
+
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 namespace vcl::proc {
 
-class ScalarParameter : public Parameter
+class ParameterVector : public PolymorphicObjectVector<Parameter>
 {
 public:
-    ScalarParameter(
-        const std::string& name,
-        ScalarType         value,
-        const std::string& description = "",
-        const std::string& tooltip     = "",
-        const std::string& category    = "") :
-            Parameter(name, value, description, tooltip, category)
+    std::shared_ptr<const Parameter> get(const std::string& name) const
     {
+        for (const auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
+
+        return nullptr;
     }
 
-    ParameterType type() const override { return ParameterType::SCALAR; }
-
-    std::shared_ptr<Parameter> clone() const override
+    std::shared_ptr<Parameter> get(const std::string& name)
     {
-        return std::make_shared<ScalarParameter>(*this);
+        for (auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
+
+        return nullptr;
     }
 };
 
+using OutputValues = ParameterVector;
+
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_PARAMETERS_SCALAR_PARAMETER_H
+#endif // VCL_PROCESSING_ENGINE_PARAMETER_VECTOR_H

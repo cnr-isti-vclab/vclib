@@ -23,7 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
 #define VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
 
-#include <vclib/processing/action_interfaces/io_image_action.h>
+#include <vclib/processing/engine.h>
 
 namespace vcl::proc {
 

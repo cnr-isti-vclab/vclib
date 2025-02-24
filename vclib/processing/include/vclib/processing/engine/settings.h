@@ -20,34 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_PARAMETERS_INT_PARAMETER_H
-#define VCL_PROCESSING_PARAMETERS_INT_PARAMETER_H
+#ifndef VCL_PROCESSING_ENGINE_SETTINGS_H
+#define VCL_PROCESSING_ENGINE_SETTINGS_H
 
-#include "parameter.h"
+#include <vclib/meshes.h>
 
 namespace vcl::proc {
 
-class IntParameter : public Parameter
-{
-public:
-    IntParameter(
-        const std::string& name,
-        int                value,
-        const std::string& description = "",
-        const std::string& tooltip     = "",
-        const std::string& category    = "") :
-            Parameter(name, value, description, tooltip, category)
-    {
-    }
+/**
+ * @brief Scalar type used in the processing module.
+ */
+using ScalarType = double;
 
-    ParameterType type() const override { return ParameterType::INT; }
+/**
+ * @brief Flag that indicates if the meshes are indexed.
+ */
+constexpr bool INDEXED_MESHES = false;
 
-    std::shared_ptr<Parameter> clone() const override
-    {
-        return std::make_shared<IntParameter>(*this);
-    }
-};
+/**
+ * @brief List of supported mesh types supported by the processing module.
+ */
+using MeshTypes = TypeWrapper<
+    vcl::TriEdgeMeshT<ScalarType, INDEXED_MESHES>,
+    vcl::PolyEdgeMeshT<ScalarType, INDEXED_MESHES>>;
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_PARAMETERS_INT_PARAMETER_H
+#endif // VCL_PROCESSING_ENGINE_SETTINGS_H

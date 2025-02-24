@@ -20,34 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_PARAMETERS_UINT_PARAMETER_H
-#define VCL_PROCESSING_PARAMETERS_UINT_PARAMETER_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
 
-#include "parameter.h"
+#include "action_interfaces/action.h"
+#include "action_interfaces/filter_mesh_action.h"
+#include "action_interfaces/io_image_action.h"
+#include "action_interfaces/io_mesh_action.h"
 
-namespace vcl::proc {
-
-class UintParameter : public Parameter
-{
-public:
-    UintParameter(
-        const std::string& name,
-        uint               value,
-        const std::string& description = "",
-        const std::string& tooltip     = "",
-        const std::string& category    = "") :
-            Parameter(name, value, description, tooltip, category)
-    {
-    }
-
-    ParameterType type() const override { return ParameterType::UINT; }
-
-    std::shared_ptr<Parameter> clone() const override
-    {
-        return std::make_shared<UintParameter>(*this);
-    }
-};
-
-} // namespace vcl::proc
-
-#endif // VCL_PROCESSING_PARAMETERS_UINT_PARAMETER_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
