@@ -65,7 +65,7 @@ struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
  *
  * @ingroup types
  */
-template<template<class> class, typename...>
+template<template<typename> typename, typename...>
 struct FilterTypesByCondition
 {
     using type = TypeWrapper<>;
@@ -76,7 +76,7 @@ struct FilterTypesByCondition
  *
  * @ingroup types
  */
-template<template<class> class Pred, typename Head, typename... Tail>
+template<template<typename> typename Pred, typename Head, typename... Tail>
 struct FilterTypesByCondition<Pred, Head, Tail...>
 {
     using type = std::conditional<
@@ -93,7 +93,7 @@ struct FilterTypesByCondition<Pred, Head, Tail...>
  * @ingroup types
  */
 // TypeWrapper specialization
-template<template<class> class Pred, typename... Tail>
+template<template<typename> typename Pred, typename... Tail>
 struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
 {
     using type = FilterTypesByCondition<Pred, Tail...>::type;
@@ -118,7 +118,7 @@ struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
  *
  * @ingroup types
  */
-template<template<class> class Pred, typename... Args>
+template<template<typename> typename Pred, typename... Args>
 struct TypesSatisfyCondition
 {
 private:
@@ -134,7 +134,7 @@ public:
  * @ingroup types
  */
 // TypeWrapper specialization
-template<template<class> class Pred, typename... Args>
+template<template<typename> typename Pred, typename... Args>
 struct TypesSatisfyCondition<Pred, TypeWrapper<Args...>>
 {
     using type = TypesSatisfyCondition<Pred, Args...>::type;
@@ -153,7 +153,7 @@ struct TypesSatisfyCondition<Pred, TypeWrapper<Args...>>
  *
  * @ingroup types
  */
-template<template<class> class Pred, typename... Args>
+template<template<typename> typename Pred, typename... Args>
 struct GetTypeByCondition
 {
 private:
@@ -169,7 +169,7 @@ public:
  * @ingroup types
  */
 // TypeWrapper specialization
-template<template<class> class Pred, typename... Args>
+template<template<typename> typename Pred, typename... Args>
 struct GetTypeByCondition<Pred, TypeWrapper<Args...>>
 {
     using type = GetTypeByCondition<Pred, Args...>::type;
