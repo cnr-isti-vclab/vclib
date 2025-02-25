@@ -20,18 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_H
-#define VCL_PROCESSING_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_MANAGER_H
 
-#include "processing/actions.h"
-#include "processing/manager.h"
+#include "io_action_container.h"
 
-/**
- * @defgroup processing Processing
- *
- * @brief List of classes and functions that allow to perform high level
- * processing, without the need to interact with the underlying data structures
- * and algorithms.
- */
+#include <vclib/processing/actions.h>
 
-#endif // VCL_PROCESSING_H
+namespace vcl::proc::detail {
+
+class Manager {
+    IOActionContainer mImageActions;
+
+public:
+    Manager() { addDefaultActions(); }
+
+    void add(const std::shared_ptr<Action>& action)
+    {
+        using enum Action::Type;
+
+        std::shared_ptr<IOAction> ioImageAction;
+
+        switch (action->type()) {
+        case IO_IMAGE_ACTION:
+            ioImageAction = std::dynamic_pointer_cast<IOAction>(action);
+            mImageActions.add(ioImageAction);
+            break;
+        default: throw std::runtime_error("Action type not supported");
+        }
+    }
+
+    template<vcl::Range R>
+    requires vcl::RangeOf<R, std::shared_ptr<Action>>
+    void add(R&& actions)
+    {
+        for (const auto& action : actions) {
+            add(action);
+        }
+    }
+
+    void addDefaultActions() { add(ioImageActions()); }
+
+    std::shared_ptr<IOImageAction> loadImageAction(FileFormat fmt) const
+    {
+        return std::dynamic_pointer_cast<IOImageAction>(
+            mImageActions.getSave(fmt));
+    }
+
+    std::shared_ptr<IOImageAction> saveImageAction(FileFormat fmt) const
+    {
+        return std::dynamic_pointer_cast<IOImageAction>(
+            mImageActions.getSave(fmt));
+    }
+
+};
+
+} // namespace vcl::proc::detail
+
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_MANAGER_H

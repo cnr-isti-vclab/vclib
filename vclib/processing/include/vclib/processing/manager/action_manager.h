@@ -20,18 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_H
-#define VCL_PROCESSING_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_H
 
-#include "processing/actions.h"
-#include "processing/manager.h"
+#include "action_manager/manager.h"
 
-/**
- * @defgroup processing Processing
- *
- * @brief List of classes and functions that allow to perform high level
- * processing, without the need to interact with the underlying data structures
- * and algorithms.
- */
+namespace vcl::proc {
 
-#endif // VCL_PROCESSING_H
+class ActionManager
+{
+public:
+    static void add(const std::shared_ptr<Action>& action)
+    {
+        instance().add(action);
+    }
+
+    template<vcl::Range R>
+    requires vcl::RangeOf<R, std::shared_ptr<Action>>
+    static void add(R&& actions)
+    {
+        instance().add(std::forward<R>(actions));
+    }
+
+    static std::shared_ptr<IOImageAction> loadImageAction(FileFormat fmt)
+    {
+        return instance().saveImageAction(fmt);
+    }
+
+    static std::shared_ptr<IOImageAction> saveImageAction(FileFormat fmt)
+    {
+        return instance().loadImageAction(fmt);
+    }
+
+private:
+    static detail::Manager& instance()
+    {
+        static detail::Manager instance;
+        return instance;
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_H
