@@ -25,6 +25,8 @@
 
 #include "io_mesh/base_io_mesh.h"
 
+#include <vclib/processing/engine.h>
+
 #include <vclib/meshes.h>
 
 #include <memory>
@@ -36,8 +38,9 @@ std::vector<std::shared_ptr<Action>> ioMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    vec.push_back(BaseIOMesh<vcl::TriEdgeMesh>().clone());
-    //vec.push_back(BaseIOMesh<vcl::PolyEdgeMesh>().clone());
+    using Actions = TemplatedTypeWrapper<BaseIOMesh>;
+
+    fillActionsForSupportedMeshTypes(vec, Actions());
 
     return vec;
 }
