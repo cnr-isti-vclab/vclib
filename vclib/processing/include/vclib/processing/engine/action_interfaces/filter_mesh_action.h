@@ -173,6 +173,13 @@ public:
 
     Type type() const final { return Type::FILTER_MESH_ACTION; }
 
+    MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
+
+    std::string identifier() const final
+    {
+        return identifierFromName(name() + " " + vcl::meshTypeName<MeshType>());
+    }
+
     /// execute overrides
 
     OutputValues execute(
@@ -291,12 +298,6 @@ public:
         AbstractLogger&        log = logger()) const
     {
         return execute(outputMeshes, parameters(), log);
-    }
-
-protected:
-    std::string identifier() const final
-    {
-        return identifierFromName(name() + " " + vcl::meshTypeName<MeshType>());
     }
 
 private:

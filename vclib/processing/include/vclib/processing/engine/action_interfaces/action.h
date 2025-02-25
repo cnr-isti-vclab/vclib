@@ -23,6 +23,8 @@
 #ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_ACTION_H
 #define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_ACTION_H
 
+#include <vclib/processing/engine/settings.h>
+
 #include <vclib/misc/logger.h>
 #include <vclib/misc/string.h>
 #include <vclib/types.h>
@@ -83,14 +85,31 @@ public:
      */
     virtual Type type() const = 0;
 
-protected:
-    static ConsoleLogger& logger() { return log; }
+    /**
+     * @brief Returns the type of the mesh for which the action is designed for.
+     *
+     * This is usually the mesh type on which the action is templated.
+     * If the action is not templated, the return value should be
+     * MeshTypeId::COUNT.
+     *
+     * @return The type of the mesh for which the action is designed for.
+     */
+    virtual MeshTypeId meshType() const = 0;
 
-    // members used by the action manager
+    /**
+     * @brief Returns the identifier of the action.
+     *
+     * The identifier is a string that is used to identify the action.
+     *
+     * @return The identifier of the action.
+     */
     virtual std::string identifier() const
     {
         return identifierFromName(name());
     }
+
+protected:
+    static ConsoleLogger& logger() { return log; }
 
     static std::string identifierFromName(const std::string& name)
     {

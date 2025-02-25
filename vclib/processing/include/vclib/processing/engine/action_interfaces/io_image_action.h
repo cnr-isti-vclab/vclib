@@ -106,6 +106,10 @@ public:
      * ************************************ */
 
     Type type() const final { return Type::IO_IMAGE_ACTION; }
+
+    MeshTypeId meshType() const final { return MeshTypeId::COUNT; }
+
+    std::string identifier() const final { return IOAction::identifier(); }
 };
 
 } // namespace vcl::proc

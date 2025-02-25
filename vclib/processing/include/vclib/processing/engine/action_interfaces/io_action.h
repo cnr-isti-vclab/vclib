@@ -48,6 +48,10 @@ public:
 
     virtual std::string name() const = 0;
 
+    virtual Type type() const = 0;
+
+    virtual MeshTypeId meshType() const = 0;
+
     /**
      * @brief Returns the type of support for input/output operations.
      *

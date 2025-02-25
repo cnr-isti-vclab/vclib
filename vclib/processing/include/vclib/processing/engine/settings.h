@@ -56,11 +56,20 @@ template<typename MeshType>
 constexpr MeshTypeId meshTypeId()
 {
     constexpr uint id = IndexInTypes<MeshType, MeshTypes>::value;
+    if constexpr (id == UINT_NULL) {
+        return MeshTypeId::COUNT;
+    }
+    return static_cast<MeshTypeId>(id);
+}
+
+template<typename MeshType>
+constexpr void checkMeshTypeId()
+{
+    constexpr uint id = toUnderlying(meshTypeId<MeshType>());
     static_assert(id != UINT_NULL, "Mesh type not supported.");
     static_assert(
         id >= 0 && id < toUnderlying(MeshTypeId::COUNT),
         "Invalid mesh type id.");
-    return static_cast<MeshTypeId>(id);
 }
 
 } // namespace vcl::proc

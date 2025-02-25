@@ -174,6 +174,13 @@ public:
 
     Type type() const final { return Type::IO_MESH_ACTION; }
 
+    MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
+
+    std::string identifier() const final
+    {
+        return identifierFromName(name() + " " + vcl::meshTypeName<MeshType>());
+    }
+
     std::vector<FileFormat> supportedFormats() const final
     {
         std::vector<FileFormat> formats;
@@ -263,11 +270,6 @@ protected:
             }
         }
         return MeshInfo();
-    }
-
-    std::string identifier() const final
-    {
-        return identifierFromName(name() + " " + vcl::meshTypeName<MeshType>());
     }
 };
 
