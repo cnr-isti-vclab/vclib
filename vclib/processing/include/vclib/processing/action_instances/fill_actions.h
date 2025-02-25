@@ -29,33 +29,24 @@
 namespace vcl::proc {
 
 /**
- * @brief Given a list of actions given in a TemplatedTypeWrapper, this function
+ * @brief Given a list of actions in a TemplatedTypeWrapper, this function
  * fills the given vector with the action instances that can be instantiated for
- * all the supported mesh types in the processing module.
+ * the given template argument MeshType
  *
  * @param[in/out] vec: vector to fill with the action instances
  */
-template<template<typename> typename... Actions>
-void fillActionsForSupportedMeshTypes(
+template<typename MeshType, template<typename> typename... Actions>
+void fillActionsIfSupported(
     std::vector<std::shared_ptr<Action>>& vec,
     TemplatedTypeWrapper<Actions...>)
 {
-    // lambda called for each mesh type
-    auto fMesh = [&]<typename MeshType>() {
-        // lambda called for each action
-        auto fAct = [&]<template<typename> typename Act>() {
-            // if the action can be instantiated with the mesh type
-            if constexpr (IsInstantiable<Act, MeshType>) {
-                vec.push_back(std::make_shared<Act<MeshType>>());
-            }
-        };
-
-        // call the lambda for each action
-        (fAct.template operator()<Actions>(), ...);
+    auto fAct = [&]<template<typename> typename Act>() {
+        if constexpr (IsInstantiable<Act, MeshType>) {
+            vec.push_back(std::make_shared<Act<MeshType>>());
+        }
     };
 
-    // call the lambda for each mesh type
-    vcl::ForEachType<MeshTypes>::apply(fMesh);
+    (fAct.template operator()<Actions>(), ...);
 }
 
 } // namespace vcl::proc

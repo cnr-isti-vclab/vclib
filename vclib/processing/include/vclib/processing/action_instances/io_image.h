@@ -34,7 +34,7 @@ inline std::vector<std::shared_ptr<Action>> ioImageActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    vec.push_back(BaseIOImage().clone());
+    vec.push_back(std::make_shared<BaseIOImage>());
 
     return vec;
 }
