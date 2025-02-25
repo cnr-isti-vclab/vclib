@@ -67,29 +67,39 @@ void main()
     vec4 light = vec4(1, 1, 1, 1);
 
     vec3 normal = normalize(v_normal);
-
-    // if flat shading, compute normal of face
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_FLAT))) {
-        normal = vec3(
+        
+    //if neither flat shading nor smooth shading do nothing, otherwise always compute light and if flat shading compute face normals
+    switch(u_surfaceMode & (posToBitFlag(VCL_MRS_SURF_SHADING_FLAT) | posToBitFlag(VCL_MRS_SURF_SHADING_SMOOTH))){
+        case posToBitFlag(VCL_MRS_SURF_SHADING_FLAT): 
+            normal = vec3(
             primitiveNormals[gl_PrimitiveID * 3],
             primitiveNormals[gl_PrimitiveID * 3 + 1],
             primitiveNormals[gl_PrimitiveID * 3 + 2]);
-        normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
-        normal = normalize(normal);
+            normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
+            normal = normalize(normal);
+            light = computeLight(u_lightDir, u_lightColor, normal);
+
+            specular = computeSpecular(
+                v_position,
+                u_cameraEyePos,
+                u_lightDir,
+                u_lightColor,
+                normal);
+            break;
+        case posToBitFlag(VCL_MRS_SURF_SHADING_SMOOTH):
+            light = computeLight(u_lightDir, u_lightColor, normal);
+
+            specular = computeSpecular(
+                v_position,
+                u_cameraEyePos,
+                u_lightDir,
+                u_lightColor,
+                normal);
+            break;
     }
 
-    // if flat or smooth shading, compute light
-    if (!bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_NONE))) {
-        light = computeLight(u_lightDir, u_lightColor, normal);
 
-        specular = computeSpecular(
-            v_position,
-            u_cameraEyePos,
-            u_lightDir,
-            u_lightColor,
-            normal);
-    }
-    
+
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 

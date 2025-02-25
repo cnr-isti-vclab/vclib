@@ -36,9 +36,9 @@ set(SOURCES
     main.cpp)
 
 set(SHADERS
-    shaders/vs_vertex_shader.sc
+    shanders/vs_vertex_shader.sc
     shaders/fs_fragment_shader.sc
-    shaders/varying.def.sc)
+    shaders/varyig.def.sc)
 
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
