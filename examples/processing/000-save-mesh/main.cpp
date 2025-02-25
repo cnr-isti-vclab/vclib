@@ -26,27 +26,35 @@
 
 int main()
 {
-    vcl::LoadSettings s;
-    s.loadTextureImages = true;
+    // vcl::LoadSettings s;
+    // s.loadTextureImages = true;
 
-    vcl::proc::TriMesh mesh = vcl::load<vcl::proc::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
+    // vcl::proc::TriMesh mesh = vcl::load<vcl::proc::TriMesh>(
+    //     VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
 
-    vcl::proc::ActionManager manager;
+    // vcl::proc::ActionManager manager;
 
-    manager.add(vcl::proc::vclibActions());
+    // manager.add(vcl::proc::vclibActions());
 
-    // saving obj
-    manager.saveMeshAction("obj")->save("td.obj", mesh);
+    // // saving obj
+    // manager.saveMeshAction("obj")->save("td.obj", mesh);
 
-    // saving off
-    manager.saveMeshAction("off")->save("td.off", mesh);
+    // // saving off
+    // manager.saveMeshAction("off")->save("td.off", mesh);
 
-    // saving ply
-    manager.saveMeshAction("ply")->save("td.ply", mesh);
+    // // saving ply
+    // manager.saveMeshAction("ply")->save("td.ply", mesh);
 
-    // saving stl
-    manager.saveMeshAction("stl")->save("td.stl", mesh);
+    // // saving stl
+    // manager.saveMeshAction("stl")->save("td.stl", mesh);
+
+    vcl::proc::BaseIOMesh<vcl::PolyMesh> ioMesh;
+
+    std::cerr << ioMesh.name() << std::endl;
+
+    auto mesh = ioMesh.load(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+
+    ioMesh.save(VCLIB_RESULTS_PATH "/bunny.stl", mesh);
 
     return 0;
 }
