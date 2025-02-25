@@ -33,29 +33,6 @@
 template<typename ValueType, typename ScalarType>
 using HSGrid3 = vcl::HashTableGrid3<ValueType, ScalarType>;
 
-template<vcl::FaceMeshConcept MeshType>
-constexpr std::string meshName()
-{
-    constexpr bool indexed = MeshType::FaceType::INDEXED;
-    using ScalarType       = MeshType::VertexType::CoordType::ScalarType;
-
-    std::string name;
-    if constexpr (vcl::HasTriangles<MeshType>)
-        name = "Tri";
-    else
-        name = "Poly";
-
-    name += "Mesh";
-
-    if constexpr (indexed)
-        name += "Indexed";
-
-    if constexpr (std::same_as<ScalarType, float>)
-        name += "f";
-
-    return name;
-}
-
 template<vcl::Box3Concept BoxType>
 auto randomPoints(
     vcl::uint      n,

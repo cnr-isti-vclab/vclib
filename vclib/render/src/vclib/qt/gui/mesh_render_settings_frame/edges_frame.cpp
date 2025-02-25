@@ -39,9 +39,9 @@ EdgesFrame::EdgesFrame(MeshRenderSettings& settings, QWidget* parent) :
 
     connect(
         mUI->visibilityCheckBox,
-        SIGNAL(stateChanged(int)),
+        SIGNAL(checkStateChanged(Qt::CheckState)),
         this,
-        SLOT(onVisibilityChanged(int)));
+        SLOT(onVisibilityChanged(Qt::CheckState)));
 
     connect(
         mUI->shadingSmoothRadioButton,
@@ -151,9 +151,9 @@ void EdgesFrame::updateColorComboBoxFromSettings()
     setButtonBackGround(mUI->colorDialogPushButton, c);
 }
 
-void EdgesFrame::onVisibilityChanged(int arg1)
+void EdgesFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
-    mMRS.setEdges(VISIBLE, arg1 == Qt::Checked);
+    mMRS.setEdges(VISIBLE, arg1 == Qt::CheckState::Checked);
     emit settingsUpdated();
 }
 

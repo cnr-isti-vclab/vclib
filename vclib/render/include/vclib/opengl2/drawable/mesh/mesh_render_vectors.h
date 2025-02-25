@@ -547,7 +547,7 @@ private:
 
                 mVTexIds.resize(NUM_TRIS);
 
-                vertexTexCoordIndicesAsTriangulatedFaceWedgeTexCoordIndicesToBuffer(
+                vertexTexCoordIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
                     mesh, mVTexIds.data(), mIndexMap);
             }
         }

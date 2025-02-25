@@ -23,7 +23,7 @@
 #ifndef VCL_TYPES_MESH_COMPONENTS_H
 #define VCL_TYPES_MESH_COMPONENTS_H
 
-#include "variadic_templates.h"
+#include "filter_types.h"
 
 // TODO: complete documentation
 

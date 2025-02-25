@@ -63,7 +63,7 @@ DrawableObjectFrame::DrawableObjectFrame(
 
     connect(
         mUI->visibilityCheckBox,
-        &QCheckBox::stateChanged,
+        &QCheckBox::checkStateChanged,
         this,
         &DrawableObjectFrame::visibilityCheckBoxStateChanged);
 }
@@ -73,9 +73,9 @@ DrawableObjectFrame::~DrawableObjectFrame()
     delete mUI;
 }
 
-void DrawableObjectFrame::visibilityCheckBoxStateChanged(int arg1)
+void DrawableObjectFrame::visibilityCheckBoxStateChanged(Qt::CheckState arg1)
 {
-    mObj->setVisibility(arg1 == Qt::Checked);
+    mObj->setVisibility(arg1 == Qt::CheckState::Checked);
     emit visibilityChanged();
 }
 

@@ -20,45 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
-#define VCL_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
+#ifndef VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
+#define VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
 
-#include <QDockWidget>
+#include "variadic_templates.h"
 
-#include <vclib/processing/action_interfaces/filter_mesh_action.h>
+namespace vcl {
 
-namespace vcl::qt {
-
-namespace Ui {
-class FilterMeshDockWidget;
-} // namespace Ui
-
-class FilterMeshDockWidget : public QDockWidget
+template<template<typename...> typename... Args>
+struct TemplatedTypeWrapper
 {
-    Q_OBJECT
-
-    Ui::FilterMeshDockWidget* mUI;
-
-    const std::shared_ptr<proc::FilterMeshAction> mAction;
-
-public:
-    explicit FilterMeshDockWidget(
-        const std::shared_ptr<proc::FilterMeshAction>& action,
-        QWidget*                                       parent = nullptr);
-
-    ~FilterMeshDockWidget();
-
-signals:
-    void applyFilter(
-        const std::shared_ptr<proc::FilterMeshAction>& action,
-        const proc::ParameterVector&                   parmas);
-
-private slots:
-    void onApplyButtonClicked();
-
-    void onCancelButtonClicked();
+    static constexpr uint size() { return sizeof...(Args); }
 };
 
-} // namespace vcl::qt
+// note: specialization from variadic_templates.h
+template<template<typename...> typename... Args>
+struct FirstType<TemplatedTypeWrapper<Args...>>
+{
+    template<typename... T>
+    using type = std::tuple_element<0, std::tuple<Args<T>...>>::type;
+};
 
-#endif // VCL_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
+} // namespace vcl
+
+#endif // VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H

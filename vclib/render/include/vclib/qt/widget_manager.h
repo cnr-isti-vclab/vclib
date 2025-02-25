@@ -140,9 +140,9 @@ protected:
 
     // current pixel ratio
     // values > 0 are used to detect changes in pixel ratio
-    double mCurrentPixelRatio = -1.0; 
+    double mCurrentPixelRatio = -1.0;
 
-    bool event(QEvent *event) override
+    bool event(QEvent* event) override
     {
         if (event->type() == QEvent::DevicePixelRatioChange)
         {
@@ -163,7 +163,8 @@ protected:
 
                 // send resize event
                 QResizeEvent resizeEvent(size(), size());
-                auto app = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+                auto         app = qobject_cast<QGuiApplication*>(
+                    QCoreApplication::instance());
                 app->sendEvent(this, &resizeEvent);
             }
         }
@@ -281,7 +282,7 @@ protected:
 
     double pixelRatio() const
     {
-        auto * screen = this->screen();
+        auto* screen = this->screen();
         return double(screen ? screen->devicePixelRatio() : 1.0);
     }
 

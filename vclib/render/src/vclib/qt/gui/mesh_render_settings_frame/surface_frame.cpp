@@ -39,9 +39,9 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
 
     connect(
         mUI->visibilityCheckBox,
-        SIGNAL(stateChanged(int)),
+        SIGNAL(checkStateChanged(Qt::CheckState)),
         this,
-        SLOT(onVisibilityChanged(int)));
+        SLOT(onVisibilityChanged(Qt::CheckState)));
 
     connect(
         mUI->shadingSmoothRadioButton,
@@ -166,9 +166,9 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     setButtonBackGround(mUI->colorDialogPushButton, c);
 }
 
-void SurfaceFrame::onVisibilityChanged(int arg1)
+void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
-    mMRS.setSurface(VISIBLE, arg1 == Qt::Checked);
+    mMRS.setSurface(VISIBLE, arg1 == Qt::CheckState::Checked);
     emit settingsUpdated();
 }
 

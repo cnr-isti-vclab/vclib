@@ -20,30 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_PROCESSING_PARAMETERS_SCALAR_PARAMETER_ROW_H
-#define VCL_QT_GUI_PROCESSING_PARAMETERS_SCALAR_PARAMETER_ROW_H
+#ifndef VCL_TYPES_TYPE_WRAPPER_H
+#define VCL_TYPES_TYPE_WRAPPER_H
 
-#include <QLineEdit>
+#include "variadic_templates.h"
 
-#include "parameter_row.h"
+namespace vcl {
 
-namespace vcl::qt {
+// TODO: write documentation for all the functions and classes in this file
 
-class ScalarParameterRow : public ParameterRow
+/**
+ * @brief A simple structure that wraps a list of variadic templates, without
+ * instantiating anything. Useful when you need to wrap a list of types, and
+ * consider them as a single type.
+ *
+ * @ingroup types
+ */
+template<typename... Args>
+struct TypeWrapper
 {
-    proc::ScalarParameter mParam;
-
-    QLineEdit* mLineEdit = nullptr;
-
-public:
-    ScalarParameterRow(const proc::ScalarParameter& param);
-
-    // ParameterRow interface
-    QWidget* parameterWidget() override;
-
-    std::shared_ptr<proc::Parameter> parameterFromWidget() const override;
+    static constexpr uint size() { return sizeof...(Args); }
 };
 
-} // namespace vcl::qt
+/**
+ * @copydoc FirstType
+ *
+ * @ingroup types
+ */
+// note: specialization from variadic_templates.h
+template<typename... Args>
+struct FirstType<TypeWrapper<Args...>>
+{
+    using type = std::tuple_element<0, std::tuple<Args...>>::type;
+};
 
-#endif // VCL_QT_GUI_PROCESSING_PARAMETERS_SCALAR_PARAMETER_ROW_H
+// note: specialization from variadic_templates.h
+template<typename... Args>
+uint indexInTypePack(std::type_index ti, TypeWrapper<Args...>)
+{
+    return indexInTypePack<Args...>(ti);
+}
+
+// note: specialization from variadic_templates.h
+template<typename T, typename... Us>
+struct IndexInTypes<T, TypeWrapper<Us...>>
+{
+    static constexpr uint value = indexInTypePack<T, Us...>();
+};
+
+// note: specialization from variadic_templates.h
+template<typename... Args>
+struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
+{
+};
+
+// note: specialization from variadic_templates.h
+template<typename... T>
+struct ForEachType<TypeWrapper<T...>> : public ForEachType<T...>
+{
+};
+
+} // namespace vcl
+
+#endif // VCL_TYPES_TYPE_WRAPPER_H
