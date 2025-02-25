@@ -68,7 +68,7 @@ public:
     std::shared_ptr<IOImageAction> loadImageAction(FileFormat fmt) const
     {
         return std::dynamic_pointer_cast<IOImageAction>(
-            mImageActions.getSave(fmt));
+            mImageActions.getLoad(fmt));
     }
 
     std::shared_ptr<IOImageAction> saveImageAction(FileFormat fmt) const

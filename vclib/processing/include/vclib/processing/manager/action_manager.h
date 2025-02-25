@@ -44,12 +44,12 @@ public:
 
     static std::shared_ptr<IOImageAction> loadImageAction(FileFormat fmt)
     {
-        return instance().saveImageAction(fmt);
+        return instance().loadImageAction(fmt);
     }
 
     static std::shared_ptr<IOImageAction> saveImageAction(FileFormat fmt)
     {
-        return instance().loadImageAction(fmt);
+        return instance().saveImageAction(fmt);
     }
 
 private:

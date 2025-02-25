@@ -24,5 +24,6 @@
 #define VCL_PROCESSING_MANAGER_H
 
 #include "manager/action_manager.h"
+#include "manager/load_save_textures.h"
 
 #endif // VCL_PROCESSING_MANAGER_H

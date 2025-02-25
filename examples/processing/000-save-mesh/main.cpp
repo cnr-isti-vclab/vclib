@@ -56,5 +56,11 @@ int main()
 
     ioMesh.save(VCLIB_RESULTS_PATH "/bunny.stl", mesh);
 
+    // test texture
+
+    mesh = ioMesh.load(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
+
+    ioMesh.save(VCLIB_RESULTS_PATH "/td.obj", mesh);
+
     return 0;
 }

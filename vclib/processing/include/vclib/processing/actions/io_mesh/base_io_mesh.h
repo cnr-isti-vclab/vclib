@@ -24,6 +24,7 @@
 #define VCL_PROCESSING_ACTIONS_IO_MESH_BASE_IO_MESH_H
 
 #include <vclib/processing/engine.h>
+#include <vclib/processing/manager.h>
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/load_save.h>
@@ -131,14 +132,18 @@ public:
     {
         MeshType mesh;
 
+        std::string basePath = FileInfo::pathWithoutFileName(filename);
+
         if (format == "obj") {
             mesh = loadObj<MeshType>(filename, loadedInfo, log);
+            loadTexturesUsingManager(mesh, basePath);
         }
         else if (format == "off") {
             mesh = loadOff<MeshType>(filename, loadedInfo, log);
         }
         else if (format == "ply") {
             mesh = loadPly<MeshType>(filename, loadedInfo, log);
+            loadTexturesUsingManager(mesh, basePath);
         }
         else if (format == "stl") {
             mesh = loadStl<MeshType>(filename, loadedInfo, log);
@@ -167,13 +172,11 @@ public:
         const ParameterVector& parameters,
         AbstractLogger&        log = Base::logger()) const final
     {
+        std::string basePath = FileInfo::pathWithoutFileName(filename);
+
         SaveSettings settings;
         settings.info = info;
         if (format == "obj" || format == "ply" || format == "stl") {
-            if (format != "stl") { // obj and ply
-                settings.saveTextureImages =
-                    parameters.get("save_texture_files")->boolValue();
-            }
             if (format != "obj") { // ply and stl
                 settings.binary = parameters.get("binary")->boolValue();
             }
@@ -186,12 +189,16 @@ public:
 
         if (format == "obj") {
             saveObj(mesh, filename, settings, log);
+            if (parameters.get("save_texture_files")->boolValue())
+                saveTexturesUsingManager(mesh, basePath);
         }
         else if (format == "off") {
             saveOff(mesh, filename, settings, log);
         }
         else if (format == "ply") {
             savePly(mesh, filename, settings, log);
+            if (parameters.get("save_texture_files")->boolValue())
+                saveTexturesUsingManager(mesh, basePath);
         }
         else if (format == "stl") {
             if (!isTriangleMesh(mesh)) {
