@@ -36,10 +36,12 @@
 
 namespace vcl::proc {
 
-template<MeshConcept MeshType>
+template<MeshConcept Mesh>
 class FilterMeshAction : public Action
 {
 public:
+    using MeshType = Mesh;
+
     enum class Category {
         CREATE = 0,
         CLEANING_AND_REPAIRING,

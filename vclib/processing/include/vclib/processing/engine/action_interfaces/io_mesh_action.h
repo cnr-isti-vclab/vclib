@@ -35,10 +35,12 @@
 
 namespace vcl::proc {
 
-template<MeshConcept MeshType>
+template<MeshConcept Mesh>
 class IOMeshAction : public Action
 {
 public:
+    using MeshType = Mesh;
+
     enum class IOSupport { LOAD, SAVE, BOTH };
 
     /* ******************************************************************** *
