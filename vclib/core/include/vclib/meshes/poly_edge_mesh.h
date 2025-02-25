@@ -74,7 +74,7 @@ class Face :
             face::OptionalQuality<Scalar, Face<Scalar, I>>,
             face::OptionalAdjacentPolygons<I, Face<Scalar, I>>,
             face::OptionalAdjacentEdges<I, Edge<Scalar, I>, Face<Scalar, I>>,
-            face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar, I>>,
+            face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar, I>>,
             face::OptionalMark<Face<Scalar, I>>,
             face::CustomComponents<Face<Scalar, I>>>
 {

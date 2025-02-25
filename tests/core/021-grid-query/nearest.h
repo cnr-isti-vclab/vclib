@@ -46,7 +46,8 @@ auto bruteforceNearestFaces(
     std::vector<ScalarType> dists(
         points.size(), std::numeric_limits<ScalarType>::max());
 
-    vcl::Timer t("Computing brute force distances for " + meshName<MeshType>());
+    vcl::Timer t(
+        "Computing brute force distances for " + vcl::meshTypeName<MeshType>());
     for (vcl::uint i = 0; const auto& p : points) {
         for (const auto& f : mesh.faces()) {
             ScalarType dist = distFun(p, f);
@@ -91,12 +92,12 @@ void closestFacesTest(
 {
     auto [nearest, dists] = bruteforceNearestFaces(mesh, points);
 
-    vcl::Timer t(meshName<MeshType>() + ": Computing " + gridName);
+    vcl::Timer t(vcl::meshTypeName<MeshType>() + ": Computing " + gridName);
     auto       grid = computeGrid<Grid>(mesh);
     t.stopAndPrint();
 
     auto [nearestGrid, distsGrid] =
-        gridNearestFaces(grid, points, meshName<MeshType>(), gridName);
+        gridNearestFaces(grid, points, vcl::meshTypeName<MeshType>(), gridName);
 
     for (vcl::uint i = 0; i < points.size(); i++) {
         if (!vcl::epsilonEquals(dists[i], distsGrid[i])) {

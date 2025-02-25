@@ -20,30 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_PROCESSING_PARAMETERS_USCALAR_PARAMETER_ROW_H
-#define VCL_QT_GUI_PROCESSING_PARAMETERS_USCALAR_PARAMETER_ROW_H
+#ifndef VCL_LOAD_SAVE_FORMATS_H
+#define VCL_LOAD_SAVE_FORMATS_H
 
-#include <QLineEdit>
+#include <vclib/exceptions/io.h>
+#include <vclib/io/file_format.h>
 
-#include "parameter_row.h"
+namespace vcl {
 
-namespace vcl::qt {
-
-class UscalarParameterRow : public ParameterRow
+constexpr FileFormat objFileFormat()
 {
-    proc::UscalarParameter mParam;
+    return FileFormat("obj", "OBJ Wavefront .obj");
+}
 
-    QLineEdit* mLineEdit = nullptr;
+constexpr FileFormat offFileFormat()
+{
+    return FileFormat("off", "OFF Object File Format .off");
+}
 
-public:
-    UscalarParameterRow(const proc::UscalarParameter& param);
+constexpr FileFormat plyFileFormat()
+{
+    return FileFormat("ply", "PLY Polygon File Format .ply");
+}
 
-    // ParameterRow interface
-    QWidget* parameterWidget() override;
+constexpr FileFormat stlFileFormat()
+{
+    return FileFormat("stl", "STL Stereolithography .stl");
+}
 
-    std::shared_ptr<proc::Parameter> parameterFromWidget() const override;
-};
+FileFormat fileFormat(const std::string& format)
+{
+    std::string ext = toLower(format);
+    if (ext == "obj") {
+        return objFileFormat();
+    }
+    else if (ext == "off") {
+        return offFileFormat();
+    }
+    else if (ext == "ply") {
+        return plyFileFormat();
+    }
+    else if (ext == "stl") {
+        return stlFileFormat();
+    }
+    else {
+        throw UnknownFileFormatException(ext);
+    }
+}
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_PROCESSING_PARAMETERS_USCALAR_PARAMETER_ROW_H
+#endif // VCL_LOAD_SAVE_FORMATS_H

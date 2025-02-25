@@ -155,7 +155,6 @@ public:
                 mWedgeTextureIndexBuffer.bind(
                     VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
             }
-
         }
         else if (indexBufferToBind == EDGES) {
             mEdgeIndexBuffer.bind();

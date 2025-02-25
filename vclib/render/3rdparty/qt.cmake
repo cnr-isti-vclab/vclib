@@ -20,7 +20,15 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(Qt6 COMPONENTS Core Xml OpenGL Gui Widgets OpenGLWidgets QUIET)
+set(QT_MINIMUM_VERSION 6.7)
+
+set(QT_COMPONENTS Core Xml Gui Widgets)
+
+if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+    list(APPEND QT_COMPONENTS OpenGL OpenGLWidgets)
+endif()
+
+find_package(Qt6 ${QT_MINIMUM_VERSION} COMPONENTS ${QT_COMPONENTS} QUIET)
 
 if (VCLIB_ALLOW_SYSTEM_QT)
     if (Qt6_FOUND)
@@ -30,10 +38,12 @@ if (VCLIB_ALLOW_SYSTEM_QT)
         target_compile_definitions(vclib-3rd-qt INTERFACE
             VCLIB_WITH_QT)
 
-        target_link_libraries(vclib-3rd-qt INTERFACE Qt6::Core Qt6::Widgets Qt6::Xml)
+        target_link_libraries(vclib-3rd-qt INTERFACE
+            Qt6::Core Qt6::Widgets Qt6::Xml)
 
-        if (OpenGL_FOUND)
-            target_link_libraries(vclib-3rd-qt INTERFACE Qt6::OpenGL Qt6::OpenGLWidgets)
+        if (OpenGL_FOUND AND VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+            target_link_libraries(vclib-3rd-qt INTERFACE
+                Qt6::OpenGL Qt6::OpenGLWidgets)
         endif()
 
         list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-qt)

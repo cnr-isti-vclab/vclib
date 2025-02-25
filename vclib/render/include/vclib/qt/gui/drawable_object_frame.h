@@ -52,7 +52,7 @@ signals:
     void resized();
 
 private slots:
-    void visibilityCheckBoxStateChanged(int arg1);
+    void visibilityCheckBoxStateChanged(Qt::CheckState arg1);
 
     void showInfoToolButtonChecked(bool checked);
 };

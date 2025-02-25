@@ -20,18 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/mesh_processing_main_window.h>
+#ifndef VCL_ALGORITHMS_MESH_TYPE_NAME_H
+#define VCL_ALGORITHMS_MESH_TYPE_NAME_H
 
-#include <QApplication>
+#include <vclib/concepts/mesh.h>
 
-int main(int argc, char** argv)
+namespace vcl {
+
+/**
+ * @brief Returns the name of the mesh type as a string.
+ * @return the name of the mesh type as a string.
+ *
+ * @ingroup algorithms_mesh
+ */
+template<MeshConcept MeshType>
+constexpr std::string meshTypeName()
 {
-    QApplication app(argc, argv);
+    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
 
-    vcl::qt::MeshProcessingMainWindow mw;
+    std::string name;
 
-    mw.show();
-    mw.showMaximized();
+    if constexpr (!HasFaces<MeshType> && !HasEdges<MeshType>) {
+        name = "PointCloud";
+    }
+    else {
+        constexpr bool indexed = MeshType::FaceType::INDEXED;
 
-    return app.exec();
+        if constexpr (vcl::HasTriangles<MeshType>)
+            name = "Tri";
+        else if constexpr (vcl::HasQuads<MeshType>)
+            name = "Quad";
+        else
+            name = "Poly";
+
+        if constexpr (vcl::HasEdges<MeshType>)
+            name += "Edge";
+
+        name += "Mesh";
+
+        if constexpr (indexed)
+            name += "Indexed";
+    }
+
+    if constexpr (std::same_as<ScalarType, float>)
+        name += "f";
+
+    return name;
 }
+
+} // namespace vcl
+
+#endif // VCL_ALGORITHMS_MESH_TYPE_NAME_H

@@ -140,14 +140,12 @@ protected:
 
     // current pixel ratio
     // values > 0 are used to detect changes in pixel ratio
-    double mCurrentPixelRatio = -1.0; 
+    double mCurrentPixelRatio = -1.0;
 
-    bool event(QEvent *event) override
+    bool event(QEvent* event) override
     {
         if (event->type() == QEvent::DevicePixelRatioChange)
         {
-            std::cerr << "DevicePixelRatioChange " << pixelRatio() << std::endl;
-            std::cerr << "size " << size().width() << " x " << size().height() << std::endl;
             // save current ratio
             mCurrentPixelRatio = pixelRatio();
             // send update event
@@ -156,21 +154,17 @@ protected:
 
         if (event->type() == QEvent::UpdateRequest)
         {
-            std::cerr << "UpdateRequest " << pixelRatio() << std::endl;
             if (mCurrentPixelRatio > 0 && mCurrentPixelRatio != pixelRatio())
             {
                 const double ratio = pixelRatio();
-                
-                // ratio changed
-                std::cerr << "Ratio changed " << mCurrentPixelRatio << " -> "
-                          << ratio << std::endl;
 
                 // reset current ratio
                 mCurrentPixelRatio = -1.0;
 
                 // send resize event
                 QResizeEvent resizeEvent(size(), size());
-                auto app = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+                auto         app = qobject_cast<QGuiApplication*>(
+                    QCoreApplication::instance());
                 app->sendEvent(this, &resizeEvent);
             }
         }
@@ -182,7 +176,6 @@ protected:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
     {
-        std::cerr << "Resize: ratio " << pixelRatio() << std::endl;
         Base::resizeEvent(event);
         DerivedRenderApp::WM::resize(
             derived(), width() * pixelRatio(), height() * pixelRatio());
@@ -242,12 +235,6 @@ protected:
 
     void mousePressEvent(QMouseEvent* event) override
     {
-        // on right press print device pixel ratio
-        if (event->button() == Qt::RightButton)
-        {
-            std::cerr << "DevicePixelRatio: " << pixelRatio() << std::endl;
-        }
-
         DerivedRenderApp::WM::mousePress(
             derived(),
             vcl::qt::fromQt(event->button()),
@@ -295,7 +282,7 @@ protected:
 
     double pixelRatio() const
     {
-        auto * screen = this->screen();
+        auto* screen = this->screen();
         return double(screen ? screen->devicePixelRatio() : 1.0);
     }
 

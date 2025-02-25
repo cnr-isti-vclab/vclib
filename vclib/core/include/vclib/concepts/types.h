@@ -61,6 +61,23 @@ concept IsClass = std::is_class_v<T>;
 template<typename T>
 concept IsNotClass = !IsClass<T>;
 
+/**
+ * @brief Concept that is evaluated true if the templated type C is instantiable
+ * with type T, i.e., C<T> is a valid type.
+ *
+ * Example of usage:
+ * @code{.cpp}
+ * if constexpr(IsInstantiable<C, T>) {
+ *     C<T> instance;
+ *     // do something...
+ * }
+ * @endcode
+ *
+ * @ingroup util_concepts
+ */
+template<template<typename> typename C, typename T>
+concept IsInstantiable = requires { typename C<T>; };
+
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_TYPES_H

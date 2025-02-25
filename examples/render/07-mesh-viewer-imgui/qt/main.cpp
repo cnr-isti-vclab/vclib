@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "../mesh_viewer_imgui_drawer.h"
+#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #include "get_drawable_mesh.h"
 
 #include <vclib/imgui/imgui_drawer.h>
