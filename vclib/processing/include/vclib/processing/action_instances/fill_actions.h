@@ -20,9 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_IO_MESH_H
-#define VCL_PROCESSING_ACTIONS_IO_MESH_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_FILL_ACTIONS_H
+#define VCL_PROCESSING_ACTION_INSTANCES_FILL_ACTIONS_H
 
-#include "io_mesh/base_io_mesh.h"
+#include <vclib/processing/engine/action_interfaces/action.h>
+#include <vclib/processing/engine/settings.h>
 
-#endif // VCL_PROCESSING_ACTIONS_IO_MESH_H
+namespace vcl::proc {
+
+/**
+ * @brief Given a list of actions given in a TemplatedTypeWrapper, this function
+ * fills the given vector with the action instances that can be instantiated for
+ * all the supported mesh types in the processing module.
+ *
+ * @param[in/out] vec: vector to fill with the action instances
+ */
+template<template<typename> typename... Actions>
+void fillActionsForSupportedMeshTypes(
+    std::vector<std::shared_ptr<Action>>& vec,
+    TemplatedTypeWrapper<Actions...>)
+{
+    // lambda called for each mesh type
+    auto fMesh = [&]<typename MeshType>() {
+        // lambda called for each action
+        auto fAct = [&]<template<typename> typename Act>() {
+            // if the action can be instantiated with the mesh type
+            if constexpr (IsInstantiable<Act, MeshType>) {
+                vec.push_back(std::make_shared<Act<MeshType>>());
+            }
+        };
+
+        // call the lambda for each action
+        (fAct.template operator()<Actions>(), ...);
+    };
+
+    // call the lambda for each mesh type
+    vcl::ForEachType<MeshTypes>::apply(fMesh);
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_FILL_ACTIONS_H

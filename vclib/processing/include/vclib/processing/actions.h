@@ -27,27 +27,4 @@
 #include "actions/io_image.h"
 #include "actions/io_mesh.h"
 
-namespace vcl::proc {
-
-std::vector<std::shared_ptr<Action>> vclibActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    // IO Image actions
-    auto ioImgVector = ioImageActions();
-    vec.insert(vec.end(), ioImgVector.begin(), ioImgVector.end());
-
-    // IO Mesh actions
-    auto ioMeshVector = ioMeshActions();
-    vec.insert(vec.end(), ioMeshVector.begin(), ioMeshVector.end());
-
-    // // Filter Mesh actions
-    auto filterMeshVector = filterMeshActions();
-    vec.insert(vec.end(), filterMeshVector.begin(), filterMeshVector.end());
-
-    return vec;
-}
-
-} // namespace vcl::proc
-
 #endif // VCL_PROCESSING_ACTIONS_H

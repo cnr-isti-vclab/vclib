@@ -25,20 +25,4 @@
 
 #include "io_image/base_io_image.h"
 
-#include <memory>
-#include <vector>
-
-namespace vcl::proc {
-
-std::vector<std::shared_ptr<Action>> ioImageActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    vec.push_back(BaseIOImage().clone());
-
-    return vec;
-}
-
-} // namespace vcl::proc
-
 #endif // VCL_PROCESSING_ACTIONS_IO_IMAGE_H

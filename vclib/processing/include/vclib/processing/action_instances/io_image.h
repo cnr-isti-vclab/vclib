@@ -20,9 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_IO_MESH_H
-#define VCL_PROCESSING_ACTIONS_IO_MESH_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_IO_IMAGE_H
+#define VCL_PROCESSING_ACTION_INSTANCES_IO_IMAGE_H
 
-#include "io_mesh/base_io_mesh.h"
+#include <vclib/processing/actions/io_image.h>
 
-#endif // VCL_PROCESSING_ACTIONS_IO_MESH_H
+#include <memory>
+#include <vector>
+
+namespace vcl::proc {
+
+inline std::vector<std::shared_ptr<Action>> ioImageActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    vec.push_back(BaseIOImage().clone());
+
+    return vec;
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_IO_IMAGE_H

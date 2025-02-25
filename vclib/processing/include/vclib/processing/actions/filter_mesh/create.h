@@ -25,26 +25,4 @@
 
 #include "create/create_cone_filter.h"
 
-#include <vclib/processing/engine.h>
-
-#include <vclib/meshes.h>
-
-#include <memory>
-#include <vector>
-
-namespace vcl::proc {
-
-std::vector<std::shared_ptr<Action>> createFilterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    using Actions = TemplatedTypeWrapper<CreateConeFilter>;
-
-    fillActionsForSupportedMeshTypes(vec, Actions());
-
-    return vec;
-}
-
-} // namespace vcl::proc
-
 #endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H

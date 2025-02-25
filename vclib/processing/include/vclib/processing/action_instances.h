@@ -20,44 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ENGINE_COMMON_FUNCTIONS_H
-#define VCL_PROCESSING_ENGINE_COMMON_FUNCTIONS_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_H
+#define VCL_PROCESSING_ACTION_INSTANCES_H
 
-#include <vclib/processing/engine/action_interfaces/action.h>
-#include <vclib/processing/engine/settings.h>
+#include "action_instances/filter_mesh.h"
+#include "action_instances/io_image.h"
+#include "action_instances/io_mesh.h"
 
 namespace vcl::proc {
 
-/**
- * @brief Given a list of actions given in a TemplatedTypeWrapper, this function
- * fills the given vector with the action instances that can be instantiated for
- * all the supported mesh types in the processing module.
- *
- * @param[in/out] vec: vector to fill with the action instances
- */
-template<template<typename> typename... Actions>
-void fillActionsForSupportedMeshTypes(
-    std::vector<std::shared_ptr<Action>>& vec,
-    TemplatedTypeWrapper<Actions...>)
+inline std::vector<std::shared_ptr<Action>> actionInstances()
 {
-    // lambda called for each mesh type
-    auto fMesh = [&]<typename MeshType>() {
-        // lambda called for each action
-        auto fAct = [&]<template<typename> typename Act>() {
-            // if the action can be instantiated with the mesh type
-            if constexpr (IsInstantiable<Act, MeshType>) {
-                vec.push_back(std::make_shared<Act<MeshType>>());
-            }
-        };
+    std::vector<std::shared_ptr<Action>> vec;
 
-        // call the lambda for each action
-        (fAct.template operator()<Actions>(), ...);
-    };
+    // IO Image actions
+    auto ioImgVector = ioImageActions();
+    vec.insert(vec.end(), ioImgVector.begin(), ioImgVector.end());
 
-    // call the lambda for each mesh type
-    vcl::ForEachType<MeshTypes>::apply(fMesh);
+    // IO Mesh actions
+    auto ioMeshVector = ioMeshActions();
+    vec.insert(vec.end(), ioMeshVector.begin(), ioMeshVector.end());
+
+    // // Filter Mesh actions
+    auto filterMeshVector = filterMeshActions();
+    vec.insert(vec.end(), filterMeshVector.begin(), filterMeshVector.end());
+
+    return vec;
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ENGINE_COMMON_FUNCTIONS_H
+#endif // VCL_PROCESSING_ACTION_INSTANCES_H

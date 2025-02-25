@@ -25,26 +25,4 @@
 
 #include "apply/laplacian_smoothing_filter.h"
 
-#include <vclib/processing/engine.h>
-
-#include <vclib/meshes.h>
-
-#include <memory>
-#include <vector>
-
-namespace vcl::proc {
-
-std::vector<std::shared_ptr<Action>> applyFilterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    using Actions = TemplatedTypeWrapper<LaplacianSmoothingFilter>;
-
-    fillActionsForSupportedMeshTypes(vec, Actions());
-
-    return vec;
-}
-
-} // namespace vcl::proc
-
 #endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_H

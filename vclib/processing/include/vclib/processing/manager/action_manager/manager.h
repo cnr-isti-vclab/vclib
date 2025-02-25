@@ -25,9 +25,13 @@
 
 #include "io_action_container.h"
 
-#include <vclib/processing/actions.h>
+#include <vclib/processing/engine/action_interfaces.h>
 
-namespace vcl::proc::detail {
+namespace vcl::proc {
+
+std::vector<std::shared_ptr<Action>> ioImageActions();
+
+namespace detail {
 
 class Manager {
     IOActionContainer mImageActions;
@@ -75,6 +79,8 @@ public:
 
 };
 
-} // namespace vcl::proc::detail
+} // namespace detail
+
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_MANAGER_H

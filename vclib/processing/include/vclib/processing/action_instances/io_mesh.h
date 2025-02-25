@@ -20,9 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_IO_MESH_H
-#define VCL_PROCESSING_ACTIONS_IO_MESH_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H
+#define VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H
 
-#include "io_mesh/base_io_mesh.h"
+#include "fill_actions.h"
 
-#endif // VCL_PROCESSING_ACTIONS_IO_MESH_H
+#include <vclib/processing/actions/io_mesh.h>
+
+#include <memory>
+#include <vector>
+
+namespace vcl::proc {
+
+inline std::vector<std::shared_ptr<Action>> ioMeshActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    using Actions = TemplatedTypeWrapper<BaseIOMesh>;
+
+    fillActionsForSupportedMeshTypes(vec, Actions());
+
+    return vec;
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H

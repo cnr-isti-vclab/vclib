@@ -24,7 +24,6 @@
 #define VCL_PROCESSING_ENGINE_H
 
 #include "engine/action_interfaces.h"
-#include "engine/common_functions.h"
 #include "engine/parameter_vector.h"
 #include "engine/parameters.h"
 #include "engine/settings.h"
