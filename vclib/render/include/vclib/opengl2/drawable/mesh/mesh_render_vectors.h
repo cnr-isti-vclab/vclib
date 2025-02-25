@@ -28,6 +28,7 @@
 #include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/math/min_max.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
 #include <vclib/space/complex/tri_poly_index_bimap.h>
 #include <vclib/space/core/image.h>
@@ -35,225 +36,69 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-class MeshRenderVectors
+template<MeshConcept Mesh>
+class MeshRenderVectors :
+        public MeshRenderData<MeshRenderVectors<Mesh>>
 {
-    using MRI = MeshRenderInfo;
+    using MeshType = Mesh;
+    using Base = MeshRenderData<MeshRenderVectors<MeshType>>;
+    using MRI  = MeshRenderInfo;
 
-    MRI::BuffersBitSet mBuffersToFill = MRI::BUFFERS_ALL;
+    friend Base;
 
     std::vector<float>    mVerts;
-    std::vector<uint32_t> mTris;
-    std::vector<uint32_t> mEdges;
-    std::vector<uint32_t> mWireframe;
-
     std::vector<float>    mVNormals;
     std::vector<uint32_t> mVColors;
     std::vector<float>    mVTexCoords;
-    std::vector<uint32_t> mVTexIds;
+    std::vector<float>    mWTexCoords;
 
+    std::vector<uint32_t> mTris;
     std::vector<float>    mTNormals;
     std::vector<uint32_t> mTColors;
-    std::vector<float>    mWTexCoords;
+    std::vector<uint32_t> mVTexIds;
     std::vector<uint32_t> mWTexIds;
 
+    std::vector<uint32_t> mEdges;
     std::vector<float>    mENormals;
     std::vector<uint32_t> mEColors;
 
-    std::array<float, 4> mMeshColor = {0.5, 0.5, 0.5, 1};
+    std::vector<uint32_t> mWireframe;
 
     std::vector<vcl::Image> mTextures;
 
-    // vector that tells, for each non-duplicated vertex, which wedges it
-    // belongs to each pair is the face index and the wedge index in the face
-    // allows to access the wedge texcoords for each non-duplicated vertex
-    std::vector<std::pair<uint, uint>> mVertWedgeMap;
-
-    // the list of vertices that has been duplicated (each element of the list
-    // is the index of the vertex to duplicate)
-    std::list<uint> mVertsToDuplicate;
-
-    // a list that tells, for each duplicated vertex, the list of faces that
-    // must be reassigned to the corresponding duplicated vertex
-    // each duplicated vertex has a list of pairs face/vertex index in the face
-    // that must be/have been reassigned to the duplicated vertex
-    std::list<std::list<std::pair<uint, uint>>> mFacesToReassign;
-
-    // data used to manage the mapping beteween the original polygonal faces
-    // and the triangle faces
-
-    // map that stores the correspondence between the original polygonal faces
-    // and the triangle faces
-    TriPolyIndexBiMap mIndexMap;
+    std::array<float, 4> mMeshColor = {0.5, 0.5, 0.5, 1};
 
 public:
     MeshRenderVectors() = default;
 
     MeshRenderVectors(
-        const MeshType&    m,
-        MRI::BuffersBitSet buffersToFill = MRI::BUFFERS_ALL) :
-            mBuffersToFill(buffersToFill)
-    {
-        update(m);
-    }
-
-    void update(
         const MeshType&    mesh,
-        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL)
+        MRI::BuffersBitSet buffersToFill = MRI::BUFFERS_ALL) :
+            Base(buffersToFill)
     {
-        using enum MRI::Buffers;
-
-        MRI::BuffersBitSet btu = mBuffersToFill & buffersToUpdate;
-
-        clear(btu);
-
-        if (btu[toUnderlying(VERTICES)] || btu[toUnderlying(WEDGE_TEXCOORDS)] ||
-            btu[toUnderlying(TRIANGLES)]) {
-            mVertWedgeMap.clear();
-            mVertsToDuplicate.clear();
-            mFacesToReassign.clear();
-
-            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                if (mesh.isPerFaceWedgeTexCoordsEnabled()) {
-                    countVerticesToDuplicateByWedgeTexCoords(
-                        mesh,
-                        mVertWedgeMap,
-                        mVertsToDuplicate,
-                        mFacesToReassign);
-                }
-            }
-        }
-
-        if (btu[toUnderlying(VERTICES)]) {
-            // vertex buffer (coordinates)
-            createVertexCoordsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(VERT_NORMALS)]) {
-            // vertex buffer (normals)
-            createVertexNormalsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(VERT_COLORS)]) {
-            // vertex buffer (colors)
-            createVertexColorsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(VERT_TEXCOORDS)]) {
-            // vertex buffer (UVs)
-            createVertexTexCoordsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
-            // vertex wedges buffer (duplicated vertices)
-            createWedgeTexCoordsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TRIANGLES)]) {
-            // triangle index buffer
-            createTriangleIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TRI_NORMALS)]) {
-            // triangle normal buffer
-            createTriangleNormalsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TRI_COLORS)]) {
-            // triangle color buffer
-            createTriangleColorsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(VERT_TEXCOORDS)]) {
-            // triangle vertex texture indices buffer
-            createVertexTextureIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
-            // triangle wedge texture indices buffer
-            createWedgeTextureIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(EDGES)]) {
-            // edge index buffer
-            createEdgeIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(EDGE_NORMALS)]) {
-            // edge normal buffer
-            createEdgeNormalsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(EDGE_COLORS)]) {
-            // edge color buffer
-            createEdgeColorsBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(WIREFRAME)]) {
-            // wireframe index buffer
-            createWireframeIndicesBuffer(mesh);
-        }
-
-        if (btu[toUnderlying(TEXTURES)]) {
-            // textures
-            createTextureUnits(mesh);
-        }
-
-        if (btu[toUnderlying(MESH_UNIFORMS)]) {
-            // mesh uniforms
-            fillMeshAttribs(mesh);
-        }
+        Base::update(mesh, buffersToFill);
     }
 
-    void clear(MRI::BuffersBitSet buffersToClear = MRI::BUFFERS_ALL)
+    void swap(MeshRenderVectors& other)
     {
-        using enum MRI::Buffers;
-
-        if (buffersToClear[toUnderlying(VERTICES)])
-            mVerts.clear();
-
-        if (buffersToClear[toUnderlying(TRIANGLES)])
-            mTris.clear();
-
-        if (buffersToClear[toUnderlying(EDGES)])
-            mEdges.clear();
-
-        if (buffersToClear[toUnderlying(WIREFRAME)])
-            mWireframe.clear();
-
-        if (buffersToClear[toUnderlying(VERT_NORMALS)])
-            mVNormals.clear();
-
-        if (buffersToClear[toUnderlying(VERT_COLORS)])
-            mVColors.clear();
-
-        if (buffersToClear[toUnderlying(TRI_NORMALS)])
-            mTNormals.clear();
-
-        if (buffersToClear[toUnderlying(TRI_COLORS)])
-            mTColors.clear();
-
-        if (buffersToClear[toUnderlying(VERT_TEXCOORDS)]) {
-            mVTexCoords.clear();
-            mVTexIds.clear();
-        }
-
-        if (buffersToClear[toUnderlying(VERT_TEXCOORDS)]) {
-            mWTexIds.clear();
-            mWTexCoords.clear();
-        }
-
-        if (buffersToClear[toUnderlying(EDGE_NORMALS)])
-            mENormals.clear();
-
-        if (buffersToClear[toUnderlying(EDGE_COLORS)])
-            mEColors.clear();
-
-        if (buffersToClear[toUnderlying(TEXTURES)])
-            mTextures.clear();
-
-        if (buffersToClear[toUnderlying(MESH_UNIFORMS)])
-            mMeshColor = {0.5, 0.5, 0.5, 1};
+        using std::swap;
+        Base::swap(other);
+        swap(mVerts, other.mVerts);
+        swap(mVNormals, other.mVNormals);
+        swap(mVColors, other.mVColors);
+        swap(mVTexCoords, other.mVTexCoords);
+        swap(mWTexCoords, other.mWTexCoords);
+        swap(mTris, other.mTris);
+        swap(mTNormals, other.mTNormals);
+        swap(mTColors, other.mTColors);
+        swap(mVTexIds, other.mVTexIds);
+        swap(mWTexIds, other.mWTexIds);
+        swap(mEdges, other.mEdges);
+        swap(mENormals, other.mENormals);
+        swap(mEColors, other.mEColors);
+        swap(mWireframe, other.mWireframe);
+        swap(mTextures, other.mTextures);
+        swap(mMeshColor, other.mMeshColor);
     }
 
     uint vertexNumber() const { return mVerts.size() / 3; }
@@ -385,243 +230,142 @@ public:
     }
 
 private:
-    void fillMeshAttribs(const MeshType& m)
+    void setVertexCoordsBuffer(const MeshType& mesh) // override
     {
-        if constexpr (vcl::HasColor<MeshType>) {
-            mMeshColor[0] = m.color().redF();
-            mMeshColor[1] = m.color().greenF();
-            mMeshColor[2] = m.color().blueF();
-            mMeshColor[3] = m.color().alphaF();
-        }
-    }
-
-    void createVertexCoordsBuffer(const MeshType& mesh)
-    {
-        uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+        uint nv = Base::numVerts();
 
         mVerts.resize(nv * 3);
 
-        vertexCoordsToBuffer(mesh, mVerts.data());
-        appendDuplicateVertexCoordsToBuffer(
-            mesh, mVertsToDuplicate, mVerts.data());
+        Base::fillVertexCoords(mesh, mVerts.data());
     }
 
-    void createVertexNormalsBuffer(const MeshType& mesh)
+    void setVertexNormalsBuffer(const MeshType& mesh) // override
     {
-        using enum MRI::Buffers;
+        uint nv = Base::numVerts();
 
-        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-            if (vcl::isPerVertexNormalAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+        mVNormals.resize(nv * 3);
 
-                mVNormals.resize(nv * 3);
+        Base::fillVertexNormals(mesh, mVNormals.data());
+    }
 
-                vertexNormalsToBuffer(mesh, mVNormals.data());
-                appendDuplicateVertexNormalsToBuffer(
-                    mesh, mVertsToDuplicate, mVNormals.data());
-            }
+    void setVertexColorsBuffer(const MeshType& mesh) // override
+    {
+        uint nv = Base::numVerts();
+
+        mVColors.resize(nv);
+
+        Base::fillVertexColors(mesh, mVColors.data(), Color::Format::ABGR);
+    }
+
+    void setVertexTexCoordsBuffer(const MeshType& mesh) // override
+    {
+        uint nv = Base::numVerts();
+
+        mVTexCoords.resize(nv * 2);
+
+        Base::fillVertexTexCoords(mesh, mVTexCoords.data());
+    }
+
+    void setWedgeTexCoordsBuffer(const MeshType& mesh) // override
+    {
+        uint nv = Base::numVerts();
+
+        mWTexCoords.resize(nv * 2);
+
+        Base::fillWedgeTexCoords(mesh, mWTexCoords.data());
+    }
+
+    void setTriangleIndicesBuffer(const MeshType& mesh) // override
+    {
+        uint nt = Base::numTris();
+
+        mTris.resize(nt * 3);
+
+        Base::fillTriangleIndices(mesh, mTris.data());
+    }
+
+    void setTriangleNormalsBuffer(const MeshType& mesh) // override
+    {
+        uint nt = Base::numTris();
+
+        mTNormals.resize(nt * 3);
+
+        Base::fillTriangleNormals(mesh, mTNormals.data());
+    }
+
+    void setTriangleColorsBuffer(const MeshType& mesh) // override
+    {
+        uint nt = Base::numTris();
+
+        mTColors.resize(nt);
+
+        Base::fillTriangleColors(
+            mesh, mTColors.data(), Color::Format::ABGR);
+    }
+
+    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
+    {
+        if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+            uint nt = Base::numTris();
+
+            mVTexIds.resize(nt);
+
+            Base::fillVertexTextureIndices(mesh, mVTexIds.data());
         }
     }
 
-    void createVertexColorsBuffer(const MeshType& mesh)
+    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
     {
-        using enum MRI::Buffers;
+        uint nt = Base::numTris();
 
-        if constexpr (vcl::HasPerVertexColor<MeshType>) {
-            if (vcl::isPerVertexColorAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+        mWTexIds.resize(nt);
 
-                mVColors.resize(nv);
-
-                vertexColorsToBuffer(
-                    mesh, mVColors.data(), Color::Format::ABGR);
-                appendDuplicateVertexColorsToBuffer(
-                    mesh,
-                    mVertsToDuplicate,
-                    mVColors.data(),
-                    Color::Format::ABGR);
-            }
-        }
+        Base::fillWedgeTextureIndices(mesh, mWTexIds.data());
     }
 
-    void createVertexTexCoordsBuffer(const MeshType& mesh)
+    void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
-        using enum MRI::Buffers;
+        uint ne = Base::numEdges();
 
-        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+        mEdges.resize(ne * 2);
 
-                mVTexCoords.resize(nv * 2);
-
-                vertexTexCoordsToBuffer(mesh, mVTexCoords.data());
-                appendDuplicateVertexTexCoordsToBuffer(
-                    mesh, mVertsToDuplicate, mVTexCoords.data());
-            }
-        }
+        Base::fillEdgeIndices(mesh, mEdges.data());
     }
 
-    void createWedgeTexCoordsBuffer(const MeshType& mesh)
+    void setEdgeNormalsBuffer(const MeshType& mesh) // override
     {
-        using enum MRI::Buffers;
+        uint ne = Base::numEdges();
 
-        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-            if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                uint nv = mesh.vertexNumber() + mVertsToDuplicate.size();
+        mENormals.resize(ne * 3);
 
-                mWTexCoords.resize(nv * 2);
-
-                wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
-                    mesh, mVertWedgeMap, mFacesToReassign, mWTexCoords.data());
-            }
-        }
+        Base::fillEdgeNormals(mesh, mENormals.data());
     }
 
-    void createTriangleIndicesBuffer(const MeshType& mesh)
+    void setEdgeColorsBuffer(const MeshType& mesh) // override
     {
-        using enum MRI::Buffers;
+        uint ne = Base::numEdges();
 
-        if constexpr (vcl::HasFaces<MeshType>) {
-            const uint NUM_TRIS = vcl::countTriangulatedTriangles(mesh);
+        mEColors.resize(ne);
 
-            mTris.resize(NUM_TRIS * 3);
-
-            triangulatedFaceIndicesToBuffer(
-                mesh,
-                mTris.data(),
-                mIndexMap,
-                MatrixStorageType::ROW_MAJOR,
-                NUM_TRIS);
-            replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
-                mesh,
-                mVertsToDuplicate,
-                mFacesToReassign,
-                mIndexMap,
-                mTris.data());
-        }
+        Base::fillEdgeColors(
+            mesh, mEColors.data(), Color::Format::ABGR);
     }
 
-    void createTriangleNormalsBuffer(const MeshType& mesh)
+    void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
-        using enum MRI::Buffers;
+        const uint nw = Base::numWireframeLines();
 
-        if constexpr (vcl::HasPerFaceNormal<MeshType>) {
-            if (vcl::isPerFaceNormalAvailable(mesh)) {
-                const uint NUM_TRIS = mIndexMap.triangleNumber();
+        mWireframe.resize(nw * 2);
 
-                mTNormals.resize(NUM_TRIS * 3);
-
-                triangulatedFaceNormalsToBuffer(
-                    mesh,
-                    mTNormals.data(),
-                    mIndexMap,
-                    MatrixStorageType::ROW_MAJOR);
-            }
-        }
+        Base::fillWireframeIndices(mesh, mWireframe.data());
     }
 
-    void createTriangleColorsBuffer(const MeshType& mesh)
+    void setTextureUnits(const MeshType& mesh) // override
     {
-        using enum MRI::Buffers;
-
-        if constexpr (vcl::HasPerFaceColor<MeshType>) {
-            if (vcl::isPerFaceColorAvailable(mesh)) {
-                const uint NUM_TRIS = mIndexMap.triangleNumber();
-
-                mTColors.resize(NUM_TRIS);
-
-                triangulatedFaceColorsToBuffer(
-                    mesh, mTColors.data(), mIndexMap, Color::Format::ABGR);
-            }
-        }
-    }
-
-    void createVertexTextureIndicesBuffer(const MeshType& mesh)
-    {
-        using enum MRI::Buffers;
-
-        if constexpr (
-            vcl::HasFaces<MeshType> && vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(mesh)) {
-                const uint NUM_TRIS = vcl::countTriangulatedTriangles(mesh);
-
-                mVTexIds.resize(NUM_TRIS);
-
-                vertexTexCoordIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
-                    mesh, mVTexIds.data(), mIndexMap);
-            }
-        }
-    }
-
-    void createWedgeTextureIndicesBuffer(const MeshType& mesh)
-    {
-        using enum MRI::Buffers;
-
-        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-            if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                const uint NUM_TRIS = mIndexMap.triangleNumber();
-
-                mWTexIds.resize(NUM_TRIS);
-
-                triangulatedFaceWedgeTexCoordIndicesToBuffer(
-                    mesh, mWTexIds.data(), mIndexMap);
-            }
-        }
-    }
-
-    void createEdgeIndicesBuffer(const MeshType& mesh)
-    {
-        if constexpr (vcl::HasEdges<MeshType>) {
-            mEdges.resize(mesh.edgeNumber() * 2);
-
-            edgeIndicesToBuffer(mesh, mEdges.data());
-        }
-    }
-
-    void createEdgeNormalsBuffer(const MeshType& mesh)
-    {
-        using enum MRI::Buffers;
-
-        if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
-            if (vcl::isPerEdgeNormalAvailable(mesh)) {
-                mENormals.resize(mesh.edgeNumber() * 3);
-
-                edgeNormalsToBuffer(mesh, mENormals.data());
-            }
-        }
-    }
-
-    void createEdgeColorsBuffer(const MeshType& mesh)
-    {
-        using enum MRI::Buffers;
-
-        if constexpr (vcl::HasPerEdgeColor<MeshType>) {
-            if (vcl::isPerEdgeColorAvailable(mesh)) {
-                mEColors.resize(mesh.edgeNumber());
-
-                edgeColorsToBuffer(mesh, mEColors.data(), Color::Format::ABGR);
-            }
-        }
-    }
-
-    void createWireframeIndicesBuffer(const MeshType& mesh)
-    {
-        using enum MRI::Buffers;
-
-        if constexpr (vcl::HasFaces<MeshType>) {
-            const uint NUM_EDGES = vcl::countPerFaceVertexReferences(mesh);
-
-            mWireframe.resize(NUM_EDGES * 2);
-
-            wireframeIndicesToBuffer(mesh, mWireframe.data());
-        }
-    }
-
-    void createTextureUnits(const MeshType& mesh)
-    {
+        mTextures.clear();
         if constexpr (vcl::HasTextureImages<MeshType>) {
             for (const vcl::Texture& t : mesh.textures()) {
-                if (t.image().isNull()) {
+                if (t.image().isNull()) { // the texture has not been loaded
                     vcl::Image txt(mesh.meshBasePath() + t.path());
                     txt.mirror();
                     mTextures.push_back(txt);
@@ -632,12 +376,22 @@ private:
                 }
             }
         }
-        else if constexpr (vcl::HasTexturePaths<MeshType>) {
+        else {
             for (uint i = 0; i < mesh.textureNumber(); ++i) {
                 vcl::Image txt(mesh.meshBasePath() + mesh.texturePath(i));
                 txt.mirror();
                 mTextures.push_back(txt);
             }
+        }
+    }
+
+    void setMeshUniforms(const MeshType& m) // override
+    {
+        if constexpr (vcl::HasColor<MeshType>) {
+            mMeshColor[0] = m.color().redF();
+            mMeshColor[1] = m.color().greenF();
+            mMeshColor[2] = m.color().blueF();
+            mMeshColor[3] = m.color().alphaF();
         }
     }
 };
