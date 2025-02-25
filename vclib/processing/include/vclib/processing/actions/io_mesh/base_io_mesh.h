@@ -49,7 +49,8 @@ public:
 
     Base::IOSupport ioSupport() const final { return Base::IOSupport::BOTH; }
 
-    std::vector<std::pair<FileFormat, MeshInfo>> supportedFormats() const final
+    std::vector<std::pair<FileFormat, MeshInfo>> supportedMeshFormats()
+        const final
     {
         return {
             {objFileFormat(), objFormatCapability()},

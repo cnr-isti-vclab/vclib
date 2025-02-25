@@ -23,7 +23,7 @@
 #ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H
 #define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H
 
-#include "action.h"
+#include "io_action.h"
 
 #include <vclib/io/file_format.h>
 #include <vclib/space/core/image.h>
@@ -32,15 +32,9 @@
 
 namespace vcl::proc {
 
-class IOImageAction : public Action
+class IOImageAction : public IOAction
 {
 public:
-    enum class IOSupport {
-        LOAD,
-        SAVE,
-        BOTH
-    };
-
     /* ******************************************************************** *
      * Member functions that must/may be implemented by the derived classes *
      * ******************************************************************** */
@@ -51,26 +45,10 @@ public:
 
     virtual std::string name() const = 0;
 
-    /**
-     * @brief Returns the type of support for input/output operations.
-     *
-     * Possible values are:
-     * - LOAD: the action supports only loading images;
-     * - SAVE: the action supports only saving images;
-     * - BOTH: the action supports both loading and saving images.
-     *
-     * @return the type of support for input/output operations
-     */
+    // From IOAction class
+
     virtual IOSupport ioSupport() const = 0;
 
-    /**
-     * @brief Returns the list of file formats supported by the action.
-     *
-     * Each file format is defined by a list of extensions (all the possible
-     * extensions that a file format could have) and a description.
-     *
-     * @return the list of file formats supported by the action
-     */
     virtual std::vector<FileFormat> supportedFormats() const = 0;
 
     /**

@@ -23,7 +23,7 @@
 #ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_MESH_ACTION_H
 #define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_MESH_ACTION_H
 
-#include "action.h"
+#include "io_action.h"
 
 #include <vclib/processing/engine/parameter_vector.h>
 
@@ -36,12 +36,10 @@
 namespace vcl::proc {
 
 template<MeshConcept Mesh>
-class IOMeshAction : public Action
+class IOMeshAction : public IOAction
 {
 public:
     using MeshType = Mesh;
-
-    enum class IOSupport { LOAD, SAVE, BOTH };
 
     /* ******************************************************************** *
      * Member functions that must/may be implemented by the derived classes *
@@ -53,16 +51,8 @@ public:
 
     virtual std::string name() const = 0;
 
-    /**
-     * @brief Returns the type of support for input/output operations.
-     *
-     * Possible values are:
-     * - LOAD: the action supports only loading meshes;
-     * - SAVE: the action supports only saving meshes;
-     * - BOTH: the action supports both loading and saving meshes.
-     *
-     * @return the type of support for input/output operations
-     */
+    // From IOAction class
+
     virtual IOSupport ioSupport() const = 0;
 
     /**
@@ -78,7 +68,7 @@ public:
      * @return the vectir of file formats supported by the action and their
      * capabilities
      */
-    virtual std::vector<std::pair<FileFormat, MeshInfo>> supportedFormats()
+    virtual std::vector<std::pair<FileFormat, MeshInfo>> supportedMeshFormats()
         const = 0;
 
     /**
@@ -184,6 +174,15 @@ public:
 
     Type type() const final { return Type::IO_MESH_ACTION; }
 
+    std::vector<FileFormat> supportedFormats() const final
+    {
+        std::vector<FileFormat> formats;
+        for (const auto& [f, _] : supportedMeshFormats()) {
+            formats.push_back(f);
+        }
+        return formats;
+    }
+
     MeshType load(
         const std::string&     filename,
         const ParameterVector& parameters,
@@ -258,7 +257,7 @@ protected:
 
     MeshInfo formatCapability(const FileFormat& format) const
     {
-        for (const auto& [f, info] : supportedFormats()) {
+        for (const auto& [f, info] : supportedMeshFormats()) {
             if (f == format) {
                 return info;
             }

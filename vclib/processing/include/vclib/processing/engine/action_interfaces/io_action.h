@@ -20,13 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
-#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_ACTION_H
 
-#include "action_interfaces/action.h"
-#include "action_interfaces/filter_mesh_action.h"
-#include "action_interfaces/io_action.h"
-#include "action_interfaces/io_image_action.h"
-#include "action_interfaces/io_mesh_action.h"
+#include "action.h"
 
-#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
+#include <vclib/io/file_format.h>
+
+namespace vcl::proc {
+
+class IOAction : public Action
+{
+public:
+    enum class IOSupport {
+        LOAD,
+        SAVE,
+        BOTH
+    };
+
+    /* ******************************************************************** *
+     * Member functions that must/may be implemented by the derived classes *
+     * ******************************************************************** */
+
+    // From Action class
+
+    [[nodiscard]] virtual std::shared_ptr<Action> clone() const = 0;
+
+    virtual std::string name() const = 0;
+
+    /**
+     * @brief Returns the type of support for input/output operations.
+     *
+     * Possible values are:
+     * - LOAD: the action supports only loading images;
+     * - SAVE: the action supports only saving images;
+     * - BOTH: the action supports both loading and saving images.
+     *
+     * @return the type of support for input/output operations
+     */
+    virtual IOSupport ioSupport() const = 0;
+
+    /**
+     * @brief Returns the list of file formats supported by the action.
+     *
+     * Each file format is defined by a list of extensions (all the possible
+     * extensions that a file format could have) and a description.
+     *
+     * @return the list of file formats supported by the action
+     */
+    virtual std::vector<FileFormat> supportedFormats() const = 0;
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_ACTION_H
