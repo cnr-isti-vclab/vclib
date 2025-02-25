@@ -57,6 +57,13 @@ int main()
 
     auto vec = filterMeshActions();
 
+    std::cerr << "Id of TriEdgeMesh: "
+              << vcl::toUnderlying(meshTypeId<vcl::TriEdgeMesh>()) << std::endl;
+
+    std::cerr << "Id of PolyEdgeMesh: "
+              << vcl::toUnderlying(meshTypeId<vcl::PolyEdgeMesh>())
+              << std::endl;
+
     BaseIOImage ioImage;
 
     auto img = ioImage.load(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble_A.png");

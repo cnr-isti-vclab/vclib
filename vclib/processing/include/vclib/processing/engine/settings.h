@@ -37,12 +37,31 @@ using ScalarType = double;
  */
 constexpr bool INDEXED_MESHES = false;
 
+enum class MeshTypeId : vcl::uint
+{
+    TRIANGLE_MESH = 0,
+    POLYGON_MESH = 1,
+
+    COUNT
+};
+
 /**
  * @brief List of supported mesh types supported by the processing module.
  */
 using MeshTypes = TypeWrapper<
     vcl::TriEdgeMeshT<ScalarType, INDEXED_MESHES>,
     vcl::PolyEdgeMeshT<ScalarType, INDEXED_MESHES>>;
+
+template<typename MeshType>
+constexpr MeshTypeId meshTypeId()
+{
+    constexpr uint id = IndexInTypes<MeshType, MeshTypes>::value;
+    static_assert(id != UINT_NULL, "Mesh type not supported.");
+    static_assert(
+        id >= 0 && id < toUnderlying(MeshTypeId::COUNT),
+        "Invalid mesh type id.");
+    return static_cast<MeshTypeId>(id);
+}
 
 } // namespace vcl::proc
 
