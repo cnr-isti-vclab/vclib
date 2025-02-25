@@ -27,14 +27,14 @@
 
 namespace vcl {
 
-template<template <typename...> typename... Args>
+template<template<typename...> typename... Args>
 struct TemplatedTypeWrapper
 {
     static constexpr uint size() { return sizeof...(Args); }
 };
 
 // note: specialization from variadic_templates.h
-template<template <typename...> typename... Args>
+template<template<typename...> typename... Args>
 struct FirstType<TemplatedTypeWrapper<Args...>>
 {
     template<typename... T>

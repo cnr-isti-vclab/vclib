@@ -75,7 +75,7 @@ concept IsNotClass = !IsClass<T>;
  *
  * @ingroup util_concepts
  */
-template <template <typename> typename C, typename T>
+template<template<typename> typename C, typename T>
 concept IsInstantiable = requires { typename C<T>; };
 
 } // namespace vcl
