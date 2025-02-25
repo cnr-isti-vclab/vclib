@@ -52,6 +52,9 @@ using MeshTypes = TypeWrapper<
     vcl::TriEdgeMeshT<ScalarType, INDEXED_MESHES>,
     vcl::PolyEdgeMeshT<ScalarType, INDEXED_MESHES>>;
 
+template<MeshTypeId MESH_ID>
+using GetMeshType = TypeAt<toUnderlying(MESH_ID), MeshTypes>::type;
+
 template<typename MeshType>
 constexpr MeshTypeId meshTypeId()
 {
