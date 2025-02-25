@@ -129,6 +129,15 @@ struct IndexInTypes
     static constexpr uint value = indexInTypePack<T, Us...>();
 };
 
+template<uint I, typename ...T>
+struct TypeAt
+{
+    using type = std::tuple_element_t<I, std::tuple<T...>>;
+};
+
+template<uint I, typename ...T>
+using TypeAtT = typename TypeAt<I, T...>::type;
+
 template<typename... Args>
 struct NumberOfTypes
 {
