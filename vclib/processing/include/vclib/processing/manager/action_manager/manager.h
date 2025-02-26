@@ -30,8 +30,7 @@
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> ioImageActions();
-std::vector<std::shared_ptr<Action>> ioMeshActions();
+std::vector<std::shared_ptr<Action>> actionInstances();
 
 namespace detail {
 
@@ -40,7 +39,7 @@ class Manager {
 
     IOActionContainer mImageIOActions;
     std::array<IOActionContainer, MESH_TYPE_NUMBER> mMeshIOActions;
-    std::array<IDActionContainer, MESH_TYPE_NUMBER> mMeshFilterActions;
+    std::array<IDActionContainer, MESH_TYPE_NUMBER> mFilterActions;
 
 public:
     Manager() { addDefaultActions(); }
@@ -65,6 +64,11 @@ public:
             mt = toUnderlying(action->meshType());
             mMeshIOActions[mt].add(ioMeshAction);
             break;
+        case FILTER_ACTION:
+            checkMeshAction(action);
+            mt = toUnderlying(action->meshType());
+            mFilterActions[mt].add(action);
+            break;
         default: throw std::runtime_error("Action type not supported");
         }
     }
@@ -80,16 +84,23 @@ public:
 
     void addDefaultActions()
     {
-        add(ioImageActions());
-        add(ioMeshActions());
+        add(actionInstances());
     }
 
-    // load
+    // load image
 
     std::vector<FileFormat> loadImageFormats() const
     {
         return mImageIOActions.loadFormats();
     }
+
+    std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt) const
+    {
+        return std::dynamic_pointer_cast<ImageIOAction>(
+            mImageIOActions.loadAction(fmt));
+    }
+
+    // load mesh
 
     std::vector<FileFormat> loadMeshFormats(MeshTypeId mt) const
     {
@@ -113,12 +124,6 @@ public:
         return std::vector<FileFormat>(formats.begin(), formats.end());
     }
 
-    std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt) const
-    {
-        return std::dynamic_pointer_cast<ImageIOAction>(
-            mImageIOActions.loadAction(fmt));
-    }
-
     std::shared_ptr<IOAction> loadMeshAction(FileFormat fmt, MeshTypeId mt)
         const
     {
@@ -134,12 +139,20 @@ public:
         return std::dynamic_pointer_cast<MeshIOAction<MeshType>>(act);
     }
 
-    // save
+    // save image
 
     std::vector<FileFormat> saveImageFormats() const
     {
         return mImageIOActions.saveFormats();
     }
+
+    std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt) const
+    {
+        return std::dynamic_pointer_cast<ImageIOAction>(
+            mImageIOActions.saveAction(fmt));
+    }
+
+    // save mesh
 
     std::vector<FileFormat> saveMeshFormats(MeshTypeId mt) const
     {
@@ -163,12 +176,6 @@ public:
         return std::vector<FileFormat>(formats.begin(), formats.end());
     }
 
-    std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt) const
-    {
-        return std::dynamic_pointer_cast<ImageIOAction>(
-            mImageIOActions.saveAction(fmt));
-    }
-
     std::shared_ptr<IOAction> saveMeshAction(FileFormat fmt, MeshTypeId mt)
         const
     {
@@ -183,6 +190,24 @@ public:
             mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].saveAction(fmt);
 
         return std::dynamic_pointer_cast<MeshIOAction<MeshType>>(act);
+    }
+
+    // filter
+
+    std::shared_ptr<Action> filterAction(const std::string& name, MeshTypeId mt)
+        const
+    {
+        return mFilterActions[toUnderlying(mt)].action(name);
+    }
+
+    template<typename MeshType>
+    std::shared_ptr<FilterAction<MeshType>> filterAction(
+        const std::string& name)
+    {
+        auto act =
+            mFilterActions[toUnderlying(meshTypeId<MeshType>())].action(name);
+
+        return std::dynamic_pointer_cast<FilterAction<MeshType>>(act);
     }
 
 private:

@@ -35,8 +35,6 @@ class IOActionContainer
 {
     using FormatMap = std::map<FileFormat, std::shared_ptr<IOAction>>;
 
-    vcl::PolymorphicObjectVector<Action> mActions;
-
     FormatMap mLoadFormatMap;
     FormatMap mSaveFormatMap;
 
@@ -54,15 +52,14 @@ public:
 
         for (const auto& format : formats) {
             checkFormatDoesNotExist(format);
-            mActions.pushBack(action);
             auto supp = action->ioSupport();
             if (supp == LOAD || supp == BOTH) {
                 mLoadFormatMap[format] =
-                    std::dynamic_pointer_cast<IOAction>(mActions.back());
+                    std::dynamic_pointer_cast<IOAction>(action);
             }
             if (supp == SAVE || supp == BOTH) {
                 mSaveFormatMap[format] =
-                    std::dynamic_pointer_cast<IOAction>(mActions.back());
+                    std::dynamic_pointer_cast<IOAction>(action);
             }
         }
     }

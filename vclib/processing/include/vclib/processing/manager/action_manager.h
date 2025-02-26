@@ -156,6 +156,28 @@ public:
         return instance().saveMeshAction<GetMeshType<MESH>>(fmt);
     }
 
+    // filter
+
+    static std::shared_ptr<Action> filterAction(
+        const std::string& name,
+        MeshTypeId         mt)
+    {
+        return instance().filterAction(name, mt);
+    }
+
+    template<typename MeshType>
+    static std::shared_ptr<FilterAction<MeshType>> filterAction(
+        const std::string& name)
+    {
+        return instance().filterAction<MeshType>(name);
+    }
+
+    template<MeshTypeId MESH>
+    static auto filteraction(const std::string& name)
+    {
+        return instance().filterAction<GetMeshType<MESH>>(name);
+    }
+
 private:
     static detail::Manager& instance()
     {

@@ -103,7 +103,7 @@ public:
      *
      * @return The identifier of the action.
      */
-    virtual std::string identifier() const final
+    std::string identifier() const
     {
         return identifierFromName(name());
     }

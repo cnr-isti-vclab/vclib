@@ -27,7 +27,7 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 add_subdirectory(000-save-mesh)
 add_subdirectory(001-load-mesh)
-# add_subdirectory(002-create-mesh)
+add_subdirectory(002-create-mesh)
 # add_subdirectory(003-laplacian-smoothing)
 # add_subdirectory(004-convex-hull)
 
