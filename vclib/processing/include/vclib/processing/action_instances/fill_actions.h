@@ -20,28 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_FILL_ACTIONS_H
+#define VCL_PROCESSING_ACTION_INSTANCES_FILL_ACTIONS_H
 
-#include <vclib/load_save.h>
+#include <vclib/processing/engine/action_interfaces/action.h>
+#include <vclib/processing/engine/settings.h>
 
-int main()
+namespace vcl::proc {
+
+/**
+ * @brief Given a list of actions in a TemplatedTypeWrapper, this function
+ * fills the given vector with the action instances that can be instantiated for
+ * the given template argument MeshType
+ *
+ * @param[in/out] vec: vector to fill with the action instances
+ */
+template<typename MeshType, template<typename> typename... Actions>
+void fillActionsIfSupported(
+    std::vector<std::shared_ptr<Action>>& vec,
+    TemplatedTypeWrapper<Actions...>)
 {
-    using namespace vcl::proc;
+    auto fAct = [&]<template<typename> typename Act>() {
+        if constexpr (IsInstantiable<Act, MeshType>) {
+            vec.push_back(std::make_shared<Act<MeshType>>());
+        }
+    };
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
-
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
-
-    action->execute(in_out);
-
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
-
-    return 0;
+    (fAct.template operator()<Actions>(), ...);
 }
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_FILL_ACTIONS_H

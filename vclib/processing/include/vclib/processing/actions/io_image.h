@@ -20,28 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ACTIONS_IO_IMAGE_H
+#define VCL_PROCESSING_ACTIONS_IO_IMAGE_H
 
-#include <vclib/load_save.h>
+#include "io_image/base_io_image.h"
 
-int main()
-{
-    using namespace vcl::proc;
-
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
-
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
-
-    action->execute(in_out);
-
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
-
-    return 0;
-}
+#endif // VCL_PROCESSING_ACTIONS_IO_IMAGE_H

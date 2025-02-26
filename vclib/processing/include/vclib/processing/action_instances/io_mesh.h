@@ -20,28 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H
+#define VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H
 
-#include <vclib/load_save.h>
+#include "fill_actions.h"
 
-int main()
+#include <vclib/processing/actions/io_mesh.h>
+
+#include <memory>
+#include <vector>
+
+namespace vcl::proc {
+
+template<MeshConcept MeshType>
+inline std::vector<std::shared_ptr<Action>> ioMeshActions()
 {
-    using namespace vcl::proc;
+    std::vector<std::shared_ptr<Action>> vec;
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    using Actions = TemplatedTypeWrapper<BaseIOMesh>;
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+    fillActionsIfSupported<MeshType>(vec, Actions());
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
-
-    action->execute(in_out);
-
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
-
-    return 0;
+    return vec;
 }
+
+inline std::vector<std::shared_ptr<Action>> ioMeshActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    // lambda called for each mesh type
+    auto fMesh = [&]<typename MeshType>() {
+        auto v = ioMeshActions<MeshType>();
+        vec.insert(vec.end(), v.begin(), v.end());
+    };
+
+    // call lambda for each mesh type
+    vcl::ForEachType<MeshTypes>::apply(fMesh);
+
+    return vec;
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H

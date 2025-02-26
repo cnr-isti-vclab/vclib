@@ -26,15 +26,15 @@
 
 int main()
 {
-    vcl::proc::ActionManager manager;
+    using namespace vcl::proc;
 
-    manager.add(vcl::proc::vclibActions());
+    auto action = ActionManager::filterAction<vcl::TriEdgeMesh>("Create Cone");
 
-    vcl::proc::MeshVector mv;
+    std::vector<vcl::TriEdgeMesh> out;
+    action->execute(out);
 
-    manager.filterMeshActionByName("Create Cone")->applyFilter(mv);
-
-    manager.saveMeshAction("ply")->save("cone.ply", *mv.front());
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
+        VCLIB_RESULTS_PATH "/cone02.ply", out.front());
 
     return 0;
 }

@@ -20,28 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ENGINE_SETTINGS_H
+#define VCL_PROCESSING_ENGINE_SETTINGS_H
 
-#include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
-int main()
+namespace vcl::proc {
+
+/**
+ * @brief Scalar type used in the processing module.
+ */
+using ScalarType = double;
+
+/**
+ * @brief Flag that indicates if the meshes are indexed.
+ */
+constexpr bool INDEXED_MESHES = false;
+
+enum class MeshTypeId : vcl::uint
 {
-    using namespace vcl::proc;
+    TRIANGLE_MESH = 0,
+    POLYGON_MESH = 1,
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    COUNT
+};
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+/**
+ * @brief List of supported mesh types supported by the processing module.
+ */
+using MeshTypes = TypeWrapper<
+    vcl::TriEdgeMeshT<ScalarType, INDEXED_MESHES>,
+    vcl::PolyEdgeMeshT<ScalarType, INDEXED_MESHES>>;
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+template<MeshTypeId MESH_ID>
+using GetMeshType = TypeAt<toUnderlying(MESH_ID), MeshTypes>::type;
 
-    action->execute(in_out);
-
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
-
-    return 0;
+template<typename MeshType>
+constexpr MeshTypeId meshTypeId()
+{
+    constexpr uint id = IndexInTypes<MeshType, MeshTypes>::value;
+    if constexpr (id == UINT_NULL) {
+        return MeshTypeId::COUNT;
+    }
+    return static_cast<MeshTypeId>(id);
 }
+
+template<typename MeshType>
+constexpr void checkMeshTypeId()
+{
+    constexpr uint id = toUnderlying(meshTypeId<MeshType>());
+    static_assert(id != UINT_NULL, "Mesh type not supported.");
+    static_assert(
+        id >= 0 && id < toUnderlying(MeshTypeId::COUNT),
+        "Invalid mesh type id.");
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ENGINE_SETTINGS_H

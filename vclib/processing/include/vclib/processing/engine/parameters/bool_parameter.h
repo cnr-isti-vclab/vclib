@@ -20,28 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ENGINE_PARAMETERS_BOOL_PARAMETER_H
+#define VCL_PROCESSING_ENGINE_PARAMETERS_BOOL_PARAMETER_H
 
-#include <vclib/load_save.h>
+#include "parameter.h"
 
-int main()
+namespace vcl::proc {
+
+class BoolParameter : public Parameter
 {
-    using namespace vcl::proc;
+public:
+    BoolParameter(
+        const std::string& name,
+        bool               value,
+        const std::string& description = "",
+        const std::string& tooltip     = "",
+        const std::string& category    = "") :
+            Parameter(name, value, description, tooltip, category)
+    {
+    }
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    ParameterType type() const override { return ParameterType::BOOL; }
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+    std::shared_ptr<Parameter> clone() const override
+    {
+        return std::make_shared<BoolParameter>(*this);
+    }
+};
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+} // namespace vcl::proc
 
-    action->execute(in_out);
-
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
-
-    return 0;
-}
+#endif // VCL_PROCESSING_ENGINE_PARAMETERS_BOOL_PARAMETER_H

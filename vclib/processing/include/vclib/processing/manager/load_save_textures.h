@@ -20,28 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_MANAGER_LOAD_SAVE_TEXTURES_H
+#define VCL_PROCESSING_MANAGER_LOAD_SAVE_TEXTURES_H
 
-#include <vclib/load_save.h>
+#include "action_manager.h"
 
-int main()
+namespace vcl::proc {
+
+template<MeshConcept MeshType>
+void saveTexturesUsingManager(const MeshType& mesh, const std::string& basePath)
 {
-    using namespace vcl::proc;
+    if constexpr (HasTextureImages<MeshType>) {
+        for (const vcl::Texture& texture : mesh.textures()) {
+            std::string ext = FileInfo::extension(texture.path());
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
-
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
-
-    action->execute(in_out);
-
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
-
-    return 0;
+            try {
+                auto act = ActionManager::saveImageAction(ext);
+                act->save(basePath + texture.path(), texture.image());
+            }
+            catch (const std::exception& e) {
+                // todo: log error
+                std::cerr << "Error saving texture: " << e.what() << std::endl;
+            }
+        }
+    }
 }
+
+template<MeshConcept MeshType>
+void loadTexturesUsingManager(MeshType& mesh, const std::string& basePath)
+{
+    if constexpr (HasTextureImages<MeshType>) {
+        for (vcl::Texture& texture : mesh.textures()) {
+            std::string ext = FileInfo::extension(texture.path());
+
+            try {
+                auto act        = ActionManager::loadImageAction(ext);
+                texture.image() = act->load(basePath + texture.path());
+            }
+            catch (const std::exception& e) {
+                // todo: log error
+                std::cerr << "Error loading texture: " << e.what() << std::endl;
+            }
+        }
+    }
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_MANAGER_LOAD_SAVE_TEXTURES_H

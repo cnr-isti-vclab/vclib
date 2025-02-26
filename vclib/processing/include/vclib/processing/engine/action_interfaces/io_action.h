@@ -20,28 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_ACTION_H
 
-#include <vclib/load_save.h>
+#include "action.h"
 
-int main()
+#include <vclib/io/file_format.h>
+
+namespace vcl::proc {
+
+class IOAction : public Action
 {
-    using namespace vcl::proc;
+public:
+    enum class IOSupport {
+        LOAD,
+        SAVE,
+        BOTH
+    };
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    /* ******************************************************************** *
+     * Member functions that must/may be implemented by the derived classes *
+     * ******************************************************************** */
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+    // From Action class
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+    [[nodiscard]] virtual std::shared_ptr<Action> clone() const = 0;
 
-    action->execute(in_out);
+    virtual std::string name() const = 0;
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
+    virtual Type type() const = 0;
 
-    return 0;
-}
+    virtual MeshTypeId meshType() const = 0;
+
+    /**
+     * @brief Returns the type of support for input/output operations.
+     *
+     * Possible values are:
+     * - LOAD: the action supports only loading images;
+     * - SAVE: the action supports only saving images;
+     * - BOTH: the action supports both loading and saving images.
+     *
+     * @return the type of support for input/output operations
+     */
+    virtual IOSupport ioSupport() const = 0;
+
+    /**
+     * @brief Returns the list of file formats supported by the action.
+     *
+     * Each file format is defined by a list of extensions (all the possible
+     * extensions that a file format could have) and a description.
+     *
+     * @return the list of file formats supported by the action
+     */
+    virtual std::vector<FileFormat> supportedFormats() const = 0;
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_ACTION_H

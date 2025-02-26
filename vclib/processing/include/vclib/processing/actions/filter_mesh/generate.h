@@ -25,20 +25,4 @@
 
 #include "generate/convex_hull_filter.h"
 
-#include <memory>
-#include <vector>
-
-namespace vcl::proc {
-
-std::vector<std::shared_ptr<Action>> vclibGenerateFilterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    vec.push_back(ConvexHullFilter().clone());
-
-    return vec;
-}
-
-} // namespace vcl::proc
-
 #endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_H

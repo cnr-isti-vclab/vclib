@@ -21,16 +21,17 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-core-examples)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(EXAMPLE_NAME 08-test-texcoords)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-add_subdirectory(000-save-mesh)
-add_subdirectory(001-load-mesh)
-add_subdirectory(002-create-mesh)
-add_subdirectory(003-laplacian-smoothing)
-add_subdirectory(004-convex-hull)
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(999-misc)
+set(SOURCES
+    main.cpp)
 
-
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${SOURCES})

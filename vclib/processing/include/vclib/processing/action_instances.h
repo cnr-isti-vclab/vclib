@@ -20,28 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_H
+#define VCL_PROCESSING_ACTION_INSTANCES_H
 
-#include <vclib/load_save.h>
+#include "action_instances/filter_mesh.h"
+#include "action_instances/io_image.h"
+#include "action_instances/io_mesh.h"
 
-int main()
+namespace vcl::proc {
+
+inline std::vector<std::shared_ptr<Action>> actionInstances()
 {
-    using namespace vcl::proc;
+    std::vector<std::shared_ptr<Action>> vec;
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    // IO Image actions
+    auto ioImgVector = ioImageActions();
+    vec.insert(vec.end(), ioImgVector.begin(), ioImgVector.end());
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+    // IO Mesh actions
+    auto ioMeshVector = ioMeshActions();
+    vec.insert(vec.end(), ioMeshVector.begin(), ioMeshVector.end());
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+    // // Filter Mesh actions
+    auto filterMeshVector = filterMeshActions();
+    vec.insert(vec.end(), filterMeshVector.begin(), filterMeshVector.end());
 
-    action->execute(in_out);
-
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
-
-    return 0;
+    return vec;
 }
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_H
