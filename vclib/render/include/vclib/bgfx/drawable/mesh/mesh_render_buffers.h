@@ -37,12 +37,11 @@
 namespace vcl {
 
 template<MeshConcept Mesh>
-class MeshRenderBuffers :
-        public MeshRenderData<MeshRenderBuffers<Mesh>>
+class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 {
     using MeshType = Mesh;
-    using Base = MeshRenderData<MeshRenderBuffers<MeshType>>;
-    using MRI = MeshRenderInfo;
+    using Base     = MeshRenderData<MeshRenderBuffers<MeshType>>;
+    using MRI      = MeshRenderInfo;
 
     friend Base;
 
@@ -306,17 +305,12 @@ private:
     {
         uint nt = Base::numTris();
 
-        auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(nt);
+        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
         mTriangleColorBuffer.createForCompute(
-            buffer,
-            nt,
-            PrimitiveType::UINT,
-            bgfx::Access::Read,
-            releaseFn);
+            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
     void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
@@ -347,8 +341,7 @@ private:
     {
         uint ne = Base::numEdges();
 
-        auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(ne * 2);
+        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(ne * 2);
 
         Base::fillEdgeIndices(mesh, buffer);
 
@@ -360,8 +353,7 @@ private:
         uint ne = Base::numEdges();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(
-                ne * 3);
+            getAllocatedBufferAndReleaseFn<float>(ne * 3);
 
         Base::fillEdgeNormals(mesh, buffer);
 
@@ -377,17 +369,12 @@ private:
     {
         uint ne = Base::numEdges();
 
-        auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(ne);
+        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(ne);
 
         Base::fillEdgeColors(mesh, buffer, Color::Format::ABGR);
 
         mEdgeColorBuffer.createForCompute(
-            buffer,
-            ne,
-            PrimitiveType::UINT,
-            bgfx::Access::Read,
-            releaseFn);
+            buffer, ne, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
@@ -409,8 +396,7 @@ private:
             vcl::Image txt;
             if constexpr (vcl::HasTextureImages<MeshType>) {
                 if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::Image(
-                        mesh.meshBasePath() + mesh.texturePath(i));
+                    txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
                 }
                 else {
                     txt = mesh.texture(i).image();

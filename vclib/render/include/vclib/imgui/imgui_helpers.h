@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IMGUI_HELPERS_H
-#define VCL_IMGUI_HELPERS_H
+#ifndef VCL_IMGUI_IMGUI_HELPERS_H
+#define VCL_IMGUI_IMGUI_HELPERS_H
 
 #include <functional>
 #include <imgui.h>
@@ -88,4 +88,4 @@ inline bool ColorEdit4(
 
 } // namespace ImGui
 
-#endif // VCL_IMGUI_HELPERS_H
+#endif // VCL_IMGUI_IMGUI_HELPERS_H

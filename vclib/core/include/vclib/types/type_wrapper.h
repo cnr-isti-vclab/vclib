@@ -69,7 +69,7 @@ struct IndexInTypes<T, TypeWrapper<Us...>>
 };
 
 // note: specialization from variadic_templates.h
-template<uint I, typename ...T>
+template<uint I, typename... T>
 struct TypeAt<I, TypeWrapper<T...>>
 {
     using type = TypeAt<I, T...>::type;

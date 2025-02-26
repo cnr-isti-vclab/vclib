@@ -37,12 +37,11 @@
 namespace vcl {
 
 template<MeshConcept Mesh>
-class MeshRenderVectors :
-        public MeshRenderData<MeshRenderVectors<Mesh>>
+class MeshRenderVectors : public MeshRenderData<MeshRenderVectors<Mesh>>
 {
     using MeshType = Mesh;
-    using Base = MeshRenderData<MeshRenderVectors<MeshType>>;
-    using MRI  = MeshRenderInfo;
+    using Base     = MeshRenderData<MeshRenderVectors<MeshType>>;
+    using MRI      = MeshRenderInfo;
 
     friend Base;
 
@@ -299,8 +298,7 @@ private:
 
         mTColors.resize(nt);
 
-        Base::fillTriangleColors(
-            mesh, mTColors.data(), Color::Format::ABGR);
+        Base::fillTriangleColors(mesh, mTColors.data(), Color::Format::ABGR);
     }
 
     void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
@@ -347,8 +345,7 @@ private:
 
         mEColors.resize(ne);
 
-        Base::fillEdgeColors(
-            mesh, mEColors.data(), Color::Format::ABGR);
+        Base::fillEdgeColors(mesh, mEColors.data(), Color::Format::ABGR);
     }
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
