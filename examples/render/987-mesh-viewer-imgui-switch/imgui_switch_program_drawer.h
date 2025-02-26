@@ -20,8 +20,12 @@ class ImguiSwitchProgramDrawer : public vcl::PlainDrawer<DerivedRenderApp>
         void onDrawContent(vcl::uint viewId) override {
             ImGuiIO &io = ImGui::GetIO();
             ImGui::Begin("Switch program checkbox",nullptr);
-            ImGui::Checkbox("Use switch program?", useSwitchProgramGlobal);
+            ImGui::Checkbox("Use switch program", useSwitchProgramGlobal);
             ImGui::End();
+        };
+
+        void onResize(vcl::uint width, vcl::uint height) override {
+            bgfx::reset(width, height, BGFX_RESET_NONE);
         };
 };
 
