@@ -24,38 +24,7 @@
 #define VCL_PROCESSING_ACTIONS_H
 
 #include "actions/filter_mesh.h"
-#include "actions/load_image.h"
-#include "actions/load_mesh.h"
-#include "actions/save_image.h"
-#include "actions/save_mesh.h"
-
-namespace vcl::proc {
-
-std::vector<std::shared_ptr<Action>> vclibActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    // Load actions
-    auto loadImageActions = vclibLoadImageActions();
-    vec.insert(vec.end(), loadImageActions.begin(), loadImageActions.end());
-
-    auto loadMeshActions = vclibLoadMeshActions();
-    vec.insert(vec.end(), loadMeshActions.begin(), loadMeshActions.end());
-
-    // Save actions
-    auto saveImageActions = vclibSaveImageActions();
-    vec.insert(vec.end(), saveImageActions.begin(), saveImageActions.end());
-
-    auto saveMeshActions = vclibSaveMeshActions();
-    vec.insert(vec.end(), saveMeshActions.begin(), saveMeshActions.end());
-
-    // Filter actions
-    auto filterMeshActions = vclibFilterMeshActions();
-    vec.insert(vec.end(), filterMeshActions.begin(), filterMeshActions.end());
-
-    return vec;
-}
-
-} // namespace vcl::proc
+#include "actions/io_image.h"
+#include "actions/io_mesh.h"
 
 #endif // VCL_PROCESSING_ACTIONS_H

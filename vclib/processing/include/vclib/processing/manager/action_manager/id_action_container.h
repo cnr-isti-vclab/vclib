@@ -20,28 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_ACTION_CONTAINER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_ACTION_CONTAINER_H
 
-#include <vclib/load_save.h>
+#include <vclib/processing/engine/action_interfaces/action.h>
 
-int main()
+#include <map>
+
+namespace vcl::proc {
+
+class IDActionContainer
 {
-    using namespace vcl::proc;
+    using ActionMap = std::map<std::string, std::shared_ptr<Action>>;
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    ActionMap mActionMap;
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+public:
+    IDActionContainer() = default;
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+    void add(std::shared_ptr<Action> action)
+    {
+        if (!action) {
+            throw std::runtime_error("Action is nullptr.");
+        }
+        checkActionDoesNotExist(action->name());
+        mActionMap[action->name()] = action;
+    }
 
-    action->execute(in_out);
+    std::shared_ptr<Action> action(const std::string& name) const
+    {
+        auto it = findActionExists(name);
+        return it->second;
+    }
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
+private:
+    void checkActionDoesNotExist(const std::string& name) const
+    {
+        if (mActionMap.find(name) != mActionMap.end()) {
+            throw std::runtime_error("Action " + name + " already registered.");
+        }
+    }
 
-    return 0;
-}
+    ActionMap::const_iterator findActionExists(const std::string& name) const
+    {
+        auto it = mActionMap.find(name);
+        if (it == mActionMap.end()) {
+            throw std::runtime_error("Action " + name + " not registered.");
+        }
+        return it;
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_ACTION_CONTAINER_H

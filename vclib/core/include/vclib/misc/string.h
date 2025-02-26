@@ -23,10 +23,13 @@
 #ifndef VCL_MISC_STRING_H
 #define VCL_MISC_STRING_H
 
+#include <vclib/math/min_max.h>
+
 #include <algorithm>
 #include <cctype>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace vcl {
 
@@ -123,6 +126,62 @@ inline void removeCarriageReturn(std::string& s)
 {
     if (s.size() > 0 && s[s.size() - 1] == '\r')
         s = s.substr(0, s.size() - 1);
+}
+
+/**
+ * @brief Computes the Levenshtein distance between two strings.
+ *
+ * The [Levenshtein
+ * distance](https://en.wikipedia.org/wiki/Levenshtein_distance) is the minimum
+ * number of single-character edits (insertions, deletions, or substitutions)
+ * required to change one word into another.
+ *
+ * @param[in] str1: first string.
+ * @param[in] str2: second string.
+ * @return the Levenshtein distance between `str2` and `str2`.
+ */
+inline uint levenshteinDist(const std::string& str1, const std::string& str2)
+{
+    std::vector<std::vector<uint>> d(
+        str1.size() + 1, std::vector<uint>(str2.size() + 1));
+
+    if (str1.size() == 0)
+        return str2.size();
+    if (str2.size() == 0)
+        return str1.size();
+
+    for (uint i = 0; i <= str1.size(); i++)
+        d[i][0] = i;
+    for (uint j = 0; j <= str2.size(); j++)
+        d[0][j] = j;
+
+    for (uint i = 1; i <= str1.size(); i++) {
+        for (uint j = 1; j <= str2.size(); j++) {
+            uint cost = (str2[j - 1] == str1[i - 1]) ? 0 : 1;
+
+            uint deletion     = d[i - 1][j] + 1;
+            uint insertion    = d[i][j - 1] + 1;
+            uint substitution = d[i - 1][j - 1] + cost;
+
+            d[i][j] = vcl::min(deletion, insertion, substitution);
+        }
+    }
+
+    return d[str1.size()][str2.size()];
+}
+
+/**
+ * @brief Computes the distance between two strings.
+ *
+ * This function is an alias for `levenshteinDist`.
+ *
+ * @param[in] str1: first string.
+ * @param[in] str2: second string.
+ * @return the Levenshtein distance between `str1` and `str2`.
+ */
+inline uint distance(const std::string& str1, const std::string& str2)
+{
+    return levenshteinDist(str1, str2);
 }
 
 } // namespace vcl

@@ -26,33 +26,40 @@
 
 int main()
 {
-    vcl::proc::ActionManager manager;
+    using namespace vcl::proc;
 
-    manager.add(vcl::proc::vclibActions());
+    auto suppFormatsTEM = ActionManager::loadMeshFormats<vcl::TriEdgeMesh>();
 
-    std::shared_ptr<vcl::proc::MeshI> pm0 = manager.loadMeshAction("obj")->load(
-        VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj");
+    std::cerr << "Supported load formats for TriEdgeMesh:" << std::endl;
+    for (const auto& fmt : suppFormatsTEM) {
+        std::cerr << fmt.description() << std::endl;
+    }
 
-    assert(pm0->is<vcl::proc::TriMesh>());
+    auto suppFormats = ActionManager::loadMeshFormats();
 
-    auto pm1 = manager.loadMeshAction("obj")->load(VCLIB_EXAMPLE_MESHES_PATH
-                                                   "/greek_helmet.obj");
+    std::cerr << "All the supported load formats:" << std::endl;
+    for (const auto& fmt : suppFormats) {
+        std::cerr << fmt.description() << std::endl;
+    }
 
-    assert(pm1->is<vcl::proc::PolyMesh>());
+    vcl::TriEdgeMesh td =
+        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
+            VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj");
 
-    auto params = manager.loadMeshAction("obj")->parameters();
-    params.get("mesh_type")->setUintValue(1);
+    vcl::PolyEdgeMesh ghp = ActionManager::loadMeshAction<vcl::PolyEdgeMesh>(
+        "obj")->load(VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj");
 
-    auto pm2 = manager.loadMeshAction("obj")->load(
-        VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj", params);
+    vcl::TriEdgeMesh ght = ActionManager::loadMeshAction<vcl::TriEdgeMesh>(
+        "obj")->load(VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj");
 
-    assert(pm2->is<vcl::proc::TriMesh>());
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("obj")->save(
+        VCLIB_RESULTS_PATH "/td1.obj", td);
 
-    manager.saveMeshAction("obj")->save("td1.obj", *pm0);
+    ActionManager::saveMeshAction<vcl::PolyEdgeMesh>("obj")->save(
+        VCLIB_RESULTS_PATH "/greek_poly.obj", ghp);
 
-    manager.saveMeshAction("obj")->save("greek_poly.obj", *pm1);
-
-    manager.saveMeshAction("obj")->save("greek_tri.obj", *pm2);
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("obj")->save(
+        VCLIB_RESULTS_PATH "/greek_tri.obj", ght);
 
     return 0;
 }

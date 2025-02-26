@@ -20,28 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ENGINE_PARAMETERS_USCALAR_PARAMETER_H
+#define VCL_PROCESSING_ENGINE_PARAMETERS_USCALAR_PARAMETER_H
 
-#include <vclib/load_save.h>
+#include "parameter.h"
 
-int main()
+namespace vcl::proc {
+
+class UscalarParameter : public Parameter
 {
-    using namespace vcl::proc;
+public:
+    UscalarParameter(
+        const std::string& name,
+        ScalarType         value,
+        const std::string& description = "",
+        const std::string& tooltip     = "",
+        const std::string& category    = "") :
+            Parameter(name, 0.0, description, tooltip, category)
+    {
+        setScalarValue(value);
+    }
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    ParameterType type() const override { return ParameterType::USCALAR; }
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+    std::shared_ptr<Parameter> clone() const override
+    {
+        return std::make_shared<UscalarParameter>(*this);
+    }
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+    void setScalarValue(ScalarType value) override
+    {
+        checkScalarValue(value);
+        Parameter::setScalarValue(value);
+    }
 
-    action->execute(in_out);
+private:
+    void checkScalarValue(ScalarType value) const
+    {
+        if (value < 0.0)
+            throw std::runtime_error(
+                "UscalarParameter: value cannot be negative");
+    }
+};
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
+} // namespace vcl::proc
 
-    return 0;
-}
+#endif // VCL_PROCESSING_ENGINE_PARAMETERS_USCALAR_PARAMETER_H

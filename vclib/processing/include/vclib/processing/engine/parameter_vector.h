@@ -20,28 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ENGINE_PARAMETER_VECTOR_H
+#define VCL_PROCESSING_ENGINE_PARAMETER_VECTOR_H
 
-#include <vclib/load_save.h>
+#include "parameters/parameter.h"
 
-int main()
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
+
+namespace vcl::proc {
+
+class ParameterVector : public PolymorphicObjectVector<Parameter>
 {
-    using namespace vcl::proc;
+public:
+    std::shared_ptr<const Parameter> get(const std::string& name) const
+    {
+        for (const auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        return nullptr;
+    }
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+    std::shared_ptr<Parameter> get(const std::string& name)
+    {
+        for (auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+        return nullptr;
+    }
+};
 
-    action->execute(in_out);
+using OutputValues = ParameterVector;
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
+} // namespace vcl::proc
 
-    return 0;
-}
+#endif // VCL_PROCESSING_ENGINE_PARAMETER_VECTOR_H

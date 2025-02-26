@@ -20,28 +20,58 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
+#define VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
 
-#include <vclib/load_save.h>
+#include <vclib/processing/engine.h>
 
-int main()
+namespace vcl::proc {
+
+class BaseIOImage : public ImageIOAction
 {
-    using namespace vcl::proc;
+public:
+    std::string name() const final { return "Base IO Image"; }
 
-    vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
-            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    std::shared_ptr<Action> clone() const final
+    {
+        return std::make_shared<BaseIOImage>(*this);
+    }
 
-    std::vector<vcl::TriEdgeMesh*> in_out;
-    in_out.push_back(&bunny);
+    IOSupport ioSupport() const final { return IOSupport::BOTH; }
 
-    auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+    std::vector<FileFormat> supportedFormats() const final
+    {
+        std::vector<FileFormat> formats;
+        formats.push_back(FileFormat("png", "Portable Network Graphics"));
+        formats.push_back(FileFormat("bmp", "Bitmap"));
+        formats.push_back(FileFormat("tga", "Truevision TGA"));
+        formats.push_back(FileFormat(
+            std::vector<std::string> {"jpg", "jpeg"},
+            "Joint Photographic Experts Group"));
 
-    action->execute(in_out);
+        return formats;
+    }
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
+    Image load(const std::string& filename, AbstractLogger& log = logger())
+        const final
+    {
+        Image img(filename);
+        if (img.isNull()) {
+            throw std::runtime_error("Error loading image from " + filename);
+        }
+        return img;
+    }
 
-    return 0;
-}
+    void save(
+        const std::string& filename,
+        const Image&       image,
+        AbstractLogger&    log = logger()) const final
+    {
+        assert(!image.isNull());
+        image.save(filename);
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
