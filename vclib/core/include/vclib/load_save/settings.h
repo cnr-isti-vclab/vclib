@@ -73,10 +73,17 @@ struct SaveSettings
      * @brief If true, and if the Mesh has the TextureImages component, the
      * saving function will save the texture images to the paths stored in the
      * TextureImages component. Otherwise, only the paths of the textures will
-     * be saved.
+     * be saved (meaning that the file will contain the paths to the textures,
+     * but the texture images will not be saved).
+     *
+     * This is useful when the texture images are in a format not supported by
+     * the saving function, or when the texture images are already saved.
      *
      * It applies to all the saving functions that save to a file format that
      * supports textures.
+     *
+     * @note To avoid saving also the texture paths in the file, you should use
+     * the info class and set the TEXTURES component to false.
      */
     bool saveTextureImages = false;
 

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_MESH_VIEWER_DRAWER_IMGUI_H
-#define VCL_RENDER_DRAWERS_MESH_VIEWER_DRAWER_IMGUI_H
+#ifndef VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H
+#define VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H
 
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/viewer_drawer.h>
@@ -690,4 +690,4 @@ public:
     }
 };
 
-#endif // VCL_RENDER_DRAWERS_MESH_VIEWER_DRAWER_IMGUI_H
+#endif // VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H

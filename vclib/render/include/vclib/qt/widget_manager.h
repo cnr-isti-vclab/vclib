@@ -144,18 +144,15 @@ protected:
 
     bool event(QEvent* event) override
     {
-        if (event->type() == QEvent::DevicePixelRatioChange)
-        {
+        if (event->type() == QEvent::DevicePixelRatioChange) {
             // save current ratio
             mCurrentPixelRatio = pixelRatio();
             // send update event
             this->update();
         }
 
-        if (event->type() == QEvent::UpdateRequest)
-        {
-            if (mCurrentPixelRatio > 0 && mCurrentPixelRatio != pixelRatio())
-            {
+        if (event->type() == QEvent::UpdateRequest) {
+            if (mCurrentPixelRatio > 0 && mCurrentPixelRatio != pixelRatio()) {
                 const double ratio = pixelRatio();
 
                 // reset current ratio

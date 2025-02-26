@@ -72,12 +72,11 @@ public:
 
     const std::vector<std::string>& extensions() const { return mExtensions; }
 
-    bool matchExtension(const std::string& extension) const
+    bool matchExtension(std::string extension) const
     {
-        auto e = extension;
-        clearExtension(e);
+        clearExtension(extension);
         for (const auto& ext : mExtensions) {
-            if (ext == e) {
+            if (ext == extension) {
                 return true;
             }
         }
