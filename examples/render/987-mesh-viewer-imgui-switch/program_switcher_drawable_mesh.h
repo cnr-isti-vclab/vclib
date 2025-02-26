@@ -48,6 +48,7 @@ class ProgramSwitcherDrawableMesh : public vcl::DrawableMesh<MeshType>
 
         using vcl::AbstractDrawableMesh::mMRS;
         using Parent::mMRB;
+        using Parent::bindUniforms;
 
     public:
         using Parent::Parent;

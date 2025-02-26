@@ -40,8 +40,11 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     using MRI = MeshRenderInfo;
 
     Box3d mBoundingBox;
+protected:
 
     MeshRenderBuffers<MeshType> mMRB;
+
+private:
 
     bgfx::ProgramHandle mProgramEdges =
         Context::instance()
@@ -228,7 +231,7 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 
-private:
+protected:
     void bindUniforms() const
     {
         mMeshRenderSettingsUniforms.bind();
