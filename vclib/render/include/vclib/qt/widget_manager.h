@@ -135,6 +135,41 @@ public:
 protected:
     void* windowPtr() { return reinterpret_cast<void*>(this); }
 
+#ifdef Q_OS_MACOS
+    // TODO: eventually choose if checking for pixel ratio every update
+
+    // current pixel ratio
+    // values > 0 are used to detect changes in pixel ratio
+    double mCurrentPixelRatio = -1.0;
+
+    bool event(QEvent* event) override
+    {
+        if (event->type() == QEvent::DevicePixelRatioChange) {
+            // save current ratio
+            mCurrentPixelRatio = pixelRatio();
+            // send update event
+            this->update();
+        }
+
+        if (event->type() == QEvent::UpdateRequest) {
+            if (mCurrentPixelRatio > 0 && mCurrentPixelRatio != pixelRatio()) {
+                const double ratio = pixelRatio();
+
+                // reset current ratio
+                mCurrentPixelRatio = -1.0;
+
+                // send resize event
+                QResizeEvent resizeEvent(size(), size());
+                auto         app = qobject_cast<QGuiApplication*>(
+                    QCoreApplication::instance());
+                app->sendEvent(this, &resizeEvent);
+            }
+        }
+
+        return QWidget::event(event);
+    }
+#endif
+
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
     {
@@ -242,10 +277,10 @@ protected:
         update();
     }
 
-    static double pixelRatio()
+    double pixelRatio() const
     {
-        auto app = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
-        return app->devicePixelRatio();
+        auto* screen = this->screen();
+        return double(screen ? screen->devicePixelRatio() : 1.0);
     }
 
 private:

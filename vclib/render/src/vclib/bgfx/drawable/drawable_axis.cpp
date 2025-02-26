@@ -54,7 +54,7 @@ void DrawableAxis::draw(uint viewId) const
                     mUniforms.bind();
 
                     mArrowBuffers[j].bindVertexBuffers(MeshRenderSettings());
-                    mArrowBuffers[j].bindIndexBuffers();
+                    mArrowBuffers[j].bindIndexBuffers(MeshRenderSettings());
 
                     bgfx::setTransform(mMatrices[i].data());
 

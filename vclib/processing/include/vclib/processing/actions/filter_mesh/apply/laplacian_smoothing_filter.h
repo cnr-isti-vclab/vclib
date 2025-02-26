@@ -23,24 +23,26 @@
 #ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_LAPLACIAN_SMOOTHING_FILTER_H
 #define VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_LAPLACIAN_SMOOTHING_FILTER_H
 
-#include <vclib/processing/action_interfaces/filter_mesh_action.h>
-#include <vclib/processing/parameters.h>
+#include <vclib/processing/engine.h>
 
 #include <vclib/algorithms/mesh/smooth.h>
 
 namespace vcl::proc {
 
-class LaplacianSmoothingFilter : public FilterMeshAction
+template<MeshConcept MeshType>
+class LaplacianSmoothingFilter : public FilterAction<MeshType>
 {
+    using Base = FilterAction<MeshType>;
+
 public:
-    std::shared_ptr<Action> clone() const override
+    std::shared_ptr<Action> clone() const final
     {
         return std::make_shared<LaplacianSmoothingFilter>(*this);
     }
 
-    std::string name() const override { return "Laplacian Smoothing"; }
+    std::string name() const final { return "Laplacian Smoothing"; }
 
-    std::string description() const override
+    std::string description() const final
     {
         return "Laplacian smooth. Average each vertex position with weighted "
                "positions of neighbour vertices.<br><b>"
@@ -50,20 +52,17 @@ public:
                "egst.20051044</a>";
     }
 
-    vcl::BitSet<uint> categories() const override
+    vcl::BitSet<uint> categories() const final
     {
-        return vcl::BitSet<uint>({SMOOTHING});
+        return {Base::Category::SMOOTHING};
     }
 
-    MeshParamVector inputMeshParameters() const final { return {}; }
+    std::vector<UintParameter> inputMeshes() const final { return {}; }
 
-    MeshParamVector inputOutputMeshParameters() const final
+    std::vector<UintParameter> inputOutputMeshes() const final
     {
-        std::pair<MeshParameter, BitSet<short>> par;
-        par.first  = MeshParameter("input_output", "Input/Output Mesh", "");
-        par.second = BitSet<short>({MeshIType::TRI_MESH, MeshIType::POLY_MESH});
-
-        return {par};
+        return {
+            UintParameter("input_output", 1, "Input/Output Mesh", "")};
     }
 
     ParameterVector parameters() const override
@@ -93,45 +92,24 @@ public:
         return params;
     }
 
-    virtual OutputValues applyFilter(
-        const MeshVector,
-        const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
-        MeshVector&,
+    virtual OutputValues executeFilter(
+        const std::vector<const MeshType*>&,
+        const std::vector<MeshType*>& inputOutputMeshes,
+        std::vector<MeshType>&,
         const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const override
+        AbstractLogger&        log = Base::logger()) const final
     {
-        BitSet<short> supportedMeshTypes =
-            inputOutputMeshParameters().front().second;
-
         uint smoothingSteps = parameters.get("smoothing_steps")->uintValue();
         bool cotangentWeighting =
             parameters.get("cotangent_weighting")->boolValue();
         bool onlySelected = parameters.get("only_selected")->boolValue();
 
-        std::shared_ptr<MeshI> mesh = inputOutputMeshes[0];
+        MeshType& mesh = *inputOutputMeshes.front();
 
-        auto fun = [&](auto& mesh) {
-            laplacianSmooth(
-                mesh, smoothingSteps, cotangentWeighting, onlySelected);
-        };
-
-        callFunctionForSupportedInputOutputMeshTypes(
-            *mesh, supportedMeshTypes, fun);
-
-        return OutputValues();
-    }
-
-private:
-    void laplacianSmooth(
-        MeshConcept auto& mesh,
-        uint              smoothingSteps,
-        bool              cotangentWeighting,
-        bool              onlySelected) const
-    {
         vcl::laplacianSmoothing(
             mesh, smoothingSteps, onlySelected, cotangentWeighting);
 
-        updateBoxAndNormals(mesh);
+        return OutputValues();
     }
 };
 

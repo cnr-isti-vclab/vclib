@@ -24,8 +24,8 @@
 #define VCL_TYPES_MESH_CONTAINERS_H
 
 #include "base.h"
+#include "filter_types.h"
 #include "pointers.h"
-#include "variadic_templates.h"
 
 namespace vcl {
 

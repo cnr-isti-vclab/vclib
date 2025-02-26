@@ -14,14 +14,6 @@ All the modules can be found in the [vclib](vclib) directory, and can be built s
 
 By default, the library is built with the `Core` module only, but you can enable the other modules by setting the `VCLIB_BUILD_MODULE_<module>` CMake variable to `ON`.
 
-## Disclaimer
-
-I designed and developed this library mostly for personal use and to study new features of C++17 and C++20.
-Most of the features of this library are poorly tested: I maintain the library during my free time.
-
-If you appreciate this work, or you think it could be improved, let me know by opening a thread in the discussion tab!
-Looking forward for your feedback!
-
 ## Install
 
 The core module of library is header only, therefore to install it you just need to add the `vclib/core/include` directory in your
@@ -34,9 +26,9 @@ in your `cmake` project. CMake will create a target called `vclib`, that you can
 VCLib requires recent compiler versions in order to build the newly features of the C++20 language, that have been recently integrated in the major compilers.
 
 VCLib currently builds with the following compilers:
-  - GCC 11.3 (default in Ubuntu 22.04)
-  - CLang 16 (default in XCode 15.0 on MacOS)
-  - MSVC 19.36 (last version in Visual Studio 2022)
+  - GCC 13.3 (default in Ubuntu 24.04)
+  - CLang 16 (XCode 15.0 on MacOS)
+  - MSVC 19.36 (Visual Studio 2022)
 
 There is no guarantee that old compiler versions are capable to build the library.
 

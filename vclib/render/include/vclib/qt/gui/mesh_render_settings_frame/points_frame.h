@@ -55,7 +55,7 @@ private:
     void updateColorComboBoxFromSettings();
 
 private slots:
-    void onVisibilityChanged(int arg1);
+    void onVisibilityChanged(Qt::CheckState arg1);
     void onShapeCircleToggled(bool checked);
     void onShapePixelToggled(bool checked);
     void onShadingVertexToggled(bool checked);

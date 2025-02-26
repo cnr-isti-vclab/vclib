@@ -23,16 +23,19 @@
 #ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_CONVEX_HULL_FILTER_H
 #define VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_CONVEX_HULL_FILTER_H
 
-#include <vclib/processing/action_interfaces/filter_mesh_action.h>
+#include <vclib/processing/engine.h>
 
 #include <vclib/algorithms/mesh/convex_hull.h>
 
 namespace vcl::proc {
 
-class ConvexHullFilter : public FilterMeshAction
+template<MeshConcept MeshType>
+class ConvexHullFilter : public FilterAction<MeshType>
 {
+    using Base = FilterAction<MeshType>;
+
 public:
-    std::shared_ptr<Action> clone() const override
+    std::shared_ptr<Action> clone() const final
     {
         return std::make_shared<ConvexHullFilter>(*this);
     }
@@ -44,59 +47,31 @@ public:
         return "Generates a convex hull mesh from a set of 3D points.";
     }
 
-    BitSet<uint> categories() const final
+    Base::CategoryBitSet categories() const final
     {
-        return BitSet<uint>({RECONSTRUCTION});
+        return {Base::Category::RECONSTRUCTION};
     }
 
-    MeshParamVector inputMeshParameters() const final
+    std::vector<UintParameter> inputMeshes() const final
     {
-        std::pair<MeshParameter, BitSet<short>> par;
-        par.first = MeshParameter("input", "Input Mesh", "");
-        par.second.set(); // all meshes are supported
-
-        return {par};
+        return {UintParameter("input", 0, "Input Mesh", "")};
     }
 
-    MeshParamVector inputOutputMeshParameters() const final { return {}; }
+    std::vector<UintParameter> inputOutputMeshes() const final { return {}; }
 
     ParameterVector parameters() const final { return {}; }
 
-    virtual OutputValues applyFilter(
-        const MeshVector inputMeshes,
-        const std::vector<std::shared_ptr<MeshI>>&,
-        MeshVector&            outputMeshes,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const override
+    virtual OutputValues executeFilter(
+        const std::vector<const MeshType*>& inputMeshes,
+        const std::vector<MeshType*>&       inputOutputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        const ParameterVector&              parameters,
+        AbstractLogger&                     log = Base::logger()) const final
     {
-        BitSet<short> supportedMeshTypes = inputMeshParameters().front().second;
-
-        const auto& inputMesh = inputMeshes.front();
-
-        auto fun = [&](const auto& mesh) {
-            return convexHull(mesh, log);
-        };
-
-        TriMesh ch = callFunctionForSupportedInputMeshTypes(
-            *inputMesh, supportedMeshTypes, fun);
-
-        outputMeshes.pushBack(std::make_shared<TriMesh>(std::move(ch)));
-
+        const MeshType& input = *inputMeshes.front();
+        outputMeshes.push_back(
+            convexHull<MeshType>(input.vertices() | vcl::views::coords, log));
         return OutputValues();
-    }
-
-private:
-    template<MeshConcept MeshType>
-    TriMesh convexHull(const MeshType& mesh, AbstractLogger& log) const
-    {
-        TriMesh m =
-            vcl::convexHull<TriMesh>(mesh.vertices() | vcl::views::coords, log);
-
-        vcl::updatePerVertexAndFaceNormals(m);
-
-        m.name() = mesh.name() + " convex hull";
-
-        return m;
     }
 };
 
