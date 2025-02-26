@@ -20,36 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#ifndef GET_PROGRAM_SWITCHER_DRAWABLE_MESH_H
+#define GET_PROGRAM_SWITCHER_DRAWABLE_MESH_H
+ 
+#include <vclib/algorithms/mesh/update/color.h>
+#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
+ 
+#include "program_switcher_drawable_mesh.h"
 
-#ifndef IMGUI_SWITCH_PROGRAM_DRAWER_H
-#define IMGUI_SWITCH_PROGRAM_DRAWER_H
-
-#include <imgui.h>
-#include <vclib/render/drawers/plain_drawer.h>
-
-#include <bgfx/bgfx.h>
-
-template<typename DerivedRenderApp>
-class ImguiSwitchProgramDrawer : public vcl::PlainDrawer<DerivedRenderApp>
+template<vcl::MeshConcept MeshType>
+inline ProgramSwitcherDrawableMesh<MeshType> getProgramSwitcherDrawableMesh(
+    const std::string& filename)
 {
+    // load a mesh:
+    MeshType m = vcl::load<MeshType>(filename);
+    vcl::updatePerVertexAndFaceNormals(m);
 
-    public:
-        using vcl::PlainDrawer<DerivedRenderApp>::PlainDrawer;
+    // enable the vertex color of the mesh and set it to gray
+    m.enablePerVertexColor();
+    vcl::setPerVertexColor(m, vcl::Color::Gray);
 
-        static inline bool *useSwitchProgram;
+    // create a MeshRenderSettings object, that allows to set the rendering
+    // options of the mesh
+    // default is what we want: color per vertex, smooth shading, no wireframe
+    vcl::MeshRenderSettings settings(m);
 
-        ImguiSwitchProgramDrawer(){};
+    // create a DrawableMesh object from the mesh
+    ProgramSwitcherDrawableMesh<MeshType> drawable(m);
 
-        void onDrawContent(vcl::uint viewId) override {
-            ImGuiIO &io = ImGui::GetIO();
-            ImGui::Begin("Switch program checkbox",nullptr);
-            ImGui::Checkbox("Use switch program", useSwitchProgram);
-            ImGui::End();
-        };
+    // set the settings to the drawable mesh
+    drawable.setRenderSettings(settings);
 
-        void onResize(vcl::uint width, vcl::uint height) override {
-            bgfx::reset(width, height, BGFX_RESET_NONE);
-        };
+    return drawable;
 };
 
-#endif
+#endif //GET_PROGRAM_SWITCHER_DRAWABLE_MESH_H
+ 

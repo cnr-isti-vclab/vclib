@@ -1,30 +1,30 @@
 /*****************************************************************************
-* VCLib                                                                     *
-* Visual Computing Library                                                  *
-*                                                                           *
-* Copyright(C) 2021-2025                                                    *
-* Visual Computing Lab                                                      *
-* ISTI - Italian National Research Council                                  *
-*                                                                           *
-* All rights reserved.                                                      *
-*                                                                           *
-* This program is free software; you can redistribute it and/or modify      *
-* it under the terms of the Mozilla Public License Version 2.0 as published *
-* by the Mozilla Foundation; either version 2 of the License, or            *
-* (at your option) any later version.                                       *
-*                                                                           *
-* This program is distributed in the hope that it will be useful,           *
-* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-* Mozilla Public License Version 2.0                                        *
-* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-****************************************************************************/
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2025                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
 
-#ifndef VCL_PROGRAM_SWITCHER_DRAWABLE_MESH_H
-#define VCL_PROGRAM_SWITCHER_DRAWABLE_MESH_H
+#ifndef PROGRAM_SWITCHER_DRAWABLE_MESH_H
+#define PROGRAM_SWITCHER_DRAWABLE_MESH_H
  
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/bgfx/drawable/drawable_mesh.h>
  
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h> 
@@ -32,221 +32,58 @@
  
 #include <bgfx/bgfx.h>
  
-namespace vcl {
- 
-template<MeshConcept MeshType>
-class ProgramSwitcherDrawableMesh : public AbstractDrawableMesh, public MeshType
-{
-    using MRI = MeshRenderInfo;
+template<vcl::MeshConcept MeshType>
+class ProgramSwitcherDrawableMesh : public vcl::DrawableMesh<MeshType>
+{   
+    using Parent = vcl::DrawableMesh<MeshType>;
 
-    Box3d mBoundingBox;
-
-    MeshRenderBuffers<MeshType> mMRB;
-
-    bgfx::ProgramHandle mProgramEdges =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES>();
-
-    bgfx::ProgramHandle mProgramPoints =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_POINTS>();
- 
-    bgfx::ProgramHandle mProgramSurface =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
- 
-    bgfx::ProgramHandle mProgramWireframe =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME>();
-
-    //this is where i'd put my surfaceswitchprogram, IF I HAD ONE
-    bgfx::ProgramHandle mProgramSurfaceSwitch = 
+    bgfx::ProgramHandle mProgramSurfaceSwitch =
         vcl::loadProgram(
             "shaders/vs_surface",
             "shaders/fs_surface_switch"
         );
- 
-    mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
- 
-public:
 
-    static inline bool* useSwitchProgram;
 
-    ProgramSwitcherDrawableMesh() = default;
- 
-    ProgramSwitcherDrawableMesh(const MeshType& mesh) :
-            AbstractDrawableMesh(mesh), MeshType(mesh)
-    {
-        updateBuffers();
-    }
- 
-    ProgramSwitcherDrawableMesh(MeshType&& mesh) :
-           AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
-    {
-        updateBuffers();
-    }
- 
-    ProgramSwitcherDrawableMesh(const ProgramSwitcherDrawableMesh& drawableMesh) :
-            AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
-            MeshType(drawableMesh), mBoundingBox(drawableMesh.mBoundingBox),
-            mMeshRenderSettingsUniforms(
-                drawableMesh.mMeshRenderSettingsUniforms)
-    {
-        if constexpr (HasName<MeshType>) {
-            AbstractDrawableMesh::name() = drawableMesh.name();
-        }
-        mMRB.update(*this);
-    }
- 
-    ProgramSwitcherDrawableMesh(ProgramSwitcherDrawableMesh&& drawableMesh) { swap(drawableMesh); }
+    protected:
 
-    ~ProgramSwitcherDrawableMesh() = default;
- 
-    ProgramSwitcherDrawableMesh& operator=(ProgramSwitcherDrawableMesh drawableMesh)
-    {
-        swap(drawableMesh);
-        return *this;
-    }
- 
-    void updateBuffers(
-        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
-    {
-        if constexpr (HasName<MeshType>) {
-            AbstractDrawableMesh::name() = MeshType::name();
+        using vcl::AbstractDrawableMesh::mMRS;
+        using Parent::mMRB;
+
+    public:
+        using Parent::Parent;
+
+        static inline bool *useSwitchProgram;
+
+        std::shared_ptr<vcl::DrawableObject> clone() const& override
+        {
+            return std::make_shared<ProgramSwitcherDrawableMesh>(*this);
         }
- 
-        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
-            if (this->MeshType::boundingBox().isNull()) {
-                bbToInitialize = true;
-            }
-            else {
-                mBoundingBox =
-                    this->MeshType::boundingBox().template cast<double>();
-            }
+
+        std::shared_ptr<vcl::DrawableObject> clone() && override
+        {
+            return std::make_shared<ProgramSwitcherDrawableMesh>(std::move(*this));
         }
- 
-        if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(*this);
-        }
- 
-        mMRB.update(*this, buffersToUpdate);
-        mMRS.setRenderCapabilityFrom(*this);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
-    }
- 
-    std::string& name() override { return MeshType::name(); }
- 
-    const std::string& name() const override { return MeshType::name(); }
- 
-    void swap(ProgramSwitcherDrawableMesh& other)
-    {
-        using std::swap;
-        AbstractDrawableMesh::swap(other);
-        MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
-        swap(mMRB, other.mMRB);
-        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
-    }
- 
-    friend void swap(ProgramSwitcherDrawableMesh& a, ProgramSwitcherDrawableMesh& b) { a.swap(b); }
- 
-    // DrawableObject implementation
- 
-    void init() override {}
- 
-    void draw(uint viewId) const override
-    {
-        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+
+        void draw(vcl::uint viewId) const override
+        {
+            uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
- 
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            if (bgfx::isValid(mProgramPoints)) {
-                mMRB.bindVertexBuffers(mMRS);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-                bgfx::submit(viewId, mProgramPoints);
+            
+            if(*useSwitchProgram){
+                if(mMRS.isSurface(vcl::MeshRenderInfo::Surface::VISIBLE)){
+                    bgfx::setState(state);
+                    mMRB.bindTextures();
+                    mMRB.bindVertexBuffers(mMRS);
+                    mMRB.bindIndexBuffers(mMRS);
+                    bindUniforms();
+                    bgfx::submit(viewId, mProgramSurfaceSwitch);
+                }
+            }else{
+                Parent::draw(viewId);
             }
         }
- 
-        if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            if (bgfx::isValid(mProgramSurface)) {
-                mMRB.bindTextures(); // Bind textures before vertex buffers!!
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS);
-                bindUniforms();
-
-                bgfx::setState(state);
-
-                bgfx::submit(viewId, *useSwitchProgram ? mProgramSurfaceSwitch : mProgramSurface);
-            }
-        }
- 
-        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            if (bgfx::isValid(mProgramWireframe)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
-
-                bgfx::submit(viewId, mProgramWireframe);
-            }
-        }
- 
-        if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
-            if (bgfx::isValid(mProgramEdges)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
-
-                bgfx::submit(viewId, mProgramEdges);
-            }
-        }
-    }
- 
-    Box3d boundingBox() const override { return mBoundingBox; }
- 
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<ProgramSwitcherDrawableMesh>(*this);
-    }
- 
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<ProgramSwitcherDrawableMesh>(std::move(*this));
-    }
- 
-    void setVisibility(bool vis) override
-    {
-        AbstractDrawableMesh::setVisibility(vis);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
-    }
- 
-    void setRenderSettings(const MeshRenderSettings& rs) override
-    {
-        AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
-    }
- 
-private:
-    void bindUniforms() const
-    {
-        mMeshRenderSettingsUniforms.bind();
-        mMRB.bindUniforms();
-    }
 };
  
-} // namespace vcl
- 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_H
+#endif // PROGRAM_SWITCHER_DRAWABLE_MESH_H
  

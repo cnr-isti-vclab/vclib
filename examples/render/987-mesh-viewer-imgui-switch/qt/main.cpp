@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
-#include "get_drawable_mesh.h"
 
 #include <vclib/imgui/imgui_drawer.h>
 
@@ -30,9 +29,10 @@
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 #include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/render/drawable/drawable_mesh.h>
+
 #include "../imgui_switch_program_drawer.h"
 #include "../program_switcher_drawable_mesh.h"
+#include "../get_program_switcher_drawable_mesh.h"
 
 #include <QApplication>
 
@@ -47,15 +47,16 @@ using ViewerWidget = vcl::RenderApp<
 int main(int argc, char** argv)
 {
     bool b = false;
-    ImguiSwitchProgramDrawer<ViewerWidget>::useSwitchProgramGlobal = &b;
-    vcl::ProgramSwitcherDrawableMesh<vcl::TriMesh>::useSwitchProgram = &b;
+    ImguiSwitchProgramDrawer<ViewerWidget>::useSwitchProgram = &b;
+    ProgramSwitcherDrawableMesh<vcl::TriMesh>::useSwitchProgram = &b;
 
     QApplication app(argc, argv);
 
     ViewerWidget tw("Mesh Viewer ImGui Qt");
 
     // load and set up a drawable mesh
-    vcl::ProgramSwitcherDrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    ProgramSwitcherDrawableMesh<vcl::TriMesh> drawable = 
+        getProgramSwitcherDrawableMesh<vcl::TriMesh>("C:/Users/Giacomo/Documents/vclib/vclib/assets/example_meshes/bimba.obj");
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
