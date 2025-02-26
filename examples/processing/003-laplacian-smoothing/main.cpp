@@ -26,21 +26,22 @@
 
 int main()
 {
-    vcl::proc::ActionManager manager;
+    using namespace vcl::proc;
 
-    manager.add(vcl::proc::vclibActions());
+    vcl::TriEdgeMesh bunny =
+        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
+            VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    auto pm0 = manager.loadMeshAction("obj")->load(VCLIB_EXAMPLE_MESHES_PATH
-                                                   "/bunny.obj");
+    std::vector<vcl::TriEdgeMesh*> in_out;
+    in_out.push_back(&bunny);
 
-    std::vector<std::shared_ptr<vcl::proc::MeshI>> mv;
+    auto action =
+        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
 
-    mv.push_back(pm0);
+    action->execute(in_out);
 
-    manager.filterMeshActionByName("Laplacian Smoothing")->applyFilter(mv);
-
-    manager.saveMeshAction("ply")->save(
-        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", *mv.front());
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
+        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", bunny);
 
     return 0;
 }
