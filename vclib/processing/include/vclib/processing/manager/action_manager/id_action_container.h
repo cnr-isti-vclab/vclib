@@ -20,11 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
-#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_ACTION_CONTAINER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_ACTION_CONTAINER_H
 
-#include "action_interfaces/filter_action.h"
-#include "action_interfaces/image_io_action.h"
-#include "action_interfaces/mesh_io_action.h"
+namespace vcl::proc {
 
-#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
+class IDActionContainer
+{
+
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_ACTION_CONTAINER_H

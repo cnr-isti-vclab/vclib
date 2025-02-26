@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_MESH_ACTION_H
-#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_MESH_ACTION_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_ACTION_H
 
 #include "action.h"
 
@@ -37,7 +37,7 @@
 namespace vcl::proc {
 
 template<MeshConcept Mesh>
-class FilterMeshAction : public Action
+class FilterAction : public Action
 {
 public:
     using MeshType = Mesh;
@@ -171,14 +171,9 @@ public:
      * Member functions already implemented *
      * ************************************ */
 
-    Type type() const final { return Type::FILTER_MESH_ACTION; }
+    Type type() const final { return Type::FILTER_ACTION; }
 
     MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
-
-    std::string identifier() const final
-    {
-        return identifierFromName(name() + " " + vcl::meshTypeName<MeshType>());
-    }
 
     /// execute overrides
 
@@ -348,4 +343,4 @@ private:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_MESH_ACTION_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_ACTION_H

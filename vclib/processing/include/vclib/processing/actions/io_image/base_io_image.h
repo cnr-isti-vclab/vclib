@@ -27,7 +27,7 @@
 
 namespace vcl::proc {
 
-class BaseIOImage : public IOImageAction
+class BaseIOImage : public ImageIOAction
 {
 public:
     std::string name() const final { return "Base IO Image"; }

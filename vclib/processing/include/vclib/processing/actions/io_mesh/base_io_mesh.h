@@ -32,9 +32,9 @@
 namespace vcl::proc {
 
 template<MeshConcept MeshType>
-class BaseIOMesh : public IOMeshAction<MeshType>
+class BaseIOMesh : public MeshIOAction<MeshType>
 {
-    using Base = IOMeshAction<MeshType>;
+    using Base = MeshIOAction<MeshType>;
 
 public:
     // allow usage of the overridden base class functions

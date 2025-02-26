@@ -51,7 +51,7 @@ public:
         return instance().loadImageFormats();
     }
 
-    static std::shared_ptr<IOImageAction> loadImageAction(FileFormat fmt)
+    static std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt)
     {
         return instance().loadImageAction(fmt);
     }
@@ -63,7 +63,7 @@ public:
         return instance().saveImageFormats();
     }
 
-    static std::shared_ptr<IOImageAction> saveImageAction(FileFormat fmt)
+    static std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt)
     {
         return instance().saveImageAction(fmt);
     }
@@ -100,7 +100,7 @@ public:
     }
 
     template<typename MeshType>
-    static std::shared_ptr<IOMeshAction<MeshType>> loadMeshAction(
+    static std::shared_ptr<MeshIOAction<MeshType>> loadMeshAction(
         FileFormat fmt)
     {
         return instance().loadMeshAction<MeshType>(fmt);
@@ -144,7 +144,7 @@ public:
     }
 
     template<typename MeshType>
-    static std::shared_ptr<IOMeshAction<MeshType>> saveMeshAction(
+    static std::shared_ptr<MeshIOAction<MeshType>> saveMeshAction(
         FileFormat fmt)
     {
         return instance().saveMeshAction<MeshType>(fmt);

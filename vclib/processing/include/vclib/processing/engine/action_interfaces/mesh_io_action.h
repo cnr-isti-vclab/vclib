@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_MESH_ACTION_H
-#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_MESH_ACTION_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_MESH_IO_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_MESH_IO_ACTION_H
 
 #include "io_action.h"
 
@@ -36,7 +36,7 @@
 namespace vcl::proc {
 
 template<MeshConcept Mesh>
-class IOMeshAction : public IOAction
+class MeshIOAction : public IOAction
 {
 public:
     using MeshType = Mesh;
@@ -172,14 +172,9 @@ public:
      * Member functions already implemented *
      * ************************************ */
 
-    Type type() const final { return Type::IO_MESH_ACTION; }
+    Type type() const final { return Type::MESH_IO_ACTION; }
 
     MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
-
-    std::string identifier() const final
-    {
-        return identifierFromName(name() + " " + vcl::meshTypeName<MeshType>());
-    }
 
     std::vector<FileFormat> supportedFormats() const final
     {
@@ -275,4 +270,4 @@ protected:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_MESH_ACTION_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_MESH_IO_ACTION_H

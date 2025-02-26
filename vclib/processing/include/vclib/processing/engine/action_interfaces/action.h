@@ -40,9 +40,9 @@ class Action
 
 public:
     enum class Type {
-        IO_IMAGE_ACTION = 0,
-        IO_MESH_ACTION,
-        FILTER_MESH_ACTION,
+        IMAGE_IO_ACTION = 0,
+        MESH_IO_ACTION,
+        FILTER_ACTION,
 
         COUNT
     };
@@ -103,7 +103,7 @@ public:
      *
      * @return The identifier of the action.
      */
-    virtual std::string identifier() const
+    virtual std::string identifier() const final
     {
         return identifierFromName(name());
     }

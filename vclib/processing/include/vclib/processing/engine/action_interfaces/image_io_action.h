@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H
-#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IMAGE_IO_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IMAGE_IO_ACTION_H
 
 #include "io_action.h"
 
@@ -32,7 +32,7 @@
 
 namespace vcl::proc {
 
-class IOImageAction : public IOAction
+class ImageIOAction : public IOAction
 {
 public:
     /* ******************************************************************** *
@@ -105,13 +105,11 @@ public:
      * Member functions already implemented *
      * ************************************ */
 
-    Type type() const final { return Type::IO_IMAGE_ACTION; }
+    Type type() const final { return Type::IMAGE_IO_ACTION; }
 
     MeshTypeId meshType() const final { return MeshTypeId::COUNT; }
-
-    std::string identifier() const final { return IOAction::identifier(); }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IO_IMAGE_ACTION_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_IMAGE_IO_ACTION_H
