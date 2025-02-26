@@ -82,16 +82,105 @@ public:
         add(ioMeshActions());
     }
 
+    // load
+
+    std::vector<FileFormat> loadImageFormats() const
+    {
+        return mImageActions.loadFormats();
+    }
+
+    std::vector<FileFormat> loadMeshFormats(MeshTypeId mt) const
+    {
+        return mMeshActions[toUnderlying(mt)].loadFormats();
+    }
+
+    template<typename MeshType>
+    std::vector<FileFormat> loadMeshFormats() const
+    {
+        return mMeshActions[toUnderlying(meshTypeId<MeshType>())].loadFormats();
+    }
+
+    std::vector<FileFormat> loadMeshFormats() const
+    {
+        std::set<FileFormat> formats;
+        for (uint i = 0; i < toUnderlying(MeshTypeId::COUNT); ++i) {
+            auto meshFormats = mMeshActions[i].loadFormats();
+
+            formats.insert(meshFormats.begin(), meshFormats.end());
+        }
+        return std::vector<FileFormat>(formats.begin(), formats.end());
+    }
+
     std::shared_ptr<IOImageAction> loadImageAction(FileFormat fmt) const
     {
         return std::dynamic_pointer_cast<IOImageAction>(
-            mImageActions.getLoad(fmt));
+            mImageActions.loadAction(fmt));
+    }
+
+    std::shared_ptr<IOAction> loadMeshAction(FileFormat fmt, MeshTypeId mt)
+        const
+    {
+        return mMeshActions[toUnderlying(mt)].loadAction(fmt);
+    }
+
+    template<typename MeshType>
+    std::shared_ptr<IOMeshAction<MeshType>> loadMeshAction(FileFormat fmt)
+    {
+        auto act =
+            mMeshActions[toUnderlying(meshTypeId<MeshType>())].loadAction(fmt);
+
+        return std::dynamic_pointer_cast<IOMeshAction<MeshType>>(act);
+    }
+
+    // save
+
+    std::vector<FileFormat> saveImageFormats() const
+    {
+        return mImageActions.saveFormats();
+    }
+
+    std::vector<FileFormat> saveMeshFormats(MeshTypeId mt) const
+    {
+        return mMeshActions[toUnderlying(mt)].saveFormats();
+    }
+
+    template<typename MeshType>
+    std::vector<FileFormat> saveMeshFormats() const
+    {
+        return mMeshActions[toUnderlying(meshTypeId<MeshType>())].saveFormats();
+    }
+
+    std::vector<FileFormat> saveMeshFormats() const
+    {
+        std::set<FileFormat> formats;
+        for (uint i = 0; i < toUnderlying(MeshTypeId::COUNT); ++i) {
+            auto meshFormats = mMeshActions[i].saveFormats();
+
+            formats.insert(meshFormats.begin(), meshFormats.end());
+        }
+        return std::vector<FileFormat>(formats.begin(), formats.end());
     }
 
     std::shared_ptr<IOImageAction> saveImageAction(FileFormat fmt) const
     {
         return std::dynamic_pointer_cast<IOImageAction>(
-            mImageActions.getSave(fmt));
+            mImageActions.saveAction(fmt));
+    }
+
+    std::shared_ptr<IOAction> saveMeshAction(FileFormat fmt, MeshTypeId mt)
+        const
+    {
+        return mMeshActions[toUnderlying(mt)].saveAction(fmt);
+    }
+
+    template<typename MeshType>
+    std::shared_ptr<IOMeshAction<MeshType>> saveMeshAction(
+        FileFormat fmt) const
+    {
+        auto act =
+            mMeshActions[toUnderlying(meshTypeId<MeshType>())].saveAction(fmt);
+
+        return std::dynamic_pointer_cast<IOMeshAction<MeshType>>(act);
     }
 
 private:

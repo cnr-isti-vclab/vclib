@@ -67,7 +67,7 @@ public:
         }
     }
 
-    std::shared_ptr<IOAction> getLoad(const FileFormat& format) const
+    std::shared_ptr<IOAction> loadAction(const FileFormat& format) const
     {
         auto it = findLoadFormatExists(format);
         return it->second;
@@ -82,7 +82,7 @@ public:
         return formats;
     }
 
-    std::shared_ptr<IOAction> getSave(const FileFormat& format) const
+    std::shared_ptr<IOAction> saveAction(const FileFormat& format) const
     {
         auto it = findSaveFormatExists(format);
         return it->second;

@@ -26,41 +26,43 @@
 
 int main()
 {
-    // vcl::LoadSettings s;
-    // s.loadTextureImages = true;
+    using namespace vcl::proc;
 
-    // vcl::proc::TriMesh mesh = vcl::load<vcl::proc::TriMesh>(
-    //     VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
+    auto suppFormatsTEM = ActionManager::saveMeshFormats<vcl::TriEdgeMesh>();
 
-    // vcl::proc::ActionManager manager;
+    std::cerr << "Supported save formats for TriEdgeMesh:" << std::endl;
+    for (const auto& fmt : suppFormatsTEM) {
+        std::cerr << fmt.description() << std::endl;
+    }
 
-    // manager.add(vcl::proc::vclibActions());
+    auto suppFormats = ActionManager::saveMeshFormats();
 
-    // // saving obj
-    // manager.saveMeshAction("obj")->save("td.obj", mesh);
+    std::cerr << "All the supported save formats:" << std::endl;
+    for (const auto& fmt : suppFormats) {
+        std::cerr << fmt.description() << std::endl;
+    }
 
-    // // saving off
-    // manager.saveMeshAction("off")->save("td.off", mesh);
+    vcl::LoadSettings s;
+    s.loadTextureImages = true;
 
-    // // saving ply
-    // manager.saveMeshAction("ply")->save("td.ply", mesh);
+    vcl::TriEdgeMesh mesh = vcl::load<vcl::TriEdgeMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
 
-    // // saving stl
-    // manager.saveMeshAction("stl")->save("td.stl", mesh);
+    // saving obj
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("obj")->save(
+        VCLIB_RESULTS_PATH "/td.obj", mesh);
 
-    vcl::proc::BaseIOMesh<vcl::PolyMesh> ioMesh;
+    // saving off
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("off")->save(
+        VCLIB_RESULTS_PATH "/td.off", mesh);
 
-    std::cerr << ioMesh.name() << std::endl;
+    // saving ply
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
+        VCLIB_RESULTS_PATH "/td.ply", mesh);
 
-    auto mesh = ioMesh.load(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-
-    ioMesh.save(VCLIB_RESULTS_PATH "/bunny.stl", mesh);
-
-    // test texture
-
-    mesh = ioMesh.load(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
-
-    ioMesh.save(VCLIB_RESULTS_PATH "/td.obj", mesh);
+    // saving stl
+    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("stl")->save(
+        VCLIB_RESULTS_PATH "/td.stl", mesh);
 
     return 0;
 }
