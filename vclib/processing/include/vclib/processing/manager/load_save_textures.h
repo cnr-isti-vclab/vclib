@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef LOAD_SAVE_TEXTURES_H
-#define LOAD_SAVE_TEXTURES_H
+#ifndef VCL_PROCESSING_MANAGER_LOAD_SAVE_TEXTURES_H
+#define VCL_PROCESSING_MANAGER_LOAD_SAVE_TEXTURES_H
 
 #include "action_manager.h"
 
@@ -67,4 +67,4 @@ void loadTexturesUsingManager(MeshType& mesh, const std::string& basePath)
 
 } // namespace vcl::proc
 
-#endif // LOAD_SAVE_TEXTURES_H
+#endif // VCL_PROCESSING_MANAGER_LOAD_SAVE_TEXTURES_H
