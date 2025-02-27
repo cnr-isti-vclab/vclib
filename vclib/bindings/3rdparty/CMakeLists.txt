@@ -1,0 +1,39 @@
+#*****************************************************************************
+#* VCLib                                                                     *
+#* Visual Computing Library                                                  *
+#*                                                                           *
+#* Copyright(C) 2021-2025                                                    *
+#* Visual Computing Lab                                                      *
+#* ISTI - Italian National Research Council                                  *
+#*                                                                           *
+#* All rights reserved.                                                      *
+#*                                                                           *
+#* This program is free software; you can redistribute it and/or modify      *
+#* it under the terms of the Mozilla Public License Version 2.0 as published *
+#* by the Mozilla Foundation; either version 2 of the License, or            *
+#* (at your option) any later version.                                       *
+#*                                                                           *
+#* This program is distributed in the hope that it will be useful,           *
+#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+#* Mozilla Public License Version 2.0                                        *
+#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+#****************************************************************************/
+
+cmake_minimum_required(VERSION 3.24)
+project(vclib-bindings-3rdparty)
+
+include(FetchContent)
+
+# pybind11
+option(VCLIB_ALLOW_DOWNLOAD_PYBIND "Allow use of downloaded pyBind11 source" ON)
+
+# === Fetch dependencies === #
+
+set(VCLIB_BINDINGS_3RDPARTY_LIBRARIES "")
+
+### pybind11
+include(pybind.cmake)
+
+set(VCLIB_BINDINGS_3RDPARTY_LIBRARIES
+    ${VCLIB_BINDINGS_3RDPARTY_LIBRARIES} PARENT_SCOPE)
