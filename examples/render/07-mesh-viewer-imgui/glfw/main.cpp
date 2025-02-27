@@ -40,7 +40,7 @@ int main(int argc, char** argv)
         vcl::glfw::WindowManager,
         vcl::Canvas,
         vcl::imgui::ImGuiDrawer,
-        MeshViewerDrawerImgui>;
+        vcl::imgui::MeshViewerDrawerImgui>;
 
     ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
 

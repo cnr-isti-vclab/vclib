@@ -23,15 +23,18 @@
 #ifndef VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H
 #define VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H
 
+#include "imgui_helpers.h"
+
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 
-#include "imgui_helpers.h"
 #include <imgui.h>
 
 #include <algorithm>
 #include <iterator>
 #include <numeric>
+
+namespace vcl::imgui {
 
 template<typename DerivedRenderApp>
 class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
@@ -40,6 +43,44 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 
     int mMeshIndex = 0;
 
+public:
+    using Base::Base;
+
+    virtual void onDraw(vcl::uint viewId) override
+    {
+        // draw parent
+        Base::onDraw(viewId);
+
+        // draw imgui
+        ImGui::Begin("Meshes");
+
+        // mesh table
+        {
+            ImGuiWindowFlags window_flags =
+                ImGuiWindowFlags_HorizontalScrollbar;
+            ImGui::BeginChild(
+                "##ListContainer",
+                ImVec2(ImGui::GetContentRegionAvail().x, 260),
+                ImGuiChildFlags_None,
+                window_flags);
+            drawMeshList();
+            ImGui::EndChild();
+        }
+
+        // drawable mesh info and settings for selected mesh
+        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
+            auto drawable =
+                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
+                    Base::mDrawList->at(mMeshIndex));
+            if (drawable) {
+                drawMeshSettings(*drawable);
+            }
+        }
+
+        ImGui::End();
+    }
+
+private:
     void drawMeshList()
     {
         if (!Base::mDrawList || Base::mDrawList->empty()) {
@@ -651,43 +692,8 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
             drawable.setRenderSettings(newSettings);
         }
     }
-
-public:
-    using Base::Base;
-
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw parent
-        Base::onDraw(viewId);
-
-        // draw imgui
-        ImGui::Begin("Meshes");
-
-        // mesh table
-        {
-            ImGuiWindowFlags window_flags =
-                ImGuiWindowFlags_HorizontalScrollbar;
-            ImGui::BeginChild(
-                "##ListContainer",
-                ImVec2(ImGui::GetContentRegionAvail().x, 260),
-                ImGuiChildFlags_None,
-                window_flags);
-            drawMeshList();
-            ImGui::EndChild();
-        }
-
-        // drawable mesh info and settings for selected mesh
-        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
-            auto drawable =
-                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
-                    Base::mDrawList->at(mMeshIndex));
-            if (drawable) {
-                drawMeshSettings(*drawable);
-            }
-        }
-
-        ImGui::End();
-    }
 };
+
+} // namespace vcl::imgui
 
 #endif // VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H
