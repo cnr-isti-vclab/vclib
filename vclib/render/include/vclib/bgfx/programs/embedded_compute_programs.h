@@ -23,7 +23,11 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
 
-// TODO remove this when there will be an embedded compute program
-#include <vclib/bgfx/programs/compute_loader.h>
+#include "embedded_c_programs/lines.h"
+#include "embedded_c_programs/lines_indirect.h"
+#include "embedded_c_programs/lines_texture.h"
+#include "embedded_c_programs/polylines.h"
+#include "embedded_c_programs/polylines_indirect.h"
+#include "embedded_c_programs/polylines_texture.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
