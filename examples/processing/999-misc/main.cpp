@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
 #include <vclib/meshes.h>
+#include <vclib/processing.h>
 
 int main()
 {
@@ -95,7 +95,8 @@ int main()
     auto params = laplacianSmoothingFilter.parameters();
     params.get("smoothing_steps")->setUintValue(10);
 
-    laplacianSmoothingFilter.execute(std::vector<vcl::TriMesh*>{&mesh}, params);
+    laplacianSmoothingFilter.execute(
+        std::vector<vcl::TriMesh*> {&mesh}, params);
 
     ioMesh.save(VCLIB_RESULTS_PATH "/bunny_smoothed.ply", mesh);
 

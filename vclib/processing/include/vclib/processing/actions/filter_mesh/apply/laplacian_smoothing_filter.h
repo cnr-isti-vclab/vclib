@@ -61,8 +61,7 @@ public:
 
     std::vector<UintParameter> inputOutputMeshes() const final
     {
-        return {
-            UintParameter("input_output", 1, "Input/Output Mesh", "")};
+        return {UintParameter("input_output", 1, "Input/Output Mesh", "")};
     }
 
     ParameterVector parameters() const override

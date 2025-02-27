@@ -37,10 +37,9 @@ using ScalarType = double;
  */
 constexpr bool INDEXED_MESHES = false;
 
-enum class MeshTypeId : vcl::uint
-{
+enum class MeshTypeId : vcl::uint {
     TRIANGLE_MESH = 0,
-    POLYGON_MESH = 1,
+    POLYGON_MESH  = 1,
 
     COUNT
 };

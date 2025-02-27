@@ -34,10 +34,11 @@ std::vector<std::shared_ptr<Action>> actionInstances();
 
 namespace detail {
 
-class Manager {
+class Manager
+{
     static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
 
-    IOActionContainer mImageIOActions;
+    IOActionContainer                               mImageIOActions;
     std::array<IOActionContainer, MESH_TYPE_NUMBER> mMeshIOActions;
     std::array<IDActionContainer, MESH_TYPE_NUMBER> mFilterActions;
 
@@ -61,7 +62,7 @@ public:
         case MESH_IO_ACTION:
             checkMeshAction(action);
             ioMeshAction = std::dynamic_pointer_cast<IOAction>(action);
-            mt = toUnderlying(action->meshType());
+            mt           = toUnderlying(action->meshType());
             mMeshIOActions[mt].add(ioMeshAction);
             break;
         case FILTER_ACTION:
@@ -82,10 +83,7 @@ public:
         }
     }
 
-    void addDefaultActions()
-    {
-        add(actionInstances());
-    }
+    void addDefaultActions() { add(actionInstances()); }
 
     // load image
 
@@ -110,7 +108,8 @@ public:
     template<typename MeshType>
     std::vector<FileFormat> loadMeshFormats() const
     {
-        return mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].loadFormats();
+        return mMeshIOActions[toUnderlying(meshTypeId<MeshType>())]
+            .loadFormats();
     }
 
     std::vector<FileFormat> loadMeshFormats() const
@@ -134,7 +133,8 @@ public:
     std::shared_ptr<MeshIOAction<MeshType>> loadMeshAction(FileFormat fmt)
     {
         auto act =
-            mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].loadAction(fmt);
+            mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].loadAction(
+                fmt);
 
         return std::dynamic_pointer_cast<MeshIOAction<MeshType>>(act);
     }
@@ -162,7 +162,8 @@ public:
     template<typename MeshType>
     std::vector<FileFormat> saveMeshFormats() const
     {
-        return mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].saveFormats();
+        return mMeshIOActions[toUnderlying(meshTypeId<MeshType>())]
+            .saveFormats();
     }
 
     std::vector<FileFormat> saveMeshFormats() const
@@ -183,11 +184,11 @@ public:
     }
 
     template<typename MeshType>
-    std::shared_ptr<MeshIOAction<MeshType>> saveMeshAction(
-        FileFormat fmt) const
+    std::shared_ptr<MeshIOAction<MeshType>> saveMeshAction(FileFormat fmt) const
     {
         auto act =
-            mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].saveAction(fmt);
+            mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].saveAction(
+                fmt);
 
         return std::dynamic_pointer_cast<MeshIOAction<MeshType>>(act);
     }
@@ -218,7 +219,6 @@ private:
                 "The Action MeshType is not supported by the ActionManager.");
         }
     }
-
 };
 
 } // namespace detail

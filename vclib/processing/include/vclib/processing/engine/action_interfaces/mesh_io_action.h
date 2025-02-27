@@ -27,8 +27,8 @@
 
 #include <vclib/processing/engine/parameter_vector.h>
 
-#include <vclib/algorithms/mesh/update.h>
 #include <vclib/algorithms/mesh/type_name.h>
+#include <vclib/algorithms/mesh/update.h>
 #include <vclib/io/file_format.h>
 #include <vclib/io/file_info.h>
 #include <vclib/space/complex/mesh_info.h>
@@ -190,9 +190,9 @@ public:
         const ParameterVector& parameters,
         AbstractLogger&        log = logger()) const
     {
-        MeshInfo info;
+        MeshInfo   info;
         FileFormat format(FileInfo::extension(filename));
-        auto     mesh = load(filename, format, parameters, info, log);
+        auto       mesh = load(filename, format, parameters, info, log);
         return mesh;
     }
 
