@@ -23,8 +23,7 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-bindings)
 
-# TODO: rename
-set(MODULE_NAME vcl)
+set(MODULE_NAME vclib_bindings)
 
 # 3rdparty libraries
 message(STATUS "VCLib-Bindings: 3rd party libraries")
@@ -38,7 +37,19 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "bindings/*.h")
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "bindings/*.cpp")
 
 pybind11_add_module(${MODULE_NAME} ${HEADERS} ${SOURCES})
+target_compile_definitions(${MODULE_NAME} PRIVATE
+    VCLIB_MAIN_MODULE_NAME=${MODULE_NAME})
 
 target_include_directories(${MODULE_NAME} PRIVATE ${VCLIB_BINDINGS_INCLUDE_DIR})
-target_link_libraries(${MODULE_NAME} PRIVATE vclib-core)
+target_link_libraries(${MODULE_NAME} PRIVATE vclib::core)
+
+# put the generated binary in a dir called vclib
+set_target_properties(${MODULE_NAME} PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/vclib)
+
+# after build module, copy the file 'assets/__init__.py' to the build dir
+add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/__init__.py"
+    "${CMAKE_CURRENT_BINARY_DIR}/vclib/__init__.py")
 

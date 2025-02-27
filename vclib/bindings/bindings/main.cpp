@@ -25,7 +25,7 @@
 #include "space/core/point.h"
 
 // creation of a python module
-PYBIND11_MODULE(vcl, m)
+PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
 {
     // import the bindings
     using namespace vcl::bind;
