@@ -37,12 +37,34 @@ class ProgramSwitcherDrawableMesh : public vcl::DrawableMesh<MeshType>
 {   
     using Parent = vcl::DrawableMesh<MeshType>;
 
-    bgfx::ProgramHandle mProgramSurfaceSwitch =
+    bgfx::ProgramHandle mProgramSurfaceNone =
         vcl::loadProgram(
             "shaders/vs_surface",
-            "shaders/fs_surface_switch"
+            "shaders/fs_surface_none"
         );
 
+    bgfx::ProgramHandle mProgramSurfaceFlat =
+        vcl::loadProgram(
+            "shaders/vs_surface",
+            "shaders/fs_surface_flat"
+        );
+
+    bgfx::ProgramHandle mProgramSurfaceSmooth =
+        vcl::loadProgram(
+            "shaders/vs_surface",
+            "shaders/fs_surface_smooth"
+        );
+
+    bgfx::ProgramHandle surfaceProgramSelector() const
+    {
+        if(mMRS.isSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT)){
+            return mProgramSurfaceFlat;
+        } else if(mMRS.isSurface(vcl::MeshRenderInfo::Surface::SHADING_SMOOTH)){
+            return mProgramSurfaceSmooth;
+        } else {
+            return mProgramSurfaceNone;
+        }
+    }
 
     protected:
 
@@ -78,7 +100,7 @@ class ProgramSwitcherDrawableMesh : public vcl::DrawableMesh<MeshType>
                     mMRB.bindVertexBuffers(mMRS);
                     mMRB.bindIndexBuffers(mMRS);
                     bindUniforms();
-                    bgfx::submit(viewId, mProgramSurfaceSwitch);
+                    bgfx::submit(viewId, surfaceProgramSelector());
                 }
             }else{
                 Parent::draw(viewId);
