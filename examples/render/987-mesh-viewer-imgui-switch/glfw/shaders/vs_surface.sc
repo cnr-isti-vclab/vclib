@@ -20,53 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
+$input a_position, a_normal, a_color0, a_texcoord0, a_texcoord1
+$output v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 
-#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
-#include <vclib/qt/widget_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/viewer_drawer.h>
-#include <vclib/render/render_app.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-
-#include "../imgui_switch_program_drawer.h"
-#include "../program_switcher_drawable_mesh.h"
-#include "../get_program_switcher_drawable_mesh.h"
-
-#include <QApplication>
-
-int main(int argc, char** argv)
+void main()
 {
-    using ViewerWidget = vcl::RenderApp<
-    vcl::qt::WidgetManager,
-    vcl::Canvas,
-    vcl::imgui::ImGuiDrawer,
-    vcl::imgui::MeshViewerDrawerImgui,
-    vcl::imgui::ImguiStatsDrawer,
-    ImguiSwitchProgramDrawer>;
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
+    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
+    v_texcoord0 = a_texcoord0;
+    v_texcoord1 = a_texcoord1;
 
-    bool b = false;
-    ImguiSwitchProgramDrawer<ViewerWidget>::useSwitchProgram = &b;
-    ProgramSwitcherDrawableMesh<vcl::TriMesh>::useSwitchProgram = &b;
-
-    QApplication app(argc, argv);
-
-    ViewerWidget tw("Mesh Viewer ImGui Qt");
-
-    // load and set up a drawable mesh
-    ProgramSwitcherDrawableMesh<vcl::TriMesh> drawable = 
-        getProgramSwitcherDrawableMesh<vcl::TriMesh>("C:/Users/Giacomo/Documents/vclib/vclib/assets/example_meshes/bimba.obj");
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    bgfx::reset(tw.width()*tw.dpiScale().x(), tw.height()*tw.dpiScale().y(), BGFX_RESET_NONE);
-
-    return app.exec();
+    // default case - color is taken from buffer
+    v_color = a_color0;
 }

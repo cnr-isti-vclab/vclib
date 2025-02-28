@@ -35,3 +35,12 @@ set(SOURCES
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
     SOURCES ${SOURCES})
+
+set(
+    SHADERS
+    shaders/vs_surface.sc
+    shaders/varying.def.sc
+    shaders/fs_surface_switch.sc
+)
+        
+target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
