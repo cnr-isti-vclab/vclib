@@ -25,8 +25,6 @@ cmake_minimum_required(VERSION 3.24)
 set(EXAMPLE_NAME 987-mesh-viewer-imgui-switch-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
-#include(CMakePrintHelpers)
-
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
 
@@ -46,5 +44,3 @@ set(
 )
     
 target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
-
-#cmake_print_variables(SHADERS)
