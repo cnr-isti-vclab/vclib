@@ -46,6 +46,8 @@ public:
         QWidget*                               parent = nullptr);
     ~DrawableObjectFrame();
 
+    void setIcon(const QIcon& icon, const QString& tooltip = "");
+
 signals:
     void visibilityChanged();
 
