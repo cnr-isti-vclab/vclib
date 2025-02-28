@@ -33,6 +33,7 @@ template<MeshConcept MeshType>
 class CreateConeFilter : public FilterAction<MeshType>
 {
     using Base = FilterAction<MeshType>;
+
 public:
     std::shared_ptr<Action> clone() const final
     {

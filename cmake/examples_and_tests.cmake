@@ -66,7 +66,7 @@ function(_vclib_add_test_example name)
     endif()
 
     if (NOT ${ARG_HEADER_ONLY})
-        target_link_libraries(${TARGET_NAME} PRIVATE vclib-${ARG_VCLIB_MODULE})
+        target_link_libraries(${TARGET_NAME} PRIVATE vclib::${ARG_VCLIB_MODULE})
     else()
         # additional include and links required when using header only:
 

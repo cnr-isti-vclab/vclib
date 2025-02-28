@@ -19,7 +19,7 @@ By default, the library is built with the `Core` module only, but you can enable
 The core module of library is header only, therefore to install it you just need to add the `vclib/core/include` directory in your
 `INCLUDE_PATH`.
 Otherwise, you can use the library by using the `cmake` command `add_subdirectory`, by adding the path to this repository
-in your `cmake` project. CMake will create a target called `vclib`, that you can link using the `target_link_libraries` command.
+in your `cmake` project. CMake will create a target called `vclib::vclib`, that you can link using the `target_link_libraries` command.
 
 ## Compiler support
 

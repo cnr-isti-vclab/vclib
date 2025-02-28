@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 08-test-texcoords)
+set(EXAMPLE_NAME 02-mesh-viewer-imgui-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings

@@ -186,7 +186,6 @@ public:
             }
         }
 
-
         if (format == "obj") {
             saveObj(mesh, filename, settings, log);
             if (parameters.get("save_texture_files")->boolValue())

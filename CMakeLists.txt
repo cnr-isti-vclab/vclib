@@ -50,24 +50,25 @@ include(cmake/vclib_common_settings.cmake)
 ### Examples and Tests
 include(cmake/examples_and_tests.cmake)
 
-add_library(vclib INTERFACE)
+add_library(${PROJECT_NAME} INTERFACE)
+add_library(vclib::vclib ALIAS ${PROJECT_NAME})
 
 add_subdirectory(vclib/core)
-target_link_libraries(vclib INTERFACE vclib-core)
+target_link_libraries(vclib INTERFACE vclib::core)
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
     add_subdirectory(vclib/external)
-    target_link_libraries(vclib INTERFACE vclib-external)
+    target_link_libraries(vclib INTERFACE vclib::external)
 endif()
 
 if (VCLIB_BUILD_MODULE_PROCESSING)
     add_subdirectory(vclib/processing)
-    target_link_libraries(vclib INTERFACE vclib-processing)
+    target_link_libraries(vclib INTERFACE vclib::processing)
 endif()
 
 if (VCLIB_BUILD_MODULE_RENDER)
     add_subdirectory(vclib/render)
-    target_link_libraries(vclib INTERFACE vclib-render)
+    target_link_libraries(vclib INTERFACE vclib::render)
 endif()
 
 set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)

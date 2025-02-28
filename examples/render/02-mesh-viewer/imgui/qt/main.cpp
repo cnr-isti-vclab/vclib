@@ -37,7 +37,7 @@ using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
     vcl::imgui::ImGuiDrawer,
-    MeshViewerDrawerImgui>;
+    vcl::imgui::MeshViewerDrawerImgui>;
 
 int main(int argc, char** argv)
 {

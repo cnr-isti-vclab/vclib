@@ -33,9 +33,10 @@ set(VCLIB_EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
+add_library(vclib::external ALIAS ${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_EXTERNAL_INCLUDE_DIR})
 
 target_link_libraries(${PROJECT_NAME} INTERFACE
-    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib-core)
+    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib::core)
 
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})

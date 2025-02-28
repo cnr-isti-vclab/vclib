@@ -103,10 +103,7 @@ public:
      *
      * @return The identifier of the action.
      */
-    std::string identifier() const
-    {
-        return identifierFromName(name());
-    }
+    std::string identifier() const { return identifierFromName(name()); }
 
 protected:
     static ConsoleLogger& logger() { return log; }

@@ -50,6 +50,12 @@ DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
     delete mUI;
 }
 
+void DrawableObjectVectorFrame::setIconFunction(const IconFunction& f)
+{
+    mIconFunction = f;
+    updateDrawableVectorWidget();
+}
+
 void DrawableObjectVectorFrame::setDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
@@ -98,6 +104,12 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
         QListWidgetItem*     item = new QListWidgetItem(mUI->listWidget);
         DrawableObjectFrame* frame =
             new DrawableObjectFrame(d, mUI->listWidget);
+
+        if (mIconFunction) {
+            std::pair<QIcon, std::string> p = mIconFunction(*d);
+
+            frame->setIcon(p.first, QString::fromStdString(p.second));
+        }
 
         mUI->listWidget->addItem(item);
         mUI->listWidget->setItemWidget(item, frame);
