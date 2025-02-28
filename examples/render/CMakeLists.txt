@@ -39,7 +39,7 @@ endif()
 if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(common)
 
-    #add_subdirectory(00-hello-triangle)
+    add_subdirectory(00-hello-triangle)
     add_subdirectory(01-viewer)
     add_subdirectory(02-mesh-viewer)
     add_subdirectory(03-viewer-with-text)
@@ -48,7 +48,6 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(06-viewer-imgui)
     add_subdirectory(07-test-texcoords)
 
-    add_subdirectory(986-mesh-viewer-split-shaders)
     add_subdirectory(987-mesh-viewer-imgui-switch)
     add_subdirectory(999-misc)
 
