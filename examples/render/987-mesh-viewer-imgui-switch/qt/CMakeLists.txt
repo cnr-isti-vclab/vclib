@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 986-mesh-viewer-imgui-switch-qt)
+set(EXAMPLE_NAME 987-mesh-viewer-imgui-switch-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 #include(CMakePrintHelpers)

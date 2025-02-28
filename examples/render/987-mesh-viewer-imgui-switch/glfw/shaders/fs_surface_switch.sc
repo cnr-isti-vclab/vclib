@@ -69,7 +69,7 @@ void main()
     vec3 normal = normalize(v_normal);
         
     //if neither flat shading nor smooth shading do nothing, otherwise always compute light and if flat shading compute face normals
-    switch(u_surfaceMode & (posToBitFlag(VCL_MRS_SURF_SHADING_FLAT) | posToBitFlag(VCL_MRS_SURF_SHADING_SMOOTH))){
+    switch(u_surfaceMode & (posToBitFlag(VCL_MRS_SURF_SHADING_FLAT) | posToBitFlag(VCL_MRS_SURF_SHADING_SMOOTH))) {
         case posToBitFlag(VCL_MRS_SURF_SHADING_FLAT): 
             normal = vec3(
             primitiveNormals[gl_PrimitiveID * 3],
@@ -103,20 +103,31 @@ void main()
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERTEX))) {
-        color = v_color;
-    }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
-        color = u_meshColor;
-    }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
-        color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
-    }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
-        color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord0);
-    }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
-        color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
+    switch(
+        u_surfaceMode 
+        & ( 
+            posToBitFlag(VCL_MRS_SURF_COLOR_VERTEX)
+            | posToBitFlag(VCL_MRS_SURF_COLOR_MESH)
+            | posToBitFlag(VCL_MRS_SURF_COLOR_FACE)
+            | posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)
+            | posToBitFlag(VCL_MRS_SURF_TEX_WEDGE)
+        )
+    ) {
+        case posToBitFlag(VCL_MRS_SURF_COLOR_VERTEX):
+            color = v_color;
+            break;
+        case posToBitFlag(VCL_MRS_SURF_COLOR_MESH):
+            color = u_meshColor;
+            break;
+        case posToBitFlag(VCL_MRS_SURF_COLOR_FACE):
+            color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
+            break;
+        case posToBitFlag(VCL_MRS_SURF_TEX_VERTEX):
+            color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord0);
+            break;
+        case posToBitFlag(VCL_MRS_SURF_TEX_WEDGE):
+            color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
+            break;
     }
 
     gl_FragColor = light * color + vec4(specular, 0);

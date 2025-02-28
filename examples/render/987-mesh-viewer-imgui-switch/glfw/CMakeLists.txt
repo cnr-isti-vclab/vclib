@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 986-mesh-viewer-imgui-switch-glfw)
+set(EXAMPLE_NAME 987-mesh-viewer-imgui-switch-glfw)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings
