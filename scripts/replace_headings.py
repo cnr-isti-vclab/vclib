@@ -87,8 +87,9 @@ if __name__ == "__main__":
 
     os.chdir('../vclib/')
     for module in vcl_modules:
-        replace_headers_in_dir(module + '/include/vclib/', exclude_paths)
-        replace_cmake_headers_in_dir(module + '/include/vclib/', recursive=False)
+        if os.path.exists(module + '/include/vclib/'):
+            replace_headers_in_dir(module + '/include/vclib/', exclude_paths)
+            replace_cmake_headers_in_dir(module + '/include/vclib/', recursive=False)
 
         if os.path.exists(module + '/3rdparty'):
             replace_cmake_headers_in_dir(module + '/3rdparty', recursive=False)

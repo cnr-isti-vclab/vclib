@@ -20,15 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef TRI_MESH_H
-#define TRI_MESH_H
+#include "core.h"
 
-#include <pybind11/pybind11.h>
+#include "core/point.h"
 
 namespace vcl::bind {
 
-void initTriMesh(pybind11::module& m);
+void initCore(pybind11::module& m)
+{
+    namespace py = pybind11;
+
+    py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
+    initPoint(sm);
+}
 
 } // namespace vcl::bind
-
-#endif // TRI_MESH_H

@@ -44,13 +44,19 @@ def replace_header_guards_in_dir(folder_path):
                 file.write(file_string)
 
 if __name__ == "__main__":
-    vcl_modules = ['core', 'external', 'processing','render']
+    vcl_modules = ['bindings', 'core', 'external', 'processing','render']
 
     os.chdir('../vclib/')
 
     for module in vcl_modules:
-        os.chdir(module + '/include/vclib/')
+        if module == 'bindings':
+            os.chdir(module + '/src/')
+        else:
+            os.chdir(module + '/include/vclib/')
 
         replace_header_guards_in_dir('')
 
-        os.chdir('../../../')
+        if module == 'bindings':
+            os.chdir('../../')
+        else:
+            os.chdir('../../../')

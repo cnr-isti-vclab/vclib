@@ -20,15 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef POINT_H
-#define POINT_H
-
 #include <pybind11/pybind11.h>
 
-namespace vcl::bind {
+#include "space.h"
 
-void initPoint(pybind11::module& m);
+// creation of a python module
+PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
+{
+    // import the bindings
+    using namespace vcl::bind;
 
-} // namespace vcl::bind
-
-#endif // POINT_H
+    // initialize the bindings
+    initSpace(m);
+}

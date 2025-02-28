@@ -20,69 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCL_BINDINGS_SPACE_H
+#define VCL_BINDINGS_SPACE_H
 
-#include <vclib/space/core.h>
+#include <pybind11/pybind11.h>
+
+#include "space/core.h"
 
 namespace vcl::bind {
 
-template<uint DIM>
-void populatePoint(pybind11::module& m)
+void initSpace(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    using P = Point<double, DIM>;
-
-    std::string cName = "Point" + std::to_string(DIM);
-    py::class_<P> c(m, cName.c_str());
-    c.def(py::init<>());
-    if constexpr (DIM == 1) {
-        c.def(py::init<double>(), py::arg("x"));
-    }
-    if constexpr (DIM == 2) {
-        c.def(py::init<double, double>(), py::arg("x"), py::arg("y"));
-    }
-    if constexpr (DIM == 3) {
-        c.def(
-            py::init<double, double, double>(),
-            py::arg("x"),
-            py::arg("y"),
-            py::arg("z"));
-    }
-    if constexpr (DIM == 4) {
-        c.def(
-            py::init<double, double, double, double>(),
-            py::arg("x"),
-            py::arg("y"),
-            py::arg("z"),
-            py::arg("w"));
-    }
-
-    if constexpr (DIM >= 1) {
-        c.def("x", py::overload_cast<>(&P::x, py::const_));
-        c.def("set_x", [](P& p, double v) { p.x() = v; });
-    }
-    if constexpr (DIM >= 2) {
-        c.def("y", py::overload_cast<>(&P::y, py::const_));
-        c.def("set_y", [](P& p, double v) { p.y() = v; });
-    }
-    if constexpr (DIM >= 3) {
-        c.def("z", py::overload_cast<>(&P::z, py::const_));
-        c.def("set_z", [](P& p, double v) { p.z() = v; });
-    }
-    if constexpr (DIM >= 4) {
-        c.def("w", py::overload_cast<>(&P::w, py::const_));
-        c.def("set_w", [](P& p, double v) { p.w() = v; });
-    }
-}
-
-void initPoint(pybind11::module& m)
-{
-    namespace py = pybind11;
-
-    populatePoint<2>(m);
-    populatePoint<3>(m);
-    populatePoint<4>(m);
+    py::module_ sm = m.def_submodule("space", "Spatial Data Structures");
+    initCore(sm);
 }
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_SPACE_H
