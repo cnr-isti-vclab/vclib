@@ -20,19 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_H
-#define VCL_PROCESSING_H
+#ifndef VCL_PROCESSING_FUNCTIONS_H
+#define VCL_PROCESSING_FUNCTIONS_H
 
-#include "processing/action_instances.h"
-#include "processing/manager.h"
-#include "processing/functions.h"
+#include "manager.h"
 
-/**
- * @defgroup processing Processing
- *
- * @brief List of classes and functions that allow to perform high level
- * processing, without the need to interact with the underlying data structures
- * and algorithms.
- */
+#include <any>
 
-#endif // VCL_PROCESSING_H
+namespace vcl::proc {
+
+std::pair<std::any, MeshTypeId> loadMeshBestFit(
+    const std::string& filename,
+    const ParameterVector& parameters,
+    auto& logger)
+{
+    std::any res;
+    std::string ext = FileInfo::extension(filename);
+
+    PolyEdgeMesh mesh = ActionManager::loadMeshAction<PolyEdgeMesh>(ext)->load(
+        filename, parameters, logger);
+
+    if (isTriangleMesh(mesh)) {
+        TriEdgeMesh m;
+        m.importFrom(mesh);
+        res = std::move(m);
+        return {res, MeshTypeId::TRIANGLE_MESH};
+    }
+    else {
+        res = std::move(mesh);
+        return {res, MeshTypeId::POLYGON_MESH};
+    }
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_FUNCTIONS_H
