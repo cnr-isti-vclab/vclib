@@ -59,8 +59,6 @@ public:
 
     // From Action class
 
-    [[nodiscard]] virtual std::shared_ptr<Action> clone() const = 0;
-
     virtual std::string name() const = 0;
 
     /**

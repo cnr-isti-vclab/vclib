@@ -43,11 +43,6 @@ public:
 
     std::string name() const final { return "Base IO"; }
 
-    std::shared_ptr<Action> clone() const final
-    {
-        return std::make_shared<BaseIOMesh<MeshType>>(*this);
-    }
-
     Base::IOSupport ioSupport() const final { return Base::IOSupport::BOTH; }
 
     std::vector<std::pair<FileFormat, MeshInfo>> supportedMeshFormats()

@@ -35,11 +35,6 @@ class LaplacianSmoothingFilter : public FilterActionT<MeshType>
     using Base = FilterActionT<MeshType>;
 
 public:
-    std::shared_ptr<Action> clone() const final
-    {
-        return std::make_shared<LaplacianSmoothingFilter>(*this);
-    }
-
     std::string name() const final { return "Laplacian Smoothing"; }
 
     std::string description() const final
