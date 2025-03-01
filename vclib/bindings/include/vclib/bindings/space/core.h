@@ -23,11 +23,19 @@
 #ifndef VCL_BINDINGS_SPACE_CORE_H
 #define VCL_BINDINGS_SPACE_CORE_H
 
+#include "core/point.h"
+
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initCore(pybind11::module& m);
+inline void initCore(pybind11::module& m)
+{
+    namespace py = pybind11;
+
+    //py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
+    initPoint(m);
+}
 
 } // namespace vcl::bind
 

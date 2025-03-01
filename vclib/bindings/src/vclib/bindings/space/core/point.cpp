@@ -38,13 +38,25 @@ void populatePoint(pybind11::module& m)
     using P = Point<Scalar, DIM>;
 
     std::string cName = "Point" + std::to_string(DIM);
-    py::class_<P> c(m, cName.c_str());
+    py::class_<P> c(m, cName.c_str(), py::buffer_protocol());
     c.def(py::init<>());
 
     addCopy(c);
 
     c.def_property_readonly_static("DIM", [](py::object /* self */) {
         return P::DIM;
+    });
+
+    c.def_buffer([](P& p) -> py::buffer_info {
+        return py::buffer_info(
+            p.data(),                                /* Pointer to buffer */
+            sizeof(Scalar),                          /* Size of one scalar */
+            py::format_descriptor<Scalar>::format(), /* Python struct-style
+                                                        format descriptor */
+            1,                                       /* Number of dimensions */
+            {DIM},                                   /* Buffer dimensions */
+            {sizeof(Scalar)} /* Strides (in bytes) for each index */
+        );
     });
 
     if constexpr (DIM == 1) {

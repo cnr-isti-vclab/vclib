@@ -23,18 +23,18 @@
 #ifndef VCL_BINDINGS_SPACE_H
 #define VCL_BINDINGS_SPACE_H
 
-#include <pybind11/pybind11.h>
-
 #include "space/core.h"
+
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initSpace(pybind11::module& m)
+inline void initSpace(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::module_ sm = m.def_submodule("space", "Spatial Data Structures");
-    initCore(sm);
+    //py::module_ sm = m.def_submodule("space", "Spatial Data Structures");
+    initCore(m);
 }
 
 } // namespace vcl::bind
