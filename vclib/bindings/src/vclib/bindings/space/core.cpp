@@ -20,16 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <pybind11/pybind11.h>
+#include <vclib/bindings/space/core.h>
 
-#include "space.h"
+#include <vclib/bindings/space/core/point.h>
 
-// creation of a python module
-PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
+namespace vcl::bind {
+
+void initCore(pybind11::module& m)
 {
-    // import the bindings
-    using namespace vcl::bind;
+    namespace py = pybind11;
 
-    // initialize the bindings
-    initSpace(m);
+    py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
+    initPoint(sm);
 }
+
+} // namespace vcl::bind

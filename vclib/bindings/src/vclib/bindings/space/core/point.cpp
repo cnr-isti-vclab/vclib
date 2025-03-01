@@ -20,9 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "point.h"
+#include <vclib/bindings/space/core/point.h>
+#include <vclib/bindings/utils.h>
 
 #include <vclib/space/core.h>
+
+#include <pybind11/operators.h>
 
 namespace vcl::bind {
 
@@ -31,32 +34,38 @@ void populatePoint(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    using P = Point<double, DIM>;
+    using Scalar = double;
+    using P = Point<Scalar, DIM>;
 
     std::string cName = "Point" + std::to_string(DIM);
     py::class_<P> c(m, cName.c_str());
     c.def(py::init<>());
+
+    addCopy(c);
 
     c.def_property_readonly_static("DIM", [](py::object /* self */) {
         return P::DIM;
     });
 
     if constexpr (DIM == 1) {
-        c.def(py::init<double>(), py::arg("x"));
+        c.def(py::init<Scalar>(), py::arg("x"));
     }
     if constexpr (DIM == 2) {
-        c.def(py::init<double, double>(), py::arg("x"), py::arg("y"));
+        c.def(py::init<Scalar, Scalar>(), py::arg("x"), py::arg("y"));
     }
     if constexpr (DIM == 3) {
         c.def(
-            py::init<double, double, double>(),
+            py::init<Scalar, Scalar, Scalar>(),
             py::arg("x"),
             py::arg("y"),
             py::arg("z"));
+
+        c.def("cross", [](const P& p1, const P& p2) { return p1.cross(p2); });
+        c.def("ortho_base", &P::orthoBase);
     }
     if constexpr (DIM == 4) {
         c.def(
-            py::init<double, double, double, double>(),
+            py::init<Scalar, Scalar, Scalar, Scalar>(),
             py::arg("x"),
             py::arg("y"),
             py::arg("z"),
@@ -65,20 +74,49 @@ void populatePoint(pybind11::module& m)
 
     if constexpr (DIM >= 1) {
         c.def("x", py::overload_cast<>(&P::x, py::const_));
-        c.def("set_x", [](P& p, double v) { p.x() = v; });
+        c.def("set_x", [](P& p, Scalar v) { p.x() = v; });
     }
     if constexpr (DIM >= 2) {
         c.def("y", py::overload_cast<>(&P::y, py::const_));
-        c.def("set_y", [](P& p, double v) { p.y() = v; });
+        c.def("set_y", [](P& p, Scalar v) { p.y() = v; });
     }
     if constexpr (DIM >= 3) {
         c.def("z", py::overload_cast<>(&P::z, py::const_));
-        c.def("set_z", [](P& p, double v) { p.z() = v; });
+        c.def("set_z", [](P& p, Scalar v) { p.z() = v; });
     }
     if constexpr (DIM >= 4) {
         c.def("w", py::overload_cast<>(&P::w, py::const_));
-        c.def("set_w", [](P& p, double v) { p.w() = v; });
+        c.def("set_w", [](P& p, Scalar v) { p.w() = v; });
     }
+
+    c.def("is_degenerate", &P::isDegenerate);
+    c.def("epsilon_equals", &P::epsilonEquals);
+    c.def("angle", &P::angle);
+    c.def("dist", &P::dist);
+    c.def("squared_dist", &P::squaredDist);
+    c.def("mul", &P::mul);
+    c.def("div", &P::div);
+    c.def("size", &P::size);
+    c.def("outer_product", &P::outerProduct);
+
+    c.def("dot", [](const P& p1, const P& p2) { return p1.dot(p2); });
+    c.def("norm", &P::norm);
+
+    // operators
+    c.def(-py::self);
+    c.def(py::self + py::self);
+    c.def(py::self + Scalar());
+    c.def(py::self - py::self);
+    c.def(py::self - Scalar());
+    c.def(py::self * Scalar());
+    c.def(Scalar() * py::self);
+    c.def(py::self / Scalar());
+    c.def(py::self += py::self);
+    c.def(py::self += Scalar());
+    c.def(py::self -= py::self);
+    c.def(py::self -= Scalar());
+    c.def(py::self *= Scalar());
+    c.def(py::self /= Scalar());
 }
 
 void initPoint(pybind11::module& m)

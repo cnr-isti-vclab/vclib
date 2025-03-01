@@ -49,14 +49,8 @@ if __name__ == "__main__":
     os.chdir('../vclib/')
 
     for module in vcl_modules:
-        if module == 'bindings':
-            os.chdir(module + '/src/')
-        else:
-            os.chdir(module + '/include/vclib/')
+        os.chdir(module + '/include/vclib/')
 
         replace_header_guards_in_dir('')
 
-        if module == 'bindings':
-            os.chdir('../../')
-        else:
-            os.chdir('../../../')
+        os.chdir('../../../')

@@ -29,13 +29,15 @@ set(MODULE_NAME vclib_bindings)
 message(STATUS "VCLib-Bindings: 3rd party libraries")
 add_subdirectory(3rdparty)
 
-file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "src/bindings/*.h")
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/bindings/*.cpp")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/vclib/bindings/*.cpp")
 
 pybind11_add_module(${MODULE_NAME} ${HEADERS} ${SOURCES})
 target_compile_definitions(${MODULE_NAME} PRIVATE
     VCLIB_MAIN_MODULE_NAME=${MODULE_NAME})
+
+set(VCLIB_BINDINGS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_include_directories(${MODULE_NAME} PRIVATE ${VCLIB_BINDINGS_INCLUDE_DIR})
 target_link_libraries(${MODULE_NAME} PRIVATE vclib::core)

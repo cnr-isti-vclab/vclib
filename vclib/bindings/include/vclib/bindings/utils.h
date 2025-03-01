@@ -20,16 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "tri_mesh.h"
+#ifndef VCL_BINDINGS_UTILS_H
+#define VCL_BINDINGS_UTILS_H
 
-#include <vclib/meshes.h>
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initTriMesh(pybind11::module& m)
+template<typename Class>
+void addCopy(pybind11::class_<Class>& c)
 {
-    // Create the class
-    pybind11::class_<TriMesh> tmClass(m, "TriMesh");
+    using namespace pybind11::literals;
+
+    c.def("__copy__", [](const Class& self) {
+        return Class(self);
+    });
+    c.def(
+        "__deepcopy__",
+        [](const Class& self, pybind11::dict) {
+            return Class(self);
+        },
+        "memo"_a);
 }
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_UTILS_H
