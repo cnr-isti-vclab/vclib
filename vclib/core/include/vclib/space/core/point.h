@@ -375,7 +375,7 @@ public:
     {
         Point<Scalar, N> tmp;
         for (size_t i = 0; i < DIM; ++i) {
-            if (p1.mP[i] == 0)
+            if (p1[i] == 0)
                 throw std::runtime_error(
                     "Math error: Attempted to divide by Zero\n");
             tmp[i] = at(i) / p1[i];
