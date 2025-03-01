@@ -29,6 +29,12 @@
 
 namespace vcl::proc {
 
+template<template<typename> typename Action, typename MeshType>
+auto actionDownCast(const std::shared_ptr<vcl::proc::Action>& action)
+{
+    return std::dynamic_pointer_cast<Action<MeshType>>(action);
+}
+
 std::pair<std::any, MeshTypeId> loadMeshBestFit(
     const std::string&     filename,
     const ParameterVector& parameters,
@@ -49,6 +55,51 @@ std::pair<std::any, MeshTypeId> loadMeshBestFit(
     else {
         res = std::move(mesh);
         return {res, MeshTypeId::POLYGON_MESH};
+    }
+}
+
+inline ParameterVector loadMeshParameters(MeshTypeId type, FileFormat f)
+{
+    auto action = ActionManager::loadMeshAction(f, type);
+    switch(type) {
+    case MeshTypeId::TRIANGLE_MESH:
+        return actionDownCast<MeshIOAction, vcl::TriEdgeMesh>(action)
+            ->parametersLoad(f);
+    case MeshTypeId::POLYGON_MESH:
+        return actionDownCast<MeshIOAction, vcl::PolyEdgeMesh>(action)
+            ->parametersLoad(f);
+    default:
+        return ParameterVector();
+    }
+}
+
+inline ParameterVector saveMeshParameters(MeshTypeId type, FileFormat f)
+{
+    auto action = ActionManager::saveMeshAction(f, type);
+    switch(type) {
+    case MeshTypeId::TRIANGLE_MESH:
+        return actionDownCast<MeshIOAction, vcl::TriEdgeMesh>(action)
+            ->parametersSave(f);
+    case MeshTypeId::POLYGON_MESH:
+        return actionDownCast<MeshIOAction, vcl::PolyEdgeMesh>(action)
+            ->parametersSave(f);
+    default:
+        return ParameterVector();
+    }
+}
+
+inline ParameterVector filterParameters(MeshTypeId type, const std::string& name)
+{
+    auto action = ActionManager::filterAction(name, type);
+    switch(type) {
+    case MeshTypeId::TRIANGLE_MESH:
+        return actionDownCast<FilterAction, vcl::TriEdgeMesh>(action)
+            ->parameters();
+    case MeshTypeId::POLYGON_MESH:
+        return actionDownCast<FilterAction, vcl::PolyEdgeMesh>(action)
+            ->parameters();
+    default:
+        return ParameterVector();
     }
 }
 
