@@ -30,11 +30,11 @@
 namespace vcl::proc {
 
 std::pair<std::any, MeshTypeId> loadMeshBestFit(
-    const std::string& filename,
+    const std::string&     filename,
     const ParameterVector& parameters,
-    auto& logger)
+    auto&                  logger)
 {
-    std::any res;
+    std::any    res;
     std::string ext = FileInfo::extension(filename);
 
     PolyEdgeMesh mesh = ActionManager::loadMeshAction<PolyEdgeMesh>(ext)->load(
