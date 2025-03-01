@@ -63,10 +63,10 @@ inline ParameterVector loadMeshParameters(MeshTypeId type, FileFormat f)
     auto action = ActionManager::loadMeshAction(f, type);
     switch(type) {
     case MeshTypeId::TRIANGLE_MESH:
-        return actionDownCast<MeshIOAction, vcl::TriEdgeMesh>(action)
+        return actionDownCast<MeshIOActionT, vcl::TriEdgeMesh>(action)
             ->parametersLoad(f);
     case MeshTypeId::POLYGON_MESH:
-        return actionDownCast<MeshIOAction, vcl::PolyEdgeMesh>(action)
+        return actionDownCast<MeshIOActionT, vcl::PolyEdgeMesh>(action)
             ->parametersLoad(f);
     default:
         return ParameterVector();
@@ -78,10 +78,10 @@ inline ParameterVector saveMeshParameters(MeshTypeId type, FileFormat f)
     auto action = ActionManager::saveMeshAction(f, type);
     switch(type) {
     case MeshTypeId::TRIANGLE_MESH:
-        return actionDownCast<MeshIOAction, vcl::TriEdgeMesh>(action)
+        return actionDownCast<MeshIOActionT, vcl::TriEdgeMesh>(action)
             ->parametersSave(f);
     case MeshTypeId::POLYGON_MESH:
-        return actionDownCast<MeshIOAction, vcl::PolyEdgeMesh>(action)
+        return actionDownCast<MeshIOActionT, vcl::PolyEdgeMesh>(action)
             ->parametersSave(f);
     default:
         return ParameterVector();
@@ -93,10 +93,10 @@ inline ParameterVector filterParameters(MeshTypeId type, const std::string& name
     auto action = ActionManager::filterAction(name, type);
     switch(type) {
     case MeshTypeId::TRIANGLE_MESH:
-        return actionDownCast<FilterAction, vcl::TriEdgeMesh>(action)
+        return actionDownCast<FilterActionT, vcl::TriEdgeMesh>(action)
             ->parameters();
     case MeshTypeId::POLYGON_MESH:
-        return actionDownCast<FilterAction, vcl::PolyEdgeMesh>(action)
+        return actionDownCast<FilterActionT, vcl::PolyEdgeMesh>(action)
             ->parameters();
     default:
         return ParameterVector();

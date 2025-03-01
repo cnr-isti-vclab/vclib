@@ -30,9 +30,9 @@
 namespace vcl::proc {
 
 template<MeshConcept MeshType>
-class LaplacianSmoothingFilter : public FilterAction<MeshType>
+class LaplacianSmoothingFilter : public FilterActionT<MeshType>
 {
-    using Base = FilterAction<MeshType>;
+    using Base = FilterActionT<MeshType>;
 
 public:
     std::shared_ptr<Action> clone() const final

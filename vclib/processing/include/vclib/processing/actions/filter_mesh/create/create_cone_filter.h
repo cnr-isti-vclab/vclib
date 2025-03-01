@@ -30,9 +30,9 @@
 namespace vcl::proc {
 
 template<MeshConcept MeshType>
-class CreateConeFilter : public FilterAction<MeshType>
+class CreateConeFilter : public FilterActionT<MeshType>
 {
-    using Base = FilterAction<MeshType>;
+    using Base = FilterActionT<MeshType>;
 
 public:
     std::shared_ptr<Action> clone() const final
