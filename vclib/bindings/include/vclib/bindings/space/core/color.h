@@ -20,25 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_SPACE_CORE_H
-#define VCL_BINDINGS_SPACE_CORE_H
-
-#include "core/color.h"
-#include "core/point.h"
+#ifndef VCL_BINDINGS_SPACE_CORE_COLOR_H
+#define VCL_BINDINGS_SPACE_CORE_COLOR_H
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-inline void initCore(pybind11::module& m)
-{
-    namespace py = pybind11;
-
-    //py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
-    initColor(m);
-    initPoint(m);
-}
+void initColor(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_SPACE_CORE_H
+#endif // VCL_BINDINGS_SPACE_CORE_COLOR_H
