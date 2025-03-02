@@ -41,7 +41,7 @@ void populatePoint(pybind11::module& m)
     py::class_<P> c(m, cName.c_str(), py::buffer_protocol());
     c.def(py::init<>());
 
-    addCopy(c);
+    defCopy(c);
 
     c.def_property_readonly_static("DIM", [](py::object /* self */) {
         return P::DIM;
@@ -129,6 +129,8 @@ void populatePoint(pybind11::module& m)
     c.def(py::self -= Scalar());
     c.def(py::self *= Scalar());
     c.def(py::self /= Scalar());
+
+    defRepr(c);
 }
 
 void initPoint(pybind11::module& m)

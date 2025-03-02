@@ -39,7 +39,7 @@ void initTriMesh(pybind11::module& m)
 
     c.def(py::init<>());
 
-    addCopy(c);
+    defCopy(c);
 
     initTriMeshVertex(c);
     initTriMeshVertexContainer(c);

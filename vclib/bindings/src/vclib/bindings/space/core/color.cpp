@@ -36,7 +36,7 @@ void initColor(pybind11::module& m)
     c.def(py::init<uint8_t, uint8_t, uint8_t>());
     c.def(py::init<uint8_t, uint8_t, uint8_t, uint8_t>());
 
-    addCopy(c);
+    defCopy(c);
 
     c.def_buffer([](Color& p) -> py::buffer_info {
         return py::buffer_info(
@@ -66,6 +66,8 @@ void initColor(pybind11::module& m)
     c.def("set_alpha", [](Color& c, uint v) { c.alpha() = v; });
     c.def("alpha_f", &Color::alphaF);
     c.def("set_alpha_f", &Color::setAlphaF);
+
+    defRepr(c);
 }
 
 } // namespace vcl::bind

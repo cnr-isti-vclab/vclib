@@ -25,10 +25,12 @@
 
 #include <pybind11/pybind11.h>
 
+#include <sstream>
+
 namespace vcl::bind {
 
 template<typename Class>
-void addCopy(pybind11::class_<Class>& c)
+void defCopy(pybind11::class_<Class>& c)
 {
     using namespace pybind11::literals;
 
@@ -41,6 +43,16 @@ void addCopy(pybind11::class_<Class>& c)
             return Class(self);
         },
         "memo"_a);
+}
+
+template<typename Class>
+void defRepr(pybind11::class_<Class>& c)
+{
+    c.def("__repr__", [](const Class& self) {
+        std::stringstream ss;
+        ss << self;
+        return ss.str();
+    });
 }
 
 } // namespace vcl::bind
