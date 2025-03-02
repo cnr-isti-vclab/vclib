@@ -31,15 +31,6 @@ namespace vcl::bind {
 
 namespace detail {
 
-template<MeshConcept MeshType>
-class ElemRange
-{
-public:
-    MeshType& t;
-
-    ElemRange(MeshType& t) : t(t) {}
-};
-
 template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 void addOptionalComponentFunctions(
     pybind11::class_<MeshType>& c,
@@ -126,23 +117,21 @@ void initContainer(
         return t.template deleteElement<ELEM_ID>(i);
     });
 
-    using ER = detail::ElemRange<MeshType>;
+    using ElemView = View<decltype(MeshType().template begin<ELEM_ID>())>;
 
     // inner class that allows to iterate over elements
-    pybind11::class_<ER> v(c, ("_" + capitalName + "Range").c_str());
+    pybind11::class_<ElemView> v(c, ("_" + capitalName + "Range").c_str());
 
     v.def(
         "__iter__",
-        [](ER& t) {
+        [](ElemView& t) {
             return py::make_iterator(
-                t.t.template begin<ELEM_ID>(), t.t.template end<ELEM_ID>());
+                t.begin(), t.end());
         },
-        py::keep_alive<
-            0,
-            1>() /* Essential: keep object alive while iterator exists */);
+        py::keep_alive<0, 1>());
 
     c.def(namePlural.c_str(), [](MeshType& t) {
-        return ER(t);
+        return t.template elements<ELEM_ID>();
     });
 
     // optional components

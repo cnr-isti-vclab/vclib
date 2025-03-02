@@ -45,7 +45,7 @@ void initTriMesh(pybind11::module& m)
     initTriMeshVertex(c);
     initTriMeshVertexContainer(c);
 
-    //initContainer<TriMesh::Face>(c, "face");
+    initContainer<TriMesh::Face>(c, "face");
 }
 
 } // namespace vcl::bind
