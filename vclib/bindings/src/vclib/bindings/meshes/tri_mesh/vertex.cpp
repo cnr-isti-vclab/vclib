@@ -20,19 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/meshes.h>
-#include <vclib/bindings/space.h>
+#include <vclib/bindings/meshes/tri_mesh/vertex.h>
 
-#include <pybind11/pybind11.h>
+namespace vcl::bind {
 
-// creation of a python module
-PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
+void initTriMeshVertex(pybind11::class_<vcl::TriMesh>& ct)
 {
-    // import the bindings
-    using namespace vcl::bind;
+    namespace py = pybind11;
 
-    // initialize the bindings
-    initSpace(m);
+    // Create the class
+    pybind11::class_<TriMesh::Vertex> c(ct, "Vertex");
 
-    initMeshes(m);
+    c.def("coord", py::overload_cast<>(&TriMesh::Vertex::coord, py::const_));
+    c.def("set_coord", [](TriMesh::Vertex& v, const Point3d& p) {
+        v.coord() = p;
+    });
+    c.def("normal", py::overload_cast<>(&TriMesh::Vertex::normal, py::const_));
+    c.def("set_normal", [](TriMesh::Vertex& v, const Point3d& p) {
+        v.normal() = p;
+    });
+    c.def("color", py::overload_cast<>(&TriMesh::Vertex::color, py::const_));
+    c.def("set_color", [](TriMesh::Vertex& v, const Color& c) {
+        v.color() = c;
+    });
 }
+
+} // namespace vcl::bind

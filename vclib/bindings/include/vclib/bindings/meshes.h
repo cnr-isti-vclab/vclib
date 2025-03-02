@@ -20,19 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/meshes.h>
-#include <vclib/bindings/space.h>
+#ifndef VCL_BINDINGS_MESHES_H
+#define VCL_BINDINGS_MESHES_H
+
+#include "meshes/tri_mesh.h"
 
 #include <pybind11/pybind11.h>
 
-// creation of a python module
-PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
+namespace vcl::bind {
+
+inline void initMeshes(pybind11::module& m)
 {
-    // import the bindings
-    using namespace vcl::bind;
+    namespace py = pybind11;
 
-    // initialize the bindings
-    initSpace(m);
-
-    initMeshes(m);
+    //py::module_ sm = m.def_submodule("meshes", "Meshes");
+    initTriMesh(m);
 }
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_MESHES_H

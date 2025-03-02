@@ -21,8 +21,8 @@
  ****************************************************************************/
 
 #include <vclib/bindings/space/core/point.h>
-#include <vclib/bindings/utils.h>
 
+#include <vclib/bindings/utils.h>
 #include <vclib/space/core.h>
 
 #include <pybind11/operators.h>
