@@ -23,9 +23,9 @@
 #ifndef VCL_BINDINGS_MESHES_TRI_MESH_VERTEX_CONTAINER_H
 #define VCL_BINDINGS_MESHES_TRI_MESH_VERTEX_CONTAINER_H
 
-#include <pybind11/pybind11.h>
-
 #include <vclib/meshes.h>
+
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
