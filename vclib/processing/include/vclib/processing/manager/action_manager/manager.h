@@ -184,7 +184,8 @@ public:
     }
 
     template<typename MeshType>
-    std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(FileFormat fmt) const
+    std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(
+        FileFormat fmt) const
     {
         auto act =
             mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].saveAction(
