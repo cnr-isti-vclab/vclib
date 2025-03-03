@@ -20,34 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/meshes/tri_mesh.h>
+#ifndef VCL_BINDINGS_MESH_ELEMENT_H
+#define VCL_BINDINGS_MESH_ELEMENT_H
 
-#include <vclib/bindings/mesh/container.h>
-#include <vclib/bindings/meshes/tri_mesh/face.h>
-#include <vclib/bindings/meshes/tri_mesh/vertex.h>
-#include <vclib/bindings/meshes/tri_mesh/vertex_container.h>
-#include <vclib/bindings/utils.h>
+#include <vclib/concepts/mesh.h>
+#include <vclib/space/core.h>
 
-#include <vclib/meshes.h>
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initTriMesh(pybind11::module& m)
+template<ElementConcept ElementType>
+void initElement(pybind11::class_<ElementType>& c)
 {
     namespace py = pybind11;
 
-    // Create the class
-    pybind11::class_<TriMesh> c(m, "TriMesh");
+    c.def("index", &ElementType::index);
 
-    c.def(py::init<>());
+    c.def("parent_mesh", [](ElementType& v) {
+        return v.parentMesh();
+    });
 
-    defCopy(c);
-
-    initTriMeshVertex(c);
-    initTriMeshVertexContainer(c);
-
-    initTriMeshFace(c);
-    initContainer<TriMesh::Face>(c, "face");
+    if constexpr (comp::HasCoordinate<ElementType>) {
+        c.def("coord", py::overload_cast<>(&ElementType::coord, py::const_));
+        c.def("set_coord", [](ElementType& v, const Point3d& p) {
+            v.coord() = p;
+        });
+    }
+    if constexpr (comp::HasNormal<ElementType>) {
+        c.def("normal", py::overload_cast<>(&ElementType::normal, py::const_));
+        c.def("set_normal", [](ElementType& v, const Point3d& p) {
+            v.normal() = p;
+        });
+    }
+    if constexpr (comp::HasColor<ElementType>) {
+        c.def("color", py::overload_cast<>(&ElementType::color, py::const_));
+        c.def("set_color", [](ElementType& v, const Color& c) {
+            v.color() = c;
+        });
+    }
 }
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_MESH_ELEMENT_H

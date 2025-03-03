@@ -22,6 +22,8 @@
 
 #include <vclib/bindings/meshes/tri_mesh/vertex.h>
 
+#include <vclib/bindings/mesh/element.h>
+
 namespace vcl::bind {
 
 void initTriMeshVertex(pybind11::class_<vcl::TriMesh>& ct)
@@ -31,18 +33,7 @@ void initTriMeshVertex(pybind11::class_<vcl::TriMesh>& ct)
     // Create the class
     pybind11::class_<TriMesh::Vertex> c(ct, "Vertex");
 
-    c.def("coord", py::overload_cast<>(&TriMesh::Vertex::coord, py::const_));
-    c.def("set_coord", [](TriMesh::Vertex& v, const Point3d& p) {
-        v.coord() = p;
-    });
-    c.def("normal", py::overload_cast<>(&TriMesh::Vertex::normal, py::const_));
-    c.def("set_normal", [](TriMesh::Vertex& v, const Point3d& p) {
-        v.normal() = p;
-    });
-    c.def("color", py::overload_cast<>(&TriMesh::Vertex::color, py::const_));
-    c.def("set_color", [](TriMesh::Vertex& v, const Color& c) {
-        v.color() = c;
-    });
+    initElement(c);
 }
 
 } // namespace vcl::bind

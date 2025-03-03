@@ -20,34 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/meshes/tri_mesh.h>
-
-#include <vclib/bindings/mesh/container.h>
 #include <vclib/bindings/meshes/tri_mesh/face.h>
-#include <vclib/bindings/meshes/tri_mesh/vertex.h>
-#include <vclib/bindings/meshes/tri_mesh/vertex_container.h>
-#include <vclib/bindings/utils.h>
 
-#include <vclib/meshes.h>
+#include <vclib/bindings/mesh/element.h>
 
 namespace vcl::bind {
 
-void initTriMesh(pybind11::module& m)
+void initTriMeshFace(pybind11::class_<vcl::TriMesh>& ct)
 {
     namespace py = pybind11;
 
     // Create the class
-    pybind11::class_<TriMesh> c(m, "TriMesh");
+    pybind11::class_<TriMesh::Face> c(ct, "Face");
 
-    c.def(py::init<>());
-
-    defCopy(c);
-
-    initTriMeshVertex(c);
-    initTriMeshVertexContainer(c);
-
-    initTriMeshFace(c);
-    initContainer<TriMesh::Face>(c, "face");
+    initElement(c);
 }
 
 } // namespace vcl::bind
