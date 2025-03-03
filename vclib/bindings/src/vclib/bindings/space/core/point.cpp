@@ -135,8 +135,6 @@ void populatePoint(pybind11::module& m)
 
 void initPoint(pybind11::module& m)
 {
-    namespace py = pybind11;
-
     populatePoint<2>(m);
     populatePoint<3>(m);
     populatePoint<4>(m);

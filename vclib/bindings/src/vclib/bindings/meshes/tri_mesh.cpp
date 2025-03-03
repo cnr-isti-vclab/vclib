@@ -22,6 +22,7 @@
 
 #include <vclib/bindings/meshes/tri_mesh.h>
 
+#include <vclib/bindings/mesh/components.h>
 #include <vclib/bindings/mesh/container.h>
 #include <vclib/bindings/meshes/tri_mesh/face.h>
 #include <vclib/bindings/meshes/tri_mesh/vertex.h>
@@ -48,6 +49,8 @@ void initTriMesh(pybind11::module& m)
 
     initTriMeshFace(c);
     initContainer<TriMesh::Face>(c, "face");
+
+    initComponents(c);
 }
 
 } // namespace vcl::bind

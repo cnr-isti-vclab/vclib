@@ -22,7 +22,7 @@
 
 #include <vclib/bindings/meshes/tri_mesh/face.h>
 
-#include <vclib/bindings/mesh/element.h>
+#include <vclib/bindings/mesh/components.h>
 
 namespace vcl::bind {
 
@@ -33,7 +33,7 @@ void initTriMeshFace(pybind11::class_<vcl::TriMesh>& ct)
     // Create the class
     pybind11::class_<TriMesh::Face> c(ct, "Face");
 
-    initElement(c);
+    initComponents(c);
 }
 
 } // namespace vcl::bind

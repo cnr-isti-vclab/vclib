@@ -20,59 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_ELEMENT_H
-#define VCL_BINDINGS_MESH_ELEMENT_H
-
-#include "components/vertex_references.h"
-
-#include <vclib/concepts/mesh.h>
-#include <vclib/space/core.h>
+#ifndef VCL_BINDINGS_SPACE_CORE_BOX_H
+#define VCL_BINDINGS_SPACE_CORE_BOX_H
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initElement(pybind11::class_<ElementType>& c)
-{
-    namespace py = pybind11;
-
-    c.def("index", &ElementType::index);
-
-    c.def("parent_mesh", [](ElementType& v) {
-        return v.parentMesh();
-    });
-
-    if constexpr (comp::HasCoordinate<ElementType>) {
-        c.def("coord", py::overload_cast<>(&ElementType::coord, py::const_));
-        c.def("set_coord", [](ElementType& v, const Point3d& p) {
-            v.coord() = p;
-        });
-    }
-    if constexpr (comp::HasNormal<ElementType>) {
-        c.def("normal", py::overload_cast<>(&ElementType::normal, py::const_));
-        c.def("set_normal", [](ElementType& v, const Point3d& p) {
-            v.normal() = p;
-        });
-    }
-    if constexpr (comp::HasColor<ElementType>) {
-        c.def("color", py::overload_cast<>(&ElementType::color, py::const_));
-        c.def("set_color", [](ElementType& v, const Color& c) {
-            v.color() = c;
-        });
-    }
-    if constexpr (comp::HasQuality<ElementType>) {
-        c.def("quality", py::overload_cast<>(&ElementType::quality, py::const_));
-        c.def("set_quality", [](ElementType& v, double q) {
-            v.quality() = q;
-        });
-    }
-
-    if constexpr (comp::HasVertexReferences<ElementType>) {
-        initVertexReferences(c);
-    }
-}
+void initBox(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESH_ELEMENT_H
+#endif // VCL_BINDINGS_SPACE_CORE_BOX_H

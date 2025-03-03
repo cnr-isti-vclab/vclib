@@ -23,6 +23,7 @@
 #ifndef VCL_BINDINGS_SPACE_CORE_H
 #define VCL_BINDINGS_SPACE_CORE_H
 
+#include "core/box.h"
 #include "core/color.h"
 #include "core/point.h"
 
@@ -35,8 +36,11 @@ inline void initCore(pybind11::module& m)
     namespace py = pybind11;
 
     //py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
-    initColor(m);
     initPoint(m);
+
+    initBox(m);
+    initColor(m);
+
 }
 
 } // namespace vcl::bind

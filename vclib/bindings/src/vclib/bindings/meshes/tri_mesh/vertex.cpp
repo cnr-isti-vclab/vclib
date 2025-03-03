@@ -22,7 +22,7 @@
 
 #include <vclib/bindings/meshes/tri_mesh/vertex.h>
 
-#include <vclib/bindings/mesh/element.h>
+#include <vclib/bindings/mesh/components.h>
 
 namespace vcl::bind {
 
@@ -33,7 +33,7 @@ void initTriMeshVertex(pybind11::class_<vcl::TriMesh>& ct)
     // Create the class
     pybind11::class_<TriMesh::Vertex> c(ct, "Vertex");
 
-    initElement(c);
+    initComponents(c);
 }
 
 } // namespace vcl::bind
