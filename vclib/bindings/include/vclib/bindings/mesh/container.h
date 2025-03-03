@@ -95,13 +95,13 @@ void initContainer(
         ("deleted_" + name + "_number").c_str(),
         &MeshType::template deletedNumber<ELEM_ID>);
 
-    c.def(("add_" + name).c_str(), [](MeshType& t) {
-        return t.template add<ELEM_ID>();
-    });
+    c.def(
+        ("add_" + name).c_str(),
+        py::overload_cast<>(&MeshType::template add<ELEM_ID>));
 
-    c.def(("add_" + namePlural).c_str(), [](MeshType& t, uint n) {
-        return t.template add<ELEM_ID>(n);
-    });
+    c.def(
+        ("add_" + namePlural).c_str(),
+        py::overload_cast<uint>(&MeshType::template add<ELEM_ID>));
 
     c.def(
         ("clear_" + namePlural).c_str(),
@@ -113,9 +113,9 @@ void initContainer(
         ("reserve_" + namePlural).c_str(),
         &MeshType::template reserve<ELEM_ID>);
 
-    c.def(("delete_" + name).c_str(), [](MeshType& t, uint i) {
-        return t.template deleteElement<ELEM_ID>(i);
-    });
+    c.def(
+        ("delete_" + name).c_str(),
+        py::overload_cast<uint>(&MeshType::template deleteElement<ELEM_ID>));
 
     using ElemView = View<decltype(MeshType().template begin<ELEM_ID>())>;
 
@@ -130,9 +130,10 @@ void initContainer(
         },
         py::keep_alive<0, 1>());
 
-    c.def(namePlural.c_str(), [](MeshType& t) {
-        return t.template elements<ELEM_ID>();
-    });
+    c.def(
+        namePlural.c_str(),
+        py::overload_cast<bool>(&MeshType::template elements<ELEM_ID>),
+        py::arg("jump_deleted") = true);
 
     // optional components
 
