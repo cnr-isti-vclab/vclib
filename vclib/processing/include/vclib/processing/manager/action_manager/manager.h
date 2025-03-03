@@ -130,13 +130,13 @@ public:
     }
 
     template<typename MeshType>
-    std::shared_ptr<MeshIOAction<MeshType>> loadMeshAction(FileFormat fmt)
+    std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(FileFormat fmt)
     {
         auto act =
             mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].loadAction(
                 fmt);
 
-        return std::dynamic_pointer_cast<MeshIOAction<MeshType>>(act);
+        return std::dynamic_pointer_cast<MeshIOActionT<MeshType>>(act);
     }
 
     // save image
@@ -184,13 +184,14 @@ public:
     }
 
     template<typename MeshType>
-    std::shared_ptr<MeshIOAction<MeshType>> saveMeshAction(FileFormat fmt) const
+    std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(
+        FileFormat fmt) const
     {
         auto act =
             mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].saveAction(
                 fmt);
 
-        return std::dynamic_pointer_cast<MeshIOAction<MeshType>>(act);
+        return std::dynamic_pointer_cast<MeshIOActionT<MeshType>>(act);
     }
 
     // filter
@@ -202,13 +203,13 @@ public:
     }
 
     template<typename MeshType>
-    std::shared_ptr<FilterAction<MeshType>> filterAction(
+    std::shared_ptr<FilterActionT<MeshType>> filterAction(
         const std::string& name)
     {
         auto act =
             mFilterActions[toUnderlying(meshTypeId<MeshType>())].action(name);
 
-        return std::dynamic_pointer_cast<FilterAction<MeshType>>(act);
+        return std::dynamic_pointer_cast<FilterActionT<MeshType>>(act);
     }
 
 private:

@@ -30,16 +30,11 @@
 namespace vcl::proc {
 
 template<MeshConcept MeshType>
-class ConvexHullFilter : public FilterAction<MeshType>
+class ConvexHullFilter : public FilterActionT<MeshType>
 {
-    using Base = FilterAction<MeshType>;
+    using Base = FilterActionT<MeshType>;
 
 public:
-    std::shared_ptr<Action> clone() const final
-    {
-        return std::make_shared<ConvexHullFilter>(*this);
-    }
-
     std::string name() const final { return "Convex Hull"; }
 
     std::string description() const final

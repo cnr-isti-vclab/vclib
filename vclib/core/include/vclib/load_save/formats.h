@@ -48,7 +48,7 @@ constexpr FileFormat stlFileFormat()
     return FileFormat("stl", "STL Stereolithography .stl");
 }
 
-FileFormat fileFormat(const std::string& format)
+inline FileFormat fileFormat(const std::string& format)
 {
     std::string ext = toLower(format);
     if (ext == "obj") {

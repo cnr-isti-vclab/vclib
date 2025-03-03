@@ -32,11 +32,6 @@ class BaseIOImage : public ImageIOAction
 public:
     std::string name() const final { return "Base IO Image"; }
 
-    std::shared_ptr<Action> clone() const final
-    {
-        return std::make_shared<BaseIOImage>(*this);
-    }
-
     IOSupport ioSupport() const final { return IOSupport::BOTH; }
 
     std::vector<FileFormat> supportedFormats() const final
