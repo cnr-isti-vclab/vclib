@@ -23,6 +23,8 @@
 #include <vclib/bindings/meshes.h>
 #include <vclib/bindings/space.h>
 
+#include <vclib/types.h>
+
 #include <pybind11/pybind11.h>
 
 // creation of a python module
@@ -30,6 +32,8 @@ PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
 {
     // import the bindings
     using namespace vcl::bind;
+
+    m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
 
     // initialize the bindings
     initSpace(m);
