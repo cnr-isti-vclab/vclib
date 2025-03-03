@@ -216,9 +216,9 @@ protected:
     void setElementMod(int i, uint ei)
     {
         if constexpr (STORE_INDICES)
-            Base::container().atMod(i) = elemFromParent(ei);
-        else
             Base::container().atMod(i) = ei;
+        else
+            Base::container().atMod(i) = elemFromParent(ei);
     }
 
     template<Range Rng>
