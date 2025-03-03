@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 
     // load and set up a drawable mesh
     ProgramSwitcherDrawableMesh<vcl::TriMesh> drawable = 
-        getProgramSwitcherDrawableMesh<vcl::TriMesh>("C:/Users/Giacomo/Documents/vclib/vclib/assets/example_meshes/bimba.obj");
+        getProgramSwitcherDrawableMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
