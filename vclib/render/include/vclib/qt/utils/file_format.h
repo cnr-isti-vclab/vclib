@@ -65,6 +65,17 @@ inline QString filterFormatsToQString(
     return filter;
 }
 
+inline FileFormat formatFromQStringFilter(const QString& filter)
+{
+    // find the first "(*."
+    int start = filter.indexOf("(*.") + 3;
+    // find the first ")" after start
+    int end = filter.indexOf(")", start);
+    // extract the extension between start and end
+    QString ext = filter.mid(start, end - start);
+    return FileFormat(ext.toStdString());
+}
+
 } // namespace vcl::qt
 
 #endif // VCL_QT_UTILS_FILE_FORMAT_H

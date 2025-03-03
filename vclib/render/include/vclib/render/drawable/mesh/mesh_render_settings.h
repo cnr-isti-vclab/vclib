@@ -834,9 +834,8 @@ private:
             else if (canSurface(COLOR_VERTEX_TEX)) {
                 setSurface(COLOR_VERTEX_TEX);
             }
-            else if (canSurface(COLOR_MESH)) {
-                setSurface(COLOR_MESH);
-            }
+            // jump mesh color on purpose: it is always available on the mesh,
+            // but rarely used and it is likely to be set to 0 (black)
             else {
                 setSurface(COLOR_USER);
             }
