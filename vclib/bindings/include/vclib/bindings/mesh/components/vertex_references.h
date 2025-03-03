@@ -20,59 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_ELEMENT_H
-#define VCL_BINDINGS_MESH_ELEMENT_H
-
-#include "components/vertex_references.h"
+#ifndef VCL_BINDINGS_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#define VCL_BINDINGS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include <vclib/concepts/mesh.h>
-#include <vclib/space/core.h>
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
 template<ElementConcept ElementType>
-void initElement(pybind11::class_<ElementType>& c)
+void initVertexReferences(pybind11::class_<ElementType>& c)
 {
+    using VertexType = ElementType::VertexType;
+
     namespace py = pybind11;
 
-    c.def("index", &ElementType::index);
+    c.def("vertex_number", &ElementType::vertexNumber);
 
-    c.def("parent_mesh", [](ElementType& v) {
-        return v.parentMesh();
+    c.def("vertex", [](ElementType& e, uint i) {
+        return e.vertex(i);
     });
-
-    if constexpr (comp::HasCoordinate<ElementType>) {
-        c.def("coord", py::overload_cast<>(&ElementType::coord, py::const_));
-        c.def("set_coord", [](ElementType& v, const Point3d& p) {
-            v.coord() = p;
-        });
-    }
-    if constexpr (comp::HasNormal<ElementType>) {
-        c.def("normal", py::overload_cast<>(&ElementType::normal, py::const_));
-        c.def("set_normal", [](ElementType& v, const Point3d& p) {
-            v.normal() = p;
-        });
-    }
-    if constexpr (comp::HasColor<ElementType>) {
-        c.def("color", py::overload_cast<>(&ElementType::color, py::const_));
-        c.def("set_color", [](ElementType& v, const Color& c) {
-            v.color() = c;
-        });
-    }
-    if constexpr (comp::HasQuality<ElementType>) {
-        c.def("quality", py::overload_cast<>(&ElementType::quality, py::const_));
-        c.def("set_quality", [](ElementType& v, double q) {
-            v.quality() = q;
-        });
-    }
-
-    if constexpr (comp::HasVertexReferences<ElementType>) {
-        initVertexReferences(c);
-    }
+    c.def("vertex_mod", [](ElementType& e, int i) {
+        return e.vertexMod(i);
+    });
+    c.def("set_vertex", [](ElementType& e, uint i, VertexType* v) {
+        e.setVertex(i, v);
+    });
+    c.def("set_vertex", [](ElementType& e, uint i, uint vi) {
+        e.setVertex(i, vi);
+    });
+    c.def("set_vertex_mod", [](ElementType& e, int i, VertexType* v) {
+        e.setVertexMod(i, v);
+    });
+    c.def("set_vertex_mod", [](ElementType& e, int i, uint vi) {
+        e.setVertexMod(i, vi);
+    });
 }
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESH_ELEMENT_H
+#endif // VCL_BINDINGS_MESH_COMPONENTS_VERTEX_REFERENCES_H
