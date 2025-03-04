@@ -55,10 +55,22 @@ void initComponents(pybind11::class_<ElementType>& c)
             v.boundingBox() = b;
         });
     }
+    if constexpr (comp::HasColor<ElementType>) {
+        c.def("color", py::overload_cast<>(&ElementType::color), reference);
+        c.def("set_color", [](ElementType& v, const Color& c) {
+            v.color() = c;
+        });
+    }
     if constexpr (comp::HasCoordinate<ElementType>) {
         c.def("coord", py::overload_cast<>(&ElementType::coord), reference);
         c.def("set_coord", [](ElementType& v, const Point3d& p) {
             v.coord() = p;
+        });
+    }
+    if constexpr (comp::HasName<ElementType>) {
+        c.def("name", py::overload_cast<>(&ElementType::name));
+        c.def("set_name", [](ElementType& v, const std::string& n) {
+            v.name() = n;
         });
     }
     if constexpr (comp::HasNormal<ElementType>) {
@@ -67,12 +79,18 @@ void initComponents(pybind11::class_<ElementType>& c)
             v.normal() = p;
         });
     }
-    if constexpr (comp::HasColor<ElementType>) {
-        c.def("color", py::overload_cast<>(&ElementType::color), reference);
-        c.def("set_color", [](ElementType& v, const Color& c) {
-            v.color() = c;
-        });
+    if constexpr (comp::HasPrincipalCurvature<ElementType>) {
+        c.def(
+            "principal_curvature",
+            py::overload_cast<>(&ElementType::principalCurvature),
+            reference);
+        c.def(
+            "set_principal_curvature",
+            [](ElementType& v, const PrincipalCurvatured& p) {
+                v.principalCurvature() = p;
+            });
     }
+
     if constexpr (comp::HasQuality<ElementType>) {
         c.def("quality", py::overload_cast<>(&ElementType::quality));
         c.def("set_quality", [](ElementType& v, double q) {
