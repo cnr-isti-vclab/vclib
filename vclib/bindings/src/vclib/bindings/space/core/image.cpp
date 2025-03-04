@@ -20,36 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_SPACE_CORE_H
-#define VCL_BINDINGS_SPACE_CORE_H
+#include <vclib/bindings/space/core/image.h>
 
-#include "core/box.h"
-#include "core/color.h"
-#include "core/image.h"
-#include "core/point.h"
-#include "core/principal_curvature.h"
-#include "core/tex_coord.h"
-#include "core/tex_coord_indexed.h"
-
-#include <pybind11/pybind11.h>
+#include <vclib/space/core.h>
 
 namespace vcl::bind {
 
-inline void initCore(pybind11::module& m)
+void initImage(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    //py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
-    initPoint(m);
+    py::class_<Image> c(m, "Image", py::buffer_protocol());
+    c.def(py::init<>());
+    c.def(py::init<std::string>());
 
-    initBox(m);
-    initColor(m);
-    initImage(m);
-    initPrincipalCurvature(m);
-    initTexCoord(m);
-    initTexCoordIndexed(m);
+    c.def("is_null", &Image::isNull);
+    c.def("height", &Image::height);
+    c.def("width", &Image::width);
+    c.def("size_in_bytes", &Image::sizeInBytes);
+    c.def("pixel", &Image::pixel);
+    c.def("load", &Image::load);
+    c.def("save", &Image::save);
+    c.def("mirror", &Image::mirror);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_SPACE_CORE_H
