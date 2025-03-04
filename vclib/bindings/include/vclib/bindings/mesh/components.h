@@ -23,6 +23,9 @@
 #ifndef VCL_BINDINGS_MESH_ELEMENT_H
 #define VCL_BINDINGS_MESH_ELEMENT_H
 
+#include "components/bit_flags.h"
+#include "components/polygon_bit_flags.h"
+#include "components/triangle_bit_flags.h"
 #include "components/vertex_references.h"
 
 #include <vclib/concepts/mesh.h>
@@ -44,6 +47,17 @@ void initComponents(pybind11::class_<ElementType>& c)
         c.def("parent_mesh", [](ElementType& v) {
             return v.parentMesh();
         });
+    }
+
+    // bit flags
+    if constexpr (comp::HasTriangleBitFlags<ElementType>) {
+        initTriangleBitFlags(c);
+    }
+    else if constexpr (comp::HasPolygonBitFlags<ElementType>) {
+        initPolygonBitFlags(c);
+    }
+    else if constexpr (comp::HasBitFlags<ElementType>){
+        initBitFlags(c);
     }
 
     if constexpr (comp::HasBoundingBox<ElementType>) {
