@@ -130,6 +130,8 @@ void populatePoint(pybind11::module& m)
     c.def(py::self *= Scalar());
     c.def(py::self /= Scalar());
 
+    defComparisonOperators(c);
+
     defRepr(c);
 }
 

@@ -36,6 +36,9 @@ void initPrincipalCurvature(pybind11::module& m)
     using P = PrincipalCurvature<Scalar>;
 
     py::class_<P> c(m, "PrincipalCurvature");
+    c.def(py::init<>());
+
+    defCopy(c);
 
     c.def("max_dir", py::overload_cast<>(&P::maxDir), reference);
     c.def("set_max_dir", [](P& p, const Point3<Scalar>& d) { p.maxDir() = d; });

@@ -97,6 +97,15 @@ void initComponents(pybind11::class_<ElementType>& c)
             v.quality() = q;
         });
     }
+    if constexpr (comp::HasTexCoord<ElementType>) {
+        c.def(
+            "tex_coord",
+            py::overload_cast<>(&ElementType::texCoord),
+            reference);
+        c.def("set_tex_coord", [](ElementType& v, const TexCoordIndexedd& t) {
+            v.texCoord() = t;
+        });
+    }
 
     if constexpr (comp::HasVertexReferences<ElementType>) {
         initVertexReferences(c);

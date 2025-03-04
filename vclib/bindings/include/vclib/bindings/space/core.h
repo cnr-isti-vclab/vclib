@@ -26,6 +26,9 @@
 #include "core/box.h"
 #include "core/color.h"
 #include "core/point.h"
+#include "core/principal_curvature.h"
+#include "core/tex_coord.h"
+#include "core/tex_coord_indexed.h"
 
 #include <pybind11/pybind11.h>
 
@@ -40,7 +43,9 @@ inline void initCore(pybind11::module& m)
 
     initBox(m);
     initColor(m);
-
+    initPrincipalCurvature(m);
+    initTexCoord(m);
+    initTexCoordIndexed(m);
 }
 
 } // namespace vcl::bind

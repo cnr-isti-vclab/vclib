@@ -20,55 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_UTILS_H
-#define VCL_BINDINGS_UTILS_H
+#include <vclib/bindings/space/core/tex_coord.h>
 
-#include <pybind11/pybind11.h>
-#include <pybind11/operators.h>
-
-#include <sstream>
+#include <vclib/space/core.h>
 
 namespace vcl::bind {
 
-template<typename Class>
-void defCopy(pybind11::class_<Class>& c)
-{
-    using namespace pybind11::literals;
-
-    c.def("__copy__", [](const Class& self) {
-        return Class(self);
-    });
-    c.def(
-        "__deepcopy__",
-        [](const Class& self, pybind11::dict) {
-            return Class(self);
-        },
-        "memo"_a);
-}
-
-template<typename Class>
-void defRepr(pybind11::class_<Class>& c)
-{
-    c.def("__repr__", [](const Class& self) {
-        std::stringstream ss;
-        ss << self;
-        return ss.str();
-    });
-}
-
-template<typename Class>
-void defComparisonOperators(pybind11::class_<Class>& c)
+void initTexCoord(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    c.def(py::self == py::self);
-    c.def(py::self != py::self);
-    c.def(py::self < py::self);
-    c.def(py::self <= py::self);
-    c.def(py::self > py::self);
-    c.def(py::self >= py::self);
+    using Scalar = double;
+    using P = TexCoord<Scalar>;
+
+    py::class_<P> c(m, "TexCoord");
+
+    populateTexCoord<P>(c);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_UTILS_H
