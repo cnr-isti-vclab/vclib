@@ -26,7 +26,7 @@ project(vclib-bindings-3rdparty)
 include(FetchContent)
 
 # pybind11
-option(VCLIB_ALLOW_DOWNLOAD_PYBIND "Allow use of downloaded pyBind11 source" ON)
+option(VCLIB_ALLOW_DOWNLOAD_PYBIND "Allow use of downloaded pybind11 source" ON)
 
 # === Fetch dependencies === #
 

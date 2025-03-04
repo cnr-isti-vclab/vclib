@@ -21,20 +21,16 @@
 #****************************************************************************/
 
 if (VCLIB_ALLOW_DOWNLOAD_PYBIND)
-    message(STATUS "- pyBind11 - using downloaded source")
+    message(STATUS "- pybind11 - using downloaded source")
     FetchContent_Declare(
         pybind11
         GIT_REPOSITORY https://github.com/pybind/pybind11
         GIT_TAG        v2.13.6
     )
 
-    FetchContent_GetProperties(pybind11)
-    if(NOT pybind11_POPULATED)
-        FetchContent_Populate(pybind11)
-        add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
-    endif()
+    FetchContent_MakeAvailable(pybind11)
 else()
-    message(FATAL_ERROR "pyBind11 is required - please enable VCLIB_ALLOW_DOWNLOAD_PYBIND")
+    message(FATAL_ERROR "pybind11 is required - please enable VCLIB_ALLOW_DOWNLOAD_PYBIND")
 endif()
 
 
