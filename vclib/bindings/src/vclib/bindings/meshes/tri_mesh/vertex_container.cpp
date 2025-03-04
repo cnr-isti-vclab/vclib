@@ -24,6 +24,8 @@
 
 #include <vclib/bindings/mesh/container.h>
 
+#include <pybind11/stl.h>
+
 namespace vcl::bind {
 
 void initTriMeshVertexContainer(pybind11::class_<TriMesh>& ct)
@@ -33,10 +35,12 @@ void initTriMeshVertexContainer(pybind11::class_<TriMesh>& ct)
     initContainer<vcl::TriMesh::Vertex>(ct, "vertex", "vertices");
 
     ct.def("add_vertex", [](TriMesh& t, const Point3d& p) {
-        t.addVertex(p);
+        return t.addVertex(p);
     });
 
-    ct.def("compact_vertices", &TriMesh::compactVertices);
+    ct.def("add_vertices", [](TriMesh& t, const std::vector<Point3d>& v) {
+        return t.addVertices(v);
+    });
 }
 
 } // namespace vcl::bind

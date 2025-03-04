@@ -114,6 +114,10 @@ void initContainer(
         &MeshType::template reserve<ELEM_ID>);
 
     c.def(
+        ("compact_" + namePlural).c_str(),
+        &MeshType::template compactElements<ELEM_ID>);
+
+    c.def(
         ("delete_" + name).c_str(),
         py::overload_cast<uint>(&MeshType::template deleteElement<ELEM_ID>));
 
