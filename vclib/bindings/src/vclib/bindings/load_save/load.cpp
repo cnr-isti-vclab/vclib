@@ -20,26 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/load_save.h>
-#include <vclib/bindings/meshes.h>
-#include <vclib/bindings/space.h>
+#include <vclib/bindings/load_save/load.h>
 
-#include <vclib/types.h>
+#include <vclib/load_save/load.h>
+#include <vclib/meshes.h>
 
-#include <pybind11/pybind11.h>
+namespace vcl::bind {
 
-// creation of a python module
-PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
+void initLoad(pybind11::module& m)
 {
-    // import the bindings
-    using namespace vcl::bind;
+    namespace py = pybind11;
 
-    m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
+    m.def(
+        "load",
+        [](vcl::TriMesh& m, const std::string& filename) {
+            vcl::load(m, filename);
+        },
+        py::arg("m"),
+        py::arg("filename"));
 
-    // initialize the bindings
-    initSpace(m);
-
-    initMeshes(m);
-
-    initLoadSave(m);
+    m.def("load_tri_mesh", [](const std::string& filename) {
+        return vcl::load<vcl::TriMesh>(filename);
+    });
 }
+
+} // namespace vcl::bind

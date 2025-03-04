@@ -20,26 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/load_save.h>
-#include <vclib/bindings/meshes.h>
-#include <vclib/bindings/space.h>
+#ifndef VCL_BINDINGS_LOAD_SAVE_H
+#define VCL_BINDINGS_LOAD_SAVE_H
 
-#include <vclib/types.h>
+#include "load_save/load.h"
 
 #include <pybind11/pybind11.h>
 
-// creation of a python module
-PYBIND11_MODULE(VCLIB_MAIN_MODULE_NAME, m)
+namespace vcl::bind {
+
+void initLoadSave(pybind11::module& m)
 {
-    // import the bindings
-    using namespace vcl::bind;
-
-    m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
-
-    // initialize the bindings
-    initSpace(m);
-
-    initMeshes(m);
-
-    initLoadSave(m);
+    initLoad(m);
 }
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_LOAD_SAVE_H
