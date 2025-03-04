@@ -23,6 +23,7 @@
 #ifndef VCL_BINDINGS_MESHES_H
 #define VCL_BINDINGS_MESHES_H
 
+#include "meshes/poly_mesh.h"
 #include "meshes/tri_mesh.h"
 
 #include <pybind11/pybind11.h>
@@ -35,6 +36,7 @@ inline void initMeshes(pybind11::module& m)
 
     //py::module_ sm = m.def_submodule("meshes", "Meshes");
     initTriMesh(m);
+    initPolyMesh(m);
 }
 
 } // namespace vcl::bind

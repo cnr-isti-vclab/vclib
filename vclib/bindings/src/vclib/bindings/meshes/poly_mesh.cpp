@@ -20,27 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/meshes/tri_mesh/vertex_container.h>
+#include <vclib/bindings/meshes/poly_mesh.h>
 
-#include <vclib/bindings/mesh/container.h>
+#include <vclib/bindings/mesh/mesh.h>
+#include <vclib/bindings/utils.h>
 
-#include <pybind11/stl.h>
+#include <vclib/meshes.h>
 
 namespace vcl::bind {
 
-void initTriMeshVertexContainer(pybind11::class_<TriMesh>& ct)
+void initPolyMesh(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    initContainer<vcl::TriMesh::Vertex>(ct, "vertex", "vertices");
-
-    ct.def("add_vertex", [](TriMesh& t, const Point3d& p) {
-        return t.addVertex(p);
-    });
-
-    ct.def("add_vertices", [](TriMesh& t, const std::vector<Point3d>& v) {
-        return t.addVertices(v);
-    });
+    initMesh<vcl::PolyMesh>(m, "PolyMesh");
 }
 
 } // namespace vcl::bind

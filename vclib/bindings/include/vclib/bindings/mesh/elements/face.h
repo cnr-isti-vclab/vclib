@@ -20,17 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESHES_TRI_MESH_FACE_H
-#define VCL_BINDINGS_MESHES_TRI_MESH_FACE_H
+#ifndef VCL_BINDINGS_MESH_ELEMENTS_FACE_H
+#define VCL_BINDINGS_MESH_ELEMENTS_FACE_H
+
+#include <vclib/concepts/mesh.h>
+
+#include <vclib/bindings/mesh/components.h>
 
 #include <pybind11/pybind11.h>
 
-#include <vclib/meshes.h>
-
 namespace vcl::bind {
 
-void initTriMeshFace(pybind11::class_<vcl::TriMesh>& c);
+template<MeshConcept MeshType>
+void initFace(pybind11::class_<MeshType>& ct)
+{
+    using FaceType = MeshType::FaceType;
+
+    // Create the class
+    pybind11::class_<FaceType> c(ct, "Face");
+
+    initComponents(c);
+}
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESHES_TRI_MESH_FACE_H
+#endif // VCL_BINDINGS_MESH_ELEMENTS_FACE_H

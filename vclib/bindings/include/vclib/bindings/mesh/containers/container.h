@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_CONTAINER_H
-#define VCL_BINDINGS_MESH_CONTAINER_H
+#ifndef VCL_BINDINGS_MESH_CONTAINERS_CONTAINER_H
+#define VCL_BINDINGS_MESH_CONTAINERS_CONTAINER_H
 
 #include <vclib/concepts/mesh.h>
 
@@ -147,4 +147,4 @@ void initContainer(
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESH_CONTAINER_H
+#endif // VCL_BINDINGS_MESH_CONTAINERS_CONTAINER_H

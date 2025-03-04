@@ -22,11 +22,7 @@
 
 #include <vclib/bindings/meshes/tri_mesh.h>
 
-#include <vclib/bindings/mesh/components.h>
-#include <vclib/bindings/mesh/container.h>
-#include <vclib/bindings/meshes/tri_mesh/face.h>
-#include <vclib/bindings/meshes/tri_mesh/vertex.h>
-#include <vclib/bindings/meshes/tri_mesh/vertex_container.h>
+#include <vclib/bindings/mesh/mesh.h>
 #include <vclib/bindings/utils.h>
 
 #include <vclib/meshes.h>
@@ -37,20 +33,7 @@ void initTriMesh(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    // Create the class
-    pybind11::class_<TriMesh> c(m, "TriMesh");
-
-    c.def(py::init<>());
-
-    defCopy(c);
-
-    initTriMeshVertex(c);
-    initTriMeshVertexContainer(c);
-
-    initTriMeshFace(c);
-    initContainer<TriMesh::Face>(c, "face");
-
-    initComponents(c);
+    initMesh<vcl::TriMesh>(m, "TriMesh");
 }
 
 } // namespace vcl::bind

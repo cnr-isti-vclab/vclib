@@ -20,28 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
-#define VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
+#ifndef VCL_BINDINGS_MESH_ELEMENTS_VERTEX_H
+#define VCL_BINDINGS_MESH_ELEMENTS_VERTEX_H
 
-#include "triangle_bit_flags.h"
+#include <vclib/concepts/mesh.h>
+
+#include <vclib/bindings/mesh/components.h>
+
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initPolygonBitFlags(pybind11::class_<ElementType>& c)
+template<MeshConcept MeshType>
+void initVertex(pybind11::class_<MeshType>& ct)
 {
-    namespace py = pybind11;
+    using VertexType = MeshType::VertexType;
 
-    initTriangleBitFlags(c);
+    // Create the class
+    pybind11::class_<VertexType> c(ct, "Vertex");
 
-    // c.def(
-    //     "edge_user_bit",
-    //     py::overload_cast<uint>(&ElementType::edgeUserBit, py::const_));
-    // c.def("set_edge_user_bit", [](ElementType& e, uint i, bool b) {
-    //     e.edgeUserBit(i) = b;
-    // });
+    initComponents(c);
 }
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
+#endif // VCL_BINDINGS_MESH_ELEMENTS_VERTEX_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_ELEMENT_H
-#define VCL_BINDINGS_MESH_ELEMENT_H
+#ifndef VCL_BINDINGS_MESH_COMPONENTS_H
+#define VCL_BINDINGS_MESH_COMPONENTS_H
 
 #include "components/bit_flags.h"
 #include "components/polygon_bit_flags.h"
@@ -128,4 +128,4 @@ void initComponents(pybind11::class_<ElementType>& c)
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESH_ELEMENT_H
+#endif // VCL_BINDINGS_MESH_COMPONENTS_H

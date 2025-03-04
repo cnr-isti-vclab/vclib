@@ -20,28 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
-#define VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
+#ifndef VCL_BINDINGS_MESH_MESH_H
+#define VCL_BINDINGS_MESH_MESH_H
 
-#include "triangle_bit_flags.h"
+#include "containers.h"
+#include "elements.h"
+
+#include <vclib/bindings/utils.h>
+
+#include <vclib/concepts/mesh.h>
+
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initPolygonBitFlags(pybind11::class_<ElementType>& c)
+template<MeshConcept MeshType>
+void initMesh(pybind11::module& m, const std::string& name)
 {
     namespace py = pybind11;
 
-    initTriangleBitFlags(c);
+    // Create the class
+    pybind11::class_<MeshType> c(m, name.c_str());
 
-    // c.def(
-    //     "edge_user_bit",
-    //     py::overload_cast<uint>(&ElementType::edgeUserBit, py::const_));
-    // c.def("set_edge_user_bit", [](ElementType& e, uint i, bool b) {
-    //     e.edgeUserBit(i) = b;
-    // });
+    c.def(py::init<>());
+
+    defCopy(c);
+
+    initVertex(c);
+    initVertexContainer(c);
+
+    if constexpr (HasFaces<MeshType>) {
+        initFace(c);
+        initFaceContainer(c);
+    }
+
+    initComponents(c);
 }
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
+#endif // VCL_BINDINGS_MESH_MESH_H

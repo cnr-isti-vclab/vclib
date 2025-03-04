@@ -20,17 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESHES_TRI_MESH_VERTEX_H
-#define VCL_BINDINGS_MESHES_TRI_MESH_VERTEX_H
+#ifndef VCL_BINDINGS_MESHES_POLY_MESH_H
+#define VCL_BINDINGS_MESHES_POLY_MESH_H
 
 #include <pybind11/pybind11.h>
 
-#include <vclib/meshes.h>
-
 namespace vcl::bind {
 
-void initTriMeshVertex(pybind11::class_<vcl::TriMesh>& c);
+void initPolyMesh(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_MESHES_TRI_MESH_VERTEX_H
+#endif // VCL_BINDINGS_MESHES_POLY_MESH_H

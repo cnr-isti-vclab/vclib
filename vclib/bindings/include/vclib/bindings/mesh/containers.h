@@ -20,28 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
-#define VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
+#ifndef VCL_BINDINGS_MESH_CONTAINERS_H
+#define VCL_BINDINGS_MESH_CONTAINERS_H
 
-#include "triangle_bit_flags.h"
+#include "containers/face_container.h"
+#include "containers/vertex_container.h"
 
-namespace vcl::bind {
-
-template<ElementConcept ElementType>
-void initPolygonBitFlags(pybind11::class_<ElementType>& c)
-{
-    namespace py = pybind11;
-
-    initTriangleBitFlags(c);
-
-    // c.def(
-    //     "edge_user_bit",
-    //     py::overload_cast<uint>(&ElementType::edgeUserBit, py::const_));
-    // c.def("set_edge_user_bit", [](ElementType& e, uint i, bool b) {
-    //     e.edgeUserBit(i) = b;
-    // });
-}
-
-} // namespace vcl::bind
-
-#endif // VCL_BINDINGS_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
+#endif // VCL_BINDINGS_MESH_CONTAINERS_H
