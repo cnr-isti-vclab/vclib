@@ -203,6 +203,28 @@ public:
     }
 
     /**
+     * @brief Add an arbitrary number of vertices with the coordinates contained
+     * in the given range, returning the id of the first added vertex.
+     *
+     * If the call of this function will cause a reallocation of the Vertex
+     * container, the function will automatically take care of updating all the
+     * Vertex pointers contained in the Mesh.
+     *
+     * @param range: the range of coordinates of the vertices to add.
+     * @return the id of the first added vertex.
+     */
+    template<vcl::Range R>
+    uint addVertices(R&& range) requires RangeOf<R, typename T::CoordType>
+    {
+        uint vid = vertexContainerSize();
+        reserveVertices(vid + std::ranges::size(range));
+        for (const auto& v : range) {
+            addVertex(v);
+        }
+        return vid;
+    }
+
+    /**
      * @brief Clears the Vertex container of the Mesh, deleting all the
      * vertices.
      *

@@ -148,6 +148,18 @@ public:
     }
 };
 
+/* Specialization Aliases */
+
+/**
+ * @brief Alias for a PrincipalCurvature object with single precision.
+ */
+using PrincipalCurvaturef = PrincipalCurvature<float>;
+
+/**
+ * @brief Alias for a PrincipalCurvature object with double precision.
+ */
+using PrincipalCurvatured = PrincipalCurvature<double>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_PRINCIPAL_CURVATURE_H
