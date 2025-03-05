@@ -49,6 +49,12 @@ class ProgramSwitcherDrawableMesh : public vcl::DrawableMesh<MeshType>
         vcl::loadProgram("shaders/vs_surface", "shaders/fs_surface_smooth_face_color_only")
     };
 
+    bgfx::ProgramHandle librarySurfaceShaderNoSpecularHandle =
+        vcl::loadProgram(
+            "shaders/vs_surface",
+            "shaders/fs_surface_current"
+        );
+
     bgfx::ProgramHandle surfaceProgramSelector() const {
         uint32_t mul = Globals::useSplitFaceColor;
         uint32_t off = 0;
@@ -86,18 +92,15 @@ class ProgramSwitcherDrawableMesh : public vcl::DrawableMesh<MeshType>
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
             
-            if(Globals::useSplitShading){
-                if(mMRS.isSurface(vcl::MeshRenderInfo::Surface::VISIBLE)){
-                    bgfx::setState(state);
-                    mMRB.bindTextures();
-                    mMRB.bindVertexBuffers(mMRS);
-                    mMRB.bindIndexBuffers(mMRS);
-                    bindUniforms();
-                    bgfx::submit(viewId, surfaceProgramSelector());
-                }
-            }else{
-                Parent::draw(viewId);
+            if(mMRS.isSurface(vcl::MeshRenderInfo::Surface::VISIBLE)){
+                bgfx::setState(state);
+                mMRB.bindTextures();
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS);
+                bindUniforms();
+                bgfx::submit(viewId, Globals::useSplitShading ? surfaceProgramSelector() : librarySurfaceShaderNoSpecularHandle);
             }
+            
         }
 };
  

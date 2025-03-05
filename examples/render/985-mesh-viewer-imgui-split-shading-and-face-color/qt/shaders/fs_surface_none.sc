@@ -60,7 +60,6 @@ void main()
 
     /***** compute light ******/
     // default values - no shading
-    vec3 specular = vec3(0.0, 0.0, 0.0);
     vec4 light = vec4(1, 1, 1, 1);
 
     /***** compute color ******/
@@ -93,6 +92,6 @@ void main()
             break;
     }
 
-    gl_FragColor = light * color + vec4(specular, 0);
+    gl_FragColor = light * color;
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

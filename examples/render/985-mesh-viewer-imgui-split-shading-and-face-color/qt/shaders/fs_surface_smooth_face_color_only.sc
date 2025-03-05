@@ -37,16 +37,9 @@ void main()
         
     vec4 light = computeLight(u_lightDir, u_lightColor, normal);
 
-    vec3 specular = computeSpecular(
-        v_position,
-        u_cameraEyePos,
-        u_lightDir,
-        u_lightColor,
-        normal);
-
     /***** compute color ******/
     vec4 color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
 
-    gl_FragColor = light * color + vec4(specular, 0);
+    gl_FragColor = light * color;
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

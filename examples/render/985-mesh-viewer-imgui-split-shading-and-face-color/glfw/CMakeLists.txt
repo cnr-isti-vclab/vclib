@@ -46,6 +46,7 @@ set(
     shaders/fs_surface_none_face_color_only.sc
     shaders/fs_surface_flat_face_color_only.sc
     shaders/fs_surface_smooth_face_color_only.sc
+    shaders/fs_surface_current.sc
 )
         
 target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
