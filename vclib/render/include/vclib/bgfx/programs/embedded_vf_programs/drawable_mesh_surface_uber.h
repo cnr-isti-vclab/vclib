@@ -28,7 +28,7 @@
 namespace vcl {
 
 template<>
-struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE>
+struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_UBER>
 {
     static bgfx::EmbeddedShader::Data vertexShader(
         bgfx::RendererType::Enum type);

@@ -59,7 +59,7 @@ private:
     bgfx::ProgramHandle mProgramSurface =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
+            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_UBER>();
 
     bgfx::ProgramHandle mProgramWireframe =
         Context::instance()

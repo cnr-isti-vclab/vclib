@@ -27,7 +27,7 @@
 #include "embedded_vf_programs/drawable_directional_light.h"
 #include "embedded_vf_programs/drawable_mesh_edges.h"
 #include "embedded_vf_programs/drawable_mesh_points.h"
-#include "embedded_vf_programs/drawable_mesh_surface.h"
+#include "embedded_vf_programs/drawable_mesh_surface_uber.h"
 #include "embedded_vf_programs/drawable_mesh_wireframe.h"
 #include "embedded_vf_programs/drawable_trackball.h"
 #include "embedded_vf_programs/font_basic.h"
