@@ -139,6 +139,32 @@ public:
         return std::dynamic_pointer_cast<MeshIOActionT<MeshType>>(act);
     }
 
+    ParameterVector loadMeshParameters(FileFormat fmt) const
+    {
+        std::shared_ptr<IOAction> act;
+        for (uint i = 0; i < toUnderlying(MeshTypeId::COUNT); ++i) {
+            if (mMeshIOActions[i].loadFormatExists(fmt)) {
+                act = mMeshIOActions[i].loadAction(fmt);
+            }
+        }
+        if (act) {
+            switch (act->meshType()) {
+                case MeshTypeId::TRIANGLE_MESH:
+                    return std::dynamic_pointer_cast<
+                               MeshIOActionT<TriEdgeMesh>>(act)
+                        ->parametersLoad(fmt);
+                case MeshTypeId::POLYGON_MESH:
+                    return std::dynamic_pointer_cast<
+                               MeshIOActionT<PolyEdgeMesh>>(act)
+                        ->parametersLoad(fmt);
+                default: return ParameterVector();
+            }
+        }
+        else {
+            throw std::runtime_error("The FileFormat is not supported.");
+        }
+    }
+
     // save image
 
     std::vector<FileFormat> saveImageFormats() const
