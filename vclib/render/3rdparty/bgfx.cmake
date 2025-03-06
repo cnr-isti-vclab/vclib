@@ -32,6 +32,8 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     target_link_libraries(vclib-3rd-bgfx INTERFACE bgfx::bx bgfx::bgfx bgfx::bimg)
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include)
+    target_include_directories(vclib-3rd-bgfx
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include)
 
     # make sure that the imported targets are global
     set_target_properties(bgfx::bin2c PROPERTIES IMPORTED_GLOBAL TRUE)
