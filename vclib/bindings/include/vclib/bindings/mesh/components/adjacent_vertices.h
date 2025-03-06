@@ -116,7 +116,8 @@ void initAdjacentVertices(pybind11::class_<ElementType>& c)
 
     c.def("adj_vertices", py::overload_cast<>(&ElementType::adjVertices));
 
-    using AdjVertexIndexView = View<decltype(ElementType().adjVertexIndexBegin())>;
+    using AdjVertexIndexView =
+        View<decltype(ElementType().adjVertexIndexBegin())>;
 
     // inner class that allows to iterate over adj vertex indices
     pybind11::class_<AdjVertexIndexView> vi(c, "_AdjVertexIndexRange");

@@ -141,8 +141,35 @@ void initContainer(
 
     // optional components
 
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::ADJACENT_EDGES>(
+        c, name, "adjacent_edges");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::ADJACENT_FACES>(
+        c, name, "adjacent_faces");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::ADJACENT_VERTICES>(
+        c, name, "adjacent_vertices");
+
     detail::addOptionalComponentFunctions<ELEM_ID, CompId::COLOR>(
         c, name, "color");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::NORMAL>(
+        c, name, "normal");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::PRINCIPAL_CURVATURE>(
+        c, name, "principal_curvature");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::QUALITY>(
+        c, name, "quality");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::TEX_COORD>(
+        c, name, "tex_coord");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::WEDGE_COLORS>(
+        c, name, "wedge_colors");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::WEDGE_TEX_COORDS>(
+        c, name, "wedge_tex_coords");
 }
 
 } // namespace vcl::bind
