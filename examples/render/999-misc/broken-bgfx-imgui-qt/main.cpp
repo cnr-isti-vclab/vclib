@@ -29,6 +29,30 @@
 
 #include <iostream>
 
+template<typename Der>
+class ViewerDrawer : public vcl::ViewerDrawer<Der>
+{
+public:
+    using ParentViewer = vcl::ViewerDrawer<Der>;
+    using ParentViewer::ParentViewer;
+
+    void onMousePress(
+        vcl::MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+
+        if (button == vcl::MouseButton::RIGHT) {
+            QFileDialog::getOpenFileName(
+                nullptr,
+                QObject::tr("Open Document"),
+                QDir::currentPath());
+        }
+    }
+};
+
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
@@ -37,18 +61,13 @@ int main(int argc, char** argv)
         vcl::RenderApp<
             vcl::qt::WidgetManager,
             vcl::Canvas,
-            // vcl::imgui::ImGuiDrawer,
-            // vcl::imgui::ImguiStatsDrawer,
-            vcl::ViewerDrawer>;
+            vcl::imgui::ImGuiDrawer,
+            vcl::imgui::ImguiStatsDrawer,
+            ViewerDrawer>;
 
     Viewer viewer("Viewer with ImGui and Stats");
 
     viewer.show();
-
-    QFileDialog::getOpenFileName(
-        nullptr,
-        QObject::tr("Open Document"),
-        QDir::currentPath());
 
     // FIXME #3: It does not work when ImguiDrawers are activated
 
