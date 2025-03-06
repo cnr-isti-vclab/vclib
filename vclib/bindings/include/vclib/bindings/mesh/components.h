@@ -23,6 +23,7 @@
 #ifndef VCL_BINDINGS_MESH_COMPONENTS_H
 #define VCL_BINDINGS_MESH_COMPONENTS_H
 
+#include "components/adjacent_faces.h"
 #include "components/bit_flags.h"
 #include "components/polygon_bit_flags.h"
 #include "components/triangle_bit_flags.h"
@@ -47,6 +48,10 @@ void initComponents(pybind11::class_<ElementType>& c)
         c.def("parent_mesh", [](ElementType& v) {
             return v.parentMesh();
         });
+    }
+
+    if constexpr (comp::HasAdjacentFaces<ElementType>) {
+        initAdjacentFaces(c);
     }
 
     // bit flags
