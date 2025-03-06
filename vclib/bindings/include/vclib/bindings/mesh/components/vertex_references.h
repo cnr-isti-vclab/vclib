@@ -97,15 +97,15 @@ void initVertexReferences(pybind11::class_<ElementType>& c)
         c.def(
             "push_vertex",
             py::overload_cast<VertexType*>(&ElementType::pushVertex));
-        // c.def(
-        //     "push_vertex",
-        //     py::overload_cast<uint>(&ElementType::pushVertex));
+        c.def(
+            "push_vertex",
+            py::overload_cast<uint>(&ElementType::pushVertex));
         c.def(
             "insert_vertex",
             py::overload_cast<uint, VertexType*>(&ElementType::insertVertex));
-        // c.def(
-        //     "insert_vertex",
-        //     py::overload_cast<uint, uint>(&ElementType::insertVertex));
+        c.def(
+            "insert_vertex",
+            py::overload_cast<uint, uint>(&ElementType::insertVertex));
         c.def("erase_vertex", &ElementType::eraseVertex);
         c.def("clear_vertices", &ElementType::clearVertices);
     }

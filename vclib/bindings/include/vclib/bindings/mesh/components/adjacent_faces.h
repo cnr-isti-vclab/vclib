@@ -95,15 +95,15 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
         c.def(
             "push_adj_face",
             py::overload_cast<FaceType*>(&ElementType::pushAdjFace));
-        // c.def(
-        //     "push_adj_face",
-        //     py::overload_cast<uint>(&ElementType::pushAdjFace));
+        c.def(
+            "push_adj_face",
+            py::overload_cast<uint>(&ElementType::pushAdjFace));
         c.def(
             "insert_adj_face",
             py::overload_cast<uint, FaceType*>(&ElementType::insertAdjFace));
-        // c.def(
-        //     "insert_adj_face",
-        //     py::overload_cast<uint, uint>(&ElementType::insertAdjFace));
+        c.def(
+            "insert_adj_face",
+            py::overload_cast<uint, uint>(&ElementType::insertAdjFace));
         c.def("erase_adj_face", &ElementType::eraseAdjFace);
         c.def("clear_adj_faces", &ElementType::clearAdjFaces);
     }
