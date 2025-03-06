@@ -24,8 +24,8 @@
 #define VCL_PROCESSING_MANAGER_ACTION_MANAGER_MANAGER_H
 
 #include "id_mesh_manager.h"
-#include "io_mesh_manager.h"
 #include "io_image_manager.h"
+#include "io_mesh_manager.h"
 
 #include <vclib/processing/engine/action_interfaces.h>
 
@@ -35,7 +35,10 @@ std::vector<std::shared_ptr<Action>> actionInstances();
 
 namespace detail {
 
-class Manager : public IDMeshManager, public IOMeshManager, public IOImageManager
+class Manager :
+        public IDMeshManager,
+        public IOMeshManager,
+        public IOImageManager
 {
 public:
     Manager() { addDefaultActions(); }

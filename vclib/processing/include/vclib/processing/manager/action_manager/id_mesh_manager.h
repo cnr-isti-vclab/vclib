@@ -29,7 +29,8 @@
 
 namespace vcl::proc::detail {
 
-class IDMeshManager {
+class IDMeshManager
+{
     static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
 
     std::array<IDActionContainer, MESH_TYPE_NUMBER> mFilterActions;

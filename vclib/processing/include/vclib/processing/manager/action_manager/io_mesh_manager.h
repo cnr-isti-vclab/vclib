@@ -29,7 +29,8 @@
 
 namespace vcl::proc::detail {
 
-class IOMeshManager {
+class IOMeshManager
+{
     static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
 
     std::array<IOActionContainer, MESH_TYPE_NUMBER> mMeshIOActions;
@@ -94,12 +95,12 @@ public:
         if (act) {
             switch (act->meshType()) {
             case MeshTypeId::TRIANGLE_MESH:
-                return std::dynamic_pointer_cast<
-                           MeshIOActionT<TriEdgeMesh>>(act)
+                return std::dynamic_pointer_cast<MeshIOActionT<TriEdgeMesh>>(
+                           act)
                     ->parametersLoad(fmt);
             case MeshTypeId::POLYGON_MESH:
-                return std::dynamic_pointer_cast<
-                           MeshIOActionT<PolyEdgeMesh>>(act)
+                return std::dynamic_pointer_cast<MeshIOActionT<PolyEdgeMesh>>(
+                           act)
                     ->parametersLoad(fmt);
             default: return ParameterVector();
             }
@@ -153,6 +154,5 @@ public:
 };
 
 } // namespace vcl::proc::detail
-
 
 #endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_MESH_MANAGER_H
