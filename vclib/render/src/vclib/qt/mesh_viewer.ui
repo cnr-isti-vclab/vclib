@@ -31,7 +31,7 @@
      <property name="childrenCollapsible">
       <bool>false</bool>
      </property>
-     <widget class="vcl::qt::ViewerWidget" name="viewer" native="true">
+     <widget class="vcl::qt::MeshViewerRenderApp" name="viewer" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -130,9 +130,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>vcl::qt::ViewerWidget</class>
+   <class>vcl::qt::MeshViewerRenderApp</class>
    <extends>QWidget</extends>
-   <header>vclib/qt/viewer_widget.h</header>
+   <header>vclib/qt/mesh_viewer_render_app.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
