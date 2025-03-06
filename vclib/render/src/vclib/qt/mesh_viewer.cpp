@@ -124,6 +124,12 @@ TextEditLogger& MeshViewer::logger()
     return *mUI->logger;
 }
 
+void MeshViewer::setDrawVectorIconFunction(
+    const DrawableObjectVectorFrame::IconFunction& f)
+{
+    mUI->drawVectorFrame->setIconFunction(f);
+}
+
 /**
  * @brief Slot called when the user changed the visibility of an object in the
  * DrawableObjectVectorFrame

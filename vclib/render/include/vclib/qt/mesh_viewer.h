@@ -23,6 +23,8 @@
 #ifndef VCL_QT_MESH_VIEWER_H
 #define VCL_QT_MESH_VIEWER_H
 
+#include "gui/drawable_object_vector_frame.h"
+
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
@@ -58,6 +60,9 @@ public:
     uint selectedDrawableObject() const;
 
     TextEditLogger& logger();
+
+    void setDrawVectorIconFunction(
+        const DrawableObjectVectorFrame::IconFunction& f);
 
 public slots:
     void visibilityDrawableObjectChanged();
