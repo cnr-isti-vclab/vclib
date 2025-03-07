@@ -1,4 +1,9 @@
-﻿/*****************************************************************************
+$shading = @("none", "flat", "smooth")
+$colors = @("color_vertex", "color_mesh", "color_face", "color_user", "tex_vertex", "tex_wedge")
+
+foreach ($shad in $shading) {
+    foreach ($col in $colors) {
+        echo "/*****************************************************************************
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
@@ -20,15 +25,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_$($shad.toUpper())_$($col.toUpper())_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_$($shad.toUpper())_$($col.toUpper())_H
 
 #include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
 template<>
-struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX>
+struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_$($shad.toUpper())_$($col.toUpper())>
 {
     static bgfx::EmbeddedShader::Data vertexShader(
         bgfx::RendererType::Enum type);
@@ -39,5 +44,7 @@ struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX_H
-
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_$($shad.toUpper())_$($col.toUpper())_H
+" | out-file "drawable_mesh_surface_$($shad)_$($col).h" -encoding utf8
+    }
+}
