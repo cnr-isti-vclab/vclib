@@ -112,6 +112,11 @@ public:
         return instance().loadMeshAction<GetMeshType<MESH>>(fmt);
     }
 
+    static ParameterVector loadMeshParameters(FileFormat fmt)
+    {
+        return instance().loadMeshParameters(fmt);
+    }
+
     // save mesh
 
     static std::vector<FileFormat> saveMeshFormats(MeshTypeId mt)

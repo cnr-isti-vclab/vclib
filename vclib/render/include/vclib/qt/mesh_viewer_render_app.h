@@ -20,62 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_MESH_VIEWER_H
-#define VCL_QT_MESH_VIEWER_H
+#ifndef VCL_QT_MESH_VIEWER_RENDER_APP_H
+#define VCL_QT_MESH_VIEWER_RENDER_APP_H
 
-#include "gui/drawable_object_vector_frame.h"
+// This file defines the RenderApp used by the qt MeshViewer application.
+// By default, the vcl::qt::ViewerWidget is used as the RenderApp.
+// it can be replaced with a custom RenderApp by defining an header file
+// called custom_mesh_viewer_render_app.h that defines a RenderApp named
+// MeshViewerRenderApp (defined inside the vcl::qt namespace).
+// note: the MeshViewerRenderApp class must be a QWidget.
 
-#include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/render/drawable/drawable_object_vector.h>
+#if __has_include(<custom_mesh_viewer_render_app.h>)
+#include <custom_mesh_viewer_render_app.h>
+#else
 
-#include <QWidget>
+#include "viewer_widget.h"
 
 namespace vcl::qt {
 
-namespace Ui {
-class MeshViewer;
-} // namespace Ui
-
-class MeshViewer : public QWidget
-{
-    Q_OBJECT
-
-    Ui::MeshViewer* mUI;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
-
-public:
-    explicit MeshViewer(QWidget* parent = nullptr);
-    ~MeshViewer();
-
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    uint selectedDrawableObject() const;
-
-    TextEditLogger& logger();
-
-    void setDrawVectorIconFunction(
-        const DrawableObjectVectorFrame::IconFunction& f);
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
-    void fitScene();
-
-    void updateGUI();
-};
+using MeshViewerRenderApp = ViewerWidget;
 
 } // namespace vcl::qt
+#endif
 
-#endif // VCL_QT_MESH_VIEWER_H
+#endif // VCL_QT_MESH_VIEWER_RENDER_APP_H

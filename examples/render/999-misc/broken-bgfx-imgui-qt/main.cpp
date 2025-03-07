@@ -20,62 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_MESH_VIEWER_H
-#define VCL_QT_MESH_VIEWER_H
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/imgui/imgui_stats_drawer.h>
+#include <vclib/qt/viewer_widget.h>
 
-#include "gui/drawable_object_vector_frame.h"
+#include <QApplication>
+#include <QFileDialog>
 
-#include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/render/drawable/drawable_object_vector.h>
+#include <iostream>
 
-#include <QWidget>
-
-namespace vcl::qt {
-
-namespace Ui {
-class MeshViewer;
-} // namespace Ui
-
-class MeshViewer : public QWidget
+template<typename Der>
+class ViewerDrawer : public vcl::ViewerDrawer<Der>
 {
-    Q_OBJECT
-
-    Ui::MeshViewer* mUI;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
-
 public:
-    explicit MeshViewer(QWidget* parent = nullptr);
-    ~MeshViewer();
+    using ParentViewer = vcl::ViewerDrawer<Der>;
+    using ParentViewer::ParentViewer;
 
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
+    void onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
 
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    uint selectedDrawableObject() const;
-
-    TextEditLogger& logger();
-
-    void setDrawVectorIconFunction(
-        const DrawableObjectVectorFrame::IconFunction& f);
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
-    void fitScene();
-
-    void updateGUI();
+        if (button == vcl::MouseButton::RIGHT) {
+            QFileDialog::getOpenFileName(
+                nullptr, QObject::tr("Open Document"), QDir::currentPath());
+        }
+    }
 };
 
-} // namespace vcl::qt
+int main(int argc, char** argv)
+{
+    QApplication app(argc, argv);
 
-#endif // VCL_QT_MESH_VIEWER_H
+    using Viewer = vcl::RenderApp<
+        vcl::qt::WidgetManager,
+        vcl::Canvas,
+        vcl::imgui::ImGuiDrawer,
+        vcl::imgui::ImguiStatsDrawer,
+        ViewerDrawer>;
+
+    Viewer viewer("Viewer with ImGui and Stats");
+
+    viewer.show();
+
+    // FIXME #3: It does not work when ImguiDrawers are activated
+
+    return app.exec();
+}

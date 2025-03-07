@@ -31,5 +31,8 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
 
     if (TARGET vclib-3rd-qt)
         add_subdirectory(bgfx-qt)
+        if (TARGET vclib-3rd-imgui)
+            add_subdirectory(broken-bgfx-imgui-qt)
+        endif()
     endif()
 endif()

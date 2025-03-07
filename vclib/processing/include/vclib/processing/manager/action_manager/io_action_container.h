@@ -64,6 +64,11 @@ public:
         }
     }
 
+    bool loadFormatExists(const FileFormat& format) const
+    {
+        return mLoadFormatMap.find(format) != mLoadFormatMap.end();
+    }
+
     std::shared_ptr<IOAction> loadAction(const FileFormat& format) const
     {
         auto it = findLoadFormatExists(format);
@@ -77,6 +82,11 @@ public:
             formats.push_back(format);
         }
         return formats;
+    }
+
+    bool saveFormatExists(const FileFormat& format) const
+    {
+        return mSaveFormatMap.find(format) != mSaveFormatMap.end();
     }
 
     std::shared_ptr<IOAction> saveAction(const FileFormat& format) const

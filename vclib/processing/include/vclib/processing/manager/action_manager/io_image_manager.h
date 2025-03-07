@@ -20,62 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_MESH_VIEWER_H
-#define VCL_QT_MESH_VIEWER_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
 
-#include "gui/drawable_object_vector_frame.h"
+#include "io_action_container.h"
 
-#include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/processing/engine/action_interfaces.h>
 
-#include <QWidget>
+namespace vcl::proc::detail {
 
-namespace vcl::qt {
-
-namespace Ui {
-class MeshViewer;
-} // namespace Ui
-
-class MeshViewer : public QWidget
+class IOImageManager
 {
-    Q_OBJECT
+    IOActionContainer mImageIOActions;
 
-    Ui::MeshViewer* mUI;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
+protected:
+    void add(const std::shared_ptr<IOAction>& action)
+    {
+        mImageIOActions.add(action);
+    }
 
 public:
-    explicit MeshViewer(QWidget* parent = nullptr);
-    ~MeshViewer();
+    // load image
 
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
+    std::vector<FileFormat> loadImageFormats() const
+    {
+        return mImageIOActions.loadFormats();
+    }
 
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
+    std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt) const
+    {
+        return std::dynamic_pointer_cast<ImageIOAction>(
+            mImageIOActions.loadAction(fmt));
+    }
 
-    uint selectedDrawableObject() const;
+    // save image
 
-    TextEditLogger& logger();
+    std::vector<FileFormat> saveImageFormats() const
+    {
+        return mImageIOActions.saveFormats();
+    }
 
-    void setDrawVectorIconFunction(
-        const DrawableObjectVectorFrame::IconFunction& f);
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
-    void fitScene();
-
-    void updateGUI();
+    std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt) const
+    {
+        return std::dynamic_pointer_cast<ImageIOAction>(
+            mImageIOActions.saveAction(fmt));
+    }
 };
 
-} // namespace vcl::qt
+} // namespace vcl::proc::detail
 
-#endif // VCL_QT_MESH_VIEWER_H
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H

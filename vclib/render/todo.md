@@ -13,6 +13,7 @@
 - BGFX
   - [X] Fix FIXME #1 on example-01-viewer-qt
   - [ ] Fix FIXME #2 on example-04-hello-triangle-imgui-qt
+  - [ ] Fix FIXME #3 on example-999-misc-broken-bgfx-imgui-qt (probably related with FIXME #2)
   - [X] Fix 2 Qt windows with BGFX canvas.
   - [ ] Add possibility to update a subset of buffers for DrawableMesh
   - [X] Library shaders should be built as headers

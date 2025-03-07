@@ -20,62 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_MESH_VIEWER_H
-#define VCL_QT_MESH_VIEWER_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_MESH_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_MESH_MANAGER_H
 
-#include "gui/drawable_object_vector_frame.h"
+#include "id_action_container.h"
 
-#include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/processing/engine/action_interfaces.h>
 
-#include <QWidget>
+namespace vcl::proc::detail {
 
-namespace vcl::qt {
-
-namespace Ui {
-class MeshViewer;
-} // namespace Ui
-
-class MeshViewer : public QWidget
+class IDMeshManager
 {
-    Q_OBJECT
+    static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
 
-    Ui::MeshViewer* mUI;
+    std::array<IDActionContainer, MESH_TYPE_NUMBER> mFilterActions;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
+protected:
+    void add(const std::shared_ptr<Action>& action)
+    {
+        uint mt = toUnderlying(action->meshType());
+        mFilterActions[mt].add(action);
+    }
 
 public:
-    explicit MeshViewer(QWidget* parent = nullptr);
-    ~MeshViewer();
+    // filter
 
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
+    std::shared_ptr<Action> filterAction(const std::string& name, MeshTypeId mt)
+        const
+    {
+        return mFilterActions[toUnderlying(mt)].action(name);
+    }
 
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
+    template<typename MeshType>
+    std::shared_ptr<FilterActionT<MeshType>> filterAction(
+        const std::string& name)
+    {
+        auto act =
+            mFilterActions[toUnderlying(meshTypeId<MeshType>())].action(name);
 
-    uint selectedDrawableObject() const;
-
-    TextEditLogger& logger();
-
-    void setDrawVectorIconFunction(
-        const DrawableObjectVectorFrame::IconFunction& f);
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
-    void fitScene();
-
-    void updateGUI();
+        return std::dynamic_pointer_cast<FilterActionT<MeshType>>(act);
+    }
 };
 
-} // namespace vcl::qt
+} // namespace vcl::proc::detail
 
-#endif // VCL_QT_MESH_VIEWER_H
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_MESH_MANAGER_H
