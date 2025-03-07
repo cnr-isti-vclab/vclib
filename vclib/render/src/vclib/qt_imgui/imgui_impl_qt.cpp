@@ -311,16 +311,22 @@ protected:
                 ImGui_ImplQt_UpdateFocusEvent(event->type() == QEvent::FocusIn);
                 return BLOCK_EVENTS;
             }
-            case QEvent::Enter:
+            case QEvent::WindowActivate:
+            case QEvent::WindowDeactivate: {
+                ImGui_ImplQt_UpdateFocusEvent(
+                    event->type() == QEvent::WindowActivate);
+                return BLOCK_EVENTS;
+            }
             case QEvent::Leave: {
                 ImGui_ImplQt_UpdateMouseData();
                 return BLOCK_EVENTS;
             }
-            default: break;
+            default:
+                return BLOCK_EVENTS;
             }
         }
         // standard event processing
-        return false;
+        return QObject::eventFilter(obj, event);
     }
 };
 
