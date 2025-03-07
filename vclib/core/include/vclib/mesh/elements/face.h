@@ -148,9 +148,25 @@ public:
         (pushBackTTVNComponent<Comps>(), ...);
     }
 
+    void pushVertex(uint vi) requires PolygonFaceConcept<Face>
+    {
+        VRefs::pushVertex(vi);
+
+        // Now I need to pushBack in all the TTVN components
+        (pushBackTTVNComponent<Comps>(), ...);
+    }
+
     void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
     {
         VRefs::insertVertex(i, v);
+
+        // Now I need to insert in all the TTVN components
+        (insertTTVNComponent<Comps>(i), ...);
+    }
+
+    void insertVertex(uint i, uint vi) requires PolygonFaceConcept<Face>
+    {
+        VRefs::insertVertex(i, vi);
 
         // Now I need to insert in all the TTVN components
         (insertTTVNComponent<Comps>(i), ...);

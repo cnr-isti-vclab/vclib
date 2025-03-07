@@ -20,53 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/qt/viewer_widget.h>
+#ifndef VCL_QT_MESH_VIEWER_RENDER_APP_H
+#define VCL_QT_MESH_VIEWER_RENDER_APP_H
 
-#include <QApplication>
-#include <QFileDialog>
+// This file defines the RenderApp used by the qt MeshViewer application.
+// By default, the vcl::qt::ViewerWidget is used as the RenderApp.
+// it can be replaced with a custom RenderApp by defining an header file
+// called custom_mesh_viewer_render_app.h that defines a RenderApp named
+// MeshViewerRenderApp (defined inside the vcl::qt namespace).
+// note: the MeshViewerRenderApp class must be a QWidget.
 
-#include <iostream>
+#if __has_include(<custom_mesh_viewer_render_app.h>)
+#include <custom_mesh_viewer_render_app.h>
+#else
 
-template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
-{
-public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
-    using ParentViewer::ParentViewer;
+#include "viewer_widget.h"
 
-    void onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
-    {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+namespace vcl::qt {
 
-        if (button == vcl::MouseButton::RIGHT) {
-            QFileDialog::getOpenFileName(
-                nullptr, QObject::tr("Open Document"), QDir::currentPath());
-        }
-    }
-};
+using MeshViewerRenderApp = ViewerWidget;
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
+} // namespace vcl::qt
+#endif
 
-    using Viewer = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::ImguiStatsDrawer,
-        ViewerDrawer>;
-
-    Viewer viewer("Viewer with ImGui and Stats");
-
-    viewer.show();
-
-    // FIXME #3: It does not work when ImguiDrawers are activated
-
-    return app.exec();
-}
+#endif // VCL_QT_MESH_VIEWER_RENDER_APP_H
