@@ -28,13 +28,6 @@ int main()
 {
     using namespace vcl::proc;
 
-    auto suppFormatsTEM = ActionManager::loadMeshFormats<vcl::TriEdgeMesh>();
-
-    std::cerr << "Supported load formats for TriEdgeMesh:" << std::endl;
-    for (const auto& fmt : suppFormatsTEM) {
-        std::cerr << fmt.description() << std::endl;
-    }
-
     auto suppFormats = ActionManager::loadMeshFormats();
 
     std::cerr << "All the supported load formats:" << std::endl;

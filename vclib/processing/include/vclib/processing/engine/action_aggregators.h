@@ -20,53 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
-#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_AGGREGATORS_H
+#define VCL_PROCESSING_ENGINE_ACTION_AGGREGATORS_H
 
-#include "io_action_container.h"
+#include "action_aggregators/mesh_io_actions.h"
 
-#include <vclib/processing/engine/action_interfaces.h>
-
-namespace vcl::proc::detail {
-
-class IOImageManager
-{
-    IOActionContainer<IOAction> mImageIOActions;
-
-protected:
-    void add(const std::shared_ptr<IOAction>& action)
-    {
-        mImageIOActions.add(action);
-    }
-
-public:
-    // load image
-
-    std::vector<FileFormat> loadImageFormats() const
-    {
-        return mImageIOActions.loadFormats();
-    }
-
-    std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt) const
-    {
-        return std::dynamic_pointer_cast<ImageIOAction>(
-            mImageIOActions.loadAction(fmt));
-    }
-
-    // save image
-
-    std::vector<FileFormat> saveImageFormats() const
-    {
-        return mImageIOActions.saveFormats();
-    }
-
-    std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt) const
-    {
-        return std::dynamic_pointer_cast<ImageIOAction>(
-            mImageIOActions.saveAction(fmt));
-    }
-};
-
-} // namespace vcl::proc::detail
-
-#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
+#endif // VCL_PROCESSING_ENGINE_ACTION_AGGREGATORS_H

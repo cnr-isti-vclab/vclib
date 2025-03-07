@@ -50,7 +50,7 @@ public:
         uint mt;
 
         std::shared_ptr<IOAction> ioImageAction;
-        std::shared_ptr<IOAction> ioMeshAction;
+        std::shared_ptr<MeshIOActions> ioMeshAction;
 
         switch (action->type()) {
         case IMAGE_IO_ACTION:
@@ -58,8 +58,7 @@ public:
             IOImageManager::add(ioImageAction);
             break;
         case MESH_IO_ACTION:
-            checkMeshAction(action);
-            ioMeshAction = std::dynamic_pointer_cast<IOAction>(action);
+            ioMeshAction = std::dynamic_pointer_cast<MeshIOActions>(action);
             IOMeshManager::add(ioMeshAction);
             break;
         case FILTER_ACTION:

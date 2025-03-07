@@ -25,131 +25,70 @@
 
 #include "io_action_container.h"
 
-#include <vclib/processing/engine/action_interfaces.h>
+#include <vclib/processing/engine/action_aggregators.h>
 
 namespace vcl::proc::detail {
 
 class IOMeshManager
 {
-    static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
-
-    std::array<IOActionContainer, MESH_TYPE_NUMBER> mMeshIOActions;
+    IOActionContainer<MeshIOActions> mMeshIOActions;
 
 protected:
-    void add(const std::shared_ptr<IOAction>& action)
+    void add(const std::shared_ptr<MeshIOActions>& action)
     {
         uint mt = toUnderlying(action->meshType());
-        mMeshIOActions[mt].add(action);
+        mMeshIOActions.add(action);
     }
 
 public:
     // load mesh
 
-    std::vector<FileFormat> loadMeshFormats(MeshTypeId mt) const
-    {
-        return mMeshIOActions[toUnderlying(mt)].loadFormats();
-    }
-
-    template<typename MeshType>
     std::vector<FileFormat> loadMeshFormats() const
     {
-        return mMeshIOActions[toUnderlying(meshTypeId<MeshType>())]
-            .loadFormats();
-    }
-
-    std::vector<FileFormat> loadMeshFormats() const
-    {
-        std::set<FileFormat> formats;
-        for (uint i = 0; i < toUnderlying(MeshTypeId::COUNT); ++i) {
-            auto meshFormats = mMeshIOActions[i].loadFormats();
-
-            formats.insert(meshFormats.begin(), meshFormats.end());
-        }
-        return std::vector<FileFormat>(formats.begin(), formats.end());
-    }
-
-    std::shared_ptr<IOAction> loadMeshAction(FileFormat fmt, MeshTypeId mt)
-        const
-    {
-        return mMeshIOActions[toUnderlying(mt)].loadAction(fmt);
-    }
-
-    template<typename MeshType>
-    std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(FileFormat fmt)
-    {
-        auto act =
-            mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].loadAction(
-                fmt);
-
-        return std::dynamic_pointer_cast<MeshIOActionT<MeshType>>(act);
+        return mMeshIOActions.loadFormats();
     }
 
     ParameterVector loadMeshParameters(FileFormat fmt) const
     {
-        std::shared_ptr<IOAction> act;
-        for (uint i = 0; i < toUnderlying(MeshTypeId::COUNT); ++i) {
-            if (mMeshIOActions[i].loadFormatExists(fmt)) {
-                act = mMeshIOActions[i].loadAction(fmt);
-            }
-        }
-        if (act) {
-            switch (act->meshType()) {
-            case MeshTypeId::TRIANGLE_MESH:
-                return std::dynamic_pointer_cast<MeshIOActionT<TriEdgeMesh>>(
-                           act)
-                    ->parametersLoad(fmt);
-            case MeshTypeId::POLYGON_MESH:
-                return std::dynamic_pointer_cast<MeshIOActionT<PolyEdgeMesh>>(
-                           act)
-                    ->parametersLoad(fmt);
-            default: return ParameterVector();
-            }
-        }
-        else {
-            throw std::runtime_error("The FileFormat is not supported.");
-        }
+        return loadMeshActions(fmt)->parametersLoad(fmt);
+    }
+
+    std::shared_ptr<MeshIOActions> loadMeshActions(FileFormat fmt) const
+    {
+        return mMeshIOActions.loadAction(fmt);
+    }
+
+    template<MeshConcept MeshType>
+    std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(
+        FileFormat fmt) const
+    {
+        std::shared_ptr<MeshIOActions> actions = loadMeshActions(fmt);
+        return actions->action<MeshType>();
     }
 
     // save mesh
 
-    std::vector<FileFormat> saveMeshFormats(MeshTypeId mt) const
-    {
-        return mMeshIOActions[toUnderlying(mt)].saveFormats();
-    }
-
-    template<typename MeshType>
     std::vector<FileFormat> saveMeshFormats() const
     {
-        return mMeshIOActions[toUnderlying(meshTypeId<MeshType>())]
-            .saveFormats();
+        return mMeshIOActions.saveFormats();
     }
 
-    std::vector<FileFormat> saveMeshFormats() const
+    ParameterVector saveMeshParameters(FileFormat fmt) const
     {
-        std::set<FileFormat> formats;
-        for (uint i = 0; i < toUnderlying(MeshTypeId::COUNT); ++i) {
-            auto meshFormats = mMeshIOActions[i].saveFormats();
-
-            formats.insert(meshFormats.begin(), meshFormats.end());
-        }
-        return std::vector<FileFormat>(formats.begin(), formats.end());
+        return saveMeshActions(fmt)->parametersSave(fmt);
     }
 
-    std::shared_ptr<IOAction> saveMeshAction(FileFormat fmt, MeshTypeId mt)
-        const
+    std::shared_ptr<MeshIOActions> saveMeshActions(FileFormat fmt) const
     {
-        return mMeshIOActions[toUnderlying(mt)].saveAction(fmt);
+        return mMeshIOActions.saveAction(fmt);
     }
 
-    template<typename MeshType>
+    template<MeshConcept MeshType>
     std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(
         FileFormat fmt) const
     {
-        auto act =
-            mMeshIOActions[toUnderlying(meshTypeId<MeshType>())].saveAction(
-                fmt);
-
-        return std::dynamic_pointer_cast<MeshIOActionT<MeshType>>(act);
+        std::shared_ptr<MeshIOActions> actions = saveMeshActions(fmt);
+        return actions->action<MeshType>();
     }
 };
 

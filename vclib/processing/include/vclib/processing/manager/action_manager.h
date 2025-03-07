@@ -70,95 +70,38 @@ public:
 
     // load mesh
 
-    static std::vector<FileFormat> loadMeshFormats(MeshTypeId mt)
-    {
-        return instance().loadMeshFormats(mt);
-    }
-
-    template<typename MeshType>
-    static std::vector<FileFormat> loadMeshFormats()
-    {
-        return instance().loadMeshFormats<MeshType>();
-    }
-
-    template<MeshTypeId MESH>
-    static std::vector<FileFormat> loadMeshFormats()
-    {
-        return instance().loadMeshFormats<GetMeshType<MESH>>();
-    }
-
     static std::vector<FileFormat> loadMeshFormats()
     {
         return instance().loadMeshFormats();
     }
 
-    static std::shared_ptr<IOAction> loadMeshAction(
-        FileFormat fmt,
-        MeshTypeId mt)
+    static std::shared_ptr<MeshIOActions> loadMeshActions(FileFormat fmt)
     {
-        return instance().loadMeshAction(fmt, mt);
+        return instance().loadMeshActions(fmt);
     }
 
-    template<typename MeshType>
-    static std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(
-        FileFormat fmt)
+    template<MeshConcept MeshType>
+    static std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(FileFormat fmt)
     {
         return instance().loadMeshAction<MeshType>(fmt);
     }
 
-    template<MeshTypeId MESH>
-    static std::shared_ptr<IOAction> loadMeshAction(FileFormat fmt)
-    {
-        return instance().loadMeshAction<GetMeshType<MESH>>(fmt);
-    }
-
-    static ParameterVector loadMeshParameters(FileFormat fmt)
-    {
-        return instance().loadMeshParameters(fmt);
-    }
-
     // save mesh
-
-    static std::vector<FileFormat> saveMeshFormats(MeshTypeId mt)
-    {
-        return instance().saveMeshFormats(mt);
-    }
-
-    template<typename MeshType>
-    static std::vector<FileFormat> saveMeshFormats()
-    {
-        return instance().saveMeshFormats<MeshType>();
-    }
-
-    template<MeshTypeId MESH>
-    static std::vector<FileFormat> saveMeshFormats()
-    {
-        return instance().saveMeshFormats<GetMeshType<MESH>>();
-    }
 
     static std::vector<FileFormat> saveMeshFormats()
     {
         return instance().saveMeshFormats();
     }
 
-    static std::shared_ptr<IOAction> saveMeshAction(
-        FileFormat fmt,
-        MeshTypeId mt)
+    static std::shared_ptr<MeshIOActions> saveMeshActions(FileFormat fmt)
     {
-        return instance().saveMeshAction(fmt, mt);
+        return instance().saveMeshActions(fmt);
     }
 
-    template<typename MeshType>
-    static std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(
-        FileFormat fmt)
+    template<MeshConcept MeshType>
+    static std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(FileFormat fmt)
     {
         return instance().saveMeshAction<MeshType>(fmt);
-    }
-
-    template<MeshTypeId MESH>
-    static auto saveMeshAction(FileFormat fmt)
-    {
-        return instance().saveMeshAction<GetMeshType<MESH>>(fmt);
     }
 
     // filter

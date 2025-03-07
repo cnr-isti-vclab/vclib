@@ -28,13 +28,6 @@ int main()
 {
     using namespace vcl::proc;
 
-    auto suppFormatsTEM = ActionManager::saveMeshFormats<vcl::TriEdgeMesh>();
-
-    std::cerr << "Supported save formats for TriEdgeMesh:" << std::endl;
-    for (const auto& fmt : suppFormatsTEM) {
-        std::cerr << fmt.description() << std::endl;
-    }
-
     auto suppFormats = ActionManager::saveMeshFormats();
 
     std::cerr << "All the supported save formats:" << std::endl;

@@ -49,6 +49,20 @@ void fillActionsIfSupported(
     (fAct.template operator()<Actions>(), ...);
 }
 
+template<typename Aggregator, template<typename> typename... Actions>
+void fillAggregatedActions(
+    std::vector<std::shared_ptr<Action>>& vec,
+    TemplatedTypeWrapper<Actions...>)
+{
+    auto fAct = [&]<template<typename> typename Act>() {
+        std::shared_ptr<Aggregator> a = std::make_shared<Aggregator>();
+        a->template fillWithSupportedMeshTypes<Act>();
+        vec.push_back(a);
+    };
+
+    (fAct.template operator()<Actions>(), ...);
+}
+
 } // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTION_INSTANCES_FILL_ACTIONS_H
