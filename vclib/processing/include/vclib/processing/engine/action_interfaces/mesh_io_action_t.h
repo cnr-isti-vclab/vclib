@@ -133,64 +133,6 @@ public:
 
     MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
 
-    MeshType load(
-        const std::string&     filename,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const
-    {
-        MeshInfo   info;
-        FileFormat format(FileInfo::extension(filename));
-        auto       mesh = load(filename, format, parameters, info, log);
-        return mesh;
-    }
-
-    MeshType load(const std::string& filename, AbstractLogger& log = logger())
-        const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        return load(filename, parametersLoad(format), log);
-    }
-
-    void save(
-        const std::string&     filename,
-        const MeshType&        mesh,
-        const MeshInfo&        info,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, format, mesh, info, parameters, log);
-    }
-
-    void save(
-        const std::string& filename,
-        const MeshType&    mesh,
-        const MeshInfo&    info,
-        AbstractLogger&    log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, mesh, info, parametersSave(format), log);
-    }
-
-    void save(
-        const std::string&     filename,
-        const MeshType&        mesh,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, mesh, formatCapability(format), parameters, log);
-    }
-
-    void save(
-        const std::string& filename,
-        const MeshType&    mesh,
-        AbstractLogger&    log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, mesh, parametersSave(format), log);
-    }
-
 protected:
     void postLoad(MeshType& mesh, const MeshInfo& loadedInfo) const
     {
@@ -203,16 +145,6 @@ protected:
             }
         }
         vcl::updateBoundingBox(mesh);
-    }
-
-    MeshInfo formatCapability(const FileFormat& format) const
-    {
-        for (const auto& [f, info] : supportedMeshFormats()) {
-            if (f == format) {
-                return info;
-            }
-        }
-        return MeshInfo();
     }
 };
 

@@ -36,24 +36,24 @@ int main()
     }
 
     vcl::TriEdgeMesh td =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
+        ActionManager::loadMeshActions("obj")->load<vcl::TriEdgeMesh>(
             VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj");
 
     vcl::PolyEdgeMesh ghp =
-        ActionManager::loadMeshAction<vcl::PolyEdgeMesh>("obj")->load(
+        ActionManager::loadMeshActions("obj")->load<vcl::PolyEdgeMesh>(
             VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj");
 
     vcl::TriEdgeMesh ght =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
+        ActionManager::loadMeshActions("obj")->load<vcl::TriEdgeMesh>(
             VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj");
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("obj")->save(
+    ActionManager::saveMeshActions("obj")->save(
         VCLIB_RESULTS_PATH "/td1.obj", td);
 
-    ActionManager::saveMeshAction<vcl::PolyEdgeMesh>("obj")->save(
+    ActionManager::saveMeshActions("obj")->save(
         VCLIB_RESULTS_PATH "/greek_poly.obj", ghp);
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("obj")->save(
+    ActionManager::saveMeshActions("obj")->save(
         VCLIB_RESULTS_PATH "/greek_tri.obj", ght);
 
     return 0;

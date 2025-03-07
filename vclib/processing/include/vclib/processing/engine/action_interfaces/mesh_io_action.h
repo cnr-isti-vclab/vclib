@@ -113,6 +113,17 @@ public:
         }
         return formats;
     }
+
+protected:
+    MeshInfo formatCapability(const FileFormat& format) const
+    {
+        for (const auto& [f, info] : supportedMeshFormats()) {
+            if (f == format) {
+                return info;
+            }
+        }
+        return MeshInfo();
+    }
 };
 
 } // namespace vcl::proc

@@ -33,7 +33,7 @@ int main()
     std::vector<vcl::TriEdgeMesh> out;
     action->execute(out);
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
+    ActionManager::saveMeshActions("ply")->save(
         VCLIB_RESULTS_PATH "/cone02.ply", out.front());
 
     return 0;

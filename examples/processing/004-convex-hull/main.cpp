@@ -29,7 +29,7 @@ int main()
     using namespace vcl::proc;
 
     vcl::TriEdgeMesh bunny =
-        ActionManager::loadMeshAction<vcl::TriEdgeMesh>("obj")->load(
+        ActionManager::loadMeshActions("obj")->load<vcl::TriEdgeMesh>(
             VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     std::vector<vcl::TriEdgeMesh> out;
@@ -37,7 +37,7 @@ int main()
     ActionManager::filterAction<vcl::TriEdgeMesh>("Convex Hull")
         ->execute({&std::as_const(bunny)}, out);
 
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
+    ActionManager::saveMeshActions("ply")->save(
         VCLIB_RESULTS_PATH "/convex_hull_bunny.ply", out.front());
 
     return 0;

@@ -42,19 +42,19 @@ int main()
         VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
 
     // saving obj
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("obj")->save(
+    ActionManager::saveMeshActions("obj")->save(
         VCLIB_RESULTS_PATH "/td.obj", mesh);
 
     // saving off
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("off")->save(
+    ActionManager::saveMeshActions("off")->save(
         VCLIB_RESULTS_PATH "/td.off", mesh);
 
     // saving ply
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("ply")->save(
+    ActionManager::saveMeshActions("ply")->save(
         VCLIB_RESULTS_PATH "/td.ply", mesh);
 
     // saving stl
-    ActionManager::saveMeshAction<vcl::TriEdgeMesh>("stl")->save(
+    ActionManager::saveMeshActions("stl")->save(
         VCLIB_RESULTS_PATH "/td.stl", mesh);
 
     return 0;

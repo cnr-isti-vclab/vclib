@@ -99,6 +99,26 @@ public:
     }
 
     template<MeshConcept MeshType>
+    MeshType load(
+        const std::string&     filename,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
+    {
+        MeshInfo   info;
+        FileFormat format(FileInfo::extension(filename));
+        auto       mesh = load<MeshType>(filename, format, parameters, info, log);
+        return mesh;
+    }
+
+    template<MeshConcept MeshType>
+    MeshType load(const std::string& filename, AbstractLogger& log = logger())
+        const
+    {
+        FileFormat format(FileInfo::extension(filename));
+        return load<MeshType>(filename, parametersLoad(format), log);
+    }
+
+    template<MeshConcept MeshType>
     void save(
         const std::string&     filename,
         const FileFormat&      format,
@@ -109,6 +129,50 @@ public:
     {
         checkActionForMeshType<MeshType>(false, true);
         action<MeshType>()->save(filename, format, mesh, info, parameters, log);
+    }
+
+    template<MeshConcept MeshType>
+    void save(
+        const std::string&     filename,
+        const MeshType&        mesh,
+        const MeshInfo&        info,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
+    {
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, format, mesh, info, parameters, log);
+    }
+
+    template<MeshConcept MeshType>
+    void save(
+        const std::string& filename,
+        const MeshType&    mesh,
+        const MeshInfo&    info,
+        AbstractLogger&    log = logger()) const
+    {
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, mesh, info, parametersSave(format), log);
+    }
+
+    template<MeshConcept MeshType>
+    void save(
+        const std::string&     filename,
+        const MeshType&        mesh,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
+    {
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, mesh, formatCapability(format), parameters, log);
+    }
+
+    template<MeshConcept MeshType>
+    void save(
+        const std::string& filename,
+        const MeshType&    mesh,
+        AbstractLogger&    log = logger()) const
+    {
+        FileFormat format(FileInfo::extension(filename));
+        save(filename, mesh, parametersSave(format), log);
     }
 
 private:
