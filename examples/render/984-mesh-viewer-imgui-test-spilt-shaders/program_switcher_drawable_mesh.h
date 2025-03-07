@@ -99,16 +99,6 @@ class ProgramSwitcherDrawableMesh : public vcl::DrawableMesh<MeshType>
     public:
         using Parent::Parent;
 
-        ProgramSwitcherDrawableMesh<MeshType>()
-        {
-            uint32_t index = 0;
-            for(uint32_t i = toUnderlying(vcl::VertFragProgram::DRAWABLE_MESH_SURFACE_UBER); i < toUnderlying(vcl::VertFragProgram::DRAWABLE_MESH_SURFACE_SMOOTH_TEX_WEDGE); i++){
-                vcl::VertFragProgram prog = static_cast<vcl::VertFragProgram>(i);
-                surfaceProgramHandles[index] = vcl::Context::instance().programManager().getProgram<prog>();
-                index++;
-            }
-        }
-
         std::shared_ptr<vcl::DrawableObject> clone() const& override
         {
             return std::make_shared<ProgramSwitcherDrawableMesh>(*this);
