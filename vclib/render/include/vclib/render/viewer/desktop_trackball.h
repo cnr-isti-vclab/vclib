@@ -44,6 +44,8 @@ public:
     inline static const Point3<Scalar> UNIT_Y = {0, 1, 0};
 
 private:
+    bool ignoreEvents = false;
+
     using MotionType = vcl::TrackBall<Scalar>::MotionType;
 
     // translation step in camera space
@@ -202,6 +204,16 @@ private:
     };
 
 public:
+    void startIgnoringTrackBallEvents()
+    {
+        ignoreEvents = true;
+    }
+
+    void stopIgnoringTrackBallEvents()
+    {
+        ignoreEvents = false;
+    }
+
     DesktopTrackBall(uint width = 1024, uint height = 768)
     {
         resizeViewer(width, height);
@@ -243,6 +255,11 @@ public:
         resetTrackBall();
     }
 
+    //Expose the trackball function to everyone
+    void rotateTrackBall(const Quaternion<Scalar> &rotation){
+        mTrackball.rotate(rotation);
+    }
+
     void focus(const Point3<Scalar>& center)
     {
         mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
@@ -259,6 +276,10 @@ public:
 
     void moveMouse(int x, int y)
     {
+        if(ignoreEvents){
+            return;
+        }
+
         // ugly AF
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
@@ -271,6 +292,10 @@ public:
 
     void pressMouse(MouseButton::Enum button)
     {
+        if(ignoreEvents){
+            return;
+        }
+
         // if dragging, do not update the current mouse button
         if (mTrackball.isDragging()) {
             return;
@@ -290,6 +315,10 @@ public:
 
     void releaseMouse(MouseButton::Enum button)
     {
+        if(ignoreEvents){
+            return;
+        }
+
         // if dragging, update the current mouse button only if it matches
         if (mTrackball.isDragging() && mCurrentMouseButton == button) {
             mCurrentMouseButton = MouseButton::NO_BUTTON;
@@ -305,6 +334,11 @@ public:
 
     void scroll(Scalar pixelDeltaX, Scalar pixelDeltaY)
     {
+        if(ignoreEvents){
+            return;
+        }
+
+
         if (pixelDeltaX == 0 && pixelDeltaY == 0) {
             return;
         }
@@ -326,6 +360,10 @@ public:
 
     void keyPress(Key::Enum key)
     {
+        if(ignoreEvents){
+            return;
+        }
+
         // atomic motions are enabled while dragging
         auto atomicOp = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
         if (atomicOp != mKeyAtomicMap.end()) {
@@ -346,6 +384,10 @@ public:
 
     void keyRelease(Key::Enum key)
     {
+        if(ignoreEvents){
+            return;
+        }
+
         // ugly solution to end drag motion when a key is released
         if (!mTrackball.isDragging())
             return;
