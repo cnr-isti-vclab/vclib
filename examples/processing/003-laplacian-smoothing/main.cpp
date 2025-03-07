@@ -36,7 +36,7 @@ int main()
     in_out.push_back(&bunny);
 
     auto action =
-        ActionManager::filterAction<vcl::TriEdgeMesh>("Laplacian Smoothing");
+        ActionManager::filterActions("Laplacian Smoothing");
 
     action->execute(in_out);
 

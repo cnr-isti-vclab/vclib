@@ -92,7 +92,7 @@ public:
     }
 
     template<MeshConcept MeshType>
-    void execute(
+    OutputValues execute(
         const std::vector<const MeshType*>& inputMeshes,
         const std::vector<MeshType*>&       inputOutputMeshes,
         std::vector<MeshType>&              outputMeshes,
@@ -100,8 +100,125 @@ public:
         AbstractLogger&                     log = logger()) const
     {
         checkActionForMeshType<MeshType>();
-        mFilterActions[toUnderlying(meshTypeId<MeshType>())]->execute(
+        return action<MeshType>()->execute(
             inputMeshes, inputOutputMeshes, outputMeshes, parameters, log);
+    }
+
+    // without parameters override
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        const std::vector<MeshType*>&       inputOutputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        AbstractLogger&                     log = logger()) const
+    {
+        return execute(
+            inputMeshes, inputOutputMeshes, outputMeshes, parameters(), log);
+    }
+
+    // without inputOutputMeshes override
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        const ParameterVector&              parameters,
+        AbstractLogger&                     log = logger()) const
+    {
+        checkInputOutputMeshes(0);
+        return execute(inputMeshes, {}, outputMeshes, parameters, log);
+    }
+
+    // without inputOutputMeshes and parameters override
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        std::vector<MeshType>&              outputMeshes,
+        AbstractLogger&                     log = logger()) const
+    {
+        return execute(inputMeshes, outputMeshes, parameters(), log);
+    }
+
+    // without inputOutputMeshes and outputMeshes override
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        const ParameterVector&              parameters,
+        AbstractLogger&                     log = logger()) const
+    {
+        std::vector<MeshType> outputMeshes;
+        auto out = execute(inputMeshes, outputMeshes, parameters, log);
+        warnOutputMeshesVector(outputMeshes, log);
+        return out;
+    }
+
+    // without inputOutputMeshes, outputMeshes and parameters override
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<const MeshType*>& inputMeshes,
+        AbstractLogger&                     log = logger()) const
+    {
+        return execute(inputMeshes, parameters(), log);
+    }
+
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        std::vector<MeshType>&        outputMeshes,
+        const ParameterVector&        parameters,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute({}, inputOutputMeshes, outputMeshes, parameters, log);
+    }
+
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        std::vector<MeshType>&        outputMeshes,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute(inputOutputMeshes, outputMeshes, parameters(), log);
+    }
+
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        const ParameterVector&        parameters,
+        AbstractLogger&               log = logger()) const
+    {
+        std::vector<MeshType> outputMeshes;
+        auto out = execute(inputOutputMeshes, outputMeshes, parameters, log);
+        warnOutputMeshesVector(outputMeshes, log);
+        return out;
+    }
+
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        const std::vector<MeshType*>& inputOutputMeshes,
+        AbstractLogger&               log = logger()) const
+    {
+        return execute(inputOutputMeshes, parameters(), log);
+    }
+
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        std::vector<MeshType>& outputMeshes,
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
+    {
+        return execute(
+            std::vector<const MeshType*>(),
+            std::vector<MeshType*>(),
+            outputMeshes,
+            parameters,
+            log);
+    }
+
+    template<MeshConcept MeshType>
+    OutputValues execute(
+        std::vector<MeshType>& outputMeshes,
+        AbstractLogger&        log = logger()) const
+    {
+        return execute(outputMeshes, parameters(), log);
     }
 
 private:

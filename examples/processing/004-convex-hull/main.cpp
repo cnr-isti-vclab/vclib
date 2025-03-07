@@ -34,7 +34,7 @@ int main()
 
     std::vector<vcl::TriEdgeMesh> out;
 
-    ActionManager::filterAction<vcl::TriEdgeMesh>("Convex Hull")
+    ActionManager::filterActions("Convex Hull")
         ->execute({&std::as_const(bunny)}, out);
 
     ActionManager::saveMeshActions("ply")->save(

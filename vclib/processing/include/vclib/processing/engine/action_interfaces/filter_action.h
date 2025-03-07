@@ -123,6 +123,53 @@ public:
      * ************************************ */
 
     Type type() const final { return Type::FILTER_ACTION; }
+
+protected:
+    void checkInputMeshes(uint provided) const
+    {
+        uint n = inputMeshes().size();
+        if (n != provided) {
+            throw std::runtime_error(
+                "The action " + name() + " requires " + std::to_string(n) +
+                " input meshes, but " + std::to_string(provided) +
+                " was provided. Use a different execute overload.");
+        }
+    }
+
+    void checkInputOutputMeshes(uint provided) const
+    {
+        uint n = inputOutputMeshes().size();
+        if (n != provided) {
+            throw std::runtime_error(
+                "The action " + name() + " requires " + std::to_string(n) +
+                " input/output meshes, but " + std::to_string(provided) +
+                " was provided. Use a different execute overload.");
+        }
+    }
+
+    template<MeshConcept MeshType>
+    void warnOutputMeshesVector(
+        const std::vector<MeshType>& outputMeshes,
+        AbstractLogger&              log) const
+    {
+        if (!outputMeshes.empty()) {
+            log.log(
+                "The action " + name() +
+                    " returned output meshes, but an "
+                    "outputMeshes vector was not provided to the execute "
+                    "function.",
+                log.WARNING_LOG);
+        }
+    }
+
+    template<MeshConcept MeshType>
+    void checkInputVectors(
+        const std::vector<const MeshType*>& inputMeshes,
+        const std::vector<MeshType*>&       inputOutputMeshes) const
+    {
+        checkInputMeshes(inputMeshes.size());
+        checkInputOutputMeshes(inputOutputMeshes.size());
+    }
 };
 
 } // namespace vcl::proc

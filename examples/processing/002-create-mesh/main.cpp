@@ -28,7 +28,7 @@ int main()
 {
     using namespace vcl::proc;
 
-    auto action = ActionManager::filterAction<vcl::TriEdgeMesh>("Create Cone");
+    auto action = ActionManager::filterActions("Create Cone");
 
     std::vector<vcl::TriEdgeMesh> out;
     action->execute(out);
