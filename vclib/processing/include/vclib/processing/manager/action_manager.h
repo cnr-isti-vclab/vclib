@@ -106,11 +106,10 @@ public:
 
     // filter
 
-    static std::shared_ptr<Action> filterAction(
-        const std::string& name,
-        MeshTypeId         mt)
+    static std::shared_ptr<FilterActions> filterActions(
+        const std::string& name)
     {
-        return instance().filterAction(name, mt);
+        return instance().filterActions(name);
     }
 
     template<typename MeshType>

@@ -34,73 +34,53 @@ namespace vcl::proc {
 
 namespace detail {
 
-template<MeshConcept MeshType>
 inline std::vector<std::shared_ptr<Action>> applyFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
     using Actions = TemplatedTypeWrapper<LaplacianSmoothingFilter>;
 
-    fillActionsIfSupported<MeshType>(vec, Actions());
+    fillAggregatedActions<FilterActions>(vec, Actions());
 
     return vec;
 }
 
-template<MeshConcept MeshType>
 inline std::vector<std::shared_ptr<Action>> createFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
     using Actions = TemplatedTypeWrapper<CreateConeFilter>;
 
-    fillActionsIfSupported<MeshType>(vec, Actions());
+    fillAggregatedActions<FilterActions>(vec, Actions());
 
     return vec;
 }
 
-template<MeshConcept MeshType>
 inline std::vector<std::shared_ptr<Action>> generateFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
     using Actions = TemplatedTypeWrapper<ConvexHullFilter>;
 
-    fillActionsIfSupported<MeshType>(vec, Actions());
+    fillAggregatedActions<FilterActions>(vec, Actions());
 
     return vec;
 }
 
 } // namespace detail
 
-template<MeshConcept MeshType>
 inline std::vector<std::shared_ptr<Action>> filterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    auto a = detail::applyFilterMeshActions<MeshType>();
+    auto a = detail::applyFilterMeshActions();
     vec.insert(vec.begin(), a.begin(), a.end());
 
-    auto c = detail::createFilterMeshActions<MeshType>();
+    auto c = detail::createFilterMeshActions();
     vec.insert(vec.begin(), c.begin(), c.end());
 
-    auto g = detail::generateFilterMeshActions<MeshType>();
+    auto g = detail::generateFilterMeshActions();
     vec.insert(vec.begin(), g.begin(), g.end());
-
-    return vec;
-}
-
-inline std::vector<std::shared_ptr<Action>> filterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    // lambda called for each mesh type
-    auto fMesh = [&]<typename MeshType>() {
-        auto v = filterMeshActions<MeshType>();
-        vec.insert(vec.end(), v.begin(), v.end());
-    };
-
-    // call lambda for each mesh type
-    vcl::ForEachType<MeshTypes>::apply(fMesh);
 
     return vec;
 }

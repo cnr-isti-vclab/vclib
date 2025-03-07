@@ -29,16 +29,17 @@
 
 namespace vcl::proc {
 
+template<typename ActionType>
 class IDActionContainer
 {
-    using ActionMap = std::map<std::string, std::shared_ptr<Action>>;
+    using ActionMap = std::map<std::string, std::shared_ptr<ActionType>>;
 
     ActionMap mActionMap;
 
 public:
     IDActionContainer() = default;
 
-    void add(std::shared_ptr<Action> action)
+    void add(std::shared_ptr<ActionType> action)
     {
         if (!action) {
             throw std::runtime_error("Action is nullptr.");
@@ -47,7 +48,7 @@ public:
         mActionMap[action->name()] = action;
     }
 
-    std::shared_ptr<Action> action(const std::string& name) const
+    std::shared_ptr<ActionType> action(const std::string& name) const
     {
         auto it = findActionExists(name);
         return it->second;

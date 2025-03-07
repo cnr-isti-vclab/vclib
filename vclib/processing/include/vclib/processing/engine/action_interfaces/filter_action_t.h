@@ -23,35 +23,19 @@
 #ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_ACTION_T_H
 #define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_FILTER_ACTION_T_H
 
-#include "action.h"
-
-#include <vclib/processing/engine/parameter_vector.h>
-#include <vclib/processing/engine/parameters.h>
+#include "filter_action.h"
 
 #include <vclib/algorithms/mesh/type_name.h>
 #include <vclib/algorithms/mesh/update.h>
-#include <vclib/io/file_format.h>
-#include <vclib/io/file_info.h>
 #include <vclib/space/complex/mesh_info.h>
 
 namespace vcl::proc {
 
 template<MeshConcept Mesh>
-class FilterActionT : public Action
+class FilterActionT : public FilterAction
 {
 public:
     using MeshType = Mesh;
-
-    enum class Category {
-        CREATE = 0,
-        CLEANING_AND_REPAIRING,
-        RECONSTRUCTION,
-        SMOOTHING,
-
-        COUNT,
-    };
-
-    using CategoryBitSet = BitSet<uint>;
 
     /* ******************************************************************** *
      * Member functions that must/may be implemented by the derived classes *
@@ -61,69 +45,16 @@ public:
 
     virtual std::string name() const = 0;
 
-    /**
-     * @brief Returns the categories of the filter.
-     *
-     * Returns a BitSet that contains, for each category listed in the
-     * Category enum, whether the action belongs to that category.
-     *
-     * @return The categories of the action.
-     */
+    // From FilterAction class
+
     virtual CategoryBitSet categories() const = 0;
 
-    /**
-     * @brief Returns the description of the filter.
-     *
-     * @return The description of the filter.
-     */
     virtual std::string description() const = 0;
 
-    /**
-     * @brief Returns a vector indicating the input meshes that the filter
-     * requires, and their description.
-     *
-     * Input meshes are the meshes that the filter will use to perform its
-     * operation, but that will not be modified (they will be const, and the
-     * applyFilter function will receive them in a const vector of const
-     * meshes).
-     *
-     * The UintParameter objects in the returned vector must contain the name
-     * and description of the input meshes. The uint value contained in the
-     * UintParameter object won't be used. The number of input mesh requires is
-     * the size of the returned vector.
-     *
-     * @return The input meshes for the filter.
-     */
     virtual std::vector<UintParameter> inputMeshes() const = 0;
 
-    /**
-     * @brief Returns a vector indicating the number of input/output meshes that
-     * the filter requires, and their description.
-     *
-     * Input/Output meshes are the meshes that the filter will use to perform
-     * its operation, and that will be modified (they will be non-const, and the
-     * applyFilter function will receive them in a const vector of non-const
-     * meshes).
-     *
-     * The UintParameter objects in the returned vector must contain the name
-     * and description of the input/output meshes. The uint value contained in
-     * the UintParameter object won't be used. The number of input/output mesh
-     * requires is the size of the returned vector.
-     *
-     * @return The input/output meshes for the filter.
-     */
     virtual std::vector<UintParameter> inputOutputMeshes() const = 0;
 
-    /**
-     * @brief Returns the parameters of the filter.
-     *
-     * By default, the filter has no parameters.
-     *
-     * You should override this method if your filter requires
-     * parameters.
-     *
-     * @return The parameters for the filter.
-     */
     virtual ParameterVector parameters() const { return ParameterVector(); }
 
 protected:
@@ -168,8 +99,6 @@ public:
     /* ************************************ *
      * Member functions already implemented *
      * ************************************ */
-
-    Type type() const final { return Type::FILTER_ACTION; }
 
     MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
 

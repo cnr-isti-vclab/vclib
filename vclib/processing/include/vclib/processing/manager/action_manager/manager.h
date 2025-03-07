@@ -49,21 +49,22 @@ public:
 
         uint mt;
 
-        std::shared_ptr<IOAction> ioImageAction;
-        std::shared_ptr<MeshIOActions> ioMeshAction;
+        std::shared_ptr<ImageIOAction> ioImageAction;
+        std::shared_ptr<MeshIOActions> ioMeshActions;
+        std::shared_ptr<FilterActions> filterActions;
 
         switch (action->type()) {
         case IMAGE_IO_ACTION:
-            ioImageAction = std::dynamic_pointer_cast<IOAction>(action);
+            ioImageAction = std::dynamic_pointer_cast<ImageIOAction>(action);
             IOImageManager::add(ioImageAction);
             break;
         case MESH_IO_ACTION:
-            ioMeshAction = std::dynamic_pointer_cast<MeshIOActions>(action);
-            IOMeshManager::add(ioMeshAction);
+            ioMeshActions = std::dynamic_pointer_cast<MeshIOActions>(action);
+            IOMeshManager::add(ioMeshActions);
             break;
         case FILTER_ACTION:
-            checkMeshAction(action);
-            IDMeshManager::add(action);
+            filterActions = std::dynamic_pointer_cast<FilterActions>(action);
+            IDMeshManager::add(filterActions);
             break;
         default: throw std::runtime_error("Action type not supported");
         }
@@ -79,15 +80,6 @@ public:
     }
 
     void addDefaultActions() { add(actionInstances()); }
-
-private:
-    void checkMeshAction(const std::shared_ptr<Action>& action)
-    {
-        if (action->meshType() >= MeshTypeId::COUNT) {
-            throw std::runtime_error(
-                "The Action MeshType is not supported by the ActionManager.");
-        }
-    }
 };
 
 } // namespace detail

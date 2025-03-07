@@ -29,26 +29,13 @@
 namespace vcl::proc {
 
 /**
- * @brief Given a list of actions in a TemplatedTypeWrapper, this function
- * fills the given vector with the action instances that can be instantiated for
- * the given template argument MeshType
- *
- * @param[in/out] vec: vector to fill with the action instances
+ * @brief @brief Given a list of actions in a TemplatedTypeWrapper, this
+ * function fills the given vector with instances of Aggregator type (one for
+ * each action type) - see processing/engine/action_aggregators.
+ * Each Aggregator contains the action instances that can be instantiated for
+ * the supported mesh types.
+ * @param vec
  */
-template<typename MeshType, template<typename> typename... Actions>
-void fillActionsIfSupported(
-    std::vector<std::shared_ptr<Action>>& vec,
-    TemplatedTypeWrapper<Actions...>)
-{
-    auto fAct = [&]<template<typename> typename Act>() {
-        if constexpr (IsInstantiable<Act, MeshType>) {
-            vec.push_back(std::make_shared<Act<MeshType>>());
-        }
-    };
-
-    (fAct.template operator()<Actions>(), ...);
-}
-
 template<typename Aggregator, template<typename> typename... Actions>
 void fillAggregatedActions(
     std::vector<std::shared_ptr<Action>>& vec,

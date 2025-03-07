@@ -25,40 +25,36 @@
 
 #include "id_action_container.h"
 
-#include <vclib/processing/engine/action_interfaces.h>
+#include <vclib/processing/engine/action_aggregators.h>
 
 namespace vcl::proc::detail {
 
 class IDMeshManager
 {
-    static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
-
-    std::array<IDActionContainer, MESH_TYPE_NUMBER> mFilterActions;
+    IDActionContainer<FilterActions> mFilterActions;
 
 protected:
-    void add(const std::shared_ptr<Action>& action)
+    void add(const std::shared_ptr<FilterActions>& action)
     {
-        uint mt = toUnderlying(action->meshType());
-        mFilterActions[mt].add(action);
+        mFilterActions.add(action);
     }
 
 public:
     // filter
 
-    std::shared_ptr<Action> filterAction(const std::string& name, MeshTypeId mt)
+    std::shared_ptr<FilterActions> filterActions(const std::string& name)
         const
     {
-        return mFilterActions[toUnderlying(mt)].action(name);
+        return mFilterActions.action(name);
     }
 
     template<typename MeshType>
     std::shared_ptr<FilterActionT<MeshType>> filterAction(
         const std::string& name)
     {
-        auto act =
-            mFilterActions[toUnderlying(meshTypeId<MeshType>())].action(name);
+        std::shared_ptr<FilterActions> actions = filterActions(name);
 
-        return std::dynamic_pointer_cast<FilterActionT<MeshType>>(act);
+        return actions->action<MeshType>();
     }
 };
 

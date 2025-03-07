@@ -36,7 +36,6 @@ class IOMeshManager
 protected:
     void add(const std::shared_ptr<MeshIOActions>& action)
     {
-        uint mt = toUnderlying(action->meshType());
         mMeshIOActions.add(action);
     }
 

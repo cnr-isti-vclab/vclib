@@ -58,22 +58,6 @@ std::pair<std::any, MeshTypeId> loadMeshBestFit(
     }
 }
 
-inline ParameterVector filterParameters(
-    MeshTypeId         type,
-    const std::string& name)
-{
-    auto action = ActionManager::filterAction(name, type);
-    switch (type) {
-    case MeshTypeId::TRIANGLE_MESH:
-        return actionDownCast<FilterActionT, vcl::TriEdgeMesh>(action)
-            ->parameters();
-    case MeshTypeId::POLYGON_MESH:
-        return actionDownCast<FilterActionT, vcl::PolyEdgeMesh>(action)
-            ->parameters();
-    default: return ParameterVector();
-    }
-}
-
 } // namespace vcl::proc
 
 #endif // VCL_PROCESSING_FUNCTIONS_H

@@ -33,34 +33,6 @@
 
 namespace vcl::proc {
 
-// template<MeshConcept MeshType>
-// inline std::vector<std::shared_ptr<Action>> ioMeshActions()
-// {
-//     std::vector<std::shared_ptr<Action>> vec;
-
-//     using Actions = TemplatedTypeWrapper<BaseIOMesh>;
-
-//     fillActionsIfSupported<MeshType>(vec, Actions());
-
-//     return vec;
-// }
-
-// inline std::vector<std::shared_ptr<Action>> ioMeshActions()
-// {
-//     std::vector<std::shared_ptr<Action>> vec;
-
-//     // lambda called for each mesh type
-//     auto fMesh = [&]<typename MeshType>() {
-//         auto v = ioMeshActions<MeshType>();
-//         vec.insert(vec.end(), v.begin(), v.end());
-//     };
-
-//     // call lambda for each mesh type
-//     vcl::ForEachType<MeshTypes>::apply(fMesh);
-
-//     return vec;
-// }
-
 inline std::vector<std::shared_ptr<Action>> ioMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
