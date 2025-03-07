@@ -38,17 +38,15 @@ public:
 
     void onMousePress(
         vcl::MouseButton::Enum   button,
-        double              x,
-        double              y,
+        double                   x,
+        double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
         vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
 
         if (button == vcl::MouseButton::RIGHT) {
             QFileDialog::getOpenFileName(
-                nullptr,
-                QObject::tr("Open Document"),
-                QDir::currentPath());
+                nullptr, QObject::tr("Open Document"), QDir::currentPath());
         }
     }
 };
@@ -57,13 +55,12 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    using Viewer =
-        vcl::RenderApp<
-            vcl::qt::WidgetManager,
-            vcl::Canvas,
-            vcl::imgui::ImGuiDrawer,
-            vcl::imgui::ImguiStatsDrawer,
-            ViewerDrawer>;
+    using Viewer = vcl::RenderApp<
+        vcl::qt::WidgetManager,
+        vcl::Canvas,
+        vcl::imgui::ImGuiDrawer,
+        vcl::imgui::ImguiStatsDrawer,
+        ViewerDrawer>;
 
     Viewer viewer("Viewer with ImGui and Stats");
 
