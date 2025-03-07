@@ -64,9 +64,12 @@ class ImguiStatsDrawer : public vcl::PlainDrawer<DerivedDrawer>
 
 public:
     using vcl::PlainDrawer<DerivedDrawer>::PlainDrawer;
+    using Base = vcl::PlainDrawer<DerivedDrawer>;
 
-    void onDrawContent(uint viewId)
+    void onDraw(uint viewId)
     {
+        Base::onDraw(viewId);
+
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Begin("Stats", nullptr);
 
