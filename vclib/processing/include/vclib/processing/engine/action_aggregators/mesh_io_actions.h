@@ -76,6 +76,18 @@ public:
         return mMeshIOActions[mFirstMeshType]->parametersSave(format);
     }
 
+    BitSet32 supportedMeshTypes() const
+    {
+        checkActionHasBeenFilled();
+        BitSet32 bitset;
+        for (uint i = 0; i < MESH_TYPE_NUMBER; i++) {
+            if (mMeshIOActions[i] != nullptr) {
+                bitset[i] = true;
+            }
+        }
+        return bitset;
+    }
+
     template<MeshConcept MeshType>
     std::shared_ptr<MeshIOActionT<MeshType>> action() const
     {
