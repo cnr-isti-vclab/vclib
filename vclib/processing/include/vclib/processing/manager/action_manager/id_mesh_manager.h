@@ -55,6 +55,8 @@ public:
 
         return actions->action<MeshType>();
     }
+
+    auto filterActions() { return mFilterActions.actions(); }
 };
 
 } // namespace vcl::proc::detail

@@ -54,6 +54,11 @@ public:
         return it->second;
     }
 
+    auto actions() {
+        auto f = [](const ActionMap::value_type& p) { return p.second; };
+        return std::views::transform(mActionMap, f);
+    }
+
 private:
     void checkActionDoesNotExist(const std::string& name) const
     {

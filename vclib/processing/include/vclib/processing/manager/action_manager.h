@@ -123,6 +123,11 @@ public:
         return instance().filterActions(name);
     }
 
+    static auto filterActions()
+    {
+        return instance().filterActions();
+    }
+
     template<typename MeshType>
     static std::shared_ptr<FilterActionT<MeshType>> filterAction(
         const std::string& name)
