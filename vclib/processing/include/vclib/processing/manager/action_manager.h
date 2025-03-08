@@ -75,6 +75,11 @@ public:
         return instance().loadMeshFormats();
     }
 
+    static ParameterVector loadMeshParameters(FileFormat fmt)
+    {
+        return instance().loadMeshParameters(fmt);
+    }
+
     static std::shared_ptr<MeshIOActions> loadMeshActions(FileFormat fmt)
     {
         return instance().loadMeshActions(fmt);
@@ -92,6 +97,11 @@ public:
     static std::vector<FileFormat> saveMeshFormats()
     {
         return instance().saveMeshFormats();
+    }
+
+    static ParameterVector saveMeshParameters(FileFormat fmt)
+    {
+        return instance().saveMeshParameters(fmt);
     }
 
     static std::shared_ptr<MeshIOActions> saveMeshActions(FileFormat fmt)

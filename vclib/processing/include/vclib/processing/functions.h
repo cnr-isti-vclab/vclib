@@ -43,7 +43,7 @@ std::pair<std::any, MeshTypeId> loadMeshBestFit(
     std::any    res;
     std::string ext = FileInfo::extension(filename);
 
-    PolyEdgeMesh mesh = ActionManager::loadMeshAction<PolyEdgeMesh>(ext)->load(
+    PolyEdgeMesh mesh = ActionManager::loadMeshActions(ext)->load<PolyEdgeMesh>(
         filename, parameters, logger);
 
     if (isTriangleMesh(mesh)) {
