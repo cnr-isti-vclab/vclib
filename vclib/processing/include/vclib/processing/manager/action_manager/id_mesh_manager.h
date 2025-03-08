@@ -42,8 +42,7 @@ protected:
 public:
     // filter
 
-    std::shared_ptr<FilterActions> filterActions(const std::string& name)
-        const
+    std::shared_ptr<FilterActions> filterActions(const std::string& name) const
     {
         return mFilterActions.action(name);
     }

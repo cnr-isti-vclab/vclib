@@ -34,9 +34,9 @@ void fillWithSupportedMeshTypes(auto& array, uint& firstMeshType)
 {
     firstMeshType = toUnderlying(MeshTypeId::COUNT);
 
-    uint i = 0;
+    uint i    = 0;
     auto fAct = [&]<typename MeshType>() {
-        if constexpr(IsInstantiable<Act, MeshType>) {
+        if constexpr (IsInstantiable<Act, MeshType>) {
             array[toUnderlying(meshTypeId<MeshType>())] =
                 std::make_shared<Act<MeshType>>();
             if (i < firstMeshType) {

@@ -81,7 +81,8 @@ public:
     }
 
     template<MeshConcept MeshType>
-    static std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(FileFormat fmt)
+    static std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(
+        FileFormat fmt)
     {
         return instance().loadMeshAction<MeshType>(fmt);
     }
@@ -99,15 +100,15 @@ public:
     }
 
     template<MeshConcept MeshType>
-    static std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(FileFormat fmt)
+    static std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(
+        FileFormat fmt)
     {
         return instance().saveMeshAction<MeshType>(fmt);
     }
 
     // filter
 
-    static std::shared_ptr<FilterActions> filterActions(
-        const std::string& name)
+    static std::shared_ptr<FilterActions> filterActions(const std::string& name)
     {
         return instance().filterActions(name);
     }

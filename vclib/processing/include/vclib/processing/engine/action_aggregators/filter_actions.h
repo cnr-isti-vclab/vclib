@@ -33,16 +33,14 @@ class FilterActions : public FilterAction
 {
     static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
 
-    std::array<std::shared_ptr<FilterAction>, MESH_TYPE_NUMBER>
-         mFilterActions;
+    std::array<std::shared_ptr<FilterAction>, MESH_TYPE_NUMBER> mFilterActions;
     uint mFirstMeshType = MESH_TYPE_NUMBER;
 
 public:
     template<template<typename> typename Act>
     void fillWithSupportedMeshTypes()
     {
-        detail::fillWithSupportedMeshTypes<Act>(
-            mFilterActions, mFirstMeshType);
+        detail::fillWithSupportedMeshTypes<Act>(mFilterActions, mFirstMeshType);
     }
 
     std::string name() const final

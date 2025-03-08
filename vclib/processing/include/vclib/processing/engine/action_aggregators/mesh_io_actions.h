@@ -106,7 +106,7 @@ public:
     {
         MeshInfo   info;
         FileFormat format(FileInfo::extension(filename));
-        auto       mesh = load<MeshType>(filename, format, parameters, info, log);
+        auto mesh = load<MeshType>(filename, format, parameters, info, log);
         return mesh;
     }
 

@@ -35,8 +35,7 @@ int main()
     std::vector<vcl::TriEdgeMesh*> in_out;
     in_out.push_back(&bunny);
 
-    auto action =
-        ActionManager::filterActions("Laplacian Smoothing");
+    auto action = ActionManager::filterActions("Laplacian Smoothing");
 
     action->execute(in_out);
 
