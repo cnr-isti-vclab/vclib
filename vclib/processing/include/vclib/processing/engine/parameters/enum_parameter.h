@@ -32,19 +32,25 @@ namespace vcl::proc {
 class EnumParameter : public Parameter
 {
     std::vector<std::string> mEnumValues;
+    vcl::BitSet32            mEnabled;
 
 public:
     EnumParameter(
         const std::string&              name,
         uint                            value,
         const std::vector<std::string>& enumValues,
+        vcl::BitSet32                   enabled     = vcl::BitSet32().set(),
         const std::string&              description = "",
         const std::string&              tooltip     = "",
         const std::string&              category    = "") :
-            Parameter(name, 0u, description, tooltip, category)
+            Parameter(name, 0u, description, tooltip, category),
+            mEnumValues(enumValues), mEnabled(enabled)
     {
-        for (const auto& v : enumValues)
-            mEnumValues.push_back(v);
+        if (mEnumValues.size() >= 32) {
+            throw std::runtime_error(
+                "The number of enum values exceeds the maximum allowed value "
+                "of 32.");
+        }
         setUintValue(value);
     }
 
@@ -63,14 +69,36 @@ public:
 
     const std::vector<std::string>& enumValues() const { return mEnumValues; }
 
-    const std::string& enumValue() const { return mEnumValues[intValue()]; }
-
-    void setEnumValue(const std::string& value)
+    uint enumUintValue(const std::string& value) const
     {
         auto it = std::find(mEnumValues.begin(), mEnumValues.end(), value);
         if (it == mEnumValues.end())
             throw std::runtime_error("Invalid enum string value: " + value);
-        Parameter::setUintValue(it - mEnumValues.begin());
+        return it - mEnumValues.begin();
+    }
+
+    const std::string& enumValue(uint value) const
+    {
+        checkEnumValue(value);
+        return mEnumValues[value];
+    }
+
+    bool isEnabled(uint value) const
+    {
+        checkEnumValue(value);
+        return mEnabled[value];
+    }
+
+    bool isEnabled(const std::string& value) const
+    {
+        return isEnabled(enumUintValue(value));
+    }
+
+    const std::string& enumValue() const { return mEnumValues[uintValue()]; }
+
+    void setEnumValue(const std::string& value)
+    {
+        setUintValue(enumUintValue(value));
     }
 
 private:
@@ -81,6 +109,9 @@ private:
                 "Invalid enum value: " + std::to_string(value) +
                 "; expected value in [0, " +
                 std::to_string(mEnumValues.size()) + ")");
+        if (mEnabled[value] == false)
+            throw std::runtime_error(
+                "Enum value " + std::to_string(value) + " is disabled.");
     }
 };
 
