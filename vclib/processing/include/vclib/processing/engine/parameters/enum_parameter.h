@@ -63,7 +63,7 @@ public:
 
     void setUintValue(uint value) override
     {
-        checkEnumValue(value);
+        checkEnumValueEnabled(value);
         Parameter::setUintValue(value);
     }
 
@@ -109,6 +109,11 @@ private:
                 "Invalid enum value: " + std::to_string(value) +
                 "; expected value in [0, " +
                 std::to_string(mEnumValues.size()) + ")");
+    }
+
+    void checkEnumValueEnabled(uint value) const
+    {
+        checkEnumValue(value);
         if (mEnabled[value] == false)
             throw std::runtime_error(
                 "Enum value " + std::to_string(value) + " is disabled.");
