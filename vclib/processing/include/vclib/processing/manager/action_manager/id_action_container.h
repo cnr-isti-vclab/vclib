@@ -54,8 +54,11 @@ public:
         return it->second;
     }
 
-    auto actions() {
-        auto f = [](const ActionMap::value_type& p) { return p.second; };
+    auto actions()
+    {
+        auto f = [](const ActionMap::value_type& p) {
+            return p.second;
+        };
         return std::views::transform(mActionMap, f);
     }
 
