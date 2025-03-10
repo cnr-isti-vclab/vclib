@@ -42,14 +42,20 @@ class TimeLimitedAutomationAction : public AutomationAction
             1e3f;
         
         if(timePassedSeconds >= durationSeconds){
-            innerAction->end();
             end();
+            return;
         }
 
         innerAction->update();
     }
 
-    using Parent::end;
+    void end() override
+    {
+        Parent::end();
+        innerAction->end();
+        firstUpdate = true;
+        
+    }
 };
 
 #endif

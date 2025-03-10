@@ -37,16 +37,19 @@
 #include "../../rotation_automation_action.h"
 #include "../../benchmark_drawer.h"
 #include "../../time_limited_automation_action.h"
+#include "../../per_frame_rotation_automation_action.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
     vcl::imgui::ImGuiDrawer,
-    vcl::imgui::MeshViewerDrawerImgui,
+    vcl::ViewerDrawer,
     BenchmarkDrawer>;
 
 int main(int argc, char** argv)
 {
+    vcl::Context::setResetFlags(BGFX_RESET_NONE);
+
     QApplication app(argc, argv);
 
     ViewerWidget tw("Mesh Viewer ImGui Qt");
@@ -60,22 +63,22 @@ int main(int argc, char** argv)
 
     tw.addAutomation(
         new TimeLimitedAutomationAction(
-            new RotationAutomationAction(&tw, 1.f, {1.f, 0.f, 0.f})
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 0.f, 0.f})
         )
     );
     tw.addAutomation(
         new TimeLimitedAutomationAction(
-            new RotationAutomationAction(&tw, 1.f, {0.f, 1.f, 0.f})
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 1.f, 0.f})
         )
     );
     tw.addAutomation(
         new TimeLimitedAutomationAction(
-            new RotationAutomationAction(&tw, 1.f, {0.f, 0.f, 1.f})
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 0.f, 1.f})
         )
     );
     tw.addAutomation(
         new TimeLimitedAutomationAction(
-            new RotationAutomationAction(&tw, 3.14f, {1.f, 1.f, -2.f})
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 1.f, -2.f})
         )
     );
     tw.fitScene();

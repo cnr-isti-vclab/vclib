@@ -18,6 +18,9 @@ class AutomationAction
 
         virtual void update() {};
 
+        //this method ALSO has to reset everything in THIS object so that a subsequent start() call
+        //is like calling start() on a new object equal to this one
+        //or maybe just declare a reset() method that does so...TODO?
         virtual void end()
         {
             active = false;

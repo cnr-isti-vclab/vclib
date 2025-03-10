@@ -32,6 +32,12 @@
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
+#include "../../automation_imgui_drawer.h"
+#include "../../rotation_automation_action.h"
+#include "../../benchmark_drawer.h"
+#include "../../time_limited_automation_action.h"
+#include "../../per_frame_rotation_automation_action.h"
+
 #include <imgui.h>
 
 int main(int argc, char** argv)
@@ -40,7 +46,10 @@ int main(int argc, char** argv)
         vcl::glfw::WindowManager,
         vcl::Canvas,
         vcl::imgui::ImGuiDrawer,
-        vcl::imgui::MeshViewerDrawerImgui>;
+        vcl::imgui::MeshViewerDrawerImgui,
+        BenchmarkDrawer>;
+
+    vcl::Context::setResetFlags(BGFX_RESET_NONE);
 
     ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
 
@@ -51,12 +60,28 @@ int main(int argc, char** argv)
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
 
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
+    tw.setRepeatTimes(BENCHMARK_DRAWER_REPEAT_FOREVER);
 
-    tw.pushDrawableObject(drawable);
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 0.f, 0.f})
+        )
+    );
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 1.f, 0.f})
+        )
+    );
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 0.f, 1.f})
+        )
+    );
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 1.f, -2.f})
+        )
+    );
 
     tw.fitScene();
 

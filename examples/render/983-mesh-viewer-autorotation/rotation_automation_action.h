@@ -4,6 +4,7 @@
 #include "automation_action.h"
 #include <vclib/render/viewer/desktop_trackball.h>
 #include <vclib/space/core/quaternion.h>
+#include <bx/bx.h>
 
 class RotationAutomationAction: public AutomationAction
 {
@@ -31,6 +32,16 @@ class RotationAutomationAction: public AutomationAction
 
 
     public:
+
+    static RotationAutomationAction fromSecondsPerRotation(vcl::DesktopTrackBall<float> *trackball, float secondsPerRotation, vcl::Point3f axis)
+    {
+        return RotationAutomationAction(trackball, bx::kPi2 / secondsPerRotation, axis);
+    }
+
+    static RotationAutomationAction* ptrFromSecondsPerRotation(vcl::DesktopTrackBall<float> *trackball, float secondsPerRotation, vcl::Point3f axis)
+    {
+        return new RotationAutomationAction(trackball, bx::kPi2 / secondsPerRotation, axis);
+    }
 
     RotationAutomationAction(vcl::DesktopTrackBall<float> *trackball, float radiansPerSecond, vcl::Point3f axis)
     : trackball{trackball},
