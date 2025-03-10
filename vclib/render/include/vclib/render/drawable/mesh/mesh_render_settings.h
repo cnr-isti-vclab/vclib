@@ -684,13 +684,15 @@ public:
 
                     if constexpr (vcl::HasTexturePaths<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-                            if (vcl::isPerVertexTexCoordAvailable(m))
+                            if (vcl::isPerVertexTexCoordAvailable(m) &&
+                                m.textureNumber() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                            if (vcl::isPerFaceWedgeTexCoordsAvailable(m))
+                            if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
+                                m.textureNumber() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
                         }
@@ -822,17 +824,17 @@ private:
                 setSurface(SHADING_NONE);
             }
             // color
-            if (canSurface(COLOR_VERTEX)) {
-                setSurface(COLOR_VERTEX);
-            }
-            else if (canSurface(COLOR_FACE)) {
-                setSurface(COLOR_FACE);
-            }
-            else if (canSurface(COLOR_WEDGE_TEX)) {
+            if (canSurface(COLOR_WEDGE_TEX)) {
                 setSurface(COLOR_WEDGE_TEX);
             }
             else if (canSurface(COLOR_VERTEX_TEX)) {
                 setSurface(COLOR_VERTEX_TEX);
+            }
+            else if (canSurface(COLOR_VERTEX)) {
+                setSurface(COLOR_VERTEX);
+            }
+            else if (canSurface(COLOR_FACE)) {
+                setSurface(COLOR_FACE);
             }
             // jump mesh color on purpose: it is always available on the mesh,
             // but rarely used and it is likely to be set to 0 (black)
