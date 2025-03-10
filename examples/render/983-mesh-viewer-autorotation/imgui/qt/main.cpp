@@ -34,12 +34,14 @@
 #include <QApplication>
 
 #include "../../automation_imgui_drawer.h"
+#include "../../rotation_automation_action.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
     vcl::imgui::ImGuiDrawer,
-    vcl::imgui::MeshViewerDrawerImgui>;
+    vcl::imgui::MeshViewerDrawerImgui,
+    AutomationImguiDrawer>;
 
 int main(int argc, char** argv)
 {
@@ -54,11 +56,13 @@ int main(int argc, char** argv)
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
 
+    tw.addAutomation(std::string("Rotate around X"), new RotationAutomationAction(&tw, 1.f, {1.f, 0.f, 0.f}));
+    tw.addAutomation(std::string("Rotate around Y"), new RotationAutomationAction(&tw, 1.f, {0.f, 1.f, 0.f}));
+    tw.addAutomation(std::string("Rotate around Z"), new RotationAutomationAction(&tw, 1.f, {0.f, 0.f, 1.f}));
+
     tw.fitScene();
 
     tw.show();
-
-    tw.startIgnoringTrackBallEvents();
 
     return app.exec();
 }

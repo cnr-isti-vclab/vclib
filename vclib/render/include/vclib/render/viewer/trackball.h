@@ -618,8 +618,11 @@ private:
 
     /**--------- Base functions ---------**/
     // (general purpose and used for atomic operations)
-
+    public:
+    
     void rotate(const Quaternion<Scalar>& q) { mTransform.prerotate(q); }
+
+    private:
 
     void rotate(Point3<Scalar> axis, Scalar angleRad)
     {

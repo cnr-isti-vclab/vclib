@@ -256,7 +256,7 @@ public:
     }
 
     //Expose the trackball function to everyone
-    void rotateTrackBall(const Quaternion<Scalar> &rotation){
+    void rotate(const Quaternion<Scalar>& rotation){
         mTrackball.rotate(rotation);
     }
 
