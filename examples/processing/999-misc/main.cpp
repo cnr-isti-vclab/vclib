@@ -64,41 +64,5 @@ int main()
               << vcl::toUnderlying(meshTypeId<vcl::PolyEdgeMesh>())
               << std::endl;
 
-    BaseIOImage ioImage;
-
-    auto img = ioImage.load(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble_A.png");
-    ioImage.save(VCLIB_RESULTS_PATH "/TextureDoubleSaved.jpeg", img);
-
-    BaseIOMesh<vcl::TriMesh> ioMesh;
-
-    std::cerr << ioMesh.name() << std::endl;
-
-    auto mesh = ioMesh.load(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-
-    ConvexHullFilter<vcl::TriMesh> convexHullFilter;
-
-    std::vector<vcl::TriMesh> out;
-
-    convexHullFilter.execute({&std::as_const(mesh)}, out);
-
-    ioMesh.save(VCLIB_RESULTS_PATH "/bunny_ch.ply", out.front());
-
-    CreateConeFilter<vcl::TriMesh> createConeFilter;
-
-    out.clear();
-    createConeFilter.execute(out);
-
-    ioMesh.save(VCLIB_RESULTS_PATH "/cone.ply", out.front());
-
-    LaplacianSmoothingFilter<vcl::TriMesh> laplacianSmoothingFilter;
-
-    auto params = laplacianSmoothingFilter.parameters();
-    params.get("smoothing_steps")->setUintValue(10);
-
-    laplacianSmoothingFilter.execute(
-        std::vector<vcl::TriMesh*> {&mesh}, params);
-
-    ioMesh.save(VCLIB_RESULTS_PATH "/bunny_smoothed.ply", mesh);
-
     return 0;
 }

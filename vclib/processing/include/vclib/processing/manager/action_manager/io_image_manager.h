@@ -31,10 +31,10 @@ namespace vcl::proc::detail {
 
 class IOImageManager
 {
-    IOActionContainer mImageIOActions;
+    IOActionContainer<ImageIOAction> mImageIOActions;
 
 protected:
-    void add(const std::shared_ptr<IOAction>& action)
+    void add(const std::shared_ptr<ImageIOAction>& action)
     {
         mImageIOActions.add(action);
     }
@@ -49,8 +49,7 @@ public:
 
     std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt) const
     {
-        return std::dynamic_pointer_cast<ImageIOAction>(
-            mImageIOActions.loadAction(fmt));
+        return mImageIOActions.loadAction(fmt);
     }
 
     // save image
@@ -62,8 +61,7 @@ public:
 
     std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt) const
     {
-        return std::dynamic_pointer_cast<ImageIOAction>(
-            mImageIOActions.saveAction(fmt));
+        return mImageIOActions.saveAction(fmt);
     }
 };
 

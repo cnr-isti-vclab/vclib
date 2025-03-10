@@ -23,20 +23,16 @@
 #ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_MESH_IO_ACTION_T_H
 #define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_MESH_IO_ACTION_T_H
 
-#include "io_action.h"
-
-#include <vclib/processing/engine/parameter_vector.h>
+#include "mesh_io_action.h"
 
 #include <vclib/algorithms/mesh/type_name.h>
 #include <vclib/algorithms/mesh/update.h>
-#include <vclib/io/file_format.h>
 #include <vclib/io/file_info.h>
-#include <vclib/space/complex/mesh_info.h>
 
 namespace vcl::proc {
 
 template<MeshConcept Mesh>
-class MeshIOActionT : public IOAction
+class MeshIOActionT : public MeshIOAction
 {
 public:
     using MeshType = Mesh;
@@ -53,51 +49,16 @@ public:
 
     virtual IOSupport ioSupport() const = 0;
 
-    /**
-     * @brief Returns a vector of file formats and their capabilities.
-     *
-     * Each file format is defined by a list of extensions (all the possible
-     * extensions that a file format could have) and a description.
-     *
-     * The capabilities of the file format are defined by the MeshInfo
-     * class, and they are used to determine the information that can be
-     * stored or loaded from the file.
-     *
-     * @return the vectir of file formats supported by the action and their
-     * capabilities
-     */
+    // From MeshIOAction class
+
     virtual std::vector<std::pair<FileFormat, MeshInfo>> supportedMeshFormats()
         const = 0;
 
-    /**
-     * @brief Returns the parameters to load the mesh.
-     *
-     * By default, the load function has no parameters.
-     *
-     * You should override this method if your load function requires
-     * parameters.
-     *
-     * @param[in] format: the file format for which the parameters are requested
-     *
-     * @return The parameters for loading the mesh with the given file format.
-     */
     virtual ParameterVector parametersLoad(const FileFormat& format) const
     {
         return ParameterVector();
     }
 
-    /**
-     * @brief Returns the parameters to save the mesh.
-     *
-     * By default, the save function has no parameters.
-     *
-     * You should override this method if your save function requires
-     * parameters.
-     *
-     * @param[in] format: the file format for which the parameters are requested
-     *
-     * @return The parameters for saving the mesh with the given file format.
-     */
     virtual ParameterVector parametersSave(const FileFormat& format) const
     {
         return ParameterVector();
@@ -170,76 +131,7 @@ public:
      * Member functions already implemented *
      * ************************************ */
 
-    Type type() const final { return Type::MESH_IO_ACTION; }
-
     MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
-
-    std::vector<FileFormat> supportedFormats() const final
-    {
-        std::vector<FileFormat> formats;
-        for (const auto& [f, _] : supportedMeshFormats()) {
-            formats.push_back(f);
-        }
-        return formats;
-    }
-
-    MeshType load(
-        const std::string&     filename,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const
-    {
-        MeshInfo   info;
-        FileFormat format(FileInfo::extension(filename));
-        auto       mesh = load(filename, format, parameters, info, log);
-        return mesh;
-    }
-
-    MeshType load(const std::string& filename, AbstractLogger& log = logger())
-        const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        return load(filename, parametersLoad(format), log);
-    }
-
-    void save(
-        const std::string&     filename,
-        const MeshType&        mesh,
-        const MeshInfo&        info,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, format, mesh, info, parameters, log);
-    }
-
-    void save(
-        const std::string& filename,
-        const MeshType&    mesh,
-        const MeshInfo&    info,
-        AbstractLogger&    log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, mesh, info, parametersSave(format), log);
-    }
-
-    void save(
-        const std::string&     filename,
-        const MeshType&        mesh,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, mesh, formatCapability(format), parameters, log);
-    }
-
-    void save(
-        const std::string& filename,
-        const MeshType&    mesh,
-        AbstractLogger&    log = logger()) const
-    {
-        FileFormat format(FileInfo::extension(filename));
-        save(filename, mesh, parametersSave(format), log);
-    }
 
 protected:
     void postLoad(MeshType& mesh, const MeshInfo& loadedInfo) const
@@ -253,16 +145,6 @@ protected:
             }
         }
         vcl::updateBoundingBox(mesh);
-    }
-
-    MeshInfo formatCapability(const FileFormat& format) const
-    {
-        for (const auto& [f, info] : supportedMeshFormats()) {
-            if (f == format) {
-                return info;
-            }
-        }
-        return MeshInfo();
     }
 };
 
