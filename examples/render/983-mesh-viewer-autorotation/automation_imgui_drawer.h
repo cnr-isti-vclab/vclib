@@ -1,16 +1,17 @@
+#ifndef AUTOMATION_IMGUI_DRAWER_H
+#define AUTOMATION_IMGUI_DRAWER_H
+
 #include <imgui.h>
 #include <vclib/render/drawers/plain_drawer.h>
 #include <chrono>
 #include <vector>
-
-namespace vcl::imgui{
+#include "automation_action.h"
 
 template<typename DerivedDrawer>
 class AutomationImguiDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
-    std::chrono::time_point prev;
-    using NameFunPair = std::pair<std::string,std::function<void()>>;
-    std::vector<NameFunPair> automations;
+    using NameActionPair = std::pair<std::string, AutomationAction>;
+    std::vector<NameActionPair> automations;
 
 public:
 
@@ -20,7 +21,14 @@ public:
         ImGui::Begin("Automation", nullptr);
         for(int i=0; i<automations.size(); i++){
             if(ImGui::Button(automations[i].first)){
-                automations[i].second();
+                if(automations[i].second.isActive()){
+                    automations[i].second.end()
+                }else{
+                    automations[i].second.start()
+                }
+            }
+            if(automations[i].second.isActive()){
+                automations[i].second.update();
             }
         }
         ImGui::End();
@@ -42,4 +50,4 @@ public:
     }
 };
 
-}
+#endif
