@@ -110,8 +110,24 @@ public:
         AbstractLogger&                     log = logger()) const
     {
         checkInputVectors(inputMeshes, inputOutputMeshes);
-        return executeFilter(
+        auto res = executeFilter(
             inputMeshes, inputOutputMeshes, outputMeshes, parameters, log);
+        for (MeshType* m : inputOutputMeshes) {
+            postExecute(*m);
+        }
+        for (MeshType& m : outputMeshes) {
+            postExecute(m);
+        }
+        return res;
+    }
+
+protected:
+    void postExecute(MeshType& mesh) const
+    {
+        if constexpr (HasFaces<MeshType>) {
+            vcl::updatePerVertexAndFaceNormals(mesh);
+        }
+        vcl::updateBoundingBox(mesh);
     }
 };
 
