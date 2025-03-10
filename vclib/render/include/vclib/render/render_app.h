@@ -329,7 +329,7 @@ private:
         // call the onPostDraw member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<RenderApp>*>(this)->onPostDraw(), ...);
+        (..., static_cast<Drawers<RenderApp>*>(this)->onPostDraw());
     }
 
     /***** Member functions called by Drawer objects *****/
