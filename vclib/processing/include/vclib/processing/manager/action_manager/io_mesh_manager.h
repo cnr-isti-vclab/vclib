@@ -72,6 +72,11 @@ public:
         return mMeshIOActions.saveFormats();
     }
 
+    std::vector<FileFormat> saveMeshFormats(MeshTypeId m) const
+    {
+        return mMeshIOActions.saveFormats(m);
+    }
+
     ParameterVector saveMeshParameters(FileFormat fmt) const
     {
         return saveMeshActions(fmt)->parametersSave(fmt);

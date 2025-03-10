@@ -99,6 +99,11 @@ public:
         return instance().saveMeshFormats();
     }
 
+    static std::vector<FileFormat> saveMeshFormats(MeshTypeId m)
+    {
+        return instance().saveMeshFormats(m);
+    }
+
     static ParameterVector saveMeshParameters(FileFormat fmt)
     {
         return instance().saveMeshParameters(fmt);
