@@ -35,13 +35,15 @@
 
 #include "../../automation_imgui_drawer.h"
 #include "../../rotation_automation_action.h"
+#include "../../benchmark_drawer.h"
+#include "../../time_limited_automation_action.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
     vcl::imgui::ImGuiDrawer,
     vcl::imgui::MeshViewerDrawerImgui,
-    AutomationImguiDrawer>;
+    BenchmarkDrawer>;
 
 int main(int argc, char** argv)
 {
@@ -56,10 +58,26 @@ int main(int argc, char** argv)
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
 
-    tw.addAutomation(std::string("Rotate around X"), new RotationAutomationAction(&tw, 1.f, {1.f, 0.f, 0.f}));
-    tw.addAutomation(std::string("Rotate around Y"), new RotationAutomationAction(&tw, 1.f, {0.f, 1.f, 0.f}));
-    tw.addAutomation(std::string("Rotate around Z"), new RotationAutomationAction(&tw, 1.f, {0.f, 0.f, 1.f}));
-
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            new RotationAutomationAction(&tw, 1.f, {1.f, 0.f, 0.f})
+        )
+    );
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            new RotationAutomationAction(&tw, 1.f, {0.f, 1.f, 0.f})
+        )
+    );
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            new RotationAutomationAction(&tw, 1.f, {0.f, 0.f, 1.f})
+        )
+    );
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            new RotationAutomationAction(&tw, 3.14f, {1.f, 1.f, -2.f})
+        )
+    );
     tw.fitScene();
 
     tw.show();

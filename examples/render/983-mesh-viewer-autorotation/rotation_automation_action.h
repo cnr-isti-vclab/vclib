@@ -36,14 +36,14 @@ class RotationAutomationAction: public AutomationAction
     : trackball{trackball},
     radiansPerSecond{radiansPerSecond},
     around{axis}
-    {}
+    {};
 
     void start() override
     {
         Parent::start();
         notifyStarted();
         trackball->startIgnoringTrackBallEvents();
-    }
+    };
 
     void update() override
     {
@@ -68,7 +68,7 @@ class RotationAutomationAction: public AutomationAction
         if(!isAnyActive()){
             trackball->stopIgnoringTrackBallEvents();
         }
-    }
+    };
 };
 
 #endif
