@@ -145,7 +145,8 @@ public:
 
     // convert
 
-    static std::shared_ptr<ConvertActions> convertActions(const std::string& name)
+    static std::shared_ptr<ConvertActions> convertActions(
+        const std::string& name)
     {
         return instance().convertActions(name);
     }

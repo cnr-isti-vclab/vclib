@@ -20,51 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
-#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_MESH_IO_H
+#define VCL_PROCESSING_ACTION_INSTANCES_MESH_IO_H
 
-#include "io_action_container.h"
+#include "fill_actions.h"
 
-#include <vclib/processing/engine/action_interfaces.h>
+#include <vclib/processing/actions/mesh_io.h>
+#include <vclib/processing/engine/action_aggregators/mesh_io_actions.h>
 
-namespace vcl::proc::detail {
+#include <memory>
+#include <vector>
 
-class IOImageManager
+namespace vcl::proc {
+
+inline std::vector<std::shared_ptr<Action>> meshIOActions()
 {
-    IOActionContainer<ImageIOAction> mImageIOActions;
+    std::vector<std::shared_ptr<Action>> vec;
 
-protected:
-    void add(const std::shared_ptr<ImageIOAction>& action)
-    {
-        mImageIOActions.add(action);
-    }
+    using Actions = TemplatedTypeWrapper<BaseMeshIO>;
 
-public:
-    // load image
+    fillAggregatedActions<MeshIOActions>(vec, Actions());
 
-    std::vector<FileFormat> loadImageFormats() const
-    {
-        return mImageIOActions.loadFormats();
-    }
+    return vec;
+}
 
-    std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt) const
-    {
-        return mImageIOActions.loadAction(fmt);
-    }
+} // namespace vcl::proc
 
-    // save image
-
-    std::vector<FileFormat> saveImageFormats() const
-    {
-        return mImageIOActions.saveFormats();
-    }
-
-    std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt) const
-    {
-        return mImageIOActions.saveAction(fmt);
-    }
-};
-
-} // namespace vcl::proc::detail
-
-#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_IMAGE_MANAGER_H
+#endif // VCL_PROCESSING_ACTION_INSTANCES_MESH_IO_H

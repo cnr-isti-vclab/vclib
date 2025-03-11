@@ -20,12 +20,71 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
+#define VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
 
-#include "actions/convert.h"
-#include "actions/filter_mesh.h"
-#include "actions/image_io.h"
-#include "actions/mesh_io.h"
+#include "fill_actions.h"
 
-#endif // VCL_PROCESSING_ACTIONS_H
+#include <vclib/processing/actions/filter_mesh.h>
+
+#include <memory>
+#include <vector>
+
+namespace vcl::proc {
+
+namespace detail {
+
+inline std::vector<std::shared_ptr<Action>> applyFilterActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    using Actions = TemplatedTypeWrapper<LaplacianSmoothingFilter>;
+
+    fillAggregatedActions<FilterActions>(vec, Actions());
+
+    return vec;
+}
+
+inline std::vector<std::shared_ptr<Action>> createFilterActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    using Actions = TemplatedTypeWrapper<CreateConeFilter>;
+
+    fillAggregatedActions<FilterActions>(vec, Actions());
+
+    return vec;
+}
+
+inline std::vector<std::shared_ptr<Action>> generateFilterActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    using Actions = TemplatedTypeWrapper<ConvexHullFilter>;
+
+    fillAggregatedActions<FilterActions>(vec, Actions());
+
+    return vec;
+}
+
+} // namespace detail
+
+inline std::vector<std::shared_ptr<Action>> filterActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    auto a = detail::applyFilterActions();
+    vec.insert(vec.begin(), a.begin(), a.end());
+
+    auto c = detail::createFilterActions();
+    vec.insert(vec.begin(), c.begin(), c.end());
+
+    auto g = detail::generateFilterActions();
+    vec.insert(vec.begin(), g.begin(), g.end());
+
+    return vec;
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H

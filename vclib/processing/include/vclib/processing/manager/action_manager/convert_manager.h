@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_MESH_MANAGER_H
-#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_MESH_MANAGER_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_MANAGER_H
 
 #include "id_action_container.h"
 
@@ -29,36 +29,36 @@
 
 namespace vcl::proc::detail {
 
-class IDMeshManager
+class ConvertManager
 {
-    IDActionContainer<FilterActions> mFilterActions;
+    IDActionContainer<ConvertActions> mConvertActions;
 
 protected:
-    void add(const std::shared_ptr<FilterActions>& action)
+    void add(const std::shared_ptr<ConvertActions>& action)
     {
-        mFilterActions.add(action);
+        mConvertActions.add(action);
     }
 
 public:
-    // filter
+    // convert
 
-    std::shared_ptr<FilterActions> filterActions(const std::string& name) const
+    std::shared_ptr<ConvertActions> convertActions(const std::string& name) const
     {
-        return mFilterActions.action(name);
+        return mConvertActions.action(name);
     }
 
     template<typename MeshType>
-    std::shared_ptr<FilterActionT<MeshType>> filterAction(
+    std::shared_ptr<ConvertActionT<MeshType>> convertAction(
         const std::string& name)
     {
-        std::shared_ptr<FilterActions> actions = filterActions(name);
+        std::shared_ptr<ConvertActions> actions = convertActions(name);
 
         return actions->action<MeshType>();
     }
 
-    auto filterActions() { return mFilterActions.actions(); }
+    auto convertActions() { return mConvertActions.actions(); }
 };
 
 } // namespace vcl::proc::detail
 
-#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_ID_MESH_MANAGER_H
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_MANAGER_H

@@ -20,45 +20,82 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_ACTION_MANAGER_H
-#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_ACTION_MANAGER_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_MESH_IO_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_MESH_IO_MANAGER_H
 
-#include "id_action_container.h"
+#include "io_action_container.h"
 
 #include <vclib/processing/engine/action_aggregators.h>
 
 namespace vcl::proc::detail {
 
-class ConvertActionManager
+class MeshIOManager
 {
-    IDActionContainer<ConvertActions> mConvertActions;
+    IOActionContainer<MeshIOActions> mMeshIOActions;
 
 protected:
-    void add(const std::shared_ptr<ConvertActions>& action)
+    void add(const std::shared_ptr<MeshIOActions>& action)
     {
-        mConvertActions.add(action);
+        mMeshIOActions.add(action);
     }
 
 public:
-    // convert
+    // load mesh
 
-    std::shared_ptr<ConvertActions> convertActions(const std::string& name) const
+    std::vector<FileFormat> loadMeshFormats() const
     {
-        return mConvertActions.action(name);
+        return mMeshIOActions.loadFormats();
     }
 
-    template<typename MeshType>
-    std::shared_ptr<ConvertActionT<MeshType>> convertAction(
-        const std::string& name)
+    ParameterVector loadMeshParameters(FileFormat fmt) const
     {
-        std::shared_ptr<ConvertActions> actions = convertActions(name);
+        return loadMeshActions(fmt)->parametersLoad(fmt);
+    }
 
+    std::shared_ptr<MeshIOActions> loadMeshActions(FileFormat fmt) const
+    {
+        return mMeshIOActions.loadAction(fmt);
+    }
+
+    template<MeshConcept MeshType>
+    std::shared_ptr<MeshIOActionT<MeshType>> loadMeshAction(
+        FileFormat fmt) const
+    {
+        std::shared_ptr<MeshIOActions> actions = loadMeshActions(fmt);
         return actions->action<MeshType>();
     }
 
-    auto convertActions() { return mConvertActions.actions(); }
+    // save mesh
+
+    std::vector<FileFormat> saveMeshFormats() const
+    {
+        return mMeshIOActions.saveFormats();
+    }
+
+    std::vector<FileFormat> saveMeshFormats(MeshTypeId m) const
+    {
+        return mMeshIOActions.saveFormats(m);
+    }
+
+    ParameterVector saveMeshParameters(FileFormat fmt) const
+    {
+        return saveMeshActions(fmt)->parametersSave(fmt);
+    }
+
+    std::shared_ptr<MeshIOActions> saveMeshActions(FileFormat fmt) const
+    {
+        return mMeshIOActions.saveAction(fmt);
+    }
+
+    template<MeshConcept MeshType>
+    std::shared_ptr<MeshIOActionT<MeshType>> saveMeshAction(
+        FileFormat fmt) const
+    {
+        std::shared_ptr<MeshIOActions> actions = saveMeshActions(fmt);
+        return actions->action<MeshType>();
+    }
 };
 
 } // namespace vcl::proc::detail
 
-#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_ACTION_MANAGER_H
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_MESH_IO_MANAGER_H

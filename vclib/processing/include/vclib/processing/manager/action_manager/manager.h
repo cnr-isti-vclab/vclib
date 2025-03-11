@@ -23,10 +23,10 @@
 #ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_MANAGER_H
 #define VCL_PROCESSING_MANAGER_ACTION_MANAGER_MANAGER_H
 
-#include "convert_action_manager.h"
-#include "id_mesh_manager.h"
-#include "io_image_manager.h"
-#include "io_mesh_manager.h"
+#include "convert_manager.h"
+#include "filter_manager.h"
+#include "image_io_manager.h"
+#include "mesh_io_manager.h"
 
 #include <vclib/processing/engine/action_interfaces.h>
 
@@ -37,10 +37,10 @@ std::vector<std::shared_ptr<Action>> actionInstances();
 namespace detail {
 
 class Manager :
-        public ConvertActionManager,
-        public IDMeshManager,
-        public IOMeshManager,
-        public IOImageManager
+        public ConvertManager,
+        public FilterManager,
+        public ImageIOManager,
+        public MeshIOManager
 {
 public:
     Manager() { addDefaultActions(); }
@@ -52,26 +52,26 @@ public:
         uint mt;
 
         std::shared_ptr<ConvertActions> convertActions;
-        std::shared_ptr<ImageIOAction> ioImageAction;
-        std::shared_ptr<MeshIOActions> ioMeshActions;
         std::shared_ptr<FilterActions> filterActions;
+        std::shared_ptr<ImageIOAction> imageIOAction;
+        std::shared_ptr<MeshIOActions> meshIOActions;
 
         switch (action->type()) {
-        case IMAGE_IO_ACTION:
-            ioImageAction = std::dynamic_pointer_cast<ImageIOAction>(action);
-            IOImageManager::add(ioImageAction);
-            break;
-        case MESH_IO_ACTION:
-            ioMeshActions = std::dynamic_pointer_cast<MeshIOActions>(action);
-            IOMeshManager::add(ioMeshActions);
+        case CONVERT_ACTION:
+            convertActions = std::dynamic_pointer_cast<ConvertActions>(action);
+            ConvertManager::add(convertActions);
             break;
         case FILTER_ACTION:
             filterActions = std::dynamic_pointer_cast<FilterActions>(action);
-            IDMeshManager::add(filterActions);
+            FilterManager::add(filterActions);
             break;
-        case Action::Type::CONVERT_ACTION:
-            convertActions = std::dynamic_pointer_cast<ConvertActions>(action);
-            ConvertActionManager::add(convertActions);
+        case IMAGE_IO_ACTION:
+            imageIOAction = std::dynamic_pointer_cast<ImageIOAction>(action);
+            ImageIOManager::add(imageIOAction);
+            break;
+        case MESH_IO_ACTION:
+            meshIOActions = std::dynamic_pointer_cast<MeshIOActions>(action);
+            MeshIOManager::add(meshIOActions);
             break;
         default: throw std::runtime_error("Action type not supported");
         }

@@ -20,30 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H
-#define VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_FILTER_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_FILTER_MANAGER_H
 
-#include "fill_actions.h"
+#include "id_action_container.h"
 
-#include <vclib/processing/actions/io_mesh.h>
-#include <vclib/processing/engine/action_aggregators/mesh_io_actions.h>
+#include <vclib/processing/engine/action_aggregators.h>
 
-#include <memory>
-#include <vector>
+namespace vcl::proc::detail {
 
-namespace vcl::proc {
-
-inline std::vector<std::shared_ptr<Action>> ioMeshActions()
+class FilterManager
 {
-    std::vector<std::shared_ptr<Action>> vec;
+    IDActionContainer<FilterActions> mFilterActions;
 
-    using Actions = TemplatedTypeWrapper<BaseIOMesh>;
+protected:
+    void add(const std::shared_ptr<FilterActions>& action)
+    {
+        mFilterActions.add(action);
+    }
 
-    fillAggregatedActions<MeshIOActions>(vec, Actions());
+public:
+    // filter
 
-    return vec;
-}
+    std::shared_ptr<FilterActions> filterActions(const std::string& name) const
+    {
+        return mFilterActions.action(name);
+    }
 
-} // namespace vcl::proc
+    template<typename MeshType>
+    std::shared_ptr<FilterActionT<MeshType>> filterAction(
+        const std::string& name)
+    {
+        std::shared_ptr<FilterActions> actions = filterActions(name);
 
-#endif // VCL_PROCESSING_ACTION_INSTANCES_IO_MESH_H
+        return actions->action<MeshType>();
+    }
+
+    auto filterActions() { return mFilterActions.actions(); }
+};
+
+} // namespace vcl::proc::detail
+
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_FILTER_MANAGER_H
