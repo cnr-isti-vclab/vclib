@@ -133,7 +133,7 @@ public:
         const bool homogeneousNDC =
             Context::instance().capabilites().homogeneousDepth;
 
-        ParentViewer::readRequest(button, x, y, modifiers, homogeneousNDC);
+        ParentViewer::readDepthRequest(x, y, homogeneousNDC);
     }
 
     void toggleAxisVisibility() override

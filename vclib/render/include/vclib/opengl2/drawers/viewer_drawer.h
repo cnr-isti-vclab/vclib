@@ -114,7 +114,7 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::readRequest(button, x, y, modifiers);
+        ParentViewer::readDepthRequest(x, y);
     }
 
     void toggleAxisVisibility() override

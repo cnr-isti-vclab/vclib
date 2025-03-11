@@ -197,11 +197,9 @@ public:
     }
 
 protected:
-    void readRequest(
-        MouseButton::Enum   button,
+    void readDepthRequest(
         double              x,
         double              y,
-        const KeyModifiers& modifiers,
         bool                homogeneousNDC = true)
     {
         using ReadData  = ReadBufferTypes::ReadData;
