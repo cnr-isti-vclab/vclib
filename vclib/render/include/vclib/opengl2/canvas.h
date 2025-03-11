@@ -199,8 +199,10 @@ public:
     bool onScreenshot(
         const std::string& filename,
         uint               width  = 0,
-        uint               height = 0)
+        uint               height = 0,
+        uint               multiplier = 1)
     {
+        (void) multiplier; // not used
         (void) width;
         (void) height;
 
