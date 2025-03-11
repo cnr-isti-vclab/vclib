@@ -65,7 +65,7 @@ public:
 
     uint selectedDrawableObject() const;
 
-    void update();
+    void update(); // todo: rename this to refresh
 
 signals:
     void drawableObjectVisibilityChanged();
