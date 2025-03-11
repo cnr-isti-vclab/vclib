@@ -253,7 +253,8 @@ public:
     bool onScreenshot(
         const std::string& filename,
         uint               width  = 0,
-        uint               height = 0)
+        uint               height = 0,
+        uint               multiplier = 1)
     {
         if (!Context::instance().supportsReadback() // feature unsupported
             || mReadRequest != std::nullopt) {      // read already requested
@@ -265,6 +266,8 @@ public:
         if (width != 0 && height != 0)
             size = {width, height};
 
+        size *= multiplier;
+
         // color data callback
         CallbackReadBuffer callback = [=](const ReadData& data) {
             assert(
@@ -272,6 +275,7 @@ public:
             const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
 
             // save rgb image data into file using stb depending on file
+            // TODO: maybe useful to save it asynchronously
             try {
                 vcl::saveImageData(filename, size.x(), size.y(), d.data());
             }

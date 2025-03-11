@@ -111,6 +111,30 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     CallbackReadBuffer callback,
     const Color& clearColor) : type(COLOR), point(0, 0), readCallback(callback)
 {
+    // check framebuffer size
+    assert(framebufferSize.x() != 0 && framebufferSize.y() != 0);
+    // get texture size capabilitites
+    const auto maxSize = bgfx::getCaps()->limits.maxTextureSize;
+    if (framebufferSize.x() > maxSize || framebufferSize.y() > maxSize) {
+        std::cerr << "Framebuffer size " << "(" << framebufferSize.x() << "x"
+                    << framebufferSize.y() << ")"
+                    << "exceeds the maximum texture size "
+                    << maxSize << "x" << maxSize << std::endl;
+
+        const bool isWidthMax  = framebufferSize.x() > framebufferSize.y();
+        const auto maxSizeSide =
+            isWidthMax ? framebufferSize.x() : framebufferSize.y();
+
+        // adapt the size to the maximum texture size
+        const double ratio = double(maxSize) / double(maxSizeSide);
+        framebufferSize = Point2<uint>(
+            isWidthMax ? maxSize : uint(maxSize * ratio),
+            isWidthMax ? uint(maxSize * ratio) : maxSize);
+
+        std::cerr << "Setting size to " << "(" << framebufferSize.x() << "x"
+                  << framebufferSize.y() << ")" << std::endl;
+    }
+
     blitSize = framebufferSize.cast<uint16_t>();
 
     auto& ctx       = Context::instance();
