@@ -68,7 +68,5 @@ int main(int argc, char** argv)
 
     viewer.show();
 
-    // FIXME #3: It does not work when ImguiDrawers are activated
-
     return app.exec();
 }
