@@ -20,31 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INSTANCES_CONVERT_H
-#define VCL_PROCESSING_ACTION_INSTANCES_CONVERT_H
+#ifndef VCL_PROCESSING_ACTIONS_CONVERT_POLY_EDGE_MESH_H
+#define VCL_PROCESSING_ACTIONS_CONVERT_POLY_EDGE_MESH_H
 
-#include "fill_actions.h"
-
-#include <vclib/processing/actions/convert.h>
-#include <vclib/processing/engine/action_aggregators/convert_actions.h>
-
-#include <memory>
-#include <vector>
+#include <vclib/processing/engine.h>
 
 namespace vcl::proc {
 
-inline std::vector<std::shared_ptr<Action>> convertActions()
+template<MeshConcept MeshType>
+
+class PolyEdgeMeshConvert : public ConvertActionT<MeshType>
 {
-    std::vector<std::shared_ptr<Action>> vec;
+    using Base = ConvertActionT<MeshType>;
 
-    using Actions =
-        TemplatedTypeWrapper<PolyEdgeMeshConvert, TriEdgeMeshConvert>;
+    std::string name() const final { return "Convert to PolyEdgeMesh"; }
 
-    fillAggregatedActions<ConvertActions>(vec, Actions());
+    std::pair<MeshTypeId, std::any> convert(
+        const MeshType&                  inputMesh,
+        AbstractLogger&                  log) const final
+    {
+        using PolyEdgeMeshType = GetMeshType<MeshTypeId::POLYGON_MESH>;
 
-    return vec;
-}
+        PolyEdgeMeshType polyEdgeMesh;
+        polyEdgeMesh.importFrom(inputMesh);
+
+        return {MeshTypeId::POLYGON_MESH, std::any(polyEdgeMesh)};
+    }
+};
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTION_INSTANCES_CONVERT_H
+#endif // VCL_PROCESSING_ACTIONS_CONVERT_POLY_EDGE_MESH_H

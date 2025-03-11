@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_CONVERT_H
 #define VCL_PROCESSING_ACTIONS_CONVERT_H
 
+#include "convert/poly_edge_mesh.h"
 #include "convert/tri_edge_mesh.h"
 
 #endif // VCL_PROCESSING_ACTIONS_CONVERT_H
