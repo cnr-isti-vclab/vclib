@@ -20,12 +20,52 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_T_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_T_H
 
-#include "actions/convert.h"
-#include "actions/filter_mesh.h"
-#include "actions/io_image.h"
-#include "actions/io_mesh.h"
+#include "convert_action.h"
 
-#endif // VCL_PROCESSING_ACTIONS_H
+#include <vclib/concepts/mesh.h>
+
+namespace vcl::proc {
+
+template<MeshConcept Mesh>
+class ConvertActionT : public ConvertAction
+{
+public:
+    using MeshType = Mesh;
+
+    /* ******************************************************************** *
+     * Member functions that must/may be implemented by the derived classes *
+     * ******************************************************************** */
+
+    // From Action class
+
+    virtual std::string name() const = 0;
+
+    /**
+     * @brief Converts a mesh from the templated MeshType of the action to
+     * a target mesh type.
+     *
+     * The converted mesh is returned in a std::pair. The first element
+     * is the MeshTypeId of the output mesh, and the second element is the
+     * output mesh itself, contained in a std::any object.
+     *
+     * @param inputMesh
+     * @param log
+     */
+    virtual std::pair<MeshTypeId, std::any> convert(
+        const MeshType&                  inputMesh,
+        AbstractLogger&                  log = logger()) const = 0;
+
+    /* ************************************ *
+     * Member functions already implemented *
+     * ************************************ */
+
+    MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
+
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_T_H

@@ -20,12 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#ifndef VCL_PROCESSING_ACTIONS_CONVERT_H
+#define VCL_PROCESSING_ACTIONS_CONVERT_H
 
-#include "actions/convert.h"
-#include "actions/filter_mesh.h"
-#include "actions/io_image.h"
-#include "actions/io_mesh.h"
+#include "convert/tri_edge_mesh.h"
 
-#endif // VCL_PROCESSING_ACTIONS_H
+#endif // VCL_PROCESSING_ACTIONS_CONVERT_H

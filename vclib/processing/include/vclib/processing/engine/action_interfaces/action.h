@@ -43,6 +43,7 @@ public:
         IMAGE_IO_ACTION = 0,
         MESH_IO_ACTION,
         FILTER_ACTION,
+        CONVERT_ACTION,
 
         COUNT
     };

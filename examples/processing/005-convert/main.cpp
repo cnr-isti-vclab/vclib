@@ -20,12 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#include <vclib/processing.h>
 
-#include "actions/convert.h"
-#include "actions/filter_mesh.h"
-#include "actions/io_image.h"
-#include "actions/io_mesh.h"
+#include <vclib/load_save.h>
 
-#endif // VCL_PROCESSING_ACTIONS_H
+int main()
+{
+    using namespace vcl::proc;
+
+    vcl::PolyEdgeMesh bunny =
+        ActionManager::loadMeshActions("obj")->load<vcl::PolyEdgeMesh>(
+            VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj");
+
+    std::shared_ptr<ConvertActions> action =
+        ActionManager::convertActions("Convert to TriEdgeMesh");
+
+    auto [id, anyMesh] = action->convert(bunny);
+
+    ActionManager::saveMeshActions("ply")->save(
+        VCLIB_RESULTS_PATH "/converted_greek_helmet.ply",
+        std::any_cast<vcl::TriEdgeMesh>(anyMesh));
+
+    return 0;
+}

@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTION_INSTANCES_H
 #define VCL_PROCESSING_ACTION_INSTANCES_H
 
+#include "action_instances/convert.h"
 #include "action_instances/filter_mesh.h"
 #include "action_instances/io_image.h"
 #include "action_instances/io_mesh.h"
@@ -32,6 +33,10 @@ namespace vcl::proc {
 inline std::vector<std::shared_ptr<Action>> actionInstances()
 {
     std::vector<std::shared_ptr<Action>> vec;
+
+    // Convert actions
+    auto convertVector = convertActions();
+    vec.insert(vec.end(), convertVector.begin(), convertVector.end());
 
     // IO Image actions
     auto ioImgVector = ioImageActions();

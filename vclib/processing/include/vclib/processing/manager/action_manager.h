@@ -138,9 +138,31 @@ public:
     }
 
     template<MeshTypeId MESH>
-    static auto filteraction(const std::string& name)
+    static auto filterAction(const std::string& name)
     {
         return instance().filterAction<GetMeshType<MESH>>(name);
+    }
+
+    // convert
+
+    static std::shared_ptr<ConvertActions> convertActions(const std::string& name)
+    {
+        return instance().convertActions(name);
+    }
+
+    static auto convertActions() { return instance().convertActions(); }
+
+    template<typename MeshType>
+    static std::shared_ptr<ConvertActionT<MeshType>> convertAction(
+        const std::string& name)
+    {
+        return instance().convertAction<MeshType>(name);
+    }
+
+    template<MeshTypeId MESH>
+    static auto convertAction(const std::string& name)
+    {
+        return instance().convertAction<GetMeshType<MESH>>(name);
     }
 
 private:

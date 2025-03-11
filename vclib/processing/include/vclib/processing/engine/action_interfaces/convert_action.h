@@ -20,12 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_H
 
-#include "actions/convert.h"
-#include "actions/filter_mesh.h"
-#include "actions/io_image.h"
-#include "actions/io_mesh.h"
+#include "action.h"
 
-#endif // VCL_PROCESSING_ACTIONS_H
+namespace vcl::proc {
+
+class ConvertAction : public Action
+{
+public:
+    /* ******************************************************************** *
+     * Member functions that must/may be implemented by the derived classes *
+     * ******************************************************************** */
+
+    // From Action class
+
+    virtual std::string name() const = 0;
+
+    virtual MeshTypeId meshType() const = 0;
+
+    /* ************************************ *
+     * Member functions already implemented *
+     * ************************************ */
+
+    Type type() const final { return Type::CONVERT_ACTION; }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_H

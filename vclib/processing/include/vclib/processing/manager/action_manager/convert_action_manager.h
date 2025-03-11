@@ -20,12 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_ACTION_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_ACTION_MANAGER_H
 
-#include "actions/convert.h"
-#include "actions/filter_mesh.h"
-#include "actions/io_image.h"
-#include "actions/io_mesh.h"
+#include "id_action_container.h"
 
-#endif // VCL_PROCESSING_ACTIONS_H
+#include <vclib/processing/engine/action_aggregators.h>
+
+namespace vcl::proc::detail {
+
+class ConvertActionManager
+{
+    IDActionContainer<ConvertActions> mConvertActions;
+
+protected:
+    void add(const std::shared_ptr<ConvertActions>& action)
+    {
+        mConvertActions.add(action);
+    }
+
+public:
+    // convert
+
+    std::shared_ptr<ConvertActions> convertActions(const std::string& name) const
+    {
+        return mConvertActions.action(name);
+    }
+
+    template<typename MeshType>
+    std::shared_ptr<ConvertActionT<MeshType>> convertAction(
+        const std::string& name)
+    {
+        std::shared_ptr<ConvertActions> actions = convertActions(name);
+
+        return actions->action<MeshType>();
+    }
+
+    auto convertActions() { return mConvertActions.actions(); }
+};
+
+} // namespace vcl::proc::detail
+
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_CONVERT_ACTION_MANAGER_H
