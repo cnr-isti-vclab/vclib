@@ -64,7 +64,7 @@ public:
         AbstractLogger&                     log = Base::logger()) const final
     {
         const MeshType& input = *inputMeshes.front();
-        std::string name = "Convex Hull";
+        std::string     name  = "Convex Hull";
         if constexpr (HasName<MeshType>) {
             name = input.name() + " " + name;
         }
