@@ -38,6 +38,10 @@
 #include "../../benchmark_drawer.h"
 #include "../../time_limited_automation_action.h"
 #include "../../per_frame_rotation_automation_action.h"
+#include "../../automation_action_group.h"
+#include "../../scale_automation_action.h"
+#include "../../per_frame_scale_automation_action.h"
+#include "../../frame_limited_automation_action.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
@@ -60,25 +64,36 @@ int main(int argc, char** argv)
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
-
+    tw.setRepeatTimes(5);
     tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 0.f, 0.f})
+        new FrameLimitedAutomationAction(
+            AutomationActionGroupBuilder()
+                .addAutomation(PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 0.f, 1.f}))
+                ->addAutomation(PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 0.f, 0.f}))
+                ->addAutomation(
+                    new TimeLimitedAutomationAction(
+                        new PerFrameScaleAutomationAction(&tw, -0.5e-5f),
+                        2.f
+                    )
+                )
+                ->finish(),
+                4000
         )
     );
     tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 1.f, 0.f})
-        )
-    );
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 0.f, 1.f})
-        )
-    );
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 1.f, -2.f})
+        new FrameLimitedAutomationAction(
+            AutomationActionGroupBuilder()
+                .addAutomation(PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 0.f, -1.f}))
+                ->addAutomation(PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {-1.f, 0.f, 0.f}))
+                ->addAutomation(
+                    new TimeLimitedAutomationAction(
+                        new PerFrameScaleAutomationAction(&tw, 0.5e-5f),
+                        2.f
+                    )
+                )
+                ->finish()
+                ,
+                4000
         )
     );
     tw.fitScene();

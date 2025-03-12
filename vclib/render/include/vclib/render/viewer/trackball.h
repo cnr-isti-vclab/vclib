@@ -726,6 +726,8 @@ private:
         performZmove(pixelDelta);
     }
 
+    public:
+
     /**-------------- Scaling --------------**/
 
     // scrolling and scaling are setup with "magic" numbers
@@ -735,6 +737,8 @@ private:
         const auto factor = std::pow(1.2f, -pixelDelta);
         changeScale(factor);
     }
+
+    private:
 
     void dragScale()
     {

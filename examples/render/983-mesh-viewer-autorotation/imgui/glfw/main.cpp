@@ -37,6 +37,7 @@
 #include "../../benchmark_drawer.h"
 #include "../../time_limited_automation_action.h"
 #include "../../per_frame_rotation_automation_action.h"
+#include "../../scale_automation_action.h"
 
 #include <imgui.h>
 

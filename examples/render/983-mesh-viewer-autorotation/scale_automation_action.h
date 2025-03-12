@@ -1,12 +1,11 @@
-#ifndef ROTATION_AUTOMATION_ACTION_H
-#define ROTATION_AUTOMATION_ACTION_H
+#ifndef SCALE_AUTOMATION_ACTION_H
+#define SCALE_AUTOMATION_ACTION_H
 
 #include "automation_action.h"
 #include <vclib/render/viewer/desktop_trackball.h>
-#include <vclib/space/core/quaternion.h>
 #include <bx/bx.h>
 
-class RotationAutomationAction: public AutomationAction
+class ScaleAutomationAction : public AutomationAction
 {
     static inline uint32_t activeCount = 0;
 
@@ -27,34 +26,23 @@ class RotationAutomationAction: public AutomationAction
 
     using Parent = AutomationAction;
     vcl::DesktopTrackBall<float> *trackball;
-    float radiansPerNS;
-    vcl::Point3f around;
-
+    float pixelDeltaPerNS;
+    float totalPixelDelta;
 
     public:
 
-    static RotationAutomationAction fromSecondsPerRotation(vcl::DesktopTrackBall<float> *trackball, float secondsPerRotation, vcl::Point3f axis)
-    {
-        return RotationAutomationAction(trackball, bx::kPi2 / secondsPerRotation, axis);
-    }
-
-    static RotationAutomationAction* ptrFromSecondsPerRotation(vcl::DesktopTrackBall<float> *trackball, float secondsPerRotation, vcl::Point3f axis)
-    {
-        return new RotationAutomationAction(trackball, bx::kPi2 / secondsPerRotation, axis);
-    }
-
-    RotationAutomationAction(vcl::DesktopTrackBall<float> *trackball, float radiansPerSecond, vcl::Point3f axis)
+    ScaleAutomationAction(vcl::DesktopTrackBall<float> *trackball, float pixelDeltaPerSecond)
     : trackball{trackball},
-    radiansPerNS{radiansPerSecond / 1e9f},
-    around{axis}
-    {};
+    pixelDeltaPerNS{pixelDeltaPerSecond / 1e9f},
+    totalPixelDelta{0}
+    {}
 
     void start() override
     {
         Parent::start();
         notifyStarted();
         trackball->startIgnoringTrackBallEvents();
-    };
+    }
 
     void update() override
     {
@@ -63,9 +51,9 @@ class RotationAutomationAction: public AutomationAction
         
         auto deltaT = std::chrono::duration_cast<std::chrono::nanoseconds>(now-prev);
 
-        auto rotation = vcl::Quaternion<float>(radiansPerNS * (float)deltaT.count(), around);
+        totalPixelDelta += pixelDeltaPerNS * deltaT.count();
 
-        trackball->rotate(rotation);
+        trackball->performScale(totalPixelDelta);
 
         prev = now;
     };
@@ -77,6 +65,7 @@ class RotationAutomationAction: public AutomationAction
         if(!isAnyActive()){
             trackball->stopIgnoringTrackBallEvents();
         }
+        totalPixelDelta = 0;
     };
 };
 

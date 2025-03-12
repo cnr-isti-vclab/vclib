@@ -260,6 +260,11 @@ public:
         mTrackball.rotate(rotation);
     }
 
+    void performScale(Scalar pixelDelta)
+    {
+        mTrackball.performScale(pixelDelta);
+    }
+
     void focus(const Point3<Scalar>& center)
     {
         mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
