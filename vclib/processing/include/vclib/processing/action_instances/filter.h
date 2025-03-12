@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
-#define VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_FILTER_H
+#define VCL_PROCESSING_ACTION_INSTANCES_FILTER_H
 
 #include "fill_actions.h"
 
@@ -87,4 +87,4 @@ inline std::vector<std::shared_ptr<Action>> filterActions()
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
+#endif // VCL_PROCESSING_ACTION_INSTANCES_FILTER_H

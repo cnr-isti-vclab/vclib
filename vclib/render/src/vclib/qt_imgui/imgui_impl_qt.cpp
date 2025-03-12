@@ -321,8 +321,7 @@ protected:
                 ImGui_ImplQt_UpdateMouseData();
                 return BLOCK_EVENTS;
             }
-            default:
-                return BLOCK_EVENTS;
+            default: return BLOCK_EVENTS;
             }
         }
         // standard event processing

@@ -52,9 +52,9 @@ public:
         uint mt;
 
         std::shared_ptr<ConvertActions> convertActions;
-        std::shared_ptr<FilterActions> filterActions;
-        std::shared_ptr<ImageIOAction> imageIOAction;
-        std::shared_ptr<MeshIOActions> meshIOActions;
+        std::shared_ptr<FilterActions>  filterActions;
+        std::shared_ptr<ImageIOAction>  imageIOAction;
+        std::shared_ptr<MeshIOActions>  meshIOActions;
 
         switch (action->type()) {
         case CONVERT_ACTION:

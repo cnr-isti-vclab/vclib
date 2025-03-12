@@ -36,8 +36,8 @@ class PolyEdgeMeshConvert : public ConvertActionT<MeshType>
     std::string name() const final { return "Convert to PolyEdgeMesh"; }
 
     std::pair<MeshTypeId, std::any> convert(
-        const MeshType&                  inputMesh,
-        AbstractLogger&                  log) const final
+        const MeshType& inputMesh,
+        AbstractLogger& log) const final
     {
         using PolyEdgeMeshType = GetMeshType<MeshTypeId::POLYGON_MESH>;
 

@@ -42,7 +42,8 @@ protected:
 public:
     // convert
 
-    std::shared_ptr<ConvertActions> convertActions(const std::string& name) const
+    std::shared_ptr<ConvertActions> convertActions(
+        const std::string& name) const
     {
         return mConvertActions.action(name);
     }

@@ -33,14 +33,16 @@ class ConvertActions : public ConvertAction
 {
     static const uint MESH_TYPE_NUMBER = toUnderlying(MeshTypeId::COUNT);
 
-    std::array<std::shared_ptr<ConvertAction>, MESH_TYPE_NUMBER> mConvertActions;
+    std::array<std::shared_ptr<ConvertAction>, MESH_TYPE_NUMBER>
+         mConvertActions;
     uint mFirstMeshType = MESH_TYPE_NUMBER;
 
 public:
     template<template<typename> typename Act>
     void fillWithSupportedMeshTypes()
     {
-        detail::fillWithSupportedMeshTypes<Act>(mConvertActions, mFirstMeshType);
+        detail::fillWithSupportedMeshTypes<Act>(
+            mConvertActions, mFirstMeshType);
     }
 
     std::string name() const final
@@ -73,12 +75,11 @@ public:
 
     template<MeshConcept MeshType>
     std::pair<MeshTypeId, std::any> convert(
-        const MeshType&                  inputMesh,
-        AbstractLogger&                  log = logger()) const
+        const MeshType& inputMesh,
+        AbstractLogger& log = logger()) const
     {
         checkActionForMeshType<MeshType>();
-        return action<MeshType>()->convert(
-            inputMesh, log);
+        return action<MeshType>()->convert(inputMesh, log);
     }
 
 private:

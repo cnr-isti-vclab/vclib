@@ -55,15 +55,14 @@ public:
      * @param log
      */
     virtual std::pair<MeshTypeId, std::any> convert(
-        const MeshType&                  inputMesh,
-        AbstractLogger&                  log = logger()) const = 0;
+        const MeshType& inputMesh,
+        AbstractLogger& log = logger()) const = 0;
 
     /* ************************************ *
      * Member functions already implemented *
      * ************************************ */
 
     MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
-
 };
 
 } // namespace vcl::proc
