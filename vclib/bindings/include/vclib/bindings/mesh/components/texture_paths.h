@@ -23,9 +23,12 @@
 #ifndef VCL_BINDINGS_MESH_COMPONENTS_TEXTURE_PATHS_H
 #define VCL_BINDINGS_MESH_COMPONENTS_TEXTURE_PATHS_H
 
+#include <vclib/bindings/utils.h>
+
 #include <vclib/concepts/mesh.h>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace vcl::bind {
 
@@ -55,16 +58,19 @@ void initTexturePaths(pybind11::class_<MeshType>& c)
     c.def("clear_texture_paths", &MeshType::clearTexturePaths);
     c.def("push_texture_path", &MeshType::pushTexturePath);
 
-    using TexturePathView = View<decltype(MeshType().texturePathBegin())>;
+    using TexturePathView = decltype(MeshType().texturePaths());
 
-    // inner class that allows to iterate over texturePaths
-    pybind11::class_<TexturePathView> v(c, "_TexturePathRange");
-    v.def(
-        "__iter__",
-        [](TexturePathView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(TexturePathView))) {
+        // inner class that allows to iterate over texturePaths
+        pybind11::class_<TexturePathView> v(c, "_TexturePathRange");
+        v.def(
+            "__iter__",
+            [](TexturePathView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(TexturePathView));
+    }
 
     c.def("texture_paths", py::overload_cast<>(&MeshType::texturePaths));
 }

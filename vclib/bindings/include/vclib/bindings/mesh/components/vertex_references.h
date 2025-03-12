@@ -23,6 +23,8 @@
 #ifndef VCL_BINDINGS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_BINDINGS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
+#include <vclib/bindings/utils.h>
+
 #include <vclib/concepts/mesh.h>
 
 #include <pybind11/pybind11.h>
@@ -110,29 +112,38 @@ void initVertexReferences(pybind11::class_<ElementType>& c)
         c.def("clear_vertices", &ElementType::clearVertices);
     }
 
-    using VertexView = View<decltype(ElementType().vertexBegin())>;
+    using VertexView = decltype(ElementType().vertices());
 
-    // inner class that allows to iterate over vertices
-    pybind11::class_<VertexView> v(c, "_VertexRange");
-    v.def(
-        "__iter__",
-        [](VertexView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(VertexView))) {
+        // inner class that allows to iterate over vertices
+        pybind11::class_<VertexView> v(c, "_VertexReferencesRange");
+        v.def(
+            "__iter__",
+            [](VertexView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+
+        registeredTypes.insert(typeid(VertexView));
+    }
+
 
     c.def("vertices", py::overload_cast<>(&ElementType::vertices));
 
-    using VertexIndexView = View<decltype(ElementType().vertexIndexBegin())>;
+    using VertexIndexView = decltype(ElementType().vertexIndices());
 
-    // inner class that allows to iterate over vertex indices
-    pybind11::class_<VertexIndexView> vi(c, "_VertexIndexRange");
-    vi.def(
-        "__iter__",
-        [](VertexIndexView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(VertexIndexView))) {
+        // inner class that allows to iterate over vertex indices
+        pybind11::class_<VertexIndexView> vi(c, "_VertexReferencesIndexRange");
+        vi.def(
+            "__iter__",
+            [](VertexIndexView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+
+        registeredTypes.insert(typeid(VertexIndexView));
+    }
 
     c.def(
         "vertex_indices",

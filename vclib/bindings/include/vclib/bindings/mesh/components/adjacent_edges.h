@@ -23,6 +23,8 @@
 #ifndef VCL_BINDINGS_MESH_COMPONENTS_ADJACENT_EDGES_H
 #define VCL_BINDINGS_MESH_COMPONENTS_ADJACENT_EDGES_H
 
+#include <vclib/bindings/utils.h>
+
 #include <vclib/concepts/mesh.h>
 
 #include <pybind11/pybind11.h>
@@ -108,29 +110,35 @@ void initAdjacentEdges(pybind11::class_<ElementType>& c)
         c.def("clear_adj_edges", &ElementType::clearAdjEdges);
     }
 
-    using AdjEdgeView = View<decltype(ElementType().adjEdgeBegin())>;
+    using AdjEdgeView = decltype(ElementType().adjEdges());
 
-    // inner class that allows to iterate over adj edges
-    pybind11::class_<AdjEdgeView> v(c, "_AdjEdgeRange");
-    v.def(
-        "__iter__",
-        [](AdjEdgeView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(AdjEdgeView))) {
+        // inner class that allows to iterate over adj edges
+        pybind11::class_<AdjEdgeView> v(c, "_AdjEdgeRange");
+        v.def(
+            "__iter__",
+            [](AdjEdgeView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(AdjEdgeView));
+    }
 
     c.def("adj_edges", py::overload_cast<>(&ElementType::adjEdges));
 
-    using AdjEdgeIndexView = View<decltype(ElementType().adjEdgeIndexBegin())>;
+    using AdjEdgeIndexView = decltype(ElementType().adjEdgeIndices());
 
-    // inner class that allows to iterate over adj edge indices
-    pybind11::class_<AdjEdgeIndexView> vi(c, "_AdjEdgeIndexRange");
-    vi.def(
-        "__iter__",
-        [](AdjEdgeIndexView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(AdjEdgeIndexView))) {
+        // inner class that allows to iterate over adj edge indices
+        pybind11::class_<AdjEdgeIndexView> vi(c, "_AdjEdgeIndexRange");
+        vi.def(
+            "__iter__",
+            [](AdjEdgeIndexView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(AdjEdgeIndexView));
+    }
 
     c.def(
         "adj_edge_indices",

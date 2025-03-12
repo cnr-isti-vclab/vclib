@@ -23,6 +23,8 @@
 #ifndef VCL_BINDINGS_MESH_COMPONENTS_ADJACENT_VERTICES_H
 #define VCL_BINDINGS_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
+#include <vclib/bindings/utils.h>
+
 #include <vclib/concepts/mesh.h>
 
 #include <pybind11/pybind11.h>
@@ -103,30 +105,37 @@ void initAdjacentVertices(pybind11::class_<ElementType>& c)
     c.def("erase_adj_vertex", &ElementType::eraseAdjVertex);
     c.def("clear_adj_vertices", &ElementType::clearAdjVertices);
 
-    using AdjVertexView = View<decltype(ElementType().adjVertexBegin())>;
+    using AdjVertexView = decltype(ElementType().adjVertices());
 
-    // inner class that allows to iterate over adj vertices
-    pybind11::class_<AdjVertexView> v(c, "_AdjVertexRange");
-    v.def(
-        "__iter__",
-        [](AdjVertexView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(AdjVertexView))) {
+        // inner class that allows to iterate over adj vertices
+        pybind11::class_<AdjVertexView> v(c, "_AdjVertexRange");
+        v.def(
+            "__iter__",
+            [](AdjVertexView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+
+        registeredTypes.insert(typeid(AdjVertexView));
+    }
 
     c.def("adj_vertices", py::overload_cast<>(&ElementType::adjVertices));
 
-    using AdjVertexIndexView =
-        View<decltype(ElementType().adjVertexIndexBegin())>;
+    using AdjVertexIndexView = decltype(ElementType().adjVertexIndices());
 
-    // inner class that allows to iterate over adj vertex indices
-    pybind11::class_<AdjVertexIndexView> vi(c, "_AdjVertexIndexRange");
-    vi.def(
-        "__iter__",
-        [](AdjVertexIndexView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(AdjVertexIndexView))) {
+        // inner class that allows to iterate over adj vertex indices
+        pybind11::class_<AdjVertexIndexView> vi(c, "_AdjVertexIndexRange");
+        vi.def(
+            "__iter__",
+            [](AdjVertexIndexView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+
+        registeredTypes.insert(typeid(AdjVertexIndexView));
+    }
 
     c.def(
         "adj_vertex_indices",

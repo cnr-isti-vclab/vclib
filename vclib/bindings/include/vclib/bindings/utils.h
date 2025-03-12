@@ -26,9 +26,14 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 
+#include <set>
 #include <sstream>
 
 namespace vcl::bind {
+
+using RegisteredTypesSet = std::set<std::type_index>;
+
+inline RegisteredTypesSet registeredTypes;
 
 template<typename Class>
 void defCopy(pybind11::class_<Class>& c)

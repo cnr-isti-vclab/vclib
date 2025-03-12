@@ -23,6 +23,8 @@
 #ifndef VCL_BINDINGS_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_BINDINGS_MESH_COMPONENTS_ADJACENT_FACES_H
 
+#include <vclib/bindings/utils.h>
+
 #include <vclib/concepts/mesh.h>
 
 #include <pybind11/pybind11.h>
@@ -108,29 +110,35 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
         c.def("clear_adj_faces", &ElementType::clearAdjFaces);
     }
 
-    using AdjFaceView = View<decltype(ElementType().adjFaceBegin())>;
+    using AdjFaceView = decltype(ElementType().adjFaces());
 
-    // inner class that allows to iterate over adj faces
-    pybind11::class_<AdjFaceView> v(c, "_AdjFaceRange");
-    v.def(
-        "__iter__",
-        [](AdjFaceView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(AdjFaceView))) {
+        // inner class that allows to iterate over adj faces
+        pybind11::class_<AdjFaceView> v(c, "_AdjFaceRange");
+        v.def(
+            "__iter__",
+            [](AdjFaceView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(AdjFaceView));
+    }
 
     c.def("adj_faces", py::overload_cast<>(&ElementType::adjFaces));
 
-    using AdjFaceIndexView = View<decltype(ElementType().adjFaceIndexBegin())>;
+    using AdjFaceIndexView = decltype(ElementType().adjFaceIndices());
 
-    // inner class that allows to iterate over adj face indices
-    pybind11::class_<AdjFaceIndexView> vi(c, "_AdjFaceIndexRange");
-    vi.def(
-        "__iter__",
-        [](AdjFaceIndexView& v) {
-            return py::make_iterator(v.begin(), v.end());
-        },
-        py::keep_alive<0, 1>());
+    if (!registeredTypes.contains(typeid(AdjFaceIndexView))) {
+        // inner class that allows to iterate over adj face indices
+        pybind11::class_<AdjFaceIndexView> vi(c, "_AdjFaceIndexRange");
+        vi.def(
+            "__iter__",
+            [](AdjFaceIndexView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(AdjFaceIndexView));
+    }
 
     c.def(
         "adj_face_indices",

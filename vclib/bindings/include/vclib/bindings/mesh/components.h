@@ -54,15 +54,15 @@ void initComponents(pybind11::class_<ElementType>& c)
         });
     }
 
-    // if constexpr (comp::HasAdjacentEdges<ElementType>) {
-    //     initAdjacentEdges(c);
-    // }
-    // if constexpr (comp::HasAdjacentFaces<ElementType>) {
-    //     initAdjacentFaces(c);
-    // }
-    // if constexpr (comp::HasAdjacentVertices<ElementType>) {
-    //     initAdjacentVertices(c);
-    // }
+    if constexpr (comp::HasAdjacentEdges<ElementType>) {
+        initAdjacentEdges(c);
+    }
+    if constexpr (comp::HasAdjacentFaces<ElementType>) {
+        initAdjacentFaces(c);
+    }
+    if constexpr (comp::HasAdjacentVertices<ElementType>) {
+        initAdjacentVertices(c);
+    }
 
     // bit flags
     if constexpr (comp::HasTriangleBitFlags<ElementType>) {
@@ -136,12 +136,12 @@ void initComponents(pybind11::class_<ElementType>& c)
         });
     }
 
-    // if constexpr (comp::HasTextureImages<ElementType>) {
-    //     initTextureImages(c);
-    // }
-    // else if constexpr (comp::HasTexturePaths<ElementType>) {
-    //     initTexturePaths(c);
-    // }
+    if constexpr (comp::HasTextureImages<ElementType>) {
+        initTextureImages(c);
+    }
+    else if constexpr (comp::HasTexturePaths<ElementType>) {
+        initTexturePaths(c);
+    }
 
     if constexpr (comp::HasVertexReferences<ElementType>) {
         initVertexReferences(c);

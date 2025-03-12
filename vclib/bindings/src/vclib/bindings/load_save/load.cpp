@@ -49,6 +49,10 @@ void initLoad(pybind11::module& m)
     m.def("load_tri_mesh", [](const std::string& filename) {
         return vcl::load<vcl::TriMesh>(filename);
     });
+
+    m.def("load_poly_mesh", [](const std::string& filename) {
+        return vcl::load<vcl::PolyMesh>(filename);
+    });
 }
 
 } // namespace vcl::bind

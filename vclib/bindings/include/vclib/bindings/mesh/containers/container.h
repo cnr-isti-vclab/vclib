@@ -121,7 +121,7 @@ void initContainer(
         ("delete_" + name).c_str(),
         py::overload_cast<uint>(&MeshType::template deleteElement<ELEM_ID>));
 
-    using ElemView = View<decltype(MeshType().template begin<ELEM_ID>())>;
+    using ElemView = decltype(MeshType().template elements<ELEM_ID>());
 
     // inner class that allows to iterate over elements
     pybind11::class_<ElemView> v(c, ("_" + capitalName + "Range").c_str());
