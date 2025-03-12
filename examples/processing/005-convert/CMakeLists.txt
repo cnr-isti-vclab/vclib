@@ -22,19 +22,14 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    if (TARGET vclib-3rd-glfw)
-        add_subdirectory(bgfx)
-        add_subdirectory(bgfx-glfw)
-    endif()
+set(EXAMPLE_NAME 005-convert)
+project(vclib-example-${EXAMPLE_NAME})
 
-    if (TARGET vclib-3rd-qt)
-        add_subdirectory(bgfx-qt)
-    endif()
-endif()
+set(SOURCES
+    main.cpp)
 
-if (TARGET vclib-3rd-qt)
-    if (TARGET vclib-3rd-imgui)
-        add_subdirectory(broken-bgfx-imgui-qt)
-    endif()
-endif()
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    VCLIB_MODULE processing
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})

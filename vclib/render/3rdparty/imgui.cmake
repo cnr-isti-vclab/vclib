@@ -40,6 +40,7 @@ if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
         target_sources(imgui PRIVATE
             ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
             ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h)
+        target_link_libraries(imgui PRIVATE vclib-3rd-glfw)
     endif()
 
     if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
@@ -49,7 +50,6 @@ if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
         )
     endif()
 
-    target_link_libraries(imgui PRIVATE glfw)
     target_include_directories(imgui PUBLIC
         ${imgui_SOURCE_DIR}
         ${imgui_SOURCE_DIR}/misc/cpp

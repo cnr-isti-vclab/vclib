@@ -20,53 +20,71 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
-#define VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_FILTER_H
+#define VCL_PROCESSING_ACTION_INSTANCES_FILTER_H
 
-#include <vclib/processing/engine.h>
+#include "fill_actions.h"
+
+#include <vclib/processing/actions/filter_mesh.h>
+
+#include <memory>
+#include <vector>
 
 namespace vcl::proc {
 
-class BaseIOImage : public ImageIOAction
+namespace detail {
+
+inline std::vector<std::shared_ptr<Action>> applyFilterActions()
 {
-public:
-    std::string name() const final { return "Base IO Image"; }
+    std::vector<std::shared_ptr<Action>> vec;
 
-    IOSupport ioSupport() const final { return IOSupport::BOTH; }
+    using Actions = TemplatedTypeWrapper<LaplacianSmoothingFilter>;
 
-    std::vector<FileFormat> supportedFormats() const final
-    {
-        std::vector<FileFormat> formats;
-        formats.push_back(FileFormat("png", "Portable Network Graphics"));
-        formats.push_back(FileFormat("bmp", "Bitmap"));
-        formats.push_back(FileFormat("tga", "Truevision TGA"));
-        formats.push_back(FileFormat(
-            std::vector<std::string> {"jpg", "jpeg"},
-            "Joint Photographic Experts Group"));
+    fillAggregatedActions<FilterActions>(vec, Actions());
 
-        return formats;
-    }
+    return vec;
+}
 
-    Image load(const std::string& filename, AbstractLogger& log = logger())
-        const final
-    {
-        Image img(filename);
-        if (img.isNull()) {
-            throw std::runtime_error("Error loading image from " + filename);
-        }
-        return img;
-    }
+inline std::vector<std::shared_ptr<Action>> createFilterActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
 
-    void save(
-        const std::string& filename,
-        const Image&       image,
-        AbstractLogger&    log = logger()) const final
-    {
-        assert(!image.isNull());
-        image.save(filename);
-    }
-};
+    using Actions = TemplatedTypeWrapper<CreateConeFilter>;
+
+    fillAggregatedActions<FilterActions>(vec, Actions());
+
+    return vec;
+}
+
+inline std::vector<std::shared_ptr<Action>> generateFilterActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    using Actions = TemplatedTypeWrapper<ConvexHullFilter>;
+
+    fillAggregatedActions<FilterActions>(vec, Actions());
+
+    return vec;
+}
+
+} // namespace detail
+
+inline std::vector<std::shared_ptr<Action>> filterActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    auto a = detail::applyFilterActions();
+    vec.insert(vec.begin(), a.begin(), a.end());
+
+    auto c = detail::createFilterActions();
+    vec.insert(vec.begin(), c.begin(), c.end());
+
+    auto g = detail::generateFilterActions();
+    vec.insert(vec.begin(), g.begin(), g.end());
+
+    return vec;
+}
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_IO_IMAGE_BASE_IO_IMAGE_H
+#endif // VCL_PROCESSING_ACTION_INSTANCES_FILTER_H

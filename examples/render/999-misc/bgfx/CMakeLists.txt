@@ -22,4 +22,6 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-add_subdirectory(native)
+if (TARGET vclib-3rd-glfw)
+    add_subdirectory(native)
+endif()

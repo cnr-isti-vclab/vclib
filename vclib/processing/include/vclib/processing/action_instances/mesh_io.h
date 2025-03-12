@@ -20,25 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INSTANCES_IO_IMAGE_H
-#define VCL_PROCESSING_ACTION_INSTANCES_IO_IMAGE_H
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_MESH_IO_H
+#define VCL_PROCESSING_ACTION_INSTANCES_MESH_IO_H
 
-#include <vclib/processing/actions/io_image.h>
+#include "fill_actions.h"
+
+#include <vclib/processing/actions/mesh_io.h>
+#include <vclib/processing/engine/action_aggregators/mesh_io_actions.h>
 
 #include <memory>
 #include <vector>
 
 namespace vcl::proc {
 
-inline std::vector<std::shared_ptr<Action>> ioImageActions()
+inline std::vector<std::shared_ptr<Action>> meshIOActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    vec.push_back(std::make_shared<BaseIOImage>());
+    using Actions = TemplatedTypeWrapper<BaseMeshIO>;
+
+    fillAggregatedActions<MeshIOActions>(vec, Actions());
 
     return vec;
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTION_INSTANCES_IO_IMAGE_H
+#endif // VCL_PROCESSING_ACTION_INSTANCES_MESH_IO_H

@@ -20,53 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/qt/viewer_widget.h>
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_IMAGE_IO_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_IMAGE_IO_MANAGER_H
 
-#include <QApplication>
-#include <QFileDialog>
+#include "io_action_container.h"
 
-#include <iostream>
+#include <vclib/processing/engine/action_interfaces.h>
 
-template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
+namespace vcl::proc::detail {
+
+class ImageIOManager
 {
-public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
-    using ParentViewer::ParentViewer;
+    IOActionContainer<ImageIOAction> mImageIOActions;
 
-    void onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
+protected:
+    void add(const std::shared_ptr<ImageIOAction>& action)
     {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+        mImageIOActions.add(action);
+    }
 
-        if (button == vcl::MouseButton::RIGHT) {
-            QFileDialog::getOpenFileName(
-                nullptr, QObject::tr("Open Document"), QDir::currentPath());
-        }
+public:
+    // load image
+
+    std::vector<FileFormat> loadImageFormats() const
+    {
+        return mImageIOActions.loadFormats();
+    }
+
+    std::shared_ptr<ImageIOAction> loadImageAction(FileFormat fmt) const
+    {
+        return mImageIOActions.loadAction(fmt);
+    }
+
+    // save image
+
+    std::vector<FileFormat> saveImageFormats() const
+    {
+        return mImageIOActions.saveFormats();
+    }
+
+    std::shared_ptr<ImageIOAction> saveImageAction(FileFormat fmt) const
+    {
+        return mImageIOActions.saveAction(fmt);
     }
 };
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
+} // namespace vcl::proc::detail
 
-    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
-
-    using Viewer = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::ImguiStatsDrawer,
-        ViewerDrawer>;
-
-    Viewer viewer("Viewer with ImGui and Stats");
-
-    viewer.show();
-
-    return app.exec();
-}
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_IMAGE_IO_MANAGER_H

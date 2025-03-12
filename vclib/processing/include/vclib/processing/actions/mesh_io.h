@@ -20,53 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/qt/viewer_widget.h>
+#ifndef VCL_PROCESSING_ACTIONS_MESH_IO_H
+#define VCL_PROCESSING_ACTIONS_MESH_IO_H
 
-#include <QApplication>
-#include <QFileDialog>
+#include "mesh_io/base_mesh_io.h"
 
-#include <iostream>
-
-template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
-{
-public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
-    using ParentViewer::ParentViewer;
-
-    void onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
-    {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
-
-        if (button == vcl::MouseButton::RIGHT) {
-            QFileDialog::getOpenFileName(
-                nullptr, QObject::tr("Open Document"), QDir::currentPath());
-        }
-    }
-};
-
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
-
-    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
-
-    using Viewer = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::ImguiStatsDrawer,
-        ViewerDrawer>;
-
-    Viewer viewer("Viewer with ImGui and Stats");
-
-    viewer.show();
-
-    return app.exec();
-}
+#endif // VCL_PROCESSING_ACTIONS_MESH_IO_H

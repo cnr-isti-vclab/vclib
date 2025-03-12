@@ -101,6 +101,17 @@ public:
         return formats;
     }
 
+    std::vector<FileFormat> saveFormats(MeshTypeId m) const
+    {
+        // available only if ActionType is MeshIOActions
+        std::vector<FileFormat> formats;
+        for (const auto& [format, action] : mSaveFormatMap) {
+            if (action->supportedMeshTypes()[toUnderlying(m)])
+                formats.push_back(format);
+        }
+        return formats;
+    }
+
 private:
     void checkFormatDoesNotExist(const FileFormat& format) const
     {

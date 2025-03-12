@@ -20,71 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
-#define VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
+#ifndef VCL_PROCESSING_ACTIONS_CONVERT_POLY_EDGE_MESH_H
+#define VCL_PROCESSING_ACTIONS_CONVERT_POLY_EDGE_MESH_H
 
-#include "fill_actions.h"
-
-#include <vclib/processing/actions/filter_mesh.h>
-
-#include <memory>
-#include <vector>
+#include <vclib/processing/engine.h>
 
 namespace vcl::proc {
 
-namespace detail {
+template<MeshConcept MeshType>
 
-inline std::vector<std::shared_ptr<Action>> applyFilterMeshActions()
+class PolyEdgeMeshConvert : public ConvertActionT<MeshType>
 {
-    std::vector<std::shared_ptr<Action>> vec;
+    using Base = ConvertActionT<MeshType>;
 
-    using Actions = TemplatedTypeWrapper<LaplacianSmoothingFilter>;
+    std::string name() const final { return "Convert to PolyEdgeMesh"; }
 
-    fillAggregatedActions<FilterActions>(vec, Actions());
+    std::pair<MeshTypeId, std::any> convert(
+        const MeshType& inputMesh,
+        AbstractLogger& log) const final
+    {
+        using PolyEdgeMeshType = GetMeshType<MeshTypeId::POLYGON_MESH>;
 
-    return vec;
-}
+        PolyEdgeMeshType polyEdgeMesh;
+        polyEdgeMesh.importFrom(inputMesh);
 
-inline std::vector<std::shared_ptr<Action>> createFilterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    using Actions = TemplatedTypeWrapper<CreateConeFilter>;
-
-    fillAggregatedActions<FilterActions>(vec, Actions());
-
-    return vec;
-}
-
-inline std::vector<std::shared_ptr<Action>> generateFilterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    using Actions = TemplatedTypeWrapper<ConvexHullFilter>;
-
-    fillAggregatedActions<FilterActions>(vec, Actions());
-
-    return vec;
-}
-
-} // namespace detail
-
-inline std::vector<std::shared_ptr<Action>> filterMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
-
-    auto a = detail::applyFilterMeshActions();
-    vec.insert(vec.begin(), a.begin(), a.end());
-
-    auto c = detail::createFilterMeshActions();
-    vec.insert(vec.begin(), c.begin(), c.end());
-
-    auto g = detail::generateFilterMeshActions();
-    vec.insert(vec.begin(), g.begin(), g.end());
-
-    return vec;
-}
+        return {MeshTypeId::POLYGON_MESH, std::any(polyEdgeMesh)};
+    }
+};
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTION_INSTANCES_FILTER_MESH_H
+#endif // VCL_PROCESSING_ACTIONS_CONVERT_POLY_EDGE_MESH_H

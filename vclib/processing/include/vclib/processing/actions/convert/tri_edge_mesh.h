@@ -20,9 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_IO_MESH_H
-#define VCL_PROCESSING_ACTIONS_IO_MESH_H
+#ifndef VCL_PROCESSING_ACTIONS_CONVERT_TRI_EDGE_MESH_H
+#define VCL_PROCESSING_ACTIONS_CONVERT_TRI_EDGE_MESH_H
 
-#include "io_mesh/base_io_mesh.h"
+#include <vclib/processing/engine.h>
 
-#endif // VCL_PROCESSING_ACTIONS_IO_MESH_H
+namespace vcl::proc {
+
+template<MeshConcept MeshType>
+
+class TriEdgeMeshConvert : public ConvertActionT<MeshType>
+{
+    using Base = ConvertActionT<MeshType>;
+
+    std::string name() const final { return "Convert to TriEdgeMesh"; }
+
+    std::pair<MeshTypeId, std::any> convert(
+        const MeshType& inputMesh,
+        AbstractLogger& log) const final
+    {
+        using TriEdgeMeshType = GetMeshType<MeshTypeId::TRIANGLE_MESH>;
+
+        TriEdgeMeshType triEdgeMesh;
+        triEdgeMesh.importFrom(inputMesh);
+
+        return {MeshTypeId::TRIANGLE_MESH, std::any(triEdgeMesh)};
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTIONS_CONVERT_TRI_EDGE_MESH_H

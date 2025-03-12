@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_MESH_MANAGER_H
-#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_MESH_MANAGER_H
+#ifndef VCL_PROCESSING_MANAGER_ACTION_MANAGER_MESH_IO_MANAGER_H
+#define VCL_PROCESSING_MANAGER_ACTION_MANAGER_MESH_IO_MANAGER_H
 
 #include "io_action_container.h"
 
@@ -29,7 +29,7 @@
 
 namespace vcl::proc::detail {
 
-class IOMeshManager
+class MeshIOManager
 {
     IOActionContainer<MeshIOActions> mMeshIOActions;
 
@@ -72,6 +72,11 @@ public:
         return mMeshIOActions.saveFormats();
     }
 
+    std::vector<FileFormat> saveMeshFormats(MeshTypeId m) const
+    {
+        return mMeshIOActions.saveFormats(m);
+    }
+
     ParameterVector saveMeshParameters(FileFormat fmt) const
     {
         return saveMeshActions(fmt)->parametersSave(fmt);
@@ -93,4 +98,4 @@ public:
 
 } // namespace vcl::proc::detail
 
-#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_IO_MESH_MANAGER_H
+#endif // VCL_PROCESSING_MANAGER_ACTION_MANAGER_MESH_IO_MANAGER_H

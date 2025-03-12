@@ -20,53 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/qt/viewer_widget.h>
+#ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_T_H
+#define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_T_H
 
-#include <QApplication>
-#include <QFileDialog>
+#include "convert_action.h"
 
-#include <iostream>
+#include <vclib/concepts/mesh.h>
 
-template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
+namespace vcl::proc {
+
+template<MeshConcept Mesh>
+class ConvertActionT : public ConvertAction
 {
 public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
-    using ParentViewer::ParentViewer;
+    using MeshType = Mesh;
 
-    void onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
-    {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+    /* ******************************************************************** *
+     * Member functions that must/may be implemented by the derived classes *
+     * ******************************************************************** */
 
-        if (button == vcl::MouseButton::RIGHT) {
-            QFileDialog::getOpenFileName(
-                nullptr, QObject::tr("Open Document"), QDir::currentPath());
-        }
-    }
+    // From Action class
+
+    virtual std::string name() const = 0;
+
+    /**
+     * @brief Converts a mesh from the templated MeshType of the action to
+     * a target mesh type.
+     *
+     * The converted mesh is returned in a std::pair. The first element
+     * is the MeshTypeId of the output mesh, and the second element is the
+     * output mesh itself, contained in a std::any object.
+     *
+     * @param inputMesh
+     * @param log
+     */
+    virtual std::pair<MeshTypeId, std::any> convert(
+        const MeshType& inputMesh,
+        AbstractLogger& log = logger()) const = 0;
+
+    /* ************************************ *
+     * Member functions already implemented *
+     * ************************************ */
+
+    MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
 };
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
+} // namespace vcl::proc
 
-    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
-
-    using Viewer = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::ImguiStatsDrawer,
-        ViewerDrawer>;
-
-    Viewer viewer("Viewer with ImGui and Stats");
-
-    viewer.show();
-
-    return app.exec();
-}
+#endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_CONVERT_ACTION_T_H

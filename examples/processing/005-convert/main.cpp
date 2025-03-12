@@ -20,53 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/processing.h>
 
-#include <QApplication>
-#include <QFileDialog>
+#include <vclib/load_save.h>
 
-#include <iostream>
-
-template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
+int main()
 {
-public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
-    using ParentViewer::ParentViewer;
+    using namespace vcl::proc;
 
-    void onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
-    {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+    vcl::PolyEdgeMesh bunny =
+        ActionManager::loadMeshActions("obj")->load<vcl::PolyEdgeMesh>(
+            VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj");
 
-        if (button == vcl::MouseButton::RIGHT) {
-            QFileDialog::getOpenFileName(
-                nullptr, QObject::tr("Open Document"), QDir::currentPath());
-        }
-    }
-};
+    std::shared_ptr<ConvertActions> action =
+        ActionManager::convertActions("Convert to TriEdgeMesh");
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
+    auto [id, anyMesh] = action->convert(bunny);
 
-    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
+    ActionManager::saveMeshActions("ply")->save(
+        VCLIB_RESULTS_PATH "/converted_greek_helmet.ply",
+        std::any_cast<vcl::TriEdgeMesh>(anyMesh));
 
-    using Viewer = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::ImguiStatsDrawer,
-        ViewerDrawer>;
-
-    Viewer viewer("Viewer with ImGui and Stats");
-
-    viewer.show();
-
-    return app.exec();
+    return 0;
 }

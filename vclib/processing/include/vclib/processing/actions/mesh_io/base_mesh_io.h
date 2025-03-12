@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_IO_MESH_BASE_IO_MESH_H
-#define VCL_PROCESSING_ACTIONS_IO_MESH_BASE_IO_MESH_H
+#ifndef VCL_PROCESSING_ACTIONS_MESH_IO_BASE_MESH_IO_H
+#define VCL_PROCESSING_ACTIONS_MESH_IO_BASE_MESH_IO_H
 
 #include <vclib/processing/engine.h>
 #include <vclib/processing/manager.h>
@@ -32,7 +32,7 @@
 namespace vcl::proc {
 
 template<MeshConcept MeshType>
-class BaseIOMesh : public MeshIOActionT<MeshType>
+class BaseMeshIO : public MeshIOActionT<MeshType>
 {
     using Base = MeshIOActionT<MeshType>;
 
@@ -211,4 +211,4 @@ public:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_IO_MESH_BASE_IO_MESH_H
+#endif // VCL_PROCESSING_ACTIONS_MESH_IO_BASE_MESH_IO_H

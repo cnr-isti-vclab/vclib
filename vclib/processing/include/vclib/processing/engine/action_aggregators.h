@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ENGINE_ACTION_AGGREGATORS_H
 #define VCL_PROCESSING_ENGINE_ACTION_AGGREGATORS_H
 
+#include "action_aggregators/convert_actions.h"
 #include "action_aggregators/filter_actions.h"
 #include "action_aggregators/mesh_io_actions.h"
 

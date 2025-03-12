@@ -20,53 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/qt/viewer_widget.h>
+#ifndef VCL_PROCESSING_ACTION_INSTANCES_CONVERT_H
+#define VCL_PROCESSING_ACTION_INSTANCES_CONVERT_H
 
-#include <QApplication>
-#include <QFileDialog>
+#include "fill_actions.h"
 
-#include <iostream>
+#include <vclib/processing/actions/convert.h>
+#include <vclib/processing/engine/action_aggregators/convert_actions.h>
 
-template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
+#include <memory>
+#include <vector>
+
+namespace vcl::proc {
+
+inline std::vector<std::shared_ptr<Action>> convertActions()
 {
-public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
-    using ParentViewer::ParentViewer;
+    std::vector<std::shared_ptr<Action>> vec;
 
-    void onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
-    {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+    using Actions =
+        TemplatedTypeWrapper<PolyEdgeMeshConvert, TriEdgeMeshConvert>;
 
-        if (button == vcl::MouseButton::RIGHT) {
-            QFileDialog::getOpenFileName(
-                nullptr, QObject::tr("Open Document"), QDir::currentPath());
-        }
-    }
-};
+    fillAggregatedActions<ConvertActions>(vec, Actions());
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
-
-    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
-
-    using Viewer = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::ImguiStatsDrawer,
-        ViewerDrawer>;
-
-    Viewer viewer("Viewer with ImGui and Stats");
-
-    viewer.show();
-
-    return app.exec();
+    return vec;
 }
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTION_INSTANCES_CONVERT_H
