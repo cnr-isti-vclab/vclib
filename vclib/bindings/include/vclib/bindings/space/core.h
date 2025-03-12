@@ -30,6 +30,7 @@
 #include "core/principal_curvature.h"
 #include "core/tex_coord.h"
 #include "core/tex_coord_indexed.h"
+#include "core/texture.h"
 
 #include <pybind11/pybind11.h>
 
@@ -48,6 +49,7 @@ inline void initCore(pybind11::module& m)
     initPrincipalCurvature(m);
     initTexCoord(m);
     initTexCoordIndexed(m);
+    initTexture(m);
 }
 
 } // namespace vcl::bind

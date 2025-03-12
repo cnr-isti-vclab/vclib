@@ -25,12 +25,39 @@
 
 #include "texture_paths.h"
 
+#include <vclib/space/core/texture.h>
+
 namespace vcl::bind {
 
 template<MeshConcept MeshType>
 void initTextureImages(pybind11::class_<MeshType>& c)
 {
+    namespace py = pybind11;
+
     initTexturePaths(c);
+
+    c.def("texture", py::overload_cast<uint>(&MeshType::texture, py::const_));
+    c.def("set_texture", [](MeshType& t, uint i, const Texture& tex) {
+        t.texture(i) = tex;
+    });
+    c.def("clear_textures", &MeshType::clearTextures);
+    c.def("push_texture", &MeshType::pushTexture);
+
+    using TextureView = decltype(MeshType().textures());
+
+    if (!registeredTypes.contains(typeid(TextureView))) {
+        // inner class that allows to iterate over textures
+        pybind11::class_<TextureView> v(c, "_TextureRange");
+        v.def(
+            "__iter__",
+            [](TextureView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(TextureView));
+    }
+
+    c.def("textures", py::overload_cast<>(&MeshType::textures));
 }
 
 } // namespace vcl::bind

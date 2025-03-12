@@ -20,28 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/space/core/image.h>
+#ifndef VCL_BINDINGS_SPACE_CORE_TEXTURE_H
+#define VCL_BINDINGS_SPACE_CORE_TEXTURE_H
 
-#include <vclib/space/core.h>
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initImage(pybind11::module& m)
-{
-    namespace py = pybind11;
-
-    py::class_<Image> c(m, "Image"/*, py::buffer_protocol()*/);
-    c.def(py::init<>());
-    c.def(py::init<std::string>());
-
-    c.def("is_null", &Image::isNull);
-    c.def("height", &Image::height);
-    c.def("width", &Image::width);
-    c.def("size_in_bytes", &Image::sizeInBytes);
-    c.def("pixel", &Image::pixel);
-    c.def("load", &Image::load);
-    c.def("save", &Image::save);
-    c.def("mirror", &Image::mirror);
-}
+void initTexture(pybind11::module& m);
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_SPACE_CORE_TEXTURE_H

@@ -20,28 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/space/core/image.h>
+#include <vclib/bindings/space/core/texture.h>
 
 #include <vclib/space/core.h>
 
+#include <pybind11/stl.h>
+
 namespace vcl::bind {
 
-void initImage(pybind11::module& m)
+void initTexture(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<Image> c(m, "Image"/*, py::buffer_protocol()*/);
+    py::class_<Texture> c(m, "Texture");
     c.def(py::init<>());
     c.def(py::init<std::string>());
 
-    c.def("is_null", &Image::isNull);
-    c.def("height", &Image::height);
-    c.def("width", &Image::width);
-    c.def("size_in_bytes", &Image::sizeInBytes);
-    c.def("pixel", &Image::pixel);
-    c.def("load", &Image::load);
-    c.def("save", &Image::save);
-    c.def("mirror", &Image::mirror);
+    c.def("path", py::overload_cast<>(&Texture::path, py::const_));
+    c.def("set_path", [](Texture& t, const std::string& p) {
+        t.path() = p;
+    });
+    c.def("image", py::overload_cast<>(&Texture::image, py::const_));
+    c.def("set_image", [](Texture& t, const Image& i) {
+        t.image() = i;
+    });
 }
 
 } // namespace vcl::bind
