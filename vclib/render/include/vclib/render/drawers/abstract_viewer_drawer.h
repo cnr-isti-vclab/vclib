@@ -96,6 +96,12 @@ public:
         return mDrawList->size() - 1;
     }
 
+    uint clearDrawableObjectVector()
+    {
+        mDrawList->clear();
+        return 0;
+    }
+
     void fitScene()
     {
         Point3f sceneCenter;

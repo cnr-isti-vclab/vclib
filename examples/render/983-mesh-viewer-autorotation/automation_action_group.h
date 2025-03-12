@@ -8,6 +8,7 @@
 class AutomationActionGroup : public AutomationAction
 {
     std::vector<AutomationAction*> automations;
+    using Parent = AutomationAction;
 
     public:
 
@@ -18,6 +19,7 @@ class AutomationActionGroup : public AutomationAction
 
     void start() override
     {
+        Parent::start();
         for(size_t i=0; i<automations.size(); i++){
             automations[i]->start();
         }
@@ -34,6 +36,7 @@ class AutomationActionGroup : public AutomationAction
 
     void end() override
     {
+        Parent::end();
         for(size_t i=0; i<automations.size(); i++){
             if(automations[i]->isActive()){
                 automations[i]->end();

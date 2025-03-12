@@ -20,13 +20,13 @@ class TimeLimitedAutomationAction : public AutomationAction
     innerAction{innerAction}
     {};
 
-    void start()
+    void start() override
     {
         Parent::start();
         innerAction->start();
     }
 
-    void update()
+    void update() override
     {
         if(firstUpdate)
         {
@@ -46,6 +46,9 @@ class TimeLimitedAutomationAction : public AutomationAction
             return;
         }
 
+        if(!innerAction->isActive()){
+            return;
+        }
         innerAction->update();
     }
 

@@ -9,7 +9,7 @@ class FrameLimitedAutomationAction : public AutomationAction
     using Parent = AutomationAction;
 
     AutomationAction *innerAction;
-    uint32_t currentFrames;
+    uint32_t currentFrames = 0;
     uint32_t durationFrames;
 
     public:
@@ -33,13 +33,18 @@ class FrameLimitedAutomationAction : public AutomationAction
             end();
             return;
         }
+        if(!innerAction->isActive()){
+            return;
+        }
         innerAction->update();
     }
 
     void end() override
     {
         Parent::end();
-        innerAction->end();
+        if(innerAction->isActive()){
+            innerAction->end();
+        }
         currentFrames = 0;
     }
 };
