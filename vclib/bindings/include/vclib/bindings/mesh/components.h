@@ -32,6 +32,7 @@
 #include "components/texture_paths.h"
 #include "components/triangle_bit_flags.h"
 #include "components/vertex_references.h"
+#include "components/wedge_colors.h"
 #include "components/wedge_tex_coords.h"
 
 #include <vclib/concepts/mesh.h>
@@ -148,6 +149,9 @@ void initComponents(pybind11::class_<ElementType>& c)
         initVertexReferences(c);
     }
 
+    if constexpr (comp::HasWedgeColors<ElementType>) {
+        initWedgeColors(c);
+    }
     if constexpr (comp::HasWedgeTexCoords<ElementType>) {
         initWedgeTexCoords(c);
     }
