@@ -67,6 +67,21 @@ void initColor(pybind11::module& m)
     c.def("alpha_f", &Color::alphaF);
     c.def("set_alpha_f", &Color::setAlphaF);
 
+    // operators
+    c.def("__call__", [](Color& p, uint i) { // operator()
+        return p(i);
+    });
+
+    c.def("__getitem__", [](Color& p, uint i) { // operator[]
+        return p(i);
+    });
+
+    c.def("__setitem__", [](Color& p, uint i, uint8_t v) { // operator[]
+        p(i) = v;
+    });
+
+    defComparisonOperators(c);
+
     defRepr(c);
 }
 

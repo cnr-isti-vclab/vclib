@@ -20,40 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_SPACE_CORE_H
-#define VCL_BINDINGS_SPACE_CORE_H
+#include <vclib/bindings/space/core/matrix.h>
 
-#include "core/box.h"
-#include "core/color.h"
-#include "core/image.h"
-#include "core/matrix.h"
-#include "core/point.h"
-#include "core/principal_curvature.h"
-#include "core/tex_coord.h"
-#include "core/tex_coord_indexed.h"
-#include "core/texture.h"
+#include <vclib/bindings/utils.h>
+#include <vclib/space/core.h>
 
-#include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
 
 namespace vcl::bind {
 
-inline void initCore(pybind11::module& m)
+template<uint R, uint C>
+void populteMatrix(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    //py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
-    initPoint(m);
+    using Scalar = double;
+    using M = Matrix<Scalar, R, C>;
 
-    initBox(m);
-    initColor(m);
-    initImage(m);
-    initMatrix(m);
-    initPrincipalCurvature(m);
-    initTexCoord(m);
-    initTexCoordIndexed(m);
-    initTexture(m);
+    std::string cName = "Matrix" + std::to_string(R) + std::to_string(C);
+    py::class_<M> c(m, cName.c_str(), py::buffer_protocol());
+    c.def(py::init<>());
+
+    defCopy(c);
+
+    c.def_buffer([](M& p) -> py::buffer_info {
+        return py::buffer_info(
+            p.data(),                                /* Pointer to buffer */
+            sizeof(Scalar),                          /* Size of one scalar */
+            py::format_descriptor<Scalar>::format(), /* Python struct-style
+               format descriptor */
+            2,                                       /* Number of dimensions */
+            {R, C},                                  /* Buffer dimensions */
+            {sizeof(Scalar),
+             sizeof(Scalar) * R}
+            /* Strides (in bytes) for each index */
+        );
+    });
+
+    c.def("__call__", [](M& p, uint i, uint j) { // operator()
+        return p(i, j);
+    });
+
+    c.def("__getitem__", [](M& p, std::pair<uint, uint> i) { // operator[]
+        return p(i.first, i.second);
+    });
+
+    c.def(
+        "__setitem__",
+        [](M& p, std::pair<uint, uint> i, Scalar v) { // operator[]
+            p(i.first, i.second) = v;
+        });
+}
+
+void initMatrix(pybind11::module& m)
+{
+    populteMatrix<2,2>(m);
+    populteMatrix<3,3>(m);
+    populteMatrix<4,4>(m);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_SPACE_CORE_H

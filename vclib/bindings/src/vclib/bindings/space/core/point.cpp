@@ -115,6 +115,18 @@ void populatePoint(pybind11::module& m)
     c.def("norm", &P::norm);
 
     // operators
+    c.def("__call__", [](P& p, uint i) { // operator()
+        return p(i);
+    });
+
+    c.def("__getitem__", [](P& p, uint i) { // operator[]
+        return p(i);
+    });
+
+    c.def("__setitem__", [](P& p, uint i, Scalar v) { // operator[]
+        p(i) = v;
+    });
+
     c.def(-py::self);
     c.def(py::self + py::self);
     c.def(py::self + Scalar());
