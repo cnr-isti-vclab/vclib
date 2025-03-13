@@ -21,7 +21,9 @@
  ****************************************************************************/
 
 #include <vclib/bindings/load_save/load.h>
+#include <vclib/bindings/utils.h>
 
+#include <vclib/algorithms/mesh/type_name.h>
 #include <vclib/load_save/load.h>
 #include <vclib/meshes.h>
 
@@ -31,28 +33,31 @@ void initLoad(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    m.def(
-        "load",
-        [](vcl::TriMesh& m, const std::string& filename) {
-            vcl::load(m, filename);
-        },
-        py::arg("m"),
-        py::arg("filename"));
-    m.def(
-        "load",
-        [](vcl::PolyMesh& m, const std::string& filename) {
-            vcl::load(m, filename);
-        },
-        py::arg("m"),
-        py::arg("filename"));
+    auto fLoad = []<typename MeshType>(pybind11::module& m) {
+        m.def(
+            "load",
+            [](MeshType& m, const std::string& filename) {
+                vcl::load(m, filename);
+            },
+            py::arg("m"),
+            py::arg("filename"));
+    };
 
-    m.def("load_tri_mesh", [](const std::string& filename) {
-        return vcl::load<vcl::TriMesh>(filename);
-    });
+    defForAllMeshTypes(m, fLoad);
 
-    m.def("load_poly_mesh", [](const std::string& filename) {
-        return vcl::load<vcl::PolyMesh>(filename);
-    });
+    auto fNameLoad = []<typename MeshType>(pybind11::module& m) {
+        std::string name =
+            "load_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
+        m.def(
+            name.c_str(),
+            [](MeshType& m, const std::string& filename) {
+                vcl::load(m, filename);
+            },
+            py::arg("m"),
+            py::arg("filename"));
+    };
+
+    defForAllMeshTypes(m, fNameLoad);
 }
 
 } // namespace vcl::bind
