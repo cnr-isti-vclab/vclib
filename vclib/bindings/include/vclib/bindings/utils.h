@@ -23,6 +23,8 @@
 #ifndef VCL_BINDINGS_UTILS_H
 #define VCL_BINDINGS_UTILS_H
 
+#include <vclib/meshes.h>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 
@@ -72,6 +74,16 @@ void defComparisonOperators(pybind11::class_<Class>& c)
     c.def(py::self <= py::self);
     c.def(py::self > py::self);
     c.def(py::self >= py::self);
+}
+
+void defForAllMeshTypes(auto& pymod, auto&& function)
+{
+    function.template operator()<vcl::PointCloud>(pymod);
+    function.template operator()<vcl::EdgeMesh>(pymod);
+    function.template operator()<vcl::PolyMesh>(pymod);
+    function.template operator()<vcl::PolyEdgeMesh>(pymod);
+    function.template operator()<vcl::TriMesh>(pymod);
+    function.template operator()<vcl::TriEdgeMesh>(pymod);
 }
 
 } // namespace vcl::bind

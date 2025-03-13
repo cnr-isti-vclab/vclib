@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <vclib/bindings/load_save/save.h>
+#include <vclib/bindings/utils.h>
 
 #include <vclib/load_save/save.h>
 #include <vclib/meshes.h>
@@ -29,15 +30,19 @@ namespace vcl::bind {
 
 void initSave(pybind11::module& m)
 {
-    namespace py = pybind11;
+    auto f = []<MeshConcept MeshType>(pybind11::module& m) {
+        namespace py = pybind11;
 
-    m.def(
-        "save",
-        [](const vcl::TriMesh& m, const std::string& filename) {
-            vcl::save(m, filename);
-        },
-        py::arg("m"),
-        py::arg("filename"));
+        m.def(
+            "save",
+            [](const MeshType& m, const std::string& filename) {
+                vcl::save(m, filename);
+            },
+            py::arg("m"),
+            py::arg("filename"));
+    };
+
+    defForAllMeshTypes(m, f);
 }
 
 } // namespace vcl::bind
