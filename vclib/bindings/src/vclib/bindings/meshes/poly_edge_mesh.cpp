@@ -20,33 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESHES_H
-#define VCL_BINDINGS_MESHES_H
+#include <vclib/bindings/meshes/poly_edge_mesh.h>
 
-#include "meshes/edge_mesh.h"
-#include "meshes/point_cloud.h"
-#include "meshes/poly_mesh.h"
-#include "meshes/poly_edge_mesh.h"
-#include "meshes/tri_mesh.h"
-#include "meshes/tri_edge_mesh.h"
+#include <vclib/bindings/mesh/mesh.h>
+#include <vclib/bindings/utils.h>
 
-#include <pybind11/pybind11.h>
+#include <vclib/meshes.h>
 
 namespace vcl::bind {
 
-inline void initMeshes(pybind11::module& m)
+void initPolyEdgeMesh(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    //py::module_ sm = m.def_submodule("meshes", "Meshes");
-    initEdgeMesh(m);
-    initPointCloud(m);
-    initPolyMesh(m);
-    initPolyEdgeMesh(m);
-    initTriMesh(m);
-    initTriEdgeMesh(m);
+    initMesh<vcl::PolyEdgeMesh>(m, "PolyEdgeMesh");
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_MESHES_H
