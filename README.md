@@ -9,6 +9,7 @@ The library is divided in several modules, each one with a specific purpose:
   - **External**: contains algorithms and data structures that use external libraries, like VCG, etc.
   - **Processing**: contains algorithms for high level mesh and geometry processing tasks that can be used as black boxes plugins.
   - **Render**: contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
+  - **Bindings**: contains the python bindings of the library.
 
 All the modules can be found in the [vclib](vclib) directory, and can be built separately.
 
