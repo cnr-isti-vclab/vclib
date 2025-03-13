@@ -53,6 +53,10 @@ void initMesh(pybind11::module& m, const std::string& name)
         initFace(c);
         initFaceContainer(c);
     }
+    if constexpr (HasEdges<MeshType>) {
+        initEdge(c);
+        initEdgeContainer(c);
+    }
 
     initComponents(c);
 }

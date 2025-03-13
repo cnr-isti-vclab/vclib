@@ -20,11 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_MESH_ELEMENTS_H
-#define VCL_BINDINGS_MESH_ELEMENTS_H
+#ifndef VCL_BINDINGS_MESH_ELEMENTS_EDGE_H
+#define VCL_BINDINGS_MESH_ELEMENTS_EDGE_H
 
-#include "elements/edge.h"
-#include "elements/face.h"
-#include "elements/vertex.h"
+#include <vclib/concepts/mesh.h>
 
-#endif // VCL_BINDINGS_MESH_ELEMENTS_H
+#include <vclib/bindings/mesh/components.h>
+
+#include <pybind11/pybind11.h>
+
+namespace vcl::bind {
+
+template<MeshConcept MeshType>
+void initEdge(pybind11::class_<MeshType>& ct)
+{
+    using EdgeType = MeshType::EdgeType;
+
+    // Create the class
+    pybind11::class_<EdgeType> c(ct, "Edge");
+
+    initComponents(c);
+}
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_MESH_ELEMENTS_EDGE_H

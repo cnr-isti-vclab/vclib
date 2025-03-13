@@ -23,6 +23,7 @@
 #ifndef VCL_BINDINGS_MESH_CONTAINERS_H
 #define VCL_BINDINGS_MESH_CONTAINERS_H
 
+#include "containers/edge_container.h"
 #include "containers/face_container.h"
 #include "containers/vertex_container.h"
 
