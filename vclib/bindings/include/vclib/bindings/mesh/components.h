@@ -145,6 +145,16 @@ void initComponents(pybind11::class_<ElementType>& c)
         initTexturePaths(c);
     }
 
+    if constexpr (comp::HasTransformMatrix<ElementType>) {
+        c.def(
+            "transform_matrix",
+            py::overload_cast<>(&ElementType::transformMatrix),
+            reference);
+        c.def("set_transform_matrix", [](ElementType& v, const Matrix44d& m) {
+            v.transformMatrix() = m;
+        });
+    }
+
     if constexpr (comp::HasVertexReferences<ElementType>) {
         initVertexReferences(c);
     }
