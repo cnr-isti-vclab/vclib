@@ -2,6 +2,7 @@
 #define TIME_LIMITED_AUTOMATION_ACTION_H
 
 #include "automation_action.h"
+#include <vclib/misc/timer.h>
 #include <chrono>
 
 class TimeLimitedAutomationAction : public AutomationAction
@@ -9,9 +10,9 @@ class TimeLimitedAutomationAction : public AutomationAction
     using Parent = AutomationAction;
 
     AutomationAction *innerAction;
-    std::chrono::high_resolution_clock::time_point startTime;
     float durationSeconds;
-    bool firstUpdate = true;
+    vcl::Timer timer;
+
 
     public:
 
@@ -23,25 +24,13 @@ class TimeLimitedAutomationAction : public AutomationAction
     void start() override
     {
         Parent::start();
+        timer.start();
         innerAction->start();
     }
 
     void update() override
-    {
-        if(firstUpdate)
-        {
-            startTime = std::chrono::high_resolution_clock::now();
-            firstUpdate = false;
-        }
-        float timePassedSeconds = 
-            (float)std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::high_resolution_clock::now() - startTime
-            )
-            .count() 
-            / 
-            1e3f;
-        
-        if(timePassedSeconds >= durationSeconds){
+    {   
+        if(timer.delay() >= durationSeconds){
             end();
             return;
         }
@@ -56,8 +45,7 @@ class TimeLimitedAutomationAction : public AutomationAction
     {
         Parent::end();
         innerAction->end();
-        firstUpdate = true;
-        
+        timer.stop();
     }
 };
 

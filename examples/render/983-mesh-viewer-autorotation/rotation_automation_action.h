@@ -4,11 +4,13 @@
 #include "automation_action.h"
 #include <vclib/render/viewer/desktop_trackball.h>
 #include <vclib/space/core/quaternion.h>
+#include <vclib/misc/timer.h>
 #include <bx/bx.h>
 
 class RotationAutomationAction: public AutomationAction
 {
     static inline uint32_t activeCount = 0;
+
 
     static void notifyStarted()
     {
@@ -27,8 +29,9 @@ class RotationAutomationAction: public AutomationAction
 
     using Parent = AutomationAction;
     vcl::DesktopTrackBall<float> *trackball;
-    float radiansPerNS;
+    float radiansPerSecond;
     vcl::Point3f around;
+    vcl::Timer timer;
 
 
     public:
@@ -45,7 +48,7 @@ class RotationAutomationAction: public AutomationAction
 
     RotationAutomationAction(vcl::DesktopTrackBall<float> *trackball, float radiansPerSecond, vcl::Point3f axis)
     : trackball{trackball},
-    radiansPerNS{radiansPerSecond / 1e9f},
+    radiansPerSecond{radiansPerSecond},
     around{axis}
     {};
 
@@ -53,27 +56,24 @@ class RotationAutomationAction: public AutomationAction
     {
         Parent::start();
         notifyStarted();
+        timer.start();
         trackball->startIgnoringTrackBallEvents();
     };
 
     void update() override
     {
-        std::chrono::high_resolution_clock::time_point now = 
-            std::chrono::high_resolution_clock::now();
-        
-        auto deltaT = std::chrono::duration_cast<std::chrono::nanoseconds>(now-prev);
-
-        auto rotation = vcl::Quaternion<float>(radiansPerNS * (float)deltaT.count(), around);
+        auto rotation = vcl::Quaternion<float>(radiansPerSecond * timer.delay(), around);
 
         trackball->rotate(rotation);
 
-        prev = now;
+        timer.start();
     };
 
     void end() override
     {
         Parent::end();
         notifyEnded();
+        timer.stop();
         if(!isAnyActive()){
             trackball->stopIgnoringTrackBallEvents();
         }

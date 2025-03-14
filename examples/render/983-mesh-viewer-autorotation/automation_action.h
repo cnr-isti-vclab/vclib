@@ -6,7 +6,6 @@
 class AutomationAction
 {
     protected:
-        std::chrono::high_resolution_clock::time_point prev;
         bool active = false;
 
     public:
@@ -15,7 +14,6 @@ class AutomationAction
         //A call to start does NOT guarantee that the action is active, as subclasses may set it to false based on their own state
         virtual void start()
         {
-            prev = std::chrono::high_resolution_clock::now();
             active = true;
         };
 

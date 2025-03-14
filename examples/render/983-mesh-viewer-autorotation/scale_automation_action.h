@@ -3,10 +3,12 @@
 
 #include "automation_action.h"
 #include <vclib/render/viewer/desktop_trackball.h>
+#include <vclib/misc/timer.h>
 #include <bx/bx.h>
 
 class ScaleAutomationAction : public AutomationAction
 {
+
     static inline uint32_t activeCount = 0;
 
     static void notifyStarted()
@@ -26,14 +28,15 @@ class ScaleAutomationAction : public AutomationAction
 
     using Parent = AutomationAction;
     vcl::DesktopTrackBall<float> *trackball;
-    float pixelDeltaPerNS;
+    float pixelDeltaPerSecond;
     float totalPixelDelta;
+    vcl::Timer timer;
 
     public:
 
     ScaleAutomationAction(vcl::DesktopTrackBall<float> *trackball, float pixelDeltaPerSecond)
     : trackball{trackball},
-    pixelDeltaPerNS{pixelDeltaPerSecond / 1e9f},
+    pixelDeltaPerSecond{pixelDeltaPerSecond},
     totalPixelDelta{0}
     {}
 
@@ -41,27 +44,24 @@ class ScaleAutomationAction : public AutomationAction
     {
         Parent::start();
         notifyStarted();
+        timer.start();
         trackball->startIgnoringTrackBallEvents();
     }
 
     void update() override
     {
-        std::chrono::high_resolution_clock::time_point now = 
-            std::chrono::high_resolution_clock::now();
-        
-        auto deltaT = std::chrono::duration_cast<std::chrono::nanoseconds>(now-prev);
-
-        totalPixelDelta += pixelDeltaPerNS * deltaT.count();
+        totalPixelDelta += pixelDeltaPerSecond * timer.delay();
 
         trackball->performScale(totalPixelDelta);
 
-        prev = now;
+        timer.start();
     };
 
     void end() override
     {
         Parent::end();
         notifyEnded();
+        timer.stop();
         if(!isAnyActive()){
             trackball->stopIgnoringTrackBallEvents();
         }
