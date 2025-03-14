@@ -353,9 +353,9 @@ private:
         return CanvasType::onReadDepth(point, callback);
     }
 
-    void dScreenshot(const std::string& filename, uint width, uint height)
+    void dScreenshot(const std::string& filename, uint multiplier = 1)
     {
-        CanvasType::onScreenshot(filename, width, height);
+        CanvasType::onScreenshot(filename, multiplier);
     }
 };
 
@@ -712,18 +712,15 @@ public: // TODO - remove this when C++26 is supported
      * canvas.
      *
      * @param[in] filename: The filename where the screenshot will be saved.
-     * @param[in] width: The width of the screenshot. If 0, the width of the
-     * canvas will be used.
-     * @param[in] height: The height of the screenshot. If 0, the height of the
-     * canvas will be used.
+     * @param[in] multiplier: The multiplier that will be applied to the
+     * canvas image. The default value is 1.
      */
     static void screenshot(
         RenderApp*         r,
         const std::string& filename,
-        uint               width  = 0,
-        uint               height = 0)
+        uint               multiplier = 1)
     {
-        r->dScreenshot(filename, width, height);
+        r->dScreenshot(filename, multiplier);
     }
 };
 

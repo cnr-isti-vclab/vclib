@@ -119,6 +119,18 @@ public:
     }
 
     /**
+     * @brief Request a screenshot of the canvas.
+     *     The screenshot will be saved asynchronously.
+     * @param filename The filename where the screenshot will be saved.
+     * @param multiplier The multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     */
+    bool screenshot(const std::string& filename, uint multiplier = 1)
+    {
+        return onScreenshot(filename, multiplier);
+    }
+
+    /**
      * @brief Automatically called by the DerivedRenderApp when the window
      * initializes.
      * Initialization is requires in some backends+window manager combinations,
@@ -198,13 +210,9 @@ public:
      */
     bool onScreenshot(
         const std::string& filename,
-        uint               width  = 0,
-        uint               height = 0,
         uint               multiplier = 1)
     {
         (void) multiplier; // not used
-        (void) width;
-        (void) height;
 
         std::vector<std::uint8_t> buffer(mSize.x() * mSize.y() * 4);
         // read pixels

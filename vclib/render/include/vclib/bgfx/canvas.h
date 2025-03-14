@@ -144,6 +144,18 @@ public:
     }
 
     /**
+     * @brief Request a screenshot of the canvas.
+     *     The screenshot will be saved asynchronously.
+     * @param filename The filename where the screenshot will be saved.
+     * @param multiplier The multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     */
+    bool screenshot(const std::string& filename, uint multiplier = 1)
+    {
+        return onScreenshot(filename, multiplier);
+    }
+
+    /**
      * @brief Automatically called by the DerivedRenderApp when the window
      * initializes.
      * Initialization is requires in some backends+window manager combinations,
@@ -243,17 +255,15 @@ public:
 
     /**
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
-     * for a screenshot.
+     * for a screenshot. Also called by the public member function screenshot().
      *
      * @param filename
-     * @param width
-     * @param height
-     * @return
+     * @param multiplier multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     * @note this function is asynchronous, the screenshot will be saved later.
      */
     bool onScreenshot(
         const std::string& filename,
-        uint               width  = 0,
-        uint               height = 0,
         uint               multiplier = 1)
     {
         if (!Context::instance().supportsReadback() // feature unsupported
@@ -262,11 +272,7 @@ public:
         }
 
         // get size
-        auto size = mSize;
-        if (width != 0 && height != 0)
-            size = {width, height};
-
-        size *= multiplier;
+        auto size = mSize * multiplier;
 
         // color data callback
         CallbackReadBuffer callback = [=](const ReadData& data) {
