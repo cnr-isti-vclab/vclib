@@ -136,14 +136,16 @@ protected:
     void* windowPtr() { return reinterpret_cast<void*>(this); }
 
 #ifdef Q_OS_MACOS
-    // TODO: eventually choose if checking for pixel ratio every update
+// TODO: eventually choose if checking for pixel ratio every update
 
-    // current pixel ratio
-    // values > 0 are used to detect changes in pixel ratio
-    double mCurrentPixelRatio = -1.0;
+// current pixel ratio
+// values > 0 are used to detect changes in pixel ratio
+double mCurrentPixelRatio = -1.0;
+#endif
 
-    bool event(QEvent* event) override
-    {
+bool event(QEvent* event) override
+{
+#ifdef Q_OS_MACOS
         if (event->type() == QEvent::DevicePixelRatioChange) {
             // save current ratio
             mCurrentPixelRatio = pixelRatio();
@@ -165,10 +167,17 @@ protected:
                 app->sendEvent(this, &resizeEvent);
             }
         }
-
-        return QWidget::event(event);
-    }
 #endif
+        // if widgets' window is blocked or deactivated, reset mofiifers
+        if (event->type() == QEvent::WindowBlocked ||
+            event->type() == QEvent::WindowDeactivate)
+        {
+            DerivedRenderApp::WM::setModifiers(
+                derived(), {KeyModifier::NO_MODIFIER});
+        }
+
+        return Base::event(event);
+    }
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override
