@@ -35,9 +35,9 @@ void populteMatrix(pybind11::module& m)
     namespace py = pybind11;
 
     using Scalar = double;
-    using M = Matrix<Scalar, R, C>;
+    using M      = Matrix<Scalar, R, C>;
 
-    std::string cName = "Matrix" + std::to_string(R) + std::to_string(C);
+    std::string   cName = "Matrix" + std::to_string(R) + std::to_string(C);
     py::class_<M> c(m, cName.c_str(), py::buffer_protocol());
     c.def(py::init<>());
 
@@ -51,8 +51,7 @@ void populteMatrix(pybind11::module& m)
                format descriptor */
             2,                                       /* Number of dimensions */
             {R, C},                                  /* Buffer dimensions */
-            {sizeof(Scalar),
-             sizeof(Scalar) * R}
+            {sizeof(Scalar), sizeof(Scalar) * R}
             /* Strides (in bytes) for each index */
         );
     });
@@ -74,9 +73,9 @@ void populteMatrix(pybind11::module& m)
 
 void initMatrix(pybind11::module& m)
 {
-    populteMatrix<2,2>(m);
-    populteMatrix<3,3>(m);
-    populteMatrix<4,4>(m);
+    populteMatrix<2, 2>(m);
+    populteMatrix<3, 3>(m);
+    populteMatrix<4, 4>(m);
 }
 
 } // namespace vcl::bind

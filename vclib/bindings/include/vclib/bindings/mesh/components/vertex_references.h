@@ -43,19 +43,23 @@ void initVertexReferences(pybind11::class_<ElementType>& c)
 
     c.def("vertex_number", &ElementType::vertexNumber);
 
-    c.def("vertex", [](ElementType& e, uint i) {
-        return e.vertex(i);
-    }, py::return_value_policy::reference);
-    c.def("vertex_mod", [](ElementType& e, int i) {
-        return e.vertexMod(i);
-    }, py::return_value_policy::reference);
+    c.def(
+        "vertex",
+        [](ElementType& e, uint i) {
+            return e.vertex(i);
+        },
+        py::return_value_policy::reference);
+    c.def(
+        "vertex_mod",
+        [](ElementType& e, int i) {
+            return e.vertexMod(i);
+        },
+        py::return_value_policy::reference);
 
     c.def(
         "set_vertex",
         py::overload_cast<uint, VertexType*>(&ElementType::setVertex));
-    c.def(
-        "set_vertex",
-        py::overload_cast<uint, uint>(&ElementType::setVertex));
+    c.def("set_vertex", py::overload_cast<uint, uint>(&ElementType::setVertex));
     c.def(
         "set_vertex_mod",
         py::overload_cast<int, VertexType*>(&ElementType::setVertexMod));
@@ -99,9 +103,7 @@ void initVertexReferences(pybind11::class_<ElementType>& c)
         c.def(
             "push_vertex",
             py::overload_cast<VertexType*>(&ElementType::pushVertex));
-        c.def(
-            "push_vertex",
-            py::overload_cast<uint>(&ElementType::pushVertex));
+        c.def("push_vertex", py::overload_cast<uint>(&ElementType::pushVertex));
         c.def(
             "insert_vertex",
             py::overload_cast<uint, VertexType*>(&ElementType::insertVertex));
@@ -126,7 +128,6 @@ void initVertexReferences(pybind11::class_<ElementType>& c)
 
         registeredTypes.insert(typeid(VertexView));
     }
-
 
     c.def("vertices", py::overload_cast<>(&ElementType::vertices));
 

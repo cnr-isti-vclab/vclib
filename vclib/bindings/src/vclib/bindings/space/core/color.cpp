@@ -51,19 +51,27 @@ void initColor(pybind11::module& m)
     });
 
     c.def("red", py::overload_cast<>(&Color::red, py::const_));
-    c.def("set_red", [](Color& c, uint v) { c.red() = v; });
+    c.def("set_red", [](Color& c, uint v) {
+        c.red() = v;
+    });
     c.def("red_f", &Color::redF);
     c.def("set_red_f", &Color::setRedF);
     c.def("green", py::overload_cast<>(&Color::green, py::const_));
-    c.def("set_green", [](Color& c, uint v) { c.green() = v; });
+    c.def("set_green", [](Color& c, uint v) {
+        c.green() = v;
+    });
     c.def("green_f", &Color::greenF);
     c.def("set_green_f", &Color::setGreenF);
     c.def("blue", py::overload_cast<>(&Color::blue, py::const_));
-    c.def("set_blue", [](Color& c, uint v) { c.blue() = v; });
+    c.def("set_blue", [](Color& c, uint v) {
+        c.blue() = v;
+    });
     c.def("blue_f", &Color::blueF);
     c.def("set_blue_f", &Color::setBlueF);
     c.def("alpha", py::overload_cast<>(&Color::alpha, py::const_));
-    c.def("set_alpha", [](Color& c, uint v) { c.alpha() = v; });
+    c.def("set_alpha", [](Color& c, uint v) {
+        c.alpha() = v;
+    });
     c.def("alpha_f", &Color::alphaF);
     c.def("set_alpha_f", &Color::setAlphaF);
 

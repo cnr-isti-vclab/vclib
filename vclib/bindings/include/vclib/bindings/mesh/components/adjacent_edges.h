@@ -42,17 +42,23 @@ void initAdjacentEdges(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    static const int N = ElementType::ADJ_EDGE_NUMBER;
+    static const int  N    = ElementType::ADJ_EDGE_NUMBER;
     static const bool TTVN = CompType::TIED_TO_VERTEX_NUMBER;
 
     c.def("adj_edge_number", &ElementType::adjEdgesNumber);
 
-    c.def("adj_edge", [](ElementType& e, uint i) {
-        return e.adjEdge(i);
-    }, py::return_value_policy::reference);
-    c.def("adj_edge_mod", [](ElementType& e, int i) {
-        return e.adjEdgeMod(i);
-    }, py::return_value_policy::reference);
+    c.def(
+        "adj_edge",
+        [](ElementType& e, uint i) {
+            return e.adjEdge(i);
+        },
+        py::return_value_policy::reference);
+    c.def(
+        "adj_edge_mod",
+        [](ElementType& e, int i) {
+            return e.adjEdgeMod(i);
+        },
+        py::return_value_policy::reference);
 
     c.def(
         "set_adj_edge",
@@ -71,10 +77,9 @@ void initAdjacentEdges(pybind11::class_<ElementType>& c)
         e.setAdjEdges(v);
     });
 
-    c.def(
-        "set_adj_edges", [](ElementType& e, const std::vector<EdgeType*>& v) {
-            e.setAdjEdges(v);
-        });
+    c.def("set_adj_edges", [](ElementType& e, const std::vector<EdgeType*>& v) {
+        e.setAdjEdges(v);
+    });
 
     c.def(
         "contains_adj_edge",

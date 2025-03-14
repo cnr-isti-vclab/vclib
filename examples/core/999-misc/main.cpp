@@ -84,7 +84,7 @@ int main()
     static_assert(vcl::Cloneable<const Shape&>, "");
     static_assert(vcl::Cloneable<Shape&&>, "");
 
-    vcl::Point3d p(1,1,1);
+    vcl::Point3d p(1, 1, 1);
 
     p = p + p;
     p = p / 2;

@@ -41,7 +41,7 @@ inline void initCore(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    //py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
+    // py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
     initPoint(m);
 
     initBox(m);

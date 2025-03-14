@@ -31,7 +31,7 @@ void initTexCoord(pybind11::module& m)
     namespace py = pybind11;
 
     using Scalar = double;
-    using P = TexCoord<Scalar>;
+    using P      = TexCoord<Scalar>;
 
     py::class_<P> c(m, "TexCoord");
 

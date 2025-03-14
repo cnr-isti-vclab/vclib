@@ -25,10 +25,10 @@
 
 #include "meshes/edge_mesh.h"
 #include "meshes/point_cloud.h"
-#include "meshes/poly_mesh.h"
 #include "meshes/poly_edge_mesh.h"
-#include "meshes/tri_mesh.h"
+#include "meshes/poly_mesh.h"
 #include "meshes/tri_edge_mesh.h"
+#include "meshes/tri_mesh.h"
 
 #include <pybind11/pybind11.h>
 
@@ -38,7 +38,7 @@ inline void initMeshes(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    //py::module_ sm = m.def_submodule("meshes", "Meshes");
+    // py::module_ sm = m.def_submodule("meshes", "Meshes");
     initEdgeMesh(m);
     initPointCloud(m);
     initPolyMesh(m);

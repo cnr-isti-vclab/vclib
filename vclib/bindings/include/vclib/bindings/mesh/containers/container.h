@@ -44,23 +44,16 @@ void addOptionalComponentFunctions(
         c.def(
             ("is_per_" + name + "_" + compName + "_enabled").c_str(),
             [](const MeshType& t) {
-                return t.template isPerElementComponentEnabled<
-                    ELEM_ID,
-                    COMP_ID>();
+                return t
+                    .template isPerElementComponentEnabled<ELEM_ID, COMP_ID>();
             });
+        c.def(("enable_per_" + name + "_" + compName).c_str(), [](MeshType& t) {
+            return t.template enablePerElementComponent<ELEM_ID, COMP_ID>();
+        });
         c.def(
-            ("enable_per_" + name + "_" + compName).c_str(),
-            [](MeshType& t) {
-                return t.template enablePerElementComponent<
-                    ELEM_ID,
-                    COMP_ID>();
-            });
-        c.def(
-            ("disable_per_" + name + "_" + compName).c_str(),
-            [](MeshType& t) {
-                return t.template disablePerElementComponent<
-                    ELEM_ID,
-                    COMP_ID>();
+            ("disable_per_" + name + "_" + compName).c_str(), [](MeshType& t) {
+                return t
+                    .template disablePerElementComponent<ELEM_ID, COMP_ID>();
             });
     }
 }
@@ -78,14 +71,17 @@ void initContainer(
     static const uint ELEM_ID = Element::ELEMENT_ID;
 
     std::string capitalName = name;
-    capitalName[0] = std::toupper(capitalName[0]);
+    capitalName[0]          = std::toupper(capitalName[0]);
 
     if (namePlural.empty())
         namePlural = name + "s";
 
-    c.def(name.c_str(), [](MeshType& t, uint i) -> Element& {
-        return t.template element<ELEM_ID>(i);
-    }, py::return_value_policy::reference);
+    c.def(
+        name.c_str(),
+        [](MeshType& t, uint i) -> Element& {
+            return t.template element<ELEM_ID>(i);
+        },
+        py::return_value_policy::reference);
 
     c.def((name + "_number").c_str(), &MeshType::template number<ELEM_ID>);
     c.def(
@@ -107,8 +103,7 @@ void initContainer(
         ("clear_" + namePlural).c_str(),
         &MeshType::template clearElements<ELEM_ID>);
     c.def(
-        ("resize_" + namePlural).c_str(),
-        &MeshType::template resize<ELEM_ID>);
+        ("resize_" + namePlural).c_str(), &MeshType::template resize<ELEM_ID>);
     c.def(
         ("reserve_" + namePlural).c_str(),
         &MeshType::template reserve<ELEM_ID>);
@@ -129,8 +124,7 @@ void initContainer(
     v.def(
         "__iter__",
         [](ElemView& t) {
-            return py::make_iterator(
-                t.begin(), t.end());
+            return py::make_iterator(t.begin(), t.end());
         },
         py::keep_alive<0, 1>());
 

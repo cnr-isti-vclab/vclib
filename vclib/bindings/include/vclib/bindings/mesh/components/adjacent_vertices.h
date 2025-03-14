@@ -38,18 +38,25 @@ void initAdjacentVertices(pybind11::class_<ElementType>& c)
 
     // the actual type of the AdjacentVertices component
     using CompType = RemoveRef<
-        decltype(ElementType().template component<CompId::ADJACENT_VERTICES>())>;
+        decltype(ElementType()
+                     .template component<CompId::ADJACENT_VERTICES>())>;
 
     namespace py = pybind11;
 
     c.def("adj_vertex_number", &ElementType::adjVerticesNumber);
 
-    c.def("adj_vertex", [](ElementType& e, uint i) {
-        return e.adjVertex(i);
-    }, py::return_value_policy::reference);
-    c.def("adj_vertex_mod", [](ElementType& e, int i) {
-        return e.adjVertexMod(i);
-    }, py::return_value_policy::reference);
+    c.def(
+        "adj_vertex",
+        [](ElementType& e, uint i) {
+            return e.adjVertex(i);
+        },
+        py::return_value_policy::reference);
+    c.def(
+        "adj_vertex_mod",
+        [](ElementType& e, int i) {
+            return e.adjVertexMod(i);
+        },
+        py::return_value_policy::reference);
 
     c.def(
         "set_adj_vertex",
@@ -69,7 +76,8 @@ void initAdjacentVertices(pybind11::class_<ElementType>& c)
     });
 
     c.def(
-        "set_adj_vertices", [](ElementType& e, const std::vector<VertexType*>& v) {
+        "set_adj_vertices",
+        [](ElementType& e, const std::vector<VertexType*>& v) {
             e.setAdjVertices(v);
         });
 

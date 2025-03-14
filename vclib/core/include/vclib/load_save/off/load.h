@@ -537,7 +537,8 @@ void loadOff(
     log.endTask("Reading vertices");
     if constexpr (HasFaces<MeshType>) {
         log.startNewTask(percVertices, 100, "Reading faces");
-        detail::readOffFaces(m, inputOffStream, fileInfo, nFaces, settings, log);
+        detail::readOffFaces(
+            m, inputOffStream, fileInfo, nFaces, settings, log);
         log.endTask("Reading faces");
     }
     else {

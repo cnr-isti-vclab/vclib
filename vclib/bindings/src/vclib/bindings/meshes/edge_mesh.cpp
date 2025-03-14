@@ -37,4 +37,3 @@ void initEdgeMesh(pybind11::module& m)
 }
 
 } // namespace vcl::bind
-

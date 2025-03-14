@@ -30,7 +30,7 @@ void initImage(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<Image> c(m, "Image"/*, py::buffer_protocol()*/);
+    py::class_<Image> c(m, "Image" /*, py::buffer_protocol()*/);
     c.def(py::init<>());
     c.def(py::init<std::string>());
 

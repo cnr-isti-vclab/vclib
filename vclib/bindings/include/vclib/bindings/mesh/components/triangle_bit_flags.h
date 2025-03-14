@@ -37,35 +37,27 @@ void initTriangleBitFlags(pybind11::class_<ElementType>& c)
     c.def(
         "edge_on_border",
         py::overload_cast<uint>(&ElementType::edgeOnBorder, py::const_));
-    c.def(
-        "set_edge_on_border",
-        [](ElementType& e, uint i, bool b) {
-            e.edgeOnBorder(i) = b;
-        });
+    c.def("set_edge_on_border", [](ElementType& e, uint i, bool b) {
+        e.edgeOnBorder(i) = b;
+    });
     c.def(
         "edge_selected",
         py::overload_cast<uint>(&ElementType::edgeSelected, py::const_));
-    c.def(
-        "set_edge_selected",
-        [](ElementType& e, uint i, bool b) {
-            e.edgeSelected(i) = b;
-        });
+    c.def("set_edge_selected", [](ElementType& e, uint i, bool b) {
+        e.edgeSelected(i) = b;
+    });
     c.def(
         "edge_visited",
         py::overload_cast<uint>(&ElementType::edgeVisited, py::const_));
-    c.def(
-        "set_edge_visited",
-        [](ElementType& e, uint i, bool b) {
-            e.edgeVisited(i) = b;
-        });
+    c.def("set_edge_visited", [](ElementType& e, uint i, bool b) {
+        e.edgeVisited(i) = b;
+    });
     c.def(
         "edge_faux",
         py::overload_cast<uint>(&ElementType::edgeFaux, py::const_));
-    c.def(
-        "set_edge_faux",
-        [](ElementType& e, uint i, bool b) {
-            e.edgeFaux(i) = b;
-        });
+    c.def("set_edge_faux", [](ElementType& e, uint i, bool b) {
+        e.edgeFaux(i) = b;
+    });
 }
 
 } // namespace vcl::bind

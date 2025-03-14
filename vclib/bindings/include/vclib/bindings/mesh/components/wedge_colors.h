@@ -40,12 +40,18 @@ void initWedgeColors(pybind11::class_<ElementType>& c)
 
     static const int N = ElementType::WEDGE_COLOR_NUMBER;
 
-    c.def("wedge_color", [](ElementType& e, uint i) {
-        return e.wedgeColor(i);
-    }, py::return_value_policy::reference);
-    c.def("wedge_color_mod", [](ElementType& e, int i) {
-        return e.wedgeColorMod(i);
-    }, py::return_value_policy::reference);
+    c.def(
+        "wedge_color",
+        [](ElementType& e, uint i) {
+            return e.wedgeColor(i);
+        },
+        py::return_value_policy::reference);
+    c.def(
+        "wedge_color_mod",
+        [](ElementType& e, int i) {
+            return e.wedgeColorMod(i);
+        },
+        py::return_value_policy::reference);
 
     c.def("set_wedge_color", &ElementType::setWedgeColor);
 
@@ -75,8 +81,7 @@ void initWedgeColors(pybind11::class_<ElementType>& c)
         registeredTypes.insert(typeid(WedgeColorsView));
     }
 
-    c.def(
-        "wedge_colors", py::overload_cast<>(&ElementType::wedgeColors));
+    c.def("wedge_colors", py::overload_cast<>(&ElementType::wedgeColors));
 }
 
 } // namespace vcl::bind

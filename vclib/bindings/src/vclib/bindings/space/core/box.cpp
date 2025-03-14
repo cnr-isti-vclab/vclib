@@ -35,11 +35,11 @@ void populateBox(pybind11::module& m)
     namespace py = pybind11;
     using enum py::return_value_policy;
 
-    using Scalar = double;
+    using Scalar    = double;
     using PointType = Point<Scalar, DIM>;
-    using B = Box<PointType>;
+    using B         = Box<PointType>;
 
-    std::string cName = "Box" + std::to_string(DIM);
+    std::string   cName = "Box" + std::to_string(DIM);
     py::class_<B> c(m, cName.c_str());
     c.def(py::init<>());
     c.def(py::init<PointType>());
@@ -52,10 +52,14 @@ void populateBox(pybind11::module& m)
     });
 
     c.def("min", py::overload_cast<>(&B::min), reference);
-    c.def("set_min", [](B& b, const PointType& p) { b.min() = p; });
+    c.def("set_min", [](B& b, const PointType& p) {
+        b.min() = p;
+    });
 
     c.def("max", py::overload_cast<>(&B::max), reference);
-    c.def("set_max", [](B& b, const PointType& p) { b.max() = p; });
+    c.def("set_max", [](B& b, const PointType& p) {
+        b.max() = p;
+    });
 
     c.def("is_null", &B::isNull);
     c.def("is_empty", &B::isEmpty);
@@ -75,9 +79,15 @@ void populateBox(pybind11::module& m)
     c.def("max_dim", &B::maxDim);
     c.def("intersection", &B::intersection);
     c.def("set_null", &B::setNull);
-    c.def("add", [](B& b, const PointType& p) { b.add(p); });
-    c.def("add", [](B& b, const PointType& p, Scalar s) { b.add(p, s); });
-    c.def("add", [](B& b, const B& box) { b.add(box); });
+    c.def("add", [](B& b, const PointType& p) {
+        b.add(p);
+    });
+    c.def("add", [](B& b, const PointType& p, Scalar s) {
+        b.add(p, s);
+    });
+    c.def("add", [](B& b, const B& box) {
+        b.add(box);
+    });
     c.def("translate", &B::translate);
 
     c.def(py::self == py::self);

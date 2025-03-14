@@ -73,7 +73,7 @@ void initComponents(pybind11::class_<ElementType>& c)
     else if constexpr (comp::HasPolygonBitFlags<ElementType>) {
         initPolygonBitFlags(c);
     }
-    else if constexpr (comp::HasBitFlags<ElementType>){
+    else if constexpr (comp::HasBitFlags<ElementType>) {
         initBitFlags(c);
     }
 

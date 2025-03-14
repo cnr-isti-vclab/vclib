@@ -42,17 +42,23 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    static const int N = ElementType::ADJ_FACE_NUMBER;
+    static const int  N    = ElementType::ADJ_FACE_NUMBER;
     static const bool TTVN = CompType::TIED_TO_VERTEX_NUMBER;
 
     c.def("adj_face_number", &ElementType::adjFacesNumber);
 
-    c.def("adj_face", [](ElementType& e, uint i) {
-        return e.adjFace(i);
-    }, py::return_value_policy::reference);
-    c.def("adj_face_mod", [](ElementType& e, int i) {
-        return e.adjFaceMod(i);
-    }, py::return_value_policy::reference);
+    c.def(
+        "adj_face",
+        [](ElementType& e, uint i) {
+            return e.adjFace(i);
+        },
+        py::return_value_policy::reference);
+    c.def(
+        "adj_face_mod",
+        [](ElementType& e, int i) {
+            return e.adjFaceMod(i);
+        },
+        py::return_value_policy::reference);
 
     c.def(
         "set_adj_face",
@@ -71,10 +77,9 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
         e.setAdjFaces(v);
     });
 
-    c.def(
-        "set_adj_faces", [](ElementType& e, const std::vector<FaceType*>& v) {
-            e.setAdjFaces(v);
-        });
+    c.def("set_adj_faces", [](ElementType& e, const std::vector<FaceType*>& v) {
+        e.setAdjFaces(v);
+    });
 
     c.def(
         "contains_adj_face",
