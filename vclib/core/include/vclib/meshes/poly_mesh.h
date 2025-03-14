@@ -80,11 +80,23 @@ class Face :
 namespace vcl {
 
 /**
- * @brief The PolyMeshT is a Polygonal Mesh type that stores Vertices and Faces
- * as elements.
+ * @brief The PolyMeshT class is a mesh class that represents a polygonal mesh.
+ * 
+ * It allows to store vertices and polygonal faces.
+ * 
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
  * or pointers to store references.
+ * 
+ * @extends mesh::VertexContainer
+ * @extends mesh::FaceContainer
+ * @extends mesh::BoundingBox3
+ * @extends mesh::Color
+ * @extends mesh::Mark
+ * @extends mesh::Name
+ * @extends mesh::TextureImages
+ * @extends mesh::TransformMatrix
+ * @extends mesh::CustomComponents
  *
  * @ingroup meshes
  */
@@ -102,6 +114,7 @@ class PolyMeshT :
             mesh::CustomComponents>
 {
 public:
+    /** @brief The scalar used to store all the data of the Mesh. */
     using ScalarType = Scalar;
 };
 

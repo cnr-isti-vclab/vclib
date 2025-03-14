@@ -58,9 +58,19 @@ class Vertex :
 namespace vcl {
 
 /**
- * @brief The PointCloudT is a Mesh type that stores only Vertices as elements.
+ * @brief The PointCloudT class is a mesh class that represents a point cloud.
+ * 
+ * It allows to store only vertices.
  *
  * @tparam Scalar: The scalar type used for the mesh.
+ * 
+ * @extends mesh::VertexContainer
+ * @extends mesh::BoundingBox3
+ * @extends mesh::Mark
+ * @extends mesh::Name
+ * @extends mesh::TextureImages
+ * @extends mesh::TransformMatrix
+ * @extends mesh::CustomComponents
  *
  * @ingroup meshes
  */
@@ -76,6 +86,7 @@ class PointCloudT :
             mesh::CustomComponents>
 {
 public:
+    /** @brief The scalar used to store all the data of the Mesh. */
     using ScalarType = Scalar;
 };
 

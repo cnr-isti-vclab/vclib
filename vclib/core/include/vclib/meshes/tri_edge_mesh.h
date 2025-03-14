@@ -101,11 +101,26 @@ class Edge :
 namespace vcl {
 
 /**
- * @brief The TriEdgeMeshT is a Mesh type that stores Vertices, Faces and Edges
- * as elements.
+ * @brief The TriEdgeMeshT class is a mesh class that represents a triangle mesh
+ * with edges.
+ * 
+ * It allows to store vertices, triangles and edges. Edges are separated from
+ * faces, and they are stored in a dedicated container.
+ * 
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
  * or pointers to store references.
+ * 
+ * @extends mesh::VertexContainer
+ * @extends mesh::FaceContainer
+ * @extends mesh::EdgeContainer
+ * @extends mesh::BoundingBox3
+ * @extends mesh::Color
+ * @extends mesh::Mark
+ * @extends mesh::Name
+ * @extends mesh::TextureImages
+ * @extends mesh::TransformMatrix
+ * @extends mesh::CustomComponents
  *
  * @ingroup meshes
  */
@@ -124,6 +139,7 @@ class TriEdgeMeshT :
             mesh::CustomComponents>
 {
 public:
+    /** @brief The scalar used to store all the data of the Mesh. */
     using ScalarType = Scalar;
 };
 

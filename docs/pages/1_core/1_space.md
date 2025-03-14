@@ -1,4 +1,4 @@
-# Spatial and other Data Structures     {#space_page}
+# Spatial and other Data Structures     {#core_space}
 
 VCLib provides several Data Structures, mostly spatial, that can be include trough `#include<vclib/space.h>`.
 
