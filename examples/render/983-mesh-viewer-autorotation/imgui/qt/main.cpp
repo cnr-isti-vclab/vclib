@@ -44,6 +44,8 @@
 #include "../../frame_limited_automation_action.h"
 #include "../../mesh_changer_automation_action.h"
 #include "../../reset_trackball_automation_action.h"
+#include "../../time_delay_automation_action.h"
+#include "../../frame_delay_automation_action.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
@@ -72,29 +74,20 @@ int main(int argc, char** argv)
         new TimeLimitedAutomationAction(
             AutomationActionGroupBuilder()
             .addAutomation(new RotationAutomationAction(&tw, 1.f, {0.f, 1.f, 0.f}))
-            ->addAutomation(new TimeLimitedAutomationAction(
-                    new ScaleAutomationAction(&tw, -0.01f),
-                    2.f
+            ->addAutomation(
+                new FrameDelayAutomationAction(
+                    new TimeLimitedAutomationAction(
+                        new RotationAutomationAction(&tw, 1.f, {1.f,0.f,0.f}),
+                        2.f
+                    ),
+                    800
                 )
             )
-            ->finish()
+            ->finish(),
+            10.f
         )
     );
-    tw.addAutomation(
-        new MeshChangerAutomationAction<ViewerWidget, vcl::TriMesh>(&tw, &drawable2)
-    );
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            AutomationActionGroupBuilder()
-            .addAutomation(new RotationAutomationAction(&tw, 1.f, {0.f, 1.f, 0.f}))
-            ->addAutomation(new TimeLimitedAutomationAction(
-                    new ScaleAutomationAction(&tw, 0.01f),
-                    2.f
-                )
-            )
-            ->finish()
-        )
-    );
+    
     tw.fitScene();
 
     tw.show();

@@ -1,32 +1,31 @@
-#ifndef TIME_DELAY_AUTOMATION_ACTION_H
-#define TIME_DELAY_AUTOMATION_ACTION_H
+#ifndef FRAME_DELAY_AUTOMATION_ACTION_H
+#define FRAME_DELAY_AUTOMATION_ACTION_H
 
 #include "wrapper_automation_action.h"
-#include <vclib/misc/timer.h>
 
-class TimeDelayAutomationAction : public WrapperAutomationAction
+class FrameDelayAutomationAction : public WrapperAutomationAction
 {
-    vcl::Timer timer;
-    float delaySeconds;
+    uint32_t currentFrames = 0;
+    uint32_t delayFrames;
     bool innerStarted = false;
     using Parent = WrapperAutomationAction;
 
     public:
 
-    TimeDelayAutomationAction(AutomationAction *action, float delaySeconds)
+    FrameDelayAutomationAction(AutomationAction *action, uint32_t delayFrames)
     : Parent(action),
-    delaySeconds{delaySeconds}
+    delayFrames{delayFrames}
     {};
 
     void start() override
     {
         AutomationAction::start();
-        timer.start();
     }
 
     void update() override
     {
-        if(timer.delay() < delaySeconds){
+        if(currentFrames < delayFrames){
+            currentFrames++;
             return;
         }
         if(!innerStarted){
@@ -43,7 +42,7 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
     void end() override
     {
         Parent::end();
-        timer.stop();
+        currentFrames = 0;
         innerStarted = false;
     }
 };
