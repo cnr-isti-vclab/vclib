@@ -5,6 +5,7 @@
 
 #include "automation_action.h"
 
+//Is this a wrapper? There is no documentation about wrappers that wrap multiple instances...
 class AutomationActionGroup : public AutomationAction
 {
     std::vector<AutomationAction*> automations;

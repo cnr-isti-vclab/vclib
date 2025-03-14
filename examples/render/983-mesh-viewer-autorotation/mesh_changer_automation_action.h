@@ -23,11 +23,15 @@ class MeshChangerAutomationAction : public AutomationAction
 
     void start() override
     {
-        active = !completedOnce;
+        Parent::start();
     }
 
     void update() override
     {
+        if(completedOnce){
+            end();
+            return;
+        }
         avd->clearDrawableObjectVector();
         avd->pushDrawableObject(*mesh);
         avd->fitScene();

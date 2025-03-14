@@ -1,15 +1,13 @@
 #ifndef TIME_LIMITED_AUTOMATION_ACTION_H
 #define TIME_LIMITED_AUTOMATION_ACTION_H
 
-#include "automation_action.h"
+#include "wrapper_automation_action.h"
 #include <vclib/misc/timer.h>
 #include <chrono>
 
-class TimeLimitedAutomationAction : public AutomationAction
+class TimeLimitedAutomationAction : public WrapperAutomationAction
 {
-    using Parent = AutomationAction;
-
-    AutomationAction *innerAction;
+    using Parent = WrapperAutomationAction;
     float durationSeconds;
     vcl::Timer timer;
 
@@ -17,15 +15,14 @@ class TimeLimitedAutomationAction : public AutomationAction
     public:
 
     TimeLimitedAutomationAction(AutomationAction* innerAction, float durationSeconds = 5.5f)
-    : durationSeconds{durationSeconds},
-    innerAction{innerAction}
+    : Parent(innerAction), 
+    durationSeconds{durationSeconds}
     {};
 
     void start() override
     {
-        Parent::start();
         timer.start();
-        innerAction->start();
+        Parent::start();
     }
 
     void update() override
@@ -34,17 +31,12 @@ class TimeLimitedAutomationAction : public AutomationAction
             end();
             return;
         }
-
-        if(!innerAction->isActive()){
-            return;
-        }
-        innerAction->update();
+        Parent::update();
     }
 
     void end() override
     {
         Parent::end();
-        innerAction->end();
         timer.stop();
     }
 };
