@@ -80,7 +80,7 @@ namespace vcl {
 /**
  * @brief The EdgeMeshT class is a mesh class that represents a mesh that stores
  * only vertices and edges (no faces).
- * 
+ *
  * The mesh is templated over the scalar type and a boolean flag that indicates
  * whether the mesh uses indices to store vertices of edges and adjacency
  * information.
@@ -88,7 +88,7 @@ namespace vcl {
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
  * or pointers to store references.
- * 
+ *
  * @extends mesh::VertexContainer
  * @extends mesh::EdgeContainer
  * @extends mesh::BoundingBox3

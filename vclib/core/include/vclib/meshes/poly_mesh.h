@@ -81,13 +81,13 @@ namespace vcl {
 
 /**
  * @brief The PolyMeshT class is a mesh class that represents a polygonal mesh.
- * 
+ *
  * It allows to store vertices and polygonal faces.
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
  * or pointers to store references.
- * 
+ *
  * @extends mesh::VertexContainer
  * @extends mesh::FaceContainer
  * @extends mesh::BoundingBox3

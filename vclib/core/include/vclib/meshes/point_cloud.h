@@ -59,11 +59,11 @@ namespace vcl {
 
 /**
  * @brief The PointCloudT class is a mesh class that represents a point cloud.
- * 
+ *
  * It allows to store only vertices.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * 
+ *
  * @extends mesh::VertexContainer
  * @extends mesh::BoundingBox3
  * @extends mesh::Mark

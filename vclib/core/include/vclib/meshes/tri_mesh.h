@@ -81,17 +81,17 @@ namespace vcl {
 
 /**
  * @brief The TriMeshT class is a mesh class that represents a triangle mesh.
- * 
+ *
  * It allows to store vertices and triangles.
- * 
+ *
  * The mesh is templated over the scalar type and a boolean flag that indicates
  * whether the mesh uses indices to store vertices of faces and adjacency
  * information.
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
  * or pointers to store references.
- * 
+ *
  * @extends mesh::VertexContainer
  * @extends mesh::FaceContainer
  * @extends mesh::BoundingBox3
@@ -101,7 +101,7 @@ namespace vcl {
  * @extends mesh::TextureImages
  * @extends mesh::TransformMatrix
  * @extends mesh::CustomComponents
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool INDEXED>
