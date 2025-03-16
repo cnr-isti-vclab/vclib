@@ -41,6 +41,27 @@ class Vertex;
 template<typename Scalar, bool INDEXED>
 class Face;
 
+/**
+ * @brief The Vertex type used by the PolyMeshT class.
+ *
+ * @extends vert::BitFlags
+ * @extends vert::Coordinate3
+ * @extends vert::Normal3
+ * @extends vert::OptionalColor
+ * @extends vert::OptionalQuality
+ * @extends vert::OptionalAdjacentFaces
+ * @extends vert::OptionalAdjacentVertices
+ * @extends vert::OptionalPrincipalCurvature
+ * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMark
+ * @extends vert::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam I: A boolean flag that indicates whether the mesh uses indices or
+ * pointers to store vertices of faces and adjacency information.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar, bool I>
 class Vertex :
         public vcl::Vertex<
@@ -59,6 +80,25 @@ class Vertex :
 {
 };
 
+/**
+ * @brief The Face type used by the PolyMeshT class.
+ *
+ * @extends face::PolygonBitFlags
+ * @extends face::PolygonVertexRefs
+ * @extends face::Normal3
+ * @extends face::OptionalColor
+ * @extends face::OptionalQuality
+ * @extends face::OptionalAdjacentPolygons
+ * @extends face::OptionalPolygonWedgeTexCoords
+ * @extends face::OptionalMark
+ * @extends face::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam I: A boolean flag that indicates whether the mesh uses indices or
+ * pointers to store vertices of faces and adjacency information.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar, bool I>
 class Face :
         public vcl::Face<
@@ -82,7 +122,7 @@ namespace vcl {
 /**
  * @brief The PolyMeshT class is a mesh class that represents a polygonal mesh.
  *
- * It allows to store vertices and polygonal faces.
+ * It allows to store polymesh::Vertex and polymesh::Face elements.
  *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
@@ -118,10 +158,37 @@ public:
     using ScalarType = Scalar;
 };
 
-using PolyMeshf        = PolyMeshT<float, false>;
-using PolyMesh         = PolyMeshT<double, false>;
+/**
+ * @brief The PolyMeshf class is a specialization of the PolyMeshT class that
+ * uses `float` as scalar and pointers to store vertices of faces and adjacency
+ * information.
+ * @ingroup meshes
+ */
+using PolyMeshf = PolyMeshT<float, false>;
+
+/**
+ * @brief The PolyMesh class is a specialization of the PolyMeshT class that
+ * uses `double` as scalar and pointers to store vertices of faces and adjacency
+ * information.
+ * @ingroup meshes
+ */
+using PolyMesh = PolyMeshT<double, false>;
+
+/**
+ * @brief The PolyMeshIndexedf class is a specialization of the PolyMeshT class
+ * that uses `float` as scalar and indices (`unsigned int`) to store vertices of
+ * faces and adjacency information.
+ * @ingroup meshes
+ */
 using PolyMeshIndexedf = PolyMeshT<float, true>;
-using PolyMeshIndexed  = PolyMeshT<double, true>;
+
+/**
+ * @brief The PolyMeshIndexed class is a specialization of the PolyMeshT class
+ * that uses `double` as scalar and indices (`unsigned int`) to store vertices
+ * of faces and adjacency information.
+ * @ingroup meshes
+ */
+using PolyMeshIndexed = PolyMeshT<double, true>;
 
 } // namespace vcl
 
