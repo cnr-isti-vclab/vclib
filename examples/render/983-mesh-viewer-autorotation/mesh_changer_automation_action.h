@@ -20,12 +20,12 @@ class MeshChangerAutomationAction : public AutomationAction
 
     MeshChangerAutomationAction(
         vcl::AbstractViewerDrawer<DerivedRenderApp>* avd,
-        vcl::DrawableMesh<MeshType> &&mesh
+        vcl::DrawableMesh<MeshType> &mesh
     )
     : avd{avd},
     objectVector{std::make_shared<vcl::DrawableObjectVector>(vcl::DrawableObjectVector())}
     {
-        objectVector->pushBack(std::move(mesh));
+        objectVector->pushBack(mesh);
     }
 
     void start() override

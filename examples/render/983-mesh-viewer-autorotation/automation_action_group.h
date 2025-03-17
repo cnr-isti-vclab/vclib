@@ -27,9 +27,9 @@ class AutomationActionGroup : public AutomationAction
 
     void update() override
     {
-        for(size_t i=0; i<automations.size(); i++){
-            if(automations[i]->isActive()){
-                automations[i]->update();
+        for (const auto aut : automations){
+            if(aut->isActive()){
+                aut->update();
             }
         }
     }

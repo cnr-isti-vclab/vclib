@@ -1,8 +1,7 @@
 - Repeated automation action ?
 - Automation action sequence ? (definitely needs to be done if point above is done)
-- Time delay automation action ?
-- Frame delay automation action ?
+- MeshChangerAutomationAction multiple meshes?
 - put "m" before member variables in classes
-- FIX reset_trackball_automation_h
-- add "relevancy" to BenchmarkDrawer class when you add an action, so that you
-    can choose whether to measure the framerate of the action or not
+- Create some "Metric" classes that measure what is needed when executing actions for the BenchmarkDrawer.
+- Create some "Printer" classes that write the measured benchmarks wherever
+- BUG: first automation is always worse than all the others (BenchmarkDrawer)

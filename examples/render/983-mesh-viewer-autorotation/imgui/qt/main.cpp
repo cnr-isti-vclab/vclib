@@ -30,6 +30,7 @@
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
+#include <vclib/load_save.h>
 
 #include <QApplication>
 
@@ -63,8 +64,7 @@ int main(int argc, char** argv)
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>("bunny.obj");
-    vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>("ESTE_PRINT.ply");
-
+    vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>();
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
@@ -105,7 +105,7 @@ int main(int argc, char** argv)
     );
     tw.addAutomation(
         MeshChangerAutomationAction(
-            &tw, std::move(drawable2)
+            &tw, drawable2 
         ),
         false
     );

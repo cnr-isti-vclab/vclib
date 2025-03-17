@@ -2,6 +2,7 @@
 #define BENCHMARK_DRAWER_H
 
 #include "automation_action.h"
+#include "fps_benchmark_metric.h"
 #include <bgfx/bgfx.h>
 #include <vector>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
@@ -17,15 +18,20 @@ template<typename DerivedDrawer>
 class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
     using Parent = vcl::PlainDrawer<DerivedDrawer>;
+
     vcl::PolymorphicObjectVector<AutomationAction> automations;
     std::vector<bool> relevancies;
+
     std::string outStr = "";
     std::ofstream outStream;
+
     size_t currentAutomationIndex = 0;
+
     uint32_t repeatTimes = 1;
     uint32_t repeatCount = 0;
-    vcl::Timer currentAutomationTimer;
-    uint32_t currentAutomationFrames = 0;
+
+    FpsBenchmarkMetric metric;
+
     bool toStdOut = true;
     bool firstCall = true;
     bool allDone = false;
@@ -43,23 +49,19 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 
     void onAutomationEnd()
     {
-        currentAutomationTimer.stop();
-        double currentAutomationSeconds = currentAutomationTimer.delay();
+        metric.end();
         if(relevancies[currentAutomationIndex]){
-            double framerate = (double)currentAutomationFrames / currentAutomationSeconds;
             if(toStdOut){
-                printf("Loop %u, automation %zu : %.4f fps average\n", repeatCount, currentAutomationIndex, framerate);
+                printf("Loop %u, automation %zu : %s fps average\n", repeatCount, currentAutomationIndex, metric.getMeasureString().c_str());
             }else{
-                outStr += std::format("{:.3f}", framerate);
+                outStr += metric.getMeasureString();
                 if(currentAutomationIndex == automations.size()-1){
                     outStr += "\n";
                 }else{
                     outStr += ",";
                 }
-                printf("outStr: %s\n", outStr.c_str());
             }
         }
-        currentAutomationFrames = 0;
         currentAutomationIndex++;
     }
 
@@ -86,8 +88,8 @@ public:
         }
         if(firstCall){
             automations[0]->start();
+            metric.start();
             firstCall = false;
-            currentAutomationTimer.start();
         }
         if(!automations[currentAutomationIndex]->isActive()){
 
@@ -105,11 +107,11 @@ public:
                 }
                 benchmarkLoop();
             }
-            currentAutomationTimer.start();
+            metric.start();
             automations[currentAutomationIndex]->start();
         }
-        currentAutomationFrames++;
         if(automations[currentAutomationIndex]->isActive()){
+            metric.update();
             automations[currentAutomationIndex]->update();
         }
     };
