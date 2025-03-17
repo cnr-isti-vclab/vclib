@@ -40,7 +40,7 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: render-${{ matrix.os }}-${{matrix.render_backend}}-${{ github.ref }}
+        key: render-${{ matrix.os }}-${{matrix.render_backend}}-${{ github.ref_name }}
     - name: Build
       shell: bash
       run: |
