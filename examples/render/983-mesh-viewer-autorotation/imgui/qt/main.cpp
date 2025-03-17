@@ -70,6 +70,7 @@ int main(int argc, char** argv)
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
     tw.setRepeatTimes(5);
+    tw.setOutputFile("./out.csv");
     tw.addAutomation(
         new TimeLimitedAutomationAction(
             AutomationActionGroupBuilder()
@@ -85,6 +86,18 @@ int main(int argc, char** argv)
             )
             ->finish(),
             10.f
+        )
+    );
+    tw.addAutomation(
+        new MeshChangerAutomationAction(&tw, &drawable2),
+        false
+    );
+    tw.addAutomation(
+        new TimeLimitedAutomationAction(
+            new RotationAutomationAction(
+                &tw, 5.f, {0.f,0.f,1.f}
+            ),
+            4.f
         )
     );
     

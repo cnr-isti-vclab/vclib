@@ -7,6 +7,8 @@
 #include <chrono>
 #include <iostream>
 #include <vclib/misc/timer.h>
+#include <string>
+#include <fstream>
 
 #define BENCHMARK_DRAWER_REPEAT_FOREVER 0
 
@@ -15,11 +17,15 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
     using Parent = vcl::PlainDrawer<DerivedDrawer>;
     std::vector<AutomationAction*> automations;
+    std::vector<bool> relevancies;
+    std::string outStr = "";
+    std::ofstream outStream;
     size_t currentAutomationIndex = 0;
     uint32_t repeatTimes = 1;
     uint32_t repeatCount = 0;
     vcl::Timer currentAutomationTimer;
     uint32_t currentAutomationFrames = 0;
+    bool toStdOut = true;
     bool firstCall = true;
     bool allDone = false;
 
@@ -38,7 +44,19 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     {
         currentAutomationTimer.stop();
         double currentAutomationSeconds = currentAutomationTimer.delay();
-        printf("Loop %u, automation %zu : %.4f fps average\n", repeatCount, currentAutomationIndex, (double)currentAutomationFrames / currentAutomationSeconds);
+        if(relevancies[currentAutomationIndex]){
+            double framerate = (double)currentAutomationFrames / currentAutomationSeconds;
+            if(toStdOut){
+                printf("Loop %u, automation %zu : %.4f fps average\n", repeatCount, currentAutomationIndex, framerate);
+            }else{
+                outStr += std::format("{:.3f}", framerate);
+                if(currentAutomationIndex == automations.size()-1){
+                    outStr += "\n";
+                }else{
+                    outStr += ",";
+                }
+            }
+        }
         currentAutomationFrames = 0;
         currentAutomationIndex++;
     }
@@ -77,6 +95,9 @@ public:
                 repeatCount++;
                 if(isLastLoop()){
                     printf("All benchmarks done.\n");
+                    if(!toStdOut){
+                        outStream << outStr;
+                    }
                     return;
                 }
                 benchmarkLoop();
@@ -90,9 +111,10 @@ public:
         }
     };
 
-    size_t addAutomation(AutomationAction *action)
+    size_t addAutomation(AutomationAction *action, bool relevancy = true)
     {
         automations.push_back(action);
+        relevancies.push_back(relevancy);
         return automations.size()-1;
     }
 
@@ -103,6 +125,20 @@ public:
         allDone = false;
         repeatCount = 0;
     };
+
+    void useStdOut()
+    {
+        toStdOut = true;
+    }
+
+    void setOutputFile(const std::string str){
+        outStream.open(str);
+        if(outStream.fail()){
+            printf("Error: couldn't open file %s. Writing to stdout instead\n", str.c_str());
+            return;
+        }
+        toStdOut = false;
+    }
 };
 
 #endif
