@@ -45,15 +45,9 @@ jobs:
       shell: bash
       run: |
         mkdir build
-        cd build
-        cmake -GNinja \
-          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DVCLIB_BUILD_MODULE_RENDER=ON \
-          -DVCLIB_RENDER_BACKEND=${{ matrix.render_backend }} \
-          -DVCLIB_CORE_BUILD_EXAMPLES=OFF -DVCLIB_CORE_BUILD_TESTS=OFF \
-          ..
-        ninja
+        cmake -B build --preset=vclib-render-${{matrix.render_backend}}-release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build build --parallel
     # - name: Run Tests
     #   shell: bash
     #   run: |
