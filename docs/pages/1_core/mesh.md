@@ -1,24 +1,6 @@
-# VCLib Meshes     {#mesh_documentation_page}
+# VCLib Meshes     {#core_mesh}
 
-## Overview 
-### Prebuilt Mesh data structures
-
-VCLib provides a set of prebuilt mesh data structures:
-
-- vcl::TriMesh: a simple Triangle Mesh data structure, allows to store a container of Vertices, a container of Triangles and some other components;
-- vcl::PolyMesh: a Polygon Mesh data structure, allows to store a container of Vertices, a container of Polygons (no constraints on the number of vertices of each polygon) and some other components;
-- vcl::EdgeMesh: a Mesh data structure that allows to store a container of Vertices, a container of Edges (segments), and some other components;
-- vcl::PointClout: a Mesh data structure that stores just a container of Vertices and some other components;
-- (ToDo: QuadMesh)
-- (ToDo: volumetric data structures)
-
-All these meshes store scalar values using `double` floating-point precision, but the library provides also the alternative with the `f` suffix that stores scalars using single floating point precision (vcl::TriMeshf, vcl::PolyMeshf, ...).
-
-All the prebuilt data structures are documented in the @ref meshes group.
-
-All these data structures are implemented by customizing the vcl::Mesh data structure, which is a highly customizable mesh data structure. 
-
-### Mesh Structure
+The Mesh data structure of the VCLib core module is a generic data structure that can be customized to fit the user needs. The Mesh is composed of Elements, that are the basic building blocks of the Mesh, and Components, that are the data that the Elements store. The Mesh is organized in Containers, that store the Elements and the Components of the Mesh.
 
 To explain how Mesh customization is possible, we first need to define the entities involved that compose a VCLib Mesh, and to do that we analyze the TriMesh example:
 
@@ -31,7 +13,7 @@ In this simplified scheme of the TriMesh, there are several entities involved:
   - Element Containers (red);
   - Components (yellow) and the data they store internally (orange);
 
-The overal Mesh data structure is composed of two Containers of Vertex and Face Elements, and some other Components that store some data. 
+The overall Mesh data structure is composed of two Containers of Vertex and Face Elements, and some other Components that store some data. 
 Looking the Elements in detail, we see that each Element is composed of Components: for example, a Vertex could be organized as follows:
 
 ![trimesh vertex](trimesh_vertex.svg "A Vertex Element")
@@ -40,7 +22,7 @@ In this case, the Vertex Element has for example the Coordinate, Flags, Normal a
 
 To understand how these entities are organized and implemented, we suggest to take a look at the @subpage mesh_components_page, @subpage mesh_elements_page and @subpage mesh_containers_page pages.
 
-The next sections will introduce some concpets that you should know before using the VCLib Meshes.
+The next sections will introduce some concepts that you should know before using the VCLib Meshes.
 
 ### Components
 

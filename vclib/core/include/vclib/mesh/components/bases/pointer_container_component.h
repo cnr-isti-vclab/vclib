@@ -30,6 +30,8 @@
 
 namespace vcl::comp {
 
+/// @cond VCLIB_HIDDEN_DOCS
+
 /**
  * @brief The PointerContainerComponent is the base class for all the
  * components of VCLib that store a container of pointers to an Element.
@@ -211,6 +213,8 @@ private:
                      ->template element<Elem::ELEMENT_ID>(0));
     }
 };
+
+/// @endcond
 
 } // namespace vcl::comp
 

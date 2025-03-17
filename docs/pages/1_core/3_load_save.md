@@ -1,4 +1,4 @@
-# Load/Save     {#load_save_page}
+# Load/Save     {#core_load_save}
 
 VCLib provides a set of functions to load from file and to save to file a given input Mesh. You can find the list of available function in the @ref load_save group.
 

@@ -535,9 +535,15 @@ void loadOff(
     log.startNewTask(0, percVertices, "Reading vertices");
     detail::readOffVertices(m, inputOffStream, fileInfo, nVertices, log);
     log.endTask("Reading vertices");
-    log.startNewTask(percVertices, 100, "Reading faces");
-    detail::readOffFaces(m, inputOffStream, fileInfo, nFaces, settings, log);
-    log.endTask("Reading faces");
+    if constexpr (HasFaces<MeshType>) {
+        log.startNewTask(percVertices, 100, "Reading faces");
+        detail::readOffFaces(
+            m, inputOffStream, fileInfo, nFaces, settings, log);
+        log.endTask("Reading faces");
+    }
+    else {
+        log.log(100, "Ignored faces reading");
+    }
     if (settings.enableOptionalComponents)
         loadedInfo = fileInfo;
 }

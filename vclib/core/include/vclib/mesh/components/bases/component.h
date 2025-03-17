@@ -31,7 +31,10 @@
 
 namespace vcl::comp {
 
+/// @cond VCLIB_HIDDEN_DOCS
+
 /**
+ * @private
  * @brief The Component class is the base class for almost all the components of
  * VCLib (with the exception of CustomComponents).
  *
@@ -250,6 +253,8 @@ struct IsVerticalComponentPred
 {
     static const bool value = IsVerticalComponent<T>;
 };
+
+/// @endcond
 
 } // namespace vcl::comp
 

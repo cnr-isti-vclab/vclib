@@ -38,6 +38,22 @@ namespace vcl::pointcloud {
 template<typename Scalar>
 class Vertex;
 
+/**
+ * @brief The Vertex type used by the PointCloudT class.
+ *
+ * @extends vert::BitFlags
+ * @extends vert::Coordinate3
+ * @extends vert::Normal3
+ * @extends vert::OptionalColor
+ * @extends vert::OptionalQuality
+ * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMark
+ * @extends vert::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar>
 class Vertex :
         public vcl::Vertex<
@@ -58,9 +74,19 @@ class Vertex :
 namespace vcl {
 
 /**
- * @brief The PointCloudT is a Mesh type that stores only Vertices as elements.
+ * @brief The PointCloudT class is a mesh class that represents a point cloud.
+ *
+ * It allows to store only pointcloud::Vertex elements.
  *
  * @tparam Scalar: The scalar type used for the mesh.
+ *
+ * @extends mesh::VertexContainer
+ * @extends mesh::BoundingBox3
+ * @extends mesh::Mark
+ * @extends mesh::Name
+ * @extends mesh::TextureImages
+ * @extends mesh::TransformMatrix
+ * @extends mesh::CustomComponents
  *
  * @ingroup meshes
  */
@@ -76,11 +102,23 @@ class PointCloudT :
             mesh::CustomComponents>
 {
 public:
+    /** @brief The scalar used to store all the data of the Mesh. */
     using ScalarType = Scalar;
 };
 
+/**
+ * @brief The PointCloudf class is a specialization of the PointCloudT class
+ * that uses `float` as scalar.
+ * @ingroup meshes
+ */
 using PointCloudf = PointCloudT<float>;
-using PointCloud  = PointCloudT<double>;
+
+/**
+ * @brief The PointCloud class is a specialization of the PointCloudT class
+ * that uses `double` as scalar.
+ * @ingroup meshes
+ */
+using PointCloud = PointCloudT<double>;
 
 } // namespace vcl
 

@@ -44,8 +44,6 @@ constexpr std::string meshTypeName()
         name = "PointCloud";
     }
     else {
-        constexpr bool indexed = MeshType::FaceType::INDEXED;
-
         if constexpr (vcl::HasTriangles<MeshType>)
             name = "Tri";
         else if constexpr (vcl::HasQuads<MeshType>)
@@ -58,8 +56,16 @@ constexpr std::string meshTypeName()
 
         name += "Mesh";
 
-        if constexpr (indexed)
-            name += "Indexed";
+        if constexpr (HasFaces<MeshType>) {
+            if constexpr (MeshType::FaceType::INDEXED) {
+                name += "Indexed";
+            }
+        }
+        if constexpr (HasEdges<MeshType>) {
+            if constexpr (MeshType::EdgeType::INDEXED) {
+                name += "Indexed";
+            }
+        }
     }
 
     if constexpr (std::same_as<ScalarType, float>)

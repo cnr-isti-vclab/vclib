@@ -114,6 +114,25 @@ inline constexpr std::string toUpper(const std::string& s)
 }
 
 /**
+ * @brief Converts a string from camel case to snake case.
+ *
+ * For example, "CamelCase" is converted to "camel_case".
+ *
+ * @param[in] s: input string.
+ * @return the input string converted to snake case.
+ */
+inline constexpr std::string camelCaseToSnakeCase(const std::string& s)
+{
+    std::string ret;
+    for (size_t i = 0; i < s.size(); i++) {
+        if (i > 0 && std::isupper(s[i]))
+            ret += '_';
+        ret += std::tolower(s[i]);
+    }
+    return ret;
+}
+
+/**
  * @brief Removes the carriage return character (`\r`) from the end of the
  * string.
  *

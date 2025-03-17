@@ -265,8 +265,10 @@ void readStlAscii(
             log.progress(fp.tellg());
         } while (fp);
 
-        if (m.faceNumber() > 0)
-            loadedInfo.setTriangleMesh();
+        if constexpr (HasFaces<MeshType>) {
+            if (m.faceNumber() > 0)
+                loadedInfo.setTriangleMesh();
+        }
     }
 
     log.endProgress();
