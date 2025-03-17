@@ -46,7 +46,7 @@ class Edge;
 
 /**
  * @brief The Vertex type used by the TriEdgeMeshT class.
- * 
+ *
  * @extends vert::BitFlags
  * @extends vert::Coordinate3
  * @extends vert::Normal3
@@ -58,11 +58,11 @@ class Edge;
  * @extends vert::OptionalTexCoord
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>
@@ -86,7 +86,7 @@ class Vertex :
 
 /**
  * @brief The Face type used by the TriEdgeMeshT class.
- * 
+ *
  * @extends face::TriangleBitFlags
  * @extends face::TriangleVertexRefs
  * @extends face::Normal3
@@ -97,11 +97,11 @@ class Vertex :
  * @extends face::OptionalTriangleWedgeTexCoords
  * @extends face::OptionalMark
  * @extends face::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>
@@ -123,7 +123,7 @@ class Face :
 
 /**
  * @brief The Edge type used by the TriEdgeMeshT class.
- * 
+ *
  * @extends edge::BitFlags
  * @extends edge::VertexReferences
  * @extends edge::OptionalNormal3
@@ -133,11 +133,11 @@ class Face :
  * @extends edge::OptionalAdjacentFaces
  * @extends edge::OptionalMark
  * @extends edge::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>

@@ -40,7 +40,7 @@ class Vertex;
 
 /**
  * @brief The Vertex type used by the PointCloudT class.
- * 
+ *
  * @extends vert::BitFlags
  * @extends vert::Coordinate3
  * @extends vert::Normal3
@@ -49,9 +49,9 @@ class Vertex;
  * @extends vert::OptionalTexCoord
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar>
@@ -118,7 +118,7 @@ using PointCloudf = PointCloudT<float>;
  * that uses `double` as scalar.
  * @ingroup meshes
  */
-using PointCloud  = PointCloudT<double>;
+using PointCloud = PointCloudT<double>;
 
 } // namespace vcl
 

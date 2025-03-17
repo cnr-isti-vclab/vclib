@@ -46,7 +46,7 @@ class Edge;
 
 /**
  * @brief The Vertex type used by the PolyEdgeMeshT class.
- * 
+ *
  * @extends vert::BitFlags
  * @extends vert::Coordinate3
  * @extends vert::Normal3
@@ -59,11 +59,11 @@ class Edge;
  * @extends vert::OptionalTexCoord
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>
@@ -87,7 +87,7 @@ class Vertex :
 
 /**
  * @brief The Face type used by the PolyEdgeMeshT class.
- * 
+ *
  * @extends face::PolygonBitFlags
  * @extends face::PolygonVertexRefs
  * @extends face::Normal3
@@ -98,11 +98,11 @@ class Vertex :
  * @extends face::OptionalPolygonWedgeTexCoords
  * @extends face::OptionalMark
  * @extends face::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>
@@ -124,7 +124,7 @@ class Face :
 
 /**
  * @brief The Edge type used by the PolyEdgeMeshT class.
- * 
+ *
  * @extends edge::BitFlags
  * @extends edge::VertexReferences
  * @extends edge::OptionalNormal3
@@ -134,11 +134,11 @@ class Face :
  * @extends edge::OptionalAdjacentFaces
  * @extends edge::OptionalMark
  * @extends edge::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>
@@ -166,8 +166,8 @@ namespace vcl {
  * mesh with edges.
  *
  * It allows to store polyedgemesh::Vertex, polyedgemesh::Face and
- * polyedgemesh::Edge elements. Edges are separated from faces and are stored in a
- * dedicated container.
+ * polyedgemesh::Edge elements. Edges are separated from faces and are stored in
+ * a dedicated container.
  *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices

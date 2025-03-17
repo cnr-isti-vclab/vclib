@@ -43,7 +43,7 @@ class Face;
 
 /**
  * @brief The Vertex type used by the TriMeshT class.
- * 
+ *
  * @extends vert::BitFlags
  * @extends vert::Coordinate3
  * @extends vert::Normal3
@@ -55,11 +55,11 @@ class Face;
  * @extends vert::OptionalTexCoord
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>
@@ -82,7 +82,7 @@ class Vertex :
 
 /**
  * @brief The Face type used by the TriMeshT class.
- * 
+ *
  * @extends face::TriangleBitFlags
  * @extends face::TriangleVertexRefs
  * @extends face::Normal3
@@ -92,11 +92,11 @@ class Vertex :
  * @extends face::OptionalTriangleWedgeTexCoords
  * @extends face::OptionalMark
  * @extends face::CustomComponents
- * 
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam I: A boolean flag that indicates whether the mesh uses indices or
  * pointers to store vertices of faces and adjacency information.
- * 
+ *
  * @ingroup meshes
  */
 template<typename Scalar, bool I>
