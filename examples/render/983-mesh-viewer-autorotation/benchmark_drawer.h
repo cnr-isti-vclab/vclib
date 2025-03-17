@@ -4,6 +4,7 @@
 #include "automation_action.h"
 #include <bgfx/bgfx.h>
 #include <vector>
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
 #include <chrono>
 #include <iostream>
 #include <vclib/misc/timer.h>
@@ -16,7 +17,7 @@ template<typename DerivedDrawer>
 class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
     using Parent = vcl::PlainDrawer<DerivedDrawer>;
-    std::vector<AutomationAction*> automations;
+    vcl::PolymorphicObjectVector<AutomationAction> automations;
     std::vector<bool> relevancies;
     std::string outStr = "";
     std::ofstream outStream;
@@ -55,6 +56,7 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
                 }else{
                     outStr += ",";
                 }
+                printf("outStr: %s\n", outStr.c_str());
             }
         }
         currentAutomationFrames = 0;
@@ -90,13 +92,14 @@ public:
         if(!automations[currentAutomationIndex]->isActive()){
 
             onAutomationEnd();
-
-            if(allDone = (currentAutomationIndex >= automations.size())){
+            allDone = currentAutomationIndex >= automations.size();
+            if(allDone){
                 repeatCount++;
                 if(isLastLoop()){
                     printf("All benchmarks done.\n");
                     if(!toStdOut){
                         outStream << outStr;
+                        outStream.close();
                     }
                     return;
                 }
@@ -111,9 +114,9 @@ public:
         }
     };
 
-    size_t addAutomation(AutomationAction *action, bool relevancy = true)
+    size_t addAutomation(const AutomationAction &action, bool relevancy = true)
     {
-        automations.push_back(action);
+        automations.pushBack(action);
         relevancies.push_back(relevancy);
         return automations.size()-1;
     }

@@ -1,21 +1,20 @@
 #ifndef AUTOMATION_ACTION_GROUP_H
 #define AUTOMATION_ACTION_GROUP_H
 
-#include <vector>
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 #include "automation_action.h"
 
-//Is this a wrapper? There is no documentation about wrappers that wrap multiple instances...
 class AutomationActionGroup : public AutomationAction
 {
-    std::vector<AutomationAction*> automations;
+    vcl::PolymorphicObjectVector<AutomationAction> automations;
     using Parent = AutomationAction;
 
     public:
 
-    void addAutomation(AutomationAction* automation)
+    void addAutomation(const AutomationAction &automation)
     {
-        automations.push_back(automation);
+        automations.pushBack(automation);
     }
 
     void start() override
@@ -44,26 +43,36 @@ class AutomationActionGroup : public AutomationAction
             }
         }
     }
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<AutomationActionGroup>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<AutomationActionGroup>(std::move(*this));
+    }
 };
 
 class AutomationActionGroupBuilder
 {
-    AutomationActionGroup *group;
+    AutomationActionGroup group;
 
     public:
 
     AutomationActionGroupBuilder()
     {
-        group = new AutomationActionGroup();
+        group = AutomationActionGroup();
     }
 
-    AutomationActionGroupBuilder *addAutomation(AutomationAction *automation)
+    AutomationActionGroupBuilder addAutomation(const AutomationAction &automation)
     {
-        group->addAutomation(automation);
-        return this;
+        group.addAutomation(automation);
+        return *this;
     }
 
-    AutomationAction *finish()
+    AutomationActionGroup finish()
     {
         return group;
     }

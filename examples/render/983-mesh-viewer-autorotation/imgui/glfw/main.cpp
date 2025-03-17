@@ -62,28 +62,6 @@ int main(int argc, char** argv)
     tw.pushDrawableObject(drawable);
 
     tw.setRepeatTimes(BENCHMARK_DRAWER_REPEAT_FOREVER);
-
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 0.f, 0.f})
-        )
-    );
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 1.f, 0.f})
-        )
-    );
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {0.f, 0.f, 1.f})
-        )
-    );
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            PerFrameRotationAutomationAction::ptrFromFramesPerRotation(&tw, 10000.f, {1.f, 1.f, -2.f})
-        )
-    );
-
     tw.fitScene();
 
     tw.show();

@@ -9,10 +9,10 @@ class WrapperAutomationAction : public AutomationAction
 
     protected:
 
-    AutomationAction* innerAction;
+    std::shared_ptr<AutomationAction> innerAction;
 
-    WrapperAutomationAction(AutomationAction *action)
-    : innerAction{action}
+    WrapperAutomationAction(const AutomationAction &action)
+    : innerAction{action.clone()}
     {}
 
     void start() override

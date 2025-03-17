@@ -13,7 +13,7 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
 
     public:
 
-    FrameLimitedAutomationAction(AutomationAction* innerAction, uint32_t durationFrames = 400.f)
+    FrameLimitedAutomationAction(const AutomationAction &innerAction, uint32_t durationFrames = 400.f)
     : Parent(innerAction),
     durationFrames{durationFrames},
     currentFrames{0}
@@ -38,6 +38,16 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
     {
         Parent::end();
         currentFrames = 0;
+    }
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<FrameLimitedAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<FrameLimitedAutomationAction>(std::move(*this));
     }
 };
 

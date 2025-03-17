@@ -13,7 +13,7 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
 
     public:
 
-    TimeDelayAutomationAction(AutomationAction *action, float delaySeconds)
+    TimeDelayAutomationAction(const AutomationAction &action, float delaySeconds)
     : Parent(action),
     delaySeconds{delaySeconds}
     {};
@@ -45,6 +45,16 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
         Parent::end();
         timer.stop();
         innerStarted = false;
+    }
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<TimeDelayAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<TimeDelayAutomationAction>(std::move(*this));
     }
 };
 

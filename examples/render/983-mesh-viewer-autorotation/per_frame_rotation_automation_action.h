@@ -70,6 +70,16 @@ class PerFrameRotationAutomationAction : public AutomationAction
             trackball->stopIgnoringTrackBallEvents();
         }
     };
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<PerFrameRotationAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<PerFrameRotationAutomationAction>(std::move(*this));
+    }
 };
 
 #endif

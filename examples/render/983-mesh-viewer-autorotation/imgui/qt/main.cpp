@@ -43,7 +43,6 @@
 #include "../../per_frame_scale_automation_action.h"
 #include "../../frame_limited_automation_action.h"
 #include "../../mesh_changer_automation_action.h"
-#include "../../reset_trackball_automation_action.h"
 #include "../../time_delay_automation_action.h"
 #include "../../frame_delay_automation_action.h"
 
@@ -63,42 +62,52 @@ int main(int argc, char** argv)
     ViewerWidget tw("Mesh Viewer ImGui Qt");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-    vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>("bunny.obj");
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>("bunny.obj");
+    vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>("ESTE_PRINT.ply");
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
-    tw.setRepeatTimes(5);
-    tw.setOutputFile("./out.csv");
+    tw.setRepeatTimes(2);
     tw.addAutomation(
-        new TimeLimitedAutomationAction(
+        TimeLimitedAutomationAction(
             AutomationActionGroupBuilder()
-            .addAutomation(new RotationAutomationAction(&tw, 1.f, {0.f, 1.f, 0.f}))
-            ->addAutomation(
-                new FrameDelayAutomationAction(
-                    new TimeLimitedAutomationAction(
-                        new RotationAutomationAction(&tw, 1.f, {1.f,0.f,0.f}),
-                        2.f
-                    ),
-                    800
+            .addAutomation(
+                RotationAutomationAction(
+                    &tw, 5.f, {0.f,0.f,1.f}
                 )
             )
-            ->finish(),
-            10.f
+            .addAutomation(
+                ScaleAutomationAction(
+                    &tw, -0.01f
+                )
+            )
+            .finish(),
+            1.f
         )
     );
     tw.addAutomation(
-        new MeshChangerAutomationAction(&tw, &drawable2),
+        TimeLimitedAutomationAction(
+            AutomationActionGroupBuilder()
+            .addAutomation(
+                RotationAutomationAction(
+                    &tw, 5.f, {0.f,-1.f,0.f}
+                )
+            )
+            .addAutomation(
+                ScaleAutomationAction(
+                    &tw, -0.01f
+                )
+            )
+            .finish(),
+            1.f
+        )
+    );
+    tw.addAutomation(
+        MeshChangerAutomationAction(
+            &tw, std::move(drawable2)
+        ),
         false
-    );
-    tw.addAutomation(
-        new TimeLimitedAutomationAction(
-            new RotationAutomationAction(
-                &tw, 5.f, {0.f,0.f,1.f}
-            ),
-            4.f
-        )
     );
     
     tw.fitScene();

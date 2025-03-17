@@ -4,22 +4,29 @@
 #include "automation_action.h"
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
+
 
 template<typename DerivedRenderApp, typename MeshType>
 class MeshChangerAutomationAction : public AutomationAction
 {
     vcl::AbstractViewerDrawer<DerivedRenderApp>* avd;
-    vcl::DrawableMesh<MeshType> *mesh;
+    std::shared_ptr<vcl::DrawableObjectVector> objectVector;
     bool completedOnce =  false;
 
     using Parent = AutomationAction;
 
     public:
 
-    MeshChangerAutomationAction(vcl::AbstractViewerDrawer<DerivedRenderApp>* avd, vcl::DrawableMesh<MeshType> *mesh)
+    MeshChangerAutomationAction(
+        vcl::AbstractViewerDrawer<DerivedRenderApp>* avd,
+        vcl::DrawableMesh<MeshType> &&mesh
+    )
     : avd{avd},
-    mesh{mesh}
-    {}
+    objectVector{std::make_shared<vcl::DrawableObjectVector>(vcl::DrawableObjectVector())}
+    {
+        objectVector->pushBack(std::move(mesh));
+    }
 
     void start() override
     {
@@ -32,8 +39,7 @@ class MeshChangerAutomationAction : public AutomationAction
             end();
             return;
         }
-        avd->clearDrawableObjectVector();
-        avd->pushDrawableObject(*mesh);
+        avd->setDrawableObjectVector(objectVector);
         avd->fitScene();
         end();
     }
@@ -42,6 +48,16 @@ class MeshChangerAutomationAction : public AutomationAction
     {
         Parent::end();
         completedOnce = true;
+    }
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<MeshChangerAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<MeshChangerAutomationAction>(std::move(*this));
     }
 };
 

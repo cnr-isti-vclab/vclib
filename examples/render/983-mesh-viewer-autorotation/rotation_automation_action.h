@@ -78,6 +78,16 @@ class RotationAutomationAction: public AutomationAction
             trackball->stopIgnoringTrackBallEvents();
         }
     };
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<RotationAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<RotationAutomationAction>(std::move(*this));
+    }
 };
 
 #endif

@@ -12,7 +12,7 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
 
     public:
 
-    FrameDelayAutomationAction(AutomationAction *action, uint32_t delayFrames)
+    FrameDelayAutomationAction(const AutomationAction &action, uint32_t delayFrames)
     : Parent(action),
     delayFrames{delayFrames}
     {};
@@ -44,6 +44,16 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
         Parent::end();
         currentFrames = 0;
         innerStarted = false;
+    }
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<FrameDelayAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<FrameDelayAutomationAction>(std::move(*this));
     }
 };
 

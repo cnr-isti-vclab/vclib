@@ -67,6 +67,16 @@ class ScaleAutomationAction : public AutomationAction
         }
         totalPixelDelta = 0;
     };
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<ScaleAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<ScaleAutomationAction>(std::move(*this));
+    }
 };
 
 #endif

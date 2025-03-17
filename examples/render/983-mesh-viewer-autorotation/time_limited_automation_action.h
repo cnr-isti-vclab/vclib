@@ -14,7 +14,7 @@ class TimeLimitedAutomationAction : public WrapperAutomationAction
 
     public:
 
-    TimeLimitedAutomationAction(AutomationAction* innerAction, float durationSeconds = 5.5f)
+    TimeLimitedAutomationAction(const AutomationAction &innerAction, float durationSeconds = 5.5f)
     : Parent(innerAction), 
     durationSeconds{durationSeconds}
     {};
@@ -38,6 +38,16 @@ class TimeLimitedAutomationAction : public WrapperAutomationAction
     {
         Parent::end();
         timer.stop();
+    }
+
+    std::shared_ptr<AutomationAction> clone() const & override
+    {
+        return std::make_shared<TimeLimitedAutomationAction>(*this);
+    }
+
+    std::shared_ptr<AutomationAction> clone() && override
+    {
+        return std::make_shared<TimeLimitedAutomationAction>(std::move(*this));
     }
 };
 
