@@ -7,6 +7,41 @@
     },
     "configurePresets": [
         {
+            "name": "msvc",
+            "hidden": true,
+            "displayName": "MSVC",
+            "description": "Using MSVC compiler",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "clang",
+            "hidden": true,
+            "displayName": "Clang",
+            "description": "Using Clang compiler",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "gcc",
+            "hidden": true,
+            "displayName": "GCC",
+            "description": "Using GCC compiler",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
             "name": "vclib-core-debug",
             "displayName": "VCLib::Core - Debug",
             "description": "Core with default options",
