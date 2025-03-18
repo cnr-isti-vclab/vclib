@@ -136,6 +136,24 @@
             }
         },
         {
+            "name": "vclib-bindings-debug",
+            "inherits": "vclib-core-no-tests-debug",
+            "displayName": "VCLib::Bindings - Debug",
+            "description": "Python Bindings module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+            }
+        },
+        {
+            "name": "vclib-bindings-release",
+            "inherits": "vclib-core-no-tests-release",
+            "displayName": "VCLib::Bindings - Release",
+            "description": "Python Bindings module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+            }
+        },
+        {
             "name": "vclib-all-modules-debug",
             "displayName": "VCLib - All Modules - Debug",
             "description": "All modules with default options",
@@ -220,6 +238,18 @@
             "displayName": "VCLib::Processing - Release",
             "description": "Processing module",
             "configurePreset": "vclib-processing-release"
+        },
+        {
+            "name": "vclib-bindings-debug",
+            "displayName": "VCLib::Bindings - Debug",
+            "description": "Python Bindings module",
+            "configurePreset": "vclib-bindings-debug"
+        },
+        {
+            "name": "vclib-bindings-release",
+            "displayName": "VCLib::Bindings - Release",
+            "description": "Python Bindings module",
+            "configurePreset": "vclib-bindings-release"
         },
         {
             "name": "vclib-all-modules-debug",
