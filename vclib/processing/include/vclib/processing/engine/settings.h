@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ENGINE_SETTINGS_H
 #define VCL_PROCESSING_ENGINE_SETTINGS_H
 
+#include <vclib/algorithms/mesh/type_name.h>
 #include <vclib/meshes.h>
 
 namespace vcl::proc {
@@ -37,10 +38,9 @@ using ScalarType = double;
  */
 constexpr bool INDEXED_MESHES = false;
 
-enum class MeshTypeId : vcl::uint
-{
+enum class MeshTypeId : vcl::uint {
     TRIANGLE_MESH = 0,
-    POLYGON_MESH = 1,
+    POLYGON_MESH  = 1,
 
     COUNT
 };
@@ -73,6 +73,16 @@ constexpr void checkMeshTypeId()
     static_assert(
         id >= 0 && id < toUnderlying(MeshTypeId::COUNT),
         "Invalid mesh type id.");
+}
+
+constexpr std::array<std::string, toUnderlying(MeshTypeId::COUNT)>
+meshTypeNames()
+{
+    std::array<std::string, toUnderlying(MeshTypeId::COUNT)> array = {
+        vcl::meshTypeName<GetMeshType<MeshTypeId::TRIANGLE_MESH>>(),
+        vcl::meshTypeName<GetMeshType<MeshTypeId::POLYGON_MESH>>()};
+
+    return array;
 }
 
 } // namespace vcl::proc

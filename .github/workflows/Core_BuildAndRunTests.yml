@@ -33,17 +33,14 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: core-${{ matrix.os }}-${{ github.ref }}
+        key: core-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build
       shell: bash
       run: |
         mkdir build
-        cd build
-        cmake -GNinja \
-          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-          -DCMAKE_BUILD_TYPE=Release \
-          ..
-        ninja
+        cmake -B build --preset=vclib-core-release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build build --parallel
     - name: Run Tests
       shell: bash
       run: |

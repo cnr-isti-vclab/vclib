@@ -24,6 +24,7 @@
 #define VCL_PROCESSING_H
 
 #include "processing/action_instances.h"
+#include "processing/functions.h"
 #include "processing/manager.h"
 
 /**

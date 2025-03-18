@@ -23,6 +23,7 @@
 #ifndef VCL_LOAD_SAVE_PLY_LOAD_H
 #define VCL_LOAD_SAVE_PLY_LOAD_H
 
+#include "detail/edge.h"
 #include "detail/extra.h"
 #include "detail/face.h"
 #include "detail/tristrip.h"

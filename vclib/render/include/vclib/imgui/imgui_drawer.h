@@ -155,7 +155,12 @@ public:
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_RenderDrawData(ImGui::GetDrawData());
 #endif // VCLIB_RENDER_BACKEND_*
+#ifndef __linux__
+        // FIXME #4: find a clean way to properly update the WindowManager
+        // as fast as possible (update inside the paintEvent is not allowed by
+        // qt)
         derived()->update();
+#endif
     }
 
     virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)

@@ -73,6 +73,12 @@ DrawableObjectFrame::~DrawableObjectFrame()
     delete mUI;
 }
 
+void DrawableObjectFrame::setIcon(const QIcon& icon, const QString& tooltip)
+{
+    mUI->iconLabel->setPixmap(icon.pixmap(16, 16));
+    mUI->iconLabel->setToolTip(tooltip);
+}
+
 void DrawableObjectFrame::visibilityCheckBoxStateChanged(Qt::CheckState arg1)
 {
     mObj->setVisibility(arg1 == Qt::CheckState::Checked);

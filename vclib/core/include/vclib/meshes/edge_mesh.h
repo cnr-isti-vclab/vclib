@@ -41,6 +41,26 @@ class Vertex;
 template<typename Scalar, bool INDEXED>
 class Edge;
 
+/**
+ * @brief The Vertex type used by the EdgeMeshT class.
+ *
+ * @extends vert::BitFlags
+ * @extends vert::Coordinate3
+ * @extends vert::Normal3
+ * @extends vert::OptionalColor
+ * @extends vert::OptionalQuality
+ * @extends vert::OptionalAdjacentEdges
+ * @extends vert::OptionalAdjacentVertices
+ * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMark
+ * @extends vert::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam I: A boolean flag that indicates whether the mesh uses indices or
+ * pointers to store vertices of edges and adjacency information.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar, bool I>
 class Vertex :
         public vcl::Vertex<
@@ -58,6 +78,24 @@ class Vertex :
 {
 };
 
+/**
+ * @brief The Edge type used by the EdgeMeshT class.
+ *
+ * @extends edge::BitFlags
+ * @extends edge::VertexReferences
+ * @extends edge::OptionalNormal3
+ * @extends edge::OptionalColor
+ * @extends edge::OptionalQuality
+ * @extends edge::OptionalAdjacentEdges
+ * @extends edge::OptionalMark
+ * @extends edge::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam I: A boolean flag that indicates whether the mesh uses indices or
+ * pointers to store vertices of edges and adjacency information.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar, bool I>
 class Edge :
         public vcl::Edge<
@@ -78,12 +116,28 @@ class Edge :
 namespace vcl {
 
 /**
- * @brief The EdgeMeshT is a Mesh type that stores Vertices and Edges as
- * elements.
+ * @brief The EdgeMeshT class is a mesh class that represents a mesh that stores
+ * only vertices and edges (no faces).
+ *
+ * It allows to store edgemesh::Vertex and edgemesh::Edge elements.
+ *
+ * The mesh is templated over the scalar type and a boolean flag that indicates
+ * whether the mesh uses indices to store vertices of edges and adjacency
+ * information.
  *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
  * or pointers to store references.
+ *
+ * @extends mesh::VertexContainer
+ * @extends mesh::EdgeContainer
+ * @extends mesh::BoundingBox3
+ * @extends mesh::Color
+ * @extends mesh::Mark
+ * @extends mesh::Name
+ * @extends mesh::TextureImages
+ * @extends mesh::TransformMatrix
+ * @extends mesh::CustomComponents
  *
  * @ingroup meshes
  */
@@ -100,13 +154,41 @@ class EdgeMeshT :
             mesh::CustomComponents>
 {
 public:
+    /** @brief The scalar used to store all the data of the Mesh. */
     using ScalarType = Scalar;
 };
 
-using EdgeMeshf        = EdgeMeshT<float, false>;
-using EdgeMesh         = EdgeMeshT<double, false>;
+/**
+ * @brief The EdgeMeshf class is a specialization of the EdgeMeshT class that
+ * uses `float` as scalar and pointers to store vertices of edges and adjacency
+ * information.
+ * @ingroup meshes
+ */
+using EdgeMeshf = EdgeMeshT<float, false>;
+
+/**
+ * @brief The EdgeMesh class is a specialization of the EdgeMeshT class that
+ * uses `double` as scalar and pointers to store vertices of edges and adjacency
+ * information.
+ * @ingroup meshes
+ */
+using EdgeMesh = EdgeMeshT<double, false>;
+
+/**
+ * @brief The EdgeMeshIndexedf class is a specialization of the EdgeMeshT class
+ * that uses `float` as scalar and indices (`unsigned int`) to store vertices of
+ * edges and adjacency information.
+ * @ingroup meshes
+ */
 using EdgeMeshIndexedf = EdgeMeshT<float, true>;
-using EdgeMeshIndexed  = EdgeMeshT<double, true>;
+
+/**
+ * @brief The EdgeMeshIndexed class is a specialization of the EdgeMeshT class
+ * that uses `double` as scalar and indices (`unsigned int`) to store vertices
+ * of edges and adjacency information.
+ * @ingroup meshes
+ */
+using EdgeMeshIndexed = EdgeMeshT<double, true>;
 
 } // namespace vcl
 

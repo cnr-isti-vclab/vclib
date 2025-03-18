@@ -23,9 +23,10 @@
 #ifndef VCL_PROCESSING_ACTION_INSTANCES_H
 #define VCL_PROCESSING_ACTION_INSTANCES_H
 
-#include "action_instances/filter_mesh.h"
-#include "action_instances/io_image.h"
-#include "action_instances/io_mesh.h"
+#include "action_instances/convert.h"
+#include "action_instances/filter.h"
+#include "action_instances/image_io.h"
+#include "action_instances/mesh_io.h"
 
 namespace vcl::proc {
 
@@ -33,17 +34,21 @@ inline std::vector<std::shared_ptr<Action>> actionInstances()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    // IO Image actions
-    auto ioImgVector = ioImageActions();
-    vec.insert(vec.end(), ioImgVector.begin(), ioImgVector.end());
+    // Convert actions
+    auto convertVector = convertActions();
+    vec.insert(vec.end(), convertVector.begin(), convertVector.end());
 
-    // IO Mesh actions
-    auto ioMeshVector = ioMeshActions();
-    vec.insert(vec.end(), ioMeshVector.begin(), ioMeshVector.end());
+    // Filter actions
+    auto filterVector = filterActions();
+    vec.insert(vec.end(), filterVector.begin(), filterVector.end());
 
-    // // Filter Mesh actions
-    auto filterMeshVector = filterMeshActions();
-    vec.insert(vec.end(), filterMeshVector.begin(), filterMeshVector.end());
+    // ImageIO actions
+    auto imgIOVector = imageIOActions();
+    vec.insert(vec.end(), imgIOVector.begin(), imgIOVector.end());
+
+    // MeshIO actions
+    auto meshIOVector = meshIOActions();
+    vec.insert(vec.end(), meshIOVector.begin(), meshIOVector.end());
 
     return vec;
 }

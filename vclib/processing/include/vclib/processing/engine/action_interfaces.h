@@ -23,8 +23,9 @@
 #ifndef VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
 #define VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H
 
-#include "action_interfaces/filter_action.h"
+#include "action_interfaces/convert_action.h"
+#include "action_interfaces/filter_action_t.h"
 #include "action_interfaces/image_io_action.h"
-#include "action_interfaces/mesh_io_action.h"
+#include "action_interfaces/mesh_io_action_t.h"
 
 #endif // VCL_PROCESSING_ENGINE_ACTION_INTERFACES_H

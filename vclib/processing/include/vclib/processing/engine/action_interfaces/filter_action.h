@@ -28,20 +28,11 @@
 #include <vclib/processing/engine/parameter_vector.h>
 #include <vclib/processing/engine/parameters.h>
 
-#include <vclib/algorithms/mesh/type_name.h>
-#include <vclib/algorithms/mesh/update.h>
-#include <vclib/io/file_format.h>
-#include <vclib/io/file_info.h>
-#include <vclib/space/complex/mesh_info.h>
-
 namespace vcl::proc {
 
-template<MeshConcept Mesh>
 class FilterAction : public Action
 {
 public:
-    using MeshType = Mesh;
-
     enum class Category {
         CREATE = 0,
         CLEANING_AND_REPAIRING,
@@ -59,9 +50,9 @@ public:
 
     // From Action class
 
-    [[nodiscard]] virtual std::shared_ptr<Action> clone() const = 0;
-
     virtual std::string name() const = 0;
+
+    virtual MeshTypeId meshType() const = 0;
 
     /**
      * @brief Returns the categories of the filter.
@@ -128,174 +119,13 @@ public:
      */
     virtual ParameterVector parameters() const { return ParameterVector(); }
 
-protected:
-    /**
-     * @brief Executes the filter to the input meshes and/or input/output
-     * meshes, filling eventual output meshes, and returning the output values
-     * of the filter, if any.
-     *
-     * This method is the one that actually executes the filter, and must be
-     * implemented by the derived classes.
-     *
-     * It won't be called directly by the user or the manager, but by the
-     * execute method of the base class. You don't need to check the consistency
-     * of the input vectors, as this will be done by the execute method of the
-     * base class.
-     *
-     * @param[in] inputMeshes: The input meshes. These meshes will not be
-     * modified by the filter. They will be passed to the function as a const
-     * vector of const pointers to meshes, which guarantees that the meshes
-     * of the vector will not be modified.
-     * @param[in/out] inputOutputMeshes: The input/output meshes. These meshes
-     * can be used as input and can be modified by the filter. They will be
-     * passed to the function as a vector of pointers to meshes, which
-     * guarantees that the vector cannot be modified, but the meshes pointed by
-     * the elements of the vector can be modified.
-     * @param[our] outputMeshes: The output meshes. These meshes will be filled
-     * by the filter, if any. The filter will create new meshes and will add
-     * them to the vector. The vector will be empty when the function
-     * is called, and the filter will fill it with the output meshes.
-     * @param[in] parameters: The parameters of the filter.
-     * @param[in] log: The logger to use
-     * @return The output values of the filter, if any.
-     */
-    virtual OutputValues executeFilter(
-        const std::vector<const MeshType*>& inputMeshes,
-        const std::vector<MeshType*>&       inputOutputMeshes,
-        std::vector<MeshType>&              outputMeshes,
-        const ParameterVector&              parameters,
-        AbstractLogger&                     log = logger()) const = 0;
-
-public:
     /* ************************************ *
      * Member functions already implemented *
      * ************************************ */
 
     Type type() const final { return Type::FILTER_ACTION; }
 
-    MeshTypeId meshType() const final { return meshTypeId<MeshType>(); }
-
-    /// execute overrides
-
-    OutputValues execute(
-        const std::vector<const MeshType*>& inputMeshes,
-        const std::vector<MeshType*>&       inputOutputMeshes,
-        std::vector<MeshType>&              outputMeshes,
-        const ParameterVector&              parameters,
-        AbstractLogger&                     log = logger()) const
-    {
-        checkInputVectors(inputMeshes, inputOutputMeshes);
-        return executeFilter(
-            inputMeshes, inputOutputMeshes, outputMeshes, parameters, log);
-    }
-
-    // without parameters override
-    OutputValues execute(
-        const std::vector<const MeshType*>& inputMeshes,
-        const std::vector<MeshType*>&       inputOutputMeshes,
-        std::vector<MeshType>&              outputMeshes,
-        AbstractLogger&                     log = logger()) const
-    {
-        return execute(
-            inputMeshes, inputOutputMeshes, outputMeshes, parameters(), log);
-    }
-
-    // without inputOutputMeshes override
-    OutputValues execute(
-        const std::vector<const MeshType*>& inputMeshes,
-        std::vector<MeshType>&              outputMeshes,
-        const ParameterVector&              parameters,
-        AbstractLogger&                     log = logger()) const
-    {
-        checkInputOutputMeshes(0);
-        return execute(inputMeshes, {}, outputMeshes, parameters, log);
-    }
-
-    // without inputOutputMeshes and parameters override
-    OutputValues execute(
-        const std::vector<const MeshType*>& inputMeshes,
-        std::vector<MeshType>&              outputMeshes,
-        AbstractLogger&                     log = logger()) const
-    {
-        return execute(inputMeshes, outputMeshes, parameters(), log);
-    }
-
-    // without inputOutputMeshes and outputMeshes override
-    OutputValues execute(
-        const std::vector<const MeshType*>& inputMeshes,
-        const ParameterVector&              parameters,
-        AbstractLogger&                     log = logger()) const
-    {
-        std::vector<MeshType> outputMeshes;
-        auto out = execute(inputMeshes, outputMeshes, parameters, log);
-        warnOutputMeshesVector(outputMeshes, log);
-        return out;
-    }
-
-    // without inputOutputMeshes, outputMeshes and parameters override
-    OutputValues execute(
-        const std::vector<const MeshType*>& inputMeshes,
-        AbstractLogger&                     log = logger()) const
-    {
-        return execute(inputMeshes, parameters(), log);
-    }
-
-    OutputValues execute(
-        const std::vector<MeshType*>& inputOutputMeshes,
-        std::vector<MeshType>&        outputMeshes,
-        const ParameterVector&        parameters,
-        AbstractLogger&               log = logger()) const
-    {
-        return execute({}, inputOutputMeshes, outputMeshes, parameters, log);
-    }
-
-    OutputValues execute(
-        const std::vector<MeshType*>& inputOutputMeshes,
-        std::vector<MeshType>&        outputMeshes,
-        AbstractLogger&               log = logger()) const
-    {
-        return execute(inputOutputMeshes, outputMeshes, parameters(), log);
-    }
-
-    OutputValues execute(
-        const std::vector<MeshType*>& inputOutputMeshes,
-        const ParameterVector&        parameters,
-        AbstractLogger&               log = logger()) const
-    {
-        std::vector<MeshType> outputMeshes;
-        auto out = execute(inputOutputMeshes, outputMeshes, parameters, log);
-        warnOutputMeshesVector(outputMeshes, log);
-        return out;
-    }
-
-    OutputValues execute(
-        const std::vector<MeshType*>& inputOutputMeshes,
-        AbstractLogger&               log = logger()) const
-    {
-        return execute(inputOutputMeshes, parameters(), log);
-    }
-
-    OutputValues execute(
-        std::vector<MeshType>& outputMeshes,
-        const ParameterVector& parameters,
-        AbstractLogger&        log = logger()) const
-    {
-        return execute(
-            std::vector<const MeshType*>(),
-            std::vector<MeshType*>(),
-            outputMeshes,
-            parameters,
-            log);
-    }
-
-    OutputValues execute(
-        std::vector<MeshType>& outputMeshes,
-        AbstractLogger&        log = logger()) const
-    {
-        return execute(outputMeshes, parameters(), log);
-    }
-
-private:
+protected:
     void checkInputMeshes(uint provided) const
     {
         uint n = inputMeshes().size();
@@ -318,6 +148,7 @@ private:
         }
     }
 
+    template<MeshConcept MeshType>
     void warnOutputMeshesVector(
         const std::vector<MeshType>& outputMeshes,
         AbstractLogger&              log) const
@@ -332,6 +163,7 @@ private:
         }
     }
 
+    template<MeshConcept MeshType>
     void checkInputVectors(
         const std::vector<const MeshType*>& inputMeshes,
         const std::vector<MeshType*>&       inputOutputMeshes) const

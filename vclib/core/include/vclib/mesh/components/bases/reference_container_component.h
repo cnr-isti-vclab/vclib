@@ -28,6 +28,8 @@
 
 namespace vcl::comp {
 
+/// @cond VCLIB_HIDDEN_DOCS
+
 /**
  * @brief The ReferenceContainerComponent is a class that inherits from the
  * @ref IndexContainerComponent or @ref PointerContainerComponent classes,
@@ -216,9 +218,9 @@ protected:
     void setElementMod(int i, uint ei)
     {
         if constexpr (STORE_INDICES)
-            Base::container().atMod(i) = elemFromParent(ei);
-        else
             Base::container().atMod(i) = ei;
+        else
+            Base::container().atMod(i) = elemFromParent(ei);
     }
 
     template<Range Rng>
@@ -424,6 +426,8 @@ protected:
                         ->template element<Elem::ELEMENT_ID>(vi);
     }
 };
+
+/// @endcond
 
 } // namespace vcl::comp
 

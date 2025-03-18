@@ -43,29 +43,13 @@ public:
         IMAGE_IO_ACTION = 0,
         MESH_IO_ACTION,
         FILTER_ACTION,
+        CONVERT_ACTION,
 
         COUNT
     };
 
     Action()          = default;
     virtual ~Action() = default;
-
-    /**
-     * @brief Returns a new instance of the action.
-     *
-     * Assuming that your action is called `MyAction`, you should implement this
-     * member function as follows:
-     *
-     * @code{.cpp}
-     * std::shared_ptr<Action> clone() const override
-     * {
-     *    return std::make_shared<MyAction>(*this);
-     * }
-     * @endcode
-     *
-     * @return A shared pointer to the new instance of the action.
-     */
-    [[nodiscard]] virtual std::shared_ptr<Action> clone() const = 0;
 
     /**
      * @brief Returns the name of the action.
@@ -103,10 +87,7 @@ public:
      *
      * @return The identifier of the action.
      */
-    std::string identifier() const
-    {
-        return identifierFromName(name());
-    }
+    std::string identifier() const { return identifierFromName(name()); }
 
 protected:
     static ConsoleLogger& logger() { return log; }

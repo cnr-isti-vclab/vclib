@@ -30,16 +30,11 @@
 namespace vcl::proc {
 
 template<MeshConcept MeshType>
-class ConvexHullFilter : public FilterAction<MeshType>
+class ConvexHullFilter : public FilterActionT<MeshType>
 {
-    using Base = FilterAction<MeshType>;
+    using Base = FilterActionT<MeshType>;
 
 public:
-    std::shared_ptr<Action> clone() const final
-    {
-        return std::make_shared<ConvexHullFilter>(*this);
-    }
-
     std::string name() const final { return "Convex Hull"; }
 
     std::string description() const final
@@ -69,8 +64,15 @@ public:
         AbstractLogger&                     log = Base::logger()) const final
     {
         const MeshType& input = *inputMeshes.front();
+        std::string     name  = "Convex Hull";
+        if constexpr (HasName<MeshType>) {
+            name = input.name() + " " + name;
+        }
         outputMeshes.push_back(
             convexHull<MeshType>(input.vertices() | vcl::views::coords, log));
+        if constexpr (HasName<MeshType>) {
+            outputMeshes.back().name() = name;
+        }
         return OutputValues();
     }
 };

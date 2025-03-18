@@ -37,11 +37,19 @@ class DrawableObjectVectorFrame;
 
 class DrawableObjectVectorFrame : public QFrame
 {
+public:
+    using IconFunction =
+        std::function<std::pair<QIcon, std::string>(const DrawableObject&)>;
+
+private:
     Q_OBJECT
 
     // this frame does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> mDrawList;
     Ui::DrawableObjectVectorFrame*        mUI;
+
+    // icon function
+    IconFunction mIconFunction = nullptr;
 
 public:
     explicit DrawableObjectVectorFrame(QWidget* parent = nullptr);
@@ -50,12 +58,14 @@ public:
         QWidget*                                     parent = nullptr);
     ~DrawableObjectVectorFrame();
 
+    void setIconFunction(const IconFunction& f);
+
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
     uint selectedDrawableObject() const;
 
-    void update();
+    void update(); // todo: rename this to refresh
 
 signals:
     void drawableObjectVisibilityChanged();

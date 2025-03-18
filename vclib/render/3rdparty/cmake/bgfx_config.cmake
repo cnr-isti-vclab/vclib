@@ -160,8 +160,8 @@ function(_add_bgfx_shader FILE DIR TARGET)
     _set_bgfx_profiles()
 
     get_property(BGFX_SHADER_INCLUDE_PATH TARGET vclib-3rd-bgfx PROPERTY BGFX_SHADER_INCLUDE_PATH)
-    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-    get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
+    get_property(VCLIB_RENDER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+    get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
 
     get_property(TARGET_BIN_DIR TARGET ${TARGET} PROPERTY BINARY_DIR)
     set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/shaders")
@@ -320,9 +320,9 @@ endfunction()
 function(build_bgfx_shaders_to_headers)
     target_ide_add_bgfx_shaders(vclib-render ${ARGV})
 
-    get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
-    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-    get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
+    get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
+    get_property(VCLIB_RENDER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+    get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
     get_property(BGFX_SHADER_INCLUDE_PATH TARGET vclib-3rd-bgfx PROPERTY BGFX_SHADER_INCLUDE_PATH)
 
     set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/shaders")
@@ -374,8 +374,8 @@ endfunction()
 function(build_assets_to_headers)
     target_ide_add_assets(vclib-render ${ARGV})
 
-    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-    get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
+    get_property(VCLIB_RENDER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+    get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
 
     set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include")
 

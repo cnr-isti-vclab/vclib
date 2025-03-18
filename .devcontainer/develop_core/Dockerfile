@@ -1,6 +1,8 @@
 FROM ubuntu:24.04
 
-RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -y update && apt-get -y install \
     build-essential \
     catch2 \
     clang \

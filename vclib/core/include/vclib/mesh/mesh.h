@@ -822,6 +822,20 @@ public:
     }
 
     /**
+     * @brief Compacts the Container of the given element, removing all the
+     * elements marked as deleted. Element indices will change accordingly. The
+     * function will automatically take care of updating all the Element
+     * pointers contained in the Mesh.
+     */
+    template<uint ELEM_ID>
+    void compactElements() requires (hasContainerOf<ELEM_ID>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        Cont::compactElements();
+    }
+
+    /**
      * @brief Marks as deleted the element at the given index from its
      * container, deduced from the template index ELEM_ID.
      *

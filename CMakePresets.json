@@ -1,0 +1,237 @@
+{
+    "version": 5,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 24,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "msvc",
+            "hidden": true,
+            "displayName": "MSVC",
+            "description": "Using MSVC compiler",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "clang",
+            "hidden": true,
+            "displayName": "Clang",
+            "description": "Using Clang compiler",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "gcc",
+            "hidden": true,
+            "displayName": "GCC",
+            "description": "Using GCC compiler",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "vclib-core-debug",
+            "displayName": "VCLib::Core - Debug",
+            "description": "Core with default options",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "vclib-core-release",
+            "displayName": "VCLib::Core - Release",
+            "description": "Core with default options",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "vclib-core-no-tests-debug",
+            "inherits": "vclib-core-debug",
+            "displayName": "VCLib::Core (No Tests and Examples) - Debug",
+            "description": "Core without tests and examples",
+            "cacheVariables": {
+                "VCLIB_CORE_BUILD_EXAMPLES": "OFF",
+                "VCLIB_CORE_BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "vclib-core-no-tests-release",
+            "inherits": "vclib-core-release",
+            "displayName": "VCLib::Core (No Tests and Examples) - Release",
+            "description": "Core without tests and examples",
+            "cacheVariables": {
+                "VCLIB_CORE_BUILD_EXAMPLES": "OFF",
+                "VCLIB_CORE_BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "vclib-render-bgfx-debug",
+            "inherits": "vclib-core-no-tests-debug",
+            "displayName": "VCLib::Render (BGFX) - Debug",
+            "description": "Render with bgfx render backend",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_RENDER": "ON"
+            }
+        },
+        {
+            "name": "vclib-render-bgfx-release",
+            "inherits": "vclib-core-no-tests-release",
+            "displayName": "VCLib::Render (BGFX) - Release",
+            "description": "Render with bgfx render backend",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_RENDER": "ON"
+            }
+        },
+        {
+            "name": "vclib-render-opengl2-debug",
+            "inherits": "vclib-core-no-tests-debug",
+            "displayName": "VCLib::Render (OpenGL) - Debug",
+            "description": "Render with OpenGL render backend",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_RENDER": "ON",
+                "VCLIB_RENDER_BACKEND": "opengl2"
+            }
+        },
+        {
+            "name": "vclib-render-opengl2-release",
+            "inherits": "vclib-core-no-tests-release",
+            "displayName": "VCLib::Render (OpenGL) - Release",
+            "description": "Render with OpenGL render backend",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_RENDER": "ON",
+                "VCLIB_RENDER_BACKEND": "opengl2"
+            }
+        },
+        {
+            "name": "vclib-processing-debug",
+            "inherits": "vclib-core-no-tests-debug",
+            "displayName": "VCLib::Processing - Debug",
+            "description": "Processing module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_PROCESSING": "ON"
+            }
+        },
+        {
+            "name": "vclib-processing-release",
+            "inherits": "vclib-core-no-tests-release",
+            "displayName": "VCLib::Processing - Release",
+            "description": "Processing module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_PROCESSING": "ON"
+            }
+        },
+        {
+            "name": "vclib-all-modules-debug",
+            "displayName": "VCLib - All Modules - Debug",
+            "description": "All modules with default options",
+            "inherits": "vclib-core-debug",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_EXTERNAL": "ON",
+                "VCLIB_BUILD_MODULE_PROCESSING": "ON",
+                "VCLIB_BUILD_MODULE_RENDER": "ON",
+                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+            }
+        },
+        {
+            "name": "vclib-all-modules-release",
+            "displayName": "VCLib - All Modules - Release",
+            "description": "All modules with default options",
+            "inherits": "vclib-core-release",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_EXTERNAL": "ON",
+                "VCLIB_BUILD_MODULE_PROCESSING": "ON",
+                "VCLIB_BUILD_MODULE_RENDER": "ON",
+                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "vclib-core-debug",
+            "displayName": "VCLib::Core - Debug",
+            "description": "Core with default options",
+            "configurePreset": "vclib-core-debug"
+        },
+        {
+            "name": "vclib-core-release",
+            "displayName": "VCLib::Core - Release",
+            "description": "Core with default options",
+            "configurePreset": "vclib-core-release"
+        },
+        {
+            "name": "vclib-core-no-tests-debug",
+            "displayName": "VCLib::Core (No Tests and Examples) - Debug",
+            "description": "Core without tests and examples",
+            "configurePreset": "vclib-core-no-tests-debug"
+        },
+        {
+            "name": "vclib-core-no-tests-release",
+            "displayName": "VCLib::Core (No Tests and Examples) - Release",
+            "description": "Core without tests and examples",
+            "configurePreset": "vclib-core-no-tests-release"
+        },
+        {
+            "name": "vclib-render-bgfx-debug",
+            "displayName": "VCLib::Render (BGFX) - Debug",
+            "description": "Render with bgfx render backend",
+            "configurePreset": "vclib-render-bgfx-debug"
+        },
+        {
+            "name": "vclib-render-bgfx-release",
+            "displayName": "VCLib::Render (BGFX) - Release",
+            "description": "Render with bgfx render backend",
+            "configurePreset": "vclib-render-bgfx-release"
+        },
+        {
+            "name": "vclib-render-opengl2-debug",
+            "displayName": "VCLib::Render (OpenGL) - Debug",
+            "description": "Render with OpenGL render backend",
+            "configurePreset": "vclib-render-opengl2-debug"
+        },
+        {
+            "name": "vclib-render-opengl2-release",
+            "displayName": "VCLib::Render (OpenGL) - Release",
+            "description": "Render with OpenGL render backend",
+            "configurePreset": "vclib-render-opengl2-release"
+        },
+        {
+            "name": "vclib-processing-debug",
+            "displayName": "VCLib::Processing - Debug",
+            "description": "Processing module",
+            "configurePreset": "vclib-processing-debug"
+        },
+        {
+            "name": "vclib-processing-release",
+            "displayName": "VCLib::Processing - Release",
+            "description": "Processing module",
+            "configurePreset": "vclib-processing-release"
+        },
+        {
+            "name": "vclib-all-modules-debug",
+            "displayName": "VCLib - All Modules - Debug",
+            "description": "All modules with default options",
+            "configurePreset": "vclib-all-modules-debug"
+        },
+        {
+            "name": "vclib-all-modules-release",
+            "displayName": "VCLib - All Modules - Release",
+            "description": "All modules with default options",
+            "configurePreset": "vclib-all-modules-release"
+        }
+    ]
+}

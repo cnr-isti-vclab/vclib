@@ -31,9 +31,10 @@
 
 namespace vcl::proc {
 
+template<typename ActionType>
 class IOActionContainer
 {
-    using FormatMap = std::map<FileFormat, std::shared_ptr<IOAction>>;
+    using FormatMap = std::map<FileFormat, std::shared_ptr<ActionType>>;
 
     FormatMap mLoadFormatMap;
     FormatMap mSaveFormatMap;
@@ -41,10 +42,8 @@ class IOActionContainer
 public:
     IOActionContainer() = default;
 
-    void add(std::shared_ptr<IOAction> action)
+    void add(std::shared_ptr<ActionType> action)
     {
-        using enum IOAction::IOSupport;
-
         if (!action) {
             throw std::runtime_error("Action is nullptr.");
         }
@@ -53,18 +52,21 @@ public:
         for (const auto& format : formats) {
             checkFormatDoesNotExist(format);
             auto supp = action->ioSupport();
-            if (supp == LOAD || supp == BOTH) {
-                mLoadFormatMap[format] =
-                    std::dynamic_pointer_cast<IOAction>(action);
+            if (supp != ActionType::IOSupport::SAVE) {
+                mLoadFormatMap[format] = action;
             }
-            if (supp == SAVE || supp == BOTH) {
-                mSaveFormatMap[format] =
-                    std::dynamic_pointer_cast<IOAction>(action);
+            if (supp != ActionType::IOSupport::LOAD) {
+                mSaveFormatMap[format] = action;
             }
         }
     }
 
-    std::shared_ptr<IOAction> loadAction(const FileFormat& format) const
+    bool loadFormatExists(const FileFormat& format) const
+    {
+        return mLoadFormatMap.find(format) != mLoadFormatMap.end();
+    }
+
+    std::shared_ptr<ActionType> loadAction(const FileFormat& format) const
     {
         auto it = findLoadFormatExists(format);
         return it->second;
@@ -79,7 +81,12 @@ public:
         return formats;
     }
 
-    std::shared_ptr<IOAction> saveAction(const FileFormat& format) const
+    bool saveFormatExists(const FileFormat& format) const
+    {
+        return mSaveFormatMap.find(format) != mSaveFormatMap.end();
+    }
+
+    std::shared_ptr<ActionType> saveAction(const FileFormat& format) const
     {
         auto it = findSaveFormatExists(format);
         return it->second;
@@ -90,6 +97,17 @@ public:
         std::vector<FileFormat> formats;
         for (const auto& [format, _] : mSaveFormatMap) {
             formats.push_back(format);
+        }
+        return formats;
+    }
+
+    std::vector<FileFormat> saveFormats(MeshTypeId m) const
+    {
+        // available only if ActionType is MeshIOActions
+        std::vector<FileFormat> formats;
+        for (const auto& [format, action] : mSaveFormatMap) {
+            if (action->supportedMeshTypes()[toUnderlying(m)])
+                formats.push_back(format);
         }
         return formats;
     }

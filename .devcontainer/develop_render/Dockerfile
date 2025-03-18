@@ -1,9 +1,11 @@
 FROM ubuntu:24.04
 
-ARG QT_VERSION=6.7.2
+ARG QT_VERSION=6.8.2
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 ENV PATH=/opt/qt/${QT_VERSION}/gcc_64/bin:/root/.local/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/qt/${QT_VERSION}/gcc_64/lib/
@@ -11,7 +13,7 @@ ENV QT_PLUGIN_PATH=/opt/qt/${QT_VERSION}/gcc_64/plugins/
 ENV QML_IMPORT_PATH=/opt/qt/${QT_VERSION}/gcc_64/qml/
 ENV QML2_IMPORT_PATH=/opt/qt/${QT_VERSION}/gcc_64/qml/
 
-RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+RUN apt-get -y update && apt-get -y install \
     build-essential \
     catch2 \
     clang \

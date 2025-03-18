@@ -44,6 +44,28 @@ class Face;
 template<typename Scalar, bool INDEXED>
 class Edge;
 
+/**
+ * @brief The Vertex type used by the PolyEdgeMeshT class.
+ *
+ * @extends vert::BitFlags
+ * @extends vert::Coordinate3
+ * @extends vert::Normal3
+ * @extends vert::OptionalColor
+ * @extends vert::OptionalQuality
+ * @extends vert::OptionalAdjacentEdges
+ * @extends vert::OptionalAdjacentFaces
+ * @extends vert::OptionalAdjacentVertices
+ * @extends vert::OptionalPrincipalCurvature
+ * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMark
+ * @extends vert::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam I: A boolean flag that indicates whether the mesh uses indices or
+ * pointers to store vertices of faces and adjacency information.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar, bool I>
 class Vertex :
         public vcl::Vertex<
@@ -63,6 +85,26 @@ class Vertex :
 {
 };
 
+/**
+ * @brief The Face type used by the PolyEdgeMeshT class.
+ *
+ * @extends face::PolygonBitFlags
+ * @extends face::PolygonVertexRefs
+ * @extends face::Normal3
+ * @extends face::OptionalColor
+ * @extends face::OptionalQuality
+ * @extends face::OptionalAdjacentPolygons
+ * @extends face::OptionalAdjacentEdges
+ * @extends face::OptionalPolygonWedgeTexCoords
+ * @extends face::OptionalMark
+ * @extends face::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam I: A boolean flag that indicates whether the mesh uses indices or
+ * pointers to store vertices of faces and adjacency information.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar, bool I>
 class Face :
         public vcl::Face<
@@ -80,6 +122,25 @@ class Face :
 {
 };
 
+/**
+ * @brief The Edge type used by the PolyEdgeMeshT class.
+ *
+ * @extends edge::BitFlags
+ * @extends edge::VertexReferences
+ * @extends edge::OptionalNormal3
+ * @extends edge::OptionalColor
+ * @extends edge::OptionalQuality
+ * @extends edge::OptionalAdjacentEdges
+ * @extends edge::OptionalAdjacentFaces
+ * @extends edge::OptionalMark
+ * @extends edge::CustomComponents
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam I: A boolean flag that indicates whether the mesh uses indices or
+ * pointers to store vertices of faces and adjacency information.
+ *
+ * @ingroup meshes
+ */
 template<typename Scalar, bool I>
 class Edge :
         public vcl::Edge<
@@ -101,11 +162,27 @@ class Edge :
 namespace vcl {
 
 /**
- * @brief The PolyEdgeMeshT is a Polygonal Mesh type that stores Vertices, Faces
- * and Edges as elements.
+ * @brief The PolyEdgeMeshT class is a mesh class that represents a polygonal
+ * mesh with edges.
+ *
+ * It allows to store polyedgemesh::Vertex, polyedgemesh::Face and
+ * polyedgemesh::Edge elements. Edges are separated from faces and are stored in
+ * a dedicated container.
+ *
  * @tparam Scalar: The scalar type used for the mesh.
  * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
  * or pointers to store references.
+ *
+ * @extends mesh::VertexContainer
+ * @extends mesh::FaceContainer
+ * @extends mesh::EdgeContainer
+ * @extends mesh::BoundingBox3
+ * @extends mesh::Color
+ * @extends mesh::Mark
+ * @extends mesh::Name
+ * @extends mesh::TextureImages
+ * @extends mesh::TransformMatrix
+ * @extends mesh::CustomComponents
  *
  * @ingroup meshes
  */
@@ -124,6 +201,7 @@ class PolyEdgeMeshT :
             mesh::CustomComponents>
 {
 public:
+    /** @brief The scalar used to store all the data of the Mesh. */
     using ScalarType = Scalar;
 };
 
@@ -145,16 +223,16 @@ using PolyEdgeMesh = PolyEdgeMeshT<double, false>;
 
 /**
  * @brief The PolyEdgeMeshIndexedf class is a specialization of PolyEdgeMeshT
- * that uses `float` as scalar and indices to store vertices of faces/edges and
- * adjacency information.
+ * that uses `float` as scalar and indices (`unsigned int`) to store vertices of
+ * faces/edges and adjacency information.
  * @ingroup meshes
  */
 using PolyEdgeMeshIndexedf = PolyEdgeMeshT<float, true>;
 
 /**
  * @brief The PolyEdgeMeshIndexed class is a specialization of PolyEdgeMeshT
- * that uses `double` as scalar and indices to store vertices of faces/edges and
- * adjacency information.
+ * that uses `double` as scalar and indices (`unsigned int`) to store vertices
+ * of faces/edges and adjacency information.
  * @ingroup meshes
  */
 using PolyEdgeMeshIndexed = PolyEdgeMeshT<double, true>;
