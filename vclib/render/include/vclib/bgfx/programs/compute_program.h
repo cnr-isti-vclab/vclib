@@ -25,7 +25,18 @@
 
 namespace vcl {
 
-enum class ComputeProgram { COUNT };
+enum class ComputeProgram
+{
+    LINES,
+    LINES_INDIRECT,
+    LINES_TEXTURE,
+
+    POLYLINES,
+    POLYLINES_INDIRECT,
+    POLYLINES_TEXTURE,
+
+    COUNT
+};
 
 } // namespace vcl
 
