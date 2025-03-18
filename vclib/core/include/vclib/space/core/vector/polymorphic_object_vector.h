@@ -429,7 +429,7 @@ public:
     void insert(uint i, const T& v) requires (N < 0)
     {
         assert(i < Base::size() + 1);
-        Base::insert(Base::begin() + i, v.clone());
+        Base::insert(i, v.clone());
     }
 
     /**
@@ -451,7 +451,7 @@ public:
     void insert(uint i, T&& v) requires (N < 0)
     {
         assert(i < Base::size() + 1);
-        Base::insert(Base::begin() + i, std::move(v).clone());
+        Base::insert(i, std::move(v).clone());
     }
 
     /**

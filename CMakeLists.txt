@@ -32,6 +32,8 @@ option(VCLIB_BUILD_MODULE_EXTERNAL "Build the external module" OFF)
 option(VCLIB_BUILD_MODULE_PROCESSING "Build the processing module" OFF)
 option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
+option(VCLIB_BUILD_MODULE_BINDINGS "Build the python bindings module" OFF)
+
 # Build examples
 option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
 
@@ -69,6 +71,10 @@ endif()
 if (VCLIB_BUILD_MODULE_RENDER)
     add_subdirectory(vclib/render)
     target_link_libraries(vclib INTERFACE vclib::render)
+endif()
+
+if (VCLIB_BUILD_MODULE_BINDINGS)
+    add_subdirectory(vclib/bindings)
 endif()
 
 set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)

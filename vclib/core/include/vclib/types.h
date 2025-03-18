@@ -36,7 +36,7 @@
 #include "types/view.h"
 
 /**
- * @defgroup types VCLib Types Module
+ * @defgroup types Types
  *
  * @brief The Types module defines all the utility definitions, types, classes
  * and type traits that are common in the library.

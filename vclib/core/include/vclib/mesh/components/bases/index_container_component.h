@@ -30,6 +30,8 @@
 
 namespace vcl::comp {
 
+/// @cond VCLIB_HIDDEN_DOCS
+
 /**
  * @brief The IndexContainerComponent is the base class for all the
  * components of VCLib that store a container of indices of an Element.
@@ -189,6 +191,8 @@ protected:
         }
     }
 };
+
+/// @endcond
 
 } // namespace vcl::comp
 

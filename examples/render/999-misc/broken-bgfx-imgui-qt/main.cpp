@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    //vcl::Context::setResetFlags(BGFX_RESET_NONE);
+    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
 
     using Viewer = vcl::RenderApp<
         vcl::qt::WidgetManager,
@@ -65,8 +65,6 @@ int main(int argc, char** argv)
     Viewer viewer("Viewer with ImGui and Stats");
 
     viewer.show();
-
-    // FIXME #3: It does not work when ImguiDrawers are activated
 
     return app.exec();
 }

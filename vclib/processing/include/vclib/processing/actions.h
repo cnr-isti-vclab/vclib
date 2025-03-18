@@ -23,8 +23,9 @@
 #ifndef VCL_PROCESSING_ACTIONS_H
 #define VCL_PROCESSING_ACTIONS_H
 
+#include "actions/convert.h"
 #include "actions/filter_mesh.h"
-#include "actions/io_image.h"
-#include "actions/io_mesh.h"
+#include "actions/image_io.h"
+#include "actions/mesh_io.h"
 
 #endif // VCL_PROCESSING_ACTIONS_H
