@@ -20,33 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/io.h>
-#include <vclib/bindings/core/load_save.h>
-#include <vclib/bindings/core/meshes.h>
-#include <vclib/bindings/core/space.h>
+#include <vclib/bindings/processing/engine/action_interfaces/image_io_action.h>
 
-#include <vclib/types.h>
-
-#include <pybind11/pybind11.h>
+#include <vclib/processing/engine.h>
 
 namespace vcl::bind {
 
-// creation of a python module
-PYBIND11_MODULE(core, m)
+void initImageIOAction(pybind11::module& m)
 {
-    // import the bindings
-    using namespace vcl::bind;
+    namespace py = pybind11;
 
-    m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
-
-    // initialize the bindings
-    initIO(m);
-
-    initSpace(m);
-
-    initMeshes(m);
-
-    initLoadSave(m);
+    pybind11::class_<vcl::proc::ImageIOAction> c(m, "ImageIOAction");
 }
 
 } // namespace vcl::bind

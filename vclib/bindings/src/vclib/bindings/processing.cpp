@@ -20,6 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/bindings/processing/action_manager.h>
+#include <vclib/bindings/processing/engine.h>
+
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
@@ -30,7 +33,9 @@ PYBIND11_MODULE(processing, m)
     // import the bindings
     using namespace vcl::bind;
 
+    initEngine(m);
 
+    initActionManager(m);
 }
 
 } // namespace vcl::bind

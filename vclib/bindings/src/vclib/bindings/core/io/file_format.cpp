@@ -20,33 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/io.h>
-#include <vclib/bindings/core/load_save.h>
-#include <vclib/bindings/core/meshes.h>
-#include <vclib/bindings/core/space.h>
+#include <vclib/bindings/core/io/file_format.h>
 
-#include <vclib/types.h>
+#include <vclib/io/file_format.h>
 
-#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace vcl::bind {
 
-// creation of a python module
-PYBIND11_MODULE(core, m)
+void initFileFormat(pybind11::module& m)
 {
-    // import the bindings
-    using namespace vcl::bind;
+    namespace py = pybind11;
 
-    m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
+    pybind11::class_<vcl::FileFormat> c(m, "FileFormat");
 
-    // initialize the bindings
-    initIO(m);
+    c.def(
+        py::init<const std::string&, std::string>(),
+        py::arg("extension"),
+        py::arg("description") = "");
+    c.def(
+        py::init<std::vector<std::string>, std::string>(),
+        py::arg("extensions"),
+        py::arg("description") = "");
 
-    initSpace(m);
-
-    initMeshes(m);
-
-    initLoadSave(m);
+    c.def("description", &vcl::FileFormat::description);
+    c.def("extensions", &vcl::FileFormat::extensions);
+    c.def("match_extension", &vcl::FileFormat::matchExtension);
+    c.def("__eq__", &vcl::FileFormat::operator==);
 }
 
 } // namespace vcl::bind
