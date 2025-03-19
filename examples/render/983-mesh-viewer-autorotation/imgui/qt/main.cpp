@@ -39,7 +39,8 @@
 #include "../../benchmark_drawer.h"
 #include "../../time_limited_automation_action.h"
 #include "../../per_frame_rotation_automation_action.h"
-#include "../../automation_action_group.h"
+#include "../../simultaneous_automation_actions.h"
+#include "../../sequential_automation_actions.h"
 #include "../../scale_automation_action.h"
 #include "../../per_frame_scale_automation_action.h"
 #include "../../frame_limited_automation_action.h"
@@ -48,6 +49,7 @@
 #include "../../frame_delay_automation_action.h"
 #include "../../time_benchmark_metric.h"
 #include "../../csv_benchmark_printer.h"
+#include "../../json_benchmark_printer.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
@@ -67,52 +69,32 @@ int main(int argc, char** argv)
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>("bunny.obj");
     vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>();
+
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
     tw.setRepeatTimes(2);
     tw.addAutomation(
         FrameLimitedAutomationAction(
-            AutomationActionGroupBuilder()
-            .addAutomation(
-                RotationAutomationAction(
-                    &tw, 5.f, {0.f,0.f,1.f}
-                )
-            )
-            .addAutomation(
-                ScaleAutomationAction(
-                    &tw, -0.01f
-                )
-            )
-            .finish(),
+            SimultaneousAutomationActions{
+                RotationAutomationAction(&tw, 5.f, {0.f,0.f,1.f}),
+                ScaleAutomationAction(&tw, -0.01f)
+            },
             10000.f
         )
     );
     tw.addAutomation(
-        FrameLimitedAutomationAction(
-            AutomationActionGroupBuilder()
-            .addAutomation(
-                RotationAutomationAction(
-                    &tw, 5.f, {0.f,-1.f,0.f}
-                )
-            )
-            .addAutomation(
-                ScaleAutomationAction(
-                    &tw, -0.01f
-                )
-            )
-            .finish(),
-            10000.f
-        )
+        SequentialAutomationActions{
+            FrameLimitedAutomationAction( RotationAutomationAction(&tw, 5.f, {0.f,-1.f,0.f}), 5000.f),
+            FrameLimitedAutomationAction( ScaleAutomationAction(&tw, 0.02f), 5000.f)
+        }
     );
     tw.addAutomation(
-        MeshChangerAutomationAction(
-            &tw, drawable2 
-        ),
+        MeshChangerAutomationAction(&tw, drawable2),
         false
     );
     tw.setMetric(TimeBenchmarkMetric());
-    tw.setPrinter(CsvBenchmarkPrinter("./testone.csv"));
+    tw.setPrinter(JsonBenchmarkPrinter("./test_out.json"));
     
     tw.fitScene();
 

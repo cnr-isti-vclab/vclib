@@ -7,7 +7,6 @@
 class CsvBenchmarkPrinter : public BenchmarkPrinter
 {
     std::string fileName;
-    std::string toPrint;
     std::ofstream stream;
     bool firstInRow = true;
 
@@ -24,7 +23,6 @@ class CsvBenchmarkPrinter : public BenchmarkPrinter
 
     CsvBenchmarkPrinter(const CsvBenchmarkPrinter &other)
     : fileName{other.fileName},
-    toPrint{other.toPrint},
     firstInRow{other.firstInRow},
     stream()
     {

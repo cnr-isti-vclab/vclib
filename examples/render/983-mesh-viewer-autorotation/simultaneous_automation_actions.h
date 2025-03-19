@@ -1,16 +1,26 @@
-#ifndef AUTOMATION_ACTION_GROUP_H
-#define AUTOMATION_ACTION_GROUP_H
+#ifndef SIMULTANEOUS_AUTOMATION_ACTIONS_H
+#define SIMULTANEOUS_AUTOMATION_ACTIONS_H
 
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 #include "automation_action.h"
 
-class AutomationActionGroup : public AutomationAction
+class SimultaneousAutomationActions : public AutomationAction
 {
     vcl::PolymorphicObjectVector<AutomationAction> automations;
     using Parent = AutomationAction;
 
     public:
+    
+    SimultaneousAutomationActions(std::initializer_list<std::shared_ptr<AutomationAction>> init)
+    {
+        for(auto el = init.begin(); el < init.end(); el++)
+        {
+            automations.pushBack(*el);
+        }
+    };
+
+    SimultaneousAutomationActions() {};
 
     void addAutomation(const AutomationAction &automation)
     {
@@ -47,35 +57,12 @@ class AutomationActionGroup : public AutomationAction
 
     std::shared_ptr<AutomationAction> clone() const & override
     {
-        return std::make_shared<AutomationActionGroup>(*this);
+        return std::make_shared<SimultaneousAutomationActions>(*this);
     }
 
     std::shared_ptr<AutomationAction> clone() && override
     {
-        return std::make_shared<AutomationActionGroup>(std::move(*this));
-    }
-};
-
-class AutomationActionGroupBuilder
-{
-    AutomationActionGroup group;
-
-    public:
-
-    AutomationActionGroupBuilder()
-    {
-        group = AutomationActionGroup();
-    }
-
-    AutomationActionGroupBuilder addAutomation(const AutomationAction &automation)
-    {
-        group.addAutomation(automation);
-        return *this;
-    }
-
-    AutomationActionGroup finish()
-    {
-        return group;
+        return std::make_shared<SimultaneousAutomationActions>(std::move(*this));
     }
 };
 

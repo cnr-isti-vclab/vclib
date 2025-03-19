@@ -39,6 +39,8 @@ class AutomationAction
             return active;
         }
 
+        operator std::shared_ptr<AutomationAction>() { return clone(); }; 
+
         virtual std::shared_ptr<AutomationAction> clone() const& = 0;
         virtual std::shared_ptr<AutomationAction> clone() && = 0;
 };
