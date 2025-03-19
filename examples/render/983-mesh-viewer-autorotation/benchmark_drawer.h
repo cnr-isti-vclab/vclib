@@ -3,6 +3,7 @@
 
 #include "automation_action.h"
 #include "fps_benchmark_metric.h"
+#include "stdout_benchmark_printer.h"
 #include <bgfx/bgfx.h>
 #include <vector>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
@@ -30,7 +31,10 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     uint32_t repeatTimes = 1;
     uint32_t repeatCount = 0;
 
-    FpsBenchmarkMetric metric;
+    uint32_t waitFrames = 1800;
+
+    std::shared_ptr<BenchmarkMetric> metric = FpsBenchmarkMetric().clone();
+    std::shared_ptr<BenchmarkPrinter> printer = StdoutBenchmarkPrinter().clone();
 
     bool toStdOut = true;
     bool firstCall = true;
@@ -49,18 +53,9 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 
     void onAutomationEnd()
     {
-        metric.end();
+        metric->end();
         if(relevancies[currentAutomationIndex]){
-            if(toStdOut){
-                printf("Loop %u, automation %zu : %s fps average\n", repeatCount, currentAutomationIndex, metric.getMeasureString().c_str());
-            }else{
-                outStr += metric.getMeasureString();
-                if(currentAutomationIndex == automations.size()-1){
-                    outStr += "\n";
-                }else{
-                    outStr += ",";
-                }
-            }
+            printer->print(*metric);
         }
         currentAutomationIndex++;
     }
@@ -80,6 +75,10 @@ public:
 
     void onDrawContent(uint viewId) override
     {
+        if(waitFrames>0){
+            waitFrames--;
+            return;
+        }
         if(automations.size() == 0){
             allDone = true;
         }
@@ -88,7 +87,7 @@ public:
         }
         if(firstCall){
             automations[0]->start();
-            metric.start();
+            metric->start();
             firstCall = false;
         }
         if(!automations[currentAutomationIndex]->isActive()){
@@ -99,19 +98,17 @@ public:
                 repeatCount++;
                 if(isLastLoop()){
                     printf("All benchmarks done.\n");
-                    if(!toStdOut){
-                        outStream << outStr;
-                        outStream.close();
-                    }
+                    printer->finish(*metric);
                     return;
                 }
                 benchmarkLoop();
+                printer->onBenchmarkLoop();
             }
-            metric.start();
+            metric->start();
             automations[currentAutomationIndex]->start();
         }
         if(automations[currentAutomationIndex]->isActive()){
-            metric.update();
+            metric->update();
             automations[currentAutomationIndex]->update();
         }
     };
@@ -144,6 +141,26 @@ public:
         }
         toStdOut = false;
     }
+
+    void setMetric(const BenchmarkMetric &bm)
+    {
+        metric = bm.clone();
+    };
+
+    void setPrinter(const BenchmarkPrinter &bp)
+    {
+        printer = bp.clone();
+    };
+
+    void getRepeatCount()
+    {
+        return repeatCount;
+    };
+
+    void getCurrentAutomationIndex()
+    {
+        return currentAutomationIndex;
+    };
 };
 
 #endif

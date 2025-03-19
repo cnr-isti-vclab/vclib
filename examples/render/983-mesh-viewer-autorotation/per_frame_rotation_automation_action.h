@@ -57,6 +57,7 @@ class PerFrameRotationAutomationAction : public AutomationAction
 
     void update() override
     {
+        Parent::update();
         auto rotation = vcl::Quaternion<float>(radiansPerFrame, around);
 
         trackball->rotate(rotation);

@@ -62,6 +62,7 @@ class RotationAutomationAction: public AutomationAction
 
     void update() override
     {
+        Parent::update();
         auto rotation = vcl::Quaternion<float>(radiansPerSecond * timer.delay(), around);
 
         trackball->rotate(rotation);

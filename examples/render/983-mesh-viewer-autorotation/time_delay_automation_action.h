@@ -26,6 +26,7 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
 
     void update() override
     {
+        AutomationAction::update();
         if(timer.delay() < delaySeconds){
             return;
         }

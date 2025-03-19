@@ -24,6 +24,7 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
 
     void update() override
     {
+        AutomationAction::update();
         if(currentFrames < delayFrames){
             currentFrames++;
             return;

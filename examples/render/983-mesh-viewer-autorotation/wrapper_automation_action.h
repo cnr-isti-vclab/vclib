@@ -23,6 +23,7 @@ class WrapperAutomationAction : public AutomationAction
 
     void update() override
     {
+        Parent::update();
         if(!innerAction->isActive()){
             return;
         }

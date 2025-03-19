@@ -4,4 +4,9 @@
 - put "m" before member variables in classes
 - Create some "Metric" classes that measure what is needed when executing actions for the BenchmarkDrawer.
 - Create some "Printer" classes that write the measured benchmarks wherever
+- Automation that changes Metric or Printer (But mostly metric, changing printer seems a lot less useful)
 - BUG: first automation is always worse than all the others (BenchmarkDrawer)
+    SOLUTION: wait a few frames before starting (TEST ON VARIOUS DEVICES WHETHER THE AMOUNT YOU PUT IS GOOD ENOUGH).
+- FileBenchmarkPrinter subclass of BenchmarkPrinter that has fileName, toPrint and stream and implements everything except
+    for onBenchmarkLoop and print which remain pure virtual
+- AutomationActionGroup initializer list

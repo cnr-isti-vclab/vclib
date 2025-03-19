@@ -46,6 +46,7 @@ class PerFrameScaleAutomationAction : public AutomationAction
 
     void update() override
     {
+        Parent::update();
         totalPixelDelta += pixelDeltaPerFrame;
 
         trackball->performScale(totalPixelDelta);

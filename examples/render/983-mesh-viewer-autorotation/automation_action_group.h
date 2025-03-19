@@ -27,6 +27,7 @@ class AutomationActionGroup : public AutomationAction
 
     void update() override
     {
+        Parent::update();
         for (const auto aut : automations){
             if(aut->isActive()){
                 aut->update();

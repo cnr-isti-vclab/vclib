@@ -27,6 +27,7 @@ class TimeLimitedAutomationAction : public WrapperAutomationAction
 
     void update() override
     {   
+        AutomationAction::update();
         if(timer.delay() >= durationSeconds){
             end();
             return;

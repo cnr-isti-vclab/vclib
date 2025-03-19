@@ -46,6 +46,8 @@
 #include "../../mesh_changer_automation_action.h"
 #include "../../time_delay_automation_action.h"
 #include "../../frame_delay_automation_action.h"
+#include "../../time_benchmark_metric.h"
+#include "../../csv_benchmark_printer.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
@@ -70,7 +72,7 @@ int main(int argc, char** argv)
     tw.pushDrawableObject(drawable);
     tw.setRepeatTimes(2);
     tw.addAutomation(
-        TimeLimitedAutomationAction(
+        FrameLimitedAutomationAction(
             AutomationActionGroupBuilder()
             .addAutomation(
                 RotationAutomationAction(
@@ -83,11 +85,11 @@ int main(int argc, char** argv)
                 )
             )
             .finish(),
-            1.f
+            10000.f
         )
     );
     tw.addAutomation(
-        TimeLimitedAutomationAction(
+        FrameLimitedAutomationAction(
             AutomationActionGroupBuilder()
             .addAutomation(
                 RotationAutomationAction(
@@ -100,7 +102,7 @@ int main(int argc, char** argv)
                 )
             )
             .finish(),
-            1.f
+            10000.f
         )
     );
     tw.addAutomation(
@@ -109,6 +111,8 @@ int main(int argc, char** argv)
         ),
         false
     );
+    tw.setMetric(TimeBenchmarkMetric());
+    tw.setPrinter(CsvBenchmarkPrinter("./testone.csv"));
     
     tw.fitScene();
 

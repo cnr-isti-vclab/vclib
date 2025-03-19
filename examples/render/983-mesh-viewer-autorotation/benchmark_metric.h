@@ -1,15 +1,20 @@
 #ifndef BENCHMARK_METRIC_H
 #define BENCHMARK_METRIC_H
 
-template<typename MeasureType>
+#include <string>
+
 class BenchmarkMetric
 {
     public:
     
     virtual void start() = 0;
     virtual void update() = 0;
-    virtual MeasureType getMeasure() = 0;
+    virtual std::string getMeasureString() = 0;
+    virtual std::string getUnitOfMeasure() = 0;
     virtual void end() = 0;
+
+    virtual std::shared_ptr<BenchmarkMetric> clone() const & = 0;
+    virtual std::shared_ptr<BenchmarkMetric> clone()  && = 0;
 };
 
 #endif

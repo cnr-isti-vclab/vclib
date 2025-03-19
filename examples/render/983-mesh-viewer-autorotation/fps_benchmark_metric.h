@@ -6,10 +6,11 @@
 #include <format>
 #include "benchmark_metric.h"
 
-class FpsBenchmarkMetric : public BenchmarkMetric<double>
+class FpsBenchmarkMetric : public BenchmarkMetric
 {
     vcl::Timer timer;
     double frames = 0;
+
     public:
 
     void start() override
@@ -23,21 +24,28 @@ class FpsBenchmarkMetric : public BenchmarkMetric<double>
         frames++;
     };
 
-    double getMeasure() override
-    {
-        return frames / timer.delay();
-    };
-
     std::string getMeasureString()
     {
-        double measure = getMeasure();
-        std::string ret = std::format("{:.3f}", measure);
-        return ret;
+        return std::format("{:.3f}", frames / timer.delay());
     };
+
+    std::string getUnitOfMeasure()
+    {
+        return "fps";
+    }
 
     void end() override
     {
         timer.stop();
+    };
+
+    std::shared_ptr<BenchmarkMetric> clone() const &
+    {
+        return std::make_shared<FpsBenchmarkMetric>(*this);
+    };
+    std::shared_ptr<BenchmarkMetric> clone()  &&
+    {
+        return std::make_shared<FpsBenchmarkMetric>(std::move(*this));
     };
 };
 
