@@ -20,36 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_BINDINGS_CORE_MESH_COMPONENTS_BIT_FLAGS_H
+#define VCL_BINDINGS_CORE_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/concepts/mesh.h>
 
-#include <QApplication>
+#include <pybind11/pybind11.h>
 
-int main(int argc, char** argv)
+namespace vcl::bind {
+
+namespace detail {
+
+template<ElementConcept ElementType>
+void initCommonFlags(pybind11::class_<ElementType>& c)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    c.def("deleted", &ElementType::deleted);
+    c.def("selected", py::overload_cast<>(&ElementType::selected, py::const_));
+    c.def("set_selected", [](ElementType& e, bool s) {
+        e.selected() = s;
+    });
+    c.def("on_border", py::overload_cast<>(&ElementType::onBorder, py::const_));
+    c.def("visited", py::overload_cast<>(&ElementType::visited, py::const_));
+    c.def("set_visited", [](ElementType& e, bool v) {
+        e.visited() = v;
+    });
+    c.def("user_bit", [](ElementType& e, uint i) {
+        return e.userBit(i);
+    });
+    c.def("set_user_bit", [](ElementType& e, uint i, bool b) {
+        e.userBit(i) = b;
+    });
+    c.def("reset_bit_flags", &ElementType::resetBitFlags);
 }
+
+} // namespace detail
+
+template<ElementConcept ElementType>
+void initBitFlags(pybind11::class_<ElementType>& c)
+{
+    namespace py = pybind11;
+
+    c.def("set_on_border", [](ElementType& e, bool b) {
+        e.onBorder() = b;
+    });
+}
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_MESH_COMPONENTS_BIT_FLAGS_H

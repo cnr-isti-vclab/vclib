@@ -20,36 +20,42 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#include <vclib/bindings/core/space/core/principal_curvature.h>
 
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/bindings/utils.h>
+#include <vclib/space/core.h>
 
-#include <QApplication>
+namespace vcl::bind {
 
-int main(int argc, char** argv)
+void initPrincipalCurvature(pybind11::module& m)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
+    using enum py::return_value_policy;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    using Scalar = double;
+    using P      = PrincipalCurvature<Scalar>;
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    py::class_<P> c(m, "PrincipalCurvature");
+    c.def(py::init<>());
 
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
+    defCopy(c);
 
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    c.def("max_dir", py::overload_cast<>(&P::maxDir), reference);
+    c.def("set_max_dir", [](P& p, const Point3<Scalar>& d) {
+        p.maxDir() = d;
+    });
+    c.def("min_dir", py::overload_cast<>(&P::minDir), reference);
+    c.def("set_min_dir", [](P& p, const Point3<Scalar>& d) {
+        p.minDir() = d;
+    });
+    c.def("max_value", py::overload_cast<>(&P::maxValue, py::const_));
+    c.def("set_max_value", [](P& p, Scalar v) {
+        p.maxValue() = v;
+    });
+    c.def("min_value", py::overload_cast<>(&P::minValue, py::const_));
+    c.def("set_min_value", [](P& p, Scalar v) {
+        p.minValue() = v;
+    });
 }
+
+} // namespace vcl::bind

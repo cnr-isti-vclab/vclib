@@ -20,36 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_BINDINGS_CORE_MESH_ELEMENTS_H
+#define VCL_BINDINGS_CORE_MESH_ELEMENTS_H
 
-#include <vclib/qt/viewer_widget.h>
+#include "elements/edge.h"
+#include "elements/face.h"
+#include "elements/vertex.h"
 
-#include <QApplication>
-
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
-
-    vcl::qt::ViewerWidget tw("Viewer Qt");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
-}
+#endif // VCL_BINDINGS_CORE_MESH_ELEMENTS_H

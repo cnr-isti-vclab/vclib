@@ -20,36 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#include <vclib/bindings/core/io/file_format.h>
 
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/io/file_format.h>
 
-#include <QApplication>
+#include <pybind11/stl.h>
 
-int main(int argc, char** argv)
+namespace vcl::bind {
+
+void initFileFormat(pybind11::module& m)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    pybind11::class_<vcl::FileFormat> c(m, "FileFormat");
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    c.def(
+        py::init<const std::string&, std::string>(),
+        py::arg("extension"),
+        py::arg("description") = "");
+    c.def(
+        py::init<std::vector<std::string>, std::string>(),
+        py::arg("extensions"),
+        py::arg("description") = "");
 
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    c.def("description", &vcl::FileFormat::description);
+    c.def("extensions", &vcl::FileFormat::extensions);
+    c.def("match_extension", &vcl::FileFormat::matchExtension);
+    c.def("__eq__", &vcl::FileFormat::operator==);
 }
+
+} // namespace vcl::bind

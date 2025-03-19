@@ -20,36 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_BINDINGS_CORE_MESH_MESH_H
+#define VCL_BINDINGS_CORE_MESH_MESH_H
 
-#include <vclib/qt/viewer_widget.h>
+#include "containers.h"
+#include "elements.h"
 
-#include <QApplication>
+#include <vclib/bindings/utils.h>
 
-int main(int argc, char** argv)
+#include <vclib/concepts/mesh.h>
+
+#include <pybind11/pybind11.h>
+
+namespace vcl::bind {
+
+template<MeshConcept MeshType>
+void initMesh(pybind11::module& m, const std::string& name)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    // Create the class
+    pybind11::class_<MeshType> c(m, name.c_str());
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    c.def(py::init<>());
 
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
+    defCopy(c);
 
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
+    initVertex(c);
+    initVertexContainer(c);
 
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+    if constexpr (HasFaces<MeshType>) {
+        initFace(c);
+        initFaceContainer(c);
+    }
+    if constexpr (HasEdges<MeshType>) {
+        initEdge(c);
+        initEdgeContainer(c);
+    }
 
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    initComponents(c);
 }
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_MESH_MESH_H

@@ -20,36 +20,62 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#include <vclib/bindings/core/space/core/matrix.h>
 
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/bindings/utils.h>
+#include <vclib/space/core.h>
 
-#include <QApplication>
+#include <pybind11/operators.h>
 
-int main(int argc, char** argv)
+namespace vcl::bind {
+
+template<uint R, uint C>
+void populteMatrix(pybind11::module& m)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    using Scalar = double;
+    using M      = Matrix<Scalar, R, C>;
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    std::string   cName = "Matrix" + std::to_string(R) + std::to_string(C);
+    py::class_<M> c(m, cName.c_str(), py::buffer_protocol());
+    c.def(py::init<>());
 
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
+    defCopy(c);
 
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
+    c.def_buffer([](M& p) -> py::buffer_info {
+        return py::buffer_info(
+            p.data(),                                /* Pointer to buffer */
+            sizeof(Scalar),                          /* Size of one scalar */
+            py::format_descriptor<Scalar>::format(), /* Python struct-style
+               format descriptor */
+            2,                                       /* Number of dimensions */
+            {R, C},                                  /* Buffer dimensions */
+            {sizeof(Scalar), sizeof(Scalar) * R}
+            /* Strides (in bytes) for each index */
+        );
+    });
 
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+    c.def("__call__", [](M& p, uint i, uint j) { // operator()
+        return p(i, j);
+    });
 
-    tw.fitScene();
+    c.def("__getitem__", [](M& p, std::pair<uint, uint> i) { // operator[]
+        return p(i.first, i.second);
+    });
 
-    tw.show();
-
-    return app.exec();
+    c.def(
+        "__setitem__",
+        [](M& p, std::pair<uint, uint> i, Scalar v) { // operator[]
+            p(i.first, i.second) = v;
+        });
 }
+
+void initMatrix(pybind11::module& m)
+{
+    populteMatrix<2, 2>(m);
+    populteMatrix<3, 3>(m);
+    populteMatrix<4, 4>(m);
+}
+
+} // namespace vcl::bind

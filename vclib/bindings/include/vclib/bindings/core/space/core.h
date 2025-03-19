@@ -20,36 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_BINDINGS_CORE_SPACE_CORE_H
+#define VCL_BINDINGS_CORE_SPACE_CORE_H
 
-#include <vclib/qt/viewer_widget.h>
+#include "core/box.h"
+#include "core/color.h"
+#include "core/image.h"
+#include "core/matrix.h"
+#include "core/point.h"
+#include "core/principal_curvature.h"
+#include "core/tex_coord.h"
+#include "core/tex_coord_indexed.h"
+#include "core/texture.h"
 
-#include <QApplication>
+#include <pybind11/pybind11.h>
 
-int main(int argc, char** argv)
+namespace vcl::bind {
+
+inline void initCore(pybind11::module& m)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    // py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
+    initPoint(m);
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    initBox(m);
+    initColor(m);
+    initImage(m);
+    initMatrix(m);
+    initPrincipalCurvature(m);
+    initTexCoord(m);
+    initTexCoordIndexed(m);
+    initTexture(m);
 }
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_SPACE_CORE_H

@@ -20,36 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#include <vclib/bindings/core/space/core/texture.h>
 
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/space/core.h>
 
-#include <QApplication>
+#include <pybind11/stl.h>
 
-int main(int argc, char** argv)
+namespace vcl::bind {
+
+void initTexture(pybind11::module& m)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    py::class_<Texture> c(m, "Texture");
+    c.def(py::init<>());
+    c.def(py::init<std::string>());
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    c.def("path", py::overload_cast<>(&Texture::path, py::const_));
+    c.def("set_path", [](Texture& t, const std::string& p) {
+        t.path() = p;
+    });
+    c.def("image", py::overload_cast<>(&Texture::image, py::const_));
+    c.def("set_image", [](Texture& t, const Image& i) {
+        t.image() = i;
+    });
 }
+
+} // namespace vcl::bind

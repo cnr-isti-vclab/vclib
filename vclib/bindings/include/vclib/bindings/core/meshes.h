@@ -20,36 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_BINDINGS_CORE_MESHES_H
+#define VCL_BINDINGS_CORE_MESHES_H
 
-#include <vclib/qt/viewer_widget.h>
+#include "meshes/edge_mesh.h"
+#include "meshes/point_cloud.h"
+#include "meshes/poly_edge_mesh.h"
+#include "meshes/poly_mesh.h"
+#include "meshes/tri_edge_mesh.h"
+#include "meshes/tri_mesh.h"
 
-#include <QApplication>
+#include <pybind11/pybind11.h>
 
-int main(int argc, char** argv)
+namespace vcl::bind {
+
+inline void initMeshes(pybind11::module& m)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    // py::module_ sm = m.def_submodule("meshes", "Meshes");
+    initEdgeMesh(m);
+    initPointCloud(m);
+    initPolyMesh(m);
+    initPolyEdgeMesh(m);
+    initTriMesh(m);
+    initTriEdgeMesh(m);
 }
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_MESHES_H

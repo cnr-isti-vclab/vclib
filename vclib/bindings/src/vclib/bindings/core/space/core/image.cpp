@@ -20,36 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#include <vclib/bindings/core/space/core/image.h>
 
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/space/core.h>
 
-#include <QApplication>
+namespace vcl::bind {
 
-int main(int argc, char** argv)
+void initImage(pybind11::module& m)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    py::class_<Image> c(m, "Image" /*, py::buffer_protocol()*/);
+    c.def(py::init<>());
+    c.def(py::init<std::string>());
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    c.def("is_null", &Image::isNull);
+    c.def("height", &Image::height);
+    c.def("width", &Image::width);
+    c.def("size_in_bytes", &Image::sizeInBytes);
+    c.def("pixel", &Image::pixel);
+    c.def("load", &Image::load);
+    c.def("save", &Image::save);
+    c.def("mirror", &Image::mirror);
 }
+
+} // namespace vcl::bind

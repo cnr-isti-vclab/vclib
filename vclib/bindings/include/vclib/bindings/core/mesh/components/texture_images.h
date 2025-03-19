@@ -20,36 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_BINDINGS_CORE_MESH_COMPONENTS_TEXTURE_IMAGES_H
+#define VCL_BINDINGS_CORE_MESH_COMPONENTS_TEXTURE_IMAGES_H
 
-#include <vclib/qt/viewer_widget.h>
+#include "texture_paths.h"
 
-#include <QApplication>
+#include <vclib/space/core/texture.h>
 
-int main(int argc, char** argv)
+namespace vcl::bind {
+
+template<MeshConcept MeshType>
+void initTextureImages(pybind11::class_<MeshType>& c)
 {
-    QApplication app(argc, argv);
+    namespace py = pybind11;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    initTexturePaths(c);
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    c.def("texture", py::overload_cast<uint>(&MeshType::texture));
+    c.def("set_texture", [](MeshType& t, uint i, const Texture& tex) {
+        t.texture(i) = tex;
+    });
+    c.def("clear_textures", &MeshType::clearTextures);
+    c.def("push_texture", &MeshType::pushTexture);
 
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_UNIFORMS});
+    using TextureView = decltype(MeshType().textures());
 
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
+    if (!registeredTypes.contains(typeid(TextureView))) {
+        // inner class that allows to iterate over textures
+        pybind11::class_<TextureView> v(c, "_TextureRange");
+        v.def(
+            "__iter__",
+            [](TextureView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(TextureView));
+    }
 
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
+    c.def("textures", py::overload_cast<>(&MeshType::textures));
 }
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_MESH_COMPONENTS_TEXTURE_IMAGES_H
