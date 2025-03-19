@@ -20,6 +20,10 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
     using Parent = vcl::PlainDrawer<DerivedDrawer>;
 
+    bool beforeStartWaitTimerStarted = false;
+    vcl::Timer beforeStartWaitTimer;
+    double beforeStartWaitSeconds = 0.5f;
+
     vcl::PolymorphicObjectVector<AutomationAction> automations;
     std::vector<bool> relevancies;
 
@@ -30,8 +34,6 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 
     uint32_t repeatTimes = 1;
     uint32_t repeatCount = 0;
-
-    uint32_t waitFrames = 1800;
 
     std::shared_ptr<BenchmarkMetric> metric = FpsBenchmarkMetric().clone();
     std::shared_ptr<BenchmarkPrinter> printer = StdoutBenchmarkPrinter().clone();
@@ -75,8 +77,13 @@ public:
 
     void onDrawContent(uint viewId) override
     {
-        if(waitFrames>0){
-            waitFrames--;
+        if(!beforeStartWaitTimerStarted)
+        {
+            beforeStartWaitTimer.start();
+            beforeStartWaitTimerStarted = true;
+        }
+        if(beforeStartWaitTimer.delay() < beforeStartWaitSeconds)
+        {
             return;
         }
         if(automations.size() == 0){
