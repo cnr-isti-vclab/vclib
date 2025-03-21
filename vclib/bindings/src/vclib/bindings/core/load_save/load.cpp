@@ -33,7 +33,8 @@ void initLoad(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    auto fLoad = []<typename MeshType>(pybind11::module& m) {
+    auto fLoad = []<MeshConcept MeshType>(
+                     pybind11::module& m, MeshType = MeshType()) {
         m.def(
             "load",
             [](MeshType& m, const std::string& filename) {
@@ -45,15 +46,15 @@ void initLoad(pybind11::module& m)
 
     defForAllMeshTypes(m, fLoad);
 
-    auto fNameLoad = []<typename MeshType>(pybind11::module& m) {
+    auto fNameLoad = []<MeshConcept MeshType>(
+                         pybind11::module& m, MeshType = MeshType()) {
         std::string name =
             "load_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
-            [](MeshType& m, const std::string& filename) {
-                vcl::load(m, filename);
+            [](const std::string& filename) {
+                return vcl::load<MeshType>(filename);
             },
-            py::arg("m"),
             py::arg("filename"));
     };
 

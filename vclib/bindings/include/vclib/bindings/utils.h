@@ -76,14 +76,60 @@ void defComparisonOperators(pybind11::class_<Class>& c)
     c.def(py::self >= py::self);
 }
 
+/**
+ * @brief calls a function for all mesh types, if the function is callable for
+ * the specific mesh type.
+ *
+ * The function should be defined in the following way:
+ *
+ * @code{.cpp}
+ * pybind11::module m;
+ *
+ * auto fun = []<MeshConcept MeshType>(
+ *                pybind11::module& m, MeshType = MeshType()) {
+ *
+ *      // add the function that uses MeshType to the module
+ * };
+ *
+ * defForAllMeshTypes(m, fun);
+ * @endcode
+ *
+ * The second MeshType argument is there to allow the compiler to deduce the
+ * type of the mesh. It must not be used in the lambda body.
+ * You can decide for which type of mesh the function should be defined by
+ * using the MeshConcept concepts (e.g. if you want to define the function for
+ * all mesh types that are FaceMeshConcept, you can use FaceMeshConcept as
+ * template argument).
+ *
+ * @note If the function is defined in a different way, the compiler won't
+ * give any error. The function will just not be defined for the specific mesh
+ * type.
+ *
+ * @param pymod
+ * @param function
+ */
 void defForAllMeshTypes(auto& pymod, auto&& function)
 {
-    function.template operator()<vcl::PointCloud>(pymod);
-    function.template operator()<vcl::EdgeMesh>(pymod);
-    function.template operator()<vcl::PolyMesh>(pymod);
-    function.template operator()<vcl::PolyEdgeMesh>(pymod);
-    function.template operator()<vcl::TriMesh>(pymod);
-    function.template operator()<vcl::TriEdgeMesh>(pymod);
+    using FType = decltype(function);
+
+    if constexpr (std::invocable<FType, pybind11::module&, vcl::PointCloud>) {
+        function.template operator()<vcl::PointCloud>(pymod);
+    }
+    if constexpr (std::invocable<FType, pybind11::module&, vcl::EdgeMesh>) {
+        function.template operator()<vcl::EdgeMesh>(pymod);
+    }
+    if constexpr (std::invocable<FType, pybind11::module&, vcl::PolyMesh>) {
+        function.template operator()<vcl::PolyMesh>(pymod);
+    }
+    if constexpr (std::invocable<FType, pybind11::module&, vcl::PolyEdgeMesh>) {
+        function.template operator()<vcl::PolyEdgeMesh>(pymod);
+    }
+    if constexpr (std::invocable<FType, pybind11::module&, vcl::TriMesh>) {
+        function.template operator()<vcl::TriMesh>(pymod);
+    }
+    if constexpr (std::invocable<FType, pybind11::module&, vcl::TriEdgeMesh>) {
+        function.template operator()<vcl::TriEdgeMesh>(pymod);
+    }
 }
 
 } // namespace vcl::bind

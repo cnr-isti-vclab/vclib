@@ -30,7 +30,8 @@ namespace vcl::bind {
 
 void initSave(pybind11::module& m)
 {
-    auto f = []<MeshConcept MeshType>(pybind11::module& m) {
+    auto f = []<MeshConcept MeshType>(
+                 pybind11::module& m, MeshType = MeshType()) {
         namespace py = pybind11;
 
         m.def(
