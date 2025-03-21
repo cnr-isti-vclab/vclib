@@ -20,72 +20,70 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_surface.h>
+#include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_points_id.h>
 
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.glsl.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/fs_points_id.sc.glsl.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/vs_points_id.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.essl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.essl.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/fs_points_id.sc.essl.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/vs_points_id.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.spv.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.spv.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/fs_points_id.sc.spv.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/vs_points_id.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.dx11.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/fs_points_id.sc.dx11.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/vs_points_id.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-// #include <shaders/drawable/drawable_mesh/surface/fs_surface_id.sc.mtl.bin.h>
-// #include <shaders/drawable/drawable_mesh/surface/vs_surface_id.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.mtl.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/fs_points_id.sc.mtl.bin.h>
+#include <shaders/drawable/drawable_mesh/points_id/vs_points_id.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_MESH_SURFACE>::
+    VertFragProgram::DRAWABLE_MESH_POINTS_ID>::
     vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_surface_essl, sizeof(vs_surface_essl)};
+        return {type, vs_points_id_essl, sizeof(vs_points_id_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_surface_glsl, sizeof(vs_surface_glsl)};
+        return {type, vs_points_id_glsl, sizeof(vs_points_id_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, vs_surface_spv, sizeof(vs_surface_spv)};
+        return {type, vs_points_id_spv, sizeof(vs_points_id_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, vs_surface_dx11, sizeof(vs_surface_dx11)};
+        return {type, vs_points_id_dx11, sizeof(vs_points_id_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, vs_surface_mtl, sizeof(vs_surface_mtl)};
+        return {type, vs_points_id_mtl, sizeof(vs_points_id_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_MESH_SURFACE>::
+    VertFragProgram::DRAWABLE_MESH_POINTS_ID>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_surface_essl, sizeof(fs_surface_essl)};
+        return {type, fs_points_id_essl, sizeof(fs_points_id_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_surface_glsl, sizeof(fs_surface_glsl)};
+        return {type, fs_points_id_glsl, sizeof(fs_points_id_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_surface_spv, sizeof(fs_surface_spv)};
+        return {type, fs_points_id_spv, sizeof(fs_points_id_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_surface_dx11, sizeof(fs_surface_dx11)};
+        return {type, fs_points_id_dx11, sizeof(fs_points_id_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_surface_mtl, sizeof(fs_surface_mtl)};
+        return {type, fs_points_id_mtl, sizeof(fs_points_id_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }

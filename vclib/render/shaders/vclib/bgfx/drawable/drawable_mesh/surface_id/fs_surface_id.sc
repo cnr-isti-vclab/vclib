@@ -20,37 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#include <vclib/bgfx/shaders_common.sh>
 
-namespace vcl {
+uniform vec4 u_meshId;
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_TRACKBALL,
+void main()
+{
+    /***** render ID to color ******/
+    vec4 color = uintABGRToVec4Color(floatBitsToUint(156234.5618f));
 
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
-
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
-
-    COUNT
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+    gl_FragColor = color;
+}
