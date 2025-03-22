@@ -30,18 +30,18 @@ namespace vcl::bind {
 
 void initSave(pybind11::module& m)
 {
-    auto f = []<MeshConcept MeshType>(
-                 pybind11::module& m, MeshType = MeshType()) {
-        namespace py = pybind11;
+    auto f =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            namespace py = pybind11;
 
-        m.def(
-            "save",
-            [](const MeshType& m, const std::string& filename) {
-                vcl::save(m, filename);
-            },
-            py::arg("m"),
-            py::arg("filename"));
-    };
+            m.def(
+                "save",
+                [](const MeshType& m, const std::string& filename) {
+                    vcl::save(m, filename);
+                },
+                py::arg("m"),
+                py::arg("filename"));
+        };
 
     defForAllMeshTypes(m, f);
 }
