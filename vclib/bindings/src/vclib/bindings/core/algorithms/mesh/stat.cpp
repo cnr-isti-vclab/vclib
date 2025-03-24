@@ -51,6 +51,14 @@ void initStatAlgorithms(pybind11::module& m)
             m.def("covariance_matrix_of_point_cloud", [](const MeshType& m) {
                 return vcl::covarianceMatrixOfPointCloud(m);
             });
+
+            m.def("vertex_quality_min_max", [](const MeshType& m) {
+                return vcl::vertexQualityMinMax(m);
+            });
+
+            m.def("vertex_quality_average", [](const MeshType& m) {
+                return vcl::vertexQualityAverage(m);
+            });
         };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -90,6 +98,14 @@ void initStatAlgorithms(pybind11::module& m)
             py::arg("angle_rad_neg"),
             py::arg("angle_rad_pos"),
             py::arg("also_border_edges") = false);
+
+        m.def("face_quality_min_max", [](const MeshType& m) {
+            return vcl::faceQualityMinMax(m);
+        });
+
+        m.def("face_quality_average", [](const MeshType& m) {
+            return vcl::faceQualityAverage(m);
+        });
     };
 
     defForAllMeshTypes(m, fFaceMeshes);

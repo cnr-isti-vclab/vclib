@@ -205,26 +205,25 @@ auto covarianceMatrixOfMesh(const MeshType& m)
 template<MeshConcept MeshType, typename ScalarType>
 std::vector<ScalarType> vertexRadiusFromWeights(
     const MeshType&                m,
-    const std::vector<ScalarType>& weights,
+    Range auto&&                   weights,
     double                         diskRadius,
     double                         radiusVariance,
     bool                           invert = false)
 {
     using VertexType = MeshType::VertexType;
 
-    std::vector<ScalarType> radius(m.vertexContainerSize());
-    auto minmax = std::minmax_element(weights.begin(), weights.end());
+    assert(std::ranges::size(weights) == m.vertexNumber());
 
-    float minRad   = diskRadius;
-    float maxRad   = diskRadius * radiusVariance;
-    float deltaQ   = *minmax.second - *minmax.first;
-    float deltaRad = maxRad - minRad;
-    for (const VertexType& v : m.vertices()) {
-        ScalarType w = weights[m.index(v)];
+    std::vector<ScalarType> radius(m.vertexContainerSize());
+    const auto [min, max] = std::ranges::minmax_element(weights);
+
+    double minRad   = diskRadius;
+    double maxRad   = diskRadius * radiusVariance;
+    double deltaQ   = max - min;
+    double deltaRad = maxRad - minRad;
+    for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
         radius[m.index(v)] =
-            minRad +
-            deltaRad *
-                ((invert ? *minmax.second - w : w - *minmax.first) / deltaQ);
+            minRad + deltaRad * ((invert ? max - w : w - min) / deltaQ);
     }
 
     return radius;

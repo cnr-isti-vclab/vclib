@@ -40,7 +40,7 @@ namespace vcl {
  * @return The barycenter of the input mesh.
  */
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
+auto barycenter(const MeshType& m) -> MeshType::VertexType::CoordType
 {
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;
@@ -52,6 +52,41 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
     }
 
     return bar / m.vertexNumber();
+}
+
+/**
+ * @brief Returns the barycenter of the mesh weighted on the given range.
+ *
+ * The output barycenter is computed as a weighted average of the vertices of
+ * the mesh, using the values in the input range as weights.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *
+ * @param[in] m: input mesh on which compute the barycenter.
+ * @param[in] weights: range of weights to use for the weighted average.
+ * @return The barycenter weighted on the input range.
+ */
+template<MeshConcept MeshType>
+auto weightedBarycenter(
+    const MeshType& m, Range auto&& weights) -> MeshType::VertexType::CoordType
+{
+    using VertexType  = MeshType::VertexType;
+    using CoordType   = VertexType::CoordType;
+    using RType       = std::ranges::range_value_t<decltype(weights)>;
+
+    assert(std::ranges::size(weights) == m.vertexNumber());
+
+    CoordType   bar;
+    RType weightedSum = 0;
+
+    for(const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
+        bar += v.coord() * w;
+        weightedSum += w;
+    }
+
+    return bar / weightedSum;
 }
 
 /**
@@ -70,24 +105,12 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
  * @return The barycenter weighted on the per vertex quality.
  */
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType qualityWeightedBarycenter(
-    const MeshType& m)
+auto qualityWeightedBarycenter(
+    const MeshType& m) -> MeshType::VertexType::CoordType
 {
     requirePerVertexQuality(m);
 
-    using VertexType  = MeshType::VertexType;
-    using CoordType   = VertexType::CoordType;
-    using QualityType = VertexType::QualityType;
-
-    CoordType   bar;
-    QualityType weightedSum = 0;
-
-    for (const VertexType& v : m.vertices()) {
-        bar += v.coord() * v.quality();
-        weightedSum += v.quality();
-    }
-
-    return bar / weightedSum;
+    return weightedBarycenter(m, m.vertices() | views::quality);
 }
 
 /**
@@ -106,7 +129,7 @@ typename MeshType::VertexType::CoordType qualityWeightedBarycenter(
  * @return
  */
 template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
+auto shellBarycenter(const MeshType& m) -> MeshType::VertexType::CoordType
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
