@@ -1,7 +1,9 @@
 #ifndef FRAME_DELAY_AUTOMATION_ACTION_H
 #define FRAME_DELAY_AUTOMATION_ACTION_H
 
-#include "wrapper_automation_action.h"
+#include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
+
+namespace vcl{
 
 class FrameDelayAutomationAction : public WrapperAutomationAction
 {
@@ -12,19 +14,19 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
 
     public:
 
-    FrameDelayAutomationAction(const AutomationAction &action, uint32_t delayFrames)
+    FrameDelayAutomationAction(const AbstractAutomationAction &action, uint32_t delayFrames)
     : Parent(action),
     delayFrames{delayFrames}
     {};
 
     void start() override
     {
-        AutomationAction::start();
+        AbstractAutomationAction::start();
     }
 
     void doAction() override
     {
-        AutomationAction::doAction();
+        AbstractAutomationAction::doAction();
         if(currentFrames < delayFrames){
             currentFrames++;
             return;
@@ -47,15 +49,17 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
         innerStarted = false;
     }
 
-    std::shared_ptr<AutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const & override
     {
         return std::make_shared<FrameDelayAutomationAction>(*this);
     }
 
-    std::shared_ptr<AutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction> clone() && override
     {
         return std::make_shared<FrameDelayAutomationAction>(std::move(*this));
     }
 };
+
+}
 
 #endif

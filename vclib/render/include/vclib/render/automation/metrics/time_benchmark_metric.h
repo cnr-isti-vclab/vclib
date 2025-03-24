@@ -1,13 +1,15 @@
 #ifndef TIME_BENCHMARK_METRIC_H
 #define TIME_BENCHMARK_METRIC_H
 
-#include "benchmark_metric.h"
+#include <vclib/render/automation/metrics/benchmark_metric.h>
 #include <format>
 #include <vclib/misc/timer.h>
 
+namespace vcl{
+
 class TimeBenchmarkMetric : public BenchmarkMetric
 {
-    vcl::Timer timer;
+    Timer timer;
 
     public:
 
@@ -42,5 +44,7 @@ class TimeBenchmarkMetric : public BenchmarkMetric
         return std::make_shared<TimeBenchmarkMetric>(std::move(*this));
     };
 };
+
+}
 
 #endif

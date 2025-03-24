@@ -4,11 +4,13 @@
 #include <vclib/misc/timer.h>
 #include <string>
 #include <format>
-#include "benchmark_metric.h"
+#include <vclib/render/automation/metrics/benchmark_metric.h>
+
+namespace vcl{
 
 class FpsBenchmarkMetric : public BenchmarkMetric
 {
-    vcl::Timer timer;
+    Timer timer;
     double frames = 0;
 
     public:
@@ -49,5 +51,6 @@ class FpsBenchmarkMetric : public BenchmarkMetric
     };
 };
 
+}
 
 #endif

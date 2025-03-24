@@ -1,13 +1,15 @@
 #ifndef METRIC_CHANGER_AUTOMATION_ACTION_H
 #define METRIC_CHANGER_AUTOMATION_ACTION_H
 
-#include "automation_action.h"
-#include "benchmark_metric.h"
+#include <vclib/render/automation/actions/abstract_automation_action.h>
+#include <vclib/render/automation/metrics/benchmark_metric.h>
+
+namespace vcl{
 
 template<typename DerivedDrawer>
-class MetricChangerAutomationAction : public AutomationAction
+class MetricChangerAutomationAction : public AbstractAutomationAction
 {
-    using Parent = AutomationAction;
+    using Parent = AbstractAutomationAction;
 
     bool actionDone = false;
     DerivedDrawer *benchmarkDrawer;
@@ -41,15 +43,17 @@ class MetricChangerAutomationAction : public AutomationAction
         Parent::end();
     };
 
-    std::shared_ptr<AutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const & override
     {
         return std::make_shared<MetricChangerAutomationAction>(*this);
     };
 
-    std::shared_ptr<AutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction> clone() && override
     {
         return std::make_shared<MetricChangerAutomationAction>(std::move(*this));
     };
 };
+
+}
 
 #endif

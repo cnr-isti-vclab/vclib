@@ -1,11 +1,13 @@
 #ifndef PER_FRAME_SCALE_AUTOMATION_ACTION_H
 #define PER_FRAME_SCALE_AUTOMATION_ACTION_H
 
-#include "automation_action.h"
+#include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 #include <bx/bx.h>
 
-class PerFrameScaleAutomationAction : public AutomationAction
+namespace vcl{
+
+class PerFrameScaleAutomationAction : public AbstractAutomationAction
 {
     static inline uint32_t activeCount = 0;
 
@@ -24,14 +26,14 @@ class PerFrameScaleAutomationAction : public AutomationAction
         return activeCount != 0;
     }
 
-    using Parent = AutomationAction;
-    vcl::DesktopTrackBall<float> *trackball;
+    using Parent = AbstractAutomationAction;
+    DesktopTrackBall<float> *trackball;
     float pixelDeltaPerFrame;
     float totalPixelDelta;
 
     public:
 
-    PerFrameScaleAutomationAction(vcl::DesktopTrackBall<float> *trackball, float pixelDeltaPerFrame)
+    PerFrameScaleAutomationAction(DesktopTrackBall<float> *trackball, float pixelDeltaPerFrame)
     : trackball{trackball},
     pixelDeltaPerFrame{pixelDeltaPerFrame},
     totalPixelDelta{0}
@@ -62,15 +64,17 @@ class PerFrameScaleAutomationAction : public AutomationAction
         totalPixelDelta = 0;
     };
 
-    std::shared_ptr<AutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const & override
     {
         return std::make_shared<PerFrameScaleAutomationAction>(*this);
     }
 
-    std::shared_ptr<AutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction> clone() && override
     {
         return std::make_shared<PerFrameScaleAutomationAction>(std::move(*this));
     }
 };
+
+}
 
 #endif

@@ -5,13 +5,13 @@
 #include <vclib/render/drawers/plain_drawer.h>
 #include <chrono>
 #include <vector>
-#include "automation_action.h"
+#include <vclib/render/automation/actions/abstract_automation_action.h>
 
 template<typename DerivedDrawer>
 class AutomationImguiDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
     using Parent = vcl::PlainDrawer<DerivedDrawer>;
-    using NameActionPair = std::pair<std::string, AutomationAction*>;
+    using NameActionPair = std::pair<std::string, vcl::AbstractAutomationAction*>;
     std::vector<NameActionPair> automations;
 
 public:
@@ -51,7 +51,7 @@ public:
         ImGui::End();
     }
 
-    size_t addAutomation(const std::string& name, AutomationAction *action)
+    size_t addAutomation(const std::string& name, vcl::AbstractAutomationAction *action)
     {
         automations.push_back(std::pair<NameActionPair::first_type, NameActionPair::second_type>(name, action));
         return automations.size();

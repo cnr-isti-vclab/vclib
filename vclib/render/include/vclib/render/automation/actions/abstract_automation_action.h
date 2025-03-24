@@ -3,7 +3,9 @@
 
 #include<chrono>
 
-class AutomationAction
+namespace vcl{
+
+class AbstractAutomationAction
 {
     private:
         bool active = false;
@@ -39,10 +41,12 @@ class AutomationAction
             return active;
         }
 
-        operator std::shared_ptr<AutomationAction>() { return clone(); }; 
+        operator std::shared_ptr<AbstractAutomationAction>() { return clone(); }; 
 
-        virtual std::shared_ptr<AutomationAction> clone() const& = 0;
-        virtual std::shared_ptr<AutomationAction> clone() && = 0;
+        virtual std::shared_ptr<AbstractAutomationAction> clone() const& = 0;
+        virtual std::shared_ptr<AbstractAutomationAction> clone() && = 0;
 };
+
+}
 
 #endif

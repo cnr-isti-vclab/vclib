@@ -1,20 +1,21 @@
 #ifndef SEQUENTIAL_AUTOMATION_ACTIONS_H
 #define SEQUENTIAL_AUTOMATION_ACTIONS_H
 
-#include "automation_action.h"
-
+#include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 
-class SequentialAutomationActions : public AutomationAction
+namespace vcl{
+
+class SequentialAutomationActions : public AbstractAutomationAction
 {
-    vcl::PolymorphicObjectVector<AutomationAction> automations;
-    using Parent = AutomationAction;
+    PolymorphicObjectVector<AbstractAutomationAction> automations;
+    using Parent = AbstractAutomationAction;
 
     uint32_t currentIndex = 0;
 
     public:
     
-    SequentialAutomationActions(std::initializer_list<std::shared_ptr<AutomationAction>> init)
+    SequentialAutomationActions(std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
     {
         for(auto el = init.begin(); el < init.end(); el++)
         {
@@ -24,7 +25,7 @@ class SequentialAutomationActions : public AutomationAction
 
     SequentialAutomationActions() {};
 
-    void addAutomation(const AutomationAction &automation)
+    void addAutomation(const AbstractAutomationAction &automation)
     {
         automations.pushBack(automation);
     }
@@ -63,15 +64,17 @@ class SequentialAutomationActions : public AutomationAction
         currentIndex = 0;
     }
 
-    std::shared_ptr<AutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const & override
     {
         return std::make_shared<SequentialAutomationActions>(*this);
     }
 
-    std::shared_ptr<AutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction> clone() && override
     {
         return std::make_shared<SequentialAutomationActions>(std::move(*this));
     }
 };
+
+}
 
 #endif

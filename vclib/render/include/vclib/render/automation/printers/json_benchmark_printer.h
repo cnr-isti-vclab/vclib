@@ -1,9 +1,11 @@
 #ifndef JSON_BENCHMARK_PRINTER_H
 #define JSON_BENCHMARK_PRINTER_H
 
-#include "benchmark_printer.h"
+#include <vclib/render/automation/printers/benchmark_printer.h>
 #include <fstream>
 #include <format>
+
+namespace vcl{
 
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
@@ -82,5 +84,7 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
         }
     };
 };
+
+}
 
 #endif

@@ -1,17 +1,19 @@
 #ifndef WRAPPER_AUTOMATION_ACTION_H
 #define WRAPPER_AUTOMATION_ACTION_H
 
-#include "automation_action.h"
+#include <vclib/render/automation/actions/abstract_automation_action.h>
 
-class WrapperAutomationAction : public AutomationAction
+namespace vcl{
+
+class WrapperAutomationAction : public AbstractAutomationAction
 {
-    using Parent = AutomationAction;
+    using Parent = AbstractAutomationAction;
 
     protected:
 
-    std::shared_ptr<AutomationAction> innerAction;
+    std::shared_ptr<AbstractAutomationAction> innerAction;
 
-    WrapperAutomationAction(const AutomationAction &action)
+    WrapperAutomationAction(const AbstractAutomationAction &action)
     : innerAction{action.clone()}
     {}
 
@@ -38,5 +40,7 @@ class WrapperAutomationAction : public AutomationAction
         Parent::end();
     }
 };
+
+}
 
 #endif

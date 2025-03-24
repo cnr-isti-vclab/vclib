@@ -3,7 +3,9 @@
 
 #include <string>
 #include <memory>
-#include "benchmark_metric.h"
+#include <vclib/render/automation/metrics/benchmark_metric.h>
+
+namespace vcl{
 
 class BenchmarkPrinter
 {
@@ -16,5 +18,7 @@ class BenchmarkPrinter
     virtual std::shared_ptr<BenchmarkPrinter> clone() const & = 0;
     virtual std::shared_ptr<BenchmarkPrinter> clone() && = 0;
 };
+
+}
 
 #endif

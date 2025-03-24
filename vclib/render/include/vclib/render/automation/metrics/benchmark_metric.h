@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace vcl{
+
 class BenchmarkMetric
 {
     public:
@@ -16,5 +18,7 @@ class BenchmarkMetric
     virtual std::shared_ptr<BenchmarkMetric> clone() const & = 0;
     virtual std::shared_ptr<BenchmarkMetric> clone()  && = 0;
 };
+
+}
 
 #endif

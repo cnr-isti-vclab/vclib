@@ -1,8 +1,10 @@
 #ifndef CSV_BENCHMARK_PRINTER_H
 #define CSV_BENCHMARK_PRINTER_H
 
-#include "benchmark_printer.h"
+#include <vclib/render/automation/printers/benchmark_printer.h>
 #include <fstream>
+
+namespace vcl{
 
 class CsvBenchmarkPrinter : public BenchmarkPrinter
 {
@@ -68,5 +70,7 @@ class CsvBenchmarkPrinter : public BenchmarkPrinter
         }
     };
 };
+
+}
 
 #endif

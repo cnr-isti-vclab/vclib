@@ -1,8 +1,9 @@
 #ifndef FRAME_LIMITED_AUTOMATION_ACTION_H
 #define FRAME_LIMITED_AUTOMATION_ACTION_H
 
-#include "automation_action.h"
-#include "wrapper_automation_action.h"
+#include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
+
+namespace vcl{
 
 class FrameLimitedAutomationAction : public WrapperAutomationAction
 {
@@ -13,7 +14,7 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
 
     public:
 
-    FrameLimitedAutomationAction(const AutomationAction &innerAction, uint32_t durationFrames = 400.f)
+    FrameLimitedAutomationAction(const AbstractAutomationAction &innerAction, uint32_t durationFrames = 400.f)
     : Parent(innerAction),
     durationFrames{durationFrames},
     currentFrames{0}
@@ -40,15 +41,17 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
         currentFrames = 0;
     }
 
-    std::shared_ptr<AutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const & override
     {
         return std::make_shared<FrameLimitedAutomationAction>(*this);
     }
 
-    std::shared_ptr<AutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction> clone() && override
     {
         return std::make_shared<FrameLimitedAutomationAction>(std::move(*this));
     }
 };
+
+}
 
 #endif

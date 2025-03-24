@@ -1,32 +1,34 @@
 #ifndef TIME_DELAY_AUTOMATION_ACTION_H
 #define TIME_DELAY_AUTOMATION_ACTION_H
 
-#include "wrapper_automation_action.h"
+#include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 #include <vclib/misc/timer.h>
+
+namespace vcl{
 
 class TimeDelayAutomationAction : public WrapperAutomationAction
 {
-    vcl::Timer timer;
+    Timer timer;
     float delaySeconds;
     bool innerStarted = false;
     using Parent = WrapperAutomationAction;
 
     public:
 
-    TimeDelayAutomationAction(const AutomationAction &action, float delaySeconds)
+    TimeDelayAutomationAction(const AbstractAutomationAction &action, float delaySeconds)
     : Parent(action),
     delaySeconds{delaySeconds}
     {};
 
     void start() override
     {
-        AutomationAction::start();
+        AbstractAutomationAction::start();
         timer.start();
     }
 
     void doAction() override
     {
-        AutomationAction::doAction();
+        AbstractAutomationAction::doAction();
         if(timer.delay() < delaySeconds){
             return;
         }
@@ -48,15 +50,17 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
         innerStarted = false;
     }
 
-    std::shared_ptr<AutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const & override
     {
         return std::make_shared<TimeDelayAutomationAction>(*this);
     }
 
-    std::shared_ptr<AutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction> clone() && override
     {
         return std::make_shared<TimeDelayAutomationAction>(std::move(*this));
     }
 };
+
+}
 
 #endif

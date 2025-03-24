@@ -1,9 +1,9 @@
 #ifndef BENCHMARK_DRAWER_H
 #define BENCHMARK_DRAWER_H
 
-#include "automation_action.h"
-#include "fps_benchmark_metric.h"
-#include "stdout_benchmark_printer.h"
+#include <vclib/render/automation/actions/abstract_automation_action.h>
+#include <vclib/render/automation/metrics/fps_benchmark_metric.h>
+#include <vclib/render/automation/printers/stdout_benchmark_printer.h>
 #include <bgfx/bgfx.h>
 #include <vector>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
@@ -14,6 +14,8 @@
 #include <fstream>
 
 #define BENCHMARK_DRAWER_REPEAT_FOREVER 0
+
+namespace vcl{
 
 template<typename DerivedDrawer>
 class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
@@ -28,7 +30,7 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     vcl::Timer beforeStartWaitTimer;
     double beforeStartWaitSeconds = 0.5f;
 
-    vcl::PolymorphicObjectVector<AutomationAction> automations;
+    vcl::PolymorphicObjectVector<AbstractAutomationAction> automations;
     std::vector<bool> relevancies;
 
     size_t currentAutomationIndex = 0;
@@ -121,7 +123,7 @@ public:
         }
     };
 
-    size_t addAutomation(const AutomationAction &action, bool relevancy = true)
+    size_t addAutomation(const AbstractAutomationAction &action, bool relevancy = true)
     {
         automations.pushBack(action);
         relevancies.push_back(relevancy);
@@ -161,5 +163,7 @@ public:
         return currentAutomationIndex;
     };
 };
+
+}
 
 #endif

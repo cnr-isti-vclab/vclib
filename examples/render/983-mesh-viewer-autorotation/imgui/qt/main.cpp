@@ -30,34 +30,20 @@
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
-#include <vclib/load_save.h>
+
+#include <vclib/render/automation/actions.h>
+#include <vclib/render/automation/printers.h>
+#include <vclib/render/automation/metrics.h>
+#include <vclib/render/drawers/benchmark_drawer.h>
 
 #include <QApplication>
-
-#include "../../automation_imgui_drawer.h"
-#include "../../rotation_automation_action.h"
-#include "../../benchmark_drawer.h"
-#include "../../time_limited_automation_action.h"
-#include "../../per_frame_rotation_automation_action.h"
-#include "../../simultaneous_automation_actions.h"
-#include "../../sequential_automation_actions.h"
-#include "../../scale_automation_action.h"
-#include "../../per_frame_scale_automation_action.h"
-#include "../../frame_limited_automation_action.h"
-#include "../../mesh_changer_automation_action.h"
-#include "../../time_delay_automation_action.h"
-#include "../../frame_delay_automation_action.h"
-#include "../../time_benchmark_metric.h"
-#include "../../csv_benchmark_printer.h"
-#include "../../json_benchmark_printer.h"
-#include "../../metric_changer_automation_action.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
     vcl::imgui::ImGuiDrawer,
     vcl::ViewerDrawer,
-    BenchmarkDrawer>;
+    vcl::BenchmarkDrawer>;
 
 int main(int argc, char** argv)
 {
@@ -75,25 +61,25 @@ int main(int argc, char** argv)
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
     tw.addAutomation(
-        FrameLimitedAutomationAction(
-            SimultaneousAutomationActions{
-                RotationAutomationAction(&tw, 5.f, {0.f,0.f,1.f}),
-                ScaleAutomationAction(&tw, -0.01f)
+        vcl::FrameLimitedAutomationAction(
+            vcl::SimultaneousAutomationActions{
+                vcl::RotationAutomationAction(&tw, 5.f, {0.f,0.f,1.f}),
+                vcl::ScaleAutomationAction(&tw, -0.01f)
             },
             10000.f
         )
     );
     tw.addAutomation(
-        MetricChangerAutomationAction<BenchmarkDrawer<ViewerWidget>>(&tw, TimeBenchmarkMetric()),
+        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(&tw, vcl::TimeBenchmarkMetric()),
         false
     );
     tw.addAutomation(
-        SequentialAutomationActions{
-            FrameLimitedAutomationAction( RotationAutomationAction(&tw, 5.f, {0.f,-1.f,0.f}), 5000.f),
-            FrameLimitedAutomationAction( ScaleAutomationAction(&tw, 0.02f), 5000.f)
+        vcl::SequentialAutomationActions{
+            vcl::FrameLimitedAutomationAction( vcl::RotationAutomationAction(&tw, 5.f, {0.f,-1.f,0.f}), 5000.f),
+            vcl::FrameLimitedAutomationAction( vcl::ScaleAutomationAction(&tw, 0.02f), 5000.f)
         }
     );
-    tw.setPrinter(JsonBenchmarkPrinter("./test_out.json"));
+    tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
     
     tw.fitScene();
 

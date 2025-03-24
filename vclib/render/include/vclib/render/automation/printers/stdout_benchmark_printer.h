@@ -1,7 +1,9 @@
 #ifndef STDOUT_BENCHMARK_PRINTER_H
 #define STDOUT_BENCHMARK_PRINTER_H
 
-#include "benchmark_printer.h"
+#include <vclib/render/automation/printers/benchmark_printer.h>
+
+namespace vcl{
 
 class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
@@ -37,5 +39,7 @@ class StdoutBenchmarkPrinter : public BenchmarkPrinter
         return std::make_shared<StdoutBenchmarkPrinter>(std::move(*this));
     };
 };
+
+}
 
 #endif
