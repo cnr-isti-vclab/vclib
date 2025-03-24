@@ -27,10 +27,12 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {
     using Parent = vcl::PlainDrawer<DerivedDrawer>;
 
-    //What is this for? To avoid the slight freeze some time after starting.
-    //It's not about "frames" but about "seconds" (Lower framerate = less frames that you need to wait to avoid the freeze,
-    //tested so far only on 2 devices)
-    //What causes the freeze? no clue.
+    /*
+    What are these variables for? To avoid the slight freeze some time after starting.
+    It's not about "frames" but about "seconds" (Lower framerate = less frames that you need to wait to avoid the freeze,
+    tested so far only on 2 devices)
+    What causes the freeze? no clue.
+    */
     bool beforeStartWaitTimerStarted = false;
     vcl::Timer beforeStartWaitTimer;
     double beforeStartWaitSeconds = 0.5f;
