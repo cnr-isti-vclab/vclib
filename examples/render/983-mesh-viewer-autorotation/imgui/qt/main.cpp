@@ -62,6 +62,18 @@ int main(int argc, char** argv)
     tw.pushDrawableObject(drawable);
     tw.setRepeatTimes(8);
     tw.addAutomation(
+        vcl::StartCountDelayAutomationAction(
+            vcl::StartCountLimitedAutomationAction(
+                vcl::MeshChangerAutomationAction(
+                    &tw,
+                    drawable2
+                ),
+                1
+            ),
+            4
+        )
+    );
+    tw.addAutomation(
         vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(&tw, vcl::FpsBenchmarkMetric()),
         false
     );

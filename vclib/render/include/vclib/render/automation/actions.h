@@ -16,5 +16,7 @@
 #include <vclib/render/automation/actions/wrappers/time_delay_automation_action.h>
 #include <vclib/render/automation/actions/wrappers/time_limited_automation_action.h>
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/start_count_delay_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/start_count_limited_automation_action.h>
 
 #endif
