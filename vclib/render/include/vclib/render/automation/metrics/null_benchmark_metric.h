@@ -1,5 +1,5 @@
-#ifndef NULL_BENCHMARK_METRIC_H
-#define NULL_BENCHMARK_METRIC_H
+#ifndef VCL_NULL_BENCHMARK_METRIC_H
+#define VCL_NULL_BENCHMARK_METRIC_H
 
 #include <string>
 #include <format>

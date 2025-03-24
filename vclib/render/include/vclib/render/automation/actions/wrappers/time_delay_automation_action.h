@@ -1,5 +1,5 @@
-#ifndef TIME_DELAY_AUTOMATION_ACTION_H
-#define TIME_DELAY_AUTOMATION_ACTION_H
+#ifndef VCL_TIME_DELAY_AUTOMATION_ACTION_H
+#define VCL_TIME_DELAY_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 #include <vclib/misc/timer.h>

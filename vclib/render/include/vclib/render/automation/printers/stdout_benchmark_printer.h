@@ -1,5 +1,5 @@
-#ifndef STDOUT_BENCHMARK_PRINTER_H
-#define STDOUT_BENCHMARK_PRINTER_H
+#ifndef VCL_STDOUT_BENCHMARK_PRINTER_H
+#define VCL_STDOUT_BENCHMARK_PRINTER_H
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 

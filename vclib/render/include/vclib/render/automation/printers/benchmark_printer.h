@@ -1,5 +1,5 @@
-#ifndef BENCHMARK_PRINTER_H
-#define BENCHMARK_PRINTER_H
+#ifndef VCL_BENCHMARK_PRINTER_H
+#define VCL_BENCHMARK_PRINTER_H
 
 #include <string>
 #include <memory>

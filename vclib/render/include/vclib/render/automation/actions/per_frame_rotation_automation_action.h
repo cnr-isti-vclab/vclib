@@ -1,5 +1,5 @@
-#ifndef PER_FRAME_ROTATION_AUTOMATION_ACTION_H
-#define PER_FRAME_ROTATION_AUTOMATION_ACTION_H
+#ifndef VCL_PER_FRAME_ROTATION_AUTOMATION_ACTION_H
+#define VCL_PER_FRAME_ROTATION_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>

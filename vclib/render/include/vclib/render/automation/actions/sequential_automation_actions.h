@@ -1,5 +1,5 @@
-#ifndef SEQUENTIAL_AUTOMATION_ACTIONS_H
-#define SEQUENTIAL_AUTOMATION_ACTIONS_H
+#ifndef VCL_SEQUENTIAL_AUTOMATION_ACTIONS_H
+#define VCL_SEQUENTIAL_AUTOMATION_ACTIONS_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>

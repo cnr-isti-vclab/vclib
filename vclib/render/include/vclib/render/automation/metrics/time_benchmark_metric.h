@@ -1,5 +1,5 @@
-#ifndef TIME_BENCHMARK_METRIC_H
-#define TIME_BENCHMARK_METRIC_H
+#ifndef VCL_TIME_BENCHMARK_METRIC_H
+#define VCL_TIME_BENCHMARK_METRIC_H
 
 #include <vclib/render/automation/metrics/benchmark_metric.h>
 #include <format>

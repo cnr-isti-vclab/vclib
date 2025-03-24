@@ -1,5 +1,5 @@
-#ifndef BENCHMARK_DRAWER_H
-#define BENCHMARK_DRAWER_H
+#ifndef VCL_BENCHMARK_DRAWER_H
+#define VCL_BENCHMARK_DRAWER_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/fps_benchmark_metric.h>
@@ -13,7 +13,7 @@
 #include <string>
 #include <fstream>
 
-#define BENCHMARK_DRAWER_REPEAT_FOREVER 0
+#define VCL_BENCHMARK_DRAWER_REPEAT_FOREVER 0
 
 namespace vcl{
 
@@ -60,7 +60,7 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 
     bool isLastLoop()
     {
-        return repeatTimes != BENCHMARK_DRAWER_REPEAT_FOREVER && repeatCount >= repeatTimes; 
+        return repeatTimes != VCL_BENCHMARK_DRAWER_REPEAT_FOREVER && repeatCount >= repeatTimes;
     }
 
     void onAutomationEnd()

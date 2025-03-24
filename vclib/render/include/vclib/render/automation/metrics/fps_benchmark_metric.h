@@ -1,5 +1,5 @@
-#ifndef FPS_BENCHMARK_METRIC_H
-#define FPS_BENCHMARK_METRIC_H
+#ifndef VCL_FPS_BENCHMARK_METRIC_H
+#define VCL_FPS_BENCHMARK_METRIC_H
 
 #include <vclib/misc/timer.h>
 #include <string>

@@ -1,5 +1,5 @@
-#ifndef AUTOMATION_ACTION_H
-#define AUTOMATION_ACTION_H
+#ifndef VCL_AUTOMATION_ACTION_H
+#define VCL_AUTOMATION_ACTION_H
 
 #include<chrono>
 

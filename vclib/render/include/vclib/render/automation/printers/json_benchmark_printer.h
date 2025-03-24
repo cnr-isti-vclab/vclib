@@ -1,5 +1,5 @@
-#ifndef JSON_BENCHMARK_PRINTER_H
-#define JSON_BENCHMARK_PRINTER_H
+#ifndef VCL_JSON_BENCHMARK_PRINTER_H
+#define VCL_JSON_BENCHMARK_PRINTER_H
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 #include <fstream>

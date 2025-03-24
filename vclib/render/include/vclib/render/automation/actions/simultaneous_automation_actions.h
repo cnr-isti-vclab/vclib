@@ -1,5 +1,5 @@
-#ifndef SIMULTANEOUS_AUTOMATION_ACTIONS_H
-#define SIMULTANEOUS_AUTOMATION_ACTIONS_H
+#ifndef VCL_SIMULTANEOUS_AUTOMATION_ACTIONS_H
+#define VCL_SIMULTANEOUS_AUTOMATION_ACTIONS_H
 
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 #include <vclib/render/automation/actions/abstract_automation_action.h>

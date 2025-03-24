@@ -1,5 +1,5 @@
-#ifndef METRIC_CHANGER_AUTOMATION_ACTION_H
-#define METRIC_CHANGER_AUTOMATION_ACTION_H
+#ifndef VCL_METRIC_CHANGER_AUTOMATION_ACTION_H
+#define VCL_METRIC_CHANGER_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/benchmark_metric.h>

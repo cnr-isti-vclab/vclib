@@ -1,5 +1,5 @@
-#ifndef FRAME_DELAY_AUTOMATION_ACTION_H
-#define FRAME_DELAY_AUTOMATION_ACTION_H
+#ifndef VCL_FRAME_DELAY_AUTOMATION_ACTION_H
+#define VCL_FRAME_DELAY_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 

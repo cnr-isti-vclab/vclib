@@ -1,5 +1,5 @@
-#ifndef CSV_BENCHMARK_PRINTER_H
-#define CSV_BENCHMARK_PRINTER_H
+#ifndef VCL_CSV_BENCHMARK_PRINTER_H
+#define VCL_CSV_BENCHMARK_PRINTER_H
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 #include <fstream>

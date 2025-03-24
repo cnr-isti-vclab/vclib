@@ -1,5 +1,5 @@
-#ifndef NULL_BENCHMARK_PRINTER_H
-#define NULL_BENCHMARK_PRINTER_H
+#ifndef VCL_NULL_BENCHMARK_PRINTER_H
+#define VCL_NULL_BENCHMARK_PRINTER_H
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 

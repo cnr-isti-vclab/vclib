@@ -1,5 +1,5 @@
-#ifndef WRAPPER_AUTOMATION_ACTION_H
-#define WRAPPER_AUTOMATION_ACTION_H
+#ifndef VCL_WRAPPER_AUTOMATION_ACTION_H
+#define VCL_WRAPPER_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 
