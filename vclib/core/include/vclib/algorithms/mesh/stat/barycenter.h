@@ -70,7 +70,7 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
  * @return The barycenter weighted on the per vertex quality.
  */
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(
+typename MeshType::VertexType::CoordType qualityWeightedBarycenter(
     const MeshType& m)
 {
     requirePerVertexQuality(m);
@@ -92,7 +92,7 @@ typename MeshType::VertexType::CoordType scalarWeightedBarycenter(
 
 /**
  * @brief Computes the barycenter of the surface thin-shell.
- * E.g. it assume a 'empty' model where all the mass is located on the surface
+ * E.g. it assumes a 'empty' model where all the mass is located on the surface
  * and compute the barycenter of that thinshell. Works for any polygonal model
  * (no problem with open, nonmanifold selfintersecting models). Useful for
  * computing the barycenter of 2D planar figures.

@@ -66,7 +66,11 @@ double surfaceArea(const MeshType& m)
 
 /**
  * @brief Computes the border length of the given Mesh, that is the sum of the
- * length of the edges that are on border in the given mesh.
+ * length of the face edges that are on border in the given mesh.
+ *
+ * The function checks whether a face edge is on border by checking if the
+ * adjacent face is nullptr, therefore the mesh must have the adjacent faces
+ * computed.
  *
  * @param[in] m: mesh on which compute the border length.
  * @return The border length of the given mesh.
@@ -75,6 +79,8 @@ template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m)
 {
     using FaceType = MeshType::FaceType;
+
+    requirePerFaceAdjacentFaces(m);
 
     double l = 0;
     for (const FaceType& f : m.faces()) {
@@ -101,18 +107,19 @@ template<MeshConcept MeshType>
 auto covarianceMatrixOfPointCloud(const MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    using ScalarType = VertexType::CoordType::ScalarType;
+    using CoordType = VertexType::CoordType;
+    using ScalarType = CoordType::ScalarType;
 
-    auto bar = barycenter(m);
+    CoordType bar = barycenter(m);
 
     Matrix33<ScalarType> mm;
     mm.setZero();
     // compute covariance matrix
     for (const VertexType& v : m.vertices()) {
-        auto e = v.coord() - bar;
-        m += e.outerProduct(e);
+        CoordType e = v.coord() - bar;
+        mm += e.outerProduct(e);
     }
-    return m;
+    return mm;
 }
 
 /**
