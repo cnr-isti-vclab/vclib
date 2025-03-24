@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/bindings/core/algorithms.h>
 #include <vclib/bindings/core/io.h>
 #include <vclib/bindings/core/load_save.h>
 #include <vclib/bindings/core/meshes.h>
@@ -47,6 +48,8 @@ PYBIND11_MODULE(core, m)
     initMeshes(m);
 
     initLoadSave(m);
+
+    initAlgorithms(m);
 }
 
 } // namespace vcl::bind
