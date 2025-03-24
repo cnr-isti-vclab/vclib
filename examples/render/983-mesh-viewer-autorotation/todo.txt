@@ -1,6 +1,8 @@
 - Repeated automation action ?
 - MeshChangerAutomationAction multiple meshes?
 - put "m" before member variables in classes
-- Automation that changes Metric or Printer (But mostly metric, changing printer seems a lot less useful)
 - FileBenchmarkPrinter subclass of BenchmarkPrinter that has fileName, toPrint and stream and implements everything except
     for onBenchmarkLoop and print which remain pure virtual
+- Use an array of measures inside the metric classes and find some way to print them properly with the 
+    printers?
+- Automation that limits the amount of times an Automation can be executed?

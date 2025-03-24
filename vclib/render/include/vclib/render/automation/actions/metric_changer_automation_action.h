@@ -8,14 +8,12 @@ namespace vcl{
 
 /*
     An automation that represents a change of metric in a BenchmarkDrawer.
-    It has an effect only once.
 */
 template<typename DerivedDrawer>
 class MetricChangerAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
 
-    bool actionDone = false;
     DerivedDrawer *benchmarkDrawer;
     std::shared_ptr<BenchmarkMetric> metric;
 
@@ -33,12 +31,7 @@ class MetricChangerAutomationAction : public AbstractAutomationAction
 
     void doAction() override
     {
-        if(actionDone)
-        {
-            return;
-        }
         benchmarkDrawer->setMetric(*metric);
-        actionDone = true;
         end();
     };
 

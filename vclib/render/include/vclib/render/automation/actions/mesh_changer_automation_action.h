@@ -11,14 +11,12 @@ namespace vcl{
 
 /*
     Automation that represents a singular change of mesh in a viewer drawer.
-    It has an effect only once.
 */
 template<typename DerivedRenderApp, typename MeshType>
 class MeshChangerAutomationAction : public AbstractAutomationAction
 {
     vcl::AbstractViewerDrawer<DerivedRenderApp>* avd;
     std::shared_ptr<vcl::DrawableObjectVector> objectVector;
-    bool completedOnce =  false;
 
     using Parent = AbstractAutomationAction;
 
@@ -42,10 +40,6 @@ class MeshChangerAutomationAction : public AbstractAutomationAction
     void doAction() override
     {
         Parent::doAction();
-        if(completedOnce){
-            end();
-            return;
-        }
         avd->setDrawableObjectVector(objectVector);
         avd->fitScene();
         end();
@@ -54,7 +48,6 @@ class MeshChangerAutomationAction : public AbstractAutomationAction
     void end()
     {
         Parent::end();
-        completedOnce = true;
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() const & override

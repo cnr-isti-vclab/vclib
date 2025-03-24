@@ -60,6 +60,11 @@ int main(int argc, char** argv)
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
+    tw.setRepeatTimes(8);
+    tw.addAutomation(
+        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(&tw, vcl::FpsBenchmarkMetric()),
+        false
+    );
     tw.addAutomation(
         vcl::FrameLimitedAutomationAction(
             vcl::SimultaneousAutomationActions{
