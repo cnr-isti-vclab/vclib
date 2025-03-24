@@ -7,6 +7,9 @@
 
 namespace vcl{
 
+/*
+    Class which writes the metric's results to a json file
+*/
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
     uint32_t loopCounter = 0;

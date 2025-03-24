@@ -7,6 +7,9 @@
 
 namespace vcl{
 
+/*
+    Measures the time it takes for the automation to complete
+*/
 class TimeBenchmarkMetric : public BenchmarkMetric
 {
     Timer timer;

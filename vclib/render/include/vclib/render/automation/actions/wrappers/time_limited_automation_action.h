@@ -7,6 +7,11 @@
 
 namespace vcl{
 
+
+/*
+    Automation that allows you to add a maximum duration (in terms of time) to an automation,
+    so that after the chosen duration has elapsed the automation is guaranteed to be over
+*/
 class TimeLimitedAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;

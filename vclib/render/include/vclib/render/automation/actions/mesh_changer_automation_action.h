@@ -9,6 +9,10 @@
 
 namespace vcl{
 
+/*
+    Automation that represents a singular change of mesh in a viewer drawer.
+    It has an effect only once.
+*/
 template<typename DerivedRenderApp, typename MeshType>
 class MeshChangerAutomationAction : public AbstractAutomationAction
 {

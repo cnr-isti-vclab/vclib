@@ -7,6 +7,10 @@
 
 namespace vcl{
 
+/*
+    Abstract class whose children define how you should write (display, print, ...) the metrics measured from
+    automations
+*/
 class BenchmarkPrinter
 {
     public:

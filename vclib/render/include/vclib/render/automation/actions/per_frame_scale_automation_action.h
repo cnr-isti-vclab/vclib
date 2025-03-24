@@ -7,6 +7,11 @@
 
 namespace vcl{
 
+
+/*
+    An action that represent the scaling of a DesktopTrackball, with the intensity of the scaling
+    calculated per frame
+*/
 class PerFrameScaleAutomationAction : public AbstractAutomationAction
 {
     static inline uint32_t activeCount = 0;

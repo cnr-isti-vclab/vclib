@@ -5,6 +5,9 @@
 
 namespace vcl{
 
+/*
+    Class which writes the metric's results to stdout
+*/
 class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
     uint32_t automationIndex = 0;

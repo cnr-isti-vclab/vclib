@@ -6,6 +6,9 @@
 
 namespace vcl{
 
+/*
+    Class which writes the metric's results to a csv file
+*/
 class CsvBenchmarkPrinter : public BenchmarkPrinter
 {
     std::string fileName;

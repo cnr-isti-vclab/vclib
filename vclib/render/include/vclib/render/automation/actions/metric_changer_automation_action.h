@@ -6,6 +6,10 @@
 
 namespace vcl{
 
+/*
+    An automation that represents a change of metric in a BenchmarkDrawer.
+    It has an effect only once.
+*/
 template<typename DerivedDrawer>
 class MetricChangerAutomationAction : public AbstractAutomationAction
 {

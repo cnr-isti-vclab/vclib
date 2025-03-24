@@ -8,6 +8,9 @@
 
 namespace vcl{
 
+/*
+    Measures the average frames per second of the automations
+*/
 class FpsBenchmarkMetric : public BenchmarkMetric
 {
     Timer timer;

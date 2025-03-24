@@ -8,6 +8,10 @@
 
 namespace vcl{
 
+/*
+    An action that represent the rotation of a DesktopTrackball, with the intensity of the rotation
+    calculated per frame
+*/
 class PerFrameRotationAutomationAction : public AbstractAutomationAction
 {
     static inline uint32_t activeCount = 0;
