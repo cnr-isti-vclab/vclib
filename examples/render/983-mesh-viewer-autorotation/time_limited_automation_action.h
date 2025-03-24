@@ -25,14 +25,14 @@ class TimeLimitedAutomationAction : public WrapperAutomationAction
         Parent::start();
     }
 
-    void update() override
+    void doAction() override
     {   
-        AutomationAction::update();
+        AutomationAction::doAction();
         if(timer.delay() >= durationSeconds){
             end();
             return;
         }
-        Parent::update();
+        Parent::doAction();
     }
 
     void end() override

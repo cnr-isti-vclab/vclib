@@ -48,9 +48,9 @@ class ScaleAutomationAction : public AutomationAction
         trackball->startIgnoringTrackBallEvents();
     }
 
-    void update() override
+    void doAction() override
     {
-        Parent::update();
+        Parent::doAction();
         totalPixelDelta += pixelDeltaPerSecond * timer.delay();
 
         trackball->performScale(totalPixelDelta);

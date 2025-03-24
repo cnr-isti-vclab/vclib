@@ -16,7 +16,7 @@ class TimeBenchmarkMetric : public BenchmarkMetric
         timer.start();
     }
 
-    void update() override {}
+    void measure() override {}
 
     std::string getMeasureString() override
     {

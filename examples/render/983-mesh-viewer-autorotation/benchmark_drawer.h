@@ -76,7 +76,7 @@ public:
         this->repeatTimes = repeatTimes;
     }
 
-    void onDrawContent(uint viewId) override
+    void onDrawContent(vcl::uint viewId) override
     {
         if(!beforeStartWaitTimerStarted)
         {
@@ -116,8 +116,8 @@ public:
             automations[currentAutomationIndex]->start();
         }
         if(automations[currentAutomationIndex]->isActive()){
-            metric->update();
-            automations[currentAutomationIndex]->update();
+            metric->measure();
+            automations[currentAutomationIndex]->doAction();
         }
     };
 
@@ -139,15 +139,6 @@ public:
     void useStdOut()
     {
         toStdOut = true;
-    }
-
-    void setOutputFile(const std::string str){
-        outStream.open(str);
-        if(outStream.fail()){
-            printf("Error: couldn't open file %s. Writing to stdout instead\n", str.c_str());
-            return;
-        }
-        toStdOut = false;
     }
 
     void setMetric(const BenchmarkMetric &bm)

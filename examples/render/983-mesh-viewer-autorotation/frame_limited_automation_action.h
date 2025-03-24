@@ -24,14 +24,14 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
         Parent::start();
     }
 
-    void update()
+    void doAction()
     {
         currentFrames++;
         if(currentFrames >= durationFrames){
             end();
             return;
         }
-        Parent::update();
+        Parent::doAction();
     }
 
     void end() override

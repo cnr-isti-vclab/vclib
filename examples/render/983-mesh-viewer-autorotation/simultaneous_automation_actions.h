@@ -35,12 +35,12 @@ class SimultaneousAutomationActions : public AutomationAction
         }
     }
 
-    void update() override
+    void doAction() override
     {
-        Parent::update();
+        Parent::doAction();
         for (const auto aut : automations){
             if(aut->isActive()){
-                aut->update();
+                aut->doAction();
             }
         }
     }

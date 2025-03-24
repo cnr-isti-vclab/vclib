@@ -33,9 +33,9 @@ class MeshChangerAutomationAction : public AutomationAction
         Parent::start();
     }
 
-    void update() override
+    void doAction() override
     {
-        Parent::update();
+        Parent::doAction();
         if(completedOnce){
             end();
             return;

@@ -21,13 +21,13 @@ class WrapperAutomationAction : public AutomationAction
         innerAction->start();
     }
 
-    void update() override
+    void doAction() override
     {
-        Parent::update();
+        Parent::doAction();
         if(!innerAction->isActive()){
             return;
         }
-        innerAction->update();
+        innerAction->doAction();
     };
 
     void end() override

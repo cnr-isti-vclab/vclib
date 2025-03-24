@@ -60,9 +60,9 @@ class RotationAutomationAction: public AutomationAction
         trackball->startIgnoringTrackBallEvents();
     };
 
-    void update() override
+    void doAction() override
     {
-        Parent::update();
+        Parent::doAction();
         auto rotation = vcl::Quaternion<float>(radiansPerSecond * timer.delay(), around);
 
         trackball->rotate(rotation);

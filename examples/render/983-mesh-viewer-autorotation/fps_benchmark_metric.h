@@ -19,7 +19,7 @@ class FpsBenchmarkMetric : public BenchmarkMetric
         frames = 0;
     };
 
-    void update() override
+    void measure() override
     {
         frames++;
     };

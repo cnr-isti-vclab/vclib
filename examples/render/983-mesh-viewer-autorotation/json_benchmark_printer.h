@@ -52,7 +52,7 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
 
         stream 
         << std::format("\n\t\t\"Automation {}\" : {{", automationIndex)
-        << std::format("\n\t\t\t\"duration\" : \"{}\"", metric.getMeasureString()+metric.getUnitOfMeasure())
+        << std::format("\n\t\t\t\"metric\" : \"{}\"", metric.getMeasureString()+metric.getUnitOfMeasure())
         << "\n\t\t}";
 
         automationIndex++;

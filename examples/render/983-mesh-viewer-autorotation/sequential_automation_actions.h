@@ -35,9 +35,9 @@ class SequentialAutomationActions : public AutomationAction
         automations[0]->start();
     }
 
-    void update() override
+    void doAction() override
     {
-        Parent::update();
+        Parent::doAction();
         if(!automations[currentIndex]->isActive())
         {
             if(currentIndex == automations.size()-1)
@@ -49,7 +49,7 @@ class SequentialAutomationActions : public AutomationAction
             automations[currentIndex]->start();
         }
         if(automations[currentIndex]->isActive()){
-            automations[currentIndex]->update();
+            automations[currentIndex]->doAction();
         }
     }
 

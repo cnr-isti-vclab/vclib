@@ -24,9 +24,9 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
         timer.start();
     }
 
-    void update() override
+    void doAction() override
     {
-        AutomationAction::update();
+        AutomationAction::doAction();
         if(timer.delay() < delaySeconds){
             return;
         }
@@ -35,7 +35,7 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
             innerStarted = true;
         }
         if(innerAction->isActive()){
-            innerAction->update();
+            innerAction->doAction();
             return;
         }
         end();

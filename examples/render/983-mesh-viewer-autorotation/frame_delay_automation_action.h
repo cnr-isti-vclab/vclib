@@ -22,9 +22,9 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
         AutomationAction::start();
     }
 
-    void update() override
+    void doAction() override
     {
-        AutomationAction::update();
+        AutomationAction::doAction();
         if(currentFrames < delayFrames){
             currentFrames++;
             return;
@@ -34,7 +34,7 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
             innerStarted = true;
         }
         if(innerAction->isActive()){
-            innerAction->update();
+            innerAction->doAction();
             return;
         }
         end();

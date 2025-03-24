@@ -50,6 +50,7 @@
 #include "../../time_benchmark_metric.h"
 #include "../../csv_benchmark_printer.h"
 #include "../../json_benchmark_printer.h"
+#include "../../metric_changer_automation_action.h"
 
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
@@ -73,7 +74,6 @@ int main(int argc, char** argv)
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
-    tw.setRepeatTimes(2);
     tw.addAutomation(
         FrameLimitedAutomationAction(
             SimultaneousAutomationActions{
@@ -84,16 +84,15 @@ int main(int argc, char** argv)
         )
     );
     tw.addAutomation(
+        MetricChangerAutomationAction<BenchmarkDrawer<ViewerWidget>>(&tw, TimeBenchmarkMetric()),
+        false
+    );
+    tw.addAutomation(
         SequentialAutomationActions{
             FrameLimitedAutomationAction( RotationAutomationAction(&tw, 5.f, {0.f,-1.f,0.f}), 5000.f),
             FrameLimitedAutomationAction( ScaleAutomationAction(&tw, 0.02f), 5000.f)
         }
     );
-    tw.addAutomation(
-        MeshChangerAutomationAction(&tw, drawable2),
-        false
-    );
-    tw.setMetric(TimeBenchmarkMetric());
     tw.setPrinter(JsonBenchmarkPrinter("./test_out.json"));
     
     tw.fitScene();

@@ -20,10 +20,10 @@ class AutomationAction
 
         //Outside callers SHOULD ALWAYS check if the action is active before calling
         //since the action MAY call end() on itself during an update
-        virtual void update() 
+        virtual void doAction()
         {
             if(!isActive()){
-                throw "Do not call update() on inactive actions!";
+                throw "Do not call doAction() on inactive actions!";
             }
         };
 

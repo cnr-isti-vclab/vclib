@@ -22,7 +22,7 @@ public:
     using Parent::onResize;
     using Parent::onPostDraw;
 
-    void onDrawContent(uint viewId) override
+    void onDrawContent(vcl::uint viewId) override
     {
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Begin("Automation", nullptr);
