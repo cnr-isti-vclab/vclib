@@ -107,7 +107,7 @@ template<MeshConcept MeshType>
 auto covarianceMatrixOfPointCloud(const MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType = VertexType::CoordType;
+    using CoordType  = VertexType::CoordType;
     using ScalarType = CoordType::ScalarType;
 
     CoordType bar = barycenter(m);
@@ -204,11 +204,11 @@ auto covarianceMatrixOfMesh(const MeshType& m)
  */
 template<MeshConcept MeshType, typename ScalarType>
 std::vector<ScalarType> vertexRadiusFromWeights(
-    const MeshType&                m,
-    Range auto&&                   weights,
-    double                         diskRadius,
-    double                         radiusVariance,
-    bool                           invert = false)
+    const MeshType& m,
+    Range auto&&    weights,
+    double          diskRadius,
+    double          radiusVariance,
+    bool            invert = false)
 {
     using VertexType = MeshType::VertexType;
 

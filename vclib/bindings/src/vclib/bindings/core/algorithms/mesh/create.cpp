@@ -63,8 +63,7 @@ void initCreateAlgorithms(pybind11::module& m)
             return vcl::createDodecahedron<MeshType>();
         });
 
-        name =
-            "create_cube_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
+        name = "create_cube_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
             [](const Point3d& min, double edge) {

@@ -49,10 +49,10 @@ auto elementQualityMinMax(const MeshType& m)
 {
     requirePerElementComponent<ELEM_ID, CompId::QUALITY>(m);
 
-    auto [min, max] = std::ranges::minmax(
-        m.template elements<ELEM_ID>() | views::quality);
+    auto [min, max] =
+        std::ranges::minmax(m.template elements<ELEM_ID>() | views::quality);
 
-    return std::pair{min, max};
+    return std::pair {min, max};
 }
 
 /**

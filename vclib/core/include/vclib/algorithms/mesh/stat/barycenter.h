@@ -69,19 +69,19 @@ auto barycenter(const MeshType& m) -> MeshType::VertexType::CoordType
  * @return The barycenter weighted on the input range.
  */
 template<MeshConcept MeshType>
-auto weightedBarycenter(
-    const MeshType& m, Range auto&& weights) -> MeshType::VertexType::CoordType
+auto weightedBarycenter(const MeshType& m, Range auto&& weights)
+    -> MeshType::VertexType::CoordType
 {
-    using VertexType  = MeshType::VertexType;
-    using CoordType   = VertexType::CoordType;
-    using RType       = std::ranges::range_value_t<decltype(weights)>;
+    using VertexType = MeshType::VertexType;
+    using CoordType  = VertexType::CoordType;
+    using RType      = std::ranges::range_value_t<decltype(weights)>;
 
     assert(std::ranges::size(weights) == m.vertexNumber());
 
-    CoordType   bar;
-    RType weightedSum = 0;
+    CoordType bar;
+    RType     weightedSum = 0;
 
-    for(const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
+    for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
         bar += v.coord() * w;
         weightedSum += w;
     }
@@ -105,8 +105,8 @@ auto weightedBarycenter(
  * @return The barycenter weighted on the per vertex quality.
  */
 template<MeshConcept MeshType>
-auto qualityWeightedBarycenter(
-    const MeshType& m) -> MeshType::VertexType::CoordType
+auto qualityWeightedBarycenter(const MeshType& m)
+    -> MeshType::VertexType::CoordType
 {
     requirePerVertexQuality(m);
 
