@@ -44,6 +44,8 @@ public:
 
     virtual void onDraw(uint viewId) { onDrawContent(viewId); }
 
+    virtual void onDrawId(uint viewId) {}
+
     virtual void onDrawContent(uint viewId) {}
 
     virtual void onPostDraw() {}
