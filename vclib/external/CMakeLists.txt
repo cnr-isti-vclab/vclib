@@ -27,7 +27,7 @@ project(vclib-external)
 message(STATUS "VCLib-External: 3rd party libraries")
 add_subdirectory(3rdparty)
 
-### vclib-core target
+### vclib-external target
 set(VCLIB_EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
@@ -40,3 +40,7 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
     ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib::core)
 
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
+
+# Install
+install(DIRECTORY ${VCLIB_EXTERNAL_INCLUDE_DIR}/vclib
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

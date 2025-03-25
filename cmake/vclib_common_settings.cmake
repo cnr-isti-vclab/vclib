@@ -27,6 +27,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(GNUInstallDirs)
+
 if (WIN32)
     add_compile_definitions(NOMINMAX)
     add_compile_definitions(_USE_MATH_DEFINES)

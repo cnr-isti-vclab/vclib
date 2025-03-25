@@ -75,7 +75,7 @@ elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 
     set(BGFX_WITH_WAYLAND ${VCLIB_RENDER_WITH_WAYLAND})
 
-    add_subdirectory(${VCLIB_BGFX_DIR})
+    add_subdirectory(${VCLIB_BGFX_DIR} EXCLUDE_FROM_ALL)
 
     add_library(vclib-3rd-bgfx INTERFACE)
 

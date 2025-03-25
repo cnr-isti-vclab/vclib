@@ -46,3 +46,7 @@ target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 if (MSVC)
     target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
 endif()
+
+# Install
+install(DIRECTORY ${VCLIB_CORE_INCLUDE_DIR}/vclib
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

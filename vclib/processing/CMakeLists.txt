@@ -23,6 +23,9 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-processing)
 
+### vclib-processing target
+set(VCLIB_PROCESSING_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
@@ -34,3 +37,7 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 target_link_libraries(${PROJECT_NAME} INTERFACE vclib::core)
 
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
+
+# Install
+install(DIRECTORY ${VCLIB_PROCESSING_INCLUDE_DIR}/vclib
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

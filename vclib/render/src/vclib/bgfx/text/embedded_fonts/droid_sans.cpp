@@ -22,7 +22,7 @@
 
 #include <vclib/bgfx/text/embedded_fonts/droid_sans.h>
 
-#include <assets/fonts/droidsans.ttf.bin.h>
+#include <vclib/assets/fonts/droidsans.ttf.bin.h>
 
 namespace vcl {
 

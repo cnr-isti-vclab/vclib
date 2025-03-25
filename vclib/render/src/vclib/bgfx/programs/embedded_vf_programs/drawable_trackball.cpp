@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_trackball.h>
 
-#include <shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.essl.bin.h>
-#include <shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.spv.bin.h>
-#include <shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/fs_drawable_trackball.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_trackball/vs_drawable_trackball.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

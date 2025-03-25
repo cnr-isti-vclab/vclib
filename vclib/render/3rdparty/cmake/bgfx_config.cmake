@@ -309,7 +309,7 @@ function(build_bgfx_shaders_to_headers)
     get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
     get_property(BGFX_SHADER_INCLUDE_PATH TARGET vclib-3rd-bgfx PROPERTY BGFX_SHADER_INCLUDE_PATH)
 
-    set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/shaders")
+    set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib/shaders")
 
     foreach(SHADER ${ARGV})
         file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/bgfx" ${SHADER})
@@ -356,7 +356,7 @@ function(build_assets_to_headers)
     get_property(VCLIB_RENDER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
     get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
 
-    set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include")
+    set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib")
 
     foreach(ASSET ${ARGV})
         file(RELATIVE_PATH ASSET_REL "${VCLIB_RENDER_DIR}/.." ${ASSET})
