@@ -53,6 +53,14 @@ public:
         CallbackReadBuffer callback,
         const Color&       clearColor = Color::Black);
 
+    // Read ID constructor
+    ReadFramebufferRequest(
+        Point2i            queryIdPoint,
+        Point2<uint>       framebufferSize,
+        bool               idAsColor,
+        CallbackReadBuffer callback,
+        const Color&       clearColor = Color::TransparentBlack); // TODO: remove
+
     ~ReadFramebufferRequest();
 
     ReadFramebufferRequest& operator=(ReadFramebufferRequest&& right) = default;
@@ -73,7 +81,8 @@ private:
     enum Type {
         COLOR = 0, // entire color buffer
         DEPTH = 1, // single pixel depth
-        COUNT = 2
+        ID    = 2, // single pixel id
+        COUNT = 3
     };
 
     // read back type

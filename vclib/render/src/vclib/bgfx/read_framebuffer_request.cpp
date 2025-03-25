@@ -105,7 +105,7 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     assert(bgfx::isValid(blitTexture));
 }
 
-// read color constructor
+// Read color constructor
 ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
     CallbackReadBuffer callback,
@@ -149,6 +149,42 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     assert(bgfx::isValid(offscreenFbh));
 
     // create the blit depth texture
+    blitTexture = bgfx::createTexture2D(
+        uint16_t(blitSize.x()),
+        uint16_t(blitSize.y()),
+        false,
+        1,
+        getOffscreenColorFormat(),
+        kBlitFormat);
+    assert(bgfx::isValid(blitTexture));
+}
+
+// Read ID constructor
+ReadFramebufferRequest::ReadFramebufferRequest(
+    Point2i            queryIdPoint,
+    Point2<uint>       framebufferSize,
+    bool               idAsColor, // TODO: implement
+    CallbackReadBuffer callback,
+    const Color&       clearColor)
+    : type(ID)
+    , point(queryIdPoint)
+    , readCallback(callback)
+{
+    blitSize = framebufferSize.cast<uint16_t>();
+
+    auto& ctx       = Context::instance();
+    viewOffscreenId = ctx.requestViewId();
+
+    offscreenFbh = ctx.createOffscreenFramebufferAndInitView(
+        viewOffscreenId,
+        framebufferSize.x(),
+        framebufferSize.y(),
+        true,
+        clearColor.rgba());
+    assert(bgfx::isValid(offscreenFbh));
+
+    // read id as color
+    // create the blit color texture
     blitTexture = bgfx::createTexture2D(
         uint16_t(blitSize.x()),
         uint16_t(blitSize.y()),

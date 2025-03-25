@@ -220,11 +220,13 @@ protected:
         const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
 
         auto callback = [=, this](const ReadData& dt) {
-            mReadRequested = false;
-
+            
             const auto& data = std::get<FloatData>(dt);
             assert(data.size() == 1);
             const float depth = data[0];
+
+            mReadRequested = false;
+
             // if the depth is 1.0, the point is not in the scene
             if (depth == 1.0f) {
                 return;
@@ -240,6 +242,39 @@ protected:
         };
 
         mReadRequested = DerivedRenderApp::DRW::readDepth(
+            derived(), Point2i(p.x(), p.y()), callback);
+        if (mReadRequested)
+            derived()->update();
+    }
+
+    void readIdRequest(
+        double x,
+        double y,
+        std::function<void(uint)> idCallback)
+    {
+        using ReadData = ReadBufferTypes::ReadData;
+
+        if (mReadRequested)
+            return;
+
+        // get point
+        const Point2d p(x, y);
+
+        // create the callback
+        auto callback = [=, this](const ReadData& dt) {
+            
+            const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
+            assert(data.size() == 4);
+            // TODO: check how to do this properly
+            const uint id = *(uint32_t *) &data[0];
+
+            mReadRequested = false;
+
+            idCallback(id);
+            derived()->update();
+        };
+
+        mReadRequested = DerivedRenderApp::DRW::readId(
             derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
             derived()->update();

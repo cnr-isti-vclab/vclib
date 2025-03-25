@@ -353,6 +353,13 @@ private:
         return CanvasType::onReadDepth(point, callback);
     }
 
+    [[nodiscard]] bool dReadId(
+        const Point2i&                      point,
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
+    {
+        return CanvasType::onReadID(point, callback);
+    }
+
     void dScreenshot(const std::string& filename, uint multiplier = 1)
     {
         CanvasType::onScreenshot(filename, multiplier);
@@ -704,6 +711,25 @@ public: // TODO - remove this when C++26 is supported
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
         return r->dReadDepth(point, callback);
+    }
+
+    /**
+     * @brief A Drawer object can request the ID at a specific point on the
+     * canvas. This function is called by the Drawer object to request the ID at
+     * the specified point.
+     *
+     * @param[in] point: The point on the canvas where the ID must be read.
+     * @param[in] callback: The callback function that will be called when the ID
+     * is read. TODO: explain the callback function signature.
+     *
+     * @return true if the ID is successfully read, false otherwise.
+     */
+    [[nodiscard]] static bool readId(
+        RenderApp*                          r,
+        const Point2i&                      point,
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
+    {
+        return r->dReadID(point, callback);
     }
 
     /**

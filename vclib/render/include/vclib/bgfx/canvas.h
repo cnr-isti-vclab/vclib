@@ -294,6 +294,29 @@ public:
         return true;
     }
 
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * to read the ID at a specific point.
+     *
+     * @param point
+     * @param callback
+     * @return
+     */
+     [[nodiscard]] bool onReadId(
+        const Point2i&     point,
+        CallbackReadBuffer callback = nullptr)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt         // read already requested
+            || point.x() < 0 || point.y() < 0       // point out of bounds
+            || point.x() >= mSize.x() || point.y() >= mSize.y()) {
+            return false;
+        }
+
+        mReadRequest.emplace(point, mSize, true, callback);
+        return true;
+    }
+
 private:
     // draw offscreen frame
     void offscreenFrame()
