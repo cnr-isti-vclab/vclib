@@ -26,6 +26,7 @@
 #include <vclib/space/core.h>
 
 #include <pybind11/operators.h>
+#include <pybind11/stl.h>
 
 namespace vcl::bind {
 
@@ -40,6 +41,19 @@ void populatePoint(pybind11::module& m)
     std::string   cName = "Point" + std::to_string(DIM);
     py::class_<P> c(m, cName.c_str(), py::buffer_protocol());
     c.def(py::init<>());
+    c.def(py::init([](const py::list& v) {
+        if (v.size() != DIM) {
+            throw std::invalid_argument(
+                "Input list must have " + std::to_string(DIM) +
+                " elements for type vclib.Point" + std::to_string(DIM));
+        }
+        P p;
+        for (uint i = 0; const auto& d : v) {
+            p(i++) = d.cast<double>();
+        }
+        return p;
+    }));
+    py::implicitly_convertible<py::list, P>();
 
     defCopy(c);
 
