@@ -58,11 +58,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
             .programManager()
             .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
 
-    bgfx::ProgramHandle mProgramWireframe =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME>();
-
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
@@ -126,6 +121,7 @@ public:
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
+        mMRB.setWireframeSettings(mMRS);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
@@ -180,15 +176,7 @@ public:
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            if (bgfx::isValid(mProgramWireframe)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
-
-                bgfx::submit(viewId, mProgramWireframe);
-            }
+            mMRB.drawWireframe(viewId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
@@ -225,6 +213,7 @@ public:
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
+        mMRB.setWireframeSettings(rs); // TODO check me
         mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 
