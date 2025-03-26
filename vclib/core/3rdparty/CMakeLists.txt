@@ -34,16 +34,21 @@ option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 # MapBox earcut
 option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
     "Allow use of bundled Mapbox-Eaurcut source" ON)
+option(VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT
+    "Allow install Mapbox-Eaurcut source" ON)
 
 # Zip iterator
 option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
     "Allow use of bundled ZipViews source" ON)
+option(VCLIB_ALLOW_INSTALL_ZIP_VIEWS
+    "Allow install ZipViews source" ON)
 
 # STB
 option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
 
 # poolSTL
 option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
+option(VCLIB_ALLOW_INSTALL_POOLSTL "Allow install poolSTL source" ON)
 
 # === OPTIONAL === #
 

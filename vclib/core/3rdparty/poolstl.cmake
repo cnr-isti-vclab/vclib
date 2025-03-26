@@ -43,6 +43,12 @@ if (VCLIB_ALLOW_BUNDLED_POOLSTL AND
     endif()
 
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-poolstl)
+
+    # Install
+    if (VCLIB_ALLOW_INSTALL_POOLSTL)
+        install(DIRECTORY ${POOLSTL_INCLUDE_DIRS}/poolstl
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    endif()
 else()
     message(FATAL_ERROR "poolSTL is required to full support parallel algorithms - VCLIB_ALLOW_BUNDLED_POOLSTL must be enabled and found.")
 endif()
