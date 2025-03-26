@@ -60,6 +60,10 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     double beforeStartWaitSeconds = 0.5f;
 
     vcl::PolymorphicObjectVector<AbstractAutomationAction> automations;
+    /*
+    This vector's purpose is to keep track of whether to write the metric measured for the automation
+    at the same index in the automations vector
+    */
     std::vector<bool> relevancies;
 
     size_t currentAutomationIndex = 0;
