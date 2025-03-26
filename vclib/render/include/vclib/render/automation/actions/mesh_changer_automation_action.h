@@ -67,7 +67,7 @@ class MeshChangerAutomationAction : public AbstractAutomationAction
         end();
     }
 
-    void end()
+    void end() override
     {
         Parent::end();
     }
