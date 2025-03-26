@@ -408,6 +408,7 @@ private:
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
+            assert(size > 0);
 
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint>(size);
