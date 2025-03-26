@@ -26,7 +26,6 @@
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/fps_benchmark_metric.h>
 #include <vclib/render/automation/printers/stdout_benchmark_printer.h>
-#include <bgfx/bgfx.h>
 #include <vector>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 #include <chrono>
