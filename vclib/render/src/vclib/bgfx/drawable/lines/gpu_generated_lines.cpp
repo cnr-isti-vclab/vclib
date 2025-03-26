@@ -103,12 +103,12 @@ void GPUGeneratedLines::allocateVertexBuffer(uint pointsSize)
         .end();
 
 
-    const uint sz = pointsSize * 4 * 12;
+    const uint sz = (pointsSize / 2) * 4 * 12;
 
     mVertices.create(
         bgfx::makeRef(nullptr, sizeof(float) * sz),
         layout,
-        BGFX_BUFFER_COMPUTE_WRITE,
+        BGFX_BUFFER_COMPUTE_READ_WRITE,
         true);
 }
 
@@ -118,7 +118,7 @@ void GPUGeneratedLines::allocateIndexBuffer(uint pointsSize)
 
     mIndices.create(
         bgfx::makeRef(nullptr, sizeof(uint) * sz),
-        BGFX_BUFFER_COMPUTE_WRITE | BGFX_BUFFER_INDEX32,
+        BGFX_BUFFER_COMPUTE_READ_WRITE | BGFX_BUFFER_INDEX32,
         true);
 }
 

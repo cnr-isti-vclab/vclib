@@ -43,7 +43,7 @@ void CPUGeneratedLines::setPoints(const std::vector<LinesVertex>& points)
 {
     if (points.size() > 1) {
         // generate memory buffers
-        uint bufferVertsSize = points.size() * 4 * 12;
+        uint bufferVertsSize = (points.size() / 2) * 4 * 12;
         uint bufferIndsSize = (points.size() / 2) * 6;
 
         auto [vertices, vReleaseFn] =
