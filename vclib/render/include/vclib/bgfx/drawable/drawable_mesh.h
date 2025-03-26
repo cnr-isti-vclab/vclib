@@ -173,12 +173,6 @@ public:
 
     void draw(uint viewId) const override
     {
-        // generate random uint between 1 and 2^32 - 1
-        const uint id = 1 + (rand() % (4294967295 - 1 + 1));
-        std::cout << "id: " << id << std::endl;
-        drawId(viewId, id);
-        return;
-
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
