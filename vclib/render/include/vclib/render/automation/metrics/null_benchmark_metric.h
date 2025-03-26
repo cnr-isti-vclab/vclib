@@ -40,20 +40,20 @@ class NullBenchmarkMetric : public BenchmarkMetric
 
     void measure() override {};
 
-    std::string getMeasureString() { return ""; };
+    std::string getMeasureString() override { return ""; };
 
-    std::string getUnitOfMeasure() { return ""; };
+    std::string getUnitOfMeasure() override { return ""; };
 
-    std::string getFullLengthUnitOfMeasure() { return ""; };
+    std::string getFullLengthUnitOfMeasure() override { return ""; };
 
     void end() override {};
 
-    std::shared_ptr<BenchmarkMetric> clone() const &
+    std::shared_ptr<BenchmarkMetric> clone() const & override
     {
         return std::make_shared<NullBenchmarkMetric>(*this);
     };
 
-    std::shared_ptr<BenchmarkMetric> clone()  &&
+    std::shared_ptr<BenchmarkMetric> clone()  && override
     {
         return std::make_shared<NullBenchmarkMetric>(std::move(*this));
     };

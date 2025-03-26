@@ -58,14 +58,14 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
         stream.open(fileName);
     };
 
-    void onBenchmarkLoop()
+    void onBenchmarkLoop() override
     {
         loopCounter++;
         automationIndex = 0;
         stream << std::format("\n\t}},\n\t\"Loop {}\" : {{", loopCounter);
     };
 
-    void print(BenchmarkMetric &metric)
+    void print(BenchmarkMetric &metric) override
     {
         if(loopCounter == 0 && automationIndex == 0)
         {
@@ -85,7 +85,7 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
         automationIndex++;
     };
 
-    void finish(BenchmarkMetric &metric)
+    void finish(BenchmarkMetric &metric) override
     {
         stream << "\n\t}\n}";
         stream.close();

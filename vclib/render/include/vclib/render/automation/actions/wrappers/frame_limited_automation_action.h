@@ -46,12 +46,12 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
     currentFrames{0}
     {};
 
-    void start()
+    void start() override
     {
         Parent::start();
     }
 
-    void doAction()
+    void doAction() override
     {
         currentFrames++;
         if(currentFrames >= durationFrames){

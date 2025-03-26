@@ -182,12 +182,12 @@ public:
         printer = bp.clone();
     };
 
-    void getRepeatCount()
+    uint32_t getRepeatCount()
     {
         return repeatCount;
     };
 
-    void getCurrentAutomationIndex()
+    size_t getCurrentAutomationIndex()
     {
         return currentAutomationIndex;
     };

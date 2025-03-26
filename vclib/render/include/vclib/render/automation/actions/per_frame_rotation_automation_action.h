@@ -26,7 +26,7 @@
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 #include <vclib/space/core/quaternion.h>
-#include <bx/bx.h>
+#include <numbers>
 
 namespace vcl{
 
@@ -45,12 +45,12 @@ class PerFrameRotationAutomationAction : public AbstractAutomationAction
 
     static PerFrameRotationAutomationAction fromFramesPerRotation(DesktopTrackBall<float> *trackball, float framesPerRotation, Point3f axis)
     { 
-        return PerFrameRotationAutomationAction(trackball, bx::kPi2 / framesPerRotation, axis);
+        return PerFrameRotationAutomationAction(trackball, (2*std::numbers::pi_v<float>) / framesPerRotation, axis);
     }
 
     static PerFrameRotationAutomationAction* ptrFromFramesPerRotation(DesktopTrackBall<float> *trackball, float framesPerRotation, Point3f axis)
     {
-        return new PerFrameRotationAutomationAction(trackball, bx::kPi2 / framesPerRotation, axis);
+        return new PerFrameRotationAutomationAction(trackball, (2*std::numbers::pi_v<float>) / framesPerRotation, axis);
     }
 
     PerFrameRotationAutomationAction(DesktopTrackBall<float> *trackball, float radiansPerFrame, Point3f axis)

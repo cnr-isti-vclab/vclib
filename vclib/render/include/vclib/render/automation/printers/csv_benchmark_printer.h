@@ -56,7 +56,7 @@ class CsvBenchmarkPrinter : public BenchmarkPrinter
         stream.open(fileName);
     };
 
-    void onBenchmarkLoop()
+    void onBenchmarkLoop() override
     {
         stream << "\n";
         firstInRow = true;

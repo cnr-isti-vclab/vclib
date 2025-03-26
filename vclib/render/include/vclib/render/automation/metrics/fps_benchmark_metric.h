@@ -51,12 +51,12 @@ class FpsBenchmarkMetric : public BenchmarkMetric
         frames++;
     };
 
-    std::string getMeasureString()
+    std::string getMeasureString() override
     {
         return std::format("{:.3f}", frames / timer.delay());
     };
 
-    std::string getUnitOfMeasure()
+    std::string getUnitOfMeasure() override
     {
         return "fps";
     }
@@ -75,7 +75,7 @@ class FpsBenchmarkMetric : public BenchmarkMetric
     {
         return std::make_shared<FpsBenchmarkMetric>(*this);
     };
-    std::shared_ptr<BenchmarkMetric> clone()  &&
+    std::shared_ptr<BenchmarkMetric> clone()  && override
     {
         return std::make_shared<FpsBenchmarkMetric>(std::move(*this));
     };

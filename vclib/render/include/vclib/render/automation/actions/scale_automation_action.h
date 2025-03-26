@@ -26,7 +26,6 @@
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 #include <vclib/misc/timer.h>
-#include <bx/bx.h>
 
 namespace vcl{
 

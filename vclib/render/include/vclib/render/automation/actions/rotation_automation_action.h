@@ -27,7 +27,7 @@
 #include <vclib/render/viewer/desktop_trackball.h>
 #include <vclib/space/core/quaternion.h>
 #include <vclib/misc/timer.h>
-#include <bx/bx.h>
+#include <numbers>
 
 namespace vcl{
 
@@ -49,12 +49,12 @@ class RotationAutomationAction: public AbstractAutomationAction
 
     static RotationAutomationAction fromSecondsPerRotation(DesktopTrackBall<float> *trackball, float secondsPerRotation, Point3f axis)
     {
-        return RotationAutomationAction(trackball, bx::kPi2 / secondsPerRotation, axis);
+        return RotationAutomationAction(trackball, (2*std::numbers::pi_v<float>) / secondsPerRotation, axis);
     }
 
     static RotationAutomationAction* ptrFromSecondsPerRotation(DesktopTrackBall<float> *trackball, float secondsPerRotation, Point3f axis)
     {
-        return new RotationAutomationAction(trackball, bx::kPi2 / secondsPerRotation, axis);
+        return new RotationAutomationAction(trackball, (2*std::numbers::pi_v<float>) / secondsPerRotation, axis);
     }
 
     RotationAutomationAction(DesktopTrackBall<float> *trackball, float radiansPerSecond, Point3f axis)

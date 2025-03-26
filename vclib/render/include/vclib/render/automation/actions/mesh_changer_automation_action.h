@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CAHNGER_AUTOMATION_ACTION_H
+#ifndef VCL_MESH_CHANGER_AUTOMATION_ACTION_H
 #define VCL_MESH_CHANGER_AUTOMATION_ACTION_H
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
