@@ -66,7 +66,11 @@ double surfaceArea(const MeshType& m)
 
 /**
  * @brief Computes the border length of the given Mesh, that is the sum of the
- * length of the edges that are on border in the given mesh.
+ * length of the face edges that are on border in the given mesh.
+ *
+ * The function checks whether a face edge is on border by checking if the
+ * adjacent face is nullptr, therefore the mesh must have the adjacent faces
+ * computed.
  *
  * @param[in] m: mesh on which compute the border length.
  * @return The border length of the given mesh.
@@ -75,6 +79,8 @@ template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m)
 {
     using FaceType = MeshType::FaceType;
+
+    requirePerFaceAdjacentFaces(m);
 
     double l = 0;
     for (const FaceType& f : m.faces()) {
@@ -101,18 +107,19 @@ template<MeshConcept MeshType>
 auto covarianceMatrixOfPointCloud(const MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    using ScalarType = VertexType::CoordType::ScalarType;
+    using CoordType  = VertexType::CoordType;
+    using ScalarType = CoordType::ScalarType;
 
-    auto bar = barycenter(m);
+    CoordType bar = barycenter(m);
 
     Matrix33<ScalarType> mm;
     mm.setZero();
     // compute covariance matrix
     for (const VertexType& v : m.vertices()) {
-        auto e = v.coord() - bar;
-        m += e.outerProduct(e);
+        CoordType e = v.coord() - bar;
+        mm += e.outerProduct(e);
     }
-    return m;
+    return mm;
 }
 
 /**
@@ -197,27 +204,26 @@ auto covarianceMatrixOfMesh(const MeshType& m)
  */
 template<MeshConcept MeshType, typename ScalarType>
 std::vector<ScalarType> vertexRadiusFromWeights(
-    const MeshType&                m,
-    const std::vector<ScalarType>& weights,
-    double                         diskRadius,
-    double                         radiusVariance,
-    bool                           invert = false)
+    const MeshType& m,
+    Range auto&&    weights,
+    double          diskRadius,
+    double          radiusVariance,
+    bool            invert = false)
 {
     using VertexType = MeshType::VertexType;
 
-    std::vector<ScalarType> radius(m.vertexContainerSize());
-    auto minmax = std::minmax_element(weights.begin(), weights.end());
+    assert(std::ranges::size(weights) == m.vertexNumber());
 
-    float minRad   = diskRadius;
-    float maxRad   = diskRadius * radiusVariance;
-    float deltaQ   = *minmax.second - *minmax.first;
-    float deltaRad = maxRad - minRad;
-    for (const VertexType& v : m.vertices()) {
-        ScalarType w = weights[m.index(v)];
+    std::vector<ScalarType> radius(m.vertexContainerSize());
+    const auto [min, max] = std::ranges::minmax_element(weights);
+
+    double minRad   = diskRadius;
+    double maxRad   = diskRadius * radiusVariance;
+    double deltaQ   = max - min;
+    double deltaRad = maxRad - minRad;
+    for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
         radius[m.index(v)] =
-            minRad +
-            deltaRad *
-                ((invert ? *minmax.second - w : w - *minmax.first) / deltaQ);
+            minRad + deltaRad * ((invert ? max - w : w - min) / deltaQ);
     }
 
     return radius;

@@ -32,8 +32,8 @@ void initCreateAlgorithms(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    auto fCreateCone = []<FaceMeshConcept MeshType>(
-                           pybind11::module& m, MeshType = MeshType()) {
+    auto functions = []<FaceMeshConcept MeshType>(
+                         pybind11::module& m, MeshType = MeshType()) {
         std::string name =
             "create_cone_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
@@ -45,13 +45,8 @@ void initCreateAlgorithms(pybind11::module& m)
             py::arg("radius_top"),
             py::arg("height"),
             py::arg("subdivisions") = 36);
-    };
 
-    defForAllMeshTypes(m, fCreateCone);
-
-    auto fCreateCylinder = []<FaceMeshConcept MeshType>(
-                               pybind11::module& m, MeshType = MeshType()) {
-        std::string name =
+        name =
             "create_cylinder_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
@@ -61,25 +56,14 @@ void initCreateAlgorithms(pybind11::module& m)
             py::arg("radius"),
             py::arg("height"),
             py::arg("subdivisions") = 36);
-    };
 
-    defForAllMeshTypes(m, fCreateCylinder);
-
-    auto fCreateDodecahedron = []<FaceMeshConcept MeshType>(
-                                   pybind11::module& m, MeshType = MeshType()) {
-        std::string name = "create_dodecahedron_" +
-                           camelCaseToSnakeCase(meshTypeName<MeshType>());
+        name = "create_dodecahedron_" +
+               camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(name.c_str(), []() {
             return vcl::createDodecahedron<MeshType>();
         });
-    };
 
-    defForAllMeshTypes(m, fCreateDodecahedron);
-
-    auto fCreateCube = []<FaceMeshConcept MeshType>(
-                           pybind11::module& m, MeshType = MeshType()) {
-        std::string name =
-            "create_cube_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
+        name = "create_cube_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
             [](const Point3d& min, double edge) {
@@ -87,14 +71,9 @@ void initCreateAlgorithms(pybind11::module& m)
             },
             py::arg("min")  = Point3d(-0.5, -0.5, -0.5),
             py::arg("edge") = 1);
-    };
 
-    defForAllMeshTypes(m, fCreateCube);
-
-    auto fCreateHexahedron = []<FaceMeshConcept MeshType>(
-                                 pybind11::module& m, MeshType = MeshType()) {
-        std::string name = "create_hexahedron_" +
-                           camelCaseToSnakeCase(meshTypeName<MeshType>());
+        name = "create_hexahedron_" +
+               camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
             [](const Point3d& min, const Point3d& max) {
@@ -102,24 +81,14 @@ void initCreateAlgorithms(pybind11::module& m)
             },
             py::arg("min"),
             py::arg("max"));
-    };
 
-    defForAllMeshTypes(m, fCreateHexahedron);
-
-    auto fCreateIcosahedron = []<FaceMeshConcept MeshType>(
-                                  pybind11::module& m, MeshType = MeshType()) {
-        std::string name = "create_icosahedron_" +
-                           camelCaseToSnakeCase(meshTypeName<MeshType>());
+        name = "create_icosahedron_" +
+               camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(name.c_str(), []() {
             return vcl::createIcosahedron<MeshType>();
         });
-    };
 
-    defForAllMeshTypes(m, fCreateIcosahedron);
-
-    auto fCreateSphere = []<FaceMeshConcept MeshType>(
-                             pybind11::module& m, MeshType = MeshType()) {
-        std::string name =
+        name =
             "create_sphere_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
@@ -128,20 +97,15 @@ void initCreateAlgorithms(pybind11::module& m)
             },
             py::arg("center"),
             py::arg("radius"));
-    };
 
-    defForAllMeshTypes(m, fCreateSphere);
-
-    auto fCreateTetrahedron = []<FaceMeshConcept MeshType>(
-                                  pybind11::module& m, MeshType = MeshType()) {
-        std::string name = "create_tetrahedron_" +
-                           camelCaseToSnakeCase(meshTypeName<MeshType>());
+        name = "create_tetrahedron_" +
+               camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(name.c_str(), []() {
             return vcl::createTetrahedron<MeshType>();
         });
     };
 
-    defForAllMeshTypes(m, fCreateTetrahedron);
+    defForAllMeshTypes(m, functions);
 }
 
 } // namespace vcl::bind

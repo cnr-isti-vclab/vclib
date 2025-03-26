@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/font_basic.h>
 
-#include <shaders/font/fs_font_basic.sc.glsl.bin.h>
-#include <shaders/font/vs_font_basic.sc.glsl.bin.h>
+#include <vclib/shaders/font/fs_font_basic.sc.glsl.bin.h>
+#include <vclib/shaders/font/vs_font_basic.sc.glsl.bin.h>
 
-#include <shaders/font/fs_font_basic.sc.essl.bin.h>
-#include <shaders/font/vs_font_basic.sc.essl.bin.h>
+#include <vclib/shaders/font/fs_font_basic.sc.essl.bin.h>
+#include <vclib/shaders/font/vs_font_basic.sc.essl.bin.h>
 
-#include <shaders/font/fs_font_basic.sc.spv.bin.h>
-#include <shaders/font/vs_font_basic.sc.spv.bin.h>
+#include <vclib/shaders/font/fs_font_basic.sc.spv.bin.h>
+#include <vclib/shaders/font/vs_font_basic.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/font/fs_font_basic.sc.dx11.bin.h>
-#include <shaders/font/vs_font_basic.sc.dx11.bin.h>
+#include <vclib/shaders/font/fs_font_basic.sc.dx11.bin.h>
+#include <vclib/shaders/font/vs_font_basic.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/font/fs_font_basic.sc.mtl.bin.h>
-#include <shaders/font/vs_font_basic.sc.mtl.bin.h>
+#include <vclib/shaders/font/fs_font_basic.sc.mtl.bin.h>
+#include <vclib/shaders/font/vs_font_basic.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

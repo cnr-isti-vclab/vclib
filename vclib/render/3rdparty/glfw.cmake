@@ -42,7 +42,8 @@ elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
 
     FetchContent_Declare(glfw3
         GIT_REPOSITORY https://github.com/glfw/glfw.git
-        GIT_TAG        3.4)
+        GIT_TAG        3.4
+        EXCLUDE_FROM_ALL)
 
     FetchContent_MakeAvailable(glfw3)
 

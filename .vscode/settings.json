@@ -44,6 +44,7 @@
         "vclib"
     ],
     "doxygen_runner.configuration_file_override": "${workspaceFolder}/docs/Doxyfile",
+    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
     "files.associations": {
         "algorithm": "cpp",
         "any": "cpp",

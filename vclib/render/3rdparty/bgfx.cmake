@@ -43,8 +43,6 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     set_target_properties(bgfx::geometryv PROPERTIES IMPORTED_GLOBAL TRUE)
     set_target_properties(bgfx::shaderc PROPERTIES IMPORTED_GLOBAL TRUE)
 
-    set(VCLIB_BGFX_CMAKE_DIR "${bgfx_DIR}")
-
     # get bgfx include path
     get_target_property(BGFX_INCLUDE_PATH bgfx::bgfx INTERFACE_INCLUDE_DIRECTORIES)
 
@@ -59,6 +57,9 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH})
+
+    set_target_properties(vclib-3rd-bgfx PROPERTIES
+        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_DIR})
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 
@@ -75,7 +76,7 @@ elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 
     set(BGFX_WITH_WAYLAND ${VCLIB_RENDER_WITH_WAYLAND})
 
-    add_subdirectory(${VCLIB_BGFX_DIR})
+    add_subdirectory(${VCLIB_BGFX_DIR} EXCLUDE_FROM_ALL)
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
@@ -86,7 +87,8 @@ elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
 
-    set(VCLIB_BGFX_CMAKE_DIR "${VCLIB_BGFX_DIR}/cmake")
+    set_target_properties(vclib-3rd-bgfx PROPERTIES
+        BGFX_CMAKE_SCRIPTS_PATH ${VCLIB_BGFX_DIR}/cmake)
 
     set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${VCLIB_BGFX_DIR}/bgfx/src)
@@ -95,8 +97,4 @@ elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 else()
     message(FATAL_ERROR
         "bgfx is required - be sure to clone recursively the vclib repository.")
-endif()
-
-if (TARGET vclib-3rd-bgfx)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 endif()

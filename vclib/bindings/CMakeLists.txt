@@ -68,5 +68,16 @@ foreach(MODULE ${PYTHON_MODULES})
     # in the ${VCLIB_MODULE_BINARY_DIR}/__init__.py, append a line with:
     # from .${MODULE} import *
     file(APPEND "${VCLIB_MODULE_BINARY_DIR}/__init__.py" "from .${MODULE} import *\n")
+
+    # Install
+    install(TARGETS ${MODULE}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/python${VCLIB_PYTHON_VERSION}/site-packages/vclib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach()
+
+# Install
+install(FILES "${VCLIB_MODULE_BINARY_DIR}/__init__.py"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/python${VCLIB_PYTHON_VERSION}/site-packages/vclib)
+
 
