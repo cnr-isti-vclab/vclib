@@ -56,14 +56,36 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     bgfx::ProgramHandle mProgramSurface =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
+            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_ID>();
 
     bgfx::ProgramHandle mProgramWireframe =
         Context::instance()
             .programManager()
             .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME>();
 
+    bgfx::ProgramHandle mProgramEdgesID =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES_ID>();
+    
+    bgfx::ProgramHandle mProgramPointsID =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_POINTS_ID>();
+
+    bgfx::ProgramHandle mProgramSurfaceID =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_ID>();
+
+    bgfx::ProgramHandle mProgramWireframeID =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME_ID>();
+
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
+
+    Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
 
 public:
     DrawableMeshBGFX() = default;
@@ -151,6 +173,12 @@ public:
 
     void draw(uint viewId) const override
     {
+        // generate random uint between 1 and 2^32 - 1
+        const uint id = 1 + (rand() % (4294967295 - 1 + 1));
+        std::cout << "id: " << id << std::endl;
+        drawId(viewId, id);
+        return;
+
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
@@ -196,6 +224,66 @@ public:
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
                 bindUniforms();
+
+                bgfx::setState(state | BGFX_STATE_PT_LINES);
+
+                bgfx::submit(viewId, mProgramEdges);
+            }
+        }
+    }
+
+    void drawId(uint viewId, uint id) const override
+    {
+        uint64_t state = 0
+        | BGFX_STATE_WRITE_RGB
+        | BGFX_STATE_WRITE_A
+        | BGFX_STATE_WRITE_Z
+        | BGFX_STATE_DEPTH_TEST_LEQUAL
+        | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
+        
+        const std::array<float,4> idFloat = {Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
+
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            if (bgfx::isValid(mProgramPointsID)) {
+                mMRB.bindVertexBuffers(mMRS);
+                mIdUniform.bind(&idFloat[0]);
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+
+                bgfx::submit(viewId, mProgramPointsID);
+            }
+        }
+
+        if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
+            if (bgfx::isValid(mProgramSurface)) {
+                mMRB.bindTextures(); // Bind textures before vertex buffers!!
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS);
+                mIdUniform.bind(&idFloat);
+
+                bgfx::setState(state);
+
+                bgfx::submit(viewId, mProgramSurface);
+            }
+        }
+
+        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
+            if (bgfx::isValid(mProgramWireframe)) {
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
+                mIdUniform.bind(&idFloat);
+
+                bgfx::setState(state | BGFX_STATE_PT_LINES);
+
+                bgfx::submit(viewId, mProgramWireframe);
+            }
+        }
+
+        if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
+            if (bgfx::isValid(mProgramEdges)) {
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
+                mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
