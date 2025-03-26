@@ -28,7 +28,7 @@
 namespace vcl{
 
 /*
-    Absttract class that represents a way of measuring the performance of an Automation.
+    Abstract class that represents a way of measuring the performance of an Automation.
 */
 class BenchmarkMetric
 {

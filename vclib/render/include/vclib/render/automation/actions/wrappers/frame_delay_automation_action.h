@@ -29,7 +29,7 @@ namespace vcl{
 
 /*
     Automation that allows you to add a delay (in terms of frames) to an action,
-    so that it starts only after the delay has elapsed
+    so that it can be started only after the delay has elapsed
 */
 class FrameDelayAutomationAction : public WrapperAutomationAction
 {

@@ -29,9 +29,7 @@
 namespace vcl{
 
 /*
-    An automation which represents a sequence of actions. Keep in mind
-    that since this is considered as a single action, metrics are only measured
-    once for the entire group
+    An automation which represents a sequence of actions.
 */
 class SequentialAutomationActions : public AbstractAutomationAction
 {

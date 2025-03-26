@@ -28,8 +28,9 @@
 namespace vcl{
 
 /*
-    Automation that allows you to add a maximum duration (in terms of start() calls) to an automation,
-    so that after the chosen duration has elapsed the automation is guaranteed to be over
+    Automation that allows you to add a maximum amount of times start() is called (in terms of start() calls) 
+    to an automation, so that after start() has been called for those many times the automation is guaranteed 
+    to never be started again
 */
 class StartCountLimitedAutomationAction : public WrapperAutomationAction
 {

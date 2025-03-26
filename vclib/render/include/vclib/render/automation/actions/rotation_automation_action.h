@@ -33,7 +33,7 @@ namespace vcl{
 
 
 /*
-    An action that represent the rotation of a DesktopTrackball, with the intensity of the rotation
+    An automation that represent the rotation of a DesktopTrackball, with the intensity of the rotation
     calculated using the time between frames
 */
 class RotationAutomationAction: public AbstractAutomationAction

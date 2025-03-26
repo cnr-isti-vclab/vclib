@@ -29,7 +29,7 @@ namespace vcl{
 
 /*
     Automation that allows you to add a delay (in terms of number of start() calls) to an action,
-    so that it starts only after the delay has elapsed
+    so that the inner automation can be started only after the delay has elapsed
 */
 class StartCountDelayAutomationAction : public WrapperAutomationAction
 {

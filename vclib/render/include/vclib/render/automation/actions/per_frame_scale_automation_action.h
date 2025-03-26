@@ -31,7 +31,7 @@ namespace vcl{
 
 
 /*
-    An action that represent the scaling of a DesktopTrackball, with the intensity of the scaling
+    An automation that represent the scaling of a DesktopTrackball, with the intensity of the scaling
     calculated per frame
 */
 class PerFrameScaleAutomationAction : public AbstractAutomationAction
