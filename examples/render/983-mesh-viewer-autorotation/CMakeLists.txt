@@ -22,8 +22,9 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-3rd-imgui)
-    add_subdirectory(imgui)
+if (TARGET vclib-3rd-glfw)
+    add_subdirectory(glfw)
 endif()
-
-
+if (TARGET vclib-3rd-qt)
+    add_subdirectory(qt)
+endif()

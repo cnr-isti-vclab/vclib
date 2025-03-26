@@ -20,15 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
-
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
+
+#include "get_drawable_mesh.h"
 
 #include <vclib/imgui/imgui_drawer.h>
 
-#include <vclib/qt/widget_manager.h>
+#include <vclib/algorithms/mesh/stat/bounding_box.h>
+#include <vclib/algorithms/mesh/update/transform.h>
+#include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 #include <vclib/render/automation/actions.h>
@@ -36,22 +37,20 @@
 #include <vclib/render/automation/metrics.h>
 #include <vclib/render/drawers/benchmark_drawer.h>
 
-#include <QApplication>
-
-using ViewerWidget = vcl::RenderApp<
-    vcl::qt::WidgetManager,
-    vcl::Canvas,
-    vcl::imgui::ImGuiDrawer,
-    vcl::ViewerDrawer,
-    vcl::BenchmarkDrawer>;
+#include <imgui.h>
 
 int main(int argc, char** argv)
 {
+    using ImguiMeshViewer = vcl::RenderApp<
+        vcl::glfw::WindowManager,
+        vcl::Canvas,
+        vcl::imgui::ImGuiDrawer,
+        vcl::imgui::MeshViewerDrawerImgui,
+        vcl::BenchmarkDrawer>;
+
     vcl::Context::setResetFlags(BGFX_RESET_NONE);
 
-    QApplication app(argc, argv);
-
-    ViewerWidget tw("Mesh Viewer ImGui Qt");
+    ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>("bunny.obj");
@@ -60,47 +59,58 @@ int main(int argc, char** argv)
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
-    tw.setRepeatTimes(8);
+
+    //Repeat all automations 3 times
+    tw.setRepeatTimes(3);
+    
+    //Wait 1 loop, then change the mesh but do it only once
     tw.addAutomation(
         vcl::StartCountDelayAutomationAction(
             vcl::StartCountLimitedAutomationAction(
-                vcl::MeshChangerAutomationAction(
-                    &tw,
-                    drawable2
-                ),
+                vcl::MeshChangerAutomationAction(&tw, drawable2),
                 1
             ),
-            4
+            1
         )
     );
+ 
+    //Change the measured metric to FPS
     tw.addAutomation(
-        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(&tw, vcl::FpsBenchmarkMetric()),
+        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ImguiMeshViewer>>(&tw, vcl::FpsBenchmarkMetric()),
         false
     );
+ 
+    //Rotate and scale at the same time for 2 seconds
     tw.addAutomation(
-        vcl::FrameLimitedAutomationAction(
+        vcl::TimeLimitedAutomationAction(
             vcl::SimultaneousAutomationActions{
                 vcl::RotationAutomationAction(&tw, 5.f, {0.f,0.f,1.f}),
                 vcl::ScaleAutomationAction(&tw, -0.01f)
             },
-            10000.f
+            2.f
         )
     );
+ 
+    //Change the measured metric to time (seconds)
     tw.addAutomation(
-        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(&tw, vcl::TimeBenchmarkMetric()),
+        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ImguiMeshViewer>>(&tw, vcl::TimeBenchmarkMetric()),
         false
     );
+ 
+     //Rotate for 5000 frames and then scale for 5000 frames
     tw.addAutomation(
         vcl::SequentialAutomationActions{
             vcl::FrameLimitedAutomationAction( vcl::RotationAutomationAction(&tw, 5.f, {0.f,-1.f,0.f}), 5000.f),
             vcl::FrameLimitedAutomationAction( vcl::ScaleAutomationAction(&tw, 0.02f), 5000.f)
         }
     );
+ 
+    //Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
-    
+
     tw.fitScene();
 
     tw.show();
 
-    return app.exec();
+    return 0;
 }
