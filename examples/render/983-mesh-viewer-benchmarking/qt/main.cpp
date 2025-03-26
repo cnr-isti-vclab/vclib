@@ -47,7 +47,11 @@ using ViewerWidget = vcl::RenderApp<
 
 int main(int argc, char** argv)
 {
-    vcl::Context::setResetFlags(BGFX_RESET_NONE);
+    #ifdef VCLIB_RENDER_BACKEND_BGFX
+
+        vcl::Context::setResetFlags(BGFX_RESET_NONE);
+
+    #endif
 
     QApplication app(argc, argv);
 

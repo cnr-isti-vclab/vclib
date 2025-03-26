@@ -48,7 +48,11 @@ int main(int argc, char** argv)
         vcl::imgui::MeshViewerDrawerImgui,
         vcl::BenchmarkDrawer>;
 
-    vcl::Context::setResetFlags(BGFX_RESET_NONE);
+    #ifdef VCLIB_RENDER_BACKEND_BGFX
+
+        vcl::Context::setResetFlags(BGFX_RESET_NONE);
+
+    #endif
 
     ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
 
