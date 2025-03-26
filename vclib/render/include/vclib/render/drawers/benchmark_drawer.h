@@ -57,7 +57,7 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     */
     bool beforeStartWaitTimerStarted = false;
     vcl::Timer beforeStartWaitTimer;
-    double beforeStartWaitSeconds = 0.5f;
+    double beforeStartWaitSeconds = 0.4f;
 
     vcl::PolymorphicObjectVector<AbstractAutomationAction> automations;
     /*
