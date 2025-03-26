@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 983-mesh-viewer-autorotation-imgui-qt)
+set(EXAMPLE_NAME 983-mesh-viewer-benchmarking-imgui-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings

@@ -48,7 +48,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(06-viewer-imgui)
     add_subdirectory(07-test-texcoords)
 
-    add_subdirectory(983-mesh-viewer-autorotation)
+    add_subdirectory(983-mesh-viewer-benchmarking)
     add_subdirectory(999-misc)
 
     # the following examples are the same of the ones in the core module,

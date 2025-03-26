@@ -104,7 +104,7 @@ int main(int argc, char** argv)
         )
     );
 
-    //Change the measured metric to time (seconds)
+    //Change the measured metric to time (seconds) 
     tw.addAutomation(
         vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ImguiMeshViewer>>(&tw, vcl::TimeBenchmarkMetric()),
         false
