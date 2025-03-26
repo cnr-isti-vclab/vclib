@@ -26,6 +26,12 @@
 #include <vclib/io/file_info.h>
 #include <vclib/misc/string.h>
 
+// disable deprecated warnings - just for stb
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 #define STB_IMAGE_STATIC // make stb static
 #define STB_IMAGE_WRITE_STATIC
 #define STB_IMAGE_IMPLEMENTATION // and then include the implementation
@@ -38,6 +44,10 @@
 // header-only
 #include "../../../external/stb-master/stb/stb_image.h"
 #include "../../../external/stb-master/stb/stb_image_write.h"
+#endif
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #include <memory>
