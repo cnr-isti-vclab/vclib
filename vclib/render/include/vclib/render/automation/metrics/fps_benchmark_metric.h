@@ -71,7 +71,7 @@ class FpsBenchmarkMetric : public BenchmarkMetric
         timer.stop();
     };
 
-    std::shared_ptr<BenchmarkMetric> clone() const &
+    std::shared_ptr<BenchmarkMetric> clone() const & override
     {
         return std::make_shared<FpsBenchmarkMetric>(*this);
     };
