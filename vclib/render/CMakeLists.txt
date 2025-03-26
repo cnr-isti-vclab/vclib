@@ -159,6 +159,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+
     target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_BACKEND_BGFX)
 
     build_bgfx_shaders_to_headers(${SHADERS})
@@ -191,6 +193,6 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/cmake/bgfx_config.cmake
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
 endif()

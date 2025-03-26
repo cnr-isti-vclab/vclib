@@ -20,7 +20,9 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-include(${VCLIB_BGFX_CMAKE_DIR}/bgfxToolUtils.cmake)
+get_property(BGFX_CMAKE_SCRIPTS_PATH TARGET vclib-3rd-bgfx PROPERTY BGFX_CMAKE_SCRIPTS_PATH)
+
+include(${BGFX_CMAKE_SCRIPTS_PATH}/bgfxToolUtils.cmake)
 
 function(_set_bgfx_profiles)
     set(GLSL_PROFILE 140 PARENT_SCOPE)
