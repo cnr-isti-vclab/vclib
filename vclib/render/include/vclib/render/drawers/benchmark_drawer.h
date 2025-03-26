@@ -74,7 +74,6 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     std::shared_ptr<BenchmarkMetric> metric = FpsBenchmarkMetric().clone();
     std::shared_ptr<BenchmarkPrinter> printer = StdoutBenchmarkPrinter().clone();
 
-    bool toStdOut = true;
     bool firstCall = true;
     bool allDone = false;
 
@@ -170,11 +169,6 @@ public:
         allDone = false;
         repeatCount = 0;
     };
-
-    void useStdOut()
-    {
-        toStdOut = true;
-    }
 
     void setMetric(const BenchmarkMetric &bm)
     {

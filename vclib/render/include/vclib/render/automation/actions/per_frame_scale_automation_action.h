@@ -36,23 +36,6 @@ namespace vcl{
 */
 class PerFrameScaleAutomationAction : public AbstractAutomationAction
 {
-    static inline uint32_t activeCount = 0;
-
-    static void notifyStarted()
-    {
-        activeCount++;
-    }
-
-    static void notifyEnded()
-    {
-        activeCount--;
-    }
-
-    static bool isAnyActive()
-    {
-        return activeCount != 0;
-    }
-
     using Parent = AbstractAutomationAction;
     DesktopTrackBall<float> *trackball;
     float pixelDeltaPerFrame;
@@ -69,8 +52,6 @@ class PerFrameScaleAutomationAction : public AbstractAutomationAction
     void start() override
     {
         Parent::start();
-        notifyStarted();
-        trackball->startIgnoringTrackBallEvents();
     }
 
     void doAction() override
@@ -84,10 +65,6 @@ class PerFrameScaleAutomationAction : public AbstractAutomationAction
     void end() override
     {
         Parent::end();
-        notifyEnded();
-        if(!isAnyActive()){
-            trackball->stopIgnoringTrackBallEvents();
-        }
         totalPixelDelta = 0;
     };
 

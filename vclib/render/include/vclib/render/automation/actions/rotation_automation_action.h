@@ -38,24 +38,6 @@ namespace vcl{
 */
 class RotationAutomationAction: public AbstractAutomationAction
 {
-    static inline uint32_t activeCount = 0;
-
-
-    static void notifyStarted()
-    {
-        activeCount++;
-    }
-
-    static void notifyEnded()
-    {
-        activeCount--;
-    }
-
-    static bool isAnyActive()
-    {
-        return activeCount != 0;
-    }
-
     using Parent = AbstractAutomationAction;
     DesktopTrackBall<float> *trackball;
     float radiansPerSecond;
@@ -84,9 +66,7 @@ class RotationAutomationAction: public AbstractAutomationAction
     void start() override
     {
         Parent::start();
-        notifyStarted();
         timer.start();
-        trackball->startIgnoringTrackBallEvents();
     };
 
     void doAction() override
@@ -102,11 +82,7 @@ class RotationAutomationAction: public AbstractAutomationAction
     void end() override
     {
         Parent::end();
-        notifyEnded();
         timer.stop();
-        if(!isAnyActive()){
-            trackball->stopIgnoringTrackBallEvents();
-        }
     };
 
     std::shared_ptr<AbstractAutomationAction> clone() const & override

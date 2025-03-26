@@ -20,13 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PER_FRAME_ROTATION_AUTOMATION_ACTION_H
-#define VCL_PER_FRAME_ROTATION_AUTOMATION_ACTION_H
+#ifndef VCL_TRACKBALL_EVENT_IGNORE_AUTOMATION_ACTION_H
+#define VCL_TRACKBALL_EVENT_IGNORE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
-#include <vclib/space/core/quaternion.h>
-#include <bx/bx.h>
 
 namespace vcl{
 
@@ -34,43 +32,33 @@ namespace vcl{
     An automation that represent the rotation of a DesktopTrackball, with the intensity of the rotation
     calculated per frame
 */
-class PerFrameRotationAutomationAction : public AbstractAutomationAction
+class TrackballEventIgnoreAutomationAction : public AbstractAutomationAction
 {
-    using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float> *trackball;
-    float radiansPerFrame;
-    Point3f around;
+   using Parent = AbstractAutomationAction;
+   DesktopTrackBall<float> *trackball;
+   bool ignoreEvents;
 
     public:
 
-    static PerFrameRotationAutomationAction fromFramesPerRotation(DesktopTrackBall<float> *trackball, float framesPerRotation, Point3f axis)
-    { 
-        return PerFrameRotationAutomationAction(trackball, bx::kPi2 / framesPerRotation, axis);
-    }
-
-    static PerFrameRotationAutomationAction* ptrFromFramesPerRotation(DesktopTrackBall<float> *trackball, float framesPerRotation, Point3f axis)
-    {
-        return new PerFrameRotationAutomationAction(trackball, bx::kPi2 / framesPerRotation, axis);
-    }
-
-    PerFrameRotationAutomationAction(DesktopTrackBall<float> *trackball, float radiansPerFrame, Point3f axis)
-    : trackball{trackball},
-    radiansPerFrame{radiansPerFrame},
-    around{axis}
-    {};
+   TrackballEventIgnoreAutomationAction(DesktopTrackBall<float> *trackball, bool ignoreEvents)
+   : trackball{trackball},
+   ignoreEvents{ignoreEvents}
+   {};
 
     void start() override
     {
-        Parent::start();
-        trackball->startIgnoringTrackBallEvents();
+       Parent::start();
     };
 
     void doAction() override
     {
         Parent::doAction();
-        auto rotation = Quaternion<float>(radiansPerFrame, around);
-
-        trackball->rotate(rotation);
+        if(ignoreEvents){
+            trackball->startIgnoringTrackBallEvents();
+        }else{
+            trackball->stopIgnoringTrackBallEvents();
+        }
+        end();
     };
 
     void end() override
@@ -80,12 +68,12 @@ class PerFrameRotationAutomationAction : public AbstractAutomationAction
 
     std::shared_ptr<AbstractAutomationAction> clone() const & override
     {
-        return std::make_shared<PerFrameRotationAutomationAction>(*this);
+        return std::make_shared<TrackballEventIgnoreAutomationAction>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<PerFrameRotationAutomationAction>(std::move(*this));
+        return std::make_shared<TrackballEventIgnoreAutomationAction>(std::move(*this));
     }
 };
 

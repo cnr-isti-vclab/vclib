@@ -37,24 +37,6 @@ namespace vcl{
 */
 class ScaleAutomationAction : public AbstractAutomationAction
 {
-
-    static inline uint32_t activeCount = 0;
-
-    static void notifyStarted()
-    {
-        activeCount++;
-    }
-
-    static void notifyEnded()
-    {
-        activeCount--;
-    }
-
-    static bool isAnyActive()
-    {
-        return activeCount != 0;
-    }
-
     using Parent = AbstractAutomationAction;
     DesktopTrackBall<float> *trackball;
     float pixelDeltaPerSecond;
@@ -72,9 +54,7 @@ class ScaleAutomationAction : public AbstractAutomationAction
     void start() override
     {
         Parent::start();
-        notifyStarted();
         timer.start();
-        trackball->startIgnoringTrackBallEvents();
     }
 
     void doAction() override
@@ -90,11 +70,7 @@ class ScaleAutomationAction : public AbstractAutomationAction
     void end() override
     {
         Parent::end();
-        notifyEnded();
         timer.stop();
-        if(!isAnyActive()){
-            trackball->stopIgnoringTrackBallEvents();
-        }
         totalPixelDelta = 0;
     };
 

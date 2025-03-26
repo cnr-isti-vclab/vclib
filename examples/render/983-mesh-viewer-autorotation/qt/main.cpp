@@ -64,6 +64,16 @@ int main(int argc, char** argv)
     //Repeat all automations 2 times
     tw.setRepeatTimes(3);
     
+    //Before starting we disable trackball events. We want this to be done only once
+    tw.addAutomation(
+        vcl::StartCountLimitedAutomationAction(
+            vcl::TrackballEventIgnoreAutomationAction(&tw, true),
+            1
+        ),
+        //We don't want to measure the metric for this automation
+        false
+    );
+
     //After the first loop, change the mesh
     tw.addAutomation(
         vcl::StartCountDelayAutomationAction(
@@ -107,6 +117,16 @@ int main(int argc, char** argv)
             vcl::FrameLimitedAutomationAction( vcl::RotationAutomationAction(&tw, 5.f, {0.f,-1.f,0.f}), 5000.f),
             vcl::FrameLimitedAutomationAction( vcl::ScaleAutomationAction(&tw, 0.02f), 5000.f)
         }
+    );
+
+    //When all the automations are finished, we reenable trackball events
+    tw.addAutomation(
+        vcl::StartCountDelayAutomationAction(
+            vcl::TrackballEventIgnoreAutomationAction(&tw, false),
+            2
+        ),
+        //We don't want to measure the metric for this automation
+        false
     );
 
     //Print the results in a json file
