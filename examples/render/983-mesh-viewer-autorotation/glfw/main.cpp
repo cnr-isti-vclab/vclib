@@ -71,12 +71,15 @@ int main(int argc, char** argv)
                 1
             ),
             1
-        )
+        ),
+        //We don't want to measure the metric for this automation
+        false
     );
  
     //Change the measured metric to FPS
     tw.addAutomation(
         vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ImguiMeshViewer>>(&tw, vcl::FpsBenchmarkMetric()),
+        //We don't want to measure the metric for this automation
         false
     );
  
