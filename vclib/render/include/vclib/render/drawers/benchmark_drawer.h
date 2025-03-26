@@ -105,6 +105,8 @@ public:
     using Parent::onResize;
     using Parent::onPostDraw;
 
+    /*WARNING: repeating forever does not work properly with printers. It is recommended to only
+    repeat forever with a NullBenchmarkPrinter*/
     void setRepeatTimes(float repeatTimes)
     {
         this->repeatTimes = repeatTimes;
