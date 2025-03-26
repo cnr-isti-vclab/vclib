@@ -55,6 +55,11 @@ class TimeBenchmarkMetric : public BenchmarkMetric
         return "s";
     }
 
+    std::string getFullLengthUnitOfMeasure() override
+    {
+        return "seconds";
+    }
+
     void end() override
     {
         timer.stop();

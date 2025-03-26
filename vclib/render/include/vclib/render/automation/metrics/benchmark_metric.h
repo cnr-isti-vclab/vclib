@@ -38,6 +38,7 @@ class BenchmarkMetric
     virtual void measure() = 0;
     virtual std::string getMeasureString() = 0;
     virtual std::string getUnitOfMeasure() = 0;
+    virtual std::string getFullLengthUnitOfMeasure() = 0;
     virtual void end() = 0;
 
     virtual std::shared_ptr<BenchmarkMetric> clone() const & = 0;

@@ -61,6 +61,11 @@ class FpsBenchmarkMetric : public BenchmarkMetric
         return "fps";
     }
 
+    std::string getFullLengthUnitOfMeasure() override
+    {
+        return "frames per second";
+    }
+
     void end() override
     {
         timer.stop();

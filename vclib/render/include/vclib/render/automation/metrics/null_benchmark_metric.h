@@ -42,7 +42,9 @@ class NullBenchmarkMetric : public BenchmarkMetric
 
     std::string getMeasureString() { return ""; };
 
-    std::string getUnitOfMeasure() { return ""; }
+    std::string getUnitOfMeasure() { return ""; };
+
+    std::string getFullLengthUnitOfMeasure() { return ""; };
 
     void end() override {};
 
