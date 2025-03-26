@@ -221,5 +221,3 @@ build/*
 */*.vsix
 
 .vscode/c_cpp_properties.json
-
-assets/example_meshes/ESTE_PRINT.ply
