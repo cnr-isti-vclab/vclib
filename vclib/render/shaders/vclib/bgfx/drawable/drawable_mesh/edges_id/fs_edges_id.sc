@@ -28,7 +28,6 @@ void main()
 {
     /***** render ID to color ******/
     vec4 color = uintABGRToVec4Color(floatBitsToUint(u_meshId.r));
-    color.w = 1.0;
 
     gl_FragColor = color;
 }
