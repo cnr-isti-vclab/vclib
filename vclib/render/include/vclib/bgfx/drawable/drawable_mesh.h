@@ -56,7 +56,7 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
     bgfx::ProgramHandle mProgramSurface =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_ID>();
+            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
 
     bgfx::ProgramHandle mProgramWireframe =
         Context::instance()
@@ -234,7 +234,8 @@ public:
         | BGFX_STATE_WRITE_Z
         | BGFX_STATE_DEPTH_TEST_LEQUAL
         | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
-        
+        // write alpha as is
+
         const std::array<float,4> idFloat = {Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
@@ -249,7 +250,7 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            if (bgfx::isValid(mProgramSurface)) {
+            if (bgfx::isValid(mProgramSurfaceID)) {
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS);
@@ -257,31 +258,31 @@ public:
 
                 bgfx::setState(state);
 
-                bgfx::submit(viewId, mProgramSurface);
+                bgfx::submit(viewId, mProgramSurfaceID);
             }
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            if (bgfx::isValid(mProgramWireframe)) {
+            if (bgfx::isValid(mProgramWireframeID)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
                 mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewId, mProgramWireframe);
+                bgfx::submit(viewId, mProgramWireframeID);
             }
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
-            if (bgfx::isValid(mProgramEdges)) {
+            if (bgfx::isValid(mProgramEdgesID)) {
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
                 mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewId, mProgramEdges);
+                bgfx::submit(viewId, mProgramEdgesID);
             }
         }
     }
