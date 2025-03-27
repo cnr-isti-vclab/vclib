@@ -32,7 +32,9 @@ add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
 add_library(vclib::processing ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} INTERFACE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    ${VCLIB_PROCESSING_INCLUDE_DIR})
+
+target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_PROCESSING_MODULE)
 
 target_link_libraries(${PROJECT_NAME} INTERFACE vclib::core)
 
