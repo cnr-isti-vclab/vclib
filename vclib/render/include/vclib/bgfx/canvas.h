@@ -331,7 +331,19 @@ private:
         // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        DerivedRenderApp::CNV::drawContent(derived());
+        switch (mReadRequest->type())
+        {
+        case ReadFramebufferRequest::Type::COLOR:
+        case ReadFramebufferRequest::Type::DEPTH:
+            DerivedRenderApp::CNV::drawContent(derived());
+            break;
+        case ReadFramebufferRequest::Type::ID:
+            DerivedRenderApp::CNV::drawId(derived());
+            break;
+        default:
+            assert(false && "unsupported readback type");
+            break;
+        }
         mViewId = tmpId;
     }
 

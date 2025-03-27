@@ -109,6 +109,17 @@ public:
         ParentViewer::drawableObjectVector().draw(viewId);
     }
 
+    void onDrawId(uint viewId) override
+    {
+        bgfx::setViewTransform(
+            viewId, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+
+        mCameraUniforms.updateCamera(DTB::camera());
+        mCameraUniforms.bind();
+
+        ParentViewer::drawableObjectVector().drawId(viewId, uint(1));
+    }
+
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         if (key == Key::F1) {
@@ -138,6 +149,21 @@ public:
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+    }
+
+    void onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        if (button == MouseButton::RIGHT) {
+            ParentViewer::readIdRequest(x, y, [](uint id) {
+                std::cout << "ID: " << id << std::endl;
+            });
+        }
+
+        ParentViewer::onMousePress(button, x, y, modifiers);
     }
 
     void toggleAxisVisibility() override

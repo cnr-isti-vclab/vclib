@@ -324,6 +324,16 @@ private:
          ...);
     }
 
+    void cnvDrawId()
+    {
+        // call the onDrawId member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers<RenderApp>*>(this)->onDrawId(
+             CanvasType::viewId()),
+         ...);
+    }
+
     void cnvPostDraw()
     {
         // call the onPostDraw member function of each Drawer object.
@@ -357,7 +367,7 @@ private:
         const Point2i&                      point,
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
-        return CanvasType::onReadID(point, callback);
+        return CanvasType::onReadId(point, callback);
     }
 
     void dScreenshot(const std::string& filename, uint multiplier = 1)
@@ -600,6 +610,15 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
     static void drawContent(RenderApp* r) { r->cnvDrawContent(); }
 
     /**
+     * @brief The CanvasType wants to draw only the IDs of the objects, without
+     * any decorator (e.g. axis, trackball, grid, etc.).
+     * This scenario is useful when the user wants to take a snapshot of the
+     * scene without any decoration. It asks the RenderApp to call the
+     * `onDrawId(uint())` function for every Drawer object.
+     */
+    static void drawId(RenderApp* r) { r->cnvDrawId(); }
+
+    /**
      * @brief The CanvasType has finished drawing and has submitted the new
      * frame, and asks the RenderApp to call the `onPostDraw()` function for
      * every Drawer object.
@@ -729,7 +748,7 @@ public: // TODO - remove this when C++26 is supported
         const Point2i&                      point,
         ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
-        return r->dReadID(point, callback);
+        return r->dReadId(point, callback);
     }
 
     /**
