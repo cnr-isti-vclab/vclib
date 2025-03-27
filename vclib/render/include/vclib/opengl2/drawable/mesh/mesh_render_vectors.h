@@ -360,25 +360,22 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         mTextures.clear();
-        if constexpr (vcl::HasTextureImages<MeshType>) {
-            for (const vcl::Texture& t : mesh.textures()) {
-                if (t.image().isNull()) { // the texture has not been loaded
-                    vcl::Image txt(mesh.meshBasePath() + t.path());
-                    txt.mirror();
-                    mTextures.push_back(txt);
+        mTextures.reserve(mesh.textureNumber());
+        for (uint i = 0; i < mesh.textureNumber(); ++i) {
+            vcl::Image txt;
+            if constexpr (vcl::HasTextureImages<MeshType>) {
+                if (mesh.texture(i).image().isNull()) {
+                    txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
                 }
                 else {
-                    mTextures.push_back(t.image());
-                    mTextures.back().mirror();
+                    txt = mesh.texture(i).image();
                 }
             }
-        }
-        else {
-            for (uint i = 0; i < mesh.textureNumber(); ++i) {
-                vcl::Image txt(mesh.meshBasePath() + mesh.texturePath(i));
-                txt.mirror();
-                mTextures.push_back(txt);
+            else {
+                txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
             }
+            txt.mirror();
+            mTextures.push_back(txt);
         }
     }
 
