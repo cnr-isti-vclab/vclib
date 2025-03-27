@@ -130,10 +130,14 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        const bool homogeneousNDC =
-            Context::instance().capabilites().homogeneousDepth;
+        ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
+        
+        if (button == MouseButton::LEFT) {
+            const bool homogeneousNDC =
+                Context::instance().capabilites().homogeneousDepth;
 
-        ParentViewer::readDepthRequest(x, y, homogeneousNDC);
+            ParentViewer::readDepthRequest(x, y, homogeneousNDC);
+        }
     }
 
     void toggleAxisVisibility() override
