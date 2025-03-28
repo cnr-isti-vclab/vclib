@@ -9,7 +9,10 @@
 
 #include <bx/bx.h>
 #include <bx/math.h>
+
+#define STB_TRUETYPE_IMPLEMENTATION
 #include <stb/stb_truetype.h>
+
 //#include "../common.h"
 #include <bgfx/bgfx.h>
 

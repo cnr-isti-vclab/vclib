@@ -151,6 +151,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${VCLIB_RENDER_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/include)
 
+target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_RENDER_MODULE)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
 

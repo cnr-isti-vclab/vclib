@@ -35,6 +35,7 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
 add_library(vclib::external ALIAS ${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_EXTERNAL_INCLUDE_DIR})
+target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_EXTERNAL_MODULE)
 
 target_link_libraries(${PROJECT_NAME} INTERFACE
     ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib::core)

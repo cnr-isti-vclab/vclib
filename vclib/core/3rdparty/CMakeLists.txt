@@ -45,6 +45,7 @@ option(VCLIB_ALLOW_INSTALL_ZIP_VIEWS
 
 # STB
 option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
+option(VCLIB_ALLOW_INSTALL_STB "Allow install STB source" ON)
 
 # poolSTL
 option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
