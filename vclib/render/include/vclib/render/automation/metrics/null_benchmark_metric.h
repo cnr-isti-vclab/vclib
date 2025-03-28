@@ -23,24 +23,27 @@
 #ifndef VCL_NULL_BENCHMARK_METRIC_H
 #define VCL_NULL_BENCHMARK_METRIC_H
 
-#include <string>
-#include <format>
 #include <vclib/render/automation/metrics/benchmark_metric.h>
 
-namespace vcl{
+#include <format>
+#include <string>
+
+namespace vcl {
 
 /*
     Measures nothing
 */
 class NullBenchmarkMetric : public BenchmarkMetric
 {
-    public:
-
+public:
     void start() override {};
 
     void measure() override {};
 
-    std::vector<std::string> getMeasureStrings() override { return std::vector<std::string>{""}; };
+    std::vector<std::string> getMeasureStrings() override
+    {
+        return std::vector<std::string> {""};
+    };
 
     std::string getUnitOfMeasure() override { return ""; };
 
@@ -48,17 +51,17 @@ class NullBenchmarkMetric : public BenchmarkMetric
 
     void end() override {};
 
-    std::shared_ptr<BenchmarkMetric> clone() const & override
+    std::shared_ptr<BenchmarkMetric> clone() const& override
     {
         return std::make_shared<NullBenchmarkMetric>(*this);
     };
 
-    std::shared_ptr<BenchmarkMetric> clone()  && override
+    std::shared_ptr<BenchmarkMetric> clone() && override
     {
         return std::make_shared<NullBenchmarkMetric>(std::move(*this));
     };
 };
 
-}
+} // namespace vcl
 
 #endif

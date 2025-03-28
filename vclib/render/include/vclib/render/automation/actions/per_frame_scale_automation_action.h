@@ -26,32 +26,29 @@
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 
-namespace vcl{
-
+namespace vcl {
 
 /*
-    An automation that represent the scaling of a DesktopTrackball, with the intensity of the scaling
-    calculated per frame
+    An automation that represent the scaling of a DesktopTrackball, with the
+   intensity of the scaling calculated per frame
 */
 class PerFrameScaleAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float> *trackball;
-    float pixelDeltaPerFrame;
-    float totalPixelDelta;
+    DesktopTrackBall<float>* trackball;
+    float                    pixelDeltaPerFrame;
+    float                    totalPixelDelta;
 
-    public:
-
-    PerFrameScaleAutomationAction(DesktopTrackBall<float> *trackball, float pixelDeltaPerFrame)
-    : trackball{trackball},
-    pixelDeltaPerFrame{pixelDeltaPerFrame},
-    totalPixelDelta{0}
-    {}
-
-    void start() override
+public:
+    PerFrameScaleAutomationAction(
+        DesktopTrackBall<float>* trackball,
+        float                    pixelDeltaPerFrame) :
+            trackball {trackball}, pixelDeltaPerFrame {pixelDeltaPerFrame},
+            totalPixelDelta {0}
     {
-        Parent::start();
     }
+
+    void start() override { Parent::start(); }
 
     void doAction() override
     {
@@ -67,17 +64,18 @@ class PerFrameScaleAutomationAction : public AbstractAutomationAction
         totalPixelDelta = 0;
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<PerFrameScaleAutomationAction>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<PerFrameScaleAutomationAction>(std::move(*this));
+        return std::make_shared<PerFrameScaleAutomationAction>(
+            std::move(*this));
     }
 };
 
-}
+} // namespace vcl
 
 #endif

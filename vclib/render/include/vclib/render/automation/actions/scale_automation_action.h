@@ -25,30 +25,31 @@
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
+
 #include <vclib/misc/timer.h>
 
-namespace vcl{
-
+namespace vcl {
 
 /*
-    An automation that represent the scaling of a DesktopTrackball, with the intensity of the scaling
-    calculated using the time between frames
+    An automation that represent the scaling of a DesktopTrackball, with the
+   intensity of the scaling calculated using the time between frames
 */
 class ScaleAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float> *trackball;
-    float pixelDeltaPerSecond;
-    float totalPixelDelta;
-    Timer timer;
+    DesktopTrackBall<float>* trackball;
+    float                    pixelDeltaPerSecond;
+    float                    totalPixelDelta;
+    Timer                    timer;
 
-    public:
-
-    ScaleAutomationAction(DesktopTrackBall<float> *trackball, float pixelDeltaPerSecond)
-    : trackball{trackball},
-    pixelDeltaPerSecond{pixelDeltaPerSecond},
-    totalPixelDelta{0}
-    {}
+public:
+    ScaleAutomationAction(
+        DesktopTrackBall<float>* trackball,
+        float                    pixelDeltaPerSecond) :
+            trackball {trackball}, pixelDeltaPerSecond {pixelDeltaPerSecond},
+            totalPixelDelta {0}
+    {
+    }
 
     void start() override
     {
@@ -73,7 +74,7 @@ class ScaleAutomationAction : public AbstractAutomationAction
         totalPixelDelta = 0;
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<ScaleAutomationAction>(*this);
     }
@@ -84,6 +85,6 @@ class ScaleAutomationAction : public AbstractAutomationAction
     }
 };
 
-}
+} // namespace vcl
 
 #endif

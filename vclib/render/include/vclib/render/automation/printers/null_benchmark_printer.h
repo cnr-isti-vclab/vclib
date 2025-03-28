@@ -25,22 +25,21 @@
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
     Class which doesn't write anything anywhere
 */
 class NullBenchmarkPrinter : public BenchmarkPrinter
 {
-    public:
-
-    void print(BenchmarkMetric &metric) override {};
+public:
+    void print(BenchmarkMetric& metric) override {};
 
     void onBenchmarkLoop() override {};
 
-    void finish(BenchmarkMetric &metric) override {};
+    void finish(BenchmarkMetric& metric) override {};
 
-    std::shared_ptr<BenchmarkPrinter> clone() const & override
+    std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
         return std::make_shared<NullBenchmarkPrinter>(*this);
     };
@@ -51,6 +50,6 @@ class NullBenchmarkPrinter : public BenchmarkPrinter
     };
 };
 
-}
+} // namespace vcl
 
 #endif

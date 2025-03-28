@@ -25,7 +25,7 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
     Automation that allows you to add a delay (in terms of frames) to an action,
@@ -35,33 +35,28 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
 {
     uint32_t currentFrames = 0;
     uint32_t delayFrames;
-    bool innerStarted = false;
-    using Parent = WrapperAutomationAction;
+    bool     innerStarted = false;
+    using Parent          = WrapperAutomationAction;
 
-    public:
+public:
+    FrameDelayAutomationAction(
+        const AbstractAutomationAction& action,
+        uint32_t delayFrames) : Parent(action), delayFrames {delayFrames} {};
 
-    FrameDelayAutomationAction(const AbstractAutomationAction &action, uint32_t delayFrames)
-    : Parent(action),
-    delayFrames{delayFrames}
-    {};
-
-    void start() override
-    {
-        AbstractAutomationAction::start();
-    }
+    void start() override { AbstractAutomationAction::start(); }
 
     void doAction() override
     {
         AbstractAutomationAction::doAction();
-        if(currentFrames < delayFrames){
+        if (currentFrames < delayFrames) {
             currentFrames++;
             return;
         }
-        if(!innerStarted){
+        if (!innerStarted) {
             innerAction->start();
             innerStarted = true;
         }
-        if(innerAction->isActive()){
+        if (innerAction->isActive()) {
             innerAction->doAction();
             return;
         }
@@ -72,10 +67,10 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
     {
         Parent::end();
         currentFrames = 0;
-        innerStarted = false;
+        innerStarted  = false;
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<FrameDelayAutomationAction>(*this);
     }
@@ -86,6 +81,6 @@ class FrameDelayAutomationAction : public WrapperAutomationAction
     }
 };
 
-}
+} // namespace vcl
 
 #endif

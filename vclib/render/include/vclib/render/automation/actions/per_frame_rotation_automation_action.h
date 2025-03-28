@@ -25,39 +25,53 @@
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
+
 #include <vclib/space/core/quaternion.h>
+
 #include <numbers>
 
-namespace vcl{
+namespace vcl {
 
 /*
-    An automation that represent the rotation of a DesktopTrackball, with the intensity of the rotation
-    calculated per frame
+    An automation that represent the rotation of a DesktopTrackball, with the
+   intensity of the rotation calculated per frame
 */
 class PerFrameRotationAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float> *trackball;
-    float radiansPerFrame;
-    Point3f around;
+    DesktopTrackBall<float>* trackball;
+    float                    radiansPerFrame;
+    Point3f                  around;
 
-    public:
-
-    static PerFrameRotationAutomationAction fromFramesPerRotation(DesktopTrackBall<float> *trackball, float framesPerRotation, Point3f axis)
-    { 
-        return PerFrameRotationAutomationAction(trackball, (2*std::numbers::pi_v<float>) / framesPerRotation, axis);
-    }
-
-    static PerFrameRotationAutomationAction* ptrFromFramesPerRotation(DesktopTrackBall<float> *trackball, float framesPerRotation, Point3f axis)
+public:
+    static PerFrameRotationAutomationAction fromFramesPerRotation(
+        DesktopTrackBall<float>* trackball,
+        float                    framesPerRotation,
+        Point3f                  axis)
     {
-        return new PerFrameRotationAutomationAction(trackball, (2*std::numbers::pi_v<float>) / framesPerRotation, axis);
+        return PerFrameRotationAutomationAction(
+            trackball,
+            (2 * std::numbers::pi_v<float>) / framesPerRotation,
+            axis);
     }
 
-    PerFrameRotationAutomationAction(DesktopTrackBall<float> *trackball, float radiansPerFrame, Point3f axis)
-    : trackball{trackball},
-    radiansPerFrame{radiansPerFrame},
-    around{axis}
-    {};
+    static PerFrameRotationAutomationAction* ptrFromFramesPerRotation(
+        DesktopTrackBall<float>* trackball,
+        float                    framesPerRotation,
+        Point3f                  axis)
+    {
+        return new PerFrameRotationAutomationAction(
+            trackball,
+            (2 * std::numbers::pi_v<float>) / framesPerRotation,
+            axis);
+    }
+
+    PerFrameRotationAutomationAction(
+        DesktopTrackBall<float>* trackball,
+        float                    radiansPerFrame,
+        Point3f                  axis) :
+            trackball {trackball}, radiansPerFrame {radiansPerFrame},
+            around {axis} {};
 
     void start() override
     {
@@ -73,22 +87,20 @@ class PerFrameRotationAutomationAction : public AbstractAutomationAction
         trackball->rotate(rotation);
     };
 
-    void end() override
-    {
-        Parent::end();
-    };
+    void end() override { Parent::end(); };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<PerFrameRotationAutomationAction>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<PerFrameRotationAutomationAction>(std::move(*this));
+        return std::make_shared<PerFrameRotationAutomationAction>(
+            std::move(*this));
     }
 };
 
-}
+} // namespace vcl
 
 #endif

@@ -26,57 +26,52 @@
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
-    An automation that represent the rotation of a DesktopTrackball, with the intensity of the rotation
-    calculated per frame
+    An automation that represent the rotation of a DesktopTrackball, with the
+   intensity of the rotation calculated per frame
 */
 class TrackballEventIgnoreAutomationAction : public AbstractAutomationAction
 {
-   using Parent = AbstractAutomationAction;
-   DesktopTrackBall<float> *trackball;
-   bool ignoreEvents;
+    using Parent = AbstractAutomationAction;
+    DesktopTrackBall<float>* trackball;
+    bool                     ignoreEvents;
 
-    public:
+public:
+    TrackballEventIgnoreAutomationAction(
+        DesktopTrackBall<float>* trackball,
+        bool                     ignoreEvents) :
+            trackball {trackball}, ignoreEvents {ignoreEvents} {};
 
-   TrackballEventIgnoreAutomationAction(DesktopTrackBall<float> *trackball, bool ignoreEvents)
-   : trackball{trackball},
-   ignoreEvents{ignoreEvents}
-   {};
-
-    void start() override
-    {
-       Parent::start();
-    };
+    void start() override { Parent::start(); };
 
     void doAction() override
     {
         Parent::doAction();
-        if(ignoreEvents){
+        if (ignoreEvents) {
             trackball->startIgnoringTrackBallEvents();
-        }else{
+        }
+        else {
             trackball->stopIgnoringTrackBallEvents();
         }
         end();
     };
 
-    void end() override
-    {
-        Parent::end();
-    };
+    void end() override { Parent::end(); };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<TrackballEventIgnoreAutomationAction>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<TrackballEventIgnoreAutomationAction>(std::move(*this));
+        return std::make_shared<TrackballEventIgnoreAutomationAction>(
+            std::move(*this));
     }
 };
 
-}
+} // namespace vcl
 
 #endif

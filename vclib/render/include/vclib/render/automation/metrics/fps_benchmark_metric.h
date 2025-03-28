@@ -23,64 +23,58 @@
 #ifndef VCL_FPS_BENCHMARK_METRIC_H
 #define VCL_FPS_BENCHMARK_METRIC_H
 
-#include <vclib/misc/timer.h>
-#include <string>
-#include <format>
 #include <vclib/render/automation/metrics/benchmark_metric.h>
 
-namespace vcl{
+#include <vclib/misc/timer.h>
+
+#include <format>
+#include <string>
+
+namespace vcl {
 
 /*
     Measures the average frames per second of the automations
 */
 class FpsBenchmarkMetric : public BenchmarkMetric
 {
-    Timer timer;
+    Timer  timer;
     double frames = 0;
 
-    public:
-
+public:
     void start() override
     {
         timer.start();
         frames = 0;
     };
 
-    void measure() override
-    {
-        frames++;
-    };
+    void measure() override { frames++; };
 
     std::vector<std::string> getMeasureStrings() override
     {
-        return std::vector<std::string>{std::format("{:.3f}", frames / timer.delay())};
+        return std::vector<std::string> {
+            std::format("{:.3f}", frames / timer.delay())};
     };
 
-    std::string getUnitOfMeasure() override
-    {
-        return "fps";
-    }
+    std::string getUnitOfMeasure() override { return "fps"; }
 
     std::string getFullLengthUnitOfMeasure() override
     {
         return "frames per second";
     }
 
-    void end() override
-    {
-        timer.stop();
-    };
+    void end() override { timer.stop(); };
 
-    std::shared_ptr<BenchmarkMetric> clone() const & override
+    std::shared_ptr<BenchmarkMetric> clone() const& override
     {
         return std::make_shared<FpsBenchmarkMetric>(*this);
     };
-    std::shared_ptr<BenchmarkMetric> clone()  && override
+
+    std::shared_ptr<BenchmarkMetric> clone() && override
     {
         return std::make_shared<FpsBenchmarkMetric>(std::move(*this));
     };
 };
 
-}
+} // namespace vcl
 
 #endif

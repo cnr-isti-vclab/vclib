@@ -24,8 +24,8 @@
 #define VCL_TIME_BENCHMARK_METRIC_H
 
 #include <vclib/render/automation/metrics/benchmark_metric.h>
-#include <format>
 #include <vclib/misc/timer.h>
+#include <format>
 
 namespace vcl{
 

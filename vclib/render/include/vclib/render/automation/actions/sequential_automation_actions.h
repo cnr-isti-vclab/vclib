@@ -24,9 +24,10 @@
 #define VCL_SEQUENTIAL_AUTOMATION_ACTIONS_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
+
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
     An automation which represents a sequence of actions.
@@ -38,19 +39,18 @@ class SequentialAutomationActions : public AbstractAutomationAction
 
     uint32_t currentIndex = 0;
 
-    public:
-    
-    SequentialAutomationActions(std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
+public:
+    SequentialAutomationActions(
+        std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
     {
-        for(auto el = init.begin(); el < init.end(); el++)
-        {
+        for (auto el = init.begin(); el < init.end(); el++) {
             automations.pushBack(*el);
         }
     };
 
     SequentialAutomationActions() {};
 
-    void addAutomation(const AbstractAutomationAction &automation)
+    void addAutomation(const AbstractAutomationAction& automation)
     {
         automations.pushBack(automation);
     }
@@ -64,17 +64,15 @@ class SequentialAutomationActions : public AbstractAutomationAction
     void doAction() override
     {
         Parent::doAction();
-        if(!automations[currentIndex]->isActive())
-        {
-            if(currentIndex == automations.size()-1)
-            {
+        if (!automations[currentIndex]->isActive()) {
+            if (currentIndex == automations.size() - 1) {
                 end();
                 return;
             }
             currentIndex++;
             automations[currentIndex]->start();
         }
-        if(automations[currentIndex]->isActive()){
+        if (automations[currentIndex]->isActive()) {
             automations[currentIndex]->doAction();
         }
     }
@@ -82,14 +80,13 @@ class SequentialAutomationActions : public AbstractAutomationAction
     void end() override
     {
         Parent::end();
-        if(automations[currentIndex]->isActive())
-        {
+        if (automations[currentIndex]->isActive()) {
             automations[currentIndex]->end();
         }
         currentIndex = 0;
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<SequentialAutomationActions>(*this);
     }
@@ -100,6 +97,6 @@ class SequentialAutomationActions : public AbstractAutomationAction
     }
 };
 
-}
+} // namespace vcl
 
 #endif

@@ -25,11 +25,12 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
-    Automation that allows you to add a maximum duration (in terms of frames) to an automation,
-    so that after the chosen duration has elapsed the automation is guaranteed to be over
+    Automation that allows you to add a maximum duration (in terms of frames) to
+   an automation, so that after the chosen duration has elapsed the automation
+   is guaranteed to be over
 */
 class FrameLimitedAutomationAction : public WrapperAutomationAction
 {
@@ -38,23 +39,19 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
     uint32_t currentFrames = 0;
     uint32_t durationFrames;
 
-    public:
+public:
+    FrameLimitedAutomationAction(
+        const AbstractAutomationAction& innerAction,
+        uint32_t                        durationFrames = 400.f) :
+            Parent(innerAction), durationFrames {durationFrames},
+            currentFrames {0} {};
 
-    FrameLimitedAutomationAction(const AbstractAutomationAction &innerAction, uint32_t durationFrames = 400.f)
-    : Parent(innerAction),
-    durationFrames{durationFrames},
-    currentFrames{0}
-    {};
-
-    void start() override
-    {
-        Parent::start();
-    }
+    void start() override { Parent::start(); }
 
     void doAction() override
     {
         currentFrames++;
-        if(currentFrames >= durationFrames){
+        if (currentFrames >= durationFrames) {
             end();
             return;
         }
@@ -67,7 +64,7 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
         currentFrames = 0;
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<FrameLimitedAutomationAction>(*this);
     }
@@ -78,6 +75,6 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
     }
 };
 
-}
+} // namespace vcl
 
 #endif

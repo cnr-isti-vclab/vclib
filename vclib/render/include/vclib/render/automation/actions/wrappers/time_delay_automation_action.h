@@ -24,9 +24,10 @@
 #define VCL_TIME_DELAY_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
+
 #include <vclib/misc/timer.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
     Automation that allows you to add a delay (in terms of time) to an action,
@@ -36,15 +37,13 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
 {
     Timer timer;
     float delaySeconds;
-    bool innerStarted = false;
-    using Parent = WrapperAutomationAction;
+    bool  innerStarted = false;
+    using Parent       = WrapperAutomationAction;
 
-    public:
-
-    TimeDelayAutomationAction(const AbstractAutomationAction &action, float delaySeconds)
-    : Parent(action),
-    delaySeconds{delaySeconds}
-    {};
+public:
+    TimeDelayAutomationAction(
+        const AbstractAutomationAction& action,
+        float delaySeconds) : Parent(action), delaySeconds {delaySeconds} {};
 
     void start() override
     {
@@ -55,14 +54,14 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
     void doAction() override
     {
         AbstractAutomationAction::doAction();
-        if(timer.delay() < delaySeconds){
+        if (timer.delay() < delaySeconds) {
             return;
         }
-        if(!innerStarted){
+        if (!innerStarted) {
             innerAction->start();
             innerStarted = true;
         }
-        if(innerAction->isActive()){
+        if (innerAction->isActive()) {
             innerAction->doAction();
             return;
         }
@@ -76,7 +75,7 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
         innerStarted = false;
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<TimeDelayAutomationAction>(*this);
     }
@@ -87,6 +86,6 @@ class TimeDelayAutomationAction : public WrapperAutomationAction
     }
 };
 
-}
+} // namespace vcl
 
 #endif

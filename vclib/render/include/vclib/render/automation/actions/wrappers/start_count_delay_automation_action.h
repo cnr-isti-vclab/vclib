@@ -25,11 +25,12 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
-    Automation that allows you to add a delay (in terms of number of start() calls) to an action,
-    so that the inner automation can be started only after the delay has elapsed
+    Automation that allows you to add a delay (in terms of number of start()
+   calls) to an action, so that the inner automation can be started only after
+   the delay has elapsed
 */
 class StartCountDelayAutomationAction : public WrapperAutomationAction
 {
@@ -38,17 +39,14 @@ class StartCountDelayAutomationAction : public WrapperAutomationAction
     uint32_t waitStarts;
     uint32_t currentStarts = 0;
 
-    public:
-
-    StartCountDelayAutomationAction(const AbstractAutomationAction &innerAction, uint32_t waitStarts)
-    : Parent(innerAction),
-    waitStarts{waitStarts}
-    {};
+public:
+    StartCountDelayAutomationAction(
+        const AbstractAutomationAction& innerAction,
+        uint32_t waitStarts) : Parent(innerAction), waitStarts {waitStarts} {};
 
     void start() override
     {
-        if(currentStarts < waitStarts)
-        {
+        if (currentStarts < waitStarts) {
             AbstractAutomationAction::start();
             currentStarts++;
             return;
@@ -59,28 +57,25 @@ class StartCountDelayAutomationAction : public WrapperAutomationAction
     void doAction() override
     {
         Parent::doAction();
-        if(!innerAction->isActive())
-        {
+        if (!innerAction->isActive()) {
             end();
         }
     };
 
-    void end() override
-    {
-        Parent::end();
-    };
+    void end() override { Parent::end(); };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<StartCountDelayAutomationAction>(*this);
     };
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<StartCountDelayAutomationAction>(std::move(*this));
+        return std::make_shared<StartCountDelayAutomationAction>(
+            std::move(*this));
     };
 };
 
-}
+} // namespace vcl
 
 #endif

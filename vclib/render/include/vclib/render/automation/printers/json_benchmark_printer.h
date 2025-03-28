@@ -24,36 +24,34 @@
 #define VCL_JSON_BENCHMARK_PRINTER_H
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
+
 #include <fstream>
 #include <sstream>
 
-namespace vcl{
+namespace vcl {
 
 /*
     Class which writes the metric's results to a json file
 */
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint32_t loopCounter = 0;
+    uint32_t loopCounter     = 0;
     uint32_t automationIndex = 0;
 
-    std::string fileName;
+    std::string   fileName;
     std::ofstream stream;
 
-    public:
-
-    JsonBenchmarkPrinter(const std::string &fileName)
-    : fileName{fileName}
+public:
+    JsonBenchmarkPrinter(const std::string& fileName) : fileName {fileName}
     {
         stream.open(fileName);
-        if(stream.fail()){
+        if (stream.fail()) {
             throw "JsonBenchmarkPrinter : invalid file name\n";
         }
     };
 
-    JsonBenchmarkPrinter(const JsonBenchmarkPrinter &other)
-    : fileName{other.fileName},
-    stream()
+    JsonBenchmarkPrinter(const JsonBenchmarkPrinter& other) :
+            fileName {other.fileName}, stream()
     {
         stream.open(fileName);
     };
@@ -65,15 +63,13 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
         stream << "\n\t},\n\t\"Loop " << loopCounter << "\" : {";
     };
 
-    void print(BenchmarkMetric &metric) override
+    void print(BenchmarkMetric& metric) override
     {
-        if(loopCounter == 0 && automationIndex == 0)
-        {
+        if (loopCounter == 0 && automationIndex == 0) {
             stream << "{\n\t\"Loop 0\" : {";
         }
 
-        if(automationIndex != 0)
-        {
+        if (automationIndex != 0) {
             stream << ",";
         }
 
@@ -82,33 +78,30 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
         temp << "[";
 
         bool isFirst = true;
-        for(auto meas: metric.getMeasureStrings())
-        {
-            if(!isFirst)
-            {
-                temp << ","; 
-            }else{
+        for (auto meas : metric.getMeasureStrings()) {
+            if (!isFirst) {
+                temp << ",";
+            }
+            else {
                 isFirst = false;
             }
             temp << "\n\t\t\t\t" << meas << metric.getUnitOfMeasure();
         }
         temp << "\n\t\t\t]";
 
-        stream 
-        << "\n\t\t\"Automation " << automationIndex << "\" : {"
-        << "\n\t\t\t\"measurements\" : "<< temp.str()
-        << "\n\t\t}";
+        stream << "\n\t\t\"Automation " << automationIndex << "\" : {"
+               << "\n\t\t\t\"measurements\" : " << temp.str() << "\n\t\t}";
 
         automationIndex++;
     };
 
-    void finish(BenchmarkMetric &metric) override
+    void finish(BenchmarkMetric& metric) override
     {
         stream << "\n\t}\n}";
         stream.close();
     };
 
-    std::shared_ptr<BenchmarkPrinter> clone() const & override
+    std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
         return std::make_shared<JsonBenchmarkPrinter>(*this);
     };
@@ -120,13 +113,12 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
 
     ~JsonBenchmarkPrinter()
     {
-        if(stream.is_open())
-        {
+        if (stream.is_open()) {
             stream.close();
         }
     };
 };
 
-}
+} // namespace vcl
 
 #endif

@@ -23,13 +23,12 @@
 #ifndef VCL_MESH_CHANGER_AUTOMATION_ACTION_H
 #define VCL_MESH_CHANGER_AUTOMATION_ACTION_H
 
-#include <vclib/render/drawers/abstract_viewer_drawer.h>
+#include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
-#include <vclib/render/automation/actions/abstract_automation_action.h>
+#include <vclib/render/drawers/abstract_viewer_drawer.h>
 
-
-namespace vcl{
+namespace vcl {
 
 /*
     Automation that represents a singular change of mesh in a viewer drawer.
@@ -38,26 +37,22 @@ template<typename DerivedRenderApp, typename MeshType>
 class MeshChangerAutomationAction : public AbstractAutomationAction
 {
     vcl::AbstractViewerDrawer<DerivedRenderApp>* avd;
-    std::shared_ptr<vcl::DrawableObjectVector> objectVector;
+    std::shared_ptr<vcl::DrawableObjectVector>   objectVector;
 
     using Parent = AbstractAutomationAction;
 
-    public:
-
+public:
     MeshChangerAutomationAction(
         vcl::AbstractViewerDrawer<DerivedRenderApp>* avd,
-        vcl::DrawableMesh<MeshType> &mesh
-    )
-    : avd{avd},
-    objectVector{std::make_shared<vcl::DrawableObjectVector>(vcl::DrawableObjectVector())}
+        vcl::DrawableMesh<MeshType>&                 mesh) :
+            avd {avd},
+            objectVector {std::make_shared<vcl::DrawableObjectVector>(
+                vcl::DrawableObjectVector())}
     {
         objectVector->pushBack(mesh);
     }
 
-    void start() override
-    {
-        Parent::start();
-    }
+    void start() override { Parent::start(); }
 
     void doAction() override
     {
@@ -67,12 +62,9 @@ class MeshChangerAutomationAction : public AbstractAutomationAction
         end();
     }
 
-    void end() override
-    {
-        Parent::end();
-    }
+    void end() override { Parent::end(); }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<MeshChangerAutomationAction>(*this);
     }
@@ -83,6 +75,6 @@ class MeshChangerAutomationAction : public AbstractAutomationAction
     }
 };
 
-}
+} // namespace vcl
 
 #endif

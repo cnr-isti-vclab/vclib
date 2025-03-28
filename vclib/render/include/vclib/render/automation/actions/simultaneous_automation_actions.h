@@ -23,11 +23,11 @@
 #ifndef VCL_SIMULTANEOUS_AUTOMATION_ACTIONS_H
 #define VCL_SIMULTANEOUS_AUTOMATION_ACTIONS_H
 
-#include <vclib/space/core/vector/polymorphic_object_vector.h>
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 
-namespace vcl{
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
 
+namespace vcl {
 
 /*
     An automation which represents a group of action executed "simultaneously".
@@ -37,19 +37,18 @@ class SimultaneousAutomationActions : public AbstractAutomationAction
     PolymorphicObjectVector<AbstractAutomationAction> automations;
     using Parent = AbstractAutomationAction;
 
-    public:
-    
-    SimultaneousAutomationActions(std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
+public:
+    SimultaneousAutomationActions(
+        std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
     {
-        for(auto el = init.begin(); el < init.end(); el++)
-        {
+        for (auto el = init.begin(); el < init.end(); el++) {
             automations.pushBack(*el);
         }
     };
 
     SimultaneousAutomationActions() {};
 
-    void addAutomation(const AbstractAutomationAction &automation)
+    void addAutomation(const AbstractAutomationAction& automation)
     {
         automations.pushBack(automation);
     }
@@ -57,7 +56,7 @@ class SimultaneousAutomationActions : public AbstractAutomationAction
     void start() override
     {
         Parent::start();
-        for(size_t i=0; i<automations.size(); i++){
+        for (size_t i = 0; i < automations.size(); i++) {
             automations[i]->start();
         }
     }
@@ -65,8 +64,8 @@ class SimultaneousAutomationActions : public AbstractAutomationAction
     void doAction() override
     {
         Parent::doAction();
-        for (const auto aut : automations){
-            if(aut->isActive()){
+        for (const auto aut : automations) {
+            if (aut->isActive()) {
                 aut->doAction();
             }
         }
@@ -75,24 +74,25 @@ class SimultaneousAutomationActions : public AbstractAutomationAction
     void end() override
     {
         Parent::end();
-        for(size_t i=0; i<automations.size(); i++){
-            if(automations[i]->isActive()){
+        for (size_t i = 0; i < automations.size(); i++) {
+            if (automations[i]->isActive()) {
                 automations[i]->end();
             }
         }
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<SimultaneousAutomationActions>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<SimultaneousAutomationActions>(std::move(*this));
+        return std::make_shared<SimultaneousAutomationActions>(
+            std::move(*this));
     }
 };
 
-}
+} // namespace vcl
 
 #endif

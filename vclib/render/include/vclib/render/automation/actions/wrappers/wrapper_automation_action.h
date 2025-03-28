@@ -25,19 +25,19 @@
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 
-namespace vcl{
+namespace vcl {
 
 class WrapperAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
 
-    protected:
-
+protected:
     std::shared_ptr<AbstractAutomationAction> innerAction;
 
-    WrapperAutomationAction(const AbstractAutomationAction &action)
-    : innerAction{action.clone()}
-    {}
+    WrapperAutomationAction(const AbstractAutomationAction& action) :
+            innerAction {action.clone()}
+    {
+    }
 
     void start() override
     {
@@ -48,7 +48,7 @@ class WrapperAutomationAction : public AbstractAutomationAction
     void doAction() override
     {
         Parent::doAction();
-        if(!innerAction->isActive()){
+        if (!innerAction->isActive()) {
             return;
         }
         innerAction->doAction();
@@ -56,13 +56,13 @@ class WrapperAutomationAction : public AbstractAutomationAction
 
     void end() override
     {
-        if(innerAction->isActive()){
+        if (innerAction->isActive()) {
             innerAction->end();
         }
         Parent::end();
     }
 };
 
-}
+} // namespace vcl
 
 #endif

@@ -25,12 +25,13 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
-namespace vcl{
+namespace vcl {
 
 /*
-    Automation that allows you to add a maximum amount of times start() is called (in terms of start() calls) 
-    to an automation, so that after start() has been called for those many times the automation is guaranteed 
-    to never be started again
+    Automation that allows you to add a maximum amount of times start() is
+   called (in terms of start() calls) to an automation, so that after start()
+   has been called for those many times the automation is guaranteed to never be
+   started again
 */
 class StartCountLimitedAutomationAction : public WrapperAutomationAction
 {
@@ -39,17 +40,15 @@ class StartCountLimitedAutomationAction : public WrapperAutomationAction
     uint32_t maximumStarts;
     uint32_t currentStarts = 0;
 
-    public:
-
-    StartCountLimitedAutomationAction(const AbstractAutomationAction &innerAction, uint32_t maximumStarts)
-    : Parent(innerAction),
-    maximumStarts{maximumStarts}
-    {};
+public:
+    StartCountLimitedAutomationAction(
+        const AbstractAutomationAction& innerAction,
+        uint32_t                        maximumStarts) :
+            Parent(innerAction), maximumStarts {maximumStarts} {};
 
     void start() override
     {
-        if(currentStarts >= maximumStarts)
-        {
+        if (currentStarts >= maximumStarts) {
             AbstractAutomationAction::start();
             return;
         }
@@ -60,28 +59,25 @@ class StartCountLimitedAutomationAction : public WrapperAutomationAction
     void doAction() override
     {
         Parent::doAction();
-        if(!innerAction->isActive())
-        {
+        if (!innerAction->isActive()) {
             end();
         }
     };
 
-    void end() override
-    {
-        Parent::end();
-    };
+    void end() override { Parent::end(); };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const & override
+    std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<StartCountLimitedAutomationAction>(*this);
     };
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<StartCountLimitedAutomationAction>(std::move(*this));
+        return std::make_shared<StartCountLimitedAutomationAction>(
+            std::move(*this));
     };
 };
 
-}
+} // namespace vcl
 
 #endif

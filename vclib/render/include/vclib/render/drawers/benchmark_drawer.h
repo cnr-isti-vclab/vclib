@@ -23,20 +23,22 @@
 #ifndef VCL_BENCHMARK_DRAWER_H
 #define VCL_BENCHMARK_DRAWER_H
 
+#include <vclib/misc/timer.h>
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/fps_benchmark_metric.h>
 #include <vclib/render/automation/printers/stdout_benchmark_printer.h>
-#include <vector>
+#include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
+
 #include <chrono>
-#include <iostream>
-#include <vclib/misc/timer.h>
-#include <string>
 #include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #define VCL_BENCHMARK_DRAWER_REPEAT_FOREVER 0
 
-namespace vcl{
+namespace vcl {
 
 /*
     Class that combines a Printer, a Metric and a Vector of Automations to
@@ -49,19 +51,19 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     using Parent = vcl::PlainDrawer<DerivedDrawer>;
 
     /*
-    What are these variables for? To avoid the slight freeze some time after starting.
-    It's not about "frames" but about "seconds" (Lower framerate = less frames that you need to wait to avoid the freeze,
-    tested so far only on 2 devices)
-    What causes the freeze? no clue.
+    What are these variables for? To avoid the slight freeze some time after
+    starting. It's not about "frames" but about "seconds" (Lower framerate =
+    less frames that you need to wait to avoid the freeze, tested so far only on
+    2 devices) What causes the freeze? no clue.
     */
-    bool beforeStartWaitTimerStarted = false;
+    bool       beforeStartWaitTimerStarted = false;
     vcl::Timer beforeStartWaitTimer;
-    double beforeStartWaitSeconds = 0.4f;
+    double     beforeStartWaitSeconds = 0.4f;
 
     vcl::PolymorphicObjectVector<AbstractAutomationAction> automations;
     /*
-    This vector's purpose is to keep track of whether to write the metric measured for the automation
-    at the same index in the automations vector
+    This vector's purpose is to keep track of whether to write the metric
+    measured for the automation at the same index in the automations vector
     */
     std::vector<bool> relevancies;
 
@@ -70,76 +72,71 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     uint32_t repeatTimes = 1;
     uint32_t repeatCount = 0;
 
-    std::shared_ptr<BenchmarkMetric> metric = FpsBenchmarkMetric().clone();
-    std::shared_ptr<BenchmarkPrinter> printer = StdoutBenchmarkPrinter().clone();
+    std::shared_ptr<BenchmarkMetric>  metric = FpsBenchmarkMetric().clone();
+    std::shared_ptr<BenchmarkPrinter> printer =
+        StdoutBenchmarkPrinter().clone();
 
     bool firstCall = true;
-    bool allDone = false;
+    bool allDone   = false;
 
     void benchmarkLoop()
     {
         currentAutomationIndex = 0;
-        allDone = false;
+        allDone                = false;
     };
 
     bool isLastLoop()
     {
-        return repeatTimes != VCL_BENCHMARK_DRAWER_REPEAT_FOREVER && repeatCount >= repeatTimes;
+        return repeatTimes != VCL_BENCHMARK_DRAWER_REPEAT_FOREVER &&
+               repeatCount >= repeatTimes;
     }
 
     void onAutomationEnd()
     {
         metric->end();
-        if(relevancies[currentAutomationIndex]){
+        if (relevancies[currentAutomationIndex]) {
             printer->print(*metric);
         }
         currentAutomationIndex++;
     }
 
 public:
-
-    using Parent::Parent;
     using Parent::onDraw;
     using Parent::onInit;
-    using Parent::onResize;
     using Parent::onPostDraw;
+    using Parent::onResize;
+    using Parent::Parent;
 
-    /*WARNING: repeating forever does not work properly with printers. It is recommended to only
-    repeat forever with a NullBenchmarkPrinter*/
-    void setRepeatTimes(float repeatTimes)
-    {
-        this->repeatTimes = repeatTimes;
-    }
+    /*WARNING: repeating forever does not work properly with printers. It is
+    recommended to only repeat forever with a NullBenchmarkPrinter*/
+    void setRepeatTimes(float repeatTimes) { this->repeatTimes = repeatTimes; }
 
     void onDrawContent(vcl::uint viewId) override
     {
-        if(!beforeStartWaitTimerStarted)
-        {
+        if (!beforeStartWaitTimerStarted) {
             beforeStartWaitTimer.start();
             beforeStartWaitTimerStarted = true;
         }
-        if(beforeStartWaitTimer.delay() < beforeStartWaitSeconds)
-        {
+        if (beforeStartWaitTimer.delay() < beforeStartWaitSeconds) {
             return;
         }
-        if(automations.size() == 0){
+        if (automations.size() == 0) {
             allDone = true;
         }
-        if(allDone){
+        if (allDone) {
             return;
         }
-        if(firstCall){
+        if (firstCall) {
             automations[0]->start();
             metric->start();
             firstCall = false;
         }
-        if(!automations[currentAutomationIndex]->isActive()){
-
+        if (!automations[currentAutomationIndex]->isActive()) {
             onAutomationEnd();
             allDone = currentAutomationIndex >= automations.size();
-            if(allDone){
+            if (allDone) {
                 repeatCount++;
-                if(isLastLoop()){
+                if (isLastLoop()) {
                     printf("All benchmarks done.\n");
                     printer->finish(*metric);
                     return;
@@ -150,48 +147,38 @@ public:
             metric->start();
             automations[currentAutomationIndex]->start();
         }
-        if(automations[currentAutomationIndex]->isActive()){
+        if (automations[currentAutomationIndex]->isActive()) {
             metric->measure();
             automations[currentAutomationIndex]->doAction();
         }
     };
 
-    size_t addAutomation(const AbstractAutomationAction &action, bool relevancy = true)
+    size_t addAutomation(
+        const AbstractAutomationAction& action,
+        bool                            relevancy = true)
     {
         automations.pushBack(action);
         relevancies.push_back(relevancy);
-        return automations.size()-1;
+        return automations.size() - 1;
     }
 
     void restartBenchmark()
     {
         currentAutomationIndex = 0;
-        firstCall = true;
-        allDone = false;
-        repeatCount = 0;
+        firstCall              = true;
+        allDone                = false;
+        repeatCount            = 0;
     };
 
-    void setMetric(const BenchmarkMetric &bm)
-    {
-        metric = bm.clone();
-    };
+    void setMetric(const BenchmarkMetric& bm) { metric = bm.clone(); };
 
-    void setPrinter(const BenchmarkPrinter &bp)
-    {
-        printer = bp.clone();
-    };
+    void setPrinter(const BenchmarkPrinter& bp) { printer = bp.clone(); };
 
-    uint32_t getRepeatCount()
-    {
-        return repeatCount;
-    };
+    uint32_t getRepeatCount() { return repeatCount; };
 
-    size_t getCurrentAutomationIndex()
-    {
-        return currentAutomationIndex;
-    };
+    size_t getCurrentAutomationIndex() { return currentAutomationIndex; };
 };
 
-}
+} // namespace vcl
 
 #endif
