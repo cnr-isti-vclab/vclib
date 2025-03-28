@@ -720,9 +720,12 @@ public: // TODO - remove this when C++26 is supported
      * @param[in] point: The point on the canvas where the depth value must be
      * read.
      * @param[in] callback: The callback function that will be called when the
-     * depth value is read. TODO: explain the callback function signature.
+     * depth value is read. The callback function should have the following signature:
+     * `void callback(const ReadData& value)`, where `value` float depth value 
+     * read from the canvas.
      *
-     * @return true if the depth value is successfully read, false otherwise.
+     * @return true if the depth requeste is successfully submitted, false
+     * otherwise.
      */
     [[nodiscard]] static bool readDepth(
         RenderApp*                          r,
@@ -739,9 +742,13 @@ public: // TODO - remove this when C++26 is supported
      *
      * @param[in] point: The point on the canvas where the ID must be read.
      * @param[in] callback: The callback function that will be called when the ID
-     * is read. TODO: explain the callback function signature.
+     * is read. The callback function should have the following signature:
+     * `void callback(const ReadData& value)`, where `value` is the
+     * ID value read from the canvas encoded into 4 bytes (unsigned 32 bit
+     * integer).
      *
-     * @return true if the ID is successfully read, false otherwise.
+     * @return true if the ID request is successfully submitted, false
+     * otherwise.
      */
     [[nodiscard]] static bool readId(
         RenderApp*                          r,
