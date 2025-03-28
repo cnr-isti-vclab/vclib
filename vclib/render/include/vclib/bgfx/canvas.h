@@ -298,9 +298,11 @@ public:
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * to read the ID at a specific point.
      *
-     * @param point
-     * @param callback
-     * @return
+     * @param point The point where the ID must be read.
+     * @param callback The callback function that will be called when the ID is
+     * read.
+     * @return true id the red Id request is successfully submitted, false
+     * otherwise.
      */
      [[nodiscard]] bool onReadId(
         const Point2i&     point,
