@@ -618,8 +618,11 @@ private:
 
     /**--------- Base functions ---------**/
     // (general purpose and used for atomic operations)
-
+    public:
+    
     void rotate(const Quaternion<Scalar>& q) { mTransform.prerotate(q); }
+
+    private:
 
     void rotate(Point3<Scalar> axis, Scalar angleRad)
     {
@@ -723,6 +726,8 @@ private:
         performZmove(pixelDelta);
     }
 
+    public:
+
     /**-------------- Scaling --------------**/
 
     // scrolling and scaling are setup with "magic" numbers
@@ -732,6 +737,8 @@ private:
         const auto factor = std::pow(1.2f, -pixelDelta);
         changeScale(factor);
     }
+
+    private:
 
     void dragScale()
     {
