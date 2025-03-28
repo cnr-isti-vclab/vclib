@@ -24,10 +24,13 @@
 #define VCL_TIME_BENCHMARK_METRIC_H
 
 #include <vclib/render/automation/metrics/benchmark_metric.h>
-#include <vclib/misc/timer.h>
-#include <format>
 
-namespace vcl{
+#include <vclib/misc/timer.h>
+
+#include <iomanip>
+#include <sstream>
+
+namespace vcl {
 
 /*
     Measures the time it takes for the automation to complete
@@ -36,45 +39,36 @@ class TimeBenchmarkMetric : public BenchmarkMetric
 {
     Timer timer;
 
-    public:
-
-    void start() override
-    {
-        timer.start();
-    }
+public:
+    void start() override { timer.start(); }
 
     void measure() override {}
 
     std::vector<std::string> getMeasureStrings() override
     {
-        return std::vector<std::string>{std::format("{:.3f}", timer.delay())};
+        std::ostringstream temp;
+        temp << std::setprecision(3) << timer.delay();
+
+        return std::vector<std::string> {temp.str()};
     }
 
-    std::string getUnitOfMeasure() override
-    {
-        return "s";
-    }
+    std::string getUnitOfMeasure() override { return "s"; }
 
-    std::string getFullLengthUnitOfMeasure() override
-    {
-        return "seconds";
-    }
+    std::string getFullLengthUnitOfMeasure() override { return "seconds"; }
 
-    void end() override
-    {
-        timer.stop();
-    }
+    void end() override { timer.stop(); }
 
-    std::shared_ptr<BenchmarkMetric> clone() const & override
+    std::shared_ptr<BenchmarkMetric> clone() const& override
     {
         return std::make_shared<TimeBenchmarkMetric>(*this);
     }
+
     std::shared_ptr<BenchmarkMetric> clone() && override
     {
         return std::make_shared<TimeBenchmarkMetric>(std::move(*this));
     };
 };
 
-}
+} // namespace vcl
 
 #endif

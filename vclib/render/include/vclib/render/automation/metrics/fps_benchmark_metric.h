@@ -27,7 +27,8 @@
 
 #include <vclib/misc/timer.h>
 
-#include <format>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 namespace vcl {
@@ -51,8 +52,10 @@ public:
 
     std::vector<std::string> getMeasureStrings() override
     {
-        return std::vector<std::string> {
-            std::format("{:.3f}", frames / timer.delay())};
+        std::ostringstream temp;
+        temp << std::setprecision(3) << frames / timer.delay();
+
+        return std::vector<std::string> {temp.str()};
     };
 
     std::string getUnitOfMeasure() override { return "fps"; }

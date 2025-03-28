@@ -25,7 +25,6 @@
 
 #include <vclib/render/automation/metrics/benchmark_metric.h>
 
-#include <format>
 #include <string>
 
 namespace vcl {
