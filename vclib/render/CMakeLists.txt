@@ -151,6 +151,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${VCLIB_RENDER_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/include)
 
+target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_RENDER_MODULE)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
 
@@ -159,6 +161,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+
     target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_BACKEND_BGFX)
 
     build_bgfx_shaders_to_headers(${SHADERS})
@@ -177,3 +181,20 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     ${VCLIB_RENDER_3RDPARTY_LIBRARIES} vclib::core)
+
+# Install
+install(DIRECTORY ${VCLIB_RENDER_INCLUDE_DIR}/vclib
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/vclib
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/)
+
+install(TARGETS ${PROJECT_NAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
+endif()

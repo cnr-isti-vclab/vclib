@@ -21,11 +21,16 @@
 #****************************************************************************/
 
 if (VCLIB_ALLOW_DOWNLOAD_PYBIND)
+    find_package(Python3 QUIET)
+    set(VCLIB_PYTHON_VERSION
+        "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}" PARENT_SCOPE)
+
     message(STATUS "- pybind11 - using downloaded source")
     FetchContent_Declare(
         pybind11
         GIT_REPOSITORY https://github.com/pybind/pybind11
         GIT_TAG        v2.13.6
+        EXCLUDE_FROM_ALL
     )
 
     FetchContent_MakeAvailable(pybind11)

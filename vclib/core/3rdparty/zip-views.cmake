@@ -42,3 +42,9 @@ add_library(vclib-3rd-zip-views INTERFACE)
 target_link_libraries(vclib-3rd-zip-views INTERFACE zip-view)
 
 list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-zip-views)
+
+# Install
+if (VCLIB_ALLOW_INSTALL_ZIP_VIEWS)
+    install(FILES ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()

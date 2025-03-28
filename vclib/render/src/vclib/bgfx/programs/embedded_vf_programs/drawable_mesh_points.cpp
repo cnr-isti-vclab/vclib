@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_points.h>
 
-#include <shaders/drawable/drawable_mesh/points/fs_points.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_mesh/points/vs_points.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/fs_points.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/vs_points.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/points/fs_points.sc.essl.bin.h>
-#include <shaders/drawable/drawable_mesh/points/vs_points.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/fs_points.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/vs_points.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/points/fs_points.sc.spv.bin.h>
-#include <shaders/drawable/drawable_mesh/points/vs_points.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/fs_points.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/vs_points.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_mesh/points/fs_points.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_mesh/points/vs_points.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/fs_points.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/vs_points.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_mesh/points/fs_points.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_mesh/points/vs_points.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/fs_points.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/points/vs_points.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

@@ -22,23 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_surface.h>
 
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.essl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.spv.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-// #include <shaders/drawable/drawable_mesh/surface/fs_surface_id.sc.mtl.bin.h>
-// #include <shaders/drawable/drawable_mesh/surface/vs_surface_id.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/fs_surface.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_mesh/surface/vs_surface.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
