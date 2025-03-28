@@ -25,7 +25,7 @@
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 #include <fstream>
-#include <format>
+#include <sstream>
 
 namespace vcl{
 
@@ -62,7 +62,7 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
     {
         loopCounter++;
         automationIndex = 0;
-        stream << std::format("\n\t}},\n\t\"Loop {}\" : {{", loopCounter);
+        stream << "\n\t},\n\t\"Loop " << loopCounter << "\" : {";
     };
 
     void print(BenchmarkMetric &metric) override
@@ -77,9 +77,26 @@ class JsonBenchmarkPrinter : public BenchmarkPrinter
             stream << ",";
         }
 
+        std::ostringstream temp;
+
+        temp << "[";
+
+        bool isFirst = true;
+        for(auto meas: metric.getMeasureStrings())
+        {
+            if(!isFirst)
+            {
+                temp << ","; 
+            }else{
+                isFirst = false;
+            }
+            temp << "\n\t\t\t\t" << meas << metric.getUnitOfMeasure();
+        }
+        temp << "\n\t\t\t]";
+
         stream 
-        << std::format("\n\t\t\"Automation {}\" : {{", automationIndex)
-        << std::format("\n\t\t\t\"metric\" : \"{}\"", metric.getMeasureString()+metric.getUnitOfMeasure())
+        << "\n\t\t\"Automation " << automationIndex << "\" : {"
+        << "\n\t\t\t\"measurements\" : "<< temp.str()
         << "\n\t\t}";
 
         automationIndex++;

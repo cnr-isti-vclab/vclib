@@ -45,9 +45,9 @@ class TimeBenchmarkMetric : public BenchmarkMetric
 
     void measure() override {}
 
-    std::string getMeasureString() override
+    std::vector<std::string> getMeasureStrings() override
     {
-        return std::format("{:.3f}", timer.delay());
+        return std::vector<std::string>{std::format("{:.3f}", timer.delay())};
     }
 
     std::string getUnitOfMeasure() override

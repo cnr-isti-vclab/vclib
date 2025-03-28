@@ -24,6 +24,7 @@
 #define VCL_STDOUT_BENCHMARK_PRINTER_H
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
+#include <sstream>
 
 namespace vcl{
 
@@ -39,10 +40,25 @@ class StdoutBenchmarkPrinter : public BenchmarkPrinter
 
     void print(BenchmarkMetric &metric) override
     {
+        std::ostringstream temp;
+        temp << "[";
+        bool isFirst = true;
+        for(auto meas: metric.getMeasureStrings())
+        {
+            if(!isFirst)
+            {
+                temp << ", ";
+            }else{
+                isFirst = false;
+            }
+            temp << meas + metric.getUnitOfMeasure(); 
+        }
+        temp << "]";
         printf("Loop %u, automation %u: %s\n",
             loopCounter,
             automationIndex,
-            (metric.getMeasureString() + metric.getUnitOfMeasure()).c_str());
+            temp.str().c_str()
+        );
 
         automationIndex++;
     };

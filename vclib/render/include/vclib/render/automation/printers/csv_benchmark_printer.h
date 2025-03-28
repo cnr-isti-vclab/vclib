@@ -25,6 +25,8 @@
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 #include <fstream>
+#include <utility>
+#include <sstream>
 
 namespace vcl{
 
@@ -33,9 +35,12 @@ namespace vcl{
 */
 class CsvBenchmarkPrinter : public BenchmarkPrinter
 {
+    uint32_t loopCounter = 0;
+    uint32_t automationCounter = 0;
+    uint32_t maxMeasurementSize = 0;
     std::string fileName;
     std::ofstream stream;
-    bool firstInRow = true;
+    std::vector<std::pair<std::string, size_t>> measurementStrings;
 
     public:
 
@@ -50,7 +55,6 @@ class CsvBenchmarkPrinter : public BenchmarkPrinter
 
     CsvBenchmarkPrinter(const CsvBenchmarkPrinter &other)
     : fileName{other.fileName},
-    firstInRow{other.firstInRow},
     stream()
     {
         stream.open(fileName);
@@ -58,22 +62,51 @@ class CsvBenchmarkPrinter : public BenchmarkPrinter
 
     void onBenchmarkLoop() override
     {
-        stream << "\n";
-        firstInRow = true;
+        loopCounter++;
+        automationCounter = 0;
     };
 
     void print(BenchmarkMetric &metric) override
     {
-        if(!firstInRow){
-            stream << ",";
-        }else{
-            firstInRow = false;
+        std::ostringstream temp;
+        temp << loopCounter << ";" << automationCounter;
+
+        std::vector<std::string> measureStrings = metric.getMeasureStrings();
+
+        maxMeasurementSize = std::max(maxMeasurementSize, (uint32_t) measureStrings.size());
+
+        for(size_t i = 0; i < measureStrings.size(); i++)
+        {
+            measureStrings[i] = measureStrings[i] + metric.getUnitOfMeasure();
         }
-        stream << metric.getMeasureString()+metric.getUnitOfMeasure();
+
+        if(metric.getMeasureStrings().size() > 0)
+        {
+            temp << ";";
+            std::copy(
+                measureStrings.begin(),
+                measureStrings.end()-1,
+                std::ostream_iterator<std::string>(temp, ";")
+            );
+            temp << measureStrings.back();
+        }
+
+        measurementStrings.push_back(std::make_pair(temp.str(), measureStrings.size()));
+
+        automationCounter++;
     };
 
     void finish(BenchmarkMetric &metric) override
     {
+        stream << "Loop;Automation";
+        for(uint32_t i=0; i < maxMeasurementSize; i++)
+        {
+            stream << ";Measurement " << i;
+        }
+        for(auto meas: measurementStrings)
+        {
+            stream << "\n" << meas.first << std::string(maxMeasurementSize-meas.second, ';');
+        }
         stream.close();
     };
 

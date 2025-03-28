@@ -40,7 +40,7 @@ class NullBenchmarkMetric : public BenchmarkMetric
 
     void measure() override {};
 
-    std::string getMeasureString() override { return ""; };
+    std::vector<std::string> getMeasureStrings() override { return std::vector<std::string>{""}; };
 
     std::string getUnitOfMeasure() override { return ""; };
 

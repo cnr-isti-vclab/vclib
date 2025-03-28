@@ -51,9 +51,9 @@ class FpsBenchmarkMetric : public BenchmarkMetric
         frames++;
     };
 
-    std::string getMeasureString() override
+    std::vector<std::string> getMeasureStrings() override
     {
-        return std::format("{:.3f}", frames / timer.delay());
+        return std::vector<std::string>{std::format("{:.3f}", frames / timer.delay())};
     };
 
     std::string getUnitOfMeasure() override

@@ -24,6 +24,7 @@
 #define VCL_BENCHMARK_METRIC_H
 
 #include <string>
+#include <vector>
 
 namespace vcl{
 
@@ -36,7 +37,7 @@ class BenchmarkMetric
     
     virtual void start() = 0;
     virtual void measure() = 0;
-    virtual std::string getMeasureString() = 0;
+    virtual std::vector<std::string> getMeasureStrings() = 0;
     virtual std::string getUnitOfMeasure() = 0;
     virtual std::string getFullLengthUnitOfMeasure() = 0;
     virtual void end() = 0;
