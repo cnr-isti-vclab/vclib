@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_wireframe_id.h>
 
-#include <shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.essl.bin.h>
-#include <shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.spv.bin.h>
-#include <shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/fs_wireframe_id.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/wireframe_id/vs_wireframe_id.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
