@@ -41,6 +41,7 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
     using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
+    // selected mesh index
     int mMeshIndex = 0;
 
 public:
@@ -78,6 +79,27 @@ public:
         }
 
         ImGui::End();
+    }
+
+    void onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        if (button == MouseButton::RIGHT) {
+            this->readIdRequest(x, y, [&](uint id) {
+                if (id == 0) {
+                    std::cout << "No mesh selected" << std::endl;
+                    return;
+                }
+                id -= 1;
+                mMeshIndex = id;
+                std::cout << "selected mesh ID: " << id << std::endl;
+            });
+        }
+
+        Base::onMousePress(button, x, y, modifiers);
     }
 
 private:

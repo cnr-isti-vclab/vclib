@@ -49,6 +49,8 @@ class AbstractViewerDrawer :
 {
     bool mReadRequested = false;
 
+    uint mId = 1;
+
 protected:
     // the list of drawable objects
     // it could be owned by the viewer, or it could be shared with other
@@ -58,6 +60,9 @@ protected:
         std::make_shared<DrawableObjectVector>();
 
     using DTB = vcl::DesktopTrackBall<float>;
+
+    // the drawer id
+    uint & id() { return mId; }
 
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :

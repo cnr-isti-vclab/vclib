@@ -117,7 +117,7 @@ public:
         mCameraUniforms.updateCamera(DTB::camera());
         mCameraUniforms.bind();
 
-        ParentViewer::drawableObjectVector().drawId(viewId, uint(1));
+        ParentViewer::drawableObjectVector().drawId(viewId, ParentViewer::id());
     }
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
@@ -149,21 +149,6 @@ public:
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
-    }
-
-    void onMousePress(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        if (button == MouseButton::RIGHT) {
-            ParentViewer::readIdRequest(x, y, [](uint id) {
-                std::cout << "ID: " << id << std::endl;
-            });
-        }
-
-        ParentViewer::onMousePress(button, x, y, modifiers);
     }
 
     void toggleAxisVisibility() override
