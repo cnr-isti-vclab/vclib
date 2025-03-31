@@ -42,62 +42,62 @@ namespace vcl {
 class RotationAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* trackball;
-    float                    radiansPerSecond;
-    Point3f                  around;
-    Timer                    timer;
+    DesktopTrackBall<float>* mTrackBall;
+    float                    mRadiansPerSecond;
+    Point3f                  mAround;
+    Timer                    mTimer;
 
 public:
     static RotationAutomationAction fromSecondsPerRotation(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    secondsPerRotation,
         Point3f                  axis)
     {
         return RotationAutomationAction(
-            trackball,
+            trackBall,
             (2 * std::numbers::pi_v<float>) / secondsPerRotation,
             axis);
     }
 
     static RotationAutomationAction* ptrFromSecondsPerRotation(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    secondsPerRotation,
         Point3f                  axis)
     {
         return new RotationAutomationAction(
-            trackball,
+            trackBall,
             (2 * std::numbers::pi_v<float>) / secondsPerRotation,
             axis);
     }
 
     RotationAutomationAction(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    radiansPerSecond,
         Point3f                  axis) :
-            trackball {trackball}, radiansPerSecond {radiansPerSecond},
-            around {axis} {};
+            mTrackBall {trackBall}, mRadiansPerSecond {radiansPerSecond},
+            mAround {axis} {};
 
     void start() override
     {
         Parent::start();
-        timer.start();
+        mTimer.start();
     };
 
     void doAction() override
     {
         Parent::doAction();
         auto rotation =
-            Quaternion<float>(radiansPerSecond * timer.delay(), around);
+            Quaternion<float>(mRadiansPerSecond * mTimer.delay(), mAround);
 
-        trackball->rotate(rotation);
+        mTrackBall->rotate(rotation);
 
-        timer.start();
+        mTimer.start();
     };
 
     void end() override
     {
         Parent::end();
-        timer.stop();
+        mTimer.stop();
     };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

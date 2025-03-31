@@ -36,19 +36,19 @@ class StartCountDelayAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;
 
-    uint32_t waitStarts;
-    uint32_t currentStarts = 0;
+    uint32_t mWaitStarts;
+    uint32_t mCurrentStarts = 0;
 
 public:
     StartCountDelayAutomationAction(
         const AbstractAutomationAction& innerAction,
-        uint32_t waitStarts) : Parent(innerAction), waitStarts {waitStarts} {};
+        uint32_t waitStarts) : Parent(innerAction), mWaitStarts {waitStarts} {};
 
     void start() override
     {
-        if (currentStarts < waitStarts) {
+        if (mCurrentStarts < mWaitStarts) {
             AbstractAutomationAction::start();
-            currentStarts++;
+            mCurrentStarts++;
             return;
         }
         Parent::start();

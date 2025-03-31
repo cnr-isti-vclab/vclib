@@ -36,19 +36,19 @@ namespace vcl {
 class TrackballEventIgnoreAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* trackball;
+    DesktopTrackBall<float>* mTrackBall;
     bool                     ignoreEvents;
 
 public:
     TrackballEventIgnoreAutomationAction(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         bool                     ignoreEvents) :
-            trackball {trackball}, ignoreEvents {ignoreEvents} {};
+            mTrackBall {trackBall}, ignoreEvents {ignoreEvents} {};
 
     void doAction() override
     {
         Parent::doAction();
-        trackball->ignoreTrackBallEvents(ignoreEvents);
+        mTrackBall->ignoreTrackBallEvents(ignoreEvents);
         end();
     };
 

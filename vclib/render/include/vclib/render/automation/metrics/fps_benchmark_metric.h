@@ -40,22 +40,22 @@ namespace vcl {
  */
 class FpsBenchmarkMetric : public BenchmarkMetric
 {
-    Timer  timer;
-    double frames = 0;
+    Timer  mTimer;
+    double mFrames = 0;
 
 public:
     void start() override
     {
-        timer.start();
-        frames = 0;
+        mTimer.start();
+        mFrames = 0;
     };
 
-    void measure() override { frames++; };
+    void measure() override { mFrames++; };
 
     std::vector<std::string> getMeasureStrings() override
     {
         std::ostringstream temp;
-        temp << std::setprecision(3) << frames / timer.delay();
+        temp << std::setprecision(3) << mFrames / mTimer.delay();
 
         return std::vector<std::string> {temp.str()};
     };
@@ -64,10 +64,10 @@ public:
 
     std::string getFullLengthUnitOfMeasure() override
     {
-        return "frames per second";
+        return "mFrames per second";
     }
 
-    void end() override { timer.stop(); };
+    void end() override { mTimer.stop(); };
 
     std::shared_ptr<BenchmarkMetric> clone() const& override
     {

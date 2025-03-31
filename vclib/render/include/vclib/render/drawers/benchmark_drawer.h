@@ -56,48 +56,49 @@ class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
     less frames that you need to wait to avoid the freeze, tested so far only on
     2 devices) What causes the freeze? no clue.
     */
-    bool       beforeStartWaitTimerStarted = false;
-    vcl::Timer beforeStartWaitTimer;
-    double     beforeStartWaitSeconds = 0.4f;
+    bool       mBeforeStartWaitTimerStarted = false;
+    vcl::Timer mBeforeStartWaitTimer;
+    double     mBeforeStartWaitSeconds = 0.4f;
 
-    vcl::PolymorphicObjectVector<AbstractAutomationAction> automations;
-    /*
-    This vector's purpose is to keep track of whether to write the metric
-    measured for the automation at the same index in the automations vector
-    */
-    std::vector<bool> relevancies;
+    vcl::PolymorphicObjectVector<AbstractAutomationAction> mAutomations;
 
-    size_t currentAutomationIndex = 0;
+    /**
+     * This vector's purpose is to keep track of whether to write the metric
+     * measured for the automation at the same index in the automations vector
+     */
+    std::vector<bool> mRelevancies;
 
-    uint32_t repeatTimes = 1;
-    uint32_t repeatCount = 0;
+    size_t mCurrentAutomationIndex = 0;
 
-    std::shared_ptr<BenchmarkMetric>  metric = FpsBenchmarkMetric().clone();
-    std::shared_ptr<BenchmarkPrinter> printer =
+    uint32_t mRepeatTimes = 1;
+    uint32_t mRepeatCount = 0;
+
+    std::shared_ptr<BenchmarkMetric>  mMetric = FpsBenchmarkMetric().clone();
+    std::shared_ptr<BenchmarkPrinter> mPrinter =
         StdoutBenchmarkPrinter().clone();
 
-    bool firstCall = true;
-    bool allDone   = false;
+    bool mFirstCall = true;
+    bool mAllDone   = false;
 
     void benchmarkLoop()
     {
-        currentAutomationIndex = 0;
-        allDone                = false;
+        mCurrentAutomationIndex = 0;
+        mAllDone                = false;
     };
 
     bool isLastLoop()
     {
-        return repeatTimes != VCL_BENCHMARK_DRAWER_REPEAT_FOREVER &&
-               repeatCount >= repeatTimes;
+        return mRepeatTimes != VCL_BENCHMARK_DRAWER_REPEAT_FOREVER &&
+               mRepeatCount >= mRepeatTimes;
     }
 
     void onAutomationEnd()
     {
-        metric->end();
-        if (relevancies[currentAutomationIndex]) {
-            printer->print(*metric);
+        mMetric->end();
+        if (mRelevancies[mCurrentAutomationIndex]) {
+            mPrinter->print(*mMetric);
         }
-        currentAutomationIndex++;
+        mCurrentAutomationIndex++;
     }
 
 public:
@@ -109,47 +110,47 @@ public:
 
     /*WARNING: repeating forever does not work properly with printers. It is
     recommended to only repeat forever with a NullBenchmarkPrinter*/
-    void setRepeatTimes(float repeatTimes) { this->repeatTimes = repeatTimes; }
+    void setRepeatTimes(float repeatTimes) { this->mRepeatTimes = repeatTimes; }
 
     void onDrawContent(vcl::uint viewId) override
     {
-        if (!beforeStartWaitTimerStarted) {
-            beforeStartWaitTimer.start();
-            beforeStartWaitTimerStarted = true;
+        if (!mBeforeStartWaitTimerStarted) {
+            mBeforeStartWaitTimer.start();
+            mBeforeStartWaitTimerStarted = true;
         }
-        if (beforeStartWaitTimer.delay() < beforeStartWaitSeconds) {
+        if (mBeforeStartWaitTimer.delay() < mBeforeStartWaitSeconds) {
             return;
         }
-        if (automations.size() == 0) {
-            allDone = true;
+        if (mAutomations.size() == 0) {
+            mAllDone = true;
         }
-        if (allDone) {
+        if (mAllDone) {
             return;
         }
-        if (firstCall) {
-            automations[0]->start();
-            metric->start();
-            firstCall = false;
+        if (mFirstCall) {
+            mAutomations[0]->start();
+            mMetric->start();
+            mFirstCall = false;
         }
-        if (!automations[currentAutomationIndex]->isActive()) {
+        if (!mAutomations[mCurrentAutomationIndex]->isActive()) {
             onAutomationEnd();
-            allDone = currentAutomationIndex >= automations.size();
-            if (allDone) {
-                repeatCount++;
+            mAllDone = mCurrentAutomationIndex >= mAutomations.size();
+            if (mAllDone) {
+                mRepeatCount++;
                 if (isLastLoop()) {
                     std::cerr << "All benchmarks done." << std::endl;
-                    printer->finish(*metric);
+                    mPrinter->finish(*mMetric);
                     return;
                 }
                 benchmarkLoop();
-                printer->onBenchmarkLoop();
+                mPrinter->onBenchmarkLoop();
             }
-            metric->start();
-            automations[currentAutomationIndex]->start();
+            mMetric->start();
+            mAutomations[mCurrentAutomationIndex]->start();
         }
-        if (automations[currentAutomationIndex]->isActive()) {
-            metric->measure();
-            automations[currentAutomationIndex]->doAction();
+        if (mAutomations[mCurrentAutomationIndex]->isActive()) {
+            mMetric->measure();
+            mAutomations[mCurrentAutomationIndex]->doAction();
         }
     };
 
@@ -157,26 +158,26 @@ public:
         const AbstractAutomationAction& action,
         bool                            relevancy = true)
     {
-        automations.pushBack(action);
-        relevancies.push_back(relevancy);
-        return automations.size() - 1;
+        mAutomations.pushBack(action);
+        mRelevancies.push_back(relevancy);
+        return mAutomations.size() - 1;
     }
 
     void restartBenchmark()
     {
-        currentAutomationIndex = 0;
-        firstCall              = true;
-        allDone                = false;
-        repeatCount            = 0;
+        mCurrentAutomationIndex = 0;
+        mFirstCall              = true;
+        mAllDone                = false;
+        mRepeatCount            = 0;
     };
 
-    void setMetric(const BenchmarkMetric& bm) { metric = bm.clone(); };
+    void setMetric(const BenchmarkMetric& bm) { mMetric = bm.clone(); };
 
-    void setPrinter(const BenchmarkPrinter& bp) { printer = bp.clone(); };
+    void setPrinter(const BenchmarkPrinter& bp) { mPrinter = bp.clone(); };
 
-    uint32_t getRepeatCount() { return repeatCount; };
+    uint32_t getRepeatCount() { return mRepeatCount; };
 
-    size_t getCurrentAutomationIndex() { return currentAutomationIndex; };
+    size_t getCurrentAutomationIndex() { return mCurrentAutomationIndex; };
 };
 
 } // namespace vcl

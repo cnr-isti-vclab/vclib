@@ -36,20 +36,20 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;
 
-    uint32_t currentFrames = 0;
-    uint32_t durationFrames;
+    uint32_t mCurrentFrames = 0;
+    uint32_t mDurationFrames;
 
 public:
     FrameLimitedAutomationAction(
         const AbstractAutomationAction& innerAction,
         uint32_t                        durationFrames = 400.f) :
-            Parent(innerAction), durationFrames {durationFrames},
-            currentFrames {0} {};
+            Parent(innerAction), mDurationFrames {durationFrames},
+            mCurrentFrames {0} {};
 
     void doAction() override
     {
-        currentFrames++;
-        if (currentFrames >= durationFrames) {
+        mCurrentFrames++;
+        if (mCurrentFrames >= mDurationFrames) {
             end();
             return;
         }
@@ -59,7 +59,7 @@ public:
     void end() override
     {
         Parent::end();
-        currentFrames = 0;
+        mCurrentFrames = 0;
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

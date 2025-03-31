@@ -40,46 +40,46 @@ namespace vcl {
 class PerFrameRotationAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* trackball;
-    float                    radiansPerFrame;
-    Point3f                  around;
+    DesktopTrackBall<float>* mTrackBall;
+    float                    mRadiansPerFrame;
+    Point3f                  mAround;
 
 public:
     static PerFrameRotationAutomationAction fromFramesPerRotation(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    framesPerRotation,
         Point3f                  axis)
     {
         return PerFrameRotationAutomationAction(
-            trackball,
+            trackBall,
             (2 * std::numbers::pi_v<float>) / framesPerRotation,
             axis);
     }
 
     static PerFrameRotationAutomationAction* ptrFromFramesPerRotation(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    framesPerRotation,
         Point3f                  axis)
     {
         return new PerFrameRotationAutomationAction(
-            trackball,
+            trackBall,
             (2 * std::numbers::pi_v<float>) / framesPerRotation,
             axis);
     }
 
     PerFrameRotationAutomationAction(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    radiansPerFrame,
         Point3f                  axis) :
-            trackball {trackball}, radiansPerFrame {radiansPerFrame},
-            around {axis} {};
+            mTrackBall {trackBall}, mRadiansPerFrame {radiansPerFrame},
+            mAround {axis} {};
 
     void doAction() override
     {
         Parent::doAction();
-        auto rotation = Quaternion<float>(radiansPerFrame, around);
+        auto rotation = Quaternion<float>(mRadiansPerFrame, mAround);
 
-        trackball->rotate(rotation);
+        mTrackBall->rotate(rotation);
     };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

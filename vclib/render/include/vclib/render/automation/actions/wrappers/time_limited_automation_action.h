@@ -39,25 +39,25 @@ namespace vcl {
 class TimeLimitedAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;
-    float durationSeconds;
-    Timer timer;
+    float mDurationSeconds;
+    Timer mTimer;
 
 public:
     TimeLimitedAutomationAction(
         const AbstractAutomationAction& innerAction,
         float                           durationSeconds = 5.5f) :
-            Parent(innerAction), durationSeconds {durationSeconds} {};
+            Parent(innerAction), mDurationSeconds {durationSeconds} {};
 
     void start() override
     {
-        timer.start();
+        mTimer.start();
         Parent::start();
     }
 
     void doAction() override
     {
         AbstractAutomationAction::doAction();
-        if (timer.delay() >= durationSeconds) {
+        if (mTimer.delay() >= mDurationSeconds) {
             end();
             return;
         }
@@ -67,7 +67,7 @@ public:
     void end() override
     {
         Parent::end();
-        timer.stop();
+        mTimer.stop();
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

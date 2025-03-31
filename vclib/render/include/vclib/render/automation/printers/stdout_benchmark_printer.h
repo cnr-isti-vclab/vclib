@@ -35,8 +35,8 @@ namespace vcl {
  */
 class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint32_t automationIndex = 0;
-    uint32_t loopCounter     = 0;
+    uint32_t mAutomationIndex = 0;
+    uint32_t mLoopCounter     = 0;
 
 public:
     void print(BenchmarkMetric& metric) override
@@ -54,13 +54,13 @@ public:
             temp << meas + metric.getUnitOfMeasure();
         }
         temp << "]";
-        std::cout << "Loop " << loopCounter << ", automation "
-                  << automationIndex << ": " << temp.str() << std::endl;
+        std::cout << "Loop " << mLoopCounter << ", automation "
+                  << mAutomationIndex << ": " << temp.str() << std::endl;
 
-        automationIndex++;
+        mAutomationIndex++;
     };
 
-    void onBenchmarkLoop() override { loopCounter++; }
+    void onBenchmarkLoop() override { mLoopCounter++; }
 
     void finish(BenchmarkMetric& metric) override {};
 

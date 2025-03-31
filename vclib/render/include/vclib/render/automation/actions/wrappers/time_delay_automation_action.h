@@ -36,31 +36,31 @@ namespace vcl {
  */
 class TimeDelayAutomationAction : public WrapperAutomationAction
 {
-    Timer timer;
-    float delaySeconds;
-    bool  innerStarted = false;
-    using Parent       = WrapperAutomationAction;
+    Timer mTimer;
+    float mDelaySeconds;
+    bool  mInnerStarted = false;
+    using Parent        = WrapperAutomationAction;
 
 public:
     TimeDelayAutomationAction(
         const AbstractAutomationAction& action,
-        float delaySeconds) : Parent(action), delaySeconds {delaySeconds} {};
+        float delaySeconds) : Parent(action), mDelaySeconds {delaySeconds} {};
 
     void start() override
     {
         AbstractAutomationAction::start();
-        timer.start();
+        mTimer.start();
     }
 
     void doAction() override
     {
         AbstractAutomationAction::doAction();
-        if (timer.delay() < delaySeconds) {
+        if (mTimer.delay() < mDelaySeconds) {
             return;
         }
-        if (!innerStarted) {
+        if (!mInnerStarted) {
             innerAction->start();
-            innerStarted = true;
+            mInnerStarted = true;
         }
         if (innerAction->isActive()) {
             innerAction->doAction();
@@ -72,8 +72,8 @@ public:
     void end() override
     {
         Parent::end();
-        timer.stop();
-        innerStarted = false;
+        mTimer.stop();
+        mInnerStarted = false;
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

@@ -49,42 +49,42 @@ namespace vcl {
  */
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint loopCounter     = 0;
-    uint automationIndex = 0;
+    uint mLoopCounter     = 0;
+    uint mAutomationIndex = 0;
 
-    std::string   fileName;
-    std::ofstream stream;
+    std::string   mFileName;
+    std::ofstream mStream;
 
 public:
-    JsonBenchmarkPrinter(const std::string& fileName) : fileName {fileName}
+    JsonBenchmarkPrinter(const std::string& fileName) : mFileName {fileName}
     {
-        stream.open(fileName);
-        if (stream.fail()) {
+        mStream.open(fileName);
+        if (mStream.fail()) {
             throw "JsonBenchmarkPrinter : invalid file name\n";
         }
     };
 
     JsonBenchmarkPrinter(const JsonBenchmarkPrinter& other) :
-            fileName {other.fileName}, stream()
+            mFileName {other.mFileName}, mStream()
     {
-        stream.open(fileName);
+        mStream.open(mFileName);
     };
 
     void onBenchmarkLoop() override
     {
-        loopCounter++;
-        automationIndex = 0;
-        stream << "\n\t},\n\t\"Loop " << loopCounter << "\" : {";
+        mLoopCounter++;
+        mAutomationIndex = 0;
+        mStream << "\n\t},\n\t\"Loop " << mLoopCounter << "\" : {";
     };
 
     void print(BenchmarkMetric& metric) override
     {
-        if (loopCounter == 0 && automationIndex == 0) {
-            stream << "{\n\t\"Loop 0\" : {";
+        if (mLoopCounter == 0 && mAutomationIndex == 0) {
+            mStream << "{\n\t\"Loop 0\" : {";
         }
 
-        if (automationIndex != 0) {
-            stream << ",";
+        if (mAutomationIndex != 0) {
+            mStream << ",";
         }
 
         std::ostringstream temp;
@@ -103,16 +103,16 @@ public:
         }
         temp << "\n\t\t\t]";
 
-        stream << "\n\t\t\"Automation " << automationIndex << "\" : {"
-               << "\n\t\t\t\"measurements\" : " << temp.str() << "\n\t\t}";
+        mStream << "\n\t\t\"Automation " << mAutomationIndex << "\" : {"
+                << "\n\t\t\t\"measurements\" : " << temp.str() << "\n\t\t}";
 
-        automationIndex++;
+        mAutomationIndex++;
     };
 
     void finish(BenchmarkMetric& metric) override
     {
-        stream << "\n\t}\n}";
-        stream.close();
+        mStream << "\n\t}\n}";
+        mStream.close();
     };
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
@@ -127,8 +127,8 @@ public:
 
     ~JsonBenchmarkPrinter()
     {
-        if (stream.is_open()) {
-            stream.close();
+        if (mStream.is_open()) {
+            mStream.close();
         }
     };
 };

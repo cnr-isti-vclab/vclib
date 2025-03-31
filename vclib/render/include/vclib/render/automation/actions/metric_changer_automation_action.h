@@ -37,18 +37,18 @@ class MetricChangerAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
 
-    DerivedDrawer*                   benchmarkDrawer;
-    std::shared_ptr<BenchmarkMetric> metric;
+    DerivedDrawer*                   mBenchmarkDrawer;
+    std::shared_ptr<BenchmarkMetric> mMetric;
 
 public:
     MetricChangerAutomationAction(
         DerivedDrawer*         drawer,
         const BenchmarkMetric& metric) :
-            benchmarkDrawer {drawer}, metric {metric.clone()} {};
+            mBenchmarkDrawer {drawer}, mMetric {metric.clone()} {};
 
     void doAction() override
     {
-        benchmarkDrawer->setMetric(*metric);
+        mBenchmarkDrawer->setMetric(*mMetric);
         end();
     };
 

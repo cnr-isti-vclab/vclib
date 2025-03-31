@@ -38,7 +38,7 @@ namespace vcl {
  */
 class SimultaneousAutomationActions : public AbstractAutomationAction
 {
-    PolymorphicObjectVector<AbstractAutomationAction> automations;
+    PolymorphicObjectVector<AbstractAutomationAction> mAutomations;
     using Parent = AbstractAutomationAction;
 
 public:
@@ -46,7 +46,7 @@ public:
         std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
     {
         for (auto el = init.begin(); el < init.end(); el++) {
-            automations.pushBack(*el);
+            mAutomations.pushBack(*el);
         }
     };
 
@@ -54,21 +54,21 @@ public:
 
     void addAutomation(const AbstractAutomationAction& automation)
     {
-        automations.pushBack(automation);
+        mAutomations.pushBack(automation);
     }
 
     void start() override
     {
         Parent::start();
-        for (size_t i = 0; i < automations.size(); i++) {
-            automations[i]->start();
+        for (size_t i = 0; i < mAutomations.size(); i++) {
+            mAutomations[i]->start();
         }
     }
 
     void doAction() override
     {
         Parent::doAction();
-        for (const auto aut : automations) {
+        for (const auto aut : mAutomations) {
             if (aut->isActive()) {
                 aut->doAction();
             }
@@ -78,9 +78,9 @@ public:
     void end() override
     {
         Parent::end();
-        for (size_t i = 0; i < automations.size(); i++) {
-            if (automations[i]->isActive()) {
-                automations[i]->end();
+        for (size_t i = 0; i < mAutomations.size(); i++) {
+            if (mAutomations[i]->isActive()) {
+                mAutomations[i]->end();
             }
         }
     }

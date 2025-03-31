@@ -45,38 +45,38 @@ namespace vcl {
  */
 class CsvBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint32_t                                    loopCounter        = 0;
-    uint32_t                                    automationCounter  = 0;
+    uint32_t                                    mLoopCounter       = 0;
+    uint32_t                                    mAutomationCounter = 0;
     uint32_t                                    maxMeasurementSize = 0;
-    std::string                                 fileName;
-    std::ofstream                               stream;
-    std::vector<std::pair<std::string, size_t>> measurementStrings;
+    std::string                                 mFileName;
+    std::ofstream                               mStream;
+    std::vector<std::pair<std::string, size_t>> mMeasurementStrings;
 
 public:
-    CsvBenchmarkPrinter(const std::string& fileName) : fileName {fileName}
+    CsvBenchmarkPrinter(const std::string& fileName) : mFileName {fileName}
     {
-        stream.open(fileName);
-        if (stream.fail()) {
+        mStream.open(fileName);
+        if (mStream.fail()) {
             throw "CsvBenchmarkPrinter : invalid file name\n";
         }
     };
 
     CsvBenchmarkPrinter(const CsvBenchmarkPrinter& other) :
-            fileName {other.fileName}, stream()
+            mFileName {other.mFileName}, mStream()
     {
-        stream.open(fileName);
+        mStream.open(mFileName);
     };
 
     void onBenchmarkLoop() override
     {
-        loopCounter++;
-        automationCounter = 0;
+        mLoopCounter++;
+        mAutomationCounter = 0;
     };
 
     void print(BenchmarkMetric& metric) override
     {
         std::ostringstream temp;
-        temp << loopCounter << ";" << automationCounter;
+        temp << mLoopCounter << ";" << mAutomationCounter;
 
         std::vector<std::string> measureStrings = metric.getMeasureStrings();
 
@@ -96,24 +96,24 @@ public:
             temp << measureStrings.back();
         }
 
-        measurementStrings.push_back(
+        mMeasurementStrings.push_back(
             std::make_pair(temp.str(), measureStrings.size()));
 
-        automationCounter++;
+        mAutomationCounter++;
     };
 
     void finish(BenchmarkMetric& metric) override
     {
-        stream << "Loop;Automation";
+        mStream << "Loop;Automation";
         for (uint32_t i = 0; i < maxMeasurementSize; i++) {
-            stream << ";Measurement " << i;
+            mStream << ";Measurement " << i;
         }
-        for (const auto& meas : measurementStrings) {
-            stream << "\n"
-                   << meas.first
-                   << std::string(maxMeasurementSize - meas.second, ';');
+        for (const auto& meas : mMeasurementStrings) {
+            mStream << "\n"
+                    << meas.first
+                    << std::string(maxMeasurementSize - meas.second, ';');
         }
-        stream.close();
+        mStream.close();
     };
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
@@ -128,8 +128,8 @@ public:
 
     ~CsvBenchmarkPrinter()
     {
-        if (stream.is_open()) {
-            stream.close();
+        if (mStream.is_open()) {
+            mStream.close();
         }
     };
 };

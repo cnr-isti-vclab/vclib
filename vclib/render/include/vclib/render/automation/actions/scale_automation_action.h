@@ -38,41 +38,41 @@ namespace vcl {
 class ScaleAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* trackball;
-    float                    pixelDeltaPerSecond;
-    float                    totalPixelDelta;
-    Timer                    timer;
+    DesktopTrackBall<float>* mTrackBall;
+    float                    mPixelDeltaPerSecond;
+    float                    mTotalPixelDelta;
+    Timer                    mTimer;
 
 public:
     ScaleAutomationAction(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    pixelDeltaPerSecond) :
-            trackball {trackball}, pixelDeltaPerSecond {pixelDeltaPerSecond},
-            totalPixelDelta {0}
+            mTrackBall {trackBall}, mPixelDeltaPerSecond {pixelDeltaPerSecond},
+            mTotalPixelDelta {0}
     {
     }
 
     void start() override
     {
         Parent::start();
-        timer.start();
+        mTimer.start();
     }
 
     void doAction() override
     {
         Parent::doAction();
-        totalPixelDelta += pixelDeltaPerSecond * timer.delay();
+        mTotalPixelDelta += mPixelDeltaPerSecond * mTimer.delay();
 
-        trackball->performScale(totalPixelDelta);
+        mTrackBall->performScale(mTotalPixelDelta);
 
-        timer.start();
+        mTimer.start();
     };
 
     void end() override
     {
         Parent::end();
-        timer.stop();
-        totalPixelDelta = 0;
+        mTimer.stop();
+        mTotalPixelDelta = 0;
     };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

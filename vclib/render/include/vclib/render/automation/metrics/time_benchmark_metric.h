@@ -38,17 +38,17 @@ namespace vcl {
  */
 class TimeBenchmarkMetric : public BenchmarkMetric
 {
-    Timer timer;
+    Timer mTimer;
 
 public:
-    void start() override { timer.start(); }
+    void start() override { mTimer.start(); }
 
     void measure() override {}
 
     std::vector<std::string> getMeasureStrings() override
     {
         std::ostringstream temp;
-        temp << std::setprecision(3) << timer.delay();
+        temp << std::setprecision(3) << mTimer.delay();
 
         return std::vector<std::string> {temp.str()};
     }
@@ -57,7 +57,7 @@ public:
 
     std::string getFullLengthUnitOfMeasure() override { return "seconds"; }
 
-    void end() override { timer.stop(); }
+    void end() override { mTimer.stop(); }
 
     std::shared_ptr<BenchmarkMetric> clone() const& override
     {

@@ -37,23 +37,23 @@ class StartCountLimitedAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;
 
-    uint32_t maximumStarts;
-    uint32_t currentStarts = 0;
+    uint32_t mMaximumStarts;
+    uint32_t mCurrentStarts = 0;
 
 public:
     StartCountLimitedAutomationAction(
         const AbstractAutomationAction& innerAction,
         uint32_t                        maximumStarts) :
-            Parent(innerAction), maximumStarts {maximumStarts} {};
+            Parent(innerAction), mMaximumStarts {maximumStarts} {};
 
     void start() override
     {
-        if (currentStarts >= maximumStarts) {
+        if (mCurrentStarts >= mMaximumStarts) {
             AbstractAutomationAction::start();
             return;
         }
         Parent::start();
-        currentStarts++;
+        mCurrentStarts++;
     };
 
     void doAction() override

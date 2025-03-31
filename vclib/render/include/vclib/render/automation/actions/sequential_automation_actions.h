@@ -38,17 +38,17 @@ namespace vcl {
  */
 class SequentialAutomationActions : public AbstractAutomationAction
 {
-    PolymorphicObjectVector<AbstractAutomationAction> automations;
+    PolymorphicObjectVector<AbstractAutomationAction> mAutomations;
     using Parent = AbstractAutomationAction;
 
-    uint32_t currentIndex = 0;
+    uint32_t mCurrentIndex = 0;
 
 public:
     SequentialAutomationActions(
         std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
     {
         for (auto el = init.begin(); el < init.end(); el++) {
-            automations.pushBack(*el);
+            mAutomations.pushBack(*el);
         }
     };
 
@@ -56,38 +56,38 @@ public:
 
     void addAutomation(const AbstractAutomationAction& automation)
     {
-        automations.pushBack(automation);
+        mAutomations.pushBack(automation);
     }
 
     void start() override
     {
         Parent::start();
-        automations[0]->start();
+        mAutomations[0]->start();
     }
 
     void doAction() override
     {
         Parent::doAction();
-        if (!automations[currentIndex]->isActive()) {
-            if (currentIndex == automations.size() - 1) {
+        if (!mAutomations[mCurrentIndex]->isActive()) {
+            if (mCurrentIndex == mAutomations.size() - 1) {
                 end();
                 return;
             }
-            currentIndex++;
-            automations[currentIndex]->start();
+            mCurrentIndex++;
+            mAutomations[mCurrentIndex]->start();
         }
-        if (automations[currentIndex]->isActive()) {
-            automations[currentIndex]->doAction();
+        if (mAutomations[mCurrentIndex]->isActive()) {
+            mAutomations[mCurrentIndex]->doAction();
         }
     }
 
     void end() override
     {
         Parent::end();
-        if (automations[currentIndex]->isActive()) {
-            automations[currentIndex]->end();
+        if (mAutomations[mCurrentIndex]->isActive()) {
+            mAutomations[mCurrentIndex]->end();
         }
-        currentIndex = 0;
+        mCurrentIndex = 0;
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

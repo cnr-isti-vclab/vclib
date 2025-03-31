@@ -34,28 +34,28 @@ namespace vcl {
  */
 class FrameDelayAutomationAction : public WrapperAutomationAction
 {
-    uint32_t currentFrames = 0;
-    uint32_t delayFrames;
-    bool     innerStarted = false;
-    using Parent          = WrapperAutomationAction;
+    uint32_t mCurrentFrames = 0;
+    uint32_t mDelayFrames;
+    bool     mInnerStarted = false;
+    using Parent           = WrapperAutomationAction;
 
 public:
     FrameDelayAutomationAction(
         const AbstractAutomationAction& action,
-        uint32_t delayFrames) : Parent(action), delayFrames {delayFrames} {};
+        uint32_t delayFrames) : Parent(action), mDelayFrames {delayFrames} {};
 
     void start() override { AbstractAutomationAction::start(); }
 
     void doAction() override
     {
         AbstractAutomationAction::doAction();
-        if (currentFrames < delayFrames) {
-            currentFrames++;
+        if (mCurrentFrames < mDelayFrames) {
+            mCurrentFrames++;
             return;
         }
-        if (!innerStarted) {
+        if (!mInnerStarted) {
             innerAction->start();
-            innerStarted = true;
+            mInnerStarted = true;
         }
         if (innerAction->isActive()) {
             innerAction->doAction();
@@ -67,8 +67,8 @@ public:
     void end() override
     {
         Parent::end();
-        currentFrames = 0;
-        innerStarted  = false;
+        mCurrentFrames = 0;
+        mInnerStarted  = false;
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

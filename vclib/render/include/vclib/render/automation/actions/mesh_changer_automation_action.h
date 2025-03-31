@@ -37,8 +37,8 @@ namespace vcl {
 template<typename DerivedRenderApp, typename MeshType>
 class MeshChangerAutomationAction : public AbstractAutomationAction
 {
-    vcl::AbstractViewerDrawer<DerivedRenderApp>* avd;
-    std::shared_ptr<vcl::DrawableObjectVector>   objectVector;
+    vcl::AbstractViewerDrawer<DerivedRenderApp>* mAvd;
+    std::shared_ptr<vcl::DrawableObjectVector>   mObjectVector;
 
     using Parent = AbstractAutomationAction;
 
@@ -46,18 +46,18 @@ public:
     MeshChangerAutomationAction(
         vcl::AbstractViewerDrawer<DerivedRenderApp>* avd,
         vcl::DrawableMesh<MeshType>&                 mesh) :
-            avd {avd},
-            objectVector {std::make_shared<vcl::DrawableObjectVector>(
+            mAvd {avd},
+            mObjectVector {std::make_shared<vcl::DrawableObjectVector>(
                 vcl::DrawableObjectVector())}
     {
-        objectVector->pushBack(mesh);
+        mObjectVector->pushBack(mesh);
     }
 
     void doAction() override
     {
         Parent::doAction();
-        avd->setDrawableObjectVector(objectVector);
-        avd->fitScene();
+        mAvd->setDrawableObjectVector(mObjectVector);
+        mAvd->fitScene();
         end();
     }
 

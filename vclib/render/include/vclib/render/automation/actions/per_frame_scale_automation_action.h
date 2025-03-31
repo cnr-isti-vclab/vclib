@@ -36,31 +36,31 @@ namespace vcl {
 class PerFrameScaleAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* trackball;
-    float                    pixelDeltaPerFrame;
-    float                    totalPixelDelta;
+    DesktopTrackBall<float>* mTrackBall;
+    float                    mPixelDeltaPerFrame;
+    float                    mTotalPixelDelta;
 
 public:
     PerFrameScaleAutomationAction(
-        DesktopTrackBall<float>* trackball,
+        DesktopTrackBall<float>* trackBall,
         float                    pixelDeltaPerFrame) :
-            trackball {trackball}, pixelDeltaPerFrame {pixelDeltaPerFrame},
-            totalPixelDelta {0}
+            mTrackBall {trackBall}, mPixelDeltaPerFrame {pixelDeltaPerFrame},
+            mTotalPixelDelta {0}
     {
     }
 
     void doAction() override
     {
         Parent::doAction();
-        totalPixelDelta += pixelDeltaPerFrame;
+        mTotalPixelDelta += mPixelDeltaPerFrame;
 
-        trackball->performScale(totalPixelDelta);
+        mTrackBall->performScale(mTotalPixelDelta);
     };
 
     void end() override
     {
         Parent::end();
-        totalPixelDelta = 0;
+        mTotalPixelDelta = 0;
     };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override

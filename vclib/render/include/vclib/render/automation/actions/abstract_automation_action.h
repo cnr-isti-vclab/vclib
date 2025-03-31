@@ -35,7 +35,7 @@ namespace vcl {
 class AbstractAutomationAction
 {
 private:
-    bool active = false;
+    bool mActive = false;
 
 public:
     /**
@@ -45,7 +45,7 @@ public:
      * A call to start SHOULD guarantee that the action is considered active at
      * least until the next doAction
      */
-    virtual void start() { active = true; };
+    virtual void start() { mActive = true; };
 
     /**
      * Called every frame (as long as the action is active)
@@ -71,9 +71,9 @@ public:
      * this one (unless it makes no sense for the action to be started multiple
      * times)
      */
-    virtual void end() { active = false; };
+    virtual void end() { mActive = false; };
 
-    virtual bool isActive() { return active; }
+    virtual bool isActive() { return mActive; }
 
     operator std::shared_ptr<AbstractAutomationAction>() { return clone(); };
 
