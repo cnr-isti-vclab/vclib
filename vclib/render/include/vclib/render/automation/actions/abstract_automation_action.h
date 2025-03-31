@@ -38,6 +38,15 @@ class AbstractAutomationAction
 private:
     bool mActive = false;
 
+    class UpdatedInactiveException : std::exception
+    {
+        const char* what() const throw() override
+        {
+            return "UpdatedInactiveException: Do not call doAction() "
+                   "on inactive actions!\n";
+        }
+    };
+
 public:
     /**
      * Only ever called by outside sources
@@ -60,7 +69,7 @@ public:
     virtual void doAction()
     {
         if (!isActive()) {
-            throw std::exception("Do not call doAction() on inactive actions!");
+            throw UpdatedInactiveException();
         }
     };
 
