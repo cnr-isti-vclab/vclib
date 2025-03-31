@@ -24,6 +24,7 @@
 #define VCL_AUTOMATION_ACTION_H
 
 #include <chrono>
+#include <memory>
 
 namespace vcl {
 
