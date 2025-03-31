@@ -35,8 +35,8 @@ namespace vcl {
 */
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint32_t loopCounter     = 0;
-    uint32_t automationIndex = 0;
+    uint loopCounter     = 0;
+    uint automationIndex = 0;
 
     std::string   fileName;
     std::ofstream stream;

@@ -42,4 +42,4 @@
 #include <vclib/render/automation/actions/wrappers/time_limited_automation_action.h>
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
-#endif
+#endif // VCL_AUTOMATION_ACTIONS_H

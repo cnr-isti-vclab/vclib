@@ -26,6 +26,7 @@
 #include <vclib/render/automation/printers/benchmark_printer.h>
 
 #include <fstream>
+#include <iterator>
 #include <sstream>
 #include <utility>
 
@@ -99,7 +100,7 @@ public:
         for (uint32_t i = 0; i < maxMeasurementSize; i++) {
             stream << ";Measurement " << i;
         }
-        for (auto meas : measurementStrings) {
+        for (const auto& meas : measurementStrings) {
             stream << "\n"
                    << meas.first
                    << std::string(maxMeasurementSize - meas.second, ';');

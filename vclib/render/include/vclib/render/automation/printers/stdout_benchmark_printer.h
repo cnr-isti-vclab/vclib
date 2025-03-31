@@ -43,7 +43,7 @@ public:
         std::ostringstream temp;
         temp << "[";
         bool isFirst = true;
-        for (auto meas : metric.getMeasureStrings()) {
+        for (const auto& meas : metric.getMeasureStrings()) {
             if (!isFirst) {
                 temp << ", ";
             }

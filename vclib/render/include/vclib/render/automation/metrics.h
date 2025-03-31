@@ -28,4 +28,4 @@
 #include <vclib/render/automation/metrics/null_benchmark_metric.h>
 #include <vclib/render/automation/metrics/time_benchmark_metric.h>
 
-#endif
+#endif // VCL_BENCHMARK_METRICS_H

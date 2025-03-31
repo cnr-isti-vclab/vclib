@@ -29,4 +29,4 @@
 #include <vclib/render/automation/printers/null_benchmark_printer.h>
 #include <vclib/render/automation/printers/stdout_benchmark_printer.h>
 
-#endif
+#endif // VCL_BENCHMARK_PRINTERS_H

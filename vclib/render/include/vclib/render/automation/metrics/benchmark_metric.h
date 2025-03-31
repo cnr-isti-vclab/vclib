@@ -23,6 +23,7 @@
 #ifndef VCL_BENCHMARK_METRIC_H
 #define VCL_BENCHMARK_METRIC_H
 
+#include <memory>
 #include <string>
 #include <vector>
 
