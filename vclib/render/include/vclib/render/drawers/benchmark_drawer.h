@@ -40,11 +40,12 @@
 
 namespace vcl {
 
-/*
-    Class that combines a Printer, a Metric and a Vector of Automations to
-    measure and write (somewhere) the performance of each Automation.
-    While it is a Drawer, it doesn't really draw anything.
-*/
+/**
+ * The BenchmarkDrawer is a class that combines a BenchmarkPrinter, a
+ * BenchmarkMetric and a Vector of Automations to measure and write (somewhere)
+ * the performance of each Automation. While it is a Drawer, it doesn't really
+ * draw anything.
+ */
 template<typename DerivedDrawer>
 class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
 {

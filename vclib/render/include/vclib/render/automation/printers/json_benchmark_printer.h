@@ -35,6 +35,7 @@ namespace vcl {
  * of a BenchmarkMetric to a json file.
  *
  * The file will have the following format:
+ * <PRE>
  * {
  *      "Loop <loop_number>": {
  *          "Automation <automation_number>": {
@@ -46,6 +47,7 @@ namespace vcl {
  *      },
  *      ...
  * }
+ * </PRE>
  */
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {

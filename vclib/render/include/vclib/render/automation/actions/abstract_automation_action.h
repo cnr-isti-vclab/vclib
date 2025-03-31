@@ -24,6 +24,7 @@
 #define VCL_AUTOMATION_ACTION_H
 
 #include <chrono>
+#include <exception>
 #include <memory>
 
 namespace vcl {
@@ -54,12 +55,12 @@ public:
      * and it is therefore important to check whether the automation is active
      * before calling doAction()
      *
-     * @throws If it is called on an inactive action
+     * @throws std::exception If it is called on an inactive action
      */
     virtual void doAction()
     {
         if (!isActive()) {
-            throw "Do not call doAction() on inactive actions!";
+            throw std::exception("Do not call doAction() on inactive actions!");
         }
     };
 
