@@ -204,15 +204,7 @@ private:
     };
 
 public:
-    void startIgnoringTrackBallEvents()
-    {
-        ignoreEvents = true;
-    }
-
-    void stopIgnoringTrackBallEvents()
-    {
-        ignoreEvents = false;
-    }
+    void ignoreTrackBallEvents(bool b) { ignoreEvents = b; }
 
     DesktopTrackBall(uint width = 1024, uint height = 768)
     {
@@ -255,8 +247,9 @@ public:
         resetTrackBall();
     }
 
-    //Expose the trackball function to everyone
-    void rotate(const Quaternion<Scalar>& rotation){
+    // Expose the trackball function to everyone
+    void rotate(const Quaternion<Scalar>& rotation)
+    {
         mTrackball.rotate(rotation);
     }
 
@@ -281,7 +274,7 @@ public:
 
     void moveMouse(int x, int y)
     {
-        if(ignoreEvents){
+        if (ignoreEvents) {
             return;
         }
 
@@ -297,7 +290,7 @@ public:
 
     void pressMouse(MouseButton::Enum button)
     {
-        if(ignoreEvents){
+        if (ignoreEvents) {
             return;
         }
 
@@ -320,7 +313,7 @@ public:
 
     void releaseMouse(MouseButton::Enum button)
     {
-        if(ignoreEvents){
+        if (ignoreEvents) {
             return;
         }
 
@@ -339,10 +332,9 @@ public:
 
     void scroll(Scalar pixelDeltaX, Scalar pixelDeltaY)
     {
-        if(ignoreEvents){
+        if (ignoreEvents) {
             return;
         }
-
 
         if (pixelDeltaX == 0 && pixelDeltaY == 0) {
             return;
@@ -365,7 +357,7 @@ public:
 
     void keyPress(Key::Enum key)
     {
-        if(ignoreEvents){
+        if (ignoreEvents) {
             return;
         }
 
@@ -389,7 +381,7 @@ public:
 
     void keyRelease(Key::Enum key)
     {
-        if(ignoreEvents){
+        if (ignoreEvents) {
             return;
         }
 

@@ -52,8 +52,6 @@ public:
         objectVector->pushBack(mesh);
     }
 
-    void start() override { Parent::start(); }
-
     void doAction() override
     {
         Parent::doAction();

@@ -23,11 +23,14 @@
 #ifndef VCL_ROTATION_AUTOMATION_ACTION_H
 #define VCL_ROTATION_AUTOMATION_ACTION_H
 
-#include <numbers>
-#include <vclib/misc/timer.h>
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/viewer/desktop_trackball.h>
+
 #include <vclib/space/core/quaternion.h>
+
+#include <vclib/misc/timer.h>
+
+#include <numbers>
 
 namespace vcl {
 

@@ -137,7 +137,7 @@ public:
             if (allDone) {
                 repeatCount++;
                 if (isLastLoop()) {
-                    printf("All benchmarks done.\n");
+                    std::cerr << "All benchmarks done." << std::endl;
                     printer->finish(*metric);
                     return;
                 }

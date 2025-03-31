@@ -24,6 +24,7 @@
 #define VCL_TRACKBALL_EVENT_IGNORE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
+
 #include <vclib/render/viewer/desktop_trackball.h>
 
 namespace vcl {
@@ -49,12 +50,7 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        if (ignoreEvents) {
-            trackball->startIgnoringTrackBallEvents();
-        }
-        else {
-            trackball->stopIgnoringTrackBallEvents();
-        }
+        trackball->ignoreTrackBallEvents(ignoreEvents);
         end();
     };
 

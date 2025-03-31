@@ -64,8 +64,6 @@ public:
         }
     };
 
-    void end() override { Parent::end(); };
-
     std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
         return std::make_shared<StartCountLimitedAutomationAction>(*this);

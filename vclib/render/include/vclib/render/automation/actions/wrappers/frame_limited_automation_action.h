@@ -46,8 +46,6 @@ public:
             Parent(innerAction), durationFrames {durationFrames},
             currentFrames {0} {};
 
-    void start() override { Parent::start(); }
-
     void doAction() override
     {
         currentFrames++;

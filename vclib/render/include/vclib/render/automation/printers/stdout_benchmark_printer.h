@@ -53,11 +53,8 @@ public:
             temp << meas + metric.getUnitOfMeasure();
         }
         temp << "]";
-        printf(
-            "Loop %u, automation %u: %s\n",
-            loopCounter,
-            automationIndex,
-            temp.str().c_str());
+        std::cout << "Loop " << loopCounter << ", automation "
+                  << automationIndex << ": " << temp.str() << std::endl;
 
         automationIndex++;
     };

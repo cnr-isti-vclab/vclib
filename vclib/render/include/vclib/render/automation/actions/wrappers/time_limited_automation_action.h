@@ -23,9 +23,11 @@
 #ifndef VCL_TIME_LIMITED_AUTOMATION_ACTION_H
 #define VCL_TIME_LIMITED_AUTOMATION_ACTION_H
 
-#include <chrono>
-#include <vclib/misc/timer.h>
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
+
+#include <vclib/misc/timer.h>
+
+#include <chrono>
 
 namespace vcl {
 

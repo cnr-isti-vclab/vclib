@@ -73,12 +73,6 @@ public:
             trackball {trackball}, radiansPerFrame {radiansPerFrame},
             around {axis} {};
 
-    void start() override
-    {
-        Parent::start();
-        trackball->startIgnoringTrackBallEvents();
-    };
-
     void doAction() override
     {
         Parent::doAction();
@@ -86,8 +80,6 @@ public:
 
         trackball->rotate(rotation);
     };
-
-    void end() override { Parent::end(); };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override
     {

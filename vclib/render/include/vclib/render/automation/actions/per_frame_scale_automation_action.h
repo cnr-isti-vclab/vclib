@@ -48,8 +48,6 @@ public:
     {
     }
 
-    void start() override { Parent::start(); }
-
     void doAction() override
     {
         Parent::doAction();
