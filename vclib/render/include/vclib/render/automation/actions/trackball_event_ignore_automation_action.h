@@ -30,17 +30,17 @@
 namespace vcl {
 
 /**
- * The TrackballEventIgnoreAutomationAction is an automation which represents
+ * The TrackBallEventIgnoreAutomationAction is an automation which represents
  * the request to a DesktopTrackball to stop/start listening to events
  */
-class TrackballEventIgnoreAutomationAction : public AbstractAutomationAction
+class TrackBallEventIgnoreAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
     DesktopTrackBall<float>* mTrackBall;
     bool                     ignoreEvents;
 
 public:
-    TrackballEventIgnoreAutomationAction(
+    TrackBallEventIgnoreAutomationAction(
         DesktopTrackBall<float>* trackBall,
         bool                     ignoreEvents) :
             mTrackBall {trackBall}, ignoreEvents {ignoreEvents} {};
@@ -54,12 +54,12 @@ public:
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override
     {
-        return std::make_shared<TrackballEventIgnoreAutomationAction>(*this);
+        return std::make_shared<TrackBallEventIgnoreAutomationAction>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction> clone() && override
     {
-        return std::make_shared<TrackballEventIgnoreAutomationAction>(
+        return std::make_shared<TrackBallEventIgnoreAutomationAction>(
             std::move(*this));
     }
 };

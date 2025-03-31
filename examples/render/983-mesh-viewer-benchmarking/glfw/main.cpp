@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     // once
     tw.addAutomation(
         vcl::StartCountLimitedAutomationAction(
-            vcl::TrackballEventIgnoreAutomationAction(&tw, true), 1),
+            vcl::TrackBallEventIgnoreAutomationAction(&tw, true), 1),
         // We don't want to measure the metric for this automation
         false);
 
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
     // When all the automations are finished, we reenable trackball events
     tw.addAutomation(
         vcl::StartCountDelayAutomationAction(
-            vcl::TrackballEventIgnoreAutomationAction(&tw, false), 2),
+            vcl::TrackBallEventIgnoreAutomationAction(&tw, false), 2),
         // We don't want to measure the metric for this automation
         false);
 
