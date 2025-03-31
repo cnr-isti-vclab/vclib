@@ -108,8 +108,12 @@ public:
     using Parent::onResize;
     using Parent::Parent;
 
-    /*WARNING: repeating forever does not work properly with printers. It is
-    recommended to only repeat forever with a NullBenchmarkPrinter*/
+    /**
+     * Set how many times the entire sequence of automations should be repeated
+     *
+     * WARNING: repeating forever does not work properly with printers. It is
+     * recommended to only repeat forever with a NullBenchmarkPrinter
+     */
     void setRepeatTimes(float repeatTimes) { this->mRepeatTimes = repeatTimes; }
 
     void onDrawContent(vcl::uint viewId) override
@@ -162,14 +166,6 @@ public:
         mRelevancies.push_back(relevancy);
         return mAutomations.size() - 1;
     }
-
-    void restartBenchmark()
-    {
-        mCurrentAutomationIndex = 0;
-        mFirstCall              = true;
-        mAllDone                = false;
-        mRepeatCount            = 0;
-    };
 
     void setMetric(const BenchmarkMetric& bm) { mMetric = bm.clone(); };
 
