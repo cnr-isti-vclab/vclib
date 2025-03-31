@@ -29,9 +29,13 @@
 
 namespace vcl {
 
-/*
-    An automation which represents a sequence of actions.
-*/
+/**
+ * The SequentialAutomationActions class is an automation which represents
+ * a sequence of actions.
+ *
+ * @note Since this counts as a single action, the metrics will work as they do
+ * for a single action even though they are multiple
+ */
 class SequentialAutomationActions : public AbstractAutomationAction
 {
     PolymorphicObjectVector<AbstractAutomationAction> automations;

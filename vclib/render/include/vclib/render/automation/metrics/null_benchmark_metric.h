@@ -29,9 +29,9 @@
 
 namespace vcl {
 
-/*
-    Measures nothing
-*/
+/**
+ * The NullBenchmarkMetric class measures nothing.
+ */
 class NullBenchmarkMetric : public BenchmarkMetric
 {
 public:

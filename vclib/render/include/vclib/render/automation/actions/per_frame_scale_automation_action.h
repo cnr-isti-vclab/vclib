@@ -28,10 +28,11 @@
 
 namespace vcl {
 
-/*
-    An automation that represent the scaling of a DesktopTrackball, with the
-   intensity of the scaling calculated per frame
-*/
+/**
+ * The PerFrameScaleAutomationAction is an automation that represents the
+ * scaling of a DesktopTrackball, with the strength of the scaling measured
+ * per-frame
+ */
 class PerFrameScaleAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;

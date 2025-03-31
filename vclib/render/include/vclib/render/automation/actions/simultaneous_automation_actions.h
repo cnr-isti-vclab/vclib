@@ -29,9 +29,13 @@
 
 namespace vcl {
 
-/*
-    An automation which represents a group of action executed "simultaneously".
-*/
+/**
+ * The SimultaneousAutomationActions class is an automation which represents
+ * a group of actions executed "at the same time"
+ *
+ * @note Since this counts as a single action, the metrics will work as they do
+ * for a single action even though they are multiple
+ */
 class SimultaneousAutomationActions : public AbstractAutomationAction
 {
     PolymorphicObjectVector<AbstractAutomationAction> automations;

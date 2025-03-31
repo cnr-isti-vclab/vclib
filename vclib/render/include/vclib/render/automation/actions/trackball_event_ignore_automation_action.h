@@ -29,10 +29,10 @@
 
 namespace vcl {
 
-/*
-    An automation that represent the rotation of a DesktopTrackball, with the
-   intensity of the rotation calculated per frame
-*/
+/**
+ * The TrackballEventIgnoreAutomationAction is an automation which represents
+ * the request to a DesktopTrackball to stop/start listening to events
+ */
 class TrackballEventIgnoreAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;
@@ -45,16 +45,12 @@ public:
         bool                     ignoreEvents) :
             trackball {trackball}, ignoreEvents {ignoreEvents} {};
 
-    void start() override { Parent::start(); };
-
     void doAction() override
     {
         Parent::doAction();
         trackball->ignoreTrackBallEvents(ignoreEvents);
         end();
     };
-
-    void end() override { Parent::end(); };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override
     {

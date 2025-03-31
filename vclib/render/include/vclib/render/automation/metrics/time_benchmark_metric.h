@@ -32,9 +32,10 @@
 
 namespace vcl {
 
-/*
-    Measures the time it takes for the automation to complete
-*/
+/**
+ * The TimeBenchmarkMetric class measures the time (in seconds) an automation
+ * takes to complete
+ */
 class TimeBenchmarkMetric : public BenchmarkMetric
 {
     Timer timer;

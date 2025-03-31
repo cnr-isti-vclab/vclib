@@ -30,15 +30,28 @@
 
 namespace vcl {
 
-/*
-    Abstract class whose children define how you should write (display, print,
-   ...) the metrics measured from automations
-*/
+/**
+ * The BenchmarkPrinter class is an abstract class that represent a way of
+ * writing (printing, ...) measurements from a BenchmarkMetric
+ */
 class BenchmarkPrinter
 {
 public:
-    virtual void onBenchmarkLoop()               = 0;
-    virtual void print(BenchmarkMetric& metric)  = 0;
+    /**
+     * @brief Called just before the start of the next BenchmarkDrawer loop
+     */
+    virtual void onBenchmarkLoop() = 0;
+
+    /**
+     * @brief Called every time an automation ends
+     * @param[in] metric: The metric to take the measurements from
+     */
+    virtual void print(BenchmarkMetric& metric) = 0;
+
+    /**
+     * @brief Called when the last automation of the last loop has finished
+     * @param[in] metric: The metric to take the measurements from
+     */
     virtual void finish(BenchmarkMetric& metric) = 0;
 
     virtual std::shared_ptr<BenchmarkPrinter> clone() const& = 0;

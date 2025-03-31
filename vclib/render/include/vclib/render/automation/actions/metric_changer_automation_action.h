@@ -28,9 +28,10 @@
 
 namespace vcl {
 
-/*
-    An automation that represents a change of metric in a BenchmarkDrawer.
-*/
+/**
+ * The MetricChangerAutomationAction is an automation that represents a
+ * change of metric inside a BenchmarkDrawer
+ */
 template<typename DerivedDrawer>
 class MetricChangerAutomationAction : public AbstractAutomationAction
 {
@@ -45,15 +46,11 @@ public:
         const BenchmarkMetric& metric) :
             benchmarkDrawer {drawer}, metric {metric.clone()} {};
 
-    void start() override { Parent::start(); };
-
     void doAction() override
     {
         benchmarkDrawer->setMetric(*metric);
         end();
     };
-
-    void end() override { Parent::end(); };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override
     {

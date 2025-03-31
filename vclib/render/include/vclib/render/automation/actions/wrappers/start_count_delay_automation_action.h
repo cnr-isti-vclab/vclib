@@ -27,11 +27,11 @@
 
 namespace vcl {
 
-/*
-    Automation that allows you to add a delay (in terms of number of start()
-   calls) to an action, so that the inner automation can be started only after
-   the delay has elapsed
-*/
+/**
+ * The StartCountDelayAutomationAction is an automation allows you to add a
+ * delay (in terms of number of start() calls) to an action, so that the inner
+ * automation can be started only after the delay has elapsed
+ */
 class StartCountDelayAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;
@@ -61,8 +61,6 @@ public:
             end();
         }
     };
-
-    void end() override { Parent::end(); };
 
     std::shared_ptr<AbstractAutomationAction> clone() const& override
     {

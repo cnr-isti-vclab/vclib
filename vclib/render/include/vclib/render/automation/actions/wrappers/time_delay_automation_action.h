@@ -29,10 +29,11 @@
 
 namespace vcl {
 
-/*
-    Automation that allows you to add a delay (in terms of time) to an action,
-    so that it can be started only after the delay has elapsed
-*/
+/**
+ * The TimeDelayAutomationAction is an automation that allows you to add a delay
+ * (in terms of time) to an action, so that it can be started only after the
+ * delay has elapsed
+ */
 class TimeDelayAutomationAction : public WrapperAutomationAction
 {
     Timer timer;

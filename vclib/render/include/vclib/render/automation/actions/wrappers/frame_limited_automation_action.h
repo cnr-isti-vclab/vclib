@@ -27,11 +27,11 @@
 
 namespace vcl {
 
-/*
-    Automation that allows you to add a maximum duration (in terms of frames) to
-   an automation, so that after the chosen duration has elapsed the automation
-   is guaranteed to be over
-*/
+/**
+ * The TimeLimitedAutomationAction is an automation that allows you
+ * to add a maximum duration (in terms of frames) to an automation, so that
+ * after the chosen duration has elapsed the automation is guaranteed to be over
+ */
 class FrameLimitedAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;

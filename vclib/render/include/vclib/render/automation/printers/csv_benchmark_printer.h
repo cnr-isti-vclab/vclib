@@ -32,9 +32,17 @@
 
 namespace vcl {
 
-/*
-    Class which writes the metric's results to a csv file
-*/
+/**
+ * The CsvBenchmarkPrinter class is a BenchmarkPrinter that writes the results
+ * of a BenchmarkMetric to a CSV file.
+ *
+ * The CSV file will have the following columns:
+ * - Loop: the loop number
+ * - Automation: the automation number
+ * - Measurement 0: first measurement for the automation
+ * - ...
+ * - Measurement n: the last measurement for the automation
+ */
 class CsvBenchmarkPrinter : public BenchmarkPrinter
 {
     uint32_t                                    loopCounter        = 0;

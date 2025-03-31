@@ -30,9 +30,10 @@
 
 namespace vcl {
 
-/*
-    Automation that represents a singular change of mesh in a viewer drawer.
-*/
+/**
+ * The MeshChangerAutomationAction is an automation that represents a singular
+ * change of mesh inside an AbstractViewerDrawer
+ */
 template<typename DerivedRenderApp, typename MeshType>
 class MeshChangerAutomationAction : public AbstractAutomationAction
 {

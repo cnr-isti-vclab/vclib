@@ -33,9 +33,11 @@
 
 namespace vcl {
 
-/*
-    Measures the average frames per second of the automations
-*/
+/**
+ * The FpsBenchmarkMetric class measures the average framerate
+ * for an automation by keeping track of the total duration of the automation
+ * and the total frames it took to complete
+ */
 class FpsBenchmarkMetric : public BenchmarkMetric
 {
     Timer  timer;

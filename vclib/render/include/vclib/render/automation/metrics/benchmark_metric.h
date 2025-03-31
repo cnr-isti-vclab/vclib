@@ -29,19 +29,42 @@
 
 namespace vcl {
 
-/*
-    Abstract class that represents a way of measuring the performance of an
-   Automation.
-*/
+/**
+ * The BenchmarkMetric class is an Abstract class that represents a way of
+ * measuring the performance of an Automation.
+ */
 class BenchmarkMetric
 {
 public:
-    virtual void                     start()                      = 0;
-    virtual void                     measure()                    = 0;
-    virtual std::vector<std::string> getMeasureStrings()          = 0;
-    virtual std::string              getUnitOfMeasure()           = 0;
-    virtual std::string              getFullLengthUnitOfMeasure() = 0;
-    virtual void                     end()                        = 0;
+    /**
+     * @brief Called when the automation is started
+     */
+    virtual void start() = 0;
+
+    /**
+     * @brief Called each frame
+     */
+    virtual void measure() = 0;
+
+    /**
+     * @return A vector of string representations of the measurement(s) taken
+     */
+    virtual std::vector<std::string> getMeasureStrings() = 0;
+
+    /**
+     * @return The symbol that represents the unit of measure
+     */
+    virtual std::string getUnitOfMeasure() = 0;
+
+    /**
+     * @return The full name of the unit of measure
+     */
+    virtual std::string getFullLengthUnitOfMeasure() = 0;
+
+    /**
+     * @brief Called when the automation finishes
+     */
+    virtual void end() = 0;
 
     virtual std::shared_ptr<BenchmarkMetric> clone() const& = 0;
     virtual std::shared_ptr<BenchmarkMetric> clone() &&     = 0;

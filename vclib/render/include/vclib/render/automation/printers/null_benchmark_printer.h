@@ -27,9 +27,10 @@
 
 namespace vcl {
 
-/*
-    Class which doesn't write anything anywhere
-*/
+/**
+ * The NullBenchmarkPrinter class is a BenchmarkPrinter that writes nothing
+ * nowhere
+ */
 class NullBenchmarkPrinter : public BenchmarkPrinter
 {
 public:

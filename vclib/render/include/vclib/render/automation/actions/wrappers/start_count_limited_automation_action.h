@@ -27,12 +27,12 @@
 
 namespace vcl {
 
-/*
-    Automation that allows you to add a maximum amount of times start() is
-   called (in terms of start() calls) to an automation, so that after start()
-   has been called for those many times the automation is guaranteed to never be
-   started again
-*/
+/**
+ * The StartCountLimitedAutomationAction is an automation allows you to add a
+ * maximum amount of times start() is called (in terms of start() calls) to an
+ * automation, so that after start() has been called for those many times the
+ * automation is guaranteed to never be started again
+ */
 class StartCountLimitedAutomationAction : public WrapperAutomationAction
 {
     using Parent = WrapperAutomationAction;

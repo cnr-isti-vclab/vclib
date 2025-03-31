@@ -30,10 +30,11 @@
 
 namespace vcl {
 
-/*
-    An automation that represent the scaling of a DesktopTrackball, with the
-   intensity of the scaling calculated using the time between frames
-*/
+/**
+ * The ScaleAutomationAction is an automation that represents the
+ * scaling of a DesktopTrackball, with the strength of the scaling measured
+ * per-second
+ */
 class ScaleAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;

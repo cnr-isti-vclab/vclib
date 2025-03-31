@@ -30,9 +30,23 @@
 
 namespace vcl {
 
-/*
-    Class which writes the metric's results to a json file
-*/
+/**
+ * The JsonBenchmarkPrinter class is a BenchmarkPrinter that writes the results
+ * of a BenchmarkMetric to a json file.
+ *
+ * The file will have the following format:
+ * {
+ *      "Loop <loop_number>": {
+ *          "Automation <automation_number>": {
+ *              "measurements": [
+ *                  ...
+ *              ]
+ *          },
+ *          ...
+ *      },
+ *      ...
+ * }
+ */
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
     uint loopCounter     = 0;

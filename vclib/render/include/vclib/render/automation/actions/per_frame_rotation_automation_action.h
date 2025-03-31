@@ -32,10 +32,11 @@
 
 namespace vcl {
 
-/*
-    An automation that represent the rotation of a DesktopTrackball, with the
-   intensity of the rotation calculated per frame
-*/
+/**
+ * The PerFrameRotationAutomationAction is an automation that represents the
+ * rotation of a DesktopTrackball, with the strength of the rotation measured
+ * per-frame
+ */
 class PerFrameRotationAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;

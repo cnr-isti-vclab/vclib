@@ -27,6 +27,10 @@
 
 namespace vcl {
 
+/**
+ * The WrapperAutomationAction is a class that represents an automation whose
+ * only purpose is to add functionality to another automation
+ */
 class WrapperAutomationAction : public AbstractAutomationAction
 {
     using Parent = AbstractAutomationAction;

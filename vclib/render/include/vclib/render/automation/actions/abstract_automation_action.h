@@ -27,19 +27,34 @@
 
 namespace vcl {
 
+/**
+ * The AbstractAutomationAction is a class that represents something to be done
+ * by a BenchmarkDrawer
+ */
 class AbstractAutomationAction
 {
 private:
     bool active = false;
 
 public:
-    // An action SHOULD NOT call start on itself during an update
-    // A call to start SHOULD guarantee that the action is considered active (at
-    // least until the next update)
+    /**
+     * Only ever called by outside sources
+     *
+     * An automation SHOULD NOT call start on itself during an update
+     * A call to start SHOULD guarantee that the action is considered active at
+     * least until the next doAction
+     */
     virtual void start() { active = true; };
 
-    // Outside callers SHOULD ALWAYS check if the action is active before
-    // calling since the action MAY call end() on itself during an update
+    /**
+     * Called every frame (as long as the action is active)
+     *
+     * An automation may call end() on itself during a doAction(),
+     * and it is therefore important to check whether the automation is active
+     * before calling doAction()
+     *
+     * @throws If it is called on an inactive action
+     */
     virtual void doAction()
     {
         if (!isActive()) {
@@ -47,10 +62,14 @@ public:
         }
     };
 
-    // this method ALSO has to reset everything in THIS object so that a
-    // subsequent start() call is like calling start() on a new object equal to
-    // this one (unless it makes no sense for the action to be started multiple
-    // times)
+    /**
+     * Either called by the automation itself or by outside sources
+     *
+     * This method ALSO has to reset everything in THIS object so that a
+     * subsequent start() call is like calling start() on a new object equal to
+     * this one (unless it makes no sense for the action to be started multiple
+     * times)
+     */
     virtual void end() { active = false; };
 
     virtual bool isActive() { return active; }

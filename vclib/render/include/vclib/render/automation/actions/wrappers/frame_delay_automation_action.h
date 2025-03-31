@@ -27,10 +27,11 @@
 
 namespace vcl {
 
-/*
-    Automation that allows you to add a delay (in terms of frames) to an action,
-    so that it can be started only after the delay has elapsed
-*/
+/**
+ * The TimeDelayAutomationAction is an automation that allows you to add a delay
+ * (in terms of frames) to an action, so that it can be started only after the
+ * delay has elapsed
+ */
 class FrameDelayAutomationAction : public WrapperAutomationAction
 {
     uint32_t currentFrames = 0;

@@ -29,9 +29,10 @@
 
 namespace vcl {
 
-/*
-    Class which writes the metric's results to stdout
-*/
+/**
+ * The StdoutBenchmarkPrinter class is a BenchmarkPrinter that writes the
+ * results of a BenchmarkMetric to standard output
+ */
 class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
     uint32_t automationIndex = 0;
