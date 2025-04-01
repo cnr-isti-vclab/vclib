@@ -226,25 +226,6 @@ public:
         return mTrackball.projectionMatrix();
     }
 
-    void resetTrackBall()
-    {
-        mTrackball.reset(
-            mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
-    }
-
-    void setTrackBall(const Point3<Scalar>& center, Scalar radius)
-    {
-        mDefaultTrackBallCenter = center;
-        mDefaultTrackBallRadius = radius;
-
-        resetTrackBall();
-    }
-
-    void focus(const Point3<Scalar>& center)
-    {
-        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
-    }
-
     // events
 
     void onResize(unsigned int width, unsigned int height) override
@@ -300,9 +281,36 @@ public:
     }
 
 protected:
+    void resetTrackBall()
+    {
+        mTrackball.reset(
+            mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
+    }
+
+    void setTrackBall(const Point3<Scalar>& center, Scalar radius)
+    {
+        mDefaultTrackBallCenter = center;
+        mDefaultTrackBallRadius = radius;
+
+        resetTrackBall();
+    }
+
+    void focus(const Point3<Scalar>& center)
+    {
+        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
+    }
+
     bool isDragging() const { return mTrackball.isDragging(); }
 
     MotionType currentMotion() const { return mTrackball.currentMotion(); }
+
+private:
+    void resizeViewer(uint w, uint h)
+    {
+        mWidth  = w;
+        mHeight = h;
+        mTrackball.setScreenSize(w, h);
+    }
 
     void setKeyModifiers(KeyModifiers keys) { mCurrentKeyModifiers = keys; }
 
@@ -409,14 +417,6 @@ protected:
             mTrackball.endDragMotion(currentMotion());
             mTrackball.update();
         }
-    }
-
-private:
-    void resizeViewer(uint w, uint h)
-    {
-        mWidth  = w;
-        mHeight = h;
-        mTrackball.setScreenSize(w, h);
     }
 
     static void rotate(
