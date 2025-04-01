@@ -210,8 +210,6 @@ public:
 
     DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 
-    const Camera<Scalar>& camera() const { return mTrackball.camera(); }
-
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
 
     Matrix44<Scalar> lightGizmoMatrix() const
@@ -281,6 +279,8 @@ public:
     }
 
 protected:
+    const Camera<Scalar>& camera() const { return mTrackball.camera(); }
+
     void resetTrackBall()
     {
         mTrackball.reset(

@@ -127,7 +127,7 @@ public:
         return lookAtMatrix<MatrixType>(mEye, mCenter, mUp);
     }
 
-    MatrixType projMatrix() const
+    MatrixType projectionMatrix() const
     {
         switch (mProjectionMode) {
         case ProjectionMode::ORTHO: {
@@ -137,7 +137,7 @@ public:
                 -w, w, h, -h, mNear, mFar, false);
         }
         case ProjectionMode::PERSPECTIVE: {
-            return projectionMatrix<MatrixType>(
+            return vcl::projectionMatrix<MatrixType>(
                 mFovDeg, mAspect, mNear, mFar, false);
         }
         default: assert(false); return MatrixType::Identity();

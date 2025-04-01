@@ -243,7 +243,10 @@ public:
         return mCamera.viewMatrix() * mTransform.matrix();
     }
 
-    Matrix44<Scalar> projectionMatrix() const { return mCamera.projMatrix(); }
+    Matrix44<Scalar> projectionMatrix() const
+    {
+        return mCamera.projectionMatrix();
+    }
 
     Matrix44<Scalar> gizmoMatrix() const
     {
