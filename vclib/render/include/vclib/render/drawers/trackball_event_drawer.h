@@ -23,9 +23,8 @@
 #ifndef VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 #define VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 
-#include "trackball.h"
-
 #include <vclib/render/input.h>
+#include <vclib/render/viewer/trackball.h>
 #include <vclib/space/core/bit_set.h>
 
 #include <map>
@@ -33,7 +32,7 @@
 namespace vcl {
 
 template<typename Scalar>
-class DesktopTrackBall
+class TrackBallEventDrawerT
 {
 public:
     using ScalarType    = Scalar;
@@ -202,7 +201,7 @@ private:
     };
 
 public:
-    DesktopTrackBall(uint width = 1024, uint height = 768)
+    TrackBallEventDrawerT(uint width = 1024, uint height = 768)
     {
         resizeViewer(width, height);
     }

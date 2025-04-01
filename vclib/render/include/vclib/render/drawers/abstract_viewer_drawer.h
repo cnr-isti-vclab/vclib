@@ -24,11 +24,11 @@
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
 #include "event_drawer.h"
+#include "trackball_event_drawer.h"
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/read_buffer_types.h>
-#include <vclib/render/viewer/desktop_trackball.h>
 
 #include <memory>
 
@@ -44,7 +44,7 @@ namespace vcl {
  */
 template<typename DerivedRenderApp>
 class AbstractViewerDrawer :
-        public DesktopTrackBall<float>,
+        public TrackBallEventDrawerT<float>,
         public EventDrawer<DerivedRenderApp>
 {
     bool mReadRequested = false;
@@ -57,7 +57,7 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
-    using DTB = vcl::DesktopTrackBall<float>;
+    using DTB = vcl::TrackBallEventDrawerT<float>;
 
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
