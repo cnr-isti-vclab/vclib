@@ -130,13 +130,6 @@ public:
         DTB::onKeyPress(key, modifiers);
 
         switch (key) {
-        case Key::C:
-            std::cout << "(" << DTB::camera().eye() << ") "
-                      << "(" << DTB::camera().center() << ") "
-                      << "(" << DTB::camera().up() << ")\n";
-            std::cout << std::flush;
-            break;
-
         case Key::A: toggleAxisVisibility(); break;
 
         case Key::S:

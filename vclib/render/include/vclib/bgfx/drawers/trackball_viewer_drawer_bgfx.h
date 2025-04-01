@@ -20,31 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
-#define VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
+#ifndef VCL_BGFX_DRAWERS_TRACKBALL_VIEWER_DRAWER_BGFX_H
+#define VCL_BGFX_DRAWERS_TRACKBALL_VIEWER_DRAWER_BGFX_H
 
-#include <vclib/render/config.h>
+#include "viewer_drawer.h"
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawers/trackball_viewer_drawer_bgfx.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/drawers/viewer_drawer.h>
-#endif
+#include <vclib/render/drawers/trackball_event_drawer.h>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
 template<typename DerivedRenderApp>
-using ViewerDrawer = TrackBallViewerDrawerBGFX<DerivedRenderApp>;
-#endif
+class TrackBallViewerDrawerBGFX :
+        public ViewerDrawerBGFX<TrackBallEventDrawer, DerivedRenderApp>
+{
+    using ParentViewer =
+        ViewerDrawerBGFX<TrackBallEventDrawer, DerivedRenderApp>;
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<typename DerivedRenderApp>
-using ViewerDrawer = TrackBallViewerDrawerOpenGL2<DerivedRenderApp>;
-#endif
+public:
+    using ParentViewer::ParentViewer;
+};
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
+#endif // VCL_BGFX_DRAWERS_TRACKBALL_VIEWER_DRAWER_BGFX_H
