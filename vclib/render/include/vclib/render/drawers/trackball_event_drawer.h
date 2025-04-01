@@ -23,6 +23,8 @@
 #ifndef VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 #define VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 
+#include "event_drawer.h"
+
 #include <vclib/render/input.h>
 #include <vclib/render/viewer/trackball.h>
 #include <vclib/space/core/bit_set.h>
@@ -31,8 +33,8 @@
 
 namespace vcl {
 
-template<typename Scalar>
-class TrackBallEventDrawerT
+template<typename Scalar, typename DerivedRenderApp>
+class TrackBallEventDrawerT : public EventDrawer<DerivedRenderApp>
 {
 public:
     using ScalarType    = Scalar;
@@ -386,6 +388,9 @@ private:
         t.applyAtomicMotion(TrackBallType::PAN, translation);
     }
 };
+
+template<typename DerivedRenderApp>
+using TrackBallEventDrawer = TrackBallEventDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 

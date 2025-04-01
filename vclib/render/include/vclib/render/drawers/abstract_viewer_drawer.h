@@ -23,7 +23,6 @@
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
-#include "event_drawer.h"
 #include "trackball_event_drawer.h"
 
 #include <vclib/render/drawable/drawable_object_vector.h>
@@ -44,8 +43,7 @@ namespace vcl {
  */
 template<typename DerivedRenderApp>
 class AbstractViewerDrawer :
-        public TrackBallEventDrawerT<float>,
-        public EventDrawer<DerivedRenderApp>
+        public TrackBallEventDrawer<DerivedRenderApp>
 {
     bool mReadRequested = false;
 
@@ -57,7 +55,7 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
-    using DTB = vcl::TrackBallEventDrawerT<float>;
+    using DTB = vcl::TrackBallEventDrawer<DerivedRenderApp>;
 
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
@@ -206,6 +204,7 @@ protected:
     {
         using ReadData  = ReadBufferTypes::ReadData;
         using FloatData = ReadBufferTypes::FloatData;
+        using MatrixType = DTB::MatrixType;
 
         if (mReadRequested)
             return;
@@ -235,7 +234,7 @@ protected:
             // unproject the point
             const Point3f p2d(p.x(), vp[3] - p.y(), depth);
             auto          unproj = unproject(
-                p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
+                p2d, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();
