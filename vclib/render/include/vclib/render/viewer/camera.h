@@ -31,15 +31,15 @@ template<typename Scalar>
 class Camera
 {
 public:
+    using PointType  = vcl::Point3<Scalar>;
+    using MatrixType = vcl::Matrix44<Scalar>;
+
     struct ProjectionMode
     {
         enum Enum { ORTHO, PERSPECTIVE };
     };
 
 private:
-    using PointType  = vcl::Point3<Scalar>;
-    using MatrixType = vcl::Matrix44<Scalar>;
-
     /* Extrinsics */
 
     /// @brief Position where the camera is looking at

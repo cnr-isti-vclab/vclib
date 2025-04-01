@@ -24,6 +24,7 @@
 #define DRAWERS_H
 
 #include <vclib/render/canvas.h>
+#include <vclib/render/concepts/vew_projection_event_drawer.h>
 #include <vclib/render/render_app.h>
 
 #ifdef VCLIB_WITH_QT
@@ -35,6 +36,7 @@
 
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/drawers/plain_drawer.h>
+#include <vclib/render/drawers/trackball_event_drawer.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 
 #ifdef VCLIB_WITH_IMGUI
@@ -63,6 +65,7 @@ void drawersStaticAssertsWM()
     using RenderAppPD  = RenderApp<WM, Canvas, PlainDrawer>;
     using RenderAppED  = RenderApp<WM, Canvas, EventDrawer>;
     using RenderAppBED = RenderApp<WM, Canvas, BlockerEventDrawer>;
+    using RenderAppTED = RenderApp<WM, Canvas, TrackBallEventDrawer>;
     using RenderAppVD  = RenderApp<WM, Canvas, ViewerDrawer>;
 
     // PlainDrawer
@@ -197,6 +200,78 @@ void drawersStaticAssertsWM()
     static_assert(
         BlockerEventDrawerConcept<BlockerEventDrawer<RenderAppBED>&&>,
         "BlockerEventDrawer&& does not satisfy the BlockerEventDrawerConcept");
+
+    // TrackballEventDrawer
+    static_assert(
+        DrawerConcept<TrackBallEventDrawer<RenderAppTED>>,
+        "TrackBallEventDrawer does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<const TrackBallEventDrawer<RenderAppTED>>,
+        "const TrackBallEventDrawer does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<TrackBallEventDrawer<RenderAppTED>&>,
+        "TrackBallEventDrawer& does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<const TrackBallEventDrawer<RenderAppTED>&>,
+        "const TrackBallEventDrawer& does not satisfy the DrawerConcept");
+    static_assert(
+        DrawerConcept<TrackBallEventDrawer<RenderAppTED>&&>,
+        "TrackBallEventDrawer&& does not satisfy the DrawerConcept");
+
+    static_assert(
+        EventDrawerConcept<TrackBallEventDrawer<RenderAppTED>>,
+        "TrackBallEventDrawer does not satisfy the EventDrawerConcept");
+    static_assert(
+        EventDrawerConcept<const TrackBallEventDrawer<RenderAppTED>>,
+        "const TrackBallEventDrawer does not satisfy the EventDrawerConcept");
+    static_assert(
+        EventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&>,
+        "TrackBallEventDrawer& does not satisfy the EventDrawerConcept");
+    static_assert(
+        EventDrawerConcept<const TrackBallEventDrawer<RenderAppTED>&>,
+        "const TrackBallEventDrawer& does not satisfy the EventDrawerConcept");
+    static_assert(
+        EventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&&>,
+        "TrackBallEventDrawer&& does not satisfy the EventDrawerConcept");
+
+    static_assert(
+        !BlockerEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>>,
+        "TrackBallEventDrawer does satisfy the BlockerEventDrawerConcept");
+    static_assert(
+        !BlockerEventDrawerConcept<const TrackBallEventDrawer<RenderAppTED>>,
+        "const TrackBallEventDrawer does satisfy the BlockerEventDrawerConcept");
+    static_assert(
+        !BlockerEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&>,
+        "TrackBallEventDrawer& does satisfy the BlockerEventDrawerConcept");
+    static_assert(
+        !BlockerEventDrawerConcept<const TrackBallEventDrawer<RenderAppTED>&>,
+        "const TrackBallEventDrawer& does satisfy the BlockerEventDrawerConcept");
+    static_assert(
+        !BlockerEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&&>,
+        "TrackBallEventDrawer&& does satisfy the BlockerEventDrawerConcept");
+
+    static_assert(
+        ViewProjectionEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>>,
+        "TrackBallEventDrawer does not satisfy the "
+        "ViewProjectionEventDrawerConcept");
+    static_assert(
+        ViewProjectionEventDrawerConcept<
+            const TrackBallEventDrawer<RenderAppTED>>,
+        "const TrackBallEventDrawer does not satisfy the "
+        "ViewProjectionEventDrawerConcept");
+    static_assert(
+        ViewProjectionEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&>,
+        "TrackBallEventDrawer& does not satisfy the "
+        "ViewProjectionEventDrawerConcept");
+    static_assert(
+        ViewProjectionEventDrawerConcept<
+            const TrackBallEventDrawer<RenderAppTED>&>,
+        "const TrackBallEventDrawer& does not satisfy the "
+        "ViewProjectionEventDrawerConcept");
+    static_assert(
+        ViewProjectionEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&&>,
+        "TrackBallEventDrawer&& does not satisfy the "
+        "ViewProjectionEventDrawerConcept");
 
     // ViewerDrawer
     static_assert(

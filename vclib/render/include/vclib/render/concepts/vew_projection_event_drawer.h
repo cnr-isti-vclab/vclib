@@ -20,27 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
-#define VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
+#ifndef VCL_RENDER_CONCEPTS_VEW_PROJECTION_EVENT_DRAWER_H
+#define VCL_RENDER_CONCEPTS_VEW_PROJECTION_EVENT_DRAWER_H
 
-#include <vclib/concepts.h>
+#include "event_drawer.h"
+#include "view_projection.h"
 
 namespace vcl {
 
 template<typename T>
-concept ViewProjectionConcept = requires(T&& obj)
-{
-    typename RemoveRef<T>::MatrixType;
-
-    { obj.viewMatrix() } -> Matrix44Concept;
-    { obj.projectionMatrix() } -> Matrix44Concept;
-
-    // non const requirements
-    // requires IsConst<T> || requires {
-
-    // };
-};
+concept ViewProjectionEventDrawerConcept =
+    ViewProjectionConcept<T> && EventDrawerConcept<T>;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
+#endif // VCL_RENDER_CONCEPTS_VEW_PROJECTION_EVENT_DRAWER_H
