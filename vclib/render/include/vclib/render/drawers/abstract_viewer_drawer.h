@@ -23,11 +23,11 @@
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
-#include "trackball_event_drawer.h"
-
+#include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/read_buffer_types.h>
+#include <vclib/space/core/color.h>
 
 #include <memory>
 
@@ -41,9 +41,10 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-template<typename DerivedRenderApp>
-class AbstractViewerDrawer :
-        public TrackBallEventDrawer<DerivedRenderApp>
+template<
+    template<typename DRA> typename ViewProjEventDrawer,
+    typename DerivedRenderApp>
+class AbstractViewerDrawer : public ViewProjEventDrawer<DerivedRenderApp>
 {
     bool mReadRequested = false;
 
@@ -55,12 +56,16 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
-    using DTB = vcl::TrackBallEventDrawer<DerivedRenderApp>;
+    using DTB = ViewProjEventDrawer<DerivedRenderApp>;
 
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             DTB(width, height)
     {
+        static_assert(
+            ViewProjectionEventDrawerConcept<DTB>,
+            "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
+            "base class");
     }
 
     ~AbstractViewerDrawer() = default;

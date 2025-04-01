@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONCEPTS_VEW_PROJECTION_EVENT_DRAWER_H
-#define VCL_RENDER_CONCEPTS_VEW_PROJECTION_EVENT_DRAWER_H
+#ifndef VCL_RENDER_CONCEPTS_VIEW_PROJECTION_EVENT_DRAWER_H
+#define VCL_RENDER_CONCEPTS_VIEW_PROJECTION_EVENT_DRAWER_H
 
 #include "event_drawer.h"
 #include "view_projection.h"
@@ -34,4 +34,4 @@ concept ViewProjectionEventDrawerConcept =
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONCEPTS_VEW_PROJECTION_EVENT_DRAWER_H
+#endif // VCL_RENDER_CONCEPTS_VIEW_PROJECTION_EVENT_DRAWER_H

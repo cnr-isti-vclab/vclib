@@ -24,7 +24,7 @@
 #define DRAWERS_H
 
 #include <vclib/render/canvas.h>
-#include <vclib/render/concepts/vew_projection_event_drawer.h>
+#include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/render_app.h>
 
 #ifdef VCLIB_WITH_QT

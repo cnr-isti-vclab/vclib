@@ -23,6 +23,8 @@
 #ifndef VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
 
+#include "trackball_event_drawer.h"
+
 #include <vclib/render/config.h>
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
@@ -37,12 +39,12 @@ namespace vcl {
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 template<typename DerivedRenderApp>
-using ViewerDrawer = ViewerDrawerBGFX<DerivedRenderApp>;
+using ViewerDrawer = ViewerDrawerBGFX<TrackBallEventDrawer, DerivedRenderApp>;
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 template<typename DerivedRenderApp>
-using ViewerDrawer = ViewerDrawerOpenGL2<DerivedRenderApp>;
+using ViewerDrawer = ViewerDrawerOpenGL2<TrackBallEventDrawer, DerivedRenderApp>;
 #endif
 
 } // namespace vcl
