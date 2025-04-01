@@ -25,9 +25,7 @@
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
-#include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/bgfx/drawable/uniforms/camera_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
@@ -45,9 +43,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer, Derive
     CameraUniforms           mCameraUniforms;
     DirectionalLightUniforms mDirectionalLightUniforms;
 
-    DrawableAxis             mAxis;
     DrawableDirectionalLight mDirectionalLight;
-    DrawableTrackBall        mDrawTrackBall;
 
     // flags
     bool mStatsEnabled = false;
@@ -71,25 +67,15 @@ public:
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
-        mAxis.init();
         mDirectionalLight.init();
-        mDrawTrackBall.init();
     }
 
     void onDraw(uint viewId) override
     {
         onDrawContent(viewId);
 
-        if (mAxis.isVisible()) {
-            mAxis.draw(viewId);
-        }
-
         if (mDirectionalLight.isVisible()) {
             mDirectionalLight.draw(viewId);
-        }
-
-        if (mDrawTrackBall.isVisible()) {
-            mDrawTrackBall.draw(viewId);
         }
     }
 
@@ -98,7 +84,6 @@ public:
         setDirectionalLightVisibility(
             DTB::currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
         updateDirectionalLight();
-        updateDrawableTrackball();
 
         bgfx::setViewTransform(
             viewId, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
@@ -138,16 +123,6 @@ public:
         ParentViewer::readRequest(button, x, y, modifiers, homogeneousNDC);
     }
 
-    void toggleAxisVisibility() override
-    {
-        mAxis.setVisibility(!mAxis.isVisible());
-    }
-
-    void toggleTrackBallVisibility() override
-    {
-        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
-    }
-
 private:
     bool isDirectionalLightVisible() const
     {
@@ -164,13 +139,6 @@ private:
         auto v = DTB::lightGizmoMatrix();
         mDirectionalLight.updateRotation(v);
         mDirectionalLightUniforms.updateLight(DTB::light());
-    }
-
-    void updateDrawableTrackball()
-    {
-        auto v = DTB::gizmoMatrix();
-        mDrawTrackBall.setTransform(v);
-        mDrawTrackBall.updateDragging(DTB::isDragging());
     }
 };
 

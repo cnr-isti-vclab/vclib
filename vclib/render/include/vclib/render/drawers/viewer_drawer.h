@@ -30,7 +30,7 @@
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/drawers/viewer_drawer.h>
+#include <vclib/opengl2/drawers/trackball_viewer_drawer_opengl2.h>
 #endif
 
 namespace vcl {

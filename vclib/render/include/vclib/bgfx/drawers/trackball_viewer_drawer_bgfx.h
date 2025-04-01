@@ -25,6 +25,8 @@
 
 #include "viewer_drawer.h"
 
+#include <vclib/bgfx/drawable/drawable_axis.h>
+#include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
 
 namespace vcl {
@@ -36,8 +38,70 @@ class TrackBallViewerDrawerBGFX :
     using ParentViewer =
         ViewerDrawerBGFX<TrackBallEventDrawer, DerivedRenderApp>;
 
+    DrawableAxis             mAxis;
+    DrawableTrackBall        mDrawTrackBall;
+
 public:
     using ParentViewer::ParentViewer;
+
+    void onInit(uint viewId) override
+    {
+        ParentViewer::onInit(viewId);
+        mAxis.init();
+        mDrawTrackBall.init();
+    }
+
+    void onDraw(uint viewId) override
+    {
+        ParentViewer::onDraw(viewId);
+
+        if (mAxis.isVisible()) {
+            mAxis.draw(viewId);
+        }
+
+        if (mDrawTrackBall.isVisible()) {
+            mDrawTrackBall.draw(viewId);
+        }
+    }
+
+    void onDrawContent(uint viewId) override
+    {
+        ParentViewer::onDrawContent(viewId);
+
+        updateDrawableTrackball();
+    }
+
+    // events
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        ParentViewer::onKeyPress(key, modifiers);
+
+        switch (key) {
+        case Key::A: toggleAxisVisibility(); break;
+
+        case Key::T: toggleTrackBallVisibility(); break;
+
+        default: break;
+        }
+    }
+
+    void toggleAxisVisibility()
+    {
+        mAxis.setVisibility(!mAxis.isVisible());
+    }
+
+    void toggleTrackBallVisibility()
+    {
+        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+    }
+
+private:
+    void updateDrawableTrackball()
+    {
+        auto v = ParentViewer::gizmoMatrix();
+        mDrawTrackBall.setTransform(v);
+        mDrawTrackBall.updateDragging(ParentViewer::isDragging());
+    }
 };
 
 } // namespace vcl

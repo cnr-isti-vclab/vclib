@@ -114,10 +114,6 @@ public:
         DTB::fitScene(sceneCenter, sceneRadius);
     }
 
-    virtual void toggleAxisVisibility() = 0;
-
-    virtual void toggleTrackBallVisibility() = 0;
-
     // events
     void onInit(uint) override
     {
@@ -130,15 +126,11 @@ public:
         DTB::onKeyPress(key, modifiers);
 
         switch (key) {
-        case Key::A: toggleAxisVisibility(); break;
-
         case Key::S:
             if (modifiers[KeyModifier::CONTROL])
                 DerivedRenderApp::DRW::screenshot(
                     derived(), "viewer_screenshot.png");
             break;
-
-        case Key::T: toggleTrackBallVisibility(); break;
 
         default: break;
         }

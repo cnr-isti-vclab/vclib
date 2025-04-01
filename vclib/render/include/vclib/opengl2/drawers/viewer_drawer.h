@@ -113,16 +113,6 @@ public:
     {
         ParentViewer::readRequest(button, x, y, modifiers);
     }
-
-    void toggleAxisVisibility() override
-    {
-        // todo
-    }
-
-    void toggleTrackBallVisibility() override
-    {
-        // todo
-    }
 };
 
 } // namespace vcl
