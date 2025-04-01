@@ -120,14 +120,9 @@ public:
             derived(), Color::White);
     }
 
-    void onResize(unsigned int width, unsigned int height) override
-    {
-        DTB::resizeViewer(width, height);
-    }
-
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        DTB::setKeyModifiers(modifiers);
+        DTB::onKeyPress(key, modifiers);
 
         switch (key) {
         case Key::C:
@@ -149,49 +144,6 @@ public:
 
         default: break;
         }
-
-        DTB::keyPress(key);
-    }
-
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::keyRelease(key);
-    }
-
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::moveMouse(x, y);
-    }
-
-    void onMousePress(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::moveMouse(x, y);
-        DTB::pressMouse(button);
-    }
-
-    void onMouseRelease(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::moveMouse(x, y);
-        DTB::releaseMouse(button);
-    }
-
-    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
-        override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::scroll(dx, dy);
     }
 
 protected:

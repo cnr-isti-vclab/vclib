@@ -245,17 +245,64 @@ public:
         mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
     }
 
+    // events
+
+    void onResize(unsigned int width, unsigned int height) override
+    {
+        resizeViewer(width, height);
+    }
+
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        keyPress(key);
+    }
+
+    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        keyRelease(key);
+    }
+
+    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        moveMouse(x, y);
+    }
+
+    void onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        moveMouse(x, y);
+        pressMouse(button);
+    }
+
+    void onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        moveMouse(x, y);
+        releaseMouse(button);
+    }
+
+    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+        override
+    {
+        setKeyModifiers(modifiers);
+        scroll(dx, dy);
+    }
+
 protected:
     bool isDragging() const { return mTrackball.isDragging(); }
 
     MotionType currentMotion() const { return mTrackball.currentMotion(); }
-
-    void resizeViewer(uint w, uint h)
-    {
-        mWidth  = w;
-        mHeight = h;
-        mTrackball.setScreenSize(w, h);
-    }
 
     void setKeyModifiers(KeyModifiers keys) { mCurrentKeyModifiers = keys; }
 
@@ -365,6 +412,13 @@ protected:
     }
 
 private:
+    void resizeViewer(uint w, uint h)
+    {
+        mWidth  = w;
+        mHeight = h;
+        mTrackball.setScreenSize(w, h);
+    }
+
     static void rotate(
         TrackBallType&        t,
         const Point3<Scalar>& axis,
