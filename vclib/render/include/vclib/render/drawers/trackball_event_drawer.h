@@ -38,7 +38,8 @@ class TrackBallEventDrawerT : public EventDrawer<DerivedRenderApp>
 {
 public:
     using ScalarType    = Scalar;
-    using MatrixType    = vcl::Matrix44<Scalar>;
+    using PointType     = Point3<Scalar>;
+    using MatrixType    = Matrix44<Scalar>;
     using TrackBallType = vcl::TrackBall<Scalar>;
 
     inline static const Point3<Scalar> UNIT_X = {1, 0, 0};
@@ -208,9 +209,34 @@ public:
         resizeViewer(width, height);
     }
 
-    DirectionalLight<Scalar> light() const { return mTrackball.light(); }
-
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
+
+
+    Matrix44<Scalar> projectionMatrix() const
+    {
+        return mTrackball.projectionMatrix();
+    }
+
+    void reset()
+    {
+        mTrackball.reset(
+            mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
+    }
+
+    void focus(const Point3<Scalar>& center)
+    {
+        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
+    }
+
+    void fitScene(const Point3<Scalar>& center, Scalar radius)
+    {
+        mDefaultTrackBallCenter = center;
+        mDefaultTrackBallRadius = radius;
+
+        reset();
+    }
+
+    DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 
     Matrix44<Scalar> lightGizmoMatrix() const
     {
@@ -218,11 +244,6 @@ public:
     }
 
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
-
-    Matrix44<Scalar> projectionMatrix() const
-    {
-        return mTrackball.projectionMatrix();
-    }
 
     // events
 
@@ -280,25 +301,6 @@ public:
 
 protected:
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }
-
-    void resetTrackBall()
-    {
-        mTrackball.reset(
-            mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
-    }
-
-    void setTrackBall(const Point3<Scalar>& center, Scalar radius)
-    {
-        mDefaultTrackBallCenter = center;
-        mDefaultTrackBallRadius = radius;
-
-        resetTrackBall();
-    }
-
-    void focus(const Point3<Scalar>& center)
-    {
-        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
-    }
 
     bool isDragging() const { return mTrackball.isDragging(); }
 

@@ -28,17 +28,25 @@
 namespace vcl {
 
 template<typename T>
-concept ViewProjectionConcept = requires(T&& obj)
+concept ViewProjectionConcept = requires(
+    T&& obj,
+    typename RemoveRef<T>::ScalarType s,
+    typename RemoveRef<T>::PointType p)
 {
+    typename RemoveRef<T>::ScalarType;
+    typename RemoveRef<T>::PointType;
     typename RemoveRef<T>::MatrixType;
 
     { obj.viewMatrix() } -> Matrix44Concept;
     { obj.projectionMatrix() } -> Matrix44Concept;
 
     // non const requirements
-    // requires IsConst<T> || requires {
+    requires IsConst<T> || requires {
+        { obj.reset() } -> std::same_as<void>;
 
-    // };
+        { obj.focus(p) } -> std::same_as<void>;
+        { obj.fitScene(p, s) } -> std::same_as<void>;
+    };
 };
 
 } // namespace vcl

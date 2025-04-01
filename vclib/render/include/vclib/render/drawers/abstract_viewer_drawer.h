@@ -106,7 +106,7 @@ public:
             sceneRadius = bb.diagonal();
         }
 
-        DTB::setTrackBall(sceneCenter, sceneRadius);
+        DTB::fitScene(sceneCenter, sceneRadius);
     }
 
     virtual void toggleAxisVisibility() = 0;

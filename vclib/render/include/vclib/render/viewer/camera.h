@@ -31,6 +31,7 @@ template<typename Scalar>
 class Camera
 {
 public:
+    using ScalarType = Scalar;
     using PointType  = vcl::Point3<Scalar>;
     using MatrixType = vcl::Matrix44<Scalar>;
 
