@@ -103,11 +103,6 @@ public:
     }
 
     // events
-    void onResize(unsigned int width, unsigned int height) override
-    {
-        DTB::resizeViewer(width, height);
-    }
-
     void onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
