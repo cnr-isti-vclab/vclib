@@ -20,21 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "canvas.h"
-#include "drawable_object.h"
-#include "drawers.h"
-#include "render_app.h"
-#include "view_projection.h"
-#include "window_manager.h"
+#ifndef VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
+#define VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
 
-int main()
+#include <vclib/concepts.h>
+
+namespace vcl {
+
+template<typename T>
+concept ViewProjectionConcept = requires(T&& obj)
 {
-    canvasStaticAsserts();
-    drawableObjectStaticAsserts();
-    drawersStaticAsserts();
-    renderAppStaticAsserts();
-    viewProjectionStaticAsserts();
-    windowManagerStaticAsserts();
+    { obj.viewMatrix() } -> Matrix44Concept;
+    { obj.projectionMatrix() } -> Matrix44Concept;
 
-    return 0;
-}
+    // non const requirements
+    // requires IsConst<T> || requires {
+
+    // };
+};
+
+} // namespace vcl
+
+#endif // VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H

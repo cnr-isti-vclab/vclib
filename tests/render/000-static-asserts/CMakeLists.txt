@@ -30,6 +30,7 @@ set(HEADERS
     canvas.h
     drawers.h
     render_app.h
+    view_projection.h
     window_manager.h
 )
 
