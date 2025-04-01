@@ -207,10 +207,6 @@ public:
         resizeViewer(width, height);
     }
 
-    bool isDragging() const { return mTrackball.isDragging(); }
-
-    MotionType currentMotion() const { return mTrackball.currentMotion(); }
-
     DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }
@@ -247,6 +243,11 @@ public:
     {
         mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
     }
+
+protected:
+    bool isDragging() const { return mTrackball.isDragging(); }
+
+    MotionType currentMotion() const { return mTrackball.currentMotion(); }
 
     void resizeViewer(uint w, uint h)
     {
@@ -332,7 +333,7 @@ public:
             atomicOp->second(mTrackball);
         }
 
-        // dragging
+               // dragging
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
@@ -350,7 +351,7 @@ public:
         if (!mTrackball.isDragging())
             return;
 
-        // dragging
+               // dragging
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
