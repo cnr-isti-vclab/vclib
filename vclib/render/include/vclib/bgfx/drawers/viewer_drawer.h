@@ -25,7 +25,7 @@
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
-#include <vclib/bgfx/drawable/drawable_directional_light.h>
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/camera_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
@@ -42,8 +42,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer, Derive
 
     CameraUniforms           mCameraUniforms;
     DirectionalLightUniforms mDirectionalLightUniforms;
-
-    DrawableDirectionalLight mDirectionalLight;
 
     // flags
     bool mStatsEnabled = false;
@@ -67,22 +65,15 @@ public:
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
-        mDirectionalLight.init();
     }
 
     void onDraw(uint viewId) override
     {
         onDrawContent(viewId);
-
-        if (mDirectionalLight.isVisible()) {
-            mDirectionalLight.draw(viewId);
-        }
     }
 
     void onDrawContent(uint viewId) override
     {
-        setDirectionalLightVisibility(
-            DTB::currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
         updateDirectionalLight();
 
         bgfx::setViewTransform(
@@ -124,20 +115,8 @@ public:
     }
 
 private:
-    bool isDirectionalLightVisible() const
-    {
-        return mDirectionalLight.isVisible();
-    }
-
-    void setDirectionalLightVisibility(bool b)
-    {
-        mDirectionalLight.setVisibility(b);
-    }
-
     void updateDirectionalLight()
     {
-        auto v = DTB::lightGizmoMatrix();
-        mDirectionalLight.updateRotation(v);
         mDirectionalLightUniforms.updateLight(DTB::light());
     }
 };

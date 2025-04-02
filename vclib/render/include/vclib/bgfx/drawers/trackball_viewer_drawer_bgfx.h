@@ -26,6 +26,7 @@
 #include "viewer_drawer.h"
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
+#include <vclib/bgfx/drawable/drawable_directional_light.h>
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
 
@@ -40,6 +41,7 @@ class TrackBallViewerDrawerBGFX :
 
     DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
+    DrawableDirectionalLight mDrawableDirectionalLight;
 
 public:
     using ParentViewer::ParentViewer;
@@ -49,11 +51,16 @@ public:
         ParentViewer::onInit(viewId);
         mAxis.init();
         mDrawTrackBall.init();
+        mDrawableDirectionalLight.init();
     }
 
     void onDraw(uint viewId) override
     {
         ParentViewer::onDraw(viewId);
+
+        setDirectionalLightVisibility(
+            ParentViewer::currentMotion() ==
+            ParentViewer::TrackBallType::DIR_LIGHT_ARC);
 
         if (mAxis.isVisible()) {
             mAxis.draw(viewId);
@@ -62,6 +69,10 @@ public:
         if (mDrawTrackBall.isVisible()) {
             mDrawTrackBall.draw(viewId);
         }
+
+        if (mDrawableDirectionalLight.isVisible()) {
+            mDrawableDirectionalLight.draw(viewId);
+        }
     }
 
     void onDrawContent(uint viewId) override
@@ -69,6 +80,7 @@ public:
         ParentViewer::onDrawContent(viewId);
 
         updateDrawableTrackball();
+        updateDrawableDirectionalLight();
     }
 
     // events
@@ -101,6 +113,22 @@ private:
         auto v = ParentViewer::gizmoMatrix();
         mDrawTrackBall.setTransform(v);
         mDrawTrackBall.updateDragging(ParentViewer::isDragging());
+    }
+
+    bool isDirectionalLightVisible() const
+    {
+        return mDrawableDirectionalLight.isVisible();
+    }
+
+    void setDirectionalLightVisibility(bool b)
+    {
+        mDrawableDirectionalLight.setVisibility(b);
+    }
+
+    void updateDrawableDirectionalLight()
+    {
+        auto v = ParentViewer::lightGizmoMatrix();
+        mDrawableDirectionalLight.updateRotation(v);
     }
 };
 
