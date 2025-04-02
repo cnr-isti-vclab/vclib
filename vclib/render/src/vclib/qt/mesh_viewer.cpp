@@ -46,6 +46,22 @@ bool KeyFilter::eventFilter(QObject *watched, QEvent *event)
 }
 
 /**
+ * @brief Returns the MeshViewerRenderApp used by this MeshViewer.
+ *
+ * @return MeshViewerRenderApp
+ */
+MeshViewerRenderApp& MeshViewer::viewer() const
+{
+    return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
+}
+
+DrawableObjectVectorFrame &MeshViewer::drawableObjectVectorFrame() const
+{
+    return *static_cast<vcl::qt::DrawableObjectVectorFrame*>(
+        mUI->drawVectorFrame);
+}
+
+/**
  * @brief MeshViewer constructor.
  *
  * Creates a MeshViewer having the given parent.
