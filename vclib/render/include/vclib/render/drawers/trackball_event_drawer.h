@@ -46,11 +46,7 @@ public:
     inline static const Point3<Scalar> UNIT_Y = {0, 1, 0};
 
 private:
-<<<<<<< HEAD:vclib/render/include/vclib/render/viewer/desktop_trackball.h
-    bool ignoreEvents = false;
-=======
     using Base = EventDrawer<DerivedRenderApp>;
->>>>>>> temp:vclib/render/include/vclib/render/drawers/trackball_event_drawer.h
 
     using MotionType = vcl::TrackBall<Scalar>::MotionType;
 
@@ -210,14 +206,8 @@ private:
     };
 
 public:
-<<<<<<< HEAD:vclib/render/include/vclib/render/viewer/desktop_trackball.h
-    void ignoreTrackBallEvents(bool b) { ignoreEvents = b; }
-
-    DesktopTrackBall(uint width = 1024, uint height = 768)
-=======
     TrackBallEventDrawerT(uint width = 1024, uint height = 768) :
             Base(width, height)
->>>>>>> temp:vclib/render/include/vclib/render/drawers/trackball_event_drawer.h
     {
         resizeViewer(width, height);
     }
@@ -225,7 +215,6 @@ public:
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }
 
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
-
 
     Matrix44<Scalar> projectionMatrix() const
     {
@@ -279,22 +268,7 @@ public:
         keyRelease(key);
     }
 
-<<<<<<< HEAD:vclib/render/include/vclib/render/viewer/desktop_trackball.h
-    // Expose the trackball function to everyone
-    void rotate(const Quaternion<Scalar>& rotation)
-    {
-        mTrackball.rotate(rotation);
-    }
-
-    void performScale(Scalar pixelDelta)
-    {
-        mTrackball.performScale(pixelDelta);
-    }
-
-    void focus(const Point3<Scalar>& center)
-=======
     void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
->>>>>>> temp:vclib/render/include/vclib/render/drawers/trackball_event_drawer.h
     {
         setKeyModifiers(modifiers);
         moveMouse(x, y);
@@ -439,7 +413,7 @@ private:
             atomicOp->second(mTrackball);
         }
 
-               // dragging
+        // dragging
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
@@ -461,7 +435,7 @@ private:
         if (!mTrackball.isDragging())
             return;
 
-               // dragging
+        // dragging
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
