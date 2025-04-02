@@ -48,6 +48,8 @@ class AbstractViewerDrawer : public ViewProjEventDrawer<DerivedRenderApp>
 {
     bool mReadRequested = false;
 
+    using Base = ViewProjEventDrawer<DerivedRenderApp>;
+
 protected:
     // the list of drawable objects
     // it could be owned by the viewer, or it could be shared with other
@@ -60,10 +62,10 @@ protected:
 
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
-            DTB(width, height)
+            Base(width, height)
     {
         static_assert(
-            ViewProjectionEventDrawerConcept<DTB>,
+            ViewProjectionEventDrawerConcept<Base>,
             "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
             "base class");
     }
@@ -111,7 +113,7 @@ public:
             sceneRadius = bb.diagonal();
         }
 
-        DTB::fitScene(sceneCenter, sceneRadius);
+        Base::fitScene(sceneCenter, sceneRadius);
     }
 
     // events
@@ -123,7 +125,7 @@ public:
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        DTB::onKeyPress(key, modifiers);
+        Base::onKeyPress(key, modifiers);
 
         switch (key) {
         case Key::S:
@@ -146,7 +148,7 @@ protected:
     {
         using ReadData  = ReadBufferTypes::ReadData;
         using FloatData = ReadBufferTypes::FloatData;
-        using MatrixType = DTB::MatrixType;
+        using MatrixType = Base::MatrixType;
 
         if (mReadRequested)
             return;
@@ -155,8 +157,8 @@ protected:
         const Point2d p(x, y);
 
         // create the callback
-        const auto proj = DTB::projectionMatrix();
-        const auto view = DTB::viewMatrix();
+        const auto proj = Base::projectionMatrix();
+        const auto view = Base::viewMatrix();
         // viewport
         auto size = DerivedRenderApp::DRW::canvasSize(derived());
 
