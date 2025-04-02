@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_DRAWERS_TRACKBALL_VIEWER_DRAWER_BGFX_H
 #define VCL_BGFX_DRAWERS_TRACKBALL_VIEWER_DRAWER_BGFX_H
 
-#include "viewer_drawer.h"
+#include "viewer_drawer_bgfx.h"
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>

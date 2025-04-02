@@ -20,101 +20,93 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
-#define VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
+#ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
+#define VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
-#include <vclib/render/read_buffer_types.h>
 
-#include <memory>
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <GL/gl.h>
-#endif
+#include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/uniforms/camera_uniforms.h>
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
+#include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 namespace vcl {
 
 template<
     template<typename DRA> typename ViewProjEventDrawer,
     typename DerivedRenderApp>
-class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>
+class ViewerDrawerBGFX :
+        public AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>
 {
-    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>;
-    using DTB          = ParentViewer::DTB;
+    using ParentViewer =
+        AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>;
+
+    CameraUniforms           mCameraUniforms;
+    DirectionalLightUniforms mDirectionalLightUniforms;
+
+    // flags
+    bool mStatsEnabled = false;
 
 public:
-    ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
+    ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
+        mCameraUniforms.updateCamera(ParentViewer::camera());
+        mDirectionalLightUniforms.updateLight(ParentViewer::light());
     }
 
-    ViewerDrawerOpenGL2(
+    ViewerDrawerBGFX(
         const std::shared_ptr<DrawableObjectVector>& v,
         uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerOpenGL2(width, height)
+        uint height = 768) : ViewerDrawerBGFX(width, height)
     {
         ParentViewer::setDrawableObjectVector(v);
     }
 
-    void onInit(uint viewId) override
+    void onDrawContent(uint viewId) override
     {
-        ParentViewer::onInit(viewId);
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_COLOR_MATERIAL);
-        glEnable(GL_NORMALIZE);
+        bgfx::setViewTransform(
+            viewId,
+            ParentViewer::viewMatrix().data(),
+            ParentViewer::projectionMatrix().data());
 
-        float lightAmbient[] = {.2f, .2f, .2f, 1.0f};
-        float lightDiffuse[] = {.5f, .5f, .5f, 1.0f};
+        mCameraUniforms.updateCamera(ParentViewer::camera());
+        mCameraUniforms.bind();
 
-        glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+        mDirectionalLightUniforms.updateLight(ParentViewer::light());
+        mDirectionalLightUniforms.bind();
 
-        if (ParentViewer::mDrawList) {
-            for (auto& obj : *(ParentViewer::mDrawList)) {
-                obj->init();
+        ParentViewer::drawableObjectVector().draw(viewId);
+    }
+
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        if (key == Key::F1) {
+            if (mStatsEnabled) {
+                mStatsEnabled = false;
+                bgfx::setDebug(BGFX_DEBUG_NONE);
+            }
+            else {
+                mStatsEnabled = true;
+                bgfx::setDebug(BGFX_DEBUG_STATS);
             }
         }
+        ParentViewer::onKeyPress(key, modifiers);
     }
 
-    void onDraw(uint viewId) override { onDrawContent(viewId); }
-
-    void onDrawContent(uint) override
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        auto         tmp = DTB::light().direction();
-        vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glMultMatrixf(DTB::projectionMatrix().data());
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
-        glMultMatrixf(DTB::viewMatrix().data());
-
-        for (auto& obj : *(ParentViewer::mDrawList))
-            obj->draw();
-    }
-
-    // events
     void onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::readRequest(button, x, y, modifiers);
+        const bool homogeneousNDC =
+            Context::instance().capabilites().homogeneousDepth;
+
+        ParentViewer::readRequest(button, x, y, modifiers, homogeneousNDC);
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
+#endif // VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H

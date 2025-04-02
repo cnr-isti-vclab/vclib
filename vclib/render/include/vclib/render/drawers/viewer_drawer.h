@@ -20,26 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
+#define VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
 
-#include "viewer_drawer_opengl2.h"
+#include <vclib/render/config.h>
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/drawers/viewer_drawer_bgfx.h>
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <vclib/opengl2/drawers/viewer_drawer_opengl2.h>
+#endif
 
 namespace vcl {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer, DerivedRenderApp>
-{
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer, DerivedRenderApp>;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+template<
+    template<typename DRA> typename ViewProjEventDrawer,
+    typename DerivedRenderApp>
+using ViewerDrawer = ViewerDrawerBGFX<ViewProjEventDrawer, DerivedRenderApp>;
+#endif
 
-public:
-    using ParentViewer::ParentViewer;
-};
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+template<
+    template<typename DRA> typename ViewProjEventDrawer,
+    typename DerivedRenderApp>
+using ViewerDrawer = ViewerDrawerOpenGL2<ViewProjEventDrawer, DerivedRenderApp>;
+#endif
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
