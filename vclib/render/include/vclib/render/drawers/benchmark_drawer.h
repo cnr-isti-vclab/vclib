@@ -27,7 +27,9 @@
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/fps_benchmark_metric.h>
 #include <vclib/render/automation/printers/stdout_benchmark_printer.h>
-#include <vclib/render/drawers/plain_drawer.h>
+#include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/viewer/camera.h>
+#include <vclib/render/viewer/lights/directional_light.h>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 #include <chrono>
@@ -44,12 +46,22 @@ namespace vcl {
  * The BenchmarkDrawer is a class that combines a BenchmarkPrinter, a
  * BenchmarkMetric and a Vector of Automations to measure and write (somewhere)
  * the performance of each Automation. While it is a Drawer, it doesn't really
- * draw anything.
+ * draw anything. DEPRECATED COMMENT
  */
-template<typename DerivedDrawer>
-class BenchmarkDrawer : public vcl::PlainDrawer<DerivedDrawer>
+template<typename DerivedDrawer, typename Scalar>
+class BenchmarkDrawer : public vcl::EventDrawer<DerivedDrawer>
 {
-    using Parent = vcl::PlainDrawer<DerivedDrawer>;
+public:
+    using ScalarType = Scalar;
+    using PointType  = Point3<Scalar>;
+    using MatrixType = Matrix44<Scalar>;
+
+private:
+    using Parent = vcl::EventDrawer<DerivedDrawer>;
+
+    DirectionalLight<Scalar> mLight;
+    Camera<Scalar>           mCamera;
+    MatrixType               mModelMatrix;
 
     /*
     What are these variables for? To avoid the slight freeze some time after
@@ -108,6 +120,20 @@ public:
     using Parent::onPostDraw;
     using Parent::onResize;
     using Parent::Parent;
+
+    MatrixType viewMatrix() { return mCamera.viewMatrix() * mModelMatrix; }
+
+    MatrixType projectionMatrix() { return mCamera.projectionMatrix(); }
+
+    Camera<Scalar> camera() { return mCamera; }
+
+    DirectionalLight<Scalar> light() { return mLight; }
+
+    void reset() {}
+
+    void focus(PointType p) {}
+
+    void fitScene(PointType p, Scalar s) {}
 
     /**
      * Set how many times the entire sequence of automations should be repeated
