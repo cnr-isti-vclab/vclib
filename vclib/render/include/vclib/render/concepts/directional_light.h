@@ -20,39 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
-#define VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
+#ifndef VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H
+#define VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H
 
-#include "camera.h"
-#include "directional_light.h"
+#include <vclib/concepts.h>
+#include <vclib/space/core/color.h>
 
 namespace vcl {
 
 template<typename T>
-concept ViewProjectionConcept = requires(
+concept DirectionalLightConcept = requires(
     T&& obj,
-    typename RemoveRef<T>::ScalarType s,
-    typename RemoveRef<T>::PointType p)
+    RemoveRef<T>::PointType p,
+    vcl::Color c)
 {
-    typename RemoveRef<T>::ScalarType;
+    // types
     typename RemoveRef<T>::PointType;
-    typename RemoveRef<T>::MatrixType;
 
-    { obj.viewMatrix() } -> Matrix44Concept;
-    { obj.projectionMatrix() } -> Matrix44Concept;
+    // constructors
+    RemoveRef<T>();
+    RemoveRef<T>(p, c);
 
-    { obj.camera() } -> CameraConcept;
-    { obj.light() } -> DirectionalLightConcept;
+    { obj.direction() } -> Point3Concept;
+    { obj.color() } -> ColorConcept;
 
     // non const requirements
     requires IsConst<T> || requires {
         { obj.reset() } -> std::same_as<void>;
-
-        { obj.focus(p) } -> std::same_as<void>;
-        { obj.fitScene(p, s) } -> std::same_as<void>;
     };
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
+#endif // VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H

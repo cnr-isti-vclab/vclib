@@ -28,6 +28,7 @@ project(vclib-test-${TEST_NAME})
 set(HEADERS
     camera.h
     canvas.h
+    directional_light.h
     drawable_object.h
     drawers.h
     render_app.h
