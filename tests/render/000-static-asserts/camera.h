@@ -20,58 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef CAMERA_H
+#define CAMERA_H
 
-// imgui drawer must be included before the window manager...
-#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/render/concepts/camera.h>
+#include <vclib/render/viewer/camera.h>
 
-#include <vclib/glfw/window_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/render_app.h>
-
-#include <imgui.h>
-
-template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
+void cameraStaticAsserts()
 {
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+    using namespace vcl;
 
-public:
-    using ParentDrawer::ParentDrawer;
+    using Camerad = Camera<double>;
 
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
-
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
-};
-
-int main(int argc, char** argv)
-{
-    using ImGuiDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
-
-    ImGuiDemo tw("Viewer ImGui GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
+    static_assert(
+        CameraConcept<Camerad>,
+        "Camera does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad>,
+        "const Camera does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&>,
+        "Camera& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad&>,
+        "const Camera& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&&>,
+        "Camera&& does not satisfy the CameraConcept");
 }
+
+#endif // CAMERA_H

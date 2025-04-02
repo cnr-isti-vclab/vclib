@@ -200,12 +200,12 @@ public:
         mCamera.setFieldOfViewAdaptingEyeDistance(fov);
     }
 
-    Camera<Scalar>::ProjectionMode::Enum projectionMode() const
+    Camera<Scalar>::ProjectionMode projectionMode() const
     {
         return mCamera.projectionMode();
     }
 
-    void setProjectionMode(Camera<Scalar>::ProjectionMode::Enum mode)
+    void setProjectionMode(Camera<Scalar>::ProjectionMode mode)
     {
         mCamera.projectionMode() = mode;
         mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
@@ -236,6 +236,12 @@ public:
             mDirectionalLightTransform * Point3<Scalar>(0, 0, 1));
     }
 
+    void setLightDirection(const Point3<Scalar>& direction)
+    {
+        mDirectionalLightTransform = Quaternion<Scalar>::FromTwoVectors(
+            Point3<Scalar>(0, 0, 1), direction);
+    }
+
     const vcl::Camera<Scalar>& camera() const { return mCamera; }
 
     Matrix44<Scalar> viewMatrix() const
@@ -243,7 +249,10 @@ public:
         return mCamera.viewMatrix() * mTransform.matrix();
     }
 
-    Matrix44<Scalar> projectionMatrix() const { return mCamera.projMatrix(); }
+    Matrix44<Scalar> projectionMatrix() const
+    {
+        return mCamera.projectionMatrix();
+    }
 
     Matrix44<Scalar> gizmoMatrix() const
     {

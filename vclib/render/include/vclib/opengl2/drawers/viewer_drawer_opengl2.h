@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
-#define VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
+#ifndef VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_OPENGL2_H
+#define VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_OPENGL2_H
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 #include <vclib/render/read_buffer_types.h>
@@ -39,11 +39,14 @@
 
 namespace vcl {
 
-template<typename DerivedRenderApp>
-class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderApp>
+template<
+    template<typename DRA> typename ViewProjEventDrawer,
+    typename DerivedRenderApp>
+class ViewerDrawerOpenGL2 :
+        public AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>
 {
-    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
-    using DTB          = ParentViewer::DTB;
+    using ParentViewer =
+        AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
@@ -87,27 +90,22 @@ public:
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        auto         tmp = DTB::light().direction();
+        auto         tmp = ParentViewer::light().direction();
         vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glMultMatrixf(DTB::projectionMatrix().data());
+        glMultMatrixf(ParentViewer::projectionMatrix().data());
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
-        glMultMatrixf(DTB::viewMatrix().data());
+        glMultMatrixf(ParentViewer::viewMatrix().data());
 
         for (auto& obj : *(ParentViewer::mDrawList))
             obj->draw();
     }
 
     // events
-    void onResize(unsigned int width, unsigned int height) override
-    {
-        DTB::resizeViewer(width, height);
-    }
-
     void onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
@@ -116,18 +114,8 @@ public:
     {
         ParentViewer::readRequest(button, x, y, modifiers);
     }
-
-    void toggleAxisVisibility() override
-    {
-        // todo
-    }
-
-    void toggleTrackBallVisibility() override
-    {
-        // todo
-    }
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_H
+#endif // VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_OPENGL2_H

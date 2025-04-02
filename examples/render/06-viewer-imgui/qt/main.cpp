@@ -25,7 +25,7 @@
 #include <vclib/imgui/imgui_drawer.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 #include <imgui.h>
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
         vcl::qt::WidgetManager,
         vcl::Canvas,
         DemoImGuiDrawer,
-        vcl::ViewerDrawer>;
+        vcl::TrackBallViewerDrawer>;
 
     ImGuiDemo tw("Viewer ImGui Qt");
 

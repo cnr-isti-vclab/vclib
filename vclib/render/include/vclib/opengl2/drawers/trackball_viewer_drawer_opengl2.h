@@ -20,58 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
 
-// imgui drawer must be included before the window manager...
-#include <vclib/imgui/imgui_drawer.h>
+#include "viewer_drawer_opengl2.h"
 
-#include <vclib/glfw/window_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/render_app.h>
+#include <vclib/render/drawers/trackball_event_drawer.h>
 
-#include <imgui.h>
+namespace vcl {
 
 template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
+class TrackBallViewerDrawerOpenGL2 :
+        public ViewerDrawerOpenGL2<TrackBallEventDrawer, DerivedRenderApp>
 {
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+    using ParentViewer =
+        ViewerDrawerOpenGL2<TrackBallEventDrawer, DerivedRenderApp>;
 
 public:
-    using ParentDrawer::ParentDrawer;
-
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
-
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
+    using ParentViewer::ParentViewer;
 };
 
-int main(int argc, char** argv)
-{
-    using ImGuiDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
+} // namespace vcl
 
-    ImGuiDemo tw("Viewer ImGui GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
-}
+#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H

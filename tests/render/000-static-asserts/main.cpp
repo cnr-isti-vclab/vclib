@@ -20,18 +20,24 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "camera.h"
 #include "canvas.h"
+#include "directional_light.h"
 #include "drawable_object.h"
 #include "drawers.h"
 #include "render_app.h"
+#include "view_projection.h"
 #include "window_manager.h"
 
 int main()
 {
+    cameraStaticAsserts();
     canvasStaticAsserts();
+    directionalLightStaticAsserts();
     drawableObjectStaticAsserts();
     drawersStaticAsserts();
     renderAppStaticAsserts();
+    viewProjectionStaticAsserts();
     windowManagerStaticAsserts();
 
     return 0;

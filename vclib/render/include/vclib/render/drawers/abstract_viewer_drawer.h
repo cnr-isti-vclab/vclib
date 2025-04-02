@@ -23,12 +23,11 @@
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
-#include "event_drawer.h"
-
+#include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/read_buffer_types.h>
-#include <vclib/render/viewer/desktop_trackball.h>
+#include <vclib/space/core/color.h>
 
 #include <memory>
 
@@ -42,12 +41,14 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-template<typename DerivedRenderApp>
-class AbstractViewerDrawer :
-        public DesktopTrackBall<float>,
-        public EventDrawer<DerivedRenderApp>
+template<
+    template<typename DRA> typename ViewProjEventDrawer,
+    typename DerivedRenderApp>
+class AbstractViewerDrawer : public ViewProjEventDrawer<DerivedRenderApp>
 {
     bool mReadRequested = false;
+
+    using Base = ViewProjEventDrawer<DerivedRenderApp>;
 
 protected:
     // the list of drawable objects
@@ -57,12 +58,16 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
-    using DTB = vcl::DesktopTrackBall<float>;
+    using DTB = ViewProjEventDrawer<DerivedRenderApp>;
 
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
-            DTB(width, height)
+            Base(width, height)
     {
+        static_assert(
+            ViewProjectionEventDrawerConcept<Base>,
+            "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
+            "base class");
     }
 
     ~AbstractViewerDrawer() = default;
@@ -108,12 +113,8 @@ public:
             sceneRadius = bb.diagonal();
         }
 
-        DTB::setTrackBall(sceneCenter, sceneRadius);
+        Base::fitScene(sceneCenter, sceneRadius);
     }
-
-    virtual void toggleAxisVisibility() = 0;
-
-    virtual void toggleTrackBallVisibility() = 0;
 
     // events
     void onInit(uint) override
@@ -122,78 +123,19 @@ public:
             derived(), Color::White);
     }
 
-    void onResize(unsigned int width, unsigned int height) override
-    {
-        DTB::resizeViewer(width, height);
-    }
-
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        DTB::setKeyModifiers(modifiers);
+        Base::onKeyPress(key, modifiers);
 
         switch (key) {
-        case Key::C:
-            std::cout << "(" << DTB::camera().eye() << ") "
-                      << "(" << DTB::camera().center() << ") "
-                      << "(" << DTB::camera().up() << ")\n";
-            std::cout << std::flush;
-            break;
-
-        case Key::A: toggleAxisVisibility(); break;
-
         case Key::S:
             if (modifiers[KeyModifier::CONTROL])
                 DerivedRenderApp::DRW::screenshot(
                     derived(), "viewer_screenshot.png");
             break;
 
-        case Key::T: toggleTrackBallVisibility(); break;
-
         default: break;
         }
-
-        DTB::keyPress(key);
-    }
-
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::keyRelease(key);
-    }
-
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::moveMouse(x, y);
-    }
-
-    void onMousePress(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::moveMouse(x, y);
-        DTB::pressMouse(button);
-    }
-
-    void onMouseRelease(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::moveMouse(x, y);
-        DTB::releaseMouse(button);
-    }
-
-    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
-        override
-    {
-        DTB::setKeyModifiers(modifiers);
-        DTB::scroll(dx, dy);
     }
 
 protected:
@@ -206,6 +148,7 @@ protected:
     {
         using ReadData  = ReadBufferTypes::ReadData;
         using FloatData = ReadBufferTypes::FloatData;
+        using MatrixType = Base::MatrixType;
 
         if (mReadRequested)
             return;
@@ -214,8 +157,8 @@ protected:
         const Point2d p(x, y);
 
         // create the callback
-        const auto proj = DTB::projectionMatrix();
-        const auto view = DTB::viewMatrix();
+        const auto proj = Base::projectionMatrix();
+        const auto view = Base::viewMatrix();
         // viewport
         auto size = DerivedRenderApp::DRW::canvasSize(derived());
 
@@ -235,7 +178,7 @@ protected:
             // unproject the point
             const Point3f p2d(p.x(), vp[3] - p.y(), depth);
             auto          unproj = unproject(
-                p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
+                p2d, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();

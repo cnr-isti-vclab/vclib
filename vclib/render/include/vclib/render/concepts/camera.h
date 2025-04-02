@@ -20,29 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONCEPTS_DRAWER_H
-#define VCL_RENDER_CONCEPTS_DRAWER_H
+#ifndef VCL_RENDER_CONCEPTS_CAMERA_H
+#define VCL_RENDER_CONCEPTS_CAMERA_H
 
 #include <vclib/concepts.h>
 
 namespace vcl {
 
 template<typename T>
-concept DrawerConcept = requires (T&& obj) {
+concept CameraConcept = requires (
+    T&& obj,
+    typename RemoveRef<T>::ScalarType s,
+    typename RemoveRef<T>::ScalarType& sR,
+    typename RemoveRef<T>::ProjectionMode pm,
+    typename RemoveRef<T>::ProjectionMode& pmR) {
+    // inner types
+    typename RemoveRef<T>::ScalarType;
+    typename RemoveRef<T>::PointType;
+    typename RemoveRef<T>::MatrixType;
+    typename RemoveRef<T>::ProjectionMode;
+
     // constructors
     RemoveRef<T>();
-    RemoveRef<T>(uint(), uint());
+
+    { obj.center() } -> Point3Concept;
+    { obj.eye() } -> Point3Concept;
+    { obj.up() } -> Point3Concept;
+    { obj.fieldOfView() } -> std::convertible_to<decltype(s)>;
+    { obj.projectionMode() } -> std::convertible_to<decltype(pm)>;
+    { obj.verticalHeight() } -> std::convertible_to<decltype(s)>;
+    { obj.aspectRatio() } -> std::convertible_to<decltype(s)>;
+    { obj.nearPlane() } -> std::convertible_to<decltype(s)>;
+    { obj.farPlane() } -> std::convertible_to<decltype(s)>;
+    { obj.viewMatrix() } -> Matrix44Concept;
+    { obj.projectionMatrix() } -> Matrix44Concept;
 
     // non const requirements
     requires IsConst<T> || requires {
-        { obj.onInit(uint()) } -> std::same_as<void>;
-        { obj.onResize(uint(), uint()) } -> std::same_as<void>;
-        { obj.onDraw(uint()) } -> std::same_as<void>;
-        { obj.onDrawContent(uint()) } -> std::same_as<void>;
-        { obj.onPostDraw() } -> std::same_as<void>;
+        { obj.reset() } -> std::same_as<void>;
+        { obj.fieldOfView() } -> std::same_as<decltype(sR)>;
+        { obj.projectionMode() } -> std::same_as<decltype(pmR)>;
+        { obj.setFieldOfViewAdaptingEyeDistance(s) } -> std::same_as<void>;
+        { obj.verticalHeight() } -> std::same_as<decltype(sR)>;
+        { obj.aspectRatio() } -> std::same_as<decltype(sR)>;
+        { obj.nearPlane() } -> std::same_as<decltype(sR)>;
+        { obj.farPlane() } -> std::same_as<decltype(sR)>;
     };
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONCEPTS_DRAWER_H
+#endif // VCL_RENDER_CONCEPTS_CAMERA_H
