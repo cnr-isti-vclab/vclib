@@ -20,70 +20,60 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
+#define VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/algorithms/mesh/update/transform.h>
-#include <vclib/qt/mesh_viewer.h>
+ #include <vclib/qt/widget_manager.h>
+ #include <vclib/render/canvas.h>
+ #include <vclib/render/drawers/viewer_drawer.h>
+ #include <vclib/render/render_app.h>
 
-#include <QApplication>
-
-class MeshViewerSelectQt : public vcl::qt::MeshViewer
+template<typename DerivedRenderApp>
+class ViewerDrawerSelectQt : public vcl::ViewerDrawer<DerivedRenderApp>
 {
-public:
-    using vcl::qt::MeshViewer::MeshViewer;
+    using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
-    MeshViewerSelectQt(QWidget* parent = nullptr) : vcl::qt::MeshViewer(parent)
+    // a callback function called when an object is selected
+    std::function<void(uint)> mOnObjectSelected = [](uint) {};
+
+public:
+    using Base::Base;
+
+    void onMousePress(
+        vcl::MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const vcl::KeyModifiers& modifiers) override
     {
-        viewer().setOnObjectSelected(
-            [this](uint id) {
-                drawableObjectVectorFrame().setSelectedItem(id);
+        if (button == vcl::MouseButton::RIGHT) {
+            this->readIdRequest(x, y, [&](uint id) {
+                if (id == 0) {
+                    std::cout << "No object selected" << std::endl;
+                    return;
+                }
+                id -= 1;
+                std::cout << "selected ID: " << id << std::endl;
+                if (mOnObjectSelected)
+                    mOnObjectSelected(id);
             });
+        }
+
+        Base::onMousePress(button, x, y, modifiers);
+    }
+
+    // seeter fo the callback function called when an object is selected
+    void setOnObjectSelected(const std::function<void(uint)>& f)
+    {
+        mOnObjectSelected = f;
     }
 };
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
+// definition of custom MeshViewerRenderApp for the qt MeshViewer
+namespace vcl::qt {
+ 
+     using MeshViewerRenderApp =
+        vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ViewerDrawerSelectQt>;
 
-    MeshViewerSelectQt mv;
-
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
-
-    using enum vcl::MeshRenderInfo::Buffers;
-
-    m.enablePerFaceColor();
-    for (auto& f : m.faces()) {
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
-    }
-    m.updateBuffers({TRI_COLORS});
-
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(std::move(m));
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.name() = "bimba_scaled";
-
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
-
-    drawable.updateBuffers({VERTICES, VERT_NORMALS});
-    v->pushBack(std::move(drawable));
-
-    mv.setDrawableObjectVector(v);
-
-    mv.show();
-    mv.showMaximized();
-
-    return app.exec();
-}
+ } // namespace vcl::qt
+ 
+#endif // VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
