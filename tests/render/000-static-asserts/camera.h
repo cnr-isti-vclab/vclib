@@ -20,38 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
-#define VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
+#ifndef CAMERA_H
+#define CAMERA_H
 
-#include "camera.h"
+#include <vclib/render/concepts/camera.h>
+#include <vclib/render/viewer/camera.h>
 
-namespace vcl {
-
-template<typename T>
-concept ViewProjectionConcept = requires(
-    T&& obj,
-    typename RemoveRef<T>::ScalarType s,
-    typename RemoveRef<T>::PointType p)
+void cameraStaticAsserts()
 {
-    typename RemoveRef<T>::ScalarType;
-    typename RemoveRef<T>::PointType;
-    typename RemoveRef<T>::MatrixType;
+    using namespace vcl;
 
-    { obj.viewMatrix() } -> Matrix44Concept;
-    { obj.projectionMatrix() } -> Matrix44Concept;
+    using Camerad = Camera<double>;
 
-    { obj.camera() } -> CameraConcept;
-    obj.light();
+    static_assert(
+        CameraConcept<Camerad>,
+        "Camera does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad>,
+        "const Camera does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&>,
+        "Camera& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad&>,
+        "const Camera& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&&>,
+        "Camera&& does not satisfy the CameraConcept");
+}
 
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.reset() } -> std::same_as<void>;
-
-        { obj.focus(p) } -> std::same_as<void>;
-        { obj.fitScene(p, s) } -> std::same_as<void>;
-    };
-};
-
-} // namespace vcl
-
-#endif // VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
+#endif // CAMERA_H

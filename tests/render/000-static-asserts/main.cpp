@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "camera.h"
 #include "canvas.h"
 #include "drawable_object.h"
 #include "drawers.h"
@@ -29,6 +30,7 @@
 
 int main()
 {
+    cameraStaticAsserts();
     canvasStaticAsserts();
     drawableObjectStaticAsserts();
     drawersStaticAsserts();

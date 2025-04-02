@@ -200,12 +200,12 @@ public:
         mCamera.setFieldOfViewAdaptingEyeDistance(fov);
     }
 
-    Camera<Scalar>::ProjectionMode::Enum projectionMode() const
+    Camera<Scalar>::ProjectionMode projectionMode() const
     {
         return mCamera.projectionMode();
     }
 
-    void setProjectionMode(Camera<Scalar>::ProjectionMode::Enum mode)
+    void setProjectionMode(Camera<Scalar>::ProjectionMode mode)
     {
         mCamera.projectionMode() = mode;
         mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());

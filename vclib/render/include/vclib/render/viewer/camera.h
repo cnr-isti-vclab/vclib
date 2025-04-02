@@ -35,10 +35,7 @@ public:
     using PointType  = vcl::Point3<Scalar>;
     using MatrixType = vcl::Matrix44<Scalar>;
 
-    struct ProjectionMode
-    {
-        enum Enum { ORTHO, PERSPECTIVE };
-    };
+    enum class ProjectionMode { ORTHO, PERSPECTIVE };
 
 private:
     /* Extrinsics */
@@ -58,7 +55,7 @@ private:
     Scalar mFovDeg = 54.0;
 
     /// @brief Projection mode
-    ProjectionMode::Enum mProjectionMode = ProjectionMode::PERSPECTIVE;
+    ProjectionMode mProjectionMode = ProjectionMode::PERSPECTIVE;
 
     /// @brief Height of the target in world space
     /// (used for ortho projection, and adapting the eye distance for
@@ -103,9 +100,9 @@ public:
                                         std::tan((fov / 2.0) / 180.0 * M_PI));
     }
 
-    ProjectionMode::Enum& projectionMode() { return mProjectionMode; }
+    ProjectionMode& projectionMode() { return mProjectionMode; }
 
-    ProjectionMode::Enum projectionMode() const { return mProjectionMode; }
+    ProjectionMode projectionMode() const { return mProjectionMode; }
 
     Scalar& verticalHeight() { return mVerticalHeight; }
 

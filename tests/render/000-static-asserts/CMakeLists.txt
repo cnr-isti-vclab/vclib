@@ -26,8 +26,9 @@ set(TEST_NAME 000-static-asserts)
 project(vclib-test-${TEST_NAME})
 
 set(HEADERS
-    drawable_object.h
+    camera.h
     canvas.h
+    drawable_object.h
     drawers.h
     render_app.h
     view_projection.h
