@@ -46,6 +46,8 @@ public:
     inline static const Point3<Scalar> UNIT_Y = {0, 1, 0};
 
 private:
+    using Base = EventDrawer<DerivedRenderApp>;
+
     using MotionType = vcl::TrackBall<Scalar>::MotionType;
 
     // translation step in camera space
@@ -204,7 +206,8 @@ private:
     };
 
 public:
-    TrackBallEventDrawerT(uint width = 1024, uint height = 768)
+    TrackBallEventDrawerT(uint width = 1024, uint height = 768) :
+            Base(width, height)
     {
         resizeViewer(width, height);
     }

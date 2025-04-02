@@ -236,6 +236,12 @@ public:
             mDirectionalLightTransform * Point3<Scalar>(0, 0, 1));
     }
 
+    void setLightDirection(const Point3<Scalar>& direction)
+    {
+        mDirectionalLightTransform = Quaternion<Scalar>::FromTwoVectors(
+            Point3<Scalar>(0, 0, 1), direction);
+    }
+
     const vcl::Camera<Scalar>& camera() const { return mCamera; }
 
     Matrix44<Scalar> viewMatrix() const
