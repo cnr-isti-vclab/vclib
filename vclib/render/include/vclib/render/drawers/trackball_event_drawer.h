@@ -212,6 +212,8 @@ public:
         resizeViewer(width, height);
     }
 
+    const Camera<Scalar>& camera() const { return mTrackball.camera(); }
+
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
 
 
@@ -303,8 +305,6 @@ public:
     }
 
 protected:
-    const Camera<Scalar>& camera() const { return mTrackball.camera(); }
-
     bool isDragging() const { return mTrackball.isDragging(); }
 
     MotionType currentMotion() const { return mTrackball.currentMotion(); }

@@ -40,6 +40,9 @@ concept ViewProjectionConcept = requires(
     { obj.viewMatrix() } -> Matrix44Concept;
     { obj.projectionMatrix() } -> Matrix44Concept;
 
+    obj.camera();
+    obj.light();
+
     // non const requirements
     requires IsConst<T> || requires {
         { obj.reset() } -> std::same_as<void>;

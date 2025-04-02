@@ -40,24 +40,6 @@ void viewProjectionStaticAsserts()
 {
     using namespace vcl;
 
-    using Camerad = Camera<double>;
-
-    static_assert(
-        !ViewProjectionConcept<Camerad>,
-        "Camera does satisfy the ViewProjectionConcept");
-    static_assert(
-        ViewProjectionConcept<const Camerad>,
-        "const Camera does not satisfy the ViewProjectionConcept");
-    static_assert(
-        !ViewProjectionConcept<Camerad&>,
-        "Camera& does satisfy the ViewProjectionConcept");
-    static_assert(
-        ViewProjectionConcept<const Camerad&>,
-        "const Camera& does not satisfy the ViewProjectionConcept");
-    static_assert(
-        !ViewProjectionConcept<Camerad&&>,
-        "Camera&& does satisfy the ViewProjectionConcept");
-
 #if VCLIB_WITH_GLFW
     using RenderAppT = RenderApp<WMG, Canvas, TrackBallEventDrawer>;
 

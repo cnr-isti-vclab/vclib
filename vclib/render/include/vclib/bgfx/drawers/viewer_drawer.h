@@ -62,26 +62,15 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
-    void onInit(uint viewId) override
-    {
-        ParentViewer::onInit(viewId);
-    }
-
-    void onDraw(uint viewId) override
-    {
-        onDrawContent(viewId);
-    }
-
     void onDrawContent(uint viewId) override
     {
-        updateDirectionalLight();
-
         bgfx::setViewTransform(
             viewId, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 
         mCameraUniforms.updateCamera(DTB::camera());
         mCameraUniforms.bind();
 
+        mDirectionalLightUniforms.updateLight(DTB::light());
         mDirectionalLightUniforms.bind();
 
         ParentViewer::drawableObjectVector().draw(viewId);
@@ -112,12 +101,6 @@ public:
             Context::instance().capabilites().homogeneousDepth;
 
         ParentViewer::readRequest(button, x, y, modifiers, homogeneousNDC);
-    }
-
-private:
-    void updateDirectionalLight()
-    {
-        mDirectionalLightUniforms.updateLight(DTB::light());
     }
 };
 
