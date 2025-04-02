@@ -48,6 +48,10 @@ class RotationAutomationAction : public AbstractAutomationAction
     Timer                    mTimer;
 
 public:
+    /**
+     * Method to construct an object from this class by specifing how many
+     * frames you want an entire rotation (2*pi) to take
+     */
     static RotationAutomationAction fromSecondsPerRotation(
         DesktopTrackBall<float>* trackBall,
         float                    secondsPerRotation,
@@ -59,6 +63,11 @@ public:
             axis);
     }
 
+    /**
+     * Method to construct an object from this class by specifing how many
+     * frames you want an entire rotation (2*pi) to take. It returns a pointer
+     * to a heap allocated object.
+     */
     static RotationAutomationAction* ptrFromSecondsPerRotation(
         DesktopTrackBall<float>* trackBall,
         float                    secondsPerRotation,

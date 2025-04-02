@@ -45,6 +45,10 @@ class PerFrameRotationAutomationAction : public AbstractAutomationAction
     Point3f                  mAround;
 
 public:
+    /**
+     * Method to construct an object from this class by specifing how many
+     * frames you want an entire rotation (2*pi) to take
+     */
     static PerFrameRotationAutomationAction fromFramesPerRotation(
         DesktopTrackBall<float>* trackBall,
         float                    framesPerRotation,
@@ -56,6 +60,11 @@ public:
             axis);
     }
 
+    /**
+     * Method to construct an object from this class by specifing how many
+     * frames you want an entire rotation (2*pi) to take. It returns a pointer
+     * to a heap allocated object
+     */
     static PerFrameRotationAutomationAction* ptrFromFramesPerRotation(
         DesktopTrackBall<float>* trackBall,
         float                    framesPerRotation,

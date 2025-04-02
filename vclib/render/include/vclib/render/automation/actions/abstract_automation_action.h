@@ -64,7 +64,7 @@ public:
      * and it is therefore important to check whether the automation is active
      * before calling doAction()
      *
-     * @throws std::exception If it is called on an inactive action
+     * @throws UpdatedIncativeException If it is called on an inactive action
      */
     virtual void doAction()
     {
