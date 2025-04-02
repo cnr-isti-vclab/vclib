@@ -25,7 +25,7 @@
 #include <vclib/bgfx/drawers/text_drawer.h>
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     using ViewerWindow = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        vcl::ViewerDrawer,
+        vcl::TrackBallViewerDrawer,
         vcl::TextDrawer>;
 
     ViewerWindow tw("Viewer GLFW");
