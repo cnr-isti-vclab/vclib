@@ -101,7 +101,7 @@ public:
             else {
                 isFirst = false;
             }
-            temp << "\n\t\t\t\t" << meas << metric.getUnitOfMeasure();
+            temp << "\n\t\t\t\t\"" << meas << metric.getUnitOfMeasure() << "\"";
         }
         temp << "\n\t\t\t]";
 

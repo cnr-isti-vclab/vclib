@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TIME_BENCHMARK_METRIC_H
-#define VCL_TIME_BENCHMARK_METRIC_H
+#ifndef VCL_MULTIPLE_TIME_BENCHMARK_METRIC_H
+#define VCL_MULTIPLE_TIME_BENCHMARK_METRIC_H
 
 #include <vclib/render/automation/metrics/benchmark_metric.h>
 
@@ -29,52 +29,90 @@
 
 #include <iomanip>
 #include <sstream>
+#include <stdint.h>
+#include <string>
+#include <vector>
 
 namespace vcl {
 
 /**
- * The TimeBenchmarkMetric class measures the time (in seconds) an automation
- * takes to complete
+ * The MultipleTimeBenchmarkMetric class measures the time multiple
+ * times for an automation. It keeps track of the seconds for each frame in a
+ * vector, then "splits" the vector into multiple sections and calculates the
+ * sum for each section. If the chosen number of measurements is greater than
+ * the measurements taken (i.e. the number of frames the automation took to
+ * complete), it returns the entire vector.
  */
-class TimeBenchmarkMetric : public BenchmarkMetric
+class MultipleTimeBenchmarkMetric : public BenchmarkMetric
 {
-    bool  mFirstMeasurement = true;
-    Timer mTimer;
+    bool                mFirstMeasurement = true;
+    std::vector<double> mMeasurements;
+    uint32_t            mMeasurementCount;
+    Timer               mTimer;
 
 public:
-    void start() override { mFirstMeasurement = true; }
+    MultipleTimeBenchmarkMetric(uint32_t measurementCount) :
+            mMeasurementCount {measurementCount}
+    {
+    }
+
+    void start() override
+    {
+        mMeasurements     = std::vector<double>();
+        mFirstMeasurement = true;
+    };
 
     void measure() override
     {
         if (mFirstMeasurement) {
-            mFirstMeasurement = false;
             mTimer.start();
+            mFirstMeasurement = false;
             return;
         }
-    }
+        mTimer.stop();
+        mMeasurements.push_back(mTimer.delay());
+        mTimer.start();
+    };
 
     std::vector<std::string> getMeasureStrings() override
     {
-        std::ostringstream temp;
-        temp << std::setprecision(3) << mTimer.delay();
+        std::vector<std::string> retVec;
+        uint32_t                 trueMeasurementCount =
+            std::min((uint32_t) mMeasurements.size() - 1, mMeasurementCount);
+        for (uint32_t i = 1; i <= trueMeasurementCount; i++) {
+            uint32_t from =
+                (uint32_t) ((double) (i - 1) / (double) trueMeasurementCount *
+                            (double) mMeasurements.size());
+            uint32_t to =
+                (uint32_t) ((double) i / (double) trueMeasurementCount *
+                            (double) mMeasurements.size());
+            double sum = 0;
+            for (uint32_t j = from; j < to; j++) {
+                sum += mMeasurements[j];
+            }
 
-        return std::vector<std::string> {temp.str()};
-    }
+            std::ostringstream temp;
+            temp << std::fixed << std::setprecision(3) << sum;
+            retVec.push_back(temp.str());
+        }
+
+        return retVec;
+    };
 
     std::string getUnitOfMeasure() override { return "s"; }
 
     std::string getFullLengthUnitOfMeasure() override { return "seconds"; }
 
-    void end() override { mTimer.stop(); }
+    void end() override { mTimer.stop(); };
 
     std::shared_ptr<BenchmarkMetric> clone() const& override
     {
-        return std::make_shared<TimeBenchmarkMetric>(*this);
-    }
+        return std::make_shared<MultipleTimeBenchmarkMetric>(*this);
+    };
 
     std::shared_ptr<BenchmarkMetric> clone() && override
     {
-        return std::make_shared<TimeBenchmarkMetric>(std::move(*this));
+        return std::make_shared<MultipleTimeBenchmarkMetric>(std::move(*this));
     };
 };
 

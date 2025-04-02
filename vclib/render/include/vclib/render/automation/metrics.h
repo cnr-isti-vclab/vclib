@@ -25,6 +25,8 @@
 
 #include <vclib/render/automation/metrics/benchmark_metric.h>
 #include <vclib/render/automation/metrics/fps_benchmark_metric.h>
+#include <vclib/render/automation/metrics/multiple_fps_benchmark_metric.h>
+#include <vclib/render/automation/metrics/multiple_time_benchmark_metric.h>
 #include <vclib/render/automation/metrics/null_benchmark_metric.h>
 #include <vclib/render/automation/metrics/time_benchmark_metric.h>
 

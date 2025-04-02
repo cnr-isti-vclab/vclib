@@ -88,7 +88,7 @@ int main(int argc, char** argv)
     // Change the measured metric to FPS
     tw.addAutomation(
         vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(
-            &tw, vcl::FpsBenchmarkMetric()),
+            &tw, vcl::MultipleFpsBenchmarkMetric(5)),
         // We don't want to measure the metric for this automation
         false);
 
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
     // Change the measured metric to time (seconds)
     tw.addAutomation(
         vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(
-            &tw, vcl::TimeBenchmarkMetric()),
+            &tw, vcl::MultipleTimeBenchmarkMetric(5)),
         false);
 
     // Rotate for 5000 frames and then scale for 5000 frames
