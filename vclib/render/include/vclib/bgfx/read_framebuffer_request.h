@@ -65,8 +65,7 @@ public:
         Point2i            queryIdPoint,
         Point2<uint>       framebufferSize,
         bool               idAsColor,
-        CallbackReadBuffer callback,
-        const Color&       clearColor = Color::TransparentBlack); // TODO: remove
+        CallbackReadBuffer callback);
 
     ~ReadFramebufferRequest();
 

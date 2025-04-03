@@ -236,7 +236,8 @@ public:
         | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
         // write alpha as is
 
-        const std::array<float,4> idFloat = {Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
+        const std::array<float,4> idFloat =
+            {Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             if (bgfx::isValid(mProgramPointsID)) {

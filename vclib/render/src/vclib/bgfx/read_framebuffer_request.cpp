@@ -159,13 +159,14 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     assert(bgfx::isValid(mBlitTexture));
 }
 
+static uint32_t kNullId = UINT_NULL;
+
 // Read ID constructor
 ReadFramebufferRequest::ReadFramebufferRequest(
     Point2i            queryIdPoint,
     Point2<uint>       framebufferSize,
-    bool               idAsColor, // TODO: implement
-    CallbackReadBuffer callback,
-    const Color&       clearColor)
+    bool               idAsColor, // TODO: implement (now it's always true)
+    CallbackReadBuffer callback)
     : mType(ID)
     , mPoint(queryIdPoint)
     , mReadCallback(callback)
@@ -175,12 +176,14 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     auto& ctx       = Context::instance();
     mViewOffscreenId = ctx.requestViewId();
 
+    const Color clearColor(kNullId, Color::Format::RGBA);
+
     mOffscreenFbh = ctx.createOffscreenFramebufferAndInitView(
         mViewOffscreenId,
         framebufferSize.x(),
         framebufferSize.y(),
         true,
-        clearColor.rgba());
+        clearColor.abgr());
     assert(bgfx::isValid(mOffscreenFbh));
 
     // read id as color

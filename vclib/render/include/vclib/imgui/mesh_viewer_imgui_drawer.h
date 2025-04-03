@@ -89,13 +89,11 @@ public:
     {
         if (button == MouseButton::RIGHT) {
             this->readIdRequest(x, y, [&](uint id) {
-                if (id == 0) {
-                    std::cout << "No mesh selected" << std::endl;
+                if (id == UINT_NULL)
                     return;
-                }
-                id -= 1;
+
                 mMeshIndex = id;
-                std::cout << "selected mesh ID: " << id << std::endl;
+                std::cout << "Selected  ID: " << id << std::endl;
             });
         }
 

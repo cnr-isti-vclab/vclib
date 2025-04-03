@@ -47,11 +47,9 @@ public:
     {
         if (button == vcl::MouseButton::RIGHT) {
             this->readIdRequest(x, y, [&](uint id) {
-                if (id == 0) {
-                    std::cout << "No object selected" << std::endl;
+                if (id == vcl::UINT_NULL)
                     return;
-                }
-                id -= 1;
+                
                 std::cout << "selected ID: " << id << std::endl;
                 if (mOnObjectSelected)
                     mOnObjectSelected(id);

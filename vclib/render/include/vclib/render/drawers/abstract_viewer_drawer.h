@@ -49,7 +49,8 @@ class AbstractViewerDrawer :
 {
     bool mReadRequested = false;
 
-    uint mId = 1;
+    // the default id for the viewer drawer is 0
+    uint mId = 0;
 
 protected:
     // the list of drawable objects
