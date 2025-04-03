@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-24.04', 'macos-13', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-24.04', 'macos-13', 'macos-15', 'windows-latest']
         render_backend: ['bgfx', 'opengl2']
     steps:
     - uses: actions/checkout@v4
