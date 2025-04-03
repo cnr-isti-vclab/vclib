@@ -39,13 +39,6 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/vclib/render/*.cpp")
 
 file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "assets/*")
 
-# remove all files in ${CMAKE_CURRENT_BINARY_DIR}/include/vclib
-file(GLOB_RECURSE VCLIB_RENDER_GEN_HEADERS CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_BINARY_DIR}/include/vclib/*")
-foreach(FILE ${VCLIB_RENDER_GEN_HEADERS})
-    file(REMOVE ${FILE})
-endforeach()
-
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
