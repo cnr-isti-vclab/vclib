@@ -71,7 +71,7 @@ and you are ready to go.
 VCLib requires recent compiler versions in order to build the newly features of the C++20 language, that have been recently integrated in the major compilers:
 
   - GCC 13.3 (default in Ubuntu 24.04)
-  - CLang 16 (XCode 15.0 on MacOS)
+  - Apple CLang 16 (XCode 16.2 on MacOS) or CLang 17
   - MSVC 19.36 (Visual Studio 2022)
 
 #### C++17 Parallel STL
