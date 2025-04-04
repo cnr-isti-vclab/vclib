@@ -37,6 +37,7 @@ class PerFrameScaleAutomationAction :
         public AbstractAutomationAction<BmarkDrawer>
 {
     using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     float mPixelDeltaPerFrame;
     float mTotalPixelDelta;
 

@@ -40,6 +40,7 @@ template<typename BmarkDrawer>
 class TimeLimitedAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 {
     using Parent = WrapperAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     using Parent::innerAction;
     float mDurationSeconds;
     Timer mTimer;

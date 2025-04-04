@@ -52,7 +52,10 @@ protected:
     BmarkDrawer* benchmarkDrawer = NULL;
 
 public:
-    void setBenchmarkDrawer(BmarkDrawer* drawer) { benchmarkDrawer = drawer; }
+    virtual void setBenchmarkDrawer(BmarkDrawer* drawer)
+    {
+        benchmarkDrawer = drawer;
+    }
 
     /**
      * Only ever called by outside sources

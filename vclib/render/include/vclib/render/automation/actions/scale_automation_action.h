@@ -38,6 +38,7 @@ template<typename BmarkDrawer>
 class ScaleAutomationAction : public AbstractAutomationAction<BmarkDrawer>
 {
     using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     float mPixelDeltaPerSecond;
     float mTotalPixelDelta;
     Timer mTimer;

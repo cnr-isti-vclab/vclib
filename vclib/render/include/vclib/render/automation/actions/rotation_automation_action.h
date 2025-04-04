@@ -42,6 +42,7 @@ template<typename BmarkDrawer>
 class RotationAutomationAction : public AbstractAutomationAction<BmarkDrawer>
 {
     using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     float   mRadiansPerSecond;
     Point3f mAround;
     Timer   mTimer;

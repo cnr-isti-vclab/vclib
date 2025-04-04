@@ -37,6 +37,7 @@ class WrapperAutomationAction : public AbstractAutomationAction<BmarkDrawer>
     using Parent = AbstractAutomationAction<BmarkDrawer>;
 
 protected:
+    using Parent::benchmarkDrawer;
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> innerAction;
 
 public:

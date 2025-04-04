@@ -39,6 +39,7 @@ class FrameDelayAutomationAction : public WrapperAutomationAction<BmarkDrawer>
     uint32_t mDelayFrames;
     bool     mInnerStarted = false;
     using Parent           = WrapperAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     using Parent::innerAction;
 
 public:

@@ -41,6 +41,7 @@ class PerFrameRotationAutomationAction :
         public AbstractAutomationAction<BmarkDrawer>
 {
     using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     float   mRadiansPerFrame;
     Point3f mAround;
 

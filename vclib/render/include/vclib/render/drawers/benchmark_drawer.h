@@ -63,7 +63,12 @@ private:
 
     DirectionalLight<ScalarType> mLight;
     Camera<ScalarType>           mCamera;
-    MatrixType                   mModelMatrix;
+    MatrixType                   mThing = MatrixType {
+                          {1.f, 0.f, 0.f, 0.f},
+                          {0.f, 1.f, 0.f, 0.f},
+                          {0.f, 0.f, 1.f, 0.f},
+                          {0.f, 0.f, 0.f, 1.f}
+    };
 
     /*
     What are these variables for? To avoid the slight freeze some time after
@@ -123,7 +128,7 @@ public:
     using Parent::onResize;
     using Parent::Parent;
 
-    MatrixType viewMatrix() { return mCamera.viewMatrix() * mModelMatrix; }
+    MatrixType viewMatrix() { return mCamera.viewMatrix(); }
 
     MatrixType projectionMatrix() { return mCamera.projectionMatrix(); }
 
@@ -135,7 +140,7 @@ public:
 
     void focus(PointType p) {}
 
-    void fitScene(PointType p, ScalarType s) {}
+    void fitScene(PointType p, ScalarType s) { mCamera.center() = -p; }
 
     /**
      * Set how many times the entire sequence of automations should be repeated
@@ -189,7 +194,9 @@ public:
 
     size_t addAutomation(const AutomationType& action, bool relevancy = true)
     {
-        mAutomations.pushBack(action);
+        std::shared_ptr<AutomationType> cloned = action.clone();
+        cloned->setBenchmarkDrawer(this);
+        mAutomations.pushBack(std::move(*cloned));
         mRelevancies.push_back(relevancy);
         return mAutomations.size() - 1;
     }

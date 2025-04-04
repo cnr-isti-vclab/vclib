@@ -41,6 +41,7 @@ class SequentialAutomationActions : public AbstractAutomationAction<BmarkDrawer>
 {
     PolymorphicObjectVector<AbstractAutomationAction<BmarkDrawer>> mAutomations;
     using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
 
     uint32_t mCurrentIndex = 0;
 
@@ -50,7 +51,7 @@ public:
             std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>> init)
     {
         for (auto el = init.begin(); el < init.end(); el++) {
-            el->setBenchmarkDrawer(this->benchmarkDrawer);
+            (*el)->setBenchmarkDrawer(this->benchmarkDrawer);
             mAutomations.pushBack(*el);
         }
     };
@@ -98,7 +99,7 @@ public:
     {
         this->benchmarkDrawer = drawer;
         for (auto& automation : mAutomations) {
-            automation.setBenchmarkDrawer(this->benchmarkDrawer);
+            automation->setBenchmarkDrawer(this->benchmarkDrawer);
         }
     }
 

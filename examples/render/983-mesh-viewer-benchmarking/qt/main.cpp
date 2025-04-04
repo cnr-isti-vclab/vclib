@@ -41,8 +41,7 @@ using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
     vcl::imgui::ImGuiDrawer,
-    vcl::ViewerDrawer,
-    vcl::BenchmarkDrawer>;
+    vcl::ViewerDrawer>;
 
 int main(int argc, char** argv)
 {

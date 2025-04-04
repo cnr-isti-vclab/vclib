@@ -36,6 +36,7 @@ template<typename BmarkDrawer>
 class FrameLimitedAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 {
     using Parent = WrapperAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     using Parent::innerAction;
 
     uint32_t mCurrentFrames = 0;

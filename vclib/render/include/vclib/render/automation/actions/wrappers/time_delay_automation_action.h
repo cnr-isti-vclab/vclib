@@ -41,6 +41,7 @@ class TimeDelayAutomationAction : public WrapperAutomationAction<BmarkDrawer>
     float mDelaySeconds;
     bool  mInnerStarted = false;
     using Parent        = WrapperAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
     using Parent::innerAction;
 
 public:

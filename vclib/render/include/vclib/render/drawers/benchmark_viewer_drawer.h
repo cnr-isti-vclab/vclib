@@ -20,51 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_METRIC_CHANGER_AUTOMATION_ACTION_H
-#define VCL_METRIC_CHANGER_AUTOMATION_ACTION_H
+#ifndef VCL_BENCHMARK_VIEWER_DRAWER
+#define VCL_BENCHMARK_VIEWER_DRAWER
 
-#include <vclib/render/automation/actions/abstract_automation_action.h>
-#include <vclib/render/automation/metrics/benchmark_metric.h>
+#include <vclib/bgfx/drawable/drawable_axis.h>
+#include <vclib/bgfx/drawers/viewer_drawer_bgfx.h>
+#include <vclib/render/drawers/benchmark_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 
 namespace vcl {
 
-/**
- * The MetricChangerAutomationAction is an automation that represents a
- * change of metric inside a BenchmarkDrawer
- */
-template<typename BmarkDrawer>
-class MetricChangerAutomationAction :
-        public AbstractAutomationAction<BmarkDrawer>
+template<typename DerivedRenderApp>
+class BenchmarkViewerDrawer :
+        public ViewerDrawerBGFX<BenchmarkDrawer<DerivedRenderApp>>
 {
-    using Parent = AbstractAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
-
-    std::shared_ptr<BenchmarkMetric> mMetric;
+private:
+    using Parent = ViewerDrawerBGFX<BenchmarkDrawer<DerivedRenderApp>>;
+    DrawableAxis mAxis;
 
 public:
-    MetricChangerAutomationAction(const BenchmarkMetric& metric) :
-            mMetric {metric.clone()} {};
+    using Parent::onDraw;
+    using Parent::onKeyPress;
+    using Parent::onMouseDoubleClick;
+    using Parent::Parent;
 
-    void doAction() override
+    void onInit(uint viewId) override
     {
-        benchmarkDrawer->setMetric(*mMetric);
-        end();
-    };
+        Parent::onInit(viewId);
+        mAxis.init();
+    }
 
-    void end() override { Parent::end(); }
-
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
-        const& override
+    void onDraw(uint viewId) override
     {
-        return std::make_shared<MetricChangerAutomationAction<BmarkDrawer>>(
-            *this);
-    };
+        Parent::onDraw(viewId);
+        mAxis.draw(viewId);
+    }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    void onDrawContent(uint viewId) override
     {
-        return std::make_shared<MetricChangerAutomationAction<BmarkDrawer>>(
-            std::move(*this));
-    };
+        BenchmarkDrawer<DerivedRenderApp>::onDrawContent(viewId);
+        Parent::onDrawContent(viewId);
+    }
 };
 
 } // namespace vcl
