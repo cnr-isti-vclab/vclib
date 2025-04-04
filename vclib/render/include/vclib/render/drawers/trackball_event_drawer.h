@@ -394,7 +394,7 @@ private:
             atomicOp->second(mTrackball);
         }
 
-               // dragging
+        // dragging
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
@@ -412,7 +412,7 @@ private:
         if (!mTrackball.isDragging())
             return;
 
-               // dragging
+        // dragging
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
