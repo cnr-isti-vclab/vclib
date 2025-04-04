@@ -48,20 +48,22 @@ namespace vcl {
  * the performance of each Automation. While it is a Drawer, it doesn't really
  * draw anything. DEPRECATED COMMENT
  */
-template<typename DerivedDrawer, typename Scalar>
+template<typename DerivedDrawer>
 class BenchmarkDrawer : public vcl::EventDrawer<DerivedDrawer>
 {
 public:
-    using ScalarType = Scalar;
-    using PointType  = Point3<Scalar>;
-    using MatrixType = Matrix44<Scalar>;
+    using ScalarType = float;
+    using PointType  = Point3<ScalarType>;
+    using MatrixType = Matrix44<ScalarType>;
 
 private:
+    using AutomationType =
+        AbstractAutomationAction<BenchmarkDrawer<DerivedDrawer>>;
     using Parent = vcl::EventDrawer<DerivedDrawer>;
 
-    DirectionalLight<Scalar> mLight;
-    Camera<Scalar>           mCamera;
-    MatrixType               mModelMatrix;
+    DirectionalLight<ScalarType> mLight;
+    Camera<ScalarType>           mCamera;
+    MatrixType                   mModelMatrix;
 
     /*
     What are these variables for? To avoid the slight freeze some time after
@@ -73,7 +75,7 @@ private:
     vcl::Timer mBeforeStartWaitTimer;
     double     mBeforeStartWaitSeconds = 0.4f;
 
-    vcl::PolymorphicObjectVector<AbstractAutomationAction> mAutomations;
+    vcl::PolymorphicObjectVector<AutomationType> mAutomations;
 
     /**
      * This vector's purpose is to keep track of whether to write the metric
@@ -125,15 +127,15 @@ public:
 
     MatrixType projectionMatrix() { return mCamera.projectionMatrix(); }
 
-    Camera<Scalar> camera() { return mCamera; }
+    Camera<ScalarType> camera() { return mCamera; }
 
-    DirectionalLight<Scalar> light() { return mLight; }
+    DirectionalLight<ScalarType> light() { return mLight; }
 
     void reset() {}
 
     void focus(PointType p) {}
 
-    void fitScene(PointType p, Scalar s) {}
+    void fitScene(PointType p, ScalarType s) {}
 
     /**
      * Set how many times the entire sequence of automations should be repeated
@@ -185,9 +187,7 @@ public:
         }
     };
 
-    size_t addAutomation(
-        const AbstractAutomationAction& action,
-        bool                            relevancy = true)
+    size_t addAutomation(const AutomationType& action, bool relevancy = true)
     {
         mAutomations.pushBack(action);
         mRelevancies.push_back(relevancy);

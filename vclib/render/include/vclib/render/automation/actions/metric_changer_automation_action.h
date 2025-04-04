@@ -32,19 +32,18 @@ namespace vcl {
  * The MetricChangerAutomationAction is an automation that represents a
  * change of metric inside a BenchmarkDrawer
  */
-template<typename DerivedDrawer>
-class MetricChangerAutomationAction : public AbstractAutomationAction
+template<typename BmarkDrawer>
+class MetricChangerAutomationAction :
+        public AbstractAutomationAction<BmarkDrawer>
 {
-    using Parent = AbstractAutomationAction;
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
 
-    DerivedDrawer*                   mBenchmarkDrawer;
+    BmarkDrawer*                     mBenchmarkDrawer;
     std::shared_ptr<BenchmarkMetric> mMetric;
 
 public:
-    MetricChangerAutomationAction(
-        DerivedDrawer*         drawer,
-        const BenchmarkMetric& metric) :
-            mBenchmarkDrawer {drawer}, mMetric {metric.clone()} {};
+    MetricChangerAutomationAction(const BenchmarkMetric& metric) :
+            mMetric {metric.clone()} {};
 
     void doAction() override
     {
@@ -52,14 +51,18 @@ public:
         end();
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    void end() override { Parent::end(); }
+
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<MetricChangerAutomationAction>(*this);
+        return std::make_shared<MetricChangerAutomationAction<BmarkDrawer>>(
+            *this);
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<MetricChangerAutomationAction>(
+        return std::make_shared<MetricChangerAutomationAction<BmarkDrawer>>(
             std::move(*this));
     };
 };

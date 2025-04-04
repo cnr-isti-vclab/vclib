@@ -32,19 +32,23 @@ namespace vcl {
  * to add a maximum duration (in terms of frames) to an automation, so that
  * after the chosen duration has elapsed the automation is guaranteed to be over
  */
-class FrameLimitedAutomationAction : public WrapperAutomationAction
+template<typename BmarkDrawer>
+class FrameLimitedAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 {
-    using Parent = WrapperAutomationAction;
+    using Parent = WrapperAutomationAction<BmarkDrawer>;
+    using Parent::innerAction;
 
     uint32_t mCurrentFrames = 0;
     uint32_t mDurationFrames;
 
 public:
     FrameLimitedAutomationAction(
-        const AbstractAutomationAction& innerAction,
-        uint32_t                        durationFrames = 400.f) :
+        const AbstractAutomationAction<BmarkDrawer>& innerAction,
+        uint32_t                                     durationFrames = 400.f) :
             Parent(innerAction), mDurationFrames {durationFrames},
             mCurrentFrames {0} {};
+
+    void start() override { Parent::start(); }
 
     void doAction() override
     {
@@ -62,14 +66,17 @@ public:
         mCurrentFrames = 0;
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<FrameLimitedAutomationAction>(*this);
+        return std::make_shared<FrameLimitedAutomationAction<BmarkDrawer>>(
+            *this);
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<FrameLimitedAutomationAction>(std::move(*this));
+        return std::make_shared<FrameLimitedAutomationAction<BmarkDrawer>>(
+            std::move(*this));
     }
 };
 

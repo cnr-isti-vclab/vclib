@@ -320,10 +320,6 @@ private:
 
     void moveMouse(int x, int y)
     {
-        if (ignoreEvents) {
-            return;
-        }
-
         // ugly AF
         auto it = mDragMotionMap.find(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
@@ -336,10 +332,6 @@ private:
 
     void pressMouse(MouseButton::Enum button)
     {
-        if (ignoreEvents) {
-            return;
-        }
-
         // if dragging, do not update the current mouse button
         if (mTrackball.isDragging()) {
             return;
@@ -359,10 +351,6 @@ private:
 
     void releaseMouse(MouseButton::Enum button)
     {
-        if (ignoreEvents) {
-            return;
-        }
-
         // if dragging, update the current mouse button only if it matches
         if (mTrackball.isDragging() && mCurrentMouseButton == button) {
             mCurrentMouseButton = MouseButton::NO_BUTTON;
@@ -378,10 +366,6 @@ private:
 
     void scroll(Scalar pixelDeltaX, Scalar pixelDeltaY)
     {
-        if (ignoreEvents) {
-            return;
-        }
-
         if (pixelDeltaX == 0 && pixelDeltaY == 0) {
             return;
         }
@@ -403,10 +387,6 @@ private:
 
     void keyPress(Key::Enum key)
     {
-        if (ignoreEvents) {
-            return;
-        }
-
         // atomic motions are enabled while dragging
         auto atomicOp = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
         if (atomicOp != mKeyAtomicMap.end()) {
@@ -427,10 +407,6 @@ private:
 
     void keyRelease(Key::Enum key)
     {
-        if (ignoreEvents) {
-            return;
-        }
-
         // ugly solution to end drag motion when a key is released
         if (!mTrackball.isDragging())
             return;

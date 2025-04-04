@@ -24,7 +24,6 @@
 #define VCL_SCALE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
-#include <vclib/render/viewer/desktop_trackball.h>
 
 #include <vclib/misc/timer.h>
 
@@ -35,20 +34,17 @@ namespace vcl {
  * scaling of a DesktopTrackball, with the strength of the scaling measured
  * per-second
  */
-class ScaleAutomationAction : public AbstractAutomationAction
+template<typename BmarkDrawer>
+class ScaleAutomationAction : public AbstractAutomationAction<BmarkDrawer>
 {
-    using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* mTrackBall;
-    float                    mPixelDeltaPerSecond;
-    float                    mTotalPixelDelta;
-    Timer                    mTimer;
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
+    float mPixelDeltaPerSecond;
+    float mTotalPixelDelta;
+    Timer mTimer;
 
 public:
-    ScaleAutomationAction(
-        DesktopTrackBall<float>* trackBall,
-        float                    pixelDeltaPerSecond) :
-            mTrackBall {trackBall}, mPixelDeltaPerSecond {pixelDeltaPerSecond},
-            mTotalPixelDelta {0}
+    ScaleAutomationAction(float pixelDeltaPerSecond) :
+            mPixelDeltaPerSecond {pixelDeltaPerSecond}, mTotalPixelDelta {0}
     {
     }
 
@@ -62,9 +58,6 @@ public:
     {
         Parent::doAction();
         mTotalPixelDelta += mPixelDeltaPerSecond * mTimer.delay();
-
-        mTrackBall->performScale(mTotalPixelDelta);
-
         mTimer.start();
     };
 
@@ -75,14 +68,16 @@ public:
         mTotalPixelDelta = 0;
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<ScaleAutomationAction>(*this);
+        return std::make_shared<ScaleAutomationAction<BmarkDrawer>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<ScaleAutomationAction>(std::move(*this));
+        return std::make_shared<ScaleAutomationAction<BmarkDrawer>>(
+            std::move(*this));
     }
 };
 

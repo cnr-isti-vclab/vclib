@@ -32,23 +32,25 @@ namespace vcl {
  * delay (in terms of frames) to an action, so that it can be started only after
  * the delay has elapsed
  */
-class FrameDelayAutomationAction : public WrapperAutomationAction
+template<typename BmarkDrawer>
+class FrameDelayAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 {
     uint32_t mCurrentFrames = 0;
     uint32_t mDelayFrames;
     bool     mInnerStarted = false;
-    using Parent           = WrapperAutomationAction;
+    using Parent           = WrapperAutomationAction<BmarkDrawer>;
+    using Parent::innerAction;
 
 public:
     FrameDelayAutomationAction(
-        const AbstractAutomationAction& action,
+        const AbstractAutomationAction<BmarkDrawer>& action,
         uint32_t delayFrames) : Parent(action), mDelayFrames {delayFrames} {};
 
-    void start() override { AbstractAutomationAction::start(); }
+    void start() override { AbstractAutomationAction<BmarkDrawer>::start(); }
 
     void doAction() override
     {
-        AbstractAutomationAction::doAction();
+        AbstractAutomationAction<BmarkDrawer>::doAction();
         if (mCurrentFrames < mDelayFrames) {
             mCurrentFrames++;
             return;
@@ -71,14 +73,16 @@ public:
         mInnerStarted  = false;
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<FrameDelayAutomationAction>(*this);
+        return std::make_shared<FrameDelayAutomationAction<BmarkDrawer>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<FrameDelayAutomationAction>(std::move(*this));
+        return std::make_shared<FrameDelayAutomationAction<BmarkDrawer>>(
+            std::move(*this));
     }
 };
 

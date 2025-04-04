@@ -24,7 +24,6 @@
 #define VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
-#include <vclib/render/viewer/desktop_trackball.h>
 
 namespace vcl {
 
@@ -33,19 +32,17 @@ namespace vcl {
  * scaling of a DesktopTrackball, with the strength of the scaling measured
  * per-frame
  */
-class PerFrameScaleAutomationAction : public AbstractAutomationAction
+template<typename BmarkDrawer>
+class PerFrameScaleAutomationAction :
+        public AbstractAutomationAction<BmarkDrawer>
 {
-    using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* mTrackBall;
-    float                    mPixelDeltaPerFrame;
-    float                    mTotalPixelDelta;
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
+    float mPixelDeltaPerFrame;
+    float mTotalPixelDelta;
 
 public:
-    PerFrameScaleAutomationAction(
-        DesktopTrackBall<float>* trackBall,
-        float                    pixelDeltaPerFrame) :
-            mTrackBall {trackBall}, mPixelDeltaPerFrame {pixelDeltaPerFrame},
-            mTotalPixelDelta {0}
+    PerFrameScaleAutomationAction(float pixelDeltaPerFrame) :
+            mPixelDeltaPerFrame {pixelDeltaPerFrame}, mTotalPixelDelta {0}
     {
     }
 
@@ -53,8 +50,6 @@ public:
     {
         Parent::doAction();
         mTotalPixelDelta += mPixelDeltaPerFrame;
-
-        mTrackBall->performScale(mTotalPixelDelta);
     };
 
     void end() override
@@ -63,14 +58,16 @@ public:
         mTotalPixelDelta = 0;
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<PerFrameScaleAutomationAction>(*this);
+        return std::make_shared<PerFrameScaleAutomationAction<BmarkDrawer>>(
+            *this);
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<PerFrameScaleAutomationAction>(
+        return std::make_shared<PerFrameScaleAutomationAction<BmarkDrawer>>(
             std::move(*this));
     }
 };

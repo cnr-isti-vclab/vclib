@@ -36,23 +36,27 @@ namespace vcl {
  * @note Since this counts as a single action, the metrics will work as they do
  * for a single action even though they are multiple
  */
-class SimultaneousAutomationActions : public AbstractAutomationAction
+template<typename BmarkDrawer>
+class SimultaneousAutomationActions :
+        public AbstractAutomationAction<BmarkDrawer>
 {
-    PolymorphicObjectVector<AbstractAutomationAction> mAutomations;
-    using Parent = AbstractAutomationAction;
+    PolymorphicObjectVector<AbstractAutomationAction<BmarkDrawer>> mAutomations;
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
 
 public:
     SimultaneousAutomationActions(
-        std::initializer_list<std::shared_ptr<AbstractAutomationAction>> init)
+        std::initializer_list<
+            std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>> init)
     {
         for (auto el = init.begin(); el < init.end(); el++) {
+            el->setBenchmarkDrawer(this->benchmarkDrawer);
             mAutomations.pushBack(*el);
         }
     };
 
     SimultaneousAutomationActions() {};
 
-    void addAutomation(const AbstractAutomationAction& automation)
+    void addAutomation(const AbstractAutomationAction<BmarkDrawer>& automation)
     {
         mAutomations.pushBack(automation);
     }
@@ -85,14 +89,24 @@ public:
         }
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    void setBenchmarkDrawer(BmarkDrawer* drawer) override
     {
-        return std::make_shared<SimultaneousAutomationActions>(*this);
+        this->benchmarkDrawer = drawer;
+        for (auto& automation : mAutomations) {
+            automation.setBenchmarkDrawer(this->benchmarkDrawer);
+        }
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<SimultaneousAutomationActions>(
+        return std::make_shared<SimultaneousAutomationActions<BmarkDrawer>>(
+            *this);
+    }
+
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    {
+        return std::make_shared<SimultaneousAutomationActions<BmarkDrawer>>(
             std::move(*this));
     }
 };

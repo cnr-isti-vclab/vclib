@@ -33,23 +33,26 @@ namespace vcl {
  * automation, so that after start() has been called for those many times the
  * automation is guaranteed to never be started again
  */
-class StartCountLimitedAutomationAction : public WrapperAutomationAction
+template<typename BmarkDrawer>
+class StartCountLimitedAutomationAction :
+        public WrapperAutomationAction<BmarkDrawer>
 {
-    using Parent = WrapperAutomationAction;
+    using Parent = WrapperAutomationAction<BmarkDrawer>;
+    using Parent::innerAction;
 
     uint32_t mMaximumStarts;
     uint32_t mCurrentStarts = 0;
 
 public:
     StartCountLimitedAutomationAction(
-        const AbstractAutomationAction& innerAction,
-        uint32_t                        maximumStarts) :
+        const AbstractAutomationAction<BmarkDrawer>& innerAction,
+        uint32_t                                     maximumStarts) :
             Parent(innerAction), mMaximumStarts {maximumStarts} {};
 
     void start() override
     {
         if (mCurrentStarts >= mMaximumStarts) {
-            AbstractAutomationAction::start();
+            AbstractAutomationAction<BmarkDrawer>::start();
             return;
         }
         Parent::start();
@@ -64,14 +67,18 @@ public:
         }
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    void end() override { Parent::end(); }
+
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<StartCountLimitedAutomationAction>(*this);
+        return std::make_shared<StartCountLimitedAutomationAction<BmarkDrawer>>(
+            *this);
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<StartCountLimitedAutomationAction>(
+        return std::make_shared<StartCountLimitedAutomationAction<BmarkDrawer>>(
             std::move(*this));
     };
 };

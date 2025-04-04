@@ -24,7 +24,6 @@
 #define VCL_ROTATION_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
-#include <vclib/render/viewer/desktop_trackball.h>
 
 #include <vclib/space/core/quaternion.h>
 
@@ -39,13 +38,13 @@ namespace vcl {
  * rotation of a DesktopTrackball, with the strength of the rotation measured
  * per-second
  */
-class RotationAutomationAction : public AbstractAutomationAction
+template<typename BmarkDrawer>
+class RotationAutomationAction : public AbstractAutomationAction<BmarkDrawer>
 {
-    using Parent = AbstractAutomationAction;
-    DesktopTrackBall<float>* mTrackBall;
-    float                    mRadiansPerSecond;
-    Point3f                  mAround;
-    Timer                    mTimer;
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
+    float   mRadiansPerSecond;
+    Point3f mAround;
+    Timer   mTimer;
 
 public:
     /**
@@ -53,14 +52,11 @@ public:
      * frames you want an entire rotation (2*pi) to take
      */
     static RotationAutomationAction fromSecondsPerRotation(
-        DesktopTrackBall<float>* trackBall,
-        float                    secondsPerRotation,
-        Point3f                  axis)
+        float   secondsPerRotation,
+        Point3f axis)
     {
         return RotationAutomationAction(
-            trackBall,
-            (2 * std::numbers::pi_v<float>) / secondsPerRotation,
-            axis);
+            (2 * std::numbers::pi_v<float>) / secondsPerRotation, axis);
     }
 
     /**
@@ -69,22 +65,15 @@ public:
      * to a heap allocated object.
      */
     static RotationAutomationAction* ptrFromSecondsPerRotation(
-        DesktopTrackBall<float>* trackBall,
-        float                    secondsPerRotation,
-        Point3f                  axis)
+        float   secondsPerRotation,
+        Point3f axis)
     {
         return new RotationAutomationAction(
-            trackBall,
-            (2 * std::numbers::pi_v<float>) / secondsPerRotation,
-            axis);
+            (2 * std::numbers::pi_v<float>) / secondsPerRotation, axis);
     }
 
-    RotationAutomationAction(
-        DesktopTrackBall<float>* trackBall,
-        float                    radiansPerSecond,
-        Point3f                  axis) :
-            mTrackBall {trackBall}, mRadiansPerSecond {radiansPerSecond},
-            mAround {axis} {};
+    RotationAutomationAction(float radiansPerSecond, Point3f axis) :
+            mRadiansPerSecond {radiansPerSecond}, mAround {axis} {};
 
     void start() override
     {
@@ -98,8 +87,6 @@ public:
         auto rotation =
             Quaternion<float>(mRadiansPerSecond * mTimer.delay(), mAround);
 
-        mTrackBall->rotate(rotation);
-
         mTimer.start();
     };
 
@@ -109,14 +96,16 @@ public:
         mTimer.stop();
     };
 
-    std::shared_ptr<AbstractAutomationAction> clone() const& override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
     {
-        return std::make_shared<RotationAutomationAction>(*this);
+        return std::make_shared<RotationAutomationAction<BmarkDrawer>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<RotationAutomationAction>(std::move(*this));
+        return std::make_shared<RotationAutomationAction<BmarkDrawer>>(
+            std::move(*this));
     }
 };
 

@@ -31,11 +31,12 @@ namespace vcl {
 
 /**
  * The AbstractAutomationAction is a class that represents something to be done
- * by a BenchmarkDrawer
+ * by a BenchmarkDrawer. All classes that derive from this one should declare
+ * AutomationAttorney as a friend
  */
+template<typename BmarkDrawer>
 class AbstractAutomationAction
 {
-private:
     bool mActive = false;
 
     class UpdatedInactiveException : std::exception
@@ -47,7 +48,12 @@ private:
         }
     };
 
+protected:
+    BmarkDrawer* benchmarkDrawer = NULL;
+
 public:
+    void setBenchmarkDrawer(BmarkDrawer* drawer) { benchmarkDrawer = drawer; }
+
     /**
      * Only ever called by outside sources
      *
@@ -85,10 +91,15 @@ public:
 
     virtual bool isActive() { return mActive; }
 
-    operator std::shared_ptr<AbstractAutomationAction>() { return clone(); };
+    operator std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>()
+    {
+        return clone();
+    };
 
-    virtual std::shared_ptr<AbstractAutomationAction> clone() const& = 0;
-    virtual std::shared_ptr<AbstractAutomationAction> clone() &&     = 0;
+    virtual std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& = 0;
+    virtual std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>
+    clone() && = 0;
 };
 
 } // namespace vcl

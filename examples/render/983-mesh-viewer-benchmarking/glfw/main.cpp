@@ -69,58 +69,32 @@ int main(int argc, char** argv)
     // Repeat all automations 2 times
     tw.setRepeatTimes(3);
 
-    // Before starting we disable trackball events. We want this to be done only
-    // once
-    tw.addAutomation(
-        vcl::StartCountLimitedAutomationAction(
-            vcl::TrackBallEventIgnoreAutomationAction(&tw, true), 1),
-        // We don't want to measure the metric for this automation
-        false);
-
-    // After the first loop, change the mesh
-    tw.addAutomation(
-        vcl::StartCountDelayAutomationAction(
-            vcl::StartCountLimitedAutomationAction(
-                vcl::MeshChangerAutomationAction(&tw, drawable2), 1),
-            1),
-        // We don't want to measure the metric for this automation
-        false);
-
     // Change the measured metric to FPS
     tw.addAutomation(
         vcl::MetricChangerAutomationAction<
-            vcl::BenchmarkDrawer<ImguiMeshViewer>>(
-            &tw, vcl::FpsBenchmarkMetric()),
+            vcl::BenchmarkDrawer<ImguiMeshViewer>>(vcl::FpsBenchmarkMetric()),
         // We don't want to measure the metric for this automation
         false);
 
     // Rotate and scale at the same time for 2 seconds
     tw.addAutomation(vcl::TimeLimitedAutomationAction(
         vcl::SimultaneousAutomationActions {
-            vcl::RotationAutomationAction(&tw, 5.f, {0.f, 0.f, 1.f}),
-            vcl::ScaleAutomationAction(&tw, -0.01f)},
+            vcl::RotationAutomationAction(5.f, {0.f, 0.f, 1.f}),
+            vcl::ScaleAutomationAction(-0.01f)},
         2.f));
 
     // Change the measured metric to time (seconds)
     tw.addAutomation(
         vcl::MetricChangerAutomationAction<
-            vcl::BenchmarkDrawer<ImguiMeshViewer>>(
-            &tw, vcl::TimeBenchmarkMetric()),
+            vcl::BenchmarkDrawer<ImguiMeshViewer>>(vcl::TimeBenchmarkMetric()),
         false);
 
     // Rotate for 5000 frames and then scale for 5000 frames
     tw.addAutomation(vcl::SequentialAutomationActions {
         vcl::FrameLimitedAutomationAction(
-            vcl::RotationAutomationAction(&tw, 5.f, {0.f, -1.f, 0.f}), 5000.f),
+            vcl::RotationAutomationAction(5.f, {0.f, -1.f, 0.f}), 5000.f),
         vcl::FrameLimitedAutomationAction(
-            vcl::ScaleAutomationAction(&tw, 0.02f), 5000.f)});
-
-    // When all the automations are finished, we reenable trackball events
-    tw.addAutomation(
-        vcl::StartCountDelayAutomationAction(
-            vcl::TrackBallEventIgnoreAutomationAction(&tw, false), 2),
-        // We don't want to measure the metric for this automation
-        false);
+            vcl::ScaleAutomationAction(0.02f), 5000.f)});
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
