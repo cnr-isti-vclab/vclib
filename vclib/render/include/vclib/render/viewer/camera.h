@@ -31,15 +31,13 @@ template<typename Scalar>
 class Camera
 {
 public:
-    struct ProjectionMode
-    {
-        enum Enum { ORTHO, PERSPECTIVE };
-    };
-
-private:
+    using ScalarType = Scalar;
     using PointType  = vcl::Point3<Scalar>;
     using MatrixType = vcl::Matrix44<Scalar>;
 
+    enum class ProjectionMode { ORTHO, PERSPECTIVE };
+
+private:
     /* Extrinsics */
 
     /// @brief Position where the camera is looking at
@@ -57,7 +55,7 @@ private:
     Scalar mFovDeg = 54.0;
 
     /// @brief Projection mode
-    ProjectionMode::Enum mProjectionMode = ProjectionMode::PERSPECTIVE;
+    ProjectionMode mProjectionMode = ProjectionMode::PERSPECTIVE;
 
     /// @brief Height of the target in world space
     /// (used for ortho projection, and adapting the eye distance for
@@ -102,9 +100,9 @@ public:
                                         std::tan((fov / 2.0) / 180.0 * M_PI));
     }
 
-    ProjectionMode::Enum& projectionMode() { return mProjectionMode; }
+    ProjectionMode& projectionMode() { return mProjectionMode; }
 
-    ProjectionMode::Enum projectionMode() const { return mProjectionMode; }
+    ProjectionMode projectionMode() const { return mProjectionMode; }
 
     Scalar& verticalHeight() { return mVerticalHeight; }
 
@@ -127,7 +125,7 @@ public:
         return lookAtMatrix<MatrixType>(mEye, mCenter, mUp);
     }
 
-    MatrixType projMatrix() const
+    MatrixType projectionMatrix() const
     {
         switch (mProjectionMode) {
         case ProjectionMode::ORTHO: {
@@ -137,7 +135,7 @@ public:
                 -w, w, h, -h, mNear, mFar, false);
         }
         case ProjectionMode::PERSPECTIVE: {
-            return projectionMatrix<MatrixType>(
+            return vcl::projectionMatrix<MatrixType>(
                 mFovDeg, mAspect, mNear, mFar, false);
         }
         default: assert(false); return MatrixType::Identity();

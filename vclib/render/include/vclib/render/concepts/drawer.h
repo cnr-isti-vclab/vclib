@@ -29,6 +29,7 @@ namespace vcl {
 
 template<typename T>
 concept DrawerConcept = requires (T&& obj) {
+    // constructors
     RemoveRef<T>();
     RemoveRef<T>(uint(), uint());
 

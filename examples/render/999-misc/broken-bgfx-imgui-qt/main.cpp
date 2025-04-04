@@ -30,10 +30,10 @@
 #include <iostream>
 
 template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
+class ViewerDrawer : public vcl::TrackBallViewerDrawer<Der>
 {
 public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
+    using ParentViewer = vcl::TrackBallViewerDrawer<Der>;
     using ParentViewer::ParentViewer;
 
     void onMousePress(
@@ -42,7 +42,7 @@ public:
         double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+        vcl::TrackBallViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
 
         if (button == vcl::MouseButton::RIGHT) {
             QFileDialog::getOpenFileName(

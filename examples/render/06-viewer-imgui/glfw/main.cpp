@@ -27,7 +27,7 @@
 
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 #include <imgui.h>
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
         vcl::glfw::WindowManager,
         vcl::Canvas,
         DemoImGuiDrawer,
-        vcl::ViewerDrawer>;
+        vcl::TrackBallViewerDrawer>;
 
     ImGuiDemo tw("Viewer ImGui GLFW");
 
