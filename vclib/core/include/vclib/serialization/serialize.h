@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_SERIALIZATION_DESERIALIZE_H
-#define VCL_IO_SERIALIZATION_DESERIALIZE_H
+#ifndef VCL_SERIALIZATION_SERIALIZE_H
+#define VCL_SERIALIZATION_SERIALIZE_H
 
 #include "endian.h"
 
@@ -30,90 +30,90 @@
 
 #include <array>
 #include <bit>
-#include <istream>
+#include <ostream>
 #include <vector>
 
 namespace vcl {
 
 /**
- * @brief Deserialize data from an input stream, using the specified endian
- * format.
+ * @brief Serialize data to an output stream, using the specified endian format.
  *
- * The endian format specifies the format of the data read from the input
- * stream. If the endian format is different from the native one, the data is
- * swapped.
+ * The endian format specifies if the data should be converted to a different
+ * endianness w.r.t. the native one.
  *
- * @param[in] is: input stream.
- * @param[out] data: deserialized data.
- * @param[in] endian: endian format of the deserialization.
+ * @param[in] os: output stream.
+ * @param[in] data: data to serialize.
+ * @param[in] endian: endian format of the serialization.
  */
 template<IsNotClass T>
-void deserialize(std::istream& is, T& data, std::endian endian)
+void serialize(std::ostream& os, const T& data, std::endian endian)
 {
-    is.read(reinterpret_cast<char*>(&data), sizeof(T));
     if (endian != std::endian::native) {
-        data = detail::swapEndian(data);
+        T swapped = detail::swapEndian(data);
+        os.write(reinterpret_cast<const char*>(&swapped), sizeof(T));
+    }
+    else {
+        os.write(reinterpret_cast<const char*>(&data), sizeof(T));
     }
 }
 
 /**
- * @brief Deserialize an array of contiguous data from an input stream, using
- * the specified format.
+ * @brief Serialize an array of contiguous data to an output stream, using the
+ * specified format.
  *
- * The endian format specifies the format of the data read from the input
- * stream. If the endian format is different from the native one, the data is
- * swapped.
+ * The endian format specifies if the data should be converted to a different
+ * endianness w.r.t. the native one.
  *
- * By default, the deserialization is done in binary little endian format.
+ * By default, the serialization is done in binary little endian format.
  *
- * @param[in] is: input stream.
- * @param[out] data: pointer to the deserialized data.
- * @param[in] size: number of elements to deserialize.
- * @param[in] endian: endian format of the deserialization.
+ * @param[in] os: output stream.
+ * @param[in] data: pointer to the data to serialize.
+ * @param[in] size: number of elements to serialize.
+ * @param[in] endian: endian format of the serialization.
  */
 template<typename T>
-void deserializeN(
-    std::istream& is,
-    T*            data,
+void serializeN(
+    std::ostream& os,
+    const T*      data,
     std::size_t   size,
     std::endian   endian = std::endian::little)
 {
     for (std::size_t i = 0; i < size; ++i) {
-        deserialize(is, data[i], endian);
+        serialize(os, data[i], endian);
     }
 }
 
 template<typename T, typename... Others>
-void deserialize(std::istream& is, T& data, Others&... others)
+void serialize(std::ostream& os, const T& data, const Others&... others)
 {
     if constexpr (Serializable<T>) {
-        data.deserialize(is);
+        data.serialize(os);
     }
     else {
-        deserialize(is, data, std::endian::little);
+        serialize(os, data, std::endian::little);
     }
     if constexpr (sizeof...(Others) > 0) {
-        deserialize(is, others...);
+        serialize(os, others...);
     }
 }
 
-/// Deserialize specializations ///
+/// Serialize specializations ///
 
 /*
  * std::array
  */
 
 template<typename T, std::size_t N>
-void deserialize(std::istream& is, std::array<T, N>& a)
+void serialize(std::ostream& os, const std::array<T, N>& a)
 {
     if constexpr (Serializable<T>) {
-        for (T& v : a) {
-            v.deserialize(is);
+        for (const T& v : a) {
+            v.serialize(os);
         }
     }
     else {
-        for (T& e : a) {
-            deserialize(is, e);
+        for (const T& e : a) {
+            serialize(os, e);
         }
     }
 }
@@ -122,12 +122,11 @@ void deserialize(std::istream& is, std::array<T, N>& a)
  * std::string
  */
 
-inline void deserialize(std::istream& is, std::string& s)
+inline void serialize(std::ostream& os, const std::string& s)
 {
-    std::size_t size;
-    deserialize(is, size);
-    s.resize(size);
-    deserializeN(is, s.data(), size);
+    std::size_t size = s.size();
+    serialize(os, size);
+    serializeN(os, s.data(), size);
 }
 
 /*
@@ -135,23 +134,22 @@ inline void deserialize(std::istream& is, std::string& s)
  */
 
 template<typename T>
-void deserialize(std::istream& is, std::vector<T>& v)
+void serialize(std::ostream& os, const std::vector<T>& v)
 {
-    std::size_t size;
-    deserialize(is, size);
-    v.resize(size);
+    std::size_t size = v.size();
+    serialize(os, size);
     if constexpr (Serializable<T>) {
-        for (T& e : v) {
-            e.deserialize(is);
+        for (const T& e : v) {
+            e.serialize(os);
         }
     }
     else {
-        for (T& e : v) {
-            deserialize(is, e);
+        for (const T& e : v) {
+            serialize(os, e);
         }
     }
 }
 
 } // namespace vcl
 
-#endif // VCL_IO_SERIALIZATION_DESERIALIZE_H
+#endif // VCL_SERIALIZATION_SERIALIZE_H

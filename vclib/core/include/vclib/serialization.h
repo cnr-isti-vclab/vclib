@@ -20,31 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_SERIALIZATION_ENDIAN_H
-#define VCL_IO_SERIALIZATION_ENDIAN_H
+#ifndef VCL_SERIALIZATION_H
+#define VCL_SERIALIZATION_H
 
-#include <cstdio>
+#include "serialization/deserialize.h"
+#include "serialization/serialize.h"
 
-namespace vcl::detail {
-
-// https://stackoverflow.com/a/38141476/5851101
-template<typename T>
-T swapEndian(T u)
-{
-    union
-    {
-        T             u;
-        unsigned char u8[sizeof(T)];
-    } source, dest;
-
-    source.u = u;
-
-    for (std::size_t k = 0; k < sizeof(T); k++)
-        dest.u8[k] = source.u8[sizeof(T) - k - 1];
-
-    return dest.u;
-}
-
-} // namespace vcl::detail
-
-#endif // VCL_IO_SERIALIZATION_ENDIAN_H
+#endif // VCL_SERIALIZATION_H
