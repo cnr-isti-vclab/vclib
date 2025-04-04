@@ -39,14 +39,10 @@
 
 namespace vcl {
 
-template<
-    template<typename DRA> typename ViewProjEventDrawer,
-    typename DerivedRenderApp>
-class ViewerDrawerOpenGL2 :
-        public AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>
+template<typename ViewProjEventDrawer>
+class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
-    using ParentViewer =
-        AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>;
+    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :

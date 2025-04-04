@@ -31,10 +31,10 @@ namespace vcl {
 
 template<typename DerivedRenderApp>
 class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer, DerivedRenderApp>
+        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
 {
     using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer, DerivedRenderApp>;
+        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
 
 public:
     using ParentViewer::ParentViewer;
