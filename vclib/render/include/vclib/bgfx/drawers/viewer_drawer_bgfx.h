@@ -32,14 +32,10 @@
 
 namespace vcl {
 
-template<
-    template<typename DRA> typename ViewProjEventDrawer,
-    typename DerivedRenderApp>
-class ViewerDrawerBGFX :
-        public AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>
+template<typename ViewProjEventDrawer>
+class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
-    using ParentViewer =
-        AbstractViewerDrawer<ViewProjEventDrawer, DerivedRenderApp>;
+    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
     CameraUniforms           mCameraUniforms;
     DirectionalLightUniforms mDirectionalLightUniforms;

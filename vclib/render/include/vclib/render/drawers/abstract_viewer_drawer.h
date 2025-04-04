@@ -41,14 +41,13 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-template<
-    template<typename DRA> typename ViewProjEventDrawer,
-    typename DerivedRenderApp>
-class AbstractViewerDrawer : public ViewProjEventDrawer<DerivedRenderApp>
+template<typename ViewProjEventDrawer>
+class AbstractViewerDrawer : public ViewProjEventDrawer
 {
     bool mReadRequested = false;
 
-    using Base = ViewProjEventDrawer<DerivedRenderApp>;
+    using Base = ViewProjEventDrawer;
+    using DRA = ViewProjEventDrawer::DRA;
 
 protected:
     // the list of drawable objects
@@ -57,9 +56,6 @@ protected:
     // widgets)
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
-
-    using DTB = ViewProjEventDrawer<DerivedRenderApp>;
-
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
@@ -119,7 +115,7 @@ public:
     // events
     void onInit(uint) override
     {
-        DerivedRenderApp::DRW::setCanvasDefaultClearColor(
+        DRA::DRW::setCanvasDefaultClearColor(
             derived(), Color::White);
     }
 
@@ -130,7 +126,7 @@ public:
         switch (key) {
         case Key::S:
             if (modifiers[KeyModifier::CONTROL])
-                DerivedRenderApp::DRW::screenshot(
+                DRA::DRW::screenshot(
                     derived(), "viewer_screenshot.png");
             break;
 
@@ -160,7 +156,7 @@ protected:
         const auto proj = Base::projectionMatrix();
         const auto view = Base::viewMatrix();
         // viewport
-        auto size = DerivedRenderApp::DRW::canvasSize(derived());
+        auto size = DRA::DRW::canvasSize(derived());
 
         const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
 
@@ -184,18 +180,18 @@ protected:
             derived()->update();
         };
 
-        mReadRequested = DerivedRenderApp::DRW::readDepth(
+        mReadRequested = DRA::DRW::readDepth(
             derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
             derived()->update();
     }
 
 private:
-    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
+    auto* derived() { return static_cast<DRA*>(this); }
 
     const auto* derived() const
     {
-        return static_cast<const DerivedRenderApp*>(this);
+        return static_cast<const DRA*>(this);
     }
 };
 

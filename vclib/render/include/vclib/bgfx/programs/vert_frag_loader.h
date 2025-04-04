@@ -35,7 +35,7 @@ struct VertFragLoader
     static bgfx::EmbeddedShader::Data vertexShader(
         bgfx::RendererType::Enum type)
     {
-        static_assert(true, "Invalid program");
+        static_assert(false, "Invalid program");
         switch (type) {
         case bgfx::RendererType::OpenGLES: return {type, nullptr, 0};
         case bgfx::RendererType::OpenGL: return {type, nullptr, 0};
@@ -54,7 +54,7 @@ struct VertFragLoader
     static bgfx::EmbeddedShader::Data fragmentShader(
         bgfx::RendererType::Enum type)
     {
-        static_assert(true, "Invalid program");
+        static_assert(false, "Invalid program");
         switch (type) {
         case bgfx::RendererType::OpenGLES: return {type, nullptr, 0};
         case bgfx::RendererType::OpenGL: return {type, nullptr, 0};

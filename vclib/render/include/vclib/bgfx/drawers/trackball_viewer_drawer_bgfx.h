@@ -34,10 +34,10 @@ namespace vcl {
 
 template<typename DerivedRenderApp>
 class TrackBallViewerDrawerBGFX :
-        public ViewerDrawerBGFX<TrackBallEventDrawer, DerivedRenderApp>
+        public ViewerDrawerBGFX<TrackBallEventDrawer<DerivedRenderApp>>
 {
     using ParentViewer =
-        ViewerDrawerBGFX<TrackBallEventDrawer, DerivedRenderApp>;
+        ViewerDrawerBGFX<TrackBallEventDrawer<DerivedRenderApp>>;
 
     DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
