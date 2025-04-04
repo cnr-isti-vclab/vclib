@@ -30,9 +30,9 @@
 #include <vclib/concepts/mesh/components.h>
 #include <vclib/concepts/mesh/containers.h>
 #include <vclib/concepts/mesh/elements/element.h>
-#include <vclib/io/serialization.h>
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
+#include <vclib/serialization.h>
 #include <vclib/types/view.h>
 
 #include <vector>

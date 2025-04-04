@@ -26,7 +26,7 @@
 #include "image.h"
 
 #include <vclib/io/file_info.h>
-#include <vclib/io/serialization.h>
+#include <vclib/serialization.h>
 
 namespace vcl {
 

@@ -25,7 +25,7 @@
 
 #include <vclib/concepts/ranges/range.h>
 #include <vclib/exceptions.h>
-#include <vclib/io/serialization.h>
+#include <vclib/serialization.h>
 #include <vclib/types.h>
 
 #include <algorithm>

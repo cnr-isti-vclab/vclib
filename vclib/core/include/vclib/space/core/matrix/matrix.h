@@ -25,7 +25,7 @@
 
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/concepts/space/point.h>
-#include <vclib/io/serialization.h>
+#include <vclib/serialization.h>
 
 #include <Eigen/Core>
 

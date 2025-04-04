@@ -26,7 +26,7 @@
 #include "bit_set/bit_proxy.h"
 
 #include <vclib/concepts/types.h>
-#include <vclib/io/serialization.h>
+#include <vclib/serialization.h>
 
 #include <stdexcept>
 #include <string>
