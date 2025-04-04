@@ -53,7 +53,7 @@ struct EmbeddedFont
 {
     static FontData embeddedFont()
     {
-        static_assert(true, "Invalid Font");
+        static_assert(false, "Invalid Font");
         return {nullptr, 0};
     }
 };

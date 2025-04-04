@@ -23,6 +23,8 @@
 #ifndef VCL_IO_FILE_INFO_H
 #define VCL_IO_FILE_INFO_H
 
+#include "file_format.h"
+
 #include <vclib/exceptions/io.h>
 #include <vclib/types.h>
 
@@ -259,6 +261,24 @@ public:
         std::string fn, ext;
         separateExtensionFromFileName(filename, fn, ext);
         return ext;
+    }
+
+    /**
+     * @brief Get the file format of a file from its filename.
+     *
+     * Example of usage:
+     * @code{.cpp}
+     * std::string fullname = "/usr/bin/foo.sh";
+     * FileFormat ff = FileInfo::fileFormat(fullname);
+     * //ff = FileFormat("sh", "")
+     * @endcode
+     *
+     * @param[in] filename: string containing the filename
+     * @return the file format of the file
+     */
+    static FileFormat fileFormat(const std::string& filename)
+    {
+        return FileFormat(extension(filename));
     }
 
     /**
