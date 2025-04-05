@@ -23,27 +23,31 @@
 #ifndef VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 #define VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 
-#include "trackball.h"
+#include "event_drawer.h"
 
 #include <vclib/render/input.h>
+#include <vclib/render/viewer/trackball.h>
 #include <vclib/space/core/bit_set.h>
 
 #include <map>
 
 namespace vcl {
 
-template<typename Scalar>
-class DesktopTrackBall
+template<typename Scalar, typename DerivedRenderApp>
+class TrackBallEventDrawerT : public EventDrawer<DerivedRenderApp>
 {
 public:
     using ScalarType    = Scalar;
-    using MatrixType    = vcl::Matrix44<Scalar>;
+    using PointType     = Point3<Scalar>;
+    using MatrixType    = Matrix44<Scalar>;
     using TrackBallType = vcl::TrackBall<Scalar>;
 
     inline static const Point3<Scalar> UNIT_X = {1, 0, 0};
     inline static const Point3<Scalar> UNIT_Y = {0, 1, 0};
 
 private:
+    using Base = EventDrawer<DerivedRenderApp>;
+
     using MotionType = vcl::TrackBall<Scalar>::MotionType;
 
     // translation step in camera space
@@ -202,20 +206,42 @@ private:
     };
 
 public:
-    DesktopTrackBall(uint width = 1024, uint height = 768)
+    TrackBallEventDrawerT(uint width = 1024, uint height = 768) :
+            Base(width, height)
     {
         resizeViewer(width, height);
     }
 
-    bool isDragging() const { return mTrackball.isDragging(); }
-
-    MotionType currentMotion() const { return mTrackball.currentMotion(); }
-
-    DirectionalLight<Scalar> light() const { return mTrackball.light(); }
-
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }
 
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
+
+
+    Matrix44<Scalar> projectionMatrix() const
+    {
+        return mTrackball.projectionMatrix();
+    }
+
+    void reset()
+    {
+        mTrackball.reset(
+            mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
+    }
+
+    void focus(const Point3<Scalar>& center)
+    {
+        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
+    }
+
+    void fitScene(const Point3<Scalar>& center, Scalar radius)
+    {
+        mDefaultTrackBallCenter = center;
+        mDefaultTrackBallRadius = radius;
+
+        reset();
+    }
+
+    DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 
     Matrix44<Scalar> lightGizmoMatrix() const
     {
@@ -224,30 +250,66 @@ public:
 
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
 
-    Matrix44<Scalar> projectionMatrix() const
+    // events
+
+    void onResize(unsigned int width, unsigned int height) override
     {
-        return mTrackball.projectionMatrix();
+        resizeViewer(width, height);
     }
 
-    void resetTrackBall()
+    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        mTrackball.reset(
-            mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
+        setKeyModifiers(modifiers);
+        keyPress(key);
     }
 
-    void setTrackBall(const Point3<Scalar>& center, Scalar radius)
+    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        mDefaultTrackBallCenter = center;
-        mDefaultTrackBallRadius = radius;
-
-        resetTrackBall();
+        setKeyModifiers(modifiers);
+        keyRelease(key);
     }
 
-    void focus(const Point3<Scalar>& center)
+    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
-        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
+        setKeyModifiers(modifiers);
+        moveMouse(x, y);
     }
 
+    void onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        moveMouse(x, y);
+        pressMouse(button);
+    }
+
+    void onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        moveMouse(x, y);
+        releaseMouse(button);
+    }
+
+    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+        override
+    {
+        setKeyModifiers(modifiers);
+        scroll(dx, dy);
+    }
+
+protected:
+    bool isDragging() const { return mTrackball.isDragging(); }
+
+    MotionType currentMotion() const { return mTrackball.currentMotion(); }
+
+private:
     void resizeViewer(uint w, uint h)
     {
         mWidth  = w;
@@ -362,7 +424,6 @@ public:
         }
     }
 
-private:
     static void rotate(
         TrackBallType&        t,
         const Point3<Scalar>& axis,
@@ -386,6 +447,9 @@ private:
         t.applyAtomicMotion(TrackBallType::PAN, translation);
     }
 };
+
+template<typename DerivedRenderApp>
+using TrackBallEventDrawer = TrackBallEventDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 

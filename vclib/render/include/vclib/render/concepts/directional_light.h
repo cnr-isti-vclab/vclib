@@ -20,58 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H
+#define VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H
 
-// imgui drawer must be included before the window manager...
-#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core/color.h>
 
-#include <vclib/glfw/window_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/render_app.h>
+namespace vcl {
 
-#include <imgui.h>
-
-template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
+template<typename T>
+concept DirectionalLightConcept = requires(
+    T&& obj,
+    RemoveRef<T>::PointType p,
+    vcl::Color c)
 {
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+    // types
+    typename RemoveRef<T>::PointType;
 
-public:
-    using ParentDrawer::ParentDrawer;
+    // constructors
+    RemoveRef<T>();
+    RemoveRef<T>(p, c);
 
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
+    { obj.direction() } -> Point3Concept;
+    { obj.color() } -> ColorConcept;
 
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.reset() } -> std::same_as<void>;
+    };
 };
 
-int main(int argc, char** argv)
-{
-    using ImGuiDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
+} // namespace vcl
 
-    ImGuiDemo tw("Viewer ImGui GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
-}
+#endif // VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H

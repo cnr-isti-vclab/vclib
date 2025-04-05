@@ -20,58 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_RENDER_DRAWERS_TRACKBALL_VIEWER_DRAWER_H
+#define VCL_RENDER_DRAWERS_TRACKBALL_VIEWER_DRAWER_H
 
-// imgui drawer must be included before the window manager...
-#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/render/config.h>
 
-#include <vclib/glfw/window_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/render_app.h>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/drawers/trackball_viewer_drawer_bgfx.h>
+#endif
 
-#include <imgui.h>
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <vclib/opengl2/drawers/trackball_viewer_drawer_opengl2.h>
+#endif
 
+namespace vcl {
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
 template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
-{
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+using TrackBallViewerDrawer = TrackBallViewerDrawerBGFX<DerivedRenderApp>;
+#endif
 
-public:
-    using ParentDrawer::ParentDrawer;
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+template<typename DerivedRenderApp>
+using TrackBallViewerDrawer = TrackBallViewerDrawerOpenGL2<DerivedRenderApp>;
+#endif
 
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
+} // namespace vcl
 
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
-};
-
-int main(int argc, char** argv)
-{
-    using ImGuiDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
-
-    ImGuiDemo tw("Viewer ImGui GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
-}
+#endif // VCL_RENDER_DRAWERS_TRACKBALL_VIEWER_DRAWER_H

@@ -27,7 +27,7 @@
 #include <vclib/bgfx/drawers/text_drawer.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 #include <QApplication>
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     using ViewerWidget = vcl::RenderApp<
         vcl::qt::WidgetManager,
         vcl::Canvas,
-        vcl::ViewerDrawer,
+        vcl::TrackBallViewerDrawer,
         vcl::TextDrawer>;
 
     QApplication app(argc, argv);

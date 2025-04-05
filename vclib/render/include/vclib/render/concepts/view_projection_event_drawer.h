@@ -20,58 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_RENDER_CONCEPTS_VIEW_PROJECTION_EVENT_DRAWER_H
+#define VCL_RENDER_CONCEPTS_VIEW_PROJECTION_EVENT_DRAWER_H
 
-// imgui drawer must be included before the window manager...
-#include <vclib/imgui/imgui_drawer.h>
+#include "event_drawer.h"
+#include "view_projection.h"
 
-#include <vclib/glfw/window_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/render_app.h>
+namespace vcl {
 
-#include <imgui.h>
+template<typename T>
+concept ViewProjectionEventDrawerConcept =
+    ViewProjectionConcept<T> && EventDrawerConcept<T>;
 
-template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
-{
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+} // namespace vcl
 
-public:
-    using ParentDrawer::ParentDrawer;
-
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
-
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
-};
-
-int main(int argc, char** argv)
-{
-    using ImGuiDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
-
-    ImGuiDemo tw("Viewer ImGui GLFW");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return 0;
-}
+#endif // VCL_RENDER_CONCEPTS_VIEW_PROJECTION_EVENT_DRAWER_H
