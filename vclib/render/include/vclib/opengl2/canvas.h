@@ -119,6 +119,18 @@ public:
     }
 
     /**
+     * @brief Request a screenshot of the canvas.
+     *     The screenshot will be saved asynchronously.
+     * @param filename The filename where the screenshot will be saved.
+     * @param multiplier The multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     */
+    bool screenshot(const std::string& filename, uint multiplier = 1)
+    {
+        return onScreenshot(filename, multiplier);
+    }
+
+    /**
      * @brief Automatically called by the DerivedRenderApp when the window
      * initializes.
      * Initialization is requires in some backends+window manager combinations,
@@ -196,13 +208,9 @@ public:
      * @param height
      * @return
      */
-    bool onScreenshot(
-        const std::string& filename,
-        uint               width  = 0,
-        uint               height = 0)
+    bool onScreenshot(const std::string& filename, uint multiplier = 1)
     {
-        (void) width;
-        (void) height;
+        (void) multiplier; // not used
 
         std::vector<std::uint8_t> buffer(mSize.x() * mSize.y() * 4);
         // read pixels
@@ -227,6 +235,23 @@ public:
         stbi_flip_vertically_on_write(0);
 
         return ret;
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * to read the ID at a specific point.
+     *
+     * @param point The point where the ID must be read.
+     * @param callback The callback function that will be called when the ID is
+     * read.
+     * @return always false
+     * @note this function is not supported in opengl2
+     */
+    [[nodiscard]] bool onReadId(
+        const Point2i&     point,
+        CallbackReadBuffer callback = nullptr)
+    {
+        return false;
     }
 
 private:

@@ -20,37 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_EDGES_ID_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_EDGES_ID_H
+
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_TRACKBALL,
+template<>
+struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_EDGES_ID>
+{
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
-
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
-
-    COUNT
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_EDGES_ID_H

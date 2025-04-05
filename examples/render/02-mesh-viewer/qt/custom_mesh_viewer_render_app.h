@@ -20,37 +20,59 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#ifndef VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
+#define VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
 
-namespace vcl {
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/render_app.h>
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_TRACKBALL,
+template<typename DerivedRenderApp>
+class ViewerDrawerSelectQt : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
+{
+    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
+    // a callback function called when an object is selected
+    std::function<void(uint)> mOnObjectSelected = [](uint) {
+    };
 
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
+public:
+    using Base::Base;
 
-    COUNT
+    void onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        if (button == vcl::MouseButton::RIGHT) {
+            this->readIdRequest(x, y, [&](uint id) {
+                if (id == vcl::UINT_NULL)
+                    return;
+
+                std::cout << "selected ID: " << id << std::endl;
+                if (mOnObjectSelected)
+                    mOnObjectSelected(id);
+            });
+        }
+
+        Base::onMousePress(button, x, y, modifiers);
+    }
+
+    // seeter fo the callback function called when an object is selected
+    void setOnObjectSelected(const std::function<void(uint)>& f)
+    {
+        mOnObjectSelected = f;
+    }
 };
 
-} // namespace vcl
+// definition of custom MeshViewerRenderApp for the qt MeshViewer
+namespace vcl::qt {
 
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+using MeshViewerRenderApp =
+    vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ViewerDrawerSelectQt>;
+
+} // namespace vcl::qt
+
+#endif // VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
