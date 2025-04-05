@@ -67,7 +67,7 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance()
             .programManager()
             .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES_ID>();
-    
+
     bgfx::ProgramHandle mProgramPointsID =
         Context::instance()
             .programManager()
@@ -228,16 +228,14 @@ public:
 
     void drawId(uint viewId, uint id) const override
     {
-        uint64_t state = 0
-        | BGFX_STATE_WRITE_RGB
-        | BGFX_STATE_WRITE_A
-        | BGFX_STATE_WRITE_Z
-        | BGFX_STATE_DEPTH_TEST_LEQUAL
-        | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
+        uint64_t state =
+            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+            BGFX_STATE_DEPTH_TEST_LEQUAL |
+            BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
         // write alpha as is
 
-        const std::array<float,4> idFloat =
-            {Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
+        const std::array<float, 4> idFloat = {
+            Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             if (bgfx::isValid(mProgramPointsID)) {

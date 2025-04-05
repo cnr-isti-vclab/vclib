@@ -23,10 +23,10 @@
 #ifndef VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
 #define VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
 
- #include <vclib/qt/widget_manager.h>
- #include <vclib/render/canvas.h>
- #include <vclib/render/drawers/viewer_drawer.h>
- #include <vclib/render/render_app.h>
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/render_app.h>
 
 template<typename DerivedRenderApp>
 class ViewerDrawerSelectQt : public vcl::ViewerDrawer<DerivedRenderApp>
@@ -34,22 +34,23 @@ class ViewerDrawerSelectQt : public vcl::ViewerDrawer<DerivedRenderApp>
     using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
     // a callback function called when an object is selected
-    std::function<void(uint)> mOnObjectSelected = [](uint) {};
+    std::function<void(uint)> mOnObjectSelected = [](uint) {
+    };
 
 public:
     using Base::Base;
 
     void onMousePress(
         vcl::MouseButton::Enum   button,
-        double              x,
-        double              y,
+        double                   x,
+        double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
         if (button == vcl::MouseButton::RIGHT) {
             this->readIdRequest(x, y, [&](uint id) {
                 if (id == vcl::UINT_NULL)
                     return;
-                
+
                 std::cout << "selected ID: " << id << std::endl;
                 if (mOnObjectSelected)
                     mOnObjectSelected(id);
@@ -68,10 +69,10 @@ public:
 
 // definition of custom MeshViewerRenderApp for the qt MeshViewer
 namespace vcl::qt {
- 
-     using MeshViewerRenderApp =
-        vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ViewerDrawerSelectQt>;
 
- } // namespace vcl::qt
- 
+using MeshViewerRenderApp =
+    vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ViewerDrawerSelectQt>;
+
+} // namespace vcl::qt
+
 #endif // VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H

@@ -329,8 +329,7 @@ private:
         // call the onDrawId member function of each Drawer object.
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<RenderApp>*>(this)->onDrawId(
-             CanvasType::viewId()),
+        (static_cast<Drawers<RenderApp>*>(this)->onDrawId(CanvasType::viewId()),
          ...);
     }
 
@@ -720,9 +719,9 @@ public: // TODO - remove this when C++26 is supported
      * @param[in] point: The point on the canvas where the depth value must be
      * read.
      * @param[in] callback: The callback function that will be called when the
-     * depth value is read. The callback function should have the following signature:
-     * `void callback(const ReadData& value)`, where `value` float depth value 
-     * read from the canvas.
+     * depth value is read. The callback function should have the following
+     * signature: `void callback(const ReadData& value)`, where `value` float
+     * depth value read from the canvas.
      *
      * @return true if the depth requeste is successfully submitted, false
      * otherwise.
@@ -741,8 +740,8 @@ public: // TODO - remove this when C++26 is supported
      * the specified point.
      *
      * @param[in] point: The point on the canvas where the ID must be read.
-     * @param[in] callback: The callback function that will be called when the ID
-     * is read. The callback function should have the following signature:
+     * @param[in] callback: The callback function that will be called when the
+     * ID is read. The callback function should have the following signature:
      * `void callback(const ReadData& value)`, where `value` is the
      * ID value read from the canvas encoded into 4 bytes (unsigned 32 bit
      * integer).

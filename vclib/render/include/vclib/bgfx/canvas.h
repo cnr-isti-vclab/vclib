@@ -262,9 +262,7 @@ public:
      * @return true if the screenshot is requested, false otherwise.
      * @note this function is asynchronous, the screenshot will be saved later.
      */
-    bool onScreenshot(
-        const std::string& filename,
-        uint               multiplier = 1)
+    bool onScreenshot(const std::string& filename, uint multiplier = 1)
     {
         if (!Context::instance().supportsReadback() // feature unsupported
             || mReadRequest != std::nullopt) {      // read already requested
@@ -304,7 +302,7 @@ public:
      * @return true id the red Id request is successfully submitted, false
      * otherwise.
      */
-     [[nodiscard]] bool onReadId(
+    [[nodiscard]] bool onReadId(
         const Point2i&     point,
         CallbackReadBuffer callback = nullptr)
     {
@@ -333,8 +331,7 @@ private:
         // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        switch (mReadRequest->type())
-        {
+        switch (mReadRequest->type()) {
         case ReadFramebufferRequest::Type::COLOR:
         case ReadFramebufferRequest::Type::DEPTH:
             DerivedRenderApp::CNV::drawContent(derived());
@@ -342,9 +339,7 @@ private:
         case ReadFramebufferRequest::Type::ID:
             DerivedRenderApp::CNV::drawId(derived());
             break;
-        default:
-            assert(false && "unsupported readback type");
-            break;
+        default: assert(false && "unsupported readback type"); break;
         }
         mViewId = tmpId;
     }

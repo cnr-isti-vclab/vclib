@@ -45,7 +45,7 @@ void DrawableObjectVector::drawId(uint viewId, uint id) const
 {
     if (isVisible()) {
         for (size_t idx = 0; idx < Base::size(); idx++) {
-            const auto & p = Base::at(idx);
+            const auto& p = Base::at(idx);
 
             if (p->isVisible())
                 p->drawId(viewId, id + uint(idx));

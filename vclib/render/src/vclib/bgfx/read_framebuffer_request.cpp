@@ -79,7 +79,7 @@ ReadFramebufferRequest::ReadFramebufferRequest(
 {
     mBlitSize = getBlitDepthSize(framebufferSize);
 
-    auto& ctx       = Context::instance();
+    auto& ctx        = Context::instance();
     mViewOffscreenId = ctx.requestViewId();
 
     mOffscreenFbh = ctx.createOffscreenFramebufferAndInitView(
@@ -109,7 +109,8 @@ ReadFramebufferRequest::ReadFramebufferRequest(
 ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
     CallbackReadBuffer callback,
-    const Color& clearColor) : mType(COLOR), mPoint(0, 0), mReadCallback(callback)
+    const Color&       clearColor) :
+        mType(COLOR), mPoint(0, 0), mReadCallback(callback)
 {
     // check framebuffer size
     assert(framebufferSize.x() != 0 && framebufferSize.y() != 0);
@@ -117,17 +118,17 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     const auto maxSize = bgfx::getCaps()->limits.maxTextureSize;
     if (framebufferSize.x() > maxSize || framebufferSize.y() > maxSize) {
         std::cerr << "Framebuffer size " << "(" << framebufferSize.x() << "x"
-                    << framebufferSize.y() << ")"
-                    << "exceeds the maximum texture size "
-                    << maxSize << "x" << maxSize << std::endl;
+                  << framebufferSize.y() << ")"
+                  << "exceeds the maximum texture size " << maxSize << "x"
+                  << maxSize << std::endl;
 
-        const bool isWidthMax  = framebufferSize.x() > framebufferSize.y();
+        const bool isWidthMax = framebufferSize.x() > framebufferSize.y();
         const auto maxSizeSide =
             isWidthMax ? framebufferSize.x() : framebufferSize.y();
 
         // adapt the size to the maximum texture size
         const double ratio = double(maxSize) / double(maxSizeSide);
-        framebufferSize = Point2<uint>(
+        framebufferSize    = Point2<uint>(
             isWidthMax ? maxSize : uint(maxSize * ratio),
             isWidthMax ? uint(maxSize * ratio) : maxSize);
 
@@ -137,7 +138,7 @@ ReadFramebufferRequest::ReadFramebufferRequest(
 
     mBlitSize = framebufferSize.cast<uint16_t>();
 
-    auto& ctx       = Context::instance();
+    auto& ctx        = Context::instance();
     mViewOffscreenId = ctx.requestViewId();
 
     mOffscreenFbh = ctx.createOffscreenFramebufferAndInitView(
@@ -166,14 +167,12 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     Point2i            queryIdPoint,
     Point2<uint>       framebufferSize,
     bool               idAsColor, // TODO: implement (now it's always true)
-    CallbackReadBuffer callback)
-    : mType(ID)
-    , mPoint(queryIdPoint)
-    , mReadCallback(callback)
+    CallbackReadBuffer callback) :
+        mType(ID), mPoint(queryIdPoint), mReadCallback(callback)
 {
     mBlitSize = framebufferSize.cast<uint16_t>();
 
-    auto& ctx       = Context::instance();
+    auto& ctx        = Context::instance();
     mViewOffscreenId = ctx.requestViewId();
 
     const Color clearColor(kNullId, Color::Format::RGBA);
@@ -243,8 +242,8 @@ bool ReadFramebufferRequest::submit()
     const auto readPixelSize = mBlitSize.x() * mBlitSize.y();
 
     // source buffer
-    uint8_t attachment = mType == ID ? uint8_t(0) : uint8_t(mType);
-    const auto srcBuffer = bgfx::getTexture(mOffscreenFbh, attachment);
+    uint8_t    attachment = mType == ID ? uint8_t(0) : uint8_t(mType);
+    const auto srcBuffer  = bgfx::getTexture(mOffscreenFbh, attachment);
 
     switch (mType) {
     case DEPTH: {
@@ -272,7 +271,7 @@ bool ReadFramebufferRequest::submit()
             mBlitTexture, std::get<FloatData>(mReadData).data());
     } break;
     case COLOR:
-    case ID:{
+    case ID: {
         // allocate memory for blit color data
         mReadData = ByteData(readPixelSize * 4);
 
@@ -280,8 +279,7 @@ bool ReadFramebufferRequest::submit()
         bgfx::blit(mViewOffscreenId, mBlitTexture, 0, 0, srcBuffer);
 
         mFrameAvailable = bgfx::readTexture(
-            mBlitTexture,
-            std::get<ByteData>(mReadData).data());
+            mBlitTexture, std::get<ByteData>(mReadData).data());
     } break;
     default: assert(false && "unsupported readback type"); return false;
     }
@@ -316,7 +314,7 @@ bool ReadFramebufferRequest::performRead(uint32_t currFrame) const
     } break;
     case ID: {
         assert(std::holds_alternative<ByteData>(mReadData));
-        
+
         const auto& data = std::get<ByteData>(mReadData);
         if (data.size() == 4)
             this->mReadCallback(mReadData);

@@ -142,7 +142,7 @@ public:
         const KeyModifiers& modifiers) override
     {
         ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
-        
+
         if (button == MouseButton::LEFT) {
             const bool homogeneousNDC =
                 Context::instance().capabilites().homogeneousDepth;

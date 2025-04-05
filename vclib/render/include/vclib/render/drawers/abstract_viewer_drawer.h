@@ -63,7 +63,7 @@ protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
     // the drawer id
-    uint & id() { return mId; }
+    uint& id() { return mId; }
 
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
@@ -203,10 +203,7 @@ public:
     }
 
 protected:
-    void readDepthRequest(
-        double              x,
-        double              y,
-        bool                homogeneousNDC = true)
+    void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
         using ReadData  = ReadBufferTypes::ReadData;
         using FloatData = ReadBufferTypes::FloatData;
@@ -226,7 +223,6 @@ protected:
         const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
 
         auto callback = [=, this](const ReadData& dt) {
-            
             const auto& data = std::get<FloatData>(dt);
             assert(data.size() == 1);
             const float depth = data[0];
@@ -253,10 +249,7 @@ protected:
             derived()->update();
     }
 
-    void readIdRequest(
-        double x,
-        double y,
-        std::function<void(uint)> idCallback)
+    void readIdRequest(double x, double y, std::function<void(uint)> idCallback)
     {
         using ReadData = ReadBufferTypes::ReadData;
 
@@ -268,11 +261,10 @@ protected:
 
         // create the callback
         auto callback = [=, this](const ReadData& dt) {
-            
             const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
             assert(data.size() == 4);
             // TODO: check how to do this properly
-            const uint id = *(uint32_t *) &data[0];
+            const uint id = *(uint32_t*) &data[0];
 
             mReadRequested = false;
 

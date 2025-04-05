@@ -29,14 +29,16 @@
 
 namespace vcl::qt {
 
-
-bool KeyFilter::eventFilter(QObject *watched, QEvent *event)
+bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
 {
     if (event->type() == QEvent::KeyPress) {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        // Ignore only the Ctrl + S shortcut override, you can customize check for your needs
-        if (keyEvent->modifiers().testFlag(Qt::ControlModifier) && keyEvent->key() == 'S') {
-            qDebug() << "Ignoring" << keyEvent->modifiers() << "+" << (char)keyEvent->key() << "for" << watched;
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        // Ignore only the Ctrl + S shortcut override, you can customize check
+        // for your needs
+        if (keyEvent->modifiers().testFlag(Qt::ControlModifier) &&
+            keyEvent->key() == 'S') {
+            qDebug() << "Ignoring" << keyEvent->modifiers() << "+"
+                     << (char) keyEvent->key() << "for" << watched;
             event->ignore();
             return true;
         }
@@ -55,7 +57,7 @@ MeshViewerRenderApp& MeshViewer::viewer() const
     return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
 }
 
-DrawableObjectVectorFrame &MeshViewer::drawableObjectVectorFrame() const
+DrawableObjectVectorFrame& MeshViewer::drawableObjectVectorFrame() const
 {
     return *static_cast<vcl::qt::DrawableObjectVectorFrame*>(
         mUI->drawVectorFrame);

@@ -208,9 +208,7 @@ public:
      * @param height
      * @return
      */
-    bool onScreenshot(
-        const std::string& filename,
-        uint               multiplier = 1)
+    bool onScreenshot(const std::string& filename, uint multiplier = 1)
     {
         (void) multiplier; // not used
 
@@ -239,7 +237,7 @@ public:
         return ret;
     }
 
-     /**
+    /**
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * to read the ID at a specific point.
      *
