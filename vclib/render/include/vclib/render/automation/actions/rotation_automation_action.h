@@ -88,6 +88,8 @@ public:
         auto rotation =
             Quaternion<float>(mRadiansPerSecond * mTimer.delay(), mAround);
 
+        benchmarkDrawer->rotate(rotation);
+
         mTimer.start();
     };
 

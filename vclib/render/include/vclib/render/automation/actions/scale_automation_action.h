@@ -59,6 +59,7 @@ public:
     {
         Parent::doAction();
         mTotalPixelDelta += mPixelDeltaPerSecond * mTimer.delay();
+        benchmarkDrawer->scale(mPixelDeltaPerSecond * mTimer.delay());
         mTimer.start();
     };
 

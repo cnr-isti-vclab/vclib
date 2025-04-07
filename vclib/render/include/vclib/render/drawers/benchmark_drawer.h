@@ -30,6 +30,7 @@
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/viewer/camera.h>
 #include <vclib/render/viewer/lights/directional_light.h>
+#include <vclib/space/core/quaternion.h>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 #include <chrono>
@@ -63,12 +64,7 @@ private:
 
     DirectionalLight<ScalarType> mLight;
     Camera<ScalarType>           mCamera;
-    MatrixType                   mThing = MatrixType {
-                          {1.f, 0.f, 0.f, 0.f},
-                          {0.f, 1.f, 0.f, 0.f},
-                          {0.f, 0.f, 1.f, 0.f},
-                          {0.f, 0.f, 0.f, 1.f}
-    };
+    Affine3<ScalarType>          mTransform = Affine3<ScalarType>::Identity();
 
     /*
     What are these variables for? To avoid the slight freeze some time after
@@ -97,6 +93,8 @@ private:
     std::shared_ptr<BenchmarkPrinter> mPrinter =
         StdoutBenchmarkPrinter().clone();
 
+    ScalarType mCurrentPreScale = 1.f;
+
     bool mFirstCall = true;
     bool mAllDone   = false;
 
@@ -122,13 +120,16 @@ private:
     }
 
 public:
-    using Parent::onDraw;
+    // using Parent::onDraw;
     using Parent::onInit;
     using Parent::onPostDraw;
     using Parent::onResize;
     using Parent::Parent;
 
-    MatrixType viewMatrix() { return mCamera.viewMatrix(); }
+    MatrixType viewMatrix()
+    {
+        return mCamera.viewMatrix() * mTransform.matrix();
+    }
 
     MatrixType projectionMatrix() { return mCamera.projectionMatrix(); }
 
@@ -136,11 +137,17 @@ public:
 
     DirectionalLight<ScalarType> light() { return mLight; }
 
-    void reset() {}
+    void onDraw(uint viewId) { Parent::onDraw(viewId); }
 
-    void focus(PointType p) {}
+    void reset() { mCamera.center() = {0.f, 0.f, 0.f}; }
 
-    void fitScene(PointType p, ScalarType s) { mCamera.center() = -p; }
+    void focus(PointType p) { mCamera.center() = p; }
+
+    void fitScene(PointType p, ScalarType s)
+    {
+        mTransform.scale(s);
+        mTransform.translate(-p);
+    }
 
     /**
      * Set how many times the entire sequence of automations should be repeated
@@ -208,6 +215,14 @@ public:
     uint32_t getRepeatCount() { return mRepeatCount; };
 
     size_t getCurrentAutomationIndex() { return mCurrentAutomationIndex; };
+
+    void rotate(Quaternion<float> rot) { mTransform.prerotate(rot); }
+
+    void scale(float deltaS)
+    {
+        mCurrentPreScale += deltaS;
+        mTransform.prescale(mCurrentPreScale);
+    }
 };
 
 } // namespace vcl

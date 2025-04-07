@@ -78,15 +78,16 @@ int main(int argc, char** argv)
         false);
 
     // Rotate and scale at the same time for 2 seconds
-    tw.addAutomation(vcl::TimeLimitedAutomationAction<
-                     vcl::BenchmarkDrawer<ImguiMeshViewer>>(
-        vcl::SimultaneousAutomationActions<
-            vcl::BenchmarkDrawer<ImguiMeshViewer>> {
-            vcl::RotationAutomationAction<
-                vcl::BenchmarkDrawer<ImguiMeshViewer>>(5.f, {0.f, 0.f, 1.f}),
-            vcl::ScaleAutomationAction<vcl::BenchmarkDrawer<ImguiMeshViewer>>(
-                -0.01f)},
-        2.f));
+    tw.addAutomation(
+        vcl::TimeLimitedAutomationAction<vcl::BenchmarkDrawer<ImguiMeshViewer>>(
+            vcl::SimultaneousAutomationActions<
+                vcl::BenchmarkDrawer<ImguiMeshViewer>> {
+                vcl::RotationAutomationAction<
+                    vcl::BenchmarkDrawer<ImguiMeshViewer>>(
+                    5.f, {0.f, 0.f, 1.f}),
+                vcl::ScaleAutomationAction<
+                    vcl::BenchmarkDrawer<ImguiMeshViewer>>(-0.0001f)},
+            2.f));
 
     // Change the measured metric to time (seconds)
     tw.addAutomation(
@@ -95,21 +96,25 @@ int main(int argc, char** argv)
         false);
 
     // Rotate for 5000 frames and then scale for 5000 frames
-    tw.addAutomation(vcl::SequentialAutomationActions<
-                     vcl::BenchmarkDrawer<ImguiMeshViewer>> {
-        vcl::FrameLimitedAutomationAction<
-            vcl::BenchmarkDrawer<ImguiMeshViewer>>(
-            vcl::RotationAutomationAction<
-                vcl::BenchmarkDrawer<ImguiMeshViewer>>(5.f, {0.f, -1.f, 0.f}),
-            5000.f),
-        vcl::FrameLimitedAutomationAction<
-            vcl::BenchmarkDrawer<ImguiMeshViewer>>(
-            vcl::ScaleAutomationAction<vcl::BenchmarkDrawer<ImguiMeshViewer>>(
-                0.02f),
-            5000.f)});
+    tw.addAutomation(
+        vcl::SequentialAutomationActions<
+            vcl::BenchmarkDrawer<ImguiMeshViewer>> {
+            vcl::FrameLimitedAutomationAction<
+                vcl::BenchmarkDrawer<ImguiMeshViewer>>(
+                vcl::RotationAutomationAction<
+                    vcl::BenchmarkDrawer<ImguiMeshViewer>>(
+                    5.f, {0.f, -1.f, 0.f}),
+                5000.f),
+            vcl::FrameLimitedAutomationAction<
+                vcl::BenchmarkDrawer<ImguiMeshViewer>>(
+                vcl::ScaleAutomationAction<
+                    vcl::BenchmarkDrawer<ImguiMeshViewer>>(0.0002f),
+                5000.f)});
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
+
+    tw.fitScene();
 
     tw.show();
 

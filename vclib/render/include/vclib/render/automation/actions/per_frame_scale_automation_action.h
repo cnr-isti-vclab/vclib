@@ -51,6 +51,7 @@ public:
     {
         Parent::doAction();
         mTotalPixelDelta += mPixelDeltaPerFrame;
+        benchmarkDrawer->scale(mPixelDeltaPerFrame);
     };
 
     void end() override

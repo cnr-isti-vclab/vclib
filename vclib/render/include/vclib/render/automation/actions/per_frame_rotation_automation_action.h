@@ -78,6 +78,7 @@ public:
     {
         Parent::doAction();
         auto rotation = Quaternion<float>(mRadiansPerFrame, mAround);
+        benchmarkDrawer->rotate(rotation);
     };
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
