@@ -81,7 +81,13 @@ public:
         mCamera.center() = p;
     }
 
-    void fitScene(const PointType & p, Scalar s) {}
+    void fitScene(const PointType & p, Scalar s)
+    {
+        mCamera.center() = p;
+        mCamera.eye()    = p + PointType(0, 0, 1);
+        mCamera.verticalHeight() = s;
+        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
+    }
 
     void onResize(uint width, uint height) override
     {
