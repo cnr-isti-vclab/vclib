@@ -137,7 +137,7 @@ public:
 
     DirectionalLight<ScalarType> light() { return mLight; }
 
-    void onDraw(uint viewId) { Parent::onDraw(viewId); }
+    void onDraw(uint viewId) override { Parent::onDraw(viewId); }
 
     void reset() { mCamera.center() = {0.f, 0.f, 0.f}; }
 
