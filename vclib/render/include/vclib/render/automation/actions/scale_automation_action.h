@@ -40,12 +40,11 @@ class ScaleAutomationAction : public AbstractAutomationAction<BmarkDrawer>
     using Parent = AbstractAutomationAction<BmarkDrawer>;
     using Parent::benchmarkDrawer;
     float mPixelDeltaPerSecond;
-    float mTotalPixelDelta;
     Timer mTimer;
 
 public:
     ScaleAutomationAction(float pixelDeltaPerSecond) :
-            mPixelDeltaPerSecond {pixelDeltaPerSecond}, mTotalPixelDelta {0}
+            mPixelDeltaPerSecond {pixelDeltaPerSecond}
     {
     }
 
@@ -58,7 +57,6 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        mTotalPixelDelta += mPixelDeltaPerSecond * mTimer.delay();
         benchmarkDrawer->scale(mPixelDeltaPerSecond * mTimer.delay());
         mTimer.start();
     };
@@ -67,7 +65,6 @@ public:
     {
         Parent::end();
         mTimer.stop();
-        mTotalPixelDelta = 0;
     };
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()

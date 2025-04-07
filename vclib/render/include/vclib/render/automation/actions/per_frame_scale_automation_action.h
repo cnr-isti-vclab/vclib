@@ -39,26 +39,20 @@ class PerFrameScaleAutomationAction :
     using Parent = AbstractAutomationAction<BmarkDrawer>;
     using Parent::benchmarkDrawer;
     float mPixelDeltaPerFrame;
-    float mTotalPixelDelta;
 
 public:
     PerFrameScaleAutomationAction(float pixelDeltaPerFrame) :
-            mPixelDeltaPerFrame {pixelDeltaPerFrame}, mTotalPixelDelta {0}
+            mPixelDeltaPerFrame {pixelDeltaPerFrame}
     {
     }
 
     void doAction() override
     {
         Parent::doAction();
-        mTotalPixelDelta += mPixelDeltaPerFrame;
         benchmarkDrawer->scale(mPixelDeltaPerFrame);
     };
 
-    void end() override
-    {
-        Parent::end();
-        mTotalPixelDelta = 0;
-    };
+    void end() override { Parent::end(); };
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
         const& override

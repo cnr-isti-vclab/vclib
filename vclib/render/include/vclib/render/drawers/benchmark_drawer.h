@@ -46,8 +46,7 @@ namespace vcl {
 /**
  * The BenchmarkDrawer is a class that combines a BenchmarkPrinter, a
  * BenchmarkMetric and a Vector of Automations to measure and write (somewhere)
- * the performance of each Automation. While it is a Drawer, it doesn't really
- * draw anything. DEPRECATED COMMENT
+ * the performance of each Automation.
  */
 template<typename DerivedDrawer>
 class BenchmarkDrawer : public vcl::EventDrawer<DerivedDrawer>
@@ -145,6 +144,7 @@ public:
 
     void fitScene(PointType p, ScalarType s)
     {
+        mCurrentPreScale = s;
         mTransform.scale(s);
         mTransform.translate(-p);
     }
@@ -218,10 +218,18 @@ public:
 
     void rotate(Quaternion<float> rot) { mTransform.prerotate(rot); }
 
+    // Possibly rename to changeScaleAbsolute? Possibly create actions that
+    // scale in different ways (and also rename the action)?
+    /**
+     * Changes scale by an absolute amount (i.e. if the current scale is 2.0 and
+     * deltaS is 0.4, the new scale will be 2.4)
+     */
     void scale(float deltaS)
     {
-        mCurrentPreScale += deltaS;
-        mTransform.prescale(mCurrentPreScale);
+        ScalarType scalingFactor =
+            (mCurrentPreScale + deltaS) / mCurrentPreScale;
+        mTransform.prescale(scalingFactor);
+        mCurrentPreScale = mCurrentPreScale * scalingFactor;
     }
 };
 
