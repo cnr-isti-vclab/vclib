@@ -23,10 +23,12 @@
 #include "get_drawable_mesh.h"
 
 #include <vclib/render/automation/actions.h>
+#include <vclib/render/automation/actions/automation_action_factory.h>
 #include <vclib/render/automation/metrics.h>
 #include <vclib/render/automation/printers.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/benchmark_drawer.h>
+#include <vclib/render/drawers/benchmark_viewer_drawer.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
@@ -40,8 +42,8 @@
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
-    vcl::imgui::ImGuiDrawer,
-    vcl::ViewerDrawer>;
+    vcl::BenchmarkViewerDrawer,
+    vcl::imgui::ImGuiDrawer>;
 
 int main(int argc, char** argv)
 {
@@ -60,6 +62,10 @@ int main(int argc, char** argv)
         getDrawableMesh<vcl::TriMesh>("bunny.obj");
     vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>();
 
+    // An automation action factory, to shorten the length of Automation
+    // declarations
+    vcl::AutomationActionFactory<ViewerWidget> aaf;
+
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
@@ -69,30 +75,23 @@ int main(int argc, char** argv)
 
     // Change the measured metric to FPS
     tw.addAutomation(
-        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(
-            vcl::FpsBenchmarkMetric()),
+        aaf.MetricChanger(vcl::FpsBenchmarkMetric()),
         // We don't want to measure the metric for this automation
         false);
 
     // Rotate and scale at the same time for 2 seconds
-    tw.addAutomation(vcl::TimeLimitedAutomationAction(
-        vcl::SimultaneousAutomationActions {
-            vcl::RotationAutomationAction(5.f, {0.f, 0.f, 1.f}),
-            vcl::ScaleAutomationAction(-0.01f)},
+    tw.addAutomation(aaf.TimeLimited(
+        aaf.Simultaneous(
+            {aaf.Rotation(5.f, {0.f, 0.f, 1.f}), aaf.Scale(-0.0001f)}),
         2.f));
 
     // Change the measured metric to time (seconds)
-    tw.addAutomation(
-        vcl::MetricChangerAutomationAction<vcl::BenchmarkDrawer<ViewerWidget>>(
-            vcl::TimeBenchmarkMetric()),
-        false);
+    tw.addAutomation(aaf.MetricChanger(vcl::TimeBenchmarkMetric()), false);
 
     // Rotate for 5000 frames and then scale for 5000 frames
-    tw.addAutomation(vcl::SequentialAutomationActions {
-        vcl::FrameLimitedAutomationAction(
-            vcl::RotationAutomationAction(5.f, {0.f, -1.f, 0.f}), 5000.f),
-        vcl::FrameLimitedAutomationAction(
-            vcl::ScaleAutomationAction(0.02f), 5000.f)});
+    tw.addAutomation(aaf.Sequential(
+        {aaf.FrameLimited(aaf.Rotation(5.f, {0.f, -1.f, 0.f}), 5000.f),
+         aaf.FrameLimited(aaf.Scale(0.0002f), 5000.f)}));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
