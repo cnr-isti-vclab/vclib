@@ -83,7 +83,7 @@ include(poolstl.cmake)
 
 if (VCLIB_BUILD_CORE_WITH_IO_3RDPARTY_LIBRARIES)
     ### STB
-    include(stb.cmake)
+    include(io/stb.cmake)
 
 endif()
 
