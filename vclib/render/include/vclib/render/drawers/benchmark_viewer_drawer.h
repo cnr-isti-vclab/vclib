@@ -23,8 +23,6 @@
 #ifndef VCL_BENCHMARK_VIEWER_DRAWER
 #define VCL_BENCHMARK_VIEWER_DRAWER
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
-#include <vclib/bgfx/drawers/viewer_drawer_bgfx.h>
 #include <vclib/render/drawers/benchmark_drawer.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 
@@ -32,11 +30,10 @@ namespace vcl {
 
 template<typename DerivedRenderApp>
 class BenchmarkViewerDrawer :
-        public ViewerDrawerBGFX<BenchmarkDrawer<DerivedRenderApp>>
+        public ViewerDrawer<BenchmarkDrawer<DerivedRenderApp>>
 {
 private:
-    using Parent = ViewerDrawerBGFX<BenchmarkDrawer<DerivedRenderApp>>;
-    DrawableAxis mAxis;
+    using Parent = ViewerDrawer<BenchmarkDrawer<DerivedRenderApp>>;
 
 public:
     using Parent::onDraw;
@@ -44,22 +41,14 @@ public:
     using Parent::onMouseDoubleClick;
     using Parent::Parent;
 
-    void onInit(uint viewId) override
-    {
-        Parent::onInit(viewId);
-        mAxis.init();
-    }
+    void onInit(uint viewId) override { Parent::onInit(viewId); }
 
-    void onDraw(uint viewId) override
-    {
-        Parent::onDraw(viewId);
-        mAxis.draw(viewId);
-    }
+    void onDraw(uint viewId) override { Parent::onDraw(viewId); }
 
     void onDrawContent(uint viewId) override
     {
-        BenchmarkDrawer<DerivedRenderApp>::onDrawContent(viewId);
         Parent::onDrawContent(viewId);
+        BenchmarkDrawer<DerivedRenderApp>::onDrawContent(viewId);
     }
 };
 
