@@ -60,7 +60,6 @@
   - [X] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown (SOLVED MISTERIOUSLY)
   - [X] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring (REFACTORING IN PROGRESS)
   - [ ] update documentation of Canvas & co.
-  - [ ] Eventually implement screenshot custom size (split rendering into multiple tiles)
-  - [X] screenshot with size multiplier (bgfx only)
+  - [ ] implement screenshot custom size (split rendering into multiple tiles)
   - [X] move MeshViewerImguiDrawer into library
-  - [X] move example 07 mesh-viewer-imgui in example 02
+  - [ ] move example 07 mesh-viewer-imgui in example 02

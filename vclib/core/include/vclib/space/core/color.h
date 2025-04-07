@@ -115,9 +115,6 @@ public:
         LightBrown = 0xff4080b0,
         DarkBrown  = 0xff002040,
         Brown      = 0xff004080,
-
-        TransparentBlack = 0x00000000,
-        TransparentWhite = 0x00ffffff
     };
 
     /**

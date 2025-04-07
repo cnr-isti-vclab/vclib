@@ -144,18 +144,6 @@ public:
     }
 
     /**
-     * @brief Request a screenshot of the canvas.
-     *     The screenshot will be saved asynchronously.
-     * @param filename The filename where the screenshot will be saved.
-     * @param multiplier The multiplier applied to the canvas image.
-     * @return true if the screenshot is requested, false otherwise.
-     */
-    bool screenshot(const std::string& filename, uint multiplier = 1)
-    {
-        return onScreenshot(filename, multiplier);
-    }
-
-    /**
      * @brief Automatically called by the DerivedRenderApp when the window
      * initializes.
      * Initialization is requires in some backends+window manager combinations,
@@ -255,14 +243,17 @@ public:
 
     /**
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
-     * for a screenshot. Also called by the public member function screenshot().
+     * for a screenshot.
      *
      * @param filename
-     * @param multiplier multiplier applied to the canvas image.
-     * @return true if the screenshot is requested, false otherwise.
-     * @note this function is asynchronous, the screenshot will be saved later.
+     * @param width
+     * @param height
+     * @return
      */
-    bool onScreenshot(const std::string& filename, uint multiplier = 1)
+    bool onScreenshot(
+        const std::string& filename,
+        uint               width  = 0,
+        uint               height = 0)
     {
         if (!Context::instance().supportsReadback() // feature unsupported
             || mReadRequest != std::nullopt) {      // read already requested
@@ -270,7 +261,9 @@ public:
         }
 
         // get size
-        auto size = mSize * multiplier;
+        auto size = mSize;
+        if (width != 0 && height != 0)
+            size = {width, height};
 
         // color data callback
         CallbackReadBuffer callback = [=](const ReadData& data) {
@@ -279,7 +272,6 @@ public:
             const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
 
             // save rgb image data into file using stb depending on file
-            // TODO: maybe useful to save it asynchronously
             try {
                 vcl::saveImageData(filename, size.x(), size.y(), d.data());
             }
@@ -289,31 +281,6 @@ public:
         };
 
         mReadRequest.emplace(size, callback, mDefaultClearColor);
-        return true;
-    }
-
-    /**
-     * @brief Automatically called by the DerivedRenderApp when a drawer asks
-     * to read the ID at a specific point.
-     *
-     * @param point The point where the ID must be read.
-     * @param callback The callback function that will be called when the ID is
-     * read.
-     * @return true id the red Id request is successfully submitted, false
-     * otherwise.
-     */
-    [[nodiscard]] bool onReadId(
-        const Point2i&     point,
-        CallbackReadBuffer callback = nullptr)
-    {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt         // read already requested
-            || point.x() < 0 || point.y() < 0       // point out of bounds
-            || point.x() >= mSize.x() || point.y() >= mSize.y()) {
-            return false;
-        }
-
-        mReadRequest.emplace(point, mSize, true, callback);
         return true;
     }
 
@@ -331,16 +298,7 @@ private:
         // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        switch (mReadRequest->type()) {
-        case ReadFramebufferRequest::Type::COLOR:
-        case ReadFramebufferRequest::Type::DEPTH:
-            DerivedRenderApp::CNV::drawContent(derived());
-            break;
-        case ReadFramebufferRequest::Type::ID:
-            DerivedRenderApp::CNV::drawId(derived());
-            break;
-        default: assert(false && "unsupported readback type"); break;
-        }
+        DerivedRenderApp::CNV::drawContent(derived());
         mViewId = tmpId;
     }
 

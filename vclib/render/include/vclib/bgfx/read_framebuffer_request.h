@@ -40,13 +40,6 @@ public:
     using ReadData           = ReadBufferTypes::ReadData;
     using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
-    enum Type {
-        COLOR = 0, // entire color buffer
-        DEPTH = 1, // single pixel depth
-        ID    = 2, // single pixel id
-        COUNT = 3
-    };
-
     // Read depth constructor
     ReadFramebufferRequest(
         Point2i            queryDepthPoint,
@@ -60,18 +53,9 @@ public:
         CallbackReadBuffer callback,
         const Color&       clearColor = Color::Black);
 
-    // Read ID constructor
-    ReadFramebufferRequest(
-        Point2i            queryIdPoint,
-        Point2<uint>       framebufferSize,
-        bool               idAsColor,
-        CallbackReadBuffer callback);
-
     ~ReadFramebufferRequest();
 
     ReadFramebufferRequest& operator=(ReadFramebufferRequest&& right) = default;
-
-    Type type() const;
 
     bgfx::ViewId viewId() const;
 
@@ -86,28 +70,34 @@ public:
     [[nodiscard]] bool performRead(uint32_t currFrame) const;
 
 private:
+    enum Type {
+        COLOR = 0, // entire color buffer
+        DEPTH = 1, // single pixel depth
+        COUNT = 2
+    };
+
     // read back type
-    Type mType = COUNT;
+    Type type = COUNT;
 
     // frame # when data will be available for reading
-    uint32_t mFrameAvailable = 0;
+    uint32_t frameAvailable = 0;
     // point to read from
-    Point2i mPoint = {-1, -1};
+    Point2i point = {-1, -1};
 
     // frame buffer for offscreen drawing and reading back
-    bgfx::FrameBufferHandle mOffscreenFbh = BGFX_INVALID_HANDLE;
+    bgfx::FrameBufferHandle offscreenFbh = BGFX_INVALID_HANDLE;
     // view id for offscreen drawing
-    bgfx::ViewId mViewOffscreenId = 0;
+    bgfx::ViewId viewOffscreenId = 0;
 
     // blit texture
-    bgfx::TextureHandle mBlitTexture = BGFX_INVALID_HANDLE;
-    Point2<uint16_t>    mBlitSize    = {0, 0};
+    bgfx::TextureHandle blitTexture = BGFX_INVALID_HANDLE;
+    Point2<uint16_t>    blitSize    = {0, 0};
     // data read from the blit texture
-    ReadData mReadData = {};
+    ReadData readData = {};
     // callback called when the data is available
-    CallbackReadBuffer mReadCallback = nullptr;
+    CallbackReadBuffer readCallback = nullptr;
     // submitted flag
-    bool mSubmitted = false;
+    bool submitted = false;
 };
 
 } // namespace detail

@@ -75,17 +75,6 @@ public:
         ParentViewer::drawableObjectVector().draw(viewId);
     }
 
-    void onDrawId(uint viewId) override
-    {
-        bgfx::setViewTransform(
-            viewId, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
-
-        mCameraUniforms.updateCamera(DTB::camera());
-        mCameraUniforms.bind();
-
-        ParentViewer::drawableObjectVector().drawId(viewId, ParentViewer::id());
-    }
-
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         if (key == Key::F1) {
@@ -107,14 +96,10 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
+        const bool homogeneousNDC =
+            Context::instance().capabilites().homogeneousDepth;
 
-        if (button == MouseButton::LEFT) {
-            const bool homogeneousNDC =
-                Context::instance().capabilites().homogeneousDepth;
-
-            ParentViewer::readDepthRequest(x, y, homogeneousNDC);
-        }
+        ParentViewer::readRequest(button, x, y, modifiers, homogeneousNDC);
     }
 };
 

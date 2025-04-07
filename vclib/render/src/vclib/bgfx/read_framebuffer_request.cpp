@@ -75,15 +75,15 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
     CallbackReadBuffer callback,
     const Color&       clearColor) :
-        mType(DEPTH), mPoint(queryDepthPoint), mReadCallback(callback)
+        type(DEPTH), point(queryDepthPoint), readCallback(callback)
 {
-    mBlitSize = getBlitDepthSize(framebufferSize);
+    blitSize = getBlitDepthSize(framebufferSize);
 
-    auto& ctx        = Context::instance();
-    mViewOffscreenId = ctx.requestViewId();
+    auto& ctx       = Context::instance();
+    viewOffscreenId = ctx.requestViewId();
 
-    mOffscreenFbh = ctx.createOffscreenFramebufferAndInitView(
-        mViewOffscreenId,
+    offscreenFbh = ctx.createOffscreenFramebufferAndInitView(
+        viewOffscreenId,
         framebufferSize.x(),
         framebufferSize.y(),
         true,
@@ -92,204 +92,134 @@ ReadFramebufferRequest::ReadFramebufferRequest(
         Context::DEFAULT_CLEAR_STENCIL,
         getOffscreenColorFormat(),
         getOffscreenDepthFormat());
-    assert(bgfx::isValid(mOffscreenFbh));
+    assert(bgfx::isValid(offscreenFbh));
 
     // create the blit depth texture
-    mBlitTexture = bgfx::createTexture2D(
-        uint16_t(mBlitSize.x()),
-        uint16_t(mBlitSize.y()),
+    blitTexture = bgfx::createTexture2D(
+        uint16_t(blitSize.x()),
+        uint16_t(blitSize.y()),
         false,
         1,
         getOffscreenDepthFormat(),
         kBlitFormat);
-    assert(bgfx::isValid(mBlitTexture));
+    assert(bgfx::isValid(blitTexture));
 }
 
-// Read color constructor
+// read color constructor
 ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
     CallbackReadBuffer callback,
-    const Color&       clearColor) :
-        mType(COLOR), mPoint(0, 0), mReadCallback(callback)
+    const Color& clearColor) : type(COLOR), point(0, 0), readCallback(callback)
 {
-    // check framebuffer size
-    assert(framebufferSize.x() != 0 && framebufferSize.y() != 0);
-    // get texture size capabilitites
-    const auto maxSize = bgfx::getCaps()->limits.maxTextureSize;
-    if (framebufferSize.x() > maxSize || framebufferSize.y() > maxSize) {
-        std::cerr << "Framebuffer size " << "(" << framebufferSize.x() << "x"
-                  << framebufferSize.y() << ")"
-                  << "exceeds the maximum texture size " << maxSize << "x"
-                  << maxSize << std::endl;
+    blitSize = framebufferSize.cast<uint16_t>();
 
-        const bool isWidthMax = framebufferSize.x() > framebufferSize.y();
-        const auto maxSizeSide =
-            isWidthMax ? framebufferSize.x() : framebufferSize.y();
+    auto& ctx       = Context::instance();
+    viewOffscreenId = ctx.requestViewId();
 
-        // adapt the size to the maximum texture size
-        const double ratio = double(maxSize) / double(maxSizeSide);
-        framebufferSize    = Point2<uint>(
-            isWidthMax ? maxSize : uint(maxSize * ratio),
-            isWidthMax ? uint(maxSize * ratio) : maxSize);
-
-        std::cerr << "Setting size to " << "(" << framebufferSize.x() << "x"
-                  << framebufferSize.y() << ")" << std::endl;
-    }
-
-    mBlitSize = framebufferSize.cast<uint16_t>();
-
-    auto& ctx        = Context::instance();
-    mViewOffscreenId = ctx.requestViewId();
-
-    mOffscreenFbh = ctx.createOffscreenFramebufferAndInitView(
-        mViewOffscreenId,
+    offscreenFbh = ctx.createOffscreenFramebufferAndInitView(
+        viewOffscreenId,
         framebufferSize.x(),
         framebufferSize.y(),
         true,
         clearColor.rgba());
-    assert(bgfx::isValid(mOffscreenFbh));
+    assert(bgfx::isValid(offscreenFbh));
 
     // create the blit depth texture
-    mBlitTexture = bgfx::createTexture2D(
-        uint16_t(mBlitSize.x()),
-        uint16_t(mBlitSize.y()),
+    blitTexture = bgfx::createTexture2D(
+        uint16_t(blitSize.x()),
+        uint16_t(blitSize.y()),
         false,
         1,
         getOffscreenColorFormat(),
         kBlitFormat);
-    assert(bgfx::isValid(mBlitTexture));
-}
-
-static uint32_t kNullId = UINT_NULL;
-
-// Read ID constructor
-ReadFramebufferRequest::ReadFramebufferRequest(
-    Point2i            queryIdPoint,
-    Point2<uint>       framebufferSize,
-    bool               idAsColor, // TODO: implement (now it's always true)
-    CallbackReadBuffer callback) :
-        mType(ID), mPoint(queryIdPoint), mReadCallback(callback)
-{
-    mBlitSize = framebufferSize.cast<uint16_t>();
-
-    auto& ctx        = Context::instance();
-    mViewOffscreenId = ctx.requestViewId();
-
-    const Color clearColor(kNullId, Color::Format::RGBA);
-
-    mOffscreenFbh = ctx.createOffscreenFramebufferAndInitView(
-        mViewOffscreenId,
-        framebufferSize.x(),
-        framebufferSize.y(),
-        true,
-        clearColor.abgr());
-    assert(bgfx::isValid(mOffscreenFbh));
-
-    // read id as color
-    // create the blit color texture
-    mBlitTexture = bgfx::createTexture2D(
-        uint16_t(mBlitSize.x()),
-        uint16_t(mBlitSize.y()),
-        false,
-        1,
-        getOffscreenColorFormat(),
-        kBlitFormat);
-    assert(bgfx::isValid(mBlitTexture));
+    assert(bgfx::isValid(blitTexture));
 }
 
 ReadFramebufferRequest::~ReadFramebufferRequest()
 {
-    if (bgfx::isValid(mBlitTexture))
-        bgfx::destroy(mBlitTexture);
+    if (bgfx::isValid(blitTexture))
+        bgfx::destroy(blitTexture);
 
-    if (bgfx::isValid(mOffscreenFbh))
-        bgfx::destroy(mOffscreenFbh);
+    if (bgfx::isValid(offscreenFbh))
+        bgfx::destroy(offscreenFbh);
 
-    if (mViewOffscreenId != 0) {
+    if (viewOffscreenId != 0) {
         auto& ctx = Context::instance();
-        ctx.releaseViewId(mViewOffscreenId);
+        ctx.releaseViewId(viewOffscreenId);
     }
-}
-
-ReadFramebufferRequest::Type ReadFramebufferRequest::type() const
-{
-    return mType;
 }
 
 bgfx::ViewId ReadFramebufferRequest::viewId() const
 {
-    return mViewOffscreenId;
+    return viewOffscreenId;
 }
 
 bgfx::FrameBufferHandle ReadFramebufferRequest::frameBuffer() const
 {
-    return mOffscreenFbh;
+    return offscreenFbh;
 }
 
 bool ReadFramebufferRequest::isSubmitted() const
 {
-    return mSubmitted;
+    return submitted;
 }
 
 bool ReadFramebufferRequest::submit()
 {
-    if (mSubmitted)
+    if (submitted)
         return false;
 
-    mSubmitted = true;
-
     // pixel size
-    const auto readPixelSize = mBlitSize.x() * mBlitSize.y();
+    const auto readPixelSize = blitSize.x() * blitSize.y();
 
     // source buffer
-    uint8_t    attachment = mType == ID ? uint8_t(0) : uint8_t(mType);
-    const auto srcBuffer  = bgfx::getTexture(mOffscreenFbh, attachment);
+    const auto srcBuffer = bgfx::getTexture(offscreenFbh, uint8_t(type));
 
-    switch (mType) {
+    switch (type) {
     case DEPTH: {
         // allocate memory for blit depth data
-        mReadData = FloatData(readPixelSize);
+        readData = FloatData(readPixelSize);
         if (readPixelSize == 1) {
             // read a single fragment
             bgfx::blit(
-                mViewOffscreenId,
-                mBlitTexture,
+                viewOffscreenId,
+                blitTexture,
                 0,
                 0,
                 srcBuffer,
-                uint16_t(mPoint.x()),
-                uint16_t(mPoint.y()),
+                uint16_t(point.x()),
+                uint16_t(point.y()),
                 1,
                 1);
         }
         else {
             // read the entire depth buffer
-            bgfx::blit(mViewOffscreenId, mBlitTexture, 0, 0, srcBuffer);
+            bgfx::blit(viewOffscreenId, blitTexture, 0, 0, srcBuffer);
         }
         // submit read from blit CPU texture
-        mFrameAvailable = bgfx::readTexture(
-            mBlitTexture, std::get<FloatData>(mReadData).data());
+        frameAvailable = bgfx::readTexture(
+            blitTexture, std::get<FloatData>(readData).data());
     } break;
-    case COLOR:
-    case ID: {
+    case COLOR: {
         // allocate memory for blit color data
-        mReadData = ByteData(readPixelSize * 4);
+        readData = ByteData(readPixelSize * 4);
 
         // read the entire depth buffer
-        bgfx::blit(mViewOffscreenId, mBlitTexture, 0, 0, srcBuffer);
+        bgfx::blit(viewOffscreenId, blitTexture, 0, 0, srcBuffer);
 
-        mFrameAvailable = bgfx::readTexture(
-            mBlitTexture, std::get<ByteData>(mReadData).data());
+        frameAvailable =
+            bgfx::readTexture(blitTexture, std::get<ByteData>(readData).data());
     } break;
     default: assert(false && "unsupported readback type"); return false;
     }
 
+    submitted = true;
     return true;
 }
 
 bool ReadFramebufferRequest::isAvailable(uint32_t currentFrame) const
 {
-    return mFrameAvailable != 0 && currentFrame >= mFrameAvailable;
+    return frameAvailable != 0 && currentFrame >= frameAvailable;
 }
 
 bool ReadFramebufferRequest::performRead(uint32_t currFrame) const
@@ -297,35 +227,20 @@ bool ReadFramebufferRequest::performRead(uint32_t currFrame) const
     if (!isAvailable(currFrame))
         return false;
 
-    switch (mType) {
+    switch (type) {
     case DEPTH: {
-        assert(std::holds_alternative<FloatData>(mReadData));
-        const auto& data = std::get<FloatData>(mReadData);
+        assert(std::holds_alternative<FloatData>(readData));
+        const auto& data = std::get<FloatData>(readData);
         if (data.size() == 1)
-            this->mReadCallback(mReadData);
+            this->readCallback(readData);
         else {
-            this->mReadCallback(
-                FloatData({data[mPoint.y() * mBlitSize.x() + mPoint.x()]}));
+            this->readCallback(
+                FloatData({data[point.y() * blitSize.x() + point.x()]}));
         }
     } break;
     case COLOR: {
-        assert(std::holds_alternative<ByteData>(mReadData));
-        this->mReadCallback(mReadData);
-    } break;
-    case ID: {
-        assert(std::holds_alternative<ByteData>(mReadData));
-
-        const auto& data = std::get<ByteData>(mReadData);
-        if (data.size() == 4)
-            this->mReadCallback(mReadData);
-        else {
-            ByteData idData(4);
-            std::copy_n(
-                data.begin() + (mPoint.y() * mBlitSize.x() + mPoint.x()) * 4,
-                4,
-                idData.begin());
-            this->mReadCallback(idData);
-        }
+        assert(std::holds_alternative<ByteData>(readData));
+        this->readCallback(readData);
     } break;
     default: assert(false && "unsupported readback type");
     }

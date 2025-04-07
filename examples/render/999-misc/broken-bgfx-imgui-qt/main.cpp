@@ -27,6 +27,8 @@
 #include <QApplication>
 #include <QFileDialog>
 
+#include <iostream>
+
 template<typename Der>
 class ViewerDrawer : public vcl::TrackBallViewerDrawer<Der>
 {

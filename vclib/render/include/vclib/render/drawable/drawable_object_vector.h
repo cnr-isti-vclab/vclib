@@ -44,7 +44,6 @@ public:
     // DrawableObject interface
     void                            init();
     void                            draw(uint viewId) const;
-    void                            drawId(uint viewId, uint id) const;
     Box3d                           boundingBox() const;
     std::shared_ptr<DrawableObject> clone() const&;
     std::shared_ptr<DrawableObject> clone() &&;

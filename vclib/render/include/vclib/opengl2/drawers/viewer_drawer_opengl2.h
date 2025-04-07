@@ -108,7 +108,7 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::readDepthRequest(x, y);
+        ParentViewer::readRequest(button, x, y, modifiers);
     }
 };
 
