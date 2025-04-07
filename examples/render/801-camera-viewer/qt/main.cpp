@@ -22,45 +22,33 @@
 
 #include "get_drawable_mesh.h"
 
-// imgui drawer must be included before the window manager...
-#include <vclib/imgui/imgui_drawer.h>
-
-#include <vclib/glfw/window_manager.h>
+#include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/camera_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
-#include <imgui.h>
+#include <QApplication>
 
 template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
+class CameraViewerDrawer :
+    public vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>
 {
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
-
 public:
-    using ParentDrawer::ParentDrawer;
-
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
-
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
+    using Base = vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>;
+    using Base::Base;
 };
 
 int main(int argc, char** argv)
 {
-    using ImGuiDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
+    QApplication app(argc, argv);
 
-    ImGuiDemo tw("Viewer ImGui GLFW");
+    using SimpleCameraDemo = vcl::RenderApp<
+        vcl::qt::WidgetManager,
+        vcl::Canvas,
+        CameraViewerDrawer>;
+
+    SimpleCameraDemo tw("Camera Viewer Qt");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
@@ -73,5 +61,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }

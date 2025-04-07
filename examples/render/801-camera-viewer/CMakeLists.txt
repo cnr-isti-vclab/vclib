@@ -22,26 +22,9 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME 000-static-asserts)
-project(vclib-test-${TEST_NAME})
-
-set(HEADERS
-    camera.h
-    canvas.h
-    directional_light.h
-    drawable_object.h
-    drawers.h
-    render_app.h
-    view_projection.h
-    window_manager.h
-)
-
-set(SOURCES
-    main.cpp
-)
-
-vclib_add_test(
-    ${TEST_NAME}
-    VCLIB_MODULE render
-    SOURCES ${HEADERS} ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+if (TARGET vclib-3rd-glfw)
+    add_subdirectory(glfw)
+endif()
+if (TARGET vclib-3rd-qt)
+    add_subdirectory(qt)
+endif()
