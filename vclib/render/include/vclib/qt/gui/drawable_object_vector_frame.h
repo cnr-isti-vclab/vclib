@@ -67,6 +67,9 @@ public:
 
     void update(); // todo: rename this to refresh
 
+    // function to set the selected item
+    bool setSelectedItem(uint i);
+
 signals:
     void drawableObjectVisibilityChanged();
     void drawableObjectSelectionChanged(uint i);

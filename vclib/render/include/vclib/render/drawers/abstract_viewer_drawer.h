@@ -46,8 +46,8 @@ class AbstractViewerDrawer : public ViewProjEventDrawer
 {
     bool mReadRequested = false;
 
-    using Base = ViewProjEventDrawer;
-    using DRA = ViewProjEventDrawer::DRA;
+    // the default id for the viewer drawer is 0
+    uint mId = 0;
 
 protected:
     // the list of drawable objects
@@ -56,6 +56,12 @@ protected:
     // widgets)
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
+
+    using DTB = vcl::DesktopTrackBall<float>;
+
+    // the drawer id
+    uint& id() { return mId; }
+
 public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
@@ -115,8 +121,7 @@ public:
     // events
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(
-            derived(), Color::White);
+        DRA::DRW::setCanvasDefaultClearColor(derived(), Color::White);
     }
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
@@ -126,8 +131,7 @@ public:
         switch (key) {
         case Key::S:
             if (modifiers[KeyModifier::CONTROL])
-                DRA::DRW::screenshot(
-                    derived(), "viewer_screenshot.png");
+                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
             break;
 
         default: break;
@@ -135,15 +139,10 @@ public:
     }
 
 protected:
-    void readRequest(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers,
-        bool                homogeneousNDC = true)
+    void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
-        using ReadData  = ReadBufferTypes::ReadData;
-        using FloatData = ReadBufferTypes::FloatData;
+        using ReadData   = ReadBufferTypes::ReadData;
+        using FloatData  = ReadBufferTypes::FloatData;
         using MatrixType = Base::MatrixType;
 
         if (mReadRequested)
@@ -161,11 +160,12 @@ protected:
         const Point4f vp = {.0f, .0f, float(size.x()), float(size.y())};
 
         auto callback = [=, this](const ReadData& dt) {
-            mReadRequested = false;
-
             const auto& data = std::get<FloatData>(dt);
             assert(data.size() == 1);
             const float depth = data[0];
+
+            mReadRequested = false;
+
             // if the depth is 1.0, the point is not in the scene
             if (depth == 1.0f) {
                 return;
@@ -173,14 +173,72 @@ protected:
 
             // unproject the point
             const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-            auto          unproj = unproject(
-                p2d, MatrixType(proj * view), vp, homogeneousNDC);
+            auto          unproj =
+                unproject(p2d, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();
         };
 
-        mReadRequested = DRA::DRW::readDepth(
+        mReadRequested =
+            DRA::DRW::readDepth(derived(), Point2i(p.x(), p.y()), callback);
+        if (mReadRequested)
+            derived()->update();
+    }
+
+    void readIdRequest(double x, double y, std::function<void(uint)> idCallback)
+    {
+        using ReadData = ReadBufferTypes::ReadData;
+
+        if (mReadRequested)
+            return;
+
+        // get point
+        const Point2d p(x, y);
+
+        // create the callback
+        auto callback = [=, this](const ReadData& dt) {
+            const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
+            assert(data.size() == 4);
+            // TODO: check how to do this properly
+            const uint id = *(uint32_t*) &data[0];
+
+            mReadRequested = false;
+
+            idCallback(id);
+            derived()->update();
+        };
+
+        mReadRequested = DerivedRenderApp::DRW::readId(
+            derived(), Point2i(p.x(), p.y()), callback);
+        if (mReadRequested)
+            derived()->update();
+    }
+
+    void readIdRequest(double x, double y, std::function<void(uint)> idCallback)
+    {
+        using ReadData = ReadBufferTypes::ReadData;
+
+        if (mReadRequested)
+            return;
+
+        // get point
+        const Point2d p(x, y);
+
+        // create the callback
+        auto callback = [=, this](const ReadData& dt) {
+            const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
+            assert(data.size() == 4);
+            // TODO: check how to do this properly
+            const uint id = *(uint32_t*) &data[0];
+
+            mReadRequested = false;
+
+            idCallback(id);
+            derived()->update();
+        };
+
+        mReadRequested = DerivedRenderApp::DRW::readId(
             derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
             derived()->update();
@@ -189,10 +247,7 @@ protected:
 private:
     auto* derived() { return static_cast<DRA*>(this); }
 
-    const auto* derived() const
-    {
-        return static_cast<const DRA*>(this);
-    }
+    const auto* derived() const { return static_cast<const DRA*>(this); }
 };
 
 } // namespace vcl

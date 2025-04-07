@@ -80,6 +80,17 @@ public:
     virtual void draw(uint viewId = 0) const = 0;
 
     /**
+     * @brief This member function should draw the object.
+     * It will be called on request when the renderer needs to draw the ID of
+     * the object.
+     *
+     * @param viewId The ID of the view to draw. It may be used depending on the
+     * rendering engine.
+     * @param id The ID of the object.
+     */
+    virtual void drawId(uint viewId, uint id) const {};
+
+    /**
      * @brief This member function is used to find a good camera position
      * to render object. It should return the the bounding box of the object.
      * Return a null bounding box if the object shouldn't influence the position

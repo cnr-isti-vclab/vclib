@@ -32,13 +32,13 @@ class ScreenShotDialog : public QFileDialog
 {
     Q_OBJECT
 
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
+    QSpinBox* mMultiplierSpinBox = nullptr;
 
 public:
     explicit ScreenShotDialog(QWidget* parent = nullptr);
     ~ScreenShotDialog();
 
-    float screenMultiplierValue() const;
+    int screenMultiplierValue() const;
 };
 
 } // namespace vcl::qt
