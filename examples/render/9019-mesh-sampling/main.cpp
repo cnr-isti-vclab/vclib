@@ -22,7 +22,7 @@
 
 #include "montecarlo_sampling.h"
 
-#include <vclib/load_save.h>
+#include <vclib/io.h>
 
 #include <default_viewer.h>
 
