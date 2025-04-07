@@ -20,10 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_IMAGE_H
-#define VCL_IO_IMAGE_H
+#ifndef VCL_IO_IMAGE_STB_LOAD_H
+#define VCL_IO_IMAGE_STB_LOAD_H
 
-#include "image/load.h"
-#include "image/save.h"
+#include <vclib/io/file_info.h>
+#include <vclib/misc/string.h>
 
-#endif // VCL_IO_IMAGE_H
+// disable deprecated warnings - just for stb
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
+#define STB_IMAGE_STATIC // make stb static
+#define STB_IMAGE_IMPLEMENTATION // and then include the implementation
+#include <stb/stb_image.h>
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
+#include <memory>
+#include <set>
+#include <string>
+
+namespace vcl::stb {
+
+inline std::set<FileFormat> loadImageFormats()
+{
+    return {
+        FileFormat("png", "Portable Network Graphics"),
+        FileFormat("bmp", "Bitmap"),
+        FileFormat("tga", "Truevision TGA"),
+        FileFormat(
+            std::vector<std::string> {"jpg", "jpeg"},
+            "Joint Photographic Experts Group"),
+    };
+}
+
+inline std::shared_ptr<unsigned char> loadImageData(
+    const std::string& filename,
+    int&               w,
+    int&               h)
+{
+    std::shared_ptr<unsigned char> ptr(
+        stbi_load(filename.c_str(), &w, &h, nullptr, 4), stbi_image_free);
+    return ptr;
+}
+
+} // namespace vcl::stb
+
+#endif // VCL_IO_IMAGE_STB_LOAD_H

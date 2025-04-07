@@ -43,10 +43,6 @@ option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
 option(VCLIB_ALLOW_INSTALL_ZIP_VIEWS
     "Allow install ZipViews source" ON)
 
-# STB
-option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
-option(VCLIB_ALLOW_INSTALL_STB "Allow install STB source" ON)
-
 # poolSTL
 option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
 option(VCLIB_ALLOW_INSTALL_POOLSTL "Allow install poolSTL source" ON)
@@ -55,6 +51,13 @@ option(VCLIB_ALLOW_INSTALL_POOLSTL "Allow install poolSTL source" ON)
 
 # TBB
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
+
+# IO - 3rd Party libraries
+if (VCLIB_BUILD_CORE_WITH_IO_3RDPARTY_LIBRARIES)
+    # STB
+    option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
+    option(VCLIB_ALLOW_INSTALL_STB "Allow install STB source" ON)
+endif()
 
 
 # === Fetch dependencies === #
@@ -70,14 +73,19 @@ include(mapbox.cmake)
 ### Zip iterator
 include(zip-views.cmake)
 
-### STB
-include(stb.cmake)
-
 ### TBB
 include(tbb.cmake) # leave this BEFORE poolSTL
 
 ### poolSTL
 include(poolstl.cmake)
+
+### IO - 3rd Party libraries
+
+if (VCLIB_BUILD_CORE_WITH_IO_3RDPARTY_LIBRARIES)
+    ### STB
+    include(stb.cmake)
+
+endif()
 
 
 set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
