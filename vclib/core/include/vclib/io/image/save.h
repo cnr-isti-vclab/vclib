@@ -33,6 +33,8 @@
 #include "stb/save.h"
 #endif
 
+#include <vclib/space/core/image.h>
+
 namespace vcl {
 
 /**
@@ -88,10 +90,10 @@ inline void saveImageData(
         " not supported for saving image data");
 }
 
-// inline void saveImage(const std::string& filename, const Image& image)
-// {
-//     saveImageData(filename, image.width(), image.height(), image.data());
-// }
+inline void saveImage(const Image& image, const std::string& filename)
+{
+    saveImageData(filename, image.width(), image.height(), image.data());
+}
 
 } // namespace vcl
 

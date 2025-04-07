@@ -27,6 +27,7 @@
 
 #include <vclib/exceptions/io.h>
 #include <vclib/io/file_info.h>
+#include <vclib/io/image/save.h>
 #include <vclib/io/write.h>
 #include <vclib/io/mesh/settings.h>
 #include <vclib/misc/logger.h>
@@ -158,7 +159,7 @@ void writeElementObjMaterial(
                     }
                     const Texture& t = m.texture(textureIndex);
                     try {
-                        t.image().save(m.meshBasePath() + mat.map_Kd);
+                        saveImage(t.image(), m.meshBasePath() + mat.map_Kd);
                     }
                     catch (const std::runtime_error& e) {
                         log.log(e.what(), LogType::WARNING_LOG);

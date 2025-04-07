@@ -32,15 +32,12 @@ void initImage(pybind11::module& m)
 
     py::class_<Image> c(m, "Image" /*, py::buffer_protocol()*/);
     c.def(py::init<>());
-    c.def(py::init<std::string>());
 
     c.def("is_null", &Image::isNull);
     c.def("height", &Image::height);
     c.def("width", &Image::width);
     c.def("size_in_bytes", &Image::sizeInBytes);
     c.def("pixel", &Image::pixel);
-    c.def("load", &Image::load);
-    c.def("save", &Image::save);
     c.def("mirror", &Image::mirror);
 }
 

@@ -27,6 +27,7 @@
 
 #include <vclib/algorithms/mesh/face_topology.h>
 #include <vclib/io/file_info.h>
+#include <vclib/io/image/load.h>
 #include <vclib/io/read.h>
 #include <vclib/io/mesh/settings.h>
 #include <vclib/misc/logger.h>
@@ -662,9 +663,8 @@ void loadObj(
     if constexpr (HasTextureImages<MeshType>) {
         if (settings.loadTextureImages) {
             for (Texture& texture : m.textures()) {
-                bool b =
-                    texture.image().load(m.meshBasePath() + texture.path());
-                if (!b) {
+                texture.image() = loadImage(m.meshBasePath() + texture.path());
+                if (texture.image().isNull()) {
                     log.log(
                         "Cannot load texture " + texture.path(),
                         LogType::WARNING_LOG);

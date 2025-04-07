@@ -33,7 +33,7 @@
 
 #include <vclib/io/file_format.h>
 #include <vclib/io/file_info.h>
-//#include <vclib/space/core/image.h>
+#include <vclib/space/core/image.h>
 
 #include <memory>
 #include <string>
@@ -87,15 +87,15 @@ inline std::shared_ptr<unsigned char> loadImageData(
         " not supported for loading image data");
 }
 
-// inline Image loadImage(const std::string& filename)
-// {
-//     int  w, h;
-//     auto data = loadImageData(filename, w, h);
-//     if (!data) {
-//         return Image();
-//     }
-//     return Image(data.get(), w, h);
-// }
+inline Image loadImage(const std::string& filename)
+{
+    int  w, h;
+    auto data = loadImageData(filename, w, h);
+    if (!data) {
+        return Image();
+    }
+    return Image(data.get(), w, h);
+}
 
 } // namespace vcl
 
