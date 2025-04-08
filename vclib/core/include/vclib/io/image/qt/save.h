@@ -20,45 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_IMAGE_SAVE_H
-#define VCL_IO_IMAGE_SAVE_H
+#ifndef VCL_IO_IMAGE_QT_SAVE_H
+#define VCL_IO_IMAGE_QT_SAVE_H
 
-#include "bmp/save.h"
+#include <vclib/io/file_format.h>
 
-#ifdef VCLIB_WITH_QT
-#include "qt/save.h"
-#endif
+#include <QImage>
 
-#ifdef VCLIB_WITH_STB
-#include "stb/save.h"
-#endif
+#include <set>
 
-#include <vclib/space/core/image.h>
+namespace vcl::qt {
 
-namespace vcl {
-
-/**
- * @brief Returns the set of image formats supported for saving.
- *
- * The set contains all the image formats that can be saved using all the
- * external libraries compiled with VCLib.
- *
- * @return A set of image formats supported for saving.
- */
 inline std::set<FileFormat> saveImageFormats()
 {
-    std::set<FileFormat> ff;
-
-#ifdef VCLIB_WITH_QT
-    auto fqt = qt::saveImageFormats();
-    ff.insert(fqt.begin(), fqt.end());
-#endif
-
-#ifdef VCLIB_WITH_STB
-    auto fstb = stb::saveImageFormats();
-    ff.insert(fstb.begin(), fstb.end());
-#endif
-    return ff;
+    return {
+            FileFormat("bmp", "Bitmap"),
+            FileFormat(
+                std::vector<std::string> {"jpg", "jpeg"},
+                "Joint Photographic Experts Group"),
+            FileFormat("png", "Portable Network Graphics"),
+            FileFormat("ppm", "Portable Pixmap"),
+            FileFormat("xbm", "X11 Bitmap"),
+            FileFormat("xpm", "X11 Pixmap"),
+            };
 }
 
 inline void saveImageData(
@@ -68,33 +52,15 @@ inline void saveImageData(
     const unsigned char* data,
     uint                 quality = 90)
 {
-    FileFormat ff = FileInfo::fileFormat(filename);
-
-#ifdef VCLIB_WITH_QT
-    if (qt::saveImageFormats().contains(ff)) {
-        return qt::saveImageData(filename, w, h, data, quality);
+    QImage image(w, h, QImage::Format_RGBA8888);
+    std::copy(data, data + w * h * 4, image.bits());
+    bool res = image.save(QString::fromStdString(filename), nullptr, quality);
+    if (!res) {
+        throw std::runtime_error(
+            "Failed to save image data to file: " + filename);
     }
-#endif
-
-#ifdef VCLIB_WITH_STB
-    if (stb::saveImageFormats().contains(ff)) {
-        return stb::saveImageData(filename, w, h, data, quality);
-    }
-#endif
-    if (ff == FileFormat("bmp")) {
-        // save rgb image data into bmp file
-        return saveImageToBmp(filename, w, h, data);
-    }
-    throw std::runtime_error(
-        "File Format " + ff.extensions().front() +
-        " not supported for saving image data");
 }
 
-inline void saveImage(const Image& image, const std::string& filename)
-{
-    saveImageData(filename, image.width(), image.height(), image.data());
-}
+} // namespace vcl::qt
 
-} // namespace vcl
-
-#endif // VCL_IO_IMAGE_SAVE_H
+#endif // VCL_IO_IMAGE_QT_SAVE_H

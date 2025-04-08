@@ -54,6 +54,9 @@ option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
 # IO - 3rd Party libraries
 if (VCLIB_BUILD_CORE_WITH_IO_3RDPARTY_LIBRARIES)
+    # Qt
+    option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
+
     # STB
     option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
     option(VCLIB_ALLOW_INSTALL_STB "Allow install STB source" ON)
@@ -82,9 +85,11 @@ include(poolstl.cmake)
 ### IO - 3rd Party libraries
 
 if (VCLIB_BUILD_CORE_WITH_IO_3RDPARTY_LIBRARIES)
+    # Qt
+    include(io/qt.cmake)
+
     ### STB
     include(io/stb.cmake)
-
 endif()
 
 

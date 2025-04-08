@@ -24,7 +24,7 @@
 #define VCL_IO_IMAGE_LOAD_H
 
 #ifdef VCLIB_WITH_QT
-// #include "qt/load.h"
+#include "qt/load.h"
 #endif
 
 #ifdef VCLIB_WITH_STB
@@ -53,8 +53,8 @@ inline std::set<FileFormat> loadImageFormats()
     std::set<FileFormat> ff;
 
 #ifdef VCLIB_WITH_QT
-    // auto fqt = qt::loadImageFormats();
-    // ff.insert(fqt.begin(), fqt.end());
+    auto fqt = qt::loadImageFormats();
+    ff.insert(fqt.begin(), fqt.end());
 #endif
 
 #ifdef VCLIB_WITH_STB
@@ -72,9 +72,9 @@ inline std::shared_ptr<unsigned char> loadImageData(
     FileFormat ff = FileInfo::fileFormat(filename);
 
 #ifdef VCLIB_WITH_QT
-    // if (qt::loadImageFormats().contains(ff)) {
-    //     return qt::loadImageData(filename, w, h);
-    // }
+    if (qt::loadImageFormats().contains(ff)) {
+        return qt::loadImageData(filename, w, h);
+    }
 #endif
 
 #ifdef VCLIB_WITH_STB

@@ -20,22 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "../hello_triangle_drawer.h"
+#ifndef VCL_IO_IMAGE_QT_LOAD_H
+#define VCL_IO_IMAGE_QT_LOAD_H
 
-// may include qt - must be included before glfw...
-#include <vclib/render/canvas.h>
+#include <vclib/io/file_info.h>
+#include <vclib/misc/string.h>
 
-#include <vclib/glfw/window_manager.h>
-#include <vclib/render/render_app.h>
+#include <QImage>
 
-int main(int argc, char** argv)
+#include <memory>
+#include <set>
+#include <string>
+
+namespace vcl::qt {
+
+inline std::set<FileFormat> loadImageFormats()
 {
-    using WindowGLFW = vcl::
-        RenderApp<vcl::glfw::WindowManager, vcl::Canvas, HelloTriangleDrawer>;
-
-    WindowGLFW tw("Hello Triangle with GLFW");
-
-    tw.show();
-
-    return 0;
+    return {
+        FileFormat("bmp", "Bitmap"),
+        FileFormat(
+            std::vector<std::string> {"jpg", "jpeg"},
+            "Joint Photographic Experts Group"),
+        FileFormat("png", "Portable Network Graphics"),
+        FileFormat("pbm", "Portable Bitmap"),
+        FileFormat("pgm", "Portable Graymap"),
+        FileFormat("ppm", "Portable Pixmap"),
+        FileFormat("xbm", "X11 Bitmap"),
+        FileFormat("xpm", "X11 Pixmap"),
+    };
 }
+
+inline std::shared_ptr<unsigned char> loadImageData(
+    const std::string& filename,
+    int&               w,
+    int&               h)
+{
+    std::shared_ptr<unsigned char> ptr;
+    QImage                         img(filename.c_str());
+    if (!img.isNull()) {
+        img.convertTo(QImage::Format_RGBA8888);
+
+        ptr = std::shared_ptr<unsigned char>(
+            new unsigned char[img.width() * img.height() * 4]);
+        std::copy(
+            img.bits(), img.bits() + img.width() * img.height() * 4, ptr.get());
+
+        w = QImage(filename.c_str()).width();
+        h = QImage(filename.c_str()).height();
+    }
+    return ptr;
+}
+
+} // namespace vcl::qt
+
+#endif // VCL_IO_IMAGE_QT_LOAD_H
