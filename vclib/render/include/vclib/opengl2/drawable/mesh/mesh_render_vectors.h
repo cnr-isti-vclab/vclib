@@ -23,9 +23,11 @@
 #ifndef VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 #define VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 
+#include <vclib/algorithms/core/create.h>
 #include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
+#include <vclib/io/image/load.h>
 #include <vclib/math/min_max.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
@@ -365,14 +367,18 @@ private:
             vcl::Image txt;
             if constexpr (vcl::HasTextureImages<MeshType>) {
                 if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
+                    txt = vcl::loadImage(
+                        mesh.meshBasePath() + mesh.texturePath(i));
                 }
                 else {
                     txt = mesh.texture(i).image();
                 }
             }
             else {
-                txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
+                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
+            }
+            if (txt.isNull()) {
+                txt = vcl::createCheckBoardImage(512);
             }
             txt.mirror();
             mTextures.push_back(txt);

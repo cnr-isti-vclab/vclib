@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 #include <vclib/algorithms/core/polygon/geometry.h>
-#include <vclib/load_save.h>
+#include <vclib/io.h>
 #include <vclib/meshes.h>
 #include <vclib/misc/logger/null_logger.h>
 

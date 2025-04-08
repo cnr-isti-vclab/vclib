@@ -22,7 +22,7 @@
 
 #include <vclib/processing.h>
 
-#include <vclib/load_save.h>
+#include <vclib/io.h>
 
 int main()
 {

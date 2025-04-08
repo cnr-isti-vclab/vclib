@@ -194,6 +194,7 @@ STRIP_FROM_PATH        =
 # using the -I flag.
 
 STRIP_FROM_INC_PATH    = vclib/core/include \
+                         vclib/external/include \
                          vclib/render/include
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter (but
@@ -946,6 +947,7 @@ WARN_LOGFILE           =
 
 INPUT                  = docs/ \
                          vclib/core/include/ \
+                         vclib/external/include/ \
                          vclib/render/include/ \
                          vclib/render/src/
 
@@ -1073,7 +1075,8 @@ EXCLUDE_PATTERNS       = README.md
 EXCLUDE_SYMBOLS        = detail \
                          mapbox \
                          bgfx \
-                         std
+                         std \
+                         VCL_HIDE*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

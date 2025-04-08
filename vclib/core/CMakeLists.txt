@@ -23,6 +23,10 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-core)
 
+### Options
+option(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES
+    "Build the core module with 3rdparty I/O libraries" ON)
+
 # 3rdparty libraries
 message(STATUS "VCLib-Core: 3rdparty libraries")
 add_subdirectory(3rdparty)

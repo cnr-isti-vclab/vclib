@@ -24,7 +24,7 @@
 #include <vclib/bindings/utils.h>
 
 #include <vclib/algorithms/mesh/type_name.h>
-#include <vclib/load_save/load.h>
+#include <vclib/io/mesh/load.h>
 #include <vclib/meshes.h>
 
 namespace vcl::bind {

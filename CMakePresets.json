@@ -60,6 +60,26 @@
             }
         },
         {
+            "name": "vclib-core-no-3rd-io-debug",
+            "inherits": "vclib-core-debug",
+            "displayName": "VCLib::Core without 3rdparty IO libraries - Debug",
+            "description": "Core without 3rdparty IO libraries",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
+            }
+        },
+        {
+            "name": "vclib-core-no-3rd-io-release",
+            "inherits": "vclib-core-release",
+            "displayName": "VCLib::Core without 3rdparty IO libraries - Release",
+            "description": "Core without 3rdparty IO libraries",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
+            }
+        },
+        {
             "name": "vclib-core-no-tests-debug",
             "hidden": true,
             "inherits": "vclib-core-debug",
