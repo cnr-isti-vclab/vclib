@@ -82,9 +82,12 @@ void main()
     if (!bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_NONE))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
+        // all computations are in view (camera) space
+        // => the camera eye is at (0, 0, 0)
+        // also, u_lightDir is provided in view space
         specular = computeSpecular(
             v_position,
-            u_cameraEyePos,
+            vec3(0.0, 0.0, 0.0),
             u_lightDir,
             u_lightColor,
             normal);

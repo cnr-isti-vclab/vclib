@@ -35,16 +35,19 @@ void main()
     vec3 specular = vec3(0.0, 0.0, 0.0);
     vec4 light = vec4(1, 1, 1, 1);
 
-    // compute light
-    light = computeLight(u_lightDir, u_lightColor, v_normal);
-    vec3 camEyePos = mul(u_modelView, vec4(u_cameraEyePos, 1.0)).xyz;
+    // compute normal
+    vec3 normal = normalize(v_normal);
 
+    // compute light
+    light = computeLight(u_lightDir, u_lightColor, normal);
+
+    // compute specular
     specular = computeSpecular(
         v_position,
-        camEyePos,
+        vec3(0.0, 0.0, 0.0),
         u_lightDir,
         u_lightColor,
-        v_normal);
+        normal);
 
     gl_FragColor = light * u_axisColor + vec4(specular, 0);
 }
