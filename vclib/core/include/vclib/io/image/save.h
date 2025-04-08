@@ -85,9 +85,7 @@ inline void saveImageData(
         // save rgb image data into bmp file
         return saveImageToBmp(filename, w, h, data);
     }
-    throw std::runtime_error(
-        "File Format " + ff.extensions().front() +
-        " not supported for saving image data");
+    throw UnknownFileFormatException(ff.extensions().front());
 }
 
 inline void saveImage(const Image& image, const std::string& filename)

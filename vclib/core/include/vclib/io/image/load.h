@@ -82,9 +82,7 @@ inline std::shared_ptr<unsigned char> loadImageData(
         return stb::loadImageData(filename, w, h);
     }
 #endif
-    throw std::runtime_error(
-        "File Format " + ff.extensions().front() +
-        " not supported for loading image data");
+    throw UnknownFileFormatException(ff.extensions().front());
 }
 
 inline Image loadImage(const std::string& filename)

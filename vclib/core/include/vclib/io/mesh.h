@@ -24,7 +24,6 @@
 #define VCL_IO_MESH_H
 
 #include "mesh/capability.h"
-#include "mesh/formats.h"
 #include "mesh/load.h"
 #include "mesh/save.h"
 

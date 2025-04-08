@@ -23,9 +23,15 @@
 #ifndef VCL_IO_MESH_OFF_CAPABILITY_H
 #define VCL_IO_MESH_OFF_CAPABILITY_H
 
+#include <vclib/io/file_format.h>
 #include <vclib/space/complex/mesh_info.h>
 
 namespace vcl {
+
+constexpr FileFormat offFileFormat()
+{
+    return FileFormat("off", "OFF Object File Format .off");
+}
 
 inline MeshInfo offFormatCapability()
 {

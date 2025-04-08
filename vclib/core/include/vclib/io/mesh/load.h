@@ -28,6 +28,8 @@
 #include "ply/load.h"
 #include "stl/load.h"
 
+#include "capability.h"
+
 /**
  * @defgroup load_mesh Load mesh functions
  * @ingroup io_mesh
@@ -37,6 +39,28 @@
 
 /// @brief
 namespace vcl {
+
+/**
+ * @brief Returns the set of mesh formats supported for loading.
+ *
+ * The set contains all the mesh formats that can be loaded using all the
+ * external libraries compiled with VCLib.
+ *
+ * @return A set of mesh formats supported for loading.
+ *
+ * @ingroup load_mesh
+ */
+inline std::set<FileFormat> loadMeshFormats()
+{
+    std::set<FileFormat> ff;
+
+    ff.insert(objFileFormat());
+    ff.insert(offFileFormat());
+    ff.insert(plyFileFormat());
+    ff.insert(stlFileFormat());
+
+    return ff;
+}
 
 /**
  * @brief Loads a mesh from a file with the given filename and stores it in the
@@ -67,25 +91,24 @@ void load(
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
-    std::string ext = FileInfo::extension(filename);
-    ext             = toLower(ext);
+    FileFormat ff = FileInfo::fileFormat(filename);
 
     loadedInfo.clear();
 
-    if (ext == ".obj") {
+    if (ff == objFileFormat()) {
         loadObj(m, filename, loadedInfo, log, settings);
     }
-    else if (ext == ".off") {
+    else if (ff == offFileFormat()) {
         loadOff(m, filename, loadedInfo, log, settings);
     }
-    else if (ext == ".ply") {
+    else if (ff == plyFileFormat()) {
         loadPly(m, filename, loadedInfo, log, settings);
     }
-    else if (ext == ".stl") {
+    else if (ff == stlFileFormat()) {
         loadStl(m, filename, loadedInfo, log, settings);
     }
     else {
-        throw UnknownFileFormatException(ext);
+        throw UnknownFileFormatException(ff.extensions().front());
     }
 }
 

@@ -23,9 +23,15 @@
 #ifndef VCL_IO_MESH_STL_CAPABILITY_H
 #define VCL_IO_MESH_STL_CAPABILITY_H
 
+#include <vclib/io/file_format.h>
 #include <vclib/space/complex/mesh_info.h>
 
 namespace vcl {
+
+constexpr FileFormat stlFileFormat()
+{
+    return FileFormat("stl", "STL Stereolithography .stl");
+}
 
 inline MeshInfo stlFormatCapability()
 {

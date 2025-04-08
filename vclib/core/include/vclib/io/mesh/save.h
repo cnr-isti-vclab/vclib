@@ -28,6 +28,8 @@
 #include "ply/save.h"
 #include "stl/save.h"
 
+#include "capability.h"
+
 /**
  * @defgroup save_mesh Save mesh functions
  * @ingroup io_mesh
@@ -36,6 +38,28 @@
  */
 
 namespace vcl {
+
+/**
+ * @brief Returns the set of mesh formats supported for saving.
+ *
+ * The set contains all the mesh formats that can be saved using all the
+ * external libraries compiled with VCLib.
+ *
+ * @return A set of mesh formats supported for saving.
+ *
+ * @ingroup save_mesh
+ */
+inline std::set<FileFormat> saveMeshFormats()
+{
+    std::set<FileFormat> ff;
+
+    ff.insert(objFileFormat());
+    ff.insert(offFileFormat());
+    ff.insert(plyFileFormat());
+    ff.insert(stlFileFormat());
+
+    return ff;
+}
 
 /**
  * @brief Saves a mesh to a file with the given filename. Checks automatically
@@ -62,22 +86,22 @@ void save(
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
-    std::string ext = FileInfo::extension(filename);
-    ext             = toLower(ext);
-    if (ext == ".obj") {
+    FileFormat ff = FileInfo::fileFormat(filename);
+
+    if (ff == objFileFormat()) {
         saveObj(m, filename, log, settings);
     }
-    else if (ext == ".off") {
+    else if (ff == offFileFormat()) {
         saveOff(m, filename, log, settings);
     }
-    else if (ext == ".ply") {
+    else if (ff == plyFileFormat()) {
         savePly(m, filename, log, settings);
     }
-    else if (ext == ".stl") {
+    else if (ff == stlFileFormat()) {
         saveStl(m, filename, log, settings);
     }
     else {
-        throw UnknownFileFormatException(ext);
+        throw UnknownFileFormatException(ff.extensions().front());
     }
 }
 
