@@ -53,7 +53,7 @@ option(VCLIB_ALLOW_INSTALL_POOLSTL "Allow install poolSTL source" ON)
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
 # IO - 3rd Party libraries
-if (VCLIB_BUILD_CORE_WITH_IO_3RDPARTY_LIBRARIES)
+if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     # Qt
     option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
 
@@ -84,7 +84,7 @@ include(poolstl.cmake)
 
 ### IO - 3rd Party libraries
 
-if (VCLIB_BUILD_CORE_WITH_IO_3RDPARTY_LIBRARIES)
+if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     # Qt
     include(io/qt.cmake)
 
