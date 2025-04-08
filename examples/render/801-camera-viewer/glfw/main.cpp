@@ -30,7 +30,7 @@
 
 template<typename DerivedRenderApp>
 class CameraViewerDrawer :
-    public vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>
+        public vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>
 {
 public:
     using Base = vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>;
@@ -39,10 +39,8 @@ public:
 
 int main(int argc, char** argv)
 {
-    using SimpleCameraDemo = vcl::RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        CameraViewerDrawer>;
+    using SimpleCameraDemo = vcl::
+        RenderApp<vcl::glfw::WindowManager, vcl::Canvas, CameraViewerDrawer>;
 
     SimpleCameraDemo tw("Camera Viewer GLFW");
 

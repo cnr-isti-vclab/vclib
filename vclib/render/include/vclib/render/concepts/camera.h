@@ -29,10 +29,10 @@ namespace vcl {
 
 template<typename T>
 concept CameraConcept = requires (
-    T&& obj,
-    typename RemoveRef<T>::ScalarType s,
-    typename RemoveRef<T>::ScalarType& sR,
-    typename RemoveRef<T>::ProjectionMode pm,
+    T&&                                    obj,
+    typename RemoveRef<T>::ScalarType      s,
+    typename RemoveRef<T>::ScalarType&     sR,
+    typename RemoveRef<T>::ProjectionMode  pm,
     typename RemoveRef<T>::ProjectionMode& pmR) {
     // inner types
     typename RemoveRef<T>::ScalarType;

@@ -33,14 +33,12 @@ void cameraStaticAsserts()
     using Camerad = Camera<double>;
 
     static_assert(
-        CameraConcept<Camerad>,
-        "Camera does not satisfy the CameraConcept");
+        CameraConcept<Camerad>, "Camera does not satisfy the CameraConcept");
     static_assert(
         CameraConcept<const Camerad>,
         "const Camera does not satisfy the CameraConcept");
     static_assert(
-        CameraConcept<Camerad&>,
-        "Camera& does not satisfy the CameraConcept");
+        CameraConcept<Camerad&>, "Camera& does not satisfy the CameraConcept");
     static_assert(
         CameraConcept<const Camerad&>,
         "const Camera& does not satisfy the CameraConcept");

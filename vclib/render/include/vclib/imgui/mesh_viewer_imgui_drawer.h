@@ -37,7 +37,8 @@
 namespace vcl::imgui {
 
 template<typename DerivedRenderApp>
-class MeshViewerDrawerImgui : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
+class MeshViewerDrawerImgui :
+        public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
     using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 

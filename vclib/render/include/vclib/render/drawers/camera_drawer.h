@@ -27,8 +27,7 @@
 #include <vclib/render/viewer/camera.h>
 #include <vclib/render/viewer/lights.h>
 
-namespace vcl
-{
+namespace vcl {
 template<typename Scalar, typename DerivedRenderApp>
 class CameraDrawerT : public vcl::EventDrawer<DerivedRenderApp>
 {
@@ -38,60 +37,41 @@ public:
     using PointType  = CameraType::PointType;
     using MatrixType = CameraType::MatrixType;
     using LightType  = vcl::DirectionalLight<Scalar>;
-    
+
 protected:
     CameraType mCamera;
 
 public:
     using Base = vcl::EventDrawer<DerivedRenderApp>;
 
-    CameraDrawerT(uint width = 100, uint height = 768) :
-            Base(width, height)
+    CameraDrawerT(uint width = 100, uint height = 768) : Base(width, height)
     {
         onResize(width, height);
     }
 
-    MatrixType viewMatrix() const
-    {
-        return mCamera.viewMatrix();
-    }
-    
-    MatrixType projectionMatrix() const
-    {
-        return mCamera.projectionMatrix();
-    }
-    
-    const CameraType & camera() const
-    {
-        return mCamera;
-    }
+    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
 
-    LightType light() const
-    {
-        return LightType();
-    }
+    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
 
-    void reset()
-    {
-        mCamera.reset();
-    }
+    const CameraType& camera() const { return mCamera; }
 
-    void focus(const PointType & p)
-    {
-        mCamera.center() = p;
-    }
+    LightType light() const { return LightType(); }
 
-    void fitScene(const PointType & p, Scalar s)
+    void reset() { mCamera.reset(); }
+
+    void focus(const PointType& p) { mCamera.center() = p; }
+
+    void fitScene(const PointType& p, Scalar s)
     {
-        mCamera.center() = p;
-        mCamera.eye()    = p + PointType(0, 0, 1);
+        mCamera.center()         = p;
+        mCamera.eye()            = p + PointType(0, 0, 1);
         mCamera.verticalHeight() = s;
         mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
     }
 
     void onResize(uint width, uint height) override
     {
-        mCamera.aspectRatio() = Scalar(double(width)/height);
+        mCamera.aspectRatio() = Scalar(double(width) / height);
     }
 };
 

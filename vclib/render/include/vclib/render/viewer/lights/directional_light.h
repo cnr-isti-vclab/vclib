@@ -32,15 +32,15 @@ template<typename Scalar>
 class DirectionalLight
 {
     vcl::Point3<Scalar> mDir   = vcl::Point3<Scalar>(0.0f, 0.0f, 1.0f);
-    vcl::Color              mColor = vcl::Color::White;
+    vcl::Color          mColor = vcl::Color::White;
 
 public:
-    using PointType  = vcl::Point3<Scalar>;
+    using PointType = vcl::Point3<Scalar>;
 
     DirectionalLight() = default;
 
     DirectionalLight(
-        const PointType& d,
+        const PointType&  d,
         const vcl::Color& c = vcl::Color::White) : mDir(d), mColor(c)
     {
     }

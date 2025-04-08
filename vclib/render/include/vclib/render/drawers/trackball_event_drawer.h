@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
-#define VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
+#ifndef VCL_RENDER_DRAWERS_TRACKBALL_EVENT_DRAWER_H
+#define VCL_RENDER_DRAWERS_TRACKBALL_EVENT_DRAWER_H
 
 #include "event_drawer.h"
 
@@ -215,7 +215,6 @@ public:
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }
 
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
-
 
     Matrix44<Scalar> projectionMatrix() const
     {
@@ -453,4 +452,4 @@ using TrackBallEventDrawer = TrackBallEventDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
+#endif // VCL_RENDER_DRAWERS_TRACKBALL_EVENT_DRAWER_H

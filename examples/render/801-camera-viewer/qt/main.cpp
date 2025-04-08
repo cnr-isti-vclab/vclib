@@ -32,7 +32,7 @@
 
 template<typename DerivedRenderApp>
 class CameraViewerDrawer :
-    public vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>
+        public vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>
 {
 public:
     using Base = vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>;
@@ -43,10 +43,8 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    using SimpleCameraDemo = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        CameraViewerDrawer>;
+    using SimpleCameraDemo =
+        vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, CameraViewerDrawer>;
 
     SimpleCameraDemo tw("Camera Viewer Qt");
 
