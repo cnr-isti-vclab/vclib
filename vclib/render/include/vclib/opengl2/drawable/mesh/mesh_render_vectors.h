@@ -23,6 +23,7 @@
 #ifndef VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 #define VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 
+#include <vclib/algorithms/core/create.h>
 #include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
@@ -376,10 +377,9 @@ private:
             else {
                 txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
             }
-            // TODO
-            // if (txt.isNull()) {
-            //     txt = vcl::createCheckBoardImage(512);
-            // }
+            if (txt.isNull()) {
+                txt = vcl::createCheckBoardImage(512);
+            }
             txt.mirror();
             mTextures.push_back(txt);
         }

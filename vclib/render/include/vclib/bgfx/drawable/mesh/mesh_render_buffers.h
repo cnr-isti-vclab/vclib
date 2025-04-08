@@ -25,6 +25,7 @@
 
 #include "mesh_render_buffers_macros.h"
 
+#include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
@@ -407,10 +408,9 @@ private:
             else {
                 txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
             }
-            // TODO
-            // if (txt.isNull()) {
-            //     txt = vcl::createCheckBoardImage(512);
-            // }
+            if (txt.isNull()) {
+                txt = vcl::createCheckBoardImage(512);
+            }
 
             txt.mirror();
 

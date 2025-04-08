@@ -41,7 +41,7 @@ namespace vcl {
  */
 class Image
 {
-    Array2<uint32_t> mImg;
+    Array2<uint> mImg;
 
 public:
     Image() {}
@@ -87,6 +87,10 @@ public:
             }
         }
     }
+
+    Image(const Array2<uint>& img) : mImg(img) {}
+
+    Image(Array2<uint>&& img) : mImg(std::move(img)) {}
 
     bool isNull() const { return mImg.empty(); }
 
