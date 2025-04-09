@@ -73,7 +73,7 @@ public:
 
     std::string getFullLengthUnitOfMeasure() override
     {
-        return "mFrames per second";
+        return "frames per second";
     }
 
     void end() override { mTimer.stop(); };
