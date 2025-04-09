@@ -56,7 +56,7 @@ public:
     std::vector<std::string> getMeasureStrings() override
     {
         std::ostringstream temp;
-        temp << std::setprecision(3) << mTimer.delay();
+        temp << std::fixed << std::setprecision(3) << mTimer.delay();
 
         return std::vector<std::string> {temp.str()};
     }
