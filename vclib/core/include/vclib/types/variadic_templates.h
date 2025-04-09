@@ -30,8 +30,6 @@
 
 namespace vcl {
 
-// TODO: write documentation for all the functions and classes in this file
-
 /**
  * @brief Get the first type of a pack of types (variadic templates) or a
  * TypeWrapper.
@@ -98,7 +96,7 @@ constexpr uint indexInTypePack()
  * type_index in a pack of types (variadic templates).
  * The pack is composed of U and Us...
  *
- * @param ti: the type_index of the type to search.
+ * @param[in] ti: the type_index of the type to search.
  *
  * @ingroup types
  */
@@ -123,21 +121,69 @@ uint indexInTypePack(std::type_index ti)
     }
 }
 
+/**
+ * @brief Get the index of a type T in a pack of types (variadic templates) or a
+ * TypeWrapper.
+ *
+ * Usage:
+ * @code{.cpp}
+ * const uint i = IndexInTypes<int, int, float, double>::value;
+ * static_assert(i == 0, "");
+ * @endcode
+ *
+ * @ingroup types
+ */
 template<typename T, typename... Us>
 struct IndexInTypes
 {
     static constexpr uint value = indexInTypePack<T, Us...>();
 };
 
+/**
+ * @brief Get the type at a given index in a pack of types (variadic templates)
+ * or a TypeWrapper.
+ *
+ * Usage:
+ * @code{.cpp}
+ * using ResType = TypeAt<1, int, float, double>::type;
+ * static_assert(std::is_same<ResType, float>::value, "");
+ * @endcode
+ *
+ * @ingroup types
+ */
 template<uint I, typename... T>
 struct TypeAt
 {
     using type = std::tuple_element_t<I, std::tuple<T...>>;
 };
 
+/**
+ * @brief Alias for the type at a given index in a pack of types (variadic
+ * templates) or a TypeWrapper.
+ *
+ * Usage:
+ * @code{.cpp}
+ * using ResType = TypeAtT<1, int, float, double>;
+ * static_assert(std::is_same<ResType, float>::value, "");
+ * @endcode
+ *
+ * @ingroup types
+ */
 template<uint I, typename... T>
 using TypeAtT = typename TypeAt<I, T...>::type;
 
+/**
+ * @brief Get the number of types in a pack of types (variadic templates) or a
+ * TypeWrapper.
+ *
+ * Usage:
+ * @code{.cpp}
+ * const uint i = NumberOfTypes<int, float, double>::value;
+ * static_assert(i == 3, "");
+ * @endcode
+ *
+ * @ingroup types
+ */
 template<typename... Args>
 struct NumberOfTypes
 {
