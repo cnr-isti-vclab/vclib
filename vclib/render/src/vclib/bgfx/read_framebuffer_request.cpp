@@ -242,9 +242,8 @@ bool ReadFramebufferRequest::submit()
     const auto readPixelSize = mBlitSize.x() * mBlitSize.y();
 
     // source buffer
-    uint8_t    attachment = (mType == Type::ID) ?
-        uint8_t(0) : toUnderlying(mType);
-    const auto srcBuffer  = bgfx::getTexture(mOffscreenFbh, attachment);
+    uint8_t attachment = (mType == Type::ID) ? uint8_t(0) : toUnderlying(mType);
+    const auto srcBuffer = bgfx::getTexture(mOffscreenFbh, attachment);
 
     switch (mType) {
     case Type::DEPTH: {

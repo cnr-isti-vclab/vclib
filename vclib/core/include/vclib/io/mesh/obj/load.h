@@ -28,8 +28,8 @@
 #include <vclib/algorithms/mesh/face_topology.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/image/load.h>
-#include <vclib/io/read.h>
 #include <vclib/io/mesh/settings.h>
+#include <vclib/io/read.h>
 #include <vclib/misc/logger.h>
 #include <vclib/space/complex/mesh_info.h>
 #include <vclib/space/core/texture.h>
