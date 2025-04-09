@@ -239,13 +239,15 @@ void drawersStaticAssertsWM()
         "TrackBallEventDrawer does satisfy the BlockerEventDrawerConcept");
     static_assert(
         !BlockerEventDrawerConcept<const TrackBallEventDrawer<RenderAppTED>>,
-        "const TrackBallEventDrawer does satisfy the BlockerEventDrawerConcept");
+        "const TrackBallEventDrawer does satisfy the "
+        "BlockerEventDrawerConcept");
     static_assert(
         !BlockerEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&>,
         "TrackBallEventDrawer& does satisfy the BlockerEventDrawerConcept");
     static_assert(
         !BlockerEventDrawerConcept<const TrackBallEventDrawer<RenderAppTED>&>,
-        "const TrackBallEventDrawer& does satisfy the BlockerEventDrawerConcept");
+        "const TrackBallEventDrawer& does satisfy the "
+        "BlockerEventDrawerConcept");
     static_assert(
         !BlockerEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&&>,
         "TrackBallEventDrawer&& does satisfy the BlockerEventDrawerConcept");

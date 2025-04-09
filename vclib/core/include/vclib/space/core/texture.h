@@ -26,7 +26,7 @@
 #include "image.h"
 
 #include <vclib/io/file_info.h>
-#include <vclib/io/serialization.h>
+#include <vclib/serialization.h>
 
 namespace vcl {
 
@@ -43,7 +43,7 @@ public:
      *
      * @param[in] path: the path of the texture file.
      */
-    Texture(const std::string& path) : mPath(path) { mImg.load(path); }
+    Texture(const std::string& path) : mPath(path) {}
 
     /**
      * @brief Creates a Texture object, with the given image and its path.

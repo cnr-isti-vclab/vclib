@@ -27,7 +27,7 @@
 
 #include <vclib/concepts/mesh/components/texture_images.h>
 #include <vclib/concepts/mesh/components/texture_paths.h>
-#include <vclib/io/serialization.h>
+#include <vclib/serialization.h>
 #include <vclib/types/view.h>
 
 #include <string>

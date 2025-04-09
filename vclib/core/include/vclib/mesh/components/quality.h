@@ -26,7 +26,7 @@
 #include "bases/component.h"
 
 #include <vclib/concepts/mesh/components/quality.h>
-#include <vclib/io/serialization.h>
+#include <vclib/serialization.h>
 
 namespace vcl::comp {
 

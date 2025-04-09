@@ -29,11 +29,10 @@
 namespace vcl {
 
 template<typename T>
-concept ViewProjectionConcept = requires(
-    T&& obj,
+concept ViewProjectionConcept = requires (
+    T&&                               obj,
     typename RemoveRef<T>::ScalarType s,
-    typename RemoveRef<T>::PointType p)
-{
+    typename RemoveRef<T>::PointType  p) {
     typename RemoveRef<T>::ScalarType;
     typename RemoveRef<T>::PointType;
     typename RemoveRef<T>::MatrixType;

@@ -75,6 +75,19 @@ public:
         ParentViewer::drawableObjectVector().draw(viewId);
     }
 
+    void onDrawId(uint viewId) override
+    {
+        bgfx::setViewTransform(
+            viewId,
+            ParentViewer::viewMatrix().data(),
+            ParentViewer::projectionMatrix().data());
+
+        mCameraUniforms.updateCamera(ParentViewer::camera());
+        mCameraUniforms.bind();
+
+        ParentViewer::drawableObjectVector().drawId(viewId, ParentViewer::id());
+    }
+
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         if (key == Key::F1) {

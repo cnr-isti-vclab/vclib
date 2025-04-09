@@ -29,19 +29,29 @@
 #include <vclib/render/render_app.h>
 #include <vclib/render/viewer/camera.h>
 
+#ifdef VCLIB_WITH_QT
+#include <vclib/qt/widget_manager.h>
+#endif
 #ifdef VCLIB_WITH_GLFW
 #include <vclib/glfw/window_manager.h>
+#endif // VCLIB_WITH_GLFW
 
+#ifdef VCLIB_WITH_QT
+template<typename DR>
+using WMQ = vcl::qt::WidgetManager<DR>;
+#endif
+
+#ifdef VCLIB_WITH_GLFW
 template<typename DR>
 using WMG = vcl::glfw::WindowManager<DR>;
 #endif // VCLIB_WITH_GLFW
 
-void viewProjectionStaticAsserts()
+template<template<typename> typename WM>
+void viewProjectionStaticAssertsWM()
 {
     using namespace vcl;
 
-#if VCLIB_WITH_GLFW
-    using RenderAppT = RenderApp<WMG, Canvas, TrackBallEventDrawer>;
+    using RenderAppT = RenderApp<WM, Canvas, TrackBallEventDrawer>;
 
     static_assert(
         ViewProjectionConcept<TrackBallEventDrawer<RenderAppT>>,
@@ -60,6 +70,19 @@ void viewProjectionStaticAsserts()
     static_assert(
         ViewProjectionConcept<TrackBallEventDrawer<RenderAppT>&&>,
         "TrackBallEventDrawer&& does not satisfy the ViewProjectionConcept");
+}
+
+void viewProjectionStaticAsserts()
+{
+    using namespace vcl;
+
+    // static asserts for each window manager
+#ifdef VCLIB_WITH_QT
+    viewProjectionStaticAssertsWM<WMQ>();
+#endif
+
+#if VCLIB_WITH_GLFW
+    viewProjectionStaticAssertsWM<WMG>();
 #endif
 }
 

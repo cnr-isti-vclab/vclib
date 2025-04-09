@@ -146,6 +146,8 @@ public:
         mCamera.aspectRatio() = ScalarType(double(width) / height);
     }
 
+    void onDrawId(uint viewId) {}
+
     void onDraw(uint viewId) override { Parent::onDraw(viewId); }
 
     void reset() { mCamera.center() = {0.f, 0.f, 0.f}; }

@@ -29,26 +29,23 @@
 namespace vcl {
 
 template<typename T>
-concept DirectionalLightConcept = requires(
-    T&& obj,
-    RemoveRef<T>::PointType p,
-    vcl::Color c)
-{
-    // types
-    typename RemoveRef<T>::PointType;
+concept DirectionalLightConcept =
+    requires (T&& obj, RemoveRef<T>::PointType p, vcl::Color c) {
+        // types
+        typename RemoveRef<T>::PointType;
 
-    // constructors
-    RemoveRef<T>();
-    RemoveRef<T>(p, c);
+        // constructors
+        RemoveRef<T>();
+        RemoveRef<T>(p, c);
 
-    { obj.direction() } -> Point3Concept;
-    { obj.color() } -> ColorConcept;
+        { obj.direction() } -> Point3Concept;
+        { obj.color() } -> ColorConcept;
 
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.reset() } -> std::same_as<void>;
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.reset() } -> std::same_as<void>;
+        };
     };
-};
 
 } // namespace vcl
 

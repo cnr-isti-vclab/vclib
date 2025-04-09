@@ -97,10 +97,7 @@ public:
         }
     }
 
-    void toggleAxisVisibility()
-    {
-        mAxis.setVisibility(!mAxis.isVisible());
-    }
+    void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
 
     void toggleTrackBallVisibility()
     {
