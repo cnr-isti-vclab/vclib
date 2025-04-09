@@ -146,7 +146,7 @@ public:
         mCamera.aspectRatio() = ScalarType(double(width) / height);
     }
 
-    void onDrawId(uint viewId) {}
+    void onDrawId(uint viewId) override {}
 
     void onDraw(uint viewId) override { Parent::onDraw(viewId); }
 
