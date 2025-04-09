@@ -224,12 +224,12 @@ public:
      * Changes scale by an absolute amount (i.e. if the current scale is 2.0 and
      * deltaS is 0.4, the new scale will be 2.4)
      */
-    void scale(float deltaS)
+    void changeScaleAbsolute(float deltaS)
     {
         ScalarType scalingFactor =
             (mCurrentPreScale + deltaS) / mCurrentPreScale;
         mTransform.prescale(scalingFactor);
-        mCurrentPreScale = mCurrentPreScale * scalingFactor;
+        mCurrentPreScale = mCurrentPreScale + deltaS;
     }
 };
 

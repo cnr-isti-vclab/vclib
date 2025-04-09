@@ -28,12 +28,12 @@
 namespace vcl {
 
 /**
- * The PerFrameScaleAutomationAction is an automation that represents the
- * scaling of a DesktopTrackball, with the strength of the scaling measured
- * per-frame
+ * The PerFrameChangeScaleAbsoluteAutomationAction is an automation that
+ * represents the scaling of a DesktopTrackball, with the strength of the
+ * scaling measured per-frame
  */
 template<typename BmarkDrawer>
-class PerFrameScaleAutomationAction :
+class PerFrameChangeScaleAbsoluteAutomationAction :
         public AbstractAutomationAction<BmarkDrawer>
 {
     using Parent = AbstractAutomationAction<BmarkDrawer>;
@@ -41,7 +41,7 @@ class PerFrameScaleAutomationAction :
     float mPixelDeltaPerFrame;
 
 public:
-    PerFrameScaleAutomationAction(float pixelDeltaPerFrame) :
+    PerFrameChangeScaleAbsoluteAutomationAction(float pixelDeltaPerFrame) :
             mPixelDeltaPerFrame {pixelDeltaPerFrame}
     {
     }
@@ -57,13 +57,14 @@ public:
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
         const& override
     {
-        return std::make_shared<PerFrameScaleAutomationAction<BmarkDrawer>>(
-            *this);
+        return std::make_shared<
+            PerFrameChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<PerFrameScaleAutomationAction<BmarkDrawer>>(
+        return std::make_shared<
+            PerFrameChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(
             std::move(*this));
     }
 };

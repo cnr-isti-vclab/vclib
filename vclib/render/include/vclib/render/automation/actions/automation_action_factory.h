@@ -54,10 +54,11 @@ public:
             framesPerRotation, axis);
     }
 
-    PerFrameScaleAutomationAction<TemplPar> PerFrameScale(
-        float pixelDeltaPerFrame)
+    PerFrameChangeScaleAbsoluteAutomationAction<TemplPar>
+    PerFrameChangeScaleAbsolute(float pixelDeltaPerFrame)
     {
-        return PerFrameScaleAutomationAction<TemplPar>(pixelDeltaPerFrame);
+        return PerFrameChangeScaleAbsoluteAutomationAction<TemplPar>(
+            pixelDeltaPerFrame);
     }
 
     RotationAutomationAction<TemplPar> Rotation(
@@ -67,9 +68,11 @@ public:
         return RotationAutomationAction<TemplPar>(framesPerRotation, axis);
     }
 
-    ScaleAutomationAction<TemplPar> Scale(float pixelDeltaPerSecond)
+    ChangeScaleAbsoluteAutomationAction<TemplPar> ChangeScaleAbsolute(
+        float pixelDeltaPerSecond)
     {
-        return ScaleAutomationAction<TemplPar>(pixelDeltaPerSecond);
+        return ChangeScaleAbsoluteAutomationAction<TemplPar>(
+            pixelDeltaPerSecond);
     }
 
     SequentialAutomationActions<TemplPar> Sequential(

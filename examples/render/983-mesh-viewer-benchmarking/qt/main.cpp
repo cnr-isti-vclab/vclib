@@ -82,7 +82,8 @@ int main(int argc, char** argv)
     // Rotate and scale at the same time for 2 seconds
     tw.addAutomation(aaf.TimeLimited(
         aaf.Simultaneous(
-            {aaf.Rotation(5.f, {0.f, 0.f, 1.f}), aaf.Scale(-0.2f)}),
+            {aaf.Rotation(5.f, {0.f, 0.f, 1.f}),
+             aaf.ChangeScaleAbsolute(-0.2f)}),
         2.f));
 
     // Change the measured metric to time (seconds)
@@ -91,7 +92,7 @@ int main(int argc, char** argv)
     // Rotate for 5000 frames and then scale for 5000 frames
     tw.addAutomation(aaf.Sequential(
         {aaf.FrameLimited(aaf.Rotation(5.f, {0.f, -1.f, 0.f}), 5000.f),
-         aaf.FrameLimited(aaf.Scale(1.0f), 5000.f)}));
+         aaf.FrameLimited(aaf.ChangeScaleAbsolute(1.0f), 5000.f)}));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
