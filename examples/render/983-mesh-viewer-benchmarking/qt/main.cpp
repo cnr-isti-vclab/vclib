@@ -60,7 +60,6 @@ int main(int argc, char** argv)
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable =
         getDrawableMesh<vcl::TriMesh>("bunny.obj");
-    vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>();
 
     // An automation action factory, to shorten the length of Automation
     // declarations

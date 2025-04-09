@@ -122,8 +122,12 @@ public:
     // using Parent::onDraw;
     using Parent::onInit;
     using Parent::onPostDraw;
-    using Parent::onResize;
     using Parent::Parent;
+
+    BenchmarkDrawer(uint width, uint height) : Parent(width, height)
+    {
+        onResize(width, height);
+    }
 
     MatrixType viewMatrix()
     {
@@ -135,6 +139,12 @@ public:
     Camera<ScalarType> camera() { return mCamera; }
 
     DirectionalLight<ScalarType> light() { return mLight; }
+
+    void onResize(uint width, uint height) override
+    {
+        Parent::onResize(width, height);
+        mCamera.aspectRatio() = ScalarType(double(width) / height);
+    }
 
     void onDraw(uint viewId) override { Parent::onDraw(viewId); }
 

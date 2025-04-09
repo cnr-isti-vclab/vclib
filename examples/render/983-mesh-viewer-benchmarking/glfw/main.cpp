@@ -44,7 +44,7 @@
 
 int main(int argc, char** argv)
 {
-    using ImguiMeshViewer = vcl::RenderApp<
+    using BenchmarkViewer = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
         vcl::BenchmarkViewerDrawer>;
@@ -55,16 +55,15 @@ int main(int argc, char** argv)
 
 #endif
 
-    ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
+    BenchmarkViewer tw("Benchmark Viewer GLFW");
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable =
         getDrawableMesh<vcl::TriMesh>("bunny.obj");
-    vcl::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh<vcl::TriMesh>();
 
     // An automation action factory, to shorten the length of Automation
     // declarations
-    vcl::AutomationActionFactory<ImguiMeshViewer> aaf;
+    vcl::AutomationActionFactory<BenchmarkViewer> aaf;
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
