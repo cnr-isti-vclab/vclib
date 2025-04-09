@@ -102,7 +102,7 @@ public:
         mAutomationCounter++;
     };
 
-    void finish(BenchmarkMetric& metric) override
+    void finish() override
     {
         mStream << "Loop;Automation";
         for (uint32_t i = 0; i < maxMeasurementSize; i++) {

@@ -50,9 +50,8 @@ public:
 
     /**
      * @brief Called when the last automation of the last loop has finished
-     * @param[in] metric: The metric to take the measurements from
      */
-    virtual void finish(BenchmarkMetric& metric) = 0;
+    virtual void finish() = 0;
 
     virtual std::shared_ptr<BenchmarkPrinter> clone() const& = 0;
     virtual std::shared_ptr<BenchmarkPrinter> clone() &&     = 0;

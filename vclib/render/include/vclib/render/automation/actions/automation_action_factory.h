@@ -40,12 +40,6 @@ class AutomationActionFactory
     using TemplPar = BenchmarkDrawer<DerivedRenderApp>;
 
 public:
-    MetricChangerAutomationAction<TemplPar> MetricChanger(
-        const BenchmarkMetric& metric)
-    {
-        return MetricChangerAutomationAction<TemplPar>(metric);
-    }
-
     PerFrameRotationAutomationAction<TemplPar> PerFrameRotation(
         float   framesPerRotation,
         Point3f axis)

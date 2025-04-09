@@ -38,7 +38,7 @@ public:
 
     void onBenchmarkLoop() override {};
 
-    void finish(BenchmarkMetric& metric) override {};
+    void finish() override {};
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {

@@ -73,10 +73,7 @@ int main(int argc, char** argv)
     tw.setRepeatTimes(3);
 
     // Change the measured metric to FPS
-    tw.addAutomation(
-        aaf.MetricChanger(vcl::FpsBenchmarkMetric()),
-        // We don't want to measure the metric for this automation
-        false);
+    tw.setMetric(vcl::FpsBenchmarkMetric());
 
     // Rotate and scale at the same time for 2 seconds
     tw.addAutomation(aaf.TimeLimited(
@@ -86,7 +83,7 @@ int main(int argc, char** argv)
         2.f));
 
     // Change the measured metric to time (seconds)
-    tw.addAutomation(aaf.MetricChanger(vcl::TimeBenchmarkMetric()), false);
+    tw.setMetric(vcl::TimeBenchmarkMetric());
 
     // Rotate for 5000 frames and then scale for 5000 frames
     tw.addAutomation(aaf.Sequential(

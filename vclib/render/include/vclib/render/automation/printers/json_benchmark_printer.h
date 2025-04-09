@@ -111,7 +111,7 @@ public:
         mAutomationIndex++;
     };
 
-    void finish(BenchmarkMetric& metric) override
+    void finish() override
     {
         mStream << "\n\t}\n}";
         mStream.close();

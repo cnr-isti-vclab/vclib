@@ -71,17 +71,12 @@ private:
     less frames that you need to wait to avoid the freeze, tested so far only on
     2 devices) What causes the freeze? no clue.
     */
-    bool       mBeforeStartWaitTimerStarted = false;
-    vcl::Timer mBeforeStartWaitTimer;
-    double     mBeforeStartWaitSeconds = 0.4f;
+    bool   mBeforeStartWaitTimerStarted = false;
+    Timer  mBeforeStartWaitTimer;
+    double mBeforeStartWaitSeconds = 0.4f;
 
-    vcl::PolymorphicObjectVector<AutomationType> mAutomations;
-
-    /**
-     * This vector's purpose is to keep track of whether to write the metric
-     * measured for the automation at the same index in the automations vector
-     */
-    std::vector<bool> mRelevancies;
+    PolymorphicObjectVector<AutomationType>  mAutomations;
+    PolymorphicObjectVector<BenchmarkMetric> mMetrics;
 
     size_t mCurrentAutomationIndex = 0;
 
@@ -111,10 +106,8 @@ private:
 
     void onAutomationEnd()
     {
-        mMetric->end();
-        if (mRelevancies[mCurrentAutomationIndex]) {
-            mPrinter->print(*mMetric);
-        }
+        mMetrics[mCurrentAutomationIndex]->end();
+        mPrinter->print(*mMetrics[mCurrentAutomationIndex]);
         mCurrentAutomationIndex++;
     }
 
@@ -186,7 +179,7 @@ public:
         }
         if (mFirstCall) {
             mAutomations[0]->start();
-            mMetric->start();
+            mMetrics[0]->start();
             mFirstCall = false;
         }
         if (!mAutomations[mCurrentAutomationIndex]->isActive()) {
@@ -196,31 +189,48 @@ public:
                 mRepeatCount++;
                 if (isLastLoop()) {
                     std::cerr << "All benchmarks done." << std::endl;
-                    mPrinter->finish(*mMetric);
+                    mPrinter->finish();
                     return;
                 }
                 benchmarkLoop();
                 mPrinter->onBenchmarkLoop();
             }
-            mMetric->start();
+            mMetrics[mCurrentAutomationIndex]->start();
             mAutomations[mCurrentAutomationIndex]->start();
         }
         if (mAutomations[mCurrentAutomationIndex]->isActive()) {
-            mMetric->measure();
+            mMetrics[mCurrentAutomationIndex]->measure();
             mAutomations[mCurrentAutomationIndex]->doAction();
         }
     };
 
-    size_t addAutomation(const AutomationType& action, bool relevancy = true)
+    size_t addAutomation(const AutomationType& action)
     {
         std::shared_ptr<AutomationType> cloned = action.clone();
         cloned->setBenchmarkDrawer(this);
         mAutomations.pushBack(std::move(*cloned));
-        mRelevancies.push_back(relevancy);
+        mMetrics.pushBack(*mMetric);
         return mAutomations.size() - 1;
     }
 
-    void setMetric(const BenchmarkMetric& bm) { mMetric = bm.clone(); };
+    size_t addAutomation(
+        const AutomationType&  action,
+        const BenchmarkMetric& metric)
+    {
+        std::shared_ptr<AutomationType> cloned = action.clone();
+        cloned->setBenchmarkDrawer(this);
+        mAutomations.pushBack(std::move(*cloned));
+        mMetrics.pushBack(metric);
+        return mAutomations.size() - 1;
+    }
+
+    /**
+     * Sets the BenchmarkMetric that will be used by all the Automations added
+     * after this call. It has no effect on Automations added before this call.
+     *
+     * @param[in] bm The BenchmarkMetric to set
+     */
+    void setMetric(const BenchmarkMetric& bm) { mMetric = bm.clone(); }
 
     void setPrinter(const BenchmarkPrinter& bp) { mPrinter = bp.clone(); };
 
