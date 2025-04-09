@@ -109,10 +109,14 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        const bool homogeneousNDC =
-            Context::instance().capabilites().homogeneousDepth;
+        ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
 
-        ParentViewer::readRequest(button, x, y, modifiers, homogeneousNDC);
+        if (button == MouseButton::LEFT) {
+            const bool homogeneousNDC =
+                Context::instance().capabilites().homogeneousDepth;
+
+            ParentViewer::readDepthRequest(x, y, homogeneousNDC);
+        }
     }
 };
 

@@ -324,6 +324,15 @@ private:
          ...);
     }
 
+    void cnvDrawId()
+    {
+        // call the onDrawId member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers<RenderApp>*>(this)->onDrawId(CanvasType::viewId()),
+         ...);
+    }
+
     void cnvPostDraw()
     {
         // call the onPostDraw member function of each Drawer object.
@@ -353,9 +362,16 @@ private:
         return CanvasType::onReadDepth(point, callback);
     }
 
-    void dScreenshot(const std::string& filename, uint width, uint height)
+    [[nodiscard]] bool dReadId(
+        const Point2i&                      point,
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
     {
-        CanvasType::onScreenshot(filename, width, height);
+        return CanvasType::onReadId(point, callback);
+    }
+
+    void dScreenshot(const std::string& filename, uint multiplier = 1)
+    {
+        CanvasType::onScreenshot(filename, multiplier);
     }
 };
 
@@ -593,6 +609,15 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
     static void drawContent(RenderApp* r) { r->cnvDrawContent(); }
 
     /**
+     * @brief The CanvasType wants to draw only the IDs of the objects, without
+     * any decorator (e.g. axis, trackball, grid, etc.).
+     * This scenario is useful when the user wants to take a snapshot of the
+     * scene without any decoration. It asks the RenderApp to call the
+     * `onDrawId(uint())` function for every Drawer object.
+     */
+    static void drawId(RenderApp* r) { r->cnvDrawId(); }
+
+    /**
      * @brief The CanvasType has finished drawing and has submitted the new
      * frame, and asks the RenderApp to call the `onPostDraw()` function for
      * every Drawer object.
@@ -694,9 +719,12 @@ public: // TODO - remove this when C++26 is supported
      * @param[in] point: The point on the canvas where the depth value must be
      * read.
      * @param[in] callback: The callback function that will be called when the
-     * depth value is read. TODO: explain the callback function signature.
+     * depth value is read. The callback function should have the following
+     * signature: `void callback(const ReadData& value)`, where `value` float
+     * depth value read from the canvas.
      *
-     * @return true if the depth value is successfully read, false otherwise.
+     * @return true if the depth requeste is successfully submitted, false
+     * otherwise.
      */
     [[nodiscard]] static bool readDepth(
         RenderApp*                          r,
@@ -707,23 +735,43 @@ public: // TODO - remove this when C++26 is supported
     }
 
     /**
+     * @brief A Drawer object can request the ID at a specific point on the
+     * canvas. This function is called by the Drawer object to request the ID at
+     * the specified point.
+     *
+     * @param[in] point: The point on the canvas where the ID must be read.
+     * @param[in] callback: The callback function that will be called when the
+     * ID is read. The callback function should have the following signature:
+     * `void callback(const ReadData& value)`, where `value` is the
+     * ID value read from the canvas encoded into 4 bytes (unsigned 32 bit
+     * integer).
+     *
+     * @return true if the ID request is successfully submitted, false
+     * otherwise.
+     */
+    [[nodiscard]] static bool readId(
+        RenderApp*                          r,
+        const Point2i&                      point,
+        ReadBufferTypes::CallbackReadBuffer callback = nullptr)
+    {
+        return r->dReadId(point, callback);
+    }
+
+    /**
      * @brief A Drawer object can request a screenshot of the canvas. This
      * function is called by the Drawer object to request a screenshot of the
      * canvas.
      *
      * @param[in] filename: The filename where the screenshot will be saved.
-     * @param[in] width: The width of the screenshot. If 0, the width of the
-     * canvas will be used.
-     * @param[in] height: The height of the screenshot. If 0, the height of the
-     * canvas will be used.
+     * @param[in] multiplier: The multiplier that will be applied to the
+     * canvas image. The default value is 1.
      */
     static void screenshot(
         RenderApp*         r,
         const std::string& filename,
-        uint               width  = 0,
-        uint               height = 0)
+        uint               multiplier = 1)
     {
-        r->dScreenshot(filename, width, height);
+        r->dScreenshot(filename, multiplier);
     }
 };
 

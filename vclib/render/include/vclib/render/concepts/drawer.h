@@ -38,6 +38,7 @@ concept DrawerConcept = requires (T&& obj) {
         { obj.onInit(uint()) } -> std::same_as<void>;
         { obj.onResize(uint(), uint()) } -> std::same_as<void>;
         { obj.onDraw(uint()) } -> std::same_as<void>;
+        { obj.onDrawId(uint()) } -> std::same_as<void>;
         { obj.onDrawContent(uint()) } -> std::same_as<void>;
         { obj.onPostDraw() } -> std::same_as<void>;
     };
