@@ -47,6 +47,9 @@ bgfx::ProgramHandle createProgram(
     bgfx::ShaderHandle vsHandle,
     bgfx::ShaderHandle fsHandle);
 
+bgfx::ProgramHandle createProgram(
+    bgfx::ShaderHandle csHandle);
+
 } // namespace vcl
 
 #endif // VCL_BGFX_PROGRAMS_LOAD_PROGRAM_H

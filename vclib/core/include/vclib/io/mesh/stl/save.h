@@ -24,8 +24,8 @@
 #define VCL_IO_MESH_STL_SAVE_H
 
 #include <vclib/algorithms/core/polygon.h>
-#include <vclib/io/write.h>
 #include <vclib/io/mesh/settings.h>
+#include <vclib/io/write.h>
 #include <vclib/misc/logger.h>
 #include <vclib/space/complex/mesh_info.h>
 

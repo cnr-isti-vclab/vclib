@@ -34,15 +34,15 @@ namespace vcl::qt {
 inline std::set<FileFormat> saveImageFormats()
 {
     return {
-            FileFormat("bmp", "Bitmap"),
-            FileFormat(
-                std::vector<std::string> {"jpg", "jpeg"},
-                "Joint Photographic Experts Group"),
-            FileFormat("png", "Portable Network Graphics"),
-            FileFormat("ppm", "Portable Pixmap"),
-            FileFormat("xbm", "X11 Bitmap"),
-            FileFormat("xpm", "X11 Pixmap"),
-            };
+        FileFormat("bmp", "Bitmap"),
+        FileFormat(
+            std::vector<std::string> {"jpg", "jpeg"},
+            "Joint Photographic Experts Group"),
+        FileFormat("png", "Portable Network Graphics"),
+        FileFormat("ppm", "Portable Pixmap"),
+        FileFormat("xbm", "X11 Bitmap"),
+        FileFormat("xpm", "X11 Pixmap"),
+    };
 }
 
 inline void saveImageData(

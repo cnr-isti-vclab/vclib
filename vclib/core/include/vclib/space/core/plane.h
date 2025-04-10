@@ -27,6 +27,7 @@
 
 #include <vclib/concepts/space/plane.h>
 #include <vclib/exceptions/misc.h>
+#include <vclib/serialization.h>
 
 namespace vcl {
 
@@ -45,7 +46,6 @@ namespace vcl {
  *
  * @ingroup space_core
  */
-// TODO: Make Plane Serializable and add tests.
 template<typename Scalar, bool NORM = true>
 class Plane
 {
@@ -149,6 +149,26 @@ public:
         Point3<Scalar> mirr = projectPoint(p);
         mirr += mirr - p;
         return mirr;
+    }
+
+    /**
+     * @brief Serializes the plane to the given output stream.
+     * @param[in] os: The output stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        mDir.serialize(os);
+        vcl::serialize(os, mOffset);
+    }
+
+    /**
+     * @brief Deserializes the plane from the given input stream.
+     * @param[in] is: The input stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        mDir.deserialize(is);
+        vcl::deserialize(is, mOffset);
     }
 
     bool operator==(const Plane& p) const

@@ -28,8 +28,8 @@
 #include <vclib/exceptions/io.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/image/save.h>
-#include <vclib/io/write.h>
 #include <vclib/io/mesh/settings.h>
+#include <vclib/io/write.h>
 #include <vclib/misc/logger.h>
 #include <vclib/space/complex/mesh_info.h>
 #include <vclib/space/core/texture.h>

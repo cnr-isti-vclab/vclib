@@ -106,9 +106,7 @@ createTrackBall(ScalarType scale = 1.0, uint pointsPerCircle = 64)
  *
  * @ingroup core_create
  */
-inline Image createCheckBoardImage(
-    uint imageSize,
-    uint checkNum = 8)
+inline Image createCheckBoardImage(uint imageSize, uint checkNum = 8)
 {
     vcl::Array2<uint> img(imageSize, imageSize);
 

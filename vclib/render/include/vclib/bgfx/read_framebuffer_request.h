@@ -40,7 +40,7 @@ public:
     using ReadData           = ReadBufferTypes::ReadData;
     using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
-    enum class Type : uint8_t{
+    enum class Type : uint8_t {
         COLOR = 0, // entire color buffer
         DEPTH = 1, // single pixel depth
         ID    = 2, // single pixel id

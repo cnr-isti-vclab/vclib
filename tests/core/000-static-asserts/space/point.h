@@ -49,6 +49,7 @@ void pointStaticAsserts()
         "const Point& does not satisfy the PointConcept");
     static_assert(
         PointConcept<PointType&&>, "Point&& does not satisfy the PointConcept");
+    static_assert(Serializable<PointType>, "Point is not serializable");
 
     // point2
     static_assert(
@@ -65,6 +66,7 @@ void pointStaticAsserts()
     static_assert(
         Point2Concept<Point2Type&&>,
         "Point2&& does not satisfy the Point2Concept");
+    static_assert(Serializable<Point2Type>, "Point2 is not serializable");
 
     // point3
     static_assert(
@@ -81,6 +83,7 @@ void pointStaticAsserts()
     static_assert(
         Point3Concept<Point3Type&&>,
         "Point3&& does not satisfy the Point3Concept");
+    static_assert(Serializable<Point3Type>, "Point3 is not serializable");
 
     // point4
     static_assert(
@@ -97,12 +100,15 @@ void pointStaticAsserts()
     static_assert(
         Point4Concept<Point4Type&&>,
         "Point4&& does not satisfy the Point4Concept");
+    static_assert(Serializable<Point4Type>, "Point4 is not serializable");
 
-    // TODO: check these concepts
-    // point iterators
-    static_assert(PointIteratorConcept<std::vector<Point2d>::iterator>, "");
     static_assert(
-        PointIteratorConcept<std::vector<Point3d>::const_iterator>, "");
+        PointIteratorConcept<std::vector<Point2d>::iterator>,
+        "Vector of Point2 iterator does not satisfy the PointIteratorConcept");
+    static_assert(
+        PointIteratorConcept<std::vector<Point3d>::const_iterator>,
+        "Vector of Point3 const iterator does not satisfy the "
+        "PointIteratorConcept");
 }
 
 #endif // POINT_H

@@ -29,26 +29,36 @@
 namespace vcl {
 
 /**
- * @brief Utility class that represents a edge in a Mesh.
+ * @brief Utility class that represents a edge in a Mesh having Vertices and
+ * Faces.
  *
  * An instance of MeshEdgeUtil stores:
  * - the index of the edge in the face
  * - the pointer of the face
  * - the pointers of the vertices of the edge.
  *
- * Edges can be sorted using this class
  *
- * TODO: unify these two classes with a template parameter for constness
+ * This class allows to compare edges in a Mesh. The ordering is done using the
+ * vertex pointers of the edge (the face pointer or the edge index are not
+ * used).
+ *
+ * @tparam MeshType: The type of the mesh. It must satisfy the FaceMeshConcept.
  *
  * @ingroup space_complex
  */
-template<FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType, bool CNST = false>
 class MeshEdgeUtil
 {
-public:
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
+    using VertexType = std::conditional_t<
+        CNST,
+        const typename MeshType::VertexType,
+        typename MeshType::VertexType>;
+    using FaceType = std::conditional_t<
+        CNST,
+        const typename MeshType::FaceType,
+        typename MeshType::FaceType>;
 
+public:
     VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
     FaceType*   f;    // Pointer to the face of the edge
     int         e;    // Index of the edge inside the face
@@ -88,51 +98,13 @@ public:
     }
 };
 
+/**
+ * @brief Const version of MeshEdgeUtil.
+ *
+ * @ingroup space_complex
+ */
 template<FaceMeshConcept MeshType>
-class ConstMeshEdgeUtil
-{
-public:
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-
-    const VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
-    const FaceType*   f;    // Pointer to the face of the edge
-    int               e;    // Index of the edge inside the face
-
-    ConstMeshEdgeUtil() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
-
-    ConstMeshEdgeUtil(const FaceType& pf, uint ne)
-    {
-        v[0] = pf.vertex(ne);
-        v[1] = pf.vertexMod(ne + 1);
-        assert(v[0] != v[1]);
-
-        if (v[0] > v[1])
-            std::swap(v[0], v[1]);
-        f = &pf;
-        e = ne;
-    }
-
-    bool operator<(const ConstMeshEdgeUtil& pe) const
-    {
-        if (v[0] < pe.v[0])
-            return true;
-        else if (v[0] > pe.v[0])
-            return false;
-        else
-            return v[1] < pe.v[1];
-    }
-
-    bool operator==(const ConstMeshEdgeUtil& pe) const
-    {
-        return v[0] == pe.v[0] && v[1] == pe.v[1];
-    }
-
-    bool operator!=(const ConstMeshEdgeUtil& pe) const
-    {
-        return v[0] != pe.v[0] || v[1] != pe.v[1];
-    }
-};
+using ConstMeshEdgeUtil = MeshEdgeUtil<MeshType, true>;
 
 } // namespace vcl
 

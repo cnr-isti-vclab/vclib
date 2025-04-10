@@ -32,7 +32,7 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
-#define STB_IMAGE_STATIC // make stb static
+#define STB_IMAGE_STATIC         // make stb static
 #define STB_IMAGE_IMPLEMENTATION // and then include the implementation
 #include <stb/stb_image.h>
 
