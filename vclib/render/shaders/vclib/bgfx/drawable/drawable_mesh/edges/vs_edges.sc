@@ -29,8 +29,7 @@ void main()
 {
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
     v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
-    // TODO: use the 'normal matrix' to transform normals
-    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
+    v_normal = normalize(mul(u_normalMatrix, a_normal));
 
     // default case - color is taken from buffer
     v_color = a_color0;
