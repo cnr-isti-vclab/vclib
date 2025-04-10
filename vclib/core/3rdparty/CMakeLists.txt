@@ -54,6 +54,12 @@ option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
 # IO - 3rd Party libraries
 if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
+    # NLohmannJSON
+    option(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON
+        "Allow use of downloaded nlohmann-json source" ON)
+    option(VCLIB_ALLOW_INSTALL_NLOHMANN_JSON
+        "Allow install nlohmann-json source" ON)
+
     # Qt
     option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
 
@@ -85,10 +91,13 @@ include(poolstl.cmake)
 ### IO - 3rd Party libraries
 
 if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
+    # NLohmannJSON
+    include(io/json.cmake)
+
     # Qt
     include(io/qt.cmake)
 
-    ### STB
+    # STB
     include(io/stb.cmake)
 endif()
 
