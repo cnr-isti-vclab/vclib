@@ -65,12 +65,15 @@ void facesFromPlyTriStrip(MeshType& m, const std::vector<int>& tristrip)
     }
 }
 
-template<FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void readPlyTriStripsTxt(
     std::istream&    file,
     const PlyHeader& header,
-    MeshType&        m)
+    MeshType&        m,
+    LogType&         log)
 {
+    log.startProgress("Reading Triangle Strips", header.numberTriStrips());
+
     for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
         Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
         Tokenizer::iterator token = spaceTokenizer.begin();
@@ -100,16 +103,20 @@ void readPlyTriStripsTxt(
                 }
             }
         }
+        log.progress(tid);
     }
+    log.endProgress();
 }
 
-template<FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void readPlyTriStripsBin(
     std::istream&    file,
     const PlyHeader& header,
     MeshType&        m,
-    std::endian      end)
+    std::endian      end,
+    LogType&         log)
 {
+    log.startProgress("Reading Triangle Strips", header.numberTriStrips());
     for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
         for (const PlyProperty& p : header.triStripsProperties()) {
             bool hasBeenRead = false;
@@ -134,7 +141,9 @@ void readPlyTriStripsBin(
                 }
             }
         }
+        log.progress(tid);
     }
+    log.endProgress();
 }
 
 template<FaceMeshConcept MeshType, LoggerConcept LogType>
@@ -144,15 +153,14 @@ void readPlyTriStrips(
     MeshType&        mesh,
     LogType&         log)
 {
-    // todo: manage log
     if (header.format() == ply::ASCII) {
-        detail::readPlyTriStripsTxt(file, header, mesh);
+        detail::readPlyTriStripsTxt(file, header, mesh, log);
     }
     else {
         std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
                               std::endian::big :
                               std::endian::little;
-        detail::readPlyTriStripsBin(file, header, mesh, end);
+        detail::readPlyTriStripsBin(file, header, mesh, end, log);
     }
 }
 
