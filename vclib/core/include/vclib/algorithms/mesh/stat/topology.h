@@ -282,7 +282,6 @@ uint countVerticesToDuplicateByWedgeTexCoords(
     std::vector<std::map<WedgeTexCoordsInfo, FaceList>> wedges(
         mesh.vertexContainerSize());
 
-    // TODO: use compacted indices instead of f.index() in this loop
     for (const auto& f : mesh.faces()) {
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             uint vi = f.vertexIndex(i);

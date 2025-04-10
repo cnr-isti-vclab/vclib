@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_CORE_VISIBILITY_H
 #define VCL_ALGORITHMS_CORE_VISIBILITY_H
 
+#include "polygon/geometry.h"
+
 #include <vclib/concepts/space/plane.h>
 #include <vclib/concepts/space/point.h>
 #include <vclib/concepts/space/triangle.h>
@@ -67,15 +69,28 @@ auto halfSpaceDeterminant(const TriangleType& triangle, const PointType& point)
 template<FaceConcept FaceType, Point3Concept PointType>
 auto halfSpaceDeterminant(const FaceType& face, const PointType& point)
 {
-    // TODO: don't just check the first three vertices: first check if the face
-    // is a triangle, then:
-    // - if it is a triangle, keep the current implementation
+    // - if it is a triangle, compute the determinant using the triangle
     // - if it is a polygon, use its normal to compute the determinant
-    return halfSpaceDeterminant(
-        face.vertex(0)->coord(),
-        face.vertex(1)->coord(),
-        face.vertex(2)->coord(),
-        point);
+    if constexpr (TriangleFaceConcept<FaceType>) {
+        return halfSpaceDeterminant(
+            face.vertex(0)->coord(),
+            face.vertex(1)->coord(),
+            face.vertex(2)->coord(),
+            point);
+    }
+    else {
+        if (face.vertexNumber() == 3) {
+            return halfSpaceDeterminant(
+                face.vertex(0)->coord(),
+                face.vertex(1)->coord(),
+                face.vertex(2)->coord(),
+                point);
+        }
+        else {
+            PointType n = faceNormal(face);
+            return n.dot(point - face.vertex(0)->coord());
+        }
+    }
 }
 
 /**

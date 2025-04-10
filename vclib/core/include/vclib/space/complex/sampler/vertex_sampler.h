@@ -7,24 +7,19 @@
 
 namespace vcl {
 
-namespace detail {
-
-// TODO: make this class the default outside the detail namespace
-// and then define only the const version with CNST = true
-template<VertexConcept VertexType, bool CNST = false>
+template<VertexConcept Vertex, bool CNST = true>
 class VertexSampler
 {
-    using VP   = std::conditional_t<CNST, const VertexType*, VertexType*>;
-    using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
+    using VertexType = std::conditional_t<CNST, const Vertex, Vertex>;
 
-    std::vector<VP> mSamples;
+    std::vector<VertexType*> mSamples;
 
 public:
     using PointType = VertexType::CoordType;
 
     VertexSampler() {}
 
-    const std::vector<VP> samples() const { return mSamples; }
+    const std::vector<VertexType*> samples() const { return mSamples; }
 
     const typename VertexType::CoordType& sample(uint i) const
     {
@@ -39,22 +34,17 @@ public:
 
     void resize(uint n) { mSamples.resize(n); }
 
-    void add(VPar v) { mSamples.push_back(&v); }
+    void add(VertexType& v) { mSamples.push_back(&v); }
 
-    void set(uint i, VPar v) { mSamples[i] = &v; }
+    void set(uint i, VertexType& v) { mSamples[i] = &v; }
 
     auto begin() const { return std::begin(mSamples | views::coords); }
 
     auto end() const { return std::end(mSamples | views::coords); }
 };
 
-} // namespace detail
-
 template<VertexConcept VertexType>
-using VertexSampler = detail::VertexSampler<VertexType, false>;
-
-template<VertexConcept VertexType>
-using ConstVertexSampler = detail::VertexSampler<VertexType, true>;
+using ConstVertexSampler = VertexSampler<VertexType, true>;
 
 } // namespace vcl
 

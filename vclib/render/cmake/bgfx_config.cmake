@@ -105,17 +105,33 @@ function(_bgfx_compile_shader_to_header)
             if(PROFILE STREQUAL "spirv")
                 set(PLATFORM_I LINUX)
             endif()
-            _bgfx_shaderc_parse(
-                CLI #
-                ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
-                FILE ${SHADER_FILE_ABSOLUTE}
-                OUTPUT ${OUTPUT}
-                PROFILE ${PROFILE}
-                O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
-                VARYINGDEF ${ARGS_VARYING_DEF}
-                INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
-                BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
-            )
+
+            # if VARYINGDEF is not empty
+            if(NOT "${ARGS_VARYING_DEF}" STREQUAL "")
+                _bgfx_shaderc_parse(
+                    CLI #
+                    ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
+                    FILE ${SHADER_FILE_ABSOLUTE}
+                    OUTPUT ${OUTPUT}
+                    PROFILE ${PROFILE}
+                    O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
+                    VARYINGDEF ${ARGS_VARYING_DEF}
+                    INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
+                    BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
+                    )
+            else()
+                _bgfx_shaderc_parse(
+                    CLI #
+                    ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
+                    FILE ${SHADER_FILE_ABSOLUTE}
+                    OUTPUT ${OUTPUT}
+                    PROFILE ${PROFILE}
+                    O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
+                    INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
+                    BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
+                )
+            endif()
+
             list(APPEND OUTPUTS ${OUTPUT})
             list(APPEND ALL_OUTPUTS ${OUTPUT})
             list(APPEND COMMANDS COMMAND bgfx::shaderc ${CLI})
@@ -332,10 +348,15 @@ function(build_bgfx_shaders_to_headers)
         endif()
 
         if(NOT "${TYPE}" STREQUAL "")
+            if ("${TYPE}" STREQUAL "COMPUTE")
+                set(VARYING_DEF_PATH)
+            else()
+                set(VARYING_DEF_PATH "${ABSOLUTE_DIR_PATH}/varying.def.sc")
+            endif()
             _bgfx_compile_shader_to_header(
                 TYPE ${TYPE}
                 SHADERS ${ABSOLUTE_PATH_SHADER}
-                VARYING_DEF "${ABSOLUTE_DIR_PATH}/varying.def.sc"
+                VARYING_DEF ${VARYING_DEF_PATH}
                 OUTPUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH}
                 INCLUDE_DIRS "${BGFX_DIR}/src;${VCLIB_RENDER_DIR};${VCLIB_RENDER_SHADER_DIR}"
                 DEPENDS ${ARGV}

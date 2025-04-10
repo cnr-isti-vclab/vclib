@@ -20,9 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/io.h>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
-#include <vclib/io.h>
 #include <vclib/meshes.h>
 #include <vclib/space.h>
 
@@ -79,6 +79,17 @@ vcl::BitSet<T> randomBitSet()
     for (unsigned int i = 0; i < bs.size(); i++)
         bs.set(i, dis(gen));
     return bs;
+}
+
+template<typename Scalar>
+vcl::Plane<Scalar> randomPlane()
+{
+    std::random_device rd;
+    std::mt19937       gen(rd());
+
+    DistrType<Scalar> dis((Scalar) -100, (Scalar) 100);
+
+    return vcl::Plane<Scalar>(randomPoint<Scalar, 3>(), dis(gen));
 }
 
 TEMPLATE_TEST_CASE("Point Serialization", "", int, float, double)
@@ -149,6 +160,29 @@ TEST_CASE("Colors Serialization")
 
     REQUIRE(c1 == c3);
     REQUIRE(c2 == c4);
+}
+
+TEMPLATE_TEST_CASE("Plane Serialization", "", float, double)
+{
+    using Scalar = TestType;
+
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/plane.bin");
+
+    vcl::Plane<Scalar> p1 = randomPlane<Scalar>();
+
+    p1.serialize(fo);
+    fo.close();
+
+    vcl::Plane<Scalar> p2;
+
+    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
+                                                "/serialization/plane.bin");
+
+    p2.deserialize(fi);
+    fi.close();
+
+    REQUIRE(p1 == p2);
 }
 
 TEMPLATE_TEST_CASE(

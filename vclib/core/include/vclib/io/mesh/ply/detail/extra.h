@@ -27,8 +27,8 @@
 
 #include <vclib/exceptions/io.h>
 #include <vclib/io/image.h>
-#include <vclib/io/read.h>
 #include <vclib/io/mesh/settings.h>
+#include <vclib/io/read.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
 #include <vclib/space/core/texture.h>
@@ -48,7 +48,8 @@ void readPlyTextures(
             if constexpr (HasTextureImages<MeshType>) {
                 uint k = mesh.textureNumber() - 1;
                 if (settings.loadTextureImages) {
-                    mesh.texture(k).image() = loadImage(mesh.meshBasePath() + str);
+                    mesh.texture(k).image() =
+                        loadImage(mesh.meshBasePath() + str);
                     if (mesh.texture(k).image().isNull()) {
                         log.log(
                             "Cannot load texture " + str, LogType::WARNING_LOG);

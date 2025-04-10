@@ -23,8 +23,8 @@
 #ifndef VCL_IO_MESH_STL_LOAD_H
 #define VCL_IO_MESH_STL_LOAD_H
 
-#include <vclib/io/read.h>
 #include <vclib/io/mesh/settings.h>
+#include <vclib/io/read.h>
 #include <vclib/misc/logger.h>
 #include <vclib/space/complex/mesh_info.h>
 
