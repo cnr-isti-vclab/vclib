@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/font_distance_field_drop_shadow_image.h>
 
-#include <shaders/font/fs_font_distance_field_drop_shadow_image.sc.glsl.bin.h>
-#include <shaders/font/vs_font_distance_field_drop_shadow_image.sc.glsl.bin.h>
+#include <vclib/shaders/font/fs_font_distance_field_drop_shadow_image.sc.glsl.bin.h>
+#include <vclib/shaders/font/vs_font_distance_field_drop_shadow_image.sc.glsl.bin.h>
 
-#include <shaders/font/fs_font_distance_field_drop_shadow_image.sc.essl.bin.h>
-#include <shaders/font/vs_font_distance_field_drop_shadow_image.sc.essl.bin.h>
+#include <vclib/shaders/font/fs_font_distance_field_drop_shadow_image.sc.essl.bin.h>
+#include <vclib/shaders/font/vs_font_distance_field_drop_shadow_image.sc.essl.bin.h>
 
-#include <shaders/font/fs_font_distance_field_drop_shadow_image.sc.spv.bin.h>
-#include <shaders/font/vs_font_distance_field_drop_shadow_image.sc.spv.bin.h>
+#include <vclib/shaders/font/fs_font_distance_field_drop_shadow_image.sc.spv.bin.h>
+#include <vclib/shaders/font/vs_font_distance_field_drop_shadow_image.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/font/fs_font_distance_field_drop_shadow_image.sc.dx11.bin.h>
-#include <shaders/font/vs_font_distance_field_drop_shadow_image.sc.dx11.bin.h>
+#include <vclib/shaders/font/fs_font_distance_field_drop_shadow_image.sc.dx11.bin.h>
+#include <vclib/shaders/font/vs_font_distance_field_drop_shadow_image.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/font/fs_font_distance_field_drop_shadow_image.sc.mtl.bin.h>
-#include <shaders/font/vs_font_distance_field_drop_shadow_image.sc.mtl.bin.h>
+#include <vclib/shaders/font/fs_font_distance_field_drop_shadow_image.sc.mtl.bin.h>
+#include <vclib/shaders/font/vs_font_distance_field_drop_shadow_image.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

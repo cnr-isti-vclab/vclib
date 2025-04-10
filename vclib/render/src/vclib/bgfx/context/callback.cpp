@@ -22,6 +22,7 @@
 
 #include <vclib/bgfx/context/callback.h>
 
+#include <vclib/io/image/save.h>
 #include <vclib/space/core/image.h>
 
 #include <bx/debug.h>
@@ -114,7 +115,7 @@ void Callback::screenShot(
     bool        yflip)
 {
     vcl::Image img(data, width, height, yflip, vcl::Color::Format::ARGB);
-    img.save(filePath);
+    vcl::saveImage(img, filePath);
 }
 
 void Callback::captureBegin(

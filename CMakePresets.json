@@ -60,7 +60,28 @@
             }
         },
         {
+            "name": "vclib-core-no-3rd-io-debug",
+            "inherits": "vclib-core-debug",
+            "displayName": "VCLib::Core without 3rdparty IO libraries - Debug",
+            "description": "Core without 3rdparty IO libraries",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
+            }
+        },
+        {
+            "name": "vclib-core-no-3rd-io-release",
+            "inherits": "vclib-core-release",
+            "displayName": "VCLib::Core without 3rdparty IO libraries - Release",
+            "description": "Core without 3rdparty IO libraries",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
+            }
+        },
+        {
             "name": "vclib-core-no-tests-debug",
+            "hidden": true,
             "inherits": "vclib-core-debug",
             "displayName": "VCLib::Core (No Tests and Examples) - Debug",
             "description": "Core without tests and examples",
@@ -71,6 +92,7 @@
         },
         {
             "name": "vclib-core-no-tests-release",
+            "hidden": true,
             "inherits": "vclib-core-release",
             "displayName": "VCLib::Core (No Tests and Examples) - Release",
             "description": "Core without tests and examples",
@@ -80,8 +102,48 @@
             }
         },
         {
-            "name": "vclib-render-bgfx-debug",
+            "name": "vclib-external-debug",
             "inherits": "vclib-core-no-tests-debug",
+            "displayName": "VCLib::External - Debug",
+            "description": "External Module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_EXTERNAL": "ON"
+            }
+        },
+        {
+            "name": "vclib-external-release",
+            "inherits": "vclib-core-no-tests-release",
+            "displayName": "VCLib::External - Release",
+            "description": "External Module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_EXTERNAL": "ON"
+            }
+        },
+        {
+            "name": "vclib-external-no-tests-debug",
+            "hidden": true,
+            "inherits": "vclib-external-debug",
+            "displayName": "VCLib::External (No Tests and Examples) - Debug",
+            "description": "External Module",
+            "cacheVariables": {
+                "VCLIB_EXTERNAL_BUILD_EXAMPLES": "OFF",
+                "VCLIB_EXTERNAL_BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "vclib-external-no-tests-release",
+            "hidden": true,
+            "inherits": "vclib-external-release",
+            "displayName": "VCLib::External (No Tests and Examples) - Release",
+            "description": "External Module",
+            "cacheVariables": {
+                "VCLIB_EXTERNAL_BUILD_EXAMPLES": "OFF",
+                "VCLIB_EXTERNAL_BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "vclib-render-bgfx-debug",
+            "inherits": "vclib-external-no-tests-debug",
             "displayName": "VCLib::Render (BGFX) - Debug",
             "description": "Render with bgfx render backend",
             "cacheVariables": {
@@ -90,7 +152,7 @@
         },
         {
             "name": "vclib-render-bgfx-release",
-            "inherits": "vclib-core-no-tests-release",
+            "inherits": "vclib-external-no-tests-release",
             "displayName": "VCLib::Render (BGFX) - Release",
             "description": "Render with bgfx render backend",
             "cacheVariables": {
@@ -99,7 +161,7 @@
         },
         {
             "name": "vclib-render-opengl2-debug",
-            "inherits": "vclib-core-no-tests-debug",
+            "inherits": "vclib-external-no-tests-debug",
             "displayName": "VCLib::Render (OpenGL) - Debug",
             "description": "Render with OpenGL render backend",
             "cacheVariables": {
@@ -109,7 +171,7 @@
         },
         {
             "name": "vclib-render-opengl2-release",
-            "inherits": "vclib-core-no-tests-release",
+            "inherits": "vclib-external-no-tests-release",
             "displayName": "VCLib::Render (OpenGL) - Release",
             "description": "Render with OpenGL render backend",
             "cacheVariables": {
@@ -133,6 +195,24 @@
             "description": "Processing module",
             "cacheVariables": {
                 "VCLIB_BUILD_MODULE_PROCESSING": "ON"
+            }
+        },
+        {
+            "name": "vclib-bindings-debug",
+            "inherits": "vclib-core-no-tests-debug",
+            "displayName": "VCLib::Bindings - Debug",
+            "description": "Python Bindings module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+            }
+        },
+        {
+            "name": "vclib-bindings-release",
+            "inherits": "vclib-core-no-tests-release",
+            "displayName": "VCLib::Bindings - Release",
+            "description": "Python Bindings module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
             }
         },
         {
@@ -174,16 +254,16 @@
             "configurePreset": "vclib-core-release"
         },
         {
-            "name": "vclib-core-no-tests-debug",
-            "displayName": "VCLib::Core (No Tests and Examples) - Debug",
-            "description": "Core without tests and examples",
-            "configurePreset": "vclib-core-no-tests-debug"
+            "name": "vclib-external-debug",
+            "displayName": "VCLib::External - Debug",
+            "description": "External module",
+            "configurePreset": "vclib-external-debug"
         },
         {
-            "name": "vclib-core-no-tests-release",
-            "displayName": "VCLib::Core (No Tests and Examples) - Release",
-            "description": "Core without tests and examples",
-            "configurePreset": "vclib-core-no-tests-release"
+            "name": "vclib-external-release",
+            "displayName": "VCLib::External - Release",
+            "description": "External module",
+            "configurePreset": "vclib-external-release"
         },
         {
             "name": "vclib-render-bgfx-debug",
@@ -220,6 +300,18 @@
             "displayName": "VCLib::Processing - Release",
             "description": "Processing module",
             "configurePreset": "vclib-processing-release"
+        },
+        {
+            "name": "vclib-bindings-debug",
+            "displayName": "VCLib::Bindings - Debug",
+            "description": "Python Bindings module",
+            "configurePreset": "vclib-bindings-debug"
+        },
+        {
+            "name": "vclib-bindings-release",
+            "displayName": "VCLib::Bindings - Release",
+            "description": "Python Bindings module",
+            "configurePreset": "vclib-bindings-release"
         },
         {
             "name": "vclib-all-modules-debug",

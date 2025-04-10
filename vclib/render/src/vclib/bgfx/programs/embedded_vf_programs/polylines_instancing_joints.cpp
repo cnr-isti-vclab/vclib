@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/polylines_instancing_joints.h>
 
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.essl.bin.h>
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.spv.bin.h>
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/fs_instancing_based_polylines.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_polylines/instancing_based_polylines/vs_instancing_based_joints.sc.mtl.bin.h>
 
 #endif // __APPLE__
 

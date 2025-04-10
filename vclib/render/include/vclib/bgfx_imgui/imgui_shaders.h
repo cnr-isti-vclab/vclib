@@ -25,32 +25,32 @@
 
 #include <vclib/bgfx/programs/load_program.h>
 
-#include <bgfx_imgui/fs_imgui_image.sc.glsl.bin.h>
-#include <bgfx_imgui/vs_imgui_image.sc.glsl.bin.h>
-#include <bgfx_imgui/fs_ocornut_imgui.sc.glsl.bin.h>
-#include <bgfx_imgui/vs_ocornut_imgui.sc.glsl.bin.h>
+#include <vclib/bgfx_imgui/fs_imgui_image.sc.glsl.bin.h>
+#include <vclib/bgfx_imgui/vs_imgui_image.sc.glsl.bin.h>
+#include <vclib/bgfx_imgui/fs_ocornut_imgui.sc.glsl.bin.h>
+#include <vclib/bgfx_imgui/vs_ocornut_imgui.sc.glsl.bin.h>
 
-#include <bgfx_imgui/fs_imgui_image.sc.essl.bin.h>
-#include <bgfx_imgui/vs_imgui_image.sc.essl.bin.h>
-#include <bgfx_imgui/fs_ocornut_imgui.sc.essl.bin.h>
-#include <bgfx_imgui/vs_ocornut_imgui.sc.essl.bin.h>
+#include <vclib/bgfx_imgui/fs_imgui_image.sc.essl.bin.h>
+#include <vclib/bgfx_imgui/vs_imgui_image.sc.essl.bin.h>
+#include <vclib/bgfx_imgui/fs_ocornut_imgui.sc.essl.bin.h>
+#include <vclib/bgfx_imgui/vs_ocornut_imgui.sc.essl.bin.h>
 
-#include <bgfx_imgui/fs_imgui_image.sc.spv.bin.h>
-#include <bgfx_imgui/vs_imgui_image.sc.spv.bin.h>
-#include <bgfx_imgui/fs_ocornut_imgui.sc.spv.bin.h>
-#include <bgfx_imgui/vs_ocornut_imgui.sc.spv.bin.h>
+#include <vclib/bgfx_imgui/fs_imgui_image.sc.spv.bin.h>
+#include <vclib/bgfx_imgui/vs_imgui_image.sc.spv.bin.h>
+#include <vclib/bgfx_imgui/fs_ocornut_imgui.sc.spv.bin.h>
+#include <vclib/bgfx_imgui/vs_ocornut_imgui.sc.spv.bin.h>
 
 #ifdef _WIN32
-#include <bgfx_imgui/fs_imgui_image.sc.dx11.bin.h>
-#include <bgfx_imgui/vs_imgui_image.sc.dx11.bin.h>
-#include <bgfx_imgui/fs_ocornut_imgui.sc.dx11.bin.h>
-#include <bgfx_imgui/vs_ocornut_imgui.sc.dx11.bin.h>
+#include <vclib/bgfx_imgui/fs_imgui_image.sc.dx11.bin.h>
+#include <vclib/bgfx_imgui/vs_imgui_image.sc.dx11.bin.h>
+#include <vclib/bgfx_imgui/fs_ocornut_imgui.sc.dx11.bin.h>
+#include <vclib/bgfx_imgui/vs_ocornut_imgui.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <bgfx_imgui/fs_imgui_image.sc.mtl.bin.h>
-#include <bgfx_imgui/vs_imgui_image.sc.mtl.bin.h>
-#include <bgfx_imgui/fs_ocornut_imgui.sc.mtl.bin.h>
-#include <bgfx_imgui/vs_ocornut_imgui.sc.mtl.bin.h>
+#include <vclib/bgfx_imgui/fs_imgui_image.sc.mtl.bin.h>
+#include <vclib/bgfx_imgui/vs_imgui_image.sc.mtl.bin.h>
+#include <vclib/bgfx_imgui/fs_ocornut_imgui.sc.mtl.bin.h>
+#include <vclib/bgfx_imgui/vs_ocornut_imgui.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

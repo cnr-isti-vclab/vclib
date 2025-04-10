@@ -27,7 +27,7 @@
 #include <vclib/processing/manager.h>
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/load_save.h>
+#include <vclib/io.h>
 
 namespace vcl::proc {
 

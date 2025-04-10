@@ -25,10 +25,12 @@
 
 #include "mesh_render_buffers_macros.h"
 
+#include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/drawable/drawable_lines.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
+#include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/space/core/image.h>
@@ -463,18 +465,24 @@ private:
             vcl::Image txt;
             if constexpr (vcl::HasTextureImages<MeshType>) {
                 if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
+                    txt = vcl::loadImage(
+                        mesh.meshBasePath() + mesh.texturePath(i));
                 }
                 else {
                     txt = mesh.texture(i).image();
                 }
             }
             else {
-                txt = vcl::Image(mesh.meshBasePath() + mesh.texturePath(i));
+                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
             }
+            if (txt.isNull()) {
+                txt = vcl::createCheckBoardImage(512);
+            }
+
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
+            assert(size > 0);
 
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint>(size);

@@ -25,8 +25,6 @@
 
 #include "filter_types.h"
 
-// TODO: complete documentation
-
 namespace vcl {
 
 /**
@@ -184,6 +182,13 @@ struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
 
 } // namespace detail
 
+/**
+ * @brief Given the ID of a Component and a list of Component types (or a
+ * TypeWrapper), this alias sets its type to the corresponding Component type
+ * found in the list.
+ *
+ * @ingroup types
+ */
 template<uint COMP_ID, typename... Components>
 using ComponentOfType = FirstTypeT<
     typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>;

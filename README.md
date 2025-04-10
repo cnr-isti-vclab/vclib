@@ -9,6 +9,7 @@ All the modules can be found in the [vclib](https://github.com/cnr-isti-vclab/vc
 The library is divided in several modules, each one with a specific purpose:
 
   - **Core**: contains the basic core library, that in its C++ side is templated header only. It contains the basic data structures and algorithms for low level mesh geometry processing; all the other modules depend on this one.
+    - **IO**: the `Core` module contains an inner module for input/output operations (loading from and saving to files) that can use 3rd party libraries. It can be configured in order to avoid 3rd party libraries and be used in header-only mode.
   - **Render**: contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
   - **External**: contains algorithms and data structures that use external libraries, like VCG, etc.
   - **Processing**: contains algorithms for high level mesh and geometry processing tasks that can be used as black box actions.

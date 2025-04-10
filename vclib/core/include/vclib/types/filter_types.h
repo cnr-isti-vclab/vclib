@@ -27,8 +27,6 @@
 
 namespace vcl {
 
-// TODO: write documentation for all the functions and classes in this file
-
 namespace detail {
 
 template<typename, typename>
@@ -44,7 +42,7 @@ struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
 
 /**
  * @brief Removes all types that do not satisfy a condition, and get them as a
- * tuple.
+ * TypeWrapper.
  *
  * The condition is a templated predicate struct that must have a static member
  * bool `value` that is true if the type satisfies the condition.
@@ -62,7 +60,7 @@ struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
  * static_assert(std::is_same<ResTypes, TypeWrapper<int, char>>::value, "");
  * @endcode
  *
- * ResTuple will be a TypeWrapper<int, char> (int and char are the only integral
+ * ResTypes will be a TypeWrapper<int, char> (int and char are the only integral
  * types).
  *
  * @ingroup types
@@ -102,26 +100,29 @@ struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
 };
 
 /**
- * @brief Its value is set to true if there is at least one type in the given
+ * @brief Sets its `value` to `true` if there is at least one type in the given
  * pack Args... that satisfies the given condition
  *
  * Usage:
  *
  * @code{.cpp}
  * // there is a type (int) that is integral
- * static const bool res =
- *     TypesSatisfyCondition<std::is_integral, int, float, double>::value;
+ * static const bool res = OneTypeAtLeastSatisfiesCondition<
+ *     std::is_integral,
+ *     int, float, double>::value;
  * static_assert(res == true, "");
  *
  * static const bool res2 =
- *     TypesSatisfyCondition<std::is_integral, float, double>::value;
+ *     OneTypeAtLeastSatisfiesCondition<
+ *     std::is_integral,
+ *     float, double>::value;
  * static_assert(res2 != true, "");
  * @endcode
  *
  * @ingroup types
  */
 template<template<typename> typename Pred, typename... Args>
-struct TypesSatisfyCondition
+struct OneTypeAtLeastSatisfiesCondition
 {
 private:
     using ResTypes = FilterTypesByCondition<Pred, Args...>::type;
@@ -131,19 +132,20 @@ public:
 };
 
 /**
- * @copydoc TypesSatisfyCondition
+ * @copydoc OneTypeAtLeastSatisfiesCondition
  *
  * @ingroup types
  */
 // TypeWrapper specialization
 template<template<typename> typename Pred, typename... Args>
-struct TypesSatisfyCondition<Pred, TypeWrapper<Args...>>
+struct OneTypeAtLeastSatisfiesCondition<Pred, TypeWrapper<Args...>>
 {
-    using type = TypesSatisfyCondition<Pred, Args...>::type;
+    using type = OneTypeAtLeastSatisfiesCondition<Pred, Args...>::type;
 };
 
 /**
- * @brief The the first type of a pack that satisfies the given condition.
+ * @brief Sets `type` to the first type of a pack that satisfies the given
+ * condition.
  *
  * Usage:
  * @code{.cpp}

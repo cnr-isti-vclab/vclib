@@ -29,26 +29,55 @@ set(MODULE_NAME vclib_bindings)
 message(STATUS "VCLib-Bindings: 3rd party libraries")
 add_subdirectory(3rdparty)
 
-file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
-
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/vclib/bindings/*.cpp")
-
-pybind11_add_module(${MODULE_NAME} ${HEADERS} ${SOURCES})
-target_compile_definitions(${MODULE_NAME} PRIVATE
-    VCLIB_MAIN_MODULE_NAME=${MODULE_NAME})
-
 set(VCLIB_BINDINGS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_include_directories(${MODULE_NAME} PRIVATE ${VCLIB_BINDINGS_INCLUDE_DIR})
-target_link_libraries(${MODULE_NAME} PRIVATE vclib::core)
+set(VCLIB_MODULE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/vclib)
 
-# put the generated binary in a dir called vclib
-set_target_properties(${MODULE_NAME} PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/vclib)
+set(PYTHON_MODULES core)
 
-# after build module, copy the file 'assets/__init__.py' to the build dir
-add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/__init__.py"
-    "${CMAKE_CURRENT_BINARY_DIR}/vclib/__init__.py")
+if (VCLIB_BUILD_MODULE_EXTERNAL)
+#    list(APPEND PYTHON_MODULES external)
+endif()
+
+if (VCLIB_BUILD_MODULE_PROCESSING)
+    list(APPEND PYTHON_MODULES processing)
+endif()
+
+if (VCLIB_BUILD_MODULE_RENDER)
+#    list(APPEND PYTHON_MODULES render)
+endif()
+
+# create __init__.py inside VCLIB_MODULE_BINARY_DIR
+file(WRITE "${VCLIB_MODULE_BINARY_DIR}/__init__.py" "")
+
+# for each module
+foreach(MODULE ${PYTHON_MODULES})
+    file(GLOB_RECURSE MODULE_HEADERS CONFIGURE_DEPENDS "include/vclib/bindings/${MODULE}/*.h")
+    file(GLOB_RECURSE MODULE_SOURCES CONFIGURE_DEPENDS "src/vclib/bindings/${MODULE}/*.cpp")
+    list(APPEND MODULE_SOURCES "src/vclib/bindings/${MODULE}.cpp")
+
+    pybind11_add_module(${MODULE} ${MODULE_HEADERS} ${MODULE_SOURCES})
+
+    target_include_directories(${MODULE} PRIVATE ${VCLIB_BINDINGS_INCLUDE_DIR})
+    target_link_libraries(${MODULE} PRIVATE vclib::core vclib::${MODULE})
+
+    # put the generated binary in a dir called vclib
+    set_target_properties(${MODULE} PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${VCLIB_MODULE_BINARY_DIR})
+
+    # in the ${VCLIB_MODULE_BINARY_DIR}/__init__.py, append a line with:
+    # from .${MODULE} import *
+    file(APPEND "${VCLIB_MODULE_BINARY_DIR}/__init__.py" "from .${MODULE} import *\n")
+
+    # Install
+    install(TARGETS ${MODULE}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/python${VCLIB_PYTHON_VERSION}/site-packages/vclib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach()
+
+# Install
+install(FILES "${VCLIB_MODULE_BINARY_DIR}/__init__.py"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/python${VCLIB_PYTHON_VERSION}/site-packages/vclib)
+
 

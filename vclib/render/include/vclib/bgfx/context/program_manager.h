@@ -75,6 +75,7 @@ public:
                     VertFragLoader<PROGRAM>::vertexShader(mRenderType)),
                 vcl::loadShader(
                     VertFragLoader<PROGRAM>::fragmentShader(mRenderType)));
+            assert(bgfx::isValid(mVFPrograms[p]));
         }
         return mVFPrograms[p];
     }

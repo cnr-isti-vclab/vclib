@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX);
         drawable.setRenderSettings(mrs);
-        showMeshesOnViewer(argc, argv, viewer, drawable);
+        showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
     }
     else if constexpr (USE_BUNNY) {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
         auto mrs = drawable.renderSettings();
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
         drawable.setRenderSettings(mrs);
-        showMeshesOnViewer(argc, argv, viewer, drawable);
+        showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
     }
     else {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
         mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
         drawable.setRenderSettings(mrs);
-        showMeshesOnViewer(argc, argv, viewer, drawable);
+        showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
     }
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT

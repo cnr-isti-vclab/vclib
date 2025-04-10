@@ -34,7 +34,10 @@ if (VCLIB_ALLOW_SYSTEM_QT)
     if (Qt6_FOUND)
         message(STATUS "- Qt6 - using system-provided library")
 
-        add_library(vclib-3rd-qt INTERFACE)
+        if (NOT TARGET vclib-3rd-qt)
+            add_library(vclib-3rd-qt INTERFACE)
+        endif()
+
         target_compile_definitions(vclib-3rd-qt INTERFACE
             VCLIB_WITH_QT)
 

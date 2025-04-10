@@ -47,6 +47,7 @@ void planeStaticAsserts()
         "const Plane& does not satisfy the PlaneConcept");
     static_assert(
         PlaneConcept<PlaneType&&>, "Plane&& does not satisfy the PlaneConcept");
+    static_assert(Serializable<PlaneType>, "Plane is not serializable");
 }
 
 #endif // PLANE_H

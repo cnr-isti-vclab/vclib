@@ -28,7 +28,75 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/views/mesh.h>
 
+#include <numeric>
+
 namespace vcl {
+
+/**
+ * @brief Returns a pair containing the min and the maximum quality of the
+ * elements of the given type.
+ *
+ * The mesh is expected to have a Element Container of the given ELEM_ID, and
+ * the elements of the given type are expected to have a Quality component.
+ *
+ * @param[in] m: the input Mesh on which compute the minimum and the maximum
+ * quality.
+ * @return A `std::pair` having as first element the minimum, and as second
+ * element the maximum quality.
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+auto elementQualityMinMax(const MeshType& m)
+{
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(m);
+
+    auto [min, max] =
+        std::ranges::minmax(m.template elements<ELEM_ID>() | views::quality);
+
+    return std::pair {min, max};
+}
+
+/**
+ * @brief Returns a scalar that is the average of the quality of the elements of
+ * the given type.
+ *
+ * The mesh is expected to have a Element Container of the given ELEM_ID, and
+ * the elements of the given type are expected to have a Quality component.
+ *
+ * @param[in] m: the input Mesh on which compute the average of the quality.
+ * @return The average of the quality of the elements of the given type.
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+auto elementQualityAverage(const MeshType& m)
+{
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(m);
+
+    auto eq = m.template elements<ELEM_ID>() | views::quality;
+    return std::accumulate(std::ranges::begin(eq), std::ranges::end(eq), 0.0) /
+           m.template number<ELEM_ID>();
+}
+
+template<uint ELEM_ID, MeshConcept MeshType>
+auto elementQualityHistogram(
+    const MeshType& m,
+    bool            selectionOnly = false,
+    uint            histSize      = 10000)
+{
+    using QualityType =
+        typename MeshType::template ElementType<ELEM_ID>::QualityType;
+
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(m);
+
+    auto minmax = elementQualityMinMax<ELEM_ID>(m);
+
+    Histogram<QualityType> h(minmax.first, minmax.second, histSize);
+    for (const auto& e : m.template elements<ELEM_ID>()) {
+        if (!selectionOnly || e.selected()) {
+            assert(!isDegenerate(e.quality()));
+            h.addValue(e.quality());
+        }
+    }
+    return h;
+}
 
 /**
  * @brief Returns a pair containing the min and the maximum vertex quality.
@@ -46,10 +114,7 @@ namespace vcl {
 template<MeshConcept MeshType>
 auto vertexQualityMinMax(const MeshType& m)
 {
-    requirePerVertexQuality(m);
-
-    auto [min, max] = std::ranges::minmax(m.vertices() | views::quality);
-    return std::make_pair(min, max);
+    return elementQualityMinMax<ElemId::VERTEX>(m);
 }
 
 /**
@@ -68,11 +133,7 @@ auto vertexQualityMinMax(const MeshType& m)
 template<FaceMeshConcept MeshType>
 auto faceQualityMinMax(const MeshType& m)
 {
-    requirePerFaceQuality(m);
-
-    auto [min, max] = std::ranges::minmax(m.faces() | views::quality);
-
-    return std::make_pair(min, max);
+    return elementQualityMinMax<ElemId::FACE>(m);
 }
 
 /**
@@ -89,17 +150,7 @@ auto faceQualityMinMax(const MeshType& m)
 template<MeshConcept MeshType>
 auto vertexQualityAverage(const MeshType& m)
 {
-    requirePerVertexQuality(m);
-
-    using VertexType  = MeshType::VertexType;
-    using QualityType = VertexType::QualityType;
-
-    QualityType avg = 0;
-
-    for (const VertexType& v : m.vertices())
-        avg += v.quality();
-
-    return avg / m.vertexNumber();
+    return elementQualityAverage<ElemId::VERTEX>(m);
 }
 
 /**
@@ -116,17 +167,7 @@ auto vertexQualityAverage(const MeshType& m)
 template<FaceMeshConcept MeshType>
 auto faceQualityAverage(const MeshType& m)
 {
-    requirePerFaceQuality(m);
-
-    using FaceType    = MeshType::FaceType;
-    using QualityType = FaceType::QualityType;
-
-    QualityType avg = 0;
-
-    for (const FaceType& f : m.faces())
-        avg += f.quality();
-
-    return avg / m.faceNumber();
+    return elementQualityAverage<ElemId::FACE>(m);
 }
 
 /**
@@ -177,20 +218,7 @@ Histogram<HScalar> vertexQualityHistogram(
     bool            selectionOnly = false,
     uint            histSize      = 10000)
 {
-    requirePerVertexQuality(m);
-
-    using VertexType = MeshType::VertexType;
-
-    auto minmax = vertexQualityMinMax(m);
-
-    Histogram<HScalar> h(minmax.first, minmax.second, histSize);
-    for (const VertexType& v : m.vertices()) {
-        if (!selectionOnly || v.selected()) {
-            assert(!isDegenerate(v.quality()));
-            h.addValue(v.quality());
-        }
-    }
-    return h;
+    return elementQualityHistogram<ElemId::VERTEX>(m, selectionOnly, histSize);
 }
 
 template<FaceMeshConcept MeshType, typename HScalar = double>
@@ -199,20 +227,7 @@ Histogram<HScalar> faceQualityHistogram(
     bool            selectionOnly = false,
     uint            histSize      = 10000)
 {
-    requirePerFaceQuality(m);
-
-    using FaceType = MeshType::FaceType;
-
-    auto minmax = vertexQualityMinMax(m);
-
-    Histogram<HScalar> h(minmax.first, minmax.second, histSize);
-    for (const FaceType& f : m.faces()) {
-        if (!selectionOnly || f.selected()) {
-            assert(!isDegenerate(f.quality()));
-            h.addValue(f.quality());
-        }
-    }
-    return h;
+    return elementQualityHistogram<ElemId::FACE>(m, selectionOnly, histSize);
 }
 
 } // namespace vcl

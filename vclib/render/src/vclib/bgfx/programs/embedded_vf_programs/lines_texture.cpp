@@ -22,25 +22,25 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/lines_texture.h>
 
-#include <shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.glsl.bin.h>
 
 
-#include <shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.essl.bin.h>
-#include <shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.essl.bin.h>
 
 
-#include <shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.spv.bin.h>
-#include <shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.spv.bin.h>
 
 #ifdef _WIN32
-#include <shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.dx11.bin.h>
 
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/fs_texture_based_lines.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_lines/texture_based_lines/vs_texture_based_lines.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
