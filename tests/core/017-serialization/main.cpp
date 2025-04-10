@@ -81,6 +81,17 @@ vcl::BitSet<T> randomBitSet()
     return bs;
 }
 
+template<typename Scalar>
+vcl::Plane<Scalar> randomPlane()
+{
+    std::random_device rd;
+    std::mt19937       gen(rd());
+
+    DistrType<Scalar> dis((Scalar) -100, (Scalar) 100);
+
+    return vcl::Plane<Scalar>(randomPoint<Scalar, 3>(), dis(gen));
+}
+
 TEMPLATE_TEST_CASE("Point Serialization", "", int, float, double)
 {
     using Scalar = TestType;
@@ -149,6 +160,29 @@ TEST_CASE("Colors Serialization")
 
     REQUIRE(c1 == c3);
     REQUIRE(c2 == c4);
+}
+
+TEMPLATE_TEST_CASE("Plane Serialization", "", float, double)
+{
+    using Scalar = TestType;
+
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/plane.bin");
+
+    vcl::Plane<Scalar> p1 = randomPlane<Scalar>();
+
+    p1.serialize(fo);
+    fo.close();
+
+    vcl::Plane<Scalar> p2;
+
+    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
+                                                "/serialization/plane.bin");
+
+    p2.deserialize(fi);
+    fi.close();
+
+    REQUIRE(p1 == p2);
 }
 
 TEMPLATE_TEST_CASE(

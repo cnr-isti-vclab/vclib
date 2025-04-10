@@ -131,6 +131,10 @@ public:
      */
     Scalar& minValue() { return mK2; }
 
+    /**
+     * @brief Serializes the principal curvature to the given output stream.
+     * @param[in] os: The output stream.
+     */
     void serialize(std::ostream& os) const
     {
         mDir1.serialize(os);
@@ -139,6 +143,10 @@ public:
         vcl::serialize(os, mK2);
     }
 
+    /**
+     * @brief Deserializes the principal curvature from the given input stream.
+     * @param[in] is: The input stream.
+     */
     void deserialize(std::istream& is)
     {
         mDir1.deserialize(is);
