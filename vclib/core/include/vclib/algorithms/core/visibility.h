@@ -91,8 +91,6 @@ auto halfSpaceDeterminant(const FaceType& face, const PointType& point)
             return n.dot(point - face.vertex(0)->coord());
         }
     }
-
-
 }
 
 /**
