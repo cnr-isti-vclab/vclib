@@ -20,50 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#ifndef VCL_BGFX_DRAWABLE_LINES_INSTANCING_BASED_LINES_H
+#define VCL_BGFX_DRAWABLE_LINES_INSTANCING_BASED_LINES_H
+
+#include "line_settings.h"
+
+#include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines_common/lines.h>
 
 namespace vcl {
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_TRACKBALL,
+class InstancingBasedLines : public Lines<LineSettings>
+{
+    static inline const std::vector<float> VERTICES =
+        {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+    static inline const std::vector<uint> INDICES = {0, 1, 2, 1, 3, 2};
 
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
+    bgfx::ProgramHandle mLinesPH =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::LINES_INSTANCING>();
 
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
+    std::vector<LinesVertex> mPoints;
 
-    LINES,
-    LINES_INDIRECT,
-    LINES_INSTANCING,
-    LINES_TEXTURE,
+    VertexBuffer mVertices;
+    IndexBuffer  mIndices;
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_INDIRECT_JOINTS,
-    POLYLINES_INSTANCING,
-    POLYLINES_INSTANCING_JOINTS,
-    POLYLINES_TEXTURE,
-    POLYLINES_TEXTURE_JOINTS,
+    mutable bgfx::InstanceDataBuffer mInstanceDB;
 
-    COUNT
+public:
+    InstancingBasedLines();
+
+    InstancingBasedLines(const std::vector<LinesVertex>& points);
+
+    void swap(InstancingBasedLines& other);
+
+    void draw(uint viewId) const;
+
+    void setPoints(const std::vector<LinesVertex>& points);
+
+private:
+    void checkCaps() const
+    {
+        const bgfx::Caps* caps = bgfx::getCaps();
+        const bool instancingSupported =
+            bool(caps->supported & BGFX_CAPS_INSTANCING);
+
+        if (!instancingSupported) {
+            throw std::runtime_error("Instancing or compute are not supported");
+        }
+    }
+
+    void generateInstanceDataBuffer() const;
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#endif // VCL_BGFX_DRAWABLE_LINES_INSTANCING_BASED_LINES_H

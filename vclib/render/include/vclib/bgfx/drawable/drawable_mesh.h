@@ -58,11 +58,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
             .programManager()
             .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
 
-    bgfx::ProgramHandle mProgramWireframe =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME>();
-
     bgfx::ProgramHandle mProgramEdgesID =
         Context::instance()
             .programManager()
@@ -77,11 +72,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         Context::instance()
             .programManager()
             .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_ID>();
-
-    bgfx::ProgramHandle mProgramWireframeID =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_WIREFRAME_ID>();
 
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
@@ -148,6 +138,7 @@ public:
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
+        mMRB.setWireframeSettings(mMRS);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
@@ -202,15 +193,7 @@ public:
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            if (bgfx::isValid(mProgramWireframe)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
-
-                bgfx::submit(viewId, mProgramWireframe);
-            }
+            mMRB.drawWireframe(viewId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
@@ -261,17 +244,7 @@ public:
             }
         }
 
-        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            if (bgfx::isValid(mProgramWireframeID)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-                mIdUniform.bind(&idFloat);
-
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
-
-                bgfx::submit(viewId, mProgramWireframeID);
-            }
-        }
+        // TODO: manage drawID for wireframe!
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             if (bgfx::isValid(mProgramEdgesID)) {
@@ -307,6 +280,7 @@ public:
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
+        mMRB.setWireframeSettings(rs); // TODO check me
         mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 

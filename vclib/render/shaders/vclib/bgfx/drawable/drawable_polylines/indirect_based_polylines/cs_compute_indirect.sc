@@ -20,50 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#include <bgfx_compute.sh>
 
-namespace vcl {
+BUFFER_WO(segmentsIndirectBuffer, uvec4, 0);
+BUFFER_WO(jointsIndirectBuffer,   uvec4, 1);
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_TRACKBALL,
+uniform vec4 u_IndirectData;
 
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
-
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
-
-    LINES,
-    LINES_INDIRECT,
-    LINES_INSTANCING,
-    LINES_TEXTURE,
-
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_INDIRECT_JOINTS,
-    POLYLINES_INSTANCING,
-    POLYLINES_INSTANCING_JOINTS,
-    POLYLINES_TEXTURE,
-    POLYLINES_TEXTURE_JOINTS,
-
-    COUNT
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+NUM_THREADS(1, 1, 1)
+void main()
+{
+    drawIndexedIndirect(segmentsIndirectBuffer, 0, 6, u_IndirectData.x - 1, 0, 0, 0);
+    drawIndexedIndirect(jointsIndirectBuffer,   0, 6, u_IndirectData.x - 2, 0, 0, 0);
+}

@@ -20,50 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#ifndef VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
+#define VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
+
+#include "polyline_settings.h"
+
+#include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines_common/lines.h>
 
 namespace vcl {
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_TRACKBALL,
+class CPUGeneratedPolylines : public Lines<PolylineSettings>
+{
+    bgfx::ProgramHandle mLinesPH =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::POLYLINES>();
 
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
+    VertexBuffer mVertices;
+    IndexBuffer  mSegmentIndices;
+    IndexBuffer  mJointIndices;
 
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
+public:
+    CPUGeneratedPolylines() = default;
 
-    LINES,
-    LINES_INDIRECT,
-    LINES_INSTANCING,
-    LINES_TEXTURE,
+    CPUGeneratedPolylines(const std::vector<LinesVertex>& points);
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_INDIRECT_JOINTS,
-    POLYLINES_INSTANCING,
-    POLYLINES_INSTANCING_JOINTS,
-    POLYLINES_TEXTURE,
-    POLYLINES_TEXTURE_JOINTS,
+    void swap(CPUGeneratedPolylines& other);
 
-    COUNT
+    void setPoints(const std::vector<LinesVertex>& points);
+
+    void draw(uint viewId) const;
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#endif // VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H

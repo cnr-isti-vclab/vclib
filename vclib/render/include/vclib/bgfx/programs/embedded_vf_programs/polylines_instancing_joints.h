@@ -20,17 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal, a_color0
-$output v_position, v_normal, v_color
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_POLYLINES_INSTANCING_JOINTS_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_POLYLINES_INSTANCING_JOINTS_H
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
-void main()
+namespace vcl {
+
+template<>
+struct VertFragLoader<VertFragProgram::POLYLINES_INSTANCING_JOINTS>
 {
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
-    v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
-    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-    // default case - color is taken from buffer
-    v_color = a_color0;
-}
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_POLYLINES_INSTANCING_JOINTS_H
