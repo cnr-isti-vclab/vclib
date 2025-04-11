@@ -60,7 +60,7 @@ public:
 
     SequentialAutomationActions() {};
 
-    std::string getDescription()
+    std::string getDescription() override
     {
         std::ostringstream temp;
         temp << "Sequential automations: [ ";

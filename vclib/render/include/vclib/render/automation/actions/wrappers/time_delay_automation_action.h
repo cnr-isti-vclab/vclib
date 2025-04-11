@@ -58,7 +58,7 @@ public:
         mTimer.start();
     }
 
-    std::string getDescription()
+    std::string getDescription() override
     {
         std::ostringstream temp;
         temp << "After " << std::fixed << std::setprecision(3) << mDelaySeconds

@@ -52,7 +52,7 @@ public:
 
     void start() override { AbstractAutomationAction<BmarkDrawer>::start(); }
 
-    std::string getDescription()
+    std::string getDescription() override
     {
         std::ostringstream temp;
         temp << "After " << std::fixed << std::setprecision(3) << mDelayFrames

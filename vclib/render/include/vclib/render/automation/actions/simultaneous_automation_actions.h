@@ -59,7 +59,7 @@ public:
 
     SimultaneousAutomationActions() {};
 
-    std::string getDescription()
+    std::string getDescription() override
     {
         std::ostringstream temp;
         temp << "Simultaneous automations: [ ";

@@ -59,7 +59,7 @@ public:
         Parent::start();
     }
 
-    std::string getDescription()
+    std::string getDescription() override
     {
         std::ostringstream temp;
         temp << "For " << std::fixed << std::setprecision(3) << mDurationSeconds

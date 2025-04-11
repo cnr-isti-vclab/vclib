@@ -49,7 +49,7 @@ public:
     {
     }
 
-    std::string getDescription()
+    std::string getDescription() override
     {
         std::ostringstream temp;
         temp << "Absolute scale " << std::fixed << std::setprecision(3)

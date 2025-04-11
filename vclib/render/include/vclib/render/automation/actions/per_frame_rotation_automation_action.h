@@ -76,7 +76,7 @@ public:
     PerFrameRotationAutomationAction(float radiansPerFrame, Point3f axis) :
             mRadiansPerFrame {radiansPerFrame}, mAround {axis} {};
 
-    std::string getDescription()
+    std::string getDescription() override
     {
         std::ostringstream temp;
         temp << "Rotate " << std::fixed << std::setprecision(3)
