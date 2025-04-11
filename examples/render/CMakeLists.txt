@@ -50,10 +50,13 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
 
     add_subdirectory(801-camera-viewer)
 
-    add_subdirectory(984-mesh-viewer-imgui-test-spilt-shaders)
-    add_subdirectory("985-mesh-viewer-imgui-split-shading-and-face-color")
-    add_subdirectory(986-mesh-viewer-imgui-split-shading)
-    add_subdirectory(987-mesh-viewer-imgui-switch)
+    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+        add_subdirectory(984-mesh-viewer-imgui-test-spilt-shaders)
+        add_subdirectory(985-mesh-viewer-imgui-split-shading-and-face-color)
+        add_subdirectory(986-mesh-viewer-imgui-split-shading)
+        add_subdirectory(987-mesh-viewer-imgui-switch)
+    endif()
+
     add_subdirectory(999-misc)
 
     # the following examples are the same of the ones in the core module,
