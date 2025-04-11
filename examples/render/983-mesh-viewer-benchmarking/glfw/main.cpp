@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 
     // An automation action factory, to shorten the length of Automation
     // declarations
-    vcl::AutomationActionFactory<BenchmarkViewer> aaf;
+    vcl::AutomationActionFactory<vcl::BenchmarkDrawer<BenchmarkViewer>> aaf;
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
@@ -76,19 +76,20 @@ int main(int argc, char** argv)
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
     // Rotate and scale at the same time for 2 seconds
-    tw.addAutomation(aaf.TimeLimited(
-        aaf.Simultaneous(
-            {aaf.Rotation(5.f, {0.f, 0.f, 1.f}),
-             aaf.ChangeScaleAbsolute(-0.2f)}),
+    tw.addAutomation(aaf.createTimeLimited(
+        aaf.createSimultaneous(
+            {aaf.createRotation(5.f, {0.f, 0.f, 1.f}),
+             aaf.createChangeScaleAbsolute(-0.2f)}),
         2.f));
 
     // Change the measured metric to time (seconds)
     tw.setMetric(vcl::TimeBenchmarkMetric());
 
     // Rotate for 5000 frames and then scale for 5000 frames
-    tw.addAutomation(aaf.Sequential(
-        {aaf.FrameLimited(aaf.Rotation(5.f, {0.f, -1.f, 0.f}), 5000.f),
-         aaf.FrameLimited(aaf.ChangeScaleAbsolute(1.0f), 5000.f)}));
+    tw.addAutomation(aaf.createSequential(
+        {aaf.createFrameLimited(
+             aaf.createRotation(5.f, {0.f, -1.f, 0.f}), 5000.f),
+         aaf.createFrameLimited(aaf.createChangeScaleAbsolute(1.0f), 5000.f)}));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));

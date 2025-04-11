@@ -37,10 +37,10 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class AutomationActionFactory
 {
-    using TemplPar = BenchmarkDrawer<DerivedRenderApp>;
+    using TemplPar = DerivedRenderApp;
 
 public:
-    PerFrameRotationAutomationAction<TemplPar> PerFrameRotation(
+    PerFrameRotationAutomationAction<TemplPar> createPerFrameRotation(
         float   framesPerRotation,
         Point3f axis)
     {
@@ -49,48 +49,48 @@ public:
     }
 
     PerFrameChangeScaleAbsoluteAutomationAction<TemplPar>
-    PerFrameChangeScaleAbsolute(float pixelDeltaPerFrame)
+    createPerFrameChangeScaleAbsolute(float pixelDeltaPerFrame)
     {
         return PerFrameChangeScaleAbsoluteAutomationAction<TemplPar>(
             pixelDeltaPerFrame);
     }
 
-    RotationAutomationAction<TemplPar> Rotation(
+    RotationAutomationAction<TemplPar> createRotation(
         float   framesPerRotation,
         Point3f axis)
     {
         return RotationAutomationAction<TemplPar>(framesPerRotation, axis);
     }
 
-    ChangeScaleAbsoluteAutomationAction<TemplPar> ChangeScaleAbsolute(
+    ChangeScaleAbsoluteAutomationAction<TemplPar> createChangeScaleAbsolute(
         float pixelDeltaPerSecond)
     {
         return ChangeScaleAbsoluteAutomationAction<TemplPar>(
             pixelDeltaPerSecond);
     }
 
-    SequentialAutomationActions<TemplPar> Sequential(
+    SequentialAutomationActions<TemplPar> createSequential(
         std::initializer_list<
             std::shared_ptr<AbstractAutomationAction<TemplPar>>> init)
     {
         return SequentialAutomationActions(init);
     }
 
-    SimultaneousAutomationActions<TemplPar> Simultaneous(
+    SimultaneousAutomationActions<TemplPar> createSimultaneous(
         std::initializer_list<
             std::shared_ptr<AbstractAutomationAction<TemplPar>>> init)
     {
         return SimultaneousAutomationActions<TemplPar>(init);
     }
 
-    FrameDelayAutomationAction<TemplPar> FrameDelay(
+    FrameDelayAutomationAction<TemplPar> createFrameDelay(
         const AbstractAutomationAction<TemplPar>& action,
         uint32_t                                  delayFrames)
     {
         return FrameDelayAutomationAction<TemplPar>(action, delayFrames);
     }
 
-    FrameLimitedAutomationAction<TemplPar> FrameLimited(
+    FrameLimitedAutomationAction<TemplPar> createFrameLimited(
         const AbstractAutomationAction<TemplPar>& innerAction,
         uint32_t                                  durationFrames = 400.f)
     {
@@ -98,7 +98,7 @@ public:
             innerAction, durationFrames);
     }
 
-    StartCountDelayAutomationAction<TemplPar> StartCountDelay(
+    StartCountDelayAutomationAction<TemplPar> createStartCountDelay(
         const AbstractAutomationAction<TemplPar>& innerAction,
         uint32_t                                  waitStarts)
     {
@@ -106,7 +106,7 @@ public:
             innerAction, waitStarts);
     }
 
-    StartCountLimitedAutomationAction<TemplPar> StartCountLimited(
+    StartCountLimitedAutomationAction<TemplPar> createStartCountLimited(
         const AbstractAutomationAction<TemplPar>& innerAction,
         uint32_t                                  maximumStarts)
     {
@@ -114,14 +114,14 @@ public:
             innerAction, maximumStarts);
     }
 
-    TimeDelayAutomationAction<TemplPar> TimeDelay(
+    TimeDelayAutomationAction<TemplPar> createTimeDelay(
         const AbstractAutomationAction<TemplPar>& action,
         float                                     delaySeconds)
     {
         return TimeDelayAutomationAction<TemplPar>(action, delaySeconds);
     }
 
-    TimeLimitedAutomationAction<TemplPar> TimeLimited(
+    TimeLimitedAutomationAction<TemplPar> createTimeLimited(
         const AbstractAutomationAction<TemplPar>& action,
         float                                     durationSeconds = 5.5f)
     {
