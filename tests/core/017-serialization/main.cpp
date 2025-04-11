@@ -176,8 +176,8 @@ TEMPLATE_TEST_CASE("Plane Serialization", "", float, double)
 
     vcl::Plane<Scalar> p2;
 
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/plane.bin");
+    std::ifstream fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/plane.bin");
 
     p2.deserialize(fi);
     fi.close();
