@@ -36,7 +36,8 @@ namespace vcl {
 
 class ObjectBenchmarkPrinterResultMTUnsafe
 {
-    friend class ObjectBenchmarkPrinter<ObjectBenchmarkPrinterResultMTSafe>;
+    template<typename ResultObjectType>
+    friend class ObjectBenchmarkPrinter;
 
     using VectorType =
         std::vector<std::pair<std::string, std::shared_ptr<BenchmarkMetric>>>;
@@ -70,7 +71,8 @@ public:
 
 class ObjectBenchmarkPrinterResultMTSafe
 {
-    friend class ObjectBenchmarkPrinter<ObjectBenchmarkPrinterResultMTSafe>;
+    template<typename ResultObjectType>
+    friend class ObjectBenchmarkPrinter;
 
     using VectorType =
         std::vector<std::pair<std::string, std::shared_ptr<BenchmarkMetric>>>;
