@@ -25,6 +25,7 @@
 
 #include "deserialize.h"
 
+#include <any>
 #include <array>
 #include <string>
 #include <vector>
@@ -82,6 +83,28 @@ void deserialize(std::istream& is, std::vector<T>& v)
     else {
         for (T& e : v) {
             deserialize(is, e);
+        }
+    }
+}
+
+template<typename T>
+void deserialize(std::istream& is, std::vector<std::any>& v)
+{
+    std::size_t size;
+    deserialize(is, size);
+    v.resize(size);
+    if constexpr (Serializable<T>) {
+        for (std::any& e : v) {
+            T obj;
+            obj.deserialize(is);
+            e = std::move(obj);
+        }
+    }
+    else {
+        for (std::any& e : v) {
+            T obj;
+            deserialize(is, obj);
+            e = std::move(obj);
         }
     }
 }

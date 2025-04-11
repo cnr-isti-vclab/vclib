@@ -25,6 +25,7 @@
 
 #include "serialize.h"
 
+#include <any>
 #include <array>
 #include <string>
 #include <vector>
@@ -80,6 +81,23 @@ void serialize(std::ostream& os, const std::vector<T>& v)
     else {
         for (const T& e : v) {
             serialize(os, e);
+        }
+    }
+}
+
+template<typename T>
+void serialize(std::ostream& os, const std::vector<std::any>& v)
+{
+    std::size_t size = v.size();
+    serialize(os, size);
+    if constexpr (Serializable<T>) {
+        for (const std::any& e : v) {
+            std::any_cast<T>(e).serialize(os);
+        }
+    }
+    else {
+        for (const std::any& e : v) {
+            serialize(os, std::any_cast<T>(e));
         }
     }
 }
