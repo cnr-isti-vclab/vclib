@@ -42,13 +42,13 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction<BmarkDrawer>
     using Parent::benchmarkDrawer;
     using Parent::innerAction;
 
-    uint32_t mCurrentFrames = 0;
-    uint32_t mDurationFrames;
+    uint mCurrentFrames = 0;
+    uint mDurationFrames;
 
 public:
     FrameLimitedAutomationAction(
         const AbstractAutomationAction<BmarkDrawer>& innerAction,
-        uint32_t                                     durationFrames) :
+        uint                                         durationFrames) :
             Parent(innerAction), mDurationFrames {durationFrames},
             mCurrentFrames {0} {};
 
