@@ -53,7 +53,7 @@ class MeshEdgeUtil
         CNST,
         const typename MeshType::VertexType,
         typename MeshType::VertexType>;
-    using FaceType   = std::conditional_t<
+    using FaceType = std::conditional_t<
         CNST,
         const typename MeshType::FaceType,
         typename MeshType::FaceType>;
