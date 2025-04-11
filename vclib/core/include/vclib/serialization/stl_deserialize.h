@@ -20,10 +20,72 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SERIALIZATION_H
-#define VCL_SERIALIZATION_H
+#ifndef VCL_SERIALIZATION_STL_DESERIALIZE_H
+#define VCL_SERIALIZATION_STL_DESERIALIZE_H
 
-#include "serialization/stl_deserialize.h"
-#include "serialization/stl_serialize.h"
+#include "deserialize.h"
 
-#endif // VCL_SERIALIZATION_H
+#include <array>
+#include <string>
+#include <vector>
+
+namespace vcl {
+
+/// STL Deserialize specializations ///
+
+/*
+ * std::array
+ */
+
+template<typename T, std::size_t N>
+void deserialize(std::istream& is, std::array<T, N>& a)
+{
+    if constexpr (Serializable<T>) {
+        for (T& v : a) {
+            v.deserialize(is);
+        }
+    }
+    else {
+        for (T& e : a) {
+            deserialize(is, e);
+        }
+    }
+}
+
+/*
+ * std::string
+ */
+
+inline void deserialize(std::istream& is, std::string& s)
+{
+    std::size_t size;
+    deserialize(is, size);
+    s.resize(size);
+    deserializeN(is, s.data(), size);
+}
+
+/*
+ * std::vector
+ */
+
+template<typename T>
+void deserialize(std::istream& is, std::vector<T>& v)
+{
+    std::size_t size;
+    deserialize(is, size);
+    v.resize(size);
+    if constexpr (Serializable<T>) {
+        for (T& e : v) {
+            e.deserialize(is);
+        }
+    }
+    else {
+        for (T& e : v) {
+            deserialize(is, e);
+        }
+    }
+}
+
+} // namespace vcl
+
+#endif // VCL_SERIALIZATION_STL_DESERIALIZE_H

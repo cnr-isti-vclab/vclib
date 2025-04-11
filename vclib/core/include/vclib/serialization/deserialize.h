@@ -28,10 +28,8 @@
 #include <vclib/concepts/serialization.h>
 #include <vclib/concepts/types.h>
 
-#include <array>
 #include <bit>
 #include <istream>
-#include <vector>
 
 namespace vcl {
 
@@ -94,61 +92,6 @@ void deserialize(std::istream& is, T& data, Others&... others)
     }
     if constexpr (sizeof...(Others) > 0) {
         deserialize(is, others...);
-    }
-}
-
-/// Deserialize specializations ///
-
-/*
- * std::array
- */
-
-template<typename T, std::size_t N>
-void deserialize(std::istream& is, std::array<T, N>& a)
-{
-    if constexpr (Serializable<T>) {
-        for (T& v : a) {
-            v.deserialize(is);
-        }
-    }
-    else {
-        for (T& e : a) {
-            deserialize(is, e);
-        }
-    }
-}
-
-/*
- * std::string
- */
-
-inline void deserialize(std::istream& is, std::string& s)
-{
-    std::size_t size;
-    deserialize(is, size);
-    s.resize(size);
-    deserializeN(is, s.data(), size);
-}
-
-/*
- * std::vector
- */
-
-template<typename T>
-void deserialize(std::istream& is, std::vector<T>& v)
-{
-    std::size_t size;
-    deserialize(is, size);
-    v.resize(size);
-    if constexpr (Serializable<T>) {
-        for (T& e : v) {
-            e.deserialize(is);
-        }
-    }
-    else {
-        for (T& e : v) {
-            deserialize(is, e);
-        }
     }
 }
 
