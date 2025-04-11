@@ -26,6 +26,7 @@
 #include <vclib/misc/timer.h>
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/fps_benchmark_metric.h>
+#include <vclib/render/automation/metrics/null_benchmark_metric.h>
 #include <vclib/render/automation/printers/stdout_benchmark_printer.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/viewer/camera.h>

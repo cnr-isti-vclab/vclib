@@ -27,6 +27,7 @@
 #include <vclib/render/automation/printers/csv_benchmark_printer.h>
 #include <vclib/render/automation/printers/json_benchmark_printer.h>
 #include <vclib/render/automation/printers/null_benchmark_printer.h>
+#include <vclib/render/automation/printers/object_benchmark_printer.h>
 #include <vclib/render/automation/printers/stdout_benchmark_printer.h>
 
 #endif // VCL_BENCHMARK_PRINTERS_H
