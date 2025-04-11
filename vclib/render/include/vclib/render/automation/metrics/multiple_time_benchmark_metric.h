@@ -47,11 +47,11 @@ class MultipleTimeBenchmarkMetric : public BenchmarkMetric
 {
     bool                mFirstMeasurement = true;
     std::vector<double> mMeasurements;
-    uint32_t            mMeasurementCount;
+    uint                mMeasurementCount;
     Timer               mTimer;
 
 public:
-    MultipleTimeBenchmarkMetric(uint32_t measurementCount) :
+    MultipleTimeBenchmarkMetric(uint measurementCount) :
             mMeasurementCount {measurementCount}
     {
     }
@@ -77,17 +77,16 @@ public:
     std::vector<std::string> getMeasureStrings() override
     {
         std::vector<std::string> retVec;
-        uint32_t                 trueMeasurementCount =
-            std::min((uint32_t) mMeasurements.size() - 1, mMeasurementCount);
-        for (uint32_t i = 1; i <= trueMeasurementCount; i++) {
-            uint32_t from =
-                (uint32_t) ((double) (i - 1) / (double) trueMeasurementCount *
-                            (double) mMeasurements.size());
-            uint32_t to =
-                (uint32_t) ((double) i / (double) trueMeasurementCount *
-                            (double) mMeasurements.size());
+        uint                     trueMeasurementCount =
+            std::min((uint) mMeasurements.size() - 1, mMeasurementCount);
+        for (uint i = 1; i <= trueMeasurementCount; i++) {
+            uint from =
+                (uint) ((double) (i - 1) / (double) trueMeasurementCount *
+                        (double) mMeasurements.size());
+            uint   to  = (uint) ((double) i / (double) trueMeasurementCount *
+                              (double) mMeasurements.size());
             double sum = 0;
-            for (uint32_t j = from; j < to; j++) {
+            for (uint j = from; j < to; j++) {
                 sum += mMeasurements[j];
             }
 

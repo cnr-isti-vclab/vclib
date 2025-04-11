@@ -45,7 +45,7 @@ class SequentialAutomationActions : public AbstractAutomationAction<BmarkDrawer>
     using Parent = AbstractAutomationAction<BmarkDrawer>;
     using Parent::benchmarkDrawer;
 
-    uint32_t mCurrentIndex = 0;
+    uint mCurrentIndex = 0;
 
 public:
     SequentialAutomationActions(

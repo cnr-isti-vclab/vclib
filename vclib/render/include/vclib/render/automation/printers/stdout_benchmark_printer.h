@@ -35,8 +35,8 @@ namespace vcl {
  */
 class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint32_t mAutomationIndex = 0;
-    uint32_t mLoopCounter     = 0;
+    uint mAutomationIndex = 0;
+    uint mLoopCounter     = 0;
 
 public:
     void print(BenchmarkMetric& metric, std::string description) override

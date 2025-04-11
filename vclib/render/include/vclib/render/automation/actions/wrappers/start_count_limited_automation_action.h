@@ -44,13 +44,13 @@ class StartCountLimitedAutomationAction :
     using Parent::benchmarkDrawer;
     using Parent::innerAction;
 
-    uint32_t mMaximumStarts;
-    uint32_t mCurrentStarts = 0;
+    uint mMaximumStarts;
+    uint mCurrentStarts = 0;
 
 public:
     StartCountLimitedAutomationAction(
         const AbstractAutomationAction<BmarkDrawer>& innerAction,
-        uint32_t                                     maximumStarts) :
+        uint                                         maximumStarts) :
             Parent(innerAction), mMaximumStarts {maximumStarts} {};
 
     void start() override

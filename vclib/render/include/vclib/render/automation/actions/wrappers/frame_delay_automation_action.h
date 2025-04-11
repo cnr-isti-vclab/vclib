@@ -38,8 +38,8 @@ namespace vcl {
 template<typename BmarkDrawer>
 class FrameDelayAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 {
-    uint32_t mCurrentFrames = 0;
-    uint32_t mDelayFrames;
+    uint mCurrentFrames = 0;
+    uint mDelayFrames;
     bool     mInnerStarted = false;
     using Parent           = WrapperAutomationAction<BmarkDrawer>;
     using Parent::benchmarkDrawer;
@@ -48,7 +48,7 @@ class FrameDelayAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 public:
     FrameDelayAutomationAction(
         const AbstractAutomationAction<BmarkDrawer>& action,
-        uint32_t delayFrames) : Parent(action), mDelayFrames {delayFrames} {};
+        uint delayFrames) : Parent(action), mDelayFrames {delayFrames} {};
 
     void start() override { AbstractAutomationAction<BmarkDrawer>::start(); }
 

@@ -48,7 +48,7 @@ class FrameLimitedAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 public:
     FrameLimitedAutomationAction(
         const AbstractAutomationAction<BmarkDrawer>& innerAction,
-        uint32_t                                     durationFrames = 400.f) :
+        uint32_t                                     durationFrames) :
             Parent(innerAction), mDurationFrames {durationFrames},
             mCurrentFrames {0} {};
 

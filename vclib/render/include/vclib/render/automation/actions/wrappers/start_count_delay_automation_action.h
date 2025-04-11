@@ -43,13 +43,13 @@ class StartCountDelayAutomationAction :
     using Parent::benchmarkDrawer;
     using Parent::innerAction;
 
-    uint32_t mWaitStarts;
-    uint32_t mCurrentStarts = 0;
+    uint mWaitStarts;
+    uint mCurrentStarts = 0;
 
 public:
     StartCountDelayAutomationAction(
         const AbstractAutomationAction<BmarkDrawer>& innerAction,
-        uint32_t waitStarts) : Parent(innerAction), mWaitStarts {waitStarts} {};
+        uint waitStarts) : Parent(innerAction), mWaitStarts {waitStarts} {};
 
     void start() override
     {

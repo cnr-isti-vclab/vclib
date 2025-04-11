@@ -44,9 +44,9 @@ namespace vcl {
  */
 class CsvBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint32_t                                    mLoopCounter       = 0;
-    uint32_t                                    mAutomationCounter = 0;
-    uint32_t                                    maxMeasurementSize = 0;
+    uint                                        mLoopCounter       = 0;
+    uint                                        mAutomationCounter = 0;
+    uint                                        maxMeasurementSize = 0;
     std::string                                 mFileName;
     std::ofstream                               mStream;
     std::vector<std::pair<std::string, size_t>> mMeasurementStrings;

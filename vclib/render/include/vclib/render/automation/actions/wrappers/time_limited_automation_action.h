@@ -50,7 +50,7 @@ class TimeLimitedAutomationAction : public WrapperAutomationAction<BmarkDrawer>
 public:
     TimeLimitedAutomationAction(
         const AbstractAutomationAction<BmarkDrawer>& innerAction,
-        float                                        durationSeconds = 5.5f) :
+        float                                        durationSeconds) :
             Parent(innerAction), mDurationSeconds {durationSeconds} {};
 
     void start() override

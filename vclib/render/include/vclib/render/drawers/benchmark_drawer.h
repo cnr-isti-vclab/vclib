@@ -80,8 +80,8 @@ private:
 
     size_t mCurrentAutomationIndex = 0;
 
-    uint32_t mRepeatTimes = 1;
-    uint32_t mRepeatCount = 0;
+    uint mRepeatTimes = 1;
+    uint mRepeatCount = 0;
 
     std::shared_ptr<BenchmarkMetric>  mMetric = FpsBenchmarkMetric().clone();
     std::shared_ptr<BenchmarkPrinter> mPrinter =
@@ -164,7 +164,7 @@ public:
      */
     void setRepeatTimes(float repeatTimes) { this->mRepeatTimes = repeatTimes; }
 
-    void onDrawContent(vcl::uint viewId) override
+    void onDrawContent(uint viewId) override
     {
         if (!mBeforeStartWaitTimerStarted) {
             mBeforeStartWaitTimer.start();
@@ -236,7 +236,7 @@ public:
 
     void setPrinter(const BenchmarkPrinter& bp) { mPrinter = bp.clone(); };
 
-    uint32_t getRepeatCount() { return mRepeatCount; };
+    uint getRepeatCount() { return mRepeatCount; };
 
     size_t getCurrentAutomationIndex() { return mCurrentAutomationIndex; };
 
