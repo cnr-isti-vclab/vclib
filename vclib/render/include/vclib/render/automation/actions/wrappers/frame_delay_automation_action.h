@@ -25,6 +25,9 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
+#include <iomanip>
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -48,6 +51,14 @@ public:
         uint32_t delayFrames) : Parent(action), mDelayFrames {delayFrames} {};
 
     void start() override { AbstractAutomationAction<BmarkDrawer>::start(); }
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "After " << std::fixed << std::setprecision(3) << mDelayFrames
+             << " frames: " << innerAction->getDescription();
+        return temp.str();
+    }
 
     void doAction() override
     {

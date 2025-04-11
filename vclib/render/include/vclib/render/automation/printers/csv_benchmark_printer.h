@@ -34,11 +34,10 @@ namespace vcl {
 
 /**
  * The CsvBenchmarkPrinter class is a BenchmarkPrinter that writes the results
- * of a BenchmarkMetric to a CSV file.
+ * of a BenchmarkMetric to a CSV file that uses ; as a separator.
  *
  * The CSV file will have the following columns:
- * - Loop: the loop number
- * - Automation: the automation number
+ * - Description: A description of the automation
  * - Measurement 0: first measurement for the automation
  * - ...
  * - Measurement n: the last measurement for the automation
@@ -73,10 +72,10 @@ public:
         mAutomationCounter = 0;
     };
 
-    void print(BenchmarkMetric& metric) override
+    void print(BenchmarkMetric& metric, std::string description) override
     {
         std::ostringstream temp;
-        temp << mLoopCounter << ";" << mAutomationCounter;
+        temp << description;
 
         std::vector<std::string> measureStrings = metric.getMeasureStrings();
 
@@ -104,7 +103,7 @@ public:
 
     void finish() override
     {
-        mStream << "Loop;Automation";
+        mStream << "Description";
         for (uint32_t i = 0; i < maxMeasurementSize; i++) {
             mStream << ";Measurement " << i;
         }

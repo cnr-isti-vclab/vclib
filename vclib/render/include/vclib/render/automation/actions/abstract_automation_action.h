@@ -57,6 +57,8 @@ public:
         benchmarkDrawer = drawer;
     }
 
+    virtual std::string getDescription() = 0;
+
     /**
      * Only ever called by outside sources
      *

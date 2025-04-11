@@ -39,7 +39,7 @@ class StdoutBenchmarkPrinter : public BenchmarkPrinter
     uint32_t mLoopCounter     = 0;
 
 public:
-    void print(BenchmarkMetric& metric) override
+    void print(BenchmarkMetric& metric, std::string description) override
     {
         std::ostringstream temp;
         temp << "[";
@@ -54,8 +54,7 @@ public:
             temp << meas + metric.getUnitOfMeasure();
         }
         temp << "]";
-        std::cout << "Loop " << mLoopCounter << ", automation "
-                  << mAutomationIndex << ": " << temp.str() << std::endl;
+        std::cout << description << " -> " << temp.str() << std::endl;
 
         mAutomationIndex++;
     };

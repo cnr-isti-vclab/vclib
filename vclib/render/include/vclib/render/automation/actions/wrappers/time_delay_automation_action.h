@@ -27,6 +27,9 @@
 
 #include <vclib/misc/timer.h>
 
+#include <iomanip>
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -53,6 +56,14 @@ public:
     {
         AbstractAutomationAction<BmarkDrawer>::start();
         mTimer.start();
+    }
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "After " << std::fixed << std::setprecision(3) << mDelaySeconds
+             << " seconds: " << innerAction->getDescription();
+        return temp.str();
     }
 
     void doAction() override

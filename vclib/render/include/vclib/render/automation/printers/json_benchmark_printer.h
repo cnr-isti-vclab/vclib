@@ -51,8 +51,8 @@ namespace vcl {
  */
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
-    uint mLoopCounter     = 0;
-    uint mAutomationIndex = 0;
+    bool mFirstLoop       = true;
+    bool mFirstAutomation = true;
 
     std::string   mFileName;
     std::ofstream mStream;
@@ -72,20 +72,15 @@ public:
         mStream.open(mFileName);
     };
 
-    void onBenchmarkLoop() override
-    {
-        mLoopCounter++;
-        mAutomationIndex = 0;
-        mStream << "\n\t},\n\t\"Loop " << mLoopCounter << "\" : {";
-    };
+    void onBenchmarkLoop() override { mFirstLoop = false; };
 
-    void print(BenchmarkMetric& metric) override
+    void print(BenchmarkMetric& metric, std::string description) override
     {
-        if (mLoopCounter == 0 && mAutomationIndex == 0) {
-            mStream << "{\n\t\"Loop 0\" : {";
+        if (mFirstLoop && mFirstAutomation) {
+            mStream << "[";
         }
 
-        if (mAutomationIndex != 0) {
+        if (!mFirstAutomation) {
             mStream << ",";
         }
 
@@ -101,19 +96,21 @@ public:
             else {
                 isFirst = false;
             }
-            temp << "\n\t\t\t\t\"" << meas << metric.getUnitOfMeasure() << "\"";
+            temp << "\n\t\t\t\"" << meas << metric.getUnitOfMeasure() << "\"";
         }
-        temp << "\n\t\t\t]";
+        temp << "\n\t\t]";
 
-        mStream << "\n\t\t\"Automation " << mAutomationIndex << "\" : {"
-                << "\n\t\t\t\"measurements\" : " << temp.str() << "\n\t\t}";
+        mStream << "\n\t{";
 
-        mAutomationIndex++;
+        mStream << "\n\t\t\"Description\" : \"" << description << "\""
+                << "\n\t\t\"Measurements\" : " << temp.str() << "\n\t}";
+
+        mFirstAutomation = false;
     };
 
     void finish() override
     {
-        mStream << "\n\t}\n}";
+        mStream << "\n]";
         mStream.close();
     };
 

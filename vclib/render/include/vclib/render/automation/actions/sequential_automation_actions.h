@@ -27,6 +27,8 @@
 
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -57,6 +59,23 @@ public:
     };
 
     SequentialAutomationActions() {};
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "Sequential automations: [ ";
+        bool isFirst = true;
+        mAutomations[0];
+        for (const auto& automation : mAutomations) {
+            if (!isFirst) {
+                temp << ", ";
+            }
+            isFirst = false;
+            temp << automation->getDescription();
+        }
+        temp << " ]";
+        return temp.str();
+    }
 
     void addAutomation(const AbstractAutomationAction<BmarkDrawer>& automation)
     {

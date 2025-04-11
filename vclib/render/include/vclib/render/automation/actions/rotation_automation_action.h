@@ -76,6 +76,15 @@ public:
     RotationAutomationAction(float radiansPerSecond, Point3f axis) :
             mRadiansPerSecond {radiansPerSecond}, mAround {axis} {};
 
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "Rotate " << std::fixed << std::setprecision(3)
+             << mRadiansPerSecond << " radians per second around { "
+             << mAround[0] << ", " << mAround[1] << ", " << mAround[2] << " }";
+        return temp.str();
+    }
+
     void start() override
     {
         Parent::start();

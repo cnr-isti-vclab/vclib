@@ -25,6 +25,9 @@
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 
+#include <iomanip>
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -44,6 +47,14 @@ public:
     PerFrameChangeScaleAbsoluteAutomationAction(float pixelDeltaPerFrame) :
             mPixelDeltaPerFrame {pixelDeltaPerFrame}
     {
+    }
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "Absolute scale " << std::fixed << std::setprecision(3)
+             << std::showpos << mPixelDeltaPerFrame << " per frame";
+        return temp.str();
     }
 
     void doAction() override

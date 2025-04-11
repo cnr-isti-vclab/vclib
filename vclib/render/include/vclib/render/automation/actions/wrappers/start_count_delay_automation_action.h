@@ -25,6 +25,9 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
+#include <iomanip>
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -57,6 +60,14 @@ public:
         }
         Parent::start();
     };
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "After " << std::fixed << std::setprecision(3) << mWaitStarts
+             << " loops: " << innerAction->getDescription();
+        return temp.str();
+    }
 
     void doAction() override
     {

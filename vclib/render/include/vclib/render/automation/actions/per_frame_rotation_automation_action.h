@@ -27,7 +27,9 @@
 
 #include <vclib/space/core/quaternion.h>
 
+#include <iomanip>
 #include <numbers>
+#include <sstream>
 
 namespace vcl {
 
@@ -73,6 +75,15 @@ public:
 
     PerFrameRotationAutomationAction(float radiansPerFrame, Point3f axis) :
             mRadiansPerFrame {radiansPerFrame}, mAround {axis} {};
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "Rotate " << std::fixed << std::setprecision(3)
+             << mRadiansPerFrame << " radians per frame around { " << mAround[0]
+             << ", " << mAround[1] << ", " << mAround[2] << " }";
+        return temp.str();
+    }
 
     void doAction() override
     {

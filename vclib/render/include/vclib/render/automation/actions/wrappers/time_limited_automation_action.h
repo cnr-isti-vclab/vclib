@@ -28,6 +28,8 @@
 #include <vclib/misc/timer.h>
 
 #include <chrono>
+#include <iomanip>
+#include <sstream>
 
 namespace vcl {
 
@@ -55,6 +57,14 @@ public:
     {
         mTimer.start();
         Parent::start();
+    }
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "For " << std::fixed << std::setprecision(3) << mDurationSeconds
+             << " seconds: " << innerAction->getDescription();
+        return temp.str();
     }
 
     void doAction() override

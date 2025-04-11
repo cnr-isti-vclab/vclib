@@ -41,6 +41,8 @@ protected:
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> innerAction;
 
 public:
+    using Parent::getDescription;
+
     WrapperAutomationAction(
         const AbstractAutomationAction<BmarkDrawer>& action) :
             innerAction {action.clone()}

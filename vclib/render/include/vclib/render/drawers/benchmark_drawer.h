@@ -107,7 +107,9 @@ private:
     void onAutomationEnd()
     {
         mMetrics[mCurrentAutomationIndex]->end();
-        mPrinter->print(*mMetrics[mCurrentAutomationIndex]);
+        mPrinter->print(
+            *mMetrics[mCurrentAutomationIndex],
+            mAutomations[mCurrentAutomationIndex]->getDescription());
         mCurrentAutomationIndex++;
     }
 

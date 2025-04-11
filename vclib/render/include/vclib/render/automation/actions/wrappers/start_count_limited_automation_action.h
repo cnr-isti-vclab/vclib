@@ -25,6 +25,9 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
+#include <iomanip>
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -59,6 +62,14 @@ public:
         Parent::start();
         mCurrentStarts++;
     };
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "For " << std::fixed << std::setprecision(3) << mMaximumStarts
+             << " loops: " << innerAction->getDescription();
+        return temp.str();
+    }
 
     void doAction() override
     {

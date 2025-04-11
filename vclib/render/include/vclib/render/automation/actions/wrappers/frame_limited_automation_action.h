@@ -25,6 +25,9 @@
 
 #include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
+#include <iomanip>
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -50,6 +53,14 @@ public:
             mCurrentFrames {0} {};
 
     void start() override { Parent::start(); }
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "For " << std::fixed << std::setprecision(3) << mDurationFrames
+             << " frames: " << innerAction->getDescription();
+        return temp.str();
+    }
 
     void doAction() override
     {

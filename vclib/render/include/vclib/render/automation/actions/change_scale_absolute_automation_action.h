@@ -27,6 +27,9 @@
 
 #include <vclib/misc/timer.h>
 
+#include <iomanip>
+#include <sstream>
+
 namespace vcl {
 
 /**
@@ -47,6 +50,14 @@ public:
     ChangeScaleAbsoluteAutomationAction(float pixelDeltaPerSecond) :
             mPixelDeltaPerSecond {pixelDeltaPerSecond}
     {
+    }
+
+    std::string getDescription()
+    {
+        std::ostringstream temp;
+        temp << "Absolute scale " << std::fixed << std::setprecision(3)
+             << std::showpos << mPixelDeltaPerSecond << " per second";
+        return temp.str();
     }
 
     void start() override
