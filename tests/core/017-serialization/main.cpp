@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/algorithms/mesh/stat.h>
 #include <vclib/io.h>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
@@ -402,4 +403,48 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
             REQUIRE(
                 mesh1.face(i).vertexIndex(j) == mesh2.face(i).vertexIndex(j));
     }
+}
+
+TEMPLATE_TEST_CASE("Mesh with custom components serialization", "", vcl::PolyMesh, vcl::TriMesh)
+{
+    using Mesh = TestType;
+
+    Mesh mesh1 = vcl::load<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+
+    mesh1.template addCustomComponent<vcl::Point3d>(
+        "barycenter", vcl::barycenter(mesh1));
+    mesh1.template addCustomComponent<vcl::Point3d>(
+        "shell_barycenter", vcl::shellBarycenter(mesh1));
+    mesh1.template addCustomComponent<double>("area", vcl::surfaceArea(mesh1));
+
+    std::ofstream fo =
+        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/mesh_cc.bin");
+    mesh1.serialize(fo);
+    mesh1.template serializeCustomComponentsOfType<double>(fo);
+    mesh1.template serializeCustomComponentsOfType<vcl::Point3d>(fo);
+    fo.close();
+
+    Mesh          mesh2;
+    std::ifstream fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/mesh_cc.bin");
+    mesh2.deserialize(fi);
+    mesh2.template deserializeCustomComponentsOfType<double>(fi);
+    mesh2.template deserializeCustomComponentsOfType<vcl::Point3d>(fi);
+    fi.close();
+
+    REQUIRE(mesh2.hasCustomComponent("barycenter"));
+    REQUIRE(mesh2.hasCustomComponent("shell_barycenter"));
+    REQUIRE(mesh2.hasCustomComponent("area"));
+    REQUIRE(mesh2.template isCustomComponentOfType<vcl::Point3d>("barycenter"));
+    REQUIRE(mesh2.template isCustomComponentOfType<vcl::Point3d>("shell_barycenter"));
+    REQUIRE(mesh2.template isCustomComponentOfType<double>("area"));
+    REQUIRE(
+        mesh1.template customComponent<vcl::Point3d>("barycenter") ==
+        mesh2.template customComponent<vcl::Point3d>("barycenter"));
+    REQUIRE(
+        mesh1.template customComponent<vcl::Point3d>("shell_barycenter") ==
+        mesh2.template customComponent<vcl::Point3d>("shell_barycenter"));
+    REQUIRE(
+        mesh1.template customComponent<double>("area") ==
+        mesh2.template customComponent<double>("area"));
 }
