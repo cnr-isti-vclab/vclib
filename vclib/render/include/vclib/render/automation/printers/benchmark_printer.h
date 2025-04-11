@@ -54,6 +54,8 @@ public:
      */
     virtual void finish() = 0;
 
+    virtual bool isNull() { return false; }
+
     virtual std::shared_ptr<BenchmarkPrinter> clone() const& = 0;
     virtual std::shared_ptr<BenchmarkPrinter> clone() &&     = 0;
 };
