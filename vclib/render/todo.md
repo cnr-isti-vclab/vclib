@@ -12,8 +12,9 @@
   - [ ] The AbstractViewer should not inherit from DesktopTrackball, but it should own it as a member.
 - BGFX
   - [X] Fix FIXME #1 on example-01-viewer-qt
-  - [ ] Fix FIXME #2 on example-04-hello-triangle-imgui-qt
-  - [ ] Fix FIXME #3 on example-999-misc-broken-bgfx-imgui-qt (probably related with FIXME #2)
+  - [X] Fix FIXME #2 on example-04-hello-triangle-imgui-qt
+  - [X] Fix FIXME #3 on example-999-misc-broken-bgfx-imgui-qt (probably related with FIXME #2)
+  - [ ] Fix FIXME #4 on imgui/imgui_drawer.h
   - [X] Fix 2 Qt windows with BGFX canvas.
   - [ ] Add possibility to update a subset of buffers for DrawableMesh
   - [X] Library shaders should be built as headers
@@ -59,6 +60,7 @@
   - [X] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown (SOLVED MISTERIOUSLY)
   - [X] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring (REFACTORING IN PROGRESS)
   - [ ] update documentation of Canvas & co.
-  - [ ] implement screenshot custom size (split rendering into multiple tiles)
+  - [ ] Eventually implement screenshot custom size (split rendering into multiple tiles)
+  - [X] screenshot with size multiplier (bgfx only)
   - [X] move MeshViewerImguiDrawer into library
-  - [ ] move example 07 mesh-viewer-imgui in example 02
+  - [X] move example 07 mesh-viewer-imgui in example 02

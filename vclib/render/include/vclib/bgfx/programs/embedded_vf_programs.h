@@ -26,7 +26,14 @@
 #include "embedded_vf_programs/drawable_axis.h"
 #include "embedded_vf_programs/drawable_directional_light.h"
 #include "embedded_vf_programs/drawable_mesh_edges.h"
+#include "embedded_vf_programs/drawable_mesh_edges_id.h"
 #include "embedded_vf_programs/drawable_mesh_points.h"
+#include "embedded_vf_programs/drawable_mesh_points_id.h"
+//#include "embedded_vf_programs/drawable_mesh_surface.h"
+#include "embedded_vf_programs/drawable_mesh_surface_id.h"
+#include "embedded_vf_programs/drawable_mesh_wireframe.h"
+#include "embedded_vf_programs/drawable_mesh_wireframe_id.h"
+
 #include "embedded_vf_programs/drawable_mesh_surface_uber.h"
 #include "embedded_vf_programs/drawable_mesh_surface_none_color_vertex.h"
 #include "embedded_vf_programs/drawable_mesh_surface_none_color_mesh.h"
@@ -46,7 +53,7 @@
 #include "embedded_vf_programs/drawable_mesh_surface_smooth_color_user.h"
 #include "embedded_vf_programs/drawable_mesh_surface_smooth_tex_vertex.h"
 #include "embedded_vf_programs/drawable_mesh_surface_smooth_tex_wedge.h"
-#include "embedded_vf_programs/drawable_mesh_wireframe.h"
+
 #include "embedded_vf_programs/drawable_trackball.h"
 #include "embedded_vf_programs/font_basic.h"
 #include "embedded_vf_programs/font_distance_field.h"

@@ -22,21 +22,21 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_edges.h>
 
-#include <shaders/drawable/drawable_mesh/edges/fs_edges.sc.glsl.bin.h>
-#include <shaders/drawable/drawable_mesh/edges/vs_edges.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/fs_edges.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/vs_edges.sc.glsl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/edges/fs_edges.sc.essl.bin.h>
-#include <shaders/drawable/drawable_mesh/edges/vs_edges.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/fs_edges.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/vs_edges.sc.essl.bin.h>
 
-#include <shaders/drawable/drawable_mesh/edges/fs_edges.sc.spv.bin.h>
-#include <shaders/drawable/drawable_mesh/edges/vs_edges.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/fs_edges.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/vs_edges.sc.spv.bin.h>
 #ifdef _WIN32
-#include <shaders/drawable/drawable_mesh/edges/fs_edges.sc.dx11.bin.h>
-#include <shaders/drawable/drawable_mesh/edges/vs_edges.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/fs_edges.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/vs_edges.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/drawable/drawable_mesh/edges/fs_edges.sc.mtl.bin.h>
-#include <shaders/drawable/drawable_mesh/edges/vs_edges.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/fs_edges.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/edges/vs_edges.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

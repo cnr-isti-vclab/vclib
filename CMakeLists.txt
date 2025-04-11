@@ -32,6 +32,8 @@ option(VCLIB_BUILD_MODULE_EXTERNAL "Build the external module" OFF)
 option(VCLIB_BUILD_MODULE_PROCESSING "Build the processing module" OFF)
 option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
+option(VCLIB_BUILD_MODULE_BINDINGS "Build the python bindings module" OFF)
+
 # Build examples
 option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
 
@@ -71,6 +73,10 @@ if (VCLIB_BUILD_MODULE_RENDER)
     target_link_libraries(vclib INTERFACE vclib::render)
 endif()
 
+if (VCLIB_BUILD_MODULE_BINDINGS)
+    add_subdirectory(vclib/bindings)
+endif()
+
 set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 set(VCLIB_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
@@ -95,3 +101,7 @@ if (VCLIB_BUILD_TESTS)
 
     add_subdirectory(${VCLIB_TESTS_DIR})
 endif()
+
+# Install
+install(FILES ${CMAKE_CURRENT_LIST_DIR}/LICENSE
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/licenses/vclib)

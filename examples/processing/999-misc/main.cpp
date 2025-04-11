@@ -55,7 +55,7 @@ int main()
         ++i;
     }
 
-    auto vec = filterMeshActions();
+    auto vec = filterActions();
 
     std::cerr << "Id of TriEdgeMesh: "
               << vcl::toUnderlying(meshTypeId<vcl::TriEdgeMesh>()) << std::endl;

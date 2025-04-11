@@ -194,6 +194,7 @@ STRIP_FROM_PATH        =
 # using the -I flag.
 
 STRIP_FROM_INC_PATH    = vclib/core/include \
+                         vclib/external/include \
                          vclib/render/include
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter (but
@@ -690,7 +691,7 @@ SORT_MEMBER_DOCS       = YES
 # this will also influence the order of the classes in the class list.
 # The default value is: NO.
 
-SORT_BRIEF_DOCS        = NO
+SORT_BRIEF_DOCS        = YES
 
 # If the SORT_MEMBERS_CTORS_1ST tag is set to YES then doxygen will sort the
 # (brief and detailed) documentation of class members so that constructors and
@@ -946,6 +947,7 @@ WARN_LOGFILE           =
 
 INPUT                  = docs/ \
                          vclib/core/include/ \
+                         vclib/external/include/ \
                          vclib/render/include/ \
                          vclib/render/src/
 
@@ -1073,7 +1075,8 @@ EXCLUDE_PATTERNS       = README.md
 EXCLUDE_SYMBOLS        = detail \
                          mapbox \
                          bgfx \
-                         std
+                         std \
+                         VCL_HIDE*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
@@ -1400,6 +1403,7 @@ HTML_STYLESHEET        =
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 HTML_EXTRA_STYLESHEET  = docs/doxygen-awesome-css/doxygen-awesome.css \
+                         doxygen-awesome-sidebar-only.css \
                          docs/doxygen-awesome-css/doxygen-awesome-sidebar-only-darkmode-toggle.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
@@ -1423,7 +1427,7 @@ HTML_EXTRA_FILES       = docs/doxygen-awesome-css/doxygen-awesome-darkmode-toggl
 # The default value is: AUTO_LIGHT.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_COLORSTYLE        = AUTO_LIGHT
+HTML_COLORSTYLE        = TOGGLE
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to

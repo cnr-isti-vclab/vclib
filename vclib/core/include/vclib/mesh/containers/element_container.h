@@ -30,15 +30,16 @@
 #include <vclib/concepts/mesh/components.h>
 #include <vclib/concepts/mesh/containers.h>
 #include <vclib/concepts/mesh/elements/element.h>
-#include <vclib/io/serialization.h>
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
+#include <vclib/serialization.h>
 #include <vclib/types/view.h>
 
 #include <vector>
 
 namespace vcl::mesh {
 
+/// @cond VCLIB_HIDDEN_DOCS
 template<ElementConcept T>
 class ElementContainer : public ElementContainerTriggerer
 {
@@ -790,6 +791,20 @@ protected:
         return cc;
     }
 
+    template<typename K>
+    void serializePerElementCustomComponentsOfType(std::ostream& os) const
+        requires comp::HasCustomComponents<T>
+    {
+        mCustomCompVecMap.template serializeCustomComponentsOfType<K>(os);
+    }
+
+    template<typename K>
+    void deserializePerElementCustomComponentsOfType(std::istream& is)
+        requires comp::HasCustomComponents<T>
+    {
+        mCustomCompVecMap.template deserializeCustomComponentsOfType<K>(is);
+    }
+
     uint index(const T* e) const
     {
         assert(
@@ -1075,6 +1090,8 @@ private:
         }
     }
 };
+
+/// @endcond
 
 } // namespace vcl::mesh
 

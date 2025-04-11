@@ -49,6 +49,9 @@ void principalCurvatureStaticAsserts()
     static_assert(
         PrincipalCurvatureConcept<PrincipalCurvatureType&&>,
         "PrincipalCurvature&& does not satisfy the PrincipalCurvatureConcept");
+    static_assert(
+        Serializable<PrincipalCurvatureType>,
+        "PrincipalCurvature is not serializable");
 }
 
 #endif // PRINCIPAL_CURVATURE_H

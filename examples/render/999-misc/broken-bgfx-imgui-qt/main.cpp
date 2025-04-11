@@ -27,13 +27,11 @@
 #include <QApplication>
 #include <QFileDialog>
 
-#include <iostream>
-
 template<typename Der>
-class ViewerDrawer : public vcl::ViewerDrawer<Der>
+class ViewerDrawer : public vcl::TrackBallViewerDrawer<Der>
 {
 public:
-    using ParentViewer = vcl::ViewerDrawer<Der>;
+    using ParentViewer = vcl::TrackBallViewerDrawer<Der>;
     using ParentViewer::ParentViewer;
 
     void onMousePress(
@@ -42,7 +40,7 @@ public:
         double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
-        vcl::ViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
+        vcl::TrackBallViewerDrawer<Der>::onMousePress(button, x, y, modifiers);
 
         if (button == vcl::MouseButton::RIGHT) {
             QFileDialog::getOpenFileName(
@@ -55,6 +53,8 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
+    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
+
     using Viewer = vcl::RenderApp<
         vcl::qt::WidgetManager,
         vcl::Canvas,
@@ -65,8 +65,6 @@ int main(int argc, char** argv)
     Viewer viewer("Viewer with ImGui and Stats");
 
     viewer.show();
-
-    // FIXME #3: It does not work when ImguiDrawers are activated
 
     return app.exec();
 }

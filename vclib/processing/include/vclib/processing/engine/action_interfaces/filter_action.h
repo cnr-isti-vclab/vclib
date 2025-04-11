@@ -52,6 +52,8 @@ public:
 
     virtual std::string name() const = 0;
 
+    virtual MeshTypeId meshType() const = 0;
+
     /**
      * @brief Returns the categories of the filter.
      *
@@ -117,7 +119,6 @@ public:
      */
     virtual ParameterVector parameters() const { return ParameterVector(); }
 
-public:
     /* ************************************ *
      * Member functions already implemented *
      * ************************************ */

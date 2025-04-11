@@ -54,6 +54,8 @@ using ContCompBase = std::conditional_t<
 
 } // namespace detail
 
+/// @cond VCLIB_HIDDEN_DOCS
+
 /**
  * @brief The ContainerComponent class is the base class for all the components
  * of VCLib that store a container of objects of a given type T.
@@ -233,6 +235,8 @@ protected:
         return std::get<1>(Base::data());
     }
 };
+
+/// @endcond
 
 } // namespace vcl::comp
 

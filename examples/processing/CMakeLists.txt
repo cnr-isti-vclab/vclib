@@ -30,6 +30,7 @@ add_subdirectory(001-load-mesh)
 add_subdirectory(002-create-mesh)
 add_subdirectory(003-laplacian-smoothing)
 add_subdirectory(004-convex-hull)
+add_subdirectory(005-convert)
 
 add_subdirectory(999-misc)
 

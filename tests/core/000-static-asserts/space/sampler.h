@@ -104,14 +104,9 @@ void samplerStaticAsserts()
         SamplerConcept<ConstVertexSamplerType&&>,
         "ConstVertexSampler&& does not satisfy the SamplerConcept");
 
-    // TODO: fix these asserts
-    // ranges
-    //     static_assert(
-    //        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
-    //        "");
-
-    //    VertexSampler<detail::TMPSimplePolyMesh::Vertex> v;
-    //    auto it = std::ranges::begin(v);
+    static_assert(
+        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
+        "A VertexSampler is not a range");
 }
 
 #endif // SAMPLER_H

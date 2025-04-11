@@ -31,7 +31,7 @@ template<typename DerivedRenderApp>
 class PlainDrawer
 {
 protected:
-    using DRT = DerivedRenderApp;
+    using DRA = DerivedRenderApp;
 
 public:
     PlainDrawer() = default;
@@ -44,14 +44,16 @@ public:
 
     virtual void onDraw(uint viewId) { onDrawContent(viewId); }
 
+    virtual void onDrawId(uint viewId) {}
+
     virtual void onDrawContent(uint viewId) {}
 
     virtual void onPostDraw() {}
 
 protected:
-    auto* derived() { return static_cast<DRT*>(this); }
+    auto* derived() { return static_cast<DRA*>(this); }
 
-    const auto* derived() const { return static_cast<const DRT*>(this); }
+    const auto* derived() const { return static_cast<const DRA*>(this); }
 };
 
 } // namespace vcl

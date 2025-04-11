@@ -22,8 +22,10 @@
 
 #include "../hello_triangle_drawer.h"
 
-#include <vclib/glfw/window_manager.h>
+// may include qt - must be included before glfw...
 #include <vclib/render/canvas.h>
+
+#include <vclib/glfw/window_manager.h>
 #include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)

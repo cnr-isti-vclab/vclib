@@ -33,19 +33,14 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: external-${{ matrix.os }}-${{ github.ref }}
+        key: external-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build
       shell: bash
       run: |
         mkdir build
-        cd build
-        cmake -GNinja \
-          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DVCLIB_BUILD_MODULE_EXTERNAL=ON \
-          -DVCLIB_CORE_BUILD_EXAMPLES=OFF -DVCLIB_CORE_BUILD_TESTS=OFF \
-          ..
-        ninja
+        cmake -B build --preset=vclib-external-release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build build --parallel
     - name: Run Tests
       shell: bash
       run: |

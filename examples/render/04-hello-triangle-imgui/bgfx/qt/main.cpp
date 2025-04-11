@@ -35,9 +35,6 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    // FIXME #2: crash on linux when closing: derived()->update() in
-    // imgui_drawer.h
-
     using WidgetQt = vcl::RenderApp<
         vcl::qt::WidgetManager, // The WindowManager: Qt
         vcl::Canvas,            // The default Canvas

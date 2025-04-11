@@ -64,8 +64,15 @@ public:
         AbstractLogger&                     log = Base::logger()) const final
     {
         const MeshType& input = *inputMeshes.front();
+        std::string     name  = "Convex Hull";
+        if constexpr (HasName<MeshType>) {
+            name = input.name() + " " + name;
+        }
         outputMeshes.push_back(
             convexHull<MeshType>(input.vertices() | vcl::views::coords, log));
+        if constexpr (HasName<MeshType>) {
+            outputMeshes.back().name() = name;
+        }
         return OutputValues();
     }
 };

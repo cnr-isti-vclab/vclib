@@ -92,11 +92,10 @@ namespace vcl {
  * bool`: Called when a Drawer object asks to read the depth value at the
  * specified point on the canvas. The function should read the depth value at
  * the specified point and call the callback function with the depth value.
- * - `onScreenshot(const std::string& filename, uint width = 0, uint height = 0)
+ * - `onScreenshot(const std::string& filename, uint multiplier = 1)
  * -> bool`: Called when a Drawer object asks for a screenshot of the canvas.
  * The function should take a screenshot of the canvas and save it to the
- * specified filename. If the width and height are specified, the screenshot
- * should be resized to the specified dimensions.
+ * specified filename.
  */
 template<typename T>
 concept CanvasConcept = requires (
@@ -125,7 +124,7 @@ concept CanvasConcept = requires (
 
         { obj.onReadDepth(p, cbrb) } -> std::same_as<bool>;
         { obj.onScreenshot(str) } -> std::same_as<bool>;
-        { obj.onScreenshot(str, u, u) } -> std::same_as<bool>;
+        { obj.onScreenshot(str, u) } -> std::same_as<bool>;
     };
 };
 

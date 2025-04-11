@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-24.04', 'macos-13', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-24.04', 'macos-13', 'macos-15', 'windows-latest']
         render_backend: ['bgfx', 'opengl2']
     steps:
     - uses: actions/checkout@v4
@@ -33,6 +33,10 @@ jobs:
       shell: bash
       run: |
         brew install ninja
+        # if matrix.os == 'macos-13'
+        if [[ "${{ matrix.os }}" == "macos-13" ]]; then
+          brew install llvm@18
+        fi
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
@@ -40,20 +44,27 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: render-${{ matrix.os }}-${{matrix.render_backend}}-${{ github.ref }}
+        key: render-${{ matrix.os }}-${{matrix.render_backend}}-${{ github.ref_name }}
     - name: Build
       shell: bash
       run: |
+        if [[ "${{ matrix.os }}" == "macos-13" ]]; then
+          export BREW_PATH="$(brew --prefix)"
+          export LLVM_PATH="$(brew --prefix llvm@18)"
+          export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+          export LIBRARY_PATH="$LIBRARY_PATH:$SDKROOT/usr/lib"
+          export PATH="$LLVM_PATH/bin:$PATH"
+          export CC="$LLVM_PATH/bin/clang"
+          export CXX="$LLVM_PATH/bin/clang++"
+          export COMPILER=${CXX}
+          export CFLAGS="-I $BREW_PATH/include -I $LLVM_PATH/include"
+          export CXXFLAGS="-I $BREW_PATH/include -I $LLVM_PATH/include"
+          export LDFLAGS="-L $LIBRARY_PATH -L $BREW_PATH/lib -L $LLVM_PATH/lib -L $LLVM_PATH/lib/c++" 
+        fi
         mkdir build
-        cd build
-        cmake -GNinja \
-          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DVCLIB_BUILD_MODULE_RENDER=ON \
-          -DVCLIB_RENDER_BACKEND=${{ matrix.render_backend }} \
-          -DVCLIB_CORE_BUILD_EXAMPLES=OFF -DVCLIB_CORE_BUILD_TESTS=OFF \
-          ..
-        ninja
+        cmake -B build --preset=vclib-render-${{matrix.render_backend}}-release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build build --parallel
     # - name: Run Tests
     #   shell: bash
     #   run: |

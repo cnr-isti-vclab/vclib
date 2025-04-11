@@ -39,3 +39,9 @@ target_include_directories(vclib-3rd-mapbox-earcut
     INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
 
 list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-mapbox-earcut)
+
+# Install
+if (VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT)
+    install(DIRECTORY ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()

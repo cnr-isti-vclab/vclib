@@ -75,6 +75,7 @@ public:
                     VertFragLoader<PROGRAM>::vertexShader(mRenderType)),
                 vcl::loadShader(
                     VertFragLoader<PROGRAM>::fragmentShader(mRenderType)));
+            assert(bgfx::isValid(mVFPrograms[p]));
         }
         return mVFPrograms[p];
     }
@@ -84,7 +85,8 @@ public:
     {
         uint p = toUnderlying(PROGRAM);
         if (!bgfx::isValid(mCPrograms[p])) {
-            // TODO - use ComputeLoader
+            mCPrograms[p] = vcl::createProgram(vcl::loadShader(
+                ComputeLoader<PROGRAM>::computeShader(mRenderType)));
         }
         return mCPrograms[p];
     }

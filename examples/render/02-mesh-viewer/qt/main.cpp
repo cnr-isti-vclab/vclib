@@ -28,11 +28,24 @@
 
 #include <QApplication>
 
+class MeshViewerSelectQt : public vcl::qt::MeshViewer
+{
+public:
+    using vcl::qt::MeshViewer::MeshViewer;
+
+    MeshViewerSelectQt(QWidget* parent = nullptr) : vcl::qt::MeshViewer(parent)
+    {
+        viewer().setOnObjectSelected([this](uint id) {
+            drawableObjectVectorFrame().setSelectedItem(id);
+        });
+    }
+};
+
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    vcl::qt::MeshViewer mv;
+    MeshViewerSelectQt mv;
 
     // load and set up a drawable mesh
     auto m = getDrawableMesh<vcl::TriMesh>();

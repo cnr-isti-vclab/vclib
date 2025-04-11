@@ -200,6 +200,7 @@ cython_debug/
 
 # CMake gitignore
 
+CMakeUserPresets.json
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles

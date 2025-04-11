@@ -27,7 +27,7 @@
 #include "views/pointers.h"
 
 /**
- * @defgroup views  Views Module
+ * @defgroup views  Views
  *
  * @brief List of [range views](https://en.cppreference.com/w/cpp/ranges/view)
  * of the library.
