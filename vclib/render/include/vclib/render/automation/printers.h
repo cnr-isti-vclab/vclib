@@ -20,27 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_BENCHMARK_PRINTERS_H
+#define VCL_BENCHMARK_PRINTERS_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/printers/benchmark_printer.h>
+#include <vclib/render/automation/printers/csv_benchmark_printer.h>
+#include <vclib/render/automation/printers/json_benchmark_printer.h>
+#include <vclib/render/automation/printers/null_benchmark_printer.h>
+#include <vclib/render/automation/printers/object_benchmark_printer.h>
+#include <vclib/render/automation/printers/stdout_benchmark_printer.h>
 
-namespace vcl::qt {
-
-class ScreenShotDialog : public QFileDialog
-{
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
-
-public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
-
-    float screenMultiplierValue() const;
-};
-
-} // namespace vcl::qt
-
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif // VCL_BENCHMARK_PRINTERS_H

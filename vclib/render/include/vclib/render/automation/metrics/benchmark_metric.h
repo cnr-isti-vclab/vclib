@@ -20,27 +20,58 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_BENCHMARK_METRIC_H
+#define VCL_BENCHMARK_METRIC_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <memory>
+#include <string>
+#include <vector>
 
-namespace vcl::qt {
+namespace vcl {
 
-class ScreenShotDialog : public QFileDialog
+/**
+ * The BenchmarkMetric class is an Abstract class that represents a way of
+ * measuring the performance of an Automation.
+ */
+class BenchmarkMetric
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
-
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    /**
+     * @brief Called when the automation is started
+     */
+    virtual void start() = 0;
 
-    float screenMultiplierValue() const;
+    /**
+     * @brief Called each frame
+     */
+    virtual void measure() = 0;
+
+    /**
+     * @return A vector of string representations of the measurement(s) taken
+     */
+    virtual std::vector<std::string> getMeasureStrings() = 0;
+
+    /**
+     * @return The symbol that represents the unit of measure
+     */
+    virtual std::string getUnitOfMeasure() = 0;
+
+    /**
+     * @return The full name of the unit of measure
+     */
+    virtual std::string getFullLengthUnitOfMeasure() = 0;
+
+    /**
+     * @brief Called when the automation finishes
+     */
+    virtual void end() = 0;
+
+    virtual bool isNull() { return false; };
+
+    virtual std::shared_ptr<BenchmarkMetric> clone() const& = 0;
+    virtual std::shared_ptr<BenchmarkMetric> clone() &&     = 0;
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

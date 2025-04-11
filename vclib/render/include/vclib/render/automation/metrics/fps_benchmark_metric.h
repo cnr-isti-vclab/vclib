@@ -20,27 +20,75 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_FPS_BENCHMARK_METRIC_H
+#define VCL_FPS_BENCHMARK_METRIC_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/metrics/benchmark_metric.h>
 
-namespace vcl::qt {
+#include <vclib/misc/timer.h>
 
-class ScreenShotDialog : public QFileDialog
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+namespace vcl {
+
+/**
+ * The FpsBenchmarkMetric class measures the average framerate
+ * for an automation by keeping track of the total duration of the automation
+ * and the total frames it took to complete
+ */
+class FpsBenchmarkMetric : public BenchmarkMetric
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
+    bool   mFirstMeasurement = true;
+    Timer  mTimer;
+    double mFrames = 0;
 
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    void start() override
+    {
+        mFrames           = 0;
+        mFirstMeasurement = true;
+    };
 
-    float screenMultiplierValue() const;
+    void measure() override
+    {
+        if (mFirstMeasurement) {
+            mFirstMeasurement = false;
+            mTimer.start();
+            return;
+        }
+        mFrames++;
+    };
+
+    std::vector<std::string> getMeasureStrings() override
+    {
+        std::ostringstream temp;
+        temp << std::fixed << std::setprecision(3) << mFrames / mTimer.delay();
+
+        return std::vector<std::string> {temp.str()};
+    };
+
+    std::string getUnitOfMeasure() override { return "fps"; }
+
+    std::string getFullLengthUnitOfMeasure() override
+    {
+        return "frames per second";
+    }
+
+    void end() override { mTimer.stop(); };
+
+    std::shared_ptr<BenchmarkMetric> clone() const& override
+    {
+        return std::make_shared<FpsBenchmarkMetric>(*this);
+    };
+
+    std::shared_ptr<BenchmarkMetric> clone() && override
+    {
+        return std::make_shared<FpsBenchmarkMetric>(std::move(*this));
+    };
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

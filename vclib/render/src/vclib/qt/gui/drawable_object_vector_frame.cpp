@@ -87,16 +87,6 @@ void DrawableObjectVectorFrame::update()
     }
 }
 
-bool DrawableObjectVectorFrame::setSelectedItem(uint i)
-{
-    if (i >= mDrawList->size()) {
-        return false;
-    }
-    mUI->listWidget->setCurrentRow(i);
-    emit drawableObjectSelectionChanged(i);
-    return true;
-}
-
 void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
 {
     if (mUI->listWidget->selectedItems().size() > 0) {

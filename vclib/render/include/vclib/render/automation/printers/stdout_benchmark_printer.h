@@ -20,27 +20,60 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_STDOUT_BENCHMARK_PRINTER_H
+#define VCL_STDOUT_BENCHMARK_PRINTER_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/printers/benchmark_printer.h>
 
-namespace vcl::qt {
+#include <sstream>
 
-class ScreenShotDialog : public QFileDialog
+namespace vcl {
+
+/**
+ * The StdoutBenchmarkPrinter class is a BenchmarkPrinter that writes the
+ * results of a BenchmarkMetric to standard output
+ */
+class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
+    uint mAutomationIndex = 0;
+    uint mLoopCounter     = 0;
 
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    void print(BenchmarkMetric& metric, std::string description) override
+    {
+        std::ostringstream temp;
+        temp << "[";
+        bool isFirst = true;
+        for (const auto& meas : metric.getMeasureStrings()) {
+            if (!isFirst) {
+                temp << ", ";
+            }
+            else {
+                isFirst = false;
+            }
+            temp << meas + metric.getUnitOfMeasure();
+        }
+        temp << "]";
+        std::cout << description << " -> " << temp.str() << std::endl;
 
-    float screenMultiplierValue() const;
+        mAutomationIndex++;
+    };
+
+    void onBenchmarkLoop() override { mLoopCounter++; }
+
+    void finish() override {};
+
+    std::shared_ptr<BenchmarkPrinter> clone() const& override
+    {
+        return std::make_shared<StdoutBenchmarkPrinter>(*this);
+    };
+
+    std::shared_ptr<BenchmarkPrinter> clone() && override
+    {
+        return std::make_shared<StdoutBenchmarkPrinter>(std::move(*this));
+    };
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

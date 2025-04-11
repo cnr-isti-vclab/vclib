@@ -20,27 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_BENCHMARK_PRINTER_H
+#define VCL_BENCHMARK_PRINTER_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/metrics/benchmark_metric.h>
 
-namespace vcl::qt {
+#include <memory>
+#include <string>
 
-class ScreenShotDialog : public QFileDialog
+namespace vcl {
+
+/**
+ * The BenchmarkPrinter class is an abstract class that represent a way of
+ * writing (printing, ...) measurements from a BenchmarkMetric
+ */
+class BenchmarkPrinter
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
-
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    /**
+     * @brief Called just before the start of the next BenchmarkDrawer loop
+     */
+    virtual void onBenchmarkLoop() = 0;
 
-    float screenMultiplierValue() const;
+    /**
+     * @brief Called every time an automation ends
+     * @param[in] metric: The metric to take the measurements from
+     * @param[in] description: a description of the automation
+     */
+    virtual void print(BenchmarkMetric& metric, std::string description) = 0;
+
+    /**
+     * @brief Called when the last automation of the last loop has finished
+     */
+    virtual void finish() = 0;
+
+    virtual bool isNull() { return false; }
+
+    virtual std::shared_ptr<BenchmarkPrinter> clone() const& = 0;
+    virtual std::shared_ptr<BenchmarkPrinter> clone() &&     = 0;
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

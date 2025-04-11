@@ -20,27 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_NULL_BENCHMARK_METRIC_H
+#define VCL_NULL_BENCHMARK_METRIC_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/metrics/benchmark_metric.h>
 
-namespace vcl::qt {
+#include <string>
 
-class ScreenShotDialog : public QFileDialog
+namespace vcl {
+
+/**
+ * The NullBenchmarkMetric class measures nothing.
+ */
+class NullBenchmarkMetric : public BenchmarkMetric
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
-
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    void start() override {};
 
-    float screenMultiplierValue() const;
+    void measure() override {};
+
+    bool isNull() override { return true; }
+
+    std::vector<std::string> getMeasureStrings() override
+    {
+        return std::vector<std::string> {""};
+    };
+
+    std::string getUnitOfMeasure() override { return ""; };
+
+    std::string getFullLengthUnitOfMeasure() override { return ""; };
+
+    void end() override {};
+
+    std::shared_ptr<BenchmarkMetric> clone() const& override
+    {
+        return std::make_shared<NullBenchmarkMetric>(*this);
+    };
+
+    std::shared_ptr<BenchmarkMetric> clone() && override
+    {
+        return std::make_shared<NullBenchmarkMetric>(std::move(*this));
+    };
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

@@ -20,27 +20,39 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_NULL_BENCHMARK_PRINTER_H
+#define VCL_NULL_BENCHMARK_PRINTER_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/printers/benchmark_printer.h>
 
-namespace vcl::qt {
+namespace vcl {
 
-class ScreenShotDialog : public QFileDialog
+/**
+ * The NullBenchmarkPrinter class is a BenchmarkPrinter that writes nothing
+ * nowhere
+ */
+class NullBenchmarkPrinter : public BenchmarkPrinter
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
-
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    void print(BenchmarkMetric& metric, std::string description) override {};
 
-    float screenMultiplierValue() const;
+    void onBenchmarkLoop() override {};
+
+    void finish() override {};
+
+    bool isNull() override { return true; }
+
+    std::shared_ptr<BenchmarkPrinter> clone() const& override
+    {
+        return std::make_shared<NullBenchmarkPrinter>(*this);
+    };
+
+    std::shared_ptr<BenchmarkPrinter> clone() && override
+    {
+        return std::make_shared<NullBenchmarkPrinter>(std::move(*this));
+    };
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

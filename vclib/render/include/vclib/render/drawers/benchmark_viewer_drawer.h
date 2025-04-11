@@ -20,27 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_BENCHMARK_VIEWER_DRAWER
+#define VCL_BENCHMARK_VIEWER_DRAWER
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/drawers/benchmark_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 
-namespace vcl::qt {
+namespace vcl {
 
-class ScreenShotDialog : public QFileDialog
+template<typename DerivedRenderApp>
+class BenchmarkViewerDrawer :
+        public ViewerDrawer<BenchmarkDrawer<DerivedRenderApp>>
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
+private:
+    using Parent = ViewerDrawer<BenchmarkDrawer<DerivedRenderApp>>;
 
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    using Parent::onDraw;
+    using Parent::onKeyPress;
+    using Parent::onMouseDoubleClick;
+    using Parent::Parent;
 
-    float screenMultiplierValue() const;
+    void onInit(uint viewId) override { Parent::onInit(viewId); }
+
+    void onDraw(uint viewId) override { Parent::onDraw(viewId); }
+
+    void onDrawContent(uint viewId) override
+    {
+        Parent::onDrawContent(viewId);
+        BenchmarkDrawer<DerivedRenderApp>::onDrawContent(viewId);
+    }
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

@@ -20,27 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_BENCHMARK_METRICS_H
+#define VCL_BENCHMARK_METRICS_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/metrics/benchmark_metric.h>
+#include <vclib/render/automation/metrics/fps_benchmark_metric.h>
+#include <vclib/render/automation/metrics/multiple_fps_benchmark_metric.h>
+#include <vclib/render/automation/metrics/multiple_time_benchmark_metric.h>
+#include <vclib/render/automation/metrics/null_benchmark_metric.h>
+#include <vclib/render/automation/metrics/time_benchmark_metric.h>
 
-namespace vcl::qt {
-
-class ScreenShotDialog : public QFileDialog
-{
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
-
-public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
-
-    float screenMultiplierValue() const;
-};
-
-} // namespace vcl::qt
-
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif // VCL_BENCHMARK_METRICS_H

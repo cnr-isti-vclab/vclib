@@ -20,27 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_AUTOMATION_ACTIONS_H
+#define VCL_AUTOMATION_ACTIONS_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/actions/abstract_automation_action.h>
+#include <vclib/render/automation/actions/change_scale_absolute_automation_action.h>
+#include <vclib/render/automation/actions/per_frame_change_scale_absolute_automation_action.h>
+#include <vclib/render/automation/actions/per_frame_rotation_automation_action.h>
+#include <vclib/render/automation/actions/rotation_automation_action.h>
+#include <vclib/render/automation/actions/sequential_automation_actions.h>
+#include <vclib/render/automation/actions/simultaneous_automation_actions.h>
 
-namespace vcl::qt {
+#include <vclib/render/automation/actions/wrappers/frame_delay_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/frame_limited_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/start_count_delay_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/start_count_limited_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/time_delay_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/time_limited_automation_action.h>
+#include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
 
-class ScreenShotDialog : public QFileDialog
-{
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
-
-public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
-
-    float screenMultiplierValue() const;
-};
-
-} // namespace vcl::qt
-
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif // VCL_AUTOMATION_ACTIONS_H

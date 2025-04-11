@@ -20,27 +20,64 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_TIME_BENCHMARK_METRIC_H
+#define VCL_TIME_BENCHMARK_METRIC_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/metrics/benchmark_metric.h>
 
-namespace vcl::qt {
+#include <vclib/misc/timer.h>
 
-class ScreenShotDialog : public QFileDialog
+#include <iomanip>
+#include <sstream>
+
+namespace vcl {
+
+/**
+ * The TimeBenchmarkMetric class measures the time (in seconds) an automation
+ * takes to complete
+ */
+class TimeBenchmarkMetric : public BenchmarkMetric
 {
-    Q_OBJECT
-
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
+    bool  mFirstMeasurement = true;
+    Timer mTimer;
 
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    void start() override { mFirstMeasurement = true; }
 
-    float screenMultiplierValue() const;
+    void measure() override
+    {
+        if (mFirstMeasurement) {
+            mFirstMeasurement = false;
+            mTimer.start();
+            return;
+        }
+    }
+
+    std::vector<std::string> getMeasureStrings() override
+    {
+        std::ostringstream temp;
+        temp << std::fixed << std::setprecision(3) << mTimer.delay();
+
+        return std::vector<std::string> {temp.str()};
+    }
+
+    std::string getUnitOfMeasure() override { return "s"; }
+
+    std::string getFullLengthUnitOfMeasure() override { return "seconds"; }
+
+    void end() override { mTimer.stop(); }
+
+    std::shared_ptr<BenchmarkMetric> clone() const& override
+    {
+        return std::make_shared<TimeBenchmarkMetric>(*this);
+    }
+
+    std::shared_ptr<BenchmarkMetric> clone() && override
+    {
+        return std::make_shared<TimeBenchmarkMetric>(std::move(*this));
+    };
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

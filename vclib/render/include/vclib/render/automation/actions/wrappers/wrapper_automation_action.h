@@ -20,27 +20,65 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_WRAPPER_AUTOMATION_ACTION_H
+#define VCL_WRAPPER_AUTOMATION_ACTION_H
 
-#include <QFileDialog>
-#include <QSpinBox>
+#include <vclib/render/automation/actions/abstract_automation_action.h>
 
-namespace vcl::qt {
+namespace vcl {
 
-class ScreenShotDialog : public QFileDialog
+/**
+ * The WrapperAutomationAction is a class that represents an automation whose
+ * only purpose is to add functionality to another automation
+ */
+template<typename BmarkDrawer>
+class WrapperAutomationAction : public AbstractAutomationAction<BmarkDrawer>
 {
-    Q_OBJECT
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
 
-    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
+protected:
+    using Parent::benchmarkDrawer;
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> innerAction;
 
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
-    ~ScreenShotDialog();
+    using Parent::getDescription;
 
-    float screenMultiplierValue() const;
+    WrapperAutomationAction(
+        const AbstractAutomationAction<BmarkDrawer>& action) :
+            innerAction {action.clone()}
+    {
+    }
+
+    void setBenchmarkDrawer(BmarkDrawer* drawer) override
+    {
+        this->benchmarkDrawer = drawer;
+        innerAction->setBenchmarkDrawer(drawer);
+    }
+
+    void start() override
+    {
+        Parent::start();
+        innerAction->start();
+    }
+
+    void doAction() override
+    {
+        Parent::doAction();
+        if (!innerAction->isActive()) {
+            return;
+        }
+        innerAction->doAction();
+    };
+
+    void end() override
+    {
+        if (innerAction->isActive()) {
+            innerAction->end();
+        }
+        Parent::end();
+    }
 };
 
-} // namespace vcl::qt
+} // namespace vcl
 
-#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif

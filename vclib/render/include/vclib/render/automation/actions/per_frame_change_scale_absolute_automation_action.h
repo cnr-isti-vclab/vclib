@@ -20,32 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#ifndef VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
+#define VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
+
+#include <vclib/render/automation/actions/abstract_automation_action.h>
+
+#include <iomanip>
+#include <sstream>
 
 namespace vcl {
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_TRACKBALL,
+/**
+ * The PerFrameChangeScaleAbsoluteAutomationAction is an automation that
+ * represents the scaling of a DesktopTrackball, with the strength of the
+ * scaling measured per-frame
+ */
+template<typename BmarkDrawer>
+class PerFrameChangeScaleAbsoluteAutomationAction :
+        public AbstractAutomationAction<BmarkDrawer>
+{
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
+    float mPixelDeltaPerFrame;
 
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
+public:
+    PerFrameChangeScaleAbsoluteAutomationAction(float pixelDeltaPerFrame) :
+            mPixelDeltaPerFrame {pixelDeltaPerFrame}
+    {
+    }
 
-    COUNT
+    std::string getDescription() override
+    {
+        std::ostringstream temp;
+        temp << "Absolute scale " << std::fixed << std::setprecision(3)
+             << std::showpos << mPixelDeltaPerFrame << " per frame";
+        return temp.str();
+    }
+
+    void doAction() override
+    {
+        Parent::doAction();
+        benchmarkDrawer->scale(mPixelDeltaPerFrame);
+    };
+
+    void end() override { Parent::end(); };
+
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
+    {
+        return std::make_shared<
+            PerFrameChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(*this);
+    }
+
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    {
+        return std::make_shared<
+            PerFrameChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(
+            std::move(*this));
+    }
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#endif

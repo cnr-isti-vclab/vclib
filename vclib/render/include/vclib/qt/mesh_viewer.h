@@ -26,7 +26,6 @@
 #include "gui/drawable_object_vector_frame.h"
 
 #include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <QWidget>
@@ -36,14 +35,6 @@ namespace vcl::qt {
 namespace Ui {
 class MeshViewer;
 } // namespace Ui
-
-class KeyFilter : public QObject
-{
-    using QObject::QObject;
-
-protected:
-    bool eventFilter(QObject* obj, QEvent* event) override;
-};
 
 class MeshViewer : public QWidget
 {
@@ -55,13 +46,6 @@ class MeshViewer : public QWidget
 
     std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
     std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
-
-protected:
-    MeshViewerRenderApp& viewer() const;
-
-    DrawableObjectVectorFrame& drawableObjectVectorFrame() const;
-
-    void keyPressEvent(QKeyEvent* event) override;
 
 public:
     explicit MeshViewer(QWidget* parent = nullptr);
