@@ -127,6 +127,8 @@ public:
 
     void finish() override { result->finish(); };
 
+    std::shared_ptr<ResultObjectType> getResultPtr() { return result; }
+
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
         return std::make_shared<ObjectBenchmarkPrinter<ResultObjectType>>(
