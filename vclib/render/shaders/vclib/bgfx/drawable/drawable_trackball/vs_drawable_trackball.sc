@@ -22,7 +22,7 @@
 
 $input a_position
 
-$output v_color
+$output v_normal, v_color
 
 #include <vclib/bgfx/drawable/drawable_trackball/uniforms.sh>
 
@@ -32,6 +32,7 @@ void main()
     uint isDragging = floatBitsToUint(u_isDraggingFloat);
     float alpha = isDragging != 0u ? 0.9f : 0.5f;
 
+    v_normal = normalize(mul(u_model[0], vec4(a_position, 0.0)).xyz);
     gl_Position = mul(u_proj, mul(u_model[0], vec4(a_position, 1.0)));
 
     // Compute the color
