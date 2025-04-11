@@ -63,7 +63,7 @@ public:
     std::string getDescription() override
     {
         std::ostringstream temp;
-        temp << "Sequential automations: [ ";
+        temp << "Sequential[ ";
         bool isFirst = true;
         mAutomations[0];
         for (const auto& automation : mAutomations) {
