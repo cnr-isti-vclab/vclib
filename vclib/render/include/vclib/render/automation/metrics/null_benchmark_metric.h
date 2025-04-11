@@ -39,6 +39,8 @@ public:
 
     void measure() override {};
 
+    bool isNull() override { return true; }
+
     std::vector<std::string> getMeasureStrings() override
     {
         return std::vector<std::string> {""};

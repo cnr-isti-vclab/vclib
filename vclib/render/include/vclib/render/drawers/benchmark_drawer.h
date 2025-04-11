@@ -107,9 +107,11 @@ private:
     void onAutomationEnd()
     {
         mMetrics[mCurrentAutomationIndex]->end();
-        mPrinter->print(
-            *mMetrics[mCurrentAutomationIndex],
-            mAutomations[mCurrentAutomationIndex]->getDescription());
+        if (!mMetrics[mCurrentAutomationIndex]->isNull()) {
+            mPrinter->print(
+                *mMetrics[mCurrentAutomationIndex],
+                mAutomations[mCurrentAutomationIndex]->getDescription());
+        }
         mCurrentAutomationIndex++;
     }
 
@@ -206,6 +208,11 @@ public:
         }
     };
 
+    /**
+     * Add an automation to the back of the list of automations. The metric
+     * measured for this automation is the last one that was set through
+     * setMetric(...)
+     */
     size_t addAutomation(const AutomationType& action)
     {
         std::shared_ptr<AutomationType> cloned = action.clone();
@@ -215,6 +222,10 @@ public:
         return mAutomations.size() - 1;
     }
 
+    /**
+     * Add an automation and measure the chosen metric for it. The metric change
+     * only applies to this automation.
+     */
     size_t addAutomation(
         const AutomationType&  action,
         const BenchmarkMetric& metric)
@@ -223,6 +234,16 @@ public:
         cloned->setBenchmarkDrawer(this);
         mAutomations.pushBack(std::move(*cloned));
         mMetrics.pushBack(metric);
+        return mAutomations.size() - 1;
+    }
+
+    /**
+     * Syntactic sugar for adding an automation whose measured metric is
+     * NullBenchmarkMetric
+     */
+    size_t addAutomationNoMetric(const AutomationType& action)
+    {
+        addAutomation(action, NullBenchmarkMetric());
         return mAutomations.size() - 1;
     }
 

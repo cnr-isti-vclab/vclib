@@ -66,6 +66,8 @@ public:
      */
     virtual void end() = 0;
 
+    virtual bool isNull() { return false; };
+
     virtual std::shared_ptr<BenchmarkMetric> clone() const& = 0;
     virtual std::shared_ptr<BenchmarkMetric> clone() &&     = 0;
 };

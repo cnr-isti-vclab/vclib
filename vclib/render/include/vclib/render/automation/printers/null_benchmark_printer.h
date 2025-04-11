@@ -40,6 +40,8 @@ public:
 
     void finish() override {};
 
+    bool isNull() override { return true; }
+
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
         return std::make_shared<NullBenchmarkPrinter>(*this);
