@@ -362,7 +362,7 @@ public:
             vcl::deserialize(is, b);
             std::vector<std::any> v;
             vcl::deserialize<CompType>(is, v);
-            mMap[name] = v;
+            mMap[name]              = v;
             mNeedToInitialize[name] = b;
             mCompType.emplace(name, typeid(CompType));
         }
