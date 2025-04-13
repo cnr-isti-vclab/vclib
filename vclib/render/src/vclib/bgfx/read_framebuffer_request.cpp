@@ -75,7 +75,7 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
     CallbackReadBuffer callback,
     const Color&       clearColor) :
-        mType(DEPTH), mPoint(queryDepthPoint), mReadCallback(callback)
+        mType(Type::DEPTH), mPoint(queryDepthPoint), mReadCallback(callback)
 {
     mBlitSize = getBlitDepthSize(framebufferSize);
 
@@ -110,7 +110,7 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
     CallbackReadBuffer callback,
     const Color&       clearColor) :
-        mType(COLOR), mPoint(0, 0), mReadCallback(callback)
+        mType(Type::COLOR), mPoint(0, 0), mReadCallback(callback)
 {
     // check framebuffer size
     assert(framebufferSize.x() != 0 && framebufferSize.y() != 0);
@@ -168,7 +168,7 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     Point2<uint>       framebufferSize,
     bool               idAsColor, // TODO: implement (now it's always true)
     CallbackReadBuffer callback) :
-        mType(ID), mPoint(queryIdPoint), mReadCallback(callback)
+        mType(Type::ID), mPoint(queryIdPoint), mReadCallback(callback)
 {
     mBlitSize = framebufferSize.cast<uint16_t>();
 
@@ -242,11 +242,11 @@ bool ReadFramebufferRequest::submit()
     const auto readPixelSize = mBlitSize.x() * mBlitSize.y();
 
     // source buffer
-    uint8_t    attachment = mType == ID ? uint8_t(0) : uint8_t(mType);
-    const auto srcBuffer  = bgfx::getTexture(mOffscreenFbh, attachment);
+    uint8_t attachment = (mType == Type::ID) ? uint8_t(0) : toUnderlying(mType);
+    const auto srcBuffer = bgfx::getTexture(mOffscreenFbh, attachment);
 
     switch (mType) {
-    case DEPTH: {
+    case Type::DEPTH: {
         // allocate memory for blit depth data
         mReadData = FloatData(readPixelSize);
         if (readPixelSize == 1) {
@@ -270,8 +270,8 @@ bool ReadFramebufferRequest::submit()
         mFrameAvailable = bgfx::readTexture(
             mBlitTexture, std::get<FloatData>(mReadData).data());
     } break;
-    case COLOR:
-    case ID: {
+    case Type::COLOR:
+    case Type::ID: {
         // allocate memory for blit color data
         mReadData = ByteData(readPixelSize * 4);
 
@@ -298,7 +298,7 @@ bool ReadFramebufferRequest::performRead(uint32_t currFrame) const
         return false;
 
     switch (mType) {
-    case DEPTH: {
+    case Type::DEPTH: {
         assert(std::holds_alternative<FloatData>(mReadData));
         const auto& data = std::get<FloatData>(mReadData);
         if (data.size() == 1)
@@ -308,11 +308,11 @@ bool ReadFramebufferRequest::performRead(uint32_t currFrame) const
                 FloatData({data[mPoint.y() * mBlitSize.x() + mPoint.x()]}));
         }
     } break;
-    case COLOR: {
+    case Type::COLOR: {
         assert(std::holds_alternative<ByteData>(mReadData));
         this->mReadCallback(mReadData);
     } break;
-    case ID: {
+    case Type::ID: {
         assert(std::holds_alternative<ByteData>(mReadData));
 
         const auto& data = std::get<ByteData>(mReadData);

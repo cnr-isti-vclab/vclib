@@ -23,7 +23,7 @@
 #include <vclib/bindings/core/load_save/save.h>
 #include <vclib/bindings/utils.h>
 
-#include <vclib/load_save/save.h>
+#include <vclib/io/mesh/save.h>
 #include <vclib/meshes.h>
 
 namespace vcl::bind {

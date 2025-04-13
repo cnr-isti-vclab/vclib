@@ -26,7 +26,7 @@
 #include "imgui_helpers.h"
 
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
 
 #include <imgui.h>
 
@@ -37,9 +37,10 @@
 namespace vcl::imgui {
 
 template<typename DerivedRenderApp>
-class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
+class MeshViewerDrawerImgui :
+        public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
-    using Base = vcl::ViewerDrawer<DerivedRenderApp>;
+    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
     // selected mesh index
     int mMeshIndex = 0;

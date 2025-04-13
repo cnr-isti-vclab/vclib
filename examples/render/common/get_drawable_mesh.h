@@ -20,12 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
+#define VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
 
 #include <vclib/algorithms/mesh/update/color.h>
 #include <vclib/algorithms/mesh/update/normal.h>
-#include <vclib/load_save.h>
+#include <vclib/io.h>
 #include <vclib/meshes.h>
 
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -56,4 +56,4 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     return drawable;
 }
 
-#endif // COMMON_H
+#endif // VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H

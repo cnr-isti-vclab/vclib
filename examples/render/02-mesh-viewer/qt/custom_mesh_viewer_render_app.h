@@ -25,13 +25,13 @@
 
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 template<typename DerivedRenderApp>
-class ViewerDrawerSelectQt : public vcl::ViewerDrawer<DerivedRenderApp>
+class ViewerDrawerSelectQt : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
-    using Base = vcl::ViewerDrawer<DerivedRenderApp>;
+    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
     // a callback function called when an object is selected
     std::function<void(uint)> mOnObjectSelected = [](uint) {

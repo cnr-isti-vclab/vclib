@@ -69,7 +69,7 @@ namespace vcl {
  * vcl::save(m, "meshfile.ply", info);
  * @endcode
  *
- * @ingroup load_save
+ * @ingroup io_mesh
  * @ingroup space_complex
  */
 class MeshInfo

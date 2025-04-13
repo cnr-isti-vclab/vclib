@@ -85,7 +85,8 @@ public:
     {
         uint p = toUnderlying(PROGRAM);
         if (!bgfx::isValid(mCPrograms[p])) {
-            // TODO - use ComputeLoader
+            mCPrograms[p] = vcl::createProgram(vcl::loadShader(
+                ComputeLoader<PROGRAM>::computeShader(mRenderType)));
         }
         return mCPrograms[p];
     }

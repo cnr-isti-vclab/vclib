@@ -40,11 +40,11 @@ public:
     using ReadData           = ReadBufferTypes::ReadData;
     using CallbackReadBuffer = ReadBufferTypes::CallbackReadBuffer;
 
-    enum Type {
+    enum class Type : uint8_t {
         COLOR = 0, // entire color buffer
         DEPTH = 1, // single pixel depth
         ID    = 2, // single pixel id
-        COUNT = 3
+        COUNT
     };
 
     // Read depth constructor
@@ -87,7 +87,7 @@ public:
 
 private:
     // read back type
-    Type mType = COUNT;
+    Type mType = Type::COUNT;
 
     // frame # when data will be available for reading
     uint32_t mFrameAvailable = 0;

@@ -28,24 +28,26 @@
 
 namespace vcl {
 
-template<typename ScalarType>
+template<typename Scalar>
 class DirectionalLight
 {
-    vcl::Point3<ScalarType> mDir   = vcl::Point3<ScalarType>(0.0f, 0.0f, 1.0f);
-    vcl::Color              mColor = vcl::Color::White;
+    vcl::Point3<Scalar> mDir   = vcl::Point3<Scalar>(0.0f, 0.0f, 1.0f);
+    vcl::Color          mColor = vcl::Color::White;
 
 public:
+    using PointType = vcl::Point3<Scalar>;
+
     DirectionalLight() = default;
 
     DirectionalLight(
-        const vcl::Point3<ScalarType>& d,
+        const PointType&  d,
         const vcl::Color& c = vcl::Color::White) : mDir(d), mColor(c)
     {
     }
 
-    vcl::Point3<ScalarType>& direction() { return mDir; }
+    PointType& direction() { return mDir; }
 
-    const vcl::Point3<ScalarType>& direction() const { return mDir; }
+    const PointType& direction() const { return mDir; }
 
     vcl::Color& color() { return mColor; }
 

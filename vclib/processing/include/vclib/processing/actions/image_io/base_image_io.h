@@ -25,6 +25,8 @@
 
 #include <vclib/processing/engine.h>
 
+#include <vclib/io/image.h>
+
 namespace vcl::proc {
 
 class BaseImageIO : public ImageIOAction
@@ -50,11 +52,7 @@ public:
     Image load(const std::string& filename, AbstractLogger& log = logger())
         const final
     {
-        Image img(filename);
-        if (img.isNull()) {
-            throw std::runtime_error("Error loading image from " + filename);
-        }
-        return img;
+        return loadImage(filename);
     }
 
     void save(
@@ -63,7 +61,7 @@ public:
         AbstractLogger&    log = logger()) const final
     {
         assert(!image.isNull());
-        image.save(filename);
+        saveImage(image, filename);
     }
 };
 
