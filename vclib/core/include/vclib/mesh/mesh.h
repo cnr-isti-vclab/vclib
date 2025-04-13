@@ -1473,7 +1473,8 @@ public:
      *
      * @tparam ELEM_ID: the ID of the element.
      * @tparam K: the type of the component to serialize.
-     * @param[in] os: the output stream to which serialize the custom components.
+     * @param[in] os: the output stream to which serialize the custom
+     * components.
      */
     template<uint ELEM_ID, typename K>
     void serializePerElementCustomComponentsOfType(std::ostream& os) const
@@ -1492,7 +1493,8 @@ public:
      *
      * @tparam ELEM_ID: the ID of the element.
      * @tparam K: the type of the component to deserialize.
-     * @param[in] is: the input stream from which deserialize the custom components.
+     * @param[in] is: the input stream from which deserialize the custom
+     * components.
      */
     template<uint ELEM_ID, typename K>
     void deserializePerElementCustomComponentsOfType(std::istream& is)
