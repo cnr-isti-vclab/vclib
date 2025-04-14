@@ -51,5 +51,16 @@ def main():
     create_file('templates/embedded_vf_programs/header.h', '../include/vclib/bgfx/programs/embedded_vf_programs/' + enum_name_lc + '.h', enum_name, vertex_shader_path, fragment_shader_path)
     create_file('templates/embedded_vf_programs/source.cpp', '../src/vclib/bgfx/programs/embedded_vf_programs/' + enum_name_lc + '.cpp', enum_name, vertex_shader_path, fragment_shader_path)
 
+    # Update the embedded_vf_programs.h file to include the new header
+    with open('../include/vclib/bgfx/programs/embedded_vf_programs.h', 'r') as f:
+        lines = f.readlines()
+    for i, line in enumerate(lines):
+        if '#include' in line:
+            break
+    lines.insert(i + 1, '#include "embedded_vf_programs/' + enum_name_lc + '.h"\n')
+    with open('../include/vclib/bgfx/programs/embedded_vf_programs.h', 'w') as f:
+        f.writelines(lines)
+
+
 if __name__ == "__main__":
     main()
