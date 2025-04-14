@@ -42,6 +42,7 @@ class MeshViewerDrawerImgui :
 {
     using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
+    // selected mesh index
     int mMeshIndex = 0;
 
 public:
@@ -79,6 +80,25 @@ public:
         }
 
         ImGui::End();
+    }
+
+    void onMousePress(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        if (button == MouseButton::RIGHT) {
+            this->readIdRequest(x, y, [&](uint id) {
+                if (id == UINT_NULL)
+                    return;
+
+                mMeshIndex = id;
+                std::cout << "Selected  ID: " << id << std::endl;
+            });
+        }
+
+        Base::onMousePress(button, x, y, modifiers);
     }
 
 private:

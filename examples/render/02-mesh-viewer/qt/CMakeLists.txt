@@ -32,6 +32,9 @@ set(SOURCES
     custom_mesh_viewer_render_app.h
     main.cpp)
 
+target_include_directories(vclib-render PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR})
+
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render

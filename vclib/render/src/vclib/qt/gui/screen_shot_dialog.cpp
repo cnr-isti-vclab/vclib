@@ -30,7 +30,7 @@ namespace vcl::qt {
 ScreenShotDialog::ScreenShotDialog(QWidget* parent) :
         QFileDialog(
             parent,
-            "Save Screen Shot",
+            "Save Screenshot",
             "",
             "Image Files (*.png *.jpg *.jpeg *.bmp)")
 {
@@ -40,11 +40,10 @@ ScreenShotDialog::ScreenShotDialog(QWidget* parent) :
 
     // Screen multiplier spin box
     layout->addWidget(new QLabel("Screen Multiplier:"), 4, 0);
-    mMultiplierSpinBox = new QDoubleSpinBox();
+    mMultiplierSpinBox = new QSpinBox();
     mMultiplierSpinBox->setMinimum(1);
     mMultiplierSpinBox->setMaximum(10);
     mMultiplierSpinBox->setValue(1);
-    mMultiplierSpinBox->setSingleStep(0.5);
 
     layout->addWidget(mMultiplierSpinBox, 4, 1);
 }
@@ -53,7 +52,7 @@ ScreenShotDialog::~ScreenShotDialog()
 {
 }
 
-float ScreenShotDialog::screenMultiplierValue() const
+int ScreenShotDialog::screenMultiplierValue() const
 {
     return mMultiplierSpinBox->value();
 }
