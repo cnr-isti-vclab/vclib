@@ -25,6 +25,6 @@
 
 uniform vec4 u_trackballSettingsPack;
 
-#define u_isDraggingFloat u_trackballSettingsPack.x
+#define u_trackballAlpha u_trackballSettingsPack.x
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH

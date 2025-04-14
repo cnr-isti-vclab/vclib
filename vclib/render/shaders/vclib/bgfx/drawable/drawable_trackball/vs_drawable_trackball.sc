@@ -27,10 +27,7 @@ $output v_normal, v_color
 
 void main()
 {
-    uint isDragging = floatBitsToUint(u_isDraggingFloat);
-    float alpha = isDragging != 0u ? 0.9f : 0.5f;
-
     v_normal = normalize(mul(u_model[0], vec4(a_position, 0.0)).xyz);
-    v_color = vec4(a_color0.rgb, alpha);
+    v_color = vec4(a_color0.rgb, u_trackballAlpha);
     gl_Position = mul(u_proj, mul(u_model[0], vec4(a_position, 1.0)));
 }
