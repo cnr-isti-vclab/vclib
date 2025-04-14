@@ -60,7 +60,7 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        benchmarkDrawer->scale(mPixelDeltaPerFrame);
+        benchmarkDrawer->changeScaleAbsolute(mPixelDeltaPerFrame);
     };
 
     void end() override { Parent::end(); };
