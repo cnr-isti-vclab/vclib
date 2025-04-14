@@ -272,8 +272,8 @@ public:
     }
 
     template<typename CompType>
-    void deserializeCustomComponentsOfType(std::istream& is) requires
-        (!IS_VERTICAL)
+    void deserializeCustomComponentsOfType(std::istream& is)
+        requires (!IS_VERTICAL)
     {
         std::vector<std::string> compNames;
         vcl::deserialize(is, compNames);

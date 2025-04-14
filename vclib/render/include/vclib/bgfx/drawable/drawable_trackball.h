@@ -46,13 +46,6 @@ class DrawableTrackBall : public DrawableObject
     VertexBuffer mVertexCoordsBuffer;
     IndexBuffer  mEdgeIndexBuffer;
 
-    // TODO: can we be sure that this is called after the context initialization
-    // triggered by a window?
-    bgfx::ProgramHandle mProgram =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_TRACKBALL>();
-
     DrawableTrackballUniforms mUniforms;
 
     vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
@@ -66,8 +59,8 @@ public:
     }
 
     DrawableTrackBall(const DrawableTrackBall& other) :
-            mVisible(other.mVisible), mProgram(other.mProgram),
-            mUniforms(other.mUniforms), mTransform(other.mTransform)
+            mVisible(other.mVisible), mUniforms(other.mUniforms),
+            mTransform(other.mTransform)
     {
         // copy all the members that can be copied, and then re-create the
         // buffers
@@ -92,7 +85,6 @@ public:
         swap(mVisible, other.mVisible);
         swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
         swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
-        swap(mProgram, other.mProgram);
         swap(mUniforms, other.mUniforms);
         swap(mTransform, other.mTransform);
     }
@@ -119,22 +111,24 @@ public:
 
     void draw(uint viewId) const override
     {
+        using enum VertFragProgram;
+
+        ProgramManager& pm = Context::instance().programManager();
+
         if (isVisible()) {
-            if (bgfx::isValid(mProgram)) {
-                bgfx::setState(
-                    0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                    BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
-                    BGFX_STATE_BLEND_NORMAL);
+            bgfx::setState(
+                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
+                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
+                BGFX_STATE_BLEND_NORMAL);
 
-                mVertexCoordsBuffer.bind(0);
-                mEdgeIndexBuffer.bind();
+            mVertexCoordsBuffer.bind(0);
+            mEdgeIndexBuffer.bind();
 
-                bgfx::setTransform(mTransform.data());
+            bgfx::setTransform(mTransform.data());
 
-                mUniforms.bind();
+            mUniforms.bind();
 
-                bgfx::submit(viewId, mProgram);
-            }
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
         }
     }
 

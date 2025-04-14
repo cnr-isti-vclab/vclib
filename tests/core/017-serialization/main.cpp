@@ -482,8 +482,8 @@ TEMPLATE_TEST_CASE(
     REQUIRE(
         mesh2.template isPerVertexCustomComponentOfType<vcl::Point3d>("rand"));
     REQUIRE(mesh2.template isPerElementCustomComponentOfType<
-        vcl::ElemId::FACE,
-        vcl::Color>("rand_color"));
+            vcl::ElemId::FACE,
+            vcl::Color>("rand_color"));
 
     REQUIRE(
         mesh1.template customComponent<vcl::Point3d>("barycenter") ==
