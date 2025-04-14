@@ -49,6 +49,8 @@ int main(int argc, char** argv)
         vcl::imgui::ImguiStatsDrawer,
         ImguiSplitProgramDrawer>;
 
+    vcl::Context::setResetFlags(BGFX_RESET_NONE);
+
     ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
 
     // get control of the DrawableObjectVector of the viewer

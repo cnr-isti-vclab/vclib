@@ -36,8 +36,6 @@
 template<typename DerivedRenderApp>
 class ImguiSplitProgramDrawer : public vcl::PlainDrawer<DerivedRenderApp>
 {
-    bool useSplitProgram = false;
-
     using SurfaceProgramsType =
         typename vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType;
     using SurfaceProgramsTypeFunction =
@@ -54,19 +52,49 @@ public:
     {
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Begin("Split programs checkbox", nullptr);
-        ImGui::Checkbox("Use split programs", &useSplitProgram);
+
+        const char* items[] = {
+            "Uber Shader",
+            "Split Shaders",
+            "Uber Shader Static if"
+        };
+        static const char* current_item = items[0];
+
+        static uint currNum = 0;
+
+        if (ImGui::BeginCombo("##combo", current_item)) {
+            for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
+                bool is_selected = (current_item == items[n]);
+                if (ImGui::Selectable(items[n], is_selected)) {
+                    current_item = items[n];
+                    currNum = n;
+                }
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
         ImGui::End();
 
         if (surfaceProgramChangerFn) {
-            if (useSplitProgram) {
+            switch(currNum) {
+
+            case 1:
                 surfaceProgramChangerFn(
                     vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
-                        SPLITTED);
-            }
-            else {
+                    SPLITTED);
+                break;
+            case 2:
                 surfaceProgramChangerFn(
                     vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
-                        UBER);
+                    UBER_WITH_STATIC_IF);
+                break;
+            case 0:
+            default:
+                surfaceProgramChangerFn(
+                    vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
+                    UBER);
             }
         }
     };
