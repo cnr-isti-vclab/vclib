@@ -25,6 +25,7 @@
 
 #include "../metrics/benchmark_metric.h"
 #include "benchmark_printer.h"
+#include <vclib/render/drawers/benchmark_drawer.h>
 
 #include <condition_variable>
 #include <mutex>
@@ -34,9 +35,10 @@
 
 namespace vcl {
 
+// Possibly useless, equivalent to writing your own printer
 class ObjectBenchmarkPrinterResultMTUnsafe
 {
-    template<typename ResultObjectType>
+    template<typename ResultObjectType, typename T>
     friend class ObjectBenchmarkPrinter;
 
     using VectorType =
@@ -71,7 +73,7 @@ public:
 
 class ObjectBenchmarkPrinterResultMTSafe
 {
-    template<typename ResultObjectType>
+    template<typename ResultObjectType, typename T>
     friend class ObjectBenchmarkPrinter;
 
     using VectorType =
@@ -114,32 +116,49 @@ public:
     }
 };
 
-template<typename ResultObjectType>
+// if the MTunsafe result is useless, first template can be removed. Second
+// template may also be removed as perhaps using a different drawer with this
+// object is not interesting enough to warrant an extra template parameter
+//
+// The "friend" class is to only allow that class to call print or finish (and
+// therefore to ensure that there is only one writer, though it may not work
+// properly as another instance of that class in a separate thread may call
+// print and finish on the same object. Ensuring there is only one writer is
+// good to avoid having to use locks whenever writing to the vector, since any
+// reader can only read whenever there is nothing else to write by design)
+//
+// I am very close to just throwing this class in the bin and telling the user
+// to just write their own printer if they want multithreading support
+template<typename ResultObjectType, typename FriendClass>
 class ObjectBenchmarkPrinter : public BenchmarkPrinter
 {
-    std::shared_ptr<ResultObjectType> result;
+    friend FriendClass;
 
-public:
-    void print(BenchmarkMetric& metric, std::string description) override
+    std::shared_ptr<ResultObjectType> result =
+        std::make_shared<ResultObjectType>(ResultObjectType());
+
+    void print(const BenchmarkMetric& metric, std::string description) override
     {
         result->addEntry(description, metric.clone());
     }
 
-    void onBenchmarkLoop() override {};
-
     void finish() override { result->finish(); };
+
+public:
+    void onBenchmarkLoop() override {};
 
     std::shared_ptr<ResultObjectType> getResultPtr() { return result; }
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
-        return std::make_shared<ObjectBenchmarkPrinter<ResultObjectType>>(
-            *this);
+        return std::make_shared<
+            ObjectBenchmarkPrinter<ResultObjectType, FriendClass>>(*this);
     }
 
     std::shared_ptr<BenchmarkPrinter> clone() && override
     {
-        return std::make_shared<ObjectBenchmarkPrinter<ResultObjectType>>(
+        return std::make_shared<
+            ObjectBenchmarkPrinter<ResultObjectType, FriendClass>>(
             std::move(*this));
     }
 };

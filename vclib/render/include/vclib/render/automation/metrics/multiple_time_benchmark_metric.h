@@ -74,7 +74,7 @@ public:
         mTimer.start();
     };
 
-    std::vector<std::string> getMeasureStrings() override
+    std::vector<std::string> getMeasureStrings() const override
     {
         std::vector<std::string> retVec;
         uint                     trueMeasurementCount =
@@ -98,9 +98,9 @@ public:
         return retVec;
     };
 
-    std::string getUnitOfMeasure() override { return "s"; }
+    std::string getUnitOfMeasure() const override { return "s"; }
 
-    std::string getFullLengthUnitOfMeasure() override { return "seconds"; }
+    std::string getFullLengthUnitOfMeasure() const override { return "seconds"; }
 
     void end() override { mTimer.stop(); };
 

@@ -74,7 +74,7 @@ public:
 
     void onBenchmarkLoop() override { mFirstLoop = false; };
 
-    void print(BenchmarkMetric& metric, std::string description) override
+    void print(const BenchmarkMetric& metric, std::string description) override
     {
         if (mFirstLoop && mFirstAutomation) {
             mStream << "[";

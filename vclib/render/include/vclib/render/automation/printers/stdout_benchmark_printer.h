@@ -39,7 +39,7 @@ class StdoutBenchmarkPrinter : public BenchmarkPrinter
     uint mLoopCounter     = 0;
 
 public:
-    void print(BenchmarkMetric& metric, std::string description) override
+    void print(const BenchmarkMetric& metric, std::string description) override
     {
         std::ostringstream temp;
         temp << "[";

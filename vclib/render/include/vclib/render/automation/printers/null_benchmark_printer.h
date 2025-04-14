@@ -34,7 +34,7 @@ namespace vcl {
 class NullBenchmarkPrinter : public BenchmarkPrinter
 {
 public:
-    void print(BenchmarkMetric& metric, std::string description) override {};
+    void print(const BenchmarkMetric& metric, std::string description) override {};
 
     void onBenchmarkLoop() override {};
 

@@ -53,7 +53,7 @@ public:
         }
     }
 
-    std::vector<std::string> getMeasureStrings() override
+    std::vector<std::string> getMeasureStrings() const override
     {
         std::ostringstream temp;
         temp << std::fixed << std::setprecision(3) << mTimer.delay();
@@ -61,9 +61,9 @@ public:
         return std::vector<std::string> {temp.str()};
     }
 
-    std::string getUnitOfMeasure() override { return "s"; }
+    std::string getUnitOfMeasure() const override { return "s"; }
 
-    std::string getFullLengthUnitOfMeasure() override { return "seconds"; }
+    std::string getFullLengthUnitOfMeasure() const override { return "seconds"; }
 
     void end() override { mTimer.stop(); }
 

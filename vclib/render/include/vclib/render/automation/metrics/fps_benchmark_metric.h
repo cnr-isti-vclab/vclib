@@ -61,7 +61,7 @@ public:
         mFrames++;
     };
 
-    std::vector<std::string> getMeasureStrings() override
+    std::vector<std::string> getMeasureStrings() const override
     {
         std::ostringstream temp;
         temp << std::fixed << std::setprecision(3) << mFrames / mTimer.delay();
@@ -69,9 +69,9 @@ public:
         return std::vector<std::string> {temp.str()};
     };
 
-    std::string getUnitOfMeasure() override { return "fps"; }
+    std::string getUnitOfMeasure() const override { return "fps"; }
 
-    std::string getFullLengthUnitOfMeasure() override
+    std::string getFullLengthUnitOfMeasure() const override
     {
         return "frames per second";
     }

@@ -41,14 +41,14 @@ public:
 
     bool isNull() override { return true; }
 
-    std::vector<std::string> getMeasureStrings() override
+    std::vector<std::string> getMeasureStrings() const override
     {
-        return std::vector<std::string> {""};
+        return {};
     };
 
-    std::string getUnitOfMeasure() override { return ""; };
+    std::string getUnitOfMeasure() const override { return ""; };
 
-    std::string getFullLengthUnitOfMeasure() override { return ""; };
+    std::string getFullLengthUnitOfMeasure() const override { return ""; };
 
     void end() override {};
 

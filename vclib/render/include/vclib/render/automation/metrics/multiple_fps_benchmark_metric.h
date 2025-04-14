@@ -74,7 +74,7 @@ public:
         mTimer.start();
     };
 
-    std::vector<std::string> getMeasureStrings() override
+    std::vector<std::string> getMeasureStrings() const override
     {
         std::vector<std::string> retVec;
         uint                     trueMeasurementCount =
@@ -99,9 +99,9 @@ public:
         return retVec;
     };
 
-    std::string getUnitOfMeasure() override { return "fps"; }
+    std::string getUnitOfMeasure() const override { return "fps"; }
 
-    std::string getFullLengthUnitOfMeasure() override
+    std::string getFullLengthUnitOfMeasure() const override
     {
         return "frames per second";
     }

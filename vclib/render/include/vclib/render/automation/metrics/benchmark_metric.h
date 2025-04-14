@@ -49,17 +49,17 @@ public:
     /**
      * @return A vector of string representations of the measurement(s) taken
      */
-    virtual std::vector<std::string> getMeasureStrings() = 0;
+    virtual std::vector<std::string> getMeasureStrings() const = 0;
 
     /**
      * @return The symbol that represents the unit of measure
      */
-    virtual std::string getUnitOfMeasure() = 0;
+    virtual std::string getUnitOfMeasure() const = 0;
 
     /**
      * @return The full name of the unit of measure
      */
-    virtual std::string getFullLengthUnitOfMeasure() = 0;
+    virtual std::string getFullLengthUnitOfMeasure() const  = 0;
 
     /**
      * @brief Called when the automation finishes
