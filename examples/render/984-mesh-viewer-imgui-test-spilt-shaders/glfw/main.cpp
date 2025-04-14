@@ -60,7 +60,6 @@ int main(int argc, char** argv)
     DrawableMesh<TriMesh> drawable = getDrawableMesh<TriMesh>("bimba.obj");
 
     // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(std::move(drawable));
 
     auto setShaderFunction =
