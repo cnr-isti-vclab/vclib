@@ -49,13 +49,6 @@ class DrawableDirectionalLight : public DrawableObject
 
     DrawableDirectionalLightUniforms mUniform;
 
-    // TODO: can we be sure that this is called after the context initialization
-    // triggered by a window?
-    bgfx::ProgramHandle mProgram =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_DIRECTIONAL_LIGHT>();
-
 public:
     DrawableDirectionalLight();
 

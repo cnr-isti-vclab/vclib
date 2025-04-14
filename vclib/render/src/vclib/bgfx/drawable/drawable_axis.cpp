@@ -40,26 +40,28 @@ void DrawableAxis::setSize(double size)
 
 void DrawableAxis::draw(uint viewId) const
 {
+    using enum VertFragProgram;
+
+    ProgramManager& pm = Context::instance().programManager();
+
     if (isVisible()) {
-        if (bgfx::isValid(mProgram)) {
-            uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                             BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                             BGFX_STATE_MSAA;
-            for (uint i = 0; i < 3; i++) {
-                for (uint j = 0; j < 2; j++) {
-                    if (j == 0) // cylinders
-                        mUniforms.setColor(AXIS_COLORS[i]);
-                    else // rest (cone, spheres...)
-                        mUniforms.setColor(vcl::Color::White);
-                    mUniforms.bind();
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
+                         BGFX_STATE_MSAA;
+        for (uint i = 0; i < 3; i++) {
+            for (uint j = 0; j < 2; j++) {
+                if (j == 0) // cylinders
+                    mUniforms.setColor(AXIS_COLORS[i]);
+                else // rest (cone, spheres...)
+                    mUniforms.setColor(vcl::Color::White);
+                mUniforms.bind();
 
-                    mArrowBuffers[j].bindVertexBuffers(MeshRenderSettings());
-                    mArrowBuffers[j].bindIndexBuffers(MeshRenderSettings());
+                mArrowBuffers[j].bindVertexBuffers(MeshRenderSettings());
+                mArrowBuffers[j].bindIndexBuffers(MeshRenderSettings());
 
-                    bgfx::setTransform(mMatrices[i].data());
+                bgfx::setTransform(mMatrices[i].data());
 
-                    bgfx::submit(viewId, mProgram);
-                }
+                bgfx::submit(viewId, pm.getProgram<DRAWABLE_AXIS>());
             }
         }
     }

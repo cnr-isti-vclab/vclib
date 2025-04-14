@@ -26,6 +26,7 @@
 #include "detail/custom_components_data.h"
 
 #include <vclib/concepts/mesh/components/custom_components.h>
+#include <vclib/serialization.h>
 
 #include <any>
 #include <string>
@@ -255,6 +256,32 @@ public:
         requires (!IS_VERTICAL)
     {
         return mData.deleteCustomComponent(compName);
+    }
+
+    template<typename CompType>
+    void serializeCustomComponentsOfType(std::ostream& os) const
+        requires (!IS_VERTICAL)
+    {
+        std::vector<std::string> compNames =
+            customComponentNamesOfType<CompType>();
+        vcl::serialize(os, compNames);
+        for (const auto& name : compNames) {
+            const CompType& c = customComponent<CompType>(name);
+            vcl::serialize(os, c);
+        }
+    }
+
+    template<typename CompType>
+    void deserializeCustomComponentsOfType(std::istream& is)
+        requires (!IS_VERTICAL)
+    {
+        std::vector<std::string> compNames;
+        vcl::deserialize(is, compNames);
+        for (const auto& name : compNames) {
+            CompType c;
+            vcl::deserialize(is, c);
+            addCustomComponent<CompType>(name, c);
+        }
     }
 
 protected:

@@ -140,8 +140,7 @@ bgfx::ProgramHandle createProgram(
     return bgfx::createProgram(vsHandle, fsHandle, true);
 }
 
-bgfx::ProgramHandle createProgram(
-    bgfx::ShaderHandle csHandle)
+bgfx::ProgramHandle createProgram(bgfx::ShaderHandle csHandle)
 {
     return bgfx::createProgram(csHandle, true);
 }

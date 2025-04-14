@@ -25,6 +25,7 @@
 
 #include <vclib/exceptions/mesh.h>
 #include <vclib/misc/compactness.h>
+#include <vclib/serialization.h>
 #include <vclib/types.h>
 
 #include <any>
@@ -334,6 +335,36 @@ public:
             if (other.componentType(compName) == componentType(compName)) {
                 mMap.at(compName)[thisPos] = other.mMap.at(compName)[otherPos];
             }
+        }
+    }
+
+    template<typename CompType>
+    void serializeCustomComponentsOfType(std::ostream& os) const
+    {
+        std::vector<std::string> compNames =
+            allComponentNamesOfType<CompType>();
+        vcl::serialize(os, compNames);
+        for (const auto& name : compNames) {
+            bool b = mNeedToInitialize.at(name);
+            vcl::serialize(os, b);
+            const std::vector<std::any>& v = componentVector<CompType>(name);
+            vcl::serialize<CompType>(os, v);
+        }
+    }
+
+    template<typename CompType>
+    void deserializeCustomComponentsOfType(std::istream& is)
+    {
+        std::vector<std::string> compNames;
+        vcl::deserialize(is, compNames);
+        for (const auto& name : compNames) {
+            bool b;
+            vcl::deserialize(is, b);
+            std::vector<std::any> v;
+            vcl::deserialize<CompType>(is, v);
+            mMap[name]              = v;
+            mNeedToInitialize[name] = b;
+            mCompType.emplace(name, typeid(CompType));
         }
     }
 
