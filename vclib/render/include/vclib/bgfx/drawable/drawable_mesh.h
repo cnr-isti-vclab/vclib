@@ -142,9 +142,23 @@ public:
     friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
 
     // TODO: to be removed after shader benchmarks
-    void setShaderProgramType(SurfaceProgramsType type)
+    void setSurfaceProgramType(SurfaceProgramsType type)
     {
-        mSurfaceProgramType = type;
+        if (type != mSurfaceProgramType) {
+            std::cerr << "Program Type changed: ";
+            switch (type) {
+                case SurfaceProgramsType::SPLITTED:
+                    std::cerr << "SPLITTED\n";
+                    break;
+                case SurfaceProgramsType::UBER_WITH_STATIC_IF:
+                    std::cerr << "UBER_WITH_STATIC_IF\n";
+                    break;
+                case SurfaceProgramsType::UBER:
+                    std::cerr << "UBER\n";
+                    break;
+            }
+            mSurfaceProgramType = type;
+        }
     }
 
     // DrawableObject implementation

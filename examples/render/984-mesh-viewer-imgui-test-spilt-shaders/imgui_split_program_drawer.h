@@ -20,38 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #ifndef IMGUI_SWITCH_PROGRAM_DRAWER_H
 #define IMGUI_SWITCH_PROGRAM_DRAWER_H
 
-#include <imgui.h>
 #include <vclib/render/drawers/plain_drawer.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 
+#include <vclib/meshes.h>
+
+#include <imgui.h>
 #include <bgfx/bgfx.h>
 
-#include "globals.h"
+#include <functional>
 
 template<typename DerivedRenderApp>
 class ImguiSplitProgramDrawer : public vcl::PlainDrawer<DerivedRenderApp>
 {
+    bool useSplitProgram = false;
 
-    public:
-        using vcl::PlainDrawer<DerivedRenderApp>::PlainDrawer;
+    using SurfaceProgramsType =
+        typename vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType;
+    using SurfaceProgramsTypeFunction =
+        std::function<void(SurfaceProgramsType)>;
 
-        static inline bool *useSwitchProgram;
+    SurfaceProgramsTypeFunction surfaceProgramChangerFn = nullptr;
 
-        ImguiSplitProgramDrawer(){};
+public:
+    using vcl::PlainDrawer<DerivedRenderApp>::PlainDrawer;
 
-        void onDrawContent(vcl::uint viewId) override {
-            ImGuiIO &io = ImGui::GetIO();
-            ImGui::Begin("Split programs checkbox",nullptr);
-            ImGui::Checkbox("Use split programs", &Globals::useSplitShading);
-            ImGui::End();
-        };
+    ImguiSplitProgramDrawer() {};
 
-        void onResize(vcl::uint width, vcl::uint height) override {
-            bgfx::reset(width, height, BGFX_RESET_NONE);
-        };
+    void onDrawContent(vcl::uint viewId) override
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        ImGui::Begin("Split programs checkbox", nullptr);
+        ImGui::Checkbox("Use split programs", &useSplitProgram);
+        ImGui::End();
+
+        if (surfaceProgramChangerFn) {
+            if (useSplitProgram) {
+                surfaceProgramChangerFn(
+                    vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
+                        SPLITTED);
+            }
+            else {
+                surfaceProgramChangerFn(
+                    vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
+                        UBER);
+            }
+        }
+    };
+
+    void onResize(vcl::uint width, vcl::uint height) override
+    {
+        bgfx::reset(width, height, BGFX_RESET_NONE);
+    };
+
+    void setSurfaceProgramChangerFn(SurfaceProgramsTypeFunction fn)
+    {
+        surfaceProgramChangerFn = fn;
+    }
 };
 
 #endif

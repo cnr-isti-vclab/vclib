@@ -20,6 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "get_drawable_mesh.h"
+
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 
 #include <vclib/imgui/imgui_drawer.h>
@@ -33,12 +35,12 @@
 
 #include <imgui.h>
 
-#include "../get_program_switcher_drawable_mesh.h"
 #include "../imgui_split_program_drawer.h"
-#include "../program_switcher_drawable_mesh.h"
 
 int main(int argc, char** argv)
 {
+    using namespace vcl;
+
     using ImguiMeshViewer = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
@@ -49,15 +51,29 @@ int main(int argc, char** argv)
 
     ImguiMeshViewer tw("ImGui Mesh Viewer GLFW");
 
-    bgfx::reset(tw.width()*tw.dpiScale().x(), tw.height()*tw.dpiScale().y(), BGFX_RESET_NONE);
+    // get control of the DrawableObjectVector of the viewer
+    std::shared_ptr<DrawableObjectVector> vec =
+        std::make_shared<DrawableObjectVector>();
+    tw.setDrawableObjectVector(vec);
 
     // load and set up a drawable mesh
-    ProgramSwitcherDrawableMesh<vcl::TriMesh> drawable = 
-        getProgramSwitcherDrawableMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+    DrawableMesh<TriMesh> drawable = getDrawableMesh<TriMesh>("bimba.obj");
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+    tw.pushDrawableObject(std::move(drawable));
+
+    auto setShaderFunction =
+        [&vec](DrawableMesh<TriMesh>::SurfaceProgramsType type) {
+            for (auto& obj : *vec) {
+                auto* mesh = dynamic_cast<DrawableMesh<TriMesh>*>(obj.get());
+                if (mesh) {
+                    mesh->setSurfaceProgramType(type);
+                }
+            }
+        };
+
+    tw.setSurfaceProgramChangerFn(setShaderFunction);
 
     tw.fitScene();
 
