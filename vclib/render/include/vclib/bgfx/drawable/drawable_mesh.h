@@ -37,17 +37,29 @@ namespace vcl {
 template<MeshConcept MeshType>
 class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 {
+public:
+    // TODO: to be removed after shader benchmarks
+    enum class SurfaceProgramsType {
+        SPLITTED,
+        UBER_WITH_STATIC_IF,
+        UBER,
+    };
+
+private:
     using MRI = MeshRenderInfo;
 
     Box3d mBoundingBox;
-protected:
 
-    MeshRenderBuffers<MeshType> mMRB;
-
-private:
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
     Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
+
+    // TODO: to be removed after shader benchmarks
+    SurfaceProgramsType mSurfaceProgramType =
+        SurfaceProgramsType::SPLITTED;
+
+protected:
+    MeshRenderBuffers<MeshType> mMRB;
 
 public:
     DrawableMeshBGFX() = default;
@@ -129,6 +141,12 @@ public:
 
     friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
 
+    // TODO: to be removed after shader benchmarks
+    void setShaderProgramType(SurfaceProgramsType type)
+    {
+        mSurfaceProgramType = type;
+    }
+
     // DrawableObject implementation
 
     void init() override {}
@@ -160,7 +178,7 @@ public:
 
             bgfx::setState(state);
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_UBER>());
+            bgfx::submit(viewId, surfaceProgramSelector());
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
@@ -269,6 +287,69 @@ protected:
     {
         mMeshRenderSettingsUniforms.bind();
         mMRB.bindUniforms();
+    }
+
+    bgfx::ProgramHandle surfaceProgramSelector() const {
+        using enum VertFragProgram;
+
+        ProgramManager& pm = Context::instance().programManager();
+
+        // TODO: to be removed after shader benchmarks
+        if (mSurfaceProgramType == SurfaceProgramsType::SPLITTED) {
+            static const std::array<bgfx::ProgramHandle, 18> surfaceProgramHandles =
+                {pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_USER>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_VERTEX>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_WEDGE>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_VERTEX>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_MESH>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_FACE>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_USER>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_TEX_WEDGE>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_VERTEX>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_MESH>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_USER>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_VERTEX>(),
+                 pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_WEDGE>()};
+
+            uint32_t mul = 0;
+            uint32_t off = 0;
+
+            {
+                using enum MeshRenderInfo::Surface;
+                if (mMRS.isSurface(SHADING_FLAT)) {
+                    mul = 1;
+                }
+                if (mMRS.isSurface(SHADING_SMOOTH)) {
+                    mul = 2;
+                }
+                if (mMRS.isSurface(COLOR_MESH)) {
+                    off = 1;
+                }
+                if (mMRS.isSurface(COLOR_FACE)) {
+                    off = 2;
+                }
+                if (mMRS.isSurface(COLOR_USER)) {
+                    off = 3;
+                }
+                if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
+                    off = 4;
+                }
+                if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
+                    off = 5;
+                }
+            }
+
+            VertFragProgram p = static_cast<VertFragProgram>(6 * mul + off);
+
+            return surfaceProgramHandles[toUnderlying(p)];
+        }
+
+        return pm.getProgram<DRAWABLE_MESH_SURFACE_UBER>();
     }
 };
 
