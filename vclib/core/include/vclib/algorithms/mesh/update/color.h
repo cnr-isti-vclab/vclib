@@ -41,22 +41,46 @@ struct ColorAvgInfo
     uint         cnt = 0;
 };
 
-template<uint ELEM_ID, FaceMeshConcept MeshType>
+template<uint ELEM_ID, MeshConcept MeshType>
 void setPerElemColorFromVertexColor(MeshType& m)
 {
     requirePerVertexColor(m);
+    requirePerElementComponent<ELEM_ID, CompId::VERTEX_REFERENCES>(m);
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
 
-    using VertexType = MeshType::VertexType;
-
-    for (auto& f : m.template elements<ELEM_ID>()) {
+    for (auto& e : m.template elements<ELEM_ID>()) {
         Point4<uint> avg(0, 0, 0, 0);
-        for (const VertexType* v : f.vertices()) {
+        for (const auto* v : e.vertices()) {
             avg += v->color().template cast<uint>();
         }
-        avg /= f.vertexNumber();
-        f.color() = avg.cast<uint8_t>();
+        avg /= e.vertexNumber();
+        e.color() = avg.template cast<uint8_t>();
     }
+}
+
+template<uint ELEM_ID, MeshConcept MeshType>
+void setPerVertexColorFromElemColor(MeshType& m)
+{
+    requirePerVertexColor(m);
+    requirePerElementComponent<ELEM_ID, CompId::VERTEX_REFERENCES>(m);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
+
+    std::vector<ColorAvgInfo> avgColors(m.vertexContainerSize());
+
+    for (const auto& e : m.template elements<ELEM_ID>()) {
+        for (const auto* v: e.vertices()) {
+            avgColors[v->index()].c += e.color().template cast<uint>();
+            avgColors[v->index()].cnt[v->index()]++;
+        }
+    }
+
+    for (auto& v : m.vertices()) {
+        if (avgColors[v.index()].cnt > 0) {
+            avgColors[v.index()] /= avgColors[v.index()].cnt[v.index()];
+            v.color() = avgColors[v.index()].c.template cast<uint8_t>();
+        }
+    }
+
 }
 
 } // namespace detail
@@ -198,24 +222,7 @@ void setMeshColor(MeshType& m, Color c = Color::White)
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m)
 {
-    requirePerVertexColor(m);
-    requirePerFaceColor(m);
-
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-
-    std::vector<detail::ColorAvgInfo> csi(m.vertexContainerSize());
-
-    for (const FaceType& f : m.faces()) {
-        for (const VertexType* v : f.vertices()) {
-            csi[m.index(v)].c += v->color();
-            csi[m.index(v)].cnt++;
-        }
-    }
-
-    for (VertexType& v : m.vertices()) {
-        v.color() = csi[m.index(v)].c / csi[m.index(v)].cnt;
-    }
+    detail::setPerVertexColorFromElemColor<ElemId::FACE>(m);
 }
 
 /**
