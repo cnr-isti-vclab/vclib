@@ -22,6 +22,9 @@
 
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 
+#include <vclib/algorithms/core/create.h>
+#include <vclib/bgfx/context.h>
+
 namespace vcl {
 
 namespace detail {
@@ -107,8 +110,8 @@ DrawableTrackBall::DrawableTrackBall()
 }
 
 DrawableTrackBall::DrawableTrackBall(const DrawableTrackBall& other) :
-            mVisible(other.mVisible), mProgram(other.mProgram),
-            mUniforms(other.mUniforms), mTransform(other.mTransform)
+            mVisible(other.mVisible), mUniforms(other.mUniforms),
+            mTransform(other.mTransform)
 {
     // copy all the members that can be copied, and then re-create the
     // buffers
@@ -121,7 +124,6 @@ void DrawableTrackBall::swap(DrawableTrackBall& other)
     swap(mVisible, other.mVisible);
     swap(mVertexCoordsColorBuffer, other.mVertexCoordsColorBuffer);
     swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
-    swap(mProgram, other.mProgram);
     swap(mUniforms, other.mUniforms);
     swap(mTransform, other.mTransform);
 }
@@ -149,22 +151,24 @@ DrawableTrackBall& DrawableTrackBall::operator=(DrawableTrackBall other)
 
 void DrawableTrackBall::draw(uint viewId) const
 {
+    using enum VertFragProgram;
+
+    ProgramManager& pm = Context::instance().programManager();
+
     if (isVisible()) {
-        if (bgfx::isValid(mProgram)) {
-            bgfx::setState(
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
-                BGFX_STATE_BLEND_ALPHA);
+        bgfx::setState(
+            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
+            BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
+            BGFX_STATE_BLEND_ALPHA);
 
-            mVertexCoordsColorBuffer.bind(0);
-            mEdgeIndexBuffer.bind();
+        mVertexCoordsColorBuffer.bind(0);
+        mEdgeIndexBuffer.bind();
 
-            bgfx::setTransform(mTransform.data());
+        bgfx::setTransform(mTransform.data());
 
-            mUniforms.bind();
+        mUniforms.bind();
 
-            bgfx::submit(viewId, mProgram);
-        }
+        bgfx::submit(viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
     }
 }
 
