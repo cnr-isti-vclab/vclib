@@ -32,7 +32,8 @@
 
 template<vcl::MeshConcept MeshType>
 inline vcl::DrawableMesh<MeshType> getDrawableMesh(
-    std::string filename = "bimba.obj", bool fromVCLibExamplesPath = true)
+    std::string filename              = "bimba.obj",
+    bool        fromVCLibExamplesPath = true)
 {
     if (fromVCLibExamplesPath) {
         filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
