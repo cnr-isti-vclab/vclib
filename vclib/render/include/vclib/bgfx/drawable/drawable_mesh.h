@@ -41,7 +41,7 @@ public:
     // TODO: to be removed after shader benchmarks
     enum class SurfaceProgramsType {
         UBER,
-        SPLITTED,
+        SPLIT,
         UBER_WITH_STATIC_IF,
     };
 
@@ -147,7 +147,7 @@ public:
             std::cerr << "Program Type changed: ";
             switch (type) {
             case SurfaceProgramsType::UBER: std::cerr << "UBER\n"; break;
-            case SurfaceProgramsType::SPLITTED:
+            case SurfaceProgramsType::SPLIT:
                 std::cerr << "SPLITTED\n";
                 break;
             case SurfaceProgramsType::UBER_WITH_STATIC_IF:
@@ -337,7 +337,7 @@ protected:
 
         VertFragProgram p = static_cast<VertFragProgram>(6 * mul + off);
 
-        if (mSurfaceProgramType == SurfaceProgramsType::SPLITTED) {
+        if (mSurfaceProgramType == SurfaceProgramsType::SPLIT) {
             static const std::array<bgfx::ProgramHandle, 18>
                 surfaceProgramHandles = {
                     pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>(),

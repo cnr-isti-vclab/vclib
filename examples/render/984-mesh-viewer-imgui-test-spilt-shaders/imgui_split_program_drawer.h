@@ -83,7 +83,7 @@ public:
             case 1:
                 surfaceProgramChangerFn(
                     vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
-                    SPLITTED);
+                    SPLIT);
                 break;
             case 2:
                 surfaceProgramChangerFn(
