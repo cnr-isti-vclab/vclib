@@ -20,10 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SERIALIZATION_H
-#define VCL_SERIALIZATION_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_%PR_NAME_UC%_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_%PR_NAME_UC%_H
 
-#include "serialization/stl_deserialize.h"
-#include "serialization/stl_serialize.h"
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
-#endif // VCL_SERIALIZATION_H
+namespace vcl {
+
+template<>
+struct VertFragLoader<VertFragProgram::%PR_NAME_UC%>
+{
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_%PR_NAME_UC%_H

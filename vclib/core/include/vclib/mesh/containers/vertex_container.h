@@ -1113,6 +1113,40 @@ public:
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
+
+    /**
+     * @brief Serializes in the given output stream all the custom components of
+     * the Vertex Element of type K.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * CustomComponents Component.
+     *
+     * @param[in] os: the output stream where the custom components will be
+     * serialized.
+     */
+    template<typename K>
+    void serializePerVertexCustomComponentsOfType(std::ostream& os) const
+        requires vert::HasCustomComponents<T>
+    {
+        Base::template serializePerElementCustomComponentsOfType<K>(os);
+    }
+
+    /**
+     * @brief Deserializes in the given input stream all the custom components
+     * of the Vertex Element of type K.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * CustomComponents Component.
+     *
+     * @param[in] is: the input stream where the custom components will be
+     * deserialized.
+     */
+    template<typename K>
+    void deserializePerVertexCustomComponentsOfType(std::istream& is)
+        requires vert::HasCustomComponents<T>
+    {
+        Base::template deserializePerElementCustomComponentsOfType<K>(is);
+    }
 };
 
 } // namespace vcl::mesh

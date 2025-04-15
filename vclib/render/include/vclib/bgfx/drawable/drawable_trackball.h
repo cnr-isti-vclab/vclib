@@ -41,13 +41,6 @@ class DrawableTrackBall : public DrawableObject
     VertexBuffer mVertexCoordsColorBuffer;
     IndexBuffer  mEdgeIndexBuffer;
 
-    // TODO: can we be sure that this is called after the context initialization
-    // triggered by a window?
-    bgfx::ProgramHandle mProgram =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_TRACKBALL>();
-
     DrawableTrackballUniforms mUniforms;
 
     vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();

@@ -28,10 +28,8 @@
 #include <vclib/concepts/serialization.h>
 #include <vclib/concepts/types.h>
 
-#include <array>
 #include <bit>
 #include <ostream>
-#include <vector>
 
 namespace vcl {
 
@@ -94,59 +92,6 @@ void serialize(std::ostream& os, const T& data, const Others&... others)
     }
     if constexpr (sizeof...(Others) > 0) {
         serialize(os, others...);
-    }
-}
-
-/// Serialize specializations ///
-
-/*
- * std::array
- */
-
-template<typename T, std::size_t N>
-void serialize(std::ostream& os, const std::array<T, N>& a)
-{
-    if constexpr (Serializable<T>) {
-        for (const T& v : a) {
-            v.serialize(os);
-        }
-    }
-    else {
-        for (const T& e : a) {
-            serialize(os, e);
-        }
-    }
-}
-
-/*
- * std::string
- */
-
-inline void serialize(std::ostream& os, const std::string& s)
-{
-    std::size_t size = s.size();
-    serialize(os, size);
-    serializeN(os, s.data(), size);
-}
-
-/*
- * std::vector
- */
-
-template<typename T>
-void serialize(std::ostream& os, const std::vector<T>& v)
-{
-    std::size_t size = v.size();
-    serialize(os, size);
-    if constexpr (Serializable<T>) {
-        for (const T& e : v) {
-            e.serialize(os);
-        }
-    }
-    else {
-        for (const T& e : v) {
-            serialize(os, e);
-        }
     }
 }
 
