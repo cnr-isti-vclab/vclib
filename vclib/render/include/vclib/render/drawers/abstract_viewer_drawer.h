@@ -122,7 +122,7 @@ public:
     // events
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(derived(), Color::White);
+        DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
     }
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override

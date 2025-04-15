@@ -50,7 +50,7 @@ void main()
             primitiveNormals[gl_PrimitiveID * 3],
             primitiveNormals[gl_PrimitiveID * 3 + 1],
             primitiveNormals[gl_PrimitiveID * 3 + 2]);
-        normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
+        normal = normalize(mul(u_normalMatrix, normal));
     }
 
     // if flat or smooth shading, compute light
@@ -59,7 +59,7 @@ void main()
 
         specular = computeSpecular(
             v_position,
-            u_cameraEyePos,
+            vec3(0.0, 0.0, 0.0),
             u_lightDir,
             u_lightColor,
             normal);

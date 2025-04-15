@@ -138,8 +138,9 @@ public:
         ProgramManager& pm = Context::instance().programManager();
 
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                         BGFX_STATE_BLEND_NORMAL;
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
+
+
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);

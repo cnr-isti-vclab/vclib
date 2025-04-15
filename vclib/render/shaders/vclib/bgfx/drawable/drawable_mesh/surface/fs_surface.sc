@@ -74,17 +74,19 @@ void main()
             primitiveNormals[gl_PrimitiveID * 3],
             primitiveNormals[gl_PrimitiveID * 3 + 1],
             primitiveNormals[gl_PrimitiveID * 3 + 2]);
-        normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
-        normal = normalize(normal);
+        normal = normalize(mul(u_normalMatrix, normal));
     }
 
     // if flat or smooth shading, compute light
     if (!bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_NONE))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
+        // all computations are in view (camera) space
+        // => the camera eye is at (0, 0, 0)
+        // also, u_lightDir is provided in view space
         specular = computeSpecular(
             v_position,
-            u_cameraEyePos,
+            vec3(0.0, 0.0, 0.0),
             u_lightDir,
             u_lightColor,
             normal);
