@@ -23,7 +23,7 @@
 #ifndef VCL_SERIALIZATION_H
 #define VCL_SERIALIZATION_H
 
-#include "serialization/deserialize.h"
-#include "serialization/serialize.h"
+#include "serialization/stl_deserialize.h"
+#include "serialization/stl_serialize.h"
 
 #endif // VCL_SERIALIZATION_H

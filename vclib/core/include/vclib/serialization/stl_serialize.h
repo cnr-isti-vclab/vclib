@@ -20,51 +20,88 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#ifndef VCL_SERIALIZATION_STL_SERIALIZE_H
+#define VCL_SERIALIZATION_STL_SERIALIZE_H
+
+#include "serialize.h"
+
+#include <any>
+#include <array>
+#include <string>
+#include <vector>
 
 namespace vcl {
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
+/// STL Serialize specializations ///
 
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
+/*
+ * std::array
+ */
 
-    DRAWABLE_TRACKBALL,
+template<typename T, std::size_t N>
+void serialize(std::ostream& os, const std::array<T, N>& a)
+{
+    if constexpr (Serializable<T>) {
+        for (const T& v : a) {
+            v.serialize(os);
+        }
+    }
+    else {
+        for (const T& e : a) {
+            serialize(os, e);
+        }
+    }
+}
 
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
+/*
+ * std::string
+ */
 
-    LINES,
-    LINES_INDIRECT,
-    LINES_INSTANCING,
-    LINES_TEXTURE,
+inline void serialize(std::ostream& os, const std::string& s)
+{
+    std::size_t size = s.size();
+    serialize(os, size);
+    serializeN(os, s.data(), size);
+}
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_INDIRECT_JOINTS,
-    POLYLINES_INSTANCING,
-    POLYLINES_INSTANCING_JOINTS,
-    POLYLINES_TEXTURE,
-    POLYLINES_TEXTURE_JOINTS,
+/*
+ * std::vector
+ */
 
-    COUNT
-};
+template<typename T>
+void serialize(std::ostream& os, const std::vector<T>& v)
+{
+    std::size_t size = v.size();
+    serialize(os, size);
+    if constexpr (Serializable<T>) {
+        for (const T& e : v) {
+            e.serialize(os);
+        }
+    }
+    else {
+        for (const T& e : v) {
+            serialize(os, e);
+        }
+    }
+}
+
+template<typename T>
+void serialize(std::ostream& os, const std::vector<std::any>& v)
+{
+    std::size_t size = v.size();
+    serialize(os, size);
+    if constexpr (Serializable<T>) {
+        for (const std::any& e : v) {
+            std::any_cast<T>(e).serialize(os);
+        }
+    }
+    else {
+        for (const std::any& e : v) {
+            serialize(os, std::any_cast<T>(e));
+        }
+    }
+}
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#endif // VCL_SERIALIZATION_STL_SERIALIZE_H

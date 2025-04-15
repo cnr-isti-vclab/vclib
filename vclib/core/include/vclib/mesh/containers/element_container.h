@@ -791,6 +791,20 @@ protected:
         return cc;
     }
 
+    template<typename K>
+    void serializePerElementCustomComponentsOfType(std::ostream& os) const
+        requires comp::HasCustomComponents<T>
+    {
+        mCustomCompVecMap.template serializeCustomComponentsOfType<K>(os);
+    }
+
+    template<typename K>
+    void deserializePerElementCustomComponentsOfType(std::istream& is)
+        requires comp::HasCustomComponents<T>
+    {
+        mCustomCompVecMap.template deserializeCustomComponentsOfType<K>(is);
+    }
+
     uint index(const T* e) const
     {
         assert(

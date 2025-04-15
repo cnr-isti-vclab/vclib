@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
+#define VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
 
 #include <vclib/algorithms/mesh/update/color.h>
 #include <vclib/algorithms/mesh/update/normal.h>
@@ -32,10 +32,14 @@
 
 template<vcl::MeshConcept MeshType>
 inline vcl::DrawableMesh<MeshType> getDrawableMesh(
-    const std::string& filename = "bimba.obj")
+    std::string filename              = "bimba.obj",
+    bool        fromVCLibExamplesPath = true)
 {
-    // load a mesh:
-    MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
+    if (fromVCLibExamplesPath) {
+        filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
+    }
+
+    MeshType m = vcl::load<MeshType>(filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
@@ -56,4 +60,4 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     return drawable;
 }
 
-#endif // COMMON_H
+#endif // VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H

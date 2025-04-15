@@ -20,51 +20,95 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#ifndef VCL_SERIALIZATION_STL_DESERIALIZE_H
+#define VCL_SERIALIZATION_STL_DESERIALIZE_H
+
+#include "deserialize.h"
+
+#include <any>
+#include <array>
+#include <string>
+#include <vector>
 
 namespace vcl {
 
-enum class VertFragProgram {
-    DRAWABLE_AXIS,
-    DRAWABLE_DIRECTIONAL_LIGHT,
+/// STL Deserialize specializations ///
 
-    DRAWABLE_MESH_EDGES,
-    DRAWABLE_MESH_POINTS,
-    DRAWABLE_MESH_SURFACE,
-    DRAWABLE_MESH_WIREFRAME,
-    DRAWABLE_MESH_EDGES_ID,
-    DRAWABLE_MESH_POINTS_ID,
-    DRAWABLE_MESH_SURFACE_ID,
-    DRAWABLE_MESH_WIREFRAME_ID,
+/*
+ * std::array
+ */
 
-    DRAWABLE_TRACKBALL,
+template<typename T, std::size_t N>
+void deserialize(std::istream& is, std::array<T, N>& a)
+{
+    if constexpr (Serializable<T>) {
+        for (T& v : a) {
+            v.deserialize(is);
+        }
+    }
+    else {
+        for (T& e : a) {
+            deserialize(is, e);
+        }
+    }
+}
 
-    FONT_BASIC,
-    FONT_DISTANCE_FIELD,
-    FONT_DISTANCE_FIELD_DROP_SHADOW,
-    FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE,
-    FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
-    FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
-    FONT_DISTANCE_FIELD_SUBPIXEL,
+/*
+ * std::string
+ */
 
-    LINES,
-    LINES_INDIRECT,
-    LINES_INSTANCING,
-    LINES_TEXTURE,
+inline void deserialize(std::istream& is, std::string& s)
+{
+    std::size_t size;
+    deserialize(is, size);
+    s.resize(size);
+    deserializeN(is, s.data(), size);
+}
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_INDIRECT_JOINTS,
-    POLYLINES_INSTANCING,
-    POLYLINES_INSTANCING_JOINTS,
-    POLYLINES_TEXTURE,
-    POLYLINES_TEXTURE_JOINTS,
+/*
+ * std::vector
+ */
 
-    COUNT
-};
+template<typename T>
+void deserialize(std::istream& is, std::vector<T>& v)
+{
+    std::size_t size;
+    deserialize(is, size);
+    v.resize(size);
+    if constexpr (Serializable<T>) {
+        for (T& e : v) {
+            e.deserialize(is);
+        }
+    }
+    else {
+        for (T& e : v) {
+            deserialize(is, e);
+        }
+    }
+}
+
+template<typename T>
+void deserialize(std::istream& is, std::vector<std::any>& v)
+{
+    std::size_t size;
+    deserialize(is, size);
+    v.resize(size);
+    if constexpr (Serializable<T>) {
+        for (std::any& e : v) {
+            T obj;
+            obj.deserialize(is);
+            e = std::move(obj);
+        }
+    }
+    else {
+        for (std::any& e : v) {
+            T obj;
+            deserialize(is, obj);
+            e = std::move(obj);
+        }
+    }
+}
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_VERT_FRAG_PROGRAM_H
+#endif // VCL_SERIALIZATION_STL_DESERIALIZE_H

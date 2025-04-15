@@ -1451,6 +1451,59 @@ public:
         return Cont::template customComponentVectorHandle<K>(name);
     }
 
+    /**
+     * @brief Serializes the custom components of type `K` of the element
+     * with ID ELEM_ID.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID. Otherwise, a compiler error will be triggered.
+     *
+     * E.g. suppose to have a Mesh having vertices with three custom components,
+     * two of type `float` and one of type `int`. To serialize ONLY the custom
+     * components of type `float`, you can call:
+     *
+     * @code{.cpp}
+     * MeshType m;
+     * std::ofstream os("customComponents.bin");
+     * m.template
+     *     serializePerElementCustomComponentsOfType<
+     *         ElemId::VERTEX, float>(os);
+     * os.close();
+     * @endcode
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @tparam K: the type of the component to serialize.
+     * @param[in] os: the output stream to which serialize the custom
+     * components.
+     */
+    template<uint ELEM_ID, typename K>
+    void serializePerElementCustomComponentsOfType(std::ostream& os) const
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        Cont::template serializePerElementCustomComponentsOfType<K>(os);
+    }
+
+    /**
+     * @brief Deserializes the custom components of type `K` of the element
+     * with ID ELEM_ID.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID. Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @tparam K: the type of the component to deserialize.
+     * @param[in] is: the input stream from which deserialize the custom
+     * components.
+     */
+    template<uint ELEM_ID, typename K>
+    void deserializePerElementCustomComponentsOfType(std::istream& is)
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        Cont::template deserializePerElementCustomComponentsOfType<K>(is);
+    }
+
 protected:
     template<typename Cont>
     bool isContainerCompact() const

@@ -43,36 +43,6 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 
     MeshRenderBuffers<MeshType> mMRB;
 
-    bgfx::ProgramHandle mProgramEdges =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES>();
-
-    bgfx::ProgramHandle mProgramPoints =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_POINTS>();
-
-    bgfx::ProgramHandle mProgramSurface =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE>();
-
-    bgfx::ProgramHandle mProgramEdgesID =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_EDGES_ID>();
-
-    bgfx::ProgramHandle mProgramPointsID =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_POINTS_ID>();
-
-    bgfx::ProgramHandle mProgramSurfaceID =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_ID>();
-
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
     Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
@@ -164,32 +134,32 @@ public:
 
     void draw(uint viewId) const override
     {
+        using enum VertFragProgram;
+
+        ProgramManager& pm = Context::instance().programManager();
+
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                          BGFX_STATE_BLEND_NORMAL;
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            if (bgfx::isValid(mProgramPoints)) {
-                mMRB.bindVertexBuffers(mMRS);
-                bindUniforms();
+            mMRB.bindVertexBuffers(mMRS);
+            bindUniforms();
 
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+            bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
-                bgfx::submit(viewId, mProgramPoints);
-            }
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            if (bgfx::isValid(mProgramSurface)) {
-                mMRB.bindTextures(); // Bind textures before vertex buffers!!
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS);
-                bindUniforms();
+            mMRB.bindTextures(); // Bind textures before vertex buffers!!
+            mMRB.bindVertexBuffers(mMRS);
+            mMRB.bindIndexBuffers(mMRS);
+            bindUniforms();
 
-                bgfx::setState(state);
+            bgfx::setState(state);
 
-                bgfx::submit(viewId, mProgramSurface);
-            }
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE>());
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
@@ -197,20 +167,22 @@ public:
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
-            if (bgfx::isValid(mProgramEdges)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
-                bindUniforms();
+            mMRB.bindVertexBuffers(mMRS);
+            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
+            bindUniforms();
 
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewId, mProgramEdges);
-            }
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES>());
         }
     }
 
     void drawId(uint viewId, uint id) const override
     {
+        using enum VertFragProgram;
+
+        ProgramManager& pm = Context::instance().programManager();
+
         uint64_t state =
             0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
             BGFX_STATE_DEPTH_TEST_LEQUAL |
@@ -221,41 +193,35 @@ public:
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            if (bgfx::isValid(mProgramPointsID)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mIdUniform.bind(&idFloat[0]);
+            mMRB.bindVertexBuffers(mMRS);
+            mIdUniform.bind(&idFloat[0]);
 
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+            bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
-                bgfx::submit(viewId, mProgramPointsID);
-            }
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            if (bgfx::isValid(mProgramSurfaceID)) {
-                mMRB.bindTextures(); // Bind textures before vertex buffers!!
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS);
-                mIdUniform.bind(&idFloat);
+            mMRB.bindTextures(); // Bind textures before vertex buffers!!
+            mMRB.bindVertexBuffers(mMRS);
+            mMRB.bindIndexBuffers(mMRS);
+            mIdUniform.bind(&idFloat);
 
-                bgfx::setState(state);
+            bgfx::setState(state);
 
-                bgfx::submit(viewId, mProgramSurfaceID);
-            }
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
         // TODO: manage drawID for wireframe!
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
-            if (bgfx::isValid(mProgramEdgesID)) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
-                mIdUniform.bind(&idFloat);
+            mMRB.bindVertexBuffers(mMRS);
+            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
+            mIdUniform.bind(&idFloat);
 
-                bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewId, mProgramEdgesID);
-            }
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
         }
     }
 

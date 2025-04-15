@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/algorithms/mesh/stat.h>
 #include <vclib/io.h>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
@@ -176,8 +177,8 @@ TEMPLATE_TEST_CASE("Plane Serialization", "", float, double)
 
     vcl::Plane<Scalar> p2;
 
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/plane.bin");
+    std::ifstream fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/plane.bin");
 
     p2.deserialize(fi);
     fi.close();
@@ -401,5 +402,121 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
         for (unsigned int j = 0; j < mesh1.face(i).vertexNumber(); j++)
             REQUIRE(
                 mesh1.face(i).vertexIndex(j) == mesh2.face(i).vertexIndex(j));
+    }
+}
+
+TEMPLATE_TEST_CASE(
+    "Mesh with custom components serialization",
+    "",
+    vcl::PolyMesh,
+    vcl::TriMesh)
+{
+    // in this test, we will use explicit mesh functions for vertices,
+    // and generic mesh functions with ElemId::FACE for faces
+
+    using Mesh = TestType;
+
+    Mesh mesh1 = vcl::load<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+
+    mesh1.template addCustomComponent<vcl::Point3d>(
+        "barycenter", vcl::barycenter(mesh1));
+    mesh1.template addCustomComponent<vcl::Point3d>(
+        "shell_barycenter", vcl::shellBarycenter(mesh1));
+    mesh1.template addCustomComponent<double>("area", vcl::surfaceArea(mesh1));
+
+    mesh1.template addPerVertexCustomComponent<vcl::Point3d>("rand");
+    mesh1.template addPerElementCustomComponent<vcl::ElemId::FACE, vcl::Color>(
+        "rand_color");
+
+    auto vh = mesh1.template perVertexCustomComponentVectorHandle<vcl::Point3d>(
+        "rand");
+
+    for (unsigned int i = 0; i < mesh1.vertexNumber(); i++) {
+        vh[i] = randomPoint<double, 3>();
+    }
+
+    auto fh = mesh1.template perElementCustomComponentVectorHandle<
+        vcl::ElemId::FACE,
+        vcl::Color>("rand_color");
+
+    for (unsigned int i = 0; i < mesh1.faceNumber(); i++) {
+        fh[i] = randomColor();
+    }
+
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/mesh_cc.bin");
+    mesh1.serialize(fo);
+    mesh1.template serializeCustomComponentsOfType<double>(fo);
+    mesh1.template serializeCustomComponentsOfType<vcl::Point3d>(fo);
+    mesh1.template serializePerVertexCustomComponentsOfType<vcl::Point3d>(fo);
+    mesh1.template serializePerElementCustomComponentsOfType<
+        vcl::ElemId::FACE,
+        vcl::Color>(fo);
+    fo.close();
+
+    Mesh          mesh2;
+    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
+                                                "/serialization/mesh_cc.bin");
+    mesh2.deserialize(fi);
+    mesh2.template deserializeCustomComponentsOfType<double>(fi);
+    mesh2.template deserializeCustomComponentsOfType<vcl::Point3d>(fi);
+    mesh2.template deserializePerVertexCustomComponentsOfType<vcl::Point3d>(fi);
+    mesh2.template deserializePerElementCustomComponentsOfType<
+        vcl::ElemId::FACE,
+        vcl::Color>(fi);
+    fi.close();
+
+    REQUIRE(mesh2.hasCustomComponent("barycenter"));
+    REQUIRE(mesh2.hasCustomComponent("shell_barycenter"));
+    REQUIRE(mesh2.hasCustomComponent("area"));
+
+    REQUIRE(mesh2.hasPerVertexCustomComponent("rand"));
+    REQUIRE(mesh2.template hasPerElementCustomComponent<vcl::ElemId::FACE>(
+        "rand_color"));
+
+    REQUIRE(mesh2.template isCustomComponentOfType<vcl::Point3d>("barycenter"));
+    REQUIRE(mesh2.template isCustomComponentOfType<vcl::Point3d>(
+        "shell_barycenter"));
+    REQUIRE(mesh2.template isCustomComponentOfType<double>("area"));
+
+    REQUIRE(
+        mesh2.template isPerVertexCustomComponentOfType<vcl::Point3d>("rand"));
+    REQUIRE(mesh2.template isPerElementCustomComponentOfType<
+            vcl::ElemId::FACE,
+            vcl::Color>("rand_color"));
+
+    REQUIRE(
+        mesh1.template customComponent<vcl::Point3d>("barycenter") ==
+        mesh2.template customComponent<vcl::Point3d>("barycenter"));
+    REQUIRE(
+        mesh1.template customComponent<vcl::Point3d>("shell_barycenter") ==
+        mesh2.template customComponent<vcl::Point3d>("shell_barycenter"));
+    REQUIRE(
+        mesh1.template customComponent<double>("area") ==
+        mesh2.template customComponent<double>("area"));
+
+    auto vh1 =
+        mesh1.template perVertexCustomComponentVectorHandle<vcl::Point3d>(
+            "rand");
+    auto vh2 =
+        mesh2.template perVertexCustomComponentVectorHandle<vcl::Point3d>(
+            "rand");
+
+    REQUIRE(vh1.size() == vh2.size());
+    for (vcl::uint i = 0; i < vh1.size(); ++i) {
+        REQUIRE(vh1[i] == vh2[i]);
+    }
+
+    auto fh1 = mesh1.template perElementCustomComponentVectorHandle<
+        vcl::ElemId::FACE,
+        vcl::Color>("rand_color");
+
+    auto fh2 = mesh2.template perElementCustomComponentVectorHandle<
+        vcl::ElemId::FACE,
+        vcl::Color>("rand_color");
+
+    REQUIRE(fh1.size() == fh2.size());
+    for (vcl::uint i = 0; i < fh1.size(); ++i) {
+        REQUIRE(fh1[i] == fh2[i]);
     }
 }
