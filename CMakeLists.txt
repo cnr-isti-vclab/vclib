@@ -34,6 +34,13 @@ option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
 option(VCLIB_BUILD_MODULE_BINDINGS "Build the python bindings module" OFF)
 
+# Install modules options
+option(VCLIB_INSTALL_MODULE_CORE "Install the core module" ON)
+option(VCLIB_INSTALL_MODULE_EXTERNAL "Install the external module" ON)
+option(VCLIB_INSTALL_MODULE_PROCESSING "Install the processing module" ON)
+option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
+option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
+
 # Build examples
 option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
 
@@ -55,26 +62,26 @@ include(cmake/examples_and_tests.cmake)
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(vclib::vclib ALIAS ${PROJECT_NAME})
 
-add_subdirectory(vclib/core)
+add_subdirectory(vclib/core ${VCLIB_CORE_EXCLUDE_FROM_ALL_OPTION})
 target_link_libraries(vclib INTERFACE vclib::core)
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
-    add_subdirectory(vclib/external)
+    add_subdirectory(vclib/external ${VCLIB_EXTERNAL_EXCLUDE_FROM_ALL_OPTION})
     target_link_libraries(vclib INTERFACE vclib::external)
 endif()
 
 if (VCLIB_BUILD_MODULE_PROCESSING)
-    add_subdirectory(vclib/processing)
+    add_subdirectory(vclib/processing ${VCLIB_PROCESSING_EXCLUDE_FROM_ALL_OPTION})
     target_link_libraries(vclib INTERFACE vclib::processing)
 endif()
 
 if (VCLIB_BUILD_MODULE_RENDER)
-    add_subdirectory(vclib/render)
+    add_subdirectory(vclib/render ${VCLIB_RENDER_EXCLUDE_FROM_ALL_OPTION})
     target_link_libraries(vclib INTERFACE vclib::render)
 endif()
 
 if (VCLIB_BUILD_MODULE_BINDINGS)
-    add_subdirectory(vclib/bindings)
+    add_subdirectory(vclib/bindings ${VCLIB_BINDINGS_EXCLUDE_FROM_ALL_OPTION})
 endif()
 
 set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)

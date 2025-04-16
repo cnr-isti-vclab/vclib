@@ -89,7 +89,7 @@ void main()
             u_lightColor,
             normal);
     }
-
+    
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
