@@ -47,8 +47,9 @@ if (VCLIB_BUILD_MODULE_RENDER)
 #    list(APPEND PYTHON_MODULES render)
 endif()
 
-# create __init__.py inside VCLIB_MODULE_BINARY_DIR
-file(WRITE "${VCLIB_MODULE_BINARY_DIR}/__init__.py" "")
+# copy the __init__.py
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/__init__.py"
+    DESTINATION ${VCLIB_MODULE_BINARY_DIR})
 
 # for each module
 foreach(MODULE ${PYTHON_MODULES})

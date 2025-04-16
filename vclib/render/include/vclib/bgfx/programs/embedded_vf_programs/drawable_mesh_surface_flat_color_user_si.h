@@ -20,30 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_WINDOW_MANAGERS_H
-#define VCL_RENDER_WINDOW_MANAGERS_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_FLAT_COLOR_USER_SI_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_FLAT_COLOR_USER_SI_H
+
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
-/**
- * @brief The WindowManagerId struct enumerates the window managers that can be
- * used to create and manage a window and its events.
- *
- * The window managers are identified by an unsigned integer value, that
- * corresponds to a specific window manager implementation.
- */
-struct WindowManagerId
+template<>
+struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_FLAT_COLOR_USER_SI>
 {
-    enum Enum {
-        GLFW_WINDOW,
-        QT_WIDGET,
-        QT_WINDOW,
-        // Additional window managers here
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-        WINDOW_MANAGERS_NUMBER
-    };
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_WINDOW_MANAGERS_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_FLAT_COLOR_USER_SI_H
