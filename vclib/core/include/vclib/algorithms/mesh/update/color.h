@@ -68,7 +68,7 @@ void setPerVertexColorFromElemColor(MeshType& m)
     std::vector<ColorAvgInfo> avgColors(m.vertexContainerSize());
 
     for (const auto& e : m.template elements<ELEM_ID>()) {
-        for (const auto* v: e.vertices()) {
+        for (const auto* v : e.vertices()) {
             avgColors[v->index()].c += e.color().template cast<uint>();
             avgColors[v->index()].cnt[v->index()]++;
         }
@@ -80,7 +80,6 @@ void setPerVertexColorFromElemColor(MeshType& m)
             v.color() = avgColors[v.index()].c.template cast<uint8_t>();
         }
     }
-
 }
 
 } // namespace detail
