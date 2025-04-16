@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef IMGUI_SWITCH_PROGRAM_DRAWER_H
-#define IMGUI_SWITCH_PROGRAM_DRAWER_H
+#ifndef IMGUI_SPLIT_PROGRAM_DRAWER_H
+#define IMGUI_SPLIT_PROGRAM_DRAWER_H
 
 #include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -53,8 +53,8 @@ public:
     void onDraw(uint viewId) override
     {
         Base::onDraw(viewId);
-    
-        ImGuiIO& io = ImGui::GetIO();
+
+        ImGui::SetNextWindowSize(ImVec2(200.0f, 0.0f), ImGuiCond_Once);
         ImGui::Begin("Split programs checkbox", nullptr);
 
         const char* items[] = {
@@ -66,6 +66,7 @@ public:
 
         static uint currNum = 0;
 
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::BeginCombo("##combo", current_item)) {
             for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
                 bool is_selected = (current_item == items[n]);
