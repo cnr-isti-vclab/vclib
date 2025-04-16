@@ -122,7 +122,7 @@ public:
 /**
  * Multithread-safe printer class that "prints" to a (or rather, stores in a)
  * vector. It is still not recommended to call the print() function from
- * multiple threads, since the first one to finish will call finish and disable
+ * multiple threads, since the first one to finish will disable
  * writing
  *
  * To use this class all that is needed is to create an object of this class and
