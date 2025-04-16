@@ -74,6 +74,14 @@ foreach(MODULE ${PYTHON_MODULES})
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/python${VCLIB_PYTHON_VERSION}/site-packages/vclib
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+    # RPath for qt
+    if (TARGET vclib-3rd-qt)
+        if (APPLE)
+            set_target_properties(${MODULE} PROPERTIES
+                INSTALL_RPATH "@loader_path/../PyQt6/Qt6/lib")
+        endif()
+    endif()
 endforeach()
 
 # Install
