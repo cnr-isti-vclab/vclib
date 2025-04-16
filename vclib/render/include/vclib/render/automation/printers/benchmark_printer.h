@@ -47,7 +47,9 @@ public:
      * @param[in] metric: The metric to take the measurements from
      * @param[in] description: a description of the automation
      */
-    virtual void print(const BenchmarkMetric& metric, std::string description) = 0;
+    virtual void print(
+        const BenchmarkMetric& metric,
+        const std::string&     description) = 0;
 
     /**
      * @brief Called when the last automation of the last loop has finished

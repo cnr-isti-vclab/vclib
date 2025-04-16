@@ -72,7 +72,8 @@ public:
         mAutomationCounter = 0;
     };
 
-    void print(const BenchmarkMetric& metric, std::string description) override
+    void print(const BenchmarkMetric& metric, const std::string& description)
+        override
     {
         std::ostringstream temp;
         temp << description;

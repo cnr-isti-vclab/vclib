@@ -59,14 +59,14 @@ public:
     /**
      * @return The full name of the unit of measure
      */
-    virtual std::string getFullLengthUnitOfMeasure() const  = 0;
+    virtual std::string getFullLengthUnitOfMeasure() const = 0;
 
     /**
      * @brief Called when the automation finishes
      */
     virtual void end() = 0;
 
-    virtual bool isNull() { return false; };
+    virtual bool isNull() const { return false; };
 
     virtual std::shared_ptr<BenchmarkMetric> clone() const& = 0;
     virtual std::shared_ptr<BenchmarkMetric> clone() &&     = 0;

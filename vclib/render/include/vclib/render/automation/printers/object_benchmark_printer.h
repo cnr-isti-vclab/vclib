@@ -80,8 +80,8 @@ public:
      * if mIsFinished is false.
      */
     void addEntry(
-        std::string                      description,
-        std::shared_ptr<BenchmarkMetric> metric)
+        const std::string&                      description,
+        const std::shared_ptr<BenchmarkMetric>& metric)
     {
         std::unique_lock lV(mVectorMutex);
         if (mIsFinished) {
@@ -139,7 +139,7 @@ public:
      * only ever the null optional if the automations are finished and the index
      * is out of range.
      */
-    std::optional<VectorElementType> getVectorAtBlocking(size_t index)
+    std::optional<VectorElementType> getVectorAtBlocking(const size_t index)
     {
         std::unique_lock lV(mVectorMutex);
         while (mDescriptionAndMeasurementsVector.size() <= index &&
@@ -164,8 +164,8 @@ public:
      * @returns An optional copy of the element at the requested index
      */
     std::optional<VectorElementType> getVectorAtNonBlocking(
-        size_t index,
-        bool&  finishedAndOutOfRange)
+        const size_t index,
+        bool&        finishedAndOutOfRange)
     {
         finishedAndOutOfRange = false;
         if (!mVectorMutex.try_lock()) {
@@ -207,7 +207,8 @@ public:
         return result;
     }
 
-    void print(const BenchmarkMetric& metric, std::string description) override
+    void print(const BenchmarkMetric& metric, const std::string& description)
+        override
     {
         result->addEntry(description, metric.clone());
     }

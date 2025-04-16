@@ -39,12 +39,9 @@ public:
 
     void measure() override {};
 
-    bool isNull() override { return true; }
+    bool isNull() const override { return true; }
 
-    std::vector<std::string> getMeasureStrings() const override
-    {
-        return {};
-    };
+    std::vector<std::string> getMeasureStrings() const override { return {}; };
 
     std::string getUnitOfMeasure() const override { return ""; };
 

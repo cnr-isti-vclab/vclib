@@ -94,7 +94,7 @@ public:
      */
     virtual void end() { mActive = false; };
 
-    virtual bool isActive() { return mActive; }
+    virtual bool isActive() const { return mActive; }
 
     operator std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>()
     {
