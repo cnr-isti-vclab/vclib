@@ -28,8 +28,15 @@
 
 namespace vcl {
 
-namespace detail {
-
+/**
+ * @brief Return the number of elements identified by `ELEM_ID` of the mesh that
+ * are marked as selected.
+ *
+ * @tparam ELEM_ID: The element ID to be checked (e.g., vertex, edge, face).
+ *
+ * @param[in] m: The input mesh.
+ * @return The number of selected elements.
+ */
 template<uint ELEM_ID, MeshConcept MeshType>
 uint elementSelectionNumber(const MeshType& m)
 {
@@ -37,20 +44,38 @@ uint elementSelectionNumber(const MeshType& m)
         m.template elements<ELEM_ID>() | views::selected);
 }
 
-} // namespace detail
-
+/**
+ * @brief Return the number of vertices of the mesh that are marked as selected.
+ * @param[in] m: The input mesh.
+ * @return The number of selected vertices.
+ */
 template<MeshConcept MeshType>
 uint vertexSelectionNumber(const MeshType& m)
 {
-    return detail::elementSelectionNumber<ElemId::VERTEX>(m);
+    return elementSelectionNumber<ElemId::VERTEX>(m);
 }
 
+/**
+ * @brief Return the number of faces of the mesh that are marked as selected.
+ * @param[in] m: The input mesh.
+ * @return The number of selected faces.
+ */
 template<FaceMeshConcept MeshType>
 uint faceSelectionNumber(const MeshType& m)
 {
-    return detail::elementSelectionNumber<ElemId::FACE>(m);
+    return elementSelectionNumber<ElemId::FACE>(m);
 }
 
+/**
+ * @brief Return the number of face edges of the mesh that are marked as
+ * selected.
+ *
+ * With 'face edges' it is intended the edges that are part of the faces of the
+ * mesh (e.g. if a face has 4 vertices, it has 4 edges).
+ *
+ * @param[in] m: The input mesh.
+ * @return The number of selected edges.
+ */
 template<FaceMeshConcept MeshType>
 uint faceEdgesSelectionNumber(const MeshType& m)
 {
@@ -65,10 +90,16 @@ uint faceEdgesSelectionNumber(const MeshType& m)
     return cnt;
 }
 
+/**
+ * @brief Return the number of edges of the mesh that are marked as selected.
+ *
+ * @param[in] m: The input mesh.
+ * @return The number of selected edges.
+ */
 template<EdgeMeshConcept MeshType>
 uint edgeSelectionNumber(const MeshType& m)
 {
-    return detail::elementSelectionNumber<ElemId::EDGE>(m);
+    return elementSelectionNumber<ElemId::EDGE>(m);
 }
 
 } // namespace vcl
