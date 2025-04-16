@@ -43,13 +43,17 @@ class ImguiSplitProgramDrawer : public vcl::PlainDrawer<DerivedRenderApp>
 
     SurfaceProgramsTypeFunction surfaceProgramChangerFn = nullptr;
 
+    using Base = vcl::PlainDrawer<DerivedRenderApp>;
+
 public:
-    using vcl::PlainDrawer<DerivedRenderApp>::PlainDrawer;
+    using Base::Base;
 
     ImguiSplitProgramDrawer() {};
 
-    void onDrawContent(vcl::uint viewId) override
+    void onDraw(uint viewId) override
     {
+        Base::onDraw(viewId);
+    
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Begin("Split programs checkbox", nullptr);
 
