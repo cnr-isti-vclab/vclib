@@ -20,24 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+$input v_color, v_uv, v_length, v_normal, v_is_start_end
 
-namespace vcl {
+#include <vclib/bgfx/drawable/polylines.sh>
 
-enum class ComputeProgram
-{
-    LINES,
-    LINES_INDIRECT,
-    LINES_TEXTURE,
+uniform vec4 u_data;
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_TEXTURE,
+void main() {
+    uint thickness_antialias_border_miterlimit = floatBitsToUint(u_data.y);
+    uint caps_joint_color = floatBitsToUint(u_data.w);
 
-    COUNT
-};
+    float u_thickness     = float((thickness_antialias_border_miterlimit >> uint(24)) & uint(0xFF));
+    float u_antialias     = float((thickness_antialias_border_miterlimit >> uint(16)) & uint(0xFF));
+    float u_border        = float((thickness_antialias_border_miterlimit >> uint(8))  & uint(0xFF));
+    
+    float u_leftCap       = float((caps_joint_color >> uint(6)) & uint(0x3));
+    float u_rigthCap      = float((caps_joint_color >> uint(4)) & uint(0x3));
+    float u_joint         = float((caps_joint_color >> uint(2)) & uint(0x3));
 
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+    vec4 color = calculatePolylinesColor(v_uv.xy, u_thickness, v_length, u_leftCap, u_rigthCap, u_joint, v_color, 1 - floor(v_is_start_end));
+    if(color.w == 0)
+        discard;
+    else
+        gl_FragColor = color;
+}

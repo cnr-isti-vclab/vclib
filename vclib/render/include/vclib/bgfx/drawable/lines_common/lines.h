@@ -20,24 +20,62 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#ifndef VCL_BGFX_DRAWABLE_LINES_COMMON_LINES_H
+#define VCL_BGFX_DRAWABLE_LINES_COMMON_LINES_H
+
+#include <vclib/types.h>
+
+#include <bgfx/bgfx.h>
 
 namespace vcl {
 
-enum class ComputeProgram
+template<typename Settings>
+class Lines
 {
-    LINES,
-    LINES_INDIRECT,
-    LINES_TEXTURE,
+    Settings mSettings;
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_TEXTURE,
+public:
+    // TODO: remove this getter
+    // add proper methots to set the settings that apply for lines
+    // do then a similar class for polylines
+    Settings& settings() { return mSettings; }
 
-    COUNT
+    const Settings& settings() const { return mSettings; }
+
+    void swap(Lines& other)
+    {
+        using std::swap;
+
+        swap(mSettings, other.mSettings);
+    }
+
+    friend void swap(Lines& a, Lines& b) { a.swap(b); }
+
+protected:
+    void bindSettingsUniform() const
+    {
+        mSettings.bindUniform();
+    }
+
+    static uint64_t drawState()
+    {
+        return 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+               BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
+               UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
+    }
+
+    template<typename T>
+    static std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(
+        uint size)
+    {
+        T* buffer = new T[size];
+
+        return std::make_pair(buffer, [](void* ptr, void*) {
+            delete[] static_cast<T*>(ptr);
+        });
+    }
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#endif // VCL_BGFX_DRAWABLE_LINES_COMMON_LINES_H

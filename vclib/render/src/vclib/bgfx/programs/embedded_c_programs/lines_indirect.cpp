@@ -20,41 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color
+#include <vclib/bgfx/programs/embedded_c_programs/lines_indirect.h>
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.400.bin.h>
 
-void main()
+#include <vclib/shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.essl.bin.h>
+
+#include <vclib/shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.spv.bin.h>
+
+#ifdef _WIN32
+#include <vclib/shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/drawable/drawable_lines/indirect_based_lines/cs_compute_indirect.sc.mtl.bin.h>
+#endif // __APPLE__
+
+namespace vcl {
+
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::LINES_INDIRECT>::
+    computeShader(bgfx::RendererType::Enum type)
 {
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
-
-    // color
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
-
-    /***** compute light ******/
-    // default values - no shading
-    vec3 specular = vec3(0.0, 0.0, 0.0);
-    vec4 light = vec4(1, 1, 1, 1);
-
-    vec3 normal = normalize(v_normal);
-
-    // shading
-    if (!bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_SHADING_NONE))) {
-        light = computeLight(u_lightDir, u_lightColor, normal);
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_compute_indirect_essl, sizeof(cs_compute_indirect_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_compute_indirect_400, sizeof(cs_compute_indirect_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_compute_indirect_spv, sizeof(cs_compute_indirect_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_compute_indirect_dx11, sizeof(cs_compute_indirect_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_compute_indirect_mtl, sizeof(cs_compute_indirect_mtl)};
+#endif
+    default: return {type, nullptr, 0};
     }
-
-    color = uintABGRToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
-
-    if (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_VERT))) {
-        color = v_color;
-    }
-    if (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_MESH))) {
-        color = u_meshColor;
-    }
-    depthOffset = 0.00005;
-
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
+
+} // namespace vcl

@@ -20,24 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_POLYLINES_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_POLYLINES_H
+
+#include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
-enum class ComputeProgram
+template<>
+struct ComputeLoader<ComputeProgram::POLYLINES>
 {
-    LINES,
-    LINES_INDIRECT,
-    LINES_TEXTURE,
-
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_TEXTURE,
-
-    COUNT
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_POLYLINES_H

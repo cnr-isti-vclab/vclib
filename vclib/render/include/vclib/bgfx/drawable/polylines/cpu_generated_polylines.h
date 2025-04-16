@@ -20,24 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#ifndef VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
+#define VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H
+
+#include "polyline_settings.h"
+
+#include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/lines_common/lines.h>
 
 namespace vcl {
 
-enum class ComputeProgram
+class CPUGeneratedPolylines : public Lines<PolylineSettings>
 {
-    LINES,
-    LINES_INDIRECT,
-    LINES_TEXTURE,
+    bgfx::ProgramHandle mLinesPH =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::POLYLINES>();
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_TEXTURE,
+    VertexBuffer mVertices;
+    IndexBuffer  mSegmentIndices;
+    IndexBuffer  mJointIndices;
 
-    COUNT
+public:
+    CPUGeneratedPolylines() = default;
+
+    CPUGeneratedPolylines(const std::vector<LinesVertex>& points);
+
+    void swap(CPUGeneratedPolylines& other);
+
+    void setPoints(const std::vector<LinesVertex>& points);
+
+    void draw(uint viewId) const;
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#endif // VCL_BGFX_DRAWABLE_POLYLINES_CPU_GENERATED_POLYLINES_H

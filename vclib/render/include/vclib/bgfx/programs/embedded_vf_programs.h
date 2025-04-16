@@ -31,7 +31,7 @@
 #include "embedded_vf_programs/drawable_mesh_points_id.h"
 // #include "embedded_vf_programs/drawable_mesh_surface.h"
 #include "embedded_vf_programs/drawable_mesh_surface_id.h"
-#include "embedded_vf_programs/drawable_mesh_wireframe.h"
+
 #include "embedded_vf_programs/drawable_mesh_wireframe_id.h"
 
 #include "embedded_vf_programs/drawable_mesh_surface_flat_color_face.h"
@@ -81,5 +81,16 @@
 #include "embedded_vf_programs/font_distance_field_outline_drop_shadow_image.h"
 #include "embedded_vf_programs/font_distance_field_outline_image.h"
 #include "embedded_vf_programs/font_distance_field_subpixel.h"
+#include "embedded_vf_programs/lines.h"
+#include "embedded_vf_programs/lines_indirect.h"
+#include "embedded_vf_programs/lines_instancing.h"
+#include "embedded_vf_programs/lines_texture.h"
+#include "embedded_vf_programs/polylines.h"
+#include "embedded_vf_programs/polylines_indirect.h"
+#include "embedded_vf_programs/polylines_indirect_joints.h"
+#include "embedded_vf_programs/polylines_instancing.h"
+#include "embedded_vf_programs/polylines_instancing_joints.h"
+#include "embedded_vf_programs/polylines_texture.h"
+#include "embedded_vf_programs/polylines_texture_joints.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_H

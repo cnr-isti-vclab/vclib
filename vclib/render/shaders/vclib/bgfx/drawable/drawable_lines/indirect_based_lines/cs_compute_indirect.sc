@@ -20,24 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#include <bgfx_compute.sh>
 
-namespace vcl {
+BUFFER_WO(indirectBuffer, uvec4, 0);
+uniform vec4 u_IndirectData;
 
-enum class ComputeProgram
+NUM_THREADS(1, 1, 1)
+void main()
 {
-    LINES,
-    LINES_INDIRECT,
-    LINES_TEXTURE,
-
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_TEXTURE,
-
-    COUNT
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+    drawIndexedIndirect(indirectBuffer, 0, 6, u_IndirectData.x, 0, 0, 0);
+}

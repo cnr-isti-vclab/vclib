@@ -20,24 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_LINES_INDIRECT_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_LINES_INDIRECT_H
+
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
-enum class ComputeProgram
+template<>
+struct VertFragLoader<VertFragProgram::LINES_INDIRECT>
 {
-    LINES,
-    LINES_INDIRECT,
-    LINES_TEXTURE,
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-    POLYLINES,
-    POLYLINES_INDIRECT,
-    POLYLINES_TEXTURE,
-
-    COUNT
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_LINES_INDIRECT_H
