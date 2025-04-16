@@ -133,13 +133,11 @@ public:
     /**
      * Blocks the calling thread until the Vector contains the requested index
      *
-     * @note Check that the automations aren't finished and the vector size
-     * before increasing index and calling again: it may remain blocked forever
-     * otherwise
+     * @param[in] index the requested index
      *
      * @returns An optional copy of the element at the requested index. It is
      * only ever the null optional if the automations are finished and the index
-     * ends up being out of range.
+     * is out of range.
      */
     std::optional<VectorElementType> getVectorAtBlocking(size_t index)
     {
@@ -158,18 +156,25 @@ public:
      * Returns the null optional until the Vector contains the requested index
      * or if locking fails
      *
-     * @note Check that the automations aren't finished and the vector size
-     * before increasing index and calling again: you may otherwise loop forever
-     * for no reason
+     * @param[in] index the requested index
+     * @param[out] finishedAndOutOfRange True if the automations are finished
+     * and the requested index is out of range, false in all other cases and if
+     * locking failed
      *
      * @returns An optional copy of the element at the requested index
      */
-    std::optional<VectorElementType> getVectorAtNonBlocking(size_t index)
+    std::optional<VectorElementType> getVectorAtNonBlocking(
+        size_t index,
+        bool&  finishedAndOutOfRange)
     {
+        finishedAndOutOfRange = false;
         if (!mVectorMutex.try_lock()) {
             return std::nullopt;
         }
         if (mDescriptionAndMeasurementsVector.size() <= index) {
+            if (mIsFinished) {
+                finishedAndOutOfRange = true;
+            }
             mVectorMutex.unlock();
             return std::nullopt;
         }
