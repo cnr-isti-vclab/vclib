@@ -80,6 +80,9 @@ foreach(MODULE ${PYTHON_MODULES})
         if (APPLE)
             set_target_properties(${MODULE} PROPERTIES
                 INSTALL_RPATH "@loader_path/../PyQt6/Qt6/lib")
+        elseif(LINUX)
+            set_target_properties(${MODULE} PROPERTIES
+                INSTALL_RPATH "$ORIGIN/../PyQt6/Qt6/lib")
         endif()
     endif()
 endforeach()
