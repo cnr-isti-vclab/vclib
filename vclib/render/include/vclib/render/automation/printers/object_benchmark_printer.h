@@ -41,12 +41,15 @@ namespace vcl {
  */
 class ObjectBenchmarkPrinterResult
 {
-    friend class ObjectBenchmarkPrinter;
+public:
+    using VectorElementType =
+        std::pair<std::string, std::shared_ptr<BenchmarkMetric>>;
 
-    using VectorType =
-        std::vector<std::pair<std::string, std::shared_ptr<BenchmarkMetric>>>;
+    using VectorType = std::vector<VectorElementType>;
+
+private:
     std::condition_variable mFinishedCond;
-    std::mutex              mFinishBoolMutex;
+    std::condition_variable mElementCountCond;
     std::mutex              mVectorMutex;
     bool                    mIsFinished = false;
     VectorType              mDescriptionAndMeasurementsVector;
@@ -54,9 +57,22 @@ class ObjectBenchmarkPrinterResult
 public:
     void finish()
     {
-        std::unique_lock lF(mFinishBoolMutex);
+        std::unique_lock lV(mVectorMutex);
         mIsFinished = true;
         mFinishedCond.notify_all();
+        mElementCountCond.notify_all();
+    }
+
+    bool isFinished()
+    {
+        std::unique_lock lV(mVectorMutex);
+        return mIsFinished;
+    }
+
+    size_t vectorSize()
+    {
+        std::unique_lock lV(mVectorMutex);
+        return mDescriptionAndMeasurementsVector.size();
     }
 
     /**
@@ -67,13 +83,13 @@ public:
         std::string                      description,
         std::shared_ptr<BenchmarkMetric> metric)
     {
-        std::unique_lock lF(mFinishBoolMutex);
+        std::unique_lock lV(mVectorMutex);
         if (mIsFinished) {
             return;
         }
-        std::unique_lock lV(mVectorMutex);
         mDescriptionAndMeasurementsVector.push_back(
             std::make_pair(description, metric));
+        mElementCountCond.notify_all();
     }
 
     /**
@@ -84,12 +100,11 @@ public:
      */
     VectorType getVectorBlocking()
     {
-        std::unique_lock lF(mFinishBoolMutex);
-        while (!mIsFinished) {
-            mFinishedCond.wait(lF);
-        }
         std::unique_lock lV(mVectorMutex);
-        VectorType       copy = VectorType(mDescriptionAndMeasurementsVector);
+        while (!mIsFinished) {
+            mFinishedCond.wait(lV);
+        }
+        VectorType copy = VectorType(mDescriptionAndMeasurementsVector);
         return copy;
     }
 
@@ -102,19 +117,65 @@ public:
      */
     std::optional<VectorType> getVectorNonBlocking()
     {
-        if (!mFinishBoolMutex.try_lock()) {
-            return std::nullopt;
-        }
-        if (!mIsFinished) {
-            return std::nullopt;
-        }
         if (!mVectorMutex.try_lock()) {
             return std::nullopt;
         }
+        if (!mIsFinished) {
+            mVectorMutex.unlock();
+            return std::nullopt;
+        }
         std::optional<VectorType> copy =
-            std::make_optional(VectorType(mDescriptionAndMeasurementsVector));
+            std::make_optional(mDescriptionAndMeasurementsVector);
         mVectorMutex.unlock();
-        mFinishBoolMutex.unlock();
+        return copy;
+    }
+
+    /**
+     * Blocks the calling thread until the Vector contains the requested index
+     *
+     * @note Check that the automations aren't finished and the vector size
+     * before increasing index and calling again: it may remain blocked forever
+     * otherwise
+     *
+     * @returns An optional copy of the element at the requested index. It is
+     * only ever the null optional if the automations are finished and the index
+     * ends up being out of range.
+     */
+    std::optional<VectorElementType> getVectorAtBlocking(size_t index)
+    {
+        std::unique_lock lV(mVectorMutex);
+        while (mDescriptionAndMeasurementsVector.size() <= index &&
+               !mIsFinished) {
+            mElementCountCond.wait(lV);
+        }
+        if (mIsFinished && mDescriptionAndMeasurementsVector.size() <= index) {
+            return std::nullopt;
+        }
+        return std::make_optional(mDescriptionAndMeasurementsVector[index]);
+    }
+
+    /**
+     * Returns the null optional until the Vector contains the requested index
+     * or if locking fails
+     *
+     * @note Check that the automations aren't finished and the vector size
+     * before increasing index and calling again: you may otherwise loop forever
+     * for no reason
+     *
+     * @returns An optional copy of the element at the requested index
+     */
+    std::optional<VectorElementType> getVectorAtNonBlocking(size_t index)
+    {
+        if (!mVectorMutex.try_lock()) {
+            return std::nullopt;
+        }
+        if (mDescriptionAndMeasurementsVector.size() <= index) {
+            mVectorMutex.unlock();
+            return std::nullopt;
+        }
+        std::optional<VectorElementType> copy =
+            std::make_optional(mDescriptionAndMeasurementsVector[index]);
+        mVectorMutex.unlock();
         return copy;
     }
 };
@@ -122,7 +183,7 @@ public:
 /**
  * Multithread-safe printer class that "prints" to a (or rather, stores in a)
  * vector. It is still not recommended to call the print() function from
- * multiple threads, since the first one to finish will disable
+ * multiple threads, since the first one to finish will  disable
  * writing
  *
  * To use this class all that is needed is to create an object of this class and

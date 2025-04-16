@@ -44,17 +44,19 @@
 
 #include <thread>
 
+// Function that will be called by the separate thread
 void toStdOutMTFun(std::shared_ptr<vcl::ObjectBenchmarkPrinterResult> res)
 {
+    // We want to block until all the automations are finished and we have all
+    // the metrics at our disposal
     auto vec = res->getVectorBlocking();
-    for(const auto &el: vec){
-        for(const auto &measurement: (el.second->getMeasureStrings())){
+    for (const auto& el : vec) {
+        for (const auto& measurement : (el.second->getMeasureStrings())) {
             std::cout << measurement << ", ";
         }
         std::cout << std::endl;
     }
 }
-
 
 int main(int argc, char** argv)
 {
@@ -71,8 +73,10 @@ int main(int argc, char** argv)
 
     BenchmarkViewer tw("Benchmark Viewer GLFW");
 
+    // Create the ObjectBenchmarkPrinter instance
     vcl::ObjectBenchmarkPrinter obp;
 
+    // Initialize the thread that will read the results
     std::thread thr(toStdOutMTFun, obp.getResultPtr());
 
     // load and set up a drawable mesh
@@ -109,7 +113,7 @@ int main(int argc, char** argv)
              aaf.createRotation(5.f, {0.f, -1.f, 0.f}), 5000.f),
          aaf.createFrameLimited(aaf.createChangeScaleAbsolute(1.0f), 5000.f)}));
 
-    // Print the results in a json file
+    // Print the results to a vector
     tw.setPrinter(obp);
 
     tw.fitScene();
