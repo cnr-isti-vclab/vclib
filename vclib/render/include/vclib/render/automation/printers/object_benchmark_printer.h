@@ -35,107 +35,111 @@
 
 namespace vcl {
 
-// Possibly useless, equivalent to writing your own printer
-class ObjectBenchmarkPrinterResultMTUnsafe
+/**
+ * Stores the vector that is "printed to" by the ObjectBenchmarkPrinter class
+ * and manages synchronization.
+ */
+class ObjectBenchmarkPrinterResult
 {
-    template<typename ResultObjectType, typename T>
     friend class ObjectBenchmarkPrinter;
 
     using VectorType =
         std::vector<std::pair<std::string, std::shared_ptr<BenchmarkMetric>>>;
-    bool       mIsFinished = false;
-    VectorType mDescriptionAndMeasurementsVector;
-
-    void finish() { mIsFinished = true; }
-
-    void addEntry(
-        std::string                      description,
-        std::shared_ptr<BenchmarkMetric> metric)
-    {
-        mDescriptionAndMeasurementsVector.push_back(
-            std::make_pair(description, metric));
-    }
+    std::condition_variable mFinishedCond;
+    std::mutex              mFinishBoolMutex;
+    std::mutex              mVectorMutex;
+    bool                    mIsFinished = false;
+    VectorType              mDescriptionAndMeasurementsVector;
 
 public:
-    /**
-     * @returns An optional copy of the vector of descriptions and measured
-     * metrics. Returns nullopt when the mIsFinished variable was false
-     */
-    std::optional<VectorType> getVector()
-    {
-        if (!mIsFinished) {
-            return std::nullopt;
-        }
-        return std::make_optional(
-            VectorType(mDescriptionAndMeasurementsVector));
-    }
-};
-
-class ObjectBenchmarkPrinterResultMTSafe
-{
-    template<typename ResultObjectType, typename T>
-    friend class ObjectBenchmarkPrinter;
-
-    using VectorType =
-        std::vector<std::pair<std::string, std::shared_ptr<BenchmarkMetric>>>;
-    std::condition_variable      mFinishedCond;
-    std::unique_lock<std::mutex> mFinishBoolMutex;
-    bool                         mIsFinished = false;
-    VectorType                   mDescriptionAndMeasurementsVector;
-
     void finish()
     {
-        mFinishBoolMutex.lock();
+        std::unique_lock lF(mFinishBoolMutex);
         mIsFinished = true;
-        mFinishBoolMutex.unlock();
+        mFinishedCond.notify_all();
     }
 
+    /**
+     * Adds a measurment and its description to the vector. Nothing gets added
+     * if mIsFinished is false.
+     */
     void addEntry(
         std::string                      description,
         std::shared_ptr<BenchmarkMetric> metric)
     {
+        std::unique_lock lF(mFinishBoolMutex);
+        if (mIsFinished) {
+            return;
+        }
+        std::unique_lock lV(mVectorMutex);
         mDescriptionAndMeasurementsVector.push_back(
             std::make_pair(description, metric));
     }
 
-public:
     /**
      * Blocks the calling thread until mIsFinished is true (i.e. until all
      * automations are completed).
      *
      * @returns A copy of the vector of descriptions and measured metrics
      */
-    VectorType getVector()
+    VectorType getVectorBlocking()
     {
-        mFinishBoolMutex.lock();
+        std::unique_lock lF(mFinishBoolMutex);
         while (!mIsFinished) {
-            mFinishedCond.wait(mFinishBoolMutex);
+            mFinishedCond.wait(lF);
         }
+        std::unique_lock lV(mVectorMutex);
+        VectorType       copy = VectorType(mDescriptionAndMeasurementsVector);
+        return copy;
+    }
+
+    /**
+     * Returns the null optional if locking failed or if mIsFinished was false
+     * (i.e. not all automations were completed).
+     *
+     * @returns An optional copy of the vector of descriptions and measured
+     * metrics
+     */
+    std::optional<VectorType> getVectorNonBlocking()
+    {
+        if (!mFinishBoolMutex.try_lock()) {
+            return std::nullopt;
+        }
+        if (!mIsFinished) {
+            return std::nullopt;
+        }
+        if (!mVectorMutex.try_lock()) {
+            return std::nullopt;
+        }
+        std::optional<VectorType> copy =
+            std::make_optional(VectorType(mDescriptionAndMeasurementsVector));
+        mVectorMutex.unlock();
         mFinishBoolMutex.unlock();
-        return VectorType(mDescriptionAndMeasurementsVector);
+        return copy;
     }
 };
 
-// if the MTunsafe result is useless, first template can be removed. Second
-// template may also be removed as perhaps using a different drawer with this
-// object is not interesting enough to warrant an extra template parameter
-//
-// The "friend" class is to only allow that class to call print or finish (and
-// therefore to ensure that there is only one writer, though it may not work
-// properly as another instance of that class in a separate thread may call
-// print and finish on the same object. Ensuring there is only one writer is
-// good to avoid having to use locks whenever writing to the vector, since any
-// reader can only read whenever there is nothing else to write by design)
-//
-// I am very close to just throwing this class in the bin and telling the user
-// to just write their own printer if they want multithreading support
-template<typename ResultObjectType, typename FriendClass>
+/**
+ * Multithread-safe printer class that "prints" to a (or rather, stores in a)
+ * vector. It is still not recommended to call the print() function from
+ * multiple threads, since the first one to finish will call finish and disable
+ * writing
+ *
+ * To use this class all that is needed is to create an object of this class and
+ * then pass the result pointer to the separate thread
+ */
 class ObjectBenchmarkPrinter : public BenchmarkPrinter
 {
-    friend FriendClass;
+    std::shared_ptr<ObjectBenchmarkPrinterResult> result =
+        std::make_shared<ObjectBenchmarkPrinterResult>();
 
-    std::shared_ptr<ResultObjectType> result =
-        std::make_shared<ResultObjectType>(ResultObjectType());
+public:
+    void onBenchmarkLoop() override {};
+
+    std::shared_ptr<ObjectBenchmarkPrinterResult> getResultPtr()
+    {
+        return result;
+    }
 
     void print(const BenchmarkMetric& metric, std::string description) override
     {
@@ -144,22 +148,14 @@ class ObjectBenchmarkPrinter : public BenchmarkPrinter
 
     void finish() override { result->finish(); };
 
-public:
-    void onBenchmarkLoop() override {};
-
-    std::shared_ptr<ResultObjectType> getResultPtr() { return result; }
-
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
-        return std::make_shared<
-            ObjectBenchmarkPrinter<ResultObjectType, FriendClass>>(*this);
+        return std::make_shared<ObjectBenchmarkPrinter>(*this);
     }
 
     std::shared_ptr<BenchmarkPrinter> clone() && override
     {
-        return std::make_shared<
-            ObjectBenchmarkPrinter<ResultObjectType, FriendClass>>(
-            std::move(*this));
+        return std::make_shared<ObjectBenchmarkPrinter>(std::move(*this));
     }
 };
 

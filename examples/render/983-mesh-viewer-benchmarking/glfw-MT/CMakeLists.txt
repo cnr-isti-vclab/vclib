@@ -22,7 +22,16 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-3rd-glfw)
-    add_subdirectory(glfw)
-    add_subdirectory(glfw-MT)
-endif()
+set(EXAMPLE_NAME 983-mesh-viewer-benchmarking-glfw-MT)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
+
+set(SOURCES
+    main.cpp)
+
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${SOURCES})
