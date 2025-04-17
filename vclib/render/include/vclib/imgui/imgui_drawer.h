@@ -135,12 +135,13 @@ public:
 #endif // VCLIB_WITH_QT
     }
 
-    virtual void onDraw(uint)
+    virtual void onDraw(uint viewId)
     {
         // imgui frame
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
         ImGui_ImplOpenGL2_NewFrame();
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
+        (void)viewId;
         ImGui_ImplBgfx_NewFrame(mImguiViewId);
 #endif // VCLIB_RENDER_BACKEND_*
 #ifdef VCLIB_WITH_GLFW
@@ -155,7 +156,11 @@ public:
 #endif // VCLIB_WITH_QT
         ImGui::NewFrame();
 
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        this->onDrawContent(viewId);
+        #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         this->onDrawContent(mImguiViewId);
+#endif // VCLIB_RENDER_BACKEND_*
     }
 
     virtual void onPostDraw()
