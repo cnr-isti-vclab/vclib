@@ -22,8 +22,8 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_surface_none_tex_wedge.h>
 
-#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.glsl.bin.h>
 #include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface_none_tex_wedge.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.glsl.bin.h>
 
 #include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface_none_tex_wedge.sc.essl.bin.h>
 #include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.essl.bin.h>
@@ -71,23 +71,37 @@ bgfx::EmbeddedShader::Data VertFragLoader<
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_surface_none_tex_wedge_essl, sizeof(fs_surface_none_tex_wedge_essl)};
+        return {
+            type,
+            fs_surface_none_tex_wedge_essl,
+            sizeof(fs_surface_none_tex_wedge_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_surface_none_tex_wedge_glsl, sizeof(fs_surface_none_tex_wedge_glsl)};
+        return {
+            type,
+            fs_surface_none_tex_wedge_glsl,
+            sizeof(fs_surface_none_tex_wedge_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_surface_none_tex_wedge_spv, sizeof(fs_surface_none_tex_wedge_spv)};
+        return {
+            type,
+            fs_surface_none_tex_wedge_spv,
+            sizeof(fs_surface_none_tex_wedge_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_surface_none_tex_wedge_dx11, sizeof(fs_surface_none_tex_wedge_dx11)};
+        return {
+            type,
+            fs_surface_none_tex_wedge_dx11,
+            sizeof(fs_surface_none_tex_wedge_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_surface_none_tex_wedge_mtl, sizeof(fs_surface_none_tex_wedge_mtl)};
+        return {
+            type,
+            fs_surface_none_tex_wedge_mtl,
+            sizeof(fs_surface_none_tex_wedge_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
 } // namespace vcl
-
