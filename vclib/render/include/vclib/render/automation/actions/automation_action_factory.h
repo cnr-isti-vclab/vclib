@@ -92,7 +92,7 @@ public:
 
     FrameLimitedAutomationAction<TemplPar> createFrameLimited(
         const AbstractAutomationAction<TemplPar>& innerAction,
-        uint32_t                                  durationFrames = 400.f)
+        uint32_t                                  durationFrames)
     {
         return FrameLimitedAutomationAction<TemplPar>(
             innerAction, durationFrames);
@@ -123,7 +123,7 @@ public:
 
     TimeLimitedAutomationAction<TemplPar> createTimeLimited(
         const AbstractAutomationAction<TemplPar>& action,
-        float                                     durationSeconds = 5.5f)
+        float                                     durationSeconds)
     {
         return TimeLimitedAutomationAction<TemplPar>(action, durationSeconds);
     }
