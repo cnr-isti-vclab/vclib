@@ -20,81 +20,71 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_START_COUNT_LIMITED_AUTOMATION_ACTION_H
-#define VCL_START_COUNT_LIMITED_AUTOMATION_ACTION_H
+#include <vclib/render/automation/actions.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 
-#include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
-
-#include <iomanip>
-#include <sstream>
+#include <memory>
 
 namespace vcl {
 
-/**
- * The StartCountLimitedAutomationAction is an automation allows you to add a
- * maximum amount of times start() is called (in terms of start() calls) to an
- * automation, so that after start() has been called for those many times the
- * automation is guaranteed to never be started again
- */
 template<typename BmarkDrawer>
-class StartCountLimitedAutomationAction :
-        public WrapperAutomationAction<BmarkDrawer>
+class ChangeShaderAutomationAction :
+        public AbstractAutomationAction<BmarkDrawer>
 {
-    using Parent = WrapperAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
-    using Parent::innerAction;
+    using Base    = AbstractAutomationAction<BmarkDrawer>;
+    using SrfPrgs = DrawableMesh<TriMesh>::SurfaceProgramsType;
 
-    uint mMaximumStarts;
-    uint mCurrentStarts = 0;
+    SrfPrgs                               prg;
+    std::shared_ptr<DrawableObjectVector> objVec;
 
 public:
-    StartCountLimitedAutomationAction(
-        const AbstractAutomationAction<BmarkDrawer>& innerAction,
-        uint                                         maximumStarts) :
-            Parent(innerAction), mMaximumStarts {maximumStarts} {};
-
-    void start() override
+    ChangeShaderAutomationAction(
+        std::shared_ptr<DrawableObjectVector> objVec,
+        SrfPrgs                               prg) : objVec {objVec}, prg {prg}
     {
-        if (mCurrentStarts >= mMaximumStarts) {
-            AbstractAutomationAction<BmarkDrawer>::start();
-            return;
-        }
-        Parent::start();
-        mCurrentStarts++;
-    };
+    }
 
     std::string getDescription() override
     {
-        std::ostringstream temp;
-        temp << "For " << std::fixed << std::setprecision(3) << mMaximumStarts
-             << " loops (" << mMaximumStarts-mCurrentStarts << " remaining): " << innerAction->getDescription();
-        return temp.str();
+        std::string progString;
+        switch (prg) {
+        case SrfPrgs::UBER: progString = "UBER"; break;
+        case SrfPrgs::SPLIT: progString = "SPLIT"; break;
+        case SrfPrgs::UBER_WITH_STATIC_IF:
+            progString = "UBER WITH STATIC IF";
+            break;
+        };
+        return std::string("Changed shader used to ") + progString;
     }
+
+    using Base::start;
 
     void doAction() override
     {
-        Parent::doAction();
-        if (!innerAction->isActive()) {
-            end();
+        Base::doAction();
+        for (auto& obj : *objVec) {
+            auto* mesh = dynamic_cast<DrawableMesh<TriMesh>*>(obj.get());
+            if (mesh) {
+                mesh->setSurfaceProgramType(prg);
+            }
         }
-    };
+        end();
+    }
 
-    void end() override { Parent::end(); }
+    using Base::end;
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
         const& override
     {
-        return std::make_shared<StartCountLimitedAutomationAction<BmarkDrawer>>(
+        return std::make_shared<ChangeShaderAutomationAction<BmarkDrawer>>(
             *this);
-    };
+    }
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<StartCountLimitedAutomationAction<BmarkDrawer>>(
+        return std::make_shared<ChangeShaderAutomationAction<BmarkDrawer>>(
             std::move(*this));
-    };
+    }
 };
 
 } // namespace vcl
-
-#endif

@@ -64,7 +64,7 @@ public:
     std::string getDescription() override
     {
         std::ostringstream temp;
-        temp << "After " << std::fixed << std::setprecision(3) << mWaitStarts
+        temp << "After " << std::fixed << std::setprecision(3) << mWaitStarts - mCurrentStarts
              << " loops: " << innerAction->getDescription();
         return temp.str();
     }
