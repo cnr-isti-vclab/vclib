@@ -88,8 +88,8 @@ int main(int argc, char** argv)
     // Rotate for 5000 frames and then scale for 5000 frames
     tw.addAutomation(aaf.createSequential(
         {aaf.createFrameLimited(
-             aaf.createRotation(5.f, {0.f, -1.f, 0.f}), 5000.f),
-         aaf.createFrameLimited(aaf.createChangeScaleAbsolute(1.0f), 5000.f)}));
+             aaf.createPerFrameRotation(1.f/1000.f, {0.f, -1.f, 0.f}), 5000.f),
+         aaf.createFrameLimited(aaf.createPerFrameChangeScaleAbsolute(1.f/5000.f), 5000.f)}));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));

@@ -31,8 +31,7 @@ namespace vcl {
 
 /**
  * The AbstractAutomationAction is a class that represents something to be done
- * by a BenchmarkDrawer. All classes that derive from this one should declare
- * AutomationAttorney as a friend
+ * by a BenchmarkDrawer.
  */
 template<typename BmarkDrawer>
 class AbstractAutomationAction
