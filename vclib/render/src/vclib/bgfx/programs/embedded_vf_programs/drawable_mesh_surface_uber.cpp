@@ -22,8 +22,8 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_surface_uber.h>
 
-#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.glsl.bin.h>
 #include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface_uber.sc.glsl.bin.h>
+#include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.glsl.bin.h>
 
 #include <vclib/shaders/drawable/drawable_mesh/surface/fs_surface_uber.sc.essl.bin.h>
 #include <vclib/shaders/drawable/drawable_mesh/surface/vs_surface.sc.essl.bin.h>

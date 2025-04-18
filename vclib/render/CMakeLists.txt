@@ -27,6 +27,8 @@ project(vclib-render)
 set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")
 set_property(CACHE VCLIB_RENDER_BACKEND PROPERTY STRINGS bgfx opengl2 none)
 
+option(VCLIB_RENDER_BUILD_SHARED_LIB "Build shared library (ignored on Windows)" ON)
+
 # external libraries
 message(STATUS "VCLib-Render: 3rdparty libraries")
 add_subdirectory(3rdparty)
@@ -131,12 +133,16 @@ endif()
 if (WIN32)
     # on windows vclib-render must be static - needed for bgfx
     # TODO - try to make it work also on windows with SHARED...
-    set(VLIB_RENDER_LIB_TYPE STATIC)
+    set(VCLIB_RENDER_LIB_TYPE STATIC)
 else()
-    set(VLIB_RENDER_LIB_TYPE SHARED)
+    if (VCLIB_RENDER_BUILD_SHARED_LIB)
+        set(VCLIB_RENDER_LIB_TYPE SHARED)
+    else()
+        set(VCLIB_RENDER_LIB_TYPE STATIC)
+    endif()
 endif()
 
-add_library(${PROJECT_NAME} ${VLIB_RENDER_LIB_TYPE}
+add_library(${PROJECT_NAME} ${VCLIB_RENDER_LIB_TYPE}
     ${HEADERS} ${SOURCES} ${SHADERS} ${FORMS})
 add_library(vclib::render ALIAS ${PROJECT_NAME})
 

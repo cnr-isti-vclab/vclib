@@ -53,6 +53,10 @@ option(VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY
     "If true, the examples and tests of VCLib-core will be built just setting
     the INCLUDE_PATH of the library (no cmake targets)." OFF)
 
+# If true, vclib will require Qt
+option(VCLIB_REQUIRES_QT
+    "If true, vclib will require Qt (if core with io or render modules enabled)" OFF)
+
 ### Common settings
 include(cmake/vclib_common_settings.cmake)
 

@@ -42,7 +42,8 @@
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE_SI>::vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE_SI>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -64,24 +65,40 @@ bgfx::EmbeddedShader::Data VertFragLoader<
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE_SI>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE_SI>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_surface_smooth_color_face_si_essl, sizeof(fs_surface_smooth_color_face_si_essl)};
+        return {
+            type,
+            fs_surface_smooth_color_face_si_essl,
+            sizeof(fs_surface_smooth_color_face_si_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_surface_smooth_color_face_si_glsl, sizeof(fs_surface_smooth_color_face_si_glsl)};
+        return {
+            type,
+            fs_surface_smooth_color_face_si_glsl,
+            sizeof(fs_surface_smooth_color_face_si_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_surface_smooth_color_face_si_spv, sizeof(fs_surface_smooth_color_face_si_spv)};
+        return {
+            type,
+            fs_surface_smooth_color_face_si_spv,
+            sizeof(fs_surface_smooth_color_face_si_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_surface_smooth_color_face_si_dx11, sizeof(fs_surface_smooth_color_face_si_dx11)};
+        return {
+            type,
+            fs_surface_smooth_color_face_si_dx11,
+            sizeof(fs_surface_smooth_color_face_si_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_surface_smooth_color_face_si_mtl, sizeof(fs_surface_smooth_color_face_si_mtl)};
+        return {
+            type,
+            fs_surface_smooth_color_face_si_mtl,
+            sizeof(fs_surface_smooth_color_face_si_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
