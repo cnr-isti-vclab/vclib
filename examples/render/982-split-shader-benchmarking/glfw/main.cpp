@@ -22,9 +22,9 @@
 
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 
+#include "change_shader_automation_action.h"
 #include "get_drawable_mesh.h"
 #include "glfw_maximized_window_manager.h"
-#include "change_shader_automation_action.h"
 
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
@@ -65,18 +65,21 @@ int main(void)
     vcl::DrawableMesh<vcl::TriMesh> drawable =
         getDrawableMesh<vcl::TriMesh>("bunny.obj");
 
-    std::shared_ptr<vcl::DrawableObjectVector> vec = std::make_shared<vcl::DrawableObjectVector>();
+    std::shared_ptr<vcl::DrawableObjectVector> vec =
+        std::make_shared<vcl::DrawableObjectVector>();
 
     tw.setDrawableObjectVector(vec);
-
-
 
     // An automation action factory, to shorten the length of Automation
     // declarations
     vcl::AutomationActionFactory<BenchmarDrawerT> aaf;
 
-    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa(vec, vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::SPLIT);
-    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa2(vec, vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
+    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa(
+        vec, vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::SPLIT);
+    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa2(
+        vec,
+        vcl::DrawableMesh<
+            vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
@@ -101,11 +104,14 @@ int main(void)
     // Rotate for 5000 frames and then scale for 5000 frames
     tw.addAutomation(aaf.createSequential(
         {aaf.createFrameLimited(
-             aaf.createRotation(5.f, {0.f, -1.f, 0.f}), 5000.f),
-         aaf.createFrameLimited(aaf.createChangeScaleAbsolute(1.0f), 5000.f)}));
+             aaf.createPerFrameRotation(1e-1f, {0.f, -1.f, 0.f}), 5000),
+         aaf.createFrameLimited(
+             aaf.createPerFrameChangeScaleAbsolute(1e-5f), 5000)}));
 
-    tw.addAutomation(aaf.createStartCountDelay(aaf.createStartCountLimited(csaa,1),1));
-    tw.addAutomation(aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2,1),2));
+    tw.addAutomation(
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 1));
+    tw.addAutomation(
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 2));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));

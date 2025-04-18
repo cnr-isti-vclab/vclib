@@ -89,7 +89,8 @@ int main(int argc, char** argv)
     tw.addAutomation(aaf.createSequential(
         {aaf.createFrameLimited(
              aaf.createPerFrameRotation(1e-3f, {0.f, -1.f, 0.f}), 5000),
-         aaf.createFrameLimited(aaf.createPerFrameChangeScaleAbsolute(5e-3f), 5000)}));
+         aaf.createFrameLimited(
+             aaf.createPerFrameChangeScaleAbsolute(5e-3f), 5000)}));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
