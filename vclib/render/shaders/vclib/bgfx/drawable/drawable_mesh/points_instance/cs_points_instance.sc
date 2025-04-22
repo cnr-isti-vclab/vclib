@@ -48,8 +48,9 @@ void main()
         uint vertexId = pointId * 4 + i;
         uint attrPosCol  = vertexId * 2;   // pos 3, col 1
         uint attrNormSca = attrPosCol + 1; // norm 3, sca 1
-        vOut[attrPosCol].xyz  = position[pointId];
-        vOut[attrPosCol].w    = uintBitsToFloat(vec4ColToUint(colors[pointId]));
-        vOut[attrNormSca].xyz = normals[pointId];
+        vOut[attrPosCol]  = vec4(
+            position[pointId],
+            uintBitsToFloat(vec4ColToUint(colors[pointId])));
+        vOut[attrNormSca] = vec4(normals[pointId], 1.0);
     }
 }
