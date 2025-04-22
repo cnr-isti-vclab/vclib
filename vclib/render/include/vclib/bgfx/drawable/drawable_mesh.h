@@ -143,12 +143,19 @@ public:
 
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            bindUniforms();
+            // mMRB.bindVertexBuffers(mMRS);
+            // bindUniforms();
 
-            bgfx::setState(state | BGFX_STATE_PT_POINTS);
+            // bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+            // bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+
+            mMRB.bindComputeVertexBuffers(mMRS);
+            bgfx::dispatch(
+                viewId,
+                pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
+                this->vertexNumber(), 1, 1);
+
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {

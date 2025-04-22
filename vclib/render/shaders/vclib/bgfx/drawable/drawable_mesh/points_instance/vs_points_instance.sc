@@ -20,9 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
+$input a_position, a_color0, a_normal, a_texcoord0
+$output v_normal, v_color
 
-#include "embedded_compute_programs/drawable_mesh_points.h"
+#include <vclib/bgfx/shaders_common.sh>
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
+void main()
+{
+    uint idx = uint(gl_VertexID) & 3u; // last 2 bits
+    vec4 pos = mul(u_modelViewProj, vec4(a_position, 1.0));
+    vec4 offset = vec4(
+        (idx & 1u) * 2.0f * u_viewTexel.x,
+        ((idx >> 1) & 1u) * 2.0f * u_viewTexel.y, 0, 0);
+
+    gl_Position = pos + offset;
+    v_normal = normalize(mul(u_normalMatrix, a_normal));
+
+    // default case - color is taken from buffer
+    v_color = a_color0;
+}

@@ -20,9 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
+#include <vclib/bgfx/shaders_common.sh>
 
-#include "embedded_compute_programs/drawable_mesh_points.h"
+uniform vec4 u_meshId;
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
+void main()
+{
+    /***** render ID to color ******/
+    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_meshId.r));
+
+    gl_FragColor = color;
+}
