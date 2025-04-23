@@ -20,6 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#ifndef VCL_AUTOMATION_ACTION_ALIASES_H
+#define VCL_AUTOMATION_ACTION_ALIASES_H
+
 #include "actions.h"
 
 namespace vcl {
@@ -68,3 +71,5 @@ template<typename T>
 using TLimitedAA = TimeLimitedAutomationAction;
 
 } // namespace vcl
+
+#endif
