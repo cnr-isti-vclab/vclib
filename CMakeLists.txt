@@ -21,7 +21,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
+
+file(READ "${CMAKE_SOURCE_DIR}/VERSION" VCLIB_VERSION)
+string(STRIP "${VCLIB_VERSION}" VCLIB_VERSION)
+
+project(vclib VERSION ${VCLIB_VERSION})
 
 ### Options
 
