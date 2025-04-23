@@ -93,8 +93,6 @@ osused = platform.system()
 if osused == 'Windows':
     inst_req.append('msvc-runtime')
 
-_package_data = ['dist/poba.odt']
-
 setup(
     name="vclib",
     version="0.1.0",
@@ -107,7 +105,7 @@ setup(
     url="https://github.com/cnr-isti-vclab/vclib",
     include_package_data=True,
     package_data={
-        "vclib": _package_data,  # Include built modules and __init__.py
+        "vclib": [],
     },
     install_requires= inst_req,
     python_requires=">=3.8",
@@ -120,7 +118,7 @@ setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+        "License :: OSI Approved :: MPL-2.0",
         "Operating System :: OS Independent",
     ],
     zip_safe=False,
