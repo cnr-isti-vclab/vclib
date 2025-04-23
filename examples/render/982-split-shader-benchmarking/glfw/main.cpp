@@ -95,7 +95,7 @@ int main(void)
     tw.addAutomation(aaf.createTimeLimited(
         aaf.createSimultaneous(
             {aaf.createRotation(5.f, {0.f, 0.f, 1.f}),
-             aaf.createChangeScaleAbsolute(-0.2f)}),
+             aaf.createChangeScaleMultiplicative(-0.2f)}),
         2.f));
 
     // Change the measured metric to time (seconds)
@@ -106,7 +106,7 @@ int main(void)
         {aaf.createFrameLimited(
              aaf.createPerFrameRotation(1e-1f, {0.f, -1.f, 0.f}), 5000),
          aaf.createFrameLimited(
-             aaf.createPerFrameChangeScaleAbsolute(1e-5f), 5000)}));
+             aaf.createPerFrameChangeScaleMultiplicative(2e-4f), 5000)}));
 
     tw.addAutomation(
         aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 1));
