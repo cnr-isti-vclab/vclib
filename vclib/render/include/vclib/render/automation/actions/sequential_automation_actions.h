@@ -33,10 +33,10 @@ namespace vcl {
 
 /**
  * The SequentialAutomationActions class is an automation which represents
- * a sequence of actions.
+ * a sequence of automations.
  *
- * @note Since this counts as a single action, the metrics will work as they do
- * for a single action even though they are multiple
+ * @note Since this counts as a single automation, the metrics will work as they
+ * do for a single automation even though they are multiple
  */
 template<typename BmarkDrawer>
 class SequentialAutomationActions : public AbstractAutomationAction<BmarkDrawer>

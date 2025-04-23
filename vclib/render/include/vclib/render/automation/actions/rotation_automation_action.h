@@ -34,8 +34,8 @@
 namespace vcl {
 
 /**
- * The RotationAutomationAction is an automation that represents the
- * rotation of a DesktopTrackball, with the strength of the rotation measured
+ * The RotationAutomationAction is an automation that represents a
+ * rotation, with the strength of the rotation measured
  * per-second
  */
 template<typename BmarkDrawer>

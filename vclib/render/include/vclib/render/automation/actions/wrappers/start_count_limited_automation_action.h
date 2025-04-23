@@ -35,6 +35,9 @@ namespace vcl {
  * maximum amount of times start() is called (in terms of start() calls) to an
  * automation, so that after start() has been called for those many times the
  * automation is guaranteed to never be started again
+ *
+ * @note This is substantially the same as "executing only for a limited number
+ * of loops"
  */
 template<typename BmarkDrawer>
 class StartCountLimitedAutomationAction :
@@ -67,7 +70,8 @@ public:
     {
         std::ostringstream temp;
         temp << "For " << std::fixed << std::setprecision(3) << mMaximumStarts
-             << " loops (" << mMaximumStarts-mCurrentStarts << " remaining): " << innerAction->getDescription();
+             << " loops (" << mMaximumStarts - mCurrentStarts
+             << " remaining): " << innerAction->getDescription();
         return temp.str();
     }
 

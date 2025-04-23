@@ -29,10 +29,13 @@
 
 namespace vcl {
 
+// TODO (maybe): find a way to remove template on Automations and remove this
+// class?
 /**
  * The AutomationActionFactory class is a factory class that allows the creation
  * of Automations without having to specify the template each time and with
- * shorter names
+ * shorter names.
+ *
  */
 template<typename DerivedRenderApp>
 class AutomationActionFactory

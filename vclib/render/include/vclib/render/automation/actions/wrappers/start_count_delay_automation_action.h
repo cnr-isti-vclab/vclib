@@ -34,6 +34,9 @@ namespace vcl {
  * The StartCountDelayAutomationAction is an automation allows you to add a
  * delay (in terms of number of start() calls) to an action, so that the inner
  * automation can be started only after the delay has elapsed
+ *
+ * @note This is substantially the same as "executing only after a certain
+ * number of loops have passed"
  */
 template<typename BmarkDrawer>
 class StartCountDelayAutomationAction :
@@ -64,7 +67,8 @@ public:
     std::string getDescription() override
     {
         std::ostringstream temp;
-        temp << "After " << std::fixed << std::setprecision(3) << mWaitStarts - mCurrentStarts
+        temp << "After " << std::fixed << std::setprecision(3)
+             << mWaitStarts - mCurrentStarts
              << " loops: " << innerAction->getDescription();
         return temp.str();
     }

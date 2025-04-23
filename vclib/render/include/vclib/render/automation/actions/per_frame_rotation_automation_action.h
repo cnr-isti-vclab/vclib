@@ -34,8 +34,8 @@
 namespace vcl {
 
 /**
- * The PerFrameRotationAutomationAction is an automation that represents the
- * rotation of a DesktopTrackball, with the strength of the rotation measured
+ * The PerFrameRotationAutomationAction is an automation that represents a
+ * rotation, with the strength of the rotation measured
  * per-frame
  */
 template<typename BmarkDrawer>
