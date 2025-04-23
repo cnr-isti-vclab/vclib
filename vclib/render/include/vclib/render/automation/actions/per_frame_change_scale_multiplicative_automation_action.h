@@ -77,8 +77,6 @@ public:
     void end() override
     {
         Parent::end();
-        std::cout << "From: " << mOriginalScale
-                  << ", To: " << benchmarkDrawer->getScale() << std::endl;
     };
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
