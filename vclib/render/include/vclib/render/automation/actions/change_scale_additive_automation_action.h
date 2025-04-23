@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SCALE_AUTOMATION_ACTION_H
-#define VCL_SCALE_AUTOMATION_ACTION_H
+#ifndef VCL_SCALE_ADDITIVE_AUTOMATION_ACTION_H
+#define VCL_SCALE_ADDITIVE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 
@@ -33,9 +33,12 @@
 namespace vcl {
 
 /**
- * The ChangeScaleAbsoluteAutomationAction is an automation that represents a
- * scaling, with the strength of the scaling measured
+ * The ChangeScaleAdditiveAutomationAction is an automation that represents a
+ * scaling in an additive way, with the strength of the scaling measured
  * per-second
+ *
+ * @note Additive scaling is represented by the following formula: finalScale
+ * = initialScale + (deltaScale * duration)
  */
 template<typename BmarkDrawer>
 class ChangeScaleAdditiveAutomationAction :

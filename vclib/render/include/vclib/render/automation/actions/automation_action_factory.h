@@ -49,9 +49,16 @@ public:
     }
 
     PerFrameChangeScaleAdditiveAutomationAction<TemplPar>
-    createPerFrameChangeScaleAbsolute(float pixelDeltaPerFrame)
+    createPerFrameChangeScaleAdditive(float pixelDeltaPerFrame)
     {
         return PerFrameChangeScaleAdditiveAutomationAction<TemplPar>(
+            pixelDeltaPerFrame);
+    }
+
+    PerFrameChangeScaleMultiplicativeAutomationAction<TemplPar>
+    createPerFrameChangeScaleMultiplicative(float pixelDeltaPerFrame)
+    {
+        return PerFrameChangeScaleMultiplicativeAutomationAction<TemplPar>(
             pixelDeltaPerFrame);
     }
 
@@ -66,6 +73,13 @@ public:
         float pixelDeltaPerSecond)
     {
         return ChangeScaleAdditiveAutomationAction<TemplPar>(
+            pixelDeltaPerSecond);
+    }
+
+    ChangeScaleMultiplicativeAutomationAction<TemplPar>
+    createChangeScaleMultiplicative(float pixelDeltaPerSecond)
+    {
+        return ChangeScaleMultiplicativeAutomationAction<TemplPar>(
             pixelDeltaPerSecond);
     }
 

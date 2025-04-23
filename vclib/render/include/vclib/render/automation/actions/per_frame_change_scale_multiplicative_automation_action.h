@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
-#define VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
+#ifndef VCL_PER_FRAME_SCALE_MULTIPLICATIVE_AUTOMATION_ACTION_H
+#define VCL_PER_FRAME_SCALE_MULTIPLICATIVE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 
@@ -32,8 +32,11 @@ namespace vcl {
 
 /**
  * The PerFrameChangeScaleMultiplicativeAutomationAction is an automation that
- * represents a scaling, with the strength of the
- * scaling measured per-frame
+ * represents a scaling in a multiplicative way, with the strength of the
+ * scaling measured per-second
+ *
+ * @note Multiplicative scaling is represented by the following formula:
+ * finalScale = initialScale * (1 + (deltaScale * duration))
  */
 template<typename BmarkDrawer>
 class PerFrameChangeScaleMultiplicativeAutomationAction :
@@ -45,15 +48,15 @@ class PerFrameChangeScaleMultiplicativeAutomationAction :
     float mPixelDeltaPerFrame;
 
 public:
-    PerFrameChangeScaleMultiplicativeAutomationAction(float pixelDeltaPerFrame) :
-            mPixelDeltaPerFrame {pixelDeltaPerFrame}
+    PerFrameChangeScaleMultiplicativeAutomationAction(
+        float pixelDeltaPerFrame) : mPixelDeltaPerFrame {pixelDeltaPerFrame}
     {
     }
 
     void start()
     {
         Parent::start();
-        mOriginalScale = benchmarkDrawer->getScale()
+        mOriginalScale = benchmarkDrawer->getScale();
     }
 
     std::string getDescription() override
@@ -67,16 +70,23 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        benchmarkDrawer->changeScaleAdditive(mPixelDeltaPerFrame);
+        benchmarkDrawer->changeScaleMultiplicative(
+            mPixelDeltaPerFrame, mOriginalScale);
     };
 
-    void end() override { Parent::end(); };
+    void end() override
+    {
+        Parent::end();
+        std::cout << "From: " << mOriginalScale
+                  << ", To: " << benchmarkDrawer->getScale() << std::endl;
+    };
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
         const& override
     {
         return std::make_shared<
-            PerFrameChangeScaleMultiplicativeAutomationAction<BmarkDrawer>>(*this);
+            PerFrameChangeScaleMultiplicativeAutomationAction<BmarkDrawer>>(
+            *this);
     }
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override

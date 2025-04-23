@@ -151,7 +151,7 @@ public:
     void fitScene(PointType p, ScalarType s)
     {
         mCurrentPreScale = 0.5 / s;
-        mTransform.scale(mCurrentPreScale);
+        mTransform.scale(0.5 / s);
         mTransform.translate(-p);
     }
 
@@ -263,6 +263,9 @@ public:
     /**
      * Changes scale in an Additive way (given a current scaling factor of 10x
      * increasing by 1x brings the scale to 11x)
+     *
+     * @note Additive scaling is represented by the following formula:
+     * finalScale = initialScale + (deltaScale * duration)
      */
     void changeScaleAdditive(ScalarType deltaS)
     {
@@ -275,8 +278,12 @@ public:
     /**
      * Changes scale in a Multiplicative way (given a current scaling factor of
      * 10x increasing by 1x brings the scale to 20x)
+     *
+     *  @note Multiplicative scaling is represented by the following formula:
+     *  finalScale = initialScale * (1 + (deltaScale * duration))
      */
-    void changeScaleMultiplicative(ScalarType deltaS) {
+    void changeScaleMultiplicative(ScalarType deltaS)
+    {
         ScalarType additiveIncrease = deltaS * mCurrentPreScale;
         changeScaleAdditive(additiveIncrease);
     }
@@ -284,9 +291,14 @@ public:
     /**
      * Changes scale in a Multiplicative way using base as the scaling factor to
      * multiply off of instead of the current scaling factor (given a current
-     * scaling factor of 10x and base 5x increasing by 1x brings the scale to 15x)
+     * scaling factor of 10x and base 5x increasing by 1x brings the scale to
+     * 15x)
+     *
+     *  @note Multiplicative scaling is represented by the following formula:
+     *  finalScale = initialScale * (1 + (deltaScale * duration))
      */
-    void changeScaleMultiplicative(ScalarType deltaS, ScalarType base) {
+    void changeScaleMultiplicative(ScalarType deltaS, ScalarType base)
+    {
         ScalarType additiveIncrease = deltaS * base;
         changeScaleAdditive(additiveIncrease);
     }

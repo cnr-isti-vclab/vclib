@@ -58,8 +58,7 @@ int main(int argc, char** argv)
     BenchmarkViewer tw("Benchmark Viewer GLFW");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable =
-        getDrawableMesh<vcl::TriMesh>("bunny.obj");
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     // An automation action factory, to shorten the length of Automation
     // declarations
@@ -79,7 +78,7 @@ int main(int argc, char** argv)
     tw.addAutomation(aaf.createTimeLimited(
         aaf.createSimultaneous(
             {aaf.createRotation(5.f, {0.f, 0.f, 1.f}),
-             aaf.createChangeScaleAbsolute(-0.2f)}),
+             aaf.createChangeScaleMultiplicative(-0.2f)}),
         2.f));
 
     // Change the measured metric to time (seconds)
@@ -90,7 +89,7 @@ int main(int argc, char** argv)
         {aaf.createFrameLimited(
              aaf.createPerFrameRotation(1e-3f, {0.f, -1.f, 0.f}), 5000),
          aaf.createFrameLimited(
-             aaf.createPerFrameChangeScaleAbsolute(5e-3f), 5000)}));
+             aaf.createPerFrameChangeScaleMultiplicative(2e-4f), 5000)}));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
