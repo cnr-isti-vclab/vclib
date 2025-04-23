@@ -10,6 +10,9 @@ from setuptools.command.install import install
 from setuptools.command.sdist import sdist
 from setuptools.command.bdist_wheel import bdist_wheel as _bdist_wheel
 
+with open('VERSION', 'r') as f:
+    vclib_version = f.read().strip()
+
 try:
     class bdist_wheel(_bdist_wheel):
         def finalize_options(self):
@@ -95,7 +98,7 @@ if osused == 'Windows':
 
 setup(
     name="vclib",
-    version="0.1.0",
+    version=vclib_version,
     packages=['vclib'],
     author="Visual Computing Lab",
     author_email="vclab@isti.cnr.it",
