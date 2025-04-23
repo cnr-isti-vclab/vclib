@@ -144,18 +144,14 @@ public:
         mCamera.aspectRatio() = ScalarType(double(width) / height);
     }
 
-    void onDrawId(uint viewId) override {}
+    void reset() {}
 
-    void onDraw(uint viewId) override { Parent::onDraw(viewId); }
-
-    void reset() { mCamera.center() = {0.f, 0.f, 0.f}; }
-
-    void focus(PointType p) { mCamera.center() = p; }
+    void focus(PointType p) {}
 
     void fitScene(PointType p, ScalarType s)
     {
-        mCurrentPreScale = s;
-        mTransform.scale(s);
+        mCurrentPreScale = 0.5 / s;
+        mTransform.scale(mCurrentPreScale);
         mTransform.translate(-p);
     }
 
@@ -264,19 +260,38 @@ public:
 
     void rotate(Quaternion<float> rot) { mTransform.prerotate(rot); }
 
-    // Possibly rename to changeScaleAbsolute? Possibly create actions that
-    // scale in different ways (and also rename the action)?
     /**
-     * Changes scale by an absolute amount (i.e. if the current scale is 2.0 and
-     * deltaS is 0.4, the new scale will be 2.4)
+     * Changes scale in an Additive way (given a current scaling factor of 10x
+     * increasing by 1x brings the scale to 11x)
      */
-    void changeScaleAbsolute(float deltaS)
+    void changeScaleAdditive(ScalarType deltaS)
     {
         ScalarType scalingFactor =
             (mCurrentPreScale + deltaS) / mCurrentPreScale;
         mTransform.prescale(scalingFactor);
         mCurrentPreScale = mCurrentPreScale + deltaS;
     }
+
+    /**
+     * Changes scale in a Multiplicative way (given a current scaling factor of
+     * 10x increasing by 1x brings the scale to 20x)
+     */
+    void changeScaleMultiplicative(ScalarType deltaS) {
+        ScalarType additiveIncrease = deltaS * mCurrentPreScale;
+        changeScaleAdditive(additiveIncrease);
+    }
+
+    /**
+     * Changes scale in a Multiplicative way using base as the scaling factor to
+     * multiply off of instead of the current scaling factor (given a current
+     * scaling factor of 10x and base 5x increasing by 1x brings the scale to 15x)
+     */
+    void changeScaleMultiplicative(ScalarType deltaS, ScalarType base) {
+        ScalarType additiveIncrease = deltaS * base;
+        changeScaleAdditive(additiveIncrease);
+    }
+
+    ScalarType getScale() { return mCurrentPreScale; }
 };
 
 } // namespace vcl

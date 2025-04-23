@@ -20,10 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
-#define VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
+#ifndef VCL_SCALE_AUTOMATION_ACTION_H
+#define VCL_SCALE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
+
+#include <vclib/misc/timer.h>
 
 #include <iomanip>
 #include <sstream>
@@ -31,52 +33,64 @@
 namespace vcl {
 
 /**
- * The PerFrameChangeScaleAbsoluteAutomationAction is an automation that
- * represents the scaling of a DesktopTrackball, with the strength of the
- * scaling measured per-frame
+ * The ChangeScaleAbsoluteAutomationAction is an automation that represents a
+ * scaling, with the strength of the scaling measured
+ * per-second
  */
 template<typename BmarkDrawer>
-class PerFrameChangeScaleAbsoluteAutomationAction :
+class ChangeScaleAdditiveAutomationAction :
         public AbstractAutomationAction<BmarkDrawer>
 {
     using Parent = AbstractAutomationAction<BmarkDrawer>;
     using Parent::benchmarkDrawer;
-    float mPixelDeltaPerFrame;
+    float mPixelDeltaPerSecond;
+    Timer mTimer;
 
 public:
-    PerFrameChangeScaleAbsoluteAutomationAction(float pixelDeltaPerFrame) :
-            mPixelDeltaPerFrame {pixelDeltaPerFrame}
+    ChangeScaleAdditiveAutomationAction(float pixelDeltaPerSecond) :
+            mPixelDeltaPerSecond {pixelDeltaPerSecond}
     {
     }
 
     std::string getDescription() override
     {
         std::ostringstream temp;
-        temp << "Absolute scale " << std::fixed << std::setprecision(3)
-             << std::showpos << mPixelDeltaPerFrame << " per frame";
+        temp << "Additive scale " << std::fixed << std::setprecision(3)
+             << std::showpos << mPixelDeltaPerSecond << " per second";
         return temp.str();
+    }
+
+    void start() override
+    {
+        Parent::start();
+        mTimer.start();
     }
 
     void doAction() override
     {
         Parent::doAction();
-        benchmarkDrawer->changeScaleAbsolute(mPixelDeltaPerFrame);
+        benchmarkDrawer->changeScaleAdditive(
+            mPixelDeltaPerSecond * mTimer.delay());
+        mTimer.start();
     };
 
-    void end() override { Parent::end(); };
+    void end() override
+    {
+        Parent::end();
+        mTimer.stop();
+    };
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
         const& override
     {
         return std::make_shared<
-            PerFrameChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(*this);
+            ChangeScaleAdditiveAutomationAction<BmarkDrawer>>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
         return std::make_shared<
-            PerFrameChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(
-            std::move(*this));
+            ChangeScaleAdditiveAutomationAction<BmarkDrawer>>(std::move(*this));
     }
 };
 

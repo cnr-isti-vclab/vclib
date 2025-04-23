@@ -33,21 +33,22 @@
 namespace vcl {
 
 /**
- * The ChangeScaleAbsoluteAutomationAction is an automation that represents the
- * scaling of a DesktopTrackball, with the strength of the scaling measured
+ * The ChangeScaleAbsoluteAutomationAction is an automation that represents a
+ * scaling, with the strength of the scaling measured
  * per-second
  */
 template<typename BmarkDrawer>
-class ChangeScaleAbsoluteAutomationAction :
+class ChangeScaleMultiplicativeAutomationAction :
         public AbstractAutomationAction<BmarkDrawer>
 {
     using Parent = AbstractAutomationAction<BmarkDrawer>;
     using Parent::benchmarkDrawer;
+    float mOriginalScale;
     float mPixelDeltaPerSecond;
     Timer mTimer;
 
 public:
-    ChangeScaleAbsoluteAutomationAction(float pixelDeltaPerSecond) :
+    ChangeScaleMultiplicativeAutomationAction(float pixelDeltaPerSecond) :
             mPixelDeltaPerSecond {pixelDeltaPerSecond}
     {
     }
@@ -63,14 +64,15 @@ public:
     void start() override
     {
         Parent::start();
+        mOriginalScale = benchmarkDrawer->getScale();
         mTimer.start();
     }
 
     void doAction() override
     {
         Parent::doAction();
-        benchmarkDrawer->changeScaleAbsolute(
-            mPixelDeltaPerSecond * mTimer.delay());
+        benchmarkDrawer->changeScaleMultiplicative(
+            mPixelDeltaPerSecond * mTimer.delay(), mOriginalScale);
         mTimer.start();
     };
 
@@ -84,13 +86,14 @@ public:
         const& override
     {
         return std::make_shared<
-            ChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(*this);
+            ChangeScaleMultiplicativeAutomationAction<BmarkDrawer>>(*this);
     }
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
         return std::make_shared<
-            ChangeScaleAbsoluteAutomationAction<BmarkDrawer>>(std::move(*this));
+            ChangeScaleMultiplicativeAutomationAction<BmarkDrawer>>(
+            std::move(*this));
     }
 };
 

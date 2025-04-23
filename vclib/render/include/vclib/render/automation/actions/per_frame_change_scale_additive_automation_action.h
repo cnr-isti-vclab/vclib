@@ -20,25 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_AUTOMATION_ACTIONS_H
-#define VCL_AUTOMATION_ACTIONS_H
+#ifndef VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
+#define VCL_PER_FRAME_SCALE_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
-#include <vclib/render/automation/actions/change_scale_additive_automation_action.h>
-#include <vclib/render/automation/actions/change_scale_multiplicative_automation_action.h>
-#include <vclib/render/automation/actions/per_frame_change_scale_additive_automation_action.h>
-#include <vclib/render/automation/actions/per_frame_change_scale_multiplicative_automation_action.h>
-#include <vclib/render/automation/actions/per_frame_rotation_automation_action.h>
-#include <vclib/render/automation/actions/rotation_automation_action.h>
-#include <vclib/render/automation/actions/sequential_automation_actions.h>
-#include <vclib/render/automation/actions/simultaneous_automation_actions.h>
 
-#include <vclib/render/automation/actions/wrappers/frame_delay_automation_action.h>
-#include <vclib/render/automation/actions/wrappers/frame_limited_automation_action.h>
-#include <vclib/render/automation/actions/wrappers/start_count_delay_automation_action.h>
-#include <vclib/render/automation/actions/wrappers/start_count_limited_automation_action.h>
-#include <vclib/render/automation/actions/wrappers/time_delay_automation_action.h>
-#include <vclib/render/automation/actions/wrappers/time_limited_automation_action.h>
-#include <vclib/render/automation/actions/wrappers/wrapper_automation_action.h>
+#include <iomanip>
+#include <sstream>
 
-#endif // VCL_AUTOMATION_ACTIONS_H
+namespace vcl {
+
+/**
+ * The PerFrameChangeScaleAdditiveAutomationAction is an automation that
+ * represents a scaling, with the strength of the
+ * scaling measured per-frame
+ */
+template<typename BmarkDrawer>
+class PerFrameChangeScaleAdditiveAutomationAction :
+        public AbstractAutomationAction<BmarkDrawer>
+{
+    using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent::benchmarkDrawer;
+    float mPixelDeltaPerFrame;
+
+public:
+    PerFrameChangeScaleAdditiveAutomationAction(float pixelDeltaPerFrame) :
+            mPixelDeltaPerFrame {pixelDeltaPerFrame}
+    {
+    }
+
+    std::string getDescription() override
+    {
+        std::ostringstream temp;
+        temp << "Additive scale " << std::fixed << std::setprecision(3)
+             << std::showpos << mPixelDeltaPerFrame << " per frame";
+        return temp.str();
+    }
+
+    void doAction() override
+    {
+        Parent::doAction();
+        benchmarkDrawer->changeScaleAdditive(mPixelDeltaPerFrame);
+    };
+
+    void end() override { Parent::end(); };
+
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+        const& override
+    {
+        return std::make_shared<
+            PerFrameChangeScaleAdditiveAutomationAction<BmarkDrawer>>(*this);
+    }
+
+    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    {
+        return std::make_shared<
+            PerFrameChangeScaleAdditiveAutomationAction<BmarkDrawer>>(
+            std::move(*this));
+    }
+};
+
+} // namespace vcl
+
+#endif

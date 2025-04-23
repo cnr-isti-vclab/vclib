@@ -64,6 +64,7 @@ public:
         if (mStream.fail()) {
             throw "JsonBenchmarkPrinter : invalid file name\n";
         }
+
     };
 
     JsonBenchmarkPrinter(const JsonBenchmarkPrinter& other) :
