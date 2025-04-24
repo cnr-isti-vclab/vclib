@@ -543,19 +543,6 @@ protected:
      */
     void setVertexCoordsBuffer(const MeshConcept auto&) {}
 
-
-    /**
-     * @brief Function that sets the content of vertex quad buffer and sends the
-     * data to the GPU.
-     *
-     * The function should allocate and fill a cpu buffer to store the vertex
-     * quad indices using the `numVerts() * 6` and `fillVertexQuadIndices()`
-     * functions, and then send the data to the GPU using the rendering backend.
-     *
-     * @param[in] mesh: the input mesh from which to get the data
-     */
-    void setVertexQuadBuffer(const MeshConcept auto&) {}
-
     /**
      * @brief Function that sets the content of vertex normals buffer and sends
      * the data to the GPU.
@@ -886,7 +873,6 @@ private:
         if (btu[toUnderlying(VERTICES)]) {
             // vertex buffer (coordinates)
             derived().setVertexCoordsBuffer(mesh);
-            derived().setVertexQuadBuffer(mesh); // indices
         }
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {

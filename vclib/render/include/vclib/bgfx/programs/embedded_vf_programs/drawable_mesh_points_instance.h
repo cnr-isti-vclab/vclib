@@ -20,40 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-// TODO: remove v_position
-$input v_position, v_normal, v_color
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_POINTS_INSTANCE_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_POINTS_INSTANCE_H
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
-void main()
+namespace vcl {
+
+template<>
+struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_POINTS_INSTANCE>
 {
-    // color
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-    /***** compute light ******/
-    // default values - no shading
-    vec3 specular = vec3(0.0, 0.0, 0.0);
-    vec4 light = vec4(1, 1, 1, 1);
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
+};
 
-    vec3 normal = normalize(v_normal);
+} // namespace vcl
 
-    // if per vert shading
-    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_VERT))) {
-        light = computeLight(u_lightDir, u_lightColor, normal);
-    }
-
-    color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
-
-    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
-        color = v_color;
-    }
-    else if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_MESH))) {
-        color = u_meshColor;
-    }
-
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0001;
-
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
-}
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_POINTS_INSTANCE_H

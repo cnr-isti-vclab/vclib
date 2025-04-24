@@ -23,16 +23,19 @@
 $input a_position, a_color0, a_normal, a_texcoord0
 $output v_normal, v_color
 
-#include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
 void main()
 {
     uint idx = uint(gl_VertexID) & 3u; // last 2 bits
+    // (bit 0 = x axis, bit 1 = y axis)
     vec4 pos = mul(u_modelViewProj, vec4(a_position, 1.0));
     vec4 offset = vec4(
-        (idx & 1u) * 2.0f * u_viewTexel.x,
-        ((idx >> 1) & 1u) * 2.0f * u_viewTexel.y, 0, 0);
+        (2.0 * (idx & 1u) - 1.0) * u_pointWidth * u_viewTexel.x, // is divided by 2
+        (2.0 * ((idx >> 1) & 1u) - 1.0) * u_pointWidth * u_viewTexel.y, // is divided by 2
+        0, 0);
 
+    pos = pos / pos.w;
     gl_Position = pos + offset;
     v_normal = normalize(mul(u_normalMatrix, a_normal));
 

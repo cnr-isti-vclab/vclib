@@ -22,18 +22,9 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-// convert vec4 color to uint
-uint vec4ColToUint(vec4 color)
-{
-    return uint(color.x * 255.0) << 24 |
-           uint(color.y * 255.0) << 16 |
-           uint(color.z * 255.0) << 8  |
-           uint(color.w * 255.0);
-};
-
-BUFFER_RO(position, vec3, 0); // coordinates
-BUFFER_RO(normals,  vec3, 1); // normals
-BUFFER_RO(colors,   vec4, 2); // colors
+BUFFER_RO(positions, float, 0); // coordinates (3 floats)
+BUFFER_RO(normals,  float, 1); // normals (3 floats)
+BUFFER_RO(colors,   uint, 2); // colors (4 floats)
 
 BUFFER_WO(vOut, vec4, 4); // output vertices
 
@@ -48,9 +39,18 @@ void main()
         uint vertexId = pointId * 4 + i;
         uint attrPosCol  = vertexId * 2;   // pos 3, col 1
         uint attrNormSca = attrPosCol + 1; // norm 3, sca 1
+        vec4 col = colors[pointId];
+        vec3 p = vec3(
+            positions[pointId * 3],
+            positions[pointId * 3 + 1],
+            positions[pointId * 3 + 2]);
+        vec3 n = vec3(
+            normals[pointId * 3],
+            normals[pointId * 3 + 1],
+            normals[pointId * 3 + 2]);
         vOut[attrPosCol]  = vec4(
-            position[pointId],
-            uintBitsToFloat(vec4ColToUint(colors[pointId])));
-        vOut[attrNormSca] = vec4(normals[pointId], 1.0);
+            p,
+            uintBitsToFloat(colors[pointId]));
+        vOut[attrNormSca] = vec4(n, 1.0);
     }
 }

@@ -140,24 +140,6 @@ public:
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
-
-
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            // mMRB.bindVertexBuffers(mMRS);
-            // bindUniforms();
-
-            // bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-            // bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
-
-            mMRB.bindComputeVertexBuffers(mMRS);
-            bgfx::dispatch(
-                viewId,
-                pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
-                this->vertexNumber(), 1, 1);
-
-        }
-
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
@@ -188,6 +170,32 @@ public:
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES>());
         }
+
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            if (!Context::instance().supportsCompute()) {
+                // 1 px vertices
+                mMRB.bindVertexBuffers(mMRS);
+                bindUniforms();
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+            }
+            else
+            {
+                // splats (quads)
+                mMRB.bindComputeVertexBuffers(mMRS);
+                bgfx::dispatch(
+                    viewId,
+                    pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
+                    this->vertexNumber(), 1, 1);
+                
+                mMRB.bindVertexQuadBuffer();
+                bindUniforms();
+                bgfx::setState(state);
+                bgfx::submit(
+                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+            }
+        }
     }
 
     void drawId(uint viewId, uint id) const override
@@ -204,15 +212,6 @@ public:
 
         const std::array<float, 4> idFloat = {
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
-
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mIdUniform.bind(&idFloat[0]);
-
-            bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
-        }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
@@ -244,6 +243,16 @@ public:
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
         }
+
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            mMRB.bindVertexBuffers(mMRS);
+            mIdUniform.bind(&idFloat[0]);
+
+            bgfx::setState(state | BGFX_STATE_PT_POINTS);
+
+            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
+        }
+
     }
 
     Box3d boundingBox() const override { return mBoundingBox; }

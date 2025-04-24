@@ -32,6 +32,7 @@
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
+#include <vclib/bgfx/context.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
@@ -133,26 +134,37 @@ public:
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
         // bgfx allows a maximum number of 4 vertex streams...
-        // TODO: binding locations should be exposed in a proper way
-        mVertexCoordsBuffer.bind(0);
-        mVertexNormalsBuffer.bind(1);
-        mVertexColorsBuffer.bind(2);
+        mVertexCoordsBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
+        mVertexNormalsBuffer.bind(VCL_MRB_VERTEX_NORMAL_STREAM);
+        mVertexColorsBuffer.bind(VCL_MRB_VERTEX_COLOR_STREAM);
 
         if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            mVertexUVBuffer.bind(3);
+            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
         }
         else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mVertexWedgeUVBuffer.bind(3);
+            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
         }
     }
 
+    // to generate splats
     void bindComputeVertexBuffers(const MeshRenderSettings& mrs) const
     {
-        mVertexCoordsBuffer.bindCompute(0, bgfx::Access::Read);
-        mVertexNormalsBuffer.bindCompute(1, bgfx::Access::Read);
-        mVertexColorsBuffer.bindCompute(2, bgfx::Access::Read);
+        mVertexCoordsBuffer.bindCompute(
+            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        mVertexNormalsBuffer.bindCompute(
+            VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
+        mVertexColorsBuffer.bindCompute(
+            VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
 
         bgfx::setBuffer(4, mVertexQuadBuffer, bgfx::Access::Write);
+    }
+
+    // to draw splats
+    void bindVertexQuadBuffer() const
+    {
+        assert(bgfx::isValid(mVertexQuadBuffer));
+        bgfx::setVertexBuffer(0, mVertexQuadBuffer);
+        mVertexQuadIndexBuffer.bind();
     }
 
     void bindIndexBuffers(
@@ -220,46 +232,53 @@ private:
             releaseFn);
 
 
-        // TODO: check bgfx capabilities
-        // setup also instancing for quad splatting
-        // destroy if present
-        nv = mesh.vertexNumber();
-        if (bgfx::isValid(mVertexQuadBuffer))
+        // Creates the buffers to be used with compute for splatting
+        if (Context::instance().supportsCompute())
         {
-            bgfx::destroy(mVertexQuadBuffer);
+            // destroy the previous buffer if it exists
+            if (bgfx::isValid(mVertexQuadBuffer))
+            {
+                bgfx::destroy(mVertexQuadBuffer);
+            }
+
+            // create a layout <coordinates, colors, normals, float>
+            // 2 X vec4
+            bgfx::VertexLayout layout; 
+            layout.begin()
+                .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
+                .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Uint8, true)
+                .add(bgfx::Attrib::Normal,    3, bgfx::AttribType::Float)
+                .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
+            .end();
+
+            // create the dynamic vertex buffer
+            mVertexQuadBuffer = bgfx::createDynamicVertexBuffer(
+                mesh.vertexNumber() * 4,
+                layout,
+                BGFX_BUFFER_COMPUTE_WRITE);
+
+            setVertexQuadBuffer(mesh);
         }
-        // create a layout <coordinates, colors, normals, float>
-        // 2 X vec4
-        bgfx::VertexLayout layout; 
-        layout.begin()
-            .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Uint8, true)
-            .add(bgfx::Attrib::Normal,    3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
-         .end();
-
-        // create the dynamic vertex buffer
-        mVertexQuadBuffer = bgfx::createDynamicVertexBuffer(
-            nv * 4,
-            layout,
-            BGFX_BUFFER_COMPUTE_WRITE);
-
-        setVertexQuadBuffer(mesh);
     }
 
-    // TODO: eliminate this function? NO check for capabilities
-    void setVertexQuadBuffer(const MeshType& mesh) // override
+    /**
+     * @brief The function allocates and fills a GPU index buffer to render
+     * a quad for each vertex of the mesh.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexQuadBuffer(const MeshType& mesh)
     {
-        const uint nv = mesh.vertexNumber();
+        const uint totalIndices = mesh.vertexNumber() * 6;
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(nv * 6);
+            getAllocatedBufferAndReleaseFn<uint>(totalIndices);
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
         mVertexQuadIndexBuffer.create(
             buffer,
-            nv * 6,
+            totalIndices,
             true,
             releaseFn);
         

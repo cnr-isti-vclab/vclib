@@ -20,14 +20,39 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
+$input v_normal, v_color
 
-uniform vec4 u_meshId;
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
 void main()
 {
-    /***** render ID to color ******/
-    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_meshId.r));
+    // color
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
-    gl_FragColor = color;
+    /***** compute light ******/
+    // default values - no shading
+    vec3 specular = vec3(0.0, 0.0, 0.0);
+    vec4 light = vec4(1, 1, 1, 1);
+
+    vec3 normal = normalize(v_normal);
+
+    // if per vert shading
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_VERT))) {
+        light = computeLight(u_lightDir, u_lightColor, normal);
+    }
+
+    color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
+
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
+        color = v_color;
+    }
+    else if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_MESH))) {
+        color = u_meshColor;
+    }
+
+    // depth offset - avoid z-fighting
+    float depthOffset = 0.0001;
+
+    gl_FragColor = light * color + vec4(specular, 0);
+    gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
