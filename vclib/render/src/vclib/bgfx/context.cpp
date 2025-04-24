@@ -135,6 +135,11 @@ bool Context::supportsReadback() const
            (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK);
 }
 
+bool Context::supportsCompute() const
+{
+    return (capabilites().supported & BGFX_CAPS_COMPUTE) == BGFX_CAPS_COMPUTE;
+}
+
 bgfx::ViewId Context::requestViewId()
 {
     std::lock_guard<std::mutex> lock(sMutex);
