@@ -56,7 +56,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     // point splatting
     IndexBuffer  mVertexQuadIndexBuffer;
-    bgfx::DynamicVertexBufferHandle mVertexQuadBuffer = BGFX_INVALID_HANDLE;
+    DynamicVertexBuffer mVertexQuadBuffer;
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
@@ -86,13 +86,6 @@ public:
             Base(buffersToFill)
     {
         Base::update(mesh, buffersToFill);
-    }
-
-    ~MeshRenderBuffers() {
-        if (bgfx::isValid(mVertexQuadBuffer)) {
-            bgfx::destroy(mVertexQuadBuffer);
-            mVertexQuadBuffer = BGFX_INVALID_HANDLE;
-        }
     }
 
     MeshRenderBuffers(const MeshRenderBuffers& other) = delete;
@@ -156,14 +149,13 @@ public:
         mVertexColorsBuffer.bindCompute(
             VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
 
-        bgfx::setBuffer(4, mVertexQuadBuffer, bgfx::Access::Write);
+        mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
     }
 
     // to draw splats
     void bindVertexQuadBuffer() const
     {
-        assert(bgfx::isValid(mVertexQuadBuffer));
-        bgfx::setVertexBuffer(0, mVertexQuadBuffer);
+        mVertexQuadBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
         mVertexQuadIndexBuffer.bind();
     }
 
@@ -235,12 +227,6 @@ private:
         // Creates the buffers to be used with compute for splatting
         if (Context::instance().supportsCompute())
         {
-            // destroy the previous buffer if it exists
-            if (bgfx::isValid(mVertexQuadBuffer))
-            {
-                bgfx::destroy(mVertexQuadBuffer);
-            }
-
             // create a layout <coordinates, colors, normals, float>
             // 2 X vec4
             bgfx::VertexLayout layout; 
@@ -251,8 +237,8 @@ private:
                 .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
             .end();
 
-            // create the dynamic vertex buffer
-            mVertexQuadBuffer = bgfx::createDynamicVertexBuffer(
+            // create the dynamic vertex buffer for splatting
+            mVertexQuadBuffer.create(
                 mesh.vertexNumber() * 4,
                 layout,
                 BGFX_BUFFER_COMPUTE_WRITE);

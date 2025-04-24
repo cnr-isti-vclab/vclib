@@ -21,12 +21,16 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-BUFFER_RO(positions, float, 0); // coordinates (3 floats)
-BUFFER_RO(normals,  float, 1); // normals (3 floats)
-BUFFER_RO(colors,   uint, 2); // colors (4 floats)
+BUFFER_RO(positions, float, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
+BUFFER_RO(normals,   float, VCL_MRB_VERTEX_NORMAL_STREAM);   // normals (3 floats)
+BUFFER_RO(colors,    uint,  VCL_MRB_VERTEX_COLOR_STREAM);    // colors (rgba uint)
 
 BUFFER_WO(vOut, vec4, 4); // output vertices
+// 2 vec4 per vertex:
+// - 3 floats for position + 1 uint for color
+// - 3 floats for normal   + 1 float for scale
 
 
 NUM_THREADS(1, 1, 1) // 1 thread per point
