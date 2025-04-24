@@ -33,28 +33,28 @@ BUFFER_WO(vOut, vec4, 4); // output vertices
 // - 3 floats for normal   + 1 float for scale
 
 
-NUM_THREADS(1, 1, 1) // 1 thread per point
+NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
     uint pointId = gl_GlobalInvocationID.x;
 
+    vec4 col = colors[pointId];
+    vec3 p = vec3(
+        positions[pointId * 3],
+        positions[pointId * 3 + 1],
+        positions[pointId * 3 + 2]);
+    vec3 n = vec3(
+        normals[pointId * 3],
+        normals[pointId * 3 + 1],
+        normals[pointId * 3 + 2]);
+        
     // Generate quad vertices
     for (int i = 0; i < 4; ++i) {
+        // Offset for quad vertices
         uint vertexId = pointId * 4 + i;
-        uint attrPosCol  = vertexId * 2;   // pos 3, col 1
-        uint attrNormSca = attrPosCol + 1; // norm 3, sca 1
-        vec4 col = colors[pointId];
-        vec3 p = vec3(
-            positions[pointId * 3],
-            positions[pointId * 3 + 1],
-            positions[pointId * 3 + 2]);
-        vec3 n = vec3(
-            normals[pointId * 3],
-            normals[pointId * 3 + 1],
-            normals[pointId * 3 + 2]);
-        vOut[attrPosCol]  = vec4(
-            p,
-            uintBitsToFloat(colors[pointId]));
-        vOut[attrNormSca] = vec4(n, 1.0);
+        // pos 3, col 1
+        // norm 3, sca 1
+        vOut[vertexId * 2]     = vec4(p, uintBitsToFloat(colors[pointId]));
+        vOut[vertexId * 2 + 1] = vec4(n, 1.0);
     }
 }
