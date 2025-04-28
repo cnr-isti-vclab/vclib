@@ -27,21 +27,19 @@ $input v_normal, v_color
 void main()
 {
     // color
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    // vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
     /***** compute light ******/
     // default values - no shading
-    vec3 specular = vec3(0.0, 0.0, 0.0);
+    // vec3 specular = vec3(0.0, 0.0, 0.0);
     vec4 light = vec4(1, 1, 1, 1);
-
-    vec3 normal = normalize(v_normal);
 
     // if per vert shading
     if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_VERT))) {
-        light = computeLight(u_lightDir, u_lightColor, normal);
+        light = computeLight(u_lightDir, u_lightColor, v_normal);
     }
 
-    color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
+    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
 
     if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
         color = v_color;
@@ -50,9 +48,6 @@ void main()
         color = u_meshColor;
     }
 
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0001;
-
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
+    // NO depth writing (it kills performance)
+    gl_FragColor = light * color; // + vec4(specular, 0);
 }

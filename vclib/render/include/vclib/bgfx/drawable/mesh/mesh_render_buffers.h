@@ -57,6 +57,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // point splatting
     IndexBuffer  mVertexQuadIndexBuffer;
     DynamicVertexBuffer mVertexQuadBuffer;
+    mutable bool mVertexQuadBufferGenerated = false;
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
@@ -109,6 +110,9 @@ public:
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
+        swap(mVertexQuadIndexBuffer, other.mVertexQuadIndexBuffer);
+        swap(mVertexQuadBuffer, other.mVertexQuadBuffer);
+        swap(mVertexQuadBufferGenerated, other.mVertexQuadBufferGenerated);
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
@@ -140,8 +144,16 @@ public:
     }
 
     // to generate splats
-    void bindComputeVertexBuffers(const MeshRenderSettings& mrs) const
+    void computeQuadVertexBuffers(
+        const MeshType&    mesh,
+        const bgfx::ViewId viewId) const
     {
+        if (!mVertexQuadBuffer.isValid() ||
+            mVertexQuadBufferGenerated) {
+            return;
+        }
+
+        // fill the buffer using compute shader
         mVertexCoordsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mVertexNormalsBuffer.bindCompute(
@@ -150,6 +162,14 @@ public:
             VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
 
         mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
+
+        auto & pm = Context::instance().programManager();
+        bgfx::dispatch(
+            viewId,
+            pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
+            mesh.vertexNumber(), 1, 1);
+
+        mVertexQuadBufferGenerated = true;
     }
 
     // to draw splats
@@ -243,7 +263,11 @@ private:
                 layout,
                 BGFX_BUFFER_COMPUTE_WRITE);
 
-            setVertexQuadBuffer(mesh);
+            // create the index buffer for splatting
+            setVertexQuadIndexBuffer(mesh);
+
+            // record that the vertex quad buffer must be generated
+            mVertexQuadBufferGenerated = false;
         }
     }
 
@@ -253,7 +277,7 @@ private:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexQuadBuffer(const MeshType& mesh)
+    void setVertexQuadIndexBuffer(const MeshType& mesh)
     {
         const uint totalIndices = mesh.vertexNumber() * 6;
 

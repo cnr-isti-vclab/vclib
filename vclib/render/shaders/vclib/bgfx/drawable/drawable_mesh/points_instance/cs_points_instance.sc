@@ -36,7 +36,7 @@ BUFFER_WO(vOut, vec4, 4); // output vertices
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
-    uint pointId = gl_GlobalInvocationID.x;
+    uint pointId = gl_WorkGroupID.x;
 
     vec4 col = colors[pointId];
     vec3 p = vec3(
@@ -47,8 +47,9 @@ void main()
         normals[pointId * 3],
         normals[pointId * 3 + 1],
         normals[pointId * 3 + 2]);
-        
+
     // Generate quad vertices
+    UNROLL
     for (int i = 0; i < 4; ++i) {
         // Offset for quad vertices
         uint vertexId = pointId * 4 + i;

@@ -31,6 +31,7 @@ void main()
     // (bit 0 = x axis, bit 1 = y axis)
     vec4 pos = mul(u_modelViewProj, vec4(a_position, 1.0));
     vec4 offset = vec4(
+        // {-1, +1} * width * texel
         (2.0 * (idx & 1u) - 1.0) * u_pointWidth * u_viewTexel.x, // is divided by 2
         (2.0 * ((idx >> 1) & 1u) - 1.0) * u_pointWidth * u_viewTexel.y, // is divided by 2
         0, 0);
