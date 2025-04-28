@@ -86,7 +86,7 @@ int main(void)
     tw.pushDrawableObject(std::move(drawable));
 
     // Repeat all automations 2 times
-    tw.setRepeatTimes(60);
+    tw.setRepeatTimes(120);
 
     tw.addAutomationNoMetric(aaf.createStartCountLimited(
         aaf.createTimeLimited(aaf.createChangeScaleMultiplicative(1.f), 1.f),
@@ -112,9 +112,9 @@ int main(void)
         aaf.createTimeLimited(aaf.createRotation(5.f, {1.f, 0.f, 0.f}), 2.f));
 
     tw.addAutomation(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 20));
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 40));
     tw.addAutomation(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 40));
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 80));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
