@@ -53,7 +53,7 @@ public:
     {
     }
 
-    void start()
+    void start() override
     {
         Parent::start();
         mOriginalScale = benchmarkDrawer->getScale();
