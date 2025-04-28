@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_normal, v_color
+$input v_normal, v_color, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
@@ -29,6 +29,13 @@ void main()
     // color
     // vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
+    // circle mode (if outside of the circle, discard)
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE))) {
+        if (length(2.0 * v_texcoord1 - vec2(1.0, 1.0)) > 1.0) {
+            discard;
+        }
+    }
+    
     /***** compute light ******/
     // default values - no shading
     // vec3 specular = vec3(0.0, 0.0, 0.0);

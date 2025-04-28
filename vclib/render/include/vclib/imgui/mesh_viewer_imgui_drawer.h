@@ -177,25 +177,25 @@ private:
         // shape
         ImGui::Text("Shape:");
         ImGui::SameLine();
-        ImGui::BeginDisabled(true);
         ImGui::RadioButton(
             "Circle",
             [&] {
-                return false;
+                return settings.isPoints(SHAPE_CIRCLE);
             },
             [&](bool v) {
+                if (v)
+                    settings.setPoints(SHAPE_CIRCLE);
             });
-        ImGui::EndDisabled();
         ImGui::SameLine();
-        ImGui::BeginDisabled(false);
         ImGui::RadioButton(
             "Pixel",
             [&] {
-                return true;
+                return settings.isPoints(SHAPE_PIXEL);
             },
             [&](bool v) {
+                if (v)
+                    settings.setPoints(SHAPE_PIXEL);
             });
-        ImGui::EndDisabled();
 
         // shading
         ImGui::Text("Shading:");
