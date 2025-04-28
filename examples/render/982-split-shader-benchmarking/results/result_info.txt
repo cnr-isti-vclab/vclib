@@ -11,6 +11,8 @@ Of those 6 measurements:
     - 2 and 5 are one rotation around Y axis in 1k frames
     - 3 and 6 are one rotation arount X axis in 1k frames
 
+ALL OF THESE TESTS WERE DONE ON THE PC MARKED "VCGLAB2 222" (the one i usually use)
+
 TODO: 
     split the result files in 3 (one per group) and 
     change the printer to print separately on those files by 
