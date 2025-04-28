@@ -25,6 +25,7 @@
 #include "change_shader_automation_action.h"
 #include "get_drawable_mesh.h"
 #include "glfw_maximized_window_manager.h"
+#include "CsvBenchmarkPrinterNoDescription.h"
 
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
@@ -62,8 +63,8 @@ int main(void)
     BenchmarkViewer tw("Benchmark Viewer GLFW");
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable =
-        getDrawableMesh<vcl::TriMesh>("bunny.obj");
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>(
+        "C:/Users/Giacomo/Documents/vclib/ESTE_PRINT.ply", false);
 
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
@@ -86,38 +87,36 @@ int main(void)
     tw.pushDrawableObject(std::move(drawable));
 
     // Repeat all automations 2 times
-    tw.setRepeatTimes(120);
+    tw.setRepeatTimes(6);
 
-    tw.addAutomationNoMetric(aaf.createStartCountLimited(
-        aaf.createTimeLimited(aaf.createChangeScaleMultiplicative(1.f), 1.f),
-        1));
-
-    // Change the measured metric to FPS
-    tw.setMetric(vcl::FpsBenchmarkMetric());
+    tw.setMetric(vcl::TimeBenchmarkMetric());
 
     // Rotate and scale at the same time for 2 seconds
-    tw.addAutomation(
-        aaf.createTimeLimited(aaf.createRotation(5.f, {0.f, 0.f, 1.f}), 2.f));
-
-    // Change the measured metric to time (seconds)
-    tw.setMetric(vcl::TimeBenchmarkMetric());
+    tw.addAutomation(aaf.createFrameLimited(
+        vcl::PerFrameRotationAutomationAction<
+            BenchmarDrawerT>::fromFramesPerRotation(1000.f, {0.f, 0.f, 1.f}),
+        1000.f));
 
     // Rotate for 5000 frames and then scale for 5000 frames
     tw.addAutomation(aaf.createFrameLimited(
-        aaf.createPerFrameRotation(1e-1f, {0.f, -1.f, 0.f}), 1000));
+        vcl::PerFrameRotationAutomationAction<
+            BenchmarDrawerT>::fromFramesPerRotation(1000.f, {0.f, 1.f, 0.f}),
+        1000.f));
 
-    tw.setMetric(vcl::FpsBenchmarkMetric());
+    tw.addAutomation(aaf.createFrameLimited(
+        vcl::PerFrameRotationAutomationAction<
+            BenchmarDrawerT>::fromFramesPerRotation(1000.f, {1.f, 0.f, 0.f}),
+        1000.f));
 
-    tw.addAutomation(
-        aaf.createTimeLimited(aaf.createRotation(5.f, {1.f, 0.f, 0.f}), 2.f));
-
-    tw.addAutomation(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 40));
-    tw.addAutomation(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 80));
+    tw.addAutomationNoMetric(
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 1));
+    tw.addAutomationNoMetric(
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 3));
 
     // Print the results in a json file
-    tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
+    tw.setPrinter(
+        vcl::CsvBenchmarkPrinterNoDescription(
+            "C:/Users/Giacomo/Documents/vclib/benchmark_results.csv", 6));
 
     tw.fitScene();
 

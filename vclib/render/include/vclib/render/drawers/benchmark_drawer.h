@@ -150,8 +150,9 @@ public:
 
     void fitScene(PointType p, ScalarType s)
     {
-        mCurrentPreScale = 0.5 / s;
-        mTransform.scale(0.5 / s);
+        assert(s != 0);
+        mCurrentPreScale = 1.5 / s;
+        mTransform.scale(1.5 / s);
         mTransform.translate(-p);
     }
 
