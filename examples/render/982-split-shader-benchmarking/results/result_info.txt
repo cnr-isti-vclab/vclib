@@ -1,0 +1,7 @@
+First sequence: Uber shader
+
+Second squence: Split shaders
+
+Third sequence: Uber-if shader
+
+Every 6 measurements of each group belong to a different execution
