@@ -86,32 +86,35 @@ int main(void)
     tw.pushDrawableObject(std::move(drawable));
 
     // Repeat all automations 2 times
-    tw.setRepeatTimes(3);
+    tw.setRepeatTimes(60);
+
+    tw.addAutomationNoMetric(aaf.createStartCountLimited(
+        aaf.createTimeLimited(aaf.createChangeScaleMultiplicative(1.f), 1.f),
+        1));
 
     // Change the measured metric to FPS
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
     // Rotate and scale at the same time for 2 seconds
-    tw.addAutomation(aaf.createTimeLimited(
-        aaf.createSimultaneous(
-            {aaf.createRotation(5.f, {0.f, 0.f, 1.f}),
-             aaf.createChangeScaleMultiplicative(-0.2f)}),
-        2.f));
+    tw.addAutomation(
+        aaf.createTimeLimited(aaf.createRotation(5.f, {0.f, 0.f, 1.f}), 2.f));
 
     // Change the measured metric to time (seconds)
     tw.setMetric(vcl::TimeBenchmarkMetric());
 
     // Rotate for 5000 frames and then scale for 5000 frames
-    tw.addAutomation(aaf.createSequential(
-        {aaf.createFrameLimited(
-             aaf.createPerFrameRotation(1e-1f, {0.f, -1.f, 0.f}), 5000),
-         aaf.createFrameLimited(
-             aaf.createPerFrameChangeScaleMultiplicative(2e-4f), 5000)}));
+    tw.addAutomation(aaf.createFrameLimited(
+        aaf.createPerFrameRotation(1e-1f, {0.f, -1.f, 0.f}), 1000));
+
+    tw.setMetric(vcl::FpsBenchmarkMetric());
 
     tw.addAutomation(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 1));
+        aaf.createTimeLimited(aaf.createRotation(5.f, {1.f, 0.f, 0.f}), 2.f));
+
     tw.addAutomation(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 2));
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 20));
+    tw.addAutomation(
+        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 40));
 
     // Print the results in a json file
     tw.setPrinter(vcl::JsonBenchmarkPrinter("./test_out.json"));
