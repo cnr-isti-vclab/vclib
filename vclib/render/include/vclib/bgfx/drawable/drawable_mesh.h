@@ -188,8 +188,7 @@ public:
                 // render splats
                 mMRB.bindVertexQuadBuffer();
                 bindUniforms();
-                bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                    BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
+                bgfx::setState(state);
                 bgfx::submit(
                     viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
@@ -204,7 +203,7 @@ public:
 
         uint64_t state =
             0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-            BGFX_STATE_DEPTH_TEST_LEQUAL | // TODO: less?
+            BGFX_STATE_DEPTH_TEST_LEQUAL |
             BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
         // write alpha as is
 
@@ -243,14 +242,29 @@ public:
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mIdUniform.bind(&idFloat[0]);
+            if (!Context::instance().supportsCompute()) {
+                // 1 px vertices
+                mMRB.bindVertexBuffers(mMRS);
+                mIdUniform.bind(&idFloat);
 
-            bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
+            }
+            else
+            {
+                // generate splats (quads) lazy
+                mMRB.computeQuadVertexBuffers(*this, viewId);
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
+                // render splats
+                mMRB.bindVertexQuadBuffer();
+                bindUniforms();
+                mIdUniform.bind(&idFloat);
+
+                bgfx::setState(state);
+                bgfx::submit(
+                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
+            }
         }
-
     }
 
     Box3d boundingBox() const override { return mBoundingBox; }
