@@ -258,6 +258,13 @@ public:
             bgfx::setBuffer(stage, mHandle, access);
         }
     }
+
+    void bindVertex(uint stream) const
+    {
+        if (bgfx::isValid(mHandle)) {
+            bgfx::setVertexBuffer(stream, mHandle);
+        }
+    }
 };
 
 } // namespace vcl

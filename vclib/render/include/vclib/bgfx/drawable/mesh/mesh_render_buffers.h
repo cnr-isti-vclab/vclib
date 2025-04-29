@@ -131,9 +131,9 @@ public:
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
         // bgfx allows a maximum number of 4 vertex streams...
-        mVertexCoordsBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
-        mVertexNormalsBuffer.bind(VCL_MRB_VERTEX_NORMAL_STREAM);
-        mVertexColorsBuffer.bind(VCL_MRB_VERTEX_COLOR_STREAM);
+        mVertexCoordsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
+        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
 
         if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
             mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
@@ -234,13 +234,14 @@ private:
 
         Base::fillVertexCoords(mesh, buffer);
 
-        mVertexCoordsBuffer.create(
+        mVertexCoordsBuffer.createForCompute(
             buffer,
             nv,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
             false,
+            bgfx::Access::Read,
             releaseFn);
 
 
@@ -304,13 +305,14 @@ private:
 
         Base::fillVertexNormals(mesh, buffer);
 
-        mVertexNormalsBuffer.create(
+        mVertexNormalsBuffer.createForCompute(
             buffer,
             nv,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
             false,
+            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -322,13 +324,14 @@ private:
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
-        mVertexColorsBuffer.create(
+        mVertexColorsBuffer.createForCompute(
             buffer,
             nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
+            bgfx::Access::Read,
             releaseFn);
     }
 
