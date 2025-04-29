@@ -23,7 +23,7 @@
 $input a_position
 $output v_texcoord1
 
-#include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
 void main()
 {
