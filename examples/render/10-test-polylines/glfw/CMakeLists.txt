@@ -22,11 +22,16 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    if (TARGET vclib-3rd-glfw)
-        add_subdirectory(glfw)
-    endif()
-    if (TARGET vclib-3rd-qt)
-        add_subdirectory(qt)
-    endif()
-endif()
+set(EXAMPLE_NAME 10-test-polylines-glfw)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
+
+set(SOURCES
+    main.cpp)
+
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${SOURCES})
