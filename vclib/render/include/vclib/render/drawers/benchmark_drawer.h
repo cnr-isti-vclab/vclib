@@ -65,6 +65,7 @@ private:
     DirectionalLight<ScalarType> mLight;
     Camera<ScalarType>           mCamera;
     Affine3<ScalarType>          mTransform = Affine3<ScalarType>::Identity();
+    bool                         mTerminateUponCompletion = false;
 
     /*
     What are these variables for? To avoid the slight freeze some time after
@@ -177,7 +178,8 @@ public:
             mAllDone = true;
         }
         if (mAllDone) {
-            exit(0);
+            if (mTerminateUponCompletion)
+                exit(0);
             return;
         }
         if (mFirstCall) {
@@ -259,6 +261,11 @@ public:
     uint getRepeatCount() { return mRepeatCount; };
 
     size_t getCurrentAutomationIndex() { return mCurrentAutomationIndex; };
+
+    void terminateUponCompletion(bool b = true)
+    {
+        mTerminateUponCompletion = b;
+    }
 
     void rotate(Quaternion<float> rot) { mTransform.prerotate(rot); }
 

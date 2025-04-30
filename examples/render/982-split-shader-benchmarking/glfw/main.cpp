@@ -123,6 +123,8 @@ int main(void)
         vcl::CsvBenchmarkPrinterNoDescription(
             "C:/Users/Giacomo/Desktop/results_uber.csv", "C:/Users/Giacomo/Desktop/results_split.csv", "C:/Users/Giacomo/Desktop/results_uber_if.csv", 6));
 
+    tw.terminateUponCompletion();
+
     tw.fitScene();
 
     tw.show();
