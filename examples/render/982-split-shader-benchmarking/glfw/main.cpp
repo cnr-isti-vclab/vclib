@@ -116,7 +116,7 @@ int main(void)
     // Print the results in a json file
     tw.setPrinter(
         vcl::CsvBenchmarkPrinterNoDescription(
-            "C:/Users/Giacomo/Documents/vclib/benchmark_results.csv", 6));
+            "C:/Users/Giacomo/Desktop/results_uber.csv", "C:/Users/Giacomo/Desktop/results_split.csv", "C:/Users/Giacomo/Desktop/results_uber_if.csv", 6));
 
     tw.fitScene();
 

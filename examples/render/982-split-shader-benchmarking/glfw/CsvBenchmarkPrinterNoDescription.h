@@ -48,26 +48,63 @@ class CsvBenchmarkPrinterNoDescription : public BenchmarkPrinter
     uint                                        mAutomationCounter = 0;
     uint                                        maxMeasurementSize = 0;
     uint                                        newlineEvery       = 0;
-    std::string                                 mFileName;
-    std::ofstream                               mStream;
+    std::string                                 mFileNameUber;
+    std::string                                 mFileNameSplit;
+    std::string                                 mFileNameUberIf;
+    std::ofstream                               mUberStream;
+    std::ofstream                               mSplitStream;
+    std::ofstream                               mUberIfStream;
     std::vector<std::pair<std::string, size_t>> mMeasurementStrings;
+
+    void openStreams()
+    {
+        mUberStream.open(mFileNameUber, std::ios_base::app);
+        if (mUberStream.fail()) {
+            throw "CsvBenchmarkPrinter : invalid file name\n";
+        }
+        mSplitStream.open(mFileNameSplit, std::ios_base::app);
+        if (mSplitStream.fail()) {
+            throw "CsvBenchmarkPrinter : invalid file name\n";
+        }
+        mUberIfStream.open(mFileNameUberIf, std::ios_base::app);
+        if (mUberIfStream.fail()) {
+            throw "CsvBenchmarkPrinter : invalid file name\n";
+        }
+    }
+
+    void closeStreams()
+    {
+        if (mUberStream.is_open()) {
+            mUberStream.close();
+        }
+        if (mSplitStream.is_open()) {
+            mSplitStream.close();
+        }
+        if (mUberIfStream.is_open()) {
+            mUberIfStream.close();
+        }
+    }
 
 public:
     CsvBenchmarkPrinterNoDescription(
-        const std::string& fileName,
-        uint newlineEvery) : mFileName {fileName}, newlineEvery {newlineEvery}
+        const std::string& fileNameUber,
+        const std::string& fileNameSplit,
+        const std::string& fileNameUberIf,
+        uint               newlineEvery) :
+            mFileNameUber {fileNameUber}, mFileNameSplit {fileNameSplit},
+            mFileNameUberIf {fileNameUberIf}, newlineEvery {newlineEvery}
     {
-        mStream.open(fileName);
-        if (mStream.fail()) {
-            throw "CsvBenchmarkPrinter : invalid file name\n";
-        }
+        openStreams();
     };
 
     CsvBenchmarkPrinterNoDescription(
         const CsvBenchmarkPrinterNoDescription& other) :
-            mFileName {other.mFileName}, mStream(), newlineEvery {other.newlineEvery}
+            mFileNameUber {other.mFileNameUber},
+            mFileNameSplit {other.mFileNameSplit},
+            mFileNameUberIf {other.mFileNameUberIf},
+            newlineEvery {other.newlineEvery}
     {
-        mStream.open(mFileName);
+        openStreams();
     };
 
     void onBenchmarkLoop() override
@@ -85,10 +122,6 @@ public:
         maxMeasurementSize =
             std::max(maxMeasurementSize, (uint32_t) measureStrings.size());
 
-        for (size_t i = 0; i < measureStrings.size(); i++) {
-            measureStrings[i] = measureStrings[i];
-        }
-
         if (metric.getMeasureStrings().size() > 0) {
             std::copy(
                 measureStrings.begin(),
@@ -105,21 +138,20 @@ public:
 
     void finish() override
     {
-        bool isFirst = true;
-        uint counter = 1;
+        uint counter = 0;
         for (const auto& meas : mMeasurementStrings) {
-            if (!isFirst) {
-                mStream << "\n";
+            std::ofstream* usedStream;
+            switch (counter / newlineEvery) {
+            case 0: usedStream = &mUberStream; break;
+            case 1: usedStream = &mSplitStream; break;
+            case 2: usedStream = &mUberIfStream; break;
             }
-            isFirst = false;
-            mStream << meas.first
-                    << std::string(maxMeasurementSize - meas.second, ';');
-            if(counter%newlineEvery == 0){
-                mStream << "\n";
-            }
+            *usedStream << meas.first
+                        << std::string(maxMeasurementSize - meas.second, ';')
+                        << "\n";
             counter++;
         }
-        mStream.close();
+        closeStreams();
     };
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
@@ -133,12 +165,7 @@ public:
             std::move(*this));
     };
 
-    ~CsvBenchmarkPrinterNoDescription()
-    {
-        if (mStream.is_open()) {
-            mStream.close();
-        }
-    };
+    ~CsvBenchmarkPrinterNoDescription() { closeStreams(); };
 };
 
 } // namespace vcl

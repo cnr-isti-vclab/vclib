@@ -64,12 +64,12 @@ public:
 
     void doAction() override
     {
-        mCurrentFrames++;
         if (mCurrentFrames >= mDurationFrames) {
             end();
             return;
         }
         Parent::doAction();
+        mCurrentFrames++;
     }
 
     void end() override

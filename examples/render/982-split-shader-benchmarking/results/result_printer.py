@@ -10,24 +10,18 @@ def variance(lis):
     
 
 def main():
-    if(len(sys.argv) < 2):
-        print("Filename required");
+    if(len(sys.argv) != 4):
+        print("Filenames required");
         exit(1);
-    contents = None;
-    with open(sys.argv[1]) as file:
-        contents = file.read();
-    if(contents == None):
-        exit(1);
-    contents = contents.split("\n");
-    res = [[],[],[]];
-    index = 0;
-    for el in contents:
-        stripped = el.strip();
-        if not stripped:
-            index+=1;
-            continue;
-        res[index].append(float(stripped));
-    for (name, lis) in zip(["Uber   ", "Split  ", "Uber-if"], res):
+    contents = list();
+    for i in range(1, len(sys.argv)):
+        with open(sys.argv[i]) as file:
+            temp = file.read();
+            if not temp:
+                exit(1);
+            contents.append(temp);
+    contents = [[float(y) for y in x.strip().split('\n')] for x in contents];
+    for (name, lis) in zip(["Uber   ", "Split  ", "Uber-if"], contents):
         print(f"{name}: mean {sum(lis)/len(lis)}, variance {variance(lis)}");
     return 0;
 
