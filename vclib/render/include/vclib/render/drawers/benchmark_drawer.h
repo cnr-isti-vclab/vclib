@@ -177,6 +177,7 @@ public:
             mAllDone = true;
         }
         if (mAllDone) {
+            exit(0);
             return;
         }
         if (mFirstCall) {

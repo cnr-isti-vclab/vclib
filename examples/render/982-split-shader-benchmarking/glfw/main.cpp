@@ -64,7 +64,12 @@ int main(void)
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>(
-        "C:/Users/Giacomo/Documents/vclib/ESTE_PRINT.ply", false);
+        "C:/Users/Giacomo/Documents/vclib/dragon.ply", false);
+
+    auto settings = drawable.renderSettings();
+    bool b = settings.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
+    assert(b);
+    drawable.setRenderSettings(settings);
 
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
