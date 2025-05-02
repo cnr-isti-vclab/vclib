@@ -176,21 +176,23 @@ public:
 
         if (settings.isWireframe(COLOR_USER)) {
             vcl::Color generalColor = settings.wireframeUserColor();
-            wSettings.setGeneralColor(LinesVertex::COLOR(
-                generalColor.redF(),
-                generalColor.greenF(),
-                generalColor.blueF(),
-                generalColor.alphaF()));
+            wSettings.setGeneralColor(
+                LinesVertex::COLOR(
+                    generalColor.redF(),
+                    generalColor.greenF(),
+                    generalColor.blueF(),
+                    generalColor.alphaF()));
             wSettings.setColorToUse(LineColorToUse::GENERAL_COLOR);
         }
 
         if (settings.isWireframe(COLOR_MESH)) {
             const float* colorPerMesh = mMeshUniforms.currentMeshColor();
-            wSettings.setGeneralColor(LinesVertex::COLOR(
-                colorPerMesh[0],
-                colorPerMesh[1],
-                colorPerMesh[2],
-                colorPerMesh[3]));
+            wSettings.setGeneralColor(
+                LinesVertex::COLOR(
+                    colorPerMesh[0],
+                    colorPerMesh[1],
+                    colorPerMesh[2],
+                    colorPerMesh[3]));
             wSettings.setColorToUse(LineColorToUse::GENERAL_COLOR);
         }
 
@@ -199,10 +201,7 @@ public:
         }
     }
 
-    void drawWireframe(uint viewId) const 
-    {
-        mWireframeLines.draw(viewId);
-    }
+    void drawWireframe(uint viewId) const { mWireframeLines.draw(viewId); }
 
     void bindTextures() const
     {
@@ -418,33 +417,45 @@ private:
     {
         // TODO: DATA DUPLICATION
         // Heavy refactoring needed here
-        std::vector<LinesVertex> wireframe;
-        wireframe.reserve(mesh.faceNumber() * 3);
+        std::vector<float> wireframeCoords;
+        wireframeCoords.reserve(mesh.faceNumber() * 3 * 3);
+
+        std::vector<uint> wireframeColors;
+        wireframeColors.reserve(mesh.faceNumber() * 3);
+
+        std::vector<float> wireframeNormals;
+        wireframeNormals.reserve(mesh.faceNumber() * 3 * 3);
+
         for (const auto& f : mesh.faces()) {
             for (uint i = 0; i < f.vertexNumber(); ++i) {
-                const auto& p0 = f.vertex(i)->coord();
-                const auto& p1 = f.vertexMod((i + 1))->coord();
+                const auto&       p0 = f.vertex(i)->coord();
+                const auto&       p1 = f.vertexMod((i + 1))->coord();
                 const vcl::Color& c0 = f.vertex(i)->color();
                 const vcl::Color& c1 = f.vertexMod((i + 1))->color();
                 // TODO: NORMALS CAN ALSO NOT BE AVAILABLE
                 const auto& n0 = f.vertex(i)->normal();
                 const auto& n1 = f.vertexMod((i + 1))->normal();
 
-                wireframe.push_back(LinesVertex(
-                    p0.x(), p0.y(), p0.z(),
+                wireframeCoords.insert(
+                    wireframeCoords.end(), {(float)p0.x(), (float)p0.y(), (float)p0.z()});
+                wireframeColors.push_back(
                     LinesVertex::COLOR(
-                        c0.redF(), c0.greenF(), c0.blueF(), c0.alphaF()),
-                    n0.x(), n0.y(), n0.z()));
+                        c0.redF(), c0.greenF(), c0.blueF(), c0.alphaF()));
+                wireframeNormals.insert(
+                    wireframeNormals.end(), {(float)n0.x(), (float)n0.y(), (float)n0.z()});
 
-                wireframe.push_back(LinesVertex(
-                    p1.x(), p1.y(), p1.z(),
+                wireframeCoords.insert(
+                    wireframeCoords.end(), {(float)p1.x(), (float)p1.y(), (float)p1.z()});
+                wireframeColors.push_back(
                     LinesVertex::COLOR(
-                        c1.redF(), c1.greenF(), c1.blueF(), c1.alphaF()),
-                    n1.x(), n1.y(), n1.z()));
+                        c1.redF(), c1.greenF(), c1.blueF(), c1.alphaF()));
+                wireframeNormals.insert(
+                    wireframeNormals.end(), {(float)n1.x(), (float)n1.y(), (float)n1.z()});
             }
         }
         // wireframe index buffer
-        mWireframeLines.setPoints(wireframe);
+        mWireframeLines.setPoints(
+            wireframeCoords, wireframeColors, wireframeNormals);
 
         // WAS:
         // const uint nw = Base::numWireframeLines();

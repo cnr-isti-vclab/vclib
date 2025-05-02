@@ -39,15 +39,15 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
     float g = disColor(gen);
     float b = disColor(gen);
 
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(1);
+    vertCoords.emplace_back(0);
+    vertCoords.emplace_back(0);
 
     vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
 
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(0);
+    vertCoords.emplace_back(1);
+    vertCoords.emplace_back(0);
 
     vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
 }
@@ -65,15 +65,15 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
         pushRandomLine(vertCoords, vertColors);
     
     auto cpuLines = std::make_shared<vcl::DrawableCPULines>(vertCoords, vertColors, vertNormals);
-    // auto gpuLines = std::make_shared<vcl::DrawableGPULines>(points);
+    auto gpuLines = std::make_shared<vcl::DrawableGPULines>(vertCoords, vertColors, vertNormals);
     // auto instancingLines = std::make_shared<vcl::DrawableInstancingLines>(points);
     // auto indirectLines = std::make_shared<vcl::DrawableIndirectLines>(points);
     // auto textureLines = std::make_shared<vcl::DrawableTextureLines>(points);
 
     cpuLines->settings().setColorToUse(
         vcl::LineColorToUse::PER_VERTEX_COLOR);
-    // gpuLines->settings().setColorToUse(
-    //     vcl::LineColorToUse::PER_VERTEX_COLOR);
+    gpuLines->settings().setColorToUse(
+        vcl::LineColorToUse::PER_VERTEX_COLOR);
     // instancingLines->settings().setColorToUse(
     //     vcl::LineColorToUse::PER_VERTEX_COLOR);
     // indirectLines->settings().setColorToUse(
@@ -82,16 +82,16 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
     //     vcl::LineColorToUse::PER_VERTEX_COLOR);
 
     vec.pushBack(*cpuLines.get());
-    // vec.pushBack(*gpuLines.get());
+    vec.pushBack(*gpuLines.get());
     // vec.pushBack(*instancingLines.get());
     // vec.pushBack(*indirectLines.get());
     // vec.pushBack(*textureLines.get());
 
     for (vcl::uint i = 0; i < vec.size(); ++i) {
-        vec.at(i)->setVisibility(false);
+        vec.at(i)->setVisibility(true);
     }
 
-    vec.at(0)->setVisibility(true);
+    // vec.at(0)->setVisibility(true);
 
     return vec;
 }

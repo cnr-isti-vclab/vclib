@@ -129,7 +129,7 @@ public:
 };
 
 using DrawableCPULines        = DrawableLines<CPUGeneratedLines>;
-// using DrawableGPULines        = DrawableLines<GPUGeneratedLines>;
+using DrawableGPULines        = DrawableLines<GPUGeneratedLines>;
 // using DrawableIndirectLines   = DrawableLines<IndirectBasedLines>;
 // using DrawableInstancingLines = DrawableLines<InstancingBasedLines>;
 // using DrawableTextureLines    = DrawableLines<TextureBasedLines>;

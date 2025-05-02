@@ -39,7 +39,7 @@ class LinesImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
     std::shared_ptr<vcl::DrawableObjectVector> mLines;
-    const vcl::uint N_LINES = 100;
+    const vcl::uint N_LINES = 2;
     int mSelcted = 0;
 
 public:
@@ -58,9 +58,9 @@ public:
         if (!ParentDrawer::isWindowMinimized()) {
             ImGui::Begin("Showing");
 
-            const char* items[] = { "CPU Generated" };
+            const char* items[] = { "CPU Generated" , "GPU Generated", "Instancing Based", "Indirect Based", "Texture Based"};
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < mLines->size(); i++)
                 ImGui::RadioButton(items[i], &mSelcted, i);
             ImGui::End();
         }
