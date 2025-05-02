@@ -33,10 +33,9 @@ namespace vcl {
 
 class CPUGeneratedLines : public Lines<LineSettings>
 {
-    bgfx::ProgramHandle mLinesPH =
-        Context::instance()
-            .programManager()
-            .getProgram<VertFragProgram::LINES>();
+    bgfx::ProgramHandle mLinesPH = Context::instance()
+                                       .programManager()
+                                       .getProgram<VertFragProgram::LINES>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
@@ -44,13 +43,19 @@ class CPUGeneratedLines : public Lines<LineSettings>
 public:
     CPUGeneratedLines() = default;
 
-    CPUGeneratedLines(const std::vector<LinesVertex>& points);
+    CPUGeneratedLines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(CPUGeneratedLines& other);
 
     friend void swap(CPUGeneratedLines& a, CPUGeneratedLines& b) { a.swap(b); }
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void draw(uint viewId) const;
 };

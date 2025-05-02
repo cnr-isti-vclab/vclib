@@ -24,9 +24,12 @@
 
 namespace vcl {
 
-CPUGeneratedLines::CPUGeneratedLines(const std::vector<LinesVertex>& points)
+CPUGeneratedLines::CPUGeneratedLines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals)
 {
-    setPoints(points);
+    setPoints(vertCoords, vertColors, vertNormals);
 }
 
 void CPUGeneratedLines::swap(CPUGeneratedLines& other)
@@ -39,12 +42,16 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
     swap(mIndices, other.mIndices);
 }
 
-void CPUGeneratedLines::setPoints(const std::vector<LinesVertex>& points)
+void CPUGeneratedLines::setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals)
 {
-    if (points.size() > 1) {
+    const uint nPoints = vertCoords.size() / 3;
+    if (nPoints > 1) {
         // generate memory buffers
-        uint bufferVertsSize = (points.size() / 2) * 4 * 12;
-        uint bufferIndsSize = (points.size() / 2) * 6;
+        uint bufferVertsSize = (nPoints / 2) * 4 * 12;
+        uint bufferIndsSize = (nPoints / 2) * 6;
 
         auto [vertices, vReleaseFn] =
             getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
@@ -54,23 +61,22 @@ void CPUGeneratedLines::setPoints(const std::vector<LinesVertex>& points)
 
         uint vi = 0;
         uint ii = 0;
-        for (uint i = 1; i < points.size(); i += 2) {
+        for (uint i = 1; i < nPoints; i += 2) {
             for (uint k = 0; k < 2; k++) {
                 for (uint j = 0; j < 2; j++) {
-                    vertices[vi++] = points[i - 1].X;
-                    vertices[vi++] = points[i - 1].Y;
-                    vertices[vi++] = points[i - 1].Z;
+                    vertices[vi++] = vertCoords[((i - 1) * 3)];
+                    vertices[vi++] = vertCoords[((i - 1) * 3) + 1];
+                    vertices[vi++] = vertCoords[((i - 1) * 3) + 2];
 
-                    vertices[vi++] = points[i].X;
-                    vertices[vi++] = points[i].Y;
-                    vertices[vi++] = points[i].Z;
+                    vertices[vi++] = vertCoords[(i * 3)];
+                    vertices[vi++] = vertCoords[(i * 3) + 1];
+                    vertices[vi++] = vertCoords[(i * 3) + 2];
 
-                    vertices[vi++] = std::bit_cast<float>(
-                        points[i - (1 - k)].getABGRColor());
+                    vertices[vi++] = std::bit_cast<float>(vertColors[i - (1 - k)]);
 
-                    vertices[vi++] = points[i - (1 - k)].xN;
-                    vertices[vi++] = points[i - (1 - k)].yN;
-                    vertices[vi++] = points[i - (1 - k)].zN;
+                    vertices[vi++] = vertNormals[((i - (1 - k)) * 3)];
+                    vertices[vi++] = vertNormals[((i - (1 - k)) * 3) + 1];
+                    vertices[vi++] = vertNormals[((i - (1 - k)) * 3) + 2];
 
                     vertices[vi++] = k;
                     vertices[vi++] = j;

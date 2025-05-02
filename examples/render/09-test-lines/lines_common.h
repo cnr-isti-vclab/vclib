@@ -28,7 +28,7 @@
 
 #include <random>
 
-void pushRandomLine(std::vector<vcl::LinesVertex>& points)
+void pushRandomLine(std::vector<float>& vertCoords, std::vector<uint>& vertColors)
 {
     std::random_device rd;
     std::mt19937       gen(rd());
@@ -39,12 +39,17 @@ void pushRandomLine(std::vector<vcl::LinesVertex>& points)
     float g = disColor(gen);
     float b = disColor(gen);
 
-    points.emplace_back(
-        disPoint(gen), disPoint(gen), disPoint(gen),
-        vcl::LinesVertex::COLOR(r, g, b, 1.0f));
-    points.emplace_back(
-        disPoint(gen), disPoint(gen), disPoint(gen),
-        vcl::LinesVertex::COLOR(r, g, b, 1.0f));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+
+    vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
+
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+
+    vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
 }
 
 // return a vector that has a set of nLines lines with different types
@@ -52,35 +57,37 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
 {
     vcl::DrawableObjectVector vec;
 
-    std::vector<vcl::LinesVertex> points;
-
+    std::vector<float> vertCoords;
+    std::vector<uint> vertColors;
+    std::vector<float> vertNormals(nLines, 0.0f); 
+    
     for (vcl::uint i = 0; i < nLines; i++)
-        pushRandomLine(points);
-
-    auto cpuLines = std::make_shared<vcl::DrawableCPULines>(points);
-    auto gpuLines = std::make_shared<vcl::DrawableGPULines>(points);
-    auto instancingLines = std::make_shared<vcl::DrawableInstancingLines>(points);
-    auto indirectLines = std::make_shared<vcl::DrawableIndirectLines>(points);
-    auto textureLines = std::make_shared<vcl::DrawableTextureLines>(points);
+        pushRandomLine(vertCoords, vertColors);
+    
+    auto cpuLines = std::make_shared<vcl::DrawableCPULines>(vertCoords, vertColors, vertNormals);
+    // auto gpuLines = std::make_shared<vcl::DrawableGPULines>(points);
+    // auto instancingLines = std::make_shared<vcl::DrawableInstancingLines>(points);
+    // auto indirectLines = std::make_shared<vcl::DrawableIndirectLines>(points);
+    // auto textureLines = std::make_shared<vcl::DrawableTextureLines>(points);
 
     cpuLines->settings().setColorToUse(
         vcl::LineColorToUse::PER_VERTEX_COLOR);
-    gpuLines->settings().setColorToUse(
-        vcl::LineColorToUse::PER_VERTEX_COLOR);
-    instancingLines->settings().setColorToUse(
-        vcl::LineColorToUse::PER_VERTEX_COLOR);
-    indirectLines->settings().setColorToUse(
-        vcl::LineColorToUse::PER_VERTEX_COLOR);
-    textureLines->settings().setColorToUse(
-        vcl::LineColorToUse::PER_VERTEX_COLOR);
+    // gpuLines->settings().setColorToUse(
+    //     vcl::LineColorToUse::PER_VERTEX_COLOR);
+    // instancingLines->settings().setColorToUse(
+    //     vcl::LineColorToUse::PER_VERTEX_COLOR);
+    // indirectLines->settings().setColorToUse(
+    //     vcl::LineColorToUse::PER_VERTEX_COLOR);
+    // textureLines->settings().setColorToUse(
+    //     vcl::LineColorToUse::PER_VERTEX_COLOR);
 
     vec.pushBack(*cpuLines.get());
-    vec.pushBack(*gpuLines.get());
-    vec.pushBack(*instancingLines.get());
-    vec.pushBack(*indirectLines.get());
-    vec.pushBack(*textureLines.get());
+    // vec.pushBack(*gpuLines.get());
+    // vec.pushBack(*instancingLines.get());
+    // vec.pushBack(*indirectLines.get());
+    // vec.pushBack(*textureLines.get());
 
-    for (vcl::uint i = 0; i < 5; ++i) {
+    for (vcl::uint i = 0; i < vec.size(); ++i) {
         vec.at(i)->setVisibility(false);
     }
 

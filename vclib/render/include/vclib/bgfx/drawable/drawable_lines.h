@@ -25,8 +25,8 @@
 
 #include "lines/cpu_generated_lines.h"
 #include "lines/gpu_generated_lines.h"
-#include "lines/instancing_based_lines.h"
 #include "lines/indirect_based_lines.h"
+#include "lines/instancing_based_lines.h"
 #include "lines/texture_based_lines.h"
 
 #include <vclib/bgfx/context.h>
@@ -39,21 +39,31 @@ namespace vcl {
 template<typename LinesImplementation = CPUGeneratedLines>
 class DrawableLines : public vcl::DrawableObject
 {
-    std::vector<LinesVertex> mPoints;
-    LinesImplementation      mLines;
-    bool                     mVisible = true;
+    std::vector<float> mVertCoords;
+    std::vector<uint>  mVertColors;
+    std::vector<float> mVertNormals;
+
+    LinesImplementation mLines;
+    bool                mVisible = true;
 
 public:
     DrawableLines() = default;
 
-    DrawableLines(const std::vector<LinesVertex>& points) :
-            mPoints(points), mLines(points)
+    DrawableLines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>()) :
+            mVertCoords(vertCoords), mVertColors(vertColors),
+            mVertNormals(vertNormals),
+            mLines(vertCoords, vertColors, vertNormals)
     {
     }
 
-    DrawableLines(const DrawableLines& other) : DrawableObject(other),
-            mPoints(other.mPoints), mLines(other.mPoints),
-            mVisible(other.mVisible)
+    DrawableLines(const DrawableLines& other) :
+            DrawableObject(other), mVertCoords(other.mVertCoords),
+            mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
+            mVisible(other.mVisible),
+            mLines(other.mVertCoords, other.mVertColors, other.mVertNormals)
     {
         mLines.settings() = other.settings();
     }
@@ -72,7 +82,10 @@ public:
     {
         using std::swap;
         DrawableObject::swap(other);
-        swap(mPoints, other.mPoints);
+
+        swap(mVertCoords, other.mVertCoords);
+        swap(mVertColors, other.mVertColors);
+        swap(mVertNormals, other.mVertNormals);
         swap(mLines, other.mLines);
         swap(mVisible, other.mVisible);
     }
@@ -115,11 +128,11 @@ public:
     void setVisibility(bool vis) override { mVisible = vis; }
 };
 
-using DrawableCPULines = DrawableLines<CPUGeneratedLines>;
-using DrawableGPULines = DrawableLines<GPUGeneratedLines>;
-using DrawableIndirectLines = DrawableLines<IndirectBasedLines>;
-using DrawableInstancingLines = DrawableLines<InstancingBasedLines>;
-using DrawableTextureLines = DrawableLines<TextureBasedLines>;
+using DrawableCPULines        = DrawableLines<CPUGeneratedLines>;
+// using DrawableGPULines        = DrawableLines<GPUGeneratedLines>;
+// using DrawableIndirectLines   = DrawableLines<IndirectBasedLines>;
+// using DrawableInstancingLines = DrawableLines<InstancingBasedLines>;
+// using DrawableTextureLines    = DrawableLines<TextureBasedLines>;
 
 } // namespace vcl
 

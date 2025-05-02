@@ -58,9 +58,9 @@ public:
         if (!ParentDrawer::isWindowMinimized()) {
             ImGui::Begin("Showing");
 
-            const char* items[] = { "CPU Generated", "GPU Generated", "Instancing Based", "Indirect Based", "Texture Based" };
+            const char* items[] = { "CPU Generated" };
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 1; i++)
                 ImGui::RadioButton(items[i], &mSelcted, i);
             ImGui::End();
         }
