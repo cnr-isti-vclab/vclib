@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.sc": "glsl",
+        "vector": "cpp"
+    }
+}

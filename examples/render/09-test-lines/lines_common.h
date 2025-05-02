@@ -28,7 +28,7 @@
 
 #include <random>
 
-void pushRandomLine(std::vector<float>& vertCoords, std::vector<uint>& vertColors)
+void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vertColors)
 {
     std::random_device rd;
     std::mt19937       gen(rd());
@@ -58,8 +58,8 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
     vcl::DrawableObjectVector vec;
 
     std::vector<float> vertCoords;
-    std::vector<uint> vertColors;
-    std::vector<float> vertNormals(nLines, 0.0f); 
+    std::vector<vcl::uint> vertColors;
+    std::vector<float> vertNormals(nLines * 2 * 3, 0.0f); 
     
     for (vcl::uint i = 0; i < nLines; i++)
         pushRandomLine(vertCoords, vertColors);

@@ -45,7 +45,7 @@ class PolylinesImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
 public:
     using ParentDrawer::ParentDrawer;
 
-    PolylinesImGuiDrawer(uint, uint) 
+    PolylinesImGuiDrawer(vcl::uint, vcl::uint) 
     {
         mLines = std::make_shared<vcl::DrawableObjectVector>(getDrawableLines(N_LINES));
     }

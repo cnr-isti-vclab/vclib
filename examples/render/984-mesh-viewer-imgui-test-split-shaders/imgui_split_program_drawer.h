@@ -50,7 +50,7 @@ public:
 
     ImguiSplitProgramDrawer() {};
 
-    void onDraw(uint viewId) override
+    void onDraw(vcl::uint viewId) override
     {
         Base::onDraw(viewId);
 
@@ -64,7 +64,7 @@ public:
         };
         static const char* current_item = items[0];
 
-        static uint currNum = 0;
+        static vcl::uint currNum = 0;
 
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::BeginCombo("##combo", current_item)) {
