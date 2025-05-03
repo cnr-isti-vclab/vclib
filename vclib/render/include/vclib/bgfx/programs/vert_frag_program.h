@@ -95,7 +95,6 @@ enum class VertFragProgram {
     FONT_DISTANCE_FIELD_SUBPIXEL,
 
     LINES,
-    LINES_INDIRECT,
     LINES_INSTANCING,
     LINES_TEXTURE,
 

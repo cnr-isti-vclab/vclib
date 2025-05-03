@@ -82,7 +82,6 @@
 #include "embedded_vf_programs/font_distance_field_outline_image.h"
 #include "embedded_vf_programs/font_distance_field_subpixel.h"
 #include "embedded_vf_programs/lines.h"
-#include "embedded_vf_programs/lines_indirect.h"
 #include "embedded_vf_programs/lines_instancing.h"
 #include "embedded_vf_programs/lines_texture.h"
 #include "embedded_vf_programs/polylines.h"

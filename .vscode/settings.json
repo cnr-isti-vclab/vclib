@@ -97,6 +97,13 @@
         "xutility": "cpp",
         "*.sh": "cpp",
         "core": "cpp",
-        "*.hpp11": "cpp"
+        "*.hpp11": "cpp",
+        "codecvt": "cpp",
+        "cwctype": "cpp",
+        "memory_resource": "cpp",
+        "string_view": "cpp",
+        "semaphore": "cpp",
+        "text_encoding": "cpp",
+        "cinttypes": "cpp"
     }
 }

@@ -22,11 +22,36 @@
 
 #include <bgfx_compute.sh>
 
-BUFFER_WO(indirectBuffer, uvec4, 0);
-uniform vec4 u_IndirectData;
+BUFFER_RO(coordsBuffer,         vec4,  0);
+BUFFER_RO(colorBuffer,          uint,  1);
+BUFFER_RO(normalsBuffer,        vec4,  2);
+
+BUFFER_WO(instanceDataBuffer,   vec4,  3);
+
+#define get_float_from_vec4(pos, myBuffer) myBuffer[uint(pos) / 4][uint(pos) % 4]
+
+#define p(pos)        vec3(get_float_from_vec4(((pos) * 3) + 0, coordsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 1, coordsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 2, coordsBuffer))
+
+#define color(pos)    colorBuffer[pos]
+
+#define normal(pos)   vec3(get_float_from_vec4(((pos) * 3) + 0, normalsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 1, normalsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 2, normalsBuffer))    
 
 NUM_THREADS(1, 1, 1)
 void main()
 {
-    drawIndexedIndirect(indirectBuffer, 0, 6, u_IndirectData.x, 0, 0, 0);
+    vec3 p0          = p((gl_WorkGroupID.x * 2));
+    vec3 p1          = p((gl_WorkGroupID.x * 2) + 1);
+    uint color0     = color((gl_WorkGroupID.x * 2));
+    uint color1     = color((gl_WorkGroupID.x * 2) + 1);
+    vec3 normal0     = normal((gl_WorkGroupID.x * 2));
+    vec3 normal1     = normal((gl_WorkGroupID.x * 2) + 1);
+
+    instanceDataBuffer[(gl_WorkGroupID.x * 4)]      = vec4(p0.xyz, uintBitsToFloat(color0));
+    instanceDataBuffer[(gl_WorkGroupID.x * 4) + 1]  = vec4(p1.xyz, uintBitsToFloat(color1));
+    instanceDataBuffer[(gl_WorkGroupID.x * 4) + 2]  = vec4(normal0.xyz, 0);
+    instanceDataBuffer[(gl_WorkGroupID.x * 4) + 3]  = vec4(normal1.xyz, 0);
 }

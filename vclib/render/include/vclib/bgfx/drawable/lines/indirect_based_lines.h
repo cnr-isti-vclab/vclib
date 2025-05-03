@@ -41,23 +41,31 @@ class IndirectBasedLines : public Lines<LineSettings>
         Context::instance()
             .programManager()
             .getComputeProgram<ComputeProgram::LINES_INDIRECT>();
+
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::LINES_INDIRECT>();
+            .getProgram<VertFragProgram::LINES_INSTANCING>();
 
+
+    VertexBuffer mVertCoords;
+    VertexBuffer mVertColors;
+    VertexBuffer mVertNormals;
+ 
     VertexBuffer mVertices;
-    IndexBuffer  mIndices;
+    IndexBuffer mIndices;
 
-    VertexBuffer mPoints;
+    VertexBuffer mInstanceData;
 
-    IndirectBuffer mIndirect;
-    Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
+    uint mNumPoints;
 
 public:
     IndirectBasedLines();
 
-    IndirectBasedLines(const std::vector<LinesVertex>& points);
+    IndirectBasedLines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(IndirectBasedLines& other);
 
@@ -68,7 +76,10 @@ public:
 
     void draw(uint viewId) const;
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
 private:
     void checkCaps() const
@@ -85,9 +96,15 @@ private:
         }
     }
 
-    void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
+    void setCoordsBuffers(const std::vector<float>& vertCoords);
 
-    void generateIndirectBuffer(uint pointSize);
+    void setColorsBuffers(const std::vector<uint>& vertColors);
+
+    void setNormalsBuffers(const std::vector<float>& vertNormals);
+
+    void allocateInstanceData();       
+
+    void generateInstanceDataBuffer();
 };
 
 } // namespace vcl

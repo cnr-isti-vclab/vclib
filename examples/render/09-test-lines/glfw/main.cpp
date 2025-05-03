@@ -39,7 +39,7 @@ class LinesImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
     std::shared_ptr<vcl::DrawableObjectVector> mLines;
-    const vcl::uint N_LINES = 100;
+    const vcl::uint N_LINES = 1000;
     int mSelcted = 0;
 
 public:
