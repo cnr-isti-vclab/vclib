@@ -42,7 +42,9 @@ class InstancingBasedLines : public Lines<LineSettings>
             .programManager()
             .getProgram<VertFragProgram::LINES_INSTANCING>();
 
-    std::vector<LinesVertex> mPoints;
+    std::vector<float> mVertCoords;
+    std::vector<uint> mVertColors;
+    std::vector<float> mVertNormals;
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
@@ -52,13 +54,19 @@ class InstancingBasedLines : public Lines<LineSettings>
 public:
     InstancingBasedLines();
 
-    InstancingBasedLines(const std::vector<LinesVertex>& points);
+    InstancingBasedLines(        
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(InstancingBasedLines& other);
 
     void draw(uint viewId) const;
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
 private:
     void checkCaps() const

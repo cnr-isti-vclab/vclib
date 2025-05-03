@@ -39,9 +39,11 @@ InstancingBasedLines::InstancingBasedLines()
 }
 
 InstancingBasedLines::InstancingBasedLines(
-    const std::vector<LinesVertex>& points) : InstancingBasedLines()
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals) : InstancingBasedLines()
 {
-    setPoints(points);
+    setPoints(vertCoords, vertColors, vertNormals);
 }
 
 void InstancingBasedLines::swap(InstancingBasedLines& other)
@@ -50,7 +52,9 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
 
     Lines::swap(other);
 
-    swap(mPoints, other.mPoints);
+    swap(mVertCoords, other.mVertCoords);
+    swap(mVertColors, other.mVertColors);
+    swap(mVertNormals, other.mVertNormals);
 
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
@@ -59,7 +63,7 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
 
 void InstancingBasedLines::draw(uint viewId) const
 {
-    if (mPoints.size() > 1) {
+    if ((mVertCoords.size() / 3) > 1) {
         bindSettingsUniform();
 
         generateInstanceDataBuffer();
@@ -73,47 +77,53 @@ void InstancingBasedLines::draw(uint viewId) const
     }
 }
 
-void InstancingBasedLines::setPoints(const std::vector<LinesVertex>& points)
+void InstancingBasedLines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals)
 {
-    mPoints = points;
+    mVertCoords = vertCoords;
+    mVertColors = vertColors;
+    mVertNormals = vertNormals;
 }
 
 void InstancingBasedLines::generateInstanceDataBuffer() const
 {
+    const uint nPoints = mVertCoords.size() / 3;
     const uint16_t stride = sizeof(float) * 16;
-    uint           size   = (mPoints.size() / 2);
+    uint           size   = (nPoints / 2);
 
     uint linesNum = bgfx::getAvailInstanceDataBuffer(size, stride);
     bgfx::allocInstanceDataBuffer(&mInstanceDB, size, stride);
 
     uint8_t* data = mInstanceDB.data;
-    for (uint i = 1; i < mPoints.size(); i += 2) {
+    for (uint i = 1; i < nPoints; i += 2) {
         float* p0 = reinterpret_cast<float*>(data);
-        p0[0]     = mPoints[i - 1].X;
-        p0[1]     = mPoints[i - 1].Y;
-        p0[2]     = mPoints[i - 1].Z;
+        p0[0]     = mVertCoords[((i - 1) * 3)];
+        p0[1]     = mVertCoords[((i - 1) * 3) + 1];
+        p0[2]     = mVertCoords[((i - 1) * 3) + 2];
 
         uint* color0 = reinterpret_cast<uint*>(&data[12]);
-        color0[0]    = mPoints[i - 1].getABGRColor();
+        color0[0]    = mVertColors[i - 1];
 
         float* p1 = reinterpret_cast<float*>(&data[16]);
-        p1[0]     = mPoints[i].X;
-        p1[1]     = mPoints[i].Y;
-        p1[2]     = mPoints[i].Z;
+        p1[0]     = mVertCoords[(i * 3)];
+        p1[1]     = mVertCoords[(i * 3) + 1];
+        p1[2]     = mVertCoords[(i * 3) + 2];
 
         uint* color1 = reinterpret_cast<uint*>(&data[28]);
-        color1[0]    = mPoints[i].getABGRColor();
+        color1[0]    = mVertColors[i];
 
         float* n0 = reinterpret_cast<float*>(&data[32]);
-        n0[0]     = mPoints[i - 1].xN;
-        n0[1]     = mPoints[i - 1].yN;
-        n0[2]     = mPoints[i - 1].zN;
+        n0[0]     = mVertNormals[((i - 1) * 3)];
+        n0[1]     = mVertNormals[((i - 1) * 3) + 1];
+        n0[2]     = mVertNormals[((i - 1) * 3) + 2];
         n0[3]     = 0;
 
         float* n1 = reinterpret_cast<float*>(&data[48]);
-        n1[0]     = mPoints[i].xN;
-        n1[1]     = mPoints[i].yN;
-        n1[2]     = mPoints[i].zN;
+        n1[0]     = mVertNormals[(i * 3)];
+        n1[1]     = mVertNormals[(i * 3) + 1];
+        n1[2]     = mVertNormals[(i * 3) + 2];
         n1[3]     = 0;
 
         data += stride;

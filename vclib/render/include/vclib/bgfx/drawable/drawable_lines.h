@@ -130,8 +130,8 @@ public:
 
 using DrawableCPULines        = DrawableLines<CPUGeneratedLines>;
 using DrawableGPULines        = DrawableLines<GPUGeneratedLines>;
+using DrawableInstancingLines = DrawableLines<InstancingBasedLines>;
 // using DrawableIndirectLines   = DrawableLines<IndirectBasedLines>;
-// using DrawableInstancingLines = DrawableLines<InstancingBasedLines>;
 // using DrawableTextureLines    = DrawableLines<TextureBasedLines>;
 
 } // namespace vcl
