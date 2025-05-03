@@ -35,7 +35,7 @@ BUFFER_WO(indexBuffer,       uint,  4);
                            get_float_from_vec4(((pos) * 3) + 1, coordsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 2, coordsBuffer))
 
-#define color(pos)    1.0
+#define color(pos)    colorBuffer[pos]
 
 #define normal(pos)   vec3(get_float_from_vec4(((pos) * 3) + 0, normalsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 1, normalsBuffer), \
@@ -47,11 +47,11 @@ void main() {
 
     vec3 p0        = p((gl_WorkGroupID.x * 2));
     vec3 p1        = p((gl_WorkGroupID.x * 2) + 1);
-    float color    = color((gl_WorkGroupID.x * 2) + (1 - ((uint)(gl_LocalInvocationID.x + 1) % 2)));
+    uint color    = color((gl_WorkGroupID.x * 2) + (1 - ((uint)(gl_LocalInvocationID.x + 1) % 2)));
     vec3 normal    = normal((gl_WorkGroupID.x * 2) + (1 - ((uint)(gl_LocalInvocationID.x + 1) % 2)));
 
-    vertexBuffer[baseIndex]     = vec4(coordsBuffer[1].y, p0.y, p0.z, p1.x);
-    vertexBuffer[baseIndex + 1] = vec4(p1.y, p1.z, 0, normal.x);
+    vertexBuffer[baseIndex]     = vec4(p0.x, p0.y, p0.z, p1.x);
+    vertexBuffer[baseIndex + 1] = vec4(p1.y, p1.z, uintBitsToFloat(color), normal.x);
     vertexBuffer[baseIndex + 2] = vec4(normal.y, normal.z, gl_LocalInvocationID.x, gl_LocalInvocationID.y);
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {

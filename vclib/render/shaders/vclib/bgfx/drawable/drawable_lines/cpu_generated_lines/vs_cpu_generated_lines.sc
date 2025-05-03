@@ -54,7 +54,4 @@ void main() {
 
     v_uv = calculateLinesUV(p0_px, p1_px, uv, v_length, u_thickness, u_antialias, u_border, u_leftCap, u_rigthCap);
     gl_Position = calculateLines(p0_px, p1_px, uv, v_length, u_thickness, u_antialias, u_border, u_screenWidth, u_screenHeigth, u_leftCap, u_rigthCap);
-
-    v_color = vec4(p0.x, 0, 0, 1);
-    gl_Position = vec4(uv.xy, 0, 1);
 }

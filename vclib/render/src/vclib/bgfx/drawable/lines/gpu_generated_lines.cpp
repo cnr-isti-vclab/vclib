@@ -111,13 +111,13 @@ void GPUGeneratedLines::SetColorsBuffers(const std::vector<uint>& vertColors)
 
     std::copy(vertColors.begin(), vertColors.end(), buffer);
 
-    mVertCoords.createForCompute(
+    mVertColors.createForCompute(
         buffer,
         vertColors.size(),
         bgfx::Attrib::Color0,
         4,
         PrimitiveType::UCHAR,
-        false,
+        true,
         bgfx::Access::Read,
         releaseFn
     );
@@ -130,7 +130,7 @@ void GPUGeneratedLines::SetNormalsBuffers(const std::vector<float>& vertNormals)
 
     std::copy(vertNormals.begin(), vertNormals.end(), buffer);
 
-    mVertCoords.createForCompute(
+    mVertNormals.createForCompute(
         buffer,
         vertNormals.size() / 3,
         bgfx::Attrib::Normal,

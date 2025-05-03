@@ -39,15 +39,15 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
     float g = disColor(gen);
     float b = disColor(gen);
 
-    vertCoords.emplace_back(1);
-    vertCoords.emplace_back(0);
-    vertCoords.emplace_back(0);
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
 
     vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
 
-    vertCoords.emplace_back(0);
-    vertCoords.emplace_back(1);
-    vertCoords.emplace_back(0);
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
 
     vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
 }
