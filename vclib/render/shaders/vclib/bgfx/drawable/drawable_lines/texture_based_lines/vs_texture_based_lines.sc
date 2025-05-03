@@ -52,8 +52,8 @@ void main() {
     vec4 normal0     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 2, maxTextureSize));
     vec4 normal1     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 3, maxTextureSize));
 
-    vec4 color0 = uintRGBAToVec4FloatColor(floatBitsToUint(p0.w));
-    vec4 color1 = uintRGBAToVec4FloatColor(floatBitsToUint(p1.w));
+    vec4 color0 = uintABGRToVec4Color(floatBitsToUint(p0.w));
+    vec4 color1 = uintABGRToVec4Color(floatBitsToUint(p1.w));
 
     vec4 p0_px = calculatePointWithMVP(p0, u_screenWidth, u_screenHeigth);
     vec4 p1_px = calculatePointWithMVP(p1, u_screenWidth, u_screenHeigth);

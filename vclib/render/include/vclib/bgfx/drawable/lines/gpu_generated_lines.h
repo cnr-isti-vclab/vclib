@@ -89,11 +89,11 @@ private:
         }
     }
 
-    void SetCoordsBuffers(const std::vector<float>& vertCoords);
+    void setCoordsBuffers(const std::vector<float>& vertCoords);
 
-    void SetColorsBuffers(const std::vector<uint>& vertColors);
+    void setColorsBuffers(const std::vector<uint>& vertColors);
 
-    void SetNormalsBuffers(const std::vector<float>& vertNormals);
+    void setNormalsBuffers(const std::vector<float>& vertNormals);
 
     void allocateVertexBuffer(uint pointsSize);
 

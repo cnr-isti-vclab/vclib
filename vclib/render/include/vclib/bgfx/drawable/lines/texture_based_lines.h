@@ -51,7 +51,10 @@ class TextureBasedLines : public Lines<LineSettings>
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
 
-    VertexBuffer mPoints;
+    VertexBuffer mVertCoords;
+    VertexBuffer mVertColors;
+    VertexBuffer mVertNormals;    
+    
     TextureBuffer mTexture;
 
     IndirectBuffer mIndirect;
@@ -60,7 +63,10 @@ class TextureBasedLines : public Lines<LineSettings>
 public:
     TextureBasedLines();
 
-    TextureBasedLines(const std::vector<LinesVertex>& points);
+    TextureBasedLines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(TextureBasedLines& other);
 
@@ -68,7 +74,10 @@ public:
 
     void draw(uint viewId) const;
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
 private:
     void checkCaps() const
@@ -89,6 +98,12 @@ private:
                 "supported");
         }
     }
+
+    void setCoordsBuffers(const std::vector<float>& vertCoords);
+
+    void setColorsBuffers(const std::vector<uint>& vertColors);
+
+    void setNormalsBuffers(const std::vector<float>& vertNormals);
 
     void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
 

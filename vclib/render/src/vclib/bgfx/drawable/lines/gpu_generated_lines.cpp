@@ -66,9 +66,9 @@ void GPUGeneratedLines::setPoints(
 {
     const uint nPoints = vertCoords.size() / 3;
     if (nPoints > 1) {
-        SetCoordsBuffers(vertCoords);
-        SetColorsBuffers(vertColors);
-        SetNormalsBuffers(vertNormals);
+        setCoordsBuffers(vertCoords);
+        setColorsBuffers(vertColors);
+        setNormalsBuffers(vertNormals);
 
         allocateVertexBuffer(nPoints);
         allocateIndexBuffer(nPoints);
@@ -85,7 +85,7 @@ void GPUGeneratedLines::setPoints(
     }
 }
 
-void GPUGeneratedLines::SetCoordsBuffers(const std::vector<float>& vertCoords)
+void GPUGeneratedLines::setCoordsBuffers(const std::vector<float>& vertCoords)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
@@ -104,7 +104,7 @@ void GPUGeneratedLines::SetCoordsBuffers(const std::vector<float>& vertCoords)
     );
 }
 
-void GPUGeneratedLines::SetColorsBuffers(const std::vector<uint>& vertColors)
+void GPUGeneratedLines::setColorsBuffers(const std::vector<uint>& vertColors)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<uint>(vertColors.size());
@@ -123,7 +123,7 @@ void GPUGeneratedLines::SetColorsBuffers(const std::vector<uint>& vertColors)
     );
 }
 
-void GPUGeneratedLines::SetNormalsBuffers(const std::vector<float>& vertNormals)
+void GPUGeneratedLines::setNormalsBuffers(const std::vector<float>& vertNormals)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<float>(vertNormals.size());
