@@ -39,9 +39,11 @@ InstancingBasedPolylines::InstancingBasedPolylines()
 }
 
 InstancingBasedPolylines::InstancingBasedPolylines(
-    const std::vector<LinesVertex>& points) : InstancingBasedPolylines()
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals) : InstancingBasedPolylines()
 {
-    setPoints(points);
+    setPoints(vertCoords, vertColors, vertNormals);
 }
 
 void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
@@ -50,7 +52,9 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 
     Lines::swap(other);
 
-    swap(mPoints, other.mPoints);
+    swap(mVertCoords, other.mVertCoords);
+    swap(mVertColors, other.mVertColors);
+    swap(mVertNormals, other.mVertNormals);
 
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
@@ -60,7 +64,8 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 
 void InstancingBasedPolylines::draw(uint viewId) const
 {
-    if (mPoints.size() > 1) {
+    const uint nPoints = mVertCoords.size() / 3;
+    if (nPoints > 1) {
         bindSettingsUniform();
 
         generateInstanceBuffer();
@@ -81,23 +86,30 @@ void InstancingBasedPolylines::draw(uint viewId) const
     }
 }
 
-void InstancingBasedPolylines::setPoints(const std::vector<LinesVertex>& points)
+void InstancingBasedPolylines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals)
 {
-    mPoints = points;
+    mVertCoords = vertCoords;
+    mVertColors = vertColors;
+    mVertNormals = vertNormals;
 }
 
 void InstancingBasedPolylines::generateInstanceBuffer() const
 {
+    const uint nPoints = mVertCoords.size() / 3;
+
     const uint16_t strideSegments = sizeof(float) * 20;
     uint       linesNumSegments =
-        bgfx::getAvailInstanceDataBuffer(mPoints.size() - 1, strideSegments);
+        bgfx::getAvailInstanceDataBuffer(nPoints - 1, strideSegments);
     bgfx::allocInstanceDataBuffer(
         &mSegmentsInstanceDB, linesNumSegments, strideSegments);
 
     const uint16_t strideJoints = sizeof(float) * 16;
-    if (mPoints.size() > 2) {
+    if (nPoints > 2) {
         uint linesNumJoints =
-            bgfx::getAvailInstanceDataBuffer(mPoints.size() - 2, strideJoints);
+            bgfx::getAvailInstanceDataBuffer(nPoints - 2, strideJoints);
         bgfx::allocInstanceDataBuffer(
             &mJointsInstanceDB, linesNumJoints, strideJoints);
     }
@@ -107,67 +119,67 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
 
     for (uint i = 0; i < linesNumSegments; i++) {
         float* prevSegments = reinterpret_cast<float*>(dataSegments);
-        prevSegments[0]     = mPoints[i - !!i].X;
-        prevSegments[1]     = mPoints[i - !!i].Y;
-        prevSegments[2]     = mPoints[i - !!i].Z;
-        prevSegments[3]     = mPoints[i].xN;
+        prevSegments[0]     = mVertCoords[((i - !!i) * 3)];
+        prevSegments[1]     = mVertCoords[((i - !!i) * 3) + 1];
+        prevSegments[2]     = mVertCoords[((i - !!i) * 3) + 2];
+        prevSegments[3]     = mVertNormals[(i * 3)];
 
         float* currSegments = reinterpret_cast<float*>(&dataSegments[16]);
-        currSegments[0]     = mPoints[i].X;
-        currSegments[1]     = mPoints[i].Y;
-        currSegments[2]     = mPoints[i].Z;
+        currSegments[0]     = mVertCoords[(i * 3)];
+        currSegments[1]     = mVertCoords[(i * 3) + 1];
+        currSegments[2]     = mVertCoords[(i * 3) + 2];
 
         uint* color0 = reinterpret_cast<uint*>(&dataSegments[28]);
-        color0[0]        = mPoints[i].getABGRColor();
+        color0[0]        = mVertColors[i];
 
         float* nextSegments = reinterpret_cast<float*>(&dataSegments[32]);
-        nextSegments[0]     = mPoints[i + 1].X;
-        nextSegments[1]     = mPoints[i + 1].Y;
-        nextSegments[2]     = mPoints[i + 1].Z;
+        nextSegments[0]     = mVertCoords[((i + 1) * 3)];
+        nextSegments[1]     = mVertCoords[((i + 1) * 3) + 1];
+        nextSegments[2]     = mVertCoords[((i + 1) * 3) + 2];
 
         uint* color1 = reinterpret_cast<uint*>(&dataSegments[44]);
-        color1[0]        = mPoints[i + 1].getABGRColor();
+        color1[0]           = mVertColors[i + 1];
 
         float* next_nextSegments = reinterpret_cast<float*>(&dataSegments[48]);
         next_nextSegments[0] =
-            mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].X;
+            mVertCoords[((i + 1 + (!!(linesNumSegments - 1 - i))) * 3)];
         next_nextSegments[1] =
-            mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].Y;
+            mVertCoords[((i + 1 + (!!(linesNumSegments - 1 - i))) * 3) + 1];
         next_nextSegments[2] =
-            mPoints[i + 1 + (!!(linesNumSegments - 1 - i))].Z;
-        next_nextSegments[3] = mPoints[i].yN;
+            mVertCoords[((i + 1 + (!!(linesNumSegments - 1 - i))) * 3) + 2];
+        next_nextSegments[3] = mVertNormals[(i * 3) + 1];
 
         float* normalSegments = reinterpret_cast<float*>(&dataSegments[64]);
-        normalSegments[0]     = mPoints[i].zN;
-        normalSegments[1]     = mPoints[i + 1].xN;
-        normalSegments[2]     = mPoints[i + 1].yN;
-        normalSegments[3]     = mPoints[i + 1].zN;
+        normalSegments[0]     = mVertNormals[(i * 3) + 2];
+        normalSegments[1]     = mVertNormals[((i + 1) * 3)];
+        normalSegments[2]     = mVertNormals[((i + 1) * 3) + 1];
+        normalSegments[3]     = mVertNormals[((i + 1) * 3) + 2];
 
         if (i > 0) {
             float* prevJoint = reinterpret_cast<float*>(dataJoints);
-            prevJoint[0]     = mPoints[i - 1].X;
-            prevJoint[1]     = mPoints[i - 1].Y;
-            prevJoint[2]     = mPoints[i - 1].Z;
+            prevJoint[0]     = mVertCoords[((i - 1) * 3)];
+            prevJoint[1]     = mVertCoords[((i - 1) * 3) + 1];
+            prevJoint[2]     = mVertCoords[((i - 1) * 3) + 2];
             prevJoint[3]     = 0.0f;
 
             float* currJoint = reinterpret_cast<float*>(&dataJoints[16]);
-            currJoint[0]     = mPoints[i].X;
-            currJoint[1]     = mPoints[i].Y;
-            currJoint[2]     = mPoints[i].Z;
+            currJoint[0]     = mVertCoords[(i * 3)];
+            currJoint[1]     = mVertCoords[(i * 3) + 1];
+            currJoint[2]     = mVertCoords[(i * 3) + 2];
 
             uint* colorJoint = reinterpret_cast<uint*>(&dataJoints[28]);
-            colorJoint[0]        = mPoints[i].getABGRColor();
+            colorJoint[0]    = mVertColors[i];
 
             float* nextJoint = reinterpret_cast<float*>(&dataJoints[32]);
-            nextJoint[0]     = mPoints[i + 1].X;
-            nextJoint[1]     = mPoints[i + 1].Y;
-            nextJoint[2]     = mPoints[i + 1].Z;
+            nextJoint[0]     = mVertCoords[((i + 1) * 3)];
+            nextJoint[1]     = mVertCoords[((i + 1) * 3) + 1];
+            nextJoint[2]     = mVertCoords[((i + 1) * 3) + 2];
             nextJoint[3]     = 0.0f;
 
             float* normalJoint = reinterpret_cast<float*>(&dataJoints[48]);
-            normalJoint[0]     = mPoints[i].xN;
-            normalJoint[1]     = mPoints[i].yN;
-            normalJoint[2]     = mPoints[i].zN;
+            normalJoint[0]     = mVertNormals[(i * 3)];
+            normalJoint[1]     = mVertNormals[(i * 3) + 1];
+            normalJoint[2]     = mVertNormals[(i * 3) + 2];
             normalJoint[3]     = 0;
 
             dataJoints += strideJoints;

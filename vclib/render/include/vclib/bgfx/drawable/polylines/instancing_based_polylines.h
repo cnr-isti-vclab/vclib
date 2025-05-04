@@ -48,7 +48,9 @@ class InstancingBasedPolylines : public Lines<PolylineSettings>
             .programManager()
             .getProgram<VertFragProgram::POLYLINES_INSTANCING>();
 
-    std::vector<LinesVertex> mPoints;
+    std::vector<float> mVertCoords;
+    std::vector<uint> mVertColors;
+    std::vector<float> mVertNormals;
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
@@ -59,13 +61,19 @@ class InstancingBasedPolylines : public Lines<PolylineSettings>
 public:
     InstancingBasedPolylines();
 
-    InstancingBasedPolylines(const std::vector<LinesVertex>& points);
+    InstancingBasedPolylines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(InstancingBasedPolylines& other);
 
     void draw(uint viewId) const;
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
 private:
     void checkCaps() const
