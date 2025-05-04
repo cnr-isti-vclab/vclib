@@ -75,7 +75,8 @@ public:
 
     void draw(uint viewId) const;
 
-    void setPoints(        const std::vector<float>& vertCoords,
+    void setPoints( 
+        const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals);
 

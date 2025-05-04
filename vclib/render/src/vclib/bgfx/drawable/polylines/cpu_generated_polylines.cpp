@@ -51,7 +51,7 @@ void CPUGeneratedPolylines::setPoints(
 {
     const uint nPoints = vertCoords.size() / 3;
     if (nPoints > 1) {
-        uint bufferVertsSize = (nPoints - 1) * 4 * 15;
+        uint bufferVertsSize = (nPoints - 1) * 4 * 16;
         uint bufferSegmetIndicesSize = (nPoints - 1) * 6;
         uint bufferJointsIndicesSize = (nPoints - 2) * 6;
 
@@ -96,6 +96,7 @@ void CPUGeneratedPolylines::setPoints(
 
                     vertices[vi++] = static_cast<float>(k);
                     vertices[vi++] = static_cast<float>(j);
+                    vertices[vi++] = 0.0f;
                 }
             }
 
@@ -127,7 +128,7 @@ void CPUGeneratedPolylines::setPoints(
             .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
             .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::TexCoord2, 2, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord2, 3, bgfx::AttribType::Float)
             .end();
 
         mVertices.create(

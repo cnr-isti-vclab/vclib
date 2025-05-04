@@ -137,7 +137,7 @@ public:
 };
 
 using DrawableCPUPolylines = DrawablePolylines<CPUGeneratedPolylines>;
-// using DrawableGPUPolylines = DrawablePolylines<GPUGeneratedPolylines>;
+using DrawableGPUPolylines = DrawablePolylines<GPUGeneratedPolylines>;
 // using DrawableIndirectPolylines = DrawablePolylines<IndirectBasedPolylines>;
 // using DrawableInstancingPolylines = DrawablePolylines<InstancingBasedPolylines>;
 // using DrawableTexturePolylines = DrawablePolylines<TextureBasedPolylines>;

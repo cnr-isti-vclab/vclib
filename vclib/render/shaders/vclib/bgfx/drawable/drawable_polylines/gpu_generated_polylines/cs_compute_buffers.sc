@@ -22,50 +22,47 @@
 
 #include <bgfx_compute.sh>
 
-BUFFER_RO(pointsBuffer,              float,  0);
-BUFFER_WO(vertexBuffer,              float,  1);
-BUFFER_WO(segmentsIndexBuffer,       uint,   2);
-BUFFER_WO(jointsIndexBuffer,         uint,   3);
+BUFFER_RO(coordsBuffer,              vec4,  0);
+BUFFER_RO(colorBuffer,               uint,  1);
+BUFFER_RO(normalsBuffer,             vec4,  2);
+
+BUFFER_WO(vertexBuffer,              vec4,  3);
+BUFFER_WO(segmentsIndexBuffer,       uint,  4);
+BUFFER_WO(jointsIndexBuffer,         uint,  5);
 
 uniform vec4 u_numWorksGroups;
 #define numWorksGroups u_numWorksGroups.x
 
-#define p(pos)        vec3(pointsBuffer[((pos) * 7) + 0], pointsBuffer[((pos) * 7) + 1], pointsBuffer[((pos) * 7) + 2])
-#define color(pos)    pointsBuffer[((pos) * 7) + 3]
-#define normal(pos)   vec3(pointsBuffer[((pos) * 7) + 4], pointsBuffer[((pos) * 7) + 5], pointsBuffer[((pos) * 7) + 6]) 
+#define get_float_from_vec4(pos, myBuffer) myBuffer[uint(pos) / 4][uint(pos) % 4]
+
+#define p(pos)        vec3(get_float_from_vec4(((pos) * 3) + 0, coordsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 1, coordsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 2, coordsBuffer))
+
+#define color(pos)    colorBuffer[pos]
+
+#define normal(pos)   vec3(get_float_from_vec4(((pos) * 3) + 0, normalsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 1, normalsBuffer), \
+                           get_float_from_vec4(((pos) * 3) + 2, normalsBuffer))     
+
 
 NUM_THREADS(2, 2, 1)
 void main() {
-    uint baseIndex = (gl_WorkGroupID.x * 60) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 15);
+    uint baseIndex = (gl_WorkGroupID.x * 16) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 4);
     uint actualPoint = gl_WorkGroupID.x + gl_LocalInvocationID.x;
     uint numPoints = numWorksGroups;
 
     vec3 prev       = p(actualPoint - sign(actualPoint));
     vec3 curr       = p(actualPoint);
     vec3 next       = p(actualPoint + sign(numPoints - actualPoint));
-    float color     = color(actualPoint);
+    uint color      = color(actualPoint);
     vec3 normal     = normal(actualPoint);
 
-    vertexBuffer[baseIndex + 0] = prev.x;
-    vertexBuffer[baseIndex + 1] = prev.y;
-    vertexBuffer[baseIndex + 2] = prev.z;
+    vertexBuffer[baseIndex + 0] = vec4(prev.x, prev.y, prev.z, curr.x);
+    vertexBuffer[baseIndex + 1] = vec4(curr.y, curr.z, next.x, next.y);
+    vertexBuffer[baseIndex + 2] = vec4(next.z, uintBitsToFloat(color), normal.x, normal.y);
+    vertexBuffer[baseIndex + 3] = vec4(normal.z, gl_LocalInvocationID.x, gl_LocalInvocationID.y, 0);
 
-    vertexBuffer[baseIndex + 3] = curr.x;
-    vertexBuffer[baseIndex + 4] = curr.y;
-    vertexBuffer[baseIndex + 5] = curr.z;
-
-    vertexBuffer[baseIndex + 6] = next.x;
-    vertexBuffer[baseIndex + 7] = next.y;
-    vertexBuffer[baseIndex + 8] = next.z;
-
-    vertexBuffer[baseIndex + 9]  = uintBitsToFloat(bitfieldReverse(floatBitsToUint(color)));
-
-    vertexBuffer[baseIndex + 10] = normal.x;
-    vertexBuffer[baseIndex + 11] = normal.y;
-    vertexBuffer[baseIndex + 12] = normal.z;
-
-    vertexBuffer[baseIndex + 13] = gl_LocalInvocationID.x;
-    vertexBuffer[baseIndex + 14] = gl_LocalInvocationID.y;
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {
         segmentsIndexBuffer[(gl_WorkGroupID.x * 6)]     = (gl_WorkGroupID.x * 4);
