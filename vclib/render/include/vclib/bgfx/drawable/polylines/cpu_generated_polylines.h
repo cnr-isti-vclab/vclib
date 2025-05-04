@@ -45,11 +45,17 @@ class CPUGeneratedPolylines : public Lines<PolylineSettings>
 public:
     CPUGeneratedPolylines() = default;
 
-    CPUGeneratedPolylines(const std::vector<LinesVertex>& points);
+    CPUGeneratedPolylines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(CPUGeneratedPolylines& other);
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void draw(uint viewId) const;
 };

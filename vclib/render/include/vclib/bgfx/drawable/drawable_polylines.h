@@ -39,20 +39,31 @@ namespace vcl {
 template<typename PolylinesImplementation = CPUGeneratedPolylines>
 class DrawablePolylines : public vcl::DrawableObject
 {
-    std::vector<LinesVertex> mPoints;
+    std::vector<float> mVertCoords;
+    std::vector<uint>  mVertColors;
+    std::vector<float> mVertNormals;
+
     PolylinesImplementation  mPolylines;
     bool                     mVisible = true;
 
 public:
     DrawablePolylines() = default;
 
-    DrawablePolylines(const std::vector<LinesVertex>& points) : mPoints(points)
+    DrawablePolylines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>()) :
+            mVertCoords(vertCoords), mVertColors(vertColors),
+            mVertNormals(vertNormals),
+            mPolylines(vertCoords, vertColors, vertNormals)
     {
     }
 
     DrawablePolylines(const DrawablePolylines& other) : DrawableObject(other),
-            mPoints(other.mPoints), mPolylines(other.mPoints),
-            mVisible(other.mVisible)
+            mVertCoords(other.mVertCoords),
+            mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
+            mVisible(other.mVisible),
+            mPolylines(other.mVertCoords, other.mVertColors, other.mVertNormals)
     {
         mPolylines.settings() = other.settings();
     }
@@ -71,7 +82,9 @@ public:
     {
         using std::swap;
         DrawableObject::swap(other);
-        swap(mPoints, other.mPoints);
+        swap(mVertCoords, other.mVertCoords);
+        swap(mVertColors, other.mVertColors);
+        swap(mVertNormals, other.mVertNormals);
         swap(mPolylines, other.mPolylines);
         swap(mVisible, other.mVisible);
     }
@@ -88,10 +101,15 @@ public:
         return mPolylines.settings();
     }
 
-    void setPoints(const std::vector<LinesVertex>& points)
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>())
     {
-        mPoints = points;
-        mPolylines.setPoints(points);
+        mVertCoords = vertCoords;
+        mVertColors = vertColors;
+        mVertNormals = vertNormals;        
+        mPolylines.setPoints(vertCoords, vertColors, vertNormals);
     }
 
     // DrawableObject interface
@@ -119,10 +137,10 @@ public:
 };
 
 using DrawableCPUPolylines = DrawablePolylines<CPUGeneratedPolylines>;
-using DrawableGPUPolylines = DrawablePolylines<GPUGeneratedPolylines>;
-using DrawableIndirectPolylines = DrawablePolylines<IndirectBasedPolylines>;
-using DrawableInstancingPolylines = DrawablePolylines<InstancingBasedPolylines>;
-using DrawableTexturePolylines = DrawablePolylines<TextureBasedPolylines>;
+// using DrawableGPUPolylines = DrawablePolylines<GPUGeneratedPolylines>;
+// using DrawableIndirectPolylines = DrawablePolylines<IndirectBasedPolylines>;
+// using DrawableInstancingPolylines = DrawablePolylines<InstancingBasedPolylines>;
+// using DrawableTexturePolylines = DrawablePolylines<TextureBasedPolylines>;
 
 } // namespace vcl
 

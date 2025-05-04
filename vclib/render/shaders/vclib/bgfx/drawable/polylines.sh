@@ -74,18 +74,11 @@ vec4 calculatePolylines(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thicknes
           final_miter =  miter_plane;
         }
 
-        #if 0
-          if(total_width > miter_limit) {
-              vec4 new_miter_direction = (N1 * (1-uv.x)) + (N0 * uv.x);
-              miter = new_miter_direction * half_thickness;
-          }
-        #endif
-
         p = curr + (v * final_miter) + (u * half_thickness * ((T1 * (1-uv.x)) + (T0 * uv.x)) * (1 - sign(joint)));
     } 
 
     p = screenToClip(p, screen_width, screen_heigth);
-    return vec4(p.xy, curr.z / curr.w, 1.0);
+    return vec4(p.xy * curr.w, curr.z, curr.w);
 }
 
 vec4 calculatePolylinesUV(vec4 prev, vec4 curr, vec4 next, vec2 uv, float thickness, float length_px, float leftCap, float rigthCap, float joint) {

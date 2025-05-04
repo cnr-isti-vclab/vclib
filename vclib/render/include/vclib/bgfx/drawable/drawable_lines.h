@@ -99,9 +99,15 @@ public:
 
     LineSettings& settings() { return mLines.settings(); }
 
-    void setPoints(const std::vector<LinesVertex>& points)
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>())
     {
-        mLines.setPoints(points);
+        mVertCoords = vertCoords;
+        mVertColors = vertColors;
+        mVertNormals = vertNormals;
+        mLines.setPoints(vertCoords, vertColors, vertNormals);
     }
 
     // DrawableObject interface

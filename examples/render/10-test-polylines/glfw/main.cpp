@@ -60,7 +60,7 @@ public:
 
             const char* items[] = { "CPU Generated", "GPU Generated", "Instancing Based", "Indirect Based", "Texture Based" };
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < mLines->size(); i++)
                 ImGui::RadioButton(items[i], &mSelcted, i);
             ImGui::End();
         }

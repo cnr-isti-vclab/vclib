@@ -25,10 +25,12 @@
 namespace vcl {
 
 CPUGeneratedPolylines::CPUGeneratedPolylines(
-    const std::vector<LinesVertex>& points)
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals)
 {
     assert(bgfx::isValid(mLinesPH));
-    setPoints(points);
+    setPoints(vertCoords, vertColors, vertNormals);
 }
 
 void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
@@ -42,12 +44,16 @@ void CPUGeneratedPolylines::swap(CPUGeneratedPolylines& other)
     swap(mJointIndices, other.mJointIndices);
 }
 
-void CPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
+void CPUGeneratedPolylines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals)
 {
-    if (points.size() > 1) {
-        uint bufferVertsSize = (points.size() - 1) * 4 * 15;
-        uint bufferSegmetIndicesSize = (points.size() - 1) * 6;
-        uint bufferJointsIndicesSize = (points.size() - 2) * 6;
+    const uint nPoints = vertCoords.size() / 3;
+    if (nPoints > 1) {
+        uint bufferVertsSize = (nPoints - 1) * 4 * 15;
+        uint bufferSegmetIndicesSize = (nPoints - 1) * 6;
+        uint bufferJointsIndicesSize = (nPoints - 2) * 6;
 
         auto [vertices, vReleaseFn] =
             getAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
@@ -62,32 +68,31 @@ void CPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
         uint si = 0;
         uint ji = 0;
 
-        for (uint i = 0; i < points.size() - 1; i++) {
+        for (uint i = 0; i < nPoints - 1; i++) {
             for (uint k = 0; k < 2; k++) {
                 for (uint j = 0; j < 2; j++) {
                     uint curr_index = i + k;
                     uint prev_index = curr_index - (curr_index == 0 ? 0 : 1);
                     uint next_index =
-                        curr_index + (curr_index == points.size() - 1 ? 0 : 1);
+                        curr_index + (curr_index == nPoints - 1 ? 0 : 1);
 
-                    vertices[vi++] = points[prev_index].X;
-                    vertices[vi++] = points[prev_index].Y;
-                    vertices[vi++] = points[prev_index].Z;
+                    vertices[vi++] = vertCoords[(prev_index * 3)];
+                    vertices[vi++] = vertCoords[(prev_index * 3) + 1];
+                    vertices[vi++] = vertCoords[(prev_index * 3) + 2];
 
-                    vertices[vi++] = points[curr_index].X;
-                    vertices[vi++] = points[curr_index].Y;
-                    vertices[vi++] = points[curr_index].Z;
+                    vertices[vi++] = vertCoords[(curr_index * 3)];
+                    vertices[vi++] = vertCoords[(curr_index * 3) + 1];
+                    vertices[vi++] = vertCoords[(curr_index * 3) + 2];
 
-                    vertices[vi++] = points[next_index].X;
-                    vertices[vi++] = points[next_index].Y;
-                    vertices[vi++] = points[next_index].Z;
+                    vertices[vi++] = vertCoords[(next_index * 3)];
+                    vertices[vi++] = vertCoords[(next_index * 3) + 1];
+                    vertices[vi++] = vertCoords[(next_index * 3) + 2];
 
-                    vertices[vi++] = std::bit_cast<float>(
-                        points[curr_index].getABGRColor());
+                    vertices[vi++] = std::bit_cast<float>(vertColors[curr_index]);
 
-                    vertices[vi++] = points[curr_index].xN;
-                    vertices[vi++] = points[curr_index].yN;
-                    vertices[vi++] = points[curr_index].zN;
+                    vertices[vi++] = vertNormals[(curr_index * 3)];
+                    vertices[vi++] = vertNormals[(curr_index * 3) + 1];
+                    vertices[vi++] = vertNormals[(curr_index * 3) + 2];
 
                     vertices[vi++] = static_cast<float>(k);
                     vertices[vi++] = static_cast<float>(j);
@@ -102,7 +107,7 @@ void CPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
             segmIndices[si++] = (i * 4) + 2;
             segmIndices[si++] = (i * 4) + 3;
 
-            if (points.size() > 2 && i != points.size() - 2) {
+            if (nPoints > 2 && i != nPoints - 2) {
                 jointIndices[ji++] = (i * 4) + 3;
                 jointIndices[ji++] = (i * 4) + 4;
                 jointIndices[ji++] = (i * 4) + 5;
@@ -135,7 +140,7 @@ void CPUGeneratedPolylines::setPoints(const std::vector<LinesVertex>& points)
                 segmIndices, sizeof(uint) * bufferSegmetIndicesSize, siReleaseFn),
             BGFX_BUFFER_INDEX32);
 
-        if (points.size() > 2) {
+        if (nPoints > 2) {
             mJointIndices.create(
                 bgfx::makeRef(
                     jointIndices, sizeof(uint) * bufferJointsIndicesSize, jiReleaseFn),
