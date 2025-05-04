@@ -58,7 +58,7 @@ public:
     {
         std::vector<std::string>                                  argVec;
         std::unordered_map<std::string, std::vector<std::string>> ret_val;
-        for (size_t i = 0; i < argc; i++) {
+        for (size_t i = 1; i < argc; i++) {
             argVec.push_back(std::string(argv[i]));
         }
         std::vector<std::string>::iterator it = argVec.begin();
@@ -81,7 +81,9 @@ public:
                     it = argVec.erase(it);
                 }
                 ret_val.insert(std::pair(search_res->first, pars));
+                continue;
             }
+            it++;
         }
         return std::pair(ret_val, argVec);
     }
