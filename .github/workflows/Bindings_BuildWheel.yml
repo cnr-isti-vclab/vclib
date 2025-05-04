@@ -68,7 +68,7 @@ jobs:
         else
           source venv/bin/activate
         fi
-        pip install --upgrade pip setuptools wheel build
+        python -m pip install --upgrade pip setuptools wheel build
         python -m build --wheel --outdir dist
     - name: Upload Wheel
       uses: actions/upload-artifact@v4
