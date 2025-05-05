@@ -46,6 +46,15 @@
 
 #include <imgui.h>
 
+#include <regex>
+
+#if defined(WIN32) || defined(_WIN32) || \
+    defined(__WIN32) && !defined(__CYGWIN__)
+static const std::string PATH_SEP = "\\";
+#else
+static const std::string PATH_SEP = "/";
+#endif
+
 int main(int argc, char** argv)
 {
     using BenchmarkViewer = vcl::RenderApp<
@@ -69,17 +78,23 @@ int main(int argc, char** argv)
         {"-f",              1},
         {"-r",              1},
         {"-h",              0},
-        {"--no-print",      0}
+        {"--help",          0},
+        {"--no-print",      0},
+        {"--flat",          0}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
     std::vector<std::string> remainingArgs = res.second;
 
     if (options.contains("-h")) {
+        std::string argv0    = std::string(argv[0]);
+        size_t      slashPos = std::string(argv0).rfind(PATH_SEP);
+        std::string programName =
+            slashPos == std::string::npos ? argv0 : argv0.substr(slashPos + 1);
         std::cout
             << "Executes a benchmark which comprises 3 rotations (one around "
                "each axis) for every SurfaceProgramType:"
-            << "\nusage: " << argv[0] << " [options] model1 model2 ..."
+            << "\nusage: " << programName << " [options] model1 model2 ..."
             << "\noptions:" << "\n\t--stdout: Prints results to standard output"
             << "\n\t-o: Takes 3 filenames as parameters; it writes the results "
                "in those files"
@@ -90,7 +105,8 @@ int main(int argc, char** argv)
             << "\n\t-f: Allows you to choose how many frames the rotations last"
             << "\n\t-r: Allows you to choose how many times the 3 rotations "
                "are executed for each SurfaceProgramType"
-            << "\n\t-h: Shows help page\n";
+            << "\n\t--flat: Uses flat shading for all the meshes"
+            << "\n\t-h, --help: Shows help page\n";
         exit(0);
     }
 
@@ -126,6 +142,11 @@ int main(int argc, char** argv)
         }
         bb.add(vcl::boundingBox(msh));
         msh.updateBuffers({VERTICES, VERT_NORMALS});
+        if (options.contains("--flat")) {
+            vcl::MeshRenderSettings mrs = msh.renderSettings();
+            mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
+            msh.setRenderSettings(mrs);
+        }
         vec->pushBack(std::move(msh));
     }
 
@@ -170,6 +191,11 @@ int main(int argc, char** argv)
         aaf.createStartCountLimited(csaa2, 1),
         repetitionsPerProgramType * 2 - 1));
 
+    std::string shadingType = "smooth";
+    if (options.contains("--flat")) {
+        shadingType = "flat";
+    }
+
     if (options.contains("--stdout")) {
         tw.setPrinter(vcl::StdoutBenchmarkPrinter());
     }
@@ -183,9 +209,9 @@ int main(int argc, char** argv)
         std::string folderString = options["--output-folder"][0];
         tw.setPrinter(
             vcl::CsvBenchmarkPrinterNoDescription(
-                folderString + "/uber_result.csv",
-                folderString + "/split_result.csv",
-                folderString + "/uber_if_result.csv",
+                folderString + "/uber_result_" + shadingType + ".csv",
+                folderString + "/split_result_" + shadingType + ".csv",
+                folderString + "/uber_if_result_" + shadingType + ".csv",
                 6));
     }
     else if (options.contains("--no-print")) {
@@ -194,9 +220,9 @@ int main(int argc, char** argv)
     else {
         tw.setPrinter(
             vcl::CsvBenchmarkPrinterNoDescription(
-                "./uber_result.csv",
-                "./split_result.csv",
-                "./uber_if_result.csv",
+                "./uber_result_" + shadingType + ".csv",
+                "./split_result_" + shadingType + ".csv",
+                "./uber_if_result_" + shadingType + ".csv",
                 6));
     }
 
