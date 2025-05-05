@@ -24,11 +24,11 @@
 
 #include <vclib/imgui/imgui_drawer.h>
 
+#include "CsvBenchmarkPrinterNoDescription.h"
 #include "change_shader_automation_action.h"
+#include "cmd_opt_parser.h"
 #include "get_drawable_mesh.h"
 #include "glfw_maximized_window_manager.h"
-#include "CsvBenchmarkPrinterNoDescription.h"
-#include "cmd_opt_parser.h"
 
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
@@ -46,7 +46,7 @@
 
 #include <imgui.h>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     using BenchmarkViewer = vcl::RenderApp<
         vcl::glfw::MaximizedWindowManager,
@@ -55,45 +55,61 @@ int main(int argc, char **argv)
 
     using BenchmarDrawerT = vcl::BenchmarkDrawer<BenchmarkViewer>;
 
+    using enum vcl::MeshRenderInfo::Buffers;
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 
     vcl::Context::setResetFlags(BGFX_RESET_NONE);
 
 #endif
 
-    CmdOptionParser optionParser = CmdOptionParser{{"--stdout", 0},{"-o", 3},{"--output-folder", 1},{"-f", 1},{"-r", 1},{"-h",0}};
-    auto res = optionParser.parseOptions(argc, argv);
-    auto options = res.first;
+    CmdOptionParser optionParser = CmdOptionParser {
+        {"--stdout",        0},
+        {"-o",              3},
+        {"--output-folder", 1},
+        {"-f",              1},
+        {"-r",              1},
+        {"-h",              0},
+        {"--no-print",      0}
+    };
+    auto                     res     = optionParser.parseOptions(argc, argv);
+    auto                     options = res.first;
     std::vector<std::string> remainingArgs = res.second;
 
-    if(options.contains("-h")){
-        std::cout << "Executes a benchmark which comprises 3 rotations (one around each axis) for every SurfaceProgramType:" << 
-        "\nusage: " << argv[0] << " [options] model1 model2 ..." <<
-        "\noptions:" <<
-        "\n\t--stdout: Prints results to standard output" <<
-        "\n\t-o: Takes 3 filenames as parameters; it writes the results in those files" <<
-        "\n\t--output-folder: Takes a path as an argument. Writes the results in FOLDER/uber_result.csv, FOLDER/split_result.csv, FOLDER/uber_if_result.csv" <<
-        "\n\t-f: Allows you to choose how many frames the rotations last" <<
-        "\n\t-r: Allows you to choose how many times the 3 rotations are executed for each SurfaceProgramType" <<
-        "\n\t-h: Shows help page\n";
+    if (options.contains("-h")) {
+        std::cout
+            << "Executes a benchmark which comprises 3 rotations (one around "
+               "each axis) for every SurfaceProgramType:"
+            << "\nusage: " << argv[0] << " [options] model1 model2 ..."
+            << "\noptions:" << "\n\t--stdout: Prints results to standard output"
+            << "\n\t-o: Takes 3 filenames as parameters; it writes the results "
+               "in those files"
+            << "\n\t--output-folder: Takes a path as an argument. Writes the "
+               "results in FOLDER/uber_result.csv, FOLDER/split_result.csv, "
+               "FOLDER/uber_if_result.csv"
+            << "\n\t--no-print: disables result printing"
+            << "\n\t-f: Allows you to choose how many frames the rotations last"
+            << "\n\t-r: Allows you to choose how many times the 3 rotations "
+               "are executed for each SurfaceProgramType"
+            << "\n\t-h: Shows help page\n";
         exit(0);
     }
 
-    if(remainingArgs.size() == 0) {
+    if (remainingArgs.size() == 0) {
         std::cerr << "Error: missing model argument(s)\n";
         exit(1);
     }
 
     vcl::uint frames = 1000;
 
-    if(options.contains("-f")){
+    if (options.contains("-f")) {
         frames = vcl::uint(std::strtoul(options["-f"][0].c_str(), nullptr, 10));
     }
 
     vcl::uint repetitionsPerProgramType = 2;
 
-    if(options.contains("-r")){
-        repetitionsPerProgramType = vcl::uint(std::strtoul(options["-r"][0].c_str(), nullptr, 10));
+    if (options.contains("-r")) {
+        repetitionsPerProgramType =
+            vcl::uint(std::strtoul(options["-r"][0].c_str(), nullptr, 10));
     }
 
     BenchmarkViewer tw("Benchmark");
@@ -101,11 +117,19 @@ int main(int argc, char **argv)
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    tw.setDrawableObjectVector(vec);
-
-    for(const auto &path: remainingArgs) {
-        tw.pushDrawableObject(std::move(getDrawableMesh<vcl::TriMesh>(path, false)));
+    vcl::Box3d bb;
+    for (const auto& path : remainingArgs) {
+        vcl::DrawableMesh<vcl::TriMesh> msh =
+            getDrawableMesh<vcl::TriMesh>(path, false);
+        if (!bb.isNull()) {
+            vcl::translate(msh, vcl::Point3d(bb.size().x(), 0, 0));
+        }
+        bb.add(vcl::boundingBox(msh));
+        msh.updateBuffers({VERTICES, VERT_NORMALS});
+        vec->pushBack(std::move(msh));
     }
+
+    tw.setDrawableObjectVector(vec);
 
     // An automation action factory, to shorten the length of Automation
     // declarations
@@ -119,7 +143,7 @@ int main(int argc, char **argv)
             vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
 
     // Repeat all automations 2 times
-    tw.setRepeatTimes(repetitionsPerProgramType*3);
+    tw.setRepeatTimes(repetitionsPerProgramType * 3);
 
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
@@ -140,26 +164,43 @@ int main(int argc, char **argv)
             BenchmarDrawerT>::fromFramesPerRotation(frames, {1.f, 0.f, 0.f}),
         frames));
 
-    tw.addAutomationNoMetric(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), repetitionsPerProgramType - 1));
-    tw.addAutomationNoMetric(
-        aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), repetitionsPerProgramType * 2 - 1));
+    tw.addAutomationNoMetric(aaf.createStartCountDelay(
+        aaf.createStartCountLimited(csaa, 1), repetitionsPerProgramType - 1));
+    tw.addAutomationNoMetric(aaf.createStartCountDelay(
+        aaf.createStartCountLimited(csaa2, 1),
+        repetitionsPerProgramType * 2 - 1));
 
-    if(options.contains("--stdout")) {
+    if (options.contains("--stdout")) {
         tw.setPrinter(vcl::StdoutBenchmarkPrinter());
-    } else if(options.contains("-o")) {
+    }
+    else if (options.contains("-o")) {
         std::vector<std::string> optArgs = options["-o"];
-        tw.setPrinter(vcl::CsvBenchmarkPrinterNoDescription(optArgs[0], optArgs[1], optArgs[2], 6));
-    } else if(options.contains("--output-folder")) {
+        tw.setPrinter(
+            vcl::CsvBenchmarkPrinterNoDescription(
+                optArgs[0], optArgs[1], optArgs[2], 6));
+    }
+    else if (options.contains("--output-folder")) {
         std::string folderString = options["--output-folder"][0];
-        tw.setPrinter(vcl::CsvBenchmarkPrinterNoDescription(folderString + "/uber_result.csv", folderString + "/split_result.csv", folderString + "/uber_if_result.csv", 6));
-    } else {
-        tw.setPrinter(vcl::CsvBenchmarkPrinterNoDescription("./uber_result.csv", "./split_result.csv", "./uber_if_result.csv", 6));
+        tw.setPrinter(
+            vcl::CsvBenchmarkPrinterNoDescription(
+                folderString + "/uber_result.csv",
+                folderString + "/split_result.csv",
+                folderString + "/uber_if_result.csv",
+                6));
+    }
+    else if (options.contains("--no-print")) {
+        tw.setPrinter(vcl::NullBenchmarkPrinter());
+    }
+    else {
+        tw.setPrinter(
+            vcl::CsvBenchmarkPrinterNoDescription(
+                "./uber_result.csv",
+                "./split_result.csv",
+                "./uber_if_result.csv",
+                6));
     }
 
     tw.terminateUponCompletion();
-
-    tw.fitScene();
 
     tw.show();
 
