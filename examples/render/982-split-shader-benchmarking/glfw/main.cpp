@@ -27,7 +27,7 @@
 #include "change_shader_automation_action.h"
 #include "get_drawable_mesh.h"
 #include "glfw_maximized_window_manager.h"
-#include "CsvBenchmarkPrinterNoDescription.h"
+#include "csv_benchmark_printer_no_description.h"
 
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>

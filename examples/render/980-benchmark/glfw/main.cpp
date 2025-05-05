@@ -24,7 +24,7 @@
 
 #include <vclib/imgui/imgui_drawer.h>
 
-#include "CsvBenchmarkPrinterNoDescription.h"
+#include "csv_benchmark_printer_no_description.h"
 #include "change_shader_automation_action.h"
 #include "cmd_opt_parser.h"
 #include "get_drawable_mesh.h"
