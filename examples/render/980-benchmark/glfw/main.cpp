@@ -22,6 +22,8 @@
 
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 
+#include <vclib/imgui/imgui_drawer.h>
+
 #include "change_shader_automation_action.h"
 #include "get_drawable_mesh.h"
 #include "glfw_maximized_window_manager.h"
@@ -37,8 +39,6 @@
 #include <vclib/render/automation/printers.h>
 #include <vclib/render/drawers/benchmark_drawer.h>
 #include <vclib/render/drawers/benchmark_viewer_drawer.h>
-
-#include <vclib/imgui/imgui_drawer.h>
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/algorithms/mesh/update/transform.h>
