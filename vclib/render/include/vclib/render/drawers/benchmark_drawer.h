@@ -75,7 +75,7 @@ private:
     */
     bool   mBeforeStartWaitTimerStarted = false;
     Timer  mBeforeStartWaitTimer;
-    double mBeforeStartWaitSeconds = 0.4f;
+    double mBeforeStartWaitSeconds = 0.6f;
 
     PolymorphicObjectVector<AutomationType>  mAutomations;
     PolymorphicObjectVector<BenchmarkMetric> mMetrics;
