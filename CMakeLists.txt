@@ -46,10 +46,10 @@ option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
 option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
 
 # Build examples
-option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
+option(VCLIB_BUILD_EXAMPLES "Build examples" OFF)
 
 # Build tests
-option(VCLIB_BUILD_TESTS "Build tests" ON)
+option(VCLIB_BUILD_TESTS "Build tests" OFF)
 
 # If true, the examples and tests of VCLib will be built just setting
 # the INCLUDE_PATH of the core module (no cmake targets).

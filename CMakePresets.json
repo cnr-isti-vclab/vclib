@@ -42,16 +42,17 @@
             }
         },
         {
-            "name": "no-examples-and-tests",
+            "name": "examples-and-tests",
             "hidden": true,
             "displayName": "No Examples and Tests",
             "cacheVariables": {
-                "VCLIB_BUILD_EXAMPLES": "OFF",
-                "VCLIB_BUILD_TESTS": "OFF"
+                "VCLIB_BUILD_EXAMPLES": "ON",
+                "VCLIB_BUILD_TESTS": "ON"
             }
         },
         {
             "name": "vclib-core-debug",
+            "inherits": "examples-and-tests",
             "displayName": "VCLib::Core - Debug",
             "description": "Core with default options",
             "generator": "Ninja",
@@ -61,6 +62,7 @@
         },
         {
             "name": "vclib-core-release",
+            "inherits": "examples-and-tests",
             "displayName": "VCLib::Core - Release",
             "description": "Core with default options",
             "generator": "Ninja",
@@ -209,7 +211,6 @@
         {
             "name": "vclib-bindings-debug",
             "inherits": [
-                "no-examples-and-tests",
                 "vclib-external-debug",
                 "vclib-render-bgfx-debug",
                 "vclib-processing-debug"
@@ -217,6 +218,8 @@
             "displayName": "VCLib::Bindings - Debug",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "VCLIB_BUILD_EXAMPLES": "OFF",
+                "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",
                 "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF",
                 "VCLIB_BUILD_MODULE_BINDINGS": "ON"
@@ -225,7 +228,6 @@
         {
             "name": "vclib-bindings-release",
             "inherits": [
-                "no-examples-and-tests",
                 "vclib-external-release",
                 "vclib-render-bgfx-release",
                 "vclib-processing-release"
@@ -233,6 +235,8 @@
             "displayName": "VCLib::Bindings - Release",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "VCLIB_BUILD_EXAMPLES": "OFF",
+                "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",
                 "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF",
                 "VCLIB_BUILD_MODULE_BINDINGS": "ON"
