@@ -85,8 +85,8 @@ int main(int argc, char** argv)
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
     std::vector<std::string> remainingArgs = res.second;
-
-    if (options.contains("-h")) {
+    // 17
+    if (options.contains("-h") || options.contains("--help")) {
         std::string argv0    = std::string(argv[0]);
         size_t      slashPos = std::string(argv0).rfind(PATH_SEP);
         std::string programName =
@@ -95,18 +95,23 @@ int main(int argc, char** argv)
             << "Executes a benchmark which comprises 3 rotations (one around "
                "each axis) for every SurfaceProgramType:"
             << "\nusage: " << programName << " [options] model1 model2 ..."
-            << "\noptions:" << "\n\t--stdout: Prints results to standard output"
-            << "\n\t-o: Takes 3 filenames as parameters; it writes the results "
+            << "\noptions:"
+            << "\n\t--stdout:        " << "Prints results to standard output"
+            << "\n\t-o:              "
+            << "Takes 3 filenames as parameters; it writes the results "
                "in those files"
-            << "\n\t--output-folder: Takes a path as an argument. Writes the "
+            << "\n\t--output-folder: "
+            << "Takes a path as an argument. Writes the "
                "results in FOLDER/uber_result.csv, FOLDER/split_result.csv, "
                "FOLDER/uber_if_result.csv"
-            << "\n\t--no-print: disables result printing"
-            << "\n\t-f: Allows you to choose how many frames the rotations last"
-            << "\n\t-r: Allows you to choose how many times the 3 rotations "
+            << "\n\t--no-print:      " << "Disables result printing"
+            << "\n\t-f:              "
+            << "Allows you to choose how many frames the rotations last"
+            << "\n\t-r:              "
+            << "Allows you to choose how many times the 3 rotations "
                "are executed for each SurfaceProgramType"
-            << "\n\t--flat: Uses flat shading for all the meshes"
-            << "\n\t-h, --help: Shows help page\n";
+            << "\n\t--flat:          " << "Uses flat shading for all the meshes"
+            << "\n\t-h, --help:      " << "Shows help page\n";
         exit(0);
     }
 
