@@ -30,5 +30,5 @@ set(SOURCES
 
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 021-mesh-sphere-intersection
+    VCLIB_CORE_EXAMPLE 821-mesh-sphere-intersection
     SOURCES ${SOURCES})

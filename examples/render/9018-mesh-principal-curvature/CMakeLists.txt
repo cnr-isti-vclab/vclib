@@ -30,5 +30,5 @@ set(SOURCES
 
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 018-mesh-principal-curvature
+    VCLIB_CORE_EXAMPLE 818-mesh-principal-curvature
     SOURCES ${SOURCES})

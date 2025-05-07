@@ -30,5 +30,5 @@ set(SOURCES
 
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 015-mesh-io-stl
+    VCLIB_CORE_EXAMPLE 815-mesh-io-stl
     SOURCES ${SOURCES})
