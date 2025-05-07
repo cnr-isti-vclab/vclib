@@ -15,7 +15,42 @@ By default, the library is built with the `Core` module only, but you can enable
 
 There are two very easy ways to include VCLib in your project.
 
-#### Using *add_subdirectory*
+#### Using FetchContent
+
+If you don't want to clone the repository, you can use `FetchContent` to download the library at configuration time. This is an example of `CMakeLists.txt` that uses vclib as a dependency:
+
+```cmake
+cmake_minimum_required(VERSION 3.24)
+
+project(my_project LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(FetchContent)
+
+# enable any of the vclib modules you require here:
+set(VCLIB_BUILD_MODULE_EXTERNAL OFF)
+set(VCLIB_BUILD_MODULE_PROCESSING OFF)
+set(VCLIB_BUILD_MODULE_RENDER OFF)
+
+FetchContent_Declare(
+    vclib
+    GIT_REPOSITORY https://github.com/cnr-isti-vclab/vclib.git
+    GIT_TAG        origin/main)
+
+FetchContent_MakeAvailable(vclib)
+
+add_executable(my_project main.cpp)
+
+target_link_libraries(my_project PRIVATE vclib::vclib)
+```
+
+This will download the library and all its dependencies at configuration time, and it will make the `vclib::vclib` target available for linking.
+
+You can enable any of the VCLib modules you require by setting the corresponding `VCLIB_BUILD_MODULE_<module>` variable to `ON` before calling `FetchContent_MakeAvailable(vclib)`.
+
+#### Using add_subdirectory
 
 To include VCLib in your CMake project, first clone (recursively) the VCLib repository into your project directory:
 
@@ -29,8 +64,11 @@ git clone --recursive https://github.com/cnr-isti-vclab/vclib
 Then, in your `CMakeLists.txt`:
 
 ```cmake
-# If you want to use other modules, set the corresponding variable to ON, e.g:
-# set(VCLIB_BUILD_MODULE_RENDER ON)
+# enable any of the vclib modules you require here:
+set(VCLIB_BUILD_MODULE_EXTERNAL OFF)
+set(VCLIB_BUILD_MODULE_PROCESSING OFF)
+set(VCLIB_BUILD_MODULE_RENDER OFF)
+
 add_subdirectory(vclib)
 
 [...]
@@ -40,17 +78,7 @@ target_link_libraries(my_target PRIVATE vclib::vclib)
 
 Where `my_target` is the target of your project.
 
-#### Using *FetchContent*
-
-If you don't want to clone the repository, you can use `FetchContent` to download the library at configuration time. In your `CMakeLists.txt`:
-
-```cmake
-include(FetchContent)
-```
-
-WORK IN PROGRESS
-
-### Usage with *INCLUDE_PATH*
+#### Setting INCLUDE_PATH
 
 You can also use the VCLib Core module just as a header-only library.
 
