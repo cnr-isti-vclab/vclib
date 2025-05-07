@@ -278,58 +278,60 @@ void saveObj(
         using VertexType = MeshType::VertexType;
         using FaceType   = MeshType::FaceType;
 
-        fp << std::endl << "# Faces" << std::endl;
+        if (meshInfo.hasFaces()) {
+            fp << std::endl << "# Faces" << std::endl;
 
-        // indices of vertices that do not consider deleted vertices
-        std::vector<uint> vIndices = m.vertexCompactIndices();
+            // indices of vertices that do not consider deleted vertices
+            std::vector<uint> vIndices = m.vertexCompactIndices();
 
-        uint wedgeTexCoord = 1;
-        for (const FaceType& f : m.faces()) {
-            if (useMtl) { // mtl management
-                detail::writeElementObjMaterial(
-                    f,
-                    m,
-                    meshInfo,
-                    lastMaterial,
-                    materialMap,
-                    fp,
-                    *mtlfp,
-                    settings,
-                    log);
-            }
-            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                if (meshInfo.hasFaceWedgeTexCoords()) {
-                    using WedgeTexCoordType = FaceType::WedgeTexCoordType;
-                    for (const WedgeTexCoordType wt : f.wedgeTexCoords()) {
-                        fp << "vt ";
-                        io::writeFloat(fp, wt.u(), false);
-                        io::writeFloat(fp, wt.v(), false);
-                        fp << std::endl;
-                    }
-                }
-            }
-
-            fp << "f ";
-            for (const VertexType* v : f.vertices()) {
-                fp << vIndices[m.index(v)] + 1;
-                if constexpr (HasPerVertexTexCoord<MeshType>) {
-                    // we wrote texcoords along with vertices, each texcoord has
-                    // the same index of its vertex
-                    if (meshInfo.hasVertexTexCoords()) {
-                        fp << "/" << vIndices[m.index(v)] + 1;
-                    }
+            uint wedgeTexCoord = 1;
+            for (const FaceType& f : m.faces()) {
+                if (useMtl) { // mtl management
+                    detail::writeElementObjMaterial(
+                        f,
+                        m,
+                        meshInfo,
+                        lastMaterial,
+                        materialMap,
+                        fp,
+                        *mtlfp,
+                        settings,
+                        log);
                 }
                 if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                    // we wrote texcoords before the face; indices are
-                    // consecutive and wedge coords are the same of the number
-                    // of vertices of the face
                     if (meshInfo.hasFaceWedgeTexCoords()) {
-                        fp << "/" << wedgeTexCoord++;
+                        using WedgeTexCoordType = FaceType::WedgeTexCoordType;
+                        for (const WedgeTexCoordType wt : f.wedgeTexCoords()) {
+                            fp << "vt ";
+                            io::writeFloat(fp, wt.u(), false);
+                            io::writeFloat(fp, wt.v(), false);
+                            fp << std::endl;
+                        }
                     }
                 }
-                fp << " ";
+
+                fp << "f ";
+                for (const VertexType* v : f.vertices()) {
+                    fp << vIndices[m.index(v)] + 1;
+                    if constexpr (HasPerVertexTexCoord<MeshType>) {
+                        // we wrote texcoords along with vertices, each texcoord has
+                        // the same index of its vertex
+                        if (meshInfo.hasVertexTexCoords()) {
+                            fp << "/" << vIndices[m.index(v)] + 1;
+                        }
+                    }
+                    if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+                        // we wrote texcoords before the face; indices are
+                        // consecutive and wedge coords are the same of the number
+                        // of vertices of the face
+                        if (meshInfo.hasFaceWedgeTexCoords()) {
+                            fp << "/" << wedgeTexCoord++;
+                        }
+                    }
+                    fp << " ";
+                }
+                fp << std::endl;
             }
-            fp << std::endl;
         }
     }
 
@@ -337,27 +339,29 @@ void saveObj(
         using VertexType = MeshType::VertexType;
         using EdgeType   = MeshType::EdgeType;
 
-        fp << std::endl << "# Edges" << std::endl;
+        if (meshInfo.hasEdges()) {
+            fp << std::endl << "# Edges" << std::endl;
 
-        // indices of vertices that do not consider deleted vertices
-        std::vector<uint> vIndices = m.vertexCompactIndices();
+                   // indices of vertices that do not consider deleted vertices
+            std::vector<uint> vIndices = m.vertexCompactIndices();
 
-        for (const EdgeType& e : m.edges()) {
-            if (useMtl) { // mtl management
-                detail::writeElementObjMaterial(
-                    e,
-                    m,
-                    meshInfo,
-                    lastMaterial,
-                    materialMap,
-                    fp,
-                    *mtlfp,
-                    settings,
-                    log);
+            for (const EdgeType& e : m.edges()) {
+                if (useMtl) { // mtl management
+                    detail::writeElementObjMaterial(
+                        e,
+                        m,
+                        meshInfo,
+                        lastMaterial,
+                        materialMap,
+                        fp,
+                        *mtlfp,
+                        settings,
+                        log);
+                }
+                fp << "l ";
+                fp << vIndices[m.index(e.vertex(0))] + 1 << " ";
+                fp << vIndices[m.index(e.vertex(1))] + 1 << std::endl;
             }
-            fp << "l ";
-            fp << vIndices[m.index(e.vertex(0))] + 1 << " ";
-            fp << vIndices[m.index(e.vertex(1))] + 1 << std::endl;
         }
     }
 }
