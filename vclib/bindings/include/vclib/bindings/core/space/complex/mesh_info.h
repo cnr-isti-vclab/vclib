@@ -20,17 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_COMPLEX_H
-#define VCL_SPACE_COMPLEX_H
+#ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_MESH_INFO_H
+#define VCL_BINDINGS_CORE_SPACE_COMPLEX_MESH_INFO_H
 
-#include "complex/graph.h"
-#include "complex/grid.h"
-#include "complex/kd_tree.h"
-#include "complex/mesh_edge_util.h"
-#include "complex/mesh_info.h"
-#include "complex/mesh_inertia.h"
-#include "complex/mesh_pos.h"
-#include "complex/sampler.h"
-#include "complex/tri_poly_index_bimap.h"
+#include <pybind11/pybind11.h>
 
-#endif // VCL_SPACE_COMPLEX_H
+namespace vcl::bind {
+
+void initMeshInfo(pybind11::module& m);
+
+} // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_SPACE_COMPLEX_MESH_INFO_H
