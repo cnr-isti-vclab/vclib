@@ -22,7 +22,6 @@
 
 #include <vclib/bindings/core/algorithms.h>
 #include <vclib/bindings/core/io.h>
-#include <vclib/bindings/core/load_save.h>
 #include <vclib/bindings/core/meshes.h>
 #include <vclib/bindings/core/space.h>
 
@@ -46,8 +45,6 @@ PYBIND11_MODULE(core, m)
     initSpace(m);
 
     initMeshes(m);
-
-    initLoadSave(m);
 
     initAlgorithms(m);
 }

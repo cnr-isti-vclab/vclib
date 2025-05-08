@@ -20,30 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/load_save/save.h>
-#include <vclib/bindings/utils.h>
+#ifndef VCL_BINDINGS_CORE_IO_MESH_LOAD_H
+#define VCL_BINDINGS_CORE_IO_MESH_LOAD_H
 
-#include <vclib/io/mesh/save.h>
-#include <vclib/meshes.h>
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initSave(pybind11::module& m)
-{
-    auto f =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            namespace py = pybind11;
-
-            m.def(
-                "save",
-                [](const MeshType& m, const std::string& filename) {
-                    vcl::save(m, filename);
-                },
-                py::arg("m"),
-                py::arg("filename"));
-        };
-
-    defForAllMeshTypes(m, f);
-}
+void initLoadMesh(pybind11::module& m);
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_IO_MESH_LOAD_H
