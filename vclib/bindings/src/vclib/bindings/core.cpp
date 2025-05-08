@@ -40,13 +40,13 @@ PYBIND11_MODULE(core, m)
     m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
 
     // initialize the bindings
-    initIO(m);
-
     initSpace(m);
 
     initMeshes(m);
 
     initAlgorithms(m);
+
+    initIO(m);
 }
 
 } // namespace vcl::bind
