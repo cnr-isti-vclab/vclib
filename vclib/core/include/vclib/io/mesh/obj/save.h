@@ -314,16 +314,16 @@ void saveObj(
                 for (const VertexType* v : f.vertices()) {
                     fp << vIndices[m.index(v)] + 1;
                     if constexpr (HasPerVertexTexCoord<MeshType>) {
-                        // we wrote texcoords along with vertices, each texcoord has
-                        // the same index of its vertex
+                        // we wrote texcoords along with vertices, each texcoord
+                        // has the same index of its vertex
                         if (meshInfo.hasVertexTexCoords()) {
                             fp << "/" << vIndices[m.index(v)] + 1;
                         }
                     }
                     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                         // we wrote texcoords before the face; indices are
-                        // consecutive and wedge coords are the same of the number
-                        // of vertices of the face
+                        // consecutive and wedge coords are the same of the
+                        // number of vertices of the face
                         if (meshInfo.hasFaceWedgeTexCoords()) {
                             fp << "/" << wedgeTexCoord++;
                         }
@@ -342,7 +342,7 @@ void saveObj(
         if (meshInfo.hasEdges()) {
             fp << std::endl << "# Edges" << std::endl;
 
-                   // indices of vertices that do not consider deleted vertices
+            // indices of vertices that do not consider deleted vertices
             std::vector<uint> vIndices = m.vertexCompactIndices();
 
             for (const EdgeType& e : m.edges()) {

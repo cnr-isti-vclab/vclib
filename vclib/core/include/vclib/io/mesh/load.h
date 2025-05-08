@@ -140,7 +140,7 @@ void load(
     const std::string&  filename,
     MeshInfo&           loadedInfo,
     const LoadSettings& settings,
-    LogType&            log      = nullLogger)
+    LogType&            log = nullLogger)
 {
     load(m, filename, loadedInfo, log, settings);
 }
@@ -169,7 +169,7 @@ void load(
     MeshType&           m,
     const std::string&  filename,
     const LoadSettings& settings,
-    LogType&            log      = nullLogger)
+    LogType&            log = nullLogger)
 {
     MeshInfo loadedInfo;
     load(m, filename, loadedInfo, log, settings);
