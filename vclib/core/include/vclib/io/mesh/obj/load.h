@@ -179,11 +179,6 @@ void readObjVertex(
     const ObjMaterial&   currentMaterial,
     const LoadSettings&  settings)
 {
-    // first, need to set that I'm loading vertices
-    if (m.vertexNumber() == 0) {
-        loadedInfo.setVertices();
-        loadedInfo.setVertexCoords();
-    }
     uint vid = m.addVertex();
     for (uint i = 0; i < 3; ++i) {
         m.vertex(vid).coord()[i] = io::readDouble<double>(token);
@@ -571,12 +566,15 @@ void loadObj(
             // read vertex (and for some non-standard obj files, also vertex
             // color)
             if (header == "v") {
+                loadedInfo.setVertices();
+                loadedInfo.setVertexCoords();
                 detail::readObjVertex(
                     m, token, loadedInfo, tokens, currentMaterial, settings);
             }
             // read vertex normal (and save in vn how many normals we read)
-            if constexpr (HasPerVertexNormal<MeshType>) {
-                if (header == "vn") {
+            if (header == "vn") {
+                loadedInfo.setVertexNormals();
+                if constexpr (HasPerVertexNormal<MeshType>) {
                     detail::readObjVertexNormal(
                         m, mapNormalsCache, vn, token, loadedInfo, settings);
                     vn++;
@@ -603,8 +601,10 @@ void loadObj(
             // - color
             // - eventual texcoords
             // - possibility to split polygonal face into several triangles
-            if constexpr (HasFaces<MeshType>) {
-                if (header == "f") {
+            if (header == "f") {
+                loadedInfo.setFaces();
+                loadedInfo.setFaceVRefs();
+                if constexpr (HasFaces<MeshType>) {
                     detail::readObjFace(
                         m,
                         loadedInfo,
@@ -615,8 +615,10 @@ void loadObj(
                 }
             }
             // read edges and manage their color
-            if constexpr (HasEdges<MeshType>) {
-                if (header == "l") {
+            if (header == "l") {
+                loadedInfo.setEdges();
+                loadedInfo.setEdgeVRefs();
+                if constexpr (HasEdges<MeshType>) {
                     detail::readObjEdge(
                         m, loadedInfo, tokens, currentMaterial, settings);
                 }

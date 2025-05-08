@@ -256,6 +256,23 @@ public:
                 }
             }
         }
+        if (mEdgeElemPos != UINT_NULL) {
+            mod.setEdges();
+            for (const PlyProperty& p : mElements[mEdgeElemPos].properties) {
+                switch (p.name) {
+                case ply::vertex_indices: mod.setEdgeVRefs(); break;
+                case ply::nx:
+                case ply::ny:
+                case ply::nz: mod.setEdgeNormals(); break;
+                case ply::red:
+                case ply::green:
+                case ply::blue:
+                case ply::alpha: mod.setEdgeColors(); break;
+                case ply::quality: mod.setEdgeQuality(); break;
+                default: break;
+                }
+            }
+        }
         if (mTextureFiles.size() > 0) {
             mod.setTextures(true);
         }
