@@ -37,11 +37,22 @@ void initLoadMesh(pybind11::module& m)
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
             m.def(
                 "load",
-                [](MeshType& m, const std::string& filename) {
-                    vcl::load(m, filename);
+                [](MeshType&          m,
+                   const std::string& filename,
+                   MeshInfo&          loadedInfo,
+                   bool               enableOptionalComponents,
+                   bool               loadTextureImages) {
+                    LoadSettings settings;
+                    settings.enableOptionalComponents =
+                        enableOptionalComponents;
+                    settings.loadTextureImages = loadTextureImages;
+                    vcl::load(m, filename, loadedInfo, settings);
                 },
                 py::arg("m"),
-                py::arg("filename"));
+                py::arg("filename"),
+                py::arg("loaded_info") = MeshInfo(),
+                py::arg("enable_optional_components") = true,
+                py::arg("load_texture_images") = false);
         };
 
     defForAllMeshTypes(m, fLoad);
@@ -52,10 +63,16 @@ void initLoadMesh(pybind11::module& m)
                 "load_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
             m.def(
                 name.c_str(),
-                [](const std::string& filename) {
+                [](const std::string& filename,
+                   MeshInfo&          loadedInfo,
+                   bool               enableOptionalComponents,
+                   bool               loadTextureImages) {
                     return vcl::load<MeshType>(filename);
                 },
-                py::arg("filename"));
+                py::arg("filename"),
+                py::arg("loaded_info") = MeshInfo(),
+                py::arg("enable_optional_components") = true,
+                py::arg("load_texture_images") = false);
         };
 
     defForAllMeshTypes(m, fNameLoad);
