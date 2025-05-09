@@ -679,19 +679,24 @@ public:
         return perElementComponentType(FACE, WEDGE_TEXCOORDS);
     }
 
-    DataType perEdgeColorType() const
-    {
-        return perElementComponentType(EDGE, COLOR);
-    }
-
     DataType perEdgeNormalType() const
     {
         return perElementComponentType(EDGE, NORMAL);
     }
 
+    DataType perEdgeColorType() const
+    {
+        return perElementComponentType(EDGE, COLOR);
+    }
+
     DataType perEdgeQualityType() const
     {
         return perElementComponentType(EDGE, QUALITY);
+    }
+
+    const std::vector<CustomComponent>& perElementCustomComponents(Element el) const
+    {
+        return mPerElemCustomComponents[el];
     }
 
     const std::vector<CustomComponent>& perVertexCustomComponents() const
