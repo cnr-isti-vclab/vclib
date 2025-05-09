@@ -54,7 +54,7 @@ int main()
     vcl::MeshInfo info;
     vcl::load(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info);
 
-    std::cout << "Mesh has per face color: " << info.hasFaceColors()
+    std::cout << "Mesh has per face color: " << info.hasPerFaceColor()
               << std::endl;
 
     // You can control settings for loading a mesh using the LoadSettings object
@@ -74,7 +74,7 @@ int main()
     // You can also specify what kind of data you want to save in the file,
     // using a MeshInfo object in the SaveSettings parameter
     vcl::MeshInfo saveInfo;
-    saveInfo.setVertexCoords();
+    saveInfo.setPerVertexCoordinate();
     saveInfo.setFaces(false); // do not save faces - only point cloud
 
     vcl::SaveSettings saveSettings;
@@ -83,7 +83,8 @@ int main()
         mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny-cloud.obj", saveSettings);
 
     // You can also specify other save settings trough the SaveSettings object.
-    saveInfo.setFaceVRefs(true);
+    saveInfo.setFaces(true);
+    saveInfo.setPerFaceVertexReferences(true);
     saveSettings.info   = saveInfo;
     saveSettings.binary = false; // save in ASCII format
     vcl::save(
