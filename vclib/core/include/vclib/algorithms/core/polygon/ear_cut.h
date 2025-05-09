@@ -193,7 +193,7 @@ template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
     using PositionType = Face::VertexType::PositionType;
-    return earCut(polygon.vertices() | views::coords);
+    return earCut(polygon.vertices() | views::positions);
 }
 
 } // namespace vcl

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_COORDS_H
-#define VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H
+#define VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H
 
 #include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
@@ -32,28 +32,28 @@ namespace vcl::views {
 
 namespace detail {
 
-inline constexpr auto coord = [](auto&& p) -> decltype(auto) {
+inline constexpr auto position = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->position();
     else
         return p.position();
 };
 
-struct CoordsView
+struct PositionsView
 {
-    constexpr CoordsView() = default;
+    constexpr PositionsView() = default;
 
     template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, CoordsView)
+    friend constexpr auto operator|(R&& r, PositionsView)
     {
-        return std::forward<R>(r) | std::views::transform(coord);
+        return std::forward<R>(r) | std::views::transform(position);
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::CoordsView coords;
+inline constexpr detail::PositionsView positions;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H

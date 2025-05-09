@@ -57,7 +57,7 @@ typename FaceType::VertexType::PositionType faceNormal(const FaceType& f)
                 f.vertex(2)->position());
         }
         else {
-            return Polygon<PositionType>::normal(f.vertices() | views::coords);
+            return Polygon<PositionType>::normal(f.vertices() | views::positions);
         }
     }
 }
@@ -82,7 +82,7 @@ typename FaceType::VertexType::PositionType faceBarycenter(const FaceType& f)
             f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
-        return Polygon<PositionType>::barycenter(f.vertices() | views::coords);
+        return Polygon<PositionType>::barycenter(f.vertices() | views::positions);
     }
 }
 
@@ -113,7 +113,7 @@ auto faceArea(const FaceType& f)
                 f.vertex(2)->position());
         }
         else {
-            return Polygon<PositionType>::area(f.vertices() | views::coords);
+            return Polygon<PositionType>::area(f.vertices() | views::positions);
         }
     }
 }
@@ -145,7 +145,7 @@ auto facePerimeter(const FaceType& f)
                 f.vertex(2)->position());
         }
         else {
-            return Polygon<PositionType>::perimeter(f.vertices() | views::coords);
+            return Polygon<PositionType>::perimeter(f.vertices() | views::positions);
         }
     }
 }

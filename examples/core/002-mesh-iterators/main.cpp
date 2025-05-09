@@ -39,10 +39,10 @@ int main()
 
     const vcl::TriMesh& cm = m;
 
-    std::cerr << "\n\nCoords per face:\n\n";
+    std::cerr << "\n\nVert Positions per face:\n\n";
 
     for (const auto& f : cm | vcl::views::faces) {
-        for (const auto& c : f | vcl::views::vertices | vcl::views::coords) {
+        for (const auto& c : f | vcl::views::vertices | vcl::views::positions) {
             std::cerr << c << "\t";
         }
         std::cerr << "\n";
@@ -60,7 +60,7 @@ int main()
     std::cerr << "\n\nTransform Coords per face:\n\n";
 
     for (auto& f : cm | vcl::views::faces) {
-        for (auto& c : f | vcl::views::vertices | vcl::views::coords) {
+        for (auto& c : f | vcl::views::vertices | vcl::views::positions) {
             // c*=2;
             std::cerr << c << "\t";
         }
@@ -69,14 +69,14 @@ int main()
 
     std::cerr << "\n\nPrint Coords per vertex:\n\n";
 
-    for (const auto& c : cm.vertices() | vcl::views::coords) {
+    for (const auto& c : cm.vertices() | vcl::views::positions) {
         std::cerr << c << "\n";
     }
 
     // transform
     std::cerr << "\n\nTransform coords per vertex:\n\n";
 
-    for (vcl::Point3d& c : m.vertices() | vcl::views::coords) {
+    for (vcl::Point3d& c : m.vertices() | vcl::views::positions) {
         c *= 2;
         std::cerr << c << "\n";
     }

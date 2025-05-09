@@ -38,9 +38,9 @@ public:
 
     void set(uint i, VertexType& v) { mSamples[i] = &v; }
 
-    auto begin() const { return std::begin(mSamples | views::coords); }
+    auto begin() const { return std::begin(mSamples | views::positions); }
 
-    auto end() const { return std::end(mSamples | views::coords); }
+    auto end() const { return std::end(mSamples | views::positions); }
 };
 
 template<VertexConcept VertexType>

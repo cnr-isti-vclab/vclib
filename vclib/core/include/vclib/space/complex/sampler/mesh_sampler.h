@@ -36,7 +36,7 @@ template<MeshConcept MeshType>
 class MeshSampler
 {
     using CoordView =
-        decltype(View<typename MeshType::VertexIterator>() | views::coords);
+        decltype(View<typename MeshType::VertexIterator>() | views::positions);
 
     MeshType mMesh;
 
@@ -239,12 +239,12 @@ public:
 
     ConstIterator begin() const
     {
-        return std::ranges::begin(mMesh.vertices() | views::coords);
+        return std::ranges::begin(mMesh.vertices() | views::positions);
     }
 
     ConstIterator end() const
     {
-        return std::ranges::end(mMesh.vertices() | views::coords);
+        return std::ranges::end(mMesh.vertices() | views::positions);
     }
 
 private:

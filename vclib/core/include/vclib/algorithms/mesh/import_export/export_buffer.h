@@ -106,7 +106,7 @@ void vertexCoordsToBuffer(
 {
     const uint VERT_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
-    for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+    for (uint i = 0; const auto& c : mesh.vertices() | views::positions) {
         if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = c.x();
             buffer[i * 3 + 1] = c.y();

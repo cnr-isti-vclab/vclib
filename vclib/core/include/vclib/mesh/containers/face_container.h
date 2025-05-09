@@ -1195,7 +1195,7 @@ protected:
                         // other triangles will be added at the end of the
                         // container
                         std::vector<uint> tris =
-                            earCut(mf.vertices() | views::coords);
+                            earCut(mf.vertices() | views::positions);
                         FaceType& f = face(m.index(mf));
                         importTriPointersHelper(f, mf, base, mvbase, tris, 0);
 

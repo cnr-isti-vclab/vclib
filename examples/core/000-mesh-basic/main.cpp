@@ -47,7 +47,7 @@ int main()
     m.addVertex();
     m.addVertex();
 
-    // setting coordinate
+    // setting positions
     m.vertex(0).position() = TriMeshPoint(0, 0, 0);
     m.vertex(1).position() = TriMeshPoint(0, 1, 0);
     m.vertex(2).position() = TriMeshPoint(1, 0, 0);

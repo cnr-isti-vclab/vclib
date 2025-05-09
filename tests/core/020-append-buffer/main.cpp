@@ -117,7 +117,7 @@ void testCoordsMatrix(
 
     vcl::uint i = 0;
     // first vertices corresponds
-    for (const auto& c : tm.vertices() | vcl::views::coords) {
+    for (const auto& c : tm.vertices() | vcl::views::positions) {
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
         REQUIRE(verts(i, 2) == c.z());
