@@ -77,12 +77,12 @@ inline TriPolyIndexBiMap indexMap;
 } // namespace detail
 
 /**
- * @brief Export the vertex coordinates of a mesh to a buffer.
+ * @brief Export the vertex positions of a mesh to a buffer.
  *
- * This function exports the vertex coordinates of a mesh to a buffer. Vertices
+ * This function exports the vertex positions of a mesh to a buffer. Vertices
  * are stored in the buffer following the order they appear in the mesh.  The
  * buffer must be preallocated with the correct size (number of vertices times
- * the number of coordinates per vertex).
+ * the number of positions per vertex).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -98,7 +98,7 @@ inline TriPolyIndexBiMap indexMap;
  * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
-void vertexCoordsToBuffer(
+void vertexPositionsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,

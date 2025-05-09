@@ -42,8 +42,8 @@ int main()
     std::cerr << "\n\nVert Positions per face:\n\n";
 
     for (const auto& f : cm | vcl::views::faces) {
-        for (const auto& c : f | vcl::views::vertices | vcl::views::positions) {
-            std::cerr << c << "\t";
+        for (const auto& p : f | vcl::views::vertices | vcl::views::positions) {
+            std::cerr << p << "\t";
         }
         std::cerr << "\n";
     }
@@ -57,28 +57,28 @@ int main()
         std::cerr << "\n";
     }
 
-    std::cerr << "\n\nTransform Coords per face:\n\n";
+    std::cerr << "\n\nTransform Positions per face:\n\n";
 
     for (auto& f : cm | vcl::views::faces) {
-        for (auto& c : f | vcl::views::vertices | vcl::views::positions) {
+        for (auto& p : f | vcl::views::vertices | vcl::views::positions) {
             // c*=2;
-            std::cerr << c << "\t";
+            std::cerr << p << "\t";
         }
         std::cerr << "\n";
     }
 
-    std::cerr << "\n\nPrint Coords per vertex:\n\n";
+    std::cerr << "\n\nPrint Positions per vertex:\n\n";
 
-    for (const auto& c : cm.vertices() | vcl::views::positions) {
-        std::cerr << c << "\n";
+    for (const auto& p : cm.vertices() | vcl::views::positions) {
+        std::cerr << p << "\n";
     }
 
     // transform
-    std::cerr << "\n\nTransform coords per vertex:\n\n";
+    std::cerr << "\n\nTransform Positions per vertex:\n\n";
 
-    for (vcl::Point3d& c : m.vertices() | vcl::views::positions) {
-        c *= 2;
-        std::cerr << c << "\n";
+    for (vcl::Point3d& p : m.vertices() | vcl::views::positions) {
+        p *= 2;
+        std::cerr << p << "\n";
     }
 
     std::cerr << "\n\nTransform Selection:\n";

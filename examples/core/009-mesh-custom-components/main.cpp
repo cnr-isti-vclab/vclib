@@ -57,26 +57,26 @@ int main()
 
     assert(!m.hasPerVertexCustomComponent("flag"));
 
-    m.addPerVertexCustomComponent<vcl::Point3f>("oldCoords");
+    m.addPerVertexCustomComponent<vcl::Point3f>("oldPositions");
 
-    assert(m.hasPerVertexCustomComponent("oldCoords"));
-    assert(m.isPerVertexCustomComponentOfType<vcl::Point3f>("oldCoords"));
-    assert(!m.isPerVertexCustomComponentOfType<vcl::Point3d>("oldCoords"));
+    assert(m.hasPerVertexCustomComponent("oldPositions"));
+    assert(m.isPerVertexCustomComponentOfType<vcl::Point3f>("oldPositions"));
+    assert(!m.isPerVertexCustomComponentOfType<vcl::Point3d>("oldPositions"));
 
     for (vcl::TriMesh::Vertex& v : m.vertices()) {
-        v.customComponent<vcl::Point3f>("oldCoords") = v.position().cast<float>();
+        v.customComponent<vcl::Point3f>("oldPositions") = v.position().cast<float>();
     }
 
     vcl::taubinSmoothing(m, 500, 0.7, -0.73);
 
-    vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldCoords =
-        m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
+    vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldPositions =
+        m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldPositions");
 
     double avgDist = 0;
     using PT       = vcl::TriMesh::Vertex::PositionType;
     using ST       = PT::ScalarType;
     for (vcl::TriMesh::Vertex& v : m.vertices()) {
-        avgDist += v.position().dist(oldCoords[m.index(v)].cast<ST>());
+        avgDist += v.position().dist(oldPositions[m.index(v)].cast<ST>());
     }
     avgDist /= m.vertexNumber();
 

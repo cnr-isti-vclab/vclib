@@ -112,8 +112,8 @@ void testCoordsMatrix(
 
     auto stg = vcl::matrixStorageType<MatrixType>();
 
-    vcl::vertexCoordsToBuffer(tm, verts.data(), stg, nRows);
-    vcl::appendDuplicateVertexCoordsToBuffer(tm, vtd, verts.data(), stg);
+    vcl::vertexPositionsToBuffer(tm, verts.data(), stg, nRows);
+    vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data(), stg);
 
     vcl::uint i = 0;
     // first vertices corresponds
@@ -146,8 +146,8 @@ void testTriangleMatrix(
 
     vcl::uint               nVerts = tm.vertexNumber() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
-    vcl::vertexCoordsToBuffer(tm, verts.data());
-    vcl::appendDuplicateVertexCoordsToBuffer(tm, vtd, verts.data());
+    vcl::vertexPositionsToBuffer(tm, verts.data());
+    vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data());
 
     auto stg = vcl::matrixStorageType<MatrixType>();
 

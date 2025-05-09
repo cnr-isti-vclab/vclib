@@ -231,13 +231,13 @@ public:
     }
 
 private:
-    void setVertexCoordsBuffer(const MeshType& mesh) // override
+    void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
         mVerts.resize(nv * 3);
 
-        Base::fillVertexCoords(mesh, mVerts.data());
+        Base::fillVertexPositions(mesh, mVerts.data());
     }
 
     void setVertexNormalsBuffer(const MeshType& mesh) // override
