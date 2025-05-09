@@ -41,13 +41,13 @@ inline MeshInfo stlFormatCapability()
 
     info.setVertices();
 
-    info.setVertexCoords();
+    info.setPerVertexCoordinate();
 
     info.setFaces();
 
-    info.setFaceVRefs();
-    info.setFaceColors();
-    info.setFaceNormals();
+    info.setPerFaceVertexReferences();
+    info.setPerFaceColor();
+    info.setPerFaceNormal();
 
     return info;
 }
