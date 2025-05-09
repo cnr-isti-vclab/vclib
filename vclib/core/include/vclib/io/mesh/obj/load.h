@@ -567,7 +567,7 @@ void loadObj(
             // color)
             if (header == "v") {
                 loadedInfo.setVertices();
-                loadedInfo.setPerVertexCoordinate();
+                loadedInfo.setPerVertexPosition();
                 detail::readObjVertex(
                     m, token, loadedInfo, tokens, currentMaterial, settings);
             }

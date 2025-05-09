@@ -317,7 +317,7 @@ void loadStl(
 {
     loadedInfo.clear();
     loadedInfo.setVertices();
-    loadedInfo.setPerVertexCoordinate();
+    loadedInfo.setPerVertexPosition();
 
     if constexpr (HasFaces<MeshType>) {
         loadedInfo.setFaces();

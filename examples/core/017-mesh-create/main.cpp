@@ -31,7 +31,7 @@ int main()
     // want to save just these infos in the files, ignore the rest
     info.setVertices();
     info.setFaces();
-    info.setPerVertexCoordinate(true, vcl::PrimitiveType::FLOAT);
+    info.setPerVertexPosition(true, vcl::PrimitiveType::FLOAT);
     info.setPerFaceVertexReferences();
 
     vcl::SaveSettings settings;

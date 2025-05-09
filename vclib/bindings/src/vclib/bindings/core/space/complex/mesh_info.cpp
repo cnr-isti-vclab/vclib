@@ -55,7 +55,7 @@ void initMeshInfo(pybind11::module& m)
     el.export_values();
 
     py::enum_<MeshInfo::Component> cpt(c, "Component");
-    cpt.value("COORD", MeshInfo::Component::COORD);
+    cpt.value("POSITION", MeshInfo::Component::POSITION);
     cpt.value("VREFS", MeshInfo::Component::VREFS);
     cpt.value("NORMAL", MeshInfo::Component::NORMAL);
     cpt.value("COLOR", MeshInfo::Component::COLOR);
@@ -96,7 +96,7 @@ void initMeshInfo(pybind11::module& m)
     c.def("has_per_element_component", &MeshInfo::hasPerElementComponent);
 
     c.def("has_vertices", &MeshInfo::hasVertices);
-    c.def("has_per_vertex_coordinate", &MeshInfo::hasPerVertexCoordinate);
+    c.def("has_per_vertex_position", &MeshInfo::hasPerVertexPosition);
     c.def("has_per_vertex_normal", &MeshInfo::hasPerVertexNormal);
     c.def("has_per_vertex_color", &MeshInfo::hasPerVertexColor);
     c.def("has_per_vertex_quality", &MeshInfo::hasPerVertexQuality);
@@ -136,7 +136,7 @@ void initMeshInfo(pybind11::module& m)
     c.def("set_element", &MeshInfo::setElement);
     c.def("set_per_element_component", &MeshInfo::setPerElementComponent);
     c.def("set_vertices", &MeshInfo::setVertices);
-    c.def("set_per_vertex_coordinate", &MeshInfo::setPerVertexCoordinate);
+    c.def("set_per_vertex_position", &MeshInfo::setPerVertexPosition);
     c.def("set_per_vertex_normal", &MeshInfo::setPerVertexNormal);
     c.def("set_per_vertex_color", &MeshInfo::setPerVertexColor);
     c.def("set_per_vertex_quality", &MeshInfo::setPerVertexQuality);
@@ -190,7 +190,7 @@ void initMeshInfo(pybind11::module& m)
         &MeshInfo::clearPerEdgeCustomComponents);
 
     c.def("per_element_component_type", &MeshInfo::perElementComponentType);
-    c.def("per_vertex_coordinate_type", &MeshInfo::perVertexCoordinateType);
+    c.def("per_vertex_position_type", &MeshInfo::perVertexPositionType);
     c.def("per_vertex_normal_type", &MeshInfo::perVertexNormalType);
     c.def("per_vertex_color_type", &MeshInfo::perVertexColorType);
     c.def("per_vertex_quality_type", &MeshInfo::perVertexQualityType);

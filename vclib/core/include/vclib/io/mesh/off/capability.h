@@ -42,7 +42,7 @@ inline MeshInfo offFormatCapability()
     info.setVertices();
     info.setFaces();
 
-    info.setPerVertexCoordinate();
+    info.setPerVertexPosition();
     info.setPerVertexNormal();
     info.setPerVertexColor();
     info.setPerVertexTexCoord();

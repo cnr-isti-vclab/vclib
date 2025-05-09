@@ -45,7 +45,7 @@ inline MeshInfo objFormatCapability()
 
     info.setTextures();
 
-    info.setPerVertexCoordinate();
+    info.setPerVertexPosition();
     info.setPerVertexNormal();
     info.setPerVertexColor();
     info.setPerVertexTexCoord();

@@ -195,7 +195,7 @@ public:
                 switch (p.name) {
                 case ply::x:
                 case ply::y:
-                case ply::z: mod.setPerVertexCoordinate(); break;
+                case ply::z: mod.setPerVertexPosition(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerVertexNormal(); break;
@@ -388,14 +388,14 @@ public:
             mVertElemPos = mElements.size();
             PlyElement vElem;
             vElem.type = ply::VERTEX;
-            if (info.hasPerVertexCoordinate()) {
+            if (info.hasPerVertexPosition()) {
                 PlyProperty px, py, pz;
                 px.name = ply::x;
-                px.type = info.perVertexCoordinateType();
+                px.type = info.perVertexPositionType();
                 py.name = ply::y;
-                py.type = info.perVertexCoordinateType();
+                py.type = info.perVertexPositionType();
                 pz.name = ply::z;
-                pz.type = info.perVertexCoordinateType();
+                pz.type = info.perVertexPositionType();
                 vElem.properties.push_back(px);
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
