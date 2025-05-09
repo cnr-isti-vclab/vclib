@@ -33,7 +33,8 @@ inline void initComplex(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    // py::module_ sm = m.def_submodule("complex", "Complex Spatial Data Structures");
+    // py::module_ sm = m.def_submodule("complex", "Complex Spatial Data
+    // Structures");
 
     initMeshInfo(m);
 }

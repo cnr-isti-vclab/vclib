@@ -97,7 +97,9 @@ void initMeshInfo(pybind11::module& m)
     c.def("set_element", &MeshInfo::setElement);
     c.def("set_element_components", &MeshInfo::setElementComponents);
     c.def("add_element_custom_component", &MeshInfo::addElementCustomComponent);
-    c.def("clear_element_custom_components", &MeshInfo::clearElementCustomComponents);
+    c.def(
+        "clear_element_custom_components",
+        &MeshInfo::clearElementCustomComponents);
 
     c.def("element_component_type", &MeshInfo::elementComponentType);
 

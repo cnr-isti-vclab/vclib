@@ -231,7 +231,7 @@ MeshType load(
     const std::string&  filename,
     MeshInfo&           loadedInfo,
     const LoadSettings& settings,
-    LogType&            log      = nullLogger)
+    LogType&            log = nullLogger)
 {
     MeshType m;
     load(m, filename, loadedInfo, log, settings);
