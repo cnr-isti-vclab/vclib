@@ -27,6 +27,7 @@
 
 #include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/drawable/drawable_lines.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/io/image/load.h>
@@ -65,8 +66,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     IndexBuffer mEdgeNormalBuffer;
     IndexBuffer mEdgeColorBuffer;
 
-    // TODO: manage wireframe with proper lines
-    IndexBuffer mWireframeIndexBuffer;
+    GPUGeneratedLines mWireframeLines;
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
@@ -112,7 +112,8 @@ public:
         swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
         swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
         swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
-        swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
+
+        mWireframeLines.swap(other.mWireframeLines);
         swap(mTextureUnits, other.mTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
     }
@@ -164,10 +165,43 @@ public:
 
             mEdgeColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
         }
-        else if (indexBufferToBind == WIREFRAME) {
-            mWireframeIndexBuffer.bind();
+    }
+
+    void setWireframeSettings(const MeshRenderSettings& settings)
+    {
+        using enum MRI::Wireframe;
+
+        LineSettings& wSettings = mWireframeLines.settings();
+        wSettings.setThickness(settings.wireframeWidth());
+
+        if (settings.isWireframe(COLOR_USER)) {
+            vcl::Color generalColor = settings.wireframeUserColor();
+            wSettings.setGeneralColor(
+                LinesVertex::COLOR(
+                    generalColor.redF(),
+                    generalColor.greenF(),
+                    generalColor.blueF(),
+                    generalColor.alphaF()));
+            wSettings.setColorToUse(LineColorToUse::GENERAL_COLOR);
+        }
+
+        if (settings.isWireframe(COLOR_MESH)) {
+            const float* colorPerMesh = mMeshUniforms.currentMeshColor();
+            wSettings.setGeneralColor(
+                LinesVertex::COLOR(
+                    colorPerMesh[0],
+                    colorPerMesh[1],
+                    colorPerMesh[2],
+                    colorPerMesh[3]));
+            wSettings.setColorToUse(LineColorToUse::GENERAL_COLOR);
+        }
+
+        if (settings.isWireframe(COLOR_VERTEX)) {
+            wSettings.setColorToUse(LineColorToUse::PER_VERTEX_COLOR);
         }
     }
+
+    void drawWireframe(uint viewId) const { mWireframeLines.draw(viewId); }
 
     void bindTextures() const
     {
@@ -381,13 +415,57 @@ private:
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
-        const uint nw = Base::numWireframeLines();
+        // TODO: DATA DUPLICATION
+        // Heavy refactoring needed here
+        std::vector<float> wireframeCoords;
+        wireframeCoords.reserve(mesh.faceNumber() * 3 * 3);
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nw * 2);
+        std::vector<uint> wireframeColors;
+        wireframeColors.reserve(mesh.faceNumber() * 3);
 
-        Base::fillWireframeIndices(mesh, buffer);
+        std::vector<float> wireframeNormals;
+        wireframeNormals.reserve(mesh.faceNumber() * 3 * 3);
 
-        mWireframeIndexBuffer.create(buffer, nw * 2, true, releaseFn);
+        for (const auto& f : mesh.faces()) {
+            for (uint i = 0; i < f.vertexNumber(); ++i) {
+                const auto&       p0 = f.vertex(i)->coord();
+                const auto&       p1 = f.vertexMod((i + 1))->coord();
+                const vcl::Color& c0 = f.vertex(i)->color();
+                const vcl::Color& c1 = f.vertexMod((i + 1))->color();
+                // TODO: NORMALS CAN ALSO NOT BE AVAILABLE
+                const auto& n0 = f.vertex(i)->normal();
+                const auto& n1 = f.vertexMod((i + 1))->normal();
+
+                wireframeCoords.insert(
+                    wireframeCoords.end(), {(float)p0.x(), (float)p0.y(), (float)p0.z()});
+                wireframeColors.push_back(
+                    LinesVertex::COLOR(
+                        c0.redF(), c0.greenF(), c0.blueF(), c0.alphaF()));
+                wireframeNormals.insert(
+                    wireframeNormals.end(), {(float)n0.x(), (float)n0.y(), (float)n0.z()});
+
+                wireframeCoords.insert(
+                    wireframeCoords.end(), {(float)p1.x(), (float)p1.y(), (float)p1.z()});
+                wireframeColors.push_back(
+                    LinesVertex::COLOR(
+                        c1.redF(), c1.greenF(), c1.blueF(), c1.alphaF()));
+                wireframeNormals.insert(
+                    wireframeNormals.end(), {(float)n1.x(), (float)n1.y(), (float)n1.z()});
+            }
+        }
+        // wireframe index buffer
+        mWireframeLines.setPoints(
+            wireframeCoords, wireframeColors, wireframeNormals);
+
+        // WAS:
+        // const uint nw = Base::numWireframeLines();
+
+        // auto [buffer, releaseFn] =
+        //    getAllocatedBufferAndReleaseFn<uint>(nw * 2);
+
+        // Base::fillWireframeIndices(mesh, buffer);
+
+        // mWireframeIndexBuffer.create(buffer, nw * 2, true, releaseFn);
     }
 
     void setTextureUnits(const MeshType& mesh) // override

@@ -237,6 +237,11 @@ public:
                 bgfx::setBuffer(stream, mHandle, access);
         }
     }
+
+    void setInstance(uint start, uint numInstance) const 
+    {
+        bgfx::setInstanceDataBuffer(mHandle, start, numInstance);
+    }
 };
 
 } // namespace vcl
