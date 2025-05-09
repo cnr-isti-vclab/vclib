@@ -46,7 +46,7 @@ class Vertex :
         public vcl::Vertex<
             FooMesh,
             vcl::vert::BitFlags,
-            vcl::vert::Coordinate3d,
+            vcl::vert::Position3d,
             vcl::vert::Normal3d,
             vcl::vert::Color,
             FooComponent>

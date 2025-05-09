@@ -35,7 +35,7 @@ TEMPLATE_TEST_CASE(
 {
     using PolyMesh = TestType;
 
-    using PolyMeshPoint = PolyMesh::VertexType::CoordType;
+    using PolyMeshPoint = PolyMesh::VertexType::PositionType;
     PolyMesh m;
 
     THEN("The size for each container start at 0")

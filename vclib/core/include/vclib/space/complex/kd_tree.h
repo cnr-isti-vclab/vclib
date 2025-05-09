@@ -118,7 +118,7 @@ public:
         uint            maxDepth      = 64,
         bool            balanced      = false)
         requires (std::is_same_v<
-                     typename MeshType::VertexType::CoordType,
+                     typename MeshType::VertexType::PositionType,
                      PointType>)
             :
             mPoints(m.vertexNumber()), mIndices(m.vertexNumber()),
@@ -559,19 +559,19 @@ private:
 /* Deduction guides */
 
 template<MeshConcept MeshType>
-KDTree(const MeshType& m) -> KDTree<typename MeshType::VertexType::CoordType>;
+KDTree(const MeshType& m) -> KDTree<typename MeshType::VertexType::PositionType>;
 
 template<MeshConcept MeshType>
 KDTree(const MeshType& m, uint pointsPerCell)
-    -> KDTree<typename MeshType::VertexType::CoordType>;
+    -> KDTree<typename MeshType::VertexType::PositionType>;
 
 template<MeshConcept MeshType>
 KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth)
-    -> KDTree<typename MeshType::VertexType::CoordType>;
+    -> KDTree<typename MeshType::VertexType::PositionType>;
 
 template<MeshConcept MeshType>
 KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced)
-    -> KDTree<typename MeshType::VertexType::CoordType>;
+    -> KDTree<typename MeshType::VertexType::PositionType>;
 
 } // namespace vcl
 

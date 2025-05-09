@@ -153,7 +153,7 @@ HausdorffDistResult samplerMeshHausdorff(
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
-    using ScalarType = VertexType::CoordType::ScalarType;
+    using ScalarType = VertexType::PositionType::ScalarType;
 
     std::string meshName = "first mesh";
     if constexpr (HasName<MeshType>) {
@@ -267,7 +267,7 @@ HausdorffDistResult hausdorffDistance(
         return HausdorffDistResult();
     }
     case HAUSDORFF_MONTECARLO: {
-        PointSampler<typename MeshType2::VertexType::CoordType> sampler;
+        PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
         return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
             m1, m2, nSamples, deterministic, sampler, birth, log);

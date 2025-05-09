@@ -192,7 +192,7 @@ std::vector<uint> earCut(R&& range)
 template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
-    using CoordType = Face::VertexType::CoordType;
+    using PositionType = Face::VertexType::PositionType;
     return earCut(polygon.vertices() | views::coords);
 }
 

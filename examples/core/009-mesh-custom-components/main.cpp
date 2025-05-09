@@ -73,8 +73,8 @@ int main()
         m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
 
     double avgDist = 0;
-    using CT       = vcl::TriMesh::Vertex::CoordType;
-    using ST       = CT::ScalarType;
+    using PT       = vcl::TriMesh::Vertex::PositionType;
+    using ST       = PT::ScalarType;
     for (vcl::TriMesh::Vertex& v : m.vertices()) {
         avgDist += v.coord().dist(oldCoords[m.index(v)].cast<ST>());
     }
@@ -82,9 +82,9 @@ int main()
 
     std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
 
-    m.addCustomComponent<CT>("barycenter", vcl::barycenter(m));
+    m.addCustomComponent<PT>("barycenter", vcl::barycenter(m));
 
-    std::cerr << "Mesh barycenter: " << m.customComponent<CT>("barycenter")
+    std::cerr << "Mesh barycenter: " << m.customComponent<PT>("barycenter")
               << "\n";
 
     return 0;

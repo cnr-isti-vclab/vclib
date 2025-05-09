@@ -142,7 +142,7 @@ void testTriangleMatrix(
     const auto& ftr)
 {
     using MeshType   = vcl::RemoveRef<decltype(tm)>;
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
     vcl::uint               nVerts = tm.vertexNumber() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
@@ -226,7 +226,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Append duplicated vertex coordinates...")
     {
-        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
+        using ScalarType = typename TriMesh::VertexType::PositionType::ScalarType;
 
         SECTION("Eigen Row Major")
         {

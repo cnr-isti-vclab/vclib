@@ -48,7 +48,7 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    using PointType = TriMesh::VertexType::CoordType;
+    using PointType = TriMesh::VertexType::PositionType;
 
     const PointType p(0.5, 0.5, 0.5);
 

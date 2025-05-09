@@ -35,7 +35,7 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    using TriMeshPoint = TriMesh::VertexType::CoordType;
+    using TriMeshPoint = TriMesh::VertexType::PositionType;
     TriMesh m;
 
     THEN("The size for each container start at 0")
@@ -235,7 +235,7 @@ TEMPLATE_TEST_CASE(
     using TriMesh = TestType;
 
     TriMesh m;
-    using PointT = TriMesh::VertexType::CoordType;
+    using PointT = TriMesh::VertexType::PositionType;
 
     m.addVertices(
         PointT(-0.5, -0.5, 0.5),

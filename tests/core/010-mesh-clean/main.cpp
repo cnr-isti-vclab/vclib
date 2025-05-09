@@ -30,7 +30,7 @@
 template<vcl::FaceMeshConcept MeshType>
 void populateTriMesh(MeshType& tm)
 {
-    using Point = MeshType::VertexType::CoordType;
+    using Point = MeshType::VertexType::PositionType;
 
     // note: p3 and p4 have same coords
     const Point p0(0, 0, 0);
@@ -57,7 +57,7 @@ void populateTriMesh(MeshType& tm)
 template<vcl::FaceMeshConcept MeshType>
 void populatePolyMesh(MeshType& pm)
 {
-    using Point = MeshType::VertexType::CoordType;
+    using Point = MeshType::VertexType::PositionType;
 
     // note: p3 and p4 have same coords
     const Point p0(0, 0, 0);
@@ -79,7 +79,7 @@ void populatePolyMesh(MeshType& pm)
 template<vcl::EdgeMeshConcept MeshType>
 void populateEdgeMesh(MeshType& m)
 {
-    using Point = MeshType::VertexType::CoordType;
+    using Point = MeshType::VertexType::PositionType;
 
     const Point p0(0, 0, 0);
     const Point p1(1, 0, 0);

@@ -48,7 +48,7 @@ struct CompId
 {
     enum Enum {
         BIT_FLAGS = 0,
-        COORDINATE,
+        POSITION,
         NORMAL,
         COLOR,
         QUALITY,

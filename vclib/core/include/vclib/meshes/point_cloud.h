@@ -59,7 +59,7 @@ class Vertex :
         public vcl::Vertex<
             PointCloudT<Scalar>,
             vert::BitFlags,
-            vert::Coordinate3<Scalar>,
+            vert::Position3<Scalar>,
             vert::Normal3<Scalar>,
             vert::OptionalColor<Vertex<Scalar>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar>>,

@@ -20,27 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_POSITION_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_POSITION_H
 
 #include <vclib/concepts/space.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasCoordinate concept is satisfied only if a Element class provides
+ * @brief HasPosition concept is satisfied only if a Element class provides
  * the types and member functions specified in this concept. These types and
- * member functions allow to access to a @ref vcl::comp::Coordinate component of
+ * member functions allow to access to a @ref vcl::comp::Position component of
  * a given element.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasCoordinate = requires (T&& obj) {
-    typename RemoveRef<T>::CoordType;
+concept HasPosition = requires (T&& obj) {
+    typename RemoveRef<T>::PositionType;
     { obj.coord() } -> PointConcept;
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_POSITION_H

@@ -33,35 +33,35 @@ void coordinateComponentStaticAsserts()
 
     // test only the coordinate component
     static_assert(
-        comp::HasCoordinate<vert::Coordinate3f>,
+        comp::HasPosition<vert::Position3f>,
         "vert::Coordinate3f does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<const vert::Coordinate3f>,
+        comp::HasPosition<const vert::Position3f>,
         "const vert::Coordinate3f does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<vert::Coordinate3f&>,
+        comp::HasPosition<vert::Position3f&>,
         "vert::Coordinate3f& does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<const vert::Coordinate3f&>,
+        comp::HasPosition<const vert::Position3f&>,
         "const vert::Coordinate3f& does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<vert::Coordinate3f&&>,
+        comp::HasPosition<vert::Position3f&&>,
         "vert::Coordinate3f&& does not satisfy the HasCoordinate concept");
 
     static_assert(
-        comp::HasCoordinate<TriMeshVertex>,
+        comp::HasPosition<TriMeshVertex>,
         "TriMesh Vertex does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<const TriMeshVertex>,
+        comp::HasPosition<const TriMeshVertex>,
         "const TriMesh Vertex does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<TriMeshVertex&>,
+        comp::HasPosition<TriMeshVertex&>,
         "TriMesh Vertex& does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<const TriMeshVertex&>,
+        comp::HasPosition<const TriMeshVertex&>,
         "const TriMesh Vertex& does not satisfy the HasCoordinate concept");
     static_assert(
-        comp::HasCoordinate<TriMeshVertex&&>,
+        comp::HasPosition<TriMeshVertex&&>,
         "TriMesh Vertex&& does not satisfy the HasCoordinate concept");
 }
 

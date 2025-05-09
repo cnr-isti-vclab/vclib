@@ -41,7 +41,7 @@ class MeshSampler
     MeshType mMesh;
 
 public:
-    using PointType     = MeshType::VertexType::CoordType;
+    using PointType     = MeshType::VertexType::PositionType;
     using ScalarType    = PointType::ScalarType;
     using ConstIterator = std::ranges::iterator_t<CoordView>;
 

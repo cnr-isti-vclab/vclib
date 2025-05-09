@@ -69,10 +69,10 @@ void addTriangleFacesFromPolygon(
     const std::vector<uint>& polygon)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
+    using PositionType  = VertexType::PositionType;
 
     // from the ids, create a polygon of coordinates
-    std::vector<CoordType> polCoords(polygon.size());
+    std::vector<PositionType> polCoords(polygon.size());
     for (uint i = 0; i < polygon.size(); ++i) {
         if (polygon[i] >= m.vertexContainerSize()) {
             throw BadVertexIndexException(

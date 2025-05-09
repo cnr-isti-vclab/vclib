@@ -752,22 +752,22 @@ void componentStaticAsserts()
 
     // HasComponentOfType
     static_assert(
-        comp::HasComponentOfType<TEMVertex, CompId::COORDINATE>,
+        comp::HasComponentOfType<TEMVertex, CompId::POSITION>,
         "TEMVertex does not satisfy the HasComponentOfType COORDINATE concept");
     static_assert(
-        comp::HasComponentOfType<const TEMVertex, CompId::COORDINATE>,
+        comp::HasComponentOfType<const TEMVertex, CompId::POSITION>,
         "const TEMVertex does not satisfy the HasComponentOfType COORDINATE "
         "concept");
     static_assert(
-        comp::HasComponentOfType<TEMVertex&, CompId::COORDINATE>,
+        comp::HasComponentOfType<TEMVertex&, CompId::POSITION>,
         "TEMVertex& does not satisfy the HasComponentOfType COORDINATE "
         "concept");
     static_assert(
-        comp::HasComponentOfType<const TEMVertex&, CompId::COORDINATE>,
+        comp::HasComponentOfType<const TEMVertex&, CompId::POSITION>,
         "const TEMVertex& does not satisfy the HasComponentOfType COORDINATE "
         "concept");
     static_assert(
-        comp::HasComponentOfType<TEMVertex&&, CompId::COORDINATE>,
+        comp::HasComponentOfType<TEMVertex&&, CompId::POSITION>,
         "TEMVertex&& does not satisfy the HasComponentOfType COORDINATE "
         "concept");
 
@@ -812,23 +812,23 @@ void componentStaticAsserts()
 
     // HasVerticalComponentOfType
     static_assert(
-        !comp::HasVerticalComponentOfType<TEMVertex, CompId::COORDINATE>,
+        !comp::HasVerticalComponentOfType<TEMVertex, CompId::POSITION>,
         "TEMVertex does satisfy the HasVerticalComponentOfType COORDINATE "
         "concept");
     static_assert(
-        !comp::HasVerticalComponentOfType<const TEMVertex, CompId::COORDINATE>,
+        !comp::HasVerticalComponentOfType<const TEMVertex, CompId::POSITION>,
         "const TEMVertex does satisfy the HasVerticalComponentOfType "
         "COORDINATE concept");
     static_assert(
-        !comp::HasVerticalComponentOfType<TEMVertex&, CompId::COORDINATE>,
+        !comp::HasVerticalComponentOfType<TEMVertex&, CompId::POSITION>,
         "TEMVertex& does satisfy the HasVerticalComponentOfType COORDINATE "
         "concept");
     static_assert(
-        !comp::HasVerticalComponentOfType<const TEMVertex&, CompId::COORDINATE>,
+        !comp::HasVerticalComponentOfType<const TEMVertex&, CompId::POSITION>,
         "const TEMVertex& does satisfy the HasVerticalComponentOfType "
         "COORDINATE concept");
     static_assert(
-        !comp::HasVerticalComponentOfType<TEMVertex&&, CompId::COORDINATE>,
+        !comp::HasVerticalComponentOfType<TEMVertex&&, CompId::POSITION>,
         "TEMVertex&& does satisfy the HasVerticalComponentOfType COORDINATE "
         "concept");
 
@@ -855,23 +855,23 @@ void componentStaticAsserts()
 
     // HasOptionalComponentOfType
     static_assert(
-        !comp::HasOptionalComponentOfType<TEMVertex, CompId::COORDINATE>,
+        !comp::HasOptionalComponentOfType<TEMVertex, CompId::POSITION>,
         "TEMVertex does satisfy the HasOptionalComponentOfType COORDINATE "
         "concept");
     static_assert(
-        !comp::HasOptionalComponentOfType<const TEMVertex, CompId::COORDINATE>,
+        !comp::HasOptionalComponentOfType<const TEMVertex, CompId::POSITION>,
         "const TEMVertex does satisfy the HasOptionalComponentOfType "
         "COORDINATE concept");
     static_assert(
-        !comp::HasOptionalComponentOfType<TEMVertex&, CompId::COORDINATE>,
+        !comp::HasOptionalComponentOfType<TEMVertex&, CompId::POSITION>,
         "TEMVertex& does satisfy the HasOptionalComponentOfType COORDINATE "
         "concept");
     static_assert(
-        !comp::HasOptionalComponentOfType<const TEMVertex&, CompId::COORDINATE>,
+        !comp::HasOptionalComponentOfType<const TEMVertex&, CompId::POSITION>,
         "const TEMVertex& does satisfy the HasOptionalComponentOfType "
         "COORDINATE concept");
     static_assert(
-        !comp::HasOptionalComponentOfType<TEMVertex&&, CompId::COORDINATE>,
+        !comp::HasOptionalComponentOfType<TEMVertex&&, CompId::POSITION>,
         "TEMVertex&& does satisfy the HasOptionalComponentOfType COORDINATE "
         "concept");
 

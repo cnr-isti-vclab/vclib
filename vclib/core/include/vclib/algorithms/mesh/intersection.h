@@ -84,7 +84,7 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
-    using CoordType  = VertexType::CoordType;
+    using PositionType  = VertexType::PositionType;
 
     EdgeMesh em;
 
@@ -94,8 +94,8 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
         qH[m.index(v)] = pl.dist(v.coord());
 
     for (const FaceType& f : m.faces()) {
-        std::vector<CoordType> ptVec;
-        std::vector<CoordType> nmVec;
+        std::vector<PositionType> ptVec;
+        std::vector<PositionType> nmVec;
         for (uint j = 0; j < f.vertexNumber(); ++j) {
             if (qH[m.index(f.vertex(j))] == 0) {
                 ptVec.push_back(f.vertex(j)->coord());
@@ -108,21 +108,21 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
             else if (
                 (qH[m.index(f.vertex(j))] * qH[m.index(f.vertexMod(j + 1))]) <
                 0) {
-                const CoordType& p0 = f.vertex(j)->coord();
-                const CoordType& p1 = f.vertexMod(j + 1)->coord();
+                const PositionType& p0 = f.vertex(j)->coord();
+                const PositionType& p1 = f.vertexMod(j + 1)->coord();
 
                 float q0 = qH[m.index(f.vertex(j))];
                 float q1 = qH[m.index(f.vertexMod(j + 1))];
 
-                std::pair<CoordType, CoordType> seg(p0, p1);
-                CoordType pp = pl.segmentIntersection(seg);
+                std::pair<PositionType, PositionType> seg(p0, p1);
+                PositionType pp = pl.segmentIntersection(seg);
                 ptVec.push_back(pp);
                 if constexpr (HasPerVertexNormal<MeshType>) {
                     if (isPerVertexNormalAvailable(m)) {
                         using NormalType     = VertexType::NormalType;
                         const NormalType& n0 = f.vertex(j)->normal();
                         const NormalType& n1 = f.vertexMod(j + 1)->normal();
-                        CoordType         nn =
+                        PositionType         nn =
                             (n0 * fabs(q1) + n1 * fabs(q0)) / fabs(q0 - q1);
                         nmVec.push_back(nn);
                     }
@@ -193,8 +193,8 @@ MeshType intersection(
     double                 tol)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
-    using ScalarType = CoordType::ScalarType;
+    using PositionType  = VertexType::PositionType;
+    using ScalarType = PositionType::ScalarType;
     using FaceType   = MeshType::FaceType;
 
     auto faceSphereIntersectionFilter = [&sphere](const FaceType& f) -> bool {
@@ -207,7 +207,7 @@ MeshType intersection(
     while (i < res.faceContainerSize()) {
         FaceType& f = res.face(i);
 
-        CoordType                         witness;
+        PositionType                         witness;
         std::pair<ScalarType, ScalarType> ires(0, 0);
 
         bool allIn = true;

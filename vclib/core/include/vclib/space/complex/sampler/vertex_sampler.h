@@ -15,13 +15,13 @@ class VertexSampler
     std::vector<VertexType*> mSamples;
 
 public:
-    using PointType = VertexType::CoordType;
+    using PointType = VertexType::PositionType;
 
     VertexSampler() {}
 
     const std::vector<VertexType*> samples() const { return mSamples; }
 
-    const typename VertexType::CoordType& sample(uint i) const
+    const typename VertexType::PositionType& sample(uint i) const
     {
         return mSamples[i]->coord();
     }

@@ -119,7 +119,7 @@ void rotate(
     const Scalar&    angleRad,
     bool             updateNormals = true)
 {
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
     Matrix33<ScalarType> m;
     setTransformMatrixRotation(m, axis, angleRad);

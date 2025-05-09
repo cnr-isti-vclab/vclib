@@ -30,7 +30,7 @@ class MyVertex :
         public vcl::Vertex<
             vcl::vert::ParentMeshPointer<void>,
             vcl::vert::BitFlags,
-            vcl::vert::Coordinate3d,
+            vcl::vert::Position3d,
             vcl::vert::Normal3f,
             vcl::vert::Color>
 {
@@ -40,7 +40,7 @@ int main()
 {
     vcl::TriMesh m;
 
-    using TriMeshPoint = vcl::TriMesh::VertexType::CoordType;
+    using TriMeshPoint = vcl::TriMesh::VertexType::PositionType;
 
     // adding some vertices
     m.addVertex();
@@ -52,7 +52,7 @@ int main()
     m.vertex(1).coord() = TriMeshPoint(0, 1, 0);
     m.vertex(2).coord() = TriMeshPoint(1, 0, 0);
 
-    m.vertex(0).component<vcl::CompId::COORDINATE>().coord() =
+    m.vertex(0).component<vcl::CompId::POSITION>().coord() =
         TriMeshPoint(2, 0, 0);
 
     vcl::TriMesh::Vertex myv;

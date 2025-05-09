@@ -56,7 +56,7 @@ class MeshInertia
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
-    using ScalarType = VertexType::CoordType::ScalarType;
+    using ScalarType = VertexType::PositionType::ScalarType;
 
     enum { X = 0, Y = 1, Z = 2 };
 

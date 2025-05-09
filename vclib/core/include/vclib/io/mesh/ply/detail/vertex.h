@@ -44,7 +44,7 @@ void readPlyVertexProperty(
 {
     bool hasBeenRead = false;
     if (p.name >= ply::x && p.name <= ply::z) {
-        using Scalar = VertexType::CoordType::ScalarType;
+        using Scalar = VertexType::PositionType::ScalarType;
         int a        = p.name - ply::x;
         v.coord()[a] = io::readPrimitiveType<Scalar>(file, p.type, end);
         hasBeenRead  = true;

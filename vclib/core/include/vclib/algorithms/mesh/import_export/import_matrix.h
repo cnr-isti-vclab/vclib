@@ -403,7 +403,7 @@ void importVerticesFromMatrix(
     const VMatrix& vertices,
     bool           clearBeforeSet = true)
 {
-    using CoordType = MeshType::VertexType::CoordType;
+    using PositionType = MeshType::VertexType::PositionType;
 
     if (vertices.cols() != 3)
         throw WrongSizeException("The input vertex matrix must have 3 columns");
@@ -422,7 +422,7 @@ void importVerticesFromMatrix(
 
     uint i = 0;
     for (auto& v : mesh.vertices()) {
-        v.coord() = CoordType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
+        v.coord() = PositionType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
         i++;
     }
 }

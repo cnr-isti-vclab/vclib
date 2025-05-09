@@ -28,7 +28,7 @@
 
 int main()
 {
-    using PointType = vcl::TriMesh::VertexType::CoordType;
+    using PointType = vcl::TriMesh::VertexType::PositionType;
     vcl::TriMesh m =
         vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 

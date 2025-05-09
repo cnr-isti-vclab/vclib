@@ -33,21 +33,21 @@ namespace vcl {
 
 namespace detail {
 
-template<typename CoordType>
+template<typename PositionType>
 struct LaplacianInfo
 {
-    using ScalarType = CoordType::ScalarType;
-    CoordType  sum;
+    using ScalarType = PositionType::ScalarType;
+    PositionType  sum;
     ScalarType cnt;
 };
 
-template<typename MeshType, typename CoordType>
+template<typename MeshType, typename PositionType>
 void accumulateLaplacianInfo(
     const MeshType&                        m,
-    std::vector<LaplacianInfo<CoordType>>& data,
+    std::vector<LaplacianInfo<PositionType>>& data,
     bool                                   cotangentFlag = false)
 {
-    using ScalarType = CoordType::ScalarType;
+    using ScalarType = PositionType::ScalarType;
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
 
@@ -59,11 +59,11 @@ void accumulateLaplacianInfo(
                 const VertexType& v0 = *f.vertex(j);
                 const VertexType& v1 = *f.vertexMod(j + 1);
                 const VertexType& v2 = *f.vertexMod(j + 2);
-                const CoordType&  p0 = v0.coord();
-                const CoordType&  p1 = v1.coord();
-                const CoordType&  p2 = v2.coord();
+                const PositionType&  p0 = v0.coord();
+                const PositionType&  p1 = v1.coord();
+                const PositionType&  p2 = v2.coord();
                 if (cotangentFlag) {
-                    ScalarType angle = CoordType(p1 - p2).angle(p0 - p2);
+                    ScalarType angle = PositionType(p1 - p2).angle(p0 - p2);
                     weight           = std::tan((M_PI * 0.5) - angle);
                 }
 
@@ -80,8 +80,8 @@ void accumulateLaplacianInfo(
             if (f.edgeOnBorder(j)) {
                 const VertexType& v0  = *f.vertex(j);
                 const VertexType& v1  = *f.vertexMod(j + 1);
-                const CoordType&  p0  = v0.coord();
-                const CoordType&  p1  = v1.coord();
+                const PositionType&  p0  = v0.coord();
+                const PositionType&  p1  = v1.coord();
                 data[m.index(v0)].sum = p0;
                 data[m.index(v1)].sum = p1;
                 data[m.index(v0)].cnt = 1;
@@ -96,8 +96,8 @@ void accumulateLaplacianInfo(
             if (f.edgeOnBorder(j)) {
                 const VertexType& v0 = *f.vertex(j);
                 const VertexType& v1 = *f.vertexMod(j + 1);
-                const CoordType&  p0 = v0.coord();
-                const CoordType&  p1 = v1.coord();
+                const PositionType&  p0 = v0.coord();
+                const PositionType&  p1 = v1.coord();
                 data[m.index(v0)].sum += p1;
                 data[m.index(v1)].sum += p0;
                 ++data[m.index(v0)].cnt;
@@ -131,12 +131,12 @@ void laplacianSmoothing(
     bool      cotangentWeight = false /*, CallBackPos *cb*/)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
+    using PositionType  = VertexType::PositionType;
 
-    const detail::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
+    const detail::LaplacianInfo<PositionType> lpz = {PositionType(0, 0, 0), 0};
 
     for (uint i = 0; i < step; ++i) {
-        std::vector<detail::LaplacianInfo<CoordType>> laplData(
+        std::vector<detail::LaplacianInfo<PositionType>> laplData(
             m.vertexContainerSize(), lpz);
         detail::accumulateLaplacianInfo(m, laplData, cotangentWeight);
         for (VertexType& v : m.vertices()) {
@@ -159,18 +159,18 @@ void taubinSmoothing(
     bool      smoothSelected = false /*, CallBackPos *cb*/)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
+    using PositionType  = VertexType::PositionType;
 
-    const detail::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
+    const detail::LaplacianInfo<PositionType> lpz = {PositionType(0, 0, 0), 0};
 
     for (uint i = 0; i < step; ++i) {
-        std::vector<detail::LaplacianInfo<CoordType>> laplData(
+        std::vector<detail::LaplacianInfo<PositionType>> laplData(
             m.vertexContainerSize(), lpz);
         detail::accumulateLaplacianInfo(m, laplData);
         for (VertexType& v : m.vertices()) {
             if (laplData[m.index(v)].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
-                    CoordType delta =
+                    PositionType delta =
                         laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
                         v.coord();
                     v.coord() = v.coord() + delta * lambda;
@@ -182,7 +182,7 @@ void taubinSmoothing(
         for (VertexType& v : m.vertices()) {
             if (laplData[m.index(v)].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
-                    CoordType delta =
+                    PositionType delta =
                         laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
                         v.coord();
                     v.coord() = v.coord() + delta * mu;
@@ -260,7 +260,7 @@ void smoothPerVertexNormalsPointCloud(
     uint      neighborNum,
     uint      iterNum)
 {
-    using Scalar = MeshType::VertexType::CoordType::ScalarType;
+    using Scalar = MeshType::VertexType::PositionType::ScalarType;
     KDTree<Scalar> tree(m);
     smoothPerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
 }

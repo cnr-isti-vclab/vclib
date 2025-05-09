@@ -48,12 +48,12 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createTetrahedron()
 {
-    using CoordType = MeshType::Vertex::CoordType;
+    using PositionType = MeshType::Vertex::PositionType;
     return createTetrahedron<MeshType>(
-        CoordType(1, 1, 1),
-        CoordType(-1, 1, -1),
-        CoordType(-1, -1, 1),
-        CoordType(1, -1, -1));
+        PositionType(1, 1, 1),
+        PositionType(-1, 1, -1),
+        PositionType(-1, -1, 1),
+        PositionType(1, -1, -1));
 }
 
 /**
@@ -64,7 +64,7 @@ MeshType createTetrahedron()
  *
  * @tparam MeshType: the type of the mesh to be generated, it must satisfy the
  * FaceMeshConcept.
- * @tparam CoordType: the type of the coordinates of the points, it must satisfy
+ * @tparam PositionType: the type of the coordinates of the points, it must satisfy
  * the Point3Concept.
  *
  * @param[in] p0: the first point of the tetrahedron.
@@ -76,12 +76,12 @@ MeshType createTetrahedron()
  *
  * @ingroup create
  */
-template<FaceMeshConcept MeshType, Point3Concept CoordType>
+template<FaceMeshConcept MeshType, Point3Concept PositionType>
 MeshType createTetrahedron(
-    const CoordType& p0,
-    const CoordType& p1,
-    const CoordType& p2,
-    const CoordType& p3)
+    const PositionType& p0,
+    const PositionType& p1,
+    const PositionType& p2,
+    const PositionType& p3)
 {
     MeshType m;
 

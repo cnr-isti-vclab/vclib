@@ -1157,7 +1157,6 @@ protected:
             using ParentMesh  = Base::ParentMeshType;
             using VertexType  = ParentMesh::VertexType;
             using MVertexType = OthMesh::VertexType;
-            using MCoordType  = MVertexType::CoordType;
             using MFaceType   = OthMesh::FaceType;
 
             using VertexContainer = ParentMesh::VertexContainer;

@@ -166,7 +166,7 @@ public:
     {
         setVertices();
         setPerVertexCoordinate(
-            true, getType<typename Mesh::VertexType::CoordType::ScalarType>());
+            true, getType<typename Mesh::VertexType::PositionType::ScalarType>());
         if constexpr (HasPerVertexNormal<Mesh>) {
             if (isPerVertexNormalAvailable(m)) {
                 setPerVertexNormal(

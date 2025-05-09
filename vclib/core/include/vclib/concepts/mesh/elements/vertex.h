@@ -65,7 +65,7 @@ concept HasOptionalColor = comp::HasOptionalColor<T>;
 template<typename T>
 concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
-concept HasCoordinate = comp::HasCoordinate<T>;
+concept HasPosition = comp::HasPosition<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
@@ -105,7 +105,7 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 template<typename T>
 concept VertexConcept =
     ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::VERTEX &&
-    vert::HasBitFlags<T> && vert::HasCoordinate<T>;
+    vert::HasBitFlags<T> && vert::HasPosition<T>;
 
 } // namespace vcl
 

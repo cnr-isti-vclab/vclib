@@ -65,35 +65,35 @@ void meshConceptStaticAsserts()
 
     static_assert(
         mesh::
-            HasPerElementComponent<TriMesh, ElemId::VERTEX, CompId::COORDINATE>,
+            HasPerElementComponent<TriMesh, ElemId::VERTEX, CompId::POSITION>,
         "TriMesh does not satisfy the HasPerElementComponent "
         "VERTEX-COORDINATE");
     static_assert(
         mesh::HasPerElementComponent<
             const TriMesh,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "const TriMesh does not satisfy the HasPerElementComponent "
         "VERTEX-COORDINATE");
     static_assert(
         mesh::HasPerElementComponent<
             TriMesh&,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "TriMesh& does not satisfy the HasPerElementComponent "
         "VERTEX-COORDINATE");
     static_assert(
         mesh::HasPerElementComponent<
             const TriMesh&,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "const TriMesh& does not satisfy the HasPerElementComponent "
         "VERTEX-COORDINATE");
     static_assert(
         mesh::HasPerElementComponent<
             TriMesh&&,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "TriMesh&& does not satisfy the HasPerElementComponent "
         "VERTEX-COORDINATE");
 
@@ -171,35 +171,35 @@ void meshConceptStaticAsserts()
         !mesh::HasPerElementOptionalComponent<
             TriMesh,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "TriMesh does satisfy the HasPerElementOptionalComponent "
         "VERTEX-COORDINATE");
     static_assert(
         !mesh::HasPerElementOptionalComponent<
             const TriMesh,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "const TriMesh does satisfy the HasPerElementOptionalComponent "
         "VERTEX-COORDINATE");
     static_assert(
         !mesh::HasPerElementOptionalComponent<
             TriMesh&,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "TriMesh& does satisfy the HasPerElementOptionalComponent "
         "VERTEX-COORDINATE");
     static_assert(
         !mesh::HasPerElementOptionalComponent<
             const TriMesh&,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "const TriMesh& does satisfy the HasPerElementOptionalComponent "
         "VERTEX-COORDINATE");
     static_assert(
         !mesh::HasPerElementOptionalComponent<
             TriMesh&&,
             ElemId::VERTEX,
-            CompId::COORDINATE>,
+            CompId::POSITION>,
         "TriMesh&& does satisfy the HasPerElementOptionalComponent "
         "VERTEX-COORDINATE");
 

@@ -33,12 +33,12 @@ class TMPSimplePolyMesh;
 namespace tmpMesh {
 
 class TriVertex :
-        public Vertex<TMPSimpleTriMesh, vert::BitFlags, vert::Coordinate3d>
+        public Vertex<TMPSimpleTriMesh, vert::BitFlags, vert::Position3d>
 {
 };
 
 class PolyVertex :
-        public Vertex<TMPSimplePolyMesh, vert::BitFlags, vert::Coordinate3d>
+        public Vertex<TMPSimplePolyMesh, vert::BitFlags, vert::Position3d>
 {
 };
 

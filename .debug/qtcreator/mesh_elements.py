@@ -5,7 +5,7 @@ from mesh_components import *
 def comp_names():
     return [
         'ParentMeshPointer',
-        'Coordinate',
+        'Position',
         'VertexReferences',
         'TriangleBitFlags',
         'PolygonBitFlags',
@@ -24,7 +24,6 @@ def comp_names():
 
 def dump_element(d, value, str_value):
     elemValue = value.members(True)[0]
-    coord = None
     compList = []
     compListNames = []
 

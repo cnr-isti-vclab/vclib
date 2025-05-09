@@ -377,7 +377,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Coordinates...")
     {
-        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
+        using ScalarType = typename TriMesh::VertexType::PositionType::ScalarType;
 
         SECTION("Eigen Row Major")
         {

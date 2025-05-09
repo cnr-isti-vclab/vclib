@@ -92,7 +92,7 @@ void initComponents(pybind11::class_<ElementType>& c)
             v.color() = c;
         });
     }
-    if constexpr (comp::HasCoordinate<ElementType>) {
+    if constexpr (comp::HasPosition<ElementType>) {
         c.def("coord", py::overload_cast<>(&ElementType::coord), reference);
         c.def("set_coord", [](ElementType& v, const Point3d& p) {
             v.coord() = p;

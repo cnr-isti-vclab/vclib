@@ -144,7 +144,7 @@ public:
      * @param p: coordinate of the new vertex.
      * @return the id of the new vertex.
      */
-    uint addVertex(const typename T::CoordType& p)
+    uint addVertex(const typename T::PositionType& p)
     {
         uint vid            = addVertex();
         vertex(vid).coord() = p; // set the coordinate to the vertex
@@ -168,18 +168,18 @@ public:
     uint addVertices(uint n) { return Base::addElements(n); }
 
     /**
-     * @brief Add an arbitrary number of vertices with the given coordinates,
+     * @brief Add an arbitrary number of vertices with the given positions,
      * returning the id of the first added vertex.
      *
      * You can call this member function like:
      *
      * @code{.cpp}
-     * CoordType p0, p1, p2, p3;
+     * PositionType p0, p1, p2, p3;
      * // init coords...
      * m.addVertices(p0, p1, p2, p3);
      * @endcode
      *
-     * The number of accepted Coordtype arguments is variable.
+     * The number of accepted PositionType arguments is variable.
      *
      * If the call of this function will cause a reallocation of the Vertex
      * container, the function will automatically take care of updating all the
@@ -190,7 +190,7 @@ public:
      * @return the id of the first added vertex.
      */
     template<typename... VC>
-    uint addVertices(const typename T::CoordType& p, const VC&... v)
+    uint addVertices(const typename T::PositionType& p, const VC&... v)
     {
         uint vid = vertexContainerSize();
         // reserve the new number of vertices
@@ -214,7 +214,7 @@ public:
      * @return the id of the first added vertex.
      */
     template<vcl::Range R>
-    uint addVertices(R&& range) requires RangeOf<R, typename T::CoordType>
+    uint addVertices(R&& range) requires RangeOf<R, typename T::PositionType>
     {
         uint vid = vertexContainerSize();
         reserveVertices(vid + std::ranges::size(range));

@@ -24,7 +24,7 @@ def dump_simple_component(d, value):
         #         d.putSubItem("Coordinate", value["mData"]["mData"])
 
 
-def qdump__vcl__comp__Coordinate(d, value):
+def qdump__vcl__comp__Position(d, value):
     dump_simple_component(d, value)
 
 
