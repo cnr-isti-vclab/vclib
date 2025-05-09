@@ -39,24 +39,23 @@ void initSaveMesh(pybind11::module& m)
                 [](const MeshType&    m,
                    const std::string& filename,
                    bool               binary,
-                   bool saveTextureImages,
-                   bool magicsMode,
-                   const MeshInfo& info)
-                {
+                   bool               saveTextureImages,
+                   bool               magicsMode,
+                   const MeshInfo&    info) {
                     SaveSettings settings;
-                    settings.binary = binary;
+                    settings.binary            = binary;
                     settings.saveTextureImages = saveTextureImages;
-                    settings.magicsMode = magicsMode;
-                    settings.info = info;
+                    settings.magicsMode        = magicsMode;
+                    settings.info              = info;
 
                     vcl::save(m, filename, settings);
                 },
                 py::arg("m"),
                 py::arg("filename"),
-                py::arg("binary") = true,
+                py::arg("binary")              = true,
                 py::arg("save_texture_images") = false,
-                py::arg("magics_mode") = false,
-                py::arg("info") = MeshInfo());
+                py::arg("magics_mode")         = false,
+                py::arg("info")                = MeshInfo());
         };
 
     defForAllMeshTypes(m, f);

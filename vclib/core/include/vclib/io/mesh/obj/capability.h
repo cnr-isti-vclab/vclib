@@ -45,17 +45,17 @@ inline MeshInfo objFormatCapability()
 
     info.setTextures();
 
-    info.setVertexCoords();
-    info.setVertexNormals();
-    info.setVertexColors();
-    info.setVertexTexCoords();
+    info.setPerVertexCoordinate();
+    info.setPerVertexNormal();
+    info.setPerVertexColor();
+    info.setPerVertexTexCoord();
 
-    info.setFaceVRefs();
-    info.setFaceColors();
-    info.setFaceWedgeTexCoords();
+    info.setPerFaceVertexReferences();
+    info.setPerFaceColor();
+    info.setPerFaceWedgeTexCoords();
 
-    info.setEdgeVRefs();
-    info.setEdgeColors();
+    info.setPerEdgeVertexReferences();
+    info.setPerEdgeColor();
 
     return info;
 }

@@ -23,8 +23,8 @@
 #ifndef VCL_BINDINGS_CORE_SPACE_H
 #define VCL_BINDINGS_CORE_SPACE_H
 
-#include "space/core.h"
 #include "space/complex.h"
+#include "space/core.h"
 
 #include <pybind11/pybind11.h>
 
