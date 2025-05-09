@@ -286,7 +286,7 @@ uint removeUnreferencedVertices(MeshType& m)
  * This function marks as deleted all vertices in the input mesh that have the
  * same spatial position as another vertex in the mesh. The comparison of vertex
  * positions is based on the `position()` function of the vertex type, which must
- * return a 3D point representing the vertex coordinates.
+ * return a 3D point representing the vertex position.
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the MeshConcept.
  *
@@ -415,10 +415,10 @@ uint removeDuplicatedFaces(MeshType& m)
 }
 
 /**
- * @brief Removes all vertices that have coordinates with invalid floating point
+ * @brief Removes all vertices that have position with invalid floating point
  * values (NaN or inf).
  *
- * This function removes all vertices in the input mesh that have coordinates
+ * This function removes all vertices in the input mesh that have position
  * with invalid floating point values, such as NaN or inf. If the input mesh has
  * faces, and if the flag `deleteAlsoFaces` is set to true, all faces incident
  * on deleted vertices are also deleted.

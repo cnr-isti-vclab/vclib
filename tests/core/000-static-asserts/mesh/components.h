@@ -30,12 +30,12 @@
 #include "components/bounding_box.h"
 #include "components/color.h"
 #include "components/component.h"
-#include "components/coordinate.h"
 #include "components/custom_components.h"
 #include "components/mark.h"
 #include "components/name.h"
 #include "components/normal.h"
 #include "components/principal_curvature.h"
+#include "components/position.h"
 #include "components/quality.h"
 #include "components/tex_coord.h"
 #include "components/textures.h"
@@ -54,12 +54,12 @@ void componentsStaticAsserts()
     bitFlagsComponentStaticAsserts();
     boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
-    coordinateComponentStaticAsserts();
     customComponentsComponentStaticAsserts();
     markComponentStaticAsserts();
     nameComponentStaticAsserts();
     normalComponentStaticAsserts();
     principalCurvatureComponentStaticAsserts();
+    positionComponentStaticAsserts();
     qualityComponentStaticAsserts();
     texCoordComponentStaticAsserts();
     texturesComponentStaticAsserts();

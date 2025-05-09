@@ -20,49 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMP_COORDINATE_H
-#define COMP_COORDINATE_H
+#ifndef COMP_POSITION_H
+#define COMP_POSITION_H
 
 #include <vclib/meshes.h>
 
-void coordinateComponentStaticAsserts()
+void positionComponentStaticAsserts()
 {
     using namespace vcl;
 
     using TriMeshVertex = trimesh::Vertex<float, true>;
 
-    // test only the coordinate component
+    // test only the position component
     static_assert(
         comp::HasPosition<vert::Position3f>,
-        "vert::Coordinate3f does not satisfy the HasCoordinate concept");
+        "vert::Position3f does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<const vert::Position3f>,
-        "const vert::Coordinate3f does not satisfy the HasCoordinate concept");
+        "const vert::Position3f does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<vert::Position3f&>,
-        "vert::Coordinate3f& does not satisfy the HasCoordinate concept");
+        "vert::Position3f& does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<const vert::Position3f&>,
-        "const vert::Coordinate3f& does not satisfy the HasCoordinate concept");
+        "const vert::Position3f& does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<vert::Position3f&&>,
-        "vert::Coordinate3f&& does not satisfy the HasCoordinate concept");
+        "vert::Position3f&& does not satisfy the HasPosition concept");
 
     static_assert(
         comp::HasPosition<TriMeshVertex>,
-        "TriMesh Vertex does not satisfy the HasCoordinate concept");
+        "TriMesh Vertex does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<const TriMeshVertex>,
-        "const TriMesh Vertex does not satisfy the HasCoordinate concept");
+        "const TriMesh Vertex does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<TriMeshVertex&>,
-        "TriMesh Vertex& does not satisfy the HasCoordinate concept");
+        "TriMesh Vertex& does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<const TriMeshVertex&>,
-        "const TriMesh Vertex& does not satisfy the HasCoordinate concept");
+        "const TriMesh Vertex& does not satisfy the HasPosition concept");
     static_assert(
         comp::HasPosition<TriMeshVertex&&>,
-        "TriMesh Vertex&& does not satisfy the HasCoordinate concept");
+        "TriMesh Vertex&& does not satisfy the HasPosition concept");
 }
 
-#endif // COMP_COORDINATE_H
+#endif // COMP_POSITION_H

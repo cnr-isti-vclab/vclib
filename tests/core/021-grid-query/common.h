@@ -94,7 +94,7 @@ auto randomSpheres(
     RadiusDistrType disR(mu, sigma);
 
     for (vcl::uint i = 0; i < n; i++) {
-        // random vertex coordinate pertubated will be the center of the sphere
+        // random vertex positions pertubated will be the center of the sphere
         PointType p = mesh.vertex(disV(gen)).position();
         p += PointType(disX(gen), disY(gen), disZ(gen));
 

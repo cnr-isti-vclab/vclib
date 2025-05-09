@@ -32,7 +32,7 @@ void populateTriMesh(MeshType& tm)
 {
     using Point = MeshType::VertexType::PositionType;
 
-    // note: p3 and p4 have same coords
+    // note: p3 and p4 have same position
     const Point p0(0, 0, 0);
     const Point p1(1, 0, 0);
     const Point p2(0, 1, 0);
@@ -48,7 +48,7 @@ void populateTriMesh(MeshType& tm)
     tm.addFace(1, 2, 0); // dup of 0
     tm.addFace(3, 1, 0);
     tm.addFace(1, 3, 0); // dup of 3
-    tm.addFace(1, 4, 0); // not dup of 3 (different coordinates)
+    tm.addFace(1, 4, 0); // not dup of 3 (different position)
     tm.addFace(2, 1, 0); // dup of 0
     tm.addFace(0, 1, 2); // dup of 0
     tm.addFace(5, 3, 4);
@@ -59,7 +59,7 @@ void populatePolyMesh(MeshType& pm)
 {
     using Point = MeshType::VertexType::PositionType;
 
-    // note: p3 and p4 have same coords
+    // note: p3 and p4 have same position
     const Point p0(0, 0, 0);
     const Point p1(1, 0, 0);
     const Point p2(0, 1, 0);
@@ -70,7 +70,7 @@ void populatePolyMesh(MeshType& pm)
 
     pm.addFace(0, 1, 2);
     pm.addFace(0, 1, 2, 3);
-    pm.addFace(0, 1, 2, 4); // not dup of 1 (different coordinates)
+    pm.addFace(0, 1, 2, 4); // not dup of 1 (different position)
     pm.addFace(0, 2, 1, 3); // dup of 1
     pm.addFace(4, 1, 2, 0); // dup of 2
     pm.addFace(0, 2, 1);    // dup of 0

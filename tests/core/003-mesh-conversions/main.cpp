@@ -83,7 +83,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.faceNumber() == 3);
     }
 
-    THEN("The imported vetices have same coordinates")
+    THEN("The imported vetices have same positions")
     {
         for (const auto& tv : tm.vertices()) {
             REQUIRE(pm.vertex(tv.index()).position() == tv.position());

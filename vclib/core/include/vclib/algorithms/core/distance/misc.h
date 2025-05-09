@@ -212,7 +212,7 @@ auto boundedDistance(
 
     ScalarType dist;
 
-    // Extract the coordinates of the vertices of the face.
+    // Extract the positions of the vertices of the face.
     const TPointType& tp0 = triangle.point(0);
     const TPointType& tp1 = triangle.point(1);
     const TPointType& tp2 = triangle.point(2);

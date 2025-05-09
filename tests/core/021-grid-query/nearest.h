@@ -102,7 +102,7 @@ void closestFacesTest(
     for (vcl::uint i = 0; i < points.size(); i++) {
         if (!vcl::epsilonEquals(dists[i], distsGrid[i])) {
             std::cerr << "Error point " << i << std::endl;
-            std::cerr << "coord: \n" << points[i] << std::endl;
+            std::cerr << "pos: \n" << points[i] << std::endl;
             std::cerr << "cell: \n";
             std::cerr << grid.cell(points[i]) << std::endl;
             std::cerr << " dist: " << dists[i] << " distGrid: " << distsGrid[i]

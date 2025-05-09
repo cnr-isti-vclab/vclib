@@ -753,22 +753,22 @@ void componentStaticAsserts()
     // HasComponentOfType
     static_assert(
         comp::HasComponentOfType<TEMVertex, CompId::POSITION>,
-        "TEMVertex does not satisfy the HasComponentOfType COORDINATE concept");
+        "TEMVertex does not satisfy the HasComponentOfType POSITION concept");
     static_assert(
         comp::HasComponentOfType<const TEMVertex, CompId::POSITION>,
-        "const TEMVertex does not satisfy the HasComponentOfType COORDINATE "
+        "const TEMVertex does not satisfy the HasComponentOfType POSITION "
         "concept");
     static_assert(
         comp::HasComponentOfType<TEMVertex&, CompId::POSITION>,
-        "TEMVertex& does not satisfy the HasComponentOfType COORDINATE "
+        "TEMVertex& does not satisfy the HasComponentOfType POSITION "
         "concept");
     static_assert(
         comp::HasComponentOfType<const TEMVertex&, CompId::POSITION>,
-        "const TEMVertex& does not satisfy the HasComponentOfType COORDINATE "
+        "const TEMVertex& does not satisfy the HasComponentOfType POSITION "
         "concept");
     static_assert(
         comp::HasComponentOfType<TEMVertex&&, CompId::POSITION>,
-        "TEMVertex&& does not satisfy the HasComponentOfType COORDINATE "
+        "TEMVertex&& does not satisfy the HasComponentOfType POSITION "
         "concept");
 
     static_assert(
@@ -813,23 +813,23 @@ void componentStaticAsserts()
     // HasVerticalComponentOfType
     static_assert(
         !comp::HasVerticalComponentOfType<TEMVertex, CompId::POSITION>,
-        "TEMVertex does satisfy the HasVerticalComponentOfType COORDINATE "
+        "TEMVertex does satisfy the HasVerticalComponentOfType POSITION "
         "concept");
     static_assert(
         !comp::HasVerticalComponentOfType<const TEMVertex, CompId::POSITION>,
         "const TEMVertex does satisfy the HasVerticalComponentOfType "
-        "COORDINATE concept");
+        "POSITION concept");
     static_assert(
         !comp::HasVerticalComponentOfType<TEMVertex&, CompId::POSITION>,
-        "TEMVertex& does satisfy the HasVerticalComponentOfType COORDINATE "
+        "TEMVertex& does satisfy the HasVerticalComponentOfType POSITION "
         "concept");
     static_assert(
         !comp::HasVerticalComponentOfType<const TEMVertex&, CompId::POSITION>,
         "const TEMVertex& does satisfy the HasVerticalComponentOfType "
-        "COORDINATE concept");
+        "POSITION concept");
     static_assert(
         !comp::HasVerticalComponentOfType<TEMVertex&&, CompId::POSITION>,
-        "TEMVertex&& does satisfy the HasVerticalComponentOfType COORDINATE "
+        "TEMVertex&& does satisfy the HasVerticalComponentOfType POSITION "
         "concept");
 
     static_assert(
@@ -856,23 +856,23 @@ void componentStaticAsserts()
     // HasOptionalComponentOfType
     static_assert(
         !comp::HasOptionalComponentOfType<TEMVertex, CompId::POSITION>,
-        "TEMVertex does satisfy the HasOptionalComponentOfType COORDINATE "
+        "TEMVertex does satisfy the HasOptionalComponentOfType POSITION "
         "concept");
     static_assert(
         !comp::HasOptionalComponentOfType<const TEMVertex, CompId::POSITION>,
         "const TEMVertex does satisfy the HasOptionalComponentOfType "
-        "COORDINATE concept");
+        "POSITION concept");
     static_assert(
         !comp::HasOptionalComponentOfType<TEMVertex&, CompId::POSITION>,
-        "TEMVertex& does satisfy the HasOptionalComponentOfType COORDINATE "
+        "TEMVertex& does satisfy the HasOptionalComponentOfType POSITION "
         "concept");
     static_assert(
         !comp::HasOptionalComponentOfType<const TEMVertex&, CompId::POSITION>,
         "const TEMVertex& does satisfy the HasOptionalComponentOfType "
-        "COORDINATE concept");
+        "POSITION concept");
     static_assert(
         !comp::HasOptionalComponentOfType<TEMVertex&&, CompId::POSITION>,
-        "TEMVertex&& does satisfy the HasOptionalComponentOfType COORDINATE "
+        "TEMVertex&& does satisfy the HasOptionalComponentOfType POSITION "
         "concept");
 
     static_assert(

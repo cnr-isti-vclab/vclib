@@ -28,8 +28,7 @@
 namespace vcl {
 
 /**
- * @brief Creates a simple tetrahedron mesh with the following point
- * coordinates:
+ * @brief Creates a simple tetrahedron mesh with the following point positions:
  *
  * ```
  * ( 1,  1,  1),
@@ -64,7 +63,7 @@ MeshType createTetrahedron()
  *
  * @tparam MeshType: the type of the mesh to be generated, it must satisfy the
  * FaceMeshConcept.
- * @tparam PositionType: the type of the coordinates of the points, it must satisfy
+ * @tparam PositionType: the type of the position of the points, it must satisfy
  * the Point3Concept.
  *
  * @param[in] p0: the first point of the tetrahedron.
