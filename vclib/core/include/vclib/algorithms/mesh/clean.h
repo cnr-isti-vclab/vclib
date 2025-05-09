@@ -482,7 +482,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
  * degenerate, meaning that they have two or more vertex references that link
  * the same vertex. All degenerate faces are zero area faces, but not all zero
  * area faces are degenerate (for example, a face with three different vertex
- * references, but two of them have the same coordinates). Therefore, if you
+ * references, but two of them have the same position). Therefore, if you
  * also want to remove these kinds of faces, you should call
  * `removeDuplicatedVertices(m)` first. This function does not adjust topology.
  *

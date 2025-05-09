@@ -30,7 +30,7 @@ namespace vcl {
 
 /**
  * @brief Returns the barycenter of the mesh, that is the simple average of all
- * the vertex coordintes of the mesh.
+ * the vertex positions of the mesh.
  *
  * Requirements:
  * - Mesh:

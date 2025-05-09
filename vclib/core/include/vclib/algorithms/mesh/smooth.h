@@ -110,7 +110,7 @@ void accumulateLaplacianInfo(
 } // namespace detail
 
 /**
- * @brief vertexCoordLaplacianSmoothing the classical Laplacian smoothing. Each
+ * @brief Performs the classical Laplacian smoothing. Each
  * vertex is moved onto the average of the adjacent vertices.
  *
  * Requirements:

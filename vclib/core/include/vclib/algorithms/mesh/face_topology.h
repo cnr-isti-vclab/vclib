@@ -71,8 +71,8 @@ void addTriangleFacesFromPolygon(
     using VertexType = MeshType::VertexType;
     using PositionType  = VertexType::PositionType;
 
-    // from the ids, create a polygon of coordinates
-    std::vector<PositionType> polCoords(polygon.size());
+    // from the ids, create a polygon of positions
+    std::vector<PositionType> polPositions(polygon.size());
     for (uint i = 0; i < polygon.size(); ++i) {
         if (polygon[i] >= m.vertexContainerSize()) {
             throw BadVertexIndexException(
@@ -83,11 +83,11 @@ void addTriangleFacesFromPolygon(
             throw BadVertexIndexException(
                 "Vertex " + std::to_string(polygon[i]) + " is deleted.");
         }
-        polCoords[i] = m.vertex(polygon[i]).position();
+        polPositions[i] = m.vertex(polygon[i]).position();
     }
 
     // compute earcut of the polygons
-    std::vector<uint> tris = earCut(polCoords);
+    std::vector<uint> tris = earCut(polPositions);
 
     // faux edges management: create a set of unordered edges of the polygon
     // note: we use indices from 0 to polygon.size() because that are the output
