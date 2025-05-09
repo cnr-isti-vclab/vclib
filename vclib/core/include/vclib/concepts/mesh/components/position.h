@@ -38,7 +38,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasPosition = requires (T&& obj) {
     typename RemoveRef<T>::PositionType;
-    { obj.coord() } -> PointConcept;
+    { obj.position() } -> PointConcept;
 };
 
 } // namespace vcl::comp

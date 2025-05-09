@@ -422,7 +422,7 @@ void importVerticesFromMatrix(
 
     uint i = 0;
     for (auto& v : mesh.vertices()) {
-        v.coord() = PositionType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
+        v.position() = PositionType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
         i++;
     }
 }

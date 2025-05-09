@@ -34,9 +34,9 @@ namespace detail {
 
 inline constexpr auto coord = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
-        return p->coord();
+        return p->position();
     else
-        return p.coord();
+        return p.position();
 };
 
 struct CoordsView

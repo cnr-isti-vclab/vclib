@@ -48,15 +48,15 @@ int main()
     m.addVertex();
 
     // setting coordinate
-    m.vertex(0).coord() = TriMeshPoint(0, 0, 0);
-    m.vertex(1).coord() = TriMeshPoint(0, 1, 0);
-    m.vertex(2).coord() = TriMeshPoint(1, 0, 0);
+    m.vertex(0).position() = TriMeshPoint(0, 0, 0);
+    m.vertex(1).position() = TriMeshPoint(0, 1, 0);
+    m.vertex(2).position() = TriMeshPoint(1, 0, 0);
 
-    m.vertex(0).component<vcl::CompId::POSITION>().coord() =
+    m.vertex(0).component<vcl::CompId::POSITION>().position() =
         TriMeshPoint(2, 0, 0);
 
     vcl::TriMesh::Vertex myv;
-    myv.coord() = TriMeshPoint(3, 1, 2);
+    myv.position() = TriMeshPoint(3, 1, 2);
 
     m.enablePerVertexTexCoord();
 

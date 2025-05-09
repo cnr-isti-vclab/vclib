@@ -64,7 +64,7 @@ MeshType createIcosahedron(bool normalizeVertices = false)
 
     if (normalizeVertices) {
         for (VertexType& v : mesh.vertices())
-            v.coord().normalize();
+            v.position().normalize();
     }
 
     // Faces

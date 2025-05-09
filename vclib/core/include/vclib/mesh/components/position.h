@@ -92,13 +92,13 @@ public:
      * @brief Returns a const reference of the position of the element.
      * @return a const reference of the position of the element.
      */
-    const P& coord() const { return Base::data(); }
+    const P& position() const { return Base::data(); }
 
     /**
      * @brief Returns a reference of the position of the element.
      * @return a reference of the position of the element.
      */
-    P& coord() { return Base::data(); }
+    P& position() { return Base::data(); }
 
 protected:
     // Component interface functions
@@ -106,13 +106,13 @@ protected:
     void importFrom(const Element& v, bool = true)
     {
         if constexpr (HasPosition<Element>) {
-            coord() = v.coord().template cast<typename PositionType::ScalarType>();
+            position() = v.position().template cast<typename PositionType::ScalarType>();
         }
     }
 
-    void serialize(std::ostream& os) const { coord().serialize(os); }
+    void serialize(std::ostream& os) const { position().serialize(os); }
 
-    void deserialize(std::istream& is) { coord().deserialize(is); }
+    void deserialize(std::istream& is) { position().deserialize(is); }
 };
 
 /* Detector function to check if a class has Position available */

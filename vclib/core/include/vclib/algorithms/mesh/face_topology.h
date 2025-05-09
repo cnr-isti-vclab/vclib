@@ -83,7 +83,7 @@ void addTriangleFacesFromPolygon(
             throw BadVertexIndexException(
                 "Vertex " + std::to_string(polygon[i]) + " is deleted.");
         }
-        polCoords[i] = m.vertex(polygon[i]).coord();
+        polCoords[i] = m.vertex(polygon[i]).position();
     }
 
     // compute earcut of the polygons
@@ -431,11 +431,11 @@ auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
     auto n0 = faceNormal(f);
     auto n1 = faceNormal(f1);
 
-    auto off0 = n0 * vf0.coord();
-    auto off1 = n1 * vf1.coord();
+    auto off0 = n0 * vf0.position();
+    auto off1 = n1 * vf1.position();
 
-    auto dist01 = off0 - n0 * vf1.coord();
-    auto dist10 = off1 - n1 * vf0.coord();
+    auto dist01 = off0 - n0 * vf1.position();
+    auto dist10 = off1 - n1 * vf0.position();
 
     auto sign = std::abs(dist01) > std::abs(dist10) ? dist01 : dist10;
 

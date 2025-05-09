@@ -59,16 +59,16 @@ void accumulateLaplacianInfo(
                 const VertexType& v0 = *f.vertex(j);
                 const VertexType& v1 = *f.vertexMod(j + 1);
                 const VertexType& v2 = *f.vertexMod(j + 2);
-                const PositionType&  p0 = v0.coord();
-                const PositionType&  p1 = v1.coord();
-                const PositionType&  p2 = v2.coord();
+                const PositionType&  p0 = v0.position();
+                const PositionType&  p1 = v1.position();
+                const PositionType&  p2 = v2.position();
                 if (cotangentFlag) {
                     ScalarType angle = PositionType(p1 - p2).angle(p0 - p2);
                     weight           = std::tan((M_PI * 0.5) - angle);
                 }
 
-                data[m.index(v0)].sum += f.vertexMod(j + 1)->coord() * weight;
-                data[m.index(v1)].sum += f.vertex(j)->coord() * weight;
+                data[m.index(v0)].sum += f.vertexMod(j + 1)->position() * weight;
+                data[m.index(v1)].sum += f.vertex(j)->position() * weight;
                 data[m.index(v0)].cnt += weight;
                 data[m.index(v1)].cnt += weight;
             }
@@ -80,8 +80,8 @@ void accumulateLaplacianInfo(
             if (f.edgeOnBorder(j)) {
                 const VertexType& v0  = *f.vertex(j);
                 const VertexType& v1  = *f.vertexMod(j + 1);
-                const PositionType&  p0  = v0.coord();
-                const PositionType&  p1  = v1.coord();
+                const PositionType&  p0  = v0.position();
+                const PositionType&  p1  = v1.position();
                 data[m.index(v0)].sum = p0;
                 data[m.index(v1)].sum = p1;
                 data[m.index(v0)].cnt = 1;
@@ -96,8 +96,8 @@ void accumulateLaplacianInfo(
             if (f.edgeOnBorder(j)) {
                 const VertexType& v0 = *f.vertex(j);
                 const VertexType& v1 = *f.vertexMod(j + 1);
-                const PositionType&  p0 = v0.coord();
-                const PositionType&  p1 = v1.coord();
+                const PositionType&  p0 = v0.position();
+                const PositionType&  p1 = v1.position();
                 data[m.index(v0)].sum += p1;
                 data[m.index(v1)].sum += p0;
                 ++data[m.index(v0)].cnt;
@@ -142,7 +142,7 @@ void laplacianSmoothing(
         for (VertexType& v : m.vertices()) {
             if (laplData[m.index(v)].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
-                    v.coord() = (v.coord() + laplData[m.index(v)].sum) /
+                    v.position() = (v.position() + laplData[m.index(v)].sum) /
                                 (laplData[m.index(v)].cnt + 1);
                 }
             }
@@ -172,8 +172,8 @@ void taubinSmoothing(
                 if (!smoothSelected || v.selected()) {
                     PositionType delta =
                         laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
-                        v.coord();
-                    v.coord() = v.coord() + delta * lambda;
+                        v.position();
+                    v.position() = v.position() + delta * lambda;
                 }
             }
         }
@@ -184,8 +184,8 @@ void taubinSmoothing(
                 if (!smoothSelected || v.selected()) {
                     PositionType delta =
                         laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
-                        v.coord();
-                    v.coord() = v.coord() + delta * mu;
+                        v.position();
+                    v.position() = v.position() + delta * mu;
                 }
             }
         }
@@ -225,7 +225,7 @@ void smoothPerVertexNormalsPointCloud(
             std::vector<Scalar> distances;
 
             std::vector<uint> neighbors = tree.kNearestNeighborsIndices(
-                v.coord(), neighborNum, distances);
+                v.position(), neighborNum, distances);
 
             for (uint nid : neighbors) {
                 if (m.vertex(nid).normal() * v.normal() > 0) {

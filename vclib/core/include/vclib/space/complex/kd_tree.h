@@ -128,7 +128,7 @@ public:
 
         uint i = 0;
         for (const VertexType& v : m.vertices()) {
-            mPoints[i]  = v.coord();
+            mPoints[i]  = v.position();
             mIndices[i] = m.index(v);
             i++;
         }

@@ -86,7 +86,7 @@ TEMPLATE_TEST_CASE(
     THEN("The imported vetices have same coordinates")
     {
         for (const auto& tv : tm.vertices()) {
-            REQUIRE(pm.vertex(tv.index()).coord() == tv.coord());
+            REQUIRE(pm.vertex(tv.index()).position() == tv.position());
         }
     }
 
@@ -99,7 +99,7 @@ TEMPLATE_TEST_CASE(
             unsigned int i = 0;
             for (const auto* pv : pf.vertices()) {
                 REQUIRE(pv->index() == tf.vertexIndex(i));
-                REQUIRE(pv->coord() == tf.vertex(i)->coord());
+                REQUIRE(pv->position() == tf.vertex(i)->position());
                 ++i;
             }
 
@@ -179,7 +179,7 @@ TEMPLATE_TEST_CASE(
             REQUIRE(tm.vertexNumber() == pm.vertexNumber());
 
             for (unsigned int i = 0; i < tm.vertexNumber(); ++i) {
-                REQUIRE(tm.vertex(i).coord() == pm.vertex(i).coord());
+                REQUIRE(tm.vertex(i).position() == pm.vertex(i).position());
             }
         }
 

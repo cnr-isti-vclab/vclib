@@ -48,7 +48,7 @@ auto boundingBox(const MeshType& m)
     Box<typename VertexType::PositionType> b;
 
     for (const VertexType& v : m.vertices()) {
-        b.add(v.coord());
+        b.add(v.position());
     }
 
     return b;

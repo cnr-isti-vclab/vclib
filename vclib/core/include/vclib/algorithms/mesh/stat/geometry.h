@@ -86,7 +86,7 @@ double borderLength(const MeshType& m)
     for (const FaceType& f : m.faces()) {
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             if (f.adjFace(i) == nullptr) {
-                l += f.vertex(i)->coord().dist(f.vertexMod(i + 1)->coord());
+                l += f.vertex(i)->position().dist(f.vertexMod(i + 1)->position());
             }
         }
     }
@@ -116,7 +116,7 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
     mm.setZero();
     // compute covariance matrix
     for (const VertexType& v : m.vertices()) {
-        PositionType e = v.coord() - bar;
+        PositionType e = v.position() - bar;
         mm += e.outerProduct(e);
     }
     return mm;
@@ -153,9 +153,9 @@ auto covarianceMatrixOfMesh(const MeshType& m)
     Matrix33<ScalarType> DC;
 
     for (const FaceType& f : m.faces()) {
-        const PositionType& p0 = f.vertex(0)->coord();
-        const PositionType& p1 = f.vertex(1)->coord();
-        const PositionType& p2 = f.vertex(2)->coord();
+        const PositionType& p0 = f.vertex(0)->position();
+        const PositionType& p1 = f.vertex(1)->position();
+        const PositionType& p2 = f.vertex(2)->position();
         PositionType        n  = (p1 - p0).cross(p2 - p0);
         double           da = n.norm();
         n /= da * da;

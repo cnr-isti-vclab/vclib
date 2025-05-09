@@ -147,7 +147,7 @@ public:
     uint addVertex(const typename T::PositionType& p)
     {
         uint vid            = addVertex();
-        vertex(vid).coord() = p; // set the coordinate to the vertex
+        vertex(vid).position() = p; // set the coordinate to the vertex
         return vid;
     }
 

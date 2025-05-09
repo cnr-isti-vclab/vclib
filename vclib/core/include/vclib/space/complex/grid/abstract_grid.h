@@ -196,7 +196,7 @@ public:
                 if constexpr (PointConcept<VT>)
                     p = *vv;
                 else
-                    p = vv->coord();
+                    p = vv->position();
                 bmin = bmax = GridType::cell(p);
             }
             else { // else, call the boundingBox function
@@ -271,7 +271,7 @@ public:
                 if constexpr (PointConcept<VT>)
                     p = *vv;
                 else
-                    p = vv->coord();
+                    p = vv->position();
                 bmin = bmax = GridType::cell(p);
             }
             else {
@@ -799,7 +799,7 @@ private:
             if constexpr (PointConcept<VT>)
                 p = vv;
             else
-                p = &(vv->coord());
+                p = &(vv->position());
             test = vv && s.isInside(*p);
         }
         else { // check if the bbox of the value intersects the sphere

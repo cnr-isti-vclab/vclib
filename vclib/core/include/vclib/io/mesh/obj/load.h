@@ -181,7 +181,7 @@ void readObjVertex(
 {
     uint vid = m.addVertex();
     for (uint i = 0; i < 3; ++i) {
-        m.vertex(vid).coord()[i] = io::readDouble<double>(token);
+        m.vertex(vid).position()[i] = io::readDouble<double>(token);
     }
     if constexpr (HasPerVertexColor<MeshType>) {
         if (vid == 0) {

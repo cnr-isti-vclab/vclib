@@ -48,7 +48,7 @@ auto barycenter(const MeshType& m) -> MeshType::VertexType::PositionType
     PositionType bar;
 
     for (const VertexType& v : m.vertices()) {
-        bar += v.coord();
+        bar += v.position();
     }
 
     return bar / m.vertexNumber();
@@ -82,7 +82,7 @@ auto weightedBarycenter(const MeshType& m, Range auto&& weights)
     RType     weightedSum = 0;
 
     for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
-        bar += v.coord() * w;
+        bar += v.position() * w;
         weightedSum += w;
     }
 

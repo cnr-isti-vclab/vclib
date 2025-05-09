@@ -159,7 +159,7 @@ auto boundingBox(const TriangleType& t)
 template<VertexConcept VertexType>
 auto boundingBox(const VertexType& v)
 {
-    return Box<typename VertexType::PositionType>(v.coord());
+    return Box<typename VertexType::PositionType>(v.position());
 }
 
 /**
@@ -180,7 +180,7 @@ auto boundingBox(const VertexType& v)
 template<VertexConcept VertexType>
 auto boundingBox(const VertexType* v)
 {
-    return Box<typename VertexType::PositionType>(v->coord());
+    return Box<typename VertexType::PositionType>(v->position());
 }
 
 /**
@@ -203,7 +203,7 @@ auto boundingBox(const FaceType& f)
 
     Box<typename VertexType::PositionType> b;
     for (const VertexType* v : f.vertices())
-        b.add(v->coord());
+        b.add(v->position());
     return b;
 }
 
@@ -228,7 +228,7 @@ auto boundingBox(const FaceType* f)
 
     Box<typename VertexType::PositionType> b;
     for (const VertexType* v : f->vertices())
-        b.add(v->coord());
+        b.add(v->position());
     return b;
 }
 
@@ -252,7 +252,7 @@ auto boundingBox(const EdgeType& e)
 
     Box<typename VertexType::PositionType> b;
     for (const VertexType* v : e.vertices())
-        b.add(v->coord());
+        b.add(v->position());
     return b;
 }
 
@@ -277,7 +277,7 @@ auto boundingBox(const EdgeType* e)
 
     Box<typename VertexType::PositionType> b;
     for (const VertexType* v : e->vertices())
-        b.add(v->coord());
+        b.add(v->position());
     return b;
 }
 

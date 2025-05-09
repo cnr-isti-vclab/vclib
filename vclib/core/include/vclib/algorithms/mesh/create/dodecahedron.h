@@ -127,7 +127,7 @@ MeshType createDodecahedron(LogType& log = nullLogger)
     using ST = MeshType::VertexType::PositionType::ScalarType;
     mesh.reserveVertices(pmesh.vertexNumber());
     for (const auto& v : pmesh.vertices()) {
-        mesh.addVertex(v.coord().cast<ST>());
+        mesh.addVertex(v.position().cast<ST>());
     }
 
     log.log(80, "Vertices copied into TriMesh.");

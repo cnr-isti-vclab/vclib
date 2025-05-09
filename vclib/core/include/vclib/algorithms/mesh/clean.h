@@ -55,7 +55,7 @@ class VertPositionComparator
 public:
     inline bool operator()(const VertexPointer& a, const VertexPointer& b)
     {
-        return (a->coord() == b->coord()) ? (a < b) : (a->coord() < b->coord());
+        return (a->position() == b->position()) ? (a < b) : (a->position() < b->position());
     }
 };
 
@@ -285,7 +285,7 @@ uint removeUnreferencedVertices(MeshType& m)
  *
  * This function marks as deleted all vertices in the input mesh that have the
  * same spatial position as another vertex in the mesh. The comparison of vertex
- * positions is based on the `coord()` function of the vertex type, which must
+ * positions is based on the `position()` function of the vertex type, which must
  * return a 3D point representing the vertex coordinates.
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the MeshConcept.
@@ -334,7 +334,7 @@ uint removeDuplicatedVertices(MeshType& m)
     // i-th.
     while (i < perm.size() - 1) {
         uint j = i + 1;
-        while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
+        while (j < perm.size() && perm[i]->position() == perm[j]->position()) {
             // j will be deleted, so we map its pointer to the i-th vertex's
             // pointer.
             newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j -> i
@@ -447,7 +447,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
     // iterate over all vertices in the mesh, and mark any with invalid floating
     // point values as deleted.
     for (VertexType& v : m.vertices()) {
-        if (v.coord().isDegenerate()) {
+        if (v.position().isDegenerate()) {
             count_vd++;
             m.deleteVertex(&v);
         }

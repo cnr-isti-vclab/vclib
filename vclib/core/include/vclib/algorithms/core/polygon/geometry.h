@@ -47,14 +47,14 @@ typename FaceType::VertexType::PositionType faceNormal(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::normal(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
             return Triangle<PositionType>::normal(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord());
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position());
         }
         else {
             return Polygon<PositionType>::normal(f.vertices() | views::coords);
@@ -79,7 +79,7 @@ typename FaceType::VertexType::PositionType faceBarycenter(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::barycenter(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
         return Polygon<PositionType>::barycenter(f.vertices() | views::coords);
@@ -103,14 +103,14 @@ auto faceArea(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::area(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
             return Triangle<PositionType>::area(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord());
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position());
         }
         else {
             return Polygon<PositionType>::area(f.vertices() | views::coords);
@@ -135,14 +135,14 @@ auto facePerimeter(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::perimeter(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
             return Triangle<PositionType>::perimeter(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord());
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position());
         }
         else {
             return Polygon<PositionType>::perimeter(f.vertices() | views::coords);
@@ -166,9 +166,9 @@ auto facePerimeter(const FaceType& f)
 template<FaceConcept FaceType>
 auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 {
-    const auto& p0 = f.vertex(vi)->coord();
-    const auto& p1 = f.vertexMod((int) vi + 1)->coord();
-    const auto& p2 = f.vertexMod((int) vi - 1)->coord();
+    const auto& p0 = f.vertex(vi)->position();
+    const auto& p1 = f.vertexMod((int) vi + 1)->position();
+    const auto& p2 = f.vertexMod((int) vi - 1)->position();
     return (p2 - p0).angle(p1 - p0);
 }
 

@@ -95,7 +95,7 @@ auto randomSpheres(
 
     for (vcl::uint i = 0; i < n; i++) {
         // random vertex coordinate pertubated will be the center of the sphere
-        PointType p = mesh.vertex(disV(gen)).coord();
+        PointType p = mesh.vertex(disV(gen)).position();
         p += PointType(disX(gen), disY(gen), disZ(gen));
 
         // random radius with normal distribution

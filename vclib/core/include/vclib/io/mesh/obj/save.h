@@ -250,9 +250,9 @@ void saveObj(
                 log);
         }
         fp << "v ";
-        io::writeDouble(fp, v.coord().x(), false);
-        io::writeDouble(fp, v.coord().y(), false);
-        io::writeDouble(fp, v.coord().z(), false);
+        io::writeDouble(fp, v.position().x(), false);
+        io::writeDouble(fp, v.position().y(), false);
+        io::writeDouble(fp, v.position().z(), false);
         fp << std::endl;
 
         if constexpr (HasPerVertexNormal<MeshType>) {

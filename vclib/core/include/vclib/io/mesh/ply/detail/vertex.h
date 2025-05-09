@@ -46,7 +46,7 @@ void readPlyVertexProperty(
     if (p.name >= ply::x && p.name <= ply::z) {
         using Scalar = VertexType::PositionType::ScalarType;
         int a        = p.name - ply::x;
-        v.coord()[a] = io::readPrimitiveType<Scalar>(file, p.type, end);
+        v.position()[a] = io::readPrimitiveType<Scalar>(file, p.type, end);
         hasBeenRead  = true;
     }
     if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -172,7 +172,7 @@ void writePlyVertices(
             bool hasBeenWritten = false;
             if (p.name >= ply::x && p.name <= ply::z) {
                 io::writeProperty(
-                    file, v.coord()[p.name - ply::x], p.type, format);
+                    file, v.position()[p.name - ply::x], p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name >= ply::nx && p.name <= ply::nz) {

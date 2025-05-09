@@ -126,7 +126,7 @@ void testCoordsMatrix(
 
     // following vertices are duplicates (same as the vtd indices)
     for (vcl::uint vd : vtd) {
-        const auto& c = tm.vertex(vd).coord();
+        const auto& c = tm.vertex(vd).position();
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
         REQUIRE(verts(i, 2) == c.z());
@@ -162,9 +162,9 @@ void testTriangleMatrix(
         for (vcl::uint j = 0; j < 3; ++j) {
             // original coordinates should correspond to the duplicated ones
             // that are stored in verts matrix and indexed by tris matrix
-            REQUIRE(f.vertex(j)->coord().x() == verts(tris(i, j), 0));
-            REQUIRE(f.vertex(j)->coord().y() == verts(tris(i, j), 1));
-            REQUIRE(f.vertex(j)->coord().z() == verts(tris(i, j), 2));
+            REQUIRE(f.vertex(j)->position().x() == verts(tris(i, j), 0));
+            REQUIRE(f.vertex(j)->position().y() == verts(tris(i, j), 1));
+            REQUIRE(f.vertex(j)->position().z() == verts(tris(i, j), 2));
         }
         ++i;
     }

@@ -91,13 +91,13 @@ TEMPLATE_TEST_CASE(
 
         REQUIRE(m.vertexNumber() == 1);
         REQUIRE(m.faceNumber() == 0);
-        REQUIRE(m.vertex(0).coord() == PolyMeshPoint(0, 0, 0));
+        REQUIRE(m.vertex(0).position() == PolyMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
 
         unsigned int vi1 = m.addVertex();
 
         REQUIRE(m.vertexNumber() == 2);
-        REQUIRE(m.vertex(1).coord() == PolyMeshPoint(0, 0, 0));
+        REQUIRE(m.vertex(1).position() == PolyMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
         REQUIRE(&m.vertex(vi1) == &m.vertex(1));
 

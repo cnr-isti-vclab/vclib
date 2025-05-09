@@ -130,7 +130,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         Matrix33<ScalarType> tempMatrix;
         Matrix33<ScalarType> M = Matrix33<ScalarType>::Zero();
         for (size_t i = 0; i < vertices.size(); ++i) {
-            PositionType edge = (v.coord() - vertices[i].vert->coord());
+            PositionType edge = (v.position() - vertices[i].vert->position());
             float     curvature =
                 (2.0f * (v.normal().dot(edge))) / edge.squaredNorm();
             PositionType t = Tp * edge;
@@ -286,18 +286,18 @@ void updatePrincipalCurvaturePCA(
         Matrix33<ScalarType> A, eigenvectors;
         PositionType            bp, eigenvalues;
         if (montecarloSampling) {
-            Sphere                     s(v.coord(), radius);
+            Sphere                     s(v.position(), radius);
             std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
             std::vector<PositionType>     points;
             points.reserve(vec.size());
             for (const auto& it : vec) {
-                points.push_back(it->second->coord());
+                points.push_back(it->second->position());
             }
             A = covarianceMatrixOfPointCloud(points);
             A *= area * area / 1000;
         }
         else {
-            Sphere<ScalarType> sph(v.coord(), radius);
+            Sphere<ScalarType> sph(v.position(), radius);
             MeshType           tmpMesh = intersection(m, sph);
 
             A = covarianceMatrixOfMesh(tmpMesh);

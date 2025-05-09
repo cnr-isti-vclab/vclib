@@ -136,11 +136,11 @@ void readStlBin(
         norm.z() = io::readFloat<float>(fp, std::endian::little);
 
         for (uint j = 0; j < 3; ++j) {
-            m.vertex(vi + j).coord().x() =
+            m.vertex(vi + j).position().x() =
                 io::readFloat<float>(fp, std::endian::little);
-            m.vertex(vi + j).coord().y() =
+            m.vertex(vi + j).position().y() =
                 io::readFloat<float>(fp, std::endian::little);
-            m.vertex(vi + j).coord().z() =
+            m.vertex(vi + j).position().z() =
                 io::readFloat<float>(fp, std::endian::little);
         }
 
@@ -228,11 +228,11 @@ void readStlAscii(
                     token = tokens.begin();
                     ++token; // skip the "vertex" word
 
-                    m.vertex(vi + i).coord().x() =
+                    m.vertex(vi + i).position().x() =
                         io::readFloat<float>(token, std::endian::little);
-                    m.vertex(vi + i).coord().y() =
+                    m.vertex(vi + i).position().y() =
                         io::readFloat<float>(token, std::endian::little);
-                    m.vertex(vi + i).coord().z() =
+                    m.vertex(vi + i).position().z() =
                         io::readFloat<float>(token, std::endian::little);
 
                     // next vertex

@@ -23,7 +23,7 @@ public:
 
     const typename VertexType::PositionType& sample(uint i) const
     {
-        return mSamples[i]->coord();
+        return mSamples[i]->position();
     }
 
     std::size_t size() const { return mSamples.size(); }

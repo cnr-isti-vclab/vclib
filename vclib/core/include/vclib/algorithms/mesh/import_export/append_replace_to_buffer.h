@@ -111,7 +111,7 @@ void appendDuplicateVertexCoordsToBuffer(
     const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& coord = mesh.vertex(v).coord();
+        const auto& coord = mesh.vertex(v).position();
         if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = coord.x();
             buffer[i * 3 + 1] = coord.y();
