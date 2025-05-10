@@ -218,7 +218,9 @@ public:
             mod.setFaces();
             for (const PlyProperty& p : mElements[mFaceElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices: mod.setPerFaceVertexReferences(); break;
+                case ply::vertex_indices:
+                    mod.setPerFaceVertexReferences();
+                    break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerFaceNormal(); break;
@@ -242,7 +244,9 @@ public:
             for (const PlyProperty& p :
                  mElements[mTriStripElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices: mod.setPerFaceVertexReferences(); break;
+                case ply::vertex_indices:
+                    mod.setPerFaceVertexReferences();
+                    break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerFaceNormal(); break;
@@ -260,7 +264,9 @@ public:
             mod.setEdges();
             for (const PlyProperty& p : mElements[mEdgeElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices: mod.setPerEdgeVertexReferences(); break;
+                case ply::vertex_indices:
+                    mod.setPerEdgeVertexReferences();
+                    break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerEdgeNormal(); break;

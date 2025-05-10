@@ -402,9 +402,15 @@ public:
      * @brief Returns true if the current object has per Face Vertex References.
      * @return true if the current object has per Face Vertex References.
      */
-    bool hasPerFaceVertexReferences() const { return hasPerElementComponent(FACE, VREFS); }
+    bool hasPerFaceVertexReferences() const
+    {
+        return hasPerElementComponent(FACE, VREFS);
+    }
 
-    bool hasPerFaceNormal() const { return hasPerElementComponent(FACE, NORMAL); }
+    bool hasPerFaceNormal() const
+    {
+        return hasPerElementComponent(FACE, NORMAL);
+    }
 
     bool hasPerFaceColor() const { return hasPerElementComponent(FACE, COLOR); }
 
@@ -429,11 +435,17 @@ public:
      */
     bool hasEdges() const { return hasElement(EDGE); }
 
-    bool hasPerEdgeVertexReferences() const { return hasPerElementComponent(EDGE, VREFS); }
+    bool hasPerEdgeVertexReferences() const
+    {
+        return hasPerElementComponent(EDGE, VREFS);
+    }
 
     bool hasPerEdgeColor() const { return hasPerElementComponent(EDGE, COLOR); }
 
-    bool hasPerEdgeNormal() const { return hasPerElementComponent(EDGE, NORMAL); }
+    bool hasPerEdgeNormal() const
+    {
+        return hasPerElementComponent(EDGE, NORMAL);
+    }
 
     bool hasPerEdgeQuality() const
     {
@@ -494,7 +506,9 @@ public:
 
     void setVertices(bool b = true) { setElement(VERTEX, b); }
 
-    void setPerVertexCoordinate(bool b = true, DataType t = PrimitiveType::DOUBLE)
+    void setPerVertexCoordinate(
+        bool     b = true,
+        DataType t = PrimitiveType::DOUBLE)
     {
         setPerElementComponent(VERTEX, COORD, b, t);
     }
@@ -521,7 +535,8 @@ public:
 
     void setPerVertexCustomComponents(bool b = true)
     {
-        setPerElementComponent(VERTEX, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
+        setPerElementComponent(
+            VERTEX, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
     void setFaces(bool b = true) { setElement(FACE, b); }
@@ -546,7 +561,9 @@ public:
         setPerElementComponent(FACE, QUALITY, b, t);
     }
 
-    void setPerFaceWedgeTexCoords(bool b = true, DataType t = PrimitiveType::FLOAT)
+    void setPerFaceWedgeTexCoords(
+        bool     b = true,
+        DataType t = PrimitiveType::FLOAT)
     {
         setPerElementComponent(FACE, WEDGE_TEXCOORDS, b, t);
     }
@@ -593,13 +610,15 @@ public:
         const std::string& name,
         DataType           t)
     {
-        setPerElementComponent(el, CUSTOM_COMPONENTS, true, PrimitiveType::NONE);
+        setPerElementComponent(
+            el, CUSTOM_COMPONENTS, true, PrimitiveType::NONE);
         mPerElemCustomComponents[el].emplace_back(name, t);
     }
 
     void clearPerElementCustomComponents(Element el)
     {
-        setPerElementComponent(el, CUSTOM_COMPONENTS, false, PrimitiveType::NONE);
+        setPerElementComponent(
+            el, CUSTOM_COMPONENTS, false, PrimitiveType::NONE);
         mPerElemCustomComponents[el].clear();
     }
 
@@ -608,21 +627,30 @@ public:
         addPerElementCustomComponent(VERTEX, name, t);
     }
 
-    void clearPerVertexCustomComponents() { clearPerElementCustomComponents(VERTEX); }
+    void clearPerVertexCustomComponents()
+    {
+        clearPerElementCustomComponents(VERTEX);
+    }
 
     void addPerFaceCustomComponent(const std::string& name, DataType t)
     {
         addPerElementCustomComponent(FACE, name, t);
     }
 
-    void clearPerFaceCustomComponents() { clearPerElementCustomComponents(FACE); }
+    void clearPerFaceCustomComponents()
+    {
+        clearPerElementCustomComponents(FACE);
+    }
 
     void addPerEdgeCustomComponent(const std::string& name, DataType t)
     {
         addPerElementCustomComponent(EDGE, name, t);
     }
 
-    void clearPerEdgeCustomComponents() { clearPerElementCustomComponents(EDGE); }
+    void clearPerEdgeCustomComponents()
+    {
+        clearPerElementCustomComponents(EDGE);
+    }
 
     /*
      * Getter Component type functions : they are used mostly by save functions
@@ -694,7 +722,8 @@ public:
         return perElementComponentType(EDGE, QUALITY);
     }
 
-    const std::vector<CustomComponent>& perElementCustomComponents(Element el) const
+    const std::vector<CustomComponent>& perElementCustomComponents(
+        Element el) const
     {
         return mPerElemCustomComponents[el];
     }

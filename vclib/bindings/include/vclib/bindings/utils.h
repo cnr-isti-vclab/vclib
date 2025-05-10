@@ -171,7 +171,8 @@ void defForAllMeshTypes(pybind11::class_<C>& pyclass, auto&& function)
 {
     using FType = decltype(function);
 
-    if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::PointCloud>) {
+    if constexpr (std::
+                      invocable<FType, pybind11::class_<C>&, vcl::PointCloud>) {
         function.template operator()<vcl::PointCloud>(pyclass);
     }
     if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::EdgeMesh>) {
@@ -180,13 +181,19 @@ void defForAllMeshTypes(pybind11::class_<C>& pyclass, auto&& function)
     if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::PolyMesh>) {
         function.template operator()<vcl::PolyMesh>(pyclass);
     }
-    if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::PolyEdgeMesh>) {
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::class_<C>&,
+                      vcl::PolyEdgeMesh>) {
         function.template operator()<vcl::PolyEdgeMesh>(pyclass);
     }
     if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::TriMesh>) {
         function.template operator()<vcl::TriMesh>(pyclass);
     }
-    if constexpr (std::invocable<FType, pybind11::class_<C>&, vcl::TriEdgeMesh>) {
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::class_<C>&,
+                      vcl::TriEdgeMesh>) {
         function.template operator()<vcl::TriEdgeMesh>(pyclass);
     }
 }
