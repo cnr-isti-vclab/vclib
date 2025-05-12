@@ -20,15 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_LOAD_SAVE_LOAD_H
-#define VCL_BINDINGS_CORE_LOAD_SAVE_LOAD_H
+#ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_H
+#define VCL_BINDINGS_CORE_SPACE_COMPLEX_H
+
+#include "complex/mesh_info.h"
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initLoad(pybind11::module& m);
+inline void initComplex(pybind11::module& m)
+{
+    namespace py = pybind11;
+
+    // py::module_ sm = m.def_submodule("complex", "Complex Spatial Data
+    // Structures");
+
+    initMeshInfo(m);
+}
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_LOAD_SAVE_LOAD_H
+#endif // VCL_BINDINGS_CORE_SPACE_COMPLEX_H

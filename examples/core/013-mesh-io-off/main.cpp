@@ -31,10 +31,10 @@ int main()
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 1872);
-    assert(loadedInfo.hasVertexColors());
+    assert(loadedInfo.hasPerVertexColor());
     assert(loadedInfo.hasFaces());
     assert(m.faceNumber() == 3022);
-    assert(loadedInfo.hasFaceColors());
+    assert(loadedInfo.hasPerFaceColor());
 
     m = vcl::loadOff<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/trim-star.off", loadedInfo);

@@ -179,11 +179,6 @@ void readObjVertex(
     const ObjMaterial&   currentMaterial,
     const LoadSettings&  settings)
 {
-    // first, need to set that I'm loading vertices
-    if (m.vertexNumber() == 0) {
-        loadedInfo.setVertices();
-        loadedInfo.setVertexCoords();
-    }
     uint vid = m.addVertex();
     for (uint i = 0; i < 3; ++i) {
         m.vertex(vid).coord()[i] = io::readDouble<double>(token);
@@ -196,15 +191,15 @@ void readObjVertex(
             if (currentMaterial.hasColor || tokens.size() > 6) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexColorOptional(m);
-                    loadedInfo.setVertexColors();
+                    loadedInfo.setPerVertexColor();
                 }
                 else {
                     if (isPerVertexColorAvailable(m))
-                        loadedInfo.setVertexColors();
+                        loadedInfo.setPerVertexColor();
                 }
             }
         }
-        if (loadedInfo.hasVertexColors()) {
+        if (loadedInfo.hasPerVertexColor()) {
             // the file has the nonstandard way to store vertex colors, after
             // the coords...
             if (tokens.size() > 6) {
@@ -234,14 +229,14 @@ void readObjVertexNormal(
     if (vn == 0) {
         if (settings.enableOptionalComponents) {
             enableIfPerVertexNormalOptional(m);
-            loadedInfo.setVertexNormals();
+            loadedInfo.setPerVertexNormal();
         }
         else {
             if (isPerVertexNormalAvailable(m))
-                loadedInfo.setVertexNormals();
+                loadedInfo.setPerVertexNormal();
         }
     }
-    if (loadedInfo.hasVertexNormals()) {
+    if (loadedInfo.hasPerVertexNormal()) {
         // read the normal
         NormalType n;
         for (uint i = 0; i < 3; ++i) {
@@ -333,15 +328,15 @@ void readObjFace(
             if (currentMaterial.hasColor) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerFaceColorOptional(m);
-                    loadedInfo.setFaceColors();
+                    loadedInfo.setPerFaceColor();
                 }
                 else {
                     if (isPerFaceColorAvailable(m))
-                        loadedInfo.setFaceColors();
+                        loadedInfo.setPerFaceColor();
                 }
             }
         }
-        if (loadedInfo.hasFaceColors()) {
+        if (loadedInfo.hasPerFaceColor()) {
             if (currentMaterial.hasColor) {
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -361,15 +356,15 @@ void readObjFace(
             if (wids.size() == vids.size()) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerFaceWedgeTexCoordsOptional(m);
-                    loadedInfo.setFaceWedgeTexCoords();
+                    loadedInfo.setPerFaceWedgeTexCoords();
                 }
                 else {
                     if (isPerFaceWedgeTexCoordsAvailable(m))
-                        loadedInfo.setFaceWedgeTexCoords();
+                        loadedInfo.setPerFaceWedgeTexCoords();
                 }
             }
         }
-        if (loadedInfo.hasFaceWedgeTexCoords()) {
+        if (loadedInfo.hasPerFaceWedgeTexCoords()) {
             if (wids.size() == vids.size()) {
                 if (!splitFace) { // there wasn't a triangulation of the face
                     // it is safe to assign each wedge texcoord to its position
@@ -454,15 +449,15 @@ void readObjEdge(
             if (currentMaterial.hasColor) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerEdgeColorOptional(m);
-                    loadedInfo.setEdgeColors();
+                    loadedInfo.setPerEdgeColor();
                 }
                 else {
                     if (isPerEdgeColorAvailable(m))
-                        loadedInfo.setEdgeColors();
+                        loadedInfo.setPerEdgeColor();
                 }
             }
         }
-        if (loadedInfo.hasEdgeColors()) {
+        if (loadedInfo.hasPerEdgeColor()) {
             if (currentMaterial.hasColor) {
                 // set the current color to the edge
                 m.edge(eid).color() = currentMaterial.color();
@@ -571,12 +566,15 @@ void loadObj(
             // read vertex (and for some non-standard obj files, also vertex
             // color)
             if (header == "v") {
+                loadedInfo.setVertices();
+                loadedInfo.setPerVertexCoordinate();
                 detail::readObjVertex(
                     m, token, loadedInfo, tokens, currentMaterial, settings);
             }
             // read vertex normal (and save in vn how many normals we read)
-            if constexpr (HasPerVertexNormal<MeshType>) {
-                if (header == "vn") {
+            if (header == "vn") {
+                loadedInfo.setPerVertexNormal();
+                if constexpr (HasPerVertexNormal<MeshType>) {
                     detail::readObjVertexNormal(
                         m, mapNormalsCache, vn, token, loadedInfo, settings);
                     vn++;
@@ -603,8 +601,10 @@ void loadObj(
             // - color
             // - eventual texcoords
             // - possibility to split polygonal face into several triangles
-            if constexpr (HasFaces<MeshType>) {
-                if (header == "f") {
+            if (header == "f") {
+                loadedInfo.setFaces();
+                loadedInfo.setPerFaceVertexReferences();
+                if constexpr (HasFaces<MeshType>) {
                     detail::readObjFace(
                         m,
                         loadedInfo,
@@ -615,8 +615,10 @@ void loadObj(
                 }
             }
             // read edges and manage their color
-            if constexpr (HasEdges<MeshType>) {
-                if (header == "l") {
+            if (header == "l") {
+                loadedInfo.setEdges();
+                loadedInfo.setPerEdgeVertexReferences();
+                if constexpr (HasEdges<MeshType>) {
                     detail::readObjEdge(
                         m, loadedInfo, tokens, currentMaterial, settings);
                 }
@@ -635,19 +637,19 @@ void loadObj(
     }
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         using VertexType = MeshType::VertexType;
-        if (!loadedInfo.hasFaceWedgeTexCoords()) {
+        if (!loadedInfo.hasPerFaceWedgeTexCoords()) {
             // we can set the loaded texCoords to vertices, also if they are not
             // supported in obj
             if (texCoords.size() == m.vertexNumber()) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexTexCoordOptional(m);
-                    loadedInfo.setVertexTexCoords();
+                    loadedInfo.setPerVertexTexCoord();
                 }
                 else {
                     if (isPerVertexTexCoordAvailable(m))
-                        loadedInfo.setVertexTexCoords();
+                        loadedInfo.setPerVertexTexCoord();
                 }
-                if (loadedInfo.hasVertexTexCoords()) {
+                if (loadedInfo.hasPerVertexTexCoord()) {
                     uint i = 0;
                     for (VertexType& v : m.vertices()) {
                         v.texCoord() =

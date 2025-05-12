@@ -20,45 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/load_save/load.h>
-#include <vclib/bindings/utils.h>
+#ifndef VCL_BINDINGS_CORE_IO_MESH_SAVE_H
+#define VCL_BINDINGS_CORE_IO_MESH_SAVE_H
 
-#include <vclib/algorithms/mesh/type_name.h>
-#include <vclib/io/mesh/load.h>
-#include <vclib/meshes.h>
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initLoad(pybind11::module& m)
-{
-    namespace py = pybind11;
-
-    auto fLoad =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            m.def(
-                "load",
-                [](MeshType& m, const std::string& filename) {
-                    vcl::load(m, filename);
-                },
-                py::arg("m"),
-                py::arg("filename"));
-        };
-
-    defForAllMeshTypes(m, fLoad);
-
-    auto fNameLoad =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            std::string name =
-                "load_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
-            m.def(
-                name.c_str(),
-                [](const std::string& filename) {
-                    return vcl::load<MeshType>(filename);
-                },
-                py::arg("filename"));
-        };
-
-    defForAllMeshTypes(m, fNameLoad);
-}
+void initSaveMesh(pybind11::module& m);
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_IO_MESH_SAVE_H

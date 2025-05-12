@@ -20,15 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_LOAD_SAVE_SAVE_H
-#define VCL_BINDINGS_CORE_LOAD_SAVE_SAVE_H
+#include <vclib/bindings/core/io/mesh/save.h>
+#include <vclib/bindings/utils.h>
 
-#include <pybind11/pybind11.h>
+#include <vclib/io/mesh/save.h>
+#include <vclib/meshes.h>
 
 namespace vcl::bind {
 
-void initSave(pybind11::module& m);
+void initSaveMesh(pybind11::module& m)
+{
+    auto f =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            namespace py = pybind11;
+
+            m.def(
+                "save",
+                [](const MeshType&    m,
+                   const std::string& filename,
+                   bool               binary,
+                   bool               saveTextureImages,
+                   bool               magicsMode,
+                   const MeshInfo&    info) {
+                    SaveSettings settings;
+                    settings.binary            = binary;
+                    settings.saveTextureImages = saveTextureImages;
+                    settings.magicsMode        = magicsMode;
+                    settings.info              = info;
+
+                    vcl::save(m, filename, settings);
+                },
+                py::arg("m"),
+                py::arg("filename"),
+                py::arg("binary")              = true,
+                py::arg("save_texture_images") = false,
+                py::arg("magics_mode")         = false,
+                py::arg("info")                = MeshInfo());
+        };
+
+    defForAllMeshTypes(m, f);
+}
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_LOAD_SAVE_SAVE_H

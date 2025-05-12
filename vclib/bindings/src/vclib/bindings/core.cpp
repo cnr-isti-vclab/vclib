@@ -22,7 +22,6 @@
 
 #include <vclib/bindings/core/algorithms.h>
 #include <vclib/bindings/core/io.h>
-#include <vclib/bindings/core/load_save.h>
 #include <vclib/bindings/core/meshes.h>
 #include <vclib/bindings/core/space.h>
 
@@ -41,15 +40,13 @@ PYBIND11_MODULE(core, m)
     m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
 
     // initialize the bindings
-    initIO(m);
-
     initSpace(m);
 
     initMeshes(m);
 
-    initLoadSave(m);
-
     initAlgorithms(m);
+
+    initIO(m);
 }
 
 } // namespace vcl::bind

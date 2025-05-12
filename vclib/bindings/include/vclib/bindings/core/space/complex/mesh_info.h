@@ -20,38 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_STL_CAPABILITY_H
-#define VCL_IO_MESH_STL_CAPABILITY_H
+#ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_MESH_INFO_H
+#define VCL_BINDINGS_CORE_SPACE_COMPLEX_MESH_INFO_H
 
-#include <vclib/io/file_format.h>
-#include <vclib/space/complex/mesh_info.h>
+#include <pybind11/pybind11.h>
 
-namespace vcl {
+namespace vcl::bind {
 
-constexpr FileFormat stlFileFormat()
-{
-    return FileFormat("stl", "STL Stereolithography .stl");
-}
+void initMeshInfo(pybind11::module& m);
 
-inline MeshInfo stlFormatCapability()
-{
-    MeshInfo info;
+} // namespace vcl::bind
 
-    info.setTriangleMesh();
-
-    info.setVertices();
-
-    info.setPerVertexCoordinate();
-
-    info.setFaces();
-
-    info.setPerFaceVertexReferences();
-    info.setPerFaceColor();
-    info.setPerFaceNormal();
-
-    return info;
-}
-
-} // namespace vcl
-
-#endif // VCL_IO_MESH_STL_CAPABILITY_H
+#endif // VCL_BINDINGS_CORE_SPACE_COMPLEX_MESH_INFO_H
