@@ -101,7 +101,7 @@ int main(int argc, char** argv)
             << "Takes 3 filenames as parameters; it writes the results "
                "in those files"
             << "\n\t--output-folder: "
-            << "Takes a path as an argument. Writes the "
+            << "Takes a path (without final path separator) as an argument. Writes the "
                "results in FOLDER/uber_result.csv, FOLDER/split_result.csv, "
                "FOLDER/uber_if_result.csv"
             << "\n\t--no-print:      " << "Disables result printing"
