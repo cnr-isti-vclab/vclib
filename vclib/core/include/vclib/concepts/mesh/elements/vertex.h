@@ -98,7 +98,7 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
  * The Vertex concept is satisfied for a class V if ALL the following sentences
  * are true:
  * - The class V has the BitFlags component (or a derivate);
- * - The class V has the Coordinate component (or a derivate);
+ * - The class V has the Position component (or a derivate);
  *
  * @ingroup vert_concepts
  */

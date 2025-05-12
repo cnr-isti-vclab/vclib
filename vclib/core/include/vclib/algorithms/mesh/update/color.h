@@ -550,7 +550,7 @@ void setPerFaceColorScattering(
 
 /**
  * @brief Set the vertex color according to a perlin noise computed on the
- * vertex coordinates.
+ * vertex positions.
  *
  * To make things weirder each color band can have its own offset and frequency.
  * Period is expressed in absolute terms.

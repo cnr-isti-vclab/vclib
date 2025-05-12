@@ -134,20 +134,20 @@ public:
     uint addVertex() { return Base::addElement(); }
 
     /**
-     * @brief Add a new vertex with the given coordinate into the vertex
+     * @brief Add a new vertex with the given position into the vertex
      * container, returning the id of the added vertex.
      *
      * If the call of this function will cause a reallocation of the Vertex
      * container, the function will automatically take care of updating all the
      * Vertex pointers contained in the Mesh.
      *
-     * @param p: coordinate of the new vertex.
+     * @param p: position of the new vertex.
      * @return the id of the new vertex.
      */
     uint addVertex(const typename T::PositionType& p)
     {
         uint vid            = addVertex();
-        vertex(vid).position() = p; // set the coordinate to the vertex
+        vertex(vid).position() = p; // set the position to the vertex
         return vid;
     }
 
@@ -175,7 +175,7 @@ public:
      *
      * @code{.cpp}
      * PositionType p0, p1, p2, p3;
-     * // init coords...
+     * // init positions...
      * m.addVertices(p0, p1, p2, p3);
      * @endcode
      *
@@ -185,8 +185,8 @@ public:
      * container, the function will automatically take care of updating all the
      * Vertex pointers contained in the Mesh.
      *
-     * @param p: first vertex coordinate
-     * @param v: list of other vertex coordinates
+     * @param p: first vertex position
+     * @param v: list of other vertex positions
      * @return the id of the first added vertex.
      */
     template<typename... VC>
@@ -203,14 +203,14 @@ public:
     }
 
     /**
-     * @brief Add an arbitrary number of vertices with the coordinates contained
+     * @brief Add an arbitrary number of vertices with the positions contained
      * in the given range, returning the id of the first added vertex.
      *
      * If the call of this function will cause a reallocation of the Vertex
      * container, the function will automatically take care of updating all the
      * Vertex pointers contained in the Mesh.
      *
-     * @param range: the range of coordinates of the vertices to add.
+     * @param range: the range of positions of the vertices to add.
      * @return the id of the first added vertex.
      */
     template<vcl::Range R>

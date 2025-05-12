@@ -78,7 +78,7 @@ inline bool isStlColored(std::istream& fp, bool& magicsMode)
         magicsMode = false;
     uint              fnum = io::readUInt<uint>(fp, std::endian::little);
     static const uint fmax = 1000;
-    // 3 floats for normal and 9 for vcoords
+    // 3 floats for normal and 9 for v positions
     static const uint fdataSize = 12 * sizeof(float);
 
     for (uint i = 0; i < std::min(fnum, fmax); ++i) {
