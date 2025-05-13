@@ -35,7 +35,7 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshSampler
 {
-    using CoordView =
+    using PosView =
         decltype(View<typename MeshType::VertexIterator>() | views::positions);
 
     MeshType mMesh;
@@ -43,7 +43,7 @@ class MeshSampler
 public:
     using PointType     = MeshType::VertexType::PositionType;
     using ScalarType    = PointType::ScalarType;
-    using ConstIterator = std::ranges::iterator_t<CoordView>;
+    using ConstIterator = std::ranges::iterator_t<PosView>;
 
     MeshSampler()
     {

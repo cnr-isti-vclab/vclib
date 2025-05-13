@@ -36,7 +36,7 @@ namespace vcl {
 /*
  * Developer Documentation
  * A class that derives from an AbstractGrid must store, in some way, an
- * association between a GridCell coordinate (a Point of unsigned integers) and
+ * association between a GridCell position (a Point of unsigned integers) and
  * elements of type ValueType. Each cell may contain more than one element
  * value, and each element value may be stored in more than one cell if it
  * intersects with more than one cell.
@@ -125,7 +125,7 @@ protected:
     IntersectsCellFunction mIntersectsFun;
 
 public:
-    using KeyType = GridType::CellCoord;
+    using KeyType = GridType::CellPos;
 
     /**
      * @brief The QueryDistFunction type is a std::function that takes as input
@@ -699,7 +699,7 @@ protected:
     {
         using ScalarType = GridType::ScalarType;
         using BBoxType   = GridType::BBoxType;
-        using CellCoord  = GridType::CellCoord;
+        using CellPos    = GridType::CellPos;
 
         BBoxType bbox      = boundingBox(begin, end);
         uint     nElements = std::distance(begin, end);
@@ -710,7 +710,7 @@ protected:
             bbox.min() -= infl;
             bbox.max() += infl;
 
-            CellCoord sizes = bestGridSize(bbox.size(), nElements);
+            CellPos sizes = bestGridSize(bbox.size(), nElements);
 
             GridType::set(bbox, sizes);
         }
