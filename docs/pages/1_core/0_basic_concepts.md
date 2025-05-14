@@ -44,8 +44,8 @@ std::cout << "Vertex number: " << myTriMesh.vertexNumber() "; "
 We can access to the elements (Vertices, Faces, ...) of the mesh by index:
 
 ```cpp
-vcl::Point3d p = myTriMesh.vertex(0).coord();
-vcl::Point3d p1 = myTriMesh.face(0).vertex(1)->coord();
+vcl::Point3d p = myTriMesh.vertex(0).position();
+vcl::Point3d p1 = myTriMesh.face(0).vertex(1)->position();
 ```
 
 We can also iterate over Vertices and over Faces of the mesh:
@@ -57,7 +57,7 @@ vcl::Point3d bar;
 bar.setZero();
 
 for (const vcl::TriMesh::Vertex& v : myTriMesh.vertices()) {
-    bar += v.coord();
+    bar += v.position();
 }
 bar /= myTriMesh.vertexNumber();
 
@@ -66,7 +66,7 @@ bar /= myTriMesh.vertexNumber();
 for (const vcl::TriMesh::Face& f : myTriMesh.faces()) {
     bool up = true;
     for (const vcl::TriMesh::Vertex* v : f.vertices()) { // iterate over verts of f
-        if (v->coord().y() < bar.y())
+        if (v->position().y() < bar.y())
             up = false;
     }
     if (up) {
@@ -92,8 +92,8 @@ vcl::TriMesh mesh;
 
 mesh.addVertex(vcl::Point3d(0,0,0)); // add a vertex with pos 0,0,0
 mesh.addVertices(2); // add another two vertices to the mesh
-mesh.vertex(1).coord() = vcl::Point3d(1,0,0);
-mesh.vertex(2).coord() = vcl::Point3d(0,1,0);
+mesh.vertex(1).position() = vcl::Point3d(1,0,0);
+mesh.vertex(2).position() = vcl::Point3d(0,1,0);
 
 vcl::Point3d p0, p1, p2, p3, p4;
 
@@ -112,7 +112,7 @@ mesh.face(fid).setVertices(&mesh.vertex(2), &mesh.vertex(1), &mesh.vertex(3));
 ## Components
 
 Each data that is stored in a mesh or in a element is called "component". For
-example, the coordinate of a vertex is a component, the normal of a face is a
+example, the position of a vertex is a component, the normal of a face is a
 component, the color of a vertex is a component, and so on. 
 
 Depending on how the Element is defined, the components can be stored in different

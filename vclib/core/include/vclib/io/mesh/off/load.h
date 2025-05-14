@@ -239,11 +239,11 @@ inline void readOffHeader(
     if (header.rfind("OFF") != std::basic_string<char>::npos) {
         for (int u = header.rfind("OFF") - 1; u >= 0; u--) {
             if (header[u] == 'C')
-                fileInfo.setVertexColors();
+                fileInfo.setPerVertexColor();
             else if (header[u] == 'N')
-                fileInfo.setVertexNormals();
+                fileInfo.setPerVertexNormal();
             else if (u > 0 && header[u - 1] == 'S' && header[u] == 'T')
-                fileInfo.setVertexTexCoords();
+                fileInfo.setPerVertexTexCoord();
             else if (header[u] == '4')
                 throw MalformedFileException(
                     "Unsupported Homogeneus components in OFF.");
@@ -320,7 +320,7 @@ void readOffVertices(
 {
     using VertexType = MeshType::VertexType;
 
-    const uint nTexCoords = fileInfo.hasVertexTexCoords() ? 2 : 0;
+    const uint nTexCoords = fileInfo.hasPerVertexTexCoord() ? 2 : 0;
 
     log.startProgress("Reading vertices", nv);
     mesh.addVertices(nv);
@@ -333,12 +333,12 @@ void readOffVertices(
         // Read 3 vertex coordinates
         for (unsigned int j = 0; j < 3; j++) {
             // Read vertex coordinate
-            v.coord()[j] = io::readDouble<double>(token);
+            v.position()[j] = io::readDouble<double>(token);
         }
 
         if constexpr (HasPerVertexNormal<MeshType>) {
             if (isPerVertexNormalAvailable(mesh) &&
-                fileInfo.hasVertexNormals()) {
+                fileInfo.hasPerVertexNormal()) {
                 // Read 3 normal coordinates
                 for (unsigned int j = 0; j < 3; j++) {
                     v.normal()[j] = io::readDouble<double>(token);
@@ -346,7 +346,7 @@ void readOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasVertexNormals()) {
+        else if (fileInfo.hasPerVertexNormal()) {
             for (unsigned int j = 0; j < 3; j++) {
                 io::readDouble<double>(token);
             }
@@ -357,7 +357,8 @@ void readOffVertices(
             (int) tokens.size() - nReadComponents - nTexCoords;
 
         if constexpr (HasPerVertexColor<MeshType>) {
-            if (isPerVertexColorAvailable(mesh) && fileInfo.hasVertexColors()) {
+            if (isPerVertexColorAvailable(mesh) &&
+                fileInfo.hasPerVertexColor()) {
                 if (nColorComponents != 1 && nColorComponents != 3 &&
                     nColorComponents != 4)
                     throw MalformedFileException(
@@ -366,7 +367,7 @@ void readOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasVertexColors()) {
+        else if (fileInfo.hasPerVertexColor()) {
             if (nColorComponents != 1 && nColorComponents != 3 &&
                 nColorComponents != 4)
                 throw MalformedFileException(
@@ -376,7 +377,7 @@ void readOffVertices(
 
         if constexpr (HasPerVertexTexCoord<MeshType>) {
             if (isPerVertexTexCoordAvailable(mesh) &&
-                fileInfo.hasVertexTexCoords()) {
+                fileInfo.hasPerVertexTexCoord()) {
                 // Read 2 tex coordinates
                 for (unsigned int j = 0; j < 2; j++) {
                     v.texCoord()[j] = io::readDouble<double>(token);
@@ -384,7 +385,7 @@ void readOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasVertexTexCoords()) {
+        else if (fileInfo.hasPerVertexTexCoord()) {
             for (unsigned int j = 0; j < 2; j++) {
                 io::readDouble<double>(token);
             }
@@ -459,7 +460,7 @@ void readOffFaces(
                     if (isPerFaceColorAvailable(mesh) ||
                         (settings.enableOptionalComponents &&
                          enableIfPerFaceColorOptional(mesh))) {
-                        loadedInfo.setFaceColors();
+                        loadedInfo.setPerFaceColor();
                         f.color() = readOffColor(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in

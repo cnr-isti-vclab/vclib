@@ -28,6 +28,7 @@
 #include "complex/kd_tree.h"
 #include "complex/mesh_edge_util.h"
 #include "complex/mesh_inertia.h"
+#include "complex/mesh_info.h"
 #include "complex/mesh_pos.h"
 #include "complex/sampler.h"
 #include "complex/tri_poly_index_bimap.h"

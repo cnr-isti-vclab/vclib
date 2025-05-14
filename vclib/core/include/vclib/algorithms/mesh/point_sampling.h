@@ -786,7 +786,7 @@ SamplerType montecarloPointSampling(
     bool               deterministic = false)
 {
     using VertexType = MeshType::VertexType;
-    using ScalarType = VertexType::CoordType::ScalarType;
+    using ScalarType = VertexType::PositionType::ScalarType;
     using FaceType   = MeshType::FaceType;
     using Interval   = std::pair<ScalarType, const FaceType*>;
 

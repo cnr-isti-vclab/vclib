@@ -39,9 +39,9 @@ int main()
     m.edge(1).setVertex(0U, 1U);
     m.edge(1).setVertex(1U, 2U);
 
-    (*it)->coord() = vcl::Point3d(1, 0, 0);
+    (*it)->position() = vcl::Point3d(1, 0, 0);
 
-    assert(m.vertex(0).coord() == vcl::Point3d(1, 0, 0));
+    assert(m.vertex(0).position() == vcl::Point3d(1, 0, 0));
 
     assert(m.edge(0).vertex(0) == &m.vertex(0));
     assert(m.edge(0).vertex(1) == &m.vertex(1));

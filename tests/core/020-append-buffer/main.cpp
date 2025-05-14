@@ -101,7 +101,7 @@ void randomQuality(auto& tm)
 // test functions
 
 template<typename MatrixType>
-void testCoordsMatrix(
+void testPositionsMatrix(
     const auto& tm,
     const auto& vwm,
     const auto& vtd,
@@ -112,12 +112,12 @@ void testCoordsMatrix(
 
     auto stg = vcl::matrixStorageType<MatrixType>();
 
-    vcl::vertexCoordsToBuffer(tm, verts.data(), stg, nRows);
-    vcl::appendDuplicateVertexCoordsToBuffer(tm, vtd, verts.data(), stg);
+    vcl::vertexPositionsToBuffer(tm, verts.data(), stg, nRows);
+    vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data(), stg);
 
     vcl::uint i = 0;
     // first vertices corresponds
-    for (const auto& c : tm.vertices() | vcl::views::coords) {
+    for (const auto& c : tm.vertices() | vcl::views::positions) {
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
         REQUIRE(verts(i, 2) == c.z());
@@ -126,7 +126,7 @@ void testCoordsMatrix(
 
     // following vertices are duplicates (same as the vtd indices)
     for (vcl::uint vd : vtd) {
-        const auto& c = tm.vertex(vd).coord();
+        const auto& c = tm.vertex(vd).position();
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
         REQUIRE(verts(i, 2) == c.z());
@@ -142,12 +142,12 @@ void testTriangleMatrix(
     const auto& ftr)
 {
     using MeshType   = vcl::RemoveRef<decltype(tm)>;
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
     vcl::uint               nVerts = tm.vertexNumber() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
-    vcl::vertexCoordsToBuffer(tm, verts.data());
-    vcl::appendDuplicateVertexCoordsToBuffer(tm, vtd, verts.data());
+    vcl::vertexPositionsToBuffer(tm, verts.data());
+    vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data());
 
     auto stg = vcl::matrixStorageType<MatrixType>();
 
@@ -160,11 +160,11 @@ void testTriangleMatrix(
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
         for (vcl::uint j = 0; j < 3; ++j) {
-            // original coordinates should correspond to the duplicated ones
+            // original positions should correspond to the duplicated ones
             // that are stored in verts matrix and indexed by tris matrix
-            REQUIRE(f.vertex(j)->coord().x() == verts(tris(i, j), 0));
-            REQUIRE(f.vertex(j)->coord().y() == verts(tris(i, j), 1));
-            REQUIRE(f.vertex(j)->coord().z() == verts(tris(i, j), 2));
+            REQUIRE(f.vertex(j)->position().x() == verts(tris(i, j), 0));
+            REQUIRE(f.vertex(j)->position().y() == verts(tris(i, j), 1));
+            REQUIRE(f.vertex(j)->position().z() == verts(tris(i, j), 2));
         }
         ++i;
     }
@@ -224,33 +224,33 @@ TEMPLATE_TEST_CASE(
     vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
         tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
-    SECTION("Append duplicated vertex coordinates...")
+    SECTION("Append duplicated vertex positions...")
     {
-        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
+        using ScalarType = typename TriMesh::VertexType::PositionType::ScalarType;
 
         SECTION("Eigen Row Major")
         {
-            testCoordsMatrix<EigenRowMatrix<ScalarType>>(
+            testPositionsMatrix<EigenRowMatrix<ScalarType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("Eigen 3 Row Major")
         {
-            testCoordsMatrix<Eigen3RowMatrix<ScalarType>>(
+            testPositionsMatrix<Eigen3RowMatrix<ScalarType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("Eigen Col Major")
         {
-            testCoordsMatrix<EigenColMatrix<ScalarType>>(
+            testPositionsMatrix<EigenColMatrix<ScalarType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("Eigen 3 Col Major")
         {
-            testCoordsMatrix<Eigen3ColMatrix<ScalarType>>(
+            testPositionsMatrix<Eigen3ColMatrix<ScalarType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
         SECTION("vcl::Array2")
         {
-            testCoordsMatrix<vcl::Array2<ScalarType>>(
+            testPositionsMatrix<vcl::Array2<ScalarType>>(
                 tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
         }
     }

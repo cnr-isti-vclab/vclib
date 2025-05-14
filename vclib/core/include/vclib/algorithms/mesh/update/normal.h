@@ -607,11 +607,11 @@ void updatePerVertexNormalsAngleWeighted(
 
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             NormalType vec1 =
-                (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+                (f.vertexMod(i - 1)->position() - f.vertexMod(i)->position())
                     .normalized()
                     .template cast<NScalarType>();
             NormalType vec2 =
-                (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+                (f.vertexMod(i + 1)->position() - f.vertexMod(i)->position())
                     .normalized()
                     .template cast<NScalarType>();
 
@@ -680,10 +680,10 @@ void updatePerVertexNormalsNelsonMaxWeighted(
 
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             NScalarType e1 =
-                (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+                (f.vertexMod(i - 1)->position() - f.vertexMod(i)->position())
                     .squaredNorm();
             NScalarType e2 =
-                (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+                (f.vertexMod(i + 1)->position() - f.vertexMod(i)->position())
                     .squaredNorm();
 
             f.vertex(i)->normal() += n / (e1 * e2);

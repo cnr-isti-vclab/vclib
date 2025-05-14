@@ -1,0 +1,78 @@
+name: Bindings - Build Wheel
+
+on:
+  push:
+  pull_request: 
+  workflow_dispatch:
+    inputs:
+      python-version:
+        description: 'Python version to use'
+        default: '3.12'
+
+jobs:
+  bindings_build_wheel:
+    name: Bindings - Build Wheel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'macos-13', 'macos-latest', 'windows-latest']
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Setup env
+      id: envs
+      shell: bash
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          echo "python-version=${{ github.event.inputs.python-version }}" >> $GITHUB_OUTPUT
+        else
+          echo "python-version=3.12" >> $GITHUB_OUTPUT
+        fi
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        cache: 'true'
+        version: '6.8.2'
+    - name: Install Python ${{ steps.envs.outputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.envs.outputs.python-version }}
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install cmake ninja-build libtbb-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev
+    - name: Install dependencies
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew install ninja python3
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      run: |
+        choco upgrade ccache ninja python3
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: bindings-${{ matrix.os }}-${{ github.ref_name }}
+    - name: Build Wheel
+      shell: bash
+      run: |
+        python3 -m venv venv
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          venv/Scripts/activate
+        else
+          source venv/bin/activate
+        fi
+        python -m pip install --upgrade pip setuptools wheel build
+        python -m build --wheel --outdir dist
+    - name: Upload Wheel
+      uses: actions/upload-artifact@v4
+      with:
+        name: vclib-wheel-${{ matrix.os }}-python-${{ steps.envs.outputs.python-version }}
+        path: dist/*.whl
+        

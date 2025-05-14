@@ -24,32 +24,36 @@ set(QT_MINIMUM_VERSION 6.7)
 
 set(QT_COMPONENTS Core Xml Gui Widgets)
 
+if (VCLIB_REQUIRES_QT)
+    set(VCLIB_QT_REQUIRED "REQUIRED")
+else()
+    set(VCLIB_QT_REQUIRED "")
+endif()
+
 if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     list(APPEND QT_COMPONENTS OpenGL OpenGLWidgets)
 endif()
 
-find_package(Qt6 ${QT_MINIMUM_VERSION} COMPONENTS ${QT_COMPONENTS} QUIET)
+find_package(Qt6 ${QT_MINIMUM_VERSION} COMPONENTS ${QT_COMPONENTS} QUIET ${VCLIB_QT_REQUIRED})
 
 if (VCLIB_ALLOW_SYSTEM_QT)
     if (Qt6_FOUND)
         message(STATUS "- Qt6 - using system-provided library")
 
-        if (NOT TARGET vclib-3rd-qt)
-            add_library(vclib-3rd-qt INTERFACE)
-        endif()
+        add_library(vclib-3rd-render-qt INTERFACE)
 
-        target_compile_definitions(vclib-3rd-qt INTERFACE
+        target_compile_definitions(vclib-3rd-render-qt INTERFACE
             VCLIB_WITH_QT)
 
-        target_link_libraries(vclib-3rd-qt INTERFACE
+        target_link_libraries(vclib-3rd-render-qt INTERFACE
             Qt6::Core Qt6::Widgets Qt6::Xml)
 
         if (OpenGL_FOUND AND VCLIB_RENDER_BACKEND STREQUAL "opengl2")
-            target_link_libraries(vclib-3rd-qt INTERFACE
+            target_link_libraries(vclib-3rd-render-qt INTERFACE
                 Qt6::OpenGL Qt6::OpenGLWidgets)
         endif()
 
-        list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-qt)
+        list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-render-qt)
     else()
         message(STATUS "- Qt - not found, skipping")
     endif()

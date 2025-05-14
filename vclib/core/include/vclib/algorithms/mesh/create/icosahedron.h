@@ -42,29 +42,29 @@ template<FaceMeshConcept MeshType>
 MeshType createIcosahedron(bool normalizeVertices = false)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
+    using PositionType  = VertexType::PositionType;
 
     MeshType mesh;
 
     const double t = (1.0 + std::sqrt(5.0)) / 2.0;
 
     // Vertices
-    mesh.addVertex(CoordType(-1.0, t, 0.0));
-    mesh.addVertex(CoordType(1.0, t, 0.0));
-    mesh.addVertex(CoordType(-1.0, -t, 0.0));
-    mesh.addVertex(CoordType(1.0, -t, 0.0));
-    mesh.addVertex(CoordType(0.0, -1.0, t));
-    mesh.addVertex(CoordType(0.0, 1.0, t));
-    mesh.addVertex(CoordType(0.0, -1.0, -t));
-    mesh.addVertex(CoordType(0.0, 1.0, -t));
-    mesh.addVertex(CoordType(t, 0.0, -1.0));
-    mesh.addVertex(CoordType(t, 0.0, 1.0));
-    mesh.addVertex(CoordType(-t, 0.0, -1.0));
-    mesh.addVertex(CoordType(-t, 0.0, 1.0));
+    mesh.addVertex(PositionType(-1.0, t, 0.0));
+    mesh.addVertex(PositionType(1.0, t, 0.0));
+    mesh.addVertex(PositionType(-1.0, -t, 0.0));
+    mesh.addVertex(PositionType(1.0, -t, 0.0));
+    mesh.addVertex(PositionType(0.0, -1.0, t));
+    mesh.addVertex(PositionType(0.0, 1.0, t));
+    mesh.addVertex(PositionType(0.0, -1.0, -t));
+    mesh.addVertex(PositionType(0.0, 1.0, -t));
+    mesh.addVertex(PositionType(t, 0.0, -1.0));
+    mesh.addVertex(PositionType(t, 0.0, 1.0));
+    mesh.addVertex(PositionType(-t, 0.0, -1.0));
+    mesh.addVertex(PositionType(-t, 0.0, 1.0));
 
     if (normalizeVertices) {
         for (VertexType& v : mesh.vertices())
-            v.coord().normalize();
+            v.position().normalize();
     }
 
     // Faces

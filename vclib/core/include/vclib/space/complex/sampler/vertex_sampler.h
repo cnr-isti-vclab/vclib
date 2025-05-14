@@ -15,15 +15,15 @@ class VertexSampler
     std::vector<VertexType*> mSamples;
 
 public:
-    using PointType = VertexType::CoordType;
+    using PointType = VertexType::PositionType;
 
     VertexSampler() {}
 
     const std::vector<VertexType*> samples() const { return mSamples; }
 
-    const typename VertexType::CoordType& sample(uint i) const
+    const typename VertexType::PositionType& sample(uint i) const
     {
-        return mSamples[i]->coord();
+        return mSamples[i]->position();
     }
 
     std::size_t size() const { return mSamples.size(); }
@@ -38,9 +38,9 @@ public:
 
     void set(uint i, VertexType& v) { mSamples[i] = &v; }
 
-    auto begin() const { return std::begin(mSamples | views::coords); }
+    auto begin() const { return std::begin(mSamples | views::positions); }
 
-    auto end() const { return std::end(mSamples | views::coords); }
+    auto end() const { return std::end(mSamples | views::positions); }
 };
 
 template<VertexConcept VertexType>

@@ -108,28 +108,49 @@ TEMPLATE_TEST_CASE(
     using PolyMesh = std::tuple_element_t<1, TestType>;
     using EdgeMesh = std::tuple_element_t<2, TestType>;
 
+    vcl::MeshInfo info;
+
     SECTION("TriMesh - PolyCube")
     {
+        info.clear();
+
         TriMesh tm;
         auto    ss = objPolyCube();
-        vcl::loadObj(tm, ss, {});
+
+        vcl::loadObj(tm, ss, {}, info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(info.hasEdges());
+
+        REQUIRE(info.isQuadMesh());
     }
 
     SECTION("TriMesh - TriCube")
     {
+        info.clear();
+
         TriMesh tm;
         auto    ss = objTriCube();
-        vcl::loadObj(tm, ss, {});
+        vcl::loadObj(tm, ss, {}, info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(info.hasEdges());
+
+        REQUIRE(info.isTriangleMesh());
     }
 
     SECTION("TriMesh - Wedge TextureDouble")
     {
+        info.clear();
+
         TriMesh tm;
-        vcl::loadObj(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj");
+        vcl::loadObj(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj", info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 4);
         REQUIRE(tm.textureNumber() == 2);
@@ -138,59 +159,112 @@ TEMPLATE_TEST_CASE(
             // first two faces have texture index 0, the other two have index 1
             REQUIRE(f.textureIndex() == f.index() / 2);
         }
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(!info.hasEdges());
+
+        REQUIRE(info.isTriangleMesh());
+
+        REQUIRE(info.hasPerFaceWedgeTexCoords());
+        REQUIRE(info.hasTextures());
     }
 
     SECTION("PolyMesh - PolyCube")
     {
+        info.clear();
+
         PolyMesh pm;
         auto     ss = objPolyCube();
-        vcl::loadObj(pm, ss, {});
+        vcl::loadObj(pm, ss, {}, info);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 6);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(info.hasEdges());
+
+        REQUIRE(info.isQuadMesh());
     }
 
     SECTION("PolyMesh - TriCube")
     {
+        info.clear();
+
         PolyMesh pm;
         auto     ss = objTriCube();
-        vcl::loadObj(pm, ss, {});
+        vcl::loadObj(pm, ss, {}, info);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 12);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(info.hasEdges());
+
+        REQUIRE(info.isTriangleMesh());
     }
 
     SECTION("TriMesh - Rhombicosidodecahedron")
     {
+        info.clear();
+
         TriMesh pm;
         vcl::loadObj(
-            pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj");
+            pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj", info);
         REQUIRE(pm.vertexNumber() == 60);
         REQUIRE(pm.faceNumber() == 116);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(!info.hasEdges());
+
+        REQUIRE(info.isPolygonMesh());
     }
 
     SECTION("PolyMesh - Rhombicosidodecahedron")
     {
+        info.clear();
+
         PolyMesh pm;
         vcl::loadObj(
-            pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj");
+            pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj", info);
         REQUIRE(pm.vertexNumber() == 60);
         REQUIRE(pm.faceNumber() == 62);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(!info.hasEdges());
+
+        REQUIRE(info.isPolygonMesh());
     }
 
     SECTION("EdgeMesh - PolyCube")
     {
+        info.clear();
+
         EdgeMesh em;
         auto     ss = objPolyCube();
-        vcl::loadObj(em, ss, {});
+        vcl::loadObj(em, ss, {}, info);
         REQUIRE(em.vertexNumber() == 8);
         REQUIRE(em.edgeNumber() == 4);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(info.hasEdges());
     }
 
     SECTION("EdgeMesh - TriCube")
     {
+        info.clear();
+
         EdgeMesh pm;
         auto     ss = objTriCube();
-        vcl::loadObj(pm, ss, {});
+        vcl::loadObj(pm, ss, {}, info);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.edgeNumber() == 4);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(info.hasEdges());
     }
 }

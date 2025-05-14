@@ -20,40 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_COORDS_H
-#define VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#ifndef COMP_POSITION_H
+#define COMP_POSITION_H
 
-#include <vclib/concepts/pointers.h>
-#include <vclib/types.h>
+#include <vclib/meshes.h>
 
-#include <ranges>
-
-namespace vcl::views {
-
-namespace detail {
-
-inline constexpr auto coord = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->coord();
-    else
-        return p.coord();
-};
-
-struct CoordsView
+void positionComponentStaticAsserts()
 {
-    constexpr CoordsView() = default;
+    using namespace vcl;
 
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, CoordsView)
-    {
-        return std::forward<R>(r) | std::views::transform(coord);
-    }
-};
+    using TriMeshVertex = trimesh::Vertex<float, true>;
 
-} // namespace detail
+    // test only the position component
+    static_assert(
+        comp::HasPosition<vert::Position3f>,
+        "vert::Position3f does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<const vert::Position3f>,
+        "const vert::Position3f does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<vert::Position3f&>,
+        "vert::Position3f& does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<const vert::Position3f&>,
+        "const vert::Position3f& does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<vert::Position3f&&>,
+        "vert::Position3f&& does not satisfy the HasPosition concept");
 
-inline constexpr detail::CoordsView coords;
+    static_assert(
+        comp::HasPosition<TriMeshVertex>,
+        "TriMesh Vertex does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<const TriMeshVertex>,
+        "const TriMesh Vertex does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<TriMeshVertex&>,
+        "TriMesh Vertex& does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<const TriMeshVertex&>,
+        "const TriMesh Vertex& does not satisfy the HasPosition concept");
+    static_assert(
+        comp::HasPosition<TriMeshVertex&&>,
+        "TriMesh Vertex&& does not satisfy the HasPosition concept");
+}
 
-} // namespace vcl::views
-
-#endif // VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#endif // COMP_POSITION_H

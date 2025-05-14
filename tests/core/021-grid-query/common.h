@@ -65,7 +65,7 @@ auto randomSpheres(
     const MeshType& mesh,
     std::size_t     seed = std::random_device()())
 {
-    using PointType  = MeshType::VertexType::CoordType;
+    using PointType  = MeshType::VertexType::PositionType;
     using ScalarType = PointType::ScalarType;
 
     using VertDistrType   = std::uniform_int_distribution<vcl::uint>;
@@ -94,8 +94,8 @@ auto randomSpheres(
     RadiusDistrType disR(mu, sigma);
 
     for (vcl::uint i = 0; i < n; i++) {
-        // random vertex coordinate pertubated will be the center of the sphere
-        PointType p = mesh.vertex(disV(gen)).coord();
+        // random vertex positions pertubated will be the center of the sphere
+        PointType p = mesh.vertex(disV(gen)).position();
         p += PointType(disX(gen), disY(gen), disZ(gen));
 
         // random radius with normal distribution
@@ -115,7 +115,7 @@ template<
     vcl::FaceMeshConcept MeshType>
 auto computeGrid(const MeshType& mesh)
 {
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
     using FaceType   = MeshType::FaceType;
 
     return Grid<const FaceType*, ScalarType>(

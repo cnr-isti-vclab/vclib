@@ -42,7 +42,17 @@
             }
         },
         {
+            "name": "examples-and-tests",
+            "hidden": true,
+            "displayName": "No Examples and Tests",
+            "cacheVariables": {
+                "VCLIB_BUILD_EXAMPLES": "ON",
+                "VCLIB_BUILD_TESTS": "ON"
+            }
+        },
+        {
             "name": "vclib-core-debug",
+            "inherits": "examples-and-tests",
             "displayName": "VCLib::Core - Debug",
             "description": "Core with default options",
             "generator": "Ninja",
@@ -52,6 +62,7 @@
         },
         {
             "name": "vclib-core-release",
+            "inherits": "examples-and-tests",
             "displayName": "VCLib::Core - Release",
             "description": "Core with default options",
             "generator": "Ninja",
@@ -199,19 +210,35 @@
         },
         {
             "name": "vclib-bindings-debug",
-            "inherits": "vclib-core-no-tests-debug",
+            "inherits": [
+                "vclib-external-debug",
+                "vclib-render-bgfx-debug",
+                "vclib-processing-debug"
+            ],
             "displayName": "VCLib::Bindings - Debug",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "VCLIB_BUILD_EXAMPLES": "OFF",
+                "VCLIB_BUILD_TESTS": "OFF",
+                "VCLIB_REQUIRES_QT": "ON",
+                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF",
                 "VCLIB_BUILD_MODULE_BINDINGS": "ON"
             }
         },
         {
             "name": "vclib-bindings-release",
-            "inherits": "vclib-core-no-tests-release",
+            "inherits": [
+                "vclib-external-release",
+                "vclib-render-bgfx-release",
+                "vclib-processing-release"
+            ],
             "displayName": "VCLib::Bindings - Release",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "VCLIB_BUILD_EXAMPLES": "OFF",
+                "VCLIB_BUILD_TESTS": "OFF",
+                "VCLIB_REQUIRES_QT": "ON",
+                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF",
                 "VCLIB_BUILD_MODULE_BINDINGS": "ON"
             }
         },
@@ -237,6 +264,19 @@
                 "VCLIB_BUILD_MODULE_PROCESSING": "ON",
                 "VCLIB_BUILD_MODULE_RENDER": "ON",
                 "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+            }
+        },
+        {
+            "name": "vclib-python-wheel",
+            "displayName": "VCLib - Python Wheel",
+            "description": "Build Python wheel",
+            "inherits": "vclib-bindings-release",
+            "installDir": "./dist",
+            "cacheVariables": {
+                "VCLIB_INSTALL_MODULE_CORE": "OFF",
+                "VCLIB_INSTALL_MODULE_EXTERNAL": "OFF",
+                "VCLIB_INSTALL_MODULE_PROCESSING": "OFF",
+                "VCLIB_INSTALL_MODULE_RENDER": "OFF"
             }
         }
     ],
@@ -324,6 +364,12 @@
             "displayName": "VCLib - All Modules - Release",
             "description": "All modules with default options",
             "configurePreset": "vclib-all-modules-release"
+        },
+        {
+            "name": "vclib-python-wheel",
+            "displayName": "VCLib - Python Wheel",
+            "description": "Build Python wheel",
+            "configurePreset": "vclib-python-wheel"
         }
     ]
 }

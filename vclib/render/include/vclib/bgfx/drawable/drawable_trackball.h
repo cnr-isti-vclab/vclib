@@ -43,7 +43,7 @@ class DrawableTrackBall : public DrawableObject
 
     bool mVisible = true;
 
-    VertexBuffer mVertexCoordsBuffer;
+    VertexBuffer mVertexPosBuffer;
     IndexBuffer  mEdgeIndexBuffer;
 
     DrawableTrackballUniforms mUniforms;
@@ -83,7 +83,7 @@ public:
     {
         using std::swap;
         swap(mVisible, other.mVisible);
-        swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
+        swap(mVertexPosBuffer, other.mVertexPosBuffer);
         swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
         swap(mUniforms, other.mUniforms);
         swap(mTransform, other.mTransform);
@@ -121,7 +121,7 @@ public:
                 BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
                 BGFX_STATE_BLEND_NORMAL);
 
-            mVertexCoordsBuffer.bind(0);
+            mVertexPosBuffer.bind(0);
             mEdgeIndexBuffer.bind();
 
             bgfx::setTransform(mTransform.data());
@@ -152,7 +152,7 @@ private:
     void createBuffers()
     {
         // vertex buffer
-        mVertexCoordsBuffer.create(
+        mVertexPosBuffer.create(
             TRACKBALL_DATA.first.data(),
             TRACKBALL_DATA.first.size(),
             bgfx::Attrib::Position,

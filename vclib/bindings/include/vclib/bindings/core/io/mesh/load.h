@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_LOAD_SAVE_SAVE_H
-#define VCL_BINDINGS_CORE_LOAD_SAVE_SAVE_H
+#ifndef VCL_BINDINGS_CORE_IO_MESH_LOAD_H
+#define VCL_BINDINGS_CORE_IO_MESH_LOAD_H
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initSave(pybind11::module& m);
+void initLoadMesh(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_LOAD_SAVE_SAVE_H
+#endif // VCL_BINDINGS_CORE_IO_MESH_LOAD_H

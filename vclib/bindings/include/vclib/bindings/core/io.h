@@ -24,6 +24,7 @@
 #define VCL_BINDINGS_CORE_IO_H
 
 #include "io/file_format.h"
+#include "io/mesh.h"
 
 #include <pybind11/pybind11.h>
 
@@ -32,6 +33,7 @@ namespace vcl::bind {
 void initIO(pybind11::module& m)
 {
     initFileFormat(m);
+    initIOMesh(m);
 }
 
 } // namespace vcl::bind

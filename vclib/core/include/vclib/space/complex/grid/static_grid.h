@@ -253,9 +253,9 @@ template<VertexPointerRangeConcept Rng>
 StaticGrid(Rng) -> StaticGrid<
                     RegularGrid<
                         // scalar type used for the grid, the same of the
-                        // CoordType of the Vertex
+                        // PositionType of the Vertex
                         typename RemovePtr<typename std::ranges::iterator_t<
-                            Rng>::value_type>::CoordType::ScalarType,
+                            Rng>::value_type>::PositionType::ScalarType,
                         3>, // the dimension of the Grid
                     // the ValueType of the StaticGrid, which is the iterated
                     // type in the given range (pointer to vertex)

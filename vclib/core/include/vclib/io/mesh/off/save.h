@@ -47,11 +47,11 @@ void saveOff(
     if (!settings.info.isEmpty())
         meshInfo = settings.info.intersect(meshInfo);
 
-    if (meshInfo.hasVertexNormals())
+    if (meshInfo.hasPerVertexNormal())
         fp << "N";
-    if (meshInfo.hasVertexColors())
+    if (meshInfo.hasPerVertexColor())
         fp << "C";
-    if (meshInfo.hasVertexTexCoords())
+    if (meshInfo.hasPerVertexTexCoord())
         fp << "ST";
     fp << "OFF" << std::endl;
 
@@ -74,12 +74,12 @@ void saveOff(
     if constexpr (HasVertices<MeshType>) {
         using VertexType = MeshType::VertexType;
         for (const VertexType& v : m.vertices()) {
-            io::writeDouble(fp, v.coord().x(), false);
-            io::writeDouble(fp, v.coord().y(), false);
-            io::writeDouble(fp, v.coord().z(), false);
+            io::writeDouble(fp, v.position().x(), false);
+            io::writeDouble(fp, v.position().y(), false);
+            io::writeDouble(fp, v.position().z(), false);
 
             if constexpr (HasPerVertexColor<MeshType>) {
-                if (meshInfo.hasVertexColors()) {
+                if (meshInfo.hasPerVertexColor()) {
                     io::writeInt(fp, v.color().red(), false);
                     io::writeInt(fp, v.color().green(), false);
                     io::writeInt(fp, v.color().blue(), false);
@@ -87,14 +87,14 @@ void saveOff(
                 }
             }
             if constexpr (HasPerVertexNormal<MeshType>) {
-                if (meshInfo.hasVertexNormals()) {
+                if (meshInfo.hasPerVertexNormal()) {
                     io::writeDouble(fp, v.normal().x(), false);
                     io::writeDouble(fp, v.normal().y(), false);
                     io::writeDouble(fp, v.normal().z(), false);
                 }
             }
             if constexpr (HasPerVertexTexCoord<MeshType>) {
-                if (meshInfo.hasVertexTexCoords()) {
+                if (meshInfo.hasPerVertexTexCoord()) {
                     io::writeDouble(fp, v.texCoord().u(), false);
                     io::writeDouble(fp, v.texCoord().v(), false);
                 }
@@ -118,7 +118,7 @@ void saveOff(
                 io::writeInt(fp, vIndices[m.index(v)], false);
             }
             if constexpr (HasPerFaceColor<MeshType>) {
-                if (meshInfo.hasFaceColors()) {
+                if (meshInfo.hasPerFaceColor()) {
                     io::writeInt(fp, f.color().red(), false);
                     io::writeInt(fp, f.color().green(), false);
                     io::writeInt(fp, f.color().blue(), false);

@@ -84,21 +84,21 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
-    using CoordType  = VertexType::CoordType;
+    using PositionType  = VertexType::PositionType;
 
     EdgeMesh em;
 
     std::vector<double> qH(m.vertexContainerSize());
 
     for (const VertexType& v : m.vertices())
-        qH[m.index(v)] = pl.dist(v.coord());
+        qH[m.index(v)] = pl.dist(v.position());
 
     for (const FaceType& f : m.faces()) {
-        std::vector<CoordType> ptVec;
-        std::vector<CoordType> nmVec;
+        std::vector<PositionType> ptVec;
+        std::vector<PositionType> nmVec;
         for (uint j = 0; j < f.vertexNumber(); ++j) {
             if (qH[m.index(f.vertex(j))] == 0) {
-                ptVec.push_back(f.vertex(j)->coord());
+                ptVec.push_back(f.vertex(j)->position());
                 if constexpr (HasPerVertexNormal<MeshType>) {
                     if (isPerVertexNormalAvailable(m)) {
                         nmVec.push_back(f.vertex(j)->normal());
@@ -108,21 +108,21 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
             else if (
                 (qH[m.index(f.vertex(j))] * qH[m.index(f.vertexMod(j + 1))]) <
                 0) {
-                const CoordType& p0 = f.vertex(j)->coord();
-                const CoordType& p1 = f.vertexMod(j + 1)->coord();
+                const PositionType& p0 = f.vertex(j)->position();
+                const PositionType& p1 = f.vertexMod(j + 1)->position();
 
                 float q0 = qH[m.index(f.vertex(j))];
                 float q1 = qH[m.index(f.vertexMod(j + 1))];
 
-                std::pair<CoordType, CoordType> seg(p0, p1);
-                CoordType pp = pl.segmentIntersection(seg);
+                std::pair<PositionType, PositionType> seg(p0, p1);
+                PositionType pp = pl.segmentIntersection(seg);
                 ptVec.push_back(pp);
                 if constexpr (HasPerVertexNormal<MeshType>) {
                     if (isPerVertexNormalAvailable(m)) {
                         using NormalType     = VertexType::NormalType;
                         const NormalType& n0 = f.vertex(j)->normal();
                         const NormalType& n1 = f.vertexMod(j + 1)->normal();
-                        CoordType         nn =
+                        PositionType         nn =
                             (n0 * fabs(q1) + n1 * fabs(q0)) / fabs(q0 - q1);
                         nmVec.push_back(nn);
                     }
@@ -133,8 +133,8 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
             uint eid              = em.addEdge();
             uint v0               = em.addVertices(2);
             uint v1               = v0 + 1;
-            em.vertex(v0).coord() = ptVec[0];
-            em.vertex(v1).coord() = ptVec[1];
+            em.vertex(v0).position() = ptVec[0];
+            em.vertex(v1).position() = ptVec[1];
             em.edge(eid).setVertex(0, v0);
             em.edge(eid).setVertex(1, v1);
             if constexpr (
@@ -193,8 +193,8 @@ MeshType intersection(
     double                 tol)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
-    using ScalarType = CoordType::ScalarType;
+    using PositionType  = VertexType::PositionType;
+    using ScalarType = PositionType::ScalarType;
     using FaceType   = MeshType::FaceType;
 
     auto faceSphereIntersectionFilter = [&sphere](const FaceType& f) -> bool {
@@ -207,12 +207,12 @@ MeshType intersection(
     while (i < res.faceContainerSize()) {
         FaceType& f = res.face(i);
 
-        CoordType                         witness;
+        PositionType                         witness;
         std::pair<ScalarType, ScalarType> ires(0, 0);
 
         bool allIn = true;
         for (const auto* v : f.vertices()) {
-            allIn = allIn && sphere.isInside(v->coord());
+            allIn = allIn && sphere.isInside(v->position());
         }
         if (!allIn && intersect(f, sphere, witness, ires)) {
             if (faceArea(f) > tol) {
@@ -224,14 +224,14 @@ MeshType intersection(
                 FaceType& f = res.face(i);
 
                 res.vertex(v0).importFrom(*f.vertex(0), false);
-                res.vertex(v0).coord() =
-                    (f.vertex(0)->coord() + f.vertex(1)->coord()) / 2;
+                res.vertex(v0).position() =
+                    (f.vertex(0)->position() + f.vertex(1)->position()) / 2;
                 res.vertex(v1).importFrom(*f.vertex(1), false);
-                res.vertex(v1).coord() =
-                    (f.vertex(1)->coord() + f.vertex(2)->coord()) / 2;
+                res.vertex(v1).position() =
+                    (f.vertex(1)->position() + f.vertex(2)->position()) / 2;
                 res.vertex(v2).importFrom(*f.vertex(2), false);
-                res.vertex(v2).coord() =
-                    (f.vertex(2)->coord() + f.vertex(0)->coord()) / 2;
+                res.vertex(v2).position() =
+                    (f.vertex(2)->position() + f.vertex(0)->position()) / 2;
 
                 res.face(fi).importFrom(f, false);
                 res.face(fi).setVertices(

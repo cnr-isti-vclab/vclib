@@ -18,7 +18,7 @@ Looking the Elements in detail, we see that each Element is composed of Componen
 
 ![trimesh vertex](trimesh_vertex.svg "A Vertex Element")
 
-In this case, the Vertex Element has for example the Coordinate, Flags, Normal and Color components, each one of them stores its data and expose it trough appropriate member functions.
+In this case, the Vertex Element has for example the Position, Flags, Normal and Color components, each one of them stores its data and expose it trough appropriate member functions.
 
 To understand how these entities are organized and implemented, we suggest to take a look at the @subpage mesh_components_page, @subpage mesh_elements_page and @subpage mesh_containers_page pages.
 
@@ -47,7 +47,7 @@ When Components are part of Elements, they can actually be of two categories:
     - Persistent: data is always available in the parent Container;
     - Optional: data can be enabled and disabled at runtime, allowing to avoid memory usage for components that are not needed in some contexts.
 
-For example, the vcl::trimesh::Vertex class (that is the Vertex Element of the TriMesh class), has some horizontal components (Coordinate, Flags, Normal, Color, the components that are used more often), and some optional (Adjacent Faces, Adjacent Vertices, Texture Coordinates, the one that are used only on some contexts). This means that each Vertex will store internally only the horizontal components:
+For example, the vcl::trimesh::Vertex class (that is the Vertex Element of the TriMesh class), has some horizontal components (Position, Flags, Normal, Color, the components that are used more often), and some optional (Adjacent Faces, Adjacent Vertices, Texture Coordinates, the one that are used only on some contexts). This means that each Vertex will store internally only the horizontal components:
 
 ![trimesh vertex components](trimesh_vertex_components.svg "Vertex Components")
 

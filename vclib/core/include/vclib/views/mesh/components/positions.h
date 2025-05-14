@@ -20,45 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/load_save/load.h>
-#include <vclib/bindings/utils.h>
+#ifndef VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H
+#define VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H
 
-#include <vclib/algorithms/mesh/type_name.h>
-#include <vclib/io/mesh/load.h>
-#include <vclib/meshes.h>
+#include <vclib/concepts/pointers.h>
+#include <vclib/types.h>
 
-namespace vcl::bind {
+#include <ranges>
 
-void initLoad(pybind11::module& m)
+namespace vcl::views {
+
+namespace detail {
+
+inline constexpr auto position = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->position();
+    else
+        return p.position();
+};
+
+struct PositionsView
 {
-    namespace py = pybind11;
+    constexpr PositionsView() = default;
 
-    auto fLoad =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            m.def(
-                "load",
-                [](MeshType& m, const std::string& filename) {
-                    vcl::load(m, filename);
-                },
-                py::arg("m"),
-                py::arg("filename"));
-        };
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, PositionsView)
+    {
+        return std::forward<R>(r) | std::views::transform(position);
+    }
+};
 
-    defForAllMeshTypes(m, fLoad);
+} // namespace detail
 
-    auto fNameLoad =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            std::string name =
-                "load_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
-            m.def(
-                name.c_str(),
-                [](const std::string& filename) {
-                    return vcl::load<MeshType>(filename);
-                },
-                py::arg("filename"));
-        };
+inline constexpr detail::PositionsView positions;
 
-    defForAllMeshTypes(m, fNameLoad);
-}
+} // namespace vcl::views
 
-} // namespace vcl::bind
+#endif // VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H

@@ -69,10 +69,10 @@ void addTriangleFacesFromPolygon(
     const std::vector<uint>& polygon)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
+    using PositionType  = VertexType::PositionType;
 
-    // from the ids, create a polygon of coordinates
-    std::vector<CoordType> polCoords(polygon.size());
+    // from the ids, create a polygon of positions
+    std::vector<PositionType> polPositions(polygon.size());
     for (uint i = 0; i < polygon.size(); ++i) {
         if (polygon[i] >= m.vertexContainerSize()) {
             throw BadVertexIndexException(
@@ -83,11 +83,11 @@ void addTriangleFacesFromPolygon(
             throw BadVertexIndexException(
                 "Vertex " + std::to_string(polygon[i]) + " is deleted.");
         }
-        polCoords[i] = m.vertex(polygon[i]).coord();
+        polPositions[i] = m.vertex(polygon[i]).position();
     }
 
     // compute earcut of the polygons
-    std::vector<uint> tris = earCut(polCoords);
+    std::vector<uint> tris = earCut(polPositions);
 
     // faux edges management: create a set of unordered edges of the polygon
     // note: we use indices from 0 to polygon.size() because that are the output
@@ -431,11 +431,11 @@ auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
     auto n0 = faceNormal(f);
     auto n1 = faceNormal(f1);
 
-    auto off0 = n0 * vf0.coord();
-    auto off1 = n1 * vf1.coord();
+    auto off0 = n0 * vf0.position();
+    auto off1 = n1 * vf1.position();
 
-    auto dist01 = off0 - n0 * vf1.coord();
-    auto dist10 = off1 - n1 * vf0.coord();
+    auto dist01 = off0 - n0 * vf1.position();
+    auto dist10 = off1 - n1 * vf0.position();
 
     auto sign = std::abs(dist01) > std::abs(dist10) ? dist01 : dist10;
 
