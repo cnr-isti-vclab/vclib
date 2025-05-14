@@ -85,8 +85,6 @@
 #include "embedded_vf_programs/lines_instancing.h"
 #include "embedded_vf_programs/lines_texture.h"
 #include "embedded_vf_programs/polylines.h"
-#include "embedded_vf_programs/polylines_indirect.h"
-#include "embedded_vf_programs/polylines_indirect_joints.h"
 #include "embedded_vf_programs/polylines_instancing.h"
 #include "embedded_vf_programs/polylines_instancing_joints.h"
 #include "embedded_vf_programs/polylines_texture.h"

@@ -55,8 +55,7 @@ class InstancingBasedPolylines : public Lines<PolylineSettings>
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
 
-    mutable bgfx::InstanceDataBuffer mSegmentsInstanceDB;
-    mutable bgfx::InstanceDataBuffer mJointsInstanceDB;
+    mutable bgfx::InstanceDataBuffer mInstanceDB;
 
 public:
     InstancingBasedPolylines();

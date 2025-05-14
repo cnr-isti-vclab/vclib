@@ -52,7 +52,7 @@ class Context
     ProgramManager* mProgramManager = nullptr;
 
     inline static bgfx::RendererType::Enum sRenderType =
-        bgfx::RendererType::Count;
+        bgfx::RendererType::Vulkan;
 
     inline static uint sResetFlags = BGFX_RESET_VSYNC;
 

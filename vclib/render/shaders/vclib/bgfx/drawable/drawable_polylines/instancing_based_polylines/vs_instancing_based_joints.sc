@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, i_data0, i_data1, i_data2, i_data3
+$input a_position, i_data0, i_data1, i_data2, i_data3, i_data4
 $output v_color, v_uv, v_length, v_normal, v_is_start_end
 
 #include <vclib/bgfx/drawable/polylines.sh>
@@ -29,11 +29,11 @@ uniform vec4 u_data;
 
 #define a_uv                    a_position
 
-#define a_prev                  i_data0
+#define a_prev                  vec4(i_data0.xyz, 0.0)
 #define a_curr                  vec4(i_data1.xyz, 0.0)
-#define a_next                  i_data2
+#define a_next                  vec4(i_data2.xyz, 0.0)
 #define color                   uintABGRToVec4Color(floatBitsToUint(i_data1.w))
-#define normal                  vec3(i_data3.xyz)
+#define normal                  vec3(i_data0.w, i_data3.w, i_data4.x)
 
 void main() {
     vec4 u_general_color = uintABGRToVec4Color(floatBitsToUint(u_data.x));

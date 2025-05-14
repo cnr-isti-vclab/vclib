@@ -58,8 +58,7 @@ void InstancingBasedPolylines::swap(InstancingBasedPolylines& other)
 
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
-    swap(mSegmentsInstanceDB, other.mSegmentsInstanceDB);
-    swap(mJointsInstanceDB, other.mJointsInstanceDB);
+    swap(mInstanceDB, other.mInstanceDB);
 }
 
 void InstancingBasedPolylines::draw(uint viewId) const
@@ -72,14 +71,14 @@ void InstancingBasedPolylines::draw(uint viewId) const
 
         mVertices.bind(0);
         mIndices.bind();
-        bgfx::setInstanceDataBuffer(&mSegmentsInstanceDB);
+        bgfx::setInstanceDataBuffer(&mInstanceDB, 0, nPoints - 1);
         bgfx::setState(drawState());
         bgfx::submit(viewId, mLinesPH);
 
         if (settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
             mVertices.bind(0);
             mIndices.bind();
-            bgfx::setInstanceDataBuffer(&mJointsInstanceDB);
+            bgfx::setInstanceDataBuffer(&mInstanceDB, 1, nPoints - 1);
             bgfx::setState(drawState());
             bgfx::submit(viewId, mJointsPH);
         }
@@ -104,18 +103,9 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
     uint       linesNumSegments =
         bgfx::getAvailInstanceDataBuffer(nPoints - 1, strideSegments);
     bgfx::allocInstanceDataBuffer(
-        &mSegmentsInstanceDB, linesNumSegments, strideSegments);
+        &mInstanceDB, linesNumSegments, strideSegments);
 
-    const uint16_t strideJoints = sizeof(float) * 16;
-    if (nPoints > 2) {
-        uint linesNumJoints =
-            bgfx::getAvailInstanceDataBuffer(nPoints - 2, strideJoints);
-        bgfx::allocInstanceDataBuffer(
-            &mJointsInstanceDB, linesNumJoints, strideJoints);
-    }
-
-    uint8_t* dataSegments = mSegmentsInstanceDB.data;
-    uint8_t* dataJoints   = mJointsInstanceDB.data;
+    uint8_t* dataSegments = mInstanceDB.data;
 
     for (uint i = 0; i < linesNumSegments; i++) {
         float* prevSegments = reinterpret_cast<float*>(dataSegments);
@@ -154,36 +144,6 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         normalSegments[1]     = mVertNormals[((i + 1) * 3)];
         normalSegments[2]     = mVertNormals[((i + 1) * 3) + 1];
         normalSegments[3]     = mVertNormals[((i + 1) * 3) + 2];
-
-        if (i > 0) {
-            float* prevJoint = reinterpret_cast<float*>(dataJoints);
-            prevJoint[0]     = mVertCoords[((i - 1) * 3)];
-            prevJoint[1]     = mVertCoords[((i - 1) * 3) + 1];
-            prevJoint[2]     = mVertCoords[((i - 1) * 3) + 2];
-            prevJoint[3]     = 0.0f;
-
-            float* currJoint = reinterpret_cast<float*>(&dataJoints[16]);
-            currJoint[0]     = mVertCoords[(i * 3)];
-            currJoint[1]     = mVertCoords[(i * 3) + 1];
-            currJoint[2]     = mVertCoords[(i * 3) + 2];
-
-            uint* colorJoint = reinterpret_cast<uint*>(&dataJoints[28]);
-            colorJoint[0]    = mVertColors[i];
-
-            float* nextJoint = reinterpret_cast<float*>(&dataJoints[32]);
-            nextJoint[0]     = mVertCoords[((i + 1) * 3)];
-            nextJoint[1]     = mVertCoords[((i + 1) * 3) + 1];
-            nextJoint[2]     = mVertCoords[((i + 1) * 3) + 2];
-            nextJoint[3]     = 0.0f;
-
-            float* normalJoint = reinterpret_cast<float*>(&dataJoints[48]);
-            normalJoint[0]     = mVertNormals[(i * 3)];
-            normalJoint[1]     = mVertNormals[(i * 3) + 1];
-            normalJoint[2]     = mVertNormals[(i * 3) + 2];
-            normalJoint[3]     = 0;
-
-            dataJoints += strideJoints;
-        }
 
         dataSegments += strideSegments;
     }
