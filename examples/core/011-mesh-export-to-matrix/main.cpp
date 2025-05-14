@@ -32,7 +32,7 @@ int main()
     vcl::TriMesh tm =
         vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    Eigen::MatrixXd v = vcl::vertexCoordsMatrix<Eigen::MatrixXd>(tm);
+    Eigen::MatrixXd v = vcl::vertexPositionsMatrix<Eigen::MatrixXd>(tm);
     Eigen::MatrixXi f = vcl::faceIndicesMatrix<Eigen::MatrixXi>(tm);
 
     std::cerr << "Vertices:\n" << v << "\n\n";
@@ -42,7 +42,7 @@ int main()
     vcl::PolyMesh pm =
         vcl::loadPly<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
-    vcl::Array2<double> va = vcl::vertexCoordsMatrix<vcl::Array2<double>>(pm);
+    vcl::Array2<double> va = vcl::vertexPositionsMatrix<vcl::Array2<double>>(pm);
     vcl::Array2<int>    fa = vcl::faceIndicesMatrix<vcl::Array2<int>>(pm);
 
     std::cerr << "Vertices:\n" << va << "\n\n";

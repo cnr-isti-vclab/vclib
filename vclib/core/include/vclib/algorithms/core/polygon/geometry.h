@@ -42,22 +42,22 @@ namespace vcl {
  * @ingroup core_polygon
  */
 template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
+typename FaceType::VertexType::PositionType faceNormal(const FaceType& f)
 {
-    using CoordType = FaceType::VertexType::CoordType;
+    using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
-        return Triangle<CoordType>::normal(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+        return Triangle<PositionType>::normal(
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
-            return Triangle<CoordType>::normal(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord());
+            return Triangle<PositionType>::normal(
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position());
         }
         else {
-            return Polygon<CoordType>::normal(f.vertices() | views::coords);
+            return Polygon<PositionType>::normal(f.vertices() | views::positions);
         }
     }
 }
@@ -74,15 +74,15 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
  * @ingroup core_polygon
  */
 template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
+typename FaceType::VertexType::PositionType faceBarycenter(const FaceType& f)
 {
-    using CoordType = FaceType::VertexType::CoordType;
+    using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
-        return Triangle<CoordType>::barycenter(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+        return Triangle<PositionType>::barycenter(
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
-        return Polygon<CoordType>::barycenter(f.vertices() | views::coords);
+        return Polygon<PositionType>::barycenter(f.vertices() | views::positions);
     }
 }
 
@@ -100,20 +100,20 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 template<FaceConcept FaceType>
 auto faceArea(const FaceType& f)
 {
-    using CoordType = FaceType::VertexType::CoordType;
+    using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
-        return Triangle<CoordType>::area(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+        return Triangle<PositionType>::area(
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
-            return Triangle<CoordType>::area(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord());
+            return Triangle<PositionType>::area(
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position());
         }
         else {
-            return Polygon<CoordType>::area(f.vertices() | views::coords);
+            return Polygon<PositionType>::area(f.vertices() | views::positions);
         }
     }
 }
@@ -132,20 +132,20 @@ auto faceArea(const FaceType& f)
 template<FaceConcept FaceType>
 auto facePerimeter(const FaceType& f)
 {
-    using CoordType = FaceType::VertexType::CoordType;
+    using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
-        return Triangle<CoordType>::perimeter(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+        return Triangle<PositionType>::perimeter(
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
-            return Triangle<CoordType>::perimeter(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord());
+            return Triangle<PositionType>::perimeter(
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position());
         }
         else {
-            return Polygon<CoordType>::perimeter(f.vertices() | views::coords);
+            return Polygon<PositionType>::perimeter(f.vertices() | views::positions);
         }
     }
 }
@@ -166,9 +166,9 @@ auto facePerimeter(const FaceType& f)
 template<FaceConcept FaceType>
 auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 {
-    const auto& p0 = f.vertex(vi)->coord();
-    const auto& p1 = f.vertexMod((int) vi + 1)->coord();
-    const auto& p2 = f.vertexMod((int) vi - 1)->coord();
+    const auto& p0 = f.vertex(vi)->position();
+    const auto& p1 = f.vertexMod((int) vi + 1)->position();
+    const auto& p2 = f.vertexMod((int) vi - 1)->position();
     return (p2 - p0).angle(p1 - p0);
 }
 

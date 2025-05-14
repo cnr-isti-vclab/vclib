@@ -46,7 +46,7 @@
 namespace vcl {
 
 /**
- * @brief Get a \#V*3 Matrix of scalars containing the coordinates of the
+ * @brief Get a \#V*3 Matrix of scalars containing the positions of the
  * vertices of a Mesh. The function is templated on the Matrix itself.
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
@@ -54,7 +54,7 @@ namespace vcl {
  * Usage example with an Eigen Matrix:
  *
  * @code{.cpp}
- * Eigen::MatrixX3d V = vcl::vertexCoordsMatrix<Eigen::MatrixX3d>(myMesh);
+ * Eigen::MatrixX3d V = vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(myMesh);
  * @endif
  *
  * @note This function does not guarantee that the rows of the matrix
@@ -67,18 +67,18 @@ namespace vcl {
  * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
  *
  * @param[in] mesh: input mesh
- * @return \#V*3 matrix of scalars (vertex coordinates)
+ * @return \#V*3 matrix of scalars (vertex positions)
  *
  * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, MeshConcept MeshType>
-Matrix vertexCoordsMatrix(const MeshType& mesh)
+Matrix vertexPositionsMatrix(const MeshType& mesh)
 {
     Matrix vM(mesh.vertexNumber(), 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
-    vertexCoordsToBuffer(mesh, vM.data(), stg);
+    vertexPositionsToBuffer(mesh, vM.data(), stg);
 
     return vM;
 }

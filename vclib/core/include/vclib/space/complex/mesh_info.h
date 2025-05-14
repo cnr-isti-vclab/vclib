@@ -62,8 +62,8 @@ namespace vcl {
  * AMeshType m;
  * MeshInfo info(m); // compute the default MeshInfo object from the Mesh
  *
- * info.setVertexCoords(true, MeshInfo::FLOAT); // force to store vertex
- *                                              // coords using floats
+ * info.setPerVertexPosition(true, MeshInfo::FLOAT); // force to store vertex
+ *                                                   // positions using floats
  * info.setVertexColors(false); // do not store vertex colors
  *
  * vcl::save(m, "meshfile.ply", info);
@@ -95,7 +95,7 @@ public:
      * have.
      */
     enum Component {
-        COORD,
+        POSITION,
         VREFS,
         NORMAL,
         COLOR,
@@ -165,8 +165,9 @@ public:
     MeshInfo(const Mesh& m)
     {
         setVertices();
-        setPerVertexCoordinate(
-            true, getType<typename Mesh::VertexType::CoordType::ScalarType>());
+        setPerVertexPosition(
+            true,
+            getType<typename Mesh::VertexType::PositionType::ScalarType>());
         if constexpr (HasPerVertexNormal<Mesh>) {
             if (isPerVertexNormalAvailable(m)) {
                 setPerVertexNormal(
@@ -339,12 +340,12 @@ public:
     bool hasVertices() const { return hasElement(VERTEX); }
 
     /**
-     * @brief Returns true if the current object has Vertex Coordinates.
-     * @return true if the current object has Vertex Coordinates.
+     * @brief Returns true if the current object has Vertex Positions.
+     * @return true if the current object has Vertex Positions.
      */
-    bool hasPerVertexCoordinate() const
+    bool hasPerVertexPosition() const
     {
-        return hasPerElementComponent(VERTEX, COORD);
+        return hasPerElementComponent(VERTEX, POSITION);
     }
 
     /**
@@ -506,11 +507,9 @@ public:
 
     void setVertices(bool b = true) { setElement(VERTEX, b); }
 
-    void setPerVertexCoordinate(
-        bool     b = true,
-        DataType t = PrimitiveType::DOUBLE)
+    void setPerVertexPosition(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
-        setPerElementComponent(VERTEX, COORD, b, t);
+        setPerElementComponent(VERTEX, POSITION, b, t);
     }
 
     void setPerVertexNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
@@ -662,9 +661,9 @@ public:
         return mPerElemComponentsType(el, comp);
     }
 
-    DataType perVertexCoordinateType() const
+    DataType perVertexPositionType() const
     {
-        return perElementComponentType(VERTEX, COORD);
+        return perElementComponentType(VERTEX, POSITION);
     }
 
     DataType perVertexNormalType() const

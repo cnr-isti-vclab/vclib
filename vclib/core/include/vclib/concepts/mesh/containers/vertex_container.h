@@ -42,12 +42,12 @@ namespace mesh {
  */
 template<typename T>
 concept HasVertexContainer = requires (
-    T&&                                          obj,
-    typename RemoveRef<T>::VertexType            v,
-    typename RemoveRef<T>::VertexType*           vP,
-    typename RemoveRef<T>::VertexType&           vR,
-    typename RemoveRef<T>::VertexType::CoordType c,
-    std::vector<uint>                            vec) {
+    T&&                                             obj,
+    typename RemoveRef<T>::VertexType               v,
+    typename RemoveRef<T>::VertexType*              vP,
+    typename RemoveRef<T>::VertexType&              vR,
+    typename RemoveRef<T>::VertexType::PositionType p,
+    std::vector<uint>                               vec) {
     typename RemoveRef<T>::VertexType;
     typename RemoveRef<T>::VertexIterator;
     typename RemoveRef<T>::ConstVertexIterator;
@@ -70,9 +70,9 @@ concept HasVertexContainer = requires (
         { obj.vertex(uint()) } -> std::same_as<decltype(vR)>;
 
         { obj.addVertex() } -> std::same_as<uint>;
-        { obj.addVertex(c) } -> std::same_as<uint>;
+        { obj.addVertex(p) } -> std::same_as<uint>;
         { obj.addVertices(uint()) } -> std::same_as<uint>;
-        { obj.addVertices(c, c, c, c) } -> std::same_as<uint>;
+        { obj.addVertices(p, p, p, p) } -> std::same_as<uint>;
         { obj.clearVertices() } -> std::same_as<void>;
         { obj.resizeVertices(uint()) } -> std::same_as<void>;
         { obj.reserveVertices(uint()) } -> std::same_as<void>;

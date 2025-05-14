@@ -34,7 +34,7 @@ namespace vcl {
 /**
  * @brief The HashTableGrid class stores N-Dimensional spatial elements (that
  * could be anything on which it can be computed a N-dimensional bounding box)
- * in a regular grid, using a Hash Table having the Cell Grid coordinate as key
+ * in a regular grid, using a Hash Table having the Cell Grid position as key
  * type.
  *
  * This Grid allows to perform insertion, deletions and queries in a time that
@@ -124,7 +124,7 @@ public:
     bool empty() const { return mMap.empty(); }
 
     /**
-     * @brief Returns true if the given cell coordinate does not contain
+     * @brief Returns true if the given cell position does not contain
      * elements in it.
      * @param k
      * @return
@@ -135,7 +135,7 @@ public:
     }
 
     /**
-     * @brief Returns an std::set containing the cell coordinates of all the
+     * @brief Returns an std::set containing the cell positions of all the
      * cells that contain at least one element.
      * @return
      */

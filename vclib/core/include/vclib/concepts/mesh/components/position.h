@@ -20,40 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_COORDS_H
-#define VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_POSITION_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_POSITION_H
 
-#include <vclib/concepts/pointers.h>
-#include <vclib/types.h>
+#include <vclib/concepts/space.h>
 
-#include <ranges>
+namespace vcl::comp {
 
-namespace vcl::views {
-
-namespace detail {
-
-inline constexpr auto coord = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->coord();
-    else
-        return p.coord();
+/**
+ * @brief HasPosition concept is satisfied only if a Element class provides
+ * the types and member functions specified in this concept. These types and
+ * member functions allow to access to a @ref vcl::comp::Position component of
+ * a given element.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasPosition = requires (T&& obj) {
+    typename RemoveRef<T>::PositionType;
+    { obj.position() } -> PointConcept;
 };
 
-struct CoordsView
-{
-    constexpr CoordsView() = default;
+} // namespace vcl::comp
 
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, CoordsView)
-    {
-        return std::forward<R>(r) | std::views::transform(coord);
-    }
-};
-
-} // namespace detail
-
-inline constexpr detail::CoordsView coords;
-
-} // namespace vcl::views
-
-#endif // VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_POSITION_H

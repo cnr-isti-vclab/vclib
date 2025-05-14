@@ -124,7 +124,7 @@ TEMPLATE_TEST_CASE(
         for (const auto& v : tm.vertices()) {
             REQUIRE(
                 v.template customComponent<vcl::Point3f>("perVertex") ==
-                v.coord().template cast<float>());
+                v.position().template cast<float>());
         }
     }
 

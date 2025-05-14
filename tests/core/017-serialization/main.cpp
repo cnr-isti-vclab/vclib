@@ -393,7 +393,7 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
     REQUIRE(mesh2.isPerVertexColorEnabled());
 
     for (unsigned int i = 0; i < mesh1.vertexNumber(); i++) {
-        REQUIRE(mesh1.vertex(i).coord() == mesh2.vertex(i).coord());
+        REQUIRE(mesh1.vertex(i).position() == mesh2.vertex(i).position());
         REQUIRE(mesh1.vertex(i).color() == mesh2.vertex(i).color());
     }
 

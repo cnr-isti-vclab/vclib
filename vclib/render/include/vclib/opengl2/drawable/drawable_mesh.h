@@ -249,7 +249,7 @@ private:
         uint nv = mMRD.vertexNumber();
         uint nt = mMRD.triangleNumber();
 
-        const float*    coords          = mMRD.vertexBufferData();
+        const float*    positions       = mMRD.vertexBufferData();
         const uint32_t* triangles       = mMRD.triangleBufferData();
         const float*    vertexNormals   = mMRD.vertexNormalBufferData();
         const uint32_t* vertexColors    = mMRD.vertexColorBufferData();
@@ -260,7 +260,7 @@ private:
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             glEnableClientState(GL_VERTEX_ARRAY);
-            glVertexPointer(3, GL_FLOAT, 0, coords);
+            glVertexPointer(3, GL_FLOAT, 0, positions);
 
             if (mMRS.isPoints(MRI::Points::COLOR_VERTEX)) {
                 glEnableClientState(GL_COLOR_ARRAY);
@@ -298,22 +298,22 @@ private:
                         glBegin(GL_TRIANGLES);
                         glColor4ubv((GLubyte*) &(triangleColors[tid]));
                         glNormal3fv(&(vertexNormals[vid0_ptr]));
-                        glVertex3fv(&(coords[vid0_ptr]));
+                        glVertex3fv(&(positions[vid0_ptr]));
                         glNormal3fv(&(vertexNormals[vid1_ptr]));
-                        glVertex3fv(&(coords[vid1_ptr]));
+                        glVertex3fv(&(positions[vid1_ptr]));
                         glNormal3fv(&(vertexNormals[vid2_ptr]));
-                        glVertex3fv(&(coords[vid2_ptr]));
+                        glVertex3fv(&(positions[vid2_ptr]));
                         glEnd();
                     }
                     else {
                         glBegin(GL_TRIANGLES);
                         glColor4ubv((GLubyte*) &(triangleColors[tid]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid0_ptr]));
+                        glVertex3fv(&(positions[vid0_ptr]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid1_ptr]));
+                        glVertex3fv(&(positions[vid1_ptr]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid2_ptr]));
+                        glVertex3fv(&(positions[vid2_ptr]));
                         glEnd();
                     }
                 }
@@ -321,7 +321,7 @@ private:
             else if (mMRS.isSurface(MRI::Surface::COLOR_VERTEX)) {
                 if (mMRS.isSurface(MRI::Surface::SHADING_SMOOTH)) {
                     glEnableClientState(GL_VERTEX_ARRAY);
-                    glVertexPointer(3, GL_FLOAT, 0, coords);
+                    glVertexPointer(3, GL_FLOAT, 0, positions);
 
                     glEnableClientState(GL_NORMAL_ARRAY);
                     glNormalPointer(GL_FLOAT, 0, vertexNormals);
@@ -351,13 +351,13 @@ private:
                         glBegin(GL_TRIANGLES);
                         glColor4ubv((GLubyte*) &(vertexColors[vid0]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid0_ptr]));
+                        glVertex3fv(&(positions[vid0_ptr]));
                         glColor4ubv((GLubyte*) &(vertexColors[vid1]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid1_ptr]));
+                        glVertex3fv(&(positions[vid1_ptr]));
                         glColor4ubv((GLubyte*) &(vertexColors[vid2]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid2_ptr]));
+                        glVertex3fv(&(positions[vid2_ptr]));
                         glEnd();
                     }
                 }
@@ -367,7 +367,7 @@ private:
                 mMRS.isSurface(MRI::Surface::COLOR_USER)) {
                 if (mMRS.isSurface(MRI::Surface::SHADING_SMOOTH)) {
                     glEnableClientState(GL_VERTEX_ARRAY);
-                    glVertexPointer(3, GL_FLOAT, 0, coords);
+                    glVertexPointer(3, GL_FLOAT, 0, positions);
 
                     glEnableClientState(GL_NORMAL_ARRAY);
                     glNormalPointer(GL_FLOAT, 0, vertexNormals);
@@ -405,11 +405,11 @@ private:
 
                         glBegin(GL_TRIANGLES);
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid0_ptr]));
+                        glVertex3fv(&(positions[vid0_ptr]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid1_ptr]));
+                        glVertex3fv(&(positions[vid1_ptr]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
-                        glVertex3fv(&(coords[vid2_ptr]));
+                        glVertex3fv(&(positions[vid2_ptr]));
                         glEnd();
                     }
                 }
@@ -434,17 +434,17 @@ private:
                         vertTexCoords[vid0 * 2 + 0],
                         vertTexCoords[vid0 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid0_ptr]));
-                    glVertex3fv(&(coords[vid0_ptr]));
+                    glVertex3fv(&(positions[vid0_ptr]));
                     glTexCoord2f(
                         vertTexCoords[vid1 * 2 + 0],
                         vertTexCoords[vid1 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid1_ptr]));
-                    glVertex3fv(&(coords[vid1_ptr]));
+                    glVertex3fv(&(positions[vid1_ptr]));
                     glTexCoord2f(
                         vertTexCoords[vid2 * 2 + 0],
                         vertTexCoords[vid2 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid2_ptr]));
-                    glVertex3fv(&(coords[vid2_ptr]));
+                    glVertex3fv(&(positions[vid2_ptr]));
                     glEnd();
                     glBindTexture(GL_TEXTURE_2D, 0);
                 }
@@ -468,17 +468,17 @@ private:
                         wedgTexCoords[vid0 * 2 + 0],
                         wedgTexCoords[vid0 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid0_ptr]));
-                    glVertex3fv(&(coords[vid0_ptr]));
+                    glVertex3fv(&(positions[vid0_ptr]));
                     glTexCoord2f(
                         wedgTexCoords[vid1 * 2 + 0],
                         wedgTexCoords[vid1 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid1_ptr]));
-                    glVertex3fv(&(coords[vid1_ptr]));
+                    glVertex3fv(&(positions[vid1_ptr]));
                     glTexCoord2f(
                         wedgTexCoords[vid2 * 2 + 0],
                         wedgTexCoords[vid2 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid2_ptr]));
-                    glVertex3fv(&(coords[vid2_ptr]));
+                    glVertex3fv(&(positions[vid2_ptr]));
                     glEnd();
                     glBindTexture(GL_TEXTURE_2D, 0);
                 }
@@ -487,7 +487,7 @@ private:
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             glEnableClientState(GL_VERTEX_ARRAY);
-            glVertexPointer(3, GL_FLOAT, 0, coords);
+            glVertexPointer(3, GL_FLOAT, 0, positions);
 
             glLineWidth(mMRS.wireframeWidth());
 

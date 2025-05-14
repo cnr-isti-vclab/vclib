@@ -47,7 +47,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     friend Base;
 
-    VertexBuffer mVertexCoordsBuffer;
+    VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
     VertexBuffer mVertexColorsBuffer;
     VertexBuffer mVertexUVBuffer;
@@ -99,7 +99,7 @@ public:
     {
         using std::swap;
         Base::swap(other);
-        swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
+        swap(mVertexPositionsBuffer, other.mVertexPositionsBuffer);
         swap(mVertexNormalsBuffer, other.mVertexNormalsBuffer);
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
@@ -123,7 +123,7 @@ public:
     {
         // bgfx allows a maximum number of 4 vertex streams...
 
-        mVertexCoordsBuffer.bind(0);
+        mVertexPositionsBuffer.bind(0);
         mVertexNormalsBuffer.bind(1);
         mVertexColorsBuffer.bind(2);
 
@@ -181,16 +181,16 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
-    void setVertexCoordsBuffer(const MeshType& mesh) // override
+    void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
             getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
-        Base::fillVertexCoords(mesh, buffer);
+        Base::fillVertexPositions(mesh, buffer);
 
-        mVertexCoordsBuffer.create(
+        mVertexPositionsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Position,

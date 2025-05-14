@@ -101,14 +101,14 @@ void randomQuality(auto& tm)
 // test functions
 
 template<typename MatrixType>
-void testCoordsMatrix(const auto& tm)
+void testPositionsMatrix(const auto& tm)
 {
-    auto verts = vcl::vertexCoordsMatrix<MatrixType>(tm);
+    auto verts = vcl::vertexPositionsMatrix<MatrixType>(tm);
 
     REQUIRE(verts.rows() == tm.vertexNumber());
     REQUIRE(verts.cols() == 3);
 
-    for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::coords) {
+    for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::positions) {
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
         REQUIRE(verts(i, 2) == c.z());
@@ -375,29 +375,29 @@ TEMPLATE_TEST_CASE(
     PolyMesh pm = vcl::loadObj<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
                                          "/rhombicosidodecahedron.obj");
 
-    SECTION("Coordinates...")
+    SECTION("Positions...")
     {
-        using ScalarType = typename TriMesh::VertexType::CoordType::ScalarType;
+        using ScalarType = typename TriMesh::VertexType::PositionType::ScalarType;
 
         SECTION("Eigen Row Major")
         {
-            testCoordsMatrix<EigenRowMatrix<ScalarType>>(tm);
+            testPositionsMatrix<EigenRowMatrix<ScalarType>>(tm);
         }
         SECTION("Eigen 3 Row Major")
         {
-            testCoordsMatrix<Eigen3RowMatrix<ScalarType>>(tm);
+            testPositionsMatrix<Eigen3RowMatrix<ScalarType>>(tm);
         }
         SECTION("Eigen Col Major")
         {
-            testCoordsMatrix<EigenColMatrix<ScalarType>>(tm);
+            testPositionsMatrix<EigenColMatrix<ScalarType>>(tm);
         }
         SECTION("Eigen 3 Col Major")
         {
-            testCoordsMatrix<Eigen3ColMatrix<ScalarType>>(tm);
+            testPositionsMatrix<Eigen3ColMatrix<ScalarType>>(tm);
         }
         SECTION("vcl::Array2")
         {
-            testCoordsMatrix<vcl::Array2<ScalarType>>(tm);
+            testPositionsMatrix<vcl::Array2<ScalarType>>(tm);
         }
     }
 

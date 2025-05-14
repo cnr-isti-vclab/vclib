@@ -101,7 +101,7 @@ concept MeshConcept =
         // can call the hasPerElementComponent static function
         requires RemoveRef<T>::template hasPerElementComponent<
             ElemId::VERTEX,
-            CompId::COORDINATE>();
+            CompId::POSITION>();
 
         // constructors
         RemoveRef<T>();

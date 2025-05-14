@@ -45,7 +45,7 @@ inline MeshInfo plyFormatCapability()
 
     info.setTextures();
 
-    info.setPerVertexCoordinate();
+    info.setPerVertexPosition();
     info.setPerVertexNormal();
     info.setPerVertexColor();
     info.setPerVertexQuality();

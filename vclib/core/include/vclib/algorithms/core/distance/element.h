@@ -49,7 +49,7 @@ namespace vcl {
 template<VertexConcept VertexType, Point3Concept PointType>
 auto distance(const VertexType& v, const PointType& p)
 {
-    return v.coord().dist(p);
+    return v.position().dist(p);
 }
 
 /**
@@ -60,7 +60,7 @@ auto distance(const VertexType& v, const PointType& p)
 template<Point3Concept PointType, VertexConcept VertexType>
 auto distance(const PointType& p, const VertexType& v)
 {
-    return v.coord().dist(p);
+    return v.position().dist(p);
 }
 
 /**
@@ -80,7 +80,7 @@ auto distance(const PointType& p, const VertexType& v)
 template<VertexConcept VertexType1, VertexConcept VertexType2>
 auto distance(const VertexType1& v1, const VertexType2& v2)
 {
-    return v1.coord().dist(v2.coord());
+    return v1.position().dist(v2.position());
 }
 
 /**
@@ -116,16 +116,16 @@ auto boundedDistance(
 {
     if constexpr (TriangleFaceConcept<FaceType>) {
         TriangleWrapper tw(
-            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
 
         return boundedDistance(p, tw, maxDist, closest, signedDist);
     }
     else {
         if (f.vertexNumber() == 3) {
             TriangleWrapper tw(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord());
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position());
 
             return boundedDistance(p, tw, maxDist, closest, signedDist);
         }
@@ -138,9 +138,9 @@ auto boundedDistance(
             ScalarType d = boundedDistance(
                 p,
                 TriangleWrapper(
-                    f.vertex(tris[i])->coord(),
-                    f.vertex(tris[i + 1])->coord(),
-                    f.vertex(tris[i + 2])->coord()),
+                    f.vertex(tris[i])->position(),
+                    f.vertex(tris[i + 1])->position(),
+                    f.vertex(tris[i + 2])->position()),
                 minDist,
                 w,
                 signedDist);
@@ -301,7 +301,7 @@ auto distance(const FaceType& f, const PointType& p, bool signedDist = false)
 template<VertexConcept VertexType, FaceConcept FaceType>
 auto distance(const VertexType& v, const FaceType& f, bool signedDist = false)
 {
-    return distance(v.coord(), f, signedDist);
+    return distance(v.position(), f, signedDist);
 }
 
 /**
@@ -312,7 +312,7 @@ auto distance(const VertexType& v, const FaceType& f, bool signedDist = false)
 template<FaceConcept FaceType, VertexConcept VertexType>
 auto distance(const FaceType& f, const VertexType& v, bool signedDist = false)
 {
-    return distance(v.coord(), f, signedDist);
+    return distance(v.position(), f, signedDist);
 }
 
 } // namespace vcl

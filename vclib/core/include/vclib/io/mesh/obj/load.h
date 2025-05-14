@@ -181,13 +181,13 @@ void readObjVertex(
 {
     uint vid = m.addVertex();
     for (uint i = 0; i < 3; ++i) {
-        m.vertex(vid).coord()[i] = io::readDouble<double>(token);
+        m.vertex(vid).position()[i] = io::readDouble<double>(token);
     }
     if constexpr (HasPerVertexColor<MeshType>) {
         if (vid == 0) {
-            // if the current material has a valid color, of the file stores the
+            // if the current material has a valid color, or the file stores the
             // vertex color in the non-standard way (color values after the
-            // coordinates)
+            // positions)
             if (currentMaterial.hasColor || tokens.size() > 6) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexColorOptional(m);
@@ -201,7 +201,7 @@ void readObjVertex(
         }
         if (loadedInfo.hasPerVertexColor()) {
             // the file has the nonstandard way to store vertex colors, after
-            // the coords...
+            // the positions...
             if (tokens.size() > 6) {
                 m.vertex(vid).color().setRedF(io::readFloat<float>(token));
                 m.vertex(vid).color().setGreenF(io::readFloat<float>(token));
@@ -347,7 +347,7 @@ void readObjFace(
         }
     }
 
-    // wedge coords
+    // wedge texcoords
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
         // first, need to check if I can store wedge texcoords in the mesh
         if (fid == 0) {
@@ -567,7 +567,7 @@ void loadObj(
             // color)
             if (header == "v") {
                 loadedInfo.setVertices();
-                loadedInfo.setPerVertexCoordinate();
+                loadedInfo.setPerVertexPosition();
                 detail::readObjVertex(
                     m, token, loadedInfo, tokens, currentMaterial, settings);
             }

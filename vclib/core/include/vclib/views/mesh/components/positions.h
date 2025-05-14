@@ -20,27 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H
+#define VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H
 
-#include <vclib/concepts/space.h>
+#include <vclib/concepts/pointers.h>
+#include <vclib/types.h>
 
-namespace vcl::comp {
+#include <ranges>
 
-/**
- * @brief HasCoordinate concept is satisfied only if a Element class provides
- * the types and member functions specified in this concept. These types and
- * member functions allow to access to a @ref vcl::comp::Coordinate component of
- * a given element.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasCoordinate = requires (T&& obj) {
-    typename RemoveRef<T>::CoordType;
-    { obj.coord() } -> PointConcept;
+namespace vcl::views {
+
+namespace detail {
+
+inline constexpr auto position = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->position();
+    else
+        return p.position();
 };
 
-} // namespace vcl::comp
+struct PositionsView
+{
+    constexpr PositionsView() = default;
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, PositionsView)
+    {
+        return std::forward<R>(r) | std::views::transform(position);
+    }
+};
+
+} // namespace detail
+
+inline constexpr detail::PositionsView positions;
+
+} // namespace vcl::views
+
+#endif // VCL_VIEWS_MESH_COMPONENTS_POSITIONS_H
