@@ -25,6 +25,8 @@
 
 #include <vclib/bgfx/drawable/lines_common/lines_utils.h>
 
+#include <vclib/space/core/color.h>
+
 #include <vclib/bgfx/uniform.h>
 
 #include <bgfx/bgfx.h>
@@ -52,8 +54,8 @@ protected:
     uint8_t  mThickness = 5;
     uint8_t  mAntialias = 0;
     uint8_t  mBorder = 0;
-    uint32_t mBorderColor = LinesVertex::COLOR(0, 0, 0, 1);
-    uint32_t mGeneralColor = LinesVertex::COLOR(0, 0, 0, 1);
+    uint32_t mBorderColor = Color::ColorABGR::Black;
+    uint32_t mGeneralColor = Color::ColorABGR::Red;
 
     LineCap        mLeftCap    = LineCap::ROUND_CAP;
     LineCap        mRigthCap   = LineCap::ROUND_CAP;

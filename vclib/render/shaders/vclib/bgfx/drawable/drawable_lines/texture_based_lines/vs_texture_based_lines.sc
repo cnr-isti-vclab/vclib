@@ -34,7 +34,7 @@ uniform vec4 u_IndirectData;
 IMAGE2D_RO(textureBuffer, rgba32f, 0);
 
 void main() {
-    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintABGRToVec4Color(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_caps = floatBitsToUint(u_data.y);
     
     float u_screenWidth  = u_viewRect.z;

@@ -33,23 +33,23 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
     std::random_device rd;
     std::mt19937       gen(rd());
     std::uniform_real_distribution<float> disPoint(-2.0f, 2.0f);
-    std::uniform_real_distribution<float> disColor(0.0f, 1.0f);
+    std::uniform_real_distribution<float> disColor(0, 255);
 
-    float r = disColor(gen);
-    float g = disColor(gen);
-    float b = disColor(gen);
-
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-
-    vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
+    uint8_t r = static_cast<uint8_t>(disColor(gen));
+    uint8_t g = static_cast<uint8_t>(disColor(gen));
+    uint8_t b = static_cast<uint8_t>(disColor(gen));
 
     vertCoords.emplace_back(disPoint(gen));
     vertCoords.emplace_back(disPoint(gen));
     vertCoords.emplace_back(disPoint(gen));
 
-    vertColors.emplace_back(vcl::LinesVertex::COLORABGR(r, g, b, 1.0f));
+    vertColors.emplace_back(vcl::Color(r, g, b).abgr());
+
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+
+    vertColors.emplace_back(vcl::Color(r, g, b).abgr());
 }
 
 // return a vector that has a set of nLines lines with different types

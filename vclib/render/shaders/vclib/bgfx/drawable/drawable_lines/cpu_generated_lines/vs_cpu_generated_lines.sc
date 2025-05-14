@@ -32,7 +32,7 @@ uniform vec4 u_data;
 #define uv                    vec2(float(a_texcoord1.x), float(a_texcoord1.y))
 
 void main() {
-    vec4 u_general_color = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.x));
+    vec4 u_general_color = uintABGRToVec4Color(floatBitsToUint(u_data.x));
     uint thickness_antialias_border_caps = floatBitsToUint(u_data.y);
     
     float u_screenWidth  = u_viewRect.z;

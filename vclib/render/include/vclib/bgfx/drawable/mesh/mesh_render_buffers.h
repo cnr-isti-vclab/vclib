@@ -176,19 +176,14 @@ public:
 
         if (settings.isWireframe(COLOR_USER)) {
             vcl::Color generalColor = settings.wireframeUserColor();
-            wSettings.setGeneralColor(
-                LinesVertex::COLOR(
-                    generalColor.redF(),
-                    generalColor.greenF(),
-                    generalColor.blueF(),
-                    generalColor.alphaF()));
+            wSettings.setGeneralColor(generalColor.abgr());
             wSettings.setColorToUse(LineColorToUse::GENERAL_COLOR);
         }
 
         if (settings.isWireframe(COLOR_MESH)) {
             const float* colorPerMesh = mMeshUniforms.currentMeshColor();
             wSettings.setGeneralColor(
-                LinesVertex::COLOR(
+                LinesVertex::COLORABGR(
                     colorPerMesh[0],
                     colorPerMesh[1],
                     colorPerMesh[2],
@@ -438,17 +433,13 @@ private:
 
                 wireframeCoords.insert(
                     wireframeCoords.end(), {(float)p0.x(), (float)p0.y(), (float)p0.z()});
-                wireframeColors.push_back(
-                    LinesVertex::COLOR(
-                        c0.redF(), c0.greenF(), c0.blueF(), c0.alphaF()));
+                wireframeColors.push_back(c1.abgr());
                 wireframeNormals.insert(
                     wireframeNormals.end(), {(float)n0.x(), (float)n0.y(), (float)n0.z()});
 
                 wireframeCoords.insert(
                     wireframeCoords.end(), {(float)p1.x(), (float)p1.y(), (float)p1.z()});
-                wireframeColors.push_back(
-                    LinesVertex::COLOR(
-                        c1.redF(), c1.greenF(), c1.blueF(), c1.alphaF()));
+                wireframeColors.push_back(c1.abgr());
                 wireframeNormals.insert(
                     wireframeNormals.end(), {(float)n1.x(), (float)n1.y(), (float)n1.z()});
             }

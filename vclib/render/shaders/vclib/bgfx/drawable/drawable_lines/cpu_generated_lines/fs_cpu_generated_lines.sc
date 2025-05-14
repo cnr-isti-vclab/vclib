@@ -28,7 +28,7 @@ uniform vec4 u_data;
 
 void main() {
     uint thickness_antialias_border_caps = floatBitsToUint(u_data.y);
-    vec4 u_borderColor   = uintRGBAToVec4FloatColor(floatBitsToUint(u_data.z));
+    vec4 u_borderColor   = uintABGRToVec4Color(floatBitsToUint(u_data.z));
 
     float u_thickness    = float((thickness_antialias_border_caps >> uint(24)) & uint(0xFF));
     float u_antialias    = float((thickness_antialias_border_caps >> uint(16)) & uint(0xFF));
