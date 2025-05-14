@@ -37,15 +37,14 @@ TextureBasedPolylines::TextureBasedPolylines()
         PrimitiveType::FLOAT);
 
     mIndices.create(INDICES.data(), INDICES.size());
-
-    mSegmentsIndirect.create(1);
-    mJointsIndirect.create(1);
 }
 
 TextureBasedPolylines::TextureBasedPolylines(
-    const std::vector<LinesVertex>& points) : TextureBasedPolylines()
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals) : TextureBasedPolylines()
 {
-    setPoints(points);
+    setPoints(vertCoords, vertColors, vertNormals);
 }
 
 void TextureBasedPolylines::swap(TextureBasedPolylines& other)
@@ -56,14 +55,14 @@ void TextureBasedPolylines::swap(TextureBasedPolylines& other)
 
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
-    swap(mPoints, other.mPoints);
 
-    swap(mSegmentsIndirect, other.mSegmentsIndirect);
-    swap(mJointsIndirect, other.mJointsIndirect);
+    swap(mVertCoords, other.mVertCoords);
+    swap(mVertColors, other.mVertColors);
+    swap(mVertNormals, other.mVertNormals);
 
-    swap(mSegmentsTexture, other.mSegmentsTexture);
-    swap(mJointsTexture, other.mJointsTexture);
+    swap(mNumPoints, other.mNumPoints);
 
+    swap(mTexture, other.mTexture);
     swap(mIndirectData, other.mIndirectData);
 }
 
@@ -74,104 +73,135 @@ void TextureBasedPolylines::draw(uint viewId) const
 
         mVertices.bind(0);
         mIndices.bind();
-        mSegmentsTexture.bind(0, bgfx::Access::Read);
+        mTexture.bind(0, bgfx::Access::Read);
+        bgfx::setInstanceCount(mNumPoints - 1);
         bgfx::setState(drawState());
-        bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
+        bgfx::submit(viewId, mLinesPH);
 
         // mJointsTexture is valid only if there are more than 2 points
-        if (mJointsTexture.isValid() && settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
+        if (settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
             mVertices.bind(0);
             mIndices.bind();
-            mJointsTexture.bind(0, bgfx::Access::Read);
+            mTexture.bind(0, bgfx::Access::Read);
+            bgfx::setInstanceCount(mNumPoints - 2);
             bgfx::setState(drawState());
-            bgfx::submit(viewId, mJointsPH, mJointsIndirect.handle(), 0);
+            bgfx::submit(viewId, mJointsPH);
         }
     }
 }
 
-void TextureBasedPolylines::setPoints(const std::vector<LinesVertex>& points)
+void TextureBasedPolylines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals)
 {
-    if (points.size() > 1) {
-        allocateAndSetPointsBuffer(points);
-        allocateAndGenerateTextureBuffer(points.size());
+    mNumPoints = vertCoords.size() / 3;
+    if (mNumPoints > 1) {
+        setCoordsBuffers(vertCoords);
+        setColorsBuffers(vertColors);
+        setNormalsBuffers(vertNormals);
+        
+        allocateAndGenerateTextureBuffer();
     }
     else {
-        mPoints.destroy();
+        mVertCoords.destroy();
+        mVertColors.destroy();
+        mVertNormals.destroy();
+
         mVertices.destroy();
         mIndices.destroy();
-        mSegmentsTexture.destroy();
-        mJointsTexture.destroy();
+        mTexture.destroy();
     }
 }
 
-void TextureBasedPolylines::allocateAndSetPointsBuffer(
-    const std::vector<LinesVertex>& points)
+void TextureBasedPolylines::setCoordsBuffers(const std::vector<float>& vertCoords)
 {
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8)
-        .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-        .end();
-
     auto [buffer, releaseFn] =
-        getAllocatedBufferAndReleaseFn<LinesVertex>(points.size());
+        getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
 
-    std::copy(points.begin(), points.end(), buffer);
+    std::copy(vertCoords.begin(), vertCoords.end(), buffer);
 
-    mPoints.create(
-        bgfx::makeRef(buffer, sizeof(LinesVertex) * points.size(), releaseFn),
-        layout,
-        BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_ALLOW_RESIZE,
-        true);
+    mVertCoords.createForCompute(
+        buffer,
+        vertCoords.size() / 3,
+        bgfx::Attrib::Position,
+        3,
+        PrimitiveType::FLOAT,
+        false,
+        bgfx::Access::Read,
+        releaseFn
+    );
 }
 
-void TextureBasedPolylines::allocateAndGenerateTextureBuffer(uint pointSize)
+void TextureBasedPolylines::setColorsBuffers(const std::vector<uint>& vertColors)
 {
-    uint16_t Y_Segments = ((pointSize - 1) * 5) / (mMaxTextureSize + 1);
-    uint16_t X_Segments =
-        Y_Segments == 0 ? ((pointSize - 1) * 5) : mMaxTextureSize;
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<uint>(vertColors.size());
 
-    mSegmentsTexture.create(
+    std::copy(vertColors.begin(), vertColors.end(), buffer);
+
+    mVertColors.createForCompute(
+        buffer,
+        vertColors.size(),
+        bgfx::Attrib::Color0,
+        4,
+        PrimitiveType::UCHAR,
+        true,
+        bgfx::Access::Read,
+        releaseFn
+    );
+}
+
+void TextureBasedPolylines::setNormalsBuffers(const std::vector<float>& vertNormals)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<float>(vertNormals.size());
+
+    std::copy(vertNormals.begin(), vertNormals.end(), buffer);
+
+    mVertNormals.createForCompute(
+        buffer,
+        vertNormals.size() / 3,
+        bgfx::Attrib::Normal,
+        3,
+        PrimitiveType::FLOAT,
+        false,
+        bgfx::Access::Read,
+        releaseFn
+    );
+}
+
+void TextureBasedPolylines::allocateAndGenerateTextureBuffer()
+{
+    uint16_t Y_Segments = ((mNumPoints - 1) * 5) / (mMaxTextureSize + 1);
+    uint16_t X_Segments =
+        Y_Segments == 0 ? ((mNumPoints - 1) * 5) : mMaxTextureSize;
+
+    mTexture.create(
         X_Segments,
         Y_Segments + 1,
         bgfx::TextureFormat::RGBA32F,
         BGFX_TEXTURE_COMPUTE_WRITE);
 
-    // Joints texture is valid only if there are more than 2 points
-    if (pointSize > 2) {
-        uint16_t Y_Joints = ((pointSize - 2) * 4) / (mMaxTextureSize + 1);
-        uint16_t X_Joints =
-            Y_Joints == 0 ? ((pointSize - 2) * 4) : mMaxTextureSize;
-
-        mJointsTexture.create(
-            X_Joints,
-            Y_Joints + 1,
-            bgfx::TextureFormat::RGBA32F,
-            BGFX_TEXTURE_COMPUTE_WRITE);
-    }
-    else {
-        mJointsTexture.destroy();
-    }
-
     float data[] = {
                     static_cast<float>(mMaxTextureSize),
-                    static_cast<float>(pointSize - 1),
+                    static_cast<float>(mNumPoints - 1),
                     0,
                     0};
     mIndirectData.bind(data);
 
-    mPoints.bind(0);
-    mSegmentsTexture.bind(1, bgfx::Access::Write);
-    mJointsTexture.bind(2, bgfx::Access::Write);
-    mSegmentsIndirect.bind(3, bgfx::Access::Write);
-    mJointsIndirect.bind(4, bgfx::Access::Write);
-    bgfx::dispatch(0, mComputeTexturePH, pointSize - 1, 1, 1);
+    mVertCoords.bind(0);
+    mVertColors.bind(1);
+    mVertNormals.bind(2);
+
+    mTexture.bind(3, bgfx::Access::Write);
+
+    bgfx::dispatch(0, mComputeTexturePH, mNumPoints - 1, 1, 1);
 
     // now, bind uniform for draw
     // TODO - this should be the same of before..........
     float indirectData[] = {
-                            static_cast<float>(pointSize - 1),
+                            static_cast<float>(mNumPoints - 1),
                             static_cast<float>(mMaxTextureSize),
                             0,
                             0};

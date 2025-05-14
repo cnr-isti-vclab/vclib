@@ -62,8 +62,8 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
         std::make_shared<vcl::DrawableInstancingPolylines>(vertCoords, vertColors, vertNormals);
     auto indirectLines =
         std::make_shared<vcl::DrawableIndirectPolylines>(vertCoords, vertColors, vertNormals);
-    // auto textureLines =
-    //     std::make_shared<vcl::DrawableTexturePolylines>(points);
+    auto textureLines =
+        std::make_shared<vcl::DrawableTexturePolylines>(vertCoords, vertColors, vertNormals);
 
     cpuLines->settings().setColorToUse(
         vcl::LineColorToUse::PER_VERTEX_COLOR);
@@ -73,14 +73,14 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
         vcl::LineColorToUse::PER_VERTEX_COLOR);
     indirectLines->settings().setColorToUse(
         vcl::LineColorToUse::PER_VERTEX_COLOR);
-    // textureLines->settings().setColorToUse(
-    //     vcl::LineColorToUse::PER_VERTEX_COLOR);
+    textureLines->settings().setColorToUse(
+        vcl::LineColorToUse::PER_VERTEX_COLOR);
 
     vec.pushBack(*cpuLines.get());
     vec.pushBack(*gpuLines.get());
     vec.pushBack(*instancingLines.get());
     vec.pushBack(*indirectLines.get());
-    // vec.pushBack(*textureLines.get());
+    vec.pushBack(*textureLines.get());
 
     for (vcl::uint i = 0; i < vec.size(); ++i) {
         vec.at(i)->setVisibility(false);

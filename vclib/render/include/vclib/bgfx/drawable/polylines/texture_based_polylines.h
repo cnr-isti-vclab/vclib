@@ -57,18 +57,23 @@ class TextureBasedPolylines : public Lines<PolylineSettings>
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
 
-    VertexBuffer  mPoints;
-    TextureBuffer mSegmentsTexture;
-    TextureBuffer mJointsTexture;
+    VertexBuffer mVertCoords;
+    VertexBuffer mVertColors;
+    VertexBuffer mVertNormals;
 
-    IndirectBuffer mSegmentsIndirect;
-    IndirectBuffer mJointsIndirect;
+    TextureBuffer mTexture;
+
+    uint mNumPoints;
+
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:
     TextureBasedPolylines();
 
-    TextureBasedPolylines(const std::vector<LinesVertex>& points);
+    TextureBasedPolylines(        
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(TextureBasedPolylines& other);
 
@@ -79,7 +84,10 @@ public:
 
     void draw(uint viewId) const;
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(        
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
 private:
     void checkCaps() const
@@ -101,9 +109,13 @@ private:
         }
     }
 
-    void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
+    void setCoordsBuffers(const std::vector<float>& vertCoords);
 
-    void allocateAndGenerateTextureBuffer(uint pointSize);
+    void setColorsBuffers(const std::vector<uint>& vertColors);
+
+    void setNormalsBuffers(const std::vector<float>& vertNormals);
+
+    void allocateAndGenerateTextureBuffer();
 };
 
 } // namespace vcl

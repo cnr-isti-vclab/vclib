@@ -56,8 +56,8 @@ class TextureBasedLines : public Lines<LineSettings>
     VertexBuffer mVertNormals;    
     
     TextureBuffer mTexture;
+    uint mNumPoints;
 
-    IndirectBuffer mIndirect;
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:
@@ -105,9 +105,7 @@ private:
 
     void setNormalsBuffers(const std::vector<float>& vertNormals);
 
-    void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
-
-    void allocateAndGenerateTextureBuffer(uint pointSize);
+    void allocateAndGenerateTextureBuffer();
 };
 
 } // namespace vcl

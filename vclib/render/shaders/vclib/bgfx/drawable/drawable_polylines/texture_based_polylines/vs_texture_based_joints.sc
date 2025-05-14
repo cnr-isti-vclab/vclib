@@ -52,14 +52,18 @@ void main() {
     float u_joint        = float((caps_joint_color >> uint(2)) & uint(0x3));
     float u_color_to_use = float((caps_joint_color)            & uint(0x3));
 
-    vec4 prev    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4), maxTextureSize));
-    vec4 curr    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 1, maxTextureSize));
-    vec4 next    = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 2, maxTextureSize));
-    vec4 normal  = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 2) + 3, maxTextureSize));
-    vec4 color   = uintRGBAToVec4FloatColor(floatBitsToUint(curr.w));
-    
-    curr.w = 0;
+    uint index = gl_InstanceID + 1;
+    vec4 prev    = imageLoad(textureBuffer, calculateTextureCoord((index * 4), maxTextureSize));
+    vec4 curr    = imageLoad(textureBuffer, calculateTextureCoord((index * 4) + 1, maxTextureSize));
+    vec4 next    = imageLoad(textureBuffer, calculateTextureCoord((index * 4) + 2, maxTextureSize));
+    vec4 next_next = imageLoad(textureBuffer, calculateTextureCoord((index * 2) + 3, maxTextureSize));
 
+    vec4 normal  = vec4(prev.w, curr.w, next.w, 0);
+    vec4 color   = uintABGRToVec4Color(floatBitsToUint(next_next.w));
+    prev = vec4(prev.xyz, 0);
+    curr = vec4(curr.xyz, 0);
+    next = vec4(next.xyz, 0);
+    
     vec4 prev_px = calculatePointWithMVP(prev, u_screenWidth, u_screenHeigth);
     vec4 curr_px = calculatePointWithMVP(curr, u_screenWidth, u_screenHeigth);
     vec4 next_px = calculatePointWithMVP(next, u_screenWidth, u_screenHeigth);
