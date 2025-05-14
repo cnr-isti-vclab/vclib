@@ -139,7 +139,7 @@ public:
 using DrawableCPUPolylines = DrawablePolylines<CPUGeneratedPolylines>;
 using DrawableGPUPolylines = DrawablePolylines<GPUGeneratedPolylines>;
 using DrawableInstancingPolylines = DrawablePolylines<InstancingBasedPolylines>;
-// using DrawableIndirectPolylines = DrawablePolylines<IndirectBasedPolylines>;
+using DrawableIndirectPolylines = DrawablePolylines<IndirectBasedPolylines>;
 // using DrawableTexturePolylines = DrawablePolylines<TextureBasedPolylines>;
 
 } // namespace vcl

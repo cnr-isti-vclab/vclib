@@ -37,15 +37,14 @@ IndirectBasedPolylines::IndirectBasedPolylines()
         PrimitiveType::FLOAT);
 
     mIndices.create(INDICES.data(), INDICES.size());
-
-    mSegmentsIndirect.create(1);
-    mJointsIndirect.create(1);
 }
 
 IndirectBasedPolylines::IndirectBasedPolylines(
-    const std::vector<LinesVertex>& points) : IndirectBasedPolylines()
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals) : IndirectBasedPolylines()
 {
-    setPoints(points);
+    setPoints(vertCoords, vertColors, vertNormals);
 }
 
 void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
@@ -56,12 +55,15 @@ void IndirectBasedPolylines::swap(IndirectBasedPolylines& other)
 
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
-    swap(mPoints, other.mPoints);
-
-    swap(mSegmentsIndirect, other.mSegmentsIndirect);
-    swap(mJointsIndirect, other.mJointsIndirect);
 
     swap(mIndirectData, other.mIndirectData);
+
+    swap(mVertCoords, other.mVertCoords);
+    swap(mVertColors, other.mVertColors);
+    swap(mVertNormals, other.mVertNormals);
+
+    swap(mInstanceData, other.mInstanceData);
+    swap(mNumPoints, other.mNumPoints);
 }
 
 void IndirectBasedPolylines::draw(uint viewId) const
@@ -70,58 +72,124 @@ void IndirectBasedPolylines::draw(uint viewId) const
 
     mVertices.bind(0);
     mIndices.bind();
-    mPoints.bind(1, bgfx::Access::Read);
+    mInstanceData.setInstance(0, mNumPoints - 1);
+
     bgfx::setState(drawState());
-    bgfx::submit(viewId, mLinesPH, mSegmentsIndirect.handle(), 0);
+    bgfx::submit(viewId, mLinesPH);
 
     if (settings().getJoint() != PolyLineJoint::ROUND_JOINT) {
         mVertices.bind(0);
         mIndices.bind();
-        mPoints.bind(1, bgfx::Access::Read);
+        mInstanceData.setInstance(1, mNumPoints - 1);
+
         bgfx::setState(drawState());
-        bgfx::submit(viewId, mJointsPH, mJointsIndirect.handle(), 0);
+        bgfx::submit(viewId, mJointsPH);
     }
 }
 
-void IndirectBasedPolylines::setPoints(const std::vector<LinesVertex>& points)
+void IndirectBasedPolylines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals)
 {
-    generateIndirectBuffers(points.size());
-    allocateAndSetPointsBuffer(points);
+    mNumPoints = vertCoords.size() / 3;
+
+    setCoordsBuffers(vertCoords);   
+    setColorsBuffers(vertColors);
+    setNormalsBuffers(vertNormals);
+
+    allocateInstanceData();
+    generateInstanceDataBuffers();
 }
 
-void IndirectBasedPolylines::allocateAndSetPointsBuffer(
-    const std::vector<LinesVertex>& points)
+void IndirectBasedPolylines::setCoordsBuffers(const std::vector<float>& vertCoords)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
+
+    std::copy(vertCoords.begin(), vertCoords.end(), buffer);
+
+    mVertCoords.createForCompute(
+        buffer,
+        vertCoords.size() / 3,
+        bgfx::Attrib::Position,
+        3,
+        PrimitiveType::FLOAT,
+        false,
+        bgfx::Access::Read,
+        releaseFn
+    );
+}
+
+void IndirectBasedPolylines::setColorsBuffers(const std::vector<uint>& vertColors)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<uint>(vertColors.size());
+
+    std::copy(vertColors.begin(), vertColors.end(), buffer);
+
+    mVertColors.createForCompute(
+        buffer,
+        vertColors.size(),
+        bgfx::Attrib::Color0,
+        4,
+        PrimitiveType::UCHAR,
+        true,
+        bgfx::Access::Read,
+        releaseFn
+    );
+}
+
+void IndirectBasedPolylines::setNormalsBuffers(const std::vector<float>& vertNormals)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<float>(vertNormals.size());
+
+    std::copy(vertNormals.begin(), vertNormals.end(), buffer);
+
+    mVertNormals.createForCompute(
+        buffer,
+        vertNormals.size() / 3,
+        bgfx::Attrib::Normal,
+        3,
+        PrimitiveType::FLOAT,
+        false,
+        bgfx::Access::Read,
+        releaseFn
+    );
+}
+
+void IndirectBasedPolylines::allocateInstanceData() 
 {
     bgfx::VertexLayout layout;
     layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8)
-        .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::TexCoord0, 4, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::TexCoord1, 4, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::TexCoord2, 4, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::TexCoord3, 4, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::TexCoord4, 4, bgfx::AttribType::Float)
         .end();
 
-    auto [buffer, releaseFn] =
-        getAllocatedBufferAndReleaseFn<LinesVertex>(points.size());
+    const uint sz = (mNumPoints - 1) * 20;
 
-    std::copy(points.begin(), points.end(), buffer);
-
-    mPoints.create(
-        bgfx::makeRef(buffer, sizeof(LinesVertex) * points.size(), releaseFn),
+    mInstanceData.create(
+        bgfx::makeRef(nullptr, sizeof(float) * sz),
         layout,
-        BGFX_BUFFER_COMPUTE_READ,
+        BGFX_BUFFER_COMPUTE_WRITE,
         true);
 }
 
-void IndirectBasedPolylines::generateIndirectBuffers(uint pointSize)
+void IndirectBasedPolylines::generateInstanceDataBuffers() 
 {
-    float data[] = {static_cast<float>(pointSize), 0, 0, 0};
+    float data[] = {static_cast<float>(mNumPoints - 1), 0, 0, 0};
     mIndirectData.bind(data);
+    mVertCoords.bind(0);
+    mVertColors.bind(1);
+    mVertNormals.bind(2);
 
-    mSegmentsIndirect.bind(0, bgfx::Access::Write);
-    mJointsIndirect.bind(1, bgfx::Access::Write);
-    bgfx::dispatch(0, mComputeIndirectPH);
+    mInstanceData.bind(3, bgfx::Access::Write);
 
-    data[0] = static_cast<float>(pointSize - 1);
-    mIndirectData.bind(data);
+    bgfx::dispatch(0, mComputeIndirectPH, mNumPoints - 1, 1, 1);
 }
 
 } // namespace vcl

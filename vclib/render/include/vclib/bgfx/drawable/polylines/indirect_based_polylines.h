@@ -45,27 +45,34 @@ class IndirectBasedPolylines : public Lines<PolylineSettings>
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::POLYLINES_INDIRECT>();
+            .getProgram<VertFragProgram::POLYLINES_INSTANCING>();
 
     bgfx::ProgramHandle mJointsPH =
         Context::instance()
             .programManager()
             .getProgram<
-                VertFragProgram::POLYLINES_INDIRECT_JOINTS>();
+                VertFragProgram::POLYLINES_INSTANCING_JOINTS>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
 
-    VertexBuffer mPoints;
+    VertexBuffer mVertCoords;
+    VertexBuffer mVertColors;
+    VertexBuffer mVertNormals;
+    
+    VertexBuffer mInstanceData;
 
-    IndirectBuffer mSegmentsIndirect;
-    IndirectBuffer mJointsIndirect;
+    uint mNumPoints;
+
     Uniform mIndirectData = Uniform("u_IndirectData", bgfx::UniformType::Vec4);
 
 public:
     IndirectBasedPolylines();
 
-    IndirectBasedPolylines(const std::vector<LinesVertex>& points);
+    IndirectBasedPolylines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
     void swap(IndirectBasedPolylines& other);
 
@@ -76,7 +83,10 @@ public:
 
     void draw(uint viewId) const;
 
-    void setPoints(const std::vector<LinesVertex>& points);
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals);
 
 private:
     void checkCaps() const
@@ -93,9 +103,15 @@ private:
         }
     }
 
-    void allocateAndSetPointsBuffer(const std::vector<LinesVertex>& points);
+    void setCoordsBuffers(const std::vector<float>& vertCoords);
 
-    void generateIndirectBuffers(uint pointSize);
+    void setColorsBuffers(const std::vector<uint>& vertColors);
+
+    void setNormalsBuffers(const std::vector<float>& vertNormals);
+
+    void allocateInstanceData();       
+
+    void generateInstanceDataBuffers();
 };
 
 } // namespace vcl

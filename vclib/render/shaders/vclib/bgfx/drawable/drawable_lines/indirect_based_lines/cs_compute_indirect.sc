@@ -45,8 +45,8 @@ void main()
 {
     vec3 p0          = p((gl_WorkGroupID.x * 2));
     vec3 p1          = p((gl_WorkGroupID.x * 2) + 1);
-    uint color0     = color((gl_WorkGroupID.x * 2));
-    uint color1     = color((gl_WorkGroupID.x * 2) + 1);
+    uint color0      = color((gl_WorkGroupID.x * 2));
+    uint color1      = color((gl_WorkGroupID.x * 2) + 1);
     vec3 normal0     = normal((gl_WorkGroupID.x * 2));
     vec3 normal1     = normal((gl_WorkGroupID.x * 2) + 1);
 

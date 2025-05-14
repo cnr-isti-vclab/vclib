@@ -130,7 +130,7 @@ void InstancingBasedPolylines::generateInstanceBuffer() const
         currSegments[2]     = mVertCoords[(i * 3) + 2];
 
         uint* color0 = reinterpret_cast<uint*>(&dataSegments[28]);
-        color0[0]        = mVertColors[i];
+        color0[0]           = mVertColors[i];
 
         float* nextSegments = reinterpret_cast<float*>(&dataSegments[32]);
         nextSegments[0]     = mVertCoords[((i + 1) * 3)];
