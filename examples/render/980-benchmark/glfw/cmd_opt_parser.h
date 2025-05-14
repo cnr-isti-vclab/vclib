@@ -41,6 +41,10 @@ public:
     CmdOptionParser(std::initializer_list<CmdOption> lst)
     {
         for (const CmdOption& option : lst) {
+            if(option.first.find("-") != 0) {
+                std::cerr << "Error: attempted to declare option without any '-' in front" << std::endl;
+                exit(1);
+            }
             options.insert(option);
         }
     };
