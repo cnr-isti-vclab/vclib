@@ -35,7 +35,6 @@ struct ComputeLoader
     static bgfx::EmbeddedShader::Data computeShader(
         bgfx::RendererType::Enum type)
     {
-        static_assert(false, "Invalid program");
         switch (type) {
         case bgfx::RendererType::OpenGLES: return {type, nullptr, 0};
         case bgfx::RendererType::OpenGL: return {type, nullptr, 0};
