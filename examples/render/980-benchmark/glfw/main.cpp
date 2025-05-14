@@ -24,7 +24,7 @@
 
 #include <vclib/imgui/imgui_drawer.h>
 
-#include "csv_benchmark_printer_no_description.h"
+#include "csv_benchmark_printer_shader_change.h"
 #include "change_shader_automation_action.h"
 #include "cmd_opt_parser.h"
 #include "get_drawable_mesh.h"
@@ -202,18 +202,20 @@ int main(int argc, char** argv)
     }
 
     if (options.contains("--stdout")) {
-        tw.setPrinter(vcl::StdoutBenchmarkPrinter());
+        vcl::StdoutBenchmarkPrinter temp;
+        temp.useDescription(false);
+        tw.setPrinter(vcl::StdoutBenchmarkPrinter(temp));
     }
     else if (options.contains("-o")) {
         std::vector<std::string> optArgs = options["-o"];
         tw.setPrinter(
-            vcl::CsvBenchmarkPrinterNoDescription(
+            vcl::CsvBenchmarkPrinterShaderChange(
                 optArgs[0], optArgs[1], optArgs[2], 6));
     }
     else if (options.contains("--output-folder")) {
         std::string folderString = options["--output-folder"][0];
         tw.setPrinter(
-            vcl::CsvBenchmarkPrinterNoDescription(
+            vcl::CsvBenchmarkPrinterShaderChange(
                 folderString + "/uber_result_" + shadingType + ".csv",
                 folderString + "/split_result_" + shadingType + ".csv",
                 folderString + "/uber_if_result_" + shadingType + ".csv",
@@ -224,7 +226,7 @@ int main(int argc, char** argv)
     }
     else {
         tw.setPrinter(
-            vcl::CsvBenchmarkPrinterNoDescription(
+            vcl::CsvBenchmarkPrinterShaderChange(
                 "./uber_result_" + shadingType + ".csv",
                 "./split_result_" + shadingType + ".csv",
                 "./uber_if_result_" + shadingType + ".csv",

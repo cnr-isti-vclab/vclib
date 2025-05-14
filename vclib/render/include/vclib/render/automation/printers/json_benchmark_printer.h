@@ -64,7 +64,6 @@ public:
         if (mStream.fail()) {
             throw "JsonBenchmarkPrinter : invalid file name\n";
         }
-
     };
 
     JsonBenchmarkPrinter(const JsonBenchmarkPrinter& other) :
@@ -104,8 +103,11 @@ public:
 
         mStream << "\n\t{";
 
-        mStream << "\n\t\t\"Description\" : \"" << description << "\""
-                << "\n\t\t\"Measurements\" : " << temp.str() << "\n\t}";
+        if (printDescription) {
+            mStream << "\n\t\t\"Description\" : \"" << description << "\"";
+        }
+
+        mStream << "\n\t\t\"Measurements\" : " << temp.str() << "\n\t}";
 
         mFirstAutomation = false;
     };

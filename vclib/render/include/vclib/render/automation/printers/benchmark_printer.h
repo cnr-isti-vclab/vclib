@@ -36,6 +36,9 @@ namespace vcl {
  */
 class BenchmarkPrinter
 {
+protected:
+    bool printDescription = true;
+
 public:
     /**
      * @brief Called just before the start of the next BenchmarkDrawer loop
@@ -50,6 +53,11 @@ public:
     virtual void print(
         const BenchmarkMetric& metric,
         const std::string&     description) = 0;
+
+    /**
+     * @brief Set whether the description should be printed or not
+     */
+    virtual void useDescription(bool b = true) { printDescription = b; }
 
     /**
      * @brief Called when the last automation of the last loop has finished

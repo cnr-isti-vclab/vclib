@@ -50,6 +50,7 @@ class CsvBenchmarkPrinter : public BenchmarkPrinter
     std::string                                 mFileName;
     std::ofstream                               mStream;
     std::vector<std::pair<std::string, size_t>> mMeasurementStrings;
+    bool                                        printHeader = true;
 
 public:
     CsvBenchmarkPrinter(const std::string& fileName) : mFileName {fileName}
@@ -76,7 +77,9 @@ public:
         override
     {
         std::ostringstream temp;
-        temp << description;
+        if (printDescription) {
+            temp << description;
+        }
 
         std::vector<std::string> measureStrings = metric.getMeasureStrings();
 
@@ -88,7 +91,9 @@ public:
         }
 
         if (metric.getMeasureStrings().size() > 0) {
-            temp << ";";
+            if (printDescription) {
+                temp << ";";
+            }
             std::copy(
                 measureStrings.begin(),
                 measureStrings.end() - 1,
@@ -104,17 +109,30 @@ public:
 
     void finish() override
     {
-        mStream << "Description";
-        for (uint32_t i = 0; i < maxMeasurementSize; i++) {
-            mStream << ";Measurement " << i;
+        if (printHeader) {
+            if (printDescription) {
+                mStream << "Description";
+            }
+            for (uint32_t i = 0; i < maxMeasurementSize; i++) {
+                if (i != 0 || printDescription) {
+                    mStream << ";";
+                }
+                mStream << "Measurement " << i;
+            }
         }
+        bool firstLoop = true;
         for (const auto& meas : mMeasurementStrings) {
-            mStream << "\n"
-                    << meas.first
+            if (!firstLoop || printHeader) {
+                mStream << "\n";
+            }
+            mStream << meas.first
                     << std::string(maxMeasurementSize - meas.second, ';');
+            firstLoop = false;
         }
         mStream.close();
     };
+
+    void useHeader(bool b = true) {}
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {

@@ -55,7 +55,10 @@ public:
             temp << meas + metric.getUnitOfMeasure();
         }
         temp << "]";
-        std::cout << description << " -> " << temp.str() << std::endl;
+        if(printDescription) {
+            std::cout << description << " -> ";
+        }
+        std::cout << temp.str() << std::endl;
 
         mAutomationIndex++;
     };
