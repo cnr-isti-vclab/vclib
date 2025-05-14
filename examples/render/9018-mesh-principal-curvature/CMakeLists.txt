@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 9018-mesh-principal-curvature)
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 set(SOURCES

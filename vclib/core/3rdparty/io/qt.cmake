@@ -22,9 +22,18 @@
 
 set(QT_MINIMUM_VERSION 6.7)
 
+# on linux, avoid extra dependency to libOpengl.so, linked by Qt::Gui module
+set(OpenGL_GL_PREFERENCE LEGACY)
+
 set(QT_COMPONENTS Core Gui)
 
-find_package(Qt6 ${QT_MINIMUM_VERSION} COMPONENTS ${QT_COMPONENTS} QUIET)
+if (VCLIB_REQUIRES_QT)
+    set(VCLIB_QT_REQUIRED "REQUIRED")
+else()
+    set(VCLIB_QT_REQUIRED "")
+endif()
+
+find_package(Qt6 ${QT_MINIMUM_VERSION} COMPONENTS ${QT_COMPONENTS} QUIET ${VCLIB_QT_REQUIRED})
 
 if (VCLIB_ALLOW_SYSTEM_QT)
     if (Qt6_FOUND)

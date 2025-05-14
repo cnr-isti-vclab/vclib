@@ -137,10 +137,10 @@ protected:
     void postLoad(MeshType& mesh, const MeshInfo& loadedInfo) const
     {
         if constexpr (HasFaces<MeshType>) {
-            if (!loadedInfo.hasFaceNormals()) {
+            if (!loadedInfo.hasPerFaceNormal()) {
                 vcl::updatePerFaceNormals(mesh);
             }
-            if (!loadedInfo.hasVertexNormals()) {
+            if (!loadedInfo.hasPerVertexNormal()) {
                 vcl::updatePerVertexNormalsFromFaceNormals(mesh);
             }
         }

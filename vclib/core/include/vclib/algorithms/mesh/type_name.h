@@ -36,7 +36,7 @@ namespace vcl {
 template<MeshConcept MeshType>
 constexpr std::string meshTypeName()
 {
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
     std::string name;
 

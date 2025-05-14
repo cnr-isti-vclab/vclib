@@ -148,9 +148,7 @@ public:
             std::cerr << "Program Type changed: ";
             switch (type) {
             case SurfaceProgramsType::UBER: std::cerr << "UBER\n"; break;
-            case SurfaceProgramsType::SPLIT:
-                std::cerr << "SPLITTED\n";
-                break;
+            case SurfaceProgramsType::SPLIT: std::cerr << "SPLITTED\n"; break;
             case SurfaceProgramsType::UBER_WITH_STATIC_IF:
                 std::cerr << "UBER_WITH_STATIC_IF\n";
                 break;

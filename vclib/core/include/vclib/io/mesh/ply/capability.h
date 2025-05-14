@@ -45,22 +45,22 @@ inline MeshInfo plyFormatCapability()
 
     info.setTextures();
 
-    info.setVertexCoords();
-    info.setVertexNormals();
-    info.setVertexColors();
-    info.setVertexQuality();
-    info.setVertexTexCoords();
-    info.setVertexCustomComponents();
+    info.setPerVertexPosition();
+    info.setPerVertexNormal();
+    info.setPerVertexColor();
+    info.setPerVertexQuality();
+    info.setPerVertexTexCoord();
+    info.setPerVertexCustomComponents();
 
-    info.setFaceVRefs();
-    info.setFaceColors();
-    info.setFaceNormals();
-    info.setFaceQuality();
-    info.setFaceWedgeTexCoords();
-    info.setFaceCustomComponents();
+    info.setPerFaceVertexReferences();
+    info.setPerFaceColor();
+    info.setPerFaceNormal();
+    info.setPerFaceQuality();
+    info.setPerFaceWedgeTexCoords();
+    info.setPerFaceCustomComponents();
 
-    info.setEdgeVRefs();
-    info.setEdgeColors();
+    info.setPerEdgeVertexReferences();
+    info.setPerEdgeColor();
 
     return info;
 }

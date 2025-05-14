@@ -126,13 +126,13 @@ void saveStl(
         log.startProgress("Saving STL file", m.faceNumber());
 
         for (const FaceType& f : m.faces()) {
-            // For each triangle write the normal, the three coords and a short
+            // For each triangle write the normal, the 3 vert positions and a short
             auto n = faceNormal(f);
 
             unsigned short attributes = 0;
 
             if constexpr (HasPerFaceColor<MeshType>) {
-                if (meshInfo.hasFaceColors()) {
+                if (meshInfo.hasPerFaceColor()) {
                     if (settings.magicsMode)
                         attributes = 32768 | f.color().bgr5();
                     else
@@ -143,9 +143,9 @@ void saveStl(
             if (f.vertexNumber() == 3) {
                 detail::writeSTLTriangle(
                     fp,
-                    f.vertex(0)->coord(),
-                    f.vertex(1)->coord(),
-                    f.vertex(2)->coord(),
+                    f.vertex(0)->position(),
+                    f.vertex(1)->position(),
+                    f.vertex(2)->position(),
                     n,
                     attributes,
                     settings);
@@ -155,9 +155,9 @@ void saveStl(
                 for (uint i = 0; i < tris.size(); i += 3) {
                     detail::writeSTLTriangle(
                         fp,
-                        f.vertex(tris[i])->coord(),
-                        f.vertex(tris[i + 1])->coord(),
-                        f.vertex(tris[i + 2])->coord(),
+                        f.vertex(tris[i])->position(),
+                        f.vertex(tris[i + 1])->position(),
+                        f.vertex(tris[i + 2])->position(),
                         n,
                         attributes,
                         settings);

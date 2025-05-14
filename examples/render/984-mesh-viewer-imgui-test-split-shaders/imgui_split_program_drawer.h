@@ -23,13 +23,13 @@
 #ifndef IMGUI_SPLIT_PROGRAM_DRAWER_H
 #define IMGUI_SPLIT_PROGRAM_DRAWER_H
 
-#include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/render/drawers/plain_drawer.h>
 
 #include <vclib/meshes.h>
 
-#include <imgui.h>
 #include <bgfx/bgfx.h>
+#include <imgui.h>
 
 #include <functional>
 
@@ -58,10 +58,7 @@ public:
         ImGui::Begin("Split programs checkbox", nullptr);
 
         const char* items[] = {
-            "Uber Shader",
-            "Split Shaders",
-            "Uber Shader Static if"
-        };
+            "Uber Shader", "Split Shaders", "Uber Shader Static if"};
         static const char* current_item = items[0];
 
         static vcl::uint currNum = 0;
@@ -72,7 +69,7 @@ public:
                 bool is_selected = (current_item == items[n]);
                 if (ImGui::Selectable(items[n], is_selected)) {
                     current_item = items[n];
-                    currNum = n;
+                    currNum      = n;
                 }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus();
@@ -83,23 +80,21 @@ public:
         ImGui::End();
 
         if (surfaceProgramChangerFn) {
-            switch(currNum) {
-
+            switch (currNum) {
             case 1:
                 surfaceProgramChangerFn(
-                    vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
-                    SPLIT);
+                    vcl::DrawableMesh<
+                        vcl::TriMesh>::SurfaceProgramsType::SPLIT);
                 break;
             case 2:
                 surfaceProgramChangerFn(
                     vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
-                    UBER_WITH_STATIC_IF);
+                        UBER_WITH_STATIC_IF);
                 break;
             case 0:
             default:
                 surfaceProgramChangerFn(
-                    vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::
-                    UBER);
+                    vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::UBER);
             }
         }
     };

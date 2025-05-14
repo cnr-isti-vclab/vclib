@@ -23,6 +23,7 @@
 #ifndef VCL_BINDINGS_CORE_SPACE_H
 #define VCL_BINDINGS_CORE_SPACE_H
 
+#include "space/complex.h"
 #include "space/core.h"
 
 #include <pybind11/pybind11.h>
@@ -35,6 +36,7 @@ inline void initSpace(pybind11::module& m)
 
     // py::module_ sm = m.def_submodule("space", "Spatial Data Structures");
     initCore(m);
+    initComplex(m);
 }
 
 } // namespace vcl::bind

@@ -111,13 +111,10 @@ public:
 
     void* windowPtr() { return reinterpret_cast<void*>(winId()); }
 
-    void update()
-    {
-        QWindow::requestUpdate();
-    }
+    void update() { QWindow::requestUpdate(); }
 
 protected:
-    bool event(QEvent *event)
+    bool event(QEvent* event)
     {
         if (event->type() == QEvent::UpdateRequest) {
             DerivedRenderApp::WM::paint(derived());

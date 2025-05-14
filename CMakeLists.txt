@@ -21,7 +21,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
+
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" VCLIB_VERSION)
+string(STRIP "${VCLIB_VERSION}" VCLIB_VERSION)
+
+project(vclib VERSION ${VCLIB_VERSION})
 
 ### Options
 
@@ -42,16 +46,20 @@ option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
 option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
 
 # Build examples
-option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
+option(VCLIB_BUILD_EXAMPLES "Build examples" OFF)
 
 # Build tests
-option(VCLIB_BUILD_TESTS "Build tests" ON)
+option(VCLIB_BUILD_TESTS "Build tests" OFF)
 
 # If true, the examples and tests of VCLib will be built just setting
 # the INCLUDE_PATH of the core module (no cmake targets).
 option(VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY
     "If true, the examples and tests of VCLib-core will be built just setting
     the INCLUDE_PATH of the library (no cmake targets)." OFF)
+
+# If true, vclib will require Qt
+option(VCLIB_REQUIRES_QT
+    "If true, vclib will require Qt (if core with io or render modules enabled)" OFF)
 
 ### Common settings
 include(cmake/vclib_common_settings.cmake)

@@ -36,7 +36,7 @@ int main()
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 18844);
     assert(loadedInfo.hasFaces());
-    assert(loadedInfo.hasFaceVRefs());
+    assert(loadedInfo.hasPerFaceVertexReferences());
     assert(m.faceNumber() == 36752);
 
     m = vcl::loadPly<vcl::TriMesh>(
@@ -45,11 +45,11 @@ int main()
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 5051);
     assert(loadedInfo.hasFaces());
-    assert(loadedInfo.hasFaceVRefs());
+    assert(loadedInfo.hasPerFaceVertexReferences());
     assert(m.faceNumber() == 9999);
     assert(loadedInfo.hasTextures());
     assert(m.textureNumber() == 1);
-    assert(loadedInfo.hasFaceWedgeTexCoords());
+    assert(loadedInfo.hasPerFaceWedgeTexCoords());
     assert(vcl::isPerFaceWedgeTexCoordsAvailable(m));
     assert(!vcl::isPerFaceAdjacentFacesAvailable(m));
 
@@ -59,7 +59,7 @@ int main()
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 8);
     assert(loadedInfo.hasFaces());
-    assert(loadedInfo.hasFaceVRefs());
+    assert(loadedInfo.hasPerFaceVertexReferences());
     assert(m.faceNumber() == 4);
     assert(loadedInfo.hasTextures());
     assert(m.textureNumber() == 2);
@@ -90,7 +90,7 @@ int main()
 
     vcl::TriMesh mm = vcl::loadPly<vcl::TriMesh>(
         VCLIB_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);
-    assert(loadedInfo.hasFaceCustomComponents());
+    assert(loadedInfo.hasPerFaceCustomComponents());
 
     std::cerr << "Loaded custom component areas: \n";
     for (const auto& f : mm.faces()) {

@@ -20,27 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_%PR_NAME_UC%_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_%PR_NAME_UC%_H
 
-#include <vclib/concepts/space.h>
+#include <vclib/bgfx/programs/compute_loader.h>
 
-namespace vcl::comp {
+namespace vcl {
 
-/**
- * @brief HasCoordinate concept is satisfied only if a Element class provides
- * the types and member functions specified in this concept. These types and
- * member functions allow to access to a @ref vcl::comp::Coordinate component of
- * a given element.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasCoordinate = requires (T&& obj) {
-    typename RemoveRef<T>::CoordType;
-    { obj.coord() } -> PointConcept;
+template<>
+struct ComputeLoader<ComputeProgram::%PR_NAME_UC%>
+{
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
 };
 
-} // namespace vcl::comp
+} // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_%PR_NAME_UC%_H

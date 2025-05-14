@@ -28,11 +28,11 @@
 #include "../components/adjacent_vertices.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
-#include "../components/coordinate.h"
 #include "../components/custom_components.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
+#include "../components/position.h"
 #include "../components/principal_curvature.h"
 #include "../components/quality.h"
 #include "../components/tex_coord.h"
@@ -180,29 +180,6 @@ using VerticalColor = comp::Color<ParentVertexType>;
 template<typename ParentVertexType>
 using OptionalColor = comp::Color<ParentVertexType, true>;
 
-/* Port Coordinate class into vert namespace */
-template<typename ScalarType, int N>
-using Coordinate = comp::Coordinate<Point<ScalarType, N>>;
-
-template<typename ScalarType>
-using Coordinate3 = comp::Coordinate3<ScalarType>;
-
-using Coordinate3f = comp::Coordinate3f<>;
-using Coordinate3d = comp::Coordinate3d<>;
-
-template<typename ScalarType, int N, typename ParentVertexType>
-using VerticalCoordinate =
-    comp::Coordinate<Point<ScalarType, N>, ParentVertexType>;
-
-template<typename ScalarType, typename ParentVertexType>
-using VerticalCoordinate3 = comp::Coordinate3<ScalarType, ParentVertexType>;
-
-template<typename ParentVertexType>
-using VerticalCoordinate3f = comp::Coordinate3f<ParentVertexType>;
-
-template<typename ParentVertexType>
-using VerticalCoordinate3d = comp::Coordinate3d<ParentVertexType>;
-
 /* Port CustomComponents class into vert namespace */
 template<typename ParentVertexType>
 using CustomComponents = comp::CustomComponents<ParentVertexType>;
@@ -254,6 +231,29 @@ using OptionalNormal3d = comp::Normal3d<ParentVertexType, true>;
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
+
+/* Port Position class into vert namespace */
+template<typename ScalarType, int N>
+using Position = comp::Position<Point<ScalarType, N>>;
+
+template<typename ScalarType>
+using Position3 = comp::Position3<ScalarType>;
+
+using Position3f = comp::Position3f<>;
+using Position3d = comp::Position3d<>;
+
+template<typename ScalarType, int N, typename ParentVertexType>
+using VerticalPosition =
+    comp::Position<Point<ScalarType, N>, ParentVertexType>;
+
+template<typename ScalarType, typename ParentVertexType>
+using VerticalPosition3 = comp::Position3<ScalarType, ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalPosition3f = comp::Position3f<ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalPosition3d = comp::Position3d<ParentVertexType>;
 
 /* Port PrincipalCurvature class into vert namespace */
 template<typename ScalarType>

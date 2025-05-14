@@ -35,15 +35,15 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshSampler
 {
-    using CoordView =
-        decltype(View<typename MeshType::VertexIterator>() | views::coords);
+    using PosView =
+        decltype(View<typename MeshType::VertexIterator>() | views::positions);
 
     MeshType mMesh;
 
 public:
-    using PointType     = MeshType::VertexType::CoordType;
+    using PointType     = MeshType::VertexType::PositionType;
     using ScalarType    = PointType::ScalarType;
-    using ConstIterator = std::ranges::iterator_t<CoordView>;
+    using ConstIterator = std::ranges::iterator_t<PosView>;
 
     MeshSampler()
     {
@@ -56,7 +56,7 @@ public:
 
     const MeshType& samples() const { return mMesh; }
 
-    const PointType& sample(uint i) const { return mMesh.vertex(i).coord(); }
+    const PointType& sample(uint i) const { return mMesh.vertex(i).position(); }
 
     std::size_t size() const { return mMesh.vertexNumber(); }
 
@@ -74,12 +74,12 @@ public:
 
     void add(const PointType& p) { mMesh.addVertex(p); }
 
-    void set(uint i, const PointType& p) { mMesh.vertex(i).coord() = p; }
+    void set(uint i, const PointType& p) { mMesh.vertex(i).position() = p; }
 
     template<VertexConcept VertexType>
     void add(const VertexType& v)
     {
-        uint vi = mMesh.addVertex(v.coord());
+        uint vi = mMesh.addVertex(v.position());
         mMesh.vertex(vi).importFrom(v, false);
 
         setBirthElement(vi, "birthVertex", v.index());
@@ -88,7 +88,7 @@ public:
     template<VertexConcept VertexType>
     void set(uint i, const VertexType& v)
     {
-        mMesh.vertex(i).coord() = v.coord();
+        mMesh.vertex(i).position() = v.position();
         mMesh.vertex(i).importFrom(v, false);
 
         setBirthElement(i, "birthVertex", v.index());
@@ -98,7 +98,7 @@ public:
     void add(const EdgeType& e, double u, bool copyQuality = true)
     {
         uint vi = mMesh.addVertex(
-            (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
+            (e.vertex(0).position() * (1 - u)) + (e.vertex(1).position() * u));
 
         if constexpr (
             HasPerVertexQuality<MeshType> && edge::HasQuality<EdgeType>) {
@@ -116,8 +116,8 @@ public:
     template<EdgeConcept EdgeType>
     void set(uint i, const EdgeType& e, double u, bool copyQuality = true)
     {
-        mMesh.vertex(i).coord() =
-            (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
+        mMesh.vertex(i).position() =
+            (e.vertex(0).position() * (1 - u)) + (e.vertex(1).position() * u);
 
         if constexpr (
             HasPerVertexQuality<MeshType> && edge::HasQuality<EdgeType>) {
@@ -151,7 +151,7 @@ public:
         bool            copyNormal  = false,
         bool            copyQuality = true)
     {
-        mMesh.vertex(i).coord() = faceBarycenter(f);
+        mMesh.vertex(i).position() = faceBarycenter(f);
 
         copyComponents(i, f, copyNormal, copyQuality);
         setBirthElement(i, "birthFace", f.index());
@@ -168,7 +168,7 @@ public:
 
         PointType p;
         for (uint i = 0; i < f.vertexNumber(); i++)
-            p += f.vertex(i)->coord() * barCoords[i];
+            p += f.vertex(i)->position() * barCoords[i];
 
         uint vi = mMesh.addVertex(p);
 
@@ -188,9 +188,9 @@ public:
 
         PointType p;
         for (uint i = 0; i < f.vertexNumber(); i++)
-            p += f.vertex(i)->coord() * barCoords[i];
+            p += f.vertex(i)->position() * barCoords[i];
 
-        mMesh.vertex(i).coord() = p;
+        mMesh.vertex(i).position() = p;
 
         copyComponents(i, f, copyNormal, copyQuality);
         setBirthElement(i, "birthFace", f.index());
@@ -231,7 +231,7 @@ public:
 
         PointType p = triangleBarycentricCoordinatePoint(f, barCoords);
 
-        mMesh.vertex(i).coord() = p;
+        mMesh.vertex(i).position() = p;
 
         copyComponents(i, f, copyNormal, copyQuality);
         setBirthElement(i, "birthFace", f.index());
@@ -239,12 +239,12 @@ public:
 
     ConstIterator begin() const
     {
-        return std::ranges::begin(mMesh.vertices() | views::coords);
+        return std::ranges::begin(mMesh.vertices() | views::positions);
     }
 
     ConstIterator end() const
     {
-        return std::ranges::end(mMesh.vertices() | views::coords);
+        return std::ranges::end(mMesh.vertices() | views::positions);
     }
 
 private:

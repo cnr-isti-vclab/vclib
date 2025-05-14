@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 003-laplace-smoothing)
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-example-${EXAMPLE_NAME})
 
 set(SOURCES

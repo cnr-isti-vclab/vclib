@@ -38,7 +38,7 @@ void applyTransformMatrix(
 {
     using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
-        v.coord() *= matrix;
+        v.position() *= matrix;
     }
     if (updateNormals) {
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -59,7 +59,7 @@ void translate(MeshType& mesh, const PointType& t)
 {
     using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
-        v.coord() += t;
+        v.position() += t;
     }
 }
 
@@ -68,9 +68,9 @@ void scale(MeshType& mesh, const PointType& s)
 {
     using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
-        v.coord()(0) *= s(0);
-        v.coord()(1) *= s(1);
-        v.coord()(2) *= s(2);
+        v.position()(0) *= s(0);
+        v.position()(1) *= s(1);
+        v.position()(2) *= s(2);
     }
 }
 
@@ -79,7 +79,7 @@ void scale(MeshType& mesh, const Scalar& s)
 {
     using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
-        v.coord() *= s;
+        v.position() *= s;
     }
 }
 
@@ -90,7 +90,7 @@ void rotate(
     bool                    updateNormals = true)
 {
     for (auto& v : mesh.vertices()) {
-        v.coord() = m * v.coord();
+        v.position() = m * v.position();
     }
 
     if (updateNormals) {
@@ -119,7 +119,7 @@ void rotate(
     const Scalar&    angleRad,
     bool             updateNormals = true)
 {
-    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
     Matrix33<ScalarType> m;
     setTransformMatrixRotation(m, axis, angleRad);

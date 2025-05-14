@@ -55,7 +55,7 @@ class VertPositionComparator
 public:
     inline bool operator()(const VertexPointer& a, const VertexPointer& b)
     {
-        return (a->coord() == b->coord()) ? (a < b) : (a->coord() < b->coord());
+        return (a->position() == b->position()) ? (a < b) : (a->position() < b->position());
     }
 };
 
@@ -285,8 +285,8 @@ uint removeUnreferencedVertices(MeshType& m)
  *
  * This function marks as deleted all vertices in the input mesh that have the
  * same spatial position as another vertex in the mesh. The comparison of vertex
- * positions is based on the `coord()` function of the vertex type, which must
- * return a 3D point representing the vertex coordinates.
+ * positions is based on the `position()` function of the vertex type, which must
+ * return a 3D point representing the vertex position.
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the MeshConcept.
  *
@@ -334,7 +334,7 @@ uint removeDuplicatedVertices(MeshType& m)
     // i-th.
     while (i < perm.size() - 1) {
         uint j = i + 1;
-        while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
+        while (j < perm.size() && perm[i]->position() == perm[j]->position()) {
             // j will be deleted, so we map its pointer to the i-th vertex's
             // pointer.
             newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j -> i
@@ -415,10 +415,10 @@ uint removeDuplicatedFaces(MeshType& m)
 }
 
 /**
- * @brief Removes all vertices that have coordinates with invalid floating point
+ * @brief Removes all vertices that have position with invalid floating point
  * values (NaN or inf).
  *
- * This function removes all vertices in the input mesh that have coordinates
+ * This function removes all vertices in the input mesh that have position
  * with invalid floating point values, such as NaN or inf. If the input mesh has
  * faces, and if the flag `deleteAlsoFaces` is set to true, all faces incident
  * on deleted vertices are also deleted.
@@ -447,7 +447,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
     // iterate over all vertices in the mesh, and mark any with invalid floating
     // point values as deleted.
     for (VertexType& v : m.vertices()) {
-        if (v.coord().isDegenerate()) {
+        if (v.position().isDegenerate()) {
             count_vd++;
             m.deleteVertex(&v);
         }
@@ -482,7 +482,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
  * degenerate, meaning that they have two or more vertex references that link
  * the same vertex. All degenerate faces are zero area faces, but not all zero
  * area faces are degenerate (for example, a face with three different vertex
- * references, but two of them have the same coordinates). Therefore, if you
+ * references, but two of them have the same position). Therefore, if you
  * also want to remove these kinds of faces, you should call
  * `removeDuplicatedVertices(m)` first. This function does not adjust topology.
  *
