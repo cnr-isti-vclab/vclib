@@ -108,7 +108,8 @@ void testPositionsMatrix(const auto& tm)
     REQUIRE(verts.rows() == tm.vertexNumber());
     REQUIRE(verts.cols() == 3);
 
-    for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::positions) {
+    for (vcl::uint   i = 0;
+         const auto& c : tm.vertices() | vcl::views::positions) {
         REQUIRE(verts(i, 0) == c.x());
         REQUIRE(verts(i, 1) == c.y());
         REQUIRE(verts(i, 2) == c.z());
@@ -377,7 +378,8 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Positions...")
     {
-        using ScalarType = typename TriMesh::VertexType::PositionType::ScalarType;
+        using ScalarType =
+            typename TriMesh::VertexType::PositionType::ScalarType;
 
         SECTION("Eigen Row Major")
         {

@@ -559,7 +559,8 @@ private:
 /* Deduction guides */
 
 template<MeshConcept MeshType>
-KDTree(const MeshType& m) -> KDTree<typename MeshType::VertexType::PositionType>;
+KDTree(const MeshType& m)
+    -> KDTree<typename MeshType::VertexType::PositionType>;
 
 template<MeshConcept MeshType>
 KDTree(const MeshType& m, uint pointsPerCell)

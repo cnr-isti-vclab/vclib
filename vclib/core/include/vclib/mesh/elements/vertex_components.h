@@ -243,8 +243,7 @@ using Position3f = comp::Position3f<>;
 using Position3d = comp::Position3d<>;
 
 template<typename ScalarType, int N, typename ParentVertexType>
-using VerticalPosition =
-    comp::Position<Point<ScalarType, N>, ParentVertexType>;
+using VerticalPosition = comp::Position<Point<ScalarType, N>, ParentVertexType>;
 
 template<typename ScalarType, typename ParentVertexType>
 using VerticalPosition3 = comp::Position3<ScalarType, ParentVertexType>;

@@ -81,7 +81,8 @@ namespace vcl {
  *
  * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
  * vertexPositionsToBuffer(mesh, buffer.data());
- * appendDuplicateVertexPositionsToBuffer(mesh, vertsToDuplicate, buffer.data());
+ * appendDuplicateVertexPositionsToBuffer(mesh, vertsToDuplicate,
+ * buffer.data());
  * @endcode
  *
  * @note The buffer must be preallocated with the correct size (total number of

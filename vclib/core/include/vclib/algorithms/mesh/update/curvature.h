@@ -54,11 +54,11 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
     requirePerVertexAdjacentFaces(m);
     requirePerFaceAdjacentFaces(m);
 
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using NormalType = VertexType::NormalType;
-    using ScalarType = PositionType::ScalarType;
-    using FaceType   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using NormalType   = VertexType::NormalType;
+    using ScalarType   = PositionType::ScalarType;
+    using FaceType     = MeshType::FaceType;
 
     // Auxiliary data structure
     struct AdjVertex
@@ -131,7 +131,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         Matrix33<ScalarType> M = Matrix33<ScalarType>::Zero();
         for (size_t i = 0; i < vertices.size(); ++i) {
             PositionType edge = (v.position() - vertices[i].vert->position());
-            float     curvature =
+            float        curvature =
                 (2.0f * (v.normal().dot(edge))) / edge.squaredNorm();
             PositionType t = Tp * edge;
             t.normalize();
@@ -250,16 +250,16 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
  */
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvaturePCA(
-    MeshType&                                            m,
+    MeshType&                                               m,
     typename MeshType::VertexType::PositionType::ScalarType radius,
     bool     montecarloSampling = true,
     LogType& log                = nullLogger)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using ScalarType = PositionType::ScalarType;
-    using NormalType = VertexType::NormalType;
-    using FaceType   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
+    using NormalType   = VertexType::NormalType;
+    using FaceType     = MeshType::FaceType;
 
     using VGrid         = StaticGrid3<VertexType*, ScalarType>;
     using VGridIterator = VGrid::ConstIterator;
@@ -284,11 +284,11 @@ void updatePrincipalCurvaturePCA(
     parallelFor(m.vertices(), [&](VertexType& v) {
         // for (VertexType& v : m.vertices()) {
         Matrix33<ScalarType> A, eigenvectors;
-        PositionType            bp, eigenvalues;
+        PositionType         bp, eigenvalues;
         if (montecarloSampling) {
             Sphere                     s(v.position(), radius);
             std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
-            std::vector<PositionType>     points;
+            std::vector<PositionType>  points;
             points.reserve(vec.size());
             for (const auto& it : vec) {
                 points.push_back(it->second->position());
