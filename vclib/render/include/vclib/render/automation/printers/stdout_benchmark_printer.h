@@ -37,6 +37,7 @@ class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
     uint mAutomationIndex = 0;
     uint mLoopCounter     = 0;
+    bool mPrintDescription = true;
 
 public:
     void print(const BenchmarkMetric& metric, const std::string& description)
@@ -55,13 +56,15 @@ public:
             temp << meas + metric.getUnitOfMeasure();
         }
         temp << "]";
-        if(printDescription) {
+        if(mPrintDescription) {
             std::cout << description << " -> ";
         }
         std::cout << temp.str() << std::endl;
 
         mAutomationIndex++;
     };
+
+    void useDescription(bool b = true) { mPrintDescription = b; }
 
     void onBenchmarkLoop() override { mLoopCounter++; }
 

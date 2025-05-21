@@ -25,6 +25,7 @@
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 
+#include <exception>
 #include <fstream>
 #include <iterator>
 #include <sstream>
@@ -50,21 +51,39 @@ class CsvBenchmarkPrinter : public BenchmarkPrinter
     std::string                                 mFileName;
     std::ofstream                               mStream;
     std::vector<std::pair<std::string, size_t>> mMeasurementStrings;
-    bool                                        printHeader = true;
+    bool                                        mPrintHeader        = true;
+    bool                                        mAppend             = false;
+    bool                                        mPrintDescription   = true;
+    bool                                        mPrintUnitOfMeasure = true;
 
 public:
-    CsvBenchmarkPrinter(const std::string& fileName) : mFileName {fileName}
+    CsvBenchmarkPrinter(const std::string& fileName, bool append = false) :
+            mFileName {fileName}, mAppend {append}
     {
-        mStream.open(fileName);
+        if (append) {
+            mStream.open(fileName, std::ios_base::app);
+        }
+        else {
+            mStream.open(fileName);
+        }
         if (mStream.fail()) {
-            throw "CsvBenchmarkPrinter : invalid file name\n";
+            throw std::invalid_argument(
+                "CsvBenchmarkPrinter: invalid filename");
         }
     };
 
     CsvBenchmarkPrinter(const CsvBenchmarkPrinter& other) :
-            mFileName {other.mFileName}, mStream()
+            BenchmarkPrinter(other), mFileName {other.mFileName}, mStream(),
+            mPrintHeader(other.mPrintHeader), mAppend(other.mAppend),
+            mPrintDescription(other.mPrintDescription),
+            mPrintUnitOfMeasure(other.mPrintUnitOfMeasure)
     {
-        mStream.open(mFileName);
+        if (mAppend) {
+            mStream.open(mFileName, std::ios_base::app);
+        }
+        else {
+            mStream.open(mFileName);
+        }
     };
 
     void onBenchmarkLoop() override
@@ -77,7 +96,7 @@ public:
         override
     {
         std::ostringstream temp;
-        if (printDescription) {
+        if (mPrintDescription) {
             temp << description;
         }
 
@@ -86,12 +105,15 @@ public:
         maxMeasurementSize =
             std::max(maxMeasurementSize, (uint32_t) measureStrings.size());
 
-        for (size_t i = 0; i < measureStrings.size(); i++) {
-            measureStrings[i] = measureStrings[i] + metric.getUnitOfMeasure();
+        if (mPrintUnitOfMeasure) {
+            for (size_t i = 0; i < measureStrings.size(); i++) {
+                measureStrings[i] =
+                    measureStrings[i] + metric.getUnitOfMeasure();
+            }
         }
 
         if (metric.getMeasureStrings().size() > 0) {
-            if (printDescription) {
+            if (mPrintDescription) {
                 temp << ";";
             }
             std::copy(
@@ -109,12 +131,12 @@ public:
 
     void finish() override
     {
-        if (printHeader) {
-            if (printDescription) {
+        if (mPrintHeader) {
+            if (mPrintDescription) {
                 mStream << "Description";
             }
             for (uint32_t i = 0; i < maxMeasurementSize; i++) {
-                if (i != 0 || printDescription) {
+                if (i != 0 || mPrintDescription) {
                     mStream << ";";
                 }
                 mStream << "Measurement " << i;
@@ -122,17 +144,22 @@ public:
         }
         bool firstLoop = true;
         for (const auto& meas : mMeasurementStrings) {
-            if (!firstLoop || printHeader) {
+            if (!firstLoop || mPrintHeader) {
                 mStream << "\n";
             }
             mStream << meas.first
                     << std::string(maxMeasurementSize - meas.second, ';');
             firstLoop = false;
         }
+        mStream << std::endl;
         mStream.close();
     };
 
-    void useHeader(bool b = true) {}
+    void useHeader(bool b = true) { mPrintHeader = b; }
+
+    void useDescription(bool b = true) { mPrintDescription = b; }
+
+    void useUnitOfMeasure(bool b = true) { mPrintUnitOfMeasure = b; }
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {

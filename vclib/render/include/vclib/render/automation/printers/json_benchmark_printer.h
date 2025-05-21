@@ -25,6 +25,7 @@
 
 #include <vclib/render/automation/printers/benchmark_printer.h>
 
+#include <exception>
 #include <fstream>
 #include <sstream>
 
@@ -51,8 +52,10 @@ namespace vcl {
  */
 class JsonBenchmarkPrinter : public BenchmarkPrinter
 {
-    bool mFirstLoop       = true;
-    bool mFirstAutomation = true;
+    bool mFirstLoop          = true;
+    bool mFirstAutomation    = true;
+    bool mPrintDescription   = true;
+    bool mPrintUnitOfMeasure = true;
 
     std::string   mFileName;
     std::ofstream mStream;
@@ -62,12 +65,15 @@ public:
     {
         mStream.open(fileName);
         if (mStream.fail()) {
-            throw "JsonBenchmarkPrinter : invalid file name\n";
+            throw std::invalid_argument(
+                "JsonBenchmarkPrinter: invalid filename");
         }
     };
 
     JsonBenchmarkPrinter(const JsonBenchmarkPrinter& other) :
-            mFileName {other.mFileName}, mStream()
+            BenchmarkPrinter(other), mFileName {other.mFileName}, mStream(),
+            mPrintDescription(other.mPrintDescription),
+            mPrintUnitOfMeasure(other.mPrintUnitOfMeasure)
     {
         mStream.open(mFileName);
     };
@@ -97,13 +103,15 @@ public:
             else {
                 isFirst = false;
             }
-            temp << "\n\t\t\t\"" << meas << metric.getUnitOfMeasure() << "\"";
+            temp << "\n\t\t\t\"" << meas
+                 << (mPrintUnitOfMeasure ? metric.getUnitOfMeasure() : "")
+                 << "\"";
         }
         temp << "\n\t\t]";
 
         mStream << "\n\t{";
 
-        if (printDescription) {
+        if (mPrintDescription) {
             mStream << "\n\t\t\"Description\" : \"" << description << "\"";
         }
 
@@ -117,6 +125,10 @@ public:
         mStream << "\n]";
         mStream.close();
     };
+
+    void useDescription(bool b = true) { mPrintDescription = b; }
+
+    void useUnitOfMeasure(bool b = true) { mPrintUnitOfMeasure = b; }
 
     std::shared_ptr<BenchmarkPrinter> clone() const& override
     {

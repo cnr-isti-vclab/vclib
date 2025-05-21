@@ -32,6 +32,7 @@
 #include <vclib/render/automation/actions/rotation_automation_action.h>
 #include <vclib/render/automation/actions/sequential_automation_actions.h>
 #include <vclib/render/automation/actions/simultaneous_automation_actions.h>
+#include <vclib/render/automation/actions/null_automation_action.h>
 
 #include <vclib/render/automation/actions/wrappers/frame_delay_automation_action.h>
 #include <vclib/render/automation/actions/wrappers/frame_limited_automation_action.h>

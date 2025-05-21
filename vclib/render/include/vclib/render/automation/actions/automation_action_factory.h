@@ -144,6 +144,11 @@ public:
     {
         return TimeLimitedAutomationAction<TemplPar>(action, durationSeconds);
     }
+
+    NullAutomationAction<TemplPar> createNull()
+    {
+        return NullAutomationAction<TemplPar>();
+    }
 };
 
 } // namespace vcl

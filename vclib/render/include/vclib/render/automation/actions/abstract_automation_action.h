@@ -100,6 +100,8 @@ public:
         return clone();
     };
 
+    virtual bool isNull() const { return false; }
+
     virtual std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
         const& = 0;
     virtual std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>

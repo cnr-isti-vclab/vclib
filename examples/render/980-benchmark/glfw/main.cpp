@@ -24,8 +24,6 @@
 
 #include <vclib/imgui/imgui_drawer.h>
 
-#include "csv_benchmark_printer_shader_change.h"
-#include "change_shader_automation_action.h"
 #include "cmd_opt_parser.h"
 #include "get_drawable_mesh.h"
 #include "glfw_maximized_window_manager.h"
@@ -72,15 +70,17 @@ int main(int argc, char** argv)
 #endif
 
     CmdOptionParser optionParser = CmdOptionParser {
-        {"--stdout",        0},
-        {"-o",              3},
-        {"--output-folder", 1},
-        {"-f",              1},
-        {"-r",              1},
-        {"-h",              0},
-        {"--help",          0},
-        {"--no-print",      0},
-        {"--flat",          0}
+        {"--stdout",         0},
+        {"-o",               1},
+        {"--output-dir",     1},
+        {"-f",               1},
+        {"-r",               1},
+        {"-h",               0},
+        {"--help",           0},
+        {"--no-print",       0},
+        {"--flat",           0},
+        {"--split",          0},
+        {"--uber-static-if", 0}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
@@ -100,10 +100,10 @@ int main(int argc, char** argv)
             << "\n\t-o:              "
             << "Takes 3 filenames as parameters; it writes the results "
                "in those files"
-            << "\n\t--output-folder: "
-            << "Takes a path (without final path separator) as an argument. Writes the "
-               "results in FOLDER/uber_result.csv, FOLDER/split_result.csv, "
-               "FOLDER/uber_if_result.csv"
+            << "\n\t--output-dir: "
+            << "Takes a directory path as an argument. "
+               "Writes the "
+               "results in DIRECTORY/SPLITTYPE_result_SHADINGTYPE.csv"
             << "\n\t--no-print:      " << "Disables result printing"
             << "\n\t-f:              "
             << "Allows you to choose how many frames the rotations last"
@@ -115,21 +115,39 @@ int main(int argc, char** argv)
         exit(0);
     }
 
+    // Check if any models are in the remaining arguments
     if (remainingArgs.size() == 0) {
         std::cerr << "Error: missing model argument(s)\n";
         exit(1);
     }
 
+    // Check if there are multiple options pertaining the shader splitting type
+    if (options.contains("--split") + options.contains("--uber-static-if") >
+        1) {
+        std::cerr << "Error: conflicting shader split type options\n";
+        exit(1);
+    }
+
+    // Check if there are multiple options pertaining the output location
+    if (options.contains("--stdout") + options.contains("-o") +
+            options.contains("--output-dir") + options.contains("--no-print") >
+        1) {
+        std::cerr << "Error: conflicting output location options\n";
+        exit(1);
+    }
+
+    // -f option implementation
     vcl::uint frames = 1000;
 
     if (options.contains("-f")) {
         frames = vcl::uint(std::strtoul(options["-f"][0].c_str(), nullptr, 10));
     }
 
-    vcl::uint repetitionsPerProgramType = 2;
+    // -r option implementation
+    vcl::uint repetitions = 2;
 
     if (options.contains("-r")) {
-        repetitionsPerProgramType =
+        repetitions =
             vcl::uint(std::strtoul(options["-r"][0].c_str(), nullptr, 10));
     }
 
@@ -138,6 +156,7 @@ int main(int argc, char** argv)
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
 
+    // Insert the meshes one next to the other along the X axis
     vcl::Box3d bb;
     for (const auto& path : remainingArgs) {
         vcl::DrawableMesh<vcl::TriMesh> msh =
@@ -147,10 +166,27 @@ int main(int argc, char** argv)
         }
         bb.add(vcl::boundingBox(msh));
         msh.updateBuffers({VERTICES, VERT_NORMALS});
+
+        // --flat option implementation
         if (options.contains("--flat")) {
             vcl::MeshRenderSettings mrs = msh.renderSettings();
             mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
             msh.setRenderSettings(mrs);
+        }
+
+        // --split and --uber-static-if options implementation
+        if (options.contains("--split")) {
+            msh.setSurfaceProgramType(
+                vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::SPLIT);
+        }
+        else if (options.contains("--uber-static-if")) {
+            msh.setSurfaceProgramType(
+                vcl::DrawableMesh<
+                    vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
+        }
+        else {
+            msh.setSurfaceProgramType(
+                vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::UBER);
         }
         vec->pushBack(std::move(msh));
     }
@@ -161,76 +197,75 @@ int main(int argc, char** argv)
     // declarations
     vcl::AutomationActionFactory<BenchmarDrawerT> aaf;
 
-    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa(
-        vec, vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::SPLIT);
-    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa2(
-        vec,
-        vcl::DrawableMesh<
-            vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
-
-    // Repeat all automations 2 times
-    tw.setRepeatTimes(repetitionsPerProgramType * 3);
+    tw.setRepeatTimes(repetitions);
 
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
-    // Rotate and scale at the same time for 2 seconds
+    // Rotation around Z axis
     tw.addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
             BenchmarDrawerT>::fromFramesPerRotation(frames, {0.f, 0.f, 1.f}),
         frames));
 
-    // Rotate for 5000 frames and then scale for 5000 frames
+    // Rotation around Y axis
     tw.addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
             BenchmarDrawerT>::fromFramesPerRotation(frames, {0.f, 1.f, 0.f}),
         frames));
 
+    // Rotation around X axis
     tw.addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
             BenchmarDrawerT>::fromFramesPerRotation(frames, {1.f, 0.f, 0.f}),
         frames));
 
-    tw.addAutomationNoMetric(aaf.createStartCountDelay(
-        aaf.createStartCountLimited(csaa, 1), repetitionsPerProgramType - 1));
-    tw.addAutomationNoMetric(aaf.createStartCountDelay(
-        aaf.createStartCountLimited(csaa2, 1),
-        repetitionsPerProgramType * 2 - 1));
+    // Do nothing
+    tw.addAutomation(aaf.createFrameLimited(aaf.createNull(), frames));
 
     std::string shadingType = "smooth";
     if (options.contains("--flat")) {
         shadingType = "flat";
     }
 
+    std::string splitType = "uber";
+    if (options.contains("--split")) {
+        splitType = "split";
+    }
+    if (options.contains("--uber-static-if")) {
+        splitType = "uber_static_if";
+    }
+
     if (options.contains("--stdout")) {
-        vcl::StdoutBenchmarkPrinter temp;
-        temp.useDescription(false);
-        tw.setPrinter(vcl::StdoutBenchmarkPrinter(temp));
+        vcl::StdoutBenchmarkPrinter prntr;
+        tw.setPrinter(vcl::StdoutBenchmarkPrinter(prntr));
     }
     else if (options.contains("-o")) {
         std::vector<std::string> optArgs = options["-o"];
-        tw.setPrinter(
-            vcl::CsvBenchmarkPrinterShaderChange(
-                optArgs[0], optArgs[1], optArgs[2], 6));
+        auto prntr = vcl::CsvBenchmarkPrinter(optArgs[0], true);
+        prntr.useDescription(false);
+        prntr.useHeader(false);
+        prntr.useUnitOfMeasure(false);
+        tw.setPrinter(prntr);
     }
-    else if (options.contains("--output-folder")) {
-        std::string folderString = options["--output-folder"][0];
-        tw.setPrinter(
-            vcl::CsvBenchmarkPrinterShaderChange(
-                folderString + "/uber_result_" + shadingType + ".csv",
-                folderString + "/split_result_" + shadingType + ".csv",
-                folderString + "/uber_if_result_" + shadingType + ".csv",
-                6));
+    else if (options.contains("--output-dir")) {
+        std::string folderString = options["--output-dir"][0];
+        auto        prntr        = vcl::CsvBenchmarkPrinter(
+            folderString + splitType + "_result_" + shadingType + ".csv", true);
+        prntr.useDescription(false);
+        prntr.useHeader(false);
+        prntr.useUnitOfMeasure(false);
+        tw.setPrinter(prntr);
     }
     else if (options.contains("--no-print")) {
         tw.setPrinter(vcl::NullBenchmarkPrinter());
     }
     else {
-        tw.setPrinter(
-            vcl::CsvBenchmarkPrinterShaderChange(
-                "./uber_result_" + shadingType + ".csv",
-                "./split_result_" + shadingType + ".csv",
-                "./uber_if_result_" + shadingType + ".csv",
-                6));
+        auto prntr = vcl::CsvBenchmarkPrinter(
+            "./" + splitType + "_result_" + shadingType + ".csv", true);
+        prntr.useDescription(false);
+        prntr.useHeader(false);
+        prntr.useUnitOfMeasure(false);
+        tw.setPrinter(prntr);
     }
 
     tw.terminateUponCompletion();
