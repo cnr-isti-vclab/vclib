@@ -26,7 +26,6 @@
 
 #include "cmd_opt_parser.h"
 #include "get_drawable_mesh.h"
-#include "glfw_maximized_window_manager.h"
 
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
@@ -53,10 +52,13 @@ static const std::string PATH_SEP = "\\";
 static const std::string PATH_SEP = "/";
 #endif
 
+static const vcl::uint DEFAULT_WINDOW_WIDTH = 1440;
+static const vcl::uint DEFAULT_WINDOW_HEIGHT = 1080;
+
 int main(int argc, char** argv)
 {
     using BenchmarkViewer = vcl::RenderApp<
-        vcl::glfw::MaximizedWindowManager,
+        vcl::glfw::WindowManager,
         vcl::Canvas,
         vcl::BenchmarkViewerDrawer>;
 
@@ -80,7 +82,8 @@ int main(int argc, char** argv)
         {"--no-print",       0},
         {"--flat",           0},
         {"--split",          0},
-        {"--uber-static-if", 0}
+        {"--uber-static-if", 0},
+        {"--res",            2}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
@@ -93,25 +96,34 @@ int main(int argc, char** argv)
             slashPos == std::string::npos ? argv0 : argv0.substr(slashPos + 1);
         std::cout
             << "Executes a benchmark which comprises 3 rotations (one around "
-               "each axis) for every SurfaceProgramType:"
+               "each axis) 2 times (by default) using the given shader "
+               "splitting (Uber by default) and the given shading type (Smooth "
+               "by default):"
             << "\nusage: " << programName << " [options] model1 model2 ..."
             << "\noptions:"
-            << "\n\t--stdout:        " << "Prints results to standard output"
-            << "\n\t-o:              "
-            << "Takes 3 filenames as parameters; it writes the results "
-               "in those files"
-            << "\n\t--output-dir: "
+            << "\n\t--stdout:         " << "Prints results to standard output"
+            << "\n\t-o:               "
+            << "Allows you to choose the output file"
+            << "\n\t--output-dir:     "
             << "Takes a directory path as an argument. "
                "Writes the "
                "results in DIRECTORY/SPLITTYPE_result_SHADINGTYPE.csv"
-            << "\n\t--no-print:      " << "Disables result printing"
-            << "\n\t-f:              "
-            << "Allows you to choose how many frames the rotations last"
-            << "\n\t-r:              "
+            << "\n\t--no-print:       " << "Disables result printing"
+            << "\n\t-f:               "
+            << "Allows you to choose how many frames the rotations last "
+               "(default 1000)"
+            << "\n\t-r:               "
             << "Allows you to choose how many times the 3 rotations "
-               "are executed for each SurfaceProgramType"
-            << "\n\t--flat:          " << "Uses flat shading for all the meshes"
-            << "\n\t-h, --help:      " << "Shows help page\n";
+               "are executed (default 2)"
+            << "\n\t--flat:           "
+            << "Uses flat shading for all the meshes"
+            << "\n\t--split:          " << "Uses the \"SPLIT\" shader splitting"
+            << "\n\t--uber-static-if: "
+            << "Uses the \"UBER_WITH_STATIC_IF\" shader splitting"
+            << "\n\t--res:            "
+            << "Allows you to choose window resolution. Takes width and height "
+               "as parameters"
+            << "\n\t-h, --help:       " << "Shows help page\n";
         exit(0);
     }
 
@@ -138,20 +150,45 @@ int main(int argc, char** argv)
 
     // -f option implementation
     vcl::uint frames = 1000;
-
     if (options.contains("-f")) {
-        frames = vcl::uint(std::strtoul(options["-f"][0].c_str(), nullptr, 10));
+        frames = std::strtoul(options["-f"][0].c_str(), nullptr, 10);
+        if(frames == 0) {
+            std::cerr << "Error: invalid frame amount (option -f)" << std::endl;
+            exit(1);
+        }
     }
 
     // -r option implementation
     vcl::uint repetitions = 2;
-
     if (options.contains("-r")) {
-        repetitions =
-            vcl::uint(std::strtoul(options["-r"][0].c_str(), nullptr, 10));
+        repetitions = std::strtoul(options["-r"][0].c_str(), nullptr, 10);
+        if(repetitions == 0) {
+            std::cerr << "Error: invalid repetitions amount (option -r)" << std::endl;
+            exit(1);
+        }
     }
 
-    BenchmarkViewer tw("Benchmark");
+    // --res option implementation
+    vcl::uint width = DEFAULT_WINDOW_WIDTH;
+    vcl::uint height = DEFAULT_WINDOW_HEIGHT;
+    if (options.contains("--res")) {
+        width = std::strtoul(options["--res"][0].c_str(), nullptr, 10);
+        height = std::strtoul(options["--res"][1].c_str(), nullptr, 10);
+        bool err = false;
+        if(width == 0) {
+            std::cerr << "Error: invalid window width (option --res)" << std::endl;
+            err = true;
+        }
+        if(height == 0) {
+            std::cerr << "Error: invalid window height (option --res)" << std::endl;
+            err = true;
+        }
+        if (err) {
+            exit(1);
+        }
+    }
+
+    BenchmarkViewer tw("Benchmark", width, height);
 
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
