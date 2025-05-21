@@ -61,7 +61,7 @@ static const std::string PATH_SEP = "/";
 static const vcl::uint DEFAULT_WINDOW_WIDTH  = 1440;
 static const vcl::uint DEFAULT_WINDOW_HEIGHT = 1080;
 
-static const vcl::Color DEFAULT_USER_COLOR = vcl::Color(0, 255, 0);
+static const vcl::Color DEFAULT_USER_COLOR = vcl::Color(165, 0, 0);
 
 static const vcl::uint DEFAULT_REPETITIONS = 2;
 
@@ -70,7 +70,7 @@ static const vcl::uint DEFAULT_FRAMES = 1000;
 vcl::DrawableMesh<vcl::TriMesh> getMesh(std::string path, vcl::Color userColor)
 {
     vcl::LoadSettings ldstngs{true, true};
-    vcl::TriMesh mesh = vcl::load<vcl::TriMesh, vcl::ConsoleLogger>(path, ldstngs);
+    vcl::TriMesh mesh = vcl::load<vcl::TriMesh>(path, ldstngs);
     vcl::updatePerVertexAndFaceNormals(mesh);
 
     vcl::MeshRenderSettings mrs(mesh);
