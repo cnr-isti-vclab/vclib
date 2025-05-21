@@ -134,7 +134,8 @@ TEMPLATE_TEST_CASE(
             }
 
             for (size_t i = m1vn; i < m1vn + m2vn; ++i) {
-                REQUIRE(m3.vertex(i).position() == m2.vertex(i - m1vn).position());
+                REQUIRE(
+                    m3.vertex(i).position() == m2.vertex(i - m1vn).position());
                 REQUIRE(m3.vertex(i).normal() == m2.vertex(i - m1vn).normal());
                 REQUIRE(
                     m3.vertex(i).template customComponent<float>("v_comp") ==

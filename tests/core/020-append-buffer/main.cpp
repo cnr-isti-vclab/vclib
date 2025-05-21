@@ -226,7 +226,8 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Append duplicated vertex positions...")
     {
-        using ScalarType = typename TriMesh::VertexType::PositionType::ScalarType;
+        using ScalarType =
+            typename TriMesh::VertexType::PositionType::ScalarType;
 
         SECTION("Eigen Row Major")
         {

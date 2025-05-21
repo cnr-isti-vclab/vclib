@@ -47,7 +47,9 @@ typename FaceType::VertexType::PositionType faceNormal(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::normal(
-            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
+            f.vertex(0)->position(),
+            f.vertex(1)->position(),
+            f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
@@ -57,7 +59,8 @@ typename FaceType::VertexType::PositionType faceNormal(const FaceType& f)
                 f.vertex(2)->position());
         }
         else {
-            return Polygon<PositionType>::normal(f.vertices() | views::positions);
+            return Polygon<PositionType>::normal(
+                f.vertices() | views::positions);
         }
     }
 }
@@ -79,10 +82,13 @@ typename FaceType::VertexType::PositionType faceBarycenter(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::barycenter(
-            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
+            f.vertex(0)->position(),
+            f.vertex(1)->position(),
+            f.vertex(2)->position());
     }
     else {
-        return Polygon<PositionType>::barycenter(f.vertices() | views::positions);
+        return Polygon<PositionType>::barycenter(
+            f.vertices() | views::positions);
     }
 }
 
@@ -103,7 +109,9 @@ auto faceArea(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::area(
-            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
+            f.vertex(0)->position(),
+            f.vertex(1)->position(),
+            f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
@@ -135,7 +143,9 @@ auto facePerimeter(const FaceType& f)
     using PositionType = FaceType::VertexType::PositionType;
     if constexpr (TriangleFaceConcept<FaceType>) {
         return Triangle<PositionType>::perimeter(
-            f.vertex(0)->position(), f.vertex(1)->position(), f.vertex(2)->position());
+            f.vertex(0)->position(),
+            f.vertex(1)->position(),
+            f.vertex(2)->position());
     }
     else {
         if (f.vertexNumber() == 3) {
@@ -145,7 +155,8 @@ auto facePerimeter(const FaceType& f)
                 f.vertex(2)->position());
         }
         else {
-            return Polygon<PositionType>::perimeter(f.vertices() | views::positions);
+            return Polygon<PositionType>::perimeter(
+                f.vertices() | views::positions);
         }
     }
 }

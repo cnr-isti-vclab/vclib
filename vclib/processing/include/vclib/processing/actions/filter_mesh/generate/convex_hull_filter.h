@@ -68,8 +68,8 @@ public:
         if constexpr (HasName<MeshType>) {
             name = input.name() + " " + name;
         }
-        outputMeshes.push_back(
-            convexHull<MeshType>(input.vertices() | vcl::views::positions, log));
+        outputMeshes.push_back(convexHull<MeshType>(
+            input.vertices() | vcl::views::positions, log));
         if constexpr (HasName<MeshType>) {
             outputMeshes.back().name() = name;
         }

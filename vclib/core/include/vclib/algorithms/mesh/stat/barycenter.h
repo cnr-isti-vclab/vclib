@@ -42,8 +42,8 @@ namespace vcl {
 template<MeshConcept MeshType>
 auto barycenter(const MeshType& m) -> MeshType::VertexType::PositionType
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
 
     PositionType bar;
 
@@ -72,14 +72,14 @@ template<MeshConcept MeshType>
 auto weightedBarycenter(const MeshType& m, Range auto&& weights)
     -> MeshType::VertexType::PositionType
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using RType      = std::ranges::range_value_t<decltype(weights)>;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using RType        = std::ranges::range_value_t<decltype(weights)>;
 
     assert(std::ranges::size(weights) == m.vertexNumber());
 
     PositionType bar;
-    RType     weightedSum = 0;
+    RType        weightedSum = 0;
 
     for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
         bar += v.position() * w;
@@ -131,10 +131,10 @@ auto qualityWeightedBarycenter(const MeshType& m)
 template<FaceMeshConcept MeshType>
 auto shellBarycenter(const MeshType& m) -> MeshType::VertexType::PositionType
 {
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-    using PositionType  = VertexType::PositionType;
-    using ScalarType = PositionType::ScalarType;
+    using VertexType   = MeshType::VertexType;
+    using FaceType     = MeshType::FaceType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
 
     PositionType bar;
     bar.setZero();

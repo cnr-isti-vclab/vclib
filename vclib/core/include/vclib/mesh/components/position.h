@@ -106,7 +106,8 @@ protected:
     void importFrom(const Element& v, bool = true)
     {
         if constexpr (HasPosition<Element>) {
-            position() = v.position().template cast<typename PositionType::ScalarType>();
+            position() =
+                v.position().template cast<typename PositionType::ScalarType>();
         }
     }
 

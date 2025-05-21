@@ -42,9 +42,9 @@ namespace vcl {
 template<PolygonMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType createDodecahedron(LogType& log = nullLogger)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using ScalarType = PositionType::ScalarType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
 
     MeshType mesh;
 

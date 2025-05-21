@@ -68,8 +68,8 @@ void addTriangleFacesFromPolygon(
     FaceType&                f,
     const std::vector<uint>& polygon)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
 
     // from the ids, create a polygon of positions
     std::vector<PositionType> polPositions(polygon.size());

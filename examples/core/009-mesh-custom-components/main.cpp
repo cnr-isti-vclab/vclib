@@ -64,13 +64,15 @@ int main()
     assert(!m.isPerVertexCustomComponentOfType<vcl::Point3d>("oldPositions"));
 
     for (vcl::TriMesh::Vertex& v : m.vertices()) {
-        v.customComponent<vcl::Point3f>("oldPositions") = v.position().cast<float>();
+        v.customComponent<vcl::Point3f>("oldPositions") =
+            v.position().cast<float>();
     }
 
     vcl::taubinSmoothing(m, 500, 0.7, -0.73);
 
     vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldPositions =
-        m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldPositions");
+        m.perVertexCustomComponentVectorHandle<const vcl::Point3f>(
+            "oldPositions");
 
     double avgDist = 0;
     using PT       = vcl::TriMesh::Vertex::PositionType;
