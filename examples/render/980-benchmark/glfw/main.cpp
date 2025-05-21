@@ -25,7 +25,6 @@
 #include <vclib/imgui/imgui_drawer.h>
 
 #include "cmd_opt_parser.h"
-#include "get_drawable_mesh.h"
 
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
@@ -37,6 +36,11 @@
 #include <vclib/render/drawers/benchmark_drawer.h>
 #include <vclib/render/drawers/benchmark_viewer_drawer.h>
 
+#include <vclib/algorithms/mesh/update/color.h>
+#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/io.h>
+#include <vclib/meshes.h>
+
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/glfw/window_manager.h>
@@ -45,6 +49,8 @@
 
 #include <regex>
 
+#include <vclib/misc/logger/console_logger.h>
+
 #if defined(WIN32) || defined(_WIN32) || \
     defined(__WIN32) && !defined(__CYGWIN__)
 static const std::string PATH_SEP = "\\";
@@ -52,8 +58,41 @@ static const std::string PATH_SEP = "\\";
 static const std::string PATH_SEP = "/";
 #endif
 
-static const vcl::uint DEFAULT_WINDOW_WIDTH = 1440;
+static const vcl::uint DEFAULT_WINDOW_WIDTH  = 1440;
 static const vcl::uint DEFAULT_WINDOW_HEIGHT = 1080;
+
+static const vcl::Color DEFAULT_USER_COLOR = vcl::Color(0, 255, 0);
+
+static const vcl::uint DEFAULT_REPETITIONS = 2;
+
+static const vcl::uint DEFAULT_FRAMES = 1000;
+
+vcl::DrawableMesh<vcl::TriMesh> getMesh(std::string path, vcl::Color userColor)
+{
+    vcl::LoadSettings ldstngs{true, true};
+    vcl::TriMesh mesh = vcl::load<vcl::TriMesh, vcl::ConsoleLogger>(path, ldstngs);
+    vcl::updatePerVertexAndFaceNormals(mesh);
+
+    vcl::MeshRenderSettings mrs(mesh);
+    mrs.setSurfaceUserColor(userColor);
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_USER);
+
+    if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
+    }
+    else if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX);
+    }
+    else if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX)) {
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX);
+    }
+    else if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_FACE)) {
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_FACE);
+    }
+    vcl::DrawableMesh<vcl::TriMesh> drawable(mesh);
+    drawable.setRenderSettings(mrs);
+    return drawable;
+}
 
 int main(int argc, char** argv)
 {
@@ -72,18 +111,20 @@ int main(int argc, char** argv)
 #endif
 
     CmdOptionParser optionParser = CmdOptionParser {
-        {"--stdout",         0},
-        {"-o",               1},
-        {"--output-dir",     1},
-        {"-f",               1},
-        {"-r",               1},
-        {"-h",               0},
-        {"--help",           0},
-        {"--no-print",       0},
-        {"--flat",           0},
-        {"--split",          0},
-        {"--uber-static-if", 0},
-        {"--res",            2}
+        {"--stdout",           0},
+        {"-o",                 1},
+        {"--output-dir",       1},
+        {"-f",                 1},
+        {"-r",                 1},
+        {"-h",                 0},
+        {"--help",             0},
+        {"--no-print",         0},
+        {"--flat",             0},
+        {"--split",            0},
+        {"--uber-static-if",   0},
+        {"--res",              2},
+        {"--user-color",       3},
+        {"--force-user-color", 0}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
@@ -101,29 +142,34 @@ int main(int argc, char** argv)
                "by default):"
             << "\nusage: " << programName << " [options] model1 model2 ..."
             << "\noptions:"
-            << "\n\t--stdout:         " << "Prints results to standard output"
-            << "\n\t-o:               "
+            << "\n\t--stdout:           " << "Prints results to standard output"
+            << "\n\t-o:                 "
             << "Allows you to choose the output file"
-            << "\n\t--output-dir:     "
+            << "\n\t--output-dir:       "
             << "Takes a directory path as an argument. "
                "Writes the "
                "results in DIRECTORY/SPLITTYPE_result_SHADINGTYPE.csv"
-            << "\n\t--no-print:       " << "Disables result printing"
-            << "\n\t-f:               "
+            << "\n\t--no-print:         " << "Disables result printing"
+            << "\n\t-f:                 "
             << "Allows you to choose how many frames the rotations last "
                "(default 1000)"
-            << "\n\t-r:               "
+            << "\n\t-r:                 "
             << "Allows you to choose how many times the 3 rotations "
                "are executed (default 2)"
-            << "\n\t--flat:           "
+            << "\n\t--flat:             "
             << "Uses flat shading for all the meshes"
-            << "\n\t--split:          " << "Uses the \"SPLIT\" shader splitting"
-            << "\n\t--uber-static-if: "
+            << "\n\t--split:            "
+            << "Uses the \"SPLIT\" shader splitting"
+            << "\n\t--uber-static-if:   "
             << "Uses the \"UBER_WITH_STATIC_IF\" shader splitting"
-            << "\n\t--res:            "
+            << "\n\t--res:              "
             << "Allows you to choose window resolution. Takes width and height "
                "as parameters"
-            << "\n\t-h, --help:       " << "Shows help page\n";
+            << "\n\t--user-color:       "
+            << "Allows you to choose user color. Takes R G B as parameters."
+            << "\n\t--force-user-color: "
+            << "Forces all meshes to use user color"
+            << "\n\t-h, --help:         " << "Shows help page\n";
         exit(0);
     }
 
@@ -149,12 +195,14 @@ int main(int argc, char** argv)
     }
 
     // -f option implementation
-    vcl::uint frames = 1000;
+    vcl::uint frames = DEFAULT_FRAMES;
     if (options.contains("-f")) {
         frames = std::strtoul(options["-f"][0].c_str(), nullptr, 10);
-        if(frames == 0) {
-            std::cerr << "Error: invalid frame amount (option -f)" << std::endl;
-            exit(1);
+        if (frames == 0) {
+            std::cerr
+                << "Error: invalid frame amount (option -f), using default"
+                << std::endl;
+            frames = DEFAULT_FRAMES;
         }
     }
 
@@ -162,30 +210,41 @@ int main(int argc, char** argv)
     vcl::uint repetitions = 2;
     if (options.contains("-r")) {
         repetitions = std::strtoul(options["-r"][0].c_str(), nullptr, 10);
-        if(repetitions == 0) {
-            std::cerr << "Error: invalid repetitions amount (option -r)" << std::endl;
-            exit(1);
+        if (repetitions == 0) {
+            std::cerr << "Error: invalid repetitions amount (option -r), using "
+                         "default"
+                      << std::endl;
+            repetitions = DEFAULT_REPETITIONS;
         }
     }
 
     // --res option implementation
-    vcl::uint width = DEFAULT_WINDOW_WIDTH;
+    vcl::uint width  = DEFAULT_WINDOW_WIDTH;
     vcl::uint height = DEFAULT_WINDOW_HEIGHT;
     if (options.contains("--res")) {
-        width = std::strtoul(options["--res"][0].c_str(), nullptr, 10);
+        width  = std::strtoul(options["--res"][0].c_str(), nullptr, 10);
         height = std::strtoul(options["--res"][1].c_str(), nullptr, 10);
-        bool err = false;
-        if(width == 0) {
-            std::cerr << "Error: invalid window width (option --res)" << std::endl;
-            err = true;
+        if (width == 0) {
+            std::cerr
+                << "Error: invalid window width (option --res), using default"
+                << std::endl;
+            width = DEFAULT_WINDOW_WIDTH;
         }
-        if(height == 0) {
-            std::cerr << "Error: invalid window height (option --res)" << std::endl;
-            err = true;
+        if (height == 0) {
+            std::cerr
+                << "Error: invalid window height (option --res), using default"
+                << std::endl;
+            height = DEFAULT_WINDOW_HEIGHT;
         }
-        if (err) {
-            exit(1);
-        }
+    }
+
+    // --user-color implementation
+    vcl::Color userColor = DEFAULT_USER_COLOR;
+    if (options.contains("--user-color")) {
+        userColor = vcl::Color(
+            std::strtoul(options["--user-color"][0].c_str(), nullptr, 10) % 256,
+            std::strtoul(options["--user-color"][1].c_str(), nullptr, 10) % 256,
+            std::strtoul(options["--user-color"][2].c_str(), nullptr, 10) % 256);
     }
 
     BenchmarkViewer tw("Benchmark", width, height);
@@ -196,8 +255,14 @@ int main(int argc, char** argv)
     // Insert the meshes one next to the other along the X axis
     vcl::Box3d bb;
     for (const auto& path : remainingArgs) {
-        vcl::DrawableMesh<vcl::TriMesh> msh =
-            getDrawableMesh<vcl::TriMesh>(path, false);
+        vcl::DrawableMesh<vcl::TriMesh> msh = getMesh(path, userColor);
+
+        if (options.contains("--force-user-color")) {
+            auto mrs = msh.renderSettings();
+            mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_USER);
+            msh.setRenderSettings(mrs);
+        }
+
         if (!bb.isNull()) {
             vcl::translate(msh, vcl::Point3d(bb.size().x(), 0, 0));
         }
