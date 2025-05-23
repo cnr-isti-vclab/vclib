@@ -47,12 +47,9 @@
 
 #include <imgui.h>
 
-#include <regex>
+#include <algorithm>
 
-#include <vclib/misc/logger/console_logger.h>
-
-#if defined(WIN32) || defined(_WIN32) || \
-    defined(__WIN32) && !defined(__CYGWIN__)
+#ifdef _WIN32
 static const std::string PATH_SEP = "\\";
 #else
 static const std::string PATH_SEP = "/";
@@ -69,8 +66,8 @@ static const vcl::uint DEFAULT_FRAMES = 1000;
 
 vcl::DrawableMesh<vcl::TriMesh> getMesh(std::string path, vcl::Color userColor)
 {
-    vcl::LoadSettings ldstngs{true, true};
-    vcl::TriMesh mesh = vcl::load<vcl::TriMesh>(path, ldstngs);
+    vcl::LoadSettings ldstngs {true, true};
+    vcl::TriMesh      mesh = vcl::load<vcl::TriMesh>(path, ldstngs);
     vcl::updatePerVertexAndFaceNormals(mesh);
 
     vcl::MeshRenderSettings mrs(mesh);
@@ -244,7 +241,8 @@ int main(int argc, char** argv)
         userColor = vcl::Color(
             std::strtoul(options["--user-color"][0].c_str(), nullptr, 10) % 256,
             std::strtoul(options["--user-color"][1].c_str(), nullptr, 10) % 256,
-            std::strtoul(options["--user-color"][2].c_str(), nullptr, 10) % 256);
+            std::strtoul(options["--user-color"][2].c_str(), nullptr, 10) %
+                256);
     }
 
     BenchmarkViewer tw("Benchmark", width, height);
@@ -254,7 +252,10 @@ int main(int argc, char** argv)
 
     // Insert the meshes one next to the other along the X axis
     vcl::Box3d bb;
-    for (const auto& path : remainingArgs) {
+    for (auto& path : remainingArgs) {
+#ifdef _WIN32
+        std::replace(path.begin(), path.end(), '\\', '/');
+#endif
         vcl::DrawableMesh<vcl::TriMesh> msh = getMesh(path, userColor);
 
         if (options.contains("--force-user-color")) {
