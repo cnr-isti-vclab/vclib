@@ -1,15 +1,24 @@
-import os;
-import sys;
 
+#!/usr/bin/python3
 def main():
-    exec_path = None;
-    if "980_BENCHMARK_PATH" in os.environ:
-        exec_path = os.environ["980_BENCHMARK_PATH"];
-    elif "980-benchmark" in os.listdir(os.getcwd()):
-        exec_path = "./980-benchmark"
+    import os;
+    import sys;
+    import subprocess;
+    executable_name = None;
+    if os.name == "nt":
+        executable_name = "./980-benchmark.exe"
     else:
-        raise Exception("Environment variable 980_BENCHMARK_PATH not defined and executable isn't present in the cwd");
-    
+        executable_name = "./980-benchmark"
+    shadingTypesOptions = ["", "--flat"];
+    shadingSplittingOptions  = ["", "--split", "--uber-static-if"];
+    resolutions = [["1920", "1080"], ["1366", "768"], ["1536", "864"], ["1280", "720"]];
+    #TODO: add the meshes to be used
+    meshes = [];
+    for mesh in meshes:
+        for shadingTypeOption in shadingTypesOptions:
+            for shadingSplittingOption in shadingSplittingOptions:
+                for resolution in resolutions:
+                    subprocess.run([executable_name, shadingSplittingOption, shadingTypeOption, "--res", resolution[0], resolution[1], mesh]);
     return;
 
 if __name__ == "__main__":
