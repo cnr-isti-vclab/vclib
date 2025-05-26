@@ -49,6 +49,11 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(07-test-texcoords)
 
     add_subdirectory(801-camera-viewer)
+
+    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+        add_subdirectory(984-mesh-viewer-imgui-test-split-shaders)
+    endif()
+
     add_subdirectory(999-misc)
 
     # the following examples are the same of the ones in the core module,

@@ -69,45 +69,43 @@ void main()
     vec3 normal = normalize(v_normal);
 
     // if flat shading, compute normal of face
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_FLAT))) {
+    if (SURF_SHADING_FLAT) {
         normal = vec3(
             primitiveNormals[gl_PrimitiveID * 3],
             primitiveNormals[gl_PrimitiveID * 3 + 1],
             primitiveNormals[gl_PrimitiveID * 3 + 2]);
-        normal = normalize(mul(u_normalMatrix, normal));
+        normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
+        normal = normalize(normal);
     }
 
     // if flat or smooth shading, compute light
-    if (!bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_NONE))) {
+    if (!SURF_SHADING_NONE) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
-        // all computations are in view (camera) space
-        // => the camera eye is at (0, 0, 0)
-        // also, u_lightDir is provided in view space
         specular = computeSpecular(
             v_position,
-            vec3(0.0, 0.0, 0.0),
+            u_cameraEyePos,
             u_lightDir,
             u_lightColor,
             normal);
     }
-
+    
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERTEX))) {
+    if (SURF_COLOR_VERTEX) {
         color = v_color;
     }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
+    if (SURF_COLOR_MESH) {
         color = u_meshColor;
     }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
+    if (SURF_COLOR_FACE) {
         color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
     }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
+    if (SURF_TEX_VERTEX) {
         color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord0);
     }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
+    if (SURF_TEX_WEDGE) {
         color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
     }
 

@@ -37,6 +37,7 @@ struct WindowManagerId
     enum Enum {
         GLFW_WINDOW,
         QT_WIDGET,
+        QT_WINDOW,
         // Additional window managers here
 
         WINDOW_MANAGERS_NUMBER

@@ -47,8 +47,9 @@ if (VCLIB_BUILD_MODULE_RENDER)
 #    list(APPEND PYTHON_MODULES render)
 endif()
 
-# create __init__.py inside VCLIB_MODULE_BINARY_DIR
-file(WRITE "${VCLIB_MODULE_BINARY_DIR}/__init__.py" "")
+# copy the __init__.py
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/__init__.py"
+    DESTINATION ${VCLIB_MODULE_BINARY_DIR})
 
 # for each module
 foreach(MODULE ${PYTHON_MODULES})
@@ -74,6 +75,17 @@ foreach(MODULE ${PYTHON_MODULES})
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/python${VCLIB_PYTHON_VERSION}/site-packages/vclib
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+    # RPath for qt
+    if (TARGET vclib-3rd-qt)
+        if (APPLE)
+            set_target_properties(${MODULE} PROPERTIES
+                INSTALL_RPATH "@loader_path/../PyQt6/Qt6/lib")
+        elseif(LINUX)
+            set_target_properties(${MODULE} PROPERTIES
+                INSTALL_RPATH "$ORIGIN/../PyQt6/Qt6/lib")
+        endif()
+    endif()
 endforeach()
 
 # Install
