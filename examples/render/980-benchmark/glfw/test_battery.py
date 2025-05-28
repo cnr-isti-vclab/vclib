@@ -21,8 +21,7 @@ def main():
     resolutions = [
         ["1920", "1080"], 
         ["1366", "768"], 
-        ["1536", "864"], 
-        ["1280", "720"]
+        ["800","600"]
     ];
     #TODO: add the meshes to be used
     meshes = [];
