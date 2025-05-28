@@ -34,6 +34,14 @@ class Args:
         self.resolution = resolution
         self.mesh = mesh
 
+    @staticmethod
+    def combinatory(shadTypeList, shadSplitList, resList, meshList):
+        for mesh in meshList:
+            for shadType in shadTypeList:
+                for shadSplit in shadSplitList:
+                    for res in resList:
+                        yield Args(shadType, shadSplit, res, mesh)
+
     def asArgList(self):
         ret = list()
         shadOpt = shadingTypeOpt(self.shadingType)
@@ -58,7 +66,9 @@ def main():
         executable_name = "./980-benchmark"
     executions = [
         # Example
-        Args(SMOOTH, SPLIT, (1024, 768), "./usage_example/example.ply")
+        Args(SMOOTH, SPLIT, (1024, 768), "./usage_example/example.ply"),
+        # Combinatory example
+        *list(Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [(800, 600)], ["./usage_example/example.ply"]))
     ]
     for execution in executions:
         if not os.path.exists(execution.mesh):
