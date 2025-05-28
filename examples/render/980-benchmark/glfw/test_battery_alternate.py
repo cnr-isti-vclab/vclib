@@ -50,6 +50,7 @@ class Args:
         return ret
 
 def main():
+    global SMOOTH, FLAT, UBER, SPLIT, UBER_IF
     executable_name = None;
     if os.name == "nt":
         executable_name = "./980-benchmark.exe"
