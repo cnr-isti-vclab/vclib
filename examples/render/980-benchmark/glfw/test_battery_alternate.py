@@ -68,7 +68,7 @@ def main():
         # Example
         Args(SMOOTH, SPLIT, (1024, 768), "./usage_example/example.ply"),
         # Combinatory example
-        *list(Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [(800, 600)], ["./usage_example/example.ply"]))
+        *Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [(800, 600)], ["./usage_example/example.ply"])
     ]
     for execution in executions:
         if not os.path.exists(execution.mesh):
