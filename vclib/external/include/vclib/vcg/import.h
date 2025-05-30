@@ -166,7 +166,7 @@ void importMeshFromVCGMesh(
     const VCGMeshType& vcgMesh,
     bool               enableOptionalComponents = true)
 {
-    using CoordType = MeshType::VertexType::CoordType;
+    using PositionType = MeshType::VertexType::PositionType;
 
     mesh.reserveVertices(vcgMesh.VN());
 
@@ -184,7 +184,7 @@ void importMeshFromVCGMesh(
     // vertices
     for (uint i = 0; i < vcgMesh.vert.size(); i++) {
         if (!vcgMesh.vert[i].IsD()) {
-            uint vi = mesh.addVertex(CoordType(
+            uint vi = mesh.addVertex(PositionType(
                 vcgMesh.vert[i].P()[0],
                 vcgMesh.vert[i].P()[1],
                 vcgMesh.vert[i].P()[2]));

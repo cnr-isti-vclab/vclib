@@ -1157,7 +1157,6 @@ protected:
             using ParentMesh  = Base::ParentMeshType;
             using VertexType  = ParentMesh::VertexType;
             using MVertexType = OthMesh::VertexType;
-            using MCoordType  = MVertexType::CoordType;
             using MFaceType   = OthMesh::FaceType;
 
             using VertexContainer = ParentMesh::VertexContainer;
@@ -1196,7 +1195,7 @@ protected:
                         // other triangles will be added at the end of the
                         // container
                         std::vector<uint> tris =
-                            earCut(mf.vertices() | views::coords);
+                            earCut(mf.vertices() | views::positions);
                         FaceType& f = face(m.index(mf));
                         importTriPointersHelper(f, mf, base, mvbase, tris, 0);
 

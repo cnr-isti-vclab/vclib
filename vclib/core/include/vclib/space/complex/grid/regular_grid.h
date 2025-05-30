@@ -48,7 +48,7 @@ private:
 public:
     static const int DIM = N;
     using ScalarType     = Scalar;
-    using CellCoord      = Point<uint, N>;
+    using CellPos        = Point<uint, N>;
 
     using CellIterator = vcl::CellIterator<N>;
     using CellView     = View<CellIterator>;
@@ -109,7 +109,7 @@ public:
      * @param c
      * @return
      */
-    uint indexOfCell(const CellCoord& c) const
+    uint indexOfCell(const CellPos& c) const
     {
         unsigned long int ind = c[0];
         assert(c[0] < mSize[0]);
@@ -122,13 +122,13 @@ public:
     }
 
     /**
-     * @brief Returns the cell coordinate associated to the given unique index.
+     * @brief Returns the cell position associated to the given unique index.
      * @param index
      * @return
      */
-    CellCoord cellOfIndex(uint index) const
+    CellPos cellOfIndex(uint index) const
     {
-        typename RegularGrid<Scalar, N>::CellCoord c;
+        typename RegularGrid<Scalar, N>::CellPos c;
         for (long int i = N - 1; i >= 0; i--) {
             c[i] = index % mSize[i];
             index /= mSize[i];
@@ -167,15 +167,15 @@ public:
         return uint(t / cellLength(d));
     }
 
-    CellCoord cell(const Point<Scalar, N>& p) const
+    CellPos cell(const Point<Scalar, N>& p) const
     {
-        CellCoord c;
+        CellPos c;
         for (size_t i = 0; i < DIM; ++i)
             c(i) = cell(i, p(i));
         return c;
     }
 
-    Point<Scalar, N> cellLowerCorner(const CellCoord& c) const
+    Point<Scalar, N> cellLowerCorner(const CellPos& c) const
     {
         Point<Scalar, N> l;
         for (size_t i = 0; i < DIM; ++i)
@@ -183,7 +183,7 @@ public:
         return l;
     }
 
-    BBoxType cellBox(const CellCoord& c) const
+    BBoxType cellBox(const CellPos& c) const
     {
         BBoxType b;
 
@@ -197,9 +197,9 @@ public:
         return b;
     }
 
-    CellIterator cellBegin() const { return CellIterator(CellCoord(), mSize); }
+    CellIterator cellBegin() const { return CellIterator(CellPos(), mSize); }
 
-    CellIterator cellBegin(const CellCoord& first, const CellCoord& last) const
+    CellIterator cellBegin(const CellPos& first, const CellPos& last) const
     {
         return CellIterator(first, last + 1);
     }
@@ -208,7 +208,7 @@ public:
 
     CellView cells() const { return CellView(cellBegin(), cellEnd()); }
 
-    CellView cells(const CellCoord& first, const CellCoord& last) const
+    CellView cells(const CellPos& first, const CellPos& last) const
     {
         return CellView(cellBegin(first, last), cellEnd());
     }

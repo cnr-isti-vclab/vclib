@@ -59,9 +59,9 @@ bool intersect(const FaceType& f, const Box<PointType>& box)
     if constexpr (TriangleFaceConcept<FaceType>) {
         return intersect(
             TriangleWrapper(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord()),
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position()),
             box);
     }
     else {
@@ -71,9 +71,9 @@ bool intersect(const FaceType& f, const Box<PointType>& box)
         for (uint i = 0; i < tris.size() && !b; i += 3) {
             b |= intersect(
                 TriangleWrapper(
-                    f.vertex(tris[i])->coord(),
-                    f.vertex(tris[i + 1])->coord(),
-                    f.vertex(tris[i + 2])->coord()),
+                    f.vertex(tris[i])->position(),
+                    f.vertex(tris[i + 1])->position(),
+                    f.vertex(tris[i + 2])->position()),
                 box);
         }
         return b;
@@ -121,9 +121,9 @@ bool intersect(
     if constexpr (TriangleFaceConcept<FaceType>) {
         return intersect(
             TriangleWrapper(
-                f.vertex(0)->coord(),
-                f.vertex(1)->coord(),
-                f.vertex(2)->coord()),
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position()),
             sphere,
             witness,
             res);
@@ -132,9 +132,9 @@ bool intersect(
         if (f.vertexNumber() == 3) {
             return intersect(
                 TriangleWrapper(
-                    f.vertex(0)->coord(),
-                    f.vertex(1)->coord(),
-                    f.vertex(2)->coord()),
+                    f.vertex(0)->position(),
+                    f.vertex(1)->position(),
+                    f.vertex(2)->position()),
                 sphere,
                 witness,
                 res);
@@ -150,9 +150,9 @@ bool intersect(
             for (uint i = 0; i < tris.size() && !b; i += 3) {
                 b |= intersect(
                     TriangleWrapper(
-                        f.vertex(tris[i])->coord(),
-                        f.vertex(tris[i + 1])->coord(),
-                        f.vertex(tris[i + 2])->coord()),
+                        f.vertex(tris[i])->position(),
+                        f.vertex(tris[i + 1])->position(),
+                        f.vertex(tris[i + 2])->position()),
                     sphere,
                     w,
                     r);

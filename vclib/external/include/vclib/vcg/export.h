@@ -37,9 +37,9 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
 
     uint vi = 0;
     for (const auto& v : mesh.vertices()) {
-        vcgMesh.vert[vi].P().X() = v.coord().x();
-        vcgMesh.vert[vi].P().Y() = v.coord().y();
-        vcgMesh.vert[vi].P().Z() = v.coord().z();
+        vcgMesh.vert[vi].P().X() = v.position().x();
+        vcgMesh.vert[vi].P().Y() = v.position().y();
+        vcgMesh.vert[vi].P().Z() = v.position().z();
 
         // flags
         vcgMesh.vert[vi].Flags() = v.exportFlagsToVCGFormat();

@@ -20,49 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMP_COORDINATE_H
-#define COMP_COORDINATE_H
+#include <vclib/bindings/core/io/mesh/save.h>
+#include <vclib/bindings/utils.h>
 
+#include <vclib/io/mesh/save.h>
 #include <vclib/meshes.h>
 
-void coordinateComponentStaticAsserts()
+namespace vcl::bind {
+
+void initSaveMesh(pybind11::module& m)
 {
-    using namespace vcl;
+    auto f =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            namespace py = pybind11;
 
-    using TriMeshVertex = trimesh::Vertex<float, true>;
+            m.def(
+                "save",
+                [](const MeshType&    m,
+                   const std::string& filename,
+                   bool               binary,
+                   bool               saveTextureImages,
+                   bool               magicsMode,
+                   const MeshInfo&    info) {
+                    SaveSettings settings;
+                    settings.binary            = binary;
+                    settings.saveTextureImages = saveTextureImages;
+                    settings.magicsMode        = magicsMode;
+                    settings.info              = info;
 
-    // test only the coordinate component
-    static_assert(
-        comp::HasCoordinate<vert::Coordinate3f>,
-        "vert::Coordinate3f does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<const vert::Coordinate3f>,
-        "const vert::Coordinate3f does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<vert::Coordinate3f&>,
-        "vert::Coordinate3f& does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<const vert::Coordinate3f&>,
-        "const vert::Coordinate3f& does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<vert::Coordinate3f&&>,
-        "vert::Coordinate3f&& does not satisfy the HasCoordinate concept");
+                    vcl::save(m, filename, settings);
+                },
+                py::arg("m"),
+                py::arg("filename"),
+                py::arg("binary")              = true,
+                py::arg("save_texture_images") = false,
+                py::arg("magics_mode")         = false,
+                py::arg("info")                = MeshInfo());
+        };
 
-    static_assert(
-        comp::HasCoordinate<TriMeshVertex>,
-        "TriMesh Vertex does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<const TriMeshVertex>,
-        "const TriMesh Vertex does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<TriMeshVertex&>,
-        "TriMesh Vertex& does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<const TriMeshVertex&>,
-        "const TriMesh Vertex& does not satisfy the HasCoordinate concept");
-    static_assert(
-        comp::HasCoordinate<TriMeshVertex&&>,
-        "TriMesh Vertex&& does not satisfy the HasCoordinate concept");
+    defForAllMeshTypes(m, f);
 }
 
-#endif // COMP_COORDINATE_H
+} // namespace vcl::bind

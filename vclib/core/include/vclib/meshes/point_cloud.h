@@ -42,7 +42,7 @@ class Vertex;
  * @brief The Vertex type used by the PointCloudT class.
  *
  * @extends vert::BitFlags
- * @extends vert::Coordinate3
+ * @extends vert::Position3
  * @extends vert::Normal3
  * @extends vert::OptionalColor
  * @extends vert::OptionalQuality
@@ -59,7 +59,7 @@ class Vertex :
         public vcl::Vertex<
             PointCloudT<Scalar>,
             vert::BitFlags,
-            vert::Coordinate3<Scalar>,
+            vert::Position3<Scalar>,
             vert::Normal3<Scalar>,
             vert::OptionalColor<Vertex<Scalar>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar>>,

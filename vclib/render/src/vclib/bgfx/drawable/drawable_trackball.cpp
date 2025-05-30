@@ -122,7 +122,7 @@ void DrawableTrackBall::swap(DrawableTrackBall& other)
 {
     using std::swap;
     swap(mVisible, other.mVisible);
-    swap(mVertexCoordsColorBuffer, other.mVertexCoordsColorBuffer);
+    swap(mVertexPosColorBuffer, other.mVertexPosColorBuffer);
     swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
     swap(mUniforms, other.mUniforms);
     swap(mTransform, other.mTransform);
@@ -161,7 +161,7 @@ void DrawableTrackBall::draw(uint viewId) const
             BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
             BGFX_STATE_BLEND_ALPHA);
 
-        mVertexCoordsColorBuffer.bind(0);
+        mVertexPosColorBuffer.bind(0);
         mEdgeIndexBuffer.bind();
 
         bgfx::setTransform(mTransform.data());
@@ -200,7 +200,7 @@ void DrawableTrackBall::createBuffers()
         .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
         .end();
     // vertex buffer with color
-    mVertexCoordsColorBuffer.create(
+    mVertexPosColorBuffer.create(
         bgfx::makeRef(
             TRACKBALL_DATA.first.data(),
             TRACKBALL_DATA.first.size() *

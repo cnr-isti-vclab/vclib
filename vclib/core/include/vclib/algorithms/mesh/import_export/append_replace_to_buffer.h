@@ -61,14 +61,14 @@
 namespace vcl {
 
 /**
- * @brief Append the coordinates of the duplicated vertices to the given buffer.
+ * @brief Append the positions of the duplicated vertices to the given buffer.
  *
  * Given the list of vertices to duplicate, this function appends to the given
- * buffer the coordinates of the vertices listed in the input list.
+ * buffer the positions of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
  * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
- * vertexCoordsToBuffer function:
+ * vertexPositionsToBuffer function:
  *
  * @code{.cpp}
  *
@@ -80,8 +80,9 @@ namespace vcl {
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
- * vertexCoordsToBuffer(mesh, buffer.data());
- * appendDuplicateVertexCoordsToBuffer(mesh, vertsToDuplicate, buffer.data());
+ * vertexPositionsToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexPositionsToBuffer(mesh, vertsToDuplicate,
+ * buffer.data());
  * @endcode
  *
  * @note The buffer must be preallocated with the correct size (total number of
@@ -89,7 +90,7 @@ namespace vcl {
  *
  * @tparam MeshType: The type of the mesh.
  *
- * @param[in] mesh: The mesh from which take the coordinates.
+ * @param[in] mesh: The mesh from which take the positions.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
  * @param[in/out] buffer: The buffer where to append the duplicated vertices.
@@ -98,7 +99,7 @@ namespace vcl {
  * @ingroup append_replace_to_buffer
  */
 template<MeshConcept MeshType>
-void appendDuplicateVertexCoordsToBuffer(
+void appendDuplicateVertexPositionsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
@@ -111,16 +112,16 @@ void appendDuplicateVertexCoordsToBuffer(
     const uint VERT_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& coord = mesh.vertex(v).coord();
+        const auto& pos = mesh.vertex(v).position();
         if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 3 + 0] = coord.x();
-            buffer[i * 3 + 1] = coord.y();
-            buffer[i * 3 + 2] = coord.z();
+            buffer[i * 3 + 0] = pos.x();
+            buffer[i * 3 + 1] = pos.y();
+            buffer[i * 3 + 2] = pos.z();
         }
         else {
-            buffer[0 * VERT_NUM + i] = coord.x();
-            buffer[1 * VERT_NUM + i] = coord.y();
-            buffer[2 * VERT_NUM + i] = coord.z();
+            buffer[0 * VERT_NUM + i] = pos.x();
+            buffer[1 * VERT_NUM + i] = pos.y();
+            buffer[2 * VERT_NUM + i] = pos.z();
         }
 
         ++i;

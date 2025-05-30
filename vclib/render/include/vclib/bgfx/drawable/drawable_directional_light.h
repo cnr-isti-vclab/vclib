@@ -45,7 +45,7 @@ class DrawableDirectionalLight : public DrawableObject
     std::vector<float> mVertices; // vertices of the drawn lines
     vcl::Color         mColor = vcl::Color::Yellow; // color of the lines
 
-    VertexBuffer mVertexCoordBuffer;
+    VertexBuffer mVertexPosBuffer;
 
     DrawableDirectionalLightUniforms mUniform;
 

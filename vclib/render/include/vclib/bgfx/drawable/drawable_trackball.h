@@ -35,7 +35,7 @@ class DrawableTrackBall : public DrawableObject
 {
     bool mVisible = true;
 
-    VertexBuffer mVertexCoordsColorBuffer;
+    VertexBuffer mVertexPosColorBuffer;
     IndexBuffer  mEdgeIndexBuffer;
 
     DrawableTrackballUniforms mUniforms;

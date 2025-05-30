@@ -121,13 +121,13 @@ MeshType createSphereUV(
     uint                      parallels = 10,
     uint                      meridians = 20)
 {
-    using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
-    using Facetype   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using Facetype     = MeshType::FaceType;
 
     MeshType mesh;
 
-    mesh.addVertex(CoordType(0, 1, 0));
+    mesh.addVertex(PositionType(0, 1, 0));
     for (uint j = 0; j < parallels - 1; ++j) {
         const double polar = M_PI * double(j + 1) / double(parallels);
         const double sp    = std::sin(polar);
@@ -139,10 +139,10 @@ MeshType createSphereUV(
             const double x       = sp * ca;
             const double y       = cp;
             const double z       = sp * sa;
-            mesh.addVertex(CoordType(x, y, z));
+            mesh.addVertex(PositionType(x, y, z));
         }
     }
-    mesh.addVertex(CoordType(0, -1, 0));
+    mesh.addVertex(PositionType(0, -1, 0));
 
     for (uint i = 0; i < meridians; ++i) {
         VertexType* v = &mesh.vertex(0);
@@ -201,25 +201,26 @@ MeshType createSphereNormalizedCube(
     const SphereConcept auto& sp,
     uint                      divisions)
 {
-    using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
-    using Facetype   = MeshType::FaceType;
-    using ScalarType = CoordType::ScalarType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using Facetype     = MeshType::FaceType;
+    using ScalarType   = PositionType::ScalarType;
 
     MeshType mesh;
 
-    const double    step = 1.0 / double(divisions);
-    const CoordType step3(step, step, step);
+    const double       step = 1.0 / double(divisions);
+    const PositionType step3(step, step, step);
 
     for (uint face = 0; face < 6; ++face) {
-        const CoordType origin = detail::cts::origins[face].cast<ScalarType>();
-        const CoordType right  = detail::cts::rights[face].cast<ScalarType>();
-        const CoordType up     = detail::cts::ups[face].cast<ScalarType>();
+        const PositionType origin =
+            detail::cts::origins[face].cast<ScalarType>();
+        const PositionType right = detail::cts::rights[face].cast<ScalarType>();
+        const PositionType up    = detail::cts::ups[face].cast<ScalarType>();
         for (uint j = 0; j < divisions + 1; ++j) {
-            const CoordType j3(j, j, j);
+            const PositionType j3(j, j, j);
             for (uint i = 0; i < divisions + 1; ++i) {
-                const CoordType i3(i, i, i);
-                const CoordType p =
+                const PositionType i3(i, i, i);
+                const PositionType p =
                     origin + step3.mul(i3.mul(right) + j3.mul(up));
 
                 mesh.addVertex(p.normalized());
@@ -279,28 +280,29 @@ MeshType createSphereSpherifiedCube(
     const SphereConcept auto& sp,
     uint                      divisions)
 {
-    using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
-    using ScalarType = CoordType::ScalarType;
-    using Facetype   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
+    using Facetype     = MeshType::FaceType;
 
     MeshType mesh;
 
-    const double    step = 1.0 / double(divisions);
-    const CoordType step3(step, step, step);
+    const double       step = 1.0 / double(divisions);
+    const PositionType step3(step, step, step);
 
     for (uint face = 0; face < 6; ++face) {
-        const CoordType origin = detail::cts::origins[face].cast<ScalarType>();
-        const CoordType right  = detail::cts::rights[face].cast<ScalarType>();
-        const CoordType up     = detail::cts::ups[face].cast<ScalarType>();
+        const PositionType origin =
+            detail::cts::origins[face].cast<ScalarType>();
+        const PositionType right = detail::cts::rights[face].cast<ScalarType>();
+        const PositionType up    = detail::cts::ups[face].cast<ScalarType>();
         for (uint j = 0; j < divisions + 1; ++j) {
-            const CoordType j3(j, j, j);
+            const PositionType j3(j, j, j);
             for (uint i = 0; i < divisions + 1; ++i) {
-                const CoordType i3(i, i, i);
-                const CoordType p =
+                const PositionType i3(i, i, i);
+                const PositionType p =
                     origin + step3.mul(i3.mul(right) + j3.mul(up));
-                const CoordType p2 = p.mul(p);
-                const CoordType n(
+                const PositionType p2 = p.mul(p);
+                const PositionType n(
                     p.x() * std::sqrt(
                                 1.0 - 0.5 * (p2.y() + p2.z()) +
                                 p2.y() * p2.z() / 3.0),
@@ -364,9 +366,9 @@ MeshType createSphereSpherifiedCube(
 template<FaceMeshConcept MeshType>
 MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
 {
-    using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
-    using FaceType   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using FaceType     = MeshType::FaceType;
 
     MeshType mesh = createIcosahedron<MeshType>(true);
 
@@ -380,11 +382,11 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
             uint        v1id = mesh.index(v1);
             uint        v2id = mesh.index(v2);
 
-            CoordType pa = (v0.coord() + v1.coord());
+            PositionType pa = (v0.position() + v1.position());
             pa.normalize();
-            CoordType pb = (v1.coord() + v2.coord());
+            PositionType pb = (v1.position() + v2.position());
             pb.normalize();
-            CoordType pc = (v2.coord() + v0.coord());
+            PositionType pc = (v2.position() + v0.position());
             pc.normalize();
             uint vaid = mesh.addVertex(pa);
             uint vbid = mesh.addVertex(pb);

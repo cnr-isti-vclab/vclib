@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME 000-static-asserts)
+get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-test-${TEST_NAME})
 
 set(HEADERS
@@ -48,11 +48,11 @@ set(HEADERS
     mesh/components/bit_flags.h
     mesh/components/color.h
     mesh/components/component.h
-    mesh/components/coordinate.h
     mesh/components/custom_components.h
     mesh/components/mark.h
     mesh/components/name.h
     mesh/components/normal.h
+    mesh/components/position.h
     mesh/components/quality.h
     mesh/components/tex_coord.h
     mesh/components/textures.h

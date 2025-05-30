@@ -93,7 +93,7 @@ void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
     swap(mColor, other.mColor);
     swap(mUniform, other.mUniform);
     swap(mTransform, other.mTransform);
-    swap(mVertexCoordBuffer, other.mVertexCoordBuffer);
+    swap(mVertexPosBuffer, other.mVertexPosBuffer);
 }
 
 void DrawableDirectionalLight::updateRotation(const Matrix44f& rot)
@@ -122,7 +122,7 @@ void DrawableDirectionalLight::draw(uint viewId) const
 
         mUniform.bind();
 
-        mVertexCoordBuffer.bind(0);
+        mVertexPosBuffer.bind(0);
 
         bgfx::submit(viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
     }
@@ -145,7 +145,7 @@ std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() &&
 
 void DrawableDirectionalLight::createVertexBuffer()
 {
-    mVertexCoordBuffer.create(
+    mVertexPosBuffer.create(
         mVertices.data(),
         mVertices.size() / 3,
         bgfx::Attrib::Position,

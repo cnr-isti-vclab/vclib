@@ -54,18 +54,18 @@ namespace vcl {
  *
  * An example of implementation in a derived class is the following (assuming
  * that `Base` is this class, and `MeshType` is the mesh type that will be used
- * to render the mesh). Here we first fill the vertex coordinates to a
+ * to render the mesh). Here we first fill the vertex positions to a
  * std::vector:
  *
  * @code{.cpp}
- * void setVertexCoordsBuffer(const MeshType& mesh)
+ * void setVertexPositionsBuffer(const MeshType& mesh)
  * {
  *     // get the number of vertices (with eventual duplication)
  *     uint nv = Base::numVerts();
  *
- *     std::vector<float> vertexCoords(nv * 3);
- *     // fill the vertex coordinates
- *     Base::fillVertexCoords(mesh, vertexCoords.data());
+ *     std::vector<float> vertexPositions(nv * 3);
+ *     // fill the vertex positions
+ *     Base::fillVertexPositions(mesh, vertexPositions.data());
  *
  *     // create the gpu vertex buffer using the desired rendering backend,
  *     // (be sure to first delete the previous buffer if it exists) and send
@@ -176,7 +176,7 @@ protected:
      * mesh.
      *
      * The number of vertices must be used to compute the size of the buffers
-     * that will store the vertex data (coordinates, normals, colors, etc).
+     * that will store the vertex data (positions, normals, colors, etc).
      *
      * It can be used along with the functions `fillVertex*` provided by this
      * class. A common workflow is the following:
@@ -184,13 +184,13 @@ protected:
      * @code{.cpp}
      * uint nv = numVerts();
      * // assuming that the buffer is a vector of floats
-     * std::vector<float> vertexCoords(nv * 3);
-     * fillVertexCoords(mesh, vertexCoords.data());
+     * std::vector<float> vertexPositions(nv * 3);
+     * fillVertexPositions(mesh, vertexPositions.data());
      * @endcode
      *
      * @note The returned values may be different from the number of vertices
      * in the input mesh. This is because the mesh may have duplicated vertices
-     * (e.g., when the mesh has wedge texture coordinates).
+     * (e.g., when the mesh has wedge texture positions).
      *
      * @note Always check the required buffer size before filling the buffers
      * on the `fill*` functions documentation.
@@ -284,17 +284,17 @@ protected:
 
     /**
      * @brief Given the mesh and a pointer to a buffer, fills the buffer with
-     * the vertex coordinates of the mesh.
+     * the vertex positions of the mesh.
      *
      * The buffer must be preallocated with the correct size: `numVerts() * 3`.
      *
      * @param[in] mesh: the input mesh
      * @param[out] buffer: the buffer to fill
      */
-    void fillVertexCoords(const MeshConcept auto& mesh, auto* buffer)
+    void fillVertexPositions(const MeshConcept auto& mesh, auto* buffer)
     {
-        vertexCoordsToBuffer(mesh, buffer);
-        appendDuplicateVertexCoordsToBuffer(mesh, mVertsToDuplicate, buffer);
+        vertexPositionsToBuffer(mesh, buffer);
+        appendDuplicateVertexPositionsToBuffer(mesh, mVertsToDuplicate, buffer);
     }
 
     /**
@@ -529,11 +529,11 @@ protected:
     // the buffers:
 
     /**
-     * @brief Function that sets the content of vertex coordinates buffer and
+     * @brief Function that sets the content of vertex positions buffer and
      * sends the data to the GPU.
      *
      * The function should allocate and fill a cpu buffer to store the vertex
-     * coordinates using the `numVerts() * 3` and `fillVertexCoords()`
+     * positions using the `numVerts() * 3` and `fillVertexPositions()`
      * functions, and then send the data to the GPU using the rendering backend.
      *
      * See the @ref MeshRenderData class documentation for an example of
@@ -541,7 +541,7 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexCoordsBuffer(const MeshConcept auto&) {}
+    void setVertexPositionsBuffer(const MeshConcept auto&) {}
 
     /**
      * @brief Function that sets the content of vertex normals buffer and sends
@@ -871,8 +871,8 @@ private:
         using enum MRI::Buffers;
 
         if (btu[toUnderlying(VERTICES)]) {
-            // vertex buffer (coordinates)
-            derived().setVertexCoordsBuffer(mesh);
+            // vertex buffer (positions)
+            derived().setVertexPositionsBuffer(mesh);
         }
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {

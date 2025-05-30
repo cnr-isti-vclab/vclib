@@ -78,7 +78,7 @@ inline bool isStlColored(std::istream& fp, bool& magicsMode)
         magicsMode = false;
     uint              fnum = io::readUInt<uint>(fp, std::endian::little);
     static const uint fmax = 1000;
-    // 3 floats for normal and 9 for vcoords
+    // 3 floats for normal and 9 for v positions
     static const uint fdataSize = 12 * sizeof(float);
 
     for (uint i = 0; i < std::min(fnum, fmax); ++i) {
@@ -106,13 +106,13 @@ void readStlBin(
 
     if (settings.enableOptionalComponents) {
         if (colored)
-            loadedInfo.setFaceColors();
+            loadedInfo.setPerFaceColor();
         enableOptionalComponentsFromInfo(loadedInfo, m);
     }
     else if (colored) {
         if constexpr (HasPerFaceColor<MeshType>) {
             if (isPerFaceColorAvailable(m))
-                loadedInfo.setFaceColors();
+                loadedInfo.setPerFaceColor();
         }
     }
 
@@ -136,11 +136,11 @@ void readStlBin(
         norm.z() = io::readFloat<float>(fp, std::endian::little);
 
         for (uint j = 0; j < 3; ++j) {
-            m.vertex(vi + j).coord().x() =
+            m.vertex(vi + j).position().x() =
                 io::readFloat<float>(fp, std::endian::little);
-            m.vertex(vi + j).coord().y() =
+            m.vertex(vi + j).position().y() =
                 io::readFloat<float>(fp, std::endian::little);
-            m.vertex(vi + j).coord().z() =
+            m.vertex(vi + j).position().z() =
                 io::readFloat<float>(fp, std::endian::little);
         }
 
@@ -228,11 +228,11 @@ void readStlAscii(
                     token = tokens.begin();
                     ++token; // skip the "vertex" word
 
-                    m.vertex(vi + i).coord().x() =
+                    m.vertex(vi + i).position().x() =
                         io::readFloat<float>(token, std::endian::little);
-                    m.vertex(vi + i).coord().y() =
+                    m.vertex(vi + i).position().y() =
                         io::readFloat<float>(token, std::endian::little);
-                    m.vertex(vi + i).coord().z() =
+                    m.vertex(vi + i).position().z() =
                         io::readFloat<float>(token, std::endian::little);
 
                     // next vertex
@@ -317,12 +317,12 @@ void loadStl(
 {
     loadedInfo.clear();
     loadedInfo.setVertices();
-    loadedInfo.setVertexCoords();
+    loadedInfo.setPerVertexPosition();
 
     if constexpr (HasFaces<MeshType>) {
         loadedInfo.setFaces();
-        loadedInfo.setFaceVRefs();
-        loadedInfo.setFaceNormals();
+        loadedInfo.setPerFaceVertexReferences();
+        loadedInfo.setPerFaceNormal();
     }
 
     log.log(0, "Loading STL file");

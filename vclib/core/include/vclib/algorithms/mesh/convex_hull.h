@@ -150,7 +150,7 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
     using PointType  = std::ranges::range_value_t<R>;
-    using MPointType = MeshType::VertexType::CoordType;
+    using MPointType = MeshType::VertexType::PositionType;
     using FaceType   = MeshType::FaceType;
     using GraphType  = BipartiteGraph<PointType, uint>;
 

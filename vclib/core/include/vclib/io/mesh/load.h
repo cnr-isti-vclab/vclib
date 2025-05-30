@@ -122,9 +122,72 @@ void load(
  *
  * @param[out] m: The mesh object in which to store the loaded mesh.
  * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[out] loadedInfo: Information about the mesh components that have been
+ * loaded from the file.
+ * @param[in] settings: settings for loading the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
+ *
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not
+ * recognized.
+ *
+ * @ingroup load_mesh
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void load(
+    MeshType&           m,
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    const LoadSettings& settings,
+    LogType&            log = nullLogger)
+{
+    load(m, filename, loadedInfo, log, settings);
+}
+
+/**
+ * @brief Loads a mesh from a file with the given filename and stores it in the
+ * given mesh object. Checks automatically the file format to load from the
+ * given filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[out] m: The mesh object in which to store the loaded mesh.
+ * @param[in] filename: The filename of the file containing the mesh data.
  * @param[in] settings: settings for loading the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * loading. Default is the nullLogger object.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not
+ * recognized.
+ *
+ * @ingroup load_mesh
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void load(
+    MeshType&           m,
+    const std::string&  filename,
+    const LoadSettings& settings,
+    LogType&            log = nullLogger)
+{
+    MeshInfo loadedInfo;
+    load(m, filename, loadedInfo, log, settings);
+}
+
+/**
+ * @brief Loads a mesh from a file with the given filename and stores it in the
+ * given mesh object. Checks automatically the file format to load from the
+ * given filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[out] m: The mesh object in which to store the loaded mesh.
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[in] settings: settings for loading the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * loading. Default is the nullLogger object.
  *
  * @throws vcl::UnknownFileFormatException if the file extension is not
  * recognized.
@@ -140,6 +203,39 @@ void load(
 {
     MeshInfo loadedInfo;
     load(m, filename, loadedInfo, log, settings);
+}
+
+/**
+ * @brief Loads a mesh from a file with the given filename and stores it in the
+ * returned mesh object. Checks automatically the file format to load from the
+ * given filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[out] loadedInfo: Information about the mesh components that have been
+ * loaded from the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * loading. Default is the nullLogger object.
+ * @param[in] settings: settings for loading the file.
+ * @return The mesh object containing the loaded mesh.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not
+ * recognized.
+ *
+ * @ingroup load_mesh
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType load(
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    const LoadSettings& settings,
+    LogType&            log = nullLogger)
+{
+    MeshType m;
+    load(m, filename, loadedInfo, log, settings);
+    return m;
 }
 
 /**

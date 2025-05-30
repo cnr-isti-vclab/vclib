@@ -42,13 +42,13 @@ inline MeshInfo offFormatCapability()
     info.setVertices();
     info.setFaces();
 
-    info.setVertexCoords();
-    info.setVertexNormals();
-    info.setVertexColors();
-    info.setVertexTexCoords();
+    info.setPerVertexPosition();
+    info.setPerVertexNormal();
+    info.setPerVertexColor();
+    info.setPerVertexTexCoord();
 
-    info.setFaceVRefs();
-    info.setFaceColors();
+    info.setPerFaceVertexReferences();
+    info.setPerFaceColor();
 
     return info;
 }

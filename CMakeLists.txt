@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-file(READ "${CMAKE_SOURCE_DIR}/VERSION" VCLIB_VERSION)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" VCLIB_VERSION)
 string(STRIP "${VCLIB_VERSION}" VCLIB_VERSION)
 
 project(vclib VERSION ${VCLIB_VERSION})
@@ -46,10 +46,10 @@ option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
 option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
 
 # Build examples
-option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
+option(VCLIB_BUILD_EXAMPLES "Build examples" OFF)
 
 # Build tests
-option(VCLIB_BUILD_TESTS "Build tests" ON)
+option(VCLIB_BUILD_TESTS "Build tests" OFF)
 
 # If true, the examples and tests of VCLib will be built just setting
 # the INCLUDE_PATH of the core module (no cmake targets).

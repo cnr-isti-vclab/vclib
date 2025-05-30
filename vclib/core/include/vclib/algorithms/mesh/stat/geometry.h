@@ -86,7 +86,8 @@ double borderLength(const MeshType& m)
     for (const FaceType& f : m.faces()) {
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             if (f.adjFace(i) == nullptr) {
-                l += f.vertex(i)->coord().dist(f.vertexMod(i + 1)->coord());
+                l += f.vertex(i)->position().dist(
+                    f.vertexMod(i + 1)->position());
             }
         }
     }
@@ -106,17 +107,17 @@ double borderLength(const MeshType& m)
 template<MeshConcept MeshType>
 auto covarianceMatrixOfPointCloud(const MeshType& m)
 {
-    using VertexType = MeshType::VertexType;
-    using CoordType  = VertexType::CoordType;
-    using ScalarType = CoordType::ScalarType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
 
-    CoordType bar = barycenter(m);
+    PositionType bar = barycenter(m);
 
     Matrix33<ScalarType> mm;
     mm.setZero();
     // compute covariance matrix
     for (const VertexType& v : m.vertices()) {
-        CoordType e = v.coord() - bar;
+        PositionType e = v.position() - bar;
         mm += e.outerProduct(e);
     }
     return mm;
@@ -133,12 +134,12 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
 template<FaceMeshConcept MeshType>
 auto covarianceMatrixOfMesh(const MeshType& m)
 {
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-    using CoordType  = VertexType::CoordType;
-    using ScalarType = CoordType::ScalarType;
+    using VertexType   = MeshType::VertexType;
+    using FaceType     = MeshType::FaceType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
 
-    CoordType            bar = shellBarycenter(m);
+    PositionType         bar = shellBarycenter(m);
     Matrix33<ScalarType> C;
     C.setZero();
     Matrix33<ScalarType> C0;
@@ -153,14 +154,14 @@ auto covarianceMatrixOfMesh(const MeshType& m)
     Matrix33<ScalarType> DC;
 
     for (const FaceType& f : m.faces()) {
-        const CoordType& p0 = f.vertex(0)->coord();
-        const CoordType& p1 = f.vertex(1)->coord();
-        const CoordType& p2 = f.vertex(2)->coord();
-        CoordType        n  = (p1 - p0).cross(p2 - p0);
-        double           da = n.norm();
+        const PositionType& p0 = f.vertex(0)->position();
+        const PositionType& p1 = f.vertex(1)->position();
+        const PositionType& p2 = f.vertex(2)->position();
+        PositionType        n  = (p1 - p0).cross(p2 - p0);
+        double              da = n.norm();
         n /= da * da;
 
-        CoordType tmpp = p1 - p0;
+        PositionType tmpp = p1 - p0;
         for (uint j = 0; j < 3; j++)
             A(j, 0) = tmpp(j);
         tmpp = p2 - p0;
