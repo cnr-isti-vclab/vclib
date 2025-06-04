@@ -135,6 +135,11 @@ bool Context::supportsReadback() const
            (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK);
 }
 
+bool Context::supportsCompute() const
+{
+    return (capabilites().supported & BGFX_CAPS_COMPUTE) == BGFX_CAPS_COMPUTE;
+}
+
 bgfx::ViewId Context::requestViewId()
 {
     std::lock_guard<std::mutex> lock(sMutex);
@@ -341,12 +346,13 @@ Context::Context(void* windowHandle, void* displayHandle)
         vcl::closeWindow(mWindowHandle, mDisplayHandle);
     }
 
+    // insert view ids in the stack
     uint mv = bgfx::getCaps()->limits.maxViews;
-
+    
+    // the view id is a 0-based index, so we start from maxViews - 1
     while (mv != 0) {
-        mViewStack.push((bgfx::ViewId) mv--);
+        mViewStack.push((bgfx::ViewId) --mv);
     }
-    mViewStack.push((bgfx::ViewId) 0);
 
     // font manager must be created after bgfx::init
     mFontManager    = new FontManager();

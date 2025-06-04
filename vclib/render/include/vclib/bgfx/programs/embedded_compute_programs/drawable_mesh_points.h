@@ -20,11 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_DRAWABLE_MESH_POINTS_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_DRAWABLE_MESH_POINTS_H
+#include <vclib/bgfx/programs/compute_loader.h>
 
-uniform vec4 u_trackballSettingsPack;
+namespace vcl {
 
-#define u_trackballAlpha u_trackballSettingsPack.x
+template<>
+struct ComputeLoader<ComputeProgram::DRAWABLE_MESH_POINTS>
+{
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
+};
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_DRAWABLE_MESH_POINTS_H

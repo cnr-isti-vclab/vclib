@@ -8,12 +8,11 @@ vec3 normal = vec3(\
         primitiveNormals[gl_PrimitiveID * 3],\
         primitiveNormals[gl_PrimitiveID * 3 + 1],\
         primitiveNormals[gl_PrimitiveID * 3 + 2]);\
-normal = mul(u_modelView, vec4(normal, 0.0)).xyz;\
-normal = normalize(normal);\
+normal = normalize(mul(u_normalMatrix, normal));\
 vec4 light = computeLight(u_lightDir, u_lightColor, normal);\
 vec3 specular = computeSpecular(\
-            v_position,\
-            u_cameraEyePos,\
-            u_lightDir,\
-            u_lightColor,\
-            normal);
+        v_position,\
+        vec3(0.0, 0.0, 0.0),\
+        u_lightDir,\
+        u_lightColor,\
+        normal);

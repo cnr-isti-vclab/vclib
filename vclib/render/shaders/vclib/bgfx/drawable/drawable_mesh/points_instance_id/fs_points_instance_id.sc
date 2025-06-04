@@ -20,11 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
+$input v_texcoord1
 
-uniform vec4 u_trackballSettingsPack;
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
-#define u_trackballAlpha u_trackballSettingsPack.x
+uniform vec4 u_meshId;
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
+void main()
+{
+    // circle mode (if outside of the circle, discard)
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE))) {
+        if (length(2.0 * v_texcoord1 - vec2(1.0, 1.0)) > 1.0) {
+            discard;
+        }
+    }
+    
+    /***** render ID to color ******/
+    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_meshId.r));
+
+    gl_FragColor = color;
+}

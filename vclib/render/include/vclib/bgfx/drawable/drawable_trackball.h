@@ -25,25 +25,17 @@
 
 #include "uniforms/drawable_trackball_uniforms.h"
 
-#include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/math/transform.h>
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/space/core/matrix.h>
 
-#include <vclib/bgfx/context.h>
-
 namespace vcl {
-
 class DrawableTrackBall : public DrawableObject
 {
-    inline static const uint N_POINTS = 128;
-    inline static const auto TRACKBALL_DATA =
-        createTrackBall<float, uint16_t>(1.0, N_POINTS);
-
     bool mVisible = true;
 
-    VertexBuffer mVertexPosBuffer;
+    VertexBuffer mVertexPosColorBuffer;
     IndexBuffer  mEdgeIndexBuffer;
 
     DrawableTrackballUniforms mUniforms;
@@ -51,21 +43,9 @@ class DrawableTrackBall : public DrawableObject
     vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
 
 public:
-    DrawableTrackBall()
-    {
-        mUniforms.setNumberOfVerticesPerAxis(N_POINTS);
+    DrawableTrackBall();
 
-        createBuffers();
-    }
-
-    DrawableTrackBall(const DrawableTrackBall& other) :
-            mVisible(other.mVisible), mUniforms(other.mUniforms),
-            mTransform(other.mTransform)
-    {
-        // copy all the members that can be copied, and then re-create the
-        // buffers
-        createBuffers();
-    }
+    DrawableTrackBall(const DrawableTrackBall& other);
 
     // default move constructor - buffers can be moved
     DrawableTrackBall(DrawableTrackBall&& other) = default;
@@ -79,15 +59,7 @@ public:
      *
      * @param[in] other: the other DrawableTrackBall object.
      */
-    void swap(DrawableTrackBall& other)
-    {
-        using std::swap;
-        swap(mVisible, other.mVisible);
-        swap(mVertexPosBuffer, other.mVertexPosBuffer);
-        swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
-        swap(mUniforms, other.mUniforms);
-        swap(mTransform, other.mTransform);
-    }
+    void swap(DrawableTrackBall& other);
 
     friend void swap(DrawableTrackBall& a, DrawableTrackBall& b) { a.swap(b); }
 
@@ -96,73 +68,29 @@ public:
      * @param[in] isDragging: true if the trackball is being dragged, false
      * otherwise.
      */
-    void updateDragging(bool isDragging) { mUniforms.setDragging(isDragging); }
+    void updateDragging(bool isDragging);
 
-    void setTransform(const vcl::Matrix44f& mtx) { mTransform = mtx; }
+    void setTransform(const vcl::Matrix44f& mtx);
 
     // copy and swap idiom
-    DrawableTrackBall& operator=(DrawableTrackBall other)
-    {
-        swap(other);
-        return *this;
-    }
+    DrawableTrackBall& operator=(DrawableTrackBall other);
 
     // DrawableObject interface
 
-    void draw(uint viewId) const override
-    {
-        using enum VertFragProgram;
+    void draw(uint viewId) const override;
 
-        ProgramManager& pm = Context::instance().programManager();
+    Box3d boundingBox() const override;
 
-        if (isVisible()) {
-            bgfx::setState(
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
-                BGFX_STATE_BLEND_NORMAL);
+    std::shared_ptr<DrawableObject> clone() const& override;
 
-            mVertexPosBuffer.bind(0);
-            mEdgeIndexBuffer.bind();
+    std::shared_ptr<DrawableObject> clone() && override;
 
-            bgfx::setTransform(mTransform.data());
+    bool isVisible() const override;
 
-            mUniforms.bind();
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
-        }
-    }
-
-    Box3d boundingBox() const override { return Box3d(); }
-
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<DrawableTrackBall>(*this);
-    }
-
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<DrawableTrackBall>(std::move(*this));
-    }
-
-    bool isVisible() const override { return mVisible; }
-
-    void setVisibility(bool vis) override { mVisible = vis; }
+    void setVisibility(bool vis) override;
 
 private:
-    void createBuffers()
-    {
-        // vertex buffer
-        mVertexPosBuffer.create(
-            TRACKBALL_DATA.first.data(),
-            TRACKBALL_DATA.first.size(),
-            bgfx::Attrib::Position,
-            3,
-            PrimitiveType::FLOAT);
-
-        // edge index buffer
-        mEdgeIndexBuffer.create(
-            TRACKBALL_DATA.second.data(), TRACKBALL_DATA.second.size(), false);
-    }
+    void createBuffers();
 };
 
 } // namespace vcl

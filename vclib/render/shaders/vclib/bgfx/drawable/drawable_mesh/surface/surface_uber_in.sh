@@ -82,9 +82,9 @@ void main()
     if (!SURF_SHADING_NONE) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
-        specular = computeSpecular(
+        vec3 specular = computeSpecular(
             v_position,
-            u_cameraEyePos,
+            vec3(0.0, 0.0, 0.0),
             u_lightDir,
             u_lightColor,
             normal);
