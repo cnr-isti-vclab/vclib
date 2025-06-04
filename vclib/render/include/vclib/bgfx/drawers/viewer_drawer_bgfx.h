@@ -26,7 +26,6 @@
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/drawable/uniforms/camera_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
@@ -37,7 +36,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
-    CameraUniforms           mCameraUniforms;
     DirectionalLightUniforms mDirectionalLightUniforms;
 
     // flags
@@ -47,7 +45,6 @@ public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
-        mCameraUniforms.updateCamera(ParentViewer::camera());
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
     }
 
@@ -66,9 +63,6 @@ public:
             ParentViewer::viewMatrix().data(),
             ParentViewer::projectionMatrix().data());
 
-        mCameraUniforms.updateCamera(ParentViewer::camera());
-        mCameraUniforms.bind();
-
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
@@ -81,9 +75,6 @@ public:
             viewId,
             ParentViewer::viewMatrix().data(),
             ParentViewer::projectionMatrix().data());
-
-        mCameraUniforms.updateCamera(ParentViewer::camera());
-        mCameraUniforms.bind();
 
         ParentViewer::drawableObjectVector().drawId(viewId, ParentViewer::id());
     }

@@ -20,25 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position
-
-$output v_color
+$input a_position, a_color0
+$output v_normal, v_color
 
 #include <vclib/bgfx/drawable/drawable_trackball/uniforms.sh>
 
 void main()
 {
-    uint nVerticesPerCircle = floatBitsToUint(u_nVerticesPerCircleFloat);
-    uint isDragging = floatBitsToUint(u_isDraggingFloat);
-    float alpha = isDragging != 0u ? 0.9f : 0.5f;
-
+    v_normal = normalize(mul(u_model[0], vec4(a_position, 0.0)).xyz);
+    v_color = vec4(a_color0.rgb, u_trackballAlpha);
     gl_Position = mul(u_proj, mul(u_model[0], vec4(a_position, 1.0)));
-
-    // Compute the color
-    if (gl_VertexID < nVerticesPerCircle) // x
-        v_color = vec4(1.0, 0.0, 0.0, alpha);
-    else if (gl_VertexID < nVerticesPerCircle * 2) // y
-        v_color = vec4(0.0, 1.0, 0.0, alpha);
-    else // z
-        v_color = vec4(0.0, 0.0, 1.0, alpha);
 }

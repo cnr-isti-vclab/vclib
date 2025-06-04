@@ -82,9 +82,9 @@ template<
     PlaneConcept    PlaneType>
 EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
 {
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-    using PositionType  = VertexType::PositionType;
+    using VertexType   = MeshType::VertexType;
+    using FaceType     = MeshType::FaceType;
+    using PositionType = VertexType::PositionType;
 
     EdgeMesh em;
 
@@ -122,7 +122,7 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
                         using NormalType     = VertexType::NormalType;
                         const NormalType& n0 = f.vertex(j)->normal();
                         const NormalType& n1 = f.vertexMod(j + 1)->normal();
-                        PositionType         nn =
+                        PositionType      nn =
                             (n0 * fabs(q1) + n1 * fabs(q0)) / fabs(q0 - q1);
                         nmVec.push_back(nn);
                     }
@@ -130,9 +130,9 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
             }
         }
         if (ptVec.size() >= 2) {
-            uint eid              = em.addEdge();
-            uint v0               = em.addVertices(2);
-            uint v1               = v0 + 1;
+            uint eid                 = em.addEdge();
+            uint v0                  = em.addVertices(2);
+            uint v1                  = v0 + 1;
             em.vertex(v0).position() = ptVec[0];
             em.vertex(v1).position() = ptVec[1];
             em.edge(eid).setVertex(0, v0);
@@ -192,10 +192,10 @@ MeshType intersection(
     const Sphere<SScalar>& sphere,
     double                 tol)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using ScalarType = PositionType::ScalarType;
-    using FaceType   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
+    using FaceType     = MeshType::FaceType;
 
     auto faceSphereIntersectionFilter = [&sphere](const FaceType& f) -> bool {
         return intersect(f, sphere);
@@ -207,7 +207,7 @@ MeshType intersection(
     while (i < res.faceContainerSize()) {
         FaceType& f = res.face(i);
 
-        PositionType                         witness;
+        PositionType                      witness;
         std::pair<ScalarType, ScalarType> ires(0, 0);
 
         bool allIn = true;

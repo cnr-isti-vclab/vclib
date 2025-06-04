@@ -64,8 +64,7 @@ void meshConceptStaticAsserts()
         "TriMesh&& does satisfy the HasElementContainer EDGE");
 
     static_assert(
-        mesh::
-            HasPerElementComponent<TriMesh, ElemId::VERTEX, CompId::POSITION>,
+        mesh::HasPerElementComponent<TriMesh, ElemId::VERTEX, CompId::POSITION>,
         "TriMesh does not satisfy the HasPerElementComponent "
         "VERTEX-POSITION");
     static_assert(
@@ -76,10 +75,8 @@ void meshConceptStaticAsserts()
         "const TriMesh does not satisfy the HasPerElementComponent "
         "VERTEX-POSITION");
     static_assert(
-        mesh::HasPerElementComponent<
-            TriMesh&,
-            ElemId::VERTEX,
-            CompId::POSITION>,
+        mesh::
+            HasPerElementComponent<TriMesh&, ElemId::VERTEX, CompId::POSITION>,
         "TriMesh& does not satisfy the HasPerElementComponent "
         "VERTEX-POSITION");
     static_assert(
@@ -90,10 +87,8 @@ void meshConceptStaticAsserts()
         "const TriMesh& does not satisfy the HasPerElementComponent "
         "VERTEX-POSITION");
     static_assert(
-        mesh::HasPerElementComponent<
-            TriMesh&&,
-            ElemId::VERTEX,
-            CompId::POSITION>,
+        mesh::
+            HasPerElementComponent<TriMesh&&, ElemId::VERTEX, CompId::POSITION>,
         "TriMesh&& does not satisfy the HasPerElementComponent "
         "VERTEX-POSITION");
 

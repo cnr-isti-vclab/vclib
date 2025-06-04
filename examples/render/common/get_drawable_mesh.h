@@ -43,8 +43,10 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
-    m.enablePerVertexColor();
-    vcl::setPerVertexColor(m, vcl::Color::Gray);
+    if (!m.isPerVertexColorEnabled()) {
+        m.enablePerVertexColor();
+        vcl::setPerVertexColor(m, vcl::Color::Gray);
+    }
 
     // create a MeshRenderSettings object, that allows to set the rendering
     // options of the mesh

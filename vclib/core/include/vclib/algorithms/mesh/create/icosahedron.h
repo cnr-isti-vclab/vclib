@@ -41,8 +41,8 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createIcosahedron(bool normalizeVertices = false)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
 
     MeshType mesh;
 

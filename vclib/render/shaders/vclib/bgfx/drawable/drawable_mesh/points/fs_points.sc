@@ -20,6 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+// TODO: remove v_position
 $input v_position, v_normal, v_color
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>

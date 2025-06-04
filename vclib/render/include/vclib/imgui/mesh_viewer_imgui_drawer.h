@@ -177,25 +177,25 @@ private:
         // shape
         ImGui::Text("Shape:");
         ImGui::SameLine();
-        ImGui::BeginDisabled(true);
         ImGui::RadioButton(
             "Circle",
             [&] {
-                return false;
+                return settings.isPoints(SHAPE_CIRCLE);
             },
             [&](bool v) {
+                if (v)
+                    settings.setPoints(SHAPE_CIRCLE);
             });
-        ImGui::EndDisabled();
         ImGui::SameLine();
-        ImGui::BeginDisabled(false);
         ImGui::RadioButton(
             "Pixel",
             [&] {
-                return true;
+                return settings.isPoints(SHAPE_PIXEL);
             },
             [&](bool v) {
+                if (v)
+                    settings.setPoints(SHAPE_PIXEL);
             });
-        ImGui::EndDisabled();
 
         // shading
         ImGui::Text("Shading:");
@@ -572,6 +572,7 @@ private:
              settings.isEdges(SHADING_NONE)) == 1);
         ImGui::Text("Shading:");
         ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canEdges(SHADING_SMOOTH));
         ImGui::RadioButton(
             "Smooth",
             [&] {
@@ -581,7 +582,9 @@ private:
                 if (v)
                     settings.setEdges(SHADING_SMOOTH);
             });
+        ImGui::EndDisabled();
         ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canEdges(SHADING_FLAT));
         ImGui::RadioButton(
             "Flat",
             [&] {
@@ -591,6 +594,9 @@ private:
                 if (v)
                     settings.setEdges(SHADING_FLAT);
             });
+        ImGui::EndDisabled();
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canEdges(SHADING_NONE));
         ImGui::RadioButton(
             "None",
             [&] {
@@ -600,7 +606,8 @@ private:
                 if (vis)
                     settings.setEdges(SHADING_NONE);
             });
-
+        ImGui::EndDisabled();
+        
         // color
         ImGui::Text("Color:");
         ImGui::SameLine();
@@ -651,20 +658,22 @@ private:
                 if (selected)
                     ImGui::SetItemDefaultFocus();
             }
-            // color picker
-            ImGui::SameLine();
-            ImGui::BeginDisabled(!settings.isEdges(COLOR_USER));
-            ImGui::ColorEdit4(
-                "##EdgeUserColor",
-                [&] {
-                    return settings.edgesUserColor();
-                },
-                [&](vcl::Color c) {
-                    settings.setEdgesUserColor(c);
-                },
-                ImGuiColorEditFlags_NoInputs);
             ImGui::EndCombo();
         }
+        // user color picker
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.isEdges(COLOR_USER));
+        ImGui::ColorEdit4(
+            "##EdgeUserColor",
+            [&] {
+                return settings.edgesUserColor();
+            },
+            [&](vcl::Color c) {
+                settings.setEdgesUserColor(c);
+            },
+            ImGuiColorEditFlags_NoInputs);
+        ImGui::EndDisabled();
+        
         ImGui::EndDisabled();
     }
 

@@ -35,8 +35,8 @@ MeshType createCone(
     auto       height,
     const uint subdivisions = 36)
 {
-    using PositionType  = MeshType::VertexType::PositionType;
-    using ScalarType = PositionType::ScalarType;
+    using PositionType = MeshType::VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
 
     uint vn, fn;
     if (radiusBottom == 0 || radiusTop == 0) {

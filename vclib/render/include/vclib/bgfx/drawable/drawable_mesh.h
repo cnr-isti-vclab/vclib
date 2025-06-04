@@ -168,17 +168,7 @@ public:
         ProgramManager& pm = Context::instance().programManager();
 
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                         BGFX_STATE_BLEND_NORMAL;
-
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            bindUniforms();
-
-            bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
-        }
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
@@ -204,6 +194,29 @@ public:
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES>());
         }
+
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            if (!Context::instance().supportsCompute()) {
+                // 1 px vertices
+                mMRB.bindVertexBuffers(mMRS);
+                bindUniforms();
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+            }
+            else
+            {
+                // generate splats (quads) lazy
+                mMRB.computeQuadVertexBuffers(*this, viewId);
+
+                // render splats
+                mMRB.bindVertexQuadBuffer();
+                bindUniforms();
+                bgfx::setState(state);
+                bgfx::submit(
+                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+            }
+        }
     }
 
     void drawId(uint viewId, uint id) const override
@@ -220,15 +233,6 @@ public:
 
         const std::array<float, 4> idFloat = {
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
-
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mIdUniform.bind(&idFloat[0]);
-
-            bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
-        }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
@@ -251,6 +255,31 @@ public:
             bgfx::setState(state | BGFX_STATE_PT_LINES);
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
+        }
+
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            if (!Context::instance().supportsCompute()) {
+                // 1 px vertices
+                mMRB.bindVertexBuffers(mMRS);
+                mIdUniform.bind(&idFloat);
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
+            }
+            else
+            {
+                // generate splats (quads) lazy
+                mMRB.computeQuadVertexBuffers(*this, viewId);
+
+                // render splats
+                mMRB.bindVertexQuadBuffer();
+                bindUniforms();
+                mIdUniform.bind(&idFloat);
+
+                bgfx::setState(state);
+                bgfx::submit(
+                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
+            }
         }
     }
 

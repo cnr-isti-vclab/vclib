@@ -29,5 +29,6 @@
 #include "embedded_c_programs/polylines.h"
 #include "embedded_c_programs/polylines_indirect.h"
 #include "embedded_c_programs/polylines_texture.h"
+#include "embedded_compute_programs/drawable_mesh_points.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H

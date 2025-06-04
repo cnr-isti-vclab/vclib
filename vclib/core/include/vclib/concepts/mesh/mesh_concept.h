@@ -99,9 +99,8 @@ concept MeshConcept =
         requires RemoveRef<T>::template hasContainerOf<ElemId::VERTEX>();
 
         // can call the hasPerElementComponent static function
-        requires RemoveRef<T>::template hasPerElementComponent<
-            ElemId::VERTEX,
-            CompId::POSITION>();
+        requires RemoveRef<T>::
+            template hasPerElementComponent<ElemId::VERTEX, CompId::POSITION>();
 
         // constructors
         RemoveRef<T>();

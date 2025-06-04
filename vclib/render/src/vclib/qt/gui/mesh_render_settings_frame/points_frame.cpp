@@ -102,9 +102,8 @@ void PointsFrame::updateFrameFromSettings()
         mUI->shadingVertexRadioButton->setChecked(mMRS.isPoints(SHADING_VERT));
         mUI->shadingNoneRadioButton->setChecked(mMRS.isPoints(SHADING_NONE));
 
-        // todo
-        mUI->shapePixelRadioButton->setChecked(true);
-        mUI->shapeCircleRadioButton->setEnabled(false);
+        mUI->shapeCircleRadioButton->setChecked(mMRS.isPoints(SHAPE_CIRCLE));
+        mUI->shapePixelRadioButton->setChecked(mMRS.isPoints(SHAPE_PIXEL));
 
         updateColorComboBoxFromSettings();
         mUI->sizeSlider->setValue((uint) mMRS.pointWidth());
@@ -160,12 +159,18 @@ void PointsFrame::onVisibilityChanged(Qt::CheckState arg1)
 
 void PointsFrame::onShapeCircleToggled(bool checked)
 {
-    // todo
+    if (checked) {
+        mMRS.setPoints(SHAPE_CIRCLE);
+        emit settingsUpdated();
+    }
 }
 
 void PointsFrame::onShapePixelToggled(bool checked)
 {
-    // todo
+    if (checked) {
+        mMRS.setPoints(SHAPE_PIXEL);
+        emit settingsUpdated();
+    }
 }
 
 void PointsFrame::onShadingVertexToggled(bool checked)

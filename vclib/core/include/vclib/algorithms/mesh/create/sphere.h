@@ -121,9 +121,9 @@ MeshType createSphereUV(
     uint                      parallels = 10,
     uint                      meridians = 20)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using Facetype   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using Facetype     = MeshType::FaceType;
 
     MeshType mesh;
 
@@ -201,20 +201,21 @@ MeshType createSphereNormalizedCube(
     const SphereConcept auto& sp,
     uint                      divisions)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using Facetype   = MeshType::FaceType;
-    using ScalarType = PositionType::ScalarType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using Facetype     = MeshType::FaceType;
+    using ScalarType   = PositionType::ScalarType;
 
     MeshType mesh;
 
-    const double    step = 1.0 / double(divisions);
+    const double       step = 1.0 / double(divisions);
     const PositionType step3(step, step, step);
 
     for (uint face = 0; face < 6; ++face) {
-        const PositionType origin = detail::cts::origins[face].cast<ScalarType>();
-        const PositionType right  = detail::cts::rights[face].cast<ScalarType>();
-        const PositionType up     = detail::cts::ups[face].cast<ScalarType>();
+        const PositionType origin =
+            detail::cts::origins[face].cast<ScalarType>();
+        const PositionType right = detail::cts::rights[face].cast<ScalarType>();
+        const PositionType up    = detail::cts::ups[face].cast<ScalarType>();
         for (uint j = 0; j < divisions + 1; ++j) {
             const PositionType j3(j, j, j);
             for (uint i = 0; i < divisions + 1; ++i) {
@@ -279,20 +280,21 @@ MeshType createSphereSpherifiedCube(
     const SphereConcept auto& sp,
     uint                      divisions)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using ScalarType = PositionType::ScalarType;
-    using Facetype   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using ScalarType   = PositionType::ScalarType;
+    using Facetype     = MeshType::FaceType;
 
     MeshType mesh;
 
-    const double    step = 1.0 / double(divisions);
+    const double       step = 1.0 / double(divisions);
     const PositionType step3(step, step, step);
 
     for (uint face = 0; face < 6; ++face) {
-        const PositionType origin = detail::cts::origins[face].cast<ScalarType>();
-        const PositionType right  = detail::cts::rights[face].cast<ScalarType>();
-        const PositionType up     = detail::cts::ups[face].cast<ScalarType>();
+        const PositionType origin =
+            detail::cts::origins[face].cast<ScalarType>();
+        const PositionType right = detail::cts::rights[face].cast<ScalarType>();
+        const PositionType up    = detail::cts::ups[face].cast<ScalarType>();
         for (uint j = 0; j < divisions + 1; ++j) {
             const PositionType j3(j, j, j);
             for (uint i = 0; i < divisions + 1; ++i) {
@@ -364,9 +366,9 @@ MeshType createSphereSpherifiedCube(
 template<FaceMeshConcept MeshType>
 MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
 {
-    using VertexType = MeshType::VertexType;
-    using PositionType  = VertexType::PositionType;
-    using FaceType   = MeshType::FaceType;
+    using VertexType   = MeshType::VertexType;
+    using PositionType = VertexType::PositionType;
+    using FaceType     = MeshType::FaceType;
 
     MeshType mesh = createIcosahedron<MeshType>(true);
 
