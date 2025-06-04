@@ -20,19 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_DRAWABLE_MESH_POINTS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_DRAWABLE_MESH_POINTS_H
-#include <vclib/bgfx/programs/compute_loader.h>
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
-namespace vcl {
+#include "embedded_c_programs/lines.h"
+#include "embedded_c_programs/lines_indirect.h"
+#include "embedded_c_programs/lines_texture.h"
+#include "embedded_c_programs/polylines.h"
+#include "embedded_c_programs/polylines_indirect.h"
+#include "embedded_c_programs/polylines_texture.h"
+#include "embedded_c_programs/drawable_mesh_points.h"
 
-template<>
-struct ComputeLoader<ComputeProgram::DRAWABLE_MESH_POINTS>
-{
-    static bgfx::EmbeddedShader::Data computeShader(
-        bgfx::RendererType::Enum type);
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_DRAWABLE_MESH_POINTS_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
