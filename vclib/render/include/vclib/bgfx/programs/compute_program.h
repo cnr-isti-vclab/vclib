@@ -25,8 +25,18 @@
 
 namespace vcl {
 
-enum class ComputeProgram {
+enum class ComputeProgram
+{
+    LINES,
+    LINES_INDIRECT,
+    LINES_TEXTURE,
+
+    POLYLINES,
+    POLYLINES_INDIRECT,
+    POLYLINES_TEXTURE,
+
     DRAWABLE_MESH_POINTS,
+
     COUNT
 };
 
