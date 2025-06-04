@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/programs/embedded_compute_programs/drawable_mesh_points.h>
+#include <vclib/bgfx/programs/embedded_c_programs/drawable_mesh_points.h>
 
 #include <vclib/shaders/drawable/drawable_mesh/points_instance/cs_points_instance.sc.400.bin.h>
 
