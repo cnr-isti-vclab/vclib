@@ -23,7 +23,6 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
 
-// TODO remove this when there will be an embedded compute program
-#include <vclib/bgfx/programs/compute_loader.h>
+#include "embedded_compute_programs/drawable_mesh_points.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H

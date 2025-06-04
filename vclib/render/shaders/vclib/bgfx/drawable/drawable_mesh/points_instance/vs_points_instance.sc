@@ -20,11 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
+$input a_position, a_color0, a_normal, a_texcoord0
+$output v_normal, v_color, v_texcoord1
 
-uniform vec4 u_trackballSettingsPack;
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
-#define u_trackballAlpha u_trackballSettingsPack.x
+void main()
+{
+    uint idx = uint(gl_VertexID) & 3u; // last 2 bits
+    // (bit 0 = x axis, bit 1 = y axis)
+    vec4 pos = mul(u_modelViewProj, vec4(a_position, 1.0));
+    vec2 quadUv = vec2(idx & 1u, (idx >> 1) & 1u);
+    vec4 offset = vec4(
+        // {-1, +1} * width * texel
+        (2.0 * quadUv.x - 1.0) * u_pointWidth * u_viewTexel.x, // is divided by 2
+        (2.0 * quadUv.y - 1.0) * u_pointWidth * u_viewTexel.y, // is divided by 2
+        0, 0);
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
+    pos = pos / pos.w;
+    gl_Position = pos + offset;
+    v_normal = normalize(mul(u_normalMatrix, a_normal));
+
+    // default case - color is taken from buffer
+    v_color = a_color0;
+
+    // quad parametrization
+    v_texcoord1 = quadUv;
+}

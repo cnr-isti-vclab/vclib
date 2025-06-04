@@ -20,11 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color
+$input v_normal, v_color
 
-#include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/drawable/drawable_trackball/uniforms.sh>
+
 
 void main()
 {
-    gl_FragColor = v_color;
+    vec3 emission = vec3(0.5, 0.5, 0.5);
+    vec3 normal = normalize(v_normal);
+    float diffuse = max(dot(normal, u_lightDir), 0.0);
+    gl_FragColor = vec4(emission + diffuse * v_color.rgb, v_color.a);
 }
