@@ -24,7 +24,6 @@
 #define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_H
 
 #include "embedded_vf_programs/drawable_axis.h"
-#include "embedded_vf_programs/drawable_mesh_points_instance_id.h"
 #include "embedded_vf_programs/drawable_directional_light.h"
 #include "embedded_vf_programs/drawable_mesh_edges.h"
 #include "embedded_vf_programs/drawable_mesh_edges_id.h"
