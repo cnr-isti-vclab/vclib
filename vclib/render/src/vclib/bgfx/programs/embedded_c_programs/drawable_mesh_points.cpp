@@ -36,8 +36,7 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data ComputeLoader<
-    ComputeProgram::DRAWABLE_MESH_POINTS>::
+bgfx::EmbeddedShader::Data ComputeLoader<ComputeProgram::DRAWABLE_MESH_POINTS>::
     computeShader(bgfx::RendererType::Enum type)
 {
     switch (type) {

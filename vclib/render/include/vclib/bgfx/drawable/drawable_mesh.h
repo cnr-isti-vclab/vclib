@@ -209,8 +209,7 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
             }
-            else
-            {
+            else {
                 // generate splats (quads) lazy
                 mMRB.computeQuadVertexBuffers(*this, viewId);
 
@@ -219,7 +218,7 @@ public:
                 bindUniforms();
                 bgfx::setState(state);
                 bgfx::submit(
-                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
     }
@@ -279,8 +278,7 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
             }
-            else
-            {
+            else {
                 // generate splats (quads) lazy
                 mMRB.computeQuadVertexBuffers(*this, viewId);
 
@@ -291,7 +289,7 @@ public:
 
                 bgfx::setState(state);
                 bgfx::submit(
-                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
+                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
             }
         }
     }

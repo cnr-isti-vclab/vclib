@@ -26,10 +26,10 @@
 #include <vclib/imgui/imgui_drawer.h>
 
 #include <vclib/glfw/window_manager.h>
+#include <vclib/imgui/imgui_stats_drawer.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
 
 int main(int argc, char** argv)
 {
