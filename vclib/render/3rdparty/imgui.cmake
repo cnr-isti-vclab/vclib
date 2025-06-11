@@ -33,7 +33,7 @@ if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
     FetchContent_MakeAvailable(imgui)
 
     file(GLOB IMGUI_SOURCES ${imgui_SOURCE_DIR}/*.cpp ${imgui_SOURCE_DIR}/*.h)
-    add_library(imgui STATIC
+    add_library(imgui
         ${IMGUI_SOURCES}
         ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp # TODO: std::string? check
     )
