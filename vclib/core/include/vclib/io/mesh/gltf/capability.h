@@ -20,48 +20,42 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_CAPABILITY_H
-#define VCL_IO_MESH_CAPABILITY_H
+#ifndef VCL_IO_MESH_GLTF_CAPABILITY_H
+#define VCL_IO_MESH_GLTF_CAPABILITY_H
 
-#include "obj/capability.h"
-#include "off/capability.h"
-#include "ply/capability.h"
-#include "stl/capability.h"
-
-#ifdef VCLIB_WITH_TINYGLTF
-#include "gltf/capability.h"
-#endif
-
-#include <vclib/exceptions/io.h>
-#include <vclib/misc/string.h>
+#include <vclib/io/file_format.h>
+#include <vclib/space/complex/mesh_info.h>
 
 namespace vcl {
 
-inline MeshInfo formatCapability(const std::string& format)
+constexpr FileFormat gltfFileFormat()
 {
-    std::string ext = toLower(format);
-    if (ext == "obj") {
-        return objFormatCapability();
-    }
-    else if (ext == "off") {
-        return offFormatCapability();
-    }
-    else if (ext == "ply") {
-        return plyFormatCapability();
-    }
-    else if (ext == "stl") {
-        return stlFormatCapability();
-    }
-#ifdef VCLIB_WITH_TINYGLTF
-    else if (ext == "gltf" || ext == "glb") {
-        return gltfFormatCapability();
-    }
-#endif
-    else {
-        throw UnknownFileFormatException(ext);
-    }
+    return FileFormat({"gltf", "glb"}, "GL Transmission Format");
+}
+
+inline MeshInfo gltfFormatCapability()
+{
+    MeshInfo info;
+
+    info.setPolygonMesh();
+
+    info.setVertices();
+    info.setFaces();
+
+    info.setTextures();
+
+    info.setPerVertexPosition();
+    info.setPerVertexNormal();
+    info.setPerVertexColor();
+    info.setPerVertexTexCoord();
+
+    info.setPerFaceVertexReferences();
+    info.setPerFaceColor();
+    info.setPerFaceWedgeTexCoords();
+
+    return info;
 }
 
 } // namespace vcl
 
-#endif // VCL_IO_MESH_CAPABILITY_H
+#endif // VCL_IO_MESH_GLTF_CAPABILITY_H
