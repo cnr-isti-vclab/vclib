@@ -20,26 +20,28 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_STB_DIR ${CMAKE_CURRENT_LIST_DIR}/stb-master)
+if (VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
+    message(STATUS "- tinygltf - using downloaded source")
 
-if (VCLIB_ALLOW_BUNDLED_STB AND EXISTS ${VCLIB_STB_DIR}/stb/stb_image.h)
-    message(STATUS "- STB - using bundled source")
+    set(TINYGLTF_VERSION 2.9.6)
 
-    set(STB_INCLUDE_DIRS ${VCLIB_STB_DIR})
+    set(TINYGLTF_BUILD_LOADER_EXAMPLE OFF)
 
-    add_library(vclib-3rd-stb INTERFACE)
-    set_property(TARGET vclib-3rd-stb PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-    target_include_directories(vclib-3rd-stb INTERFACE ${STB_INCLUDE_DIRS})
-
-    target_compile_definitions(vclib-3rd-stb INTERFACE
-            VCLIB_WITH_STB)
-
-    list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-stb)
-
-    if (VCLIB_ALLOW_INSTALL_STB)
-        install(DIRECTORY ${VCLIB_STB_DIR}/stb
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-            FILES_MATCHING PATTERN "*.h")
+    if (NOT ${VCLIB_ALLOW_INSTALL_TINYGLTF})
+        set(TINYGLTF_INSTALL OFF)
     endif()
+
+    FetchContent_Declare(tinygltf
+        GIT_REPOSITORY https://github.com/syoyo/tinygltf
+        GIT_TAG        v${TINYGLTF_VERSION})
+    FetchContent_MakeAvailable(tinygltf)
+    set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+    add_library(vclib-3rd-tinygltf INTERFACE)
+    target_link_libraries(vclib-3rd-tinygltf INTERFACE tinygltf)
+
+    list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tinygltf)
+
+    target_compile_definitions(vclib-3rd-tinygltf INTERFACE
+        VCLIB_WITH_JSON VCLIB_WITH_STB VCLIB_WITH_TINYGLTF)
 endif()
