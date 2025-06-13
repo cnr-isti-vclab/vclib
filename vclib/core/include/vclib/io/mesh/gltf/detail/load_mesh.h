@@ -27,8 +27,8 @@
 #include <vclib/concepts/mesh.h>
 #include <vclib/io/mesh/settings.h>
 #include <vclib/misc/logger.h>
-#include <vclib/space/core/texture.h>
 #include <vclib/space/complex/mesh_info.h>
+#include <vclib/space/core/texture.h>
 
 #include <tiny_gltf.h>
 
@@ -36,31 +36,134 @@
 
 namespace vcl::detail {
 
-enum class GltfAttrType {POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES};
+enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES };
+inline const std::array<std::string, 4> GLTF_ATTR_STR {
+    "POSITION",
+    "NORMAL",
+    "COLOR_0",
+    "TEXCOORD_0"};
 
 void checkGltfPrimitiveMaterial(
-    const tinygltf::Model& model,
+    const tinygltf::Model&     model,
     const tinygltf::Primitive& p,
-    int& textureImg,
-    bool& hasColor,
-    vcl::Color& color)
+    int&                       textureImg,
+    bool&                      hasColor,
+    vcl::Color&                color)
 {
-    if (p.material >= 0) { //if the primitive has a material
+    if (p.material >= 0) { // if the primitive has a material
         const tinygltf::Material& mat = model.materials[p.material];
-        auto it = mat.values.find("baseColorTexture");
-        if (it != mat.values.end()){ //the material is a texture
+        auto                      it  = mat.values.find("baseColorTexture");
+        if (it != mat.values.end()) { // the material is a texture
             auto it2 = it->second.json_double_value.find("index");
-            if (it2 != it->second.json_double_value.end()){
-                textureImg = it2->second; //get the id of the texture
+            if (it2 != it->second.json_double_value.end()) {
+                textureImg = it2->second; // get the id of the texture
             }
         }
         it = mat.values.find("baseColorFactor");
-        if (it != mat.values.end()) { //vertex base color, the same for a primitive
-            hasColor = true;
+        if (it !=
+            mat.values.end()) { // vertex base color, the same for a primitive
+            hasColor                      = true;
             const std::vector<double>& vc = it->second.number_array;
-            for (unsigned int i = 0; i < 4; i++)
+            for (uint i = 0; i < 4; i++)
                 color[i] = vc[i] * 255.0;
         }
+    }
+}
+
+template<MeshConcept MeshType, typename Scalar>
+void populateGltfVertices(
+    MeshType&     m,
+    const Scalar* posArray,
+    uint          stride,
+    uint          vertNumber)
+{
+    using PositionType = typename MeshType::VertexType::PositionType;
+
+    uint base = m.addVertices(vertNumber);
+
+    for (uint i = 0; i < vertNumber; ++i) {
+        const Scalar* posBase = reinterpret_cast<const Scalar*>(
+            reinterpret_cast<const char*>(posArray) + (i) *stride);
+        m.vertex(base + i).position() =
+            PositionType(posBase[0], posBase[1], posBase[2]);
+    }
+}
+
+template <FaceMeshConcept MeshType, typename Scalar>
+void populateGltfTriangles(
+    MeshType& m,
+    uint firstVertex,
+    const Scalar* triArray,
+    uint triNumber)
+{
+    if (triArray != nullptr) {
+        uint fi = m.addFaces(triNumber);
+        for (unsigned int i = 0; i < triNumber*3; i+=3, ++fi) {
+            auto& f = m.face(fi);
+            if constexpr (HasPolygons<MeshType>) {
+                f.resizeVertices(3);
+            }
+            for (int j = 0; j < 3; ++j) {
+                f.setVertex(j, firstVertex + triArray[i+j]);
+            }
+        }
+    }
+    else {
+        triNumber = m.vertexNumber() / 3 - firstVertex;
+        uint fi = m.addFaces(triNumber);
+        for (uint i = 0; i < triNumber*3; i+=3, ++fi) {
+            auto& f = m.face(fi);
+            for (uint j = 0; j < 3; ++j) {
+                f.setVertex(j, firstVertex + i + j);
+            }
+        }
+    }
+}
+
+/**
+ * @brief given the attribute and the pointer to the data,
+ * it calls the appropriate functions that put the data into the mesh
+ * appropriately
+ * @param attr
+ * @param m
+ * @param array: vector containing the data
+ * @param stride:
+ *     number of bytes between consecutive elements in the vector
+ *     (only applies to vertex attributes; indices are always tightly packed)
+ * @param number: number of elements contained in the data
+ * @param textID:
+ *     if attr is texcoord, it is the texture id
+ *     if attr is color, tells if color has 3 or 4 components
+ */
+template<typename Scalar, MeshConcept MeshType>
+void populateGltfAttr(
+    GltfAttrType  attr,
+    MeshType&     m,
+    uint          firstVertex,
+    const Scalar* array,
+    unsigned int  stride,
+    unsigned int  number,
+    int           textID = -1)
+{
+    using enum GltfAttrType;
+
+    switch (attr) {
+    case POSITION: populateGltfVertices(m, array, stride, number); break;
+    case NORMAL:
+        // populateVNormals(m, firstVertex, array, stride, number);
+        break;
+    case COLOR_0:
+        // populateVColors(m, firstVertex, array, stride, number, textID);
+        break;
+    case TEXCOORD_0:
+        // populateVTextCoords(m, firstVertex, array, stride, number, textID);
+        break;
+    case INDICES:
+        if constexpr (HasFaces<MeshType>) {
+            populateGltfTriangles(m, firstVertex, array, number/3);
+        }
+        break;
+
     }
 }
 
@@ -80,18 +183,159 @@ void checkGltfPrimitiveMaterial(
  * @param textID: id of the texture in case of the attr is TEXCOORD_0
  * @return true if the attribute has been loaded
  */
-template<
-    MeshConcept     MeshType,
-    LoggerConcept   LogType>
-bool loadAttribute(
-    MeshType& m,
-    uint startingVertex,
-    const tinygltf::Model& model,
+template<MeshConcept MeshType>
+bool loadGltfAttribute(
+    MeshType&                  m,
+    uint                       startingVertex,
+    const tinygltf::Model&     model,
     const tinygltf::Primitive& p,
-    GltfAttrType attr,
-    int textID)
+    GltfAttrType               attr,
+    int                        textID)
 {
-    return false;
+    using enum GltfAttrType;
+
+    bool                      attrLoaded = false;
+    const tinygltf::Accessor* accessor   = nullptr;
+
+    // get the accessor associated to the attribute
+    if (attr != INDICES) {
+        auto it = p.attributes.find(GLTF_ATTR_STR[toUnderlying(attr)]);
+
+        if (it != p.attributes.end()) { // accessor found
+            accessor = &model.accessors[it->second];
+        }
+        else if (attr == POSITION) { // if we were looking for POSITION and
+                                     // didn't find any
+            throw MalformedFileException("File has not 'Position' attribute");
+        }
+    }
+    else { // if the attribute is triangle indices
+        // if the mode is GL_TRIANGLES and we have triangle indices
+        if (p.mode == TINYGLTF_MODE_TRIANGLES && p.indices >= 0 &&
+            (uint) p.indices < model.accessors.size()) {
+            accessor = &model.accessors[p.indices];
+        }
+    }
+
+    // if we found an accessor of the attribute
+    if (accessor) {
+        // bufferview: contains infos on how to access buffer with the accessor
+        const tinygltf::BufferView& posbw =
+            model.bufferViews[accessor->bufferView];
+
+        // data of the whole buffer (vector of bytes);
+        // may contain also other data not associated to our attribute
+        const std::vector<unsigned char>& posdata =
+            model.buffers[posbw.buffer].data;
+
+        // offset where the data of the attribute starts
+        uint posOffset = posbw.byteOffset + accessor->byteOffset;
+        // hack:
+        // if the attribute is a color, textid is used to tell the size of the
+        // color (3 or 4 components)
+        if (attr == COLOR_0) {
+            if (accessor->type == TINYGLTF_TYPE_VEC3)
+                textID = 3;
+            else if (accessor->type == TINYGLTF_TYPE_VEC4)
+                textID = 4;
+        }
+
+        const uint elementSize =
+            tinygltf::GetNumComponentsInType(accessor->type) *
+            tinygltf::GetComponentSizeInBytes(accessor->componentType);
+        const uint stride =
+            (posbw.byteStride > elementSize) ? posbw.byteStride : elementSize;
+
+        // if data is float
+        if (accessor->componentType == TINYGLTF_COMPONENT_TYPE_FLOAT) {
+            // get the starting point of the data as float pointer
+            const float* posArray = (const float*) (posdata.data() + posOffset);
+            populateGltfAttr(
+                attr,
+                m,
+                startingVertex,
+                posArray,
+                stride,
+                accessor->count,
+                textID);
+            attrLoaded = true;
+        }
+        // if data is double
+        else if (accessor->componentType == TINYGLTF_COMPONENT_TYPE_DOUBLE) {
+            // get the starting point of the data as double pointer
+            const double* posArray =
+                (const double*) (posdata.data() + posOffset);
+            populateGltfAttr(
+                attr,
+                m,
+                startingVertex,
+                posArray,
+                stride,
+                accessor->count,
+                textID);
+            attrLoaded = true;
+        }
+        // if data is ubyte
+        else if (
+            accessor->componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE) {
+            // get the starting point of the data as uchar pointer
+            const unsigned char* triArray =
+                (const unsigned char*) (posdata.data() + posOffset);
+            populateGltfAttr(
+                attr,
+                m,
+                startingVertex,
+                triArray,
+                stride,
+                accessor->count,
+                textID);
+            attrLoaded = true;
+        }
+        // if data is ushort
+        else if (
+            accessor->componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT) {
+            // get the starting point of the data as ushort pointer
+            const unsigned short* triArray =
+                (const unsigned short*) (posdata.data() + posOffset);
+            populateGltfAttr(
+                attr,
+                m,
+                startingVertex,
+                triArray,
+                stride,
+                accessor->count,
+                textID);
+            attrLoaded = true;
+        }
+        // if data is uint
+        else if (
+            accessor->componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT) {
+            // get the starting point of the data as uint pointer
+            const uint* triArray =
+                (const uint*) (posdata.data() + posOffset);
+            populateGltfAttr(
+                attr,
+                m,
+                startingVertex,
+                triArray,
+                stride,
+                accessor->count,
+                textID);
+            attrLoaded = true;
+        }
+    }
+    // if accessor not found and attribute is indices, it means that
+    // the mesh is not indexed, and triplets of contiguous vertices
+    // generate triangles
+    else if (attr == INDICES) {
+        // avoid explicitly the point clouds
+        if (p.mode != TINYGLTF_MODE_POINTS) {
+            // this case is managed when passing nullptr as data
+            populateGltfAttr<unsigned char>(attr, m, startingVertex, nullptr, 0, 0);
+            attrLoaded = true;
+        }
+    }
+    return attrLoaded;
 }
 
 /**
@@ -113,19 +357,21 @@ void loadGltfMeshPrimitive(
     LogType&                   log,
     const LoadSettings&        settings)
 {
-    int textureImg = -1; //id of the texture associated to the material
-    bool vTex = false; // used if a material has a texture
-    bool vCol = false; // used if a material has a base color for all the primitive
-    vcl::Color col; //the base color, to be set to all the vertices
+    int  textureImg = -1;    // id of the texture associated to the material
+    bool vTex       = false; // used if a material has a texture
+    bool vCol =
+        false;      // used if a material has a base color for all the primitive
+    vcl::Color col; // the base color, to be set to all the vertices
     checkGltfPrimitiveMaterial(model, p, textureImg, vCol, col);
 
     if constexpr (HasTexturePaths<MeshType>) {
-        if (textureImg != -1) { //if we found a texture
+        if (textureImg != -1) { // if we found a texture
             vTex = true;
-            const tinygltf::Image& img = model.images[model.textures[textureImg].source];
+            const tinygltf::Image& img =
+                model.images[model.textures[textureImg].source];
             // add the path of the texture to the mesh
             std::string uri = img.uri;
-            uri = std::regex_replace(uri, std::regex("\\%20"), " ");
+            uri             = std::regex_replace(uri, std::regex("\\%20"), " ");
 
             bool textureAdded = false;
             if constexpr (HasTextureImages<MeshType>) {
@@ -134,7 +380,9 @@ void loadGltfMeshPrimitive(
                         if (uri.empty()) {
                             uri = "texture_" + std::to_string(textureImg);
                         }
-                        vcl::Texture txt(Image(img.image.data(), img.width, img.height), uri);
+                        vcl::Texture txt(
+                            Image(img.image.data(), img.width, img.height),
+                            uri);
                         m.pushTexture(txt);
                         textureAdded = true;
                     }
@@ -147,8 +395,10 @@ void loadGltfMeshPrimitive(
         }
     }
 
+    uint firstVertex = m.vertexNumber();
+
     // load vertex position attribute
-    // loadAttribute(m, model, p, GltfAttrType::POSITION);
+    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::POSITION, textureImg);
 
     if (vCol) {
         if constexpr (HasPerVertexColor<MeshType>) {
@@ -162,12 +412,14 @@ void loadGltfMeshPrimitive(
         }
     }
 
+    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::INDICES, textureImg);
+
     if (HasTransformMatrix<MeshType>) {
         m.transformMatrix() = transf;
     }
     else {
-        // if the mesh does not have a transform matrix, apply the transformation
-        // matrix to the vertices
+        // if the mesh does not have a transform matrix, apply the
+        // transformation matrix to the vertices
         vcl::applyTransformMatrix(m, transf);
     }
 }
@@ -191,7 +443,7 @@ void gltfLoadMesh(
     const tinygltf::Model& model,
     const MatrixType&      transf,
     LogType&               log,
-    const LoadSettings& settings)
+    const LoadSettings&    settings)
 {
     if constexpr (HasName<MeshType>) {
         if (!tm.name.empty()) {
@@ -201,16 +453,9 @@ void gltfLoadMesh(
 
     log.startProgress("Reading primitives", tm.primitives.size());
 
-    //for each primitive, load it into the mesh
-    for (uint i = 0; const tinygltf::Primitive& p : tm.primitives){
-        loadGltfMeshPrimitive(
-            m,
-            info,
-            model,
-            p,
-            transf,
-            log,
-            settings);
+    // for each primitive, load it into the mesh
+    for (uint i = 0; const tinygltf::Primitive& p : tm.primitives) {
+        loadGltfMeshPrimitive(m, info, model, p, transf, log, settings);
         log.progress(i);
     }
 
@@ -218,10 +463,10 @@ void gltfLoadMesh(
 
     log.log(
         "Loaded mesh '" + tm.name + "' with " +
-        std::to_string(tm.primitives.size()) + " primitives.",
+            std::to_string(tm.primitives.size()) + " primitives.",
         LogType::LogLevel::MESSAGE_LOG);
 }
 
-} // namespace detail
+} // namespace vcl::detail
 
 #endif // VCL_IO_MESH_GLTF_LOAD_MESH_H
