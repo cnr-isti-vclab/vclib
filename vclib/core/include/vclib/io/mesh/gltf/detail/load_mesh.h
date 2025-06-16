@@ -108,7 +108,7 @@ bool populateGltfVNormals(
         if (isPerVertexNormalAvailable(m)) {
             for (unsigned int i = 0; i < vertNumber; i++) {
                 const Scalar* normBase = reinterpret_cast<const Scalar*>(
-                    reinterpret_cast<const char*>(normArray) + (i) *stride);
+                    reinterpret_cast<const char*>(normArray) + i * stride);
                 m.vertex(firstVertex + i).normal() =
                     NormalType(normBase[0], normBase[1], normBase[2]);
             }
@@ -163,6 +163,41 @@ bool populateGltfVColors(
         return false;
     }
 
+}
+
+template <MeshConcept MeshType, typename Scalar>
+bool populateGltfVTextCoords(
+    MeshType& m,
+    uint firstVertex,
+    bool enableOptionalComponents,
+    const Scalar* textCoordArray,
+    unsigned int stride,
+    unsigned int vertNumber,
+    int textID)
+{
+    if constexpr (HasPerVertexTexCoord<MeshType>) {
+        using TexCoordType = typename MeshType::VertexType::TexCoordType;
+
+        if (enableOptionalComponents)
+            enableIfPerVertexTexCoordOptional(m);
+
+        if (isPerVertexTexCoordAvailable(m)) {
+            for (unsigned int i = 0; i < vertNumber; i++) {
+                const Scalar* textCoordBase = reinterpret_cast<const Scalar*>(
+                    reinterpret_cast<const char*>(textCoordArray) + i * stride);
+
+                m.vertex(firstVertex + i).texCoord() =
+                    TexCoordType(textCoordBase[0], 1-textCoordBase[1], textID);
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
 }
 
 template <MeshConcept MeshType, typename Scalar>
@@ -237,8 +272,7 @@ bool populateGltfAttr(
     case COLOR_0:
         return populateGltfVColors(m, firstVertex, enableOptionalComponents, array, stride, number, textID);
     case TEXCOORD_0:
-        // return populateVTextCoords(m, firstVertex, array, stride, number, textID);
-        return false;
+        return populateGltfVTextCoords(m, firstVertex, enableOptionalComponents, array, stride, number, textID);
     case INDICES:
         return populateGltfTriangles(m, firstVertex, array, number/3);
     default:
@@ -526,6 +560,18 @@ void loadGltfMeshPrimitive(
         textureImg);
     if (lvc) {
         info.setPerVertexColor();
+    }
+
+    bool lvt = loadGltfAttribute(
+        m,
+        firstVertex,
+        settings.enableOptionalComponents,
+        model,
+        p,
+        GltfAttrType::TEXCOORD_0,
+        textureImg);
+    if (lvt) {
+        info.setPerVertexTexCoord();
     }
 
     bool lti = loadGltfAttribute(
