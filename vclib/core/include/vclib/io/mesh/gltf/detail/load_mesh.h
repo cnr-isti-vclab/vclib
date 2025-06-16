@@ -94,6 +94,7 @@ template <MeshConcept MeshType, typename Scalar>
 bool populateGltfVNormals(
     MeshType& m,
     uint firstVertex,
+    bool enableOptionalComponents,
     const Scalar* normArray,
     unsigned int stride,
     unsigned int vertNumber)
@@ -101,16 +102,21 @@ bool populateGltfVNormals(
     if constexpr (HasPerVertexNormal<MeshType>) {
         using NormalType = typename MeshType::VertexType::NormalType;
 
-        // TODO: manage case where normals are optional
+        if (enableOptionalComponents)
+            enableIfPerVertexNormalOptional(m);
 
-        for (unsigned int i = 0; i < vertNumber; i++) {
-            const Scalar* normBase = reinterpret_cast<const Scalar*>(
-                reinterpret_cast<const char*>(normArray) + (i) *stride);
-            m.vertex(firstVertex + i).normal() =
-                NormalType(normBase[0], normBase[1], normBase[2]);
+        if (isPerVertexNormalAvailable(m)) {
+            for (unsigned int i = 0; i < vertNumber; i++) {
+                const Scalar* normBase = reinterpret_cast<const Scalar*>(
+                    reinterpret_cast<const char*>(normArray) + (i) *stride);
+                m.vertex(firstVertex + i).normal() =
+                    NormalType(normBase[0], normBase[1], normBase[2]);
+            }
+            return true;
         }
-
-        return true;
+        else {
+            return false;
+        }
     }
     else {
         return false;
@@ -121,30 +127,37 @@ template <MeshConcept MeshType, typename Scalar>
 bool populateGltfVColors(
     MeshType& m,
     uint firstVertex,
+    bool enableOptionalComponents,
     const Scalar* colorArray,
     unsigned int stride,
     unsigned int vertNumber,
     int nElemns)
 {
     if constexpr (HasPerVertexColor<MeshType>) {
-        // TODO: manage case where colors are optional
+        if (enableOptionalComponents)
+            enableIfPerVertexColorOptional(m);
 
-        for (unsigned int i = 0; i < vertNumber*nElemns; i += nElemns) {
-            const Scalar* colorBase =
-                reinterpret_cast<const Scalar*>(reinterpret_cast<const char*>(colorArray) + (i/nElemns) * stride);
-            const auto vi = firstVertex + i/nElemns;
-            vcl::Color c;
-            if constexpr (!std::is_floating_point<Scalar>::value) {
-                uint alpha = nElemns == 4 ? colorBase[3] : 255;
-                c = vcl::Color(colorBase[0], colorBase[1], colorBase[2], alpha);
+        if (isPerVertexColorAvailable(m)) {
+            for (unsigned int i = 0; i < vertNumber*nElemns; i += nElemns) {
+                const Scalar* colorBase =
+                    reinterpret_cast<const Scalar*>(reinterpret_cast<const char*>(colorArray) + (i/nElemns) * stride);
+                const auto vi = firstVertex + i/nElemns;
+                vcl::Color c;
+                if constexpr (!std::is_floating_point<Scalar>::value) {
+                    uint alpha = nElemns == 4 ? colorBase[3] : 255;
+                    c = vcl::Color(colorBase[0], colorBase[1], colorBase[2], alpha);
+                }
+                else {
+                    uint alpha = nElemns == 4 ? colorBase[3] * 255 : 255;
+                    c = vcl::Color(colorBase[0] * 255, colorBase[1]*255, colorBase[2]*255, alpha);
+                }
+                m.vertex(vi).color() = c;
             }
-            else {
-                uint alpha = nElemns == 4 ? colorBase[3] * 255 : 255;
-                c = vcl::Color(colorBase[0] * 255, colorBase[1]*255, colorBase[2]*255, alpha);
-            }
-            m.vertex(vi).color() = c;
+            return true;
         }
-        return true;
+        else {
+            return false;
+        }
     }
     else {
         return false;
@@ -209,6 +222,7 @@ bool populateGltfAttr(
     GltfAttrType  attr,
     MeshType&     m,
     uint          firstVertex,
+    bool          enableOptionalComponents,
     const Scalar* array,
     unsigned int  stride,
     unsigned int  number,
@@ -219,9 +233,9 @@ bool populateGltfAttr(
     switch (attr) {
     case POSITION: return populateGltfVertices(m, array, stride, number);
     case NORMAL:
-        return populateGltfVNormals(m, firstVertex, array, stride, number);
+        return populateGltfVNormals(m, firstVertex, enableOptionalComponents, array, stride, number);
     case COLOR_0:
-        return populateGltfVColors(m, firstVertex, array, stride, number, textID);
+        return populateGltfVColors(m, firstVertex, enableOptionalComponents, array, stride, number, textID);
     case TEXCOORD_0:
         // return populateVTextCoords(m, firstVertex, array, stride, number, textID);
         return false;
@@ -252,6 +266,7 @@ template<MeshConcept MeshType>
 bool loadGltfAttribute(
     MeshType&                  m,
     uint                       startingVertex,
+    bool                       enableOptionalComponents,
     const tinygltf::Model&     model,
     const tinygltf::Primitive& p,
     GltfAttrType               attr,
@@ -318,6 +333,7 @@ bool loadGltfAttribute(
                 attr,
                 m,
                 startingVertex,
+                enableOptionalComponents,
                 posArray,
                 stride,
                 accessor->count,
@@ -332,6 +348,7 @@ bool loadGltfAttribute(
                 attr,
                 m,
                 startingVertex,
+                enableOptionalComponents,
                 posArray,
                 stride,
                 accessor->count,
@@ -347,6 +364,7 @@ bool loadGltfAttribute(
                 attr,
                 m,
                 startingVertex,
+                enableOptionalComponents,
                 triArray,
                 stride,
                 accessor->count,
@@ -362,6 +380,7 @@ bool loadGltfAttribute(
                 attr,
                 m,
                 startingVertex,
+                enableOptionalComponents,
                 triArray,
                 stride,
                 accessor->count,
@@ -377,6 +396,7 @@ bool loadGltfAttribute(
                 attr,
                 m,
                 startingVertex,
+                enableOptionalComponents,
                 triArray,
                 stride,
                 accessor->count,
@@ -390,7 +410,14 @@ bool loadGltfAttribute(
         // avoid explicitly the point clouds
         if (p.mode != TINYGLTF_MODE_POINTS) {
             // this case is managed when passing nullptr as data
-            return populateGltfAttr<unsigned char>(attr, m, startingVertex, nullptr, 0, 0);
+            return populateGltfAttr<unsigned char>(
+                attr,
+                m,
+                startingVertex,
+                enableOptionalComponents,
+                nullptr,
+                0,
+                0);
         }
     }
     return false;
@@ -456,7 +483,25 @@ void loadGltfMeshPrimitive(
     uint firstVertex = m.vertexNumber();
 
     // load vertex position attribute
-    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::POSITION, textureImg);
+    loadGltfAttribute(
+        m,
+        firstVertex,
+        settings.enableOptionalComponents,
+        model,
+        p,
+        GltfAttrType::POSITION,
+        textureImg);
+    info.setVertices();
+
+    bool lvn = loadGltfAttribute(
+        m,
+        firstVertex,
+        settings.enableOptionalComponents,
+        model,
+        p,
+        GltfAttrType::NORMAL,
+        textureImg);
+    info.setPerVertexNormal(lvn);
 
     if (vCol) {
         if constexpr (HasPerVertexColor<MeshType>) {
@@ -466,15 +511,36 @@ void loadGltfMeshPrimitive(
             if (isPerVertexColorAvailable(m)) {
                 for (auto& v : m.vertices())
                     v.color() = col;
+                info.setPerVertexColor();
             }
         }
     }
 
-    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::NORMAL, textureImg);
+    bool lvc = loadGltfAttribute(
+        m,
+        firstVertex,
+        settings.enableOptionalComponents,
+        model,
+        p,
+        GltfAttrType::COLOR_0,
+        textureImg);
+    if (lvc) {
+        info.setPerVertexColor();
+    }
 
-    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::COLOR_0, textureImg);
-
-    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::INDICES, textureImg);
+    bool lti = loadGltfAttribute(
+        m,
+        firstVertex,
+        settings.enableOptionalComponents,
+        model,
+        p,
+        GltfAttrType::INDICES,
+        textureImg);
+    if (lti) {
+        info.setTriangleMesh();
+        info.setFaces();
+        info.setPerFaceVertexReferences();
+    }
 
     if (HasTransformMatrix<MeshType>) {
         m.transformMatrix() = transf;
