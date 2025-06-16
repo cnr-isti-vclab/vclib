@@ -71,7 +71,7 @@ void checkGltfPrimitiveMaterial(
 }
 
 template<MeshConcept MeshType, typename Scalar>
-void populateGltfVertices(
+bool populateGltfVertices(
     MeshType&     m,
     const Scalar* posArray,
     uint          stride,
@@ -87,36 +87,105 @@ void populateGltfVertices(
         m.vertex(base + i).position() =
             PositionType(posBase[0], posBase[1], posBase[2]);
     }
+    return true;
 }
 
-template <FaceMeshConcept MeshType, typename Scalar>
-void populateGltfTriangles(
+template <MeshConcept MeshType, typename Scalar>
+bool populateGltfVNormals(
+    MeshType& m,
+    uint firstVertex,
+    const Scalar* normArray,
+    unsigned int stride,
+    unsigned int vertNumber)
+{
+    if constexpr (HasPerVertexNormal<MeshType>) {
+        using NormalType = typename MeshType::VertexType::NormalType;
+
+        // TODO: manage case where normals are optional
+
+        for (unsigned int i = 0; i < vertNumber; i++) {
+            const Scalar* normBase = reinterpret_cast<const Scalar*>(
+                reinterpret_cast<const char*>(normArray) + (i) *stride);
+            m.vertex(firstVertex + i).normal() =
+                NormalType(normBase[0], normBase[1], normBase[2]);
+        }
+
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+template <MeshConcept MeshType, typename Scalar>
+bool populateGltfVColors(
+    MeshType& m,
+    uint firstVertex,
+    const Scalar* colorArray,
+    unsigned int stride,
+    unsigned int vertNumber,
+    int nElemns)
+{
+    if constexpr (HasPerVertexColor<MeshType>) {
+        // TODO: manage case where colors are optional
+
+        for (unsigned int i = 0; i < vertNumber*nElemns; i += nElemns) {
+            const Scalar* colorBase =
+                reinterpret_cast<const Scalar*>(reinterpret_cast<const char*>(colorArray) + (i/nElemns) * stride);
+            const auto vi = firstVertex + i/nElemns;
+            vcl::Color c;
+            if constexpr (!std::is_floating_point<Scalar>::value) {
+                uint alpha = nElemns == 4 ? colorBase[3] : 255;
+                c = vcl::Color(colorBase[0], colorBase[1], colorBase[2], alpha);
+            }
+            else {
+                uint alpha = nElemns == 4 ? colorBase[3] * 255 : 255;
+                c = vcl::Color(colorBase[0] * 255, colorBase[1]*255, colorBase[2]*255, alpha);
+            }
+            m.vertex(vi).color() = c;
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+
+}
+
+template <MeshConcept MeshType, typename Scalar>
+bool populateGltfTriangles(
     MeshType& m,
     uint firstVertex,
     const Scalar* triArray,
     uint triNumber)
 {
-    if (triArray != nullptr) {
-        uint fi = m.addFaces(triNumber);
-        for (unsigned int i = 0; i < triNumber*3; i+=3, ++fi) {
-            auto& f = m.face(fi);
-            if constexpr (HasPolygons<MeshType>) {
-                f.resizeVertices(3);
-            }
-            for (int j = 0; j < 3; ++j) {
-                f.setVertex(j, firstVertex + triArray[i+j]);
+    if constexpr (HasFaces<MeshType>) {
+        if (triArray != nullptr) {
+            uint fi = m.addFaces(triNumber);
+            for (unsigned int i = 0; i < triNumber*3; i+=3, ++fi) {
+                auto& f = m.face(fi);
+                if constexpr (HasPolygons<MeshType>) {
+                    f.resizeVertices(3);
+                }
+                for (int j = 0; j < 3; ++j) {
+                    f.setVertex(j, firstVertex + triArray[i+j]);
+                }
             }
         }
+        else {
+            triNumber = m.vertexNumber() / 3 - firstVertex;
+            uint fi = m.addFaces(triNumber);
+            for (uint i = 0; i < triNumber*3; i+=3, ++fi) {
+                auto& f = m.face(fi);
+                for (uint j = 0; j < 3; ++j) {
+                    f.setVertex(j, firstVertex + i + j);
+                }
+            }
+        }
+        return true;
     }
     else {
-        triNumber = m.vertexNumber() / 3 - firstVertex;
-        uint fi = m.addFaces(triNumber);
-        for (uint i = 0; i < triNumber*3; i+=3, ++fi) {
-            auto& f = m.face(fi);
-            for (uint j = 0; j < 3; ++j) {
-                f.setVertex(j, firstVertex + i + j);
-            }
-        }
+        return false;
     }
 }
 
@@ -136,7 +205,7 @@ void populateGltfTriangles(
  *     if attr is color, tells if color has 3 or 4 components
  */
 template<typename Scalar, MeshConcept MeshType>
-void populateGltfAttr(
+bool populateGltfAttr(
     GltfAttrType  attr,
     MeshType&     m,
     uint          firstVertex,
@@ -148,22 +217,18 @@ void populateGltfAttr(
     using enum GltfAttrType;
 
     switch (attr) {
-    case POSITION: populateGltfVertices(m, array, stride, number); break;
+    case POSITION: return populateGltfVertices(m, array, stride, number);
     case NORMAL:
-        // populateVNormals(m, firstVertex, array, stride, number);
-        break;
+        return populateGltfVNormals(m, firstVertex, array, stride, number);
     case COLOR_0:
-        // populateVColors(m, firstVertex, array, stride, number, textID);
-        break;
+        return populateGltfVColors(m, firstVertex, array, stride, number, textID);
     case TEXCOORD_0:
-        // populateVTextCoords(m, firstVertex, array, stride, number, textID);
-        break;
+        // return populateVTextCoords(m, firstVertex, array, stride, number, textID);
+        return false;
     case INDICES:
-        if constexpr (HasFaces<MeshType>) {
-            populateGltfTriangles(m, firstVertex, array, number/3);
-        }
-        break;
-
+        return populateGltfTriangles(m, firstVertex, array, number/3);
+    default:
+        return false;
     }
 }
 
@@ -194,7 +259,6 @@ bool loadGltfAttribute(
 {
     using enum GltfAttrType;
 
-    bool                      attrLoaded = false;
     const tinygltf::Accessor* accessor   = nullptr;
 
     // get the accessor associated to the attribute
@@ -250,7 +314,7 @@ bool loadGltfAttribute(
         if (accessor->componentType == TINYGLTF_COMPONENT_TYPE_FLOAT) {
             // get the starting point of the data as float pointer
             const float* posArray = (const float*) (posdata.data() + posOffset);
-            populateGltfAttr(
+            return populateGltfAttr(
                 attr,
                 m,
                 startingVertex,
@@ -258,14 +322,13 @@ bool loadGltfAttribute(
                 stride,
                 accessor->count,
                 textID);
-            attrLoaded = true;
         }
         // if data is double
         else if (accessor->componentType == TINYGLTF_COMPONENT_TYPE_DOUBLE) {
             // get the starting point of the data as double pointer
             const double* posArray =
                 (const double*) (posdata.data() + posOffset);
-            populateGltfAttr(
+            return populateGltfAttr(
                 attr,
                 m,
                 startingVertex,
@@ -273,7 +336,6 @@ bool loadGltfAttribute(
                 stride,
                 accessor->count,
                 textID);
-            attrLoaded = true;
         }
         // if data is ubyte
         else if (
@@ -281,7 +343,7 @@ bool loadGltfAttribute(
             // get the starting point of the data as uchar pointer
             const unsigned char* triArray =
                 (const unsigned char*) (posdata.data() + posOffset);
-            populateGltfAttr(
+            return populateGltfAttr(
                 attr,
                 m,
                 startingVertex,
@@ -289,7 +351,6 @@ bool loadGltfAttribute(
                 stride,
                 accessor->count,
                 textID);
-            attrLoaded = true;
         }
         // if data is ushort
         else if (
@@ -297,7 +358,7 @@ bool loadGltfAttribute(
             // get the starting point of the data as ushort pointer
             const unsigned short* triArray =
                 (const unsigned short*) (posdata.data() + posOffset);
-            populateGltfAttr(
+            return populateGltfAttr(
                 attr,
                 m,
                 startingVertex,
@@ -305,7 +366,6 @@ bool loadGltfAttribute(
                 stride,
                 accessor->count,
                 textID);
-            attrLoaded = true;
         }
         // if data is uint
         else if (
@@ -313,7 +373,7 @@ bool loadGltfAttribute(
             // get the starting point of the data as uint pointer
             const uint* triArray =
                 (const uint*) (posdata.data() + posOffset);
-            populateGltfAttr(
+            return populateGltfAttr(
                 attr,
                 m,
                 startingVertex,
@@ -321,7 +381,6 @@ bool loadGltfAttribute(
                 stride,
                 accessor->count,
                 textID);
-            attrLoaded = true;
         }
     }
     // if accessor not found and attribute is indices, it means that
@@ -331,11 +390,10 @@ bool loadGltfAttribute(
         // avoid explicitly the point clouds
         if (p.mode != TINYGLTF_MODE_POINTS) {
             // this case is managed when passing nullptr as data
-            populateGltfAttr<unsigned char>(attr, m, startingVertex, nullptr, 0, 0);
-            attrLoaded = true;
+            return populateGltfAttr<unsigned char>(attr, m, startingVertex, nullptr, 0, 0);
         }
     }
-    return attrLoaded;
+    return false;
 }
 
 /**
@@ -411,6 +469,10 @@ void loadGltfMeshPrimitive(
             }
         }
     }
+
+    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::NORMAL, textureImg);
+
+    loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::COLOR_0, textureImg);
 
     loadGltfAttribute(m, firstVertex, model, p, GltfAttrType::INDICES, textureImg);
 
