@@ -30,7 +30,7 @@ namespace vcl {
 
 constexpr FileFormat gltfFileFormat()
 {
-    return FileFormat({"gltf", "glb"}, "GL Transmission Format");
+    return FileFormat(std::vector<std::string> {"gltf", "glb"}, "GL Transmission Format");
 }
 
 inline MeshInfo gltfFormatCapability()
