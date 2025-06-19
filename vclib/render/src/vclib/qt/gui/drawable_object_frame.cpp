@@ -22,6 +22,8 @@
 
 #include <vclib/qt/gui/drawable_object_frame.h>
 
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
+
 #include "ui_drawable_object_frame.h"
 
 namespace vcl::qt {
@@ -39,20 +41,26 @@ DrawableObjectFrame::DrawableObjectFrame(
     mUI->infoFrame->setVisible(false);
     mUI->showInfoToolButton->setVisible(false);
 
+    // const std::shared_ptr<AbstractDrawableMesh> mesh =
+    //     std::dynamic_pointer_cast<AbstractDrawableMesh>(obj);
+
     // info management
-    mUI->infoLabel->setText(QString::fromStdString(obj->info()));
-    if (obj->info().empty()) {
-        mUI->showInfoToolButton->setVisible(false);
-        mUI->showInfoToolButton->setChecked(false);
-        mUI->showInfoToolButton->setEnabled(false);
-        mUI->infoFrame->setVisible(false);
-    }
-    else {
+    bool isExpandable = !obj->info().empty()/* || mesh*/;
+
+    if (isExpandable) {
         mUI->showInfoToolButton->setVisible(true);
         mUI->showInfoToolButton->setEnabled(true);
         mUI->showInfoToolButton->setChecked(false);
-        mUI->infoFrame->setVisible(false);
     }
+    else {
+        mUI->showInfoToolButton->setVisible(false);
+        mUI->showInfoToolButton->setEnabled(false);
+        mUI->showInfoToolButton->setChecked(false);
+    }
+
+    mUI->infoLabel->setText(QString::fromStdString(obj->info()));
+    mUI->line->setVisible(false);
+    mUI->infoFrame->setVisible(false);
 
     // connects
     connect(
@@ -94,6 +102,7 @@ void DrawableObjectFrame::showInfoToolButtonChecked(bool checked)
         mUI->showInfoToolButton->setArrowType(Qt::RightArrow);
     }
     mUI->infoFrame->setVisible(checked);
+    mUI->line->setVisible(checked);
     emit resized();
 }
 
