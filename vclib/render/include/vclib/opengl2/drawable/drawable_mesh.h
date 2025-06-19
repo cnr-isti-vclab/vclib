@@ -153,6 +153,22 @@ public:
         bindTextures();
     }
 
+    uint vertexNumber() const override { return MeshType::vertexNumber(); }
+
+    uint faceNumber() const override {
+        if constexpr (HasFaces<MeshType>)
+            return MeshType::faceNumber();
+        else
+            return 0;
+    }
+
+    uint edgeNumber() const override {
+        if constexpr (HasEdges<MeshType>)
+            return MeshType::edgeNumber();
+        else
+            return 0;
+    }
+
     // DrawableObject implementation
 
     void init() override { bindTextures(); }
