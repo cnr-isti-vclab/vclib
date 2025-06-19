@@ -30,7 +30,18 @@ private:
 
 public:
     explicit DrawableObjectVectorTree(QWidget* parent = nullptr);
+    explicit DrawableObjectVectorTree(
+        const std::shared_ptr<DrawableObjectVector>& v,
+        QWidget*                                     parent = nullptr);
     ~DrawableObjectVectorTree();
+
+    void setIconFunction(const IconFunction& f);
+
+    void setDrawableObjectVector(
+        const std::shared_ptr<vcl::DrawableObjectVector>& v);
+
+private:
+    void updateDrawableVectorTree();
 };
 
 } // namespace vcl::qt

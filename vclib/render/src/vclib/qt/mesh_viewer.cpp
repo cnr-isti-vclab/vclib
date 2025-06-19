@@ -90,6 +90,7 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // give the vector pointer to the contained widgets
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
     mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
 
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
@@ -143,6 +144,7 @@ void MeshViewer::setDrawableObjectVector(
     // the renderSettingsFrame!
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
     mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
 
     updateGUI();
 }
