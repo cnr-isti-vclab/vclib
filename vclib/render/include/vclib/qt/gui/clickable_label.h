@@ -20,22 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/q_clickable_label.h>
+#ifndef VCL_QT_GUI_CLICKABLE_LABEL_H
+#define VCL_QT_GUI_CLICKABLE_LABEL_H
+
+#include <QLabel>
+#include <QWidget>
+#include <Qt>
 
 namespace vcl::qt {
 
-QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags) :
-        QLabel(parent)
+/**
+ * @brief The ClickableLabel class is a QLabel class which can be clicked
+ * (clicked event).
+ *
+ * Usage: just Promote a QLabel to a vcl::qt::ClickableLabel
+ *
+ * @link https://wiki.qt.io/Clickable_QLabel
+ */
+class ClickableLabel : public QLabel
 {
-}
+    Q_OBJECT
 
-QClickableLabel::~QClickableLabel()
-{
-}
+public:
+    explicit ClickableLabel(
+        QWidget*        parent = Q_NULLPTR,
+        Qt::WindowFlags f      = Qt::WindowFlags());
+    ~ClickableLabel();
 
-void QClickableLabel::mousePressEvent(QMouseEvent*)
-{
-    emit clicked();
-}
+signals:
+    void clicked();
+
+protected:
+    void mousePressEvent(QMouseEvent* event);
+};
 
 } // namespace vcl::qt
+
+#endif // VCL_QT_GUI_CLICKABLE_LABEL_H
