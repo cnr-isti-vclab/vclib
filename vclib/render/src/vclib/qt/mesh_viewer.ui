@@ -79,6 +79,9 @@
         </widget>
        </item>
        <item>
+        <widget class="vcl::qt::DrawableObjectVectorTree" name="drawVectorTree"/>
+       </item>
+       <item>
         <widget class="vcl::qt::MeshRenderSettingsFrame" name="renderSettingsFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -139,6 +142,12 @@
    <class>vcl::qt::TextEditLogger</class>
    <extends>QFrame</extends>
    <header>vclib/qt/gui/text_edit_logger.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::qt::DrawableObjectVectorTree</class>
+   <extends>QFrame</extends>
+   <header>vclib/qt/gui/drawable_object_vector_tree.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
