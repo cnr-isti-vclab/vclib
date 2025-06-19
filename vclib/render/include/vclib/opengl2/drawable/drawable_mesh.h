@@ -108,6 +108,23 @@ public:
 
     ~DrawableMeshOpenGL2() = default;
 
+    void swap(DrawableMeshOpenGL2& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mBoundingBox, other.mBoundingBox);
+        swap(mMRD, other.mMRD);
+        swap(mTextID, other.mTextID);
+    }
+
+    friend void swap(DrawableMeshOpenGL2& a, DrawableMeshOpenGL2& b)
+    {
+        a.swap(b);
+    }
+
+    // AbstractDrawableMesh implementation
+
     void updateBuffers(
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {
@@ -134,25 +151,6 @@ public:
         mMRD.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         bindTextures();
-    }
-
-    std::string& name() override { return MeshType::name(); }
-
-    const std::string& name() const override { return MeshType::name(); }
-
-    void swap(DrawableMeshOpenGL2& other)
-    {
-        using std::swap;
-        AbstractDrawableMesh::swap(other);
-        MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
-        swap(mMRD, other.mMRD);
-        swap(mTextID, other.mTextID);
-    }
-
-    friend void swap(DrawableMeshOpenGL2& a, DrawableMeshOpenGL2& b)
-    {
-        a.swap(b);
     }
 
     // DrawableObject implementation
@@ -242,6 +240,10 @@ public:
     {
         return std::make_shared<DrawableMeshOpenGL2>(std::move(*this));
     }
+
+    std::string& name() override { return MeshType::name(); }
+
+    const std::string& name() const override { return MeshType::name(); }
 
 private:
     void renderPass() const

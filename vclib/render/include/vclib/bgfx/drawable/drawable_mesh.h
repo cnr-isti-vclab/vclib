@@ -97,6 +97,36 @@ public:
         return *this;
     }
 
+    void swap(DrawableMeshBGFX& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mBoundingBox, other.mBoundingBox);
+        swap(mMRB, other.mMRB);
+        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+    }
+
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
+
+    // TODO: to be removed after shader benchmarks
+    void setSurfaceProgramType(SurfaceProgramsType type)
+    {
+        if (type != mSurfaceProgramType) {
+            std::cerr << "Program Type changed: ";
+            switch (type) {
+            case SurfaceProgramsType::UBER: std::cerr << "UBER\n"; break;
+            case SurfaceProgramsType::SPLIT: std::cerr << "SPLITTED\n"; break;
+            case SurfaceProgramsType::UBER_WITH_STATIC_IF:
+                std::cerr << "UBER_WITH_STATIC_IF\n";
+                break;
+            }
+            mSurfaceProgramType = type;
+        }
+    }
+
+    // AbstractDrawableMesh implementation
+
     void updateBuffers(
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {
@@ -124,36 +154,10 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
-    std::string& name() override { return MeshType::name(); }
-
-    const std::string& name() const override { return MeshType::name(); }
-
-    void swap(DrawableMeshBGFX& other)
+    void setRenderSettings(const MeshRenderSettings& rs) override
     {
-        using std::swap;
-        AbstractDrawableMesh::swap(other);
-        MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
-        swap(mMRB, other.mMRB);
-        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
-    }
-
-    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
-
-    // TODO: to be removed after shader benchmarks
-    void setSurfaceProgramType(SurfaceProgramsType type)
-    {
-        if (type != mSurfaceProgramType) {
-            std::cerr << "Program Type changed: ";
-            switch (type) {
-            case SurfaceProgramsType::UBER: std::cerr << "UBER\n"; break;
-            case SurfaceProgramsType::SPLIT: std::cerr << "SPLITTED\n"; break;
-            case SurfaceProgramsType::UBER_WITH_STATIC_IF:
-                std::cerr << "UBER_WITH_STATIC_IF\n";
-                break;
-            }
-            mSurfaceProgramType = type;
-        }
+        AbstractDrawableMesh::setRenderSettings(rs);
+        mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 
     // DrawableObject implementation
@@ -312,11 +316,9 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
-    void setRenderSettings(const MeshRenderSettings& rs) override
-    {
-        AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
-    }
+    std::string& name() override { return MeshType::name(); }
+
+    const std::string& name() const override { return MeshType::name(); }
 
 protected:
     void bindUniforms() const
