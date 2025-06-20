@@ -162,7 +162,7 @@ TextEditLogger& MeshViewer::logger()
 }
 
 void MeshViewer::setDrawVectorIconFunction(
-    const DrawableObjectVectorFrame::IconFunction& f)
+    const DrawableObjectVectorTree::IconFunction& f)
 {
     mUI->drawVectorTree->setIconFunction(f);
 }
