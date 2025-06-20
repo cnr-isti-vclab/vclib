@@ -20,22 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/q_clickable_label.h>
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
-namespace vcl::qt {
+#include "embedded_c_programs/drawable_mesh_points.h"
 
-QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags) :
-        QLabel(parent)
-{
-}
-
-QClickableLabel::~QClickableLabel()
-{
-}
-
-void QClickableLabel::mousePressEvent(QMouseEvent*)
-{
-    emit clicked();
-}
-
-} // namespace vcl::qt
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H

@@ -691,9 +691,9 @@ private:
             pn = ply::alpha;
         if (name == "quality" || name == "scalar")
             pn = ply::quality;
-        if (name == "texture_u")
+        if (name == "texture_u" || name == "s" || name == "u")
             pn = ply::texture_u;
-        if (name == "texture_v")
+        if (name == "texture_v" || name == "t" || name == "v")
             pn = ply::texture_v;
         if (name == "texnumber")
             pn = ply::texnumber;

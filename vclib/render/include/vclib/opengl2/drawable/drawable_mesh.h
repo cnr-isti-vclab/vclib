@@ -108,6 +108,23 @@ public:
 
     ~DrawableMeshOpenGL2() = default;
 
+    void swap(DrawableMeshOpenGL2& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mBoundingBox, other.mBoundingBox);
+        swap(mMRD, other.mMRD);
+        swap(mTextID, other.mTextID);
+    }
+
+    friend void swap(DrawableMeshOpenGL2& a, DrawableMeshOpenGL2& b)
+    {
+        a.swap(b);
+    }
+
+    // AbstractDrawableMesh implementation
+
     void updateBuffers(
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {
@@ -136,23 +153,22 @@ public:
         bindTextures();
     }
 
-    std::string& name() override { return MeshType::name(); }
+    uint vertexNumber() const override { return MeshType::vertexNumber(); }
 
-    const std::string& name() const override { return MeshType::name(); }
-
-    void swap(DrawableMeshOpenGL2& other)
+    uint faceNumber() const override
     {
-        using std::swap;
-        AbstractDrawableMesh::swap(other);
-        MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
-        swap(mMRD, other.mMRD);
-        swap(mTextID, other.mTextID);
+        if constexpr (HasFaces<MeshType>)
+            return MeshType::faceNumber();
+        else
+            return 0;
     }
 
-    friend void swap(DrawableMeshOpenGL2& a, DrawableMeshOpenGL2& b)
+    uint edgeNumber() const override
     {
-        a.swap(b);
+        if constexpr (HasEdges<MeshType>)
+            return MeshType::edgeNumber();
+        else
+            return 0;
     }
 
     // DrawableObject implementation
@@ -242,6 +258,10 @@ public:
     {
         return std::make_shared<DrawableMeshOpenGL2>(std::move(*this));
     }
+
+    std::string& name() override { return MeshType::name(); }
+
+    const std::string& name() const override { return MeshType::name(); }
 
 private:
     void renderPass() const

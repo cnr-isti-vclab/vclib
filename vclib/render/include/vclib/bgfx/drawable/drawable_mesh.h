@@ -97,6 +97,36 @@ public:
         return *this;
     }
 
+    void swap(DrawableMeshBGFX& other)
+    {
+        using std::swap;
+        AbstractDrawableMesh::swap(other);
+        MeshType::swap(other);
+        swap(mBoundingBox, other.mBoundingBox);
+        swap(mMRB, other.mMRB);
+        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+    }
+
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
+
+    // TODO: to be removed after shader benchmarks
+    void setSurfaceProgramType(SurfaceProgramsType type)
+    {
+        if (type != mSurfaceProgramType) {
+            std::cerr << "Program Type changed: ";
+            switch (type) {
+            case SurfaceProgramsType::UBER: std::cerr << "UBER\n"; break;
+            case SurfaceProgramsType::SPLIT: std::cerr << "SPLITTED\n"; break;
+            case SurfaceProgramsType::UBER_WITH_STATIC_IF:
+                std::cerr << "UBER_WITH_STATIC_IF\n";
+                break;
+            }
+            mSurfaceProgramType = type;
+        }
+    }
+
+    // AbstractDrawableMesh implementation
+
     void updateBuffers(
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {
@@ -124,36 +154,28 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
-    std::string& name() override { return MeshType::name(); }
-
-    const std::string& name() const override { return MeshType::name(); }
-
-    void swap(DrawableMeshBGFX& other)
+    void setRenderSettings(const MeshRenderSettings& rs) override
     {
-        using std::swap;
-        AbstractDrawableMesh::swap(other);
-        MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
-        swap(mMRB, other.mMRB);
-        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+        AbstractDrawableMesh::setRenderSettings(rs);
+        mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 
-    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
+    uint vertexNumber() const override { return MeshType::vertexNumber(); }
 
-    // TODO: to be removed after shader benchmarks
-    void setSurfaceProgramType(SurfaceProgramsType type)
+    uint faceNumber() const override
     {
-        if (type != mSurfaceProgramType) {
-            std::cerr << "Program Type changed: ";
-            switch (type) {
-            case SurfaceProgramsType::UBER: std::cerr << "UBER\n"; break;
-            case SurfaceProgramsType::SPLIT: std::cerr << "SPLITTED\n"; break;
-            case SurfaceProgramsType::UBER_WITH_STATIC_IF:
-                std::cerr << "UBER_WITH_STATIC_IF\n";
-                break;
-            }
-            mSurfaceProgramType = type;
-        }
+        if constexpr (HasFaces<MeshType>)
+            return MeshType::faceNumber();
+        else
+            return 0;
+    }
+
+    uint edgeNumber() const override
+    {
+        if constexpr (HasEdges<MeshType>)
+            return MeshType::edgeNumber();
+        else
+            return 0;
     }
 
     // DrawableObject implementation
@@ -209,8 +231,7 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
             }
-            else
-            {
+            else {
                 // generate splats (quads) lazy
                 mMRB.computeQuadVertexBuffers(*this, viewId);
 
@@ -219,7 +240,7 @@ public:
                 bindUniforms();
                 bgfx::setState(state);
                 bgfx::submit(
-                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
     }
@@ -279,8 +300,7 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
             }
-            else
-            {
+            else {
                 // generate splats (quads) lazy
                 mMRB.computeQuadVertexBuffers(*this, viewId);
 
@@ -291,7 +311,7 @@ public:
 
                 bgfx::setState(state);
                 bgfx::submit(
-                    viewId,pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
+                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
             }
         }
     }
@@ -314,11 +334,9 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
-    void setRenderSettings(const MeshRenderSettings& rs) override
-    {
-        AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
-    }
+    std::string& name() override { return MeshType::name(); }
+
+    const std::string& name() const override { return MeshType::name(); }
 
 protected:
     void bindUniforms() const

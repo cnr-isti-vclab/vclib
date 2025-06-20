@@ -251,19 +251,18 @@ public:
 
     /**
      * @brief Bind the vertex buffer to the compute shader.
-     * 
+     *
      * If the buffer is invalid, it is not bound.
-     * 
+     *
      * @param[in] stage: the stage to which the vertex buffer is bound.
      * @param[in] access: the access type for the buffer.
-     * 
+     *
      * @note This function is used to bind the vertex buffer to a compute
      * shader. It is similar to the bind function, but it uses the
      * bgfx::setBuffer function to bind the buffer.
      */
-    void bindCompute(
-        uint stage,
-        bgfx::Access::Enum access = bgfx::Access::Read) const
+    void bindCompute(uint stage, bgfx::Access::Enum access = bgfx::Access::Read)
+        const
     {
         if (bgfx::isValid(mHandle)) {
             bgfx::setBuffer(stage, mHandle, access);

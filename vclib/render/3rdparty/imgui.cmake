@@ -23,17 +23,19 @@
 if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
     message(STATUS "- ImGui - using downloaded source")
 
+    set(IMGUI_VERSION 1.91.9b)
+
     # ImGui (glfw + bgfx)
     FetchContent_Declare(
         imgui
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG        master
+        GIT_TAG        v${IMGUI_VERSION}
         EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(imgui)
 
     file(GLOB IMGUI_SOURCES ${imgui_SOURCE_DIR}/*.cpp ${imgui_SOURCE_DIR}/*.h)
-    add_library(imgui STATIC
+    add_library(imgui
         ${IMGUI_SOURCES}
         ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp # TODO: std::string? check
     )
