@@ -39,6 +39,11 @@ public:
         QTreeWidget*                           parent = nullptr);
 
     std::shared_ptr<DrawableObject> drawableObject() const;
+
+private:
+    void addMeshInfoItem();
+
+    static void makeItemNotSelectable(QTreeWidgetItem* item);
 };
 
 } // namespace vcl::qt

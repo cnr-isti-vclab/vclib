@@ -34,11 +34,25 @@
 }</string>
      </property>
      <property name="headerHidden">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
+     <property name="columnCount">
+      <number>2</number>
+     </property>
+     <attribute name="headerVisible">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>true</bool>
+     </attribute>
      <column>
       <property name="text">
-       <string notr="true">1</string>
+       <string notr="true"/>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
       </property>
      </column>
     </widget>
