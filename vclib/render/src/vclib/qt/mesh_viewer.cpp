@@ -37,8 +37,8 @@ bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
         // for your needs
         if (keyEvent->modifiers().testFlag(Qt::ControlModifier) &&
             keyEvent->key() == 'S') {
-            qDebug() << "Ignoring" << keyEvent->modifiers() << "+"
-                     << (char) keyEvent->key() << "for" << watched;
+            qDebug() << "Ignoring " << keyEvent->modifiers() << " + "
+                     << (char) keyEvent->key() << " for " << watched;
             event->ignore();
             return true;
         }
@@ -61,6 +61,11 @@ DrawableObjectVectorFrame& MeshViewer::drawableObjectVectorFrame() const
 {
     return *static_cast<vcl::qt::DrawableObjectVectorFrame*>(
         mUI->drawVectorFrame);
+}
+
+DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
+{
+    return *mUI->drawVectorTree;
 }
 
 /**
@@ -112,11 +117,16 @@ MeshViewer::MeshViewer(QWidget* parent) :
         this,
         SLOT(visibilityDrawableObjectChanged()));
 
-    // each time that the selected object is changed in the drawVectorFrame, we
+    // each time that the selected object is changed in the drawVectorTree, we
     // update the RenderSettingsFrame, updating its settings to the object
     // render settings
     connect(
         mUI->drawVectorFrame,
+        SIGNAL(drawableObjectSelectionChanged(uint)),
+        this,
+        SLOT(selectedDrawableObjectChanged(uint)));
+    connect(
+        mUI->drawVectorTree,
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
@@ -240,8 +250,8 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
 void MeshViewer::renderSettingsUpdated()
 {
     // The user changed the RenderSettings of the ith object.
-    uint i = mUI->drawVectorFrame->selectedDrawableObject();
-    if (mListedDrawableObjects->size() > 0) {
+    uint i = mUI->drawVectorTree->selectedDrawableObject();
+    if (i != UINT_NULL && mListedDrawableObjects->size() > 0) {
         // The selected object must always be a AbstractDrawableMesh, because
         // the RenderSettingsFrame (which called this member function) is
         // visible only when the selected Object is a AbstractDrawableMesh

@@ -40,8 +40,19 @@ public:
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
+    uint selectedDrawableObject() const;
+
+    // function to set the selected item
+    bool setSelectedItem(uint i);
+
+signals:
+    void drawableObjectSelectionChanged(uint i);
+
 private:
     void updateDrawableVectorTree();
+
+private slots:
+    void itemSelectionChanged();
 };
 
 } // namespace vcl::qt
