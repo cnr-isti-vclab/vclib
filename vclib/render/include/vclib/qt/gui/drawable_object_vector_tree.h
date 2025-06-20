@@ -4,6 +4,7 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <QFrame>
+#include <QTreeWidgetItem>
 
 namespace vcl::qt {
 
@@ -42,17 +43,21 @@ public:
 
     uint selectedDrawableObject() const;
 
+    void update(); // todo: rename this to refresh
+
     // function to set the selected item
     bool setSelectedItem(uint i);
 
 signals:
     void drawableObjectSelectionChanged(uint i);
+    void drawableObjectVisibilityChanged();
 
 private:
     void updateDrawableVectorTree();
 
 private slots:
     void itemSelectionChanged();
+    void itemCheckStateChanged(QTreeWidgetItem* item, int column);
 };
 
 } // namespace vcl::qt

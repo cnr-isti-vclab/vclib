@@ -17,6 +17,14 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
         &QTreeWidget::itemSelectionChanged,
         this,
         &DrawableObjectVectorTree::itemSelectionChanged);
+
+    // each time that the user checks or unchecks an item, call the
+    // itemCheckStateChanged slot
+    connect(
+        mUI->treeWidget,
+        &QTreeWidget::itemChanged,
+        this,
+        &DrawableObjectVectorTree::itemCheckStateChanged);
 }
 
 DrawableObjectVectorTree::DrawableObjectVectorTree(
@@ -45,6 +53,22 @@ uint DrawableObjectVectorTree::selectedDrawableObject() const
         return mUI->treeWidget->indexOfTopLevelItem(sItems.first());
     }
     return UINT_NULL;
+}
+
+void DrawableObjectVectorTree::update()
+{
+    uint selected = selectedDrawableObject();
+    updateDrawableVectorTree();
+    if (selected == UINT_NULL && mDrawList->size() > 0) {
+        selected = 0;
+    }
+
+    if (selected != UINT_NULL && selected < mDrawList->size()) {
+        auto item = mUI->treeWidget->topLevelItem(selected);
+        if (item) {
+            mUI->treeWidget->setCurrentItem(item);
+        }
+    }
 }
 
 bool DrawableObjectVectorTree::setSelectedItem(uint i)
@@ -89,11 +113,8 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
 
         mUI->treeWidget->addTopLevelItem(item);
 
-        // connect(
-        //     item,
-        //     &DrawableObjectItem::drawableObjectVisibilityChanged,
-        //     this,
-        //     &DrawableObjectVectorTree::drawableObjectVisibilityChanged);
+        // if d is visible, set the check state to checked
+        item->setCheckState(0, d->isVisible() ? Qt::Checked : Qt::Unchecked);
     }
 }
 
@@ -110,6 +131,25 @@ void DrawableObjectVectorTree::itemSelectionChanged()
         if (mUI->treeWidget->topLevelItemCount() > 0) {
             mUI->treeWidget->topLevelItem(0)->setSelected(true);
         }
+    }
+}
+
+void DrawableObjectVectorTree::itemCheckStateChanged(
+    QTreeWidgetItem* item,
+    int              column)
+{
+    if (item) {
+        // update the visibility of the drawable object
+        auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
+        if (drawableItem) {
+            auto obj = drawableItem->drawableObject();
+            if (obj) {
+                obj->setVisibility(item->checkState(column) == Qt::Checked);
+            }
+        }
+
+        // emit the visibility changed signal
+        emit drawableObjectVisibilityChanged();
     }
 }
 
