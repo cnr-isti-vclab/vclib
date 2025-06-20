@@ -30,9 +30,15 @@ DrawableObjectItem::DrawableObjectItem(
         QTreeWidgetItem(parent), mObj(obj)
 {
     assert(obj);
-    setText(0, QString::fromStdString(obj->name()));
+    if (obj->isVisible())
+        setCheckState(0, Qt::Checked);
+    else
+        setCheckState(0, Qt::Unchecked);
+
+    // leave setText and setFlags AFTER setCheckState.
+    // for some reason, they trigger the itemCheckStateChanged signal...
     setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
-    setCheckState(0, obj->isVisible() ? Qt::Checked : Qt::Unchecked);
+    setText(0, QString::fromStdString(obj->name()));
 }
 
 std::shared_ptr<DrawableObject> DrawableObjectItem::drawableObject() const
