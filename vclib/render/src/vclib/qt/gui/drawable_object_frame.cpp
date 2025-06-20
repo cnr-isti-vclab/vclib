@@ -45,7 +45,7 @@ DrawableObjectFrame::DrawableObjectFrame(
     //     std::dynamic_pointer_cast<AbstractDrawableMesh>(obj);
 
     // info management
-    bool isExpandable = !obj->info().empty()/* || mesh*/;
+    bool isExpandable = !obj->info().empty() /* || mesh*/;
 
     if (isExpandable) {
         mUI->showInfoToolButton->setVisible(true);

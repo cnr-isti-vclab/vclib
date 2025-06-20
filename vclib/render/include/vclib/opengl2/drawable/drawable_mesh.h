@@ -155,14 +155,16 @@ public:
 
     uint vertexNumber() const override { return MeshType::vertexNumber(); }
 
-    uint faceNumber() const override {
+    uint faceNumber() const override
+    {
         if constexpr (HasFaces<MeshType>)
             return MeshType::faceNumber();
         else
             return 0;
     }
 
-    uint edgeNumber() const override {
+    uint edgeNumber() const override
+    {
         if constexpr (HasEdges<MeshType>)
             return MeshType::edgeNumber();
         else
