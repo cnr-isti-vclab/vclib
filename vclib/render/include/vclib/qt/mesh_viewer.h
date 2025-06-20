@@ -60,8 +60,6 @@ class MeshViewer : public QWidget
 protected:
     MeshViewerRenderApp& viewer() const;
 
-    DrawableObjectVectorFrame& drawableObjectVectorFrame() const;
-
     DrawableObjectVectorTree& drawableObjectVectorTree() const;
 
     void keyPressEvent(QKeyEvent* event) override;

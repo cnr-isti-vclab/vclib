@@ -63,22 +63,6 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="vcl::qt::DrawableObjectVectorFrame" name="drawVectorFrame">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Shape::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Plain</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="vcl::qt::DrawableObjectVectorTree" name="drawVectorTree"/>
        </item>
        <item>
@@ -124,12 +108,6 @@
    <class>vcl::qt::MeshRenderSettingsFrame</class>
    <extends>QFrame</extends>
    <header>vclib/qt/gui/mesh_render_settings_frame.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>vcl::qt::DrawableObjectVectorFrame</class>
-   <extends>QFrame</extends>
-   <header>vclib/qt/gui/drawable_object_vector_frame.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

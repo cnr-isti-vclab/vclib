@@ -57,12 +57,6 @@ MeshViewerRenderApp& MeshViewer::viewer() const
     return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
 }
 
-DrawableObjectVectorFrame& MeshViewer::drawableObjectVectorFrame() const
-{
-    return *static_cast<vcl::qt::DrawableObjectVectorFrame*>(
-        mUI->drawVectorFrame);
-}
-
 DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
 {
     return *mUI->drawVectorTree;
@@ -94,7 +88,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     // give the vector pointer to the contained widgets
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
     mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
 
     // install the key filter
@@ -112,11 +105,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // we update the current settings of the RenderSettingsFrame, and we update
     // the glArea
     connect(
-        mUI->drawVectorFrame,
-        SIGNAL(drawableObjectVisibilityChanged()),
-        this,
-        SLOT(visibilityDrawableObjectChanged()));
-    connect(
         mUI->drawVectorTree,
         SIGNAL(drawableObjectVisibilityChanged()),
         this,
@@ -125,11 +113,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // each time that the selected object is changed in the drawVectorTree, we
     // update the RenderSettingsFrame, updating its settings to the object
     // render settings
-    connect(
-        mUI->drawVectorFrame,
-        SIGNAL(drawableObjectSelectionChanged(uint)),
-        this,
-        SLOT(selectedDrawableObjectChanged(uint)));
     connect(
         mUI->drawVectorTree,
         SIGNAL(drawableObjectSelectionChanged(uint)),
@@ -158,7 +141,6 @@ void MeshViewer::setDrawableObjectVector(
     // order here is important: drawVectorTree must have the drawVector before
     // the renderSettingsFrame!
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
     mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
 
     updateGUI();
