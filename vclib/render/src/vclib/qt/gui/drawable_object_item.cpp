@@ -28,8 +28,7 @@ namespace vcl::qt {
 
 DrawableObjectItem::DrawableObjectItem(
     const std::shared_ptr<DrawableObject>& obj,
-    QTreeWidget*                           parent) :
-        QTreeWidgetItem(parent), mObj(obj)
+    QTreeWidget* parent) : QTreeWidgetItem(parent), mObj(obj)
 {
     assert(obj);
     if (obj->isVisible())
@@ -39,7 +38,8 @@ DrawableObjectItem::DrawableObjectItem(
 
     // leave setText and setFlags AFTER setCheckState.
     // for some reason, they trigger the itemCheckStateChanged signal...
-    setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+    setFlags(
+        Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
     setText(0, QString::fromStdString(obj->name()));
 
     // add mesh info item

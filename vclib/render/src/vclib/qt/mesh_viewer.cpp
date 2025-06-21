@@ -198,7 +198,8 @@ void MeshViewer::visibilityDrawableObjectChanged()
         // if it is a AbstractDrawableMesh, we must be sure that its render
         // settings are updated accordingly.
         if (m) {
-            mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
+            mUI->renderSettingsFrame->setMeshRenderSettings(
+                m->renderSettings());
         }
         mUI->viewer->update();
     }

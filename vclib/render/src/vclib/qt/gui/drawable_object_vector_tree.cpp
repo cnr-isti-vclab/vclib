@@ -145,7 +145,8 @@ void DrawableObjectVectorTree::itemSelectionChanged()
     auto sItems = mUI->treeWidget->selectedItems();
     if (sItems.size() > 0) {
         // emit the index of the selected item
-        int selectedIndex = mUI->treeWidget->indexOfTopLevelItem(sItems.first());
+        int selectedIndex =
+            mUI->treeWidget->indexOfTopLevelItem(sItems.first());
         if (selectedIndex >= 0) {
             emit drawableObjectSelectionChanged(selectedIndex);
         }
