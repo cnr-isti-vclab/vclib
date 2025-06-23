@@ -201,6 +201,12 @@ public:
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
@@ -208,6 +214,7 @@ public:
             bindUniforms();
 
             bgfx::setState(state);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, surfaceProgramSelector());
         }
@@ -218,6 +225,7 @@ public:
             bindUniforms();
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME>());
         }
@@ -228,6 +236,7 @@ public:
             bindUniforms();
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES>());
         }
@@ -239,6 +248,8 @@ public:
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::setTransform(model.data());
+
                 bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
             }
             else {
@@ -248,7 +259,10 @@ public:
                 // render splats
                 mMRB.bindVertexQuadBuffer();
                 bindUniforms();
+
                 bgfx::setState(state);
+                bgfx::setTransform(model.data());
+
                 bgfx::submit(
                     viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
@@ -267,6 +281,12 @@ public:
             BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
         // write alpha as is
 
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+
         const std::array<float, 4> idFloat = {
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
@@ -277,6 +297,7 @@ public:
             mIdUniform.bind(&idFloat);
 
             bgfx::setState(state);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
@@ -287,6 +308,7 @@ public:
             mIdUniform.bind(&idFloat);
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
         }
@@ -297,6 +319,7 @@ public:
             mIdUniform.bind(&idFloat);
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
         }
@@ -308,6 +331,8 @@ public:
                 mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::setTransform(model.data());
+
                 bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
             }
             else {
@@ -320,6 +345,8 @@ public:
                 mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state);
+                bgfx::setTransform(model.data());
+
                 bgfx::submit(
                     viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
             }
