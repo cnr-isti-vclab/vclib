@@ -20,22 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/q_clickable_label.h>
+#ifndef VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H
+#define VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H
+
+#include <vclib/render/drawable/drawable_object.h>
+
+#include <QTreeWidgetItem>
 
 namespace vcl::qt {
 
-QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags) :
-        QLabel(parent)
+class DrawableObjectItem : public QTreeWidgetItem
 {
-}
+    std::shared_ptr<DrawableObject> mObj;
 
-QClickableLabel::~QClickableLabel()
-{
-}
+public:
+    explicit DrawableObjectItem(
+        const std::shared_ptr<DrawableObject>& obj,
+        QTreeWidget*                           parent = nullptr);
 
-void QClickableLabel::mousePressEvent(QMouseEvent*)
-{
-    emit clicked();
-}
+    std::shared_ptr<DrawableObject> drawableObject() const;
+
+private:
+    void addMeshInfoItem();
+
+    static void makeItemNotSelectable(QTreeWidgetItem* item);
+};
 
 } // namespace vcl::qt
+
+#endif // VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H

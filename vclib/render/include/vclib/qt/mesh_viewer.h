@@ -23,7 +23,7 @@
 #ifndef VCL_QT_MESH_VIEWER_H
 #define VCL_QT_MESH_VIEWER_H
 
-#include "gui/drawable_object_vector_frame.h"
+#include "gui/drawable_object_vector_tree.h"
 
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
@@ -59,7 +59,7 @@ class MeshViewer : public QWidget
 protected:
     MeshViewerRenderApp& viewer() const;
 
-    DrawableObjectVectorFrame& drawableObjectVectorFrame() const;
+    DrawableObjectVectorTree& drawableObjectVectorTree() const;
 
     void keyPressEvent(QKeyEvent* event) override;
 
@@ -78,7 +78,7 @@ public:
     TextEditLogger& logger();
 
     void setDrawVectorIconFunction(
-        const DrawableObjectVectorFrame::IconFunction& f);
+        const DrawableObjectVectorTree::IconFunction& f);
 
 public slots:
     void visibilityDrawableObjectChanged();

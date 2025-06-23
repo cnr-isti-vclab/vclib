@@ -20,45 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
-#define VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
+#ifndef VCL_QT_GUI_CLICKABLE_LABEL_H
+#define VCL_QT_GUI_CLICKABLE_LABEL_H
 
-#include <vclib/render/drawable/drawable_object.h>
-
-#include <QFrame>
+#include <QLabel>
+#include <QWidget>
+#include <Qt>
 
 namespace vcl::qt {
 
-namespace Ui {
-class DrawableObjectFrame;
-} // namespace Ui
-
-class DrawableObjectFrame : public QFrame
+/**
+ * @brief The ClickableLabel class is a QLabel class which can be clicked
+ * (clicked event).
+ *
+ * Usage: just Promote a QLabel to a vcl::qt::ClickableLabel
+ *
+ * @link https://wiki.qt.io/Clickable_QLabel
+ */
+class ClickableLabel : public QLabel
 {
     Q_OBJECT
 
-    Ui::DrawableObjectFrame*        mUI;
-    std::shared_ptr<DrawableObject> mObj;
-
 public:
-    explicit DrawableObjectFrame(
-        const std::shared_ptr<DrawableObject>& obj,
-        QWidget*                               parent = nullptr);
-    ~DrawableObjectFrame();
-
-    void setIcon(const QIcon& icon, const QString& tooltip = "");
+    explicit ClickableLabel(
+        QWidget*        parent = Q_NULLPTR,
+        Qt::WindowFlags f      = Qt::WindowFlags());
+    ~ClickableLabel();
 
 signals:
-    void visibilityChanged();
+    void clicked();
 
-    void resized();
-
-private slots:
-    void visibilityCheckBoxStateChanged(Qt::CheckState arg1);
-
-    void showInfoToolButtonChecked(bool checked);
+protected:
+    void mousePressEvent(QMouseEvent* event);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
+#endif // VCL_QT_GUI_CLICKABLE_LABEL_H
