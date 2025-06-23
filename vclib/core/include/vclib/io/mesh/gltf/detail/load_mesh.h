@@ -511,6 +511,7 @@ void loadGltfMeshPrimitive(
                 // if the image is not valid, just add the path
                 m.pushTexturePath(uri);
             }
+            textureImg = m.textureNumber() - 1; // update the texture id
         }
     }
 
