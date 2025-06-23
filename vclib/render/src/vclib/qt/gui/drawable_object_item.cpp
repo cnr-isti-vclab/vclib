@@ -53,6 +53,12 @@ std::shared_ptr<DrawableObject> DrawableObjectItem::drawableObject() const
 
 void DrawableObjectItem::addMeshInfoItem()
 {
+    // clear any existing children
+    auto l = takeChildren();
+    for (auto* item : std::as_const(l)) {
+        delete item;
+    }
+
     // if the DrawbaleObject is an AbstractDrawableMesh
     auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(mObj);
     if (mesh) {
@@ -79,6 +85,29 @@ void DrawableObjectItem::addMeshInfoItem()
             edgeNumberItem->setText(0, "# Edges");
             edgeNumberItem->setText(1, QString::number(mesh->edgeNumber()));
             makeItemNotSelectable(edgeNumberItem);
+        }
+
+        auto transformMatrixItem = new QTreeWidgetItem(this);
+        transformMatrixItem->setText(0, "Transform Matrix");
+        makeItemNotSelectable(transformMatrixItem);
+
+        // add 4 rows for the 4x4 matrix
+        for (int i = 0; i < 4; ++i) {
+            auto rowItem = new QTreeWidgetItem(transformMatrixItem);
+
+            // use a monospace font for the matrix
+            rowItem->setFont(1, QFont("Courier New", 10));
+
+            rowItem->setText(0, "");
+            QString rowLabel = "";
+            for (int j = 0; j < 4; ++j) {
+                rowLabel += QString::number(
+                    mesh->transformMatrix()(i, j), 'f', 3);
+                if (j < 3)
+                    rowLabel += "\t";
+            }
+            rowItem->setText(1, rowLabel);
+            makeItemNotSelectable(rowItem);
         }
     }
 }
