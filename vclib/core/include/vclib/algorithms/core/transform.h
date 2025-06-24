@@ -123,7 +123,7 @@ PointType multiplyNormalByMatrix(
 }
 
 template<Range R, Matrix44Concept MatrixType>
-void multiplyPointsByMatrix(R& points, const MatrixType& mat)
+void multiplyPointsByMatrix(R&& points, const MatrixType& mat)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
     using PointType = std::ranges::range_value_t<R>;
@@ -159,7 +159,7 @@ void multiplyNormalsByMatrix(
 
 template<Range R, Matrix44Concept MatrixType>
 void multiplyNormalsByMatrix(
-    R&                normals,
+    R&&               normals,
     const MatrixType& mat,
     bool              removeScalingFromMatrix = true)
     requires Point3Concept<std::ranges::range_value_t<R>>

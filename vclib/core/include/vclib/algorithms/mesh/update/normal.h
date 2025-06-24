@@ -139,18 +139,15 @@ void multiplyPerElementNormalsByMatrix(
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    if (removeScalingFromMatrix) {
-        removeScalingFromMatrixInPlace(mat);
-    }
-
     log.log(
         0,
         "Multiplying per-" + elementEnumString<ELEM_ID>() +
             " normals by matrix...");
 
-    parallelFor(mesh.template elements<ELEM_ID>(), [&](auto& e) {
-        e.normal() = mat * e.normal();
-    });
+    multiplyNormalsByMatrix(
+        mesh.template elements<ELEM_ID>() | vcl::views::normals,
+        mat,
+        removeScalingFromMatrix);
 
     log.log(
         100, "Per-" + elementEnumString<ELEM_ID>() + " normals multiplied.");
