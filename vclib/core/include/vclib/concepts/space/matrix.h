@@ -48,6 +48,8 @@ namespace vcl {
  * not mean that it can be resized. For example, a matrix with fixed size cannot
  * be resized, but it has the two resize member functions, and calling them with
  * the same sizes of the matrix does not cause any error.
+ *
+ * @ingroup space_concepts
  */
 template<typename T>
 concept EigenMatrixConcept = requires (T&& obj) {
@@ -77,12 +79,16 @@ concept EigenMatrixConcept = requires (T&& obj) {
  *
  * The concept just checks that `T` is a resizable Eigen matrix or an Array2,
  * trough their respective concepts.
+ *
+ * @ingroup space_concepts
  */
 template<typename T>
 concept MatrixConcept = EigenMatrixConcept<T> || Array2Concept<T>;
 
 /**
  * @brief Concept for 3x3 matrices.
+ *
+ * @ingroup space_concepts
  */
 template<typename T>
 concept Matrix33Concept =
@@ -91,11 +97,22 @@ concept Matrix33Concept =
 
 /**
  * @brief Concept for 4x4 matrices.
+ *
+ * @ingroup space_concepts
  */
 template<typename T>
 concept Matrix44Concept =
     EigenMatrixConcept<T> && (RemoveRef<T>::RowsAtCompileTime == 4) &&
     (RemoveRef<T>::ColsAtCompileTime == 4);
+
+/**
+ * @brief Concept for 3x3 or 4x4 matrices.
+ *
+ * @ingroup space_concepts
+ */
+template<typename T>
+concept Matrix33Or44Concept =
+    (Matrix33Concept<T> || Matrix44Concept<T>);
 
 } // namespace vcl
 
