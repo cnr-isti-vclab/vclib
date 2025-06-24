@@ -620,6 +620,38 @@ protected:
 
     /**
      * @brief Returns a view object that allows to iterate over the elements of
+     * the container in the given range:
+     *
+     * @code{.cpp}
+     * for (Element& f : m.elements(3, 10)){
+     *     // iterate over the elements from index 3 to 10
+     *     // do something with this element
+     * }
+     * @endcode
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first element to be included in the
+     * range. It must be less than elementContainerSize() and the end index.
+     * @param[in] end: the index of the last element to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    View<ElementIterator> elements(uint begin, uint end = UINT_NULL)
+    {
+        assert(begin < elementContainerSize());
+        if (end == UINT_NULL || end > elementContainerSize())
+            end = elementContainerSize();
+        assert(begin < end);
+        return View(elementBegin(false) + begin, elementBegin(false) + end);
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the elements of
      * the containers, providing two member functions begin() and end().
      *
      * This member function is very useful when you want to iterate over the
@@ -645,6 +677,39 @@ protected:
         return View(
             elementBegin(jumpDeleted && mElemVec.size() != mElemNumber),
             elementEnd());
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the elements of
+     * the container in the given range:
+     *
+     * @code{.cpp}
+     * for (const Element& f : m.elements(3, 10)){
+     *     // iterate over the elements from index 3 to 10
+     *     // do something with this element
+     * }
+     * @endcode
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first element to be included in the
+     * range. It must be less than elementContainerSize() and the end index.
+     * @param[in] end: the index of the last element to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    View<ConstElementIterator> elements(uint begin, uint end = UINT_NULL) const
+    {
+        assert(begin < elementContainerSize());
+        if (end == UINT_NULL || end > elementContainerSize())
+            end = elementContainerSize();
+        assert(begin < end);
+        return View(
+            elementBegin(false) + begin, elementBegin(false) + end);
     }
 
     void enableAllOptionalComponents()

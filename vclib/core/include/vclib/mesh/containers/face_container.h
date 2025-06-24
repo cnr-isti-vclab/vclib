@@ -447,6 +447,34 @@ public:
     auto faces(bool jumpDeleted = true) { return Base::elements(jumpDeleted); }
 
     /**
+     * @brief Returns a view object that allows to iterate over the Faces
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (Face& e : m.faces(3, 10)){
+     *     // iterate over the Faces from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the faces() function, this member function does not
+     * automatically jump deleted faces, but it iterates over the
+     * faces in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first face to be included in the
+     * range. It must be less than faceContainerSize() and the end index.
+     * @param[in] end: the index of the last face to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto faces(uint begin, uint end = UINT_NULL)
+    {
+        return Base::elements(begin, end);
+    }
+
+    /**
      * @brief Returns a small view object that allows to iterate over the Faces
      * of the containers, providing two member functions begin() and end().
      *
@@ -471,6 +499,34 @@ public:
     auto faces(bool jumpDeleted = true) const
     {
         return Base::elements(jumpDeleted);
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the Faces
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (const Face& e : m.faces(3, 10)){
+     *     // iterate over the Faces from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the faces() function, this member function does not
+     * automatically jump deleted faces, but it iterates over the
+     * faces in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first face to be included in the
+     * range. It must be less than faceContainerSize() and the end index.
+     * @param[in] end: the index of the last face to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto faces(uint begin, uint end = UINT_NULL) const
+    {
+        return Base::elements(begin, end);
     }
 
     /**
