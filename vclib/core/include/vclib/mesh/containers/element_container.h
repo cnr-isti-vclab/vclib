@@ -546,17 +546,10 @@ protected:
      */
     ElementIterator elementBegin(bool jumpDeleted = true)
     {
-        auto it = mElemVec.begin();
-        if (jumpDeleted) {
-            // if the user asked to jump the deleted elements, and the first
-            // element is deleted, we need to move forward until we find the
-            // first non-deleted element
-            while (it != mElemVec.end() && it->deleted()) {
-                ++it;
-            }
-        }
         return ElementIterator(
-            it, mElemVec, jumpDeleted && mElemVec.size() != mElemNumber);
+            mElemVec.begin(),
+            mElemVec,
+            jumpDeleted && mElemVec.size() != mElemNumber);
     }
 
     /**
@@ -581,17 +574,10 @@ protected:
      */
     ConstElementIterator elementBegin(bool jumpDeleted = true) const
     {
-        auto it = mElemVec.begin();
-        if (jumpDeleted) {
-            // if the user asked to jump the deleted elements, and the first
-            // element is deleted, we need to move forward until we find the
-            // first non-deleted element
-            while (it != mElemVec.end() && it->deleted()) {
-                ++it;
-            }
-        }
         return ConstElementIterator(
-            it, mElemVec, jumpDeleted && mElemVec.size() != mElemNumber);
+            mElemVec.begin(),
+            mElemVec,
+            jumpDeleted && mElemVec.size() != mElemNumber);
     }
 
     /**

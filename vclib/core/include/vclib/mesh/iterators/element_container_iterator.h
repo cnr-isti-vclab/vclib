@@ -95,6 +95,14 @@ public:
             mAssignSumFun     = &ElementContainerIterator::assignSumFast;
             mDiffFun          = &ElementContainerIterator::diffFast;
         }
+        else {
+            // if the user asked to jump the deleted elements, and the first
+            // element is deleted, we need to move forward until we find the
+            // first non-deleted element
+            while(mIt != mVec->end() && mIt->deleted()) {
+                ++mIt;
+            }
+        }
     }
 
     reference operator*() const { return *mIt; }
