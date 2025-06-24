@@ -27,6 +27,7 @@
 #include "mesh_containers.h"
 
 #include <vclib/concepts/mesh.h>
+#include <vclib/algorithms/core/transform.h>
 
 namespace vcl {
 
@@ -425,6 +426,23 @@ public:
         // update all the pointers/indices contained on each container
         (updateReferencesOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
          ...);
+
+        // manage transform matrix
+        if constexpr (HasTransformMatrix<Mesh<Args...>>) {
+            using Matrixtype = typename Mesh<Args...>::TransformMatrixType;
+
+            Matrixtype matrix = this->transformMatrix();
+            matrix = matrix.inverse();
+            matrix *= m.transformMatrix();
+
+            if (matrix != Matrixtype::Identity()) {
+                (updatePosAndNormalsOfContainerTypeAfterAppend<Args>(
+                     *this, sizes, matrix),
+                 ...);
+            }
+        }
+
+        // TODO: manage textures
     }
 
     /**
@@ -1924,6 +1942,54 @@ private:
                 ContainerWrapper(),
                 sizes,
                 sizes[I]);
+        }
+    }
+
+    template<
+        typename Cont,
+        typename ArrayS,
+        Matrix44Concept MatrixType,
+        typename... A>
+    static void updatePosAndNormalsOfContainerTypeAfterAppend(
+        Mesh<A...>&   m,
+        const ArrayS& sizes,
+        const MatrixType& matrix)
+    {
+        // since this function is called using pack expansion, it means that
+        // Cont could be a mesh component and not a cointainer. We check if Cont
+        // is a container
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            // The element type contained in the container
+            // We need it to get back the actual type of the element from the
+            // old bases
+            using ElType = Cont::ElementType;
+            static constexpr uint ELEM_ID = ElType::ELEMENT_ID;
+
+            using Containers = Mesh<A...>::Containers;
+            constexpr uint I = IndexInTypes<Cont, Containers>::value;
+            static_assert(I >= 0 && I != UINT_NULL);
+
+            if constexpr (hasPerElementComponent<ELEM_ID, CompId::POSITION>()) {
+                auto posview = m.template elements<ELEM_ID>((uint) sizes[I]) |
+                               vcl::views::positions;
+
+                multiplyPointsByMatrix(posview, matrix);
+            }
+
+            if constexpr (hasPerElementComponent<ELEM_ID, CompId::NORMAL>()) {
+                if constexpr (comp::HasOptionalComponentOfType<
+                                  ElType,
+                                  CompId::NORMAL>) {
+                    if (m.Cont::template isOptionalComponentEnabled<
+                            CompId::NORMAL>()) {
+                        auto norview =
+                            m.template elements<ELEM_ID>((uint) sizes[I]) |
+                            vcl::views::normals;
+
+                        multiplyNormalsByMatrix(norview, matrix);
+                    }
+                }
+            }
         }
     }
 
