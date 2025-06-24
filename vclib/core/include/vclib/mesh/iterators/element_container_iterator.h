@@ -152,6 +152,8 @@ public:
         return (this->*mDiffFun)(oi);
     }
 
+    const reference operator[](difference_type i) const { return *(*this + i); }
+
     reference operator[](difference_type i) { return *(*this + i); }
 
     bool operator<(const ElementContainerIterator& oi) const
@@ -303,18 +305,21 @@ private:
     }
 };
 
+template<
+    template<typename, typename...> typename Container,
+    typename T,
+    bool C = false>
+ElementContainerIterator<Container, T, C> operator+(
+    typename ElementContainerIterator<Container, T, C>::difference_type n,
+    const ElementContainerIterator<Container, T, C>&                    it)
+{
+    return it + n;
+}
+
 template<template<typename, typename...> typename Container, typename T>
 using ConstElementContainerIterator =
     ElementContainerIterator<Container, T, true>;
 
 } // namespace vcl
-
-template<template<typename, typename...> typename Container, typename T, bool C>
-vcl::ElementContainerIterator<Container, T, C> operator+(
-    typename vcl::ElementContainerIterator<Container, T, C>::difference_type n,
-    const vcl::ElementContainerIterator<Container, T, C>&                    it)
-{
-    return it + n;
-}
 
 #endif // VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H
