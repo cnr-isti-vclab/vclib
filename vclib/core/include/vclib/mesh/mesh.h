@@ -1103,6 +1103,44 @@ public:
     }
 
     /**
+     * Returns a lightweight view object that stores the begin and end iterators
+     * of the container of the elements having ID ELEM_ID in the mesh. The view
+     * object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (auto& el : mesh.elements<ElemId::VERTEX>(3, 10)) {
+     *     // Iterate over elements with index from 3 to 10
+     *     // Do something with el
+     * }
+     * @endcode
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID. Otherwise, a compiler error will be triggered.
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @param[in] begin: the begin index of the range to iterate over. It must
+     * be less than the elementContainerSize().
+     * @param[in] end: the end index of the range to iterate over.
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over elements.
+     */
+    template<uint ELEM_ID>
+    auto elements(uint begin, uint end = UINT_NULL)
+        requires (hasContainerOf<ELEM_ID>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::elements(begin, end);
+    }
+
+    /**
      * Returns a lightweight const view object that stores the begin and end
      * const iterators of the container of the elements having ID ELEM_ID in the
      * mesh. The view object exposes the iterators trough the `begin()` and
@@ -1131,6 +1169,44 @@ public:
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
         return Cont::elements(jumpDeleted);
+    }
+
+    /**
+     * @brief Returns a lightweight const view object that stores the begin and
+     * end const iterators of the container of the elements having ID ELEM_ID in
+     * the mesh. The view object exposes the iterators trough the `begin()` and
+     * `end()` member functions, and therefore the returned object can be used
+     * in range-based for loops:
+     *
+     * @code{.cpp}
+     * for (const auto& el : mesh.elements<ElemId::VERTEX>(3, 10)) {
+     *     // Iterate over elements with index from 3 to 10
+     *     // Do something read-only with el
+     * }
+     * @endcode
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID. Otherwise, a compiler error will be triggered.
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @param[in] begin: the begin index of the range to iterate over. It must
+     * be less than the elementContainerSize().
+     * @param[in] end: the end index of the range to iterate over.
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over elements.
+     */
+    template<uint ELEM_ID>
+    auto elements(uint begin, uint end = UINT_NULL) const
+        requires (hasContainerOf<ELEM_ID>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::elements(begin, end);
     }
 
     /**

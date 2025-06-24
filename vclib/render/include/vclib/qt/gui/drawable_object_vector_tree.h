@@ -20,22 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
-#define VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
-
-#include "drawable_object_frame.h"
+#ifndef VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_TREE_H
+#define VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_TREE_H
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <QFrame>
+#include <QTreeWidgetItem>
 
 namespace vcl::qt {
 
 namespace Ui {
-class DrawableObjectVectorFrame;
+class DrawableObjectVectorTree;
 } // namespace Ui
 
-class DrawableObjectVectorFrame : public QFrame
+class DrawableObjectVectorTree : public QFrame
 {
 public:
     using IconFunction =
@@ -44,19 +43,20 @@ public:
 private:
     Q_OBJECT
 
+    Ui::DrawableObjectVectorTree* mUI;
+
     // this frame does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> mDrawList;
-    Ui::DrawableObjectVectorFrame*        mUI;
 
     // icon function
     IconFunction mIconFunction = nullptr;
 
 public:
-    explicit DrawableObjectVectorFrame(QWidget* parent = nullptr);
-    explicit DrawableObjectVectorFrame(
+    explicit DrawableObjectVectorTree(QWidget* parent = nullptr);
+    explicit DrawableObjectVectorTree(
         const std::shared_ptr<DrawableObjectVector>& v,
         QWidget*                                     parent = nullptr);
-    ~DrawableObjectVectorFrame();
+    ~DrawableObjectVectorTree();
 
     void setIconFunction(const IconFunction& f);
 
@@ -71,16 +71,17 @@ public:
     bool setSelectedItem(uint i);
 
 signals:
-    void drawableObjectVisibilityChanged();
     void drawableObjectSelectionChanged(uint i);
-
-private slots:
-    void on_listWidget_itemSelectionChanged();
+    void drawableObjectVisibilityChanged();
 
 private:
-    void updateDrawableVectorWidget();
+    void updateDrawableVectorTree();
+
+private slots:
+    void itemSelectionChanged();
+    void itemCheckStateChanged(QTreeWidgetItem* item, int column);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+#endif // VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_TREE_H

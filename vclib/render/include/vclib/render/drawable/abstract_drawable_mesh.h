@@ -26,6 +26,8 @@
 #include "drawable_object.h"
 #include "mesh/mesh_render_settings.h"
 
+#include <vclib/space/core/matrix.h>
+
 namespace vcl {
 
 /**
@@ -63,6 +65,13 @@ public:
     virtual uint faceNumber() const = 0;
 
     virtual uint edgeNumber() const = 0;
+
+    virtual vcl::Matrix44d transformMatrix() const = 0;
+
+    virtual std::vector<std::string> textures() const
+    {
+        return std::vector<std::string>();
+    }
 
     // DrawableObject implementation
 

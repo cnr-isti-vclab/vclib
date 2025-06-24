@@ -171,6 +171,28 @@ public:
             return 0;
     }
 
+    vcl::Matrix44d transformMatrix() const override
+    {
+        if constexpr (HasTransformMatrix<MeshType>) {
+            return MeshType::transformMatrix().template cast<double>();
+        }
+        else {
+            return vcl::Matrix44d::Identity();
+        }
+    }
+
+    std::vector<std::string> textures() const override
+    {
+        std::vector<std::string> txs;
+        if constexpr (HasTexturePaths<MeshType>) {
+            txs.reserve(MeshType::textureNumber());
+            for (const auto& tpath : MeshType::texturePaths()) {
+                txs.push_back(tpath);
+            }
+        }
+        return txs;
+    }
+
     // DrawableObject implementation
 
     void init() override { bindTextures(); }

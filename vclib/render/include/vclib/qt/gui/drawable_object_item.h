@@ -20,45 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
-#define VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
+#ifndef VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H
+#define VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H
 
 #include <vclib/render/drawable/drawable_object.h>
 
-#include <QFrame>
+#include <QTreeWidgetItem>
 
 namespace vcl::qt {
 
-namespace Ui {
-class DrawableObjectFrame;
-} // namespace Ui
-
-class DrawableObjectFrame : public QFrame
+class DrawableObjectItem : public QTreeWidgetItem
 {
-    Q_OBJECT
-
-    Ui::DrawableObjectFrame*        mUI;
     std::shared_ptr<DrawableObject> mObj;
 
 public:
-    explicit DrawableObjectFrame(
+    explicit DrawableObjectItem(
         const std::shared_ptr<DrawableObject>& obj,
-        QWidget*                               parent = nullptr);
-    ~DrawableObjectFrame();
+        QTreeWidget*                           parent = nullptr);
 
-    void setIcon(const QIcon& icon, const QString& tooltip = "");
+    std::shared_ptr<DrawableObject> drawableObject() const;
 
-signals:
-    void visibilityChanged();
+private:
+    void addMeshInfoItem();
 
-    void resized();
-
-private slots:
-    void visibilityCheckBoxStateChanged(Qt::CheckState arg1);
-
-    void showInfoToolButtonChecked(bool checked);
+    static void makeItemNotSelectable(QTreeWidgetItem* item);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_DRAWABLE_OBJECT_FRAME_H
+#endif // VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H

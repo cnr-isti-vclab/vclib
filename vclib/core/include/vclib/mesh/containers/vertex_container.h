@@ -465,6 +465,34 @@ public:
     }
 
     /**
+     * @brief Returns a view object that allows to iterate over the Vertices
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (Vertex& e : m.vertices(3, 10)){
+     *     // iterate over the Vertices from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the vertices() function, this member function does not
+     * automatically jump deleted vertices, but it iterates over the
+     * vertices in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first vertex to be included in the
+     * range. It must be less than vertexContainerSize() and the end index.
+     * @param[in] end: the index of the last vertex to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto vertices(uint begin, uint end = UINT_NULL)
+    {
+        return Base::elements(begin, end);
+    }
+
+    /**
      * @brief Returns a small utility object that allows to iterate over the
      * vertices of the containers, providing two member functions begin() and
      * end().
@@ -490,6 +518,34 @@ public:
     auto vertices(bool jumpDeleted = true) const
     {
         return Base::elements(jumpDeleted);
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the Vertices
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (const Vertex& e : m.vertices(3, 10)){
+     *     // iterate over the Vertices from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the vertices() function, this member function does not
+     * automatically jump deleted vertices, but it iterates over the
+     * vertices in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first vertex to be included in the
+     * range. It must be less than vertexContainerSize() and the end index.
+     * @param[in] end: the index of the last vertex to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto vertices(uint begin, uint end = UINT_NULL) const
+    {
+        return Base::elements(begin, end);
     }
 
     /**
