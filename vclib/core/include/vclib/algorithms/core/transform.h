@@ -23,9 +23,9 @@
 #ifndef VCL_ALGORITHMS_CORE_TRANSFORM_H
 #define VCL_ALGORITHMS_CORE_TRANSFORM_H
 
+#include <vclib/concepts/range.h>
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/concepts/space/point.h>
-#include <vclib/concepts/range.h>
 #include <vclib/misc/parallel.h>
 #include <vclib/space/core/matrix.h>
 
@@ -48,10 +48,9 @@ namespace vcl {
  * @ingroup algorithms_core
  */
 template<Matrix33Or44Concept MatrixType>
-void removeScalingFromMatrixInPlace(
-    MatrixType& matrix)
+void removeScalingFromMatrixInPlace(MatrixType& matrix)
 {
-    using ScalarType = typename MatrixType::Scalar;
+    using ScalarType  = typename MatrixType::Scalar;
     ScalarType scaleX = std::sqrt(
         matrix(0, 0) * matrix(0, 0) + matrix(0, 1) * matrix(0, 1) +
         matrix(0, 2) * matrix(0, 2));
@@ -85,8 +84,7 @@ void removeScalingFromMatrixInPlace(
  * @ingroup algorithms_core
  */
 template<Matrix33Or44Concept MatrixType>
-MatrixType removeScalingFromMatrix(
-    const MatrixType& matrix)
+MatrixType removeScalingFromMatrix(const MatrixType& matrix)
 {
     MatrixType result = matrix;
     removeScalingFromMatrixInPlace(result);
@@ -96,8 +94,8 @@ MatrixType removeScalingFromMatrix(
 template<Point3Concept PointType, Matrix33Concept MatrixType>
 PointType multiplyNormalByMatrix(
     const PointType& normal,
-    MatrixType mat,
-    bool removeScalingFromMatrix = true)
+    MatrixType       mat,
+    bool             removeScalingFromMatrix = true)
 {
     using ScalarType = typename PointType::Scalar;
     if (removeScalingFromMatrix) {
@@ -109,8 +107,8 @@ PointType multiplyNormalByMatrix(
 template<Point3Concept PointType, Matrix44Concept MatrixType>
 PointType multiplyNormalByMatrix(
     const PointType& normal,
-    MatrixType mat,
-    bool removeScalingFromMatrix = true)
+    MatrixType       mat,
+    bool             removeScalingFromMatrix = true)
 {
     using ScalarType = typename PointType::Scalar;
 
@@ -126,7 +124,7 @@ template<Range R, Matrix44Concept MatrixType>
 void multiplyPointsByMatrix(R&& points, const MatrixType& mat)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    using PointType = std::ranges::range_value_t<R>;
+    using PointType  = std::ranges::range_value_t<R>;
     using ScalarType = PointType::ScalarType;
 
     Matrix44<ScalarType> m44 = mat.template cast<ScalarType>();
@@ -143,7 +141,7 @@ void multiplyNormalsByMatrix(
     bool              removeScalingFromMatrix = true)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    using PointType = std::ranges::range_value_t<R>;
+    using PointType  = std::ranges::range_value_t<R>;
     using ScalarType = PointType::ScalarType;
 
     Matrix33<ScalarType> m33 = mat.template cast<ScalarType>();
@@ -164,10 +162,11 @@ void multiplyNormalsByMatrix(
     bool              removeScalingFromMatrix = true)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    using PointType = std::ranges::range_value_t<R>;
+    using PointType  = std::ranges::range_value_t<R>;
     using ScalarType = PointType::ScalarType;
 
-    Matrix33<ScalarType> m33 = mat.template cast<ScalarType>().block(0, 0, 3, 3);
+    Matrix33<ScalarType> m33 =
+        mat.template cast<ScalarType>().block(0, 0, 3, 3);
 
     multiplyNormalsByMatrix(normals, m33, removeScalingFromMatrix);
 }

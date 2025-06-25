@@ -708,8 +708,7 @@ protected:
         if (end == UINT_NULL || end > elementContainerSize())
             end = elementContainerSize();
         assert(begin < end);
-        return View(
-            elementBegin(false) + begin, elementBegin(false) + end);
+        return View(elementBegin(false) + begin, elementBegin(false) + end);
     }
 
     void enableAllOptionalComponents()

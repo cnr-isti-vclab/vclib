@@ -26,8 +26,8 @@
 #include "mesh_components.h"
 #include "mesh_containers.h"
 
-#include <vclib/concepts/mesh.h>
 #include <vclib/algorithms/core/transform.h>
+#include <vclib/concepts/mesh.h>
 
 namespace vcl {
 
@@ -432,7 +432,7 @@ public:
             using Matrixtype = typename Mesh<Args...>::TransformMatrixType;
 
             Matrixtype matrix = this->transformMatrix();
-            matrix = matrix.inverse();
+            matrix            = matrix.inverse();
             matrix *= m.transformMatrix();
 
             if (matrix != Matrixtype::Identity()) {
@@ -1951,8 +1951,8 @@ private:
         Matrix44Concept MatrixType,
         typename... A>
     static void updatePosAndNormalsOfContainerTypeAfterAppend(
-        Mesh<A...>&   m,
-        const ArrayS& sizes,
+        Mesh<A...>&       m,
+        const ArrayS&     sizes,
         const MatrixType& matrix)
     {
         // since this function is called using pack expansion, it means that
@@ -1962,7 +1962,7 @@ private:
             // The element type contained in the container
             // We need it to get back the actual type of the element from the
             // old bases
-            using ElType = Cont::ElementType;
+            using ElType                  = Cont::ElementType;
             static constexpr uint ELEM_ID = ElType::ELEMENT_ID;
 
             using Containers = Mesh<A...>::Containers;
