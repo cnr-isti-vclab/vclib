@@ -20,48 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_CAPABILITY_H
-#define VCL_IO_MESH_CAPABILITY_H
+#include <vclib/io.h>
+#include <vclib/meshes.h>
 
-#include "obj/capability.h"
-#include "off/capability.h"
-#include "ply/capability.h"
-#include "stl/capability.h"
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
-#ifdef VCLIB_WITH_TINYGLTF
-#include "gltf/capability.h"
-#endif
+using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
+using MeshesIndexed =
+    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
+using MeshesIndexedf = std::
+    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
-#include <vclib/exceptions/io.h>
-#include <vclib/misc/string.h>
-
-namespace vcl {
-
-inline MeshInfo formatCapability(const std::string& format)
+// Test to load obj from a istringstream
+TEMPLATE_TEST_CASE(
+    "Load gltf",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
-    std::string ext = toLower(format);
-    if (ext == "obj") {
-        return objFormatCapability();
-    }
-    else if (ext == "off") {
-        return offFormatCapability();
-    }
-    else if (ext == "ply") {
-        return plyFormatCapability();
-    }
-    else if (ext == "stl") {
-        return stlFormatCapability();
-    }
-#ifdef VCLIB_WITH_TINYGLTF
-    else if (ext == "gltf" || ext == "glb") {
-        return gltfFormatCapability();
-    }
-#endif
-    else {
-        throw UnknownFileFormatException(ext);
+    using TriMesh  = std::tuple_element_t<0, TestType>;
+    using PolyMesh = std::tuple_element_t<1, TestType>;
+
+    vcl::MeshInfo info;
+
+    SECTION("Load Duck.gltf")
+    {
+        info.clear();
+
+        TriMesh tm;
+
+        vcl::loadGltf(tm, VCLIB_EXAMPLE_MESHES_PATH "/gltf/Duck/Duck.gltf", info);
+        REQUIRE(tm.vertexNumber() == 2399);
+        REQUIRE(tm.faceNumber() == 4212);
+
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(!info.hasEdges());
     }
 }
-
-} // namespace vcl
-
-#endif // VCL_IO_MESH_CAPABILITY_H
