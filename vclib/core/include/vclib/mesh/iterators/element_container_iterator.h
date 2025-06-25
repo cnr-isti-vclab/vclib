@@ -99,7 +99,7 @@ public:
             // if the user asked to jump the deleted elements, and the first
             // element is deleted, we need to move forward until we find the
             // first non-deleted element
-            while(mIt != mVec->end() && mIt->deleted()) {
+            while (mIt != mVec->end() && mIt->deleted()) {
                 ++mIt;
             }
         }
@@ -314,7 +314,8 @@ private:
 };
 
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     bool C = false>
 ElementContainerIterator<Container, T, C> operator+(

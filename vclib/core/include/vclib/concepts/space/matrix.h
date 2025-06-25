@@ -111,8 +111,7 @@ concept Matrix44Concept =
  * @ingroup space_concepts
  */
 template<typename T>
-concept Matrix33Or44Concept =
-    (Matrix33Concept<T> || Matrix44Concept<T>);
+concept Matrix33Or44Concept = (Matrix33Concept<T> || Matrix44Concept<T>);
 
 } // namespace vcl
 
