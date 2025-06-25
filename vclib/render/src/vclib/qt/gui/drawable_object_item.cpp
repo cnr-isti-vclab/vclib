@@ -101,8 +101,8 @@ void DrawableObjectItem::addMeshInfoItem()
             rowItem->setText(0, "");
             QString rowLabel = "";
             for (int j = 0; j < 4; ++j) {
-                rowLabel += QString::number(
-                    mesh->transformMatrix()(i, j), 'f', 3);
+                rowLabel +=
+                    QString::number(mesh->transformMatrix()(i, j), 'f', 3);
                 if (j < 3)
                     rowLabel += "\t";
             }

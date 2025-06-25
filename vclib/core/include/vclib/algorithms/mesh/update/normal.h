@@ -24,6 +24,7 @@
 #define VCL_ALGORITHMS_MESH_UPDATE_NORMAL_H
 
 #include <vclib/algorithms/core/polygon.h>
+#include <vclib/algorithms/core/transform.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/parallel.h>
@@ -138,31 +139,15 @@ void multiplyPerElementNormalsByMatrix(
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    if (removeScalingFromMatrix) {
-        MScalar scaleX = std::sqrt(
-            mat(0, 0) * mat(0, 0) + mat(0, 1) * mat(0, 1) +
-            mat(0, 2) * mat(0, 2));
-        MScalar scaleY = std::sqrt(
-            mat(1, 0) * mat(1, 0) + mat(1, 1) * mat(1, 1) +
-            mat(1, 2) * mat(1, 2));
-        MScalar scaleZ = std::sqrt(
-            mat(2, 0) * mat(2, 0) + mat(2, 1) * mat(2, 1) +
-            mat(2, 2) * mat(2, 2));
-        for (int i = 0; i < 3; ++i) {
-            mat(0, i) /= scaleX;
-            mat(1, i) /= scaleY;
-            mat(2, i) /= scaleZ;
-        }
-    }
-
     log.log(
         0,
         "Multiplying per-" + elementEnumString<ELEM_ID>() +
             " normals by matrix...");
 
-    parallelFor(mesh.template elements<ELEM_ID>(), [&](auto& e) {
-        e.normal() = mat * e.normal();
-    });
+    multiplyNormalsByMatrix(
+        mesh.template elements<ELEM_ID>() | vcl::views::normals,
+        mat,
+        removeScalingFromMatrix);
 
     log.log(
         100, "Per-" + elementEnumString<ELEM_ID>() + " normals multiplied.");
