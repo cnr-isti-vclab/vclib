@@ -100,7 +100,7 @@ MatrixType gltfCurrentNodeMatrix(const tinygltf::Model& model, uint currentNode)
         for(uint i = 0; i < 4; ++i) {
             for(uint j = 0; j < 4; ++j) {
                 //set the current matrix element
-                currentMatrix(i,j) = model.nodes[currentNode].matrix[i*4 + j];
+                currentMatrix(i,j) = model.nodes[currentNode].matrix[j*4 + i];
             }
         }
     }

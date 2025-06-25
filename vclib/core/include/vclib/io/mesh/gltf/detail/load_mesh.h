@@ -631,7 +631,7 @@ void gltfLoadMesh(
     // for each primitive, load it into the mesh
     for (uint i = 0; const tinygltf::Primitive& p : tm.primitives) {
         loadGltfMeshPrimitive(m, info, model, p, transf, log, settings);
-        log.progress(i);
+        log.progress(++i);
     }
 
     log.endProgress();
