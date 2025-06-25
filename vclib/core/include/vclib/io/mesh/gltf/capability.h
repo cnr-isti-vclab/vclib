@@ -50,8 +50,6 @@ inline MeshInfo gltfFormatCapability()
     info.setPerVertexTexCoord();
 
     info.setPerFaceVertexReferences();
-    info.setPerFaceColor();
-    info.setPerFaceWedgeTexCoords();
 
     return info;
 }

@@ -31,7 +31,7 @@
 namespace vcl::detail {
 
 /**
- * @brief @brief Recursive function that returns the number of meshes contained
+ * @brief Recursive function that returns the number of meshes contained
  * in the current node (0 or 1) plus the number of meshes contained in the
  * children of the node.
  *

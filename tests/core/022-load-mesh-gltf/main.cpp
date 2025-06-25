@@ -57,8 +57,8 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.vertexNumber() == 2399);
         REQUIRE(tm.faceNumber() == 4212);
 
-        // REQUIRE(info.hasVertices());
-        // REQUIRE(info.hasFaces());
-        // REQUIRE(info.hasEdges());
+        REQUIRE(info.hasVertices());
+        REQUIRE(info.hasFaces());
+        REQUIRE(!info.hasEdges());
     }
 }
