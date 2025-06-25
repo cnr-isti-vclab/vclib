@@ -635,7 +635,8 @@ protected:
      * not.
      *
      * @param[in] begin: the index of the first element to be included in the
-     * range. It must be less than elementContainerSize() and the end index.
+     * range. It must be less or equal to elementContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last element to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate
@@ -643,10 +644,10 @@ protected:
      */
     View<ElementIterator> elements(uint begin, uint end = UINT_NULL)
     {
-        assert(begin < elementContainerSize());
+        assert(begin <= elementContainerSize());
         if (end == UINT_NULL || end > elementContainerSize())
             end = elementContainerSize();
-        assert(begin < end);
+        assert(begin <= end);
         return View(elementBegin(false) + begin, elementBegin(false) + end);
     }
 
@@ -696,7 +697,8 @@ protected:
      * not.
      *
      * @param[in] begin: the index of the first element to be included in the
-     * range. It must be less than elementContainerSize() and the end index.
+     * range. It must be less or equal to elementContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last element to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate
@@ -704,10 +706,10 @@ protected:
      */
     View<ConstElementIterator> elements(uint begin, uint end = UINT_NULL) const
     {
-        assert(begin < elementContainerSize());
+        assert(begin <= elementContainerSize());
         if (end == UINT_NULL || end > elementContainerSize())
             end = elementContainerSize();
-        assert(begin < end);
+        assert(begin <= end);
         return View(elementBegin(false) + begin, elementBegin(false) + end);
     }
 
