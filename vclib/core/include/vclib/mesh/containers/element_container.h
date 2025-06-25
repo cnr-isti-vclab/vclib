@@ -722,6 +722,38 @@ protected:
     }
 
     template<typename C>
+    bool isComponentAvailable() const
+    {
+        if constexpr(comp::HasComponentOfType<T, C::COMPONENT_ID>) {
+            if constexpr(comp::HasOptionalComponentOfType<T, C::COMPONENT_ID>) {
+                return mVerticalCompVecTuple.template isComponentEnabled<C>();
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    template<uint COMP_ID>
+    bool isComponentAvailable() const
+    {
+        if constexpr(comp::HasComponentOfType<T, COMP_ID>) {
+            if constexpr(comp::HasOptionalComponentOfType<T, COMP_ID>) {
+                return mVerticalCompVecTuple.template isComponentEnabled<COMP_ID>();
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    template<typename C>
     bool isOptionalComponentEnabled() const
     {
         return mVerticalCompVecTuple.template isComponentEnabled<C>();

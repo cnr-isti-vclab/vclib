@@ -432,7 +432,7 @@ public:
             using Matrixtype = typename Mesh<Args...>::TransformMatrixType;
 
             Matrixtype matrix = this->transformMatrix();
-            matrix            = matrix.inverse();
+            matrix            = matrix.inverse().eval();
             matrix *= m.transformMatrix();
 
             if (matrix != Matrixtype::Identity()) {
@@ -442,7 +442,34 @@ public:
             }
         }
 
-        // TODO: manage textures
+        if constexpr (mesh::HasTexturePaths<Mesh<Args...>>) {
+            uint nTextures = this->textureNumber();
+
+            std::vector<uint> mapping(m.textureNumber());
+
+            for (uint i = 0; i < m.textureNumber(); ++i) {
+                uint tpi = this->indexOfTexturePath(m.texturePath(i));
+
+                if (tpi == UINT_NULL) {
+                    if constexpr (mesh::HasTextureImages<Mesh<Args...>>) {
+                        this->pushTexture(m.texture(i));
+                    }
+                    else {
+                        this->pushTexturePath(m.texturePath(i));
+                    }
+                    mapping[i] = nTextures++;
+                }
+                else {
+                    mapping[i] = tpi;
+                }
+            }
+
+            if (nTextures > 0 || mapping.size() > 0) {
+                (updateTextureIndicesOfContainerTypeAfterAppend<Args>(
+                     *this, sizes, mapping),
+                 ...);
+            }
+        }
     }
 
     /**
@@ -1977,16 +2004,59 @@ private:
             }
 
             if constexpr (hasPerElementComponent<ELEM_ID, CompId::NORMAL>()) {
-                if constexpr (comp::HasOptionalComponentOfType<
-                                  ElType,
-                                  CompId::NORMAL>) {
-                    if (m.Cont::template isOptionalComponentEnabled<
-                            CompId::NORMAL>()) {
-                        auto norview =
-                            m.template elements<ELEM_ID>((uint) sizes[I]) |
-                            vcl::views::normals;
+                if (m.Cont::template isComponentAvailable<CompId::NORMAL>()) {
+                    auto norview =
+                        m.template elements<ELEM_ID>((uint) sizes[I]) |
+                        vcl::views::normals;
 
-                        multiplyNormalsByMatrix(norview, matrix);
+                    multiplyNormalsByMatrix(norview, matrix);
+                }
+            }
+        }
+    }
+
+    template<typename Cont, typename ArrayS, typename... A>
+    static void updateTextureIndicesOfContainerTypeAfterAppend(
+        Mesh<A...>&              m,
+        const ArrayS&            sizes,
+        const std::vector<uint>& mapping)
+    {
+        // since this function is called using pack expansion, it means that
+        // Cont could be a mesh component and not a cointainer. We check if Cont
+        // is a container
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            // The element type contained in the container
+            // We need it to get back the actual type of the element from the
+            // old bases
+            using ElType                  = Cont::ElementType;
+            static constexpr uint ELEM_ID = ElType::ELEMENT_ID;
+
+            using Containers = Mesh<A...>::Containers;
+            constexpr uint I = IndexInTypes<Cont, Containers>::value;
+            static_assert(I >= 0 && I != UINT_NULL);
+
+            if constexpr (hasPerElementComponent<
+                              ELEM_ID,
+                              CompId::TEX_COORD>()) {
+                if (m.Cont::template isComponentAvailable<
+                        CompId::TEX_COORD>()) {
+                    auto tcview =
+                        m.template elements<ELEM_ID>((uint) sizes[I]) |
+                        vcl::views::texCoords;
+                    for (auto& tc : tcview) {
+                        tc.index() = mapping[tc.index()];
+                    }
+                }
+            }
+
+            if constexpr (hasPerElementComponent<
+                              ELEM_ID,
+                              CompId::WEDGE_TEX_COORDS>()) {
+                if (m.Cont::template isComponentAvailable<
+                        CompId::WEDGE_TEX_COORDS>()) {
+                    auto elview = m.template elements<ELEM_ID>((uint) sizes[I]);
+                    for (auto& e : elview) {
+                        e.textureIndex() = mapping[e.textureIndex()];
                     }
                 }
             }
