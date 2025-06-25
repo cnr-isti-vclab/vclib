@@ -149,6 +149,13 @@ public:
             mBoundingBox = vcl::boundingBox(*this);
         }
 
+        if constexpr (HasTransformMatrix<MeshType>) {
+            mBoundingBox.min() *=
+                MeshType::transformMatrix().template cast<double>();
+            mBoundingBox.max() *=
+                MeshType::transformMatrix().template cast<double>();
+        }
+
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
