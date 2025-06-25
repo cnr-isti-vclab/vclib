@@ -42,7 +42,7 @@ namespace vcl::detail {
  * @param node
  * @return
  */
-uint gltfNodeNumberMeshes(const tinygltf::Model& model, uint node)
+inline uint gltfNodeNumberMeshes(const tinygltf::Model& model, uint node)
 {
     uint nMeshes = 0;
     if (model.nodes[node].mesh >= 0){
@@ -69,7 +69,7 @@ uint gltfNodeNumberMeshes(const tinygltf::Model& model, uint node)
  * @param model
  * @return
  */
-uint gltfNumberMeshes(const tinygltf::Model& model)
+inline uint gltfNumberMeshes(const tinygltf::Model& model)
 {
     uint nMeshes = 0;
     for (uint s = 0; s < model.scenes.size(); ++s){

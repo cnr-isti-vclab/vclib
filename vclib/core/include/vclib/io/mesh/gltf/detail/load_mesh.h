@@ -43,7 +43,7 @@ inline const std::array<std::string, 4> GLTF_ATTR_STR {
     "COLOR_0",
     "TEXCOORD_0"};
 
-void checkGltfPrimitiveMaterial(
+inline void checkGltfPrimitiveMaterial(
     const tinygltf::Model&     model,
     const tinygltf::Primitive& p,
     int&                       textureImg,
