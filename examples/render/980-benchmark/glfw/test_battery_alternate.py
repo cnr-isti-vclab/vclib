@@ -74,10 +74,21 @@ def main():
     else:
         executable_name = "./980-benchmark"
     argsList = [
-        # Example
-        Args(SMOOTH, SPLIT, (1024, 768), "./usage_example/example.ply"),
-        # Combinatory example
-        Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [(800, 600)], ["./usage_example/example.ply"])
+        Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [(800, 600), None, (2560, 1920)], [
+                "./meshes/small/ram/myram_col_vert.ply",
+                "./meshes/small/ram/myram_col_face.ply",
+                "./meshes/small/ram/myram_tex_vert.ply",
+                "./meshes/small/ram/myram_tex_wedge.ply",
+                "./meshes/medium/ZUCCA500k_col_vert.ply",
+                "./meshes/medium/ZUCCA500k_col_face.ply",
+                "./meshes/medium/gargoyle/gargoyle500K_tex_vert.ply",
+                "./meshes/medium/gargoyle/gargoyle500K_tex_wedge.ply",
+                "./meshes/big/ESTE_PRINT_col_vert.ply",
+                "./meshes/big/ESTE_PRINT_col_face.ply",
+                "./meshes/big/ESTE_PRINT_tex_vert.ply",
+                "./meshes/big/ESTE_PRINT_tex_wedge.ply"
+            ]
+        )
     ]
     for args in argsList:
         if isinstance(args, types.GeneratorType):
