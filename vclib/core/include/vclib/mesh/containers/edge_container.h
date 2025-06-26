@@ -430,6 +430,35 @@ public:
     auto edges(bool jumpDeleted = true) { return Base::elements(jumpDeleted); }
 
     /**
+     * @brief Returns a view object that allows to iterate over the Edges
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (Edge& e : m.edges(3, 10)){
+     *     // iterate over the Edges from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the edges() function, this member function does not
+     * automatically jump deleted edges, but it iterates over the
+     * edges in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first edge to be included in the
+     * range. It must be less or equal to edgeContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last edge to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto edges(uint begin, uint end = UINT_NULL)
+    {
+        return Base::elements(begin, end);
+    }
+
+    /**
      * @brief Returns a small view object that allows to iterate over the
      * Edges of the containers, providing two member functions begin()
      * and end().
@@ -455,6 +484,35 @@ public:
     auto edges(bool jumpDeleted = true) const
     {
         return Base::elements(jumpDeleted);
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the Edges
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (const Edge& e : m.edges(3, 10)){
+     *     // iterate over the Edges from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the edges() function, this member function does not
+     * automatically jump deleted edges, but it iterates over the
+     * edges in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first edge to be included in the
+     * range. It must be less or equal to edgeContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last edge to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto edges(uint begin, uint end = UINT_NULL) const
+    {
+        return Base::elements(begin, end);
     }
 
     /**

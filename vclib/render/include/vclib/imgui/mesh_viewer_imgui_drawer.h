@@ -607,7 +607,7 @@ private:
                     settings.setEdges(SHADING_NONE);
             });
         ImGui::EndDisabled();
-        
+
         // color
         ImGui::Text("Color:");
         ImGui::SameLine();
@@ -673,7 +673,7 @@ private:
             },
             ImGuiColorEditFlags_NoInputs);
         ImGui::EndDisabled();
-        
+
         ImGui::EndDisabled();
     }
 

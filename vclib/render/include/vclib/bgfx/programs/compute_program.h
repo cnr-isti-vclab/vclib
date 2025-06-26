@@ -25,10 +25,7 @@
 
 namespace vcl {
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    COUNT
-};
+enum class ComputeProgram { DRAWABLE_MESH_POINTS, COUNT };
 
 } // namespace vcl
 
