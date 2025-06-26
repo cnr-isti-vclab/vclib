@@ -726,8 +726,9 @@ protected:
     template<typename C>
     bool isComponentAvailable() const
     {
-        if constexpr(comp::HasComponentOfType<T, C::COMPONENT_ID>) {
-            if constexpr(comp::HasOptionalComponentOfType<T, C::COMPONENT_ID>) {
+        if constexpr (comp::HasComponentOfType<T, C::COMPONENT_ID>) {
+            if constexpr (comp::
+                              HasOptionalComponentOfType<T, C::COMPONENT_ID>) {
                 return mVerticalCompVecTuple.template isComponentEnabled<C>();
             }
             else {
@@ -742,9 +743,10 @@ protected:
     template<uint COMP_ID>
     bool isComponentAvailable() const
     {
-        if constexpr(comp::HasComponentOfType<T, COMP_ID>) {
-            if constexpr(comp::HasOptionalComponentOfType<T, COMP_ID>) {
-                return mVerticalCompVecTuple.template isComponentEnabled<COMP_ID>();
+        if constexpr (comp::HasComponentOfType<T, COMP_ID>) {
+            if constexpr (comp::HasOptionalComponentOfType<T, COMP_ID>) {
+                return mVerticalCompVecTuple
+                    .template isComponentEnabled<COMP_ID>();
             }
             else {
                 return true;

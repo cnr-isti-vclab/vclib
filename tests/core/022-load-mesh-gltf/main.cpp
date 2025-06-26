@@ -26,12 +26,10 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
-using MeshesIndexed =
-    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::
-    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
+using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
+using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
+using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
 // Test to load obj from a istringstream
 TEMPLATE_TEST_CASE(
@@ -53,7 +51,8 @@ TEMPLATE_TEST_CASE(
 
         TriMesh tm;
 
-        vcl::loadGltf(tm, VCLIB_EXAMPLE_MESHES_PATH "/gltf/Duck/Duck.gltf", info);
+        vcl::loadGltf(
+            tm, VCLIB_EXAMPLE_MESHES_PATH "/gltf/Duck/Duck.gltf", info);
         REQUIRE(tm.vertexNumber() == 2399);
         REQUIRE(tm.faceNumber() == 4212);
 

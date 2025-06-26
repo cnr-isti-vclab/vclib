@@ -61,10 +61,10 @@ void loadGltfMeshesWhileTraversingNodes(
         ++currentMeshIt;
         ++currentInfoIt;
     }
-    //for each child
-    for (int c : model.nodes[currentNode].children){
-        if (c>=0){ //if it is valid
-            //visit child
+    // for each child
+    for (int c : model.nodes[currentNode].children) {
+        if (c >= 0) { // if it is valid
+            // visit child
             loadGltfMeshesWhileTraversingNodes(
                 model,
                 currentMeshIt,
@@ -83,7 +83,7 @@ void loadGltf(
     std::vector<MeshType>& meshes,
     std::vector<MeshInfo>& infos,
     LogType&               log,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings&    settings = LoadSettings())
 {
     using ScalarType = MeshType::ScalarType;
 
@@ -104,17 +104,11 @@ void loadGltf(
     auto mit = meshes.begin();
     auto iit = infos.begin();
 
-    for (unsigned int s = 0; s < model.scenes.size(); ++s){
+    for (unsigned int s = 0; s < model.scenes.size(); ++s) {
         const tinygltf::Scene& scene = model.scenes[s];
-        for (unsigned int n = 0; n < scene.nodes.size(); ++n){
+        for (unsigned int n = 0; n < scene.nodes.size(); ++n) {
             loadGltfMeshesWhileTraversingNodes(
-                model,
-                mit,
-                iit,
-                identityMatrix,
-                scene.nodes[n],
-                log,
-                settings);
+                model, mit, iit, identityMatrix, scene.nodes[n], log, settings);
 
             log.progress(s * scene.nodes.size() + n);
         }
@@ -134,7 +128,7 @@ void loadGltf(
     const LoadSettings& settings = LoadSettings())
 {
     tinygltf::TinyGLTF loader;
-    tinygltf::Model model;
+    tinygltf::Model    model;
 
     std::string err;
     std::string warn;
@@ -155,7 +149,8 @@ void loadGltf(
     }
 
     if (!ret) {
-        throw CannotOpenFileException("Failed to load glTF file: " + filename + "\n" + err);
+        throw CannotOpenFileException(
+            "Failed to load glTF file: " + filename + "\n" + err);
     }
 
     if (!warn.empty()) {
@@ -169,7 +164,7 @@ void loadGltf(
     std::vector<MeshInfo> infos;
     detail::loadGltf(model, meshes, infos, log, settings);
 
-    m = std::move(meshes.front());
+    m          = std::move(meshes.front());
     loadedInfo = std::move(infos.front());
     for (std::size_t i = 1; i < meshes.size(); ++i) {
         m.append(std::move(meshes[i]));

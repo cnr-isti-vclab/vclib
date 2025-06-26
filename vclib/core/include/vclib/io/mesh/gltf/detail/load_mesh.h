@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_GLTF_LOAD_MESH_H
-#define VCL_IO_MESH_GLTF_LOAD_MESH_H
+#ifndef VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
+#define VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
 
 #include <vclib/algorithms/mesh/update.h>
 #include <vclib/concepts/mesh.h>
@@ -90,14 +90,14 @@ bool populateGltfVertices(
     return true;
 }
 
-template <MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, typename Scalar>
 bool populateGltfVNormals(
-    MeshType& m,
-    uint firstVertex,
-    bool enableOptionalComponents,
+    MeshType&     m,
+    uint          firstVertex,
+    bool          enableOptionalComponents,
     const Scalar* normArray,
-    unsigned int stride,
-    unsigned int vertNumber)
+    unsigned int  stride,
+    unsigned int  vertNumber)
 {
     if constexpr (HasPerVertexNormal<MeshType>) {
         using NormalType = typename MeshType::VertexType::NormalType;
@@ -123,33 +123,39 @@ bool populateGltfVNormals(
     }
 }
 
-template <MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, typename Scalar>
 bool populateGltfVColors(
-    MeshType& m,
-    uint firstVertex,
-    bool enableOptionalComponents,
+    MeshType&     m,
+    uint          firstVertex,
+    bool          enableOptionalComponents,
     const Scalar* colorArray,
-    unsigned int stride,
-    unsigned int vertNumber,
-    int nElemns)
+    unsigned int  stride,
+    unsigned int  vertNumber,
+    int           nElemns)
 {
     if constexpr (HasPerVertexColor<MeshType>) {
         if (enableOptionalComponents)
             enableIfPerVertexColorOptional(m);
 
         if (isPerVertexColorAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber*nElemns; i += nElemns) {
-                const Scalar* colorBase =
-                    reinterpret_cast<const Scalar*>(reinterpret_cast<const char*>(colorArray) + (i/nElemns) * stride);
-                const auto vi = firstVertex + i/nElemns;
+            for (unsigned int i = 0; i < vertNumber * nElemns; i += nElemns) {
+                const Scalar* colorBase = reinterpret_cast<const Scalar*>(
+                    reinterpret_cast<const char*>(colorArray) +
+                    (i / nElemns) * stride);
+                const auto vi = firstVertex + i / nElemns;
                 vcl::Color c;
                 if constexpr (!std::is_floating_point<Scalar>::value) {
                     uint alpha = nElemns == 4 ? colorBase[3] : 255;
-                    c = vcl::Color(colorBase[0], colorBase[1], colorBase[2], alpha);
+                    c          = vcl::Color(
+                        colorBase[0], colorBase[1], colorBase[2], alpha);
                 }
                 else {
                     uint alpha = nElemns == 4 ? colorBase[3] * 255 : 255;
-                    c = vcl::Color(colorBase[0] * 255, colorBase[1]*255, colorBase[2]*255, alpha);
+                    c          = vcl::Color(
+                        colorBase[0] * 255,
+                        colorBase[1] * 255,
+                        colorBase[2] * 255,
+                        alpha);
                 }
                 m.vertex(vi).color() = c;
             }
@@ -162,18 +168,17 @@ bool populateGltfVColors(
     else {
         return false;
     }
-
 }
 
-template <MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, typename Scalar>
 bool populateGltfVTextCoords(
-    MeshType& m,
-    uint firstVertex,
-    bool enableOptionalComponents,
+    MeshType&     m,
+    uint          firstVertex,
+    bool          enableOptionalComponents,
     const Scalar* textCoordArray,
-    unsigned int stride,
-    unsigned int vertNumber,
-    int textID)
+    unsigned int  stride,
+    unsigned int  vertNumber,
+    int           textID)
 {
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         using TexCoordType = typename MeshType::VertexType::TexCoordType;
@@ -186,8 +191,8 @@ bool populateGltfVTextCoords(
                 const Scalar* textCoordBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(textCoordArray) + i * stride);
 
-                m.vertex(firstVertex + i).texCoord() =
-                    TexCoordType(textCoordBase[0], 1-textCoordBase[1], textID);
+                m.vertex(firstVertex + i).texCoord() = TexCoordType(
+                    textCoordBase[0], 1 - textCoordBase[1], textID);
             }
             return true;
         }
@@ -200,30 +205,30 @@ bool populateGltfVTextCoords(
     }
 }
 
-template <MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, typename Scalar>
 bool populateGltfTriangles(
-    MeshType& m,
-    uint firstVertex,
+    MeshType&     m,
+    uint          firstVertex,
     const Scalar* triArray,
-    uint triNumber)
+    uint          triNumber)
 {
     if constexpr (HasFaces<MeshType>) {
         if (triArray != nullptr) {
             uint fi = m.addFaces(triNumber);
-            for (unsigned int i = 0; i < triNumber*3; i+=3, ++fi) {
+            for (unsigned int i = 0; i < triNumber * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
                 if constexpr (HasPolygons<MeshType>) {
                     f.resizeVertices(3);
                 }
                 for (int j = 0; j < 3; ++j) {
-                    f.setVertex(j, firstVertex + triArray[i+j]);
+                    f.setVertex(j, firstVertex + triArray[i + j]);
                 }
             }
         }
         else {
             triNumber = m.vertexNumber() / 3 - firstVertex;
-            uint fi = m.addFaces(triNumber);
-            for (uint i = 0; i < triNumber*3; i+=3, ++fi) {
+            uint fi   = m.addFaces(triNumber);
+            for (uint i = 0; i < triNumber * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
                 for (uint j = 0; j < 3; ++j) {
                     f.setVertex(j, firstVertex + i + j);
@@ -268,15 +273,29 @@ bool populateGltfAttr(
     switch (attr) {
     case POSITION: return populateGltfVertices(m, array, stride, number);
     case NORMAL:
-        return populateGltfVNormals(m, firstVertex, enableOptionalComponents, array, stride, number);
+        return populateGltfVNormals(
+            m, firstVertex, enableOptionalComponents, array, stride, number);
     case COLOR_0:
-        return populateGltfVColors(m, firstVertex, enableOptionalComponents, array, stride, number, textID);
+        return populateGltfVColors(
+            m,
+            firstVertex,
+            enableOptionalComponents,
+            array,
+            stride,
+            number,
+            textID);
     case TEXCOORD_0:
-        return populateGltfVTextCoords(m, firstVertex, enableOptionalComponents, array, stride, number, textID);
+        return populateGltfVTextCoords(
+            m,
+            firstVertex,
+            enableOptionalComponents,
+            array,
+            stride,
+            number,
+            textID);
     case INDICES:
-        return populateGltfTriangles(m, firstVertex, array, number/3);
-    default:
-        return false;
+        return populateGltfTriangles(m, firstVertex, array, number / 3);
+    default: return false;
     }
 }
 
@@ -308,7 +327,7 @@ bool loadGltfAttribute(
 {
     using enum GltfAttrType;
 
-    const tinygltf::Accessor* accessor   = nullptr;
+    const tinygltf::Accessor* accessor = nullptr;
 
     // get the accessor associated to the attribute
     if (attr != INDICES) {
@@ -424,8 +443,7 @@ bool loadGltfAttribute(
         else if (
             accessor->componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT) {
             // get the starting point of the data as uint pointer
-            const uint* triArray =
-                (const uint*) (posdata.data() + posOffset);
+            const uint* triArray = (const uint*) (posdata.data() + posOffset);
             return populateGltfAttr(
                 attr,
                 m,
@@ -644,4 +662,4 @@ void gltfLoadMesh(
 
 } // namespace vcl::detail
 
-#endif // VCL_IO_MESH_GLTF_LOAD_MESH_H
+#endif // VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
