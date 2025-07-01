@@ -199,6 +199,50 @@ class VersionedDocsGenerator:
         with open(versions_file, 'w', encoding='utf-8') as f:
             json.dump(versions_data, f, indent=2)
 
+    def create_redirect_index(self, versions: List[str]) -> None:
+        """Creates an index.html file that redirects to the latest version."""
+        index_file = self.output_base_dir / "index.html"
+        
+        # Determine the latest version
+        if not versions:
+            latest_version = "devel"
+        else:
+            # Sort to get the latest version (excluding devel)
+            non_devel_versions = [v for v in versions if v != 'devel']
+            if non_devel_versions:
+                # Sort semantic versions to get the latest
+                def version_key(v):
+                    try:
+                        parts = v.replace('v', '').split('.')
+                        return tuple(int(x) for x in parts if x.isdigit())
+                    except:
+                        return (0, 0, 0)
+                
+                sorted_versions = sorted(non_devel_versions, key=version_key, reverse=True)
+                latest_version = sorted_versions[0] if sorted_versions else "devel"
+            else:
+                latest_version = "devel"
+        
+        # Simple HTML with immediate redirect
+        html_content = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=./{latest_version}/">
+    <title>VCLib Documentation - Redirecting to {latest_version}</title>
+</head>
+<body>
+    <p>Redirecting to <a href="./{latest_version}/">{latest_version}</a>...</p>
+    <script>
+        window.location.href = "./{latest_version}/";
+    </script>
+</body>
+</html>'''
+        
+        print(f"Creating redirect index.html to version: {latest_version}")
+        with open(index_file, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+
     def generate_all_versions(self) -> None:
         """Generate documentation for all versions and current development branch."""
         # Save current branch
@@ -279,6 +323,8 @@ class VersionedDocsGenerator:
         # Generate versions list file for JavaScript
         if successful_versions:
             self.generate_versions_list(successful_versions)
+            # Create redirect index.html
+            self.create_redirect_index(successful_versions)
 
 
 def main():
