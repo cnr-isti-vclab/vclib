@@ -167,7 +167,7 @@ class VersionedDocsGenerator:
 
     def copy_version_selector_script(self) -> None:
         """Copies the version selector JavaScript to the output directory."""
-        script_source = self.repo_root / "scripts" / "version-selector.js"
+        script_source = self.repo_root / "scripts" / "templates" / "version-selector.js"
         script_destination = self.output_base_dir / "version-selector.js"
         
         if script_source.exists():
@@ -202,6 +202,7 @@ class VersionedDocsGenerator:
     def create_redirect_index(self, versions: List[str]) -> None:
         """Creates an index.html file that redirects to the latest version."""
         index_file = self.output_base_dir / "index.html"
+        template_file = self.repo_root / "scripts" / "templates" / "index_redirect.html"
         
         # Determine the latest version
         if not versions:
@@ -223,25 +224,27 @@ class VersionedDocsGenerator:
             else:
                 latest_version = "devel"
         
-        # Simple HTML with immediate redirect
-        html_content = f'''<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=./{latest_version}/">
-    <title>VCLib Documentation - Redirecting to {latest_version}</title>
-</head>
-<body>
-    <p>Redirecting to <a href="./{latest_version}/">{latest_version}</a>...</p>
-    <script>
-        window.location.href = "./{latest_version}/";
-    </script>
-</body>
-</html>'''
-        
-        print(f"Creating redirect index.html to version: {latest_version}")
-        with open(index_file, 'w', encoding='utf-8') as f:
-            f.write(html_content)
+        # Read template and replace placeholders
+        if template_file.exists():
+            with open(template_file, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            # Replace placeholder with actual version
+            html_content = html_content.replace('{{LATEST_VERSION}}', latest_version)
+            
+            print(f"Creating redirect index.html to version: {latest_version}")
+            with open(index_file, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+        else:
+            print(f"Warning: Template file not found at {template_file}")
+            # Fallback to simple redirect
+            html_content = f'''<!DOCTYPE html>
+<html><head><meta http-equiv="refresh" content="0; url=./{latest_version}/"></head>
+<body><p>Redirecting to <a href="./{latest_version}/">{latest_version}</a>...</p></body></html>'''
+            
+            print(f"Creating fallback redirect index.html to version: {latest_version}")
+            with open(index_file, 'w', encoding='utf-8') as f:
+                f.write(html_content)
 
     def generate_all_versions(self) -> None:
         """Generate documentation for all versions and current development branch."""
