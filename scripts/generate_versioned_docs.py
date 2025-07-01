@@ -17,6 +17,7 @@ import re
 import shutil
 import subprocess
 import sys
+import json
 from pathlib import Path
 from typing import List
 
@@ -164,6 +165,40 @@ class VersionedDocsGenerator:
             shutil.rmtree(self.output_base_dir)
         self.output_base_dir.mkdir(parents=True, exist_ok=True)
 
+    def copy_version_selector_script(self) -> None:
+        """Copies the version selector JavaScript to the output directory."""
+        script_source = self.repo_root / "scripts" / "version-selector.js"
+        script_destination = self.output_base_dir / "version-selector.js"
+        
+        if script_source.exists():
+            print(f"Copying version selector script to {script_destination}")
+            shutil.copy2(script_source, script_destination)
+        else:
+            print(f"Warning: version selector script not found at {script_source}")
+
+    def generate_versions_list(self, versions: List[str]) -> None:
+        """Generates a JSON file with the list of available versions."""
+        versions_file = self.output_base_dir / "versions.json"
+        
+        # Sort versions with 'devel' first, then semantic versions in descending order
+        sorted_versions = sorted(versions, key=lambda v: (
+            0 if v == 'devel' else 1,  # 'devel' first
+            *[-int(x) for x in v.replace('v', '').split('.') if x.isdigit()]  # semantic versions desc
+        ))
+        
+        versions_data = {
+            "versions": sorted_versions,
+            "generated": subprocess.run(
+                ["date", "-Iseconds"], 
+                capture_output=True, 
+                text=True
+            ).stdout.strip()
+        }
+        
+        print(f"Generating versions list file: {versions_file}")
+        with open(versions_file, 'w', encoding='utf-8') as f:
+            json.dump(versions_data, f, indent=2)
+
     def generate_all_versions(self) -> None:
         """Generate documentation for all versions and current development branch."""
         # Save current branch
@@ -180,6 +215,9 @@ class VersionedDocsGenerator:
         
         # Always clean directory
         self.clean_output_directory()
+        
+        # Copy version selector script
+        self.copy_version_selector_script()
         
         successful_versions = []
         failed_versions = []
@@ -237,6 +275,10 @@ class VersionedDocsGenerator:
             print("No failures occurred")
             
         print(f"\nDocumentation saved in: {self.output_base_dir}")
+        
+        # Generate versions list file for JavaScript
+        if successful_versions:
+            self.generate_versions_list(successful_versions)
 
 
 def main():
