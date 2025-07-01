@@ -10,7 +10,11 @@ This script:
 5. Saves documentation in docs/_doxygen/html/${tag}/
 6. Returns to the original branch
 
-Usage: python3 generate_versioned_docs.py
+Usage: 
+  python3 generate_versioned_docs.py                # Generate docs for all versions
+  python3 generate_versioned_docs.py --verbose      # Show Doxygen output
+  python3 generate_versioned_docs.py --devel        # Generate only devel version
+  python3 generate_versioned_docs.py --verbose --devel  # Combine options
 """
 
 import re
@@ -18,17 +22,19 @@ import shutil
 import subprocess
 import sys
 import json
+import argparse
 from pathlib import Path
 from typing import List
 
 
 class VersionedDocsGenerator:
-    def __init__(self, repo_root: Path):
+    def __init__(self, repo_root: Path, verbose: bool = False):
         self.repo_root = repo_root
         self.docs_dir = repo_root / "docs"
         self.doxyfile_path = self.docs_dir / "Doxyfile"
         self.output_base_dir = self.docs_dir / "_doxygen" / "html"
         self.original_branch = None
+        self.verbose = verbose
         
         # Verify we are in a Git repository
         if not (repo_root / ".git").exists():
@@ -144,14 +150,22 @@ class VersionedDocsGenerator:
         try:
             print(f"Generating documentation for version {version}...")
             
-            # Run Doxygen
-            self.run_command(["doxygen", str(temp_doxyfile)], capture_output=False)
+            # Run Doxygen with or without captured output based on verbose mode
+            if self.verbose:
+                result = self.run_command(["doxygen", str(temp_doxyfile)], capture_output=False)
+            else:
+                result = self.run_command(["doxygen", str(temp_doxyfile)], capture_output=True)
             
             print(f"Documentation generated successfully for version {version}")
             return True
             
         except subprocess.CalledProcessError as e:
             print(f"Error generating documentation for version {version}: {e}")
+            # Show Doxygen output only on error (or if verbose is enabled)
+            if e.stdout:
+                print(f"Doxygen STDOUT:\n{e.stdout}")
+            if e.stderr:
+                print(f"Doxygen STDERR:\n{e.stderr}")
             return False
         finally:
             # Remove temporary file
@@ -246,19 +260,23 @@ class VersionedDocsGenerator:
             with open(index_file, 'w', encoding='utf-8') as f:
                 f.write(html_content)
 
-    def generate_all_versions(self) -> None:
+    def generate_all_versions(self, devel_only: bool = False) -> None:
         """Generate documentation for all versions and current development branch."""
         # Save current branch
         self.original_branch = self.get_current_branch()
         print(f"Current branch: {self.original_branch}")
         
-        # Get all tags
-        tags = self.get_git_tags()
-        
-        if not tags:
-            print("No tags found in repository.")
+        # Get all tags (only if not devel_only mode)
+        if devel_only:
+            tags = []
+            print("Running in devel-only mode - skipping tags")
         else:
-            print(f"Found {len(tags)} tags: {', '.join(tags)}")
+            tags = self.get_git_tags()
+            
+            if not tags:
+                print("No tags found in repository.")
+            else:
+                print(f"Found {len(tags)} tags: {', '.join(tags)}")
         
         # Always clean directory
         self.clean_output_directory()
@@ -283,21 +301,22 @@ class VersionedDocsGenerator:
                 print(f"Error processing development branch: {e}")
                 failed_versions.append("devel")
             
-            # Generate documentation for each tag
-            for tag in tags:
-                try:
-                    # Checkout tag
-                    self.checkout_tag(tag)
-                    
-                    # Generate documentation
-                    if self.generate_docs_for_version(tag):
-                        successful_versions.append(tag)
-                    else:
-                        failed_versions.append(tag)
+            # Generate documentation for each tag (only if not devel_only mode)
+            if not devel_only:
+                for tag in tags:
+                    try:
+                        # Checkout tag
+                        self.checkout_tag(tag)
                         
-                except Exception as e:
-                    print(f"Error processing tag {tag}: {e}")
-                    failed_versions.append(tag)
+                        # Generate documentation
+                        if self.generate_docs_for_version(tag):
+                            successful_versions.append(tag)
+                        else:
+                            failed_versions.append(tag)
+                            
+                    except Exception as e:
+                        print(f"Error processing tag {tag}: {e}")
+                        failed_versions.append(tag)
         
         finally:
             # Always return to original branch
@@ -331,6 +350,23 @@ class VersionedDocsGenerator:
 
 
 def main():
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description="Generate versioned documentation for VCLib using Doxygen"
+    )
+    parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Show Doxygen output during generation'
+    )
+    parser.add_argument(
+        '--devel',
+        action='store_true',
+        help='Generate documentation only for the current branch (devel), skip all tags'
+    )
+    
+    args = parser.parse_args()
+    
     # Use the parent directory of this script as the repository root
     repo_root = Path(__file__).parent.parent
     
@@ -340,8 +376,8 @@ def main():
         sys.exit(1)
     
     try:
-        generator = VersionedDocsGenerator(repo_root=repo_root)
-        generator.generate_all_versions()
+        generator = VersionedDocsGenerator(repo_root=repo_root, verbose=args.verbose)
+        generator.generate_all_versions(devel_only=args.devel)
         
     except Exception as e:
         print(f"Error: {e}")
