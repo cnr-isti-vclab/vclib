@@ -74,7 +74,7 @@ int main()
     // You can also specify what kind of data you want to save in the file,
     // using a MeshInfo object in the SaveSettings parameter
     vcl::MeshInfo saveInfo;
-    saveInfo.setPerVertexCoordinate();
+    saveInfo.setPerVertexPosition();
     saveInfo.setFaces(false); // do not save faces - only point cloud
 
     vcl::SaveSettings saveSettings;

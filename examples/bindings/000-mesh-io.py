@@ -71,7 +71,7 @@ vcl.save(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny.obj")
 # using a MeshInfo object
 
 save_info = vcl.MeshInfo()
-save_info.set_per_vertex_coordinate()
+save_info.set_per_vertex_position()
 save_info.set_faces(False) # do not save faces - only point cloud
 
 vcl.save(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny-cloud.obj", info = save_info)
