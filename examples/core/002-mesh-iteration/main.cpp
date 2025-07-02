@@ -116,7 +116,11 @@ int main()
         if (count >= 3) break;
         std::cout << "Vertex " << vertex.index() << " is adjacent to faces: ";
         for (const auto* face : vertex.adjFaces()) {
-            std::cout << face->index() << " ";
+            if (face != nullptr) {
+                std::cout << face->index() << " ";
+            } else {
+                std::cout << "null ";
+            }
         }
         std::cout << std::endl;
         count++;
@@ -170,43 +174,12 @@ int main()
     for (int count = 0; const auto& face : mesh | vcl::views::faces) {
         if (count >= 2) break;
         std::cout << "Face " << face.index() << " valid adjacent faces: ";
-        for (const auto& adjFace : face | vcl::views::adjFaces | vcl::views::notNull) {
+        for (const auto* adjFace : face | vcl::views::adjFaces | vcl::views::notNull) {
             std::cout << adjFace->index() << " ";
         }
         std::cout << std::endl;
         count++;
     }
-    
-    /****** Conditional iteration ******/
-    
-    std::cout << "\n=== Conditional Iteration ===" << std::endl;
-    
-    // Find vertices above a certain height
-    double threshold = 0.5;
-    std::cout << "Vertices with y > " << threshold << ":" << std::endl;
-    for (const auto& vertex : mesh.vertices()) {
-        if (vertex.position().y() > threshold) {
-            std::cout << "  Vertex " << vertex.index() 
-                      << ": " << vertex.position() << std::endl;
-        }
-    }
-    
-    // Count faces that have at least one vertex above threshold
-    int facesAboveThreshold = 0;
-    for (const auto& face : mesh.faces()) {
-        bool hasVertexAbove = false;
-        for (int i = 0; i < 3; ++i) {
-            if (face.vertex(i)->position().y() > threshold) {
-                hasVertexAbove = true;
-                break;
-            }
-        }
-        if (hasVertexAbove) {
-            facesAboveThreshold++;
-        }
-    }
-    std::cout << "Faces with at least one vertex above threshold: " 
-              << facesAboveThreshold << std::endl;
     
     /****** Polygon mesh iteration ******/
     
@@ -253,31 +226,18 @@ int main()
     
     // Compute average edge length
     double totalEdgeLength = 0.0;
-    int edgeCount = 0;
+    vcl::uint edgeCount = mesh.faceNumber() * 3;
     
     for (const auto& face : mesh.faces()) {
         for (int i = 0; i < 3; ++i) {
             const auto& v1 = face.vertex(i)->position();
             const auto& v2 = face.vertex((i + 1) % 3)->position();
             totalEdgeLength += (v2 - v1).norm();
-            edgeCount++;
         }
     }
     
     double avgEdgeLength = totalEdgeLength / edgeCount;
     std::cout << "Average edge length: " << avgEdgeLength << std::endl;
-    
-    // Count boundary vertices (vertices with less adjacent faces than expected)
-    int boundaryVertices = 0;
-    for (const auto& vertex : mesh.vertices()) {
-        // This is a simple heuristic - in a closed mesh, internal vertices
-        // typically have 6 adjacent faces on average
-        if (vertex.adjFacesNumber() < 4) {
-            boundaryVertices++;
-        }
-    }
-    std::cout << "Vertices with few adjacent faces (possibly boundary): " 
-              << boundaryVertices << std::endl;
     
     /****** Performance considerations ******/
     
@@ -285,7 +245,6 @@ int main()
     std::cout << "- Range-based for loops are generally the most readable" << std::endl;
     std::cout << "- Index-based access can be faster for random access patterns" << std::endl;
     std::cout << "- Views provide composable iteration patterns" << std::endl;
-    std::cout << "- Adjacency information requires additional memory but enables efficient traversal" << std::endl;
     
     return 0;
 }
