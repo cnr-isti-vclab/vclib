@@ -428,12 +428,15 @@ protected:
     {
         using Comps = T::Components;
 
-        uint on = other.elementNumber();
+        uint on = other.elementContainerSize();
         uint n  = elementContainerSize();
         addElements(on);
         for (uint i = 0; i < on; ++i) {
             // copy everything from the other elements, also the (not updated)
             // pointers:
+            if (other.element(i).deleted()) {
+                deleteElement(n + i);
+            }
             element(n + i) = other.element(i);
             element(n + i).setParentMesh(mParentMesh);
         }
@@ -1103,7 +1106,7 @@ private:
     template<typename Comp>
     void appendVerticalComponent(const ElementContainer<T>& other)
     {
-        uint on = other.elementNumber();
+        uint on = other.elementContainerSize();
         uint n  = elementContainerSize() - on;
 
         if (mVerticalCompVecTuple.template isComponentEnabled<Comp>() &&
@@ -1121,7 +1124,7 @@ private:
     void appendCustomComponents(const ElementContainer<T>& other)
     {
         if constexpr (comp::HasCustomComponents<T>) {
-            uint on = other.elementNumber();
+            uint on = other.elementContainerSize();
             uint n  = elementContainerSize() - on;
 
             std::vector<std::string> ccNames =
