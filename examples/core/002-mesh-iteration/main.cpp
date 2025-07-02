@@ -33,6 +33,8 @@
 
 int main()
 {
+    std::cout << "=== VCLib Example 002: Mesh Iteration ===\n\n";
+
     /****** Load a test mesh ******/
     
     std::cout << "=== Loading Test Mesh ===" << std::endl;

@@ -32,6 +32,8 @@
 
 int main()
 {
+    std::cout << "=== VCLib Example 001: Mesh Basics ===\n\n";
+
     /****** Creating a mesh from scratch ******/
     
     std::cout << "=== Creating a Triangle Mesh ===" << std::endl;

@@ -32,6 +32,8 @@
 
 int main()
 {
+    std::cout << "=== VCLib Example 004: Mesh I/O ===\n\n";
+
     /****** Load ******/
 
     // To load a mesh you can both declare the mesh object and pass it to the

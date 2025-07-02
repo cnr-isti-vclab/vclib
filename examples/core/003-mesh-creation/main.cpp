@@ -37,7 +37,7 @@ int main()
 {
     /****** Setup save settings ******/
     
-    std::cout << "=== VCLib Mesh Creation Tutorial ===" << std::endl;
+    std::cout << "=== VCLib Example 003: Mesh Creation ===" << std::endl;
     
     // Configure which mesh data to save
     vcl::MeshInfo info;
