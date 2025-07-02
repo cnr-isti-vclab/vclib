@@ -71,7 +71,7 @@ TEMPLATE_TEST_CASE(
         THEN("Vertices are copied correctly")
         {
             for (size_t i = 0; i < m1.vertexNumber(); ++i) {
-                REQUIRE(m2.vertex(i).coord() == m1.vertex(i).coord());
+                REQUIRE(m2.vertex(i).position() == m1.vertex(i).position());
                 REQUIRE(m2.vertex(i).normal() == m1.vertex(i).normal());
                 REQUIRE(
                     m2.vertex(i).template customComponent<float>("v_comp") ==
@@ -126,7 +126,7 @@ TEMPLATE_TEST_CASE(
         THEN("Vertices are copied correctly")
         {
             for (size_t i = 0; i < m1vn; ++i) {
-                REQUIRE(m3.vertex(i).coord() == m1.vertex(i).coord());
+                REQUIRE(m3.vertex(i).position() == m1.vertex(i).position());
                 REQUIRE(m3.vertex(i).normal() == m1.vertex(i).normal());
                 REQUIRE(
                     m3.vertex(i).template customComponent<float>("v_comp") ==
@@ -134,7 +134,8 @@ TEMPLATE_TEST_CASE(
             }
 
             for (size_t i = m1vn; i < m1vn + m2vn; ++i) {
-                REQUIRE(m3.vertex(i).coord() == m2.vertex(i - m1vn).coord());
+                REQUIRE(
+                    m3.vertex(i).position() == m2.vertex(i - m1vn).position());
                 REQUIRE(m3.vertex(i).normal() == m2.vertex(i - m1vn).normal());
                 REQUIRE(
                     m3.vertex(i).template customComponent<float>("v_comp") ==

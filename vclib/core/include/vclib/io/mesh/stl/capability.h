@@ -41,7 +41,7 @@ inline MeshInfo stlFormatCapability()
 
     info.setVertices();
 
-    info.setPerVertexCoordinate();
+    info.setPerVertexPosition();
 
     info.setFaces();
 

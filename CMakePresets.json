@@ -218,6 +218,7 @@
             "displayName": "VCLib::Bindings - Debug",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "BUILD_SHARED_LIBS": "OFF",
                 "VCLIB_BUILD_EXAMPLES": "OFF",
                 "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",
@@ -235,6 +236,7 @@
             "displayName": "VCLib::Bindings - Release",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "BUILD_SHARED_LIBS": "OFF",
                 "VCLIB_BUILD_EXAMPLES": "OFF",
                 "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",

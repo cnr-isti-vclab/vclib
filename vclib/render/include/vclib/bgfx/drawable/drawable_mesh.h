@@ -97,37 +97,6 @@ public:
         return *this;
     }
 
-    void updateBuffers(
-        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
-    {
-        if constexpr (HasName<MeshType>) {
-            AbstractDrawableMesh::name() = MeshType::name();
-        }
-
-        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
-            if (this->MeshType::boundingBox().isNull()) {
-                bbToInitialize = true;
-            }
-            else {
-                mBoundingBox =
-                    this->MeshType::boundingBox().template cast<double>();
-            }
-        }
-
-        if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(*this);
-        }
-
-        mMRB.update(*this, buffersToUpdate);
-        mMRS.setRenderCapabilityFrom(*this);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
-    }
-
-    std::string& name() override { return MeshType::name(); }
-
-    const std::string& name() const override { return MeshType::name(); }
-
     void swap(DrawableMeshBGFX& other)
     {
         using std::swap;
@@ -156,6 +125,88 @@ public:
         }
     }
 
+    // AbstractDrawableMesh implementation
+
+    void updateBuffers(
+        MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
+    {
+        if constexpr (HasName<MeshType>) {
+            AbstractDrawableMesh::name() = MeshType::name();
+        }
+
+        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
+        if constexpr (vcl::HasBoundingBox<MeshType>) {
+            if (this->MeshType::boundingBox().isNull()) {
+                bbToInitialize = true;
+            }
+            else {
+                mBoundingBox =
+                    this->MeshType::boundingBox().template cast<double>();
+            }
+        }
+
+        if (bbToInitialize) {
+            mBoundingBox = vcl::boundingBox(*this);
+        }
+
+        if constexpr (HasTransformMatrix<MeshType>) {
+            mBoundingBox.min() *=
+                MeshType::transformMatrix().template cast<double>();
+            mBoundingBox.max() *=
+                MeshType::transformMatrix().template cast<double>();
+        }
+
+        mMRB.update(*this, buffersToUpdate);
+        mMRS.setRenderCapabilityFrom(*this);
+        mMeshRenderSettingsUniforms.updateSettings(mMRS);
+    }
+
+    void setRenderSettings(const MeshRenderSettings& rs) override
+    {
+        AbstractDrawableMesh::setRenderSettings(rs);
+        mMeshRenderSettingsUniforms.updateSettings(rs);
+    }
+
+    uint vertexNumber() const override { return MeshType::vertexNumber(); }
+
+    uint faceNumber() const override
+    {
+        if constexpr (HasFaces<MeshType>)
+            return MeshType::faceNumber();
+        else
+            return 0;
+    }
+
+    uint edgeNumber() const override
+    {
+        if constexpr (HasEdges<MeshType>)
+            return MeshType::edgeNumber();
+        else
+            return 0;
+    }
+
+    vcl::Matrix44d transformMatrix() const override
+    {
+        if constexpr (HasTransformMatrix<MeshType>) {
+            return MeshType::transformMatrix().template cast<double>();
+        }
+        else {
+            return vcl::Matrix44d::Identity();
+        }
+    }
+
+    std::vector<std::string> textures() const override
+    {
+        std::vector<std::string> txs;
+        if constexpr (HasTexturePaths<MeshType>) {
+            txs.reserve(MeshType::textureNumber());
+            for (const auto& tpath : MeshType::texturePaths()) {
+                txs.push_back(tpath);
+            }
+        }
+        return txs;
+    }
+
     // DrawableObject implementation
 
     void init() override {}
@@ -167,16 +218,12 @@ public:
         ProgramManager& pm = Context::instance().programManager();
 
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                         BGFX_STATE_BLEND_NORMAL;
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            bindUniforms();
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
 
-            bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
@@ -186,6 +233,7 @@ public:
             bindUniforms();
 
             bgfx::setState(state);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, surfaceProgramSelector());
         }
@@ -196,6 +244,7 @@ public:
             bindUniforms();
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME>());
         }
@@ -206,8 +255,36 @@ public:
             bindUniforms();
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES>());
+        }
+
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            if (!Context::instance().supportsCompute()) {
+                // 1 px vertices
+                mMRB.bindVertexBuffers(mMRS);
+                bindUniforms();
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::setTransform(model.data());
+
+                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+            }
+            else {
+                // generate splats (quads) lazy
+                mMRB.computeQuadVertexBuffers(*this, viewId);
+
+                // render splats
+                mMRB.bindVertexQuadBuffer();
+                bindUniforms();
+
+                bgfx::setState(state);
+                bgfx::setTransform(model.data());
+
+                bgfx::submit(
+                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+            }
         }
     }
 
@@ -223,17 +300,14 @@ public:
             BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
         // write alpha as is
 
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+
         const std::array<float, 4> idFloat = {
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
-
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mIdUniform.bind(&idFloat[0]);
-
-            bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
-        }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
@@ -242,6 +316,7 @@ public:
             mIdUniform.bind(&idFloat);
 
             bgfx::setState(state);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
@@ -252,6 +327,7 @@ public:
             mIdUniform.bind(&idFloat);
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
         }
@@ -262,8 +338,37 @@ public:
             mIdUniform.bind(&idFloat);
 
             bgfx::setState(state | BGFX_STATE_PT_LINES);
+            bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
+        }
+
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            if (!Context::instance().supportsCompute()) {
+                // 1 px vertices
+                mMRB.bindVertexBuffers(mMRS);
+                mIdUniform.bind(&idFloat);
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
+                bgfx::setTransform(model.data());
+
+                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
+            }
+            else {
+                // generate splats (quads) lazy
+                mMRB.computeQuadVertexBuffers(*this, viewId);
+
+                // render splats
+                mMRB.bindVertexQuadBuffer();
+                bindUniforms();
+                mIdUniform.bind(&idFloat);
+
+                bgfx::setState(state);
+                bgfx::setTransform(model.data());
+
+                bgfx::submit(
+                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
+            }
         }
     }
 
@@ -285,11 +390,9 @@ public:
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
-    void setRenderSettings(const MeshRenderSettings& rs) override
-    {
-        AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
-    }
+    std::string& name() override { return MeshType::name(); }
+
+    const std::string& name() const override { return MeshType::name(); }
 
 protected:
     void bindUniforms() const

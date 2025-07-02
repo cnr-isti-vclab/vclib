@@ -35,11 +35,11 @@ namespace vcl {
  * to access the component of the element or mesh through a template parameter,
  * without having to know the actual type of the component.
  *
- * For example, you can access the coordinate component of an element with the
+ * For example, you can access the position component of an element with the
  * following code:
  * @code{.cpp}
  * MyElement e;
- * auto& c = e.template component<CompId::COORDINATE>();
+ * auto& p = e.template component<CompId::POSITION>();
  * @endcode
  *
  * @ingroup types
@@ -48,7 +48,7 @@ struct CompId
 {
     enum Enum {
         BIT_FLAGS = 0,
-        COORDINATE,
+        POSITION,
         NORMAL,
         COLOR,
         QUALITY,
@@ -81,7 +81,7 @@ struct CompId
  */
 constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
     "BitFlags",
-    "Coordinate",
+    "Position",
     "Normal",
     "Color",
     "Quality",

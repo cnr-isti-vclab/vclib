@@ -195,7 +195,7 @@ public:
                 switch (p.name) {
                 case ply::x:
                 case ply::y:
-                case ply::z: mod.setPerVertexCoordinate(); break;
+                case ply::z: mod.setPerVertexPosition(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerVertexNormal(); break;
@@ -218,7 +218,9 @@ public:
             mod.setFaces();
             for (const PlyProperty& p : mElements[mFaceElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices: mod.setPerFaceVertexReferences(); break;
+                case ply::vertex_indices:
+                    mod.setPerFaceVertexReferences();
+                    break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerFaceNormal(); break;
@@ -242,7 +244,9 @@ public:
             for (const PlyProperty& p :
                  mElements[mTriStripElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices: mod.setPerFaceVertexReferences(); break;
+                case ply::vertex_indices:
+                    mod.setPerFaceVertexReferences();
+                    break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerFaceNormal(); break;
@@ -260,7 +264,9 @@ public:
             mod.setEdges();
             for (const PlyProperty& p : mElements[mEdgeElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices: mod.setPerEdgeVertexReferences(); break;
+                case ply::vertex_indices:
+                    mod.setPerEdgeVertexReferences();
+                    break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerEdgeNormal(); break;
@@ -382,14 +388,14 @@ public:
             mVertElemPos = mElements.size();
             PlyElement vElem;
             vElem.type = ply::VERTEX;
-            if (info.hasPerVertexCoordinate()) {
+            if (info.hasPerVertexPosition()) {
                 PlyProperty px, py, pz;
                 px.name = ply::x;
-                px.type = info.perVertexCoordinateType();
+                px.type = info.perVertexPositionType();
                 py.name = ply::y;
-                py.type = info.perVertexCoordinateType();
+                py.type = info.perVertexPositionType();
                 pz.name = ply::z;
-                pz.type = info.perVertexCoordinateType();
+                pz.type = info.perVertexPositionType();
                 vElem.properties.push_back(px);
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
@@ -685,9 +691,9 @@ private:
             pn = ply::alpha;
         if (name == "quality" || name == "scalar")
             pn = ply::quality;
-        if (name == "texture_u")
+        if (name == "texture_u" || name == "s" || name == "u")
             pn = ply::texture_u;
-        if (name == "texture_v")
+        if (name == "texture_v" || name == "t" || name == "v")
             pn = ply::texture_v;
         if (name == "texnumber")
             pn = ply::texnumber;

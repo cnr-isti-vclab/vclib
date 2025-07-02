@@ -74,9 +74,9 @@ void saveOff(
     if constexpr (HasVertices<MeshType>) {
         using VertexType = MeshType::VertexType;
         for (const VertexType& v : m.vertices()) {
-            io::writeDouble(fp, v.coord().x(), false);
-            io::writeDouble(fp, v.coord().y(), false);
-            io::writeDouble(fp, v.coord().z(), false);
+            io::writeDouble(fp, v.position().x(), false);
+            io::writeDouble(fp, v.position().y(), false);
+            io::writeDouble(fp, v.position().z(), false);
 
             if constexpr (HasPerVertexColor<MeshType>) {
                 if (meshInfo.hasPerVertexColor()) {

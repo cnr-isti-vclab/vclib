@@ -333,7 +333,7 @@ void readOffVertices(
         // Read 3 vertex coordinates
         for (unsigned int j = 0; j < 3; j++) {
             // Read vertex coordinate
-            v.coord()[j] = io::readDouble<double>(token);
+            v.position()[j] = io::readDouble<double>(token);
         }
 
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -357,7 +357,8 @@ void readOffVertices(
             (int) tokens.size() - nReadComponents - nTexCoords;
 
         if constexpr (HasPerVertexColor<MeshType>) {
-            if (isPerVertexColorAvailable(mesh) && fileInfo.hasPerVertexColor()) {
+            if (isPerVertexColorAvailable(mesh) &&
+                fileInfo.hasPerVertexColor()) {
                 if (nColorComponents != 1 && nColorComponents != 3 &&
                     nColorComponents != 4)
                     throw MalformedFileException(

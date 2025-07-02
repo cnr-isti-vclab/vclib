@@ -26,6 +26,10 @@
 /**
  * These macros are used both on the library and on the shader side.
  */
+#define VCL_MRB_VERTEX_POSITION_STREAM 0
+#define VCL_MRB_VERTEX_NORMAL_STREAM   1
+#define VCL_MRB_VERTEX_COLOR_STREAM    2
+#define VCL_MRB_VERTEX_TEXCOORD_STREAM 3
 
 #define VCL_MRB_PRIMITIVE_COLOR_BUFFER     0
 #define VCL_MRB_PRIMITIVE_NORMAL_BUFFER    1

@@ -106,6 +106,8 @@ public:
 
     bool supportsReadback() const;
 
+    bool supportsCompute() const;
+
     /**
      * @brief Checks whether the context is initialized with the provided
      *  window handle.

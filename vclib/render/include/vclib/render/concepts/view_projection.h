@@ -23,7 +23,6 @@
 #ifndef VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
 #define VCL_RENDER_CONCEPTS_VIEW_PROJECTION_H
 
-#include "camera.h"
 #include "directional_light.h"
 
 namespace vcl {
@@ -40,7 +39,6 @@ concept ViewProjectionConcept = requires (
     { obj.viewMatrix() } -> Matrix44Concept;
     { obj.projectionMatrix() } -> Matrix44Concept;
 
-    { obj.camera() } -> CameraConcept;
     { obj.light() } -> DirectionalLightConcept;
 
     // non const requirements

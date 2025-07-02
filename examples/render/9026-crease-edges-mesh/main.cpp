@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     e.enablePerEdgeColor();
 
     for (auto& edge : e.edges()) {
-        if (edge.vertex(0)->coord().y() > 0)
+        if (edge.vertex(0)->position().y() > 0)
             edge.color() = vcl::Color::Red;
         else
             edge.color() = vcl::Color::Blue;

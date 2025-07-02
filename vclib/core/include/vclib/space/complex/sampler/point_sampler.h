@@ -62,27 +62,27 @@ public:
     template<VertexConcept VertexType>
     void add(const VertexType& v)
     {
-        mSamples.push_back(v.coord());
+        mSamples.push_back(v.position());
     }
 
     template<VertexConcept VertexType>
     void set(uint i, const VertexType& v)
     {
-        mSamples[i] = v.coord();
+        mSamples[i] = v.position();
     }
 
     template<EdgeConcept EdgeType>
     void add(const EdgeType& e, double u = 0.5)
     {
         mSamples.push_back(
-            (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
+            (e.vertex(0).position() * (1 - u)) + (e.vertex(1).position() * u));
     }
 
     template<EdgeConcept EdgeType>
     void set(uint i, const EdgeType& e, double u = 0.5)
     {
         mSamples[i] =
-            (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
+            (e.vertex(0).position() * (1 - u)) + (e.vertex(1).position() * u);
     }
 
     template<FaceConcept FaceType>
@@ -104,7 +104,7 @@ public:
 
         PointT p;
         for (uint i = 0; i < f.vertexNumber(); i++)
-            p += f.vertex(i)->coord() * barCoords[i];
+            p += f.vertex(i)->position() * barCoords[i];
 
         mSamples.push_back(p);
     }
@@ -119,7 +119,7 @@ public:
 
         PointT p;
         for (uint i = 0; i < f.vertexNumber(); i++)
-            p += f.vertex(i)->coord() * barCoords[i];
+            p += f.vertex(i)->position() * barCoords[i];
 
         mSamples[i] = p;
     }

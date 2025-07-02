@@ -77,12 +77,12 @@ inline TriPolyIndexBiMap indexMap;
 } // namespace detail
 
 /**
- * @brief Export the vertex coordinates of a mesh to a buffer.
+ * @brief Export the vertex positions of a mesh to a buffer.
  *
- * This function exports the vertex coordinates of a mesh to a buffer. Vertices
+ * This function exports the vertex positions of a mesh to a buffer. Vertices
  * are stored in the buffer following the order they appear in the mesh.  The
  * buffer must be preallocated with the correct size (number of vertices times
- * the number of coordinates per vertex).
+ * the number of positions per vertex).
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -98,7 +98,7 @@ inline TriPolyIndexBiMap indexMap;
  * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
-void vertexCoordsToBuffer(
+void vertexPositionsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
@@ -106,7 +106,7 @@ void vertexCoordsToBuffer(
 {
     const uint VERT_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
-    for (uint i = 0; const auto& c : mesh.vertices() | views::coords) {
+    for (uint i = 0; const auto& c : mesh.vertices() | views::positions) {
         if (storage == MatrixStorageType::ROW_MAJOR) {
             buffer[i * 3 + 0] = c.x();
             buffer[i * 3 + 1] = c.y();
@@ -117,6 +117,53 @@ void vertexCoordsToBuffer(
             buffer[1 * VERT_NUM + i] = c.y();
             buffer[2 * VERT_NUM + i] = c.z();
         }
+        ++i;
+    }
+}
+
+/**
+ * @brief Export the indices of a quad per vertex to a buffer.
+ *
+ * This function exports the vertex indices of a quad per vertex to a buffer.
+ * The buffer must be preallocated with the correct size (number of vertices
+ * times 6).
+ *
+ * The indices are stored in the following order:
+ *
+ * ```
+ * 0 1 2 1 3 2
+ * ```
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ *
+ * @ingroup export_buffer
+ */
+template<MeshConcept MeshType>
+void vertexQuadIndicesToBuffer(const MeshType& mesh, auto* buffer)
+{
+    // creates indices for two triangles (quad) for each vertex
+    //
+    // 2-------3
+    // | \     |
+    // |  \    |
+    // |   \   |
+    // |    \  |
+    // |     \ |
+    // 0-------1
+    //
+    // - Triangle 1: [0, 1, 2]
+    // - Triangle 2: [1, 3, 2]
+    //
+    for (uint i = 0; const auto& v : mesh.vertices()) {
+        const uint baseIdx  = i * 6;
+        const uint quadIdx  = i * 4;
+        buffer[baseIdx + 0] = quadIdx + 0;
+        buffer[baseIdx + 1] = quadIdx + 1;
+        buffer[baseIdx + 2] = quadIdx + 2;
+        buffer[baseIdx + 3] = quadIdx + 1;
+        buffer[baseIdx + 4] = quadIdx + 3;
+        buffer[baseIdx + 5] = quadIdx + 2;
         ++i;
     }
 }

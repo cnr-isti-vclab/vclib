@@ -35,7 +35,7 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    using TriMeshPoint = TriMesh::VertexType::CoordType;
+    using TriMeshPoint = TriMesh::VertexType::PositionType;
     TriMesh m;
 
     THEN("The size for each container start at 0")
@@ -91,13 +91,13 @@ TEMPLATE_TEST_CASE(
 
         REQUIRE(m.vertexNumber() == 1);
         REQUIRE(m.faceNumber() == 0);
-        REQUIRE(m.vertex(0).coord() == TriMeshPoint(0, 0, 0));
+        REQUIRE(m.vertex(0).position() == TriMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
 
         unsigned int vi1 = m.addVertex();
 
         REQUIRE(m.vertexNumber() == 2);
-        REQUIRE(m.vertex(1).coord() == TriMeshPoint(0, 0, 0));
+        REQUIRE(m.vertex(1).position() == TriMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
         REQUIRE(&m.vertex(vi1) == &m.vertex(1));
 
@@ -235,7 +235,7 @@ TEMPLATE_TEST_CASE(
     using TriMesh = TestType;
 
     TriMesh m;
-    using PointT = TriMesh::VertexType::CoordType;
+    using PointT = TriMesh::VertexType::PositionType;
 
     m.addVertices(
         PointT(-0.5, -0.5, 0.5),

@@ -201,7 +201,8 @@ void saveObj(
     // if the mesh has both vertex and wedge texcords, will be saved just wedges
     // because obj does not allow to save them both. In any case, also vertex
     // texcoords will result saved as wedge texcoords in the final file.
-    if (meshInfo.hasPerVertexTexCoord() && meshInfo.hasPerFaceWedgeTexCoords()) {
+    if (meshInfo.hasPerVertexTexCoord() &&
+        meshInfo.hasPerFaceWedgeTexCoords()) {
         meshInfo.setPerVertexTexCoord(false);
     }
 
@@ -210,8 +211,8 @@ void saveObj(
 
     bool useMtl =
         meshInfo.hasPerVertexColor() || meshInfo.hasPerFaceColor() ||
-        (meshInfo.hasTextures() &&
-         (meshInfo.hasPerVertexTexCoord() || meshInfo.hasPerFaceWedgeTexCoords()));
+        (meshInfo.hasTextures() && (meshInfo.hasPerVertexTexCoord() ||
+                                    meshInfo.hasPerFaceWedgeTexCoords()));
     if (useMtl) {
         if (saveMtlFile) {
             std::string mtlFileName =
@@ -249,9 +250,9 @@ void saveObj(
                 log);
         }
         fp << "v ";
-        io::writeDouble(fp, v.coord().x(), false);
-        io::writeDouble(fp, v.coord().y(), false);
-        io::writeDouble(fp, v.coord().z(), false);
+        io::writeDouble(fp, v.position().x(), false);
+        io::writeDouble(fp, v.position().y(), false);
+        io::writeDouble(fp, v.position().z(), false);
         fp << std::endl;
 
         if constexpr (HasPerVertexNormal<MeshType>) {

@@ -63,20 +63,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="vcl::qt::DrawableObjectVectorFrame" name="drawVectorFrame">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Shape::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Plain</enum>
-         </property>
-        </widget>
+        <widget class="vcl::qt::DrawableObjectVectorTree" name="drawVectorTree"/>
        </item>
        <item>
         <widget class="vcl::qt::MeshRenderSettingsFrame" name="renderSettingsFrame">
@@ -124,12 +111,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>vcl::qt::DrawableObjectVectorFrame</class>
-   <extends>QFrame</extends>
-   <header>vclib/qt/gui/drawable_object_vector_frame.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>vcl::qt::MeshViewerRenderApp</class>
    <extends>QWidget</extends>
    <header>vclib/qt/mesh_viewer_render_app.h</header>
@@ -139,6 +120,12 @@
    <class>vcl::qt::TextEditLogger</class>
    <extends>QFrame</extends>
    <header>vclib/qt/gui/text_edit_logger.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::qt::DrawableObjectVectorTree</class>
+   <extends>QFrame</extends>
+   <header>vclib/qt/gui/drawable_object_vector_tree.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

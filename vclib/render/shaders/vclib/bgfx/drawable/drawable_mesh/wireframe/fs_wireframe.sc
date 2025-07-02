@@ -53,7 +53,7 @@ void main()
     if (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_MESH))) {
         color = u_meshColor;
     }
-    depthOffset = 0.00005;
+    depthOffset = 0.00005; // todo: remove, use something else
 
     gl_FragColor = light * color + vec4(specular, 0);
     gl_FragDepth = gl_FragCoord.z - depthOffset;

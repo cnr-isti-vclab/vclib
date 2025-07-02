@@ -23,34 +23,13 @@
 #include "get_drawable_mesh.h"
 
 #include <vclib/imgui/imgui_drawer.h>
+#include <vclib/imgui/imgui_stats_drawer.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
-#include <imgui.h>
-
 #include <QApplication>
-
-template<typename DerivedRenderApp>
-class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
-{
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
-
-public:
-    using ParentDrawer::ParentDrawer;
-
-    virtual void onDraw(vcl::uint viewId) override
-    {
-        // draw the scene
-        ParentDrawer::onDraw(viewId);
-
-        if (!ParentDrawer::isWindowMinimized()) {
-            // imgui demo window
-            ImGui::ShowDemoWindow();
-        }
-    }
-};
 
 int main(int argc, char** argv)
 {
@@ -59,8 +38,9 @@ int main(int argc, char** argv)
     using ImGuiDemo = vcl::RenderApp<
         vcl::qt::WidgetManager,
         vcl::Canvas,
-        DemoImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
+        vcl::imgui::ImGuiDrawer,
+        vcl::TrackBallViewerDrawer,
+        vcl::imgui::ImguiStatsDrawer>;
 
     ImGuiDemo tw("Viewer ImGui Qt");
 

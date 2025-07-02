@@ -45,7 +45,7 @@ class Vertex :
         public vcl::Vertex<
             BarMesh,
             vcl::vert::BitFlags,
-            vcl::vert::Coordinate3d,
+            vcl::vert::Position3d,
             vcl::vert::Normal3d,
             vcl::vert::Color,
             OptionalBarComponent<Vertex>> // the optional BarComponent

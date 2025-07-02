@@ -164,7 +164,7 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
  * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
  * the MatrixConcept.
  *
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
  * vertices of the mesh. If the number of rows of this matrix is zero, the
@@ -224,7 +224,7 @@ MeshType pointCloudMeshFromMatrices(
  * @tparam FNMatrix: the type of the input face normal matrix. It must satisfy
  * the MatrixConcept.
  *
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
  * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
  * the faces of the mesh. If the number of rows of this matrix is zero, the
@@ -301,7 +301,7 @@ MeshType meshFromMatrices(
  *
  * @param[in] mesh: the mesh on which import all the input data from the
  * matrices.
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
  * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
  * the faces of the mesh. If the number of rows of this matrix is zero, the
@@ -372,7 +372,7 @@ void importMeshFromMatrices(
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
  * the number of rows of the input vertex matrix is equal to the number of
  * vertices of the mesh. If this is not the case, an exception is thrown.
- * Then, the function sets the coordinates of the vertices of the mesh from the
+ * Then, the function sets the positions of the vertices of the mesh from the
  * input vertex matrix. In this scenario, all the other components of the
  * vertices stored in the mesh before calling this function are preserved.
  *
@@ -390,11 +390,11 @@ void importMeshFromMatrices(
  * MatrixConcept.
  *
  * @param[in] mesh: the mesh on which import the input vertices.
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the vertices of the mesh before adding the vertices from the input matrix.
- * If `false`, the function sets the coordinates in the input matrix to the
+ * If `false`, the function sets the positions in the input matrix to the
  * vertices of the mesh, leaving all the other components untouched.
  */
 template<MeshConcept MeshType, MatrixConcept VMatrix>
@@ -403,7 +403,7 @@ void importVerticesFromMatrix(
     const VMatrix& vertices,
     bool           clearBeforeSet = true)
 {
-    using CoordType = MeshType::VertexType::CoordType;
+    using PositionType = MeshType::VertexType::PositionType;
 
     if (vertices.cols() != 3)
         throw WrongSizeException("The input vertex matrix must have 3 columns");
@@ -422,7 +422,8 @@ void importVerticesFromMatrix(
 
     uint i = 0;
     for (auto& v : mesh.vertices()) {
-        v.coord() = CoordType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
+        v.position() =
+            PositionType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
         i++;
     }
 }

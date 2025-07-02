@@ -550,7 +550,7 @@ void setPerFaceColorScattering(
 
 /**
  * @brief Set the vertex color according to a perlin noise computed on the
- * vertex coordinates.
+ * vertex positions.
  *
  * To make things weirder each color band can have its own offset and frequency.
  * Period is expressed in absolute terms.
@@ -584,9 +584,9 @@ void setPerVertexColorPerlinNoise(
 
     for (VertexType& v : m.vertices()) {
         if (!onSelected || v.selected()) {
-            p[0]      = (v.coord() / period[0]) + offset;
-            p[1]      = (v.coord() / period[1]) + offset;
-            p[2]      = (v.coord() / period[2]) + offset;
+            p[0]      = (v.position() / period[0]) + offset;
+            p[1]      = (v.position() / period[1]) + offset;
+            p[2]      = (v.position() / period[2]) + offset;
             v.color() = Color(
                 127 + 128.0 * perlinNoise(p[0][0], p[0][1], p[0][2]),
                 127 + 128.0 * perlinNoise(p[1][0], p[1][1], p[1][2]),
@@ -629,7 +629,7 @@ void setPerVertexPerlinColor(
 
     for (VertexType& v : m.vertices()) {
         if (!onSelected || v.selected()) {
-            PointType p = v.coord() / period + offset;
+            PointType p = v.position() / period + offset;
 
             double factor = (perlinNoise(p[0], p[1], p[2]) + 1.0) / 2.0;
 

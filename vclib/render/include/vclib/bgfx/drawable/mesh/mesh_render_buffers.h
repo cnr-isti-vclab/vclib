@@ -27,6 +27,7 @@
 
 #include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/io/image/load.h>
@@ -47,11 +48,16 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     friend Base;
 
-    VertexBuffer mVertexCoordsBuffer;
+    VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
     VertexBuffer mVertexColorsBuffer;
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
+
+    // point splatting
+    IndexBuffer         mVertexQuadIndexBuffer;
+    DynamicVertexBuffer mVertexQuadBuffer;
+    mutable bool        mVertexQuadBufferGenerated = false;
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
@@ -99,11 +105,14 @@ public:
     {
         using std::swap;
         Base::swap(other);
-        swap(mVertexCoordsBuffer, other.mVertexCoordsBuffer);
+        swap(mVertexPositionsBuffer, other.mVertexPositionsBuffer);
         swap(mVertexNormalsBuffer, other.mVertexNormalsBuffer);
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
+        swap(mVertexQuadIndexBuffer, other.mVertexQuadIndexBuffer);
+        swap(mVertexQuadBuffer, other.mVertexQuadBuffer);
+        swap(mVertexQuadBufferGenerated, other.mVertexQuadBufferGenerated);
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
@@ -122,17 +131,53 @@ public:
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
         // bgfx allows a maximum number of 4 vertex streams...
-
-        mVertexCoordsBuffer.bind(0);
-        mVertexNormalsBuffer.bind(1);
-        mVertexColorsBuffer.bind(2);
+        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
+        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
 
         if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            mVertexUVBuffer.bind(3);
+            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
         }
         else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mVertexWedgeUVBuffer.bind(3);
+            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
         }
+    }
+
+    // to generate splats
+    void computeQuadVertexBuffers(
+        const MeshType&    mesh,
+        const bgfx::ViewId viewId) const
+    {
+        if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
+            return;
+        }
+
+        // fill the buffer using compute shader
+        mVertexPositionsBuffer.bindCompute(
+            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        mVertexNormalsBuffer.bindCompute(
+            VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
+        mVertexColorsBuffer.bindCompute(
+            VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
+
+        mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
+
+        auto& pm = Context::instance().programManager();
+        bgfx::dispatch(
+            viewId,
+            pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
+            mesh.vertexNumber(),
+            1,
+            1);
+
+        mVertexQuadBufferGenerated = true;
+    }
+
+    // to draw splats
+    void bindVertexQuadBuffer() const
+    {
+        mVertexQuadBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
+        mVertexQuadIndexBuffer.bind();
     }
 
     void bindIndexBuffers(
@@ -181,23 +226,67 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
-    void setVertexCoordsBuffer(const MeshType& mesh) // override
+    void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
             getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
-        Base::fillVertexCoords(mesh, buffer);
+        Base::fillVertexPositions(mesh, buffer);
 
-        mVertexCoordsBuffer.create(
+        mVertexPositionsBuffer.createForCompute(
             buffer,
             nv,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
             false,
+            bgfx::Access::Read,
             releaseFn);
+
+        // Creates the buffers to be used with compute for splatting
+        if (Context::instance().supportsCompute()) {
+            // create a layout <coordinates, colors, normals, float>
+            // 2 X vec4
+            bgfx::VertexLayout layout;
+            layout.begin()
+                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+                .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
+                .end();
+
+            // create the dynamic vertex buffer for splatting
+            mVertexQuadBuffer.create(
+                mesh.vertexNumber() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
+
+            // create the index buffer for splatting
+            setVertexQuadIndexBuffer(mesh);
+
+            // record that the vertex quad buffer must be generated
+            mVertexQuadBufferGenerated = false;
+        }
+    }
+
+    /**
+     * @brief The function allocates and fills a GPU index buffer to render
+     * a quad for each vertex of the mesh.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexQuadIndexBuffer(const MeshType& mesh)
+    {
+        const uint totalIndices = mesh.vertexNumber() * 6;
+
+        auto [buffer, releaseFn] =
+            getAllocatedBufferAndReleaseFn<uint>(totalIndices);
+
+        Base::fillVertexQuadIndices(mesh, buffer);
+
+        mVertexQuadIndexBuffer.create(buffer, totalIndices, true, releaseFn);
+
+        assert(mVertexQuadIndexBuffer.isValid());
     }
 
     void setVertexNormalsBuffer(const MeshType& mesh) // override
@@ -209,13 +298,14 @@ private:
 
         Base::fillVertexNormals(mesh, buffer);
 
-        mVertexNormalsBuffer.create(
+        mVertexNormalsBuffer.createForCompute(
             buffer,
             nv,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
             false,
+            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -227,13 +317,14 @@ private:
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
-        mVertexColorsBuffer.create(
+        mVertexColorsBuffer.createForCompute(
             buffer,
             nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
+            bgfx::Access::Read,
             releaseFn);
     }
 

@@ -447,6 +447,35 @@ public:
     auto faces(bool jumpDeleted = true) { return Base::elements(jumpDeleted); }
 
     /**
+     * @brief Returns a view object that allows to iterate over the Faces
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (Face& e : m.faces(3, 10)){
+     *     // iterate over the Faces from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the faces() function, this member function does not
+     * automatically jump deleted faces, but it iterates over the
+     * faces in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first face to be included in the
+     * range. It must be less or equal to faceContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last face to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto faces(uint begin, uint end = UINT_NULL)
+    {
+        return Base::elements(begin, end);
+    }
+
+    /**
      * @brief Returns a small view object that allows to iterate over the Faces
      * of the containers, providing two member functions begin() and end().
      *
@@ -471,6 +500,35 @@ public:
     auto faces(bool jumpDeleted = true) const
     {
         return Base::elements(jumpDeleted);
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the Faces
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (const Face& e : m.faces(3, 10)){
+     *     // iterate over the Faces from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the faces() function, this member function does not
+     * automatically jump deleted faces, but it iterates over the
+     * faces in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first face to be included in the
+     * range. It must be less or equal to faceContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last face to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto faces(uint begin, uint end = UINT_NULL) const
+    {
+        return Base::elements(begin, end);
     }
 
     /**
@@ -1157,7 +1215,6 @@ protected:
             using ParentMesh  = Base::ParentMeshType;
             using VertexType  = ParentMesh::VertexType;
             using MVertexType = OthMesh::VertexType;
-            using MCoordType  = MVertexType::CoordType;
             using MFaceType   = OthMesh::FaceType;
 
             using VertexContainer = ParentMesh::VertexContainer;
@@ -1196,7 +1253,7 @@ protected:
                         // other triangles will be added at the end of the
                         // container
                         std::vector<uint> tris =
-                            earCut(mf.vertices() | views::coords);
+                            earCut(mf.vertices() | views::positions);
                         FaceType& f = face(m.index(mf));
                         importTriPointersHelper(f, mf, base, mvbase, tris, 0);
 

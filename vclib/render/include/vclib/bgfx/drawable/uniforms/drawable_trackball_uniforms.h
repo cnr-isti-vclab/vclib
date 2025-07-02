@@ -30,8 +30,10 @@ namespace vcl {
 
 class DrawableTrackballUniforms
 {
-    // first component is uint: number of vertices per circle
-    // second component is uint: 1 if dragging, 0 otherwise
+    static constexpr float DRAGGING_ALPHA     = 0.9f;
+    static constexpr float NOT_DRAGGING_ALPHA = 0.5f;
+
+    // the only component is alpha
     std::array<float, 4> mTrackBallSettings;
 
     Uniform mTrackballSettingsUniform =
@@ -40,18 +42,12 @@ class DrawableTrackballUniforms
 public:
     DrawableTrackballUniforms()
     {
-        mTrackBallSettings[0] = Uniform::uintBitsToFloat(64);
-        mTrackBallSettings[1] = Uniform::uintBitsToFloat(0);
-    }
-
-    void setNumberOfVerticesPerAxis(uint number)
-    {
-        mTrackBallSettings[0] = Uniform::uintBitsToFloat(number);
+        mTrackBallSettings[0] = NOT_DRAGGING_ALPHA; // default: not dragging
     }
 
     void setDragging(bool dragging)
     {
-        mTrackBallSettings[1] = Uniform::uintBitsToFloat((uint) dragging);
+        mTrackBallSettings[0] = dragging ? DRAGGING_ALPHA : NOT_DRAGGING_ALPHA;
     }
 
     void bind() const

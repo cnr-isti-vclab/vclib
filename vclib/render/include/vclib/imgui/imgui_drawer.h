@@ -30,6 +30,7 @@
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 #include <imgui_impl_opengl2.h>
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 #endif
 
@@ -46,6 +47,10 @@ namespace vcl::imgui {
 template<typename DerivedRenderApp>
 class ImGuiDrawer : public BlockerEventDrawer<DerivedRenderApp>
 {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+    bgfx::ViewId mImguiViewId = BGFX_INVALID_VIEW;
+#endif
+
 protected:
     using DRA = DerivedRenderApp;
 
@@ -56,6 +61,11 @@ public:
             DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW ||
                 DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET,
             "ImGuiDrawer supports only GLFW or Qt window managers.");
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        mImguiViewId = vcl::Context::instance().requestViewId();
+        assert(vcl::Context::instance().isValidViewId(mImguiViewId));
+#endif
     }
 
     ImGuiDrawer(uint, uint) : ImGuiDrawer() {}
@@ -67,6 +77,8 @@ public:
         ImGui_ImplOpenGL2_Shutdown();
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         ImGui_ImplBgfx_Shutdown();
+        vcl::Context::instance().releaseViewId(mImguiViewId);
+        mImguiViewId = BGFX_INVALID_VIEW;
 #endif // VCLIB_RENDER_BACKEND_*
 #ifdef VCLIB_WITH_GLFW
         if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
@@ -81,7 +93,7 @@ public:
         ImGui::DestroyContext();
     }
 
-    virtual void onInit(uint viewId)
+    virtual void onInit(uint)
     {
         // setup ImGui context
         IMGUI_CHECKVERSION();
@@ -129,7 +141,8 @@ public:
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
         ImGui_ImplOpenGL2_NewFrame();
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
-        ImGui_ImplBgfx_NewFrame();
+        (void) viewId;
+        ImGui_ImplBgfx_NewFrame(mImguiViewId);
 #endif // VCLIB_RENDER_BACKEND_*
 #ifdef VCLIB_WITH_GLFW
         if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
@@ -143,7 +156,11 @@ public:
 #endif // VCLIB_WITH_QT
         ImGui::NewFrame();
 
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
         this->onDrawContent(viewId);
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+        this->onDrawContent(mImguiViewId);
+#endif // VCLIB_RENDER_BACKEND_*
     }
 
     virtual void onPostDraw()
