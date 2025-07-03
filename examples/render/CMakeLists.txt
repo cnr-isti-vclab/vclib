@@ -61,6 +61,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(9000-mesh-io)
     add_subdirectory(9001-mesh-basics)
     add_subdirectory(9003-mesh-creation)
+    add_subdirectory(9004-mesh-copy-and-transform)
 
     add_subdirectory(9818-mesh-principal-curvature)
     add_subdirectory(9819-mesh-sampling)

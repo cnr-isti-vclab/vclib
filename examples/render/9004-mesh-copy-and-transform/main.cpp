@@ -20,27 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "mesh_basics.h"
+#include "mesh_copy_and_trasnform.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    auto [mesh, polyMesh] = meshBasics();
+    auto meshes = meshCopyAndTransform();
 
-    /****** Save the created mesh ******/
+    std::apply(
+        [](auto&&... args) {
+            (vcl::updatePerVertexAndFaceNormals(args), ...);
+        },
+        meshes);
 
-    std::cout << "\n=== Saving Mesh ===" << std::endl;
-
-    try {
-        vcl::save(mesh, VCLIB_RESULTS_PATH "/001_mesh-basics_triangle.ply");
-        vcl::save(polyMesh, VCLIB_RESULTS_PATH "/001_mesh-basics_polygon.ply");
-
-        std::cout << "Saved meshes to results directory" << std::endl;
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
-
-    std::cout << "Example completed successfully!\n";
-
-    return 0;
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }

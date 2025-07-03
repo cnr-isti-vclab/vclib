@@ -27,6 +27,13 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
+// This example demonstrates mesh creation in VCLib:
+// 1. Creating basic geometric primitives (tetrahedron, cube, sphere, etc.)
+// 2. Understanding the difference between TriMesh and PolyMesh
+// 3. Different sphere generation algorithms
+// 4. Creating meshes with custom parameters
+// 5. Saving created meshes to files
+
 auto meshCreation()
 {
     std::cout << "=== VCLib Example 003: Mesh Creation ===" << std::endl;

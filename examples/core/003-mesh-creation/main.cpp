@@ -22,13 +22,6 @@
 
 #include "mesh_creation.h"
 
-// This example demonstrates mesh creation in VCLib:
-// 1. Creating basic geometric primitives (tetrahedron, cube, sphere, etc.)
-// 2. Understanding the difference between TriMesh and PolyMesh
-// 3. Different sphere generation algorithms
-// 4. Creating meshes with custom parameters
-// 5. Saving created meshes to files
-
 int main()
 {
     auto
@@ -56,29 +49,38 @@ int main()
 
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
-    vcl::savePly(
-        tetrahedron, VCLIB_RESULTS_PATH "/003_tetrahedron.ply", settings);
+    try {
+        vcl::save(
+            tetrahedron, VCLIB_RESULTS_PATH "/003_tetrahedron.ply", settings);
 
-    vcl::savePly(cube, VCLIB_RESULTS_PATH "/003_cube_tri.ply", settings);
+        vcl::save(cube, VCLIB_RESULTS_PATH "/003_cube_tri.ply", settings);
 
-    vcl::savePly(
-        dodecahedron, VCLIB_RESULTS_PATH "/003_dodecahedron_tri.ply", settings);
+        vcl::save(
+            dodecahedron,
+            VCLIB_RESULTS_PATH "/003_dodecahedron_tri.ply",
+            settings);
 
-    vcl::savePly(
-        customCube, VCLIB_RESULTS_PATH "/003_custom_cube.ply", settings);
+        vcl::save(
+            customCube, VCLIB_RESULTS_PATH "/003_custom_cube.ply", settings);
 
-    vcl::savePly(cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
+        vcl::save(cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
 
-    vcl::savePly(
-        dodecahedronPoly,
-        VCLIB_RESULTS_PATH "/003_dodecahedron_poly.ply",
-        settings);
+        vcl::save(
+            dodecahedronPoly,
+            VCLIB_RESULTS_PATH "/003_dodecahedron_poly.ply",
+            settings);
 
-    vcl::savePly(
-        sphereQuads, VCLIB_RESULTS_PATH "/003_sphere_poly.ply", settings);
+        vcl::savePly(
+            sphereQuads, VCLIB_RESULTS_PATH "/003_sphere_poly.ply", settings);
 
-    std::cout << "\nAll meshes have been saved to the results directory."
-              << std::endl;
+        std::cout << "\nAll meshes have been saved to the results directory."
+                  << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error in saving: " << e.what() << "\n";
+    }
+
+    std::cout << "Example completed successfully!\n";
 
     return 0;
 }
