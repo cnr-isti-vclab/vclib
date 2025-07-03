@@ -20,48 +20,13 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-core-examples)
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-example-${EXAMPLE_NAME})
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(SOURCES
+    main.cpp)
 
-add_subdirectory(000-mesh-io)
-add_subdirectory(001-mesh-basics)
-add_subdirectory(002-mesh-iteration)
-add_subdirectory(003-mesh-creation)
-add_subdirectory(004-mesh-copy-and-transform)
-add_subdirectory(005-mesh-normals)
-
-add_subdirectory(800-mesh-basic)
-add_subdirectory(801-polymesh-basic)
-add_subdirectory(802-mesh-iterators)
-add_subdirectory(803-mesh-copy)
-add_subdirectory(804-mesh-normal)
-add_subdirectory(805-mesh-topology)
-add_subdirectory(806-mesh-stat)
-add_subdirectory(807-mesh-conversion)
-add_subdirectory(808-mesh-transform)
-add_subdirectory(809-mesh-custom-components)
-add_subdirectory(810-mesh-new-user-component)
-add_subdirectory(811-mesh-export-to-matrix)
-add_subdirectory(812-mesh-io-obj)
-add_subdirectory(813-mesh-io-off)
-add_subdirectory(814-mesh-io-ply)
-add_subdirectory(815-mesh-io-stl)
-add_subdirectory(816-mesh-clean)
-add_subdirectory(817-mesh-create)
-add_subdirectory(818-mesh-principal-curvature)
-add_subdirectory(819-mesh-sampling)
-add_subdirectory(820-mesh-smooth)
-add_subdirectory(821-mesh-sphere-intersection)
-add_subdirectory(822-edge-mesh-basic)
-add_subdirectory(823-polygon-earcut)
-add_subdirectory(824-distance)
-add_subdirectory(825-grid)
-add_subdirectory(826-crease-edges-mesh)
-add_subdirectory(827-convex-hull)
-add_subdirectory(828-topology-patch)
-add_subdirectory(998-misc-no-lib)
-add_subdirectory(999-misc)
-
-
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})
