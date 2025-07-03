@@ -25,8 +25,6 @@
 // 2. Use different weighting algorithms for vertex normals
 // 3. Manipulate normals with transformations
 
-#include <iostream>
-
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
@@ -68,7 +66,7 @@ int main()
     for (const auto& face : mesh.faces()) {
         if (faceCount >= 3)
             break;
-        std::cout << "  Face " << mesh.index(face) << ": (" << face.normal().x()
+        std::cout << "  Face " << face.index() << ": (" << face.normal().x()
                   << ", " << face.normal().y() << ", " << face.normal().z()
                   << ")\n";
         faceCount++;
