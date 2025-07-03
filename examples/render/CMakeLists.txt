@@ -58,7 +58,6 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
 
     # the following examples are the same of the ones in the core module,
     # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(9015-mesh-io-stl)
     add_subdirectory(9018-mesh-principal-curvature)
     add_subdirectory(9019-mesh-sampling)
     add_subdirectory(9021-mesh-sphere-intersection)

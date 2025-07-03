@@ -32,7 +32,7 @@
 
 int main()
 {
-    std::cout << "=== VCLib Example 004: Mesh I/O ===\n\n";
+    std::cout << "=== VCLib Example 000: Mesh I/O ===\n\n";
 
     /****** Load ******/
 
