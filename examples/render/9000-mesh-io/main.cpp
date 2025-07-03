@@ -21,26 +21,16 @@
  ****************************************************************************/
 
 #include "load_mesh.h"
-#include "save_mesh.h"
 
-// This example shows how to load and save meshes using the VCLib IO module.
-// VCLib supports loading and saving the following mesh formats:
-// - OBJ
-// - PLY
-// - OFF
-// - STL
+#include <default_viewer.h>
 
-int main()
+int main(int argc, char** argv)
 {
-    std::cout << "=== VCLib Example 000: Mesh I/O ===\n\n";
-
-    /****** Load ******/
-
     auto [mesh0, mesh1] = loadMeshes();
 
-    /****** Save ******/
+    vcl::updatePerVertexAndFaceNormals(mesh0);
+    vcl::updatePerVertexAndFaceNormals(mesh1);
 
-    saveMeshes(mesh0, mesh1);
-
-    return 0;
+    return showMeshesOnDefaultViewer(
+        argc, argv, std::move(mesh0), std::move(mesh1));
 }

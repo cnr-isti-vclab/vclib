@@ -20,27 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "load_mesh.h"
-#include "save_mesh.h"
+#ifndef LOAD_MESH_H
+#define LOAD_MESH_H
 
-// This example shows how to load and save meshes using the VCLib IO module.
-// VCLib supports loading and saving the following mesh formats:
-// - OBJ
-// - PLY
-// - OFF
-// - STL
+#include <vclib/io.h>
+#include <vclib/meshes.h>
 
-int main()
+auto loadMeshes()
 {
-    std::cout << "=== VCLib Example 000: Mesh I/O ===\n\n";
+    // To load a mesh you can both declare the mesh object and pass it to the
+    // load function, or you can create the mesh object using the load function.
 
-    /****** Load ******/
+    // declare and load:
+    vcl::TriMesh mesh0;
+    vcl::load(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    auto [mesh0, mesh1] = loadMeshes();
+    // create and load:
+    auto mesh1 =
+        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    /****** Save ******/
+    // The loaded mesh is adapted to the type of mesh you want to use (e.g.
+    // loading a file that contains a polygonal mesh in a TriMesh object).
 
-    saveMeshes(mesh0, mesh1);
+    // To know what data was loaded, you can pass a MeshInfo object to the
+    // load function.
 
-    return 0;
+    vcl::MeshInfo info;
+    vcl::load(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info);
+
+    std::cout << "Mesh has per face color: " << info.hasPerFaceColor()
+              << std::endl;
+
+    // You can control settings for loading a mesh using the LoadSettings object
+    // It allows to choose whether to enable optional components (see example
+    // TODO) and whether to load texture images or not.
+    vcl::LoadSettings loadSettings;
+    loadSettings.loadTextureImages = true;
+    vcl::load(
+        mesh1, VCLIB_EXAMPLE_MESHES_PATH "/bunny_textured.ply", loadSettings);
+
+    return std::make_tuple(mesh0, mesh1);
 }
+
+#endif // LOAD_MESH_H
