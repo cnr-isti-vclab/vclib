@@ -20,25 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "load_mesh.h"
-#include "save_mesh.h"
-
-// This example shows how to load and save meshes using the VCLib IO module.
-// VCLib supports loading and saving the following mesh formats:
-// - OBJ
-// - PLY
-// - OFF
-// - STL
+#include "mesh_io.h"
 
 int main()
 {
-    std::cout << "=== VCLib Example 000: Mesh I/O ===\n\n";
-
-    /****** Load ******/
-
     auto [mesh0, mesh1] = loadMeshes();
-
-    /****** Save ******/
 
     saveMeshes(mesh0, mesh1);
 

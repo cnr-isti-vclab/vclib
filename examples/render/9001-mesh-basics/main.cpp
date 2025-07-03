@@ -20,36 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef SAVE_MESH_H
-#define SAVE_MESH_H
+#include "mesh_basics.h"
 
-#include <vclib/io.h>
-#include <vclib/meshes.h>
+#include <default_viewer.h>
 
-void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
+int main(int argc, char** argv)
 {
-    // To save a mesh you can use the save function. The function will
-    // automatically detect the file format based on the file extension.
-    vcl::save(mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny.obj");
+    auto [mesh0, mesh1] = meshBasics();
 
-    // You can also specify what kind of data you want to save in the file,
-    // using a MeshInfo object in the SaveSettings parameter
-    vcl::MeshInfo saveInfo;
-    saveInfo.setPerVertexPosition();
-    saveInfo.setFaces(false); // do not save faces - only point cloud
+    vcl::updatePerVertexAndFaceNormals(mesh0);
+    vcl::updatePerVertexAndFaceNormals(mesh1);
 
-    vcl::SaveSettings saveSettings;
-    saveSettings.info = saveInfo;
-    vcl::save(
-        mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny-cloud.obj", saveSettings);
-
-    // You can also specify other save settings trough the SaveSettings object.
-    saveInfo.setFaces(true);
-    saveInfo.setPerFaceVertexReferences(true);
-    saveSettings.info   = saveInfo;
-    saveSettings.binary = false; // save in ASCII format
-    vcl::save(
-        mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny-ascii.ply", saveSettings);
+    return showMeshesOnDefaultViewer(
+        argc, argv, std::move(mesh0), std::move(mesh1));
 }
-
-#endif // SAVE_MESH_H

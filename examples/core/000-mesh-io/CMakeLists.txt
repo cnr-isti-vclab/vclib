@@ -24,8 +24,7 @@ get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-example-${EXAMPLE_NAME})
 
 set(SOURCES
-    load_mesh.h
-    save_mesh.h
+    mesh_io.h
     main.cpp)
 
 vclib_add_example(

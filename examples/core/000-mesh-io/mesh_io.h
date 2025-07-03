@@ -20,14 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef LOAD_MESH_H
-#define LOAD_MESH_H
+#ifndef MESH_IO_H
+#define MESH_IO_H
 
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
+// This example shows how to load and save meshes using the VCLib IO module.
+// VCLib supports loading and saving the following mesh formats:
+// - OBJ
+// - PLY
+// - OFF
+// - STL
+
 auto loadMeshes()
 {
+    std::cout << "=== VCLib Example 000: Mesh I/O ===\n\n";
+
+    /****** Load ******/
+
     // To load a mesh you can both declare the mesh object and pass it to the
     // load function, or you can create the mesh object using the load function.
 
@@ -62,4 +73,32 @@ auto loadMeshes()
     return std::make_tuple(mesh0, mesh1);
 }
 
-#endif // LOAD_MESH_H
+void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
+{
+    /****** Save ******/
+
+    // To save a mesh you can use the save function. The function will
+    // automatically detect the file format based on the file extension.
+    vcl::save(mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny.obj");
+
+           // You can also specify what kind of data you want to save in the file,
+           // using a MeshInfo object in the SaveSettings parameter
+    vcl::MeshInfo saveInfo;
+    saveInfo.setPerVertexPosition();
+    saveInfo.setFaces(false); // do not save faces - only point cloud
+
+    vcl::SaveSettings saveSettings;
+    saveSettings.info = saveInfo;
+    vcl::save(
+        mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny-cloud.obj", saveSettings);
+
+           // You can also specify other save settings trough the SaveSettings object.
+    saveInfo.setFaces(true);
+    saveInfo.setPerFaceVertexReferences(true);
+    saveSettings.info   = saveInfo;
+    saveSettings.binary = false; // save in ASCII format
+    vcl::save(
+        mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny-ascii.ply", saveSettings);
+}
+
+#endif // MESH_IO_H
