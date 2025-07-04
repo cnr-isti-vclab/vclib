@@ -75,12 +75,12 @@ def main():
         executable_name = "./980-benchmark"
     argsList = [
         Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [(960, 540), (2560, 1440)], [
-                "./meshes/small/ram/myram_col_vert.ply",
-                "./meshes/small/ram/myram_col_face.ply",
-                "./meshes/small/ram/myram_tex_wedge.ply",
-                "./meshes/medium/ZUCCA500k_col_vert.ply",
-                "./meshes/medium/ZUCCA500k_col_face.ply",
-                "./meshes/medium/gargoyle/gargoyle500K_tex_wedge.ply",
+                "./meshes/small/myram_col_vert.ply",
+                "./meshes/small/myram_col_face.ply",
+                "./meshes/small/myram_tex_wedge.ply",
+                "./meshes/medium/gargoyle500K_col_vert.ply",
+                "./meshes/medium/gargoyle500K_col_face.ply",
+                "./meshes/medium/gargoyle500K_tex_wedge.ply",
                 "./meshes/big/ESTE_PRINT_col_vert.ply",
                 "./meshes/big/ESTE_PRINT_col_face.ply",
                 "./meshes/big/ESTE_PRINT_tex_wedge.ply"
