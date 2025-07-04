@@ -51,7 +51,8 @@ class IndirectBasedLines : public Lines<LineSettings>
     VertexBuffer mVertCoords;
     VertexBuffer mVertColors;
     VertexBuffer mVertNormals;
- 
+    VertexBuffer mLineColors;
+
     VertexBuffer mVertices;
     IndexBuffer mIndices;
 
@@ -65,7 +66,8 @@ public:
     IndirectBasedLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals);
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors);
 
     void swap(IndirectBasedLines& other);
 
@@ -79,7 +81,8 @@ public:
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals);
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors);
 
 private:
     void checkCaps() const
@@ -96,11 +99,13 @@ private:
         }
     }
 
-    void setCoordsBuffers(const std::vector<float>& vertCoords);
+    void setCoordsBuffer(const std::vector<float>& vertCoords);
 
-    void setColorsBuffers(const std::vector<uint>& vertColors);
+    void setColorsBuffer(const std::vector<uint>& vertColors);
 
-    void setNormalsBuffers(const std::vector<float>& vertNormals);
+    void setNormalsBuffer(const std::vector<float>& vertNormals);
+
+    void setLineColorsBuffer(const std::vector<uint>& lineColors);
 
     void allocateInstanceData();       
 

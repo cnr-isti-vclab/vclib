@@ -46,7 +46,8 @@ public:
     CPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals);
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors);
 
     void swap(CPUGeneratedLines& other);
 
@@ -55,7 +56,8 @@ public:
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals);
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors);
 
     void draw(uint viewId) const;
 };

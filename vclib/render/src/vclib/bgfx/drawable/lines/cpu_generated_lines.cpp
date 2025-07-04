@@ -27,9 +27,10 @@ namespace vcl {
 CPUGeneratedLines::CPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals)
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors)
 {
-    setPoints(vertCoords, vertColors, vertNormals);
+    setPoints(vertCoords, vertColors, vertNormals, lineColors);
 }
 
 void CPUGeneratedLines::swap(CPUGeneratedLines& other)
@@ -45,12 +46,13 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 void CPUGeneratedLines::setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals)
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors)
 {
     const uint nPoints = vertCoords.size() / 3;
     if (nPoints > 1) {
         // generate memory buffers
-        uint bufferVertsSize = (nPoints / 2) * 4 * 12;
+        uint bufferVertsSize = (nPoints / 2) * 4 * 13;
         uint bufferIndsSize = (nPoints / 2) * 6;
 
         auto [vertices, vReleaseFn] =
@@ -80,6 +82,8 @@ void CPUGeneratedLines::setPoints(
 
                     vertices[vi++] = k;
                     vertices[vi++] = j;
+
+                    vertices[vi++] = std::bit_cast<float>(lineColors[i/2]);
                 }
             }
 
@@ -100,7 +104,7 @@ void CPUGeneratedLines::setPoints(
             .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
             .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
             .end();
 
         mVertices.create(

@@ -45,6 +45,7 @@ class InstancingBasedLines : public Lines<LineSettings>
     std::vector<float> mVertCoords;
     std::vector<uint> mVertColors;
     std::vector<float> mVertNormals;
+    std::vector<uint> mLineColors;
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
@@ -57,7 +58,8 @@ public:
     InstancingBasedLines(        
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals);
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors);
 
     void swap(InstancingBasedLines& other);
 
@@ -66,7 +68,8 @@ public:
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals);
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors);
 
 private:
     void checkCaps() const
