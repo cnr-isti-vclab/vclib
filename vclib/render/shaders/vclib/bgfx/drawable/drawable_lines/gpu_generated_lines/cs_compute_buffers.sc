@@ -22,12 +22,12 @@
 
 #include <vclib/bgfx/drawable/lines.sh>
 
-BUFFER_RO(coordsBuffer,      vec4,  0);
-BUFFER_RO(colorBuffer,       uint,  1);
-BUFFER_RO(normalsBuffer,     vec4,  2);
+BUFFER_RO(coordsBuffer,      vec4,   0);
+BUFFER_RO(colorBuffer,       uvec4,  1);
+BUFFER_RO(normalsBuffer,     vec4,   2);
 
-BUFFER_WO(vertexBuffer,      vec4,  3);
-BUFFER_WO(indexBuffer,       uint,  4);
+BUFFER_WO(vertexBuffer,      vec4,   3);
+BUFFER_WO(indexBuffer,       uvec4,  4);
 
 #define get_float_from_vec4(pos, myBuffer) myBuffer[uint(pos) / 4][uint(pos) % 4]
 
@@ -35,7 +35,7 @@ BUFFER_WO(indexBuffer,       uint,  4);
                            get_float_from_vec4(((pos) * 3) + 1, coordsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 2, coordsBuffer))
 
-#define color(pos)    colorBuffer[pos]
+#define color(pos)    get_float_from_vec4(pos, colorBuffer)
 
 #define normal(pos)   vec3(get_float_from_vec4(((pos) * 3) + 0, normalsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 1, normalsBuffer), \
@@ -55,13 +55,13 @@ void main() {
     vertexBuffer[baseIndex + 2] = vec4(normal.y, normal.z, gl_LocalInvocationID.x, gl_LocalInvocationID.y);
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {
-        indexBuffer[(6 * gl_WorkGroupID.x) + 0] = (gl_WorkGroupID.x * 4);
-        indexBuffer[(6 * gl_WorkGroupID.x) + 1] = (gl_WorkGroupID.x * 4) + 3;
-        indexBuffer[(6 * gl_WorkGroupID.x) + 2] = (gl_WorkGroupID.x * 4) + 1;
+        get_float_from_vec4((6 * gl_WorkGroupID.x) + 0, indexBuffer) = (gl_WorkGroupID.x * 4);
+        get_float_from_vec4((6 * gl_WorkGroupID.x) + 1, indexBuffer) = (gl_WorkGroupID.x * 4) + 3;
+        get_float_from_vec4((6 * gl_WorkGroupID.x) + 2, indexBuffer) = (gl_WorkGroupID.x * 4) + 1;
 
-        indexBuffer[(6 * gl_WorkGroupID.x) + 3] = (gl_WorkGroupID.x * 4);
-        indexBuffer[(6 * gl_WorkGroupID.x) + 4] = (gl_WorkGroupID.x * 4) + 2;
-        indexBuffer[(6 * gl_WorkGroupID.x) + 5] = (gl_WorkGroupID.x * 4) + 3;
+        get_float_from_vec4((6 * gl_WorkGroupID.x) + 3, indexBuffer) = (gl_WorkGroupID.x * 4);
+        get_float_from_vec4((6 * gl_WorkGroupID.x) + 4, indexBuffer) = (gl_WorkGroupID.x * 4) + 2;
+        get_float_from_vec4((6 * gl_WorkGroupID.x) + 5, indexBuffer) = (gl_WorkGroupID.x * 4) + 3;
     }
 
 }

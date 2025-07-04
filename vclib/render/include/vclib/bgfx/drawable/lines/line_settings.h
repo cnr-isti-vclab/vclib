@@ -57,8 +57,8 @@ protected:
     uint32_t mBorderColor = Color::ColorABGR::Black;
     uint32_t mGeneralColor = Color::ColorABGR::Red;
 
-    LineCap        mLeftCap    = LineCap::ROUND_CAP;
-    LineCap        mRigthCap   = LineCap::ROUND_CAP;
+    LineCap        mLeftCap    = LineCap::BUTT_CAP;
+    LineCap        mRigthCap   = LineCap::BUTT_CAP;
     LineColorToUse mColorToUse = LineColorToUse::PER_VERTEX_COLOR;
 
     Uniform mDataUH = Uniform("u_data", bgfx::UniformType::Vec4);

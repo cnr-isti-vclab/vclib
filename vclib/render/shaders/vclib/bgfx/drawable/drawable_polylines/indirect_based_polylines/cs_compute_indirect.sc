@@ -22,12 +22,11 @@
 
 #include <bgfx_compute.sh>
 
-BUFFER_RO(coordsBuffer,         vec4,  0);
-BUFFER_RO(colorBuffer,          uint,  1);
-BUFFER_RO(normalsBuffer,        vec4,  2);
+BUFFER_RO(coordsBuffer,         vec4,   0);
+BUFFER_RO(colorBuffer,          uvec4,  1);
+BUFFER_RO(normalsBuffer,        vec4,   2);
 
 BUFFER_WO(instanceDataSegments, vec4,  3);
-// BUFFER_WO(instanceDataJoints,   vec4,  4);
 
 uniform vec4 u_IndirectData;
 #define maxInstanceSize         u_IndirectData.x
@@ -38,7 +37,7 @@ uniform vec4 u_IndirectData;
                            get_float_from_vec4(((pos) * 3) + 1, coordsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 2, coordsBuffer))
 
-#define color(pos)    colorBuffer[pos]
+#define color(pos)    get_float_from_vec4(pos, colorBuffer)
 
 #define normal(pos)   vec3(get_float_from_vec4(((pos) * 3) + 0, normalsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 1, normalsBuffer), \
@@ -63,18 +62,4 @@ void main()
     instanceDataSegments[(gl_WorkGroupID.x * 5) + 2]    = vec4(next.xyz, uintBitsToFloat(color1));
     instanceDataSegments[(gl_WorkGroupID.x * 5) + 3]    = vec4(next_next.xyz, normal0.y);
     instanceDataSegments[(gl_WorkGroupID.x * 5) + 4]    = vec4(normal0.z, normal1.xyz);
-
-
-    // if(gl_WorkGroupID.x > 0) {
-    //     prev    = p(gl_WorkGroupID.x - 1);
-    //     curr    = p(gl_WorkGroupID.x);
-    //     next    = p(gl_WorkGroupID.x + 1);
-    //     color0  = color(gl_WorkGroupID.x);
-    //     normal0 = normal(gl_WorkGroupID.x);
-
-    //     instanceDataJoints[(gl_WorkGroupID.x * 4)]      = vec4(prev.xyz, 0);
-    //     instanceDataJoints[(gl_WorkGroupID.x * 4) + 1]  = vec4(curr.xyz, color0);
-    //     instanceDataJoints[(gl_WorkGroupID.x * 4) + 2]  = vec4(next.xyz, 0);
-    //     instanceDataJoints[(gl_WorkGroupID.x * 4) + 3]  = vec4(normal0.xyz, 0);
-    // }
 }

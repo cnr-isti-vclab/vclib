@@ -27,7 +27,7 @@ if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
     FetchContent_Declare(
         imgui
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG        master
+        GIT_TAG        v1.91.9b
         EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(imgui)

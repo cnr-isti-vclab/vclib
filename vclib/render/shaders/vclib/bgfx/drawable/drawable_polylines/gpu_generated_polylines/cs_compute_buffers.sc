@@ -22,13 +22,13 @@
 
 #include <bgfx_compute.sh>
 
-BUFFER_RO(coordsBuffer,              vec4,  0);
-BUFFER_RO(colorBuffer,               uint,  1);
-BUFFER_RO(normalsBuffer,             vec4,  2);
+BUFFER_RO(coordsBuffer,              vec4,   0);
+BUFFER_RO(colorBuffer,               uvec4,  1);
+BUFFER_RO(normalsBuffer,             vec4,   2);
 
-BUFFER_WO(vertexBuffer,              vec4,  3);
-BUFFER_WO(segmentsIndexBuffer,       uint,  4);
-BUFFER_WO(jointsIndexBuffer,         uint,  5);
+BUFFER_WO(vertexBuffer,              vec4,   3);
+BUFFER_WO(segmentsIndexBuffer,       uvec4,  4);
+BUFFER_WO(jointsIndexBuffer,         uvec4,  5);
 
 uniform vec4 u_numWorksGroups;
 #define numWorksGroups u_numWorksGroups.x
@@ -39,7 +39,7 @@ uniform vec4 u_numWorksGroups;
                            get_float_from_vec4(((pos) * 3) + 1, coordsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 2, coordsBuffer))
 
-#define color(pos)    colorBuffer[pos]
+#define color(pos)    get_float_from_vec4(pos, colorBuffer)
 
 #define normal(pos)   vec3(get_float_from_vec4(((pos) * 3) + 0, normalsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 1, normalsBuffer), \
@@ -65,22 +65,22 @@ void main() {
 
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {
-        segmentsIndexBuffer[(gl_WorkGroupID.x * 6)]     = (gl_WorkGroupID.x * 4);
-        segmentsIndexBuffer[(gl_WorkGroupID.x * 6) + 1] = (gl_WorkGroupID.x * 4) + 3;
-        segmentsIndexBuffer[(gl_WorkGroupID.x * 6) + 2] = (gl_WorkGroupID.x * 4) + 1;
+        get_float_from_vec4((gl_WorkGroupID.x * 6), segmentsIndexBuffer)     = (gl_WorkGroupID.x * 4);
+        get_float_from_vec4((gl_WorkGroupID.x * 6) + 1, segmentsIndexBuffer) = (gl_WorkGroupID.x * 4) + 3;
+        get_float_from_vec4((gl_WorkGroupID.x * 6) + 2, segmentsIndexBuffer) = (gl_WorkGroupID.x * 4) + 1;
 
-        segmentsIndexBuffer[(gl_WorkGroupID.x * 6) + 3] = (gl_WorkGroupID.x * 4);
-        segmentsIndexBuffer[(gl_WorkGroupID.x * 6) + 4] = (gl_WorkGroupID.x * 4) + 2;
-        segmentsIndexBuffer[(gl_WorkGroupID.x * 6) + 5] = (gl_WorkGroupID.x * 4) + 3;
+        get_float_from_vec4((gl_WorkGroupID.x * 6) + 3, segmentsIndexBuffer) = (gl_WorkGroupID.x * 4);
+        get_float_from_vec4((gl_WorkGroupID.x * 6) + 4, segmentsIndexBuffer) = (gl_WorkGroupID.x * 4) + 2;
+        get_float_from_vec4((gl_WorkGroupID.x * 6) + 5, segmentsIndexBuffer) = (gl_WorkGroupID.x * 4) + 3;
 
         if(gl_WorkGroupID.x != numWorksGroups - 1) {
-            jointsIndexBuffer[(gl_WorkGroupID.x * 6)]      = (gl_WorkGroupID.x * 4) + 3;
-            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 1]  = (gl_WorkGroupID.x * 4) + 4;
-            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 2]  = (gl_WorkGroupID.x * 4) + 5;
+            get_float_from_vec4((gl_WorkGroupID.x * 6), jointsIndexBuffer)      = (gl_WorkGroupID.x * 4) + 3;
+            get_float_from_vec4((gl_WorkGroupID.x * 6) + 1, jointsIndexBuffer)  = (gl_WorkGroupID.x * 4) + 4;
+            get_float_from_vec4((gl_WorkGroupID.x * 6) + 2, jointsIndexBuffer)  = (gl_WorkGroupID.x * 4) + 5;
 
-            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 3]  = (gl_WorkGroupID.x * 4) + 4;
-            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 4]  = (gl_WorkGroupID.x * 4) + 2;
-            jointsIndexBuffer[(gl_WorkGroupID.x * 6) + 5]  = (gl_WorkGroupID.x * 4) + 5;
+            get_float_from_vec4((gl_WorkGroupID.x * 6) + 3, jointsIndexBuffer)  = (gl_WorkGroupID.x * 4) + 4;
+            get_float_from_vec4((gl_WorkGroupID.x * 6) + 4, jointsIndexBuffer)  = (gl_WorkGroupID.x * 4) + 2;
+            get_float_from_vec4((gl_WorkGroupID.x * 6) + 5, jointsIndexBuffer)  = (gl_WorkGroupID.x * 4) + 5;
         }
     }
 }

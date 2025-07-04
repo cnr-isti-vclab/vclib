@@ -23,7 +23,7 @@
 #include <bgfx_compute.sh>
 
 BUFFER_RO(coordsBuffer,         vec4,  0);
-BUFFER_RO(colorBuffer,          uint,  1);
+BUFFER_RO(colorBuffer,          uvec4, 1);
 BUFFER_RO(normalsBuffer,        vec4,  2);
 
 BUFFER_WO(instanceDataBuffer,   vec4,  3);
@@ -34,7 +34,7 @@ BUFFER_WO(instanceDataBuffer,   vec4,  3);
                            get_float_from_vec4(((pos) * 3) + 1, coordsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 2, coordsBuffer))
 
-#define color(pos)    colorBuffer[pos]
+#define color(pos)    get_float_from_vec4(pos, colorBuffer)
 
 #define normal(pos)   vec3(get_float_from_vec4(((pos) * 3) + 0, normalsBuffer), \
                            get_float_from_vec4(((pos) * 3) + 1, normalsBuffer), \
