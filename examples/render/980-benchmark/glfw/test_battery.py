@@ -46,7 +46,7 @@ class Args:
     def asArgList(self):
         ret = list()
         shadOpt = shadingTypeOpt(self.shadingType)
-        splitOpt = shadingSplittingOpt(self.shadingType)
+        splitOpt = shadingSplittingOpt(self.shadingSplitting)
         if shadOpt is not None:
             ret.append(shadOpt)
         if splitOpt is not None:
@@ -64,7 +64,7 @@ def run(executable_name: str, execution: Args):
             return;
     resultPath = f"./results/{execution.mesh.split('/').pop()}";
     create_all_in_path(resultPath);
-    subprocess.run([executable_name, *execution.asArgList()]);
+    subprocess.run([executable_name, *execution.asArgList(), "--output-dir", resultPath, "-f", "250"]);
 
 def main():
     global SMOOTH, FLAT, UBER, SPLIT, UBER_IF
