@@ -28,6 +28,9 @@
 
 #define posToBitFlag(pos) (1u << pos)
 
+#define u_normalMatrix mtxFromCols( \
+    u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
+
 /**
  * @brief Convert an uint color in ABGR format to a vec4 float color.
  * @param[in] color: The input color.

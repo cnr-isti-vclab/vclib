@@ -29,6 +29,8 @@
 #include "embedded_vf_programs/drawable_mesh_edges_id.h"
 #include "embedded_vf_programs/drawable_mesh_points.h"
 #include "embedded_vf_programs/drawable_mesh_points_id.h"
+#include "embedded_vf_programs/drawable_mesh_points_instance.h"
+#include "embedded_vf_programs/drawable_mesh_points_instance_id.h"
 // #include "embedded_vf_programs/drawable_mesh_surface.h"
 #include "embedded_vf_programs/drawable_mesh_surface_id.h"
 

@@ -26,5 +26,6 @@
 #include <vclib/bgfx/shaders_common.sh>
 
 #include <vclib/bgfx/drawable/uniforms/drawable_trackball_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 
 #endif // VCL_EXT_BGFX_DRAWABLE_TRACKBALL_UNIFORMS_SH

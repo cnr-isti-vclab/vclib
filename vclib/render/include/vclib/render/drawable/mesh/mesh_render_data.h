@@ -299,6 +299,21 @@ protected:
 
     /**
      * @brief Given the mesh and a pointer to a buffer, fills the buffer with
+     * the vertex quad indices of the mesh (6 indices per vertex, 2 triangles
+     * per quad).
+     *
+     * The buffer must be preallocated with the correct size: `numVerts() * 6`.
+     *
+     * @param[in] mesh: the input mesh
+     * @param[out] buffer: the buffer to fill
+     */
+    void fillVertexQuadIndices(const MeshConcept auto& mesh, auto* buffer)
+    {
+        vertexQuadIndicesToBuffer(mesh, buffer);
+    }
+
+    /**
+     * @brief Given the mesh and a pointer to a buffer, fills the buffer with
      * the vertex normals of the mesh.
      *
      * The buffer must be preallocated with the correct size: `numVerts() * 3`.

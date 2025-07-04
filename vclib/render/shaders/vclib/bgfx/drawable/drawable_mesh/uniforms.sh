@@ -25,7 +25,6 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-#include <vclib/bgfx/drawable/uniforms/camera_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.sh>

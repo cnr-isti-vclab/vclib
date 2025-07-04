@@ -64,3 +64,5 @@
   - [X] screenshot with size multiplier (bgfx only)
   - [X] move MeshViewerImguiDrawer into library
   - [X] move example 07 mesh-viewer-imgui in example 02
+  - [ ] examples using qt and imgui freeze on macos when set fullscreen
+  - [ ] completely rethink trackball event handling

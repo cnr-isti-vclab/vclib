@@ -793,6 +793,7 @@ private:
             if (!canSurface(MRI::Surface::VISIBLE))
                 setPoints(VISIBLE, true);
             setPoints(SHADING_NONE);
+            setPoints(SHAPE_PIXEL);
             if (canPoints(SHADING_VERT)) {
                 setPoints(SHADING_VERT);
             }

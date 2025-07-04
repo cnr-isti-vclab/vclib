@@ -20,48 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_CAMERA_UNIFORMS_H
-#define VCL_BGFX_DRAWABLE_UNIFORMS_CAMERA_UNIFORMS_H
+$input v_normal, v_color, v_texcoord1
 
-#include <vclib/bgfx/uniform.h>
-#include <vclib/render/viewer/camera.h>
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
-#include <bgfx/bgfx.h>
-
-namespace vcl {
-
-class CameraUniforms
+void main()
 {
-    float mEye[4]     = {0.0, 0.0, 0.0, 0.0}; // eye[3] not used
-    float mNearFar[4] = {0.0, 0.0, 0.0, 0.0}; // nearFar[2] and [3] not used
+    // color
+    // vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
-    Uniform mCameraEyeUniform =
-        Uniform("u_cameraEyePosPack", bgfx::UniformType::Vec4);
+    // circle mode (if outside of the circle, discard)
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE))) {
+        if (length(2.0 * v_texcoord1 - vec2(1.0, 1.0)) > 1.0) {
+            discard;
+        }
+    }
+    
+    /***** compute light ******/
+    // default values - no shading
+    // vec3 specular = vec3(0.0, 0.0, 0.0);
+    vec4 light = vec4(1, 1, 1, 1);
 
-    Uniform mCameraNearFarUniform =
-        Uniform("u_cameraNearFarPack", bgfx::UniformType::Vec4);
-
-public:
-    CameraUniforms() {}
-
-    template<typename S>
-    void updateCamera(const vcl::Camera<S>& camera)
-    {
-        mEye[0] = camera.eye().x();
-        mEye[1] = camera.eye().y();
-        mEye[2] = camera.eye().z();
-
-        mNearFar[0] = camera.nearPlane();
-        mNearFar[1] = camera.farPlane();
+    // if per vert shading
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_VERT))) {
+        light = computeLight(u_lightDir, u_lightColor, v_normal);
     }
 
-    void bind() const
-    {
-        mCameraEyeUniform.bind(mEye);
-        mCameraNearFarUniform.bind(mNearFar);
+    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
+
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
+        color = v_color;
     }
-};
+    else if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_MESH))) {
+        color = u_meshColor;
+    }
 
-} // namespace vcl
-
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_CAMERA_UNIFORMS_H
+    // NO depth writing (it kills performance)
+    gl_FragColor = light * color; // + vec4(specular, 0);
+}

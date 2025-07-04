@@ -20,14 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_POINTS_INSTANCE_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_POINTS_INSTANCE_H
 
-#include "embedded_c_programs/lines.h"
-#include "embedded_c_programs/lines_indirect.h"
-#include "embedded_c_programs/lines_texture.h"
-#include "embedded_c_programs/polylines.h"
-#include "embedded_c_programs/polylines_indirect.h"
-#include "embedded_c_programs/polylines_texture.h"
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_COMPUTE_PROGRAMS_H
+namespace vcl {
+
+template<>
+struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_POINTS_INSTANCE>
+{
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_POINTS_INSTANCE_H

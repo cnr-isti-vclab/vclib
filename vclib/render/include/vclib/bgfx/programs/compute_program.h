@@ -35,6 +35,8 @@ enum class ComputeProgram
     POLYLINES_INDIRECT,
     POLYLINES_TEXTURE,
 
+    DRAWABLE_MESH_POINTS,
+
     COUNT
 };
 

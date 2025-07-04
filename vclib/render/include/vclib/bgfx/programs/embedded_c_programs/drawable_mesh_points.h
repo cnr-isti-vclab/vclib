@@ -20,14 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_DRAWABLE_MESH_POINTS_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_DRAWABLE_MESH_POINTS_H
+#include <vclib/bgfx/programs/compute_loader.h>
 
-uniform vec4 u_cameraEyePosPack;
-uniform vec4 u_cameraNearFarPack;
+namespace vcl {
 
-#define u_cameraEyePos u_cameraEyePosPack.xyz
-#define u_cameraNear u_cameraNearFarPack[0]
-#define u_cameraFar u_cameraNearFarPack[1]
+template<>
+struct ComputeLoader<ComputeProgram::DRAWABLE_MESH_POINTS>
+{
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
+};
 
-#endif // VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_DRAWABLE_MESH_POINTS_H
