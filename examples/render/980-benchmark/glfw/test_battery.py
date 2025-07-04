@@ -57,6 +57,17 @@ class Args:
             ret.append(str(self.resolution[1]))
         ret.append(self.mesh)
         return ret
+    
+    def resultFilename(self):
+        split = "uber";
+        shad = "smooth";
+        if(self.shadingSplitting == "--split"):
+            split = "split"
+        elif(self.shadingSplitting == "--uber-static-if"):
+            split = "uber_static_if"
+        if(self.shadingType == "--flat"):
+            shad = "flat"
+        return split + "_" + shad + "_" + str(self.resolution[0]) + "x" + str(self.resolution[1]) + ".csv"
 
 def run(executable_name: str, execution: Args):
     if not os.path.exists(execution.mesh):
@@ -64,7 +75,7 @@ def run(executable_name: str, execution: Args):
             return;
     resultPath = f"./results/{execution.mesh.split('/').pop()}";
     create_all_in_path(resultPath);
-    subprocess.run([executable_name, *execution.asArgList(), "--output-dir", resultPath, "-f", "250"]);
+    subprocess.run([executable_name, *execution.asArgList(), "-o", resultPath + "/" + execution.resultFilename() , "-f", "250"]);
 
 def main():
     global SMOOTH, FLAT, UBER, SPLIT, UBER_IF
