@@ -68,6 +68,8 @@ public:
         using reference  = value_type&;
         using pointer    = value_type*;
 
+        using Base::Base;
+
         Iterator(Base it) : Base(it) {}
 
         reference operator*() const { return Base::operator*().get(); }
@@ -84,6 +86,8 @@ public:
         using value_type = T;
         using reference  = const value_type&;
         using pointer    = const value_type*;
+
+        using Base::Base;
 
         ConstIterator(Base it) : Base(it) {}
 

@@ -1843,7 +1843,7 @@ private:
         // vector of elements contained in each container of Mesh<A...>
         std::array<const void*, N_CONTAINERS> bases;
 
-        // for each container/component of Mesh<A...>, we set call the function
+        // for each container/component of Mesh<A...>, we call the function
         // that sets the base of the container in its index
         (setContainerBase<IndexInTypes<A, Containers>::value, A>(m, bases),
          ...);
