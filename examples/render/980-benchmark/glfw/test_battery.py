@@ -59,13 +59,14 @@ class Args:
         return ret
     
     def resultFilename(self):
+        global UBER, SPLIT, UBER_IF, SMOOTH, FLAT
         split = "uber";
         shad = "smooth";
-        if(self.shadingSplitting == "--split"):
+        if(self.shadingSplitting == SPLIT):
             split = "split"
-        elif(self.shadingSplitting == "--uber-static-if"):
+        elif(self.shadingSplitting == UBER_IF):
             split = "uber_static_if"
-        if(self.shadingType == "--flat"):
+        if(self.shadingType == FLAT):
             shad = "flat"
         return split + "_" + shad + "_" + str(self.resolution[0]) + "x" + str(self.resolution[1]) + ".csv"
 
