@@ -23,7 +23,7 @@
 #ifndef VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H
 #define VCL_QT_GUI_DRAWABLE_OBJECT_ITEM_H
 
-#include <vclib/render/drawable/drawable_object.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <QTreeWidgetItem>
 
@@ -41,7 +41,11 @@ public:
     std::shared_ptr<DrawableObject> drawableObject() const;
 
 private:
-    void addMeshInfoItem();
+    void addMeshItem();
+
+    void addMeshInfoItem(const AbstractDrawableMesh& mesh);
+    void addTransformMatrixItem(const AbstractDrawableMesh& mesh);
+    void addTexturesItem(const AbstractDrawableMesh& mesh);
 
     static void makeItemNotSelectable(QTreeWidgetItem* item);
 };
