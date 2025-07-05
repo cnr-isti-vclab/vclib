@@ -22,27 +22,21 @@
 
 #include "mesh_custom_components.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    auto [mesh] = meshCustomComponents();
+    auto meshes = meshCustomComponents();
 
-    /****** Save the created meshes ******/
+    std::apply(
+        [](auto&&... args) {
+            (vcl::updatePerVertexAndFaceNormals(args), ...);
+        },
+        meshes);
 
-    std::cout << "\n=== Saving Meshes ===" << std::endl;
-
-    try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
-
-        // save the mesh after processing
-        // note: ply format is able to save custom components having primitive
-        // types
-        vcl::save(mesh, resultsPath + "/009_processed_bimba.ply");
-
-        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
-
-    return 0;
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }
