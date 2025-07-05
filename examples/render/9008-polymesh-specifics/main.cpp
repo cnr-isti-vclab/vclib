@@ -22,33 +22,21 @@
 
 #include "polymesh_specifics.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    auto [polyMesh, triMesh, dynamicMesh] = polymeshSpecifics();
+    auto meshes = polymeshSpecifics();
 
-    /****** Save the created meshes ******/
+    std::apply(
+        [](auto&&... args) {
+            (vcl::updatePerVertexAndFaceNormals(args), ...);
+        },
+        meshes);
 
-    std::cout << "\n=== Saving Meshes ===" << std::endl;
-
-    try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
-
-        // Save the created polymesh
-        vcl::save(polyMesh, resultsPath + "/008_hexagon_pyramid_polymesh.ply");
-        std::cout << "Saved: 008_hexagon_polymesh.ply\n";
-
-        // Save the converted TriMesh
-        vcl::save(triMesh, resultsPath + "/008_hexagon_pyramid_trimesh.ply");
-        std::cout << "Saved: 008_hexagon_trimesh.ply\n";
-
-        vcl::save(dynamicMesh, resultsPath + "/008_square_polymesh.ply");
-        std::cout << "Saved: 008_square_polymesh.ply\n";
-
-        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
-
-    return 0;
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }
