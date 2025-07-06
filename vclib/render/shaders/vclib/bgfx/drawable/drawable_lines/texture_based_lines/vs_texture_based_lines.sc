@@ -52,15 +52,17 @@ void main() {
     vec4 normal0     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 2, maxTextureSize));
     vec4 normal1     = imageLoad(textureBuffer, calculateTextureCoord((gl_InstanceID * 4) + 3, maxTextureSize));
 
-    vec4 color0 = uintABGRToVec4Color(floatBitsToUint(p0.w));
-    vec4 color1 = uintABGRToVec4Color(floatBitsToUint(p1.w));
+    vec4 color0      = uintABGRToVec4Color(floatBitsToUint(p0.w));
+    vec4 color1      = uintABGRToVec4Color(floatBitsToUint(p1.w));
+    vec4 lineColor   = uintABGRToVec4Color(floatBitsToUint(normal0.w));
 
     vec4 p0_px = calculatePointWithMVP(p0, u_screenWidth, u_screenHeigth);
     vec4 p1_px = calculatePointWithMVP(p1, u_screenWidth, u_screenHeigth);
     
-    v_color = (((color0 * (1 - uv.x)) + (color1 * uv.x)) * (1 - sign(u_color_to_use))) + (u_general_color * sign(u_color_to_use));
+    v_color = u_color_to_use == 0 ? ((color0 * (1 - uv.x)) + (color1 * uv.x)) : (u_color_to_use == 1 ? lineColor : u_general_color);
     v_normal = ((normal0 * (1 - uv.x)) + (normal1 * uv.x)).xyz;
     v_length = length(p1_px.xyz - p0_px.xyz);
+
     v_uv = calculateLinesUV(p0_px, p1_px, uv, v_length, u_thickness, u_antialias, u_border, u_leftCap, u_rigthCap);
     gl_Position = calculateLines(p0_px, p1_px, uv, v_length, u_thickness, u_antialias, u_border, u_screenWidth, u_screenHeigth, u_leftCap, u_rigthCap);
 }

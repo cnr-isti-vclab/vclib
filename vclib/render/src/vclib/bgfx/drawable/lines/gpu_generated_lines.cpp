@@ -46,6 +46,7 @@ void GPUGeneratedLines::swap(GPUGeneratedLines& other)
     swap(mVertColors, other.mVertColors);
     swap(mVertNormals, other.mVertNormals);
     swap(mLineColors, other.mLineColors);
+
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
 }
@@ -71,6 +72,7 @@ void GPUGeneratedLines::setPoints(
         setCoordsBuffer(vertCoords);
         setColorsBuffer(vertColors);
         setNormalsBuffer(vertNormals);
+        setLineColorsBuffer(lineColors);
 
         allocateVertexBuffer(nPoints);
         allocateIndexBuffer(nPoints);
@@ -154,7 +156,7 @@ void GPUGeneratedLines::setLineColorsBuffer(const std::vector<uint>& lineColors)
     mLineColors.createForCompute(
         buffer,
         lineColors.size(),
-        bgfx::Attrib::Color0,
+        bgfx::Attrib::Color1,
         4,
         PrimitiveType::UCHAR,
         true,
@@ -198,9 +200,10 @@ void GPUGeneratedLines::generateVerticesAndIndicesBuffers(uint pointsSize)
     mVertCoords.bind(0);
     mVertColors.bind(1);
     mVertNormals.bind(2);
+    mLineColors.bind(3);
 
-    mVertices.bind(3, bgfx::Access::Write);
-    mIndices.bind(4, bgfx::Access::Write);
+    mVertices.bind(4, bgfx::Access::Write);
+    mIndices.bind(5, bgfx::Access::Write);
 
     bgfx::dispatch(0, mComputeVerticesPH, (pointsSize / 2), 1, 1);
     // after the dispatch, the vert and indices buffers are ready to be used in

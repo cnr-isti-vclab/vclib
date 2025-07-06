@@ -543,8 +543,8 @@ private:
             }
         }
         // wireframe index buffer
-        mWireframeLines.setPoints(
-            wireframeCoords, wireframeColors, wireframeNormals);
+        // mWireframeLines.setPoints(
+        //     wireframeCoords, wireframeColors, wireframeNormals);
 
         // WAS:
         // const uint nw = Base::numWireframeLines();

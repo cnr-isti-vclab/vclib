@@ -52,11 +52,11 @@ public:
 
     DrawableLines(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors  = std::vector<uint>(),
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>& lineColors = std::vector<uint>()) :
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors) :
             mVertCoords(vertCoords), mVertColors(vertColors),
-            mVertNormals(vertNormals), mLineColors(lineColors)
+            mVertNormals(vertNormals), mLineColors(lineColors),
             mLines(vertCoords, vertColors, vertNormals, lineColors)
     {
     }
@@ -65,7 +65,7 @@ public:
             DrawableObject(other), mVertCoords(other.mVertCoords),
             mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
             mLineColors(other.mLineColors), mVisible(other.mVisible),
-            mLines(other.mVertCoords, other.mVertColors, other.mVertNormals)
+            mLines(other.mVertCoords, other.mVertColors, other.mVertNormals, other.mLineColors)
     {
         mLines.settings() = other.settings();
     }
@@ -104,9 +104,9 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors  = std::vector<uint>(),
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>& lineColors = std::vector<uint>())
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>& lineColors)
     {
         mVertCoords = vertCoords;
         mVertColors = vertColors;

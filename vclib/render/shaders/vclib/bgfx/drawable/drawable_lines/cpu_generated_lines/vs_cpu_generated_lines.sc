@@ -30,6 +30,7 @@ uniform vec4 u_data;
 #define p0                    a_position
 #define p1                    a_texcoord0
 #define uv                    vec2(float(a_texcoord1.x), float(a_texcoord1.y))
+#define lineColor             uintABGRToVec4Color(floatBitsToUint(a_texcoord1.z))
 
 void main() {
     vec4 u_general_color = uintABGRToVec4Color(floatBitsToUint(u_data.x));
@@ -48,7 +49,7 @@ void main() {
     vec4 p0_px = calculatePointWithMVP(vec4(p0, 0.0), u_screenWidth, u_screenHeigth);
     vec4 p1_px = calculatePointWithMVP(vec4(p1, 0.0), u_screenWidth, u_screenHeigth);
     
-    v_color = (a_color0 * (1 - sign(u_color_to_use))) + (u_general_color * sign(u_color_to_use));
+    v_color = u_color_to_use == 0 ? a_color0 : (u_color_to_use == 1 ? lineColor : u_general_color);
     v_normal = a_normal;
     v_length = length(p1_px.xyz - p0_px.xyz);
 

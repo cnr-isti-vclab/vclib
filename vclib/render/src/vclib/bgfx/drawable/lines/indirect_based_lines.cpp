@@ -42,10 +42,11 @@ IndirectBasedLines::IndirectBasedLines()
 IndirectBasedLines::IndirectBasedLines(
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  vertColors,
-    const std::vector<float>& vertNormals) :
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>& lineColors) :
         IndirectBasedLines()
 {
-    setPoints(vertCoords, vertColors, vertNormals);
+    setPoints(vertCoords, vertColors, vertNormals, lineColors);
 }
 
 void IndirectBasedLines::swap(IndirectBasedLines& other)
@@ -59,6 +60,7 @@ void IndirectBasedLines::swap(IndirectBasedLines& other)
     swap(mVertCoords, other.mVertCoords);
     swap(mVertColors, other.mVertColors);
     swap(mVertNormals, other.mVertNormals);
+    swap(mLineColors, other.mLineColors);
 
     swap(mInstanceData, other.mInstanceData);
     swap(mNumPoints, other.mNumPoints);
@@ -80,20 +82,22 @@ void IndirectBasedLines::draw(uint viewId) const
 void IndirectBasedLines::setPoints(    
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  vertColors,
-    const std::vector<float>& vertNormals)
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>& lineColors)
 {
 
     mNumPoints = vertCoords.size() / 3;
 
-    setCoordsBuffers(vertCoords);   
-    setColorsBuffers(vertColors);
-    setNormalsBuffers(vertNormals);
+    setCoordsBuffer(vertCoords);   
+    setColorsBuffer(vertColors);
+    setNormalsBuffer(vertNormals);
+    setLineColorsBuffer(lineColors);
 
     allocateInstanceData();
     generateInstanceDataBuffer();
 }
 
-void IndirectBasedLines::setCoordsBuffers(const std::vector<float>& vertCoords)
+void IndirectBasedLines::setCoordsBuffer(const std::vector<float>& vertCoords)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
@@ -112,7 +116,7 @@ void IndirectBasedLines::setCoordsBuffers(const std::vector<float>& vertCoords)
     );
 }
 
-void IndirectBasedLines::setColorsBuffers(const std::vector<uint>& vertColors)
+void IndirectBasedLines::setColorsBuffer(const std::vector<uint>& vertColors)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<uint>(vertColors.size());
@@ -131,7 +135,7 @@ void IndirectBasedLines::setColorsBuffers(const std::vector<uint>& vertColors)
     );
 }
 
-void IndirectBasedLines::setNormalsBuffers(const std::vector<float>& vertNormals)
+void IndirectBasedLines::setNormalsBuffer(const std::vector<float>& vertNormals)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<float>(vertNormals.size());
@@ -145,6 +149,25 @@ void IndirectBasedLines::setNormalsBuffers(const std::vector<float>& vertNormals
         3,
         PrimitiveType::FLOAT,
         false,
+        bgfx::Access::Read,
+        releaseFn
+    );
+}
+
+void IndirectBasedLines::setLineColorsBuffer(const std::vector<uint>& lineColors)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<uint>(lineColors.size());
+
+    std::copy(lineColors.begin(), lineColors.end(), buffer);
+
+    mLineColors.createForCompute(
+        buffer,
+        lineColors.size(),
+        bgfx::Attrib::Color0,
+        4,
+        PrimitiveType::UCHAR,
+        true,
         bgfx::Access::Read,
         releaseFn
     );
@@ -174,8 +197,9 @@ void IndirectBasedLines::generateInstanceDataBuffer()
     mVertCoords.bind(0);
     mVertColors.bind(1);
     mVertNormals.bind(2);
+    mLineColors.bind(3);
 
-    mInstanceData.bind(3, bgfx::Access::Write);
+    mInstanceData.bind(4, bgfx::Access::Write);
 
     bgfx::dispatch(0, mComputeIndirectPH, (mNumPoints / 2), 1, 1);
 }

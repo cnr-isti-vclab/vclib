@@ -41,10 +41,11 @@ TextureBasedLines::TextureBasedLines()
 TextureBasedLines::TextureBasedLines(
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  vertColors,
-    const std::vector<float>& vertNormals) :
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>& lineColors) :
         TextureBasedLines()
 {
-    setPoints(vertCoords, vertColors, vertNormals);
+    setPoints(vertCoords, vertColors, vertNormals, lineColors);
 }
 
 void TextureBasedLines::swap(TextureBasedLines& other)
@@ -58,6 +59,7 @@ void TextureBasedLines::swap(TextureBasedLines& other)
     swap(mVertCoords, other.mVertCoords);
     swap(mVertColors, other.mVertColors);
     swap(mVertNormals, other.mVertNormals);
+    swap(mLineColors, other.mLineColors);
 
     swap(mTexture, other.mTexture);
     swap(mNumPoints, other.mNumPoints);
@@ -80,17 +82,19 @@ void TextureBasedLines::draw(uint viewId) const
 void TextureBasedLines::setPoints(
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  vertColors,
-    const std::vector<float>& vertNormals)
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>& lineColors)
 {
     mNumPoints = vertCoords.size() / 3;
-    setCoordsBuffers(vertCoords);
-    setColorsBuffers(vertColors);
-    setNormalsBuffers(vertNormals);
+    setCoordsBuffer(vertCoords);
+    setColorsBuffer(vertColors);
+    setNormalsBuffer(vertNormals);
+    setLineColorsBuffer(lineColors);
 
     allocateAndGenerateTextureBuffer();
 }
 
-void TextureBasedLines::setCoordsBuffers(const std::vector<float>& vertCoords)
+void TextureBasedLines::setCoordsBuffer(const std::vector<float>& vertCoords)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
@@ -109,7 +113,7 @@ void TextureBasedLines::setCoordsBuffers(const std::vector<float>& vertCoords)
     );
 }
 
-void TextureBasedLines::setColorsBuffers(const std::vector<uint>& vertColors)
+void TextureBasedLines::setColorsBuffer(const std::vector<uint>& vertColors)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<uint>(vertColors.size());
@@ -128,7 +132,7 @@ void TextureBasedLines::setColorsBuffers(const std::vector<uint>& vertColors)
     );
 }
 
-void TextureBasedLines::setNormalsBuffers(const std::vector<float>& vertNormals)
+void TextureBasedLines::setNormalsBuffer(const std::vector<float>& vertNormals)
 {
     auto [buffer, releaseFn] =
         getAllocatedBufferAndReleaseFn<float>(vertNormals.size());
@@ -142,6 +146,25 @@ void TextureBasedLines::setNormalsBuffers(const std::vector<float>& vertNormals)
         3,
         PrimitiveType::FLOAT,
         false,
+        bgfx::Access::Read,
+        releaseFn
+    );
+}
+
+void TextureBasedLines::setLineColorsBuffer(const std::vector<uint>& lineColors)
+{
+    auto [buffer, releaseFn] =
+        getAllocatedBufferAndReleaseFn<uint>(lineColors.size());
+
+    std::copy(lineColors.begin(), lineColors.end(), buffer);
+
+    mLineColors.createForCompute(
+        buffer,
+        lineColors.size(),
+        bgfx::Attrib::Color0,
+        4,
+        PrimitiveType::UCHAR,
+        true,
         bgfx::Access::Read,
         releaseFn
     );
@@ -165,8 +188,9 @@ void TextureBasedLines::allocateAndGenerateTextureBuffer()
     mVertCoords.bind(0);
     mVertColors.bind(1);
     mVertNormals.bind(2);
+    mLineColors.bind(3);
 
-    mTexture.bind(3, bgfx::Access::Write);
+    mTexture.bind(4, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeTexturePH, (mNumPoints / 2), 1, 1);
 }
 

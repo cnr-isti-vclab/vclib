@@ -55,6 +55,7 @@
             "inherits": "examples-and-tests",
             "displayName": "VCLib::Core - Debug",
             "description": "Core with default options",
+            "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             }
@@ -64,6 +65,7 @@
             "inherits": "examples-and-tests",
             "displayName": "VCLib::Core - Release",
             "description": "Core with default options",
+            "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
@@ -73,6 +75,7 @@
             "inherits": "vclib-core-debug",
             "displayName": "VCLib::Core without 3rdparty IO libraries - Debug",
             "description": "Core without 3rdparty IO libraries",
+            "generator": "Ninja",
             "cacheVariables": {
                 "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
             }
@@ -82,6 +85,7 @@
             "inherits": "vclib-core-release",
             "displayName": "VCLib::Core without 3rdparty IO libraries - Release",
             "description": "Core without 3rdparty IO libraries",
+            "generator": "Ninja",
             "cacheVariables": {
                 "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
             }
@@ -214,6 +218,7 @@
             "displayName": "VCLib::Bindings - Debug",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "BUILD_SHARED_LIBS": "OFF",
                 "VCLIB_BUILD_EXAMPLES": "OFF",
                 "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",
@@ -231,6 +236,7 @@
             "displayName": "VCLib::Bindings - Release",
             "description": "Python Bindings module",
             "cacheVariables": {
+                "BUILD_SHARED_LIBS": "OFF",
                 "VCLIB_BUILD_EXAMPLES": "OFF",
                 "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",

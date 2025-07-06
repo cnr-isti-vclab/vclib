@@ -41,9 +41,10 @@ InstancingBasedLines::InstancingBasedLines()
 InstancingBasedLines::InstancingBasedLines(
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  vertColors,
-    const std::vector<float>& vertNormals) : InstancingBasedLines()
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>& lineColors) : InstancingBasedLines()
 {
-    setPoints(vertCoords, vertColors, vertNormals);
+    setPoints(vertCoords, vertColors, vertNormals, lineColors);
 }
 
 void InstancingBasedLines::swap(InstancingBasedLines& other)
@@ -55,6 +56,7 @@ void InstancingBasedLines::swap(InstancingBasedLines& other)
     swap(mVertCoords, other.mVertCoords);
     swap(mVertColors, other.mVertColors);
     swap(mVertNormals, other.mVertNormals);
+    swap(mLineColors, other.mLineColors);
 
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
@@ -80,11 +82,13 @@ void InstancingBasedLines::draw(uint viewId) const
 void InstancingBasedLines::setPoints(
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  vertColors,
-    const std::vector<float>& vertNormals)
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>& lineColors)
 {
     mVertCoords = vertCoords;
     mVertColors = vertColors;
     mVertNormals = vertNormals;
+    mLineColors = lineColors;
 }
 
 void InstancingBasedLines::generateInstanceDataBuffer() const
@@ -118,7 +122,9 @@ void InstancingBasedLines::generateInstanceDataBuffer() const
         n0[0]     = mVertNormals[((i - 1) * 3)];
         n0[1]     = mVertNormals[((i - 1) * 3) + 1];
         n0[2]     = mVertNormals[((i - 1) * 3) + 2];
-        n0[3]     = 0;
+
+        uint* lineColor = reinterpret_cast<uint*>(&data[44]);
+        lineColor[0] = mLineColors[i / 2];
 
         float* n1 = reinterpret_cast<float*>(&data[48]);
         n1[0]     = mVertNormals[(i * 3)];
