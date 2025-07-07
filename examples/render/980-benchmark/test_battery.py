@@ -76,7 +76,7 @@ def run(executable_name: str, execution: Args):
             return;
     resultPath = f"./results/{execution.mesh.split('/').pop()}";
     create_all_in_path(resultPath);
-    subprocess.run([executable_name, *execution.asArgList(), "-o", resultPath + "/" + execution.resultFilename() , "-f", "250"]);
+    subprocess.run([executable_name, *execution.asArgList(), "-o", resultPath + "/" + execution.resultFilename() , "-f", "250", "--scale", "+1"]);
 
 def main():
     global SMOOTH, FLAT, UBER, SPLIT, UBER_IF

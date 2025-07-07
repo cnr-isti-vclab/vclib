@@ -121,7 +121,8 @@ int main(int argc, char** argv)
         {"--uber-static-if",   0},
         {"--res",              2},
         {"--user-color",       3},
-        {"--force-user-color", 0}
+        {"--force-user-color", 0},
+        {"--scale",            1}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
@@ -166,6 +167,8 @@ int main(int argc, char** argv)
             << "Allows you to choose user color. Takes R G B as parameters."
             << "\n\t--force-user-color: "
             << "Forces all meshes to use user color"
+            << "\n\t--scale:            "
+            << "Allows you to set a delta scale for the model"
             << "\n\t-h, --help:         " << "Shows help page\n";
         exit(0);
     }
@@ -372,7 +375,14 @@ int main(int argc, char** argv)
     }
 
     tw.terminateUponCompletion();
-
+    if(options.contains("--scale")) {
+        float deltaS = std::strtof(options["--scale"][0].c_str(), nullptr);
+        if(deltaS == 0.0F) {
+            std::cerr << "Error: given scaling deltaS is invalid (unless you put 0 as its value). Scaling will be the default.\n";
+        }else{
+            tw.changeScaleMultiplicative(deltaS);
+        }
+    }
     tw.show();
 
     return 0;
