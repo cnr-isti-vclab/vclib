@@ -28,8 +28,6 @@
 #include <vclib/meshes.h>
 #include <vclib/space/core/array.h>
 
-#include <iostream>
-
 // This example demonstrates how to export meshes to matrices and import 
 // matrices back to meshes, including:
 // 1. Basic vertex positions and face indices
