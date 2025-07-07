@@ -20,41 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_POLYLINES_INSTANCING_JOINTS_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_POLYLINES_INSTANCING_JOINTS_H
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
-void main()
+namespace vcl {
+
+template<>
+struct VertFragLoader<VertFragProgram::POLYLINES_INSTANCING_JOINTS>
 {
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-    // color
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
+};
 
-    /***** compute light ******/
-    // default values - no shading
-    vec3 specular = vec3(0.0, 0.0, 0.0);
-    vec4 light = vec4(1, 1, 1, 1);
+} // namespace vcl
 
-    vec3 normal = normalize(v_normal);
-
-    // shading
-    if (!bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_SHADING_NONE))) {
-        light = computeLight(u_lightDir, u_lightColor, normal);
-    }
-
-    color = uintABGRToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
-
-    if (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_VERT))) {
-        color = v_color;
-    }
-    if (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_MESH))) {
-        color = u_meshColor;
-    }
-    depthOffset = 0.00005; // todo: remove, use something else
-
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
-}
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_POLYLINES_INSTANCING_JOINTS_H

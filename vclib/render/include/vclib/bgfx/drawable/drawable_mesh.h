@@ -157,6 +157,7 @@ public:
         }
 
         mMRB.update(*this, buffersToUpdate);
+        mMRB.setWireframeSettings(mMRS);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
@@ -164,6 +165,7 @@ public:
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
+        mMRB.setWireframeSettings(rs); // TODO check me
         mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 
@@ -239,14 +241,8 @@ public:
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-            bindUniforms();
-
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
             bgfx::setTransform(model.data());
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME>());
+            mMRB.drawWireframe(viewId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
@@ -321,16 +317,8 @@ public:
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-            mIdUniform.bind(&idFloat);
-
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
-            bgfx::setTransform(model.data());
-
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
-        }
+        // bgfx::setTransform(model.data());
+        // TODO: manage drawID for wireframe!
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
