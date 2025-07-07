@@ -42,8 +42,8 @@ DrawableObjectItem::DrawableObjectItem(
         Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
     setText(0, QString::fromStdString(obj->name()));
 
-    // add mesh info item
-    addMeshInfoItem();
+    // add mesh item
+    addMeshItem();
 }
 
 std::shared_ptr<DrawableObject> DrawableObjectItem::drawableObject() const
@@ -51,7 +51,7 @@ std::shared_ptr<DrawableObject> DrawableObjectItem::drawableObject() const
     return mObj;
 }
 
-void DrawableObjectItem::addMeshInfoItem()
+void DrawableObjectItem::addMeshItem()
 {
     // clear any existing children
     auto l = takeChildren();
@@ -62,65 +62,78 @@ void DrawableObjectItem::addMeshInfoItem()
     // if the DrawbaleObject is an AbstractDrawableMesh
     auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(mObj);
     if (mesh) {
-        // make this item expandable, and add a child called "Mesh Info"
-        auto meshInfoItem = new QTreeWidgetItem(this);
-        meshInfoItem->setText(0, "Mesh Info");
-        makeItemNotSelectable(meshInfoItem);
+        addMeshInfoItem(*mesh);
+        addTransformMatrixItem(*mesh);
+        addTexturesItem(*mesh);
+    }
+}
 
-        // vertex number item
-        auto vertexNumberItem = new QTreeWidgetItem(meshInfoItem);
-        vertexNumberItem->setText(0, "# Vertices");
-        vertexNumberItem->setText(1, QString::number(mesh->vertexNumber()));
-        makeItemNotSelectable(vertexNumberItem);
+void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
+{
+    // make this item expandable, and add a child called "Mesh Info"
+    auto meshInfoItem = new QTreeWidgetItem(this);
+    meshInfoItem->setText(0, "Mesh Info");
+    makeItemNotSelectable(meshInfoItem);
 
-        if (mesh->faceNumber() > 0) {
-            auto faceNumberItem = new QTreeWidgetItem(meshInfoItem);
-            faceNumberItem->setText(0, "# Faces");
-            faceNumberItem->setText(1, QString::number(mesh->faceNumber()));
-            makeItemNotSelectable(faceNumberItem);
+    // vertex number item
+    auto vertexNumberItem = new QTreeWidgetItem(meshInfoItem);
+    vertexNumberItem->setText(0, "# Vertices");
+    vertexNumberItem->setText(1, QString::number(mesh.vertexNumber()));
+    makeItemNotSelectable(vertexNumberItem);
+
+    if (mesh.faceNumber() > 0) {
+        auto faceNumberItem = new QTreeWidgetItem(meshInfoItem);
+        faceNumberItem->setText(0, "# Faces");
+        faceNumberItem->setText(1, QString::number(mesh.faceNumber()));
+        makeItemNotSelectable(faceNumberItem);
+    }
+
+    if (mesh.edgeNumber() > 0) {
+        auto edgeNumberItem = new QTreeWidgetItem(meshInfoItem);
+        edgeNumberItem->setText(0, "# Edges");
+        edgeNumberItem->setText(1, QString::number(mesh.edgeNumber()));
+        makeItemNotSelectable(edgeNumberItem);
+    }
+}
+
+void DrawableObjectItem::addTransformMatrixItem(
+    const AbstractDrawableMesh& mesh)
+{
+    auto transformMatrixItem = new QTreeWidgetItem(this);
+    transformMatrixItem->setText(0, "Transform Matrix");
+    makeItemNotSelectable(transformMatrixItem);
+
+    // add 4 rows for the 4x4 matrix
+    for (int i = 0; i < 4; ++i) {
+        auto rowItem = new QTreeWidgetItem(transformMatrixItem);
+
+        // use a monospace font for the matrix
+        rowItem->setFont(1, QFont("Courier New", 10));
+
+        rowItem->setText(0, "");
+        QString rowLabel = "";
+        for (int j = 0; j < 4; ++j) {
+            rowLabel += QString::number(mesh.transformMatrix()(i, j), 'f', 3);
+            if (j < 3)
+                rowLabel += "\t";
         }
+        rowItem->setText(1, rowLabel);
+        makeItemNotSelectable(rowItem);
+    }
+}
 
-        if (mesh->edgeNumber() > 0) {
-            auto edgeNumberItem = new QTreeWidgetItem(meshInfoItem);
-            edgeNumberItem->setText(0, "# Edges");
-            edgeNumberItem->setText(1, QString::number(mesh->edgeNumber()));
-            makeItemNotSelectable(edgeNumberItem);
-        }
+void DrawableObjectItem::addTexturesItem(const AbstractDrawableMesh& mesh)
+{
+    if (mesh.textures().size() > 0) {
+        auto texturesItem = new QTreeWidgetItem(this);
+        texturesItem->setText(0, "Textures");
+        makeItemNotSelectable(texturesItem);
 
-        auto transformMatrixItem = new QTreeWidgetItem(this);
-        transformMatrixItem->setText(0, "Transform Matrix");
-        makeItemNotSelectable(transformMatrixItem);
-
-        // add 4 rows for the 4x4 matrix
-        for (int i = 0; i < 4; ++i) {
-            auto rowItem = new QTreeWidgetItem(transformMatrixItem);
-
-            // use a monospace font for the matrix
-            rowItem->setFont(1, QFont("Courier New", 10));
-
-            rowItem->setText(0, "");
-            QString rowLabel = "";
-            for (int j = 0; j < 4; ++j) {
-                rowLabel +=
-                    QString::number(mesh->transformMatrix()(i, j), 'f', 3);
-                if (j < 3)
-                    rowLabel += "\t";
-            }
-            rowItem->setText(1, rowLabel);
-            makeItemNotSelectable(rowItem);
-        }
-
-        if (mesh->textures().size() > 0) {
-            auto texturesItem = new QTreeWidgetItem(this);
-            texturesItem->setText(0, "Textures");
-            makeItemNotSelectable(texturesItem);
-
-            for (uint i = 0; const auto& texture : mesh->textures()) {
-                auto textureItem = new QTreeWidgetItem(texturesItem);
-                textureItem->setText(0, QString::number(i++));
-                textureItem->setText(1, QString::fromStdString(texture));
-                makeItemNotSelectable(textureItem);
-            }
+        for (uint i = 0; const auto& texture : mesh.textures()) {
+            auto textureItem = new QTreeWidgetItem(texturesItem);
+            textureItem->setText(0, QString::number(i++));
+            textureItem->setText(1, QString::fromStdString(texture));
+            makeItemNotSelectable(textureItem);
         }
     }
 }

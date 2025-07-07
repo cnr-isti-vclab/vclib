@@ -64,25 +64,25 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void writePlyTextures(
     PlyHeader&          header,
     const MeshType&     mesh,
+    const std::string&  basePath,
     LogType&            log,
     const SaveSettings& settings)
 {
     if constexpr (HasTexturePaths<MeshType>) {
-        uint k = 0;
-        for (const std::string& str : mesh.texturePaths()) {
+        for (uint k = 0; const std::string& str : mesh.texturePaths()) {
             header.pushTextureFileName(str);
-            k++;
             if constexpr (HasTextureImages<MeshType>) {
                 if (settings.saveTextureImages) {
                     try {
                         saveImage(
-                            mesh.texture(k).image(), mesh.meshBasePath() + str);
+                            mesh.texture(k).image(), basePath + str);
                     }
                     catch (const std::runtime_error& e) {
                         log.log(e.what(), LogType::WARNING_LOG);
                     }
                 }
             }
+            ++k;
         }
     }
 }
