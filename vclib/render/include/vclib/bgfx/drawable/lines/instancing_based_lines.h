@@ -67,9 +67,9 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors);
+        const std::vector<uint>&  vertColors = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>& lineColors = std::vector<uint>());
 
 private:
     void checkCaps() const

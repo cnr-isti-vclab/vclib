@@ -86,9 +86,15 @@ void InstancingBasedLines::setPoints(
     const std::vector<uint>& lineColors)
 {
     mVertCoords = vertCoords;
-    mVertColors = vertColors;
-    mVertNormals = vertNormals;
-    mLineColors = lineColors;
+
+    if (!vertColors.empty())
+        mVertColors = vertColors;
+
+    if (!vertNormals.empty())
+        mVertNormals = vertNormals;
+
+    if (!lineColors.empty())
+        mLineColors = lineColors;
 }
 
 void InstancingBasedLines::generateInstanceDataBuffer() const

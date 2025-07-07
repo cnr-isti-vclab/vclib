@@ -59,17 +59,15 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
 
     std::vector<float> vertCoords;
     std::vector<vcl::uint> vertColors;
-    std::vector<float> vertNormals(nLines * 2 * 3, 0.0f); 
-    std::vector<uint> linesColors(nLines, 0xFF00FFFF); 
     
     for (vcl::uint i = 0; i < nLines; i++)
         pushRandomLine(vertCoords, vertColors);
     
-    auto cpuLines = std::make_shared<vcl::DrawableCPULines>(vertCoords, vertColors, vertNormals, linesColors);
-    auto gpuLines = std::make_shared<vcl::DrawableGPULines>(vertCoords, vertColors, vertNormals, linesColors);
-    auto instancingLines = std::make_shared<vcl::DrawableInstancingLines>(vertCoords, vertColors, vertNormals, linesColors);
-    auto indirectLines = std::make_shared<vcl::DrawableIndirectLines>(vertCoords, vertColors, vertNormals, linesColors);
-    auto textureLines = std::make_shared<vcl::DrawableTextureLines>(vertCoords, vertColors, vertNormals, linesColors);
+    auto cpuLines = std::make_shared<vcl::DrawableCPULines>(vertCoords, vertColors);
+    auto gpuLines = std::make_shared<vcl::DrawableGPULines>(vertCoords, vertColors);
+    auto instancingLines = std::make_shared<vcl::DrawableInstancingLines>(vertCoords, vertColors);
+    auto indirectLines = std::make_shared<vcl::DrawableIndirectLines>(vertCoords, vertColors);
+    auto textureLines = std::make_shared<vcl::DrawableTextureLines>(vertCoords, vertColors);
 
     cpuLines->settings().setColorToUse(
         vcl::LineColorToUse::PER_EDGE_COLOR);

@@ -71,6 +71,13 @@ public:
     GPUGeneratedLines() { checkCaps(); }
 
     GPUGeneratedLines(
+        const uint nVertices, 
+        const VertexBuffer& vertCoords,
+        const VertexBuffer& vertColors,
+        const VertexBuffer& vertNormals,
+        const VertexBuffer& lineColors);
+
+    GPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
@@ -80,11 +87,18 @@ public:
 
     void draw(uint viewId) const;
 
-    void setPoints( 
+    void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors);
+        const std::vector<uint>&  vertColors = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>& lineColors = std::vector<uint>());
+    
+    void setPoints( 
+        const uint nVertices, 
+        const VertexBuffer& vertCoords,
+        const VertexBuffer& vertColors = VertexBuffer(),
+        const VertexBuffer& vertNormals = VertexBuffer(),
+        const VertexBuffer& lineColors = VertexBuffer());
 
 private:
     void checkCaps() const
@@ -109,6 +123,13 @@ private:
     void allocateIndexBuffer(uint pointsSize);
 
     void generateVerticesAndIndicesBuffers(uint pointsSize);
+
+    void generateVerticesAndIndicesBuffers(
+        uint pointsSize,         
+        const VertexBuffer& vertCoords,
+        const VertexBuffer& vertColors,
+        const VertexBuffer& vertNormals,
+        const VertexBuffer& lineColors);
 };
 
 } // namespace vcl

@@ -52,13 +52,21 @@ public:
 
     DrawableLines(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors) :
-            mVertCoords(vertCoords), mVertColors(vertColors),
-            mVertNormals(vertNormals), mLineColors(lineColors),
-            mLines(vertCoords, vertColors, vertNormals, lineColors)
+        const std::vector<uint>&  vertColors = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>& lineColors = std::vector<uint>()) :
+            mVertCoords(vertCoords)
     {
+        if (!vertColors.empty())  mVertColors = vertColors;
+        else                      mVertColors = std::vector<uint>(vertCoords.size(), 0x000000FF);
+
+        if (!vertNormals.empty()) mVertNormals = vertNormals;
+        else                      mVertNormals = std::vector<float>(vertCoords.size(), 0.0f);
+
+        if (!lineColors.empty())  mLineColors = lineColors;
+        else                      mLineColors = std::vector<uint>(vertCoords.size() / 2, 0xFFFFFFFF);
+
+        mLines.setPoints(mVertCoords, mVertColors, mVertNormals, mLineColors);
     }
 
     DrawableLines(const DrawableLines& other) :

@@ -85,13 +85,17 @@ void IndirectBasedLines::setPoints(
     const std::vector<float>& vertNormals,
     const std::vector<uint>& lineColors)
 {
-
     mNumPoints = vertCoords.size() / 3;
+    setCoordsBuffer(vertCoords);  
 
-    setCoordsBuffer(vertCoords);   
-    setColorsBuffer(vertColors);
-    setNormalsBuffer(vertNormals);
-    setLineColorsBuffer(lineColors);
+    if (!vertColors.empty())
+        setColorsBuffer(vertColors);
+
+    if (!vertNormals.empty())
+        setNormalsBuffer(vertNormals);
+
+    if (!lineColors.empty())
+        setLineColorsBuffer(lineColors);
 
     allocateInstanceData();
     generateInstanceDataBuffer();

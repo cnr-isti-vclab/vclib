@@ -39,6 +39,17 @@ TextureBasedLines::TextureBasedLines()
 }
 
 TextureBasedLines::TextureBasedLines(
+    const uint nVertices, 
+    const VertexBuffer& vertCoords,
+    const VertexBuffer& vertColors,
+    const VertexBuffer& vertNormals,
+    const VertexBuffer& lineColors) :
+        TextureBasedLines()
+{
+    setPoints(nVertices, vertCoords, vertColors, vertNormals, lineColors);
+}
+
+TextureBasedLines::TextureBasedLines(
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  vertColors,
     const std::vector<float>& vertNormals,
@@ -87,11 +98,29 @@ void TextureBasedLines::setPoints(
 {
     mNumPoints = vertCoords.size() / 3;
     setCoordsBuffer(vertCoords);
-    setColorsBuffer(vertColors);
-    setNormalsBuffer(vertNormals);
-    setLineColorsBuffer(lineColors);
+
+    if (!vertColors.empty())
+        setColorsBuffer(vertColors);
+
+    if (!vertNormals.empty())
+        setNormalsBuffer(vertNormals);
+
+    if (!lineColors.empty())
+        setLineColorsBuffer(lineColors);
 
     allocateAndGenerateTextureBuffer();
+}
+
+void TextureBasedLines::setPoints( 
+    const uint nVertices, 
+    const VertexBuffer& vertCoords,
+    const VertexBuffer& vertColors,
+    const VertexBuffer& vertNormals,
+    const VertexBuffer& lineColors) 
+{
+    mNumPoints = nVertices;
+
+    allocateAndGenerateTextureBuffer(vertCoords, vertColors, vertNormals, lineColors);
 }
 
 void TextureBasedLines::setCoordsBuffer(const std::vector<float>& vertCoords)
@@ -189,6 +218,49 @@ void TextureBasedLines::allocateAndGenerateTextureBuffer()
     mVertColors.bind(1);
     mVertNormals.bind(2);
     mLineColors.bind(3);
+
+    mTexture.bind(4, bgfx::Access::Write);
+    bgfx::dispatch(0, mComputeTexturePH, (mNumPoints / 2), 1, 1);
+}
+
+void TextureBasedLines::allocateAndGenerateTextureBuffer(
+    const VertexBuffer& vertCoords,
+    const VertexBuffer& vertColors,
+    const VertexBuffer& vertNormals,
+    const VertexBuffer& lineColors)
+{
+    uint16_t Y = (mNumPoints * 3) / (mMaxTextureSize + 1);
+    uint16_t X = Y == 0 ? (mNumPoints * 3) : mMaxTextureSize;
+
+    mTexture.create(
+        X, Y + 1, bgfx::TextureFormat::RGBA32F, BGFX_TEXTURE_COMPUTE_WRITE);
+
+    float data[] = {
+                    static_cast<float>(mMaxTextureSize),
+                    static_cast<float>(mNumPoints / 2),
+                    0,
+                    0};
+    mIndirectData.bind(data);
+
+    vertCoords.bind(0);
+
+    if (!vertColors.isValid())
+        vertColors.bind(1);
+    else if (mVertColors.isValid())
+        mVertColors.bind(1);
+    else throw std::runtime_error("No valid Vertex Buffer");
+
+    if (!vertNormals.isValid())
+        vertNormals.bind(2);
+    else if (mVertNormals.isValid())
+        mVertNormals.bind(2);
+    else throw std::runtime_error("No valid Vertex Buffer");
+      
+    if (!lineColors.isValid())
+        lineColors.bind(3);
+    else if (mLineColors.isValid())
+        mLineColors.bind(3);
+    else throw std::runtime_error("No valid Vertex Buffer");
 
     mTexture.bind(4, bgfx::Access::Write);
     bgfx::dispatch(0, mComputeTexturePH, (mNumPoints / 2), 1, 1);
