@@ -95,6 +95,14 @@ public:
             mAssignSumFun     = &ElementContainerIterator::assignSumFast;
             mDiffFun          = &ElementContainerIterator::diffFast;
         }
+        else {
+            // if the user asked to jump the deleted elements, and the first
+            // element is deleted, we need to move forward until we find the
+            // first non-deleted element
+            while (mIt != mVec->end() && mIt->deleted()) {
+                ++mIt;
+            }
+        }
     }
 
     reference operator*() const { return *mIt; }
@@ -151,6 +159,8 @@ public:
     {
         return (this->*mDiffFun)(oi);
     }
+
+    const reference operator[](difference_type i) const { return *(*this + i); }
 
     reference operator[](difference_type i) { return *(*this + i); }
 
@@ -303,18 +313,22 @@ private:
     }
 };
 
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    bool C = false>
+ElementContainerIterator<Container, T, C> operator+(
+    typename ElementContainerIterator<Container, T, C>::difference_type n,
+    const ElementContainerIterator<Container, T, C>&                    it)
+{
+    return it + n;
+}
+
 template<template<typename, typename...> typename Container, typename T>
 using ConstElementContainerIterator =
     ElementContainerIterator<Container, T, true>;
 
 } // namespace vcl
-
-template<template<typename, typename...> typename Container, typename T, bool C>
-vcl::ElementContainerIterator<Container, T, C> operator+(
-    typename vcl::ElementContainerIterator<Container, T, C>::difference_type n,
-    const vcl::ElementContainerIterator<Container, T, C>&                    it)
-{
-    return it + n;
-}
 
 #endif // VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H

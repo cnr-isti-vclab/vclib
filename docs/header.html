@@ -12,6 +12,7 @@
 <script type="text/javascript" src="$relpath^jquery.js"></script>
 <script type="text/javascript" src="$relpath^dynsections.js"></script>
 <script type="text/javascript" src="$relpath^doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="$relpath^../version-selector.js"></script>
        <script type="text/javascript">
            DoxygenAwesomeDarkModeToggle.init()
        </script>
@@ -38,6 +39,13 @@ $extrastylesheet
    <!--BEGIN PROJECT_NUMBER-->&#160;<span id="projectnumber">$projectnumber</span><!--END PROJECT_NUMBER-->
    </div>
    <!--BEGIN PROJECT_BRIEF--><div id="projectbrief">$projectbrief</div><!--END PROJECT_BRIEF-->
+   <!-- Version selector dropdown -->
+   <div id="version-selector" style="margin-top: 10px;">
+     <label for="version-dropdown" style="font-size: 12px; color: #666;">Version:</label>
+     <select id="version-dropdown" style="margin-left: 5px; padding: 2px 5px; font-size: 12px; border: 1px solid #ccc; border-radius: 3px;">
+       <option value="">Loading versions...</option>
+     </select>
+   </div>
   </td>
   <!--END PROJECT_NAME-->
   <!--BEGIN !PROJECT_NAME-->

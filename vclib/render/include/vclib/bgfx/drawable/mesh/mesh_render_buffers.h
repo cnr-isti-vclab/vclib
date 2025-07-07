@@ -27,13 +27,13 @@
 
 #include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_lines.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
-#include <vclib/bgfx/context.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
@@ -56,9 +56,9 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mVertexWedgeUVBuffer;
 
     // point splatting
-    IndexBuffer  mVertexQuadIndexBuffer;
+    IndexBuffer         mVertexQuadIndexBuffer;
     DynamicVertexBuffer mVertexQuadBuffer;
-    mutable bool mVertexQuadBufferGenerated = false;
+    mutable bool        mVertexQuadBufferGenerated = false;
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
@@ -149,8 +149,7 @@ public:
         const MeshType&    mesh,
         const bgfx::ViewId viewId) const
     {
-        if (!mVertexQuadBuffer.isValid() ||
-            mVertexQuadBufferGenerated) {
+        if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
             return;
         }
 
@@ -164,11 +163,13 @@ public:
 
         mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
 
-        auto & pm = Context::instance().programManager();
+        auto& pm = Context::instance().programManager();
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
-            mesh.vertexNumber(), 1, 1);
+            mesh.vertexNumber(),
+            1,
+            1);
 
         mVertexQuadBufferGenerated = true;
     }
@@ -273,25 +274,21 @@ private:
             bgfx::Access::Read,
             releaseFn);
 
-
         // Creates the buffers to be used with compute for splatting
-        if (Context::instance().supportsCompute())
-        {
+        if (Context::instance().supportsCompute()) {
             // create a layout <coordinates, colors, normals, float>
             // 2 X vec4
-            bgfx::VertexLayout layout; 
+            bgfx::VertexLayout layout;
             layout.begin()
-                .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::Color0,    4, bgfx::AttribType::Uint8, true)
-                .add(bgfx::Attrib::Normal,    3, bgfx::AttribType::Float)
+                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
                 .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
-            .end();
+                .end();
 
             // create the dynamic vertex buffer for splatting
             mVertexQuadBuffer.create(
-                mesh.vertexNumber() * 4,
-                layout,
-                BGFX_BUFFER_COMPUTE_WRITE);
+                mesh.vertexNumber() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
 
             // create the index buffer for splatting
             setVertexQuadIndexBuffer(mesh);
@@ -316,12 +313,8 @@ private:
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
-        mVertexQuadIndexBuffer.create(
-            buffer,
-            totalIndices,
-            true,
-            releaseFn);
-        
+        mVertexQuadIndexBuffer.create(buffer, totalIndices, true, releaseFn);
+
         assert(mVertexQuadIndexBuffer.isValid());
     }
 

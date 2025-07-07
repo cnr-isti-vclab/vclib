@@ -35,7 +35,7 @@ target_compile_definitions(vclib-tests-examples-common INTERFACE
 
 function(_vclib_add_test_example name)
     set(options TEST HEADER_ONLY)
-    set(oneValueArgs VCLIB_MODULE VCLIB_CORE_EXAMPLE)
+    set(oneValueArgs VCLIB_MODULE VCLIB_CORE_EXAMPLE VCLIB_CORE_TEST)
     set(multiValueArgs SOURCES)
 
     cmake_parse_arguments(ARG
@@ -63,6 +63,12 @@ function(_vclib_add_test_example name)
         set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/core/${ARG_VCLIB_CORE_EXAMPLE})
         target_include_directories(${TARGET_NAME} PUBLIC
                 ${VCLIB_INCLUDE_EXAMPLES_DIR})
+    endif()
+
+    if (ARG_VCLIB_CORE_TEST)
+        set(VCLIB_INCLUDE_TESTS_DIR ${VCLIB_TESTS_DIR}/core/${ARG_VCLIB_CORE_TEST})
+        target_include_directories(${TARGET_NAME} PUBLIC
+                ${VCLIB_INCLUDE_TESTS_DIR})
     endif()
 
     if (NOT ${ARG_HEADER_ONLY})
@@ -123,6 +129,8 @@ endfunction()
 #     [VCLIB_MODULE core] # optional - to specify the module of the test
 #                           (default is core)
 #     [VCLIB_CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
+#                                     the core module from which reuse some code
+#     [VCLIB_CORE_TEST 000-mesh-basic] # optional - to specify the test of
 #                                     the core module from which reuse some code
 #     SOURCES main.cpp # sources of the test
 # )

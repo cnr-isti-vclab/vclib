@@ -26,6 +26,7 @@
 #include "mesh_components.h"
 #include "mesh_containers.h"
 
+#include <vclib/algorithms/core/transform.h>
 #include <vclib/concepts/mesh.h>
 
 namespace vcl {
@@ -425,6 +426,50 @@ public:
         // update all the pointers/indices contained on each container
         (updateReferencesOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
          ...);
+
+        // manage transform matrix
+        if constexpr (HasTransformMatrix<Mesh<Args...>>) {
+            using Matrixtype = typename Mesh<Args...>::TransformMatrixType;
+
+            Matrixtype matrix = this->transformMatrix();
+            matrix            = matrix.inverse().eval();
+            matrix *= m.transformMatrix();
+
+            if (matrix != Matrixtype::Identity()) {
+                (updatePosAndNormalsOfContainerTypeAfterAppend<Args>(
+                     *this, sizes, matrix),
+                 ...);
+            }
+        }
+
+        if constexpr (mesh::HasTexturePaths<Mesh<Args...>>) {
+            uint nTextures = this->textureNumber();
+
+            std::vector<uint> mapping(m.textureNumber());
+
+            for (uint i = 0; i < m.textureNumber(); ++i) {
+                uint tpi = this->indexOfTexturePath(m.texturePath(i));
+
+                if (tpi == UINT_NULL) {
+                    if constexpr (mesh::HasTextureImages<Mesh<Args...>>) {
+                        this->pushTexture(m.texture(i));
+                    }
+                    else {
+                        this->pushTexturePath(m.texturePath(i));
+                    }
+                    mapping[i] = nTextures++;
+                }
+                else {
+                    mapping[i] = tpi;
+                }
+            }
+
+            if (nTextures > 0 || mapping.size() > 0) {
+                (updateTextureIndicesOfContainerTypeAfterAppend<Args>(
+                     *this, sizes, mapping),
+                 ...);
+            }
+        }
     }
 
     /**
@@ -1103,6 +1148,44 @@ public:
     }
 
     /**
+     * Returns a lightweight view object that stores the begin and end iterators
+     * of the container of the elements having ID ELEM_ID in the mesh. The view
+     * object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (auto& el : mesh.elements<ElemId::VERTEX>(3, 10)) {
+     *     // Iterate over elements with index from 3 to 10
+     *     // Do something with el
+     * }
+     * @endcode
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID. Otherwise, a compiler error will be triggered.
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @param[in] begin: the begin index of the range to iterate over. It must
+     * be less than the elementContainerSize().
+     * @param[in] end: the end index of the range to iterate over.
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over elements.
+     */
+    template<uint ELEM_ID>
+    auto elements(uint begin, uint end = UINT_NULL)
+        requires (hasContainerOf<ELEM_ID>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::elements(begin, end);
+    }
+
+    /**
      * Returns a lightweight const view object that stores the begin and end
      * const iterators of the container of the elements having ID ELEM_ID in the
      * mesh. The view object exposes the iterators trough the `begin()` and
@@ -1131,6 +1214,44 @@ public:
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
         return Cont::elements(jumpDeleted);
+    }
+
+    /**
+     * @brief Returns a lightweight const view object that stores the begin and
+     * end const iterators of the container of the elements having ID ELEM_ID in
+     * the mesh. The view object exposes the iterators trough the `begin()` and
+     * `end()` member functions, and therefore the returned object can be used
+     * in range-based for loops:
+     *
+     * @code{.cpp}
+     * for (const auto& el : mesh.elements<ElemId::VERTEX>(3, 10)) {
+     *     // Iterate over elements with index from 3 to 10
+     *     // Do something read-only with el
+     * }
+     * @endcode
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID. Otherwise, a compiler error will be triggered.
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @param[in] begin: the begin index of the range to iterate over. It must
+     * be less than the elementContainerSize().
+     * @param[in] end: the end index of the range to iterate over.
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over elements.
+     */
+    template<uint ELEM_ID>
+    auto elements(uint begin, uint end = UINT_NULL) const
+        requires (hasContainerOf<ELEM_ID>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::elements(begin, end);
     }
 
     /**
@@ -1722,7 +1843,7 @@ private:
         // vector of elements contained in each container of Mesh<A...>
         std::array<const void*, N_CONTAINERS> bases;
 
-        // for each container/component of Mesh<A...>, we set call the function
+        // for each container/component of Mesh<A...>, we call the function
         // that sets the base of the container in its index
         (setContainerBase<IndexInTypes<A, Containers>::value, A>(m, bases),
          ...);
@@ -1848,6 +1969,97 @@ private:
                 ContainerWrapper(),
                 sizes,
                 sizes[I]);
+        }
+    }
+
+    template<
+        typename Cont,
+        typename ArrayS,
+        Matrix44Concept MatrixType,
+        typename... A>
+    static void updatePosAndNormalsOfContainerTypeAfterAppend(
+        Mesh<A...>&       m,
+        const ArrayS&     sizes,
+        const MatrixType& matrix)
+    {
+        // since this function is called using pack expansion, it means that
+        // Cont could be a mesh component and not a cointainer. We check if Cont
+        // is a container
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            // The element type contained in the container
+            // We need it to get back the actual type of the element from the
+            // old bases
+            using ElType                  = Cont::ElementType;
+            static constexpr uint ELEM_ID = ElType::ELEMENT_ID;
+
+            using Containers = Mesh<A...>::Containers;
+            constexpr uint I = IndexInTypes<Cont, Containers>::value;
+            static_assert(I >= 0 && I != UINT_NULL);
+
+            if constexpr (hasPerElementComponent<ELEM_ID, CompId::POSITION>()) {
+                auto posview = m.template elements<ELEM_ID>((uint) sizes[I]) |
+                               vcl::views::positions;
+
+                multiplyPointsByMatrix(posview, matrix);
+            }
+
+            if constexpr (hasPerElementComponent<ELEM_ID, CompId::NORMAL>()) {
+                if (m.Cont::template isComponentAvailable<CompId::NORMAL>()) {
+                    auto norview =
+                        m.template elements<ELEM_ID>((uint) sizes[I]) |
+                        vcl::views::normals;
+
+                    multiplyNormalsByMatrix(norview, matrix);
+                }
+            }
+        }
+    }
+
+    template<typename Cont, typename ArrayS, typename... A>
+    static void updateTextureIndicesOfContainerTypeAfterAppend(
+        Mesh<A...>&              m,
+        const ArrayS&            sizes,
+        const std::vector<uint>& mapping)
+    {
+        // since this function is called using pack expansion, it means that
+        // Cont could be a mesh component and not a cointainer. We check if Cont
+        // is a container
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            // The element type contained in the container
+            // We need it to get back the actual type of the element from the
+            // old bases
+            using ElType                  = Cont::ElementType;
+            static constexpr uint ELEM_ID = ElType::ELEMENT_ID;
+
+            using Containers = Mesh<A...>::Containers;
+            constexpr uint I = IndexInTypes<Cont, Containers>::value;
+            static_assert(I >= 0 && I != UINT_NULL);
+
+            if constexpr (hasPerElementComponent<
+                              ELEM_ID,
+                              CompId::TEX_COORD>()) {
+                if (m.Cont::template isComponentAvailable<
+                        CompId::TEX_COORD>()) {
+                    auto tcview =
+                        m.template elements<ELEM_ID>((uint) sizes[I]) |
+                        vcl::views::texCoords;
+                    for (auto& tc : tcview) {
+                        tc.index() = mapping[tc.index()];
+                    }
+                }
+            }
+
+            if constexpr (hasPerElementComponent<
+                              ELEM_ID,
+                              CompId::WEDGE_TEX_COORDS>()) {
+                if (m.Cont::template isComponentAvailable<
+                        CompId::WEDGE_TEX_COORDS>()) {
+                    auto elview = m.template elements<ELEM_ID>((uint) sizes[I]);
+                    for (auto& e : elview) {
+                        e.textureIndex() = mapping[e.textureIndex()];
+                    }
+                }
+            }
         }
     }
 

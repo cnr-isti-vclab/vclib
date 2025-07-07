@@ -42,46 +42,70 @@
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_MESH_POINTS_INSTANCE_ID>::vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::DRAWABLE_MESH_POINTS_INSTANCE_ID>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_points_instance_id_essl, sizeof(vs_points_instance_id_essl)};
+        return {
+            type,
+            vs_points_instance_id_essl,
+            sizeof(vs_points_instance_id_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_points_instance_id_glsl, sizeof(vs_points_instance_id_glsl)};
+        return {
+            type,
+            vs_points_instance_id_glsl,
+            sizeof(vs_points_instance_id_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, vs_points_instance_id_spv, sizeof(vs_points_instance_id_spv)};
+        return {
+            type, vs_points_instance_id_spv, sizeof(vs_points_instance_id_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, vs_points_instance_id_dx11, sizeof(vs_points_instance_id_dx11)};
+        return {
+            type,
+            vs_points_instance_id_dx11,
+            sizeof(vs_points_instance_id_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, vs_points_instance_id_mtl, sizeof(vs_points_instance_id_mtl)};
+        return {
+            type, vs_points_instance_id_mtl, sizeof(vs_points_instance_id_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_MESH_POINTS_INSTANCE_ID>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_POINTS_INSTANCE_ID>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_points_instance_id_essl, sizeof(fs_points_instance_id_essl)};
+        return {
+            type,
+            fs_points_instance_id_essl,
+            sizeof(fs_points_instance_id_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_points_instance_id_glsl, sizeof(fs_points_instance_id_glsl)};
+        return {
+            type,
+            fs_points_instance_id_glsl,
+            sizeof(fs_points_instance_id_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_points_instance_id_spv, sizeof(fs_points_instance_id_spv)};
+        return {
+            type, fs_points_instance_id_spv, sizeof(fs_points_instance_id_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_points_instance_id_dx11, sizeof(fs_points_instance_id_dx11)};
+        return {
+            type,
+            fs_points_instance_id_dx11,
+            sizeof(fs_points_instance_id_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_points_instance_id_mtl, sizeof(fs_points_instance_id_mtl)};
+        return {
+            type, fs_points_instance_id_mtl, sizeof(fs_points_instance_id_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }

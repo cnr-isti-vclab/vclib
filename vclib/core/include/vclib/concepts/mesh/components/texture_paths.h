@@ -52,6 +52,7 @@ concept HasTexturePaths = requires (T&& obj) {
     { obj.texturePath(uint()) } -> std::convertible_to<std::string>;
 
     { obj.meshBasePath() } -> std::convertible_to<std::string>;
+    { obj.indexOfTexturePath(std::string()) } -> std::same_as<uint>;
 
     { obj.texturePathBegin() } -> InputIterator<std::string>;
     { obj.texturePathEnd() } -> InputIterator<std::string>;

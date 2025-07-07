@@ -132,6 +132,21 @@ public:
     std::string& meshBasePath() { return Base::data().meshPath; }
 
     /**
+     * @brief Returns the index of the texture with the given path, or UINT_NULL
+     * if the texture is not found.
+     *
+     * @param[in] path: the path of the texture to search for.
+     */
+    uint indexOfTexturePath(const std::string& path) const
+    {
+        auto it = std::find(texPaths().begin(), texPaths().end(), path);
+        if (it != texPaths().end()) {
+            return static_cast<uint>(std::distance(texPaths().begin(), it));
+        }
+        return UINT_NULL;
+    }
+
+    /**
      * @brief Clears the vector of texture paths.
      */
     void clearTexturePaths() { texPaths().clear(); }

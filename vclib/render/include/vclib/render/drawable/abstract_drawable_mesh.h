@@ -26,8 +26,17 @@
 #include "drawable_object.h"
 #include "mesh/mesh_render_settings.h"
 
+#include <vclib/space/core/matrix.h>
+
 namespace vcl {
 
+/**
+ * @brief The AbstractDrawableMesh class is the base class for all the drawable
+ * meshes in the VCLib render system.
+ *
+ * It provides a common interface for drawable meshes, allowing to handle their
+ * render settings.
+ */
 class AbstractDrawableMesh : public vcl::DrawableObject
 {
 protected:
@@ -50,6 +59,19 @@ public:
             MeshRenderInfo::BUFFERS_ALL) = 0;
 
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
+
+    virtual uint vertexNumber() const = 0;
+
+    virtual uint faceNumber() const = 0;
+
+    virtual uint edgeNumber() const = 0;
+
+    virtual vcl::Matrix44d transformMatrix() const = 0;
+
+    virtual std::vector<std::string> textures() const
+    {
+        return std::vector<std::string>();
+    }
 
     // DrawableObject implementation
 

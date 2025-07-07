@@ -123,26 +123,24 @@ void vertexPositionsToBuffer(
 
 /**
  * @brief Export the indices of a quad per vertex to a buffer.
- * 
+ *
  * This function exports the vertex indices of a quad per vertex to a buffer.
  * The buffer must be preallocated with the correct size (number of vertices
  * times 6).
- * 
+ *
  * The indices are stored in the following order:
- * 
+ *
  * ```
  * 0 1 2 1 3 2
  * ```
- * 
+ *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
- * 
+ *
  * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
-void vertexQuadIndicesToBuffer(
-    const MeshType& mesh,
-    auto*           buffer)
+void vertexQuadIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
     // creates indices for two triangles (quad) for each vertex
     //
@@ -158,8 +156,8 @@ void vertexQuadIndicesToBuffer(
     // - Triangle 2: [1, 3, 2]
     //
     for (uint i = 0; const auto& v : mesh.vertices()) {
-        const uint baseIdx = i * 6;
-        const uint quadIdx = i * 4;
+        const uint baseIdx  = i * 6;
+        const uint quadIdx  = i * 4;
         buffer[baseIdx + 0] = quadIdx + 0;
         buffer[baseIdx + 1] = quadIdx + 1;
         buffer[baseIdx + 2] = quadIdx + 2;
