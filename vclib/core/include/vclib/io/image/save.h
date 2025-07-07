@@ -35,6 +35,8 @@
 
 #include <vclib/space/core/image.h>
 
+#include <set>
+
 namespace vcl {
 
 /**
@@ -76,7 +78,7 @@ inline void saveImageData(
     }
 #endif
 
-#ifdef VCLIB_WITH_STB
+#ifdef VCLIB_WITH_TINYGLTF
     if (stb::saveImageFormats().contains(ff)) {
         return stb::saveImageData(filename, w, h, data, quality);
     }

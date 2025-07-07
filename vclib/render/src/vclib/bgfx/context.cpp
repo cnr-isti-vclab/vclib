@@ -348,7 +348,7 @@ Context::Context(void* windowHandle, void* displayHandle)
 
     // insert view ids in the stack
     uint mv = bgfx::getCaps()->limits.maxViews;
-    
+
     // the view id is a 0-based index, so we start from maxViews - 1
     while (mv != 0) {
         mViewStack.push((bgfx::ViewId) --mv);

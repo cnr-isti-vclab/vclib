@@ -30,8 +30,8 @@
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 #include <imgui_impl_opengl2.h>
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
-#include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 #endif
 
 // Include the event backend imgui implementations
@@ -141,7 +141,7 @@ public:
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
         ImGui_ImplOpenGL2_NewFrame();
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
-        (void)viewId;
+        (void) viewId;
         ImGui_ImplBgfx_NewFrame(mImguiViewId);
 #endif // VCLIB_RENDER_BACKEND_*
 #ifdef VCLIB_WITH_GLFW
@@ -158,7 +158,7 @@ public:
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
         this->onDrawContent(viewId);
-        #elif defined(VCLIB_RENDER_BACKEND_BGFX)
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
         this->onDrawContent(mImguiViewId);
 #endif // VCLIB_RENDER_BACKEND_*
     }

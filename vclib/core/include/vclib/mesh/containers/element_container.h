@@ -428,12 +428,15 @@ protected:
     {
         using Comps = T::Components;
 
-        uint on = other.elementNumber();
+        uint on = other.elementContainerSize();
         uint n  = elementContainerSize();
         addElements(on);
         for (uint i = 0; i < on; ++i) {
             // copy everything from the other elements, also the (not updated)
             // pointers:
+            if (other.element(i).deleted()) {
+                deleteElement(n + i);
+            }
             element(n + i) = other.element(i);
             element(n + i).setParentMesh(mParentMesh);
         }
@@ -546,17 +549,10 @@ protected:
      */
     ElementIterator elementBegin(bool jumpDeleted = true)
     {
-        auto it = mElemVec.begin();
-        if (jumpDeleted) {
-            // if the user asked to jump the deleted elements, and the first
-            // element is deleted, we need to move forward until we find the
-            // first non-deleted element
-            while (it != mElemVec.end() && it->deleted()) {
-                ++it;
-            }
-        }
         return ElementIterator(
-            it, mElemVec, jumpDeleted && mElemVec.size() != mElemNumber);
+            mElemVec.begin(),
+            mElemVec,
+            jumpDeleted && mElemVec.size() != mElemNumber);
     }
 
     /**
@@ -581,17 +577,10 @@ protected:
      */
     ConstElementIterator elementBegin(bool jumpDeleted = true) const
     {
-        auto it = mElemVec.begin();
-        if (jumpDeleted) {
-            // if the user asked to jump the deleted elements, and the first
-            // element is deleted, we need to move forward until we find the
-            // first non-deleted element
-            while (it != mElemVec.end() && it->deleted()) {
-                ++it;
-            }
-        }
         return ConstElementIterator(
-            it, mElemVec, jumpDeleted && mElemVec.size() != mElemNumber);
+            mElemVec.begin(),
+            mElemVec,
+            jumpDeleted && mElemVec.size() != mElemNumber);
     }
 
     /**
@@ -634,6 +623,39 @@ protected:
 
     /**
      * @brief Returns a view object that allows to iterate over the elements of
+     * the container in the given range:
+     *
+     * @code{.cpp}
+     * for (Element& f : m.elements(3, 10)){
+     *     // iterate over the elements from index 3 to 10
+     *     // do something with this element
+     * }
+     * @endcode
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first element to be included in the
+     * range. It must be less or equal to elementContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last element to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    View<ElementIterator> elements(uint begin, uint end = UINT_NULL)
+    {
+        assert(begin <= elementContainerSize());
+        if (end == UINT_NULL || end > elementContainerSize())
+            end = elementContainerSize();
+        assert(begin <= end);
+        return View(elementBegin(false) + begin, elementBegin(false) + end);
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the elements of
      * the containers, providing two member functions begin() and end().
      *
      * This member function is very useful when you want to iterate over the
@@ -661,6 +683,39 @@ protected:
             elementEnd());
     }
 
+    /**
+     * @brief Returns a view object that allows to iterate over the elements of
+     * the container in the given range:
+     *
+     * @code{.cpp}
+     * for (const Element& f : m.elements(3, 10)){
+     *     // iterate over the elements from index 3 to 10
+     *     // do something with this element
+     * }
+     * @endcode
+     *
+     * @note Unlike the elements() function, this member function does not
+     * automatically jump deleted elements, but it iterates over the
+     * elements in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first element to be included in the
+     * range. It must be less or equal to elementContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last element to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    View<ConstElementIterator> elements(uint begin, uint end = UINT_NULL) const
+    {
+        assert(begin <= elementContainerSize());
+        if (end == UINT_NULL || end > elementContainerSize())
+            end = elementContainerSize();
+        assert(begin <= end);
+        return View(elementBegin(false) + begin, elementBegin(false) + end);
+    }
+
     void enableAllOptionalComponents()
     {
         mVerticalCompVecTuple.enableAllOptionalComponents();
@@ -669,6 +724,40 @@ protected:
     void disableAllOptionalComponents()
     {
         mVerticalCompVecTuple.disableAllOptionalComponents();
+    }
+
+    template<typename C>
+    bool isComponentAvailable() const
+    {
+        if constexpr (comp::HasComponentOfType<T, C::COMPONENT_ID>) {
+            if constexpr (comp::
+                              HasOptionalComponentOfType<T, C::COMPONENT_ID>) {
+                return mVerticalCompVecTuple.template isComponentEnabled<C>();
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    template<uint COMP_ID>
+    bool isComponentAvailable() const
+    {
+        if constexpr (comp::HasComponentOfType<T, COMP_ID>) {
+            if constexpr (comp::HasOptionalComponentOfType<T, COMP_ID>) {
+                return mVerticalCompVecTuple
+                    .template isComponentEnabled<COMP_ID>();
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
     }
 
     template<typename C>
@@ -1017,7 +1106,7 @@ private:
     template<typename Comp>
     void appendVerticalComponent(const ElementContainer<T>& other)
     {
-        uint on = other.elementNumber();
+        uint on = other.elementContainerSize();
         uint n  = elementContainerSize() - on;
 
         if (mVerticalCompVecTuple.template isComponentEnabled<Comp>() &&
@@ -1035,7 +1124,7 @@ private:
     void appendCustomComponents(const ElementContainer<T>& other)
     {
         if constexpr (comp::HasCustomComponents<T>) {
-            uint on = other.elementNumber();
+            uint on = other.elementContainerSize();
             uint n  = elementContainerSize() - on;
 
             std::vector<std::string> ccNames =

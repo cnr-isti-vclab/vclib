@@ -30,9 +30,10 @@ namespace vcl {
 namespace detail {
 
 template<typename ScalarType>
-struct TrackballVertex {
+struct TrackballVertex
+{
     ScalarType x, y, z;
-    uint32_t color;
+    uint32_t   color;
 };
 
 /**
@@ -51,15 +52,16 @@ createTrackballData(ScalarType radius, IndexType pointsPerCircle)
 {
     using Vertex = TrackballVertex<ScalarType>;
     static_assert(
-        sizeof(Vertex) == 3*sizeof(ScalarType) + sizeof(uint32_t),
+        sizeof(Vertex) == 3 * sizeof(ScalarType) + sizeof(uint32_t),
         "vertex struct size mismatch (not packed)");
-    assert(pointsPerCircle > 0 &&
+    assert(
+        pointsPerCircle > 0 &&
         "number of points per circle must be greater than 0");
     assert(radius > 0 && "radius must be greater than 0");
-    
+
     vcl::Polygon2<ScalarType> circle =
-    vcl::createCircle<vcl::Polygon2<ScalarType>>(pointsPerCircle, 1.0);
-    
+        vcl::createCircle<vcl::Polygon2<ScalarType>>(pointsPerCircle, 1.0);
+
     std::vector<IndexType> edges;
     std::vector<Vertex>    vertexData;
     vertexData.reserve(pointsPerCircle);
@@ -101,7 +103,7 @@ createTrackballData(ScalarType radius, IndexType pointsPerCircle)
 } // namespace detail
 
 static const uint16_t N_POINTS = 128;
-static const auto TRACKBALL_DATA =
+static const auto     TRACKBALL_DATA =
     detail::createTrackballData<float, uint16_t>(1.0, N_POINTS);
 
 DrawableTrackBall::DrawableTrackBall()
@@ -110,8 +112,8 @@ DrawableTrackBall::DrawableTrackBall()
 }
 
 DrawableTrackBall::DrawableTrackBall(const DrawableTrackBall& other) :
-            mVisible(other.mVisible), mUniforms(other.mUniforms),
-            mTransform(other.mTransform)
+        mVisible(other.mVisible), mUniforms(other.mUniforms),
+        mTransform(other.mTransform)
 {
     // copy all the members that can be copied, and then re-create the
     // buffers
@@ -187,9 +189,15 @@ std::shared_ptr<DrawableObject> DrawableTrackBall::clone() &&
     return std::make_shared<DrawableTrackBall>(std::move(*this));
 }
 
-bool DrawableTrackBall::isVisible() const { return mVisible; }
+bool DrawableTrackBall::isVisible() const
+{
+    return mVisible;
+}
 
-void DrawableTrackBall::setVisibility(bool vis) { mVisible = vis; }
+void DrawableTrackBall::setVisibility(bool vis)
+{
+    mVisible = vis;
+}
 
 void DrawableTrackBall::createBuffers()
 {
@@ -204,7 +212,7 @@ void DrawableTrackBall::createBuffers()
         bgfx::makeRef(
             TRACKBALL_DATA.first.data(),
             TRACKBALL_DATA.first.size() *
-            sizeof(detail::TrackballVertex<float>)),
+                sizeof(detail::TrackballVertex<float>)),
         layout,
         BGFX_BUFFER_NONE);
 

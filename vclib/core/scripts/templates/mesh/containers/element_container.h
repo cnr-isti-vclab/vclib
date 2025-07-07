@@ -395,6 +395,35 @@ public:
     {
         return Base::elements(jumpDeleted);
     }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the %EL_UC%s
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (%EL_UC%& e : m.%EL_C%s(3, 10)){
+     *     // iterate over the %EL_UC%s from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the %EL_C%s() function, this member function does not
+     * automatically jump deleted %EL_C%s, but it iterates over the
+     * %EL_C%s in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first %EL_C% to be included in the
+     * range. It must be less or equal to %EL_C%ContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last %EL_C% to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto %EL_C%s(uint begin, uint end = UINT_NULL)
+    {
+        return Base::elements(begin, end);
+    }
     
     /**
      * @brief Returns a small view object that allows to iterate over the
@@ -422,6 +451,35 @@ public:
     auto %EL_C%s(bool jumpDeleted = true) const
     {
         return Base::elements(jumpDeleted);
+    }
+
+    /**
+     * @brief Returns a view object that allows to iterate over the %EL_UC%s
+     * of the container in the given range:
+     *
+     * @code{.cpp}
+     * for (const %EL_UC%& e : m.%EL_C%s(3, 10)){
+     *     // iterate over the %EL_UC%s from index 3 to 10
+     *     // do something with e
+     * }
+     * @endcode
+     *
+     * @note Unlike the %EL_C%s() function, this member function does not
+     * automatically jump deleted %EL_C%s, but it iterates over the
+     * %EL_C%s in the given range, regardless of whether they are deleted or
+     * not.
+     *
+     * @param[in] begin: the index of the first %EL_C% to be included in the
+     * range. It must be less or equal to %EL_C%ContainerSize() and less or
+     * equal to the end index.
+     * @param[in] end: the index of the last %EL_C% to be included in the
+     * range.
+     * @return An object having begin() and end() function, allowing to iterate
+     * over the given range of the container.
+     */
+    auto %EL_C%s(uint begin, uint end = UINT_NULL) const
+    {
+        return Base::elements(begin, end);
     }
 
     /**

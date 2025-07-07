@@ -111,10 +111,9 @@ int main()
     // quality
     m.enablePerVertexQuality();
 
-    i = 0;
-    for (auto& qual : m.vertices() | vcl::views::quality) {
-        qual = ++i;
-    }
+    vcl::parallelFor(m.vertices() | vcl::views::quality, [&](auto& q) {
+        q = 10;
+    });
 
     std::cerr << "\n\nPrint Vertex Quality:\n";
 

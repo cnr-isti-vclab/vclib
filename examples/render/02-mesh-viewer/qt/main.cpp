@@ -36,7 +36,7 @@ public:
     MeshViewerSelectQt(QWidget* parent = nullptr) : vcl::qt::MeshViewer(parent)
     {
         viewer().setOnObjectSelected([this](uint id) {
-            drawableObjectVectorFrame().setSelectedItem(id);
+            drawableObjectVectorTree().setSelectedItem(id);
         });
     }
 };

@@ -51,6 +51,11 @@ void elementContainerStaticAsserts()
         "VertexContainer&& does not satisfy the ElementContainerConcept");
 
     static_assert(
+        std::random_access_iterator<VertexContainer::VertexIterator>,
+        "The VertexIterator of VertexContainer is not a random access "
+        "iterator");
+
+    static_assert(
         mesh::ElementContainerConcept<FaceContainer>,
         "FaceContainer does not satisfy the ElementContainerConcept");
     static_assert(
