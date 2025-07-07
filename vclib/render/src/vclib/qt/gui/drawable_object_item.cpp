@@ -75,7 +75,7 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     meshInfoItem->setText(0, "Mesh Info");
     makeItemNotSelectable(meshInfoItem);
 
-           // vertex number item
+    // vertex number item
     auto vertexNumberItem = new QTreeWidgetItem(meshInfoItem);
     vertexNumberItem->setText(0, "# Vertices");
     vertexNumberItem->setText(1, QString::number(mesh.vertexNumber()));
