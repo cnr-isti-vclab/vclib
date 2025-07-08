@@ -95,7 +95,7 @@ void savePly(
     std::ostream&       fp,
     const SaveSettings& settings,
     const std::string&  basePath = "",
-    LogType&            log = nullLogger)
+    LogType&            log      = nullLogger)
 {
     savePly(m, fp, basePath, log, settings);
 }
