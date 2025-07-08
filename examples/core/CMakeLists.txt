@@ -40,8 +40,6 @@ add_subdirectory(011-mesh-texture-and-texcoords)
 add_subdirectory(012-mesh-clean)
 
 add_subdirectory(810-mesh-new-user-component)
-add_subdirectory(811-mesh-export-to-matrix)
-add_subdirectory(816-mesh-clean)
 add_subdirectory(818-mesh-principal-curvature)
 add_subdirectory(819-mesh-sampling)
 add_subdirectory(820-mesh-smooth)
