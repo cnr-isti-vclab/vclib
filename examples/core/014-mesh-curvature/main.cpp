@@ -20,33 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
-#include <vclib/misc/timer.h>
-
-#include <iostream>
+#include "mesh_curvature.h"
 
 int main()
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                                "/bunny_textured.ply");
+    auto [originalMesh, taubinMesh, pcaMesh, generalMesh] = meshCurvature();
 
-    vcl::TriMesh mSmooth(m);
+    /****** Save the curvature meshes ******/
 
-    vcl::Timer t1("Laplacian Smoothing");
+    std::cout << "\n=== Saving Meshes ===" << std::endl;
 
-    vcl::laplacianSmoothing(mSmooth, 30);
-    t1.stopAndPrint();
+    try {
+        std::string resultsPath = VCLIB_RESULTS_PATH;
 
-    vcl::savePly(mSmooth, VCLIB_RESULTS_PATH "/bunny_lapl_smooth.ply");
+        vcl::save(taubinMesh, VCLIB_RESULTS_PATH "/014_taubin_curvature.ply");
+        vcl::save(pcaMesh, VCLIB_RESULTS_PATH "/014_pca_curvature.ply");
+        vcl::save(generalMesh, VCLIB_RESULTS_PATH "/014_general_curvature.ply");
 
-    vcl::Timer t2("Taubin Smoothing");
+        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
+        std::cout << "Files saved:" << std::endl;
+        std::cout << "  - 014_taubin_curvature.ply (colored by mean curvature)" << std::endl;
+        std::cout << "  - 014_pca_curvature.ply (colored by Gaussian curvature)" << std::endl;
+        std::cout << "  - 014_general_curvature.ply (colored by maximum curvature)" << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cout << "Error saving files: " << e.what() << std::endl;
+        return -1;
+    }
 
-    vcl::taubinSmoothing(m, 300, 0.5, -0.53);
-    t2.stopAndPrint();
-
-    vcl::savePly(m, VCLIB_RESULTS_PATH "/bunny_taub_smooth.ply");
+    std::cout << "\n=== Example 014 completed successfully! ===" << std::endl;
 
     return 0;
 }

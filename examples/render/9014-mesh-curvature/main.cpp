@@ -20,49 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef MESH_CURVATURE_H
-#define MESH_CURVATURE_H
+#include "mesh_curvature.h"
 
-#include <vclib/algorithms.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
-#include <vclib/misc/timer.h>
+#include <default_viewer.h>
 
-#include <iostream>
-
-template<vcl::MeshConcept MeshType>
-void updateCurvature(MeshType& m)
+int main(int argc, char** argv)
 {
-    vcl::ConsoleLogger log;
-    log.enablePrintTimer();
+    auto meshes = meshCurvature();
 
-    m.enablePerVertexAdjacentFaces();
-    m.enablePerFaceAdjacentFaces();
-    m.enablePerVertexPrincipalCurvature();
-    m.enablePerVertexColor();
-    m.enablePerVertexQuality();
-
-    vcl::updatePerFaceNormals(m);
-    vcl::updatePerFaceAdjacentFaces(m);
-    vcl::updatePerVertexAdjacentFaces(m);
-
-    double radius = vcl::boundingBox(m).diagonal() * 0.1;
-    log.startTimer();
-    vcl::updatePrincipalCurvaturePCA(m, radius, true, log);
-
-    vcl::setPerVertexQualityFromPrincipalCurvatureMean(m);
-    vcl::Histogramd h = vcl::vertexQualityHistogram(m);
-
-    vcl::setPerVertexColorFromQuality(
-        m, vcl::Color::ColorMap::RedBlue, h.percentile(0.1), h.percentile(0.9));
-
-    std::cout << "Curvature range: " << h.minRangeValue() << " "
-              << h.maxRangeValue() << "\n";
-    std::cout << "Used 90 percentile: " << h.percentile(0.1) << " "
-              << h.percentile(0.9) << "\n";
-
-    m.enablePerFaceColor();
-    vcl::setPerFaceColorFromVertexColor(m);
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }
-
-#endif // MESH_CURVATURE_H
