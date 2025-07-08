@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "mesh_matrix_conversion.h"
+#include "mesh_texture_and_texcoords.h"
 
 int main()
 {
-    auto [importedMesh, cubeMesh] = meshMatrixConversion();
+    auto [customMesh] = meshTextureAndTexCoords();
 
     /****** Save the created meshes ******/
 
@@ -33,16 +33,15 @@ int main()
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        // save the imported mesh after processing
-        vcl::save(importedMesh, resultsPath + "/010_imported_mesh.ply");
+        vcl::SaveSettings settings;
+        settings.saveTextureImages = true; // save texture images
 
-        vcl::save(cubeMesh, resultsPath + "/010_created_cube.ply");
+        vcl::save(
+            customMesh, resultsPath + "/011_custom_textured.ply", settings);
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }
     catch (const std::exception& e) {
         std::cerr << "Error in saving: " << e.what() << "\n";
     }
-
-    return 0;
 }

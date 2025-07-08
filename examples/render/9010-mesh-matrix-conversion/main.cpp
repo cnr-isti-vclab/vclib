@@ -22,27 +22,21 @@
 
 #include "mesh_matrix_conversion.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    auto [importedMesh, cubeMesh] = meshMatrixConversion();
+    auto meshes = meshMatrixConversion();
 
-    /****** Save the created meshes ******/
+    // std::apply(
+    //     [](auto&&... args) {
+    //         (vcl::updatePerVertexAndFaceNormals(args), ...);
+    //     },
+    //     meshes);
 
-    std::cout << "\n=== Saving Meshes ===" << std::endl;
-
-    try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
-
-        // save the imported mesh after processing
-        vcl::save(importedMesh, resultsPath + "/010_imported_mesh.ply");
-
-        vcl::save(cubeMesh, resultsPath + "/010_created_cube.ply");
-
-        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
-
-    return 0;
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef TEXTURE_AND_TEXCOORDS_H
-#define TEXTURE_AND_TEXCOORDS_H
+#ifndef MESH_TEXTURE_AND_TEXCOORDS_H
+#define MESH_TEXTURE_AND_TEXCOORDS_H
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
@@ -35,7 +35,7 @@
 // 4. Working with texture images and paths
 // 5. Enabling texture coordinate components dynamically
 
-auto textureAndTexCoordsExample()
+auto meshTextureAndTexCoords()
 {
     std::cout << "=== VCLib - Texture and TexCoords Example ===" << std::endl;
 
@@ -130,6 +130,7 @@ auto textureAndTexCoordsExample()
     // Example 4: Creating mesh with texture coordinates
     std::cout << "\n4. Creating mesh with texture coordinates..." << std::endl;
     vcl::TriMesh customMesh;
+    customMesh.name() = "Custom Textured Mesh";
 
     // Enable texture coordinate components
     customMesh.enablePerVertexTexCoord();
@@ -204,4 +205,4 @@ auto textureAndTexCoordsExample()
     return std::make_tuple(customMesh);
 }
 
-#endif // TEXTURE_AND_TEXCOORDS_H
+#endif // MESH_TEXTURE_AND_TEXCOORDS_H

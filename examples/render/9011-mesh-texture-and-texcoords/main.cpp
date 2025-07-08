@@ -20,28 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "texture_and_texcoords.h"
+#include "mesh_texture_and_texcoords.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    auto [customMesh] = textureAndTexCoordsExample();
+    auto meshes = meshTextureAndTexCoords();
 
-    /****** Save the created meshes ******/
+    std::apply(
+        [](auto&&... args) {
+            (vcl::updatePerVertexAndFaceNormals(args), ...);
+        },
+        meshes);
 
-    std::cout << "\n=== Saving Meshes ===" << std::endl;
-
-    try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
-
-        vcl::SaveSettings settings;
-        settings.saveTextureImages = true; // save texture images
-
-        vcl::save(
-            customMesh, resultsPath + "/011_custom_textured.ply", settings);
-
-        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }
