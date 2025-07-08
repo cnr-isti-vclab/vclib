@@ -51,16 +51,6 @@ void main()
         normals[idx31/4][idx31%4],
         normals[idx32/4][idx32%4]);
 
-    // float col = uintBitsToFloat(colors[pointId]);
-    // vec3 p = vec3(
-    //     positions[pointId * 3],
-    //     positions[pointId * 3 + 1],
-    //     positions[pointId * 3 + 2]);
-    // vec3 n = vec3(
-    //     normals[pointId * 3],
-    //     normals[pointId * 3 + 1],
-    //     normals[pointId * 3 + 2]);
-
     // Generate quad vertices
     UNROLL
     for (int i = 0; i < 4; ++i) {

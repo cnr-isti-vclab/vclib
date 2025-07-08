@@ -26,27 +26,27 @@ $input v_normal, v_color, v_texcoord1
 
 void main()
 {
-    // color
-    // vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    // defaul color and light
+    vec4 light = vec4(1, 1, 1, 1);
+    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
 
     // circle mode (if outside of the circle, discard)
-    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE))) {
-        if (length(2.0 * v_texcoord1 - vec2(1.0, 1.0)) > 1.0) {
+    bool isCircle = bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE));
+    bool isSphere = bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SPHERE));
+    if (isCircle || isSphere) {
+        vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
+        if (length(uv) > 1.0) {
             discard;
+        }
+        if (isSphere) {
+            // sphere mode
+            v_normal = normalize(vec3(uv.x, uv.y, sqrt(1.0 - dot(uv, uv))));
         }
     }
     
-    /***** compute light ******/
-    // default values - no shading
-    // vec3 specular = vec3(0.0, 0.0, 0.0);
-    vec4 light = vec4(1, 1, 1, 1);
-
-    // if per vert shading
     if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_VERT))) {
         light = computeLight(u_lightDir, u_lightColor, v_normal);
     }
-
-    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
 
     if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
         color = v_color;

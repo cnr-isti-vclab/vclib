@@ -621,6 +621,7 @@ public:
             setPointsCapability(MRI::Points::VISIBLE);
             setPointsCapability(MRI::Points::SHAPE_PIXEL);
             setPointsCapability(MRI::Points::SHAPE_CIRCLE);
+            setPointsCapability(MRI::Points::SHAPE_SPHERE);
             setPointsCapability(MRI::Points::SHADING_NONE);
             setPointsCapability(MRI::Points::COLOR_USER);
 

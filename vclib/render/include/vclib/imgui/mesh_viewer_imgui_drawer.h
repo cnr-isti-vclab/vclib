@@ -297,7 +297,7 @@ private:
                 settings.setPointsWidth(v);
             },
             1.0f,
-            10.0f);
+            32.0f);
 
         ImGui::EndDisabled();
     }
