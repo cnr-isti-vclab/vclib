@@ -28,12 +28,6 @@ int main(int argc, char** argv)
 {
     auto meshes = meshMatrixConversion();
 
-    // std::apply(
-    //     [](auto&&... args) {
-    //         (vcl::updatePerVertexAndFaceNormals(args), ...);
-    //     },
-    //     meshes);
-
     return std::apply(
         [&](auto&&... args) {
             return showMeshesOnDefaultViewer(argc, argv, args...);

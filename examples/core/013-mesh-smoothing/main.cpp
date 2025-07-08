@@ -20,22 +20,24 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "mesh_clean.h"
+#include "mesh_smoothing.h"
 
 int main()
 {
-    auto [originalMesh, mesh, testMesh] = meshClean();
+    auto [originalMesh, laplacianMesh, cotangentMesh, taubinMesh, normalMesh] = 
+        meshSmoothing();
 
-    /****** Save the created meshes ******/
+    /****** Save the smoothed meshes ******/
 
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        vcl::save(mesh, VCLIB_RESULTS_PATH "/012_cleaned_brain.ply");
-
-        vcl::save(testMesh, VCLIB_RESULTS_PATH "/012_test_clean.ply");
+        vcl::save(laplacianMesh, VCLIB_RESULTS_PATH "/013_laplacian_smoothed.ply");
+        vcl::save(cotangentMesh, VCLIB_RESULTS_PATH "/013_cotangent_smoothed.ply");
+        vcl::save(taubinMesh, VCLIB_RESULTS_PATH "/013_taubin_smoothed.ply");
+        vcl::save(normalMesh, VCLIB_RESULTS_PATH "/013_normal_smoothed.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

@@ -23,7 +23,7 @@
 #ifndef MESH_CLEAN_H
 #define MESH_CLEAN_H
 
-#include <vclib/algorithms/mesh/clean.h>
+#include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 

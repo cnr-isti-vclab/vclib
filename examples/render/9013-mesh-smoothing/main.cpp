@@ -20,28 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "mesh_clean.h"
+#include "mesh_smoothing.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    auto [originalMesh, mesh, testMesh] = meshClean();
+    auto meshes = meshSmoothing();
 
-    /****** Save the created meshes ******/
-
-    std::cout << "\n=== Saving Meshes ===" << std::endl;
-
-    try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
-
-        vcl::save(mesh, VCLIB_RESULTS_PATH "/012_cleaned_brain.ply");
-
-        vcl::save(testMesh, VCLIB_RESULTS_PATH "/012_test_clean.ply");
-
-        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
-
-    return 0;
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }

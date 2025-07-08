@@ -67,6 +67,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(9010-mesh-matrix-conversion)
     add_subdirectory(9011-mesh-texture-and-texcoords)
     add_subdirectory(9012-mesh-clean)
+    add_subdirectory(9013-mesh-smoothing)
 
     add_subdirectory(9818-mesh-principal-curvature)
     add_subdirectory(9819-mesh-sampling)
