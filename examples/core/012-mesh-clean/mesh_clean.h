@@ -50,22 +50,22 @@ auto meshClean()
               << mesh.faceNumber() << " faces" << std::endl;
 
     // Remove unreferenced vertices
-    uint removedUnref = vcl::removeUnreferencedVertices(mesh);
+    vcl::uint removedUnref = vcl::removeUnreferencedVertices(mesh);
     std::cout << "Removed " << removedUnref
               << " unreferenced vertices" << std::endl;
 
     // Remove duplicated vertices
-    uint removedDupVerts = vcl::removeDuplicatedVertices(mesh);
+    vcl::uint removedDupVerts = vcl::removeDuplicatedVertices(mesh);
     std::cout << "Removed " << removedDupVerts
               << " duplicated vertices" << std::endl;
 
     // Remove duplicated faces
-    uint removedDupFaces = vcl::removeDuplicatedFaces(mesh);
+    vcl::uint removedDupFaces = vcl::removeDuplicatedFaces(mesh);
     std::cout << "Removed " << removedDupFaces
               << " duplicated faces" << std::endl;
 
     // Remove degenerate faces
-    uint removedDegFaces = vcl::removeDegenerateFaces(mesh);
+    vcl::uint removedDegFaces = vcl::removeDegenerateFaces(mesh);
     std::cout << "Removed " << removedDegFaces
               << " degenerate faces" << std::endl;
 
@@ -88,11 +88,11 @@ auto meshClean()
     std::cout << "Is water tight: " << (waterTight ? "Yes" : "No") << std::endl;
 
     // Count non-manifold vertices
-    uint nonManifold = vcl::numberNonManifoldVertices(mesh);
+    vcl::uint nonManifold = vcl::numberNonManifoldVertices(mesh);
     std::cout << "Non-manifold vertices: " << nonManifold << std::endl;
 
     // Count holes
-    uint holes = vcl::numberHoles(mesh);
+    vcl::uint holes = vcl::numberHoles(mesh);
     std::cout << "Number of holes: " << holes << std::endl;
 
     /****** Connected components analysis ******/
@@ -133,12 +133,12 @@ auto meshClean()
     testMesh.name() = "Test Mesh";
 
     // Add normal vertices
-    uint v0 = testMesh.addVertex(vcl::Point3d(0, 0, 0));
-    uint v1 = testMesh.addVertex(vcl::Point3d(1, 0, 0));
-    uint v2 = testMesh.addVertex(vcl::Point3d(0, 1, 0));
+    vcl::uint v0 = testMesh.addVertex(vcl::Point3d(0, 0, 0));
+    vcl::uint v1 = testMesh.addVertex(vcl::Point3d(1, 0, 0));
+    vcl::uint v2 = testMesh.addVertex(vcl::Point3d(0, 1, 0));
     
     // Add a vertex with NaN position
-    uint v3 = testMesh.addVertex(vcl::Point3d(
+    vcl::uint v3 = testMesh.addVertex(vcl::Point3d(
         std::numeric_limits<double>::quiet_NaN(), 0, 0));
 
     // Add faces
@@ -150,7 +150,7 @@ auto meshClean()
               << testMesh.faceNumber() << " faces" << std::endl;
 
     // Remove degenerate vertices and associated faces
-    uint removedDegVerts = vcl::removeDegeneratedVertices(testMesh, true);
+    vcl::uint removedDegVerts = vcl::removeDegeneratedVertices(testMesh, true);
     std::cout << "Removed " << removedDegVerts 
               << " degenerate vertices" << std::endl;
 
