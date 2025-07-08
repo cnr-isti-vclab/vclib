@@ -428,12 +428,15 @@ protected:
     {
         using Comps = T::Components;
 
-        uint on = other.elementNumber();
+        uint on = other.elementContainerSize();
         uint n  = elementContainerSize();
         addElements(on);
         for (uint i = 0; i < on; ++i) {
             // copy everything from the other elements, also the (not updated)
             // pointers:
+            if (other.element(i).deleted()) {
+                deleteElement(n + i);
+            }
             element(n + i) = other.element(i);
             element(n + i).setParentMesh(mParentMesh);
         }
@@ -635,7 +638,8 @@ protected:
      * not.
      *
      * @param[in] begin: the index of the first element to be included in the
-     * range. It must be less than elementContainerSize() and the end index.
+     * range. It must be less or equal to elementContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last element to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate
@@ -643,10 +647,10 @@ protected:
      */
     View<ElementIterator> elements(uint begin, uint end = UINT_NULL)
     {
-        assert(begin < elementContainerSize());
+        assert(begin <= elementContainerSize());
         if (end == UINT_NULL || end > elementContainerSize())
             end = elementContainerSize();
-        assert(begin < end);
+        assert(begin <= end);
         return View(elementBegin(false) + begin, elementBegin(false) + end);
     }
 
@@ -696,7 +700,8 @@ protected:
      * not.
      *
      * @param[in] begin: the index of the first element to be included in the
-     * range. It must be less than elementContainerSize() and the end index.
+     * range. It must be less or equal to elementContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last element to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate
@@ -704,12 +709,11 @@ protected:
      */
     View<ConstElementIterator> elements(uint begin, uint end = UINT_NULL) const
     {
-        assert(begin < elementContainerSize());
+        assert(begin <= elementContainerSize());
         if (end == UINT_NULL || end > elementContainerSize())
             end = elementContainerSize();
-        assert(begin < end);
-        return View(
-            elementBegin(false) + begin, elementBegin(false) + end);
+        assert(begin <= end);
+        return View(elementBegin(false) + begin, elementBegin(false) + end);
     }
 
     void enableAllOptionalComponents()
@@ -720,6 +724,40 @@ protected:
     void disableAllOptionalComponents()
     {
         mVerticalCompVecTuple.disableAllOptionalComponents();
+    }
+
+    template<typename C>
+    bool isComponentAvailable() const
+    {
+        if constexpr (comp::HasComponentOfType<T, C::COMPONENT_ID>) {
+            if constexpr (comp::
+                              HasOptionalComponentOfType<T, C::COMPONENT_ID>) {
+                return mVerticalCompVecTuple.template isComponentEnabled<C>();
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    template<uint COMP_ID>
+    bool isComponentAvailable() const
+    {
+        if constexpr (comp::HasComponentOfType<T, COMP_ID>) {
+            if constexpr (comp::HasOptionalComponentOfType<T, COMP_ID>) {
+                return mVerticalCompVecTuple
+                    .template isComponentEnabled<COMP_ID>();
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
     }
 
     template<typename C>
@@ -1068,7 +1106,7 @@ private:
     template<typename Comp>
     void appendVerticalComponent(const ElementContainer<T>& other)
     {
-        uint on = other.elementNumber();
+        uint on = other.elementContainerSize();
         uint n  = elementContainerSize() - on;
 
         if (mVerticalCompVecTuple.template isComponentEnabled<Comp>() &&
@@ -1086,7 +1124,7 @@ private:
     void appendCustomComponents(const ElementContainer<T>& other)
     {
         if constexpr (comp::HasCustomComponents<T>) {
-            uint on = other.elementNumber();
+            uint on = other.elementContainerSize();
             uint n  = elementContainerSize() - on;
 
             std::vector<std::string> ccNames =

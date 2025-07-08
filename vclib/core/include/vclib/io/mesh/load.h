@@ -28,6 +28,10 @@
 #include "ply/load.h"
 #include "stl/load.h"
 
+#ifdef VCLIB_WITH_TINYGLTF
+#include "gltf/load.h"
+#endif
+
 #include "capability.h"
 
 /**
@@ -58,6 +62,10 @@ inline std::set<FileFormat> loadMeshFormats()
     ff.insert(offFileFormat());
     ff.insert(plyFileFormat());
     ff.insert(stlFileFormat());
+
+#ifdef VCLIB_WITH_TINYGLTF
+    ff.insert(gltfFileFormat());
+#endif
 
     return ff;
 }
@@ -107,6 +115,11 @@ void load(
     else if (ff == stlFileFormat()) {
         loadStl(m, filename, loadedInfo, log, settings);
     }
+#ifdef VCLIB_WITH_TINYGLTF
+    else if (ff == gltfFileFormat()) {
+        loadGltf(m, filename, loadedInfo, log, settings);
+    }
+#endif
     else {
         throw UnknownFileFormatException(ff.extensions().front());
     }

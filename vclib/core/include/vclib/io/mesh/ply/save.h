@@ -38,6 +38,7 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
     const MeshType&     m,
     std::ostream&       fp,
+    const std::string&  basePath = "",
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
@@ -65,7 +66,7 @@ void savePly(
             header.setNumberEdges(m.edgeNumber());
         }
     }
-    writePlyTextures(header, m, log, settings);
+    writePlyTextures(header, m, basePath, log, settings);
 
     // this should never happen
     if (!header.isValid())
@@ -93,9 +94,10 @@ void savePly(
     const MeshType&     m,
     std::ostream&       fp,
     const SaveSettings& settings,
-    LogType&            log = nullLogger)
+    const std::string&  basePath = "",
+    LogType&            log      = nullLogger)
 {
-    savePly(m, fp, log, settings);
+    savePly(m, fp, basePath, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
@@ -107,7 +109,9 @@ void savePly(
 {
     std::ofstream fp = openOutputFileStream(filename, "ply");
 
-    savePly(m, fp, log, settings);
+    std::string basePath = FileInfo::pathWithoutFileName(filename);
+
+    savePly(m, fp, basePath, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

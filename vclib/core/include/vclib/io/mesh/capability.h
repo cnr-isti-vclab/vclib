@@ -28,6 +28,10 @@
 #include "ply/capability.h"
 #include "stl/capability.h"
 
+#ifdef VCLIB_WITH_TINYGLTF
+#include "gltf/capability.h"
+#endif
+
 #include <vclib/exceptions/io.h>
 #include <vclib/misc/string.h>
 
@@ -48,6 +52,11 @@ inline MeshInfo formatCapability(const std::string& format)
     else if (ext == "stl") {
         return stlFormatCapability();
     }
+#ifdef VCLIB_WITH_TINYGLTF
+    else if (ext == "gltf" || ext == "glb") {
+        return gltfFormatCapability();
+    }
+#endif
     else {
         throw UnknownFileFormatException(ext);
     }

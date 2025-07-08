@@ -39,7 +39,6 @@ void applyTransformMatrix(
 
     multiplyPointsByMatrix(mesh.vertices() | vcl::views::positions, matrix);
 
-
     // TODO: automatize: for each element, check if it has normal and apply
     // the matrix to it
     if (updateNormals) {

@@ -481,7 +481,8 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first vertex to be included in the
-     * range. It must be less than vertexContainerSize() and the end index.
+     * range. It must be less or equal to vertexContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last vertex to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate
@@ -537,7 +538,8 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first vertex to be included in the
-     * range. It must be less than vertexContainerSize() and the end index.
+     * range. It must be less or equal to vertexContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last vertex to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate

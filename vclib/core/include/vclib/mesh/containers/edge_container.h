@@ -446,7 +446,8 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first edge to be included in the
-     * range. It must be less than edgeContainerSize() and the end index.
+     * range. It must be less or equal to edgeContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last edge to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate
@@ -502,7 +503,8 @@ public:
      * not.
      *
      * @param[in] begin: the index of the first edge to be included in the
-     * range. It must be less than edgeContainerSize() and the end index.
+     * range. It must be less or equal to edgeContainerSize() and less or
+     * equal to the end index.
      * @param[in] end: the index of the last edge to be included in the
      * range.
      * @return An object having begin() and end() function, allowing to iterate

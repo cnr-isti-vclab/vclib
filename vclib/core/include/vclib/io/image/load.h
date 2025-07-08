@@ -36,6 +36,7 @@
 #include <vclib/space/core/image.h>
 
 #include <memory>
+#include <set>
 #include <string>
 
 namespace vcl {
