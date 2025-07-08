@@ -43,8 +43,12 @@ auto meshClean()
 
     std::cout << "=== Loading and Cleaning Brain Mesh ===" << std::endl;
 
-    vcl::TriMesh mesh = 
+    vcl::TriMesh originalMesh =
         vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+    originalMesh.name() = "Original Brain Mesh";
+
+    vcl::TriMesh mesh = originalMesh;
+    mesh.name() = "Cleaned Brain Mesh";
 
     std::cout << "Original mesh: " << mesh.vertexNumber() << " vertices, "
               << mesh.faceNumber() << " faces" << std::endl;
@@ -161,7 +165,7 @@ auto meshClean()
 
     std::cout << "Example completed successfully!\n";
 
-    return std::make_tuple(mesh, testMesh);
+    return std::make_tuple(originalMesh, mesh, testMesh);
 }
 
 #endif // MESH_CLEAN_H

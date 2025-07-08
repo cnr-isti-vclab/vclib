@@ -22,26 +22,21 @@
 
 #include "mesh_clean.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    auto [originalMesh, mesh, testMesh] = meshClean();
+    auto meshes = meshClean();
 
-    /****** Save the created meshes ******/
+    std::apply(
+        [](auto&&... args) {
+            (vcl::updatePerVertexAndFaceNormals(args), ...);
+        },
+        meshes);
 
-    std::cout << "\n=== Saving Meshes ===" << std::endl;
-
-    try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
-
-        vcl::savePly(mesh, VCLIB_RESULTS_PATH "/012_cleaned_brain.ply");
-
-        vcl::savePly(testMesh, VCLIB_RESULTS_PATH "/012_test_clean.ply");
-
-        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
-
-    return 0;
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }
