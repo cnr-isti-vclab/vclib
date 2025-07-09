@@ -30,5 +30,5 @@ set(SOURCES
 
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 013-mesh-smoothing
+    VCLIB_CORE_EXAMPLE 013-mesh-clean
     SOURCES ${SOURCES})

@@ -36,7 +36,7 @@
 
 auto meshSmoothing()
 {
-    std::cout << "=== VCLib Example 013: Mesh Smoothing ===\n\n";
+    std::cout << "=== VCLib Example 014: Mesh Smoothing ===\n\n";
 
     /****** Load a mesh for smoothing ******/
 

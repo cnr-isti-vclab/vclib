@@ -35,7 +35,7 @@
 
 auto meshCurvature()
 {
-    std::cout << "=== VCLib Example 014: Mesh Curvature ===\n\n";
+    std::cout << "=== VCLib Example 015: Mesh Curvature ===\n\n";
 
     /****** Load a mesh for curvature computation ******/
 

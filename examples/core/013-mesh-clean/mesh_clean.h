@@ -37,7 +37,7 @@
 
 auto meshClean()
 {
-    std::cout << "=== VCLib Example 012: Mesh Cleaning ===\n\n";
+    std::cout << "=== VCLib Example 013: Mesh Cleaning ===\n\n";
 
     /****** Load a mesh and perform basic cleaning ******/
 
@@ -78,55 +78,6 @@ auto meshClean()
 
     std::cout << "Cleaned mesh: " << mesh.vertexNumber() << " vertices, "
               << mesh.faceNumber() << " faces\n" << std::endl;
-
-    /****** Topology analysis ******/
-
-    std::cout << "=== Topology Analysis ===" << std::endl;
-
-    // Enable adjacency information for topology checks
-    mesh.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(mesh);
-
-    // Check if mesh is water tight
-    bool waterTight = vcl::isWaterTight(mesh);
-    std::cout << "Is water tight: " << (waterTight ? "Yes" : "No") << std::endl;
-
-    // Count non-manifold vertices
-    vcl::uint nonManifold = vcl::numberNonManifoldVertices(mesh);
-    std::cout << "Non-manifold vertices: " << nonManifold << std::endl;
-
-    // Count holes
-    vcl::uint holes = vcl::numberHoles(mesh);
-    std::cout << "Number of holes: " << holes << std::endl;
-
-    /****** Connected components analysis ******/
-
-    std::cout << "=== Connected Components Analysis ===" << std::endl;
-
-    // Load a mesh with multiple components
-    vcl::TriMesh rangeMesh = 
-        vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/rangemap.ply");
-
-    rangeMesh.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(rangeMesh);
-
-    std::cout << "Range mesh: " << rangeMesh.vertexNumber() << " vertices, "
-              << rangeMesh.faceNumber() << " faces" << std::endl;
-
-    // Find connected components
-    auto components = vcl::connectedComponents(rangeMesh);
-    std::cout << "Number of connected components: " 
-              << components.size() << std::endl;
-
-    // Print component sizes
-    for (size_t i = 0; i < components.size() && i < 5; ++i) {
-        std::cout << "Component " << i << ": " 
-                  << components[i].size() << " faces" << std::endl;
-    }
-    if (components.size() > 5) {
-        std::cout << "... and " << (components.size() - 5) 
-                  << " more components" << std::endl;
-    }
 
     /****** Removing degenerate vertices with NaN positions ******/
 

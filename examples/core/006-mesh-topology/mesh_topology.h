@@ -238,12 +238,9 @@ inline void meshTopology()
     vcl::uint F = mesh.faceNumber();
 
     // Count edges by examining face adjacencies
-    vcl::uint E = 0;
-    for (const auto& face : mesh.faces()) {
-        E += 3; // Each triangle has 3 edges
-    }
-    E /= 2;           // Each edge is shared by 2 faces (except border edges)
-    E += borderEdges; // Add back the border edges
+    vcl::uint E = F * 3; // Each triangle has 3 edges
+    E /= 2;              // Each edge is shared by 2 faces (except border edges)
+    E += borderEdges;    // Add back the border edges
 
     int eulerCharacteristic = V - E + F;
 
