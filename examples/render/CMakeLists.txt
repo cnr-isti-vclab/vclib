@@ -69,6 +69,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(9013-mesh-clean)
     add_subdirectory(9014-mesh-smoothing)
     add_subdirectory(9015-mesh-curvature)
+    add_subdirectory(9016-face-flooding)
 
     add_subdirectory(9819-mesh-sampling)
     add_subdirectory(9821-mesh-sphere-intersection)
