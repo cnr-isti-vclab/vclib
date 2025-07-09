@@ -48,7 +48,7 @@ typedef enum {
 } VCLibPrincipalCurvatureAlgorithm;
 
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
+void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
 {
     requirePerVertexPrincipalCurvature(m);
     requirePerVertexAdjacentFaces(m);

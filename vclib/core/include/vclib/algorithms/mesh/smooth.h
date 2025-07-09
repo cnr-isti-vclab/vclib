@@ -261,8 +261,8 @@ void smoothPerVertexNormalsPointCloud(
     uint      neighborNum,
     uint      iterNum)
 {
-    using Scalar = MeshType::VertexType::PositionType::ScalarType;
-    KDTree<Scalar> tree(m);
+    using PointType = MeshType::VertexType::PositionType;
+    KDTree<PointType> tree(m);
     smoothPerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
 }
 

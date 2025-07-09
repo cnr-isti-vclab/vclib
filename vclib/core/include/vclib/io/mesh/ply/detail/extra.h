@@ -74,8 +74,7 @@ void writePlyTextures(
             if constexpr (HasTextureImages<MeshType>) {
                 if (settings.saveTextureImages) {
                     try {
-                        saveImage(
-                            mesh.texture(k).image(), basePath + str);
+                        saveImage(mesh.texture(k).image(), basePath + str);
                     }
                     catch (const std::runtime_error& e) {
                         log.log(e.what(), LogType::WARNING_LOG);

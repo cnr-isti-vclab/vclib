@@ -131,6 +131,7 @@ public:
         VISIBLE      = VCL_MRS_DRAW_POINTS,
         SHAPE_PIXEL  = VCL_MRS_POINTS_PIXEL,
         SHAPE_CIRCLE = VCL_MRS_POINTS_CIRCLE,
+        SHAPE_SPHERE = VCL_MRS_POINTS_SPHERE,
         SHADING_NONE = VCL_MRS_POINTS_SHADING_NONE,
         SHADING_VERT = VCL_MRS_POINTS_SHADING_VERT,
         COLOR_VERTEX = VCL_MRS_POINTS_COLOR_VERTEX,
@@ -426,7 +427,7 @@ private:
     inline static constexpr const auto POINTS_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Points>(
             Points::SHAPE_PIXEL,  // first
-            Points::SHAPE_CIRCLE, // last
+            Points::SHAPE_SPHERE, // last
             Points::SHADING_NONE, // first
             Points::SHADING_VERT, // last
             Points::COLOR_VERTEX, // first
