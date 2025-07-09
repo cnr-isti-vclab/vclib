@@ -27,6 +27,11 @@
 #include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/render_app.h>
 
+#ifdef VCLIB_WITH_IMGUI
+// include imgui BEFORE glfw (on linux/x11)
+#include <vclib/imgui/imgui_drawer.h>
+#endif
+
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/widget_manager.h>
 #endif
@@ -38,10 +43,6 @@
 #include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
-
-#ifdef VCLIB_WITH_IMGUI
-#include <vclib/imgui/imgui_drawer.h>
-#endif
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 #include <vclib/bgfx/drawers/text_drawer.h>
