@@ -20,53 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
+#include "mesh_convex_hull.h"
 
-int main()
+#include <default_viewer.h>
+
+int main(int argc, char** argv)
 {
-    vcl::TriMesh m =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+    auto meshes = meshConvexHull();
 
-    m.enablePerFaceAdjacentFaces();
-    m.enablePerFaceColor();
+    std::apply(
+        [](auto&&... args) {
+            (vcl::updatePerVertexAndFaceNormals(args), ...);
+        },
+        meshes);
 
-    vcl::updatePerVertexAndFaceNormals(m);
-    vcl::updatePerFaceAdjacentFaces(m);
-    vcl::updateBoundingBox(m);
-
-    vcl::setPerFaceColor(m, vcl::Color::Gray);
-
-    auto min = m.boundingBox().min();
-
-    auto func = [&](const vcl::TriMesh::Face& f) {
-        return vcl::facePointVisibility(f, min);
-    };
-
-    bool         found    = false;
-    unsigned int seedFace = vcl::UINT_NULL;
-    auto         it       = m.faceBegin();
-    while (!found) {
-        if (func(*it)) {
-            found    = true;
-            seedFace = it->index();
-        }
-        ++it;
-    }
-
-    m.face(seedFace).color() = vcl::Color::Red;
-
-    auto patchFaces = vcl::floodFacePatch(m.face(seedFace), func);
-
-    for (auto fPtr : patchFaces) {
-        if (fPtr->index() != seedFace) {
-            auto& f   = m.face(fPtr->index());
-            f.color() = vcl::Color::Green;
-        }
-    }
-
-    vcl::savePly(m, VCLIB_RESULTS_PATH "/bimba_patch.ply");
-
-    return 0;
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }
