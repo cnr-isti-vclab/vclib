@@ -23,7 +23,7 @@
 if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
     message(STATUS "- ImGui - using downloaded source")
 
-    set(IMGUI_VERSION 1.91.9b)
+    set(IMGUI_VERSION 1.92.0)
 
     # ImGui (glfw + bgfx)
     FetchContent_Declare(
