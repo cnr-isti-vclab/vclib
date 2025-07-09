@@ -3,6 +3,7 @@ import os;
 import sys;
 import subprocess;
 import types;
+import platform;
 
 SMOOTH = 0;
 FLAT = 1;
@@ -10,6 +11,11 @@ FLAT = 1;
 UBER = 0;
 SPLIT = 1;
 UBER_IF = 2;
+
+COL_VERT = 0;
+COL_FACE = 1;
+TEX_VERT = 2;
+TEX_WEDGE = 3;
 
 def shadingTypeOpt(enum):
     global SMOOTH, FLAT
@@ -27,26 +33,39 @@ def shadingSplittingOpt(enum):
     else:
         return None
     
+def coloringOpt(enum):
+    global COL_VERT, COL_FACE, TEX_VERT, TEX_WEDGE;
+    if enum == COL_VERT:
+        return "--force-col-vertex"
+    elif enum == COL_FACE:
+        return "--force-col-face"
+    elif enum == TEX_VERT:
+        return "--force-tex-vertex"
+    elif enum == TEX_WEDGE:
+        return "--force-tex-wedge"
 
 class Args:
-    def __init__(self, shadingType: int, shadingSplitting: int, resolution: tuple[int,int], mesh: str):
+    def __init__(self, shadingType: int, shadingSplitting: int, coloring: int, resolution: tuple[int,int], mesh: str):
         self.shadingType = shadingType
         self.shadingSplitting = shadingSplitting
+        self.coloring = coloring
         self.resolution = resolution
         self.mesh = mesh
 
     @staticmethod
-    def combinatory(shadTypeList: list[int], shadSplitList: list[int], resList: list[tuple[int,int]], meshList: list[str]):
+    def combinatory(shadTypeList: list[int], shadSplitList: list[int], coloringList: list[int], resList: list[tuple[int,int]], meshList: list[str]):
         for mesh in meshList:
             for shadType in shadTypeList:
                 for shadSplit in shadSplitList:
-                    for res in resList:
-                        yield Args(shadType, shadSplit, res, mesh)
+                    for coloring in coloringList:
+                        for res in resList:
+                            yield Args(shadType, shadSplit, coloring, res, mesh)
 
     def asArgList(self):
         ret = list()
         shadOpt = shadingTypeOpt(self.shadingType)
         splitOpt = shadingSplittingOpt(self.shadingSplitting)
+        colOpt = coloringOpt(self.coloring)
         if shadOpt is not None:
             ret.append(shadOpt)
         if splitOpt is not None:
@@ -55,56 +74,45 @@ class Args:
             ret.append("--res")
             ret.append(str(self.resolution[0]))
             ret.append(str(self.resolution[1]))
+        if colOpt is not None:
+            ret.append(colOpt)
         ret.append(self.mesh)
         return ret
-    
-    def resultFilename(self):
-        global UBER, SPLIT, UBER_IF, SMOOTH, FLAT
-        split = "uber";
-        shad = "smooth";
-        if(self.shadingSplitting == SPLIT):
-            split = "split"
-        elif(self.shadingSplitting == UBER_IF):
-            split = "uber_static_if"
-        if(self.shadingType == FLAT):
-            shad = "flat"
-        return split + "_" + shad + "_" + str(self.resolution[0]) + "x" + str(self.resolution[1]) + ".csv"
 
 def run(executable_name: str, execution: Args):
     if not os.path.exists(execution.mesh):
             print(f"{execution.mesh} model not found, skipping", file=sys.stderr);
             return;
-    resultPath = f"./results/{execution.mesh.split('/').pop()}";
-    create_all_in_path(resultPath);
-    subprocess.run([executable_name, *execution.asArgList(), "-o", resultPath + "/" + execution.resultFilename() , "-f", "250", "--scale", "+1"]);
+    subprocess.run([executable_name, *execution.asArgList(), "-o", "./test_results.json", "-f", "250", "--scale", "+1", "--device-name", platform.node()]);
 
 def main():
-    global SMOOTH, FLAT, UBER, SPLIT, UBER_IF
+    global SMOOTH, FLAT, UBER, SPLIT, UBER_IF, COL_VERT, COL_FACE, TEX_VERT, TEX_WEDGE
+    repeat = 1
+    if len(sys.argv) > 1:
+        try:
+            repeat = int(sys.argv[1])
+        except (TypeError, ValueError):
+            repeat = 1
     executable_name = None;
     if os.name == "nt":
         executable_name = "./980-benchmark.exe"
     else:
         executable_name = "./980-benchmark"
     argsList = [
-        Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [(960, 540), (2560, 1440)], [
-                "./meshes/small/myram_col_vert.ply",
-                "./meshes/small/myram_col_face.ply",
-                "./meshes/small/myram_tex_wedge.ply",
-                "./meshes/medium/gargoyle500K_col_vert.ply",
-                "./meshes/medium/gargoyle500K_col_face.ply",
-                "./meshes/medium/gargoyle500K_tex_wedge.ply",
-                "./meshes/big/ESTE_PRINT_col_vert.ply",
-                "./meshes/big/ESTE_PRINT_col_face.ply",
-                "./meshes/big/ESTE_PRINT_tex_wedge.ply"
+        Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [COL_VERT, COL_FACE, TEX_WEDGE], [(960, 540), (2560, 1440)], [
+                "./meshes/small/myram.ply",
+                "./meshes/medium/gargoyle500K.ply",
+                "./meshes/big/ESTE_PRINT.ply"
             ]
         )
     ]
-    for args in argsList:
-        if isinstance(args, types.GeneratorType):
-            for generatedArgs in args:
-                run(executable_name, generatedArgs);
-        else:
-            run(executable_name, args);
+    for i in range(repeat):
+        for args in argsList:
+            if isinstance(args, types.GeneratorType):
+                for generatedArgs in args:
+                    run(executable_name, generatedArgs);
+            else:
+                run(executable_name, args);
     return;
 
 def create_all_in_path(path: str):

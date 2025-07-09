@@ -29,6 +29,7 @@
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
+#include "980_benchmark_json_printer.h"
 #include <vclib/render/automation/actions.h>
 #include <vclib/render/automation/actions/automation_action_factory.h>
 #include <vclib/render/automation/metrics.h>
@@ -64,7 +65,10 @@ static const vcl::uint DEFAULT_REPETITIONS = 2;
 
 static const vcl::uint DEFAULT_FRAMES = 1000;
 
-vcl::DrawableMesh<vcl::TriMesh> getMesh(std::string path, vcl::Color userColor)
+vcl::DrawableMesh<vcl::TriMesh> getMesh(
+    std::string                   path,
+    vcl::Color                    userColor,
+    vcl::MeshRenderInfo::Surface* coloring = NULL)
 {
     vcl::LoadSettings ldstngs {true, true};
     vcl::TriMesh      mesh = vcl::load<vcl::TriMesh>(path, ldstngs);
@@ -74,17 +78,27 @@ vcl::DrawableMesh<vcl::TriMesh> getMesh(std::string path, vcl::Color userColor)
     mrs.setSurfaceUserColor(userColor);
     mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_USER);
 
+    vcl::MeshRenderInfo::Surface temp_coloring =
+        vcl::MeshRenderInfo::Surface::COLOR_USER;
+
     if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
+        temp_coloring = vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX;
     }
     else if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX);
+        temp_coloring = vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX;
     }
     else if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX)) {
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX);
+        temp_coloring = vcl::MeshRenderInfo::Surface::COLOR_VERTEX;
     }
     else if (mrs.canSurface(vcl::MeshRenderInfo::Surface::COLOR_FACE)) {
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_FACE);
+        temp_coloring = vcl::MeshRenderInfo::Surface::COLOR_FACE;
+    }
+    if (coloring != NULL) {
+        (*coloring) = temp_coloring;
     }
     vcl::DrawableMesh<vcl::TriMesh> drawable(mesh);
     drawable.setRenderSettings(mrs);
@@ -122,7 +136,12 @@ int main(int argc, char** argv)
         {"--res",              2},
         {"--user-color",       3},
         {"--force-user-color", 0},
-        {"--scale",            1}
+        {"--scale",            1},
+        {"--device-name",      1},
+        {"--force-col-vertex", 0},
+        {"--force-col-face",   0},
+        {"--force-tex-vertex", 0},
+        {"--force-tex-wedge",  0}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
@@ -194,6 +213,23 @@ int main(int argc, char** argv)
         exit(1);
     }
 
+    // Check if there are multiple color forcing options
+    if (options.contains("--force-user-color") +
+            options.contains("--force-col-face") +
+            options.contains("--force-col-vertex") +
+            options.contains("--force-tex-wedge") +
+            options.contains("--force-tex-vertex") >
+        1) {
+        std::cerr << "Error: conflicting color forcing options\n";
+        exit(1);
+    }
+
+    // --device-name option implementation
+    std::string device_name = "UNKNOWN_DEVICE";
+    if (options.contains("--device-name")) {
+        device_name = options["--device-name"][0];
+    }
+
     // -f option implementation
     vcl::uint frames = DEFAULT_FRAMES;
     if (options.contains("-f")) {
@@ -219,8 +255,9 @@ int main(int argc, char** argv)
     }
 
     // --res option implementation
-    vcl::uint width  = DEFAULT_WINDOW_WIDTH;
-    vcl::uint height = DEFAULT_WINDOW_HEIGHT;
+    vcl::uint   width      = DEFAULT_WINDOW_WIDTH;
+    vcl::uint   height     = DEFAULT_WINDOW_HEIGHT;
+    std::string resolution = "";
     if (options.contains("--res")) {
         width  = std::strtoul(options["--res"][0].c_str(), nullptr, 10);
         height = std::strtoul(options["--res"][1].c_str(), nullptr, 10);
@@ -237,6 +274,7 @@ int main(int argc, char** argv)
             height = DEFAULT_WINDOW_HEIGHT;
         }
     }
+    resolution = std::to_string(width) + "x" + std::to_string(height);
 
     // --user-color implementation
     vcl::Color userColor = DEFAULT_USER_COLOR;
@@ -248,22 +286,64 @@ int main(int argc, char** argv)
                 256);
     }
 
+    std::string                  meshColoring = "UNKNOWN";
+    vcl::MeshRenderInfo::Surface selectedSurfaceColoring =
+        vcl::MeshRenderInfo::Surface::COUNT;
+    if (options.contains("--force-user-color")) {
+        selectedSurfaceColoring = vcl::MeshRenderInfo::Surface::COLOR_USER;
+        meshColoring            = "col user";
+    }
+
+    if (options.contains("--force-col-face")) {
+        selectedSurfaceColoring = vcl::MeshRenderInfo::Surface::COLOR_FACE;
+        meshColoring            = "col face";
+    }
+
+    if (options.contains("--force-col-vertex")) {
+        selectedSurfaceColoring = vcl::MeshRenderInfo::Surface::COLOR_VERTEX;
+        meshColoring            = "col vert";
+    }
+
+    if (options.contains("--force-tex-vertex")) {
+        selectedSurfaceColoring =
+            vcl::MeshRenderInfo::Surface::COLOR_VERTEX_TEX;
+        meshColoring = "tex vert";
+    }
+
+    if (options.contains("--force-tex-wedge")) {
+        selectedSurfaceColoring = vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX;
+        meshColoring            = "tex wedge";
+    }
+
     BenchmarkViewer tw("Benchmark", width, height);
 
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    // Insert the meshes one next to the other along the X axis
-    vcl::Box3d bb;
+    // Insert the meshes one next to the other along the X axis & generate mesh
+    // name
+    std::string meshName = "";
+    vcl::Box3d  bb;
     for (auto& path : remainingArgs) {
 #ifdef _WIN32
         std::replace(path.begin(), path.end(), '\\', '/');
 #endif
+        if (meshName != "") {
+            meshName += "+";
+        }
+        size_t found_slash = path.rfind('/');
+        if (found_slash == std::string::npos) {
+            meshName += path;
+        }
+        else {
+            meshName += path.substr(path.rfind('/')+1);
+        }
         vcl::DrawableMesh<vcl::TriMesh> msh = getMesh(path, userColor);
 
-        if (options.contains("--force-user-color")) {
-            auto mrs = msh.renderSettings();
-            mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_USER);
+        if (selectedSurfaceColoring != vcl::MeshRenderInfo::Surface::COUNT &&
+            msh.renderSettings().canSurface(selectedSurfaceColoring)) {
+            vcl::MeshRenderSettings mrs = msh.renderSettings();
+            mrs.setSurface(selectedSurfaceColoring);
             msh.setRenderSettings(mrs);
         }
 
@@ -347,39 +427,51 @@ int main(int argc, char** argv)
     }
     else if (options.contains("-o")) {
         std::vector<std::string> optArgs = options["-o"];
-        auto prntr = vcl::CsvBenchmarkPrinter(optArgs[0], true);
-        prntr.useDescription(false);
-        prntr.useHeader(false);
-        prntr.useUnitOfMeasure(false);
+        auto        prntr        = vcl::Benchmark980JsonPrinter(
+            optArgs[0],
+            device_name,
+            meshName,
+            shadingType,
+            splitType,
+            meshColoring,
+            resolution);
         tw.setPrinter(prntr);
     }
     else if (options.contains("--output-dir")) {
         std::string folderString = options["--output-dir"][0];
-        auto        prntr        = vcl::CsvBenchmarkPrinter(
-            folderString + splitType + "_result_" + shadingType + ".csv", true);
-        prntr.useDescription(false);
-        prntr.useHeader(false);
-        prntr.useUnitOfMeasure(false);
+        auto        prntr        = vcl::Benchmark980JsonPrinter(
+            folderString + splitType + "_result_" + shadingType + ".json",
+            device_name,
+            meshName,
+            shadingType,
+            splitType,
+            meshColoring,
+            resolution);
         tw.setPrinter(prntr);
     }
     else if (options.contains("--no-print")) {
         tw.setPrinter(vcl::NullBenchmarkPrinter());
     }
     else {
-        auto prntr = vcl::CsvBenchmarkPrinter(
-            "./" + splitType + "_result_" + shadingType + ".csv", true);
-        prntr.useDescription(false);
-        prntr.useHeader(false);
-        prntr.useUnitOfMeasure(false);
+        auto prntr = vcl::Benchmark980JsonPrinter(
+            "./" + splitType + "_result_" + shadingType + ".json", 
+            device_name,
+            meshName,
+            shadingType,
+            splitType,
+            meshColoring,
+            resolution);
         tw.setPrinter(prntr);
     }
 
     tw.terminateUponCompletion();
-    if(options.contains("--scale")) {
+    if (options.contains("--scale")) {
         float deltaS = std::strtof(options["--scale"][0].c_str(), nullptr);
-        if(deltaS == 0.0F) {
-            std::cerr << "Error: given scaling deltaS is invalid (unless you put 0 as its value). Scaling will be the default.\n";
-        }else{
+        if (deltaS == 0.0F) {
+            std::cerr << "Error: given scaling deltaS is invalid (unless you "
+                         "put 0 as its value). Scaling will be the default.\n";
+        }
+        else {
             tw.changeScaleMultiplicative(deltaS);
         }
     }
