@@ -20,8 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
-
 // imgui drawer must be included before the window manager...
 #include <vclib/imgui/imgui_drawer.h>
 
@@ -35,49 +33,50 @@
 #include "../lines_common.h"
 
 template<typename DerivedRenderApp>
-class LinesImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>
+class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
-    using ParentDrawer = vcl::imgui::ImGuiDrawer<DerivedRenderApp>;
+    using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
+    // lines 
+    const vcl::uint N_LINES = 200;
     std::shared_ptr<vcl::DrawableObjectVector> mLines;
-    const vcl::uint N_LINES = 20;
-    int mSelcted = 0;
+    int mSelected = 0;
 
 public:
     using ParentDrawer::ParentDrawer;
 
-    LinesImGuiDrawer(vcl::uint, vcl::uint) 
+    LinesDrawer(vcl::uint w, vcl::uint h)
+        : ParentDrawer(w, h)
     {
-        mLines = std::make_shared<vcl::DrawableObjectVector>(getDrawableLines(N_LINES));
+        mLines = std::make_shared<vcl::DrawableObjectVector>(
+            getDrawableLines(N_LINES));
+
+        // initialize the drawable object vector with CPU generated lines
+        ParentDrawer::setDrawableObjectVector(mLines);
     }
 
-    virtual void onDraw(vcl::uint viewId) override
+    virtual void onDraw(uint viewId) override
     {
-        // draw the scene
         ParentDrawer::onDraw(viewId);
 
-        if (!ParentDrawer::isWindowMinimized()) {
-            ImGui::Begin("Showing");
-
-            const char* items[] = { "CPU Generated" };
-
-            for (int i = 0; i < mLines->size(); i++)
-                ImGui::RadioButton(items[i], &mSelcted, i);
-            ImGui::End();
+        // TODO: selectable lines
+        ImGui::Begin("Showing");
+        const char* items[] = { "CPU Generated" };
+        for (int i = 0; i < mLines->size(); ++i) {
+            ImGui::RadioButton(items[i], &mSelected, i);
         }
-
-        mLines->at(mSelcted)->draw(viewId);
+        ImGui::End();
     }
 };
 
 int main(int argc, char** argv)
 {
-    using ImGuiDemo = vcl::RenderApp<
+    using LinesDemo = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        LinesImGuiDrawer,
-        vcl::TrackBallViewerDrawer>;
+        vcl::imgui::ImGuiDrawer,
+        LinesDrawer>;
 
-    ImGuiDemo tw("Test Lines ImGui GLFW");
+    LinesDemo tw("Test Lines ImGui GLFW");
 
     tw.fitScene();
 
