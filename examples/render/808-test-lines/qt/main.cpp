@@ -81,7 +81,6 @@ int main(int argc, char** argv)
     w.resize(1024, 768);
 
     w.show();
-    tw->setFocus();
 
     return app.exec();
 }
