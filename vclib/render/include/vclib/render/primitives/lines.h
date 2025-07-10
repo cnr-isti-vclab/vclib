@@ -42,7 +42,7 @@ public:
         GENERAL_COLOR     // Use general color in uniform data
     };
 
-    enum class ImplementationTypes {
+    enum class ImplementationType {
         CPU_GENERATED,     // Buffers pre-generated in CPU
         GPU_GENERATED,     // Buffers pre-generated in GPU with computes
         CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
@@ -53,10 +53,11 @@ public:
     };
 
 private:
-    uint8_t    mThickness  = 5;
-    ColorToUse mColorToUse = ColorToUse::PER_VERTEX_COLOR;
-    Uniform    mSettingUH  = Uniform("u_settings", bgfx::UniformType::Vec4);
-    ImplementationTypes       mType = ImplementationTypes::CPU_GENERATED;
+    uint8_t             mThickness  = 5;
+    ColorToUse          mColorToUse = ColorToUse::PER_VERTEX_COLOR;
+    ImplementationType  mType       = ImplementationType::CPU_GENERATED;
+
+    Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
     detail::CPUGeneratedLines mLinesImplementation;
 
 public:
@@ -71,27 +72,6 @@ public:
         mLinesImplementation.setPoints(
             vertCoords, vertColors, vertNormals, lineColors);
     }
-
-    void draw(uint viewId) const
-    {
-        bindSettingsUniform();
-        if (mType == ImplementationTypes::CPU_GENERATED)
-            mLinesImplementation.draw(viewId);
-    }
-
-    void swap(Lines& other)
-    {
-        using std::swap;
-
-        swap(mThickness, other.mThickness);
-        swap(mColorToUse, other.mColorToUse);
-        swap(mSettingUH, other.mSettingUH);
-
-        swap(mType, other.mType);
-        swap(mLinesImplementation, other.mLinesImplementation);
-    }
-
-    friend void swap(Lines& a, Lines& b) { a.swap(b); }
 
     void setPoints(
         const std::vector<float>& vertCoords,
@@ -110,6 +90,47 @@ public:
     ColorToUse colorToUse() const { return mColorToUse; }
 
     ColorToUse& colorToUse() { return mColorToUse; }
+
+    ImplementationType type() const { return mType; }
+
+    bool setImplementationType(ImplementationType type)
+    {
+        using enum ImplementationType;
+        if (mType == type)
+            return false; // no change
+
+        // TODO: check whether caps allow the new implementation type
+        // then set the implementation and the type
+        switch(type){
+            case CPU_GENERATED: // always supported
+                mLinesImplementation = detail::CPUGeneratedLines();
+                mType                = type;
+                return true;
+            default:
+                return false; // not supported
+        }
+    }
+
+    void draw(uint viewId) const
+    {
+        bindSettingsUniform();
+        if (mType == ImplementationType::CPU_GENERATED)
+            mLinesImplementation.draw(viewId);
+    }
+
+    void swap(Lines& other)
+    {
+        using std::swap;
+
+        swap(mThickness, other.mThickness);
+        swap(mColorToUse, other.mColorToUse);
+        swap(mSettingUH, other.mSettingUH);
+
+        swap(mType, other.mType);
+        swap(mLinesImplementation, other.mLinesImplementation);
+    }
+
+    friend void swap(Lines& a, Lines& b) { a.swap(b); }
 
 private:
     void bindSettingsUniform() const
