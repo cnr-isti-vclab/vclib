@@ -31,10 +31,9 @@
 
 namespace vcl {
 
-class DrawableLines : public vcl::DrawableObject
+class DrawableLines : public Lines, public vcl::DrawableObject
 {
     bool               mVisible = true;
-    Lines              mLines;
     std::vector<float> mVertCoords;
     std::vector<uint>  mVertColors;
     std::vector<float> mVertNormals;
@@ -65,21 +64,22 @@ public:
         else
             mLineColors = std::vector<uint>(vertCoords.size() / 6, 0xFFFFFFFF);
 
-        mLines.setPoints(mVertCoords, mVertColors, mVertNormals, mLineColors);
+        Lines::setPoints(mVertCoords, mVertColors, mVertNormals, mLineColors);
     }
 
     DrawableLines(const DrawableLines& other) :
             DrawableObject(other), mVertCoords(other.mVertCoords),
-            mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
-            mLineColors(other.mLineColors), mVisible(other.mVisible),
-            mLines(
+            Lines(
                 other.mVertCoords,
                 other.mVertColors,
                 other.mVertNormals,
-                other.mLineColors)
+                other.mLineColors,
+                other.thickness(),
+                other.colorToUse(),
+                other.type()),
+            mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
+            mLineColors(other.mLineColors), mVisible(other.mVisible)
     {
-        mLines.thickness() = other.mLines.thickness();
-        mLines.colorToUse() = other.mLines.colorToUse();
     }
 
     DrawableLines(DrawableLines&& other) { swap(other); }
@@ -96,12 +96,12 @@ public:
     {
         using std::swap;
         DrawableObject::swap(other);
+        DrawableLines::swap(other);
 
         swap(mVertCoords, other.mVertCoords);
         swap(mVertColors, other.mVertColors);
         swap(mVertNormals, other.mVertNormals);
         swap(mLineColors, other.mLineColors);
-        swap(mLines, other.mLines);
         swap(mVisible, other.mVisible);
     }
 
@@ -120,23 +120,12 @@ public:
         mVertColors  = vertColors;
         mVertNormals = vertNormals;
         mLineColors  = lineColors;
-        mLines.setPoints(vertCoords, vertColors, vertNormals, mLineColors);
-    }
-
-    uint8_t getThickness() const { return mLines.thickness(); }
-
-    Lines::ColorToUse getColorToUse() const { return mLines.colorToUse(); }
-
-    void setThickness(uint8_t thickness) { mLines.thickness() = thickness; }
-
-    void setColorToUse(Lines::ColorToUse colorToUse)
-    {
-        mLines.colorToUse() = colorToUse;
+        Lines::setPoints(vertCoords, vertColors, vertNormals, mLineColors);
     }
 
     // DrawableObject interface
 
-    void draw(uint viewId) const override { mLines.draw(viewId); }
+    void draw(uint viewId) const override { Lines::draw(viewId); }
 
     vcl::Box3d boundingBox() const override
     {

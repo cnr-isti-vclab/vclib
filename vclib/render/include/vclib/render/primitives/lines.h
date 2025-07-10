@@ -63,16 +63,25 @@ private:
 public:
     Lines() = default;
 
+    // TODO: remove this constructor
+    // implement the one that takes Buffers instead of vectors
     Lines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
-        const std::vector<uint>&  lineColors)
+        const std::vector<uint>&  lineColors,
+        uint8_t                   thickness = 5,
+        ColorToUse                colorToUse = ColorToUse::PER_VERTEX_COLOR,
+        ImplementationType        type = ImplementationType::CPU_GENERATED) :
+            mThickness(thickness), mColorToUse(colorToUse)
     {
+        setImplementationType(type);
         mLinesImplementation.setPoints(
             vertCoords, vertColors, vertNormals, lineColors);
     }
 
+    // TODO: remove this
+    // implement the one that takes Buffers instead of vectors
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,

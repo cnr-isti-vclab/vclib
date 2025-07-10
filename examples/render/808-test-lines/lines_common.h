@@ -64,7 +64,7 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
         pushRandomLine(vertCoords, vertColors);
     
     auto cpuLines = std::make_shared<vcl::DrawableLines>(vertCoords, vertColors);
-    cpuLines->setThickness(10);
+    cpuLines->thickness() = 10;
 
     vec.pushBack(*cpuLines.get());
 
