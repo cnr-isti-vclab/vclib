@@ -96,7 +96,7 @@ public:
     {
         using std::swap;
         DrawableObject::swap(other);
-        DrawableLines::swap(other);
+        Lines::swap(other);
 
         swap(mVertCoords, other.mVertCoords);
         swap(mVertColors, other.mVertColors);
