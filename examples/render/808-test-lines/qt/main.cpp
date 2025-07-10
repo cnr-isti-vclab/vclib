@@ -58,7 +58,12 @@ int main(int argc, char** argv)
     const vcl::uint N_LINES = 100;
 
     std::shared_ptr<vcl::DrawableObjectVector> vec =
-        std::make_shared<vcl::DrawableObjectVector>(getDrawableLines(N_LINES));
+        std::make_shared<vcl::DrawableObjectVector>();
+
+    vec->pushBack(std::move(getDrawableLines(N_LINES)));
+
+    std::shared_ptr<vcl::DrawableLines> lines =
+        std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
 
     tw->setDrawableObjectVector(vec);
 
@@ -69,12 +74,11 @@ int main(int argc, char** argv)
         cb,
         static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         [=](int index) {
-            std::cerr << "Showing " << index << std::endl;
-            for (vcl::uint i = 0; i < 5; ++i) {
-                vec->at(i)->setVisibility(false);
-            }
-            vec->at(index)->setVisibility(true);
+            using ImplementationType =  vcl::Lines::ImplementationType;
 
+            std::cerr << "Showing " << index << std::endl;
+
+            lines->setImplementationType((ImplementationType) index);
             tw->update();
         });
 

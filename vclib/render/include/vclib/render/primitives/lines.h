@@ -43,13 +43,17 @@ public:
     };
 
     enum class ImplementationType {
-        CPU_GENERATED,     // Buffers pre-generated in CPU
-        GPU_GENERATED,     // Buffers pre-generated in GPU with computes
-        CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
-        GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
-                           // computes
-        TEXTURE_INSTANCING // Using Instancing with textures generated in GPU
-        // computes
+        CPU_GENERATED = 0, // Buffers pre-generated in CPU
+
+        // TODO: uncomment when they will be implemented
+        // GPU_GENERATED,     // Buffers pre-generated in GPU with computes
+        // CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
+        // GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
+        //                    // computes
+        // TEXTURE_INSTANCING, // Using Instancing with textures generated in GPU
+        // // computes
+
+        COUNT
     };
 
 private:

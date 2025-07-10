@@ -53,7 +53,7 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
 }
 
 // return a vector that has a set of nLines lines with different types
-vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
+vcl::DrawableLines getDrawableLines(vcl::uint nLines)
 {
     vcl::DrawableObjectVector vec;
 
@@ -63,18 +63,10 @@ vcl::DrawableObjectVector getDrawableLines(vcl::uint nLines)
     for (vcl::uint i = 0; i < nLines; i++)
         pushRandomLine(vertCoords, vertColors);
     
-    auto cpuLines = std::make_shared<vcl::DrawableLines>(vertCoords, vertColors);
-    cpuLines->thickness() = 10;
+    auto lines = vcl::DrawableLines(vertCoords, vertColors);
+    lines.thickness() = 10;
 
-    vec.pushBack(*cpuLines.get());
-
-    for (vcl::uint i = 0; i < vec.size(); ++i) {
-        vec.at(i)->setVisibility(false);
-    }
-
-    vec.at(0)->setVisibility(true);
-
-    return vec;
+    return lines;
 }
 
 #endif // LINES_COMMON_H

@@ -38,7 +38,7 @@ class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
     // lines 
     const vcl::uint N_LINES = 200;
-    std::shared_ptr<vcl::DrawableObjectVector> mLines;
+    std::shared_ptr<vcl::DrawableLines> mLines;
     int mSelected = 0;
 
 public:
@@ -47,21 +47,27 @@ public:
     LinesDrawer(vcl::uint w, vcl::uint h)
         : ParentDrawer(w, h)
     {
-        mLines = std::make_shared<vcl::DrawableObjectVector>(
-            getDrawableLines(N_LINES));
+        std::shared_ptr<vcl::DrawableObjectVector> vec =
+            std::make_shared<vcl::DrawableObjectVector>();
 
         // initialize the drawable object vector with CPU generated lines
-        ParentDrawer::setDrawableObjectVector(mLines);
+        ParentDrawer::setDrawableObjectVector(vec);
+
+        vec->pushBack(std::move(getDrawableLines(N_LINES)));
+
+        mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
     }
 
     virtual void onDraw(uint viewId) override
     {
+        using enum vcl::Lines::ImplementationType;
+
         ParentDrawer::onDraw(viewId);
 
         // TODO: selectable lines
         ImGui::Begin("Showing");
         const char* items[] = { "CPU Generated" };
-        for (int i = 0; i < mLines->size(); ++i) {
+        for (int i = 0; i < vcl::toUnderlying(COUNT); ++i) {
             ImGui::RadioButton(items[i], &mSelected, i);
         }
         ImGui::End();
