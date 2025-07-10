@@ -123,12 +123,12 @@ public:
         mStream.close();
     }
 
-    std::shared_ptr<BenchmarkPrinter> clone() const&
+    std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
         return std::make_shared<Benchmark980JsonPrinter>(*this);
     }
 
-    std::shared_ptr<BenchmarkPrinter> clone() &&
+    std::shared_ptr<BenchmarkPrinter> clone() && override
     {
         return std::make_shared<Benchmark980JsonPrinter>(std::move(*this));
     }
