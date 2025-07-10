@@ -95,11 +95,11 @@ def main():
             repeat = 1
     executable_name = None;
     if os.name == "nt":
-        executable_name = "./980-benchmark.exe"
+        executable_name = "./vclib-render-example-980-benchmark.exe"
     else:
-        executable_name = "./980-benchmark"
+        executable_name = "./vclib-render-example-980-benchmark"
     argsList = [
-        Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [COL_VERT, COL_FACE, TEX_WEDGE], [(960, 540), (2560, 1440)], [
+        Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [COL_VERT, COL_FACE, TEX_WEDGE], [(960, 960), (1920, 1920)], [
                 "./meshes/small/myram.ply",
                 "./meshes/medium/gargoyle500K.ply",
                 "./meshes/big/ESTE_PRINT.ply"
