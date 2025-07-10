@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 08-test-lines-glfw)
+set(EXAMPLE_NAME 808-test-lines-glfw)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings

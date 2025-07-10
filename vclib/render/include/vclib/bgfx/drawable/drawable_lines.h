@@ -23,7 +23,6 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
 
-
 #include <vclib/bgfx/context.h>
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/render/primitives/lines.h>
@@ -34,31 +33,37 @@ namespace vcl {
 
 class DrawableLines : public vcl::DrawableObject
 {
-    bool                mVisible = true;
-    Lines               mLines;
-    std::vector<float>  mVertCoords;
-    std::vector<uint>   mVertColors;
-    std::vector<float>  mVertNormals;
-    std::vector<uint>   mLineColors;
+    bool               mVisible = true;
+    Lines              mLines;
+    std::vector<float> mVertCoords;
+    std::vector<uint>  mVertColors;
+    std::vector<float> mVertNormals;
+    std::vector<uint>  mLineColors;
 
 public:
     DrawableLines() = default;
 
     DrawableLines(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>& lineColors = std::vector<uint>()) :
+        const std::vector<uint>&  lineColors  = std::vector<uint>()) :
             mVertCoords(vertCoords)
     {
-        if (!vertColors.empty())  mVertColors = vertColors;
-        else                      mVertColors = std::vector<uint>(vertCoords.size(), 0x000000FF);
+        if (!vertColors.empty())
+            mVertColors = vertColors;
+        else
+            mVertColors = std::vector<uint>(vertCoords.size(), 0x000000FF);
 
-        if (!vertNormals.empty()) mVertNormals = vertNormals;
-        else                      mVertNormals = std::vector<float>(vertCoords.size(), 0.0f);
+        if (!vertNormals.empty())
+            mVertNormals = vertNormals;
+        else
+            mVertNormals = std::vector<float>(vertCoords.size(), 0.0f);
 
-        if (!lineColors.empty())  mLineColors = lineColors;
-        else                      mLineColors = std::vector<uint>(vertCoords.size() / 6, 0xFFFFFFFF);
+        if (!lineColors.empty())
+            mLineColors = lineColors;
+        else
+            mLineColors = std::vector<uint>(vertCoords.size() / 6, 0xFFFFFFFF);
 
         mLines.setPoints(mVertCoords, mVertColors, mVertNormals, mLineColors);
     }
@@ -67,7 +72,11 @@ public:
             DrawableObject(other), mVertCoords(other.mVertCoords),
             mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
             mLineColors(other.mLineColors), mVisible(other.mVisible),
-            mLines(other.mVertCoords, other.mVertColors, other.mVertNormals, other.mLineColors)
+            mLines(
+                other.mVertCoords,
+                other.mVertColors,
+                other.mVertNormals,
+                other.mLineColors)
     {
         mLines.setThickness(other.mLines.getThickness());
         mLines.setColorToUse(other.mLines.getColorToUse());
@@ -105,22 +114,25 @@ public:
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors)
+        const std::vector<uint>&  lineColors)
     {
-        mVertCoords = vertCoords;
-        mVertColors = vertColors;
+        mVertCoords  = vertCoords;
+        mVertColors  = vertColors;
         mVertNormals = vertNormals;
-        mLineColors = lineColors;
+        mLineColors  = lineColors;
         mLines.setPoints(vertCoords, vertColors, vertNormals, mLineColors);
     }
 
     uint8_t getThickness() const { return mLines.getThickness(); }
-        
-    LinesColorToUse getColorToUse() const { return mLines.getColorToUse(); }
-        
+
+    Lines::ColorToUse getColorToUse() const { return mLines.getColorToUse(); }
+
     void setThickness(uint8_t thickness) { mLines.setThickness(thickness); }
-        
-    void setColorToUse(LinesColorToUse colorToUse) { mLines.setColorToUse(colorToUse); }
+
+    void setColorToUse(Lines::ColorToUse colorToUse)
+    {
+        mLines.setColorToUse(colorToUse);
+    }
 
     // DrawableObject interface
 

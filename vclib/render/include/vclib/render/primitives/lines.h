@@ -33,44 +33,49 @@
 
 namespace vcl {
 
-enum class LinesColorToUse {
-    PER_VERTEX_COLOR ,  // Select color form vertex color
-    PER_EDGE_COLOR,     // Select color from edge buffer color
-    GENERAL_COLOR       // Use general color in uniform data
-};
-
-enum class LinesImplementationTypes {
-    CPU_GENERATED,       // Buffers pre-generated in CPU
-    GPU_GENERATED,       // Buffers pre-generated in GPU with computes
-    CPU_INSTANCING,      // Using Instancing with buffers generated in CPU
-    GPU_INSTANCING,      // Using Instancing with buffer generated in GPU computes
-    TEXTURE_INSTANCING   // Using Instancing with textures generated in GPU computes
-};
-
 class Lines
 {
-    uint8_t                    mThickness = 5;
-    LinesColorToUse            mColorToUse = LinesColorToUse::PER_VERTEX_COLOR;
-    Uniform                    mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
-    LinesImplementationTypes   mType = LinesImplementationTypes::CPU_GENERATED;
-    detail::CPUGeneratedLines  mLinesImplementation;
+public:
+    enum class ColorToUse {
+        PER_VERTEX_COLOR, // Select color form vertex color
+        PER_EDGE_COLOR,   // Select color from edge buffer color
+        GENERAL_COLOR     // Use general color in uniform data
+    };
+
+    enum class ImplementationTypes {
+        CPU_GENERATED,     // Buffers pre-generated in CPU
+        GPU_GENERATED,     // Buffers pre-generated in GPU with computes
+        CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
+        GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
+                           // computes
+        TEXTURE_INSTANCING // Using Instancing with textures generated in GPU
+        // computes
+    };
+
+private:
+    uint8_t    mThickness  = 5;
+    ColorToUse mColorToUse = ColorToUse::PER_VERTEX_COLOR;
+    Uniform    mSettingUH  = Uniform("u_settings", bgfx::UniformType::Vec4);
+    ImplementationTypes       mType = ImplementationTypes::CPU_GENERATED;
+    detail::CPUGeneratedLines mLinesImplementation;
 
 public:
-
     Lines() = default;
 
-    Lines(const std::vector<float>& vertCoords,
-          const std::vector<uint>&  vertColors,
-          const std::vector<float>& vertNormals,
-          const std::vector<uint>& lineColors) 
+    Lines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  lineColors)
     {
-        mLinesImplementation.setPoints(vertCoords, vertColors, vertNormals, lineColors);
+        mLinesImplementation.setPoints(
+            vertCoords, vertColors, vertNormals, lineColors);
     }
 
-    void draw(uint viewId) const 
+    void draw(uint viewId) const
     {
         bindSettingsUniform();
-        if (mType == LinesImplementationTypes::CPU_GENERATED)
+        if (mType == ImplementationTypes::CPU_GENERATED)
             mLinesImplementation.draw(viewId);
     }
 
@@ -79,40 +84,41 @@ public:
         using std::swap;
 
         swap(mThickness, other.mThickness);
-        swap(mColorToUse, other.mColorToUse); 
+        swap(mColorToUse, other.mColorToUse);
         swap(mSettingUH, other.mSettingUH);
 
-        swap(mType, other.mType); 
+        swap(mType, other.mType);
         swap(mLinesImplementation, other.mLinesImplementation);
     }
 
     friend void swap(Lines& a, Lines& b) { a.swap(b); }
 
-    
-    void setPoints(const std::vector<float>& vertCoords,
-                   const std::vector<uint>&  vertColors,
-                   const std::vector<float>& vertNormals,
-                   const std::vector<uint>& lineColors)
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  lineColors)
     {
-        mLinesImplementation.setPoints(vertCoords, vertColors, vertNormals, lineColors);
+        mLinesImplementation.setPoints(
+            vertCoords, vertColors, vertNormals, lineColors);
     }
 
     uint8_t getThickness() const { return mThickness; }
-        
-    LinesColorToUse getColorToUse() const { return mColorToUse; }
-        
+
+    ColorToUse getColorToUse() const { return mColorToUse; }
+
     void setThickness(uint8_t thickness) { mThickness = thickness; }
-        
-    void setColorToUse(LinesColorToUse colorToUse) { mColorToUse = colorToUse; }
+
+    void setColorToUse(ColorToUse colorToUse) { mColorToUse = colorToUse; }
 
 private:
     void bindSettingsUniform() const
     {
         float data[] = {
-            static_cast<float>(mThickness), 
-            static_cast<float>(mColorToUse), 
-            0, 0
-        };
+            static_cast<float>(mThickness),
+            static_cast<float>(mColorToUse),
+            0,
+            0};
         mSettingUH.bind(data);
     }
 };
