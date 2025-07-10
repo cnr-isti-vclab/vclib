@@ -103,13 +103,13 @@ public:
             vertCoords, vertColors, vertNormals, lineColors);
     }
 
-    uint8_t getThickness() const { return mThickness; }
+    uint8_t thickness() const { return mThickness; }
 
-    ColorToUse getColorToUse() const { return mColorToUse; }
+    uint8_t& thickness() { return mThickness; }
 
-    void setThickness(uint8_t thickness) { mThickness = thickness; }
+    ColorToUse colorToUse() const { return mColorToUse; }
 
-    void setColorToUse(ColorToUse colorToUse) { mColorToUse = colorToUse; }
+    ColorToUse& colorToUse() { return mColorToUse; }
 
 private:
     void bindSettingsUniform() const

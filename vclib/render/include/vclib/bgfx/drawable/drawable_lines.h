@@ -78,8 +78,8 @@ public:
                 other.mVertNormals,
                 other.mLineColors)
     {
-        mLines.setThickness(other.mLines.getThickness());
-        mLines.setColorToUse(other.mLines.getColorToUse());
+        mLines.thickness() = other.mLines.thickness();
+        mLines.colorToUse() = other.mLines.colorToUse();
     }
 
     DrawableLines(DrawableLines&& other) { swap(other); }
@@ -123,15 +123,15 @@ public:
         mLines.setPoints(vertCoords, vertColors, vertNormals, mLineColors);
     }
 
-    uint8_t getThickness() const { return mLines.getThickness(); }
+    uint8_t getThickness() const { return mLines.thickness(); }
 
-    Lines::ColorToUse getColorToUse() const { return mLines.getColorToUse(); }
+    Lines::ColorToUse getColorToUse() const { return mLines.colorToUse(); }
 
-    void setThickness(uint8_t thickness) { mLines.setThickness(thickness); }
+    void setThickness(uint8_t thickness) { mLines.thickness() = thickness; }
 
     void setColorToUse(Lines::ColorToUse colorToUse)
     {
-        mLines.setColorToUse(colorToUse);
+        mLines.colorToUse() = colorToUse;
     }
 
     // DrawableObject interface
