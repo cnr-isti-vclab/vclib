@@ -80,6 +80,7 @@ public:
         setAttribute(Qt::WA_DontCreateNativeAncestors);
         setAttribute(Qt::WA_NativeWindow);
 #endif
+        setFocusPolicy(Qt::StrongFocus);
     }
 
     explicit WidgetManager(
