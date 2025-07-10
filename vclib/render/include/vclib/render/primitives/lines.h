@@ -67,8 +67,6 @@ private:
 public:
     Lines() = default;
 
-    // TODO: remove this constructor
-    // implement the one that takes Buffers instead of vectors
     Lines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
@@ -84,8 +82,6 @@ public:
             vertCoords, vertColors, vertNormals, lineColors);
     }
 
-    // TODO: remove this
-    // implement the one that takes Buffers instead of vectors
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,

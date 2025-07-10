@@ -25,25 +25,26 @@
 
 #include <bgfx/bgfx.h>
 
+#include <utility>
+
 namespace vcl::detail {
 
-    inline uint64_t linesDrawState()
-    {
-        return 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-               BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-               UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
-    }
-    
-    template<typename T>
-    inline std::pair<T*, bgfx::ReleaseFn> linesGetAllocatedBufferAndReleaseFn(
-        uint size)
-    {
-        T* buffer = new T[size];
-    
-        return std::make_pair(buffer, [](void* ptr, void*) {
-            delete[] static_cast<T*>(ptr);
-        });
-    }
+inline uint64_t linesDrawState()
+{
+    return 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+           BGFX_STATE_DEPTH_TEST_LESS | UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
+}
+
+template<typename T>
+inline std::pair<T*, bgfx::ReleaseFn> linesGetAllocatedBufferAndReleaseFn(
+    uint size)
+{
+    T* buffer = new T[size];
+
+    return std::make_pair(buffer, [](void* ptr, void*) {
+        delete[] static_cast<T*>(ptr);
+    });
+}
 } // namespace vcl::detail
 
 #endif // VCL_RENDER_PRIMITIVES_LINES_H

@@ -25,10 +25,10 @@
 namespace vcl::detail {
 
 CPUGeneratedLines::CPUGeneratedLines(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors)
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  lineColors)
 {
     setPoints(vertCoords, vertColors, vertNormals, lineColors);
 }
@@ -42,16 +42,16 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 }
 
 void CPUGeneratedLines::setPoints(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors)
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  lineColors)
 {
     const uint nPoints = vertCoords.size() / 3;
     if (nPoints > 1) {
         // generate memory buffers
         uint bufferVertsSize = (nPoints / 2) * 4 * 13;
-        uint bufferIndsSize = (nPoints / 2) * 6;
+        uint bufferIndsSize  = (nPoints / 2) * 6;
 
         auto [vertices, vReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<float>(bufferVertsSize);
@@ -72,7 +72,8 @@ void CPUGeneratedLines::setPoints(
                     vertices[vi++] = vertCoords[(i * 3) + 1];
                     vertices[vi++] = vertCoords[(i * 3) + 2];
 
-                    vertices[vi++] = std::bit_cast<float>(vertColors[i - (1 - k)]);
+                    vertices[vi++] =
+                        std::bit_cast<float>(vertColors[i - (1 - k)]);
 
                     vertices[vi++] = vertNormals[((i - (1 - k)) * 3)];
                     vertices[vi++] = vertNormals[((i - (1 - k)) * 3) + 1];
@@ -81,11 +82,11 @@ void CPUGeneratedLines::setPoints(
                     vertices[vi++] = k;
                     vertices[vi++] = j;
 
-                    vertices[vi++] = std::bit_cast<float>(lineColors[i/2]);
+                    vertices[vi++] = std::bit_cast<float>(lineColors[i / 2]);
                 }
             }
 
-            uint index = (4 * (i / 2));
+            uint index    = (4 * (i / 2));
             indices[ii++] = index;
             indices[ii++] = index + 3;
             indices[ii++] = index + 1;
@@ -106,10 +107,11 @@ void CPUGeneratedLines::setPoints(
             .end();
 
         mVertices.create(
-            bgfx::makeRef(vertices, sizeof(float) * bufferVertsSize, vReleaseFn),
+            bgfx::makeRef(
+                vertices, sizeof(float) * bufferVertsSize, vReleaseFn),
             layout);
 
-               // create index buffer
+        // create index buffer
         mIndices.create(
             bgfx::makeRef(indices, sizeof(uint) * bufferIndsSize, iReleaseFn),
             BGFX_BUFFER_INDEX32);
@@ -128,4 +130,4 @@ void CPUGeneratedLines::draw(uint viewId) const
     bgfx::submit(viewId, mLinesPH);
 }
 
-} // namespace vcl
+} // namespace vcl::detail

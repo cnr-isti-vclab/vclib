@@ -30,11 +30,12 @@
 
 namespace vcl::detail {
 
-class CPUGeneratedLines {
-
-    bgfx::ProgramHandle mLinesPH = Context::instance()
-                                       .programManager()
-                                       .getProgram<VertFragProgram::PRIMITIVE_LINES>();
+class CPUGeneratedLines
+{
+    bgfx::ProgramHandle mLinesPH =
+        Context::instance()
+            .programManager()
+            .getProgram<VertFragProgram::PRIMITIVE_LINES>();
 
     VertexBuffer mVertices;
     IndexBuffer  mIndices;
@@ -46,7 +47,7 @@ public:
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors);
+        const std::vector<uint>&  lineColors);
 
     void swap(CPUGeneratedLines& other);
 
@@ -56,11 +57,11 @@ public:
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
-        const std::vector<uint>& lineColors);
+        const std::vector<uint>&  lineColors);
 
     void draw(uint viewId) const;
 };
 
-} // namespace vcl
+} // namespace vcl::detail
 
 #endif // VCL_RENDER_LINES_CPU_GENERATED_H
