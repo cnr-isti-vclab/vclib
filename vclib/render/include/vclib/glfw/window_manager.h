@@ -174,6 +174,11 @@ public:
         return height;
     }
 
+    void resize(uint width, uint height)
+    {
+        glfwSetWindowSize(mWindow, width, height);
+    }
+
     void show()
     {
         DerivedRenderApp::WM::init(derived());
