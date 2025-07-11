@@ -118,8 +118,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
-
-    mUI->viewer->setFocus();
 }
 
 MeshViewer::~MeshViewer()
