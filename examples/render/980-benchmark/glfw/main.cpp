@@ -317,6 +317,8 @@ int main(int argc, char** argv)
 
     BenchmarkViewer tw("Benchmark", width, height);
 
+    tw.resize(vcl::uint(width/tw.dpiScale().x()), vcl::uint(height/tw.dpiScale().y()));
+
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
 
