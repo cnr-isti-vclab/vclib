@@ -32,7 +32,7 @@ namespace vcl::detail {
 inline uint64_t linesDrawState()
 {
     return 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-           BGFX_STATE_DEPTH_TEST_LESS | UINT64_C(0) | BGFX_STATE_BLEND_ALPHA;
+           BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
 }
 
 template<typename T>
