@@ -97,7 +97,7 @@ public:
     {
         mStream << mPrevFile;
         if (mAppendMode) {
-            mStream << "\n\t,";
+            mStream << "\t,";
         }
         if (!mAppendMode) {
             mStream << "[";
