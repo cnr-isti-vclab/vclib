@@ -147,7 +147,10 @@ public:
         setCallbacks();
     }
 
-    virtual ~WindowManager() = default;
+    virtual ~WindowManager() 
+    {
+        cleanup();
+    }
 
     const std::string& windowTitle() const { return mTitle; }
 
@@ -181,6 +184,8 @@ public:
             glfwSwapBuffers(mWindow);
 #endif
         }
+        // Window was closed by user, clean up
+        cleanup();
     }
 
     /**
@@ -353,6 +358,14 @@ protected:
     }
 
 private:
+    void cleanup()
+    {
+        if (mWindow) {
+            glfwDestroyWindow(mWindow);
+            mWindow = nullptr;
+        }
+    }
+
     void setCallbacks()
     {
         // framebuffer size callback
