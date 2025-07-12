@@ -147,10 +147,7 @@ public:
         setCallbacks();
     }
 
-    virtual ~WindowManager() 
-    {
-        cleanup();
-    }
+    virtual ~WindowManager() { cleanup(); }
 
     const std::string& windowTitle() const { return mTitle; }
 
