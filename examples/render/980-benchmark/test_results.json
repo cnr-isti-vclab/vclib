@@ -6597,4 +6597,6160 @@
 			364.267
 		]
 	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			487.435,
+			480.776,
+			494.852,
+			499.725,
+			483.771,
+			478.647,
+			482.290,
+			478.945
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			405.101,
+			402.447,
+			406.994,
+			418.560,
+			413.089,
+			418.390,
+			409.295,
+			419.923
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.108,
+			478.699,
+			479.165,
+			497.944,
+			478.618,
+			477.266,
+			480.467,
+			487.520
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			394.247,
+			415.089,
+			408.925,
+			418.116,
+			417.908,
+			417.152,
+			416.535,
+			414.819
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			478.554,
+			478.718,
+			470.420,
+			477.254,
+			478.633,
+			478.637,
+			472.043,
+			477.476
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			375.499,
+			374.899,
+			372.769,
+			383.179,
+			372.004,
+			379.659,
+			385.406,
+			382.820
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			489.056,
+			483.735,
+			477.243,
+			482.195,
+			480.366,
+			489.257,
+			487.655,
+			483.731
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			410.374,
+			416.594,
+			408.381,
+			418.453,
+			416.722,
+			413.469,
+			408.429,
+			418.702
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			494.784,
+			480.435,
+			482.134,
+			483.925,
+			485.335,
+			486.032,
+			492.547,
+			478.981
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			415.049,
+			405.764,
+			402.154,
+			415.365,
+			411.561,
+			408.477,
+			411.565,
+			420.582
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			477.127,
+			478.758,
+			470.470,
+			478.561,
+			477.234,
+			476.923,
+			470.533,
+			478.668
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			376.326,
+			380.646,
+			396.318,
+			380.483,
+			386.003,
+			392.924,
+			395.230,
+			400.667
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.280,
+			481.926,
+			479.137,
+			480.371,
+			483.770,
+			480.504,
+			483.813,
+			484.785
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			413.329,
+			418.152,
+			408.789,
+			418.700,
+			408.548,
+			413.141,
+			406.840,
+			416.904
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			485.718,
+			485.604,
+			503.934,
+			487.039,
+			480.763,
+			482.285,
+			490.249,
+			506.240
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			407.227,
+			416.956,
+			403.730,
+			418.753,
+			413.289,
+			418.645,
+			414.845,
+			418.235
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			478.670,
+			480.494,
+			470.402,
+			478.581,
+			477.225,
+			475.257,
+			468.765,
+			477.285
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			371.220,
+			372.199,
+			390.573,
+			406.833,
+			392.468,
+			375.499,
+			383.640,
+			393.517
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			506.183,
+			479.989,
+			494.844,
+			505.353,
+			504.841,
+			490.247,
+			540.723,
+			484.822
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			409.866,
+			419.898,
+			418.623,
+			418.519,
+			418.083,
+			418.896,
+			403.067,
+			416.846
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			513.429,
+			494.397,
+			487.477,
+			508.045,
+			486.762,
+			483.850,
+			494.510,
+			496.589
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			398.473,
+			415.539,
+			416.447,
+			418.416,
+			415.159,
+			406.834,
+			413.167,
+			418.869
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			478.567,
+			477.403,
+			478.652,
+			477.261,
+			478.543,
+			478.663,
+			477.262,
+			478.645
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			381.332,
+			396.475,
+			399.044,
+			410.358,
+			400.625,
+			397.507,
+			402.901,
+			402.244
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			498.213,
+			481.732,
+			540.631,
+			525.504,
+			507.953,
+			528.663,
+			523.402,
+			515.898
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			416.558,
+			418.675,
+			416.379,
+			418.706,
+			411.670,
+			393.502,
+			397.595,
+			409.800
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.260,
+			481.501,
+			497.587,
+			483.375,
+			498.750,
+			481.557,
+			483.911,
+			495.467
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			413.426,
+			413.315,
+			413.203,
+			418.963,
+			414.651,
+			418.115,
+			408.761,
+			422.060
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			476.806,
+			485.749,
+			477.286,
+			480.381,
+			482.110,
+			478.694,
+			477.232,
+			478.670
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			397.971,
+			395.962,
+			402.611,
+			411.284,
+			395.526,
+			397.393,
+			398.469,
+			414.399
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			496.205,
+			482.312,
+			491.062,
+			517.380,
+			501.832,
+			490.818,
+			507.766,
+			482.013
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			415.347,
+			416.706,
+			414.693,
+			420.297,
+			418.150,
+			418.803,
+			415.119,
+			418.229
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			483.843,
+			480.447,
+			495.388,
+			509.685,
+			490.279,
+			478.981,
+			493.943,
+			491.605
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			414.550,
+			418.393,
+			410.055,
+			418.713,
+			418.498,
+			413.428,
+			423.179,
+			416.692
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			478.686,
+			478.682,
+			482.154,
+			477.250,
+			478.661,
+			482.218,
+			483.779,
+			477.299
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			405.473,
+			411.786,
+			400.921,
+			416.489,
+			408.568,
+			412.280,
+			400.834,
+			414.568
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			282.554,
+			298.821,
+			297.753,
+			297.631,
+			299.328,
+			298.639,
+			294.870,
+			297.699
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			227.819,
+			236.752,
+			243.327,
+			234.416,
+			237.059,
+			237.721,
+			224.321,
+			234.400
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			280.802,
+			288.591,
+			292.950,
+			293.045,
+			294.134,
+			281.893,
+			289.730,
+			290.641
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			216.970,
+			228.046,
+			222.332,
+			224.154,
+			232.529,
+			224.666,
+			214.213,
+			232.052
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			226.655,
+			237.347,
+			203.897,
+			174.562,
+			151.942,
+			125.020,
+			169.839,
+			180.738
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			153.198,
+			169.817,
+			149.639,
+			154.573,
+			116.258,
+			86.468,
+			110.154,
+			121.783
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			240.909,
+			225.357,
+			116.988,
+			218.029,
+			197.894,
+			33.847,
+			170.406,
+			143.406
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			137.877,
+			115.728,
+			136.314,
+			187.450,
+			201.842,
+			207.686,
+			202.244,
+			208.326
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			253.997,
+			272.753,
+			256.181,
+			264.223,
+			264.155,
+			289.142,
+			275.988,
+			267.905
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			185.768,
+			187.536,
+			179.234,
+			180.069,
+			161.815,
+			175.182,
+			193.119,
+			195.911
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			217.829,
+			224.776,
+			223.129,
+			227.163,
+			224.903,
+			227.130,
+			224.094,
+			218.119
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			176.768,
+			165.786,
+			50.604,
+			56.338,
+			57.929,
+			145.591,
+			154.351,
+			158.771
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			285.160,
+			298.815,
+			262.271,
+			219.164,
+			218.075,
+			262.377,
+			288.450,
+			295.185
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			222.074,
+			195.374,
+			168.605,
+			154.022,
+			86.703,
+			150.300,
+			146.071,
+			166.435
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			266.092,
+			281.963,
+			293.031,
+			296.382,
+			294.046,
+			288.596,
+			281.797,
+			287.467
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			216.088,
+			228.340,
+			223.497,
+			230.243,
+			227.135,
+			222.181,
+			211.612,
+			167.519
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			230.442,
+			237.143,
+			237.137,
+			232.521,
+			238.100,
+			237.223,
+			237.993,
+			237.270
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			178.614,
+			181.419,
+			177.414,
+			179.661,
+			179.358,
+			178.844,
+			172.409,
+			179.243
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			324.026,
+			347.308,
+			337.408,
+			355.743,
+			351.899,
+			355.526,
+			352.806,
+			345.033
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			259.518,
+			285.641,
+			266.524,
+			272.630,
+			282.895,
+			280.621,
+			272.563,
+			275.310
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			287.294,
+			296.426,
+			298.947,
+			296.495,
+			296.320,
+			297.777,
+			297.842,
+			339.924
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			246.587,
+			258.482,
+			254.241,
+			254.413,
+			248.102,
+			256.178,
+			248.126,
+			257.506
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			279.804,
+			293.039,
+			268.562,
+			287.683,
+			286.094,
+			287.390,
+			277.949,
+			291.851
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			212.515,
+			223.027,
+			197.539,
+			189.889,
+			192.671,
+			203.575,
+			197.610,
+			205.963
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			325.158,
+			347.562,
+			355.823,
+			348.706,
+			343.757,
+			354.436,
+			356.931,
+			350.188
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			265.661,
+			284.796,
+			267.223,
+			281.571,
+			279.703,
+			284.780,
+			274.418,
+			282.862
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			328.011,
+			358.682,
+			349.069,
+			351.215,
+			353.143,
+			352.965,
+			352.903,
+			352.972
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			245.452,
+			254.718,
+			251.162,
+			257.584,
+			249.385,
+			237.330,
+			238.860,
+			248.067
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			273.062,
+			288.610,
+			272.697,
+			240.276,
+			240.587,
+			260.352,
+			249.762,
+			252.033
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			211.063,
+			221.776,
+			199.040,
+			205.800,
+			212.249,
+			220.166,
+			191.219,
+			208.407
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			325.704,
+			344.501,
+			352.925,
+			347.899,
+			348.893,
+			357.134,
+			349.769,
+			354.540
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			270.093,
+			288.271,
+			275.086,
+			272.976,
+			269.569,
+			275.113,
+			262.910,
+			275.776
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			309.494,
+			335.848,
+			321.525,
+			334.616,
+			320.393,
+			339.522,
+			316.818,
+			334.669
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			242.956,
+			257.103,
+			252.919,
+			258.648,
+			251.694,
+			248.514,
+			252.497,
+			256.912
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			256.658,
+			291.094,
+			248.060,
+			247.768,
+			291.891,
+			273.691,
+			259.546,
+			296.448
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			205.070,
+			224.622,
+			214.980,
+			213.328,
+			213.956,
+			214.661,
+			212.191,
+			191.574
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.219,
+			22.968,
+			22.888,
+			23.283,
+			22.968,
+			23.214,
+			22.992,
+			23.054
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.207,
+			21.614,
+			19.087,
+			21.647,
+			21.420,
+			21.342,
+			21.333,
+			21.499
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.937,
+			23.023,
+			22.516,
+			22.853,
+			22.949,
+			22.751,
+			22.958,
+			22.815
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.231,
+			21.000,
+			21.091,
+			21.141,
+			21.203,
+			21.377,
+			20.903,
+			21.205
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.449,
+			17.385,
+			17.397,
+			17.347,
+			17.413,
+			15.552,
+			16.888,
+			16.092
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.342,
+			16.512,
+			16.367,
+			16.369,
+			16.279,
+			16.368,
+			16.426,
+			16.473
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.672,
+			22.943,
+			22.782,
+			22.734,
+			22.275,
+			22.721,
+			22.482,
+			22.755
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			20.573,
+			21.448,
+			21.145,
+			21.091,
+			21.096,
+			20.631,
+			20.767,
+			21.421
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.846,
+			22.626,
+			22.704,
+			22.694,
+			22.617,
+			22.747,
+			22.670,
+			22.557
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			20.732,
+			21.153,
+			20.730,
+			20.950,
+			20.956,
+			20.968,
+			20.566,
+			20.999
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			16.574,
+			17.446,
+			17.422,
+			17.458,
+			17.418,
+			17.499,
+			17.376,
+			17.387
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.436,
+			16.397,
+			15.866,
+			15.273,
+			16.271,
+			15.921,
+			15.355,
+			16.191
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			21.324,
+			22.917,
+			22.703,
+			22.951,
+			22.746,
+			22.980,
+			22.755,
+			22.901
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.245,
+			21.262,
+			21.031,
+			21.332,
+			21.236,
+			21.107,
+			21.203,
+			21.282
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.689,
+			22.727,
+			22.070,
+			20.184,
+			21.916,
+			22.776,
+			22.423,
+			22.726
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.218,
+			21.102,
+			20.537,
+			20.921,
+			21.046,
+			21.117,
+			19.995,
+			21.066
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.536,
+			17.441,
+			17.422,
+			17.411,
+			17.379,
+			17.428,
+			17.448,
+			16.147
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.270,
+			16.328,
+			16.175,
+			16.360,
+			16.278,
+			16.358,
+			16.192,
+			16.331
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.599,
+			23.586,
+			23.453,
+			23.552,
+			23.575,
+			23.428,
+			23.351,
+			23.287
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			20.609,
+			21.480,
+			21.876,
+			22.007,
+			21.862,
+			21.739,
+			21.327,
+			22.065
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.816,
+			22.940,
+			21.244,
+			22.622,
+			22.453,
+			22.595,
+			22.327,
+			22.433
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.160,
+			21.190,
+			20.948,
+			21.182,
+			21.088,
+			21.067,
+			21.030,
+			20.872
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.095,
+			16.740,
+			16.731,
+			17.172,
+			16.854,
+			17.171,
+			17.184,
+			17.267
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.388,
+			16.372,
+			16.315,
+			16.248,
+			16.291,
+			16.420,
+			16.193,
+			16.340
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.657,
+			22.151,
+			22.608,
+			22.532,
+			22.295,
+			22.698,
+			22.563,
+			22.465
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.379,
+			21.685,
+			21.347,
+			21.412,
+			21.397,
+			21.509,
+			21.472,
+			21.321
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			19.516,
+			20.639,
+			22.263,
+			22.446,
+			22.362,
+			22.220,
+			22.095,
+			22.544
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			20.912,
+			20.821,
+			20.979,
+			21.085,
+			20.890,
+			21.185,
+			20.984,
+			21.133
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.793,
+			17.783,
+			17.729,
+			17.714,
+			17.703,
+			17.447,
+			17.357,
+			17.690
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.212,
+			16.350,
+			16.238,
+			16.348,
+			16.340,
+			16.452,
+			16.144,
+			16.355
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.724,
+			22.151,
+			22.775,
+			22.586,
+			22.705,
+			22.854,
+			22.610,
+			22.851
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.446,
+			21.453,
+			21.080,
+			21.311,
+			21.222,
+			21.302,
+			21.288,
+			21.475
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.293,
+			22.334,
+			22.145,
+			22.331,
+			22.263,
+			22.403,
+			22.343,
+			22.308
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.111,
+			21.226,
+			20.947,
+			21.021,
+			20.992,
+			21.100,
+			21.079,
+			21.050
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.113,
+			17.144,
+			17.135,
+			17.053,
+			17.100,
+			17.146,
+			16.949,
+			17.191
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.488,
+			16.388,
+			16.336,
+			16.392,
+			16.390,
+			16.424,
+			16.322,
+			16.399
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			481.999,
+			563.321,
+			580.669,
+			591.911,
+			543.967,
+			491.149,
+			479.784,
+			477.303
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			414.971,
+			418.406,
+			410.345,
+			418.001,
+			417.139,
+			413.317,
+			405.097,
+			413.464
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			487.458,
+			480.422,
+			483.971,
+			498.411,
+			489.030,
+			478.666,
+			494.384,
+			477.286
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			417.787,
+			417.001,
+			413.175,
+			417.362,
+			417.997,
+			413.469,
+			418.448,
+			418.753
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			475.564,
+			465.799,
+			480.088,
+			523.045,
+			479.078,
+			477.200,
+			478.648,
+			480.201
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			364.320,
+			354.719,
+			368.604,
+			407.402,
+			373.995,
+			359.584,
+			352.869,
+			367.056
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			485.503,
+			492.752,
+			485.786,
+			494.771,
+			481.950,
+			493.814,
+			481.044,
+			480.422
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			403.924,
+			411.822,
+			401.112,
+			419.525,
+			398.059,
+			410.350,
+			400.610,
+			414.117
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			519.267,
+			501.978,
+			512.663,
+			517.961,
+			494.725,
+			488.945,
+			503.927,
+			542.446
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			396.442,
+			403.377,
+			401.441,
+			408.856,
+			392.696,
+			407.327,
+			417.899,
+			413.733
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			475.397,
+			478.775,
+			470.361,
+			478.668,
+			460.883,
+			483.868,
+			478.681,
+			483.945
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			375.564,
+			380.273,
+			387.553,
+			393.383,
+			378.693,
+			363.713,
+			396.644,
+			406.726
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.050,
+			477.346,
+			480.322,
+			478.637,
+			480.439,
+			483.892,
+			485.674,
+			487.570
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			414.483,
+			417.132,
+			410.135,
+			416.647,
+			415.393,
+			417.844,
+			415.248,
+			418.616
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			478.633,
+			478.980,
+			478.700,
+			485.473,
+			487.611,
+			480.490,
+			481.342,
+			506.672
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			413.492,
+			413.304,
+			410.087,
+			415.289,
+			416.821,
+			418.401,
+			418.376,
+			418.349
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			481.921,
+			506.132,
+			502.092,
+			488.731,
+			484.084,
+			485.473,
+			485.688,
+			485.670
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			329.933,
+			331.530,
+			331.259,
+			367.099,
+			383.776,
+			373.891,
+			384.839,
+			405.059
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			537.366,
+			540.236,
+			560.279,
+			572.388,
+			572.110,
+			594.373,
+			544.384,
+			562.664
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			410.277,
+			418.076,
+			420.453,
+			421.722,
+			418.110,
+			418.350,
+			416.881,
+			420.179
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			487.462,
+			478.792,
+			479.012,
+			478.645,
+			482.068,
+			492.559,
+			475.689,
+			483.817
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			396.085,
+			416.955,
+			417.130,
+			415.062,
+			418.205,
+			418.111,
+			417.059,
+			413.166
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			477.025,
+			475.451,
+			478.724,
+			479.009,
+			483.830,
+			478.843,
+			477.957,
+			479.465
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			386.891,
+			416.938,
+			400.765,
+			405.613,
+			393.530,
+			397.428,
+			373.645,
+			416.941
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			487.128,
+			478.626,
+			491.037,
+			515.473,
+			496.150,
+			492.715,
+			492.804,
+			507.315
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			416.849,
+			415.215,
+			416.642,
+			428.809,
+			418.367,
+			417.994,
+			415.414,
+			418.298
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			480.355,
+			483.985,
+			511.789,
+			490.652,
+			485.636,
+			483.889,
+			478.677,
+			477.249
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			415.049,
+			418.456,
+			421.356,
+			418.779,
+			418.375,
+			418.289,
+			411.096,
+			414.070
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			480.847,
+			492.427,
+			494.447,
+			501.951,
+			478.808,
+			487.417,
+			480.596,
+			487.139
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			391.276,
+			387.826,
+			404.010,
+			409.625,
+			396.386,
+			405.814,
+			397.683,
+			416.355
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			496.229,
+			502.620,
+			527.178,
+			492.499,
+			494.474,
+			482.670,
+			481.489,
+			488.072
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			416.293,
+			420.302,
+			417.057,
+			418.393,
+			418.050,
+			425.546,
+			411.292,
+			418.558
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			503.814,
+			487.490,
+			480.427,
+			487.434,
+			478.647,
+			478.630,
+			479.024,
+			484.070
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			414.795,
+			412.699,
+			415.218,
+			416.549,
+			416.697,
+			416.471,
+			418.127,
+			418.570
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			492.900,
+			478.564,
+			468.356,
+			475.963,
+			478.610,
+			478.718,
+			475.497,
+			480.378
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			395.085,
+			402.323,
+			403.552,
+			401.374,
+			395.959,
+			404.844,
+			401.452,
+			409.783
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			289.671,
+			298.758,
+			296.506,
+			295.539,
+			287.918,
+			293.275,
+			295.352,
+			298.840
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			226.734,
+			232.350,
+			233.457,
+			230.077,
+			234.157,
+			236.348,
+			237.095,
+			233.379
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			272.461,
+			293.672,
+			295.589,
+			289.720,
+			289.581,
+			297.645,
+			296.477,
+			298.807
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			217.728,
+			199.418,
+			189.580,
+			181.172,
+			168.408,
+			196.236,
+			186.659,
+			190.626
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			176.702,
+			175.557,
+			167.227,
+			206.202,
+			218.231,
+			237.065,
+			239.163,
+			238.958
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			176.830,
+			172.437,
+			165.144,
+			172.360,
+			173.446,
+			171.984,
+			151.477,
+			174.308
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			281.926,
+			297.410,
+			294.352,
+			296.441,
+			297.682,
+			296.313,
+			296.611,
+			298.716
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			216.014,
+			228.750,
+			205.136,
+			212.506,
+			193.776,
+			206.709,
+			211.190,
+			215.702
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			207.543,
+			153.311,
+			146.334,
+			169.123,
+			179.685,
+			193.251,
+			163.233,
+			182.936
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			65.393,
+			131.609,
+			160.258,
+			189.693,
+			196.787,
+			203.960,
+			201.547,
+			208.016
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			226.148,
+			234.305,
+			229.950,
+			231.754,
+			233.401,
+			230.721,
+			234.361,
+			232.754
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			177.775,
+			176.255,
+			158.484,
+			169.074,
+			164.839,
+			167.808,
+			171.173,
+			171.702
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			284.148,
+			304.946,
+			299.946,
+			298.887,
+			298.812,
+			303.383,
+			294.491,
+			298.598
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			224.681,
+			232.656,
+			216.239,
+			211.533,
+			206.210,
+			213.506,
+			206.295,
+			210.434
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			278.348,
+			273.686,
+			282.036,
+			270.751,
+			286.277,
+			294.224,
+			289.578,
+			293.915
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			218.442,
+			212.889,
+			194.461,
+			163.353,
+			135.150,
+			140.532,
+			168.787,
+			209.169
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			221.821,
+			235.503,
+			237.030,
+			234.519,
+			232.491,
+			232.725,
+			237.894,
+			226.399
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			178.601,
+			179.961,
+			177.237,
+			170.219,
+			176.892,
+			179.303,
+			169.826,
+			173.775
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			323.436,
+			344.724,
+			346.457,
+			350.401,
+			349.758,
+			351.660,
+			353.351,
+			336.667
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			266.696,
+			272.981,
+			266.001,
+			266.326,
+			277.392,
+			267.160,
+			255.666,
+			267.193
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			298.878,
+			325.020,
+			306.974,
+			309.375,
+			307.207,
+			329.777,
+			316.822,
+			318.165
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			246.436,
+			252.745,
+			249.089,
+			253.851,
+			254.275,
+			248.145,
+			241.884,
+			241.827
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			279.993,
+			291.866,
+			280.852,
+			285.259,
+			289.587,
+			289.604,
+			288.467,
+			261.356
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			210.660,
+			213.869,
+			198.790,
+			206.790,
+			205.352,
+			208.072,
+			202.169,
+			206.661
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			327.926,
+			347.347,
+			347.228,
+			352.108,
+			344.369,
+			353.483,
+			352.571,
+			350.181
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			261.859,
+			277.626,
+			269.966,
+			266.815,
+			274.485,
+			284.251,
+			269.586,
+			259.958
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			292.494,
+			314.637,
+			310.330,
+			323.811,
+			306.970,
+			337.392,
+			314.597,
+			312.624
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			243.250,
+			257.032,
+			239.926,
+			252.781,
+			240.390,
+			247.037,
+			248.582,
+			243.387
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			268.920,
+			284.129,
+			265.021,
+			294.280,
+			283.512,
+			284.567,
+			250.737,
+			281.035
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			205.959,
+			213.485,
+			211.989,
+			211.119,
+			211.160,
+			217.775,
+			195.485,
+			199.260
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			309.987,
+			342.275,
+			343.412,
+			356.188,
+			345.897,
+			355.699,
+			346.153,
+			348.799
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			271.542,
+			276.856,
+			272.580,
+			264.380,
+			275.290,
+			279.180,
+			268.049,
+			269.721
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			316.542,
+			342.281,
+			353.355,
+			341.700,
+			331.128,
+			338.159,
+			345.285,
+			341.860
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			243.175,
+			251.797,
+			241.969,
+			256.745,
+			238.906,
+			247.391,
+			241.917,
+			238.420
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			266.285,
+			284.416,
+			254.174,
+			288.699,
+			285.026,
+			284.212,
+			247.303,
+			292.881
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			206.700,
+			219.612,
+			216.061,
+			211.927,
+			212.344,
+			221.220,
+			199.551,
+			209.096
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.495,
+			23.176,
+			22.906,
+			23.156,
+			23.193,
+			22.988,
+			23.061,
+			23.136
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.526,
+			21.669,
+			21.526,
+			21.552,
+			21.405,
+			21.715,
+			21.364,
+			21.760
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.746,
+			22.687,
+			16.264,
+			18.435,
+			19.587,
+			18.811,
+			18.865,
+			19.662
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			17.598,
+			20.727,
+			20.704,
+			16.949,
+			11.891,
+			11.652,
+			14.125,
+			15.507
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			14.151,
+			14.719,
+			14.887,
+			17.463,
+			17.261,
+			17.387,
+			17.293,
+			17.384
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.210,
+			16.520,
+			16.230,
+			16.388,
+			16.211,
+			16.370,
+			16.329,
+			16.456
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.054,
+			22.894,
+			22.971,
+			22.552,
+			22.853,
+			23.011,
+			22.912,
+			23.003
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.397,
+			21.444,
+			21.103,
+			21.343,
+			21.348,
+			21.422,
+			21.157,
+			21.313
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.663,
+			22.560,
+			22.712,
+			22.739,
+			22.681,
+			22.659,
+			22.708,
+			22.734
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.314,
+			21.256,
+			20.911,
+			21.141,
+			21.163,
+			21.094,
+			20.941,
+			21.154
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.574,
+			17.513,
+			17.467,
+			17.478,
+			17.447,
+			17.529,
+			17.451,
+			17.487
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.463,
+			16.496,
+			16.272,
+			16.454,
+			16.391,
+			16.500,
+			16.350,
+			16.484
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			20.235,
+			22.167,
+			22.779,
+			22.849,
+			22.922,
+			22.859,
+			22.745,
+			22.794
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.454,
+			21.468,
+			21.192,
+			21.527,
+			21.276,
+			21.497,
+			19.880,
+			21.659
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.646,
+			22.804,
+			22.606,
+			22.699,
+			22.522,
+			22.663,
+			22.688,
+			22.591
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			20.919,
+			21.145,
+			20.960,
+			20.847,
+			20.937,
+			20.981,
+			20.870,
+			21.191
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.372,
+			17.382,
+			17.250,
+			17.370,
+			17.242,
+			17.332,
+			17.277,
+			17.314
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.494,
+			16.505,
+			16.338,
+			16.504,
+			16.371,
+			16.488,
+			16.333,
+			16.371
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.639,
+			23.616,
+			23.467,
+			23.615,
+			23.606,
+			23.487,
+			22.796,
+			23.649
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			22.098,
+			22.067,
+			21.679,
+			21.912,
+			21.415,
+			22.044,
+			21.779,
+			22.015
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.141,
+			23.255,
+			22.878,
+			23.184,
+			23.200,
+			23.196,
+			23.145,
+			23.170
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.606,
+			21.801,
+			21.609,
+			21.504,
+			21.498,
+			21.693,
+			21.590,
+			21.731
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.638,
+			17.680,
+			17.564,
+			17.652,
+			17.669,
+			17.559,
+			17.653,
+			17.538
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.895,
+			16.861,
+			16.772,
+			16.842,
+			16.788,
+			16.759,
+			16.706,
+			16.575
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.860,
+			23.076,
+			23.516,
+			23.379,
+			23.343,
+			23.570,
+			23.243,
+			23.428
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.938,
+			21.236,
+			21.832,
+			22.100,
+			21.902,
+			22.070,
+			21.884,
+			21.885
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			21.068,
+			22.668,
+			22.897,
+			22.954,
+			23.056,
+			22.986,
+			22.893,
+			22.994
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.397,
+			21.574,
+			21.484,
+			21.469,
+			21.619,
+			21.509,
+			21.435,
+			21.868
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.655,
+			17.664,
+			17.648,
+			17.549,
+			17.647,
+			17.580,
+			17.648,
+			17.651
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.843,
+			16.898,
+			16.689,
+			16.968,
+			16.802,
+			16.956,
+			16.655,
+			16.941
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.296,
+			23.418,
+			23.420,
+			23.399,
+			23.220,
+			23.471,
+			23.237,
+			23.375
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.898,
+			22.170,
+			21.861,
+			21.904,
+			21.721,
+			22.127,
+			21.818,
+			21.906
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.287,
+			23.262,
+			23.111,
+			23.174,
+			23.150,
+			23.088,
+			23.138,
+			23.221
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.757,
+			21.659,
+			21.644,
+			21.635,
+			21.503,
+			21.954,
+			21.554,
+			21.792
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.679,
+			17.579,
+			17.645,
+			17.611,
+			17.643,
+			17.463,
+			17.529,
+			17.472
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.645,
+			16.765,
+			16.585,
+			16.832,
+			16.628,
+			16.809,
+			15.973,
+			16.855
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			478.646,
+			491.051,
+			482.195,
+			501.880,
+			478.705,
+			480.462,
+			477.144,
+			480.414
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			394.565,
+			405.537,
+			402.081,
+			416.632,
+			407.143,
+			413.368,
+			402.220,
+			413.752
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			486.085,
+			480.046,
+			492.898,
+			478.637,
+			485.709,
+			479.905,
+			477.726,
+			492.529
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			397.344,
+			413.888,
+			416.160,
+			418.676,
+			418.641,
+			413.244,
+			414.948,
+			418.148
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			471.716,
+			475.965,
+			472.177,
+			476.864,
+			478.640,
+			477.201,
+			474.280,
+			478.233
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			349.366,
+			373.254,
+			391.444,
+			405.458,
+			381.459,
+			370.233,
+			391.697,
+			383.522
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.086,
+			478.751,
+			480.363,
+			479.122,
+			480.333,
+			490.666,
+			477.358,
+			503.738
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			412.825,
+			415.516,
+			407.012,
+			418.456,
+			417.405,
+			420.985,
+			402.440,
+			418.259
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			503.820,
+			485.733,
+			498.182,
+			501.950,
+			517.473,
+			499.852,
+			511.275,
+			523.394
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			416.421,
+			416.792,
+			410.413,
+			418.334,
+			418.374,
+			418.437,
+			414.936,
+			418.287
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			475.917,
+			478.624,
+			470.478,
+			475.518,
+			478.704,
+			478.632,
+			475.555,
+			478.681
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			386.228,
+			380.225,
+			386.087,
+			400.597,
+			384.636,
+			373.940,
+			385.987,
+			380.574
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.095,
+			478.637,
+			488.070,
+			485.104,
+			477.634,
+			486.735,
+			498.155,
+			482.164
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			413.477,
+			416.250,
+			412.065,
+			418.376,
+			417.702,
+			418.045,
+			412.669,
+			418.554
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.071,
+			479.152,
+			496.192,
+			482.153,
+			483.882,
+			494.356,
+			477.344,
+			487.462
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			415.096,
+			418.634,
+			405.073,
+			418.933,
+			417.744,
+			417.053,
+			413.023,
+			418.527
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			476.904,
+			477.307,
+			463.462,
+			477.435,
+			472.642,
+			473.354,
+			467.025,
+			473.806
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			376.966,
+			373.719,
+			386.999,
+			395.714,
+			370.782,
+			388.779,
+			387.741,
+			400.482
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			563.332,
+			535.238,
+			557.965,
+			566.419,
+			538.502,
+			529.709,
+			533.652,
+			561.025
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			408.383,
+			417.251,
+			426.377,
+			422.314,
+			406.680,
+			415.093,
+			414.902,
+			418.680
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			494.748,
+			489.128,
+			497.988,
+			494.835,
+			478.625,
+			479.070,
+			476.830,
+			478.650
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			409.274,
+			419.999,
+			413.640,
+			420.083,
+			418.046,
+			418.335,
+			414.941,
+			418.664
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			480.396,
+			483.977,
+			490.799,
+			478.973,
+			478.626,
+			478.686,
+			477.249,
+			478.598
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			391.597,
+			390.866,
+			381.622,
+			414.743,
+			404.232,
+			409.862,
+			403.695,
+			415.256
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			496.283,
+			492.588,
+			487.520,
+			483.925,
+			480.333,
+			492.967,
+			481.987,
+			486.285
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			420.441,
+			421.812,
+			414.826,
+			418.786,
+			416.209,
+			418.857,
+			421.545,
+			422.294
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			494.360,
+			477.164,
+			480.402,
+			480.375,
+			478.640,
+			477.287,
+			482.571,
+			481.688
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			413.463,
+			418.249,
+			418.081,
+			418.789,
+			418.485,
+			418.838,
+			413.186,
+			419.821
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			499.868,
+			480.556,
+			479.048,
+			482.073,
+			480.368,
+			478.644,
+			487.460,
+			501.945
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			395.277,
+			391.870,
+			400.306,
+			413.414,
+			398.333,
+			400.509,
+			396.220,
+			415.118
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			483.884,
+			480.478,
+			481.023,
+			501.212,
+			480.370,
+			491.377,
+			501.669,
+			505.416
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			419.116,
+			417.793,
+			418.277,
+			418.474,
+			418.394,
+			416.905,
+			421.809,
+			418.388
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			482.035,
+			477.090,
+			482.386,
+			480.406,
+			483.878,
+			477.588,
+			504.489,
+			483.692
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			414.679,
+			417.468,
+			415.313,
+			419.956,
+			414.984,
+			421.912,
+			414.816,
+			421.870
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			478.546,
+			477.296,
+			478.642,
+			478.655,
+			477.275,
+			489.335,
+			480.306,
+			488.925
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			388.746,
+			400.894,
+			394.386,
+			415.675,
+			394.676,
+			400.660,
+			396.047,
+			414.895
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			288.541,
+			293.088,
+			298.759,
+			296.478,
+			298.670,
+			297.319,
+			294.462,
+			299.018
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			227.437,
+			230.892,
+			228.143,
+			236.126,
+			234.451,
+			234.753,
+			226.936,
+			233.174
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			268.244,
+			286.011,
+			293.328,
+			294.022,
+			293.038,
+			298.745,
+			294.167,
+			285.314
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			218.534,
+			222.018,
+			217.109,
+			222.773,
+			206.830,
+			178.821,
+			172.643,
+			191.547
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			228.686,
+			236.138,
+			236.313,
+			237.098,
+			232.773,
+			236.123,
+			235.309,
+			236.100
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			179.121,
+			173.448,
+			164.501,
+			171.270,
+			176.754,
+			179.271,
+			169.158,
+			179.316
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			282.678,
+			300.160,
+			297.577,
+			298.767,
+			298.923,
+			298.785,
+			295.330,
+			298.733
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			222.301,
+			233.240,
+			237.278,
+			237.156,
+			228.541,
+			233.998,
+			229.243,
+			233.279
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			268.100,
+			274.736,
+			296.493,
+			289.617,
+			296.322,
+			289.715,
+			278.818,
+			291.791
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			218.063,
+			226.419,
+			202.140,
+			207.617,
+			208.342,
+			203.093,
+			203.491,
+			209.169
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			229.628,
+			237.083,
+			226.602,
+			233.620,
+			230.705,
+			237.027,
+			238.107,
+			233.539
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			178.775,
+			179.281,
+			171.709,
+			175.672,
+			178.993,
+			179.292,
+			167.902,
+			177.943
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			296.365,
+			306.141,
+			297.651,
+			298.748,
+			298.870,
+			307.390,
+			300.045,
+			298.845
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			221.929,
+			235.896,
+			231.229,
+			235.185,
+			236.275,
+			224.846,
+			211.854,
+			225.687
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			279.286,
+			295.340,
+			291.825,
+			291.300,
+			292.392,
+			281.737,
+			256.151,
+			293.028
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			214.297,
+			229.082,
+			223.413,
+			215.826,
+			206.727,
+			199.996,
+			199.670,
+			202.712
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			229.960,
+			234.384,
+			237.116,
+			227.319,
+			232.593,
+			234.304,
+			232.524,
+			237.325
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			178.444,
+			180.766,
+			165.579,
+			177.216,
+			178.588,
+			178.323,
+			167.463,
+			179.290
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			330.831,
+			337.437,
+			352.466,
+			341.128,
+			351.571,
+			347.542,
+			339.396,
+			349.019
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			262.526,
+			267.345,
+			271.198,
+			268.541,
+			277.539,
+			278.674,
+			267.219,
+			260.377
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			302.965,
+			327.276,
+			307.280,
+			310.384,
+			317.887,
+			323.890,
+			311.486,
+			316.829
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			246.348,
+			258.149,
+			250.507,
+			252.064,
+			243.305,
+			256.999,
+			250.842,
+			255.400
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			284.800,
+			282.031,
+			287.069,
+			286.603,
+			296.061,
+			295.590,
+			291.821,
+			293.657
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			209.109,
+			205.047,
+			194.815,
+			194.381,
+			205.259,
+			207.000,
+			200.389,
+			199.327
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			324.492,
+			350.697,
+			347.097,
+			332.207,
+			354.337,
+			355.532,
+			353.294,
+			352.842
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			261.577,
+			268.281,
+			270.236,
+			269.201,
+			275.645,
+			278.743,
+			271.639,
+			267.947
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			294.579,
+			323.307,
+			308.813,
+			312.467,
+			309.106,
+			319.300,
+			304.554,
+			314.095
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			240.940,
+			256.141,
+			254.277,
+			252.768,
+			255.258,
+			247.977,
+			241.934,
+			255.747
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			265.144,
+			292.912,
+			250.788,
+			268.032,
+			292.319,
+			288.027,
+			241.605,
+			239.832
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			205.923,
+			220.786,
+			214.785,
+			212.680,
+			212.869,
+			218.593,
+			213.514,
+			208.363
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			321.850,
+			357.154,
+			343.785,
+			349.051,
+			341.820,
+			331.109,
+			345.993,
+			353.330
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			269.739,
+			274.650,
+			268.570,
+			268.048,
+			242.968,
+			272.961,
+			263.617,
+			271.332
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			318.391,
+			346.140,
+			346.365,
+			347.269,
+			347.426,
+			355.905,
+			346.123,
+			343.503
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			246.143,
+			252.219,
+			248.850,
+			248.841,
+			241.751,
+			250.040,
+			252.788,
+			240.692
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			275.767,
+			291.854,
+			269.844,
+			278.920,
+			274.417,
+			274.005,
+			285.245,
+			293.034
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			208.651,
+			218.801,
+			211.009,
+			208.493,
+			209.322,
+			221.498,
+			212.628,
+			211.639
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.021,
+			22.935,
+			22.147,
+			23.121,
+			22.658,
+			23.100,
+			22.976,
+			22.971
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.189,
+			21.553,
+			21.045,
+			21.393,
+			21.047,
+			21.289,
+			21.112,
+			21.157
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.428,
+			22.762,
+			22.435,
+			22.692,
+			22.340,
+			22.614,
+			22.580,
+			22.718
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.069,
+			21.087,
+			21.077,
+			21.046,
+			20.983,
+			21.187,
+			20.785,
+			21.129
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.486,
+			17.407,
+			17.496,
+			17.417,
+			17.368,
+			17.360,
+			16.550,
+			15.674
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.168,
+			16.348,
+			16.267,
+			16.324,
+			16.321,
+			16.391,
+			16.329,
+			16.319
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.691,
+			23.012,
+			22.951,
+			22.638,
+			22.980,
+			22.166,
+			20.412,
+			22.369
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.307,
+			21.088,
+			20.984,
+			21.278,
+			21.105,
+			21.295,
+			20.724,
+			21.359
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.679,
+			22.530,
+			22.596,
+			22.743,
+			22.374,
+			22.707,
+			22.639,
+			22.474
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.141,
+			21.000,
+			20.884,
+			21.176,
+			20.990,
+			21.099,
+			21.008,
+			20.796
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.318,
+			17.409,
+			17.242,
+			17.390,
+			17.169,
+			17.377,
+			17.246,
+			17.336
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.379,
+			16.380,
+			16.355,
+			16.341,
+			16.369,
+			16.386,
+			16.292,
+			16.334
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.810,
+			22.900,
+			22.557,
+			22.848,
+			22.738,
+			22.796,
+			22.750,
+			22.680
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.203,
+			21.533,
+			21.091,
+			21.327,
+			21.372,
+			21.317,
+			21.240,
+			21.457
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.708,
+			22.615,
+			22.125,
+			20.076,
+			22.339,
+			22.779,
+			22.450,
+			22.761
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.128,
+			20.840,
+			20.982,
+			20.916,
+			19.463,
+			20.550,
+			20.310,
+			21.071
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.406,
+			17.350,
+			17.371,
+			17.324,
+			17.440,
+			17.092,
+			17.241,
+			17.317
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.387,
+			16.562,
+			16.285,
+			16.508,
+			16.299,
+			16.499,
+			16.165,
+			16.468
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.246,
+			23.358,
+			23.287,
+			23.252,
+			23.237,
+			23.351,
+			22.933,
+			23.258
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			22.044,
+			21.959,
+			21.778,
+			21.930,
+			21.663,
+			22.001,
+			21.906,
+			21.757
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.241,
+			23.129,
+			22.974,
+			23.215,
+			23.202,
+			23.017,
+			23.028,
+			23.244
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.555,
+			21.079,
+			21.704,
+			21.698,
+			21.553,
+			21.952,
+			21.474,
+			21.906
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.797,
+			17.684,
+			17.715,
+			17.682,
+			15.786,
+			16.933,
+			17.637,
+			17.646
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.759,
+			16.907,
+			16.693,
+			16.898,
+			16.638,
+			16.867,
+			16.713,
+			16.882
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.725,
+			23.493,
+			23.548,
+			23.457,
+			23.603,
+			23.674,
+			23.153,
+			23.438
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			22.176,
+			22.287,
+			21.803,
+			22.024,
+			21.978,
+			21.995,
+			22.027,
+			21.810
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.937,
+			23.122,
+			23.079,
+			22.905,
+			23.026,
+			22.892,
+			22.871,
+			23.067
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.860,
+			20.605,
+			21.505,
+			21.639,
+			21.531,
+			21.766,
+			21.406,
+			21.782
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.731,
+			17.565,
+			17.551,
+			17.611,
+			17.712,
+			17.645,
+			17.594,
+			17.625
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			15.228,
+			16.641,
+			16.609,
+			16.504,
+			16.600,
+			16.779,
+			16.492,
+			16.751
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			23.430,
+			22.957,
+			23.271,
+			23.245,
+			23.020,
+			23.236,
+			23.138,
+			23.281
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.966,
+			21.999,
+			21.601,
+			21.792,
+			21.753,
+			21.959,
+			21.768,
+			21.808
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			22.850,
+			23.158,
+			23.134,
+			22.906,
+			22.934,
+			22.993,
+			23.086,
+			23.152
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			21.714,
+			21.425,
+			21.587,
+			21.549,
+			21.551,
+			21.723,
+			21.401,
+			21.572
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			17.594,
+			17.512,
+			17.619,
+			17.345,
+			17.554,
+			17.271,
+			17.324,
+			17.536
+		]
+	}
+	,
+	{
+		"Device" : "fagiomachine",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			16.597,
+			16.789,
+			16.461,
+			16.792,
+			16.534,
+			16.823,
+			16.610,
+			16.799
+		]
+	}
 ]
