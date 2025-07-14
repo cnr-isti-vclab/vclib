@@ -20,33 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "montecarlo_sampling.h"
-
-#include <vclib/io.h>
+#include "mesh_point_sampling.h"
 
 #include <default_viewer.h>
 
 int main(int argc, char** argv)
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                                "/bunny_textured.ply");
+    auto meshes = meshPointSampling();
 
-    vcl::TriMesh samples;
-
-    montecarloSampling(m, samples);
-
-    vcl::updatePerFaceNormals(m);
-    vcl::updatePerVertexNormals(m);
-    m.enablePerVertexColor();
-    vcl::setPerVertexColor(m, vcl::Color::LightBlue);
-    m.enablePerFaceColor();
-    vcl::setPerFaceColor(m, vcl::Color::LightBlue);
-
-    for (const vcl::TriMesh::Vertex& v : samples.vertices()) {
-        m.face(v.customComponent<vcl::uint>("birthFace")).color() =
-            vcl::Color::LightRed;
-    }
-
-    return showMeshesOnDefaultViewer(
-        argc, argv, std::move(m), std::move(samples));
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }

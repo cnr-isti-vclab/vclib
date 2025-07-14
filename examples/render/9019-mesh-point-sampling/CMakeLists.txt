@@ -23,15 +23,12 @@
 cmake_minimum_required(VERSION 3.24)
 
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-example-${EXAMPLE_NAME})
-
-set(HEADERS
-    montecarlo_sampling.h)
+project(vclib-render-example-${EXAMPLE_NAME})
 
 set(SOURCES
     main.cpp)
 
-vclib_add_example(
-    ${EXAMPLE_NAME}
-    SOURCES ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    VCLIB_CORE_EXAMPLE 019-mesh-point-sampling
+    SOURCES ${SOURCES})

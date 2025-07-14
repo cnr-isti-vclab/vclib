@@ -20,18 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "montecarlo_sampling.h"
+#include "mesh_point_sampling.h"
 
-#include <vclib/io.h>
-
-int main(int argc, char** argv)
+int main()
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                                "/bunny_textured.ply");
+    auto [originalMesh, allVertices, uniform, montecarlo, poisson] =
+        meshPointSampling();
 
-    vcl::TriMesh samples;
+    /****** Save the sampled meshes ******/
 
-    montecarloSampling(m, samples);
+    std::cout << "\n=== Saving Sampled Meshes ===" << std::endl;
+
+    try {
+        vcl::save(originalMesh, VCLIB_RESULTS_PATH "/019_original_mesh.ply");
+        vcl::save(allVertices, VCLIB_RESULTS_PATH "/019_vertices_sampling.ply");
+        vcl::save(uniform, VCLIB_RESULTS_PATH "/019_uniform_sampling.ply");
+        vcl::save(montecarlo, VCLIB_RESULTS_PATH "/019_montecarlo_sampling.ply");
+        vcl::save(poisson, VCLIB_RESULTS_PATH "/019_poisson_sampling.ply");
+
+        std::cout << "Saved all sampled meshes to results directory" << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error in saving: " << e.what() << "\n";
+    }
+
+    std::cout << "Example completed successfully!\n";
 
     return 0;
 }
