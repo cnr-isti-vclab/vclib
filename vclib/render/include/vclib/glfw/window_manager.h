@@ -147,10 +147,7 @@ public:
         setCallbacks();
     }
 
-    virtual ~WindowManager() 
-    {
-        cleanup();
-    }
+    virtual ~WindowManager() { cleanup(); }
 
     const std::string& windowTitle() const { return mTitle; }
 
@@ -172,6 +169,11 @@ public:
         int width, height;
         glfwGetWindowSize(mWindow, &width, &height);
         return height;
+    }
+
+    void resize(uint width, uint height)
+    {
+        glfwSetWindowSize(mWindow, width, height);
     }
 
     void show()
