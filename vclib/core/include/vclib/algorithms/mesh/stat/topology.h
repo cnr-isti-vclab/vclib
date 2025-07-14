@@ -548,11 +548,11 @@ uint numberHoles(const MeshType& m) requires HasPerFaceAdjacentFaces<MeshType>
 
     uint loopNum = 0;
 
-           // create a vector of bools to keep track of visited faces.
+    // create a vector of bools to keep track of visited faces.
     std::vector<bool> visitedFaces(m.faceContainerSize(), false);
 
-           // Traverse the mesh using a depth-first search algorithm to find all the
-           // holes.
+    // Traverse the mesh using a depth-first search algorithm to find all the
+    // holes.
     for (const FaceType& f : m.faces()) {
         uint e = 0;
         for (const VertexType* v : f.vertices()) {
@@ -605,26 +605,26 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 
     std::vector<std::set<uint>> cc;
 
-           // create a vector of bools to keep track of visited faces.
+    // create a vector of bools to keep track of visited faces.
     std::vector<bool> visitedFaces(m.faceContainerSize(), false);
 
-           // create a stack to hold the faces that need to be visited during the
-           // depth-first search.
+    // create a stack to hold the faces that need to be visited during the
+    // depth-first search.
     std::stack<const FaceType*> sf;
 
-           // traverse the mesh using a depth-first search algorithm to find the
-           // connected components.
+    // traverse the mesh using a depth-first search algorithm to find the
+    // connected components.
     for (const FaceType& f : m.faces()) {
         if (!visitedFaces[m.index(f)]) { // first time I see this face
             visitedFaces[m.index(f)] = true;
 
-                   // new connected component
+            // new connected component
             cc.emplace_back();
             std::set<uint>& ccf = cc[cc.size() - 1];
             ccf.insert(m.index(f));
 
-                   // while the stack is empty, visit the adjacent faces of the top
-                   // face of the stack
+            // while the stack is empty, visit the adjacent faces of the top
+            // face of the stack
             sf.push(&f);
             while (!sf.empty()) {
                 const FaceType* fpt = sf.top();
@@ -632,7 +632,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
                 sf.pop();
                 ccf.insert(m.index(fpt));
 
-                       // add the adjacent faces of the current visited in the stack
+                // add the adjacent faces of the current visited in the stack
                 for (uint j = 0; j < fpt->vertexNumber(); ++j) {
                     const FaceType* adjf = fpt->adjFace(j);
                     // if there is an adj face and it has not been visited
