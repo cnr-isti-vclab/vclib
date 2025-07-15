@@ -72,7 +72,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(9016-face-flooding)
     add_subdirectory(9017-mesh-convex-hull)
     add_subdirectory(9019-mesh-point-sampling)
+    add_subdirectory(9020-mesh-crease-edges)
 
     add_subdirectory(9821-mesh-sphere-intersection)
-    add_subdirectory(9826-crease-edges-mesh)
 endif()

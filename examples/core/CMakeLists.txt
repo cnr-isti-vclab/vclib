@@ -52,7 +52,6 @@ add_subdirectory(821-mesh-sphere-intersection)
 add_subdirectory(822-edge-mesh-basic)
 add_subdirectory(823-polygon-earcut)
 add_subdirectory(825-grid)
-add_subdirectory(826-crease-edges-mesh)
 add_subdirectory(998-misc-no-lib)
 add_subdirectory(999-misc)
 
