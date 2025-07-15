@@ -20,58 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef FOO_MESH_H
-#define FOO_MESH_H
-
-#include <vclib/mesh/mesh.h>
-#include <vclib/mesh/requirements.h>
-
-#include "bar_component.h"
 #include "foo_component.h"
+#include "bar_component.h"
 
-/*
- * This file defines a FooMesh class that uses the FooComponent in the Vertex
- * Element.
+#include <iostream>
+
+/**
+ * Example 023: Custom User Components
+ * 
+ * This example demonstrates how to create and use custom components in VCLib.
+ * Two different approaches are shown:
+ * 
+ * 1. FooComponent: Simple horizontal component (always available)
+ * 2. BarComponent: Advanced optional component (runtime-controlled)
  */
-
-class FooMesh;
-
-namespace foomesh {
-
-class Vertex;
-
-class Face;
-
-class Vertex :
-        public vcl::Vertex<
-            FooMesh,
-            vcl::vert::BitFlags,
-            vcl::vert::Position3d,
-            vcl::vert::Normal3d,
-            vcl::vert::Color,
-            FooComponent>
+int main()
 {
-};
+    std::cout << "=== Custom User Components Example ===" << std::endl;
 
-class Face :
-        public vcl::Face<
-            FooMesh,
-            vcl::face::TriangleBitFlags,
-            vcl::face::TriangleVertexPtrs<Vertex, Face>,
-            vcl::face::Normal3d>
-{
-};
+    // Demonstrate simple horizontal component
+    demonstrateFooComponent();
+    
+    // Demonstrate advanced optional component
+    demonstrateBarComponent();
 
-} // namespace foomesh
+    return 0;
+}
 
-class FooMesh :
-        public vcl::Mesh<
-            vcl::mesh::VertexContainer<foomesh::Vertex>,
-            vcl::mesh::FaceContainer<foomesh::Face>,
-            vcl::mesh::BoundingBox3d>
-{
-public:
-    using ScalarType = double;
-};
 
-#endif // FOO_MESH_H

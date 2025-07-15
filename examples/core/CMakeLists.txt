@@ -48,8 +48,8 @@ add_subdirectory(019-mesh-point-sampling)
 add_subdirectory(020-mesh-crease-edges)
 add_subdirectory(021-mesh-sphere-intersection)
 add_subdirectory(022-mesh-grid)
+add_subdirectory(023-mesh-custom-user-component)
 
-add_subdirectory(810-mesh-new-user-component)
 add_subdirectory(998-misc-no-lib)
 add_subdirectory(999-misc)
 
