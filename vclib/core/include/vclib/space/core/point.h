@@ -703,6 +703,42 @@ bool epsilonEquals(
     return p1.epsilonEquals(p2, epsilon);
 }
 
+/**
+ * @brief Stream insertion operator for Point objects.
+ *
+ * This operator allows Point objects to be printed to output streams in a
+ * single row format, rather than the default column format used by Eigen.
+ * The output format is: [x, y, z, ...] where the components are separated
+ * by commas and spaces.
+ *
+ * @tparam Scalar: The scalar type of the point components.
+ * @tparam N: The number of dimensions of the point.
+ * @param[in] os: The output stream to write to.
+ * @param[in] p: The Point object to write.
+ * @return A reference to the output stream.
+ */
+template<typename Scalar, uint N>
+std::ostream& operator<<(std::ostream& os, const Point<Scalar, N>& p)
+{
+    // Create a custom IOFormat for single row output
+    // Parameters: precision, flags, coeffSeparator, rowSeparator, rowPrefix,
+    // rowSuffix, matPrefix, matSuffix
+    static const Eigen::IOFormat rowFormat(
+        Eigen::StreamPrecision, // precision (use stream's precision)
+        Eigen::DontAlignCols,   // flags
+        ", ",                   // coeffSeparator (between elements)
+        ", ",                   // rowSeparator (not used for vectors)
+        "",                     // rowPrefix
+        "",                     // rowSuffix
+        "[",                    // matPrefix
+        "]"                     // matSuffix
+    );
+
+    return os << static_cast<const typename Point<Scalar, N>::BaseMatrixType&>(
+                     p)
+                     .format(rowFormat);
+}
+
 /* Specialization Aliases */
 
 /**
