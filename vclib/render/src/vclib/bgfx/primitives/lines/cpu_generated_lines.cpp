@@ -79,7 +79,7 @@ void CPUGeneratedLines::setPoints(
         uint vi = 0; // float index in vertex buffer
         uint ii = 0; // uint index in index buffer
         for (uint i = 0; i < nPoints - 1; i += 2) {
-            for (uint k = 0; k < 2; k++) { // k = 0 first point, k = 1 second point
+            for (uint k = 0; k < 2; k++) { // k = 0 1st point, k = 1 2nd point
                 for (uint j = 0; j < 2; j++) { // j = 0 "top", j = 1 "bottom"
                     vertices[vi++] = vertCoords[(i * 3)];
                     vertices[vi++] = vertCoords[(i * 3) + 1];
