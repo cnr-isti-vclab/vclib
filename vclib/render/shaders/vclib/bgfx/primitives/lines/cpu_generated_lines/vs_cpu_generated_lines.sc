@@ -29,64 +29,64 @@ $output v_color
 uniform vec4 u_settings;
 
 #define thickness             u_settings.x
-#define colorToUse            u_settings.y
+// #define colorToUse            u_settings.y
 
 #define p0                    a_position
 #define p1                    a_texcoord0
 #define color                 a_color0
-#define normal                a_normal
+// #define normal                a_normal
 #define uv                    a_texcoord1.xy
-#define lineColor             uintABGRToVec4Color(floatBitsToUint(a_texcoord1.z))
+// #define lineColor             uintABGRToVec4Color(floatBitsToUint(a_texcoord1.z))
 #define screenWidth           u_viewRect.z
-#define screenHeigth          u_viewRect.w
+#define screenHeight          u_viewRect.w
 
-vec4 screenToClip(vec4 coordinate, float screen_width, float screen_heigth) {
+vec4 screenToClip(vec4 coordinate) {
     return vec4(
-                  (2 * coordinate.x / screen_width),
-                  (2 * coordinate.y / screen_heigth),
+                  (2 * coordinate.x / screenWidth),
+                  (2 * coordinate.y / screenHeight),
                   coordinate.z,
                   coordinate.w
                 );
 }
 
-vec4 clipToScreen(vec4 coordinate, float screen_width, float screen_heigth) {
+vec4 clipToScreen(vec4 coordinate) {
     return vec4(
-                  (coordinate.x * screen_width) / 2,
-                  (coordinate.y * screen_heigth) / 2,
+                  (coordinate.x * screenWidth) / 2,
+                  (coordinate.y * screenHeight) / 2,
                   coordinate.z,
                   coordinate.w
                 );
 }
 
-vec4 calculatePointWithMVP(vec4 p, float screen_width, float screen_heigth) {
+vec4 calculatePointWithMVP(vec4 p) {
     vec4 NDC_p = mul(u_modelViewProj, vec4(p.xyz, 1.0));
 
-    vec4 screen_p = vec4(((NDC_p.xy / NDC_p.w)).xy, 0.0, 0.0);
+    vec4 screen_p = vec4(NDC_p.xy / NDC_p.w, 0.0, 0.0);
 
-    vec4 p_px = clipToScreen(screen_p, screen_width, screen_heigth);
+    vec4 p_px = clipToScreen(screen_p);
     return vec4(p_px.xy, NDC_p.z, NDC_p.w);
 }
 
 void main() {
-    vec4 p0_px = calculatePointWithMVP(vec4(p0, 0.0), screenWidth, screenHeigth);
-    vec4 p1_px = calculatePointWithMVP(vec4(p1, 0.0), screenWidth, screenHeigth);
+    vec4 p0_px = calculatePointWithMVP(vec4(p0, 0.0));
+    vec4 p1_px = calculatePointWithMVP(vec4(p1, 0.0));
     
     float length_px = length(p1_px.xyz - p0_px.xyz);
-    float half_thickness_px = thickness / 2;
+    float half_thickness_px = thickness / 2.0;
 
     vec4 T = vec4(normalize(p1_px.xy - p0_px.xy).xy, 0, 0);
     vec4 N = vec4(-T.y, T.x, 0.0, 0.0);
     
-    float u = 2.0 * uv.x - 1.0;
+    // float u = 2.0 * uv.x - 1.0;
     float v = 2.0 * uv.y - 1.0;
 
     vec4 p;
     p = p0_px + (uv.x * T * length_px) + (v * N * half_thickness_px); 
-    p = screenToClip(p, screenWidth, screenHeigth);
+    p = screenToClip(p);
 
     float z = ((1 - uv.x) * (p0_px.z)) + (uv.x * (p1_px.z));
     float w = ((1 - uv.x) * (p0_px.w)) + (uv.x * (p1_px.w));
 
     v_color = color;
-    gl_Position = vec4(p.xy * w, z, w); 
+    gl_Position = vec4(p.xy * w, z, w);
 }
