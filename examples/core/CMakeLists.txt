@@ -47,11 +47,9 @@ add_subdirectory(018-mesh-distance)
 add_subdirectory(019-mesh-point-sampling)
 add_subdirectory(020-mesh-crease-edges)
 add_subdirectory(021-mesh-sphere-intersection)
+add_subdirectory(022-mesh-grid)
 
 add_subdirectory(810-mesh-new-user-component)
-add_subdirectory(822-edge-mesh-basic)
-add_subdirectory(823-polygon-earcut)
-add_subdirectory(825-grid)
 add_subdirectory(998-misc-no-lib)
 add_subdirectory(999-misc)
 

@@ -20,39 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms.h>
-
-#include <iostream>
+#include "mesh_grid.h"
 
 int main()
 {
-    /*
-     *  3 6------------------5
-     *    |                  |
-     *  2 |                  |
-     *    |                  |
-     *  1 |  1--+--2         |
-     *    |  |     |         |
-     *  0 7--0     3--+--+---4
-     *    0  1     2  3
-     */
-
-    vcl::Polygon2d polygon = {
-        vcl::Point2d(1, 0),
-        vcl::Point2d(1, 1),
-        vcl::Point2d(2, 1),
-        vcl::Point2d(2, 0),
-        vcl::Point2d(3, 0),
-        vcl::Point2d(3, 3),
-        vcl::Point2d(0, 3),
-        vcl::Point2d(0, 0)};
-
-    std::vector<unsigned int> tri = vcl::earCut(polygon.begin(), polygon.end());
-
-    std::cerr << "Triangle indices: \n";
-    for (unsigned int i = 0; i < tri.size(); i += 3) {
-        std::cerr << tri[i] << "; " << tri[i + 1] << "; " << tri[i + 2] << "\n";
-    }
+    meshGridExamples();
 
     return 0;
 }
