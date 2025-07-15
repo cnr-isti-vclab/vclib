@@ -31,5 +31,5 @@ set(SOURCES
 vclib_add_test(
     ${TEST_NAME}
     SOURCES ${SOURCES}
-    VCLIB_CORE_EXAMPLE 010-mesh-new-user-component
+    VCLIB_CORE_EXAMPLE 023-mesh-custom-user-component
     ${HEADER_ONLY_OPTION})
