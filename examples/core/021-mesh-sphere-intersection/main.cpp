@@ -20,13 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "bimba_sphere_intersection.h"
+#include "mesh_sphere_intersection.h"
 
 int main()
 {
-    vcl::TriMesh m1 = bimbaSphereIntersection();
+    auto
+        [originalMesh,
+         centerSphereMesh,
+         centerSphereIntersection,
+         earSphereMesh,
+         earSphereIntersection,
+         largeSphereMesh,
+         largeSphereIntersection] = meshSphereIntersection();
 
-    vcl::save(m1, VCLIB_RESULTS_PATH "/bimba_sphere_intersection.ply");
+    /****** Save the created meshes ******/
+
+    std::cout << "\n=== Saving Meshes ===" << std::endl;
+
+    try {
+        std::string resultsPath = VCLIB_RESULTS_PATH;
+        
+        vcl::SaveSettings settings;
+        settings.binary = false;
+
+        // Save original and intersected meshes
+        vcl::save(originalMesh, resultsPath + "/021_original_bunny.ply");
+        vcl::save(centerSphereMesh, resultsPath + "/021_center_sphere.ply", settings);
+        vcl::save(centerSphereIntersection, resultsPath + "/021_center_sphere_intersection.ply", settings);
+        vcl::save(earSphereMesh, resultsPath + "/021_ear_sphere.ply", settings);
+        vcl::save(earSphereIntersection, resultsPath + "/021_ear_sphere_intersection.ply", settings);
+        vcl::save(largeSphereMesh, resultsPath + "/021_large_sphere.ply", settings);
+        vcl::save(largeSphereIntersection, resultsPath + "/021_large_sphere_intersection.ply", settings);
+
+        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error saving files: " << e.what() << std::endl;
+    }
 
     return 0;
 }
