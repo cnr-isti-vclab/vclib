@@ -71,7 +71,7 @@ vcl::DrawableMesh<vcl::TriMesh> getMesh(
     vcl::MeshRenderInfo::Surface* coloring = NULL)
 {
     vcl::LoadSettings ldstngs {true, true};
-    vcl::TriMesh      mesh = vcl::load<vcl::TriMesh>(path, ldstngs);
+    vcl::TriMesh      mesh = vcl::loadMesh<vcl::TriMesh>(path, ldstngs);
     vcl::updatePerVertexAndFaceNormals(mesh);
 
     vcl::MeshRenderSettings mrs(mesh);
