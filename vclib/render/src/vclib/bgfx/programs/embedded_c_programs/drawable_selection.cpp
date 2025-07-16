@@ -20,10 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/bgfx/programs/embedded_c_programs/drawable_selection.h>
 
-#include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/drawable_selection.h"
+#include <vclib/shaders/selection/cs_drawable_selection.sc.400.bin.h>
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/shaders/selection/cs_drawable_selection.sc.essl.bin.h>
+
+#include <vclib/shaders/selection/cs_drawable_selection.sc.spv.bin.h>
+
+#ifdef _WIN32
+#include <vclib/shaders/selection/cs_drawable_selection.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/selection/cs_drawable_selection.sc.mtl.bin.h>
+#endif // __APPLE__
+
+namespace vcl {
+
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::DRAWABLE_SELECTION>::
+    computeShader(bgfx::RendererType::Enum type)
+{
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_drawable_selection_essl, sizeof(cs_drawable_selection_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_drawable_selection_400, sizeof(cs_drawable_selection_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_drawable_selection_spv, sizeof(cs_drawable_selection_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_drawable_selection_dx11, sizeof(cs_drawable_selection_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_drawable_selection_mtl, sizeof(cs_drawable_selection_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
+}
+
+} // namespace vcl
