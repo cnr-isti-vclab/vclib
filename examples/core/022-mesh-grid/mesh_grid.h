@@ -48,11 +48,12 @@ void meshGridExamples()
 
     // Create a regular 3D grid with specified bounds and resolution
     vcl::RegularGrid3<double> grid(
-        vcl::Point3d(0, 0, 0),                     // min corner
-        vcl::Point3d(1, 1, 1),                     // max corner  
-        vcl::Point3<unsigned int>(10, 10, 10));    // resolution (10x10x10 cells)
+        vcl::Point3d(0, 0, 0),                  // min corner
+        vcl::Point3d(1, 1, 1),                  // max corner
+        vcl::Point3<unsigned int>(10, 10, 10)); // resolution (10x10x10 cells)
 
-    std::cout << "Created regular grid with bounds (0,0,0) to (1,1,1)" << std::endl;
+    std::cout << "Created regular grid with bounds (0,0,0) to (1,1,1)"
+              << std::endl;
     std::cout << "Grid resolution: 10x10x10 cells" << std::endl;
 
     /****** HashTableGrid with Points ******/
@@ -64,7 +65,8 @@ void meshGridExamples()
 
     // Insert points into the grid
     hashGrid.insert(vcl::Point3d(0.05, 0.15, 0.25));
-    hashGrid.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
+    hashGrid.insert(
+        vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
     hashGrid.insert(vcl::Point3d(0.02, 0.12, 0.29));
     hashGrid.insert(vcl::Point3d(0.12, 0.09, 0.32));
     hashGrid.insert(vcl::Point3d(0.24, 0.52, 0.29));
@@ -80,7 +82,8 @@ void meshGridExamples()
     // Iterate over all stored values
     std::cout << "All values in HashTableGrid:" << std::endl;
     for (const auto& element : hashGrid) {
-        std::cout << "  " << element.first << " -> " << element.second << std::endl;
+        std::cout << "  " << element.first << " -> " << element.second
+                  << std::endl;
     }
 
     /****** Spatial Queries on HashTableGrid ******/
@@ -96,7 +99,8 @@ void meshGridExamples()
     std::cout << std::endl;
 
     // Query values within a sphere
-    auto sphereValues = hashGrid.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
+    auto sphereValues =
+        hashGrid.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
     std::cout << "Values within sphere (center: 0.05,0.15,0.25, radius: 0.2): ";
     for (const auto& value : sphereValues) {
         std::cout << value->second << " ";
@@ -105,7 +109,8 @@ void meshGridExamples()
 
     // Find closest value to a query point
     auto closest = hashGrid.closestValue(vcl::Point3d(0.09, 0.09, 0.29));
-    std::cout << "Closest value to (0.09,0.09,0.29): " << closest->second << std::endl;
+    std::cout << "Closest value to (0.09,0.09,0.29): " << closest->second
+              << std::endl;
 
     // Remove values within sphere
     hashGrid.eraseInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
@@ -113,7 +118,8 @@ void meshGridExamples()
 
     std::cout << "Remaining values after sphere removal:" << std::endl;
     for (const auto& element : hashGrid) {
-        std::cout << "  " << element.first << " -> " << element.second << std::endl;
+        std::cout << "  " << element.first << " -> " << element.second
+                  << std::endl;
     }
 
     /****** StaticGrid with Points ******/
@@ -125,7 +131,8 @@ void meshGridExamples()
 
     // Insert the same points
     staticGrid.insert(vcl::Point3d(0.05, 0.15, 0.25));
-    staticGrid.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicates allowed in StaticGrid
+    staticGrid.insert(
+        vcl::Point3d(0.05, 0.15, 0.25)); // duplicates allowed in StaticGrid
     staticGrid.insert(vcl::Point3d(0.02, 0.12, 0.29));
     staticGrid.insert(vcl::Point3d(0.12, 0.09, 0.32));
     staticGrid.insert(vcl::Point3d(0.24, 0.52, 0.29));
@@ -141,7 +148,8 @@ void meshGridExamples()
     }
 
     // Spatial queries on StaticGrid
-    auto staticSphereValues = staticGrid.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
+    auto staticSphereValues =
+        staticGrid.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
     std::cout << "Values within sphere in StaticGrid: ";
     for (const auto& value : staticSphereValues) {
         std::cout << value->second << " ";
@@ -154,12 +162,14 @@ void meshGridExamples()
 
     // Create a simple mesh (hexahedron)
     vcl::TriMesh mesh = vcl::createHexahedron<vcl::TriMesh>();
-    using ScalarType = vcl::TriMesh::ScalarType;
+    using ScalarType  = vcl::TriMesh::ScalarType;
 
-    std::cout << "Created hexahedron mesh with " << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Created hexahedron mesh with " << mesh.faceNumber()
+              << " faces" << std::endl;
 
     // Create intersection function for faces and bounding boxes
-    auto intersectionFunc = vcl::intersectFunction<vcl::Box3<ScalarType>, vcl::TriMesh::Face>();
+    auto intersectionFunc =
+        vcl::intersectFunction<vcl::Box3<ScalarType>, vcl::TriMesh::Face>();
 
     // HashTableGrid storing face pointers
     vcl::HashTableGrid3<const vcl::TriMesh::Face*, ScalarType> faceHashGrid(
@@ -167,12 +177,13 @@ void meshGridExamples()
 
     std::cout << "Face indices in HashTableGrid:" << std::endl;
     for (const auto& element : faceHashGrid) {
-        std::cout << "  Face " << mesh.index(element.second) 
-                  << " in cell " << element.first << std::endl;
+        std::cout << "  Face " << mesh.index(element.second) << " in cell "
+                  << element.first << std::endl;
     }
 
     // Query faces near a point
-    auto nearbyFaces = faceHashGrid.valuesInSphere({vcl::Point3<ScalarType>(-1, -1, -1), 0.5});
+    auto nearbyFaces =
+        faceHashGrid.valuesInSphere({vcl::Point3<ScalarType>(-1, -1, -1), 0.5});
     std::cout << "Faces near point (-1,-1,-1) within radius 0.5:" << std::endl;
     for (const auto& face : nearbyFaces) {
         std::cout << "  Face " << mesh.index(face->second) << std::endl;
@@ -187,7 +198,8 @@ void meshGridExamples()
 
     std::cout << "Built StaticGrid with mesh faces" << std::endl;
 
-    auto staticNearbyFaces = faceStaticGrid.valuesInSphere({vcl::Point3<ScalarType>(-1, -1, -1), 0.5});
+    auto staticNearbyFaces = faceStaticGrid.valuesInSphere(
+        {vcl::Point3<ScalarType>(-1, -1, -1), 0.5});
     std::cout << "Faces near point (-1,-1,-1) in StaticGrid:" << std::endl;
     for (const auto& face : staticNearbyFaces) {
         std::cout << "  Face " << mesh.index(face->second) << std::endl;
@@ -200,21 +212,22 @@ void meshGridExamples()
     // Load a more complex mesh for k-nearest search
     try {
         mesh = vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
-        std::cout << "Loaded bone mesh with " << mesh.vertexNumber() << " vertices" << std::endl;
+        std::cout << "Loaded bone mesh with " << mesh.vertexNumber()
+                  << " vertices" << std::endl;
 
         // Create StaticGrid with mesh vertices
         vcl::StaticGrid vertexGrid(mesh.vertices() | vcl::views::constAddrOf);
 
         const vcl::Point3<ScalarType> queryPoint(0.5, 0.5, 0.5);
-        const int k = 5;
+        const int                     k = 5;
 
         // Find k closest vertices
         auto kClosest = vertexGrid.kClosestValues(queryPoint, k);
 
         std::cout << "5 closest vertices to point (0.5,0.5,0.5):" << std::endl;
         for (const auto& vertex : kClosest) {
-            std::cout << "  Vertex " << mesh.index(vertex->second) 
-                      << " at " << vertex->first << std::endl;
+            std::cout << "  Vertex " << mesh.index(vertex->second) << " at "
+                      << vertex->first << std::endl;
         }
     }
     catch (const std::exception& e) {

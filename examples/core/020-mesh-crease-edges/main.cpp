@@ -24,8 +24,12 @@
 
 int main()
 {
-    auto [cylinder, icosahedron, cylinderCreaseMesh, icosaCreaseMesh, sharpEdgesMesh] = 
-        meshCreaseEdges();
+    auto
+        [cylinder,
+         icosahedron,
+         cylinderCreaseMesh,
+         icosaCreaseMesh,
+         sharpEdgesMesh] = meshCreaseEdges();
 
     /****** Save the created meshes ******/
 
@@ -33,18 +37,27 @@ int main()
 
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
-        
+
         vcl::SaveSettings settings;
         settings.binary = false;
 
         // Save original meshes
         vcl::save(cylinder, resultsPath + "/020_cylinder.ply");
         vcl::save(icosahedron, resultsPath + "/020_icosahedron.ply");
-        
+
         // Save crease edge meshes
-        vcl::save(cylinderCreaseMesh, resultsPath + "/020_cylinder_crease_edges.ply", settings);
-        vcl::save(icosaCreaseMesh, resultsPath + "/020_icosahedron_crease_edges.ply", settings);
-        vcl::save(sharpEdgesMesh, resultsPath + "/020_sharp_edges_only.ply", settings);
+        vcl::save(
+            cylinderCreaseMesh,
+            resultsPath + "/020_cylinder_crease_edges.ply",
+            settings);
+        vcl::save(
+            icosaCreaseMesh,
+            resultsPath + "/020_icosahedron_crease_edges.ply",
+            settings);
+        vcl::save(
+            sharpEdgesMesh,
+            resultsPath + "/020_sharp_edges_only.ply",
+            settings);
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

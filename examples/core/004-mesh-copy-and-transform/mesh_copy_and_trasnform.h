@@ -154,7 +154,7 @@ auto meshCopyAndTransform()
     // 2.3 ROTATION
     std::cout << "\n2.3 Rotation:\n";
     vcl::TriMesh rotateMesh = vcl::createCube<vcl::TriMesh>();
-    rotateMesh.name() = "Rotated Cube";
+    rotateMesh.name()       = "Rotated Cube";
 
     // Rotation around Z-axis by 45 degrees
     double       angleRadians = M_PI / 4.0; // 45 degrees
@@ -183,7 +183,7 @@ auto meshCopyAndTransform()
     std::cout << "Creating a composite transformation matrix:\n";
 
     vcl::TriMesh matrixMesh = vcl::createIcosahedron<vcl::TriMesh>();
-    matrixMesh.name() = "Matrix Transformed Icosahedron";
+    matrixMesh.name()       = "Matrix Transformed Icosahedron";
 
     // 4x4 transformation matrix (translation + rotation + scale)
     vcl::Matrix44d transformMatrix = vcl::Matrix44d::Identity();

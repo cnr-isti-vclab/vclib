@@ -57,8 +57,8 @@ namespace detail {
 // Complex components often use a data structure to organize multiple fields
 struct BarData
 {
-    double                 bar = 0.0;        // Floating-point value
-    std::vector<vcl::uint> barVector = {};   // Vector of unsigned integers
+    double                 bar       = 0.0; // Floating-point value
+    std::vector<vcl::uint> barVector = {};  // Vector of unsigned integers
 };
 } // namespace detail
 
@@ -68,9 +68,9 @@ bool isBarComponentAvailableOn(const vcl::ElementOrMeshConcept auto& element);
 // Advanced component using VCLib's Component base class
 // This approach enables optional (runtime-controlled) components
 template<
-    typename ElementType = void, // Element type (void for horizontal only)
-    bool VERTICAL        = false, // True for vertical components  
-    bool OPTIONAL        = false> // True for optional components
+    typename ElementType = void,  // Element type (void for horizontal only)
+    bool VERTICAL        = false, // True for vertical components
+    bool OPTIONAL        = false>        // True for optional components
 class BarComponentT :
         public vcl::comp::Component<
             BarComponentT<ElementType, VERTICAL, OPTIONAL>, // CRTP pattern
@@ -91,10 +91,15 @@ class BarComponentT :
 public:
     // Component interface: access data fields through Base::data()
     double& bar() { return Base::data().bar; }
+
     double bar() const { return Base::data().bar; }
 
     std::vector<vcl::uint>& barVector() { return Base::data().barVector; }
-    const std::vector<vcl::uint>& barVector() const { return Base::data().barVector; }
+
+    const std::vector<vcl::uint>& barVector() const
+    {
+        return Base::data().barVector;
+    }
 
 protected:
     // Import function with both compile-time and runtime checks
@@ -106,7 +111,7 @@ protected:
             // Runtime check: is the component actually enabled?
             // (Important for optional components)
             if (isBarComponentAvailableOn(e)) {
-                bar() = e.bar();
+                bar()       = e.bar();
                 barVector() = e.barVector();
             }
         }
@@ -123,10 +128,12 @@ bool isBarComponentAvailableOn(const vcl::ElementOrMeshConcept auto& element)
 using BarComponent = BarComponentT<>; // Simple horizontal component
 
 template<typename ElementType>
-using VerticalBarComponent = BarComponentT<ElementType, true>; // Vertical component
+using VerticalBarComponent =
+    BarComponentT<ElementType, true>; // Vertical component
 
 template<typename ElementType>
-using OptionalBarComponent = BarComponentT<ElementType, true, true>; // Optional component
+using OptionalBarComponent =
+    BarComponentT<ElementType, true, true>; // Optional component
 
 // Compile-time validation
 static_assert(vcl::comp::ComponentConcept<BarComponent>);
@@ -144,12 +151,12 @@ namespace barmesh {
 // Vertex with optional Bar component
 class Vertex :
         public vcl::Vertex<
-            BarMesh,                            // Parent mesh type
-            vcl::vert::BitFlags,                // Standard vertex flags
-            vcl::vert::Position3d,              // 3D position
-            vcl::vert::Normal3d,                // 3D normal vector
-            vcl::vert::Color,                   // Color information
-            OptionalBarComponent<Vertex>>       // Optional Bar component
+            BarMesh,                      // Parent mesh type
+            vcl::vert::BitFlags,          // Standard vertex flags
+            vcl::vert::Position3d,        // 3D position
+            vcl::vert::Normal3d,          // 3D normal vector
+            vcl::vert::Color,             // Color information
+            OptionalBarComponent<Vertex>> // Optional Bar component
 {
 };
 
@@ -196,8 +203,9 @@ inline void demonstrateBarComponent()
     // Set values in the Bar component
     std::cout << "Setting Bar component values..." << std::endl;
     for (auto& vertex : mesh.vertices()) {
-        vertex.bar() = vertex.index() * 3.14 + 1.0;
-        vertex.barVector() = {vertex.index(), vertex.index() + 1, vertex.index() + 2};
+        vertex.bar()       = vertex.index() * 3.14 + 1.0;
+        vertex.barVector() = {
+            vertex.index(), vertex.index() + 1, vertex.index() + 2};
     }
 
     // Display the values stored in both Bar component fields
@@ -208,7 +216,8 @@ inline void demonstrateBarComponent()
         std::cout << "    barVector = [";
         for (size_t i = 0; i < vertex.barVector().size(); ++i) {
             std::cout << vertex.barVector()[i];
-            if (i < vertex.barVector().size() - 1) std::cout << ", ";
+            if (i < vertex.barVector().size() - 1)
+                std::cout << ", ";
         }
         std::cout << "]" << std::endl;
     }
@@ -217,8 +226,9 @@ inline void demonstrateBarComponent()
     std::cout << "\nTesting optional component availability..." << std::endl;
     for (const auto& vertex : mesh.vertices()) {
         bool available = isBarComponentAvailableOn(vertex);
-        std::cout << "  Vertex " << vertex.index() << " has Bar component: " 
-                  << (available ? "Yes" : "No") << std::endl;
+        std::cout << "  Vertex " << vertex.index()
+                  << " has Bar component: " << (available ? "Yes" : "No")
+                  << std::endl;
     }
 
     // Test component transfer between meshes
@@ -226,14 +236,15 @@ inline void demonstrateBarComponent()
     mesh2.addVertices(2);
     // Enable Bar component on destination mesh too
     mesh2.enablePerElementComponent<vcl::ElemId::VERTEX, BAR_COMPONENT>();
-    
+
     std::cout << "\nImporting Bar component data..." << std::endl;
     mesh2.importFrom(mesh);
-    
+
     std::cout << "Imported mesh Bar component values:" << std::endl;
     for (const auto& vertex : mesh2.vertices()) {
         if (isBarComponentAvailableOn(vertex)) {
-            std::cout << "  Vertex " << vertex.index() << ": bar = " << vertex.bar() << std::endl;
+            std::cout << "  Vertex " << vertex.index()
+                      << ": bar = " << vertex.bar() << std::endl;
         }
     }
 }

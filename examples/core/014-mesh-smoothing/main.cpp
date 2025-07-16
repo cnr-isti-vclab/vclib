@@ -24,7 +24,7 @@
 
 int main()
 {
-    auto [originalMesh, laplacianMesh, cotangentMesh, taubinMesh, normalMesh] = 
+    auto [originalMesh, laplacianMesh, cotangentMesh, taubinMesh, normalMesh] =
         meshSmoothing();
 
     /****** Save the smoothed meshes ******/
@@ -34,8 +34,10 @@ int main()
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        vcl::save(laplacianMesh, VCLIB_RESULTS_PATH "/013_laplacian_smoothed.ply");
-        vcl::save(cotangentMesh, VCLIB_RESULTS_PATH "/013_cotangent_smoothed.ply");
+        vcl::save(
+            laplacianMesh, VCLIB_RESULTS_PATH "/013_laplacian_smoothed.ply");
+        vcl::save(
+            cotangentMesh, VCLIB_RESULTS_PATH "/013_cotangent_smoothed.ply");
         vcl::save(taubinMesh, VCLIB_RESULTS_PATH "/013_taubin_smoothed.ply");
         vcl::save(normalMesh, VCLIB_RESULTS_PATH "/013_normal_smoothed.ply");
 

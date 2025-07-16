@@ -39,7 +39,7 @@ auto meshConvexHull()
         vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     inputMesh.name() = "Input Mesh";
 
-    std::cout << "Input mesh loaded: " << inputMesh.vertexNumber() 
+    std::cout << "Input mesh loaded: " << inputMesh.vertexNumber()
               << " vertices, " << inputMesh.faceNumber() << " faces\n";
 
     // Create logger for timing information
@@ -52,22 +52,28 @@ auto meshConvexHull()
         inputMesh.vertices() | vcl::views::positions, log);
     hullMesh.name() = "Convex Hull";
 
-    std::cout << "Convex hull computed: " << hullMesh.vertexNumber() 
+    std::cout << "Convex hull computed: " << hullMesh.vertexNumber()
               << " vertices, " << hullMesh.faceNumber() << " faces\n";
 
     // Also demonstrate computing hull from a simple point set
     std::cout << "\nComputing convex hull from point set...\n";
-    
+
     std::vector<vcl::Point3d> points = {
-        {0, 0, 0}, {1, 0, 0}, {0, 1, 0}, {0, 0, 1},
-        {1, 1, 0}, {1, 0, 1}, {0, 1, 1}, {1, 1, 1},
+        {0,   0,   0  },
+        {1,   0,   0  },
+        {0,   1,   0  },
+        {0,   0,   1  },
+        {1,   1,   0  },
+        {1,   0,   1  },
+        {0,   1,   1  },
+        {1,   1,   1  },
         {0.5, 0.5, 0.5}  // internal point
     };
 
     vcl::TriMesh cubeHull = vcl::convexHull<vcl::TriMesh>(points, log);
-    cubeHull.name() = "Cube Convex Hull";
+    cubeHull.name()       = "Cube Convex Hull";
 
-    std::cout << "Cube convex hull: " << cubeHull.vertexNumber() 
+    std::cout << "Cube convex hull: " << cubeHull.vertexNumber()
               << " vertices, " << cubeHull.faceNumber() << " faces\n";
 
     return std::make_tuple(inputMesh, hullMesh, cubeHull);

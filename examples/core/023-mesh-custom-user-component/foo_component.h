@@ -57,6 +57,7 @@ public:
 
     // Component data accessors
     int& foo() { return data; }
+
     int foo() const { return data; }
 
 protected:
@@ -100,12 +101,12 @@ namespace foomesh {
 // Vertex definition: extends VCLib's Vertex with FooComponent
 class Vertex :
         public vcl::Vertex<
-            FooMesh,                    // Parent mesh type
-            vcl::vert::BitFlags,        // Standard vertex flags
-            vcl::vert::Position3d,      // 3D position
-            vcl::vert::Normal3d,        // 3D normal vector
-            vcl::vert::Color,           // Color information
-            FooComponent>               // Our custom Foo component
+            FooMesh,               // Parent mesh type
+            vcl::vert::BitFlags,   // Standard vertex flags
+            vcl::vert::Position3d, // 3D position
+            vcl::vert::Normal3d,   // 3D normal vector
+            vcl::vert::Color,      // Color information
+            FooComponent>          // Our custom Foo component
 {
 };
 
@@ -153,7 +154,8 @@ inline void demonstrateFooComponent()
     // Display the values stored in the Foo component
     std::cout << "Foo component values:" << std::endl;
     for (const auto& vertex : mesh.vertices()) {
-        std::cout << "  Vertex " << vertex.index() << ": foo = " << vertex.foo() << std::endl;
+        std::cout << "  Vertex " << vertex.index() << ": foo = " << vertex.foo()
+                  << std::endl;
     }
 
     // Test compatibility with standard VCLib meshes
@@ -164,16 +166,17 @@ inline void demonstrateFooComponent()
     // The Foo component will NOT be copied because TriMesh doesn't have it
     // Only common components (position, normal, etc.) are transferred
     standardMesh.importFrom(mesh);
-    std::cout << "TriMesh now has " << standardMesh.vertexNumber() << " vertices" << std::endl;
+    std::cout << "TriMesh now has " << standardMesh.vertexNumber()
+              << " vertices" << std::endl;
 
     std::cout << "\nImporting back from TriMesh to FooMesh..." << std::endl;
     // This works but Foo component values will be initialized to default (0)
     FooMesh mesh2;
     mesh2.importFrom(standardMesh);
     mesh2.addVertices(2); // Add some vertices to see default Foo values
-    
+
     for (const auto& vertex : mesh2.vertices()) {
-        std::cout << "  Vertex " << vertex.index() << ": foo = " << vertex.foo() 
+        std::cout << "  Vertex " << vertex.index() << ": foo = " << vertex.foo()
                   << " (default value)" << std::endl;
     }
 }

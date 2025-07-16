@@ -20,17 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "foo_component.h"
 #include "bar_component.h"
+#include "foo_component.h"
 
 #include <iostream>
 
 /**
  * Example 023: Custom User Components
- * 
+ *
  * This example demonstrates how to create and use custom components in VCLib.
  * Two different approaches are shown:
- * 
+ *
  * 1. FooComponent: Simple horizontal component (always available)
  * 2. BarComponent: Advanced optional component (runtime-controlled)
  */
@@ -40,11 +40,9 @@ int main()
 
     // Demonstrate simple horizontal component
     demonstrateFooComponent();
-    
+
     // Demonstrate advanced optional component
     demonstrateBarComponent();
 
     return 0;
 }
-
-

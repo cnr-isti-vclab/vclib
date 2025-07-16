@@ -39,9 +39,13 @@ int main()
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
         std::cout << "Files saved:" << std::endl;
-        std::cout << "  - 014_taubin_curvature.ply (colored by mean curvature)" << std::endl;
-        std::cout << "  - 014_pca_curvature.ply (colored by Gaussian curvature)" << std::endl;
-        std::cout << "  - 014_general_curvature.ply (colored by maximum curvature)" << std::endl;
+        std::cout << "  - 014_taubin_curvature.ply (colored by mean curvature)"
+                  << std::endl;
+        std::cout << "  - 014_pca_curvature.ply (colored by Gaussian curvature)"
+                  << std::endl;
+        std::cout
+            << "  - 014_general_curvature.ply (colored by maximum curvature)"
+            << std::endl;
     }
     catch (const std::exception& e) {
         std::cout << "Error saving files: " << e.what() << std::endl;

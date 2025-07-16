@@ -61,7 +61,7 @@ auto meshPointSampling()
         vcl::allVerticesPointSampling<vcl::MeshSampler<vcl::PointCloud>>(
             originalMesh);
     vcl::PointCloud allVertices = allVerticesSampler.samples();
-    allVertices.name() = "All Vertices Sampling";
+    allVertices.name()          = "All Vertices Sampling";
 
     std::cout << "Sampled " << allVertices.vertexNumber()
               << " vertices (all vertices)" << std::endl;
@@ -72,11 +72,11 @@ auto meshPointSampling()
 
     // Sample 500 points uniformly from face centers
     vcl::uint numSamples = 500;
-    auto uniformSampler =
+    auto      uniformSampler =
         vcl::faceUniformPointSampling<vcl::MeshSampler<vcl::PointCloud>>(
             originalMesh, numSamples);
     vcl::PointCloud uniform = uniformSampler.samples();
-    uniform.name() = "Uniform Face Sampling";
+    uniform.name()          = "Uniform Face Sampling";
 
     std::cout << "Sampled " << uniform.vertexNumber()
               << " points using uniform face sampling" << std::endl;
@@ -102,11 +102,11 @@ auto meshPointSampling()
 
     // Sample using poisson distribution (approximate number of samples)
     double samplePerAreaUnit = 1000.0;
-    auto poissonSampler =
+    auto   poissonSampler =
         vcl::montecarloPoissonPointSampling<vcl::MeshSampler<vcl::PointCloud>>(
             originalMesh, samplePerAreaUnit);
     vcl::PointCloud poisson = poissonSampler.samples();
-    poisson.name() = "Poisson Sampling";
+    poisson.name()          = "Poisson Sampling";
 
     std::cout << "Sampled " << poisson.vertexNumber()
               << " points using poisson sampling (approximate)" << std::endl;
@@ -117,14 +117,14 @@ auto meshPointSampling()
     std::cout << "Original mesh: " << originalMesh.vertexNumber()
               << " vertices, " << originalMesh.faceNumber() << " faces"
               << std::endl;
-    std::cout << "All vertices:  " << allVertices.vertexNumber()
-              << " points" << std::endl;
-    std::cout << "Uniform:       " << uniform.vertexNumber()
-              << " points" << std::endl;
-    std::cout << "Montecarlo:    " << montecarlo.vertexNumber()
-              << " points" << std::endl;
-    std::cout << "Poisson:       " << poisson.vertexNumber()
-              << " points" << std::endl;
+    std::cout << "All vertices:  " << allVertices.vertexNumber() << " points"
+              << std::endl;
+    std::cout << "Uniform:       " << uniform.vertexNumber() << " points"
+              << std::endl;
+    std::cout << "Montecarlo:    " << montecarlo.vertexNumber() << " points"
+              << std::endl;
+    std::cout << "Poisson:       " << poisson.vertexNumber() << " points"
+              << std::endl;
 
     return std::make_tuple(
         originalMesh, allVertices, uniform, montecarlo, poisson);

@@ -63,7 +63,8 @@ auto meshTextureAndTexCoords()
 
         // Access first few vertex texture coordinates
         std::cout << "   First 3 vertex texture coordinates:" << std::endl;
-        for (vcl::uint i = 0; i < std::min(3u, meshVertexTexCoords.vertexNumber());
+        for (vcl::uint i = 0;
+             i < std::min(3u, meshVertexTexCoords.vertexNumber());
              ++i) {
             auto& texCoord = meshVertexTexCoords.vertex(i).texCoord();
             std::cout << "     Vertex " << i << ": (" << texCoord.u() << ", "

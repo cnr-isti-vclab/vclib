@@ -40,8 +40,8 @@ void meshDistance()
 
     std::cout << "=== Loading Mesh ===" << std::endl;
 
-    vcl::TriMesh mesh = vcl::load<vcl::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    vcl::TriMesh mesh =
+        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     std::cout << "Loaded mesh with " << mesh.vertexNumber() << " vertices and "
               << mesh.faceNumber() << " faces" << std::endl;
@@ -66,7 +66,8 @@ void meshDistance()
 
     /****** Compute distance between original and smoothed mesh ******/
 
-    std::cout << "\n=== Computing Distance (Original vs Smoothed) ===" << std::endl;
+    std::cout << "\n=== Computing Distance (Original vs Smoothed) ==="
+              << std::endl;
 
     vcl::ConsoleLogger log;
 
@@ -86,7 +87,8 @@ void meshDistance()
 
     // Create a Taubin smoothed version
     vcl::TriMesh taubinMesh = mesh;
-    vcl::taubinSmoothing(taubinMesh, 5, 0.5f, -0.53f); // 5 iterations, lambda=0.5, mu=-0.53
+    vcl::taubinSmoothing(
+        taubinMesh, 5, 0.5f, -0.53f); // 5 iterations, lambda=0.5, mu=-0.53
     vcl::updatePerFaceNormals(taubinMesh);
 
     // Compute distance for Taubin smoothing

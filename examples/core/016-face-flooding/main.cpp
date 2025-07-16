@@ -35,7 +35,8 @@ int main()
 
         vcl::save(m, VCLIB_RESULTS_PATH "/016_flooded_faces.ply");
 
-        std::cout << "File saved to: " << resultsPath << "/016_flooded_faces.ply\n";
+        std::cout << "File saved to: " << resultsPath
+                  << "/016_flooded_faces.ply\n";
         std::cout << "- Red face: seed for flooding\n";
         std::cout << "- Green faces: upward-facing connected faces\n";
         std::cout << "- Gray faces: other faces\n";

@@ -38,10 +38,10 @@ auto meshSphereIntersection()
 
     std::cout << "=== Loading Base Mesh ===" << std::endl;
 
-    vcl::TriMesh originalMesh = 
+    vcl::TriMesh originalMesh =
         vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     originalMesh.name() = "Original Bunny";
-    
+
     vcl::updatePerFaceNormals(originalMesh);
     vcl::updatePerVertexNormals(originalMesh);
 
@@ -54,57 +54,65 @@ auto meshSphereIntersection()
     std::cout << "\n=== Defining Intersection Spheres ===" << std::endl;
 
     // Center sphere that intersects the bunny's body
-    vcl::Sphere<vcl::TriMesh::ScalarType> centerSphere({0.28, 0.18, 0.49}, 0.08);
-    
+    vcl::Sphere<vcl::TriMesh::ScalarType> centerSphere(
+        {0.28, 0.18, 0.49}, 0.08);
+
     // Smaller sphere that intersects only part of the ears
     vcl::Sphere<vcl::TriMesh::ScalarType> earSphere({0.25, 0.47, 0.27}, 0.04);
-    
+
     // Larger sphere that encompasses most of the mesh
     vcl::Sphere<vcl::TriMesh::ScalarType> largeSphere({0.28, 0.18, 0.49}, 0.15);
 
-    std::cout << "Center sphere: radius " << centerSphere.radius() 
-              << " at (" << centerSphere.center().x() << ", " 
-              << centerSphere.center().y() << ", " << centerSphere.center().z() << ")" << std::endl;
-    std::cout << "Ear sphere: radius " << earSphere.radius()
-              << " at (" << earSphere.center().x() << ", " 
-              << earSphere.center().y() << ", " << earSphere.center().z() << ")" << std::endl;
-    std::cout << "Large sphere: radius " << largeSphere.radius()
-              << " at (" << largeSphere.center().x() << ", " 
-              << largeSphere.center().y() << ", " << largeSphere.center().z() << ")" << std::endl;
+    std::cout << "Center sphere: radius " << centerSphere.radius() << " at ("
+              << centerSphere.center().x() << ", " << centerSphere.center().y()
+              << ", " << centerSphere.center().z() << ")" << std::endl;
+    std::cout << "Ear sphere: radius " << earSphere.radius() << " at ("
+              << earSphere.center().x() << ", " << earSphere.center().y()
+              << ", " << earSphere.center().z() << ")" << std::endl;
+    std::cout << "Large sphere: radius " << largeSphere.radius() << " at ("
+              << largeSphere.center().x() << ", " << largeSphere.center().y()
+              << ", " << largeSphere.center().z() << ")" << std::endl;
 
     /****** Compute intersections ******/
 
     std::cout << "\n=== Computing Intersections ===" << std::endl;
 
     // Center intersection
-    vcl::TriMesh centerSphereIntersection = vcl::intersection(originalMesh, centerSphere);
+    vcl::TriMesh centerSphereIntersection =
+        vcl::intersection(originalMesh, centerSphere);
     centerSphereIntersection.name() = "Bunny-Center Sphere Intersection";
 
     // Ear intersection
-    vcl::TriMesh earSphereIntersection = vcl::intersection(originalMesh, earSphere);
+    vcl::TriMesh earSphereIntersection =
+        vcl::intersection(originalMesh, earSphere);
     earSphereIntersection.name() = "Bunny-Ear Sphere Intersection";
 
     // Large intersection
-    vcl::TriMesh largeSphereIntersection = vcl::intersection(originalMesh, largeSphere);
+    vcl::TriMesh largeSphereIntersection =
+        vcl::intersection(originalMesh, largeSphere);
     largeSphereIntersection.name() = "Bunny-Large Sphere Intersection";
 
-    std::cout << "Center sphere intersection: " << centerSphereIntersection.vertexNumber()
-              << " vertices, " << centerSphereIntersection.faceNumber() << " faces" << std::endl;
-    std::cout << "Ear sphere intersection: " << earSphereIntersection.vertexNumber()
-              << " vertices, " << earSphereIntersection.faceNumber() << " faces" << std::endl;
-    std::cout << "Large sphere intersection: " << largeSphereIntersection.vertexNumber()
-              << " vertices, " << largeSphereIntersection.faceNumber() << " faces" << std::endl;
+    std::cout << "Center sphere intersection: "
+              << centerSphereIntersection.vertexNumber() << " vertices, "
+              << centerSphereIntersection.faceNumber() << " faces" << std::endl;
+    std::cout << "Ear sphere intersection: "
+              << earSphereIntersection.vertexNumber() << " vertices, "
+              << earSphereIntersection.faceNumber() << " faces" << std::endl;
+    std::cout << "Large sphere intersection: "
+              << largeSphereIntersection.vertexNumber() << " vertices, "
+              << largeSphereIntersection.faceNumber() << " faces" << std::endl;
 
     /****** Optional: Create sphere meshes for visualization ******/
 
-    vcl::TriMesh centerSphereMesh = vcl::createSphere<vcl::TriMesh>(centerSphere);
+    vcl::TriMesh centerSphereMesh =
+        vcl::createSphere<vcl::TriMesh>(centerSphere);
     centerSphereMesh.name() = "Center Sphere";
 
     vcl::TriMesh earSphereMesh = vcl::createSphere<vcl::TriMesh>(earSphere);
-    earSphereMesh.name() = "Ear Sphere";
-    
+    earSphereMesh.name()       = "Ear Sphere";
+
     vcl::TriMesh largeSphereMesh = vcl::createSphere<vcl::TriMesh>(largeSphere);
-    largeSphereMesh.name() = "Large Sphere";
+    largeSphereMesh.name()       = "Large Sphere";
 
     return std::make_tuple(
         originalMesh,

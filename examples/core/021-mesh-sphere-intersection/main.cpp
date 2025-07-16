@@ -39,18 +39,29 @@ int main()
 
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
-        
+
         vcl::SaveSettings settings;
         settings.binary = false;
 
         // Save original and intersected meshes
         vcl::save(originalMesh, resultsPath + "/021_original_bunny.ply");
-        vcl::save(centerSphereMesh, resultsPath + "/021_center_sphere.ply", settings);
-        vcl::save(centerSphereIntersection, resultsPath + "/021_center_sphere_intersection.ply", settings);
+        vcl::save(
+            centerSphereMesh, resultsPath + "/021_center_sphere.ply", settings);
+        vcl::save(
+            centerSphereIntersection,
+            resultsPath + "/021_center_sphere_intersection.ply",
+            settings);
         vcl::save(earSphereMesh, resultsPath + "/021_ear_sphere.ply", settings);
-        vcl::save(earSphereIntersection, resultsPath + "/021_ear_sphere_intersection.ply", settings);
-        vcl::save(largeSphereMesh, resultsPath + "/021_large_sphere.ply", settings);
-        vcl::save(largeSphereIntersection, resultsPath + "/021_large_sphere_intersection.ply", settings);
+        vcl::save(
+            earSphereIntersection,
+            resultsPath + "/021_ear_sphere_intersection.ply",
+            settings);
+        vcl::save(
+            largeSphereMesh, resultsPath + "/021_large_sphere.ply", settings);
+        vcl::save(
+            largeSphereIntersection,
+            resultsPath + "/021_large_sphere_intersection.ply",
+            settings);
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

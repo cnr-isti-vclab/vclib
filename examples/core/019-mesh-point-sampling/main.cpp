@@ -35,10 +35,12 @@ int main()
         vcl::save(originalMesh, VCLIB_RESULTS_PATH "/019_original_mesh.ply");
         vcl::save(allVertices, VCLIB_RESULTS_PATH "/019_vertices_sampling.ply");
         vcl::save(uniform, VCLIB_RESULTS_PATH "/019_uniform_sampling.ply");
-        vcl::save(montecarlo, VCLIB_RESULTS_PATH "/019_montecarlo_sampling.ply");
+        vcl::save(
+            montecarlo, VCLIB_RESULTS_PATH "/019_montecarlo_sampling.ply");
         vcl::save(poisson, VCLIB_RESULTS_PATH "/019_poisson_sampling.ply");
 
-        std::cout << "Saved all sampled meshes to results directory" << std::endl;
+        std::cout << "Saved all sampled meshes to results directory"
+                  << std::endl;
     }
     catch (const std::exception& e) {
         std::cerr << "Error in saving: " << e.what() << "\n";

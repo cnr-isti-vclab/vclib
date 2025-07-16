@@ -48,36 +48,37 @@ auto meshClean()
     originalMesh.name() = "Original Brain Mesh";
 
     vcl::TriMesh mesh = originalMesh;
-    mesh.name() = "Cleaned Brain Mesh";
+    mesh.name()       = "Cleaned Brain Mesh";
 
     std::cout << "Original mesh: " << mesh.vertexNumber() << " vertices, "
               << mesh.faceNumber() << " faces" << std::endl;
 
     // Remove unreferenced vertices
     vcl::uint removedUnref = vcl::removeUnreferencedVertices(mesh);
-    std::cout << "Removed " << removedUnref
-              << " unreferenced vertices" << std::endl;
+    std::cout << "Removed " << removedUnref << " unreferenced vertices"
+              << std::endl;
 
     // Remove duplicated vertices
     vcl::uint removedDupVerts = vcl::removeDuplicatedVertices(mesh);
-    std::cout << "Removed " << removedDupVerts
-              << " duplicated vertices" << std::endl;
+    std::cout << "Removed " << removedDupVerts << " duplicated vertices"
+              << std::endl;
 
     // Remove duplicated faces
     vcl::uint removedDupFaces = vcl::removeDuplicatedFaces(mesh);
-    std::cout << "Removed " << removedDupFaces
-              << " duplicated faces" << std::endl;
+    std::cout << "Removed " << removedDupFaces << " duplicated faces"
+              << std::endl;
 
     // Remove degenerate faces
     vcl::uint removedDegFaces = vcl::removeDegenerateFaces(mesh);
-    std::cout << "Removed " << removedDegFaces
-              << " degenerate faces" << std::endl;
+    std::cout << "Removed " << removedDegFaces << " degenerate faces"
+              << std::endl;
 
     // Compact the mesh to remove deleted elements
     mesh.compact();
 
     std::cout << "Cleaned mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces\n" << std::endl;
+              << mesh.faceNumber() << " faces\n"
+              << std::endl;
 
     /****** Removing degenerate vertices with NaN positions ******/
 
@@ -91,28 +92,28 @@ auto meshClean()
     vcl::uint v0 = testMesh.addVertex(vcl::Point3d(0, 0, 0));
     vcl::uint v1 = testMesh.addVertex(vcl::Point3d(1, 0, 0));
     vcl::uint v2 = testMesh.addVertex(vcl::Point3d(0, 1, 0));
-    
+
     // Add a vertex with NaN position
-    vcl::uint v3 = testMesh.addVertex(vcl::Point3d(
-        std::numeric_limits<double>::quiet_NaN(), 0, 0));
+    vcl::uint v3 = testMesh.addVertex(
+        vcl::Point3d(std::numeric_limits<double>::quiet_NaN(), 0, 0));
 
     // Add faces
     testMesh.addFace(v0, v1, v2);
     testMesh.addFace(v0, v1, v3); // This face will be affected
 
-    std::cout << "Test mesh before cleaning: " 
-              << testMesh.vertexNumber() << " vertices, "
-              << testMesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Test mesh before cleaning: " << testMesh.vertexNumber()
+              << " vertices, " << testMesh.faceNumber() << " faces"
+              << std::endl;
 
     // Remove degenerate vertices and associated faces
     vcl::uint removedDegVerts = vcl::removeDegeneratedVertices(testMesh, true);
-    std::cout << "Removed " << removedDegVerts 
-              << " degenerate vertices" << std::endl;
+    std::cout << "Removed " << removedDegVerts << " degenerate vertices"
+              << std::endl;
 
     testMesh.compact();
-    std::cout << "Test mesh after cleaning: " 
-              << testMesh.vertexNumber() << " vertices, "
-              << testMesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Test mesh after cleaning: " << testMesh.vertexNumber()
+              << " vertices, " << testMesh.faceNumber() << " faces"
+              << std::endl;
 
     std::cout << "Example completed successfully!\n";
 
