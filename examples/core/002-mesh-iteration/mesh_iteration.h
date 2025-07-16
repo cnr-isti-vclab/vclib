@@ -43,7 +43,7 @@ void meshIteration()
     std::cout << "=== Loading Test Mesh ===" << std::endl;
 
     vcl::TriMesh mesh =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     std::cout << "Loaded mesh with " << mesh.vertexNumber() << " vertices and "
               << mesh.faceNumber() << " faces" << std::endl;
@@ -207,7 +207,7 @@ void meshIteration()
 
     // Load a polygon mesh
     vcl::PolyMesh polyMesh =
-        vcl::load<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+        vcl::loadMesh<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     std::cout << "Loaded polygon mesh with " << polyMesh.vertexNumber()
               << " vertices and " << polyMesh.faceNumber() << " faces"

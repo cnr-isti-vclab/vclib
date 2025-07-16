@@ -45,7 +45,7 @@ auto meshNormals()
 
     // Load a sample mesh
     vcl::TriMesh mesh;
-    vcl::load(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
+    vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
     std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
               << mesh.faceNumber() << " faces\n\n";
@@ -177,7 +177,7 @@ auto meshNormals()
 
     // Load and process a polygon mesh
     vcl::PolyMesh polyMesh;
-    vcl::load(polyMesh, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    vcl::loadMesh(polyMesh, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     std::cout << "Loaded polygon mesh: " << polyMesh.vertexNumber()
               << " vertices, " << polyMesh.faceNumber() << " faces\n";

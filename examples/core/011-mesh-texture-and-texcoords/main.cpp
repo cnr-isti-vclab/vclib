@@ -36,7 +36,7 @@ int main()
         vcl::SaveSettings settings;
         settings.saveTextureImages = true; // save texture images
 
-        vcl::save(
+        vcl::saveMesh(
             customMesh, resultsPath + "/011_custom_textured.ply", settings);
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";

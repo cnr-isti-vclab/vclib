@@ -34,7 +34,7 @@
  * @defgroup save_mesh Save mesh functions
  * @ingroup io_mesh
  *
- * @brief List of functions that allow to save to file an input Mesh.
+ * @brief List of functions that allow to saveMesh to file an input Mesh.
  */
 
 namespace vcl {
@@ -70,35 +70,30 @@ inline std::set<FileFormat> saveMeshFormats()
  *
  * @param[in] m: The mesh object to save.
  * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] settings: Settings for saving the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * saving.
- * @param[in] settings: Settings for saving the file.
- *
- * @throws vcl::UnknownFileFormatException if the file extension is not
- * recognized.
- *
- * @ingroup save_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
+void saveMesh(
     const MeshType&     m,
     const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
 {
     FileFormat ff = FileInfo::fileFormat(filename);
 
     if (ff == objFileFormat()) {
-        saveObj(m, filename, log, settings);
+        saveObj(m, filename, settings, log);
     }
     else if (ff == offFileFormat()) {
-        saveOff(m, filename, log, settings);
+        saveOff(m, filename, settings, log);
     }
     else if (ff == plyFileFormat()) {
-        savePly(m, filename, log, settings);
+        savePly(m, filename, settings, log);
     }
     else if (ff == stlFileFormat()) {
-        saveStl(m, filename, log, settings);
+        saveStl(m, filename, settings, log);
     }
     else {
         throw UnknownFileFormatException(ff.extensions().front());
@@ -114,18 +109,23 @@ void save(
  *
  * @param[in] m: The mesh object to save.
  * @param[in] filename: The filename of the file where to save the mesh data.
- * @param[in] settings: Settings for saving the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * saving.
+ * @param[in] settings: Settings for saving the file.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not
+ * recognized.
+ *
+ * @ingroup save_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
+void saveMesh(
     const MeshType&     m,
     const std::string&  filename,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
-    save(m, filename, log, settings);
+    saveMesh(m, filename, settings, log);
 }
 
 } // namespace vcl

@@ -126,22 +126,23 @@ public:
         AbstractLogger&        log = Base::logger()) const final
     {
         MeshType mesh;
+        LoadSettings settings;
 
         std::string basePath = FileInfo::pathWithoutFileName(filename);
 
         if (format == "obj") {
-            mesh = loadObj<MeshType>(filename, loadedInfo, log);
+            loadObj(mesh, filename, loadedInfo, settings, log);
             loadTexturesUsingManager(mesh, basePath);
         }
         else if (format == "off") {
-            mesh = loadOff<MeshType>(filename, loadedInfo, log);
+            loadOff(mesh, filename, loadedInfo, settings, log);
         }
         else if (format == "ply") {
-            mesh = loadPly<MeshType>(filename, loadedInfo, log);
+            loadPly(mesh, filename, loadedInfo, settings, log);
             loadTexturesUsingManager(mesh, basePath);
         }
         else if (format == "stl") {
-            mesh = loadStl<MeshType>(filename, loadedInfo, log);
+            loadStl(mesh, filename, loadedInfo, settings, log);
 
             if (parameters.get("unify_duplicate_vertices")->boolValue()) {
                 vcl::removeDuplicatedVertices(mesh);

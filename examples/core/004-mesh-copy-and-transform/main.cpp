@@ -35,22 +35,22 @@ int main()
         // Save some of the created meshes
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        vcl::save(
+        vcl::saveMesh(
             transformMesh, resultsPath + "/004_transformed_icosahedron.ply");
         std::cout << "Saved: 004_transformed_icosahedron.ply (translated "
                      "icosahedron)\n";
 
-        vcl::save(scaleMesh, resultsPath + "/004_scaled_cube.ply");
+        vcl::saveMesh(scaleMesh, resultsPath + "/004_scaled_cube.ply");
         std::cout << "Saved: 004_scaled_cube.ply (scaled cube)\n";
 
-        vcl::save(rotateMesh, resultsPath + "/004_rotated_cube.ply");
+        vcl::saveMesh(rotateMesh, resultsPath + "/004_rotated_cube.ply");
         std::cout << "Saved: 004_rotated_cube.ply (rotated cube)\n";
 
-        vcl::save(matrixMesh, resultsPath + "/004_matrix_transformed.ply");
+        vcl::saveMesh(matrixMesh, resultsPath + "/004_matrix_transformed.ply");
         std::cout
             << "Saved: 004_matrix_transformed.ply (matrix transformation)\n";
 
-        vcl::save(combinedMesh, resultsPath + "/004_combined_scene.ply");
+        vcl::saveMesh(combinedMesh, resultsPath + "/004_combined_scene.ply");
         std::cout << "Saved: 004_combined_scene.ply (combined scene)\n";
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";

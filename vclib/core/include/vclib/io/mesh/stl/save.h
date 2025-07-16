@@ -100,8 +100,8 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
     const MeshType&     m,
     std::ostream&       fp,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
 {
     MeshInfo meshInfo(m);
 
@@ -179,33 +179,13 @@ void saveStl(
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
     const MeshType&     m,
-    std::ostream&       fp,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    saveStl(m, fp, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
-    const MeshType&     m,
     const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
 {
     std::ofstream fp = openOutputFileStream(filename, "stl");
 
-    saveStl(m, fp, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
-    const MeshType&     m,
-    const std::string&  filename,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    saveStl(m, filename, log, settings);
+    saveStl(m, fp, settings, log);
 }
 
 } // namespace vcl

@@ -37,7 +37,7 @@ void meshTopologyStatistics()
 
     // Load a mesh with multiple components
     vcl::TriMesh rangeMesh =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/rangemap.ply");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/rangemap.ply");
 
     rangeMesh.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(rangeMesh);
@@ -65,7 +65,7 @@ void meshTopologyStatistics()
     std::cout << "=== Topology Analysis ===" << std::endl;
 
     vcl::TriMesh mesh =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
     mesh.name() = "Brain Mesh";
 
     // Enable adjacency information for topology checks

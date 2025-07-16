@@ -43,7 +43,7 @@ auto meshSmoothing()
     std::cout << "=== Loading Bunny Mesh ===" << std::endl;
 
     vcl::TriMesh originalMesh =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     originalMesh.name() = "Original Bunny Mesh";
 
     std::cout << "Original mesh loaded:" << std::endl;
