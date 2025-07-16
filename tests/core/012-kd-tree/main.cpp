@@ -33,7 +33,7 @@ std::vector<unsigned int> getKNearestNeighbors(
     unsigned int     k,
     std::string      mesh = "bone.ply")
 {
-    MeshType m = vcl::loadPly<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + mesh);
+    MeshType m = vcl::loadMesh<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/" + mesh);
 
     vcl::KDTree tree(m);
 

@@ -41,7 +41,7 @@ TEMPLATE_TEST_CASE(
     using VNScalar    = typename VNormalType::ScalarType;
 
     TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     THEN("The mesh normals are not updated - all zero")
     {

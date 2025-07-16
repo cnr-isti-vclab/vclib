@@ -38,7 +38,7 @@ int main()
     vcl::LoadSettings s;
     s.loadTextureImages = true;
 
-    vcl::TriEdgeMesh mesh = vcl::load<vcl::TriEdgeMesh>(
+    vcl::TriEdgeMesh mesh = vcl::loadMesh<vcl::TriEdgeMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
 
     // saving obj

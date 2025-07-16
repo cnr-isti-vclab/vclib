@@ -44,7 +44,7 @@ auto meshClean()
     std::cout << "=== Loading and Cleaning Brain Mesh ===" << std::endl;
 
     vcl::TriMesh originalMesh =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
     originalMesh.name() = "Original Brain Mesh";
 
     vcl::TriMesh mesh = originalMesh;

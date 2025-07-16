@@ -48,7 +48,7 @@ void initSaveMesh(pybind11::module& m)
                     settings.magicsMode        = magicsMode;
                     settings.info              = info;
 
-                    vcl::save(m, filename, settings);
+                    vcl::saveMesh(m, filename, settings);
                 },
                 py::arg("m"),
                 py::arg("filename"),

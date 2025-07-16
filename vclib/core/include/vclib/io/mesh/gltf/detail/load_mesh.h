@@ -491,8 +491,8 @@ void loadGltfMeshPrimitive(
     const tinygltf::Model&     model,
     const tinygltf::Primitive& p,
     const MatrixType&          transf,
-    LogType&                   log,
-    const LoadSettings&        settings)
+    const LoadSettings&        settings,
+    LogType&                   log)
 {
     int  textureImg = -1;    // id of the texture associated to the material
     bool vTex       = false; // used if a material has a texture
@@ -635,8 +635,8 @@ void gltfLoadMesh(
     const tinygltf::Mesh&  tm,
     const tinygltf::Model& model,
     const MatrixType&      transf,
-    LogType&               log,
-    const LoadSettings&    settings)
+    const LoadSettings&    settings,
+    LogType&               log)
 {
     if constexpr (HasName<MeshType>) {
         if (!tm.name.empty()) {
@@ -648,7 +648,7 @@ void gltfLoadMesh(
 
     // for each primitive, load it into the mesh
     for (uint i = 0; const tinygltf::Primitive& p : tm.primitives) {
-        loadGltfMeshPrimitive(m, info, model, p, transf, log, settings);
+        loadGltfMeshPrimitive(m, info, model, p, transf, settings, log);
         log.progress(++i);
     }
 

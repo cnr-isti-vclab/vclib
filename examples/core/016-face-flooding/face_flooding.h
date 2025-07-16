@@ -38,7 +38,7 @@ auto faceFlooding()
 
     // Load mesh
     vcl::TriMesh m =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     // Enable required components
     m.enablePerFaceAdjacentFaces();

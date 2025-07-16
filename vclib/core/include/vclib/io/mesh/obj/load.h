@@ -493,8 +493,8 @@ void loadObj(
     MeshInfo&                         loadedInfo,
     const std::string&                filename     = "",
     bool                              ignoreMtlLib = false,
-    LogType&                          log          = nullLogger,
-    const LoadSettings&               settings     = LoadSettings())
+    const LoadSettings&               settings     = LoadSettings(),
+    LogType&                          log          = nullLogger)
 {
     loadedInfo.clear();
 
@@ -703,8 +703,8 @@ void loadObj(
  * @param[in] inputMtlStreams: the streams to read the material from (if any)
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the stream
- * @param[in] log: the logger to use
  * @param[in] settings: settings for loading the file/stream.
+ * @param[in] log: the logger to use
  *
  * @ingroup load_mesh
  */
@@ -714,8 +714,8 @@ void loadObj(
     std::istream&                     inputObjStream,
     const std::vector<std::istream*>& inputMtlStreams,
     MeshInfo&                         loadedInfo,
-    LogType&                          log      = nullLogger,
-    const LoadSettings&               settings = LoadSettings())
+    const LoadSettings&               settings = LoadSettings(),
+    LogType&                          log      = nullLogger)
 {
     detail::loadObj(
         m,
@@ -724,124 +724,8 @@ void loadObj(
         loadedInfo,
         "",
         true,
-        log,
-        settings);
-}
-
-/**
- * @brief Loads from the given input obj stream and puts the content into the
- * mesh m.
- *
- * The function will fill all the components read into the stream that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * In case of materials used in the obj stream that were not found in the
- * material streams, a warning will be logged in the log argument.
- *
- * @param[in] m: the mesh to fill
- * @param[in] inputObjStream: the stream to read from
- * @param[in] inputMtlStreams: the streams to read the material from (if any)
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadObj(
-    MeshType&                         m,
-    std::istream&                     inputObjStream,
-    const std::vector<std::istream*>& inputMtlStreams,
-    LogType&                          log      = nullLogger,
-    const LoadSettings&               settings = LoadSettings())
-{
-    MeshInfo loadedInfo;
-    detail::loadObj(
-        m,
-        inputObjStream,
-        inputMtlStreams,
-        loadedInfo,
-        "",
-        true,
-        log,
-        settings);
-}
-
-/**
- * @brief Loads from the given input obj stream and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the stream that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * The info about what elements and components have been loaded from the stream
- * will be stored into the loadedInfo argument.
- *
- * In case of materials used in the obj stream that were not found in the
- * material streams, a warning will be logged in the log argument.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] inputObjStream: the stream to read from
- * @param[in] inputMtlStreams: the streams to read the material from (if any)
- * @param[out] loadedInfo: the info about what elements and components have been
- * loaded from the stream
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadObj(
-    std::istream&                     inputObjStream,
-    const std::vector<std::istream*>& inputMtlStreams,
-    MeshInfo&                         loadedInfo,
-    LogType&                          log      = nullLogger,
-    const LoadSettings&               settings = LoadSettings())
-{
-    MeshType m;
-    loadObj(m, inputObjStream, inputMtlStreams, loadedInfo, log, settings);
-    return m;
-}
-
-/**
- * @brief Loads from the given input obj stream and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the stream that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * In case of materials used in the obj stream that were not found in the
- * material streams, a warning will be logged in the log argument.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] inputObjStream: the stream to read from
- * @param[in] inputMtlStreams: the streams to read the material from (if any)
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadObj(
-    std::istream&                     inputObjStream,
-    const std::vector<std::istream*>& inputMtlStreams,
-    LogType&                          log      = nullLogger,
-    const LoadSettings&               settings = LoadSettings())
-{
-    MeshType m;
-    loadObj(m, inputObjStream, inputMtlStreams, log, settings);
-    return m;
+        settings,
+        log);
 }
 
 /**
@@ -866,8 +750,8 @@ MeshType loadObj(
  * @param[in] filename: the file to read from
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the file
- * @param[in] log: the logger to use
  * @param[in] settings: settings for loading the file/stream.
+ * @param[in] log: the logger to use
  *
  * @ingroup load_mesh
  */
@@ -876,8 +760,8 @@ void loadObj(
     MeshType&           m,
     const std::string&  filename,
     MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
 {
     std::ifstream file = openInputFileStream(filename);
 
@@ -900,111 +784,7 @@ void loadObj(
     }
 
     detail::loadObj(
-        m, file, mtlStreams, loadedInfo, filename, false, log, settings);
-}
-
-/**
- * @brief Loads from the given input obj file and puts the content into the
- * mesh m.
- *
- * The function will fill all the components read into the file that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * In case of materials used in the obj file that were not found in the
- * material files, a warning will be logged in the log argument.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] m: the mesh to fill
- * @param[in] filename: the file to read from
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadObj(
-    MeshType&           m,
-    const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshInfo loadedInfo;
-    loadObj(m, filename, loadedInfo, log, settings);
-}
-
-/**
- * @brief Loads from the given input obj file and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the file that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * The info about what elements and components have been loaded from the stream
- * will be stored into the loadedInfo argument.
- *
- * In case of materials used in the obj file that were not found in the
- * material files, a warning will be logged in the log argument.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] filename: the file to read from
- * @param[out] loadedInfo: the info about what elements and components have been
- * loaded from the file
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the file.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadObj(
-    const std::string&  filename,
-    MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshType m;
-    loadObj(m, filename, loadedInfo, log, settings);
-    return m;
-}
-
-/**
- * @brief Loads from the given input obj file and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the file that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * In case of materials used in the obj file that were not found in the
- * material files, a warning will be logged in the log argument.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] filename: the file to read from
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the file.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadObj(
-    const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshInfo loadedInfo;
-    return loadObj<MeshType>(filename, loadedInfo, log, settings);
+        m, file, mtlStreams, loadedInfo, filename, false, settings, log);
 }
 
 } // namespace vcl

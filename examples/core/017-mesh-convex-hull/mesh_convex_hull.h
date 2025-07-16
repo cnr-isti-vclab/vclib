@@ -36,7 +36,7 @@ auto meshConvexHull()
 
     // Load an input mesh
     vcl::TriMesh inputMesh =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     inputMesh.name() = "Input Mesh";
 
     std::cout << "Input mesh loaded: " << inputMesh.vertexNumber()
