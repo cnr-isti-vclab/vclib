@@ -68,49 +68,54 @@ uniform vec4 u_settings;
 // }
 
 void main() {
-    vec4 view_p0 = mul(u_modelView, vec4(p0, 1.0));
-    vec4 view_p1 = mul(u_modelView, vec4(p1, 1.0));
+    // segment points in clip space
+    vec4 C0 = mul(u_modelViewProj, vec4(p0, 1.0));
+    vec4 C1 = mul(u_modelViewProj, vec4(p1, 1.0));
 
-    vec2 T = normalize(view_p0.xy - view_p1.xy);
-    vec2 N = vec2(-T.y, T.x);
+    // clip segment to near plane (w = 0) if needed
+    vec4 clippedC0 = C0;
+    vec4 clippedC1 = C1;
 
-    vec4 view_p = (view_p0 * (1 - uv.x)) + (view_p1 * uv.x);
+    float nearEpsilon = 0.001;  // small positive value to avoid w=0
 
-    // Extract horizontal and vertical scale from projection matrix
-    float scaleX = u_proj[0][0]; // = 1 / (aspect * tan(fov/2))
-    float scaleY = u_proj[1][1]; // = 1 / tan(fov/2)
+    if (C0.w < nearEpsilon && C1.w >= nearEpsilon) {
+        // C0 is behind camera, C1 is in front - clip C0 to near plane
+        float t = (nearEpsilon - C0.w) / (C1.w - C0.w);
+        clippedC0 = mix(C0, C1, t);
+    } else if (C1.w < nearEpsilon && C0.w >= nearEpsilon) {
+        // C1 is behind camera, C0 is in front - clip C1 to near plane
+        float t = (nearEpsilon - C1.w) / (C0.w - C1.w);
+        clippedC1 = mix(C1, C0, t);
+    } else if (C0.w < nearEpsilon && C1.w < nearEpsilon) {
+        // both behind camera - discard by moving to far away
+        gl_Position = vec4(0.0, 0.0, 100.0, 1.0);
+        return;
+    }
 
-    // Compute size of 1 pixel in view space at current depth
-    float pixelSizeX = (2.0 * view_p.z) / (scaleX * screenWidth);
-    float pixelSizeY = (2.0 * view_p.z) / (scaleY * screenHeight);
+    // pick this vertex's position by uv.x along clipped segment */
+    vec4 C = mix(clippedC0, clippedC1, uv.x);
 
-    float v = 2.0 * uv.y - 1.0;
-    vec2 pixelOffset = v * N * (thickness / 2);
-    vec3 offset = vec3(pixelOffset.x * pixelSizeX, pixelOffset.y * pixelSizeY, 0.0);
+    // compute direction in NDC space (now safe since both points have w > 0) */
+    vec2 ndc0 = clippedC0.xy / clippedC0.w;
+    vec2 ndc1 = clippedC1.xy / clippedC1.w;
+    vec2 screenDir = ndc1 - ndc0;
+    float screenDirLen = length(screenDir);
 
-    vec4 posView = view_p + vec4(offset.xyz, 0);
+    if (screenDirLen > 0.0001) {
+        vec2 T = screenDir / screenDirLen;
+        vec2 N = vec2(-T.y, T.x);
+        
+        float pixelsToNDCX = 2.0 / screenWidth;
+        float pixelsToNDCY = 2.0 / screenHeight;
+        
+        float side = 2.0 * uv.y - 1.0;
+        vec2 offsetNDC = N * (0.5 * thickness) * side * vec2(pixelsToNDCX, pixelsToNDCY);
+        
+        // Convert back to clip space
+        vec2 newNDC = (C.xy / C.w) + offsetNDC;
+        C.xy = newNDC * C.w;
+    }
 
     v_color = color;
-    gl_Position = mul(u_proj, posView);
-
-    // // vec4 p0_px = calculatePointWithMVP(vec4(p0, 0.0));
-    // // vec4 p1_px = calculatePointWithMVP(vec4(p1, 0.0));
-    
-    // float length_px = length(p1_px.xyz - p0_px.xyz);
-    // float half_thickness_px = thickness / 2.0;
-
-
-    
-    // // float u = 2.0 * uv.x - 1.0;
-    // float v = 2.0 * uv.y - 1.0;
-
-    // vec4 p;
-    // p = p0_px + (uv.x * T * length_px) + (v * N * half_thickness_px); 
-    // p = screenToClip(p);
-
-    // float z = ((1 - uv.x) * (p0_px.z)) + (uv.x * (p1_px.z));
-    // float w = ((1 - uv.x) * (p0_px.w)) + (uv.x * (p1_px.w));
-
-    // v_color = color;
-    // gl_Position = vec4(p.xy * w, z, w);
+    gl_Position = C;
 }
