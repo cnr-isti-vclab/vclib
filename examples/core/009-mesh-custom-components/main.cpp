@@ -20,74 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
-
-#include <iostream>
+#include "mesh_custom_components.h"
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
+    auto [mesh] = meshCustomComponents();
 
-    m.addPerVertexCustomComponent<int>("flag");
+    /****** Save the created meshes ******/
 
-    assert(m.hasPerVertexCustomComponent("flag"));
+    std::cout << "\n=== Saving Meshes ===" << std::endl;
 
-    for (vcl::TriMesh::Vertex& v : m.vertices()) {
-        v.customComponent<int>("flag") = -4;
+    try {
+        std::string resultsPath = VCLIB_RESULTS_PATH;
+
+        // save the mesh after processing
+        // note: ply format is able to save custom components having primitive
+        // types
+        vcl::save(mesh, resultsPath + "/009_processed_bimba.ply");
+
+        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }
-
-    assert(m.vertex(10).customComponent<int>("flag") == -4);
-
-    vcl::CustomComponentVectorHandle<int> v =
-        m.perVertexCustomComponentVectorHandle<int>("flag");
-
-    for (auto& m : v) {
-        m = 8;
+    catch (const std::exception& e) {
+        std::cerr << "Error in saving: " << e.what() << "\n";
     }
-
-    v.front() = 4;
-
-    assert(m.vertex(0).customComponent<int>("flag") == 4);
-    assert(m.vertex(9).customComponent<int>("flag") == 8);
-
-    m.deletePerVertexCustomComponent("flag");
-
-    assert(!m.hasPerVertexCustomComponent("flag"));
-
-    m.addPerVertexCustomComponent<vcl::Point3f>("oldPositions");
-
-    assert(m.hasPerVertexCustomComponent("oldPositions"));
-    assert(m.isPerVertexCustomComponentOfType<vcl::Point3f>("oldPositions"));
-    assert(!m.isPerVertexCustomComponentOfType<vcl::Point3d>("oldPositions"));
-
-    for (vcl::TriMesh::Vertex& v : m.vertices()) {
-        v.customComponent<vcl::Point3f>("oldPositions") =
-            v.position().cast<float>();
-    }
-
-    vcl::taubinSmoothing(m, 500, 0.7, -0.73);
-
-    vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldPositions =
-        m.perVertexCustomComponentVectorHandle<const vcl::Point3f>(
-            "oldPositions");
-
-    double avgDist = 0;
-    using PT       = vcl::TriMesh::Vertex::PositionType;
-    using ST       = PT::ScalarType;
-    for (vcl::TriMesh::Vertex& v : m.vertices()) {
-        avgDist += v.position().dist(oldPositions[m.index(v)].cast<ST>());
-    }
-    avgDist /= m.vertexNumber();
-
-    std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
-
-    m.addCustomComponent<PT>("barycenter", vcl::barycenter(m));
-
-    std::cerr << "Mesh barycenter: " << m.customComponent<PT>("barycenter")
-              << "\n";
 
     return 0;
 }
