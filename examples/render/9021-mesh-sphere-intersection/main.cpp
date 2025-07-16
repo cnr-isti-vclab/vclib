@@ -20,30 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "bimba_sphere_intersection.h"
+#include "mesh_sphere_intersection.h"
 
 #include <default_viewer.h>
 
 int main(int argc, char** argv)
 {
-    vcl::Sphere<vcl::TriMesh::ScalarType> s = {
-        {0, 0, 0},
-        0.3
-    };
+    auto meshes = meshSphereIntersection();
 
-    vcl::TriMesh m = bimbaSphereIntersection(s);
+    std::apply(
+        [](auto&&... args) {
+            (vcl::updatePerVertexAndFaceNormals(args), ...);
+        },
+        meshes);
 
-    m.name() = "bimba";
-    m.enablePerVertexColor();
-    vcl::setPerVertexColor(m, vcl::Color::Gray);
-
-    vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
-
-    sm.name() = "sphere";
-    sm.enablePerVertexColor();
-    vcl::updatePerFaceNormals(sm);
-    vcl::updatePerVertexNormals(sm);
-    vcl::setPerVertexColor(sm, vcl::Color::Gray);
-
-    return showMeshesOnDefaultViewer(argc, argv, std::move(m), std::move(sm));
+    return std::apply(
+        [&](auto&&... args) {
+            return showMeshesOnDefaultViewer(argc, argv, args...);
+        },
+        meshes);
 }
