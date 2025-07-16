@@ -24,14 +24,10 @@
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
-BUFFER_RO(normals,   vec4, VCL_MRB_VERTEX_NORMAL_STREAM);   // normals (3 floats)
-BUFFER_RO(colors,    uvec4, VCL_MRB_VERTEX_COLOR_STREAM);   // colors (rgba uint)
 
-BUFFER_WO(vOut, vec4, 4); // output vertices
-// 2 vec4 per vertex:
-// - 3 floats for position + 1 uint for color
-// - 3 floats for normal   + 1 float for scale
+BUFFER_RW(colors,   uvec4, VCL_MRB_VERTEX_COLOR_STREAM);   // colors (rgba uint)
 
+uniform vec4 u_selectionBox;
 
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
@@ -41,24 +37,30 @@ void main()
     uint idx31 = idx30+1;
     uint idx32 = idx30+2;
 
-    float col = uintBitsToFloat(colors[pointId/4][pointId%4]);
+    float minX = u_selectionBox[0];
+    float minY = u_selectionBox[1];
+    float maxX = u_selectionBox[2];
+    float maxY = u_selectionBox[3];
+
     vec3 p = vec3(
         positions[idx30/4][idx30%4],
         positions[idx31/4][idx31%4],
         positions[idx32/4][idx32%4]);
-    vec3 n = vec3(
-        normals[idx30/4][idx30%4],
-        normals[idx31/4][idx31%4],
-        normals[idx32/4][idx32%4]);
 
-    // Generate quad vertices
-    UNROLL
-    for (int i = 0; i < 4; ++i) {
-        // Offset for quad vertices
-        uint vertexId = pointId * 4 + i;
-        // pos 3, col 1
-        // norm 3, sca 1
-        vOut[vertexId * 2]     = vec4(p, col);
-        vOut[vertexId * 2 + 1] = vec4(n, 1.0);
+    if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
+        switch(pointId%4) {
+            case 0:
+                colors[pointId/4] = vec4(uint(0xFF1B78F9), colors[pointId/4].y, colors[pointId/4].z, colors[pointId/4].w);
+                break;
+            case 1:
+                colors[pointId/4] = vec4(colors[pointId/4].x, uint(0xFF1B78F9), colors[pointId/4].z, colors[pointId/4].w);
+                break;
+            case 2:
+                colors[pointId/4] = vec4(colors[pointId/4].x, colors[pointId/4].y, uint(0xFF1B78F9), colors[pointId/4].w);
+                break;
+            case 3:
+                colors[pointId/4] = vec4(colors[pointId/4].x, colors[pointId/4].y, colors[pointId/4].z, uint(0xFF1B78F9));
+                break;
+        }
     }
 }
