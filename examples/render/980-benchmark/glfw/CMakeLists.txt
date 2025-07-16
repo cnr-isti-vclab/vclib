@@ -38,6 +38,9 @@ vclib_add_example(${EXAMPLE_NAME}
 
 # after build, copy the target vclib-render-example-${EXAMPLE_NAME} into
 # ${CMAKE_CURRENT_SOURCE_DIR}/.. directory
-file(COPY ${CMAKE_CURRENT_BINARY_DIR}/vclib-render-example-${EXAMPLE_NAME}
-    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/..)
+add_custom_command(TARGET vclib-render-example-${EXAMPLE_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_FILE:vclib-render-example-${EXAMPLE_NAME}>
+        ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
 
