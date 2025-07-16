@@ -35,3 +35,9 @@ set(SOURCES
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
     SOURCES ${SOURCES})
+
+# after build, copy the target vclib-render-example-${EXAMPLE_NAME} into
+# ${CMAKE_CURRENT_SOURCE_DIR}/.. directory
+file(COPY ${CMAKE_CURRENT_BINARY_DIR}/vclib-render-example-${EXAMPLE_NAME}
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
