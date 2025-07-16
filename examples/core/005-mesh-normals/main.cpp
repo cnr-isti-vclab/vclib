@@ -33,10 +33,10 @@ int main()
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        vcl::save(mesh, resultsPath + "/005_cube_with_normals.ply");
+        vcl::saveMesh(mesh, resultsPath + "/005_cube_with_normals.ply");
         std::cout << "Saved: 005_cube_with_normals.ply\n";
 
-        vcl::save(polyMesh, resultsPath + "/005_poly_cube_with_normals.ply");
+        vcl::saveMesh(polyMesh, resultsPath + "/005_poly_cube_with_normals.ply");
         std::cout << "Saved: 005_poly_cube_with_normals.ply\n";
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";

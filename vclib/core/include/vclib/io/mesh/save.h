@@ -34,7 +34,7 @@
  * @defgroup save_mesh Save mesh functions
  * @ingroup io_mesh
  *
- * @brief List of functions that allow to save to file an input Mesh.
+ * @brief List of functions that allow to saveMesh to file an input Mesh.
  */
 
 namespace vcl {
@@ -80,7 +80,7 @@ inline std::set<FileFormat> saveMeshFormats()
  * @ingroup save_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
+void saveMesh(
     const MeshType&     m,
     const std::string&  filename,
     LogType&            log      = nullLogger,
@@ -119,13 +119,13 @@ void save(
  * saving.
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
+void saveMesh(
     const MeshType&     m,
     const std::string&  filename,
     const SaveSettings& settings,
     LogType&            log = nullLogger)
 {
-    save(m, filename, log, settings);
+    saveMesh(m, filename, log, settings);
 }
 
 } // namespace vcl

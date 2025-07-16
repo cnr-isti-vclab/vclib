@@ -26,7 +26,7 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-// This example shows how to load and save meshes using the VCLib IO module.
+// This example shows how to loadMesh and save meshes using the VCLib IO module.
 // VCLib supports loading and saving the following mesh formats:
 // - OBJ
 // - PLY
@@ -44,11 +44,11 @@ auto loadMeshes()
 
     // declare and load:
     vcl::TriMesh mesh0;
-    vcl::load(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    vcl::loadMesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    // create and load:
+    // create and loadMesh:
     auto mesh1 =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     // The loaded mesh is adapted to the type of mesh you want to use (e.g.
     // loading a file that contains a polygonal mesh in a TriMesh object).
@@ -57,7 +57,7 @@ auto loadMeshes()
     // load function.
 
     vcl::MeshInfo info;
-    vcl::load(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info);
+    vcl::loadMesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info);
 
     std::cout << "Mesh has per face color: " << info.hasPerFaceColor()
               << std::endl;
@@ -67,7 +67,7 @@ auto loadMeshes()
     // TODO) and whether to load texture images or not.
     vcl::LoadSettings loadSettings;
     loadSettings.loadTextureImages = true;
-    vcl::load(
+    vcl::loadMesh(
         mesh1, VCLIB_EXAMPLE_MESHES_PATH "/bunny_textured.ply", loadSettings);
 
     return std::make_tuple(mesh0, mesh1);
@@ -79,7 +79,7 @@ void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
 
     // To save a mesh you can use the save function. The function will
     // automatically detect the file format based on the file extension.
-    vcl::save(mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny.obj");
+    vcl::saveMesh(mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny.obj");
 
     // You can also specify what kind of data you want to save in the file,
     // using a MeshInfo object in the SaveSettings parameter
@@ -89,7 +89,7 @@ void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
 
     vcl::SaveSettings saveSettings;
     saveSettings.info = saveInfo;
-    vcl::save(
+    vcl::saveMesh(
         mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny-cloud.obj", saveSettings);
 
     // You can also specify other save settings trough the SaveSettings object.
@@ -97,7 +97,7 @@ void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
     saveInfo.setPerFaceVertexReferences(true);
     saveSettings.info   = saveInfo;
     saveSettings.binary = false; // save in ASCII format
-    vcl::save(
+    vcl::saveMesh(
         mesh0, VCLIB_RESULTS_PATH "/000_mesh-io_bunny-ascii.ply", saveSettings);
 }
 

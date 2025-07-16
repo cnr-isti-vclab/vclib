@@ -42,19 +42,19 @@ int main()
         settings.binary = false;
 
         // Save original meshes
-        vcl::save(cylinder, resultsPath + "/020_cylinder.ply");
-        vcl::save(icosahedron, resultsPath + "/020_icosahedron.ply");
+        vcl::saveMesh(cylinder, resultsPath + "/020_cylinder.ply");
+        vcl::saveMesh(icosahedron, resultsPath + "/020_icosahedron.ply");
 
         // Save crease edge meshes
-        vcl::save(
+        vcl::saveMesh(
             cylinderCreaseMesh,
             resultsPath + "/020_cylinder_crease_edges.ply",
             settings);
-        vcl::save(
+        vcl::saveMesh(
             icosaCreaseMesh,
             resultsPath + "/020_icosahedron_crease_edges.ply",
             settings);
-        vcl::save(
+        vcl::saveMesh(
             sharpEdgesMesh,
             resultsPath + "/020_sharp_edges_only.ply",
             settings);

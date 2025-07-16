@@ -92,7 +92,7 @@ inline std::set<FileFormat> loadMeshFormats()
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void load(
+void loadMesh(
     MeshType&           m,
     const std::string&  filename,
     MeshInfo&           loadedInfo,
@@ -148,14 +148,14 @@ void load(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void load(
+void loadMesh(
     MeshType&           m,
     const std::string&  filename,
     MeshInfo&           loadedInfo,
     const LoadSettings& settings,
     LogType&            log = nullLogger)
 {
-    load(m, filename, loadedInfo, log, settings);
+    loadMesh(m, filename, loadedInfo, log, settings);
 }
 
 /**
@@ -178,14 +178,14 @@ void load(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void load(
+void loadMesh(
     MeshType&           m,
     const std::string&  filename,
     const LoadSettings& settings,
     LogType&            log = nullLogger)
 {
     MeshInfo loadedInfo;
-    load(m, filename, loadedInfo, log, settings);
+    loadMesh(m, filename, loadedInfo, log, settings);
 }
 
 /**
@@ -208,14 +208,14 @@ void load(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void load(
+void loadMesh(
     MeshType&           m,
     const std::string&  filename,
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    load(m, filename, loadedInfo, log, settings);
+    loadMesh(m, filename, loadedInfo, log, settings);
 }
 
 /**
@@ -240,14 +240,14 @@ void load(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType load(
+MeshType loadMesh(
     const std::string&  filename,
     MeshInfo&           loadedInfo,
     const LoadSettings& settings,
     LogType&            log = nullLogger)
 {
     MeshType m;
-    load(m, filename, loadedInfo, log, settings);
+    loadMesh(m, filename, loadedInfo, log, settings);
     return m;
 }
 
@@ -273,14 +273,14 @@ MeshType load(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType load(
+MeshType loadMesh(
     const std::string&  filename,
     MeshInfo&           loadedInfo,
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
     MeshType m;
-    load(m, filename, loadedInfo, log, settings);
+    loadMesh(m, filename, loadedInfo, log, settings);
     return m;
 }
 
@@ -304,13 +304,13 @@ MeshType load(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType load(
+MeshType loadMesh(
     const std::string&  filename,
     const LoadSettings& settings,
     LogType&            log = nullLogger)
 {
     MeshInfo loadedInfo;
-    return load<MeshType>(filename, loadedInfo, log, settings);
+    return loadMesh<MeshType>(filename, loadedInfo, log, settings);
 }
 
 /**
@@ -333,13 +333,13 @@ MeshType load(
  * @ingroup load_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType load(
+MeshType loadMesh(
     const std::string&  filename,
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    return load<MeshType>(filename, loadedInfo, log, settings);
+    return loadMesh<MeshType>(filename, loadedInfo, log, settings);
 }
 
 } // namespace vcl

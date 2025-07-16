@@ -52,7 +52,7 @@ TEMPLATE_TEST_CASE(
 
         std::size_t seed = std::random_device()();
 
-        TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
+        TriMesh tm = vcl::loadMesh<TriMesh>(MESH_PATH);
         vcl::updateBoundingBox(tm);
 
         std::vector<PointType> points =
@@ -75,7 +75,7 @@ TEMPLATE_TEST_CASE(
 
         std::size_t seed = std::random_device()();
 
-        PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
+        PolyMesh pm = vcl::loadMesh<PolyMesh>(MESH_PATH);
         vcl::updateBoundingBox(pm);
 
         std::vector<PointType> points =
@@ -116,7 +116,7 @@ TEMPLATE_TEST_CASE(
 
         std::size_t seed = std::random_device()();
 
-        TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
+        TriMesh tm = vcl::loadMesh<TriMesh>(MESH_PATH);
         vcl::updateBoundingBox(tm);
 
         std::vector<PointType> points =
@@ -140,7 +140,7 @@ TEMPLATE_TEST_CASE(
 
         std::size_t seed = std::random_device()();
 
-        PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
+        PolyMesh pm = vcl::loadMesh<PolyMesh>(MESH_PATH);
         vcl::updateBoundingBox(pm);
 
         std::vector<PointType> points =
@@ -182,7 +182,7 @@ TEMPLATE_TEST_CASE(
 
         std::size_t seed = std::random_device()();
 
-        TriMesh tm = vcl::load<TriMesh>(MESH_PATH);
+        TriMesh tm = vcl::loadMesh<TriMesh>(MESH_PATH);
         vcl::updateBoundingBox(tm);
 
         std::vector<SphereType> spheres =
@@ -207,7 +207,7 @@ TEMPLATE_TEST_CASE(
 
         std::size_t seed = std::random_device()();
 
-        PolyMesh pm = vcl::load<PolyMesh>(MESH_PATH);
+        PolyMesh pm = vcl::loadMesh<PolyMesh>(MESH_PATH);
         vcl::updateBoundingBox(pm);
 
         std::vector<SphereType> spheres =

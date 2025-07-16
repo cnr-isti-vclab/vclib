@@ -211,7 +211,7 @@ void meshGridExamples()
 
     // Load a more complex mesh for k-nearest search
     try {
-        mesh = vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
+        mesh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
         std::cout << "Loaded bone mesh with " << mesh.vertexNumber()
                   << " vertices" << std::endl;
 

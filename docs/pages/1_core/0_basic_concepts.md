@@ -10,13 +10,13 @@ We can first declare a new Triangle Mesh and load a ply file:
 
 vcl::TriMesh myTriMesh;
 
-vcl::load(myTriMesh, "bunny.ply");
+vcl::loadMesh(myTriMesh, "bunny.ply");
 ```
 
 Or:
 
 ```cpp
-vcl::TriMesh myTriMesh = vcl::load<vcl::TriMesh>("bunny.ply");
+vcl::TriMesh myTriMesh = vcl::loadMesh<vcl::TriMesh>("bunny.ply");
 ```
 
 The TriMesh data structure has containers of Vertices and Faces, plus some other
