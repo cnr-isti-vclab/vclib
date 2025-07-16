@@ -134,11 +134,13 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
+    vcl::MeshInfo info;
+
     SECTION("TriMesh - Cube")
     {
         TriMesh tm;
         auto    ss = stlCube();
-        vcl::loadStl(tm, ss);
+        vcl::loadStl(tm, ss, info);
         REQUIRE(tm.vertexNumber() == 36);
         REQUIRE(tm.faceNumber() == 12);
     }

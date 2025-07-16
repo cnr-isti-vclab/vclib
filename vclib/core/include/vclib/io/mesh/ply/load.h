@@ -43,8 +43,8 @@ void loadPly(
     std::istream&       file,
     const std::string&  filename,
     MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
 {
     PlyHeader header(file, filename);
     if (header.errorWhileLoading())
@@ -150,8 +150,8 @@ void loadPly(
  * @param[in] inputPlyStream: the stream to read from
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the stream
- * @param[in] log: the logger to use
  * @param[in] settings: settings for loading the file/stream.
+ * @param[in] log: the logger to use
  *
  * @ingroup load_mesh
  */
@@ -160,10 +160,10 @@ void loadPly(
     MeshType&           m,
     std::istream&       inputPlyStream,
     MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
 {
-    detail::loadPly(m, inputPlyStream, "", loadedInfo, log, settings);
+    detail::loadPly(m, inputPlyStream, "", loadedInfo, settings, log);
 }
 
 /**
@@ -184,8 +184,8 @@ void loadPly(
  * @param[in] filename: the name of the file to read from
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the file
- * @param[in] log: the logger to use
  * @param[in] settings: settings for loading the file/stream.
+ * @param[in] log: the logger to use
  *
  * @ingroup load_mesh
  */
@@ -194,12 +194,12 @@ void loadPly(
     MeshType&           m,
     const std::string&  filename,
     MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
 {
     std::ifstream file = openInputFileStream(filename);
 
-    detail::loadPly(m, file, filename, loadedInfo, log, settings);
+    detail::loadPly(m, file, filename, loadedInfo, settings, log);
 }
 
 } // namespace vcl

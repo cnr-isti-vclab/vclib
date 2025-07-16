@@ -70,6 +70,45 @@ inline std::set<FileFormat> saveMeshFormats()
  *
  * @param[in] m: The mesh object to save.
  * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] settings: Settings for saving the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * saving.
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveMesh(
+    const MeshType&     m,
+    const std::string&  filename,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
+{
+    FileFormat ff = FileInfo::fileFormat(filename);
+
+    if (ff == objFileFormat()) {
+        saveObj(m, filename, settings, log);
+    }
+    else if (ff == offFileFormat()) {
+        saveOff(m, filename, settings, log);
+    }
+    else if (ff == plyFileFormat()) {
+        savePly(m, filename, settings, log);
+    }
+    else if (ff == stlFileFormat()) {
+        saveStl(m, filename, settings, log);
+    }
+    else {
+        throw UnknownFileFormatException(ff.extensions().front());
+    }
+}
+
+/**
+ * @brief Saves a mesh to a file with the given filename. Checks automatically
+ * the file format to save from the given filename.
+ *
+ * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] m: The mesh object to save.
+ * @param[in] filename: The filename of the file where to save the mesh data.
  * @param[in, out] log: The logger object to use for logging messages during
  * saving.
  * @param[in] settings: Settings for saving the file.
@@ -86,46 +125,7 @@ void saveMesh(
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
-    FileFormat ff = FileInfo::fileFormat(filename);
-
-    if (ff == objFileFormat()) {
-        saveObj(m, filename, log, settings);
-    }
-    else if (ff == offFileFormat()) {
-        saveOff(m, filename, log, settings);
-    }
-    else if (ff == plyFileFormat()) {
-        savePly(m, filename, log, settings);
-    }
-    else if (ff == stlFileFormat()) {
-        saveStl(m, filename, log, settings);
-    }
-    else {
-        throw UnknownFileFormatException(ff.extensions().front());
-    }
-}
-
-/**
- * @brief Saves a mesh to a file with the given filename. Checks automatically
- * the file format to save from the given filename.
- *
- * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] m: The mesh object to save.
- * @param[in] filename: The filename of the file where to save the mesh data.
- * @param[in] settings: Settings for saving the file.
- * @param[in, out] log: The logger object to use for logging messages during
- * saving.
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveMesh(
-    const MeshType&     m,
-    const std::string&  filename,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    saveMesh(m, filename, log, settings);
+    saveMesh(m, filename, settings, log);
 }
 
 } // namespace vcl

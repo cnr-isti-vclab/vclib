@@ -26,7 +26,7 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-// This example shows how to loadMesh and save meshes using the VCLib IO module.
+// This example shows how to load and save meshes using the VCLib IO module.
 // VCLib supports loading and saving the following mesh formats:
 // - OBJ
 // - PLY
@@ -46,7 +46,7 @@ auto loadMeshes()
     vcl::TriMesh mesh0;
     vcl::loadMesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    // create and loadMesh:
+    // create and load:
     auto mesh1 =
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
