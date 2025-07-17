@@ -24083,4 +24083,2056 @@
 			169.606
 		]
 	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11935.453,
+			11633.859,
+			12155.986,
+			10942.835,
+			11839.924,
+			11785.226,
+			10827.198,
+			11538.284
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			10193.680,
+			9410.171,
+			10233.320,
+			9770.968,
+			10261.462,
+			9447.867,
+			10390.690,
+			9746.589
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			10888.502,
+			12134.155,
+			12040.649,
+			11165.699,
+			11935.453,
+			12043.549,
+			11823.126,
+			10975.021
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9842.907,
+			10450.631,
+			9717.417,
+			10582.011,
+			9806.998,
+			10319.066,
+			9570.843,
+			10614.810
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			12202.265,
+			12049.935,
+			12150.078,
+			10825.323,
+			12033.694,
+			11843.851,
+			10825.791,
+			11608.470
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9135.757,
+			9862.322,
+			9007.386,
+			9081.003,
+			9802.384,
+			9034.077,
+			9718.173,
+			8987.310
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			12104.779,
+			11988.683,
+			11076.160,
+			12012.878,
+			12030.220,
+			10917.984,
+			12116.512,
+			12235.110
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			10214.087,
+			9462.528,
+			10099.786,
+			9448.224,
+			9369.964,
+			9974.067,
+			9312.027,
+			10507.734
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11851.150,
+			11593.934,
+			11743.705,
+			11109.630,
+			11959.434,
+			11923.499,
+			10836.584,
+			11650.123
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9882.204,
+			10780.974,
+			10479.544,
+			9867.382,
+			10639.656,
+			9680.917,
+			10359.259,
+			9729.141
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11751.986,
+			11886.084,
+			11850.026,
+			10779.579,
+			11920.088,
+			11200.717,
+			10117.361,
+			11391.598
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9606.517,
+			8752.276,
+			8943.584,
+			9677.544,
+			8744.622,
+			9617.974,
+			8837.982,
+			8782.407
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			12161.308,
+			11911.001,
+			12139.458,
+			11503.244,
+			11920.088,
+			11427.004,
+			11725.529,
+			11152.251
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			10146.104,
+			9399.556,
+			10382.922,
+			9869.330,
+			9964.923,
+			9097.194,
+			10153.934,
+			9662.956
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11970.887,
+			12058.653,
+			10905.125,
+			11864.085,
+			11812.512,
+			10515.247,
+			11591.784,
+			11891.738
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9712.510,
+			10561.000,
+			9668.936,
+			10527.202,
+			10547.633,
+			9524.898,
+			9419.389,
+			10569.037
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11386.928,
+			11358.473,
+			10652.350,
+			11540.947,
+			11477.367,
+			10887.553,
+			11664.800,
+			11637.650
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9844.070,
+			9367.857,
+			9900.206,
+			9061.254,
+			8985.049,
+			9555.114,
+			9143.108,
+			9927.726
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11114.569,
+			12183.236,
+			12040.069,
+			11798.018,
+			10896.570,
+			11997.313,
+			11965.157,
+			11066.354
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9965.321,
+			8632.597,
+			9107.136,
+			8592.246,
+			8773.777,
+			8533.006,
+			9245.562,
+			8891.102
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			12093.068,
+			11940.584,
+			12141.227,
+			10787.487,
+			12105.951,
+			12162.491,
+			11752.539,
+			11038.502
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			10487.457,
+			9769.441,
+			10502.878,
+			10025.264,
+			10517.459,
+			10485.698,
+			9704.216,
+			11053.632
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			10595.914,
+			11800.245,
+			11982.936,
+			10399.767,
+			11362.603,
+			11516.492,
+			10545.853,
+			11612.783
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			8796.003,
+			8761.170,
+			9920.635,
+			9106.473,
+			9624.639,
+			8907.258,
+			8957.042,
+			9803.153
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			10995.294,
+			11856.770,
+			11905.896,
+			10886.605,
+			11866.901,
+			11825.363,
+			11647.410,
+			10708.931
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9996.401,
+			10422.312,
+			10001.200,
+			10860.122,
+			10522.771,
+			10037.339,
+			10652.350,
+			9871.279
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			12020.965,
+			11132.386,
+			12048.193,
+			12116.512,
+			12031.378,
+			10975.021,
+			12095.409,
+			12112.990
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9775.171,
+			10541.407,
+			9658.849,
+			10878.552,
+			9820.867,
+			10733.760,
+			9667.814,
+			10554.758
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			12031.957,
+			12067.384,
+			11361.054,
+			12004.225,
+			11891.738,
+			11883.824,
+			10376.458,
+			11292.290
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9048.791,
+			9435.030,
+			8903.451,
+			9004.466,
+			9754.575,
+			9111.783,
+			9099.181,
+			9705.346
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			10914.171,
+			11933.174,
+			11976.622,
+			11881.565,
+			11049.235,
+			11934.314,
+			11603.620,
+			11072.235
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			10381.629,
+			9553.653,
+			10259.357,
+			9682.792,
+			10288.066,
+			9441.088,
+			10356.684,
+			10216.174
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11850.588,
+			12179.675,
+			10702.971,
+			11976.622,
+			11846.657,
+			11951.429,
+			10780.044,
+			12324.985
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			10951.943,
+			10248.002,
+			10771.683,
+			10901.797,
+			10445.391,
+			10806.605,
+			9124.754,
+			10475.592
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			11721.131,
+			11858.457,
+			11718.933,
+			10913.695,
+			11801.360,
+			11454.229,
+			10162.602,
+			11078.123
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			9677.544,
+			8961.858,
+			9698.945,
+			8916.471,
+			9089.587,
+			9502.452,
+			8803.747,
+			9002.521
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7088.378,
+			7295.223,
+			6753.471,
+			6901.502,
+			7055.570,
+			7146.124,
+			6557.893,
+			6818.306
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6040.398,
+			6250.000,
+			6133.163,
+			5942.477,
+			6245.784,
+			5938.101,
+			6263.780,
+			5920.242
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7078.143,
+			7128.600,
+			6829.855,
+			6508.552,
+			7208.766,
+			7021.091,
+			6935.198,
+			6857.770
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6421.123,
+			6300.086,
+			5993.910,
+			6199.782,
+			5849.321,
+			6219.370,
+			5971.147,
+			6175.584
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			6444.960,
+			7015.968,
+			6776.170,
+			6789.235,
+			6795.694,
+			6450.947,
+			6763.703,
+			6914.864
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			5955.642,
+			5709.588,
+			5900.262,
+			5573.390,
+			5716.115,
+			6099.495,
+			5491.247,
+			5863.865
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7356.187,
+			7124.943,
+			6892.369,
+			6874.175,
+			6832.468,
+			6924.824,
+			6827.616,
+			6866.246
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			5761.032,
+			6331.358,
+			6049.607,
+			5955.642,
+			5693.205,
+			6116.956,
+			5751.490,
+			5750.431
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			6497.219,
+			6977.783,
+			6651.590,
+			6760.045,
+			7013.606,
+			6629.541,
+			6756.574,
+			6785.918
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6154.907,
+			6204.860,
+			5710.631,
+			5837.303,
+			6180.928,
+			5855.487,
+			6033.983,
+			5858.505
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			6687.532,
+			6692.365,
+			6581.199,
+			6278.725,
+			6729.656,
+			6758.218,
+			6248.594,
+			6712.310
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			5805.178,
+			6098.156,
+			5736.182,
+			5932.324,
+			5922.066,
+			6054.002,
+			5784.493,
+			5978.573
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7655.327,
+			7634.054,
+			7330.303,
+			7455.120,
+			7579.662,
+			7711.765,
+			7613.363,
+			7647.833
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6185.975,
+			6195.633,
+			6149.456,
+			6068.403,
+			6515.167,
+			6494.519,
+			6350.174,
+			6498.908
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7696.570,
+			7724.871,
+			7553.326,
+			7478.537,
+			7684.269,
+			7776.775,
+			7564.754,
+			7557.893
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6587.268,
+			6830.601,
+			6526.393,
+			6586.400,
+			6639.577,
+			6773.416,
+			6520.945,
+			6625.500
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7399.953,
+			7599.708,
+			7382.689,
+			7525.134,
+			7521.738,
+			7589.096,
+			7437.377,
+			7423.464
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6547.416,
+			6538.512,
+			6232.393,
+			6347.917,
+			6409.270,
+			6515.337,
+			6335.690,
+			6517.036
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7996.162,
+			7976.517,
+			7592.323,
+			7500.525,
+			7852.499,
+			7872.776,
+			7578.973,
+			7666.125
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6749.278,
+			6771.031,
+			6607.115,
+			6591.263,
+			6729.475,
+			6909.322,
+			6635.348,
+			6503.811
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7817.875,
+			7946.851,
+			7756.748,
+			7754.583,
+			7772.665,
+			7776.775,
+			7692.308,
+			7757.711
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6712.491,
+			6798.097,
+			6643.635,
+			6612.357,
+			6770.114,
+			6869.264,
+			6619.711,
+			6638.167
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7622.648,
+			7690.888,
+			7387.270,
+			7526.267,
+			7476.300,
+			7595.552,
+			7463.578,
+			7457.122
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6438.321,
+			6587.962,
+			6402.213,
+			6405.822,
+			6448.950,
+			6507.536,
+			6309.467,
+			6414.862
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7904.888,
+			8047.901,
+			7572.086,
+			7638.953,
+			7932.982,
+			7832.816,
+			7601.326,
+			7732.278
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6566.506,
+			6853.446,
+			6641.870,
+			6662.225,
+			6644.342,
+			6809.577,
+			6557.205,
+			6559.614
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7927.951,
+			7947.104,
+			7742.095,
+			7596.706,
+			7954.437,
+			7951.401,
+			7766.870,
+			7797.879
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6667.022,
+			6840.320,
+			6589.178,
+			6530.655,
+			6657.080,
+			6856.453,
+			6614.107,
+			6558.925
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7719.385,
+			7552.186,
+			7572.086,
+			7624.276,
+			7559.036,
+			7535.114,
+			7406.310,
+			7581.731
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6397.625,
+			6588.483,
+			6433.185,
+			6414.533,
+			6524.860,
+			6503.473,
+			6334.727,
+			6497.895
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7888.426,
+			8035.485,
+			7735.388,
+			7642.222,
+			7904.139,
+			7821.544,
+			7650.641,
+			7569.335
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6728.751,
+			6805.869,
+			6490.303,
+			6514.658,
+			6671.470,
+			6771.948,
+			6650.705,
+			6562.024
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7767.594,
+			8032.387,
+			7734.431,
+			7855.706,
+			7860.646,
+			7999.744,
+			7829.873,
+			7858.176
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6626.378,
+			6808.279,
+			6476.013,
+			6300.562,
+			6774.150,
+			6768.831,
+			6543.304,
+			6665.422
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			7765.181,
+			7763.975,
+			7635.453,
+			7616.610,
+			7720.815,
+			7664.010,
+			7556.523,
+			7614.059
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			6431.199,
+			6521.796,
+			6393.208,
+			6448.784,
+			6488.956,
+			6595.958,
+			6331.037,
+			6435.503
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			493.034,
+			496.398,
+			489.136,
+			491.683,
+			489.154,
+			499.939,
+			488.920,
+			493.022
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			341.452,
+			351.218,
+			341.203,
+			345.764,
+			339.720,
+			352.042,
+			344.462,
+			345.338
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			467.936,
+			479.499,
+			471.830,
+			478.794,
+			471.638,
+			482.479,
+			470.307,
+			476.821
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			330.848,
+			345.232,
+			333.837,
+			338.116,
+			330.834,
+			345.454,
+			334.026,
+			336.460
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			453.330,
+			462.006,
+			449.730,
+			462.165,
+			451.372,
+			460.694,
+			453.240,
+			453.520
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			319.226,
+			331.651,
+			320.363,
+			324.335,
+			319.955,
+			331.931,
+			321.543,
+			324.066
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			483.628,
+			492.217,
+			480.065,
+			489.695,
+			482.003,
+			492.312,
+			483.719,
+			486.186
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			341.640,
+			350.515,
+			341.665,
+			348.856,
+			341.837,
+			351.101,
+			341.007,
+			348.882
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			472.072,
+			478.471,
+			469.656,
+			475.970,
+			473.166,
+			480.029,
+			469.470,
+			476.087
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			330.936,
+			343.657,
+			335.639,
+			336.128,
+			330.835,
+			344.038,
+			333.509,
+			334.873
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			442.440,
+			466.588,
+			453.973,
+			464.452,
+			456.227,
+			468.692,
+			453.665,
+			470.742
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			319.249,
+			333.439,
+			321.445,
+			324.274,
+			321.806,
+			333.459,
+			320.670,
+			324.311
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			466.496,
+			477.784,
+			462.065,
+			469.894,
+			451.942,
+			470.265,
+			468.783,
+			410.861
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			321.933,
+			336.506,
+			324.368,
+			326.679,
+			327.058,
+			334.449,
+			325.542,
+			327.191
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			469.038,
+			475.310,
+			473.558,
+			416.502,
+			459.835,
+			419.995,
+			427.434,
+			430.688
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			306.352,
+			316.080,
+			306.178,
+			309.989,
+			293.361,
+			306.687,
+			288.418,
+			302.706
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			400.864,
+			431.865,
+			436.344,
+			423.123,
+			391.003,
+			402.639,
+			404.888,
+			426.148
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			325.490,
+			336.719,
+			326.544,
+			328.034,
+			329.014,
+			327.372,
+			321.275,
+			316.742
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			516.770,
+			522.952,
+			521.527,
+			527.245,
+			511.668,
+			529.288,
+			517.966,
+			526.338
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			386.371,
+			399.854,
+			392.531,
+			384.398,
+			391.013,
+			409.085,
+			382.932,
+			396.257
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			490.082,
+			522.381,
+			526.125,
+			500.748,
+			513.320,
+			522.534,
+			517.478,
+			504.030
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			350.092,
+			361.418,
+			344.483,
+			355.668,
+			352.497,
+			361.936,
+			355.291,
+			357.791
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			468.075,
+			474.003,
+			464.357,
+			469.748,
+			479.011,
+			476.244,
+			469.460,
+			476.686
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			340.625,
+			355.299,
+			344.003,
+			347.409,
+			343.139,
+			355.046,
+			343.988,
+			347.639
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			519.375,
+			524.713,
+			521.347,
+			517.148,
+			523.453,
+			525.433,
+			521.313,
+			518.483
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			374.668,
+			388.388,
+			377.185,
+			377.778,
+			374.705,
+			387.177,
+			373.627,
+			378.259
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			486.243,
+			495.599,
+			485.911,
+			490.759,
+			484.536,
+			493.443,
+			486.079,
+			489.961
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			354.747,
+			363.625,
+			355.817,
+			357.987,
+			353.795,
+			363.124,
+			357.452,
+			357.762
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			466.551,
+			476.343,
+			471.220,
+			476.081,
+			472.306,
+			475.296,
+			473.613,
+			475.380
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			340.701,
+			352.395,
+			341.235,
+			348.987,
+			340.687,
+			353.092,
+			343.637,
+			348.566
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			519.592,
+			530.095,
+			517.757,
+			521.218,
+			523.077,
+			524.179,
+			516.378,
+			520.927
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			374.946,
+			387.250,
+			372.437,
+			377.776,
+			375.224,
+			388.198,
+			374.470,
+			378.607
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			488.051,
+			497.440,
+			487.192,
+			491.057,
+			483.278,
+			492.281,
+			486.265,
+			488.975
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			353.419,
+			361.007,
+			356.378,
+			357.766,
+			359.229,
+			361.016,
+			356.769,
+			357.610
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			468.056,
+			479.058,
+			466.446,
+			473.680,
+			473.042,
+			470.420,
+			467.561,
+			474.732
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			340.219,
+			355.776,
+			344.542,
+			345.568,
+			342.054,
+			354.411,
+			343.983,
+			348.717
+		]
+	}
 ]
