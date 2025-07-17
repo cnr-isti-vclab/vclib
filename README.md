@@ -2,7 +2,7 @@
 
 [![Core - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml) [![External - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml) [![Render - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml)
 
-The Visual Computing Library is a C++20 and python modern, multi-platform Mesh and Geometry Processing library. It provides a set of of functionalities for low level and high level mesh processing, rendering and visualization, and it is designed to be easily extensible customizable, and easily integrable in other projects.
+The Visual Computing Library is a C++20 and python modern, multi-platform Mesh and Geometry Processing library. It provides a set of of functionalities for mesh processing, rendering and visualization, and it is designed to be easily extensible customizable, and easily integrable in other projects.
 
 All the modules can be found in the [vclib](https://github.com/cnr-isti-vclab/vclib/tree/main/vclib) directory inside the root of the repository. They are written in C++20, and can be built with CMake. The python side of the library is then generated using [pybind11](https://pybind11.readthedocs.io/en/stable/).
 
@@ -12,7 +12,6 @@ The library is divided in several modules, each one with a specific purpose:
     - **IO**: the `Core` module contains an inner module for input/output operations (loading from and saving to files) that can use 3rd party libraries. It can be configured in order to avoid 3rd party libraries and be used in header-only mode.
   - **Render**: contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
   - **External**: contains algorithms and data structures that use external libraries, like VCG, etc.
-  - **Processing**: contains algorithms for high level mesh and geometry processing tasks that can be used as black box actions.
   - **Bindings**: contains the python bindings of the library.
 
 ## Documentation

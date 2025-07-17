@@ -54,8 +54,4 @@ if (VCLIB_BUILD_MODULE_RENDER AND VCLIB_RENDER_BUILD_TESTS)
     add_subdirectory(render)
 endif()
 
-# if (VCLIB_BUILD_MODULE_PROCESSING)
-#     add_subdirectory(processing)
-# endif()
-
 

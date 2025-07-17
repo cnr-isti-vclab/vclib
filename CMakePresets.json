@@ -191,29 +191,10 @@
             }
         },
         {
-            "name": "vclib-processing-debug",
-            "inherits": "vclib-core-no-tests-debug",
-            "displayName": "VCLib::Processing - Debug",
-            "description": "Processing module",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON"
-            }
-        },
-        {
-            "name": "vclib-processing-release",
-            "inherits": "vclib-core-no-tests-release",
-            "displayName": "VCLib::Processing - Release",
-            "description": "Processing module",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON"
-            }
-        },
-        {
             "name": "vclib-bindings-debug",
             "inherits": [
                 "vclib-external-debug",
-                "vclib-render-bgfx-debug",
-                "vclib-processing-debug"
+                "vclib-render-bgfx-debug"
             ],
             "displayName": "VCLib::Bindings - Debug",
             "description": "Python Bindings module",
@@ -230,8 +211,7 @@
             "name": "vclib-bindings-release",
             "inherits": [
                 "vclib-external-release",
-                "vclib-render-bgfx-release",
-                "vclib-processing-release"
+                "vclib-render-bgfx-release"
             ],
             "displayName": "VCLib::Bindings - Release",
             "description": "Python Bindings module",
@@ -251,7 +231,6 @@
             "inherits": "vclib-core-debug",
             "cacheVariables": {
                 "VCLIB_BUILD_MODULE_EXTERNAL": "ON",
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON",
                 "VCLIB_BUILD_MODULE_RENDER": "ON",
                 "VCLIB_BUILD_MODULE_BINDINGS": "ON"
             }
@@ -263,7 +242,6 @@
             "inherits": "vclib-core-release",
             "cacheVariables": {
                 "VCLIB_BUILD_MODULE_EXTERNAL": "ON",
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON",
                 "VCLIB_BUILD_MODULE_RENDER": "ON",
                 "VCLIB_BUILD_MODULE_BINDINGS": "ON"
             }
@@ -277,7 +255,6 @@
             "cacheVariables": {
                 "VCLIB_INSTALL_MODULE_CORE": "OFF",
                 "VCLIB_INSTALL_MODULE_EXTERNAL": "OFF",
-                "VCLIB_INSTALL_MODULE_PROCESSING": "OFF",
                 "VCLIB_INSTALL_MODULE_RENDER": "OFF"
             }
         }
@@ -330,18 +307,6 @@
             "displayName": "VCLib::Render (OpenGL) - Release",
             "description": "Render with OpenGL render backend",
             "configurePreset": "vclib-render-opengl2-release"
-        },
-        {
-            "name": "vclib-processing-debug",
-            "displayName": "VCLib::Processing - Debug",
-            "description": "Processing module",
-            "configurePreset": "vclib-processing-debug"
-        },
-        {
-            "name": "vclib-processing-release",
-            "displayName": "VCLib::Processing - Release",
-            "description": "Processing module",
-            "configurePreset": "vclib-processing-release"
         },
         {
             "name": "vclib-bindings-debug",
