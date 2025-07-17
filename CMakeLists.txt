@@ -33,7 +33,6 @@ option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 
 # Optional modules build options
 option(VCLIB_BUILD_MODULE_EXTERNAL "Build the external module" OFF)
-option(VCLIB_BUILD_MODULE_PROCESSING "Build the processing module" OFF)
 option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
 option(VCLIB_BUILD_MODULE_BINDINGS "Build the python bindings module" OFF)
@@ -41,7 +40,6 @@ option(VCLIB_BUILD_MODULE_BINDINGS "Build the python bindings module" OFF)
 # Install modules options
 option(VCLIB_INSTALL_MODULE_CORE "Install the core module" ON)
 option(VCLIB_INSTALL_MODULE_EXTERNAL "Install the external module" ON)
-option(VCLIB_INSTALL_MODULE_PROCESSING "Install the processing module" ON)
 option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
 option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
 
@@ -76,11 +74,6 @@ target_link_libraries(vclib INTERFACE vclib::core)
 if (VCLIB_BUILD_MODULE_EXTERNAL)
     add_subdirectory(vclib/external ${VCLIB_EXTERNAL_EXCLUDE_FROM_ALL_OPTION})
     target_link_libraries(vclib INTERFACE vclib::external)
-endif()
-
-if (VCLIB_BUILD_MODULE_PROCESSING)
-    add_subdirectory(vclib/processing ${VCLIB_PROCESSING_EXCLUDE_FROM_ALL_OPTION})
-    target_link_libraries(vclib INTERFACE vclib::processing)
 endif()
 
 if (VCLIB_BUILD_MODULE_RENDER)
