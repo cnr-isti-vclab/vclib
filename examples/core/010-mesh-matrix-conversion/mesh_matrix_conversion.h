@@ -54,7 +54,7 @@ auto meshMatrixConversion()
 
     // Load a textured mesh with normals and colors
     vcl::TriMesh mesh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                                "/bunny_textured.ply");
+                                                    "/bunny_textured.ply");
     vcl::updatePerVertexNormals(mesh);
 
     // Enable and set some colors for demonstration
@@ -123,8 +123,8 @@ auto meshMatrixConversion()
     std::cout << "\n=== Different Matrix Types ===" << std::endl;
 
     // Load a polygon mesh and export with VCLib Array2
-    vcl::PolyMesh polyMesh =
-        vcl::loadMesh<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    vcl::PolyMesh polyMesh = vcl::loadMesh<vcl::PolyMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     vcl::Array2<double> polyVertices =
         vcl::vertexPositionsMatrix<vcl::Array2<double>>(polyMesh);

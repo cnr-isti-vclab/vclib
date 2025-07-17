@@ -374,7 +374,7 @@ TEMPLATE_TEST_CASE(
     TriMesh tm =
         vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
     PolyMesh pm = vcl::loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                         "/rhombicosidodecahedron.obj");
+                                          "/rhombicosidodecahedron.obj");
 
     SECTION("Positions...")
     {

@@ -51,7 +51,8 @@ int main()
             centerSphereIntersection,
             resultsPath + "/021_center_sphere_intersection.ply",
             settings);
-        vcl::saveMesh(earSphereMesh, resultsPath + "/021_ear_sphere.ply", settings);
+        vcl::saveMesh(
+            earSphereMesh, resultsPath + "/021_ear_sphere.ply", settings);
         vcl::saveMesh(
             earSphereIntersection,
             resultsPath + "/021_ear_sphere_intersection.ply",

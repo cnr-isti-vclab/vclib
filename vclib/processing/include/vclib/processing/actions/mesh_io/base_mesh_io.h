@@ -125,7 +125,7 @@ public:
         vcl::MeshInfo&         loadedInfo,
         AbstractLogger&        log = Base::logger()) const final
     {
-        MeshType mesh;
+        MeshType     mesh;
         LoadSettings settings;
 
         std::string basePath = FileInfo::pathWithoutFileName(filename);
