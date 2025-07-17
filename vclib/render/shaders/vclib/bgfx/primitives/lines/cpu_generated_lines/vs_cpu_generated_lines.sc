@@ -86,10 +86,6 @@ void main() {
         // C1 is behind camera, C0 is in front - clip C1 to near plane
         float t = (nearEpsilon - C1.w) / (C0.w - C1.w);
         clippedC1 = mix(C1, C0, t);
-    } else if (C0.w < nearEpsilon && C1.w < nearEpsilon) {
-        // both behind camera - discard by moving to far away
-        gl_Position = vec4(0.0, 0.0, 100.0, 1.0);
-        return;
     }
 
     // pick this vertex's position by uv.x along clipped segment */
