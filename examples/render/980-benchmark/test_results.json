@@ -17929,7 +17929,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -17948,7 +17948,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -17967,7 +17967,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -17986,7 +17986,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18005,7 +18005,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18024,7 +18024,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18043,7 +18043,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18062,7 +18062,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18081,7 +18081,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18100,7 +18100,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18119,7 +18119,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18138,7 +18138,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18157,7 +18157,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18176,7 +18176,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18195,7 +18195,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18214,7 +18214,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18233,7 +18233,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18252,7 +18252,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18271,7 +18271,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18290,7 +18290,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18309,7 +18309,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18328,7 +18328,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18347,7 +18347,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18366,7 +18366,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18385,7 +18385,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -18404,7 +18404,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -18423,7 +18423,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -18442,7 +18442,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -18461,7 +18461,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -18480,7 +18480,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -18499,7 +18499,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -18518,7 +18518,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -18537,7 +18537,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -18556,7 +18556,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -18575,7 +18575,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -18594,7 +18594,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -18613,7 +18613,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18632,7 +18632,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18651,7 +18651,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18670,7 +18670,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18689,7 +18689,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18708,7 +18708,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -18727,7 +18727,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18746,7 +18746,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18765,7 +18765,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18784,7 +18784,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18803,7 +18803,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18822,7 +18822,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -18841,7 +18841,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18860,7 +18860,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18879,7 +18879,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18898,7 +18898,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18917,7 +18917,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18936,7 +18936,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -18955,7 +18955,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18974,7 +18974,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -18993,7 +18993,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19012,7 +19012,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19031,7 +19031,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19050,7 +19050,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19069,7 +19069,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19088,7 +19088,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19107,7 +19107,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19126,7 +19126,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19145,7 +19145,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19164,7 +19164,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19183,7 +19183,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19202,7 +19202,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19221,7 +19221,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19240,7 +19240,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19259,7 +19259,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19278,7 +19278,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19297,7 +19297,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -19316,7 +19316,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -19335,7 +19335,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -19354,7 +19354,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -19373,7 +19373,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -19392,7 +19392,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -19411,7 +19411,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -19430,7 +19430,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -19449,7 +19449,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -19468,7 +19468,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -19487,7 +19487,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -19506,7 +19506,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -19525,7 +19525,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -19544,7 +19544,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -19563,7 +19563,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -19582,7 +19582,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -19601,7 +19601,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -19620,7 +19620,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -19639,7 +19639,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19658,7 +19658,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19677,7 +19677,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19696,7 +19696,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19715,7 +19715,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19734,7 +19734,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -19753,7 +19753,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19772,7 +19772,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19791,7 +19791,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19810,7 +19810,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19829,7 +19829,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19848,7 +19848,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -19867,7 +19867,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19886,7 +19886,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19905,7 +19905,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19924,7 +19924,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19943,7 +19943,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19962,7 +19962,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-VCLab",
+		"Device" : "DESKTOP-LINUX-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -19981,7 +19981,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20000,7 +20000,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20019,7 +20019,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20038,7 +20038,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20057,7 +20057,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20076,7 +20076,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20095,7 +20095,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20114,7 +20114,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20133,7 +20133,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20152,7 +20152,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20171,7 +20171,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20190,7 +20190,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20209,7 +20209,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20228,7 +20228,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20247,7 +20247,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20266,7 +20266,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20285,7 +20285,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20304,7 +20304,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20323,7 +20323,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -20342,7 +20342,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -20361,7 +20361,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -20380,7 +20380,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -20399,7 +20399,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -20418,7 +20418,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -20437,7 +20437,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -20456,7 +20456,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -20475,7 +20475,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -20494,7 +20494,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -20513,7 +20513,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -20532,7 +20532,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -20551,7 +20551,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -20570,7 +20570,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -20589,7 +20589,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -20608,7 +20608,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -20627,7 +20627,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -20646,7 +20646,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -20665,7 +20665,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20684,7 +20684,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20703,7 +20703,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20722,7 +20722,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20741,7 +20741,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20760,7 +20760,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -20779,7 +20779,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20798,7 +20798,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20817,7 +20817,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20836,7 +20836,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20855,7 +20855,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20874,7 +20874,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -20893,7 +20893,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20912,7 +20912,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20931,7 +20931,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20950,7 +20950,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20969,7 +20969,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -20988,7 +20988,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -21007,7 +21007,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21026,7 +21026,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21045,7 +21045,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21064,7 +21064,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21083,7 +21083,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21102,7 +21102,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21121,7 +21121,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21140,7 +21140,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21159,7 +21159,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21178,7 +21178,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21197,7 +21197,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21216,7 +21216,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21235,7 +21235,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21254,7 +21254,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21273,7 +21273,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21292,7 +21292,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21311,7 +21311,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21330,7 +21330,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21349,7 +21349,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -21368,7 +21368,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -21387,7 +21387,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -21406,7 +21406,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -21425,7 +21425,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -21444,7 +21444,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -21463,7 +21463,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -21482,7 +21482,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -21501,7 +21501,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -21520,7 +21520,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -21539,7 +21539,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -21558,7 +21558,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -21577,7 +21577,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -21596,7 +21596,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -21615,7 +21615,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -21634,7 +21634,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -21653,7 +21653,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -21672,7 +21672,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -21691,7 +21691,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21710,7 +21710,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21729,7 +21729,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21748,7 +21748,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21767,7 +21767,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21786,7 +21786,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -21805,7 +21805,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21824,7 +21824,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21843,7 +21843,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21862,7 +21862,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21881,7 +21881,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21900,7 +21900,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -21919,7 +21919,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21938,7 +21938,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21957,7 +21957,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21976,7 +21976,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -21995,7 +21995,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22014,7 +22014,7 @@
 	}
 	,
 	{
-		"Device" : "mac_muntoni",
+		"Device" : "MacBook-Air-M1",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22033,7 +22033,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22052,7 +22052,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22071,7 +22071,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22090,7 +22090,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22109,7 +22109,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22128,7 +22128,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22147,7 +22147,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22166,7 +22166,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22185,7 +22185,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22204,7 +22204,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22223,7 +22223,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22242,7 +22242,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22261,7 +22261,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22280,7 +22280,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22299,7 +22299,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22318,7 +22318,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22337,7 +22337,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22356,7 +22356,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22375,7 +22375,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -22394,7 +22394,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -22413,7 +22413,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -22432,7 +22432,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -22451,7 +22451,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -22470,7 +22470,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -22489,7 +22489,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -22508,7 +22508,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -22527,7 +22527,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -22546,7 +22546,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -22565,7 +22565,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -22584,7 +22584,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -22603,7 +22603,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22622,7 +22622,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22641,7 +22641,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22660,7 +22660,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22679,7 +22679,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22698,7 +22698,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -22717,7 +22717,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22736,7 +22736,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22755,7 +22755,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22774,7 +22774,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22793,7 +22793,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22812,7 +22812,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -22831,7 +22831,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22850,7 +22850,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22869,7 +22869,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22888,7 +22888,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22907,7 +22907,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22926,7 +22926,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -22945,7 +22945,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22964,7 +22964,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -22983,7 +22983,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23002,7 +23002,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23021,7 +23021,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23040,7 +23040,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23059,7 +23059,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23078,7 +23078,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23097,7 +23097,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23116,7 +23116,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23135,7 +23135,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23154,7 +23154,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23173,7 +23173,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23192,7 +23192,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23211,7 +23211,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23230,7 +23230,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23249,7 +23249,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23268,7 +23268,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23287,7 +23287,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -23306,7 +23306,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -23325,7 +23325,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -23344,7 +23344,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -23363,7 +23363,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -23382,7 +23382,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -23401,7 +23401,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -23420,7 +23420,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -23439,7 +23439,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -23458,7 +23458,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -23477,7 +23477,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -23496,7 +23496,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -23515,7 +23515,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -23534,7 +23534,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -23553,7 +23553,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -23572,7 +23572,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -23591,7 +23591,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -23610,7 +23610,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -23629,7 +23629,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23648,7 +23648,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23667,7 +23667,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23686,7 +23686,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23705,7 +23705,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23724,7 +23724,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -23743,7 +23743,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23762,7 +23762,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23781,7 +23781,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23800,7 +23800,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23819,7 +23819,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23838,7 +23838,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -23857,7 +23857,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23876,7 +23876,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23895,7 +23895,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23914,7 +23914,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23933,7 +23933,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23952,7 +23952,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -23971,7 +23971,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -23990,7 +23990,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24009,7 +24009,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24028,7 +24028,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24047,7 +24047,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24066,7 +24066,7 @@
 	}
 	,
 	{
-		"Device" : "Muntoni-Windows-VCLab",
+		"Device" : "DESKTOP-WINDOWS-GTX1080",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24085,7 +24085,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24104,7 +24104,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24123,7 +24123,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24142,7 +24142,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24161,7 +24161,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24180,7 +24180,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24199,7 +24199,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24218,7 +24218,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24237,7 +24237,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24256,7 +24256,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24275,7 +24275,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24294,7 +24294,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24313,7 +24313,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -24332,7 +24332,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -24351,7 +24351,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -24370,7 +24370,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -24389,7 +24389,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -24408,7 +24408,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -24427,7 +24427,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -24446,7 +24446,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -24465,7 +24465,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -24484,7 +24484,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -24503,7 +24503,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -24522,7 +24522,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -24541,7 +24541,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -24560,7 +24560,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -24579,7 +24579,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -24598,7 +24598,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -24617,7 +24617,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -24636,7 +24636,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -24655,7 +24655,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24674,7 +24674,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24693,7 +24693,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24712,7 +24712,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24731,7 +24731,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24750,7 +24750,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -24769,7 +24769,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24788,7 +24788,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24807,7 +24807,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24826,7 +24826,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24845,7 +24845,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24864,7 +24864,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -24883,7 +24883,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24902,7 +24902,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24921,7 +24921,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24940,7 +24940,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24959,7 +24959,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24978,7 +24978,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -24997,7 +24997,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25016,7 +25016,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25035,7 +25035,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25054,7 +25054,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25073,7 +25073,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25092,7 +25092,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25111,7 +25111,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25130,7 +25130,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25149,7 +25149,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25168,7 +25168,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25187,7 +25187,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25206,7 +25206,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25225,7 +25225,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25244,7 +25244,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25263,7 +25263,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25282,7 +25282,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25301,7 +25301,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25320,7 +25320,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25339,7 +25339,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -25358,7 +25358,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -25377,7 +25377,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -25396,7 +25396,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -25415,7 +25415,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -25434,7 +25434,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -25453,7 +25453,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -25472,7 +25472,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -25491,7 +25491,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -25510,7 +25510,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -25529,7 +25529,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -25548,7 +25548,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -25567,7 +25567,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -25586,7 +25586,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -25605,7 +25605,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -25624,7 +25624,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -25643,7 +25643,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -25662,7 +25662,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -25681,7 +25681,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25700,7 +25700,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25719,7 +25719,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25738,7 +25738,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25757,7 +25757,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25776,7 +25776,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -25795,7 +25795,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25814,7 +25814,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25833,7 +25833,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25852,7 +25852,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25871,7 +25871,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25890,7 +25890,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -25909,7 +25909,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25928,7 +25928,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25947,7 +25947,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25966,7 +25966,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -25985,7 +25985,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -26004,7 +26004,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -26023,7 +26023,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -26042,7 +26042,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -26061,7 +26061,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -26080,7 +26080,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -26099,7 +26099,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -26118,7 +26118,7 @@
 	}
 	,
 	{
-		"Device" : "DESKTOP-MUNTONI-WINDOWS-AMD",
+		"Device" : "DESKTOP-WINDOWS-RX7900",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -26133,6 +26133,2058 @@
 			354.411,
 			343.983,
 			348.717
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5657.389,
+			5593.592,
+			5767.678,
+			5949.406,
+			5813.278,
+			5599.230,
+			5678.076,
+			6097.561
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2117.442,
+			2093.259,
+			2148.412,
+			2261.666,
+			2087.840,
+			2048.878,
+			2131.760,
+			2276.680
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5789.986,
+			5645.635,
+			5988.024,
+			6101.877,
+			5995.635,
+			5798.177,
+			5952.948,
+			6196.401
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2163.509,
+			2081.512,
+			2170.440,
+			2335.292,
+			2141.328,
+			2074.052,
+			2137.666,
+			2321.672
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			4735.566,
+			4702.076,
+			4712.535,
+			4857.198,
+			4692.897,
+			4664.353,
+			4775.732,
+			5008.514
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2134.089,
+			2097.421,
+			2148.006,
+			2295.832,
+			2154.652,
+			2074.930,
+			2163.528,
+			2298.745
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5717.553,
+			5684.531,
+			5685.824,
+			5908.629,
+			5773.405,
+			5524.129,
+			5636.089,
+			6047.997
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2161.190,
+			2077.568,
+			2150.149,
+			2347.506,
+			2193.521,
+			2066.543,
+			2150.686,
+			2305.614
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5903.048,
+			5753.740,
+			5779.144,
+			5801.541,
+			5727.639,
+			5833.353,
+			5759.307,
+			6187.506
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2171.855,
+			2060.768,
+			2146.844,
+			2345.568,
+			2162.125,
+			2103.952,
+			2175.786,
+			2340.451
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			4597.786,
+			4629.630,
+			4818.813,
+			4902.730,
+			4724.469,
+			4572.474,
+			4776.188,
+			5008.113
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2166.077,
+			2055.989,
+			2148.745,
+			2335.881,
+			2142.245,
+			2084.150,
+			2163.360,
+			2329.287
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5425.347,
+			5496.438,
+			5633.422,
+			5482.937,
+			5523.153,
+			5673.179,
+			5701.254,
+			5892.058
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2130.888,
+			2094.276,
+			2128.529,
+			2306.997,
+			2139.074,
+			2069.331,
+			2189.027,
+			2300.014
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5837.303,
+			5535.137,
+			5781.149,
+			6128.653,
+			5701.514,
+			5796.967,
+			5744.617,
+			6179.400
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2151.741,
+			2057.021,
+			2151.500,
+			2313.487,
+			2160.275,
+			2110.114,
+			2154.894,
+			2317.304
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			4730.548,
+			4650.990,
+			4742.213,
+			4950.201,
+			4666.878,
+			4659.919,
+			4789.364,
+			4992.013
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2116.796,
+			2064.239,
+			2162.069,
+			2288.309,
+			2149.391,
+			2108.104,
+			2140.576,
+			2319.303
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5865.378,
+			5709.588,
+			5857.133,
+			5972.717,
+			5943.042,
+			5686.729,
+			5755.064,
+			6178.026
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2157.572,
+			2094.030,
+			2160.032,
+			2349.271,
+			2149.761,
+			2106.895,
+			2180.074,
+			2307.529
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5922.206,
+			5817.742,
+			5922.066,
+			6088.502,
+			6015.399,
+			5739.342,
+			5904.721,
+			6313.131
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2153.149,
+			2092.541,
+			2169.367,
+			2311.818,
+			2171.232,
+			2090.318,
+			2174.083,
+			2319.239
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			4995.804,
+			4913.715,
+			5016.857,
+			5202.589,
+			5081.404,
+			5045.307,
+			5089.473,
+			5292.573
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2113.772,
+			2064.018,
+			2141.364,
+			2299.337,
+			2154.671,
+			2096.770,
+			2164.896,
+			2332.829
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5822.349,
+			5738.815,
+			5697.486,
+			5959.334,
+			5717.422,
+			5805.178,
+			5739.606,
+			6155.664
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2140.668,
+			2025.440,
+			2078.553,
+			2225.367,
+			2117.119,
+			2066.919,
+			2088.782,
+			2242.535
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5703.986,
+			5728.821,
+			5897.200,
+			5869.785,
+			5801.002,
+			5668.420,
+			5794.683,
+			6215.968
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2168.840,
+			2099.799,
+			2143.751,
+			2318.206,
+			2220.485,
+			2109.936,
+			2183.597,
+			2272.562
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5293.694,
+			5067.396,
+			5263.823,
+			5434.783,
+			5208.659,
+			5107.357,
+			5178.449,
+			5290.669
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2138.086,
+			2112.503,
+			2150.778,
+			2322.168,
+			2194.754,
+			2074.672,
+			2162.798,
+			2290.132
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5855.487,
+			5802.079,
+			5630.250,
+			6122.499,
+			5724.754,
+			5559.633,
+			5821.671,
+			6057.816
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2147.545,
+			2125.435,
+			2132.269,
+			2260.357,
+			2170.459,
+			2117.388,
+			2165.608,
+			2321.133
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			5853.430,
+			5140.754,
+			5440.223,
+			5896.226,
+			5431.949,
+			5370.108,
+			5486.427,
+			5910.026
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2147.268,
+			2108.655,
+			2189.372,
+			2303.320,
+			2159.510,
+			2128.330,
+			2163.004,
+			2310.130
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			4951.574,
+			5073.773,
+			5158.681,
+			5155.809,
+			4857.387,
+			5010.120,
+			4995.504,
+			5068.526
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "myram.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			2182.796,
+			2084.793,
+			2170.440,
+			2342.996,
+			2118.231,
+			2083.333,
+			2167.336,
+			2305.422
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2008.145,
+			2205.772,
+			2061.057,
+			2048.240,
+			2083.490,
+			2142.465,
+			2119.219,
+			2015.300
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1050.910,
+			1161.052,
+			1079.858,
+			1076.236,
+			1075.583,
+			1150.727,
+			1088.893,
+			1075.940
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2330.828,
+			2507.020,
+			2442.957,
+			2429.354,
+			2409.035,
+			2555.271,
+			2431.292,
+			2419.339
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1138.942,
+			1215.746,
+			1139.913,
+			1129.683,
+			1158.400,
+			1223.751,
+			1145.229,
+			1139.923
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2012.882,
+			2130.125,
+			2086.986,
+			2047.485,
+			2033.215,
+			2177.340,
+			2076.619,
+			2053.945
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1075.560,
+			1143.877,
+			1082.532,
+			1074.516,
+			1076.834,
+			1149.806,
+			1073.169,
+			1077.117
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2007.516,
+			2190.446,
+			2087.090,
+			2056.581,
+			2082.500,
+			2223.289,
+			2107.641,
+			2096.665
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1087.874,
+			1156.610,
+			1094.173,
+			1077.521,
+			1087.496,
+			1163.381,
+			1091.331,
+			1079.797
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2335.641,
+			2447.549,
+			2220.347,
+			2249.172,
+			2268.705,
+			2428.033,
+			2329.352,
+			2334.441
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1139.653,
+			1220.649,
+			1141.250,
+			1136.896,
+			1166.632,
+			1220.262,
+			1144.731,
+			1135.259
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2045.057,
+			2194.869,
+			2077.689,
+			2047.301,
+			2010.648,
+			2148.689,
+			2045.927,
+			2074.413
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1075.671,
+			1144.657,
+			1083.795,
+			1075.361,
+			1075.917,
+			1146.905,
+			1078.172,
+			1075.620
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2018.196,
+			2165.233,
+			2067.380,
+			1980.088,
+			2041.816,
+			2155.080,
+			2018.229,
+			2058.579
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1101.841,
+			1145.958,
+			1086.432,
+			1075.787,
+			1084.749,
+			1173.863,
+			1089.833,
+			1080.054
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2300.564,
+			2457.993,
+			2351.547,
+			2387.433,
+			2366.886,
+			2467.162,
+			2359.403,
+			2354.603
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1061.959,
+			1125.477,
+			1062.063,
+			1048.825,
+			1066.985,
+			1115.359,
+			1060.598,
+			1049.807
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2062.928,
+			2220.209,
+			2108.957,
+			2042.233,
+			2101.441,
+			2167.091,
+			2062.383,
+			2040.333
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1070.980,
+			1144.783,
+			1082.856,
+			1076.950,
+			1077.665,
+			1147.679,
+			1083.349,
+			1077.224
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			1795.384,
+			1927.243,
+			1852.895,
+			1866.953,
+			1856.803,
+			1904.138,
+			1737.511,
+			1780.652
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1027.065,
+			1093.585,
+			1038.301,
+			1016.025,
+			1029.434,
+			1089.985,
+			1033.088,
+			1022.541
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2083.004,
+			2282.626,
+			2149.909,
+			2119.039,
+			2114.845,
+			2202.488,
+			2129.417,
+			2135.219
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1096.337,
+			1181.514,
+			1113.343,
+			1114.897,
+			1111.590,
+			1134.404,
+			1079.443,
+			1107.327
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			1838.087,
+			1953.690,
+			1870.935,
+			1854.338,
+			1859.607,
+			1918.075,
+			1840.671,
+			1855.990
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1024.998,
+			1097.748,
+			1035.102,
+			1018.803,
+			1032.324,
+			1099.931,
+			1032.239,
+			1021.814
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			1811.214,
+			1916.193,
+			1857.424,
+			1863.850,
+			1843.454,
+			1890.931,
+			1839.547,
+			1841.824
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			933.634,
+			1069.986,
+			1009.383,
+			1012.675,
+			1006.389,
+			1068.166,
+			1020.887,
+			1006.356
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2084.045,
+			2224.021,
+			2124.098,
+			2067.842,
+			2002.339,
+			2173.667,
+			2086.132,
+			2111.112
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1091.956,
+			1183.163,
+			1100.217,
+			1100.905,
+			1097.170,
+			1184.194,
+			1098.925,
+			1116.540
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			1852.236,
+			1934.026,
+			1880.463,
+			1888.260,
+			1856.155,
+			1816.240,
+			1769.598,
+			1825.844
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			959.903,
+			1063.658,
+			1013.233,
+			1009.909,
+			1004.965,
+			1081.792,
+			1004.504,
+			1014.178
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			1841.811,
+			1923.462,
+			1847.609,
+			1849.632,
+			1830.509,
+			1903.210,
+			1848.183,
+			1861.851
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1035.030,
+			1086.607,
+			1043.375,
+			1030.630,
+			1023.726,
+			1100.081,
+			1028.371,
+			1015.360
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			2101.176,
+			2198.807,
+			2100.911,
+			2057.461,
+			2071.869,
+			2179.941,
+			2116.223,
+			2130.180
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1097.839,
+			1167.777,
+			1097.435,
+			1086.952,
+			1100.691,
+			1167.662,
+			1098.771,
+			1093.948
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			1859.206,
+			1941.898,
+			1857.121,
+			1867.916,
+			1859.303,
+			1928.209,
+			1847.555,
+			1854.008
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "gargoyle500K.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			1029.955,
+			1095.713,
+			1039.661,
+			1023.948,
+			1031.072,
+			1097.598,
+			1032.068,
+			1018.089
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.522,
+			118.556,
+			118.926,
+			119.278,
+			118.462,
+			119.455,
+			119.451,
+			119.222
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			103.677,
+			106.136,
+			106.664,
+			104.971,
+			104.566,
+			108.010,
+			107.349,
+			108.624
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.749,
+			119.442,
+			119.645,
+			119.552,
+			119.473,
+			119.633,
+			119.406,
+			119.549
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			113.038,
+			114.527,
+			114.977,
+			115.233,
+			113.579,
+			115.002,
+			114.283,
+			115.298
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			119.153,
+			118.805,
+			118.960,
+			119.081,
+			118.472,
+			118.737,
+			118.725,
+			119.593
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			103.747,
+			104.984,
+			104.435,
+			105.374,
+			104.528,
+			105.766,
+			104.344,
+			104.818
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.933,
+			118.918,
+			119.398,
+			119.465,
+			118.160,
+			119.288,
+			118.665,
+			119.654
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			106.142,
+			104.756,
+			104.579,
+			104.674,
+			106.450,
+			108.511,
+			106.248,
+			104.566
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			117.893,
+			119.156,
+			119.539,
+			119.516,
+			119.552,
+			119.508,
+			119.616,
+			119.459
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			115.071,
+			114.452,
+			114.184,
+			115.358,
+			113.879,
+			117.142,
+			114.538,
+			115.168
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.410,
+			118.554,
+			119.180,
+			118.904,
+			119.007,
+			119.248,
+			119.045,
+			119.352
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			104.086,
+			105.679,
+			107.211,
+			108.301,
+			104.687,
+			105.643,
+			104.344,
+			104.564
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.585,
+			118.279,
+			119.480,
+			119.541,
+			119.032,
+			119.457,
+			118.915,
+			119.157
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			105.092,
+			105.017,
+			104.184,
+			104.563,
+			104.566,
+			105.641,
+			104.427,
+			104.569
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			119.366,
+			119.021,
+			119.367,
+			119.739,
+			119.387,
+			119.609,
+			119.554,
+			119.565
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			112.928,
+			114.474,
+			114.240,
+			117.181,
+			115.377,
+			115.149,
+			114.427,
+			115.299
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.539,
+			118.823,
+			118.747,
+			119.575,
+			119.070,
+			119.568,
+			119.043,
+			119.712
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "flat",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			104.005,
+			104.990,
+			106.959,
+			108.027,
+			104.566,
+			105.645,
+			104.432,
+			104.558
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			117.463,
+			119.031,
+			117.232,
+			118.565,
+			117.915,
+			118.621,
+			117.239,
+			119.482
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			88.389,
+			89.521,
+			88.974,
+			89.675,
+			89.161,
+			89.712,
+			89.922,
+			89.951
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.019,
+			119.248,
+			120.490,
+			119.515,
+			118.952,
+			119.289,
+			119.828,
+			119.278
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			103.404,
+			104.473,
+			103.640,
+			104.506,
+			101.208,
+			104.097,
+			102.007,
+			104.622
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			108.372,
+			108.076,
+			107.232,
+			108.748,
+			107.685,
+			109.308,
+			106.898,
+			108.705
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			85.336,
+			86.841,
+			85.579,
+			86.385,
+			85.071,
+			87.217,
+			86.529,
+			86.405
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			116.964,
+			117.523,
+			116.905,
+			118.257,
+			116.513,
+			119.235,
+			117.034,
+			118.910
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			88.560,
+			89.755,
+			89.091,
+			89.627,
+			88.857,
+			89.735,
+			88.944,
+			89.636
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			118.009,
+			118.434,
+			117.563,
+			118.588,
+			117.776,
+			118.834,
+			118.243,
+			118.863
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			101.675,
+			103.290,
+			102.521,
+			104.557,
+			101.666,
+			103.870,
+			102.440,
+			104.549
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			107.628,
+			108.705,
+			107.141,
+			107.860,
+			107.274,
+			107.625,
+			106.856,
+			107.824
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "split",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			85.599,
+			87.042,
+			85.956,
+			86.530,
+			85.935,
+			87.244,
+			85.622,
+			86.558
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			117.262,
+			118.304,
+			116.773,
+			118.074,
+			116.924,
+			118.535,
+			116.685,
+			119.171
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col vert",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			88.353,
+			89.445,
+			88.946,
+			89.637,
+			88.789,
+			89.796,
+			88.950,
+			89.684
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			117.598,
+			118.227,
+			118.763,
+			119.411,
+			117.732,
+			118.372,
+			118.167,
+			119.237
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "col face",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			100.328,
+			103.474,
+			102.399,
+			104.568,
+			101.312,
+			103.419,
+			102.526,
+			104.572
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "960x960",
+		"Framerates" : [
+			106.763,
+			107.750,
+			108.756,
+			108.067,
+			106.652,
+			108.448,
+			107.202,
+			107.622
+		]
+	}
+	,
+	{
+		"Device" : "DESKTOP-WINDOWS-GTX970",
+		"Mesh" : "ESTE_PRINT.ply",
+		"Splitting" : "uber_static_if",
+		"Shading" : "smooth",
+		"Coloring" : "tex wedge",
+		"Resolution" : "1920x1920",
+		"Framerates" : [
+			84.976,
+			86.940,
+			85.535,
+			86.498,
+			85.088,
+			87.694,
+			85.606,
+			86.551
 		]
 	}
 ]
