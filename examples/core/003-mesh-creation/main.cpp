@@ -63,7 +63,8 @@ int main()
         vcl::saveMesh(
             customCube, VCLIB_RESULTS_PATH "/003_custom_cube.ply", settings);
 
-        vcl::saveMesh(cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
+        vcl::saveMesh(
+            cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
 
         vcl::saveMesh(
             dodecahedronPoly,

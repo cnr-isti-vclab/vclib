@@ -39,10 +39,6 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
 #    list(APPEND PYTHON_MODULES external)
 endif()
 
-if (VCLIB_BUILD_MODULE_PROCESSING)
-    list(APPEND PYTHON_MODULES processing)
-endif()
-
 if (VCLIB_BUILD_MODULE_RENDER)
 #    list(APPEND PYTHON_MODULES render)
 endif()

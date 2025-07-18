@@ -83,7 +83,7 @@ void loadGltf(
     std::vector<MeshType>& meshes,
     std::vector<MeshInfo>& infos,
     const LoadSettings&    settings = LoadSettings(),
-    LogType&               log = nullLogger)
+    LogType&               log      = nullLogger)
 {
     using ScalarType = MeshType::ScalarType;
 

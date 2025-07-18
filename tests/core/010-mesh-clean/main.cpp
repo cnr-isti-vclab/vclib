@@ -171,7 +171,8 @@ TEMPLATE_TEST_CASE(
 
     SECTION("A TriMesh that is not watertight")
     {
-        TriMesh t = vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+        TriMesh t =
+            vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
 
         REQUIRE(t.vertexNumber() == 18844);
         REQUIRE(t.faceNumber() == 36752);

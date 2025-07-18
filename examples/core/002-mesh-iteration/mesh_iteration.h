@@ -206,8 +206,8 @@ void meshIteration()
     std::cout << "\n=== Polygon Mesh Iteration ===" << std::endl;
 
     // Load a polygon mesh
-    vcl::PolyMesh polyMesh =
-        vcl::loadMesh<vcl::PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    vcl::PolyMesh polyMesh = vcl::loadMesh<vcl::PolyMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     std::cout << "Loaded polygon mesh with " << polyMesh.vertexNumber()
               << " vertices and " << polyMesh.faceNumber() << " faces"
