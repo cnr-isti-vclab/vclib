@@ -30241,7 +30241,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30260,7 +30260,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30279,7 +30279,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30298,7 +30298,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30317,7 +30317,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30336,7 +30336,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30355,7 +30355,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -30374,7 +30374,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -30393,7 +30393,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -30412,7 +30412,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -30431,7 +30431,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -30450,7 +30450,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -30469,7 +30469,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -30488,7 +30488,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -30507,7 +30507,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -30526,7 +30526,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -30545,7 +30545,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -30564,7 +30564,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -30583,7 +30583,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -30602,7 +30602,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -30621,7 +30621,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -30640,7 +30640,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -30659,7 +30659,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -30678,7 +30678,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -30697,7 +30697,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -30716,7 +30716,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -30735,7 +30735,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -30754,7 +30754,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -30773,7 +30773,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -30792,7 +30792,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -30811,7 +30811,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -30830,7 +30830,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -30849,7 +30849,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -30868,7 +30868,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -30887,7 +30887,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -30906,7 +30906,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "myram.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -30925,7 +30925,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30944,7 +30944,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30963,7 +30963,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -30982,7 +30982,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31001,7 +31001,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31020,7 +31020,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31039,7 +31039,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31058,7 +31058,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31077,7 +31077,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31096,7 +31096,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31115,7 +31115,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31134,7 +31134,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31153,7 +31153,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31172,7 +31172,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31191,7 +31191,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31210,7 +31210,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31229,7 +31229,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31248,7 +31248,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31267,7 +31267,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31286,7 +31286,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31305,7 +31305,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31324,7 +31324,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31343,7 +31343,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31362,7 +31362,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31381,7 +31381,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -31400,7 +31400,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -31419,7 +31419,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -31438,7 +31438,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -31457,7 +31457,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -31476,7 +31476,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -31495,7 +31495,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -31514,7 +31514,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -31533,7 +31533,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -31552,7 +31552,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -31571,7 +31571,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -31590,7 +31590,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "gargoyle500K.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -31609,7 +31609,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31628,7 +31628,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31647,7 +31647,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31666,7 +31666,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31685,7 +31685,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31704,7 +31704,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "flat",
@@ -31723,7 +31723,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31742,7 +31742,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31761,7 +31761,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31780,7 +31780,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31799,7 +31799,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31818,7 +31818,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "flat",
@@ -31837,7 +31837,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31856,7 +31856,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31875,7 +31875,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31894,7 +31894,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31913,7 +31913,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31932,7 +31932,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "flat",
@@ -31951,7 +31951,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31970,7 +31970,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -31989,7 +31989,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -32008,7 +32008,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -32027,7 +32027,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -32046,7 +32046,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber",
 		"Shading" : "smooth",
@@ -32065,7 +32065,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -32084,7 +32084,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -32103,7 +32103,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -32122,7 +32122,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -32141,7 +32141,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -32160,7 +32160,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "split",
 		"Shading" : "smooth",
@@ -32179,7 +32179,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -32198,7 +32198,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -32217,7 +32217,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -32236,7 +32236,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -32255,7 +32255,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
@@ -32274,7 +32274,7 @@
 	}
 	,
 	{
-		"Device" : "alessandro-XPS-15-9510",
+		"Device" : "LAPTOP-LINUX-RTX3050",
 		"Mesh" : "ESTE_PRINT.ply",
 		"Splitting" : "uber_static_if",
 		"Shading" : "smooth",
