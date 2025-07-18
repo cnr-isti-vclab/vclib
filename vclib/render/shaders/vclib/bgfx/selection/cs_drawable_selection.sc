@@ -56,10 +56,10 @@ void main()
 
     uint bufferIndex = pointId/32;
     uint uint32BitOffset = 31-(pointId%32);
-
+    uint bitMask = 0x1 << uint32BitOffset;
     if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
-        vertex_selected[bufferIndex] = vertex_selected[bufferIndex] | (0x1 << uint32BitOffset);
+        vertex_selected[bufferIndex] = vertex_selected[bufferIndex] | bitMask;
     } else {
-        vertex_selected[bufferIndex] = vertex_selected[bufferIndex] & (~(0x1 << uint32BitOffset));
+        vertex_selected[bufferIndex] = vertex_selected[bufferIndex] & ~bitMask;
     }
 }

@@ -94,12 +94,18 @@ public:
             Base(buffersToFill)
     {
         Base::update(mesh, buffersToFill);
-        bgfx::VertexLayout layout = bgfx::VertexLayout().begin().add(
-            bgfx::Attrib::Position, 4, bgfx::AttribType::Uint8);
+        bgfx::VertexLayout layout =
+            bgfx::VertexLayout()
+                .begin()
+                .add(bgfx::Attrib::Position, 4, bgfx::AttribType::Uint8)
+                .end();
         uint selectedVerticesBufferSize =
             uint(ceil(double(MeshType::vertexNumber()) / 32.0));
         std::vector<uint> zeros(selectedVerticesBufferSize, 0);
-        mSelectedVerticesBuffer.create(bgfx::copy(&zeros[0], selectedVerticesBufferSize), layout, BGFX_BUFFER_COMPUTE_WRITE);
+        mSelectedVerticesBuffer.create(
+            bgfx::copy(&zeros[0], selectedVerticesBufferSize),
+            layout,
+            BGFX_BUFFER_COMPUTE_READ_WRITE);
     }
 
     MeshRenderBuffers979(const MeshRenderBuffers979& other) = delete;
@@ -196,9 +202,7 @@ public:
     {
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        mSelectedVerticesBuffer.bindCompute(
-            4, bgfx::Access::ReadWrite
-        );
+        mSelectedVerticesBuffer.bindCompute(4, bgfx::Access::ReadWrite);
 
         vcl::Point3d bboxSize = bbox.size();
         float        temp[]   = {
