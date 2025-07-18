@@ -25,8 +25,8 @@
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/algorithms/core/create.h>
+#include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
@@ -54,6 +54,9 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     VertexBuffer mVertexColorsBuffer;
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
+
+    // vertex selection
+    VertexBuffer mSelectedVerticesBuffer;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -91,6 +94,12 @@ public:
             Base(buffersToFill)
     {
         Base::update(mesh, buffersToFill);
+        bgfx::VertexLayout layout = bgfx::VertexLayout().begin().add(
+            bgfx::Attrib::Position, 4, bgfx::AttribType::Uint8);
+        uint selectedVerticesBufferSize =
+            uint(ceil(double(MeshType::vertexNumber()) / 32.0));
+        std::vector<uint> zeros(selectedVerticesBufferSize, 0);
+        mSelectedVerticesBuffer.create(bgfx::copy(&zeros[0], selectedVerticesBufferSize), layout, BGFX_BUFFER_COMPUTE_WRITE);
     }
 
     MeshRenderBuffers979(const MeshRenderBuffers979& other) = delete;
@@ -130,7 +139,10 @@ public:
         swap(mMeshUniforms, other.mMeshUniforms);
     }
 
-    friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b) { a.swap(b); }
+    friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b)
+    {
+        a.swap(b);
+    }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
@@ -177,17 +189,24 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    void calculateSelection(const MeshType& mesh, const bgfx::ViewId viewId, Box3d bbox)
-        const
+    void calculateSelection(
+        const MeshType&    mesh,
+        const bgfx::ViewId viewId,
+        Box3d              bbox) const
     {
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        mVertexColorsBuffer.bindCompute(
-            VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Write);
+        mSelectedVerticesBuffer.bindCompute(
+            4, bgfx::Access::ReadWrite
+        );
 
         vcl::Point3d bboxSize = bbox.size();
-        float temp[] = {float(bbox.center().x()-bboxSize.x()/4),float(bbox.center().y()-bboxSize.y()/4), float(bbox.center().x()+bboxSize.x()/4), float(bbox.center().y()+bboxSize.y()/4)};
-        mSelectionBoxuniform.bind((void*)temp);
+        float        temp[]   = {
+            float(bbox.center().x() - bboxSize.x() / 4),
+            float(bbox.center().y() - bboxSize.y() / 4),
+            float(bbox.center().x() + bboxSize.x() / 4),
+            float(bbox.center().y() + bboxSize.y() / 4)};
+        mSelectionBoxuniform.bind((void*) temp);
 
         auto& pm = Context::instance().programManager();
         bgfx::dispatch(

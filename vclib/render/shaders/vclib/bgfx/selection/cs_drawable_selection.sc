@@ -25,9 +25,16 @@
 
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 
-BUFFER_RW(colors,   uvec4, VCL_MRB_VERTEX_COLOR_STREAM);   // colors (rgba uint)
+BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
 uniform vec4 u_selectionBox;
+
+/* TODO: Clearly you'll have to check the coordinates in view space... 
+* (i imagine the selection box "lives" on the view plane)
+* Or maybe it would be better to just pass the coordinates of the box in world space (that way you will only need to do
+* 1 matrix multiplication to move the selection box in world space instead of 1 multiplication for each vertex to move them
+* in view space)
+*/
 
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
@@ -47,20 +54,12 @@ void main()
         positions[idx31/4][idx31%4],
         positions[idx32/4][idx32%4]);
 
+    uint bufferIndex = pointId/32;
+    uint uint32BitOffset = 31-(pointId%32);
+
     if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
-        switch(pointId%4) {
-            case 0:
-                colors[pointId/4] = vec4(uint(0xFF1B78F9), colors[pointId/4].y, colors[pointId/4].z, colors[pointId/4].w);
-                break;
-            case 1:
-                colors[pointId/4] = vec4(colors[pointId/4].x, uint(0xFF1B78F9), colors[pointId/4].z, colors[pointId/4].w);
-                break;
-            case 2:
-                colors[pointId/4] = vec4(colors[pointId/4].x, colors[pointId/4].y, uint(0xFF1B78F9), colors[pointId/4].w);
-                break;
-            case 3:
-                colors[pointId/4] = vec4(colors[pointId/4].x, colors[pointId/4].y, colors[pointId/4].z, uint(0xFF1B78F9));
-                break;
-        }
+        vertex_selected[bufferIndex] = vertex_selected[bufferIndex] | (0x1 << uint32BitOffset);
+    } else {
+        vertex_selected[bufferIndex] = vertex_selected[bufferIndex] & (~(0x1 << uint32BitOffset));
     }
 }
