@@ -57,6 +57,8 @@ private:
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
+    bgfx::ProgramHandle selectionDrawProgram = loadProgram("shaders/vs_selection", "shaders/fs_selection");
+
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
 
@@ -227,6 +229,12 @@ public:
         }
 
         mMRB.calculateSelection(*this, viewId, mBoundingBox);
+        mMRB.bindUniforms();
+        mMRB.bindVertexBuffers(mMRS);
+        mMRB.bindIndexBuffers(mMRS);
+        mMRB.bindSelection();
+        bgfx::setState(state);
+        bgfx::submit(viewId, selectionDrawProgram);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!

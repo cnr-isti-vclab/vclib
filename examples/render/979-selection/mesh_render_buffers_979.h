@@ -56,7 +56,7 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     VertexBuffer mVertexWedgeUVBuffer;
 
     // vertex selection
-    VertexBuffer mSelectedVerticesBuffer;
+    DynamicVertexBuffer mSelectedVerticesBuffer;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -80,10 +80,17 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
+    std::vector<vcl::uint> mTexReadbackVec;
+
     DrawableMeshUniforms mMeshUniforms;
 
     Uniform mSelectionBoxuniform =
         Uniform("u_selectionBox", bgfx::UniformType::Vec4);
+
+    bgfx::TextureHandle mSelectionTex;
+    Uniform mSelectionSampl = Uniform("tex_selection", bgfx::UniformType::Sampler);
+    Uniform mVertexCount = Uniform("u_vertexCount", bgfx::UniformType::Vec4);
+
 
 public:
     MeshRenderBuffers979() = default;
@@ -97,7 +104,7 @@ public:
         bgfx::VertexLayout layout =
             bgfx::VertexLayout()
                 .begin()
-                .add(bgfx::Attrib::Position, 4, bgfx::AttribType::Uint8)
+                .add(bgfx::Attrib::Position, 1, bgfx::AttribType::Float)
                 .end();
         uint selectedVerticesBufferSize =
             uint(ceil(double(MeshType::vertexNumber()) / 32.0));
@@ -106,6 +113,8 @@ public:
             bgfx::copy(&zeros[0], selectedVerticesBufferSize),
             layout,
             BGFX_BUFFER_COMPUTE_READ_WRITE);
+        mSelectionTex = bgfx::createTexture2D(MeshType::vertexNumber(), 1, false, bgfx::TextureFormat::R8, BGFX_TEXTURE_READ_BACK);
+        mTexReadbackVec = std::vector<uint8_t>(MeshType::vertexNumber(), 0);
     }
 
     MeshRenderBuffers979(const MeshRenderBuffers979& other) = delete;
@@ -203,7 +212,7 @@ public:
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mSelectedVerticesBuffer.bindCompute(4, bgfx::Access::ReadWrite);
-
+        bgfx::setImage(7, mSelectionTex, 0, bgfx::Access::Write, bgfx::TextureFormat::R8);
         vcl::Point3d bboxSize = bbox.size();
         float        temp[]   = {
             float(bbox.center().x() - bboxSize.x() / 4),
@@ -211,6 +220,13 @@ public:
             float(bbox.center().x() + bboxSize.x() / 4),
             float(bbox.center().y() + bboxSize.y() / 4)};
         mSelectionBoxuniform.bind((void*) temp);
+        vcl::uint temp2[] = {
+            mesh.vertexNumber() & 0xff,
+            (mesh.vertexNumber() >> 8) & 0xff,
+            (mesh.vertexNumber() >> 16) & 0xff,
+            (mesh.vertexNumber() >> 24) & 0xff
+        };
+        mVertexCount.bind((void*)temp2);
 
         auto& pm = Context::instance().programManager();
         bgfx::dispatch(
@@ -219,6 +235,15 @@ public:
             mesh.vertexNumber(),
             1,
             1);
+        bgfx::readTexture(mSelectionTex, (void*)&mTexReadbackVec[0]);
+        for(auto &el : mTexReadbackVec) {
+            std::cout << el << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
+    void bindSelection() const {
+        mSelectedVerticesBuffer.bind(4);
     }
 
     // to draw splats

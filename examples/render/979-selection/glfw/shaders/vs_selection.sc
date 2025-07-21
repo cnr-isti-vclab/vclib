@@ -20,56 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+$input a_position, a_normal, a_color0, a_texcoord0, a_texcoord1
+$output v_selected
 
-BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
-BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
+BUFFER_RO(vertex_selected, uint, 4);
 
-IMAGE2D_WO(tex_selection, r8, 7);
-
-uniform vec4 u_selectionBox;
-uniform vec4 u_vertexCount;
-
-/* TODO: Clearly you'll have to check the coordinates in view space... 
-* (i imagine the selection box "lives" on the view plane)
-*/
-
-NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
-    uint pointId = gl_WorkGroupID.x;
-    uint idx30 = pointId * 3;
-    uint idx31 = idx30+1;
-    uint idx32 = idx30+2;
-
-    float minX = u_selectionBox[0];
-    float minY = u_selectionBox[1];
-    float maxX = u_selectionBox[2];
-    float maxY = u_selectionBox[3];
-
-    vec3 p = vec3(
-        positions[idx30/4][idx30%4],
-        positions[idx31/4][idx31%4],
-        positions[idx32/4][idx32%4]);
-
-    uint workGroupSizeX = 
-        uint(u_vertexCount[0]) 
-        + (uint(u_vertexCount[1]) << uint(8)) 
-        + (uint(u_vertexCount[2]) << uint(16)) 
-        + (uint(u_vertexCount[3]) << uint(24));
-
-    uint bufferIndex = pointId/32;
-    uint uint32BitOffset = 31-(pointId%32);
-    uint bitMask = 0x1 << uint32BitOffset;
-    vec4 col;
-    if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
-        vertex_selected[bufferIndex] = (vertex_selected[bufferIndex] | bitMask);
-        col = vec4(1, 0, 0, 0);
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    int bufferIndex = gl_VertexID/32;
+    int bitOffset = 31 - gl_VertexID%32;
+    int bitMask = 0x1 << bitOffset;
+    if ((vertex_selected[bufferIndex] & bitMask) != 0) {
+        v_selected = 1;
     } else {
-        vertex_selected[bufferIndex] = (vertex_selected[bufferIndex] & (~bitMask));
-        col = vec4(0, 0, 0, 0);
+        v_selected = 0;
     }
-    imageStore(tex_selection, ivec2(pointId/workGroupSizeX, 1), col.x);
 }
