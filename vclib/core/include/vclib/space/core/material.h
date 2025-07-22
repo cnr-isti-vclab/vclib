@@ -23,11 +23,59 @@
 #ifndef VCL_SPACE_CORE_MATERIAL_H
 #define VCL_SPACE_CORE_MATERIAL_H
 
+#include "color.h"
+
+#include <vclib/serialization.h>
+
 namespace vcl {
 
+/**
+ * @brief Material class represents a material with properties needed for
+ * rendering (PBR).
+ */
+// TODO - Add support for textures, normal maps, and other PBR properties.
 class Material
 {
-    
+    vcl::Color mBaseColor;
+
+    float mMetallic;
+    float mRoughness;
+
+public:
+    Material() :
+            mBaseColor(vcl::Color(1.0f, 1.0f, 1.0f)), mMetallic(0.0f),
+            mRoughness(0.5f)
+    {
+    }
+
+    Material(
+        const vcl::Color& baseColor,
+        float             metallic  = 0.0f,
+        float             roughness = 0.5f) :
+            mBaseColor(baseColor), mMetallic(metallic), mRoughness(roughness)
+    {
+    }
+
+    const vcl::Color& baseColor() const { return mBaseColor; }
+    vcl::Color& baseColor() { return mBaseColor; }
+
+    float metallic() const { return mMetallic; }
+    float& metallic() { return mMetallic; }
+
+    float roughness() const { return mRoughness; }
+    float& roughness() { return mRoughness; }
+
+    void serialize(std::ostream& os) const
+    {
+        mBaseColor.serialize(os);
+        vcl::serialize(os, mMetallic, mRoughness);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        mBaseColor.deserialize(is);
+        vcl::deserialize(is, mMetallic, mRoughness);
+    }
 };
 
 } // namespace vcl

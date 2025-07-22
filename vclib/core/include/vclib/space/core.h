@@ -28,6 +28,7 @@
 #include "core/box.h"
 #include "core/color.h"
 #include "core/image.h"
+#include "core/material.h"
 #include "core/matrix.h"
 #include "core/plane.h"
 #include "core/point.h"
