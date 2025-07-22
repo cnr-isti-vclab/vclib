@@ -33,7 +33,7 @@ int main()
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        vcl::save(m, VCLIB_RESULTS_PATH "/016_flooded_faces.ply");
+        vcl::saveMesh(m, VCLIB_RESULTS_PATH "/016_flooded_faces.ply");
 
         std::cout << "File saved to: " << resultsPath
                   << "/016_flooded_faces.ply\n";

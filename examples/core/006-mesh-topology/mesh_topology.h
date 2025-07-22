@@ -45,7 +45,7 @@ inline void meshTopology()
 
     // Load a simple mesh for topology exploration
     vcl::TriMesh mesh;
-    vcl::load(mesh, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     std::cout << "Loaded triangular mesh: " << mesh.vertexNumber()
               << " vertices, " << mesh.faceNumber() << " faces\n";

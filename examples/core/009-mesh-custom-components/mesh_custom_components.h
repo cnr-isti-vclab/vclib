@@ -45,7 +45,7 @@ auto meshCustomComponents()
 
     // Load a mesh for custom component demonstration
     vcl::TriMesh mesh;
-    vcl::load(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
+    vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
     std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
               << mesh.faceNumber() << " faces\n\n";

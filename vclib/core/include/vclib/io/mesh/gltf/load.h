@@ -41,8 +41,8 @@ void loadGltfMeshesWhileTraversingNodes(
     auto&                  currentInfoIt,
     MatrixType             currentMatrix,
     uint                   currentNode,
-    LogType&               log,
-    const LoadSettings&    settings)
+    const LoadSettings&    settings,
+    LogType&               log)
 {
     currentMatrix =
         currentMatrix * gltfCurrentNodeMatrix<MatrixType>(model, currentNode);
@@ -55,8 +55,8 @@ void loadGltfMeshesWhileTraversingNodes(
             model.meshes[meshid],
             model,
             currentMatrix,
-            log,
-            settings);
+            settings,
+            log);
 
         ++currentMeshIt;
         ++currentInfoIt;
@@ -71,8 +71,8 @@ void loadGltfMeshesWhileTraversingNodes(
                 currentInfoIt,
                 currentMatrix,
                 c,
-                log,
-                settings);
+                settings,
+                log);
         }
     }
 }
@@ -82,8 +82,8 @@ void loadGltf(
     tinygltf::Model&       model,
     std::vector<MeshType>& meshes,
     std::vector<MeshInfo>& infos,
-    LogType&               log,
-    const LoadSettings&    settings = LoadSettings())
+    const LoadSettings&    settings = LoadSettings(),
+    LogType&               log      = nullLogger)
 {
     using ScalarType = MeshType::ScalarType;
 
@@ -108,7 +108,7 @@ void loadGltf(
         const tinygltf::Scene& scene = model.scenes[s];
         for (unsigned int n = 0; n < scene.nodes.size(); ++n) {
             loadGltfMeshesWhileTraversingNodes(
-                model, mit, iit, identityMatrix, scene.nodes[n], log, settings);
+                model, mit, iit, identityMatrix, scene.nodes[n], settings, log);
 
             log.progress(s * scene.nodes.size() + n);
         }
@@ -124,8 +124,8 @@ void loadGltf(
     MeshType&           m,
     const std::string&  filename,
     MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
 {
     tinygltf::TinyGLTF loader;
     tinygltf::Model    model;
@@ -162,7 +162,7 @@ void loadGltf(
     // Load the mesh data from the model
     std::vector<MeshType> meshes;
     std::vector<MeshInfo> infos;
-    detail::loadGltf(model, meshes, infos, log, settings);
+    detail::loadGltf(model, meshes, infos, settings, log);
 
     m          = std::move(meshes.front());
     loadedInfo = std::move(infos.front());

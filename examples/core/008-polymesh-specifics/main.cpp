@@ -34,14 +34,16 @@ int main()
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
         // Save the created polymesh
-        vcl::save(polyMesh, resultsPath + "/008_hexagon_pyramid_polymesh.ply");
+        vcl::saveMesh(
+            polyMesh, resultsPath + "/008_hexagon_pyramid_polymesh.ply");
         std::cout << "Saved: 008_hexagon_polymesh.ply\n";
 
         // Save the converted TriMesh
-        vcl::save(triMesh, resultsPath + "/008_hexagon_pyramid_trimesh.ply");
+        vcl::saveMesh(
+            triMesh, resultsPath + "/008_hexagon_pyramid_trimesh.ply");
         std::cout << "Saved: 008_hexagon_trimesh.ply\n";
 
-        vcl::save(dynamicMesh, resultsPath + "/008_square_polymesh.ply");
+        vcl::saveMesh(dynamicMesh, resultsPath + "/008_square_polymesh.ply");
         std::cout << "Saved: 008_square_polymesh.ply\n";
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";

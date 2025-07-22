@@ -216,7 +216,7 @@ TEMPLATE_TEST_CASE(
     using PolyMesh = std::tuple_element_t<1, TestType>;
 
     TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
 
     std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
     std::list<vcl::uint>                                  vertsToDuplicate;

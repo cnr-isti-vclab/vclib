@@ -34,12 +34,14 @@ int main()
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        vcl::save(
+        vcl::saveMesh(
             laplacianMesh, VCLIB_RESULTS_PATH "/013_laplacian_smoothed.ply");
-        vcl::save(
+        vcl::saveMesh(
             cotangentMesh, VCLIB_RESULTS_PATH "/013_cotangent_smoothed.ply");
-        vcl::save(taubinMesh, VCLIB_RESULTS_PATH "/013_taubin_smoothed.ply");
-        vcl::save(normalMesh, VCLIB_RESULTS_PATH "/013_normal_smoothed.ply");
+        vcl::saveMesh(
+            taubinMesh, VCLIB_RESULTS_PATH "/013_taubin_smoothed.ply");
+        vcl::saveMesh(
+            normalMesh, VCLIB_RESULTS_PATH "/013_normal_smoothed.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

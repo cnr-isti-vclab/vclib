@@ -372,9 +372,9 @@ TEMPLATE_TEST_CASE(
     using EdgeMesh = std::tuple_element_t<2, TestType>;
 
     TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
-    PolyMesh pm = vcl::loadObj<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                         "/rhombicosidodecahedron.obj");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    PolyMesh pm = vcl::loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                          "/rhombicosidodecahedron.obj");
 
     SECTION("Positions...")
     {

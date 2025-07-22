@@ -36,7 +36,7 @@ int main()
         // save the mesh after processing
         // note: ply format is able to save custom components having primitive
         // types
-        vcl::save(mesh, resultsPath + "/009_processed_bimba.ply");
+        vcl::saveMesh(mesh, resultsPath + "/009_processed_bimba.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

@@ -44,7 +44,7 @@ def replace_header_guards_in_dir(folder_path):
                 file.write(file_string)
 
 if __name__ == "__main__":
-    vcl_modules = ['bindings', 'core', 'external', 'processing','render']
+    vcl_modules = ['bindings', 'core', 'external', 'render']
 
     os.chdir('../vclib/')
 

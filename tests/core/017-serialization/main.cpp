@@ -371,7 +371,7 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
 {
     using Mesh = TestType;
 
-    Mesh mesh1 = vcl::load<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    Mesh mesh1 = vcl::loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     mesh1.enablePerVertexColor();
     for (unsigned int i = 0; i < mesh1.vertexNumber(); i++)
@@ -416,7 +416,7 @@ TEMPLATE_TEST_CASE(
 
     using Mesh = TestType;
 
-    Mesh mesh1 = vcl::load<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    Mesh mesh1 = vcl::loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     mesh1.template addCustomComponent<vcl::Point3d>(
         "barycenter", vcl::barycenter(mesh1));

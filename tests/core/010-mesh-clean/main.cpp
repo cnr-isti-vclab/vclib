@@ -171,7 +171,8 @@ TEMPLATE_TEST_CASE(
 
     SECTION("A TriMesh that is not watertight")
     {
-        TriMesh t = vcl::load<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+        TriMesh t =
+            vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
 
         REQUIRE(t.vertexNumber() == 18844);
         REQUIRE(t.faceNumber() == 36752);
@@ -182,7 +183,7 @@ TEMPLATE_TEST_CASE(
     SECTION("A TriMesh that is watertight")
     {
         vcl::TriMesh t =
-            vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
+            vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
 
         REQUIRE(t.vertexNumber() == 1872);
         REQUIRE(t.faceNumber() == 3022);
@@ -252,7 +253,7 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    TriMesh t = vcl::load<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+    TriMesh t = vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
 
     unsigned int nv = vcl::removeDuplicatedVertices(t);
 

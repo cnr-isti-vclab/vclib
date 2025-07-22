@@ -34,9 +34,9 @@ int main()
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
         // save the imported mesh after processing
-        vcl::save(importedMesh, resultsPath + "/010_imported_mesh.ply");
+        vcl::saveMesh(importedMesh, resultsPath + "/010_imported_mesh.ply");
 
-        vcl::save(cubeMesh, resultsPath + "/010_created_cube.ply");
+        vcl::saveMesh(cubeMesh, resultsPath + "/010_created_cube.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

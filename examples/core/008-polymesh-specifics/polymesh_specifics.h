@@ -108,8 +108,8 @@ auto polymeshSpecifics()
     vcl::TriMesh  triMeshLoaded;
 
     // note: the file contains a cube with 6 square faces
-    vcl::load(polyMeshLoaded, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
-    vcl::load(triMeshLoaded, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    vcl::loadMesh(polyMeshLoaded, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    vcl::loadMesh(triMeshLoaded, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     std::cout << "Loaded cube as PolyMesh: " << polyMeshLoaded.vertexNumber()
               << " vertices, " << polyMeshLoaded.faceNumber() << " faces\n";

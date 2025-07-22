@@ -33,9 +33,11 @@ int main()
     try {
         std::string resultsPath = VCLIB_RESULTS_PATH;
 
-        vcl::save(taubinMesh, VCLIB_RESULTS_PATH "/014_taubin_curvature.ply");
-        vcl::save(pcaMesh, VCLIB_RESULTS_PATH "/014_pca_curvature.ply");
-        vcl::save(generalMesh, VCLIB_RESULTS_PATH "/014_general_curvature.ply");
+        vcl::saveMesh(
+            taubinMesh, VCLIB_RESULTS_PATH "/014_taubin_curvature.ply");
+        vcl::saveMesh(pcaMesh, VCLIB_RESULTS_PATH "/014_pca_curvature.ply");
+        vcl::saveMesh(
+            generalMesh, VCLIB_RESULTS_PATH "/014_general_curvature.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
         std::cout << "Files saved:" << std::endl;
