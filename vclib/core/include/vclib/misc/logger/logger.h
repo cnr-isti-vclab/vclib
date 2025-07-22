@@ -137,11 +137,9 @@ public:
         assert(toPerc <= 100);
         std::pair<double, double> actualP = mIntervals.top();
         std::pair<double, double> newP;
-        newP.first = actualP.first +
-                     (actualP.second - actualP.first) *
-                         (fromPerc / 100);
-        newP.second =
-            (actualP.second - actualP.first) * (toPerc / 100);
+        newP.first =
+            actualP.first + (actualP.second - actualP.first) * (fromPerc / 100);
+        newP.second         = (actualP.second - actualP.first) * (toPerc / 100);
         mGlobalPercProgress = newP.first;
         mIntervals.push(newP);
         updateStep();
@@ -204,9 +202,9 @@ public:
     {
         assert(percPrintProgress > 0);
         assert((endPerc - startPerc) > 0);
-        mProgress.isActive  = true;
+        mProgress.isActive = true;
         mProgress.message  = msg;
-        mProgress.size      = progressSize;
+        mProgress.size     = progressSize;
         mProgress.perc     = startPerc;
         mProgress.percStep = percPrintProgress;
         mProgress.step =
