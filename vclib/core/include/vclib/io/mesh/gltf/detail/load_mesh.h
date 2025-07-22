@@ -644,15 +644,17 @@ void gltfLoadMesh(
         }
     }
 
-    log.startProgress("Reading primitives", tm.primitives.size());
+    // TODO: fix logger - save the progress state each time a new task is
+    // started
+    // log.startProgress("Reading primitives", tm.primitives.size());
 
     // for each primitive, load it into the mesh
     for (uint i = 0; const tinygltf::Primitive& p : tm.primitives) {
         loadGltfMeshPrimitive(m, info, model, p, transf, settings, log);
-        log.progress(++i);
+        // log.progress(++i);
     }
 
-    log.endProgress();
+    // log.endProgress();
 
     log.log(
         "Loaded mesh '" + tm.name + "' with " +
