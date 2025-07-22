@@ -78,6 +78,7 @@ set(HEADERS
     space/box.h
     space/color.h
     space/image.h
+    space/material.h
     space/matrix.h
     space/plane.h
     space/point.h

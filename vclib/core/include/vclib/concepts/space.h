@@ -28,6 +28,7 @@
 #include "space/box.h"
 #include "space/color.h"
 #include "space/image.h"
+#include "space/material.h"
 #include "space/matrix.h"
 #include "space/point.h"
 #include "space/polygon.h"

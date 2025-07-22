@@ -20,52 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef MATERIAL_H
+#define MATERIAL_H
 
-#include "space/array.h"
-#include "space/bit_set.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/material.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/tex_coord_indexed.h"
-#include "space/texture.h"
+#include <vclib/space.h>
 
-void spaceStaticAsserts()
+void materialStaticAsserts()
 {
-    arrayStaticAsserts();
-    bitSetStaticAsserts();
-    boxStaticAsserts();
-    colorStaticAsserts();
-    imageStaticAsserts();
-    materialStaticAsserts();
-    matrixStaticAsserts();
-    planeStaticAsserts();
-    pointStaticAsserts();
-    polygonStaticAsserts();
-    principalCurvatureStaticAsserts();
-    samplerStaticAsserts();
-    segmentStaticAsserts();
-    sphereStaticAsserts();
-    texCoordStaticAsserts();
-    texCoordIndexedStaticAsserts();
-    textureStaticAsserts();
-
     using namespace vcl;
 
-    // bitset
+    // material
     static_assert(
-        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
+        MaterialConcept<Material>,
+        "Material does not satisfy the MaterialConcept");
+    static_assert(
+        MaterialConcept<const Material>,
+        "const Material does not satisfy the MaterialConcept");
+    static_assert(
+        MaterialConcept<Material&>,
+        "Material& does not satisfy the MaterialConcept");
+    static_assert(
+        MaterialConcept<const Material&>,
+        "const Material& does not satisfy the MaterialConcept");
+    static_assert(
+        MaterialConcept<Material&&>,
+        "Material&& does not satisfy the MaterialConcept");
+
+    static_assert(Serializable<Material>, "Material is not serializable");
 }
 
-#endif // SPACE_H
+#endif // MATERIAL_H

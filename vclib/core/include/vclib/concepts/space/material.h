@@ -20,52 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef VCL_CONCEPTS_SPACE_MATERIAL_H
+#define VCL_CONCEPTS_SPACE_MATERIAL_H
 
-#include "space/array.h"
-#include "space/bit_set.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/material.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/tex_coord_indexed.h"
-#include "space/texture.h"
+#include "color.h"
 
-void spaceStaticAsserts()
-{
-    arrayStaticAsserts();
-    bitSetStaticAsserts();
-    boxStaticAsserts();
-    colorStaticAsserts();
-    imageStaticAsserts();
-    materialStaticAsserts();
-    matrixStaticAsserts();
-    planeStaticAsserts();
-    pointStaticAsserts();
-    polygonStaticAsserts();
-    principalCurvatureStaticAsserts();
-    samplerStaticAsserts();
-    segmentStaticAsserts();
-    sphereStaticAsserts();
-    texCoordStaticAsserts();
-    texCoordIndexedStaticAsserts();
-    textureStaticAsserts();
+namespace vcl {
 
-    using namespace vcl;
+template<typename T>
+concept MaterialConcept = requires (T&& obj) {
+    // constructors
+    RemoveRef<T>();
 
-    // bitset
-    static_assert(
-        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-}
+    { obj.baseColor() } -> ColorConcept;
+    { obj.metallic() } -> std::convertible_to<float>;
+    { obj.roughness() } -> std::convertible_to<float>;
 
-#endif // SPACE_H
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.metallic() } -> std::same_as<float&>;
+        { obj.roughness() } -> std::same_as<float&>;
+    };
+};
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_MATERIAL_H
