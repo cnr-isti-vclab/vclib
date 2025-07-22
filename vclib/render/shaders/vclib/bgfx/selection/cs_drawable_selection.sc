@@ -27,10 +27,9 @@ BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 fl
 
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
-IMAGE2D_WO(tex_selection, r8, 7);
+IMAGE2D_WO(tex_selection, rgba8, 7);
 
 uniform vec4 u_selectionBox;
-uniform vec4 u_vertexCount;
 
 /* TODO: Clearly you'll have to check the coordinates in view space... 
 * (i imagine the selection box "lives" on the view plane)
@@ -54,22 +53,16 @@ void main()
         positions[idx31/4][idx31%4],
         positions[idx32/4][idx32%4]);
 
-    uint workGroupSizeX = 
-        uint(u_vertexCount[0]) 
-        + (uint(u_vertexCount[1]) << uint(8)) 
-        + (uint(u_vertexCount[2]) << uint(16)) 
-        + (uint(u_vertexCount[3]) << uint(24));
-
     uint bufferIndex = pointId/32;
     uint uint32BitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << uint32BitOffset;
     vec4 col;
     if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
         vertex_selected[bufferIndex] = (vertex_selected[bufferIndex] | bitMask);
-        col = vec4(1, 0, 0, 0);
+        col = uintABGRToVec4Color(uint(0x01000000));
     } else {
         vertex_selected[bufferIndex] = (vertex_selected[bufferIndex] & (~bitMask));
-        col = vec4(0, 0, 0, 0);
+        col = uintABGRToVec4Color(uint(0));
     }
-    imageStore(tex_selection, ivec2(pointId/workGroupSizeX, 1), col.x);
+    imageStore(tex_selection, ivec2(pointId, 0), uintABGRToVec4Color((vertex_selected[bufferIndex] & bitMask)));
 }

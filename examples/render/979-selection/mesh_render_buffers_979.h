@@ -35,6 +35,7 @@
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/space/core/image.h>
+#include <algorithm>
 
 #include <bgfx/bgfx.h>
 
@@ -48,6 +49,8 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     using MRI      = MeshRenderInfo;
 
     friend Base;
+
+    bool mSelectionCalculated = false;
 
     VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
@@ -87,9 +90,12 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     Uniform mSelectionBoxuniform =
         Uniform("u_selectionBox", bgfx::UniformType::Vec4);
 
-    bgfx::TextureHandle mSelectionTex;
+    bgfx::TextureHandle mReadBackTex = BGFX_INVALID_HANDLE;
+    bgfx::TextureHandle mComputeWriteTex = BGFX_INVALID_HANDLE;
     Uniform mSelectionSampl = Uniform("tex_selection", bgfx::UniformType::Sampler);
-    Uniform mVertexCount = Uniform("u_vertexCount", bgfx::UniformType::Vec4);
+
+    uint waitForReadCounter = 100;
+    uint availabilityWait = 9999999999;
 
 
 public:
@@ -113,8 +119,7 @@ public:
             bgfx::copy(&zeros[0], selectedVerticesBufferSize),
             layout,
             BGFX_BUFFER_COMPUTE_READ_WRITE);
-        mSelectionTex = bgfx::createTexture2D(MeshType::vertexNumber(), 1, false, bgfx::TextureFormat::R8, BGFX_TEXTURE_READ_BACK);
-        mTexReadbackVec = std::vector<uint8_t>(MeshType::vertexNumber(), 0);
+        mTexReadbackVec = std::vector<uint32_t>(MeshType::vertexNumber(), 0);
     }
 
     MeshRenderBuffers979(const MeshRenderBuffers979& other) = delete;
@@ -205,14 +210,23 @@ public:
     }
 
     void calculateSelection(
-        const MeshType&    mesh,
+        uint vertexNumber,
         const bgfx::ViewId viewId,
+        const bgfx::ViewId blitViewId,
         Box3d              bbox) const
     {
+        auto *non_const_this = const_cast<MeshRenderBuffers979<Mesh>*>(this);
+
+        if(!bgfx::isValid(mReadBackTex)) {
+            non_const_this->mReadBackTex = bgfx::createTexture2D((uint16_t)vertexNumber, (uint16_t)1, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
+        }
+        if(!bgfx::isValid(mComputeWriteTex)) {
+            non_const_this->mComputeWriteTex = bgfx::createTexture2D((uint16_t)vertexNumber, (uint16_t)1, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_COMPUTE_WRITE);
+        }
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mSelectedVerticesBuffer.bindCompute(4, bgfx::Access::ReadWrite);
-        bgfx::setImage(7, mSelectionTex, 0, bgfx::Access::Write, bgfx::TextureFormat::R8);
+        bgfx::setImage(7, mComputeWriteTex, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA8);
         vcl::Point3d bboxSize = bbox.size();
         float        temp[]   = {
             float(bbox.center().x() - bboxSize.x() / 4),
@@ -220,26 +234,25 @@ public:
             float(bbox.center().x() + bboxSize.x() / 4),
             float(bbox.center().y() + bboxSize.y() / 4)};
         mSelectionBoxuniform.bind((void*) temp);
-        vcl::uint temp2[] = {
-            mesh.vertexNumber() & 0xff,
-            (mesh.vertexNumber() >> 8) & 0xff,
-            (mesh.vertexNumber() >> 16) & 0xff,
-            (mesh.vertexNumber() >> 24) & 0xff
-        };
-        mVertexCount.bind((void*)temp2);
 
         auto& pm = Context::instance().programManager();
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<ComputeProgram::DRAWABLE_SELECTION>(),
-            mesh.vertexNumber(),
+            vertexNumber,
             1,
             1);
-        bgfx::readTexture(mSelectionTex, (void*)&mTexReadbackVec[0]);
-        for(auto &el : mTexReadbackVec) {
-            std::cout << el << std::endl;
-        }
-        std::cout << std::endl;
+
+        bgfx::blit(blitViewId, mReadBackTex, 0, 0, mComputeWriteTex, 0, 0, vertexNumber, 1);
+        non_const_this->mSelectionCalculated = true;
+    }
+
+    bool selectionCalculated() const {
+        return mSelectionCalculated;
+    }
+
+    bgfx::TextureHandle getReadBackTexture() const {
+        return mReadBackTex;
     }
 
     void bindSelection() const {

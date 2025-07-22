@@ -57,8 +57,6 @@ private:
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
-    bgfx::ProgramHandle selectionDrawProgram = loadProgram("shaders/vs_selection", "shaders/fs_selection");
-
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
 
@@ -92,6 +90,10 @@ public:
     DrawableMeshBGFX979(DrawableMeshBGFX979&& drawableMesh) { swap(drawableMesh); }
 
     ~DrawableMeshBGFX979() = default;
+
+    MeshRenderBuffers979<MeshType>& getMRB() {
+        return mMRB;
+    }
 
     DrawableMeshBGFX979& operator=(DrawableMeshBGFX979 drawableMesh)
     {
@@ -228,14 +230,6 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        mMRB.calculateSelection(*this, viewId, mBoundingBox);
-        mMRB.bindUniforms();
-        mMRB.bindVertexBuffers(mMRS);
-        mMRB.bindIndexBuffers(mMRS);
-        mMRB.bindSelection();
-        bgfx::setState(state);
-        bgfx::submit(viewId, selectionDrawProgram);
-
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
@@ -296,6 +290,10 @@ public:
                     viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
+    }
+
+    Box3d& getBbox(){
+        return mBoundingBox;
     }
 
     void drawId(uint viewId, uint id) const override

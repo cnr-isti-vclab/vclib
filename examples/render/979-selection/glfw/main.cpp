@@ -28,6 +28,7 @@
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 #include "../drawable_mesh_979.h"
+#include "../imgui_texture_getter_979.h"
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <vclib/algorithms/mesh/update/color.h>
@@ -43,7 +44,7 @@ vcl::DrawableMeshBGFX979<vcl::TriMesh> getDrawableMesh979(
         filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
     }
 
-    vcl::TriMesh m = vcl::load<vcl::TriMesh>(filename);
+    vcl::TriMesh m = vcl::loadMesh<vcl::TriMesh>(filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
@@ -72,6 +73,7 @@ int main(void)
         vcl::glfw::WindowManager,
         vcl::Canvas,
         vcl::imgui::ImGuiDrawer,
+        ImGuiTextureGetter979,
         vcl::imgui::MeshViewerDrawerImgui>;
     
     RA tw("Selection", 1024, 768);
@@ -80,7 +82,11 @@ int main(void)
         std::make_shared<vcl::DrawableObjectVector>();
     tw.setDrawableObjectVector(vec);
 
-    vcl::DrawableMeshBGFX979<vcl::TriMesh> msh = getDrawableMesh979();
+    vcl::DrawableMeshBGFX979<vcl::TriMesh> msh = getDrawableMesh979("cube_poly.ply");
+
+    tw.setTexSize(msh.vertexNumber());
+    tw.setMRB(&msh.getMRB());
+    tw.setBbox(msh.getBbox());
 
     tw.pushDrawableObject(std::move(msh));
 
