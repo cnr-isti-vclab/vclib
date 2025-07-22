@@ -65,6 +65,7 @@ struct CompId
         NAME,
         TEXTURE_IMAGES,
         TEXTURE_PATHS,
+        MATERIALS,
         TRANSFORM_MATRIX,
         CUSTOM_COMPONENTS,
         // Additional components here
@@ -98,6 +99,7 @@ constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
     "Name",
     "TextureImages",
     "TexturePaths",
+    "Materials",
     "TransformMatrix",
     "CustomComponents",
 };

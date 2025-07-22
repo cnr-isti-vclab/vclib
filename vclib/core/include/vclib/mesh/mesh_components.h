@@ -27,6 +27,7 @@
 #include "components/color.h"
 #include "components/custom_components.h"
 #include "components/mark.h"
+#include "components/materials.h"
 #include "components/name.h"
 #include "components/texture_images.h"
 #include "components/texture_paths.h"
@@ -66,6 +67,9 @@ using CustomComponents = comp::CustomComponents<>;
 
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark<>;
+
+/** Port Materials class into mesh namespace **/
+using Materials = comp::Materials;
 
 /** Port Name class into mesh namespace **/
 using Name = comp::Name<>;

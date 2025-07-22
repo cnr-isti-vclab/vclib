@@ -32,6 +32,7 @@
 #include "components/component.h"
 #include "components/custom_components.h"
 #include "components/mark.h"
+#include "components/materials.h"
 #include "components/name.h"
 #include "components/normal.h"
 #include "components/position.h"

@@ -20,31 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_MATERIALS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_MATERIALS_H
 
-#include "components/adjacent_edges.h"
-#include "components/adjacent_faces.h"
-#include "components/adjacent_vertices.h"
-#include "components/bit_flags.h"
-#include "components/bounding_box.h"
-#include "components/color.h"
-#include "components/custom_components.h"
-#include "components/mark.h"
-#include "components/materials.h"
-#include "components/name.h"
-#include "components/normal.h"
-#include "components/polygon_bit_flags.h"
-#include "components/position.h"
-#include "components/principal_curvature.h"
-#include "components/quality.h"
-#include "components/tex_coord.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
-#include "components/transform_matrix.h"
-#include "components/triangle_bit_flags.h"
-#include "components/vertex_references.h"
-#include "components/wedge_colors.h"
-#include "components/wedge_tex_coords.h"
+#include <vclib/concepts/space/material.h>
 
-#endif // VCL_MESH_COMPONENTS_H
+namespace vcl::comp {
+
+template<typename T>
+concept HasMaterials =
+    requires (T&& obj) {
+
+        { obj.materialNumber() } -> std::same_as<uint>;
+        { obj.meshBasePath() } -> std::convertible_to<std::string>;
+
+        { obj.material(uint()) } -> MaterialConcept;
+
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.meshBasePath() } -> std::same_as<std::string&>;
+        };
+    };
+
+} // namespace vcl::comp
+
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_MATERIALS_H
