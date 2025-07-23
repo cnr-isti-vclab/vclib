@@ -58,6 +58,14 @@ class Materials :
         false>;
 
 public:
+    /**
+     * @brief Expose the type of the Material.
+     */
+    using MaterialType = Material;
+
+    // iterators
+    using MaterialIterator      = std::vector<Material>::iterator;
+    using ConstMaterialIterator = std::vector<Material>::const_iterator;
 
     Materials() = default;
 
@@ -90,7 +98,101 @@ public:
      */
     Material& material(uint i) { return mats()[i]; }
 
+    /**
+     * @brief Clears the vector of materials.
+     */
+    void clearMaterials()
+    {
+        mats().clear();
+    }
+
+    /**
+     * @brief Adds a material to the vector of materials.
+     * @param[in] mat: The material to add.
+     */
+    void pushMaterial(const Material& mat)
+    {
+        mats().push_back(mat);
+    }
+
+    /**
+     * @brief Returns an iterator to the beginning of the vector of materials.
+     * @return an iterator to the beginning of the vector of materials.
+     */
+    MaterialIterator materialBegin() { return mats().begin(); }
+
+    /**
+     * @brief Returns an iterator to the end of the vector of materials.
+     * @return an iterator to the end of the vector of materials.
+     */
+    MaterialIterator materialEnd() { return mats().end(); }
+
+    /**
+     * @brief Returns a const iterator to the beginning of the vector of materials.
+     * @return a const iterator to the beginning of the vector of materials.
+     */
+    ConstMaterialIterator materialBegin() const { return mats().begin(); }
+
+    /**
+     * @brief Returns a const iterator to the end of the vector of materials.
+     * @return a const iterator to the end of the vector of materials.
+     */
+    ConstMaterialIterator materialEnd() const { return mats().end(); }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and end
+     * iterators of the vector of materials. The view object exposes the iterators
+     * trough the `begin()` and `end()` member functions, and therefore the
+     * returned object can be used in range-based for loops:
+     *
+     * @code{.cpp}
+     * for (auto& mat : m.materials()) {
+     *     // Do something with mat
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over the vector of materials.
+     */
+    View<MaterialIterator> materials()
+    {
+        return View(materialBegin(), materialEnd());
+    }
+
+    /**
+     * @brief Returns a lightweight const view object that stores the begin and end
+     * iterators of the vector of materials. The view object exposes the iterators
+     * trough the `begin()` and `end()` member functions, and therefore the
+     * returned object can be used in range-based for loops:
+     *
+     * @code{.cpp}
+     * for (const auto& mat : m.materials()) {
+     *     // Do something with mat
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over the vector of materials.
+     */
+    View<ConstMaterialIterator> materials() const
+    {
+        return View(materialBegin(), materialEnd());
+    }
+
 protected:
+    // Component interface functions
+    template<typename Element>
+    void importFrom(const Element& e, bool = true)
+    {
+        if constexpr (HasMaterials<Element>) {
+            mats().clear();
+            for (const auto& mat : e.materials()) {
+                mats().push_back(mat.path());
+            }
+            meshBasePath() = e.meshBasePath();
+        }
+    }
+
     void serialize(std::ostream& os) const
     {
         vcl::serialize(os, mats());

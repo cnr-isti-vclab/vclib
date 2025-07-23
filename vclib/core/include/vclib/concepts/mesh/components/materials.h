@@ -24,21 +24,42 @@
 #define VCL_CONCEPTS_MESH_COMPONENTS_MATERIALS_H
 
 #include <vclib/concepts/space/material.h>
+#include <vclib/concepts/iterators.h>
+#include <vclib/concepts/ranges/range.h>
 
 namespace vcl::comp {
 
+/**
+ * @brief HasMaterials concept is satisfied only if a Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a @ref vcl::comp::Materials component of a
+ * given mesh.
+ *
+ * @ingroup components_concepts
+ */
 template<typename T>
 concept HasMaterials =
-    requires (T&& obj) {
+    requires (T&& obj, typename RemoveRef<T>::MaterialType m) {
 
         { obj.materialNumber() } -> std::same_as<uint>;
         { obj.meshBasePath() } -> std::convertible_to<std::string>;
 
         { obj.material(uint()) } -> MaterialConcept;
 
+        { obj.materialBegin() } -> InputIterator<decltype(m)>;
+        { obj.materialEnd() } -> InputIterator<decltype(m)>;
+        { obj.materials() } -> InputRange<decltype(m)>;
+
         // non const requirements
         requires IsConst<T> || requires {
             { obj.meshBasePath() } -> std::same_as<std::string&>;
+
+            { obj.clearMaterials() } -> std::same_as<void>;
+            { obj.pushMaterial(m) } -> std::same_as<void>;
+
+            { obj.materialBegin() } -> OutputIterator<decltype(m)>;
+            { obj.materialEnd() } -> OutputIterator<decltype(m)>;
+            { obj.materials() } -> OutputRange<decltype(m)>;
         };
     };
 
