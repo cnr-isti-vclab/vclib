@@ -57,16 +57,16 @@ void main()
     uint vec4Index = (pointId%128)/32;
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
-    uint newValue;
+    float newValue;
     if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
-        newValue = (floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) | bitMask);
+        newValue = uintBitsToFloat(floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) | bitMask);
     } else {
-        newValue = (floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & (~bitMask));
+        newValue = uintBitsToFloat(floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & (~bitMask));
     }
     switch(vec4Index) {
         case 0:
             vertex_selected[bufferIndex] = vec4(
-                uintBitsToFloat(newValue),
+                newValue,
                 vertex_selected[bufferIndex].y,
                 vertex_selected[bufferIndex].z,
                 vertex_selected[bufferIndex].w
@@ -75,7 +75,7 @@ void main()
         case 1:
             vertex_selected[bufferIndex] = vec4(
                 vertex_selected[bufferIndex].x,
-                uintBitsToFloat(newValue),
+                newValue,
                 vertex_selected[bufferIndex].z,
                 vertex_selected[bufferIndex].w
             );
@@ -84,7 +84,7 @@ void main()
             vertex_selected[bufferIndex] = vec4(
                 vertex_selected[bufferIndex].x,
                 vertex_selected[bufferIndex].y,
-                uintBitsToFloat(newValue),
+                newValue,
                 vertex_selected[bufferIndex].w
             );
             break;
