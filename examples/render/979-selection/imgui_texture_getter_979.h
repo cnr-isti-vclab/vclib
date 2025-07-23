@@ -77,7 +77,7 @@ public:
         read_to_byte_size = tInfo.storageSize;
         read_to_size      = read_to_byte_size;
         read_to           = (uint8_t*) malloc(read_to_byte_size);
-        for (uint i=0; i < read_to_size; i++) {
+        for (vcl::uint i=0; i < read_to_size; i++) {
             read_to[i] = 0;
         }
     }
@@ -86,7 +86,7 @@ public:
 
     void setBbox(const vcl::Box3d& box) { bbox = box; }
 
-    void onDraw(uint viewId)
+    void onDraw(vcl::uint viewId)
     {
         Base::onDraw(viewId);
 
@@ -115,7 +115,7 @@ public:
         }
         if (mAvailable) {
             if (!mStringValid) {
-                for (uint index = 0; index < read_to_size / 4; index++) {
+                for (vcl::uint index = 0; index < read_to_size / 4; index++) {
                     mString += std::to_string(index) + std::string(": ") +
                                std::to_string(read_to[4 * index]) +
                                std::string(", ") +
