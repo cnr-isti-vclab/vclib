@@ -97,5 +97,5 @@ void main()
             );
             break;
     }
-    imageStore(tex_selection, ivec2(pointId, 0), vec4(p, 1));
+    imageStore(tex_selection, ivec2(pointId, 0), uintABGRToVec4Color((uint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)));
 }

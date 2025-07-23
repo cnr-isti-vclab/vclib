@@ -82,9 +82,9 @@ public:
         }
     }
 
-    void setMRB(vcl::MeshRenderBuffers979<vcl::TriMesh>* mrb) { mMRB = mrb; }
+    void setMRB(const vcl::MeshRenderBuffers979<vcl::TriMesh>* mrb) { mMRB = const_cast<vcl::MeshRenderBuffers979<vcl::TriMesh>*>(mrb); }
 
-    void setBbox(vcl::Box3d& box) { bbox = box; }
+    void setBbox(const vcl::Box3d& box) { bbox = box; }
 
     void onDraw(uint viewId)
     {

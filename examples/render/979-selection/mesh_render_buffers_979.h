@@ -227,6 +227,9 @@ public:
         if(!bgfx::isValid(mComputeWriteTex)) {
             non_const_this->mComputeWriteTex = bgfx::createTexture2D((uint16_t)vertexNumber, (uint16_t)1, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_COMPUTE_WRITE);
         }
+        if (!mVertexPositionsBuffer.isValid()) {
+            std::cout << "Invalid vertex positions" << std::endl;
+        }
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mSelectedVerticesBuffer.bindCompute(4, bgfx::Access::ReadWrite);

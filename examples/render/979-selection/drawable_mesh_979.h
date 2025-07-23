@@ -91,7 +91,7 @@ public:
 
     ~DrawableMeshBGFX979() = default;
 
-    MeshRenderBuffers979<MeshType>& getMRB() {
+    const MeshRenderBuffers979<MeshType>& getMRB() const {
         return mMRB;
     }
 
@@ -292,7 +292,7 @@ public:
         }
     }
 
-    Box3d& getBbox(){
+    const Box3d& getBbox() const {
         return mBoundingBox;
     }
 
