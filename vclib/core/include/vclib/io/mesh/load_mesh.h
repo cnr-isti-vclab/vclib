@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_LOAD_H
-#define VCL_IO_MESH_LOAD_H
+#ifndef VCL_IO_MESH_LOAD_MESH_H
+#define VCL_IO_MESH_LOAD_MESH_H
 
 #include "obj/load.h"
 #include "off/load.h"
@@ -343,4 +343,4 @@ MeshType loadMesh(
 
 } // namespace vcl
 
-#endif // VCL_IO_MESH_LOAD_H
+#endif // VCL_IO_MESH_LOAD_MESH_H
