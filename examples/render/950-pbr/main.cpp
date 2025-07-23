@@ -29,8 +29,8 @@ int main(int argc, char** argv)
 {
     using namespace vcl;
 
-    MaterialTriMesh mesh = vcl::loadMesh<MaterialTriMesh>(
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf");
 
-    return showMeshesOnDefaultViewer(argc, argv, mesh);
+    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes));
 }
