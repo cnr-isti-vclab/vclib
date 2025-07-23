@@ -23,7 +23,7 @@
 #include <vclib/bindings/core/io/mesh/save.h>
 #include <vclib/bindings/utils.h>
 
-#include <vclib/io/mesh/save.h>
+#include <vclib/io/mesh/save_mesh.h>
 #include <vclib/meshes.h>
 
 namespace vcl::bind {
@@ -35,7 +35,7 @@ void initSaveMesh(pybind11::module& m)
             namespace py = pybind11;
 
             m.def(
-                "save",
+                "save_mesh",
                 [](const MeshType&    m,
                    const std::string& filename,
                    bool               binary,
