@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_SAVE_H
-#define VCL_IO_MESH_SAVE_H
+#ifndef VCL_IO_MESH_SAVE_MESH_H
+#define VCL_IO_MESH_SAVE_MESH_H
 
 #include "obj/save.h"
 #include "off/save.h"
@@ -130,4 +130,4 @@ void saveMesh(
 
 } // namespace vcl
 
-#endif // VCL_IO_MESH_SAVE_H
+#endif // VCL_IO_MESH_SAVE_MESH_H
