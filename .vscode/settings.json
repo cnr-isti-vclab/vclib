@@ -2,6 +2,7 @@
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "C_Cpp.intelliSenseEngine": "default",
     "C_Cpp.configurationWarnings": "enabled",
+    "C_Cpp.autoAddFileAssociations": false,
     "C_Cpp.intelliSenseEngineFallback": "enabled",
     "cmake.buildDirectory": "${workspaceFolder}/out/build/${variant:buildType}",
     "cmake.generator": "Ninja",
