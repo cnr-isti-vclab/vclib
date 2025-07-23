@@ -25,7 +25,7 @@
 
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 
-BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
+BUFFER_RW(vertex_selected, vec4, 4);   // is vertex selected? 1 bit per vertex...
 
 IMAGE2D_WO(tex_selection, rgba8, 7);
 
@@ -53,16 +53,49 @@ void main()
         positions[idx31/4][idx31%4],
         positions[idx32/4][idx32%4]);
 
-    uint bufferIndex = pointId/32;
-    uint uint32BitOffset = 31-(pointId%32);
-    uint bitMask = 0x1 << uint32BitOffset;
-    vec4 col;
+    uint bufferIndex = pointId/128;
+    uint vec4Index = (pointId%128)/32;
+    uint bitOffset = 31-(pointId%32);
+    uint bitMask = 0x1 << bitOffset;
+    uint newValue;
     if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
-        vertex_selected[bufferIndex] = (vertex_selected[bufferIndex] | bitMask);
-        col = uintABGRToVec4Color(uint(0x01000000));
+        newValue = (uint(vertex_selected[bufferIndex][vec4Index]) | bitMask);
     } else {
-        vertex_selected[bufferIndex] = (vertex_selected[bufferIndex] & (~bitMask));
-        col = uintABGRToVec4Color(uint(0));
+        newValue = (uint(vertex_selected[bufferIndex][vec4Index]) & (~bitMask));
     }
-    imageStore(tex_selection, ivec2(pointId, 0), uintABGRToVec4Color((vertex_selected[bufferIndex] & bitMask)));
+    switch(vec4Index) {
+        case 0:
+            vertex_selected[bufferIndex] = vec4(
+                newValue,
+                vertex_selected[bufferIndex].y,
+                vertex_selected[bufferIndex].z,
+                vertex_selected[bufferIndex].w
+            );
+            break;
+        case 1:
+            vertex_selected[bufferIndex] = vec4(
+                vertex_selected[bufferIndex].x,
+                newValue,
+                vertex_selected[bufferIndex].z,
+                vertex_selected[bufferIndex].w
+            );
+            break;
+        case 2:
+            vertex_selected[bufferIndex] = vec4(
+                vertex_selected[bufferIndex].x,
+                vertex_selected[bufferIndex].y,
+                newValue,
+                vertex_selected[bufferIndex].w
+            );
+            break;
+        case 3:
+            vertex_selected[bufferIndex] = vec4(
+                vertex_selected[bufferIndex].x,
+                vertex_selected[bufferIndex].y,
+                vertex_selected[bufferIndex].z,
+                newValue
+            );
+            break;
+    }
+    imageStore(tex_selection, ivec2(pointId, 0), vec4(p, 1));
 }

@@ -59,7 +59,7 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     VertexBuffer mVertexWedgeUVBuffer;
 
     // vertex selection
-    DynamicVertexBuffer mSelectedVerticesBuffer;
+    VertexBuffer mSelectedVerticesBuffer;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -83,8 +83,6 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
-    std::vector<vcl::uint> mTexReadbackVec;
-
     DrawableMeshUniforms mMeshUniforms;
 
     Uniform mSelectionBoxuniform =
@@ -107,19 +105,6 @@ public:
             Base(buffersToFill)
     {
         Base::update(mesh, buffersToFill);
-        bgfx::VertexLayout layout =
-            bgfx::VertexLayout()
-                .begin()
-                .add(bgfx::Attrib::Position, 1, bgfx::AttribType::Float)
-                .end();
-        uint selectedVerticesBufferSize =
-            uint(ceil(double(MeshType::vertexNumber()) / 32.0));
-        std::vector<uint> zeros(selectedVerticesBufferSize, 0);
-        mSelectedVerticesBuffer.create(
-            bgfx::copy(&zeros[0], selectedVerticesBufferSize),
-            layout,
-            BGFX_BUFFER_COMPUTE_READ_WRITE);
-        mTexReadbackVec = std::vector<uint32_t>(MeshType::vertexNumber(), 0);
     }
 
     MeshRenderBuffers979(const MeshRenderBuffers979& other) = delete;
@@ -215,8 +200,27 @@ public:
         const bgfx::ViewId blitViewId,
         Box3d              bbox) const
     {
-        auto *non_const_this = const_cast<MeshRenderBuffers979<Mesh>*>(this);
+        MeshRenderBuffers979<Mesh> *non_const_this = const_cast<MeshRenderBuffers979<Mesh>*>(this);
 
+        if(!mSelectedVerticesBuffer.isValid()) {
+            bgfx::VertexLayout layout;
+            layout
+                .begin()
+                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
+                .end();
+            uint selectedVerticesBufferSize =
+                uint(ceil(double(vertexNumber) / 32.0));
+            std::vector<uint> zeros(selectedVerticesBufferSize, 0);
+            non_const_this->mSelectedVerticesBuffer.createForCompute(
+                &zeros[0],
+                selectedVerticesBufferSize,
+                bgfx::Attrib::Color0,
+                4,
+                vcl::PrimitiveType::FLOAT,
+                false,
+                bgfx::Access::ReadWrite
+            );
+        }
         if(!bgfx::isValid(mReadBackTex)) {
             non_const_this->mReadBackTex = bgfx::createTexture2D((uint16_t)vertexNumber, (uint16_t)1, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
         }
@@ -229,10 +233,10 @@ public:
         bgfx::setImage(7, mComputeWriteTex, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA8);
         vcl::Point3d bboxSize = bbox.size();
         float        temp[]   = {
-            float(bbox.center().x() - bboxSize.x() / 4),
-            float(bbox.center().y() - bboxSize.y() / 4),
-            float(bbox.center().x() + bboxSize.x() / 4),
-            float(bbox.center().y() + bboxSize.y() / 4)};
+            float(bbox.center().x()),
+            float(bbox.center().y()),
+            float(bbox.center().x() + bboxSize.x() / 2),
+            float(bbox.center().y() + bboxSize.y() / 2)};
         mSelectionBoxuniform.bind((void*) temp);
 
         auto& pm = Context::instance().programManager();

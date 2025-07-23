@@ -1,0 +1,2 @@
+- Limit texture size to the possible max (values in texture = bitmap??? (in such a way that we have 32 times the space)). Not really useful since it probably won't be needed in the real implementation; it's just for debugging
+- Figure out why vertex binding no longer works properly
