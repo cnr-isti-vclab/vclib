@@ -59,14 +59,14 @@ void main()
     uint bitMask = 0x1 << bitOffset;
     uint newValue;
     if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
-        newValue = (uint(vertex_selected[bufferIndex][vec4Index]) | bitMask);
+        newValue = (floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) | bitMask);
     } else {
-        newValue = (uint(vertex_selected[bufferIndex][vec4Index]) & (~bitMask));
+        newValue = (floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & (~bitMask));
     }
     switch(vec4Index) {
         case 0:
             vertex_selected[bufferIndex] = vec4(
-                newValue,
+                uintBitsToFloat(newValue),
                 vertex_selected[bufferIndex].y,
                 vertex_selected[bufferIndex].z,
                 vertex_selected[bufferIndex].w
@@ -75,7 +75,7 @@ void main()
         case 1:
             vertex_selected[bufferIndex] = vec4(
                 vertex_selected[bufferIndex].x,
-                newValue,
+                uintBitsToFloat(newValue),
                 vertex_selected[bufferIndex].z,
                 vertex_selected[bufferIndex].w
             );
@@ -84,7 +84,7 @@ void main()
             vertex_selected[bufferIndex] = vec4(
                 vertex_selected[bufferIndex].x,
                 vertex_selected[bufferIndex].y,
-                newValue,
+                uintBitsToFloat(newValue),
                 vertex_selected[bufferIndex].w
             );
             break;
@@ -93,9 +93,9 @@ void main()
                 vertex_selected[bufferIndex].x,
                 vertex_selected[bufferIndex].y,
                 vertex_selected[bufferIndex].z,
-                newValue
+                uintBitsToFloat(newValue)
             );
             break;
     }
-    imageStore(tex_selection, ivec2(pointId, 0), uintABGRToVec4Color((uint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)));
+    imageStore(tex_selection, ivec2(pointId, 0), uintABGRToVec4Color((floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)));
 }
