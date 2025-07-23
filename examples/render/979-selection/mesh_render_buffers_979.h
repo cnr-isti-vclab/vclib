@@ -90,10 +90,6 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     bgfx::TextureHandle mReadBackTex = BGFX_INVALID_HANDLE;
     bgfx::TextureHandle mComputeWriteTex = BGFX_INVALID_HANDLE;
-    Uniform mSelectionSampl = Uniform("tex_selection", bgfx::UniformType::Sampler);
-
-    uint waitForReadCounter = 100;
-    uint availabilityWait = 9999999999;
 
 
 public:
