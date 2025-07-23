@@ -121,11 +121,11 @@ void loadGltf(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadGltf(
-    MeshType&           m,
-    const std::string&  filename,
-    MeshInfo&           loadedInfo,
-    const LoadSettings& settings = LoadSettings(),
-    LogType&            log      = nullLogger)
+    std::vector<MeshType>& m,
+    const std::string&     filename,
+    std::vector<MeshInfo>& loadedInfo,
+    const LoadSettings&    settings = LoadSettings(),
+    LogType&               log      = nullLogger)
 {
     tinygltf::TinyGLTF loader;
     tinygltf::Model    model;
@@ -159,10 +159,20 @@ void loadGltf(
             LogType::LogLevel::WARNING_LOG);
     }
 
-    // Load the mesh data from the model
+    detail::loadGltf(model, m, loadedInfo, settings, log);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadGltf(
+    MeshType&           m,
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
+{
     std::vector<MeshType> meshes;
     std::vector<MeshInfo> infos;
-    detail::loadGltf(model, meshes, infos, settings, log);
+    loadGltf(meshes, filename, infos, settings, log);
 
     m          = std::move(meshes.front());
     loadedInfo = std::move(infos.front());
