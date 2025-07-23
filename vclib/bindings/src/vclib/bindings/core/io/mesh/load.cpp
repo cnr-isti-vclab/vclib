@@ -24,7 +24,7 @@
 #include <vclib/bindings/utils.h>
 
 #include <vclib/algorithms/mesh/type_name.h>
-#include <vclib/io/mesh/load.h>
+#include <vclib/io/mesh/load_mesh.h>
 #include <vclib/meshes.h>
 
 namespace vcl::bind {
@@ -36,7 +36,7 @@ void initLoadMesh(pybind11::module& m)
     auto fLoad = []<MeshConcept MeshType>(
                      pybind11::module& m, MeshType = MeshType()) {
         m.def(
-            "load",
+            "load_mesh",
             [](MeshType&          m,
                const std::string& filename,
                MeshInfo&          loadedInfo,
