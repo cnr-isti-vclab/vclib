@@ -5,6 +5,7 @@
     "C_Cpp.autoAddFileAssociations": false,
     "C_Cpp.intelliSenseEngineFallback": "enabled",
     "cmake.buildDirectory": "${workspaceFolder}/out/build/${variant:buildType}",
+    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
     "cmake.generator": "Ninja",
     "cSpell.words": [
         "AABB",
@@ -49,6 +50,5 @@
         "Unwrapper",
         "vclib"
     ],
-    "doxygen_runner.configuration_file_override": "${workspaceFolder}/docs/Doxyfile",
-    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json"
+    "doxygen_runner.configuration_file_override": "${workspaceFolder}/docs/Doxyfile"
 }

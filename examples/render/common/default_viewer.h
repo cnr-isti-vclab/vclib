@@ -68,7 +68,7 @@ auto defaultViewer()
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
 #ifdef VCLIB_WITH_IMGUI
     return ImguiMeshViewer();
-#else // VCLIB_WITH_IMGUI
+#else  // VCLIB_WITH_IMGUI
     return vcl::glfw::ViewerWindow();
 #endif // VCLIB_WITH_IMGUI
 #endif
@@ -97,15 +97,15 @@ void showMeshesOnViewer(
 
 template<vcl::MeshConcept MeshTypes>
 void showMeshesOnViewer(
-    int    argc,
-    char** argv,
-    auto&  viewer,
+    int                      argc,
+    char**                   argv,
+    auto&                    viewer,
     std::vector<MeshTypes>&& meshes)
 {
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    for(auto&& mesh : meshes)
+    for (auto&& mesh : meshes)
         (pushMeshOnVector(vector, std::move(mesh)));
 
     viewer.setDrawableObjectVector(vector);
