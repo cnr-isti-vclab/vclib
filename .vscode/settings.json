@@ -5,9 +5,6 @@
     "C_Cpp.autoAddFileAssociations": false,
     "C_Cpp.intelliSenseEngineFallback": "enabled",
     "cmake.buildDirectory": "${workspaceFolder}/out/build/${variant:buildType}",
-    "cmake.configureArgs": [
-        "-DCMAKE_PREFIX_PATH=${command:qttools.qtpath}" // allows to automatically find Qt libraries
-    ],
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
     "cmake.generator": "Ninja",
     "cSpell.words": [
