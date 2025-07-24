@@ -38,7 +38,7 @@ jobs:
       shell: bash
       run: |
         mkdir build
-        cmake -B build --preset=vclib-core-release \
+        cmake -B build --preset=vclib-core-ci \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build build --parallel
     - name: Run Tests
