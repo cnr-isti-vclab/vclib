@@ -51,8 +51,18 @@ function(_vclib_add_test_example name)
         set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-example-${name}")
     endif()
 
+    if (${VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS})
+        set(TO_EXCLUDE TRUE)
+    else()
+        set(TO_EXCLUDE FALSE)
+    endif()
+
     add_executable(${TARGET_NAME} ${ARG_SOURCES})
     target_link_libraries(${TARGET_NAME} PRIVATE vclib-tests-examples-common)
+
+    if (${TO_EXCLUDE})
+        set_target_properties(${TARGET_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
+    endif()
 
     # if ARG_VCLIB_MODULE is "render"
     if (ARG_VCLIB_MODULE STREQUAL "render")
@@ -97,8 +107,10 @@ function(_vclib_add_test_example name)
 
     if (${ARG_TEST})
         set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "tests")
-        enable_testing()
-        add_test(NAME ${name} COMMAND ${TARGET_NAME})
+        if (NOT ${TO_EXCLUDE})
+            enable_testing()
+            add_test(NAME ${name} COMMAND ${TARGET_NAME})
+        endif()
     else()
         set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "examples")
     endif()
