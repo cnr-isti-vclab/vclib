@@ -62,7 +62,7 @@ jobs:
           export LDFLAGS="-L $LIBRARY_PATH -L $BREW_PATH/lib -L $LLVM_PATH/lib -L $LLVM_PATH/lib/c++" 
         fi
         mkdir build
-        cmake -B build --preset=vclib-render-${{matrix.render_backend}}-release \
+        cmake -B build --preset=vclib-render-${{matrix.render_backend}}-ci \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build build --parallel
     # - name: Run Tests
