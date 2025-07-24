@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_SAMPLER_H
-#define VCL_CONCEPTS_SPACE_SAMPLER_H
+#ifndef VCL_SPACE_COMPLEX_SAMPLER_SAMPLER_CONCEPT_H
+#define VCL_SPACE_COMPLEX_SAMPLER_SAMPLER_CONCEPT_H
 
 #include <vclib/concepts/const_correctness.h>
 #include <vclib/types/base.h>
@@ -63,4 +63,4 @@ concept SamplerConcept = requires (T&& obj) {
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_SPACE_SAMPLER_H
+#endif // VCL_SPACE_COMPLEX_SAMPLER_SAMPLER_CONCEPT_H

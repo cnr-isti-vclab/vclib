@@ -27,7 +27,6 @@
 #include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/concepts/mesh/elements/face.h>
 #include <vclib/concepts/mesh/elements/vertex.h>
-#include <vclib/concepts/space/sampler.h>
 
 namespace vcl {
 
