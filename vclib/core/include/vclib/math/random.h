@@ -25,7 +25,7 @@
 
 #include "base.h"
 
-#include <vclib/concepts/space/point.h>
+#include <vclib/concepts.h>
 
 #include <random>
 
