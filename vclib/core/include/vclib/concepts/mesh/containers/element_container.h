@@ -24,7 +24,6 @@
 #define VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
 #include <vclib/types.h>
-#include <vclib/types.h>
 
 namespace vcl::mesh {
 
