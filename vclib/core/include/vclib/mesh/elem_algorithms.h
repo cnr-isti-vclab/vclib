@@ -20,17 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_H
-#define VCL_MESH_H
+#ifndef VCL_MESH_ELEM_ALGORITHMS_H
+#define VCL_MESH_ELEM_ALGORITHMS_H
 
-#include "mesh/components.h"
-#include "mesh/elem_algorithms.h"
-#include "mesh/elements.h"
-#include "mesh/iterators/face/edge_adj_face_iterator.h"
-#include "mesh/mesh_components.h"
-#include "mesh/mesh_containers.h"
-#include "mesh/mesh.h"
-#include "mesh/requirements.h"
-#include "mesh/tmp_meshes.h"
+#include "elem_algorithms/ear_cut.h"
 
-#endif // VCL_MESH_H
+#endif // VCL_MESH_ELEM_ALGORITHMS_H
