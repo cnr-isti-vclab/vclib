@@ -25,6 +25,7 @@
 
 #include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/iterators.h>
+
 #include <vclib/types.h>
 
 namespace vcl {

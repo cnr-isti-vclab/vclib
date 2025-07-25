@@ -23,8 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_FILTER_H
 #define VCL_ALGORITHMS_MESH_FILTER_H
 
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/comparators.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
 
 #include <set>
 

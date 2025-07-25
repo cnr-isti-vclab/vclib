@@ -23,9 +23,10 @@
 #ifndef VCL_SPACE_CORE_IMAGE_H
 #define VCL_SPACE_CORE_IMAGE_H
 
+#include "array.h"
+#include "color.h"
+
 #include <vclib/serialization.h>
-#include <vclib/space/core/array.h>
-#include <vclib/space/core/color.h>
 
 #include <string>
 

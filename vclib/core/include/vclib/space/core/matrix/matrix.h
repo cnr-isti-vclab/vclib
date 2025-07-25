@@ -23,8 +23,7 @@
 #ifndef VCL_SPACE_CORE_MATRIX_MATRIX_H
 #define VCL_SPACE_CORE_MATRIX_MATRIX_H
 
-#include <vclib/concepts/space/matrix.h>
-#include <vclib/concepts/space/point.h>
+#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 
 #include <Eigen/Core>

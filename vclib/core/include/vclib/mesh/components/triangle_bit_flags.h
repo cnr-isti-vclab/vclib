@@ -25,8 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/bit_flags.h>
-#include <vclib/space/core/bit_set.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 

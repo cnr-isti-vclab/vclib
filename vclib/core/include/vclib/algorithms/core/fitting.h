@@ -25,7 +25,7 @@
 
 #include "stat.h"
 
-#include <vclib/space/core/plane.h>
+#include <vclib/space/core.h>
 
 #include <Eigen/Eigenvalues>
 

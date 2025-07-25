@@ -30,6 +30,7 @@
 #include "math/min_max.h"
 #include "math/perlin_noise.h"
 #include "math/random.h"
+#include "math/transform.h"
 
 /**
  * @defgroup math Math

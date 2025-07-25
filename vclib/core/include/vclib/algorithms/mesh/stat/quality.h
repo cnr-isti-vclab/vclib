@@ -23,10 +23,9 @@
 #ifndef VCL_ALGORITHMS_MESH_STAT_QUALITY_H
 #define VCL_ALGORITHMS_MESH_STAT_QUALITY_H
 
-#include <vclib/math/base.h>
-#include <vclib/math/histogram.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/views/mesh.h>
+#include <vclib/math.h>
+#include <vclib/mesh.h>
+#include <vclib/views.h>
 
 #include <numeric>
 

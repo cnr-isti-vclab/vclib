@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_TYPE_NAME_H
 #define VCL_ALGORITHMS_MESH_TYPE_NAME_H
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 

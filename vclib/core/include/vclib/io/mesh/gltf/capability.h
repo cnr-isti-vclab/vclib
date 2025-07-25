@@ -24,7 +24,8 @@
 #define VCL_IO_MESH_GLTF_CAPABILITY_H
 
 #include <vclib/io/file_format.h>
-#include <vclib/space/complex/mesh_info.h>
+
+#include <vclib/space/complex.h>
 
 namespace vcl {
 

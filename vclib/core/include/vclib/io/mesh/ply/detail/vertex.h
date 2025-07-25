@@ -25,12 +25,13 @@
 
 #include "header.h"
 
-#include <vclib/concepts/mesh/per_vertex.h>
-#include <vclib/exceptions/io.h>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/tokenizer.h>
+
+#include <vclib/concepts.h>
+#include <vclib/exceptions.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
 
 namespace vcl::detail {
 

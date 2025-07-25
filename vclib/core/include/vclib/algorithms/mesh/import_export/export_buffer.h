@@ -23,10 +23,10 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
 
-#include <vclib/algorithms/core/polygon/ear_cut.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/complex/tri_poly_index_bimap.h>
-#include <vclib/views/mesh.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
+#include <vclib/views.h>
 
 /**
  * @defgroup export_buffer Export Mesh to Buffer Algorithms

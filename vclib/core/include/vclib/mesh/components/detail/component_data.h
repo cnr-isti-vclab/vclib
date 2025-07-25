@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_DETAIL_COMPONENT_DATA_H
 #define VCL_MESH_COMPONENTS_DETAIL_COMPONENT_DATA_H
 
-#include <vclib/concepts/mesh/components/component.h>
+#include <vclib/concepts.h>
 
 namespace vcl::comp::detail {
 

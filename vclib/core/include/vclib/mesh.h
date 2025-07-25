@@ -20,52 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_PLY_CAPABILITY_H
-#define VCL_IO_MESH_PLY_CAPABILITY_H
+#ifndef VCL_MESH_H
+#define VCL_MESH_H
 
-#include <vclib/io/file_format.h>
+#include "mesh/components.h"
+#include "mesh/elements.h"
+#include "mesh/iterators/face/edge_adj_face_iterator.h"
+#include "mesh/mesh_components.h"
+#include "mesh/mesh_containers.h"
+#include "mesh/mesh.h"
+#include "mesh/requirements.h"
+#include "mesh/tmp_meshes.h"
 
-#include <vclib/space/complex.h>
-
-namespace vcl {
-
-constexpr FileFormat plyFileFormat()
-{
-    return FileFormat("ply", "PLY Polygon File Format .ply");
-}
-
-inline MeshInfo plyFormatCapability()
-{
-    MeshInfo info;
-
-    info.setPolygonMesh();
-
-    info.setVertices();
-    info.setFaces();
-    info.setEdges();
-
-    info.setTextures();
-
-    info.setPerVertexPosition();
-    info.setPerVertexNormal();
-    info.setPerVertexColor();
-    info.setPerVertexQuality();
-    info.setPerVertexTexCoord();
-    info.setPerVertexCustomComponents();
-
-    info.setPerFaceVertexReferences();
-    info.setPerFaceColor();
-    info.setPerFaceNormal();
-    info.setPerFaceQuality();
-    info.setPerFaceWedgeTexCoords();
-    info.setPerFaceCustomComponents();
-
-    info.setPerEdgeVertexReferences();
-    info.setPerEdgeColor();
-
-    return info;
-}
-
-} // namespace vcl
-
-#endif // VCL_IO_MESH_PLY_CAPABILITY_H
+#endif // VCL_MESH_H

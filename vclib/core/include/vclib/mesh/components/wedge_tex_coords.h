@@ -25,11 +25,9 @@
 
 #include "bases/container_component.h"
 
-#include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/concepts/mesh/components/wedge_tex_coords.h>
-#include <vclib/space/core/tex_coord.h>
-#include <vclib/space/core/vector.h>
-#include <vclib/types/view.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 

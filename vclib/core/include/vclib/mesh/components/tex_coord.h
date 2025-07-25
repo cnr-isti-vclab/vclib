@@ -25,8 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/space/core/tex_coord_indexed.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 

@@ -25,9 +25,8 @@
 
 #include "file_info.h"
 
-#include <vclib/concepts/mesh/elements/element.h>
-#include <vclib/misc/string.h>
-#include <vclib/misc/tokenizer.h>
+#include <vclib/concepts.h>
+#include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 
 namespace vcl {

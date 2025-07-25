@@ -23,7 +23,7 @@
 #ifndef VCL_IO_MESH_SETTINGS_H
 #define VCL_IO_MESH_SETTINGS_H
 
-#include <vclib/space/complex/mesh_info.h>
+#include <vclib/space/complex.h>
 
 namespace vcl {
 

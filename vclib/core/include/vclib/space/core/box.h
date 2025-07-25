@@ -25,8 +25,8 @@
 
 #include "point.h"
 
-#include <vclib/concepts/space/box.h>
-#include <vclib/math/min_max.h>
+#include <vclib/concepts.h>
+#include <vclib/math.h>
 
 namespace vcl {
 

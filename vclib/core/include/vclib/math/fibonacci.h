@@ -23,7 +23,7 @@
 #ifndef VCL_MATH_FIBONACCI_H
 #define VCL_MATH_FIBONACCI_H
 
-#include <vclib/concepts/space/point.h>
+#include <vclib/concepts.h>
 
 #include <cmath>
 #include <numbers>

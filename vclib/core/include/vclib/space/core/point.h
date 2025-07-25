@@ -23,9 +23,9 @@
 #ifndef VCL_SPACE_CORE_POINT_H
 #define VCL_SPACE_CORE_POINT_H
 
-#include <vclib/concepts/space/point.h>
-#include <vclib/math/base.h>
-#include <vclib/misc/hash.h>
+#include <vclib/concepts.h>
+#include <vclib/math.h>
+#include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 
 #include <Eigen/Core>
