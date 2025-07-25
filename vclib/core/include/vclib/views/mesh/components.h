@@ -29,6 +29,7 @@
 #include "components/colors.h"
 #include "components/normals.h"
 #include "components/positions.h"
+#include "components/principal_curvatures.h"
 #include "components/quality.h"
 #include "components/selection.h"
 #include "components/tex_coords.h"
