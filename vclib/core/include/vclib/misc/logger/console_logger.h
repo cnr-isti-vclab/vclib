@@ -25,7 +25,7 @@
 
 #include "logger.h"
 
-#include <vclib/concepts/logger.h>
+#include <vclib/concepts.h>
 
 #include <iomanip>
 
