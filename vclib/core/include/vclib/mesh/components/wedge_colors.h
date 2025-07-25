@@ -25,11 +25,9 @@
 
 #include "bases/container_component.h"
 
-#include <vclib/concepts/mesh/components/color.h>
-#include <vclib/concepts/mesh/components/wedge_colors.h>
-#include <vclib/space/core/color.h>
-#include <vclib/space/core/vector.h>
-#include <vclib/types/view.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 

@@ -23,11 +23,10 @@
 #ifndef VCL_MESH_ELEMENTS_ELEMENT_H
 #define VCL_MESH_ELEMENTS_ELEMENT_H
 
-#include <vclib/concepts/mesh/elements/element.h>
-
-#include <vclib/concepts/mesh/components/component.h>
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/components/parent_mesh_pointer.h>
+
+#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 /**

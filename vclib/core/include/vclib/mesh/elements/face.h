@@ -25,8 +25,7 @@
 
 #include "element.h"
 
-#include <vclib/concepts/mesh/elements/face.h>
-#include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts.h>
 #include <vclib/types/view.h>
 
 namespace vcl {

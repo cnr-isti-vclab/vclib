@@ -25,7 +25,7 @@
 
 #include "component.h"
 
-#include <vclib/space/core/vector.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 

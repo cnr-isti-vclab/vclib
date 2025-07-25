@@ -25,8 +25,8 @@
 
 #include "bases/reference_container_component.h"
 
-#include <vclib/concepts/mesh/components/adjacent_faces.h>
-#include <vclib/types/view.h>
+#include <vclib/concepts.h>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 

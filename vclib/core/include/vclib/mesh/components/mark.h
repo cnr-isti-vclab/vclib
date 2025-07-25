@@ -25,7 +25,7 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/mark.h>
+#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 
 namespace vcl::comp {
