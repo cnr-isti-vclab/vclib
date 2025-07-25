@@ -23,7 +23,7 @@
 #ifndef VCL_VIEWS_MESH_ELEMENTS_ELEMENT_H
 #define VCL_VIEWS_MESH_ELEMENTS_ELEMENT_H
 
-#include <vclib/concepts/pointers.h>
+#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 #include <ranges>

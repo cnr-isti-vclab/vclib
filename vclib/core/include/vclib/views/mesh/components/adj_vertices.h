@@ -23,8 +23,7 @@
 #ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
 #define VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/concepts/pointers.h>
+#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 namespace vcl::views {
