@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_H
 #define VCL_MESH_ELEM_ALGORITHMS_H
 
+#include "elem_algorithms/bounding_box.h"
 #include "elem_algorithms/polygon.h"
 #include "elem_algorithms/visibility.h"
 

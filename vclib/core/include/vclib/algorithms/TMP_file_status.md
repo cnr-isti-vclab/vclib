@@ -1,7 +1,7 @@
 # Header Files Status in algorithms/core
 
 ## Root level headers
-- [ ] bounding_box.h
+- [x] bounding_box.h
 - [ ] box.h
 - [x] create.h
 - [ ] distance.h
