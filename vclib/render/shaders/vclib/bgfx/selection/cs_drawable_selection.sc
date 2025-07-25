@@ -29,6 +29,9 @@ BUFFER_RW(vertex_selected, vec4, 4);   // is vertex selected? 1 bit per vertex..
 
 IMAGE2D_WO(tex_selection, rgba8, 7);
 
+// When the texture is no longer needed for debugging purposes we can remove u_maxTexSize and IMAGE2D_WO
+// and we can put u_vertexCount and u_workgroupSize in the same vec4 uniform (since the first one only has one useful dimension and the other only has three useful dimensions)
+
 uniform vec4 u_vertexCount;
 uniform vec4 u_selectionBox;
 uniform vec4 u_workgroupSize;
