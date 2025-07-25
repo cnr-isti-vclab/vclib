@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms/core.h>
-#include <vclib/space/core.h>
+#include <vclib/algorithms.h>
+#include <vclib/space.h>
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>

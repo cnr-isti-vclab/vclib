@@ -26,7 +26,7 @@
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/misc/timer.h>
+#include <vclib/miscellaneous.h>
 
 // This example demonstrates mesh smoothing algorithms:
 // 1. Laplacian smoothing with uniform weights

@@ -23,7 +23,7 @@
 #ifndef CONST_CORRECTNESS_H
 #define CONST_CORRECTNESS_H
 
-#include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts.h>
 
 void constCorrectnessStaticAsserts()
 {
