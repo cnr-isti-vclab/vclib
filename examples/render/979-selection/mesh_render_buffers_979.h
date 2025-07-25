@@ -87,11 +87,15 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     Uniform mSelectionBoxuniform =
         Uniform("u_selectionBox", bgfx::UniformType::Vec4);
+    Uniform mWorkgroupSizeUniform = Uniform("u_workgroupSize", bgfx::UniformType::Vec4);
+    Uniform mVertexCountUniform = Uniform("u_vertexCount", bgfx::UniformType::Vec4);
+    Uniform mMaxTexSizeUniform = Uniform("u_maxTexSize", bgfx::UniformType::Vec4);
 
     bgfx::TextureHandle mReadBackTex = BGFX_INVALID_HANDLE;
     bgfx::TextureHandle mComputeWriteTex = BGFX_INVALID_HANDLE;
 
     std::array<uint16_t, 2> mSelectionTexSize = {0, 0};
+    std::array<uint, 3> mWorkgroupSize = {0, 0, 0};
 
 
 public:
@@ -201,6 +205,15 @@ public:
         return mSelectionTexSize;
     }
 
+    std::array<uint, 3> getWorkgroupSize() {
+        if (mWorkgroupSize[0] == 0) {
+            mWorkgroupSize[0] = std::min(Base::numVerts(), uint(512));
+            mWorkgroupSize[1] = std::min(uint(std::ceil(double(Base::numVerts())/double(mWorkgroupSize[0]))), uint(512));
+            mWorkgroupSize[2] = uint(std::ceil(double(Base::numVerts())/double(mWorkgroupSize[0]*mWorkgroupSize[1])));
+        }
+        return mWorkgroupSize;
+    }
+
     uint vertexNumber() {
         return Base::numVerts();
     }
@@ -232,6 +245,7 @@ public:
             );
         }
         non_const_this->getSelectionTexSize();
+        non_const_this->getWorkgroupSize();
         if(!bgfx::isValid(mReadBackTex)) {
             non_const_this->mReadBackTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
         }
@@ -252,14 +266,19 @@ public:
             float(bbox.center().x() + bboxSize.x() / 2),
             float(bbox.center().y() + bboxSize.y() / 2)};
         mSelectionBoxuniform.bind((void*) temp);
-
+        float temp2[] = {vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]),vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]),vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]),0.f};
+        float temp3[] = {vcl::Uniform::uintBitsToFloat(Base::numVerts()),0.f,0.f,0.f};
+        float temp4[] = {vcl::Uniform::uintBitsToFloat(mSelectionTexSize[0]), vcl::Uniform::uintBitsToFloat(mSelectionTexSize[1]), 0.f, 0.f};
+        mWorkgroupSizeUniform.bind((void*)temp2);
+        mVertexCountUniform.bind((void*)temp3);
+        mMaxTexSizeUniform.bind((void*)temp4);
         auto& pm = Context::instance().programManager();
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<ComputeProgram::DRAWABLE_SELECTION>(),
-            Base::numVerts(),
-            1,
-            1);
+            mWorkgroupSize[0],
+            mWorkgroupSize[1],
+            mWorkgroupSize[2]);
 
         bgfx::blit(blitViewId, mReadBackTex, 0, 0, mComputeWriteTex, 0, 0, mSelectionTexSize[0], mSelectionTexSize[1]);
         non_const_this->mSelectionCalculated = true;

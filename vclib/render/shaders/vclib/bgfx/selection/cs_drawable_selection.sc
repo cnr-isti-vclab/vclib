@@ -29,7 +29,10 @@ BUFFER_RW(vertex_selected, vec4, 4);   // is vertex selected? 1 bit per vertex..
 
 IMAGE2D_WO(tex_selection, rgba8, 7);
 
+uniform vec4 u_vertexCount;
 uniform vec4 u_selectionBox;
+uniform vec4 u_workgroupSize;
+uniform vec4 u_maxTexSize;
 
 /* TODO: Clearly you'll have to check the coordinates in view space... 
 * (i imagine the selection box "lives" on the view plane)
@@ -38,7 +41,13 @@ uniform vec4 u_selectionBox;
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
-    uint pointId = gl_WorkGroupID.x;
+    uint vertexCount = floatBitsToUint(u_vertexCount[0]);
+    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSize[0]), floatBitsToUint(u_workgroupSize[1]), floatBitsToUint(u_workgroupSize[2]));
+    uint maxTexSizeX = floatBitsToUint(u_maxTexSize.x);
+    uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
+    if(pointId >= vertexCount) {
+        return;
+    }
     uint idx30 = pointId * 3;
     uint idx31 = idx30+1;
     uint idx32 = idx30+2;
@@ -97,5 +106,5 @@ void main()
             );
             break;
     }
-    imageStore(tex_selection, ivec2(pointId, 0), uintABGRToVec4Color((floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)));
+    imageStore(tex_selection, ivec2(pointId%maxTexSizeX, pointId/maxTexSizeX), uintABGRToVec4Color((floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)));
 }
