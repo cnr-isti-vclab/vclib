@@ -25,7 +25,8 @@
 
 #include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/space/bit_set.h>
-#include <vclib/types/base.h>
+
+#include <vclib/types.h>
 
 #include <concepts>
 

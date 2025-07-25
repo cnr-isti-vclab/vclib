@@ -20,9 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms/mesh/check_pointers.h>
-#include <vclib/algorithms/mesh/create.h>
-#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/algorithms.h>
 #include <vclib/meshes.h>
 
 #include <catch2/catch_template_test_macros.hpp>

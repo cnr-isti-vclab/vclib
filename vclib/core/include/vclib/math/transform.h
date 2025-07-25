@@ -25,8 +25,7 @@
 
 #include "base.h"
 
-#include <vclib/concepts/space/matrix.h>
-#include <vclib/concepts/space/point.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 

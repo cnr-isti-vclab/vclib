@@ -24,7 +24,8 @@
 #define VCL_IO_IMAGE_BMP_SAVE_H
 
 #include <vclib/io/file_info.h>
-#include <vclib/misc/string.h>
+
+#include <vclib/miscellaneous.h>
 
 namespace vcl {
 

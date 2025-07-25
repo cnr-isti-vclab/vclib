@@ -25,8 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/name.h>
-#include <vclib/misc/string.h>
+#include <vclib/concepts.h>
+#include <vclib/miscellaneous.h>
 
 namespace vcl::comp {
 

@@ -23,8 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_SORT_H
 #define VCL_ALGORITHMS_MESH_SORT_H
 
-#include <vclib/misc/parallel.h>
-#include <vclib/space/complex/mesh_edge_util.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
 
 #include <algorithm>
 

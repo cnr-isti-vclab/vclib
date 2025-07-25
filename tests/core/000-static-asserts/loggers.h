@@ -23,7 +23,7 @@
 #ifndef LOGGERS_H
 #define LOGGERS_H
 
-#include <vclib/misc/logger.h>
+#include <vclib/miscellaneous.h>
 
 void loggersStaticAsserts()
 {

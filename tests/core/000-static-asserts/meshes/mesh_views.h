@@ -1,8 +1,8 @@
 #ifndef MESH_VIEWS_H
 #define MESH_VIEWS_H
 
-#include <vclib/views/mesh.h>
-#include <vclib/views/pointers.h>
+#include <vclib/views.h>
+#include <vclib/meshes.h>
 
 #include <ranges>
 

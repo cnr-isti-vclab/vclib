@@ -25,10 +25,8 @@
 
 #include "polygon/geometry.h"
 
-#include <vclib/concepts/space/plane.h>
-#include <vclib/concepts/space/point.h>
-#include <vclib/concepts/space/triangle.h>
-#include <vclib/space/core/triangle_wrapper.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

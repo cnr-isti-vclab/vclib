@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_MESH_EDGE_UTIL_H
 #define VCL_SPACE_COMPLEX_MESH_EDGE_UTIL_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh.h>
 #include <vclib/types.h>
 
 namespace vcl {

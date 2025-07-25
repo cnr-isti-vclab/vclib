@@ -25,7 +25,7 @@
 
 #include "element.h"
 
-#include <vclib/concepts/mesh/elements/edge.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 

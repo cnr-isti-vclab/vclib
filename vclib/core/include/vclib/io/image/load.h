@@ -33,7 +33,8 @@
 
 #include <vclib/io/file_format.h>
 #include <vclib/io/file_info.h>
-#include <vclib/space/core/image.h>
+
+#include <vclib/space/core.h>
 
 #include <memory>
 #include <set>

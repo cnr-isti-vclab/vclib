@@ -23,12 +23,10 @@
 #ifndef VCL_ALGORITHMS_MESH_UPDATE_NORMAL_H
 #define VCL_ALGORITHMS_MESH_UPDATE_NORMAL_H
 
-#include <vclib/algorithms/core/polygon.h>
-#include <vclib/algorithms/core/transform.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/logger.h>
-#include <vclib/misc/parallel.h>
-#include <vclib/space/core/matrix.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

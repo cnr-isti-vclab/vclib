@@ -27,13 +27,12 @@
 #include "custom_components_vector_map.h"
 #include "vertical_components_vector_tuple.h"
 
-#include <vclib/concepts/mesh/components.h>
-#include <vclib/concepts/mesh/containers.h>
-#include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
+
+#include <vclib/concepts.h>
 #include <vclib/serialization.h>
-#include <vclib/types/view.h>
+#include <vclib/types.h>
 
 #include <vector>
 

@@ -23,8 +23,7 @@
 #ifndef VCL_IO_MESH_OBJ_MATERIAL_H
 #define VCL_IO_MESH_OBJ_MATERIAL_H
 
-#include <vclib/space/core/color.h>
-#include <vclib/space/core/point.h>
+#include <vclib/space/core.h>
 
 namespace vcl::detail {
 
