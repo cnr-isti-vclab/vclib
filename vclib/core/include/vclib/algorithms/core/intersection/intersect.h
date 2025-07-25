@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CORE_INTERSECTION_MISC_H
-#define VCL_ALGORITHMS_CORE_INTERSECTION_MISC_H
+#ifndef VCL_ALGORITHMS_CORE_INTERSECTION_INTERSECT_H
+#define VCL_ALGORITHMS_CORE_INTERSECTION_INTERSECT_H
 
 #include <vclib/space/core.h>
 
@@ -777,4 +777,4 @@ bool intersect(const SphereType& sphere, const TriangleType& t)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CORE_INTERSECTION_MISC_H
+#endif // VCL_ALGORITHMS_CORE_INTERSECTION_INTERSECT_H

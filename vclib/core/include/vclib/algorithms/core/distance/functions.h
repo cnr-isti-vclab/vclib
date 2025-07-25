@@ -23,8 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_DISTANCE_FUNCTIONS_H
 #define VCL_ALGORITHMS_CORE_DISTANCE_FUNCTIONS_H
 
-#include "element.h"
-#include "misc.h"
+#include "distance.h"
 
 #include <vclib/concepts.h>
 

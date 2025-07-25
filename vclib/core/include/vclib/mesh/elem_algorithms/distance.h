@@ -20,14 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CORE_DISTANCE_ELEMENT_H
-#define VCL_ALGORITHMS_CORE_DISTANCE_ELEMENT_H
+#ifndef VCL_MESH_ELEM_ALGORITHMS_DISTANCE_H
+#define VCL_MESH_ELEM_ALGORITHMS_DISTANCE_H
 
-#include "misc.h"
-
-#include <vclib/algorithms/core/bounding_box.h>
-#include <vclib/algorithms/core/polygon.h>
-
+#include <vclib/algorithms/core.h>
 #include <vclib/concepts.h>
 #include <vclib/math.h>
 #include <vclib/space/core.h>
@@ -320,4 +316,4 @@ auto distance(const FaceType& f, const VertexType& v, bool signedDist = false)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CORE_DISTANCE_ELEMENT_H
+#endif // VCL_MESH_ELEM_ALGORITHMS_DISTANCE_H
