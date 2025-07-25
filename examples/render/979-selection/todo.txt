@@ -1,2 +1,5 @@
-- Limit texture size to the possible max (values in texture = bitmap??? (in such a way that we have 32 times the space)). Not really useful since it probably won't be needed in the real implementation; it's just for debugging
-- Figure out why vertex binding no longer works properly
+- Use ModelMatrix and ViewMatrix in cs_drawable_selection to calculate a proper selection (since the selection box lives on the view plane)
+- Face selection
+- Edge selection
+- Selection modes (add, subtract, etc...)
+- Figure out a proper implementation location in the c++ code
