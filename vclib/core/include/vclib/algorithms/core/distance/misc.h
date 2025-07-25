@@ -24,9 +24,9 @@
 #define VCL_ALGORITHMS_CORE_DISTANCE_MISC_H
 
 #include <vclib/algorithms/core/bounding_box.h>
-#include <vclib/concepts/space/triangle.h>
-#include <vclib/space/core/plane.h>
-#include <vclib/space/core/segment.h>
+
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

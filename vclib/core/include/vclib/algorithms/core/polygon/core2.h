@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_POLYGON_CORE2_H
 #define VCL_ALGORITHMS_CORE_POLYGON_CORE2_H
 
-#include <vclib/space/core/polygon.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

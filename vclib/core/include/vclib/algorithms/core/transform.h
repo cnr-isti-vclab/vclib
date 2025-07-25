@@ -23,11 +23,9 @@
 #ifndef VCL_ALGORITHMS_CORE_TRANSFORM_H
 #define VCL_ALGORITHMS_CORE_TRANSFORM_H
 
-#include <vclib/concepts/range.h>
-#include <vclib/concepts/space/matrix.h>
-#include <vclib/concepts/space/point.h>
-#include <vclib/misc/parallel.h>
-#include <vclib/space/core/matrix.h>
+#include <vclib/concepts.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/core.h>
 
 #include <cmath>
 

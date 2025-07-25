@@ -26,7 +26,7 @@
 #include "element.h"
 #include "misc.h"
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 

@@ -23,10 +23,8 @@
 #ifndef VCL_ALGORITHMS_CORE_BOX_BOX3_H
 #define VCL_ALGORITHMS_CORE_BOX_BOX3_H
 
-#include <vclib/concepts/space/box.h>
-#include <vclib/space/core/box.h>
-#include <vclib/space/core/polygon.h>
-#include <vclib/space/core/segment.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 #include <stdexcept>
 
