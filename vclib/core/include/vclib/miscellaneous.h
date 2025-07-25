@@ -29,6 +29,7 @@
 #include "misc/iterators.h"
 #include "misc/logger.h"
 #include "misc/nested_initializer_lists.h"
+#include "misc/pair.h"
 #include "misc/parallel.h"
 #include "misc/shuffle.h"
 #include "misc/string.h"
