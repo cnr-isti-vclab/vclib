@@ -25,7 +25,7 @@
 
 #include "box.h"
 
-#include <vclib/concepts/space/sphere.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 

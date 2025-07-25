@@ -23,11 +23,10 @@
 #ifndef VCL_SPACE_CORE_POLYGON_H
 #define VCL_SPACE_CORE_POLYGON_H
 
+#include "point.h"
 #include "triangle.h"
 
-#include <vclib/concepts/range.h>
-#include <vclib/concepts/space/polygon.h>
-#include <vclib/space/core/point.h>
+#include <vclib/concepts.h>
 
 #include <ranges>
 #include <vector>

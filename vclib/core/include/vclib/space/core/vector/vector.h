@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_CORE_VECTOR_VECTOR_H
 #define VCL_SPACE_CORE_VECTOR_VECTOR_H
 
-#include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts.h>
 #include <vclib/exceptions.h>
 #include <vclib/serialization.h>
 #include <vclib/types.h>

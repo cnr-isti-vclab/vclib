@@ -25,7 +25,7 @@
 
 #include "point.h"
 
-#include <vclib/concepts/space/segment.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 
