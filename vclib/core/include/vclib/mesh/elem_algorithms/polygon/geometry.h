@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CORE_POLYGON_GEOMETRY_H
-#define VCL_ALGORITHMS_CORE_POLYGON_GEOMETRY_H
+#ifndef VCL_MESH_ELEM_ALGORITHMS_POLYGON_GEOMETRY_H
+#define VCL_MESH_ELEM_ALGORITHMS_POLYGON_GEOMETRY_H
 
 #include <vclib/concepts.h>
 #include <vclib/space/core.h>
@@ -185,4 +185,4 @@ auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CORE_POLYGON_GEOMETRY_H
+#endif // VCL_MESH_ELEM_ALGORITHMS_POLYGON_GEOMETRY_H

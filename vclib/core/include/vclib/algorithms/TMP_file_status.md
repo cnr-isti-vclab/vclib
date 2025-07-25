@@ -30,5 +30,5 @@
 - [x] polygon/core2.h
 - [x] polygon/create.h
 - [x] polygon/ear_cut.h
-- [ ] polygon/geometry.h
+- [x] polygon/geometry.h
 - [x] polygon/projection.h
