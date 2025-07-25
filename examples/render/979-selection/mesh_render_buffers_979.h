@@ -91,6 +91,8 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     bgfx::TextureHandle mReadBackTex = BGFX_INVALID_HANDLE;
     bgfx::TextureHandle mComputeWriteTex = BGFX_INVALID_HANDLE;
 
+    std::array<uint16_t, 2> mSelectionTexSize = {0, 0};
+
 
 public:
     MeshRenderBuffers979() = default;
@@ -190,8 +192,20 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
+    std::array<uint16_t, 2> getSelectionTexSize() {
+        if (mSelectionTexSize[0] == 0) {
+            uint32_t maxTexSize = bgfx::getCaps()->limits.maxTextureSize;
+            mSelectionTexSize[0] = (uint16_t)std::min(maxTexSize, Base::numVerts());
+            mSelectionTexSize[1] = (uint16_t)std::ceil(double(Base::numVerts()) / double(mSelectionTexSize[0]));
+        }
+        return mSelectionTexSize;
+    }
+
+    uint vertexNumber() {
+        return Base::numVerts();
+    }
+
     void calculateSelection(
-        uint vertexNumber,
         const bgfx::ViewId viewId,
         const bgfx::ViewId blitViewId,
         Box3d              bbox) const
@@ -205,7 +219,7 @@ public:
                 .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
                 .end();
             uint selectedVerticesBufferSize =
-                uint(ceil(double(vertexNumber) / 32.0));
+                uint(ceil(double(Base::numVerts()) / 32.0));
             std::vector<uint> zeros(selectedVerticesBufferSize, 0);
             non_const_this->mSelectedVerticesBuffer.createForCompute(
                 &zeros[0],
@@ -217,11 +231,12 @@ public:
                 bgfx::Access::ReadWrite
             );
         }
+        non_const_this->getSelectionTexSize();
         if(!bgfx::isValid(mReadBackTex)) {
-            non_const_this->mReadBackTex = bgfx::createTexture2D((uint16_t)vertexNumber, (uint16_t)1, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
+            non_const_this->mReadBackTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
         }
         if(!bgfx::isValid(mComputeWriteTex)) {
-            non_const_this->mComputeWriteTex = bgfx::createTexture2D((uint16_t)vertexNumber, (uint16_t)1, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_COMPUTE_WRITE);
+            non_const_this->mComputeWriteTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_COMPUTE_WRITE);
         }
         if (!mVertexPositionsBuffer.isValid()) {
             std::cout << "Invalid vertex positions" << std::endl;
@@ -242,11 +257,11 @@ public:
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<ComputeProgram::DRAWABLE_SELECTION>(),
-            vertexNumber,
+            Base::numVerts(),
             1,
             1);
 
-        bgfx::blit(blitViewId, mReadBackTex, 0, 0, mComputeWriteTex, 0, 0, vertexNumber, 1);
+        bgfx::blit(blitViewId, mReadBackTex, 0, 0, mComputeWriteTex, 0, 0, mSelectionTexSize[0], mSelectionTexSize[1]);
         non_const_this->mSelectionCalculated = true;
     }
 

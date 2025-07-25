@@ -39,12 +39,12 @@ class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
     bool mViewIdInit = false;
     bgfx::ViewId mOffScreenId;
 
+    vcl::uint mVertNum;
+
     uint64_t mCurrentFrame = 0;
 
-    size_t   mTexSize;
-    uint8_t* read_to;
+    uint8_t* read_to = NULL;
     uint32_t read_to_size;
-    uint32_t read_to_byte_size;
 
     bool     mAwaitingRead = false;
     bool     mAvailable    = false;
@@ -61,28 +61,10 @@ public:
     using vcl::PlainDrawer<DerivedDrawer>::PlainDrawer;
     using Base = vcl::PlainDrawer<DerivedDrawer>;
 
-    void setTexSize(size_t sz)
-    {
-        mTexSize = sz;
-        bgfx::TextureInfo tInfo;
-        bgfx::calcTextureSize(
-            tInfo,
-            mTexSize,
-            1,
-            1,
-            false,
-            false,
-            1,
-            bgfx::TextureFormat::Enum::RGBA8);
-        read_to_byte_size = tInfo.storageSize;
-        read_to_size      = read_to_byte_size;
-        read_to           = (uint8_t*) malloc(read_to_byte_size);
-        for (vcl::uint i=0; i < read_to_size; i++) {
-            read_to[i] = 0;
-        }
+    void setMRB(const vcl::MeshRenderBuffers979<vcl::TriMesh>* mrb) { 
+        mMRB = const_cast<vcl::MeshRenderBuffers979<vcl::TriMesh>*>(mrb);
+        mVertNum = mMRB->vertexNumber();
     }
-
-    void setMRB(const vcl::MeshRenderBuffers979<vcl::TriMesh>* mrb) { mMRB = const_cast<vcl::MeshRenderBuffers979<vcl::TriMesh>*>(mrb); }
 
     void setBbox(const vcl::Box3d& box) { bbox = box; }
 
@@ -93,6 +75,24 @@ public:
         if(!mViewIdInit) {
             auto &ctx = vcl::Context::instance();
             //mOffScreenId = ctx.requestViewId();
+            mViewIdInit = true;
+        }
+
+        if(read_to == NULL) {
+            std::array<uint16_t, 2> texSize = mMRB->getSelectionTexSize();
+            bgfx::TextureInfo texInfo;
+            bgfx::calcTextureSize(
+                texInfo,
+                texSize[0],
+                texSize[1],
+                1,
+                false,
+                false,
+                1,
+                bgfx::TextureFormat::RGBA8
+            );
+            read_to_size = texInfo.storageSize;
+            read_to = (uint8_t*)malloc(read_to_size);
         }
 
         mCurrentFrame++;
@@ -102,7 +102,7 @@ public:
             mAwaitingRead = true;
             mAvailable    = false;
             mStringValid  = false;
-            mMRB->calculateSelection(mTexSize, viewId, viewId, bbox);
+            mMRB->calculateSelection(viewId, viewId, bbox);
             mAvailabilityWait =
                 bgfx::readTexture(mMRB->getReadBackTexture(), (void*) read_to);
             mString = "";
@@ -116,6 +116,9 @@ public:
         if (mAvailable) {
             if (!mStringValid) {
                 for (vcl::uint index = 0; index < read_to_size / 4; index++) {
+                    if (index >= mVertNum) {
+                        break;
+                    }
                     mString += std::to_string(index) + std::string(": ") +
                                std::to_string(read_to[4 * index]) +
                                std::string(", ") +
@@ -131,6 +134,10 @@ public:
             ImGui::TextUnformatted(mString.c_str());
         }
         ImGui::End();
+    }
+
+    ~ImGuiTextureGetter979() {
+        free(read_to);
     }
 };
 

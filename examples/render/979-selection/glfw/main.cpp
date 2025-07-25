@@ -82,12 +82,11 @@ int main(void)
         std::make_shared<vcl::DrawableObjectVector>();
     tw.setDrawableObjectVector(vec);
 
-    vcl::DrawableMeshBGFX979<vcl::TriMesh> msh = getDrawableMesh979("cube_poly.ply");
+    vcl::DrawableMeshBGFX979<vcl::TriMesh> msh = getDrawableMesh979();
 
     tw.pushDrawableObject(std::move(msh));
     std::shared_ptr<const vcl::DrawableMeshBGFX979<vcl::TriMesh>> mshptr = std::dynamic_pointer_cast<const vcl::DrawableMeshBGFX979<vcl::TriMesh>>(tw.drawableObjectVector().at(0));
 
-    tw.setTexSize(mshptr->vertexNumber());
     tw.setMRB(&mshptr->getMRB());
     tw.setBbox(mshptr->getBbox());
 
