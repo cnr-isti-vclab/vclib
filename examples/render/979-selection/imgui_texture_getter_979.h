@@ -36,8 +36,7 @@
 template<typename DerivedDrawer>
 class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
 {
-    bool mViewIdInit = false;
-    bgfx::ViewId mOffScreenId;
+    bgfx::ViewId mOffScreenId = BGFX_INVALID_VIEW;
 
     vcl::uint mVertNum;
 
@@ -72,10 +71,9 @@ public:
     {
         Base::onDraw(viewId);
 
-        if(!mViewIdInit) {
+        if(mOffScreenId == BGFX_INVALID_VIEW) {
             auto &ctx = vcl::Context::instance();
-            //mOffScreenId = ctx.requestViewId();
-            mViewIdInit = true;
+            mOffScreenId = ctx.requestViewId();
         }
 
         if(read_to == NULL) {
@@ -102,7 +100,7 @@ public:
             mAwaitingRead = true;
             mAvailable    = false;
             mStringValid  = false;
-            mMRB->calculateSelection(viewId, viewId, bbox);
+            mMRB->calculateSelection(viewId, mOffScreenId, bbox);
             mAvailabilityWait =
                 bgfx::readTexture(mMRB->getReadBackTexture(), (void*) read_to);
             mString = "";
@@ -138,6 +136,10 @@ public:
 
     ~ImGuiTextureGetter979() {
         free(read_to);
+        auto& ctx = vcl::Context::instance();
+        if (mOffScreenId != BGFX_INVALID_VIEW) {
+            ctx.releaseViewId(mOffScreenId);
+        }
     }
 };
 
