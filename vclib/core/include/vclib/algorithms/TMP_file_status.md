@@ -2,23 +2,23 @@
 
 ## Root level headers
 - [x] bounding_box.h
-- [ ] box.h
+- [x] box.h
 - [x] create.h
-- [ ] distance.h
+- [x] distance.h
 - [x] fitting.h
-- [ ] intersection.h
-- [ ] polygon.h
+- [x] intersection.h
+- [x] polygon.h
 - [x] stat.h
-- [ ] transform.h
+- [x] transform.h
 - [x] visibility.h
 
 ## box/
 - [x] box/box3.h
 
 ## distance/
-- [ ] distance/element.h
-- [ ] distance/functions.h
-- [ ] distance/misc.h
+- [x] distance/element.h
+- [x] distance/functions.h
+- [x] distance/misc.h
 
 ## intersection/
 - [ ] intersection/element.h
