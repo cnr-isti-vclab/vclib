@@ -87,9 +87,7 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     Uniform mSelectionBoxuniform =
         Uniform("u_selectionBox", bgfx::UniformType::Vec4);
-    Uniform mWorkgroupSizeUniform = Uniform("u_workgroupSize", bgfx::UniformType::Vec4);
-    Uniform mVertexCountUniform = Uniform("u_vertexCount", bgfx::UniformType::Vec4);
-    Uniform mMaxTexSizeUniform = Uniform("u_maxTexSize", bgfx::UniformType::Vec4);
+    Uniform mWorkgroupSizeAndVertexCountUniform = Uniform("u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
 
     bgfx::TextureHandle mReadBackTex = BGFX_INVALID_HANDLE;
     bgfx::TextureHandle mComputeWriteTex = BGFX_INVALID_HANDLE;
@@ -266,12 +264,8 @@ public:
             float(bbox.center().x() + bboxSize.x() / 2),
             float(bbox.center().y() + bboxSize.y() / 2)};
         mSelectionBoxuniform.bind((void*) temp);
-        float temp2[] = {vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]),vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]),vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]),0.f};
-        float temp3[] = {vcl::Uniform::uintBitsToFloat(Base::numVerts()),0.f,0.f,0.f};
-        float temp4[] = {vcl::Uniform::uintBitsToFloat(mSelectionTexSize[0]), vcl::Uniform::uintBitsToFloat(mSelectionTexSize[1]), 0.f, 0.f};
-        mWorkgroupSizeUniform.bind((void*)temp2);
-        mVertexCountUniform.bind((void*)temp3);
-        mMaxTexSizeUniform.bind((void*)temp4);
+        float temp2[] = {vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]), vcl::Uniform::uintBitsToFloat(Base::numVerts())};
+        mWorkgroupSizeAndVertexCountUniform.bind((void*)temp2);
         auto& pm = Context::instance().programManager();
         bgfx::dispatch(
             viewId,

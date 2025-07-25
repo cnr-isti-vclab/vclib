@@ -29,13 +29,8 @@ BUFFER_RW(vertex_selected, vec4, 4);   // is vertex selected? 1 bit per vertex..
 
 IMAGE2D_WO(tex_selection, rgba8, 7);
 
-// When the texture is no longer needed for debugging purposes we can remove u_maxTexSize and IMAGE2D_WO
-// and we can put u_vertexCount and u_workgroupSize in the same vec4 uniform (since the first one only has one useful dimension and the other only has three useful dimensions)
-
-uniform vec4 u_vertexCount;
 uniform vec4 u_selectionBox;
-uniform vec4 u_workgroupSize;
-uniform vec4 u_maxTexSize;
+uniform vec4 u_workgroupSizeAndVertexCount;
 
 /* TODO: Clearly you'll have to check the coordinates in view space... 
 * (i imagine the selection box "lives" on the view plane)
@@ -44,9 +39,8 @@ uniform vec4 u_maxTexSize;
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
-    uint vertexCount = floatBitsToUint(u_vertexCount[0]);
-    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSize[0]), floatBitsToUint(u_workgroupSize[1]), floatBitsToUint(u_workgroupSize[2]));
-    uint maxTexSizeX = floatBitsToUint(u_maxTexSize.x);
+    uint vertexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
+    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
     uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
     if(pointId >= vertexCount) {
         return;
@@ -105,9 +99,10 @@ void main()
                 vertex_selected[bufferIndex].x,
                 vertex_selected[bufferIndex].y,
                 vertex_selected[bufferIndex].z,
-                uintBitsToFloat(newValue)
+                newValue
             );
             break;
     }
-    imageStore(tex_selection, ivec2(pointId%maxTexSizeX, pointId/maxTexSizeX), uintABGRToVec4Color((floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)));
+    uint texSizeX = uint(imageSize(tex_selection).x);
+    imageStore(tex_selection, ivec2(pointId%texSizeX, pointId/texSizeX), uintABGRToVec4Color((floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)));
 }
