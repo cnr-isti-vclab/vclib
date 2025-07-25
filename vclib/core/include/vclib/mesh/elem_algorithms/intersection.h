@@ -20,13 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CORE_INTERSECTION_ELEMENT_H
-#define VCL_ALGORITHMS_CORE_INTERSECTION_ELEMENT_H
+#ifndef VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
+#define VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
 
-#include "misc.h"
-
-#include <vclib/algorithms/core/polygon.h>
-
+#include <vclib/algorithms/core.h>
 #include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
@@ -202,4 +199,4 @@ bool intersect(const Sphere<SScalar>& sphere, const FaceType& f)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CORE_INTERSECTION_ELEMENT_H
+#endif // VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
