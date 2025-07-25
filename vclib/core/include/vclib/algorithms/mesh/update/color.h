@@ -24,10 +24,11 @@
 #define VCL_ALGORITHMS_MESH_UPDATE_COLOR_H
 
 #include <vclib/algorithms/mesh/stat.h>
-#include <vclib/math/perlin_noise.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/core/color.h>
-#include <vclib/views/mesh.h>
+
+#include <vclib/math.h>
+#include <vclib/mesh.h>
+#include <vclib/space/core.h>
+#include <vclib/views.h>
 
 #include <set>
 

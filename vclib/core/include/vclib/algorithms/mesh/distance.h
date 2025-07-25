@@ -24,12 +24,12 @@
 #define VCL_ALGORITHMS_MESH_DISTANCE_H
 
 #include <vclib/algorithms/mesh/point_sampling.h>
-#include <vclib/math/histogram.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/logger.h>
-#include <vclib/misc/parallel.h>
-#include <vclib/space/complex/grid.h>
-#include <vclib/views/pointers.h>
+
+#include <vclib/math.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
+#include <vclib/views.h>
 
 namespace vcl {
 
