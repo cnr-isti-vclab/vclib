@@ -20,10 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ELEM_ALGORITHMS_H
-#define VCL_MESH_ELEM_ALGORITHMS_H
+#ifndef VCL_MESH_ELEM_ALGORITHMS_POLYGON_H
+#define VCL_MESH_ELEM_ALGORITHMS_POLYGON_H
 
-#include "elem_algorithms/polygon.h"
-#include "elem_algorithms/visibility.h"
+#include "polygon/ear_cut.h"
 
-#endif // VCL_MESH_ELEM_ALGORITHMS_H
+#endif // VCL_MESH_ELEM_ALGORITHMS_POLYGON_H
