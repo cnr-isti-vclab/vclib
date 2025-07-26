@@ -27,9 +27,9 @@
 #include "mesh/elem_algorithms.h"
 #include "mesh/elements.h"
 #include "mesh/iterators/face/edge_adj_face_iterator.h"
+#include "mesh/mesh.h"
 #include "mesh/mesh_components.h"
 #include "mesh/mesh_containers.h"
-#include "mesh/mesh.h"
 #include "mesh/requirements.h"
 #include "mesh/tmp_meshes.h"
 
