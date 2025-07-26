@@ -27,6 +27,7 @@
 #include "concepts/iterators.h"
 #include "concepts/pointers.h"
 #include "concepts/range.h"
+#include "concepts/types.h"
 
 /**
  * @defgroup concepts Concepts

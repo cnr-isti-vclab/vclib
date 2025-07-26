@@ -29,6 +29,5 @@
 #include "concepts/range.h"
 #include "concepts/serialization.h"
 #include "concepts/space.h"
-#include "concepts/types.h"
 
 #endif // VCL_CONCEPTS_H
