@@ -22,7 +22,7 @@
 
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 
-#include <vclib/math/transform.h>
+#include <vclib/algorithms/core.h>
 #include <vclib/render/viewer/matrix.h>
 
 namespace vcl {

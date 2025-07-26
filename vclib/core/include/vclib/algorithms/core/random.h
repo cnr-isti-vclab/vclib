@@ -37,7 +37,7 @@ namespace vcl {
  * @param gen
  * @return
  *
- * @ingroup math
+ * @ingroup algorithms_core
  */
 template<Point3Concept PointType>
 PointType randomTriangleBarycentricCoordinate(std::mt19937& gen)
