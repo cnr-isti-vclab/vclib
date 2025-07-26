@@ -23,8 +23,6 @@
 #ifndef VCL_MATH_MIN_MAX_H
 #define VCL_MATH_MIN_MAX_H
 
-#include <vclib/concepts.h>
-
 #include <algorithm>
 
 namespace vcl {

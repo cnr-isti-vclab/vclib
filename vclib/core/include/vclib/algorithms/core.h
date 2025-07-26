@@ -31,6 +31,7 @@
 #include "core/fitting.h"
 #include "core/intersection.h"
 #include "core/polygon.h"
+#include "core/random.h"
 #include "core/stat.h"
 #include "core/transform.h"
 #include "core/visibility.h"
