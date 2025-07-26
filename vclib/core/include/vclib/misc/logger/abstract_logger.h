@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_LOGGER_ABSTRACT_LOGGER_H
 #define VCL_MISC_LOGGER_ABSTRACT_LOGGER_H
 
-#include <vclib/concepts.h>
+#include <vclib/types.h>
 
 #include <string>
 
@@ -239,6 +239,22 @@ public:
      */
     virtual void progress(uint n) = 0;
 };
+
+/**
+ * @brief The LoggerConcept is satisfied if the type T is a valid Logger type.
+ *
+ * A valid Logger type must inherit from AbstractLogger, and therefore it must
+ * provide all the pure virtual member functions to control the logging
+ * behavior.
+ *
+ * @note The NullLogger class does satisfy this concept, by providing all the
+ * required member functions as no-op.
+ *
+ * @ingroup lib_concepts
+ * @ingroup miscellaneous
+ */
+template<typename T>
+concept LoggerConcept = std::derived_from<RemoveRef<T>, AbstractLogger>;
 
 } // namespace vcl
 

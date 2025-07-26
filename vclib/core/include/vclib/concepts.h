@@ -23,7 +23,6 @@
 #ifndef VCL_CONCEPTS_H
 #define VCL_CONCEPTS_H
 
-#include "concepts/logger.h"
 #include "concepts/mesh.h"
 #include "concepts/range.h"
 #include "concepts/space.h"
