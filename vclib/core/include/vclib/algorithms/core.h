@@ -27,6 +27,7 @@
 #include "core/box.h"
 #include "core/create.h"
 #include "core/distance.h"
+#include "core/fibonacci.h"
 #include "core/fitting.h"
 #include "core/intersection.h"
 #include "core/polygon.h"
