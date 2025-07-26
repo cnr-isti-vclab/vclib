@@ -26,6 +26,7 @@
 #include "concepts/const_correctness.h"
 #include "concepts/iterators.h"
 #include "concepts/pointers.h"
+#include "concepts/polymorphism.h"
 #include "concepts/range.h"
 #include "concepts/types.h"
 

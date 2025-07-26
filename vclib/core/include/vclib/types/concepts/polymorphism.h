@@ -20,10 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_POLYMORPHISM_H
-#define VCL_CONCEPTS_POLYMORPHISM_H
-
-#include <vclib/types.h>
+#ifndef VCL_TYPES_CONCEPTS_POLYMORPHISM_H
+#define VCL_TYPES_CONCEPTS_POLYMORPHISM_H
 
 #include <concepts>
 #include <memory>
@@ -81,4 +79,4 @@ concept Cloneable = requires (T&& obj) {
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_POLYMORPHISM_H
+#endif // VCL_TYPES_CONCEPTS_POLYMORPHISM_H
