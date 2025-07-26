@@ -20,33 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_TYPES_CONCEPTS_H
+#define VCL_TYPES_CONCEPTS_H
 
-#include "types/concepts.h"
-#include "types/const_correctness.h"
-#include "types/filter_types.h"
-#include "types/inheritance.h"
-#include "types/mesh_components.h"
-#include "types/mesh_containers.h"
-#include "types/mesh_elements.h"
-#include "types/pointers.h"
-#include "types/templated_type_wrapper.h"
-#include "types/type_wrapper.h"
-#include "types/variadic_templates.h"
-#include "types/views.h"
+#include "concepts/range.h"
 
 /**
- * @defgroup types Types
+ * @defgroup concepts Concepts
+ * @ingroup types
  *
- * @brief The Types module defines all the utility definitions, types, classes
- * and type traits that are common in the library.
+ * @brief List of concepts used in the library. They allow to discriminate
+ * between all the defined types of the library, and to constrain the input
+ * argument types of templated functions and classes.
  *
- * This module does not depend on any other module of the library, and it is
- * used by all the other modules to define the types that are used in the
- * library.
+ * The library provides both generic utility concepts about iterators, pointers
+ * or const correctness management, and concepts for types that have been
+ * defined in this library. We separate these categories in two subgroups: @ref
+ * util_concepts and @ref lib_concepts.
  *
- * You can access all the types of VCLib by including `#include <vclib/types.h>`
+ * This module depends on the @ref types module.
+ *
+ * You can access all the concepts of VCLib by including `#include
+ * <vclib/concepts.h>`
  */
 
-#endif // VCL_TYPES_H
+/**
+ * @defgroup util_concepts Utility Concepts
+ * @ingroup concepts
+ *
+ * @brief List of utility concepts used in the library, that allows to check and
+ * constrain iterators, pointers, const correctness management, ranges, etc.
+ */
+
+/**
+ * @defgroup lib_concepts Library Concepts
+ * @ingroup concepts
+ *
+ * @brief List of concepts for types that have been defined in this library.
+ * They are grouped in different categories depending on the involved types.
+ */
+
+#endif // VCL_TYPES_CONCEPTS_H

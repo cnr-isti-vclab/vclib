@@ -24,6 +24,5 @@
 #define VCL_CONCEPTS_RANGE_H
 
 #include "ranges/mesh.h"
-#include "ranges/range.h"
 
 #endif // VCL_CONCEPTS_RANGE_H

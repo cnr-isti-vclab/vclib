@@ -4,7 +4,6 @@
 #define VCLIB_CONCEPTS_RANGES_MESH_%EL_U%_RANGE_H
 
 #include <vclib/concepts/pointers.h>
-#include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/mesh/elements/%EL%.h>
 
 namespace vcl {

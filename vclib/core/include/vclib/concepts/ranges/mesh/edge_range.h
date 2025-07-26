@@ -25,7 +25,6 @@
 
 #include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/concepts/pointers.h>
-#include <vclib/concepts/ranges/range.h>
 
 namespace vcl {
 

@@ -26,7 +26,6 @@
 #include "point.h"
 
 #include <vclib/concepts/iterators.h>
-#include <vclib/concepts/ranges/range.h>
 
 #include <vclib/types.h>
 

@@ -27,7 +27,6 @@
 
 #include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/iterators.h>
-#include <vclib/concepts/ranges/range.h>
 
 #include <vector>
 
