@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MATH_FIBONACCI_H
-#define VCL_MATH_FIBONACCI_H
+#ifndef VCL_ALGORITHMS_CORE_FIBONACCI_H
+#define VCL_ALGORITHMS_CORE_FIBONACCI_H
 
 #include <vclib/concepts.h>
 
@@ -64,7 +64,7 @@ PointType sphericalFibonacciPoint(uint i, uint n)
  * @param[in] n: The number of points to generate.
  * @return A vector of `n` points distributed in a unit sphere.
  *
- * @ingroup math
+ * @ingroup algorithms_core
  */
 template<Point3Concept PointType>
 std::vector<PointType> sphericalFibonacciPointSet(uint n)
@@ -80,4 +80,4 @@ std::vector<PointType> sphericalFibonacciPointSet(uint n)
 
 } // namespace vcl
 
-#endif // VCL_MATH_FIBONACCI_H
+#endif // VCL_ALGORITHMS_CORE_FIBONACCI_H
