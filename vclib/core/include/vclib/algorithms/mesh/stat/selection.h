@@ -24,7 +24,6 @@
 #define VCL_ALGORITHMS_MESH_STAT_SELECTION_H
 
 #include <vclib/mesh.h>
-#include <vclib/views.h>
 
 namespace vcl {
 

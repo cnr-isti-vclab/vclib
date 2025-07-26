@@ -26,7 +26,7 @@
 #include "element.h"
 
 #include <vclib/concepts.h>
-#include <vclib/types/view.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

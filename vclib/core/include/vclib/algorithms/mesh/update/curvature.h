@@ -34,7 +34,6 @@
 #include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 #include <vclib/space/core.h>
-#include <vclib/views.h>
 
 #include <mutex>
 

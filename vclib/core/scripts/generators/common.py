@@ -55,7 +55,7 @@ def replace_element_strings(file_string, element):
 
 def replace_header(file_string):
     # Read in the file
-    with open('../../../scripts/templates/header.txt', 'r') as file :
+    with open('../../../scripts/templates/headings.txt', 'r') as file :
         header = file.read()
 
     file_string = file_string.replace('%HEADER%', header)

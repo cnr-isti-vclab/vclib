@@ -25,7 +25,6 @@
 
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/views.h>
 
 // This example demonstrates various ways to iterate over mesh elements:
 // 1. Basic iteration over vertices and faces

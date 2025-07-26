@@ -28,7 +28,6 @@
 #include <vclib/math.h>
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
-#include <vclib/views.h>
 
 #include <set>
 
