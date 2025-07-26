@@ -24,7 +24,8 @@
 #define VCL_CONCEPTS_RANGES_MESH_VERTEX_RANGE_H
 
 #include <vclib/concepts/mesh/elements/vertex.h>
-#include <vclib/concepts/pointers.h>
+
+#include <vclib/types.h>
 
 namespace vcl {
 

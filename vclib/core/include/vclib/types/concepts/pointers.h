@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_POINTERS_H
-#define VCL_CONCEPTS_POINTERS_H
+#ifndef VCL_TYPES_CONCEPTS_POINTERS_H
+#define VCL_TYPES_CONCEPTS_POINTERS_H
 
-#include <vclib/types.h>
+#include <vclib/types/pointers.h>
 
 #include <memory>
 
@@ -101,4 +101,4 @@ concept IsAnyPointerToConst = IsPointerToConst<T> || IsSharedPointerToConst<T>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_POINTERS_H
+#endif // VCL_TYPES_CONCEPTS_POINTERS_H

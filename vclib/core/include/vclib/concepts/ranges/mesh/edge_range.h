@@ -24,7 +24,8 @@
 #define VCL_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
 
 #include <vclib/concepts/mesh/elements/edge.h>
-#include <vclib/concepts/pointers.h>
+
+#include <vclib/types.h>
 
 namespace vcl {
 

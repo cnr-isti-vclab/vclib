@@ -25,6 +25,7 @@
 
 #include "concepts/const_correctness.h"
 #include "concepts/iterators.h"
+#include "concepts/pointers.h"
 #include "concepts/range.h"
 
 /**
