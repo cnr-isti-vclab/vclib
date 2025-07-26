@@ -20,49 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
-#define VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
+#ifndef VCL_MESH_VIEWS_ELEMENTS_FACE_H
+#define VCL_MESH_VIEWS_ELEMENTS_FACE_H
 
 #include <vclib/concepts.h>
-#include <vclib/types.h>
 
 namespace vcl::views {
-
 namespace detail {
 
-struct AdjVerticesView
+struct FacesView
 {
-    constexpr AdjVerticesView() = default;
+    constexpr FacesView() = default;
 
-    template<comp::HasAdjacentVertices R>
-    friend constexpr auto operator|(R&& r, AdjVerticesView)
+    template<FaceMeshConcept R>
+    friend constexpr auto operator|(R&& r, FacesView)
     {
-        if constexpr (IsPointer<R>)
-            return r->adjVertices();
-        else
-            return r.adjVertices();
+        return r.faces();
     }
 };
 
 } // namespace detail
 
 /**
- * @brief The adjVertices view allows to obtain a view that access to the
- * adjacent vertices of the object that has been piped. Every object having type
- * that satisfies the HasAdjacentVertices concept can be applied to this view.
+ * @brief A view that allows to iterate overt the Face elements of an object.
  *
- * Resulting adjacent faces will be pointers to Vertices, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the
- * `notNull` view:
- *
- * @code{.cpp}
- * for (auto* av: v | views::adjVertices | views::notNull) { ... }
- * @endcode
+ * This view can be applied to objects having type that satisfies the
+ * FaceMeshConcept.
  *
  * @ingroup views
  */
-inline constexpr detail::AdjVerticesView adjVertices;
+inline constexpr detail::FacesView faces;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
+#endif // VCL_MESH_VIEWS_ELEMENTS_FACE_H

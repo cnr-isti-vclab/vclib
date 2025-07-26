@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_POLYGON_GEOMETRY_H
 #define VCL_MESH_ELEM_ALGORITHMS_POLYGON_GEOMETRY_H
 
+#include <vclib/mesh/views.h>
+
 #include <vclib/concepts.h>
 #include <vclib/space/core.h>
 #include <vclib/views.h>

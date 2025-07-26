@@ -20,49 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_FACES_H
-#define VCL_VIEWS_MESH_COMPONENTS_ADJ_FACES_H
+#ifndef VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
+#define VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
 
 #include <vclib/concepts.h>
-#include <vclib/types.h>
 
 namespace vcl::views {
-
 namespace detail {
 
-struct AdjFacesView
+struct VerticesView
 {
-    constexpr AdjFacesView() = default;
+    constexpr VerticesView() = default;
 
-    template<comp::HasAdjacentFaces R>
-    friend constexpr auto operator|(R&& r, AdjFacesView)
+    template<MeshConcept R>
+    friend constexpr auto operator|(R&& r, VerticesView)
     {
-        if constexpr (IsPointer<R>)
-            return r->adjFaces();
-        else
-            return r.adjFaces();
+        return r.vertices();
+    }
+
+    template<comp::HasVertexReferences R>
+    friend constexpr auto operator|(R&& r, VerticesView)
+    {
+        return r.vertices();
     }
 };
 
 } // namespace detail
 
 /**
- * @brief The adjFaces view allows to obtain a view that access to the adjacent
- * faces of the object that has been piped. Every object having type that
- * satisfies the HasAdjacentFaces concept can be applied to this view.
+ * @brief A view that allows to iterate over the Vertex elements of an object.
  *
- * Resulting adjacent faces will be pointers to Faces, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the
- * `notNull` view:
- *
- * @code{.cpp}
- * for (auto* af: f | views::adjFaces | views::notNull) { ... }
- * @endcode
+ * This view can be applied to objects having type that satisfies one of the
+ * following concepts:
+ * - MeshConcept
+ * - HasVertexReferences
  *
  * @ingroup views
  */
-inline constexpr detail::AdjFacesView adjFaces;
+inline constexpr detail::VerticesView vertices;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_ADJ_FACES_H
+#endif // VCL_MESH_VIEWS_ELEMENTS_VERTEX_H

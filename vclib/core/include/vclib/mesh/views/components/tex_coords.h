@@ -20,45 +20,50 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_ELEMENTS_VERTEX_H
-#define VCL_VIEWS_MESH_ELEMENTS_VERTEX_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
+#define VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
 
 #include <vclib/concepts.h>
+#include <vclib/types.h>
+
+#include <ranges>
 
 namespace vcl::views {
+
 namespace detail {
 
-struct VerticesView
-{
-    constexpr VerticesView() = default;
+inline constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->texCoord();
+    else
+        return p.texCoord();
+};
 
-    template<MeshConcept R>
-    friend constexpr auto operator|(R&& r, VerticesView)
+struct TexCoordsView
+{
+    constexpr TexCoordsView() = default;
+
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, TexCoordsView)
     {
-        return r.vertices();
+        using ElemType = std::ranges::range_value_t<R>;
+        return std::forward<R>(r) | std::views::transform(texCoord);
     }
 
-    template<comp::HasVertexReferences R>
-    friend constexpr auto operator|(R&& r, VerticesView)
+    template<comp::HasWedgeTexCoords R>
+    friend constexpr auto operator|(R&& r, TexCoordsView)
     {
-        return r.vertices();
+        if constexpr (IsPointer<R>)
+            return r->wedgeTexCoords();
+        else
+            return r.wedgeTexCoords();
     }
 };
 
 } // namespace detail
 
-/**
- * @brief A view that allows to iterate over the Vertex elements of an object.
- *
- * This view can be applied to objects having type that satisfies one of the
- * following concepts:
- * - MeshConcept
- * - HasVertexReferences
- *
- * @ingroup views
- */
-inline constexpr detail::VerticesView vertices;
+inline constexpr detail::TexCoordsView texCoords;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_ELEMENTS_VERTEX_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H

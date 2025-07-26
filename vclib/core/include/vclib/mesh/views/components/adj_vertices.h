@@ -20,75 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_SELECTION_H
-#define VCL_VIEWS_MESH_COMPONENTS_SELECTION_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
+#define VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
 
 #include <vclib/concepts.h>
 #include <vclib/types.h>
-
-#include <ranges>
 
 namespace vcl::views {
 
 namespace detail {
 
-inline constexpr auto isSelected = [](auto&& e) -> decltype(auto) {
-    if constexpr (vcl::IsPointer<decltype(e)>) {
-        return e->selected();
-    }
-    else {
-        return e.selected();
-    }
-};
-
-inline constexpr auto isNotSelected = [](auto&& e) -> decltype(auto) {
-    if constexpr (vcl::IsPointer<decltype(e)>) {
-        return !e->selected();
-    }
-    else {
-        return !e.selected();
-    }
-};
-
-struct SelectionView
+struct AdjVerticesView
 {
-    constexpr SelectionView() = default;
+    constexpr AdjVerticesView() = default;
 
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, SelectionView)
+    template<comp::HasAdjacentVertices R>
+    friend constexpr auto operator|(R&& r, AdjVerticesView)
     {
-        return std::forward<R>(r) | std::views::transform(isSelected);
-    }
-};
-
-struct SelectedView
-{
-    constexpr SelectedView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, SelectedView)
-    {
-        return std::forward<R>(r) | std::views::filter(isSelected);
-    }
-};
-
-struct NotSelectedView
-{
-    constexpr NotSelectedView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, NotSelectedView)
-    {
-        return std::forward<R>(r) | std::views::filter(isNotSelected);
+        if constexpr (IsPointer<R>)
+            return r->adjVertices();
+        else
+            return r.adjVertices();
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::SelectionView   selection;
-inline constexpr detail::SelectedView    selected;
-inline constexpr detail::NotSelectedView notSelected;
+/**
+ * @brief The adjVertices view allows to obtain a view that access to the
+ * adjacent vertices of the object that has been piped. Every object having type
+ * that satisfies the HasAdjacentVertices concept can be applied to this view.
+ *
+ * Resulting adjacent faces will be pointers to Vertices, that may be `nullptr`.
+ * If you are interested only on the not-null pointers, you can use the
+ * `notNull` view:
+ *
+ * @code{.cpp}
+ * for (auto* av: v | views::adjVertices | views::notNull) { ... }
+ * @endcode
+ *
+ * @ingroup views
+ */
+inline constexpr detail::AdjVerticesView adjVertices;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_SELECTION_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H

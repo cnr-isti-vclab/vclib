@@ -32,5 +32,6 @@
 #include "mesh/mesh_containers.h"
 #include "mesh/requirements.h"
 #include "mesh/tmp_meshes.h"
+#include "mesh/views.h"
 
 #endif // VCL_MESH_H

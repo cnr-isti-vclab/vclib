@@ -23,7 +23,6 @@
 #ifndef VCL_VIEWS_H
 #define VCL_VIEWS_H
 
-#include "views/mesh.h"
 #include "views/pointers.h"
 
 /**

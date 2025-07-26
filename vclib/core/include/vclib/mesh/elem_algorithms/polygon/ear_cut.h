@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_POLYGON_EAR_CUT_H
 #define VCL_MESH_ELEM_ALGORITHMS_POLYGON_EAR_CUT_H
 
+#include <vclib/mesh/views.h>
+
 #include <vclib/algorithms/core.h>
 #include <vclib/concepts.h>
 #include <vclib/views.h>

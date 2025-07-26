@@ -20,37 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_ELEMENTS_FACE_H
-#define VCL_VIEWS_MESH_ELEMENTS_FACE_H
+#ifndef VCL_MESH_VIEWS_ELEMENTS_EDGE_H
+#define VCL_MESH_VIEWS_ELEMENTS_EDGE_H
 
 #include <vclib/concepts.h>
 
 namespace vcl::views {
 namespace detail {
 
-struct FacesView
+struct EdgesView
 {
-    constexpr FacesView() = default;
+    constexpr EdgesView() = default;
 
-    template<FaceMeshConcept R>
-    friend constexpr auto operator|(R&& r, FacesView)
+    template<EdgeMeshConcept R>
+    friend constexpr auto operator|(R&& r, EdgesView)
     {
-        return r.faces();
+        return r.edges();
     }
 };
 
 } // namespace detail
 
 /**
- * @brief A view that allows to iterate overt the Face elements of an object.
+ * @brief A view that allows to iterate overt the Edge elements of an object.
  *
  * This view can be applied to objects having type that satisfies the
- * FaceMeshConcept.
+ * EdgeMeshConcept.
  *
  * @ingroup views
  */
-inline constexpr detail::FacesView faces;
+inline constexpr detail::EdgesView edges;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_ELEMENTS_FACE_H
+#endif // VCL_MESH_VIEWS_ELEMENTS_EDGE_H

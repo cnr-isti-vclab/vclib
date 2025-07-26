@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_TEX_COORDS_H
-#define VCL_VIEWS_MESH_COMPONENTS_TEX_COORDS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
+#define VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
 
 #include <vclib/concepts.h>
 #include <vclib/types.h>
@@ -32,38 +32,28 @@ namespace vcl::views {
 
 namespace detail {
 
-inline constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
+inline constexpr auto quality = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
-        return p->texCoord();
+        return p->quality();
     else
-        return p.texCoord();
+        return p.quality();
 };
 
-struct TexCoordsView
+struct QualityView
 {
-    constexpr TexCoordsView() = default;
+    constexpr QualityView() = default;
 
     template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, TexCoordsView)
+    friend constexpr auto operator|(R&& r, QualityView)
     {
-        using ElemType = std::ranges::range_value_t<R>;
-        return std::forward<R>(r) | std::views::transform(texCoord);
-    }
-
-    template<comp::HasWedgeTexCoords R>
-    friend constexpr auto operator|(R&& r, TexCoordsView)
-    {
-        if constexpr (IsPointer<R>)
-            return r->wedgeTexCoords();
-        else
-            return r.wedgeTexCoords();
+        return std::forward<R>(r) | std::views::transform(quality);
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::TexCoordsView texCoords;
+inline constexpr detail::QualityView quality;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_TEX_COORDS_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
