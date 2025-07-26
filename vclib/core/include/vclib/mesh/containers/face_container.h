@@ -31,7 +31,6 @@
 #include <vclib/mesh/elements/face_components.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/views.h>
 
 namespace vcl::mesh {
 

@@ -26,7 +26,6 @@
 #include <vclib/algorithms/core.h>
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
-#include <vclib/views.h>
 
 /**
  * @defgroup export_buffer Export Mesh to Buffer Algorithms

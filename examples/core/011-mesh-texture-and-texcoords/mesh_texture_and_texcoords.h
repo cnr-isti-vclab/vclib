@@ -26,7 +26,6 @@
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/views.h>
 
 // This example demonstrates how to work with textures and texture coordinates:
 // 1. Loading meshes with vertex texture coordinates

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_VIEW_H
-#define VCL_TYPES_VIEW_H
+#ifndef VCL_TYPES_VIEWS_VIEW_H
+#define VCL_TYPES_VIEWS_VIEW_H
 
 #define ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
 #if __has_include(<zip_view.hpp>)
@@ -83,4 +83,4 @@ protected:
 
 } // namespace vcl
 
-#endif // VCL_TYPES_VIEW_H
+#endif // VCL_TYPES_VIEWS_VIEW_H

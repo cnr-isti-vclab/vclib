@@ -25,8 +25,6 @@
 
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
-#include <vclib/types.h>
-#include <vclib/views.h>
 
 /**
  * @defgroup append_replace_to_buffer Append/Replace Mesh Data to Existing

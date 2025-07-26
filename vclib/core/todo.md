@@ -2,7 +2,7 @@
 
 - Major (to do in order):
   - [x] Delete all the algorithms in core/algorithms/core that are related to mesh, and move them to an inner mesh/algorithms directory
-  - [ ] Remove all the views in core/views that are related to mesh, and move them to an inner mesh/views directory
+  - [x] Remove all the views in core/views that are related to mesh, and move them to an inner mesh/views directory
   - [ ] Rethink the concepts in core/concepts, moving everything that is a related to a data structure in the header that contains the definition of that data structure
 
 - General:

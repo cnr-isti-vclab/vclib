@@ -27,7 +27,6 @@
 
 #include <vclib/concepts.h>
 #include <vclib/space/core.h>
-#include <vclib/views.h>
 
 namespace vcl {
 

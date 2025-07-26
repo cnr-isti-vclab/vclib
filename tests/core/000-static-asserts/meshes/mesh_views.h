@@ -2,7 +2,6 @@
 #define MESH_VIEWS_H
 
 #include <vclib/meshes.h>
-#include <vclib/views.h>
 
 #include <ranges>
 

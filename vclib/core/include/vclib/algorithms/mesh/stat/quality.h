@@ -25,7 +25,6 @@
 
 #include <vclib/math.h>
 #include <vclib/mesh.h>
-#include <vclib/views.h>
 
 #include <numeric>
 
