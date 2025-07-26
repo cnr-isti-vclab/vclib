@@ -26,7 +26,6 @@
 #include "concepts/logger.h"
 #include "concepts/mesh.h"
 #include "concepts/range.h"
-#include "concepts/serialization.h"
 #include "concepts/space.h"
 
 #endif // VCL_CONCEPTS_H

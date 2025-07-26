@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SERIALIZATION_H
-#define VCL_CONCEPTS_SERIALIZATION_H
+#ifndef VCL_SERIALIZATION_CONCEPTS_H
+#define VCL_SERIALIZATION_CONCEPTS_H
 
 #include <vclib/types.h>
 
@@ -74,4 +74,4 @@ concept Serializable = requires (T&& obj, std::ostream& os, std::istream& is) {
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_SERIALIZATION_H
+#endif // VCL_SERIALIZATION_CONCEPTS_H
