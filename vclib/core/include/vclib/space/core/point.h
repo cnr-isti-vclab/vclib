@@ -704,6 +704,50 @@ bool epsilonEquals(
 }
 
 /**
+ * @brief Returns the minimum between two points.
+ *
+ * This function returns a point that contains the minimum value between each
+ * component of the two input points.
+ *
+ * @param[in] p1: The first point.
+ * @param[in] p2: The second point.
+ * @return The point containing the minimum value between the two input points.
+ */
+template<typename Scalar, uint N>
+constexpr Point<Scalar, N> min(
+    const Point<Scalar, N>& p1,
+    const Point<Scalar, N>& p2)
+{
+    Point<Scalar, N> p;
+    for (size_t i = 0; i < p.DIM; i++) {
+        p[i] = std::min(p1[i], p2[i]);
+    }
+    return p;
+}
+
+/**
+ * @brief Returns the maximum between two points.
+ *
+ * This function returns a point that contains the maximum value between each
+ * component of the two input points.
+ *
+ * @param[in] p1: The first point.
+ * @param[in] p2: The second point.
+ * @return The point containing the maximum value between the two input points.
+ */
+template<typename Scalar, uint N>
+constexpr Point<Scalar, N> max(
+    const Point<Scalar, N>& p1,
+    const Point<Scalar, N>& p2)
+{
+    Point<Scalar, N> p;
+    for (size_t i = 0; i < p.DIM; i++) {
+        p[i] = std::max(p1[i], p2[i]);
+    }
+    return p;
+}
+
+/**
  * @brief Stream insertion operator for Point objects.
  *
  * This operator allows Point objects to be printed to output streams in a

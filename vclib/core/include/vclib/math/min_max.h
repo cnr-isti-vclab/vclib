@@ -111,50 +111,6 @@ constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail)
     return max(max(head0, head1), tail...);
 }
 
-/**
- * @brief Returns the minimum between two points.
- *
- * This function returns a point that contains the minimum value between each
- * component of the two input points.
- *
- * @param[in] p1: The first point.
- * @param[in] p2: The second point.
- * @return The point containing the minimum value between the two input points.
- *
- * @ingroup math
- */
-template<PointConcept PointType>
-constexpr auto min(const PointType& p1, const PointType& p2)
-{
-    PointType p;
-    for (size_t i = 0; i < p.DIM; i++) {
-        p[i] = std::min(p1[i], p2[i]);
-    }
-    return p;
-}
-
-/**
- * @brief Returns the maximum between two points.
- *
- * This function returns a point that contains the maximum value between each
- * component of the two input points.
- *
- * @param[in] p1: The first point.
- * @param[in] p2: The second point.
- * @return The point containing the maximum value between the two input points.
- *
- * @ingroup math
- */
-template<PointConcept PointType>
-constexpr auto max(const PointType& p1, const PointType& p2)
-{
-    PointType p;
-    for (size_t i = 0; i < p.DIM; i++) {
-        p[i] = std::max(p1[i], p2[i]);
-    }
-    return p;
-}
-
 } // namespace vcl
 
 #endif // VCL_MATH_MIN_MAX_H

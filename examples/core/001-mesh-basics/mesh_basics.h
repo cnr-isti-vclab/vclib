@@ -23,6 +23,7 @@
 #ifndef MESH_BASICS_H
 #define MESH_BASICS_H
 
+#include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
