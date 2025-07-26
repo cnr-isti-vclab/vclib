@@ -23,7 +23,7 @@
 #ifndef VCL_CONCEPTS_SPACE_BIT_SET_H
 #define VCL_CONCEPTS_SPACE_BIT_SET_H
 
-#include <vclib/concepts/const_correctness.h>
+#include <vclib/types.h>
 
 #include <concepts>
 

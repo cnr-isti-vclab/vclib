@@ -25,8 +25,7 @@
 
 #include "component.h"
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/iterators.h>
+#include <vclib/types.h>
 
 #include <vector>
 

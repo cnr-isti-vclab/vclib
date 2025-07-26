@@ -23,8 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/iterators.h>
+#include <vclib/types.h>
 
 #include <vector>
 

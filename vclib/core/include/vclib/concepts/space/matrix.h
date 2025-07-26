@@ -25,7 +25,7 @@
 
 #include "array.h"
 
-#include <vclib/concepts/const_correctness.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

@@ -23,7 +23,7 @@
 #ifndef VCL_CONCEPTS_POLYMORPHISM_H
 #define VCL_CONCEPTS_POLYMORPHISM_H
 
-#include "const_correctness.h"
+#include <vclib/types.h>
 
 #include <concepts>
 #include <memory>

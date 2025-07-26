@@ -25,8 +25,9 @@
 
 #include "component.h"
 
-#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/space/color.h>
+
+#include <vclib/types.h>
 
 #include <vector>
 

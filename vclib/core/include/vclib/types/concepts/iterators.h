@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_ITERATORS_H
-#define VCL_CONCEPTS_ITERATORS_H
+#ifndef VCL_TYPES_CONCEPTS_ITERATORS_H
+#define VCL_TYPES_CONCEPTS_ITERATORS_H
 
 #include <iterator>
 #include <type_traits>
@@ -81,4 +81,4 @@ concept IteratesOverPointer =
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_ITERATORS_H
+#endif // VCL_TYPES_CONCEPTS_ITERATORS_H

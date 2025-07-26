@@ -23,8 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/iterators.h>
+#include <vclib/types.h>
 
 #include <string>
 

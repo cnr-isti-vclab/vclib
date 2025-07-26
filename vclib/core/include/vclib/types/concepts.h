@@ -23,6 +23,8 @@
 #ifndef VCL_TYPES_CONCEPTS_H
 #define VCL_TYPES_CONCEPTS_H
 
+#include "concepts/const_correctness.h"
+#include "concepts/iterators.h"
 #include "concepts/range.h"
 
 /**

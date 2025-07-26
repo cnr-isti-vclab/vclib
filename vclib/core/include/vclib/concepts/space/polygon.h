@@ -25,8 +25,6 @@
 
 #include "point.h"
 
-#include <vclib/concepts/iterators.h>
-
 #include <vclib/types.h>
 
 namespace vcl {

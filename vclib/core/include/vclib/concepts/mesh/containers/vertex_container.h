@@ -23,8 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_CONTAINERS_VERTEX_CONTAINER_H
 #define VCL_CONCEPTS_MESH_CONTAINERS_VERTEX_CONTAINER_H
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/iterators.h>
+#include <vclib/types.h>
 
 #include <vector>
 

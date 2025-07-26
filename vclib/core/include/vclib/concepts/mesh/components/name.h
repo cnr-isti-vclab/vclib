@@ -23,7 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
 
-#include <vclib/concepts/const_correctness.h>
+#include <vclib/types.h>
 
 #include <string>
 

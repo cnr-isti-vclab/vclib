@@ -23,9 +23,6 @@
 #ifndef VCL_CONCEPTS_SPACE_ARRAY_H
 #define VCL_CONCEPTS_SPACE_ARRAY_H
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/iterators.h>
-
 #include <vclib/types.h>
 
 #include <vector>

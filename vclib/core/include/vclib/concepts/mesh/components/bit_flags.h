@@ -23,7 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/space/bit_set.h>
 
 #include <vclib/types.h>

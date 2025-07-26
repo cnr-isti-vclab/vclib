@@ -3,8 +3,7 @@
 #ifndef VCL_CONCEPTS_MESH_CONTAINERS_%EL_U%_CONTAINER_H
 #define VCL_CONCEPTS_MESH_CONTAINERS_%EL_U%_CONTAINER_H
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/iterators.h>
+#include <vclib/types.h>
 
 #include <vector>
 

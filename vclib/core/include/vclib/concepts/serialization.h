@@ -23,7 +23,7 @@
 #ifndef VCL_CONCEPTS_SERIALIZATION_H
 #define VCL_CONCEPTS_SERIALIZATION_H
 
-#include "const_correctness.h"
+#include <vclib/types.h>
 
 #include <istream>
 #include <ostream>

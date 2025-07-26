@@ -23,9 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_SAMPLER_SAMPLER_CONCEPT_H
 #define VCL_SPACE_COMPLEX_SAMPLER_SAMPLER_CONCEPT_H
 
-#include <vclib/concepts/const_correctness.h>
-
-#include <vclib/types/base.h>
+#include <vclib/types.h>
 
 namespace vcl {
 
