@@ -113,6 +113,23 @@ using Sphered = Sphere<double>;
 template<Point3Concept P, typename T>
 Sphere(P, T) -> Sphere<typename P::ScalarType>;
 
+/* Concepts */
+
+/**
+ * @brief A concept representing a Sphere.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Sphere class having any scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the SphereConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept SphereConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Sphere<typename RemoveRef<T>::ScalarType>>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_SPHERE_H

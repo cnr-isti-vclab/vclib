@@ -31,7 +31,6 @@
 #include "space/matrix.h"
 #include "space/point.h"
 #include "space/principal_curvature.h"
-#include "space/sphere.h"
 #include "space/tex_coord.h"
 #include "space/tex_coord_indexed.h"
 #include "space/texture.h"
