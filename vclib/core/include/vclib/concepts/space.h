@@ -30,7 +30,6 @@
 #include "space/image.h"
 #include "space/matrix.h"
 #include "space/point.h"
-#include "space/polygon.h"
 #include "space/principal_curvature.h"
 #include "space/segment.h"
 #include "space/sphere.h"
