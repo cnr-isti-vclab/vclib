@@ -59,6 +59,7 @@
     - [ ] weights input argument of all the function should be a range
 - Space:
   - [ ] add assert(!isNull()) on Box member functions like volume()
+  - [ ] get rid of TriangleWrapper data structure
   - [ ] improve documentation for Grid data structures
 - Misc:
   - [ ] implement non-static member functions for FileInfo class
