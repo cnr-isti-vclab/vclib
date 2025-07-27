@@ -20,45 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_RANGES_MESH_VERTEX_RANGE_H
-#define VCL_CONCEPTS_RANGES_MESH_VERTEX_RANGE_H
+#ifndef VCL_MESH_CONCEPTS_H
+#define VCL_MESH_CONCEPTS_H
 
-#include <vclib/concepts/mesh/elements/vertex.h>
+#include "concepts/ranges.h"
 
-#include <vclib/types.h>
-
-namespace vcl {
-
-/**
- * @brief The VertexRangeConcept evaluates to true if Rng is a valid Range on
- * Vertices.
- *
- * This means that Rng must be a Range of VertexConcept: the iterated type must
- * satisfy the VertexConcept.
- *
- * @ingroup vertex_concepts
- */
-template<typename Rng>
-concept VertexRangeConcept =
-    Range<Rng> &&
-    VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
-
-/**
- * @brief The VertexPointerRangeConcept evaluates to true if Rng is a valid
- * Range on Vertex Pointers.
- *
- * This means that Rng must be a Range of pointers to a type that satisfy the
- * VertexConcept.
- *
- * @ingroup vertex_concepts
- */
-template<typename Rng>
-concept VertexPointerRangeConcept =
-    Range<Rng> &&
-    IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    VertexConcept<typename std::decay_t<
-        RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>>>;
-
-} // namespace vcl
-
-#endif // VCL_CONCEPTS_RANGES_MESH_VERTEX_RANGE_H
+#endif // VCL_MESH_CONCEPTS_H

@@ -24,7 +24,6 @@
 #define VCL_CONCEPTS_H
 
 #include "concepts/mesh.h"
-#include "concepts/range.h"
 #include "concepts/space.h"
 
 #endif // VCL_CONCEPTS_H

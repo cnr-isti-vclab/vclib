@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_RANGES_MESH_H
-#define VCL_CONCEPTS_RANGES_MESH_H
+#ifndef VCL_MESH_CONCEPTS_RANGES_H
+#define VCL_MESH_CONCEPTS_RANGES_H
 
-#include "mesh/edge_range.h"
-#include "mesh/face_range.h"
-#include "mesh/vertex_range.h"
+#include "ranges/edge_range.h"
+#include "ranges/face_range.h"
+#include "ranges/vertex_range.h"
 
-#endif // VCL_CONCEPTS_RANGES_MESH_H
+#endif // VCL_MESH_CONCEPTS_RANGES_H

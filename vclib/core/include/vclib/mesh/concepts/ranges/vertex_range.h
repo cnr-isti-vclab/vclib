@@ -20,45 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_RANGES_MESH_FACE_RANGE_H
-#define VCL_CONCEPTS_RANGES_MESH_FACE_RANGE_H
+#ifndef VCL_MESH_CONCEPTS_RANGES_VERTEX_RANGE_H
+#define VCL_MESH_CONCEPTS_RANGES_VERTEX_RANGE_H
 
-#include <vclib/concepts/mesh/elements/face.h>
+#include <vclib/concepts/mesh/elements/vertex.h>
 
 #include <vclib/types.h>
 
 namespace vcl {
 
 /**
- * @brief The FaceRangeConcept evaluates to true if Rng is a valid Range
- * on Faces.
+ * @brief The VertexRangeConcept evaluates to true if Rng is a valid Range on
+ * Vertices.
  *
- * This means that Rng must be a Range of FaceConcept: the iterated type
- * must satisfy the FaceConcept.
+ * This means that Rng must be a Range of VertexConcept: the iterated type must
+ * satisfy the VertexConcept.
  *
- * @ingroup face_concepts
+ * @ingroup vertex_concepts
  */
 template<typename Rng>
-concept FaceRangeConcept =
+concept VertexRangeConcept =
     Range<Rng> &&
-    FaceConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+    VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
- * @brief The FacePointerRangeConcept evaluates to true if Rng is a valid
- * Range on Face Pointers.
+ * @brief The VertexPointerRangeConcept evaluates to true if Rng is a valid
+ * Range on Vertex Pointers.
  *
  * This means that Rng must be a Range of pointers to a type that satisfy the
- * FaceConcept.
+ * VertexConcept.
  *
- * @ingroup face_concepts
+ * @ingroup vertex_concepts
  */
 template<typename Rng>
-concept FacePointerRangeConcept =
+concept VertexPointerRangeConcept =
     Range<Rng> &&
     IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    FaceConcept<typename std::decay_t<
+    VertexConcept<typename std::decay_t<
         RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_RANGES_MESH_FACE_RANGE_H
+#endif // VCL_MESH_CONCEPTS_RANGES_VERTEX_RANGE_H

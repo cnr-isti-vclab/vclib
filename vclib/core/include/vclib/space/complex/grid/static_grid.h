@@ -28,6 +28,7 @@
 #include "regular_grid.h"
 
 #include <vclib/concepts.h>
+#include <vclib/mesh.h>
 
 #include <set>
 #include <vector>

@@ -20,45 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
-#define VCL_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
+#ifndef VCL_MESH_CONCEPTS_RANGES_FACE_RANGE_H
+#define VCL_MESH_CONCEPTS_RANGES_FACE_RANGE_H
 
-#include <vclib/concepts/mesh/elements/edge.h>
+#include <vclib/concepts/mesh/elements/face.h>
 
 #include <vclib/types.h>
 
 namespace vcl {
 
 /**
- * @brief The EdgeRangeConcept evaluates to true if Rng is a valid Range
- * on Edges.
+ * @brief The FaceRangeConcept evaluates to true if Rng is a valid Range
+ * on Faces.
  *
- * This means that Rng must be a Range of EdgeConcept: the iterated type
- * must satisfy the EdgeConcept.
+ * This means that Rng must be a Range of FaceConcept: the iterated type
+ * must satisfy the FaceConcept.
  *
- * @ingroup edge_concepts
+ * @ingroup face_concepts
  */
 template<typename Rng>
-concept EdgeRangeConcept =
+concept FaceRangeConcept =
     Range<Rng> &&
-    EdgeConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+    FaceConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
- * @brief The EdgePointerRangeConcept evaluates to true if Rng is a valid
- * Range on Edge Pointers.
+ * @brief The FacePointerRangeConcept evaluates to true if Rng is a valid
+ * Range on Face Pointers.
  *
  * This means that Rng must be a Range of pointers to a type that satisfy the
- * EdgeConcept.
+ * FaceConcept.
  *
- * @ingroup edge_concepts
+ * @ingroup face_concepts
  */
 template<typename Rng>
-concept EdgePointerRangeConcept =
+concept FacePointerRangeConcept =
     Range<Rng> &&
     IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    EdgeConcept<typename std::decay_t<
+    FaceConcept<typename std::decay_t<
         RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
+#endif // VCL_MESH_CONCEPTS_RANGES_FACE_RANGE_H
