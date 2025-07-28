@@ -79,7 +79,7 @@ class Mesh : public Args...
     template<ElementConcept T>
     friend class mesh::ElementContainer;
 
-    template<uint ELEM_ID, typename MeshType, typename... Comps>
+    template<uint ELEM_ID, typename MeshType, comp::ComponentConcept... Comps>
     friend class Element;
 
     // Predicate structures
