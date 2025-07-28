@@ -245,10 +245,10 @@ public:
         non_const_this->getSelectionTexSize();
         non_const_this->getWorkgroupSize();
         if(!bgfx::isValid(mReadBackTex)) {
-            non_const_this->mReadBackTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
+            non_const_this->mReadBackTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::R8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
         }
         if(!bgfx::isValid(mComputeWriteTex)) {
-            non_const_this->mComputeWriteTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_COMPUTE_WRITE);
+            non_const_this->mComputeWriteTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::R8, BGFX_TEXTURE_COMPUTE_WRITE);
         }
         if (!mVertexPositionsBuffer.isValid()) {
             std::cout << "Invalid vertex positions" << std::endl;
@@ -256,7 +256,7 @@ public:
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mSelectedVerticesBuffer.bindCompute(4, bgfx::Access::ReadWrite);
-        bgfx::setImage(7, mComputeWriteTex, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA8);
+        bgfx::setImage(7, mComputeWriteTex, 0, bgfx::Access::Write, bgfx::TextureFormat::R8);
         vcl::Point3d bboxSize = bbox.size();
         float        temp[]   = {
             float(bbox.center().x()),

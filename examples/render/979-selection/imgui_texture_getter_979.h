@@ -86,19 +86,17 @@ public:
                 false,
                 false,
                 1,
-                bgfx::TextureFormat::RGBA8
+                bgfx::TextureFormat::R8
             );
             read_to_size = texInfo.storageSize;
             read_to = (uint8_t*)malloc(read_to_size);
         }
 
-        mCurrentFrame++;
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Begin("Read texture button", nullptr);
         if (ImGui::Button("Calculate selection and read texture")) {
             mAwaitingRead = true;
             mAvailable    = false;
-            mStringValid  = false;
             mMRB->calculateSelection(viewId, mOffScreenId, bbox);
             mAvailabilityWait =
                 bgfx::readTexture(mMRB->getReadBackTexture(), (void*) read_to);
@@ -113,7 +111,7 @@ public:
         if (mAvailable) {
             std::string label = "##vert";
             ImGui::Separator();
-            for (vcl::uint index = 0; index < read_to_size / 4; index++) {
+            for (vcl::uint index = 0; index < read_to_size; index++) {
                 if (index >= mVertNum) {
                     break;
                 }
@@ -129,6 +127,7 @@ public:
             }
         }
         ImGui::End();
+        ++mCurrentFrame;
     }
 
     ~ImGuiTextureGetter979() {
