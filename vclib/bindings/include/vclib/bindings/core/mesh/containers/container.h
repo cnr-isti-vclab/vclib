@@ -23,7 +23,7 @@
 #ifndef VCL_BINDINGS_CORE_MESH_CONTAINERS_CONTAINER_H
 #define VCL_BINDINGS_CORE_MESH_CONTAINERS_CONTAINER_H
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/mesh.h>
 
 #include <pybind11/pybind11.h>
 

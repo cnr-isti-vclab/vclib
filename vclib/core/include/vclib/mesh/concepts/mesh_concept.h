@@ -20,14 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_MESH_CONCEPT_H
-#define VCL_CONCEPTS_MESH_MESH_CONCEPT_H
+#ifndef VCL_MESH_CONCEPTS_MESH_CONCEPT_H
+#define VCL_MESH_CONCEPTS_MESH_CONCEPT_H
 
-#include "components/component.h"
-#include "containers/edge_container.h"
-#include "containers/face_container.h"
-#include "containers/vertex_container.h"
-#include "elements/element.h"
+#include <vclib/concepts.h>
 
 namespace vcl {
 
@@ -240,4 +236,4 @@ concept PolygonMeshConcept = FaceMeshConcept<T> && HasPolygons<T>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_MESH_CONCEPT_H
+#endif // VCL_MESH_CONCEPTS_MESH_CONCEPT_H
