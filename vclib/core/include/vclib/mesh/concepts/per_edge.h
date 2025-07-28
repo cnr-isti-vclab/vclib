@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_CONCEPTS_PER_EDGE_H
 #define VCL_MESH_CONCEPTS_PER_EDGE_H
 
+#include "mesh_concept.h"
+
 #include <vclib/mesh/containers/edge_container.h>
 
 #include <vclib/concepts.h>

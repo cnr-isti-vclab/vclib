@@ -25,7 +25,6 @@
 
 #include "containers/element_container.h"
 #include "containers/face_container.h"
-#include "containers/vertex_container.h"
 
 /**
  * @defgroup containers_concepts Containers Concepts

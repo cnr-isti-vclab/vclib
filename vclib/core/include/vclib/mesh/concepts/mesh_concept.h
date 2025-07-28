@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_CONCEPTS_MESH_CONCEPT_H
 #define VCL_MESH_CONCEPTS_MESH_CONCEPT_H
 
+#include <vclib/mesh/containers/vertex_container.h>
+
 #include <vclib/concepts.h>
 
 namespace vcl {
