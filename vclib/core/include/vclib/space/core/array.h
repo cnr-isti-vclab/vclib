@@ -23,9 +23,8 @@
 #ifndef VCL_SPACE_CORE_ARRAY_H
 #define VCL_SPACE_CORE_ARRAY_H
 
-#include <vclib/concepts/ranges/range.h>
-#include <vclib/concepts/space/array.h>
-#include <vclib/misc/nested_initializer_lists.h>
+#include <vclib/concepts.h>
+#include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 #include <vclib/types.h>
 

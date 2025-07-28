@@ -26,8 +26,8 @@
 #include "mesh_components.h"
 #include "mesh_containers.h"
 
-#include <vclib/algorithms/core/transform.h>
-#include <vclib/concepts/mesh.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 
@@ -78,7 +78,7 @@ class Mesh : public Args...
     template<ElementConcept T>
     friend class mesh::ElementContainer;
 
-    template<uint ELEM_ID, typename MeshType, typename... Comps>
+    template<uint ELEM_ID, typename MeshType, comp::ComponentConcept... Comps>
     friend class Element;
 
     // Predicate structures

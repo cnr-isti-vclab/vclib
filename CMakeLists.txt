@@ -43,11 +43,8 @@ option(VCLIB_INSTALL_MODULE_EXTERNAL "Install the external module" ON)
 option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
 option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
 
-# Build examples
-option(VCLIB_BUILD_EXAMPLES "Build examples" OFF)
-
-# Build tests
-option(VCLIB_BUILD_TESTS "Build tests" OFF)
+option(VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS
+    "Exclude examples and tests targets from the build" ON)
 
 # If true, the examples and tests of VCLib will be built just setting
 # the INCLUDE_PATH of the core module (no cmake targets).
@@ -95,20 +92,17 @@ if (VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY)
     set(VCLIB_CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vclib/core/include)
 endif()
 
-if (VCLIB_BUILD_EXAMPLES)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        VCLIB_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR})
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    VCLIB_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR})
 
-    add_subdirectory(${VCLIB_EXAMPLES_DIR})
-endif()
+add_subdirectory(${VCLIB_EXAMPLES_DIR})
 
-if (VCLIB_BUILD_TESTS)
-    include(CTest)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        VCLIB_TESTS_DIR ${VCLIB_TESTS_DIR})
+include(CTest)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    VCLIB_TESTS_DIR ${VCLIB_TESTS_DIR})
 
-    add_subdirectory(${VCLIB_TESTS_DIR})
-endif()
+add_subdirectory(${VCLIB_TESTS_DIR})
+
 
 # Install
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/LICENSE

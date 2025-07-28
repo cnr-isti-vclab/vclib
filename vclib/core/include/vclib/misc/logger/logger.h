@@ -26,6 +26,7 @@
 #include "abstract_logger.h"
 
 #include <vclib/misc/timer.h>
+
 #include <vclib/types.h>
 
 #include <cassert>

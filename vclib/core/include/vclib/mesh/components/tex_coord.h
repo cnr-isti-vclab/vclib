@@ -25,8 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/space/core/tex_coord_indexed.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
@@ -126,12 +126,11 @@ protected:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has TexCoord component available,
  * `false` otherwise.
  */
-bool isTexCoordAvailableOn(const ElementConcept auto& element)
+bool isTexCoordAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::TEX_COORD>(element);
 }

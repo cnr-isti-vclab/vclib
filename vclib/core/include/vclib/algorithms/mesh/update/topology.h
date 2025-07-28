@@ -24,7 +24,8 @@
 #define VCL_ALGORITHMS_MESH_UPDATE_TOPOLOGY_H
 
 #include <vclib/algorithms/mesh/sort.h>
-#include <vclib/mesh/requirements.h>
+
+#include <vclib/mesh.h>
 
 namespace vcl {
 

@@ -28,9 +28,10 @@
 #include "detail/face.h"
 #include "detail/vertex.h"
 
-#include <vclib/exceptions/io.h>
 #include <vclib/io/mesh/settings.h>
-#include <vclib/misc/logger.h>
+
+#include <vclib/exceptions.h>
+#include <vclib/miscellaneous.h>
 
 namespace vcl {
 

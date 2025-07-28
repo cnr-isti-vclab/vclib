@@ -1,8 +1,7 @@
 #ifndef MESH_VIEWS_H
 #define MESH_VIEWS_H
 
-#include <vclib/views/mesh.h>
-#include <vclib/views/pointers.h>
+#include <vclib/meshes.h>
 
 #include <ranges>
 
@@ -76,6 +75,31 @@ void meshViewsStaticAsserts()
             std::ranges::range<decltype(cm | vcl::views::faces)>,
             "The view returned by pipe operation cm | views::faces is not a "
             "valid range.");
+
+        auto&       f  = m.face(0);
+        const auto& cf = cm.face(0);
+
+        static_assert(
+            vcl::VertexRangeConcept<decltype(f.vertices() | vcl::views::deref)>,
+            "The view returned by f.vertices() is not a "
+            "VertexRangeConcept.");
+
+        static_assert(
+            vcl::VertexRangeConcept<
+                decltype(cf.vertices() | vcl::views::deref)>,
+            "The view returned by cf.vertices() is not a "
+            "VertexRangeConcept.");
+
+        // TODO: fix these
+        // static_assert(
+        //     vcl::VertexPointerRangeConcept<decltype(f.vertices())>,
+        //     "The view returned by f.vertices() is not a "
+        //     "VertexPointerRangeConcept.");
+
+        // static_assert(
+        //     vcl::VertexPointerRangeConcept<decltype(cf.vertices())>,
+        //     "The view returned by cf.vertices() is not a "
+        //     "VertexPointerRangeConcept.");
     }
 
     if constexpr (vcl::HasEdges<MeshType>) {

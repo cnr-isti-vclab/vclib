@@ -26,7 +26,8 @@
 #include "header.h"
 
 #include <vclib/io/write.h>
-#include <vclib/misc/tokenizer.h>
+
+#include <vclib/miscellaneous.h>
 
 namespace vcl::detail {
 

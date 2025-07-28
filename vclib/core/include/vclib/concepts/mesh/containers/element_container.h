@@ -23,8 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 #define VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
-#include <vclib/types/mesh_containers.h>
-#include <vclib/types/pointers.h>
+#include <vclib/types.h>
 
 namespace vcl::mesh {
 

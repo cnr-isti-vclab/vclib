@@ -26,7 +26,7 @@
 #include "file_info.h"
 #include "file_type.h"
 
-#include <vclib/concepts/mesh/elements/element.h>
+#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 #include <vclib/types.h>
 

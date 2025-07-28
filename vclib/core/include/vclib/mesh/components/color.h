@@ -25,8 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/color.h>
-#include <vclib/space/core/color.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
@@ -119,18 +119,17 @@ protected:
 /* Detector function to check if a class has Color available */
 
 /**
- * @brief Checks if the given Element/Mesh has Color component available.
+ * @brief Checks if the given Element has Color component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has Color component available, `false`
+ * @param[in] element: The element to check.
+ * @return `true` if the element has Color component available, `false`
  * otherwise.
  */
-bool isColorAvailableOn(const ElementOrMeshConcept auto& element)
+bool isColorAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::COLOR>(element);
 }

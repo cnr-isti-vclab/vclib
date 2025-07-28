@@ -26,16 +26,26 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/render/concepts/drawable_object.h>
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <QApplication>
+#ifdef VCLIB_WITH_IMGUI
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #endif
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
+#include <QApplication>
 #include <vclib/qt/mesh_viewer.h>
-#include <vclib/render/drawable/drawable_mesh.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
 #include <vclib/glfw/viewer_window.h>
+#endif
+
 #include <vclib/render/drawable/drawable_mesh.h>
+
+#if defined(VCLIB_RENDER_EXAMPLES_WITH_GLFW) && defined(VCLIB_WITH_IMGUI)
+using ImguiMeshViewer = vcl::RenderApp<
+    vcl::glfw::WindowManager,
+    vcl::Canvas,
+    vcl::imgui::ImGuiDrawer,
+    vcl::imgui::MeshViewerDrawerImgui>;
 #endif
 
 template<vcl::MeshConcept MeshType>
@@ -56,7 +66,11 @@ auto defaultViewer()
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
     return vcl::qt::MeshViewer();
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
+#ifdef VCLIB_WITH_IMGUI
+    return ImguiMeshViewer();
+#else  // VCLIB_WITH_IMGUI
     return vcl::glfw::ViewerWindow();
+#endif // VCLIB_WITH_IMGUI
 #endif
 }
 
@@ -81,6 +95,28 @@ void showMeshesOnViewer(
     viewer.show();
 }
 
+template<vcl::MeshConcept MeshTypes>
+void showMeshesOnViewer(
+    int                      argc,
+    char**                   argv,
+    auto&                    viewer,
+    std::vector<MeshTypes>&& meshes)
+{
+    std::shared_ptr<vcl::DrawableObjectVector> vector =
+        std::make_shared<vcl::DrawableObjectVector>();
+
+    for (auto&& mesh : meshes)
+        (pushMeshOnVector(vector, std::move(mesh)));
+
+    viewer.setDrawableObjectVector(vector);
+
+#if VCLIB_RENDER_EXAMPLES_WITH_GLFW
+    viewer.fitScene();
+#endif
+
+    viewer.show();
+}
+
 template<vcl::MeshConcept... MeshTypes>
 int showMeshesOnDefaultViewer(int argc, char** argv, MeshTypes&&... meshes)
 {
@@ -88,13 +124,33 @@ int showMeshesOnDefaultViewer(int argc, char** argv, MeshTypes&&... meshes)
     QApplication application(argc, argv);
 #endif
 
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
-    vcl::qt::MeshViewer viewer;
-#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
-    vcl::glfw::ViewerWindow viewer;
-#endif
+    auto viewer = defaultViewer();
 
     showMeshesOnViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
+
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    viewer.showMaximized();
+    return application.exec();
+#else
+    (void) argc; // unused
+    (void) argv;
+    return 0;
+#endif
+}
+
+template<vcl::MeshConcept MeshTypes>
+int showMeshesOnDefaultViewer(
+    int                      argc,
+    char**                   argv,
+    std::vector<MeshTypes>&& meshes)
+{
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    QApplication application(argc, argv);
+#endif
+
+    auto viewer = defaultViewer();
+
+    showMeshesOnViewer(argc, argv, viewer, std::move(meshes));
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();

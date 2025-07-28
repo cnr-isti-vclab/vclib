@@ -23,13 +23,8 @@
 #ifndef VCL_ALGORITHMS_CORE_BOUNDING_BOX_H
 #define VCL_ALGORITHMS_CORE_BOUNDING_BOX_H
 
-#include <vclib/concepts/iterators.h>
-#include <vclib/concepts/mesh/elements/edge.h>
-#include <vclib/concepts/range.h>
-#include <vclib/concepts/space/triangle.h>
-#include <vclib/space/core/box.h>
-#include <vclib/space/core/segment.h>
-#include <vclib/space/core/sphere.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 /**
  * @defgroup core_bounding_box Core Bounding Box Algorithms
@@ -39,11 +34,11 @@
  * @brief List of overloaded boundingBox functions that take in input an object
  * (or a Range of objects) and return its/their bounding box.
  *
- * You can access these algorithms by including
- * `#include <vclib/algorithms/core/bounding_box.h>`
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/core.h>`
  *
  * @note To compute the bounding box of a Mesh, use the `vcl::boundingBox`
- * function defined in `vclib/algorithms/mesh/stat/bounding_box.h`.
+ * function defined in `vclib/algorithms/mesh.h`.
  */
 
 namespace vcl {
@@ -139,145 +134,6 @@ auto boundingBox(const TriangleType& t)
     b.add(t.point(1));
     b.add(t.point(2));
 
-    return b;
-}
-
-/**
- * @brief Compute the bounding box of a vertex
- *
- * Given a vertex `v`, this function computes and returns the bounding
- * box of the vertex. The bounding box is represented by a `vcl::Box` object.
- *
- * @tparam VertexType: The type of the vertex. It must satisfy the
- * VertexConcept.
- *
- * @param[in] v: The input vertex to compute the bounding box of
- * @return The bounding box of the input vertex
- *
- * @ingroup core_bounding_box
- */
-template<VertexConcept VertexType>
-auto boundingBox(const VertexType& v)
-{
-    return Box<typename VertexType::PositionType>(v.position());
-}
-
-/**
- * @brief Compute the bounding box of a vertex pointer
- *
- * Given a pointer to a vertex `v`, this function computes and returns the
- * bounding box of the vertex. The bounding box is represented by a `vcl::Box`
- * object.
- *
- * @tparam VertexType: The type of the vertex. It must satisfy the
- * VertexConcept.
- *
- * @param[in] v: A pointer to the input vertex to compute the bounding box of
- * @return The bounding box of the input vertex
- *
- * @ingroup core_bounding_box
- */
-template<VertexConcept VertexType>
-auto boundingBox(const VertexType* v)
-{
-    return Box<typename VertexType::PositionType>(v->position());
-}
-
-/**
- * @brief Compute the bounding box of a face
- *
- * Given a face `f`, this function computes and returns the bounding box
- * of the face. The bounding box is represented by a `vcl::Box` object.
- *
- * @tparam FaceType: The type of the face. It must satisfy the FaceConcept.
- *
- * @param[in] f The input face to compute the bounding box of
- * @return The bounding box of the input face
- *
- * @ingroup core_bounding_box
- */
-template<FaceConcept FaceType>
-auto boundingBox(const FaceType& f)
-{
-    using VertexType = FaceType::VertexType;
-
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : f.vertices())
-        b.add(v->position());
-    return b;
-}
-
-/**
- * @brief Compute the bounding box of a face pointer
- *
- * Given a pointer to a face `f`, this function computes and returns the
- * bounding box of the face. The bounding box is represented by a `vcl::Box`
- * object.
- *
- * @tparam FaceType: The type of the face. It must satisfy the FaceConcept.
- *
- * @param[in] f: A pointer to the input face to compute the bounding box of
- * @return The bounding box of the input face
- *
- * @ingroup core_bounding_box
- */
-template<FaceConcept FaceType>
-auto boundingBox(const FaceType* f)
-{
-    using VertexType = FaceType::VertexType;
-
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : f->vertices())
-        b.add(v->position());
-    return b;
-}
-
-/**
- * @brief Compute the bounding box of an edge
- *
- * Given an edge `e`, this function computes and returns the bounding box
- * of the edge. The bounding box is represented by a `vcl::Box` object.
- *
- * @tparam EdgeType: The type of the edge. It must satisfy the EdgeConcept.
- *
- * @param[in] e: The input edge to compute the bounding box of
- * @return The bounding box of the input edge
- *
- * @ingroup core_bounding_box
- */
-template<EdgeConcept EdgeType>
-auto boundingBox(const EdgeType& e)
-{
-    using VertexType = EdgeType::VertexType;
-
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : e.vertices())
-        b.add(v->position());
-    return b;
-}
-
-/**
- * @brief Compute the bounding box of an edge pointer
- *
- * Given a pointer to an edge `e`, this function computes and returns the
- * bounding box of the edge. The bounding box is represented by a `vcl::Box`
- * object.
- *
- * @tparam EdgeType: The type of the edge. It must satisfy the EdgeConcept.
- * @param[in] e: A pointer to the input edge to compute the bounding box of
- *
- * @return The bounding box of the input edge
- *
- * @ingroup core_bounding_box
- */
-template<EdgeConcept EdgeType>
-auto boundingBox(const EdgeType* e)
-{
-    using VertexType = EdgeType::VertexType;
-
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : e->vertices())
-        b.add(v->position());
     return b;
 }
 

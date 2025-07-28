@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_CREATE_HEXAHEDRON_H
 #define VCL_ALGORITHMS_MESH_CREATE_HEXAHEDRON_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 

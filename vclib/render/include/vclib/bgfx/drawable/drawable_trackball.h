@@ -25,10 +25,10 @@
 
 #include "uniforms/drawable_trackball_uniforms.h"
 
+#include <vclib/algorithms/core.h>
 #include <vclib/bgfx/buffers.h>
-#include <vclib/math/transform.h>
 #include <vclib/render/drawable/drawable_object.h>
-#include <vclib/space/core/matrix.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 class DrawableTrackBall : public DrawableObject

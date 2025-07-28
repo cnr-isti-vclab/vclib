@@ -23,8 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_INTERSECTION_H
 #define VCL_ALGORITHMS_MESH_INTERSECTION_H
 
-#include <vclib/algorithms/core/intersection/element.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/mesh.h>
 
 /**
  * @defgroup intersection_mesh Mesh Intersection Algorithms

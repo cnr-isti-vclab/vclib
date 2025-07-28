@@ -26,7 +26,6 @@
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/space/core/array.h>
 
 // This example demonstrates how to export meshes to matrices and import
 // matrices back to meshes, including:

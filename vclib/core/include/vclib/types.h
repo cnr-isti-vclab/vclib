@@ -33,7 +33,7 @@
 #include "types/templated_type_wrapper.h"
 #include "types/type_wrapper.h"
 #include "types/variadic_templates.h"
-#include "types/view.h"
+#include "types/views.h"
 
 /**
  * @defgroup types Types
