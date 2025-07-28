@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
 
+#include "../concepts/per_face.h"
 #include "../containers/face_container.h"
 #include "element_requirements.h"
 

@@ -20,11 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_PER_FACE_H
-#define VCL_CONCEPTS_MESH_PER_FACE_H
+#ifndef VCL_MESH_CONCEPTS_PER_FACE_H
+#define VCL_MESH_CONCEPTS_PER_FACE_H
 
-#include "containers/face_container.h"
-#include "elements/face.h"
+#include <vclib/concepts.h>
 
 /**
  * @defgroup face_mesh_concepts FaceMesh Concepts
@@ -35,18 +34,6 @@
  */
 
 namespace vcl {
-
-template<typename MeshType>
-concept HasTriangles =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 3;
-
-template<typename MeshType>
-concept HasQuads =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 4;
-
-template<typename MeshType>
-concept HasPolygons =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == -1;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face AdjacentEdges
@@ -273,4 +260,4 @@ concept HasPerFaceWedgeTexCoords =
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_PER_FACE_H
+#endif // VCL_MESH_CONCEPTS_PER_FACE_H

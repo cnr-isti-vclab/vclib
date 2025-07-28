@@ -23,12 +23,25 @@
 #ifndef VCL_CONCEPTS_MESH_MESH_CONCEPT_H
 #define VCL_CONCEPTS_MESH_MESH_CONCEPT_H
 
+#include "components/component.h"
 #include "containers/edge_container.h"
+#include "containers/face_container.h"
 #include "containers/vertex_container.h"
 #include "elements/element.h"
-#include "per_face.h"
 
 namespace vcl {
+
+template<typename MeshType>
+concept HasTriangles =
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 3;
+
+template<typename MeshType>
+concept HasQuads =
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 4;
+
+template<typename MeshType>
+concept HasPolygons =
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == -1;
 
 namespace mesh {
 
