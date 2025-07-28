@@ -112,24 +112,27 @@ public:
             }
         }
         if (mAvailable) {
-            if (!mStringValid) {
-                for (vcl::uint index = 0; index < read_to_size / 4; index++) {
-                    if (index >= mVertNum) {
-                        break;
-                    }
-                    mString += std::to_string(index) + std::string(": ") +
-                               std::to_string(read_to[4 * index]) +
-                               std::string(", ") +
-                               std::to_string(read_to[4 * index + 1]) +
-                               std::string(", ") +
-                               std::to_string(read_to[4 * index + 2]) +
-                               std::string(", ") +
-                               std::to_string(read_to[4 * index + 3]) +
-                               std::string("\n");
+            std::string label = "##vert";
+            ImGui::Separator();
+            for (vcl::uint index = 0; index < read_to_size / 4; index++) {
+                if (index >= mVertNum) {
+                    break;
                 }
-                mStringValid = true;
+                ImGui::TextUnformatted((std::to_string(index) + std::string(": ")).c_str());
+                ImGui::SameLine();
+                if (read_to[index] != 0) {
+                    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 255));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(0, 255, 0, 255));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(0, 255, 0, 255));
+                } else {
+                    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 255));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(255, 0, 0, 255));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(255, 0, 0, 255));
+                }
+                ImGui::Button((label + std::to_string(index)).c_str());
+                ImGui::PopStyleColor(3);
+                ImGui::Separator();
             }
-            ImGui::TextUnformatted(mString.c_str());
         }
         ImGui::End();
     }
