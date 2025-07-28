@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_MESH_H
 #define VCL_MESH_MESH_H
 
+#include "concepts.h"
 #include "mesh_components.h"
 #include "mesh_containers.h"
 
@@ -523,8 +524,10 @@ public:
             // triangulation of polygons and create additional triangle faces
             // for each of the imported polygons. This function statically
             // asserts that the import can be done.
-            using FaceContainer = typename Mesh<Args...>::FaceContainer;
-            FaceContainer::manageImportTriFromPoly(m);
+            if constexpr (mesh::HasFaceContainer<OtherMeshType>) {
+                using FaceContainer = typename Mesh<Args...>::FaceContainer;
+                FaceContainer::manageImportTriFromPoly(m);
+            }
         }
     }
 

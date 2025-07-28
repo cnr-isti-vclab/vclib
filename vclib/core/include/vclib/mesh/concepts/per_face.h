@@ -23,6 +23,10 @@
 #ifndef VCL_MESH_CONCEPTS_PER_FACE_H
 #define VCL_MESH_CONCEPTS_PER_FACE_H
 
+#include "mesh_concept.h"
+
+#include <vclib/mesh/containers/face_container.h>
+
 #include <vclib/concepts.h>
 
 /**
@@ -34,6 +38,36 @@
  */
 
 namespace vcl {
+
+template<typename MeshType>
+concept HasTriangles =
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 3;
+
+template<typename MeshType>
+concept HasQuads =
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 4;
+
+template<typename MeshType>
+concept HasPolygons =
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == -1;
+
+/**
+ * @brief The FaceMeshConcept is evaluated true if the type T is a Mesh (it
+ * satisfies the @ref vcl::MeshConcept) and has a FaceContainer.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept FaceMeshConcept = MeshConcept<T> && mesh::HasFaceContainer<T>;
+
+template<typename T>
+concept TriangleMeshConcept = FaceMeshConcept<T> && HasTriangles<T>;
+
+template<typename T>
+concept QuadMeshConcept = FaceMeshConcept<T> && HasQuads<T>;
+
+template<typename T>
+concept PolygonMeshConcept = FaceMeshConcept<T> && HasPolygons<T>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face AdjacentEdges

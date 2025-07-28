@@ -28,7 +28,6 @@
 // #include "components.h"
 
 #include "mesh/elements/edge.h"
-#include "mesh/containers/face_container.h"
 #include "mesh/elements/face.h"
 #include "mesh/elements/vertex.h"
 

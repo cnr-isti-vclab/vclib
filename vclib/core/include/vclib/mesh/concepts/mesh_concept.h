@@ -29,18 +29,6 @@
 
 namespace vcl {
 
-template<typename MeshType>
-concept HasTriangles =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 3;
-
-template<typename MeshType>
-concept HasQuads =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 4;
-
-template<typename MeshType>
-concept HasPolygons =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == -1;
-
 namespace mesh {
 
 template<typename MeshType, uint ELEM_ID>
@@ -208,24 +196,6 @@ concept MeshConcept =
  */
 template<typename T>
 concept ElementOrMeshConcept = MeshConcept<T> || ElementConcept<T>;
-
-/**
- * @brief The FaceMeshConcept is evaluated true if the type T is a Mesh (it
- * satisfies the @ref vcl::MeshConcept) and has a FaceContainer.
- *
- * @ingroup mesh_concepts
- */
-template<typename T>
-concept FaceMeshConcept = MeshConcept<T> && mesh::HasFaceContainer<T>;
-
-template<typename T>
-concept TriangleMeshConcept = FaceMeshConcept<T> && HasTriangles<T>;
-
-template<typename T>
-concept QuadMeshConcept = FaceMeshConcept<T> && HasQuads<T>;
-
-template<typename T>
-concept PolygonMeshConcept = FaceMeshConcept<T> && HasPolygons<T>;
 
 } // namespace vcl
 
