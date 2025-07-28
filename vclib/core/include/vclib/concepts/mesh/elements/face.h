@@ -97,57 +97,6 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 
 } // namespace face
 
-/**
- * @brief The FaceConcept describes how a Face element that can be
- * used for a FaceContainer should be organized.
- *
- * The Face concept is satisfied for a class F if ALL the following sentences
- * are true:
- * - The class F has the BitFlags component (or a derivate);
- * - The class F has either VertexPointers or VertexIndices components;
- * - The number of vertices of the VertexPointers/VertexIndices is -1 (dynamic
- * size) or at least 3 (static size)
- * - If the class F has the TriangleBitFlags component (or a derivate), the
- * number of vertices must be 3 (static)
- * - If the class F has the AdjacentEdges component (or a derivate), its size
- * must be the same of the vertices;
- * - If the class F has the AdjacentFaces component (or a derivate), its size
- * must be the same of the vertices;
- * - If the class F has the WedgeColors component (or a derivate), its size must
- * be the same of the vertices;
- * - If the class F has the WedgeTexCoords component (or a derivate), its size
- * must be the same of the vertices;
- *
- * @ingroup face_concepts
- */
-template<typename T>
-concept FaceConcept =
-    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::FACE &&
-    face::HasBitFlags<T> && face::HasVertexReferences<T> &&
-    (RemoveRef<T>::VERTEX_NUMBER < 0 || RemoveRef<T>::VERTEX_NUMBER >= 3) &&
-    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_NUMBER == 3) &&
-    comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
-    comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
-
-template<typename T>
-concept TriangleFaceConcept =
-    RemoveRef<T>::VERTEX_NUMBER == 3 && FaceConcept<T>;
-
-/**
- * @brief The PolygonFaceConcept describes how a Face element class should be
- * organized to be a polygonal face with dynamic size.
- *
- * The PolygonFace concept is satisfied for a class F if ALL the following
- * sentences are true:
- * - It satisfies the FaceConcept;
- * - The number of vertices of the VertexPointers component is -1 (dynamic
- * size);
- *
- * @ingroup face_concepts
- */
-template<typename T>
-concept PolygonFaceConcept = RemoveRef<T>::VERTEX_NUMBER < 0 && FaceConcept<T>;
-
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_MESH_ELEMENTS_FACE_H

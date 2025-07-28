@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_BOUNDING_BOX_H
 #define VCL_MESH_ELEM_ALGORITHMS_BOUNDING_BOX_H
 
+#include <vclib/mesh/elements.h>
+
 #include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
