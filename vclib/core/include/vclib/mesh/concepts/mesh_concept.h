@@ -208,15 +208,6 @@ template<typename T>
 concept ElementOrMeshConcept = MeshConcept<T> || ElementConcept<T>;
 
 /**
- * @brief The EdgeMeshConcept is evaluated true if the type T is a Mesh (it
- * satisfies the @ref vcl::MeshConcept) and has an EdgeContainer.
- *
- * @ingroup mesh_concepts
- */
-template<typename T>
-concept EdgeMeshConcept = MeshConcept<T> && mesh::HasEdgeContainer<T>;
-
-/**
  * @brief The FaceMeshConcept is evaluated true if the type T is a Mesh (it
  * satisfies the @ref vcl::MeshConcept) and has a FaceContainer.
  *
