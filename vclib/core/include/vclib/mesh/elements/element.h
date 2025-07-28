@@ -51,7 +51,7 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<uint ELEM_ID, typename MeshType, typename... Comps>
+template<uint ELEM_ID, typename MeshType, comp::ComponentConcept... Comps>
 class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 {
     template<ElementConcept>
@@ -62,12 +62,9 @@ public:
 
     /**
      * @brief Components is an alias to a vcl::TypeWrapper that wraps all the
-     * types from which the Element inherits (Comps) that are Components (they
-     * satisfy the ComponentConcept).
+     * Components from which the Element inherits (Comps).
      */
-    using Components =
-        FilterTypesByCondition<comp::IsComponentPred, TypeWrapper<Comps...>>::
-            type;
+    using Components = TypeWrapper<Comps...>;
 
     static const uint ELEMENT_ID = ELEM_ID;
 

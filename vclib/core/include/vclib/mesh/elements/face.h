@@ -43,7 +43,7 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<typename MeshType, typename... Comps>
+template<typename MeshType, comp::ComponentConcept... Comps>
 class Face : public Element<ElemId::FACE, MeshType, Comps...>
 {
     using Base = Element<ElemId::FACE, MeshType, Comps...>;
@@ -84,8 +84,6 @@ public:
     void setVertices(Rng&& r)
         requires (InputRange<Rng, VertexType*> || InputRange<Rng, uint>)
     {
-        using F = Face<MeshType, TypeWrapper<Comps...>>;
-
         VRefs::setVertices(r);
 
         // if polygonal, I need to resize all the TTVN components
@@ -266,7 +264,7 @@ private:
     }
 };
 
-template<typename MeshType, typename... Comps>
+template<typename MeshType, comp::ComponentConcept... Comps>
 class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
 {
 };
