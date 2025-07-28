@@ -653,12 +653,11 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has AdjacentVertices component available,
  * `false` otherwise.
  */
-bool isAdjacentVerticesAvailableOn(const ElementConcept auto& element)
+bool isAdjacentVerticesAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::ADJACENT_VERTICES>(element);
 }
