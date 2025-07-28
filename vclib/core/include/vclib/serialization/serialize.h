@@ -26,8 +26,6 @@
 #include "concepts.h"
 #include "endian.h"
 
-#include <vclib/concepts.h>
-
 #include <bit>
 #include <ostream>
 
