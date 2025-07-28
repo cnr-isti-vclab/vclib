@@ -47,7 +47,6 @@ class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
 
     bool     mAwaitingRead = false;
     bool     mAvailable    = false;
-    bool     mStringValid  = false;
     uint32_t mAvailabilityWait;
 
     vcl::Box3d bbox;
@@ -120,15 +119,10 @@ public:
                 }
                 ImGui::TextUnformatted((std::to_string(index) + std::string(": ")).c_str());
                 ImGui::SameLine();
-                if (read_to[index] != 0) {
-                    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 255));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(0, 255, 0, 255));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(0, 255, 0, 255));
-                } else {
-                    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 255));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(255, 0, 0, 255));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(255, 0, 0, 255));
-                }
+                ImU32 color = read_to[index]!=0 ? IM_COL32(0, 255, 0, 255) : IM_COL32(255, 0, 0, 255);
+                ImGui::PushStyleColor(ImGuiCol_Button, color);
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, color);
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, color);
                 ImGui::Button((label + std::to_string(index)).c_str());
                 ImGui::PopStyleColor(3);
                 ImGui::Separator();
