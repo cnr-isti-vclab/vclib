@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_REQUIREMENTS_VERTEX_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_VERTEX_REQUIREMENTS_H
 
+#include "../concepts/per_vertex.h"
 #include "../containers/vertex_container.h"
 #include "element_requirements.h"
 

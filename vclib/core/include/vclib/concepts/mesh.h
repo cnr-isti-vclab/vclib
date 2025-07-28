@@ -28,17 +28,9 @@
 #include "mesh/per_edge.h"
 #include "mesh/per_face.h"
 #include "mesh/per_mesh.h"
-#include "mesh/per_vertex.h"
 
-/**
- * @defgroup mesh_concepts Mesh Concepts
- * @ingroup lib_concepts
- * @ingroup mesh
- *
- * @brief List of concepts for types related to the Mesh data structures of the
- * library. They allow to discriminate between different Mesh types, their
- * elements and the element components.
- */
+#include "mesh/containers/vertex_container.h"
+#include "mesh/elements/vertex.h"
 
 /**
  * @defgroup element_concepts Element Concepts

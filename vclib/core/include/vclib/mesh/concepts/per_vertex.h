@@ -20,11 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_PER_VERTEX_H
-#define VCL_CONCEPTS_MESH_PER_VERTEX_H
+#ifndef VCL_MESH_CONCEPTS_PER_VERTEX_H
+#define VCL_MESH_CONCEPTS_PER_VERTEX_H
 
-#include "containers/vertex_container.h"
-#include "elements/vertex.h"
+#include <vclib/concepts.h>
 
 /**
  * @defgroup vertex_mesh_concepts VertexMesh Concepts
@@ -191,4 +190,4 @@ concept HasPerVertexCustomComponents =
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_PER_VERTEX_H
+#endif // VCL_MESH_CONCEPTS_PER_VERTEX_H

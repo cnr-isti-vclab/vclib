@@ -250,7 +250,6 @@ public:
  * @note The NullLogger class does satisfy this concept, by providing all the
  * required member functions as no-op.
  *
- * @ingroup lib_concepts
  * @ingroup miscellaneous
  */
 template<typename T>

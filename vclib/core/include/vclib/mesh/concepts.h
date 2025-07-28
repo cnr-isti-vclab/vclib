@@ -23,6 +23,16 @@
 #ifndef VCL_MESH_CONCEPTS_H
 #define VCL_MESH_CONCEPTS_H
 
+#include "concepts/per_vertex.h"
 #include "concepts/ranges.h"
+
+/**
+ * @defgroup mesh_concepts Mesh Concepts
+ * @ingroup mesh
+ *
+ * @brief List of concepts for types related to the Mesh data structures of the
+ * library. They allow to discriminate between different Mesh types, their
+ * elements and the element components.
+ */
 
 #endif // VCL_MESH_CONCEPTS_H
