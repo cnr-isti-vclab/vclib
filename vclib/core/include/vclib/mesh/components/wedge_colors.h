@@ -351,11 +351,10 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has WedgeColors available, `false` otherwise.
  */
-bool isWedgeColorsAvailableOn(const ElementConcept auto& element)
+bool isWedgeColorsAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::WEDGE_COLORS>(element);
 }

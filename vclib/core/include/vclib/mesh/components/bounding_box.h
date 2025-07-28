@@ -124,18 +124,17 @@ protected:
 /* Detector function to check if a class has BoundingBox available */
 
 /**
- * @brief Checks if the given Element/Mesh has BoundingBox component available.
+ * @brief Checks if the given Element has BoundingBox component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has BoundingBox component available,
+ * @param[in] element: The element to check.
+ * @return `true` if the element has BoundingBox component available,
  * `false` otherwise.
  */
-bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
+bool isBoundingBoxAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::BOUNDING_BOX>(element);
 }

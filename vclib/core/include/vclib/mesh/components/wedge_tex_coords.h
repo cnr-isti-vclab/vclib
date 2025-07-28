@@ -413,12 +413,11 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has WedgeTexCoords available, `false`
  * otherwise.
  */
-bool isWedgeTexCoordsAvailableOn(const ElementConcept auto& element)
+bool isWedgeTexCoordsAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::WEDGE_TEX_COORDS>(element);
 }

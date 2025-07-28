@@ -125,12 +125,11 @@ protected:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has Quality component available,
  * `false` otherwise.
  */
-bool isQualityAvailableOn(const ElementOrMeshConcept auto& element)
+bool isQualityAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::QUALITY>(element);
 }
