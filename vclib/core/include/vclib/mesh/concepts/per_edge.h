@@ -20,11 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_PER_EDGE_H
-#define VCL_CONCEPTS_MESH_PER_EDGE_H
+#ifndef VCL_MESH_CONCEPTS_PER_EDGE_H
+#define VCL_MESH_CONCEPTS_PER_EDGE_H
 
-#include "containers/edge_container.h"
-#include "elements/edge.h"
+#include <vclib/concepts.h>
 
 /**
  * @defgroup edge_mesh_concepts EdgeMesh Concepts
@@ -176,4 +175,4 @@ concept HasPerEdgeVertexReferences =
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_PER_EDGE_H
+#endif // VCL_MESH_CONCEPTS_PER_EDGE_H

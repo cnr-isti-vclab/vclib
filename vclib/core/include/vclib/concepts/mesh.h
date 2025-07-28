@@ -25,10 +25,11 @@
 
 #include "mesh/containers.h"
 
-#include "mesh/per_edge.h"
 #include "mesh/per_face.h"
 #include "mesh/per_mesh.h"
 
+#include "mesh/containers/edge_container.h"
+#include "mesh/elements/edge.h"
 #include "mesh/containers/vertex_container.h"
 #include "mesh/elements/vertex.h"
 

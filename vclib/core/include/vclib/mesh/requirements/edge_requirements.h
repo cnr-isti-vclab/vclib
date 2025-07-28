@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_REQUIREMENTS_EDGE_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_EDGE_REQUIREMENTS_H
 
+#include "../concepts/per_edge.h"
 #include "../containers/edge_container.h"
 #include "element_requirements.h"
 
