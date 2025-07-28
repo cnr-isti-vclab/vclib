@@ -23,10 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_H
 #define VCL_CONCEPTS_MESH_H
 
-#include "mesh/containers.h"
-
-// #include "components.h"
-
 #include "mesh/elements/edge.h"
 #include "mesh/elements/face.h"
 #include "mesh/elements/vertex.h"

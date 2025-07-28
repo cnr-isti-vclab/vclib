@@ -1179,6 +1179,23 @@ private:
     }
 };
 
+/**
+ * @brief A concept that checks whether a class inherits from the
+ * ElementContainer class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from the ElementContainer class having any element type.
+ *
+ * @tparam T: The type to be tested for conformity to the ElementContainer.
+ *
+ * @ingroup containers
+ * @ingroup containers_concepts
+ */
+template<typename T>
+concept ElementContainerConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    ElementContainer<typename RemoveRef<T>::ElementType>>;
+
 /// @endcond
 
 } // namespace vcl::mesh
