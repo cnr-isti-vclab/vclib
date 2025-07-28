@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_FACE_H
 #define VCL_MESH_VIEWS_ELEMENTS_FACE_H
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/mesh_concept.h>
 
 namespace vcl::views {
 namespace detail {

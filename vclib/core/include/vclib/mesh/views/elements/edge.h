@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_EDGE_H
 #define VCL_MESH_VIEWS_ELEMENTS_EDGE_H
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/per_edge.h>
 
 namespace vcl::views {
 namespace detail {
