@@ -27,9 +27,9 @@
 
 #include <vclib/io/file_info.h>
 #include <vclib/io/read.h>
-#include <vclib/misc/string.h>
-#include <vclib/misc/tokenizer.h>
-#include <vclib/space/complex/mesh_info.h>
+
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
 
 #include <clocale>
 #include <string>

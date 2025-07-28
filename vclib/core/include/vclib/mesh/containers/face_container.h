@@ -25,11 +25,12 @@
 
 #include "element_container.h"
 
-#include <vclib/algorithms/core/polygon/ear_cut.h>
 #include <vclib/mesh/containers/custom_component_vector_handle.h>
+#include <vclib/mesh/elem_algorithms.h>
 #include <vclib/mesh/elements/face.h>
 #include <vclib/mesh/elements/face_components.h>
-#include <vclib/views/mesh.h>
+
+#include <vclib/algorithms/core.h>
 
 namespace vcl::mesh {
 

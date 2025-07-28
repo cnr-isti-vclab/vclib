@@ -23,8 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_STAT_H
 #define VCL_ALGORITHMS_CORE_STAT_H
 
-#include <vclib/space/core/matrix.h>
-#include <vclib/space/core/polygon.h>
+#include <vclib/space/core.h>
 
 #include <vector>
 

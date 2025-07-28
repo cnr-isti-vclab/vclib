@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_STRING_H
 #define VCL_MISC_STRING_H
 
-#include <vclib/math/min_max.h>
+#include <vclib/math.h>
 
 #include <algorithm>
 #include <cctype>

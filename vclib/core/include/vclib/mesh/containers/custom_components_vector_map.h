@@ -23,8 +23,8 @@
 #ifndef VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
 #define VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
 
-#include <vclib/exceptions/mesh.h>
-#include <vclib/misc/compactness.h>
+#include <vclib/exceptions.h>
+#include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 #include <vclib/types.h>
 

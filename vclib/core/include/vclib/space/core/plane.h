@@ -25,8 +25,8 @@
 
 #include "point.h"
 
-#include <vclib/concepts/space/plane.h>
-#include <vclib/exceptions/misc.h>
+#include <vclib/concepts.h>
+#include <vclib/exceptions.h>
 #include <vclib/serialization.h>
 
 namespace vcl {

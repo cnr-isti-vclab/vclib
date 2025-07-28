@@ -23,12 +23,13 @@
 #ifndef VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
 #define VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
 
-#include <vclib/algorithms/mesh/update.h>
-#include <vclib/concepts/mesh.h>
 #include <vclib/io/mesh/settings.h>
-#include <vclib/misc/logger.h>
-#include <vclib/space/complex/mesh_info.h>
-#include <vclib/space/core/texture.h>
+
+#include <vclib/algorithms/mesh.h>
+#include <vclib/concepts.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
+#include <vclib/space/core.h>
 
 #include <tiny_gltf.h>
 

@@ -25,7 +25,7 @@
 
 #include "element.h"
 
-#include <vclib/concepts/mesh/elements/edge.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 
@@ -43,7 +43,7 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<typename MeshType, typename... Comps>
+template<typename MeshType, comp::ComponentConcept... Comps>
 class Edge : public Element<ElemId::EDGE, MeshType, Comps...>
 {
     // VertexPointers or VertexIndices component of the Edge
@@ -87,7 +87,7 @@ public:
     }
 };
 
-template<typename MeshType, typename... Comps>
+template<typename MeshType, comp::ComponentConcept... Comps>
 class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
 {
 };

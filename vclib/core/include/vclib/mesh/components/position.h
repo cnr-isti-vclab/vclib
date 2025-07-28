@@ -25,8 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/position.h>
-#include <vclib/space/core/point.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
@@ -105,9 +105,11 @@ protected:
     template<typename Element>
     void importFrom(const Element& v, bool = true)
     {
+        using ScalarType = PositionType::ScalarType;
         if constexpr (HasPosition<Element>) {
-            position() =
-                v.position().template cast<typename PositionType::ScalarType>();
+            if (isPositionAvailableOn(v)) {
+                position() = v.position().template cast<ScalarType>();
+            }
         }
     }
 
@@ -125,12 +127,11 @@ protected:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has Position component available, `false`
  * otherwise.
  */
-bool isPositionAvailableOn(const ElementConcept auto& element)
+bool isPositionAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::POSITION>(element);
 }

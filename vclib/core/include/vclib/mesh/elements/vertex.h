@@ -25,7 +25,7 @@
 
 #include "element.h"
 
-#include <vclib/concepts/mesh/elements/vertex.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 
@@ -42,14 +42,8 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<typename MeshType, typename... Comps>
+template<typename MeshType, comp::ComponentConcept... Comps>
 class Vertex : public Element<ElemId::VERTEX, MeshType, Comps...>
-{
-};
-
-template<typename MeshType, typename... Comps>
-class Vertex<MeshType, TypeWrapper<Comps...>> :
-        public Vertex<MeshType, Comps...>
 {
 public:
     /**
@@ -60,6 +54,12 @@ public:
      * empty constructor is called only when they become available).
      */
     Vertex() = default;
+};
+
+template<typename MeshType, comp::ComponentConcept... Comps>
+class Vertex<MeshType, TypeWrapper<Comps...>> :
+        public Vertex<MeshType, Comps...>
+{
 };
 
 } // namespace vcl

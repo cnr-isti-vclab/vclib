@@ -23,11 +23,10 @@
 #ifndef VCL_MESH_ELEMENTS_ELEMENT_H
 #define VCL_MESH_ELEMENTS_ELEMENT_H
 
-#include <vclib/concepts/mesh/elements/element.h>
-
-#include <vclib/concepts/mesh/components/component.h>
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/components/parent_mesh_pointer.h>
+
+#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 /**
@@ -52,7 +51,7 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<uint ELEM_ID, typename MeshType, typename... Comps>
+template<uint ELEM_ID, typename MeshType, comp::ComponentConcept... Comps>
 class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 {
     template<ElementConcept>
@@ -63,12 +62,9 @@ public:
 
     /**
      * @brief Components is an alias to a vcl::TypeWrapper that wraps all the
-     * types from which the Element inherits (Comps) that are Components (they
-     * satisfy the ComponentConcept).
+     * Components from which the Element inherits (Comps).
      */
-    using Components =
-        FilterTypesByCondition<comp::IsComponentPred, TypeWrapper<Comps...>>::
-            type;
+    using Components = TypeWrapper<Comps...>;
 
     static const uint ELEMENT_ID = ELEM_ID;
 

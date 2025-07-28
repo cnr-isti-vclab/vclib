@@ -23,8 +23,7 @@
 #ifndef VCL_IO_MESH_GLTF_DETAIL_INFO_H
 #define VCL_IO_MESH_GLTF_DETAIL_INFO_H
 
-#include <vclib/space/core/matrix.h>
-#include <vclib/space/core/quaternion.h>
+#include <vclib/space/core.h>
 
 #include <tiny_gltf.h>
 

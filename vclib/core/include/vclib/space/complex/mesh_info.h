@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_MESH_INFO_H
 #define VCL_SPACE_COMPLEX_MESH_INFO_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh.h>
 #include <vclib/types.h>
 
 #include <array>

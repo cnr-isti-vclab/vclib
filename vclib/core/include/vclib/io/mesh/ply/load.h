@@ -30,8 +30,9 @@
 #include "detail/vertex.h"
 
 #include <vclib/io/mesh/settings.h>
-#include <vclib/misc/logger.h>
-#include <vclib/space/complex/mesh_info.h>
+
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
 
 namespace vcl {
 

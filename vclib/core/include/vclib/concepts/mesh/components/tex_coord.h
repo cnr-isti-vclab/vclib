@@ -25,7 +25,7 @@
 
 #include "component.h"
 
-#include <vclib/concepts/space/tex_coord.h>
+#include <vclib/concepts/space/tex_coord_indexed.h>
 
 namespace vcl::comp {
 
@@ -46,7 +46,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasTexCoord = requires (T&& obj) {
     typename RemoveRef<T>::TexCoordType;
-    { obj.texCoord() } -> TexCoordConcept;
+    { obj.texCoord() } -> TexCoordIndexedConcept;
 };
 
 /**

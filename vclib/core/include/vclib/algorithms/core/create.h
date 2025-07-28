@@ -25,7 +25,7 @@
 
 #include "polygon/create.h"
 
-#include <vclib/space/core/image.h>
+#include <vclib/space/core.h>
 
 /**
  * @defgroup core_create Core Create Algorithms

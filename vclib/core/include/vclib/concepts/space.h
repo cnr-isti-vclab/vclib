@@ -29,6 +29,7 @@
 #include "space/color.h"
 #include "space/image.h"
 #include "space/matrix.h"
+#include "space/plane.h"
 #include "space/point.h"
 #include "space/polygon.h"
 #include "space/principal_curvature.h"

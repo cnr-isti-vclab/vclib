@@ -25,8 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/normal.h>
-#include <vclib/space/core/point.h>
+#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
@@ -105,10 +105,10 @@ protected:
     template<typename Element>
     void importFrom(const Element& e, bool = true)
     {
+        using ScalarType = NormalType::ScalarType;
         if constexpr (HasNormal<Element>) {
             if (isNormalAvailableOn(e)) {
-                normal() =
-                    e.normal().template cast<typename NormalType::ScalarType>();
+                normal() = e.normal().template cast<ScalarType>();
             }
         }
     }
@@ -127,12 +127,11 @@ protected:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has Normal component available, `false`
  * otherwise.
  */
-bool isNormalAvailableOn(const ElementConcept auto& element)
+bool isNormalAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::NORMAL>(element);
 }
