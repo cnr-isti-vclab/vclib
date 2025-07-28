@@ -25,7 +25,6 @@
 
 #include "projection.h"
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 #if __has_include(<mapbox/earcut.hpp>)

@@ -25,8 +25,6 @@
 
 #include "intersect.h"
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 /**
