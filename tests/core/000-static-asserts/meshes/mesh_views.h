@@ -76,8 +76,8 @@ void meshViewsStaticAsserts()
             "The view returned by pipe operation cm | views::faces is not a "
             "valid range.");
 
-        auto& f = m.face(0);
-        const auto& cf  = cm.face(0);
+        auto&       f  = m.face(0);
+        const auto& cf = cm.face(0);
 
         static_assert(
             vcl::VertexRangeConcept<decltype(f.vertices() | vcl::views::deref)>,
