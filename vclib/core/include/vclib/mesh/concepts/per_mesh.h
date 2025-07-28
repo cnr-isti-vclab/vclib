@@ -20,11 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_PER_MESH_H
-#define VCL_CONCEPTS_MESH_PER_MESH_H
+#ifndef VCL_MESH_CONCEPTS_PER_MESH_H
+#define VCL_MESH_CONCEPTS_PER_MESH_H
 
-#include "components.h"
-#include "mesh_concept.h"
+#include <vclib/concepts.h>
 
 namespace vcl {
 
@@ -123,4 +122,4 @@ concept HasTransformMatrix =
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_PER_MESH_H
+#endif // VCL_MESH_CONCEPTS_PER_MESH_H
