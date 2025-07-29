@@ -55,8 +55,8 @@ void CPUGeneratedLines::setPoints(
     const uint nPoints = vertCoords.size() / 3;
     if (nPoints > 1) {
         // generate memory buffers
-        // lines x 4 points x 13 attributes
-        uint bufferVertsSize = (nPoints / 2) * 4 * 13;
+        // lines x 4 points x 15 attributes
+        uint bufferVertsSize = (nPoints / 2) * 4 * 15;
         // lines x 6 indices
         // 2 triangles per line segment, 3 indices per triangle
         uint bufferIndsSize  = (nPoints / 2) * 6;
@@ -70,11 +70,11 @@ void CPUGeneratedLines::setPoints(
         /// vertices layout (4 points per line segment)
         /// 0-2: position 0
         /// 3-5: position 1
-        /// 6: color per vertex
-        /// 7-9: normal per vertex
-        /// 10: first/second point flag
-        /// 11: top/bottom flag
-        /// 12: color per line segment
+        /// 6: color per vertex 0
+        /// 7: color per vertex 1
+        /// 8-10: normal per vertex 0
+        /// 11-13: normal per vertex 1
+        /// 14: color per line segment
 
         uint vi = 0; // float index in vertex buffer
         uint ii = 0; // uint index in index buffer
@@ -90,14 +90,18 @@ void CPUGeneratedLines::setPoints(
                     vertices[vi++] = vertCoords[((i + 1) * 3) + 2];
 
                     vertices[vi++] =
-                        std::bit_cast<float>(vertColors[i + k]);
+                        std::bit_cast<float>(vertColors[i]);
 
-                    vertices[vi++] = vertNormals[((i + k) * 3)];
-                    vertices[vi++] = vertNormals[((i + k) * 3) + 1];
-                    vertices[vi++] = vertNormals[((i + k) * 3) + 2];
+                    vertices[vi++] =
+                        std::bit_cast<float>(vertColors[i + 1]);
 
-                    vertices[vi++] = k;
-                    vertices[vi++] = j;
+                    vertices[vi++] = vertNormals[(i * 3)];
+                    vertices[vi++] = vertNormals[(i * 3) + 1];
+                    vertices[vi++] = vertNormals[(i * 3) + 2];
+
+                    vertices[vi++] = vertNormals[((i + 1) * 3)];
+                    vertices[vi++] = vertNormals[((i + 1) * 3) + 1];
+                    vertices[vi++] = vertNormals[((i + 1) * 3) + 2];
 
                     vertices[vi++] = std::bit_cast<float>(lineColors[i / 2]);
                 }
@@ -121,8 +125,10 @@ void CPUGeneratedLines::setPoints(
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .add(bgfx::Attrib::Color1, 4, bgfx::AttribType::Uint8, true)
             .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color2, 4, bgfx::AttribType::Uint8, true)
             .end();
 
         mVertices.create(

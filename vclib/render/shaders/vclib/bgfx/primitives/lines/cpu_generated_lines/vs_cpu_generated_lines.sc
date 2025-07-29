@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_texcoord0, a_color0, a_normal, a_texcoord1
+$input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1, a_color2
 $output v_color
 
 #include <bgfx_shader.sh>
@@ -28,76 +28,72 @@ $output v_color
 
 uniform vec4 u_settings;
 
+#define NEAR_EPSILON 0.001
+#define LENGTH_EPSILON 0.0001
+
 #define thickness             u_settings.x
-// #define colorToUse            u_settings.y
+#define colorToUse            u_settings.y
 
 #define p0                    a_position
 #define p1                    a_texcoord0
-#define color                 a_color0
-// #define normal                a_normal
-#define uv                    a_texcoord1.xy
-// #define lineColor             uintABGRToVec4Color(floatBitsToUint(a_texcoord1.z))
+
+#define color0                a_color0
+#define color1                a_color1
+
+#define normal0               a_normal
+#define normal1               a_texcoord1
+
+#define lineColor             a_color2
+
 #define screenWidth           u_viewRect.z
 #define screenHeight          u_viewRect.w
 
-// vec4 screenToClip(vec4 coordinate) {
-//     return vec4(
-//                   (2 * coordinate.x / screenWidth),
-//                   (2 * coordinate.y / screenHeight),
-//                   coordinate.z,
-//                   coordinate.w
-//                 );
-// }
-
-// vec4 clipToScreen(vec4 coordinate) {
-//     return vec4(
-//                   (coordinate.x * screenWidth) / 2,
-//                   (coordinate.y * screenHeight) / 2,
-//                   coordinate.z,
-//                   coordinate.w
-//                 );
-// }
-
-// vec4 calculatePointWithMVP(vec4 p) {
-//     vec4 NDC_p = mul(u_modelViewProj, vec4(p.xyz, 1.0));
-
-//     // vec4 screen_p = vec4(NDC_p.xy / NDC_p.w, 0.0, 0.0);
-
-//     // vec4 p_px = clipToScreen(screen_p);
-//     return vec4(p_px.xy, NDC_p.z, NDC_p.w);
-// }
-
 void main() {
+    int generalIndex = gl_VertexID % 4;
+    vec2 uv = vec2((generalIndex >> 1) & 0x1, generalIndex & 0x1);
+
     // segment points in clip space
-    vec4 C0 = mul(u_modelViewProj, vec4(p0, 1.0));
-    vec4 C1 = mul(u_modelViewProj, vec4(p1, 1.0));
+    vec4 p0_NDC = mul(u_modelViewProj, vec4(p0, 1.0));
+    vec4 p1_NDC = mul(u_modelViewProj, vec4(p1, 1.0));
 
     // clip segment to near plane (w = 0) if needed
-    vec4 clippedC0 = C0;
-    vec4 clippedC1 = C1;
+    vec4 clippedP0 = p0_NDC;
+    vec4 clippedP1 = p1_NDC;
 
-    float nearEpsilon = 0.001;  // small positive value to avoid w=0
+    vec4 clippedColor0 = color0;
+    vec4 clippedColor1 = color1;
 
-    if (C0.w < nearEpsilon && C1.w >= nearEpsilon) {
-        // C0 is behind camera, C1 is in front - clip C0 to near plane
-        float t = (nearEpsilon - C0.w) / (C1.w - C0.w);
-        clippedC0 = mix(C0, C1, t);
-    } else if (C1.w < nearEpsilon && C0.w >= nearEpsilon) {
-        // C1 is behind camera, C0 is in front - clip C1 to near plane
-        float t = (nearEpsilon - C1.w) / (C0.w - C1.w);
-        clippedC1 = mix(C1, C0, t);
+    vec3 clippedNormal0 = normal0;
+    vec3 clippedNormal1 = normal1;
+
+    if (p0_NDC.w < NEAR_EPSILON) {
+        float t = (NEAR_EPSILON - p0_NDC.w) / (p1_NDC.w - p0_NDC.w);
+
+        clippedP0 = mix(p0_NDC, p1_NDC, t);
+        clippedColor0 = mix(color0, color1, t);
+        clippedNormal0 = mix(normal0, normal1, t);
+    }
+
+    if (p1_NDC.w < NEAR_EPSILON) {
+        float t = (NEAR_EPSILON - p1_NDC.w) / (p0_NDC.w - p1_NDC.w);
+
+        clippedP1 = mix(p1_NDC, p0_NDC, t);
+        clippedColor1 = mix(color1, color0, t);
+        clippedNormal1 = mix(normal1, normal0, t);
     }
 
     // pick this vertex's position by uv.x along clipped segment */
-    vec4 C = mix(clippedC0, clippedC1, uv.x);
+    vec4 p = mix(clippedP0, clippedP1, uv.x);
+    vec4 color = mix(clippedColor0, clippedColor1, uv.x);
+    vec3 normal = mix(clippedNormal0, clippedNormal1, uv.x);
 
     // compute direction in NDC space (now safe since both points have w > 0) */
-    vec2 ndc0 = clippedC0.xy / clippedC0.w;
-    vec2 ndc1 = clippedC1.xy / clippedC1.w;
-    vec2 screenDir = ndc1 - ndc0;
+    vec2 ndp0 = clippedP0.xy / clippedP0.w;
+    vec2 ndp1 = clippedP1.xy / clippedP1.w;
+    vec2 screenDir = ndp1 - ndp0;
     float screenDirLen = length(screenDir);
 
-    if (screenDirLen > 0.0001) {
+    if (screenDirLen > LENGTH_EPSILON) {
         vec2 T = screenDir / screenDirLen;
         vec2 N = vec2(-T.y, T.x);
         
@@ -108,10 +104,10 @@ void main() {
         vec2 offsetNDC = N * (0.5 * thickness) * side * vec2(pixelsToNDCX, pixelsToNDCY);
         
         // Convert back to clip space
-        vec2 newNDC = (C.xy / C.w) + offsetNDC;
-        C.xy = newNDC * C.w;
+        vec2 newNDC = (p.xy / p.w) + offsetNDC;
+        p.xy = newNDC * p.w;
     }
 
     v_color = color;
-    gl_Position = C;
+    gl_Position = p;
 }

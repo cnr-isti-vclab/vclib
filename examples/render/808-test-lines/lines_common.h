@@ -43,13 +43,13 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
     vertCoords.emplace_back(disPoint(gen));
     vertCoords.emplace_back(disPoint(gen));
 
-    vertColors.emplace_back(vcl::Color(r, g, b).abgr());
+    vertColors.emplace_back(vcl::Color(255, 0, 0).abgr());
 
     vertCoords.emplace_back(disPoint(gen));
     vertCoords.emplace_back(disPoint(gen));
     vertCoords.emplace_back(disPoint(gen));
 
-    vertColors.emplace_back(vcl::Color(r, g, b).abgr());
+    vertColors.emplace_back(vcl::Color(0, 0, 255).abgr());
 }
 
 // return a vector that has a set of nLines lines with different types
