@@ -92,6 +92,32 @@ class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
 {
 };
 
+/* Concepts */
+
+// template<typename T>
+// concept EdgeConcept = std::derived_from< // same type or derived type
+//     std::remove_cvref_t<T>,
+//     Edge<typename RemoveRef<T>::ParentMeshType,
+//          typename RemoveRef<T>::Components>>;
+
+/**
+ * @brief The EdgeConcept describes how a Edge element that can be
+ * used for a EdgeContainer should be organized.
+ *
+ * The Edge concept is satisfied for a class E if ALL the following
+ * sentences are true:
+ * - The class E has the BitFlags component (or an equivalent one);
+ * - The class E has the either VertexPointers or VertexIndices components;
+ * - The number of vertices of the VertexPointers/VertexIndices is 2.
+ *
+ * @ingroup edge_concepts
+ */
+template<typename T>
+concept EdgeConcept =
+    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::EDGE &&
+    edge::HasBitFlags<T> && edge::HasVertexReferences<T> &&
+    RemoveRef<T>::VERTEX_NUMBER == 2;
+
 } // namespace vcl
 
 #endif // VCL_MESH_ELEMENTS_EDGE_H
