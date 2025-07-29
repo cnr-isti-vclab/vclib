@@ -26,11 +26,21 @@ namespace vcl::detail {
 
 CPUGeneratedLines::CPUGeneratedLines(
     const std::vector<float>& vertCoords,
-    const std::vector<uint>&  vertColors,
     const std::vector<float>& vertNormals,
+    const std::vector<uint>&  vertColors,
     const std::vector<uint>&  lineColors)
 {
-    setPoints(vertCoords, vertColors, vertNormals, lineColors);
+    setPoints(vertCoords, vertNormals, vertColors, lineColors);
+}
+
+CPUGeneratedLines::CPUGeneratedLines(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>& lineIndices,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  vertColors,
+    const std::vector<uint>&  lineColors)
+{
+    setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
 }
 
 void CPUGeneratedLines::swap(CPUGeneratedLines& other)
@@ -46,16 +56,20 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 
 void CPUGeneratedLines::setPoints(
     const std::vector<float>& vertCoords,
-    const std::vector<uint>&  vertColors,
+    const std::vector<uint>& lineIndices,
     const std::vector<float>& vertNormals,
-    const std::vector<uint>&  lineColors)
+    const std::vector<uint>&  vertColors,
+    const std::vector<uint>&  lineColors) 
 {
     assert(vertCoords.size() % 3 == 0);
+    assert(lineIndices.size() % 2 == 0);
 
+    const bool setLineIndices = lineIndices.size() != 0;
     const bool setColors = vertColors.size() != 0;
     const bool setNormals = vertNormals.size() != 0;
     const bool setLineColors = lineColors.size() != 0;
-    const uint nPoints = vertCoords.size() / 3;
+
+    const uint nPoints = setLineIndices ? lineIndices.size() : vertCoords.size() / 3;
 
     assert(!setColors || vertCoords.size() == vertColors.size() * 3);
     assert(!setNormals || vertCoords.size() == vertNormals.size());
@@ -91,32 +105,35 @@ void CPUGeneratedLines::setPoints(
 
         uint ii = 0;
         for (uint i = 0; i < nPoints - 1; i += 2) {
+            uint index0 = setLineIndices ? lineIndices[i] : i;
+            uint index1 = setLineIndices ? lineIndices[i + 1] : i + 1;
+
             for (uint k = 0; k < 2; k++) {
                 for (uint j = 0; j < 2; j++) {
-                    vCoords[viCoords++] = vertCoords[(i * 3)];
-                    vCoords[viCoords++] = vertCoords[(i * 3) + 1];
-                    vCoords[viCoords++] = vertCoords[(i * 3) + 2];
+                    vCoords[viCoords++] = vertCoords[(index0 * 3)];
+                    vCoords[viCoords++] = vertCoords[(index0 * 3) + 1];
+                    vCoords[viCoords++] = vertCoords[(index0 * 3) + 2];
 
-                    vCoords[viCoords++] = vertCoords[((i + 1) * 3)];
-                    vCoords[viCoords++] = vertCoords[((i + 1) * 3) + 1];
-                    vCoords[viCoords++] = vertCoords[((i + 1) * 3) + 2];
+                    vCoords[viCoords++] = vertCoords[(index1 * 3)];
+                    vCoords[viCoords++] = vertCoords[(index1 * 3) + 1];
+                    vCoords[viCoords++] = vertCoords[(index1 * 3) + 2];
 
                     if (setColors) {
                         vColors[viColors++] =
-                            std::bit_cast<float>(vertColors[i]);
+                            std::bit_cast<float>(vertColors[index0]);
     
                         vColors[viColors++] =
-                            std::bit_cast<float>(vertColors[i + 1]);
+                            std::bit_cast<float>(vertColors[index1]);
                     }
 
                     if (setNormals) {
-                        vNormals[viNormals++] = vertNormals[(i * 3)];
-                        vNormals[viNormals++] = vertNormals[(i * 3) + 1];
-                        vNormals[viNormals++] = vertNormals[(i * 3) + 2];
+                        vNormals[viNormals++] = vertNormals[(index0 * 3)];
+                        vNormals[viNormals++] = vertNormals[(index0 * 3) + 1];
+                        vNormals[viNormals++] = vertNormals[(index0 * 3) + 2];
     
-                        vNormals[viNormals++] = vertNormals[((i + 1) * 3)];
-                        vNormals[viNormals++] = vertNormals[((i + 1) * 3) + 1];
-                        vNormals[viNormals++] = vertNormals[((i + 1) * 3) + 2];
+                        vNormals[viNormals++] = vertNormals[(index1 * 3)];
+                        vNormals[viNormals++] = vertNormals[(index1 * 3) + 1];
+                        vNormals[viNormals++] = vertNormals[(index1 * 3) + 2];
                     }
 
 
@@ -126,8 +143,6 @@ void CPUGeneratedLines::setPoints(
                 }
             }
 
-            // indices for the two triangles of the line segment
-            // each line segment has 4 points, so 2 triangles
             uint index    = (4 * (i / 2));
             indices[ii++] = index;
             indices[ii++] = index + 3;
@@ -189,8 +204,7 @@ void CPUGeneratedLines::setPoints(
                 layout);
         }
 
-        // create index buffer
-        mIndices.create(
+         mIndices.create(
             bgfx::makeRef(indices, sizeof(uint) * bufferIndsSize, iReleaseFn),
             BGFX_BUFFER_INDEX32);
 
@@ -200,7 +214,17 @@ void CPUGeneratedLines::setPoints(
         mVertexColors.destroy();
         mLineColors.destroy();
         mIndices.destroy();
-    }
+    } 
+}
+
+void CPUGeneratedLines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  vertColors,
+    const std::vector<uint>&  lineColors)
+{
+    const std::vector<uint> indices;
+    setPoints(vertCoords, indices, vertNormals, vertColors, lineColors);
 }
 
 void CPUGeneratedLines::draw(uint viewId) const

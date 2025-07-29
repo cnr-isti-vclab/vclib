@@ -28,42 +28,57 @@
 
 #include <random>
 
-void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vertColors)
+void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vertColors, std::vector<vcl::uint>& lineColors)
 {
     std::random_device rd;
     std::mt19937       gen(rd());
     std::uniform_real_distribution<float> disPoint(-2.0f, 2.0f);
     std::uniform_real_distribution<float> disColor(0, 255);
 
-    uint8_t r = static_cast<uint8_t>(disColor(gen));
-    uint8_t g = static_cast<uint8_t>(disColor(gen));
-    uint8_t b = static_cast<uint8_t>(disColor(gen));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(disPoint(gen));
+
+    vcl::Color c0 = vcl::Color(
+        static_cast<uint8_t>(disColor(gen)), 
+        static_cast<uint8_t>(disColor(gen)), 
+        static_cast<uint8_t>(disColor(gen))
+    );
+    vertColors.emplace_back(c0.abgr());
 
     vertCoords.emplace_back(disPoint(gen));
     vertCoords.emplace_back(disPoint(gen));
     vertCoords.emplace_back(disPoint(gen));
 
-    vertColors.emplace_back(vcl::Color(255, 0, 0).abgr());
+    vcl::Color c1 = vcl::Color(
+        static_cast<uint8_t>(disColor(gen)), 
+        static_cast<uint8_t>(disColor(gen)), 
+        static_cast<uint8_t>(disColor(gen))
+    );
+    vertColors.emplace_back(c1.abgr());
 
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-
-    vertColors.emplace_back(vcl::Color(0, 0, 255).abgr());
+    vcl::Color lineColor = vcl::Color(
+        static_cast<uint8_t>(disColor(gen)), 
+        static_cast<uint8_t>(disColor(gen)), 
+        static_cast<uint8_t>(disColor(gen))
+    );
+    lineColors.emplace_back(lineColor.abgr());
 }
 
 // return a vector that has a set of nLines lines with different types
 vcl::DrawableLines getDrawableLines(vcl::uint nLines)
 {
     vcl::DrawableObjectVector vec;
-
+    
     std::vector<float> vertCoords;
+    std::vector<float> vertNormals;
     std::vector<vcl::uint> vertColors;
+    std::vector<vcl::uint> lineColors;
     
     for (vcl::uint i = 0; i < nLines; i++)
-        pushRandomLine(vertCoords, vertColors);
+        pushRandomLine(vertCoords, vertColors, lineColors);
     
-    auto lines = vcl::DrawableLines(vertCoords, vertColors);
+    auto lines = vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
     lines.thickness() = 10;
 
     return lines;

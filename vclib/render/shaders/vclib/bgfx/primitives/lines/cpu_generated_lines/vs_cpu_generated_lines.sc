@@ -26,6 +26,8 @@ $output v_color
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#include <vclib/bgfx/shaders_common.sh> 
+
 uniform vec4 u_settings;
 
 #define NEAR_EPSILON 0.001
@@ -33,6 +35,7 @@ uniform vec4 u_settings;
 
 #define thickness             u_settings.x
 #define colorToUse            u_settings.y
+#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
 
 #define p0                    a_position
 #define p1                    a_texcoord0
@@ -108,6 +111,11 @@ void main() {
         p.xy = newNDC * p.w;
     }
 
-    v_color = color;
+    if (colorToUse == 0)
+        v_color = color;
+    else if (colorToUse == 1) 
+        v_color = lineColor;
+    else
+        v_color = generalColor;
     gl_Position = p;
 }

@@ -38,14 +38,15 @@ class DrawableLines : public Lines, public vcl::DrawableObject
     std::vector<uint>  mVertColors;
     std::vector<float> mVertNormals;
     std::vector<uint>  mLineColors;
+    std::vector<uint>  mLineIndices;
 
 public:
     DrawableLines() = default;
 
     DrawableLines(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<uint>&  lineColors  = std::vector<uint>()) :
             mVertCoords(vertCoords)
     {
@@ -64,21 +65,48 @@ public:
         else
             mLineColors = std::vector<uint>(vertCoords.size() / 6, 0xFFFFFFFF);
 
-        Lines::setPoints(mVertCoords, mVertColors, mVertNormals, mLineColors);
+        Lines::setPoints(mVertCoords, mVertNormals, mVertColors, mLineColors);
+    }
+
+    DrawableLines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>()) :
+            mLineIndices(lineIndices), mVertCoords(vertCoords)
+    {
+        if (!vertColors.empty())
+            mVertColors = vertColors;
+        else
+            mVertColors = std::vector<uint>(vertCoords.size() / 3, 0xFFFFFFFF);
+
+        if (!vertNormals.empty())
+            mVertNormals = vertNormals;
+        else
+            mVertNormals = std::vector<float>(vertCoords.size(), 0.0f);
+
+        if (!lineColors.empty())
+            mLineColors = lineColors;
+        else
+            mLineColors = std::vector<uint>(vertCoords.size() / 6, 0xFFFFFFFF);
+
+        Lines::setPoints(mVertCoords, mLineIndices, mVertNormals, mVertColors, mLineColors);
     }
 
     DrawableLines(const DrawableLines& other) :
             DrawableObject(other), mVertCoords(other.mVertCoords),
             Lines(
                 other.mVertCoords,
-                other.mVertColors,
+                other.mLineIndices,
                 other.mVertNormals,
+                other.mVertColors,
                 other.mLineColors,
                 other.thickness(),
                 other.colorToUse(),
                 other.type()),
             mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
-            mLineColors(other.mLineColors), mVisible(other.mVisible)
+            mLineColors(other.mLineColors), mVisible(other.mVisible), mLineIndices(other.mLineIndices)
     {
     }
 
@@ -99,6 +127,7 @@ public:
         Lines::swap(other);
 
         swap(mVertCoords, other.mVertCoords);
+        swap(mLineIndices, other.mLineIndices);
         swap(mVertColors, other.mVertColors);
         swap(mVertNormals, other.mVertNormals);
         swap(mLineColors, other.mLineColors);
@@ -120,7 +149,22 @@ public:
         mVertColors  = vertColors;
         mVertNormals = vertNormals;
         mLineColors  = lineColors;
-        Lines::setPoints(vertCoords, vertColors, vertNormals, mLineColors);
+        Lines::setPoints(vertCoords, vertNormals, vertColors, mLineColors);
+    }
+
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>& lineIndices,
+        const std::vector<uint>&  vertColors,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  lineColors)
+    {
+        mVertCoords  = vertCoords;
+        mLineIndices = lineIndices;
+        mVertColors  = vertColors;
+        mVertNormals = vertNormals;
+        mLineColors  = lineColors;
+        Lines::setPoints(vertCoords, lineIndices, vertNormals, vertColors, mLineColors);
     }
 
     // DrawableObject interface

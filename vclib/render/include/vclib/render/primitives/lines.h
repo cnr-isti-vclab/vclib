@@ -57,9 +57,10 @@ public:
     };
 
 private:
-    uint8_t             mThickness  = 5;
-    ColorToUse          mColorToUse = ColorToUse::PER_VERTEX_COLOR;
-    ImplementationType  mType       = ImplementationType::CPU_GENERATED;
+    uint8_t             mThickness    = 5;
+    ColorToUse          mColorToUse   = ColorToUse::PER_VERTEX_COLOR;
+    Color               mGeneralColor = Color::ColorABGR::LightGray;
+    ImplementationType  mType         = ImplementationType::CPU_GENERATED;
 
     Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
     detail::CPUGeneratedLines mLinesImplementation;
@@ -69,8 +70,8 @@ public:
 
     Lines(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors,
         uint8_t                   thickness = 5,
         ColorToUse                colorToUse = ColorToUse::PER_VERTEX_COLOR,
@@ -79,17 +80,44 @@ public:
     {
         setImplementationType(type);
         mLinesImplementation.setPoints(
-            vertCoords, vertColors, vertNormals, lineColors);
+            vertCoords, vertNormals, vertColors, lineColors);
+    }
+
+    Lines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors,
+        uint8_t                   thickness = 5,
+        ColorToUse                colorToUse = ColorToUse::PER_VERTEX_COLOR,
+        ImplementationType        type = ImplementationType::CPU_GENERATED) :
+            mThickness(thickness), mColorToUse(colorToUse)
+    {
+        setImplementationType(type);
+        mLinesImplementation.setPoints(
+            vertCoords, lineIndices, vertNormals, vertColors, lineColors);
     }
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors)
     {
         mLinesImplementation.setPoints(
-            vertCoords, vertColors, vertNormals, lineColors);
+            vertCoords, vertNormals, vertColors, lineColors);
+    }
+
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>& lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors)
+    {
+        mLinesImplementation.setPoints(
+            vertCoords, lineIndices, vertNormals, vertColors, lineColors);
     }
 
     uint8_t thickness() const { return mThickness; }
@@ -99,6 +127,10 @@ public:
     ColorToUse colorToUse() const { return mColorToUse; }
 
     ColorToUse& colorToUse() { return mColorToUse; }
+
+    Color generalColor() const { return mGeneralColor; }
+
+    Color& generalColor() { return mGeneralColor; }
 
     ImplementationType type() const { return mType; }
 
@@ -147,7 +179,7 @@ private:
         float data[] = {
             static_cast<float>(mThickness),
             static_cast<float>(mColorToUse),
-            0,
+            std::bit_cast<float>(mGeneralColor.abgr()),
             0};
         mSettingUH.bind(data);
     }
