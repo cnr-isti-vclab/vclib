@@ -28,6 +28,7 @@
 #include "vertical_components_vector_tuple.h"
 
 #include <vclib/mesh/components/bases/component.h>
+#include <vclib/mesh/elements/element.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 
 #include <vclib/concepts.h>

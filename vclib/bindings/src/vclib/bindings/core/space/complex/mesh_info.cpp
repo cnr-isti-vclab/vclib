@@ -23,6 +23,7 @@
 #include <vclib/bindings/core/space/complex/mesh_info.h>
 #include <vclib/bindings/utils.h>
 
+#include <vclib/mesh.h>
 #include <vclib/space/complex.h>
 
 namespace vcl::bind {

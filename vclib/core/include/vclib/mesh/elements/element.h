@@ -37,14 +37,26 @@
  * functions.
  */
 
-namespace vcl::mesh {
+namespace vcl {
+
+/* Concepts */
+
+template<typename T>
+concept ElementConcept = requires (T&& obj) {
+    RemoveRef<T>::ELEMENT_ID;
+    typename RemoveRef<T>::Components;
+    typename RemoveRef<T>::ParentMeshType;
+    { obj.index() } -> std::same_as<uint>;
+};
+
+namespace mesh {
 
 template<ElementConcept>
 class ElementContainer;
 
-} // namespace vcl::mesh
+} // namespace mesh
 
-namespace vcl {
+
 
 /**
  * @brief The Element class
