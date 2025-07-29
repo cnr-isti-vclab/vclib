@@ -37,7 +37,11 @@ class CPUGeneratedLines
             .programManager()
             .getProgram<VertFragProgram::PRIMITIVE_LINES>();
 
-    VertexBuffer mVertices;
+    VertexBuffer mVertexCoords;
+    VertexBuffer mVertexNormals;
+    VertexBuffer mVertexColors;
+    VertexBuffer mLineColors;
+
     IndexBuffer  mIndices;
 
 public:
@@ -45,9 +49,9 @@ public:
 
     CPUGeneratedLines(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  lineColors);
+        const std::vector<uint>&  vertColors = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>&  lineColors = std::vector<uint>());
 
     void swap(CPUGeneratedLines& other);
 
@@ -55,9 +59,9 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  lineColors);
+        const std::vector<uint>&  vertColors = std::vector<uint>(),
+        const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>&  lineColors = std::vector<uint>());
 
     void draw(uint viewId) const;
 };
