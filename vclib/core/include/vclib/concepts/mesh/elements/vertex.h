@@ -91,22 +91,6 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 
 } // namespace vert
 
-/**
- * @brief The VertexConcept describes how a Vertex element that can be used for
- * a VertexContainer should be organized.
- *
- * The Vertex concept is satisfied for a class V if ALL the following sentences
- * are true:
- * - The class V has the BitFlags component (or a derivate);
- * - The class V has the Position component (or a derivate);
- *
- * @ingroup vert_concepts
- */
-template<typename T>
-concept VertexConcept =
-    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::VERTEX &&
-    vert::HasBitFlags<T> && vert::HasPosition<T>;
-
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_MESH_ELEMENTS_VERTEX_H

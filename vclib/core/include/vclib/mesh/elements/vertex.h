@@ -62,6 +62,30 @@ class Vertex<MeshType, TypeWrapper<Comps...>> :
 {
 };
 
+/* Concepts */
+
+// template<typename T>
+// concept VertexConcept = std::derived_from< // same type or derived type
+//     std::remove_cvref_t<T>,
+//     Vertex<typename RemoveRef<T>::ParentMeshType,
+//          typename RemoveRef<T>::Components>>;
+
+/**
+ * @brief The VertexConcept describes how a Vertex element that can be used for
+ * a VertexContainer should be organized.
+ *
+ * The Vertex concept is satisfied for a class V if ALL the following sentences
+ * are true:
+ * - The class V has the BitFlags component (or a derivate);
+ * - The class V has the Position component (or a derivate);
+ *
+ * @ingroup vert_concepts
+ */
+template<typename T>
+concept VertexConcept =
+    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::VERTEX &&
+    vert::HasBitFlags<T> && vert::HasPosition<T>;
+
 } // namespace vcl
 
 #endif // VCL_MESH_ELEMENTS_VERTEX_H
