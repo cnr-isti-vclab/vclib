@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONCEPTS_RANGES_VERTEX_RANGE_H
 #define VCL_MESH_CONCEPTS_RANGES_VERTEX_RANGE_H
 
-#include <vclib/concepts/mesh/elements/vertex.h>
+#include <vclib/mesh/elements/vertex.h>
 
 #include <vclib/types.h>
 

@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONCEPTS_RANGES_FACE_RANGE_H
 #define VCL_MESH_CONCEPTS_RANGES_FACE_RANGE_H
 
-#include <vclib/concepts/mesh/elements/face.h>
+#include <vclib/mesh/elements/face.h>
 
 #include <vclib/types.h>
 

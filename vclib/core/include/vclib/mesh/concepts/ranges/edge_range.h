@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONCEPTS_RANGES_EDGE_RANGE_H
 #define VCL_MESH_CONCEPTS_RANGES_EDGE_RANGE_H
 
-#include <vclib/concepts/mesh/elements/edge.h>
+#include <vclib/mesh/elements/edge.h>
 
 #include <vclib/types.h>
 

@@ -25,14 +25,5 @@
 
 #include "mesh/elements/edge.h"
 #include "mesh/elements/face.h"
-#include "mesh/elements/vertex.h"
-
-/**
- * @defgroup element_concepts Element Concepts
- * @ingroup mesh_concepts
- * @ingroup elements
- *
- * @brief List of concepts for types related to the Elements of a Mesh.
- */
 
 #endif // VCL_CONCEPTS_MESH_H
