@@ -93,29 +93,25 @@ class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
 
 /* Concepts */
 
-// template<typename T>
-// concept EdgeConcept = std::derived_from< // same type or derived type
-//     std::remove_cvref_t<T>,
-//     Edge<typename RemoveRef<T>::ParentMeshType,
-//          typename RemoveRef<T>::Components>>;
-
 /**
- * @brief The EdgeConcept describes how a Edge element that can be
- * used for a EdgeContainer should be organized.
+ * @brief A concept that checks whether a class has (inherits from) an
+ * Edge class.
  *
- * The Edge concept is satisfied for a class E if ALL the following
- * sentences are true:
- * - The class E has the BitFlags component (or an equivalent one);
- * - The class E has the either VertexPointers or VertexIndices components;
- * - The number of vertices of the VertexPointers/VertexIndices is 2.
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Edge class having any ParentMesh type and any Component types.
+ * The concept checks also that the Edge has a BitFlags component,
+ * VertexPointers or VertexIndices components, and that the number of vertices
+ * is 2.
  *
+ * @tparam T: The type to be tested for conformity to the EdgeConcept.
+ * 
  * @ingroup edge_concepts
  */
 template<typename T>
 concept EdgeConcept =
-    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::EDGE &&
-    edge::HasBitFlags<T> && edge::HasVertexReferences<T> &&
-    RemoveRef<T>::VERTEX_NUMBER == 2;
+    IsDerivedFromSpecializationOfV<T, Edge> &&
+    RemoveRef<T>::ELEMENT_ID == ElemId::EDGE && edge::HasBitFlags<T> &&
+    edge::HasVertexReferences<T> && RemoveRef<T>::VERTEX_NUMBER == 2;
 
 } // namespace vcl
 

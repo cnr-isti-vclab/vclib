@@ -271,39 +271,31 @@ class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
 
 /* Concepts */
 
-// template<typename T>
-// concept FaceConcept = std::derived_from< // same type or derived type
-//     std::remove_cvref_t<T>,
-//     Face<typename RemoveRef<T>::ParentMeshType,
-//          typename RemoveRef<T>::Components>>;
-
 /**
- * @brief The FaceConcept describes how a Face element that can be
- * used for a FaceContainer should be organized.
+ * @brief A concept that checks whether a class has (inherits from) an
+ * Face class.
  *
- * The Face concept is satisfied for a class F if ALL the following sentences
- * are true:
- * - The class F has the BitFlags component (or a derivate);
- * - The class F has either VertexPointers or VertexIndices components;
- * - The number of vertices of the VertexPointers/VertexIndices is -1 (dynamic
- * size) or at least 3 (static size)
- * - If the class F has the TriangleBitFlags component (or a derivate), the
- * number of vertices must be 3 (static)
- * - If the class F has the AdjacentEdges component (or a derivate), its size
- * must be the same of the vertices;
- * - If the class F has the AdjacentFaces component (or a derivate), its size
- * must be the same of the vertices;
- * - If the class F has the WedgeColors component (or a derivate), its size must
- * be the same of the vertices;
- * - If the class F has the WedgeTexCoords component (or a derivate), its size
- * must be the same of the vertices;
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Face class having any ParentMesh type and any Component types.
+ * The concept checks also that the Face has:
+ *  - a BitFlags component;
+ *  - VertexPointers or VertexIndices components
+ *  - the number of vertices is less than 0 (dynamic size) or at least 3
+ *    (static size);
+ *  - if the Face has the TriangleBitFlags component, the number of vertices
+ *    must be 3 (static size);
+ *  - all the components tied to the vertex number of the Face are
+ *    consistent with the number of vertices;
+ *
+ * @tparam T: The type to be tested for conformity to the EdgeConcept.
  *
  * @ingroup face_concepts
  */
 template<typename T>
 concept FaceConcept =
-    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::FACE &&
-    face::HasBitFlags<T> && face::HasVertexReferences<T> &&
+    IsDerivedFromSpecializationOfV<T, Face> &&
+    RemoveRef<T>::ELEMENT_ID == ElemId::FACE && face::HasBitFlags<T> &&
+    face::HasVertexReferences<T> &&
     (RemoveRef<T>::VERTEX_NUMBER < 0 || RemoveRef<T>::VERTEX_NUMBER >= 3) &&
     (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_NUMBER == 3) &&
     comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
@@ -314,14 +306,11 @@ concept TriangleFaceConcept =
     RemoveRef<T>::VERTEX_NUMBER == 3 && FaceConcept<T>;
 
 /**
- * @brief The PolygonFaceConcept describes how a Face element class should be
- * organized to be a polygonal face with dynamic size.
+ * @brief A concpet that checks whether a class has (inherits from) a
+ * Face class and that the Face is polygonal (dynamic size, N < 0).
  *
- * The PolygonFace concept is satisfied for a class F if ALL the following
- * sentences are true:
- * - It satisfies the FaceConcept;
- * - The number of vertices of the VertexPointers component is -1 (dynamic
- * size);
+ * The concept is satisfied when `T` satisfies the FaceConcept and the number
+ * of vertices is less than 0 (dynamic size).
  *
  * @ingroup face_concepts
  */
