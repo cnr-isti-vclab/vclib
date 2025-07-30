@@ -23,8 +23,9 @@
 #ifndef IMGUI_TEXTURE_GETTER_979
 #define IMGUI_TEXTURE_GETTER_979
 
-#include "mesh_render_buffers_979.h"
 #include <imgui.h>
+
+#include "mesh_render_buffers_979.h"
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawers/plain_drawer.h>
 

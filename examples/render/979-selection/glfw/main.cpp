@@ -20,15 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/glfw/window_manager.h>
-
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #include <vclib/imgui/imgui_drawer.h>
+#include "../imgui_texture_getter_979.h"
 
+#include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 #include "../drawable_mesh_979.h"
-#include "../imgui_texture_getter_979.h"
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <vclib/algorithms/mesh/update/color.h>
