@@ -24,7 +24,6 @@
 #define VCL_CONCEPTS_SPACE_H
 
 #include "space/point.h"
-#include "space/tex_coord.h"
 
 /**
  * @defgroup space_concepts Space Concepts
