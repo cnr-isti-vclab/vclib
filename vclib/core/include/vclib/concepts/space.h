@@ -25,7 +25,6 @@
 
 #include "space/point.h"
 #include "space/tex_coord.h"
-#include "space/tex_coord_indexed.h"
 
 /**
  * @defgroup space_concepts Space Concepts

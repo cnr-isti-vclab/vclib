@@ -168,6 +168,8 @@ using PrincipalCurvaturef = PrincipalCurvature<float>;
  */
 using PrincipalCurvatured = PrincipalCurvature<double>;
 
+/* Concepts */
+
 /**
  * @brief A concept representing a PrincipalCurvature.
  *
