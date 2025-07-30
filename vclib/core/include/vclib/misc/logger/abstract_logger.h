@@ -240,6 +240,8 @@ public:
     virtual void progress(uint n) = 0;
 };
 
+/* Concepts */
+
 /**
  * @brief The LoggerConcept is satisfied if the type T is a valid Logger type.
  *
