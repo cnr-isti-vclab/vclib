@@ -23,7 +23,6 @@
 #ifndef VCL_CONCEPTS_SPACE_H
 #define VCL_CONCEPTS_SPACE_H
 
-#include "space/color.h"
 #include "space/point.h"
 #include "space/principal_curvature.h"
 #include "space/tex_coord.h"
