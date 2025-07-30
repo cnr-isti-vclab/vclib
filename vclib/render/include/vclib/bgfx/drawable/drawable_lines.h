@@ -24,8 +24,8 @@
 #define VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/primitives/lines.h>
 #include <vclib/render/drawable/drawable_object.h>
-#include <vclib/render/primitives/lines.h>
 
 #include <bgfx/bgfx.h>
 

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_PRIMITIVES_LINES_H
-#define VCL_RENDER_PRIMITIVES_LINES_H
+#ifndef VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H
+#define VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H
 
 #include <bgfx/bgfx.h>
 
@@ -47,4 +47,4 @@ inline std::pair<T*, bgfx::ReleaseFn> linesGetAllocatedBufferAndReleaseFn(
 }
 } // namespace vcl::detail
 
-#endif // VCL_RENDER_PRIMITIVES_LINES_H
+#endif // VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H

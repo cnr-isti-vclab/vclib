@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_LINES_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_LINES_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_PRIMITIVE_LINES_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_PRIMITIVE_LINES_H
 
 #include <vclib/bgfx/programs/vert_frag_loader.h>
 
@@ -39,4 +39,4 @@ struct VertFragLoader<VertFragProgram::PRIMITIVE_LINES>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_LINES_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_PRIMITIVE_LINES_H

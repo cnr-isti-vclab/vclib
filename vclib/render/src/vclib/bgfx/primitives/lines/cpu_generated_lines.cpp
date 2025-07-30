@@ -20,7 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/primitives/lines/cpu_generated_lines.h>
+#include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
+
+#include <vclib/bgfx/primitives/lines/lines_utils.h>
 
 namespace vcl::detail {
 
@@ -35,7 +37,7 @@ CPUGeneratedLines::CPUGeneratedLines(
 
 CPUGeneratedLines::CPUGeneratedLines(
     const std::vector<float>& vertCoords,
-    const std::vector<uint>& lineIndices,
+    const std::vector<uint>&  lineIndices,
     const std::vector<float>& vertNormals,
     const std::vector<uint>&  vertColors,
     const std::vector<uint>&  lineColors)
@@ -47,7 +49,7 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 {
     using std::swap;
 
-    swap(mVertexCoords, other.mVertexCoords);    
+    swap(mVertexCoords, other.mVertexCoords);
     swap(mVertexNormals, other.mVertexNormals);
     swap(mVertexColors, other.mVertexColors);
     swap(mLineColors, other.mLineColors);
@@ -56,32 +58,33 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 
 void CPUGeneratedLines::setPoints(
     const std::vector<float>& vertCoords,
-    const std::vector<uint>& lineIndices,
+    const std::vector<uint>&  lineIndices,
     const std::vector<float>& vertNormals,
     const std::vector<uint>&  vertColors,
-    const std::vector<uint>&  lineColors) 
+    const std::vector<uint>&  lineColors)
 {
     assert(vertCoords.size() % 3 == 0);
     assert(lineIndices.size() % 2 == 0);
 
     const bool setLineIndices = lineIndices.size() != 0;
-    const bool setColors = vertColors.size() != 0;
-    const bool setNormals = vertNormals.size() != 0;
-    const bool setLineColors = lineColors.size() != 0;
+    const bool setColors      = vertColors.size() != 0;
+    const bool setNormals     = vertNormals.size() != 0;
+    const bool setLineColors  = lineColors.size() != 0;
 
-    const uint nPoints = setLineIndices ? lineIndices.size() : vertCoords.size() / 3;
+    const uint nPoints =
+        setLineIndices ? lineIndices.size() : vertCoords.size() / 3;
 
     assert(!setColors || vertCoords.size() == vertColors.size() * 3);
     assert(!setNormals || vertCoords.size() == vertNormals.size());
-    assert(!setLineColors || vertColors.size() == lineColors.size() * 2);  
+    assert(!setLineColors || vertColors.size() == lineColors.size() * 2);
 
     if (nPoints > 1) {
-        uint bufferVertCoordsSize = (nPoints / 2) * 4 * 6;
-        uint bufferVertColorsSize = (nPoints / 2) * 4 * 2;
+        uint bufferVertCoordsSize  = (nPoints / 2) * 4 * 6;
+        uint bufferVertColorsSize  = (nPoints / 2) * 4 * 2;
         uint bufferVertNormalsSize = (nPoints / 2) * 4 * 6;
-        uint bufferLineColorsSize = (nPoints / 2) * 4 * 1;
+        uint bufferLineColorsSize  = (nPoints / 2) * 4 * 1;
 
-        uint bufferIndsSize  = (nPoints / 2) * 6;
+        uint bufferIndsSize = (nPoints / 2) * 6;
 
         auto [vCoords, vCoordsReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<float>(bufferVertCoordsSize);
@@ -91,16 +94,16 @@ void CPUGeneratedLines::setPoints(
 
         auto [vNormals, vNormalsReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<float>(bufferVertNormalsSize);
-            
+
         auto [lColors, lColorsReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<float>(bufferLineColorsSize);
 
         auto [indices, iReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
 
-        uint viCoords = 0;
-        uint viColors = 0;
-        uint viNormals = 0;
+        uint viCoords     = 0;
+        uint viColors     = 0;
+        uint viNormals    = 0;
         uint viLineColors = 0;
 
         uint ii = 0;
@@ -121,7 +124,7 @@ void CPUGeneratedLines::setPoints(
                     if (setColors) {
                         vColors[viColors++] =
                             std::bit_cast<float>(vertColors[index0]);
-    
+
                         vColors[viColors++] =
                             std::bit_cast<float>(vertColors[index1]);
                     }
@@ -130,16 +133,16 @@ void CPUGeneratedLines::setPoints(
                         vNormals[viNormals++] = vertNormals[(index0 * 3)];
                         vNormals[viNormals++] = vertNormals[(index0 * 3) + 1];
                         vNormals[viNormals++] = vertNormals[(index0 * 3) + 2];
-    
+
                         vNormals[viNormals++] = vertNormals[(index1 * 3)];
                         vNormals[viNormals++] = vertNormals[(index1 * 3) + 1];
                         vNormals[viNormals++] = vertNormals[(index1 * 3) + 2];
                     }
 
-
                     if (setLineColors) {
-                        lColors[viLineColors++] = std::bit_cast<float>(lineColors[i / 2]);
-                    }    
+                        lColors[viLineColors++] =
+                            std::bit_cast<float>(lineColors[i / 2]);
+                    }
                 }
             }
 
@@ -159,10 +162,12 @@ void CPUGeneratedLines::setPoints(
                 .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
                 .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
                 .end();
-    
+
             mVertexCoords.create(
                 bgfx::makeRef(
-                    vCoords, sizeof(float) * bufferVertCoordsSize, vCoordsReleaseFn),
+                    vCoords,
+                    sizeof(float) * bufferVertCoordsSize,
+                    vCoordsReleaseFn),
                 layout);
         }
 
@@ -172,10 +177,12 @@ void CPUGeneratedLines::setPoints(
                 .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
                 .add(bgfx::Attrib::Color1, 4, bgfx::AttribType::Uint8, true)
                 .end();
-    
+
             mVertexColors.create(
                 bgfx::makeRef(
-                    vColors, sizeof(float) * bufferVertColorsSize, vColorsReleaseFn),
+                    vColors,
+                    sizeof(float) * bufferVertColorsSize,
+                    vColorsReleaseFn),
                 layout);
         }
 
@@ -185,10 +192,12 @@ void CPUGeneratedLines::setPoints(
                 .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
                 .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
                 .end();
-    
+
             mVertexNormals.create(
                 bgfx::makeRef(
-                    vNormals, sizeof(float) * bufferVertNormalsSize, vNormalsReleaseFn),
+                    vNormals,
+                    sizeof(float) * bufferVertNormalsSize,
+                    vNormalsReleaseFn),
                 layout);
         }
 
@@ -197,24 +206,26 @@ void CPUGeneratedLines::setPoints(
             layout.begin()
                 .add(bgfx::Attrib::Color2, 4, bgfx::AttribType::Uint8, true)
                 .end();
-    
+
             mLineColors.create(
                 bgfx::makeRef(
-                    lColors, sizeof(float) * bufferLineColorsSize, lColorsReleaseFn),
+                    lColors,
+                    sizeof(float) * bufferLineColorsSize,
+                    lColorsReleaseFn),
                 layout);
         }
 
-         mIndices.create(
+        mIndices.create(
             bgfx::makeRef(indices, sizeof(uint) * bufferIndsSize, iReleaseFn),
             BGFX_BUFFER_INDEX32);
-
-    } else {
+    }
+    else {
         mVertexCoords.destroy();
         mVertexNormals.destroy();
         mVertexColors.destroy();
         mLineColors.destroy();
         mIndices.destroy();
-    } 
+    }
 }
 
 void CPUGeneratedLines::setPoints(

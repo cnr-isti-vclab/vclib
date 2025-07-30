@@ -20,16 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_PRIMITIVES_LINES_H
-#define VCL_RENDER_PRIMITIVES_LINES_H
+#ifndef VCL_BGFX_PRIMITIVES_LINES_H
+#define VCL_BGFX_PRIMITIVES_LINES_H
+
+#include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
+#include <vclib/bgfx/uniform.h>
 
 #include <vclib/types.h>
 
 #include <bgfx/bgfx.h>
-
-#include <vclib/bgfx/uniform.h>
-
-#include <vclib/render/primitives/lines/cpu_generated_lines.h>
 
 namespace vcl {
 
@@ -187,4 +186,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_PRIMITIVES_LINES_H
+#endif // VCL_BGFX_PRIMITIVES_LINES_H
