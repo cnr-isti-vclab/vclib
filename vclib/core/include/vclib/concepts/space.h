@@ -29,7 +29,6 @@
 #include "space/principal_curvature.h"
 #include "space/tex_coord.h"
 #include "space/tex_coord_indexed.h"
-#include "space/texture.h"
 
 /**
  * @defgroup space_concepts Space Concepts
