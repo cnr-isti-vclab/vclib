@@ -165,6 +165,7 @@ public:
     {
         AbstractDrawableMesh::setRenderSettings(rs);
         mMeshRenderSettingsUniforms.updateSettings(rs);
+        mMRB.updateWireframeSettings(rs);
     }
 
     uint vertexNumber() const override { return MeshType::vertexNumber(); }
@@ -239,14 +240,9 @@ public:
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-            bindUniforms();
-
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
             bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME>());
+            mMRB.drawWireframeLines(viewId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
@@ -321,16 +317,16 @@ public:
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-            mIdUniform.bind(&idFloat);
+        // if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
+        //     mMRB.bindVertexBuffers(mMRS);
+        //     mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
+        //     mIdUniform.bind(&idFloat);
 
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
-            bgfx::setTransform(model.data());
+        //     bgfx::setState(state | BGFX_STATE_PT_LINES);
+        //     bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
-        }
+        //     bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
+        // }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);

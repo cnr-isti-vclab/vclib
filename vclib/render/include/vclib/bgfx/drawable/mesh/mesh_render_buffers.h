@@ -29,6 +29,7 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
+#include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
@@ -71,8 +72,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     IndexBuffer mEdgeNormalBuffer;
     IndexBuffer mEdgeColorBuffer;
 
-    // TODO: manage wireframe with proper lines
-    IndexBuffer mWireframeIndexBuffer;
+    Lines mWireframeLines;
+    Color mMeshColor; // todo: find better way to store mesh color
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
@@ -121,27 +122,12 @@ public:
         swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
         swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
         swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
-        swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
+        swap(mWireframeLines, other.mWireframeLines);
         swap(mTextureUnits, other.mTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
-
-    void bindVertexBuffers(const MeshRenderSettings& mrs) const
-    {
-        // bgfx allows a maximum number of 4 vertex streams...
-        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
-        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
-        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
-
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
-        }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
-        }
-    }
 
     // to generate splats
     void computeQuadVertexBuffers(
@@ -171,6 +157,21 @@ public:
             1);
 
         mVertexQuadBufferGenerated = true;
+    }
+
+    void bindVertexBuffers(const MeshRenderSettings& mrs) const
+    {
+        // bgfx allows a maximum number of 4 vertex streams...
+        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
+        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
+
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+        }
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+        }
     }
 
     // to draw splats
@@ -209,10 +210,9 @@ public:
 
             mEdgeColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
         }
-        else if (indexBufferToBind == WIREFRAME) {
-            mWireframeIndexBuffer.bind();
-        }
     }
+
+    void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
     void bindTextures() const
     {
@@ -220,6 +220,25 @@ public:
         for (const auto& ptr : mTextureUnits) {
             ptr->bind(i);
             i++;
+        }
+    }
+
+    void updateWireframeSettings(const MeshRenderSettings& mrs)
+    {
+        using enum MeshRenderInfo::Wireframe;
+
+        mWireframeLines.thickness() = mrs.wireframeWidth();
+
+        if (mrs.isWireframe(COLOR_USER)) {
+            mWireframeLines.generalColor() = mrs.wireframeUserColor();
+            mWireframeLines.colorToUse()   = Lines::ColorToUse::GENERAL;
+        }
+        else if (mrs.isWireframe(COLOR_MESH)) {
+            mWireframeLines.generalColor() = mMeshColor;
+            mWireframeLines.colorToUse()   = Lines::ColorToUse::GENERAL;
+        }
+        else if (mrs.isWireframe(COLOR_VERTEX)) {
+            mWireframeLines.colorToUse() = Lines::ColorToUse::PER_VERTEX;
         }
     }
 
@@ -473,13 +492,7 @@ private:
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
-        const uint nw = Base::numWireframeLines();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nw * 2);
-
-        Base::fillWireframeIndices(mesh, buffer);
-
-        mWireframeIndexBuffer.create(buffer, nw * 2, true, releaseFn);
+        computeWireframeLines(mesh);
     }
 
     void setTextureUnits(const MeshType& mesh) // override
@@ -531,6 +544,43 @@ private:
     void setMeshUniforms(const MeshType& mesh) // override
     {
         mMeshUniforms.update(mesh);
+        if constexpr (HasColor<MeshType>) {
+            mMeshColor = mesh.color();
+        }
+    }
+
+    // to generate wireframe lines
+    void computeWireframeLines(const MeshType& mesh)
+    {
+        // if cpu lines, do this...
+
+        // positions
+        const uint         nv = Base::numVerts();
+        std::vector<float> positions(nv * 3);
+        Base::fillVertexPositions(mesh, positions.data());
+
+        // indices
+        const uint        nw = Base::numWireframeLines();
+        std::vector<uint> indices(nw * 2);
+        Base::fillWireframeIndices(mesh, indices.data());
+
+        // v normals
+        std::vector<float> normals;
+        if (mVertexNormalsBuffer.isValid()) {
+            normals.resize(nv * 3);
+            Base::fillVertexNormals(mesh, normals.data());
+        }
+
+        // vcolors
+        std::vector<uint> vcolors;
+        if (mVertexColorsBuffer.isValid()) {
+            vcolors.resize(nv);
+            Base::fillVertexColors(mesh, vcolors.data(), Color::Format::ABGR);
+        }
+
+        mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
+
+        // otherwise, already computed buffers should do the job
     }
 
     template<typename T>

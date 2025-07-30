@@ -36,9 +36,9 @@ class Lines
 {
 public:
     enum class ColorToUse {
-        PER_VERTEX_COLOR, // Select color form vertex color
-        PER_EDGE_COLOR,   // Select color from edge buffer color
-        GENERAL_COLOR     // Use general color in uniform data
+        PER_VERTEX, // Select color form vertex color
+        PER_EDGE,   // Select color from edge buffer color
+        GENERAL     // Use general color in uniform data
     };
 
     enum class ImplementationType {
@@ -57,9 +57,11 @@ public:
 
 private:
     uint8_t             mThickness    = 5;
-    ColorToUse          mColorToUse   = ColorToUse::PER_VERTEX_COLOR;
+    ColorToUse          mColorToUse   = ColorToUse::PER_VERTEX;
     Color               mGeneralColor = Color::ColorABGR::LightGray;
     ImplementationType  mType         = ImplementationType::CPU_GENERATED;
+    // TODO: add setting that allows to set shading: per vertex (using normal)
+    // or solid
 
     Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
     detail::CPUGeneratedLines mLinesImplementation;
@@ -73,7 +75,7 @@ public:
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors,
         uint8_t                   thickness = 5,
-        ColorToUse                colorToUse = ColorToUse::PER_VERTEX_COLOR,
+        ColorToUse                colorToUse = ColorToUse::PER_VERTEX,
         ImplementationType        type = ImplementationType::CPU_GENERATED) :
             mThickness(thickness), mColorToUse(colorToUse)
     {
@@ -89,7 +91,7 @@ public:
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors,
         uint8_t                   thickness = 5,
-        ColorToUse                colorToUse = ColorToUse::PER_VERTEX_COLOR,
+        ColorToUse                colorToUse = ColorToUse::PER_VERTEX,
         ImplementationType        type = ImplementationType::CPU_GENERATED) :
             mThickness(thickness), mColorToUse(colorToUse)
     {
