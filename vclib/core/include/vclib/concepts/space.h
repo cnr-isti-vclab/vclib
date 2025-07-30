@@ -23,8 +23,6 @@
 #ifndef VCL_CONCEPTS_SPACE_H
 #define VCL_CONCEPTS_SPACE_H
 
-#include "space/point.h"
-
 /**
  * @defgroup space_concepts Space Concepts
  * @ingroup lib_concepts
