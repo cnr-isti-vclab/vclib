@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_CONCEPTS_H
 #define VCL_MESH_CONCEPTS_H
 
+#include "concepts/components.h"
 #include "concepts/per_edge.h"
 #include "concepts/per_face.h"
 #include "concepts/per_mesh.h"

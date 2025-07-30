@@ -25,7 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/texture_paths.h>
+
 #include <vclib/serialization.h>
 #include <vclib/types.h>
 

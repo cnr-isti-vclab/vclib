@@ -20,38 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_QUALITY_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_QUALITY_H
 
-#include "components/adjacent_edges.h"
-#include "components/adjacent_faces.h"
-#include "components/adjacent_vertices.h"
-#include "components/bit_flags.h"
-#include "components/bounding_box.h"
-#include "components/color.h"
-#include "components/component.h"
-#include "components/custom_components.h"
-#include "components/mark.h"
-#include "components/name.h"
-#include "components/normal.h"
-#include "components/position.h"
-#include "components/principal_curvature.h"
-#include "components/quality.h"
-#include "components/tex_coord.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
-#include "components/transform_matrix.h"
-#include "components/vertex_references.h"
-#include "components/wedge_colors.h"
-#include "components/wedge_tex_coords.h"
+#include "component.h"
+
+#include <vclib/types.h>
+
+namespace vcl::comp {
 
 /**
- * @defgroup components_concepts Components Concepts
- * @ingroup mesh_concepts
- * @ingroup components
+ * @brief HasQuality concept is satisfied only if a Element class provides the
+ * types and member functions specified in this concept. These types and member
+ * functions allow to access to a @ref vcl::comp::Quality component of a given
+ * element.
  *
- * @brief List of concepts for types related to the Component classes of the
- * library.
+ * Note that this concept does not discriminate between the Horizontal Quality
+ * component and the vertical OptionalQuality component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Quality component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
+ *
+ * @ingroup components_concepts
  */
+template<typename T>
+concept HasQuality = requires (
+    T&&                                 obj,
+    typename RemoveRef<T>::QualityType  q,
+    typename RemoveRef<T>::QualityType& qR) {
+    typename RemoveRef<T>::QualityType;
+    { obj.quality() } -> std::convertible_to<decltype(q)>;
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_H
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.quality() } -> std::same_as<decltype(qR)>;
+    };
+};
+
+/**
+ * @brief HasOptionalQuality concept is satisfied only if a class satisfies the
+ * @ref vcl::comp::HasQuality concept and the static boolean constant
+ * `IS_OPTIONAL` is set to `true`.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalQuality =
+    HasQuality<T> && IsOptionalComponent<typename RemoveRef<T>::Quality>;
+
+} // namespace vcl::comp
+
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_QUALITY_H

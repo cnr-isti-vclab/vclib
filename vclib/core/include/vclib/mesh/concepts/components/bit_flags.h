@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_BIT_FLAGS_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_BIT_FLAGS_H
 
 #include <vclib/concepts/space/bit_set.h>
 
@@ -125,4 +125,4 @@ concept HasFaceBitFlags = HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_BIT_FLAGS_H

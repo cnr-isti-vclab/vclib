@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_PATHS_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_PATHS_H
 
 #include <vclib/types.h>
 
@@ -30,33 +30,46 @@
 namespace vcl::comp {
 
 /**
- * @brief HasCustomComponents concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a @ref
- * vcl::comp::CustomComponents component of a given element.
+ * @brief HasTexturePaths concept is satisfied only if a Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a @ref vcl::comp::TexturePaths component of a
+ * given mesh.
+ *
+ * @note This concept is satisfied also if a Mesh provides the @ref
+ * vcl::comp::TextureImages component, since the texture paths are stored along
+ * with the textures.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasCustomComponents =
-    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
-        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
-        {
-            obj.template isCustomComponentOfType<int>(str)
-        } -> std::same_as<bool>;
-        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
-        {
-            obj.template customComponentNamesOfType<int>()
-        } -> std::same_as<decltype(vStr)>;
+concept HasTexturePaths = requires (T&& obj) {
+    typename RemoveRef<T>::TexFileNamesIterator;
+    typename RemoveRef<T>::ConstTexFileNamesIterator;
 
-        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
+    { obj.textureNumber() } -> std::same_as<uint>;
+    { obj.texturePath(uint()) } -> std::convertible_to<std::string>;
 
-        // non const requirements
-        requires IsConst<T> || requires {
-            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
-        };
+    { obj.meshBasePath() } -> std::convertible_to<std::string>;
+    { obj.indexOfTexturePath(std::string()) } -> std::same_as<uint>;
+
+    { obj.texturePathBegin() } -> InputIterator<std::string>;
+    { obj.texturePathEnd() } -> InputIterator<std::string>;
+    { obj.texturePaths() } -> InputRange<std::string>;
+
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.texturePath(uint()) } -> std::same_as<std::string&>;
+        { obj.meshBasePath() } -> std::same_as<std::string&>;
+
+        { obj.clearTexturePaths() } -> std::same_as<void>;
+        { obj.pushTexturePath(std::string()) } -> std::same_as<void>;
+
+        { obj.texturePathBegin() } -> OutputIterator<std::string>;
+        { obj.texturePathEnd() } -> OutputIterator<std::string>;
+        { obj.texturePaths() } -> OutputRange<std::string>;
     };
+};
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_PATHS_H

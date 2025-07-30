@@ -25,7 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/texture_images.h>
+
 #include <vclib/space/core.h>
 #include <vclib/types.h>
 

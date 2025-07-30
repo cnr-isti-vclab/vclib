@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_VERTEX_REFERENCES_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_VERTEX_REFERENCES_H
 
 #include <vclib/types.h>
 
@@ -111,4 +111,4 @@ concept HasVertexReferences = requires (
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_VERTEX_REFERENCES_H

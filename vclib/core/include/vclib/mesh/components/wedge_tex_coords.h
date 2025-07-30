@@ -25,7 +25,8 @@
 
 #include "bases/container_component.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/wedge_tex_coords.h>
+
 #include <vclib/space/core.h>
 #include <vclib/types.h>
 

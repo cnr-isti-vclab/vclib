@@ -25,7 +25,7 @@
 
 #include "../detail/component_data.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/component.h>
 
 namespace vcl::comp {
 

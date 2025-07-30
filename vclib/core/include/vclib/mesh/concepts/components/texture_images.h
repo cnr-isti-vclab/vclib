@@ -20,27 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_IMAGES_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_IMAGES_H
 
-#include <vclib/concepts/space.h>
+#include "texture_paths.h"
+
+#include <vclib/concepts/space/texture.h>
+
+#include <string>
 
 namespace vcl::comp {
 
 /**
- * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class
+ * @brief HasTextureImages concept is satisfied only if a Mesh class
  * provides the member functions specified in this concept. These member
- * functions allows to access to a @ref vcl::comp::BoundingBox component of a
- * given element/mesh.
+ * functions allows to access to a @ref vcl::comp::TextureImages component of a
+ * given mesh.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasBoundingBox = requires (T&& obj) {
-    typename RemoveRef<T>::BoundingBoxType;
-    { obj.boundingBox() } -> Box3Concept;
-};
+concept HasTextureImages =
+    HasTexturePaths<T> &&
+    requires (T&& obj, typename RemoveRef<T>::TextureType t) {
+        typename RemoveRef<T>::TextureType;
+        typename RemoveRef<T>::TextureIterator;
+        typename RemoveRef<T>::ConstTextureIterator;
+
+        { obj.texture(uint()) } -> TextureConcept;
+
+        { obj.textureBegin() } -> InputIterator<decltype(t)>;
+        { obj.textureEnd() } -> InputIterator<decltype(t)>;
+        { obj.textures() } -> InputRange<decltype(t)>;
+
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.clearTextures() } -> std::same_as<void>;
+            { obj.pushTexture(std::string()) } -> std::same_as<void>;
+            { obj.pushTexture(t) } -> std::same_as<void>;
+
+            { obj.textureBegin() } -> OutputIterator<decltype(t)>;
+            { obj.textureEnd() } -> OutputIterator<decltype(t)>;
+            { obj.textures() } -> OutputRange<decltype(t)>;
+        };
+    };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_IMAGES_H

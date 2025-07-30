@@ -20,52 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_MARK_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_MARK_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_COLOR_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_COLOR_H
 
 #include "component.h"
 
-#include <vclib/types.h>
+#include <vclib/concepts/space.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasMark concept is satisfied only if a Element/Mesh class provides the
- * types and member functions specified in this concept. These types and member
- * functions allow to access to a @ref vcl::comp::Mark component of a given
- * element/mesh.
+ * @brief HasColor concept is satisfied only if a Element/Mesh class provides
+ * the types and member functions specified in this concept. These types and
+ * member functions allow to access to a @ref vcl::comp::Color component of a
+ * given element/mesh.
  *
- * Note that this concept does not discriminate between the Horizontal Mark
- * component and the vertical OptionalMark component, therefore it does not
+ * Note that this concept does not discriminate between the Horizontal Color
+ * component and the vertical OptionalColor component, therefore it does not
  * guarantee that a template Element type that satisfies this concept provides
- * Mark component at runtime (it is guaranteed only that the proper member
+ * Color component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasMark = requires (T&& obj) {
-    { obj.mark() } -> std::same_as<int>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.resetMark() } -> std::same_as<void>;
-        { obj.incrementMark() } -> std::same_as<void>;
-        { obj.decrementMark() } -> std::same_as<void>;
-    };
+concept HasColor = requires (T&& obj) {
+    typename RemoveRef<T>::ColorType;
+    { obj.color() } -> ColorConcept;
 };
 
 /**
- * @brief HasOptionalMark concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasMark concept and and the static boolean constant
+ * @brief HasOptionalColor concept is satisfied only if a class satisfies the
+ * @ref vcl::comp::HasColor concept and the static boolean constant
  * `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalMark =
-    HasMark<T> && IsOptionalComponent<typename RemoveRef<T>::Mark>;
+concept HasOptionalColor =
+    HasColor<T> && IsOptionalComponent<typename RemoveRef<T>::Color>;
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_MARK_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_COLOR_H

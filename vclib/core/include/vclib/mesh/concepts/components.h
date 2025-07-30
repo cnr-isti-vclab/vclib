@@ -20,46 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_NORMAL_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_NORMAL_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_H
 
-#include "component.h"
-
-#include <vclib/concepts/space.h>
-
-namespace vcl::comp {
-
-/**
- * @brief HasNormal concept is satisfied only if a Element class provides the
- * types and member functions specified in this concept. These types and member
- * functions allow to access to a @ref vcl::comp::Normal component of a given
- * element.
- *
- * Note that this concept does not discriminate between the Horizontal Normal
- * component and the vertical OptionalNormal component, therefore it does not
- * guarantee that a template Element type that satisfies this concept provides
- * Normal component at runtime (it is guaranteed only that the proper member
- * functions are available at compile time).
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasNormal = requires (T&& obj) {
-    typename RemoveRef<T>::NormalType;
-    { obj.normal() } -> PointConcept;
-};
+#include "components/adjacent_edges.h"
+#include "components/adjacent_faces.h"
+#include "components/adjacent_vertices.h"
+#include "components/bit_flags.h"
+#include "components/bounding_box.h"
+#include "components/color.h"
+#include "components/component.h"
+#include "components/custom_components.h"
+#include "components/mark.h"
+#include "components/name.h"
+#include "components/normal.h"
+#include "components/position.h"
+#include "components/principal_curvature.h"
+#include "components/quality.h"
+#include "components/tex_coord.h"
+#include "components/texture_images.h"
+#include "components/texture_paths.h"
+#include "components/transform_matrix.h"
+#include "components/vertex_references.h"
+#include "components/wedge_colors.h"
+#include "components/wedge_tex_coords.h"
 
 /**
- * @brief HasOptionalNormal concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasNormal concept and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
+ * @defgroup components_concepts Components Concepts
+ * @ingroup mesh_concepts
+ * @ingroup components
  *
- * @ingroup components_concepts
+ * @brief List of concepts for types related to the Component classes of the
+ * library.
  */
-template<typename T>
-concept HasOptionalNormal =
-    HasNormal<T> && IsOptionalComponent<typename RemoveRef<T>::Normal>;
 
-} // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_NORMAL_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_H

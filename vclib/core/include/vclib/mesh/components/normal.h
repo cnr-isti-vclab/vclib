@@ -25,7 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/normal.h>
+
 #include <vclib/space/core.h>
 
 namespace vcl::comp {

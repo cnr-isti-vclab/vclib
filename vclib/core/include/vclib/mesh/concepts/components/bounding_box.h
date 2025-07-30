@@ -20,32 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_BOUNDING_BOX_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_BOUNDING_BOX_H
 
-#include <vclib/types.h>
-
-#include <string>
+#include <vclib/concepts/space.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasName concept is satisfied only if a Element or Mesh class provides
- * the member functions specified in this concept. These member functions allows
- * to access to a @ref vcl::comp::Name component of a given element/mesh.
+ * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a @ref vcl::comp::BoundingBox component of a
+ * given element/mesh.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasName = requires (T&& obj) {
-    { obj.name() } -> std::convertible_to<std::string>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.name() } -> std::same_as<std::string&>;
-    };
+concept HasBoundingBox = requires (T&& obj) {
+    typename RemoveRef<T>::BoundingBoxType;
+    { obj.boundingBox() } -> Box3Concept;
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_BOUNDING_BOX_H

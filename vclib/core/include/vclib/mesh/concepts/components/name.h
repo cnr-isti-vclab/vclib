@@ -20,9 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_H
-#define VCL_CONCEPTS_MESH_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_NAME_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_NAME_H
 
-#include "mesh/components.h"
+#include <vclib/types.h>
 
-#endif // VCL_CONCEPTS_MESH_H
+#include <string>
+
+namespace vcl::comp {
+
+/**
+ * @brief HasName concept is satisfied only if a Element or Mesh class provides
+ * the member functions specified in this concept. These member functions allows
+ * to access to a @ref vcl::comp::Name component of a given element/mesh.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasName = requires (T&& obj) {
+    { obj.name() } -> std::convertible_to<std::string>;
+
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.name() } -> std::same_as<std::string&>;
+    };
+};
+
+} // namespace vcl::comp
+
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_NAME_H

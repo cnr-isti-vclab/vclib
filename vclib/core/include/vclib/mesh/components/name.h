@@ -25,7 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/name.h>
+
 #include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 

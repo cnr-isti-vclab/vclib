@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_CONTAINERS_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
 #define VCL_MESH_CONTAINERS_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
 
+#include <vclib/mesh/concepts/components/component.h>
+
 #include <vclib/concepts.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/types.h>

@@ -25,7 +25,8 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/bounding_box.h>
+
 #include <vclib/space/core.h>
 
 namespace vcl::comp {

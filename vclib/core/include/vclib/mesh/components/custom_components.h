@@ -25,7 +25,8 @@
 
 #include "detail/custom_components_data.h"
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/concepts/components/custom_components.h>
+
 #include <vclib/serialization.h>
 
 #include <any>

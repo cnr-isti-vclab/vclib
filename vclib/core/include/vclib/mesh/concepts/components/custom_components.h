@@ -20,51 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
+#ifndef VCL_MESH_CONCEPTS_COMPONENTS_CUSTOM_COMPONENTS_H
+#define VCL_MESH_CONCEPTS_COMPONENTS_CUSTOM_COMPONENTS_H
 
-#include "texture_paths.h"
-
-#include <vclib/concepts/space/texture.h>
+#include <vclib/types.h>
 
 #include <string>
 
 namespace vcl::comp {
 
 /**
- * @brief HasTextureImages concept is satisfied only if a Mesh class
- * provides the member functions specified in this concept. These member
- * functions allows to access to a @ref vcl::comp::TextureImages component of a
- * given mesh.
+ * @brief HasCustomComponents concept is satisfied only if a Element class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a @ref
+ * vcl::comp::CustomComponents component of a given element.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTextureImages =
-    HasTexturePaths<T> &&
-    requires (T&& obj, typename RemoveRef<T>::TextureType t) {
-        typename RemoveRef<T>::TextureType;
-        typename RemoveRef<T>::TextureIterator;
-        typename RemoveRef<T>::ConstTextureIterator;
+concept HasCustomComponents =
+    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
+        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
+        {
+            obj.template isCustomComponentOfType<int>(str)
+        } -> std::same_as<bool>;
+        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
+        {
+            obj.template customComponentNamesOfType<int>()
+        } -> std::same_as<decltype(vStr)>;
 
-        { obj.texture(uint()) } -> TextureConcept;
-
-        { obj.textureBegin() } -> InputIterator<decltype(t)>;
-        { obj.textureEnd() } -> InputIterator<decltype(t)>;
-        { obj.textures() } -> InputRange<decltype(t)>;
+        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
 
         // non const requirements
         requires IsConst<T> || requires {
-            { obj.clearTextures() } -> std::same_as<void>;
-            { obj.pushTexture(std::string()) } -> std::same_as<void>;
-            { obj.pushTexture(t) } -> std::same_as<void>;
-
-            { obj.textureBegin() } -> OutputIterator<decltype(t)>;
-            { obj.textureEnd() } -> OutputIterator<decltype(t)>;
-            { obj.textures() } -> OutputRange<decltype(t)>;
+            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
         };
     };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
+#endif // VCL_MESH_CONCEPTS_COMPONENTS_CUSTOM_COMPONENTS_H
