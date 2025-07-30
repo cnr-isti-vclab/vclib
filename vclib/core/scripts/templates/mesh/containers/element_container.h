@@ -514,7 +514,7 @@ public:
  * The concept is satisfied when `T` is a class that instantiates or derives
  * from a %EL_UC%Container class having any %EL_UC% element type.
  *
- * @tparam T: The type to be tested for conformity to the %EL_UC%Container.
+ * @tparam T: The type to be tested for conformity to the Has%EL_UC%Container.
  *
  * @ingroup containers
  * @ingroup containers_concepts

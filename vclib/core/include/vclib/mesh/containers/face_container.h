@@ -1341,7 +1341,7 @@ private:
  * The concept is satisfied when `T` is a class that instantiates or derives
  * from a FaceContainer class having any Face element type.
  *
- * @tparam T: The type to be tested for conformity to the FaceContainer.
+ * @tparam T: The type to be tested for conformity to the HasFaceContainer.
  *
  * @ingroup containers
  * @ingroup containers_concepts

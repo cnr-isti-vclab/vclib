@@ -1217,7 +1217,7 @@ public:
  * The concept is satisfied when `T` is a class that instantiates or derives
  * from a VertexContainer class having any Vertex element type.
  *
- * @tparam T: The type to be tested for conformity to the VertexContainer.
+ * @tparam T: The type to be tested for conformity to the HasVertexContainer.
  *
  * @ingroup containers
  * @ingroup containers_concepts

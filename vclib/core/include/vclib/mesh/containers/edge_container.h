@@ -1016,7 +1016,7 @@ public:
  * The concept is satisfied when `T` is a class that instantiates or derives
  * from a EdgeContainer class having any Edge element type.
  *
- * @tparam T: The type to be tested for conformity to the EdgeContainer.
+ * @tparam T: The type to be tested for conformity to the HasEdgeContainer.
  *
  * @ingroup containers
  * @ingroup containers_concepts
