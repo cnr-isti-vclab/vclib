@@ -3,11 +3,11 @@
 #ifndef VCL_MESH_REQUIREMENTS_%EL_U%_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_%EL_U%_REQUIREMENTS_H
 
-#include "element_requirements.h"
+#include "../concepts/per_%EL%.h"
 #include "../containers/%EL%_container.h"
+#include "element_requirements.h"
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh.h>
+#include <vclib/exceptions.h>
 
 /**
  * @defgroup %EL%_requirements %EL_UC% Requirements

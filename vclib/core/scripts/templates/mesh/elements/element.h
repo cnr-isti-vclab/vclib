@@ -3,9 +3,8 @@
 #ifndef VCL_MESH_ELEMENTS_%EL_U%_H
 #define VCL_MESH_ELEMENTS_%EL_U%_H
 
+#include "%EL%_components.h"
 #include "element.h"
-
-#include <vclib/concepts/mesh/elements/%EL%.h>
 
 namespace vcl {
 
@@ -26,12 +25,6 @@ namespace vcl {
 template<typename MeshType, typename... Comps>
 class %EL_UC% : public Element<ElemId::%EL_U%, MeshType, Comps...>
 {
-};
-
-template<typename MeshType, typename... Comps>
-class %EL_UC%<MeshType, TypeWrapper<Comps...>> :
-        public %EL_UC%<MeshType, Comps...>
-{
 public:
     /**
      * @brief Empty constructor.
@@ -42,6 +35,30 @@ public:
      */
     %EL_UC%() = default;
 };
+
+template<typename MeshType, typename... Comps>
+class %EL_UC%<MeshType, TypeWrapper<Comps...>> :
+        public %EL_UC%<MeshType, Comps...>
+{
+};
+
+/* Concepts */
+
+/**
+ * @brief The %EL_UC%Concept describes how a %EL_UC% element that can be
+ * used for a %EL_UC%Container should be organized.
+ *
+ * The %EL_UC% concept is satisfied for a class E if ALL the following
+ * sentences are true:
+ * - The class E is vcl::%EL_UC%, or derives from it;
+ * - The class E has the BitFlags component (or an equivalent one);
+ *
+ * @ingroup %EL%_concepts
+ */
+template<typename T>
+    concept %EL_UC%Concept =
+    ElementConcept<T> && RemoveRef<T>::ELEMENT_TYPE == ElemId::%EL_U% &&
+        %EL_NS%::HasBitFlags<T>;
 
 } // namespace vcl
 

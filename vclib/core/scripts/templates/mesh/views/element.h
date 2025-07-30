@@ -3,26 +3,23 @@
 #ifndef VCL_VIEWS_MESH_ELEMENTS_%EL_U%_H
 #define VCL_VIEWS_MESH_ELEMENTS_%EL_U%_H
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/mesh/concepts/per_%EL%.h>
 
 namespace vcl::views {
 namespace detail {
-
-template<typename T>
-concept Clean%EL_UC%MeshConcept = %EL_UC%MeshConcept<std::remove_cvref_t<T>>;
 
 struct %EL_UC%sView
 {
     constexpr %EL_UC%sView() = default;
 
-    template <Clean%EL_UC%MeshConcept R>
+    template <%EL_UC%MeshConcept R>
     friend constexpr auto operator|(R&& r, %EL_UC%sView)
     {
         return r.%EL_C%s();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
  * @brief A view that allows to iterate overt the %EL_UC% elements of an

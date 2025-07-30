@@ -1,9 +1,9 @@
 %HEADER%
 
-#ifndef VCLIB_CONCEPTS_RANGES_MESH_%EL_U%_RANGE_H
-#define VCLIB_CONCEPTS_RANGES_MESH_%EL_U%_RANGE_H
+#ifndef VCLIB_MESH_CONCEPTS_RANGES_%EL_U%_RANGE_H
+#define VCLIB_MESH_CONCEPTS_RANGES_%EL_U%_RANGE_H
 
-#include <vclib/concepts/mesh/elements/%EL%.h>
+#include <vclib/mesh/elements/%EL%.h>
 
 #include <vclib/types.h>
 
@@ -42,4 +42,4 @@ concept %EL_UC%PointerRangeConcept =
 
 } // namespace vcl
 
-#endif // VCLIB_CONCEPTS_RANGES_MESH_%EL_U%_RANGE_H
+#endif // VCLIB_MESH_CONCEPTS_RANGES_%EL_U%_RANGE_H
