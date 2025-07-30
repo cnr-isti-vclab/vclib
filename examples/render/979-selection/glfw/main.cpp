@@ -88,6 +88,7 @@ int main(void)
 
     tw.setMRB(&mshptr->getMRB());
     tw.setBbox(mshptr->getBbox());
+    tw.setMesh(mshptr);
 
     tw.fitScene();
 

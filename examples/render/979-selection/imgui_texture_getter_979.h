@@ -26,6 +26,7 @@
 #include <imgui.h>
 
 #include "mesh_render_buffers_979.h"
+#include "drawable_mesh_979.h"
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawers/plain_drawer.h>
 
@@ -38,6 +39,8 @@ template<typename DerivedDrawer>
 class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
 {
     bgfx::ViewId mOffScreenId = BGFX_INVALID_VIEW;
+
+    std::shared_ptr<const vcl::DrawableMeshBGFX979<vcl::TriMesh>> msh;
 
     vcl::uint mVertNum;
 
@@ -66,6 +69,8 @@ public:
     }
 
     void setBbox(const vcl::Box3d& box) { bbox = box; }
+
+    void setMesh(std::shared_ptr<const vcl::DrawableMeshBGFX979<vcl::TriMesh>> msh) {this->msh = msh;}
 
     void onDraw(vcl::uint viewId)
     {
@@ -98,6 +103,7 @@ public:
         if (ImGui::Button("Calculate selection and read texture")) {
             mAwaitingRead = true;
             mAvailable    = false;
+            msh->setTransform();
             mMRB->calculateSelection(viewId, mOffScreenId, bbox);
             mAvailabilityWait =
                 bgfx::readTexture(mMRB->getReadBackTexture(), (void*) read_to);

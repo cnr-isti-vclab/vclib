@@ -129,6 +129,14 @@ public:
         }
     }
 
+    void setTransform() const {
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        bgfx::setTransform(model.data());
+    }
+
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
