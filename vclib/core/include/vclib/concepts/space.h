@@ -24,7 +24,6 @@
 #define VCL_CONCEPTS_SPACE_H
 
 #include "space/point.h"
-#include "space/principal_curvature.h"
 #include "space/tex_coord.h"
 #include "space/tex_coord_indexed.h"
 

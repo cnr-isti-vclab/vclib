@@ -106,7 +106,7 @@ public:
     }
 };
 
-/* Texture */
+/* Concepts */
 
 /**
  * @brief A concept representing a Texture.
