@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONCEPTS_COMPONENTS_POSITION_H
 #define VCL_MESH_CONCEPTS_COMPONENTS_POSITION_H
 
-#include <vclib/concepts/space.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 

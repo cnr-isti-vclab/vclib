@@ -25,7 +25,7 @@
 
 #include "component.h"
 
-#include <vclib/concepts/space/principal_curvature.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 

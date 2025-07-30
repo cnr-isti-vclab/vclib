@@ -25,7 +25,7 @@
 
 #include "texture_paths.h"
 
-#include <vclib/concepts/space/texture.h>
+#include <vclib/space/core.h>
 
 #include <string>
 

@@ -28,7 +28,6 @@
 #include "space/box.h"
 #include "space/color.h"
 #include "space/image.h"
-#include "space/matrix.h"
 #include "space/point.h"
 #include "space/principal_curvature.h"
 #include "space/tex_coord.h"

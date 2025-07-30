@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONCEPTS_COMPONENTS_TRANSFORM_MATRIX_H
 #define VCL_MESH_CONCEPTS_COMPONENTS_TRANSFORM_MATRIX_H
 
-#include <vclib/concepts/space/matrix.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 

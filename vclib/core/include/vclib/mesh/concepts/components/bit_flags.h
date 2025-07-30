@@ -23,8 +23,7 @@
 #ifndef VCL_MESH_CONCEPTS_COMPONENTS_BIT_FLAGS_H
 #define VCL_MESH_CONCEPTS_COMPONENTS_BIT_FLAGS_H
 
-#include <vclib/concepts/space/bit_set.h>
-
+#include <vclib/space/core.h>
 #include <vclib/types.h>
 
 #include <concepts>

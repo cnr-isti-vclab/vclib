@@ -23,10 +23,55 @@
 #ifndef VCL_SPACE_CORE_MATRIX_H
 #define VCL_SPACE_CORE_MATRIX_H
 
+#include "array.h"
 #include "matrix/affine.h"
 #include "matrix/matrix.h"
 
 namespace vcl {
+
+/* Concepts */
+
+/**
+ * @brief Concept for 2D arrays (matrices). It is satisfied when `T` is a
+ * matrix, no matter its sizes.
+ *
+ * The concept just checks that `T` is a resizable Eigen matrix or an Array2,
+ * trough their respective concepts.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept MatrixConcept = EigenMatrixConcept<T> || Array2Concept<T>;
+
+/**
+ * @brief Concept for 3x3 matrices.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Matrix33Concept =
+    EigenMatrixConcept<T> && (RemoveRef<T>::RowsAtCompileTime == 3) &&
+    (RemoveRef<T>::ColsAtCompileTime == 3);
+
+/**
+ * @brief Concept for 4x4 matrices.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Matrix44Concept =
+    EigenMatrixConcept<T> && (RemoveRef<T>::RowsAtCompileTime == 4) &&
+    (RemoveRef<T>::ColsAtCompileTime == 4);
+
+/**
+ * @brief Concept for 3x3 or 4x4 matrices.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Matrix33Or44Concept = (Matrix33Concept<T> || Matrix44Concept<T>);
+
+/* Utility functions */
 
 /**
  * @brief Get the storage type of a matrix.

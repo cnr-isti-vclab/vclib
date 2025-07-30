@@ -25,7 +25,7 @@
 
 #include "component.h"
 
-#include <vclib/concepts/space/tex_coord_indexed.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 

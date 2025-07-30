@@ -25,8 +25,7 @@
 
 #include "component.h"
 
-#include <vclib/concepts/space/tex_coord.h>
-
+#include <vclib/space/core.h>
 #include <vclib/types.h>
 
 #include <vector>
