@@ -25,14 +25,15 @@
 
 #include "material.h"
 
-#include <vclib/exceptions/io.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/image/save.h>
 #include <vclib/io/mesh/settings.h>
 #include <vclib/io/write.h>
-#include <vclib/misc/logger.h>
-#include <vclib/space/complex/mesh_info.h>
-#include <vclib/space/core/texture.h>
+
+#include <vclib/exceptions.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
+#include <vclib/space/core.h>
 
 #include <map>
 
@@ -186,8 +187,8 @@ void saveObj(
     std::ostream&       fp,
     std::ostream*       mtlfp,
     bool                saveMtlFile,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
 {
     MeshInfo meshInfo(m);
 
@@ -377,18 +378,7 @@ void saveObj(
     const SaveSettings& settings,
     LogType&            log = nullLogger)
 {
-    detail::saveObj(m, "materials", fp, &mtlfp, false, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveObj(
-    const MeshType&     m,
-    std::ostream&       fp,
-    std::ostream&       mtlfp,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    detail::saveObj(m, "materials", fp, &mtlfp, false, log, settings);
+    detail::saveObj(m, "materials", fp, &mtlfp, false, settings, log);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
@@ -398,17 +388,7 @@ void saveObj(
     const SaveSettings& settings,
     LogType&            log = nullLogger)
 {
-    detail::saveObj(m, "", fp, nullptr, false, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveObj(
-    const MeshType&     m,
-    std::ostream&       fp,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    detail::saveObj(m, "", fp, nullptr, false, log, settings);
+    detail::saveObj(m, "", fp, nullptr, false, settings, log);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
@@ -420,19 +400,7 @@ void saveObj(
 {
     std::ofstream fp = openOutputFileStream(filename, "obj");
 
-    detail::saveObj(m, filename, fp, nullptr, true, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveObj(
-    const MeshType&     m,
-    const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    std::ofstream fp = openOutputFileStream(filename, "obj");
-
-    detail::saveObj(m, filename, fp, nullptr, true, log, settings);
+    detail::saveObj(m, filename, fp, nullptr, true, settings, log);
 }
 
 } // namespace vcl

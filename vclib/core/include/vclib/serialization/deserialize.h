@@ -25,8 +25,7 @@
 
 #include "endian.h"
 
-#include <vclib/concepts/serialization.h>
-#include <vclib/concepts/types.h>
+#include <vclib/concepts.h>
 
 #include <bit>
 #include <istream>

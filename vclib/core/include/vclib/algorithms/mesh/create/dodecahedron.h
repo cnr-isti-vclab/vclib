@@ -23,10 +23,9 @@
 #ifndef VCL_ALGORITHMS_MESH_CREATE_DODECAHEDRON_H
 #define VCL_ALGORITHMS_MESH_CREATE_DODECAHEDRON_H
 
-#include <vclib/algorithms/core/polygon.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/mesh/tmp_meshes.h>
-#include <vclib/misc/logger.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
 
 namespace vcl {
 

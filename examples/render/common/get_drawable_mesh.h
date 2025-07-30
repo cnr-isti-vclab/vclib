@@ -39,7 +39,7 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
         filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
     }
 
-    MeshType m = vcl::load<MeshType>(filename);
+    MeshType m = vcl::loadMesh<MeshType>(filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray

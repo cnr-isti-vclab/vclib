@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_SPACE_TEX_COORD_H
 
 #include <vclib/concepts/const_correctness.h>
+
 #include <vclib/types.h>
 
 namespace vcl {

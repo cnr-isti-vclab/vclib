@@ -25,7 +25,7 @@
 
 #include "file_format.h"
 
-#include <vclib/exceptions/io.h>
+#include <vclib/exceptions.h>
 #include <vclib/types.h>
 
 #include <filesystem>

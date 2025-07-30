@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_SHUFFLE_H
 #define VCL_MISC_SHUFFLE_H
 
-#include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts.h>
 
 #include <algorithm>
 #include <random>

@@ -26,8 +26,9 @@
 #include "barycenter.h"
 
 #include <vclib/algorithms/mesh/face_topology.h>
-#include <vclib/space/complex/mesh_inertia.h>
-#include <vclib/space/core/matrix.h>
+
+#include <vclib/space/complex.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

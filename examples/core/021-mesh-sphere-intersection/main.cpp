@@ -44,21 +44,22 @@ int main()
         settings.binary = false;
 
         // Save original and intersected meshes
-        vcl::save(originalMesh, resultsPath + "/021_original_bunny.ply");
-        vcl::save(
+        vcl::saveMesh(originalMesh, resultsPath + "/021_original_bunny.ply");
+        vcl::saveMesh(
             centerSphereMesh, resultsPath + "/021_center_sphere.ply", settings);
-        vcl::save(
+        vcl::saveMesh(
             centerSphereIntersection,
             resultsPath + "/021_center_sphere_intersection.ply",
             settings);
-        vcl::save(earSphereMesh, resultsPath + "/021_ear_sphere.ply", settings);
-        vcl::save(
+        vcl::saveMesh(
+            earSphereMesh, resultsPath + "/021_ear_sphere.ply", settings);
+        vcl::saveMesh(
             earSphereIntersection,
             resultsPath + "/021_ear_sphere_intersection.ply",
             settings);
-        vcl::save(
+        vcl::saveMesh(
             largeSphereMesh, resultsPath + "/021_large_sphere.ply", settings);
-        vcl::save(
+        vcl::saveMesh(
             largeSphereIntersection,
             resultsPath + "/021_large_sphere_intersection.ply",
             settings);

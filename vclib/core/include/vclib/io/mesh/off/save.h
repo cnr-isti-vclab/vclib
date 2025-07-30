@@ -23,11 +23,12 @@
 #ifndef VCL_IO_MESH_OFF_SAVE_H
 #define VCL_IO_MESH_OFF_SAVE_H
 
-#include <vclib/exceptions/io.h>
 #include <vclib/io/mesh/settings.h>
 #include <vclib/io/write.h>
-#include <vclib/misc/logger.h>
-#include <vclib/space/complex/mesh_info.h>
+
+#include <vclib/exceptions.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
 
 namespace vcl {
 
@@ -35,8 +36,8 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
     const MeshType&     m,
     std::ostream&       fp,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
 {
     MeshInfo meshInfo(m);
 
@@ -134,33 +135,13 @@ void saveOff(
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
     const MeshType&     m,
-    std::ostream&       fp,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    saveOff(m, fp, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveOff(
-    const MeshType&     m,
     const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
 {
     std::ofstream fp = openOutputFileStream(filename, "off");
-    saveOff(m, fp, log, settings);
+    saveOff(m, fp, settings, log);
     fp.close();
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveOff(
-    const MeshType&     m,
-    const std::string&  filename,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    saveOff(m, filename, log, settings);
 }
 
 } // namespace vcl

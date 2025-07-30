@@ -26,7 +26,6 @@
 #include <vclib/algorithms.h>
 #include <vclib/meshes.h>
 #include <vclib/space.h>
-#include <vclib/views.h>
 
 #include <random>
 

@@ -26,6 +26,7 @@
 #include "abstract_logger.h"
 
 #include <vclib/misc/timer.h>
+
 #include <vclib/types.h>
 
 #include <cassert>
@@ -38,6 +39,17 @@ namespace vcl {
 template<typename Stream>
 class Logger : public AbstractLogger
 {
+    struct ProgressStatus
+    {
+        std::string message;
+        uint        step;
+        uint        perc;
+        uint        percStep;
+        uint        size;
+        uint        lastProgress;
+        bool        isActive = false;
+    };
+
     enum InternalLogLevel { START = DEBUG_LOG + 1, END };
 
     static const uint TIMER_MAX_CHAR_NUMBER = 12;
@@ -57,15 +69,10 @@ class Logger : public AbstractLogger
 
     Timer mTimer;
 
+    LogLevel mPrintLevel = PROGRESS_LOG;
+
     // progress status members
-    std::string mProgressMessage;
-    LogLevel    mPrintLevel = PROGRESS_LOG;
-    uint        mProgressStep;
-    uint        mProgressPerc;
-    uint        mProgressPercStep;
-    uint        mProgressSize;
-    uint        mLastProgress;
-    bool        mIsProgressActive = false;
+    ProgressStatus mProgress;
 
     // settings
     bool mPrintPerc              = true;
@@ -129,12 +136,11 @@ public:
 
         assert(fromPerc >= 0);
         assert(toPerc <= 100);
+        std::pair<double, double> actualP = mIntervals.top();
         std::pair<double, double> newP;
-        newP.first = mIntervals.top().first +
-                     (mIntervals.top().second - mIntervals.top().first) *
-                         (fromPerc / 100);
-        newP.second =
-            (mIntervals.top().second - mIntervals.top().first) * (toPerc / 100);
+        newP.first =
+            actualP.first + (actualP.second - actualP.first) * (fromPerc / 100);
+        newP.second         = (actualP.second - actualP.first) * (toPerc / 100);
         mGlobalPercProgress = newP.first;
         mIntervals.push(newP);
         updateStep();
@@ -197,36 +203,36 @@ public:
     {
         assert(percPrintProgress > 0);
         assert((endPerc - startPerc) > 0);
-        mIsProgressActive = true;
-        mProgressMessage  = msg;
-        mProgressSize     = progressSize;
-        mProgressPerc     = startPerc;
-        mProgressPercStep = percPrintProgress;
-        mProgressStep =
+        mProgress.isActive = true;
+        mProgress.message  = msg;
+        mProgress.size     = progressSize;
+        mProgress.perc     = startPerc;
+        mProgress.percStep = percPrintProgress;
+        mProgress.step =
             (progressSize + 1) / ((endPerc - startPerc) / percPrintProgress);
-        if (mProgressStep == 0)
-            mProgressStep = progressSize;
-        mLastProgress = 0;
+        if (mProgress.step == 0)
+            mProgress.step = progressSize;
+        mProgress.lastProgress = 0;
     }
 
     void endProgress() override final
     {
-        progress(mProgressSize);
-        mIsProgressActive = false;
+        progress(mProgress.size);
+        mProgress.isActive = false;
     }
 
     void progress(uint n) override final
     {
         mMutex.lock();
-        assert(mIsProgressActive);
-        uint progress = n / mProgressStep;
-        if (mLastProgress < progress) {
-            mProgressPerc = progress * mProgressPercStep;
+        assert(mProgress.isActive);
+        uint progress = n / mProgress.step;
+        if (mProgress.lastProgress < progress) {
+            mProgress.perc = progress * mProgress.percStep;
             if (mPrintMsgDuringProgress)
-                log(mProgressPerc, mProgressMessage, PROGRESS_LOG);
+                log(mProgress.perc, mProgress.message, PROGRESS_LOG);
             else
-                setPercentage(mProgressPerc);
-            mLastProgress = progress;
+                setPercentage(mProgress.perc);
+            mProgress.lastProgress = progress;
         }
         mMutex.unlock();
     }

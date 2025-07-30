@@ -43,7 +43,7 @@ auto meshPointSampling()
     std::cout << "=== Loading Mesh ===" << std::endl;
 
     vcl::TriMesh originalMesh =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     originalMesh.name() = "Original Bunny Mesh";
 
     vcl::updatePerVertexAndFaceNormals(originalMesh);

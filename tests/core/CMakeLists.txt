@@ -47,6 +47,7 @@ add_subdirectory(018-polygon)
 add_subdirectory(019-export-matrix)
 add_subdirectory(020-append-buffer)
 add_subdirectory(021-grid-query)
+add_subdirectory(023-space-core)
 
 if (TARGET vclib-3rd-tinygltf)
     add_subdirectory(022-load-mesh-gltf)

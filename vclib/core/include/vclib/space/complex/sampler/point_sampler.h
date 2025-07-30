@@ -23,11 +23,8 @@
 #ifndef VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H
 #define VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H
 
-#include <vclib/algorithms/core/polygon.h>
-#include <vclib/concepts/mesh/elements/edge.h>
-#include <vclib/concepts/mesh/elements/face.h>
-#include <vclib/concepts/mesh/elements/vertex.h>
-#include <vclib/concepts/space/sampler.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 

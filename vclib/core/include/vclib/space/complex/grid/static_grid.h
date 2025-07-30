@@ -27,7 +27,7 @@
 #include "iterators/static_grid_iterator.h"
 #include "regular_grid.h"
 
-#include <vclib/concepts/ranges/mesh/vertex_range.h>
+#include <vclib/concepts.h>
 
 #include <set>
 #include <vector>

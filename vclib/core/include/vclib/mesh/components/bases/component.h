@@ -25,9 +25,7 @@
 
 #include "../detail/component_data.h"
 
-#include <vclib/concepts/mesh/components/component.h>
-#include <vclib/concepts/mesh/elements/element.h>
-#include <vclib/concepts/mesh/mesh_concept.h>
+#include <vclib/concepts.h>
 
 namespace vcl::comp {
 
@@ -218,12 +216,11 @@ protected:
  * available in the element/mesh. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] obj: The element/mesh to check. Must be of a type that satisfies
- * the ElementOrMeshConcept.
+ * @param[in] obj: The element/mesh to check.
  * @return `true` if the element/mesh has the component available, `false`
  * otherwise.
  */
-template<uint COMPONENT_ID, ElementOrMeshConcept T>
+template<uint COMPONENT_ID, typename T>
 bool isComponentAvailableOn(const T& obj)
 {
     if constexpr (HasOptionalComponentOfType<T, COMPONENT_ID>) {

@@ -28,9 +28,10 @@
 #include "detail/face.h"
 #include "detail/vertex.h"
 
-#include <vclib/exceptions/io.h>
 #include <vclib/io/mesh/settings.h>
-#include <vclib/misc/logger.h>
+
+#include <vclib/exceptions.h>
+#include <vclib/miscellaneous.h>
 
 namespace vcl {
 
@@ -38,9 +39,9 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
     const MeshType&     m,
     std::ostream&       fp,
-    const std::string&  basePath = "",
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const std::string&  fileBasePath,
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
 {
     using namespace detail;
     MeshInfo meshInfo(m);
@@ -66,7 +67,7 @@ void savePly(
             header.setNumberEdges(m.edgeNumber());
         }
     }
-    writePlyTextures(header, m, basePath, log, settings);
+    writePlyTextures(header, m, fileBasePath, log, settings);
 
     // this should never happen
     if (!header.isValid())
@@ -92,36 +93,15 @@ void savePly(
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
     const MeshType&     m,
-    std::ostream&       fp,
-    const SaveSettings& settings,
-    const std::string&  basePath = "",
-    LogType&            log      = nullLogger)
-{
-    savePly(m, fp, basePath, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-    const MeshType&     m,
     const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
 {
     std::ofstream fp = openOutputFileStream(filename, "ply");
 
     std::string basePath = FileInfo::pathWithoutFileName(filename);
 
-    savePly(m, fp, basePath, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-    const MeshType&     m,
-    const std::string&  filename,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    savePly(m, filename, log, settings);
+    savePly(m, fp, basePath, settings, log);
 }
 
 } // namespace vcl

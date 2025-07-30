@@ -23,8 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_SMOOTH_H
 #define VCL_ALGORITHMS_MESH_SMOOTH_H
 
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/complex/kd_tree.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
 
 #include <cmath>
 #include <vector>

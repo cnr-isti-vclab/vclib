@@ -26,7 +26,7 @@
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/misc/timer.h>
+#include <vclib/miscellaneous.h>
 
 // This example demonstrates mesh curvature computation algorithms:
 // 1. Principal curvature using Taubin95 algorithm
@@ -42,7 +42,7 @@ auto meshCurvature()
     std::cout << "=== Loading Bunny Mesh ===" << std::endl;
 
     vcl::TriMesh originalMesh =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     originalMesh.name() = "Original Bunny Mesh";
 
     std::cout << "Original mesh loaded:" << std::endl;

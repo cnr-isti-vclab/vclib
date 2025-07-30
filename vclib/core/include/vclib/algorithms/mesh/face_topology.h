@@ -23,14 +23,13 @@
 #ifndef VCL_ALGORITHMS_MESH_FACE_TOPOLOGY_H
 #define VCL_ALGORITHMS_MESH_FACE_TOPOLOGY_H
 
-#include <vclib/algorithms/core/polygon/ear_cut.h>
-#include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh.h>
-#include <vclib/mesh/iterators/face/edge_adj_face_iterator.h>
-#include <vclib/misc/comparators.h>
-#include <vclib/space/complex/mesh_pos.h>
-#include <vclib/space/core/polygon.h>
-#include <vclib/views/mesh.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/concepts.h>
+#include <vclib/exceptions.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
+#include <vclib/space/core.h>
 
 #include <set>
 

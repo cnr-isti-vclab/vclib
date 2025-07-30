@@ -23,14 +23,14 @@
 #ifndef VCL_IO_MESH_OFF_LOAD_H
 #define VCL_IO_MESH_OFF_LOAD_H
 
-#include <vclib/algorithms/mesh/face_topology.h>
-#include <vclib/exceptions/io.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/mesh/settings.h>
 #include <vclib/io/read.h>
-#include <vclib/misc/logger.h>
-#include <vclib/misc/tokenizer.h>
-#include <vclib/space/complex/mesh_info.h>
+
+#include <vclib/algorithms/mesh.h>
+#include <vclib/exceptions.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
 
 namespace vcl {
 
@@ -503,8 +503,8 @@ void readOffFaces(
  * @param[in] inputOffStream: the stream to read from
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the stream
- * @param[in] log: the logger to use
  * @param[in] settings: settings for loading the file/stream.
+ * @param[in] log: the logger to use
  *
  * @ingroup load_mesh
  */
@@ -513,8 +513,8 @@ void loadOff(
     MeshType&           m,
     std::istream&       inputOffStream,
     MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
 {
     uint nVertices, nFaces, nEdges;
 
@@ -550,101 +550,6 @@ void loadOff(
 }
 
 /**
- * @brief Loads from the given input off stream and puts the content into the
- * mesh m.
- *
- * The function will fill all the components read into the stream that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] m: the mesh to fill
- * @param[in] inputOffStream: the stream to read from
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadOff(
-    MeshType&           m,
-    std::istream&       inputOffStream,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshInfo loadedInfo;
-    loadOff(m, inputOffStream, loadedInfo, log, settings);
-}
-
-/**
- * @brief Loads from the given input off stream and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the stream that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * The info about what elements and components have been loaded from the stream
- * will be stored into the loadedInfo argument.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] inputOffStream: the stream to read from
- * @param[out] loadedInfo: the info about what elements and components have been
- * loaded from the stream
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadOff(
-    std::istream&       inputOffStream,
-    MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshType m;
-    loadOff(m, inputOffStream, loadedInfo, log, settings);
-    return m;
-}
-
-/**
- * @brief Loads from the given input off stream and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the stream that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the stream, will be enabled before loading the stream.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] inputOffStream: the stream to read from
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadOff(
-    std::istream&       inputOffStream,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshInfo loadedInfo;
-    return loadOff<MeshType>(inputOffStream, loadedInfo, log, settings);
-}
-
-/**
  * @brief Loads from the given input off file and puts the content into the
  * mesh m.
  *
@@ -663,8 +568,8 @@ MeshType loadOff(
  * @param[in] filename: the name of the file to read from
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the file
- * @param[in] log: the logger to use
  * @param[in] settings: settings for loading the file/stream.
+ * @param[in] log: the logger to use
  *
  * @ingroup load_mesh
  */
@@ -673,8 +578,8 @@ void loadOff(
     MeshType&           m,
     const std::string&  filename,
     MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+    const LoadSettings& settings = LoadSettings(),
+    LogType&            log      = nullLogger)
 {
     std::ifstream file = openInputFileStream(filename);
 
@@ -682,102 +587,7 @@ void loadOff(
         m.name() = FileInfo::fileNameWithoutExtension(filename);
     }
 
-    loadOff(m, file, loadedInfo, log, settings);
-}
-
-/**
- * @brief Loads from the given input off file and puts the content into the
- * mesh m.
- *
- * The function will fill all the components read into the file that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the file, will be enabled before loading the file.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] m: the mesh to fill
- * @param[in] filename: the name of the file to read from
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadOff(
-    MeshType&           m,
-    const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshInfo loadedInfo;
-    loadOff(m, filename, loadedInfo, log, settings);
-}
-
-/**
- * @brief Loads from the given input off file and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the file that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the file, will be enabled before loading the file.
- *
- * The info about what elements and components have been loaded from the file
- * will be stored into the loadedInfo argument.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] filename: the name of the file to read from
- * @param[out] loadedInfo: the info about what elements and components have been
- * loaded from the file
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the file.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadOff(
-    const std::string&  filename,
-    MeshInfo&           loadedInfo,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshType m;
-    loadOff(m, filename, loadedInfo, log, settings);
-    return m;
-}
-
-/**
- * @brief Loads from the given input off file and puts the content into the
- * returned mesh m.
- *
- * The function will fill all the components read into the file that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the file, will be enabled before loading the file.
- *
- * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
- * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
- *
- * @param[in] filename: the name of the file to read from
- * @param[in] log: the logger to use
- * @param[in] settings: settings for loading the file/stream.
- * @returns the mesh loaded from the file.
- *
- * @ingroup load_mesh
- */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadOff(
-    const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
-{
-    MeshInfo loadedInfo;
-    return loadOff<MeshType>(filename, loadedInfo, log, settings);
+    loadOff(m, file, loadedInfo, settings, log);
 }
 
 } // namespace vcl

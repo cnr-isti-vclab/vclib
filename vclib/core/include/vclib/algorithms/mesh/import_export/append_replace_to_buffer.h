@@ -23,10 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_APPEND_REPLACE_TO_BUFFER_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_APPEND_REPLACE_TO_BUFFER_H
 
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/complex/tri_poly_index_bimap.h>
-#include <vclib/types.h>
-#include <vclib/views/mesh.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
 
 /**
  * @defgroup append_replace_to_buffer Append/Replace Mesh Data to Existing

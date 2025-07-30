@@ -42,231 +42,284 @@
             }
         },
         {
-            "name": "examples-and-tests",
+            "name": "debug",
             "hidden": true,
-            "displayName": "No Examples and Tests",
-            "cacheVariables": {
-                "VCLIB_BUILD_EXAMPLES": "ON",
-                "VCLIB_BUILD_TESTS": "ON"
-            }
-        },
-        {
-            "name": "vclib-core-debug",
-            "inherits": "examples-and-tests",
-            "displayName": "VCLib::Core - Debug",
-            "description": "Core with default options",
+            "displayName": "Debug",
+            "description": "Debug build type",
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
-            "name": "vclib-core-release",
-            "inherits": "examples-and-tests",
-            "displayName": "VCLib::Core - Release",
-            "description": "Core with default options",
+            "name": "release",
+            "hidden": true,
+            "displayName": "Release",
+            "description": "Release build type",
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
-            "name": "vclib-core-no-3rd-io-debug",
-            "inherits": "vclib-core-debug",
-            "displayName": "VCLib::Core without 3rdparty IO libraries - Debug",
-            "description": "Core without 3rdparty IO libraries",
-            "generator": "Ninja",
-            "cacheVariables": {
-                "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
-            }
-        },
-        {
-            "name": "vclib-core-no-3rd-io-release",
-            "inherits": "vclib-core-release",
-            "displayName": "VCLib::Core without 3rdparty IO libraries - Release",
-            "description": "Core without 3rdparty IO libraries",
-            "generator": "Ninja",
-            "cacheVariables": {
-                "VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES": "OFF"
-            }
-        },
-        {
-            "name": "vclib-core-no-tests-debug",
+            "name": "do-not-exclude-examples-and-tests",
             "hidden": true,
-            "inherits": "vclib-core-debug",
-            "displayName": "VCLib::Core (No Tests and Examples) - Debug",
-            "description": "Core without tests and examples",
+            "displayName": "Include Examples and Tests",
+            "description": "Do not exclude examples and tests",
             "cacheVariables": {
-                "VCLIB_CORE_BUILD_EXAMPLES": "OFF",
-                "VCLIB_CORE_BUILD_TESTS": "OFF"
+                "VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS": "OFF"
             }
         },
         {
-            "name": "vclib-core-no-tests-release",
+            "name": "build-external-module",
             "hidden": true,
-            "inherits": "vclib-core-release",
-            "displayName": "VCLib::Core (No Tests and Examples) - Release",
-            "description": "Core without tests and examples",
+            "displayName": "Build External Module",
+            "description": "Build the external module",
             "cacheVariables": {
-                "VCLIB_CORE_BUILD_EXAMPLES": "OFF",
-                "VCLIB_CORE_BUILD_TESTS": "OFF"
+                "VCLIB_BUILD_MODULE_EXTERNAL": "ON"
             }
+        },
+        {
+            "name": "build-render-module",
+            "hidden": true,
+            "displayName": "Build Render Module",
+            "description": "Build the render module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_RENDER": "ON"
+            }
+        },
+        {
+            "name": "build-bindings-module",
+            "hidden": true,
+            "displayName": "Build Bindings Module",
+            "description": "Build the bindings module",
+            "cacheVariables": {
+                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+            }
+        },
+        {
+            "name": "core-examples-tests",
+            "hidden": true,
+            "displayName": "Core Examples",
+            "description": "Core with examples",
+            "cacheVariables": {
+                "VCLIB_CORE_BUILD_EXAMPLES": "ON",
+                "VCLIB_CORE_BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "external-examples-tests",
+            "hidden": true,
+            "displayName": "External Examples",
+            "description": "External with examples",
+            "cacheVariables": {
+                "VCLIB_EXTERNAL_BUILD_EXAMPLES": "ON",
+                "VCLIB_EXTERNAL_BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "render-examples-tests",
+            "hidden": true,
+            "displayName": "Render Examples",
+            "description": "Render with examples",
+            "cacheVariables": {
+                "VCLIB_RENDER_BUILD_EXAMPLES": "ON",
+                "VCLIB_RENDER_BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "vclib-core-debug",
+            "inherits": ["debug", "core-examples-tests"],
+            "displayName": "VCLib::Core - Debug",
+            "description": "Core with default options"
+        },
+        {
+            "name": "vclib-core-release",
+            "inherits": ["release", "core-examples-tests"],
+            "displayName": "VCLib::Core - Release",
+            "description": "Core with default options"
+        },
+        {
+            "name": "vclib-core-ci",
+            "inherits": ["vclib-core-release", "do-not-exclude-examples-and-tests"],
+            "displayName": "VCLib::Core - CI",
+            "description": "Core with build and test examples and tests"
         },
         {
             "name": "vclib-external-debug",
-            "inherits": "vclib-core-no-tests-debug",
+            "inherits": ["debug", "build-external-module", "external-examples-tests"],
             "displayName": "VCLib::External - Debug",
-            "description": "External Module",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_EXTERNAL": "ON"
-            }
+            "description": "External Module"
         },
         {
             "name": "vclib-external-release",
-            "inherits": "vclib-core-no-tests-release",
+            "inherits": ["release", "build-external-module", "external-examples-tests"],
             "displayName": "VCLib::External - Release",
-            "description": "External Module",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_EXTERNAL": "ON"
-            }
+            "description": "External Module"
         },
         {
-            "name": "vclib-external-no-tests-debug",
-            "hidden": true,
-            "inherits": "vclib-external-debug",
-            "displayName": "VCLib::External (No Tests and Examples) - Debug",
-            "description": "External Module",
-            "cacheVariables": {
-                "VCLIB_EXTERNAL_BUILD_EXAMPLES": "OFF",
-                "VCLIB_EXTERNAL_BUILD_TESTS": "OFF"
-            }
-        },
-        {
-            "name": "vclib-external-no-tests-release",
-            "hidden": true,
-            "inherits": "vclib-external-release",
-            "displayName": "VCLib::External (No Tests and Examples) - Release",
-            "description": "External Module",
-            "cacheVariables": {
-                "VCLIB_EXTERNAL_BUILD_EXAMPLES": "OFF",
-                "VCLIB_EXTERNAL_BUILD_TESTS": "OFF"
-            }
+            "name": "vclib-external-ci",
+            "inherits": ["vclib-external-release", "do-not-exclude-examples-and-tests"],
+            "displayName": "VCLib::External - CI",
+            "description": "External Module with build and test examples and tests"
         },
         {
             "name": "vclib-render-bgfx-debug",
-            "inherits": "vclib-external-no-tests-debug",
+            "inherits": [
+                "debug",
+                "build-render-module",
+                "build-external-module",
+                "render-examples-tests"
+            ],
             "displayName": "VCLib::Render (BGFX) - Debug",
-            "description": "Render with bgfx render backend",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_RENDER": "ON"
-            }
+            "description": "Render with bgfx render backend"
         },
         {
             "name": "vclib-render-bgfx-release",
-            "inherits": "vclib-external-no-tests-release",
+            "inherits": [
+                "release",
+                "build-render-module",
+                "build-external-module",
+                "render-examples-tests"
+            ],
             "displayName": "VCLib::Render (BGFX) - Release",
-            "description": "Render with bgfx render backend",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_RENDER": "ON"
-            }
+            "description": "Render with bgfx render backend"
+        },
+        {
+            "name": "vclib-render-bgfx-ci",
+            "inherits": [
+                "vclib-render-bgfx-release",
+                "do-not-exclude-examples-and-tests"
+            ],
+            "displayName": "VCLib::Render (BGFX) - CI",
+            "description": "Render with bgfx render backend with build and test examples and tests"
         },
         {
             "name": "vclib-render-opengl2-debug",
-            "inherits": "vclib-external-no-tests-debug",
+            "inherits": [
+                "debug",
+                "build-render-module",
+                "build-external-module",
+                "render-examples-tests"
+            ],
             "displayName": "VCLib::Render (OpenGL) - Debug",
             "description": "Render with OpenGL render backend",
             "cacheVariables": {
-                "VCLIB_BUILD_MODULE_RENDER": "ON",
                 "VCLIB_RENDER_BACKEND": "opengl2"
             }
         },
         {
             "name": "vclib-render-opengl2-release",
-            "inherits": "vclib-external-no-tests-release",
+            "inherits": [
+                "release",
+                "build-render-module",
+                "build-external-module",
+                "render-examples-tests"
+            ],
             "displayName": "VCLib::Render (OpenGL) - Release",
             "description": "Render with OpenGL render backend",
             "cacheVariables": {
-                "VCLIB_BUILD_MODULE_RENDER": "ON",
                 "VCLIB_RENDER_BACKEND": "opengl2"
             }
         },
         {
-            "name": "vclib-processing-debug",
-            "inherits": "vclib-core-no-tests-debug",
-            "displayName": "VCLib::Processing - Debug",
-            "description": "Processing module",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON"
-            }
-        },
-        {
-            "name": "vclib-processing-release",
-            "inherits": "vclib-core-no-tests-release",
-            "displayName": "VCLib::Processing - Release",
-            "description": "Processing module",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON"
-            }
+            "name": "vclib-render-opengl2-ci",
+            "inherits": [
+                "vclib-render-opengl2-release",
+                "do-not-exclude-examples-and-tests"
+            ],
+            "displayName": "VCLib::Render (OpenGL) - CI",
+            "description": "Render with OpenGL render backend with build and test examples and tests"
         },
         {
             "name": "vclib-bindings-debug",
             "inherits": [
-                "vclib-external-debug",
-                "vclib-render-bgfx-debug",
-                "vclib-processing-debug"
+                "debug",
+                "build-bindings-module",
+                "build-external-module",
+                "build-render-module"
             ],
             "displayName": "VCLib::Bindings - Debug",
             "description": "Python Bindings module",
             "cacheVariables": {
                 "BUILD_SHARED_LIBS": "OFF",
-                "VCLIB_BUILD_EXAMPLES": "OFF",
-                "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",
-                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF",
-                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF"
             }
         },
         {
             "name": "vclib-bindings-release",
             "inherits": [
-                "vclib-external-release",
-                "vclib-render-bgfx-release",
-                "vclib-processing-release"
+                "release",
+                "build-bindings-module",
+                "build-external-module",
+                "build-render-module"
             ],
             "displayName": "VCLib::Bindings - Release",
             "description": "Python Bindings module",
             "cacheVariables": {
                 "BUILD_SHARED_LIBS": "OFF",
-                "VCLIB_BUILD_EXAMPLES": "OFF",
-                "VCLIB_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON",
-                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF",
-                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
+                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF"
             }
         },
         {
             "name": "vclib-all-modules-debug",
             "displayName": "VCLib - All Modules - Debug",
             "description": "All modules with default options",
-            "inherits": "vclib-core-debug",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_EXTERNAL": "ON",
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON",
-                "VCLIB_BUILD_MODULE_RENDER": "ON",
-                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
-            }
+            "inherits": [
+                "debug",
+                "build-bindings-module",
+                "build-external-module",
+                "build-render-module",
+                "core-examples-tests",
+                "external-examples-tests",
+                "render-examples-tests"
+            ]
         },
         {
             "name": "vclib-all-modules-release",
             "displayName": "VCLib - All Modules - Release",
             "description": "All modules with default options",
-            "inherits": "vclib-core-release",
-            "cacheVariables": {
-                "VCLIB_BUILD_MODULE_EXTERNAL": "ON",
-                "VCLIB_BUILD_MODULE_PROCESSING": "ON",
-                "VCLIB_BUILD_MODULE_RENDER": "ON",
-                "VCLIB_BUILD_MODULE_BINDINGS": "ON"
-            }
+            "inherits": [
+                "release",
+                "build-bindings-module",
+                "build-external-module",
+                "build-render-module",
+                "core-examples-tests",
+                "external-examples-tests",
+                "render-examples-tests"
+            ]
+        },
+        {
+            "name": "vclib-all-modules-eat-debug",
+            "displayName": "VCLib - E&T All Modules - Debug",
+            "description": "All modules with all examples and tests",
+            "inherits": [
+                "debug",
+                "build-bindings-module",
+                "build-external-module",
+                "build-render-module",
+                "core-examples-tests",
+                "external-examples-tests",
+                "render-examples-tests",
+                "do-not-exclude-examples-and-tests"
+            ]
+        },
+        {
+            "name": "vclib-all-modules-eat-release",
+            "displayName": "VCLib - E&T All Modules - Release",
+            "description": "All modules with all examples and tests",
+            "inherits": [
+                "release",
+                "build-bindings-module",
+                "build-external-module",
+                "build-render-module",
+                "core-examples-tests",
+                "external-examples-tests",
+                "render-examples-tests",
+                "do-not-exclude-examples-and-tests"
+            ]
         },
         {
             "name": "vclib-python-wheel",
@@ -277,101 +330,8 @@
             "cacheVariables": {
                 "VCLIB_INSTALL_MODULE_CORE": "OFF",
                 "VCLIB_INSTALL_MODULE_EXTERNAL": "OFF",
-                "VCLIB_INSTALL_MODULE_PROCESSING": "OFF",
                 "VCLIB_INSTALL_MODULE_RENDER": "OFF"
             }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "vclib-core-debug",
-            "displayName": "VCLib::Core - Debug",
-            "description": "Core with default options",
-            "configurePreset": "vclib-core-debug"
-        },
-        {
-            "name": "vclib-core-release",
-            "displayName": "VCLib::Core - Release",
-            "description": "Core with default options",
-            "configurePreset": "vclib-core-release"
-        },
-        {
-            "name": "vclib-external-debug",
-            "displayName": "VCLib::External - Debug",
-            "description": "External module",
-            "configurePreset": "vclib-external-debug"
-        },
-        {
-            "name": "vclib-external-release",
-            "displayName": "VCLib::External - Release",
-            "description": "External module",
-            "configurePreset": "vclib-external-release"
-        },
-        {
-            "name": "vclib-render-bgfx-debug",
-            "displayName": "VCLib::Render (BGFX) - Debug",
-            "description": "Render with bgfx render backend",
-            "configurePreset": "vclib-render-bgfx-debug"
-        },
-        {
-            "name": "vclib-render-bgfx-release",
-            "displayName": "VCLib::Render (BGFX) - Release",
-            "description": "Render with bgfx render backend",
-            "configurePreset": "vclib-render-bgfx-release"
-        },
-        {
-            "name": "vclib-render-opengl2-debug",
-            "displayName": "VCLib::Render (OpenGL) - Debug",
-            "description": "Render with OpenGL render backend",
-            "configurePreset": "vclib-render-opengl2-debug"
-        },
-        {
-            "name": "vclib-render-opengl2-release",
-            "displayName": "VCLib::Render (OpenGL) - Release",
-            "description": "Render with OpenGL render backend",
-            "configurePreset": "vclib-render-opengl2-release"
-        },
-        {
-            "name": "vclib-processing-debug",
-            "displayName": "VCLib::Processing - Debug",
-            "description": "Processing module",
-            "configurePreset": "vclib-processing-debug"
-        },
-        {
-            "name": "vclib-processing-release",
-            "displayName": "VCLib::Processing - Release",
-            "description": "Processing module",
-            "configurePreset": "vclib-processing-release"
-        },
-        {
-            "name": "vclib-bindings-debug",
-            "displayName": "VCLib::Bindings - Debug",
-            "description": "Python Bindings module",
-            "configurePreset": "vclib-bindings-debug"
-        },
-        {
-            "name": "vclib-bindings-release",
-            "displayName": "VCLib::Bindings - Release",
-            "description": "Python Bindings module",
-            "configurePreset": "vclib-bindings-release"
-        },
-        {
-            "name": "vclib-all-modules-debug",
-            "displayName": "VCLib - All Modules - Debug",
-            "description": "All modules with default options",
-            "configurePreset": "vclib-all-modules-debug"
-        },
-        {
-            "name": "vclib-all-modules-release",
-            "displayName": "VCLib - All Modules - Release",
-            "description": "All modules with default options",
-            "configurePreset": "vclib-all-modules-release"
-        },
-        {
-            "name": "vclib-python-wheel",
-            "displayName": "VCLib - Python Wheel",
-            "description": "Build Python wheel",
-            "configurePreset": "vclib-python-wheel"
         }
     ]
 }

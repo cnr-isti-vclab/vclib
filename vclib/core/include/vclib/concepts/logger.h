@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_LOGGER_H
 
 #include <vclib/concepts/const_correctness.h>
+
 #include <vclib/types.h>
 
 #include <string>

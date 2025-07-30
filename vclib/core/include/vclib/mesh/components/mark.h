@@ -25,7 +25,7 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/mark.h>
+#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 
 namespace vcl::comp {
@@ -185,18 +185,17 @@ private:
 /* Detector function to check if a class has Mark available */
 
 /**
- * @brief Checks if the given Element/Mesh has the Mark component available.
+ * @brief Checks if the given Element has the Mark component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has the Mark component available, `false`
+ * @param[in] element: The element to check.
+ * @return `true` if the element has the Mark component available, `false`
  * otherwise.
  */
-bool isMarkAvailableOn(const ElementOrMeshConcept auto& element)
+bool isMarkAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::MARK>(element);
 }

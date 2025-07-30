@@ -45,7 +45,7 @@ inline void meshStatistics()
 
     // Load a mesh for analysis
     vcl::TriMesh mesh;
-    vcl::load(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
+    vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
     std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
               << mesh.faceNumber() << " faces\n\n";
@@ -261,7 +261,7 @@ inline void meshStatistics()
 
     // Load a different mesh for comparison
     vcl::TriMesh mesh2;
-    vcl::load(mesh2, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    vcl::loadMesh(mesh2, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     std::cout << "Comparison mesh (cube): " << mesh2.vertexNumber()
               << " vertices, " << mesh2.faceNumber() << " faces\n";

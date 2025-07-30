@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms/mesh/create/hexahedron.h>
+#include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
@@ -134,11 +134,13 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
+    vcl::MeshInfo info;
+
     SECTION("TriMesh - Cube")
     {
         TriMesh tm;
         auto    ss = stlCube();
-        vcl::loadStl(tm, ss);
+        vcl::loadStl(tm, ss, info);
         REQUIRE(tm.vertexNumber() == 36);
         REQUIRE(tm.faceNumber() == 12);
     }

@@ -25,7 +25,7 @@
 
 #include "pointer_vector.h"
 
-#include <vclib/concepts/polymorphism.h>
+#include <vclib/concepts.h>
 
 namespace vcl {
 

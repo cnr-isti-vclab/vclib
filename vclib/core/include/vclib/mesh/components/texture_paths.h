@@ -25,10 +25,9 @@
 
 #include "bases/component.h"
 
-#include <vclib/concepts/mesh/components/texture_images.h>
-#include <vclib/concepts/mesh/components/texture_paths.h>
+#include <vclib/concepts.h>
 #include <vclib/serialization.h>
-#include <vclib/types/view.h>
+#include <vclib/types.h>
 
 #include <string>
 #include <vector>

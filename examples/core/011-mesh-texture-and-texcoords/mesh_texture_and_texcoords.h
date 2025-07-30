@@ -26,7 +26,6 @@
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/views.h>
 
 // This example demonstrates how to work with textures and texture coordinates:
 // 1. Loading meshes with vertex texture coordinates
@@ -49,7 +48,7 @@ auto meshTextureAndTexCoords()
     // To load the texture images, you can set the 'loadTextureImages' option of
     // the LoadSettings object to true, that can be passed to the load function.
     // example of loading also the textures shown below (wedges)
-    vcl::load(
+    vcl::loadMesh(
         meshVertexTexCoords,
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_verttexcoords.ply");
 
@@ -84,7 +83,7 @@ auto meshTextureAndTexCoords()
 
     vcl::LoadSettings settings;
     settings.loadTextureImages = true; // load texture images
-    vcl::load(
+    vcl::loadMesh(
         meshWedgeTexCoords,
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_textured.ply",
         settings);

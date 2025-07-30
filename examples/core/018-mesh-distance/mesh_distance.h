@@ -41,7 +41,7 @@ void meshDistance()
     std::cout << "=== Loading Mesh ===" << std::endl;
 
     vcl::TriMesh mesh =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     std::cout << "Loaded mesh with " << mesh.vertexNumber() << " vertices and "
               << mesh.faceNumber() << " faces" << std::endl;
@@ -120,7 +120,7 @@ void meshDistance()
     std::cout << "\n=== Distance Between Different Meshes ===" << std::endl;
 
     vcl::TriMesh cube =
-        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     vcl::updateBoundingBox(cube);
     vcl::updatePerFaceNormals(cube);

@@ -25,8 +25,8 @@
 
 #include "bases/reference_container_component.h"
 
-#include <vclib/concepts/mesh/components/adjacent_faces.h>
-#include <vclib/types/view.h>
+#include <vclib/concepts.h>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 
@@ -689,11 +689,10 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has AdjacentFaces available, `false` otherwise.
  */
-bool isAdjacentFacesAvailableOn(const ElementConcept auto& element)
+bool isAdjacentFacesAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::ADJACENT_FACES>(element);
 }

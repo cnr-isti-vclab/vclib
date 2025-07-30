@@ -134,11 +134,13 @@ TEMPLATE_TEST_CASE(
     using PolyMesh = std::tuple_element_t<1, TestType>;
     using EdgeMesh = std::tuple_element_t<2, TestType>;
 
+    vcl::MeshInfo info;
+
     SECTION("TriMesh - PolyCube")
     {
         TriMesh tm;
         auto    ss = plyPolyCube();
-        vcl::loadPly(tm, ss);
+        vcl::loadPly(tm, ss, info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
     }
@@ -147,7 +149,7 @@ TEMPLATE_TEST_CASE(
     {
         TriMesh tm;
         auto    ss = plyTriCube();
-        vcl::loadPly(tm, ss);
+        vcl::loadPly(tm, ss, info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
     }
@@ -155,7 +157,8 @@ TEMPLATE_TEST_CASE(
     SECTION("TriMesh - VertTextureDouble")
     {
         TriMesh tm;
-        vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/VertTextureDouble.ply");
+        vcl::loadPly(
+            tm, VCLIB_EXAMPLE_MESHES_PATH "/VertTextureDouble.ply", info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 4);
         REQUIRE(tm.textureNumber() == 2);
@@ -169,7 +172,7 @@ TEMPLATE_TEST_CASE(
     SECTION("TriMesh - Wedge TextureDouble")
     {
         TriMesh tm;
-        vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
+        vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 4);
         REQUIRE(tm.textureNumber() == 2);
@@ -184,7 +187,7 @@ TEMPLATE_TEST_CASE(
     {
         PolyMesh pm;
         auto     ss = plyPolyCube();
-        vcl::loadPly(pm, ss);
+        vcl::loadPly(pm, ss, info);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 6);
     }
@@ -193,7 +196,7 @@ TEMPLATE_TEST_CASE(
     {
         PolyMesh pm;
         auto     ss = plyTriCube();
-        vcl::loadPly(pm, ss);
+        vcl::loadPly(pm, ss, info);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 12);
     }
@@ -202,7 +205,7 @@ TEMPLATE_TEST_CASE(
     {
         EdgeMesh em;
         auto     ss = plyPolyCube();
-        vcl::loadPly(em, ss);
+        vcl::loadPly(em, ss, info);
         REQUIRE(em.vertexNumber() == 8);
         REQUIRE(em.edgeNumber() == 4);
     }
@@ -211,7 +214,7 @@ TEMPLATE_TEST_CASE(
     {
         EdgeMesh pm;
         auto     ss = plyTriCube();
-        vcl::loadPly(pm, ss);
+        vcl::loadPly(pm, ss, info);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.edgeNumber() == 4);
     }

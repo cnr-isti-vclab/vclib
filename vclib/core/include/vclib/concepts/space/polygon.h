@@ -27,6 +27,7 @@
 
 #include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
+
 #include <vclib/types.h>
 
 namespace vcl {

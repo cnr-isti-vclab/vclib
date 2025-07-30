@@ -1,8 +1,6 @@
 # VCLib-Render ToDo list
 
 - General
-  - [ ] qt headers and sources should be moved into vclib/processing/qt inside this module,
-    and should be included only if vclib-processing target is available
   - [X] Manage polygonal meshes by DrawableMesh
   - [X] Fix build failure when the build directory is in the same directory as the source
   - [X] Add the possibility to check if BGFX is available in the system

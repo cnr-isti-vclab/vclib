@@ -50,27 +50,28 @@ int main()
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
-        vcl::save(
+        vcl::saveMesh(
             tetrahedron, VCLIB_RESULTS_PATH "/003_tetrahedron.ply", settings);
 
-        vcl::save(cube, VCLIB_RESULTS_PATH "/003_cube_tri.ply", settings);
+        vcl::saveMesh(cube, VCLIB_RESULTS_PATH "/003_cube_tri.ply", settings);
 
-        vcl::save(
+        vcl::saveMesh(
             dodecahedron,
             VCLIB_RESULTS_PATH "/003_dodecahedron_tri.ply",
             settings);
 
-        vcl::save(
+        vcl::saveMesh(
             customCube, VCLIB_RESULTS_PATH "/003_custom_cube.ply", settings);
 
-        vcl::save(cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
+        vcl::saveMesh(
+            cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
 
-        vcl::save(
+        vcl::saveMesh(
             dodecahedronPoly,
             VCLIB_RESULTS_PATH "/003_dodecahedron_poly.ply",
             settings);
 
-        vcl::savePly(
+        vcl::saveMesh(
             sphereQuads, VCLIB_RESULTS_PATH "/003_sphere_poly.ply", settings);
 
         std::cout << "\nAll meshes have been saved to the results directory."
