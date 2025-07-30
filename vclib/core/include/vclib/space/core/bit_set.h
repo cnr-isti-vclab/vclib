@@ -55,6 +55,11 @@ class BitSet
 
 public:
     /**
+     * @brief The type of the underlying integral value used to store the bits.
+     */
+    using UnderlyingType = T;
+
+    /**
      * @brief The number of the bits of the BitSet.
      */
     static constexpr std::size_t SIZE = sizeof(T) * 8;
@@ -405,6 +410,46 @@ using BitSet32 = BitSet<int>;
  * @ingroup space_core
  */
 using BitSet64 = BitSet<std::size_t>;
+
+/* Concepts */
+
+/**
+ * @brief BitSetConcept is satisfied only if a class provides the member
+ * functions specified in this concept. These member functions allows to a list
+ * of bits encoded in a integral type.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept BitSetConcept = requires (T&& obj) {
+    RemoveRef<T>();
+    RemoveRef<T>({uint(), uint()});
+
+    { obj.size() } -> std::same_as<std::size_t>;
+
+    { obj.at(uint()) } -> std::convertible_to<bool>;
+    { obj[uint()] } -> std::convertible_to<bool>;
+
+    { obj.all() } -> std::same_as<bool>;
+    { obj.any() } -> std::same_as<bool>;
+    { obj.none() } -> std::same_as<bool>;
+
+    { obj == obj } -> std::same_as<bool>;
+    { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
+
+           // non const requirements
+    requires IsConst<T> || requires {
+        { obj.at(uint()) } -> BitProxyConcept;
+        { obj[uint()] } -> BitProxyConcept;
+
+        obj.set();
+        obj.set(bool(), uint());
+        obj.reset();
+        obj.reset(uint());
+        obj.flip();
+        obj.flip(uint());
+    };
+};
 
 } // namespace vcl
 
