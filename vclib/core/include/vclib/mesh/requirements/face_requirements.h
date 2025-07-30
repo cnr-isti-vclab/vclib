@@ -27,7 +27,6 @@
 #include "../containers/face_container.h"
 #include "element_requirements.h"
 
-#include <vclib/concepts.h>
 #include <vclib/exceptions.h>
 
 /**

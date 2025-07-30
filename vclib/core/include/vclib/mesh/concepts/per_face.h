@@ -27,8 +27,6 @@
 
 #include <vclib/mesh/containers/face_container.h>
 
-#include <vclib/concepts.h>
-
 /**
  * @defgroup face_mesh_concepts FaceMesh Concepts
  * @ingroup mesh_concepts

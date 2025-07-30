@@ -27,7 +27,6 @@
 #include <vclib/mesh/views/components.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/concepts.h>
 
 namespace vcl {
 

@@ -32,7 +32,6 @@
 #include <vclib/mesh/elements/element.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 
-#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 #include <vclib/types.h>
 

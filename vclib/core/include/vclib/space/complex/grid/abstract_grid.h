@@ -24,7 +24,6 @@
 #define VCL_SPACE_COMPLEX_GRID_ABSTRACT_GRID_H
 
 #include <vclib/algorithms/core.h>
-#include <vclib/concepts.h>
 #include <vclib/mesh.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/space/core.h>

@@ -25,8 +25,6 @@
 
 #include <vclib/mesh/containers/vertex_container.h>
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 namespace mesh {

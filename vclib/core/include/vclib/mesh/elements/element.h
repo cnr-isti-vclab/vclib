@@ -26,7 +26,6 @@
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/components/parent_mesh_pointer.h>
 
-#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 /**

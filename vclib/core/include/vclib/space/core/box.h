@@ -25,7 +25,6 @@
 
 #include "point.h"
 
-#include <vclib/concepts.h>
 #include <vclib/math.h>
 
 namespace vcl {

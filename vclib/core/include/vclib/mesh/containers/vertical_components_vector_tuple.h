@@ -25,7 +25,6 @@
 
 #include <vclib/mesh/concepts/components/component.h>
 
-#include <vclib/concepts.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/types.h>
 

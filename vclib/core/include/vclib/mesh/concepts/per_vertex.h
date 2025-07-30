@@ -27,8 +27,6 @@
 
 #include <vclib/mesh/containers/vertex_container.h>
 
-#include <vclib/concepts.h>
-
 /**
  * @defgroup vertex_mesh_concepts VertexMesh Concepts
  * @ingroup mesh_concepts

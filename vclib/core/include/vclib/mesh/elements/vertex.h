@@ -26,8 +26,6 @@
 #include "element.h"
 #include "vertex_components.h"
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 /**

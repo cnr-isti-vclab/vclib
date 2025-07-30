@@ -27,8 +27,6 @@
 
 #include <vclib/mesh/containers/edge_container.h>
 
-#include <vclib/concepts.h>
-
 /**
  * @defgroup edge_mesh_concepts EdgeMesh Concepts
  * @ingroup mesh_concepts

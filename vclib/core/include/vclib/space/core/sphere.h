@@ -25,8 +25,6 @@
 
 #include "box.h"
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 template<typename Scalar>

@@ -26,8 +26,6 @@
 #include "edge_components.h"
 #include "element.h"
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 /**

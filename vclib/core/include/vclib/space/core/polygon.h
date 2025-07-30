@@ -26,8 +26,6 @@
 #include "point.h"
 #include "triangle.h"
 
-#include <vclib/concepts.h>
-
 #include <ranges>
 #include <vector>
 
