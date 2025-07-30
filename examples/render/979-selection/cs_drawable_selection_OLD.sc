@@ -54,33 +54,17 @@ void main()
     float maxX = u_selectionBox[2];
     float maxY = u_selectionBox[3];
 
-    vec3 maxNDC = vec3(
-        (maxX - u_viewRect.x) / u_viewRect.z * 2 - 1,
-        1 - ((minY - u_viewRect.y) / u_viewRect.w * 2),
-        0
-    );
-    vec3 minNDC = vec3(
-        (minX - u_viewRect.x) / u_viewRect.z * 2 - 1,
-        1 - ((maxY - u_viewRect.y) / u_viewRect.w * 2),
-        1
-    );
-
-    vec4 p = vec4(
+    vec3 p = vec3(
         positions[idx30/4][idx30%4],
         positions[idx31/4][idx31%4],
-        positions[idx32/4][idx32%4],
-        1
-    );
-
-    vec4 pNDC = mul(u_modelViewProj, p);
-    pNDC = pNDC / pNDC.w;
+        positions[idx32/4][idx32%4]);
 
     uint bufferIndex = pointId/128;
     uint vec4Index = (pointId%128)/32;
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
     float newValue;
-    if (pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y) {
+    if (p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY) {
         newValue = uintBitsToFloat(floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) | bitMask);
     } else {
         newValue = uintBitsToFloat(floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & (~bitMask));

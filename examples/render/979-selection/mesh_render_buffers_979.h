@@ -259,10 +259,10 @@ public:
         bgfx::setImage(7, mComputeWriteTex, 0, bgfx::Access::Write, bgfx::TextureFormat::R8);
         vcl::Point3d bboxSize = bbox.size();
         float        temp[]   = {
-            float(bbox.center().x()),
-            float(bbox.center().y()),
-            float(bbox.center().x() + bboxSize.x() / 2),
-            float(bbox.center().y() + bboxSize.y() / 2)};
+            1024.f/2.f*1.5f,
+            0.f,
+            1024.f*1.5f,
+            768.f/2.f*1.5f};
         mSelectionBoxuniform.bind((void*) temp);
         float temp2[] = {vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]), vcl::Uniform::uintBitsToFloat(Base::numVerts())};
         mWorkgroupSizeAndVertexCountUniform.bind((void*)temp2);
