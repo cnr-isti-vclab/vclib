@@ -23,6 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_H
 #define VCL_CONCEPTS_MESH_H
 
-#include "mesh/elements/face.h"
+#include "mesh/components.h"
 
 #endif // VCL_CONCEPTS_MESH_H

@@ -24,6 +24,7 @@
 #define VCL_MESH_ELEMENTS_FACE_H
 
 #include "element.h"
+#include "face_components.h"
 
 #include <vclib/concepts.h>
 #include <vclib/types.h>
