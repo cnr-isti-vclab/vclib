@@ -518,6 +518,49 @@ using Box3i = Box<Point3i>;
 using Box3f = Box<Point3f>;
 using Box3d = Box<Point3d>;
 
+/* Concepts */
+
+/**
+ * @brief A concept representing a Box.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Box class having any Point type.
+ *
+ * @tparam T: The type to be tested for conformity to the BoxConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept BoxConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Box<typename RemoveRef<T>::PointType>>;
+
+/**
+ * @brief A concept representing a 2D Box.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Box class having a Point type with dimension 2.
+ *
+ * @tparam T: The type to be tested for conformity to the Box2Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Box2Concept = BoxConcept<T> && RemoveRef<T>::DIM == 2;
+
+/**
+ * @brief A concept representing a 3D Box.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Box class having a Point type with dimension 3.
+ *
+ * @tparam T: The type to be tested for conformity to the Box2Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Box3Concept = BoxConcept<T> && RemoveRef<T>::DIM == 3;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_BOX_H

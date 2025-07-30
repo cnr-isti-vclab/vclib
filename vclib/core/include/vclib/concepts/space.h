@@ -23,7 +23,6 @@
 #ifndef VCL_CONCEPTS_SPACE_H
 #define VCL_CONCEPTS_SPACE_H
 
-#include "space/box.h"
 #include "space/color.h"
 #include "space/image.h"
 #include "space/point.h"
