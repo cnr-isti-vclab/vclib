@@ -25,7 +25,7 @@
 
 #include "face_requirements.h"
 
-#include <vclib/mesh/concepts/mesh_concept.h>
+#include <vclib/mesh/mesh.h>
 #include <vclib/mesh/mesh_components.h>
 
 #include <vclib/exceptions.h>

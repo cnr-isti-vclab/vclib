@@ -2150,6 +2150,36 @@ private:
     }
 };
 
+/* Concepts */
+
+/**
+ * @brief A concept that checks whether a class is (inherits from) a Mesh class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Mesh class having any Element Container and any Component.
+ * The concept checks also that the Mesh has a Vertex Copntainer.
+ *
+ * @tparam T: The type to be tested for conformity to the MeshConcept.
+ *
+ * @ingroup mesh
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept MeshConcept =
+    IsDerivedFromSpecializationOfV<T, Mesh> && mesh::HasVertexContainer<T>;
+
+/**
+ * @brief A concept that checks whether a class is a Mesh or an Element.
+ *
+ * The concept is satisfied when `T` is a class that satisfies the MeshConcept
+ * or the ElementConcept.
+ *
+ * @ingroup mesh
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept ElementOrMeshConcept = MeshConcept<T> || ElementConcept<T>;
+
 } // namespace vcl
 
 #endif // VCL_MESH_MESH_H

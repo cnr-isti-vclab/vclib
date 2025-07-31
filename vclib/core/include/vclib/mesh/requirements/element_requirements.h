@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
 
-#include <vclib/mesh/concepts/mesh_concept.h>
+#include <vclib/mesh/mesh.h>
 
 #include <vclib/exceptions.h>
 
