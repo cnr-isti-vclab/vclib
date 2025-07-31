@@ -107,6 +107,70 @@ constexpr bool IsDerivedFromSpecializationOfV =
 
 } // namespace ITB
 
+// bool-type-int-bool-type-bool-bool
+namespace BTIBTBB {
+
+namespace detail {
+
+template<
+    typename T,
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
+struct IsSpecializationOfComp : std::false_type
+{
+};
+
+template<
+    template<bool, typename, int, bool, typename, bool, bool> class Template,
+    bool B1,
+    typename T1,
+    int  I,
+    bool B2,
+    typename T2,
+    bool B3,
+    bool B4>
+struct IsSpecializationOfComp<Template<B1, T1, I, B2, T2, B3, B4>, Template> :
+        std::true_type
+{
+};
+
+template<
+    typename T,
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
+constexpr bool IsSpecializationOfCompTBV =
+    IsSpecializationOfComp<T, Template>::value;
+
+template<
+    typename T,
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
+struct IsDerivedFromSpecializationOfComp
+{
+private:
+    template<
+        bool B1,
+        typename T1,
+        int  I,
+        bool B2,
+        typename T2,
+        bool B3,
+        bool B4>
+    static std::true_type  test(const Template<B1, T1, I, B2, T2, B3, B4>*);
+    static std::false_type test(...);
+
+public:
+    static constexpr bool value =
+        decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+};
+
+} // namespace detail
+
+template<
+    typename T,
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
+constexpr bool IsDerivedFromSpecializationOfV =
+    detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
+
+} // namespace BTIBTBB
+
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_PREDICATES_H

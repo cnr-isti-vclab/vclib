@@ -24,18 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/types.h>
 
-#include <vector>
-
 namespace vcl::comp {
 
+template<bool, typename, int, bool, typename, bool, bool>
+class AdjacentEdges;
+
 /**
- * @brief HasAdjacentEdges concept is satisfied only if a Element class provides
- * the types and member functions specified in this concept. These types and
- * member functions allow to access to a @ref vcl::comp::AdjacentEdges
- * component of a given element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentEdges component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::AdjacentEdges, with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal
  * AdjacentEdges component and the vertical OptionalAdjacentEdges component,
@@ -43,79 +46,21 @@ namespace vcl::comp {
  * this concept provides AdjacentEdges component at runtime (it is guaranteed
  * only that the proper member functions are available at compile time).
  *
+ * @tparam T: The type to be tested for conformity to the HasAdjacentEdges.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasAdjacentEdges = requires (
-    T&&                                                   obj,
-    typename RemoveRef<T>::AdjacentEdgeType               e,
-    typename RemoveRef<T>::AdjacentEdgeIterator           it,
-    typename RemoveRef<T>::ConstAdjacentEdgeIterator      cIt,
-    typename RemoveRef<T>::ConstAdjacentEdgeIndexIterator cIIt,
-    typename RemoveRef<T>::AdjacentEdgeType*              eP,
-    const typename RemoveRef<T>::AdjacentEdgeType*        cEP,
-    std::vector<typename RemoveRef<T>::AdjacentEdgeType*> vec) {
-    RemoveRef<T>::ADJ_EDGE_NUMBER;
-    typename RemoveRef<T>::AdjacentEdgeType;
-    typename RemoveRef<T>::AdjacentEdgeIterator;
-    typename RemoveRef<T>::ConstAdjacentEdgeIterator;
-    typename RemoveRef<T>::ConstAdjacentEdgeIndexIterator;
-
-    { obj.adjEdgesNumber() } -> std::same_as<uint>;
-
-    { obj.adjEdge(uint()) } -> std::convertible_to<decltype(cEP)>;
-    { obj.adjEdgeIndex(uint()) } -> std::same_as<uint>;
-    { obj.adjEdgeMod(int()) } -> std::convertible_to<decltype(cEP)>;
-    { obj.adjEdgeIndexMod(uint()) } -> std::same_as<uint>;
-
-    { obj.containsAdjEdge(&e) } -> std::same_as<bool>;
-    { obj.containsAdjEdge(uint()) } -> std::same_as<bool>;
-    { obj.indexOfAdjEdge(&e) } -> std::same_as<uint>;
-    { obj.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
-
-    { obj.adjEdgeBegin() } -> InputIterator<decltype(cEP)>;
-    { obj.adjEdgeEnd() } -> InputIterator<decltype(cEP)>;
-
-    { obj.adjEdgeIndexBegin() } -> InputIterator<uint>;
-    { obj.adjEdgeIndexEnd() } -> InputIterator<uint>;
-
-    { obj.adjEdges() } -> InputRange<decltype(cEP)>;
-    { obj.adjEdgeIndices() } -> InputRange<uint>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.adjEdge(uint()) } -> std::same_as<decltype(eP)>;
-        { obj.adjEdgeMod(int()) } -> std::same_as<decltype(eP)>;
-
-        { obj.setAdjEdge(uint(), &e) } -> std::same_as<void>;
-        { obj.setAdjEdge(uint(), uint()) } -> std::same_as<void>;
-        { obj.setAdjEdge(it, &e) } -> std::same_as<void>;
-        { obj.setAdjEdge(it, uint()) } -> std::same_as<void>;
-        { obj.setAdjEdge(cIt, &e) } -> std::same_as<void>;
-        { obj.setAdjEdge(cIt, uint()) } -> std::same_as<void>;
-        { obj.setAdjEdge(cIIt, &e) } -> std::same_as<void>;
-        { obj.setAdjEdge(cIIt, uint()) } -> std::same_as<void>;
-        { obj.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
-        { obj.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
-        { obj.setAdjEdges(vec) } -> std::same_as<void>;
-
-        // for references components, the iterators returned by begin() and
-        // end() are input iterators because they do not allow to modify the
-        // content of the container (the only way to do that is by using the set
-        // member functions). However, they allow to modify the elements
-        // pointed by the iterators (const references components allow to
-        // iterate only trough const pointers instead).
-        { obj.adjEdgeBegin() } -> InputIterator<decltype(eP)>;
-        { obj.adjEdgeEnd() } -> InputIterator<decltype(eP)>;
-
-        { obj.adjEdges() } -> InputRange<decltype(eP)>;
-    };
-};
+concept HasAdjacentEdges =
+    BTIBTBB::IsDerivedFromSpecializationOfV<T, AdjacentEdges>;
 
 /**
- * @brief HasOptionalAdjacentEdges concept is satisfied only if a class
- * satisfies the @ref vcl::comp::HasAdjacentEdges concept and the static boolean
- * constant `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentEdges component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalAdjacentEdges.
  *
  * @ingroup components_concepts
  */

@@ -24,18 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/types.h>
 
-#include <vector>
-
 namespace vcl::comp {
 
+template<bool, typename, int, bool, typename, bool, bool>
+class AdjacentFaces;
+
 /**
- * @brief HasAdjacentFaces concept is satisfied only if a Element class provides
- * the types and member functions specified in this concept. These types and
- * member functions allow to access to a @ref vcl::comp::AdjacentFaces
- * component of a given element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentFaces component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::AdjacentFaces, with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal
  * AdjacentFaces component and the vertical OptionalAdjacentFaces component,
@@ -43,79 +46,21 @@ namespace vcl::comp {
  * this concept provides AdjacentFaces component at runtime (it is guaranteed
  * only that the proper member functions are available at compile time).
  *
+ * @tparam T: The type to be tested for conformity to the HasAdjacentFaces.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasAdjacentFaces = requires (
-    T&&                                                   obj,
-    typename RemoveRef<T>::AdjacentFaceType               f,
-    typename RemoveRef<T>::AdjacentFaceIterator           it,
-    typename RemoveRef<T>::ConstAdjacentFaceIterator      cIt,
-    typename RemoveRef<T>::ConstAdjacentFaceIndexIterator cIIt,
-    typename RemoveRef<T>::AdjacentFaceType*              fP,
-    const typename RemoveRef<T>::AdjacentFaceType*        cFP,
-    std::vector<typename RemoveRef<T>::AdjacentFaceType*> vec) {
-    RemoveRef<T>::ADJ_FACE_NUMBER;
-    typename RemoveRef<T>::AdjacentFaceType;
-    typename RemoveRef<T>::AdjacentFaceIterator;
-    typename RemoveRef<T>::ConstAdjacentFaceIterator;
-    typename RemoveRef<T>::ConstAdjacentFaceIndexIterator;
-
-    { obj.adjFacesNumber() } -> std::same_as<uint>;
-
-    { obj.adjFace(uint()) } -> std::convertible_to<decltype(cFP)>;
-    { obj.adjFaceIndex(uint()) } -> std::same_as<uint>;
-    { obj.adjFaceMod(int()) } -> std::convertible_to<decltype(cFP)>;
-    { obj.adjFaceIndexMod(uint()) } -> std::same_as<uint>;
-
-    { obj.containsAdjFace(&f) } -> std::same_as<bool>;
-    { obj.containsAdjFace(uint()) } -> std::same_as<bool>;
-    { obj.indexOfAdjFace(&f) } -> std::same_as<uint>;
-    { obj.indexOfAdjFace(uint()) } -> std::same_as<uint>;
-
-    { obj.adjFaceBegin() } -> InputIterator<decltype(cFP)>;
-    { obj.adjFaceEnd() } -> InputIterator<decltype(cFP)>;
-
-    { obj.adjFaceIndexBegin() } -> InputIterator<uint>;
-    { obj.adjFaceIndexEnd() } -> InputIterator<uint>;
-
-    { obj.adjFaces() } -> InputRange<decltype(cFP)>;
-    { obj.adjFaceIndices() } -> InputRange<uint>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.adjFace(uint()) } -> std::same_as<decltype(fP)>;
-        { obj.adjFaceMod(int()) } -> std::same_as<decltype(fP)>;
-
-        { obj.setAdjFace(uint(), &f) } -> std::same_as<void>;
-        { obj.setAdjFace(uint(), uint()) } -> std::same_as<void>;
-        { obj.setAdjFace(it, &f) } -> std::same_as<void>;
-        { obj.setAdjFace(it, uint()) } -> std::same_as<void>;
-        { obj.setAdjFace(cIt, &f) } -> std::same_as<void>;
-        { obj.setAdjFace(cIt, uint()) } -> std::same_as<void>;
-        { obj.setAdjFace(cIIt, &f) } -> std::same_as<void>;
-        { obj.setAdjFace(cIIt, uint()) } -> std::same_as<void>;
-        { obj.setAdjFaceMod(int(), &f) } -> std::same_as<void>;
-        { obj.setAdjFaceMod(int(), uint()) } -> std::same_as<void>;
-        { obj.setAdjFaces(vec) } -> std::same_as<void>;
-
-        // for references components, the iterators returned by begin() and
-        // end() are input iterators because they do not allow to modify the
-        // content of the container (the only way to do that is by using the set
-        // member functions). However, they allow to modify the elements
-        // pointed by the iterators (const references components allow to
-        // iterate only trough const pointers instead).
-        { obj.adjFaceBegin() } -> InputIterator<decltype(fP)>;
-        { obj.adjFaceEnd() } -> InputIterator<decltype(fP)>;
-
-        { obj.adjFaces() } -> InputRange<decltype(fP)>;
-    };
-};
+concept HasAdjacentFaces =
+    BTIBTBB::IsDerivedFromSpecializationOfV<T, AdjacentFaces>;
 
 /**
- * @brief HasOptionalAdjacentFaces concept is satisfied only if a class
- * satisfies the @ref vcl::comp::HasAdjacentFaces concept and the
- * static boolean constant `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentFaces component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalAdjacentFaces.
  *
  * @ingroup components_concepts
  */
