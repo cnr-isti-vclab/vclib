@@ -27,6 +27,16 @@ def generate_elem_components(element):
 
     element_components = element_components.replace('%ELEMENT_COMPONENTS%', comp_string)
 
+    conc_comp_string = ""
+    for c in element.components:
+        conc_comp_string += "template<typename T>\n"
+        conc_comp_string += "concept Has" + c.name_upper_camel + " = comp::Has" + c.name_upper_camel + "<T>;\n"
+        if c.optional:
+            conc_comp_string += "template<typename T>\n"
+            conc_comp_string += "concept HasOptional" + c.name_upper_camel + " = comp::HasOptional" + c.name_upper_camel + "<T>;\n"
+
+    element_components = element_components.replace('%COMPONENTS_CONCEPTS%', conc_comp_string)
+
     with open("../" + target_file, 'w') as file:
         file.write(element_components)
 

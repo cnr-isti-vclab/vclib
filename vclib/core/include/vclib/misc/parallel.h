@@ -23,7 +23,6 @@
 #ifndef VCL_MISC_PARALLEL_H
 #define VCL_MISC_PARALLEL_H
 
-#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 // tbb and qt conflicts: if both are linked, we need to first undef Qt's

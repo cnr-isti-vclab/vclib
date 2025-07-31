@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_MESH_STAT_BARYCENTER_H
 #define VCL_ALGORITHMS_MESH_STAT_BARYCENTER_H
 
-#include <vclib/concepts.h>
 #include <vclib/mesh.h>
 
 namespace vcl {

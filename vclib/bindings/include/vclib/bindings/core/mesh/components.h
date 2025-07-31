@@ -35,7 +35,7 @@
 #include "components/wedge_colors.h"
 #include "components/wedge_tex_coords.h"
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
 #include <pybind11/pybind11.h>

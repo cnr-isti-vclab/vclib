@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_QUALITY_H
 #define VCL_MESH_COMPONENTS_QUALITY_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/quality.h"
 
-#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 
 namespace vcl::comp {

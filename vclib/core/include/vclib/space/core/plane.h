@@ -25,7 +25,6 @@
 
 #include "point.h"
 
-#include <vclib/concepts.h>
 #include <vclib/exceptions.h>
 #include <vclib/serialization.h>
 
@@ -55,6 +54,8 @@ class Plane
 public:
     using ScalarType = Scalar;
     using PointType  = Point3<Scalar>;
+
+    static constexpr bool NORMED = NORM;
 
     /**
      * @brief Empty constructor. The plane is uninitialized.
@@ -183,6 +184,23 @@ public:
 
 using Planef = Plane<float>;
 using Planed = Plane<double>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a Plane.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Plane class having any scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the PlaneConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept PlaneConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Plane<typename RemoveRef<T>::ScalarType, RemoveRef<T>::NORMED>>;
 
 } // namespace vcl
 

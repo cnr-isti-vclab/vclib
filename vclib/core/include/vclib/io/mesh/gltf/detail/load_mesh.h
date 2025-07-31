@@ -26,7 +26,7 @@
 #include <vclib/io/mesh/settings.h>
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/concepts.h>
+#include <vclib/mesh.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 #include <vclib/space/core.h>

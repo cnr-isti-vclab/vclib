@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_POSITION_H
 #define VCL_MESH_COMPONENTS_POSITION_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/position.h"
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 namespace vcl::comp {

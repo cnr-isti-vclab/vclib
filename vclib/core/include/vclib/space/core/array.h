@@ -23,7 +23,6 @@
 #ifndef VCL_SPACE_CORE_ARRAY_H
 #define VCL_SPACE_CORE_ARRAY_H
 
-#include <vclib/concepts.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 #include <vclib/types.h>
@@ -685,6 +684,62 @@ using Array3 = Array<Scalar, 3>;
  */
 template<typename Scalar>
 using Array4 = Array<Scalar, 4>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a generic N-dimensional array.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from an Array class having any number of dimensions and any value type.
+ *
+ * @tparam T: The type to be tested for conformity to the ArrayConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept ArrayConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Array<typename RemoveRef<T>::ValueType, RemoveRef<T>::DIM>>;
+
+/**
+ * @brief A concept representing a 2-dimensional array.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from an Array class having two dimensions and any value type.
+ *
+ * @tparam T: The type to be tested for conformity to the Array2Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Array2Concept = ArrayConcept<T> && RemoveRef<T>::DIM == 2;
+
+/**
+ * @brief A concept representing a 3-dimensional array.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from an Array class having three dimensions and any value type.
+ *
+ * @tparam T: The type to be tested for conformity to the Array3Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Array3Concept = ArrayConcept<T> && RemoveRef<T>::DIM == 3;
+
+/**
+ * @brief A concept representing a 4-dimensional array.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from an Array class having four dimensions and any value type.
+ *
+ * @tparam T: The type to be tested for conformity to the Array4Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Array4Concept = ArrayConcept<T> && RemoveRef<T>::DIM == 4;
 
 } // namespace vcl
 

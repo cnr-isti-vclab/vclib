@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_CORE_VISIBILITY_H
 #define VCL_ALGORITHMS_CORE_VISIBILITY_H
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 namespace vcl {

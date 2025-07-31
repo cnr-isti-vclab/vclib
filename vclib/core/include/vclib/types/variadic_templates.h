@@ -217,6 +217,65 @@ struct ForEachType
     }
 };
 
+/**
+ * @brief Trait to check if a type is a specialization of a given template.
+ *
+ * Usage:
+ * @code{.cpp}
+ * static_assert(IsSpecializationOf<std::vector<int>, std::vector>::value, "");
+ * static_assert(!IsSpecializationOf<int, std::vector>::value, "");
+ * @endcode
+ *
+ * @ingroup types
+ */
+template<typename T, template<typename...> class Template>
+struct IsSpecializationOf : std::false_type {};
+
+template<template<typename...> class Template, typename... Args>
+struct IsSpecializationOf<Template<Args...>, Template> : std::true_type {};
+
+/**
+ * @brief Alias for IsSpecializationOf trait.
+ *
+ * @ingroup types
+ */
+template<typename T, template<typename...> class Template>
+constexpr bool IsSpecializationOfV = IsSpecializationOf<T, Template>::value;
+
+/**
+ * @brief Trait to check if a type is derived from a specialization of a given template.
+ *
+ * This trait combines inheritance checking with template specialization detection.
+ *
+ * Usage:
+ * @code{.cpp}
+ * class MyVector : public std::vector<int> {};
+ * static_assert(IsDerivedFromSpecializationOf<MyVector, std::vector>::value, "");
+ * @endcode
+ *
+ * @ingroup types
+ */
+template<typename T, template<typename...> class Template>
+struct IsDerivedFromSpecializationOf
+{
+private:
+    // Helper to check if T is derived from Template<Args...> for any Args
+    template<typename... Args>
+    static std::true_type test(const Template<Args...>*);
+    static std::false_type test(...);
+    
+public:
+    static constexpr bool value = decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+};
+
+/**
+ * @brief Alias for IsDerivedFromSpecializationOf trait.
+ *
+ * @ingroup types
+ */
+template<typename T, template<typename...> class Template>
+constexpr bool IsDerivedFromSpecializationOfV = IsDerivedFromSpecializationOf<T, Template>::value;
+
 } // namespace vcl
 
 #endif // VCL_TYPES_VARIADIC_TEMPLATES_H
