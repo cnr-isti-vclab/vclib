@@ -26,29 +26,9 @@
 #include "components.h"
 #include "mesh_concept.h"
 
+#include <vclib/mesh/mesh_components.h>
+
 namespace vcl {
-
-namespace mesh {
-
-/* Port concepts into the mesh namespace */
-template<typename T>
-concept HasBoundingBox = comp::HasBoundingBox<T>;
-template<typename T>
-concept HasColor = comp::HasColor<T>;
-template<typename T>
-concept HasCustomComponents = comp::HasCustomComponents<T>;
-template<typename T>
-concept HasMark = comp::HasMark<T>;
-template<typename T>
-concept HasName = comp::HasName<T>;
-template<typename T>
-concept HasTextureImages = comp::HasTextureImages<T>;
-template<typename T>
-concept HasTexturePaths = comp::HasTexturePaths<T>;
-template<typename T>
-concept HasTransformMatrix = comp::HasTransformMatrix<T>;
-
-} // namespace mesh
 
 /**
  * @brief Concept that is evaluated true if a Mesh has the BoundingBox

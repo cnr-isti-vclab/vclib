@@ -25,7 +25,6 @@
 
 #include "concepts/components.h"
 #include "concepts/per_mesh.h"
-#include "concepts/per_vertex.h"
 #include "concepts/ranges.h"
 
 /**
