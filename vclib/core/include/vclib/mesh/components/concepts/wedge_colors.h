@@ -24,62 +24,43 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/space/core.h>
 #include <vclib/types.h>
 
-#include <vector>
-
 namespace vcl::comp {
 
+template<int, typename, bool>
+class WedgeColors;
+
 /**
- * @brief HasWedgeColors concept is satisfied only if a Element class provides
- * the types and member functions specified in this concept. These types and
- * member functions allow to access to an @ref vcl::comp::WedgeColors component
- * of a given element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeColors component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::WedgeColors, with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal
  * WedgeColors component and the vertical OptionalWedgeColors component,
  * therefore it does not guarantee that a template Element type that satisfies
- * this concept provides WedgeColors component at runtime (it is guaranteed only
- * that the proper member functions are available at compile time).
+ * this concept provides WedgeColors component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasWedgeColors.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasWedgeColors = requires (
-    T&&                                                obj,
-    typename RemoveRef<T>::WedgeColorType              c,
-    std::vector<typename RemoveRef<T>::WedgeColorType> vec) {
-    RemoveRef<T>::WEDGE_COLOR_NUMBER;
-    typename RemoveRef<T>::WedgeColorType;
-    typename RemoveRef<T>::WedgeColorsIterator;
-    typename RemoveRef<T>::ConstWedgeColorsIterator;
-
-    { obj.wedgeColor(uint()) } -> ColorConcept;
-    { obj.wedgeColorMod(int()) } -> ColorConcept;
-
-    { obj.wedgeColorBegin() } -> InputIterator<decltype(c)>;
-    { obj.wedgeColorEnd() } -> InputIterator<decltype(c)>;
-
-    { obj.wedgeColors() } -> InputRange<decltype(c)>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.setWedgeColor(uint(), c) } -> std::same_as<void>;
-        { obj.setWedgeColors(vec) } -> std::same_as<void>;
-
-        { obj.wedgeColorBegin() } -> OutputIterator<decltype(c)>;
-        { obj.wedgeColorEnd() } -> OutputIterator<decltype(c)>;
-
-        { obj.wedgeColors() } -> OutputRange<decltype(c)>;
-    };
-};
+concept HasWedgeColors = ITB::IsDerivedFromSpecializationOfV<T, WedgeColors>;
 
 /**
- * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies
- * the @ref vcl::comp::HasWedgeColors concept and has the static boolean
- * constant `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeColors component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalWedgeColors.
  *
  * @ingroup components_concepts
  */

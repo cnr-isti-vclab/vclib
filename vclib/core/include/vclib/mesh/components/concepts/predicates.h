@@ -63,6 +63,46 @@ constexpr bool IsDerivedFromSpecializationOfV =
 
 } // namespace TB
 
+// int-type-bool
+namespace ITB {
+
+namespace detail {
+
+template<typename T, template<int, typename, bool> class Template>
+struct IsSpecializationOfComp : std::false_type
+{
+};
+
+template<
+    template<int, typename, bool> class Template,
+    int I,
+    typename T,
+    bool B>
+struct IsSpecializationOfComp<Template<I, T, B>, Template> : std::true_type
+{
+};
+
+template<typename T, template<int, typename, bool> class Template>
+struct IsDerivedFromSpecializationOfComp
+{
+private:
+    template<int I, typename TT, bool B>
+    static std::true_type  test(const Template<I, TT, B>*);
+    static std::false_type test(...);
+
+public:
+    static constexpr bool value =
+        decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+};
+
+} // namespace detail
+
+template<typename T, template<int, typename, bool> class Template>
+constexpr bool IsDerivedFromSpecializationOfV =
+    detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
+
+} // namespace ITB
+
 // type-type-bool
 namespace TTB {
 
@@ -103,31 +143,38 @@ constexpr bool IsDerivedFromSpecializationOfV =
 
 } // namespace TTB
 
-// int-type-bool
-namespace ITB {
+// bool-type-int-bool-bool
+namespace BTITB {
 
 namespace detail {
 
-template<typename T, template<int, typename, bool> class Template>
+template<
+    typename T,
+    template<bool, typename, int, typename, bool> class Template>
 struct IsSpecializationOfComp : std::false_type
 {
 };
 
 template<
-    template<int, typename, bool> class Template,
+    template<bool, typename, int, typename, bool> class Template,
+    bool B1,
+    typename T1,
     int I,
-    typename T,
-    bool B>
-struct IsSpecializationOfComp<Template<I, T, B>, Template> : std::true_type
+    typename T2,
+    bool B2>
+struct IsSpecializationOfComp<Template<B1, T1, I, T2, B2>, Template> :
+        std::true_type
 {
 };
 
-template<typename T, template<int, typename, bool> class Template>
+template<
+    typename T,
+    template<bool, typename, int, typename, bool> class Template>
 struct IsDerivedFromSpecializationOfComp
 {
 private:
-    template<int I, typename TT, bool B>
-    static std::true_type  test(const Template<I, TT, B>*);
+    template<bool B1, typename T1, int I, typename T2, bool B2>
+    static std::true_type  test(const Template<B1, T1, I, T2, B2>*);
     static std::false_type test(...);
 
 public:
@@ -137,11 +184,62 @@ public:
 
 } // namespace detail
 
-template<typename T, template<int, typename, bool> class Template>
+template<
+    typename T,
+    template<bool, typename, int, typename, bool> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 
-} // namespace ITB
+} // namespace BTITB
+
+// bool-type-type-bool-bool
+namespace BTTBB {
+
+namespace detail {
+
+template<
+    typename T,
+    template<bool, typename, typename, bool, bool> class Template>
+struct IsSpecializationOfComp : std::false_type
+{
+};
+
+template<
+    template<bool, typename, typename, bool, bool> class Template,
+    bool B1,
+    typename T1,
+    typename T2,
+    bool B2,
+    bool B3>
+struct IsSpecializationOfComp<Template<B1, T1, T2, B2, B3>, Template> :
+        std::true_type
+{
+};
+
+template<
+    typename T,
+    template<bool, typename, typename, bool, bool> class Template>
+struct IsDerivedFromSpecializationOfComp
+{
+private:
+    template<bool B1, typename T1, typename T2, bool B2, bool B3>
+    static std::true_type  test(const Template<B1, T1, T2, B2, B3>*);
+    static std::false_type test(...);
+
+public:
+    static constexpr bool value =
+        decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+};
+
+} // namespace detail
+
+template<
+    typename T,
+    template<bool, typename, typename, bool, bool> class Template>
+constexpr bool IsDerivedFromSpecializationOfV =
+    detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
+
+} // namespace BTTBB
 
 // bool-type-int-bool-type-bool-bool
 namespace BTIBTBB {
@@ -200,104 +298,6 @@ constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 
 } // namespace BTIBTBB
-
-// bool-type-type-bool-bool
-namespace BTTBB {
-
-namespace detail {
-
-template<
-    typename T,
-    template<bool, typename, typename, bool, bool> class Template>
-struct IsSpecializationOfComp : std::false_type
-{
-};
-
-template<
-    template<bool, typename, typename, bool, bool> class Template,
-    bool B1,
-    typename T1,
-    typename T2,
-    bool B2,
-    bool B3>
-struct IsSpecializationOfComp<Template<B1, T1, T2, B2, B3>, Template> :
-        std::true_type
-{
-};
-
-template<
-    typename T,
-    template<bool, typename, typename, bool, bool> class Template>
-struct IsDerivedFromSpecializationOfComp
-{
-private:
-    template<bool B1, typename T1, typename T2, bool B2, bool B3>
-    static std::true_type  test(const Template<B1, T1, T2, B2, B3>*);
-    static std::false_type test(...);
-
-public:
-    static constexpr bool value =
-        decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
-};
-
-} // namespace detail
-
-template<
-    typename T,
-    template<bool, typename, typename, bool, bool> class Template>
-constexpr bool IsDerivedFromSpecializationOfV =
-    detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
-
-} // namespace BTTBB
-
-// bool-type-int-bool-bool
-namespace BTITB {
-
-namespace detail {
-
-template<
-    typename T,
-    template<bool, typename, int, typename, bool> class Template>
-struct IsSpecializationOfComp : std::false_type
-{
-};
-
-template<
-    template<bool, typename, int, typename, bool> class Template,
-    bool B1,
-    typename T1,
-    int I,
-    typename T2,
-    bool B2>
-struct IsSpecializationOfComp<Template<B1, T1, I, T2, B2>, Template> :
-        std::true_type
-{
-};
-
-template<
-    typename T,
-    template<bool, typename, int, typename, bool> class Template>
-struct IsDerivedFromSpecializationOfComp
-{
-private:
-    template<bool B1, typename T1, int I, typename T2, bool B2>
-    static std::true_type  test(const Template<B1, T1, I, T2, B2>*);
-    static std::false_type test(...);
-
-public:
-    static constexpr bool value =
-        decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
-};
-
-} // namespace detail
-
-template<
-    typename T,
-    template<bool, typename, int, typename, bool> class Template>
-constexpr bool IsDerivedFromSpecializationOfV =
-    detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
-
-} // namespace BTITB
 
 } // namespace vcl::comp
 
