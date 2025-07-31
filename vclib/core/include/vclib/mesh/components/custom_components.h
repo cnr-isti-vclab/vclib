@@ -23,10 +23,11 @@
 #ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
+#include "base/base.h"
 #include "detail/custom_components_data.h"
-#include "concepts/custom_components.h"
 
 #include <vclib/serialization.h>
+#include <vclib/types.h>
 
 #include <any>
 #include <string>
@@ -286,14 +287,7 @@ public:
 
 protected:
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        // if the component is vertical, the import is managed by the container.
-        // if is horizontal, it must be managed by the component itself.
-        if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
-            mData = e.CustomComponents::mData;
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const
     {
@@ -305,6 +299,36 @@ protected:
         // todo
     }
 };
+
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be an Element or a
+ * Mesh) has the CustomComponents component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::CustomComponents, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasCustomComponents.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasCustomComponents =
+    IsDerivedFromSpecializationOfV<T, CustomComponents>;
+
+/* importFrom function */
+
+template<typename ParentElemType>
+template<typename Element>
+void CustomComponents<ParentElemType>::importFrom(const Element& e, bool)
+{
+    // if the component is vertical, the import is managed by the container.
+    // if is horizontal, it must be managed by the component itself.
+    if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
+        mData = e.CustomComponents::mData;
+    }
+}
 
 } // namespace vcl::comp
 
