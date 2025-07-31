@@ -23,8 +23,9 @@
 #ifndef VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 
+#include "face_requirements.h"
+
 #include <vclib/mesh/concepts/mesh_concept.h>
-#include <vclib/mesh/concepts/per_face.h>
 
 #include <vclib/exceptions.h>
 

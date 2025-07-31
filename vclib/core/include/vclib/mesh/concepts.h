@@ -24,7 +24,6 @@
 #define VCL_MESH_CONCEPTS_H
 
 #include "concepts/components.h"
-#include "concepts/per_face.h"
 #include "concepts/per_mesh.h"
 #include "concepts/per_vertex.h"
 #include "concepts/ranges.h"
