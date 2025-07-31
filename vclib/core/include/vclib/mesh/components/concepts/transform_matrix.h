@@ -23,23 +23,29 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_TRANSFORM_MATRIX_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_TRANSFORM_MATRIX_H
 
+#include "predicates.h"
+
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
+template<typename, typename, bool>
+class TransformMatrix;
+
 /**
- * @brief HasTransformMatrix concept is satisfied only if a Element or Mesh
- * class provides the member functions specified in this concept. These member
- * functions allows to access to a @ref vcl::comp::TransformMatrix component of
- * a given element/mesh.
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the TransformMatrix component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TransformMatrix, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasTransformMatrix.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTransformMatrix = requires (T&& obj) {
-    typename RemoveRef<T>::TransformMatrixType;
-    { obj.transformMatrix() } -> Matrix44Concept;
-};
+concept HasTransformMatrix =
+    TTB::IsDerivedFromSpecializationOfV<T, TransformMatrix>;
 
 } // namespace vcl::comp
 
