@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
-#define VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
+#ifndef VCL_MESH_CONTAINERS_DETAIL_CUSTOM_COMPONENTS_VECTOR_MAP_H
+#define VCL_MESH_CONTAINERS_DETAIL_CUSTOM_COMPONENTS_VECTOR_MAP_H
 
 #include <vclib/exceptions.h>
 #include <vclib/miscellaneous.h>
@@ -34,7 +34,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace vcl::mesh {
+namespace vcl::mesh::detail {
 
 /**
  * @brief The CustomComponentsVectorMap class stores a map of vectors of custom
@@ -382,6 +382,6 @@ private:
     }
 };
 
-} // namespace vcl::mesh
+} // namespace vcl::mesh::detail
 
-#endif // VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
+#endif // VCL_MESH_CONTAINERS_DETAIL_CUSTOM_COMPONENTS_VECTOR_MAP_H

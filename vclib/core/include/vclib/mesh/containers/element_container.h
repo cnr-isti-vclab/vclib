@@ -24,8 +24,8 @@
 #define VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
 #include "custom_component_vector_handle.h"
-#include "custom_components_vector_map.h"
-#include "vertical_components_vector_tuple.h"
+#include "detail/custom_components_vector_map.h"
+#include "detail/vertical_components_vector_tuple.h"
 
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/concepts/components/custom_components.h>
@@ -79,13 +79,14 @@ protected:
      * the element. Contains both the optional and the persistent vertical
      * components
      */
-    VerticalComponentsVectorTuple<vComps> mVerticalCompVecTuple;
+    detail::VerticalComponentsVectorTuple<vComps> mVerticalCompVecTuple;
 
     /**
      * @brief The map that associates a string to a vector of custom
      * components
      */
-    CustomComponentsVectorMap<comp::HasCustomComponents<T>> mCustomCompVecMap;
+    detail::CustomComponentsVectorMap<comp::HasCustomComponents<T>>
+        mCustomCompVecMap;
 
 public:
     static const uint ELEMENT_ID = T::ELEMENT_ID;

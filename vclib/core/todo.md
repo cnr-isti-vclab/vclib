@@ -28,7 +28,7 @@
   - Elements:
     - [ ] set properly elements concepts
   - Containers:
-    - [ ] Move the classes that are used internally in a folder 'detail'
+    - [x] Move the classes that are used internally in a folder 'detail'
     - [ ] Element container should provide fast compact function, that does not preserve elements order
   - Components:
     - [ ] references to elements should be available using ELEM_ID
