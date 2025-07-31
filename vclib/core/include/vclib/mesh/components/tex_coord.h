@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_TEX_COORD_H
 #define VCL_MESH_COMPONENTS_TEX_COORD_H
 
-#include "bases/component.h"
+#include "base/component.h"
 
 #include <vclib/mesh/concepts/components/tex_coord.h>
 

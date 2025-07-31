@@ -27,7 +27,7 @@
 #include "detail/custom_components_vector_map.h"
 #include "detail/vertical_components_vector_tuple.h"
 
-#include <vclib/mesh/components/bases/component.h>
+#include <vclib/mesh/components/base/component.h>
 #include <vclib/mesh/concepts/components/custom_components.h>
 #include <vclib/mesh/elements/element.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>

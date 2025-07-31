@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_NORMAL_H
 #define VCL_MESH_COMPONENTS_NORMAL_H
 
-#include "bases/component.h"
+#include "base/component.h"
 
 #include <vclib/mesh/concepts/components/normal.h>
 

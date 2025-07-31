@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 #define VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 
-#include "bases/component.h"
+#include "base/component.h"
 
 #include <vclib/mesh/concepts/components/bounding_box.h>
 

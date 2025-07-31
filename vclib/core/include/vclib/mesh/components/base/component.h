@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_BASES_COMPONENT_H
-#define VCL_MESH_COMPONENTS_BASES_COMPONENT_H
+#ifndef VCL_MESH_COMPONENTS_BASE_COMPONENT_H
+#define VCL_MESH_COMPONENTS_BASE_COMPONENT_H
 
 #include "../detail/component_data.h"
 
@@ -255,4 +255,4 @@ struct IsVerticalComponentPred
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_BASES_COMPONENT_H
+#endif // VCL_MESH_COMPONENTS_BASE_COMPONENT_H

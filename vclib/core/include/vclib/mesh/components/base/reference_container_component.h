@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_BASES_REFERENCE_CONTAINER_COMPONENT_H
-#define VCL_MESH_COMPONENTS_BASES_REFERENCE_CONTAINER_COMPONENT_H
+#ifndef VCL_MESH_COMPONENTS_BASE_REFERENCE_CONTAINER_COMPONENT_H
+#define VCL_MESH_COMPONENTS_BASE_REFERENCE_CONTAINER_COMPONENT_H
 
 #include "index_container_component.h"
 #include "pointer_container_component.h"
@@ -431,4 +431,4 @@ protected:
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_BASES_REFERENCE_CONTAINER_COMPONENT_H
+#endif // VCL_MESH_COMPONENTS_BASE_REFERENCE_CONTAINER_COMPONENT_H

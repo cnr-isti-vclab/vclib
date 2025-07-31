@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include "bases/component.h"
+#include "base/component.h"
 
 #include <vclib/mesh/concepts/components/bit_flags.h>
 
