@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_CONCEPTS_COMPONENTS_COMPONENT_H
 #define VCL_MESH_CONCEPTS_COMPONENTS_COMPONENT_H
 
+#include <vclib/mesh/components/base/base.h>
+
 #include <vclib/types.h>
 
 namespace vcl::comp {

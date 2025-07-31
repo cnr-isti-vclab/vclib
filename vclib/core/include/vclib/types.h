@@ -27,7 +27,6 @@
 #include "types/const_correctness.h"
 #include "types/filter_types.h"
 #include "types/inheritance.h"
-#include "types/mesh_components.h"
 #include "types/pointers.h"
 #include "types/templated_type_wrapper.h"
 #include "types/type_wrapper.h"

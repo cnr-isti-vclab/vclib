@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_MESH_COMPONENTS_H
-#define VCL_TYPES_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_BASE_BASE_H
+#define VCL_MESH_COMPONENTS_BASE_BASE_H
 
-#include "filter_types.h"
+#include <vclib/types.h>
 
 namespace vcl {
 
@@ -202,4 +202,4 @@ class ReferencesComponentTriggerer
 
 } // namespace vcl
 
-#endif // VCL_TYPES_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_BASE_BASE_H

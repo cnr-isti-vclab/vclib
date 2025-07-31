@@ -8,9 +8,9 @@
   - [x] 'friend class Type' should be 'friend Type'
   - [x] implement swap functions in this way (but keep swap member function): https://stackoverflow.com/a/5695855/5851101
 - Types:
-  - [ ] move mesh_containers.h to mesh/containers/base.h
-  - [ ] move mesh_elements.h to mesh/elements/base.h
-  - [ ] move mesh_components to mesh/components/base
+  - [x] move mesh_containers.h to mesh/containers/base
+  - [x] move mesh_elements.h to mesh/elements/base
+  - [x] move mesh_components to mesh/components/base
 - Concepts:
   - [x] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types

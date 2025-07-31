@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_COMPONENTS_BASE_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASE_COMPONENT_H
 
+#include "base.h"
+
 #include "../detail/component_data.h"
 
 #include <vclib/mesh/concepts/components/component.h>
