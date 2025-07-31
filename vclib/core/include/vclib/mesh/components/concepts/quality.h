@@ -24,16 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_QUALITY_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/types.h>
 
 namespace vcl::comp {
 
+template<typename, typename, bool>
+class Quality;
+
 /**
- * @brief HasQuality concept is satisfied only if a Element class provides the
- * types and member functions specified in this concept. These types and member
- * functions allow to access to a @ref vcl::comp::Quality component of a given
- * element.
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Quality component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from vcl::comp::Quality,
+ * with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal Quality
  * component and the vertical OptionalQuality component, therefore it does not
@@ -41,26 +46,19 @@ namespace vcl::comp {
  * Quality component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
+ * @tparam T: The type to be tested for conformity to the HasQuality.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasQuality = requires (
-    T&&                                 obj,
-    typename RemoveRef<T>::QualityType  q,
-    typename RemoveRef<T>::QualityType& qR) {
-    typename RemoveRef<T>::QualityType;
-    { obj.quality() } -> std::convertible_to<decltype(q)>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.quality() } -> std::same_as<decltype(qR)>;
-    };
-};
+concept HasQuality = TTB::IsDerivedFromSpecializationOfV<T, Quality>;
 
 /**
- * @brief HasOptionalQuality concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasQuality concept and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Quality component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the HasOptionalQuality.
  *
  * @ingroup components_concepts
  */
