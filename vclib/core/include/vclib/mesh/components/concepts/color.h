@@ -30,7 +30,7 @@
 
 namespace vcl::comp {
 
-template<typename ParentElemType, bool OPT>
+template<typename, bool>
 class Color;
 
 /**

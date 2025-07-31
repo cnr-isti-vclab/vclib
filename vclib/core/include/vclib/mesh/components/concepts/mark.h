@@ -24,16 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_MARK_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/types.h>
 
 namespace vcl::comp {
 
+template<typename, bool>
+class Mark;
+
 /**
- * @brief HasMark concept is satisfied only if a Element/Mesh class provides the
- * types and member functions specified in this concept. These types and member
- * functions allow to access to a @ref vcl::comp::Mark component of a given
- * element/mesh.
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Mark component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from vcl::comp::Mark,
+ * with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal Mark
  * component and the vertical OptionalMark component, therefore it does not
@@ -41,24 +46,19 @@ namespace vcl::comp {
  * Mark component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
+ * @tparam T: The type to be tested for conformity to the HasMark.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasMark = requires (T&& obj) {
-    { obj.mark() } -> std::same_as<int>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.resetMark() } -> std::same_as<void>;
-        { obj.incrementMark() } -> std::same_as<void>;
-        { obj.decrementMark() } -> std::same_as<void>;
-    };
-};
+concept HasMark = TB::IsDerivedFromSpecializationOfV<T, Mark>;
 
 /**
- * @brief HasOptionalMark concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasMark concept and and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Mark component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the HasOptionalMark.
  *
  * @ingroup components_concepts
  */

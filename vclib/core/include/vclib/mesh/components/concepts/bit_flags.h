@@ -30,13 +30,13 @@
 
 namespace vcl::comp {
 
-template<typename ParentElemType, bool OPT>
+template<typename, bool>
 class BitFlags;
 
-template<int N, typename ParentElemType, bool OPT>
+template<int, typename, bool>
 class PolygonBitFlags;
 
-template<typename ParentElemType, bool OPT>
+template<typename, bool>
 class TriangleBitFlags;
 
 /**
