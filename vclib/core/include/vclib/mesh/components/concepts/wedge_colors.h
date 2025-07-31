@@ -26,7 +26,6 @@
 #include "component.h"
 #include "predicates.h"
 
-#include <vclib/space/core.h>
 #include <vclib/types.h>
 
 namespace vcl::comp {

@@ -24,19 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_TEX_COORDS_H
 
 #include "component.h"
+#include "predicates.h"
 
-#include <vclib/space/core.h>
 #include <vclib/types.h>
-
-#include <vector>
 
 namespace vcl::comp {
 
+template<typename, int, typename, bool>
+class WedgeTexCoords;
+
 /**
- * @brief HasWedgeTexCoords concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to an @ref
- * vcl::comp::WedgeTexCoords component of a given element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeTexCoords component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::WedgeTexCoords, with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal
  * WedgeTexCoords component and the vertical OptionalWedgeTexCoords component,
@@ -44,46 +46,21 @@ namespace vcl::comp {
  * this concept provides WedgeTexCoords component at runtime (it is guaranteed
  * only that the proper member functions are available at compile time).
  *
+ * @tparam T: The type to be tested for conformity to the HasWedgeTexCoords.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasWedgeTexCoords = requires (
-    T&&                                                   obj,
-    typename RemoveRef<T>::WedgeTexCoordType              t,
-    std::vector<typename RemoveRef<T>::WedgeTexCoordType> vec) {
-    RemoveRef<T>::WEDGE_TEX_COORD_NUMBER;
-    typename RemoveRef<T>::WedgeTexCoordType;
-    typename RemoveRef<T>::WedgeTexCoordsIterator;
-    typename RemoveRef<T>::ConstWedgeTexCoordsIterator;
-
-    { obj.wedgeTexCoord(uint()) } -> TexCoordConcept;
-    { obj.wedgeTexCoordMod(int()) } -> TexCoordConcept;
-
-    { obj.textureIndex() } -> std::convertible_to<ushort>;
-
-    { obj.wedgeTexCoordBegin() } -> InputIterator<decltype(t)>;
-    { obj.wedgeTexCoordEnd() } -> InputIterator<decltype(t)>;
-
-    { obj.wedgeTexCoords() } -> InputRange<decltype(t)>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.setWedgeTexCoord(uint(), t) } -> std::same_as<void>;
-        { obj.setWedgeTexCoords(vec) } -> std::same_as<void>;
-
-        { obj.textureIndex() } -> std::same_as<ushort&>;
-
-        { obj.wedgeTexCoordBegin() } -> OutputIterator<decltype(t)>;
-        { obj.wedgeTexCoordEnd() } -> OutputIterator<decltype(t)>;
-
-        { obj.wedgeTexCoords() } -> OutputRange<decltype(t)>;
-    };
-};
+concept HasWedgeTexCoords =
+    TITB::IsDerivedFromSpecializationOfV<T, WedgeTexCoords>;
 
 /**
- * @brief HasOptionalWedgeTexCoords concept is satisfied only if a class
- * satisfied the @ref vcl::comp::HasWedgeTexCoords and has the static
- * boolean constant `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeTexCoords component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalWedgeTexCoords.
  *
  * @ingroup components_concepts
  */
