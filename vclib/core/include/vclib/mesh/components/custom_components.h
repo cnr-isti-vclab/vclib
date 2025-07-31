@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
+#include "base/base.h"
 #include "detail/custom_components_data.h"
 #include "concepts/custom_components.h"
 

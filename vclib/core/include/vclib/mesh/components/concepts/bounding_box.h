@@ -23,23 +23,28 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H
 
+#include "predicates.h"
+
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
+template<PointConcept, typename, bool>
+class BoundingBox;
+
 /**
- * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class
- * provides the member functions specified in this concept. These member
- * functions allows to access to a @ref vcl::comp::BoundingBox component of a
- * given element/mesh.
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the BoundingBox component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::BoundingBox, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasBoundingBox.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasBoundingBox = requires (T&& obj) {
-    typename RemoveRef<T>::BoundingBoxType;
-    { obj.boundingBox() } -> Box3Concept;
-};
+concept HasBoundingBox = TTB::IsDerivedFromSpecializationOfV<T, BoundingBox>;
 
 } // namespace vcl::comp
 
