@@ -23,28 +23,28 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_NAME_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_NAME_H
 
-#include <vclib/types.h>
+#include "predicates.h"
 
-#include <string>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 
+template<typename, bool>
+class Name;
+
 /**
- * @brief HasName concept is satisfied only if a Element or Mesh class provides
- * the member functions specified in this concept. These member functions allows
- * to access to a @ref vcl::comp::Name component of a given element/mesh.
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the Name component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Name, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasName.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasName = requires (T&& obj) {
-    { obj.name() } -> std::convertible_to<std::string>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.name() } -> std::same_as<std::string&>;
-    };
-};
+concept HasName = TB::IsDerivedFromSpecializationOfV<T, Name>;
 
 } // namespace vcl::comp
 
