@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_COLOR_H
 
 #include "base/component.h"
-#include "concepts/color.h"
+#include "concepts/predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -102,19 +102,60 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasColor<Element>) {
-            if (isColorAvailableOn(e)) {
-                color() = e.color();
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { color().serialize(os); }
 
     void deserialize(std::istream& is) { color().deserialize(is); }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Color component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from vcl::comp::Color,
+ * with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal Color
+ * component and the vertical OptionalColor component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Color component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasColor.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasColor = TB::IsDerivedFromSpecializationOfV<T, Color>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Color component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the HasOptionalColor.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalColor =
+    HasColor<T> && IsOptionalComponent<typename RemoveRef<T>::Color>;
+
+/* importFrom function */
+
+template<typename ParentElemType, bool OPT>
+template<typename Element>
+inline void Color<ParentElemType, OPT>::importFrom(const Element& e, bool)
+{
+    if constexpr (HasColor<Element>) {
+        if (isColorAvailableOn(e)) {
+            color() = e.color();
+        }
+    }
+}
 
 /* Detector function to check if a class has Color available */
 
