@@ -428,7 +428,7 @@ public:
          ...);
 
         // manage transform matrix
-        if constexpr (HasTransformMatrix<Mesh<Args...>>) {
+        if constexpr (mesh::HasTransformMatrix<Mesh<Args...>>) {
             using Matrixtype = typename Mesh<Args...>::TransformMatrixType;
 
             Matrixtype matrix = this->transformMatrix();
