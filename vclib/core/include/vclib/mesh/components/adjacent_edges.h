@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
 #include "base/reference_container_component.h"
-#include "concepts/adjacent_edges.h"
+#include "concepts/predicates.h"
 
 #include <vclib/types.h>
 
@@ -607,38 +607,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool importRefs = true)
-    {
-        if (importRefs) {
-            if constexpr (HasAdjacentEdges<Element>) {
-                if (isAdjacentEdgesAvailableOn(e)) {
-                    if constexpr (N > 0) {
-                        // same static size
-                        if constexpr (N == Element::ADJ_EDGE_NUMBER) {
-                            importIndicesFrom(e);
-                        }
-                        // from dynamic to static, but dynamic size == static
-                        // size
-                        else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
-                            if (e.adjEdgesNumber() == N) {
-                                importIndicesFrom(e);
-                            }
-                        }
-                        else {
-                            // do not import in this case: cannot import from
-                            // dynamic size != static size
-                        }
-                    }
-                    else {
-                        // from static/dynamic to dynamic size: need to resize
-                        // first, then import
-                        Base::resize(e.adjEdgesNumber());
-                        importIndicesFrom(e);
-                    }
-                }
-            }
-        }
-    }
+    void importFrom(const Element& e, bool importRefs = true);
 
     void serialize(std::ostream& os) const
     {
@@ -675,6 +644,122 @@ private:
         }
     }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentEdges component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::AdjacentEdges, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * AdjacentEdges component and the vertical OptionalAdjacentEdges component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides AdjacentEdges component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasAdjacentEdges.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasAdjacentEdges =
+    BTIBTBB::IsDerivedFromSpecializationOfV<T, AdjacentEdges>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentEdges component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalAdjacentEdges.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalAdjacentEdges =
+    HasAdjacentEdges<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::AdjacentEdges>;
+
+/**
+ * @private
+ * @brief HasRightNumberOfAdjacentEdges concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent edges, if tied to the vertex number, must be consistent w.r.t. the
+ * number of vertices of the face.
+ *
+ * This concept is satisfied only if static number of adjacent edges is the same
+ * of the static number of vertices.
+ */
+template<typename T>
+concept HasRightNumberOfAdjacentEdges =
+    !comp::IsTiedToVertexNumber<typename RemoveRef<T>::AdjacentEdges> ||
+    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::ADJ_EDGE_NUMBER;
+
+/**
+ * @private
+ * @brief SanityCheckAdjacentEdges concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent edges must be consistent w.r.t. the number of vertices of the face.
+ *
+ * It is satisfied if:
+ * - the component does *not* have adjacent edges, or
+ * - in case it has adjacent edges, they have the same number of vertices of the
+ * face.
+ */
+template<typename T>
+concept SanityCheckAdjacentEdges =
+    !HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
+
+/* importFrom function */
+
+template<
+    bool STORE_INDICES,
+    typename Edge,
+    int  N,
+    bool TTVN,
+    typename ParentElemType,
+    bool VERT,
+    bool OPT>
+template<typename Element>
+inline void
+    AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>::
+    importFrom(const Element& e, bool importRefs)
+{
+    if (importRefs) {
+        if constexpr (HasAdjacentEdges<Element>) {
+            if (isAdjacentEdgesAvailableOn(e)) {
+                if constexpr (N > 0) {
+                    // same static size
+                    if constexpr (N == Element::ADJ_EDGE_NUMBER) {
+                        importIndicesFrom(e);
+                    }
+                    // from dynamic to static, but dynamic size == static
+                    // size
+                    else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
+                        if (e.adjEdgesNumber() == N) {
+                            importIndicesFrom(e);
+                        }
+                    }
+                    else {
+                        // do not import in this case: cannot import from
+                        // dynamic size != static size
+                    }
+                }
+                else {
+                    // from static/dynamic to dynamic size: need to resize
+                    // first, then import
+                    Base::resize(e.adjEdgesNumber());
+                    importIndicesFrom(e);
+                }
+            }
+        }
+    }
+}
 
 /* Detector function to check if a class has AdjacentEdges available */
 
