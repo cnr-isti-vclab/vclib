@@ -20,12 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_MESH_CONTAINERS_H
-#define VCL_TYPES_MESH_CONTAINERS_H
+#ifndef VCL_MESH_CONTAINERS_BASE_BASE_H
+#define VCL_MESH_CONTAINERS_BASE_BASE_H
 
-#include "base.h"
-#include "filter_types.h"
-#include "pointers.h"
+#include <vclib/types.h>
 
 namespace vcl {
 
@@ -153,4 +151,4 @@ struct HasContainerOfElementPred
 
 } // namespace vcl
 
-#endif // VCL_TYPES_MESH_CONTAINERS_H
+#endif // VCL_MESH_CONTAINERS_BASE_BASE_H

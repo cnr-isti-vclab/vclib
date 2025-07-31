@@ -5,7 +5,6 @@
 
 #include "element_container.h"
 
-#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/%EL%.h>
 #include <vclib/mesh/elements/%EL%_components.h>
 

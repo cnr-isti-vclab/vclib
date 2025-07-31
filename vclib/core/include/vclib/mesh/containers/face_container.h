@@ -25,7 +25,6 @@
 
 #include "element_container.h"
 
-#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elem_algorithms.h>
 #include <vclib/mesh/elements/face.h>
 #include <vclib/mesh/elements/face_components.h>

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_CUSTOM_COMPONENT_VECTOR_HANDLE_H
-#define VCL_MESH_CONTAINERS_CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#ifndef VCL_MESH_CONTAINERS_BASE_CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#define VCL_MESH_CONTAINERS_BASE_CUSTOM_COMPONENT_VECTOR_HANDLE_H
 
 #include <vclib/types.h>
 
@@ -138,4 +138,4 @@ using ConstCustomComponentVectorHandle = CustomComponentVectorHandle<const T>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_CONTAINERS_CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#endif // VCL_MESH_CONTAINERS_BASE_CUSTOM_COMPONENT_VECTOR_HANDLE_H

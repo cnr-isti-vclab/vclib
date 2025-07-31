@@ -23,7 +23,8 @@
 #ifndef VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 #define VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
-#include "custom_component_vector_handle.h"
+#include "base/base.h"
+#include "base/custom_component_vector_handle.h"
 #include "detail/custom_components_vector_map.h"
 #include "detail/vertical_components_vector_tuple.h"
 
@@ -49,7 +50,7 @@ class ElementContainer : public ElementContainerTriggerer
     using ElementContainerType = ElementContainer<T>;
 
     // filter components of elements, taking only vertical ones
-    using vComps = FilterTypesByCondition<
+    using VertComps = FilterTypesByCondition<
         comp::IsVerticalComponentPred,
         typename T::Components>::type;
 
@@ -79,7 +80,7 @@ protected:
      * the element. Contains both the optional and the persistent vertical
      * components
      */
-    detail::VerticalComponentsVectorTuple<vComps> mVerticalCompVecTuple;
+    detail::VerticalComponentsVectorTuple<VertComps> mVerticalCompVecTuple;
 
     /**
      * @brief The map that associates a string to a vector of custom
@@ -442,7 +443,7 @@ protected:
             element(n + i).setParentMesh(mParentMesh);
         }
         // importing also optional, vertical and custom components:
-        appendVerticalComponents(other, vComps());
+        appendVerticalComponents(other, VertComps());
         appendCustomComponents(other);
     }
 
@@ -458,7 +459,7 @@ protected:
      */
     void serializeOptionalComponentsAndElementsNumber(std::ostream& out) const
     {
-        constexpr uint                 N_VERT_COMPS = vComps::size();
+        constexpr uint                 N_VERT_COMPS = VertComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
         uint                           i = 0;
 
@@ -468,7 +469,7 @@ protected:
             ++i;
         };
 
-        ForEachType<vComps>::apply(forEachVertComp);
+        ForEachType<VertComps>::apply(forEachVertComp);
 
         vcl::serialize(out, elementContainerSize());
         vcl::serialize(out, enabledComps);
@@ -501,7 +502,7 @@ protected:
      */
     void deserializeOptionalComponentsAndElementsNumber(std::istream& in)
     {
-        constexpr uint                 N_VERT_COMPS = vComps::size();
+        constexpr uint                 N_VERT_COMPS = VertComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
         uint                           size = 0;
 
@@ -519,7 +520,7 @@ protected:
             ++i;
         };
 
-        ForEachType<vComps>::apply(forEachVertComp);
+        ForEachType<VertComps>::apply(forEachVertComp);
     }
 
     /**
