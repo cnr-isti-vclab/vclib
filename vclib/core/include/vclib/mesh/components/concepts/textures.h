@@ -20,52 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CONCEPTS_MARK_H
-#define VCL_MESH_COMPONENTS_CONCEPTS_MARK_H
-
-#include "component.h"
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H
 
 #include <vclib/types.h>
 
 namespace vcl::comp {
 
+class TextureImages;
+class TexturePaths;
+
 /**
- * @brief HasMark concept is satisfied only if a Element/Mesh class provides the
- * types and member functions specified in this concept. These types and member
- * functions allow to access to a @ref vcl::comp::Mark component of a given
- * element/mesh.
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the TextureImages component (inherits from it).
  *
- * Note that this concept does not discriminate between the Horizontal Mark
- * component and the vertical OptionalMark component, therefore it does not
- * guarantee that a template Element type that satisfies this concept provides
- * Mark component at runtime (it is guaranteed only that the proper member
- * functions are available at compile time).
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TextureImages, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasTextureImages.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasMark = requires (T&& obj) {
-    { obj.mark() } -> std::same_as<int>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.resetMark() } -> std::same_as<void>;
-        { obj.incrementMark() } -> std::same_as<void>;
-        { obj.decrementMark() } -> std::same_as<void>;
-    };
-};
+concept HasTextureImages =
+    std::derived_from<std::remove_cvref_t<T>, TextureImages>;
 
 /**
- * @brief HasOptionalMark concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasMark concept and and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the TexturePaths or TextureImages component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TexturePaths or vcl::comp::TextureImages, with any template
+ * arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasTexturePaths.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalMark =
-    HasMark<T> && IsOptionalComponent<typename RemoveRef<T>::Mark>;
+concept HasTexturePaths =
+    HasTextureImages<T> ||
+    std::derived_from<std::remove_cvref_t<T>, TexturePaths>;
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_MARK_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H

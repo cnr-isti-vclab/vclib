@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_TEX_COORD_H
 
 #include "base/component.h"
-#include "concepts/tex_coord.h"
+#include "base/predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -102,19 +102,61 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasTexCoord<Element>) {
-            if (isTexCoordAvailableOn(e)) {
-                texCoord() = e.texCoord().template cast<Scalar>();
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { texCoord().serialize(os); }
 
     void deserialize(std::istream& is) { texCoord().deserialize(is); }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the TexCoord component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TexCoord, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * TexCoord component and the vertical OptionalTexCoord component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides TexCoord component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasTexCoord.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasTexCoord = TTB::IsDerivedFromSpecializationOfV<T, TexCoord>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the TexCoord component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalTexCoord.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalTexCoord =
+    HasTexCoord<T> && IsOptionalComponent<typename RemoveRef<T>::TexCoord>;
+
+/* importFrom function */
+
+template<typename Scalar, typename ParentElemType, bool OPT>
+template<typename Element>
+void TexCoord<Scalar, ParentElemType, OPT>::importFrom(const Element& e, bool)
+{
+    if constexpr (HasTexCoord<Element>) {
+        if (isTexCoordAvailableOn(e)) {
+            texCoord() = e.texCoord().template cast<Scalar>();
+        }
+    }
+}
 
 /* Detector function to check if a class has TexCoord available */
 

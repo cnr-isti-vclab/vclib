@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_QUALITY_H
 
 #include "base/component.h"
-#include "concepts/quality.h"
+#include "base/predicates.h"
 
 #include <vclib/serialization.h>
 
@@ -102,19 +102,62 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasQuality<Element>) {
-            if (isQualityAvailableOn(e)) {
-                quality() = e.quality();
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { vcl::serialize(os, quality()); }
 
     void deserialize(std::istream& is) { vcl::deserialize(is, quality()); }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Quality component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from vcl::comp::Quality,
+ * with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal Quality
+ * component and the vertical OptionalQuality component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Quality component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasQuality.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasQuality = TTB::IsDerivedFromSpecializationOfV<T, Quality>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Quality component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the HasOptionalQuality.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalQuality =
+    HasQuality<T> && IsOptionalComponent<typename RemoveRef<T>::Quality>;
+
+/* importFrom function */
+
+template<typename Scalar, typename ParentElemType, bool OPT>
+template<typename Element>
+void Quality<Scalar, ParentElemType, OPT>::importFrom(
+    const Element& e,
+    bool)
+{
+    if constexpr (HasQuality<Element>) {
+        if (isQualityAvailableOn(e)) {
+            quality() = e.quality();
+        }
+    }
+}
 
 /* Detector function to check if a class has Quality available */
 

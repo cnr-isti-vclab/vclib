@@ -23,104 +23,83 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
 
+#include "../base/predicates.h"
+
 #include <vclib/space/core.h>
 #include <vclib/types.h>
 
-#include <concepts>
-
 namespace vcl::comp {
 
+template<typename, bool>
+class BitFlags;
+
+template<int, typename, bool>
+class PolygonBitFlags;
+
+template<typename, bool>
+class TriangleBitFlags;
+
 /**
- * @brief HasBitFlags concept is satisfied only if a Element class provides the
- * member functions specified in this concept. These member functions allows to
- * access to a @ref vcl::comp::BitFlags component of a given element.
+ * @brief A concept that checks whether a type T (that should be a Face Element)
+ * has the PolygonBitFlags component (inherits from it).
  *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasBitFlags = requires (T&& obj) {
-    { obj.deleted() } -> std::same_as<bool>;
-    { obj.selected() } -> std::convertible_to<bool>;
-    { obj.onBorder() } -> std::convertible_to<bool>;
-    { obj.selected() } -> std::convertible_to<bool>;
-    { obj.userBit(uint()) } -> std::convertible_to<bool>;
-
-    { obj.exportFlagsToVCGFormat() } -> std::same_as<int>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.selected() } -> BitProxyConcept;
-        { obj.onBorder() } -> BitProxyConcept;
-        { obj.selected() } -> BitProxyConcept;
-        { obj.userBit(uint()) } -> BitProxyConcept;
-        { obj.resetBitFlags() } -> std::same_as<void>;
-        { obj.importFlagsFromVCGFormat(int()) } -> std::same_as<void>;
-    };
-};
-
-namespace detail {
-
-/**
- * @private
- * @brief Concept for internal use - contains all the flags member functions
- * that are contained on both the BitFlags components for Face Elements.
- */
-template<typename T>
-concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T&& obj) {
-    { obj.edgeOnBorder(uint()) } -> std::convertible_to<bool>;
-    { obj.edgeSelected(uint()) } -> std::convertible_to<bool>;
-    { obj.edgeVisited(uint()) } -> std::convertible_to<bool>;
-    { obj.edgeFaux(uint()) } -> std::convertible_to<bool>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.edgeOnBorder(uint()) } -> BitProxyConcept;
-        { obj.edgeSelected(uint()) } -> BitProxyConcept;
-        { obj.edgeVisited(uint()) } -> BitProxyConcept;
-        { obj.edgeFaux(uint()) } -> BitProxyConcept;
-    };
-};
-
-} // namespace detail
-
-/**
- * @brief HasPolygonBitFlags concept is satisfied only if a Element class (that
- * should be a Face) provides the member functions specified in this concept.
- * These member functions allows to access to @ref vcl::comp::PolygonBitFlags
- * component of a given element.
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::PolygonBitFlags, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasPolygonBitFlags.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasPolygonBitFlags =
-    detail::FaceBitFlagsConcept<T> && requires (T&& obj) {
-        { obj.__polygonBitFlags() } -> std::same_as<void>;
-    };
+    ITB::IsDerivedFromSpecializationOfV<T, PolygonBitFlags>;
 
 /**
- * @brief HasTriangleBitFlags concept is satisfied only if a Element class (that
- * should be a Face) provides the member functions specified in this concept.
- * These member functions allows to access to @ref vcl::comp::TriangleBitFlags
- * component of a given element.
+ * @brief A concept that checks whether a type T (that should be a Face Element)
+ * has the TriangleBitFlags component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TriangleBitFlags, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasTriangleBitFlags.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasTriangleBitFlags =
-    detail::FaceBitFlagsConcept<T> && requires (T&& obj) {
-        { obj.__triangleBitFlags() } -> std::same_as<void>;
-    };
+    TB::IsDerivedFromSpecializationOfV<T, TriangleBitFlags>;
 
 /**
- * @brief HasFaceBitFlags concept is satisfied if one between @ref
- * vcl::comp::HasPolygonBitFlags and @ref vcl::comp::HasTriangleBitFlags concept
- * is satisfied. This concept allows to make sure that a Face element has proper
- * FaceBitFlags (Triangle or Polygon).
+ * @brief A concept that checks whether a type T (that should be a Face Element)
+ * has either the PolygonBitFlags or the TriangleBitFlags component
+ * (inherits from one of them).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::PolygonBitFlags or vcl::comp::TriangleBitFlags, with any template
+ * arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasFaceBitFlags.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasFaceBitFlags = HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be an Element)
+ * has the one of the BitFlags components (inherits from one of them).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::BitFlags, or vcl::comp::PolygonBitFlags, or
+ * vcl::comp::TriangleBitFlags, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasBitFlags.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasBitFlags =
+    HasFaceBitFlags<T> || TB::IsDerivedFromSpecializationOfV<T, BitFlags>;
 
 } // namespace vcl::comp
 
