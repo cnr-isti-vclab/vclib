@@ -24,6 +24,5 @@
 #define VCL_MESH_CONCEPTS_H
 
 #include "concepts/components.h"
-#include "concepts/ranges.h"
 
 #endif // VCL_MESH_CONCEPTS_H
