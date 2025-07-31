@@ -25,6 +25,26 @@
 
 #include <type_traits>
 
+/*
+ * Why this boilerplate of code?
+ * Because we need to check if a type is a specialization of a templated class,
+ * and this can be done in a generalized way only if template arguments are
+ * TYPES.
+ *
+ * If they are integers or booleans, they cannot be resolved using typenames, so
+ * we need to use a different approach.
+ *
+ * We created a set of namespaces that contain the predicates to check if a
+ * type is a specialization of a templated class with different order and
+ * combination of template arguments.
+ *
+ * This set of predicates involves only the combinations that are necessary for
+ * the components of the VCLib library.
+ *
+ * Waiting for a standard solution to check if a type is a specialization
+ * of a templated class, regardless of the template arguments :)
+ */
+
 namespace vcl::comp {
 
 // type-bool
@@ -143,7 +163,7 @@ constexpr bool IsDerivedFromSpecializationOfV =
 
 } // namespace TTB
 
-// type-int-bool-bool
+// type-int-type-bool
 namespace TITB {
 
 namespace detail {
@@ -184,7 +204,7 @@ constexpr bool IsDerivedFromSpecializationOfV =
 
 } // namespace TITB
 
-// bool-type-int-bool-bool
+// bool-type-int-type-bool
 namespace BTITB {
 
 namespace detail {
