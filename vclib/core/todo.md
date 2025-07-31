@@ -7,6 +7,10 @@
   - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
   - [x] 'friend class Type' should be 'friend Type'
   - [x] implement swap functions in this way (but keep swap member function): https://stackoverflow.com/a/5695855/5851101
+- Types:
+  - [x] move mesh_containers.h to mesh/containers/base
+  - [x] move mesh_elements.h to mesh/elements/base
+  - [x] move mesh_components to mesh/components/base
 - Concepts:
   - [x] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types
@@ -15,10 +19,16 @@
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
   - [x] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
   - [x] rename RangeOf to InputRange, and implement OutputRange concept (be consistent with Input/OutputIterator concepts).
+  - [x] Major rethink of concepts
+    - [x] Delete all the algorithms in core/algorithms/core that are related to mesh, and move them to an inner mesh/algorithms directory
+    - [x] Remove all the views in core/views that are related to mesh, and move them to an inner mesh/views directory
+    - [x] move all the math functions that depends to space.core concepts to algorithms.core
+    - [x] Rethink the concepts in core/concepts, moving everything that is a related to a data structure in the header that contains the definition of that data structure
 - Mesh:
   - Elements:
     - [ ] set properly elements concepts
   - Containers:
+    - [x] Move the classes that are used internally in a folder 'detail'
     - [ ] Element container should provide fast compact function, that does not preserve elements order
   - Components:
     - [ ] references to elements should be available using ELEM_ID
@@ -53,6 +63,7 @@
     - [ ] weights input argument of all the function should be a range
 - Space:
   - [ ] add assert(!isNull()) on Box member functions like volume()
+  - [ ] get rid of TriangleWrapper data structure
   - [ ] improve documentation for Grid data structures
 - Misc:
   - [ ] implement non-static member functions for FileInfo class

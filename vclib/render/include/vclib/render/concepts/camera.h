@@ -23,7 +23,8 @@
 #ifndef VCL_RENDER_CONCEPTS_CAMERA_H
 #define VCL_RENDER_CONCEPTS_CAMERA_H
 
-#include <vclib/concepts.h>
+#include <vclib/space/core.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

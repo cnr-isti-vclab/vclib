@@ -20,8 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms/mesh/create.h>
-#include <vclib/algorithms/mesh/update.h>
+#include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 

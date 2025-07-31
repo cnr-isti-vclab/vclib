@@ -25,13 +25,14 @@
 
 #include "header.h"
 
-#include <vclib/algorithms/mesh/face_topology.h>
-#include <vclib/exceptions/io.h>
 #include <vclib/io/file_type.h>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/tokenizer.h>
+
+#include <vclib/algorithms/mesh.h>
+#include <vclib/exceptions.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
 
 namespace vcl::detail {
 

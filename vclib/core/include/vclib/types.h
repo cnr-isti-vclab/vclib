@@ -23,17 +23,15 @@
 #ifndef VCL_TYPES_H
 #define VCL_TYPES_H
 
+#include "types/concepts.h"
 #include "types/const_correctness.h"
 #include "types/filter_types.h"
 #include "types/inheritance.h"
-#include "types/mesh_components.h"
-#include "types/mesh_containers.h"
-#include "types/mesh_elements.h"
 #include "types/pointers.h"
 #include "types/templated_type_wrapper.h"
 #include "types/type_wrapper.h"
 #include "types/variadic_templates.h"
-#include "types/view.h"
+#include "types/views.h"
 
 /**
  * @defgroup types Types

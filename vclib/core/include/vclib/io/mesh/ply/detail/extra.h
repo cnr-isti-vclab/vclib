@@ -25,13 +25,14 @@
 
 #include "header.h"
 
-#include <vclib/exceptions/io.h>
 #include <vclib/io/image.h>
 #include <vclib/io/mesh/settings.h>
 #include <vclib/io/read.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/logger.h>
-#include <vclib/space/core/texture.h>
+
+#include <vclib/exceptions.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/core.h>
 
 namespace vcl::detail {
 

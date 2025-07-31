@@ -23,11 +23,12 @@
 #ifndef VCL_ALGORITHMS_MESH_CLEAN_H
 #define VCL_ALGORITHMS_MESH_CLEAN_H
 
-#include <vclib/algorithms/core/polygon/ear_cut.h>
 #include <vclib/algorithms/mesh/sort.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/complex/mesh_pos.h>
+
+#include <vclib/algorithms/core.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
 
 #include <vector>
 

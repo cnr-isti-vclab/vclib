@@ -23,10 +23,11 @@
 #ifndef VCL_MESH_COMPONENTS_NAME_H
 #define VCL_MESH_COMPONENTS_NAME_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/name.h"
 
-#include <vclib/concepts/mesh/components/name.h>
-#include <vclib/misc/string.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/serialization.h>
 
 namespace vcl::comp {
 
@@ -113,18 +114,17 @@ protected:
 /* Detector function to check if a class has Name available */
 
 /**
- * @brief Checks if the given Element/Mesh has Name component available.
+ * @brief Checks if the given Element has Name component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has Name component available, `false`
+ * @param[in] element: The element to check.
+ * @return `true` if the element has Name component available, `false`
  * otherwise.
  */
-bool isNameAvailableOn(const ElementOrMeshConcept auto& element)
+bool isNameAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::NAME>(element);
 }

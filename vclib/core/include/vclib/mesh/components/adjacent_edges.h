@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
-#include "bases/reference_container_component.h"
+#include "base/reference_container_component.h"
+#include "concepts/adjacent_edges.h"
 
-#include <vclib/concepts/mesh/components/adjacent_edges.h>
-#include <vclib/types/view.h>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 
@@ -685,11 +685,10 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has AdjacentEdges available, `false` otherwise.
  */
-bool isAdjacentEdgesAvailableOn(const ElementConcept auto& element)
+bool isAdjacentEdgesAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::ADJACENT_EDGES>(element);
 }

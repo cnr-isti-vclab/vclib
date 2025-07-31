@@ -23,12 +23,11 @@
 #ifndef VCL_MESH_COMPONENTS_TEXTURE_IMAGES_H
 #define VCL_MESH_COMPONENTS_TEXTURE_IMAGES_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/texture_images.h"
 
-#include <vclib/concepts/mesh/components/texture_images.h>
-#include <vclib/concepts/mesh/components/texture_paths.h>
-#include <vclib/space/core/texture.h>
-#include <vclib/types/view.h>
+#include <vclib/space/core.h>
+#include <vclib/types.h>
 
 #include <string>
 #include <vector>

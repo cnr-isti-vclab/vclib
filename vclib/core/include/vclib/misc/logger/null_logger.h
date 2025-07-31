@@ -25,8 +25,6 @@
 
 #include "abstract_logger.h"
 
-#include <vclib/concepts/logger.h>
-
 #include <string>
 
 namespace vcl {

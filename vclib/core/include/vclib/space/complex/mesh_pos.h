@@ -23,8 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_MESH_POS_H
 #define VCL_SPACE_COMPLEX_MESH_POS_H
 
-#include <vclib/mesh/components/adjacent_faces.h>
-#include <vclib/mesh/elements/face.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 

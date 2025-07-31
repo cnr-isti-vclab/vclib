@@ -25,8 +25,6 @@
 
 #include "point.h"
 
-#include <vclib/concepts/space/segment.h>
-
 namespace vcl {
 
 /**
@@ -186,6 +184,49 @@ using Segment3 = Segment<Point3<S>>;
 using Segment3i = Segment<Point3i>;
 using Segment3f = Segment<Point3f>;
 using Segment3d = Segment<Point3d>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a Segment.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Segment class having any Point type.
+ *
+ * @tparam T: The type to be tested for conformity to the SegmentConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept SegmentConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Segment<typename RemoveRef<T>::PointType>>;
+
+/**
+ * @brief A concept representing a 2D Segment.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Segment class having a Point type with dimension 2.
+ *
+ * @tparam T: The type to be tested for conformity to the Segment2Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Segment2Concept = SegmentConcept<T> && RemoveRef<T>::DIM == 2;
+
+/**
+ * @brief A concept representing a 3D Segment.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Segment class having a Point type with dimension 3.
+ *
+ * @tparam T: The type to be tested for conformity to the Segment3Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Segment3Concept = SegmentConcept<T> && RemoveRef<T>::DIM == 3;
 
 } // namespace vcl
 

@@ -23,13 +23,11 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
-#include "bases/container_component.h"
+#include "base/container_component.h"
+#include "concepts/wedge_colors.h"
 
-#include <vclib/concepts/mesh/components/color.h>
-#include <vclib/concepts/mesh/components/wedge_colors.h>
-#include <vclib/space/core/color.h>
-#include <vclib/space/core/vector.h>
-#include <vclib/types/view.h>
+#include <vclib/space/core.h>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 
@@ -353,11 +351,10 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has WedgeColors available, `false` otherwise.
  */
-bool isWedgeColorsAvailableOn(const ElementConcept auto& element)
+bool isWedgeColorsAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::WEDGE_COLORS>(element);
 }

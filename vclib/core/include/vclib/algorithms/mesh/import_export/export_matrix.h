@@ -26,9 +26,9 @@
 #include "export_buffer.h"
 
 #include <vclib/algorithms/mesh/stat/topology.h>
-#include <vclib/concepts/space/matrix.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/core/matrix.h>
+
+#include <vclib/mesh.h>
+#include <vclib/space/core.h>
 
 /**
  * @defgroup export_matrix Export Mesh to Matrix Algorithms

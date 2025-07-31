@@ -23,11 +23,9 @@
 #ifndef FOO_COMPONENT_H
 #define FOO_COMPONENT_H
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/mesh/components/component.h>
-#include <vclib/mesh/components/bases/component.h>
-#include <vclib/mesh/mesh.h>
-#include <vclib/meshes/tri_mesh.h>
+#include <vclib/mesh.h>
+#include <vclib/meshes.h>
+#include <vclib/types.h>
 
 #include <iostream>
 

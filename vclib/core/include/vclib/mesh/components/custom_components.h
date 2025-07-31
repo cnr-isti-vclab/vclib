@@ -24,8 +24,8 @@
 #define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
 #include "detail/custom_components_data.h"
+#include "concepts/custom_components.h"
 
-#include <vclib/concepts/mesh/components/custom_components.h>
 #include <vclib/serialization.h>
 
 #include <any>

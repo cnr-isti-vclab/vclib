@@ -23,7 +23,7 @@
 #ifndef ITERATORS_H
 #define ITERATORS_H
 
-#include <vclib/concepts/iterators.h>
+#include <vclib/types.h>
 
 #include <vector>
 

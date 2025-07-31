@@ -25,10 +25,11 @@
 
 #include <vclib/algorithms/mesh/shuffle.h>
 #include <vclib/algorithms/mesh/stat.h>
-#include <vclib/math/random.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/comparators.h>
-#include <vclib/space/complex/sampler.h>
+
+#include <vclib/math.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/space/complex.h>
 
 /**
  * @defgroup point_sampling Point Sampling Algorithms

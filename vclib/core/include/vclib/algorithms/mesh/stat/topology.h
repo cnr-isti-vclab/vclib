@@ -23,10 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_STAT_TOPOLOGY_H
 #define VCL_ALGORITHMS_MESH_STAT_TOPOLOGY_H
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/complex/mesh_edge_util.h>
-#include <vclib/space/complex/mesh_pos.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
 
 #include <map>
 #include <set>

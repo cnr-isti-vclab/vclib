@@ -32,8 +32,8 @@
  * @defgroup mesh_requirements Mesh Requirements
  * @ingroup mesh
  *
- * @brief List functions that allows to check, enable and assert characteristics
- * and the availability of components in the Elements of a Mesh.
+ * @brief List of concepts and functions that allows to check, enable and assert
+ * characteristics and the availability of components in the Elements of a Mesh.
  */
 
 #endif // VCL_MESH_REQUIREMENTS_H

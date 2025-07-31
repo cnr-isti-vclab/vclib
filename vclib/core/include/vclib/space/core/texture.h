@@ -25,7 +25,6 @@
 
 #include "image.h"
 
-#include <vclib/io/file_info.h>
 #include <vclib/serialization.h>
 
 namespace vcl {
@@ -106,6 +105,23 @@ public:
         mImg.deserialize(is);
     }
 };
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a Texture.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Texture class.
+ *
+ * @tparam T: The type to be tested for conformity to the TextureConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept TextureConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Texture>;
 
 } // namespace vcl
 

@@ -44,6 +44,24 @@
 
 namespace vcl::mesh {
 
+/* Port concepts into the mesh namespace */
+template<typename T>
+concept HasBoundingBox = comp::HasBoundingBox<T>;
+template<typename T>
+concept HasColor = comp::HasColor<T>;
+template<typename T>
+concept HasCustomComponents = comp::HasCustomComponents<T>;
+template<typename T>
+concept HasMark = comp::HasMark<T>;
+template<typename T>
+concept HasName = comp::HasName<T>;
+template<typename T>
+concept HasTextureImages = comp::HasTextureImages<T>;
+template<typename T>
+concept HasTexturePaths = comp::HasTexturePaths<T>;
+template<typename T>
+concept HasTransformMatrix = comp::HasTransformMatrix<T>;
+
 /**
  * @addtogroup mesh_components
  * @{

@@ -23,11 +23,8 @@
 #ifndef VCL_SPACE_CORE_POLYGON_H
 #define VCL_SPACE_CORE_POLYGON_H
 
+#include "point.h"
 #include "triangle.h"
-
-#include <vclib/concepts/range.h>
-#include <vclib/concepts/space/polygon.h>
-#include <vclib/space/core/point.h>
 
 #include <ranges>
 #include <vector>
@@ -582,6 +579,49 @@ using Polygon3f = Polygon<Point3f>;
  * @ingroup space_core
  */
 using Polygon3d = Polygon<Point3d>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a Polygon.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Polygon class having any Point type.
+ *
+ * @tparam T: The type to be tested for conformity to the PolygonConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept PolygonConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Polygon<typename RemoveRef<T>::PointType>>;
+
+/**
+ * @brief A concept representing a 2D Polygon.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Polygon class having a Point type with dimension 2.
+ *
+ * @tparam T: The type to be tested for conformity to the Polygon2Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Polygon2Concept = PolygonConcept<T> && RemoveRef<T>::DIM == 2;
+
+/**
+ * @brief A concept representing a 3D Polygon.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Polygon class having a Point type with dimension 3.
+ *
+ * @tparam T: The type to be tested for conformity to the Polygon3Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Polygon3Concept = PolygonConcept<T> && RemoveRef<T>::DIM == 3;
 
 } // namespace vcl
 

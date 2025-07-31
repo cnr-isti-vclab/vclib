@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_QUALITY_H
 #define VCL_MESH_COMPONENTS_QUALITY_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/quality.h"
 
-#include <vclib/concepts/mesh/components/quality.h>
 #include <vclib/serialization.h>
 
 namespace vcl::comp {
@@ -125,12 +125,11 @@ protected:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has Quality component available,
  * `false` otherwise.
  */
-bool isQualityAvailableOn(const ElementOrMeshConcept auto& element)
+bool isQualityAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::QUALITY>(element);
 }

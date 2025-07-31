@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_MATERIALS_H
 #define VCL_MESH_COMPONENTS_MATERIALS_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/materials.h"
 
-#include <vclib/concepts/mesh/components/materials.h>
-#include <vclib/space/core/material.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
