@@ -46,6 +46,11 @@ class BitProxy
 
 public:
     /**
+     * @brief The type of the underlying integral value used to store the bits.
+     */
+    using UnderlyingType = T;
+
+    /**
      * @brief Constructs the BitProxy with the given mask and index.
      * @param[in] mask: the mask containing the bit to access.
      * @param[in] index: the index of the bit to access.
@@ -76,6 +81,25 @@ public:
         mMask.get() ^= (bit << mIndex);
         return *this;
     }
+};
+
+/* Concepts */
+
+/**
+ * @brief BitProxyConcept is satisfied only if a class provides the member
+ * functions specified in this concept. These member functions allows to access
+ * to a bool reference from a bit saved in a mask, and then allow assignment.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept BitProxyConcept = requires (T&& obj) {
+    requires std::convertible_to<T, bool>;
+
+    obj = bool();
+    obj |= bool();
+    obj &= bool();
+    obj /= bool();
 };
 
 } // namespace vcl

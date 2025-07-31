@@ -25,8 +25,6 @@
 
 #include "pointer_vector.h"
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 /**

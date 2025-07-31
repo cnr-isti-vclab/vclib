@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_FIBONACCI_H
 #define VCL_ALGORITHMS_CORE_FIBONACCI_H
 
-#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 #include <cmath>
 #include <numbers>

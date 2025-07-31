@@ -256,6 +256,52 @@ using TriangleWrapper3 = TriangleWrapper<Point3<Scalar>>;
 using TriangleWrapper3f = TriangleWrapper<Point3f>;
 using TriangleWrapper3d = TriangleWrapper<Point3d>;
 
+/* Concepts */
+
+/**
+ * @brief A concept representing a Triangle.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Triangle class having any Point type.
+ *
+ * @tparam T: The type to be tested for conformity to the TriangleConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept TriangleConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Triangle<typename RemoveRef<T>::PointType>> ||
+    std::derived_from< // same type or derived type
+        std::remove_cvref_t<T>,
+        TriangleWrapper<typename RemoveRef<T>::PointType>>;
+
+/**
+ * @brief A concept representing a 2D Triangle.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Triangle class having a Point type with dimension 2.
+ *
+ * @tparam T: The type to be tested for conformity to the Triangle2Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Triangle2Concept = TriangleConcept<T> && RemoveRef<T>::DIM == 2;
+
+/**
+ * @brief A concept representing a 3D Triangle.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Triangle class having a Point type with dimension 3.
+ *
+ * @tparam T: The type to be tested for conformity to the Triangle3Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Triangle3Concept = TriangleConcept<T> && RemoveRef<T>::DIM == 3;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_TRIANGLE_WRAPPER_H

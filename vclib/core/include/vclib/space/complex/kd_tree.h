@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_KD_TREE_H
 #define VCL_SPACE_COMPLEX_KD_TREE_H
 
-#include <vclib/concepts.h>
+#include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
 #include <numeric>

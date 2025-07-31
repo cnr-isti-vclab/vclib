@@ -25,7 +25,6 @@
 
 #include <vclib/algorithms/core/bounding_box.h>
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 namespace vcl {

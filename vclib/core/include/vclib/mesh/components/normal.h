@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_NORMAL_H
 #define VCL_MESH_COMPONENTS_NORMAL_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/normal.h"
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 namespace vcl::comp {

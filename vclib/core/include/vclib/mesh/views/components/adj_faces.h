@@ -23,7 +23,8 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
 #define VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/components/concepts/adjacent_faces.h>
+
 #include <vclib/types.h>
 
 namespace vcl::views {

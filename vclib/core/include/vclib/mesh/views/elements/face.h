@@ -23,9 +23,41 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_FACE_H
 #define VCL_MESH_VIEWS_ELEMENTS_FACE_H
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/requirements/face_requirements.h>
 
-namespace vcl::views {
+namespace vcl {
+
+/**
+ * @brief The FaceRangeConcept evaluates to true if Rng is a valid Range
+ * on Faces.
+ *
+ * This means that Rng must be a Range of FaceConcept: the iterated type
+ * must satisfy the FaceConcept.
+ *
+ * @ingroup face_concepts
+ */
+template<typename Rng>
+concept FaceRangeConcept =
+    Range<Rng> &&
+    FaceConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+
+/**
+ * @brief The FacePointerRangeConcept evaluates to true if Rng is a valid
+ * Range on Face Pointers.
+ *
+ * This means that Rng must be a Range of pointers to a type that satisfy the
+ * FaceConcept.
+ *
+ * @ingroup face_concepts
+ */
+template<typename Rng>
+concept FacePointerRangeConcept =
+    Range<Rng> &&
+    IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+    FaceConcept<typename std::decay_t<
+        RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>>>;
+
+namespace views {
 namespace detail {
 
 struct FacesView
@@ -51,6 +83,7 @@ struct FacesView
  */
 inline constexpr detail::FacesView faces;
 
-} // namespace vcl::views
+} // namespace views
+} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_ELEMENTS_FACE_H

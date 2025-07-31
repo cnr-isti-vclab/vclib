@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_NAME_H
 #define VCL_MESH_COMPONENTS_NAME_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/name.h"
 
-#include <vclib/concepts.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 

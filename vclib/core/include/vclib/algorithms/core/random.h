@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_RANDOM_H
 #define VCL_ALGORITHMS_CORE_RANDOM_H
 
-#include <vclib/concepts.h>
+#include <vclib/space/core.h>
 
 #include <random>
 

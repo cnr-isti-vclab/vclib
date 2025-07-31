@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 #define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/principal_curvature.h"
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 namespace vcl::comp {

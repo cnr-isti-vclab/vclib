@@ -27,7 +27,6 @@
 #include "mesh_containers.h"
 
 #include <vclib/algorithms/core.h>
-#include <vclib/concepts.h>
 
 namespace vcl {
 
@@ -428,7 +427,7 @@ public:
          ...);
 
         // manage transform matrix
-        if constexpr (HasTransformMatrix<Mesh<Args...>>) {
+        if constexpr (mesh::HasTransformMatrix<Mesh<Args...>>) {
             using Matrixtype = typename Mesh<Args...>::TransformMatrixType;
 
             Matrixtype matrix = this->transformMatrix();
@@ -523,8 +522,10 @@ public:
             // triangulation of polygons and create additional triangle faces
             // for each of the imported polygons. This function statically
             // asserts that the import can be done.
-            using FaceContainer = typename Mesh<Args...>::FaceContainer;
-            FaceContainer::manageImportTriFromPoly(m);
+            if constexpr (mesh::HasFaceContainer<OtherMeshType>) {
+                using FaceContainer = typename Mesh<Args...>::FaceContainer;
+                FaceContainer::manageImportTriFromPoly(m);
+            }
         }
     }
 
@@ -2147,6 +2148,36 @@ private:
         return ElCont::mVerticalCompVecTuple;
     }
 };
+
+/* Concepts */
+
+/**
+ * @brief A concept that checks whether a class is (inherits from) a Mesh class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Mesh class having any Element Container and any Component.
+ * The concept checks also that the Mesh has a Vertex Copntainer.
+ *
+ * @tparam T: The type to be tested for conformity to the MeshConcept.
+ *
+ * @ingroup mesh
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept MeshConcept =
+    IsDerivedFromSpecializationOfV<T, Mesh> && mesh::HasVertexContainer<T>;
+
+/**
+ * @brief A concept that checks whether a class is a Mesh or an Element.
+ *
+ * The concept is satisfied when `T` is a class that satisfies the MeshConcept
+ * or the ElementConcept.
+ *
+ * @ingroup mesh
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept ElementOrMeshConcept = MeshConcept<T> || ElementConcept<T>;
 
 } // namespace vcl
 

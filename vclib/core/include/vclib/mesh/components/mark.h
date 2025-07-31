@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_H
 #define VCL_MESH_COMPONENTS_MARK_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/mark.h"
 
-#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 
 namespace vcl::comp {

@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_CORE_TRANSFORM_H
 #define VCL_ALGORITHMS_CORE_TRANSFORM_H
 
-#include <vclib/concepts.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/space/core.h>
 

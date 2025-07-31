@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_CORE_BOUNDING_BOX_H
 #define VCL_ALGORITHMS_CORE_BOUNDING_BOX_H
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 /**

@@ -25,8 +25,6 @@
 
 #include "point.h"
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 template<PointConcept PointT>

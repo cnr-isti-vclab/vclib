@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
-#include "bases/reference_container_component.h"
+#include "base/reference_container_component.h"
+#include "concepts/adjacent_edges.h"
 
-#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 namespace vcl::comp {

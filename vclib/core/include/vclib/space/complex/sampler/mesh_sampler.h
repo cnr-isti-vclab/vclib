@@ -24,7 +24,6 @@
 #define VCL_SPACE_COMPLEX_SAMPLER_MESH_SAMPLER_H
 
 #include <vclib/algorithms/core.h>
-#include <vclib/concepts.h>
 #include <vclib/mesh.h>
 
 namespace vcl {

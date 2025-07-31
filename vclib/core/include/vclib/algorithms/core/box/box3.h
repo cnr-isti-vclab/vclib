@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_CORE_BOX_BOX3_H
 #define VCL_ALGORITHMS_CORE_BOX_BOX3_H
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 #include <stdexcept>

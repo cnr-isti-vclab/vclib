@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
-#include "bases/reference_container_component.h"
+#include "base/reference_container_component.h"
+#include "concepts/adjacent_faces.h"
 
-#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 namespace vcl::comp {
