@@ -23,7 +23,6 @@
 #ifndef VCL_MESH_CONCEPTS_RANGES_H
 #define VCL_MESH_CONCEPTS_RANGES_H
 
-#include "ranges/edge_range.h"
 #include "ranges/face_range.h"
 #include "ranges/vertex_range.h"
 
