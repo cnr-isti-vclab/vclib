@@ -25,37 +25,25 @@
 
 #include <vclib/types.h>
 
-#include <string>
-
 namespace vcl::comp {
 
+template<typename ParentElemType>
+class CustomComponents;
+
 /**
- * @brief HasCustomComponents concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a @ref
- * vcl::comp::CustomComponents component of a given element.
+ * @brief A concept that checks whether a type T (that should be an Element or a
+ * Mesh) has the CustomComponents component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::CustomComponents, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasCustomComponents.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasCustomComponents =
-    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
-        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
-        {
-            obj.template isCustomComponentOfType<int>(str)
-        } -> std::same_as<bool>;
-        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
-        {
-            obj.template customComponentNamesOfType<int>()
-        } -> std::same_as<decltype(vStr)>;
-
-        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
-
-        // non const requirements
-        requires IsConst<T> || requires {
-            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
-        };
-    };
+    IsDerivedFromSpecializationOfV<T, CustomComponents>;
 
 } // namespace vcl::comp
 
