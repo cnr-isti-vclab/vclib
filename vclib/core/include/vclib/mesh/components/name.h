@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_NAME_H
 
 #include "base/component.h"
-#include "concepts/predicates.h"
+#include "base/predicates.h"
 
 #include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>

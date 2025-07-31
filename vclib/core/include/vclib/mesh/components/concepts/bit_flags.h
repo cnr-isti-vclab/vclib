@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
 
-#include "predicates.h"
+#include "../base/predicates.h"
 
 #include <vclib/space/core.h>
 #include <vclib/types.h>

@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
 #include "base/component.h"
-#include "concepts/predicates.h"
+#include "base/predicates.h"
 
 #include <vclib/space/core.h>
 

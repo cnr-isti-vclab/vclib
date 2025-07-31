@@ -23,8 +23,8 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
+#include "base/predicates.h"
 #include "base/reference_container_component.h"
-#include "concepts/predicates.h"
 
 #include <vclib/types.h>
 

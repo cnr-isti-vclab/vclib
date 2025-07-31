@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CONCEPTS_PREDICATES_H
-#define VCL_MESH_COMPONENTS_CONCEPTS_PREDICATES_H
+#ifndef VCL_MESH_COMPONENTS_BASE_PREDICATES_H
+#define VCL_MESH_COMPONENTS_BASE_PREDICATES_H
 
 #include <type_traits>
 
@@ -342,4 +342,4 @@ constexpr bool IsDerivedFromSpecializationOfV =
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_PREDICATES_H
+#endif // VCL_MESH_COMPONENTS_BASE_PREDICATES_H

@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include "base/container_component.h"
-#include "concepts/predicates.h"
+#include "base/predicates.h"
 
 #include <vclib/space/core.h>
 #include <vclib/types.h>

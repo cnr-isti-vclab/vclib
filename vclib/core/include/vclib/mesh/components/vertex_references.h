@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include "base/reference_container_component.h"
-#include "concepts/predicates.h"
+#include "base/predicates.h"
 
 #include <vclib/types.h>
 
