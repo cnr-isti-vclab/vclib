@@ -24,16 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
+template<typename ParentElemType, bool OPT>
+class Color;
+
 /**
- * @brief HasColor concept is satisfied only if a Element/Mesh class provides
- * the types and member functions specified in this concept. These types and
- * member functions allow to access to a @ref vcl::comp::Color component of a
- * given element/mesh.
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Color component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from vcl::comp::Color,
+ * with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal Color
  * component and the vertical OptionalColor component, therefore it does not
@@ -41,18 +46,19 @@ namespace vcl::comp {
  * Color component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
+ * @tparam T: The type to be tested for conformity to the HasColor.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasColor = requires (T&& obj) {
-    typename RemoveRef<T>::ColorType;
-    { obj.color() } -> ColorConcept;
-};
+concept HasColor = TB::IsDerivedFromSpecializationOfV<T, Color>;
 
 /**
- * @brief HasOptionalColor concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasColor concept and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Color component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the HasOptionalColor.
  *
  * @ingroup components_concepts
  */
