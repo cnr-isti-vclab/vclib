@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 
 #include "base/component.h"
-#include "concepts/bounding_box.h"
+#include "concepts/predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -108,18 +108,42 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasBoundingBox<Element>) {
-            using ScalarType = PointType::ScalarType;
-            boundingBox()    = e.boundingBox().template cast<ScalarType>();
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { boundingBox().serialize(os); }
 
     void deserialize(std::istream& is) { boundingBox().deserialize(is); }
 };
+
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the BoundingBox component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::BoundingBox, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasBoundingBox.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasBoundingBox = TTB::IsDerivedFromSpecializationOfV<T, BoundingBox>;
+
+/* importFrom function */
+
+template<PointConcept PointType, typename ParentElemType, bool OPT>
+template<typename Element>
+inline void BoundingBox<PointType, ParentElemType, OPT>::importFrom(
+    const Element& e,
+    bool)
+{
+    if constexpr (HasBoundingBox<Element>) {
+        using ScalarType = PointType::ScalarType;
+        boundingBox()    = e.boundingBox().template cast<ScalarType>();
+    }
+}
 
 /* Detector function to check if a class has BoundingBox available */
 
