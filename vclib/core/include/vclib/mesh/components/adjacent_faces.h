@@ -730,8 +730,7 @@ template<
     bool VERT,
     bool OPT>
 template<typename Element>
-inline void
-    AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>::
+void AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>::
     importFrom(const Element& e, bool importRefs)
 {
     if (importRefs) {

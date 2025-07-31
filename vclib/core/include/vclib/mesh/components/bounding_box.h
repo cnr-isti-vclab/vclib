@@ -135,7 +135,7 @@ concept HasBoundingBox = TTB::IsDerivedFromSpecializationOfV<T, BoundingBox>;
 
 template<PointConcept PointType, typename ParentElemType, bool OPT>
 template<typename Element>
-inline void BoundingBox<PointType, ParentElemType, OPT>::importFrom(
+void BoundingBox<PointType, ParentElemType, OPT>::importFrom(
     const Element& e,
     bool)
 {

@@ -214,7 +214,7 @@ concept HasOptionalMark =
 
 template<typename ParentElemType, bool OPT>
 template<typename Element>
-inline void Mark<ParentElemType, OPT>::importFrom(const Element& e, bool)
+void Mark<ParentElemType, OPT>::importFrom(const Element& e, bool)
 {
     if constexpr (HasMark<Element>) {
         if (isMarkAvailableOn(e)) {

@@ -679,7 +679,7 @@ template<
     bool VERT,
     bool OPT>
 template<typename Element>
-inline void AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>::
+void AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>::
     importFrom(const Element& e, bool importRefs)
 {
     if (importRefs) {

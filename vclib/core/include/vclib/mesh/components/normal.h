@@ -150,7 +150,7 @@ concept HasOptionalNormal =
 
 template<PointConcept P, typename ParentElemType, bool OPT>
 template<typename Element>
-inline void Normal<P, ParentElemType, OPT>::importFrom(const Element& e, bool)
+void Normal<P, ParentElemType, OPT>::importFrom(const Element& e, bool)
 {
     using ScalarType = NormalType::ScalarType;
     if constexpr (HasNormal<Element>) {

@@ -726,8 +726,7 @@ template<
     bool VERT,
     bool OPT>
 template<typename Element>
-inline void
-    AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>::
+void AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>::
     importFrom(const Element& e, bool importRefs)
 {
     if (importRefs) {

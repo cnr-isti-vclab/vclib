@@ -126,7 +126,7 @@ concept HasName = TB::IsDerivedFromSpecializationOfV<T, Name>;
 
 template<typename ParentElemType, bool OPT>
 template<typename Element>
-inline void Name<ParentElemType, OPT>::importFrom(const Element& e, bool)
+void Name<ParentElemType, OPT>::importFrom(const Element& e, bool)
 {
     if constexpr (HasName<Element>) {
         name() = e.name();

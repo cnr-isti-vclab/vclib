@@ -148,7 +148,7 @@ concept HasOptionalColor =
 
 template<typename ParentElemType, bool OPT>
 template<typename Element>
-inline void Color<ParentElemType, OPT>::importFrom(const Element& e, bool)
+void Color<ParentElemType, OPT>::importFrom(const Element& e, bool)
 {
     if constexpr (HasColor<Element>) {
         if (isColorAvailableOn(e)) {
