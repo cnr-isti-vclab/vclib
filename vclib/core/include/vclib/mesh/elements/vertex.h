@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_H
 #define VCL_MESH_ELEMENTS_VERTEX_H
 
-#include "element.h"
+#include "base/element.h"
 #include "vertex_components.h"
 
 namespace vcl {

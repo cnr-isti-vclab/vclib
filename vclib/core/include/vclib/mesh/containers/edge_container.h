@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
 
-#include "element_container.h"
+#include "base/element_container.h"
 
 #include <vclib/mesh/elements/edge.h>
 #include <vclib/mesh/elements/edge_components.h>

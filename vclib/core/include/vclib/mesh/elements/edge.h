@@ -23,8 +23,8 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_H
 #define VCL_MESH_ELEMENTS_EDGE_H
 
+#include "base/element.h"
 #include "edge_components.h"
-#include "element.h"
 
 namespace vcl {
 

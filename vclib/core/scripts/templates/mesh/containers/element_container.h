@@ -3,7 +3,7 @@
 #ifndef VCL_MESH_CONTAINER_%EL_U%_CONTAINER_H
 #define VCL_MESH_CONTAINER_%EL_U%_CONTAINER_H
 
-#include "element_container.h"
+#include "base/element_container.h"
 
 #include <vclib/mesh/elements/%EL%.h>
 #include <vclib/mesh/elements/%EL%_components.h>

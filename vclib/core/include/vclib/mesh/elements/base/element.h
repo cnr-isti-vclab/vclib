@@ -20,8 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ELEMENTS_ELEMENT_H
-#define VCL_MESH_ELEMENTS_ELEMENT_H
+#ifndef VCL_MESH_ELEMENTS_BASE_ELEMENT_H
+#define VCL_MESH_ELEMENTS_BASE_ELEMENT_H
+
+#include "base.h"
 
 #include <vclib/mesh/components/base/component.h>
 #include <vclib/mesh/components/parent_mesh_pointer.h>
@@ -246,4 +248,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_MESH_ELEMENTS_ELEMENT_H
+#endif // VCL_MESH_ELEMENTS_BASE_ELEMENT_H

@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_MESH_ELEMENTS_H
-#define VCL_TYPES_MESH_ELEMENTS_H
+#ifndef VCL_MESH_ELEMENTS_BASE_BASE_H
+#define VCL_MESH_ELEMENTS_BASE_BASE_H
 
-#include "base.h"
+#include <vclib/types.h>
 
 #include <string>
 
@@ -132,4 +132,4 @@ const std::string& elementEnumString()
 
 } // namespace vcl
 
-#endif // VCL_TYPES_MESH_ELEMENTS_H
+#endif // VCL_MESH_ELEMENTS_BASE_BASE_H

@@ -3,8 +3,8 @@
 #ifndef VCL_MESH_ELEMENTS_%EL_U%_H
 #define VCL_MESH_ELEMENTS_%EL_U%_H
 
+#include "base/element.h"
 #include "%EL%_components.h"
-#include "element.h"
 
 namespace vcl {
 

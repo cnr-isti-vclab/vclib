@@ -20,17 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
-#define VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
+#ifndef VCL_MESH_CONTAINERS_BASE_ELEMENT_CONTAINER_H
+#define VCL_MESH_CONTAINERS_BASE_ELEMENT_CONTAINER_H
 
-#include "base/base.h"
-#include "base/custom_component_vector_handle.h"
-#include "detail/custom_components_vector_map.h"
-#include "detail/vertical_components_vector_tuple.h"
+#include "base.h"
+#include "custom_component_vector_handle.h"
+
+#include "../detail/custom_components_vector_map.h"
+#include "../detail/vertical_components_vector_tuple.h"
 
 #include <vclib/mesh/components/base/component.h>
 #include <vclib/mesh/concepts/components/custom_components.h>
-#include <vclib/mesh/elements/element.h>
+#include <vclib/mesh/elements/base/element.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 
 #include <vclib/serialization.h>
@@ -1203,4 +1204,4 @@ concept ElementContainerConcept = std::derived_from< // same type or derived typ
 
 } // namespace vcl::mesh
 
-#endif // VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
+#endif // VCL_MESH_CONTAINERS_BASE_ELEMENT_CONTAINER_H
