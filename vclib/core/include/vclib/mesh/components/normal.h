@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_NORMAL_H
 
 #include "base/component.h"
-
-#include <vclib/mesh/concepts/components/normal.h>
+#include "concepts/normal.h"
 
 #include <vclib/space/core.h>
 

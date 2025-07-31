@@ -23,7 +23,8 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_POSITIONS_H
 #define VCL_MESH_VIEWS_COMPONENTS_POSITIONS_H
 
-#include <vclib/mesh/concepts/components/position.h>
+#include <vclib/mesh/components/concepts/position.h>
+
 #include <vclib/types.h>
 
 #include <ranges>

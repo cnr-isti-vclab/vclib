@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_POSITION_H
 
 #include "base/component.h"
-
-#include <vclib/mesh/concepts/components/position.h>
+#include "concepts/position.h"
 
 #include <vclib/space/core.h>
 

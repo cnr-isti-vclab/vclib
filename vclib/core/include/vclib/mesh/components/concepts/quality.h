@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_QUALITY_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_QUALITY_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_QUALITY_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_QUALITY_H
 
 #include "component.h"
 
@@ -70,4 +70,4 @@ concept HasOptionalQuality =
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_QUALITY_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_QUALITY_H

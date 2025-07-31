@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include "base/reference_container_component.h"
-
-#include <vclib/mesh/concepts/components/vertex_references.h>
+#include "concepts/vertex_references.h"
 
 #include <vclib/types.h>
 

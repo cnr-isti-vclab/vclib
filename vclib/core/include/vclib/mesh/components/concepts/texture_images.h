@@ -20,38 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_IMAGES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_IMAGES_H
 
-#include "components/adjacent_edges.h"
-#include "components/adjacent_faces.h"
-#include "components/adjacent_vertices.h"
-#include "components/bit_flags.h"
-#include "components/bounding_box.h"
-#include "components/color.h"
-#include "components/component.h"
-#include "components/custom_components.h"
-#include "components/mark.h"
-#include "components/name.h"
-#include "components/normal.h"
-#include "components/position.h"
-#include "components/principal_curvature.h"
-#include "components/quality.h"
-#include "components/tex_coord.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
-#include "components/transform_matrix.h"
-#include "components/vertex_references.h"
-#include "components/wedge_colors.h"
-#include "components/wedge_tex_coords.h"
+#include "texture_paths.h"
+
+#include <vclib/space/core.h>
+
+#include <string>
+
+namespace vcl::comp {
 
 /**
- * @defgroup components_concepts Components Concepts
- * @ingroup mesh_concepts
- * @ingroup components
+ * @brief HasTextureImages concept is satisfied only if a Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a @ref vcl::comp::TextureImages component of a
+ * given mesh.
  *
- * @brief List of concepts for types related to the Component classes of the
- * library.
+ * @ingroup components_concepts
  */
+template<typename T>
+concept HasTextureImages =
+    HasTexturePaths<T> &&
+    requires (T&& obj, typename RemoveRef<T>::TextureType t) {
+        typename RemoveRef<T>::TextureType;
+        typename RemoveRef<T>::TextureIterator;
+        typename RemoveRef<T>::ConstTextureIterator;
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_H
+        { obj.texture(uint()) } -> TextureConcept;
+
+        { obj.textureBegin() } -> InputIterator<decltype(t)>;
+        { obj.textureEnd() } -> InputIterator<decltype(t)>;
+        { obj.textures() } -> InputRange<decltype(t)>;
+
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.clearTextures() } -> std::same_as<void>;
+            { obj.pushTexture(std::string()) } -> std::same_as<void>;
+            { obj.pushTexture(t) } -> std::same_as<void>;
+
+            { obj.textureBegin() } -> OutputIterator<decltype(t)>;
+            { obj.textureEnd() } -> OutputIterator<decltype(t)>;
+            { obj.textures() } -> OutputRange<decltype(t)>;
+        };
+    };
+
+} // namespace vcl::comp
+
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_IMAGES_H

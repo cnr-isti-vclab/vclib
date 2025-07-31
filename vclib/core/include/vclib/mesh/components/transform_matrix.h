@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
 #include "base/component.h"
-
-#include <vclib/mesh/concepts/components/transform_matrix.h>
+#include "concepts/transform_matrix.h"
 
 #include <vclib/space/core.h>
 

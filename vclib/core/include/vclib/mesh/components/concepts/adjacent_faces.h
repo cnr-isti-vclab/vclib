@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_ADJACENT_FACES_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_ADJACENT_FACES_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H
 
 #include "component.h"
 
@@ -158,4 +158,4 @@ concept SanityCheckAdjacentFaces =
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_ADJACENT_FACES_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H

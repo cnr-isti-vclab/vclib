@@ -20,56 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_PATHS_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_PATHS_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H
 
-#include <vclib/types.h>
+#include "component.h"
 
-#include <string>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasTexturePaths concept is satisfied only if a Mesh class
- * provides the member functions specified in this concept. These member
- * functions allows to access to a @ref vcl::comp::TexturePaths component of a
- * given mesh.
+ * @brief HasPrincipalCurvature concept is satisfied only if a Element class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a @ref
+ * vcl::comp::PrincipalCurvature component of a given element.
  *
- * @note This concept is satisfied also if a Mesh provides the @ref
- * vcl::comp::TextureImages component, since the texture paths are stored along
- * with the textures.
+ * Note that this concept does not discriminate between the Horizontal
+ * PrincipalCurvature component and the vertical OptionalPrincipalCurvature
+ * component, therefore it does not guarantee that a template Element type that
+ * satisfies this concept provides PrincipalCurvature component at runtime (it
+ * is guaranteed only that the proper member functions are available at compile
+ * time).
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTexturePaths = requires (T&& obj) {
-    typename RemoveRef<T>::TexFileNamesIterator;
-    typename RemoveRef<T>::ConstTexFileNamesIterator;
-
-    { obj.textureNumber() } -> std::same_as<uint>;
-    { obj.texturePath(uint()) } -> std::convertible_to<std::string>;
-
-    { obj.meshBasePath() } -> std::convertible_to<std::string>;
-    { obj.indexOfTexturePath(std::string()) } -> std::same_as<uint>;
-
-    { obj.texturePathBegin() } -> InputIterator<std::string>;
-    { obj.texturePathEnd() } -> InputIterator<std::string>;
-    { obj.texturePaths() } -> InputRange<std::string>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.texturePath(uint()) } -> std::same_as<std::string&>;
-        { obj.meshBasePath() } -> std::same_as<std::string&>;
-
-        { obj.clearTexturePaths() } -> std::same_as<void>;
-        { obj.pushTexturePath(std::string()) } -> std::same_as<void>;
-
-        { obj.texturePathBegin() } -> OutputIterator<std::string>;
-        { obj.texturePathEnd() } -> OutputIterator<std::string>;
-        { obj.texturePaths() } -> OutputRange<std::string>;
-    };
+concept HasPrincipalCurvature = requires (T&& obj) {
+    typename RemoveRef<T>::PrincipalCurvatureType;
+    { obj.principalCurvature() } -> PrincipalCurvatureConcept;
 };
+
+/**
+ * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class
+ * satisfies the HasPrincipalCurvature concept and the static boolean constant
+ * `IS_OPTIONAL` is set to `true`.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalPrincipalCurvature =
+    HasPrincipalCurvature<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::PrincipalCurvature>;
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_TEXTURE_PATHS_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H

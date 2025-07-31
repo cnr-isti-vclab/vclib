@@ -23,7 +23,8 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
 #define VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
 
-#include <vclib/mesh/concepts/components/adjacent_edges.h>
+#include <vclib/mesh/components/concepts/adjacent_edges.h>
+
 #include <vclib/types.h>
 
 namespace vcl::views {

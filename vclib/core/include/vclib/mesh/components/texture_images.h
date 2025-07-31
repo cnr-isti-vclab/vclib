@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_TEXTURE_IMAGES_H
 
 #include "base/component.h"
-
-#include <vclib/mesh/concepts/components/texture_images.h>
+#include "concepts/texture_images.h"
 
 #include <vclib/space/core.h>
 #include <vclib/types.h>

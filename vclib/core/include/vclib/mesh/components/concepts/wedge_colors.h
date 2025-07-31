@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_WEDGE_COLORS_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_WEDGE_COLORS_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
 
 #include "component.h"
 
@@ -119,4 +119,4 @@ concept SanityCheckWedgeColors =
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_WEDGE_COLORS_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H

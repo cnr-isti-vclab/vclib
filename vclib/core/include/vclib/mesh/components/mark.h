@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_MARK_H
 
 #include "base/component.h"
-
-#include <vclib/mesh/concepts/components/mark.h>
+#include "concepts/mark.h"
 
 #include <vclib/serialization.h>
 

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_NAME_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_NAME_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_CUSTOM_COMPONENTS_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_CUSTOM_COMPONENTS_H
 
 #include <vclib/types.h>
 
@@ -30,22 +30,33 @@
 namespace vcl::comp {
 
 /**
- * @brief HasName concept is satisfied only if a Element or Mesh class provides
- * the member functions specified in this concept. These member functions allows
- * to access to a @ref vcl::comp::Name component of a given element/mesh.
+ * @brief HasCustomComponents concept is satisfied only if a Element class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a @ref
+ * vcl::comp::CustomComponents component of a given element.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasName = requires (T&& obj) {
-    { obj.name() } -> std::convertible_to<std::string>;
+concept HasCustomComponents =
+    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
+        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
+        {
+            obj.template isCustomComponentOfType<int>(str)
+        } -> std::same_as<bool>;
+        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
+        {
+            obj.template customComponentNamesOfType<int>()
+        } -> std::same_as<decltype(vStr)>;
 
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.name() } -> std::same_as<std::string&>;
+        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
+
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
+        };
     };
-};
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_NAME_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_CUSTOM_COMPONENTS_H

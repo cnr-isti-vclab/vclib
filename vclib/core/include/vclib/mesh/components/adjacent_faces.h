@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
 #include "base/reference_container_component.h"
-
-#include <vclib/mesh/concepts/components/adjacent_faces.h>
+#include "concepts/adjacent_faces.h"
 
 #include <vclib/types.h>
 

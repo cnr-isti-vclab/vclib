@@ -23,8 +23,9 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 #define VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 
-#include <vclib/mesh/concepts/components/color.h>
-#include <vclib/mesh/concepts/components/wedge_colors.h>
+#include <vclib/mesh/components/concepts/color.h>
+#include <vclib/mesh/components/concepts/wedge_colors.h>
+
 #include <vclib/types.h>
 
 #include <ranges>

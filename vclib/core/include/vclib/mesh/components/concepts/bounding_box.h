@@ -20,46 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_TEX_COORD_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_TEX_COORD_H
-
-#include "component.h"
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H
 
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasTexCoord concept is satisfied only if a Element class provides the
- * types and member functions specified in this concept. These types and member
- * functions allow to access to a @ref vcl::comp::TexCoord component of a given
- * element.
- *
- * Note that this concept does not discriminate between the Horizontal TexCoord
- * component and the vertical OptionalTexCoord component, therefore it does not
- * guarantee that a template Element type that satisfies this concept provides
- * TexCoord component at runtime (it is guaranteed only that the proper member
- * functions are available at compile time).
+ * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a @ref vcl::comp::BoundingBox component of a
+ * given element/mesh.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTexCoord = requires (T&& obj) {
-    typename RemoveRef<T>::TexCoordType;
-    { obj.texCoord() } -> TexCoordIndexedConcept;
+concept HasBoundingBox = requires (T&& obj) {
+    typename RemoveRef<T>::BoundingBoxType;
+    { obj.boundingBox() } -> Box3Concept;
 };
-
-/**
- * @brief HasOptionalTexCoord concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasTexCoord concept and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasOptionalTexCoord =
-    HasTexCoord<T> && IsOptionalComponent<typename RemoveRef<T>::TexCoord>;
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_TEX_COORD_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H

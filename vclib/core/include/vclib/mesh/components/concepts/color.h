@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_PRINCIPAL_CURVATURE_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_PRINCIPAL_CURVATURE_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H
 
 #include "component.h"
 
@@ -30,38 +30,36 @@
 namespace vcl::comp {
 
 /**
- * @brief HasPrincipalCurvature concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a @ref
- * vcl::comp::PrincipalCurvature component of a given element.
+ * @brief HasColor concept is satisfied only if a Element/Mesh class provides
+ * the types and member functions specified in this concept. These types and
+ * member functions allow to access to a @ref vcl::comp::Color component of a
+ * given element/mesh.
  *
- * Note that this concept does not discriminate between the Horizontal
- * PrincipalCurvature component and the vertical OptionalPrincipalCurvature
- * component, therefore it does not guarantee that a template Element type that
- * satisfies this concept provides PrincipalCurvature component at runtime (it
- * is guaranteed only that the proper member functions are available at compile
- * time).
+ * Note that this concept does not discriminate between the Horizontal Color
+ * component and the vertical OptionalColor component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Color component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPrincipalCurvature = requires (T&& obj) {
-    typename RemoveRef<T>::PrincipalCurvatureType;
-    { obj.principalCurvature() } -> PrincipalCurvatureConcept;
+concept HasColor = requires (T&& obj) {
+    typename RemoveRef<T>::ColorType;
+    { obj.color() } -> ColorConcept;
 };
 
 /**
- * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class
- * satisfies the HasPrincipalCurvature concept and the static boolean constant
+ * @brief HasOptionalColor concept is satisfied only if a class satisfies the
+ * @ref vcl::comp::HasColor concept and the static boolean constant
  * `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalPrincipalCurvature =
-    HasPrincipalCurvature<T> &&
-    IsOptionalComponent<typename RemoveRef<T>::PrincipalCurvature>;
+concept HasOptionalColor =
+    HasColor<T> && IsOptionalComponent<typename RemoveRef<T>::Color>;
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_PRINCIPAL_CURVATURE_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H

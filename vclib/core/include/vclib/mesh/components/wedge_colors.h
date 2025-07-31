@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include "base/container_component.h"
-
-#include <vclib/mesh/concepts/components/wedge_colors.h>
+#include "concepts/wedge_colors.h"
 
 #include <vclib/space/core.h>
 #include <vclib/types.h>

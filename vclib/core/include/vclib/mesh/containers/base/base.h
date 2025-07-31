@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONTAINERS_BASE_BASE_H
 #define VCL_MESH_CONTAINERS_BASE_BASE_H
 
-#include <vclib/mesh/concepts/components/component.h>
+#include <vclib/mesh/components/concepts/component.h>
 
 #include <vclib/types.h>
 

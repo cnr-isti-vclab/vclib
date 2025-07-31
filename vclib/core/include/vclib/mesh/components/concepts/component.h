@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONCEPTS_COMPONENTS_COMPONENT_H
-#define VCL_MESH_CONCEPTS_COMPONENTS_COMPONENT_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H
 
 #include <vclib/mesh/components/base/base.h>
 
@@ -294,4 +294,4 @@ concept HasOptionalComponentOfType =
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_CONCEPTS_COMPONENTS_COMPONENT_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H

@@ -23,7 +23,6 @@
 #ifndef VCL_MESH_H
 #define VCL_MESH_H
 
-#include "mesh/concepts.h"
 #include "mesh/components.h"
 #include "mesh/elem_algorithms.h"
 #include "mesh/elements.h"

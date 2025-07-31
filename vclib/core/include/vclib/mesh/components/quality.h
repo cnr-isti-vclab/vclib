@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_QUALITY_H
 
 #include "base/component.h"
-
-#include <vclib/mesh/concepts/components/quality.h>
+#include "concepts/quality.h"
 
 #include <vclib/serialization.h>
 

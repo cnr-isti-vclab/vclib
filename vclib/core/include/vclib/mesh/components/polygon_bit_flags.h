@@ -24,8 +24,7 @@
 #define VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 
 #include "base/container_component.h"
-
-#include <vclib/mesh/concepts/components/bit_flags.h>
+#include "concepts/bit_flags.h"
 
 #include <vclib/space/core.h>
 
