@@ -399,9 +399,6 @@ public:
         return f;
     }
 
-    // dummy member to discriminate between triangle and non-triangle bit flags
-    void __triangleBitFlags() const {}
-
 protected:
     BitProxy<FT> deletedBit() { return flags()[DELETED]; }
 
