@@ -23,7 +23,8 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
 #define VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
 
-#include <vclib/mesh/concepts/mesh_concept.h>
+#include <vclib/mesh/concepts/components.h>
+#include <vclib/mesh/requirements/vertex_requirements.h>
 
 namespace vcl::views {
 namespace detail {

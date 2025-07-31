@@ -24,7 +24,6 @@
 #define VCL_MESH_CONCEPTS_H
 
 #include "concepts/components.h"
-#include "concepts/per_edge.h"
 #include "concepts/per_face.h"
 #include "concepts/per_mesh.h"
 #include "concepts/per_vertex.h"
@@ -32,7 +31,7 @@
 
 /**
  * @defgroup mesh_concepts Mesh Concepts
- * @ingroup mesh
+ * @ingroup mesh_requirements
  *
  * @brief List of concepts for types related to the Mesh data structures of the
  * library. They allow to discriminate between different Mesh types, their
