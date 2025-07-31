@@ -24,35 +24,42 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_NORMAL_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
+template<PointConcept, typename, bool>
+class Normal;
+
 /**
- * @brief HasNormal concept is satisfied only if a Element class provides the
- * types and member functions specified in this concept. These types and member
- * functions allow to access to a @ref vcl::comp::Normal component of a given
- * element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the Normal component (inherits from it).
  *
- * Note that this concept does not discriminate between the Horizontal Normal
- * component and the vertical OptionalNormal component, therefore it does not
- * guarantee that a template Element type that satisfies this concept provides
- * Normal component at runtime (it is guaranteed only that the proper member
- * functions are available at compile time).
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Normal, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * Normal component and the vertical OptionalNormal component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides Normal component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasNormal.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasNormal = requires (T&& obj) {
-    typename RemoveRef<T>::NormalType;
-    { obj.normal() } -> PointConcept;
-};
+concept HasNormal = TTB::IsDerivedFromSpecializationOfV<T, Normal>;
 
 /**
- * @brief HasOptionalNormal concept is satisfied only if a class satisfies the
- * @ref vcl::comp::HasNormal concept and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the Normal component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalNormal.
  *
  * @ingroup components_concepts
  */
