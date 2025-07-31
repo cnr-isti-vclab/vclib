@@ -24,7 +24,6 @@
 #define VCL_MESH_COMPONENTS_MATERIALS_H
 
 #include "base/component.h"
-#include "concepts/materials.h"
 
 #include <vclib/space/core.h>
 
@@ -182,16 +181,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasMaterials<Element>) {
-            mats().clear();
-            for (const auto& mat : e.materials()) {
-                mats().push_back(mat.path());
-            }
-            meshBasePath() = e.meshBasePath();
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const
     {
@@ -211,6 +201,37 @@ private:
 
     const std::vector<Material>& mats() const { return Base::data().materials; }
 };
+
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the Materials component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Materials, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasMaterials.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasMaterials =
+    std::derived_from<std::remove_cvref_t<T>, Materials>;
+
+/* imoportFrom function */
+
+template<typename Element>
+void Materials::importFrom(const Element& e, bool)
+{
+    if constexpr (HasMaterials<Element>) {
+        mats().clear();
+        for (const auto& mat : e.materials()) {
+            mats().push_back(mat.path());
+        }
+        meshBasePath() = e.meshBasePath();
+    }
+}
 
 } // namespace vcl::comp
 
