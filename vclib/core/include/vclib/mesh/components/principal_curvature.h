@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 
 #include "base/component.h"
-#include "concepts/principal_curvature.h"
+#include "base/predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -111,15 +111,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasPrincipalCurvature<Element>) {
-            if (isPrincipalCurvatureAvailableOn(e)) {
-                principalCurvature() =
-                    e.principalCurvature().template cast<Scalar>();
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const
     {
@@ -128,6 +120,61 @@ protected:
 
     void deserialize(std::istream& is) { principalCurvature().deserialize(is); }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the PrincipalCurvature component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::PrincipalCurvature, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * PrincipalCurvature component and the vertical OptionalPrincipalCurvature
+ * component, therefore it does not guarantee that a template Element type that
+ * satisfies this concept provides PrincipalCurvature component at runtime (it
+ * is guaranteed only that the proper member functions are available at compile
+ * time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasPrincipalCurvature.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasPrincipalCurvature =
+    TTB::IsDerivedFromSpecializationOfV<T, PrincipalCurvature>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the PrincipalCurvature component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalPrincipalCurvature.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalPrincipalCurvature =
+    HasPrincipalCurvature<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::PrincipalCurvature>;
+
+/* importFrom function */
+
+template<typename Scalar, typename ParentElemType, bool OPT>
+template<typename Element>
+void PrincipalCurvature<Scalar, ParentElemType, OPT>::importFrom(
+    const Element& e,
+    bool)
+{
+    if constexpr (HasPrincipalCurvature<Element>) {
+        if (isPrincipalCurvatureAvailableOn(e)) {
+            principalCurvature() =
+                e.principalCurvature().template cast<Scalar>();
+        }
+    }
+}
 
 /* Detector function to check if a class has PrincipalCurvature available */
 
