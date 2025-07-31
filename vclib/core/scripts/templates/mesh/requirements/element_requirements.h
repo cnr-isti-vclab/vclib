@@ -3,7 +3,6 @@
 #ifndef VCL_MESH_REQUIREMENTS_%EL_U%_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_%EL_U%_REQUIREMENTS_H
 
-#include "../concepts/per_%EL%.h"
 #include "../containers/%EL%_container.h"
 #include "element_requirements.h"
 
@@ -17,8 +16,30 @@
  * availability of components in the %EL_UC% Elements of a Mesh.
  */
 
+/**
+ * @defgroup %EL%_mesh_concepts %EL_UC%Mesh Concepts
+ * @ingroup %EL%_requirements
+ *
+ * @brief List of concepts for types related to Meshes having %EL_UC%s.
+ * They allow to check the presence of specific components for %EL_UC%s.
+ */
+
 namespace vcl {
 
+/************
+ * concepts *
+ ************/
+
+/**
+ * @brief The %EL_UC%MeshConcept is evaluated true if the type T is a Mesh (it
+ * satisfies the @ref vcl::MeshConcept) and has a %EL_UC%Container.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept %EL_UC%MeshConcept = MeshConcept<T> && mesh::Has%EL_UC%Container<T>;
+
+%PER_ELEM_CONCEPTS%
 /*************************
  * is/enableIf functions *
  *************************/

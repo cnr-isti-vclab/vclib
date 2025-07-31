@@ -7,7 +7,6 @@ from generators.el_header import generate_elem_header
 from generators.el_range_concept import generate_elem_range_concept
 from generators.el_requirements import generate_elem_requirements
 from generators.el_view import generate_elem_view
-from generators.per_el_concepts import generate_per_elem_concepts
 from generators.update_element_type_list import update_element_list
 
 def main():
@@ -28,7 +27,6 @@ def main():
     headers_list = []
 
     gen_function_list = [
-        generate_per_elem_concepts,
         generate_elem_range_concept,
         generate_elem_header,
         generate_elem_components,
