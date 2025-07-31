@@ -24,16 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
+template<typename, typename, bool>
+class PrincipalCurvature;
+
 /**
- * @brief HasPrincipalCurvature concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a @ref
- * vcl::comp::PrincipalCurvature component of a given element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the PrincipalCurvature component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::PrincipalCurvature, with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal
  * PrincipalCurvature component and the vertical OptionalPrincipalCurvature
@@ -42,18 +47,21 @@ namespace vcl::comp {
  * is guaranteed only that the proper member functions are available at compile
  * time).
  *
+ * @tparam T: The type to be tested for conformity to the HasPrincipalCurvature.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPrincipalCurvature = requires (T&& obj) {
-    typename RemoveRef<T>::PrincipalCurvatureType;
-    { obj.principalCurvature() } -> PrincipalCurvatureConcept;
-};
+concept HasPrincipalCurvature =
+    TTB::IsDerivedFromSpecializationOfV<T, PrincipalCurvature>;
 
 /**
- * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class
- * satisfies the HasPrincipalCurvature concept and the static boolean constant
- * `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the PrincipalCurvature component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalPrincipalCurvature.
  *
  * @ingroup components_concepts
  */
