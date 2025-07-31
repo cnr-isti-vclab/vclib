@@ -20,51 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_IMAGES_H
-#define VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_IMAGES_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H
 
-#include "texture_paths.h"
-
-#include <vclib/space/core.h>
-
-#include <string>
+#include <vclib/types.h>
 
 namespace vcl::comp {
 
+class TextureImages;
+class TexturePaths;
+
 /**
- * @brief HasTextureImages concept is satisfied only if a Mesh class
- * provides the member functions specified in this concept. These member
- * functions allows to access to a @ref vcl::comp::TextureImages component of a
- * given mesh.
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the TextureImages component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TextureImages, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasTextureImages.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasTextureImages =
-    HasTexturePaths<T> &&
-    requires (T&& obj, typename RemoveRef<T>::TextureType t) {
-        typename RemoveRef<T>::TextureType;
-        typename RemoveRef<T>::TextureIterator;
-        typename RemoveRef<T>::ConstTextureIterator;
+    std::derived_from<std::remove_cvref_t<T>, TextureImages>;
 
-        { obj.texture(uint()) } -> TextureConcept;
-
-        { obj.textureBegin() } -> InputIterator<decltype(t)>;
-        { obj.textureEnd() } -> InputIterator<decltype(t)>;
-        { obj.textures() } -> InputRange<decltype(t)>;
-
-        // non const requirements
-        requires IsConst<T> || requires {
-            { obj.clearTextures() } -> std::same_as<void>;
-            { obj.pushTexture(std::string()) } -> std::same_as<void>;
-            { obj.pushTexture(t) } -> std::same_as<void>;
-
-            { obj.textureBegin() } -> OutputIterator<decltype(t)>;
-            { obj.textureEnd() } -> OutputIterator<decltype(t)>;
-            { obj.textures() } -> OutputRange<decltype(t)>;
-        };
-    };
+/**
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the TexturePaths or TextureImages component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TexturePaths or vcl::comp::TextureImages, with any template
+ * arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasTexturePaths.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasTexturePaths =
+    HasTextureImages<T> ||
+    std::derived_from<std::remove_cvref_t<T>, TexturePaths>;
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_IMAGES_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H

@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
 
 #include "base/component.h"
-#include "concepts/texture_paths.h"
+#include "concepts/textures.h"
 
 #include <vclib/serialization.h>
 #include <vclib/types.h>
