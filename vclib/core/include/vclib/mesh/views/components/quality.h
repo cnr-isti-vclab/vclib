@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
 #define VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
 
-#include <vclib/mesh/components/concepts/quality.h>
+#include <vclib/mesh/components/quality.h>
 
 #include <vclib/types.h>
 
