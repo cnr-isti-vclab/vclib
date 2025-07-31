@@ -24,18 +24,21 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_VERTICES_H
 
 #include "component.h"
+#include "predicates.h"
 
 #include <vclib/types.h>
 
-#include <vector>
-
 namespace vcl::comp {
 
+template<bool, typename, typename, bool, bool>
+class AdjacentVertices;
+
 /**
- * @brief HasAdjacentVertices concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to an @ref
- * vcl::comp::AdjacentVertices component of a given element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentVertices component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::AdjacentVertices, with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal
  * AdjacentVertices component and the vertical OptionalAdjacentVertices
@@ -44,78 +47,21 @@ namespace vcl::comp {
  * guaranteed only that the proper member functions are available at compile
  * time).
  *
+ * @tparam T: The type to be tested for conformity to the HasAdjacentVertices.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasAdjacentVertices = requires (
-    T&&                                                     obj,
-    typename RemoveRef<T>::AdjacentVertexType               v,
-    typename RemoveRef<T>::AdjacentVertexIterator           it,
-    typename RemoveRef<T>::ConstAdjacentVertexIterator      cIt,
-    typename RemoveRef<T>::ConstAdjacentVertexIndexIterator cIIt,
-    typename RemoveRef<T>::AdjacentVertexType*              vP,
-    const typename RemoveRef<T>::AdjacentVertexType*        cVP,
-    std::vector<typename RemoveRef<T>::AdjacentVertexType*> vec) {
-    typename RemoveRef<T>::AdjacentVertexType;
-    typename RemoveRef<T>::AdjacentVertexIterator;
-    typename RemoveRef<T>::ConstAdjacentVertexIterator;
-    typename RemoveRef<T>::ConstAdjacentVertexIndexIterator;
-
-    { obj.adjVerticesNumber() } -> std::same_as<uint>;
-
-    { obj.adjVertex(uint()) } -> std::convertible_to<decltype(cVP)>;
-    { obj.adjVertexIndex(uint()) } -> std::same_as<uint>;
-    { obj.adjVertexMod(int()) } -> std::convertible_to<decltype(cVP)>;
-    { obj.adjVertexIndexMod(uint()) } -> std::same_as<uint>;
-
-    { obj.containsAdjVertex(&v) } -> std::same_as<bool>;
-    { obj.containsAdjVertex(uint()) } -> std::same_as<bool>;
-    { obj.indexOfAdjVertex(&v) } -> std::same_as<uint>;
-    { obj.indexOfAdjVertex(uint()) } -> std::same_as<uint>;
-
-    { obj.adjVertexBegin() } -> InputIterator<decltype(cVP)>;
-    { obj.adjVertexEnd() } -> InputIterator<decltype(cVP)>;
-
-    { obj.adjVertexIndexBegin() } -> InputIterator<uint>;
-    { obj.adjVertexIndexEnd() } -> InputIterator<uint>;
-
-    { obj.adjVertices() } -> InputRange<decltype(cVP)>;
-    { obj.adjVertexIndices() } -> InputRange<uint>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.adjVertex(uint()) } -> std::same_as<decltype(vP)>;
-        { obj.adjVertexMod(int()) } -> std::same_as<decltype(vP)>;
-
-        { obj.setAdjVertex(uint(), &v) } -> std::same_as<void>;
-        { obj.setAdjVertex(uint(), uint()) } -> std::same_as<void>;
-        { obj.setAdjVertex(it, &v) } -> std::same_as<void>;
-        { obj.setAdjVertex(it, uint()) } -> std::same_as<void>;
-        { obj.setAdjVertex(cIt, &v) } -> std::same_as<void>;
-        { obj.setAdjVertex(cIt, uint()) } -> std::same_as<void>;
-        { obj.setAdjVertex(cIIt, &v) } -> std::same_as<void>;
-        { obj.setAdjVertex(cIIt, uint()) } -> std::same_as<void>;
-        { obj.setAdjVertexMod(int(), &v) } -> std::same_as<void>;
-        { obj.setAdjVertexMod(int(), uint()) } -> std::same_as<void>;
-        { obj.setAdjVertices(vec) } -> std::same_as<void>;
-
-        // for references components, the iterators returned by begin() and
-        // end() are input iterators because they do not allow to modify the
-        // content of the container (the only way to do that is by using the set
-        // member functions). However, they allow to modify the elements
-        // pointed by the iterators (const references components allow to
-        // iterate only trough const pointers instead).
-        { obj.adjVertexBegin() } -> InputIterator<decltype(vP)>;
-        { obj.adjVertexEnd() } -> InputIterator<decltype(vP)>;
-
-        { obj.adjVertices() } -> InputRange<decltype(vP)>;
-    };
-};
+concept HasAdjacentVertices =
+    BTTBB::IsDerivedFromSpecializationOfV<T, AdjacentVertices>;
 
 /**
- * @brief HasOptionalAdjacentVertices concept is satisfied only if a class
- * satisfies the @ref vcl::comp::HasAdjacentVertices concept and has the static
- * boolean constant `IS_OPTIONAL` is set to `true`.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentVertices component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalAdjacentVertices.
  *
  * @ingroup components_concepts
  */
