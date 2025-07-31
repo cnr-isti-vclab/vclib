@@ -721,7 +721,7 @@ template<
     typename ParentElemType,
     bool VERT>
 template<typename Element>
-inline void VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>::
+void VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>::
     importFrom(const Element& e, bool importRefs)
 {
     if (importRefs) {
