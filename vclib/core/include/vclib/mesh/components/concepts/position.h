@@ -23,23 +23,28 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_POSITION_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_POSITION_H
 
+#include "predicates.h"
+
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
+template<PointConcept, typename, bool>
+class Position;
+
 /**
- * @brief HasPosition concept is satisfied only if a Element class provides
- * the types and member functions specified in this concept. These types and
- * member functions allow to access to a @ref vcl::comp::Position component of
- * a given element.
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the Position component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Position, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasPosition.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPosition = requires (T&& obj) {
-    typename RemoveRef<T>::PositionType;
-    { obj.position() } -> PointConcept;
-};
+concept HasPosition = TTB::IsDerivedFromSpecializationOfV<T, Position>;
 
 } // namespace vcl::comp
 
