@@ -115,8 +115,8 @@ protected:
  * @brief A concept that checks whether a type T (that should be a Element or a
  * Mesh) has the Quality component (inherits from it).
  *
- * The concept is satisfied if T is a class that inherits from vcl::comp::Quality,
- * with any template arguments.
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Quality, with any template arguments.
  *
  * Note that this concept does not discriminate between the Horizontal Quality
  * component and the vertical OptionalQuality component, therefore it does not
@@ -148,9 +148,7 @@ concept HasOptionalQuality =
 
 template<typename Scalar, typename ParentElemType, bool OPT>
 template<typename Element>
-void Quality<Scalar, ParentElemType, OPT>::importFrom(
-    const Element& e,
-    bool)
+void Quality<Scalar, ParentElemType, OPT>::importFrom(const Element& e, bool)
 {
     if constexpr (HasQuality<Element>) {
         if (isQualityAvailableOn(e)) {

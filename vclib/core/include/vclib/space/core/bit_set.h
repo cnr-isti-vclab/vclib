@@ -436,7 +436,7 @@ concept BitSetConcept = requires (T&& obj) {
     { obj == obj } -> std::same_as<bool>;
     { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
 
-           // non const requirements
+    // non const requirements
     requires IsConst<T> || requires {
         { obj.at(uint()) } -> BitProxyConcept;
         { obj[uint()] } -> BitProxyConcept;

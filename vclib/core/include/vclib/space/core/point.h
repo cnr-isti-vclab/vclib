@@ -1045,7 +1045,7 @@ std::ostream& operator<<(std::ostream& os, const Point<Scalar, N>& p)
         "",                     // rowSuffix
         "[",                    // matPrefix
         "]"                     // matSuffix
-        );
+    );
 
     return os << static_cast<const typename Point<Scalar, N>::BaseMatrixType&>(
                      p)

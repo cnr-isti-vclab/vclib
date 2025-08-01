@@ -65,8 +65,6 @@ class ElementContainer;
 
 } // namespace mesh
 
-
-
 /**
  * @brief The Element class
  *

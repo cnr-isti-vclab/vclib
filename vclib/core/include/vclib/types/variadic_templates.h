@@ -229,10 +229,14 @@ struct ForEachType
  * @ingroup types
  */
 template<typename T, template<typename...> class Template>
-struct IsSpecializationOf : std::false_type {};
+struct IsSpecializationOf : std::false_type
+{
+};
 
 template<template<typename...> class Template, typename... Args>
-struct IsSpecializationOf<Template<Args...>, Template> : std::true_type {};
+struct IsSpecializationOf<Template<Args...>, Template> : std::true_type
+{
+};
 
 /**
  * @brief Alias for IsSpecializationOf trait.
@@ -243,14 +247,17 @@ template<typename T, template<typename...> class Template>
 constexpr bool IsSpecializationOfV = IsSpecializationOf<T, Template>::value;
 
 /**
- * @brief Trait to check if a type is derived from a specialization of a given template.
+ * @brief Trait to check if a type is derived from a specialization of a given
+ * template.
  *
- * This trait combines inheritance checking with template specialization detection.
+ * This trait combines inheritance checking with template specialization
+ * detection.
  *
  * Usage:
  * @code{.cpp}
  * class MyVector : public std::vector<int> {};
- * static_assert(IsDerivedFromSpecializationOf<MyVector, std::vector>::value, "");
+ * static_assert(IsDerivedFromSpecializationOf<MyVector, std::vector>::value,
+ * "");
  * @endcode
  *
  * @ingroup types
@@ -261,11 +268,12 @@ struct IsDerivedFromSpecializationOf
 private:
     // Helper to check if T is derived from Template<Args...> for any Args
     template<typename... Args>
-    static std::true_type test(const Template<Args...>*);
+    static std::true_type  test(const Template<Args...>*);
     static std::false_type test(...);
-    
+
 public:
-    static constexpr bool value = decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+    static constexpr bool value =
+        decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
 };
 
 /**
@@ -274,7 +282,8 @@ public:
  * @ingroup types
  */
 template<typename T, template<typename...> class Template>
-constexpr bool IsDerivedFromSpecializationOfV = IsDerivedFromSpecializationOf<T, Template>::value;
+constexpr bool IsDerivedFromSpecializationOfV =
+    IsDerivedFromSpecializationOf<T, Template>::value;
 
 } // namespace vcl
 
