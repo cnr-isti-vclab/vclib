@@ -27,6 +27,7 @@
 #include "base/const_correctness.h"
 #include "base/filter_types.h"
 #include "base/inheritance.h"
+#include "base/iterators.h"
 #include "base/logger.h"
 #include "base/math.h"
 #include "base/min_max.h"

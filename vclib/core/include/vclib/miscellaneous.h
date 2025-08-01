@@ -26,7 +26,6 @@
 #include "misc/compactness.h"
 #include "misc/comparators.h"
 #include "misc/hash.h"
-#include "misc/iterators.h"
 #include "misc/nested_initializer_lists.h"
 #include "misc/pair.h"
 #include "misc/parallel.h"
