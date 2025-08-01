@@ -29,8 +29,6 @@
 #include "misc/nested_initializer_lists.h"
 #include "misc/pair.h"
 #include "misc/parallel.h"
-#include "misc/shuffle.h"
-#include "misc/string.h"
 #include "misc/tokenizer.h"
 
 /**

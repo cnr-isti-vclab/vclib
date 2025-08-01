@@ -23,7 +23,8 @@
 #ifndef VCL_BASE_ITERATORS_CONST_POINTER_ITERATOR_H
 #define VCL_BASE_ITERATORS_CONST_POINTER_ITERATOR_H
 
-#include <vclib/base.h>
+#include <vclib/base/concepts/pointers.h>
+#include <vclib/base/const_correctness.h>
 
 #include <iterator>
 

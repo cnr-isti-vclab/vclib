@@ -23,6 +23,7 @@
 #ifndef VCL_BASE_CONCEPTS_POINTERS_H
 #define VCL_BASE_CONCEPTS_POINTERS_H
 
+#include <vclib/base/concepts/const_correctness.h>
 #include <vclib/base/pointers.h>
 
 #include <memory>

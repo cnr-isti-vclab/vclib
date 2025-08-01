@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_STRING_H
-#define VCL_MISC_STRING_H
+#ifndef VCL_BASE_STRING_H
+#define VCL_BASE_STRING_H
 
-#include <vclib/base.h>
+#include <vclib/base/min_max.h>
 
 #include <algorithm>
 #include <cctype>
@@ -205,4 +205,4 @@ inline uint distance(const std::string& str1, const std::string& str2)
 
 } // namespace vcl
 
-#endif // VCL_MISC_STRING_H
+#endif // VCL_BASE_STRING_H

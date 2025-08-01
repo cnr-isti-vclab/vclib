@@ -23,6 +23,9 @@
 #ifndef VCL_BASE_RANDOM_H
 #define VCL_BASE_RANDOM_H
 
+#include <vclib/base/concepts/range.h>
+
+#include <algorithm>
 #include <optional>
 #include <random>
 
@@ -51,6 +54,24 @@ inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
     }
 
     return gen;
+}
+
+/**
+ * @brief Shuffle the elements of a range.
+ *
+ * @tparam R: Type of the range.
+ * @param[in] range: Range to shuffle.
+ * @param[in] seed: optional value of seed, to get deterministic results. If not
+ * provided, a random seed is used.
+ *
+ * @ingroup base
+ */
+template<Range R>
+void shuffle(R&& range, std::optional<uint> seed = std::nullopt)
+{
+    std::mt19937 generator = randomGenerator(seed);
+
+    std::shuffle(range.begin(), range.end(), generator);
 }
 
 } // namespace vcl

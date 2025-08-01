@@ -33,6 +33,7 @@
 #include "base/min_max.h"
 #include "base/pointers.h"
 #include "base/random.h"
+#include "base/string.h"
 #include "base/templated_type_wrapper.h"
 #include "base/timer.h"
 #include "base/type_wrapper.h"
