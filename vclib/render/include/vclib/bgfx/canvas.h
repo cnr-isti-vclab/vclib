@@ -30,7 +30,7 @@
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/input.h>
 #include <vclib/render/read_buffer_types.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <optional>
 

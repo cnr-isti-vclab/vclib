@@ -34,8 +34,7 @@
 #include <vclib/mesh/elements/base/element.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 
-#include <vclib/serialization.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <vector>
 
@@ -1196,9 +1195,10 @@ private:
  * @ingroup containers_concepts
  */
 template<typename T>
-concept ElementContainerConcept = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    ElementContainer<typename RemoveRef<T>::ElementType>>;
+concept ElementContainerConcept =
+    std::derived_from< // same type or derived type
+        std::remove_cvref_t<T>,
+        ElementContainer<typename RemoveRef<T>::ElementType>>;
 
 /// @endcond
 

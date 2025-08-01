@@ -25,7 +25,7 @@
 
 #include "image.h"
 
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 namespace vcl {
 
@@ -119,9 +119,7 @@ public:
  * @ingroup space_core
  */
 template<typename T>
-concept TextureConcept = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    Texture>;
+concept TextureConcept = std::derived_from<std::remove_cvref_t<T>, Texture>;
 
 } // namespace vcl
 

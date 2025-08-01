@@ -23,9 +23,7 @@
 #ifndef VCL_SPACE_CORE_POINT_H
 #define VCL_SPACE_CORE_POINT_H
 
-#include <vclib/math.h>
-#include <vclib/miscellaneous.h>
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -1045,7 +1043,7 @@ std::ostream& operator<<(std::ostream& os, const Point<Scalar, N>& p)
         "",                     // rowSuffix
         "[",                    // matPrefix
         "]"                     // matSuffix
-        );
+    );
 
     return os << static_cast<const typename Point<Scalar, N>::BaseMatrixType&>(
                      p)

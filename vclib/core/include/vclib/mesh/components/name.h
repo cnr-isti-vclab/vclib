@@ -26,8 +26,7 @@
 #include "base/component.h"
 #include "base/predicates.h"
 
-#include <vclib/miscellaneous.h>
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 

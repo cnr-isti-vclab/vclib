@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_MESH_STAT_QUALITY_H
 #define VCL_ALGORITHMS_MESH_STAT_QUALITY_H
 
-#include <vclib/math.h>
 #include <vclib/mesh.h>
 
 #include <numeric>

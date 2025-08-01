@@ -26,7 +26,8 @@
 #include "container_component.h"
 
 #include <vclib/mesh/iterators/components/index_from_pointer_iterator.h>
-#include <vclib/misc/iterators/const_pointer_iterator.h>
+
+#include <vclib/base.h>
 
 namespace vcl::comp {
 

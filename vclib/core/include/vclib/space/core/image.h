@@ -26,7 +26,7 @@
 #include "array.h"
 #include "color.h"
 
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 #include <string>
 
@@ -145,9 +145,7 @@ public:
  * @ingroup space_core
  */
 template<typename T>
-concept ImageConcept = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    Image>;
+concept ImageConcept = std::derived_from<std::remove_cvref_t<T>, Image>;
 
 } // namespace vcl
 

@@ -27,12 +27,12 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get install cmake ninja-build libtbb-dev catch2
-        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install ninja
+        brew install catch2 glfw
         # if matrix.os == 'macos-13'
         if [[ "${{ matrix.os }}" == "macos-13" ]]; then
           brew install llvm@18

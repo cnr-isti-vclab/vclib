@@ -25,7 +25,7 @@
 #include <vclib/bindings/core/meshes.h>
 #include <vclib/bindings/core/space.h>
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <pybind11/pybind11.h>
 

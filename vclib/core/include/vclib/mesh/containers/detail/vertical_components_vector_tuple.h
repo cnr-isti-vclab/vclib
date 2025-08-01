@@ -25,8 +25,7 @@
 
 #include <vclib/mesh/components/concepts/component.h>
 
-#include <vclib/miscellaneous.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <array>
 #include <tuple>

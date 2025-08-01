@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_ITERATORS_COMPONENTS_INDEX_FROM_POINTER_ITERATOR_H
 #define VCL_MESH_ITERATORS_COMPONENTS_INDEX_FROM_POINTER_ITERATOR_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <iterator>
 

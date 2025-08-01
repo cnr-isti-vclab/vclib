@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_SAMPLER_SAMPLER_CONCEPT_H
 #define VCL_SPACE_COMPLEX_SAMPLER_SAMPLER_CONCEPT_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl {
 

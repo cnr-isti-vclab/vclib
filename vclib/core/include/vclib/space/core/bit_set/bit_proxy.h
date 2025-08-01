@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H
 #define VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <concepts>
 #include <functional>
@@ -86,21 +86,19 @@ public:
 /* Concepts */
 
 /**
- * @brief BitProxyConcept is satisfied only if a class provides the member
- * functions specified in this concept. These member functions allows to access
- * to a bool reference from a bit saved in a mask, and then allow assignment.
+ * @brief A concept representing a BitProxy.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a BitProxy class having any integral type as a template parameter.
+ *
+ * @tparam T: The type to be tested for conformity to the BitProxyConcept.
  *
  * @ingroup space_core
  */
 template<typename T>
-concept BitProxyConcept = requires (T&& obj) {
-    requires std::convertible_to<T, bool>;
-
-    obj = bool();
-    obj |= bool();
-    obj &= bool();
-    obj /= bool();
-};
+concept BitProxyConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    BitProxy<typename RemoveRef<T>::UnderlyingType>>;
 
 } // namespace vcl
 
