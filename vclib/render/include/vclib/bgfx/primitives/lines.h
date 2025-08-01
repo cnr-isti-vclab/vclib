@@ -26,7 +26,7 @@
 #include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
 #include <vclib/bgfx/uniform.h>
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <bgfx/bgfx.h>
 
