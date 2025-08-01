@@ -25,7 +25,7 @@
 
 #include "color.h"
 
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 namespace vcl {
 
