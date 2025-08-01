@@ -27,8 +27,6 @@
 
 #include <vclib/io/write.h>
 
-#include <vclib/miscellaneous.h>
-
 namespace vcl::detail {
 
 template<EdgeMeshConcept MeshType, EdgeConcept EdgeType, typename Stream>

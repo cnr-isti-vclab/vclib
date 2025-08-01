@@ -25,9 +25,6 @@
 
 #include "point.h"
 
-#include <vclib/exceptions.h>
-#include <vclib/serialization.h>
-
 namespace vcl {
 
 /**

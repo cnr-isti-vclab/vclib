@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_DRAWERS_PLAIN_DRAWER_H
 #define VCL_RENDER_DRAWERS_PLAIN_DRAWER_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl {
 

@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_CORE_HISTOGRAM_H
 #define VCL_SPACE_CORE_HISTOGRAM_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <algorithm>
 #include <cmath>

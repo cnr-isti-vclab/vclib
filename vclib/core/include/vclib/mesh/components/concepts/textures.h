@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_TEXTURES_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 

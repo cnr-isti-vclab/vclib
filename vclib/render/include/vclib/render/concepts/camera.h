@@ -24,7 +24,7 @@
 #define VCL_RENDER_CONCEPTS_CAMERA_H
 
 #include <vclib/space/core.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl {
 

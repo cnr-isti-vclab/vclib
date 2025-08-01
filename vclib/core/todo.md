@@ -7,10 +7,11 @@
   - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
   - [x] 'friend class Type' should be 'friend Type'
   - [x] implement swap functions in this way (but keep swap member function): https://stackoverflow.com/a/5695855/5851101
-- Types:
+- Base:
   - [x] move mesh_containers.h to mesh/containers/base
   - [x] move mesh_elements.h to mesh/elements/base
   - [x] move mesh_components to mesh/components/base
+  - [ ] implement Range helper types (e.g. `RangeType<R>` that returns the type iterated in the range)
 - Concepts:
   - [x] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types
@@ -39,13 +40,14 @@
     - [ ] MeshInfo should not use its own enums for elements and components
     - [ ] Add function to get MeshType name (see test 21)
 - Views:
-  - [ ] Add elements<ELEM_ID> view 
+  - [ ] Add `elements<ELEM_ID>` view 
   - [ ] Move indices view from views/mesh/elements/element.h to views/mesh/indices.h
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Iterators:
   - [ ] make just one StaticGridIterator class that can be both const and non-const (avoid code duplication)
 - IO:
+  - [ ] implement non-static member functions for FileInfo class
   - [ ] Manage read and write colors from integral to non integral types
   - [ ] Ply read/write code for some components should be the same for every element (no code duplication)
 - Algorithms:
@@ -66,9 +68,6 @@
   - [ ] add assert(!isNull()) on Box member functions like volume()
   - [ ] get rid of TriangleWrapper data structure
   - [ ] improve documentation for Grid data structures
-- Misc:
-  - [ ] implement non-static member functions for FileInfo class
-  - [ ] implement Range helper types (e.g. RangeType<R> that returns the type iterated in the range)
 - External:
   - [ ] remove zip-iterator library when c++23 zip-view will be supported
   - [ ] look for a json header only library that is compatible with c++20 modules

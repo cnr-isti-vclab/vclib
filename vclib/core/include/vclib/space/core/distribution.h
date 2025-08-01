@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_CORE_DISTRIBUTION_H
 #define VCL_SPACE_CORE_DISTRIBUTION_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <cmath>
 #include <limits>

@@ -28,7 +28,7 @@
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

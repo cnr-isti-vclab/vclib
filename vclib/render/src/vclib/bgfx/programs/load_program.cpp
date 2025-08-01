@@ -22,7 +22,7 @@
 
 #include <vclib/bgfx/programs/load_program.h>
 
-#include <vclib/exceptions/io.h>
+#include <vclib/io.h>
 
 #include <bx/bx.h>
 #include <bx/file.h>

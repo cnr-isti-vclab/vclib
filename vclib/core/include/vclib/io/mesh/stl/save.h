@@ -27,7 +27,6 @@
 #include <vclib/io/write.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 
 namespace vcl {

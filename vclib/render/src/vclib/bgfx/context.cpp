@@ -23,7 +23,7 @@
 #include <vclib/bgfx/context.h>
 
 #include <vclib/bgfx/system/native_window_handle.h>
-#include <vclib/types/base.h>
+#include <vclib/base/base.h>
 
 #include <iostream>
 

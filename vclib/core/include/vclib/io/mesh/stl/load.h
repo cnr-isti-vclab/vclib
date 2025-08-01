@@ -26,7 +26,6 @@
 #include <vclib/io/mesh/settings.h>
 #include <vclib/io/read.h>
 
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 
 namespace vcl {
