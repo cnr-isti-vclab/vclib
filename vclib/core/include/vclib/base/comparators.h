@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_COMPARATORS_H
-#define VCL_MISC_COMPARATORS_H
+#ifndef VCL_BASE_COMPARATORS_H
+#define VCL_BASE_COMPARATORS_H
 
 #include <algorithm>
 #include <utility>
@@ -91,4 +91,4 @@ struct FirstElementPairComparator
 
 } // namespace vcl
 
-#endif // VCL_MISC_COMPARATORS_H
+#endif // VCL_BASE_COMPARATORS_H

@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_TOKENIZER_H
-#define VCL_MISC_TOKENIZER_H
+#ifndef VCL_BASE_TOKENIZER_H
+#define VCL_BASE_TOKENIZER_H
 
-#include <vclib/base.h>
+#include <vclib/base/base.h>
 
 #include <string>
 #include <vector>
@@ -117,4 +117,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_MISC_TOKENIZER_H
+#endif // VCL_BASE_TOKENIZER_H

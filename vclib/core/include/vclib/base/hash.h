@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_HASH_H
-#define VCL_MISC_HASH_H
+#ifndef VCL_BASE_HASH_H
+#define VCL_BASE_HASH_H
 
 #include <functional>
 
@@ -36,7 +36,7 @@ namespace vcl {
  * @param[in] v: first argument object
  * @param[in] rest: rest of the argument objects
  *
- * @ingroup misc
+ * @ingroup base
  */
 template<typename T, typename... Rest>
 void hashCombine(std::size_t& seed, const T& v, const Rest&... rest)
@@ -47,4 +47,4 @@ void hashCombine(std::size_t& seed, const T& v, const Rest&... rest)
 
 } // namespace vcl
 
-#endif // VCL_MISC_HASH_H
+#endif // VCL_BASE_HASH_H

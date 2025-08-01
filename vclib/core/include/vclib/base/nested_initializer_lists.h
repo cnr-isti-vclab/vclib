@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_NESTED_INITIALIZER_LISTS_H
-#define VCL_MISC_NESTED_INITIALIZER_LISTS_H
+#ifndef VCL_BASE_NESTED_INITIALIZER_LISTS_H
+#define VCL_BASE_NESTED_INITIALIZER_LISTS_H
 
 /* @link https://zcrou.com/blog/dev/nested-initializers */
 
@@ -258,4 +258,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MISC_NESTED_INITIALIZER_LISTS_H
+#endif // VCL_BASE_NESTED_INITIALIZER_LISTS_H

@@ -24,12 +24,8 @@
 #define VCL_MISCELLANEOUS_H
 
 #include "misc/compactness.h"
-#include "misc/comparators.h"
-#include "misc/hash.h"
-#include "misc/nested_initializer_lists.h"
 #include "misc/pair.h"
 #include "misc/parallel.h"
-#include "misc/tokenizer.h"
 
 /**
  * @defgroup miscellaneous Miscellaneous
