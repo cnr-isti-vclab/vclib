@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SERIALIZATION_STL_SERIALIZE_H
-#define VCL_SERIALIZATION_STL_SERIALIZE_H
+#ifndef VCL_BASE_SERIALIZATION_STL_SERIALIZE_H
+#define VCL_BASE_SERIALIZATION_STL_SERIALIZE_H
 
 #include "serialize.h"
 
@@ -104,4 +104,4 @@ void serialize(std::ostream& os, const std::vector<std::any>& v)
 
 } // namespace vcl
 
-#endif // VCL_SERIALIZATION_STL_SERIALIZE_H
+#endif // VCL_BASE_SERIALIZATION_STL_SERIALIZE_H

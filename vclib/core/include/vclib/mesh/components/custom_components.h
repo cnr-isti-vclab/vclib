@@ -26,7 +26,6 @@
 #include "base/base.h"
 #include "detail/custom_components_data.h"
 
-#include <vclib/serialization.h>
 #include <vclib/base.h>
 
 #include <any>

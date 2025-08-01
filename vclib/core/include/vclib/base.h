@@ -39,6 +39,7 @@
 #include "base/parallel.h"
 #include "base/pointers.h"
 #include "base/random.h"
+#include "base/serialization.h"
 #include "base/string.h"
 #include "base/templated_type_wrapper.h"
 #include "base/timer.h"

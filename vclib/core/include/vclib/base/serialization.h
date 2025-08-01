@@ -20,58 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SERIALIZATION_CONCEPTS_H
-#define VCL_SERIALIZATION_CONCEPTS_H
+#ifndef VCL_BASE_SERIALIZATION_H
+#define VCL_BASE_SERIALIZATION_H
 
-#include <vclib/base.h>
+#include "serialization/stl_deserialize.h"
+#include "serialization/stl_serialize.h"
 
-#include <istream>
-#include <ostream>
-
-namespace vcl {
-
-/**
- * @brief Concept that is evaluated true if T is an output streamable type.
- *
- * A type T is output streamable if it can be written to an output stream, i.e.,
- * it has an overloaded operator<<.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept OutputStreamable = requires (std::ostream& os, T&& value) {
-    { os << value } -> std::convertible_to<std::ostream&>;
-};
-
-/**
- * @brief Concept that is evaluated true if T is an input streamable type.
- *
- * A type T is input streamable if it can be read from an input stream, i.e.,
- * it has an overloaded operator>>.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept InputStreamable = requires (std::istream& is, T&& value) {
-    { is >> value } -> std::convertible_to<std::istream&>;
-};
-
-/**
- * @brief Concept that is evaluated true if T is serializable.
- *
- * A type T is serializable if it can be written to an output stream and read
- * from an input stream, through the methods `serialize` and `deserialize`.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept Serializable = requires (T&& obj, std::ostream& os, std::istream& is) {
-    { obj.serialize(os) } -> std::same_as<void>;
-    requires IsConst<T> || requires {
-        { obj.deserialize(is) } -> std::same_as<void>;
-    };
-};
-
-} // namespace vcl
-
-#endif // VCL_SERIALIZATION_CONCEPTS_H
+#endif // VCL_BASE_SERIALIZATION_H

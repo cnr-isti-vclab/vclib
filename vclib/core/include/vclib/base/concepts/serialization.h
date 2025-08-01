@@ -20,31 +20,58 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SERIALIZATION_ENDIAN_H
-#define VCL_SERIALIZATION_ENDIAN_H
+#ifndef VCL_BASE_CONCEPTS_SERIALIZATION_H
+#define VCL_BASE_CONCEPTS_SERIALIZATION_H
 
-#include <cstdio>
+#include "const_correctness.h"
 
-namespace vcl::detail {
+#include <istream>
+#include <ostream>
 
-// https://stackoverflow.com/a/38141476/5851101
+namespace vcl {
+
+/**
+ * @brief Concept that is evaluated true if T is an output streamable type.
+ *
+ * A type T is output streamable if it can be written to an output stream, i.e.,
+ * it has an overloaded operator<<.
+ *
+ * @ingroup util_concepts
+ */
 template<typename T>
-T swapEndian(T u)
-{
-    union
-    {
-        T             u;
-        unsigned char u8[sizeof(T)];
-    } source, dest;
+concept OutputStreamable = requires (std::ostream& os, T&& value) {
+    { os << value } -> std::convertible_to<std::ostream&>;
+};
 
-    source.u = u;
+/**
+ * @brief Concept that is evaluated true if T is an input streamable type.
+ *
+ * A type T is input streamable if it can be read from an input stream, i.e.,
+ * it has an overloaded operator>>.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept InputStreamable = requires (std::istream& is, T&& value) {
+    { is >> value } -> std::convertible_to<std::istream&>;
+};
 
-    for (std::size_t k = 0; k < sizeof(T); k++)
-        dest.u8[k] = source.u8[sizeof(T) - k - 1];
+/**
+ * @brief Concept that is evaluated true if T is serializable.
+ *
+ * A type T is serializable if it can be written to an output stream and read
+ * from an input stream, through the methods `serialize` and `deserialize`.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept Serializable = requires (T&& obj, std::ostream& os, std::istream& is) {
+    { obj.serialize(os) } -> std::same_as<void>;
+    requires IsConst<T> || requires {
+        { obj.deserialize(is) } -> std::same_as<void>;
+    };
+};
 
-    return dest.u;
-}
+} // namespace vcl
 
-} // namespace vcl::detail
-
-#endif // VCL_SERIALIZATION_ENDIAN_H
+#endif // VCL_BASE_CONCEPTS_SERIALIZATION_H

@@ -25,7 +25,6 @@
 
 #include <vclib/base.h>
 #include <vclib/exceptions.h>
-#include <vclib/serialization.h>
 
 #include <any>
 #include <string>

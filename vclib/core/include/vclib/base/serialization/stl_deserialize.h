@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SERIALIZATION_STL_DESERIALIZE_H
-#define VCL_SERIALIZATION_STL_DESERIALIZE_H
+#ifndef VCL_BASE_SERIALIZATION_STL_DESERIALIZE_H
+#define VCL_BASE_SERIALIZATION_STL_DESERIALIZE_H
 
 #include "deserialize.h"
 
@@ -111,4 +111,4 @@ void deserialize(std::istream& is, std::vector<std::any>& v)
 
 } // namespace vcl
 
-#endif // VCL_SERIALIZATION_STL_DESERIALIZE_H
+#endif // VCL_BASE_SERIALIZATION_STL_DESERIALIZE_H

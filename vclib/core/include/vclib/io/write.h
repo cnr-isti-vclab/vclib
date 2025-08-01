@@ -26,9 +26,8 @@
 #include "file_info.h"
 #include "file_type.h"
 
-#include <vclib/mesh.h>
-#include <vclib/serialization.h>
 #include <vclib/base.h>
+#include <vclib/mesh.h>
 
 #include <filesystem>
 #include <fstream>

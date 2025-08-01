@@ -24,7 +24,6 @@
 #define VCL_SPACE_CORE_ARRAY_H
 
 #include <vclib/base.h>
-#include <vclib/serialization.h>
 
 #include <array>
 #include <cassert>

@@ -20,11 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SERIALIZATION_SERIALIZE_H
-#define VCL_SERIALIZATION_SERIALIZE_H
+#ifndef VCL_BASE_SERIALIZATION_SERIALIZE_H
+#define VCL_BASE_SERIALIZATION_SERIALIZE_H
 
-#include "concepts.h"
 #include "endian.h"
+
+#include <vclib/base/concepts/serialization.h>
+#include <vclib/base/concepts/types.h>
 
 #include <bit>
 #include <ostream>
@@ -95,4 +97,4 @@ void serialize(std::ostream& os, const T& data, const Others&... others)
 
 } // namespace vcl
 
-#endif // VCL_SERIALIZATION_SERIALIZE_H
+#endif // VCL_BASE_SERIALIZATION_SERIALIZE_H

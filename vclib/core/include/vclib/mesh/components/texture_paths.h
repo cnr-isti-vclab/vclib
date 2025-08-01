@@ -26,7 +26,6 @@
 #include "base/component.h"
 #include "concepts/textures.h"
 
-#include <vclib/serialization.h>
 #include <vclib/base.h>
 
 #include <string>
