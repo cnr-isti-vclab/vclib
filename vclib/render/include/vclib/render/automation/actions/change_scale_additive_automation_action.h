@@ -25,7 +25,7 @@
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 
-#include <vclib/misc/timer.h>
+#include <vclib/base.h>
 
 #include <iomanip>
 #include <sstream>

@@ -25,7 +25,7 @@
 
 #include <vclib/render/automation/metrics/benchmark_metric.h>
 
-#include <vclib/misc/timer.h>
+#include <vclib/base.h>
 
 #include <iomanip>
 #include <sstream>

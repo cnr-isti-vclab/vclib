@@ -24,6 +24,7 @@
 #define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
 
 #include "event_drawer.h"
+
 #include <vclib/render/viewer/camera.h>
 #include <vclib/render/viewer/lights.h>
 

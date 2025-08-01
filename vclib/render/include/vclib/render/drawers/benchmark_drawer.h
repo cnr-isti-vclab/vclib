@@ -23,7 +23,6 @@
 #ifndef VCL_BENCHMARK_DRAWER_H
 #define VCL_BENCHMARK_DRAWER_H
 
-#include <vclib/misc/timer.h>
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/fps_benchmark_metric.h>
 #include <vclib/render/automation/metrics/null_benchmark_metric.h>
@@ -31,8 +30,9 @@
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/viewer/camera.h>
 #include <vclib/render/viewer/lights/directional_light.h>
-#include <vclib/space/core/quaternion.h>
-#include <vclib/space/core/vector/polymorphic_object_vector.h>
+
+#include <vclib/base.h>
+#include <vclib/space/core.h>
 
 #include <chrono>
 #include <fstream>
