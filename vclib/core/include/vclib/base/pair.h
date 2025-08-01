@@ -20,10 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_PAIR_H
-#define VCL_MISC_PAIR_H
-
-#include <vclib/base.h>
+#ifndef VCL_BASE_PAIR_H
+#define VCL_BASE_PAIR_H
 
 namespace vcl {
 
@@ -79,4 +77,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MISC_PAIR_H
+#endif // VCL_BASE_PAIR_H

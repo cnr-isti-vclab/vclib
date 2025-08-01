@@ -24,7 +24,6 @@
 #define VCL_MISCELLANEOUS_H
 
 #include "misc/compactness.h"
-#include "misc/pair.h"
 #include "misc/parallel.h"
 
 /**
