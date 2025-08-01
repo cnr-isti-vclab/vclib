@@ -27,6 +27,7 @@
 #include "base/comparators.h"
 #include "base/concepts.h"
 #include "base/const_correctness.h"
+#include "base/exceptions.h"
 #include "base/filter_types.h"
 #include "base/hash.h"
 #include "base/inheritance.h"

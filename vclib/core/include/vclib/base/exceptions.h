@@ -29,9 +29,16 @@
 namespace vcl {
 
 /**
+ * @defgroup exceptions Exceptions
+ *
+ * @brief List of exceptions used in the library.
+ */
+
+/**
  * @brief Exception thrown when the size (generally of a container) is not the
  * expected one.
  *
+ * @ingroup base
  * @ingroup exceptions
  */
 class WrongSizeException : public std::runtime_error
@@ -43,24 +50,6 @@ public:
     {
         static std::string error;
         error = std::string("Wrong Size - ") + std::runtime_error::what();
-        return error.c_str();
-    }
-};
-
-/**
- * @brief Exception thrown when the intersection between two objects is empty.
- *
- * @ingroup exceptions
- */
-class NoIntersectionException : public std::runtime_error
-{
-public:
-    NoIntersectionException(const std::string& err) : std::runtime_error(err) {}
-
-    virtual const char* what() const throw()
-    {
-        static std::string error;
-        error = std::string("No Intersection - ") + std::runtime_error::what();
         return error.c_str();
     }
 };

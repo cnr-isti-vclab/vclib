@@ -24,15 +24,5 @@
 #define VCL_EXCEPTIONS_H
 
 #include "exceptions/mesh.h"
-#include "exceptions/misc.h"
-
-/**
- * @defgroup exceptions Exceptions
- *
- * @brief List of exceptions used in the library.
- *
- * You can access all the concepts of VCLib by including `#include
- * <vclib/exceptions.h>`
- */
 
 #endif // VCL_EXCEPTIONS_H
