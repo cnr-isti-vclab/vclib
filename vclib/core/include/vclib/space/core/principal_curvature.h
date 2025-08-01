@@ -168,6 +168,25 @@ using PrincipalCurvaturef = PrincipalCurvature<float>;
  */
 using PrincipalCurvatured = PrincipalCurvature<double>;
 
+/* Concepts */
+
+/**
+ * @brief A concept representing a PrincipalCurvature.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a PrincipalCurvature class of any scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * PrincipalCurvatureConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept PrincipalCurvatureConcept =
+    std::derived_from< // same type or derived type
+        std::remove_cvref_t<T>,
+        PrincipalCurvature<typename RemoveRef<T>::ScalarType>>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_PRINCIPAL_CURVATURE_H

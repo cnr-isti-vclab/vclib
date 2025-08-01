@@ -23,9 +23,8 @@
 #ifndef VCL_SERIALIZATION_DESERIALIZE_H
 #define VCL_SERIALIZATION_DESERIALIZE_H
 
+#include "concepts.h"
 #include "endian.h"
-
-#include <vclib/concepts.h>
 
 #include <bit>
 #include <istream>

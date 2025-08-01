@@ -25,7 +25,6 @@
 
 #include "bit_set/bit_proxy.h"
 
-#include <vclib/concepts.h>
 #include <vclib/serialization.h>
 
 #include <stdexcept>
@@ -54,6 +53,11 @@ class BitSet
     T mBits = static_cast<T>(0);
 
 public:
+    /**
+     * @brief The type of the underlying integral value used to store the bits.
+     */
+    using UnderlyingType = T;
+
     /**
      * @brief The number of the bits of the BitSet.
      */
@@ -405,6 +409,23 @@ using BitSet32 = BitSet<int>;
  * @ingroup space_core
  */
 using BitSet64 = BitSet<std::size_t>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a BitSet.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a BitSet class having any integral type as a template parameter.
+ *
+ * @tparam T: The type to be tested for conformity to the BitSetConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept BitSetConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    BitSet<typename RemoveRef<T>::UnderlyingType>>;
 
 } // namespace vcl
 

@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_H
 #define VCL_MESH_ELEMENTS_FACE_H
 
-#include "element.h"
+#include "base/element.h"
+#include "face_components.h"
 
-#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 namespace vcl {
@@ -129,7 +129,7 @@ public:
      *
      * @param n: the new number of vertices.
      */
-    void resizeVertices(uint n) requires PolygonFaceConcept<Face>
+    void resizeVertices(uint n) requires (NV < 0)
     {
         VRefs::resizeVertices(n);
 
@@ -137,7 +137,7 @@ public:
         (resizeTTVNComponent<Comps>(n), ...);
     }
 
-    void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
+    void pushVertex(VertexType* v) requires (NV < 0)
     {
         VRefs::pushVertex(v);
 
@@ -145,7 +145,7 @@ public:
         (pushBackTTVNComponent<Comps>(), ...);
     }
 
-    void pushVertex(uint vi) requires PolygonFaceConcept<Face>
+    void pushVertex(uint vi) requires (NV < 0)
     {
         VRefs::pushVertex(vi);
 
@@ -153,7 +153,7 @@ public:
         (pushBackTTVNComponent<Comps>(), ...);
     }
 
-    void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
+    void insertVertex(uint i, VertexType* v) requires (NV < 0)
     {
         VRefs::insertVertex(i, v);
 
@@ -161,7 +161,7 @@ public:
         (insertTTVNComponent<Comps>(i), ...);
     }
 
-    void insertVertex(uint i, uint vi) requires PolygonFaceConcept<Face>
+    void insertVertex(uint i, uint vi) requires (NV < 0)
     {
         VRefs::insertVertex(i, vi);
 
@@ -169,7 +169,7 @@ public:
         (insertTTVNComponent<Comps>(i), ...);
     }
 
-    void eraseVertex(uint i) requires PolygonFaceConcept<Face>
+    void eraseVertex(uint i) requires (NV < 0)
     {
         VRefs::eraseVertex(i);
 
@@ -177,7 +177,7 @@ public:
         (eraseTTVNComponent<Comps>(i), ...);
     }
 
-    void clearVertices() requires PolygonFaceConcept<Face>
+    void clearVertices() requires (NV < 0)
     {
         VRefs::clearVertices();
 
@@ -268,6 +268,54 @@ template<typename MeshType, comp::ComponentConcept... Comps>
 class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
 {
 };
+
+/* Concepts */
+
+/**
+ * @brief A concept that checks whether a class has (inherits from) an
+ * Face class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Face class having any ParentMesh type and any Component types.
+ * The concept checks also that the Face has:
+ *  - a BitFlags component;
+ *  - VertexPointers or VertexIndices components
+ *  - the number of vertices is less than 0 (dynamic size) or at least 3
+ *    (static size);
+ *  - if the Face has the TriangleBitFlags component, the number of vertices
+ *    must be 3 (static size);
+ *  - all the components tied to the vertex number of the Face are
+ *    consistent with the number of vertices;
+ *
+ * @tparam T: The type to be tested for conformity to the EdgeConcept.
+ *
+ * @ingroup face_concepts
+ */
+template<typename T>
+concept FaceConcept =
+    IsDerivedFromSpecializationOfV<T, Face> &&
+    RemoveRef<T>::ELEMENT_ID == ElemId::FACE && face::HasBitFlags<T> &&
+    face::HasVertexReferences<T> &&
+    (RemoveRef<T>::VERTEX_NUMBER < 0 || RemoveRef<T>::VERTEX_NUMBER >= 3) &&
+    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_NUMBER == 3) &&
+    comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
+    comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
+
+template<typename T>
+concept TriangleFaceConcept =
+    RemoveRef<T>::VERTEX_NUMBER == 3 && FaceConcept<T>;
+
+/**
+ * @brief A concpet that checks whether a class has (inherits from) a
+ * Face class and that the Face is polygonal (dynamic size, N < 0).
+ *
+ * The concept is satisfied when `T` satisfies the FaceConcept and the number
+ * of vertices is less than 0 (dynamic size).
+ *
+ * @ingroup face_concepts
+ */
+template<typename T>
+concept PolygonFaceConcept = RemoveRef<T>::VERTEX_NUMBER < 0 && FaceConcept<T>;
 
 } // namespace vcl
 

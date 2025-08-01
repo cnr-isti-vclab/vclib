@@ -25,7 +25,7 @@
 
 #include <vclib/bindings/utils.h>
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/mesh.h>
 
 #include <pybind11/pybind11.h>
 

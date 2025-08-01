@@ -23,9 +23,10 @@
 #ifndef VCL_MISC_SHUFFLE_H
 #define VCL_MISC_SHUFFLE_H
 
-#include <vclib/concepts.h>
+#include <vclib/types.h>
 
 #include <algorithm>
+#include <optional>
 #include <random>
 
 namespace vcl {
@@ -35,15 +36,16 @@ namespace vcl {
  *
  * @tparam R: Type of the range.
  * @param[in] range: Range to shuffle.
- * @param[in] deterministic: If true, the shuffle will be deterministic.
+ * @param[in] seed: optional value of seed, to get deterministic results. If not
+ * provided, a random seed is used.
  *
  * @ingroup miscellaneous
  */
 template<Range R>
-void shuffle(R&& range, bool deterministic = false)
+void shuffle(R&& range, std::optional<uint> seed = std::nullopt)
 {
-    std::random_device rd;
-    std::mt19937       generator(deterministic ? 0 : rd());
+    std::mt19937 generator = randomGenerator(seed);
+
     std::shuffle(range.begin(), range.end(), generator);
 }
 

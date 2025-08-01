@@ -23,9 +23,8 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_H
 #define VCL_MESH_ELEMENTS_EDGE_H
 
-#include "element.h"
-
-#include <vclib/concepts.h>
+#include "base/element.h"
+#include "edge_components.h"
 
 namespace vcl {
 
@@ -91,6 +90,28 @@ template<typename MeshType, comp::ComponentConcept... Comps>
 class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
 {
 };
+
+/* Concepts */
+
+/**
+ * @brief A concept that checks whether a class has (inherits from) an
+ * Edge class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Edge class having any ParentMesh type and any Component types.
+ * The concept checks also that the Edge has a BitFlags component,
+ * VertexPointers or VertexIndices components, and that the number of vertices
+ * is 2.
+ *
+ * @tparam T: The type to be tested for conformity to the EdgeConcept.
+ *
+ * @ingroup edge_concepts
+ */
+template<typename T>
+concept EdgeConcept =
+    IsDerivedFromSpecializationOfV<T, Edge> &&
+    RemoveRef<T>::ELEMENT_ID == ElemId::EDGE && edge::HasBitFlags<T> &&
+    edge::HasVertexReferences<T> && RemoveRef<T>::VERTEX_NUMBER == 2;
 
 } // namespace vcl
 

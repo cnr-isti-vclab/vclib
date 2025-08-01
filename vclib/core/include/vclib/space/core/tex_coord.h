@@ -124,6 +124,24 @@ using TexCoordi = TexCoord<int>;
 using TexCoordf = TexCoord<float>;
 using TexCoordd = TexCoord<double>;
 
+/* Concepts */
+
+/**
+ * @brief A concept representing a TexCoordIndexed.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a TexCoordIndexed class of any scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * TexCoordIndexedConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept TexCoordConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    TexCoord<typename RemoveRef<T>::ScalarType>>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_TEX_COORD_H

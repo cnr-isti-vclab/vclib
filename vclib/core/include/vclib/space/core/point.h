@@ -23,8 +23,6 @@
 #ifndef VCL_SPACE_CORE_POINT_H
 #define VCL_SPACE_CORE_POINT_H
 
-#include <vclib/concepts.h>
-#include <vclib/math.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
 
@@ -681,108 +679,6 @@ private:
     using Base::end;
 };
 
-/**
- * @brief Compares two points for equality.
- *
- * This function is a specialization of the epsilonEquals function template for
- * two points. It compares two points for equality by comparing each coordinate
- * of the points for equality within a specified epsilon value.
- *
- * @param[in] p1: The first point to compare.
- * @param[in] p2: The second point to compare.
- * @param[in] epsilon: The epsilon value for equality comparison.
- * @return True if the points are equal within the epsilon value, false
- * otherwise.
- */
-template<typename Scalar, uint N>
-bool epsilonEquals(
-    const Point<Scalar, N>& p1,
-    const Point<Scalar, N>& p2,
-    const Scalar&           epsilon = std::numeric_limits<Scalar>::epsilon())
-{
-    return p1.epsilonEquals(p2, epsilon);
-}
-
-/**
- * @brief Returns the minimum between two points.
- *
- * This function returns a point that contains the minimum value between each
- * component of the two input points.
- *
- * @param[in] p1: The first point.
- * @param[in] p2: The second point.
- * @return The point containing the minimum value between the two input points.
- */
-template<typename Scalar, uint N>
-constexpr Point<Scalar, N> min(
-    const Point<Scalar, N>& p1,
-    const Point<Scalar, N>& p2)
-{
-    Point<Scalar, N> p;
-    for (size_t i = 0; i < p.DIM; i++) {
-        p[i] = std::min(p1[i], p2[i]);
-    }
-    return p;
-}
-
-/**
- * @brief Returns the maximum between two points.
- *
- * This function returns a point that contains the maximum value between each
- * component of the two input points.
- *
- * @param[in] p1: The first point.
- * @param[in] p2: The second point.
- * @return The point containing the maximum value between the two input points.
- */
-template<typename Scalar, uint N>
-constexpr Point<Scalar, N> max(
-    const Point<Scalar, N>& p1,
-    const Point<Scalar, N>& p2)
-{
-    Point<Scalar, N> p;
-    for (size_t i = 0; i < p.DIM; i++) {
-        p[i] = std::max(p1[i], p2[i]);
-    }
-    return p;
-}
-
-/**
- * @brief Stream insertion operator for Point objects.
- *
- * This operator allows Point objects to be printed to output streams in a
- * single row format, rather than the default column format used by Eigen.
- * The output format is: [x, y, z, ...] where the components are separated
- * by commas and spaces.
- *
- * @tparam Scalar: The scalar type of the point components.
- * @tparam N: The number of dimensions of the point.
- * @param[in] os: The output stream to write to.
- * @param[in] p: The Point object to write.
- * @return A reference to the output stream.
- */
-template<typename Scalar, uint N>
-std::ostream& operator<<(std::ostream& os, const Point<Scalar, N>& p)
-{
-    // Create a custom IOFormat for single row output
-    // Parameters: precision, flags, coeffSeparator, rowSeparator, rowPrefix,
-    // rowSuffix, matPrefix, matSuffix
-    static const Eigen::IOFormat rowFormat(
-        Eigen::StreamPrecision, // precision (use stream's precision)
-        Eigen::DontAlignCols,   // flags
-        ", ",                   // coeffSeparator (between elements)
-        ", ",                   // rowSeparator (not used for vectors)
-        "",                     // rowPrefix
-        "",                     // rowSuffix
-        "[",                    // matPrefix
-        "]"                     // matSuffix
-    );
-
-    return os << static_cast<const typename Point<Scalar, N>::BaseMatrixType&>(
-                     p)
-                     .format(rowFormat);
-}
-
 /* Specialization Aliases */
 
 /**
@@ -931,6 +827,229 @@ using Point4f = Point4<float>;
  * @ingroup space_core
  */
 using Point4d = Point4<double>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a Point.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Point class having any scalar type and any dimension.
+ *
+ * @tparam T: The type to be tested for conformity to the PointConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept PointConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Point<typename RemoveRef<T>::ScalarType, RemoveRef<T>::DIM>>;
+
+/**
+ * @brief A concept representing a 2D Point.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Point class having any scalar type and dimension 2.
+ *
+ * @tparam T: The type to be tested for conformity to the Point2Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Point2Concept = PointConcept<T> && RemoveRef<T>::DIM == 2;
+
+/**
+ * @brief A concept representing a 3D Point.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Point class having any scalar type and dimension 3.
+ *
+ * @tparam T: The type to be tested for conformity to the Point4Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Point3Concept = PointConcept<T> && RemoveRef<T>::DIM == 3;
+
+/**
+ * @brief A concept representing a 4D Point.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Point class having any scalar type and dimension 4.
+ *
+ * @tparam T: The type to be tested for conformity to the Point4Concept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept Point4Concept = PointConcept<T> && RemoveRef<T>::DIM == 4;
+
+/**
+ * @brief A concept representing an iterator that iterates over Points
+ * (specifically, a class that satisfies the PointConcept).
+ *
+ * The concept is satisfied when `T` is an iterator having its `value_type`
+ * that satisfies the vcl::PointConcept.
+ *
+ * @tparam It: The type to be tested for conformity to the PointIteratorConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename It>
+concept PointIteratorConcept =
+    IteratorConcept<It> && PointConcept<typename It::value_type>;
+
+/**
+ * @brief A concept representing an iterator that iterates over 2D Points
+ * (specifically, a class that satisfies the Point2Concept).
+ *
+ * The concept is satisfied when `T` is an iterator having its `value_type`
+ * that satisfies the vcl::Point2Concept.
+ *
+ * @tparam It: The type to be tested for conformity to the
+ * Point2IteratorConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename It>
+concept Point2IteratorConcept =
+    IteratorConcept<It> && Point2Concept<typename It::value_type>;
+
+/**
+ * @brief A concept representing an iterator that iterates over 3D Points
+ * (specifically, a class that satisfies the Point3Concept).
+ *
+ * The concept is satisfied when `T` is an iterator having its `value_type`
+ * that satisfies the vcl::Point3Concept.
+ *
+ * @tparam It: The type to be tested for conformity to the
+ * Point3IteratorConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename It>
+concept Point3IteratorConcept =
+    IteratorConcept<It> && Point3Concept<typename It::value_type>;
+
+/**
+ * @brief A concept representing an iterator that iterates over 4D Points
+ * (specifically, a class that satisfies the Point4Concept).
+ *
+ * The concept is satisfied when `T` is an iterator having its `value_type`
+ * that satisfies the vcl::Point4Concept.
+ *
+ * @tparam It: The type to be tested for conformity to the
+ * Point4IteratorConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename It>
+concept Point4IteratorConcept =
+    IteratorConcept<It> && Point4Concept<typename It::value_type>;
+
+/* Utility functions */
+
+/**
+ * @brief Compares two points for equality.
+ *
+ * This function is a specialization of the epsilonEquals function template for
+ * two points. It compares two points for equality by comparing each coordinate
+ * of the points for equality within a specified epsilon value.
+ *
+ * @param[in] p1: The first point to compare.
+ * @param[in] p2: The second point to compare.
+ * @param[in] epsilon: The epsilon value for equality comparison.
+ * @return True if the points are equal within the epsilon value, false
+ * otherwise.
+ */
+template<typename Scalar, uint N>
+bool epsilonEquals(
+    const Point<Scalar, N>& p1,
+    const Point<Scalar, N>& p2,
+    const Scalar&           epsilon = std::numeric_limits<Scalar>::epsilon())
+{
+    return p1.epsilonEquals(p2, epsilon);
+}
+
+/**
+ * @brief Returns the minimum between two points.
+ *
+ * This function returns a point that contains the minimum value between each
+ * component of the two input points.
+ *
+ * @param[in] p1: The first point.
+ * @param[in] p2: The second point.
+ * @return The point containing the minimum value between the two input points.
+ */
+template<typename Scalar, uint N>
+constexpr Point<Scalar, N> min(
+    const Point<Scalar, N>& p1,
+    const Point<Scalar, N>& p2)
+{
+    Point<Scalar, N> p;
+    for (size_t i = 0; i < p.DIM; i++) {
+        p[i] = std::min(p1[i], p2[i]);
+    }
+    return p;
+}
+
+/**
+ * @brief Returns the maximum between two points.
+ *
+ * This function returns a point that contains the maximum value between each
+ * component of the two input points.
+ *
+ * @param[in] p1: The first point.
+ * @param[in] p2: The second point.
+ * @return The point containing the maximum value between the two input points.
+ */
+template<typename Scalar, uint N>
+constexpr Point<Scalar, N> max(
+    const Point<Scalar, N>& p1,
+    const Point<Scalar, N>& p2)
+{
+    Point<Scalar, N> p;
+    for (size_t i = 0; i < p.DIM; i++) {
+        p[i] = std::max(p1[i], p2[i]);
+    }
+    return p;
+}
+
+/**
+ * @brief Stream insertion operator for Point objects.
+ *
+ * This operator allows Point objects to be printed to output streams in a
+ * single row format, rather than the default column format used by Eigen.
+ * The output format is: [x, y, z, ...] where the components are separated
+ * by commas and spaces.
+ *
+ * @tparam Scalar: The scalar type of the point components.
+ * @tparam N: The number of dimensions of the point.
+ * @param[in] os: The output stream to write to.
+ * @param[in] p: The Point object to write.
+ * @return A reference to the output stream.
+ */
+template<typename Scalar, uint N>
+std::ostream& operator<<(std::ostream& os, const Point<Scalar, N>& p)
+{
+    // Create a custom IOFormat for single row output
+    // Parameters: precision, flags, coeffSeparator, rowSeparator, rowPrefix,
+    // rowSuffix, matPrefix, matSuffix
+    static const Eigen::IOFormat rowFormat(
+        Eigen::StreamPrecision, // precision (use stream's precision)
+        Eigen::DontAlignCols,   // flags
+        ", ",                   // coeffSeparator (between elements)
+        ", ",                   // rowSeparator (not used for vectors)
+        "",                     // rowPrefix
+        "",                     // rowSuffix
+        "[",                    // matPrefix
+        "]"                     // matSuffix
+    );
+
+    return os << static_cast<const typename Point<Scalar, N>::BaseMatrixType&>(
+                     p)
+                     .format(rowFormat);
+}
 
 /* Deduction guides */
 

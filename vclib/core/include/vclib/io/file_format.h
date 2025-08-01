@@ -23,7 +23,6 @@
 #ifndef VCL_IO_FILE_FORMAT_H
 #define VCL_IO_FILE_FORMAT_H
 
-#include <vclib/concepts.h>
 #include <vclib/miscellaneous.h>
 
 #include <algorithm>

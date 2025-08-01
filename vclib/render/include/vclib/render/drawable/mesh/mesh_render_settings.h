@@ -25,9 +25,8 @@
 
 #include "mesh_render_info.h"
 
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/core/bit_set.h>
-#include <vclib/space/core/color.h>
+#include <vclib/mesh.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

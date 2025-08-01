@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_MESH_UPDATE_TRANSFORM_H
 #define VCL_ALGORITHMS_MESH_UPDATE_TRANSFORM_H
 
-#include <vclib/math.h>
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 

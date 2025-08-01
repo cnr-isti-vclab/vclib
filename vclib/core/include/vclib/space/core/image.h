@@ -132,6 +132,21 @@ public:
     void deserialize(std::istream& is) { mImg.deserialize(is); }
 };
 
+/* Concepts */
+
+/**
+ * @brief A concept representing an Image.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from an Image class.
+ *
+ * @tparam T: The type to be tested for conformity to the ImageConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept ImageConcept = std::derived_from<std::remove_cvref_t<T>, Image>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_IMAGE_H

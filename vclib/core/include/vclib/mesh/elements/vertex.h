@@ -23,9 +23,8 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_H
 #define VCL_MESH_ELEMENTS_VERTEX_H
 
-#include "element.h"
-
-#include <vclib/concepts.h>
+#include "base/element.h"
+#include "vertex_components.h"
 
 namespace vcl {
 
@@ -61,6 +60,26 @@ class Vertex<MeshType, TypeWrapper<Comps...>> :
         public Vertex<MeshType, Comps...>
 {
 };
+
+/* Concepts */
+
+/**
+ * @brief A concept that checks whether a class has (inherits from) a
+ * Vertex class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Vertex class having any ParentMesh type and any Component types.
+ * The concept checks also that the Vertex has a BitFlags component and a
+ * Position component.
+ *
+ * @tparam T: The type to be tested for conformity to the VertexConcept.
+ *
+ * @ingroup vertex_concepts
+ */
+template<typename T>
+concept VertexConcept = IsDerivedFromSpecializationOfV<T, Vertex> &&
+                        RemoveRef<T>::ELEMENT_ID == ElemId::VERTEX &&
+                        vert::HasBitFlags<T> && vert::HasPosition<T>;
 
 } // namespace vcl
 

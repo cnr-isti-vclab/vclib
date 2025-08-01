@@ -46,6 +46,11 @@ class BitProxy
 
 public:
     /**
+     * @brief The type of the underlying integral value used to store the bits.
+     */
+    using UnderlyingType = T;
+
+    /**
      * @brief Constructs the BitProxy with the given mask and index.
      * @param[in] mask: the mask containing the bit to access.
      * @param[in] index: the index of the bit to access.
@@ -77,6 +82,23 @@ public:
         return *this;
     }
 };
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a BitProxy.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a BitProxy class having any integral type as a template parameter.
+ *
+ * @tparam T: The type to be tested for conformity to the BitProxyConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept BitProxyConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    BitProxy<typename RemoveRef<T>::UnderlyingType>>;
 
 } // namespace vcl
 

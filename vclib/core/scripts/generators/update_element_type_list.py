@@ -37,7 +37,7 @@ def increment_number_in_string(string):
     return string
 
 def update_element_list(element):
-    target_file = "../include/vclib/types/mesh_elements.h"
+    target_file = "../include/vclib/mesh/elements/base/base.h"
 
     # Read in the file
     with open(target_file, 'r') as file :

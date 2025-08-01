@@ -23,7 +23,8 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
 #define VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
 
-#include <vclib/concepts.h>
+#include <vclib/mesh/components/principal_curvature.h>
+
 #include <vclib/types.h>
 
 #include <ranges>

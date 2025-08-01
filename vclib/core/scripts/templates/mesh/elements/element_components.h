@@ -17,9 +17,26 @@
  * All these components are listed inside the vcl::%EL_NS% namespace.
  */
 
+/**
+ * @defgroup %EL%_concepts %EL_UC% Concepts
+ * @ingroup element_concepts
+ *
+ * @brief List of concepts for types related to the %EL_UC% Element.
+ */
+
 namespace vcl::%EL_NS% {
 
 /// TODO: Check this file and update the components according to the element
+
+/**
+ * @ingroup %EL%_concepts %EL%_components
+ * @{
+ */
+
+/* Port concepts into the %EL_NS% namespace */
+%COMPONENTS_CONCEPTS%
+
+/** @} */ // end of group
 
 /**
  * @addtogroup %EL%_components

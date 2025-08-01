@@ -106,6 +106,21 @@ public:
     }
 };
 
+/* Concepts */
+
+/**
+ * @brief A concept representing a Texture.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Texture class.
+ *
+ * @tparam T: The type to be tested for conformity to the TextureConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept TextureConcept = std::derived_from<std::remove_cvref_t<T>, Texture>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_TEXTURE_H

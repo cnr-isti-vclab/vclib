@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_CONCEPTS_WINDOW_MANAGER_H
 #define VCL_RENDER_CONCEPTS_WINDOW_MANAGER_H
 
-#include <vclib/concepts/space/point.h>
+#include <vclib/space/core.h>
 
 #include <concepts>
 

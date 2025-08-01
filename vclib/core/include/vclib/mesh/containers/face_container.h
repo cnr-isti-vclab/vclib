@@ -23,16 +23,16 @@
 #ifndef VCL_MESH_CONTAINERS_FACE_CONTAINER_H
 #define VCL_MESH_CONTAINERS_FACE_CONTAINER_H
 
-#include "element_container.h"
+#include "base/element_container.h"
 
-#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elem_algorithms.h>
 #include <vclib/mesh/elements/face.h>
 #include <vclib/mesh/elements/face_components.h>
 
 #include <vclib/algorithms/core.h>
 
-namespace vcl::mesh {
+namespace vcl {
+namespace mesh {
 
 /**
  * @brief The FaceContainer class represents a container of Face elements that
@@ -1212,63 +1212,58 @@ protected:
     template<typename OthMesh>
     void manageImportTriFromPoly(const OthMesh& m)
     {
-        if constexpr (HasFaceContainer<OthMesh>) {
-            using ParentMesh  = Base::ParentMeshType;
-            using VertexType  = ParentMesh::VertexType;
-            using MVertexType = OthMesh::VertexType;
-            using MFaceType   = OthMesh::FaceType;
+        using ParentMesh  = Base::ParentMeshType;
+        using VertexType  = ParentMesh::VertexType;
+        using MVertexType = OthMesh::VertexType;
+        using MFaceType   = OthMesh::FaceType;
 
-            using VertexContainer = ParentMesh::VertexContainer;
+        using VertexContainer = ParentMesh::VertexContainer;
 
-            // if this is not a triangle mesh nor a polygon mesh (meaning that
-            // we can't control the number of vertex pointers in this mesh), and
-            // this mesh does not have the same number of vertex pointers of the
-            // other, it means that we don't know how to convert these type of
-            // meshes (e.g. we don't know how to convert a polygon mesh into a
-            // quad mesh, or convert a quad mesh into a pentagonal mesh...)
-            static_assert(
-                !(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
-                  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
-                "Cannot import from that type of Mesh. Don't know how to "
-                "convert faces.");
+        // if this is not a triangle mesh nor a polygon mesh (meaning that we
+        // can't control the number of vertex pointers in this mesh), and this
+        // mesh does not have the same number of vertex pointers of the other,
+        // it means that we don't know how to convert these type of meshes (e.g.
+        // we don't know how to convert a polygon mesh into a quad mesh, or
+        // convert a quad mesh into a pentagonal mesh...)
+        static_assert(
+            !(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
+              FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
+            "Cannot import from that type of Mesh. Don't know how to "
+            "convert faces.");
 
-            // we need to manage conversion from poly or faces with cardinality
-            // > 3 (e.g. quads) to triangle meshes. In this case, we triangulate
-            // the polygon using the earcut algorithm.
-            if constexpr (
-                FaceType::VERTEX_NUMBER == 3 &&
-                (MFaceType::VERTEX_NUMBER > 3 ||
-                 MFaceType::VERTEX_NUMBER < 0)) {
-                VertexType*        base   = &Base::mParentMesh->vertex(0);
-                const MVertexType* mvbase = &m.vertex(0);
+        // we need to manage conversion from poly or faces with cardinality > 3
+        // (e.g. quads) to triangle meshes. In this case, we triangulate the
+        // polygon using the earcut algorithm.
+        if constexpr (
+            FaceType::VERTEX_NUMBER == 3 &&
+            (MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
+            VertexType*        base   = &Base::mParentMesh->vertex(0);
+            const MVertexType* mvbase = &m.vertex(0);
 
-                for (const MFaceType& mf : m.faces()) {
-                    // if the current face has the same number of vertices of
-                    // this faces (3), then the vertex pointers have been
-                    // correctly imported from the import pointers function. The
-                    // import pointers function does nothing when importing from
-                    // a face with at least 4 vertices
-                    if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
-                        // triangulate mf; the first triangle of the
-                        // triangulation will be this->face(m.index(mf)); the
-                        // other triangles will be added at the end of the
-                        // container
-                        std::vector<uint> tris =
-                            earCut(mf.vertices() | views::positions);
-                        FaceType& f = face(m.index(mf));
-                        importTriPointersHelper(f, mf, base, mvbase, tris, 0);
+            for (const MFaceType& mf : m.faces()) {
+                // if the current face has the same number of vertices of this
+                // faces (3), then the vertex pointers have been correctly
+                // imported from the import pointers function. The import
+                // pointers function does nothing when importing from a face
+                // with at least 4 vertices
+                if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
+                    // triangulate mf; the first triangle of the triangulation
+                    // will be this->face(m.index(mf)); the other triangles will
+                    // be added at the end of the container
+                    std::vector<uint> tris =
+                        earCut(mf.vertices() | views::positions);
+                    FaceType& f = face(m.index(mf));
+                    importTriPointersHelper(f, mf, base, mvbase, tris, 0);
 
-                        // number of other faces to add
-                        uint nf  = tris.size() / 3 - 1;
-                        uint fid = addFaces(nf);
+                    // number of other faces to add
+                    uint nf  = tris.size() / 3 - 1;
+                    uint fid = addFaces(nf);
 
-                        uint i = 3; // index that cycles into tris
-                        for (; fid < faceContainerSize(); ++fid) {
-                            FaceType& f = face(fid);
-                            importTriPointersHelper(
-                                f, mf, base, mvbase, tris, i);
-                            i += 3;
-                        }
+                    uint i = 3; // index that cycles into tris
+                    for (; fid < faceContainerSize(); ++fid) {
+                        FaceType& f = face(fid);
+                        importTriPointersHelper(f, mf, base, mvbase, tris, i);
+                        i += 3;
                     }
                 }
             }
@@ -1336,6 +1331,63 @@ private:
     }
 };
 
-} // namespace vcl::mesh
+/* Concepts */
+
+/**
+ * @brief A concept that checks whether a class has (inherits from) an
+ * FaceContainer class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a FaceContainer class having any Face element type.
+ *
+ * @tparam T: The type to be tested for conformity to the HasFaceContainer.
+ *
+ * @ingroup containers
+ * @ingroup containers_concepts
+ */
+template<typename T>
+concept HasFaceContainer = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    FaceContainer<typename RemoveRef<T>::FaceType>>;
+
+} // namespace mesh
+
+/**
+ * @brief HasFaces concepts is satisfied when at least one of its
+ * template types is (or inherits from) a @ref vcl::mesh::FaceContainer. It can
+ * be used both to check if a Mesh has faces, or if in a list of types there is
+ * a FaceContainer.
+ *
+ * In the following example, a MyMesh type can be instantiated only if one of
+ * its template Args is a FaceContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasFaces<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
+ * MyMesh<vcl::FaceContainer<MyFace>> m2; // ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::FaceContainer<MyFace>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) FaceContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasFaces<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ *
+ * @note This concept does not check if a Mesh is a valid FaceMesh.
+ * To do that, use the @ref vcl::FaceMeshConcept.
+ *
+ * @ingroup containers_concepts
+ */
+template<typename... Args>
+concept HasFaces = (mesh::HasFaceContainer<Args> || ...);
+
+} // namespace vcl
 
 #endif // VCL_MESH_CONTAINERS_FACE_CONTAINER_H

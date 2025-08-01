@@ -23,7 +23,6 @@
 #ifndef FOO_COMPONENT_H
 #define FOO_COMPONENT_H
 
-#include <vclib/concepts.h>
 #include <vclib/mesh.h>
 #include <vclib/meshes.h>
 #include <vclib/types.h>

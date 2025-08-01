@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_STRING_H
 #define VCL_MISC_STRING_H
 
-#include <vclib/math.h>
+#include <vclib/types.h>
 
 #include <algorithm>
 #include <cctype>
