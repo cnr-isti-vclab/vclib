@@ -31,7 +31,15 @@ set(CMAKE_CXX_STANDARD 20)
 set(SOURCES
     main.cpp)
 
+set(SHADERS
+    shaders/vs_selection.sc
+    shaders/fs_selection.sc
+    shaders/varying.def.sc
+)
+
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
 vclib_add_example(${EXAMPLE_NAME}
     VCLIB_MODULE render
     SOURCES ${SOURCES})
+
+target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})

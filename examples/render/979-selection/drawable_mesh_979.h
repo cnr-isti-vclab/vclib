@@ -57,6 +57,8 @@ private:
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
+    bgfx::ProgramHandle selDrawProg = vcl::loadProgram("shaders/vs_selection", "shaders/fs_selection");
+
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
 
@@ -236,6 +238,18 @@ public:
 
         if constexpr (HasTransformMatrix<MeshType>) {
             model = MeshType::transformMatrix().template cast<float>();
+        }
+
+        if (mMRB.selectionCalculated()) {
+            mMRB.bindVertexBuffers(mMRS);
+            mMRB.bindIndexBuffers(mMRS);
+            bindUniforms();
+            mMRB.bindSelection();
+
+            bgfx::setState(state);
+            bgfx::setTransform(model.data());
+
+            bgfx::submit(viewId, selDrawProg);
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
