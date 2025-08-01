@@ -413,42 +413,19 @@ using BitSet64 = BitSet<std::size_t>;
 /* Concepts */
 
 /**
- * @brief BitSetConcept is satisfied only if a class provides the member
- * functions specified in this concept. These member functions allows to a list
- * of bits encoded in a integral type.
+ * @brief A concept representing a BitSet.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a BitSet class having any integral type as a template parameter.
+ *
+ * @tparam T: The type to be tested for conformity to the BitSetConcept.
  *
  * @ingroup space_core
  */
 template<typename T>
-concept BitSetConcept = requires (T&& obj) {
-    RemoveRef<T>();
-    RemoveRef<T>({uint(), uint()});
-
-    { obj.size() } -> std::same_as<std::size_t>;
-
-    { obj.at(uint()) } -> std::convertible_to<bool>;
-    { obj[uint()] } -> std::convertible_to<bool>;
-
-    { obj.all() } -> std::same_as<bool>;
-    { obj.any() } -> std::same_as<bool>;
-    { obj.none() } -> std::same_as<bool>;
-
-    { obj == obj } -> std::same_as<bool>;
-    { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
-
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.at(uint()) } -> BitProxyConcept;
-        { obj[uint()] } -> BitProxyConcept;
-
-        obj.set();
-        obj.set(bool(), uint());
-        obj.reset();
-        obj.reset(uint());
-        obj.flip();
-        obj.flip(uint());
-    };
-};
+concept BitSetConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    BitSet<typename RemoveRef<T>::UnderlyingType>>;
 
 } // namespace vcl
 
