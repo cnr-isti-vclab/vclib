@@ -20,10 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_LOGGER_ABSTRACT_LOGGER_H
-#define VCL_MISC_LOGGER_ABSTRACT_LOGGER_H
+#ifndef VCL_BASE_LOGGER_ABSTRACT_LOGGER_H
+#define VCL_BASE_LOGGER_ABSTRACT_LOGGER_H
 
-#include <vclib/base.h>
+#include <vclib/base/base.h>
+#include <vclib/base/pointers.h>
 
 #include <string>
 
@@ -259,4 +260,4 @@ concept LoggerConcept = std::derived_from<RemoveRef<T>, AbstractLogger>;
 
 } // namespace vcl
 
-#endif // VCL_MISC_LOGGER_ABSTRACT_LOGGER_H
+#endif // VCL_BASE_LOGGER_ABSTRACT_LOGGER_H
