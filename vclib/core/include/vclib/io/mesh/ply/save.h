@@ -30,8 +30,6 @@
 
 #include <vclib/io/mesh/settings.h>
 
-#include <vclib/exceptions.h>
-
 namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

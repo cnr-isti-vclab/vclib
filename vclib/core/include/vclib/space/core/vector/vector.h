@@ -24,7 +24,6 @@
 #define VCL_SPACE_CORE_VECTOR_VECTOR_H
 
 #include <vclib/base.h>
-#include <vclib/exceptions.h>
 
 #include <algorithm>
 #include <array>

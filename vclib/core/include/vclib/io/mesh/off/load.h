@@ -28,7 +28,6 @@
 #include <vclib/io/read.h>
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/exceptions.h>
 #include <vclib/space/complex.h>
 
 namespace vcl {

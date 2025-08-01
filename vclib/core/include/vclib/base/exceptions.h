@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXCEPTIONS_MISC_H
-#define VCL_EXCEPTIONS_MISC_H
+#ifndef VCL_BASE_EXCEPTIONS_H
+#define VCL_BASE_EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
@@ -56,4 +56,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_EXCEPTIONS_MISC_H
+#endif // VCL_BASE_EXCEPTIONS_H

@@ -29,7 +29,6 @@
 #include <vclib/io/mesh/settings.h>
 #include <vclib/io/read.h>
 
-#include <vclib/exceptions.h>
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 

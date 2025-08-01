@@ -26,8 +26,6 @@
 #include "../containers/edge_container.h"
 #include "element_requirements.h"
 
-#include <vclib/exceptions.h>
-
 /**
  * @defgroup edge_requirements Edge Requirements
  * @ingroup mesh_requirements

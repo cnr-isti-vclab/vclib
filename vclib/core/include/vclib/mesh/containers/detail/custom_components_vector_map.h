@@ -23,8 +23,9 @@
 #ifndef VCL_MESH_CONTAINERS_DETAIL_CUSTOM_COMPONENTS_VECTOR_MAP_H
 #define VCL_MESH_CONTAINERS_DETAIL_CUSTOM_COMPONENTS_VECTOR_MAP_H
 
+#include <vclib/mesh/exceptions.h>
+
 #include <vclib/base.h>
-#include <vclib/exceptions.h>
 
 #include <any>
 #include <string>

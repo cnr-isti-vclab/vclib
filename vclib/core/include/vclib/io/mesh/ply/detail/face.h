@@ -30,7 +30,6 @@
 #include <vclib/io/write.h>
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/exceptions.h>
 #include <vclib/mesh.h>
 
 namespace vcl::detail {

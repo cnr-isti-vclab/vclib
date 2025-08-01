@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXCEPTIONS_MESH_H
-#define VCL_EXCEPTIONS_MESH_H
+#ifndef VCL_MESH_EXCEPTIONS_H
+#define VCL_MESH_EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
@@ -32,6 +32,7 @@ namespace vcl {
  * @brief Exception thrown when the mesh is inconsistent.
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class InconsistentMeshException : public std::runtime_error
 {
@@ -54,6 +55,7 @@ public:
  * missing.
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class MissingPreconditionException : public std::runtime_error
 {
@@ -76,6 +78,7 @@ public:
  * @brief Exception thrown when the mesh is not compact.
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class MissingCompactnessException : public std::runtime_error
 {
@@ -99,6 +102,7 @@ public:
  * enabled).
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class MissingComponentException : public std::runtime_error
 {
@@ -121,6 +125,7 @@ public:
  * triangles.
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class MissingTriangularRequirementException : public std::runtime_error
 {
@@ -143,6 +148,7 @@ public:
  * @brief Exception thrown when an input/output mesh is not composed of quads.
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class MissingQuadRequirementException : public std::runtime_error
 {
@@ -165,6 +171,7 @@ public:
  * @brief Exception thrown when an index is out of bounds in a vertex container.
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class BadVertexIndexException : public std::runtime_error
 {
@@ -184,6 +191,7 @@ public:
  * expected.
  *
  * @ingroup exceptions
+ * @ingroup mesh
  */
 class BadCustomComponentTypeException : public std::runtime_error
 {
@@ -204,4 +212,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_EXCEPTIONS_MESH_H
+#endif // VCL_MESH_EXCEPTIONS_H
