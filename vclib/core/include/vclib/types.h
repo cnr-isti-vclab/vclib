@@ -30,6 +30,7 @@
 #include "types/math.h"
 #include "types/min_max.h"
 #include "types/pointers.h"
+#include "types/random.h"
 #include "types/templated_type_wrapper.h"
 #include "types/type_wrapper.h"
 #include "types/variadic_templates.h"

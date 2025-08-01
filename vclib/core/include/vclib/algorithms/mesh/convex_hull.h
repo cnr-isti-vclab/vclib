@@ -84,13 +84,14 @@ void firstTetOptimization(R&& points)
  *
  * @tparam R
  * @param points
- * @param deterministic
+ * @param[in] seed: optional value of seed, to get deterministic results. If not
+ * provided, a random seed is used.
  */
 template<Range R>
-void shufflePoints(R&& points, bool deterministic = false)
+void shufflePoints(R&& points, std::optional<uint> seed = std::nullopt)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    shuffle(points, deterministic);
+    shuffle(points, seed);
 
     firstTetOptimization(points);
 
@@ -368,7 +369,8 @@ void updateNewConflicts(
  *
  * @tparam PointType: The type of the points.
  * @param[in] points: The set of points.
- * @param[in] deterministic: If true, the shuffle will be deterministic.
+ * @param[in] seed: optional value of seed, to get deterministic results. If not
+ * provided, a random seed is used.
  * @param[in] log: The logger.
  * @return The convex hull of the points.
  *
@@ -376,9 +378,9 @@ void updateNewConflicts(
  */
 template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
 MeshType convexHull(
-    const R& points,
-    bool     deterministic = false,
-    LogType& log           = nullLogger)
+    const R&            points,
+    std::optional<uint> seed = std::nullopt,
+    LogType&            log  = nullLogger)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
     using PointType  = std::ranges::range_value_t<R>;
@@ -394,7 +396,7 @@ MeshType convexHull(
     std::vector<PointType> pointsCopy(
         std::ranges::begin(points), std::ranges::end(points));
 
-    detail::shufflePoints(pointsCopy, deterministic);
+    detail::shufflePoints(pointsCopy, seed);
 
     log.log(0, "Making first tetrahedron...");
 
@@ -476,7 +478,7 @@ template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
 MeshType convexHull(const R& points, LogType& log)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    return convexHull<MeshType>(points, false, log);
+    return convexHull<MeshType>(points, std::nullopt, log);
 }
 
 } // namespace vcl

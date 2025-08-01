@@ -20,35 +20,39 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_SHUFFLE_H
-#define VCL_MISC_SHUFFLE_H
+#ifndef RANDOM_H
+#define RANDOM_H
 
-#include <vclib/types.h>
-
-#include <algorithm>
 #include <optional>
 #include <random>
 
 namespace vcl {
 
 /**
- * @brief Shuffle the elements of a range.
+ * @brief Creates a random number generator with an optional seed.
  *
- * @tparam R: Type of the range.
- * @param[in] range: Range to shuffle.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * If a seed is provided, the generator is seeded with that value, otherwise
+ * it uses a random device to generate a random seed.
  *
- * @ingroup miscellaneous
+ * @param seed: Optional seed value for the random number generator.
+ * @return A std::mt19937 random number generator.
+ *
+ * @ingroup types
  */
-template<Range R>
-void shuffle(R&& range, std::optional<uint> seed = std::nullopt)
+inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
 {
-    std::mt19937 generator = randomGenerator(seed);
+    std::mt19937 gen;
 
-    std::shuffle(range.begin(), range.end(), generator);
+    if (seed.has_value()) {
+        gen.seed(seed.value());
+    } else {
+        std::random_device rd;
+        gen.seed(rd()); // random seed
+    }
+
+    return gen;
 }
 
 } // namespace vcl
 
-#endif // VCL_MISC_SHUFFLE_H
+#endif // RANDOM_H
