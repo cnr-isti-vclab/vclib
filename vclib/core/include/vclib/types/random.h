@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef RANDOM_H
-#define RANDOM_H
+#ifndef VCL_TYPES_RANDOM_H
+#define VCL_TYPES_RANDOM_H
 
 #include <optional>
 #include <random>
@@ -55,4 +55,4 @@ inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
 
 } // namespace vcl
 
-#endif // RANDOM_H
+#endif // VCL_TYPES_RANDOM_H
