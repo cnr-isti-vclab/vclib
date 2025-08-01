@@ -219,3 +219,7 @@ build/*
 
 # Built Visual Studio Code Extensions
 */*.vsix
+
+# Benchnmark example
+examples/render/980-benchmark/vclib-render-example-980-benchmark
+examples/render/980-benchmark/meshes/*
