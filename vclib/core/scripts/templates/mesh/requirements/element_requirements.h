@@ -6,8 +6,6 @@
 #include "../containers/%EL%_container.h"
 #include "element_requirements.h"
 
-#include <vclib/exceptions.h>
-
 /**
  * @defgroup %EL%_requirements %EL_UC% Requirements
  * @ingroup mesh_requirements

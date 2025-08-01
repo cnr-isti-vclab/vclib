@@ -23,7 +23,7 @@
 #ifndef VCL_QT_GUI_TEXT_EDIT_LOGGER_H
 #define VCL_QT_GUI_TEXT_EDIT_LOGGER_H
 
-#include <vclib/misc/logger/logger.h>
+#include <vclib/base.h>
 #include <vclib/qt/gui/text_edit_logger/debug_io_device.h>
 
 #include <QFrame>

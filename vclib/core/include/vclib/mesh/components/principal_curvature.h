@@ -147,8 +147,8 @@ concept HasPrincipalCurvature =
 
 /**
  * @brief A concept that checks whether a type T (that should be a Element) has
- * the PrincipalCurvature component (inherits from it), and that the component is
- * optional.
+ * the PrincipalCurvature component (inherits from it), and that the component
+ * is optional.
  *
  * @tparam T: The type to be tested for conformity to the
  * HasOptionalPrincipalCurvature.

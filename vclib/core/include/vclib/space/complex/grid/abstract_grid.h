@@ -25,7 +25,6 @@
 
 #include <vclib/algorithms/core.h>
 #include <vclib/mesh.h>
-#include <vclib/miscellaneous.h>
 #include <vclib/space/core.h>
 
 #include <set>

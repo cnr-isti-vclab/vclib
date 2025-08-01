@@ -29,10 +29,10 @@ void matrixStaticAsserts()
 {
     using namespace vcl;
 
-    using TestMatrix  = Matrix<uint16_t, 3, 3>;
+    using TestMatrix    = Matrix<uint16_t, 3, 3>;
     using TestRowMatrix = Eigen::Matrix<uint8_t, 2, 4, Eigen::RowMajor>;
-    using TestMatrix3 = Eigen::Matrix3d;
-    using TestVector  = Eigen::VectorXi;
+    using TestMatrix3   = Eigen::Matrix3d;
+    using TestVector    = Eigen::VectorXi;
 
     using TestArray = Array2<float>;
 
@@ -64,7 +64,8 @@ void matrixStaticAsserts()
         "RowMajor const Eigen::Matrix does not satisfy the EigenMatrixConcept");
     static_assert(
         EigenMatrixConcept<const TestRowMatrix&>,
-        "RowMajor const Eigen::Matrix& does not satisfy the EigenMatrixConcept");
+        "RowMajor const Eigen::Matrix& does not satisfy the "
+        "EigenMatrixConcept");
     static_assert(
         EigenMatrixConcept<TestRowMatrix&&>,
         "RowMajor Eigen::Matrix&& does not satisfy the EigenMatrixConcept");

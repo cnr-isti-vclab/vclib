@@ -23,18 +23,15 @@
 #ifndef VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 #define VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 
-#include <vclib/algorithms/core/create.h>
-#include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
-#include <vclib/algorithms/mesh/import_export/export_buffer.h>
-#include <vclib/algorithms/mesh/stat/topology.h>
-#include <vclib/io/image/load.h>
-#include <vclib/math/min_max.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/algorithms/mesh.h>
+#include <vclib/io.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
+#include <vclib/space/core.h>
+
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
-#include <vclib/space/complex/tri_poly_index_bimap.h>
-#include <vclib/space/core/image.h>
-#include <vclib/space/core/texture.h>
 
 namespace vcl {
 

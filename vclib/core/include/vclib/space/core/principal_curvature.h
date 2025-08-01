@@ -182,9 +182,10 @@ using PrincipalCurvatured = PrincipalCurvature<double>;
  * @ingroup space_core
  */
 template<typename T>
-concept PrincipalCurvatureConcept = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    PrincipalCurvature<typename RemoveRef<T>::ScalarType>>;
+concept PrincipalCurvatureConcept =
+    std::derived_from< // same type or derived type
+        std::remove_cvref_t<T>,
+        PrincipalCurvature<typename RemoveRef<T>::ScalarType>>;
 
 } // namespace vcl
 

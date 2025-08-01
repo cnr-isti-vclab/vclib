@@ -26,8 +26,6 @@
 #include "../containers/vertex_container.h"
 #include "element_requirements.h"
 
-#include <vclib/exceptions.h>
-
 /**
  * @defgroup vertex_requirements Vertex Requirements
  * @ingroup mesh_requirements

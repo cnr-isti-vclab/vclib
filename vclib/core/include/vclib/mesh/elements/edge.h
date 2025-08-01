@@ -104,7 +104,7 @@ class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
  * is 2.
  *
  * @tparam T: The type to be tested for conformity to the EdgeConcept.
- * 
+ *
  * @ingroup edge_concepts
  */
 template<typename T>

@@ -59,8 +59,7 @@ void edgeStaticAsserts()
     static_assert(
         EdgeConcept<EMEdgeI&&>, "EMEdgeI&& does not satisfy the EdgeConcept");
 
-    static_assert(
-        !EdgeConcept<TMFace>, "TMFace does satisfy the EdgeConcept");
+    static_assert(!EdgeConcept<TMFace>, "TMFace does satisfy the EdgeConcept");
     static_assert(
         !EdgeConcept<const TMFace>,
         "const TMFace does satisfy the EdgeConcept");

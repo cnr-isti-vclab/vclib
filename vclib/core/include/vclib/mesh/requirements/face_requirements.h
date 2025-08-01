@@ -26,8 +26,6 @@
 #include "../containers/face_container.h"
 #include "element_requirements.h"
 
-#include <vclib/exceptions.h>
-
 /**
  * @defgroup face_requirements Face Requirements
  * @ingroup mesh_requirements

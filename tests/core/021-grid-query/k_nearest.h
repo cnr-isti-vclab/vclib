@@ -27,7 +27,6 @@
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
-#include <vclib/miscellaneous.h>
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>

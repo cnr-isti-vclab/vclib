@@ -31,7 +31,6 @@
 #include <vclib/io/read.h>
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 #include <vclib/space/core.h>
 

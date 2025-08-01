@@ -26,8 +26,6 @@
 #include <vclib/io/file_info.h>
 #include <vclib/io/mesh/settings.h>
 
-#include <vclib/miscellaneous.h>
-
 #include "detail/info.h"
 #include "detail/load_mesh.h"
 

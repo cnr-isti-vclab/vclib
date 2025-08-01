@@ -652,9 +652,7 @@ public:
  * @ingroup space_core
  */
 template<typename T>
-concept ColorConcept = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    Color>;
+concept ColorConcept = std::derived_from<std::remove_cvref_t<T>, Color>;
 
 /* Utility functions */
 

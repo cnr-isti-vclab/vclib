@@ -269,9 +269,10 @@ using TriangleWrapper3d = TriangleWrapper<Point3d>;
  * @ingroup space_core
  */
 template<typename T>
-concept TriangleConcept = std::derived_from< // same type or derived type
-    std::remove_cvref_t<T>,
-    Triangle<typename RemoveRef<T>::PointType>> ||
+concept TriangleConcept =
+    std::derived_from< // same type or derived type
+        std::remove_cvref_t<T>,
+        Triangle<typename RemoveRef<T>::PointType>> ||
     std::derived_from< // same type or derived type
         std::remove_cvref_t<T>,
         TriangleWrapper<typename RemoveRef<T>::PointType>>;

@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_CORE_MATRIX_MATRIX_H
 #define VCL_SPACE_CORE_MATRIX_MATRIX_H
 
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 #include <Eigen/Core>
 
@@ -103,9 +103,9 @@ concept EigenMatrixConcept = std::derived_from< // same type or derived type
     std::remove_cvref_t<T>,
     Eigen::Matrix<
         typename RemoveRef<T>::Scalar,
-                  RemoveRef<T>::RowsAtCompileTime,
-                  RemoveRef<T>::ColsAtCompileTime,
-                  RemoveRef<T>::Options>>;
+        RemoveRef<T>::RowsAtCompileTime,
+        RemoveRef<T>::ColsAtCompileTime,
+        RemoveRef<T>::Options>>;
 
 } // namespace vcl
 
