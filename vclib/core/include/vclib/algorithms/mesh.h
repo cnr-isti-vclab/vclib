@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_H
 #define VCL_ALGORITHMS_MESH_H
 
+#include "mesh/check_pointers.h"
 #include "mesh/clean.h"
 #include "mesh/convex_hull.h"
 #include "mesh/create.h"

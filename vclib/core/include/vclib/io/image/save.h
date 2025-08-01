@@ -33,7 +33,7 @@
 #include "stb/save.h"
 #endif
 
-#include <vclib/space/core/image.h>
+#include <vclib/space/core.h>
 
 #include <set>
 

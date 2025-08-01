@@ -23,8 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_SHUFFLE_H
 #define VCL_ALGORITHMS_MESH_SHUFFLE_H
 
-#include <vclib/mesh/requirements.h>
-#include <vclib/misc/shuffle.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 
@@ -37,7 +36,7 @@ namespace detail {
  * Templates M and V can be both const and non-const MeshType and VertexType
  */
 template<typename M, typename V>
-std::vector<V*> genericFASVPV(M m, bool deterministic)
+std::vector<V*> genericFASVPV(M m, std::optional<uint> seed = std::nullopt)
 {
     std::vector<V*> vec;
     vec.reserve(m.vertexNumber());
@@ -46,7 +45,7 @@ std::vector<V*> genericFASVPV(M m, bool deterministic)
         vec.push_back(&v);
     }
 
-    shuffle(vec, deterministic);
+    shuffle(vec, seed);
 
     return vec;
 }
@@ -58,7 +57,7 @@ std::vector<V*> genericFASVPV(M m, bool deterministic)
  * Templates M and F can be both const and non-const MeshType and FaceType
  */
 template<typename M, typename F>
-std::vector<F*> genericFASFPV(M m, bool deterministic)
+std::vector<F*> genericFASFPV(M m, std::optional<uint> seed = std::nullopt)
 {
     std::vector<F*> vec;
     vec.reserve(m.faceNumber());
@@ -67,7 +66,7 @@ std::vector<F*> genericFASFPV(M m, bool deterministic)
         vec.push_back(&f);
     }
 
-    shuffle(vec, deterministic);
+    shuffle(vec, seed);
 
     return vec;
 }
@@ -77,26 +76,28 @@ std::vector<F*> genericFASFPV(M m, bool deterministic)
 template<MeshConcept MeshType>
 std::vector<typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(
     MeshType& m,
-    bool      deterministic = false)
+    std::optional<uint> seed = std::nullopt)
 {
     using VertexType = MeshType::VertexType;
 
-    return detail::genericFASVPV<MeshType&, VertexType>(m, deterministic);
+    return detail::genericFASVPV<MeshType&, VertexType>(m, seed);
 }
 
 template<MeshConcept MeshType>
 std::vector<const typename MeshType::VertexType*>
-fillAndShuffleVertexPointerVector(const MeshType& m, bool deterministic = false)
+fillAndShuffleVertexPointerVector(
+    const MeshType&     m,
+    std::optional<uint> seed = std::nullopt)
 {
     using VertexType = MeshType::VertexType;
     return detail::genericFASVPV<const MeshType&, const VertexType>(
-        m, deterministic);
+        m, seed);
 }
 
 template<MeshConcept MeshType>
 std::vector<uint> fillAndShuffleVertexIndexVector(
     const MeshType& m,
-    bool            deterministic = false)
+    std::optional<uint> seed = std::nullopt)
 {
     using VertexType = MeshType::VertexType;
 
@@ -107,7 +108,7 @@ std::vector<uint> fillAndShuffleVertexIndexVector(
         vec.push_back(m.index(v));
     }
 
-    shuffle(vec, deterministic);
+    shuffle(vec, seed);
 
     return vec;
 }
@@ -115,28 +116,28 @@ std::vector<uint> fillAndShuffleVertexIndexVector(
 template<FaceMeshConcept MeshType>
 std::vector<typename MeshType::FaceType*> fillAndShuffleFacePointerVector(
     MeshType& m,
-    bool      deterministic = false)
+    std::optional<uint> seed = std::nullopt)
 {
     using FaceType = MeshType::FaceType;
 
-    return detail::genericFASFPV<MeshType&, FaceType>(m, deterministic);
+    return detail::genericFASFPV<MeshType&, FaceType>(m, seed);
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<const typename MeshType::FaceType*> fillAndShuffleFacePointerVector(
     const MeshType& m,
-    bool            deterministic = false)
+    std::optional<uint> seed = std::nullopt)
 {
     using FaceType = MeshType::FaceType;
 
     return detail::genericFASFPV<const MeshType&, const FaceType>(
-        m, deterministic);
+        m, seed);
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<uint> fillAndShuffleFaceIndexVector(
     const MeshType& m,
-    bool            deterministic = false)
+    std::optional<uint> seed = std::nullopt)
 {
     using FaceType = MeshType::FaceType;
 
@@ -147,7 +148,7 @@ std::vector<uint> fillAndShuffleFaceIndexVector(
         vec.push_back(m.index(f));
     }
 
-    shuffle(vec, deterministic);
+    shuffle(vec, seed);
 
     return vec;
 }

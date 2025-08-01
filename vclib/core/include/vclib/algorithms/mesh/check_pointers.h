@@ -23,9 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_CHECK_POINTERS_H
 #define VCL_ALGORITHMS_MESH_CHECK_POINTERS_H
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh.h>
-#include <vclib/misc/string.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 

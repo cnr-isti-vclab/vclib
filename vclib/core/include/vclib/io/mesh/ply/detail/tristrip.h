@@ -26,7 +26,6 @@
 #include "header.h"
 
 #include <vclib/io/read.h>
-#include <vclib/misc/tokenizer.h>
 
 #include <istream>
 

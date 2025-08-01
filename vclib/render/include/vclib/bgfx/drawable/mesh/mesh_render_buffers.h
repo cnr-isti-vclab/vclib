@@ -286,7 +286,8 @@ private:
 
         mVertexQuadIndexBuffer.create(buffer, totalIndices, true, releaseFn);
 
-        assert(mVertexQuadIndexBuffer.isValid());
+        // if number of vertices is not zero, the index buffer must be valid
+        assert(mVertexQuadIndexBuffer.isValid() || totalIndices == 0);
     }
 
     void setVertexNormalsBuffer(const MeshType& mesh) // override

@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_NAME_H
 #define VCL_MESH_COMPONENTS_NAME_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts/mesh/components/name.h>
-#include <vclib/misc/string.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -98,33 +98,54 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasName<Element>) {
-            name() = e.name();
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { vcl::serialize(os, name()); }
 
     void deserialize(std::istream& is) { vcl::deserialize(is, name()); }
 };
 
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the Name component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Name, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasName.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasName = TB::IsDerivedFromSpecializationOfV<T, Name>;
+
+/* importFrom function */
+
+template<typename ParentElemType, bool OPT>
+template<typename Element>
+void Name<ParentElemType, OPT>::importFrom(const Element& e, bool)
+{
+    if constexpr (HasName<Element>) {
+        name() = e.name();
+    }
+}
+
 /* Detector function to check if a class has Name available */
 
 /**
- * @brief Checks if the given Element/Mesh has Name component available.
+ * @brief Checks if the given Element has Name component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has Name component available, `false`
+ * @param[in] element: The element to check.
+ * @return `true` if the element has Name component available, `false`
  * otherwise.
  */
-bool isNameAvailableOn(const ElementOrMeshConcept auto& element)
+bool isNameAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::NAME>(element);
 }

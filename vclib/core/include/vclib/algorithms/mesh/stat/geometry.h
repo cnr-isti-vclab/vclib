@@ -26,8 +26,9 @@
 #include "barycenter.h"
 
 #include <vclib/algorithms/mesh/face_topology.h>
-#include <vclib/space/complex/mesh_inertia.h>
-#include <vclib/space/core/matrix.h>
+
+#include <vclib/space/complex.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 
@@ -203,7 +204,7 @@ auto covarianceMatrixOfMesh(const MeshType& m)
  * @param invert
  * @return
  */
-template<MeshConcept MeshType, typename ScalarType>
+template<typename ScalarType, MeshConcept MeshType>
 std::vector<ScalarType> vertexRadiusFromWeights(
     const MeshType& m,
     Range auto&&    weights,
@@ -220,11 +221,11 @@ std::vector<ScalarType> vertexRadiusFromWeights(
 
     double minRad   = diskRadius;
     double maxRad   = diskRadius * radiusVariance;
-    double deltaQ   = max - min;
+    double deltaQ   = *max - *min;
     double deltaRad = maxRad - minRad;
     for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
-        radius[m.index(v)] =
-            minRad + deltaRad * ((invert ? max - w : w - min) / deltaQ);
+        double num = invert ? (*max - w) : (w - *min);
+        radius[m.index(v)] = minRad + deltaRad * (num / deltaQ);
     }
 
     return radius;

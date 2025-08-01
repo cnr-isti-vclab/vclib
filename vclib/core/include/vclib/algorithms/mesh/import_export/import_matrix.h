@@ -23,10 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
 
-#include <vclib/concepts/space/matrix.h>
-#include <vclib/exceptions.h>
-#include <vclib/mesh/requirements.h>
-#include <vclib/space/core/polygon.h>
+#include <vclib/mesh.h>
+#include <vclib/space/core.h>
 
 /**
  * @defgroup import_matrix Import Mesh from Matrix Algorithms

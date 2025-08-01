@@ -26,7 +26,7 @@
 #include <vclib/bgfx/programs/embedded_c_programs.h>
 #include <vclib/bgfx/programs/embedded_vf_programs.h>
 #include <vclib/bgfx/programs/load_program.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <array>
 

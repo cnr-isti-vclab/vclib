@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "concepts/bit_flags.h"
 
-#include <vclib/concepts/mesh/components/bit_flags.h>
-#include <vclib/space/core/bit_set.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
@@ -398,9 +398,6 @@ public:
             f &= 0x00100000;
         return f;
     }
-
-    // dummy member to discriminate between triangle and non-triangle bit flags
-    void __triangleBitFlags() const {}
 
 protected:
     BitProxy<FT> deletedBit() { return flags()[DELETED]; }

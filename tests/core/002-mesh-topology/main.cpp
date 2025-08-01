@@ -38,7 +38,7 @@ TEMPLATE_TEST_CASE(
     using TriMesh = TestType;
 
     TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -301,7 +301,7 @@ TEMPLATE_TEST_CASE(
     using TriMesh = TestType;
 
     TriMesh pm =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -566,7 +566,7 @@ TEMPLATE_TEST_CASE(
     using PolyMesh = TestType;
 
     PolyMesh pm =
-        vcl::loadPly<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+        vcl::loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     THEN("The mesh has 8 vertices, 6 faces")
     {
@@ -759,7 +759,7 @@ TEMPLATE_TEST_CASE(
     using TriMesh = TestType;
 
     TriMesh tm1 =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
 
     THEN("Test the number of vertices to duplicate")
     {
@@ -767,7 +767,7 @@ TEMPLATE_TEST_CASE(
     }
 
     TriMesh tm2 =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
 
     THEN("Test the number of vertices to duplicate")
     {

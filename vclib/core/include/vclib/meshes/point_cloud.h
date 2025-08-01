@@ -23,8 +23,7 @@
 #ifndef VCL_MESHES_POINT_CLOUD_H
 #define VCL_MESHES_POINT_CLOUD_H
 
-#include <vclib/mesh/mesh.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 

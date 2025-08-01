@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_NORMAL_H
 #define VCL_MESH_COMPONENTS_NORMAL_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts/mesh/components/normal.h>
-#include <vclib/space/core/point.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
@@ -103,20 +103,62 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasNormal<Element>) {
-            if (isNormalAvailableOn(e)) {
-                normal() =
-                    e.normal().template cast<typename NormalType::ScalarType>();
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { normal().serialize(os); }
 
     void deserialize(std::istream& is) { normal().deserialize(is); }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the Normal component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Normal, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * Normal component and the vertical OptionalNormal component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides Normal component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasNormal.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasNormal = TTB::IsDerivedFromSpecializationOfV<T, Normal>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the Normal component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalNormal.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalNormal =
+    HasNormal<T> && IsOptionalComponent<typename RemoveRef<T>::Normal>;
+
+/* importFrom function */
+
+template<PointConcept P, typename ParentElemType, bool OPT>
+template<typename Element>
+void Normal<P, ParentElemType, OPT>::importFrom(const Element& e, bool)
+{
+    using ScalarType = NormalType::ScalarType;
+    if constexpr (HasNormal<Element>) {
+        if (isNormalAvailableOn(e)) {
+            normal() = e.normal().template cast<ScalarType>();
+        }
+    }
+}
 
 /* Detector function to check if a class has Normal available */
 
@@ -127,12 +169,11 @@ protected:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has Normal component available, `false`
  * otherwise.
  */
-bool isNormalAvailableOn(const ElementConcept auto& element)
+bool isNormalAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::NORMAL>(element);
 }

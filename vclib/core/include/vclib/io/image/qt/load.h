@@ -24,7 +24,6 @@
 #define VCL_IO_IMAGE_QT_LOAD_H
 
 #include <vclib/io/file_info.h>
-#include <vclib/misc/string.h>
 
 #include <QImage>
 

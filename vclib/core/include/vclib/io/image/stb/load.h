@@ -24,7 +24,6 @@
 #define VCL_IO_IMAGE_STB_LOAD_H
 
 #include <vclib/io/file_info.h>
-#include <vclib/misc/string.h>
 
 // disable deprecated warnings - just for stb
 #if defined(__clang__)

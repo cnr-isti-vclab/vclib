@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
-#include "bases/reference_container_component.h"
+#include "base/predicates.h"
+#include "base/reference_container_component.h"
 
-#include <vclib/concepts/mesh/components/adjacent_faces.h>
-#include <vclib/types/view.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -611,38 +611,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool importRefs = true)
-    {
-        if (importRefs) {
-            if constexpr (HasAdjacentFaces<Element>) {
-                if (isAdjacentFacesAvailableOn(e)) {
-                    if constexpr (N > 0) {
-                        // same static size
-                        if constexpr (N == Element::ADJ_FACE_NUMBER) {
-                            importIndicesFrom(e);
-                        }
-                        // from dynamic to static, but dynamic size == static
-                        // size
-                        else if constexpr (Element::ADJ_FACE_NUMBER < 0) {
-                            if (e.adjFacesNumber() == N) {
-                                importIndicesFrom(e);
-                            }
-                        }
-                        else {
-                            // do not import in this case: cannot import from
-                            // dynamic size != static size
-                        }
-                    }
-                    else {
-                        // from static/dynamic to dynamic size: need to resize
-                        // first, then import
-                        Base::resize(e.adjFacesNumber());
-                        importIndicesFrom(e);
-                    }
-                }
-            }
-        }
-    }
+    void importFrom(const Element& e, bool importRefs = true);
 
     void serialize(std::ostream& os) const
     {
@@ -680,6 +649,121 @@ private:
     }
 };
 
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentFaces component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::AdjacentFaces, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * AdjacentFaces component and the vertical OptionalAdjacentFaces component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides AdjacentFaces component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasAdjacentFaces.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasAdjacentFaces =
+    BTIBTBB::IsDerivedFromSpecializationOfV<T, AdjacentFaces>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentFaces component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalAdjacentFaces.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalAdjacentFaces =
+    HasAdjacentFaces<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::AdjacentFaces>;
+
+/**
+ * @private
+ * @brief HasRightNumberOfAdjacentFaces concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent faces, if tied to the vertex number, must be consisted w.r.t. the
+ * number of vertices of the face.
+ *
+ * This concept is satisfied only if static number of adjacent faces is the same
+ * of the static number of vertices.
+ */
+template<typename T>
+concept HasRightNumberOfAdjacentFaces =
+    !comp::IsTiedToVertexNumber<typename RemoveRef<T>::AdjacentFaces> ||
+    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::ADJ_FACE_NUMBER;
+
+/**
+ * @private
+ * @brief SanityCheckAdjacentFaces concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent faces must be consistent w.r.t. the number of vertices of the face.
+ *
+ * It is satisfied if:
+ * - the component does *not* have adjacent faces;
+ * - in case it has adjacent faces, they have the same number of vertices of the
+ * face.
+ */
+template<typename T>
+concept SanityCheckAdjacentFaces =
+    !HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
+
+/* importFrom function */
+
+template<
+    bool STORE_INDICES,
+    typename Face,
+    int  N,
+    bool TTVN,
+    typename ParentElemType,
+    bool VERT,
+    bool OPT>
+template<typename Element>
+void AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>::
+    importFrom(const Element& e, bool importRefs)
+{
+    if (importRefs) {
+        if constexpr (HasAdjacentFaces<Element>) {
+            if (isAdjacentFacesAvailableOn(e)) {
+                if constexpr (N > 0) {
+                    // same static size
+                    if constexpr (N == Element::ADJ_FACE_NUMBER) {
+                        importIndicesFrom(e);
+                    }
+                    // from dynamic to static, but dynamic size == static
+                    // size
+                    else if constexpr (Element::ADJ_FACE_NUMBER < 0) {
+                        if (e.adjFacesNumber() == N) {
+                            importIndicesFrom(e);
+                        }
+                    }
+                    else {
+                        // do not import in this case: cannot import from
+                        // dynamic size != static size
+                    }
+                }
+                else {
+                    // from static/dynamic to dynamic size: need to resize
+                    // first, then import
+                    Base::resize(e.adjFacesNumber());
+                    importIndicesFrom(e);
+                }
+            }
+        }
+    }
+}
+
 /* Detector function to check if a class has AdjacentFaces available */
 
 /**
@@ -689,11 +773,10 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has AdjacentFaces available, `false` otherwise.
  */
-bool isAdjacentFacesAvailableOn(const ElementConcept auto& element)
+bool isAdjacentFacesAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::ADJACENT_FACES>(element);
 }

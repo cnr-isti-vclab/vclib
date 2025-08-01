@@ -23,7 +23,7 @@
 #ifndef VCL_BINDINGS_CORE_MESH_ELEMENTS_VERTEX_H
 #define VCL_BINDINGS_CORE_MESH_ELEMENTS_VERTEX_H
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/mesh.h>
 
 #include <vclib/bindings/core/mesh/components.h>
 

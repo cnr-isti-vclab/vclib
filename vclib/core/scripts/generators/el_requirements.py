@@ -1,5 +1,15 @@
 from . import common
 
+def get_per_comp_string(element):
+    with open('templates/mesh/requirements/per_comp.txt', 'r') as file :
+        per_comp_string = file.read()
+
+    comp_string = ""
+    for c in element.components:
+        comp_string += per_comp_string.replace('%CNUC%', c.name_upper_camel)
+
+    return comp_string
+
 def get_comp_string(element, functions):
     with open('templates/mesh/requirements/' + functions + '_comp.txt', 'r') as file :
         per_comp_string = file.read()
@@ -19,6 +29,7 @@ def generate_elem_requirements(element):
     target_file_h = "include/vclib/mesh/" + include_file
     template_file_h = "mesh/requirements/element_requirements.h"
 
+    per_comp_string = get_per_comp_string(element)
     is_enable_comp_string = get_comp_string(element, "is_enable")
     require_comp_string = get_comp_string(element, "require")
 
@@ -26,6 +37,7 @@ def generate_elem_requirements(element):
     with open('templates/' + template_file_h, 'r') as file :
         element_requirements = file.read()
 
+    element_requirements = element_requirements.replace('%PER_ELEM_CONCEPTS%', per_comp_string)
     element_requirements = element_requirements.replace('%IS_ENABLE_COMPONENTS%', is_enable_comp_string)
     element_requirements = element_requirements.replace('%REQUIRE_COMPONENTS%', require_comp_string)
 

@@ -23,7 +23,7 @@
 #ifndef VCL_IO_MESH_PLY_DETAIL_PLY_H
 #define VCL_IO_MESH_PLY_DETAIL_PLY_H
 
-#include <vclib/misc/tokenizer.h>
+#include <vclib/base.h>
 
 #include <list>
 

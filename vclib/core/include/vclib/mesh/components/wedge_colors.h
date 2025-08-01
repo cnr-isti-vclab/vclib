@@ -23,13 +23,11 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
-#include "bases/container_component.h"
+#include "base/container_component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts/mesh/components/color.h>
-#include <vclib/concepts/mesh/components/wedge_colors.h>
-#include <vclib/space/core/color.h>
-#include <vclib/space/core/vector.h>
-#include <vclib/types/view.h>
+#include <vclib/space/core.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -279,35 +277,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasWedgeColors<Element>) {
-            if (isWedgeColorsAvailableOn(e)) {
-                if constexpr (N > 0) {
-                    // same static size
-                    if constexpr (N == Element::WEDGE_COLOR_NUMBER) {
-                        importWedgeColorsFrom(e);
-                    }
-                    // from dynamic to static, but dynamic size == static size
-                    else if constexpr (Element::WEDGE_COLOR_NUMBER < 0) {
-                        if (e.vertexNumber() == N) {
-                            importWedgeColorsFrom(e);
-                        }
-                    }
-                    else {
-                        // do not import in this case: cannot import from
-                        // dynamic size != static size
-                    }
-                }
-                else {
-                    // from static/dynamic to dynamic size: need to resize
-                    // first, then import
-                    resize(e.vertexNumber());
-                    importWedgeColorsFrom(e);
-                }
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { colors().serialize(os); }
 
@@ -344,6 +314,106 @@ private:
     const Vector<vcl::Color, N>& colors() const { return Base::container(); }
 };
 
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeColors component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::WedgeColors, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * WedgeColors component and the vertical OptionalWedgeColors component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides WedgeColors component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasWedgeColors.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasWedgeColors = ITB::IsDerivedFromSpecializationOfV<T, WedgeColors>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeColors component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalWedgeColors.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalWedgeColors =
+    HasWedgeColors<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::WedgeColors>;
+
+/**
+ * @private
+ * @brief HasRightNumberOfWedgeColors concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * wedge colors must be consistent w.r.t. the number of vertices of the face.
+ *
+ * This concept is satisfied only if static number of wedge colors is the same
+ * of the static number of vertices.
+ */
+template<typename T>
+concept HasRightNumberOfWedgeColors = T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
+
+/**
+ * @private
+ * @brief SanityCheckWedgeColors concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * wedge colors must be consistent w.r.t. the number of vertices of the face.
+ *
+ * It is satisfied if:
+ * - the component does *not* have wedge colors;
+ * - in case it has wedge colors, they have the same number of vertices of the
+ * face.
+ */
+template<typename T>
+concept SanityCheckWedgeColors =
+    !HasWedgeColors<T> || HasRightNumberOfWedgeColors<T>;
+
+/* importFrom function */
+
+template<int N, typename ParentElemType, bool OPT>
+template<typename Element>
+void WedgeColors<N, ParentElemType, OPT>::importFrom(const Element& e, bool)
+{
+    if constexpr (HasWedgeColors<Element>) {
+        if (isWedgeColorsAvailableOn(e)) {
+            if constexpr (N > 0) {
+                // same static size
+                if constexpr (N == Element::WEDGE_COLOR_NUMBER) {
+                    importWedgeColorsFrom(e);
+                }
+                // from dynamic to static, but dynamic size == static size
+                else if constexpr (Element::WEDGE_COLOR_NUMBER < 0) {
+                    if (e.vertexNumber() == N) {
+                        importWedgeColorsFrom(e);
+                    }
+                }
+                else {
+                    // do not import in this case: cannot import from
+                    // dynamic size != static size
+                }
+            }
+            else {
+                // from static/dynamic to dynamic size: need to resize
+                // first, then import
+                resize(e.vertexNumber());
+                importWedgeColorsFrom(e);
+            }
+        }
+    }
+}
+
 /* Detector function to check if a class has WedgeColors available */
 
 /**
@@ -353,11 +423,10 @@ private:
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementConcept.
+ * @param[in] element: The element to check.
  * @return `true` if the element has WedgeColors available, `false` otherwise.
  */
-bool isWedgeColorsAvailableOn(const ElementConcept auto& element)
+bool isWedgeColorsAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::WEDGE_COLORS>(element);
 }

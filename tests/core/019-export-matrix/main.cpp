@@ -20,10 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/algorithms/mesh.h>
+#include <vclib/algorithms.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/views.h>
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -372,9 +371,9 @@ TEMPLATE_TEST_CASE(
     using EdgeMesh = std::tuple_element_t<2, TestType>;
 
     TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
-    PolyMesh pm = vcl::loadObj<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                         "/rhombicosidodecahedron.obj");
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    PolyMesh pm = vcl::loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                          "/rhombicosidodecahedron.obj");
 
     SECTION("Positions...")
     {

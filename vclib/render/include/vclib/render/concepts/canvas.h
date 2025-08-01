@@ -23,9 +23,7 @@
 #ifndef VCL_RENDER_CONCEPTS_CANVAS_H
 #define VCL_RENDER_CONCEPTS_CANVAS_H
 
-#include <vclib/concepts.h>
-#include <vclib/space/core/color.h>
-#include <vclib/space/core/point.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

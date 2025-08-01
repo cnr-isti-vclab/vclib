@@ -23,8 +23,7 @@
 #ifndef VCL_IO_FILE_FORMAT_H
 #define VCL_IO_FILE_FORMAT_H
 
-#include <vclib/concepts/ranges/range.h>
-#include <vclib/misc/string.h>
+#include <vclib/base.h>
 
 #include <algorithm>
 #include <string>

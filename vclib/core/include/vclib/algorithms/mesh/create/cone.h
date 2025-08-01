@@ -23,8 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_CREATE_CONE_H
 #define VCL_ALGORITHMS_MESH_CREATE_CONE_H
 
-#include <vclib/math/base.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 

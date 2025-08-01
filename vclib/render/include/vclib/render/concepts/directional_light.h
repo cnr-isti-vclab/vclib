@@ -23,8 +23,7 @@
 #ifndef VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H
 #define VCL_RENDER_CONCEPTS_DIRECTIONAL_LIGHT_H
 
-#include <vclib/concepts.h>
-#include <vclib/space/core/color.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

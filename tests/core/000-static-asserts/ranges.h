@@ -23,7 +23,7 @@
 #ifndef RANGES_H
 #define RANGES_H
 
-#include <vclib/concepts/ranges/range.h>
+#include <vclib/base.h>
 
 #include <vector>
 

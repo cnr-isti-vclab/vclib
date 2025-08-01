@@ -32,8 +32,7 @@
 #include "gltf/capability.h"
 #endif
 
-#include <vclib/exceptions/io.h>
-#include <vclib/misc/string.h>
+#include <vclib/io/exceptions.h>
 
 namespace vcl {
 

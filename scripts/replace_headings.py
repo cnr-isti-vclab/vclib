@@ -80,7 +80,7 @@ if __name__ == "__main__":
     replace_cmake_headers_in_dir('../examples/')
     replace_cmake_headers_in_dir('../tests/')
 
-    vcl_modules = ['core', 'external', 'processing', 'render']
+    vcl_modules = ['core', 'external', 'render']
 
     # paths in which headings should not be replaced
     exclude_paths = ['bgfx/text/font', 'vclib/bgfx_imgui']

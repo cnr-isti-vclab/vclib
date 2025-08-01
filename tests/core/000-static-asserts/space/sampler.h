@@ -23,7 +23,7 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
-#include <vclib/mesh/tmp_meshes.h>
+#include <vclib/mesh.h>
 #include <vclib/space.h>
 
 void samplerStaticAsserts()

@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_H
 #define VCL_MESH_COMPONENTS_MARK_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts/mesh/components/mark.h>
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -165,14 +165,7 @@ public:
 protected:
     // Component interface function
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasMark<Element>) {
-            if (isMarkAvailableOn(e)) {
-                markRef() = e.mark();
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { vcl::serialize(os, mark()); }
 
@@ -182,21 +175,68 @@ private:
     int& markRef() { return Base::data(); }
 };
 
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Mark component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from vcl::comp::Mark,
+ * with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal Mark
+ * component and the vertical OptionalMark component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Mark component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasMark.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasMark = TB::IsDerivedFromSpecializationOfV<T, Mark>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element or a
+ * Mesh) has the Mark component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the HasOptionalMark.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalMark =
+    HasMark<T> && IsOptionalComponent<typename RemoveRef<T>::Mark>;
+
+/* importFrom function */
+
+template<typename ParentElemType, bool OPT>
+template<typename Element>
+void Mark<ParentElemType, OPT>::importFrom(const Element& e, bool)
+{
+    if constexpr (HasMark<Element>) {
+        if (isMarkAvailableOn(e)) {
+            markRef() = e.mark();
+        }
+    }
+}
+
 /* Detector function to check if a class has Mark available */
 
 /**
- * @brief Checks if the given Element/Mesh has the Mark component available.
+ * @brief Checks if the given Element has the Mark component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has the Mark component available, `false`
+ * @param[in] element: The element to check.
+ * @return `true` if the element has the Mark component available, `false`
  * otherwise.
  */
-bool isMarkAvailableOn(const ElementOrMeshConcept auto& element)
+bool isMarkAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::MARK>(element);
 }

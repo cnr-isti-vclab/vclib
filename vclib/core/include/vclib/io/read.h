@@ -25,10 +25,10 @@
 
 #include "file_info.h"
 
-#include <vclib/concepts/mesh/elements/element.h>
-#include <vclib/misc/string.h>
-#include <vclib/misc/tokenizer.h>
-#include <vclib/serialization.h>
+#include <vclib/io/exceptions.h>
+
+#include <vclib/base.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 

@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 #define VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts/mesh/components/bounding_box.h>
-#include <vclib/space/core/box.h>
+#include <vclib/space/core.h>
 
 namespace vcl::comp {
 
@@ -108,34 +108,57 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasBoundingBox<Element>) {
-            using ScalarType = PointType::ScalarType;
-            boundingBox()    = e.boundingBox().template cast<ScalarType>();
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { boundingBox().serialize(os); }
 
     void deserialize(std::istream& is) { boundingBox().deserialize(is); }
 };
 
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the BoundingBox component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::BoundingBox, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasBoundingBox.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasBoundingBox = TTB::IsDerivedFromSpecializationOfV<T, BoundingBox>;
+
+/* importFrom function */
+
+template<PointConcept PointType, typename ParentElemType, bool OPT>
+template<typename Element>
+void BoundingBox<PointType, ParentElemType, OPT>::importFrom(
+    const Element& e,
+    bool)
+{
+    if constexpr (HasBoundingBox<Element>) {
+        using ScalarType = PointType::ScalarType;
+        boundingBox()    = e.boundingBox().template cast<ScalarType>();
+    }
+}
+
 /* Detector function to check if a class has BoundingBox available */
 
 /**
- * @brief Checks if the given Element/Mesh has BoundingBox component available.
+ * @brief Checks if the given Element has BoundingBox component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has BoundingBox component available,
+ * @param[in] element: The element to check.
+ * @return `true` if the element has BoundingBox component available,
  * `false` otherwise.
  */
-bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
+bool isBoundingBoxAvailableOn(const auto& element)
 {
     return isComponentAvailableOn<CompId::BOUNDING_BOX>(element);
 }
