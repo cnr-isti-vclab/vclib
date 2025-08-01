@@ -25,7 +25,7 @@
 
 #include <vclib/mesh/components/adjacent_faces.h>
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl::views {
 

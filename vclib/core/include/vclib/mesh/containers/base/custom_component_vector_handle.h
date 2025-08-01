@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_CONTAINERS_BASE_CUSTOM_COMPONENT_VECTOR_HANDLE_H
 #define VCL_MESH_CONTAINERS_BASE_CUSTOM_COMPONENT_VECTOR_HANDLE_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <any>
 #include <vector>

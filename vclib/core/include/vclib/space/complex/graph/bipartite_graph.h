@@ -28,7 +28,7 @@
 #include "bipartite_iterators/node_iterator.h"
 #include "nodes/undirected_node.h"
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <cassert>
 #include <map>

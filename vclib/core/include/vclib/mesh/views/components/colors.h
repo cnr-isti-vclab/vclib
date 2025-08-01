@@ -26,7 +26,7 @@
 #include <vclib/mesh/components/color.h>
 #include <vclib/mesh/components/wedge_colors.h>
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <ranges>
 

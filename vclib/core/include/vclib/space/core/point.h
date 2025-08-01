@@ -23,8 +23,7 @@
 #ifndef VCL_SPACE_CORE_POINT_H
 #define VCL_SPACE_CORE_POINT_H
 
-#include <vclib/miscellaneous.h>
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>

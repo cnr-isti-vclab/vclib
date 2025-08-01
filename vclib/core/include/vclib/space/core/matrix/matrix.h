@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_CORE_MATRIX_MATRIX_H
 #define VCL_SPACE_CORE_MATRIX_MATRIX_H
 
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 #include <Eigen/Core>
 

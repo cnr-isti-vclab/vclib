@@ -26,7 +26,7 @@
 #include "base/predicates.h"
 #include "base/reference_container_component.h"
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 

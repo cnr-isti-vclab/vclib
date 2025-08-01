@@ -28,8 +28,6 @@
 #include <vclib/mesh/mesh.h>
 #include <vclib/mesh/mesh_components.h>
 
-#include <vclib/exceptions.h>
-
 /**
  * @defgroup mesh_concepts Mesh Concepts
  * @ingroup mesh_requirements

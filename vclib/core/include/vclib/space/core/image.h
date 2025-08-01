@@ -26,7 +26,7 @@
 #include "array.h"
 #include "color.h"
 
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 #include <string>
 

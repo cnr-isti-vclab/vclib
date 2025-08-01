@@ -28,9 +28,7 @@
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
 
-#include <vclib/exceptions.h>
 #include <vclib/mesh.h>
-#include <vclib/miscellaneous.h>
 
 namespace vcl::detail {
 

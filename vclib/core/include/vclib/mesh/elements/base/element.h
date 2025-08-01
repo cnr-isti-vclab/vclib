@@ -28,7 +28,7 @@
 #include <vclib/mesh/components/base/component.h>
 #include <vclib/mesh/components/parent_mesh_pointer.h>
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 /**
  * @defgroup elements Elements

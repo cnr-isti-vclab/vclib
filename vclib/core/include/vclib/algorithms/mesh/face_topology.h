@@ -24,9 +24,7 @@
 #define VCL_ALGORITHMS_MESH_FACE_TOPOLOGY_H
 
 #include <vclib/algorithms/core.h>
-#include <vclib/exceptions.h>
 #include <vclib/mesh.h>
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 #include <vclib/space/core.h>
 

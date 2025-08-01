@@ -26,8 +26,6 @@
 #include <vclib/io/mesh/settings.h>
 #include <vclib/io/write.h>
 
-#include <vclib/exceptions.h>
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 
 namespace vcl {

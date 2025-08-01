@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_UNIFORM_H
 #define VCL_BGFX_UNIFORM_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <bgfx/bgfx.h>
 

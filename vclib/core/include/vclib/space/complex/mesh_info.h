@@ -24,7 +24,7 @@
 #define VCL_SPACE_COMPLEX_MESH_INFO_H
 
 #include <vclib/mesh.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <array>
 #include <bitset>
