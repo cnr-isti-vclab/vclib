@@ -25,9 +25,6 @@
 
 #include "vector.h"
 
-#include <vclib/concepts.h>
-#include <vclib/miscellaneous.h>
-
 namespace vcl {
 
 /**

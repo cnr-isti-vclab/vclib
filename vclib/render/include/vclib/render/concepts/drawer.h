@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_CONCEPTS_DRAWER_H
 #define VCL_RENDER_CONCEPTS_DRAWER_H
 
-#include <vclib/concepts.h>
+#include <vclib/base.h>
 
 namespace vcl {
 

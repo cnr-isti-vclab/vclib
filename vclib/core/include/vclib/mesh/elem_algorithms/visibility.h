@@ -23,8 +23,9 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_VISIBILITY_H
 #define VCL_MESH_ELEM_ALGORITHMS_VISIBILITY_H
 
+#include <vclib/mesh/elements.h>
+
 #include <vclib/algorithms/core.h>
-#include <vclib/concepts.h>
 
 namespace vcl {
 

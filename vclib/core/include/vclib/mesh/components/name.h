@@ -23,11 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_NAME_H
 #define VCL_MESH_COMPONENTS_NAME_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts.h>
-#include <vclib/miscellaneous.h>
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -99,17 +98,39 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasName<Element>) {
-            name() = e.name();
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { vcl::serialize(os, name()); }
 
     void deserialize(std::istream& is) { vcl::deserialize(is, name()); }
 };
+
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the Name component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Name, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasName.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasName = TB::IsDerivedFromSpecializationOfV<T, Name>;
+
+/* importFrom function */
+
+template<typename ParentElemType, bool OPT>
+template<typename Element>
+void Name<ParentElemType, OPT>::importFrom(const Element& e, bool)
+{
+    if constexpr (HasName<Element>) {
+        name() = e.name();
+    }
+}
 
 /* Detector function to check if a class has Name available */
 

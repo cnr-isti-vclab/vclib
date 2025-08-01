@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_POSITION_H
 #define VCL_MESH_COMPONENTS_POSITION_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
@@ -103,20 +103,42 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& v, bool = true)
-    {
-        using ScalarType = PositionType::ScalarType;
-        if constexpr (HasPosition<Element>) {
-            if (isPositionAvailableOn(v)) {
-                position() = v.position().template cast<ScalarType>();
-            }
-        }
-    }
+    void importFrom(const Element& v, bool = true);
 
     void serialize(std::ostream& os) const { position().serialize(os); }
 
     void deserialize(std::istream& is) { position().deserialize(is); }
 };
+
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the Position component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::Position, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasPosition.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasPosition = TTB::IsDerivedFromSpecializationOfV<T, Position>;
+
+/* importFrom function */
+
+template<PointConcept P, typename ParentElemType, bool OPT>
+template<typename Element>
+void Position<P, ParentElemType, OPT>::importFrom(const Element& v, bool)
+{
+    using ScalarType = PositionType::ScalarType;
+    if constexpr (HasPosition<Element>) {
+        if (isPositionAvailableOn(v)) {
+            position() = v.position().template cast<ScalarType>();
+        }
+    }
+}
 
 /* Detector function to check if a class has Position available */
 

@@ -23,11 +23,11 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
-#include "bases/container_component.h"
+#include "base/container_component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -323,35 +323,7 @@ protected:
 
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasWedgeTexCoords<Element>) {
-            if (isWedgeTexCoordsAvailableOn(e)) {
-                if constexpr (N > 0) {
-                    // same static size
-                    if constexpr (N == Element::WEDGE_TEX_COORD_NUMBER) {
-                        importWedgeTexCoordsFrom(e);
-                    }
-                    // from dynamic to static, but dynamic size == static size
-                    else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0) {
-                        if (e.vertexNumber() == N) {
-                            importWedgeTexCoordsFrom(e);
-                        }
-                    }
-                    else {
-                        // do not import in this case: cannot import from
-                        // dynamic size != static size
-                    }
-                }
-                else {
-                    // from static/dynamic to dynamic size: need to resize
-                    // first, then import
-                    resize(e.vertexNumber());
-                    importWedgeTexCoordsFrom(e);
-                }
-            }
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const
     {
@@ -403,6 +375,110 @@ private:
         return Base::container();
     }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeTexCoords component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::WedgeTexCoords, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * WedgeTexCoords component and the vertical OptionalWedgeTexCoords component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides WedgeTexCoords component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasWedgeTexCoords.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasWedgeTexCoords =
+    TITB::IsDerivedFromSpecializationOfV<T, WedgeTexCoords>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the WedgeTexCoords component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalWedgeTexCoords.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalWedgeTexCoords =
+    HasWedgeTexCoords<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::WedgeTexCoords>;
+
+/**
+ * @private
+ * @brief HasRightNumberOfWedgeTexCoords concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * wedge texcoords must be consistent w.r.t. the number of vertices of the face.
+ *
+ * This concept is satisfied only if static number of wedge texcoords is the
+ * same of the static number of vertices.
+ */
+template<typename T>
+concept HasRightNumberOfWedgeTexCoords =
+    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::WEDGE_TEX_COORD_NUMBER;
+
+/**
+ * @private
+ * @brief SanityCheckWedgeTexCoords concept
+ *
+ * This concept is designed to be used with Face components, where the number of
+ * wedge texcoords must be consistent w.r.t. the number of vertices of the face.
+ *
+ * It is satisfied if:
+ * - the component does *not* have wedge texcoords;
+ * - in case it has wedge texcoords, they have the same number of vertices of
+ * the face.
+ */
+template<typename T>
+concept SanityCheckWedgeTexCoords =
+    !HasWedgeTexCoords<T> || HasRightNumberOfWedgeTexCoords<T>;
+
+/* importFrom function */
+
+template<typename Scalar, int N, typename ParentElemType, bool OPT>
+template<typename Element>
+void WedgeTexCoords<Scalar, N, ParentElemType, OPT>::importFrom(
+    const Element& e,
+    bool)
+{
+    if constexpr (HasWedgeTexCoords<Element>) {
+        if (isWedgeTexCoordsAvailableOn(e)) {
+            if constexpr (N > 0) {
+                // same static size
+                if constexpr (N == Element::WEDGE_TEX_COORD_NUMBER) {
+                    importWedgeTexCoordsFrom(e);
+                }
+                // from dynamic to static, but dynamic size == static size
+                else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0) {
+                    if (e.vertexNumber() == N) {
+                        importWedgeTexCoordsFrom(e);
+                    }
+                }
+                else {
+                    // do not import in this case: cannot import from
+                    // dynamic size != static size
+                }
+            }
+            else {
+                // from static/dynamic to dynamic size: need to resize
+                // first, then import
+                resize(e.vertexNumber());
+                importWedgeTexCoordsFrom(e);
+            }
+        }
+    }
+}
 
 /* Detector function to check if a class has WedgeTexCoords available */
 

@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_MESH_SORT_H
 #define VCL_ALGORITHMS_MESH_SORT_H
 
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 
 #include <algorithm>

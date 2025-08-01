@@ -23,8 +23,7 @@
 #ifndef VCL_SPACE_CORE_MATRIX_MATRIX_H
 #define VCL_SPACE_CORE_MATRIX_MATRIX_H
 
-#include <vclib/concepts.h>
-#include <vclib/serialization.h>
+#include <vclib/base.h>
 
 #include <Eigen/Core>
 
@@ -70,6 +69,8 @@ public:
     }
 };
 
+/* Specialization Aliases */
+
 template<typename Scalar>
 using Matrix33 = Matrix<Scalar, 3, 3>;
 
@@ -83,6 +84,28 @@ using Matrix44 = Matrix<Scalar, 4, 4>;
 using Matrix44i = Matrix44<int>;
 using Matrix44f = Matrix44<float>;
 using Matrix44d = Matrix44<double>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing an Eigen Matrix.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from an Eigen matrix class having any scalar type and any number of rows and
+ * columns.
+ *
+ * @tparam T: The type to be tested for conformity to the EigenMatrixConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept EigenMatrixConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Eigen::Matrix<
+        typename RemoveRef<T>::Scalar,
+        RemoveRef<T>::RowsAtCompileTime,
+        RemoveRef<T>::ColsAtCompileTime,
+        RemoveRef<T>::Options>>;
 
 } // namespace vcl
 

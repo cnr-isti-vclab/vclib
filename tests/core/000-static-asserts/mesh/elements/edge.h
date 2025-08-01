@@ -31,6 +31,7 @@ void edgeStaticAsserts()
 
     using EMEdge  = edgemesh::Edge<float, false>;
     using EMEdgeI = edgemesh::Edge<float, true>;
+    using TMFace  = trimesh::Face<float, false>;
 
     static_assert(
         EdgeConcept<EMEdge>, "EMEdge does not satisfy the EdgeConcept");
@@ -57,6 +58,18 @@ void edgeStaticAsserts()
         "const EMEdgeI& does not satisfy the EdgeConcept");
     static_assert(
         EdgeConcept<EMEdgeI&&>, "EMEdgeI&& does not satisfy the EdgeConcept");
+
+    static_assert(!EdgeConcept<TMFace>, "TMFace does satisfy the EdgeConcept");
+    static_assert(
+        !EdgeConcept<const TMFace>,
+        "const TMFace does satisfy the EdgeConcept");
+    static_assert(
+        !EdgeConcept<TMFace&>, "TMFace& does satisfy the EdgeConcept");
+    static_assert(
+        !EdgeConcept<const TMFace&>,
+        "const TMFace& does satisfy the EdgeConcept");
+    static_assert(
+        !EdgeConcept<TMFace&&>, "TMFace&& does satisfy the EdgeConcept");
 }
 
 #endif // ELEM_EDGE_H

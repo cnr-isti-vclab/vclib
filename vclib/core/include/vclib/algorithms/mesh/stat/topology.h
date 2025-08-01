@@ -23,7 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_STAT_TOPOLOGY_H
 #define VCL_ALGORITHMS_MESH_STAT_TOPOLOGY_H
 
-#include <vclib/concepts.h>
+#include "../sort.h"
+
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
 
@@ -178,20 +179,18 @@ inline std::vector<std::pair<uint, uint>>          dummyVectorOfPairs;
  *
  * @ingroup mesh_stat
  */
-uint countPerFaceVertexReferences(const MeshConcept auto& mesh)
+uint countPerFaceVertexReferences(const FaceMeshConcept auto& mesh)
 {
     using MeshType = decltype(mesh);
 
     uint nRefs = 0;
 
-    if constexpr (FaceMeshConcept<MeshType>) {
-        if constexpr (TriangleMeshConcept<MeshType>) {
-            return mesh.faceNumber() * 3;
-        }
-        else {
-            for (const auto& f : mesh.faces()) {
-                nRefs += f.vertexNumber();
-            }
+    if constexpr (TriangleMeshConcept<MeshType>) {
+        return mesh.faceNumber() * 3;
+    }
+    else {
+        for (const auto& f : mesh.faces()) {
+            nRefs += f.vertexNumber();
         }
     }
 
@@ -209,7 +208,7 @@ uint countPerFaceVertexReferences(const MeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint largestFaceSize(const MeshConcept auto& mesh)
+uint largestFaceSize(const FaceMeshConcept auto& mesh)
 {
     using MeshType = decltype(mesh);
 
@@ -218,7 +217,7 @@ uint largestFaceSize(const MeshConcept auto& mesh)
     if constexpr (TriangleMeshConcept<MeshType>) {
         return 3;
     }
-    else if constexpr (FaceMeshConcept<MeshType>) {
+    else {
         for (const auto& f : mesh.faces()) {
             maxFaceSize = std::max(maxFaceSize, f.vertexNumber());
         }
@@ -237,16 +236,14 @@ uint largestFaceSize(const MeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint countTriangulatedTriangles(const MeshConcept auto& mesh)
+uint countTriangulatedTriangles(const FaceMeshConcept auto& mesh)
 {
     using MeshType = decltype(mesh);
 
     uint nTris = 0;
 
-    if constexpr (FaceMeshConcept<MeshType>) {
-        for (const auto& f : mesh.faces()) {
-            nTris += f.vertexNumber() - 2;
-        }
+    for (const auto& f : mesh.faces()) {
+        nTris += f.vertexNumber() - 2;
     }
 
     return nTris;
@@ -399,7 +396,8 @@ uint countVerticesToDuplicateByWedgeTexCoords(
  * @param[in] mesh: The input mesh for which to calculate the referenced
  * vertices.
  * @param[out] nUnref: The number of non-referenced vertices.
- * @param[in] onlyFaces: If true, only the faces of the mesh are considered.
+ * @param[in] onlyFaces: If true, only the faces of the mesh are considered,
+ * and any other element will not be checked for vertex references.
  * @return a Container of values interpreted as booleans telling, for each
  * vertex of the mesh, if it is referenced.
  *
@@ -447,17 +445,19 @@ Container referencedVertices(
  *
  * @param[in] m: The input mesh for which to calculate the number of
  * unreferenced vertices.
+ * @param[in] onlyFaces: If true, only the faces of the mesh are considered,
+ * and any other element will not be checked for vertex references.
  * @return The number of non-deleted unreferenced vertices in the mesh.
  *
  * @ingroup mesh_stat
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint numberUnreferencedVertices(const MeshType& m)
+uint numberUnreferencedVertices(const MeshType& m, bool onlyFaces = false)
 {
     uint nV = 0;
     // store the number of unref vertices into nV
-    referencedVertices<std::vector<bool>>(m, nV);
+    referencedVertices<std::vector<bool>>(m, nV, onlyFaces);
 
     return nV;
 }

@@ -23,10 +23,96 @@
 #ifndef VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 
-#include <vclib/concepts.h>
-#include <vclib/exceptions.h>
+#include "face_requirements.h"
+
+#include <vclib/mesh/mesh.h>
+#include <vclib/mesh/mesh_components.h>
+
+/**
+ * @defgroup mesh_concepts Mesh Concepts
+ * @ingroup mesh_requirements
+ *
+ * @brief List of concepts for types related to the Mesh data structures of the
+ * library. They allow to discriminate between different Mesh types, their
+ * elements and the element components.
+ */
 
 namespace vcl {
+
+/************
+ * concepts *
+ ************/
+
+/**
+ * @brief Concept that is evaluated true if a Mesh has the BoundingBox
+ * component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasBoundingBox =
+    MeshConcept<MeshType> && mesh::HasBoundingBox<MeshType>;
+
+/**
+ * @brief Concept that is evaluated true if a Mesh has the Color component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasColor = MeshConcept<MeshType> && mesh::HasColor<MeshType>;
+
+/**
+ * @brief Concept that is evaluated true if a Mesh has the CustomComponents
+ * component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasCustomComponents =
+    MeshConcept<MeshType> && mesh::HasCustomComponents<MeshType>;
+
+/**
+ * @brief Concept that is evaluated true if a Mesh has the Mark component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasMark = MeshConcept<MeshType> && mesh::HasMark<MeshType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the Name component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasName = MeshConcept<MeshType> && mesh::HasName<MeshType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the TextureImages component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasTextureImages =
+    MeshConcept<MeshType> && mesh::HasTextureImages<MeshType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the TexturePaths component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasTexturePaths =
+    MeshConcept<MeshType> && mesh::HasTexturePaths<MeshType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the TransformMatrix component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasTransformMatrix =
+    MeshConcept<MeshType> && mesh::HasTransformMatrix<MeshType>;
 
 /********************
  * is/has functions *

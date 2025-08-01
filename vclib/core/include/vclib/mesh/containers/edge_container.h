@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
 
-#include "element_container.h"
+#include "base/element_container.h"
 
-#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/edge.h>
 #include <vclib/mesh/elements/edge_components.h>
 
-namespace vcl::mesh {
+namespace vcl {
+namespace mesh {
 
 /**
  * @brief The EdgeContainer class represents a container of Edge
@@ -1006,6 +1006,63 @@ public:
     }
 };
 
-} // namespace vcl::mesh
+/* Concepts */
+
+/**
+ * @brief A concept that checks whether a class has (inherits from) an
+ * EdgeContainer class.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a EdgeContainer class having any Edge element type.
+ *
+ * @tparam T: The type to be tested for conformity to the HasEdgeContainer.
+ *
+ * @ingroup containers
+ * @ingroup containers_concepts
+ */
+template<typename T>
+concept HasEdgeContainer = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    EdgeContainer<typename RemoveRef<T>::EdgeType>>;
+
+} // namespace mesh
+
+/**
+ * @brief HasEdges concepts is satisfied when at least one of its
+ * template types is (or inherits from) a @ref vcl::mesh::EdgeContainer. It can
+ * be used both to check if a Mesh has edges, or if in a list of types there is
+ * a EdgeContainer.
+ *
+ * In the following example, a MyMesh type can be instantiated only if one of
+ * its template Args is a EdgeContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasEdges<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
+ * MyMesh<vcl::EdgeContainer<MyEdge>> m2; // ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::EdgeContainer<MyEdge>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) EdgeContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasEdges<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ *
+ * @note This concept does not check if a Mesh is a valid EdgeMesh.
+ * To do that, use the @ref vcl::EdgeMeshConcept.
+ *
+ * @ingroup containers_concepts
+ */
+template<typename... Args>
+concept HasEdges = (mesh::HasEdgeContainer<Args> || ...);
+
+} // namespace vcl
 
 #endif // VCL_MESH_CONTAINERS_EDGE_CONTAINER_H

@@ -25,9 +25,10 @@
 
 #include "file_info.h"
 
-#include <vclib/concepts.h>
-#include <vclib/miscellaneous.h>
-#include <vclib/serialization.h>
+#include <vclib/io/exceptions.h>
+
+#include <vclib/base.h>
+#include <vclib/mesh.h>
 
 namespace vcl {
 

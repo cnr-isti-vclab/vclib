@@ -23,8 +23,10 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 #define VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 
-#include <vclib/concepts.h>
-#include <vclib/types.h>
+#include <vclib/mesh/components/color.h>
+#include <vclib/mesh/components/wedge_colors.h>
+
+#include <vclib/base.h>
 
 #include <ranges>
 

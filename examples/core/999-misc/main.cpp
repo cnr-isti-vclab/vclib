@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/concepts.h>
 #include <vclib/space.h>
 
 #include <iostream>

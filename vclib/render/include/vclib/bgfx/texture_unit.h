@@ -24,7 +24,7 @@
 #define VCL_BGFX_TEXTURE_UNIT_H
 
 #include <vclib/space/core/point.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <bgfx/bgfx.h>
 

@@ -27,7 +27,6 @@
 
 #include <vclib/algorithms/mesh/stat/topology.h>
 
-#include <vclib/concepts.h>
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 

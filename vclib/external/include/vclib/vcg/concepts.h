@@ -23,7 +23,7 @@
 #ifndef VCL_VCG_CONCEPTS_H
 #define VCL_VCG_CONCEPTS_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <vcg/space/point2.h>
 #include <vcg/space/point3.h>

@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
-#include "bases/reference_container_component.h"
+#include "base/predicates.h"
+#include "base/reference_container_component.h"
 
-#include <vclib/concepts.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -657,36 +657,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool importRefs = true)
-    {
-        if (importRefs) {
-            if constexpr (HasVertexReferences<Element>) {
-                if constexpr (N > 0) {
-                    // same size non-polygonal faces
-                    if constexpr (N == Element::VERTEX_NUMBER) {
-                        importIndicesFrom(e);
-                    }
-                    // from polygonal to fixed size, but the polygon size == the
-                    // fixed face size
-                    else if constexpr (Element::VERTEX_NUMBER < 0) {
-                        if (e.vertexNumber() == N) {
-                            importIndicesFrom(e);
-                        }
-                    }
-                    else {
-                        // do not import in this case: cannot import from a face
-                        // of different size
-                    }
-                }
-                else {
-                    // from fixed to polygonal size: need to resize first, then
-                    // import
-                    resizeVertices(e.vertexNumber());
-                    importIndicesFrom(e);
-                }
-            }
-        }
-    }
+    void importFrom(const Element& e, bool importRefs = true);
 
     void serialize(std::ostream& os) const
     {
@@ -723,6 +694,64 @@ private:
         }
     }
 };
+
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the VertexReferences component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::VertexReferences, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasVertexReferences.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasVertexReferences =
+    BTITB::IsDerivedFromSpecializationOfV<T, VertexReferences>;
+
+/* importFrom function */
+
+template<
+    bool STORE_INDICES,
+    typename Vertex,
+    int N,
+    typename ParentElemType,
+    bool VERT>
+template<typename Element>
+void VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>::
+    importFrom(const Element& e, bool importRefs)
+{
+    if (importRefs) {
+        if constexpr (HasVertexReferences<Element>) {
+            if constexpr (N > 0) {
+                // same size non-polygonal faces
+                if constexpr (N == Element::VERTEX_NUMBER) {
+                    importIndicesFrom(e);
+                }
+                // from polygonal to fixed size, but the polygon size == the
+                // fixed face size
+                else if constexpr (Element::VERTEX_NUMBER < 0) {
+                    if (e.vertexNumber() == N) {
+                        importIndicesFrom(e);
+                    }
+                }
+                else {
+                    // do not import in this case: cannot import from a face
+                    // of different size
+                }
+            }
+            else {
+                // from fixed to polygonal size: need to resize first, then
+                // import
+                resizeVertices(e.vertexNumber());
+                importIndicesFrom(e);
+            }
+        }
+    }
+}
 
 } // namespace vcl::comp
 

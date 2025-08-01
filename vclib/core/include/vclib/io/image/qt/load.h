@@ -25,8 +25,6 @@
 
 #include <vclib/io/file_info.h>
 
-#include <vclib/miscellaneous.h>
-
 #include <QImage>
 
 #include <memory>

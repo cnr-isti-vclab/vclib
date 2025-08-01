@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
-#include "bases/reference_container_component.h"
+#include "base/predicates.h"
+#include "base/reference_container_component.h"
 
-#include <vclib/concepts.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 
@@ -595,19 +595,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool importRefs = true)
-    {
-        if (importRefs) {
-            if constexpr (HasAdjacentVertices<Element>) {
-                if (isAdjacentVerticesAvailableOn(e)) {
-                    // from static/dynamic to dynamic size: need to resize
-                    // first, then import
-                    resizeAdjVertices(e.adjVerticesNumber());
-                    importIndicesFrom(e);
-                }
-            }
-        }
-    }
+    void importFrom(const Element& e, bool importRefs = true);
 
     void serialize(std::ostream& os) const
     {
@@ -642,6 +630,69 @@ private:
         }
     }
 };
+
+/* concepts */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentVertices component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::AdjacentVertices, with any template arguments.
+ *
+ * Note that this concept does not discriminate between the Horizontal
+ * AdjacentVertices component and the vertical OptionalAdjacentVertices
+ * component, therefore it does not guarantee that a template Element type that
+ * satisfies this concept provides AdjacentVertices component at runtime (it is
+ * guaranteed only that the proper member functions are available at compile
+ * time).
+ *
+ * @tparam T: The type to be tested for conformity to the HasAdjacentVertices.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasAdjacentVertices =
+    BTTBB::IsDerivedFromSpecializationOfV<T, AdjacentVertices>;
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Element) has
+ * the AdjacentVertices component (inherits from it), and that the component is
+ * optional.
+ *
+ * @tparam T: The type to be tested for conformity to the
+ * HasOptionalAdjacentVertices.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalAdjacentVertices =
+    HasAdjacentVertices<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::AdjacentVertices>;
+
+/* importFrom function */
+
+template<
+    bool STORE_INDICES,
+    typename Vertex,
+    typename ParentElemType,
+    bool VERT,
+    bool OPT>
+template<typename Element>
+void AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>::
+    importFrom(const Element& e, bool importRefs)
+{
+    if (importRefs) {
+        if constexpr (HasAdjacentVertices<Element>) {
+            if (isAdjacentVerticesAvailableOn(e)) {
+                // from static/dynamic to dynamic size: need to resize
+                // first, then import
+                resizeAdjVertices(e.adjVerticesNumber());
+                importIndicesFrom(e);
+            }
+        }
+    }
+}
 
 /* Detector function to check if a class has AdjacentVertices available */
 

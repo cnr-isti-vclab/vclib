@@ -25,8 +25,6 @@
 
 #include "distance.h"
 
-#include <vclib/concepts.h>
-
 namespace vcl {
 
 namespace detail {

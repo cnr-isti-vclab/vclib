@@ -26,9 +26,10 @@
 #include "file_info.h"
 #include "file_type.h"
 
-#include <vclib/concepts.h>
-#include <vclib/serialization.h>
-#include <vclib/types.h>
+#include <vclib/io/exceptions.h>
+
+#include <vclib/base.h>
+#include <vclib/mesh.h>
 
 #include <filesystem>
 #include <fstream>

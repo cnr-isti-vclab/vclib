@@ -23,8 +23,9 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
 #define VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
 
-#include <vclib/concepts.h>
-#include <vclib/types.h>
+#include <vclib/mesh/components/adjacent_vertices.h>
+
+#include <vclib/base.h>
 
 namespace vcl::views {
 

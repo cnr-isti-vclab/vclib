@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 #define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
-#include "bases/component.h"
+#include "base/component.h"
+#include "base/predicates.h"
 
-#include <vclib/concepts.h>
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
@@ -123,17 +123,42 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e, bool = true)
-    {
-        if constexpr (HasTransformMatrix<Element>) {
-            transformMatrix() = e.transformMatrix().template cast<Scalar>();
-        }
-    }
+    void importFrom(const Element& e, bool = true);
 
     void serialize(std::ostream& os) const { transformMatrix().serialize(os); }
 
     void deserialize(std::istream& is) { transformMatrix().deserialize(is); }
 };
+
+/* concept */
+
+/**
+ * @brief A concept that checks whether a type T (that should be a Mesh)
+ * has the TransformMatrix component (inherits from it).
+ *
+ * The concept is satisfied if T is a class that inherits from
+ * vcl::comp::TransformMatrix, with any template arguments.
+ *
+ * @tparam T: The type to be tested for conformity to the HasTransformMatrix.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasTransformMatrix =
+    TTB::IsDerivedFromSpecializationOfV<T, TransformMatrix>;
+
+/* importFrom function */
+
+template<typename Scalar, typename ParentElemType, bool OPT>
+template<typename Element>
+void TransformMatrix<Scalar, ParentElemType, OPT>::importFrom(
+    const Element& e,
+    bool)
+{
+    if constexpr (HasTransformMatrix<Element>) {
+        transformMatrix() = e.transformMatrix().template cast<Scalar>();
+    }
+}
 
 /* Detector function to check if a class has TransformMatrix available */
 

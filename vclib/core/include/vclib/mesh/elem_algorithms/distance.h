@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_DISTANCE_H
 #define VCL_MESH_ELEM_ALGORITHMS_DISTANCE_H
 
+#include <vclib/mesh/elements.h>
+
 #include <vclib/algorithms/core.h>
-#include <vclib/concepts.h>
-#include <vclib/math.h>
 #include <vclib/space/core.h>
 
 namespace vcl {

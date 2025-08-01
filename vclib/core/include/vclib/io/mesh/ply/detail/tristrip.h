@@ -27,8 +27,6 @@
 
 #include <vclib/io/read.h>
 
-#include <vclib/miscellaneous.h>
-
 #include <istream>
 
 namespace vcl::detail {

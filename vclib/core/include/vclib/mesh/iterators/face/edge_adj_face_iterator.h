@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_ITERATORS_FACE_EDGE_ADJ_FACE_ITERATOR_H
 #define VCL_MESH_ITERATORS_FACE_EDGE_ADJ_FACE_ITERATOR_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <iterator>
 
