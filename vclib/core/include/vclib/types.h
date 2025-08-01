@@ -32,6 +32,7 @@
 #include "types/pointers.h"
 #include "types/random.h"
 #include "types/templated_type_wrapper.h"
+#include "types/timer.h"
 #include "types/type_wrapper.h"
 #include "types/variadic_templates.h"
 #include "types/views.h"

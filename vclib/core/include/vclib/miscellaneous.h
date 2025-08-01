@@ -33,7 +33,6 @@
 #include "misc/parallel.h"
 #include "misc/shuffle.h"
 #include "misc/string.h"
-#include "misc/timer.h"
 #include "misc/tokenizer.h"
 
 /**
