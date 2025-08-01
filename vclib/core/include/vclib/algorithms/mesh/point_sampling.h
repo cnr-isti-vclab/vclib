@@ -26,7 +26,6 @@
 #include <vclib/algorithms/mesh/shuffle.h>
 #include <vclib/algorithms/mesh/stat.h>
 
-#include <vclib/math.h>
 #include <vclib/mesh.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>

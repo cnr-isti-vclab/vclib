@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MATH_PERLIN_NOISE_H
-#define VCL_MATH_PERLIN_NOISE_H
+#ifndef VCL_ALGORITHMS_CORE_PERLIN_NOISE_H
+#define VCL_ALGORITHMS_CORE_PERLIN_NOISE_H
 
 #include <cmath>
 
@@ -107,7 +107,7 @@ inline double perlinNoiseFade(double t)
  * @param z
  * @return
  *
- * @ingroup math
+ * @ingroup space_core
  */
 inline double perlinNoise(double x, double y, double z)
 {
@@ -160,4 +160,4 @@ inline double perlinNoise(double x, double y, double z)
 
 } // namespace vcl
 
-#endif // VCL_MATH_PERLIN_NOISE_H
+#endif // VCL_ALGORITHMS_CORE_PERLIN_NOISE_H

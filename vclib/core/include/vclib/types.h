@@ -27,6 +27,8 @@
 #include "types/const_correctness.h"
 #include "types/filter_types.h"
 #include "types/inheritance.h"
+#include "types/math.h"
+#include "types/min_max.h"
 #include "types/pointers.h"
 #include "types/templated_type_wrapper.h"
 #include "types/type_wrapper.h"

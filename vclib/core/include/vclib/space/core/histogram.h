@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MATH_HISTOGRAM_H
-#define VCL_MATH_HISTOGRAM_H
+#ifndef VCL_SPACE_CORE_HISTOGRAM_H
+#define VCL_SPACE_CORE_HISTOGRAM_H
 
 #include <vclib/types.h>
 
@@ -39,7 +39,7 @@ namespace vcl {
  *
  * @tparam ScalarType
  *
- * @ingroup math
+ * @ingroup space_core
  */
 template<typename ScalarType>
 class Histogram
@@ -317,4 +317,4 @@ using Histogramd = Histogram<double>;
 
 } // namespace vcl
 
-#endif // VCL_MATH_HISTOGRAM_H
+#endif // VCL_SPACE_CORE_HISTOGRAM_H

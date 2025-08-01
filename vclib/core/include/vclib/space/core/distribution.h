@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MATH_DISTRIBUTION_H
-#define VCL_MATH_DISTRIBUTION_H
+#ifndef VCL_SPACE_CORE_DISTRIBUTION_H
+#define VCL_SPACE_CORE_DISTRIBUTION_H
 
 #include <vclib/types.h>
 
@@ -36,12 +36,12 @@ namespace vcl {
  * compute some statistics like average, variance, standardDeviation, and
  * percentiles.
  *
- * @ingroup math
+ * @ingroup space_core
  */
 template<typename Scalar>
 class Distribution
 {
-    std::set<Scalar> mSet;
+    std::multiset<Scalar> mSet;
 
     Scalar mMin = std::numeric_limits<Scalar>::max();
     Scalar mMax = std::numeric_limits<Scalar>::lowest();
@@ -165,4 +165,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MATH_DISTRIBUTION_H
+#endif // VCL_SPACE_CORE_DISTRIBUTION_H
