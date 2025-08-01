@@ -28,7 +28,6 @@
 #include <vclib/io/file_info.h>
 #include <vclib/io/read.h>
 
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 
 #include <clocale>

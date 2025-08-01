@@ -31,7 +31,6 @@
 
 #include <vclib/io/mesh/settings.h>
 
-#include <vclib/miscellaneous.h>
 #include <vclib/space/complex.h>
 
 namespace vcl {

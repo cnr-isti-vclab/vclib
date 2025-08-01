@@ -25,7 +25,6 @@
 
 #include <vclib/exceptions.h>
 #include <vclib/mesh.h>
-#include <vclib/miscellaneous.h>
 
 namespace vcl {
 

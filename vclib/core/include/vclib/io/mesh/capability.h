@@ -33,7 +33,6 @@
 #endif
 
 #include <vclib/exceptions.h>
-#include <vclib/miscellaneous.h>
 
 namespace vcl {
 

@@ -36,7 +36,7 @@ namespace vcl {
  * This class satisfies the LoggerConcept, and just does nothing in all its
  * member functions.
  *
- * @ingroup miscellaneous
+ * @ingroup base
  */
 class NullLogger : public AbstractLogger
 {
@@ -118,7 +118,7 @@ public:
  * In this way, when the user does not give a logger argument, the default will
  * be an object of NullLogger.
  *
- * @ingroup miscellaneous
+ * @ingroup base
  */
 inline NullLogger nullLogger;
 

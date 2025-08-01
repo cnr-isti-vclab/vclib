@@ -34,7 +34,7 @@ namespace vcl {
  * @brief The AbstractLogger class is used as common ancestor class for all the
  * logger types in the library.
  *
- * @ingroup miscellaneous
+ * @ingroup base
  */
 class AbstractLogger
 {
@@ -253,7 +253,7 @@ public:
  * @note The NullLogger class does satisfy this concept, by providing all the
  * required member functions as no-op.
  *
- * @ingroup miscellaneous
+ * @ingroup base
  */
 template<typename T>
 concept LoggerConcept = std::derived_from<RemoveRef<T>, AbstractLogger>;

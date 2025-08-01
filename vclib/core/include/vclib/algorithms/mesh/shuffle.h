@@ -24,7 +24,6 @@
 #define VCL_ALGORITHMS_MESH_SHUFFLE_H
 
 #include <vclib/mesh.h>
-#include <vclib/miscellaneous.h>
 
 namespace vcl {
 
