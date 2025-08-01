@@ -23,6 +23,7 @@
 #ifndef VCL_BASE_H
 #define VCL_BASE_H
 
+#include "base/compactness.h"
 #include "base/comparators.h"
 #include "base/concepts.h"
 #include "base/const_correctness.h"

@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_COMPACTNESS_H
-#define VCL_MISC_COMPACTNESS_H
+#ifndef VCL_BASE_COMPACTNESS_H
+#define VCL_BASE_COMPACTNESS_H
 
-#include <vclib/base.h>
+#include <vclib/base/base.h>
 
 #include <vector>
 
@@ -70,4 +70,4 @@ void compactVector(
 
 } // namespace vcl
 
-#endif // VCL_MISC_COMPACTNESS_H
+#endif // VCL_BASE_COMPACTNESS_H

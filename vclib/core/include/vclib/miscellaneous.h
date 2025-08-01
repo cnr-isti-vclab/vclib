@@ -23,7 +23,6 @@
 #ifndef VCL_MISCELLANEOUS_H
 #define VCL_MISCELLANEOUS_H
 
-#include "misc/compactness.h"
 #include "misc/parallel.h"
 
 /**
