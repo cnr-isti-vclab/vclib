@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_ELEMENTS_BASE_BASE_H
 #define VCL_MESH_ELEMENTS_BASE_BASE_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <string>
 
@@ -48,7 +48,7 @@ namespace vcl {
  * }
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 struct ElemId
 {
@@ -64,7 +64,7 @@ struct ElemId
  * @brief The ELEMENT_ENUM_STRINGS array contains the string representation of
  * the elements that can compose a mesh.
  *
- * @ingroup types
+ * @ingroup base
  */
 constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
     "Vertex",
@@ -81,7 +81,7 @@ constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
  *
  * @tparam ELEM_ID: The ELEM_ID value associated to the string.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<uint ELEM_ID>
 struct ElementString
@@ -100,7 +100,7 @@ struct ElementString
  * @tparam ELEM_ID: an unsigned integer that identifies the element.
  * @return The string associated to the ELEM_ID value.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<uint ELEM_ID>
 constexpr const char* elementEnumCString()
@@ -119,7 +119,7 @@ constexpr const char* elementEnumCString()
  * @tparam ELEM_ID: an unsigned integer that identifies the element.
  * @return The string associated to the ELEM_ID value.
  *
- * @ingroup types
+ * @ingroup base
  */
 // Todo: make this function constexpr when upgrading to C++23.
 template<uint ELEM_ID>

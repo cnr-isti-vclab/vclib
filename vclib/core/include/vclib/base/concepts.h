@@ -20,64 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_CONCEPTS_TYPES_H
-#define VCL_TYPES_CONCEPTS_TYPES_H
+#ifndef VCL_BASE_CONCEPTS_H
+#define VCL_BASE_CONCEPTS_H
 
-#include <concepts>
-
-namespace vcl {
-
-/**
- * @brief Concept for types that can be used as indices.
- *
- * This concept is evaluated true if T is an integral type or an enum type.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept IntegralOrEnum = std::integral<T> || std::is_enum_v<T>;
+#include "concepts/const_correctness.h"
+#include "concepts/iterators.h"
+#include "concepts/pointers.h"
+#include "concepts/polymorphism.h"
+#include "concepts/range.h"
+#include "concepts/types.h"
 
 /**
- * @brief Concept for types that can be used as indices, excluding bool.
+ * @defgroup util_concepts Utility Concepts
  *
- * @ingroup util_concepts
+ * @brief List of utility concepts used in the library, that allows to check and
+ * constrain iterators, pointers, const correctness management, ranges, etc.
  */
-template<typename T>
-concept NonBoolIntegralOrEnum = IntegralOrEnum<T> && !std::same_as<T, bool>;
 
-/**
- * @brief Concept that is evaluated true if T is a class.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept IsClass = std::is_class_v<T>;
-
-/**
- * @brief Concept that is evaluated true if T is not a class.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept IsNotClass = !IsClass<T>;
-
-/**
- * @brief Concept that is evaluated true if the templated type C is instantiable
- * with type T, i.e., C<T> is a valid type.
- *
- * Example of usage:
- * @code{.cpp}
- * if constexpr(IsInstantiable<C, T>) {
- *     C<T> instance;
- *     // do something...
- * }
- * @endcode
- *
- * @ingroup util_concepts
- */
-template<template<typename> typename C, typename T>
-concept IsInstantiable = requires { typename C<T>; };
-
-} // namespace vcl
-
-#endif // VCL_TYPES_CONCEPTS_TYPES_H
+#endif // VCL_BASE_CONCEPTS_H

@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_PARALLEL_H
 #define VCL_MISC_PARALLEL_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 // tbb and qt conflicts: if both are linked, we need to first undef Qt's
 // emit - see: https://github.com/oneapi-src/oneTBB/issues/547

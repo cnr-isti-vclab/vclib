@@ -25,7 +25,7 @@
 
 #include <vclib/miscellaneous.h>
 #include <vclib/serialization.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <array>
 #include <cassert>

@@ -25,7 +25,7 @@
 
 #include "abstract_logger.h"
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <cassert>
 #include <cmath>

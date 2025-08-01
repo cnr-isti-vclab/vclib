@@ -20,34 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_BASE_H
+#define VCL_BASE_H
 
-#include "types/concepts.h"
-#include "types/const_correctness.h"
-#include "types/filter_types.h"
-#include "types/inheritance.h"
-#include "types/math.h"
-#include "types/min_max.h"
-#include "types/pointers.h"
-#include "types/random.h"
-#include "types/templated_type_wrapper.h"
-#include "types/timer.h"
-#include "types/type_wrapper.h"
-#include "types/variadic_templates.h"
-#include "types/views.h"
+#include "base/concepts.h"
+#include "base/const_correctness.h"
+#include "base/filter_types.h"
+#include "base/inheritance.h"
+#include "base/math.h"
+#include "base/min_max.h"
+#include "base/pointers.h"
+#include "base/random.h"
+#include "base/templated_type_wrapper.h"
+#include "base/timer.h"
+#include "base/type_wrapper.h"
+#include "base/variadic_templates.h"
+#include "base/views.h"
 
 /**
- * @defgroup types Types
+ * @defgroup base Base
  *
- * @brief The Types module defines all the utility definitions, types, classes
+ * @brief The Base module defines all the utility definitions, types, classes
  * and type traits that are common in the library.
  *
  * This module does not depend on any other module of the library, and it is
- * used by all the other modules to define the types that are used in the
- * library.
+ * used by all the other modules.
  *
- * You can access all the types of VCLib by including `#include <vclib/types.h>`
+ * You can access to the module by including `#include <vclib/base.h>`
  */
 
-#endif // VCL_TYPES_H
+#endif // VCL_BASE_H

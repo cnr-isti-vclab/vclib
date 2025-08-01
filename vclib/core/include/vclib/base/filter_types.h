@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_FILTER_TYPES_H
-#define VCL_TYPES_FILTER_TYPES_H
+#ifndef VCL_BASE_FILTER_TYPES_H
+#define VCL_BASE_FILTER_TYPES_H
 
 #include "type_wrapper.h"
 
@@ -63,7 +63,7 @@ struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
  * ResTypes will be a TypeWrapper<int, char> (int and char are the only integral
  * types).
  *
- * @ingroup types
+ * @ingroup base
  */
 template<template<typename> typename, typename...>
 struct FilterTypesByCondition
@@ -74,7 +74,7 @@ struct FilterTypesByCondition
 /**
  * @copydoc FilterTypesByCondition
  *
- * @ingroup types
+ * @ingroup base
  */
 template<template<typename> typename Pred, typename Head, typename... Tail>
 struct FilterTypesByCondition<Pred, Head, Tail...>
@@ -90,7 +90,7 @@ struct FilterTypesByCondition<Pred, Head, Tail...>
 /**
  * @copydoc FilterTypesByCondition
  *
- * @ingroup types
+ * @ingroup base
  */
 // TypeWrapper specialization
 template<template<typename> typename Pred, typename... Tail>
@@ -119,7 +119,7 @@ struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
  * static_assert(res2 != true, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<template<typename> typename Pred, typename... Args>
 struct OneTypeAtLeastSatisfiesCondition
@@ -134,7 +134,7 @@ public:
 /**
  * @copydoc OneTypeAtLeastSatisfiesCondition
  *
- * @ingroup types
+ * @ingroup base
  */
 // TypeWrapper specialization
 template<template<typename> typename Pred, typename... Args>
@@ -155,7 +155,7 @@ struct OneTypeAtLeastSatisfiesCondition<Pred, TypeWrapper<Args...>>
  * static_assert(std::is_same<ResType, char>::value, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<template<typename> typename Pred, typename... Args>
 struct GetTypeByCondition
@@ -170,7 +170,7 @@ public:
 /**
  * @copydoc GetTypeByCondition
  *
- * @ingroup types
+ * @ingroup base
  */
 // TypeWrapper specialization
 template<template<typename> typename Pred, typename... Args>
@@ -181,4 +181,4 @@ struct GetTypeByCondition<Pred, TypeWrapper<Args...>>
 
 } // namespace vcl
 
-#endif // VCL_TYPES_FILTER_TYPES_H
+#endif // VCL_BASE_FILTER_TYPES_H

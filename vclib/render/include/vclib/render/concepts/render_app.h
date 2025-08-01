@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_CONCEPTS_RENDER_APP_H
 #define VCL_RENDER_CONCEPTS_RENDER_APP_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl {
 

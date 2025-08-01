@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_DETAIL_CUSTOM_COMPONENTS_DATA_H
 #define VCL_MESH_COMPONENTS_DETAIL_CUSTOM_COMPONENTS_DATA_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <any>
 #include <string>

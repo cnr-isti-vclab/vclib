@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
 #define VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <ranges>
 

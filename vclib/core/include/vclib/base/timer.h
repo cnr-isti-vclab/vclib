@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_TIMER_H
-#define VCL_TYPES_TIMER_H
+#ifndef VCL_BASE_TIMER_H
+#define VCL_BASE_TIMER_H
 
 #include <chrono>
 #include <iostream>
@@ -175,4 +175,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_TYPES_TIMER_H
+#endif // VCL_BASE_TIMER_H

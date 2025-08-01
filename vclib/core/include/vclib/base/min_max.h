@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_MIN_MAX_H
-#define VCL_TYPES_MIN_MAX_H
+#ifndef VCL_BASE_MIN_MAX_H
+#define VCL_BASE_MIN_MAX_H
 
 #include <algorithm>
 
@@ -34,7 +34,7 @@ namespace vcl {
  * @param[in] p2: The second parameter.
  * @return The minimum between the two parameters.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 constexpr auto min(const T& p1, const T& p2)
@@ -59,7 +59,7 @@ constexpr auto min(const T& p1, const T& p2)
  * @param[in] tail: The rest of the parameters.
  * @return The minimum between the parameters.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename Head, typename... Tail>
 constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail)
@@ -75,7 +75,7 @@ constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail)
  * @param[in] p2: The second parameter.
  * @return The maximum between the two parameters.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 constexpr auto max(const T& p1, const T& p2)
@@ -100,7 +100,7 @@ constexpr auto max(const T& p1, const T& p2)
  * @param[in] tail: The rest of the parameters.
  * @return The maximum between the parameters.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename Head, typename... Tail>
 constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail)
@@ -111,4 +111,4 @@ constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail)
 
 } // namespace vcl
 
-#endif // VCL_TYPES_MIN_MAX_H
+#endif // VCL_BASE_MIN_MAX_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_VARIADIC_TEMPLATES_H
-#define VCL_TYPES_VARIADIC_TEMPLATES_H
+#ifndef VCL_BASE_VARIADIC_TEMPLATES_H
+#define VCL_BASE_VARIADIC_TEMPLATES_H
 
 #include "base.h"
 
@@ -40,7 +40,7 @@ namespace vcl {
  * static_assert(std::is_same<ResType, int>::value, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename... Args>
 struct FirstType
@@ -57,7 +57,7 @@ struct FirstType
  * static_assert(std::is_same<ResType, int>::value, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename... Args>
 using FirstTypeT = typename FirstType<Args...>::type;
@@ -66,7 +66,7 @@ using FirstTypeT = typename FirstType<Args...>::type;
  * @brief Function that returns the index of a Type T in a pack of types
  * (variadic templates). The pack is composed of U and Us...
  *
- * @ingroup types
+ * @ingroup base
  */
 // https://stackoverflow.com/a/71477756/5851101
 template<typename T, typename U, typename... Us>
@@ -98,7 +98,7 @@ constexpr uint indexInTypePack()
  *
  * @param[in] ti: the type_index of the type to search.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename U, typename... Us>
 uint indexInTypePack(std::type_index ti)
@@ -131,7 +131,7 @@ uint indexInTypePack(std::type_index ti)
  * static_assert(i == 0, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T, typename... Us>
 struct IndexInTypes
@@ -149,7 +149,7 @@ struct IndexInTypes
  * static_assert(std::is_same<ResType, float>::value, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<uint I, typename... T>
 struct TypeAt
@@ -167,7 +167,7 @@ struct TypeAt
  * static_assert(std::is_same<ResType, float>::value, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<uint I, typename... T>
 using TypeAtT = typename TypeAt<I, T...>::type;
@@ -182,7 +182,7 @@ using TypeAtT = typename TypeAt<I, T...>::type;
  * static_assert(i == 3, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename... Args>
 struct NumberOfTypes
@@ -205,7 +205,7 @@ struct NumberOfTypes
  * vcl::ForEachType<int, float, double>::apply(f);
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename... T>
 struct ForEachType
@@ -226,7 +226,7 @@ struct ForEachType
  * static_assert(!IsSpecializationOf<int, std::vector>::value, "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T, template<typename...> class Template>
 struct IsSpecializationOf : std::false_type
@@ -241,7 +241,7 @@ struct IsSpecializationOf<Template<Args...>, Template> : std::true_type
 /**
  * @brief Alias for IsSpecializationOf trait.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T, template<typename...> class Template>
 constexpr bool IsSpecializationOfV = IsSpecializationOf<T, Template>::value;
@@ -260,7 +260,7 @@ constexpr bool IsSpecializationOfV = IsSpecializationOf<T, Template>::value;
  * "");
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T, template<typename...> class Template>
 struct IsDerivedFromSpecializationOf
@@ -279,7 +279,7 @@ public:
 /**
  * @brief Alias for IsDerivedFromSpecializationOf trait.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T, template<typename...> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
@@ -287,4 +287,4 @@ constexpr bool IsDerivedFromSpecializationOfV =
 
 } // namespace vcl
 
-#endif // VCL_TYPES_VARIADIC_TEMPLATES_H
+#endif // VCL_BASE_VARIADIC_TEMPLATES_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_BASE_H
-#define VCL_TYPES_BASE_H
+#ifndef VCL_BASE_BASE_H
+#define VCL_BASE_BASE_H
 
 #include <cassert>
 #include <cstdint>
@@ -43,7 +43,7 @@ using ushort = uint16_t;
  * represented in an unsigned int, but with the possibility to flag whether the
  * value is not initialized or is set to null.
  *
- * @ingroup types
+ * @ingroup base
  */
 constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
 
@@ -53,7 +53,7 @@ constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
  * It is used mostly for I/O operations, but can be useful in any context where
  * a type must be described in a variable at runtime.
  *
- * @ingroup types
+ * @ingroup base
  */
 enum class PrimitiveType {
     CHAR,
@@ -71,7 +71,7 @@ enum class PrimitiveType {
  * @brief A simple type that enumerates the main storage types for matrices (row
  * or column major).
  *
- * @ingroup types
+ * @ingroup base
  */
 enum class MatrixStorageType { ROW_MAJOR, COLUMN_MAJOR };
 
@@ -114,7 +114,7 @@ constexpr typename std::underlying_type<E>::type toUnderlying(E e) noexcept
  * Useful for iterators that return a pointer to a value, but the value is
  * stored in the iterator itself.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<class T>
 class FakePointerWithValue
@@ -129,4 +129,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_TYPES_BASE_H
+#endif // VCL_BASE_BASE_H

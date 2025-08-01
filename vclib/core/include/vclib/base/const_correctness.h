@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_CONST_CORRECTNESS_H
-#define VCL_TYPES_CONST_CORRECTNESS_H
+#ifndef VCL_BASE_CONST_CORRECTNESS_H
+#define VCL_BASE_CONST_CORRECTNESS_H
 
 #include <memory>
 #include <type_traits>
@@ -37,7 +37,7 @@ namespace vcl {
  *
  * @tparam T The type to be converted to a const pointer.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 struct MakeConstPointer
@@ -48,7 +48,7 @@ struct MakeConstPointer
 /**
  * @copydoc MakeConstPointer
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 struct MakeConstPointer<T*>
@@ -59,7 +59,7 @@ struct MakeConstPointer<T*>
 /**
  * @copydoc MakeConstPointer
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 struct MakeConstPointer<std::shared_ptr<T>>
@@ -72,7 +72,7 @@ struct MakeConstPointer<std::shared_ptr<T>>
  *
  * @tparam T The type to be converted to a const pointer.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 using MakeConstPointerT = typename MakeConstPointer<T>::type;
@@ -97,7 +97,7 @@ using MakeConstPointerT = typename MakeConstPointer<T>::type;
  * @param[in] value: The const pointer/reference to be const-casted.
  * @return The non-const pointer/reference.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 constexpr T& asConst(const T& value) noexcept
@@ -108,7 +108,7 @@ constexpr T& asConst(const T& value) noexcept
 /**
  * @copydoc asConst
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 constexpr T* asConst(const T* value) noexcept
@@ -119,7 +119,7 @@ constexpr T* asConst(const T* value) noexcept
 /**
  * @copydoc asConst
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 constexpr T* asConst(T* value) noexcept
@@ -132,4 +132,4 @@ void asConst(const T&&) = delete;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_CONST_CORRECTNESS_H
+#endif // VCL_BASE_CONST_CORRECTNESS_H

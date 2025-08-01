@@ -25,7 +25,7 @@
 
 #include <vclib/mesh/components/base/base.h>
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl::comp {
 

@@ -28,7 +28,7 @@
 
 #include <vclib/mesh.h>
 #include <vclib/serialization.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <filesystem>
 #include <fstream>

@@ -20,27 +20,39 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
-#define VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
+#ifndef VCL_BASE_RANDOM_H
+#define VCL_BASE_RANDOM_H
 
-#include "variadic_templates.h"
+#include <optional>
+#include <random>
 
 namespace vcl {
 
-template<template<typename...> typename... Args>
-struct TemplatedTypeWrapper
+/**
+ * @brief Creates a random number generator with an optional seed.
+ *
+ * If a seed is provided, the generator is seeded with that value, otherwise
+ * it uses a random device to generate a random seed.
+ *
+ * @param seed: Optional seed value for the random number generator.
+ * @return A std::mt19937 random number generator.
+ *
+ * @ingroup base
+ */
+inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
 {
-    static constexpr uint size() { return sizeof...(Args); }
-};
+    std::mt19937 gen;
 
-// note: specialization from variadic_templates.h
-template<template<typename...> typename... Args>
-struct FirstType<TemplatedTypeWrapper<Args...>>
-{
-    template<typename... T>
-    using type = std::tuple_element<0, std::tuple<Args<T>...>>::type;
-};
+    if (seed.has_value()) {
+        gen.seed(seed.value());
+    } else {
+        std::random_device rd;
+        gen.seed(rd()); // random seed
+    }
+
+    return gen;
+}
 
 } // namespace vcl
 
-#endif // VCL_TYPES_TEMPLATED_TYPE_WRAPPER_H
+#endif // VCL_BASE_RANDOM_H

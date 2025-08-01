@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BASE_BASE_H
 #define VCL_MESH_COMPONENTS_BASE_BASE_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl {
 
@@ -42,7 +42,7 @@ namespace vcl {
  * auto& p = e.template component<CompId::POSITION>();
  * @endcode
  *
- * @ingroup types
+ * @ingroup base
  */
 struct CompId
 {
@@ -77,7 +77,7 @@ struct CompId
  * @brief The COMPONENT_ENUM_STRINGS array contains the string representation
  * of the CompId::Enum values.
  *
- * @ingroup types
+ * @ingroup base
  */
 constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
     "BitFlags",
@@ -111,7 +111,7 @@ constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
  *
  * @tparam COMP_ID: The COMP_ID value associated to the string.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<uint COMP_ID>
 struct ComponentString
@@ -130,7 +130,7 @@ struct ComponentString
  * @tparam COMP_ID: an unsigned integer that identifies the component.
  * @return The string associated to the COMP_ID value.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<uint COMP_ID>
 constexpr const char* componentEnumString()
@@ -187,7 +187,7 @@ struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
  * TypeWrapper), this alias sets its type to the corresponding Component type
  * found in the list.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<uint COMP_ID, typename... Components>
 using ComponentOfType = FirstTypeT<

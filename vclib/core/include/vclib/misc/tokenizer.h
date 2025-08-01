@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_TOKENIZER_H
 #define VCL_MISC_TOKENIZER_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <string>
 #include <vector>

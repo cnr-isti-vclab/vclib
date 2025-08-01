@@ -25,7 +25,7 @@
 
 #include <vclib/mesh/components/position.h>
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <ranges>
 

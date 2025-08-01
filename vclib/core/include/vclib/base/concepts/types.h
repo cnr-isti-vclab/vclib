@@ -20,39 +20,64 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_RANDOM_H
-#define VCL_TYPES_RANDOM_H
+#ifndef VCL_BASE_CONCEPTS_TYPES_H
+#define VCL_BASE_CONCEPTS_TYPES_H
 
-#include <optional>
-#include <random>
+#include <concepts>
 
 namespace vcl {
 
 /**
- * @brief Creates a random number generator with an optional seed.
+ * @brief Concept for types that can be used as indices.
  *
- * If a seed is provided, the generator is seeded with that value, otherwise
- * it uses a random device to generate a random seed.
+ * This concept is evaluated true if T is an integral type or an enum type.
  *
- * @param seed: Optional seed value for the random number generator.
- * @return A std::mt19937 random number generator.
- *
- * @ingroup types
+ * @ingroup util_concepts
  */
-inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
-{
-    std::mt19937 gen;
+template<typename T>
+concept IntegralOrEnum = std::integral<T> || std::is_enum_v<T>;
 
-    if (seed.has_value()) {
-        gen.seed(seed.value());
-    } else {
-        std::random_device rd;
-        gen.seed(rd()); // random seed
-    }
+/**
+ * @brief Concept for types that can be used as indices, excluding bool.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept NonBoolIntegralOrEnum = IntegralOrEnum<T> && !std::same_as<T, bool>;
 
-    return gen;
-}
+/**
+ * @brief Concept that is evaluated true if T is a class.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept IsClass = std::is_class_v<T>;
+
+/**
+ * @brief Concept that is evaluated true if T is not a class.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept IsNotClass = !IsClass<T>;
+
+/**
+ * @brief Concept that is evaluated true if the templated type C is instantiable
+ * with type T, i.e., C<T> is a valid type.
+ *
+ * Example of usage:
+ * @code{.cpp}
+ * if constexpr(IsInstantiable<C, T>) {
+ *     C<T> instance;
+ *     // do something...
+ * }
+ * @endcode
+ *
+ * @ingroup util_concepts
+ */
+template<template<typename> typename C, typename T>
+concept IsInstantiable = requires { typename C<T>; };
 
 } // namespace vcl
 
-#endif // VCL_TYPES_RANDOM_H
+#endif // VCL_BASE_CONCEPTS_TYPES_H

@@ -20,29 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_CONCEPTS_CONST_CORRECTNESS_H
-#define VCL_TYPES_CONCEPTS_CONST_CORRECTNESS_H
+#ifndef VCL_BASE_TEMPLATED_TYPE_WRAPPER_H
+#define VCL_BASE_TEMPLATED_TYPE_WRAPPER_H
 
-#include <vclib/types/pointers.h>
-
-#include <type_traits>
+#include "variadic_templates.h"
 
 namespace vcl {
 
-/**
- * @brief The IsConst concept is satisfied if T satisfies one of the following
- * conditions:
- *
- * - T is const;
- * - T is a pointer to const;
- * - T is a reference to const;
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept IsConst =
-    std::is_const_v<RemovePtr<T>> || std::is_const_v<RemoveRef<T>>;
+template<template<typename...> typename... Args>
+struct TemplatedTypeWrapper
+{
+    static constexpr uint size() { return sizeof...(Args); }
+};
+
+// note: specialization from variadic_templates.h
+template<template<typename...> typename... Args>
+struct FirstType<TemplatedTypeWrapper<Args...>>
+{
+    template<typename... T>
+    using type = std::tuple_element<0, std::tuple<Args<T>...>>::type;
+};
 
 } // namespace vcl
 
-#endif // VCL_TYPES_CONCEPTS_CONST_CORRECTNESS_H
+#endif // VCL_BASE_TEMPLATED_TYPE_WRAPPER_H

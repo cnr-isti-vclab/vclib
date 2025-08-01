@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_TRI_POLY_INDEX_BIMAP_H
 #define VCL_SPACE_COMPLEX_TRI_POLY_INDEX_BIMAP_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <vector>
 

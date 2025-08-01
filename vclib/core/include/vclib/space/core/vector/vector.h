@@ -25,7 +25,7 @@
 
 #include <vclib/exceptions.h>
 #include <vclib/serialization.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <algorithm>
 #include <array>

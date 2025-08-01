@@ -25,7 +25,7 @@
 
 #include <vclib/mesh.h>
 #include <vclib/meshes.h>
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <iostream>
 

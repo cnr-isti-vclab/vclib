@@ -20,17 +20,65 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_VIEWS_H
-#define VCL_TYPES_VIEWS_H
+#ifndef VCL_BASE_CONCEPTS_ITERATORS_H
+#define VCL_BASE_CONCEPTS_ITERATORS_H
 
-#include "views/pointers.h"
-#include "views/view.h"
+#include <iterator>
+#include <type_traits>
+
+namespace vcl {
 
 /**
- * @defgroup views  Views
+ * @brief The IteratorConcept is satisfied if T is an input or output iterator.
  *
- * @brief List of [range views](https://en.cppreference.com/w/cpp/ranges/view)
- * of the library.
+ * @ingroup util_concepts
  */
+template<typename T>
+concept IteratorConcept = std::input_or_output_iterator<T>;
 
-#endif // VCL_TYPES_VIEWS_H
+/**
+ * @brief The InputIterator concept is satisfied if T is an input iterator
+ * that implements the `operator*` returning a value convertible to V.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T, typename V>
+concept InputIterator =
+    std::input_iterator<T> && std::indirectly_readable<T> && requires (T i) {
+        { *i } -> std::convertible_to<V>;
+    };
+
+/**
+ * @brief The OutputIterator concept is satisfied if T is an output iterator
+ * that implements the `operator*` returning a reference to V.
+ *
+ * @see https://en.cppreference.com/w/cpp/iterator/output_iterator
+ *
+ * @ingroup util_concepts
+ */
+template<typename T, typename V>
+concept OutputIterator = std::output_iterator<T, V>;
+
+/**
+ * @brief The IteratorOverClass concept is satisfied if T is an iterator having
+ * its `value_type` that is a class.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept IteratesOverClass =
+    IteratorConcept<T> && std::is_class_v<typename T::value_type>;
+
+/**
+ * @brief The IteratorOverPointer concept is satisfied if T is an iterator
+ * having its `value_type ` that is a pointer.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept IteratesOverPointer =
+    IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
+
+} // namespace vcl
+
+#endif // VCL_BASE_CONCEPTS_ITERATORS_H

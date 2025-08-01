@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_TYPE_WRAPPER_H
-#define VCL_TYPES_TYPE_WRAPPER_H
+#ifndef VCL_BASE_TYPE_WRAPPER_H
+#define VCL_BASE_TYPE_WRAPPER_H
 
 #include "variadic_templates.h"
 
@@ -32,7 +32,7 @@ namespace vcl {
  * instantiating anything. Useful when you need to wrap a list of types, and
  * consider them as a single type.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename... Args>
 struct TypeWrapper
@@ -43,7 +43,7 @@ struct TypeWrapper
 /**
  * @copydoc FirstType
  *
- * @ingroup types
+ * @ingroup base
  */
 // note: specialization from variadic_templates.h
 template<typename... Args>
@@ -61,7 +61,7 @@ struct FirstType<TypeWrapper<Args...>>
  * @param[in] ti: the type_index of the type to search.
  * @param[in] tw: the TypeWrapper to search in.
  *
- * @ingroup types
+ * @ingroup base
  */
 // note: specialization from variadic_templates.h
 template<typename... Args>
@@ -73,7 +73,7 @@ uint indexInTypePack(std::type_index ti, TypeWrapper<Args...>)
 /**
  * @copydoc IndexInTypes
  *
- * @ingroup types
+ * @ingroup base
  */
 // note: specialization from variadic_templates.h
 template<typename T, typename... Us>
@@ -85,7 +85,7 @@ struct IndexInTypes<T, TypeWrapper<Us...>>
 /**
  * @copydoc TypeAt
  *
- * @ingroup types
+ * @ingroup base
  */
 // note: specialization from variadic_templates.h
 template<uint I, typename... T>
@@ -97,7 +97,7 @@ struct TypeAt<I, TypeWrapper<T...>>
 /**
  * @copydoc NumberOfTypes
  *
- * @ingroup types
+ * @ingroup base
  */
 // note: specialization from variadic_templates.h
 template<typename... Args>
@@ -108,7 +108,7 @@ struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
 /**
  * @copydoc ForEachType
  *
- * @ingroup types
+ * @ingroup base
  */
 // note: specialization from variadic_templates.h
 template<typename... T>
@@ -118,4 +118,4 @@ struct ForEachType<TypeWrapper<T...>> : public ForEachType<T...>
 
 } // namespace vcl
 
-#endif // VCL_TYPES_TYPE_WRAPPER_H
+#endif // VCL_BASE_TYPE_WRAPPER_H

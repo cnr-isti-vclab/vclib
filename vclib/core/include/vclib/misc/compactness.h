@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_COMPACTNESS_H
 #define VCL_MISC_COMPACTNESS_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <vector>
 

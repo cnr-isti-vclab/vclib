@@ -20,67 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_VIEWS_VIEW_H
-#define VCL_TYPES_VIEWS_VIEW_H
+#ifndef VCL_BASE_INHERITANCE_H
+#define VCL_BASE_INHERITANCE_H
 
-#define ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
-#if __has_include(<zip_view.hpp>)
-#include <zip_view.hpp>
-#else
-// inclusion for usage of vclib without CMake - not ideal but necessary for
-// header only
-#include "../../../external/zip-views-1.0/zip_view.hpp"
-#endif
-#undef ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
-
-#include <ranges>
+#include <type_traits>
 
 namespace vcl {
 
+namespace detail {
+
+template<template<typename... formal> class base>
+struct IsDerivedFromImplementation
+{
+    template<typename... actual>
+    std::true_type operator()(base<actual...>*) const;
+
+    std::false_type operator()(void*) const;
+};
+
+} // namespace detail
+
 /**
- * @brief The View class is a simple class that stores and exposes two iterators
- * begin and end.
+ * @brief Utility class that allows to check if given class 'Derived' is derived
+ * from a specialization of a templated class.
  *
- * It is useful for classes that expose multiple containers, and they do not
- * expose the classic member functions begin()/end(). In these cases, it is
- * possible to expose the view of a selected container by returning a View
- * object initialized with the begin/end iterators.
- *
- * For example, a Mesh can expose Vertex and Face containers.
- * The mesh exposes the member functions:
- * - vertexBegin()
- * - vertexEnd()
- * - faceBegin()
- * - faceEnd()
- * To allow view iteration over vertices, the Mesh could expose a vertices()
- * member function that returns a View object that is constructed in this way:
+ * Given a class X and a templated class C<template T>, it can be used in the
+ * following way:
  *
  * @code {.cpp}
- * auto vertices() { return View{vertexBegin(), vertexEnd()}; }
+ * using myCheck = vcl::IsDerivedFromTemplateSpecialization<X, C>::type;
+ *
+ * if constexpr (myCheck::value) { ... }
  * @endcode
  *
- * @ingroup views
- * @ingroup types
+ * and will return true if X derives from any specialization of C.
+ *
+ * @tparam derived The class to be checked.
+ * @tparam base The templated class to be checked.
+ *
+ * @ingroup base
  */
-template<typename It>
-class View : public std::ranges::view_interface<View<It>>
-{
-public:
-    using iterator       = It;
-    using const_iterator = It;
-
-    View() = default;
-
-    View(It begin, It end) : mBegin(begin), mEnd(end) {}
-
-    auto begin() const { return mBegin; }
-
-    auto end() const { return mEnd; }
-
-protected:
-    It mBegin, mEnd;
-};
+// https://stackoverflow.com/a/25846080/5851101
+// https://stackoverflow.com/questions/25845536#comment40451928_25846080
+// http://coliru.stacked-crooked.com/a/9feadc62e7594eb2
+template<typename derived, template<typename...> class base>
+using IsDerivedFromTemplateSpecialization = std::invoke_result<
+    detail::IsDerivedFromImplementation<base>,
+    typename std::remove_cv<derived>::type*>::type;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_VIEWS_VIEW_H
+#endif // VCL_BASE_INHERITANCE_H

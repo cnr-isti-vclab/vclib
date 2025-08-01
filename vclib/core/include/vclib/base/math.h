@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_MATH_H
-#define VCL_TYPES_MATH_H
+#ifndef VCL_BASE_MATH_H
+#define VCL_BASE_MATH_H
 
 #include <cassert>
 #include <cmath>
@@ -37,7 +37,7 @@ namespace vcl {
  * @param[in] number: the number to check
  * @return true if the number is degenerate, false otherwise.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename Scalar>
 bool isDegenerate(Scalar number)
@@ -58,7 +58,7 @@ bool isDegenerate(Scalar number)
  * @return true if the numbers are equal within the epsilon value, false
  * otherwise.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename Scalar>
 bool epsilonEquals(
@@ -75,7 +75,7 @@ bool epsilonEquals(
  * @param[in] deg: the angle in degrees
  * @return the angle in radians.ù
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename Scalar>
 Scalar toRad(const Scalar& deg)
@@ -89,7 +89,7 @@ Scalar toRad(const Scalar& deg)
  * @param[in] rad: the angle in radians
  * @return the angle in degrees.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename Scalar>
 Scalar toDeg(const Scalar& rad)
@@ -107,7 +107,7 @@ Scalar toDeg(const Scalar& rad)
  *
  * @return the natural logarithm of n!.
  *
- * @ingroup types
+ * @ingroup base
  */
 inline double lnOfFactorial(int n)
 {
@@ -152,4 +152,4 @@ inline double lnOfFactorial(int n)
 
 } // namespace vcl
 
-#endif // VCL_TYPES_MATH_H
+#endif // VCL_BASE_MATH_H

@@ -23,7 +23,7 @@
 #ifndef VCL_MISC_LOGGER_ABSTRACT_LOGGER_H
 #define VCL_MISC_LOGGER_ABSTRACT_LOGGER_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <string>
 

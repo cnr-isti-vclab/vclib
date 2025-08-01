@@ -26,7 +26,7 @@
 #include "base/element.h"
 #include "face_components.h"
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 namespace vcl {
 

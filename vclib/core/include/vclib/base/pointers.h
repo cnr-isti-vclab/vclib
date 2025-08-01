@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_POINTERS_H
-#define VCL_TYPES_POINTERS_H
+#ifndef VCL_BASE_POINTERS_H
+#define VCL_BASE_POINTERS_H
 
 #include <type_traits>
 #include <utility>
@@ -36,7 +36,7 @@ namespace vcl {
  *
  * @tparam T The input type.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 using RemovePtr = std::remove_pointer_t<T>;
@@ -49,7 +49,7 @@ using RemovePtr = std::remove_pointer_t<T>;
  *
  * @tparam T The input type.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 using RemoveRef = std::remove_reference_t<T>;
@@ -60,7 +60,7 @@ using RemoveRef = std::remove_reference_t<T>;
  *
  * @tparam T The input type.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 using RemoveCVRefAndPointer = std::remove_cvref_t<RemovePtr<T>>;
@@ -72,7 +72,7 @@ using RemoveCVRefAndPointer = std::remove_cvref_t<RemovePtr<T>>;
  *
  * @tparam T The input type.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 using RemoveConstFromPointer = std::conditional_t<
@@ -89,7 +89,7 @@ using RemoveConstFromPointer = std::conditional_t<
  * @return a reference to obj if it is not a pointer, or a reference to *obj if
  * it is a pointer.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 auto& dereferencePtr(T&& obj)
@@ -110,7 +110,7 @@ auto& dereferencePtr(T&& obj)
  * @return the address of 'obj' if obj is not a pointer, or obj if it is a
  * pointer.
  *
- * @ingroup types
+ * @ingroup base
  */
 template<typename T>
 auto addressOfObj(T& obj)
@@ -125,4 +125,4 @@ auto addressOfObj(T& obj)
 
 } // namespace vcl
 
-#endif // VCL_TYPES_POINTERS_H
+#endif // VCL_BASE_POINTERS_H

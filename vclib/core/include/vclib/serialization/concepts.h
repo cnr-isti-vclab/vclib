@@ -23,7 +23,7 @@
 #ifndef VCL_SERIALIZATION_CONCEPTS_H
 #define VCL_SERIALIZATION_CONCEPTS_H
 
-#include <vclib/types.h>
+#include <vclib/base.h>
 
 #include <istream>
 #include <ostream>
