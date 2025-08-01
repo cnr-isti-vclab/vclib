@@ -36,6 +36,7 @@
 #include "base/min_max.h"
 #include "base/nested_initializer_lists.h"
 #include "base/pair.h"
+#include "base/parallel.h"
 #include "base/pointers.h"
 #include "base/random.h"
 #include "base/string.h"

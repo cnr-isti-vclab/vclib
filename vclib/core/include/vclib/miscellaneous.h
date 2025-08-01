@@ -23,8 +23,6 @@
 #ifndef VCL_MISCELLANEOUS_H
 #define VCL_MISCELLANEOUS_H
 
-#include "misc/parallel.h"
-
 /**
  * @defgroup miscellaneous Miscellaneous
  *

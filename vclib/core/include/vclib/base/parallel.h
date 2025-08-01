@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_PARALLEL_H
-#define VCL_MISC_PARALLEL_H
+#ifndef VCL_BASE_PARALLEL_H
+#define VCL_BASE_PARALLEL_H
 
-#include <vclib/base.h>
+#include <vclib/base/concepts/range.h>
 
 // tbb and qt conflicts: if both are linked, we need to first undef Qt's
 // emit - see: https://github.com/oneapi-src/oneTBB/issues/547
@@ -99,4 +99,4 @@ void parallelFor(Rng&& r, Lambda&& F)
 
 } // namespace vcl
 
-#endif // VCL_MISC_PARALLEL_H
+#endif // VCL_BASE_PARALLEL_H
