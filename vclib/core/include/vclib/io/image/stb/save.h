@@ -23,6 +23,7 @@
 #ifndef VCL_IO_IMAGE_STB_SAVE_H
 #define VCL_IO_IMAGE_STB_SAVE_H
 
+#include <vclib/io/exceptions.h>
 #include <vclib/io/file_info.h>
 
 // disable deprecated warnings - just for stb

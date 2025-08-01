@@ -23,7 +23,6 @@
 #ifndef VCL_EXCEPTIONS_H
 #define VCL_EXCEPTIONS_H
 
-#include "exceptions/io.h"
 #include "exceptions/mesh.h"
 #include "exceptions/misc.h"
 
