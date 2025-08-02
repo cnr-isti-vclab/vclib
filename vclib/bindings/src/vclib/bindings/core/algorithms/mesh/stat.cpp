@@ -36,7 +36,6 @@ void initStatAlgorithms(pybind11::module& m)
 
     auto fAllMeshes =
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-
             // barycenter.h
 
             m.def("barycenter", [](const MeshType& m) {
@@ -116,7 +115,6 @@ void initStatAlgorithms(pybind11::module& m)
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
                            pybind11::module& m, MeshType = MeshType()) {
-
         // barycenter.h
 
         m.def("shell_barycenter", [](const MeshType& m) {

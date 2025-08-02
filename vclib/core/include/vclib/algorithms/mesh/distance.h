@@ -217,8 +217,8 @@ HausdorffDistResult hausdorffDistance(
         // todo
     }
     else {
-        sampler = montecarloPointSampling<SamplerType>(
-            m2, nSamples, birth, seed);
+        sampler =
+            montecarloPointSampling<SamplerType>(m2, nSamples, birth, seed);
     }
 
     log.log(5, meshName2 + " sampled.");

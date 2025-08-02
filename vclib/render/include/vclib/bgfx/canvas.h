@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_CANVAS_H
 #define VCL_BGFX_CANVAS_H
 
+#include <vclib/base.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/read_framebuffer_request.h>
 #include <vclib/bgfx/system/native_window_handle.h>
@@ -30,7 +31,6 @@
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/input.h>
 #include <vclib/render/read_buffer_types.h>
-#include <vclib/base.h>
 
 #include <optional>
 
