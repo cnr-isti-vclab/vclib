@@ -65,7 +65,7 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
     lineColors.emplace_back(lineColor.abgr());
 }
 
-// return a vector that has a set of nLines lines with different types
+// Returns a DrawableLines object containing nLines random lines.
 vcl::DrawableLines getDrawableLines(vcl::uint nLines)
 {
     vcl::DrawableObjectVector vec;
