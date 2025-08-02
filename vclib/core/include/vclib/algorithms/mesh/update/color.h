@@ -69,13 +69,13 @@ void setPerVertexColorFromElemColor(MeshType& m)
     for (const auto& e : m.template elements<ELEM_ID>()) {
         for (const auto* v : e.vertices()) {
             avgColors[v->index()].c += e.color().template cast<uint>();
-            avgColors[v->index()].cnt[v->index()]++;
+            avgColors[v->index()].cnt++;
         }
     }
 
     for (auto& v : m.vertices()) {
         if (avgColors[v.index()].cnt > 0) {
-            avgColors[v.index()] /= avgColors[v.index()].cnt[v.index()];
+            avgColors[v.index()].c /= avgColors[v.index()].cnt;
             v.color() = avgColors[v.index()].c.template cast<uint8_t>();
         }
     }
@@ -182,23 +182,6 @@ void setPerEdgeColor(
     else {
         std::ranges::fill(m.edges() | views::colors, c);
     }
-}
-
-/**
- * @brief Sets the color component of a mesh.
- *
- * @tparam MeshType: type of the input mesh. It must satisfy the HasColor
- * concept.
- *
- * @param[in,out] m: the mesh on which set the color.
- * @param[in] c: the color to set to the mesh.
- *
- * @ingroup update
- */
-template<HasColor MeshType>
-void setMeshColor(MeshType& m, Color c = Color::White)
-{
-    m.color() = c;
 }
 
 /**

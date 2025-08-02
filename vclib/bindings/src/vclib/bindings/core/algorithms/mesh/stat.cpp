@@ -23,8 +23,7 @@
 #include <vclib/bindings/core/algorithms/mesh/stat.h>
 #include <vclib/bindings/utils.h>
 
-#include <vclib/algorithms/mesh/stat.h>
-#include <vclib/algorithms/mesh/type_name.h>
+#include <vclib/algorithms/mesh.h>
 
 #include <pybind11/stl.h>
 
