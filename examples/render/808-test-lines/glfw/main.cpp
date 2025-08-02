@@ -37,7 +37,7 @@ class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
     // lines 
-    const vcl::uint N_LINES = 10;
+    const vcl::uint N_LINES = 100;
     std::shared_ptr<vcl::DrawableLines> mLines;
     int mSelected = 0;
 

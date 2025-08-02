@@ -228,6 +228,7 @@ public:
         using enum MeshRenderInfo::Wireframe;
 
         mWireframeLines.thickness() = mrs.wireframeWidth();
+        mWireframeLines.shadingPerVertex() = mrs.isWireframe(SHADING_VERT);
 
         if (mrs.isWireframe(COLOR_USER)) {
             mWireframeLines.generalColor() = mrs.wireframeUserColor();

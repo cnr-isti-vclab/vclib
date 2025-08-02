@@ -20,11 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color
+$input v_color, v_normal
+
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh> 
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+uniform vec4 u_settings;
+#define u_shadingPerVertex bool(u_settings.w)
+
 void main() {
-    gl_FragColor = v_color;
+    vec4 color = v_color;
+    if (u_shadingPerVertex) {
+        color *= computeLight(u_lightDir, u_lightColor, v_normal);
+    }
+    gl_FragColor = color;
 }

@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 $input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1, a_color2
-$output v_color
+$output v_color, v_normal
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
@@ -59,6 +59,9 @@ void main() {
     vec4 p0_NDC = mul(u_modelViewProj, vec4(p0, 1.0));
     vec4 p1_NDC = mul(u_modelViewProj, vec4(p1, 1.0));
 
+    vec3 n0_NDC = normalize(mul(u_normalMatrix, normal0));
+    vec3 n1_NDC = normalize(mul(u_normalMatrix, normal1));
+
     // clip segment to near plane (w = 0) if needed
     vec4 clippedP0 = p0_NDC;
     vec4 clippedP1 = p1_NDC;
@@ -66,8 +69,8 @@ void main() {
     vec4 clippedColor0 = color0;
     vec4 clippedColor1 = color1;
 
-    vec3 clippedNormal0 = normal0;
-    vec3 clippedNormal1 = normal1;
+    vec3 clippedNormal0 = n0_NDC;
+    vec3 clippedNormal1 = n1_NDC;
 
     if (p0_NDC.w < NEAR_EPSILON) {
         float t = (NEAR_EPSILON - p0_NDC.w) / (p1_NDC.w - p0_NDC.w);
@@ -117,5 +120,7 @@ void main() {
         v_color = lineColor;
     else
         v_color = generalColor;
+
+    v_normal = normal;
     gl_Position = p;
 }

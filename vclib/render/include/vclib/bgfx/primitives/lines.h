@@ -56,10 +56,11 @@ public:
     };
 
 private:
-    uint8_t             mThickness    = 5;
-    ColorToUse          mColorToUse   = ColorToUse::PER_VERTEX;
-    Color               mGeneralColor = Color::ColorABGR::LightGray;
-    ImplementationType  mType         = ImplementationType::CPU_GENERATED;
+    uint8_t             mThickness        = 5;
+    bool                mShadingPerVertex = false;
+    ColorToUse          mColorToUse       = ColorToUse::PER_VERTEX;
+    Color               mGeneralColor     = Color::ColorABGR::LightGray;
+    ImplementationType  mType             = ImplementationType::CPU_GENERATED;
     // TODO: add setting that allows to set shading: per vertex (using normal)
     // or solid
 
@@ -75,9 +76,10 @@ public:
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors,
         uint8_t                   thickness = 5,
+        bool                      shadingPerVertex = false,
         ColorToUse                colorToUse = ColorToUse::PER_VERTEX,
         ImplementationType        type = ImplementationType::CPU_GENERATED) :
-            mThickness(thickness), mColorToUse(colorToUse)
+            mThickness(thickness), mShadingPerVertex(shadingPerVertex), mColorToUse(colorToUse)
     {
         setImplementationType(type);
         mLinesImplementation.setPoints(
@@ -91,9 +93,10 @@ public:
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors,
         uint8_t                   thickness = 5,
+        bool                      shadingPerVertex = false,
         ColorToUse                colorToUse = ColorToUse::PER_VERTEX,
         ImplementationType        type = ImplementationType::CPU_GENERATED) :
-            mThickness(thickness), mColorToUse(colorToUse)
+            mThickness(thickness), mShadingPerVertex(shadingPerVertex), mColorToUse(colorToUse)
     {
         setImplementationType(type);
         mLinesImplementation.setPoints(
@@ -133,6 +136,10 @@ public:
 
     Color& generalColor() { return mGeneralColor; }
 
+    bool shadingPerVertex() const { return mShadingPerVertex; }
+
+    bool& shadingPerVertex() { return mShadingPerVertex; }
+
     ImplementationType type() const { return mType; }
 
     bool setImplementationType(ImplementationType type)
@@ -165,6 +172,7 @@ public:
         using std::swap;
 
         swap(mThickness, other.mThickness);
+        swap(mShadingPerVertex, other.mShadingPerVertex);
         swap(mColorToUse, other.mColorToUse);
         swap(mSettingUH, other.mSettingUH);
 
@@ -181,7 +189,7 @@ private:
             static_cast<float>(mThickness),
             static_cast<float>(mColorToUse),
             std::bit_cast<float>(mGeneralColor.abgr()),
-            0};
+            static_cast<float>(mShadingPerVertex)};
         mSettingUH.bind(data);
     }
 };

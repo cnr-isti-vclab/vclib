@@ -103,6 +103,7 @@ public:
                 other.mVertColors,
                 other.mLineColors,
                 other.thickness(),
+                other.shadingPerVertex(),
                 other.colorToUse(),
                 other.type()),
             mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),

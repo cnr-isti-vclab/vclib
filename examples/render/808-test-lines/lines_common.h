@@ -80,6 +80,7 @@ vcl::DrawableLines getDrawableLines(vcl::uint nLines)
     
     auto lines = vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
     lines.thickness() = 10;
+    lines.colorToUse() = vcl::Lines::ColorToUse::GENERAL;
 
     return lines;
 }
