@@ -150,7 +150,7 @@ public:
 
         // TODO: check whether caps allow the new implementation type
         // then set the implementation and the type
-        switch(type){
+        switch (type) {
             case CPU_GENERATED: // always supported
                 mLinesImplementation = detail::CPUGeneratedLines();
                 mType                = type;
