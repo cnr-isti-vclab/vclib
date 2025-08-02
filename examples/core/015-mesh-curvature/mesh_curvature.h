@@ -83,8 +83,8 @@ auto meshCurvature()
     vcl::setPerVertexColorFromQuality(
         taubinMesh,
         vcl::Color::ColorMap::RedBlue,
-        h.percentile(0.1),
-        h.percentile(0.9));
+        h.valueAtPercentile(0.1),
+        h.valueAtPercentile(0.9));
 
     std::cout << "Taubin95 curvature computed." << std::endl;
     std::cout << "  Mean curvature range: " << h.minRangeValue() << " to "
@@ -112,8 +112,8 @@ auto meshCurvature()
     vcl::setPerVertexColorFromQuality(
         pcaMesh,
         vcl::Color::ColorMap::RedBlue,
-        h2.percentile(0.05),
-        h2.percentile(0.95));
+        h2.valueAtPercentile(0.05),
+        h2.valueAtPercentile(0.95));
 
     std::cout << "PCA curvature computed (radius: " << radius << ")."
               << std::endl;
@@ -147,8 +147,8 @@ auto meshCurvature()
     vcl::setPerVertexColorFromQuality(
         generalMesh,
         vcl::Color::ColorMap::RedBlue,
-        h3.percentile(0.1),
-        h3.percentile(0.9));
+        h3.valueAtPercentile(0.1),
+        h3.valueAtPercentile(0.9));
 
     std::cout << "General curvature computed." << std::endl;
     std::cout << "  Maximum curvature range: " << h3.minRangeValue() << " to "
