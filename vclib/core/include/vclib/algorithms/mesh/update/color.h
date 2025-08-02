@@ -390,24 +390,24 @@ void setPerVertexColorFromFaceBorderFlag(
     for (FaceType& f : m.faces()) {
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             if (f.edgeOnBorder(i)) {
-                if (f.vertex(i).color() == baseColor)
-                    f.vertex(i).color() = borderColor;
-                if (f.vertex(i).color() == internalColor)
-                    f.vertex(i).color() = mixColor;
-                if (f.vertexMod(i + 1).color() == baseColor)
-                    f.vertexMod(i + 1).color() = borderColor;
-                if (f.vertexMod(i + 1).color() == internalColor)
-                    f.vertexMod(i + 1).color() = mixColor;
+                if (f.vertex(i)->color() == baseColor)
+                    f.vertex(i)->color() = borderColor;
+                if (f.vertex(i)->color() == internalColor)
+                    f.vertex(i)->color() = mixColor;
+                if (f.vertexMod(i + 1)->color() == baseColor)
+                    f.vertexMod(i + 1)->color() = borderColor;
+                if (f.vertexMod(i + 1)->color() == internalColor)
+                    f.vertexMod(i + 1)->color() = mixColor;
             }
             else {
-                if (f.vertex(i).color() == baseColor)
-                    f.vertex(i).color() = internalColor;
-                if (f.vertex(i).color() == borderColor)
-                    f.vertex(i).color() = mixColor;
-                if (f.vertexMod(i + 1).color() == baseColor)
-                    f.vertexMod(i + 1).color() = internalColor;
-                if (f.vertexMod(i + 1).color() == borderColor)
-                    f.vertexMod(i + 1).color() = mixColor;
+                if (f.vertex(i)->color() == baseColor)
+                    f.vertex(i)->color() = internalColor;
+                if (f.vertex(i)->color() == borderColor)
+                    f.vertex(i)->color() = mixColor;
+                if (f.vertexMod(i + 1)->color() == baseColor)
+                    f.vertexMod(i + 1)->color() = internalColor;
+                if (f.vertexMod(i + 1)->color() == borderColor)
+                    f.vertexMod(i + 1)->color() = mixColor;
             }
         }
     }
@@ -522,7 +522,7 @@ void setPerFaceColorScattering(
                 for (uint i = 0; i < f.vertexNumber(); ++i) {
                     if (f.edgeFaux(i)) {
                         assert(f.adjFace(i) != nullptr);
-                        f.adjFace(i)->color = f.color();
+                        f.adjFace(i)->color() = f.color();
                     }
                 }
             }
@@ -551,12 +551,12 @@ void setPerFaceColorScattering(
  *
  * @ingroup update
  */
-template<MeshConcept MeshType, PointConcept PointType>
+template<MeshConcept MeshType, Point3Concept PointType>
 void setPerVertexColorPerlinNoise(
-    MeshType& m,
-    PointType period,
-    PointType offset     = PointType(0, 0, 0),
-    bool      onSelected = false)
+    MeshType&        m,
+    const PointType& period,
+    const PointType& offset     = PointType(0, 0, 0),
+    bool             onSelected = false)
 {
     requirePerVertexColor(m);
 
@@ -596,14 +596,14 @@ void setPerVertexColorPerlinNoise(
  *
  * @ingroup update
  */
-template<MeshConcept MeshType, PointConcept PointType>
+template<MeshConcept MeshType, Point3Concept PointType>
 void setPerVertexPerlinColor(
-    MeshType& m,
-    double    period,
-    PointType offset     = PointType(0, 0, 0),
-    Color     color1     = Color::Black,
-    Color     color2     = Color::White,
-    bool      onSelected = false)
+    MeshType&        m,
+    double           period,
+    const PointType& offset     = PointType(0, 0, 0),
+    const Color&     color1     = Color::Black,
+    const Color&     color2     = Color::White,
+    bool             onSelected = false)
 {
     requirePerVertexColor(m);
 
