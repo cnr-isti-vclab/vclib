@@ -84,6 +84,15 @@ void initStatAlgorithms(pybind11::module& m)
                 return vcl::vertexQualityAverage(m);
             });
 
+            m.def(
+                "vertex_quality_histogram",
+                [](const MeshType& m, bool selectionOnly, uint histSize) {
+                    return vcl::vertexQualityHistogram(m, selectionOnly, histSize);
+                },
+                py::arg("mesh"),
+                py::arg("selection_only") = false,
+                py::arg("hist_size") = 10000u);
+
             // selection.h
 
             m.def("vertex_selection_number", [](const MeshType& m) {
@@ -163,7 +172,14 @@ void initStatAlgorithms(pybind11::module& m)
             return vcl::faceQualityAverage(m);
         });
 
-        // todo: face_quality_histogram - need histogram class
+        m.def(
+            "face_quality_histogram",
+            [](const MeshType& m, bool selectionOnly, uint histSize) {
+                return vcl::faceQualityHistogram(m, selectionOnly, histSize);
+            },
+            py::arg("mesh"),
+            py::arg("selection_only") = false,
+            py::arg("hist_size") = 10000u);
 
         // selection.h
 
