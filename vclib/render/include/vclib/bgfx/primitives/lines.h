@@ -32,6 +32,7 @@
 
 namespace vcl {
 
+// TODO: add shading per-line (flat, per-line normal) (?)
 class Lines
 {
 public:
@@ -58,7 +59,7 @@ public:
 private:
     uint8_t             mThickness        = 5;
     bool                mShadingPerVertex = false;
-    ColorToUse          mColorToUse       = ColorToUse::PER_VERTEX;
+    ColorToUse          mColorToUse       = ColorToUse::GENERAL;
     Color               mGeneralColor     = Color::ColorABGR::LightGray;
     ImplementationType  mType             = ImplementationType::CPU_GENERATED;
     // TODO: add setting that allows to set shading: per vertex (using normal)
