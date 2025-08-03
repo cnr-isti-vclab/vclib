@@ -131,7 +131,7 @@ auto meshCurvature()
     {
         vcl::Timer timer("General principal curvature");
         vcl::updatePrincipalCurvature(
-            generalMesh, vcl::VCL_PRINCIPAL_CURVATURE_TAUBIN95);
+            generalMesh, vcl::PrincipalCurvatureAlgorithm::TAUBIN95);
         timer.stopAndPrint();
     }
 
