@@ -23,6 +23,7 @@
 #ifndef VCL_BINDINGS_CORE_BASE_LOGGER_H
 #define VCL_BINDINGS_CORE_BASE_LOGGER_H
 
+#include "logger/abstract_logger.h"
 #include "logger/null_logger.h"
 
 #include <pybind11/pybind11.h>
@@ -31,6 +32,7 @@ namespace vcl::bind {
 
 void initLogger(pybind11::module& m)
 {
+    initAbstractLogger(m);
     initNullLogger(m);
 }
 

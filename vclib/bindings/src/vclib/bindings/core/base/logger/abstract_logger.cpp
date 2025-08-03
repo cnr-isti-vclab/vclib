@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/base/logger/null_logger.h>
+#include <vclib/bindings/core/base/logger/abstract_logger.h>
 #include <vclib/bindings/utils.h>
 
 #include <vclib/base.h>
@@ -29,13 +29,11 @@
 
 namespace vcl::bind {
 
-void initNullLogger(pybind11::module& m)
+void initAbstractLogger(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<NullLogger, AbstractLogger> c(m, "NullLogger");
-
-    m.attr("null_logger") = vcl::nullLogger;
+    py::class_<AbstractLogger> c(m, "AbstractLogger");
 }
 
 } // namespace vcl::bind
