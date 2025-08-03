@@ -93,6 +93,56 @@ void initUpdateAlgorithms(pybind11::module& m)
                 py::arg("color1")        = Color::Black,
                 py::arg("color2")        = Color::White,
                 py::arg("only_selected") = false);
+
+            // normal.h
+
+            m.def("clear_per_vertex_normals", [](MeshType& m) {
+                return vcl::clearPerVertexNormals(m);
+            });
+
+            m.def(
+                "clear_per_referenced_vertex_normals",
+                [](MeshType& m) {
+                    return vcl::clearPerReferencedVertexNormals(m);
+                });
+
+            m.def("normalize_per_vertex_normals", [](MeshType& m) {
+                return vcl::normalizePerVertexNormals(m);
+            });
+
+            m.def(
+                "normalize_per_referenced_vertex_normals",
+                [](MeshType& m) {
+                    return vcl::normalizePerReferencedVertexNormals(m);
+                });
+
+            m.def(
+                "multiply_per_vertex_normals_by_matrix",
+                [](MeshType&             m,
+                   const vcl::Matrix33d& mat,
+                   bool                  removeScalingFromMatrix = true,
+                   AbstractLogger& log = vcl::nullLogger) {
+                    return vcl::multiplyPerVertexNormalsByMatrix(
+                        m, mat, removeScalingFromMatrix, log);
+                },
+                py::arg("mesh"),
+                py::arg("matrix"),
+                py::arg("remove_scaling_from_matrix") = true,
+                py::arg("log") = py::cast(vcl::nullLogger));
+
+            m.def(
+                "multiply_per_vertex_normals_by_matrix",
+                [](MeshType&             m,
+                   const vcl::Matrix44d& mat,
+                   bool                  removeScalingFromMatrix = true,
+                   AbstractLogger& log = vcl::nullLogger) {
+                    return vcl::multiplyPerVertexNormalsByMatrix(
+                        m, mat, removeScalingFromMatrix, log);
+                },
+                py::arg("mesh"),
+                py::arg("matrix"),
+                py::arg("remove_scaling_from_matrix") = true,
+                py::arg("log") = py::cast(vcl::nullLogger));
         };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -108,6 +158,12 @@ void initUpdateAlgorithms(pybind11::module& m)
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
                            pybind11::module& m, MeshType = MeshType()) {
+        // border.h
+
+        m.def("update_border", [](MeshType& m) {
+            return vcl::updateBorder(m);
+        });
+
         // color.h
 
         m.def(
@@ -180,8 +236,6 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         // curvature.h
 
-        // TODO: add logger
-
         m.def(
             "update_per_vertex_principal_curvature",
             [](MeshType&                   m,
@@ -193,6 +247,114 @@ void initUpdateAlgorithms(pybind11::module& m)
             py::arg("mesh"),
             py::arg("algorithm") = PrincipalCurvatureAlgorithm::TAUBIN95,
             py::arg("log") = py::cast(vcl::nullLogger));
+
+        // normal.h
+
+        m.def("clear_per_face_normals", [](MeshType& m) {
+            return vcl::clearPerFaceNormals(m);
+        });
+
+        m.def("normalize_per_face_normals", [](MeshType& m) {
+            return vcl::normalizePerFaceNormals(m);
+        });
+
+        m.def(
+            "multiply_per_face_normals_by_matrix",
+            [](MeshType&             m,
+               const vcl::Matrix33d& mat,
+               bool                  removeScalingFromMatrix = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::multiplyPerFaceNormalsByMatrix(
+                    m, mat, removeScalingFromMatrix, log);
+            },
+            py::arg("mesh"),
+            py::arg("matrix"),
+            py::arg("remove_scaling_from_matrix") = true,
+            py::arg("log") = py::cast(vcl::nullLogger));
+
+        m.def(
+            "multiply_per_face_normals_by_matrix",
+            [](MeshType&             m,
+               const vcl::Matrix44d& mat,
+               bool                  removeScalingFromMatrix = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::multiplyPerFaceNormalsByMatrix(
+                    m, mat, removeScalingFromMatrix, log);
+            },
+            py::arg("mesh"),
+            py::arg("matrix"),
+            py::arg("remove_scaling_from_matrix") = true,
+            py::arg("log") = py::cast(vcl::nullLogger));
+
+        m.def(
+            "update_per_face_normals",
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::updatePerFaceNormals(m, normalize, log);
+            },
+            py::arg("mesh"),
+            py::arg("normalize") = true,
+            py::arg("log") = py::cast(vcl::nullLogger));
+
+        m.def(
+            "update_per_vertex_normals",
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::updatePerVertexNormals(m, normalize, log);
+            },
+            py::arg("mesh"),
+            py::arg("normalize") = true,
+            py::arg("log") = py::cast(vcl::nullLogger));
+
+        m.def(
+            "update_per_vertex_normals_from_face_normals",
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::updatePerVertexNormalsFromFaceNormals(
+                    m, normalize, log);
+            },
+            py::arg("mesh"),
+            py::arg("normalize") = true,
+            py::arg("log")       = py::cast(vcl::nullLogger));
+
+        m.def(
+            "update_per_vertex_and_face_normals",
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::updatePerVertexAndFaceNormals(
+                    m, normalize, log);
+            },
+            py::arg("mesh"),
+            py::arg("normalize") = true,
+            py::arg("log")       = py::cast(vcl::nullLogger));
+
+        m.def(
+            "update_per_vertex_normals_angle_weighted",
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::updatePerVertexNormalsAngleWeighted(
+                    m, normalize, log);
+            },
+            py::arg("mesh"),
+            py::arg("normalize") = true,
+            py::arg("log")       = py::cast(vcl::nullLogger));
+
+        m.def(
+            "update_per_vertex_normals_nelson_max_weighted",
+            [](MeshType& m,
+               bool      normalize = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return vcl::updatePerVertexNormalsNelsonMaxWeighted(
+                    m, normalize, log);
+            },
+            py::arg("mesh"),
+            py::arg("normalize") = true,
+            py::arg("log")       = py::cast(vcl::nullLogger));
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
