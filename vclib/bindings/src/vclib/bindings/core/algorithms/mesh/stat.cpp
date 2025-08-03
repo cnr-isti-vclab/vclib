@@ -33,91 +33,91 @@ void initStatAlgorithms(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    auto fAllMeshes =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            // barycenter.h
+    auto fAllMeshes = []<MeshConcept MeshType>(
+                          pybind11::module& m, MeshType = MeshType()) {
+        // barycenter.h
 
-            m.def("barycenter", [](const MeshType& m) {
-                return vcl::barycenter(m);
-            });
+        m.def("barycenter", [](const MeshType& m) {
+            return vcl::barycenter(m);
+        });
 
-            m.def("quality_weighted_barycenter", [](const MeshType& m) {
-                return vcl::qualityWeightedBarycenter(m);
-            });
+        m.def("quality_weighted_barycenter", [](const MeshType& m) {
+            return vcl::qualityWeightedBarycenter(m);
+        });
 
-            // bounding_box.h
+        // bounding_box.h
 
-            m.def("bounding_box", [](const MeshType& m) {
-                return vcl::boundingBox(m);
-            });
+        m.def("bounding_box", [](const MeshType& m) {
+            return vcl::boundingBox(m);
+        });
 
-            // geometry.h
+        // geometry.h
 
-            m.def("covariance_matrix_of_point_cloud", [](const MeshType& m) {
-                return vcl::covarianceMatrixOfPointCloud(m);
-            });
+        m.def("covariance_matrix_of_point_cloud", [](const MeshType& m) {
+            return vcl::covarianceMatrixOfPointCloud(m);
+        });
 
-            m.def(
-                "vertex_radius_from_wheights",
-                [](const MeshType&            m,
-                   const std::vector<double>& weights,
-                   double                     diskRadius,
-                   double                     radiusVariance,
-                   bool                       invert) {
-                    return vcl::vertexRadiusFromWeights<double>(
-                        m, weights, diskRadius, radiusVariance, invert);
-                },
-                py::arg("mesh"),
-                py::arg("weights"),
-                py::arg("disk_radius"),
-                py::arg("radius_variance"),
-                py::arg("invert") = false);
+        m.def(
+            "vertex_radius_from_wheights",
+            [](const MeshType&            m,
+               const std::vector<double>& weights,
+               double                     diskRadius,
+               double                     radiusVariance,
+               bool                       invert) {
+                return vcl::vertexRadiusFromWeights<double>(
+                    m, weights, diskRadius, radiusVariance, invert);
+            },
+            py::arg("mesh"),
+            py::arg("weights"),
+            py::arg("disk_radius"),
+            py::arg("radius_variance"),
+            py::arg("invert") = false);
 
-            // quality.h
+        // quality.h
 
-            m.def("vertex_quality_min_max", [](const MeshType& m) {
-                return vcl::vertexQualityMinMax(m);
-            });
+        m.def("vertex_quality_min_max", [](const MeshType& m) {
+            return vcl::vertexQualityMinMax(m);
+        });
 
-            m.def("vertex_quality_average", [](const MeshType& m) {
-                return vcl::vertexQualityAverage(m);
-            });
+        m.def("vertex_quality_average", [](const MeshType& m) {
+            return vcl::vertexQualityAverage(m);
+        });
 
-            m.def(
-                "vertex_quality_histogram",
-                [](const MeshType& m, bool selectionOnly, uint histSize) {
-                    return vcl::vertexQualityHistogram(m, selectionOnly, histSize);
-                },
-                py::arg("mesh"),
-                py::arg("selection_only") = false,
-                py::arg("hist_size") = 10000u);
+        m.def(
+            "vertex_quality_histogram",
+            [](const MeshType& m, bool selectionOnly, uint histSize) {
+                return vcl::vertexQualityHistogram(m, selectionOnly, histSize);
+            },
+            py::arg("mesh"),
+            py::arg("selection_only") = false,
+            py::arg("hist_size")      = 10000u);
 
-            // selection.h
+        // selection.h
 
-            m.def("vertex_selection_number", [](const MeshType& m) {
-                return vcl::vertexSelectionNumber(m);
-            });
+        m.def("vertex_selection_number", [](const MeshType& m) {
+            return vcl::vertexSelectionNumber(m);
+        });
 
-            // topology.h
+        // topology.h
 
-            m.def(
-                "referenced_vertices",
-                [](const MeshType& m, bool onlyFaces) {
-                    uint nUnref = 0;
-                    return vcl::referencedVertices<std::vector<bool>>(
-                        m, nUnref, onlyFaces);
-                },
-                py::arg("mesh"),
-                py::arg("only_faces") = false);
+        m.def(
+            "referenced_vertices",
+            [](const MeshType& m, bool onlyFaces) {
+                uint nUnref = 0;
+                return vcl::referencedVertices<std::vector<bool>>(
+                    m, nUnref, onlyFaces);
+            },
+            py::arg("mesh"),
+            py::arg("only_faces") = false);
 
-            m.def(
-                "number_unreferenced_vertices",
-                [](const MeshType& m, bool onlyFaces) {
-                    return vcl::numberUnreferencedVertices(m, onlyFaces);
-                },
-                py::arg("mesh"),
-                py::arg("only_faces") = false);
-        };
+        m.def(
+            "number_unreferenced_vertices",
+            [](const MeshType& m, bool onlyFaces) {
+                return vcl::numberUnreferencedVertices(m, onlyFaces);
+            },
+            py::arg("mesh"),
+            py::arg("only_faces") = false);
+    };
 
     defForAllMeshTypes(m, fAllMeshes);
 
@@ -178,7 +178,7 @@ void initStatAlgorithms(pybind11::module& m)
             },
             py::arg("mesh"),
             py::arg("selection_only") = false,
-            py::arg("hist_size") = 10000u);
+            py::arg("hist_size")      = 10000u);
 
         // selection.h
 

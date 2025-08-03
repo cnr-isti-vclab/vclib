@@ -35,14 +35,17 @@ void initHistogram(pybind11::module& m)
     py::class_<Histd> c(m, "Histogram" /*, py::buffer_protocol()*/);
     c.def(py::init<>());
 
-    c.def(py::init([](double minRange, double maxRange, uint nBins,
-                      double gamma = 1.0) {
-        return Histd(minRange, maxRange, nBins, gamma);
-    }));
+    c.def(py::init(
+        [](double minRange, double maxRange, uint nBins, double gamma = 1.0) {
+            return Histd(minRange, maxRange, nBins, gamma);
+        }));
 
     c.def("clear", &Histd::clear);
-    c.def("add_value", &Histd::addValue, py::arg("value"),
-          py::arg("increment") = 1.0);
+    c.def(
+        "add_value",
+        &Histd::addValue,
+        py::arg("value"),
+        py::arg("increment") = 1.0);
     c.def("min_range_value", &Histd::minRangeValue);
     c.def("max_range_value", &Histd::maxRangeValue);
     c.def("sum_values", &Histd::sumValues);
@@ -62,8 +65,11 @@ void initHistogram(pybind11::module& m)
         return h.binOfValueCount(value);
     });
     c.def("bin_of_value_width", &Histd::binOfValueWidth, py::arg("value"));
-    c.def("range_count", &Histd::rangeCount, py::arg("rangeMin"),
-          py::arg("rangeMax"));
+    c.def(
+        "range_count",
+        &Histd::rangeCount,
+        py::arg("rangeMin"),
+        py::arg("rangeMax"));
     c.def(
         "value_at_percentile",
         &Histd::valueAtPercentile,

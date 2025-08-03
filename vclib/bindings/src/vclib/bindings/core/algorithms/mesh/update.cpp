@@ -35,7 +35,6 @@ void initUpdateAlgorithms(pybind11::module& m)
 
     auto fAllMeshes =
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-
             // bounding_box.h
 
             m.def("update_bounding_box", [](MeshType& m) {
@@ -50,7 +49,7 @@ void initUpdateAlgorithms(pybind11::module& m)
                     return vcl::setPerVertexColor(m, c, onlySelected);
                 },
                 py::arg("mesh"),
-                py::arg("color") = Color::White,
+                py::arg("color")         = Color::White,
                 py::arg("only_selected") = false);
 
             m.def(
@@ -59,7 +58,7 @@ void initUpdateAlgorithms(pybind11::module& m)
                     return vcl::setPerVertexColorFromQuality(m, cm, minQ, maxQ);
                 },
                 py::arg("mesh"),
-                py::arg("color_map") = Color::ColorMap::RedBlue,
+                py::arg("color_map")   = Color::ColorMap::RedBlue,
                 py::arg("min_quality") = 0,
                 py::arg("max_quality") = 0);
 
@@ -108,20 +107,16 @@ void initUpdateAlgorithms(pybind11::module& m)
                 return vcl::setPerFaceColor(m, c, onlySelected);
             },
             py::arg("mesh"),
-            py::arg("color") = Color::White,
+            py::arg("color")         = Color::White,
             py::arg("only_selected") = false);
 
-        m.def(
-            "set_per_vertex_color_from_face_color",
-            [](MeshType& m) {
-                return vcl::setPerVertexColorFromFaceColor(m);
-            });
+        m.def("set_per_vertex_color_from_face_color", [](MeshType& m) {
+            return vcl::setPerVertexColorFromFaceColor(m);
+        });
 
-        m.def(
-            "set_per_face_color_from_vertex_color",
-            [](MeshType& m) {
-                return vcl::setPerFaceColorFromVertexColor(m);
-            });
+        m.def("set_per_face_color_from_vertex_color", [](MeshType& m) {
+            return vcl::setPerFaceColorFromVertexColor(m);
+        });
 
         m.def(
             "set_per_face_color_from_quality",
@@ -129,27 +124,27 @@ void initUpdateAlgorithms(pybind11::module& m)
                 return vcl::setPerFaceColorFromQuality(m, cm, minQ, maxQ);
             },
             py::arg("mesh"),
-            py::arg("color_map") = Color::ColorMap::RedBlue,
+            py::arg("color_map")   = Color::ColorMap::RedBlue,
             py::arg("min_quality") = 0,
             py::arg("max_quality") = 0);
 
         m.def(
             "set_per_vertex_color_from_face_border_flag",
             [](MeshType& m,
-               Color borderColor   = Color::Blue,
-               Color internalColor = Color::White,
-               Color mixColor      = Color::Cyan) {
+               Color     borderColor   = Color::Blue,
+               Color     internalColor = Color::White,
+               Color     mixColor      = Color::Cyan) {
                 return vcl::setPerVertexColorFromFaceBorderFlag(
                     m, borderColor, internalColor, mixColor);
             },
             py::arg("mesh"),
-            py::arg("border_color") = Color::Blue,
+            py::arg("border_color")   = Color::Blue,
             py::arg("internal_color") = Color::White,
-            py::arg("mix_color") = Color::Cyan);
+            py::arg("mix_color")      = Color::Cyan);
 
         m.def(
             "set_per_face_color_from_connected_components",
-            [](MeshType& m,
+            [](MeshType&                          m,
                const std::vector<std::set<uint>>& connectedComponents) {
                 return vcl::setPerFaceColorFromConnectedComponents(
                     m, connectedComponents);
@@ -167,12 +162,12 @@ void initUpdateAlgorithms(pybind11::module& m)
         m.def(
             "set_per_face_color_scattering",
             [](MeshType& m, uint nColors = 50, bool checkFauxEdges = true) {
-                return vcl::setPerFaceColorScattering(m, nColors, checkFauxEdges);
+                return vcl::setPerFaceColorScattering(
+                    m, nColors, checkFauxEdges);
             },
             py::arg("mesh"),
-            py::arg("n_colors") = 50,
+            py::arg("n_colors")         = 50,
             py::arg("check_faux_edges") = true);
-
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
@@ -187,15 +182,12 @@ void initUpdateAlgorithms(pybind11::module& m)
                 return vcl::setPerEdgeColor(m, c, onlySelected);
             },
             py::arg("mesh"),
-            py::arg("color") = Color::White,
+            py::arg("color")         = Color::White,
             py::arg("only_selected") = false);
 
-        m.def(
-            "set_per_edge_color_from_vertex_color",
-            [](MeshType& m) {
-                return vcl::setPerEdgeColorFromVertexColor(m);
-            });
-
+        m.def("set_per_edge_color_from_vertex_color", [](MeshType& m) {
+            return vcl::setPerEdgeColorFromVertexColor(m);
+        });
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
