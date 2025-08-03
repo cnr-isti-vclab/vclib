@@ -38,7 +38,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             // bounding_box.h
 
             m.def("update_bounding_box", [](MeshType& m) {
-                return vcl::updateBoundingBox(m);
+                return updateBoundingBox(m);
             });
 
             // color.h
@@ -46,7 +46,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             m.def(
                 "set_per_vertex_color",
                 [](MeshType& m, Color c, bool onlySelected = false) {
-                    return vcl::setPerVertexColor(m, c, onlySelected);
+                    return setPerVertexColor(m, c, onlySelected);
                 },
                 py::arg("mesh"),
                 py::arg("color")         = Color::White,
@@ -55,7 +55,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             m.def(
                 "set_per_vertex_color_from_quality",
                 [](MeshType& m, Color::ColorMap cm, double minQ, double maxQ) {
-                    return vcl::setPerVertexColorFromQuality(m, cm, minQ, maxQ);
+                    return setPerVertexColorFromQuality(m, cm, minQ, maxQ);
                 },
                 py::arg("mesh"),
                 py::arg("color_map")   = Color::ColorMap::RedBlue,
@@ -68,7 +68,7 @@ void initUpdateAlgorithms(pybind11::module& m)
                    Point3d&  period,
                    Point3d&  offset,
                    bool      onlySelected) {
-                    return vcl::setPerVertexColorPerlinNoise(
+                    return setPerVertexColorPerlinNoise(
                         m, period, offset, onlySelected);
                 },
                 py::arg("mesh"),
@@ -84,7 +84,7 @@ void initUpdateAlgorithms(pybind11::module& m)
                    Color&    color1,
                    Color&    color2,
                    bool      onlySelected) {
-                    return vcl::setPerVertexPerlinColor(
+                    return setPerVertexPerlinColor(
                         m, period, offset, color1, color2, onlySelected);
                 },
                 py::arg("mesh"),
@@ -97,24 +97,20 @@ void initUpdateAlgorithms(pybind11::module& m)
             // normal.h
 
             m.def("clear_per_vertex_normals", [](MeshType& m) {
-                return vcl::clearPerVertexNormals(m);
+                return clearPerVertexNormals(m);
             });
 
-            m.def(
-                "clear_per_referenced_vertex_normals",
-                [](MeshType& m) {
-                    return vcl::clearPerReferencedVertexNormals(m);
-                });
+            m.def("clear_per_referenced_vertex_normals", [](MeshType& m) {
+                return clearPerReferencedVertexNormals(m);
+            });
 
             m.def("normalize_per_vertex_normals", [](MeshType& m) {
-                return vcl::normalizePerVertexNormals(m);
+                return normalizePerVertexNormals(m);
             });
 
-            m.def(
-                "normalize_per_referenced_vertex_normals",
-                [](MeshType& m) {
-                    return vcl::normalizePerReferencedVertexNormals(m);
-                });
+            m.def("normalize_per_referenced_vertex_normals", [](MeshType& m) {
+                return normalizePerReferencedVertexNormals(m);
+            });
 
             m.def(
                 "multiply_per_vertex_normals_by_matrix",
@@ -122,7 +118,7 @@ void initUpdateAlgorithms(pybind11::module& m)
                    const vcl::Matrix33d& mat,
                    bool                  removeScalingFromMatrix = true,
                    AbstractLogger& log = vcl::nullLogger) {
-                    return vcl::multiplyPerVertexNormalsByMatrix(
+                    return multiplyPerVertexNormalsByMatrix(
                         m, mat, removeScalingFromMatrix, log);
                 },
                 py::arg("mesh"),
@@ -136,17 +132,44 @@ void initUpdateAlgorithms(pybind11::module& m)
                    const vcl::Matrix44d& mat,
                    bool                  removeScalingFromMatrix = true,
                    AbstractLogger& log = vcl::nullLogger) {
-                    return vcl::multiplyPerVertexNormalsByMatrix(
+                    return multiplyPerVertexNormalsByMatrix(
                         m, mat, removeScalingFromMatrix, log);
                 },
                 py::arg("mesh"),
                 py::arg("matrix"),
                 py::arg("remove_scaling_from_matrix") = true,
                 py::arg("log") = py::cast(vcl::nullLogger));
+
+            // quality.h
+
+            m.def(
+                "set_per_vertex_quality",
+                [](MeshType& m, double quality) {
+                    return setPerVertexQuality(m, quality);
+                },
+                py::arg("mesh"),
+                py::arg("quality") = 0.0);
+
+            m.def(
+                "clamp_per_vertex_quality",
+                [](MeshType& m, double minQ, double maxQ) {
+                    return clampPerVertexQuality(m, minQ, maxQ);
+                },
+                py::arg("mesh"),
+                py::arg("min_quality") = 0.0,
+                py::arg("max_quality") = 1.0);
+
+            m.def(
+                "normalize_per_vertex_quality",
+                [](MeshType& m, double minQ, double maxQ) {
+                    return normalizePerVertexQuality(m, minQ, maxQ);
+                },
+                py::arg("mesh"),
+                py::arg("min_quality") = 0.0,
+                py::arg("max_quality") = 1.0);
         };
 
     defForAllMeshTypes(m, fAllMeshes);
-
 
     // enum for PrincipalCurvatureAlgorithm (define it here because is not
     // related to the mesh definition)
@@ -246,7 +269,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             py::arg("mesh"),
             py::arg("algorithm") = PrincipalCurvatureAlgorithm::TAUBIN95,
-            py::arg("log") = py::cast(vcl::nullLogger));
+            py::arg("log")       = py::cast(vcl::nullLogger));
 
         // normal.h
 
@@ -270,7 +293,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             py::arg("mesh"),
             py::arg("matrix"),
             py::arg("remove_scaling_from_matrix") = true,
-            py::arg("log") = py::cast(vcl::nullLogger));
+            py::arg("log")                        = py::cast(vcl::nullLogger));
 
         m.def(
             "multiply_per_face_normals_by_matrix",
@@ -284,7 +307,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             py::arg("mesh"),
             py::arg("matrix"),
             py::arg("remove_scaling_from_matrix") = true,
-            py::arg("log") = py::cast(vcl::nullLogger));
+            py::arg("log")                        = py::cast(vcl::nullLogger));
 
         m.def(
             "update_per_face_normals",
@@ -295,7 +318,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             py::arg("mesh"),
             py::arg("normalize") = true,
-            py::arg("log") = py::cast(vcl::nullLogger));
+            py::arg("log")       = py::cast(vcl::nullLogger));
 
         m.def(
             "update_per_vertex_normals",
@@ -306,7 +329,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             py::arg("mesh"),
             py::arg("normalize") = true,
-            py::arg("log") = py::cast(vcl::nullLogger));
+            py::arg("log")       = py::cast(vcl::nullLogger));
 
         m.def(
             "update_per_vertex_normals_from_face_normals",
@@ -325,8 +348,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             [](MeshType& m,
                bool      normalize = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::updatePerVertexAndFaceNormals(
-                    m, normalize, log);
+                return vcl::updatePerVertexAndFaceNormals(m, normalize, log);
             },
             py::arg("mesh"),
             py::arg("normalize") = true,
@@ -355,6 +377,86 @@ void initUpdateAlgorithms(pybind11::module& m)
             py::arg("mesh"),
             py::arg("normalize") = true,
             py::arg("log")       = py::cast(vcl::nullLogger));
+
+        // quality.h
+
+        m.def(
+            "set_per_face_quality",
+            [](MeshType& m, double quality) {
+                return vcl::setPerFaceQuality(m, quality);
+            },
+            py::arg("mesh"),
+            py::arg("quality") = 0.0);
+
+        m.def(
+            "clamp_per_face_quality",
+            [](MeshType& m, double minQ, double maxQ) {
+                return vcl::clampPerFaceQuality(m, minQ, maxQ);
+            },
+            py::arg("mesh"),
+            py::arg("min_quality") = 0.0,
+            py::arg("max_quality") = 1.0);
+
+        m.def(
+            "normalize_per_face_quality",
+            [](MeshType& m, double minQ, double maxQ) {
+                return vcl::normalizePerFaceQuality(m, minQ, maxQ);
+            },
+            py::arg("mesh"),
+            py::arg("min_quality") = 0.0,
+            py::arg("max_quality") = 1.0);
+
+        m.def("set_per_vertex_quality_from_vertex_valence", [](MeshType& m) {
+            return vcl::setPerVertexQualityFromVertexValence(m);
+        });
+
+        m.def("set_per_face_quality_from_face_area", [](MeshType& m) {
+            return vcl::setPerFaceQualityFromFaceArea(m);
+        });
+
+        m.def(
+            "set_per_vertex_quality_from_principal_curvature_gaussian",
+            [](MeshType& m) {
+                return setPerVertexQualityFromPrincipalCurvatureGaussian(m);
+            },
+            py::arg("mesh"));
+
+        m.def(
+            "set_per_vertex_quality_from_principal_curvature_mean",
+            [](MeshType& m) {
+                return setPerVertexQualityFromPrincipalCurvatureMean(m);
+            },
+            py::arg("mesh"));
+
+        m.def(
+            "set_per_vertex_quality_from_principal_curvature_min_value",
+            [](MeshType& m) {
+                return setPerVertexQualityFromPrincipalCurvatureMinValue(m);
+            },
+            py::arg("mesh"));
+
+        m.def(
+            "set_per_vertex_quality_from_principal_curvature_max_value",
+            [](MeshType& m) {
+                return setPerVertexQualityFromPrincipalCurvatureMaxValue(m);
+            },
+            py::arg("mesh"));
+
+        m.def(
+            "set_per_vertex_quality_from_principal_curvature_shape_index",
+            [](MeshType& m) {
+                return setPerVertexQualityFromPrincipalCurvatureShapeIndex(
+                    m);
+            },
+            py::arg("mesh"));
+
+        m.def(
+            "set_per_vertex_quality_from_principal_curvature_curvedness",
+            [](MeshType& m) {
+                return setPerVertexQualityFromPrincipalCurvatureCurvedness(
+                    m);
+            },
+            py::arg("mesh"));
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
