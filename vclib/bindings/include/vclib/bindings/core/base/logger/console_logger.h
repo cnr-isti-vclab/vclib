@@ -20,24 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_BASE_LOGGER_H
-#define VCL_BINDINGS_CORE_BASE_LOGGER_H
-
-#include "logger/abstract_logger.h"
-#include "logger/console_logger.h"
-#include "logger/null_logger.h"
+#ifndef VCL_BINDINGS_CORE_BASE_LOGGER_CONSOLE_LOGGER_H
+#define VCL_BINDINGS_CORE_BASE_LOGGER_CONSOLE_LOGGER_H
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-void initLogger(pybind11::module& m)
-{
-    initAbstractLogger(m);
-    initConsoleLogger(m);
-    initNullLogger(m);
-}
+void initConsoleLogger(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_BASE_LOGGER_H
+#endif // VCL_BINDINGS_CORE_BASE_LOGGER_CONSOLE_LOGGER_H

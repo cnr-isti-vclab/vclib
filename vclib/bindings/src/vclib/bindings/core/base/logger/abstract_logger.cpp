@@ -34,6 +34,15 @@ void initAbstractLogger(pybind11::module& m)
     namespace py = pybind11;
 
     py::class_<AbstractLogger> c(m, "AbstractLogger");
+
+    // define LogLevel enum
+    py::enum_<AbstractLogger::LogLevel> llEnum(c, "LogLevel");
+    llEnum.value("ERROR_LOG", AbstractLogger::ERROR_LOG);
+    llEnum.value("WARNING_LOG", AbstractLogger::WARNING_LOG);
+    llEnum.value("MESSAGE_LOG", AbstractLogger::MESSAGE_LOG);
+    llEnum.value("PROGRESS_LOG", AbstractLogger::PROGRESS_LOG);
+    llEnum.value("DEBUG_LOG", AbstractLogger::DEBUG_LOG);
+    llEnum.export_values();
 }
 
 } // namespace vcl::bind

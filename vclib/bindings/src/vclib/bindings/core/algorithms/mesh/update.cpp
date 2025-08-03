@@ -186,11 +186,13 @@ void initUpdateAlgorithms(pybind11::module& m)
             "update_per_vertex_principal_curvature",
             [](MeshType&                   m,
                PrincipalCurvatureAlgorithm alg =
-                   PrincipalCurvatureAlgorithm::TAUBIN95) {
-                return vcl::updatePrincipalCurvature(m, alg);
+                   PrincipalCurvatureAlgorithm::TAUBIN95,
+               AbstractLogger& log = nullLogger) {
+                return vcl::updatePrincipalCurvature(m, alg, log);
             },
             py::arg("mesh"),
-            py::arg("algorithm") = PrincipalCurvatureAlgorithm::TAUBIN95);
+            py::arg("algorithm") = PrincipalCurvatureAlgorithm::TAUBIN95,
+            py::arg("log") = py::cast(vcl::nullLogger));
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
