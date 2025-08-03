@@ -97,6 +97,15 @@ void initUpdateAlgorithms(pybind11::module& m)
 
     defForAllMeshTypes(m, fAllMeshes);
 
+
+    // enum for PrincipalCurvatureAlgorithm (define it here because is not
+    // related to the mesh definition)
+    py::enum_<vcl::PrincipalCurvatureAlgorithm> pcaEnum(
+        m, "PrincipalCurvatureAlgorithm");
+    pcaEnum.value("TAUBIN95", vcl::PrincipalCurvatureAlgorithm::TAUBIN95);
+    pcaEnum.value("PCA", vcl::PrincipalCurvatureAlgorithm::PCA);
+    pcaEnum.export_values();
+
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
                            pybind11::module& m, MeshType = MeshType()) {
         // color.h
@@ -170,12 +179,6 @@ void initUpdateAlgorithms(pybind11::module& m)
             py::arg("check_faux_edges") = true);
 
         // curvature.h
-
-        py::enum_<vcl::PrincipalCurvatureAlgorithm> pcaEnum(
-            m, "PrincipalCurvatureAlgorithm");
-        pcaEnum.value("TAUBIN95", vcl::PrincipalCurvatureAlgorithm::TAUBIN95);
-        pcaEnum.value("PCA", vcl::PrincipalCurvatureAlgorithm::PCA);
-        pcaEnum.export_values();
 
         // TODO: add logger
 

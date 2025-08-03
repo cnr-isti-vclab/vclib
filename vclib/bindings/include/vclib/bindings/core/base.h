@@ -20,34 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/algorithms.h>
-#include <vclib/bindings/core/base.h>
-#include <vclib/bindings/core/io.h>
-#include <vclib/bindings/core/meshes.h>
-#include <vclib/bindings/core/space.h>
+#ifndef VCL_BINDINGS_CORE_BASE_H
+#define VCL_BINDINGS_CORE_BASE_H
 
-#include <vclib/base.h>
+#include "base/base.h"
+#include "base/logger.h"
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-// creation of a python module
-PYBIND11_MODULE(core, m)
+inline void initBase(pybind11::module& m)
 {
-    // import the bindings
-    using namespace vcl::bind;
-
-    // initialize the bindings
-    initBase(m);
-
-    initSpace(m);
-
-    initMeshes(m);
-
-    initAlgorithms(m);
-
-    initIO(m);
+    initBaseBase(m);
+    initLogger(m);
 }
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_CORE_BASE_H
