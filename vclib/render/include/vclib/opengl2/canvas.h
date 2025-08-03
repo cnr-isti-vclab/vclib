@@ -23,12 +23,12 @@
 #ifndef VCL_OPENGL2_CANVAS_H
 #define VCL_OPENGL2_CANVAS_H
 
+#include <vclib/base.h>
 #include <vclib/io/image.h>
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
-#include <vclib/base.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

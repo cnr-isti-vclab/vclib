@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <vclib/bindings/core/algorithms.h>
+#include <vclib/bindings/core/base.h>
 #include <vclib/bindings/core/io.h>
 #include <vclib/bindings/core/meshes.h>
 #include <vclib/bindings/core/space.h>
@@ -37,9 +38,9 @@ PYBIND11_MODULE(core, m)
     // import the bindings
     using namespace vcl::bind;
 
-    m.attr("UINT_NULL") = pybind11::int_(vcl::UINT_NULL);
-
     // initialize the bindings
+    initBase(m);
+
     initSpace(m);
 
     initMeshes(m);

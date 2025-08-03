@@ -20,61 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BASE_RANDOM_H
-#define VCL_BASE_RANDOM_H
+#include <vclib/bindings/core/base/logger/abstract_logger.h>
+#include <vclib/bindings/utils.h>
 
-#include <vclib/base/concepts/range.h>
+#include <vclib/base.h>
 
-#include <algorithm>
-#include <optional>
-#include <random>
+#include <pybind11/operators.h>
 
-namespace vcl {
+namespace vcl::bind {
 
-/**
- * @brief Creates a random number generator with an optional seed.
- *
- * If a seed is provided, the generator is seeded with that value, otherwise
- * it uses a random device to generate a random seed.
- *
- * @param seed: Optional seed value for the random number generator.
- * @return A std::mt19937 random number generator.
- *
- * @ingroup base
- */
-inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
+void initAbstractLogger(pybind11::module& m)
 {
-    std::mt19937 gen;
+    namespace py = pybind11;
 
-    if (seed.has_value()) {
-        gen.seed(seed.value());
-    }
-    else {
-        std::random_device rd;
-        gen.seed(rd()); // random seed
-    }
+    py::class_<AbstractLogger> c(m, "AbstractLogger");
 
-    return gen;
+    // define LogLevel enum
+    py::enum_<AbstractLogger::LogLevel> llEnum(c, "LogLevel");
+    llEnum.value("ERROR_LOG", AbstractLogger::ERROR_LOG);
+    llEnum.value("WARNING_LOG", AbstractLogger::WARNING_LOG);
+    llEnum.value("MESSAGE_LOG", AbstractLogger::MESSAGE_LOG);
+    llEnum.value("PROGRESS_LOG", AbstractLogger::PROGRESS_LOG);
+    llEnum.value("DEBUG_LOG", AbstractLogger::DEBUG_LOG);
+    llEnum.export_values();
 }
 
-/**
- * @brief Shuffle the elements of a range.
- *
- * @tparam R: Type of the range.
- * @param[in] range: Range to shuffle.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
- *
- * @ingroup base
- */
-template<Range R>
-void shuffle(R&& range, std::optional<uint> seed = std::nullopt)
-{
-    std::mt19937 generator = randomGenerator(seed);
-
-    std::shuffle(range.begin(), range.end(), generator);
-}
-
-} // namespace vcl
-
-#endif // VCL_BASE_RANDOM_H
+} // namespace vcl::bind

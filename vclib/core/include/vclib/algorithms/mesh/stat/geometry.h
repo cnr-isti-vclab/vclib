@@ -224,7 +224,7 @@ std::vector<ScalarType> vertexRadiusFromWeights(
     double deltaQ   = *max - *min;
     double deltaRad = maxRad - minRad;
     for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
-        double num = invert ? (*max - w) : (w - *min);
+        double num         = invert ? (*max - w) : (w - *min);
         radius[m.index(v)] = minRad + deltaRad * (num / deltaQ);
     }
 
