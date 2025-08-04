@@ -25,6 +25,7 @@
 
 #include "core/box.h"
 #include "core/color.h"
+#include "core/histogram.h"
 #include "core/image.h"
 #include "core/matrix.h"
 #include "core/point.h"
@@ -46,6 +47,7 @@ inline void initCore(pybind11::module& m)
 
     initBox(m);
     initColor(m);
+    initHistogram(m);
     initImage(m);
     initMatrix(m);
     initPrincipalCurvature(m);

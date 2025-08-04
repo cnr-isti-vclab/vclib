@@ -23,9 +23,9 @@
 #ifndef BAR_COMPONENT_H
 #define BAR_COMPONENT_H
 
+#include <vclib/base.h>
 #include <vclib/mesh.h>
 #include <vclib/meshes.h>
-#include <vclib/base.h>
 
 #include <iostream>
 #include <vector>

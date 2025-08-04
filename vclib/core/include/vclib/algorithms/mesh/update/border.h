@@ -20,87 +20,58 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_MESH_UPDATE_SELECTION_H
-#define VCL_ALGORITHMS_MESH_UPDATE_SELECTION_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_BORDER_H
+#define VCL_ALGORITHMS_MESH_UPDATE_BORDER_H
 
-#include <vclib/algorithms/mesh/clean.h>
-#include <vclib/algorithms/mesh/stat.h>
+#include <vclib/algorithms/mesh/sort.h>
 
 #include <vclib/mesh.h>
 
 namespace vcl {
 
-template<uint ELEM_ID, MeshConcept MeshType>
-void clearElementSelection(MeshType& mesh)
-{
-    for (auto&& e : mesh.template elements<ELEM_ID>()) {
-        e.selected() = false;
-    }
-}
-
-template<MeshConcept MeshType>
-void clearVertexSelection(MeshType& m)
-{
-    clearElementSelection<ElemId::VERTEX>(m);
-}
-
+/**
+ * @brief Computes per-face border flags without requiring any kind of
+ * topology info.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces
+ *
+ * Complexity: O(NF log (NF))
+ *
+ * @param m: the mesh on which the border flags will be updated
+ */
 template<FaceMeshConcept MeshType>
-void clearFaceSelection(MeshType& m)
+void updateBorder(MeshType& m)
 {
-    clearElementSelection<ElemId::FACE>(m);
-}
-
-template<FaceMeshConcept MeshType>
-void clearFaceEdgesSelection(MeshType& m)
-{
-    for (auto& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
-            f.edgeSelected(i) = false;
-        }
-    }
-}
-
-template<EdgeMeshConcept MeshType>
-void clearEdgeSelection(MeshType& m)
-{
-    clearElementSelection<ElemId::EDGE>(m);
-}
-
-template<FaceMeshConcept MeshType>
-void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst = true)
-{
-    std::vector<bool> nonManifoldVertices =
-        detail::nonManifoldVerticesVectorBool(m);
-
     using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
 
-    for (VertexType& v : m.vertices()) {
-        if (nonManifoldVertices[m.index(v)]) {
-            v.selected() = true;
+    for (FaceType& f : m.faces())
+        for (uint i = 0; i < f.vertexNumber(); ++i)
+            f.edgeOnBorder(i) = false;
+
+    if (m.faceNumber() == 0)
+        return;
+
+    std::vector<MeshEdgeUtil<MeshType>> e = fillAndSortMeshEdgeUtilVector(m);
+
+    typename std::vector<MeshEdgeUtil<MeshType>>::iterator pe, ps;
+    ps = e.begin();
+    pe = e.begin();
+    do {
+        if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
+            if (pe - ps == 1) {
+                ps->f->edgeOnBorder(ps->e) = true;
+            }
+            ps = pe;
         }
-        else if (clearSelectionFirst) {
-            v.selected() = false;
-        }
-    }
-}
-
-template<FaceMeshConcept MeshType>
-void selectCreaseFaceEdges(
-    MeshType& m,
-    double    angleRadNeg,
-    double    angleRadPos,
-    bool      alsoBorderEdges = false)
-{
-    clearFaceEdgesSelection(m);
-
-    std::vector<std::pair<uint, uint>> creaseEdges =
-        creaseFaceEdges(m, angleRadNeg, angleRadPos, alsoBorderEdges);
-
-    for (const auto& [fi, ei] : creaseEdges) {
-        m.face(fi).edgeSelected(ei) = true;
-    }
+        if (pe != e.end())
+            ++pe;
+    } while (pe != e.end());
 }
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_MESH_UPDATE_SELECTION_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_BORDER_H
