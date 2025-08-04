@@ -32,9 +32,8 @@ IMAGE2D_WO(tex_selection, r8, 7);
 uniform vec4 u_selectionBox;
 uniform vec4 u_workgroupSizeAndVertexCount;
 
-/* TODO: Clearly you'll have to check the coordinates in view space... 
-* (i imagine the selection box "lives" on the view plane)
-*/
+// THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
+// Possibility: uniform containing selection box passed already in NDC space? It's probably doable
 
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
