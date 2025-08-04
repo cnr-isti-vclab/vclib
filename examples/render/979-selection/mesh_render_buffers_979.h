@@ -59,7 +59,7 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     VertexBuffer mVertexWedgeUVBuffer;
 
     // vertex selection
-    VertexBuffer mSelectedVerticesBuffer;
+    IndexBuffer mSelectedVerticesBuffer;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -235,10 +235,7 @@ public:
             non_const_this->mSelectedVerticesBuffer.createForCompute(
                 &zeros[0],
                 selectedVerticesBufferSize,
-                bgfx::Attrib::Color0,
-                4,
-                vcl::PrimitiveType::FLOAT,
-                false,
+                vcl::PrimitiveType::UINT,
                 bgfx::Access::ReadWrite
             );
         }
@@ -255,14 +252,16 @@ public:
         }
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        mSelectedVerticesBuffer.bindCompute(4, bgfx::Access::ReadWrite);
+        non_const_this->mSelectedVerticesBuffer.setCompute(true);
+        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+        non_const_this->mSelectedVerticesBuffer.setCompute(false);
         bgfx::setImage(7, mComputeWriteTex, 0, bgfx::Access::Write, bgfx::TextureFormat::R8);
         vcl::Point3d bboxSize = bbox.size();
         float        temp[]   = {
-            1024.f/2.f,
+            1024.f/2.f*1.5f,
             0.f,
-            1024.f,
-            768.f/2.f};
+            1024.f*1.5f,
+            768.f/2.f*1.5f};
         mSelectionBoxuniform.bind((void*) temp);
         float temp2[] = {vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]), vcl::Uniform::uintBitsToFloat(Base::numVerts())};
         mWorkgroupSizeAndVertexCountUniform.bind((void*)temp2);

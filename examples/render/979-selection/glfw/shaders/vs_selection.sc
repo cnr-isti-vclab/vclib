@@ -26,17 +26,16 @@ $output v_color
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-BUFFER_RO(vertex_selected, vec4, 4);
+BUFFER_RO(vertex_selected, uint, 4);
 
 void main() {
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
 
     uint pointId = uint(gl_VertexID);
-    uint bufferIndex = pointId/128;
-    uint vec4Index = (pointId%128)/32;
+    uint bufferIndex = pointId/32;
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
-    if ((floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & bitMask) == 0) {
+    if ((vertex_selected[bufferIndex] & bitMask) == 0) {
         v_color = a_color0;
     } else {
         v_color = uintABGRToVec4Color(uint(0xFF0000FF));

@@ -25,7 +25,7 @@
 
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 
-BUFFER_RW(vertex_selected, vec4, 4);   // is vertex selected? 1 bit per vertex...
+BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
 IMAGE2D_WO(tex_selection, r8, 7);
 
@@ -75,50 +75,15 @@ void main()
     vec4 pNDC = mul(u_modelViewProj, p);
     pNDC = pNDC / pNDC.w;
 
-    uint bufferIndex = pointId/128;
-    uint vec4Index = (pointId%128)/32;
+    uint bufferIndex = pointId/32;
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
-    float newValue;
+    uint _useless;
     if (pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y) {
-        newValue = uintBitsToFloat(floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) | bitMask);
+        atomicFetchAndOr(vertex_selected[bufferIndex], bitMask, _useless);
     } else {
-        newValue = uintBitsToFloat(floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & (~bitMask));
-    }
-    switch(vec4Index) {
-        case 0:
-            vertex_selected[bufferIndex] = vec4(
-                newValue,
-                vertex_selected[bufferIndex].y,
-                vertex_selected[bufferIndex].z,
-                vertex_selected[bufferIndex].w
-            );
-            break;
-        case 1:
-            vertex_selected[bufferIndex] = vec4(
-                vertex_selected[bufferIndex].x,
-                newValue,
-                vertex_selected[bufferIndex].z,
-                vertex_selected[bufferIndex].w
-            );
-            break;
-        case 2:
-            vertex_selected[bufferIndex] = vec4(
-                vertex_selected[bufferIndex].x,
-                vertex_selected[bufferIndex].y,
-                newValue,
-                vertex_selected[bufferIndex].w
-            );
-            break;
-        case 3:
-            vertex_selected[bufferIndex] = vec4(
-                vertex_selected[bufferIndex].x,
-                vertex_selected[bufferIndex].y,
-                vertex_selected[bufferIndex].z,
-                newValue
-            );
-            break;
+        atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
     }
     uint texSizeX = uint(imageSize(tex_selection).x);
-    imageStore(tex_selection, ivec2(pointId%texSizeX, pointId/texSizeX), uintABGRToVec4Color((floatBitsToUint(vertex_selected[bufferIndex][vec4Index]) & bitMask) >> (bitOffset)).x);
+    imageStore(tex_selection, ivec2(pointId%texSizeX, pointId/texSizeX), uintABGRToVec4Color((vertex_selected[bufferIndex] & bitMask) >> (bitOffset)).x);
 }
