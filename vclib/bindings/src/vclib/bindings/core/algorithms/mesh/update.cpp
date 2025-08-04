@@ -167,6 +167,12 @@ void initUpdateAlgorithms(pybind11::module& m)
                 py::arg("mesh"),
                 py::arg("min_quality") = 0.0,
                 py::arg("max_quality") = 1.0);
+
+            // selection.h
+
+            m.def("clear_vertex_selection", [](MeshType& m) {
+                return clearVertexSelection(m);
+            });
         };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -455,6 +461,34 @@ void initUpdateAlgorithms(pybind11::module& m)
                 return setPerVertexQualityFromPrincipalCurvatureCurvedness(m);
             },
             py::arg("mesh"));
+
+        // selection.h
+
+        m.def("clear_face_selection", [](MeshType& m) {
+            return clearFaceSelection(m);
+        });
+
+        m.def("clear_face_edges_selection", [](MeshType& m) {
+            return clearFaceEdgesSelection(m);
+        });
+
+        m.def(
+            "select_non_manifold_vertices",
+            [](MeshType& m, bool csf) {
+                return selectNonManifoldVertices(m, csf);
+            },
+            py::arg("mesh"),
+            py::arg("clear_selection_first") = true);
+
+        m.def(
+            "select_crease_face_edges",
+            [](MeshType& m, double arn, double arp, double abe) {
+                return selectCreaseFaceEdges(m, arn, arp, abe);
+            },
+            py::arg("mesh"),
+            py::arg("angle_rad_neg"),
+            py::arg("angle_rad_pos"),
+            py::arg("also_border_edges") = false);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
@@ -474,6 +508,12 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def("set_per_edge_color_from_vertex_color", [](MeshType& m) {
             return vcl::setPerEdgeColorFromVertexColor(m);
+        });
+
+        // selection.h
+
+        m.def("clear_edge_selection", [](MeshType& m) {
+            return clearEdgeSelection(m);
         });
     };
 
