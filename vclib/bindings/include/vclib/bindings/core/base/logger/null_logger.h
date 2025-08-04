@@ -20,61 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BASE_RANDOM_H
-#define VCL_BASE_RANDOM_H
+#ifndef VCL_BINDINGS_CORE_BASE_LOGGER_NULL_LOGGER_H
+#define VCL_BINDINGS_CORE_BASE_LOGGER_NULL_LOGGER_H
 
-#include <vclib/base/concepts/range.h>
+#include <pybind11/pybind11.h>
 
-#include <algorithm>
-#include <optional>
-#include <random>
+namespace vcl::bind {
 
-namespace vcl {
+void initNullLogger(pybind11::module& m);
 
-/**
- * @brief Creates a random number generator with an optional seed.
- *
- * If a seed is provided, the generator is seeded with that value, otherwise
- * it uses a random device to generate a random seed.
- *
- * @param seed: Optional seed value for the random number generator.
- * @return A std::mt19937 random number generator.
- *
- * @ingroup base
- */
-inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
-{
-    std::mt19937 gen;
+} // namespace vcl::bind
 
-    if (seed.has_value()) {
-        gen.seed(seed.value());
-    }
-    else {
-        std::random_device rd;
-        gen.seed(rd()); // random seed
-    }
-
-    return gen;
-}
-
-/**
- * @brief Shuffle the elements of a range.
- *
- * @tparam R: Type of the range.
- * @param[in] range: Range to shuffle.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
- *
- * @ingroup base
- */
-template<Range R>
-void shuffle(R&& range, std::optional<uint> seed = std::nullopt)
-{
-    std::mt19937 generator = randomGenerator(seed);
-
-    std::shuffle(range.begin(), range.end(), generator);
-}
-
-} // namespace vcl
-
-#endif // VCL_BASE_RANDOM_H
+#endif // VCL_BINDINGS_CORE_BASE_LOGGER_NULL_LOGGER_H

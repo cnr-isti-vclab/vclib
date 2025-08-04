@@ -20,61 +20,64 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BASE_RANDOM_H
-#define VCL_BASE_RANDOM_H
+#include <vclib/bindings/core/base/logger/console_logger.h>
+#include <vclib/bindings/utils.h>
 
-#include <vclib/base/concepts/range.h>
+#include <vclib/base.h>
 
-#include <algorithm>
-#include <optional>
-#include <random>
+#include <pybind11/operators.h>
 
-namespace vcl {
+namespace vcl::bind {
 
-/**
- * @brief Creates a random number generator with an optional seed.
- *
- * If a seed is provided, the generator is seeded with that value, otherwise
- * it uses a random device to generate a random seed.
- *
- * @param seed: Optional seed value for the random number generator.
- * @return A std::mt19937 random number generator.
- *
- * @ingroup base
- */
-inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
+void initConsoleLogger(pybind11::module& m)
 {
-    std::mt19937 gen;
+    namespace py = pybind11;
 
-    if (seed.has_value()) {
-        gen.seed(seed.value());
-    }
-    else {
-        std::random_device rd;
-        gen.seed(rd()); // random seed
-    }
+    py::class_<ConsoleLogger, AbstractLogger> c(m, "ConsoleLogger");
 
-    return gen;
+    c.def(py::init<>());
+
+    c.def("start_timer", &ConsoleLogger::startTimer);
+    c.def("stop_timer", &ConsoleLogger::stopTimer);
+    c.def("time", &ConsoleLogger::time);
+
+    c.def("percentage", &ConsoleLogger::percentage);
+
+    c.def(
+        "log",
+        [](ConsoleLogger& self, const std::string& msg) {
+            self.log(msg);
+        },
+        py::arg("msg"));
+    c.def(
+        "log",
+        [](ConsoleLogger&          self,
+           const std::string&      msg,
+           ConsoleLogger::LogLevel lvl) {
+            self.log(msg, lvl);
+        },
+        py::arg("msg"),
+        py::arg("lvl"));
+
+    c.def(
+        "log",
+        [](ConsoleLogger& self, uint perc, const std::string& msg) {
+            self.log(perc, msg);
+        },
+        py::arg("perc"),
+        py::arg("msg"));
+
+    c.def(
+        "log",
+        [](ConsoleLogger&          self,
+           uint                    perc,
+           const std::string&      msg,
+           ConsoleLogger::LogLevel lvl) {
+            self.log(perc, msg, lvl);
+        },
+        py::arg("perc"),
+        py::arg("msg"),
+        py::arg("lvl"));
 }
 
-/**
- * @brief Shuffle the elements of a range.
- *
- * @tparam R: Type of the range.
- * @param[in] range: Range to shuffle.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
- *
- * @ingroup base
- */
-template<Range R>
-void shuffle(R&& range, std::optional<uint> seed = std::nullopt)
-{
-    std::mt19937 generator = randomGenerator(seed);
-
-    std::shuffle(range.begin(), range.end(), generator);
-}
-
-} // namespace vcl
-
-#endif // VCL_BASE_RANDOM_H
+} // namespace vcl::bind
