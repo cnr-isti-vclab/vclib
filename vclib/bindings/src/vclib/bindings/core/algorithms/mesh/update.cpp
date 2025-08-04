@@ -445,16 +445,14 @@ void initUpdateAlgorithms(pybind11::module& m)
         m.def(
             "set_per_vertex_quality_from_principal_curvature_shape_index",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureShapeIndex(
-                    m);
+                return setPerVertexQualityFromPrincipalCurvatureShapeIndex(m);
             },
             py::arg("mesh"));
 
         m.def(
             "set_per_vertex_quality_from_principal_curvature_curvedness",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureCurvedness(
-                    m);
+                return setPerVertexQualityFromPrincipalCurvatureCurvedness(m);
             },
             py::arg("mesh"));
     };

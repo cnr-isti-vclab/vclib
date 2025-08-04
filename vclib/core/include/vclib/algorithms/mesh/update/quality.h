@@ -80,7 +80,7 @@ void normalizePerElementQuality(
 {
     requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
-    QualityType range = maxQ - minQ;
+    QualityType range   = maxQ - minQ;
     auto [eMinQ, eMaxQ] = elementQualityMinMax<ELEM_ID>(mesh);
 
     for (auto&& q : mesh.template elements<ELEM_ID>() | vcl::views::quality) {
