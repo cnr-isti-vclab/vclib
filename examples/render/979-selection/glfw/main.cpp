@@ -84,11 +84,7 @@ int main(void)
     vcl::DrawableMeshBGFX979<vcl::TriMesh> msh = getDrawableMesh979("cube_poly.ply");
 
     tw.pushDrawableObject(std::move(msh));
-    std::shared_ptr<const vcl::DrawableMeshBGFX979<vcl::TriMesh>> mshptr = std::dynamic_pointer_cast<const vcl::DrawableMeshBGFX979<vcl::TriMesh>>(tw.drawableObjectVector().at(0));
-
-    tw.setMRB(&mshptr->getMRB());
-    tw.setBbox(mshptr->getBbox());
-    tw.setMesh(mshptr);
+    tw.setMesh(tw.drawableObjectVector(), 0);
 
     tw.fitScene();
 

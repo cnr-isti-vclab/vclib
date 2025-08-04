@@ -5,6 +5,3 @@
 - Actual way to "start selecting"
 - Check Z coordinate in selection if (needs to be inside the NDC space)
 - Maybe change code so that the selection box uniform is already in NDC space?
-
-URGENT:
-- Clean up texture (which is now useless, given the vertex and fragment shaders to show the selection)

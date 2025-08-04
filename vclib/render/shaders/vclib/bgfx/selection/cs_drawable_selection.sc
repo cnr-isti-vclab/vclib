@@ -27,8 +27,6 @@ BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 fl
 
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
-IMAGE2D_WO(tex_selection, r8, 7);
-
 uniform vec4 u_selectionBox;
 uniform vec4 u_workgroupSizeAndVertexCount;
 
@@ -83,6 +81,4 @@ void main()
     } else {
         atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
     }
-    uint texSizeX = uint(imageSize(tex_selection).x);
-    imageStore(tex_selection, ivec2(pointId%texSizeX, pointId/texSizeX), uintABGRToVec4Color((vertex_selected[bufferIndex] & bitMask) >> (bitOffset)).x);
 }

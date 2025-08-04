@@ -25,6 +25,7 @@
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+#include <algorithm>
 #include <vclib/algorithms/core/create.h>
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/bgfx/buffers.h>
@@ -35,7 +36,6 @@
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/space/core/image.h>
-#include <algorithm>
 
 #include <bgfx/bgfx.h>
 
@@ -87,14 +87,10 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     Uniform mSelectionBoxuniform =
         Uniform("u_selectionBox", bgfx::UniformType::Vec4);
-    Uniform mWorkgroupSizeAndVertexCountUniform = Uniform("u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
+    Uniform mWorkgroupSizeAndVertexCountUniform =
+        Uniform("u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
 
-    bgfx::TextureHandle mReadBackTex = BGFX_INVALID_HANDLE;
-    bgfx::TextureHandle mComputeWriteTex = BGFX_INVALID_HANDLE;
-
-    std::array<uint16_t, 2> mSelectionTexSize = {0, 0};
     std::array<uint, 3> mWorkgroupSize = {0, 0, 0};
-
 
 public:
     MeshRenderBuffers979() = default;
@@ -194,41 +190,31 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    std::array<uint16_t, 2> getSelectionTexSize() {
-        if (mSelectionTexSize[0] == 0) {
-            uint32_t maxTexSize = bgfx::getCaps()->limits.maxTextureSize;
-            mSelectionTexSize[0] = (uint16_t)std::min(maxTexSize, Base::numVerts());
-            mSelectionTexSize[1] = (uint16_t)std::ceil(double(Base::numVerts()) / double(mSelectionTexSize[0]));
-        }
-        return mSelectionTexSize;
-    }
-
-    std::array<uint, 3> getWorkgroupSize() {
+    std::array<uint, 3> getWorkgroupSize()
+    {
         if (mWorkgroupSize[0] == 0) {
             mWorkgroupSize[0] = std::min(Base::numVerts(), uint(512));
-            mWorkgroupSize[1] = std::min(uint(std::ceil(double(Base::numVerts())/double(mWorkgroupSize[0]))), uint(512));
-            mWorkgroupSize[2] = uint(std::ceil(double(Base::numVerts())/double(mWorkgroupSize[0]*mWorkgroupSize[1])));
+            mWorkgroupSize[1] = std::min(
+                uint(
+                    std::ceil(
+                        double(Base::numVerts()) / double(mWorkgroupSize[0]))),
+                uint(512));
+            mWorkgroupSize[2] = uint(
+                std::ceil(
+                    double(Base::numVerts()) /
+                    double(mWorkgroupSize[0] * mWorkgroupSize[1])));
         }
         return mWorkgroupSize;
     }
 
-    uint vertexNumber() {
-        return Base::numVerts();
-    }
+    uint vertexNumber() { return Base::numVerts(); }
 
-    void calculateSelection(
-        const bgfx::ViewId viewId,
-        const bgfx::ViewId blitViewId,
-        Box3d              bbox) const
+    void calculateSelection(const bgfx::ViewId viewId) const
     {
-        MeshRenderBuffers979<Mesh> *non_const_this = const_cast<MeshRenderBuffers979<Mesh>*>(this);
+        MeshRenderBuffers979<Mesh>* non_const_this =
+            const_cast<MeshRenderBuffers979<Mesh>*>(this);
 
-        if(!mSelectedVerticesBuffer.isValid()) {
-            bgfx::VertexLayout layout;
-            layout
-                .begin()
-                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
-                .end();
+        if (!mSelectedVerticesBuffer.isValid()) {
             uint selectedVerticesBufferSize =
                 uint(ceil(double(Base::numVerts()) / 32.0));
             std::vector<uint> zeros(selectedVerticesBufferSize, 0);
@@ -236,17 +222,9 @@ public:
                 &zeros[0],
                 selectedVerticesBufferSize,
                 vcl::PrimitiveType::UINT,
-                bgfx::Access::ReadWrite
-            );
+                bgfx::Access::ReadWrite);
         }
-        non_const_this->getSelectionTexSize();
         non_const_this->getWorkgroupSize();
-        if(!bgfx::isValid(mReadBackTex)) {
-            non_const_this->mReadBackTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::R8, BGFX_TEXTURE_READ_BACK | BGFX_TEXTURE_BLIT_DST);
-        }
-        if(!bgfx::isValid(mComputeWriteTex)) {
-            non_const_this->mComputeWriteTex = bgfx::createTexture2D(mSelectionTexSize[0], mSelectionTexSize[1], false, 1, bgfx::TextureFormat::R8, BGFX_TEXTURE_COMPUTE_WRITE);
-        }
         if (!mVertexPositionsBuffer.isValid()) {
             std::cout << "Invalid vertex positions" << std::endl;
         }
@@ -255,16 +233,14 @@ public:
         non_const_this->mSelectedVerticesBuffer.setCompute(true);
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         non_const_this->mSelectedVerticesBuffer.setCompute(false);
-        bgfx::setImage(7, mComputeWriteTex, 0, bgfx::Access::Write, bgfx::TextureFormat::R8);
-        vcl::Point3d bboxSize = bbox.size();
-        float        temp[]   = {
-            1024.f/2.f,
-            0.f,
-            1024.f,
-            768.f/2.f};
+        float temp[] = {1024.f / 2.f, 0.f, 1024.f, 768.f / 2.f};
         mSelectionBoxuniform.bind((void*) temp);
-        float temp2[] = {vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]), vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]), vcl::Uniform::uintBitsToFloat(Base::numVerts())};
-        mWorkgroupSizeAndVertexCountUniform.bind((void*)temp2);
+        float temp2[] = {
+            vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]),
+            vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]),
+            vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]),
+            vcl::Uniform::uintBitsToFloat(Base::numVerts())};
+        mWorkgroupSizeAndVertexCountUniform.bind((void*) temp2);
         auto& pm = Context::instance().programManager();
         bgfx::dispatch(
             viewId,
@@ -272,22 +248,12 @@ public:
             mWorkgroupSize[0],
             mWorkgroupSize[1],
             mWorkgroupSize[2]);
-
-        bgfx::blit(blitViewId, mReadBackTex, 0, 0, mComputeWriteTex, 0, 0, mSelectionTexSize[0], mSelectionTexSize[1]);
         non_const_this->mSelectionCalculated = true;
     }
 
-    bool selectionCalculated() const {
-        return mSelectionCalculated;
-    }
+    bool selectionCalculated() const { return mSelectionCalculated; }
 
-    bgfx::TextureHandle getReadBackTexture() const {
-        return mReadBackTex;
-    }
-
-    void bindSelection() const {
-        mSelectedVerticesBuffer.bind(4);
-    }
+    void bindSelection() const { mSelectedVerticesBuffer.bind(4); }
 
     // to draw splats
     void bindVertexQuadBuffer() const
