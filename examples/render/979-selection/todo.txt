@@ -1,5 +1,8 @@
-- Use ModelMatrix and ViewMatrix in cs_drawable_selection to calculate a proper selection (since the selection box lives on the view plane)
 - Face selection
 - Edge selection
-- Selection modes (add, subtract, etc...)
+- Selection modes (add, subtract, invert, select all, select none)
 - Figure out a proper implementation location in the c++ code
+- Actual way to "start selecting"
+
+URGENT:
+- Clean up texture (which is now useless, given the vertex and fragment shaders to show the selection)
