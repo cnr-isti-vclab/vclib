@@ -27,7 +27,7 @@ BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 fl
 
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
-uniform vec4 u_selectionBox;
+uniform vec4 u_selectionBox; // screen space
 uniform vec4 u_workgroupSizeAndVertexCount;
 
 // THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
