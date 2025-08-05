@@ -97,6 +97,10 @@ jobs:
         else
           echo "python-version=3.12" >> $GITHUB_OUTPUT
         fi
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install freeglut3-dev
     - name: Install Python ${{ steps.envs.outputs.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -111,6 +115,7 @@ jobs:
         python3 -m pip install --upgrade pip setuptools wheel
         python3 -m pip install dist/*.whl
     - name: Run examples
+      shell: bash
       run: |
         for f in examples/bindings/*.py; do
           python "$f"
