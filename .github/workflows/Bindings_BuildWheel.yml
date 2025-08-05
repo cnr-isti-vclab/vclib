@@ -44,7 +44,7 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get install cmake ninja-build libtbb-dev
+        sudo apt-get install cmake ninja-build
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
@@ -106,6 +106,7 @@ jobs:
         name: vclib-wheel-${{ matrix.os }}-python-${{ steps.envs.outputs.python-version }}
         path: dist/
     - name: Install dependencies
+      shell: bash
       run: |
         python3 -m pip install --upgrade pip setuptools wheel
         python3 -m pip install dist/*.whl
