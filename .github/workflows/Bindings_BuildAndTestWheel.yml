@@ -1,4 +1,4 @@
-name: Bindings - Build Wheel
+name: Bindings - Build and test Wheel
 
 on:
   push:
