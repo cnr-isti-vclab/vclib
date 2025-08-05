@@ -492,39 +492,29 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         // topology.h
 
-        m.def(
-            "clear_per_vertex_adjacent_faces",
-            [](MeshType& m) {
-                return clearPerVertexAdjacentFaces(m);
-            });
+        m.def("clear_per_vertex_adjacent_faces", [](MeshType& m) {
+            return clearPerVertexAdjacentFaces(m);
+        });
 
-        m.def(
-            "update_per_vertex_adjacent_faces",
-            [](MeshType& m) {
-                return updatePerVertexAdjacentFaces(m);
-            });
+        m.def("update_per_vertex_adjacent_faces", [](MeshType& m) {
+            return updatePerVertexAdjacentFaces(m);
+        });
 
         m.def("clear_per_vertex_adjacent_vertices", [](MeshType& m) {
             return clearPerVertexAdjacentVertices(m);
         });
 
-        m.def(
-            "update_per_vertex_adjacent_vertices",
-            [](MeshType& m) {
-                return updatePerVertexAdjacentVertices(m);
-            });
+        m.def("update_per_vertex_adjacent_vertices", [](MeshType& m) {
+            return updatePerVertexAdjacentVertices(m);
+        });
 
-        m.def(
-            "clear_per_face_adjacent_faces",
-            [](MeshType& m) {
-                return clearPerFaceAdjacentFaces(m);
-            });
+        m.def("clear_per_face_adjacent_faces", [](MeshType& m) {
+            return clearPerFaceAdjacentFaces(m);
+        });
 
-        m.def(
-            "update_per_face_adjacent_faces",
-            [](MeshType& m) {
-                return updatePerFaceAdjacentFaces(m);
-            });
+        m.def("update_per_face_adjacent_faces", [](MeshType& m) {
+            return updatePerFaceAdjacentFaces(m);
+        });
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
