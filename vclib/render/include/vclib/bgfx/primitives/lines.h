@@ -175,9 +175,10 @@ public:
         swap(mThickness, other.mThickness);
         swap(mShadingPerVertex, other.mShadingPerVertex);
         swap(mColorToUse, other.mColorToUse);
-        swap(mSettingUH, other.mSettingUH);
-
+        swap(mGeneralColor, other.mGeneralColor);
         swap(mType, other.mType);
+
+        swap(mSettingUH, other.mSettingUH);
         swap(mLinesImplementation, other.mLinesImplementation);
     }
 

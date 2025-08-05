@@ -158,7 +158,7 @@ public:
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
+        setRenderSettings(mMRS);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
