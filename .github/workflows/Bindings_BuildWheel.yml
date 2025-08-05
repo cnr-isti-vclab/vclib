@@ -75,4 +75,42 @@ jobs:
       with:
         name: vclib-wheel-${{ matrix.os }}-python-${{ steps.envs.outputs.python-version }}
         path: dist/*.whl
-        
+  
+  run_python_examples:
+    name: Run Python Examples
+    runs-on: ${{ matrix.os }}
+    needs: bindings_build_wheel
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'macos-13', 'macos-latest', 'windows-latest']
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Setup env
+      id: envs
+      shell: bash
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          echo "python-version=${{ github.event.inputs.python-version }}" >> $GITHUB_OUTPUT
+        else
+          echo "python-version=3.12" >> $GITHUB_OUTPUT
+        fi
+    - name: Install Python ${{ steps.envs.outputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.envs.outputs.python-version }}
+    - uses: actions/download-artifact@v4
+      with:
+        name: vclib-wheel-${{ matrix.os }}-python-${{ steps.envs.outputs.python-version }}
+        path: dist/
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip setuptools wheel
+        python3 -m pip install dist/*.whl
+    - name: Run examples
+      run: |
+        for f in examples/bindings/*.py; do
+          python "$f"
+        done
