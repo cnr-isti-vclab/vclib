@@ -177,5 +177,23 @@ print("PolyMesh:")
 print(f"  Vertices: {poly_mesh.vertex_number()}")
 print(f"  Faces: {poly_mesh.face_number()}")
 
+# /****** Computing and displaying barycenter and bounding box ******/
 
+print("\n=== Barycenter and Bounding Box ===")
 
+# Compute barycenter manually
+barycenter = vcl.Point3(0, 0, 0)
+for vertex in mesh.vertices():
+    barycenter += vertex.position()
+barycenter /= mesh.vertex_number()
+
+print(f"Mesh barycenter: {barycenter}")
+
+# Find bounding box manually
+min_point = vcl.Point3(float("inf"), float("inf"), float("inf"))
+max_point = vcl.Point3(float("-inf"), float("-inf"), float("-inf"))
+for vertex in mesh.vertices():
+    min_point = vcl.min(min_point, vertex.position())
+    max_point = vcl.max(max_point, vertex.position())
+
+print(f"Bounding Box: Min {min_point}, Max {max_point}")

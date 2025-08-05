@@ -190,9 +190,9 @@ auto meshBasics()
     std::cout << "  Vertices: " << polyMesh.vertexNumber() << std::endl;
     std::cout << "  Faces: " << polyMesh.faceNumber() << std::endl;
 
-    /****** Computing and displaying bounding box ******/
+    /****** Computing and displaying barycenter and bounding box ******/
 
-    std::cout << "\n=== Bounding Box ===" << std::endl;
+    std::cout << "\n=== Barycenter and Bounding Box ===" << std::endl;
 
     // Compute barycenter manually
     vcl::Point3d barycenter(0, 0, 0);
