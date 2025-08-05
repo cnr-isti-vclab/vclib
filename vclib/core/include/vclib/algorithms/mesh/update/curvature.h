@@ -37,10 +37,7 @@
 
 namespace vcl {
 
-enum class PrincipalCurvatureAlgorithm {
-    TAUBIN95,
-    PCA
-};
+enum class PrincipalCurvatureAlgorithm { TAUBIN95, PCA };
 
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
@@ -388,9 +385,7 @@ void updatePrincipalCurvature(
 
     double radius;
     switch (alg) {
-    case TAUBIN95:
-        updatePrincipalCurvatureTaubin95(m, log);
-        break;
+    case TAUBIN95: updatePrincipalCurvatureTaubin95(m, log); break;
     case PCA:
         radius = boundingBox(m).diagonal() * 0.1;
         updatePrincipalCurvaturePCA(m, radius, true, log);

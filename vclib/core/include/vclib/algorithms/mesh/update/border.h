@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_MESH_UPDATE_FLAG_H
-#define VCL_ALGORITHMS_MESH_UPDATE_FLAG_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_BORDER_H
+#define VCL_ALGORITHMS_MESH_UPDATE_BORDER_H
 
 #include <vclib/algorithms/mesh/sort.h>
 
@@ -49,7 +49,8 @@ void updateBorder(MeshType& m)
     using FaceType   = MeshType::FaceType;
 
     for (FaceType& f : m.faces())
-        f.unsetAllEdgesOnBorder();
+        for (uint i = 0; i < f.vertexNumber(); ++i)
+            f.edgeOnBorder(i) = false;
 
     if (m.faceNumber() == 0)
         return;
@@ -73,4 +74,4 @@ void updateBorder(MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_MESH_UPDATE_FLAG_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_BORDER_H
