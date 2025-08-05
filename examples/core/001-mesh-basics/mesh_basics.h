@@ -74,7 +74,7 @@ auto meshBasics()
     // Access faces and their vertices
     std::cout << "Face 0 vertices: ";
     for (int i = 0; i < 3; ++i) {
-        std::cout << mesh.index(mesh.face(0).vertex(i)) << " ";
+        std::cout << mesh.face(0).vertex(i).index() << " ";
         // or mesh.face(0).vertexIndex(i)
     }
     std::cout << std::endl;
