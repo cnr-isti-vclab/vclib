@@ -99,3 +99,83 @@ for face in mesh.faces():
         if i < 2:
             print(", ", end="")
     print("]")
+
+# /****** Working with optional components ******/
+
+print("\n=== Optional Components ===")
+
+# Check if color component is available
+print(f"Per-vertex color enabled: {mesh.is_per_vertex_color_enabled()}")
+
+# Enable per-vertex color component
+mesh.enable_per_vertex_color()
+print(f"Enabled per-vertex color")
+print(f"Per-vertex color enabled: {mesh.is_per_vertex_color_enabled()}")
+
+# Set vertex colors
+mesh.vertex(0).set_color(vcl.Color.RED)
+mesh.vertex(1).set_color(vcl.Color.GREEN)
+mesh.vertex(2).set_color(vcl.Color.BLUE)
+mesh.vertex(3).set_color(vcl.Color.YELLOW)
+
+print(f"Set colors for all vertices")
+
+# Enable and set face colors
+mesh.enable_per_face_color()
+mesh.face(0).set_color(vcl.Color.CYAN)
+mesh.face(1).set_color(vcl.Color.MAGENTA)
+
+print(f"Set colors for all faces")
+
+# /****** Polygon Mesh example ******/
+
+print("=== Creating a Polygon Mesh ===")
+
+poly_mesh = vcl.PolyMesh()
+
+# Polygon meshes can also be named
+poly_mesh.set_name("My Polygon Mesh")
+
+# Add vertices for a square
+poly_mesh.add_vertex([0, 0, 0])
+poly_mesh.add_vertex([2, 0, 0])
+poly_mesh.add_vertex([2, 2, 0])
+poly_mesh.add_vertex([0, 2, 0])
+
+# Add a quadrilateral face
+# Polygon faces can have variable number of vertices
+
+# easy way:
+# poly_mesh.add_face([0, 1, 2, 3])  # single quad face
+
+# or:
+poly_mesh.add_face()
+face = poly_mesh.face(0)
+face.push_vertex(poly_mesh.vertex(0)) # with the pointer of the vertex
+face.push_vertex(1) # or with the index of the vertex
+face.push_vertex(poly_mesh.vertex(2))
+face.push_vertex(poly_mesh.vertex(3))
+
+print(f"Created polygon with {face.vertex_number()} vertices")
+
+# Iterate over vertices of the polygon face
+print("Polygon vertices:", end=" ")
+for i in range(face.vertex_number()):
+    print(f"{face.vertex(i).index()}", end=" ")
+print()
+
+# /****** Mesh statistics ******/
+
+print("\n=== Mesh Statistics ===")
+
+print("TriMesh:")
+print(f"  Vertices: {mesh.vertex_number()}")
+print(f"  Faces: {mesh.face_number()}")
+print(f"  Container sizes - Vertices: {mesh.vertex_container_size()}, Faces: {mesh.face_container_size()}")
+
+print("PolyMesh:")
+print(f"  Vertices: {poly_mesh.vertex_number()}")
+print(f"  Faces: {poly_mesh.face_number()}")
+
+
+
