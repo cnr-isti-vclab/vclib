@@ -118,5 +118,7 @@ jobs:
       shell: bash
       run: |
         for f in examples/bindings/*.py; do
+          printf "=== Running $f ===\n"
           python "$f"
+          printf "\n"
         done
