@@ -36,7 +36,7 @@ void initColor(pybind11::module& m)
     c.def(py::init<uint8_t, uint8_t, uint8_t>());
     c.def(py::init<uint8_t, uint8_t, uint8_t, uint8_t>());
     c.def(py::init<Color::ColorABGR>());
-    
+
     // Enable implicit conversion from ColorABGR to Color
     py::implicitly_convertible<Color::ColorABGR, Color>();
 

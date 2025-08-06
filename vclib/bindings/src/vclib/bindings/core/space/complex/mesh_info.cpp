@@ -183,12 +183,16 @@ void initMeshInfo(pybind11::module& m)
         &MeshInfo::setPerFaceNormal,
         "b"_a = true,
         "t"_a = FLOAT);
-    c.def("set_per_face_color", &MeshInfo::setPerFaceColor,
-          "b"_a = true,
-          "t"_a = UCHAR);
-    c.def("set_per_face_quality", &MeshInfo::setPerFaceQuality,
-          "b"_a = true,
-          "t"_a = DOUBLE);
+    c.def(
+        "set_per_face_color",
+        &MeshInfo::setPerFaceColor,
+        "b"_a = true,
+        "t"_a = UCHAR);
+    c.def(
+        "set_per_face_quality",
+        &MeshInfo::setPerFaceQuality,
+        "b"_a = true,
+        "t"_a = DOUBLE);
     c.def(
         "set_per_face_wedge_tex_coords",
         &MeshInfo::setPerFaceWedgeTexCoords,

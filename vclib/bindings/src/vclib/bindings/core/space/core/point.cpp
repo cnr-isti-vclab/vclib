@@ -163,7 +163,9 @@ void populatePoint(pybind11::module& m)
 
     m.def(
         "epsilon_equals",
-        [](const P& p1, const P& p2, const Scalar& epsilon = std::numeric_limits<Scalar>::epsilon()) {
+        [](const P&      p1,
+           const P&      p2,
+           const Scalar& epsilon = std::numeric_limits<Scalar>::epsilon()) {
             return vcl::epsilonEquals(p1, p2, epsilon);
         },
         py::arg("p1"),
