@@ -174,10 +174,11 @@ void initCreateAlgorithms(pybind11::module& m)
             name.c_str(),
             [](const Point3d&                     center,
                double                             radius,
-               CreateSphereArgs::CreateSphereMode mode      = UV,
-               uint                               parallels = 10,
-               uint                               meridians = 20,
-               uint                               divisions = 20) {
+               CreateSphereArgs::CreateSphereMode mode =
+                   CreateSphereArgs::CreateSphereMode::UV,
+               uint parallels = 10,
+               uint meridians = 20,
+               uint divisions = 20) {
                 return vcl::createSphere<MeshType>(
                     Sphere(center, radius),
                     CreateSphereArgs {mode, parallels, meridians, divisions});
