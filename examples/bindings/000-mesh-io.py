@@ -38,52 +38,69 @@ VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 # - OFF
 # - STL
 
-# /****** Load ******/
+def load_meshes():
+    print("=== VCLib Example 000: Mesh IO ===\n")
 
-# To load a mesh you can both declare the mesh object and pass it to the
-# load_mesh function, or you can create the mesh object using the 
-# load_[mesh_type] function.
+    # /****** Load ******/
 
-# declare and load:
-mesh0 = vcl.TriMesh()
-vcl.load_mesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj")
+    # To load a mesh you can both declare the mesh object and pass it to the
+    # load_mesh function, or you can create the mesh object using the 
+    # load_[mesh_type] function.
 
-# create and load:
-mesh1 = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/bunny_textured.ply")
+    # declare and load:
+    mesh0 = vcl.TriMesh()
+    vcl.load_mesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj")
 
-# The loaded mesh is adapted to the type of mesh you want to use (e.g.
-# loading a file that contains a polygonal mesh in a TriMesh object).
+    # create and load:
+    mesh1 = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj")
 
-# To know what data was loaded, you can pass a MeshInfo object to the
-# load function.
+    # The loaded mesh is adapted to the type of mesh you want to use (e.g.
+    # loading a file that contains a polygonal mesh in a TriMesh object).
 
-info = vcl.MeshInfo()
-vcl.load_mesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj", info)
-print("Mesh has per face color: " + str(info.has_per_face_color()))
+    # To know what data was loaded, you can pass a MeshInfo object to the
+    # load function.
 
-# You can control settings fro loading a mesh using the load function arguments.
-# They allow to choose whether to enable optional components (see example
-# TODO) and whether to load texture images or not.
-vcl.load_mesh(mesh1, VCLIB_EXAMPLE_MESHES_PATH + "/bunny_textured.ply", load_texture_images = True)
+    info = vcl.MeshInfo()
+    vcl.load_mesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj", info)
+    print("Mesh has per face color: " + str(info.has_per_face_color()))
 
-# /****** Save ******/
+    # You can control settings fro loading a mesh using the load function arguments.
+    # They allow to choose whether to enable optional components (see example
+    # TODO) and whether to load texture images or not.
+    vcl.load_mesh(mesh1, VCLIB_EXAMPLE_MESHES_PATH + "/bunny_textured.ply", load_texture_images = True)
 
-# To save a mesh you can use the save function. The function will
-# automatically detect the file format based on the file extension.
-vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny.obj")
+    return mesh0, mesh1
 
-# You can also specify what kind of data you want to save in the file,
-# using a MeshInfo object
 
-save_info = vcl.MeshInfo()
-save_info.set_per_vertex_position()
-save_info.set_faces(False) # do not save faces - only point cloud
+def save_meshes(mesh0, mesh1):
+    # /****** Save ******/
 
-vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny-cloud.obj", info = save_info)
+    # To save a mesh you can use the save function. The function will
+    # automatically detect the file format based on the file extension.
+    vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny.obj")
 
-# You can also specify other settings for saving
-save_info.set_faces(True)
-save_info.set_per_face_vertex_references(True)
+    # You can also specify what kind of data you want to save in the file,
+    # using a MeshInfo object
 
-# Save in ply ASCII format
-vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny-ascii.ply", info = save_info, binary = False)
+    save_info = vcl.MeshInfo()
+    save_info.set_per_vertex_position()
+    save_info.set_faces(False) # do not save faces - only point cloud
+
+    vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny-cloud.obj", info = save_info)
+
+    # You can also specify other settings for saving
+    save_info.set_faces(True)
+    save_info.set_per_face_vertex_references(True)
+
+    # Save in ply ASCII format
+    vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny-ascii.ply", info = save_info, binary = False)
+
+
+if __name__ == "__main__":
+    # Load meshes
+    mesh0, mesh1 = load_meshes()
+
+    # Save meshes
+    save_meshes(mesh0, mesh1)
+
+    print("Mesh IO example completed successfully.")
