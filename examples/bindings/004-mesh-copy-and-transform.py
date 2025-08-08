@@ -92,6 +92,71 @@ def mesh_copy_and_transform():
     bb_after = transform_mesh.bounding_box()
     print(f"   Bounding box after translation {translation}: {bb_after.min()} to {bb_after.max()}")
 
+    # 2.2 Scaling
+    print("\n2.2 Scaling:\n")
+    scale_mesh = vcl.create_cube_tri_mesh()
+    vcl.update_bounding_box(scale_mesh)
+    scale_mesh.set_name("Scaled Cube")
+
+    # Calculate bounding box before scaling
+    bb_before_scale = scale_mesh.bounding_box()
+    diagonal_before = bb_before_scale.diagonal()
+    print(f"   Diagonal before scaling: {diagonal_before}\n")
+
+    # Apply uniform scaling
+    scale_factor = 2.5
+    vcl.scale(scale_mesh, scale_factor)
+    vcl.update_bounding_box(scale_mesh)
+
+    bb_after_scale = scale_mesh.bounding_box()
+    diagonal_after = bb_after_scale.diagonal()
+    print(f"   Diagonal after scaling by {scale_factor}: {diagonal_after}\n")
+    print(f"   Diagonal ratio: {diagonal_after / diagonal_before} (should be ~{scale_factor})\n")
+
+    # Non-uniform scaling
+    print("\n2.3 Non-uniform Scaling:\n")
+    non_uniform_scale_mesh = vcl.create_cube_tri_mesh()
+    vcl.update_bounding_box(non_uniform_scale_mesh)
+    non_uniform_scale_mesh.set_name("Non-uniform Scaled Cube")
+
+    scale_factors = vcl.Point3(1.0, 2.0, 0.5)
+    vcl.scale(non_uniform_scale_mesh, scale_factors)
+    vcl.update_bounding_box(non_uniform_scale_mesh)
+
+    bb_non_uniform = non_uniform_scale_mesh.bounding_box()
+    size = bb_non_uniform.size()
+    print(f"   Dimensions after non-uniform scaling {scale_factors}: {size}")
+
+    # 2.3 Rotation
+    print("\n2.3 Rotation:\n")
+    rotate_mesh = vcl.create_cube_tri_mesh()
+    vcl.update_bounding_box(rotate_mesh)
+    rotate_mesh.set_name("Rotated Cube")
+
+    # Rotation around Z-axis by 45 degrees
+    rotation_axis = vcl.Point3(0.0, 0.0, 1.0)
+    rotation_angle = 45.0
+
+    print(f"   Rotating around axis {rotation_axis} by {rotation_angle} degrees\n")
+
+    vcl.rotate(rotate_mesh, rotation_axis, rotation_angle)
+    vcl.update_bounding_box(rotate_mesh)
+
+    bb_rotated = rotate_mesh.bounding_box()
+    print(f"   Bounding box after rotation: {bb_rotated.min()} to {bb_rotated.max()}\n")
+
+    # ========================================
+    # PART 3: TRANSFORMATION MATRICES
+    # ========================================
+
+    print("PART 3: Transformation Matrices\n")
+
+    print("Creating a composite transformation matrix:\n")
+
+    matrix_mesh = vcl.create_icosahedron_tri_mesh()
+    matrix_mesh.set_name("Matrix Transformed Icosahedron")
+
+    # TODO: Define a transformation matrix
 
 if __name__ == "__main__":
     mesh_copy_and_transform()

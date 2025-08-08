@@ -205,6 +205,14 @@ void initUpdateAlgorithms(pybind11::module& m)
                 "scale_vector"_a);
 
             m.def(
+                "scale",
+                [](MeshType& m, const double& s) {
+                    return scale(m, s);
+                },
+                "mesh"_a,
+                "scale_factor"_a);
+
+            m.def(
                 "rotate",
                 [](MeshType&             m,
                    const vcl::Matrix33d& mat,
