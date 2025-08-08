@@ -244,7 +244,7 @@ public:
         auto& pm = Context::instance().programManager();
         bgfx::dispatch(
             viewId,
-            pm.getComputeProgram<ComputeProgram::DRAWABLE_SELECTION>(),
+            pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>(),
             mWorkgroupSize[0],
             mWorkgroupSize[1],
             mWorkgroupSize[2]);

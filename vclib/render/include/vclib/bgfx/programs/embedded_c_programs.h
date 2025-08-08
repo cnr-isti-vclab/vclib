@@ -24,6 +24,6 @@
 #define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
 #include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/drawable_selection.h"
+#include "embedded_c_programs/selection_vertex.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H

@@ -20,42 +20,42 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/programs/embedded_c_programs/drawable_selection.h>
+#include <vclib/bgfx/programs/embedded_c_programs/selection_vertex.h>
 
-#include <vclib/shaders/selection/cs_drawable_selection.sc.400.bin.h>
+#include <vclib/shaders/selection/cs_selection_vertex.sc.400.bin.h>
 
-#include <vclib/shaders/selection/cs_drawable_selection.sc.essl.bin.h>
+#include <vclib/shaders/selection/cs_selection_vertex.sc.essl.bin.h>
 
-#include <vclib/shaders/selection/cs_drawable_selection.sc.spv.bin.h>
+#include <vclib/shaders/selection/cs_selection_vertex.sc.spv.bin.h>
 
 #ifdef _WIN32
-#include <vclib/shaders/selection/cs_drawable_selection.sc.dx11.bin.h>
+#include <vclib/shaders/selection/cs_selection_vertex.sc.dx11.bin.h>
 
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/selection/cs_drawable_selection.sc.mtl.bin.h>
+#include <vclib/shaders/selection/cs_selection_vertex.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::DRAWABLE_SELECTION>::
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_VERTEX>::
     computeShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, cs_drawable_selection_essl, sizeof(cs_drawable_selection_essl)};
+        return {type, cs_selection_vertex_essl, sizeof(cs_selection_vertex_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, cs_drawable_selection_400, sizeof(cs_drawable_selection_400)};
+        return {type, cs_selection_vertex_400, sizeof(cs_selection_vertex_400)};
     case bgfx::RendererType::Vulkan:
-        return {type, cs_drawable_selection_spv, sizeof(cs_drawable_selection_spv)};
+        return {type, cs_selection_vertex_spv, sizeof(cs_selection_vertex_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, cs_drawable_selection_dx11, sizeof(cs_drawable_selection_dx11)};
+        return {type, cs_selection_vertex_dx11, sizeof(cs_selection_vertex_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, cs_drawable_selection_mtl, sizeof(cs_drawable_selection_mtl)};
+        return {type, cs_selection_vertex_mtl, sizeof(cs_selection_vertex_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }

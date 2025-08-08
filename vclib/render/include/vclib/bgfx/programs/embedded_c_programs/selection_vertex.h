@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_DRAWABLE_SELECTION_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_DRAWABLE_SELECTION_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_H
 
 #include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
 template<>
-struct ComputeLoader<ComputeProgram::DRAWABLE_SELECTION>
+struct ComputeLoader<ComputeProgram::SELECTION_VERTEX>
 {
     static bgfx::EmbeddedShader::Data computeShader(
         bgfx::RendererType::Enum type);
@@ -36,4 +36,4 @@ struct ComputeLoader<ComputeProgram::DRAWABLE_SELECTION>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_DRAWABLE_SELECTION_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_H
