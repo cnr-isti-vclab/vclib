@@ -63,6 +63,10 @@ public:
         ImGui::RadioButton("Add", [this]() -> bool {return this->mode == vcl::SelectionMode979::ADD;}, [this](bool b){this->mode = vcl::SelectionMode979::ADD;});
         ImGui::SameLine();
         ImGui::RadioButton("Subtract", [this]() -> bool {return this->mode == vcl::SelectionMode979::SUBTRACT;}, [this](bool b){this->mode = vcl::SelectionMode979::SUBTRACT;});
+        ImGui::SameLine();
+        ImGui::RadioButton("All", [this]() -> bool {return this->mode == vcl::SelectionMode979::ALL;}, [this](bool b){this->mode = vcl::SelectionMode979::ALL;});
+        ImGui::SameLine();
+        ImGui::RadioButton("None", [this]() -> bool {return this->mode == vcl::SelectionMode979::NONE;}, [this](bool b){this->mode = vcl::SelectionMode979::NONE;});
         if (ImGui::Button("Calculate selection")) {
             msh->setTransform();
             msh->getMRB().calculateSelection(viewId, mode);

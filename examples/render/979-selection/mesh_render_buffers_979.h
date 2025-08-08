@@ -44,7 +44,9 @@ namespace vcl {
 enum class SelectionMode979 {
     NORMAL,
     ADD,
-    SUBTRACT
+    SUBTRACT,
+    ALL,
+    NONE
 };
 
 template<MeshConcept Mesh>
@@ -258,6 +260,12 @@ public:
                 break;
             case SelectionMode979::SUBTRACT:
                 selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
+                break;
+            case SelectionMode979::ALL:
+                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ALL>();
+                break;
+            case SelectionMode979::NONE:
+                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
                 break;
         }
         bgfx::dispatch(

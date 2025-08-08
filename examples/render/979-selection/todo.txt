@@ -6,12 +6,13 @@
 - Check Z coordinate in selection if (needs to be inside the NDC space)
 - Maybe change code so that the selection box uniform is already in NDC space?
 
-- Non penetrating selection, possible way:
-    1. Calculate Depth Buffer (framebuffer)
-    2. Calculate position of point in screen space
-    3. Interpolate bilinearly the depth value within (pSS.x - 0.5, pSS.y - 0.5) and (pSS.x + 0.5, pSS.y + 0.5) 
-    (Likely done automatically when reading the texture) 
-    (Transform those coordinates in texture space, right now they are in Screen Space)
-    (If possible ignore values equal to one (unless the others are near it), because there's likely nothing there)
-    4. If point depth (NDC) is within an epsilon of said depth, it is visible; otherwise it isn't
-    5. Select the points that are visible and that are within the selection box
+- Non penetrating selection, possible ways:
+    1. Depth buffer interpolation
+        1. Calculate Depth Buffer (framebuffer)
+        2. Calculate position of point in screen space
+        3. Interpolate bilinearly the depth value within (pSS.x - 0.5, pSS.y - 0.5) and (pSS.x + 0.5, pSS.y + 0.5) 
+        (Likely done automatically when reading the texture) 
+        (Transform those coordinates in texture space, right now they are in Screen Space)
+        (If possible ignore values equal to one (unless the others are near it), because there's likely nothing there)
+        4. If point depth (NDC) is within an epsilon of said depth, it is visible; otherwise it isn't
+        5. Select the points that are visible and that are within the selection box

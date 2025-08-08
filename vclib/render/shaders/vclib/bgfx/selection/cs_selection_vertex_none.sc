@@ -20,14 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-#include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/selection_vertex_none.h"
-#include "embedded_c_programs/selection_vertex_all.h"
-#include "embedded_c_programs/selection_vertex_subtract.h"
-#include "embedded_c_programs/selection_vertex_add.h"
-#include "embedded_c_programs/selection_vertex.h"
+BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
+
+uniform vec4 u_selectionBox; // screen space
+uniform vec4 u_workgroupSizeAndVertexCount;
+
+// THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
+// Possibility: uniform containing selection box passed already in NDC space? It's probably doable
+
+NUM_THREADS(1, 1, 1) // 1 'thread' per point
+void main()
+{
+    uint vertexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
+    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
+    uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
+    if(pointId >= vertexCount) {
+        return;
+    }
+    uint bufferIndex = pointId/32;
+    uint bitOffset = 31-(pointId%32);
+    uint bitMask = 0x1 << bitOffset;
+    uint _useless;
+    atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
+}
