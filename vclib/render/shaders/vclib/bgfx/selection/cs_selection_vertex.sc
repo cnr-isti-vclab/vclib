@@ -54,12 +54,12 @@ void main()
     vec3 maxNDC = vec3(
         (maxX - u_viewRect.x) / u_viewRect.z * 2 - 1,
         1 - ((minY - u_viewRect.y) / u_viewRect.w * 2),
-        0
+        1
     );
     vec3 minNDC = vec3(
         (minX - u_viewRect.x) / u_viewRect.z * 2 - 1,
         1 - ((maxY - u_viewRect.y) / u_viewRect.w * 2),
-        1
+        0
     );
 
     vec4 p = vec4(
@@ -76,7 +76,7 @@ void main()
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
     uint _useless;
-    if (pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y) {
+    if (pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y && pNDC.z >= minNDC.z && pNDC.z <= maxNDC.z) {
         atomicFetchAndOr(vertex_selected[bufferIndex], bitMask, _useless);
     } else {
         atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
