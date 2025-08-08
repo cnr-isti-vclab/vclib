@@ -25,7 +25,7 @@
 
 namespace vcl {
 
-enum class ComputeProgram { DRAWABLE_MESH_POINTS, SELECTION_VERTEX, COUNT };
+enum class ComputeProgram { DRAWABLE_MESH_POINTS, SELECTION_VERTEX, SELECTION_VERTEX_ADD, SELECTION_VERTEX_SUBTRACT, COUNT };
 
 } // namespace vcl
 
