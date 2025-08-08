@@ -23,6 +23,8 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
+
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
 uniform vec4 u_selectionBox; // screen space
@@ -40,10 +42,12 @@ void main()
     if(pointId >= vertexCount) {
         return;
     }
+
     uint bufferIndex = pointId/32;
     uint bitOffset = 31-(pointId%32);
-    if(bitOffset != 31) {
+    if(bitOffset!=31) {
         return;
     }
-    vertex_selected[bufferIndex] = uint(0);
+    uint _useless;
+    vertex_selected[bufferIndex] = ~vertex_selected[bufferIndex];
 }

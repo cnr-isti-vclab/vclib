@@ -46,7 +46,8 @@ enum class SelectionMode979 {
     ADD,
     SUBTRACT,
     ALL,
-    NONE
+    NONE,
+    INVERT
 };
 
 template<MeshConcept Mesh>
@@ -241,7 +242,7 @@ public:
         non_const_this->mSelectedVerticesBuffer.setCompute(true);
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         non_const_this->mSelectedVerticesBuffer.setCompute(false);
-        float temp[] = {1024.f / 2.f * 1.5f, 0.f, 1024.f * 1.5f, 768.f / 2.f * 1.5f};
+        float temp[] = {1024.f / 2.f, 0.f, 1024.f, 768.f / 2.f};
         mSelectionBoxuniform.bind((void*) temp);
         float temp2[] = {
             vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]),
@@ -266,6 +267,9 @@ public:
                 break;
             case SelectionMode979::NONE:
                 selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
+                break;
+            case SelectionMode979::INVERT:
+                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
                 break;
         }
         bgfx::dispatch(

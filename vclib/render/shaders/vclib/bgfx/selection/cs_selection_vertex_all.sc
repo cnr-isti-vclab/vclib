@@ -43,7 +43,8 @@ void main()
 
     uint bufferIndex = pointId/32;
     uint bitOffset = 31-(pointId%32);
-    uint bitMask = 0x1 << bitOffset;
-    uint _useless;
-    atomicFetchAndOr(vertex_selected[bufferIndex], bitMask, _useless);
+    if(bitOffset != 31) {
+        return;
+    }
+    vertex_selected[bufferIndex] = 0xffffffff;
 }

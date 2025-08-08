@@ -24,6 +24,7 @@
 #define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
 #include "embedded_c_programs/drawable_mesh_points.h"
+#include "embedded_c_programs/selection_vertex_invert.h"
 #include "embedded_c_programs/selection_vertex_none.h"
 #include "embedded_c_programs/selection_vertex_all.h"
 #include "embedded_c_programs/selection_vertex_subtract.h"

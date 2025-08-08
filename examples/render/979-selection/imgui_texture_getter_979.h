@@ -64,6 +64,8 @@ public:
         ImGui::SameLine();
         ImGui::RadioButton("Subtract", [this]() -> bool {return this->mode == vcl::SelectionMode979::SUBTRACT;}, [this](bool b){this->mode = vcl::SelectionMode979::SUBTRACT;});
         ImGui::SameLine();
+        ImGui::RadioButton("Invert", [this]() -> bool {return this->mode == vcl::SelectionMode979::INVERT;}, [this](bool b){this->mode = vcl::SelectionMode979::INVERT;});
+        ImGui::SameLine();
         ImGui::RadioButton("All", [this]() -> bool {return this->mode == vcl::SelectionMode979::ALL;}, [this](bool b){this->mode = vcl::SelectionMode979::ALL;});
         ImGui::SameLine();
         ImGui::RadioButton("None", [this]() -> bool {return this->mode == vcl::SelectionMode979::NONE;}, [this](bool b){this->mode = vcl::SelectionMode979::NONE;});

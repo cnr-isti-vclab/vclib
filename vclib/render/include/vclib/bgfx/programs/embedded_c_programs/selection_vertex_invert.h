@@ -20,30 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_INVERT_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_INVERT_H
 
-BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
+#include <vclib/bgfx/programs/compute_loader.h>
 
-uniform vec4 u_selectionBox; // screen space
-uniform vec4 u_workgroupSizeAndVertexCount;
+namespace vcl {
 
-// THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
-// Possibility: uniform containing selection box passed already in NDC space? It's probably doable
-
-NUM_THREADS(1, 1, 1) // 1 'thread' per point
-void main()
+template<>
+struct ComputeLoader<ComputeProgram::SELECTION_VERTEX_INVERT>
 {
-    uint vertexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
-    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
-    uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
-    if(pointId >= vertexCount) {
-        return;
-    }
-    uint bufferIndex = pointId/32;
-    uint bitOffset = 31-(pointId%32);
-    if(bitOffset != 31) {
-        return;
-    }
-    vertex_selected[bufferIndex] = uint(0);
-}
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_INVERT_H

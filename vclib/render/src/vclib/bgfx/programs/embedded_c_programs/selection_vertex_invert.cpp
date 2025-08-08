@@ -20,30 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/programs/embedded_c_programs/selection_vertex_invert.h>
 
-BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
+#include <vclib/shaders/selection/cs_selection_vertex_invert.sc.400.bin.h>
 
-uniform vec4 u_selectionBox; // screen space
-uniform vec4 u_workgroupSizeAndVertexCount;
+#include <vclib/shaders/selection/cs_selection_vertex_invert.sc.essl.bin.h>
 
-// THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
-// Possibility: uniform containing selection box passed already in NDC space? It's probably doable
+#include <vclib/shaders/selection/cs_selection_vertex_invert.sc.spv.bin.h>
 
-NUM_THREADS(1, 1, 1) // 1 'thread' per point
-void main()
+#ifdef _WIN32
+#include <vclib/shaders/selection/cs_selection_vertex_invert.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/selection/cs_selection_vertex_invert.sc.mtl.bin.h>
+#endif // __APPLE__
+
+namespace vcl {
+
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_VERTEX_INVERT>::
+    computeShader(bgfx::RendererType::Enum type)
 {
-    uint vertexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
-    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
-    uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
-    if(pointId >= vertexCount) {
-        return;
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_selection_vertex_invert_essl, sizeof(cs_selection_vertex_invert_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_selection_vertex_invert_400, sizeof(cs_selection_vertex_invert_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_selection_vertex_invert_spv, sizeof(cs_selection_vertex_invert_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_selection_vertex_invert_dx11, sizeof(cs_selection_vertex_invert_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_selection_vertex_invert_mtl, sizeof(cs_selection_vertex_invert_mtl)};
+#endif
+    default: return {type, nullptr, 0};
     }
-    uint bufferIndex = pointId/32;
-    uint bitOffset = 31-(pointId%32);
-    if(bitOffset != 31) {
-        return;
-    }
-    vertex_selected[bufferIndex] = uint(0);
 }
+
+} // namespace vcl
