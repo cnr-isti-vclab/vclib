@@ -59,6 +59,9 @@ void initMesh(pybind11::module& m, const std::string& name)
     }
 
     initComponents(c);
+
+    // TODO: add all the members of the mesh
+    c.def("clear", &MeshType::clear);
 }
 
 } // namespace vcl::bind

@@ -121,7 +121,7 @@ auto meshCopyAndTransform()
     scaleMesh.name() = "Scaled Cube";
 
     auto   bbScaleBefore  = scaleMesh.boundingBox();
-    double diagonalBefore = (bbScaleBefore.max() - bbScaleBefore.min()).norm();
+    double diagonalBefore = bbScaleBefore.diagonal();
     std::cout << "   Bounding box diagonal before scaling: " << diagonalBefore
               << "\n";
 
@@ -146,7 +146,7 @@ auto meshCopyAndTransform()
     vcl::updateBoundingBox(nonUniformMesh);
 
     auto         bbNonUniform = nonUniformMesh.boundingBox();
-    vcl::Point3d size         = bbNonUniform.max() - bbNonUniform.min();
+    vcl::Point3d size         = bbNonUniform.size();
     std::cout << "   Dimensions after non-uniform scaling (" << scaleFactors.x()
               << ", " << scaleFactors.y() << ", " << scaleFactors.z() << "): ("
               << size.x() << ", " << size.y() << ", " << size.z() << ")\n";
@@ -165,6 +165,7 @@ auto meshCopyAndTransform()
               << ", " << axis.z() << ")\n";
 
     vcl::rotate(rotateMesh, axis, angleRadians);
+    vcl::updateBoundingBox(rotateMesh);
 
     auto bbRotated = rotateMesh.boundingBox();
     std::cout << "   Bounding box after rotation: dimensions ("

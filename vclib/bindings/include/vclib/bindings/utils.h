@@ -76,6 +76,117 @@ void defComparisonOperators(pybind11::class_<Class>& c)
     c.def(py::self >= py::self);
 }
 
+template<typename Class>
+void defArithmeticOperators(pybind11::class_<Class>& c)
+{
+    namespace py = pybind11;
+
+    c.def( // -a
+        "__neg__",
+        [](Class& a) -> Class& {
+            a = -a;
+            return a;
+        },
+        py::is_operator());
+
+    c.def( // a+b
+        "__add__",
+        [](const Class& a, const Class& b) -> Class {
+            return a + b;
+        },
+        py::is_operator());
+
+    c.def( // a+b
+        "__add__",
+        [](const Class& a, double b) -> Class {
+            return a + b;
+        },
+        py::is_operator());
+
+    c.def( // a-b
+        "__sub__",
+        [](const Class& a, const Class& b) -> Class {
+            return a - b;
+        },
+        py::is_operator());
+
+    c.def( // a-b
+        "__sub__",
+        [](const Class& a, double b) -> Class {
+            return a - b;
+        },
+        py::is_operator());
+
+    c.def( // a*b
+        "__mul__",
+        [](const Class& a, double b) -> Class {
+            return a * b;
+        },
+        py::is_operator());
+
+    c.def( // a*b
+        "__mul__",
+        [](double a, const Class& b) -> Class {
+            return a * b;
+        },
+        py::is_operator());
+
+    c.def( // a/b
+        "__truediv__",
+        [](const Class& a, double b) -> Class {
+            return a / b;
+        },
+        py::is_operator());
+
+    c.def( // a+=b
+        "__iadd__",
+        [](Class& a, const Class& b) -> Class& {
+            a += b;
+            return a;
+        },
+        py::is_operator());
+
+    c.def( // a+=b
+        "__iadd__",
+        [](Class& a, double b) -> Class& {
+            a += b;
+            return a;
+        },
+        py::is_operator());
+
+    c.def( // a-=b
+        "__isub__",
+        [](Class& a, const Class& b) -> Class& {
+            a -= b;
+            return a;
+        },
+        py::is_operator());
+
+    c.def( // a-=b
+        "__isub__",
+        [](Class& a, double b) -> Class& {
+            a -= b;
+            return a;
+        },
+        py::is_operator());
+
+    c.def( // a*=b
+        "__imul__",
+        [](Class& a, double b) -> Class& {
+            a *= b;
+            return a;
+        },
+        py::is_operator());
+
+    c.def( // a/=b
+        "__itruediv__",
+        [](Class& a, double b) -> Class& {
+            a /= b;
+            return a;
+        },
+        py::is_operator());
+}
+
 /**
  * @brief calls a function for all mesh types, if the function is callable for
  * the specific mesh type. The function takes as a first argument a
