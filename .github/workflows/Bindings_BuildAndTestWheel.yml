@@ -100,7 +100,8 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get install libgl1-mesa-dev
+        sudo apt-get update && sudo apt-get upgrade
+        sudo apt-get install freeglut3-dev
     - name: Install Python ${{ steps.envs.outputs.python-version }}
       uses: actions/setup-python@v5
       with:
