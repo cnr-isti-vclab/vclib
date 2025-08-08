@@ -40,6 +40,9 @@ template<typename DerivedDrawer>
 class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
 {
     std::shared_ptr<const vcl::DrawableMeshBGFX979<vcl::TriMesh>> msh;
+    vcl::SelectionMode979 mode = vcl::SelectionMode979::NORMAL;
+
+
 
 public:
     using vcl::PlainDrawer<DerivedDrawer>::PlainDrawer;
@@ -55,9 +58,14 @@ public:
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Begin("Calculate selection button", nullptr);
+        ImGui::RadioButton("Normal", [this]() -> bool {return this->mode == vcl::SelectionMode979::NORMAL;}, [this](bool b){this->mode = vcl::SelectionMode979::NORMAL;});
+        ImGui::SameLine();
+        ImGui::RadioButton("Add", [this]() -> bool {return this->mode == vcl::SelectionMode979::ADD;}, [this](bool b){this->mode = vcl::SelectionMode979::ADD;});
+        ImGui::SameLine();
+        ImGui::RadioButton("Subtract", [this]() -> bool {return this->mode == vcl::SelectionMode979::SUBTRACT;}, [this](bool b){this->mode = vcl::SelectionMode979::SUBTRACT;});
         if (ImGui::Button("Calculate selection")) {
             msh->setTransform();
-            msh->getMRB().calculateSelection(viewId);
+            msh->getMRB().calculateSelection(viewId, mode);
         }
         ImGui::End();
     }

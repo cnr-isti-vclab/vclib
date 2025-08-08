@@ -41,6 +41,12 @@
 
 namespace vcl {
 
+enum class SelectionMode979 {
+    NORMAL,
+    ADD,
+    SUBTRACT
+};
+
 template<MeshConcept Mesh>
 class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 {
@@ -209,7 +215,7 @@ public:
 
     uint vertexNumber() { return Base::numVerts(); }
 
-    void calculateSelection(const bgfx::ViewId viewId) const
+    void calculateSelection(const bgfx::ViewId viewId, SelectionMode979 mode) const
     {
         MeshRenderBuffers979<Mesh>* non_const_this =
             const_cast<MeshRenderBuffers979<Mesh>*>(this);
@@ -233,7 +239,7 @@ public:
         non_const_this->mSelectedVerticesBuffer.setCompute(true);
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         non_const_this->mSelectedVerticesBuffer.setCompute(false);
-        float temp[] = {1024.f / 2.f, 0.f, 1024.f, 768.f / 2.f};
+        float temp[] = {1024.f / 2.f * 1.5f, 0.f, 1024.f * 1.5f, 768.f / 2.f * 1.5f};
         mSelectionBoxuniform.bind((void*) temp);
         float temp2[] = {
             vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]),
@@ -242,9 +248,21 @@ public:
             vcl::Uniform::uintBitsToFloat(Base::numVerts())};
         mWorkgroupSizeAndVertexCountUniform.bind((void*) temp2);
         auto& pm = Context::instance().programManager();
+        bgfx::ProgramHandle selectionProgram;
+        switch(mode) {
+            case SelectionMode979::NORMAL:
+                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
+                break;
+            case SelectionMode979::ADD:
+                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ADD>();
+                break;
+            case SelectionMode979::SUBTRACT:
+                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
+                break;
+        }
         bgfx::dispatch(
             viewId,
-            pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>(),
+            selectionProgram,
             mWorkgroupSize[0],
             mWorkgroupSize[1],
             mWorkgroupSize[2]);
