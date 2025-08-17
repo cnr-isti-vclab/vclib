@@ -58,12 +58,12 @@ public:
 
 private:
     uint8_t             mThickness        = 5;
+    // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE, NONE
+    // PER_EDGE means that we use a buffer of normals for each edge
     bool                mShadingPerVertex = false;
     ColorToUse          mColorToUse       = ColorToUse::GENERAL;
     Color               mGeneralColor     = Color::ColorABGR::LightGray;
     ImplementationType  mType             = ImplementationType::CPU_GENERATED;
-    // TODO: add setting that allows to set shading: per vertex (using normal)
-    // or solid
 
     Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
     detail::CPUGeneratedLines mLinesImplementation;
