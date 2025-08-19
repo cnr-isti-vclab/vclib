@@ -39,8 +39,9 @@ namespace vcl {
  * constrained to be the same, and operations like resize, reserve, and
  * clear are applied to all vectors simultaneously.
  *
- * Each vector can be accessed by the index of its type in the template
- * parameter pack, and it will allow to access to its elements.
+ * Each vector can be accessed, trough the index of its type in the template
+ * parameter pack, using the `span()` member function. It will allow to access
+ * to its elements.
  *
  * The class also supports enabling and disabling individual vectors, which
  * allows for selective operations on the contained vectors. Disabled vectors
@@ -174,22 +175,23 @@ public:
     }
 
     /**
-     * @brief Returns a const reference to the vector at the given index.
+     * @brief Returns a const std::span to the vector at the given index.
      *
      * This function allows access to the elements of the vector at the
      * specified index, throwing an exception if the vector is disabled.
      *
      * @throws std::runtime_error if the vector at index I is disabled.
-     * @return A const reference to the vector at index I.
+     * @return A const std::span to the vector at index I.
      */
     template<uint I>
-    constexpr const auto& vector() const
+    auto span() const
     {
         if (!isVectorEnabled<I>()) {
             throw std::runtime_error(
                 "Accessing disabled vector at index " + std::to_string(I));
         }
-        return std::get<I>(mVecTuple);
+        using RT = TypeAtT<I, Types...>;
+        return std::span<const RT>(std::get<I>(mVecTuple));
     }
 
     /**
@@ -202,7 +204,7 @@ public:
      * @return A std::span to the vector at index I.
      */
     template<uint I>
-    auto vector()
+    auto span()
     {
         if (!isVectorEnabled<I>()) {
             throw std::runtime_error(
@@ -259,12 +261,6 @@ public:
     }
 
 private:
-    template<typename T>
-    static constexpr uint indexOfType()
-    {
-        return IndexInTypes<T, Types...>::value;
-    }
-
     template<std::size_t N>
     void applyToAllEnabledVectors(auto&& func)
     {
