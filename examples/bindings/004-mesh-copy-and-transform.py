@@ -213,7 +213,20 @@ def mesh_copy_and_transform():
     # # Create different primitives to add
     # sp = vcl.Sphere([0.0, 0.0, 0.0], 1.0)
 
+    return (transform_mesh, scale_mesh, rotate_mesh, matrix_mesh, combined_mesh)
+
 if __name__ == "__main__":
-    mesh_copy_and_transform()
+    transform_mesh, scale_mesh, rotate_mesh, matrix_mesh, combined_mesh = mesh_copy_and_transform()
+
+    try:
+        # Save the meshes to files
+        vcl.save_mesh(transform_mesh, VCLIB_RESULTS_PATH + "/004_transformed_icosahedron.ply")
+        vcl.save_mesh(scale_mesh, VCLIB_RESULTS_PATH + "/004_scaled_cube.ply")
+        vcl.save_mesh(rotate_mesh, VCLIB_RESULTS_PATH + "/004_rotated_cube.ply")
+        vcl.save_mesh(matrix_mesh, VCLIB_RESULTS_PATH + "/004_matrix_transformed.ply")
+        vcl.save_mesh(combined_mesh, VCLIB_RESULTS_PATH + "/004_combined_scene.ply")
+        print("Meshes saved successfully.")
+    except Exception as e:
+        print(f"Error saving meshes: {e}")
 
     print("Example completed successfully!")

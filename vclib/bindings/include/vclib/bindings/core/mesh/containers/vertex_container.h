@@ -44,18 +44,6 @@ void initVertexContainer(pybind11::class_<MeshType>& ct)
         return t.addVertex(p);
     });
 
-    ct.def("add_vertex", [](MeshType& t, const py::list& v) {
-        if (v.size() != 3) {
-            throw std::invalid_argument(
-                "Input list must have 3 elements for type vclib.Point3");
-        }
-        Point3d p;
-        for (uint i = 0; const auto& d : v) {
-            p(i++) = d.cast<double>();
-        }
-        return t.addVertex(p);
-    });
-
     ct.def("add_vertices", [](MeshType& t, const std::vector<Point3d>& v) {
         return t.addVertices(v);
     });
