@@ -40,6 +40,18 @@ void populteMatrix(pybind11::module& m)
     std::string   cName = "Matrix" + std::to_string(R) + std::to_string(C);
     py::class_<M> c(m, cName.c_str(), py::buffer_protocol());
     c.def(py::init<>());
+    // allow to initialize Matrix with py::buffer
+    c.def(py::init([](const py::buffer& b) {
+        auto info = b.request();
+        if (info.ndim != 2 || info.shape[0] != R || info.shape[1] != C) {
+            throw std::invalid_argument(
+                "Buffer must have shape (" + std::to_string(R) + ", " +
+                std::to_string(C) + ")");
+        }
+        return Eigen::Map<Eigen::Matrix<double, R, C, Eigen::RowMajor>>(
+            static_cast<Scalar*>(info.ptr));
+    }));
+    py::implicitly_convertible<py::buffer, M>();
 
     defCopy(c);
 
