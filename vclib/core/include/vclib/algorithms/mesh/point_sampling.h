@@ -749,8 +749,7 @@ SamplerType faceAreaWeightedPointSampling(
         weights[m.index(f)] = faceArea(f);
     }
 
-    return faceWeightedPointSampling<SamplerType>(
-        m, weights, nSamples, seed);
+    return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, seed);
 }
 
 /**
@@ -848,8 +847,8 @@ SamplerType montecarloPointSampling(
  */
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(
-    const MeshType& m,
-    uint            nSamples,
+    const MeshType&     m,
+    uint                nSamples,
     std::optional<uint> seed = std::nullopt)
 {
     std::vector<uint> birthFaces;
@@ -916,8 +915,8 @@ SamplerType stratifiedMontecarloPointSampling(
  */
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPoissonPointSampling(
-    const MeshType& m,
-    uint            nSamples,
+    const MeshType&     m,
+    uint                nSamples,
     std::optional<uint> seed = std::nullopt)
 {
     using FaceType   = MeshType::FaceType;

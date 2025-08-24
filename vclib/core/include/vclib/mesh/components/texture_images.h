@@ -26,8 +26,8 @@
 #include "base/component.h"
 #include "concepts/textures.h"
 
-#include <vclib/space/core.h>
 #include <vclib/base.h>
+#include <vclib/space/core.h>
 
 #include <string>
 #include <vector>

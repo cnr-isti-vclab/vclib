@@ -217,7 +217,7 @@ public:
 
     ScalarType binOfValueWidth(ScalarType value)
     {
-        uint pos = BinIndex(value);
+        uint pos = binIndex(value);
         return mRanges[pos + 1] - mRanges[pos];
     }
 
@@ -239,7 +239,7 @@ public:
      * @param frac
      * @return
      */
-    ScalarType percentile(ScalarType frac) const
+    ScalarType valueAtPercentile(ScalarType frac) const
     {
         if (mHist.size() == 0)
             return 0;

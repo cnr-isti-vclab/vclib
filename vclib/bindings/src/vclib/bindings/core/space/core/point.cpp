@@ -54,6 +54,11 @@ void populatePoint(pybind11::module& m)
         return p;
     }));
     py::implicitly_convertible<py::list, P>();
+    // allow to initialize Point with py::buffer
+    c.def(py::init([](const py::buffer& b) {
+        return pyBufferToEigen<1, DIM>(b);
+    }));
+    py::implicitly_convertible<py::buffer, P>();
 
     defCopy(c);
 
@@ -153,24 +158,40 @@ void populatePoint(pybind11::module& m)
         p(i) = v;
     });
 
-    c.def(-py::self);
-    c.def(py::self + py::self);
-    c.def(py::self + Scalar());
-    c.def(py::self - py::self);
-    c.def(py::self - Scalar());
-    c.def(py::self * Scalar());
-    c.def(Scalar() * py::self);
-    c.def(py::self / Scalar());
-    c.def(py::self += py::self);
-    c.def(py::self += Scalar());
-    c.def(py::self -= py::self);
-    c.def(py::self -= Scalar());
-    c.def(py::self *= Scalar());
-    c.def(py::self /= Scalar());
+    defArithmeticOperators(c);
 
     defComparisonOperators(c);
 
     defRepr(c);
+
+    // outside class functions
+
+    m.def(
+        "epsilon_equals",
+        [](const P&      p1,
+           const P&      p2,
+           const Scalar& epsilon = std::numeric_limits<Scalar>::epsilon()) {
+            return vcl::epsilonEquals(p1, p2, epsilon);
+        },
+        py::arg("p1"),
+        py::arg("p2"),
+        py::arg("epsilon") = std::numeric_limits<Scalar>::epsilon());
+
+    m.def(
+        "min",
+        [](const P& p1, const P& p2) {
+            return vcl::min(p1, p2);
+        },
+        py::arg("p1"),
+        py::arg("p2"));
+
+    m.def(
+        "max",
+        [](const P& p1, const P& p2) {
+            return vcl::max(p1, p2);
+        },
+        py::arg("p1"),
+        py::arg("p2"));
 }
 
 void initPoint(pybind11::module& m)

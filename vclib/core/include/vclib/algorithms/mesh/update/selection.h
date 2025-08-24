@@ -30,28 +30,24 @@
 
 namespace vcl {
 
-namespace detail {
-
-template<Range Rng>
-void clearSelection(Rng&& r)
+template<uint ELEM_ID, MeshConcept MeshType>
+void clearElementSelection(MeshType& mesh)
 {
-    for (auto& e : r) {
+    for (auto&& e : mesh.template elements<ELEM_ID>()) {
         e.selected() = false;
     }
 }
 
-} // namespace detail
-
 template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m)
 {
-    detail::clearSelection(m.vertices());
+    clearElementSelection<ElemId::VERTEX>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void clearFaceSelection(MeshType& m)
 {
-    detail::clearSelection(m.faces());
+    clearElementSelection<ElemId::FACE>(m);
 }
 
 template<FaceMeshConcept MeshType>
@@ -67,11 +63,11 @@ void clearFaceEdgesSelection(MeshType& m)
 template<EdgeMeshConcept MeshType>
 void clearEdgeSelection(MeshType& m)
 {
-    detail::clearSelection(m.edges());
+    clearElementSelection<ElemId::EDGE>(m);
 }
 
 template<FaceMeshConcept MeshType>
-void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
+void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst = true)
 {
     std::vector<bool> nonManifoldVertices =
         detail::nonManifoldVerticesVectorBool(m);

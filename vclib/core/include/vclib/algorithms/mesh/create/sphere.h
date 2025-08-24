@@ -54,14 +54,14 @@ namespace vcl {
  */
 struct CreateSphereArgs
 {
-    typedef enum {
+    enum class CreateSphereMode {
         UV = 0,
         NORMALIZED_CUBE,
         SPHERIFIED_CUBE,
         ICOSAHEDRON
-    } CreateSphereMode;
+    };
 
-    CreateSphereMode mode = UV;
+    CreateSphereMode mode = CreateSphereMode::UV;
 
     // used for mode = UV
     uint parallels = 10;
@@ -430,18 +430,20 @@ MeshType createSphere(
     const SphereConcept auto& sp,
     const CreateSphereArgs&   args = CreateSphereArgs())
 {
+    using enum CreateSphereArgs::CreateSphereMode;
+
     MeshType m;
     switch (args.mode) {
-    case CreateSphereArgs::UV:
+    case UV:
         m = createSphereUV<MeshType>(sp, args.parallels, args.meridians);
         break;
-    case CreateSphereArgs::NORMALIZED_CUBE:
+    case NORMALIZED_CUBE:
         m = createSphereNormalizedCube<MeshType>(sp, args.divisions);
         break;
-    case CreateSphereArgs::SPHERIFIED_CUBE:
+    case SPHERIFIED_CUBE:
         m = createSphereSpherifiedCube<MeshType>(sp, args.divisions);
         break;
-    case CreateSphereArgs::ICOSAHEDRON:
+    case ICOSAHEDRON:
         m = createSphereIcosahedron<MeshType>(sp, args.divisions);
         break;
     }

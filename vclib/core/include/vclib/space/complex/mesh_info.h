@@ -23,8 +23,8 @@
 #ifndef VCL_SPACE_COMPLEX_MESH_INFO_H
 #define VCL_SPACE_COMPLEX_MESH_INFO_H
 
-#include <vclib/mesh.h>
 #include <vclib/base.h>
+#include <vclib/mesh.h>
 
 #include <array>
 #include <bitset>

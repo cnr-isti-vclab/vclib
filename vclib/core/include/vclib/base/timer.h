@@ -90,8 +90,9 @@ public:
     /**
      * @brief Starts the timer.
      */
-    void start() {
-        mBegin = std::chrono::high_resolution_clock::now();
+    void start()
+    {
+        mBegin     = std::chrono::high_resolution_clock::now();
         mIsStopped = false;
     }
 
