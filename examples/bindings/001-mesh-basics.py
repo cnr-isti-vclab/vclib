@@ -23,6 +23,7 @@
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
 import vclib as vcl
+import numpy as np
 import os
 
 current_file_path = os.path.abspath(__file__)
@@ -51,7 +52,7 @@ def mesh_basics():
 
     # Add vertices to the mesh
     mesh.add_vertex([0, 0, 0])
-    mesh.add_vertex([1, 0, 0])
+    mesh.add_vertex(np.array([1., 0., 0.])) # example using np array (when using numpy, numbers must be floats)
     mesh.add_vertex([0, 1, 0])
     mesh.add_vertex([1, 1, 0])
 
