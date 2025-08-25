@@ -172,19 +172,17 @@ void initCreateAlgorithms(pybind11::module& m)
             "create_sphere_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
-            [](const Point3d&                     center,
-               double                             radius,
+            [](const Sphered&                     sphere,
                CreateSphereArgs::CreateSphereMode mode =
                    CreateSphereArgs::CreateSphereMode::UV,
                uint parallels = 10,
                uint meridians = 20,
                uint divisions = 20) {
                 return vcl::createSphere<MeshType>(
-                    Sphere(center, radius),
+                    sphere,
                     CreateSphereArgs {mode, parallels, meridians, divisions});
             },
-            "center"_a    = Point3d(0, 0, 0),
-            "radius"_a    = 1.0,
+            "sphere"_a    = Sphered(Point3d(0, 0, 0), 1.0),
             "mode"_a      = UV,
             "parallels"_a = 10,
             "meridians"_a = 20,
@@ -193,20 +191,18 @@ void initCreateAlgorithms(pybind11::module& m)
         m.def(
             "create_sphere",
             [](MeshType&                          m,
-               const Point3d&                     center,
-               double                             radius,
+               const Sphered&                     sphere,
                CreateSphereArgs::CreateSphereMode mode =
                    CreateSphereArgs::CreateSphereMode::UV,
                uint parallels = 10,
                uint meridians = 20,
                uint divisions = 20) {
                 m = vcl::createSphere<MeshType>(
-                    Sphere(center, radius),
+                    sphere,
                     CreateSphereArgs {mode, parallels, meridians, divisions});
             },
             "mesh"_a,
-            "center"_a    = Point3d(0, 0, 0),
-            "radius"_a    = 1.0,
+            "sphere"_a    = Sphered(Point3d(0, 0, 0), 1.0),
             "mode"_a      = UV,
             "parallels"_a = 10,
             "meridians"_a = 20,
