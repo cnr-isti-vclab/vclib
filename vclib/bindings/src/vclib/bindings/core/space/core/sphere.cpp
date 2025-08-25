@@ -20,44 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_SPACE_CORE_H
-#define VCL_BINDINGS_CORE_SPACE_CORE_H
+#include <vclib/bindings/core/space/core/sphere.h>
 
-#include "core/box.h"
-#include "core/color.h"
-#include "core/histogram.h"
-#include "core/image.h"
-#include "core/matrix.h"
-#include "core/point.h"
-#include "core/principal_curvature.h"
-#include "core/sphere.h"
-#include "core/tex_coord.h"
-#include "core/tex_coord_indexed.h"
-#include "core/texture.h"
+#include <vclib/space/core.h>
 
-#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-inline void initCore(pybind11::module& m)
+void initSphere(pybind11::module& m)
 {
     namespace py = pybind11;
+    using namespace py::literals;
 
-    // py::module_ sm = m.def_submodule("core", "Core Spatial Data Structures");
-    initPoint(m);
+    py::class_<Sphered> c(m, "Sphere");
+    c.def(py::init<>());
+    c.def(py::init<Point3d, double>(), "center"_a, "radius"_a);
 
-    initBox(m);
-    initColor(m);
-    initHistogram(m);
-    initImage(m);
-    initMatrix(m);
-    initPrincipalCurvature(m);
-    initSphere(m);
-    initTexCoord(m);
-    initTexCoordIndexed(m);
-    initTexture(m);
+    c.def("center", py::overload_cast<>(&Sphered::center, py::const_));
+    c.def(
+        "set_center",
+        [](Sphered& s, const Point3d& c) {
+            s.center() = c;
+        },
+        "center"_a);
+
+    c.def("radius", py::overload_cast<>(&Sphered::radius, py::const_));
+    c.def(
+        "set_radius",
+        [](Sphered& s, double r) {
+            s.radius() = r;
+        },
+        "radius"_a);
+
+    c.def("diameter", &Sphered::diameter);
+    c.def("circumference", &Sphered::circumference);
+    c.def("surface_area", &Sphered::surfaceArea);
+    c.def("volume", &Sphered::volume);
+    c.def("is_inside", &Sphered::isInside, "p"_a);
+    c.def("intersects", &Sphered::intersects, "box"_a);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_SPACE_CORE_H
