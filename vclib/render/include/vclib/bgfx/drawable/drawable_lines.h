@@ -125,7 +125,7 @@ public:
     {
         using std::swap;
         DrawableObject::swap(other);
-        Lines::swap(other);
+        swap(static_cast<Lines&>(*this), static_cast<Lines&>(other));
 
         swap(mVertCoords, other.mVertCoords);
         swap(mLineIndices, other.mLineIndices);

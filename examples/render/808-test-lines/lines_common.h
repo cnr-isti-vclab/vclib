@@ -28,10 +28,13 @@
 
 #include <random>
 
-void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vertColors, std::vector<vcl::uint>& lineColors)
+void pushRandomLine(
+    std::vector<float>&     vertCoords,
+    std::vector<vcl::uint>& vertColors,
+    std::vector<vcl::uint>& lineColors)
 {
-    std::random_device rd;
-    std::mt19937       gen(rd());
+    std::random_device                    rd;
+    std::mt19937                          gen(rd());
     std::uniform_real_distribution<float> disPoint(-2.0f, 2.0f);
     std::uniform_real_distribution<float> disColor(0, 255);
 
@@ -40,10 +43,9 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
     vertCoords.emplace_back(disPoint(gen));
 
     vcl::Color c0 = vcl::Color(
-        static_cast<uint8_t>(disColor(gen)), 
-        static_cast<uint8_t>(disColor(gen)), 
-        static_cast<uint8_t>(disColor(gen))
-    );
+        static_cast<uint8_t>(disColor(gen)),
+        static_cast<uint8_t>(disColor(gen)),
+        static_cast<uint8_t>(disColor(gen)));
     vertColors.emplace_back(c0.abgr());
 
     vertCoords.emplace_back(disPoint(gen));
@@ -51,17 +53,15 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
     vertCoords.emplace_back(disPoint(gen));
 
     vcl::Color c1 = vcl::Color(
-        static_cast<uint8_t>(disColor(gen)), 
-        static_cast<uint8_t>(disColor(gen)), 
-        static_cast<uint8_t>(disColor(gen))
-    );
+        static_cast<uint8_t>(disColor(gen)),
+        static_cast<uint8_t>(disColor(gen)),
+        static_cast<uint8_t>(disColor(gen)));
     vertColors.emplace_back(c1.abgr());
 
     vcl::Color lineColor = vcl::Color(
-        static_cast<uint8_t>(disColor(gen)), 
-        static_cast<uint8_t>(disColor(gen)), 
-        static_cast<uint8_t>(disColor(gen))
-    );
+        static_cast<uint8_t>(disColor(gen)),
+        static_cast<uint8_t>(disColor(gen)),
+        static_cast<uint8_t>(disColor(gen)));
     lineColors.emplace_back(lineColor.abgr());
 }
 
@@ -69,18 +69,19 @@ void pushRandomLine(std::vector<float>& vertCoords, std::vector<vcl::uint>& vert
 vcl::DrawableLines getDrawableLines(vcl::uint nLines)
 {
     vcl::DrawableObjectVector vec;
-    
-    std::vector<float> vertCoords;
-    std::vector<float> vertNormals;
+
+    std::vector<float>     vertCoords;
+    std::vector<float>     vertNormals;
     std::vector<vcl::uint> vertColors;
     std::vector<vcl::uint> lineColors;
-    
+
     for (vcl::uint i = 0; i < nLines; i++)
         pushRandomLine(vertCoords, vertColors, lineColors);
-    
-    auto lines = vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
+
+    auto lines =
+        vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
     lines.thickness() = 10;
-    lines.colorToUse() = vcl::Lines::ColorToUse::GENERAL;
+    lines.setColorToUse(vcl::Lines::ColorToUse::PER_VERTEX);
 
     return lines;
 }

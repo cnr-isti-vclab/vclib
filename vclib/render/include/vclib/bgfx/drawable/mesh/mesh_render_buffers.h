@@ -216,43 +216,45 @@ public:
     void updateEdgeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Edges;
+        using enum Lines::ColorToUse;
 
         mEdgeLines.thickness()        = mrs.edgesWidth();
         mEdgeLines.shadingPerVertex() = mrs.isEdges(SHADING_SMOOTH);
 
         if (mrs.isEdges(COLOR_USER)) {
             mEdgeLines.generalColor() = mrs.edgesUserColor();
-            mEdgeLines.colorToUse()   = Lines::ColorToUse::GENERAL;
+            mEdgeLines.setColorToUse(GENERAL);
         }
         else if (mrs.isEdges(COLOR_MESH)) {
             mEdgeLines.generalColor() = mMeshColor;
-            mEdgeLines.colorToUse()   = Lines::ColorToUse::GENERAL;
+            mEdgeLines.setColorToUse(GENERAL);
         }
         else if (mrs.isEdges(COLOR_VERTEX)) {
-            mEdgeLines.colorToUse() = Lines::ColorToUse::PER_VERTEX;
+            mEdgeLines.setColorToUse(PER_VERTEX);
         }
         else if (mrs.isEdges(COLOR_EDGE)) {
-            mEdgeLines.colorToUse() = Lines::ColorToUse::PER_EDGE;
+            mEdgeLines.setColorToUse(PER_EDGE);
         }
     }
 
     void updateWireframeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Wireframe;
+        using enum Lines::ColorToUse;
 
         mWireframeLines.thickness()        = mrs.wireframeWidth();
         mWireframeLines.shadingPerVertex() = mrs.isWireframe(SHADING_VERT);
 
         if (mrs.isWireframe(COLOR_USER)) {
             mWireframeLines.generalColor() = mrs.wireframeUserColor();
-            mWireframeLines.colorToUse()   = Lines::ColorToUse::GENERAL;
+            mWireframeLines.setColorToUse(GENERAL);
         }
         else if (mrs.isWireframe(COLOR_MESH)) {
             mWireframeLines.generalColor() = mMeshColor;
-            mWireframeLines.colorToUse()   = Lines::ColorToUse::GENERAL;
+            mWireframeLines.setColorToUse(GENERAL);
         }
         else if (mrs.isWireframe(COLOR_VERTEX)) {
-            mWireframeLines.colorToUse() = Lines::ColorToUse::PER_VERTEX;
+            mWireframeLines.setColorToUse(PER_VERTEX);
         }
     }
 
