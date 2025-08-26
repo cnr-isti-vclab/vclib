@@ -24,7 +24,6 @@
 
 #include <vclib/space/core.h>
 
-
 namespace vcl::bind {
 
 void initSphere(pybind11::module& m)
