@@ -58,7 +58,7 @@ auto meshNormals()
 
     // Show normals for first few faces
     std::cout << "\nFirst 3 face normals:\n";
-    for (uint fi = 0; fi < 3; ++fi) {
+    for (vcl::uint fi = 0; fi < 3; ++fi) {
         const auto& f = mesh.face(fi);
         std::cout << "  Face " << fi << ": " << f.normal() << "\n";
     }
