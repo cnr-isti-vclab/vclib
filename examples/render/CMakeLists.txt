@@ -48,9 +48,12 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(06-viewer-imgui)
     add_subdirectory(07-test-texcoords)
 
+    add_subdirectory(983-mesh-viewer-benchmarking)
     add_subdirectory(801-camera-viewer)
 
     if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+        add_subdirectory(980-benchmark)
+        add_subdirectory(982-split-shader-benchmarking)
         add_subdirectory(984-mesh-viewer-imgui-test-split-shaders)
     endif()
 
