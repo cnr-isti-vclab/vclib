@@ -46,7 +46,7 @@ def mesh_copy_and_transform():
 
     # PART 1: MESH COPYING AND CLONING
 
-    print("PART 1: Mesh Copying and Cloning\n")
+    print("PART 1: Mesh Copying and Cloning")
     print("---------------------------------\n")
 
     # Create a starting mesh: an icosahedron
@@ -75,7 +75,7 @@ def mesh_copy_and_transform():
     # PART 2: GEOMETRIC TRANSFORMATIONS
     # ========================================
 
-    print("PART 2: Geometric Transformations\n")
+    print("PART 2: Geometric Transformations")
     print("---------------------------------\n")
 
     transform_mesh = vcl.create_icosahedron_tri_mesh()
@@ -155,7 +155,7 @@ def mesh_copy_and_transform():
     # PART 3: TRANSFORMATION MATRICES
     # ========================================
 
-    print("PART 3: Transformation Matrices\n")
+    print("PART 3: Transformation Matrices")
     print("-------------------------------\n")
 
     print("Creating a composite transformation matrix:\n")
@@ -203,15 +203,56 @@ def mesh_copy_and_transform():
     # PART 4: MESH COMBINATION (APPEND)
     # ========================================
 
-    print("PART 4: Mesh Combination (Append)\n")
+    print("PART 4: Mesh Combination (Append)")
     print("---------------------------------\n")
 
     combined_mesh = vcl.create_cube_tri_mesh()
     print (f"   Main Mesh (cube): {combined_mesh.vertex_number()} vertices, {combined_mesh.face_number()} faces\n")
     combined_mesh.set_name("Combined Scene")
 
-    # # Create different primitives to add
-    # sp = vcl.Sphere([0.0, 0.0, 0.0], 1.0)
+    # Create different primitives to add
+    sp = vcl.Sphere([0.0, 0.0, 0.0], 1.0)
+
+    sphere1 = vcl.create_sphere_tri_mesh(sp, vcl.ICOSAHEDRON, divisions=3)
+    vcl.translate(sphere1, vcl.Point3(3.0, 0.0, 0.0))
+
+    sphere2 = vcl.create_sphere_tri_mesh(sp, vcl.UV, parallels=16, meridians=16)
+    vcl.translate(sphere2, vcl.Point3(-3.0, 0.0, 0.0))
+    vcl.scale(sphere2, 0.8)
+
+    tetrahedron = vcl.create_tetrahedron_tri_mesh()
+    vcl.translate(tetrahedron, vcl.Point3(0.0, 3.0, 0.0))
+    vcl.scale(tetrahedron, 1.5)
+
+    print("\nPrimitives to add:\n")
+    print(f"- Icosphere (3 subdivisions): {sphere1.vertex_number()} vertices, {sphere1.face_number()} faces")
+    print(f"- UV Sphere (16x16): {sphere2.vertex_number()} vertices, {sphere2.face_number()} faces")
+    print(f"- Tetrahedron: {tetrahedron.vertex_number()} vertices, {tetrahedron.face_number()} faces")
+
+    print("\nCombination through append:\n")
+
+    original_count = combined_mesh.vertex_number()
+    combined_mesh.append(sphere1)
+    print(f"After appending sphere 1: {combined_mesh.vertex_number()} vertices (+" \
+          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+
+    combined_mesh.append(sphere2)
+    print(f"After appending sphere 2: {combined_mesh.vertex_number()} vertices (+" \
+          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+
+    combined_mesh.append(tetrahedron)
+    print(f"After appending tetrahedron: {combined_mesh.vertex_number()} vertices (+" \
+          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+
+    print(f"\nFinal combined mesh: {combined_mesh.vertex_number()} vertices, {combined_mesh.face_number()} faces\n")
+
+    vcl.update_bounding_box(combined_mesh)
+    bb_combined = combined_mesh.bounding_box()
+    print(f"Bounding box of combined mesh:\n")
+    print(f"Min: ({bb_combined.min().x()}, "
+          f"{bb_combined.min().y()}, {bb_combined.min().z()})\n")
+    print(f"Max: ({bb_combined.max().x()}, "
+          f"{bb_combined.max().y()}, {bb_combined.max().z()})\n")
 
     return (transform_mesh, scale_mesh, rotate_mesh, matrix_mesh, combined_mesh)
 
