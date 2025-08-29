@@ -1,0 +1,216 @@
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2025                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
+#ifndef VCL_BGFX_PRIMITIVES_LINES_H
+#define VCL_BGFX_PRIMITIVES_LINES_H
+
+#include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
+#include <vclib/bgfx/uniform.h>
+
+#include <vclib/base.h>
+#include <vclib/space/core.h>
+
+#include <bgfx/bgfx.h>
+
+namespace vcl {
+
+// TODO: add shading per-line (flat, per-line normal) (?)
+class Lines
+{
+public:
+    enum class ColorToUse {
+        PER_VERTEX, // Select color form vertex color
+        PER_EDGE,   // Select color from edge buffer color
+        GENERAL     // Use general color in uniform data
+    };
+
+    enum class ImplementationType {
+        CPU_GENERATED = 0, // Buffers pre-generated in CPU
+
+        // TODO: uncomment when they will be implemented
+        // GPU_GENERATED,     // Buffers pre-generated in GPU with computes
+        // CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
+        // GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
+        //                    // computes
+        // TEXTURE_INSTANCING, // Using Instancing with textures generated in
+                               // GPU computes
+
+        COUNT
+    };
+
+private:
+    uint8_t mThickness = 5;
+    // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
+    // NONE
+    // PER_EDGE means that we use a buffer of normals for each edge
+    bool mShadingPerVertex = false;
+
+    BitSet8    mColorCapability = {false, false, true}; // general color only
+    ColorToUse mColorToUse      = ColorToUse::GENERAL;
+    Color      mGeneralColor    = Color::ColorABGR::LightGray;
+    ImplementationType mType    = ImplementationType::CPU_GENERATED;
+
+    Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
+    detail::CPUGeneratedLines mLinesImplementation;
+
+public:
+    Lines() = default;
+
+    Lines(
+        const std::vector<float>& vertCoords,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors,
+        uint8_t                   thickness        = 5,
+        bool                      shadingPerVertex = false,
+        ColorToUse                colorToUse       = ColorToUse::GENERAL,
+        ImplementationType        type = ImplementationType::CPU_GENERATED) :
+            mThickness(thickness), mShadingPerVertex(shadingPerVertex)
+    {
+        setImplementationType(type);
+        setPoints(vertCoords, vertNormals, vertColors, lineColors);
+        setColorToUse(colorToUse);
+    }
+
+    Lines(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors,
+        uint8_t                   thickness        = 5,
+        bool                      shadingPerVertex = false,
+        ColorToUse                colorToUse       = ColorToUse::GENERAL,
+        ImplementationType        type = ImplementationType::CPU_GENERATED) :
+            mThickness(thickness), mShadingPerVertex(shadingPerVertex)
+    {
+        setImplementationType(type);
+        setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+        setColorToUse(colorToUse);
+    }
+
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors)
+    {
+        mLinesImplementation.setPoints(
+            vertCoords, vertNormals, vertColors, lineColors);
+        updateColorCapability(vertColors, lineColors);
+    }
+
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors)
+    {
+        mLinesImplementation.setPoints(
+            vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+        updateColorCapability(vertColors, lineColors);
+    }
+
+    uint8_t thickness() const { return mThickness; }
+
+    uint8_t& thickness() { return mThickness; }
+
+    ColorToUse colorToUse() const { return mColorToUse; }
+
+    Color generalColor() const { return mGeneralColor; }
+
+    Color& generalColor() { return mGeneralColor; }
+
+    bool shadingPerVertex() const { return mShadingPerVertex; }
+
+    bool& shadingPerVertex() { return mShadingPerVertex; }
+
+    ImplementationType type() const { return mType; }
+
+    void setColorToUse(ColorToUse color)
+    {
+        if (!mColorCapability[toUnderlying(color)]) {
+            throw std::runtime_error(
+                "Lines::setColorToUse(): color option not supported by the "
+                "current buffers.");
+        }
+        else {
+            mColorToUse = color;
+        }
+    }
+
+    bool setImplementationType(ImplementationType type)
+    {
+        using enum ImplementationType;
+        if (mType == type)
+            return false; // no change
+
+        // TODO: check whether caps allow the new implementation type
+        // then set the implementation and the type
+        switch (type) {
+        case CPU_GENERATED: // always supported
+            mLinesImplementation = detail::CPUGeneratedLines();
+            mType                = type;
+            return true;
+        default: return false; // not supported
+        }
+    }
+
+    void draw(uint viewId) const
+    {
+        bindSettingsUniform();
+        if (mType == ImplementationType::CPU_GENERATED)
+            mLinesImplementation.draw(viewId);
+    }
+
+private:
+    void updateColorCapability(
+        const std::vector<uint>& vertColors,
+        const std::vector<uint>& lineColors)
+    {
+        using enum ColorToUse;
+
+        if (vertColors.empty())
+            mColorCapability[toUnderlying(PER_VERTEX)] = false;
+        else
+            mColorCapability[toUnderlying(PER_VERTEX)] = true;
+        if (lineColors.empty())
+            mColorCapability[toUnderlying(PER_EDGE)] = false;
+        else
+            mColorCapability[toUnderlying(PER_EDGE)] = true;
+    }
+
+    void bindSettingsUniform() const
+    {
+        float data[] = {
+            static_cast<float>(mThickness),
+            static_cast<float>(mColorToUse),
+            std::bit_cast<float>(mGeneralColor.abgr()),
+            static_cast<float>(mShadingPerVertex)};
+        mSettingUH.bind(data);
+    }
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PRIMITIVES_LINES_H
