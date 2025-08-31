@@ -30,6 +30,8 @@
 #include <vclib/base.h>
 #include <vclib/space/core.h>
 
+#include <variant>
+
 #include <bgfx/bgfx.h>
 
 namespace vcl {
