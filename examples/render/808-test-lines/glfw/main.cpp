@@ -37,7 +37,7 @@ class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
     // lines 
-    const vcl::uint N_LINES = 100;
+    const vcl::uint N_LINES = 8;
     std::shared_ptr<vcl::DrawableLines> mLines;
     int mSelected = 0;
 
@@ -65,12 +65,32 @@ public:
         ParentDrawer::onDraw(viewId);
 
         // TODO: selectable lines
+        int selected = mSelected;
+
         ImGui::Begin("Showing");
-        const char* items[] = { "CPU Generated" };
+        const char* items[] = { "Primitive", "CPU Generated" };
         for (int i = 0; i < vcl::toUnderlying(COUNT); ++i) {
-            ImGui::RadioButton(items[i], &mSelected, i);
+            ImGui::RadioButton(items[i], &selected, i);
         }
         ImGui::End();
+
+        if (selected != mSelected) {
+            mSelected = selected;
+            mLines->setImplementationType(static_cast<vcl::Lines::ImplementationType>(mSelected));
+        }
+
+        ImGui::Begin("Settings");
+        ImGui::SliderFloat("Thickness", &mLines->thickness(), 1.0f, 100.0f);
+        ImGui::Checkbox("Shading per Vertex", &mLines->shadingPerVertex());
+
+        const char* colorToUseItems[] = { "Per Vertex", "Per Edge", "General" };
+        int         colorToUse        = vcl::toUnderlying(mLines->colorToUse());
+        for (int i = 0; i < 3; ++i) {
+            ImGui::RadioButton(colorToUseItems[i], &colorToUse, i);
+        }
+        mLines->setColorToUse(static_cast<vcl::Lines::ColorToUse>(colorToUse));
+        ImGui::End();
+
     }
 };
 

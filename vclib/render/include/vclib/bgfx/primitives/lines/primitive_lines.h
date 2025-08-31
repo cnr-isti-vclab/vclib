@@ -18,22 +18,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+ ****************************************************************************/ 
 
-#ifndef VCL_BGFX_PRIMITIVES_LINES_CPU_GENERATED_LINES_H
-#define VCL_BGFX_PRIMITIVES_LINES_CPU_GENERATED_LINES_H
+#ifndef VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
+#define VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 
 namespace vcl::detail {
 
-class CPUGeneratedLines
+class PrimitiveLines
 {
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::CUSTOM_CPU_LINES>();
+            .getProgram<VertFragProgram::PRIMITIVE_LINES>();
 
     VertexBuffer mVertexCoords;
     VertexBuffer mVertexNormals;
@@ -43,41 +43,41 @@ class CPUGeneratedLines
     IndexBuffer  mIndices;
 
 public:
-    CPUGeneratedLines() = default;
+    PrimitiveLines() = default;
 
-    CPUGeneratedLines(
+    PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
         const std::vector<uint>&  vertColors = std::vector<uint>(),
         const std::vector<uint>&  lineColors = std::vector<uint>());
 
-    CPUGeneratedLines(
+    PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
         const std::vector<uint>&  vertColors = std::vector<uint>(),
         const std::vector<uint>&  lineColors = std::vector<uint>());
 
-    void swap(CPUGeneratedLines& other);
+    void swap(PrimitiveLines& other);
 
-    friend void swap(CPUGeneratedLines& a, CPUGeneratedLines& b) { a.swap(b); }
-
-    void setPoints(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>& lineIndices,
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+    friend void swap(PrimitiveLines& a, PrimitiveLines& b) { a.swap(b); }
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
+
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
 
     void draw(uint viewId) const;
 };
 
 } // namespace vcl::detail
 
-#endif // VCL_BGFX_PRIMITIVES_LINES_CPU_GENERATED_LINES_H
+#endif // VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H

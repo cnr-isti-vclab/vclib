@@ -110,8 +110,7 @@ void main() {
         vec2 offsetNDC = N * (0.5 * thickness) * side * vec2(pixelsToNDCX, pixelsToNDCY);
         
         // Convert back to clip space
-        vec2 newNDC = (p.xy / p.w) + offsetNDC;
-        p.xy = newNDC * p.w;
+        p.xy = p.xy + (offsetNDC * p.w);
     }
 
     if (colorToUse == 0)

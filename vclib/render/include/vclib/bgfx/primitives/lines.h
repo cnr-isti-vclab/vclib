@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_PRIMITIVES_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_H
 
+#include <vclib/bgfx/primitives/lines/primitive_lines.h>
 #include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
 #include <vclib/bgfx/uniform.h>
 
@@ -44,7 +45,8 @@ public:
     };
 
     enum class ImplementationType {
-        CPU_GENERATED = 0, // Buffers pre-generated in CPU
+        PRIMITIVE     = 0   , // Use bgfx primitive lines (not implemented)
+        CPU_GENERATED = 1   , // Buffers pre-generated in CPU
 
         // TODO: uncomment when they will be implemented
         // GPU_GENERATED,     // Buffers pre-generated in GPU with computes
@@ -58,7 +60,7 @@ public:
     };
 
 private:
-    uint8_t mThickness = 5;
+    float mThickness = 5.0f;
     // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
     // NONE
     // PER_EDGE means that we use a buffer of normals for each edge
@@ -67,23 +69,23 @@ private:
     BitSet8    mColorCapability = {false, false, true}; // general color only
     ColorToUse mColorToUse      = ColorToUse::GENERAL;
     Color      mGeneralColor    = Color::ColorABGR::LightGray;
-    ImplementationType mType    = ImplementationType::CPU_GENERATED;
+    ImplementationType mType    = ImplementationType::COUNT;
 
     Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
-    detail::CPUGeneratedLines mLinesImplementation;
+    std::variant<detail::PrimitiveLines, detail::CPUGeneratedLines> mLinesImplementation;
 
 public:
-    Lines() = default;
+    Lines() { setImplementationType(ImplementationType::PRIMITIVE); };
 
     Lines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals,
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors,
-        uint8_t                   thickness        = 5,
+        float                     thickness        = 5.0f,
         bool                      shadingPerVertex = false,
         ColorToUse                colorToUse       = ColorToUse::GENERAL,
-        ImplementationType        type = ImplementationType::CPU_GENERATED) :
+        ImplementationType        type = ImplementationType::PRIMITIVE) :
             mThickness(thickness), mShadingPerVertex(shadingPerVertex)
     {
         setImplementationType(type);
@@ -97,10 +99,10 @@ public:
         const std::vector<float>& vertNormals,
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors,
-        uint8_t                   thickness        = 5,
+        float                     thickness        = 5.0f,
         bool                      shadingPerVertex = false,
         ColorToUse                colorToUse       = ColorToUse::GENERAL,
-        ImplementationType        type = ImplementationType::CPU_GENERATED) :
+        ImplementationType        type = ImplementationType::PRIMITIVE) :
             mThickness(thickness), mShadingPerVertex(shadingPerVertex)
     {
         setImplementationType(type);
@@ -114,8 +116,23 @@ public:
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors)
     {
-        mLinesImplementation.setPoints(
-            vertCoords, vertNormals, vertColors, lineColors);
+        using enum ImplementationType;
+
+        switch(mType){
+            case PRIMITIVE: // always supported
+                std::get<detail::PrimitiveLines>(mLinesImplementation).setPoints(
+                    vertCoords, vertNormals, vertColors, lineColors
+                );
+                break;
+
+            case CPU_GENERATED: // always supported
+                std::get<detail::CPUGeneratedLines>(mLinesImplementation).setPoints(
+                    vertCoords, vertNormals, vertColors, lineColors
+                );
+                break;
+            default:
+                break; 
+        }
         updateColorCapability(vertColors, lineColors);
     }
 
@@ -126,14 +143,29 @@ public:
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors)
     {
-        mLinesImplementation.setPoints(
-            vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+        using enum ImplementationType;
+
+        switch(mType){
+            case PRIMITIVE: // always supported
+                std::get<detail::PrimitiveLines>(mLinesImplementation).setPoints(
+                    vertCoords, lineIndices, vertNormals, vertColors, lineColors
+                );
+                break;
+
+            case CPU_GENERATED: // always supported
+                std::get<detail::CPUGeneratedLines>(mLinesImplementation).setPoints(
+                    vertCoords, lineIndices, vertNormals, vertColors, lineColors
+                );
+                break;
+            default:
+                break; 
+        }
         updateColorCapability(vertColors, lineColors);
     }
 
-    uint8_t thickness() const { return mThickness; }
+    float thickness() const { return mThickness; }
 
-    uint8_t& thickness() { return mThickness; }
+    float& thickness() { return mThickness; }
 
     ColorToUse colorToUse() const { return mColorToUse; }
 
@@ -168,20 +200,46 @@ public:
         // TODO: check whether caps allow the new implementation type
         // then set the implementation and the type
         switch (type) {
-        case CPU_GENERATED: // always supported
-            mLinesImplementation = detail::CPUGeneratedLines();
-            mType                = type;
-            return true;
-        default: return false; // not supported
+            case PRIMITIVE: // always supported
+                mLinesImplementation = detail::PrimitiveLines();
+                mType                = type;
+                return true;
+
+            case CPU_GENERATED: // always supported
+                mLinesImplementation = detail::CPUGeneratedLines();
+                mType                = type;
+                return true;
+
+            default: return false; // not supported
         }
     }
 
     void draw(uint viewId) const
     {
         bindSettingsUniform();
+        if (mType == ImplementationType::PRIMITIVE)
+            std::get<detail::PrimitiveLines>(mLinesImplementation).draw(viewId);
+
         if (mType == ImplementationType::CPU_GENERATED)
-            mLinesImplementation.draw(viewId);
+            std::get<detail::CPUGeneratedLines>(mLinesImplementation).draw(viewId);
     }
+
+    void swap(Lines& other)
+    {
+        using std::swap;
+
+        swap(mThickness, other.mThickness);
+        swap(mColorToUse, other.mColorToUse);
+        swap(mSettingUH, other.mSettingUH);
+        swap(mGeneralColor, other.mGeneralColor);
+        swap(mShadingPerVertex, other.mShadingPerVertex);
+        swap(mColorCapability, other.mColorCapability);
+
+        swap(mType, other.mType);
+        swap(mLinesImplementation, other.mLinesImplementation);
+    }
+
+    friend void swap(Lines& a, Lines& b) { a.swap(b); }
 
 private:
     void updateColorCapability(
@@ -190,20 +248,14 @@ private:
     {
         using enum ColorToUse;
 
-        if (vertColors.empty())
-            mColorCapability[toUnderlying(PER_VERTEX)] = false;
-        else
-            mColorCapability[toUnderlying(PER_VERTEX)] = true;
-        if (lineColors.empty())
-            mColorCapability[toUnderlying(PER_EDGE)] = false;
-        else
-            mColorCapability[toUnderlying(PER_EDGE)] = true;
+        mColorCapability[toUnderlying(PER_VERTEX)] = !vertColors.empty();
+        mColorCapability[toUnderlying(PER_EDGE)]   = !lineColors.empty();
     }
 
     void bindSettingsUniform() const
     {
         float data[] = {
-            static_cast<float>(mThickness),
+            mThickness,
             static_cast<float>(mColorToUse),
             std::bit_cast<float>(mGeneralColor.abgr()),
             static_cast<float>(mShadingPerVertex)};

@@ -142,8 +142,8 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  vertColors,
         const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors)
     {
         mVertCoords  = vertCoords;
@@ -155,9 +155,9 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>& lineIndices,
-        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors)
     {
         mVertCoords  = vertCoords;
@@ -190,6 +190,12 @@ public:
     bool isVisible() const override { return mVisible; }
 
     void setVisibility(bool vis) override { mVisible = vis; }
+
+    void setImplementationType(ImplementationType type)
+    {
+        Lines::setImplementationType(type);
+        Lines::setPoints(mVertCoords, mLineIndices, mVertNormals, mVertColors, mLineColors);
+    }
 };
 
 } // namespace vcl
