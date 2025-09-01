@@ -81,7 +81,10 @@ public:
 
         ImGui::Begin("Settings");
         ImGui::SliderFloat("Thickness", &mLines->thickness(), 1.0f, 100.0f);
-        ImGui::Checkbox("Shading per Vertex", &mLines->shadingPerVertex());
+
+        bool shadingPerVertex = mLines->shadingPerVertex();
+        ImGui::Checkbox("Shading per Vertex", &shadingPerVertex);
+        mLines->setShading(shadingPerVertex);
 
         const char* colorToUseItems[] = { "Per Vertex", "Per Edge", "General" };
         int         colorToUse        = vcl::toUnderlying(mLines->colorToUse());
