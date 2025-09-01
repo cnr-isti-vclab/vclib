@@ -58,7 +58,7 @@ void main()
 
     uint fBufferIndex = (indicesBaseIndex/3)/32;
     uint fBitOffset = 31-((indicesBaseIndex/3)%32);
-    uint fBitMask = 0x1 << bitOffset;
+    uint fBitMask = 0x1 << fBitOffset;
     uint _useless;
     if (slctd == 1) {
         atomicFetchAndOr(vertex_selected[fBufferIndex], fBitMask, _useless);
