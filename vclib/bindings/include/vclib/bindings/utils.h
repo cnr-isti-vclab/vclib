@@ -187,6 +187,54 @@ void defArithmeticOperators(pybind11::class_<Class>& c)
         py::is_operator());
 }
 
+template<uint R, uint C>
+Eigen::Matrix<double, R, C, Eigen::RowMajor> pyBufferToEigen(
+    const pybind11::buffer& b)
+{
+    auto info = b.request();
+    if constexpr (R == 1 || C == 1) {
+        constexpr uint DIM = (R == 1) ? C : R;
+        if (info.ndim != 1 || info.shape[0] != DIM) {
+            throw std::invalid_argument(
+                "Buffer must have shape (" + std::to_string(DIM) + ")");
+        }
+    }
+    else {
+        if (info.ndim != 2 || info.shape[0] != R || info.shape[1] != C) {
+            throw std::invalid_argument(
+                "Buffer must have shape (" + std::to_string(R) + ", " +
+                std::to_string(C) + ")");
+        }
+    }
+
+    if (info.format == pybind11::format_descriptor<int>::format()) {
+        Eigen::Map<Eigen::Matrix<int, R, C, Eigen::RowMajor>> map(
+            static_cast<int*>(info.ptr));
+        return map.template cast<double>();
+    }
+    else if (info.format == pybind11::format_descriptor<long>::format()) {
+        Eigen::Map<Eigen::Matrix<long, R, C, Eigen::RowMajor>> map(
+            static_cast<long*>(info.ptr));
+        return map.template cast<double>();
+    }
+    else if (info.format == pybind11::format_descriptor<float>::format()) {
+        Eigen::Map<Eigen::Matrix<float, R, C, Eigen::RowMajor>> map(
+            static_cast<float*>(info.ptr));
+        return map.template cast<double>();
+    }
+    else if (info.format == pybind11::format_descriptor<double>::format()) {
+        return Eigen::Map<Eigen::Matrix<double, R, C, Eigen::RowMajor>>(
+            static_cast<double*>(info.ptr));
+    }
+    else {
+        throw std::invalid_argument(
+            "Buffer type not supported (supported types are: int32, int64, "
+            "float32, float64)");
+    }
+
+    return Eigen::Matrix<double, R, C, Eigen::RowMajor>();
+}
+
 /**
  * @brief calls a function for all mesh types, if the function is callable for
  * the specific mesh type. The function takes as a first argument a

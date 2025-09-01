@@ -36,13 +36,6 @@ auto meshNormals()
 {
     std::cout << "=== VCLib Example 005: Mesh Normals ===\n\n";
 
-    // ========================================
-    // PART 1: LOADING AND BASIC NORMAL CALCULATION
-    // ========================================
-
-    std::cout << "PART 1: Loading Mesh and Basic Normal Calculation\n";
-    std::cout << "--------------------------------------------------\n";
-
     // Load a sample mesh
     vcl::TriMesh mesh;
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
@@ -51,10 +44,10 @@ auto meshNormals()
               << mesh.faceNumber() << " faces\n\n";
 
     // ========================================
-    // PART 2: FACE NORMALS
+    // PART 1: FACE NORMALS
     // ========================================
 
-    std::cout << "PART 2: Face Normals\n";
+    std::cout << "PART 1: Face Normals\n";
     std::cout << "--------------------\n";
 
     // Calculate face normals
@@ -65,58 +58,48 @@ auto meshNormals()
 
     // Show normals for first few faces
     std::cout << "\nFirst 3 face normals:\n";
-    int faceCount = 0;
-    for (const auto& face : mesh.faces()) {
-        if (faceCount >= 3)
-            break;
-        std::cout << "  Face " << face.index() << ": (" << face.normal().x()
-                  << ", " << face.normal().y() << ", " << face.normal().z()
-                  << ")\n";
-        faceCount++;
+    for (vcl::uint fi = 0; fi < 3; ++fi) {
+        const auto& f = mesh.face(fi);
+        std::cout << "  Face " << fi << ": " << f.normal() << "\n";
     }
 
     // ========================================
-    // PART 3: VERTEX NORMALS - DIFFERENT ALGORITHMS
+    // PART 2: VERTEX NORMALS - DIFFERENT ALGORITHMS
     // ========================================
 
-    std::cout << "\n\nPART 3: Vertex Normals - Different Algorithms\n";
+    std::cout << "\n\nPART 2: Vertex Normals - Different Algorithms\n";
     std::cout << "----------------------------------------------\n";
 
-    // 3.1 Basic vertex normals (area weighted)
-    std::cout << "\n3.1 Basic Vertex Normals (area weighted):\n";
+    // 2.1 Basic vertex normals (area weighted)
+    std::cout << "\n2.1 Basic Vertex Normals (area weighted):\n";
     vcl::updatePerVertexNormals(mesh);
 
     std::cout << "Basic vertex normals calculated\n";
-    std::cout << "First vertex normal: (" << mesh.vertex(0).normal().x() << ", "
-              << mesh.vertex(0).normal().y() << ", "
-              << mesh.vertex(0).normal().z() << ")\n";
+    std::cout << "First vertex normal: " << mesh.vertex(0).normal() << "\n";
 
     // Store this result for comparison
     auto basicNormal = mesh.vertex(0).normal();
 
-    // 3.2 Vertex normals from face normals (uniform weight)
-    std::cout << "\n3.2 Vertex Normals from Face Normals (uniform weight):\n";
+    // 2.2 Vertex normals from face normals (uniform weight)
+    std::cout << "\n2.2 Vertex Normals from Face Normals (uniform weight):\n";
     vcl::updatePerVertexNormalsFromFaceNormals(mesh);
 
     auto uniformNormal = mesh.vertex(0).normal();
-    std::cout << "Uniform weighted normal: (" << uniformNormal.x() << ", "
-              << uniformNormal.y() << ", " << uniformNormal.z() << ")\n";
+    std::cout << "Uniform weighted normal: " << uniformNormal << "\n";
 
-    // 3.3 Angle weighted vertex normals
-    std::cout << "\n3.3 Angle Weighted Vertex Normals:\n";
+    // 2.3 Angle weighted vertex normals
+    std::cout << "\n2.3 Angle Weighted Vertex Normals:\n";
     vcl::updatePerVertexNormalsAngleWeighted(mesh);
 
     auto angleNormal = mesh.vertex(0).normal();
-    std::cout << "Angle weighted normal: (" << angleNormal.x() << ", "
-              << angleNormal.y() << ", " << angleNormal.z() << ")\n";
+    std::cout << "Angle weighted normal: " << angleNormal << "\n";
 
-    // 3.4 Nelson-Max weighted vertex normals
-    std::cout << "\n3.4 Nelson-Max Weighted Vertex Normals:\n";
+    // 2.4 Nelson-Max weighted vertex normals
+    std::cout << "\n2.4 Nelson-Max Weighted Vertex Normals:\n";
     vcl::updatePerVertexNormalsNelsonMaxWeighted(mesh);
 
     auto nelsonMaxNormal = mesh.vertex(0).normal();
-    std::cout << "Nelson-Max weighted normal: (" << nelsonMaxNormal.x() << ", "
-              << nelsonMaxNormal.y() << ", " << nelsonMaxNormal.z() << ")\n";
+    std::cout << "Nelson-Max weighted normal: " << nelsonMaxNormal << "\n";
 
     // Compare the different methods
     std::cout << "\nComparison of different weighting methods for vertex 0:\n";
@@ -130,49 +113,41 @@ auto meshNormals()
               << " (magnitude)\n";
 
     // ========================================
-    // PART 4: NORMAL MANIPULATION
+    // PART 3: NORMAL MANIPULATION
     // ========================================
 
-    std::cout << "\n\nPART 4: Normal Manipulation\n";
+    std::cout << "\n\nPART 3: Normal Manipulation\n";
     std::cout << "----------------------------\n";
 
     // Create a transformation matrix to flip normals
-    std::cout << "4.1 Flipping Normals:\n";
+    std::cout << "3.1 Flipping Normals:\n";
     vcl::Matrix44d flipMatrix = vcl::Matrix44d::Identity();
     flipMatrix.diagonal() << -1, -1, -1, 1; // Flip X, Y, Z components
 
     // Store original normal for comparison
     auto originalFaceNormal = mesh.face(0).normal();
-    std::cout << "Original face 0 normal: (" << originalFaceNormal.x() << ", "
-              << originalFaceNormal.y() << ", " << originalFaceNormal.z()
-              << ")\n";
+    std::cout << "Original face 0 normal: " << originalFaceNormal << "\n";
 
     // Apply transformation to face normals
     vcl::multiplyPerFaceNormalsByMatrix(mesh, flipMatrix);
 
     auto flippedFaceNormal = mesh.face(0).normal();
-    std::cout << "Flipped face 0 normal:  (" << flippedFaceNormal.x() << ", "
-              << flippedFaceNormal.y() << ", " << flippedFaceNormal.z()
-              << ")\n";
+    std::cout << "Flipped face 0 normal:  " << flippedFaceNormal << "\n";
 
     // Apply transformation to vertex normals
     auto originalVertexNormal = mesh.vertex(0).normal();
-    std::cout << "\nOriginal vertex 0 normal: (" << originalVertexNormal.x()
-              << ", " << originalVertexNormal.y() << ", "
-              << originalVertexNormal.z() << ")\n";
+    std::cout << "\nOriginal vertex 0 normal: " << originalVertexNormal << "\n";
 
     vcl::multiplyPerVertexNormalsByMatrix(mesh, flipMatrix);
 
     auto flippedVertexNormal = mesh.vertex(0).normal();
-    std::cout << "Flipped vertex 0 normal:  (" << flippedVertexNormal.x()
-              << ", " << flippedVertexNormal.y() << ", "
-              << flippedVertexNormal.z() << ")\n";
+    std::cout << "Flipped vertex 0 normal:  " << flippedVertexNormal << "\n";
 
     // ========================================
-    // PART 5: WORKING WITH DIFFERENT MESH TYPES
+    // PART 4: WORKING WITH DIFFERENT MESH TYPES
     // ========================================
 
-    std::cout << "\n\nPART 5: Working with Different Mesh Types\n";
+    std::cout << "\n\nPART 4: Working with Different Mesh Types\n";
     std::cout << "------------------------------------------\n";
 
     // Load and process a polygon mesh
@@ -187,9 +162,10 @@ auto meshNormals()
     vcl::updatePerVertexNormals(polyMesh);
 
     std::cout << "Calculated normals for polygon mesh\n";
-    std::cout << "First polygon face normal: (" << polyMesh.face(0).normal().x()
-              << ", " << polyMesh.face(0).normal().y() << ", "
-              << polyMesh.face(0).normal().z() << ")\n";
+    std::cout << "First polygon face normal: " << polyMesh.face(0).normal()
+              << "\n";
+    std::cout << "First polygon vertex normal: " << polyMesh.vertex(0).normal()
+              << "\n";
 
     // ========================================
     // SUMMARY

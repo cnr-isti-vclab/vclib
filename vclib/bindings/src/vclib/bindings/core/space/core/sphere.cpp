@@ -20,67 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/space/core/matrix.h>
+#include <vclib/bindings/core/space/core/sphere.h>
 
-#include <vclib/bindings/utils.h>
 #include <vclib/space/core.h>
-
-#include <pybind11/operators.h>
 
 namespace vcl::bind {
 
-template<uint R, uint C>
-void populteMatrix(pybind11::module& m)
+void initSphere(pybind11::module& m)
 {
     namespace py = pybind11;
+    using namespace py::literals;
 
-    using Scalar = double;
-    using M      = Matrix<Scalar, R, C>;
-
-    std::string   cName = "Matrix" + std::to_string(R) + std::to_string(C);
-    py::class_<M> c(m, cName.c_str(), py::buffer_protocol());
+    py::class_<Sphered> c(m, "Sphere");
     c.def(py::init<>());
-    // allow to initialize Matrix with py::buffer
-    c.def(py::init([](const py::buffer& b) {
-        return pyBufferToEigen<R, C>(b);
-    }));
-    py::implicitly_convertible<py::buffer, M>();
+    c.def(py::init<Point3d, double>(), "center"_a, "radius"_a);
 
-    defCopy(c);
-
-    c.def_buffer([](M& p) -> py::buffer_info {
-        return py::buffer_info(
-            p.data(),                                /* Pointer to buffer */
-            sizeof(Scalar),                          /* Size of one scalar */
-            py::format_descriptor<Scalar>::format(), /* Python struct-style
-               format descriptor */
-            2,                                       /* Number of dimensions */
-            {R, C},                                  /* Buffer dimensions */
-            {sizeof(Scalar), sizeof(Scalar) * R}
-            /* Strides (in bytes) for each index */
-        );
-    });
-
-    c.def("__call__", [](M& p, uint i, uint j) { // operator()
-        return p(i, j);
-    });
-
-    c.def("__getitem__", [](M& p, std::pair<uint, uint> i) { // operator[]
-        return p(i.first, i.second);
-    });
-
+    c.def("center", py::overload_cast<>(&Sphered::center, py::const_));
     c.def(
-        "__setitem__",
-        [](M& p, std::pair<uint, uint> i, Scalar v) { // operator[]
-            p(i.first, i.second) = v;
-        });
-}
+        "set_center",
+        [](Sphered& s, const Point3d& c) {
+            s.center() = c;
+        },
+        "center"_a);
 
-void initMatrix(pybind11::module& m)
-{
-    populteMatrix<2, 2>(m);
-    populteMatrix<3, 3>(m);
-    populteMatrix<4, 4>(m);
+    c.def("radius", py::overload_cast<>(&Sphered::radius, py::const_));
+    c.def(
+        "set_radius",
+        [](Sphered& s, double r) {
+            s.radius() = r;
+        },
+        "radius"_a);
+
+    c.def("diameter", &Sphered::diameter);
+    c.def("circumference", &Sphered::circumference);
+    c.def("surface_area", &Sphered::surfaceArea);
+    c.def("volume", &Sphered::volume);
+    c.def("is_inside", &Sphered::isInside, "p"_a);
+    c.def("intersects", &Sphered::intersects, "box"_a);
 }
 
 } // namespace vcl::bind

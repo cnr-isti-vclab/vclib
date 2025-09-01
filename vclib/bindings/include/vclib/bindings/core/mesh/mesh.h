@@ -38,6 +38,7 @@ template<MeshConcept MeshType>
 void initMesh(pybind11::module& m, const std::string& name)
 {
     namespace py = pybind11;
+    using namespace py::literals;
 
     // Create the class
     pybind11::class_<MeshType> c(m, name.c_str());
@@ -62,6 +63,13 @@ void initMesh(pybind11::module& m, const std::string& name)
 
     // TODO: add all the members of the mesh
     c.def("clear", &MeshType::clear);
+
+    c.def(
+        "append",
+        [](MeshType& m, const MeshType& o) {
+            m.append(o);
+        },
+        "other_mesh"_a);
 }
 
 } // namespace vcl::bind
