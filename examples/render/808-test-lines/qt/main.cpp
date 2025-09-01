@@ -34,7 +34,7 @@ class LinesComboBox : public QComboBox
 public:
     LinesComboBox(QWidget* parent = nullptr) : QComboBox(parent)
     {
-        addItem("CPUGeneratedLines");
+        addItems({"Primitive", "CPU Generated"});
     }
 };
 
