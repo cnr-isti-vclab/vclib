@@ -54,6 +54,11 @@ void populatePoint(pybind11::module& m)
         return p;
     }));
     py::implicitly_convertible<py::list, P>();
+    // allow to initialize Point with py::buffer
+    c.def(py::init([](const py::buffer& b) {
+        return pyBufferToEigen<1, DIM>(b);
+    }));
+    py::implicitly_convertible<py::buffer, P>();
 
     defCopy(c);
 

@@ -206,9 +206,11 @@ auto meshCopyAndTransform()
     transformMatrix(1, 3) = 1.0; // translation Y
     transformMatrix(2, 3) = 0.5; // translation Z
 
-    // Add scale factor (multiplying the rotational part)
+    // Add scale factor (multiplying diagonal of the rotational part)
     scaleFactor = 1.5;
-    transformMatrix.block<3, 3>(0, 0) *= scaleFactor;
+    transformMatrix(0, 0) *= scaleFactor; // Scale X
+    transformMatrix(1, 1) *= scaleFactor; // Scale Y
+    transformMatrix(2, 2) *= scaleFactor; // Scale Z
 
     std::cout << "Transformation matrix:\n" << transformMatrix << "\n\n";
 
