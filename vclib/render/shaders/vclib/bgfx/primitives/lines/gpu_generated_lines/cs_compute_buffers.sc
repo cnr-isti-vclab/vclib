@@ -25,8 +25,8 @@
 
 #include <vclib/bgfx/shaders_common.sh> 
 
-BUFFER_RO(lineIndex,         uvec4, 0);
-BUFFER_RO(vertCoords,        vec4,  1);
+BUFFER_RO(vertCoords,        vec4,  0);
+BUFFER_RO(lineIndex,         uvec4, 1);
 BUFFER_RO(vertNormals,       vec4,  2);
 BUFFER_RO(vertColors,        uvec4, 3);
 BUFFER_RO(lineColor,         uvec4, 4);
@@ -34,9 +34,12 @@ BUFFER_RO(lineColor,         uvec4, 4);
 BUFFER_WO(vertexBuffer,      vec4,  5);
 BUFFER_WO(indexBuffer,       uvec4, 6); 
 
-uniform vec4 u_CustomIndices;
+uniform vec4 u_ActiveBuffers; // x = line indices, y = normals, z = colors, w = line colors
 
-#define setIndices          bool(u_CustomIndices.x)
+#define setIndices          (u_ActiveBuffers.x == 1)
+#define setNormals          (u_ActiveBuffers.y == 1)
+#define setColors           (u_ActiveBuffers.z == 1)
+#define setLineColors       (u_ActiveBuffers.w == 1)
 
 #define get_float_from_vec4(pos, Buffer) Buffer[uint(pos) / 4][uint(pos) % 4]
 
@@ -55,24 +58,36 @@ uniform vec4 u_CustomIndices;
 
 NUM_THREADS(2, 2, 1)
 void main() {
-    uint index0 = (gl_WorkGroupID * 2);
-    uint index1 = (gl_WorkGroupID * 2) + 1;
+    uint baseIndex = (gl_WorkGroupID.x * 60) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 15);
+    uint index0 = (gl_WorkGroupID.x * 2);
+    uint index1 = (gl_WorkGroupID.x * 2) + 1;
+
     if(setIndices) {
-        index0 = index((gl_WorkGroupID * 2));
-        index1 = index((gl_WorkGroupID * 2) + 1);
+        index0 = index((gl_WorkGroupID.x * 2));
+        index1 = index((gl_WorkGroupID.x * 2) + 1);
     }
 
-    uint baseIndex = (gl_WorkGroupID.x * 60) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 15);
+    vec3 p0 = p(index0);
+    vec3 p1 = p(index1);
 
-    vec3 p0         = p(index0);
-    vec3 p1         = p(index1);
-    uint color0     = color(index0);
-    uint color1     = color(index1);
-    vec3 normal0    = normal(index0);
-    vec3 normal1    = normal(index1);
+    uint color0 = 0xffffffff;
+    uint color1 = 0xffffffff;
+    if(setColors) {
+        color0 = color(index0);
+        color1 = color(index1);
+    }
 
-    uint lineColor  = lineColor(gl_WorkGroupID.x);
+    vec3 normal0 = vec3(0.0, 0.0, 1.0);
+    vec3 normal1 = vec3(0.0, 0.0, 1.0);
+    if(setNormals) {
+        normal0 = normal(index0);
+        normal1 = normal(index1);
+    }
 
+    uint lineC = 0xffffffff;
+    if(setLineColors) {
+        lineC  = lineColor(gl_WorkGroupID.x);
+    }
 
     get_float_from_vec4(baseIndex,     vertexBuffer) = p0.x;
     get_float_from_vec4(baseIndex + 1, vertexBuffer) = p0.y;
@@ -93,7 +108,7 @@ void main() {
     get_float_from_vec4(baseIndex + 12, vertexBuffer) = normal1.y;
     get_float_from_vec4(baseIndex + 13, vertexBuffer) = normal1.z;
 
-    get_float_from_vec4(baseIndex + 14, vertexBuffer) = uintBitsToFloat(lineColor);
+    get_float_from_vec4(baseIndex + 14, vertexBuffer) = uintBitsToFloat(lineC);
 
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {

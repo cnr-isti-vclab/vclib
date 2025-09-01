@@ -45,8 +45,7 @@ class GPUGeneratedLines
             .getProgram<VertFragProgram::CUSTOM_CPU_LINES>();
 
 
-    bool mCustomIndices = false;
-    Uniform mCustomIndicesUH = Uniform("u_CustomIndices", bgfx::UniformType::Vec4);
+    Uniform mCustomIndicesUH = Uniform("u_ActiveBuffers", bgfx::UniformType::Vec4);
     
     VertexBuffer mVertexCoords;
     VertexBuffer mVertexNormals;
@@ -73,6 +72,21 @@ public:
         const std::vector<uint>&  vertColors = std::vector<uint>(),
         const std::vector<uint>&  lineColors = std::vector<uint>());
 
+    GPUGeneratedLines(
+        const uint pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors = VertexBuffer(),
+        const VertexBuffer& lineColors = VertexBuffer());
+
+    GPUGeneratedLines(
+        const uint pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors = VertexBuffer(),
+        const VertexBuffer& lineColors = VertexBuffer());
+
     void swap(GPUGeneratedLines& other);
 
     friend void swap(GPUGeneratedLines& a, GPUGeneratedLines& b) { a.swap(b); }
@@ -85,11 +99,26 @@ public:
         const std::vector<uint>&  lineColors = std::vector<uint>());
         
     void setPoints(
-        const std::vector<float>& vertCoords,
+         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
         const std::vector<uint>&  vertColors = std::vector<uint>(),
         const std::vector<uint>&  lineColors = std::vector<uint>());
-            
+
+    void setPoints(
+        const uint pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors = VertexBuffer(),
+        const VertexBuffer& lineColors = VertexBuffer());
+
+    void setPoints(
+        const uint pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors = VertexBuffer(),
+        const VertexBuffer& lineColors = VertexBuffer());
+
     void draw(uint viewId) const;
 
 private:
@@ -116,7 +145,14 @@ private:
     
     void allocateVertexAndIndexBuffer(const uint pointsSize);
 
-    void generateVertexAndIndexBuffer(const uint pointsSize);
+    void generateVertexAndIndexBuffer(
+        const uint pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals,
+        const VertexBuffer& vertexColors,
+        const VertexBuffer& lineColors
+    );
 };
 
 } // namespace vcl::detail
