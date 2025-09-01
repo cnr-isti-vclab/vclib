@@ -37,7 +37,7 @@ class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
     // lines 
-    const vcl::uint N_LINES = 8;
+    const vcl::uint N_LINES = 100;
     std::shared_ptr<vcl::DrawableLines> mLines;
     int mSelected = 0;
 
@@ -68,7 +68,7 @@ public:
         int selected = mSelected;
 
         ImGui::Begin("Showing");
-        const char* items[] = { "Primitive", "CPU Generated" };
+        const char* items[] = { "Primitive", "CPU Generated", "GPU Generated" };
         for (int i = 0; i < vcl::toUnderlying(COUNT); ++i) {
             ImGui::RadioButton(items[i], &selected, i);
         }
