@@ -226,23 +226,6 @@ public:
             std::get<detail::CPUGeneratedLines>(mLinesImplementation).draw(viewId);
     }
 
-    void swap(Lines& other)
-    {
-        using std::swap;
-
-        swap(mThickness, other.mThickness);
-        swap(mColorToUse, other.mColorToUse);
-        swap(mSettingUH, other.mSettingUH);
-        swap(mGeneralColor, other.mGeneralColor);
-        swap(mShadingPerVertex, other.mShadingPerVertex);
-        swap(mColorCapability, other.mColorCapability);
-
-        swap(mType, other.mType);
-        swap(mLinesImplementation, other.mLinesImplementation);
-    }
-
-    friend void swap(Lines& a, Lines& b) { a.swap(b); }
-
 private:
     void updateColorCapability(
         const std::vector<uint>& vertColors,
