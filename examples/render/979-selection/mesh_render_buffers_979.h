@@ -242,7 +242,7 @@ public:
         non_const_this->mSelectedVerticesBuffer.setCompute(true);
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         non_const_this->mSelectedVerticesBuffer.setCompute(false);
-        float temp[] = {1024.f / 2.f, 0.f, 1024.f, 768.f / 2.f};
+        float temp[] = {1024.f / 2.f * 1.5f, 0.f, 1024.f * 1.5f, 768.f / 2.f * 1.5f};
         mSelectionBoxuniform.bind((void*) temp);
         float temp2[] = {
             vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]),

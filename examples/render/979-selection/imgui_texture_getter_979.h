@@ -36,45 +36,49 @@
 
 #include <bgfx/bgfx.h>
 
-template<typename DerivedDrawer>
-class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
-{
-    std::shared_ptr<const vcl::DrawableMeshBGFX979<vcl::TriMesh>> msh;
-    vcl::SelectionMode979 mode = vcl::SelectionMode979::NORMAL;
-
-
-
+template<typename MeshType> 
+class ImguiTextureGetter979Wrapper {
 public:
-    using vcl::PlainDrawer<DerivedDrawer>::PlainDrawer;
-    using Base = vcl::PlainDrawer<DerivedDrawer>;
-
-    void setMesh(const vcl::DrawableObjectVector& dov, size_t index) {
-        this->msh = std::dynamic_pointer_cast<const vcl::DrawableMeshBGFX979<vcl::TriMesh>>(dov.at(index));
-    }
-
-    void onDraw(vcl::uint viewId)
+    template<typename DerivedDrawer>
+    class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
     {
-        Base::onDraw(viewId);
+        std::shared_ptr<const vcl::DrawableMeshBGFX979<MeshType>> msh;
+        vcl::SelectionMode979 mode = vcl::SelectionMode979::NORMAL;
 
-        ImGuiIO& io = ImGui::GetIO();
-        ImGui::Begin("Calculate selection button", nullptr);
-        ImGui::RadioButton("Normal", [this]() -> bool {return this->mode == vcl::SelectionMode979::NORMAL;}, [this](bool b){this->mode = vcl::SelectionMode979::NORMAL;});
-        ImGui::SameLine();
-        ImGui::RadioButton("Add", [this]() -> bool {return this->mode == vcl::SelectionMode979::ADD;}, [this](bool b){this->mode = vcl::SelectionMode979::ADD;});
-        ImGui::SameLine();
-        ImGui::RadioButton("Subtract", [this]() -> bool {return this->mode == vcl::SelectionMode979::SUBTRACT;}, [this](bool b){this->mode = vcl::SelectionMode979::SUBTRACT;});
-        ImGui::SameLine();
-        ImGui::RadioButton("Invert", [this]() -> bool {return this->mode == vcl::SelectionMode979::INVERT;}, [this](bool b){this->mode = vcl::SelectionMode979::INVERT;});
-        ImGui::SameLine();
-        ImGui::RadioButton("All", [this]() -> bool {return this->mode == vcl::SelectionMode979::ALL;}, [this](bool b){this->mode = vcl::SelectionMode979::ALL;});
-        ImGui::SameLine();
-        ImGui::RadioButton("None", [this]() -> bool {return this->mode == vcl::SelectionMode979::NONE;}, [this](bool b){this->mode = vcl::SelectionMode979::NONE;});
-        if (ImGui::Button("Calculate selection")) {
-            msh->setTransform();
-            msh->getMRB().calculateSelection(viewId, mode);
+
+
+    public:
+        using vcl::PlainDrawer<DerivedDrawer>::PlainDrawer;
+        using Base = vcl::PlainDrawer<DerivedDrawer>;
+
+        void setMesh(const vcl::DrawableObjectVector& dov, size_t index) {
+            this->msh = std::dynamic_pointer_cast<const vcl::DrawableMeshBGFX979<MeshType>>(dov.at(index));
         }
-        ImGui::End();
-    }
+
+        void onDraw(vcl::uint viewId)
+        {
+            Base::onDraw(viewId);
+
+            ImGuiIO& io = ImGui::GetIO();
+            ImGui::Begin("Calculate selection button", nullptr);
+            ImGui::RadioButton("Normal", [this]() -> bool {return this->mode == vcl::SelectionMode979::NORMAL;}, [this](bool b){this->mode = vcl::SelectionMode979::NORMAL;});
+            ImGui::SameLine();
+            ImGui::RadioButton("Add", [this]() -> bool {return this->mode == vcl::SelectionMode979::ADD;}, [this](bool b){this->mode = vcl::SelectionMode979::ADD;});
+            ImGui::SameLine();
+            ImGui::RadioButton("Subtract", [this]() -> bool {return this->mode == vcl::SelectionMode979::SUBTRACT;}, [this](bool b){this->mode = vcl::SelectionMode979::SUBTRACT;});
+            ImGui::SameLine();
+            ImGui::RadioButton("Invert", [this]() -> bool {return this->mode == vcl::SelectionMode979::INVERT;}, [this](bool b){this->mode = vcl::SelectionMode979::INVERT;});
+            ImGui::SameLine();
+            ImGui::RadioButton("All", [this]() -> bool {return this->mode == vcl::SelectionMode979::ALL;}, [this](bool b){this->mode = vcl::SelectionMode979::ALL;});
+            ImGui::SameLine();
+            ImGui::RadioButton("None", [this]() -> bool {return this->mode == vcl::SelectionMode979::NONE;}, [this](bool b){this->mode = vcl::SelectionMode979::NONE;});
+            if (ImGui::Button("Calculate selection")) {
+                msh->setTransform();
+                msh->getMRB().calculateSelection(viewId, mode);
+            }
+            ImGui::End();
+        }
+    };
 };
 
 #endif

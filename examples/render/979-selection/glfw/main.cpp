@@ -35,7 +35,8 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-vcl::DrawableMeshBGFX979<vcl::TriMesh> getDrawableMesh979(
+template <typename MeshType>
+vcl::DrawableMeshBGFX979<MeshType> getDrawableMesh979(
     std::string filename              = "bimba.obj",
     bool        fromVCLibExamplesPath = true)
 {
@@ -43,7 +44,7 @@ vcl::DrawableMeshBGFX979<vcl::TriMesh> getDrawableMesh979(
         filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
     }
 
-    vcl::TriMesh m = vcl::loadMesh<vcl::TriMesh>(filename);
+    MeshType m = vcl::loadMesh<MeshType>(filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
@@ -58,7 +59,7 @@ vcl::DrawableMeshBGFX979<vcl::TriMesh> getDrawableMesh979(
     vcl::MeshRenderSettings settings(m);
 
     // create a DrawableMesh object from the mesh
-    vcl::DrawableMeshBGFX979<vcl::TriMesh> drawable(m);
+    vcl::DrawableMeshBGFX979<MeshType> drawable(m);
 
     // set the settings to the drawable mesh
     drawable.setRenderSettings(settings);
@@ -68,11 +69,13 @@ vcl::DrawableMeshBGFX979<vcl::TriMesh> getDrawableMesh979(
 
 int main(void)
 {
+    using MeshType = vcl::PolyMesh;
+
     using RA = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
         vcl::imgui::ImGuiDrawer,
-        ImGuiTextureGetter979,
+        ImguiTextureGetter979Wrapper<MeshType>::ImGuiTextureGetter979,
         vcl::imgui::MeshViewerDrawerImgui>;
     
     RA tw("Selection", 1024, 768);
@@ -81,7 +84,7 @@ int main(void)
         std::make_shared<vcl::DrawableObjectVector>();
     tw.setDrawableObjectVector(vec);
 
-    vcl::DrawableMeshBGFX979<vcl::TriMesh> msh = getDrawableMesh979("cube_poly.ply");
+    vcl::DrawableMeshBGFX979<MeshType> msh = getDrawableMesh979<MeshType>("cube_poly.ply");
 
     tw.pushDrawableObject(std::move(msh));
     tw.setMesh(tw.drawableObjectVector(), 0);
