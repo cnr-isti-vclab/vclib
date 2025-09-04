@@ -39,16 +39,12 @@
 
 #include <bgfx/bgfx.h>
 
+// This allows selection for a maximum of 1024^3 = 1_073_741_824 vertices per mesh. Still likely enough. It is set to this because i seem to understand that Metal has a cap of 1024 (maybe?)
+#define MAX_COMPUTE_WORKGROUP_SIZE uint(1024)
+
 namespace vcl {
 
-enum class SelectionMode979 {
-    NORMAL,
-    ADD,
-    SUBTRACT,
-    ALL,
-    NONE,
-    INVERT
-};
+enum class SelectionMode979 { NORMAL, ADD, SUBTRACT, ALL, NONE, INVERT };
 
 template<MeshConcept Mesh>
 class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
@@ -59,8 +55,6 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     friend Base;
 
-    bool mSelectionCalculated = false;
-
     VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
     VertexBuffer mVertexColorsBuffer;
@@ -69,6 +63,11 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     // vertex selection
     IndexBuffer mSelectedVerticesBuffer;
+    Uniform     mSelectionBoxuniform =
+        Uniform("u_selectionBox", bgfx::UniformType::Vec4);
+    Uniform mVertexSelectionWorkgroupSizeAndVertexCountUniform =
+        Uniform("u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
+    std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -93,13 +92,6 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
     DrawableMeshUniforms mMeshUniforms;
-
-    Uniform mSelectionBoxuniform =
-        Uniform("u_selectionBox", bgfx::UniformType::Vec4);
-    Uniform mWorkgroupSizeAndVertexCountUniform =
-        Uniform("u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
-
-    std::array<uint, 3> mWorkgroupSize = {0, 0, 0};
 
 public:
     MeshRenderBuffers979() = default;
@@ -147,6 +139,9 @@ public:
         swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
         swap(mTextureUnits, other.mTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
+        swap(
+            mVertexSelectionWorkgroupSize, other.mVertexSelectionWorkgroupSize);
+        swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
     }
 
     friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b)
@@ -199,91 +194,61 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    std::array<uint, 3> getWorkgroupSize()
+    void calculateSelection(const bgfx::ViewId viewId, SelectionMode979 mode)
+        const
     {
-        if (mWorkgroupSize[0] == 0) {
-            mWorkgroupSize[0] = std::min(Base::numVerts(), uint(512));
-            mWorkgroupSize[1] = std::min(
-                uint(
-                    std::ceil(
-                        double(Base::numVerts()) / double(mWorkgroupSize[0]))),
-                uint(512));
-            mWorkgroupSize[2] = uint(
-                std::ceil(
-                    double(Base::numVerts()) /
-                    double(mWorkgroupSize[0] * mWorkgroupSize[1])));
-        }
-        return mWorkgroupSize;
-    }
-
-    uint vertexNumber() { return Base::numVerts(); }
-
-    void calculateSelection(const bgfx::ViewId viewId, SelectionMode979 mode) const
-    {
-        MeshRenderBuffers979<Mesh>* non_const_this =
-            const_cast<MeshRenderBuffers979<Mesh>*>(this);
-
-        if (!mSelectedVerticesBuffer.isValid()) {
-            uint selectedVerticesBufferSize =
-                uint(ceil(double(Base::numVerts()) / 32.0));
-            std::vector<uint> zeros(selectedVerticesBufferSize, 0);
-            non_const_this->mSelectedVerticesBuffer.createForCompute(
-                &zeros[0],
-                selectedVerticesBufferSize,
-                vcl::PrimitiveType::UINT,
-                bgfx::Access::ReadWrite);
-        }
-        non_const_this->getWorkgroupSize();
-        if (!mVertexPositionsBuffer.isValid()) {
-            std::cout << "Invalid vertex positions" << std::endl;
-        }
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        non_const_this->mSelectedVerticesBuffer.setCompute(true);
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-        non_const_this->mSelectedVerticesBuffer.setCompute(false);
-        float temp[] = {1024.f / 2.f * 1.5f, 0.f, 1024.f * 1.5f, 768.f / 2.f * 1.5f};
+
+        float temp[] = {
+            1024.f / 2.f * 1.5f, 0.f, 1024.f * 1.5f, 768.f / 2.f * 1.5f};
         mSelectionBoxuniform.bind((void*) temp);
+
         float temp2[] = {
-            vcl::Uniform::uintBitsToFloat(mWorkgroupSize[0]),
-            vcl::Uniform::uintBitsToFloat(mWorkgroupSize[1]),
-            vcl::Uniform::uintBitsToFloat(mWorkgroupSize[2]),
+            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[0]),
+            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[1]),
+            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[2]),
             vcl::Uniform::uintBitsToFloat(Base::numVerts())};
-        mWorkgroupSizeAndVertexCountUniform.bind((void*) temp2);
-        auto& pm = Context::instance().programManager();
+        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind((void*) temp2);
+
+        auto&               pm = Context::instance().programManager();
         bgfx::ProgramHandle selectionProgram;
-        switch(mode) {
-            case SelectionMode979::NORMAL:
-                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
-                break;
-            case SelectionMode979::ADD:
-                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ADD>();
-                break;
-            case SelectionMode979::SUBTRACT:
-                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
-                break;
-            case SelectionMode979::ALL:
-                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ALL>();
-                break;
-            case SelectionMode979::NONE:
-                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
-                break;
-            case SelectionMode979::INVERT:
-                selectionProgram = pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
-                break;
+        switch (mode) {
+        case SelectionMode979::NORMAL:
+            selectionProgram =
+                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
+            break;
+        case SelectionMode979::ADD:
+            selectionProgram =
+                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ADD>();
+            break;
+        case SelectionMode979::SUBTRACT:
+            selectionProgram = pm.getComputeProgram<
+                ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
+            break;
+        case SelectionMode979::ALL:
+            selectionProgram =
+                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ALL>();
+            break;
+        case SelectionMode979::NONE:
+            selectionProgram =
+                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
+            break;
+        case SelectionMode979::INVERT:
+            selectionProgram =
+                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
+            break;
         }
         bgfx::dispatch(
             viewId,
             selectionProgram,
-            mWorkgroupSize[0],
-            mWorkgroupSize[1],
-            mWorkgroupSize[2]);
-        non_const_this->mSelectionCalculated = true;
+            mVertexSelectionWorkgroupSize[0],
+            mVertexSelectionWorkgroupSize[1],
+            mVertexSelectionWorkgroupSize[2]);
     }
 
-    bool selectionCalculated() const { return mSelectionCalculated; }
-
-    void bindSelection() const { mSelectedVerticesBuffer.bind(4); }
+    void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
 
     // to draw splats
     void bindVertexQuadBuffer() const
@@ -338,6 +303,26 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
+    // Possibly replace with an algorithm (maybe a compute shader) that calculates the closest shape to a cube for the three dimensions 
+    // (to reduce the number of eccess computations), since currently if there are 1025 vertices you use 1024*2*1 = 2048 workgroups.
+    void calculateVertexSelectionWorkgroupSize()
+    {
+        mVertexSelectionWorkgroupSize[0] =
+            std::min(Base::numVerts(), MAX_COMPUTE_WORKGROUP_SIZE);
+        mVertexSelectionWorkgroupSize[1] = std::min(
+            uint(
+                std::ceil(
+                    double(Base::numVerts()) /
+                    double(mVertexSelectionWorkgroupSize[0]))),
+            MAX_COMPUTE_WORKGROUP_SIZE);
+        mVertexSelectionWorkgroupSize[2] = uint(
+            std::ceil(
+                double(Base::numVerts()) /
+                double(
+                    mVertexSelectionWorkgroupSize[0] *
+                    mVertexSelectionWorkgroupSize[1])));
+    }
+
     void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
@@ -378,6 +363,9 @@ private:
 
             // record that the vertex quad buffer must be generated
             mVertexQuadBufferGenerated = false;
+
+            // create the vertex selection buffer
+            setVertexSelectionBuffer(mesh);
         }
     }
 
@@ -400,6 +388,35 @@ private:
 
         // if number of vertices is not zero, the index buffer must be valid
         assert(mVertexQuadIndexBuffer.isValid() || totalIndices == 0);
+    }
+
+    /**
+     *  @brief The function allocates and fills a GPU index buffer which is a
+     * bitmap for vertex selection (i.e. bit is 1 if corresponding vertex is
+     * selected, otherwise 0). Initialized to all zeroes.
+     *
+     *  @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexSelectionBuffer(const MeshType& mesh)
+    {
+        const uint selectionBufferSize =
+            uint(ceil(double(mesh.vertexNumber()) / 32.0));
+
+        auto [buffer, releaseFn] =
+            getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+
+        for (uint i = 0; i < selectionBufferSize; i++) {
+            buffer[i] = 0;
+        }
+
+        mSelectedVerticesBuffer.createForCompute(
+            buffer,
+            selectionBufferSize,
+            vcl::PrimitiveType::UINT,
+            bgfx::Access::ReadWrite,
+            releaseFn);
+
+        calculateVertexSelectionWorkgroupSize();
     }
 
     void setVertexNormalsBuffer(const MeshType& mesh) // override

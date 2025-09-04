@@ -69,7 +69,7 @@ vcl::DrawableMeshBGFX979<MeshType> getDrawableMesh979(
 
 int main(void)
 {
-    using MeshType = vcl::PolyMesh;
+    using MeshType = vcl::TriMesh;
 
     using RA = vcl::RenderApp<
         vcl::glfw::WindowManager,
@@ -84,7 +84,7 @@ int main(void)
         std::make_shared<vcl::DrawableObjectVector>();
     tw.setDrawableObjectVector(vec);
 
-    vcl::DrawableMeshBGFX979<MeshType> msh = getDrawableMesh979<MeshType>("cube_poly.ply");
+    vcl::DrawableMeshBGFX979<MeshType> msh = getDrawableMesh979<MeshType>();
 
     tw.pushDrawableObject(std::move(msh));
     tw.setMesh(tw.drawableObjectVector(), 0);

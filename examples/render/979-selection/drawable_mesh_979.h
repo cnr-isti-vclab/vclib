@@ -240,17 +240,15 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        if (mMRB.selectionCalculated()) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS);
-            bindUniforms();
-            mMRB.bindSelection();
+        mMRB.bindVertexBuffers(mMRS);
+        mMRB.bindIndexBuffers(mMRS);
+        bindUniforms();
+        mMRB.bindSelectedVerticesBuffer();
 
-            bgfx::setState(state);
-            bgfx::setTransform(model.data());
+        bgfx::setState(state);
+        bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, selDrawProg);
-        }
+        bgfx::submit(viewId, selDrawProg);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
