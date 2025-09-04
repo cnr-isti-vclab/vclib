@@ -18,8 +18,8 @@
         1. Create an IndexBuffer (uint) of a certain size^3
         2. Generate the primitives (triangles, do not do this for point clouds) and set the bit in the buffer to 1 if the corresponding cube contains something
         3. When trying to calculate the selection:
-            1: Draw line from view point to point you are trying to select
-            2: If some cube you pass through (except the final one) contains something then that point is not visible and you do not select it
+            1. Draw line from view point to point you are trying to select
+            2. If some cube you pass through (except the final one) contains something then that point is not visible and you do not select it
     3. Space subdivision with depth:
         VARIANT of point 2: use more than 1 bit per cube, if  first bit 0 then empty. If first bit not 0 interpret remaining bits as a depth (from 0 closest to 1 farthest). If depth of point is within a certain 
         delta or closer than it then select it otherwise don't
