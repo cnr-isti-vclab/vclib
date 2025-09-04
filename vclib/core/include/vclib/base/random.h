@@ -48,7 +48,8 @@ inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
 
     if (seed.has_value()) {
         gen.seed(seed.value());
-    } else {
+    }
+    else {
         std::random_device rd;
         gen.seed(rd()); // random seed
     }

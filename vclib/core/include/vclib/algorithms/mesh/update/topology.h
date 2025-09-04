@@ -30,38 +30,73 @@
 namespace vcl {
 
 /**
+ * @brief Clears the adjacent faces of each element having ELEM_ID in the mesh.
+ *
+ * If the number of adjacent faces is dynamic (i.e., the case of the Vertex),
+ * each element will have 0 adjacent faces at the end of this function.
+ *
+ * If the number of adjacent faces is tied to the number of vertices of the
+ * element (i.e., the case of the Face), each element will have
+ * f->vertexNumber() adjacent faces set to nullptr at the end of this
+ * function.
+ *
+ * @param m: the mesh on which clear the per element adjacent faces.
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void clearPerElementAdjacentFaces(MeshType& m)
+{
+    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(m);
+
+    using AdjacentFacesType = comp::ComponentTypeFromID<
+        CompId::ADJACENT_FACES,
+        typename MeshType::template ElementType<ELEM_ID>::Components>;
+
+    for (auto& e : m.template elements<ELEM_ID>()) {
+        if constexpr (comp::IsTiedToVertexNumber<AdjacentFacesType>) {
+            for (uint i = 0; i < e.adjFacesNumber(); ++i) {
+                e.setAdjFace(i, nullptr);
+            }
+        }
+        else {
+            e.clearAdjFaces();
+        }
+    }
+}
+
+/**
+ * @brief Clears the adjacent vertices of each element having ELEM_ID in the
+ * mesh.
+ *
+ * Each element will have 0 adjacent vertices at the end of this function.
+ *
+ * @param m: the mesh on which clear the per element adjacent vertices.
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void clearPerElementAdjacentVertices(MeshType& m)
+{
+    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_VERTICES>(m);
+
+    for (auto& e : m.template elements<ELEM_ID>()) {
+        e.clearAdjVertices();
+    }
+}
+
+/**
  * @brief Clears the adjacent faces of each vertex of the mesh.
  *
  * Since the number of adjacent faces per vertex is dynamic, at the end of this
  * function each vertex will have 0 adjacent Faces.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - AdjacentFaces
- *
  * @param m: the mesh on which clear the per vertex adjacent faces.
  */
-template<MeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 void clearPerVertexAdjacentFaces(MeshType& m)
 {
-    requirePerVertexAdjacentFaces(m);
-
-    using VertexType = MeshType::VertexType;
-
-    for (VertexType& v : m.vertices()) {
-        v.clearAdjFaces();
-    }
+    clearPerElementAdjacentFaces<ElemId::VERTEX>(m);
 }
 
 /**
  * @brief Updates the adjacent faces of each vertex of the mesh.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - AdjacentFaces
- *   - Faces
  *
  * @param m:  the mesh on which update the per vertex adjacent faces.
  */
@@ -90,33 +125,16 @@ void updatePerVertexAdjacentFaces(MeshType& m)
  * Since the number of adjacent vertices per vertex is dynamic, at the end of
  * this function each vertex will have 0 adjacent vertices.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - AdjacentVertices
- *
  * @param m: the mesh on which clear the per vertex adjacent vertices.
  */
 template<MeshConcept MeshType>
 void clearPerVertexAdjacentVertices(MeshType& m)
 {
-    requirePerVertexAdjacentVertices(m);
-
-    using VertexType = MeshType::VertexType;
-
-    for (VertexType& v : m.vertices()) {
-        v.clearAdjVertices();
-    }
+    clearPerElementAdjacentVertices<ElemId::VERTEX>(m);
 }
 
 /**
  * @brief Updates the adjacent vertices of each vertex of the mesh.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - AdjacentVertices
- *   - Faces
  *
  * @param m:  the mesh on which update the per vertex adjacent faces.
  */
@@ -155,25 +173,12 @@ void updatePerVertexAdjacentVertices(MeshType& m)
  * of the face, at the end of this function each face will have
  * f->vertexNumber() adjacent faces set to nullptr.
  *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - AdjacentFaces
- *
  * @param m:  the mesh on which clear the per face adjacent faces.
  */
 template<FaceMeshConcept MeshType>
 void clearPerFaceAdjacentFaces(MeshType& m)
 {
-    requirePerFaceAdjacentFaces(m);
-
-    using FaceType = MeshType::FaceType;
-
-    for (FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.adjFacesNumber(); ++i) {
-            f.setAdjFace(i, nullptr);
-        }
-    }
+    clearPerElementAdjacentFaces<ElemId::FACE>(m);
 }
 
 /**
@@ -211,12 +216,6 @@ void clearPerFaceAdjacentFaces(MeshType& m)
  * fj = fi->adjFace(ei);
  * fj->adjFace(ej) != fi; // if true, the edge is non-manifold
  * @endcode
- *
- *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - AdjacentFaces
  *
  * @param m:  the mesh on which update the per face adjacent faces.
  */

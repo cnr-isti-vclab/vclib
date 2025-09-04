@@ -32,6 +32,7 @@
 #include "core/image.h"
 #include "core/material.h"
 #include "core/matrix.h"
+#include "core/parallel_vector_tuple.h"
 #include "core/plane.h"
 #include "core/point.h"
 #include "core/polygon.h"

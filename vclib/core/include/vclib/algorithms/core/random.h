@@ -102,7 +102,6 @@ inline int poissonRatioOfUniformsInteger(double L)
 
 } // namespace detail
 
-
 /**
  * @brief algorithm poisson random number (Knuth):
  * init:

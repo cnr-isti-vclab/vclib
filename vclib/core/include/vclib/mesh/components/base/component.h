@@ -252,7 +252,72 @@ struct IsVerticalComponentPred
     static const bool value = IsVerticalComponent<T>;
 };
 
+namespace detail {
+
+// Components can be individuated with their ID, which is an unsigned int.
+// This struct sets its bool `value` to true if this Element has a Component
+// with the given unsigned integer COMP_ID. Sets also `type` with a
+// TypeWrapper containing the Component that satisfied the condition. The
+// TypeWrapper will be empty if no Components were found.
+template<uint COMP_ID, typename TypeWrapperComponents>
+struct ComponentIDPred
+{
+private:
+    template<typename Cont>
+    struct SameCmpPred
+    {
+        static constexpr bool value = Cont::COMPONENT_ID == COMP_ID;
+    };
+
+public:
+    // TypeWrapper of the found component, if any
+    using type =
+        FilterTypesByCondition<SameCmpPred, TypeWrapperComponents>::type;
+    static constexpr bool value = NumberOfTypes<type>::value == 1;
+};
+
+template<uint COMP_ID, typename TypeWrapperComponents>
+struct GetComponentFromID
+{
+private:
+    template<typename>
+    struct TypeUnwrapper
+    {
+    };
+
+    template<typename C>
+    struct TypeUnwrapper<TypeWrapper<C>>
+    {
+        using type = C;
+    };
+
+public:
+    using type = TypeUnwrapper<
+        typename ComponentIDPred<COMP_ID, TypeWrapperComponents>::type>::type;
+};
+
+} // namespace detail
+
 /// @endcond
+
+/**
+ * @brief ComponentTypeFromID is a type alias that returns the type of the
+ * Component having the given ID `COMP_ID` from the TypeWrapper of Components
+ * `TypeWrapperComponents`.
+ *
+ * This alias is useful to retrieve the type of a component from its ID,
+ * allowing to work with components in a type-safe manner.
+ *
+ * Usage:
+ * ```cpp
+ * // get the Position component from a Vertex
+ * using MyComponentType =
+ * vcl::comp::ComponentTypeFromID<CompId::POSITION, Vertex::Components>;
+ * ```
+ */
+template<uint COMP_ID, typename TypeWrapperComponents>
+using ComponentTypeFromID =
+    typename detail::GetComponentFromID<COMP_ID, TypeWrapperComponents>::type;
 
 } // namespace vcl::comp
 

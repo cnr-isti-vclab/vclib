@@ -128,6 +128,9 @@ MeshType createHexahedron(const PositionType& min, const PositionType& max)
  * triangulated. If the mesh is composed of quads or polygons, a mesh containing
  * 6 quads will be returned.
  *
+ * @param[in] min: The minimum extreme of the Cube.
+ * @param[in] edgeLength: The length of the edges of the Cube.
+ *
  * @return A Mesh containing a ``[min, min+edgeLength]`` Cube.
  *
  * @ingroup create

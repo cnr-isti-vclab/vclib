@@ -75,7 +75,7 @@ std::vector<F*> genericFASFPV(M m, std::optional<uint> seed = std::nullopt)
 
 template<MeshConcept MeshType>
 std::vector<typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(
-    MeshType& m,
+    MeshType&           m,
     std::optional<uint> seed = std::nullopt)
 {
     using VertexType = MeshType::VertexType;
@@ -90,13 +90,12 @@ fillAndShuffleVertexPointerVector(
     std::optional<uint> seed = std::nullopt)
 {
     using VertexType = MeshType::VertexType;
-    return detail::genericFASVPV<const MeshType&, const VertexType>(
-        m, seed);
+    return detail::genericFASVPV<const MeshType&, const VertexType>(m, seed);
 }
 
 template<MeshConcept MeshType>
 std::vector<uint> fillAndShuffleVertexIndexVector(
-    const MeshType& m,
+    const MeshType&     m,
     std::optional<uint> seed = std::nullopt)
 {
     using VertexType = MeshType::VertexType;
@@ -115,7 +114,7 @@ std::vector<uint> fillAndShuffleVertexIndexVector(
 
 template<FaceMeshConcept MeshType>
 std::vector<typename MeshType::FaceType*> fillAndShuffleFacePointerVector(
-    MeshType& m,
+    MeshType&           m,
     std::optional<uint> seed = std::nullopt)
 {
     using FaceType = MeshType::FaceType;
@@ -125,18 +124,17 @@ std::vector<typename MeshType::FaceType*> fillAndShuffleFacePointerVector(
 
 template<FaceMeshConcept MeshType>
 std::vector<const typename MeshType::FaceType*> fillAndShuffleFacePointerVector(
-    const MeshType& m,
+    const MeshType&     m,
     std::optional<uint> seed = std::nullopt)
 {
     using FaceType = MeshType::FaceType;
 
-    return detail::genericFASFPV<const MeshType&, const FaceType>(
-        m, seed);
+    return detail::genericFASFPV<const MeshType&, const FaceType>(m, seed);
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<uint> fillAndShuffleFaceIndexVector(
-    const MeshType& m,
+    const MeshType&     m,
     std::optional<uint> seed = std::nullopt)
 {
     using FaceType = MeshType::FaceType;

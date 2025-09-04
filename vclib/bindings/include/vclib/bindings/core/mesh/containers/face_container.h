@@ -37,6 +37,10 @@ void initFaceContainer(pybind11::class_<MeshType>& ct)
     using FaceType = MeshType::FaceType;
 
     initContainer<FaceType>(ct, "face");
+
+    ct.def("add_face", [](MeshType& t, const std::vector<uint>& f) {
+        return t.addFace(f);
+    });
 }
 
 } // namespace vcl::bind

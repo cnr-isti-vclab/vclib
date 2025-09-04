@@ -23,8 +23,8 @@
 #ifndef VCL_BGFX_TEXTURE_UNIT_H
 #define VCL_BGFX_TEXTURE_UNIT_H
 
-#include <vclib/space/core/point.h>
 #include <vclib/base.h>
+#include <vclib/space/core/point.h>
 
 #include <bgfx/bgfx.h>
 

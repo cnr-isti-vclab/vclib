@@ -25,8 +25,8 @@
 
 #include "mesh_render_info_macros.h"
 
-#include <vclib/space/core/bit_set.h>
 #include <vclib/base.h>
+#include <vclib/space/core/bit_set.h>
 
 #include <array>
 

@@ -31,171 +31,145 @@
 namespace vcl {
 
 /**
- * @brief Sets a constant value to all the vertex quality of the mesh.
+ * @brief Sets a constant value to all the quality of the elements having
+ * ELEM_ID in the mesh.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Quality
- *
- * @param[in,out] m: mesh on which set the vertex quality
- * @param[in] s: quality value to set
+ * @param[in, out] mesh: the mesh on which set the element quality
+ * @param[in] quality: quality value to set
  */
-template<MeshConcept MeshType>
-void setPerVertexQuality(
-    MeshType&                                  m,
-    typename MeshType::VertexType::QualityType s)
+template<uint ELEM_ID, MeshConcept MeshType, typename QualityType>
+void setPerElementQuality(MeshType& mesh, QualityType quality)
 {
-    requirePerVertexQuality(m);
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
-    using VertexType = MeshType::VertexType;
+    std::ranges::fill(
+        mesh.template elements<ELEM_ID>() | vcl::views::quality, quality);
+}
 
-    for (VertexType& v : m.vertices()) {
-        v.quality() = s;
+/**
+ * @brief Clamps the quality of the elements having ELEM_ID in the mesh in a
+ * given interval.
+ *
+ * @param[in,out] mesh: the mesh on which clamp the element quality
+ * @param[in] minQ: minimum value of the clamping interval
+ * @param[in] maxQ: maximum value of the clamping interval
+ */
+template<uint ELEM_ID, MeshConcept MeshType, typename QualityType>
+void clampPerElementQuality(MeshType& mesh, QualityType minQ, QualityType maxQ)
+{
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
+
+    for (auto&& q : mesh.template elements<ELEM_ID>() | vcl::views::quality) {
+        q = std::clamp(q, minQ, maxQ);
     }
 }
 
 /**
- * @brief Sets a constant value to all the face quality of the mesh.
+ * @brief Normalizes the quality of the elements having ELEM_ID in the mesh in a
+ * given interval (default [0, 1]).
  *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Quality
- *
- * @param[in,out] m: mesh on which set the face quality
- * @param[in] s: quality value to set
+ * @param[in,out] mesh: mesh on which normalize the element quality
+ * @param[in] minQ: minimum value of the normalizing interval
+ * @param[in] maxQ: maximum value of the normalizing interval
  */
-template<FaceMeshConcept MeshType>
-void setPerFaceQuality(MeshType& m, typename MeshType::FaceType::QualityType s)
+template<uint ELEM_ID, MeshConcept MeshType, typename QualityType>
+void normalizePerElementQuality(
+    MeshType&   mesh,
+    QualityType minQ = 0,
+    QualityType maxQ = 1)
 {
-    requirePerFaceQuality(m);
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
-    using FaceType = MeshType::FaceType;
+    QualityType range   = maxQ - minQ;
+    auto [eMinQ, eMaxQ] = elementQualityMinMax<ELEM_ID>(mesh);
 
-    for (FaceType& f : m.faces()) {
-        f.quality() = s;
+    for (auto&& q : mesh.template elements<ELEM_ID>() | vcl::views::quality) {
+        q = minQ + range * ((q - eMinQ) / (eMaxQ - eMinQ));
     }
 }
 
 /**
- * @brief Clamps the vertex quality of a mesh in a given interval.
+ * @brief Sets a constant value to all the quality of the vertices in the mesh.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Quality
- *
- * @param[in,out] m: mesh on which clamp the vertex quality
- * @param[in] minS: minimum value of the clamping interval
- * @param[in] maxS: maximum value of the clamping interval
+ * @param[in, out] mesh: the mesh on which set the vertex quality
+ * @param[in] quality: quality value to set
  */
-template<MeshConcept MeshType>
-void clampPerVertexQuality(
-    MeshType&                                  m,
-    typename MeshType::VertexType::QualityType minS,
-    typename MeshType::VertexType::QualityType maxS)
+template<MeshConcept MeshType, typename QualityType>
+void setPerVertexQuality(MeshType& mesh, QualityType quality)
 {
-    requirePerVertexQuality(m);
-
-    using VertexType = MeshType::VertexType;
-
-    for (VertexType& v : m.vertices()) {
-        v.quality() = std::min(maxS, std::max(minS, v.quality()));
-    }
+    setPerElementQuality<ElemId::VERTEX>(mesh, quality);
 }
 
 /**
- * @brief Clamps the face quality of a mesh in a given interval.
+ * @brief Sets a constant value to all the quality of the faces in the mesh.
  *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Quality
- *
- * @param[in,out] m: mesh on which clamp the face quality
- * @param[in] minS: minimum value of the clamping interval
- * @param[in] maxS: maximum value of the clamping interval
+ * @param[in, out] mesh: the mesh on which set the face quality
+ * @param[in] quality: quality value to set
  */
-template<FaceMeshConcept MeshType>
-void clampPerFaceQuality(
-    MeshType&                                m,
-    typename MeshType::FaceType::QualityType minS,
-    typename MeshType::FaceType::QualityType maxS)
+template<FaceMeshConcept MeshType, typename QualityType>
+void setPerFaceQuality(MeshType& mesh, QualityType quality)
 {
-    requirePerFaceQuality(m);
-
-    using FaceType = MeshType::FaceType;
-
-    for (FaceType& f : m.faces()) {
-        f.quality() = std::min(maxS, std::max(minS, f.quality()));
-    }
+    setPerElementQuality<ElemId::FACE>(mesh, quality);
 }
 
 /**
- * @brief Normalizes the vertex quality of a mesh in a given interval (default
- * [0, 1]).
+ * @brief Clamps the quality of the vertices in the mesh in a given interval.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Quality
- *
- * @param[in,out] m: mesh on which normalize the vertex quality
- * @param[in] minS: minimum value of the normalizing interval
- * @param[in] maxS: maximum value of the normalizing interval
+ * @param[in,out] mesh: the mesh on which clamp the vertex quality
+ * @param[in] minQ: minimum value of the clamping interval
+ * @param[in] maxQ: maximum value of the clamping interval
  */
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, typename QualityType>
+void clampPerVertexQuality(MeshType& mesh, QualityType minQ, QualityType maxQ)
+{
+    clampPerElementQuality<ElemId::VERTEX>(mesh, minQ, maxQ);
+}
+
+/**
+ * @brief Clamps the quality of the faces in the mesh in a given interval.
+ *
+ * @param[in,out] mesh: the mesh on which clamp the face quality
+ * @param[in] minQ: minimum value of the clamping interval
+ * @param[in] maxQ: maximum value of the clamping interval
+ */
+template<FaceMeshConcept MeshType, typename QualityType>
+void clampPerFaceQuality(MeshType& mesh, QualityType minQ, QualityType maxQ)
+{
+    clampPerElementQuality<ElemId::FACE>(mesh, minQ, maxQ);
+}
+
+/**
+ * @brief Normalizes the quality of the vertices in the mesh in a given interval
+ * (default [0, 1]).
+ *
+ * @param[in,out] mesh: mesh on which normalize the vertex quality
+ * @param[in] minQ: minimum value of the normalizing interval
+ * @param[in] maxQ: maximum value of the normalizing interval
+ */
+template<MeshConcept MeshType, typename QualityType>
 void normalizePerVertexQuality(
-    MeshType&                                  m,
-    typename MeshType::VertexType::QualityType minS = 0,
-    typename MeshType::VertexType::QualityType maxS = 1)
+    MeshType&   mesh,
+    QualityType minQ = 0,
+    QualityType maxQ = 1)
 {
-    requirePerVertexQuality(m);
-
-    using VertexType  = MeshType::VertexType;
-    using QualityType = VertexType::QualityType;
-
-    QualityType                         range = maxS - minS;
-    std::pair<QualityType, QualityType> p     = vertexQualityMinMax(m);
-
-    for (VertexType& v : m.vertices()) {
-        v.quality() =
-            minS + range * ((v.quality() - p.first) / (p.second - p.first));
-    }
+    normalizePerElementQuality<ElemId::VERTEX>(mesh, minQ, maxQ);
 }
 
 /**
- * @brief Normalizes the face quality of a mesh in a given interval (default [0,
- * 1]).
+ * @brief Normalizes the quality of the faces in the mesh in a given interval
+ * (default [0, 1]).
  *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Quality
- *
- * @param[in,out] m: mesh on which normalize the face quality
- * @param[in] minS: minimum value of the normalizing interval
- * @param[in] maxS: maximum value of the normalizing interval
+ * @param[in,out] mesh: mesh on which normalize the face quality
+ * @param[in] minQ: minimum value of the normalizing interval
+ * @param[in] maxQ: maximum value of the normalizing interval
  */
-template<FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType, typename QualityType>
 void normalizePerFaceQuality(
-    MeshType&                                m,
-    typename MeshType::FaceType::QualityType minS = 0,
-    typename MeshType::FaceType::QualityType maxS = 1)
+    MeshType&   mesh,
+    QualityType minQ = 0,
+    QualityType maxQ = 1)
 {
-    requirePerFaceQuality(m);
-
-    using FaceType    = MeshType::FaceType;
-    using QualityType = FaceType::QualityType;
-
-    QualityType                         range = maxS - minS;
-    std::pair<QualityType, QualityType> p     = faceQualityMinMax(m);
-
-    for (FaceType& f : m.faces()) {
-        f.quality() =
-            minS + range * ((f.quality() - p.first) / (p.second - p.first));
-    }
+    normalizePerElementQuality<ElemId::FACE>(mesh, minQ, maxQ);
 }
 
 /**

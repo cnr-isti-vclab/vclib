@@ -23,10 +23,10 @@
 #ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 #define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 
+#include <vclib/base.h>
 #include <vclib/bgfx/programs/embedded_c_programs.h>
 #include <vclib/bgfx/programs/embedded_vf_programs.h>
 #include <vclib/bgfx/programs/load_program.h>
-#include <vclib/base.h>
 
 #include <array>
 

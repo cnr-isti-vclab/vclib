@@ -25,6 +25,7 @@
 
 #include "algorithms/mesh/create.h"
 #include "algorithms/mesh/stat.h"
+#include "algorithms/mesh/update.h"
 
 #include <pybind11/pybind11.h>
 
@@ -34,6 +35,7 @@ inline void initAlgorithms(pybind11::module& m)
 {
     initCreateAlgorithms(m);
     initStatAlgorithms(m);
+    initUpdateAlgorithms(m);
 }
 
 } // namespace vcl::bind

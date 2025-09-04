@@ -35,6 +35,10 @@ void initColor(pybind11::module& m)
     c.def(py::init<>());
     c.def(py::init<uint8_t, uint8_t, uint8_t>());
     c.def(py::init<uint8_t, uint8_t, uint8_t, uint8_t>());
+    c.def(py::init<Color::ColorABGR>());
+
+    // Enable implicit conversion from ColorABGR to Color
+    py::implicitly_convertible<Color::ColorABGR, Color>();
 
     defCopy(c);
 
@@ -91,6 +95,53 @@ void initColor(pybind11::module& m)
     defComparisonOperators(c);
 
     defRepr(c);
+
+    // Format enum
+    py::enum_<Color::Format> formatEnum(c, "Format");
+    formatEnum.value("ARGB", Color::Format::ARGB);
+    formatEnum.value("ABGR", Color::Format::ABGR);
+    formatEnum.value("RGBA", Color::Format::RGBA);
+    formatEnum.value("BGRA", Color::Format::BGRA);
+    formatEnum.export_values();
+
+    // ColorABGR enum
+    py::enum_<Color::ColorABGR> colorEnum(c, "ColorABGR");
+    colorEnum.value("BLACK", Color::ColorABGR::Black);
+    colorEnum.value("DARK_GRAY", Color::ColorABGR::DarkGray);
+    colorEnum.value("GRAY", Color::ColorABGR::Gray);
+    colorEnum.value("LIGHT_GRAY", Color::ColorABGR::LightGray);
+    colorEnum.value("WHITE", Color::ColorABGR::White);
+    colorEnum.value("RED", Color::ColorABGR::Red);
+    colorEnum.value("GREEN", Color::ColorABGR::Green);
+    colorEnum.value("BLUE", Color::ColorABGR::Blue);
+    colorEnum.value("YELLOW", Color::ColorABGR::Yellow);
+    colorEnum.value("CYAN", Color::ColorABGR::Cyan);
+    colorEnum.value("MAGENTA", Color::ColorABGR::Magenta);
+    colorEnum.value("LIGHT_RED", Color::ColorABGR::LightRed);
+    colorEnum.value("LIGHT_GREEN", Color::ColorABGR::LightGreen);
+    colorEnum.value("LIGHT_BLUE", Color::ColorABGR::LightBlue);
+    colorEnum.value("LIGHT_CYAN", Color::ColorABGR::LightCyan);
+    colorEnum.value("LIGHT_YELLOW", Color::ColorABGR::LightYellow);
+    colorEnum.value("LIGHT_MAGENTA", Color::ColorABGR::LightMagenta);
+    colorEnum.value("DARK_RED", Color::ColorABGR::DarkRed);
+    colorEnum.value("DARK_GREEN", Color::ColorABGR::DarkGreen);
+    colorEnum.value("DARK_BLUE", Color::ColorABGR::DarkBlue);
+    colorEnum.value("DARK_CYAN", Color::ColorABGR::DarkCyan);
+    colorEnum.value("DARK_YELLOW", Color::ColorABGR::DarkYellow);
+    colorEnum.value("DARK_MAGENTA", Color::ColorABGR::DarkMagenta);
+    colorEnum.value("LIGHT_BROWN", Color::ColorABGR::LightBrown);
+    colorEnum.value("DARK_BROWN", Color::ColorABGR::DarkBrown);
+    colorEnum.value("BROWN", Color::ColorABGR::Brown);
+    colorEnum.value("TRANSPARENT_BLACK", Color::ColorABGR::TransparentBlack);
+    colorEnum.value("TRANSPARENT_WHITE", Color::ColorABGR::TransparentWhite);
+    colorEnum.export_values();
+
+    // ColorMap enum
+    py::enum_<Color::ColorMap> colorMapEnum(c, "ColorMap");
+    colorMapEnum.value("RED_BLUE", Color::ColorMap::RedBlue);
+    colorMapEnum.value("PARULA", Color::ColorMap::Parula);
+    colorMapEnum.value("GREY_SHADE", Color::ColorMap::GreyShade);
+    colorMapEnum.export_values();
 }
 
 } // namespace vcl::bind

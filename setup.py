@@ -88,6 +88,7 @@ class CustomBDistWheel(bdist_wheel):
         super().run()
 
 inst_req = [
+    "numpy>=2.0",
     "pyqt6==6.8"
 ]
 
