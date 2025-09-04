@@ -91,14 +91,14 @@ def main():
         create_c_file('templates/embedded_c_programs/source.cpp', '../src/vclib/bgfx/programs/embedded_c_programs/' + enum_name_lc + '.cpp', enum_name, compute_shader_path)
 
 
-        # Update the embedded_compute_programs.h file to include the new header
-        with open('../include/vclib/bgfx/programs/embedded_compute_programs.h', 'r') as f:
+        # Update the embedded_c_programs.h file to include the new header
+        with open('../include/vclib/bgfx/programs/embedded_c_programs.h', 'r') as f:
             lines = f.readlines()
         for i, line in enumerate(lines):
             if '#include' in line:
                 break
         lines.insert(i + 1, '#include "embedded_c_programs/' + enum_name_lc + '.h"\n')
-        with open('../include/vclib/bgfx/programs/embedded_compute_programs.h', 'w') as f:
+        with open('../include/vclib/bgfx/programs/embedded_c_programs.h', 'w') as f:
             f.writelines(lines)
 
 
