@@ -51,9 +51,9 @@ def mesh_statistics():
     barycenter_diff = (geom_barycenter - shell_barycenter).norm()
     print(f"Distance between barycenters: {barycenter_diff}")
     if barycenter_diff < 1e-6:
-        print("  → Barycenters are very close (uniform distribution)")
+        print("  -> Barycenters are very close (uniform distribution)")
     else:
-        print("  → Barycenters differ (non-uniform distribution)")
+        print("  -> Barycenters differ (non-uniform distribution)")
 
     # PART 3: SURFACE AREA AND VOLUME
     print("\n\nPART 3: Surface Area and Volume\n-------------------------------")
@@ -69,9 +69,9 @@ def mesh_statistics():
         compactness = sphere_surface_area / surface_area
         print(f"Compactness (sphere/mesh surface ratio): {compactness}")
         if compactness > 0.8:
-            print("  → Shape is relatively compact (sphere-like)")
+            print("  -> Shape is relatively compact (sphere-like)")
         else:
-            print("  → Shape has complex surface (elongated or detailed)")
+            print("  -> Shape has complex surface (elongated or detailed)")
 
     # PART 4: EDGE AND FACE STATISTICS
     print("\n\nPART 4: Edge and Face Statistics\n--------------------------------")
