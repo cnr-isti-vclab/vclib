@@ -72,8 +72,8 @@ void initMesh(pybind11::module& m, const std::string& name)
         "other_mesh"_a);
 
     auto importFromFun = []<MeshConcept OtherMeshType>(
-        pybind11::class_<MeshType>& c, OtherMeshType = OtherMeshType())
-    {
+                             pybind11::class_<MeshType>& c,
+                             OtherMeshType = OtherMeshType()) {
         c.def("import_from", [](MeshType& m, const OtherMeshType& o) {
             m.importFrom(o);
         });
