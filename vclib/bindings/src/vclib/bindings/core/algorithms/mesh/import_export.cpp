@@ -80,6 +80,35 @@ void initImportExportAlgorithms(pybind11::module& m)
                     return vcl::vertexQualityVector<Eigen::VectorXd>(m);
                 },
                 "mesh"_a);
+
+            // import_matrix.h
+
+            m.def(camelCaseToSnakeCase(meshTypeName<MeshType>() + "_from_matrices").c_str(),
+                  [](Eigen::MatrixX3d& V,
+                     Eigen::MatrixXi& F,
+                     Eigen::MatrixX3d& VN,
+                     Eigen::MatrixX3d& FN) {
+                      return vcl::meshFromMatrices<MeshType>(V, F, VN, FN);
+                  },
+                  "vertices"_a,
+                  "faces"_a = Eigen::MatrixXi(),
+                  "vertex_normals"_a = Eigen::MatrixX3d(),
+                  "face_normals"_a = Eigen::MatrixX3d());
+
+            m.def(
+                "mesh_from_matrices",
+                [](MeshType& mesh,
+                   Eigen::MatrixX3d& V,
+                   Eigen::MatrixXi& F,
+                   Eigen::MatrixX3d& VN,
+                   Eigen::MatrixX3d& FN) {
+                    return vcl::importMeshFromMatrices<MeshType>(mesh, V, F, VN, FN);
+                },
+                "mesh"_a,
+                "vertices"_a,
+                "faces"_a = Eigen::MatrixXi(),
+                "vertex_normals"_a = Eigen::MatrixX3d(),
+                "face_normals"_a = Eigen::MatrixX3d());
         };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -167,7 +196,7 @@ void initImportExportAlgorithms(pybind11::module& m)
     auto fEdgeMeshes = []<EdgeMeshConcept MeshType>(
                            pybind11::module& m, MeshType = MeshType()) {
         // export_matrix.h
-        
+
         m.def(
             "edge_indices_matrix",
             [](const MeshType& m) {
