@@ -20,27 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_H
-#define VCL_BINDINGS_CORE_SPACE_COMPLEX_H
+#include <vclib/bindings/core/space/complex/tri_poly_index_bimap.h>
+#include <vclib/bindings/utils.h>
 
-#include "complex/mesh_info.h"
-#include "complex/tri_poly_index_bimap.h"
-
-#include <pybind11/pybind11.h>
+#include <vclib/space/complex.h>
 
 namespace vcl::bind {
 
-inline void initComplex(pybind11::module& m)
+void initTriPolyIndexBimap(pybind11::module& m)
 {
     namespace py = pybind11;
+    using namespace py::literals;
 
-    // py::module_ sm = m.def_submodule("complex", "Complex Spatial Data
-    // Structures");
+    py::class_<TriPolyIndexBiMap> c(m, "TriPolyIndexBiMap");
+    c.def(py::init<>());
 
-    initMeshInfo(m);
-    initTriPolyIndexBimap(m);
+    c.def("polygon", &TriPolyIndexBiMap::polygon, "triangle_index"_a);
+    c.def(
+        "triangle_begin", &TriPolyIndexBiMap::triangleBegin, "polygon_index"_a);
+    c.def(
+        "triangle_number",
+        py::overload_cast<uint>(&TriPolyIndexBiMap::triangleNumber, py::const_),
+        "polygon_index"_a);
+    c.def("clear", &TriPolyIndexBiMap::clear);
+    c.def(
+        "reserve",
+        &TriPolyIndexBiMap::reserve,
+        "n_triangles"_a,
+        "n_polygons"_a);
+    c.def(
+        "insert",
+        &TriPolyIndexBiMap::insert,
+        "triangle_index"_a,
+        "polygon_index"_a);
+
+    c.def(
+        "triangle_number",
+        py::overload_cast<>(&TriPolyIndexBiMap::triangleNumber, py::const_));
+    c.def("polygon_number", &TriPolyIndexBiMap::polygonNumber);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_SPACE_COMPLEX_H
