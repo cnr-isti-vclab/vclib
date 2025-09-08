@@ -26,6 +26,7 @@
 #include <vclib/bgfx/primitives/lines/primitive_lines.h>
 #include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
 #include <vclib/bgfx/primitives/lines/gpu_generated_lines.h>
+
 #include <vclib/bgfx/uniform.h>
 
 #include <vclib/base.h>
@@ -38,6 +39,10 @@
 namespace vcl {
 
 // TODO: add shading per-line (flat, per-line normal) (?)
+/**
+ * @brief The Lines class provides an abstraction for rendering 3D lines
+ * with variable thickness and different implementation strategies.
+ */
 class Lines
 {
 public:
@@ -56,8 +61,7 @@ public:
         // CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
         // GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
         //                    // computes
-        // TEXTURE_INSTANCING, // Using Instancing with textures generated in
-                               // GPU computes
+        // TEXTURE_INSTANCING, // Using Instancing with textures generated in GPU computes
         
         COUNT
     };
@@ -68,22 +72,72 @@ private:
                                              detail::GPUGeneratedLines>;
 
     float mThickness = 5.0f;
+
     // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
     // NONE
     // PER_EDGE means that we use a buffer of normals for each edge
-    bool mShadingPerVertex = false;
+    bool mShadingPerVertexCapability = false; // true if normals provided
+    bool mShadingPerVertex           = false;
 
     BitSet8    mColorCapability = {false, false, true}; // general color only
     ColorToUse mColorToUse      = ColorToUse::GENERAL;
     Color      mGeneralColor    = Color::ColorABGR::LightGray;
-    ImplementationType mType    = ImplementationType::COUNT;
+
+    ImplementationType mType = ImplementationType::COUNT;
 
     Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
     LinesImplementation mLinesImplementation;
 
 public:
-    Lines() { setImplementationType(ImplementationType::PRIMITIVE); };
+    /**
+     * @brief Creates a Lines object with default parameters and without
+     * points.
+     *
+     * If the implementation type is not specified, it will be chosen
+     * depending on the capabilities of the current hardware.
+     *
+     * @param[in] type: implementation type to use. If the provided type is
+     * not supported by the current hardware, an exception is thrown. If the
+     * type is COUNT, the default implementation type will be chosen
+     * depending on the capabilities of the current hardware.
+     */
+    Lines(ImplementationType type = ImplementationType::COUNT)
+    {
+        if (type == ImplementationType::COUNT)
+            type = defaultImplementationType(false);
+        setImplementationType(type);
+    };
 
+    /**
+     * @brief Creates a Lines object with given points and parameters.
+     *
+     * Each line is defined by two consecutive vertices in the vertCoords
+     * vector (and related buffers). So the number of lines is equal to
+     * vertCoords.size()/6.
+     *
+     * If the implementation type is not specified, it will be chosen
+     * depending on the capabilities of the current hardware.
+     *
+     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
+     * vertex).
+     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
+     * it can be empty.
+     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
+     * it can be empty.
+     * @param[in] lineColors: vector of line colors (1 uint per line),
+     * it can be empty.
+     * @param[in] thickness: thickness of the lines (in pixels).
+     * @param[in] shadingPerVertex: if true, the lighting is computed using
+     * the vertex normals, otherwise no lighting is applied. If this settings
+     * is not consistent with the provided buffers, an exception is thrown.
+     * @param[in] colorToUse: specifies which color to use for rendering the
+     * lines. If this settings is not consistent with the provided buffers,
+     * an exception is thrown.
+     * @param[in] type: implementation type to use. If the provided type is
+     * not supported by the current hardware, an exception is thrown. If the
+     * type is COUNT, the default implementation type will be chosen
+     * depending on the capabilities of the current hardware.
+     */
     Lines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals,
@@ -92,14 +146,45 @@ public:
         float                     thickness        = 5.0f,
         bool                      shadingPerVertex = false,
         ColorToUse                colorToUse       = ColorToUse::GENERAL,
-        ImplementationType        type = ImplementationType::PRIMITIVE) :
-            mThickness(thickness), mShadingPerVertex(shadingPerVertex)
+        ImplementationType        type = ImplementationType::COUNT) :
+            mThickness(thickness)
     {
-        setImplementationType(type);
-        setPoints(vertCoords, vertNormals, vertColors, lineColors);
+        setPoints(vertCoords, vertNormals, vertColors, lineColors, type);
+        setShading(shadingPerVertex);
         setColorToUse(colorToUse);
     }
 
+    /**
+     * @brief Creates a Lines object with given points and parameters.
+     *
+     * Each line is defined by two consecutive indices in the lineIndices
+     * vector, which refer to vertices in the vertCoords vector (and related
+     * buffers). So the number of lines is equal to lineIndices.size()/2.
+     *
+     * If the implementation type is not specified, it will be chosen
+     * depending on the capabilities of the current hardware.
+     *
+     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
+     * vertex).
+     * @param[in] lineIndices: vector of line indices (2 uint per line).
+     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
+     * it can be empty.
+     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
+     * it can be empty.
+     * @param[in] lineColors: vector of line colors (1 uint per line),
+     * it can be empty.
+     * @param[in] thickness: thickness of the lines (in pixels).
+     * @param[in] shadingPerVertex: if true, the lighting is computed using
+     * the vertex normals, otherwise no lighting is applied. If this settings
+     * is not consistent with the provided buffers, an exception is thrown.
+     * @param[in] colorToUse: specifies which color to use for rendering the
+     * lines. If this settings is not consistent with the provided buffers,
+     * an exception is thrown.
+     * @param[in] type: implementation type to use. If the provided type is
+     * not supported by the current hardware, an exception is thrown. If the
+     * type is COUNT, the default implementation type will be chosen
+     * depending on the capabilities of the current hardware.
+     */
     Lines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
@@ -109,21 +194,50 @@ public:
         float                     thickness        = 5.0f,
         bool                      shadingPerVertex = false,
         ColorToUse                colorToUse       = ColorToUse::GENERAL,
-        ImplementationType        type = ImplementationType::PRIMITIVE) :
-            mThickness(thickness), mShadingPerVertex(shadingPerVertex)
+        ImplementationType        type = ImplementationType::COUNT) :
+            mThickness(thickness)
     {
-        setImplementationType(type);
-        setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+        setPoints(
+            vertCoords, lineIndices, vertNormals, vertColors, lineColors, type);
+        setShading(shadingPerVertex);
         setColorToUse(colorToUse);
     }
 
+    /**
+     * @brief Sets the points of the lines.
+     *
+     * Each line is defined by two consecutive vertices in the vertCoords
+     * vector (and related buffers). So the number of lines is equal to
+     * vertCoords.size()/6.
+     *
+     * If the implementation type is not specified, it will be chosen
+     * depending on the capabilities of the current hardware.
+     *
+     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
+     * vertex).
+     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
+     * it can be empty.
+     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
+     * it can be empty.
+     * @param[in] lineColors: vector of line colors (1 uint per line),
+     * it can be empty.
+     * @param[in] type: implementation type to use. If the provided type is
+     * not supported by the current hardware, an exception is thrown. If the
+     * type is COUNT, the default implementation type will be chosen
+     * depending on the capabilities of the current hardware.
+     */
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals,
         const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors)
+        const std::vector<uint>&  lineColors,
+        ImplementationType        type = ImplementationType::COUNT)
     {
         using enum ImplementationType;
+      
+        if (type == ImplementationType::COUNT)
+            type = defaultImplementationType(true);
+        setImplementationType(type);
 
         switch(mType){
             case PRIMITIVE: // always supported
@@ -145,18 +259,48 @@ public:
             default:
                 break; 
         }
+        updateShadingCapability(vertNormals);
         updateColorCapability(vertColors, lineColors);
     }
 
+    /**
+     * @brief Sets the points of the lines.
+     *
+     * Each line is defined by two consecutive indices in the lineIndices
+     * vector, which refer to vertices in the vertCoords vector (and related
+     * buffers). So the number of lines is equal to lineIndices.size()/2.
+     *
+     * If the implementation type is not specified, it will be chosen
+     * depending on the capabilities of the current hardware.
+     *
+     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
+     * vertex).
+     * @param[in] lineIndices: vector of line indices (2 uint per line).
+     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
+     * it can be empty.
+     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
+     * it can be empty.
+     * @param[in] lineColors: vector of line colors (1 uint per line),
+     * it can be empty.
+     * @param[in] type: implementation type to use. If the provided type is
+     * not supported by the current hardware, an exception is thrown. If the
+     * type is COUNT, the default implementation type will be chosen
+     * depending on the capabilities of the current hardware.
+     */
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals,
         const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors)
+        const std::vector<uint>&  lineColors,
+        ImplementationType        type = ImplementationType::COUNT)
     {
         using enum ImplementationType;
 
+        if (type == ImplementationType::COUNT)
+            type = defaultImplementationType(true);
+        setImplementationType(type);
+      
         switch(mType){
             case PRIMITIVE: // always supported
                 std::get<detail::PrimitiveLines>(mLinesImplementation).setPoints(
@@ -177,25 +321,90 @@ public:
             default:
                 break; 
         }
+        updateShadingCapability(vertNormals);
         updateColorCapability(vertColors, lineColors);
     }
 
+    /**
+     * @brief Returns the thickness of the lines (in pixels).
+     * @return The thickness of the lines (in pixels).
+     */
     float thickness() const { return mThickness; }
 
+    /**
+     * @brief Returns a reference to the thickness of the lines (in pixels).
+     * This allows to modify the thickness directly.
+     * @return A reference to the thickness of the lines (in pixels).
+     */
     float& thickness() { return mThickness; }
 
-    ColorToUse colorToUse() const { return mColorToUse; }
-
-    Color generalColor() const { return mGeneralColor; }
-
-    Color& generalColor() { return mGeneralColor; }
-
+    /**
+     * @brief Returns true if shading is computed per vertex using vertex
+     * normals, false if no shading is applied.
+     * @return true if shading is computed per vertex using vertex normals.
+     */
     bool shadingPerVertex() const { return mShadingPerVertex; }
 
-    bool& shadingPerVertex() { return mShadingPerVertex; }
+    /**
+     * @brief Returns the color that is used to render the lines.
+     * @return The color that is used to render the lines.
+     */
+    ColorToUse colorToUse() const { return mColorToUse; }
 
+    /**
+     * @brief Returns the general color that is used to render the lines
+     * when colorToUse() is set to ColorToUse::GENERAL.
+     * @return The general color that is used to render the lines.
+     */
+    Color generalColor() const { return mGeneralColor; }
+
+    /**
+     * @brief Returns a reference to the general color that is used to render
+     * the lines when colorToUse() is set to ColorToUse::GENERAL. This allows
+     * to modify the color directly.
+     * @return A reference to the general color that is used to render the
+     * lines.
+     */
+    Color& generalColor() { return mGeneralColor; }
+
+    /**
+     * @brief Returns the current implementation type that is used to render
+     * the lines.
+     * @return The current implementation type that is used to render the
+     * lines.
+     */
     ImplementationType type() const { return mType; }
 
+    /**
+     * @brief Sets wether to use per vertex shading (using vertex normals) or
+     * not.
+     *
+     * If the provided setting is not consistent with the provided buffers,
+     * an exception is thrown.
+     *
+     * @param[in] perVertex: if true, the lighting is computed using the vertex
+     * normals, otherwise no lighting is applied. If this settings
+     */
+    void setShading(bool perVertex)
+    {
+        if (!mShadingPerVertexCapability && perVertex) {
+            throw std::runtime_error(
+                "Lines::setShading(): shading per vertex not supported by the "
+                "current buffers.");
+        }
+        else {
+            mShadingPerVertex = perVertex;
+        }
+    }
+
+    /**
+     * @brief Sets which color to use for rendering the lines.
+     *
+     * If the provided setting is not consistent with the provided buffers,
+     * an exception is thrown.
+     *
+     * @param[in] color: specifies which color to use for rendering the lines.
+     */
     void setColorToUse(ColorToUse color)
     {
         if (!mColorCapability[toUnderlying(color)]) {
@@ -208,34 +417,10 @@ public:
         }
     }
 
-    bool setImplementationType(ImplementationType type)
-    {
-        using enum ImplementationType;
-        if (mType == type)
-            return false; // no change
-
-        // TODO: check whether caps allow the new implementation type
-        // then set the implementation and the type
-        switch (type) {
-            case PRIMITIVE: // always supported
-                mLinesImplementation = detail::PrimitiveLines();
-                mType                = type;
-                return true;
-
-            case CPU_GENERATED: // always supported
-                mLinesImplementation = detail::CPUGeneratedLines();
-                mType                = type;
-                return true;
-
-            case GPU_GENERATED:
-                mLinesImplementation = detail::GPUGeneratedLines();
-                mType                = type;
-                return true;
-
-            default: return false; // not supported
-        }
-    }
-
+    /**
+     * @brief Draws in the given view the lines with the current settings.
+     * @param[in] viewId: the view in which to draw the lines.
+     */
     void draw(uint viewId) const
     {
         bindSettingsUniform();
@@ -249,24 +434,56 @@ public:
             std::get<detail::GPUGeneratedLines>(mLinesImplementation).draw(viewId);
     }
 
-    void swap(Lines& other)
+private:
+    /**
+     * @brief Returns the default supported implementation type that can be
+     * used, depending on the capabilities of the current hardware.
+     * @param[in] cpuMemPointsProvided: true if point info of the lines is
+     * provided trough CPU memory, false if it is provided through GPU buffers.
+     * @return the default supported implementation type
+     */
+    ImplementationType defaultImplementationType(
+        bool cpuMemPointsProvided) const
     {
-        using std::swap;
-
-        swap(mThickness, other.mThickness);
-        swap(mColorToUse, other.mColorToUse);
-        swap(mSettingUH, other.mSettingUH);
-        swap(mGeneralColor, other.mGeneralColor);
-        swap(mShadingPerVertex, other.mShadingPerVertex);
-        swap(mColorCapability, other.mColorCapability);
-
-        swap(mType, other.mType);
-        swap(mLinesImplementation, other.mLinesImplementation);
+        if (cpuMemPointsProvided)
+            return ImplementationType::CPU_GENERATED;
+        else
+            return ImplementationType::PRIMITIVE;
     }
 
-    friend void swap(Lines& a, Lines& b) { a.swap(b); }
+    bool setImplementationType(ImplementationType type)
+    {
+        using enum ImplementationType;
+        if (mType == type)
+            return false; // no change
 
-private:
+        switch (type) {
+        case PRIMITIVE: // always supported
+            mLinesImplementation = detail::PrimitiveLines();
+            mType                = type;
+            return true;
+
+        case CPU_GENERATED: // always supported
+            mLinesImplementation = detail::CPUGeneratedLines();
+            mType                = type;
+            return true;
+
+        case GPU_GENERATED:
+            mLinesImplementation = detail::GPUGeneratedLines();
+            mType                = type;
+            return true;
+
+        default: return false; // not supported
+        }
+    }
+
+    void updateShadingCapability(const std::vector<float>& vertNormals)
+    {
+        mShadingPerVertexCapability = !vertNormals.empty();
+        if (!mShadingPerVertexCapability)
+            mShadingPerVertex = false;
+    }
+
     void updateColorCapability(
         const std::vector<uint>& vertColors,
         const std::vector<uint>& lineColors)

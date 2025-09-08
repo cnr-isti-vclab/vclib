@@ -193,8 +193,13 @@ public:
 
     void setImplementationType(ImplementationType type)
     {
-        Lines::setImplementationType(type);
-        Lines::setPoints(mVertCoords, mLineIndices, mVertNormals, mVertColors, mLineColors);
+        Lines::setPoints(
+            mVertCoords,
+            mLineIndices,
+            mVertNormals,
+            mVertColors,
+            mLineColors,
+            type);
     }
 };
 

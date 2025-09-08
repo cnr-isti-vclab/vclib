@@ -20,26 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#ifndef VCL_BINDINGS_CORE_BASE_EXCEPTIONS_H
+#define VCL_BINDINGS_CORE_BASE_EXCEPTIONS_H
 
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-inline void initAlgorithms(pybind11::module& m)
-{
-    initCreateAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
-}
+void initBaseExceptions(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H
+#endif // VCL_BINDINGS_CORE_BASE_EXCEPTIONS_H

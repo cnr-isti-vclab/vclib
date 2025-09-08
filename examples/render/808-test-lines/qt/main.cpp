@@ -38,6 +38,15 @@ public:
     }
 };
 
+class ColorToUseComboBox : public QComboBox
+{
+public:
+    ColorToUseComboBox(QWidget* parent = nullptr) : QComboBox(parent)
+    {
+        addItems({"Per Vertex", "Per Edge", "General"});
+    }
+};
+
 
 int main(int argc, char** argv)
 {
@@ -49,8 +58,18 @@ int main(int argc, char** argv)
     QVBoxLayout* layout = new QVBoxLayout(&w);
 
     // add the combo box to the layout
-    LinesComboBox* cb = new LinesComboBox(&w);
-    layout->addWidget(cb);
+    LinesComboBox* lcb = new LinesComboBox(&w);
+    layout->addWidget(lcb);
+
+    ColorToUseComboBox* ccb = new ColorToUseComboBox(&w);
+    layout->addWidget(ccb);
+
+    QSlider* tslider = new QSlider();
+    tslider->setOrientation(Qt::Orientation::Horizontal);
+    tslider->setMinimum(1);
+    tslider->setMaximum(100);
+    tslider->setValue(5);
+    layout->addWidget(tslider);
 
     vcl::qt::ViewerWidget* tw = new vcl::qt::ViewerWidget(&w);
     layout->addWidget(tw);
@@ -66,21 +85,40 @@ int main(int argc, char** argv)
         std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
 
     tw->setDrawableObjectVector(vec);
+    tslider->setValue(lines->thickness());
 
     // connect the combo box signal of item changed to a lambda that sets
     // as visible the ith drawable object in the viewer widget
 
     QObject::connect(
-        cb,
+        lcb,
         static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         [=](int index) {
             using ImplementationType =  vcl::Lines::ImplementationType;
 
-            std::cerr << "Showing " << index << std::endl;
+            std::cerr << "Lines implementation: " << index << std::endl;
 
             lines->setImplementationType((ImplementationType) index);
             tw->update();
         });
+
+    QObject::connect(
+        ccb,
+        static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+        [=](int index) {
+            using ColorToUse =  vcl::Lines::ColorToUse;
+
+            std::cerr << "Color to use: " << index << std::endl;
+
+            lines->setColorToUse((ColorToUse) index);
+            tw->update();
+        });
+
+    QObject::connect(tslider, &QSlider::valueChanged, [=](int value) {
+        std::cerr << "Thickness: " << value << std::endl;
+        lines->thickness() = (float)value;
+        tw->update();
+    });
 
     w.resize(1024, 768);
 

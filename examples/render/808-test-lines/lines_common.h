@@ -79,6 +79,7 @@ vcl::DrawableLines getDrawableLines(vcl::uint nLines)
         pushRandomLine(vertCoords, vertColors, lineColors);
 
     auto lines = vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
+    lines.setImplementationType(vcl::Lines::ImplementationType::PRIMITIVE);
     lines.thickness() = 10;
     lines.setColorToUse(vcl::Lines::ColorToUse::PER_VERTEX);
 

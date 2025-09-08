@@ -24,6 +24,7 @@
 #define VCL_BINDINGS_CORE_BASE_H
 
 #include "base/base.h"
+#include "base/exceptions.h"
 #include "base/logger.h"
 
 #include <pybind11/pybind11.h>
@@ -33,6 +34,7 @@ namespace vcl::bind {
 inline void initBase(pybind11::module& m)
 {
     initBaseBase(m);
+    initBaseExceptions(m);
     initLogger(m);
 }
 

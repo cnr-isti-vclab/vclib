@@ -218,8 +218,8 @@ public:
         using enum MeshRenderInfo::Edges;
         using enum Lines::ColorToUse;
 
-        mEdgeLines.thickness()        = mrs.edgesWidth();
-        mEdgeLines.shadingPerVertex() = mrs.isEdges(SHADING_SMOOTH);
+        mEdgeLines.thickness() = mrs.edgesWidth();
+        mEdgeLines.setShading(mrs.isEdges(SHADING_SMOOTH));
 
         if (mrs.isEdges(COLOR_USER)) {
             mEdgeLines.generalColor() = mrs.edgesUserColor();
@@ -242,8 +242,8 @@ public:
         using enum MeshRenderInfo::Wireframe;
         using enum Lines::ColorToUse;
 
-        mWireframeLines.thickness()        = mrs.wireframeWidth();
-        mWireframeLines.shadingPerVertex() = mrs.isWireframe(SHADING_VERT);
+        mWireframeLines.thickness() = mrs.wireframeWidth();
+        mWireframeLines.setShading(mrs.isWireframe(SHADING_VERT));
 
         if (mrs.isWireframe(COLOR_USER)) {
             mWireframeLines.generalColor() = mrs.wireframeUserColor();
