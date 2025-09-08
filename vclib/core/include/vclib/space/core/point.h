@@ -435,6 +435,7 @@ public:
         return res;
     }
 
+    // TODO: this function should return a pair
     /**
      * @brief Computes an [Orthonormal
      * Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting from

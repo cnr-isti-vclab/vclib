@@ -43,7 +43,7 @@ void initAdjacentVertices(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    c.def("adj_vertex_number", &ElementType::adjVerticesNumber);
+    c.def("adj_vertices_number", &ElementType::adjVerticesNumber);
 
     c.def(
         "adj_vertex",

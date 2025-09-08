@@ -92,7 +92,7 @@ void populatePoint(pybind11::module& m)
             py::arg("z"));
 
         c.def("cross", [](const P& p1, const P& p2) {
-            return p1.cross(p2);
+            return P(p1.cross(p2));
         });
         c.def("ortho_base", &P::orthoBase);
     }
@@ -138,7 +138,9 @@ void populatePoint(pybind11::module& m)
     c.def("mul", &P::mul);
     c.def("div", &P::div);
     c.def("size", &P::size);
-    c.def("outer_product", &P::outerProduct);
+    c.def("outer_product", [](const P& p1, const P& p2) {
+        return Matrix<Scalar, DIM, DIM>(p1.outerProduct(p2));
+    });
 
     c.def("dot", [](const P& p1, const P& p2) {
         return p1.dot(p2);
