@@ -136,62 +136,6 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
 } // namespace detail
 
 /**
- * @brief Creates and returns a new point cloud mesh from the input vertex
- * matrix and the other matrices that are given as arguments.
- *
- * The function accepts several input matrices/vectors, that are used only if
- * their number of rows is different from zero. It tries to fill all the data
- * contained in the non-empty input matrices into the Mesh:
- * - if a Mesh is not able to store same data, the relative input matrix is
- * ignored. For example, if the Mesh has no per Vertex Normals, the function
- * will ignore the input vertex normals matrix, also if that is not empty.
- * - if a Mesh is able to store some data and the relative input matrix is not
- * empty, the data will be stored in the Mesh. If the matrix has not the
- * expected size, an exception is thrown.
- *
- * @note All the disabled optional components will be enabled if their
- * corresponding input matrix is not empty.
- *
- * @throws vcl::WrongSizeException if the sizes of the non-empty input matrices
- * have not the expected sizes.
- *
- * @tparam MeshType: the type of the mesh to be created. It must satisfy the
- * MeshConcept.
- * @tparam VMatrix: the type of the input vertex matrix. It must satisfy the
- * MatrixConcept.
- * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
- * the MatrixConcept.
- *
- * @param[in] vertices: a \#V*3 matrix containing the positions of the
- * vertices of the mesh.
- * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
- * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function will not add vertex normals to the mesh.
- *
- * @return a new point cloud mesh containing the data passed as argument.
- */
-template<
-    MeshConcept   MeshType,
-    MatrixConcept VMatrix,
-    MatrixConcept VNMatrix = Eigen::MatrixX3d>
-MeshType pointCloudMeshFromMatrices(
-    const VMatrix&  vertices,
-    const VNMatrix& vertexNormals = VNMatrix())
-{
-    MeshType mesh;
-
-    importMeshFromMatrices(
-        mesh,
-        vertices,
-        Eigen::MatrixX3i(),
-        Eigen::MatrixX2i(),
-        vertexNormals,
-        Eigen::MatrixX3d());
-
-    return mesh;
-}
-
-/**
  * @brief Creates and returns a new mesh from the input vertex and face (if any)
  * matrices, and the other matrices that are given as arguments.
  *
@@ -226,13 +170,16 @@ MeshType pointCloudMeshFromMatrices(
  * vertices of the mesh.
  * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
  * the faces of the mesh. If the number of rows of this matrix is zero, the
- * function will not add faces to the mesh.
+ * function will not add faces to the mesh. If the MeshType has no faces, the
+ * function will ignore this matrix.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
  * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function will not add vertex normals to the mesh.
+ * function will not add vertex normals to the mesh. If the MeshType has no
+ * vertex normals, the function will ignore this matrix.
  * @param[in] faceNormals: a \#F*3 matrix containing the normals of the faces of
  * the mesh. If the number of rows of this matrix is zero, the function will not
- * add face normals to the mesh.
+ * add face normals to the mesh. If the MeshType has no face normals, the
+ * function will ignore this matrix.
  *
  * @return a new mesh containing the data passed as argument.
  */
@@ -303,16 +250,20 @@ MeshType meshFromMatrices(
  * vertices of the mesh.
  * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
  * the faces of the mesh. If the number of rows of this matrix is zero, the
- * function will not add faces to the mesh.
+ * function will not add faces to the mesh. If the MeshType has no faces, the
+ * function will ignore this matrix.
  * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
  * the edges of the mesh. If the number of rows of this matrix is zero, the
- * function will not add edges to the mesh.
+ * function will not add edges to the mesh. If the MeshType has no edges, the
+ * function will ignore this matrix.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
  * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function will not add vertex normals to the mesh.
+ * function will not add vertex normals to the mesh. If the MeshType has no
+ * vertex normals, the function will ignore this matrix.
  * @param[in] faceNormals: a \#F*3 matrix containing the normals of the faces of
  * the mesh. If the number of rows of this matrix is zero, the function will not
- * add face normals to the mesh.
+ * add face normals to the mesh. If the MeshType has no face normals, the
+ * function will ignore this matrix.
  */
 template<
     MeshConcept   MeshType,
@@ -358,14 +309,14 @@ void importMeshFromMatrices(
 }
 
 /**
- * @brief Sets the vertices of the given input `mesh` from the input vertex
- * matrix.
+ * @brief Sets the vertex positions of the given input `mesh` from the input
+ * vertex matrix.
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
- * container of the mesh and then adds a number of vertices that depends on the
- * number of rows of the input vertex matrix. In this scenario, all the other
- * components of the vertices stored in the mesh before calling this function
- * are lost.
+ * clears the vertex container of the mesh and then adds a number of vertices
+ * that depends on the number of rows of the input vertex matrix. In this
+ * scenario, all the other components of the vertices stored in the mesh before
+ * calling this function are lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
  * the number of rows of the input vertex matrix is equal to the number of
