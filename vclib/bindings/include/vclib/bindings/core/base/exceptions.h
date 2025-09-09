@@ -23,7 +23,6 @@
 #ifndef VCL_BINDINGS_CORE_BASE_EXCEPTIONS_H
 #define VCL_BINDINGS_CORE_BASE_EXCEPTIONS_H
 
-
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {

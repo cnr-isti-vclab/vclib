@@ -40,7 +40,7 @@ class CPUGeneratedLines
     VertexBuffer mVertexColors;
     VertexBuffer mLineColors;
 
-    IndexBuffer  mIndices;
+    IndexBuffer mIndices;
 
 public:
     CPUGeneratedLines() = default;
@@ -48,15 +48,15 @@ public:
     CPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     CPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void swap(CPUGeneratedLines& other);
 
@@ -64,16 +64,16 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>& lineIndices,
+        const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void draw(uint viewId) const;
 };

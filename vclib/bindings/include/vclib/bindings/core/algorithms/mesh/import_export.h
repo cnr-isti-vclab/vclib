@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_IMPORT_EXPORT_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_IMPORT_EXPORT_H
+#ifndef VCL_BINDINGS_CORE_ALGORITHMS_MESH_IMPORT_EXPORT_H
+#define VCL_BINDINGS_CORE_ALGORITHMS_MESH_IMPORT_EXPORT_H
 
 #include <pybind11/pybind11.h>
 
@@ -31,4 +31,4 @@ void initImportExportAlgorithms(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_IMPORT_EXPORT_H
+#endif // VCL_BINDINGS_CORE_ALGORITHMS_MESH_IMPORT_EXPORT_H

@@ -24,9 +24,9 @@
 
 #include <vclib/qt/viewer_widget.h>
 
+#include <QApplication>
 #include <QComboBox>
 #include <QVBoxLayout>
-#include <QApplication>
 
 // a QWidget class having only a combo box with the list of available lines
 class LinesComboBox : public QComboBox
@@ -46,7 +46,6 @@ public:
         addItems({"Per Vertex", "Per Edge", "General"});
     }
 };
-
 
 int main(int argc, char** argv)
 {
@@ -94,7 +93,7 @@ int main(int argc, char** argv)
         lcb,
         static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         [=](int index) {
-            using ImplementationType =  vcl::Lines::ImplementationType;
+            using ImplementationType = vcl::Lines::ImplementationType;
 
             std::cerr << "Lines implementation: " << index << std::endl;
 
@@ -106,7 +105,7 @@ int main(int argc, char** argv)
         ccb,
         static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         [=](int index) {
-            using ColorToUse =  vcl::Lines::ColorToUse;
+            using ColorToUse = vcl::Lines::ColorToUse;
 
             std::cerr << "Color to use: " << index << std::endl;
 
@@ -116,7 +115,7 @@ int main(int argc, char** argv)
 
     QObject::connect(tslider, &QSlider::valueChanged, [=](int value) {
         std::cerr << "Thickness: " << value << std::endl;
-        lines->thickness() = (float)value;
+        lines->thickness() = (float) value;
         tw->update();
     });
 

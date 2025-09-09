@@ -91,7 +91,8 @@ public:
         else
             mLineColors = std::vector<uint>(vertCoords.size() / 6, 0xFFFFFFFF);
 
-        Lines::setPoints(mVertCoords, mLineIndices, mVertNormals, mVertColors, mLineColors);
+        Lines::setPoints(
+            mVertCoords, mLineIndices, mVertNormals, mVertColors, mLineColors);
     }
 
     DrawableLines(const DrawableLines& other) :
@@ -107,7 +108,8 @@ public:
                 other.colorToUse(),
                 other.type()),
             mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
-            mLineColors(other.mLineColors), mVisible(other.mVisible), mLineIndices(other.mLineIndices)
+            mLineColors(other.mLineColors), mVisible(other.mVisible),
+            mLineIndices(other.mLineIndices)
     {
     }
 
@@ -165,7 +167,8 @@ public:
         mVertColors  = vertColors;
         mVertNormals = vertNormals;
         mLineColors  = lineColors;
-        Lines::setPoints(vertCoords, lineIndices, vertNormals, vertColors, mLineColors);
+        Lines::setPoints(
+            vertCoords, lineIndices, vertNormals, vertColors, mLineColors);
     }
 
     // DrawableObject interface

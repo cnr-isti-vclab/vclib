@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/ 
+ ****************************************************************************/
 
 #ifndef VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
@@ -40,7 +40,7 @@ class PrimitiveLines
     VertexBuffer mVertexColors;
     VertexBuffer mLineColors;
 
-    IndexBuffer  mIndices;
+    IndexBuffer mIndices;
 
 public:
     PrimitiveLines() = default;
@@ -48,15 +48,15 @@ public:
     PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void swap(PrimitiveLines& other);
 
