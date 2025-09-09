@@ -36,16 +36,15 @@ template<typename DerivedRenderApp>
 class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
-    // lines 
-    const vcl::uint N_LINES = 8;
+    // lines
+    const vcl::uint                     N_LINES = 8;
     std::shared_ptr<vcl::DrawableLines> mLines;
-    int mSelected = 0;
+    int                                 mSelected = 0;
 
 public:
     using ParentDrawer::ParentDrawer;
 
-    LinesDrawer(vcl::uint w, vcl::uint h)
-        : ParentDrawer(w, h)
+    LinesDrawer(vcl::uint w, vcl::uint h) : ParentDrawer(w, h)
     {
         std::shared_ptr<vcl::DrawableObjectVector> vec =
             std::make_shared<vcl::DrawableObjectVector>();
@@ -68,7 +67,7 @@ public:
         int selected = mSelected;
 
         ImGui::Begin("Showing");
-        const char* items[] = { "Primitive", "CPU Generated" };
+        const char* items[] = {"Primitive", "CPU Generated"};
         for (int i = 0; i < vcl::toUnderlying(COUNT); ++i) {
             ImGui::RadioButton(items[i], &selected, i);
         }
@@ -76,7 +75,8 @@ public:
 
         if (selected != mSelected) {
             mSelected = selected;
-            mLines->setImplementationType(static_cast<vcl::Lines::ImplementationType>(mSelected));
+            mLines->setImplementationType(
+                static_cast<vcl::Lines::ImplementationType>(mSelected));
         }
 
         ImGui::Begin("Settings");
@@ -86,14 +86,13 @@ public:
         ImGui::Checkbox("Shading per Vertex", &shadingPerVertex);
         mLines->setShading(shadingPerVertex);
 
-        const char* colorToUseItems[] = { "Per Vertex", "Per Edge", "General" };
+        const char* colorToUseItems[] = {"Per Vertex", "Per Edge", "General"};
         int         colorToUse        = vcl::toUnderlying(mLines->colorToUse());
         for (int i = 0; i < 3; ++i) {
             ImGui::RadioButton(colorToUseItems[i], &colorToUse, i);
         }
         mLines->setColorToUse(static_cast<vcl::Lines::ColorToUse>(colorToUse));
         ImGui::End();
-
     }
 };
 

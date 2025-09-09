@@ -321,7 +321,8 @@ public:
         //     bgfx::setState(state | BGFX_STATE_PT_LINES);
         //     bgfx::setTransform(model.data());
 
-        //     bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
+        //     bgfx::submit(viewId,
+        //     pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
         // }
 
         // if (mMRS.isEdges(MRI::Edges::VISIBLE)) {

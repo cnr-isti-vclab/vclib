@@ -34,82 +34,85 @@ void initImportExportAlgorithms(pybind11::module& m)
     namespace py = pybind11;
     using namespace py::literals;
 
-    auto fAllMeshes =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            // export_matrix.h
+    auto fAllMeshes = []<MeshConcept MeshType>(
+                          pybind11::module& m, MeshType = MeshType()) {
+        // export_matrix.h
 
-            m.def(
-                "vertex_positions_matrix",
-                [](const MeshType& m) {
-                    return vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(m);
-                },
-                "mesh"_a);
+        m.def(
+            "vertex_positions_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(m);
+            },
+            "mesh"_a);
 
-            m.def(
-                "vertex_selection_vector",
-                [](const MeshType& m) {
-                    return vcl::vertexSelectionVector<Eigen::VectorXi>(m);
-                },
-                "mesh"_a);
+        m.def(
+            "vertex_selection_vector",
+            [](const MeshType& m) {
+                return vcl::vertexSelectionVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
 
-            m.def(
-                "vertex_normals_matrix",
-                [](const MeshType& m) {
-                    return vcl::vertexNormalsMatrix<Eigen::MatrixX3d>(m);
-                },
-                "mesh"_a);
+        m.def(
+            "vertex_normals_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexNormalsMatrix<Eigen::MatrixX3d>(m);
+            },
+            "mesh"_a);
 
-            m.def(
-                "vertex_colors_matrix",
-                [](const MeshType& m) {
-                    return vcl::vertexColorsMatrix<Eigen::MatrixX4i>(m);
-                },
-                "mesh"_a);
+        m.def(
+            "vertex_colors_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexColorsMatrix<Eigen::MatrixX4i>(m);
+            },
+            "mesh"_a);
 
-            m.def(
-                "vertex_colors_vector",
-                [](const MeshType& m, Color::Format colorFormat) {
-                    return vcl::vertexColorsVector<Eigen::VectorXi>(m, colorFormat);
-                },
-                "mesh"_a,
-                "color_format"_a = Color::Format::RGBA);
+        m.def(
+            "vertex_colors_vector",
+            [](const MeshType& m, Color::Format colorFormat) {
+                return vcl::vertexColorsVector<Eigen::VectorXi>(m, colorFormat);
+            },
+            "mesh"_a,
+            "color_format"_a = Color::Format::RGBA);
 
-            m.def(
-                "vertex_quality_vector",
-                [](const MeshType& m) {
-                    return vcl::vertexQualityVector<Eigen::VectorXd>(m);
-                },
-                "mesh"_a);
+        m.def(
+            "vertex_quality_vector",
+            [](const MeshType& m) {
+                return vcl::vertexQualityVector<Eigen::VectorXd>(m);
+            },
+            "mesh"_a);
 
-            // import_matrix.h
+        // import_matrix.h
 
-            m.def(camelCaseToSnakeCase(meshTypeName<MeshType>() + "_from_matrices").c_str(),
-                  [](Eigen::MatrixX3d& V,
-                     Eigen::MatrixXi& F,
-                     Eigen::MatrixX3d& VN,
-                     Eigen::MatrixX3d& FN) {
-                      return vcl::meshFromMatrices<MeshType>(V, F, VN, FN);
-                  },
-                  "vertices"_a,
-                  "faces"_a = Eigen::MatrixXi(),
-                  "vertex_normals"_a = Eigen::MatrixX3d(),
-                  "face_normals"_a = Eigen::MatrixX3d());
+        m.def(
+            camelCaseToSnakeCase(meshTypeName<MeshType>() + "_from_matrices")
+                .c_str(),
+            [](Eigen::MatrixX3d& V,
+               Eigen::MatrixXi&  F,
+               Eigen::MatrixX3d& VN,
+               Eigen::MatrixX3d& FN) {
+                return vcl::meshFromMatrices<MeshType>(V, F, VN, FN);
+            },
+            "vertices"_a,
+            "faces"_a          = Eigen::MatrixXi(),
+            "vertex_normals"_a = Eigen::MatrixX3d(),
+            "face_normals"_a   = Eigen::MatrixX3d());
 
-            m.def(
-                "mesh_from_matrices",
-                [](MeshType& mesh,
-                   Eigen::MatrixX3d& V,
-                   Eigen::MatrixXi& F,
-                   Eigen::MatrixX3d& VN,
-                   Eigen::MatrixX3d& FN) {
-                    return vcl::importMeshFromMatrices<MeshType>(mesh, V, F, VN, FN);
-                },
-                "mesh"_a,
-                "vertices"_a,
-                "faces"_a = Eigen::MatrixXi(),
-                "vertex_normals"_a = Eigen::MatrixX3d(),
-                "face_normals"_a = Eigen::MatrixX3d());
-        };
+        m.def(
+            "mesh_from_matrices",
+            [](MeshType&         mesh,
+               Eigen::MatrixX3d& V,
+               Eigen::MatrixXi&  F,
+               Eigen::MatrixX3d& VN,
+               Eigen::MatrixX3d& FN) {
+                return vcl::importMeshFromMatrices<MeshType>(
+                    mesh, V, F, VN, FN);
+            },
+            "mesh"_a,
+            "vertices"_a,
+            "faces"_a          = Eigen::MatrixXi(),
+            "vertex_normals"_a = Eigen::MatrixX3d(),
+            "face_normals"_a   = Eigen::MatrixX3d());
+    };
 
     defForAllMeshTypes(m, fAllMeshes);
 

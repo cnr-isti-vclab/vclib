@@ -43,8 +43,8 @@ PrimitiveLines::PrimitiveLines(
     const std::vector<uint>&  lineColors)
 {
     setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
-
 }
+
 void PrimitiveLines::swap(PrimitiveLines& other)
 {
     using std::swap;
@@ -53,7 +53,7 @@ void PrimitiveLines::swap(PrimitiveLines& other)
     swap(mVertexNormals, other.mVertexNormals);
     swap(mVertexColors, other.mVertexColors);
     swap(mLineColors, other.mLineColors);
-    swap(mIndices, other.mIndices); 
+    swap(mIndices, other.mIndices);
 }
 
 void PrimitiveLines::setPoints(
@@ -82,12 +82,13 @@ void PrimitiveLines::setPoints(
     const bool setLineColors  = lineColors.size() != 0;
 
     const uint numVertices = vertCoords.size() / 3;
-    const uint numLines = setLineIndices ? lineIndices.size() / 2 : numVertices / 2;
+    const uint numLines =
+        setLineIndices ? lineIndices.size() / 2 : numVertices / 2;
     const uint numElements = setLineIndices ? lineIndices.size() : numVertices;
-    
+
     assert(!setColors || vertCoords.size() == vertColors.size() * 3);
     assert(!setNormals || vertCoords.size() == vertNormals.size());
-    assert(!setLineColors || vertColors.size() == lineColors.size() * 2);   
+    assert(!setLineColors || vertColors.size() == lineColors.size() * 2);
 
     if (numElements > 1) {
         {
@@ -97,16 +98,16 @@ void PrimitiveLines::setPoints(
                 .end();
 
             mVertexCoords.create(
-                bgfx::makeRef(vertCoords.data(), sizeof(float) * vertCoords.size()),
-                layout
-            );
+                bgfx::makeRef(
+                    vertCoords.data(), sizeof(float) * vertCoords.size()),
+                layout);
         }
 
         if (setLineIndices) {
             mIndices.create(
-                bgfx::makeRef(lineIndices.data(), sizeof(uint32_t) * lineIndices.size()),
-                BGFX_BUFFER_INDEX32
-            );
+                bgfx::makeRef(
+                    lineIndices.data(), sizeof(uint32_t) * lineIndices.size()),
+                BGFX_BUFFER_INDEX32);
         }
 
         if (setNormals) {
@@ -114,13 +115,13 @@ void PrimitiveLines::setPoints(
             layout.begin()
                 .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float, true)
                 .end();
-    
+
             mVertexNormals.create(
-                bgfx::makeRef(vertNormals.data(), sizeof(float) * vertNormals.size()),
-                layout
-            );
+                bgfx::makeRef(
+                    vertNormals.data(), sizeof(float) * vertNormals.size()),
+                layout);
         }
-            
+
         if (setColors) {
             bgfx::VertexLayout layout;
             layout.begin()
@@ -128,9 +129,9 @@ void PrimitiveLines::setPoints(
                 .end();
 
             mVertexColors.create(
-                bgfx::makeRef(vertColors.data(), sizeof(uint32_t) * vertColors.size()),
-                layout
-            );
+                bgfx::makeRef(
+                    vertColors.data(), sizeof(uint32_t) * vertColors.size()),
+                layout);
         }
 
         if (setLineColors) {
@@ -140,13 +141,14 @@ void PrimitiveLines::setPoints(
             if (setLineIndices) {
                 expandedLineColors.resize(numVertices);
                 for (uint i = 0; i < numLines; ++i) {
-                    const uint32_t color = lineColors[i];
-                    const uint index1 = lineIndices[i * 2 + 0];
-                    const uint index2 = lineIndices[i * 2 + 1];
+                    const uint32_t color       = lineColors[i];
+                    const uint     index1      = lineIndices[i * 2 + 0];
+                    const uint     index2      = lineIndices[i * 2 + 1];
                     expandedLineColors[index1] = color;
                     expandedLineColors[index2] = color;
                 }
-            } else {
+            }
+            else {
                 for (const auto& color : lineColors) {
                     expandedLineColors.push_back(color);
                     expandedLineColors.push_back(color);
@@ -159,12 +161,13 @@ void PrimitiveLines::setPoints(
                 .end();
 
             mLineColors.create(
-                bgfx::makeRef(expandedLineColors.data(), sizeof(uint32_t) * expandedLineColors.size()),
-                layout
-            );
+                bgfx::makeRef(
+                    expandedLineColors.data(),
+                    sizeof(uint32_t) * expandedLineColors.size()),
+                layout);
         }
-        
-    } else {
+    }
+    else {
         mVertexCoords.destroy();
         mIndices.destroy();
         mVertexNormals.destroy();

@@ -41,24 +41,39 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::CUSTOM_CPU_LINES>::vertexShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::CUSTOM_CPU_LINES>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_cpu_generated_lines_essl, sizeof(vs_cpu_generated_lines_essl)};
+        return {
+            type,
+            vs_cpu_generated_lines_essl,
+            sizeof(vs_cpu_generated_lines_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_cpu_generated_lines_glsl, sizeof(vs_cpu_generated_lines_glsl)};
+        return {
+            type,
+            vs_cpu_generated_lines_glsl,
+            sizeof(vs_cpu_generated_lines_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, vs_cpu_generated_lines_spv, sizeof(vs_cpu_generated_lines_spv)};
+        return {
+            type,
+            vs_cpu_generated_lines_spv,
+            sizeof(vs_cpu_generated_lines_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, vs_cpu_generated_lines_dx11, sizeof(vs_cpu_generated_lines_dx11)};
+        return {
+            type,
+            vs_cpu_generated_lines_dx11,
+            sizeof(vs_cpu_generated_lines_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, vs_cpu_generated_lines_mtl, sizeof(vs_cpu_generated_lines_mtl)};
+        return {
+            type,
+            vs_cpu_generated_lines_mtl,
+            sizeof(vs_cpu_generated_lines_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
@@ -69,19 +84,34 @@ bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::CUSTOM_CPU_LINES>::
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_cpu_generated_lines_essl, sizeof(fs_cpu_generated_lines_essl)};
+        return {
+            type,
+            fs_cpu_generated_lines_essl,
+            sizeof(fs_cpu_generated_lines_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_cpu_generated_lines_glsl, sizeof(fs_cpu_generated_lines_glsl)};
+        return {
+            type,
+            fs_cpu_generated_lines_glsl,
+            sizeof(fs_cpu_generated_lines_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_cpu_generated_lines_spv, sizeof(fs_cpu_generated_lines_spv)};
+        return {
+            type,
+            fs_cpu_generated_lines_spv,
+            sizeof(fs_cpu_generated_lines_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_cpu_generated_lines_dx11, sizeof(fs_cpu_generated_lines_dx11)};
+        return {
+            type,
+            fs_cpu_generated_lines_dx11,
+            sizeof(fs_cpu_generated_lines_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_cpu_generated_lines_mtl, sizeof(fs_cpu_generated_lines_mtl)};
+        return {
+            type,
+            fs_cpu_generated_lines_mtl,
+            sizeof(fs_cpu_generated_lines_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
