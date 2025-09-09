@@ -255,6 +255,7 @@ public:
         case GPU_GENERATED:
             std::get<detail::GPUGeneratedLines>(mLinesImplementation)
                 .setPoints(vertCoords, vertNormals, vertColors, lineColors);
+            break;
         default: break;
         }
         updateShadingCapability(vertNormals);
