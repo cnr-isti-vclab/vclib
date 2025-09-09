@@ -23,9 +23,9 @@
 #ifndef VCL_BGFX_PRIMITIVES_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_H
 
-#include <vclib/bgfx/primitives/lines/primitive_lines.h>
 #include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
 #include <vclib/bgfx/primitives/lines/gpu_generated_lines.h>
+#include <vclib/bgfx/primitives/lines/primitive_lines.h>
 
 #include <vclib/bgfx/uniform.h>
 
@@ -53,23 +53,25 @@ public:
     };
 
     enum class ImplementationType {
-        PRIMITIVE     = 0,     // Use bgfx primitive lines (not implemented)
-        CPU_GENERATED = 1,     // Buffers pre-generated in CPU
-        GPU_GENERATED = 2,     // Buffers pre-generated in GPU with computes
+        PRIMITIVE     = 0, // Use bgfx primitive lines (not implemented)
+        CPU_GENERATED = 1, // Buffers pre-generated in CPU
+        GPU_GENERATED = 2, // Buffers pre-generated in GPU with computes
 
         // TODO: uncomment when they will be implemented
         // CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
         // GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
         //                    // computes
-        // TEXTURE_INSTANCING, // Using Instancing with textures generated in GPU computes
-        
+        // TEXTURE_INSTANCING, // Using Instancing with textures generated in
+        // GPU computes
+
         COUNT
     };
 
 private:
-    using LinesImplementation = std::variant<detail::PrimitiveLines, 
-                                             detail::CPUGeneratedLines,
-                                             detail::GPUGeneratedLines>;
+    using LinesImplementation = std::variant<
+        detail::PrimitiveLines,
+        detail::CPUGeneratedLines,
+        detail::GPUGeneratedLines>;
 
     float mThickness = 5.0f;
 
@@ -234,30 +236,26 @@ public:
         ImplementationType        type = ImplementationType::COUNT)
     {
         using enum ImplementationType;
-      
+
         if (type == ImplementationType::COUNT)
             type = defaultImplementationType(true);
         setImplementationType(type);
 
-        switch(mType){
-            case PRIMITIVE: // always supported
-                std::get<detail::PrimitiveLines>(mLinesImplementation).setPoints(
-                    vertCoords, vertNormals, vertColors, lineColors
-                );
-                break;
+        switch (mType) {
+        case PRIMITIVE: // always supported
+            std::get<detail::PrimitiveLines>(mLinesImplementation)
+                .setPoints(vertCoords, vertNormals, vertColors, lineColors);
+            break;
 
-            case CPU_GENERATED: // always supported
-                std::get<detail::CPUGeneratedLines>(mLinesImplementation).setPoints(
-                    vertCoords, vertNormals, vertColors, lineColors
-                );
-                break;
+        case CPU_GENERATED: // always supported
+            std::get<detail::CPUGeneratedLines>(mLinesImplementation)
+                .setPoints(vertCoords, vertNormals, vertColors, lineColors);
+            break;
 
-            case GPU_GENERATED:
-                std::get<detail::GPUGeneratedLines>(mLinesImplementation).setPoints(
-                    vertCoords, vertNormals, vertColors, lineColors
-                );
-            default:
-                break; 
+        case GPU_GENERATED:
+            std::get<detail::GPUGeneratedLines>(mLinesImplementation)
+                .setPoints(vertCoords, vertNormals, vertColors, lineColors);
+        default: break;
         }
         updateShadingCapability(vertNormals);
         updateColorCapability(vertColors, lineColors);
@@ -300,26 +298,37 @@ public:
         if (type == ImplementationType::COUNT)
             type = defaultImplementationType(true);
         setImplementationType(type);
-      
-        switch(mType){
-            case PRIMITIVE: // always supported
-                std::get<detail::PrimitiveLines>(mLinesImplementation).setPoints(
-                    vertCoords, lineIndices, vertNormals, vertColors, lineColors
-                );
-                break;
 
-            case CPU_GENERATED: // always supported
-                std::get<detail::CPUGeneratedLines>(mLinesImplementation).setPoints(
-                    vertCoords, lineIndices, vertNormals, vertColors, lineColors
-                );
-                break;
+        switch (mType) {
+        case PRIMITIVE: // always supported
+            std::get<detail::PrimitiveLines>(mLinesImplementation)
+                .setPoints(
+                    vertCoords,
+                    lineIndices,
+                    vertNormals,
+                    vertColors,
+                    lineColors);
+            break;
 
-            case GPU_GENERATED:
-                std::get<detail::GPUGeneratedLines>(mLinesImplementation).setPoints(
-                    vertCoords, lineIndices, vertNormals, vertColors, lineColors
-                );
-            default:
-                break; 
+        case CPU_GENERATED: // always supported
+            std::get<detail::CPUGeneratedLines>(mLinesImplementation)
+                .setPoints(
+                    vertCoords,
+                    lineIndices,
+                    vertNormals,
+                    vertColors,
+                    lineColors);
+            break;
+
+        case GPU_GENERATED:
+            std::get<detail::GPUGeneratedLines>(mLinesImplementation)
+                .setPoints(
+                    vertCoords,
+                    lineIndices,
+                    vertNormals,
+                    vertColors,
+                    lineColors);
+        default: break;
         }
         updateShadingCapability(vertNormals);
         updateColorCapability(vertColors, lineColors);
@@ -423,15 +432,19 @@ public:
      */
     void draw(uint viewId) const
     {
+        using enum ImplementationType;
+
         bindSettingsUniform();
-        if (mType == ImplementationType::PRIMITIVE)
+        if (mType == PRIMITIVE)
             std::get<detail::PrimitiveLines>(mLinesImplementation).draw(viewId);
 
-        if (mType == ImplementationType::CPU_GENERATED)
-            std::get<detail::CPUGeneratedLines>(mLinesImplementation).draw(viewId);
+        if (mType == CPU_GENERATED)
+            std::get<detail::CPUGeneratedLines>(mLinesImplementation)
+                .draw(viewId);
 
-        if (mType == ImplementationType::GPU_GENERATED)
-            std::get<detail::GPUGeneratedLines>(mLinesImplementation).draw(viewId);
+        if (mType == GPU_GENERATED)
+            std::get<detail::GPUGeneratedLines>(mLinesImplementation)
+                .draw(viewId);
     }
 
 private:
