@@ -329,6 +329,7 @@ public:
                     vertNormals,
                     vertColors,
                     lineColors);
+            break;
         default: break;
         }
         updateShadingCapability(vertNormals);
