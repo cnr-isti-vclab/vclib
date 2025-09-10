@@ -97,10 +97,11 @@ auto meshMatrixConversion()
 
     // Create a new mesh from the exported matrices
     vcl::TriMesh importedMesh =
-        vcl::meshFromMatrices<vcl::TriMesh>(vertices, faces, vertexNormals);
+        vcl::meshFromMatrices<vcl::TriMesh>(vertices, faces);
     importedMesh.name() = "Imported Mesh";
 
     // Import additional components separately
+    vcl::importVertexNormalsFromMatrix(importedMesh, vertexNormals);
     vcl::importVertexColorsFromMatrix(importedMesh, vertexColors);
     vcl::importFaceColorsFromMatrix(importedMesh, faceColors);
 
@@ -152,8 +153,27 @@ auto meshMatrixConversion()
         1, 1, 1,                // 6
         -1, 1, 1;               // 7
 
-    Eigen::MatrixXi cubeFaces(12, 3);
-    cubeFaces << 0, 2, 1, 0, 3, 2, // bottom (z = -1)
+    Eigen::MatrixXi cubeQuads(6, 4);
+    cubeQuads << 0, 1, 2, 3, // bottom (z = -1)
+        4, 7, 6, 5,          // top    (z = +1)
+        0, 4, 5, 1,          // front  (y = -1)
+        2, 6, 7, 3,          // back   (y = +1)
+        0, 3, 7, 4,          // left   (x = -1)
+        1, 5, 6, 2;          // right  (x = +1)
+
+    try {
+        // Create trimesh mesh from polygonal matrices is not allowed
+        vcl::TriMesh failMesh =
+            vcl::meshFromMatrices<vcl::TriMesh>(cubeVertices, cubeQuads);
+        // You should first call meshFromMatrices with PolyMesh, then
+        // convert to TriMesh if needed using triMesh.importFrom(polyMesh);
+    }
+    catch (const vcl::WrongSizeException& e) {
+        std::cerr << "Error creating tri mesh: " << e.what() << std::endl << std::endl;
+    }
+
+    Eigen::MatrixXi cubeTriangles(12, 3);
+    cubeTriangles << 0, 2, 1, 0, 3, 2, // bottom (z = -1)
         4, 5, 6, 4, 6, 7,          // top    (z = +1)
         0, 1, 5, 0, 5, 4,          // front  (y = -1)
         2, 3, 7, 2, 7, 6,          // back   (y = +1)
@@ -162,7 +182,7 @@ auto meshMatrixConversion()
 
     // Create mesh from these matrices
     vcl::TriMesh cubeMesh =
-        vcl::meshFromMatrices<vcl::TriMesh>(cubeVertices, cubeFaces);
+        vcl::meshFromMatrices<vcl::TriMesh>(cubeVertices, cubeTriangles);
     cubeMesh.name() = "Cube Mesh";
 
     std::cout << "Created cube mesh: " << cubeMesh.vertexNumber()

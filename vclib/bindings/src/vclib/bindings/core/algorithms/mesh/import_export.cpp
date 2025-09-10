@@ -86,32 +86,25 @@ void initImportExportAlgorithms(pybind11::module& m)
         m.def(
             camelCaseToSnakeCase(meshTypeName<MeshType>() + "_from_matrices")
                 .c_str(),
-            [](Eigen::MatrixX3d& V,
-               Eigen::MatrixXi&  F,
-               Eigen::MatrixX3d& VN,
-               Eigen::MatrixX3d& FN) {
-                return vcl::meshFromMatrices<MeshType>(V, F, VN, FN);
+            [](Eigen::MatrixX3d& V, Eigen::MatrixXi& F, Eigen::MatrixX2i& E) {
+                return vcl::meshFromMatrices<MeshType>(V, F, E);
             },
             "vertices"_a,
-            "faces"_a          = Eigen::MatrixXi(),
-            "vertex_normals"_a = Eigen::MatrixX3d(),
-            "face_normals"_a   = Eigen::MatrixX3d());
+            "faces"_a = Eigen::MatrixXi(),
+            "edges"_a = Eigen::MatrixX2i());
 
         m.def(
             "mesh_from_matrices",
             [](MeshType&         mesh,
                Eigen::MatrixX3d& V,
                Eigen::MatrixXi&  F,
-               Eigen::MatrixX3d& VN,
-               Eigen::MatrixX3d& FN) {
-                return vcl::importMeshFromMatrices<MeshType>(
-                    mesh, V, F, VN, FN);
+               Eigen::MatrixX2i& E) {
+                return vcl::importMeshFromMatrices<MeshType>(mesh, V, F, E);
             },
             "mesh"_a,
             "vertices"_a,
-            "faces"_a          = Eigen::MatrixXi(),
-            "vertex_normals"_a = Eigen::MatrixX3d(),
-            "face_normals"_a   = Eigen::MatrixX3d());
+            "faces"_a = Eigen::MatrixXi(),
+            "edges"_a = Eigen::MatrixX2i());
     };
 
     defForAllMeshTypes(m, fAllMeshes);
