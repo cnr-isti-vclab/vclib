@@ -223,6 +223,8 @@ void GPUGeneratedLines::allocateLineIndices(const std::vector<uint>& lineIndices
     auto [buffer, releaseFn] =
         linesGetAllocatedBufferAndReleaseFn<uint>(lineIndices.size());
 
+    std::copy(lineIndices.begin(), lineIndices.end(), buffer);
+
     mLineIndices.createForCompute(
         buffer,
         lineIndices.size(),
