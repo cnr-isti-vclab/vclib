@@ -58,6 +58,40 @@ void CPUGeneratedLines::swap(CPUGeneratedLines& other)
 
 void CPUGeneratedLines::setPoints(
     const std::vector<float>& vertCoords,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  vertColors,
+    const std::vector<uint>&  lineColors)
+{
+    const std::vector<uint> lineIndices;
+    setPoints(
+        false, vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+}
+
+void CPUGeneratedLines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  lineIndices,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  vertColors,
+    const std::vector<uint>&  lineColors)
+{
+    setPoints(
+        true, vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+}
+
+void CPUGeneratedLines::draw(uint viewId) const
+{
+    mVertexCoords.bind(0);
+    mVertexColors.bind(1);
+    mVertexNormals.bind(2);
+    mLineColors.bind(3);
+    mIndices.bind();
+    bgfx::setState(linesDrawState());
+    bgfx::submit(viewId, mLinesPH);
+}
+
+void CPUGeneratedLines::setPoints(
+    bool                      setLineIndices,
+    const std::vector<float>& vertCoords,
     const std::vector<uint>&  lineIndices,
     const std::vector<float>& vertNormals,
     const std::vector<uint>&  vertColors,
@@ -66,7 +100,6 @@ void CPUGeneratedLines::setPoints(
     assert(vertCoords.size() % 3 == 0);
     assert(lineIndices.size() % 2 == 0);
 
-    const bool setLineIndices = lineIndices.size() != 0;
     const bool setColors      = vertColors.size() != 0;
     const bool setNormals     = vertNormals.size() != 0;
     const bool setLineColors  = lineColors.size() != 0;
@@ -226,27 +259,6 @@ void CPUGeneratedLines::setPoints(
         mLineColors.destroy();
         mIndices.destroy();
     }
-}
-
-void CPUGeneratedLines::setPoints(
-    const std::vector<float>& vertCoords,
-    const std::vector<float>& vertNormals,
-    const std::vector<uint>&  vertColors,
-    const std::vector<uint>&  lineColors)
-{
-    const std::vector<uint> indices;
-    setPoints(vertCoords, indices, vertNormals, vertColors, lineColors);
-}
-
-void CPUGeneratedLines::draw(uint viewId) const
-{
-    mVertexCoords.bind(0);
-    mVertexColors.bind(1);
-    mVertexNormals.bind(2);
-    mLineColors.bind(3);
-    mIndices.bind();
-    bgfx::setState(linesDrawState());
-    bgfx::submit(viewId, mLinesPH);
 }
 
 } // namespace vcl::detail

@@ -84,15 +84,18 @@ vcl::DrawableLines getDrawableLines(vcl::uint nLines, bool indexed = false)
 
         std::random_device                    rd;
         std::mt19937                          gen(rd());
-        std::uniform_int_distribution<uint>   disVertex(0, nLines * 2 - 1);
+        std::uniform_int_distribution<vcl::uint>   disVertex(0, nLines * 2 - 1);
         for (vcl::uint i = 0; i < nLines; i++) {
             indices.push_back(disVertex(gen));
             indices.push_back(disVertex(gen));
         }
     }
 
-    auto lines = vcl::DrawableLines(
-        vertCoords, indices, vertNormals, vertColors, lineColors);
+    auto lines =
+        indexed ?
+            vcl::DrawableLines(
+                vertCoords, indices, vertNormals, vertColors, lineColors) :
+            vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
     lines.setImplementationType(vcl::Lines::ImplementationType::PRIMITIVE);
     lines.thickness() = 10;
     lines.setColorToUse(vcl::Lines::ColorToUse::PER_VERTEX);

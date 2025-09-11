@@ -87,12 +87,14 @@ public:
         if (indexed != mIndexed) {
             auto t = mLines->thickness();
             auto c = mLines->colorToUse();
+            auto i = mLines->implementationType();
             mIndexed = indexed;
             mVec->clear();
             mVec->pushBack(std::move(getDrawableLines(N_LINES, indexed)));
             mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
             mLines->thickness() = t;
             mLines->setColorToUse(c);
+            mLines->setImplementationType(i);
         }
 
         ImGui::SliderFloat("Thickness", &mLines->thickness(), 1.0f, 100.0f);

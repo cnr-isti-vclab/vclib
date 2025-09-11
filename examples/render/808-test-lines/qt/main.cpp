@@ -106,6 +106,8 @@ int main(int argc, char** argv)
             getLines(vec)->setColorToUse(
                 (vcl::Lines::ColorToUse) ccb->currentIndex());
             getLines(vec)->thickness() = tslider->value();
+            getLines(vec)->setImplementationType(
+                (vcl::Lines::ImplementationType) lcb->currentIndex());
             tw->update();
         });
 

@@ -45,6 +45,34 @@ PrimitiveLines::PrimitiveLines(
     setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
 }
 
+PrimitiveLines::PrimitiveLines(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    setPoints(
+        pointsSize, vertexCoords, vertexNormals, vertexColors, lineColors);
+}
+
+PrimitiveLines::PrimitiveLines(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const IndexBuffer&  lineIndices,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    setPoints(
+        pointsSize,
+        vertexCoords,
+        lineIndices,
+        vertexNormals,
+        vertexColors,
+        lineColors);
+}
+
 void PrimitiveLines::swap(PrimitiveLines& other)
 {
     using std::swap;
@@ -62,11 +90,138 @@ void PrimitiveLines::setPoints(
     const std::vector<uint>&  vertColors,
     const std::vector<uint>&  lineColors)
 {
-    const std::vector<uint> indices;
-    setPoints(vertCoords, indices, vertNormals, vertColors, lineColors);
+    const std::vector<uint> lineIndices;
+    setPoints(
+        false,
+        vertCoords,
+        lineIndices,
+        vertNormals,
+        vertColors,
+        lineColors);
 }
 
 void PrimitiveLines::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  lineIndices,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  vertColors,
+    const std::vector<uint>&  lineColors)
+{
+    setPoints(
+        true,
+        vertCoords,
+        lineIndices,
+        vertNormals,
+        vertColors,
+        lineColors);
+}
+
+void PrimitiveLines::setPoints(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    IndexBuffer indices;
+    setPoints(
+        pointsSize,
+        vertexCoords,
+        indices,
+        vertexNormals,
+        vertexColors,
+        lineColors);
+}
+
+void PrimitiveLines::setPoints(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const IndexBuffer&  lineIndices,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    reinitBuffers(NOT_OWNED);
+    if (vertexCoords.isValid())
+        std::get<NOT_OWNED>(mVertexCoords) = &vertexCoords;
+    if (vertexNormals.isValid())
+        std::get<NOT_OWNED>(mVertexNormals) = &vertexNormals;
+    if (vertexColors.isValid())
+        std::get<NOT_OWNED>(mVertexColors) = &vertexColors;
+    if (lineColors.isValid())
+        std::get<NOT_OWNED>(mLineColors) = &lineColors;
+    if (lineIndices.isValid())
+        std::get<NOT_OWNED>(mIndices) = &lineIndices;
+}
+
+void PrimitiveLines::draw(uint viewId) const
+{
+    if (mOwnsBuffers) {
+        const VertexBuffer& vcoords = std::get<OWNED>(mVertexCoords);
+        const VertexBuffer& vnormals = std::get<OWNED>(mVertexNormals);
+        const VertexBuffer& vcolors = std::get<OWNED>(mVertexColors);
+        const VertexBuffer& lcolors =
+            std::get<OWNED>(mLineColors); // TODO: change to IndexBuffer
+        const IndexBuffer&  inds = std::get<OWNED>(mIndices);
+
+        if (vcoords.isValid())
+            vcoords.bind(0);
+        if (vnormals.isValid())
+            vnormals.bind(1);
+        if (vcolors.isValid())
+            vcolors.bind(2);
+        if (lcolors.isValid())
+            lcolors.bind(3);
+        if (inds.isValid())
+            inds.bind();
+    }
+    else {
+        const VertexBuffer* vcoords = std::get<NOT_OWNED>(mVertexCoords);
+        const VertexBuffer* vnormals = std::get<NOT_OWNED>(mVertexNormals);
+        const VertexBuffer* vcolors = std::get<NOT_OWNED>(mVertexColors);
+        const VertexBuffer* lcolors =
+            std::get<NOT_OWNED>(mLineColors); // TODO: change to IndexBuffer
+        const IndexBuffer*  inds = std::get<NOT_OWNED>(mIndices);
+
+        if (vcoords && vcoords->isValid())
+            vcoords->bind(0);
+        if (vnormals &&vnormals->isValid())
+            vnormals->bind(1);
+        if (vcolors && vcolors->isValid())
+            vcolors->bind(2);
+        if (lcolors && lcolors->isValid())
+            lcolors->bind(3);
+        if (inds && inds->isValid())
+            inds->bind();
+    }
+
+    bgfx::setState(linesDrawState() | BGFX_STATE_PT_LINES);
+    bgfx::submit(viewId, mLinesPH);
+}
+
+void PrimitiveLines::reinitBuffers(Ownership owned)
+{
+    mOwnsBuffers = (owned == OWNED);
+
+    if (mOwnsBuffers) {
+        mVertexCoords  = VertexBuffer();
+        mVertexNormals = VertexBuffer();
+        mVertexColors  = VertexBuffer();
+        mLineColors    = VertexBuffer(); // TODO: change to IndexBuffer
+        mIndices       = IndexBuffer();
+    }
+    else {
+        mVertexCoords  = static_cast<const VertexBuffer*>(nullptr);
+        mVertexNormals = static_cast<const VertexBuffer*>(nullptr);
+        mVertexColors  = static_cast<const VertexBuffer*>(nullptr);
+        mLineColors    = static_cast<const VertexBuffer*>(
+            nullptr); // TODO: change to IndexBuffer
+        mIndices = static_cast<const IndexBuffer*>(nullptr);
+    }
+}
+
+void PrimitiveLines::setPoints(
+    bool                      setLineIndices,
     const std::vector<float>& vertCoords,
     const std::vector<uint>&  lineIndices,
     const std::vector<float>& vertNormals,
@@ -78,10 +233,9 @@ void PrimitiveLines::setPoints(
     assert(vertCoords.size() % 3 == 0);
     assert(lineIndices.size() % 2 == 0);
 
-    const bool setLineIndices = lineIndices.size() != 0;
-    const bool setColors      = vertColors.size() != 0;
-    const bool setNormals     = vertNormals.size() != 0;
-    const bool setLineColors  = lineColors.size() != 0;
+    const bool setColors     = vertColors.size() != 0;
+    const bool setNormals    = vertNormals.size() != 0;
+    const bool setLineColors = lineColors.size() != 0;
 
     const uint numVertices = vertCoords.size() / 3;
     const uint numLines =
@@ -181,59 +335,6 @@ void PrimitiveLines::setPoints(
         std::get<OWNED>(mVertexNormals).destroy();
         std::get<OWNED>(mVertexColors).destroy();
         std::get<OWNED>(mLineColors).destroy();
-    }
-}
-
-void PrimitiveLines::draw(uint viewId) const
-{
-    const VertexBuffer& vcoords  = mOwnsBuffers ?
-                                       std::get<OWNED>(mVertexCoords) :
-                                       *std::get<NOT_OWNED>(mVertexCoords);
-    const VertexBuffer& vnormals = mOwnsBuffers ?
-                                       std::get<OWNED>(mVertexNormals) :
-                                       *std::get<NOT_OWNED>(mVertexNormals);
-    const VertexBuffer& vcolors  = mOwnsBuffers ?
-                                       std::get<OWNED>(mVertexColors) :
-                                       *std::get<NOT_OWNED>(mVertexColors);
-    const VertexBuffer& lcolors  = mOwnsBuffers ? // TODO: change to IndexBuffer
-                                      std::get<OWNED>(mLineColors) :
-                                       *std::get<NOT_OWNED>(mLineColors);
-    const IndexBuffer&  inds     = mOwnsBuffers ? std::get<OWNED>(mIndices) :
-                                                  *std::get<NOT_OWNED>(mIndices);
-
-    if (vcoords.isValid())
-        vcoords.bind(0);
-    if (vnormals.isValid())
-        vnormals.bind(1);
-    if (vcolors.isValid())
-        vcolors.bind(2);
-    if (lcolors.isValid())
-        lcolors.bind(3);
-    if (inds.isValid())
-        inds.bind();
-
-    bgfx::setState(linesDrawState() | BGFX_STATE_PT_LINES);
-    bgfx::submit(viewId, mLinesPH);
-}
-
-void PrimitiveLines::reinitBuffers(Ownership owned)
-{
-    mOwnsBuffers = (owned == OWNED);
-
-    if (mOwnsBuffers) {
-        mVertexCoords  = VertexBuffer();
-        mVertexNormals = VertexBuffer();
-        mVertexColors  = VertexBuffer();
-        mLineColors    = VertexBuffer(); // TODO: change to IndexBuffer
-        mIndices       = IndexBuffer();
-    }
-    else {
-        mVertexCoords  = static_cast<const VertexBuffer*>(nullptr);
-        mVertexNormals = static_cast<const VertexBuffer*>(nullptr);
-        mVertexColors  = static_cast<const VertexBuffer*>(nullptr);
-        mLineColors    = static_cast<const VertexBuffer*>(
-            nullptr); // TODO: change to IndexBuffer
-        mIndices = static_cast<const IndexBuffer*>(nullptr);
     }
 }
 
