@@ -120,6 +120,14 @@ public:
 
 private:
     void reinitBuffers(Ownership owned);
+
+    void setPoints(
+        bool setLineIndices,
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
 };
 
 } // namespace vcl::detail
