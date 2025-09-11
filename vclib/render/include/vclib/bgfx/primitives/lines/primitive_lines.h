@@ -45,12 +45,13 @@ class PrimitiveLines
     // by default, all variants are owned (first element of the variant)
     bool mOwnsBuffers = true;
 
-    std::variant<VertexBuffer, VertexBuffer*> mVertexCoords;
-    std::variant<VertexBuffer, VertexBuffer*> mVertexNormals;
-    std::variant<VertexBuffer, VertexBuffer*> mVertexColors;
-    std::variant<VertexBuffer, VertexBuffer*> mLineColors;
+    std::variant<VertexBuffer, const VertexBuffer*> mVertexCoords;
+    std::variant<VertexBuffer, const VertexBuffer*> mVertexNormals;
+    std::variant<VertexBuffer, const VertexBuffer*> mVertexColors;
+    std::variant<VertexBuffer, const VertexBuffer*>
+        mLineColors; // TODO: change this to IndexBuffer
 
-    std::variant<IndexBuffer, IndexBuffer*> mIndices;
+    std::variant<IndexBuffer, const IndexBuffer*> mIndices;
 
 public:
     PrimitiveLines() = default;
