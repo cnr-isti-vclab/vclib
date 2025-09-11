@@ -40,6 +40,17 @@ namespace vcl {
 /**
  * @brief The Lines class provides an abstraction for rendering 3D lines
  * with variable thickness and different implementation strategies.
+ *
+ * The Lines class supports several implementation types that are generally
+ * determined by the hardware capabilities. Each implementation type has its
+ * own advantages and disadvantages in terms of performance and memory usage.
+ *
+ * A line can be instantiated using std::vectors or bgfx buffers (VertexBuffer
+ * and IndexBuffer). When using std::vectors, the buffers are created and
+ * managed internally by the Lines class. When using bgfx buffers, the user
+ * is responsible for creating and managing the buffers, and they must remain
+ * valid for the lifetime of the Lines object (this is especially valid when
+ * the implementation type is PRIMITIVE).
  */
 class Lines
 {
@@ -230,19 +241,20 @@ public:
         ImplementationType        type = ImplementationType::COUNT)
     {
         using enum ImplementationType;
+        using namespace detail;
 
-        if (type == ImplementationType::COUNT)
+        if (type == COUNT)
             type = defaultImplementationType(true);
         setImplementationType(type);
 
         switch (mType) {
         case PRIMITIVE: // always supported
-            std::get<detail::PrimitiveLines>(mLinesImplementation)
+            std::get<PrimitiveLines>(mLinesImplementation)
                 .setPoints(vertCoords, vertNormals, vertColors, lineColors);
             break;
 
         case CPU_GENERATED: // always supported
-            std::get<detail::CPUGeneratedLines>(mLinesImplementation)
+            std::get<CPUGeneratedLines>(mLinesImplementation)
                 .setPoints(vertCoords, vertNormals, vertColors, lineColors);
             break;
         default: break;
@@ -284,14 +296,15 @@ public:
         ImplementationType        type = ImplementationType::COUNT)
     {
         using enum ImplementationType;
+        using namespace detail;
 
-        if (type == ImplementationType::COUNT)
+        if (type == COUNT)
             type = defaultImplementationType(true);
         setImplementationType(type);
 
         switch (mType) {
         case PRIMITIVE: // always supported
-            std::get<detail::PrimitiveLines>(mLinesImplementation)
+            std::get<PrimitiveLines>(mLinesImplementation)
                 .setPoints(
                     vertCoords,
                     lineIndices,
@@ -301,7 +314,7 @@ public:
             break;
 
         case CPU_GENERATED: // always supported
-            std::get<detail::CPUGeneratedLines>(mLinesImplementation)
+            std::get<CPUGeneratedLines>(mLinesImplementation)
                 .setPoints(
                     vertCoords,
                     lineIndices,
@@ -413,13 +426,15 @@ public:
      */
     void draw(uint viewId) const
     {
-        bindSettingsUniform();
-        if (mType == ImplementationType::PRIMITIVE)
-            std::get<detail::PrimitiveLines>(mLinesImplementation).draw(viewId);
+        using enum ImplementationType;
+        using namespace detail;
 
-        if (mType == ImplementationType::CPU_GENERATED)
-            std::get<detail::CPUGeneratedLines>(mLinesImplementation)
-                .draw(viewId);
+        bindSettingsUniform();
+        if (mType == PRIMITIVE)
+            std::get<PrimitiveLines>(mLinesImplementation).draw(viewId);
+
+        if (mType == CPU_GENERATED)
+            std::get<CPUGeneratedLines>(mLinesImplementation).draw(viewId);
     }
 
 private:
@@ -433,15 +448,18 @@ private:
     ImplementationType defaultImplementationType(
         bool cpuMemPointsProvided) const
     {
+        using enum ImplementationType;
+
         if (cpuMemPointsProvided)
-            return ImplementationType::CPU_GENERATED;
+            return CPU_GENERATED;
         else
-            return ImplementationType::PRIMITIVE;
+            return PRIMITIVE;
     }
 
     bool setImplementationType(ImplementationType type)
     {
         using enum ImplementationType;
+
         if (mType == type)
             return false; // no change
 
