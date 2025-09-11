@@ -30,6 +30,7 @@
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/selection/selection_mode.h>
 
 #include <algorithm>
 #include <vector>
@@ -43,7 +44,7 @@ public:
     class ImGuiTextureGetter979 : public vcl::PlainDrawer<DerivedDrawer>
     {
         std::shared_ptr<const vcl::DrawableMeshBGFX979<MeshType>> msh;
-        vcl::SelectionMode979 mode = vcl::SelectionMode979::NORMAL;
+        vcl::SelectionMode mode = vcl::SelectionMode::VERTEX_REGULAR;
 
 
 
@@ -61,17 +62,17 @@ public:
 
             ImGuiIO& io = ImGui::GetIO();
             ImGui::Begin("Calculate selection button", nullptr);
-            ImGui::RadioButton("Normal", [this]() -> bool {return this->mode == vcl::SelectionMode979::NORMAL;}, [this](bool b){this->mode = vcl::SelectionMode979::NORMAL;});
+            ImGui::RadioButton("Regular", [this]() -> bool {return this->mode == vcl::SelectionMode::VERTEX_REGULAR;}, [this](bool b){this->mode = vcl::SelectionMode::VERTEX_REGULAR;});
             ImGui::SameLine();
-            ImGui::RadioButton("Add", [this]() -> bool {return this->mode == vcl::SelectionMode979::ADD;}, [this](bool b){this->mode = vcl::SelectionMode979::ADD;});
+            ImGui::RadioButton("Add", [this]() -> bool {return this->mode == vcl::SelectionMode::VERTEX_ADD;}, [this](bool b){this->mode = vcl::SelectionMode::VERTEX_ADD;});
             ImGui::SameLine();
-            ImGui::RadioButton("Subtract", [this]() -> bool {return this->mode == vcl::SelectionMode979::SUBTRACT;}, [this](bool b){this->mode = vcl::SelectionMode979::SUBTRACT;});
+            ImGui::RadioButton("Subtract", [this]() -> bool {return this->mode == vcl::SelectionMode::VERTEX_SUBTRACT;}, [this](bool b){this->mode = vcl::SelectionMode::VERTEX_SUBTRACT;});
             ImGui::SameLine();
-            ImGui::RadioButton("Invert", [this]() -> bool {return this->mode == vcl::SelectionMode979::INVERT;}, [this](bool b){this->mode = vcl::SelectionMode979::INVERT;});
+            ImGui::RadioButton("Invert", [this]() -> bool {return this->mode == vcl::SelectionMode::VERTEX_INVERT;}, [this](bool b){this->mode = vcl::SelectionMode::VERTEX_INVERT;});
             ImGui::SameLine();
-            ImGui::RadioButton("All", [this]() -> bool {return this->mode == vcl::SelectionMode979::ALL;}, [this](bool b){this->mode = vcl::SelectionMode979::ALL;});
+            ImGui::RadioButton("All", [this]() -> bool {return this->mode == vcl::SelectionMode::VERTEX_ALL;}, [this](bool b){this->mode = vcl::SelectionMode::VERTEX_ALL;});
             ImGui::SameLine();
-            ImGui::RadioButton("None", [this]() -> bool {return this->mode == vcl::SelectionMode979::NONE;}, [this](bool b){this->mode = vcl::SelectionMode979::NONE;});
+            ImGui::RadioButton("None", [this]() -> bool {return this->mode == vcl::SelectionMode::VERTEX_NONE;}, [this](bool b){this->mode = vcl::SelectionMode::VERTEX_NONE;});
             if (ImGui::Button("Calculate selection")) {
                 msh->setTransform();
                 msh->getMRB().calculateSelection(viewId, mode);

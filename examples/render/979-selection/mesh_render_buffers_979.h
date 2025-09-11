@@ -35,6 +35,7 @@
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
+#include <vclib/render/selection/selection_mode.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
@@ -43,8 +44,6 @@
 #define MAX_COMPUTE_WORKGROUP_SIZE uint(1024)
 
 namespace vcl {
-
-enum class SelectionMode979 { NORMAL, ADD, SUBTRACT, ALL, NONE, INVERT };
 
 template<MeshConcept Mesh>
 class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
@@ -194,7 +193,7 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    void calculateSelection(const bgfx::ViewId viewId, SelectionMode979 mode)
+    void calculateSelection(const bgfx::ViewId viewId, SelectionMode mode)
         const
     {
         mVertexPositionsBuffer.bindCompute(
@@ -214,28 +213,28 @@ public:
 
         auto&               pm = Context::instance().programManager();
         bgfx::ProgramHandle selectionProgram;
-        switch (mode) {
-        case SelectionMode979::NORMAL:
+        switch (SelectionMode::Enum(mode)) {
+        case SelectionMode::VERTEX_REGULAR:
             selectionProgram =
                 pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
             break;
-        case SelectionMode979::ADD:
+        case SelectionMode::VERTEX_ADD:
             selectionProgram =
                 pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ADD>();
             break;
-        case SelectionMode979::SUBTRACT:
+        case SelectionMode::VERTEX_SUBTRACT:
             selectionProgram = pm.getComputeProgram<
                 ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
             break;
-        case SelectionMode979::ALL:
+        case SelectionMode::VERTEX_ALL:
             selectionProgram =
                 pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ALL>();
             break;
-        case SelectionMode979::NONE:
+        case SelectionMode::VERTEX_NONE:
             selectionProgram =
                 pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
             break;
-        case SelectionMode979::INVERT:
+        case SelectionMode::VERTEX_INVERT:
             selectionProgram =
                 pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
             break;
