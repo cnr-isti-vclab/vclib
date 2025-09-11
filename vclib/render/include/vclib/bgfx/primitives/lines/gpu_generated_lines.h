@@ -44,9 +44,9 @@ class GPUGeneratedLines
             .programManager()
             .getProgram<VertFragProgram::CUSTOM_CPU_LINES>();
 
+    Uniform mCustomIndicesUH =
+        Uniform("u_ActiveBuffers", bgfx::UniformType::Vec4);
 
-    Uniform mCustomIndicesUH = Uniform("u_ActiveBuffers", bgfx::UniformType::Vec4);
-    
     VertexBuffer mVertexCoords;
     VertexBuffer mVertexNormals;
     VertexBuffer mVertexColors;
@@ -62,97 +62,102 @@ public:
     GPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     GPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     GPUGeneratedLines(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     GPUGeneratedLines(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     void swap(GPUGeneratedLines& other);
 
     friend void swap(GPUGeneratedLines& a, GPUGeneratedLines& b) { a.swap(b); }
-    
+
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>& lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
-        
-    void setPoints(
-         const std::vector<float>& vertCoords,
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void setPoints(
-        const uint pointsSize,
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals = std::vector<float>(),
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
+
+    void setPoints(
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     void setPoints(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     void draw(uint viewId) const;
 
 private:
     void checkCaps() const
     {
-        const bgfx::Caps* caps = bgfx::getCaps();
+        const bgfx::Caps* caps      = bgfx::getCaps();
         const bool computeSupported = bool(caps->supported & BGFX_CAPS_COMPUTE);
         if (!computeSupported) {
             throw std::runtime_error("GPU compute not supported");
         }
     }
 
-    void setActiveBuffers(bool coords, bool indices, bool normals, bool colors, bool lineColors);
-    
+    void setPoints(
+        bool                      setLineIndices,
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
+
     void allocateVertexCoords(const std::vector<float>& vertCoords);
 
     void allocateLineIndices(const std::vector<uint>& lineIndices);
-    
+
     void allocateVertexNormals(const std::vector<float>& vertNormals);
-    
+
     void allocateVertexColors(const std::vector<uint>& vertColors);
-    
+
     void allocateVertexLineColors(const std::vector<uint>& lineColors);
-    
+
     void allocateVertexAndIndexBuffer(const uint pointsSize);
 
     void generateVertexAndIndexBuffer(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals,
         const VertexBuffer& vertexColors,
-        const VertexBuffer& lineColors
-    );
+        const VertexBuffer& lineColors);
 };
 
 } // namespace vcl::detail

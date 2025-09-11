@@ -28,8 +28,7 @@ GPUGeneratedLines::GPUGeneratedLines(
     const std::vector<float>& vertCoords,
     const std::vector<float>& vertNormals,
     const std::vector<uint>&  vertColors,
-    const std::vector<uint>&  lineColors) :
-    GPUGeneratedLines()
+    const std::vector<uint>&  lineColors) : GPUGeneratedLines()
 {
     assert(bgfx::isValid(mComputeVerticesPH));
     setPoints(vertCoords, vertNormals, vertColors, lineColors);
@@ -40,39 +39,43 @@ GPUGeneratedLines::GPUGeneratedLines(
     const std::vector<uint>&  lineIndices,
     const std::vector<float>& vertNormals,
     const std::vector<uint>&  vertColors,
-    const std::vector<uint>&  lineColors) :
-    GPUGeneratedLines()
+    const std::vector<uint>&  lineColors) : GPUGeneratedLines()
 {
     assert(bgfx::isValid(mComputeVerticesPH));
     setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
 }
 
 GPUGeneratedLines::GPUGeneratedLines(
-    const uint pointsSize,
+    const uint          pointsSize,
     const VertexBuffer& vertexCoords,
     const VertexBuffer& vertexNormals,
     const VertexBuffer& vertexColors,
-    const VertexBuffer& lineColors) :
-    GPUGeneratedLines()
+    const VertexBuffer& lineColors) : GPUGeneratedLines()
 {
     assert(bgfx::isValid(mComputeVerticesPH));
-    setPoints(pointsSize, vertexCoords, vertexNormals, vertexColors, lineColors);
+    setPoints(
+        pointsSize, vertexCoords, vertexNormals, vertexColors, lineColors);
 }
 
 GPUGeneratedLines::GPUGeneratedLines(
-    const uint pointsSize,
+    const uint          pointsSize,
     const VertexBuffer& vertexCoords,
     const IndexBuffer&  lineIndices,
     const VertexBuffer& vertexNormals,
     const VertexBuffer& vertexColors,
-    const VertexBuffer& lineColors) :
-    GPUGeneratedLines()
+    const VertexBuffer& lineColors) : GPUGeneratedLines()
 {
     assert(bgfx::isValid(mComputeVerticesPH));
-    setPoints(pointsSize, vertexCoords, lineIndices, vertexNormals, vertexColors, lineColors);
+    setPoints(
+        pointsSize,
+        vertexCoords,
+        lineIndices,
+        vertexNormals,
+        vertexColors,
+        lineColors);
 }
 
-void GPUGeneratedLines::swap(GPUGeneratedLines& other) 
+void GPUGeneratedLines::swap(GPUGeneratedLines& other)
 {
     using std::swap;
 
@@ -86,7 +89,6 @@ void GPUGeneratedLines::swap(GPUGeneratedLines& other)
 
     swap(mVertices, other.mVertices);
     swap(mIndices, other.mIndices);
-
 }
 
 void GPUGeneratedLines::draw(uint viewId) const
@@ -96,20 +98,80 @@ void GPUGeneratedLines::draw(uint viewId) const
     bgfx::setState(linesDrawState());
     bgfx::submit(viewId, mLinesPH);
 }
-        
+
 void GPUGeneratedLines::setPoints(
     const std::vector<float>& vertCoords,
     const std::vector<float>& vertNormals,
     const std::vector<uint>&  vertColors,
     const std::vector<uint>&  lineColors)
 {
-    std::vector<uint> indices;
-    setPoints(vertCoords, indices, vertNormals, vertColors, lineColors);
+    std::vector<uint> lineIndices;
+    setPoints(
+        false, vertCoords, lineIndices, vertNormals, vertColors, lineColors);
 }
 
 void GPUGeneratedLines::setPoints(
     const std::vector<float>& vertCoords,
-    const std::vector<uint>& lineIndices,
+    const std::vector<uint>&  lineIndices,
+    const std::vector<float>& vertNormals,
+    const std::vector<uint>&  vertColors,
+    const std::vector<uint>&  lineColors)
+{
+    setPoints(
+        true, vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+}
+
+void GPUGeneratedLines::setPoints(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    IndexBuffer emptyIndices;
+    setPoints(
+        pointsSize,
+        vertexCoords,
+        emptyIndices,
+        vertexNormals,
+        vertexColors,
+        lineColors);
+}
+
+void GPUGeneratedLines::setPoints(
+    const uint          nPoints,
+    const VertexBuffer& vertexCoords,
+    const IndexBuffer&  lineIndices,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    if (nPoints > 1) {
+        allocateVertexAndIndexBuffer(nPoints);
+        generateVertexAndIndexBuffer(
+            nPoints,
+            vertexCoords,
+            lineIndices,
+            vertexNormals,
+            vertexColors,
+            lineColors);
+    }
+    else {
+        mVertexCoords.destroy();
+        mVertexColors.destroy();
+        mVertexNormals.destroy();
+        mLineColors.destroy();
+        mLineIndices.destroy();
+
+        mVertices.destroy();
+        mIndices.destroy();
+    }
+}
+
+void GPUGeneratedLines::setPoints(
+    bool                      setLineIndices,
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  lineIndices,
     const std::vector<float>& vertNormals,
     const std::vector<uint>&  vertColors,
     const std::vector<uint>&  lineColors)
@@ -117,10 +179,9 @@ void GPUGeneratedLines::setPoints(
     assert(vertCoords.size() % 3 == 0);
     assert(lineIndices.size() % 2 == 0);
 
-    const bool setLineIndices = lineIndices.size() != 0;
-    const bool setColors      = vertColors.size() != 0;
-    const bool setNormals     = vertNormals.size() != 0;
-    const bool setLineColors  = lineColors.size() != 0;
+    const bool setColors     = vertColors.size() != 0;
+    const bool setNormals    = vertNormals.size() != 0;
+    const bool setLineColors = lineColors.size() != 0;
 
     const uint nPoints =
         setLineIndices ? lineIndices.size() : vertCoords.size() / 3;
@@ -130,7 +191,6 @@ void GPUGeneratedLines::setPoints(
     assert(!setLineColors || vertColors.size() == lineColors.size() * 2);
 
     if (nPoints > 1) {
-
         allocateVertexCoords(vertCoords);
 
         if (setLineIndices)
@@ -144,9 +204,12 @@ void GPUGeneratedLines::setPoints(
 
         allocateVertexAndIndexBuffer(nPoints);
         generateVertexAndIndexBuffer(
-            nPoints, mVertexCoords, mLineIndices, 
-            mVertexNormals, mVertexColors, mLineColors
-        );
+            nPoints,
+            mVertexCoords,
+            mLineIndices,
+            mVertexNormals,
+            mVertexColors,
+            mLineColors);
     }
     else {
         mVertexCoords.destroy();
@@ -160,46 +223,8 @@ void GPUGeneratedLines::setPoints(
     }
 }
 
-void GPUGeneratedLines::setPoints(
-    const uint pointsSize,
-    const VertexBuffer& vertexCoords,
-    const VertexBuffer& vertexNormals,
-    const VertexBuffer& vertexColors,
-    const VertexBuffer& lineColors)
-{
-    IndexBuffer emptyIndices;
-    setPoints(pointsSize, vertexCoords, emptyIndices, vertexNormals, vertexColors, lineColors);
-}
-
-void GPUGeneratedLines::setPoints(
-    const uint nPoints,
-    const VertexBuffer& vertexCoords,
-    const IndexBuffer&  lineIndices,
-    const VertexBuffer& vertexNormals,
-    const VertexBuffer& vertexColors,
-    const VertexBuffer& lineColors)
-{
-    if (nPoints > 1) {
-
-        allocateVertexAndIndexBuffer(nPoints);
-        generateVertexAndIndexBuffer(
-            nPoints, vertexCoords, lineIndices, 
-            vertexNormals, vertexColors, lineColors
-        );
-    }
-    else {
-        mVertexCoords.destroy();
-        mVertexColors.destroy();
-        mVertexNormals.destroy();
-        mLineColors.destroy();
-        mLineIndices.destroy();
-
-        mVertices.destroy();
-        mIndices.destroy();
-    }
-}
-    
-void GPUGeneratedLines::allocateVertexCoords(const std::vector<float>& vertCoords)
+void GPUGeneratedLines::allocateVertexCoords(
+    const std::vector<float>& vertCoords)
 {
     auto [buffer, releaseFn] =
         linesGetAllocatedBufferAndReleaseFn<float>(vertCoords.size());
@@ -214,11 +239,11 @@ void GPUGeneratedLines::allocateVertexCoords(const std::vector<float>& vertCoord
         PrimitiveType::FLOAT,
         false,
         bgfx::Access::Read,
-        releaseFn
-    );
+        releaseFn);
 }
 
-void GPUGeneratedLines::allocateLineIndices(const std::vector<uint>& lineIndices) 
+void GPUGeneratedLines::allocateLineIndices(
+    const std::vector<uint>& lineIndices)
 {
     auto [buffer, releaseFn] =
         linesGetAllocatedBufferAndReleaseFn<uint>(lineIndices.size());
@@ -230,11 +255,11 @@ void GPUGeneratedLines::allocateLineIndices(const std::vector<uint>& lineIndices
         lineIndices.size(),
         PrimitiveType::UINT,
         bgfx::Access::Read,
-        releaseFn
-    );
+        releaseFn);
 }
-    
-void GPUGeneratedLines::allocateVertexNormals(const std::vector<float>& vertNormals)
+
+void GPUGeneratedLines::allocateVertexNormals(
+    const std::vector<float>& vertNormals)
 {
     auto [buffer, releaseFn] =
         linesGetAllocatedBufferAndReleaseFn<float>(vertNormals.size());
@@ -249,11 +274,11 @@ void GPUGeneratedLines::allocateVertexNormals(const std::vector<float>& vertNorm
         PrimitiveType::FLOAT,
         false,
         bgfx::Access::Read,
-        releaseFn
-    );
+        releaseFn);
 }
-    
-void GPUGeneratedLines::allocateVertexColors(const std::vector<uint>& vertColors) 
+
+void GPUGeneratedLines::allocateVertexColors(
+    const std::vector<uint>& vertColors)
 {
     auto [buffer, releaseFn] =
         linesGetAllocatedBufferAndReleaseFn<uint>(vertColors.size());
@@ -268,11 +293,11 @@ void GPUGeneratedLines::allocateVertexColors(const std::vector<uint>& vertColors
         PrimitiveType::UCHAR,
         true,
         bgfx::Access::Read,
-        releaseFn
-    );
+        releaseFn);
 }
-    
-void GPUGeneratedLines::allocateVertexLineColors(const std::vector<uint>& lineColors) 
+
+void GPUGeneratedLines::allocateVertexLineColors(
+    const std::vector<uint>& lineColors)
 {
     auto [buffer, releaseFn] =
         linesGetAllocatedBufferAndReleaseFn<uint>(lineColors.size());
@@ -287,11 +312,10 @@ void GPUGeneratedLines::allocateVertexLineColors(const std::vector<uint>& lineCo
         PrimitiveType::UCHAR,
         true,
         bgfx::Access::Read,
-        releaseFn
-    );
+        releaseFn);
 }
-    
-void GPUGeneratedLines::allocateVertexAndIndexBuffer(const uint pointsSize) 
+
+void GPUGeneratedLines::allocateVertexAndIndexBuffer(const uint pointsSize)
 {
     bgfx::VertexLayout layout;
     layout.begin()
@@ -321,17 +345,18 @@ void GPUGeneratedLines::allocateVertexAndIndexBuffer(const uint pointsSize)
 }
 
 void GPUGeneratedLines::generateVertexAndIndexBuffer(
-    const uint pointsSize,
+    const uint          pointsSize,
     const VertexBuffer& vertexCoords,
     const IndexBuffer&  lineIndices,
     const VertexBuffer& vertexNormals,
     const VertexBuffer& vertexColors,
     const VertexBuffer& lineColors)
 {
-    float data[] = {static_cast<float>(lineIndices.isValid()), 
-                   static_cast<float>(vertexNormals.isValid()), 
-                   static_cast<float>(vertexColors.isValid()), 
-                   static_cast<float>(lineColors.isValid())};
+    float data[] = {
+        static_cast<float>(lineIndices.isValid()),
+        static_cast<float>(vertexNormals.isValid()),
+        static_cast<float>(vertexColors.isValid()),
+        static_cast<float>(lineColors.isValid())};
 
     mCustomIndicesUH.bind(data);
     vertexCoords.bind(0);
