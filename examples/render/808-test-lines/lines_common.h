@@ -91,8 +91,11 @@ vcl::DrawableLines getDrawableLines(vcl::uint nLines, bool indexed = false)
         }
     }
 
-    auto lines = vcl::DrawableLines(
-        vertCoords, indices, vertNormals, vertColors, lineColors);
+    auto lines =
+        indexed ?
+            vcl::DrawableLines(
+                vertCoords, indices, vertNormals, vertColors, lineColors) :
+            vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
     lines.setImplementationType(vcl::Lines::ImplementationType::PRIMITIVE);
     lines.thickness() = 10;
     lines.setColorToUse(vcl::Lines::ColorToUse::PER_VERTEX);
