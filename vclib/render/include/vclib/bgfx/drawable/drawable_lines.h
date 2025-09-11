@@ -77,7 +77,7 @@ public:
                 other.thickness(),
                 other.shadingPerVertex(),
                 other.colorToUse(),
-                other.type()),
+                other.implementationType()),
             mVisible(other.mVisible), mUseLineIndices(other.mUseLineIndices),
             mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
             mLineColors(other.mLineColors), mLineIndices(other.mLineIndices)

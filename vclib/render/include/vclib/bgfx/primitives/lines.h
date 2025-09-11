@@ -376,7 +376,7 @@ public:
      * @return The current implementation type that is used to render the
      * lines.
      */
-    ImplementationType type() const { return mType; }
+    ImplementationType implementationType() const { return mType; }
 
     /**
      * @brief Sets wether to use per vertex shading (using vertex normals) or
