@@ -66,18 +66,27 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
         const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void setPoints(
         const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
         const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void draw(uint viewId) const;
+
+private:
+    void setPoints(
+        bool setLineIndices,
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
 };
 
 } // namespace vcl::detail
