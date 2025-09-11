@@ -41,20 +41,22 @@ class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
     std::shared_ptr<vcl::DrawableLines> mLines;
     int                                 mSelected = 0;
 
+    std::shared_ptr<vcl::DrawableObjectVector> mVec =
+        std::make_shared<vcl::DrawableObjectVector>();
+
+    bool mIndexed = false;
+
 public:
     using ParentDrawer::ParentDrawer;
 
     LinesDrawer(vcl::uint w, vcl::uint h) : ParentDrawer(w, h)
     {
-        std::shared_ptr<vcl::DrawableObjectVector> vec =
-            std::make_shared<vcl::DrawableObjectVector>();
-
         // initialize the drawable object vector with CPU generated lines
-        ParentDrawer::setDrawableObjectVector(vec);
+        ParentDrawer::setDrawableObjectVector(mVec);
 
-        vec->pushBack(std::move(getDrawableLines(N_LINES)));
+        mVec->pushBack(std::move(getDrawableLines(N_LINES)));
 
-        mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
+        mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
     }
 
     virtual void onDraw(uint viewId) override
@@ -80,6 +82,19 @@ public:
         }
 
         ImGui::Begin("Settings");
+        bool indexed = mIndexed;
+        ImGui::Checkbox("Indexed", &indexed);
+        if (indexed != mIndexed) {
+            auto t = mLines->thickness();
+            auto c = mLines->colorToUse();
+            mIndexed = indexed;
+            mVec->clear();
+            mVec->pushBack(std::move(getDrawableLines(N_LINES, indexed)));
+            mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
+            mLines->thickness() = t;
+            mLines->setColorToUse(c);
+        }
+
         ImGui::SliderFloat("Thickness", &mLines->thickness(), 1.0f, 100.0f);
 
         bool shadingPerVertex = mLines->shadingPerVertex();
