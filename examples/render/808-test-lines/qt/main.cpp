@@ -25,6 +25,7 @@
 #include <vclib/qt/viewer_widget.h>
 
 #include <QApplication>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QVBoxLayout>
 
@@ -47,6 +48,15 @@ public:
     }
 };
 
+std::shared_ptr<vcl::DrawableLines> getLines(
+    std::shared_ptr<vcl::DrawableObjectVector> vec)
+{
+    std::shared_ptr<vcl::DrawableLines> lines =
+        std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
+
+    return lines;
+}
+
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
@@ -55,6 +65,9 @@ int main(int argc, char** argv)
 
     // add the viewer tw to the layout
     QVBoxLayout* layout = new QVBoxLayout(&w);
+
+    QCheckBox* indexedCB = new QCheckBox("Indexed", &w);
+    layout->addWidget(indexedCB);
 
     // add the combo box to the layout
     LinesComboBox* lcb = new LinesComboBox(&w);
@@ -80,14 +93,21 @@ int main(int argc, char** argv)
 
     vec->pushBack(std::move(getDrawableLines(N_LINES)));
 
-    std::shared_ptr<vcl::DrawableLines> lines =
-        std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
-
     tw->setDrawableObjectVector(vec);
-    tslider->setValue(lines->thickness());
+    tslider->setValue(getLines(vec)->thickness());
 
-    // connect the combo box signal of item changed to a lambda that sets
-    // as visible the ith drawable object in the viewer widget
+    QObject::connect(
+        indexedCB, &QCheckBox::checkStateChanged, [=](Qt::CheckState state) {
+            bool indexed = (state == Qt::CheckState::Checked);
+            std::cerr << "Indexed: " << indexed << std::endl;
+
+            vec->clear();
+            vec->pushBack(std::move(getDrawableLines(N_LINES, indexed)));
+            getLines(vec)->setColorToUse(
+                (vcl::Lines::ColorToUse) ccb->currentIndex());
+            getLines(vec)->thickness() = tslider->value();
+            tw->update();
+        });
 
     QObject::connect(
         lcb,
@@ -97,7 +117,7 @@ int main(int argc, char** argv)
 
             std::cerr << "Lines implementation: " << index << std::endl;
 
-            lines->setImplementationType((ImplementationType) index);
+            getLines(vec)->setImplementationType((ImplementationType) index);
             tw->update();
         });
 
@@ -109,13 +129,13 @@ int main(int argc, char** argv)
 
             std::cerr << "Color to use: " << index << std::endl;
 
-            lines->setColorToUse((ColorToUse) index);
+            getLines(vec)->setColorToUse((ColorToUse) index);
             tw->update();
         });
 
     QObject::connect(tslider, &QSlider::valueChanged, [=](int value) {
         std::cerr << "Thickness: " << value << std::endl;
-        lines->thickness() = (float) value;
+        getLines(vec)->thickness() = (float) value;
         tw->update();
     });
 

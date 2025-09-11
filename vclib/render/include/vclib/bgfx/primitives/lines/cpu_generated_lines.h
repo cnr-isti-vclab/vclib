@@ -28,6 +28,8 @@
 
 namespace vcl::detail {
 
+// Note: copy constructor and assignment are not allowed (because of bgfx
+// handles). Move constructor and assignment are allowed.
 class CPUGeneratedLines
 {
     bgfx::ProgramHandle mLinesPH =
