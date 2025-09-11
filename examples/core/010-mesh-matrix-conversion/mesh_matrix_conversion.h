@@ -169,16 +169,17 @@ auto meshMatrixConversion()
         // convert to TriMesh if needed using triMesh.importFrom(polyMesh);
     }
     catch (const vcl::WrongSizeException& e) {
-        std::cerr << "Error creating tri mesh: " << e.what() << std::endl << std::endl;
+        std::cerr << "Error creating tri mesh: " << e.what() << std::endl
+                  << std::endl;
     }
 
     Eigen::MatrixXi cubeTriangles(12, 3);
     cubeTriangles << 0, 2, 1, 0, 3, 2, // bottom (z = -1)
-        4, 5, 6, 4, 6, 7,          // top    (z = +1)
-        0, 1, 5, 0, 5, 4,          // front  (y = -1)
-        2, 3, 7, 2, 7, 6,          // back   (y = +1)
-        0, 4, 7, 0, 7, 3,          // left   (x = -1)
-        1, 2, 6, 1, 6, 5;          // right  (x = +1)
+        4, 5, 6, 4, 6, 7,              // top    (z = +1)
+        0, 1, 5, 0, 5, 4,              // front  (y = -1)
+        2, 3, 7, 2, 7, 6,              // back   (y = +1)
+        0, 4, 7, 0, 7, 3,              // left   (x = -1)
+        1, 2, 6, 1, 6, 5;              // right  (x = +1)
 
     // Create mesh from these matrices
     vcl::TriMesh cubeMesh =

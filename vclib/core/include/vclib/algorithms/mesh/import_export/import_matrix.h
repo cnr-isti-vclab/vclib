@@ -180,17 +180,16 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
 template<
     MeshConcept   MeshType,
     MatrixConcept VMatrix,
-    MatrixConcept FMatrix  = Eigen::MatrixX3i,
-    MatrixConcept EMatrix  = Eigen::MatrixX2i>
+    MatrixConcept FMatrix = Eigen::MatrixX3i,
+    MatrixConcept EMatrix = Eigen::MatrixX2i>
 MeshType meshFromMatrices(
-    const VMatrix&  vertices,
-    const FMatrix&  faces         = FMatrix(),
-    const EMatrix&  edges         = EMatrix())
+    const VMatrix& vertices,
+    const FMatrix& faces = FMatrix(),
+    const EMatrix& edges = EMatrix())
 {
     MeshType mesh;
 
-    importMeshFromMatrices(
-        mesh, vertices, faces, edges);
+    importMeshFromMatrices(mesh, vertices, faces, edges);
 
     return mesh;
 }
@@ -247,13 +246,13 @@ MeshType meshFromMatrices(
 template<
     MeshConcept   MeshType,
     MatrixConcept VMatrix,
-    MatrixConcept FMatrix  = Eigen::MatrixX3i,
-    MatrixConcept EMatrix  = Eigen::MatrixX2i>
+    MatrixConcept FMatrix = Eigen::MatrixX3i,
+    MatrixConcept EMatrix = Eigen::MatrixX2i>
 void importMeshFromMatrices(
-    MeshType&       mesh,
-    const VMatrix&  vertices,
-    const FMatrix&  faces         = FMatrix(),
-    const EMatrix&  edges         = EMatrix())
+    MeshType&      mesh,
+    const VMatrix& vertices,
+    const FMatrix& faces = FMatrix(),
+    const EMatrix& edges = EMatrix())
 {
     mesh.clear();
     mesh.disableAllOptionalComponents();
@@ -435,7 +434,7 @@ void importFacesFromMatrix(
                 ++i;
             }
         }
-        else { 
+        else {
             // cannot import the faces if the number of vertices is different
             // between the matrix and the mesh
             throw WrongSizeException(
@@ -600,10 +599,10 @@ void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
  * If the number of rows of the input matrix is zero, the function does nothing.
  * Otherwise, the number of rows of the input matrix must be equal to the number
  * of vertices of the mesh. An exception is thrown otherwise.
- * 
+ *
  * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
  * channel is set to 255 (1.0f).
- * 
+ *
  * The input matrix can have integral or floating point scalar type. If it has
  * integral scalar type, the color components are expected to be in range
  * [0, 255]. If it has floating point scalar type, the color components are
@@ -634,10 +633,10 @@ void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
  * If the number of rows of the input matrix is zero, the function does nothing.
  * Otherwise, the number of rows of the input matrix must be equal to the number
  * of faces of the mesh. An exception is thrown otherwise.
- * 
+ *
  * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
  * channel is set to 255 (1.0f).
- * 
+ *
  * The input matrix can have integral or floating point scalar type. If it has
  * integral scalar type, the color components are expected to be in range
  * [0, 255]. If it has floating point scalar type, the color components are
@@ -668,10 +667,10 @@ void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
  * If the number of rows of the input matrix is zero, the function does nothing.
  * Otherwise, the number of rows of the input matrix must be equal to the number
  * of edges of the mesh. An exception is thrown otherwise.
- * 
+ *
  * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
  * channel is set to 255 (1.0f).
- * 
+ *
  * The input matrix can have integral or floating point scalar type. If it has
  * integral scalar type, the color components are expected to be in range
  * [0, 255]. If it has floating point scalar type, the color components are
