@@ -495,6 +495,9 @@ private:
 
         mColorCapability[toUnderlying(PER_VERTEX)] = !vertColors.empty();
         mColorCapability[toUnderlying(PER_EDGE)]   = !lineColors.empty();
+
+        if (!mColorCapability[toUnderlying(mColorToUse)])
+            mColorToUse = GENERAL;
     }
 
     void bindSettingsUniform() const
