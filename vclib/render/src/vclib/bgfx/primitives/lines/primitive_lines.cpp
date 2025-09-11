@@ -45,6 +45,29 @@ PrimitiveLines::PrimitiveLines(
     setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
 }
 
+PrimitiveLines::PrimitiveLines(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    setPoints(
+        pointsSize, vertexCoords, vertexNormals, vertexColors, lineColors);
+}
+
+PrimitiveLines::PrimitiveLines(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const IndexBuffer&  lineIndices,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    setPoints(
+        pointsSize, vertexCoords, vertexNormals, vertexColors, lineColors);
+}
+
 void PrimitiveLines::swap(PrimitiveLines& other)
 {
     using std::swap;
@@ -182,6 +205,39 @@ void PrimitiveLines::setPoints(
         std::get<OWNED>(mVertexColors).destroy();
         std::get<OWNED>(mLineColors).destroy();
     }
+}
+
+void PrimitiveLines::setPoints(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    IndexBuffer indices;
+    setPoints(
+        pointsSize,
+        vertexCoords,
+        indices,
+        vertexNormals,
+        vertexColors,
+        lineColors);
+}
+
+void PrimitiveLines::setPoints(
+    const uint          pointsSize,
+    const VertexBuffer& vertexCoords,
+    const IndexBuffer&  lineIndices,
+    const VertexBuffer& vertexNormals,
+    const VertexBuffer& vertexColors,
+    const VertexBuffer& lineColors)
+{
+    reinitBuffers(NOT_OWNED);
+    std::get<NOT_OWNED>(mVertexCoords) = &vertexCoords;
+    std::get<NOT_OWNED>(mVertexNormals) = &vertexNormals;
+    std::get<NOT_OWNED>(mVertexColors)  = &vertexColors;
+    std::get<NOT_OWNED>(mLineColors)    = &lineColors;
+    std::get<NOT_OWNED>(mIndices)       = &lineIndices;
 }
 
 void PrimitiveLines::draw(uint viewId) const
