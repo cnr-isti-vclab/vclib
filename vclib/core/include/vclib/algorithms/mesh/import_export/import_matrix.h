@@ -92,7 +92,7 @@ MeshType meshFromMatrices(
 {
     MeshType mesh;
 
-    importMeshFromMatrices(mesh, vertices, faces, edges);
+    meshFromMatrices(mesh, vertices, faces, edges);
 
     return mesh;
 }
@@ -151,7 +151,7 @@ template<
     MatrixConcept VMatrix,
     MatrixConcept FMatrix = Eigen::MatrixX3i,
     MatrixConcept EMatrix = Eigen::MatrixX2i>
-void importMeshFromMatrices(
+void meshFromMatrices(
     MeshType&      mesh,
     const VMatrix& vertices,
     const FMatrix& faces = FMatrix(),
@@ -160,16 +160,16 @@ void importMeshFromMatrices(
     mesh.clear();
     mesh.disableAllOptionalComponents();
 
-    importVerticesFromMatrix(mesh, vertices);
+    vertexPositionsFromMatrix(mesh, vertices);
 
     if constexpr (HasFaces<MeshType>) {
         if (faces.rows() > 0)
-            importFacesFromMatrix(mesh, faces);
+            faceIndicesFromMatrix(mesh, faces);
     }
 
     if constexpr (HasEdges<MeshType>) {
         if (edges.rows() > 0)
-            importEdgesFromMatrix(mesh, edges);
+            edgeIndicesFromMatrix(mesh, edges);
     }
 }
 
@@ -214,7 +214,7 @@ void importMeshFromMatrices(
  * @ingroup import_matrix
  */
 template<MeshConcept MeshType, MatrixConcept VMatrix>
-void importVerticesFromMatrix(
+void vertexPositionsFromMatrix(
     MeshType&      mesh,
     const VMatrix& vertices,
     bool           clearBeforeSet = true)
@@ -288,7 +288,7 @@ void importVerticesFromMatrix(
  * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
-void importFacesFromMatrix(
+void faceIndicesFromMatrix(
     MeshType&      mesh,
     const FMatrix& faces,
     bool           clearBeforeSet = true)
@@ -389,7 +389,7 @@ void importFacesFromMatrix(
  * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
-void importEdgesFromMatrix(
+void edgeIndicesFromMatrix(
     MeshType&      mesh,
     const EMatrix& edges,
     bool           clearBeforeSet = true)
@@ -435,7 +435,7 @@ void importEdgesFromMatrix(
  * @ingroup import_matrix
  */
 template<uint ELEM_ID, MeshConcept MeshType, Range R>
-void importElementSelectionFromRange(MeshType& mesh, R&& selection)
+void elementSelectionFromRange(MeshType& mesh, R&& selection)
 {
     if (std::ranges::size(selection) != mesh.template number<ELEM_ID>())
         throw WrongSizeException(
@@ -467,9 +467,9 @@ void importElementSelectionFromRange(MeshType& mesh, R&& selection)
  * @ingroup import_matrix
  */
 template<MeshConcept MeshType, Range R>
-void importVertexSelectionFromRange(MeshType& mesh, R&& selection)
+void vertexSelectionFromRange(MeshType& mesh, R&& selection)
 {
-    importElementSelectionFromRange<ElemId::VERTEX>(mesh, selection);
+    elementSelectionFromRange<ElemId::VERTEX>(mesh, selection);
 }
 
 /**
@@ -489,9 +489,9 @@ void importVertexSelectionFromRange(MeshType& mesh, R&& selection)
  * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, Range R>
-void importFaceSelectionFromRange(MeshType& mesh, R&& selection)
+void faceSelectionFromRange(MeshType& mesh, R&& selection)
 {
-    importElementSelectionFromRange<ElemId::FACE>(mesh, selection);
+    elementSelectionFromRange<ElemId::FACE>(mesh, selection);
 }
 
 /**
@@ -511,9 +511,9 @@ void importFaceSelectionFromRange(MeshType& mesh, R&& selection)
  * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, Range R>
-void importEdgeSelectionFromRange(MeshType& mesh, R&& selection)
+void edgeSelectionFromRange(MeshType& mesh, R&& selection)
 {
-    importElementSelectionFromRange<ElemId::EDGE>(mesh, selection);
+    elementSelectionFromRange<ElemId::EDGE>(mesh, selection);
 }
 
 /**
@@ -537,7 +537,7 @@ void importEdgeSelectionFromRange(MeshType& mesh, R&& selection)
  * @ingroup import_matrix
  */
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
-void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
+void elementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
 {
     // The type of the normal of the element
     using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
@@ -585,11 +585,9 @@ void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
  * @ingroup import_matrix
  */
 template<MeshConcept MeshType, MatrixConcept VNMatrix>
-void importVertexNormalsFromMatrix(
-    MeshType&       mesh,
-    const VNMatrix& vertexNormals)
+void vertexNormalsFromMatrix(MeshType& mesh, const VNMatrix& vertexNormals)
 {
-    importElementNormalsFromMatrix<ElemId::VERTEX>(mesh, vertexNormals);
+    elementNormalsFromMatrix<ElemId::VERTEX>(mesh, vertexNormals);
 }
 
 /**
@@ -613,9 +611,9 @@ void importVertexNormalsFromMatrix(
  * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
-void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
+void faceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
-    importElementNormalsFromMatrix<ElemId::FACE>(mesh, faceNormals);
+    elementNormalsFromMatrix<ElemId::FACE>(mesh, faceNormals);
 }
 
 /**
@@ -639,9 +637,9 @@ void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
  * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, MatrixConcept ENMatrix>
-void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
+void edgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
 {
-    importElementNormalsFromMatrix<ElemId::EDGE>(mesh, edgeNormals);
+    elementNormalsFromMatrix<ElemId::EDGE>(mesh, edgeNormals);
 }
 
 /**
@@ -673,7 +671,7 @@ void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
  * @ingroup import_matrix
  */
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
-void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
+void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
 {
     using MatrixScalar = CMatrix::Scalar;
 
@@ -751,9 +749,9 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
  * @ingroup import_matrix
  */
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
-void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
+void vertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 {
-    importElementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
+    elementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
 }
 
 /**
@@ -785,9 +783,9 @@ void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
  * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
-void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
+void faceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 {
-    importElementColorsFromMatrix<ElemId::FACE>(mesh, faceColors);
+    elementColorsFromMatrix<ElemId::FACE>(mesh, faceColors);
 }
 
 /**
@@ -819,9 +817,9 @@ void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
  * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
-void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
+void edgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 {
-    importElementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
+    elementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
 }
 
 } // namespace vcl

@@ -99,7 +99,7 @@ void initImportExportAlgorithms(pybind11::module& m)
                Eigen::MatrixX3d& V,
                Eigen::MatrixXi&  F,
                Eigen::MatrixX2i& E) {
-                return vcl::importMeshFromMatrices<MeshType>(mesh, V, F, E);
+                return vcl::meshFromMatrices(mesh, V, F, E);
             },
             "mesh"_a,
             "vertices"_a,
