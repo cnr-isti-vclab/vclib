@@ -41,104 +41,6 @@
 
 namespace vcl {
 
-namespace detail {
-
-template<uint ELEM_ID, MeshConcept MeshType, Range R>
-void importElementSelectionFromRange(MeshType& mesh, R&& selection)
-{
-    if (std::ranges::size(selection) != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input selection range must have the same number of elements "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
-    auto s = selection.begin();
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
-        e.selected() = *s;
-        ++s;
-    }
-}
-
-template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
-void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
-{
-    // The type of the normal of the element
-    using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
-
-    if (normals.cols() != 3)
-        throw WrongSizeException(
-            "The input " + elementEnumString<ELEM_ID>() +
-            " normal matrix must have 3 columns");
-
-    // matrix rows must be equal to the number of elements of the given type
-    if (normals.rows() != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input normal matrix must have the same number of rows "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
-
-    uint i = 0;
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
-        e.normal() = NormalType(normals(i, 0), normals(i, 1), normals(i, 2));
-        i++;
-    }
-}
-
-template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
-void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
-{
-    using MatrixScalar = CMatrix::Scalar;
-
-    if (colors.cols() != 3 && colors.cols() != 4)
-        throw WrongSizeException(
-            "The input " + elementEnumString<ELEM_ID>() +
-            " color matrix must have 3 or 4 columns");
-
-    // matrix rows must be equal to the number of elements of the given type
-    if (colors.rows() != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input color matrix must have the same number of rows "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
-
-    uint i = 0;
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
-        // Matrix has colors in range 0-255
-        if constexpr (std::integral<MatrixScalar>) {
-            if (colors.cols() == 3) {
-                e.color() = Color(colors(i, 0), colors(i, 1), colors(i, 2));
-            }
-            else {
-                e.color() = Color(
-                    colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
-            }
-        }
-        else { // Matrix has colors in range 0-1
-            if (colors.cols() == 3) {
-                e.color() = Color(
-                    colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
-            }
-            else {
-                e.color() = Color(
-                    colors(i, 0) * 255,
-                    colors(i, 1) * 255,
-                    colors(i, 2) * 255,
-                    colors(i, 3) * 255);
-            }
-        }
-
-        i++;
-    }
-}
-
-} // namespace detail
-
 /**
  * @brief Creates and returns a new mesh from the input matrices that are given
  * as arguments.
@@ -509,6 +411,143 @@ void importEdgesFromMatrix(
 }
 
 /**
+ * @brief Sets the element identified by `ELEM_ID` selection of the given input
+ * `mesh` from the input selection range (that could be anything that satisfies
+ * the Range concept: e.g. std::vector<bool>, std::array<bool, N>,
+ * Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input element selection.
+ * @param[in] selection: the input element selection range.
+ */
+template<uint ELEM_ID, MeshConcept MeshType, Range R>
+void importElementSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    if (std::ranges::size(selection) != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input selection range must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    auto s = selection.begin();
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.selected() = *s;
+        ++s;
+    }
+}
+
+/**
+ * @brief Sets the vertex selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex selection.
+ * @param[in] selection: the input vertex selection range.
+ */
+template<MeshConcept MeshType, Range R>
+void importVertexSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    importElementSelectionFromRange<ElemId::VERTEX>(mesh, selection);
+}
+
+/**
+ * @brief Sets the face selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face selection.
+ * @param[in] selection: the input face selection range.
+ */
+template<FaceMeshConcept MeshType, Range R>
+void importFaceSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    importElementSelectionFromRange<ElemId::FACE>(mesh, selection);
+}
+
+/**
+ * @brief Sets the edge selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input edge selection.
+ * @param[in] selection: the input edge selection range.
+ */
+template<EdgeMeshConcept MeshType, Range R>
+void importEdgeSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    importElementSelectionFromRange<ElemId::EDGE>(mesh, selection);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` normals of the given input
+ * `mesh` from the input normals matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam NMatrix: the type of the input normals matrix. It must satisfy the
+ * MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input element normals.
+ * @param[in] normals: a \#E*3 matrix containing the normals of the elements
+ * of the mesh.
+ */
+template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
+void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
+{
+    // The type of the normal of the element
+    using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
+
+    if (normals.cols() != 3)
+        throw WrongSizeException(
+            "The input " + elementEnumString<ELEM_ID>() +
+            " normal matrix must have 3 columns");
+
+    // matrix rows must be equal to the number of elements of the given type
+    if (normals.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input normal matrix must have the same number of rows "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
+
+    uint i = 0;
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.normal() = NormalType(normals(i, 0), normals(i, 1), normals(i, 2));
+        i++;
+    }
+}
+
+/**
  * @brief Sets the vertex normals of the given input `mesh` from the input
  * vertex normals matrix.
  *
@@ -531,7 +570,7 @@ void importVertexNormalsFromMatrix(
     MeshType&       mesh,
     const VNMatrix& vertexNormals)
 {
-    detail::importElementNormalsFromMatrix<ElemId::VERTEX>(mesh, vertexNormals);
+    importElementNormalsFromMatrix<ElemId::VERTEX>(mesh, vertexNormals);
 }
 
 /**
@@ -555,7 +594,7 @@ void importVertexNormalsFromMatrix(
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
-    detail::importElementNormalsFromMatrix<ElemId::FACE>(mesh, faceNormals);
+    importElementNormalsFromMatrix<ElemId::FACE>(mesh, faceNormals);
 }
 
 /**
@@ -579,7 +618,83 @@ void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 template<EdgeMeshConcept MeshType, MatrixConcept ENMatrix>
 void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
 {
-    detail::importElementNormalsFromMatrix<ElemId::EDGE>(mesh, edgeNormals);
+    importElementNormalsFromMatrix<ElemId::EDGE>(mesh, edgeNormals);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` colors of the given input
+ * `mesh` from the input colors matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * elements of the mesh, otherwise an exception is thrown.
+ *
+ * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
+ * channel is set to 255 (1.0f).
+ *
+ * The input matrix can have integral or floating point scalar type. If it has
+ * integral scalar type, the color components are expected to be in range
+ * [0, 255]. If it has floating point scalar type, the color components are
+ * expected to be in range [0.0f, 1.0f].
+ *
+ * The function enables the per-element color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam CMatrix: the type of the input colors matrix. It must satisfy the
+ * MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input colors.
+ * @param[in] colors: a \#V*3 or \#V*4 matrix containing the colors of the
+ * elements of the mesh.
+ */
+template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
+void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
+{
+    using MatrixScalar = CMatrix::Scalar;
+
+    if (colors.cols() != 3 && colors.cols() != 4)
+        throw WrongSizeException(
+            "The input " + elementEnumString<ELEM_ID>() +
+            " color matrix must have 3 or 4 columns");
+
+    // matrix rows must be equal to the number of elements of the given type
+    if (colors.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input color matrix must have the same number of rows "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    uint i = 0;
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        // Matrix has colors in range 0-255
+        if constexpr (std::integral<MatrixScalar>) {
+            if (colors.cols() == 3) {
+                e.color() = Color(colors(i, 0), colors(i, 1), colors(i, 2));
+            }
+            else {
+                e.color() = Color(
+                    colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
+            }
+        }
+        else { // Matrix has colors in range 0-1
+            if (colors.cols() == 3) {
+                e.color() = Color(
+                    colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
+            }
+            else {
+                e.color() = Color(
+                    colors(i, 0) * 255,
+                    colors(i, 1) * 255,
+                    colors(i, 2) * 255,
+                    colors(i, 3) * 255);
+            }
+        }
+
+        i++;
+    }
 }
 
 /**
@@ -611,7 +726,7 @@ void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
 void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 {
-    detail::importElementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
+    importElementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
 }
 
 /**
@@ -643,7 +758,7 @@ void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
 void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 {
-    detail::importElementColorsFromMatrix<ElemId::FACE>(mesh, faceColors);
+    importElementColorsFromMatrix<ElemId::FACE>(mesh, faceColors);
 }
 
 /**
@@ -675,67 +790,7 @@ void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
 void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 {
-    detail::importElementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
-}
-
-/**
- * @brief Sets the vertex selection of the given input `mesh` from the input
- * selection range (that could be anything that satisfies the Range concept:
- * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
- *
- * The number of elements of the input range must be equal to the number of
- * vertices of the mesh, otherwise an exception is thrown.
- *
- * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
- * MeshConcept.
- * @tparam R: the type of the input range. It must satisfy the Range concept.
- * @param[in/out] mesh: the mesh on which import the input vertex selection.
- * @param[in] selection: the input vertex selection range.
- */
-template<MeshConcept MeshType, Range R>
-void importVertexSelectionFromRange(MeshType& mesh, R&& selection)
-{
-    detail::importElementSelectionFromRange<ElemId::VERTEX>(mesh, selection);
-}
-
-/**
- * @brief Sets the face selection of the given input `mesh` from the input
- * selection range (that could be anything that satisfies the Range concept:
- * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
- *
- * The number of elements of the input range must be equal to the number of
- * faces of the mesh, otherwise an exception is thrown.
- *
- * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
- * FaceMeshConcept.
- * @tparam R: the type of the input range. It must satisfy the Range concept.
- * @param[in/out] mesh: the mesh on which import the input face selection.
- * @param[in] selection: the input face selection range.
- */
-template<FaceMeshConcept MeshType, Range R>
-void importFaceSelectionFromRange(MeshType& mesh, R&& selection)
-{
-    detail::importElementSelectionFromRange<ElemId::FACE>(mesh, selection);
-}
-
-/**
- * @brief Sets the edge selection of the given input `mesh` from the input
- * selection range (that could be anything that satisfies the Range concept:
- * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
- *
- * The number of elements of the input range must be equal to the number of
- * edges of the mesh, otherwise an exception is thrown.
- *
- * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
- * EdgeMeshConcept.
- * @tparam R: the type of the input range. It must satisfy the Range concept.
- * @param[in/out] mesh: the mesh on which import the input edge selection.
- * @param[in] selection: the input edge selection range.
- */
-template<EdgeMeshConcept MeshType, Range R>
-void importEdgeSelectionFromRange(MeshType& mesh, R&& selection)
-{
-    detail::importElementSelectionFromRange<ElemId::EDGE>(mesh, selection);
+    importElementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
 }
 
 } // namespace vcl
