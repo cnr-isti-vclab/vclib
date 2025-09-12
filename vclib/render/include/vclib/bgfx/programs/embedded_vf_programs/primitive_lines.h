@@ -20,26 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_PRIMITIVE_LINES_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_PRIMITIVE_LINES_H
 
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
-#include <pybind11/pybind11.h>
+namespace vcl {
 
-namespace vcl::bind {
-
-inline void initAlgorithms(pybind11::module& m)
+template<>
+struct VertFragLoader<VertFragProgram::PRIMITIVE_LINES>
 {
-    initCreateAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
-}
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-} // namespace vcl::bind
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
+};
 
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_PRIMITIVE_LINES_H

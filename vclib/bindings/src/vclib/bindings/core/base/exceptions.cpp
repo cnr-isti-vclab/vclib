@@ -20,26 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#include <vclib/bindings/core/base/exceptions.h>
 
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
-
-#include <pybind11/pybind11.h>
+#include <vclib/base.h>
 
 namespace vcl::bind {
 
-inline void initAlgorithms(pybind11::module& m)
+void initBaseExceptions(pybind11::module& m)
 {
-    initCreateAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+    namespace py = pybind11;
+
+    py::register_exception<WrongSizeException>(m, "WrongSizeException");
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H
