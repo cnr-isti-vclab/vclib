@@ -26,6 +26,7 @@
 #include "import_export/append_replace_to_buffer.h"
 #include "import_export/export_buffer.h"
 #include "import_export/export_matrix.h"
+#include "import_export/import_buffer.h"
 #include "import_export/import_matrix.h"
 
 /**

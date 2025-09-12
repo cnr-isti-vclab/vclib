@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
 
+#include "import_buffer.h"
+
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
@@ -180,15 +182,16 @@ void meshFromMatrices(
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the vertex container of the mesh and then adds a number of vertices
  * that depends on the number of rows of the input vertex matrix. In this
- * scenario, all the other components of the vertices stored in the mesh before
- * calling this function are lost.
+ * scenario, all the old vertices with their components stored in the mesh
+ * before calling this function are lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
  * the number of rows of the input vertex matrix is equal to the number of
  * vertices of the mesh. If this is not the case, an exception is thrown.
  * Then, the function sets the positions of the vertices of the mesh from the
- * input vertex matrix. In this scenario, all the other components of the
- * vertices stored in the mesh before calling this function are preserved.
+ * input vertex matrix. In this scenario, all the components (except the
+ * positions) of the vertices stored in the mesh before calling this function
+ * are preserved.
  *
  * All the other containers of the mesh are left as they are. Pointers to
  * vertices stored in the other containers of the mesh are still valid only if
@@ -219,29 +222,13 @@ void vertexPositionsFromMatrix(
     const VMatrix& vertices,
     bool           clearBeforeSet = true)
 {
-    using PositionType = MeshType::VertexType::PositionType;
-
     if (vertices.cols() != 3)
         throw WrongSizeException("The input vertex matrix must have 3 columns");
 
-    if (clearBeforeSet) {
-        mesh.clearVertices();
-        mesh.resizeVertices(vertices.rows());
-    }
-    else {
-        if (vertices.rows() != mesh.vertexNumber()) {
-            throw WrongSizeException(
-                "The input vertex matrix has a different number of rows than "
-                "the number of vertices of the mesh");
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<VMatrix>();
 
-    uint i = 0;
-    for (auto& v : mesh.vertices()) {
-        v.position() =
-            PositionType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
-        i++;
-    }
+    vertexPositionsFromBuffer(
+        mesh, vertices.data(), vertices.rows(), clearBeforeSet, stg);
 }
 
 /**
@@ -254,17 +241,18 @@ void vertexPositionsFromMatrix(
  * If this condition is not satisfied, an exception is thrown.
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
- * clears the face container of the mesh and then adds a number of faces that
- * depends on the number of rows of the input face matrix. In this
- * scenario, all the other components of the faces stored in the mesh before
- * calling this function are lost.
+ * clears the face container of the mesh and then adds a number of faces
+ * that depends on the number of rows of the input face matrix. In this
+ * scenario, all the old faces with their components stored in the mesh
+ * before calling this function are lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
  * the number of rows of the input face matrix is equal to the number of
  * faces of the mesh. If this is not the case, an exception is thrown.
- * Then, the function sets the vertex indices of the faces of the mesh from the
- * input face matrix. In this scenario, all the other components of the
- * faces stored in the mesh before calling this function are preserved.
+ * Then, the function sets the indices of the faces of the mesh from the
+ * input face matrix. In this scenario, all the components (except the
+ * indices) of the faces stored in the mesh before calling this function
+ * are preserved.
  *
  * All the other containers of the mesh are left as they are. Pointers to faces
  * stored in the other containers of the mesh are still valid only if the number
@@ -358,17 +346,18 @@ void faceIndicesFromMatrix(
  * matrix.
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
- * clears the edge container of the mesh and then adds a number of edges that
- * depends on the number of rows of the input edge matrix. In this
- * scenario, all the other components of the edges stored in the mesh before
- * calling this function are lost.
+ * clears the edge container of the mesh and then adds a number of edges
+ * that depends on the number of rows of the input edge matrix. In this
+ * scenario, all the old edges with their components stored in the mesh
+ * before calling this function are lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
  * the number of rows of the input edge matrix is equal to the number of
  * edges of the mesh. If this is not the case, an exception is thrown.
- * Then, the function sets the vertex indices of the edges of the mesh from the
- * input edge matrix. In this scenario, all the other components of the
- * edges stored in the mesh before calling this function are preserved.
+ * Then, the function sets the indices of the edges of the mesh from the
+ * input edge matrix. In this scenario, all the components (except the
+ * indices) of the edges stored in the mesh before calling this function
+ * are preserved.
  *
  * All the other containers of the mesh are left as they are. Pointers to edges
  * stored in the other containers of the mesh are still valid only if the number
