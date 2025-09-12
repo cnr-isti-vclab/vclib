@@ -20,65 +20,75 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
-#define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#ifndef VCL_FPS_BENCHMARK_METRIC_H
+#define VCL_FPS_BENCHMARK_METRIC_H
 
-#include "event_drawer.h"
+#include <vclib/render/automation/metrics/benchmark_metric.h>
 
-#include <vclib/render/viewer/camera.h>
-#include <vclib/render/viewer/lights.h>
+#include <vclib/base.h>
+
+#include <iomanip>
+#include <sstream>
+#include <string>
 
 namespace vcl {
-template<typename Scalar, typename DerivedRenderApp>
-class CameraDrawerT : public vcl::EventDrawer<DerivedRenderApp>
+
+/**
+ * The FpsBenchmarkMetric class measures the average framerate
+ * for an automation by keeping track of the total duration of the automation
+ * and the total frames it took to complete
+ */
+class FpsBenchmarkMetric : public BenchmarkMetric
 {
-public:
-    using ScalarType = Scalar;
-    using CameraType = vcl::Camera<Scalar>;
-    using PointType  = CameraType::PointType;
-    using MatrixType = CameraType::MatrixType;
-    using LightType  = vcl::DirectionalLight<Scalar>;
-
-protected:
-    CameraType mCamera;
+    bool   mFirstMeasurement = true;
+    Timer  mTimer;
+    double mFrames = 0;
 
 public:
-    using Base = vcl::EventDrawer<DerivedRenderApp>;
-
-    CameraDrawerT(uint width = 100, uint height = 768) : Base(width, height)
+    void start() override
     {
-        onResize(width, height);
+        mFrames           = 0;
+        mFirstMeasurement = true;
+    };
+
+    void measure() override
+    {
+        if (mFirstMeasurement) {
+            mFirstMeasurement = false;
+            mTimer.start();
+            return;
+        }
+        mFrames++;
+    };
+
+    std::vector<std::string> getMeasureStrings() const override
+    {
+        std::ostringstream temp;
+        temp << std::fixed << std::setprecision(3) << mFrames / mTimer.delay();
+
+        return std::vector<std::string> {temp.str()};
+    };
+
+    std::string getUnitOfMeasure() const override { return "fps"; }
+
+    std::string getFullLengthUnitOfMeasure() const override
+    {
+        return "frames per second";
     }
 
-    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
+    void end() override { mTimer.stop(); };
 
-    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
-
-    const CameraType& camera() const { return mCamera; }
-
-    LightType light() const { return LightType(); }
-
-    void reset() { mCamera.reset(); }
-
-    void focus(const PointType& p) { mCamera.center() = p; }
-
-    void fitScene(const PointType& p, Scalar s)
+    std::shared_ptr<BenchmarkMetric> clone() const& override
     {
-        mCamera.center()         = p;
-        mCamera.eye()            = p + PointType(0, 0, 1);
-        mCamera.verticalHeight() = s;
-        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
-    }
+        return std::make_shared<FpsBenchmarkMetric>(*this);
+    };
 
-    void onResize(uint width, uint height) override
+    std::shared_ptr<BenchmarkMetric> clone() && override
     {
-        mCamera.aspectRatio() = Scalar(double(width) / height);
-    }
+        return std::make_shared<FpsBenchmarkMetric>(std::move(*this));
+    };
 };
-
-template<typename DerivedRenderApp>
-using CameraDrawer = CameraDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#endif
