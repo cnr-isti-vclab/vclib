@@ -43,16 +43,20 @@ namespace vcl {
 
 namespace detail {
 
-template<MatrixConcept FMatrix>
-std::vector<uint> faceVertIndices(const FMatrix& faces, uint f)
+template<uint ELEM_ID, MeshConcept MeshType, Range R>
+void importElementSelectionFromRange(MeshType& mesh, R&& selection)
 {
-    std::vector<uint> fVerts;
+    if (std::ranges::size(selection) != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input selection range must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
 
-    uint j = 0;
-    while (j < faces.cols() && faces(f, j) != -1 && faces(f, j) != UINT_NULL)
-        fVerts.push_back(faces(f, j));
-
-    return fVerts;
+    auto s = selection.begin();
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.selected() = *s;
+        ++s;
+    }
 }
 
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
@@ -164,16 +168,14 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
  * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
  * @param[in] faces: a \#F*K matrix containing the indices of the vertices of
- * the faces of the mesh. If the number of rows of this matrix is zero, the
- * function will not add faces to the mesh. If the MeshType has no faces, the
- * function will ignore this matrix. If the mesh is not a polygonal mesh (e.g. a
- * triangle mesh), K must be equal to the number of vertices of each face of
- * the mesh (e.g. 3 for triangle meshes, 4 for quad meshes, etc.). If this
- * condition is not satisfied, an exception is thrown.
+ * the faces of the mesh. If the MeshType has no faces, the function will ignore
+ * this matrix. If the mesh is not a polygonal mesh (e.g. a triangle mesh), K
+ * must be equal to the number of vertices of each face of the mesh (e.g. 3 for
+ * triangle meshes, 4 for quad meshes, etc.). If this condition is not
+ * satisfied, an exception is thrown.
  * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
- * the edges of the mesh. If the number of rows of this matrix is zero, the
- * function will not add edges to the mesh. If the MeshType has no edges, the
- * function will ignore this matrix.
+ * the edges of the mesh. If the MeshType has no edges, the function will ignore
+ * this matrix.
  *
  * @return a new mesh containing the data passed as argument.
  */
@@ -232,16 +234,14 @@ MeshType meshFromMatrices(
  * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
  * @param[in] faces: a \#F*K matrix containing the indices of the vertices of
- * the faces of the mesh. If the number of rows of this matrix is zero, the
- * function will not add faces to the mesh. If the MeshType has no faces, the
- * function will ignore this matrix. If the mesh is not a polygonal mesh (e.g. a
- * triangle mesh), K must be equal to the number of vertices of each face of
- * the mesh (e.g. 3 for triangle meshes, 4 for quad meshes, etc.). If this
- * condition is not satisfied, an exception is thrown.
+ * the faces of the mesh. If the MeshType has no faces, the function will ignore
+ * this matrix. If the mesh is not a polygonal mesh (e.g. a triangle mesh), K
+ * must be equal to the number of vertices of each face of the mesh (e.g. 3 for
+ * triangle meshes, 4 for quad meshes, etc.). If this condition is not
+ * satisfied, an exception is thrown.
  * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
- * the edges of the mesh. If the number of rows of this matrix is zero, the
- * function will not add edges to the mesh. If the MeshType has no edges, the
- * function will ignore this matrix.
+ * the edges of the mesh. If the MeshType has no edges, the function will ignore
+ * this matrix.
  */
 template<
     MeshConcept   MeshType,
@@ -371,9 +371,7 @@ void importVerticesFromMatrix(
  * MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input faces.
  * @param[in] faces: a \#F*K matrix containing the indices of the vertices of
- * the faces of the mesh. If the number of rows of this matrix is zero, the
- * function will not add faces to the mesh. If the MeshType has no faces, the
- * function will ignore this matrix. If the mesh is not a polygonal mesh (e.g. a
+ * the faces of the mesh. If the mesh is not a polygonal mesh (e.g. a
  * triangle mesh), K must be equal to the number of vertices of each face of
  * the mesh (e.g. 3 for triangle meshes, 4 for quad meshes, etc.). If this
  * condition is not satisfied, an exception is thrown.
@@ -475,9 +473,7 @@ void importFacesFromMatrix(
  * MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input faces.
  * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
- * the edges of the mesh. If the number of rows of this matrix is zero, the
- * function will not add edges to the mesh. If the MeshType has no edges, the
- * function will ignore this matrix.
+ * the edges of the mesh.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the edges of the mesh before adding the edges from the input matrix.
  * If `false`, the function sets the indices in the input matrix to the
@@ -516,9 +512,8 @@ void importEdgesFromMatrix(
  * @brief Sets the vertex normals of the given input `mesh` from the input
  * vertex normals matrix.
  *
- * If the number of rows of the input matrix is zero, the function does nothing.
- * Otherwise, the number of rows of the input matrix must be equal to the number
- * of vertices of the mesh. An exception is thrown otherwise.
+ * The number of rows of the input matrix must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-vertex normal component if it is not already
  * enabled.
@@ -529,8 +524,7 @@ void importEdgesFromMatrix(
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input vertex normals.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
- * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function does nothing.
+ * vertices of the mesh.
  */
 template<MeshConcept MeshType, MatrixConcept VNMatrix>
 void importVertexNormalsFromMatrix(
@@ -544,9 +538,8 @@ void importVertexNormalsFromMatrix(
  * @brief Sets the face normals of the given input `mesh` from the input
  * face normals matrix.
  *
- * If the number of rows of the input matrix is zero, the function does nothing.
- * Otherwise, the number of rows of the input matrix must be equal to the number
- * of faces of the mesh. An exception is thrown otherwise.
+ * The number of rows of the input matrix must be equal to the number of faces
+ * of the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-face normal component if it is not already
  * enabled.
@@ -557,8 +550,7 @@ void importVertexNormalsFromMatrix(
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input face normals.
  * @param[in] faceNormals: a \#F*3 matrix containing the normals of the
- * faces of the mesh. If the number of rows of this matrix is zero, the
- * function does nothing.
+ * faces of the mesh.
  */
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
@@ -570,9 +562,8 @@ void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
  * @brief Sets the edge normals of the given input `mesh` from the input
  * edge normals matrix.
  *
- * If the number of rows of the input matrix is zero, the function does nothing.
- * Otherwise, the number of rows of the input matrix must be equal to the number
- * of edges of the mesh. An exception is thrown otherwise.
+ * The number of rows of the input matrix must be equal to the number of edges
+ * of the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-edge normal component if it is not already
  * enabled.
@@ -583,8 +574,7 @@ void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input edge normals.
  * @param[in] edgeNormals: a \#E*3 matrix containing the normals of the
- * edges of the mesh. If the number of rows of this matrix is zero, the
- * function does nothing.
+ * edges of the mesh.
  */
 template<EdgeMeshConcept MeshType, MatrixConcept ENMatrix>
 void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
@@ -596,9 +586,8 @@ void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
  * @brief Sets the vertex colors of the given input `mesh` from the input
  * vertex colors matrix.
  *
- * If the number of rows of the input matrix is zero, the function does nothing.
- * Otherwise, the number of rows of the input matrix must be equal to the number
- * of vertices of the mesh. An exception is thrown otherwise.
+ * The number of rows of the input matrix must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
  *
  * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
  * channel is set to 255 (1.0f).
@@ -617,8 +606,7 @@ void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input vertex colors.
  * @param[in] vertexColors: a \#V*3 or \#V*4 matrix containing the colors of the
- * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function does nothing.
+ * vertices of the mesh.
  */
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
 void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
@@ -630,9 +618,8 @@ void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
  * @brief Sets the face colors of the given input `mesh` from the input
  * face colors matrix.
  *
- * If the number of rows of the input matrix is zero, the function does nothing.
- * Otherwise, the number of rows of the input matrix must be equal to the number
- * of faces of the mesh. An exception is thrown otherwise.
+ * The number of rows of the input matrix must be equal to the number of faces
+ * of the mesh, otherwise an exception is thrown.
  *
  * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
  * channel is set to 255 (1.0f).
@@ -651,8 +638,7 @@ void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input face colors.
  * @param[in] faceColors: a \#F*3 or \#F*4 matrix containing the colors of the
- * faces of the mesh. If the number of rows of this matrix is zero, the
- * function does nothing.
+ * faces of the mesh. 
  */
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
 void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
@@ -664,9 +650,8 @@ void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
  * @brief Sets the edge colors of the given input `mesh` from the input
  * edge colors matrix.
  *
- * If the number of rows of the input matrix is zero, the function does nothing.
- * Otherwise, the number of rows of the input matrix must be equal to the number
- * of edges of the mesh. An exception is thrown otherwise.
+ * The number of rows of the input matrix must be equal to the number of edges
+ * of the mesh, otherwise an exception is thrown.
  *
  * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
  * channel is set to 255 (1.0f).
@@ -685,13 +670,72 @@ void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input edge colors.
  * @param[in] edgeColors: a \#E*3 or \#E*4 matrix containing the colors of the
- * edges of the mesh. If the number of rows of this matrix is zero, the
- * function does nothing.
+ * edges of the mesh. 
  */
 template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
 void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 {
     detail::importElementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
+}
+
+/**
+ * @brief Sets the vertex selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex selection.
+ * @param[in] selection: the input vertex selection range.
+ */
+template<MeshConcept MeshType, Range R>
+void importVertexSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    detail::importElementSelectionFromRange<ElemId::VERTEX>(mesh, selection);
+}
+
+/**
+ * @brief Sets the face selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face selection.
+ * @param[in] selection: the input face selection range.
+ */
+template<FaceMeshConcept MeshType, Range R>
+void importFaceSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    detail::importElementSelectionFromRange<ElemId::FACE>(mesh, selection);
+}
+
+/**
+ * @brief Sets the edge selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input edge selection.
+ * @param[in] selection: the input edge selection range.
+ */
+template<EdgeMeshConcept MeshType, Range R>
+void importEdgeSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    detail::importElementSelectionFromRange<ElemId::EDGE>(mesh, selection);
 }
 
 } // namespace vcl
