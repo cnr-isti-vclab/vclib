@@ -92,12 +92,7 @@ void PrimitiveLines::setPoints(
 {
     const std::vector<uint> lineIndices;
     setPoints(
-        false,
-        vertCoords,
-        lineIndices,
-        vertNormals,
-        vertColors,
-        lineColors);
+        false, vertCoords, lineIndices, vertNormals, vertColors, lineColors);
 }
 
 void PrimitiveLines::setPoints(
@@ -108,12 +103,7 @@ void PrimitiveLines::setPoints(
     const std::vector<uint>&  lineColors)
 {
     setPoints(
-        true,
-        vertCoords,
-        lineIndices,
-        vertNormals,
-        vertColors,
-        lineColors);
+        true, vertCoords, lineIndices, vertNormals, vertColors, lineColors);
 }
 
 void PrimitiveLines::setPoints(
@@ -157,12 +147,12 @@ void PrimitiveLines::setPoints(
 void PrimitiveLines::draw(uint viewId) const
 {
     if (mOwnsBuffers) {
-        const VertexBuffer& vcoords = std::get<OWNED>(mVertexCoords);
+        const VertexBuffer& vcoords  = std::get<OWNED>(mVertexCoords);
         const VertexBuffer& vnormals = std::get<OWNED>(mVertexNormals);
-        const VertexBuffer& vcolors = std::get<OWNED>(mVertexColors);
+        const VertexBuffer& vcolors  = std::get<OWNED>(mVertexColors);
         const VertexBuffer& lcolors =
             std::get<OWNED>(mLineColors); // TODO: change to IndexBuffer
-        const IndexBuffer&  inds = std::get<OWNED>(mIndices);
+        const IndexBuffer& inds = std::get<OWNED>(mIndices);
 
         if (vcoords.isValid())
             vcoords.bind(0);
@@ -176,16 +166,16 @@ void PrimitiveLines::draw(uint viewId) const
             inds.bind();
     }
     else {
-        const VertexBuffer* vcoords = std::get<NOT_OWNED>(mVertexCoords);
+        const VertexBuffer* vcoords  = std::get<NOT_OWNED>(mVertexCoords);
         const VertexBuffer* vnormals = std::get<NOT_OWNED>(mVertexNormals);
-        const VertexBuffer* vcolors = std::get<NOT_OWNED>(mVertexColors);
+        const VertexBuffer* vcolors  = std::get<NOT_OWNED>(mVertexColors);
         const VertexBuffer* lcolors =
             std::get<NOT_OWNED>(mLineColors); // TODO: change to IndexBuffer
-        const IndexBuffer*  inds = std::get<NOT_OWNED>(mIndices);
+        const IndexBuffer* inds = std::get<NOT_OWNED>(mIndices);
 
         if (vcoords && vcoords->isValid())
             vcoords->bind(0);
-        if (vnormals &&vnormals->isValid())
+        if (vnormals && vnormals->isValid())
             vnormals->bind(1);
         if (vcolors && vcolors->isValid())
             vcolors->bind(2);

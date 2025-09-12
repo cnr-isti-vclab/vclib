@@ -70,19 +70,19 @@ public:
         const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     PrimitiveLines(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     PrimitiveLines(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     void swap(PrimitiveLines& other);
 
@@ -102,19 +102,19 @@ public:
         const std::vector<uint>&  lineColors);
 
     void setPoints(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     void setPoints(
-        const uint pointsSize,
+        const uint          pointsSize,
         const VertexBuffer& vertexCoords,
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals = VertexBuffer(),
-        const VertexBuffer& vertexColors = VertexBuffer(),
-        const VertexBuffer& lineColors = VertexBuffer());
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     void draw(uint viewId) const;
 
@@ -122,7 +122,7 @@ private:
     void reinitBuffers(Ownership owned);
 
     void setPoints(
-        bool setLineIndices,
+        bool                      setLineIndices,
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals,

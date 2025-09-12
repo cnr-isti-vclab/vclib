@@ -100,9 +100,9 @@ void CPUGeneratedLines::setPoints(
     assert(vertCoords.size() % 3 == 0);
     assert(lineIndices.size() % 2 == 0);
 
-    const bool setColors      = vertColors.size() != 0;
-    const bool setNormals     = vertNormals.size() != 0;
-    const bool setLineColors  = lineColors.size() != 0;
+    const bool setColors     = vertColors.size() != 0;
+    const bool setNormals    = vertNormals.size() != 0;
+    const bool setLineColors = lineColors.size() != 0;
 
     const uint nPoints =
         setLineIndices ? lineIndices.size() : vertCoords.size() / 3;

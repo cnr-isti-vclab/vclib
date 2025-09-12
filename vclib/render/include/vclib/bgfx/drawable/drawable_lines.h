@@ -34,8 +34,8 @@ namespace vcl {
 class DrawableLines : public Lines, public vcl::DrawableObject
 {
     bool mVisible        = true;
-    bool mUseLineIndices = false; // true whether a vector of line indices has been
-                                  // provided (even if empty)
+    bool mUseLineIndices = false; // true whether a vector of line indices has
+                                  // been provided (even if empty)
 
     std::vector<float> mVertCoords;
     std::vector<uint>  mVertColors;
@@ -62,8 +62,7 @@ public:
         const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<uint>&  lineColors  = std::vector<uint>())
     {
-        setPoints(
-            vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+        setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
     }
 
     DrawableLines(const DrawableLines& other) :
@@ -122,10 +121,10 @@ public:
         const std::vector<uint>&  lineColors)
     {
         mUseLineIndices = false;
-        mVertCoords  = vertCoords;
-        mVertColors  = vertColors;
-        mVertNormals = vertNormals;
-        mLineColors  = lineColors;
+        mVertCoords     = vertCoords;
+        mVertColors     = vertColors;
+        mVertNormals    = vertNormals;
+        mLineColors     = lineColors;
         Lines::setPoints(vertCoords, vertNormals, vertColors, mLineColors);
     }
 
@@ -137,11 +136,11 @@ public:
         const std::vector<uint>&  lineColors)
     {
         mUseLineIndices = true;
-        mVertCoords  = vertCoords;
-        mLineIndices = lineIndices;
-        mVertColors  = vertColors;
-        mVertNormals = vertNormals;
-        mLineColors  = lineColors;
+        mVertCoords     = vertCoords;
+        mLineIndices    = lineIndices;
+        mVertColors     = vertColors;
+        mVertNormals    = vertNormals;
+        mLineColors     = lineColors;
         Lines::setPoints(
             vertCoords, lineIndices, vertNormals, vertColors, mLineColors);
     }
