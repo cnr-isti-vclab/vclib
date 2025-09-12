@@ -81,7 +81,7 @@ public:
 
 private:
     void setPoints(
-        bool setLineIndices,
+        bool                      setLineIndices,
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals,

@@ -85,9 +85,9 @@ public:
         bool indexed = mIndexed;
         ImGui::Checkbox("Indexed", &indexed);
         if (indexed != mIndexed) {
-            auto t = mLines->thickness();
-            auto c = mLines->colorToUse();
-            auto i = mLines->implementationType();
+            auto t   = mLines->thickness();
+            auto c   = mLines->colorToUse();
+            auto i   = mLines->implementationType();
             mIndexed = indexed;
             mVec->clear();
             mVec->pushBack(std::move(getDrawableLines(N_LINES, indexed)));
