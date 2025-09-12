@@ -100,18 +100,18 @@ void vertexPositionsToBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
-    const uint VERT_NUM =
+    const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
-    for (uint i = 0; const auto& c : mesh.vertices() | views::positions) {
+    for (uint i = 0; const auto& p : mesh.vertices() | views::positions) {
         if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 3 + 0] = c.x();
-            buffer[i * 3 + 1] = c.y();
-            buffer[i * 3 + 2] = c.z();
+            buffer[i * 3 + 0] = p.x();
+            buffer[i * 3 + 1] = p.y();
+            buffer[i * 3 + 2] = p.z();
         }
         else {
-            buffer[0 * VERT_NUM + i] = c.x();
-            buffer[1 * VERT_NUM + i] = c.y();
-            buffer[2 * VERT_NUM + i] = c.z();
+            buffer[0 * ROW_NUM + i] = p.x();
+            buffer[1 * ROW_NUM + i] = p.y();
+            buffer[2 * ROW_NUM + i] = p.z();
         }
         ++i;
     }
@@ -331,14 +331,13 @@ void faceIndicesToBuffer(
     // lambda to get the vertex index of a face (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    const uint FACE_NUM =
-        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+    const uint ROW_NUM = rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < largestFaceSize; ++j) {
             uint index = i * largestFaceSize + j;
             if (storage == MatrixStorageType::COLUMN_MAJOR)
-                index = j * FACE_NUM + i;
+                index = j * ROW_NUM + i;
             if (j < f.vertexNumber()) {
                 buffer[index] = vIndex(f, j);
             }
@@ -504,8 +503,7 @@ void edgeIndicesToBuffer(
     // lambda to get the vertex index of a edge (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    const uint EDGE_NUM =
-        rowNumber == UINT_NULL ? mesh.edgeNumber() : rowNumber;
+    const uint ROW_NUM = rowNumber == UINT_NULL ? mesh.edgeNumber() : rowNumber;
 
     for (uint i = 0; const auto& e : mesh.edges()) {
         if (storage == MatrixStorageType::ROW_MAJOR) {
@@ -513,8 +511,8 @@ void edgeIndicesToBuffer(
             buffer[i * 2 + 1] = vIndex(e, 1);
         }
         else {
-            buffer[0 * EDGE_NUM + i] = vIndex(e, 0);
-            buffer[1 * EDGE_NUM + i] = vIndex(e, 1);
+            buffer[0 * ROW_NUM + i] = vIndex(e, 0);
+            buffer[1 * ROW_NUM + i] = vIndex(e, 1);
         }
         ++i;
     }
@@ -563,7 +561,7 @@ void wireframeIndicesToBuffer(
     // lambda to get the vertex index of a edge (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    const uint EDGE_NUM =
+    const uint ROW_NUM =
         rowNumber == UINT_NULL ? countPerFaceVertexReferences(mesh) : rowNumber;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
@@ -575,8 +573,8 @@ void wireframeIndicesToBuffer(
                 buffer[i * 2 + 1] = v1;
             }
             else {
-                buffer[0 * EDGE_NUM + i] = v0;
-                buffer[1 * EDGE_NUM + i] = v1;
+                buffer[0 * ROW_NUM + i] = v0;
+                buffer[1 * ROW_NUM + i] = v1;
             }
             ++i;
         }
@@ -743,7 +741,7 @@ void elementNormalsToBuffer(
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    const uint ELEM_NUM =
+    const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     for (uint        i = 0;
@@ -754,9 +752,9 @@ void elementNormalsToBuffer(
             buffer[i * 3 + 2] = n.z();
         }
         else {
-            buffer[0 * ELEM_NUM + i] = n.x();
-            buffer[1 * ELEM_NUM + i] = n.y();
-            buffer[2 * ELEM_NUM + i] = n.z();
+            buffer[0 * ROW_NUM + i] = n.x();
+            buffer[1 * ROW_NUM + i] = n.y();
+            buffer[2 * ROW_NUM + i] = n.z();
         }
         ++i;
     }
@@ -857,7 +855,7 @@ void triangulatedFaceNormalsToBuffer(
 {
     requirePerFaceNormal(mesh);
 
-    const uint FACE_NUM =
+    const uint ROW_NUM =
         rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
 
     for (const auto& f : mesh.faces()) {
@@ -871,9 +869,9 @@ void triangulatedFaceNormalsToBuffer(
                 buffer[t * 3 + 2] = n.z();
             }
             else {
-                buffer[0 * FACE_NUM + t] = n.x();
-                buffer[1 * FACE_NUM + t] = n.y();
-                buffer[2 * FACE_NUM + t] = n.z();
+                buffer[0 * ROW_NUM + t] = n.x();
+                buffer[1 * ROW_NUM + t] = n.y();
+                buffer[2 * ROW_NUM + t] = n.z();
             }
         }
     }
@@ -945,7 +943,7 @@ void elementColorsToBuffer(
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    const uint ELEM_NUM =
+    const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     for (uint        i = 0;
@@ -957,10 +955,10 @@ void elementColorsToBuffer(
             buffer[i * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
         }
         else {
-            buffer[0 * ELEM_NUM + i] = R_INT ? c.red() : c.redF();
-            buffer[1 * ELEM_NUM + i] = R_INT ? c.green() : c.greenF();
-            buffer[2 * ELEM_NUM + i] = R_INT ? c.blue() : c.blueF();
-            buffer[3 * ELEM_NUM + i] = R_INT ? c.alpha() : c.alphaF();
+            buffer[0 * ROW_NUM + i] = R_INT ? c.red() : c.redF();
+            buffer[1 * ROW_NUM + i] = R_INT ? c.green() : c.greenF();
+            buffer[2 * ROW_NUM + i] = R_INT ? c.blue() : c.blueF();
+            buffer[3 * ROW_NUM + i] = R_INT ? c.alpha() : c.alphaF();
         }
         ++i;
     }
@@ -1147,7 +1145,7 @@ void triangulatedFaceColorsToBuffer(
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
-    const uint FACE_NUM =
+    const uint ROW_NUM =
         rowNumber == UINT_NULL ? indexMap.triangleNumber() : rowNumber;
 
     for (const auto& f : mesh.faces()) {
@@ -1162,10 +1160,10 @@ void triangulatedFaceColorsToBuffer(
                 buffer[t * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
             }
             else {
-                buffer[0 * FACE_NUM + t] = R_INT ? c.red() : c.redF();
-                buffer[1 * FACE_NUM + t] = R_INT ? c.green() : c.greenF();
-                buffer[2 * FACE_NUM + t] = R_INT ? c.blue() : c.blueF();
-                buffer[3 * FACE_NUM + t] = R_INT ? c.alpha() : c.alphaF();
+                buffer[0 * ROW_NUM + t] = R_INT ? c.red() : c.redF();
+                buffer[1 * ROW_NUM + t] = R_INT ? c.green() : c.greenF();
+                buffer[2 * ROW_NUM + t] = R_INT ? c.blue() : c.blueF();
+                buffer[3 * ROW_NUM + t] = R_INT ? c.alpha() : c.alphaF();
             }
         }
     }
@@ -1443,7 +1441,7 @@ void vertexTexCoordsToBuffer(
 {
     requirePerVertexTexCoord(mesh);
 
-    const uint VERT_NUM =
+    const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
 
     for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
@@ -1452,8 +1450,8 @@ void vertexTexCoordsToBuffer(
             buffer[i * 2 + 1] = t.v();
         }
         else {
-            buffer[0 * VERT_NUM + i] = t.u();
-            buffer[1 * VERT_NUM + i] = t.v();
+            buffer[0 * ROW_NUM + i] = t.u();
+            buffer[1 * ROW_NUM + i] = t.v();
         }
         ++i;
     }
@@ -1614,15 +1612,14 @@ void faceWedgeTexCoordsToBuffer(
 {
     requirePerFaceWedgeTexCoords(mesh);
 
-    const uint FACE_NUM =
-        rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+    const uint ROW_NUM = rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < largestFaceSize * 2; ++j) {
             uint fi    = j / 2;
             uint index = i * largestFaceSize * 2 + j;
             if (storage == MatrixStorageType::COLUMN_MAJOR)
-                index = j * FACE_NUM + i;
+                index = j * ROW_NUM + i;
             if (fi < f.wedgeTexCoordsNumber()) {
                 const auto& w = f.wedgeTexCoord(fi);
                 if (j % 2 == 0)
@@ -1762,7 +1759,7 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
 
     requirePerFaceWedgeTexCoords(mesh);
 
-    const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
+    const uint ROW_NUM = mesh.vertexNumber() + facesToReassign.size();
 
     // first export the texcoords of the non-duplicated vertices, using the
     // vertWedgeMap to get the texcoord index in the face
@@ -1781,8 +1778,8 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
             buffer[vi * 2 + 1] = w.v();
         }
         else {
-            buffer[0 * VERT_NUM + vi] = w.u();
-            buffer[1 * VERT_NUM + vi] = w.v();
+            buffer[0 * ROW_NUM + vi] = w.u();
+            buffer[1 * ROW_NUM + vi] = w.v();
         }
         ++vi;
     }
@@ -1801,8 +1798,8 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
             buffer[vi * 2 + 1] = w.v();
         }
         else {
-            buffer[0 * VERT_NUM + vi] = w.u();
-            buffer[1 * VERT_NUM + vi] = w.v();
+            buffer[0 * ROW_NUM + vi] = w.u();
+            buffer[1 * ROW_NUM + vi] = w.v();
         }
         ++vi;
     }
