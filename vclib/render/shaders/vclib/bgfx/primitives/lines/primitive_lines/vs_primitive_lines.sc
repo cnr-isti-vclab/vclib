@@ -20,26 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+$input a_position, a_normal, a_color0, a_color1
+$output v_color, v_normal
 
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
+#include <bgfx_shader.sh>
+#include <bgfx_compute.sh>
 
-#include <pybind11/pybind11.h>
+#include <vclib/bgfx/shaders_common.sh> 
 
-namespace vcl::bind {
+uniform vec4 u_settings;
 
-inline void initAlgorithms(pybind11::module& m)
-{
-    initCreateAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+#define colorToUse            u_settings.y
+#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
+
+#define p                     a_position
+#define color                 a_color0
+#define normal                a_normal
+#define lineColor             a_color1
+
+void main() {
+    if (colorToUse == 0)
+        v_color = color;
+    else if (colorToUse == 1) 
+        v_color = lineColor;
+    else
+        v_color = generalColor;
+
+    v_normal = normalize(mul(u_normalMatrix, normal));
+    gl_Position = mul(u_modelViewProj, vec4(p, 1.0));
 }
-
-} // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H

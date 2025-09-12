@@ -20,26 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+$input v_color, v_normal
 
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh> 
 
-#include <pybind11/pybind11.h>
+#include <bgfx_shader.sh>
+#include <bgfx_compute.sh>
 
-namespace vcl::bind {
+uniform vec4 u_settings;
+#define u_shadingPerVertex bool(u_settings.w)
 
-inline void initAlgorithms(pybind11::module& m)
-{
-    initCreateAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+void main() {
+    vec4 color = v_color;
+    if (u_shadingPerVertex) {
+        color *= computeLight(u_lightDir, u_lightColor, v_normal);
+    }
+    gl_FragColor = color;
 }
-
-} // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H

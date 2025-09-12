@@ -23,8 +23,7 @@
 #include <vclib/bindings/core/algorithms/mesh/create.h>
 #include <vclib/bindings/utils.h>
 
-#include <vclib/algorithms/mesh/create.h>
-#include <vclib/algorithms/mesh/type_name.h>
+#include <vclib/algorithms/mesh.h>
 
 namespace vcl::bind {
 

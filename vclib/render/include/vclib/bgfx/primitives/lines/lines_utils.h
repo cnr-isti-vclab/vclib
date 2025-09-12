@@ -20,26 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#ifndef VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H
+#define VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H
 
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
+#include <bgfx/bgfx.h>
 
-#include <pybind11/pybind11.h>
+#include <utility>
 
-namespace vcl::bind {
+namespace vcl::detail {
 
-inline void initAlgorithms(pybind11::module& m)
+inline uint64_t linesDrawState()
 {
-    initCreateAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+    return 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+           BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
 }
 
-} // namespace vcl::bind
+template<typename T>
+inline std::pair<T*, bgfx::ReleaseFn> linesGetAllocatedBufferAndReleaseFn(
+    uint size)
+{
+    T* buffer = new T[size];
 
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H
+    return std::make_pair(buffer, [](void* ptr, void*) {
+        delete[] static_cast<T*>(ptr);
+    });
+}
+} // namespace vcl::detail
+
+#endif // VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H
