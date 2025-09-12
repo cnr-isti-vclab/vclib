@@ -35,9 +35,6 @@
  * @brief List Export Mesh to Buffer algorithms.
  *
  * They allow to export mesh data to pre-allocated buffers.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
  */
 
 namespace vcl {

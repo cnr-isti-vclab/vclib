@@ -38,9 +38,6 @@
  * @brief List Export Mesh to Matrix algorithms.
  *
  * They allow to export mesh data to matrices.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
  */
 
 namespace vcl {

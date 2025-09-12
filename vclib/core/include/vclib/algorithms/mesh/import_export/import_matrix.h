@@ -34,9 +34,6 @@
  * @brief List Import Mesh from Matrix algorithms.
  *
  * They allow to import mesh data from matrices.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
  */
 
 namespace vcl {
@@ -80,6 +77,8 @@ namespace vcl {
  * this matrix.
  *
  * @return a new mesh containing the data passed as argument.
+ *
+ * @ingroup import_matrix
  */
 template<
     MeshConcept   MeshType,
@@ -144,6 +143,8 @@ MeshType meshFromMatrices(
  * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
  * the edges of the mesh. If the MeshType has no edges, the function will ignore
  * this matrix.
+ *
+ * @ingroup import_matrix
  */
 template<
     MeshConcept   MeshType,
@@ -209,6 +210,8 @@ void importMeshFromMatrices(
  * the vertices of the mesh before adding the vertices from the input matrix.
  * If `false`, the function sets the positions in the input matrix to the
  * vertices of the mesh, leaving all the other components untouched.
+ *
+ * @ingroup import_matrix
  */
 template<MeshConcept MeshType, MatrixConcept VMatrix>
 void importVerticesFromMatrix(
@@ -281,6 +284,8 @@ void importVerticesFromMatrix(
  * the faces of the mesh before adding the faces from the input matrix.
  * If `false`, the function sets the indices in the input matrix to the
  * faces of the mesh, leaving all the other components untouched.
+ *
+ * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
 void importFacesFromMatrix(
@@ -380,6 +385,8 @@ void importFacesFromMatrix(
  * the edges of the mesh before adding the edges from the input matrix.
  * If `false`, the function sets the indices in the input matrix to the
  * edges of the mesh, leaving all the other components untouched.
+ *
+ * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
 void importEdgesFromMatrix(
@@ -424,6 +431,8 @@ void importEdgesFromMatrix(
  * @tparam R: the type of the input range. It must satisfy the Range concept.
  * @param[in/out] mesh: the mesh on which import the input element selection.
  * @param[in] selection: the input element selection range.
+ *
+ * @ingroup import_matrix
  */
 template<uint ELEM_ID, MeshConcept MeshType, Range R>
 void importElementSelectionFromRange(MeshType& mesh, R&& selection)
@@ -454,6 +463,8 @@ void importElementSelectionFromRange(MeshType& mesh, R&& selection)
  * @tparam R: the type of the input range. It must satisfy the Range concept.
  * @param[in/out] mesh: the mesh on which import the input vertex selection.
  * @param[in] selection: the input vertex selection range.
+ *
+ * @ingroup import_matrix
  */
 template<MeshConcept MeshType, Range R>
 void importVertexSelectionFromRange(MeshType& mesh, R&& selection)
@@ -474,6 +485,8 @@ void importVertexSelectionFromRange(MeshType& mesh, R&& selection)
  * @tparam R: the type of the input range. It must satisfy the Range concept.
  * @param[in/out] mesh: the mesh on which import the input face selection.
  * @param[in] selection: the input face selection range.
+ *
+ * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, Range R>
 void importFaceSelectionFromRange(MeshType& mesh, R&& selection)
@@ -494,6 +507,8 @@ void importFaceSelectionFromRange(MeshType& mesh, R&& selection)
  * @tparam R: the type of the input range. It must satisfy the Range concept.
  * @param[in/out] mesh: the mesh on which import the input edge selection.
  * @param[in] selection: the input edge selection range.
+ *
+ * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, Range R>
 void importEdgeSelectionFromRange(MeshType& mesh, R&& selection)
@@ -518,6 +533,8 @@ void importEdgeSelectionFromRange(MeshType& mesh, R&& selection)
  * @param[in/out] mesh: the mesh on which import the input element normals.
  * @param[in] normals: a \#E*3 matrix containing the normals of the elements
  * of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
 void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
@@ -564,6 +581,8 @@ void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
  * @param[in/out] mesh: the mesh on which import the input vertex normals.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
  * vertices of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<MeshConcept MeshType, MatrixConcept VNMatrix>
 void importVertexNormalsFromMatrix(
@@ -590,6 +609,8 @@ void importVertexNormalsFromMatrix(
  * @param[in/out] mesh: the mesh on which import the input face normals.
  * @param[in] faceNormals: a \#F*3 matrix containing the normals of the
  * faces of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
@@ -614,6 +635,8 @@ void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
  * @param[in/out] mesh: the mesh on which import the input edge normals.
  * @param[in] edgeNormals: a \#E*3 matrix containing the normals of the
  * edges of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, MatrixConcept ENMatrix>
 void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
@@ -646,6 +669,8 @@ void importEdgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
  * @param[in/out] mesh: the mesh on which import the input colors.
  * @param[in] colors: a \#V*3 or \#V*4 matrix containing the colors of the
  * elements of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
 void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
@@ -722,6 +747,8 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
  * @param[in/out] mesh: the mesh on which import the input vertex colors.
  * @param[in] vertexColors: a \#V*3 or \#V*4 matrix containing the colors of the
  * vertices of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
 void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
@@ -753,7 +780,9 @@ void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input face colors.
  * @param[in] faceColors: a \#F*3 or \#F*4 matrix containing the colors of the
- * faces of the mesh. 
+ * faces of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
 void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
@@ -785,7 +814,9 @@ void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
  * satisfy the MatrixConcept.
  * @param[in/out] mesh: the mesh on which import the input edge colors.
  * @param[in] edgeColors: a \#E*3 or \#E*4 matrix containing the colors of the
- * edges of the mesh. 
+ * edges of the mesh.
+ *
+ * @ingroup import_matrix
  */
 template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
 void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)

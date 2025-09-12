@@ -36,9 +36,6 @@
  * @brief List of Import/Export Mesh algorithms.
  *
  * They allow to import and export mesh data from/to different formats.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
  */
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
