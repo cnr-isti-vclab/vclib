@@ -105,7 +105,11 @@ void vertexPositionsFromBuffer(
         if (vertexNumber != mesh.vertexNumber()) {
             throw WrongSizeException(
                 "The input vertex number does not match the number of vertices "
-                "of the mesh");
+                "of the mesh\n"
+                "Number of vertices in the mesh: " +
+                std::to_string(mesh.vertexNumber()) +
+                "\nNumber of input vertex number: " +
+                std::to_string(vertexNumber));
         }
     }
 

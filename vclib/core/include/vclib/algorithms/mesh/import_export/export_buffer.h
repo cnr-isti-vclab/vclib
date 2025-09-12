@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
 
+#include "detail.h"
+
 #include <vclib/algorithms/core.h>
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
@@ -76,7 +78,7 @@ inline TriPolyIndexBiMap indexMap;
  * @brief Export the vertex positions of a mesh to a buffer.
  *
  * This function exports the vertex positions of a mesh to a buffer. Vertices
- * are stored in the buffer following the order they appear in the mesh.  The
+ * are stored in the buffer following the order they appear in the mesh. The
  * buffer must be preallocated with the correct size (number of vertices times
  * the number of positions per vertex).
  *
@@ -100,19 +102,14 @@ void vertexPositionsToBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
+    using namespace detail;
+
     const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
     for (uint i = 0; const auto& p : mesh.vertices() | views::positions) {
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 3 + 0] = p.x();
-            buffer[i * 3 + 1] = p.y();
-            buffer[i * 3 + 2] = p.z();
-        }
-        else {
-            buffer[0 * ROW_NUM + i] = p.x();
-            buffer[1 * ROW_NUM + i] = p.y();
-            buffer[2 * ROW_NUM + i] = p.z();
-        }
+        at(buffer, i, 0, ROW_NUM, 3, storage) = p.x();
+        at(buffer, i, 1, ROW_NUM, 3, storage) = p.y();
+        at(buffer, i, 2, ROW_NUM, 3, storage) = p.z();
         ++i;
     }
 }
@@ -325,6 +322,8 @@ void faceIndicesToBuffer(
     bool              getIndicesAsIfContainerCompact = true,
     uint              rowNumber                      = UINT_NULL)
 {
+    using namespace detail;
+
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
 
@@ -335,15 +334,8 @@ void faceIndicesToBuffer(
 
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < largestFaceSize; ++j) {
-            uint index = i * largestFaceSize + j;
-            if (storage == MatrixStorageType::COLUMN_MAJOR)
-                index = j * ROW_NUM + i;
-            if (j < f.vertexNumber()) {
-                buffer[index] = vIndex(f, j);
-            }
-            else {
-                buffer[index] = -1;
-            }
+            at(buffer, i, j, ROW_NUM, largestFaceSize, storage) =
+                j < f.vertexNumber() ? vIndex(f, j) : -1;
         }
         ++i;
     }
@@ -404,6 +396,8 @@ void triangulatedFaceIndicesToBuffer(
     uint               numTriangles = UINT_NULL,
     bool               getIndicesAsIfContainerCompact = true)
 {
+    using namespace detail;
+
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
 
@@ -442,16 +436,10 @@ void triangulatedFaceIndicesToBuffer(
                 // map the t-th triangle to the f polygonal face
                 indexMap.insert(t, f.index());
 
-                if (storage == MatrixStorageType::ROW_MAJOR) {
-                    buffer[t * 3 + 0] = vIndex(f, vind[vi + 0]);
-                    buffer[t * 3 + 1] = vIndex(f, vind[vi + 1]);
-                    buffer[t * 3 + 2] = vIndex(f, vind[vi + 2]);
-                }
-                else {
-                    buffer[0 * numTriangles + t] = vIndex(f, vind[vi + 0]);
-                    buffer[1 * numTriangles + t] = vIndex(f, vind[vi + 1]);
-                    buffer[2 * numTriangles + t] = vIndex(f, vind[vi + 2]);
-                }
+                for (uint k = 0; k < 3; ++k)
+                    at(buffer, t, k, numTriangles, 3, storage) =
+                        vIndex(f, vind[vi + k]);
+
                 ++t;
             }
         }
@@ -497,6 +485,8 @@ void edgeIndicesToBuffer(
     bool              getIndicesAsIfContainerCompact = true,
     uint              rowNumber                      = UINT_NULL)
 {
+    using namespace detail;
+
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
 
@@ -506,14 +496,9 @@ void edgeIndicesToBuffer(
     const uint ROW_NUM = rowNumber == UINT_NULL ? mesh.edgeNumber() : rowNumber;
 
     for (uint i = 0; const auto& e : mesh.edges()) {
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 2 + 0] = vIndex(e, 0);
-            buffer[i * 2 + 1] = vIndex(e, 1);
-        }
-        else {
-            buffer[0 * ROW_NUM + i] = vIndex(e, 0);
-            buffer[1 * ROW_NUM + i] = vIndex(e, 1);
-        }
+        at(buffer, i, 0, ROW_NUM, 2, storage) = vIndex(e, 0);
+        at(buffer, i, 1, ROW_NUM, 2, storage) = vIndex(e, 1);
+
         ++i;
     }
 }
@@ -555,6 +540,8 @@ void wireframeIndicesToBuffer(
     bool              getIndicesAsIfContainerCompact = true,
     uint              rowNumber                      = UINT_NULL)
 {
+    using namespace detail;
+
     const std::vector<uint> vertCompIndices =
         detail::vertCompactIndices(mesh, getIndicesAsIfContainerCompact);
 
@@ -568,14 +555,10 @@ void wireframeIndicesToBuffer(
         for (uint j = 0; j < f.vertexNumber(); ++j) {
             uint v0 = vIndex(f, j);
             uint v1 = vIndex(f, (j + 1) % f.vertexNumber());
-            if (storage == MatrixStorageType::ROW_MAJOR) {
-                buffer[i * 2 + 0] = v0;
-                buffer[i * 2 + 1] = v1;
-            }
-            else {
-                buffer[0 * ROW_NUM + i] = v0;
-                buffer[1 * ROW_NUM + i] = v1;
-            }
+
+            at(buffer, i, 0, ROW_NUM, 2, storage) = v0;
+            at(buffer, i, 1, ROW_NUM, 2, storage) = v1;
+
             ++i;
         }
     }
@@ -739,6 +722,8 @@ void elementNormalsToBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
+    using namespace detail;
+
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     const uint ROW_NUM =
@@ -746,16 +731,11 @@ void elementNormalsToBuffer(
 
     for (uint        i = 0;
          const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 3 + 0] = n.x();
-            buffer[i * 3 + 1] = n.y();
-            buffer[i * 3 + 2] = n.z();
-        }
-        else {
-            buffer[0 * ROW_NUM + i] = n.x();
-            buffer[1 * ROW_NUM + i] = n.y();
-            buffer[2 * ROW_NUM + i] = n.z();
-        }
+
+        at(buffer, i, 0, ROW_NUM, 3, storage) = n.x();
+        at(buffer, i, 1, ROW_NUM, 3, storage) = n.y();
+        at(buffer, i, 2, ROW_NUM, 3, storage) = n.z();
+
         ++i;
     }
 }
@@ -853,6 +833,8 @@ void triangulatedFaceNormalsToBuffer(
     MatrixStorageType        storage   = MatrixStorageType::ROW_MAJOR,
     uint                     rowNumber = UINT_NULL)
 {
+    using namespace detail;
+
     requirePerFaceNormal(mesh);
 
     const uint ROW_NUM =
@@ -863,16 +845,9 @@ void triangulatedFaceNormalsToBuffer(
         uint        first = indexMap.triangleBegin(f.index());
         uint        last  = first + indexMap.triangleNumber(f.index());
         for (uint t = first; t < last; ++t) {
-            if (storage == MatrixStorageType::ROW_MAJOR) {
-                buffer[t * 3 + 0] = n.x();
-                buffer[t * 3 + 1] = n.y();
-                buffer[t * 3 + 2] = n.z();
-            }
-            else {
-                buffer[0 * ROW_NUM + t] = n.x();
-                buffer[1 * ROW_NUM + t] = n.y();
-                buffer[2 * ROW_NUM + t] = n.z();
-            }
+            at(buffer, t, 0, ROW_NUM, 3, storage) = n.x();
+            at(buffer, t, 1, ROW_NUM, 3, storage) = n.y();
+            at(buffer, t, 2, ROW_NUM, 3, storage) = n.z();
         }
     }
 }
@@ -939,6 +914,8 @@ void elementColorsToBuffer(
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  rowNumber      = UINT_NULL)
 {
+    using namespace detail;
+
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
@@ -948,18 +925,12 @@ void elementColorsToBuffer(
 
     for (uint        i = 0;
          const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 4 + 0] = R_INT ? c.red() : c.redF();
-            buffer[i * 4 + 1] = R_INT ? c.green() : c.greenF();
-            buffer[i * 4 + 2] = R_INT ? c.blue() : c.blueF();
-            buffer[i * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
-        }
-        else {
-            buffer[0 * ROW_NUM + i] = R_INT ? c.red() : c.redF();
-            buffer[1 * ROW_NUM + i] = R_INT ? c.green() : c.greenF();
-            buffer[2 * ROW_NUM + i] = R_INT ? c.blue() : c.blueF();
-            buffer[3 * ROW_NUM + i] = R_INT ? c.alpha() : c.alphaF();
-        }
+
+        at(buffer, i, 0, ROW_NUM, 4, storage) = R_INT ? c.red() : c.redF();
+        at(buffer, i, 1, ROW_NUM, 4, storage) = R_INT ? c.green() : c.greenF();
+        at(buffer, i, 2, ROW_NUM, 4, storage) = R_INT ? c.blue() : c.blueF();
+        at(buffer, i, 3, ROW_NUM, 4, storage) = R_INT ? c.alpha() : c.alphaF();
+
         ++i;
     }
 }
@@ -1141,6 +1112,8 @@ void triangulatedFaceColorsToBuffer(
     Color::Representation    representation = Color::Representation::INT_0_255,
     uint                     rowNumber      = UINT_NULL)
 {
+    using namespace detail;
+
     requirePerFaceColor(mesh);
 
     const bool R_INT = representation == Color::Representation::INT_0_255;
@@ -1153,18 +1126,13 @@ void triangulatedFaceColorsToBuffer(
         uint        first = indexMap.triangleBegin(f.index());
         uint        last  = first + indexMap.triangleNumber(f.index());
         for (uint t = first; t < last; ++t) {
-            if (storage == MatrixStorageType::ROW_MAJOR) {
-                buffer[t * 4 + 0] = R_INT ? c.red() : c.redF();
-                buffer[t * 4 + 1] = R_INT ? c.green() : c.greenF();
-                buffer[t * 4 + 2] = R_INT ? c.blue() : c.blueF();
-                buffer[t * 4 + 3] = R_INT ? c.alpha() : c.alphaF();
-            }
-            else {
-                buffer[0 * ROW_NUM + t] = R_INT ? c.red() : c.redF();
-                buffer[1 * ROW_NUM + t] = R_INT ? c.green() : c.greenF();
-                buffer[2 * ROW_NUM + t] = R_INT ? c.blue() : c.blueF();
-                buffer[3 * ROW_NUM + t] = R_INT ? c.alpha() : c.alphaF();
-            }
+            at(buffer, t, 0, ROW_NUM, 4, storage) = R_INT ? c.red() : c.redF();
+            at(buffer, t, 1, ROW_NUM, 4, storage) =
+                R_INT ? c.green() : c.greenF();
+            at(buffer, t, 2, ROW_NUM, 4, storage) =
+                R_INT ? c.blue() : c.blueF();
+            at(buffer, t, 3, ROW_NUM, 4, storage) =
+                R_INT ? c.alpha() : c.alphaF();
         }
     }
 }
@@ -1439,20 +1407,17 @@ void vertexTexCoordsToBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
+    using namespace detail;
+
     requirePerVertexTexCoord(mesh);
 
     const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
 
     for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[i * 2 + 0] = t.u();
-            buffer[i * 2 + 1] = t.v();
-        }
-        else {
-            buffer[0 * ROW_NUM + i] = t.u();
-            buffer[1 * ROW_NUM + i] = t.v();
-        }
+        at(buffer, i, 0, ROW_NUM, 2, storage) = t.u();
+        at(buffer, i, 1, ROW_NUM, 2, storage) = t.v();
+
         ++i;
     }
 }
@@ -1755,6 +1720,7 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR)
 {
+    using namespace detail;
     using TexCoordType = typename MeshType::FaceType::WedgeTexCoordType;
 
     requirePerFaceWedgeTexCoords(mesh);
@@ -1773,14 +1739,9 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
         if (fInd != UINT_NULL && wInd != UINT_NULL) {
             w = mesh.face(fInd).wedgeTexCoord(wInd);
         }
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[vi * 2 + 0] = w.u();
-            buffer[vi * 2 + 1] = w.v();
-        }
-        else {
-            buffer[0 * ROW_NUM + vi] = w.u();
-            buffer[1 * ROW_NUM + vi] = w.v();
-        }
+        at(buffer, vi, 0, ROW_NUM, 2, storage) = w.u();
+        at(buffer, vi, 1, ROW_NUM, 2, storage) = w.v();
+
         ++vi;
     }
 
@@ -1793,14 +1754,9 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
         uint        wInd = p.second;
 
         const auto& w = mesh.face(fInd).wedgeTexCoord(wInd);
-        if (storage == MatrixStorageType::ROW_MAJOR) {
-            buffer[vi * 2 + 0] = w.u();
-            buffer[vi * 2 + 1] = w.v();
-        }
-        else {
-            buffer[0 * ROW_NUM + vi] = w.u();
-            buffer[1 * ROW_NUM + vi] = w.v();
-        }
+        at(buffer, vi, 0, ROW_NUM, 2, storage) = w.u();
+        at(buffer, vi, 1, ROW_NUM, 2, storage) = w.v();
+
         ++vi;
     }
 }
