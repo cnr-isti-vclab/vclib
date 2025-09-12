@@ -239,6 +239,11 @@ void vertexPositionsFromMatrix(
  * columns of the input face matrix must be equal to the number of vertices of
  * each face of the mesh (e.g. 3 for triangle meshes, 4 for quad meshes, etc.).
  * If this condition is not satisfied, an exception is thrown.
+ * 
+ * If the MeshType is a polygonal mesh, the size of each polygonal face is
+ * determined by counting the number of valid vertex indices in each row of the
+ * input face matrix. Valid vertex indices are non-negative and not equal to
+ * UINT_NULL.
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the face container of the mesh and then adds a number of faces
@@ -270,7 +275,7 @@ void vertexPositionsFromMatrix(
  * condition is not satisfied, an exception is thrown.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the faces of the mesh before adding the faces from the input matrix.
- * If `false`, the function sets the indices in the input matrix to the
+ * If `false`, the function sets the indices from the input matrix to the
  * faces of the mesh, leaving all the other components untouched.
  *
  * @ingroup import_matrix
@@ -281,64 +286,15 @@ void faceIndicesFromMatrix(
     const FMatrix& faces,
     bool           clearBeforeSet = true)
 {
-    if (clearBeforeSet) {
-        mesh.clearFaces();
-        mesh.resizeFaces(faces.rows());
-    }
-    else {
-        if (faces.rows() != mesh.faceNumber()) {
-            throw WrongSizeException(
-                "The input face matrix has a different number of rows "
-                "than the number of faces of the mesh.\n"
-                "Number of faces in the mesh: " +
-                std::to_string(mesh.faceNumber()) +
-                "\nNumber of rows in the input face matrix: " +
-                std::to_string(faces.rows()));
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<FMatrix>();
 
-    if constexpr (HasPolygons<MeshType>) {
-        uint i = 0;
-        for (auto& f : mesh.faces()) {
-            uint vertexNumber = 0;
-
-            // count the number of vertices of the face
-            while (vertexNumber < faces.cols() &&
-                   faces(i, vertexNumber) != -1 &&
-                   faces(i, vertexNumber) != UINT_NULL)
-                vertexNumber++;
-
-            f.resizeVertices(vertexNumber);
-
-            for (uint j = 0; j < vertexNumber; ++j)
-                f.setVertex(j, faces(i, j));
-            ++i;
-        }
-    }
-    else { // the vertex number of mesh faces is fixed
-        using FaceType = MeshType::FaceType;
-
-        constexpr int VN = FaceType::VERTEX_NUMBER;
-        if (faces.cols() == VN) { // faces of matrix and mesh have same size
-            uint i = 0;
-            for (auto& f : mesh.faces()) {
-                for (uint j = 0; j < VN; ++j)
-                    f.setVertex(j, faces(i, j));
-                ++i;
-            }
-        }
-        else {
-            // cannot import the faces if the number of vertices is different
-            // between the matrix and the mesh
-            throw WrongSizeException(
-                "The input face matrix has a different number of columns "
-                "than the vertex number of the faces of the mesh.\n"
-                "Vertex number of faces in the mesh: " +
-                std::to_string(VN) +
-                "\nNumber of columns in the input face matrix: " +
-                std::to_string(faces.cols()));
-        }
-    }
+    faceIndicesFromBuffer(
+        mesh,
+        faces.data(),
+        faces.rows(),
+        faces.cols(),
+        clearBeforeSet,
+        stg);
 }
 
 /**
@@ -364,10 +320,10 @@ void faceIndicesFromMatrix(
  * of edges is not changed (same allocation policy of the std::vector).
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
- * FaceMeshConcept.
- * @tparam FMatrix: the type of the input face matrix. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam EMatrix: the type of the input edge matrix. It must satisfy the
  * MatrixConcept.
- * @param[in/out] mesh: the mesh on which import the input faces.
+ * @param[in/out] mesh: the mesh on which import the input edges.
  * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
  * the edges of the mesh.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
@@ -386,24 +342,10 @@ void edgeIndicesFromMatrix(
     if (edges.cols() != 2)
         throw WrongSizeException("The input edge matrix must have 2 columns");
 
-    if (clearBeforeSet) {
-        mesh.clearEdges();
-        mesh.resizeEdges(edges.rows());
-    }
-    else {
-        if (edges.rows() != mesh.edgeNumber()) {
-            throw WrongSizeException(
-                "The input edge matrix has a different number of rows than "
-                "the number of edges of the mesh");
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<EMatrix>();
 
-    uint i = 0;
-    for (auto& e : mesh.edges()) {
-        e.setVertex(0, edges(i, 0));
-        e.setVertex(1, edges(i, 1));
-        i++;
-    }
+    edgeIndicesFromBuffer(
+        mesh, edges.data(), edges.rows(), clearBeforeSet, stg);
 }
 
 /**
