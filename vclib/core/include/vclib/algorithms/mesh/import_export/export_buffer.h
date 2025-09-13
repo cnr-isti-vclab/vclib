@@ -731,7 +731,6 @@ void elementNormalsToBuffer(
 
     for (uint        i = 0;
          const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
-
         at(buffer, i, 0, ROW_NUM, 3, storage) = n.x();
         at(buffer, i, 1, ROW_NUM, 3, storage) = n.y();
         at(buffer, i, 2, ROW_NUM, 3, storage) = n.z();
@@ -925,7 +924,6 @@ void elementColorsToBuffer(
 
     for (uint        i = 0;
          const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
-
         at(buffer, i, 0, ROW_NUM, 4, storage) = R_INT ? c.red() : c.redF();
         at(buffer, i, 1, ROW_NUM, 4, storage) = R_INT ? c.green() : c.greenF();
         at(buffer, i, 2, ROW_NUM, 4, storage) = R_INT ? c.blue() : c.blueF();

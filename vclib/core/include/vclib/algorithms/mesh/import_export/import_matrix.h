@@ -239,7 +239,7 @@ void vertexPositionsFromMatrix(
  * columns of the input face matrix must be equal to the number of vertices of
  * each face of the mesh (e.g. 3 for triangle meshes, 4 for quad meshes, etc.).
  * If this condition is not satisfied, an exception is thrown.
- * 
+ *
  * If the MeshType is a polygonal mesh, the size of each polygonal face is
  * determined by counting the number of valid vertex indices in each row of the
  * input face matrix. Valid vertex indices are non-negative and not equal to
@@ -289,12 +289,7 @@ void faceIndicesFromMatrix(
     MatrixStorageType stg = matrixStorageType<FMatrix>();
 
     faceIndicesFromBuffer(
-        mesh,
-        faces.data(),
-        faces.rows(),
-        faces.cols(),
-        clearBeforeSet,
-        stg);
+        mesh, faces.data(), faces.rows(), faces.cols(), clearBeforeSet, stg);
 }
 
 /**

@@ -405,7 +405,7 @@ void appendDuplicateVertexNormalsToBuffer(
     const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& normal = mesh.vertex(v).normal();
+        const auto& normal                    = mesh.vertex(v).normal();
         at(buffer, i, 0, ROW_NUM, 3, storage) = normal.x();
         at(buffer, i, 1, ROW_NUM, 3, storage) = normal.y();
         at(buffer, i, 2, ROW_NUM, 3, storage) = normal.z();
@@ -468,11 +468,11 @@ void appendDuplicateVertexColorsToBuffer(
 
     requirePerVertexColor(mesh);
 
-    const bool R_INT    = representation == Color::Representation::INT_0_255;
+    const bool R_INT   = representation == Color::Representation::INT_0_255;
     const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& c = mesh.vertex(v).color();
+        const auto& c                         = mesh.vertex(v).color();
         at(buffer, i, 0, ROW_NUM, 4, storage) = R_INT ? c.red() : c.redF();
         at(buffer, i, 1, ROW_NUM, 4, storage) = R_INT ? c.green() : c.greenF();
         at(buffer, i, 2, ROW_NUM, 4, storage) = R_INT ? c.blue() : c.blueF();
@@ -660,7 +660,7 @@ void appendDuplicateVertexTexCoordsToBuffer(
     const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& t = mesh.vertex(v).texCoord();
+        const auto& t                         = mesh.vertex(v).texCoord();
         at(buffer, i, 0, ROW_NUM, 2, storage) = t.u();
         at(buffer, i, 1, ROW_NUM, 2, storage) = t.v();
 
