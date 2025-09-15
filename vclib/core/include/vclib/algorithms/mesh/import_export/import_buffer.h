@@ -544,7 +544,7 @@ void elementNormalsFromBuffer(
  *
  * @ingroup import_buffer
  */
-template< MeshConcept MeshType>
+template<MeshConcept MeshType>
 void vertexNormalsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
@@ -552,7 +552,7 @@ void vertexNormalsFromBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
-    elementNormalsFromBuffer<ElementId::VERTEX, MeshType>(
+    elementNormalsFromBuffer<ElemId::VERTEX, MeshType>(
         mesh, buffer, vertexNumber, storage, rowNumber);
 }
 
@@ -593,7 +593,7 @@ void faceNormalsFromBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
-    elementNormalsFromBuffer<ElementId::FACE, MeshType>(
+    elementNormalsFromBuffer<ElemId::FACE, MeshType>(
         mesh, buffer, faceNumber, storage, rowNumber);
 }
 
@@ -634,7 +634,7 @@ void edgeNormalsFromBuffer(
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
-    elementNormalsFromBuffer<ElementId::EDGE, MeshType>(
+    elementNormalsFromBuffer<ElemId::EDGE, MeshType>(
         mesh, buffer, edgeNumber, storage, rowNumber);
 }
 
