@@ -465,29 +465,15 @@ void edgeSelectionFromRange(MeshType& mesh, R&& selection)
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
 void elementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
 {
-    // The type of the normal of the element
-    using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
+    MatrixStorageType stg = matrixStorageType<NMatrix>();
 
     if (normals.cols() != 3)
         throw WrongSizeException(
             "The input " + elementEnumString<ELEM_ID>() +
             " normal matrix must have 3 columns");
 
-    // matrix rows must be equal to the number of elements of the given type
-    if (normals.rows() != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input normal matrix must have the same number of rows "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
-
-    uint i = 0;
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
-        e.normal() = NormalType(normals(i, 0), normals(i, 1), normals(i, 2));
-        i++;
-    }
+    elementNormalsFromBuffer<ELEM_ID>(
+        mesh, normals.data(), normals.rows(), stg);
 }
 
 /**

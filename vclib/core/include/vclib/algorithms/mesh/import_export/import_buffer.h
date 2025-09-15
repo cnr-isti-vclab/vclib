@@ -339,6 +339,305 @@ void edgeIndicesFromBuffer(
     }
 }
 
+/**
+ * @brief Sets the element identified by `ELEM_ID` selection of the given input
+ * `mesh` from the input selection buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input element selection.
+ * @param[in] buffer: the input element selection buffer.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementSelectionFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        elementNumber)
+{
+    if (elementNumber != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input selection buffer must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    for (uint i = 0; auto& e : mesh.template elements<ELEM_ID>()) {
+        e.selected() = buffer[i];
+        ++i;
+    }
+}
+
+/**
+ * @brief Sets the vertex selection of the given input `mesh` from the input
+ * selection buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex selection.
+ * @param[in] buffer: the input vertex selection buffer.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<MeshConcept MeshType>
+void vertexSelectionFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        elementNumber)
+{
+    elementSelectionFromBuffer<ElemId::VERTEX>(mesh, buffer, elementNumber);
+}
+
+/**
+ * @brief Sets the face selection of the given input `mesh` from the input
+ * selection buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input face selection.
+ * @param[in] buffer: the input face selection buffer.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceSelectionFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        elementNumber)
+{
+    elementSelectionFromBuffer<ElemId::FACE>(mesh, buffer, elementNumber);
+}
+
+/**
+ * @brief Sets the edge selection of the given input `mesh` from the input
+ * selection buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input edge selection.
+ * @param[in] buffer: the input edge selection buffer.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<EdgeMeshConcept MeshType>
+void edgeSelectionFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        elementNumber)
+{
+    elementSelectionFromBuffer<ElemId::EDGE>(mesh, buffer, elementNumber);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` normals of the given input
+ * `mesh` from the input buffer, that is expected to be a contiguous array of
+ * scalars, where each row contains the 3 components of the normal of a
+ * element.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given elementNumber must be equal to the number of ELEM_ID elements of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input element normals.
+ * @param[in] buffer: a contiguous array containing the normals of the
+ * elements of the mesh.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `elementNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementNormalsFromBuffer(
+    MeshType&         mesh,
+    const auto*       buffer,
+    uint              elementNumber,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    using namespace detail;
+
+    const uint ROW_NUM = rowNumber == UINT_NULL ? elementNumber : rowNumber;
+
+    // elementNumber must be equal to the number of elements of the given type
+    if (elementNumber != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input element number does not match the number of " +
+            elementEnumString<ELEM_ID>() +
+            " elements of the mesh\n"
+            "Number of " +
+            elementEnumString<ELEM_ID>() + " elements in the mesh: " +
+            std::to_string(mesh.template number<ELEM_ID>()) +
+            "\nNumber of input element number: " +
+            std::to_string(elementNumber));
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
+
+    for (uint  i = 0;
+         auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
+        n.x() = at(buffer, i, 0, ROW_NUM, 3, storage);
+        n.y() = at(buffer, i, 1, ROW_NUM, 3, storage);
+        n.z() = at(buffer, i, 2, ROW_NUM, 3, storage);
+
+        ++i;
+    }
+}
+
+/**
+ * @brief Sets the vertex normals of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * contains the 3 components of the normal of a vertex.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given vertexNumber must be equal to the number of vertices of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex normals.
+ * @param[in] buffer: a contiguous array containing the normals of the
+ * vertices of the mesh.
+ * @param[in] vertexNumber: the number of vertices contained in the input
+ * buffer.
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `vertexNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template< MeshConcept MeshType>
+void vertexNormalsFromBuffer(
+    MeshType&         mesh,
+    const auto*       buffer,
+    uint              vertexNumber,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    elementNormalsFromBuffer<ElementId::VERTEX, MeshType>(
+        mesh, buffer, vertexNumber, storage, rowNumber);
+}
+
+/**
+ * @brief Sets the face normals of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * contains the 3 components of the normal of a face.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given faceNumber must be equal to the number of faces of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input face normals.
+ * @param[in] buffer: a contiguous array containing the normals of the
+ * faces of the mesh.
+ * @param[in] faceNumber: the number of faces contained in the input
+ * buffer.
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `faceNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceNormalsFromBuffer(
+    MeshType&         mesh,
+    const auto*       buffer,
+    uint              faceNumber,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    elementNormalsFromBuffer<ElementId::FACE, MeshType>(
+        mesh, buffer, faceNumber, storage, rowNumber);
+}
+
+/**
+ * @brief Sets the edge normals of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * contains the 3 components of the normal of an edge.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given edgeNumber must be equal to the number of edges of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input edge normals.
+ * @param[in] buffer: a contiguous array containing the normals of the
+ * edges of the mesh.
+ * @param[in] edgeNumber: the number of edges contained in the input
+ * buffer.
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `edgeNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<EdgeMeshConcept MeshType>
+void edgeNormalsFromBuffer(
+    MeshType&         mesh,
+    const auto*       buffer,
+    uint              edgeNumber,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    elementNormalsFromBuffer<ElementId::EDGE, MeshType>(
+        mesh, buffer, edgeNumber, storage, rowNumber);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_BUFFER_H
