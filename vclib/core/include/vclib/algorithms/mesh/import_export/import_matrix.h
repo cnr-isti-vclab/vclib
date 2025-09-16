@@ -816,6 +816,39 @@ void edgeQualityFromRange(MeshType& mesh, R&& quality)
     elementQualityFromRange<ElemId::EDGE>(mesh, quality);
 }
 
+/**
+ * @brief Sets the vertex tex coords of the given input `mesh` from the input
+ * vertex tex coords matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex tex coords component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam VTMatrix: the type of the input vertex tex coords matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex tex coords.
+ * @param[in] vertexTexCoords: a \#V*2 matrix containing the tex coords of the
+ * vertices of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, MatrixConcept VTMatrix>
+void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
+{
+    MatrixStorageType stg = matrixStorageType<VTMatrix>();
+
+    if (vertexTexCoords.cols() != 2)
+        throw WrongSizeException(
+            "The input vertex tex coords matrix must have 2 columns");
+
+    vertexTexCoordsFromBuffer(
+        mesh, vertexTexCoords.data(), vertexTexCoords.rows(), stg);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H

@@ -1046,6 +1046,69 @@ void edgeQualityFromBuffer(
         mesh, buffer, edgeNumber);
 }
 
+/**
+ * @brief Sets the vertex tex coords of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * contains the 2 components of the texture coordinates of a vertex.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex tex coords component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ *
+ * @param[in/out] mesh: the mesh on which import the input tex coords.
+ * @param[in] buffer: a contiguous array containing the tex coords of the
+ * vertices of the mesh.
+ * @param[in] vertexNumber: the number of vertices contained in the input
+ * buffer.
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `vertexNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<MeshConcept MeshType>
+void vertexTexCoordsFromBuffer(
+    MeshType&         mesh,
+    const auto*       buffer,
+    uint              vertexNumber,
+    MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber      = UINT_NULL)
+{
+    using namespace detail;
+
+    const uint ROW_NUM = rowNumber == UINT_NULL ? vertexNumber : rowNumber;
+
+    if (vertexNumber != mesh.vertexNumber()) {
+        throw WrongSizeException(
+            "The input vertex number does not match the number of vertices "
+            "of the mesh\n"
+            "Number of vertices in the mesh: " +
+            std::to_string(mesh.vertexNumber()) +
+            "\nNumber of input vertex number: " +
+            std::to_string(vertexNumber));
+    }
+
+    enableIfPerVertexTexCoordOptional(mesh);
+    requirePerVertexTexCoord(mesh);
+
+    for (uint i = 0; auto& t : mesh.vertices() | views::texCoords) {
+        t.u() = at(buffer, i, 0, ROW_NUM, 2, storage);
+        t.v() = at(buffer, i, 1, ROW_NUM, 2, storage);
+
+        ++i;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_BUFFER_H
