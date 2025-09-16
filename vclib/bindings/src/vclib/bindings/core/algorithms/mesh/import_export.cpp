@@ -26,6 +26,7 @@
 #include <vclib/algorithms/mesh.h>
 
 #include <pybind11/eigen.h>
+#include <pybind11/stl.h>
 
 namespace vcl::bind {
 
@@ -46,9 +47,16 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "vertex_selection_vector",
+            "vertex_selection_array",
             [](const MeshType& m) {
                 return vcl::vertexSelectionVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_selection_list",
+            [](const MeshType& m) {
+                return vcl::vertexSelectionVector<std::vector<int>>(m);
             },
             "mesh"_a);
 
@@ -67,7 +75,7 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "vertex_colors_vector",
+            "vertex_colors_array",
             [](const MeshType& m, Color::Format colorFormat) {
                 return vcl::vertexColorsVector<Eigen::VectorXi>(m, colorFormat);
             },
@@ -75,9 +83,25 @@ void initImportExportAlgorithms(pybind11::module& m)
             "color_format"_a = Color::Format::RGBA);
 
         m.def(
-            "vertex_quality_vector",
+            "vertex_colors_list",
+            [](const MeshType& m, Color::Format colorFormat) {
+                return vcl::vertexColorsVector<std::vector<uint>>(
+                    m, colorFormat);
+            },
+            "mesh"_a,
+            "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "vertex_quality_array",
             [](const MeshType& m) {
                 return vcl::vertexQualityVector<Eigen::VectorXd>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_quality_list",
+            [](const MeshType& m) {
+                return vcl::vertexQualityVector<std::vector<double>>(m);
             },
             "mesh"_a);
 
@@ -105,6 +129,44 @@ void initImportExportAlgorithms(pybind11::module& m)
             "vertices"_a,
             "faces"_a = Eigen::MatrixXi(),
             "edges"_a = Eigen::MatrixX2i());
+
+        m.def(
+            "vertex_positions_from_matrix",
+            [](MeshType&               mesh,
+               const Eigen::MatrixX3d& vertexPositions,
+               bool                    clearBeforeSet) {
+                return vcl::vertexPositionsFromMatrix(
+                    mesh, vertexPositions, clearBeforeSet);
+            },
+            "mesh"_a,
+            "vertex_positions"_a,
+            "clear_before_set"_a = true);
+
+        m.def(
+            "vertex_selection_from_array",
+            [](MeshType&              mesh,
+               const Eigen::VectorXi& vertexSelection) {
+                return vcl::vertexSelectionFromRange(mesh, vertexSelection);
+            },
+            "mesh"_a,
+            "vertex_selection"_a);
+
+        m.def(
+            "vertex_selection_from_list",
+            [](MeshType&               mesh,
+               const std::vector<int>& vertexSelection) {
+                return vcl::vertexSelectionFromRange(mesh, vertexSelection);
+            },
+            "mesh"_a,
+            "vertex_selection"_a);
+
+        m.def(
+            "vertex_normals_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX3d& vertexNormals) {
+                return vcl::vertexNormalsFromMatrix(mesh, vertexNormals);
+            },
+            "mesh"_a,
+            "vertex_normals"_a);
     };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -114,16 +176,30 @@ void initImportExportAlgorithms(pybind11::module& m)
         // export_matrix.h
 
         m.def(
-            "face_sizes_vector",
+            "face_sizes_array",
             [](const MeshType& m) {
                 return vcl::faceSizesVector<Eigen::VectorXi>(m);
             },
             "mesh"_a);
 
         m.def(
-            "face_indices_vector",
+            "face_sizes_list",
+            [](const MeshType& m) {
+                return vcl::faceSizesVector<std::vector<uint>>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_indices_array",
             [](const MeshType& m) {
                 return vcl::faceIndicesVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_indices_list",
+            [](const MeshType& m) {
+                return vcl::faceIndicesVector<std::vector<uint>>(m);
             },
             "mesh"_a);
 
@@ -151,9 +227,16 @@ void initImportExportAlgorithms(pybind11::module& m)
             "index_map"_a = TriPolyIndexBiMap());
 
         m.def(
-            "face_selection_vector",
+            "face_selection_array",
             [](const MeshType& m) {
                 return vcl::faceSelectionVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_selection_list",
+            [](const MeshType& m) {
+                return vcl::faceSelectionVector<std::vector<int>>(m);
             },
             "mesh"_a);
 
@@ -172,7 +255,7 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "face_colors_vector",
+            "face_colors_array",
             [](const MeshType& m, Color::Format colorFormat) {
                 return vcl::faceColorsVector<Eigen::VectorXi>(m, colorFormat);
             },
@@ -180,11 +263,65 @@ void initImportExportAlgorithms(pybind11::module& m)
             "color_format"_a = Color::Format::RGBA);
 
         m.def(
-            "face_quality_vector",
+            "face_colors_list",
+            [](const MeshType& m, Color::Format colorFormat) {
+                return vcl::faceColorsVector<std::vector<uint>>(m, colorFormat);
+            },
+            "mesh"_a,
+            "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "face_quality_array",
             [](const MeshType& m) {
                 return vcl::faceQualityVector<Eigen::VectorXd>(m);
             },
             "mesh"_a);
+
+        m.def(
+            "face_quality_list",
+            [](const MeshType& m) {
+                return vcl::faceQualityVector<std::vector<double>>(m);
+            },
+            "mesh"_a);
+
+        // import_matrix.h
+
+        m.def(
+            "face_indices_from_matrix",
+            [](MeshType&              mesh,
+               const Eigen::MatrixXi& faces,
+               bool                   clearBeforeSet) {
+                return vcl::faceIndicesFromMatrix(mesh, faces, clearBeforeSet);
+            },
+            "mesh"_a,
+            "faces"_a,
+            "clear_before_set"_a = true);
+
+        m.def(
+            "face_selection_from_array",
+            [](MeshType&              mesh,
+               const Eigen::VectorXi& faceSelection) {
+                return vcl::faceSelectionFromRange(mesh, faceSelection);
+            },
+            "mesh"_a,
+            "face_selection"_a);
+
+        m.def(
+            "face_selection_from_list",
+            [](MeshType&               mesh,
+               const std::vector<int>& faceSelection) {
+                return vcl::faceSelectionFromRange(mesh, faceSelection);
+            },
+            "mesh"_a,
+            "face_selection"_a);
+
+        m.def(
+            "face_normals_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX3d& faceNormals) {
+                return vcl::faceNormalsFromMatrix(mesh, faceNormals);
+            },
+            "mesh"_a,
+            "face_normals"_a);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
@@ -201,9 +338,16 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "edge_selection_vector",
+            "edge_selection_array",
             [](const MeshType& m) {
                 return vcl::edgeSelectionVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "edge_selection_list",
+            [](const MeshType& m) {
+                return vcl::edgeSelectionVector<std::vector<int>>(m);
             },
             "mesh"_a);
 
@@ -215,7 +359,7 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "edge_colors_vector",
+            "edge_colors_array",
             [](const MeshType& m, Color::Format colorFormat) {
                 return vcl::edgeColorsVector<Eigen::VectorXi>(m, colorFormat);
             },
@@ -223,11 +367,65 @@ void initImportExportAlgorithms(pybind11::module& m)
             "color_format"_a = Color::Format::RGBA);
 
         m.def(
-            "edge_quality_vector",
+            "edge_colors_list",
+            [](const MeshType& m, Color::Format colorFormat) {
+                return vcl::edgeColorsVector<std::vector<uint>>(m, colorFormat);
+            },
+            "mesh"_a,
+            "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "edge_quality_array",
             [](const MeshType& m) {
                 return vcl::edgeQualityVector<Eigen::VectorXd>(m);
             },
             "mesh"_a);
+
+        m.def(
+            "edge_quality_list",
+            [](const MeshType& m) {
+                return vcl::edgeQualityVector<std::vector<double>>(m);
+            },
+            "mesh"_a);
+
+        // import_matrix.h
+
+        m.def(
+            "edge_indices_from_matrix",
+            [](MeshType&               mesh,
+               const Eigen::MatrixX2i& edges,
+               bool                    clearBeforeSet) {
+                return vcl::edgeIndicesFromMatrix(mesh, edges, clearBeforeSet);
+            },
+            "mesh"_a,
+            "edges"_a,
+            "clear_before_set"_a = true);
+
+        m.def(
+            "edge_selection_from_array",
+            [](MeshType&              mesh,
+               const Eigen::VectorXi& edgeSelection) {
+                return vcl::edgeSelectionFromRange(mesh, edgeSelection);
+            },
+            "mesh"_a,
+            "edge_selection"_a);
+
+        m.def(
+            "edge_selection_from_list",
+            [](MeshType&               mesh,
+               const std::vector<int>& edgeSelection) {
+                return vcl::edgeSelectionFromRange(mesh, edgeSelection);
+            },
+            "mesh"_a,
+            "edge_selection"_a);
+
+        m.def(
+            "edge_normals_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX3d& edgeNormals) {
+                return vcl::edgeNormalsFromMatrix(mesh, edgeNormals);
+            },
+            "mesh"_a,
+            "edge_normals"_a);
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
