@@ -587,49 +587,17 @@ void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
 {
     using MatrixScalar = CMatrix::Scalar;
 
-    if (colors.cols() != 3 && colors.cols() != 4)
-        throw WrongSizeException(
-            "The input " + elementEnumString<ELEM_ID>() +
-            " color matrix must have 3 or 4 columns");
+    Color::Representation repr = std::integral<MatrixScalar> ?
+        Color::Representation::INT_0_255 :
+        Color::Representation::FLOAT_0_1;
 
-    // matrix rows must be equal to the number of elements of the given type
-    if (colors.rows() != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input color matrix must have the same number of rows "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
-
-    uint i = 0;
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
-        // Matrix has colors in range 0-255
-        if constexpr (std::integral<MatrixScalar>) {
-            if (colors.cols() == 3) {
-                e.color() = Color(colors(i, 0), colors(i, 1), colors(i, 2));
-            }
-            else {
-                e.color() = Color(
-                    colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
-            }
-        }
-        else { // Matrix has colors in range 0-1
-            if (colors.cols() == 3) {
-                e.color() = Color(
-                    colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
-            }
-            else {
-                e.color() = Color(
-                    colors(i, 0) * 255,
-                    colors(i, 1) * 255,
-                    colors(i, 2) * 255,
-                    colors(i, 3) * 255);
-            }
-        }
-
-        i++;
-    }
+    elementColorsFromBuffer<ELEM_ID>(
+        mesh,
+        colors.data(),
+        colors.rows(),
+        colors.cols(),
+        matrixStorageType<CMatrix>(),
+        repr);
 }
 
 /**

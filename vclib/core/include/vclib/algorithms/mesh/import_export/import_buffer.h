@@ -638,6 +638,287 @@ void edgeNormalsFromBuffer(
         mesh, buffer, edgeNumber, storage, rowNumber);
 }
 
+/**
+ * @brief Sets the element identified by `ELEM_ID` colors of the given input
+ * `mesh` from the input buffer, that is expected to be a contiguous array of
+ * scalars, where each row (number of channels) contains the 3 or 4 components
+ * of the color of a element.
+ *
+ * Scalars can be either in the range [0,255] or in the range [0,1], as
+ * specified by the `representation` argument. The default is [0,255].
+ *
+ * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
+ * the `channelsNumber` argument. The default is 4.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given elementNumber must be equal to the number of ELEM_ID elements of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input element colors.
+ * @param[in] buffer: a contiguous array containing the colors of the
+ * elements of the mesh.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ * @param[in] channelsNumber: the number of channels per color in the input
+ * buffer. It can be either 3 (RGB) or 4 (RGBA).
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] representation: the representation of the color scalars in the
+ * input buffer. It can be either in the range [0,255] or in the range [0,1].
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `elementNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementColorsFromBuffer(
+    MeshType&             mesh,
+    const auto*           buffer,
+    uint                  elementNumber,
+    uint                  channelsNumber = 4,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
+{
+    using namespace detail;
+
+    const uint ROW_NUM = rowNumber == UINT_NULL ? elementNumber : rowNumber;
+
+    if (channelsNumber!= 3 && channelsNumber != 4)
+        throw WrongSizeException(
+            "The input " + elementEnumString<ELEM_ID>() +
+            " colors must have 3 or 4 channels.");
+
+    // elementNumber must be equal to the number of elements of the given type
+    if (elementNumber != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input element number does not match the number of " +
+            elementEnumString<ELEM_ID>() +
+            " elements of the mesh\n"
+            "Number of " +
+            elementEnumString<ELEM_ID>() + " elements in the mesh: " +
+            std::to_string(mesh.template number<ELEM_ID>()) +
+            "\nNumber of input element number: " +
+            std::to_string(elementNumber));
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    for (uint  i = 0;
+         auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
+        if (representation == Color::Representation::INT_0_255) {
+            c.x() = at(buffer, i, 0, ROW_NUM, channelsNumber, storage);
+            c.y() = at(buffer, i, 1, ROW_NUM, channelsNumber, storage);
+            c.z() = at(buffer, i, 2, ROW_NUM, channelsNumber, storage);
+
+            if (channelsNumber == 4)
+                c.w() = at(buffer, i, 3, ROW_NUM, channelsNumber, storage);
+            else
+                c.w() = 255;
+        }
+        else {
+            c.x() = at(buffer, i, 0, ROW_NUM, channelsNumber, storage) * 255;
+            c.y() = at(buffer, i, 1, ROW_NUM, channelsNumber, storage) * 255;
+            c.z() = at(buffer, i, 2, ROW_NUM, channelsNumber, storage) * 255;
+
+            if (channelsNumber == 4)
+                c.w() =
+                    at(buffer, i, 3, ROW_NUM, channelsNumber, storage) * 255;
+            else
+                c.w() = 255;
+        }
+        ++i;
+    }
+}
+
+/**
+ * @brief Sets the vertex colors of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * (number of channels) contains the 3 or 4 components of the color of a
+ * vertex.
+ *
+ * Scalars can be either in the range [0,255] or in the range [0,1], as
+ * specified by the `representation` argument. The default is [0,255].
+ *
+ * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
+ * the `channelsNumber` argument. The default is 4.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given vertexNumber must be equal to the number of vertices of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex colors.
+ * @param[in] buffer: a contiguous array containing the colors of the
+ * elements of the mesh.
+ * @param[in] vertexNumber: the number of vertices contained in the input
+ * buffer.
+ * @param[in] channelsNumber: the number of channels per color in the input
+ * buffer. It can be either 3 (RGB) or 4 (RGBA).
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] representation: the representation of the color scalars in the
+ * input buffer. It can be either in the range [0,255] or in the range [0,1].
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `vertexNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<MeshConcept MeshType>
+void vertexColorsFromBuffer(
+    MeshType&             mesh,
+    const auto*           buffer,
+    uint                  vertexNumber,
+    uint                  channelsNumber = 4,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
+{
+    elementColorsFromBuffer<ElemId::VERTEX, MeshType>(
+        mesh,
+        buffer,
+        vertexNumber,
+        channelsNumber,
+        storage,
+        representation,
+        rowNumber);
+}
+
+/**
+ * @brief Sets the face colors of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * (number of channels) contains the 3 or 4 components of the color of a
+ * face.
+ *
+ * Scalars can be either in the range [0,255] or in the range [0,1], as
+ * specified by the `representation` argument. The default is [0,255].
+ *
+ * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
+ * the `channelsNumber` argument. The default is 4.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given faceNumber must be equal to the number of faces of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input face colors.
+ * @param[in] buffer: a contiguous array containing the colors of the
+ * elements of the mesh.
+ * @param[in] faceNumber: the number of faces contained in the input
+ * buffer.
+ * @param[in] channelsNumber: the number of channels per color in the input
+ * buffer. It can be either 3 (RGB) or 4 (RGBA).
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] representation: the representation of the color scalars in the
+ * input buffer. It can be either in the range [0,255] or in the range [0,1].
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `faceNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceColorsFromBuffer(
+    MeshType&             mesh,
+    const auto*           buffer,
+    uint                  faceNumber,
+    uint                  channelsNumber = 4,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
+{
+    elementColorsFromBuffer<ElemId::FACE, MeshType>(
+        mesh,
+        buffer,
+        faceNumber,
+        channelsNumber,
+        storage,
+        representation,
+        rowNumber);
+}
+
+/**
+ * @brief Sets the edge colors of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * (number of channels) contains the 3 or 4 components of the color of an
+ * edge.
+ *
+ * Scalars can be either in the range [0,255] or in the range [0,1], as
+ * specified by the `representation` argument. The default is [0,255].
+ *
+ * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
+ * the `channelsNumber` argument. The default is 4.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The given edgeNumber must be equal to the number of edges of
+ * the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input edge colors.
+ * @param[in] buffer: a contiguous array containing the colors of the
+ * elements of the mesh.
+ * @param[in] edgeNumber: the number of edges contained in the input
+ * buffer.
+ * @param[in] channelsNumber: the number of channels per color in the input
+ * buffer. It can be either 3 (RGB) or 4 (RGBA).
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] representation: the representation of the color scalars in the
+ * input buffer. It can be either in the range [0,255] or in the range [0,1].
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `edgeNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<EdgeMeshConcept MeshType>
+void edgeColorsFromBuffer(
+    MeshType&             mesh,
+    const auto*           buffer,
+    uint                  edgeNumber,
+    uint                  channelsNumber = 4,
+    MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
+    Color::Representation representation = Color::Representation::INT_0_255,
+    uint                  rowNumber      = UINT_NULL)
+{
+    elementColorsFromBuffer<ElemId::EDGE, MeshType>(
+        mesh,
+        buffer,
+        edgeNumber,
+        channelsNumber,
+        storage,
+        representation,
+        rowNumber);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_BUFFER_H
