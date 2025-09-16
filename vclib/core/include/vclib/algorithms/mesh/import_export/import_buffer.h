@@ -1227,6 +1227,50 @@ void faceWedgeTexCoordsFromBuffer(
     }
 };
 
+/**
+ * @brief Sets the face wedge texcoord indices of the given input `mesh` from
+ * the input texcoord indices buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face texcoords component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input face texcoord
+ * indices.
+ * @param[in] buffer: the input face texcoord indices buffer.
+ * @param[in] faceNumber: the number of faces contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceWedgeTexCoordIndicesFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        faceNumber)
+{
+    if (faceNumber != mesh.faceNumber())
+        throw WrongSizeException(
+            "The input faceNumber must have the same number of elements "
+            "as the number of vertices in the mesh\n"
+            "Number of faces in the mesh: " +
+            std::to_string(mesh.faceNumber()) +
+            "\nNumber of input face number: " +
+            std::to_string(faceNumber));
+
+    enableIfPerFaceWedgeTexCoordsOptional(mesh);
+    requirePerFaceWedgeTexCoords(mesh);
+
+    for (uint i = 0; auto& f : mesh.faces()) {
+        f.textureIndex() = buffer[i];
+        ++i;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_BUFFER_H

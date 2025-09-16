@@ -928,6 +928,45 @@ void faceWedgeTexCoordsFromMatrix(
         stg);
 }
 
+/**
+ * @brief Sets the face wedge texcoord indices of the given input `mesh` from
+ * the input texcoord indices range (that could be anything that satisfies the
+ * Range concept: e.g. std::vector<uint>, std::array<uint, N>, Eigen::VectorXi,
+ * etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face wedge texcoord component if it is not
+ * already enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face wedge texcoord
+ * indices.
+ * @param[in] texCoordIndices: the input face wedge texcoord indices range.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, Range R>
+void faceWedgeTexCoordIndicesFromRange(MeshType& mesh, R&& texCoordIndices)
+{
+    if (std::ranges::size(texCoordIndices) != mesh.faceNumber())
+        throw WrongSizeException(
+            "The input quality range must have the same number of elements "
+            "as the number of faces in the mesh");
+
+    enableIfPerFaceWedgeTexCoordsOptional(mesh);
+    requirePerFaceWedgeTexCoords(mesh);
+
+    auto tt = texCoordIndices.begin();
+    for (auto& f : mesh.faces()) {
+        f.textureIndex() = *tt;
+        ++tt;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
