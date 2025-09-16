@@ -318,6 +318,59 @@ void testFaceQualityFromRange()
     }
 }
 
+template<typename MeshType, typename TMatrix>
+void testVertexTexCoords()
+{
+    // Create a mesh with vertices
+    MeshType mesh;
+    mesh.addVertices(4);
+    mesh.deleteVertex(2); // keep 3 vertices
+
+    // Test 1: Import texture coordinates from matrix
+    // Create texture coordinates matrix (3 vertices, 2 columns for UV)
+    TMatrix texCoords(3, 2);
+    texCoords << 0.0, 0.0, // vertex 0: (0,0)
+                 1.0, 0.0, // vertex 1: (1,0) 
+                 0.5, 1.0; // vertex 3: (0.5,1)
+
+    // Test vertexTexCoordsFromMatrix
+    vcl::vertexTexCoordsFromMatrix(mesh, texCoords);
+
+    // Verify texture coordinates
+    vcl::uint c = 0;
+    REQUIRE(mesh.isPerVertexTexCoordEnabled());
+    REQUIRE(mesh.vertex(0).texCoord().u() == texCoords(c, 0));
+    REQUIRE(mesh.vertex(0).texCoord().v() == texCoords(c, 1));
+    c++;
+    REQUIRE(mesh.vertex(1).texCoord().u() == texCoords(c, 0));
+    REQUIRE(mesh.vertex(1).texCoord().v() == texCoords(c, 1));
+    c++;
+    REQUIRE(mesh.vertex(3).texCoord().u() == texCoords(c, 0));
+    REQUIRE(mesh.vertex(3).texCoord().v() == texCoords(c, 1));
+
+    // Test 2: Import texture coordinate indices from range
+    // Create texture coordinate indices vector
+    std::vector<vcl::uint> texCoordIndices = {10, 20, 30};
+
+    // Test vertexTexCoordIndicesFromRange
+    vcl::vertexTexCoordIndicesFromRange(mesh, texCoordIndices);
+
+    // Verify texture coordinate indices (coordinates should remain unchanged)
+    c = 0;
+    REQUIRE(mesh.isPerVertexTexCoordEnabled());
+    REQUIRE(mesh.vertex(0).texCoord().u() == texCoords(c, 0));
+    REQUIRE(mesh.vertex(0).texCoord().v() == texCoords(c, 1));
+    REQUIRE(mesh.vertex(0).texCoord().index() == texCoordIndices[c]);
+    c++;
+    REQUIRE(mesh.vertex(1).texCoord().u() == texCoords(c, 0));
+    REQUIRE(mesh.vertex(1).texCoord().v() == texCoords(c, 1));
+    REQUIRE(mesh.vertex(1).texCoord().index() == texCoordIndices[c]);
+    c++;
+    REQUIRE(mesh.vertex(3).texCoord().u() == texCoords(c, 0));
+    REQUIRE(mesh.vertex(3).texCoord().v() == texCoords(c, 1));
+    REQUIRE(mesh.vertex(3).texCoord().index() == texCoordIndices[c]);
+}
+
 // Test cases
 
 TEMPLATE_TEST_CASE("Import mesh from matrices", "", vcl::TriMeshf, vcl::TriMesh)
@@ -476,6 +529,30 @@ TEMPLATE_TEST_CASE(
     testFaceQualityFromRange<MeshType>();
 }
 
+TEMPLATE_TEST_CASE(
+    "Import vertex texture coordinates and indices",
+    "",
+    vcl::TriMeshf,
+    vcl::TriMesh,
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+
+    SECTION("Row major matrix")
+    {
+        using Matrix = Eigen::Matrix<Scalar, Eigen::Dynamic, 2, Eigen::RowMajor>;
+        testVertexTexCoords<MeshType, Matrix>();
+    }
+
+    SECTION("Column major matrix")
+    {
+        using Matrix = Eigen::Matrix<Scalar, Eigen::Dynamic, 2, Eigen::ColMajor>;
+        testVertexTexCoords<MeshType, Matrix>();
+    }
+}
+
 TEST_CASE("Import mesh - error handling")
 {
     vcl::TriMeshf mesh;
@@ -546,6 +623,40 @@ TEST_CASE("Import mesh - error handling")
 
         REQUIRE_THROWS_AS(
             vcl::vertexQualityFromRange(mesh, wrongQuality),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong texture coordinates matrix size - wrong columns")
+    {
+        mesh.addVertices(3);
+        // Matrix with wrong number of columns (should be 2)
+        Eigen::MatrixXf wrongTexCoords(3, 3);
+        wrongTexCoords << 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 1.0, 0.0;
+
+        REQUIRE_THROWS_AS(
+            vcl::vertexTexCoordsFromMatrix(mesh, wrongTexCoords),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong texture coordinates matrix size - wrong rows")
+    {
+        mesh.addVertices(3);
+        // Matrix with wrong number of rows (should be 3)
+        Eigen::MatrixXf wrongTexCoords(2, 2);
+        wrongTexCoords << 0.0, 0.0, 1.0, 0.0;
+
+        REQUIRE_THROWS_AS(
+            vcl::vertexTexCoordsFromMatrix(mesh, wrongTexCoords),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong texture coordinate indices range size")
+    {
+        mesh.addVertices(3);
+        std::vector<vcl::uint> wrongTexCoordIndices = {0, 1}; // size 2, should be 3
+
+        REQUIRE_THROWS_AS(
+            vcl::vertexTexCoordIndicesFromRange(mesh, wrongTexCoordIndices),
             vcl::WrongSizeException);
     }
 }
