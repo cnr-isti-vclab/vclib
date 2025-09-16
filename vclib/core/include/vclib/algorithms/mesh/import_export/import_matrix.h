@@ -702,6 +702,120 @@ void edgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
     elementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
 }
 
+/**
+ * @brief Sets the element identified by `ELEM_ID` quality of the given input
+ * `mesh` from the input quality range (that could be anything that satisfies
+ * the Range concept: e.g. std::vector<double>, std::array<double, N>,
+ * Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input element quality.
+ * @param[in] quality: the input element quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<uint ELEM_ID, MeshConcept MeshType, Range R>
+void elementQualityFromRange(MeshType& mesh, R&& quality)
+{
+    if (std::ranges::size(quality) != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input quality range must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::QUALITY>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
+
+    auto q = quality.begin();
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.quality() = *q;
+        ++q;
+    }
+}
+
+/**
+ * @brief Sets the vertex quality of the given input `mesh` from the input
+ * quality range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex quality.
+ * @param[in] quality: the input vertex quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, Range R>
+void vertexQualityFromRange(MeshType& mesh, R&& quality)
+{
+    elementQualityFromRange<ElemId::VERTEX>(mesh, quality);
+}
+
+/**
+ * @brief Sets the face quality of the given input `mesh` from the input
+ * quality range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face quality.
+ * @param[in] quality: the input face quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, Range R>
+void faceQualityFromRange(MeshType& mesh, R&& quality)
+{
+    elementQualityFromRange<ElemId::FACE>(mesh, quality);
+}
+
+/**
+ * @brief Sets the edge quality of the given input `mesh` from the input
+ * quality range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input edge quality.
+ * @param[in] quality: the input edge quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<EdgeMeshConcept MeshType, Range R>
+void edgeQualityFromRange(MeshType& mesh, R&& quality)
+{
+    elementQualityFromRange<ElemId::EDGE>(mesh, quality);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H

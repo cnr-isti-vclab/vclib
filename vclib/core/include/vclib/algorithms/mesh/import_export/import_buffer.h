@@ -919,6 +919,133 @@ void edgeColorsFromBuffer(
         rowNumber);
 }
 
+/**
+ * @brief Sets the element identified by `ELEM_ID` quality of the given input
+ * `mesh` from the input quality buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input element quality.
+ * @param[in] buffer: the input element quality buffer.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementQualityFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        elementNumber)
+{
+    if (elementNumber != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input quality buffer must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::QUALITY>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
+
+    for (uint i = 0; auto& e : mesh.template elements<ELEM_ID>()) {
+        e.quality() = buffer[i];
+        ++i;
+    }
+}
+
+/**
+ * @brief Sets the vertex quality of the given input `mesh` from the input
+ * quality buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex quality.
+ * @param[in] buffer: the input vertex quality buffer.
+ * @param[in] vertexNumber: the number of vertices contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<MeshConcept MeshType>
+void vertexQualityFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        vertexNumber)
+{
+    elementQualityFromBuffer<ElemId::VERTEX, MeshType>(
+        mesh, buffer, vertexNumber);
+}
+
+/**
+ * @brief Sets the face quality of the given input `mesh` from the input
+ * quality buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input face quality.
+ * @param[in] buffer: the input face quality buffer.
+ * @param[in] faceNumber: the number of faces contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceQualityFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        faceNumber)
+{
+    elementQualityFromBuffer<ElemId::FACE, MeshType>(
+        mesh, buffer, faceNumber);
+}
+
+/**
+ * @brief Sets the edge quality of the given input `mesh` from the input
+ * quality buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input edge quality.
+ * @param[in] buffer: the input edge quality buffer.
+ * @param[in] edgeNumber: the number of edges contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<EdgeMeshConcept MeshType>
+void edgeQualityFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        edgeNumber)
+{
+    elementQualityFromBuffer<ElemId::EDGE, MeshType>(
+        mesh, buffer, edgeNumber);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_BUFFER_H
