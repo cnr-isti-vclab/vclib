@@ -27,8 +27,6 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include <random>
-
 template<typename ScalarType>
 using EigenRowMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
@@ -60,29 +58,29 @@ void testMeshFromMatrices()
 {
     // Create vertex matrix with a simple cube vertices
     VMatrix vertices(8, 3);
-    vertices << 0.0, 0.0, 0.0,  // vertex 0
-                1.0, 0.0, 0.0,  // vertex 1
-                1.0, 1.0, 0.0,  // vertex 2
-                0.0, 1.0, 0.0,  // vertex 3
-                0.0, 0.0, 1.0,  // vertex 4
-                1.0, 0.0, 1.0,  // vertex 5
-                1.0, 1.0, 1.0,  // vertex 6
-                0.0, 1.0, 1.0;  // vertex 7
+    vertices << 0.0, 0.0, 0.0, // vertex 0
+        1.0, 0.0, 0.0,         // vertex 1
+        1.0, 1.0, 0.0,         // vertex 2
+        0.0, 1.0, 0.0,         // vertex 3
+        0.0, 0.0, 1.0,         // vertex 4
+        1.0, 0.0, 1.0,         // vertex 5
+        1.0, 1.0, 1.0,         // vertex 6
+        0.0, 1.0, 1.0;         // vertex 7
 
     // Create face matrix with 12 triangular faces of the cube
     FMatrix faces(12, 3);
-    faces << 0, 1, 2,  // bottom face - triangle 1
-             0, 2, 3,  // bottom face - triangle 2
-             4, 7, 6,  // top face - triangle 1
-             4, 6, 5,  // top face - triangle 2
-             0, 4, 5,  // front face - triangle 1
-             0, 5, 1,  // front face - triangle 2
-             2, 6, 7,  // back face - triangle 1
-             2, 7, 3,  // back face - triangle 2
-             0, 3, 7,  // left face - triangle 1
-             0, 7, 4,  // left face - triangle 2
-             1, 5, 6,  // right face - triangle 1
-             1, 6, 2;  // right face - triangle 2
+    faces << 0, 1, 2, // bottom face - triangle 1
+        0, 2, 3,      // bottom face - triangle 2
+        4, 7, 6,      // top face - triangle 1
+        4, 6, 5,      // top face - triangle 2
+        0, 4, 5,      // front face - triangle 1
+        0, 5, 1,      // front face - triangle 2
+        2, 6, 7,      // back face - triangle 1
+        2, 7, 3,      // back face - triangle 2
+        0, 3, 7,      // left face - triangle 1
+        0, 7, 4,      // left face - triangle 2
+        1, 5, 6,      // right face - triangle 1
+        1, 6, 2;      // right face - triangle 2
 
     // Test meshFromMatrices function
     MeshType mesh = vcl::meshFromMatrices<MeshType>(vertices, faces);
@@ -120,9 +118,7 @@ void testVertexPositionsFromMatrix()
 
     // Create vertex position matrix
     VMatrix vertices(3, 3);
-    vertices << 0.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                0.5, 1.0, 0.0;
+    vertices << 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 1.0, 0.0;
 
     // Test vertexPositionsFromMatrix with clearBeforeSet = false
     vcl::vertexPositionsFromMatrix(mesh, vertices, false);
@@ -138,13 +134,10 @@ void testVertexPositionsFromMatrix()
 
     // Test with clearBeforeSet = true
     VMatrix newVertices(4, 3);
-    newVertices << 2.0, 0.0, 0.0,
-                   3.0, 0.0, 0.0,
-                   2.5, 1.0, 0.0,
-                   2.5, 0.5, 1.0;
+    newVertices << 2.0, 0.0, 0.0, 3.0, 0.0, 0.0, 2.5, 1.0, 0.0, 2.5, 0.5, 1.0;
 
     vcl::vertexPositionsFromMatrix(mesh, newVertices, true);
-    
+
     REQUIRE(mesh.vertexNumber() == 4);
     for (vcl::uint i = 0; i < 4; ++i) {
         const auto& v = mesh.vertex(i).position();
@@ -157,28 +150,25 @@ void testVertexPositionsFromMatrix()
 template<typename MeshType, typename FMatrix>
 void testFaceIndicesFromMatrix()
 {
-    if constexpr (!vcl::HasFaces<MeshType>) {
-        return; // Skip test for meshes without faces
-    }
+    if constexpr (vcl::HasFaces<MeshType>) {
+        // Create a mesh with vertices
+        MeshType mesh;
+        mesh.addVertices(4);
 
-    // Create a mesh with vertices
-    MeshType mesh;
-    mesh.addVertices(4);
+        // Create face matrix
+        FMatrix faces(2, 3);
+        faces << 0, 1, 2, 0, 2, 3;
 
-    // Create face matrix
-    FMatrix faces(2, 3);
-    faces << 0, 1, 2,
-             0, 2, 3;
+        // Test faceIndicesFromMatrix
+        vcl::faceIndicesFromMatrix(mesh, faces);
 
-    // Test faceIndicesFromMatrix
-    vcl::faceIndicesFromMatrix(mesh, faces);
-
-    // Verify faces
-    REQUIRE(mesh.faceNumber() == 2);
-    for (vcl::uint i = 0; i < 2; ++i) {
-        const auto& f = mesh.face(i);
-        for (vcl::uint j = 0; j < 3; ++j) {
-            REQUIRE(f.vertexIndex(j) == faces(i, j));
+        // Verify faces
+        REQUIRE(mesh.faceNumber() == 2);
+        for (vcl::uint i = 0; i < 2; ++i) {
+            const auto& f = mesh.face(i);
+            for (vcl::uint j = 0; j < 3; ++j) {
+                REQUIRE(f.vertexIndex(j) == faces(i, j));
+            }
         }
     }
 }
@@ -206,25 +196,23 @@ void testVertexSelectionFromRange()
 template<typename MeshType>
 void testFaceSelectionFromRange()
 {
-    if constexpr (!vcl::HasFaces<MeshType>) {
-        return; // Skip test for meshes without faces
+    if constexpr (vcl::HasFaces<MeshType>) {
+        // Create a mesh with vertices and faces
+        MeshType mesh;
+        mesh.addVertices(4);
+        mesh.addFace(0, 1, 2);
+        mesh.addFace(0, 2, 3);
+
+        // Create selection vector
+        std::vector<bool> selection = {true, false};
+
+        // Test faceSelectionFromRange
+        vcl::faceSelectionFromRange(mesh, selection);
+
+        // Verify selection
+        REQUIRE(mesh.face(0).selected() == true);
+        REQUIRE(mesh.face(1).selected() == false);
     }
-
-    // Create a mesh with vertices and faces
-    MeshType mesh;
-    mesh.addVertices(4);
-    mesh.addFace(0, 1, 2);
-    mesh.addFace(0, 2, 3);
-
-    // Create selection vector
-    std::vector<bool> selection = {true, false};
-
-    // Test faceSelectionFromRange
-    vcl::faceSelectionFromRange(mesh, selection);
-
-    // Verify selection
-    REQUIRE(mesh.face(0).selected() == true);
-    REQUIRE(mesh.face(1).selected() == false);
 }
 
 template<typename MeshType, typename NMatrix>
@@ -236,9 +224,7 @@ void testVertexNormalsFromMatrix()
 
     // Create normals matrix
     NMatrix normals(3, 3);
-    normals << 0.0, 0.0, 1.0,
-               1.0, 0.0, 0.0,
-               0.0, 1.0, 0.0;
+    normals << 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0;
 
     // Test vertexNormalsFromMatrix
     vcl::vertexNormalsFromMatrix(mesh, normals);
@@ -262,9 +248,9 @@ void testVertexColorsFromMatrix()
 
     // Create colors matrix (3 columns - RGB)
     CMatrix colors(3, 3);
-    colors << 255, 0, 0,    // red
-              0, 255, 0,    // green
-              0, 0, 255;    // blue
+    colors << 255, 0, 0, // red
+        0, 255, 0,       // green
+        0, 0, 255;       // blue
 
     // Test elementColorsFromMatrix for vertices
     vcl::elementColorsFromMatrix<vcl::ElemId::VERTEX>(mesh, colors);
@@ -282,25 +268,77 @@ void testVertexColorsFromMatrix()
     REQUIRE(mesh.vertex(3).color().blue() == 255);
 }
 
+template<typename MeshType>
+void testVertexQualityFromRange()
+{
+    using QualityType = MeshType::VertexType::QualityType;
+
+    // Create a mesh with vertices
+    MeshType mesh;
+    mesh.addVertices(4);
+    mesh.deleteVertex(2); // keep 3 vertices
+
+    // Create quality vector
+    std::vector<QualityType> quality = {1.5, 2.7, 3.8};
+
+    // Test vertexQualityFromRange
+    vcl::vertexQualityFromRange(mesh, quality);
+
+    // Verify quality values
+    vcl::uint c = 0;
+    REQUIRE(mesh.isPerVertexQualityEnabled());
+    REQUIRE(mesh.vertex(0).quality() == quality[c++]);
+    REQUIRE(mesh.vertex(1).quality() == quality[c++]);
+    REQUIRE(mesh.vertex(3).quality() == quality[c++]);
+}
+
+template<typename MeshType>
+void testFaceQualityFromRange()
+{
+    if constexpr (vcl::HasFaces<MeshType>) {
+        using QualityType = MeshType::FaceType::QualityType;
+
+        // Create a mesh with vertices and faces
+        MeshType mesh;
+        mesh.addVertices(4);
+        mesh.addFace(0, 1, 2);
+        mesh.addFace(0, 2, 3);
+
+        // Create quality vector
+        std::vector<QualityType> quality = {0.5, 1.2};
+
+        // Test faceQualityFromRange
+        vcl::faceQualityFromRange(mesh, quality);
+
+        // Verify quality values
+        vcl::uint c = 0;
+        REQUIRE(mesh.isPerFaceQualityEnabled());
+        REQUIRE(mesh.face(0).quality() == quality[c++]);
+        REQUIRE(mesh.face(1).quality() == quality[c++]);
+    }
+}
+
 // Test cases
 
-TEMPLATE_TEST_CASE(
-    "Import mesh from matrices",
-    "",
-    vcl::TriMeshf,
-    vcl::TriMesh)
+TEMPLATE_TEST_CASE("Import mesh from matrices", "", vcl::TriMeshf, vcl::TriMesh)
 {
     using MeshType = TestType;
     using Scalar   = MeshType::VertexType::PositionType::ScalarType;
 
     SECTION("Row major matrices")
     {
-        testMeshFromMatrices<MeshType, Eigen3RowMatrix<Scalar>, EigenRowMatrix<int>>();
+        testMeshFromMatrices<
+            MeshType,
+            Eigen3RowMatrix<Scalar>,
+            EigenRowMatrix<int>>();
     }
 
     SECTION("Column major matrices")
     {
-        testMeshFromMatrices<MeshType, Eigen3ColMatrix<Scalar>, EigenColMatrix<int>>();
+        testMeshFromMatrices<
+            MeshType,
+            Eigen3ColMatrix<Scalar>,
+            EigenColMatrix<int>>();
     }
 }
 
@@ -414,6 +452,30 @@ TEMPLATE_TEST_CASE(
     }
 }
 
+TEMPLATE_TEST_CASE(
+    "Import vertex quality from range",
+    "",
+    vcl::TriMeshf,
+    vcl::TriMesh,
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+    testVertexQualityFromRange<MeshType>();
+}
+
+TEMPLATE_TEST_CASE(
+    "Import face quality from range",
+    "",
+    vcl::TriMeshf,
+    vcl::TriMesh,
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+    testFaceQualityFromRange<MeshType>();
+}
+
 TEST_CASE("Import mesh - error handling")
 {
     vcl::TriMeshf mesh;
@@ -422,9 +484,7 @@ TEST_CASE("Import mesh - error handling")
     {
         // Matrix with wrong number of columns (should be 3)
         Eigen::MatrixXf wrongVertices(3, 2);
-        wrongVertices << 0.0, 0.0,
-                         1.0, 0.0,
-                         0.5, 1.0;
+        wrongVertices << 0.0, 0.0, 1.0, 0.0, 0.5, 1.0;
 
         REQUIRE_THROWS_AS(
             vcl::vertexPositionsFromMatrix(mesh, wrongVertices),
@@ -446,9 +506,7 @@ TEST_CASE("Import mesh - error handling")
         mesh.addVertices(3);
         // Matrix with wrong number of columns (should be 3)
         Eigen::MatrixXf wrongNormals(3, 2);
-        wrongNormals << 0.0, 0.0,
-                        1.0, 0.0,
-                        0.0, 1.0;
+        wrongNormals << 0.0, 0.0, 1.0, 0.0, 0.0, 1.0;
 
         REQUIRE_THROWS_AS(
             vcl::vertexNormalsFromMatrix(mesh, wrongNormals),
@@ -460,12 +518,11 @@ TEST_CASE("Import mesh - error handling")
         mesh.addVertices(3);
         // Matrix with wrong number of columns (should be 3 or 4)
         Eigen::MatrixXi wrongColors(3, 2);
-        wrongColors << 255, 0,
-                       0, 255,
-                       0, 0;
+        wrongColors << 255, 0, 0, 255, 0, 0;
 
         REQUIRE_THROWS_AS(
-            vcl::elementColorsFromMatrix<vcl::ElemId::VERTEX>(mesh, wrongColors),
+            vcl::elementColorsFromMatrix<vcl::ElemId::VERTEX>(
+                mesh, wrongColors),
             vcl::WrongSizeException);
     }
 
@@ -474,11 +531,21 @@ TEST_CASE("Import mesh - error handling")
         mesh.addVertices(3);
         // Matrix with wrong number of rows (should be 3)
         Eigen::MatrixXi wrongColors(2, 3);
-        wrongColors << 255, 0, 0,
-                       0, 255, 0;
+        wrongColors << 255, 0, 0, 0, 255, 0;
 
         REQUIRE_THROWS_AS(
-            vcl::elementColorsFromMatrix<vcl::ElemId::VERTEX>(mesh, wrongColors),
+            vcl::elementColorsFromMatrix<vcl::ElemId::VERTEX>(
+                mesh, wrongColors),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong quality range size")
+    {
+        mesh.addVertices(3);
+        std::vector<double> wrongQuality = {1.0, 2.0}; // size 2, should be 3
+
+        REQUIRE_THROWS_AS(
+            vcl::vertexQualityFromRange(mesh, wrongQuality),
             vcl::WrongSizeException);
     }
 }
