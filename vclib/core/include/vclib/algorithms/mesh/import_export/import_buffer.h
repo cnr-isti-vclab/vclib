@@ -1047,7 +1047,7 @@ void edgeQualityFromBuffer(
 }
 
 /**
- * @brief Sets the vertex tex coords of the given input `mesh` from the input
+ * @brief Sets the vertex texcoords of the given input `mesh` from the input
  * buffer, that is expected to be a contiguous array of scalars, where each row
  * contains the 2 components of the texture coordinates of a vertex.
  *
@@ -1057,14 +1057,14 @@ void edgeQualityFromBuffer(
  * The number of elements of the input buffer must be equal to the number of
  * vertices of the mesh, otherwise an exception is thrown.
  *
- * The function enables the per-vertex tex coords component if it is not already
+ * The function enables the per-vertex texcoords component if it is not already
  * enabled.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  *
- * @param[in/out] mesh: the mesh on which import the input tex coords.
- * @param[in] buffer: a contiguous array containing the tex coords of the
+ * @param[in/out] mesh: the mesh on which import the input texcoords.
+ * @param[in] buffer: a contiguous array containing the texcoords of the
  * vertices of the mesh.
  * @param[in] vertexNumber: the number of vertices contained in the input
  * buffer.
@@ -1105,6 +1105,50 @@ void vertexTexCoordsFromBuffer(
         t.u() = at(buffer, i, 0, ROW_NUM, 2, storage);
         t.v() = at(buffer, i, 1, ROW_NUM, 2, storage);
 
+        ++i;
+    }
+}
+
+/**
+ * @brief Sets the vertex texcoord indices of the given input `mesh` from the
+ * input texcoord indices buffer.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex texcoords component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex texcoord
+ * indices.
+ * @param[in] buffer: the input vertex texcoord indices buffer.
+ * @param[in] vertexNumber: the number of vertices contained in the input
+ * buffer.
+ *
+ * @ingroup import_buffer
+ */
+template<MeshConcept MeshType>
+void vertexTexCoordIndicesFromBuffer(
+    MeshType&   mesh,
+    const auto* buffer,
+    uint        vertexNumber)
+{
+    if (vertexNumber != mesh.vertexNumber())
+        throw WrongSizeException(
+            "The input vertexNumber must have the same number of elements "
+            "as the number of vertices in the mesh\n"
+            "Number of vertices in the mesh: " +
+            std::to_string(mesh.vertexNumber()) +
+            "\nNumber of input vertex number: " +
+            std::to_string(vertexNumber));
+
+    enableIfPerVertexTexCoordOptional(mesh);
+    requirePerVertexTexCoord(mesh);
+
+    for (uint i = 0; auto& t : mesh.vertices()| views::texCoords) {
+        t.index() = buffer[i];
         ++i;
     }
 }

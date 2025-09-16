@@ -817,21 +817,21 @@ void edgeQualityFromRange(MeshType& mesh, R&& quality)
 }
 
 /**
- * @brief Sets the vertex tex coords of the given input `mesh` from the input
- * vertex tex coords matrix.
+ * @brief Sets the vertex texcoords of the given input `mesh` from the input
+ * vertex texcoords matrix.
  *
  * The number of rows of the input matrix must be equal to the number of
  * vertices of the mesh, otherwise an exception is thrown.
  *
- * The function enables the per-vertex tex coords component if it is not already
+ * The function enables the per-vertex texcoords component if it is not already
  * enabled.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @tparam VTMatrix: the type of the input vertex tex coords matrix. It must
+ * @tparam VTMatrix: the type of the input vertex texcoords matrix. It must
  * satisfy the MatrixConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex tex coords.
- * @param[in] vertexTexCoords: a \#V*2 matrix containing the tex coords of the
+ * @param[in/out] mesh: the mesh on which import the input vertex texcoords.
+ * @param[in] vertexTexCoords: a \#V*2 matrix containing the texcoords of the
  * vertices of the mesh.
  *
  * @ingroup import_matrix
@@ -843,10 +843,49 @@ void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
 
     if (vertexTexCoords.cols() != 2)
         throw WrongSizeException(
-            "The input vertex tex coords matrix must have 2 columns");
+            "The input vertex texcoords matrix must have 2 columns");
 
     vertexTexCoordsFromBuffer(
         mesh, vertexTexCoords.data(), vertexTexCoords.rows(), stg);
+}
+
+/**
+ * @brief Sets the vertex texcoord indices of the given input `mesh` from the
+ * input texcoord indices range (that could be anything that satisfies the Range
+ * concept: e.g. std::vector<uint>, std::array<uint, N>, Eigen::VectorXi,
+ * etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex texcoord component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex texcoord
+ * indices.
+ * @param[in] texCoordIndices: the input vertex texcoord indices range.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, Range R>
+void vertexTexCoordIndicesFromRange(MeshType& mesh, R&& texCoordIndices)
+{
+    if (std::ranges::size(texCoordIndices) != mesh.vertexNumber())
+        throw WrongSizeException(
+            "The input quality range must have the same number of elements "
+            "as the number of vertices in the mesh");
+
+    enableIfPerVertexTexCoordOptional(mesh);
+    requirePerVertexTexCoord(mesh);
+
+    auto tt = texCoordIndices.begin();
+    for (auto& t : mesh.vertices() | views::texCoords) {
+        t.index() = *tt;
+        ++tt;
+    }
 }
 
 } // namespace vcl
