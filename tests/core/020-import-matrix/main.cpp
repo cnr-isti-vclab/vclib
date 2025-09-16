@@ -173,6 +173,54 @@ void testFaceIndicesFromMatrix()
     }
 }
 
+template<typename MeshType, typename FMatrix>
+void testPolyFaceIndicesFromMatrix()
+{
+    if constexpr (vcl::HasFaces<MeshType> && vcl::HasPolygons<MeshType>) {
+        // Create a mesh with vertices
+        MeshType mesh;
+        mesh.addVertices(6);
+
+        // Create face matrix with faces of different sizes
+        // Face 0: triangle (0, 1, 2)
+        // Face 1: quadrilateral (0, 2, 3, 4) 
+        // Face 2: pentagon (0, 4, 5, 1, 2)
+        // Use UINT_NULL (-1) to indicate end of face for smaller faces
+        FMatrix faces(3, 5);
+        faces << 0, 1, 2, vcl::UINT_NULL, vcl::UINT_NULL,  // triangle
+                 0, 2, 3, 4, vcl::UINT_NULL,                // quadrilateral
+                 0, 4, 5, 1, 2;                             // pentagon
+
+        // Test faceIndicesFromMatrix
+        vcl::faceIndicesFromMatrix(mesh, faces);
+
+        // Verify faces
+        REQUIRE(mesh.faceNumber() == 3);
+        
+        // Verify faces using loops
+        for (vcl::uint i = 0; i < 3; ++i) {
+            const auto& f = mesh.face(i);
+            vcl::uint expectedVertexCount = 0;
+            
+            // Count non-null vertices in the row to get expected vertex count
+            for (vcl::uint j = 0; j < faces.cols(); ++j) {
+                if (faces(i, j) != vcl::UINT_NULL) {
+                    expectedVertexCount++;
+                }
+            }
+            
+            REQUIRE(f.vertexNumber() == expectedVertexCount);
+            
+            // Check vertex indices (only non-null ones)
+            for (vcl::uint j = 0; j < faces.cols(); ++j) {
+                if (faces(i, j) != vcl::UINT_NULL) {
+                    REQUIRE(f.vertexIndex(j) == faces(i, j));
+                }
+            }
+        }
+    }
+}
+
 template<typename MeshType>
 void testVertexSelectionFromRange()
 {
@@ -326,7 +374,7 @@ void testVertexTexCoords()
     mesh.addVertices(4);
     mesh.deleteVertex(2); // keep 3 vertices
 
-    // Test 1: Import texture coordinates from matrix
+    // Test: Import texture coordinates from matrix and indices from range
     // Create texture coordinates matrix (3 vertices, 2 columns for UV)
     TMatrix texCoords(3, 2);
     texCoords << 0.0, 0.0, // vertex 0: (0,0)
@@ -336,27 +384,14 @@ void testVertexTexCoords()
     // Test vertexTexCoordsFromMatrix
     vcl::vertexTexCoordsFromMatrix(mesh, texCoords);
 
-    // Verify texture coordinates
-    vcl::uint c = 0;
-    REQUIRE(mesh.isPerVertexTexCoordEnabled());
-    REQUIRE(mesh.vertex(0).texCoord().u() == texCoords(c, 0));
-    REQUIRE(mesh.vertex(0).texCoord().v() == texCoords(c, 1));
-    c++;
-    REQUIRE(mesh.vertex(1).texCoord().u() == texCoords(c, 0));
-    REQUIRE(mesh.vertex(1).texCoord().v() == texCoords(c, 1));
-    c++;
-    REQUIRE(mesh.vertex(3).texCoord().u() == texCoords(c, 0));
-    REQUIRE(mesh.vertex(3).texCoord().v() == texCoords(c, 1));
-
-    // Test 2: Import texture coordinate indices from range
     // Create texture coordinate indices vector
     std::vector<vcl::uint> texCoordIndices = {10, 20, 30};
 
     // Test vertexTexCoordIndicesFromRange
     vcl::vertexTexCoordIndicesFromRange(mesh, texCoordIndices);
 
-    // Verify texture coordinate indices (coordinates should remain unchanged)
-    c = 0;
+    // Verify texture coordinate and indices
+    vcl::uint c = 0;
     REQUIRE(mesh.isPerVertexTexCoordEnabled());
     REQUIRE(mesh.vertex(0).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(0).texCoord().v() == texCoords(c, 1));
@@ -435,6 +470,25 @@ TEMPLATE_TEST_CASE(
     SECTION("Column major matrix")
     {
         testFaceIndicesFromMatrix<MeshType, EigenColMatrix<int>>();
+    }
+}
+
+TEMPLATE_TEST_CASE(
+    "Import polygonal face indices from matrix",
+    "",
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+
+    SECTION("Row major matrix - mixed face sizes")
+    {
+        testPolyFaceIndicesFromMatrix<MeshType, EigenRowMatrix<int>>();
+    }
+
+    SECTION("Column major matrix - mixed face sizes")
+    {
+        testPolyFaceIndicesFromMatrix<MeshType, EigenColMatrix<int>>();
     }
 }
 
