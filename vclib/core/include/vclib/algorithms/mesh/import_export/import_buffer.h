@@ -1153,6 +1153,80 @@ void vertexTexCoordIndicesFromBuffer(
     }
 }
 
+/**
+ * @brief Sets the face wedge texcoords of the given input `mesh` from the input
+ * buffer, that is expected to be a contiguous array of scalars, where each row
+ * contains the 2*largetFaceSize components of the wedge texture coordinates of
+ * a face.
+ *
+ * The layout of the buffer can be either row-major or column-major, as
+ * specified by the `storage` argument. The default is row-major.
+ *
+ * The number of elements (rows) of the input buffer must be equal to the number
+ * of faces of the mesh, otherwise an exception is thrown.
+ *
+ * The number of columns of the input buffer must be equal to 2*largestFaceSize,
+ * where largestFaceSize is the size of the largest face of the mesh. If a face
+ * has a size smaller than largestFaceSize, only the first 2*faceSize columns of
+ * the corresponding row are used.
+ *
+ * The function enables the per-face wedge texcoords component if it is not
+ * already enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in/out] mesh: the mesh on which import the input wedge texcoords.
+ * @param[in] buffer: a contiguous array containing the wedge texcoords of the
+ * faces of the mesh.
+ * @param[in] faceNumber: the number of faces contained in the input buffer.
+ * @param[in] largestFaceSize: the largest size of the faces, that corresponds
+ * to the number of columns of the input buffer divided by 2 (u and v).
+ * @param[in] storage: the storage type of the input buffer. It can be either
+ * row-major or column-major.
+ * @param[in] rowNumber: if the storage type is column-major, this parameter
+ * specifies the number of rows in the input buffer. If it is not specified
+ * (default), it is assumed to be equal to `vertexNumber`.
+ *
+ * @ingroup import_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceWedgeTexCoordsFromBuffer(
+    MeshType&         mesh,
+    const auto*       buffer,
+    uint              faceNumber,
+    uint              largestFaceSize = 3,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    using namespace detail;
+
+    const uint ROW_NUM = rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
+    const uint COL_NUM = largestFaceSize * 2;
+
+    if (faceNumber != mesh.faceNumber())
+        throw WrongSizeException(
+            "The input faceNumber must have the same number of elements "
+            "as the number of faces in the mesh\n"
+            "Number of faces in the mesh: " +
+            std::to_string(mesh.faceNumber()) +
+            "\nNumber of input face number: " +
+            std::to_string(faceNumber));
+
+    enableIfPerFaceWedgeTexCoordsOptional(mesh);
+    requirePerFaceWedgeTexCoords(mesh);
+
+    for (uint i = 0; auto& f : mesh.faces()) {
+        for (uint j = 0; auto& w : f.wedgeTexCoords()) {
+            if (j < largestFaceSize) {
+                w.u() = at(buffer, i, 2 * j + 0, ROW_NUM, COL_NUM, storage);
+                w.v() = at(buffer, i, 2 * j + 1, ROW_NUM, COL_NUM, storage);
+            }
+            ++j;
+        }
+    }
+};
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_BUFFER_H

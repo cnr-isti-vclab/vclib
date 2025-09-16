@@ -888,6 +888,46 @@ void vertexTexCoordIndicesFromRange(MeshType& mesh, R&& texCoordIndices)
     }
 }
 
+/**
+ * @brief Sets the face wedge texcoords of the given input `mesh` from the input
+ * face wedge texcoords matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The number of columns is expected to be equal to 2 * K, where K is the
+ * number of vertices of the largest face of the mesh. If the mesh has fixed
+ * face size (e.g. triangle mesh, quad mesh, etc.), K is equal to the number
+ * of vertices of each face of the mesh.
+ *
+ * The function enables the per-face wedge texcoords component if it is not
+ * already enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam FTMatrix: the type of the input face wedge texcoords matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input face wedge texcoords.
+ * @param[in] faceWedgeTexCoords: a \#F*(K*2) matrix containing the wedge
+ * texcoords of the faces of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, MatrixConcept FTMatrix>
+void faceWedgeTexCoordsFromMatrix(
+    MeshType&       mesh,
+    const FTMatrix& faceWedgeTexCoords)
+{
+    MatrixStorageType stg = matrixStorageType<FTMatrix>();
+
+    faceWedgeTexCoordsFromBuffer(
+        mesh,
+        faceWedgeTexCoords.data(),
+        faceWedgeTexCoords.rows(),
+        faceWedgeTexCoords.cols() / 2,
+        stg);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
