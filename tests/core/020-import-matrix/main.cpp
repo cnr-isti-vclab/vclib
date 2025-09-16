@@ -183,34 +183,34 @@ void testPolyFaceIndicesFromMatrix()
 
         // Create face matrix with faces of different sizes
         // Face 0: triangle (0, 1, 2)
-        // Face 1: quadrilateral (0, 2, 3, 4) 
+        // Face 1: quadrilateral (0, 2, 3, 4)
         // Face 2: pentagon (0, 4, 5, 1, 2)
         // Use UINT_NULL (-1) to indicate end of face for smaller faces
         FMatrix faces(3, 5);
-        faces << 0, 1, 2, vcl::UINT_NULL, vcl::UINT_NULL,  // triangle
-                 0, 2, 3, 4, vcl::UINT_NULL,                // quadrilateral
-                 0, 4, 5, 1, 2;                             // pentagon
+        faces << 0, 1, 2, vcl::UINT_NULL, vcl::UINT_NULL, // triangle
+            0, 2, 3, 4, vcl::UINT_NULL,                   // quadrilateral
+            0, 4, 5, 1, 2;                                // pentagon
 
         // Test faceIndicesFromMatrix
         vcl::faceIndicesFromMatrix(mesh, faces);
 
         // Verify faces
         REQUIRE(mesh.faceNumber() == 3);
-        
+
         // Verify faces using loops
         for (vcl::uint i = 0; i < 3; ++i) {
-            const auto& f = mesh.face(i);
-            vcl::uint expectedVertexCount = 0;
-            
+            const auto& f                   = mesh.face(i);
+            vcl::uint   expectedVertexCount = 0;
+
             // Count non-null vertices in the row to get expected vertex count
             for (vcl::uint j = 0; j < faces.cols(); ++j) {
                 if (faces(i, j) != vcl::UINT_NULL) {
                     expectedVertexCount++;
                 }
             }
-            
+
             REQUIRE(f.vertexNumber() == expectedVertexCount);
-            
+
             // Check vertex indices (only non-null ones)
             for (vcl::uint j = 0; j < faces.cols(); ++j) {
                 if (faces(i, j) != vcl::UINT_NULL) {
@@ -378,8 +378,8 @@ void testVertexTexCoords()
     // Create texture coordinates matrix (3 vertices, 2 columns for UV)
     TMatrix texCoords(3, 2);
     texCoords << 0.0, 0.0, // vertex 0: (0,0)
-                 1.0, 0.0, // vertex 1: (1,0) 
-                 0.5, 1.0; // vertex 3: (0.5,1)
+        1.0, 0.0,          // vertex 1: (1,0)
+        0.5, 1.0;          // vertex 3: (0.5,1)
 
     // Test vertexTexCoordsFromMatrix
     vcl::vertexTexCoordsFromMatrix(mesh, texCoords);
@@ -404,6 +404,114 @@ void testVertexTexCoords()
     REQUIRE(mesh.vertex(3).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(3).texCoord().v() == texCoords(c, 1));
     REQUIRE(mesh.vertex(3).texCoord().index() == texCoordIndices[c]);
+}
+
+template<typename MeshType, typename TMatrix>
+void testFaceWedgeTexCoords()
+{
+    if constexpr (vcl::HasFaces<MeshType>) {
+        // Create a mesh with vertices and triangular faces
+        MeshType mesh;
+        mesh.addVertices(4);
+        mesh.addFace(0, 1, 2); // face 0
+        mesh.addFace(0, 2, 3); // face 1
+
+        // Create wedge texture coordinates matrix
+        // For triangle meshes: 2 faces * 3 vertices per face * 2 components
+        // (UV) = 2x6 matrix
+        TMatrix wedgeTexCoords(2, 6);
+        // Face 0: vertex 0 (0.0, 0.0), vertex 1 (1.0, 0.0), vertex 2 (0.5, 1.0)
+        // Face 1: vertex 0 (0.2, 0.1), vertex 2 (0.7, 0.9), vertex 3 (0.9, 0.8)
+        wedgeTexCoords << 0.0, 0.0, 1.0, 0.0, 0.5, 1.0, // face 0
+            0.2, 0.1, 0.7, 0.9, 0.9, 0.8;               // face 1
+
+        // Test faceWedgeTexCoordsFromMatrix
+        vcl::faceWedgeTexCoordsFromMatrix(mesh, wedgeTexCoords);
+
+        // Create wedge texture coordinate indices
+        // For triangle meshes: 2 faces = 2 indices
+        std::vector<vcl::uint> wedgeTexCoordIndices = {0, 1};
+
+        // Test faceWedgeTexCoordIndicesFromRange
+        vcl::faceWedgeTexCoordIndicesFromRange(mesh, wedgeTexCoordIndices);
+
+        // Verify wedge texture coordinates and indices
+        REQUIRE(mesh.isPerFaceWedgeTexCoordsEnabled());
+
+        for (vcl::uint i = 0; const auto& f : mesh.faces()) {
+            for (vcl::uint j = 0; const auto& w : f.wedgeTexCoords()) {
+                REQUIRE(w.u() == wedgeTexCoords(i, j++));
+                REQUIRE(w.v() == wedgeTexCoords(i, j++));
+            }
+            REQUIRE(f.textureIndex() == wedgeTexCoordIndices[i++]);
+        }
+    }
+}
+
+template<typename MeshType, typename TMatrix>
+void testPolyFaceWedgeTexCoords()
+{
+    if constexpr (vcl::HasPolygons<MeshType>) {
+        // Create a mesh with vertices and mixed faces
+        MeshType mesh;
+        mesh.addVertices(6);
+
+        // Add a triangle face
+        std::vector<vcl::uint> tri = {0, 1, 2};
+        mesh.addFace(tri);
+
+        // Add a quadrilateral face
+        std::vector<vcl::uint> quad = {0, 2, 3, 4};
+        mesh.addFace(quad);
+
+        // Create wedge texture coordinates matrix
+        // Triangle: 3 vertices * 2 coords = 6 values
+        // Quad: 4 vertices * 2 coords = 8 values
+        // Total: 8 columns
+        // For polymesh: each row has variable number of coordinates
+        TMatrix wedgeTexCoords(
+            2, 8); // 2 faces, max 4 vertices per face * 2 = 8 cols
+        wedgeTexCoords.setConstant(-1); // Initialize with invalid values
+
+        // Face 0 (triangle): 3 vertices
+        wedgeTexCoords(0, 0) = 0.0;
+        wedgeTexCoords(0, 1) = 0.0; // vertex 0
+        wedgeTexCoords(0, 2) = 1.0;
+        wedgeTexCoords(0, 3) = 0.0; // vertex 1
+        wedgeTexCoords(0, 4) = 0.5;
+        wedgeTexCoords(0, 5) = 1.0; // vertex 2
+        // Leave columns 6,7 as -1 (unused for triangle)
+
+        // Face 1 (quad): 4 vertices
+        wedgeTexCoords(1, 0) = 0.1;
+        wedgeTexCoords(1, 1) = 0.1; // vertex 0
+        wedgeTexCoords(1, 2) = 0.8;
+        wedgeTexCoords(1, 3) = 0.2; // vertex 2
+        wedgeTexCoords(1, 4) = 0.9;
+        wedgeTexCoords(1, 5) = 0.9; // vertex 3
+        wedgeTexCoords(1, 6) = 0.2;
+        wedgeTexCoords(1, 7) = 0.8; // vertex 4
+
+        // Test faceWedgeTexCoordsFromMatrix
+        vcl::faceWedgeTexCoordsFromMatrix(mesh, wedgeTexCoords);
+
+        // Create wedge texture coordinate indices
+        std::vector<vcl::uint> wedgeTexCoordIndices = {0, 1};
+
+        // Test faceWedgeTexCoordIndicesFromRange
+        vcl::faceWedgeTexCoordIndicesFromRange(mesh, wedgeTexCoordIndices);
+
+        // Verify wedge texture coordinates and indices
+        REQUIRE(mesh.isPerFaceWedgeTexCoordsEnabled());
+
+        for (vcl::uint i = 0; const auto& f : mesh.faces()) {
+            for (vcl::uint j = 0; const auto& w : f.wedgeTexCoords()) {
+                REQUIRE(w.u() == wedgeTexCoords(i, j++));
+                REQUIRE(w.v() == wedgeTexCoords(i, j++));
+            }
+            REQUIRE(f.textureIndex() == wedgeTexCoordIndices[i++]);
+        }
+    }
 }
 
 // Test cases
@@ -596,14 +704,66 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Row major matrix")
     {
-        using Matrix = Eigen::Matrix<Scalar, Eigen::Dynamic, 2, Eigen::RowMajor>;
+        using Matrix =
+            Eigen::Matrix<Scalar, Eigen::Dynamic, 2, Eigen::RowMajor>;
         testVertexTexCoords<MeshType, Matrix>();
     }
 
     SECTION("Column major matrix")
     {
-        using Matrix = Eigen::Matrix<Scalar, Eigen::Dynamic, 2, Eigen::ColMajor>;
+        using Matrix =
+            Eigen::Matrix<Scalar, Eigen::Dynamic, 2, Eigen::ColMajor>;
         testVertexTexCoords<MeshType, Matrix>();
+    }
+}
+
+TEMPLATE_TEST_CASE(
+    "Import face wedge texture coordinates and indices",
+    "",
+    vcl::TriMeshf,
+    vcl::TriMesh,
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+
+    SECTION("Row major matrix - triangular faces")
+    {
+        using Matrix = Eigen::
+            Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+        testFaceWedgeTexCoords<MeshType, Matrix>();
+    }
+
+    SECTION("Column major matrix - triangular faces")
+    {
+        using Matrix = Eigen::
+            Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+        testFaceWedgeTexCoords<MeshType, Matrix>();
+    }
+}
+
+TEMPLATE_TEST_CASE(
+    "Import polygonal face wedge texture coordinates and indices",
+    "",
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+    using Scalar   = MeshType::VertexType::PositionType::ScalarType;
+
+    SECTION("Row major matrix - mixed face sizes")
+    {
+        using Matrix = Eigen::
+            Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+        testPolyFaceWedgeTexCoords<MeshType, Matrix>();
+    }
+
+    SECTION("Column major matrix - mixed face sizes")
+    {
+        using Matrix = Eigen::
+            Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+        testPolyFaceWedgeTexCoords<MeshType, Matrix>();
     }
 }
 
@@ -707,10 +867,38 @@ TEST_CASE("Import mesh - error handling")
     SECTION("Wrong texture coordinate indices range size")
     {
         mesh.addVertices(3);
-        std::vector<vcl::uint> wrongTexCoordIndices = {0, 1}; // size 2, should be 3
+        std::vector<vcl::uint> wrongTexCoordIndices = {
+            0, 1}; // size 2, should be 3
 
         REQUIRE_THROWS_AS(
             vcl::vertexTexCoordIndicesFromRange(mesh, wrongTexCoordIndices),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong face wedge texture coordinates matrix size - wrong rows")
+    {
+        mesh.addVertices(4);
+        mesh.addFace(0, 1, 2);
+        mesh.addFace(0, 2, 3); // 2 triangular faces
+        // Matrix with wrong number of rows (should be 2)
+        Eigen::MatrixXf wrongWedgeTexCoords(1, 6);
+        wrongWedgeTexCoords << 0.0, 0.0, 1.0, 0.0, 0.5, 1.0;
+
+        REQUIRE_THROWS_AS(
+            vcl::faceWedgeTexCoordsFromMatrix(mesh, wrongWedgeTexCoords),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong face wedge texture coordinate indices range size")
+    {
+        mesh.addVertices(3);
+        mesh.addFace(0, 1, 2); // 1 triangular face, needs 3 indices
+        std::vector<vcl::uint> wrongWedgeTexCoordIndices = {
+            0, 1}; // size 2, should be 1
+
+        REQUIRE_THROWS_AS(
+            vcl::faceWedgeTexCoordIndicesFromRange(
+                mesh, wrongWedgeTexCoordIndices),
             vcl::WrongSizeException);
     }
 }

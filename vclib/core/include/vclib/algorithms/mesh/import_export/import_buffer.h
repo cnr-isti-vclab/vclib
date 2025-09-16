@@ -1224,6 +1224,7 @@ void faceWedgeTexCoordsFromBuffer(
             }
             ++j;
         }
+        ++i;
     }
 };
 
