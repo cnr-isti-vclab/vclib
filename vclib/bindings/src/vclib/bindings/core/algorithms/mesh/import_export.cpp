@@ -32,6 +32,8 @@ namespace vcl::bind {
 
 void initImportExportAlgorithms(pybind11::module& m)
 {
+    using EigenMatrixX4ui8 = Eigen::Matrix<std::uint8_t, Eigen::Dynamic, 4>;
+
     namespace py = pybind11;
     using namespace py::literals;
 
@@ -70,7 +72,7 @@ void initImportExportAlgorithms(pybind11::module& m)
         m.def(
             "vertex_colors_matrix",
             [](const MeshType& m) {
-                return vcl::vertexColorsMatrix<Eigen::MatrixX4i>(m);
+                return vcl::vertexColorsMatrix<EigenMatrixX4ui8>(m);
             },
             "mesh"_a);
 
@@ -165,6 +167,30 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "vertex_normals"_a);
+
+        m.def(
+            "vertex_colors_from_matrix",
+            [](MeshType& mesh, const EigenMatrixX4ui8& vertexColors) {
+                return vcl::vertexColorsFromMatrix(mesh, vertexColors);
+            },
+            "mesh"_a,
+            "vertex_colors"_a);
+
+        m.def(
+            "vertex_colors_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX4i& vertexColors) {
+                return vcl::vertexColorsFromMatrix(mesh, vertexColors);
+            },
+            "mesh"_a,
+            "vertex_colors"_a);
+
+        m.def(
+            "vertex_colors_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX4d& vertexColors) {
+                return vcl::vertexColorsFromMatrix(mesh, vertexColors);
+            },
+            "mesh"_a,
+            "vertex_colors"_a);
     };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -248,7 +274,7 @@ void initImportExportAlgorithms(pybind11::module& m)
         m.def(
             "face_colors_matrix",
             [](const MeshType& m) {
-                return vcl::faceColorsMatrix<Eigen::MatrixX4i>(m);
+                return vcl::faceColorsMatrix<EigenMatrixX4ui8>(m);
             },
             "mesh"_a);
 
@@ -318,6 +344,30 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "face_normals"_a);
+
+        m.def(
+            "face_colors_from_matrix",
+            [](MeshType& mesh, const EigenMatrixX4ui8& faceColors) {
+                return vcl::faceColorsFromMatrix(mesh, faceColors);
+            },
+            "mesh"_a,
+            "face_colors"_a);
+
+        m.def(
+            "face_colors_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX4i& faceColors) {
+                return vcl::faceColorsFromMatrix(mesh, faceColors);
+            },
+            "mesh"_a,
+            "face_colors"_a);
+
+        m.def(
+            "face_colors_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX4d& faceColors) {
+                return vcl::faceColorsFromMatrix(mesh, faceColors);
+            },
+            "mesh"_a,
+            "face_colors"_a);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
@@ -350,7 +400,7 @@ void initImportExportAlgorithms(pybind11::module& m)
         m.def(
             "edge_colors_matrix",
             [](const MeshType& m) {
-                return vcl::edgeColorsMatrix<Eigen::MatrixX4i>(m);
+                return vcl::edgeColorsMatrix<EigenMatrixX4ui8>(m);
             },
             "mesh"_a);
 
@@ -420,6 +470,30 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "edge_normals"_a);
+
+        m.def(
+            "edge_colors_from_matrix",
+            [](MeshType& mesh, const EigenMatrixX4ui8& edgeColors) {
+                return vcl::edgeColorsFromMatrix(mesh, edgeColors);
+            },
+            "mesh"_a,
+            "edge_colors"_a);
+
+        m.def(
+            "edge_colors_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX4i& edgeColors) {
+                return vcl::edgeColorsFromMatrix(mesh, edgeColors);
+            },
+            "mesh"_a,
+            "edge_colors"_a);
+
+        m.def(
+            "edge_colors_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX4d& edgeColors) {
+                return vcl::edgeColorsFromMatrix(mesh, edgeColors);
+            },
+            "mesh"_a,
+            "edge_colors"_a);
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
