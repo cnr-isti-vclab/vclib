@@ -144,8 +144,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "vertex_selection_from_array",
-            [](MeshType&              mesh,
-               const Eigen::VectorXi& vertexSelection) {
+            [](MeshType& mesh, const Eigen::VectorXi& vertexSelection) {
                 return vcl::vertexSelectionFromRange(mesh, vertexSelection);
             },
             "mesh"_a,
@@ -153,8 +152,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "vertex_selection_from_list",
-            [](MeshType&               mesh,
-               const std::vector<int>& vertexSelection) {
+            [](MeshType& mesh, const std::vector<int>& vertexSelection) {
                 return vcl::vertexSelectionFromRange(mesh, vertexSelection);
             },
             "mesh"_a,
@@ -299,8 +297,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "face_selection_from_array",
-            [](MeshType&              mesh,
-               const Eigen::VectorXi& faceSelection) {
+            [](MeshType& mesh, const Eigen::VectorXi& faceSelection) {
                 return vcl::faceSelectionFromRange(mesh, faceSelection);
             },
             "mesh"_a,
@@ -308,8 +305,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "face_selection_from_list",
-            [](MeshType&               mesh,
-               const std::vector<int>& faceSelection) {
+            [](MeshType& mesh, const std::vector<int>& faceSelection) {
                 return vcl::faceSelectionFromRange(mesh, faceSelection);
             },
             "mesh"_a,
@@ -403,8 +399,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "edge_selection_from_array",
-            [](MeshType&              mesh,
-               const Eigen::VectorXi& edgeSelection) {
+            [](MeshType& mesh, const Eigen::VectorXi& edgeSelection) {
                 return vcl::edgeSelectionFromRange(mesh, edgeSelection);
             },
             "mesh"_a,
@@ -412,8 +407,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "edge_selection_from_list",
-            [](MeshType&               mesh,
-               const std::vector<int>& edgeSelection) {
+            [](MeshType& mesh, const std::vector<int>& edgeSelection) {
                 return vcl::edgeSelectionFromRange(mesh, edgeSelection);
             },
             "mesh"_a,

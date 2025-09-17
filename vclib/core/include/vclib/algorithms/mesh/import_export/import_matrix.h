@@ -588,8 +588,8 @@ void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
     using MatrixScalar = CMatrix::Scalar;
 
     Color::Representation repr = std::integral<MatrixScalar> ?
-        Color::Representation::INT_0_255 :
-        Color::Representation::FLOAT_0_1;
+                                     Color::Representation::INT_0_255 :
+                                     Color::Representation::FLOAT_0_1;
 
     elementColorsFromBuffer<ELEM_ID>(
         mesh,

@@ -692,7 +692,7 @@ void elementColorsFromBuffer(
 
     const uint ROW_NUM = rowNumber == UINT_NULL ? elementNumber : rowNumber;
 
-    if (channelsNumber!= 3 && channelsNumber != 4)
+    if (channelsNumber != 3 && channelsNumber != 4)
         throw WrongSizeException(
             "The input " + elementEnumString<ELEM_ID>() +
             " colors must have 3 or 4 channels.");
@@ -1008,13 +1008,9 @@ void vertexQualityFromBuffer(
  * @ingroup import_buffer
  */
 template<FaceMeshConcept MeshType>
-void faceQualityFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        faceNumber)
+void faceQualityFromBuffer(MeshType& mesh, const auto* buffer, uint faceNumber)
 {
-    elementQualityFromBuffer<ElemId::FACE, MeshType>(
-        mesh, buffer, faceNumber);
+    elementQualityFromBuffer<ElemId::FACE, MeshType>(mesh, buffer, faceNumber);
 }
 
 /**
@@ -1037,13 +1033,9 @@ void faceQualityFromBuffer(
  * @ingroup import_buffer
  */
 template<EdgeMeshConcept MeshType>
-void edgeQualityFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        edgeNumber)
+void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer, uint edgeNumber)
 {
-    elementQualityFromBuffer<ElemId::EDGE, MeshType>(
-        mesh, buffer, edgeNumber);
+    elementQualityFromBuffer<ElemId::EDGE, MeshType>(mesh, buffer, edgeNumber);
 }
 
 /**
@@ -1081,8 +1073,8 @@ void vertexTexCoordsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
     uint              vertexNumber,
-    MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
-    uint              rowNumber      = UINT_NULL)
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
 {
     using namespace detail;
 
@@ -1094,8 +1086,7 @@ void vertexTexCoordsFromBuffer(
             "of the mesh\n"
             "Number of vertices in the mesh: " +
             std::to_string(mesh.vertexNumber()) +
-            "\nNumber of input vertex number: " +
-            std::to_string(vertexNumber));
+            "\nNumber of input vertex number: " + std::to_string(vertexNumber));
     }
 
     enableIfPerVertexTexCoordOptional(mesh);
@@ -1141,13 +1132,12 @@ void vertexTexCoordIndicesFromBuffer(
             "as the number of vertices in the mesh\n"
             "Number of vertices in the mesh: " +
             std::to_string(mesh.vertexNumber()) +
-            "\nNumber of input vertex number: " +
-            std::to_string(vertexNumber));
+            "\nNumber of input vertex number: " + std::to_string(vertexNumber));
 
     enableIfPerVertexTexCoordOptional(mesh);
     requirePerVertexTexCoord(mesh);
 
-    for (uint i = 0; auto& t : mesh.vertices()| views::texCoords) {
+    for (uint i = 0; auto& t : mesh.vertices() | views::texCoords) {
         t.index() = buffer[i];
         ++i;
     }
@@ -1196,8 +1186,8 @@ void faceWedgeTexCoordsFromBuffer(
     const auto*       buffer,
     uint              faceNumber,
     uint              largestFaceSize = 3,
-    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
-    uint              rowNumber = UINT_NULL)
+    MatrixStorageType storage         = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber       = UINT_NULL)
 {
     using namespace detail;
 
@@ -1210,8 +1200,7 @@ void faceWedgeTexCoordsFromBuffer(
             "as the number of faces in the mesh\n"
             "Number of faces in the mesh: " +
             std::to_string(mesh.faceNumber()) +
-            "\nNumber of input face number: " +
-            std::to_string(faceNumber));
+            "\nNumber of input face number: " + std::to_string(faceNumber));
 
     enableIfPerFaceWedgeTexCoordsOptional(mesh);
     requirePerFaceWedgeTexCoords(mesh);
@@ -1260,8 +1249,7 @@ void faceWedgeTexCoordIndicesFromBuffer(
             "as the number of vertices in the mesh\n"
             "Number of faces in the mesh: " +
             std::to_string(mesh.faceNumber()) +
-            "\nNumber of input face number: " +
-            std::to_string(faceNumber));
+            "\nNumber of input face number: " + std::to_string(faceNumber));
 
     enableIfPerFaceWedgeTexCoordsOptional(mesh);
     requirePerFaceWedgeTexCoords(mesh);
