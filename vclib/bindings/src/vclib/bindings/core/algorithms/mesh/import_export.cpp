@@ -191,6 +191,30 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "vertex_colors"_a);
+
+        m.def(
+            "vertex_colors_from_array",
+            [](MeshType&              mesh,
+               const Eigen::VectorXi& vertexColors,
+               Color::Format          colorFormat) {
+                return vcl::vertexColorsFromRange(
+                    mesh, vertexColors, colorFormat);
+            },
+            "mesh"_a,
+            "vertex_colors"_a,
+            "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "vertex_colors_from_list",
+            [](MeshType&               mesh,
+               const std::vector<int>& vertexColors,
+               Color::Format           colorFormat) {
+                return vcl::vertexColorsFromRange(
+                    mesh, vertexColors, colorFormat);
+            },
+            "mesh"_a,
+            "vertex_colors"_a,
+            "color_format"_a = Color::Format::RGBA);
     };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -368,6 +392,30 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "face_colors"_a);
+
+        m.def(
+            "face_colors_from_array",
+            [](MeshType&              mesh,
+               const Eigen::VectorXi& faceColors,
+               Color::Format          colorFormat) {
+                return vcl::faceColorsFromRange(
+                    mesh, faceColors, colorFormat);
+            },
+            "mesh"_a,
+            "face_colors"_a,
+            "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "face_colors_from_list",
+            [](MeshType&               mesh,
+               const std::vector<int>& faceColors,
+               Color::Format           colorFormat) {
+                return vcl::faceColorsFromRange(
+                    mesh, faceColors, colorFormat);
+            },
+            "mesh"_a,
+            "face_colors"_a,
+            "color_format"_a = Color::Format::RGBA);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
@@ -494,6 +542,30 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "edge_colors"_a);
+
+        m.def(
+            "edge_colors_from_array",
+            [](MeshType&              mesh,
+               const Eigen::VectorXi& edgeColors,
+               Color::Format          colorFormat) {
+                return vcl::edgeColorsFromRange(
+                    mesh, edgeColors, colorFormat);
+            },
+            "mesh"_a,
+            "edge_colors"_a,
+            "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "edge_colors_from_list",
+            [](MeshType&               mesh,
+               const std::vector<int>& edgeColors,
+               Color::Format           colorFormat) {
+                return vcl::edgeColorsFromRange(
+                    mesh, edgeColors, colorFormat);
+            },
+            "mesh"_a,
+            "edge_colors"_a,
+            "color_format"_a = Color::Format::RGBA);
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
