@@ -231,6 +231,31 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "vertex_quality"_a);
+
+        m.def("vertex_tex_coords_from_matrix",
+              [](MeshType& mesh, const Eigen::MatrixX2d& vertexTexCoords) {
+                  return vcl::vertexTexCoordsFromMatrix(mesh, vertexTexCoords);
+              },
+              "mesh"_a,
+              "vertex_tex_coords"_a);
+
+        m.def(
+            "vertex_tex_coords_indices_from_array",
+            [](MeshType& mesh, const Eigen::VectorXi& vertexTexCoordIndices) {
+                return vcl::vertexTexCoordIndicesFromRange(
+                    mesh, vertexTexCoordIndices);
+            },
+            "mesh"_a,
+            "vertex_tex_coord_indices"_a);
+
+        m.def(
+            "vertex_tex_coords_indices_from_list",
+            [](MeshType& mesh, const std::vector<int>& vertexTexCoordIndices) {
+                return vcl::vertexTexCoordIndicesFromRange(
+                    mesh, vertexTexCoordIndices);
+            },
+            "mesh"_a,
+            "vertex_tex_coord_indices"_a);
     };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -448,6 +473,35 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "face_quality"_a);
+
+        m.def(
+            "face_wedge_tex_coords_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixXd& faceWedgeTexCoords) {
+                return vcl::faceWedgeTexCoordsFromMatrix(
+                    mesh, faceWedgeTexCoords);
+            },
+            "mesh"_a,
+            "face_wedge_tex_coords"_a);
+
+        m.def(
+            "face_wedge_tex_coords_indices_from_array",
+            [](MeshType&              mesh,
+               const Eigen::VectorXi& faceWedgeTexCoordIndices) {
+                return vcl::faceWedgeTexCoordIndicesFromRange(
+                    mesh, faceWedgeTexCoordIndices);
+            },
+            "mesh"_a,
+            "face_wedge_tex_coord_indices"_a);
+
+        m.def(
+            "face_wedge_tex_coords_indices_from_list",
+            [](MeshType&               mesh,
+               const std::vector<int>& faceWedgeTexCoordIndices) {
+                return vcl::faceWedgeTexCoordIndicesFromRange(
+                    mesh, faceWedgeTexCoordIndices);
+            },
+            "mesh"_a,
+            "face_wedge_tex_coord_indices"_a);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
