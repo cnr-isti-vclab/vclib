@@ -326,9 +326,10 @@ void GPUGeneratedLines::allocateVertexAndIndexBuffer(const uint pointsSize)
         .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
         .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
         .add(bgfx::Attrib::Color2, 4, bgfx::AttribType::Uint8, true)
+        .add(bgfx::Attrib::TexCoord2, 1, bgfx::AttribType::Float)
         .end();
 
-    const uint szv = (pointsSize / 2) * 4 * 15;
+    const uint szv = (pointsSize / 2) * 4 * 16;
 
     mVertices.create(
         bgfx::makeRef(nullptr, sizeof(float) * szv),

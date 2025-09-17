@@ -58,7 +58,7 @@ uniform vec4 u_ActiveBuffers; // x = line indices, y = normals, z = colors, w = 
 
 NUM_THREADS(2, 2, 1)
 void main() {
-    uint baseIndex = (gl_WorkGroupID.x * 60) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 15);
+    uint baseIndex = (gl_WorkGroupID.x * 16) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 4);
     uint index0 = (gl_WorkGroupID.x * 2);
     uint index1 = (gl_WorkGroupID.x * 2) + 1;
 
@@ -89,27 +89,10 @@ void main() {
         lineC  = lineColor(gl_WorkGroupID.x);
     }
 
-    vertexBuffer[uint(baseIndex) / 4][uint(baseIndex) % 4] = p0.x;
-    vertexBuffer[uint(baseIndex + 1) / 4][uint(baseIndex + 1) % 4] = p0.y;
-    vertexBuffer[uint(baseIndex + 2) / 4][uint(baseIndex + 2) % 4] = p0.z;
-
-    vertexBuffer[uint(baseIndex + 3) / 4][uint(baseIndex + 3) % 4] = p1.x;
-    vertexBuffer[uint(baseIndex + 4) / 4][uint(baseIndex + 4) % 4] = p1.y;
-    vertexBuffer[uint(baseIndex + 5) / 4][uint(baseIndex + 5) % 4] = p1.z;
-
-    vertexBuffer[uint(baseIndex + 6) / 4][uint(baseIndex + 6) % 4] = uintBitsToFloat(color0);
-    vertexBuffer[uint(baseIndex + 7) / 4][uint(baseIndex + 7) % 4] = uintBitsToFloat(color1);
-
-    vertexBuffer[uint(baseIndex + 8) / 4][uint(baseIndex + 8) % 4] = normal0.x;
-    vertexBuffer[uint(baseIndex + 9) / 4][uint(baseIndex + 9) % 4] = normal0.y;
-    vertexBuffer[uint(baseIndex + 10) / 4][uint(baseIndex + 10) % 4] = normal0.z;
-
-    vertexBuffer[uint(baseIndex + 11) / 4][uint(baseIndex + 11) % 4] = normal1.x;
-    vertexBuffer[uint(baseIndex + 12) / 4][uint(baseIndex + 12) % 4] = normal1.y;
-    vertexBuffer[uint(baseIndex + 13) / 4][uint(baseIndex + 13) % 4] = normal1.z;
-
-    vertexBuffer[uint(baseIndex + 14) / 4][uint(baseIndex + 14) % 4] = uintBitsToFloat(lineC);
-
+    vertexBuffer[baseIndex] = vec4(p0.x, p0.y, p0.z, p1.x);
+    vertexBuffer[baseIndex + 1] = vec4(p1.y, p1.z, uintBitsToFloat(color0), uintBitsToFloat(color1));
+    vertexBuffer[baseIndex + 2] = vec4(normal0.x, normal0.y, normal0.z, normal1.x);
+    vertexBuffer[baseIndex + 3] = vec4(normal1.y, normal1.z, uintBitsToFloat(lineC), 0.0);
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {
         indexBuffer[uint((6 * gl_WorkGroupID.x) + 0) / 4][uint((6 * gl_WorkGroupID.x) + 0) % 4] = (gl_WorkGroupID.x * 4);
