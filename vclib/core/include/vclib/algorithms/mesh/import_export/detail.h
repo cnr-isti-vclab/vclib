@@ -20,23 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
-#define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
+#ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H
+#define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H
 
-#include "import_export/append_replace_to_buffer.h"
-#include "import_export/export_buffer.h"
-#include "import_export/export_matrix.h"
-#include "import_export/import_buffer.h"
-#include "import_export/import_matrix.h"
+#include <vclib/space/core.h>
 
-/**
- * @defgroup import_export Import/Export Mesh Algorithms
- *
- * @ingroup algorithms_mesh
- *
- * @brief List of Import/Export Mesh algorithms.
- *
- * They allow to import and export mesh data from/to different formats.
- */
+namespace vcl::detail {
 
-#endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
+// given a buffer, returns a reference to the element at (i,j) considering the
+// storage type (row-major or column-major)
+inline auto& at(
+    auto*             buffer,
+    uint              i,
+    uint              j,
+    uint              rowNum,
+    uint              colNum,
+    MatrixStorageType storage)
+{
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        return buffer[i * colNum + j];
+    }
+    else {
+        return buffer[j * rowNum + i];
+    }
+}
+
+} // namespace vcl::detail
+
+#endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H

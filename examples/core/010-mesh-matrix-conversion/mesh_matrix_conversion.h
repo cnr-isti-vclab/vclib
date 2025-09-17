@@ -101,9 +101,9 @@ auto meshMatrixConversion()
     importedMesh.name() = "Imported Mesh";
 
     // Import additional components separately
-    vcl::importVertexNormalsFromMatrix(importedMesh, vertexNormals);
-    vcl::importVertexColorsFromMatrix(importedMesh, vertexColors);
-    vcl::importFaceColorsFromMatrix(importedMesh, faceColors);
+    vcl::vertexNormalsFromMatrix(importedMesh, vertexNormals);
+    vcl::vertexColorsFromMatrix(importedMesh, vertexColors);
+    vcl::faceColorsFromMatrix(importedMesh, faceColors);
 
     std::cout << "Imported mesh: " << importedMesh.vertexNumber()
               << " vertices, " << importedMesh.faceNumber() << " faces"
