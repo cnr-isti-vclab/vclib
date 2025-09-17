@@ -87,7 +87,7 @@ Matrix vertexPositionsMatrix(const MeshType& mesh)
  * It could be useful when dealing with polygonal meshes.
  *
  * This function works with every Vector type that has a constructor with a
- * size_t argument and an operator(uint).
+ * size_t argument and an operator[uint].
  *
  * Usage example with Eigen Vector:
  *
@@ -582,8 +582,6 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
-
     Matrix eCM(mesh.template number<ELEM_ID>(), 4);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
@@ -628,8 +626,6 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
-    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
-
     Vect eCV(mesh.template number<ELEM_ID>());
 
     elementColorsToBuffer<ELEM_ID>(mesh, eCV.data(), colorFormat);
@@ -874,8 +870,6 @@ Vect edgeColorsVector(const MeshType& mesh, Color::Format colorFormat)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
-
     Vect eQV(mesh.template number<ELEM_ID>());
 
     elementQualityToBuffer<ELEM_ID>(mesh, eQV.data());
@@ -888,7 +882,7 @@ Vect elementQualityVector(const MeshType& mesh)
  * a Mesh. The function is templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
- * size_t argument and an operator(uint), and requires that the mesh has
+ * size_t argument and an operator[uint], and requires that the mesh has
  * per-vertex quality.
  *
  * Usage example with Eigen Vector:
@@ -921,7 +915,7 @@ Vect vertexQualityVector(const MeshType& mesh)
  * a Mesh. The function is templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
- * size_t argument and an operator(uint), and requires that the mesh has
+ * size_t argument and an operator[uint], and requires that the mesh has
  * per-face quality.
  *
  * Usage example with Eigen Vector:
@@ -954,7 +948,7 @@ Vect faceQualityVector(const MeshType& mesh)
  * a Mesh. The function is templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
- * size_t argument and an operator(uint), and requires that the mesh has
+ * size_t argument and an operator[uint], and requires that the mesh has
  * per-edge quality.
  *
  * Usage example with Eigen Vector:
@@ -980,6 +974,82 @@ template<typename Vect, EdgeMeshConcept MeshType>
 Vect edgeQualityVector(const MeshType& mesh)
 {
     return elementQualityVector<ElemId::EDGE, Vect>(mesh);
+}
+
+/**
+ * @brief Get a \#V*2 Matrix of scalars containing the texcoords of the vertices
+ * of a Mesh. The function is templated on the Matrix itself.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-vertex texcoords.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX2d VT = vcl::vertexTexCoordsMatrix<Eigen::MatrixX2d>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * texcoords available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V*2 matrix of scalars (vertex texcoords)
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexTexCoordsMatrix(const MeshType& mesh)
+{
+    Matrix vTCM(mesh.vertexNumber(), 2);
+
+    MatrixStorageType stg = matrixStorageType<Matrix>();
+
+    vertexTexCoordsToBuffer(mesh, vTCM.data(), stg);
+
+    return vTCM;
+}
+
+/**
+ * @brief Get a \#V vector of scalars containing the texcoord indices of the
+ * vertices of a Mesh. The function is templated on the Vector itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-vertex texcoords.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXd VTI =
+ *     vcl::vertexTexCoordIndicesVector<Eigen::VectorXd>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * texcoords available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V vector of scalars (vertex texcoord indices)
+ *
+ * @ingroup export_matrix
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect vertexTexCoordIndicesVector(const MeshType& mesh)
+{
+    Vect vTCI(mesh.vertexNumber());
+
+    vertexTexCoordIndicesToBuffer(mesh, vTCI.data());
+
+    return vTCI;
 }
 
 } // namespace vcl
