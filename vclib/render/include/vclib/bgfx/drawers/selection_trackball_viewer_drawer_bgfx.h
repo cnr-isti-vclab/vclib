@@ -32,6 +32,7 @@
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/bgfx/drawable/drawable_mesh_979.h>
 #include <vclib/render/drawers/selection_trackball_event_drawer.h>
+#include <vclib/render/selection/selectable.h>
 
 namespace vcl {
 
@@ -68,7 +69,7 @@ public:
         if(ParentViewer::selectionCalculationRequired()) {
             for(size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                 auto el = ParentViewer::mDrawList->at(i);
-                if(auto p = dynamic_cast<DrawableMeshBGFX979<TriMesh>*>(el.get())) {
+                if(auto p = dynamic_cast<Selectable*>(el.get())) {
                     p->calculateSelection(viewId, ParentViewer::selectionBox(), ParentViewer::selectionMode());
                 }
             }

@@ -30,13 +30,14 @@
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 #include "mesh/mesh_render_buffers_979.h"
 #include <vclib/render/selection/selection_box.h>
+#include <vclib/render/selection/selectable.h>
 
 #include <bgfx/bgfx.h>
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-class DrawableMeshBGFX979 : public AbstractDrawableMesh, public MeshType
+class DrawableMeshBGFX979 : public AbstractDrawableMesh, public MeshType, public Selectable
 {
 public:
     // TODO: to be removed after shader benchmarks
@@ -116,7 +117,7 @@ public:
 
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
 
-    void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode) {
+    void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode) override {
         mMRB.calculateSelection(viewId, box, mode);
     }
 
