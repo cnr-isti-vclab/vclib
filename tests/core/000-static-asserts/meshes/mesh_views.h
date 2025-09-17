@@ -76,6 +76,7 @@ void meshViewsStaticAsserts()
             "The view returned by pipe operation cm | views::faces is not a "
             "valid range.");
 
+        m.addFace();
         auto&       f  = m.face(0);
         const auto& cf = cm.face(0);
 

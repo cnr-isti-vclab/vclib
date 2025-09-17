@@ -38,9 +38,6 @@
  * @brief List Export Mesh to Matrix algorithms.
  *
  * They allow to export mesh data to matrices.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
  */
 
 namespace vcl {
@@ -415,6 +412,40 @@ Vect faceSelectionVector(const MeshType& mesh)
 }
 
 /**
+ * @brief Get a \#E Vector of booleans (or integers) containing the selection
+ * status of the edges of a Mesh. The function is templated on the Vector
+ * itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint].
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi S = vcl::edgeSelectionVector<Eigen::VectorXi>(myMesh);
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @tparam Vect: type of the vector to be returned.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E vector of booleans or integers (edge selection)
+ *
+ * @ingroup export_matrix
+ */
+template<typename Vect, EdgeMeshConcept MeshType>
+Vect edgeSelectionVector(const MeshType& mesh)
+{
+    return elementSelectionVector<ElemId::EDGE, Vect>(mesh);
+}
+
+/**
  * @brief Get a \#E*3 Matrix of scalars containing the normals of the elements
  * identified by `ELEM_ID` of a Mesh. The function is templated on the Matrix
  * itself.
@@ -713,7 +744,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  *
  * This function works with every Vector type that has a constructor with a
  * size_t argument and an operator[uint], and requires that the mesh has
- * per-vertex colors.
+ * per-face colors.
  *
  * Usage example with Eigen Vector:
  *
@@ -740,6 +771,74 @@ template<typename Vect, MeshConcept MeshType>
 Vect faceColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
     return elementColorsVector<ElemId::FACE, Vect>(mesh, colorFormat);
+}
+
+/**
+ * @brief Get a \#E*4 Matrix of integers containing the colors of the edges of
+ * a Mesh. The function is templated on the Matrix itself.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-edge colors.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX4i EC = vcl::edgeColorsMatrix<Eigen::MatrixX4i>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E*4 matrix of integers (edge colors)
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
+Matrix edgeColorsMatrix(const MeshType& mesh)
+{
+    return elementColorsMatrix<ElemId::EDGE, Matrix>(mesh);
+}
+
+/**
+ * @brief Get a \#E Vector of integers containing the colors of the edges
+ * of a Mesh. The function is templated on the Vector itself. The color is
+ * packed in a single 32 bit value using the provided format.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-edge colors.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi EC =
+ *     vcl::edgeColorsVector<Eigen::VectorXi>(
+ *         myMesh, Color::Format::RGBA);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E vector of integers (edge colors)
+ *
+ * @ingroup export_matrix
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect edgeColorsVector(const MeshType& mesh, Color::Format colorFormat)
+{
+    return elementColorsVector<ElemId::EDGE, Vect>(mesh, colorFormat);
 }
 
 /**
@@ -848,6 +947,39 @@ template<typename Vect, FaceMeshConcept MeshType>
 Vect faceQualityVector(const MeshType& mesh)
 {
     return elementQualityVector<ElemId::FACE, Vect>(mesh);
+}
+
+/**
+ * @brief Get a \#E Vector of scalars containing the quality of the edges of
+ * a Mesh. The function is templated on the Vector itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator(uint), and requires that the mesh has
+ * per-edge quality.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXd EQ = vcl::edgeQualityVector<Eigen::VectorXd>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * quality available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E vector of scalars (edge quality)
+ *
+ * @ingroup export_matrix
+ */
+template<typename Vect, EdgeMeshConcept MeshType>
+Vect edgeQualityVector(const MeshType& mesh)
+{
+    return elementQualityVector<ElemId::EDGE, Vect>(mesh);
 }
 
 } // namespace vcl
