@@ -125,6 +125,8 @@ protected:
 
     SelectionBox selectionBox() { return mSelectionBox; }
 
+    ToolSets getCurrentToolset() { return mCurrentToolset; }
+
 public:
     using Base::Base;
 
@@ -162,6 +164,7 @@ public:
             mPressActionExecuted.insert({
                 {pair, false}
             });
+            found2 = mPressActionExecuted.find(pair);
         }
         if (found2->second) {
             return;
@@ -216,7 +219,7 @@ public:
         case MouseButton::RIGHT: mRMBHeld = false; break;
         case MouseButton::LEFT: mLMBHeld = false; break;
         case MouseButton::MIDDLE: mMMBHeld = false; break;
-        default: break:
+        default: break;
         }
         if (mCurrentToolset == ToolSets::DEFAULT) {
             Base::onMouseRelease(button, x, y, modifiers);
@@ -230,6 +233,10 @@ public:
         mSelectionCalcRequired = true;
     }
 };
+
+template<typename DerivedRenderApp>
+using SelectionTrackBallEventDrawer =
+    SelectionTrackBallEventDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 

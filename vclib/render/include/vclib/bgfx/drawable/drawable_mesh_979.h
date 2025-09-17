@@ -27,8 +27,9 @@
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
-#include "mesh_render_buffers_979.h"
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
+#include "mesh/mesh_render_buffers_979.h"
+#include <vclib/render/selection/selection_box.h>
 
 #include <bgfx/bgfx.h>
 
@@ -114,6 +115,10 @@ public:
     }
 
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
+
+    void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode) {
+        mMRB.calculateSelection(viewId, box, mode);
+    }
 
     // TODO: to be removed after shader benchmarks
     void setSurfaceProgramType(SurfaceProgramsType type)

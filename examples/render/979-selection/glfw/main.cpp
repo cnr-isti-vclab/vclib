@@ -27,7 +27,8 @@
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
-#include "../drawable_mesh_979.h"
+#include <vclib/bgfx/drawable/drawable_mesh_979.h>
+#include <vclib/render/drawers/selection_trackball_viewer_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <vclib/algorithms/mesh/update/color.h>
@@ -74,20 +75,11 @@ int main(void)
     using RA = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        ImguiTextureGetter979Wrapper<MeshType>::ImGuiTextureGetter979,
-        vcl::imgui::MeshViewerDrawerImgui>;
+        vcl::SelectionTrackBallViewerDrawer>;
     
     RA tw("Selection", 1024, 768);
 
-    std::shared_ptr<vcl::DrawableObjectVector> vec =
-        std::make_shared<vcl::DrawableObjectVector>();
-    tw.setDrawableObjectVector(vec);
-
-    vcl::DrawableMeshBGFX979<MeshType> msh = getDrawableMesh979<MeshType>();
-
-    tw.pushDrawableObject(std::move(msh));
-    tw.setMesh(tw.drawableObjectVector(), 0);
+    tw.pushDrawableObject(getDrawableMesh979<vcl::TriMesh>());
 
     tw.fitScene();
 

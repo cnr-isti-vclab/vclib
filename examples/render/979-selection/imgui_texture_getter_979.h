@@ -25,8 +25,7 @@
 
 #include <imgui.h>
 
-#include "mesh_render_buffers_979.h"
-#include "drawable_mesh_979.h"
+#include <vclib/bgfx/drawable/drawable_mesh_979.h>
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>

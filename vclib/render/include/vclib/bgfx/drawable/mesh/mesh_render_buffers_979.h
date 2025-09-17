@@ -35,12 +35,15 @@
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
+#include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
 
-// This allows selection for a maximum of 1024^3 = 1_073_741_824 vertices per mesh. Still likely enough. It is set to this because i seem to understand that Metal has a cap of 1024 (maybe?)
+// This allows selection for a maximum of 1024^3 = 1_073_741_824 vertices per
+// mesh. Still likely enough. It is set to this because i seem to understand
+// that Metal has a cap of 1024 (maybe?)
 #define MAX_COMPUTE_WORKGROUP_SIZE uint(1024)
 
 namespace vcl {
@@ -193,15 +196,23 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    void calculateSelection(const bgfx::ViewId viewId, SelectionMode mode)
-        const
+    void calculateSelection(
+        const bgfx::ViewId viewId,
+        SelectionBox       box,
+        SelectionMode      mode) const
     {
+        if ((!box.get1().has_value() || !box.get2().has_value()) &&
+            !mode.isAtomicMode()) {
+            return;
+        }
+        Point2d minPt = box.get1().value_or(Point2d(0.0, 0.0));
+        Point2d maxPt = box.get2().value_or(Point2d(0.0, 0.0));
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
 
         float temp[] = {
-            1024.f / 2.f * 1.5f, 0.f, 1024.f * 1.5f, 768.f / 2.f * 1.5f};
+            float(minPt.x()), float(minPt.y()), float(maxPt.x()), float(maxPt.y())};
         mSelectionBoxuniform.bind((void*) temp);
 
         float temp2[] = {
@@ -302,8 +313,10 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
-    // Possibly replace with an algorithm (maybe a compute shader) that calculates the closest shape to a cube for the three dimensions 
-    // (to reduce the number of eccess computations), since currently if there are 1025 vertices you use 1024*2*1 = 2048 workgroups.
+    // Possibly replace with an algorithm (maybe a compute shader) that
+    // calculates the closest shape to a cube for the three dimensions (to
+    // reduce the number of eccess computations), since currently if there are
+    // 1025 vertices you use 1024*2*1 = 2048 workgroups.
     void calculateVertexSelectionWorkgroupSize()
     {
         mVertexSelectionWorkgroupSize[0] =
