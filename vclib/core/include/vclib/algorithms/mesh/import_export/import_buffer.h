@@ -343,30 +343,19 @@ void edgeIndicesFromBuffer(
  * @brief Sets the element identified by `ELEM_ID` selection of the given input
  * `mesh` from the input selection buffer.
  *
- * The number of elements of the input buffer must be equal to the number of
- * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ * The number of elements of the input buffer is expected to be at least the
+ * number of ELEM_ID elements of the mesh. The extra elements are ignored.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input element selection.
  * @param[in] buffer: the input element selection buffer.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
-void elementSelectionFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        elementNumber)
+void elementSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    if (elementNumber != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input selection buffer must have the same number of elements "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
     for (uint i = 0; auto& e : mesh.template elements<ELEM_ID>()) {
         e.selected() = buffer[i];
         ++i;
@@ -377,58 +366,48 @@ void elementSelectionFromBuffer(
  * @brief Sets the vertex selection of the given input `mesh` from the input
  * selection buffer.
  *
- * The number of elements of the input buffer must be equal to the number of
- * vertices of the mesh, otherwise an exception is thrown.
+ * The number of elements of the input buffer is expected to be at least the
+ * number vertices of the mesh. The extra elements are ignored.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input vertex selection.
  * @param[in] buffer: the input vertex selection buffer.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<MeshConcept MeshType>
-void vertexSelectionFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        elementNumber)
+void vertexSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    elementSelectionFromBuffer<ElemId::VERTEX>(mesh, buffer, elementNumber);
+    elementSelectionFromBuffer<ElemId::VERTEX>(mesh, buffer);
 }
 
 /**
  * @brief Sets the face selection of the given input `mesh` from the input
  * selection buffer.
  *
- * The number of elements of the input buffer must be equal to the number of
- * faces of the mesh, otherwise an exception is thrown.
+ * The number of elements of the input buffer is expected to be at least the
+ * number faces of the mesh. The extra elements are ignored.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
  * @param[in/out] mesh: the mesh on which import the input face selection.
  * @param[in] buffer: the input face selection buffer.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<FaceMeshConcept MeshType>
-void faceSelectionFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        elementNumber)
+void faceSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    elementSelectionFromBuffer<ElemId::FACE>(mesh, buffer, elementNumber);
+    elementSelectionFromBuffer<ElemId::FACE>(mesh, buffer);
 }
 
 /**
  * @brief Sets the edge selection of the given input `mesh` from the input
  * selection buffer.
  *
- * The number of elements of the input buffer must be equal to the number of
- * edges of the mesh, otherwise an exception is thrown.
+ * The number of elements of the input buffer is expected to be at least the
+ * number edges of the mesh. The extra elements are ignored.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
@@ -440,12 +419,9 @@ void faceSelectionFromBuffer(
  * @ingroup import_buffer
  */
 template<EdgeMeshConcept MeshType>
-void edgeSelectionFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        elementNumber)
+void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    elementSelectionFromBuffer<ElemId::EDGE>(mesh, buffer, elementNumber);
+    elementSelectionFromBuffer<ElemId::EDGE>(mesh, buffer);
 }
 
 /**
@@ -740,6 +716,57 @@ void elementColorsFromBuffer(
 }
 
 /**
+ * @brief Sets the element identified by `ELEM_ID` color of the given input
+ * `mesh` from the input color buffer, where each color is packed in a single
+ * 32 bit value using the provided `colorFormat`.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input element color.
+ * @param[in] buffer: the input element color buffer.
+ * @param[in] elementNumber: the number of elements contained in the input
+ * buffer.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_buffer
+ */
+template<uint ELEM_ID, MeshConcept MeshType>
+void elementColorsFromBuffer(
+    MeshType&     mesh,
+    const auto*   buffer,
+    uint          elementNumber,
+    Color::Format colorFormat)
+{
+    // elementNumber must be equal to the number of elements of the given type
+    if (elementNumber != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input element number does not match the number of " +
+            elementEnumString<ELEM_ID>() +
+            " elements of the mesh\n"
+            "Number of " +
+            elementEnumString<ELEM_ID>() + " elements in the mesh: " +
+            std::to_string(mesh.template number<ELEM_ID>()) +
+            "\nNumber of input element number: " +
+            std::to_string(elementNumber));
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    for (uint  i = 0;
+         auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
+
+        c = Color(buffer[i++], colorFormat);
+    }
+}
+
+/**
  * @brief Sets the vertex colors of the given input `mesh` from the input
  * buffer, that is expected to be a contiguous array of scalars, where each row
  * (number of channels) contains the 3 or 4 components of the color of a
@@ -797,6 +824,39 @@ void vertexColorsFromBuffer(
         storage,
         representation,
         rowNumber);
+}
+
+/**
+ * @brief Sets the vertex color of the given input `mesh` from the input color
+ * buffer, where each color is packed in a single 32 bit value using the
+ * provided `colorFormat`.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex color.
+ * @param[in] buffer: the input vertex color buffer.
+ * @param[in] vertexNumber: the number of vertices contained in the input
+ * buffer.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_buffer
+ */
+template<MeshConcept MeshType>
+void vertexColorsFromBuffer(
+    MeshType&     mesh,
+    const auto*   buffer,
+    uint          vertexNumber,
+    Color::Format colorFormat)
+{
+    elementColorsFromBuffer<ElemId::VERTEX, MeshType>(
+        mesh, buffer, vertexNumber, colorFormat);
 }
 
 /**
@@ -860,6 +920,39 @@ void faceColorsFromBuffer(
 }
 
 /**
+ * @brief Sets the face color of the given input `mesh` from the input color
+ * buffer, where each color is packed in a single 32 bit value using the
+ * provided `colorFormat`.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input face color.
+ * @param[in] buffer: the input face color buffer.
+ * @param[in] faceNumber: the number of faces contained in the input
+ * buffer.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceColorsFromBuffer(
+    MeshType&     mesh,
+    const auto*   buffer,
+    uint          faceNumber,
+    Color::Format colorFormat)
+{
+    elementColorsFromBuffer<ElemId::FACE, MeshType>(
+        mesh, buffer, faceNumber, colorFormat);
+}
+
+/**
  * @brief Sets the edge colors of the given input `mesh` from the input
  * buffer, that is expected to be a contiguous array of scalars, where each row
  * (number of channels) contains the 3 or 4 components of the color of an
@@ -917,6 +1010,39 @@ void edgeColorsFromBuffer(
         storage,
         representation,
         rowNumber);
+}
+
+/**
+ * @brief Sets the edge color of the given input `mesh` from the input color
+ * buffer, where each color is packed in a single 32 bit value using the
+ * provided `colorFormat`.
+ *
+ * The number of elements of the input buffer must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @param[in/out] mesh: the mesh on which import the input edge color.
+ * @param[in] buffer: the input edge color buffer.
+ * @param[in] edgeNumber: the number of edges contained in the input
+ * buffer.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_buffer
+ */
+template<EdgeMeshConcept MeshType>
+void edgeColorsFromBuffer(
+    MeshType&     mesh,
+    const auto*   buffer,
+    uint          edgeNumber,
+    Color::Format colorFormat)
+{
+    elementColorsFromBuffer<ElemId::EDGE, MeshType>(
+        mesh, buffer, edgeNumber, colorFormat);
 }
 
 /**
