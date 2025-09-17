@@ -89,36 +89,36 @@ void main() {
         lineC  = lineColor(gl_WorkGroupID.x);
     }
 
-    get_float_from_vec4(baseIndex,     vertexBuffer) = p0.x;
-    get_float_from_vec4(baseIndex + 1, vertexBuffer) = p0.y;
-    get_float_from_vec4(baseIndex + 2, vertexBuffer) = p0.z;
+    vertexBuffer[uint(baseIndex) / 4][uint(baseIndex) % 4] = p0.x;
+    vertexBuffer[uint(baseIndex + 1) / 4][uint(baseIndex + 1) % 4] = p0.y;
+    vertexBuffer[uint(baseIndex + 2) / 4][uint(baseIndex + 2) % 4] = p0.z;
 
-    get_float_from_vec4(baseIndex + 3, vertexBuffer) = p1.x;
-    get_float_from_vec4(baseIndex + 4, vertexBuffer) = p1.y;
-    get_float_from_vec4(baseIndex + 5, vertexBuffer) = p1.z;
+    vertexBuffer[uint(baseIndex + 3) / 4][uint(baseIndex + 3) % 4] = p1.x;
+    vertexBuffer[uint(baseIndex + 4) / 4][uint(baseIndex + 4) % 4] = p1.y;
+    vertexBuffer[uint(baseIndex + 5) / 4][uint(baseIndex + 5) % 4] = p1.z;
 
-    get_float_from_vec4(baseIndex + 6, vertexBuffer) = uintBitsToFloat(color0);
-    get_float_from_vec4(baseIndex + 7, vertexBuffer) = uintBitsToFloat(color1);
+    vertexBuffer[uint(baseIndex + 6) / 4][uint(baseIndex + 6) % 4] = uintBitsToFloat(color0);
+    vertexBuffer[uint(baseIndex + 7) / 4][uint(baseIndex + 7) % 4] = uintBitsToFloat(color1);
 
-    get_float_from_vec4(baseIndex + 8, vertexBuffer) = normal0.x;
-    get_float_from_vec4(baseIndex + 9, vertexBuffer) = normal0.y;
-    get_float_from_vec4(baseIndex + 10, vertexBuffer) = normal0.z;
+    vertexBuffer[uint(baseIndex + 8) / 4][uint(baseIndex + 8) % 4] = normal0.x;
+    vertexBuffer[uint(baseIndex + 9) / 4][uint(baseIndex + 9) % 4] = normal0.y;
+    vertexBuffer[uint(baseIndex + 10) / 4][uint(baseIndex + 10) % 4] = normal0.z;
 
-    get_float_from_vec4(baseIndex + 11, vertexBuffer) = normal1.x;
-    get_float_from_vec4(baseIndex + 12, vertexBuffer) = normal1.y;
-    get_float_from_vec4(baseIndex + 13, vertexBuffer) = normal1.z;
+    vertexBuffer[uint(baseIndex + 11) / 4][uint(baseIndex + 11) % 4] = normal1.x;
+    vertexBuffer[uint(baseIndex + 12) / 4][uint(baseIndex + 12) % 4] = normal1.y;
+    vertexBuffer[uint(baseIndex + 13) / 4][uint(baseIndex + 13) % 4] = normal1.z;
 
-    get_float_from_vec4(baseIndex + 14, vertexBuffer) = uintBitsToFloat(lineC);
+    vertexBuffer[uint(baseIndex + 14) / 4][uint(baseIndex + 14) % 4] = uintBitsToFloat(lineC);
 
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {
-        get_float_from_vec4((6 * gl_WorkGroupID.x) + 0, indexBuffer) = (gl_WorkGroupID.x * 4);
-        get_float_from_vec4((6 * gl_WorkGroupID.x) + 1, indexBuffer) = (gl_WorkGroupID.x * 4) + 3;
-        get_float_from_vec4((6 * gl_WorkGroupID.x) + 2, indexBuffer) = (gl_WorkGroupID.x * 4) + 1;
+        indexBuffer[uint((6 * gl_WorkGroupID.x) + 0) / 4][uint((6 * gl_WorkGroupID.x) + 0) % 4] = (gl_WorkGroupID.x * 4);
+        indexBuffer[uint((6 * gl_WorkGroupID.x) + 1) / 4][uint((6 * gl_WorkGroupID.x) + 1) % 4] = (gl_WorkGroupID.x * 4) + 3;
+        indexBuffer[uint((6 * gl_WorkGroupID.x) + 2) / 4][uint((6 * gl_WorkGroupID.x) + 2) % 4] = (gl_WorkGroupID.x * 4) + 1;
 
-        get_float_from_vec4((6 * gl_WorkGroupID.x) + 3, indexBuffer) = (gl_WorkGroupID.x * 4);
-        get_float_from_vec4((6 * gl_WorkGroupID.x) + 4, indexBuffer) = (gl_WorkGroupID.x * 4) + 2;
-        get_float_from_vec4((6 * gl_WorkGroupID.x) + 5, indexBuffer) = (gl_WorkGroupID.x * 4) + 3;
+        indexBuffer[uint((6 * gl_WorkGroupID.x) + 3) / 4][uint((6 * gl_WorkGroupID.x) + 3) % 4] = (gl_WorkGroupID.x * 4);
+        indexBuffer[uint((6 * gl_WorkGroupID.x) + 4) / 4][uint((6 * gl_WorkGroupID.x) + 4) % 4] = (gl_WorkGroupID.x * 4) + 2;
+        indexBuffer[uint((6 * gl_WorkGroupID.x) + 5) / 4][uint((6 * gl_WorkGroupID.x) + 5) % 4] = (gl_WorkGroupID.x * 4) + 3;
     }
 
 }
