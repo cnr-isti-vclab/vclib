@@ -607,6 +607,53 @@ void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
 }
 
 /**
+ * @brief Sets the element identified by `ELEM_ID` colors of the given input
+ * `mesh` from the input color range (that could be anything that satisfies
+ * the Range concept: e.g. std::vector<double>, std::array<double, N>,
+ * Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input element color.
+ * @param[in] colors: the input element color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<uint ELEM_ID, MeshConcept MeshType, Range R>
+void elementColorsFromRange(
+    MeshType&     mesh,
+    R&&           colors,
+    Color::Format colorFormat)
+{
+    if (std::ranges::size(colors) != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input color range must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    auto c = colors.begin();
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.color() = Color(*c, colorFormat);
+        ++c;
+    }
+}
+
+/**
  * @brief Sets the vertex colors of the given input `mesh` from the input
  * vertex colors matrix.
  *
@@ -638,6 +685,36 @@ template<MeshConcept MeshType, MatrixConcept VCMatrix>
 void vertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 {
     elementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
+}
+
+/**
+ * @brief Sets the vertex colors of the given input `mesh` from the input color
+ * range (that could be anything that satisfies the Range concept: e.g.
+ * std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex color.
+ * @param[in] colors: the input vertex color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, Range R>
+void vertexColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
+{
+    elementColorsFromRange<ElemId::VERTEX>(mesh, colors, colorFormat);
 }
 
 /**
@@ -675,6 +752,36 @@ void faceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 }
 
 /**
+ * @brief Sets the face colors of the given input `mesh` from the input color
+ * range (that could be anything that satisfies the Range concept: e.g.
+ * std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face color.
+ * @param[in] colors: the input face color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, Range R>
+void faceColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
+{
+    elementColorsFromRange<ElemId::FACE>(mesh, colors, colorFormat);
+}
+
+/**
  * @brief Sets the edge colors of the given input `mesh` from the input
  * edge colors matrix.
  *
@@ -706,6 +813,36 @@ template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
 void edgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 {
     elementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
+}
+
+/**
+ * @brief Sets the edge colors of the given input `mesh` from the input color
+ * range (that could be anything that satisfies the Range concept: e.g.
+ * std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input edge color.
+ * @param[in] colors: the input edge color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<EdgeMeshConcept MeshType, Range R>
+void edgeColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
+{
+    elementColorsFromRange<ElemId::EDGE>(mesh, colors, colorFormat);
 }
 
 /**
