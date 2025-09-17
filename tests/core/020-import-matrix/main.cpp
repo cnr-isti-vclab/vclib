@@ -317,6 +317,61 @@ void testVertexColorsFromMatrix()
 }
 
 template<typename MeshType>
+void testVertexColorsFromRange()
+{
+    // Create a mesh with vertices
+    MeshType mesh;
+    mesh.addVertices(4);
+    mesh.deleteVertex(2); // keep 3 vertices
+
+    // Create colors vector using packed 32-bit format
+    // Red: 0xFF0000FF (ABGR format: A=255, B=0, G=0, R=255)
+    // Green: 0xFF00FF00 (ABGR format: A=255, B=0, G=255, R=0) 
+    // Blue: 0xFFFF0000 (ABGR format: A=255, B=255, G=0, R=0)
+    std::vector<uint32_t> colors = {0xFF0000FF, 0xFF00FF00, 0xFFFF0000};
+
+    // Test vertexColorsFromRange with ABGR format
+    vcl::vertexColorsFromRange(mesh, colors, vcl::Color::Format::ABGR);
+
+    // Verify colors
+    vcl::uint c = 0;
+    REQUIRE(mesh.isPerVertexColorEnabled());
+    REQUIRE(mesh.vertex(0).color().red() == 255);
+    REQUIRE(mesh.vertex(0).color().green() == 0);
+    REQUIRE(mesh.vertex(0).color().blue() == 0);
+    REQUIRE(mesh.vertex(0).color().alpha() == 255);
+    REQUIRE(mesh.vertex(1).color().red() == 0);
+    REQUIRE(mesh.vertex(1).color().green() == 255);
+    REQUIRE(mesh.vertex(1).color().blue() == 0);
+    REQUIRE(mesh.vertex(1).color().alpha() == 255);
+    REQUIRE(mesh.vertex(3).color().red() == 0);
+    REQUIRE(mesh.vertex(3).color().green() == 0);
+    REQUIRE(mesh.vertex(3).color().blue() == 255);
+    REQUIRE(mesh.vertex(3).color().alpha() == 255);
+
+    // Test with different color format (RGBA)
+    // Red: 0xFF0000FF (RGBA format: R=255, G=0, B=0, A=255)
+    // Green: 0x00FF00FF (RGBA format: R=0, G=255, B=0, A=255)
+    // Blue: 0x0000FFFF (RGBA format: R=0, G=0, B=255, A=255)
+    std::vector<uint32_t> rgbaColors = {0xFF0000FF, 0x00FF00FF, 0x0000FFFF};
+    vcl::vertexColorsFromRange(mesh, rgbaColors, vcl::Color::Format::RGBA);
+
+    // Verify colors with RGBA format
+    REQUIRE(mesh.vertex(0).color().red() == 255);
+    REQUIRE(mesh.vertex(0).color().green() == 0);
+    REQUIRE(mesh.vertex(0).color().blue() == 0);
+    REQUIRE(mesh.vertex(0).color().alpha() == 255);
+    REQUIRE(mesh.vertex(1).color().red() == 0);
+    REQUIRE(mesh.vertex(1).color().green() == 255);
+    REQUIRE(mesh.vertex(1).color().blue() == 0);
+    REQUIRE(mesh.vertex(1).color().alpha() == 255);
+    REQUIRE(mesh.vertex(3).color().red() == 0);
+    REQUIRE(mesh.vertex(3).color().green() == 0);
+    REQUIRE(mesh.vertex(3).color().blue() == 255);
+    REQUIRE(mesh.vertex(3).color().alpha() == 255);
+}
+
+template<typename MeshType>
 void testVertexQualityFromRange()
 {
     using QualityType = MeshType::VertexType::QualityType;
@@ -363,6 +418,53 @@ void testFaceQualityFromRange()
         REQUIRE(mesh.isPerFaceQualityEnabled());
         REQUIRE(mesh.face(0).quality() == quality[c++]);
         REQUIRE(mesh.face(1).quality() == quality[c++]);
+    }
+}
+
+template<typename MeshType>
+void testFaceColorsFromRange()
+{
+    if constexpr (vcl::HasFaces<MeshType>) {
+        // Create a mesh with vertices and faces
+        MeshType mesh;
+        mesh.addVertices(4);
+        mesh.addFace(0, 1, 2);
+        mesh.addFace(0, 2, 3);
+
+        // Create colors vector using packed 32-bit format
+        // Red: 0xFF0000FF (ABGR format: A=255, B=0, G=0, R=255)
+        // Green: 0xFF00FF00 (ABGR format: A=255, B=0, G=255, R=0)
+        std::vector<uint32_t> colors = {0xFF0000FF, 0xFF00FF00};
+
+        // Test faceColorsFromRange with ABGR format
+        vcl::faceColorsFromRange(mesh, colors, vcl::Color::Format::ABGR);
+
+        // Verify colors
+        REQUIRE(mesh.isPerFaceColorEnabled());
+        REQUIRE(mesh.face(0).color().red() == 255);
+        REQUIRE(mesh.face(0).color().green() == 0);
+        REQUIRE(mesh.face(0).color().blue() == 0);
+        REQUIRE(mesh.face(0).color().alpha() == 255);
+        REQUIRE(mesh.face(1).color().red() == 0);
+        REQUIRE(mesh.face(1).color().green() == 255);
+        REQUIRE(mesh.face(1).color().blue() == 0);
+        REQUIRE(mesh.face(1).color().alpha() == 255);
+
+        // Test with different color format (RGBA)
+        // Red: 0xFF0000FF (RGBA format: R=255, G=0, B=0, A=255)
+        // Green: 0x00FF00FF (RGBA format: R=0, G=255, B=0, A=255)
+        std::vector<uint32_t> rgbaColors = {0xFF0000FF, 0x00FF00FF};
+        vcl::faceColorsFromRange(mesh, rgbaColors, vcl::Color::Format::RGBA);
+
+        // Verify colors with RGBA format
+        REQUIRE(mesh.face(0).color().red() == 255);
+        REQUIRE(mesh.face(0).color().green() == 0);
+        REQUIRE(mesh.face(0).color().blue() == 0);
+        REQUIRE(mesh.face(0).color().alpha() == 255);
+        REQUIRE(mesh.face(1).color().red() == 0);
+        REQUIRE(mesh.face(1).color().green() == 255);
+        REQUIRE(mesh.face(1).color().blue() == 0);
+        REQUIRE(mesh.face(1).color().alpha() == 255);
     }
 }
 
@@ -668,6 +770,30 @@ TEMPLATE_TEST_CASE(
 }
 
 TEMPLATE_TEST_CASE(
+    "Import vertex colors from range",
+    "",
+    vcl::TriMeshf,
+    vcl::TriMesh,
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+    testVertexColorsFromRange<MeshType>();
+}
+
+TEMPLATE_TEST_CASE(
+    "Import face colors from range",
+    "",
+    vcl::TriMeshf,
+    vcl::TriMesh,
+    vcl::PolyMeshf,
+    vcl::PolyMesh)
+{
+    using MeshType = TestType;
+    testFaceColorsFromRange<MeshType>();
+}
+
+TEMPLATE_TEST_CASE(
     "Import vertex quality from range",
     "",
     vcl::TriMeshf,
@@ -899,6 +1025,28 @@ TEST_CASE("Import mesh - error handling")
         REQUIRE_THROWS_AS(
             vcl::faceWedgeTexCoordIndicesFromRange(
                 mesh, wrongWedgeTexCoordIndices),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong vertex colors range size")
+    {
+        mesh.addVertices(3);
+        std::vector<uint32_t> wrongColors = {0xFF0000FF, 0xFF00FF00}; // size 2, should be 3
+
+        REQUIRE_THROWS_AS(
+            vcl::vertexColorsFromRange(mesh, wrongColors, vcl::Color::Format::ABGR),
+            vcl::WrongSizeException);
+    }
+
+    SECTION("Wrong face colors range size")
+    {
+        mesh.addVertices(4);
+        mesh.addFace(0, 1, 2);
+        mesh.addFace(0, 2, 3); // 2 triangular faces
+        std::vector<uint32_t> wrongColors = {0xFF0000FF}; // size 1, should be 2
+
+        REQUIRE_THROWS_AS(
+            vcl::faceColorsFromRange(mesh, wrongColors, vcl::Color::Format::ABGR),
             vcl::WrongSizeException);
     }
 }
