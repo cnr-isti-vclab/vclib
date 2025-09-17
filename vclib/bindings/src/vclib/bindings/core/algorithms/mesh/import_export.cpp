@@ -215,6 +215,22 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a,
             "vertex_colors"_a,
             "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "vertex_quality_from_array",
+            [](MeshType& mesh, const Eigen::VectorXd& vertexQuality) {
+                return vcl::vertexQualityFromRange(mesh, vertexQuality);
+            },
+            "mesh"_a,
+            "vertex_quality"_a);
+
+        m.def(
+            "vertex_quality_from_list",
+            [](MeshType& mesh, const std::vector<double>& vertexQuality) {
+                return vcl::vertexQualityFromRange(mesh, vertexQuality);
+            },
+            "mesh"_a,
+            "vertex_quality"_a);
     };
 
     defForAllMeshTypes(m, fAllMeshes);
@@ -416,6 +432,22 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a,
             "face_colors"_a,
             "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "face_quality_from_array",
+            [](MeshType& mesh, const Eigen::VectorXd& faceQuality) {
+                return vcl::faceQualityFromRange(mesh, faceQuality);
+            },
+            "mesh"_a,
+            "face_quality"_a);
+
+        m.def(
+            "face_quality_from_list",
+            [](MeshType& mesh, const std::vector<double>& faceQuality) {
+                return vcl::faceQualityFromRange(mesh, faceQuality);
+            },
+            "mesh"_a,
+            "face_quality"_a);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
@@ -566,6 +598,22 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a,
             "edge_colors"_a,
             "color_format"_a = Color::Format::RGBA);
+
+        m.def(
+            "edge_quality_from_array",
+            [](MeshType& mesh, const Eigen::VectorXd& edgeQuality) {
+                return vcl::edgeQualityFromRange(mesh, edgeQuality);
+            },
+            "mesh"_a,
+            "edge_quality"_a);
+
+        m.def(
+            "edge_quality_from_list",
+            [](MeshType& mesh, const std::vector<double>& edgeQuality) {
+                return vcl::edgeQualityFromRange(mesh, edgeQuality);
+            },
+            "mesh"_a,
+            "edge_quality"_a);
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
