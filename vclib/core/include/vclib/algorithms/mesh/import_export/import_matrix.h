@@ -472,8 +472,13 @@ void elementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
             "The input " + elementEnumString<ELEM_ID>() +
             " normal matrix must have 3 columns");
 
-    elementNormalsFromBuffer<ELEM_ID>(
-        mesh, normals.data(), normals.rows(), stg);
+    if (normals.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input normal matrix must have the same number of rows as the "
+            "number of " +
+            elementEnumString<ELEM_ID>() + " elements in the mesh");
+
+    elementNormalsFromBuffer<ELEM_ID>(mesh, normals.data(), stg);
 }
 
 /**
@@ -591,13 +596,14 @@ void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
                                      Color::Representation::INT_0_255 :
                                      Color::Representation::FLOAT_0_1;
 
+    if (colors.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input colors matrix must have the same number of rows as the "
+            "number of " +
+            elementEnumString<ELEM_ID>() + " elements in the mesh");
+
     elementColorsFromBuffer<ELEM_ID>(
-        mesh,
-        colors.data(),
-        colors.rows(),
-        colors.cols(),
-        matrixStorageType<CMatrix>(),
-        repr);
+        mesh, colors.data(), colors.cols(), matrixStorageType<CMatrix>(), repr);
 }
 
 /**
@@ -845,8 +851,12 @@ void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
         throw WrongSizeException(
             "The input vertex texcoords matrix must have 2 columns");
 
-    vertexTexCoordsFromBuffer(
-        mesh, vertexTexCoords.data(), vertexTexCoords.rows(), stg);
+    if (vertexTexCoords.rows() != mesh.vertexNumber())
+        throw WrongSizeException(
+            "The input vertex texcoords must have the same number of rows as "
+            "the number of vertices in the mesh");
+
+    vertexTexCoordsFromBuffer(mesh, vertexTexCoords.data(), stg);
 }
 
 /**
@@ -920,10 +930,14 @@ void faceWedgeTexCoordsFromMatrix(
 {
     MatrixStorageType stg = matrixStorageType<FTMatrix>();
 
+    if (faceWedgeTexCoords.rows() != mesh.faceNumber())
+        throw WrongSizeException(
+            "The input face wedge texcoords must have the same number of rows "
+            "as the number of faces in the mesh");
+
     faceWedgeTexCoordsFromBuffer(
         mesh,
         faceWedgeTexCoords.data(),
-        faceWedgeTexCoords.rows(),
         faceWedgeTexCoords.cols() / 2,
         stg);
 }

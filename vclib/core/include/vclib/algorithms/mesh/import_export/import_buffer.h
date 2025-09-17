@@ -427,14 +427,15 @@ void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 /**
  * @brief Sets the element identified by `ELEM_ID` normals of the given input
  * `mesh` from the input buffer, that is expected to be a contiguous array of
- * scalars, where each row contains the 3 components of the normal of a
+ * #E*3 scalars, where each row contains the 3 components of the normal of a
  * element.
+ *
+ * If not specified, the number of normals in the input buffer is assumed to be
+ * at least the number of ELEM_ID elements of the mesh. The extra normals are
+ * ignored.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
- *
- * The given elementNumber must be equal to the number of ELEM_ID elements of
- * the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-element normal component if it is not already
  * enabled.
@@ -444,13 +445,12 @@ void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  * @param[in/out] mesh: the mesh on which import the input element normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * elements of the mesh.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `elementNumber`.
+ * (default), it is assumed to be equal to the number of ELEM_ID elements of the
+ * mesh.
  *
  * @ingroup import_buffer
  */
@@ -458,25 +458,13 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              elementNumber,
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     using namespace detail;
 
-    const uint ROW_NUM = rowNumber == UINT_NULL ? elementNumber : rowNumber;
-
-    // elementNumber must be equal to the number of elements of the given type
-    if (elementNumber != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input element number does not match the number of " +
-            elementEnumString<ELEM_ID>() +
-            " elements of the mesh\n"
-            "Number of " +
-            elementEnumString<ELEM_ID>() + " elements in the mesh: " +
-            std::to_string(mesh.template number<ELEM_ID>()) +
-            "\nNumber of input element number: " +
-            std::to_string(elementNumber));
+    const uint ROW_NUM =
+        rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
@@ -493,14 +481,14 @@ void elementNormalsFromBuffer(
 
 /**
  * @brief Sets the vertex normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * contains the 3 components of the normal of a vertex.
+ * buffer, that is expected to be a contiguous array of #V*3 scalars, where each
+ * row contains the 3 components of the normal of a vertex.
+ *
+ * If not specified, the number of normals in the input buffer is assumed to be
+ * at least the number of vertices of the mesh. The extra normals are ignored.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
- *
- * The given vertexNumber must be equal to the number of vertices of
- * the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-vertex normal component if it is not already
  * enabled.
@@ -510,13 +498,11 @@ void elementNormalsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input vertex normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * vertices of the mesh.
- * @param[in] vertexNumber: the number of vertices contained in the input
- * buffer.
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `vertexNumber`.
+ * (default), it is assumed to be equal to the number of vertices of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -524,24 +510,23 @@ template<MeshConcept MeshType>
 void vertexNormalsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              vertexNumber,
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     elementNormalsFromBuffer<ElemId::VERTEX, MeshType>(
-        mesh, buffer, vertexNumber, storage, rowNumber);
+        mesh, buffer, storage, rowNumber);
 }
 
 /**
  * @brief Sets the face normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * contains the 3 components of the normal of a face.
+ * buffer, that is expected to be a contiguous array of #F*3 scalars, where each
+ * row contains the 3 components of the normal of a face.
+ *
+ * If not specified, the number of normals in the input buffer is assumed to be
+ * at least the number of faces of the mesh. The extra normals are ignored.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
- *
- * The given faceNumber must be equal to the number of faces of
- * the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-face normal component if it is not already
  * enabled.
@@ -551,13 +536,11 @@ void vertexNormalsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input face normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * faces of the mesh.
- * @param[in] faceNumber: the number of faces contained in the input
- * buffer.
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `faceNumber`.
+ * (default), it is assumed to be equal to the number of faces of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -565,24 +548,23 @@ template<FaceMeshConcept MeshType>
 void faceNormalsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              faceNumber,
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     elementNormalsFromBuffer<ElemId::FACE, MeshType>(
-        mesh, buffer, faceNumber, storage, rowNumber);
+        mesh, buffer, storage, rowNumber);
 }
 
 /**
  * @brief Sets the edge normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * contains the 3 components of the normal of an edge.
+ * buffer, that is expected to be a contiguous array of #F*3 scalars, where each
+ * row contains the 3 components of the normal of a edge.
+ *
+ * If not specified, the number of normals in the input buffer is assumed to be
+ * at least the number of edges of the mesh. The extra normals are ignored.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
- *
- * The given edgeNumber must be equal to the number of edges of
- * the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-edge normal component if it is not already
  * enabled.
@@ -592,13 +574,11 @@ void faceNormalsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input edge normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * edges of the mesh.
- * @param[in] edgeNumber: the number of edges contained in the input
- * buffer.
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `edgeNumber`.
+ * (default), it is assumed to be equal to the number of edges of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -606,19 +586,22 @@ template<EdgeMeshConcept MeshType>
 void edgeNormalsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              edgeNumber,
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     elementNormalsFromBuffer<ElemId::EDGE, MeshType>(
-        mesh, buffer, edgeNumber, storage, rowNumber);
+        mesh, buffer, storage, rowNumber);
 }
 
 /**
  * @brief Sets the element identified by `ELEM_ID` colors of the given input
  * `mesh` from the input buffer, that is expected to be a contiguous array of
- * scalars, where each row (number of channels) contains the 3 or 4 components
- * of the color of a element.
+ * #E*3 or #E*4 scalars, where each row contains the 3 or 4 components of the
+ * color of a element.
+ *
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of ELEM_ID elements of the mesh. The extra colors are
+ * ignored.
  *
  * Scalars can be either in the range [0,255] or in the range [0,1], as
  * specified by the `representation` argument. The default is [0,255].
@@ -629,9 +612,6 @@ void edgeNormalsFromBuffer(
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
  *
- * The given elementNumber must be equal to the number of ELEM_ID elements of
- * the mesh, otherwise an exception is thrown.
- *
  * The function enables the per-element color component if it is not already
  * enabled.
  *
@@ -640,8 +620,6 @@ void edgeNormalsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input element colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  * @param[in] channelsNumber: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -650,7 +628,8 @@ void edgeNormalsFromBuffer(
  * input buffer. It can be either in the range [0,255] or in the range [0,1].
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `elementNumber`.
+ * (default), it is assumed to be equal to the number of ELEM_ID elements of the
+ * mesh.
  *
  * @ingroup import_buffer
  */
@@ -658,7 +637,6 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  elementNumber,
     uint                  channelsNumber = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
@@ -666,24 +644,13 @@ void elementColorsFromBuffer(
 {
     using namespace detail;
 
-    const uint ROW_NUM = rowNumber == UINT_NULL ? elementNumber : rowNumber;
+    const uint ROW_NUM =
+        rowNumber == UINT_NULL ? mesh.template number<ELEM_ID>() : rowNumber;
 
     if (channelsNumber != 3 && channelsNumber != 4)
         throw WrongSizeException(
             "The input " + elementEnumString<ELEM_ID>() +
             " colors must have 3 or 4 channels.");
-
-    // elementNumber must be equal to the number of elements of the given type
-    if (elementNumber != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input element number does not match the number of " +
-            elementEnumString<ELEM_ID>() +
-            " elements of the mesh\n"
-            "Number of " +
-            elementEnumString<ELEM_ID>() + " elements in the mesh: " +
-            std::to_string(mesh.template number<ELEM_ID>()) +
-            "\nNumber of input element number: " +
-            std::to_string(elementNumber));
 
     enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
@@ -717,11 +684,13 @@ void elementColorsFromBuffer(
 
 /**
  * @brief Sets the element identified by `ELEM_ID` color of the given input
- * `mesh` from the input color buffer, where each color is packed in a single
- * 32 bit value using the provided `colorFormat`.
+ * `mesh` from the input buffer, that is expected to be a contiguous array of #E
+ * 32 bit values, on each of them the color is packed using the provided
+ * `colorFormat`.
  *
- * The number of elements of the input buffer must be equal to the number of
- * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of ELEM_ID elements of the mesh. The extra colors are
+ * ignored.
  *
  * The function enables the per-element color component if it is not already
  * enabled.
@@ -730,8 +699,6 @@ void elementColorsFromBuffer(
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input element color.
  * @param[in] buffer: the input element color buffer.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
  *
@@ -741,21 +708,8 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsFromBuffer(
     MeshType&     mesh,
     const auto*   buffer,
-    uint          elementNumber,
     Color::Format colorFormat)
 {
-    // elementNumber must be equal to the number of elements of the given type
-    if (elementNumber != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input element number does not match the number of " +
-            elementEnumString<ELEM_ID>() +
-            " elements of the mesh\n"
-            "Number of " +
-            elementEnumString<ELEM_ID>() + " elements in the mesh: " +
-            std::to_string(mesh.template number<ELEM_ID>()) +
-            "\nNumber of input element number: " +
-            std::to_string(elementNumber));
-
     enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
@@ -768,9 +722,11 @@ void elementColorsFromBuffer(
 
 /**
  * @brief Sets the vertex colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * (number of channels) contains the 3 or 4 components of the color of a
- * vertex.
+ * buffer, that is expected to be a contiguous array of #V*3 or #V*4 scalars,
+ * where each row contains the 3 or 4 components of the color of a vertex.
+ *
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of vertices of the mesh. The extra colors are ignored.
  *
  * Scalars can be either in the range [0,255] or in the range [0,1], as
  * specified by the `representation` argument. The default is [0,255].
@@ -780,9 +736,6 @@ void elementColorsFromBuffer(
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
- *
- * The given vertexNumber must be equal to the number of vertices of
- * the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-vertex color component if it is not already
  * enabled.
@@ -792,8 +745,6 @@ void elementColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input vertex colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] vertexNumber: the number of vertices contained in the input
- * buffer.
  * @param[in] channelsNumber: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -802,7 +753,7 @@ void elementColorsFromBuffer(
  * input buffer. It can be either in the range [0,255] or in the range [0,1].
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `vertexNumber`.
+ * (default), it is assumed to be equal to the number of vertices of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -810,29 +761,22 @@ template<MeshConcept MeshType>
 void vertexColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  vertexNumber,
     uint                  channelsNumber = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  rowNumber      = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::VERTEX, MeshType>(
-        mesh,
-        buffer,
-        vertexNumber,
-        channelsNumber,
-        storage,
-        representation,
-        rowNumber);
+        mesh, buffer, channelsNumber, storage, representation, rowNumber);
 }
 
 /**
- * @brief Sets the vertex color of the given input `mesh` from the input color
- * buffer, where each color is packed in a single 32 bit value using the
- * provided `colorFormat`.
+ * @brief Sets the vertex color of the given input `mesh` from the input buffer,
+ * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * them the color is packed using the provided `colorFormat`.
  *
- * The number of elements of the input buffer must be equal to the number of
- * vertices of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of vertices of the mesh. The extra colors are ignored.
  *
  * The function enables the per-vertex color component if it is not already
  * enabled.
@@ -841,8 +785,6 @@ void vertexColorsFromBuffer(
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input vertex color.
  * @param[in] buffer: the input vertex color buffer.
- * @param[in] vertexNumber: the number of vertices contained in the input
- * buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
  *
@@ -852,18 +794,19 @@ template<MeshConcept MeshType>
 void vertexColorsFromBuffer(
     MeshType&     mesh,
     const auto*   buffer,
-    uint          vertexNumber,
     Color::Format colorFormat)
 {
     elementColorsFromBuffer<ElemId::VERTEX, MeshType>(
-        mesh, buffer, vertexNumber, colorFormat);
+        mesh, buffer, colorFormat);
 }
 
 /**
  * @brief Sets the face colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * (number of channels) contains the 3 or 4 components of the color of a
- * face.
+ * buffer, that is expected to be a contiguous array of #F*3 or #F*4 scalars,
+ * where each row contains the 3 or 4 components of the color of a face.
+ *
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of faces of the mesh. The extra colors are ignored.
  *
  * Scalars can be either in the range [0,255] or in the range [0,1], as
  * specified by the `representation` argument. The default is [0,255].
@@ -873,9 +816,6 @@ void vertexColorsFromBuffer(
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
- *
- * The given faceNumber must be equal to the number of faces of
- * the mesh, otherwise an exception is thrown.
  *
  * The function enables the per-face color component if it is not already
  * enabled.
@@ -885,8 +825,6 @@ void vertexColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input face colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] faceNumber: the number of faces contained in the input
- * buffer.
  * @param[in] channelsNumber: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -895,7 +833,7 @@ void vertexColorsFromBuffer(
  * input buffer. It can be either in the range [0,255] or in the range [0,1].
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `faceNumber`.
+ * (default), it is assumed to be equal to the number of faces of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -903,29 +841,22 @@ template<FaceMeshConcept MeshType>
 void faceColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  faceNumber,
     uint                  channelsNumber = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  rowNumber      = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::FACE, MeshType>(
-        mesh,
-        buffer,
-        faceNumber,
-        channelsNumber,
-        storage,
-        representation,
-        rowNumber);
+        mesh, buffer, channelsNumber, storage, representation, rowNumber);
 }
 
 /**
- * @brief Sets the face color of the given input `mesh` from the input color
- * buffer, where each color is packed in a single 32 bit value using the
- * provided `colorFormat`.
+ * @brief Sets the face color of the given input `mesh` from the input buffer,
+ * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * them the color is packed using the provided `colorFormat`.
  *
- * The number of elements of the input buffer must be equal to the number of
- * faces of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of faces of the mesh. The extra colors are ignored.
  *
  * The function enables the per-face color component if it is not already
  * enabled.
@@ -934,8 +865,6 @@ void faceColorsFromBuffer(
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input face color.
  * @param[in] buffer: the input face color buffer.
- * @param[in] faceNumber: the number of faces contained in the input
- * buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
  *
@@ -945,18 +874,18 @@ template<FaceMeshConcept MeshType>
 void faceColorsFromBuffer(
     MeshType&     mesh,
     const auto*   buffer,
-    uint          faceNumber,
     Color::Format colorFormat)
 {
-    elementColorsFromBuffer<ElemId::FACE, MeshType>(
-        mesh, buffer, faceNumber, colorFormat);
+    elementColorsFromBuffer<ElemId::FACE, MeshType>(mesh, buffer, colorFormat);
 }
 
 /**
  * @brief Sets the edge colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * (number of channels) contains the 3 or 4 components of the color of an
- * edge.
+ * buffer, that is expected to be a contiguous array of #E*3 or #E*4 scalars,
+ * where each row contains the 3 or 4 components of the color of a edge.
+ *
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of edges of the mesh. The extra colors are ignored.
  *
  * Scalars can be either in the range [0,255] or in the range [0,1], as
  * specified by the `representation` argument. The default is [0,255].
@@ -967,9 +896,6 @@ void faceColorsFromBuffer(
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
  *
- * The given edgeNumber must be equal to the number of edges of
- * the mesh, otherwise an exception is thrown.
- *
  * The function enables the per-edge color component if it is not already
  * enabled.
  *
@@ -978,8 +904,6 @@ void faceColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input edge colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] edgeNumber: the number of edges contained in the input
- * buffer.
  * @param[in] channelsNumber: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -988,7 +912,7 @@ void faceColorsFromBuffer(
  * input buffer. It can be either in the range [0,255] or in the range [0,1].
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `edgeNumber`.
+ * (default), it is assumed to be equal to the number of edges of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -996,29 +920,22 @@ template<EdgeMeshConcept MeshType>
 void edgeColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  edgeNumber,
     uint                  channelsNumber = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  rowNumber      = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::EDGE, MeshType>(
-        mesh,
-        buffer,
-        edgeNumber,
-        channelsNumber,
-        storage,
-        representation,
-        rowNumber);
+        mesh, buffer, channelsNumber, storage, representation, rowNumber);
 }
 
 /**
- * @brief Sets the edge color of the given input `mesh` from the input color
- * buffer, where each color is packed in a single 32 bit value using the
- * provided `colorFormat`.
+ * @brief Sets the edge color of the given input `mesh` from the input buffer,
+ * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * them the color is packed using the provided `colorFormat`.
  *
- * The number of elements of the input buffer must be equal to the number of
- * edges of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of colors in the input buffer is assumed to be
+ * at least the number of edges of the mesh. The extra colors are ignored.
  *
  * The function enables the per-edge color component if it is not already
  * enabled.
@@ -1027,8 +944,6 @@ void edgeColorsFromBuffer(
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input edge color.
  * @param[in] buffer: the input edge color buffer.
- * @param[in] edgeNumber: the number of edges contained in the input
- * buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
  *
@@ -1038,19 +953,19 @@ template<EdgeMeshConcept MeshType>
 void edgeColorsFromBuffer(
     MeshType&     mesh,
     const auto*   buffer,
-    uint          edgeNumber,
     Color::Format colorFormat)
 {
-    elementColorsFromBuffer<ElemId::EDGE, MeshType>(
-        mesh, buffer, edgeNumber, colorFormat);
+    elementColorsFromBuffer<ElemId::EDGE, MeshType>(mesh, buffer, colorFormat);
 }
 
 /**
  * @brief Sets the element identified by `ELEM_ID` quality of the given input
- * `mesh` from the input quality buffer.
+ * `mesh` from the input quality buffer, that is expected to be a contiguous
+ * array of #E scalars, where each value contains the quality of a element.
  *
- * The number of elements of the input buffer must be equal to the number of
- * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of quality values in the input buffer is assumed
+ * to be at least the number of ELEM_ID elements of the mesh. The extra quality
+ * values are ignored.
  *
  * The function enables the per-element quality component if it is not already
  * enabled.
@@ -1059,23 +974,12 @@ void edgeColorsFromBuffer(
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input element quality.
  * @param[in] buffer: the input element quality buffer.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<uint ELEM_ID, MeshConcept MeshType>
-void elementQualityFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        elementNumber)
+void elementQualityFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    if (elementNumber != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input quality buffer must have the same number of elements "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
     enableIfPerElementComponentOptional<ELEM_ID, CompId::QUALITY>(mesh);
     requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
@@ -1087,10 +991,12 @@ void elementQualityFromBuffer(
 
 /**
  * @brief Sets the vertex quality of the given input `mesh` from the input
- * quality buffer.
+ * quality buffer, that is expected to be a contiguous array of #V scalars,
+ * where each value contains the quality of a vertex.
  *
- * The number of elements of the input buffer must be equal to the number of
- * vertices of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of quality values in the input buffer is assumed
+ * to be at least the number of vertices of the mesh. The extra quality values
+ * are ignored.
  *
  * The function enables the per-vertex quality component if it is not already
  * enabled.
@@ -1099,81 +1005,73 @@ void elementQualityFromBuffer(
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input vertex quality.
  * @param[in] buffer: the input vertex quality buffer.
- * @param[in] vertexNumber: the number of vertices contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<MeshConcept MeshType>
-void vertexQualityFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer,
-    uint        vertexNumber)
+void vertexQualityFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    elementQualityFromBuffer<ElemId::VERTEX, MeshType>(
-        mesh, buffer, vertexNumber);
+    elementQualityFromBuffer<ElemId::VERTEX, MeshType>(mesh, buffer);
 }
 
 /**
  * @brief Sets the face quality of the given input `mesh` from the input
- * quality buffer.
+ * quality buffer, that is expected to be a contiguous array of #F scalars,
+ * where each value contains the quality of a face.
  *
- * The number of elements of the input buffer must be equal to the number of
- * faces of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of quality values in the input buffer is assumed
+ * to be at least the number of faces of the mesh. The extra quality values
+ * are ignored.
  *
  * The function enables the per-face quality component if it is not already
  * enabled.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
- * FaceMeshConcept.
+ * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input face quality.
  * @param[in] buffer: the input face quality buffer.
- * @param[in] faceNumber: the number of faces contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<FaceMeshConcept MeshType>
-void faceQualityFromBuffer(MeshType& mesh, const auto* buffer, uint faceNumber)
+void faceQualityFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    elementQualityFromBuffer<ElemId::FACE, MeshType>(mesh, buffer, faceNumber);
+    elementQualityFromBuffer<ElemId::FACE, MeshType>(mesh, buffer);
 }
 
 /**
  * @brief Sets the edge quality of the given input `mesh` from the input
- * quality buffer.
+ * quality buffer, that is expected to be a contiguous array of #F scalars,
+ * where each value contains the quality of a edge.
  *
- * The number of elements of the input buffer must be equal to the number of
- * edges of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of quality values in the input buffer is assumed
+ * to be at least the number of edges of the mesh. The extra quality values
+ * are ignored.
  *
  * The function enables the per-edge quality component if it is not already
  * enabled.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
- * EdgeMeshConcept.
+ * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input edge quality.
  * @param[in] buffer: the input edge quality buffer.
- * @param[in] edgeNumber: the number of edges contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<EdgeMeshConcept MeshType>
-void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer, uint edgeNumber)
+void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    elementQualityFromBuffer<ElemId::EDGE, MeshType>(mesh, buffer, edgeNumber);
+    elementQualityFromBuffer<ElemId::EDGE, MeshType>(mesh, buffer);
 }
 
 /**
  * @brief Sets the vertex texcoords of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * contains the 2 components of the texture coordinates of a vertex.
+ * buffer, that is expected to be a contiguous array of #V*2 scalars, where each
+ * row contains the 2 components of the texture coordinates of a vertex.
  *
- * The layout of the buffer can be either row-major or column-major, as
- * specified by the `storage` argument. The default is row-major.
- *
- * The number of elements of the input buffer must be equal to the number of
- * vertices of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of texcoords in the input buffer is assumed to
+ * be at least the number of vertices of the mesh. The extra texcoords are
+ * ignored.
  *
  * The function enables the per-vertex texcoords component if it is not already
  * enabled.
@@ -1184,13 +1082,11 @@ void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer, uint edgeNumber)
  * @param[in/out] mesh: the mesh on which import the input texcoords.
  * @param[in] buffer: a contiguous array containing the texcoords of the
  * vertices of the mesh.
- * @param[in] vertexNumber: the number of vertices contained in the input
- * buffer.
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `vertexNumber`.
+ * (default), it is assumed to be equal to the number of vertices of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -1198,22 +1094,13 @@ template<MeshConcept MeshType>
 void vertexTexCoordsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              vertexNumber,
     MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber = UINT_NULL)
 {
     using namespace detail;
 
-    const uint ROW_NUM = rowNumber == UINT_NULL ? vertexNumber : rowNumber;
-
-    if (vertexNumber != mesh.vertexNumber()) {
-        throw WrongSizeException(
-            "The input vertex number does not match the number of vertices "
-            "of the mesh\n"
-            "Number of vertices in the mesh: " +
-            std::to_string(mesh.vertexNumber()) +
-            "\nNumber of input vertex number: " + std::to_string(vertexNumber));
-    }
+    const uint ROW_NUM =
+        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
 
     enableIfPerVertexTexCoordOptional(mesh);
     requirePerVertexTexCoord(mesh);
@@ -1228,10 +1115,12 @@ void vertexTexCoordsFromBuffer(
 
 /**
  * @brief Sets the vertex texcoord indices of the given input `mesh` from the
- * input texcoord indices buffer.
+ * input texcoord indices buffer, that is expected to be a contiguous array of
+ * #V scalars, where each value contains the texcoord index of a vertex.
  *
- * The number of elements of the input buffer must be equal to the number of
- * vertices of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of texcoord indices values in the input buffer
+ * is assumed to be at least the number of vertices of the mesh. The extra
+ * texcoord indices values are ignored.
  *
  * The function enables the per-vertex texcoords component if it is not already
  * enabled.
@@ -1241,25 +1130,14 @@ void vertexTexCoordsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input vertex texcoord
  * indices.
  * @param[in] buffer: the input vertex texcoord indices buffer.
- * @param[in] vertexNumber: the number of vertices contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<MeshConcept MeshType>
 void vertexTexCoordIndicesFromBuffer(
     MeshType&   mesh,
-    const auto* buffer,
-    uint        vertexNumber)
+    const auto* buffer)
 {
-    if (vertexNumber != mesh.vertexNumber())
-        throw WrongSizeException(
-            "The input vertexNumber must have the same number of elements "
-            "as the number of vertices in the mesh\n"
-            "Number of vertices in the mesh: " +
-            std::to_string(mesh.vertexNumber()) +
-            "\nNumber of input vertex number: " + std::to_string(vertexNumber));
-
     enableIfPerVertexTexCoordOptional(mesh);
     requirePerVertexTexCoord(mesh);
 
@@ -1271,15 +1149,15 @@ void vertexTexCoordIndicesFromBuffer(
 
 /**
  * @brief Sets the face wedge texcoords of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of scalars, where each row
- * contains the 2*largetFaceSize components of the wedge texture coordinates of
- * a face.
+ * buffer, that is expected to be a contiguous array of #F*(LFS*2) of scalars,
+ * where each row contains the 2*largetFaceSize components of the wedge texture
+ * coordinates of a face.
+ *
+ * If not specified, the number of per face wedge texcoords in the input buffer
+ * is assumed to be at least the number of faces of the mesh.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
- *
- * The number of elements (rows) of the input buffer must be equal to the number
- * of faces of the mesh, otherwise an exception is thrown.
  *
  * The number of columns of the input buffer must be equal to 2*largestFaceSize,
  * where largestFaceSize is the size of the largest face of the mesh. If a face
@@ -1295,14 +1173,13 @@ void vertexTexCoordIndicesFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input wedge texcoords.
  * @param[in] buffer: a contiguous array containing the wedge texcoords of the
  * faces of the mesh.
- * @param[in] faceNumber: the number of faces contained in the input buffer.
  * @param[in] largestFaceSize: the largest size of the faces, that corresponds
  * to the number of columns of the input buffer divided by 2 (u and v).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
  * @param[in] rowNumber: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `vertexNumber`.
+ * (default), it is assumed to be equal to the number of faces of the mesh.
  *
  * @ingroup import_buffer
  */
@@ -1310,7 +1187,6 @@ template<FaceMeshConcept MeshType>
 void faceWedgeTexCoordsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              faceNumber,
     uint              largestFaceSize = 3,
     MatrixStorageType storage         = MatrixStorageType::ROW_MAJOR,
     uint              rowNumber       = UINT_NULL)
@@ -1319,14 +1195,6 @@ void faceWedgeTexCoordsFromBuffer(
 
     const uint ROW_NUM = rowNumber == UINT_NULL ? mesh.faceNumber() : rowNumber;
     const uint COL_NUM = largestFaceSize * 2;
-
-    if (faceNumber != mesh.faceNumber())
-        throw WrongSizeException(
-            "The input faceNumber must have the same number of elements "
-            "as the number of faces in the mesh\n"
-            "Number of faces in the mesh: " +
-            std::to_string(mesh.faceNumber()) +
-            "\nNumber of input face number: " + std::to_string(faceNumber));
 
     enableIfPerFaceWedgeTexCoordsOptional(mesh);
     requirePerFaceWedgeTexCoords(mesh);
@@ -1345,10 +1213,12 @@ void faceWedgeTexCoordsFromBuffer(
 
 /**
  * @brief Sets the face wedge texcoord indices of the given input `mesh` from
- * the input texcoord indices buffer.
+ * the input texcoord indices buffer, that is expected to be a contiguous array
+ * of #F scalars, where each value contains the wedge texcoord index of a face.
  *
- * The number of elements of the input buffer must be equal to the number of
- * faces of the mesh, otherwise an exception is thrown.
+ * If not specified, the number of wedge texcoord indices values in the input
+ * buffer is assumed to be at least the number of faces of the mesh. The
+ * extra wedge texcoord indices values are ignored.
  *
  * The function enables the per-face texcoords component if it is not already
  * enabled.
@@ -1358,25 +1228,14 @@ void faceWedgeTexCoordsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input face texcoord
  * indices.
  * @param[in] buffer: the input face texcoord indices buffer.
- * @param[in] faceNumber: the number of faces contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
 template<FaceMeshConcept MeshType>
 void faceWedgeTexCoordIndicesFromBuffer(
     MeshType&   mesh,
-    const auto* buffer,
-    uint        faceNumber)
+    const auto* buffer)
 {
-    if (faceNumber != mesh.faceNumber())
-        throw WrongSizeException(
-            "The input faceNumber must have the same number of elements "
-            "as the number of vertices in the mesh\n"
-            "Number of faces in the mesh: " +
-            std::to_string(mesh.faceNumber()) +
-            "\nNumber of input face number: " + std::to_string(faceNumber));
-
     enableIfPerFaceWedgeTexCoordsOptional(mesh);
     requirePerFaceWedgeTexCoords(mesh);
 
