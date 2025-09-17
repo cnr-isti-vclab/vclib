@@ -28,6 +28,8 @@
 
 namespace vcl::detail {
 
+// Note: copy constructor and assignment are not allowed (because of bgfx
+// handles). Move constructor and assignment are allowed.
 class CPUGeneratedLines
 {
     bgfx::ProgramHandle mLinesPH =
@@ -40,7 +42,7 @@ class CPUGeneratedLines
     VertexBuffer mVertexColors;
     VertexBuffer mLineColors;
 
-    IndexBuffer  mIndices;
+    IndexBuffer mIndices;
 
 public:
     CPUGeneratedLines() = default;
@@ -48,15 +50,15 @@ public:
     CPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     CPUGeneratedLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void swap(CPUGeneratedLines& other);
 
@@ -64,18 +66,27 @@ public:
 
     void setPoints(
         const std::vector<float>& vertCoords,
-        const std::vector<uint>& lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void setPoints(
         const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     void draw(uint viewId) const;
+
+private:
+    void setPoints(
+        bool                      setLineIndices,
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
 };
 
 } // namespace vcl::detail

@@ -70,6 +70,15 @@ void initMesh(pybind11::module& m, const std::string& name)
             m.append(o);
         },
         "other_mesh"_a);
+
+    auto importFromFun = []<MeshConcept OtherMeshType>(
+                             pybind11::class_<MeshType>& c,
+                             OtherMeshType = OtherMeshType()) {
+        c.def("import_from", [](MeshType& m, const OtherMeshType& o) {
+            m.importFrom(o);
+        });
+    };
+    defForAllMeshTypes(c, importFromFun);
 }
 
 } // namespace vcl::bind

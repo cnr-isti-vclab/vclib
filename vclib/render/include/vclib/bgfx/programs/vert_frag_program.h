@@ -97,7 +97,7 @@ enum class VertFragProgram {
     FONT_DISTANCE_FIELD_SUBPIXEL,
 
     PRIMITIVE_LINES,
-    CUSTOM_CPU_LINES, 
+    CUSTOM_CPU_LINES, // TODO: change this name to a more meaningful one
 
     COUNT
 };

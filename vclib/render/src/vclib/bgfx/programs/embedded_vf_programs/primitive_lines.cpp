@@ -41,8 +41,9 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data vcl::VertFragLoader<VertFragProgram::PRIMITIVE_LINES>::
-    vertexShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::VertFragLoader<
+    VertFragProgram::PRIMITIVE_LINES>::vertexShader(bgfx::RendererType::Enum
+                                                        type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -64,8 +65,9 @@ bgfx::EmbeddedShader::Data vcl::VertFragLoader<VertFragProgram::PRIMITIVE_LINES>
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::VertFragLoader<VertFragProgram::PRIMITIVE_LINES>::
-    fragmentShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::VertFragLoader<
+    VertFragProgram::PRIMITIVE_LINES>::fragmentShader(bgfx::RendererType::Enum
+                                                          type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:

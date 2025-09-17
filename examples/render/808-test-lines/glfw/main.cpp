@@ -36,26 +36,27 @@ template<typename DerivedRenderApp>
 class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
-    // lines 
-    const vcl::uint N_LINES = 100;
+    // lines
+    const vcl::uint                     N_LINES = 100;
     std::shared_ptr<vcl::DrawableLines> mLines;
-    int mSelected = 0;
+    int                                 mSelected = 0;
+
+    std::shared_ptr<vcl::DrawableObjectVector> mVec =
+        std::make_shared<vcl::DrawableObjectVector>();
+
+    bool mIndexed = false;
 
 public:
     using ParentDrawer::ParentDrawer;
 
-    LinesDrawer(vcl::uint w, vcl::uint h)
-        : ParentDrawer(w, h)
+    LinesDrawer(vcl::uint w, vcl::uint h) : ParentDrawer(w, h)
     {
-        std::shared_ptr<vcl::DrawableObjectVector> vec =
-            std::make_shared<vcl::DrawableObjectVector>();
-
         // initialize the drawable object vector with CPU generated lines
-        ParentDrawer::setDrawableObjectVector(vec);
+        ParentDrawer::setDrawableObjectVector(mVec);
 
-        vec->pushBack(std::move(getDrawableLines(N_LINES)));
+        mVec->pushBack(std::move(getDrawableLines(N_LINES)));
 
-        mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
+        mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
     }
 
     virtual void onDraw(uint viewId) override
@@ -68,7 +69,7 @@ public:
         int selected = mSelected;
 
         ImGui::Begin("Showing");
-        const char* items[] = { "Primitive", "CPU Generated", "GPU Generated" };
+        const char* items[] = {"Primitive", "CPU Generated", "GPU Generated"};
         for (int i = 0; i < vcl::toUnderlying(COUNT); ++i) {
             ImGui::RadioButton(items[i], &selected, i);
         }
@@ -76,21 +77,39 @@ public:
 
         if (selected != mSelected) {
             mSelected = selected;
-            mLines->setImplementationType(static_cast<vcl::Lines::ImplementationType>(mSelected));
+            mLines->setImplementationType(
+                static_cast<vcl::Lines::ImplementationType>(mSelected));
         }
 
         ImGui::Begin("Settings");
-        ImGui::SliderFloat("Thickness", &mLines->thickness(), 1.0f, 100.0f);
-        ImGui::Checkbox("Shading per Vertex", &mLines->shadingPerVertex());
+        bool indexed = mIndexed;
+        ImGui::Checkbox("Indexed", &indexed);
+        if (indexed != mIndexed) {
+            auto t   = mLines->thickness();
+            auto c   = mLines->colorToUse();
+            auto i   = mLines->implementationType();
+            mIndexed = indexed;
+            mVec->clear();
+            mVec->pushBack(std::move(getDrawableLines(N_LINES, indexed)));
+            mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
+            mLines->thickness() = t;
+            mLines->setColorToUse(c);
+            mLines->setImplementationType(i);
+        }
 
-        const char* colorToUseItems[] = { "Per Vertex", "Per Edge", "General" };
+        ImGui::SliderFloat("Thickness", &mLines->thickness(), 1.0f, 100.0f);
+
+        bool shadingPerVertex = mLines->shadingPerVertex();
+        ImGui::Checkbox("Shading per Vertex", &shadingPerVertex);
+        mLines->setShading(shadingPerVertex);
+
+        const char* colorToUseItems[] = {"Per Vertex", "Per Edge", "General"};
         int         colorToUse        = vcl::toUnderlying(mLines->colorToUse());
         for (int i = 0; i < 3; ++i) {
             ImGui::RadioButton(colorToUseItems[i], &colorToUse, i);
         }
         mLines->setColorToUse(static_cast<vcl::Lines::ColorToUse>(colorToUse));
         ImGui::End();
-
     }
 };
 

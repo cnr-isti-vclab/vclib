@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/ 
+ ****************************************************************************/
 
 #ifndef VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
@@ -26,8 +26,12 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 
+#include <variant>
+
 namespace vcl::detail {
 
+// Note: copy constructor and assignment are not allowed (because of bgfx
+// handles). Move constructor and assignment are allowed.
 class PrimitiveLines
 {
     bgfx::ProgramHandle mLinesPH =
@@ -35,12 +39,19 @@ class PrimitiveLines
             .programManager()
             .getProgram<VertFragProgram::PRIMITIVE_LINES>();
 
-    VertexBuffer mVertexCoords;
-    VertexBuffer mVertexNormals;
-    VertexBuffer mVertexColors;
-    VertexBuffer mLineColors;
+    enum Ownership { OWNED = 0, NOT_OWNED = 1 };
 
-    IndexBuffer  mIndices;
+    // true if the buffers are created and managed internally
+    // by default, all variants are owned (first element of the variant)
+    bool mOwnsBuffers = true;
+
+    std::variant<VertexBuffer, const VertexBuffer*> mVertexCoords;
+    std::variant<VertexBuffer, const VertexBuffer*> mVertexNormals;
+    std::variant<VertexBuffer, const VertexBuffer*> mVertexColors;
+    std::variant<VertexBuffer, const VertexBuffer*>
+        mLineColors; // TODO: change this to IndexBuffer
+
+    std::variant<IndexBuffer, const IndexBuffer*> mIndices;
 
 public:
     PrimitiveLines() = default;
@@ -48,15 +59,30 @@ public:
     PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
 
     PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors = std::vector<uint>(),
-        const std::vector<uint>&  lineColors = std::vector<uint>());
+        const std::vector<uint>&  vertColors  = std::vector<uint>(),
+        const std::vector<uint>&  lineColors  = std::vector<uint>());
+
+    PrimitiveLines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
+
+    PrimitiveLines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
 
     void swap(PrimitiveLines& other);
 
@@ -75,7 +101,33 @@ public:
         const std::vector<uint>&  vertColors,
         const std::vector<uint>&  lineColors);
 
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
+
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer());
+
     void draw(uint viewId) const;
+
+private:
+    void reinitBuffers(Ownership owned);
+
+    void setPoints(
+        bool                      setLineIndices,
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
 };
 
 } // namespace vcl::detail
