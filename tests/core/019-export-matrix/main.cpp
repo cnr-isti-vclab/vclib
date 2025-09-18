@@ -53,10 +53,10 @@ template<typename ScalarType>
 using Eigen4ColMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, 4, Eigen::ColMajor>;
 
-template<typename ScalarType>
+template<typename ScalarType, typename...>
 using EigenVector = Eigen::Vector<ScalarType, Eigen::Dynamic>;
 
-template<typename ScalarType>
+template<typename ScalarType, typename...>
 using VclVector = vcl::Vector<ScalarType, -1>;
 
 // utility functions
