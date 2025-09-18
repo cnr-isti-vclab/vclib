@@ -209,7 +209,7 @@ public:
         }
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) {
+    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override {
         if (mCurrentToolset == ToolSets::DEFAULT) {
             Base::onMouseMove(x, y, modifiers);
             return;
