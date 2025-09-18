@@ -1147,6 +1147,9 @@ Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
  *     vcl::vertexAdjacentVerticesVectors<std::vector, vcl::uint>(myMesh);
  * @endif
  *
+ * @note The per-vertex AdjacentVertices component must be computed before
+ * calling this function.
+ *
  * @throws vcl::MissingCompactnessException if the vertex container is not
  * compact.
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
@@ -1179,7 +1182,8 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
         vec.resize(v.adjVerticesNumber());
         auto vecIt = vec.begin();
         for (const auto* ve : v.adjVertices()) {
-            *vecIt = T(ve->index());
+            uint idx = ve ? ve->index() : UINT_NULL;
+            *vecIt = T(idx);
             ++vecIt;
         }
 
@@ -1187,6 +1191,49 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
     }
 
     return vv;
+}
+
+/**
+ * @brief Get a \#V*LVA Matrix of integers containing the adjacent vertex
+ * indices for each vertex of a Mesh. LVA is the largest vertex adjacency size
+ * of the mesh. The unused values will be set to -1 (@ref vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi VA =
+ *     vcl::vertexAdjacentVerticesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent vertices available.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * MeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V*LVA matrix of vertex indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
+{
+    uint lva = vcl::largestPerVertexAdjacentVerticesNumber(mesh);
+
+    Matrix vAVM(mesh.vertexNumber(), lva);
+
+    MatrixStorageType stg = matrixStorageType<Matrix>();
+
+    vertexAdjacentVerticesToBuffer(mesh, vAVM.data(), lva, stg);
+
+    return vAVM;
 }
 
 } // namespace vcl

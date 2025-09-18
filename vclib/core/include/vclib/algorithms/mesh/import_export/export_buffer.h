@@ -1847,6 +1847,67 @@ void wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(
     }
 }
 
+/**
+ * @brief Export into a buffer the adjacent vertex indices for each vertex of a
+ * Mesh. The number of adjacent vertices for each vertex can be different, so
+ * the user must provide the size of the largest adjacency list with the
+ * `largestAdjacentVerticesSize` parameter.
+ * For vertices that have less adjacent vertices than
+ * `largestAdjacentVerticesSize`, the remaining entries are filled with
+ * `UINT_NULL`.
+ *
+ * You can use the function @ref vcl::largestPerVertexAdjacentVerticesNumber to
+ * get the largest adjacency size and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * uint lva = vcl::largestPerVertexAdjacentVerticesNumber(myMesh);
+ * Eigen::MatrixXi vertexAdj(myMesh.vertexNumber(), lva);
+ * vcl::vertexAdjacentVerticesToBuffer(
+ *    myMesh, vertexAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
+ * @endcode
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] largestAdjacentVerticesSize: size of the largest per-vertex vertex
+ * adjacency list
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of faces in the mesh) - used only when storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<MeshConcept MeshType>
+void vertexAdjacentVerticesToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    uint              largestAdjacentVerticesSize,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    using namespace detail;
+
+    requireVertexContainerCompactness(mesh);
+
+    const uint ROW_NUM =
+        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
+
+    const uint COL_NUM = largestAdjacentVerticesSize;
+
+    for (uint i = 0; const auto& v : mesh.vertices()) {
+        uint adjIndex = 0;
+        for (const auto* a : v.adjVertices()) {
+            uint idx = a ? a->index() : UINT_NULL;
+            at(buffer, i, adjIndex, ROW_NUM, COL_NUM, storage) = idx;
+            ++adjIndex;
+        }
+        // fill the remaining entries with UINT_NULL
+        for (; adjIndex < COL_NUM; ++adjIndex) {
+            at(buffer, i, adjIndex, ROW_NUM, COL_NUM, storage) = UINT_NULL;
+        }
+        ++i;
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
