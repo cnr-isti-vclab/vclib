@@ -22,19 +22,11 @@
 
 $input a_position
 
+// a_position vec2 in screen space
+
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-uniform vec4 u_selectionBox; // screen space
-
 void main() {
-    uint xIndex = uint(2) * (uint(gl_VertexID) / uint(2));
-    uint yIndex = uint(1) + uint(2) * (uint(gl_VertexID) % uint(2));
-
-    float xPos = u_selectionBox[xIndex];
-    float yPos = u_selectionBox[yIndex];
-
-
-
-    gl_Position = vec4((xPos - u_viewRect.x) / u_viewRect.z, (yPos - u_viewRect.y) / u_viewRect.w, 0, 1);
+    gl_Position = vec4((a_position[0] - u_viewRect.x) / u_viewRect.z * 2 -1, 1 - (a_position[1] - u_viewRect.y) / u_viewRect.w * 2, 0, 1);
 }

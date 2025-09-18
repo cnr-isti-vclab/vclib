@@ -96,11 +96,37 @@ public:
         return !anyNull();
     }
 
-    void fillFloatArray(float *arr) {
+    std::array<float, 4> asFloatArray() {
+        std::array<float, 4> arr;
         arr[0] = float(get1().value().x());
         arr[1] = float(get1().value().y());
         arr[2] = float(get2().value().x());
         arr[3] = float(get2().value().y());
+        return arr;
+    }
+
+
+    // 2----------0
+    // |          |
+    // |          |
+    // |          |
+    // |          |
+    // 1----------3
+    std::array<float, 8> vertexPositions() {
+        SelectionBox pts = this->toMinAndMax(); 
+        std::array<float, 8> arr;
+        arr[0] = pts.mPoints[0].value().x(); // xmin
+        arr[1] = pts.mPoints[1].value().y(); // ymax
+
+        arr[2] = pts.mPoints[0].value().x(); // xmin
+        arr[3] = pts.mPoints[0].value().y(); // ymin
+
+        arr[4] = pts.mPoints[1].value().x(); // xmax
+        arr[5] = pts.mPoints[1].value().y(); // ymax
+
+        arr[6] = pts.mPoints[1].value().x(); // xmax
+        arr[7] = pts.mPoints[0].value().y(); // ymin
+        return arr;
     }
 };
 } // namespace vcl

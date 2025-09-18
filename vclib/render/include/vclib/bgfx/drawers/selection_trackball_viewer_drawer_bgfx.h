@@ -43,9 +43,9 @@ class SelectionTrackBallViewerDrawerBGFX :
     using ParentViewer =
         ViewerDrawerBGFX<SelectionTrackBallEventDrawer<DerivedRenderApp>>;
 
-    Uniform mSelectionBoxUniform =
-        Uniform("u_selectionBox", bgfx::UniformType::Vec4);
-    VertexBuffer             mUselessBuffer;
+    bgfx::VertexLayout       mVertexLayout;
+    VertexBuffer             mPosBuffer;
+    IndexBuffer              mTriIndexBuf;
     DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
     DrawableDirectionalLight mDrawableDirectionalLight;
@@ -56,12 +56,13 @@ public:
     SelectionTrackBallViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(bgfx::Attrib::Position, 1, bgfx::AttribType::Float)
+        mVertexLayout.begin()
+            .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
             .end();
-        float temp[8] = {0.f, 0.f, 0.f, 0.f};
-        mUselessBuffer.create(bgfx::copy(temp, 8), layout);
+        float temp[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+        mPosBuffer.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
+        uint temp2[6] = {3, 2, 0, 1, 3, 2};
+        mTriIndexBuf.create(bgfx::copy(temp2, 6 * sizeof(uint)));
     }
 
     SelectionTrackBallViewerDrawerBGFX(
@@ -114,10 +115,11 @@ public:
         }
 
         if (ParentViewer::selectionBox().allValue()) {
-            float temp[4];
-            ParentViewer::selectionBox().toMinAndMax().fillFloatArray(temp);
-            mUselessBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
-            mSelectionBoxUniform.bind(temp);
+            std::array<float, 8> temp =
+                ParentViewer::selectionBox().vertexPositions();
+            mTriIndexBuf.bind();
+            mPosBuffer.create(bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
+            mPosBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
             bgfx::submit(
                 viewId,
                 Context::instance()
