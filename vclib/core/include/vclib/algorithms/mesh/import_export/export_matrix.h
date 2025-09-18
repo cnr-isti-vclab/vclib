@@ -1052,6 +1052,86 @@ Vect vertexTexCoordIndicesVector(const MeshType& mesh)
     return vTCI;
 }
 
+/**
+ * @brief Get a \#F*(LFS*2) Matrix of scalars containing the wedge texcoords of
+ * the faces of a Mesh. The function is templated on the Matrix itself. LFS is
+ * the largest face size of the mesh (this number is variable only for polygonal
+ * meshes).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-face wedge texcoords.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXd FWT = vcl::faceWedgeTexCoordsMatrix<Eigen::MatrixXd>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * wedge texcoords available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#F*(LFS*2) matrix of scalars (face wedge texcoords)
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
+{
+    uint lfs = vcl::largestFaceSize(mesh);
+
+    Matrix fTCM(mesh.faceNumber(), lfs * 2);
+
+    MatrixStorageType stg = matrixStorageType<Matrix>();
+
+    faceWedgeTexCoordsToBuffer(mesh, fTCM.data(), lfs, stg);
+
+    return fTCM;
+}
+
+/**
+ * @brief Get a \#F vector of scalars containing the wedge texcoord indices of
+ * the faces of a Mesh. The function is templated on the Vector itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-face texcoords.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXd VTI =
+ *     vcl::faceWedgeTexCoordIndicesVector<Eigen::VectorXd>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * wedge texcoords available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#F vector of scalars (face wedge texcoord indices)
+ *
+ * @ingroup export_matrix
+ */
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
+{
+    Vect fTCI(mesh.faceNumber());
+
+    faceWedgeTexCoordIndicesToBuffer(mesh, fTCI.data());
+
+    return fTCI;
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H

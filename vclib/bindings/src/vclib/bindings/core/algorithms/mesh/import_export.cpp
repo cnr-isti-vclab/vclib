@@ -107,6 +107,27 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a);
 
+        m.def(
+            "vertex_tex_coords_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexTexCoordsMatrix<Eigen::MatrixX2d>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_tex_coord_indices_array",
+            [](const MeshType& m) {
+                return vcl::vertexTexCoordIndicesVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_tex_coord_indices_list",
+            [](const MeshType& m) {
+                return vcl::vertexTexCoordIndicesVector<std::vector<uint>>(m);
+            },
+            "mesh"_a);
+
         // import_matrix.h
 
         m.def(
@@ -371,6 +392,27 @@ void initImportExportAlgorithms(pybind11::module& m)
             "face_quality_list",
             [](const MeshType& m) {
                 return vcl::faceQualityVector<std::vector<double>>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_wedge_tex_coords_matrix",
+            [](const MeshType& m) {
+                return vcl::faceWedgeTexCoordsMatrix<Eigen::MatrixXd>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_wedge_tex_coord_indices_array",
+            [](const MeshType& m) {
+                return vcl::faceWedgeTexCoordIndicesVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_wedge_tex_coord_indices_list",
+            [](const MeshType& m) {
+                return vcl::faceWedgeTexCoordIndicesVector<std::vector<uint>>(m);
             },
             "mesh"_a);
 
