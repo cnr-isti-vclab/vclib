@@ -977,7 +977,7 @@ public:
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        return Cont::elementConpactIndices();
+        return Cont::elementCompactIndices();
     }
 
     /**

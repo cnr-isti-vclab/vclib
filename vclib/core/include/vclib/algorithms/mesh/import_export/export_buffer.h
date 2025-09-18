@@ -43,17 +43,26 @@ namespace vcl {
 
 namespace detail {
 
+// returns a non-empty vector if the ELEM_ID container is not compact and the
+// user wants compact indices
+template<uint ELEM_ID>
+std::vector<uint> vertCompactIndices(const auto& mesh, bool wantCompact)
+{
+    std::vector<uint> elemCompIndices;
+
+    bool isCompact = mesh.template number<ELEM_ID>() ==
+                     mesh.template containerSize<ELEM_ID>();
+
+    if (wantCompact && !isCompact)
+        elemCompIndices = mesh.template compactIndices<ELEM_ID>();
+    return elemCompIndices;
+}
+
 // returns a non-empty vector if the vertex container is not compact and the
 // user wants compact indices
 std::vector<uint> vertCompactIndices(const auto& mesh, bool wantCompact)
 {
-    std::vector<uint> vertCompIndices;
-
-    bool isCompact = mesh.vertexNumber() == mesh.vertexContainerSize();
-
-    if (wantCompact && !isCompact)
-        vertCompIndices = mesh.vertexCompactIndices();
-    return vertCompIndices;
+    return vertCompactIndices<ElemId::VERTEX>(mesh, wantCompact);
 }
 
 // lambda to get the vertex index of a face (considering compact vertex indices)
