@@ -105,8 +105,7 @@ public:
         return arr;
     }
 
-
-    // 2----------0
+    // 0----------2
     // |          |
     // |          |
     // |          |
@@ -116,16 +115,16 @@ public:
         SelectionBox pts = this->toMinAndMax(); 
         std::array<float, 8> arr;
         arr[0] = pts.mPoints[0].value().x(); // xmin
-        arr[1] = pts.mPoints[1].value().y(); // ymax
+        arr[1] = pts.mPoints[0].value().y(); // ymin
 
         arr[2] = pts.mPoints[0].value().x(); // xmin
-        arr[3] = pts.mPoints[0].value().y(); // ymin
+        arr[3] = pts.mPoints[1].value().y(); // ymax
 
         arr[4] = pts.mPoints[1].value().x(); // xmax
-        arr[5] = pts.mPoints[1].value().y(); // ymax
+        arr[5] = pts.mPoints[0].value().y(); // ymin
 
         arr[6] = pts.mPoints[1].value().x(); // xmax
-        arr[7] = pts.mPoints[0].value().y(); // ymin
+        arr[7] = pts.mPoints[1].value().y(); // ymax
         return arr;
     }
 };

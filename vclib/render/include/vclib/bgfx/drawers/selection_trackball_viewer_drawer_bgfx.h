@@ -61,7 +61,7 @@ public:
             .end();
         float temp[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
         mPosBuffer.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
-        uint temp2[6] = {3, 2, 0, 1, 3, 2};
+        uint temp2[6] = {2, 3, 0, 3, 1, 0};
         mTriIndexBuf.create(bgfx::copy(temp2, 6 * sizeof(uint)));
     }
 
