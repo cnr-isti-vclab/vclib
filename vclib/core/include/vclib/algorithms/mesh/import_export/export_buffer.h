@@ -1583,7 +1583,7 @@ void faceWedgeTexCoordsToBuffer(
             uint index = i * largestFaceSize * 2 + j;
             if (storage == MatrixStorageType::COLUMN_MAJOR)
                 index = j * ROW_NUM + i;
-            if (fi < f.wedgeTexCoordsNumber()) {
+            if (fi < f.vertexNumber()) {
                 const auto& w = f.wedgeTexCoord(fi);
                 if (j % 2 == 0)
                     buffer[index] = w.u();

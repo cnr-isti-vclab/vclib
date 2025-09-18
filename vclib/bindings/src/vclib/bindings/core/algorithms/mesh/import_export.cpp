@@ -107,6 +107,27 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a);
 
+        m.def(
+            "vertex_tex_coords_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexTexCoordsMatrix<Eigen::MatrixX2d>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_tex_coord_indices_array",
+            [](const MeshType& m) {
+                return vcl::vertexTexCoordIndicesVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_tex_coord_indices_list",
+            [](const MeshType& m) {
+                return vcl::vertexTexCoordIndicesVector<std::vector<uint>>(m);
+            },
+            "mesh"_a);
+
         // import_matrix.h
 
         m.def(
@@ -232,12 +253,13 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a,
             "vertex_quality"_a);
 
-        m.def("vertex_tex_coords_from_matrix",
-              [](MeshType& mesh, const Eigen::MatrixX2d& vertexTexCoords) {
-                  return vcl::vertexTexCoordsFromMatrix(mesh, vertexTexCoords);
-              },
-              "mesh"_a,
-              "vertex_tex_coords"_a);
+        m.def(
+            "vertex_tex_coords_from_matrix",
+            [](MeshType& mesh, const Eigen::MatrixX2d& vertexTexCoords) {
+                return vcl::vertexTexCoordsFromMatrix(mesh, vertexTexCoords);
+            },
+            "mesh"_a,
+            "vertex_tex_coords"_a);
 
         m.def(
             "vertex_tex_coords_indices_from_array",
@@ -373,6 +395,27 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a);
 
+        m.def(
+            "face_wedge_tex_coords_matrix",
+            [](const MeshType& m) {
+                return vcl::faceWedgeTexCoordsMatrix<Eigen::MatrixXd>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_wedge_tex_coord_indices_array",
+            [](const MeshType& m) {
+                return vcl::faceWedgeTexCoordIndicesVector<Eigen::VectorXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_wedge_tex_coord_indices_list",
+            [](const MeshType& m) {
+                return vcl::faceWedgeTexCoordIndicesVector<std::vector<uint>>(m);
+            },
+            "mesh"_a);
+
         // import_matrix.h
 
         m.def(
@@ -439,8 +482,7 @@ void initImportExportAlgorithms(pybind11::module& m)
             [](MeshType&              mesh,
                const Eigen::VectorXi& faceColors,
                Color::Format          colorFormat) {
-                return vcl::faceColorsFromRange(
-                    mesh, faceColors, colorFormat);
+                return vcl::faceColorsFromRange(mesh, faceColors, colorFormat);
             },
             "mesh"_a,
             "face_colors"_a,
@@ -451,8 +493,7 @@ void initImportExportAlgorithms(pybind11::module& m)
             [](MeshType&               mesh,
                const std::vector<int>& faceColors,
                Color::Format           colorFormat) {
-                return vcl::faceColorsFromRange(
-                    mesh, faceColors, colorFormat);
+                return vcl::faceColorsFromRange(mesh, faceColors, colorFormat);
             },
             "mesh"_a,
             "face_colors"_a,
@@ -634,8 +675,7 @@ void initImportExportAlgorithms(pybind11::module& m)
             [](MeshType&              mesh,
                const Eigen::VectorXi& edgeColors,
                Color::Format          colorFormat) {
-                return vcl::edgeColorsFromRange(
-                    mesh, edgeColors, colorFormat);
+                return vcl::edgeColorsFromRange(mesh, edgeColors, colorFormat);
             },
             "mesh"_a,
             "edge_colors"_a,
@@ -646,8 +686,7 @@ void initImportExportAlgorithms(pybind11::module& m)
             [](MeshType&               mesh,
                const std::vector<int>& edgeColors,
                Color::Format           colorFormat) {
-                return vcl::edgeColorsFromRange(
-                    mesh, edgeColors, colorFormat);
+                return vcl::edgeColorsFromRange(mesh, edgeColors, colorFormat);
             },
             "mesh"_a,
             "edge_colors"_a,

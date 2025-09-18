@@ -715,7 +715,6 @@ void elementColorsFromBuffer(
 
     for (uint  i = 0;
          auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
-
         c = Color(buffer[i++], colorFormat);
     }
 }
@@ -1134,9 +1133,7 @@ void vertexTexCoordsFromBuffer(
  * @ingroup import_buffer
  */
 template<MeshConcept MeshType>
-void vertexTexCoordIndicesFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer)
+void vertexTexCoordIndicesFromBuffer(MeshType& mesh, const auto* buffer)
 {
     enableIfPerVertexTexCoordOptional(mesh);
     requirePerVertexTexCoord(mesh);
@@ -1232,9 +1229,7 @@ void faceWedgeTexCoordsFromBuffer(
  * @ingroup import_buffer
  */
 template<FaceMeshConcept MeshType>
-void faceWedgeTexCoordIndicesFromBuffer(
-    MeshType&   mesh,
-    const auto* buffer)
+void faceWedgeTexCoordIndicesFromBuffer(MeshType& mesh, const auto* buffer)
 {
     enableIfPerFaceWedgeTexCoordsOptional(mesh);
     requirePerFaceWedgeTexCoords(mesh);

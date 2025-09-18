@@ -712,7 +712,10 @@ void vertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
  * @ingroup import_matrix
  */
 template<MeshConcept MeshType, Range R>
-void vertexColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
+void vertexColorsFromRange(
+    MeshType&     mesh,
+    R&&           colors,
+    Color::Format colorFormat)
 {
     elementColorsFromRange<ElemId::VERTEX>(mesh, colors, colorFormat);
 }
@@ -1073,10 +1076,7 @@ void faceWedgeTexCoordsFromMatrix(
             "as the number of faces in the mesh");
 
     faceWedgeTexCoordsFromBuffer(
-        mesh,
-        faceWedgeTexCoords.data(),
-        faceWedgeTexCoords.cols() / 2,
-        stg);
+        mesh, faceWedgeTexCoords.data(), faceWedgeTexCoords.cols() / 2, stg);
 }
 
 /**

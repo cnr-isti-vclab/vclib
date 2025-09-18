@@ -200,22 +200,23 @@ uint countPerFaceVertexReferences(const FaceMeshConcept auto& mesh)
 /**
  * @brief Returns the largest face size in the mesh.
  *
- * If the mesh is a TriangleMesh, the function returns 3. Otherwise, the
- * function returns the size of the largest face in the mesh.
+ * If the mesh has static face size, the function returns the static size.
+ * Otherwise, the function iterates through all the faces of the mesh to find
+ * the largest face size.
  *
- * @param[in] mesh: The input mesh. It must satisfy the MeshConcept.
+ * @param[in] mesh: The input mesh. It must satisfy the FaceMeshConcept.
  * @return The largest face size in the mesh.
  *
  * @ingroup mesh_stat
  */
 uint largestFaceSize(const FaceMeshConcept auto& mesh)
 {
-    using MeshType = decltype(mesh);
+    using FaceType = RemoveRef<decltype(mesh)>::FaceType;
 
     uint maxFaceSize = 0;
 
-    if constexpr (TriangleMeshConcept<MeshType>) {
-        return 3;
+    if constexpr (FaceType::VERTEX_NUMBER > 0) {
+        return FaceType::VERTEX_NUMBER;
     }
     else {
         for (const auto& f : mesh.faces()) {
