@@ -82,6 +82,22 @@ public:
         null1();
         null2();
     }
+
+    bool anyNull() {
+        return !(mPoints[0].has_value() && mPoints[1].has_value());
+    }
+
+    bool allNull() {
+        return !(mPoints[0].has_value() || mPoints[1].has_value());
+    }
+
+    bool anyValue() {
+        return !allNull();
+    }
+
+    bool allValue() {
+        return !anyNull();
+    }
 };
 } // namespace vcl
 

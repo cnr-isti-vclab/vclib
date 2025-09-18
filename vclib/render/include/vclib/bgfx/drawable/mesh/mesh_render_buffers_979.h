@@ -201,8 +201,7 @@ public:
         SelectionBox       box,
         SelectionMode      mode) const
     {
-        if ((!box.get1().has_value() || !box.get2().has_value()) &&
-            !mode.isAtomicMode()) {
+        if (box.anyNull() && !mode.isAtomicMode()) {
             return;
         }
         Point2d minPt = box.get1().value_or(Point2d(0.0, 0.0));
@@ -212,7 +211,10 @@ public:
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
 
         float temp[] = {
-            float(minPt.x()), float(minPt.y()), float(maxPt.x()), float(maxPt.y())};
+            float(minPt.x()),
+            float(minPt.y()),
+            float(maxPt.x()),
+            float(maxPt.y())};
         mSelectionBoxuniform.bind((void*) temp);
 
         float temp2[] = {
