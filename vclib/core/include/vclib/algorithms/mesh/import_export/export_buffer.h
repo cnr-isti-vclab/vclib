@@ -1872,7 +1872,7 @@ void wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(
  * adjacency list
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] rowNumber: number of rows of the matrix (if different from the
- * number of faces in the mesh) - used only when storage is column major
+ * number of vertices in the mesh) - used only when storage is column major
  *
  * @ingroup export_buffer
  */
@@ -1887,6 +1887,7 @@ void vertexAdjacentVerticesToBuffer(
     using namespace detail;
 
     requireVertexContainerCompactness(mesh);
+    requirePerVertexAdjacentVertices(mesh);
 
     const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
@@ -1906,6 +1907,181 @@ void vertexAdjacentVerticesToBuffer(
         }
         ++i;
     }
+}
+
+/**
+ * @brief Export into a buffer the adjacent faces indices for each ELEM_ID
+ * element of a Mesh. The number of adjacent faces for each ELEM_ID can be
+ * different, so the user must provide the size of the largest adjacency list
+ * with the `largestAdjacentFacesSize` parameter. For elements that have less
+ * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
+ * are filled with `UINT_NULL`.
+ *
+ * You can use the function @ref vcl::largestPerElementAdjacentFacesNumber to
+ * get the largest adjacency size and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * uint lva = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(myMesh);
+ * Eigen::MatrixXi faceAdj(myMesh.elementNumber<ELEM_ID>(), lva);
+ * vcl::elementAdjacentFacesToBuffer<ELEM_ID>(
+ *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
+ * @endcode
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] largestAdjacentFacesSize: size of the largest per-element face
+ * adjacency list
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of elements in the mesh) - used only when storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<uint ELEM_ID, FaceMeshConcept MeshType>
+void elementAdjacentFacesToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    uint              largestAdjacentFacesSize,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    using namespace detail;
+
+    requireFaceContainerCompactness(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
+
+    const uint ROW_NUM = rowNumber == UINT_NULL ?
+                             mesh.template elementNumber<ELEM_ID>() :
+                             rowNumber;
+
+    const uint COL_NUM = largestAdjacentFacesSize;
+
+    for (uint i = 0; const auto& v : mesh.template elements<ELEM_ID>()) {
+        uint adjIndex = 0;
+        for (const auto* a : v.adjFaces()) {
+            uint idx = a ? a->index() : UINT_NULL;
+            at(buffer, i, adjIndex, ROW_NUM, COL_NUM, storage) = idx;
+            ++adjIndex;
+        }
+        // fill the remaining entries with UINT_NULL
+        for (; adjIndex < COL_NUM; ++adjIndex) {
+            at(buffer, i, adjIndex, ROW_NUM, COL_NUM, storage) = UINT_NULL;
+        }
+        ++i;
+    }
+}
+
+/**
+ * @brief Export into a buffer the adjacent faces indices for each vertex
+ * of a Mesh. The number of adjacent faces for each vertex can be
+ * different, so the user must provide the size of the largest adjacency list
+ * with the `largestAdjacentFacesSize` parameter. For elements that have less
+ * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
+ * are filled with `UINT_NULL`.
+ *
+ * You can use the function @ref vcl::largestPerVertexAdjacentFacesNumber to
+ * get the largest adjacency size and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * uint lva = vcl::largestPerVertexAdjacentFacesNumber(myMesh);
+ * Eigen::MatrixXi faceAdj(myMesh.vertexNumber(), lva);
+ * vcl::vertexAdjacentFacesToBuffer(
+ *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
+ * @endcode
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] largestAdjacentFacesSize: size of the largest per-vertex face
+ * adjacency list
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of vertices in the mesh) - used only when storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void vertexAdjacentFacesToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    uint              largestAdjacentFacesSize,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    elementAdjacentFacesToBuffer<ElemId::VERTEX>(
+        mesh, buffer, largestAdjacentFacesSize, storage, rowNumber);
+}
+
+/**
+ * @brief Export into a buffer the adjacent faces indices for each face
+ * of a Mesh. The number of adjacent faces for each face is expected to
+ * be equal to the largestFaceSize (see @ref vcl::largestFaceSize).
+ *
+ * @code{.cpp}
+ * uint lfs = vcl::largestFaceSize(myMesh);
+ * Eigen::MatrixXi faceAdj(myMesh.faceNumber(), lfs);
+ * vcl::faceAdjacentFacesToBuffer(
+ *    myMesh, faceAdj.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
+ * @endcode
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] largestFacesSize: size of the largest face in the mesh
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of faces in the mesh) - used only when storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void faceAdjacentFacesToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    uint              largestFacesSize,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber = UINT_NULL)
+{
+    elementAdjacentFacesToBuffer<ElemId::FACE>(
+        mesh, buffer, largestFacesSize, storage, rowNumber);
+}
+
+/**
+ * @brief Export into a buffer the adjacent faces indices for each edge
+ * of a Mesh. The number of adjacent faces for each edge can be
+ * different, so the user must provide the size of the largest adjacency list
+ * with the `largestAdjacentFacesSize` parameter. For elements that have less
+ * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
+ * are filled with `UINT_NULL`.
+ *
+ * You can use the function @ref vcl::largestPerEdgeAdjacentFacesNumber to
+ * get the largest adjacency size and allocate the buffer accordingly:
+ *
+ * @code{.cpp}
+ * uint lva = vcl::largestPerEdgeAdjacentFacesNumber(myMesh);
+ * Eigen::MatrixXi faceAdj(myMesh.edgeNumber(), lva);
+ * vcl::edgeAdjacentFacesToBuffer(
+ *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
+ * @endcode
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] largestAdjacentFacesSize: size of the largest per-edge face
+ * adjacency list
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of edges in the mesh) - used only when storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<FaceMeshConcept MeshType>
+void edgeAdjacentFacesToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    uint              largestAdjacentFacesSize,
+    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
+    uint rowNumber            = UINT_NULL) requires (EdgeMeshConcept<MeshType>)
+{
+    elementAdjacentFacesToBuffer<ElemId::EDGE>(
+        mesh, buffer, largestAdjacentFacesSize, storage, rowNumber);
 }
 
 } // namespace vcl

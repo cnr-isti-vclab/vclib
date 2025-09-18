@@ -1160,7 +1160,7 @@ Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
  * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
  *
  * @param[in] mesh: input mesh
- * @return Container<Container<T>> of adjacnet vertex indices
+ * @return Container<Container<T>> of adjacent vertex indices
  *
  * @ingroup export_matrix
  */
@@ -1234,6 +1234,120 @@ Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
     vertexAdjacentVerticesToBuffer(mesh, vAVM.data(), lva, stg);
 
     return vAVM;
+}
+
+/**
+ * @brief Get a \#E Container of Containers of integers (T) containing the
+ * adjacent face indices for each ELEM_ID element of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::elementAdjacentFacesVectors<
+ *         ElemID::VERTEX, std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-element AdjacentFaces component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element ELEM_ID indices of the mesh. This scenario is
+ * possible when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the ELEM_ID element container before calling this
+ * function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    uint ELEM_ID,
+    template<typename, typename...> typename Container,
+    typename T,
+    FaceMeshConcept MeshType>
+Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
+{
+    requireFaceContainerCompactness(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>();
+
+    Container<Container<T>> vv(mesh.template elementNumber<ELEM_ID>());
+
+    auto vvIt = vv.begin();
+    for (const auto& v : mesh.template elements<ELEM_ID>()) {
+        auto& vec = *vvIt;
+
+        vec.resize(v.adjFacesNumber());
+        auto vecIt = vec.begin();
+        for (const auto* fe : v.adjFaces()) {
+            uint idx = fe ? fe->index() : UINT_NULL;
+            *vecIt = T(idx);
+            ++vecIt;
+        }
+
+        ++vvIt;
+    }
+
+    return vv;
+}
+
+/**
+ * @brief Get a \#V Container of Containers of integers (T) containing the
+ * adjacent face indices for each vertex of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::vertexAdjacentFacesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-vertex AdjacentFaces component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...> typename Container,
+    typename T,
+    FaceMeshConcept MeshType>
+Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)
+{
+    return elementAdjacentFacesVectors<ElemId::VERTEX, Container, T>(mesh);
 }
 
 } // namespace vcl
