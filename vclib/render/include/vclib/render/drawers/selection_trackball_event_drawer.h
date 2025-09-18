@@ -209,6 +209,16 @@ public:
         }
     }
 
+    void onMouseMove(double x, double y, const KeyModifiers& modifiers) {
+        if (mCurrentToolset == ToolSets::DEFAULT) {
+            Base::onMouseMove(x, y, modifiers);
+            return;
+        }
+        if (mLMBHeld) {
+            mSelectionBox.set2({x, y});
+        }
+    }
+
     void onMouseRelease(
         MouseButton::Enum   button,
         double              x,
@@ -228,7 +238,6 @@ public:
         if (mLMBHeld) {
             return;
         }
-        mSelectionBox.set2({x, y});
         mLMBPressPositionTaken = false;
         mSelectionCalcRequired = true;
     }
