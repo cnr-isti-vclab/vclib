@@ -53,6 +53,12 @@ template<typename ScalarType>
 using Eigen4ColMatrix =
     Eigen::Matrix<ScalarType, Eigen::Dynamic, 4, Eigen::ColMajor>;
 
+template<typename ScalarType>
+using EigenVector = Eigen::Vector<ScalarType, Eigen::Dynamic>;
+
+template<typename ScalarType>
+using VclVector = vcl::Vector<ScalarType, -1>;
+
 // utility functions
 
 template<vcl::uint ELEM_ID>
@@ -351,6 +357,50 @@ void testFaceQualityVector(const auto& tm)
     }
 }
 
+template<template<typename, typename...> typename Container, typename T>
+void testVertexAdjacentVerticesVectors(const auto& tm)
+{
+    auto adjacencies = vcl::vertexAdjacentVerticesVectors<Container, T>(tm);
+
+    REQUIRE(adjacencies.size() == tm.vertexNumber());
+
+    for (vcl::uint i = 0; const auto& v : tm.vertices()) {
+        const auto& adjList = adjacencies[i];
+        REQUIRE(adjList.size() == v.adjVerticesNumber());
+        
+        vcl::uint j = 0;
+        for (const auto* adjV : v.adjVertices()) {
+            REQUIRE(adjList[j] == static_cast<T>(adjV->index()));
+            ++j;
+        }
+        ++i;
+    }
+}
+
+template<typename MatrixType>
+void testVertexAdjacentVerticesMatrix(const auto& tm)
+{
+    auto adjMatrix = vcl::vertexAdjacentVerticesMatrix<MatrixType>(tm);
+    
+    vcl::uint lva = vcl::largestPerVertexAdjacentVerticesNumber(tm);
+
+    REQUIRE(adjMatrix.rows() == tm.vertexNumber());
+    REQUIRE(adjMatrix.cols() == lva);
+
+    for (vcl::uint i = 0; const auto& v : tm.vertices()) {
+        vcl::uint j = 0;
+        for (const auto* adjV : v.adjVertices()) {
+            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjV->index()));
+            ++j;
+        }
+        // Check that remaining entries are set to -1 (UINT_NULL)
+        for (; j < lva; ++j) {
+            REQUIRE(adjMatrix(i, j) == vcl::uint(-1));
+        }
+        ++i;
+    }
+}
+
 using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
 using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
 using MeshesIndexed =
@@ -359,7 +409,7 @@ using MeshesIndexedf = std::
     tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
 
 TEMPLATE_TEST_CASE(
-    "Export TriMesh to Matrix",
+    "Export Mesh to Matrix",
     "",
     Meshes,
     Meshesf,
@@ -748,6 +798,46 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Vector")
         {
             testFaceQualityVector<vcl::Vector<ScalarType, -1>>(tm);
+        }
+    }
+
+    SECTION("Vertex Adjacent Vertices Vectors...")
+    {
+        // Update per-vertex adjacency information first
+        tm.enablePerVertexAdjacentVertices();
+        vcl::updatePerVertexAdjacentVertices(tm);
+
+        SECTION("std::vector<std::vector<vcl::uint>>")
+        {
+            testVertexAdjacentVerticesVectors<std::vector, vcl::uint>(tm);
+        }
+        SECTION("Eigen::Vector<Eigen::Vector<vcl::uint>>")
+        {
+            testVertexAdjacentVerticesVectors<EigenVector, vcl::uint>(tm);
+        }
+        SECTION("vcl::Vector<vcl::Vector<vcl::uint>>")
+        {
+            testVertexAdjacentVerticesVectors<VclVector, vcl::uint>(tm);
+        }
+    }
+
+    SECTION("Vertex Adjacent Vertices Matrix...")
+    {
+        // Update per-vertex adjacency information first
+        tm.enablePerVertexAdjacentVertices();
+        vcl::updatePerVertexAdjacentVertices(tm);
+
+        SECTION("Eigen Row Major")
+        {
+            testVertexAdjacentVerticesMatrix<EigenRowMatrix<vcl::uint>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testVertexAdjacentVerticesMatrix<EigenColMatrix<vcl::uint>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testVertexAdjacentVerticesMatrix<vcl::Array2<vcl::uint>>(tm);
         }
     }
 }
