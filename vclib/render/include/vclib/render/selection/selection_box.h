@@ -35,22 +35,21 @@ class SelectionBox
     using ArrayType = std::array<std::optional<Point2d>, 2>;
     std::array<std::optional<Point2d>, 2> mPoints = {std::nullopt, std::nullopt};
 
-    void toMinAndMax() {
+public:
+    SelectionBox() {}
+
+    SelectionBox(ArrayType arr) { mPoints = arr; }
+
+    SelectionBox toMinAndMax() {
         if (!mPoints[0].has_value() || !mPoints[1].has_value()) {
-            return;
+            return *this;
         }
         Point2d p1 = mPoints[0].value();
         Point2d p2 = mPoints[1].value();
         Point2d newp1 = {min(p1.x(), p2.x()), min(p1.y(), p2.y())};
         Point2d newp2 = {max(p1.x(), p2.x()), max(p1.y(), p2.y())};
-        mPoints[0] = std::make_optional(newp1);
-        mPoints[1] = std::make_optional(newp2);
+        return SelectionBox(ArrayType{std::make_optional(newp1), std::make_optional(newp2)});
     }
-
-public:
-    SelectionBox() {}
-
-    SelectionBox(ArrayType arr) { mPoints = arr; }
 
     std::optional<Point2d> get1() {
         return mPoints[0];
@@ -62,12 +61,10 @@ public:
 
     void set1(Point2d p) {
         mPoints[0] = std::make_optional(p);
-        toMinAndMax();
     }
 
     void set2(Point2d p) {
         mPoints[1] = std::make_optional(p);
-        toMinAndMax();
     }
 
     void null1() {
@@ -97,6 +94,13 @@ public:
 
     bool allValue() {
         return !anyNull();
+    }
+
+    void fillFloatArray(float *arr) {
+        arr[0] = float(get1().value().x());
+        arr[1] = float(get1().value().y());
+        arr[2] = float(get2().value().x());
+        arr[3] = float(get2().value().y());
     }
 };
 } // namespace vcl

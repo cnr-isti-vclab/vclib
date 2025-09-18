@@ -29,8 +29,8 @@
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
-#include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/bgfx/drawable/drawable_mesh_979.h>
+#include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/selection_trackball_event_drawer.h>
 #include <vclib/render/selection/selectable.h>
 
@@ -43,12 +43,34 @@ class SelectionTrackBallViewerDrawerBGFX :
     using ParentViewer =
         ViewerDrawerBGFX<SelectionTrackBallEventDrawer<DerivedRenderApp>>;
 
+    Uniform mSelectionBoxUniform =
+        Uniform("u_selectionBox", bgfx::UniformType::Vec4);
+    VertexBuffer             mUselessBuffer;
     DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
     DrawableDirectionalLight mDrawableDirectionalLight;
 
 public:
     using ParentViewer::ParentViewer;
+
+    SelectionTrackBallViewerDrawerBGFX(uint width = 1024, uint height = 768) :
+            ParentViewer(width, height)
+    {
+        bgfx::VertexLayout layout;
+        layout.begin()
+            .add(bgfx::Attrib::Position, 1, bgfx::AttribType::Float)
+            .end();
+        float temp[8] = {0.f, 0.f, 0.f, 0.f};
+        mUselessBuffer.create(bgfx::copy(temp, 8), layout);
+    }
+
+    SelectionTrackBallViewerDrawerBGFX(
+        const std::shared_ptr<DrawableObjectVector>& v,
+        uint                                         width = 1024,
+        uint height = 768) : SelectionTrackBallViewerDrawerBGFX(width, height)
+    {
+        ParentViewer::setDrawableObjectVector(v);
+    }
 
     void onInit(uint viewId) override
     {
@@ -66,16 +88,19 @@ public:
             ParentViewer::currentMotion() ==
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
 
-        if(ParentViewer::selectionCalculationRequired()) {
-            for(size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+        if (ParentViewer::selectionCalculationRequired()) {
+            for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                 auto el = ParentViewer::mDrawList->at(i);
-                if(auto p = dynamic_cast<Selectable*>(el.get())) {
-                    p->calculateSelection(viewId, ParentViewer::selectionBox(), ParentViewer::selectionMode());
+                if (auto p = dynamic_cast<Selectable*>(el.get())) {
+                    p->calculateSelection(
+                        viewId,
+                        ParentViewer::selectionBox().toMinAndMax(),
+                        ParentViewer::selectionMode());
                 }
             }
             ParentViewer::selectionCalculated();
         }
-        
+
         if (mAxis.isVisible()) {
             mAxis.draw(viewId);
         }
@@ -86,6 +111,18 @@ public:
 
         if (mDrawableDirectionalLight.isVisible()) {
             mDrawableDirectionalLight.draw(viewId);
+        }
+
+        if (ParentViewer::selectionBox().allValue()) {
+            float temp[4];
+            ParentViewer::selectionBox().toMinAndMax().fillFloatArray(temp);
+            mUselessBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
+            mSelectionBoxUniform.bind(temp);
+            bgfx::submit(
+                viewId,
+                Context::instance()
+                    .programManager()
+                    .getProgram<VertFragProgram::DRAWABLE_SELECTION_BOX>());
         }
     }
 
@@ -102,7 +139,7 @@ public:
     {
         ParentViewer::onKeyPress(key, modifiers);
 
-        if(ParentViewer::getCurrentToolset() == ToolSets::SELECTION) {
+        if (ParentViewer::getCurrentToolset() == ToolSets::SELECTION) {
             return;
         }
 
