@@ -170,8 +170,9 @@ Vect faceIndicesVector(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#F*max(size(F)) Matrix of integers containing the vertex
- * indices for each face of a Mesh.
+ * @brief Get a \#F*LFS Matrix of integers containing the vertex indices for
+ * each face of a Mesh. LFS is the largest face size of the mesh (this number is
+ * variable only for polygonal meshes).
  *
  * If the mesh is polygonal, the matrix will have a number of rows equal to the
  * greatest polygon of the mesh, and unused values will be set to -1.
@@ -198,7 +199,7 @@ Vect faceIndicesVector(const MeshType& mesh)
  * FaceMeshConcept.
  *
  * @param[in] mesh: input mesh
- * @return \#F*max(size(F)) matrix of vertex indices
+ * @return \#F*LFS matrix of vertex indices
  *
  * @ingroup export_matrix
  */
@@ -1130,6 +1131,62 @@ Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
     faceWedgeTexCoordIndicesToBuffer(mesh, fTCI.data());
 
     return fTCI;
+}
+
+/**
+ * @brief Get a \#V Container of Containers of integers (T) containing the
+ * adjacent vertex indices for each vertex of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::vertexAdjacentVerticesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent vertices available.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacnet vertex indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...> typename Container,
+    typename T,
+    MeshConcept MeshType>
+Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
+{
+    requireVertexContainerCompactness(mesh);
+    requirePerVertexAdjacentVertices(mesh);
+
+    Container<Container<T>> vv(mesh.vertexNumber());
+
+    auto vvIt = vv.begin();
+    for (const auto& v : mesh.vertices()) {
+        auto& vec = *vvIt;
+
+        vec.resize(v.adjVerticesNumber());
+        auto vecIt = vec.begin();
+        for (const auto* ve : v.adjVertices()) {
+            *vecIt = T(ve->index());
+            ++vecIt;
+        }
+
+        ++vvIt;
+    }
+
+    return vv;
 }
 
 } // namespace vcl

@@ -301,41 +301,11 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "face_indices_array",
-            [](const MeshType& m) {
-                return vcl::faceIndicesVector<Eigen::VectorXi>(m);
-            },
-            "mesh"_a);
-
-        m.def(
-            "face_indices_list",
-            [](const MeshType& m) {
-                return vcl::faceIndicesVector<std::vector<uint>>(m);
-            },
-            "mesh"_a);
-
-        m.def(
             "face_indices_matrix",
             [](const MeshType& m) {
                 return vcl::faceIndicesMatrix<Eigen::MatrixXi>(m);
             },
             "mesh"_a);
-
-        m.def(
-            "triangulated_face_indices_matrix",
-            [](const MeshType& m) {
-                return vcl::triangulatedFaceIndicesMatrix<Eigen::MatrixXi>(m);
-            },
-            "mesh"_a);
-
-        m.def(
-            "triangulated_face_indices_matrix",
-            [](const MeshType& m, TriPolyIndexBiMap& indexMap) {
-                return vcl::triangulatedFaceIndicesMatrix<Eigen::MatrixX3i>(
-                    m, indexMap);
-            },
-            "mesh"_a,
-            "index_map"_a = TriPolyIndexBiMap());
 
         m.def(
             "face_selection_array",
