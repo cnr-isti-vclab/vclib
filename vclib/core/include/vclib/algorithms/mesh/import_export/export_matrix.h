@@ -1165,7 +1165,8 @@ Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     MeshConcept MeshType>
 Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
@@ -1183,7 +1184,7 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
         auto vecIt = vec.begin();
         for (const auto* ve : v.adjVertices()) {
             uint idx = ve ? ve->index() : UINT_NULL;
-            *vecIt = T(idx);
+            *vecIt   = T(idx);
             ++vecIt;
         }
 
@@ -1277,7 +1278,8 @@ Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
  */
 template<
     uint ELEM_ID,
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
@@ -1295,7 +1297,7 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
         auto vecIt = vec.begin();
         for (const auto* fe : v.adjFaces()) {
             uint idx = fe ? fe->index() : UINT_NULL;
-            *vecIt = T(idx);
+            *vecIt   = T(idx);
             ++vecIt;
         }
 
@@ -1342,7 +1344,8 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)

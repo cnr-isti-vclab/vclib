@@ -367,7 +367,7 @@ void testVertexAdjacentVerticesVectors(const auto& tm)
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         const auto& adjList = adjacencies[i];
         REQUIRE(adjList.size() == v.adjVerticesNumber());
-        
+
         vcl::uint j = 0;
         for (const auto* adjV : v.adjVertices()) {
             REQUIRE(adjList[j] == static_cast<T>(adjV->index()));
@@ -381,7 +381,7 @@ template<typename MatrixType>
 void testVertexAdjacentVerticesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentVerticesMatrix<MatrixType>(tm);
-    
+
     vcl::uint lva = vcl::largestPerVertexAdjacentVerticesNumber(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexNumber());

@@ -382,7 +382,8 @@ void initImportExportAlgorithms(pybind11::module& m)
         m.def(
             "face_wedge_tex_coord_indices_list",
             [](const MeshType& m) {
-                return vcl::faceWedgeTexCoordIndicesVector<std::vector<uint>>(m);
+                return vcl::faceWedgeTexCoordIndicesVector<std::vector<uint>>(
+                    m);
             },
             "mesh"_a);
 
