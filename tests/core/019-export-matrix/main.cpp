@@ -445,6 +445,50 @@ void testVertexAdjacentFacesMatrix(const auto& tm)
     }
 }
 
+template<template<typename, typename...> typename Container, typename T>
+void testFaceAdjacentFacesVectors(const auto& tm)
+{
+    auto adjacencies = vcl::faceAdjacentFacesVectors<Container, T>(tm);
+
+    REQUIRE(adjacencies.size() == tm.faceNumber());
+
+    for (vcl::uint i = 0; const auto& f : tm.faces()) {
+        const auto& adjList = adjacencies[i];
+        REQUIRE(adjList.size() == f.adjFacesNumber());
+
+        vcl::uint j = 0;
+        for (const auto* adjF : f.adjFaces()) {
+            REQUIRE(adjList[j] == static_cast<T>(adjF->index()));
+            ++j;
+        }
+        ++i;
+    }
+}
+
+template<typename MatrixType>
+void testFaceAdjacentFacesMatrix(const auto& tm)
+{
+    auto adjMatrix = vcl::faceAdjacentFacesMatrix<MatrixType>(tm);
+
+    vcl::uint lfa = vcl::largestFaceSize(tm);
+
+    REQUIRE(adjMatrix.rows() == tm.faceNumber());
+    REQUIRE(adjMatrix.cols() == lfa);
+
+    for (vcl::uint i = 0; const auto& f : tm.faces()) {
+        vcl::uint j = 0;
+        for (const auto* adjF : f.adjFaces()) {
+            REQUIRE(adjMatrix(i, j) == static_cast<vcl::uint>(adjF->index()));
+            ++j;
+        }
+        // Check that remaining entries are set to -1 (UINT_NULL)
+        for (; j < lfa; ++j) {
+            REQUIRE(adjMatrix(i, j) == vcl::uint(-1));
+        }
+        ++i;
+    }
+}
+
 using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
 using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
 using MeshesIndexed =
@@ -922,6 +966,46 @@ TEMPLATE_TEST_CASE(
         SECTION("vcl::Array2")
         {
             testVertexAdjacentFacesMatrix<vcl::Array2<vcl::uint>>(tm);
+        }
+    }
+
+    SECTION("Face Adjacent Faces Vectors...")
+    {
+        // Update per-face adjacent faces information first
+        tm.enablePerFaceAdjacentFaces();
+        vcl::updatePerFaceAdjacentFaces(tm);
+
+        SECTION("std::vector<std::vector<vcl::uint>>")
+        {
+            testFaceAdjacentFacesVectors<std::vector, vcl::uint>(tm);
+        }
+        SECTION("Eigen::Vector<Eigen::Vector<vcl::uint>>")
+        {
+            testFaceAdjacentFacesVectors<EigenVector, vcl::uint>(tm);
+        }
+        SECTION("vcl::Vector<vcl::Vector<vcl::uint>>")
+        {
+            testFaceAdjacentFacesVectors<VclVector, vcl::uint>(tm);
+        }
+    }
+
+    SECTION("Face Adjacent Faces Matrix...")
+    {
+        // Update per-face adjacent faces information first
+        tm.enablePerFaceAdjacentFaces();
+        vcl::updatePerFaceAdjacentFaces(tm);
+
+        SECTION("Eigen Row Major")
+        {
+            testFaceAdjacentFacesMatrix<EigenRowMatrix<vcl::uint>>(tm);
+        }
+        SECTION("Eigen Col Major")
+        {
+            testFaceAdjacentFacesMatrix<EigenColMatrix<vcl::uint>>(tm);
+        }
+        SECTION("vcl::Array2")
+        {
+            testFaceAdjacentFacesMatrix<vcl::Array2<vcl::uint>>(tm);
         }
     }
 }
