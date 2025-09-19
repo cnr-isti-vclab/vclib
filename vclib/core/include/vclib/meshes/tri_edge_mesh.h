@@ -51,6 +51,7 @@ class Edge;
  * @extends vert::Normal3
  * @extends vert::OptionalColor
  * @extends vert::OptionalQuality
+ * @extends vert::OptionalAdjacentEdges
  * @extends vert::OptionalAdjacentFaces
  * @extends vert::OptionalAdjacentVertices
  * @extends vert::OptionalPrincipalCurvature

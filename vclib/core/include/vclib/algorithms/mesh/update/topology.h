@@ -221,6 +221,49 @@ void updatePerVertexAdjacentVertices(MeshType& m)
 }
 
 /**
+ * @brief Clears the adjacent edges of each vertex of the mesh.
+ *
+ * Since the number of adjacent edges per vertex is dynamic, at the end of this
+ * function each vertex will have 0 adjacent Edges.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent edges available.
+ *
+ * @param m: the mesh on which clear the per vertex adjacent edges.
+ */
+template<EdgeMeshConcept MeshType>
+void clearPerVertexAdjacentEdges(MeshType& m)
+{
+    clearPerElementAdjacentEdges<ElemId::VERTEX>(m);
+}
+
+/**
+ * @brief Updates the adjacent edges of each vertex of the mesh.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent edges available.
+ *
+ * @param m:  the mesh on which update the per vertex adjacent edges.
+ */
+template<EdgeMeshConcept MeshType>
+void updatePerVertexAdjacentEdges(MeshType& m)
+{
+    clearPerVertexAdjacentEdges(m);
+
+    using VertexType = MeshType::VertexType;
+    using EdgeType   = MeshType::EdgeType;
+
+    for (VertexType& v : m.vertices()) {
+        v.clearAdjEdges();
+    }
+
+    for (EdgeType& e : m.edges()) {
+        e.vertex(0)->pushAdjEdge(&e);
+        e.vertex(1)->pushAdjEdge(&e);
+    }
+}
+
+/**
  * @brief Clears the adjacent faces of each face of the mesh.
  *
  * Since the number of adjacent faces per face is tied to the number of vertices
@@ -286,7 +329,7 @@ void updatePerFaceAdjacentFaces(MeshType& m)
 
     // vector that contains edges sorted trough unordered vertex pointers
     // it contains clusters of "same" edges, but each one of them has its face
-    // pointer note that in case on non-manifold mesh, clusters may be of size
+    // pointer. note that in case on non-manifold mesh, clusters may be of size
     // >= 2
     std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
@@ -320,6 +363,65 @@ void updatePerFaceAdjacentFaces(MeshType& m)
 
             // j is the first different edge from first (or it is vec.end()!)
             base = j;
+        }
+    }
+}
+
+/**
+ * @brief Clears the adjacent edges of each face of the mesh.
+ *
+ * Depending on the definition of the mesh, faces can have a number of
+ * adjacent edges tied to the number of vertices of the face (e.g., in a
+ * polygonal mesh, each face has as many adjacent edges as its vertices),
+ * or a dynamic number of adjacent edges (e.g., the number of adjacent edges
+ * of a face can be different from the number of its vertices).
+ * If the number of adjacent edges is dynamic, each face will have 0 adjacent
+ * edges at the end of this function. If the number of adjacent edges is tied to
+ * the number of vertices of the face, each face will have f->vertexNumber()
+ * adjacent edges set to nullptr at the end of this function.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * adjacent edges available.
+ *
+ * @param m:  the mesh on which clear the per face adjacent edges.
+ */
+template<FaceMeshConcept MeshType>
+void clearPerFaceAdjacentEdges(MeshType& m)
+    requires EdgeMeshConcept<MeshType>
+{
+    clearPerElementAdjacentEdges<ElemId::FACE>(m);
+}
+
+template<FaceMeshConcept MeshType>
+void updatePerFaceAdjacentEdges(MeshType& m)
+    requires EdgeMeshConcept<MeshType>
+{
+    using FaceType = MeshType::FaceType;
+
+    using AdjacentEdgesType = comp::ComponentTypeFromID<
+        CompId::ADJACENT_EDGES,
+        typename FaceType::Components>;
+
+    clearPerFaceAdjacentEdges(m);
+
+    // vector that contains edges sorted trough unordered vertex pointers
+    std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
+
+    for(auto& e : m.edges()) {
+        MeshEdgeUtil<MeshType> meu(e.vertex(0), e.vertex(1));
+
+        // binary search for the edge in the sorted vector
+        auto it = std::lower_bound(vec.begin(), vec.end(), meu);
+
+        while(it != vec.end() && *it == meu) {
+            auto* f = it->f; // the face adjacent to the edge e
+            if constexpr (comp::IsTiedToVertexNumber<AdjacentEdgesType>) {
+                f->setAdjEdges(it->e, &e);
+            }
+            else {
+                f->pushAdjEdge(&e);
+            }
+            ++it;
         }
     }
 }
