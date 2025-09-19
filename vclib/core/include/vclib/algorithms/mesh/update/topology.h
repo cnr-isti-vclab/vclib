@@ -40,9 +40,12 @@ namespace vcl {
  * f->vertexNumber() adjacent faces set to nullptr at the end of this
  * function.
  *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent faces available.
+ *
  * @param m: the mesh on which clear the per element adjacent faces.
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<uint ELEM_ID, FaceMeshConcept MeshType>
 void clearPerElementAdjacentFaces(MeshType& m)
 {
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(m);
@@ -64,10 +67,49 @@ void clearPerElementAdjacentFaces(MeshType& m)
 }
 
 /**
+ * @brief Clears the adjacent edges of each element having ELEM_ID in the mesh.
+ *
+ * If the number of adjacent edges is dynamic (i.e., the case of the Vertex),
+ * each element will have 0 adjacent edges at the end of this function.
+ *
+ * If the number of adjacent edges is tied to the number of vertices of the
+ * element, each element will have e->vertexNumber() adjacent edges set to
+ * nullptr at the end of this function.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent edges available.
+ *
+ * @param m: the mesh on which clear the per element adjacent edges.
+ */
+template<uint ELEM_ID, EdgeMeshConcept MeshType>
+void clearPerElementAdjacentEdges(MeshType& m)
+{
+    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(m);
+
+    using AdjacentEdgesType = comp::ComponentTypeFromID<
+        CompId::ADJACENT_EDGES,
+        typename MeshType::template ElementType<ELEM_ID>::Components>;
+
+    for (auto& e : m.template elements<ELEM_ID>()) {
+        if constexpr (comp::IsTiedToVertexNumber<AdjacentEdgesType>) {
+            for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
+                e.setAdjEdges(i, nullptr);
+            }
+        }
+        else {
+            e.clearAdjEdges();
+        }
+    }
+}
+
+/**
  * @brief Clears the adjacent vertices of each element having ELEM_ID in the
  * mesh.
  *
  * Each element will have 0 adjacent vertices at the end of this function.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent vertices available.
  *
  * @param m: the mesh on which clear the per element adjacent vertices.
  */
@@ -87,6 +129,9 @@ void clearPerElementAdjacentVertices(MeshType& m)
  * Since the number of adjacent faces per vertex is dynamic, at the end of this
  * function each vertex will have 0 adjacent Faces.
  *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent faces available.
+ *
  * @param m: the mesh on which clear the per vertex adjacent faces.
  */
 template<FaceMeshConcept MeshType>
@@ -97,6 +142,9 @@ void clearPerVertexAdjacentFaces(MeshType& m)
 
 /**
  * @brief Updates the adjacent faces of each vertex of the mesh.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent faces available.
  *
  * @param m:  the mesh on which update the per vertex adjacent faces.
  */
@@ -125,6 +173,9 @@ void updatePerVertexAdjacentFaces(MeshType& m)
  * Since the number of adjacent vertices per vertex is dynamic, at the end of
  * this function each vertex will have 0 adjacent vertices.
  *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent vertices available.
+ *
  * @param m: the mesh on which clear the per vertex adjacent vertices.
  */
 template<MeshConcept MeshType>
@@ -135,6 +186,9 @@ void clearPerVertexAdjacentVertices(MeshType& m)
 
 /**
  * @brief Updates the adjacent vertices of each vertex of the mesh.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent vertices available.
  *
  * @param m:  the mesh on which update the per vertex adjacent faces.
  */
@@ -172,6 +226,9 @@ void updatePerVertexAdjacentVertices(MeshType& m)
  * Since the number of adjacent faces per face is tied to the number of vertices
  * of the face, at the end of this function each face will have
  * f->vertexNumber() adjacent faces set to nullptr.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * adjacent faces available.
  *
  * @param m:  the mesh on which clear the per face adjacent faces.
  */
@@ -216,6 +273,9 @@ void clearPerFaceAdjacentFaces(MeshType& m)
  * fj = fi->adjFace(ei);
  * fj->adjFace(ej) != fi; // if true, the edge is non-manifold
  * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * adjacent faces available.
  *
  * @param m:  the mesh on which update the per face adjacent faces.
  */
