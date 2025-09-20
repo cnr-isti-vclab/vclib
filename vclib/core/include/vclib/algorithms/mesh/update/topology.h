@@ -200,7 +200,7 @@ void clearPerVertexAdjacentVertices(MeshType& mesh)
 template<MeshConcept MeshType>
 void updatePerVertexAdjacentVertices(
     MeshType& mesh,
-    bool includeOnlyFaces = false)
+    bool      includeOnlyFaces = false)
 {
     clearPerVertexAdjacentVertices(mesh);
 
@@ -236,9 +236,9 @@ void updatePerVertexAdjacentVertices(
 
             for (EdgeType& e : mesh.edges()) {
                 // set the pair as adjacent only if not already present
-                if (! e.vertex(0)->containsAdjVertex(e.vertex(1)))
+                if (!e.vertex(0)->containsAdjVertex(e.vertex(1)))
                     e.vertex(0)->pushAdjVertex(e.vertex(1));
-                if (! e.vertex(1)->containsAdjVertex(e.vertex(0)))
+                if (!e.vertex(1)->containsAdjVertex(e.vertex(0)))
                     e.vertex(1)->pushAdjVertex(e.vertex(0));
             }
         }
@@ -275,7 +275,7 @@ void updatePerVertexAdjacentEdges(MeshType& mesh)
 {
     clearPerVertexAdjacentEdges(mesh);
 
-    using EdgeType   = MeshType::EdgeType;
+    using EdgeType = MeshType::EdgeType;
 
     for (EdgeType& e : mesh.edges()) {
         e.vertex(0)->pushAdjEdge(&e);
@@ -351,7 +351,8 @@ void updatePerFaceAdjacentFaces(MeshType& mesh)
     // it contains clusters of "same" edges, but each one of them has its face
     // pointer. note that in case on non-manifold mesh, clusters may be of size
     // >= 2
-    std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(mesh);
+    std::vector<MeshEdgeUtil<MeshType>> vec =
+        fillAndSortMeshEdgeUtilVector(mesh);
 
     if (vec.size() > 0) {
         // in this loop, base will point to the first element of a cluster of
@@ -447,13 +448,13 @@ void updatePerFaceAdjacentEdges(MeshType& mesh)
     std::vector<MeshEdgeUtil<MeshType>> vec =
         fillAndSortMeshEdgeUtilVector(mesh);
 
-    for(auto& e : mesh.edges()) {
+    for (auto& e : mesh.edges()) {
         MeshEdgeUtil<MeshType> meu(e.vertex(0), e.vertex(1));
 
         // binary search for the edge in the sorted vector
         auto it = std::lower_bound(vec.begin(), vec.end(), meu);
 
-        while(it != vec.end() && *it == meu) {
+        while (it != vec.end() && *it == meu) {
             auto* f = it->f; // the face adjacent to the edge e
             if constexpr (comp::IsTiedToVertexNumber<AdjacentEdgesType>) {
                 f->setAdjEdges(it->e, &e);
@@ -505,13 +506,13 @@ void updatePerEdgeAdjacentFaces(MeshType& mesh)
     std::vector<MeshEdgeUtil<MeshType>> vec =
         fillAndSortMeshEdgeUtilVector(mesh);
 
-    for(auto& e : mesh.edges()) {
+    for (auto& e : mesh.edges()) {
         MeshEdgeUtil<MeshType> meu(e.vertex(0), e.vertex(1));
 
         // binary search for the edge in the sorted vector
         auto it = std::lower_bound(vec.begin(), vec.end(), meu);
 
-        while(it != vec.end() && *it == meu) {
+        while (it != vec.end() && *it == meu) {
             auto* f = it->f; // the face adjacent to the edge e
             e.pushAdjFace(f);
             ++it;
@@ -546,7 +547,7 @@ void clearPerEdgeAdjacentEdges(MeshType& mesh)
 template<EdgeMeshConcept MeshType>
 void updatePerEdgeAdjacentEdges(MeshType& mesh)
 {
-    using EdgeType   = MeshType::EdgeType;
+    using EdgeType = MeshType::EdgeType;
 
     // for each vertex, save the edges incident in it
     std::vector<std::list<EdgeType*>> edgeMap(mesh.vertexContainerSize());
