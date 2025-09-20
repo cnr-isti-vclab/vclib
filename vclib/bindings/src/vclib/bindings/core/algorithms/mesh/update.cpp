@@ -29,6 +29,9 @@
 
 namespace vcl::bind {
 
+template<typename T>
+concept FaceEdgeMeshConcept = FaceMeshConcept<T> && EdgeMeshConcept<T>;
+
 void initUpdateAlgorithms(pybind11::module& m)
 {
     namespace py = pybind11;
@@ -38,9 +41,12 @@ void initUpdateAlgorithms(pybind11::module& m)
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
             // bounding_box.h
 
-            m.def("update_bounding_box", [](MeshType& m) {
-                return updateBoundingBox(m);
-            });
+            m.def(
+                "update_bounding_box",
+                [](MeshType& m) {
+                    return updateBoundingBox(m);
+                },
+                "mesh"_a);
 
             // color.h
 
@@ -97,21 +103,33 @@ void initUpdateAlgorithms(pybind11::module& m)
 
             // normal.h
 
-            m.def("clear_per_vertex_normals", [](MeshType& m) {
-                return clearPerVertexNormals(m);
-            });
+            m.def(
+                "clear_per_vertex_normals",
+                [](MeshType& m) {
+                    return clearPerVertexNormals(m);
+                },
+                "mesh"_a);
 
-            m.def("clear_per_referenced_vertex_normals", [](MeshType& m) {
-                return clearPerReferencedVertexNormals(m);
-            });
+            m.def(
+                "clear_per_referenced_vertex_normals",
+                [](MeshType& m) {
+                    return clearPerReferencedVertexNormals(m);
+                },
+                "mesh"_a);
 
-            m.def("normalize_per_vertex_normals", [](MeshType& m) {
-                return normalizePerVertexNormals(m);
-            });
+            m.def(
+                "normalize_per_vertex_normals",
+                [](MeshType& m) {
+                    return normalizePerVertexNormals(m);
+                },
+                "mesh"_a);
 
-            m.def("normalize_per_referenced_vertex_normals", [](MeshType& m) {
-                return normalizePerReferencedVertexNormals(m);
-            });
+            m.def(
+                "normalize_per_referenced_vertex_normals",
+                [](MeshType& m) {
+                    return normalizePerReferencedVertexNormals(m);
+                },
+                "mesh"_a);
 
             m.def(
                 "multiply_per_vertex_normals_by_matrix",
@@ -171,9 +189,28 @@ void initUpdateAlgorithms(pybind11::module& m)
 
             // selection.h
 
-            m.def("clear_vertex_selection", [](MeshType& m) {
-                return clearVertexSelection(m);
-            });
+            m.def(
+                "clear_vertex_selection",
+                [](MeshType& m) {
+                    return clearVertexSelection(m);
+                },
+                "mesh"_a);
+
+            // topology.h
+
+            m.def(
+                "clear_per_vertex_adjacent_vertices",
+                [](MeshType& m) {
+                    return clearPerVertexAdjacentVertices(m);
+                },
+                "mesh"_a);
+
+            m.def(
+                "update_per_vertex_adjacent_vertices",
+                [](MeshType& m) {
+                    return updatePerVertexAdjacentVertices(m);
+                },
+                "mesh"_a);
 
             // transform.h
 
@@ -264,9 +301,12 @@ void initUpdateAlgorithms(pybind11::module& m)
                            pybind11::module& m, MeshType = MeshType()) {
         // border.h
 
-        m.def("update_border", [](MeshType& m) {
-            return vcl::updateBorder(m);
-        });
+        m.def(
+            "update_border",
+            [](MeshType& m) {
+                return vcl::updateBorder(m);
+            },
+            "mesh"_a);
 
         // color.h
 
@@ -279,13 +319,19 @@ void initUpdateAlgorithms(pybind11::module& m)
             "color"_a         = Color::White,
             "only_selected"_a = false);
 
-        m.def("set_per_vertex_color_from_face_color", [](MeshType& m) {
-            return vcl::setPerVertexColorFromFaceColor(m);
-        });
+        m.def(
+            "set_per_vertex_color_from_face_color",
+            [](MeshType& m) {
+                return vcl::setPerVertexColorFromFaceColor(m);
+            },
+            "mesh"_a);
 
-        m.def("set_per_face_color_from_vertex_color", [](MeshType& m) {
-            return vcl::setPerFaceColorFromVertexColor(m);
-        });
+        m.def(
+            "set_per_face_color_from_vertex_color",
+            [](MeshType& m) {
+                return vcl::setPerFaceColorFromVertexColor(m);
+            },
+            "mesh"_a);
 
         m.def(
             "set_per_face_color_from_quality",
@@ -354,13 +400,19 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         // normal.h
 
-        m.def("clear_per_face_normals", [](MeshType& m) {
-            return vcl::clearPerFaceNormals(m);
-        });
+        m.def(
+            "clear_per_face_normals",
+            [](MeshType& m) {
+                return vcl::clearPerFaceNormals(m);
+            },
+            "mesh"_a);
 
-        m.def("normalize_per_face_normals", [](MeshType& m) {
-            return vcl::normalizePerFaceNormals(m);
-        });
+        m.def(
+            "normalize_per_face_normals",
+            [](MeshType& m) {
+                return vcl::normalizePerFaceNormals(m);
+            },
+            "mesh"_a);
 
         m.def(
             "multiply_per_face_normals_by_matrix",
@@ -487,13 +539,19 @@ void initUpdateAlgorithms(pybind11::module& m)
             "min_quality"_a = 0.0,
             "max_quality"_a = 1.0);
 
-        m.def("set_per_vertex_quality_from_vertex_valence", [](MeshType& m) {
-            return vcl::setPerVertexQualityFromVertexValence(m);
-        });
+        m.def(
+            "set_per_vertex_quality_from_vertex_valence",
+            [](MeshType& m) {
+                return vcl::setPerVertexQualityFromVertexValence(m);
+            },
+            "mesh"_a);
 
-        m.def("set_per_face_quality_from_face_area", [](MeshType& m) {
-            return vcl::setPerFaceQualityFromFaceArea(m);
-        });
+        m.def(
+            "set_per_face_quality_from_face_area",
+            [](MeshType& m) {
+                return vcl::setPerFaceQualityFromFaceArea(m);
+            },
+            "mesh"_a);
 
         m.def(
             "set_per_vertex_quality_from_principal_curvature_gaussian",
@@ -539,13 +597,19 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         // selection.h
 
-        m.def("clear_face_selection", [](MeshType& m) {
-            return clearFaceSelection(m);
-        });
+        m.def(
+            "clear_face_selection",
+            [](MeshType& m) {
+                return clearFaceSelection(m);
+            },
+            "mesh"_a);
 
-        m.def("clear_face_edges_selection", [](MeshType& m) {
-            return clearFaceEdgesSelection(m);
-        });
+        m.def(
+            "clear_face_edges_selection",
+            [](MeshType& m) {
+                return clearFaceEdgesSelection(m);
+            },
+            "mesh"_a);
 
         m.def(
             "select_non_manifold_vertices",
@@ -567,29 +631,33 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         // topology.h
 
-        m.def("clear_per_vertex_adjacent_faces", [](MeshType& m) {
-            return clearPerVertexAdjacentFaces(m);
-        });
+        m.def(
+            "clear_per_vertex_adjacent_faces",
+            [](MeshType& m) {
+                return clearPerVertexAdjacentFaces(m);
+            },
+            "mesh"_a);
 
-        m.def("update_per_vertex_adjacent_faces", [](MeshType& m) {
-            return updatePerVertexAdjacentFaces(m);
-        });
+        m.def(
+            "update_per_vertex_adjacent_faces",
+            [](MeshType& m) {
+                return updatePerVertexAdjacentFaces(m);
+            },
+            "mesh"_a);
 
-        m.def("clear_per_vertex_adjacent_vertices", [](MeshType& m) {
-            return clearPerVertexAdjacentVertices(m);
-        });
+        m.def(
+            "clear_per_face_adjacent_faces",
+            [](MeshType& m) {
+                return clearPerFaceAdjacentFaces(m);
+            },
+            "mesh"_a);
 
-        m.def("update_per_vertex_adjacent_vertices", [](MeshType& m) {
-            return updatePerVertexAdjacentVertices(m);
-        });
-
-        m.def("clear_per_face_adjacent_faces", [](MeshType& m) {
-            return clearPerFaceAdjacentFaces(m);
-        });
-
-        m.def("update_per_face_adjacent_faces", [](MeshType& m) {
-            return updatePerFaceAdjacentFaces(m);
-        });
+        m.def(
+            "update_per_face_adjacent_faces",
+            [](MeshType& m) {
+                return updatePerFaceAdjacentFaces(m);
+            },
+            "mesh"_a);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
@@ -607,18 +675,89 @@ void initUpdateAlgorithms(pybind11::module& m)
             "color"_a         = Color::White,
             "only_selected"_a = false);
 
-        m.def("set_per_edge_color_from_vertex_color", [](MeshType& m) {
-            return vcl::setPerEdgeColorFromVertexColor(m);
-        });
+        m.def(
+            "set_per_edge_color_from_vertex_color",
+            [](MeshType& m) {
+                return vcl::setPerEdgeColorFromVertexColor(m);
+            },
+            "mesh"_a);
 
         // selection.h
 
-        m.def("clear_edge_selection", [](MeshType& m) {
-            return clearEdgeSelection(m);
-        });
+        m.def(
+            "clear_edge_selection",
+            [](MeshType& m) {
+                return clearEdgeSelection(m);
+            },
+            "mesh"_a);
+
+        // topology.h
+
+        m.def(
+            "clear_per_vertex_adjacent_edges",
+            [](MeshType& m) {
+                return clearPerVertexAdjacentEdges(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "update_per_vertex_adjacent_edges",
+            [](MeshType& m) {
+                return updatePerVertexAdjacentEdges(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "clear_per_edge_adjacent_edges",
+            [](MeshType& m) {
+                return clearPerEdgeAdjacentEdges(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "update_per_edge_adjacent_edges",
+            [](MeshType& m) {
+                return updatePerEdgeAdjacentEdges(m);
+            },
+            "mesh"_a);
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
+
+    auto fFaceEdgeMeshes = []<FaceEdgeMeshConcept MeshType>(
+                           pybind11::module& m, MeshType = MeshType()) {
+
+        m.def(
+            "clear_per_face_adjacent_edges",
+            [](MeshType& m) {
+                return clearPerFaceAdjacentEdges(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "update_per_face_adjacent_edges",
+            [](MeshType& m) {
+                return updatePerFaceAdjacentEdges(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "clear_per_edge_adjacent_faces",
+            [](MeshType& m) {
+                return clearPerEdgeAdjacentFaces(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "update_per_edge_adjacent_faces",
+            [](MeshType& m) {
+                return updatePerEdgeAdjacentFaces(m);
+            },
+            "mesh"_a);
+
+    };
+
+    defForAllMeshTypes(m, fFaceEdgeMeshes);
 }
 
 } // namespace vcl::bind
