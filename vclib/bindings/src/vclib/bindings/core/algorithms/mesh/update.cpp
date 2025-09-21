@@ -725,8 +725,7 @@ void initUpdateAlgorithms(pybind11::module& m)
     defForAllMeshTypes(m, fEdgeMeshes);
 
     auto fFaceEdgeMeshes = []<FaceEdgeMeshConcept MeshType>(
-                           pybind11::module& m, MeshType = MeshType()) {
-
+                               pybind11::module& m, MeshType = MeshType()) {
         m.def(
             "clear_per_face_adjacent_edges",
             [](MeshType& m) {
@@ -754,7 +753,6 @@ void initUpdateAlgorithms(pybind11::module& m)
                 return updatePerEdgeAdjacentFaces(m);
             },
             "mesh"_a);
-
     };
 
     defForAllMeshTypes(m, fFaceEdgeMeshes);
