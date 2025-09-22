@@ -45,8 +45,8 @@ NUM_THREADS(1, 1, 1) // 1 'thread' per buffer index
 void main()
 {
     uvec2 wGroupSize = uvec2(floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.x), floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.y));
-    uvec2 texXSize = floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.z);
+    uint texXSize = floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.z);
     uint bufferIndex = gl_WorkGroupID.x + gl_WorkGroupID.y * wGroupSize.x + gl_WorkGroupID.z * wGroupSize.y * wGroupSize.x;
-    ivec2 texCoord = ivec2(int(bufferIndex/texXSize), int(bufferIndex%texXSize));
-    imageStore(s_tex, texCoord, uintRGBAToVec4Color(buf[bufferIndex]));
+    ivec2 txCoord = ivec2(bufferIndex/texXSize, bufferIndex%texXSize);
+    imageStore(s_tex, txCoord, uintRGBAToVec4Color(buf[bufferIndex]));
 }
