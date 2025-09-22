@@ -28,7 +28,8 @@ BUFFER_RO(buf, uint, 5); // interpret as uint buffer
 
 // We expect the texture (used as an array) to be big 
 // enough to contain at least wGroupSize.x * wGroupSize.y * wGroupSize.z elements
-// Only X and Y sizes are required for the workGroupSize, and only the X size is required for the texture size
+
+// X and Y are workGroup X and Y sizes, Z is texture X size, W is buffer size (all to be interpreted as uints)
 uniform vec4 u_workGroupSizeXYTexSizeXAndBufSize;
 
 // AGBR function "inverts" the uint's byte order inside the vec4 (little endian),
