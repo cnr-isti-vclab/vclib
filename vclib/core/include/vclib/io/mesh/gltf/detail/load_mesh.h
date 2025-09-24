@@ -70,6 +70,34 @@ inline void checkGltfPrimitiveMaterial(
     }
 }
 
+template<MeshConcept MeshType>
+void loadGltfPrimitiveMaterial(
+    MeshType&                  m,
+    const tinygltf::Model&     model,
+    const tinygltf::Primitive& p) 
+{
+    if(p.material < 0) {
+        m.pushMaterial(Material());
+        return;
+    }
+    vcl::Color color;
+    double metallic, roughness;
+    const tinygltf::Material& mat = model.materials[p.material];
+    auto it = mat.values.find("baseColorFactor");
+    if(it != mat.values.end()) {
+        const std::vector<double>& vc = it->second.number_array;
+            for (uint i = 0; i < 4; i++)
+                color[i] = vc[i] * 255.0;
+    }
+    it = mat.values.find("metallicFactor");
+    metallic = it != mat.values.end() && it->second.has_number_value? 
+        it->second.number_value : 0.;
+    it = mat.values.find("roughnessFactor");
+    roughness = it != mat.values.end() && it->second.has_number_value? 
+        it->second.number_value : 0.5;
+    m.pushMaterial(Material(color, metallic, roughness));
+}
+
 template<MeshConcept MeshType, typename Scalar>
 bool populateGltfVertices(
     MeshType&     m,
@@ -615,6 +643,8 @@ void loadGltfMeshPrimitive(
         // transformation matrix to the vertices
         vcl::applyTransformMatrix(m, transf);
     }
+
+    loadGltfPrimitiveMaterial(m, model, p);
 }
 
 /**

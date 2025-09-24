@@ -30,7 +30,15 @@ int main(int argc, char** argv)
     using namespace vcl;
 
     std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf");
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/OrientationTest/OrientationTest.gltf");
+
+    for(auto& mesh : meshes) {
+        for (auto& mat : mesh.materials()) {
+            std::cout << mat.baseColor() << std::endl;
+            std::cout << mat.metallic() << std::endl;
+            std::cout << mat.roughness() << std::endl << std::endl;
+        }
+    }
 
     return showMeshesOnDefaultViewer(argc, argv, std::move(meshes));
 }
