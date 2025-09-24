@@ -54,6 +54,8 @@ concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
+concept HasMaterials = comp::HasMaterials<T>;
+template<typename T>
 concept HasName = comp::HasName<T>;
 template<typename T>
 concept HasTextureImages = comp::HasTextureImages<T>;

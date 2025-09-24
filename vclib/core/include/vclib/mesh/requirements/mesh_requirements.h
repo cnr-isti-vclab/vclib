@@ -80,6 +80,14 @@ template<typename MeshType>
 concept HasMark = MeshConcept<MeshType> && mesh::HasMark<MeshType>;
 
 /**
+ * @brief Concept that is evaluated true if a Mesh has the Materials component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasMaterials = MeshConcept<MeshType> && mesh::HasMaterials<MeshType>;
+
+/**
  * @brief Concept that checks if a Mesh has the Name component.
  *
  * @ingroup mesh_concepts
