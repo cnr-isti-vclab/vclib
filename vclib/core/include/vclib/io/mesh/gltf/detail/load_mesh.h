@@ -644,7 +644,9 @@ void loadGltfMeshPrimitive(
         vcl::applyTransformMatrix(m, transf);
     }
 
-    loadGltfPrimitiveMaterial(m, model, p);
+    if constexpr (HasMaterials<MeshType>) {
+        loadGltfPrimitiveMaterial(m, model, p);
+    }
 }
 
 /**
