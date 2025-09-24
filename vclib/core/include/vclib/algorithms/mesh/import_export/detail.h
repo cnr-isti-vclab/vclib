@@ -20,45 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/space/core/tex_coord_indexed.h>
-
-#include <vclib/bindings/core/space/core/tex_coord.h>
+#ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H
+#define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H
 
 #include <vclib/space/core.h>
 
-namespace vcl::bind {
+namespace vcl::detail {
 
-void initTexCoordIndexed(pybind11::module& m)
+// given a buffer, returns a reference to the element at (i,j) considering the
+// storage type (row-major or column-major)
+inline auto& at(
+    auto*             buffer,
+    uint              i,
+    uint              j,
+    uint              rowNum,
+    uint              colNum,
+    MatrixStorageType storage)
 {
-    namespace py = pybind11;
-    using namespace py::literals;
-
-    using Scalar = double;
-    using P      = TexCoordIndexed<Scalar>;
-
-    py::class_<P> c(m, "TexCoordIndexed");
-
-    populateTexCoord<P>(c);
-
-    c.def(py::init<Scalar, Scalar, ushort>(), "u"_a, "v"_a, "index"_a);
-
-    c.def(py::init([](const py::list& v, ushort index) {
-        if (v.size() != 2) {
-            throw std::invalid_argument(
-                "Input list must have 2 elements for type vclib.TexCoord");
-        }
-        P p;
-        for (uint i = 0; const auto& d : v) {
-            p(i++) = d.cast<double>();
-        }
-        p.index() = index;
-        return p;
-    }));
-
-    c.def("index", py::overload_cast<>(&P::index, py::const_));
-    c.def("set_index", [](P& t, ushort i) {
-        t.index() = i;
-    });
+    if (storage == MatrixStorageType::ROW_MAJOR) {
+        return buffer[i * colNum + j];
+    }
+    else {
+        return buffer[j * rowNum + i];
+    }
 }
 
-} // namespace vcl::bind
+} // namespace vcl::detail
+
+#endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H

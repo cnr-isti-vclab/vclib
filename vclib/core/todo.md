@@ -65,6 +65,7 @@
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
 - Space:
+  - [ ] MeshEdgeUtil class should NOT rely on comparing pointers - it leds to non-deterministic behavior
   - [ ] add assert(!isNull()) on Box member functions like volume()
   - [ ] get rid of TriangleWrapper data structure
   - [ ] improve documentation for Grid data structures

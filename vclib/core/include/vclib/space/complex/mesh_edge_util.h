@@ -65,6 +65,23 @@ public:
 
     MeshEdgeUtil() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
 
+    MeshEdgeUtil(
+        VertexType* v0,
+        VertexType* v1,
+        FaceType*   pf = nullptr,
+        int         ne = -1) : f(pf), e(ne)
+    {
+        assert(v0 != v1);
+        if (v0 < v1) {
+            v[0] = v0;
+            v[1] = v1;
+        }
+        else {
+            v[0] = v1;
+            v[1] = v0;
+        }
+    }
+
     MeshEdgeUtil(FaceType& pf, uint ne)
     {
         v[0] = pf.vertex(ne);
