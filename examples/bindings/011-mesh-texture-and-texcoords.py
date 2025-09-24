@@ -59,7 +59,7 @@ def mesh_texture_and_texcoords():
 
     # Check if mesh has vertex texture coordinates
     if mesh_vertex_texcoords.is_per_vertex_tex_coord_enabled():
-        print("   ✓ Mesh has vertex texture coordinates")
+        print("   - Mesh has vertex texture coordinates")
 
         # Access first few vertex texture coordinates
         print("   First 3 vertex texture coordinates:")
@@ -67,7 +67,7 @@ def mesh_texture_and_texcoords():
             tex_coord = mesh_vertex_texcoords.vertex(i).tex_coord()
             print(f"     Vertex {i}: ({tex_coord.u()}, {tex_coord.v()}) tex_id {tex_coord.index()}")
     else:
-        print("   ✗ Mesh does not have vertex texture coordinates")
+        print("   - Mesh does not have vertex texture coordinates")
 
     # Example 2: Load mesh with wedge texture coordinates
     print("\n2. Loading mesh with wedge texture coordinates...")
@@ -80,7 +80,7 @@ def mesh_texture_and_texcoords():
 
     # Check if mesh has wedge texture coordinates
     if mesh_wedge_texcoords.is_per_face_wedge_tex_coords_enabled():
-        print("   ✓ Mesh has wedge texture coordinates")
+        print("   - Mesh has wedge texture coordinates")
 
         # Access first few face wedge texture coordinates
         print("   First face wedge texture coordinates:")
@@ -90,11 +90,11 @@ def mesh_texture_and_texcoords():
                 tex_coord = face.wedge_tex_coord(i)
                 print(f"     Wedge {i}: ({tex_coord.u()}, {tex_coord.v()}) tex_id {face.texture_index()}")
     else:
-        print("   ✗ Mesh does not have wedge texture coordinates")
+        print("   - Mesh does not have wedge texture coordinates")
 
     # Example 3: Working with texture images
     print("\n3. Working with texture images...")
-    print(f"   ✓ Mesh has {mesh_wedge_texcoords.texture_number()} textures")
+    print(f"   - Mesh has {mesh_wedge_texcoords.texture_number()} textures")
 
     for i in range(mesh_wedge_texcoords.texture_number()):
         # if the images are not loaded, the texture paths will be available
@@ -143,8 +143,8 @@ def mesh_texture_and_texcoords():
 
     print(f"   Created custom mesh with {custom_mesh.vertex_number()} vertices "
           f"and {custom_mesh.face_number()} faces")
-    print(f"   ✓ Has vertex texture coordinates: {custom_mesh.is_per_vertex_tex_coord_enabled()}")
-    print(f"   ✓ Has wedge texture coordinates: {custom_mesh.is_per_face_wedge_tex_coords_enabled()}")
+    print(f"   - Has vertex texture coordinates: {custom_mesh.is_per_vertex_tex_coord_enabled()}")
+    print(f"   - Has wedge texture coordinates: {custom_mesh.is_per_face_wedge_tex_coords_enabled()}")
 
     # Example 5: Iterating through texture coordinates using views
     print("\n5. Iterating through texture coordinates...")
