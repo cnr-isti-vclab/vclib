@@ -131,11 +131,12 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a);
 
-        m.def("vertex_adjacent_vertices_matrix",
-              [](const MeshType& m) {
-                  return vcl::vertexAdjacentVerticesMatrix<Eigen::MatrixXi>(m);
-              },
-              "mesh"_a);
+        m.def(
+            "vertex_adjacent_vertices_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexAdjacentVerticesMatrix<Eigen::MatrixXi>(m);
+            },
+            "mesh"_a);
 
         // import_matrix.h
 
