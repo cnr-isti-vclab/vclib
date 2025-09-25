@@ -71,6 +71,11 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
         Uniform("u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
     std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
 
+    // face selection: Since we do not know whether this mesh has faces or not,
+    // we use an optional
+    std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
+    std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
+
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
     DynamicVertexBuffer mVertexQuadBuffer;
@@ -196,33 +201,18 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
+    // TODO: submit both vertex selection and face selection of the corresponding type when doing
+    // face selection
     void calculateSelection(
         const bgfx::ViewId viewId,
         SelectionBox       box,
         SelectionMode      mode) const
     {
+        // If one of the box's point is not set and we are not in one of the atomic modes
+        // (which ignore the box entirely) we return
         if (box.anyNull() && !mode.isAtomicMode()) {
             return;
         }
-        Point2d minPt = box.get1().value_or(Point2d(0.0, 0.0));
-        Point2d maxPt = box.get2().value_or(Point2d(0.0, 0.0));
-        mVertexPositionsBuffer.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-
-        float temp[] = {
-            float(minPt.x()),
-            float(minPt.y()),
-            float(maxPt.x()),
-            float(maxPt.y())};
-        mSelectionBoxuniform.bind((void*) temp);
-
-        float temp2[] = {
-            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[0]),
-            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[1]),
-            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[2]),
-            vcl::Uniform::uintBitsToFloat(Base::numVerts())};
-        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind((void*) temp2);
 
         auto&               pm = Context::instance().programManager();
         bgfx::ProgramHandle selectionProgram;
@@ -251,13 +241,62 @@ public:
             selectionProgram =
                 pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
             break;
+        case SelectionMode::FACE_REGULAR:
+            selectionProgram =
+                pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
+            break;
+        default: return;
         }
-        bgfx::dispatch(
-            viewId,
-            selectionProgram,
-            mVertexSelectionWorkgroupSize[0],
-            mVertexSelectionWorkgroupSize[1],
-            mVertexSelectionWorkgroupSize[2]);
+
+        // If one of them does not have a value then we are clearly in an atomic
+        // mode and the values inside are arbitrary
+        SelectionBox minMaxBox = box.toMinAndMax();
+        Point2d      minPt     = minMaxBox.get1().value_or(Point2d(0.0, 0.0));
+        Point2d      maxPt     = minMaxBox.get2().value_or(Point2d(0.0, 0.0));
+        mVertexPositionsBuffer.bindCompute(
+            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+
+        float temp[] = {
+            float(minPt.x()),
+            float(minPt.y()),
+            float(maxPt.x()),
+            float(maxPt.y())};
+        mSelectionBoxuniform.bind((void*) temp);
+
+        std::array<float, 4> temp2;
+
+        if (mode.isVertexSelection()) {
+            temp2 = {
+                vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[0]),
+                vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[1]),
+                vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[2]),
+                vcl::Uniform::uintBitsToFloat(Base::numVerts())};
+        }
+        if (mode.isFaceSelection()) {
+            temp2 = {
+                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
+                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
+                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
+                vcl::Uniform::uintBitsToFloat(Base::numVerts())};
+        }
+        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind((void*) temp2.data());
+        if (mode.isVertexSelection()) {
+            bgfx::dispatch(
+                viewId,
+                selectionProgram,
+                mVertexSelectionWorkgroupSize[0],
+                mVertexSelectionWorkgroupSize[1],
+                mVertexSelectionWorkgroupSize[2]);
+        }
+        if (mode.isFaceSelection()) {
+            bgfx::dispatch(
+                viewId,
+                selectionProgram,
+                mFaceSelectionWorkgroupSize[0],
+                mFaceSelectionWorkgroupSize[1],
+                mFaceSelectionWorkgroupSize[2]);
+        }
     }
 
     void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
@@ -335,6 +374,26 @@ private:
                 double(
                     mVertexSelectionWorkgroupSize[0] *
                     mVertexSelectionWorkgroupSize[1])));
+    }
+
+    void calculateFaceSelectionWorkgroupSize()
+    {
+        if constexpr (MeshType::has_faces) {
+            mFaceSelectionWorkgroupSize[0] =
+                std::min(Base::numFaces(), MAX_COMPUTE_WORKGROUP_SIZE);
+            mFaceSelectionWorkgroupSize[1] = std::min(
+                uint(
+                    std::ceil(
+                        double(Base::numFaces()) /
+                        double(mFaceSelectionWorkgroupSize[0]))),
+                MAX_COMPUTE_WORKGROUP_SIZE);
+            mFaceSelectionWorkgroupSize[2] = uint(
+                std::ceil(
+                    double(Base::numFaces()) /
+                    double(
+                        mFaceSelectionWorkgroupSize[0] *
+                        mFaceSelectionWorkgroupSize[1])));
+        }
     }
 
     void setVertexPositionsBuffer(const MeshType& mesh) // override
@@ -431,6 +490,33 @@ private:
             releaseFn);
 
         calculateVertexSelectionWorkgroupSize();
+    }
+
+    void setFaceSelectionBuffer(const MeshType& mesh)
+    {
+        if (Base::numFaces() == 0) {
+            mSelectedFacesBuffer        = std::nullopt;
+            mFaceSelectionWorkgroupSize = {0, 0, 0};
+            return;
+        }
+
+        const uint selectionBufferSize =
+            uint(ceil(double(Base::numFaces()) / 32.0));
+        auto [buffer, releaseFn] =
+            getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+        for (uint i = 0; i < selectionBufferSize; i++) {
+            buffer[i] = 0;
+        }
+
+        mSelectedFacesBuffer = IndexBuffer();
+        mSelectedFacesBuffer->createForCompute(
+            buffer,
+            selectionBufferSize,
+            vcl::PrimitiveType::UINT,
+            bgfx::Access::ReadWrite,
+            releaseFn);
+
+        calculateFaceSelectionWorkgroupSize();
     }
 
     void setVertexNormalsBuffer(const MeshType& mesh) // override

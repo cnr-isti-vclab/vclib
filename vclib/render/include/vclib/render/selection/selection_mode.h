@@ -33,36 +33,74 @@ public:
         VERTEX_SUBTRACT,
         VERTEX_ALL,
         VERTEX_NONE,
-        VERTEX_INVERT
+        VERTEX_INVERT,
+        FACE_REGULAR,
+        FACE_ADD,
+        FACE_SUBTRACT,
+        FACE_ALL,
+        FACE_NONE,
+        FACE_INVERT
     };
 
     SelectionMode() = default;
 
     constexpr SelectionMode(Enum en) : mEnum(en) {}
 
-    SelectionMode& operator=(SelectionMode& other) {
+    SelectionMode& operator=(SelectionMode& other)
+    {
         mEnum = other.mEnum;
         return *this;
     }
 
-    SelectionMode& operator=(Enum en) {
+    SelectionMode& operator=(Enum en)
+    {
         mEnum = en;
         return *this;
     }
 
     constexpr operator Enum() const { return mEnum; }
+
     constexpr operator bool() const = delete;
 
-    constexpr bool isAtomicMode() {
-        switch(mEnum) {
-            case VERTEX_ALL:
-            case VERTEX_INVERT:
-            case VERTEX_NONE:
-                return true;
-            default:
-                return false;
+    constexpr bool isAtomicMode()
+    {
+        switch (mEnum) {
+        case VERTEX_ALL:
+        case VERTEX_INVERT:
+        case VERTEX_NONE:
+        case FACE_ALL:
+        case FACE_INVERT:
+        case FACE_NONE: return true;
+        default: return false;
         }
     }
+
+    constexpr bool isVertexSelection()
+    {
+        switch (mEnum) {
+        case VERTEX_REGULAR:
+        case VERTEX_ADD:
+        case VERTEX_SUBTRACT:
+        case VERTEX_ALL:
+        case VERTEX_NONE:
+        case VERTEX_INVERT: return true;
+        default: return false;
+        }
+    }
+
+    constexpr bool isFaceSelection()
+    {
+        switch (mEnum) {
+        case FACE_REGULAR:
+        case FACE_ADD:
+        case FACE_SUBTRACT:
+        case FACE_ALL:
+        case FACE_NONE:
+        case FACE_INVERT: return true;
+        default: return false;
+        }
+    }
+
 private:
     Enum mEnum;
 };

@@ -42,7 +42,7 @@ void main()
     uvec3 idcs = uvec3(indices[indicesBaseIndex], indices[indicesBaseIndex + 1], indices[indicesBaseIndex + 2]);
 
     if(indicesBaseIndex >= indexCount) {
-
+        return;
     }
 
     uint slctd = 1;
