@@ -326,7 +326,7 @@ void testVertexColorsFromRange()
 
     // Create colors vector using packed 32-bit format
     // Red: 0xFF0000FF (ABGR format: A=255, B=0, G=0, R=255)
-    // Green: 0xFF00FF00 (ABGR format: A=255, B=0, G=255, R=0) 
+    // Green: 0xFF00FF00 (ABGR format: A=255, B=0, G=255, R=0)
     // Blue: 0xFFFF0000 (ABGR format: A=255, B=255, G=0, R=0)
     std::vector<uint32_t> colors = {0xFF0000FF, 0xFF00FF00, 0xFFFF0000};
 
@@ -1031,10 +1031,12 @@ TEST_CASE("Import mesh - error handling")
     SECTION("Wrong vertex colors range size")
     {
         mesh.addVertices(3);
-        std::vector<uint32_t> wrongColors = {0xFF0000FF, 0xFF00FF00}; // size 2, should be 3
+        std::vector<uint32_t> wrongColors = {
+            0xFF0000FF, 0xFF00FF00}; // size 2, should be 3
 
         REQUIRE_THROWS_AS(
-            vcl::vertexColorsFromRange(mesh, wrongColors, vcl::Color::Format::ABGR),
+            vcl::vertexColorsFromRange(
+                mesh, wrongColors, vcl::Color::Format::ABGR),
             vcl::WrongSizeException);
     }
 
@@ -1042,11 +1044,12 @@ TEST_CASE("Import mesh - error handling")
     {
         mesh.addVertices(4);
         mesh.addFace(0, 1, 2);
-        mesh.addFace(0, 2, 3); // 2 triangular faces
+        mesh.addFace(0, 2, 3);                            // 2 triangular faces
         std::vector<uint32_t> wrongColors = {0xFF0000FF}; // size 1, should be 2
 
         REQUIRE_THROWS_AS(
-            vcl::faceColorsFromRange(mesh, wrongColors, vcl::Color::Format::ABGR),
+            vcl::faceColorsFromRange(
+                mesh, wrongColors, vcl::Color::Format::ABGR),
             vcl::WrongSizeException);
     }
 }
