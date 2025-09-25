@@ -20,65 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
-#define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#ifndef VCL_BENCHMARK_VIEWER_DRAWER
+#define VCL_BENCHMARK_VIEWER_DRAWER
 
-#include "event_drawer.h"
-
-#include <vclib/render/viewer/camera.h>
-#include <vclib/render/viewer/lights.h>
+#include <vclib/render/drawers/benchmark_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 
 namespace vcl {
-template<typename Scalar, typename DerivedRenderApp>
-class CameraDrawerT : public vcl::EventDrawer<DerivedRenderApp>
+
+template<typename DerivedRenderApp>
+class BenchmarkViewerDrawer :
+        public ViewerDrawer<BenchmarkDrawer<DerivedRenderApp>>
 {
-public:
-    using ScalarType = Scalar;
-    using CameraType = vcl::Camera<Scalar>;
-    using PointType  = CameraType::PointType;
-    using MatrixType = CameraType::MatrixType;
-    using LightType  = vcl::DirectionalLight<Scalar>;
-
-protected:
-    CameraType mCamera;
+private:
+    using Parent = ViewerDrawer<BenchmarkDrawer<DerivedRenderApp>>;
 
 public:
-    using Base = vcl::EventDrawer<DerivedRenderApp>;
+    using Parent::onDraw;
+    using Parent::onKeyPress;
+    using Parent::onMouseDoubleClick;
+    using Parent::Parent;
 
-    CameraDrawerT(uint width = 100, uint height = 768) : Base(width, height)
+    void onInit(uint viewId) override { Parent::onInit(viewId); }
+
+    void onDraw(uint viewId) override { Parent::onDraw(viewId); }
+
+    void onDrawContent(uint viewId) override
     {
-        onResize(width, height);
-    }
-
-    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
-
-    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
-
-    const CameraType& camera() const { return mCamera; }
-
-    LightType light() const { return LightType(); }
-
-    void reset() { mCamera.reset(); }
-
-    void focus(const PointType& p) { mCamera.center() = p; }
-
-    void fitScene(const PointType& p, Scalar s)
-    {
-        mCamera.center()         = p;
-        mCamera.eye()            = p + PointType(0, 0, 1);
-        mCamera.verticalHeight() = s;
-        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
-    }
-
-    void onResize(uint width, uint height) override
-    {
-        mCamera.aspectRatio() = Scalar(double(width) / height);
+        Parent::onDrawContent(viewId);
+        BenchmarkDrawer<DerivedRenderApp>::onDrawContent(viewId);
     }
 };
 
-template<typename DerivedRenderApp>
-using CameraDrawer = CameraDrawerT<float, DerivedRenderApp>;
-
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#endif
