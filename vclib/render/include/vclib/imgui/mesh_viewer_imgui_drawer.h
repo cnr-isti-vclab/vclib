@@ -545,6 +545,22 @@ private:
             ImGuiColorEditFlags_NoInputs);
         ImGui::EndDisabled();
 
+        // wireframe size
+        ImGui::Text("Size:");
+        // set the width of the window minus the width of the label
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(-10);
+        ImGui::SliderFloat(
+            "##WireframeSize",
+            [&] {
+                return settings.wireframeWidth();
+            },
+            [&](float v) {
+                settings.setWireframeWidth(v);
+            },
+            1.0f,
+            32.0f);
+
         ImGui::EndDisabled();
     }
 
