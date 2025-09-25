@@ -119,7 +119,7 @@ public:
                 ParentViewer::selectionBox().vertexPositions();
             bgfx::setState(
                 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA);
+                BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
             mTriIndexBuf.bind();
             mPosBuffer.create(
                 bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
