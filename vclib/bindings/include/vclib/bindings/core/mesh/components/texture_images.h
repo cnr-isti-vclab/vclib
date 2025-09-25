@@ -36,8 +36,10 @@ void initTextureImages(pybind11::class_<MeshType>& c)
 
     initTexturePaths(c);
 
-    c.def("texture", py::overload_cast<uint>(&MeshType::texture),
-          py::return_value_policy::reference);
+    c.def(
+        "texture",
+        py::overload_cast<uint>(&MeshType::texture),
+        py::return_value_policy::reference);
     c.def("set_texture", [](MeshType& t, uint i, const Texture& tex) {
         t.texture(i) = tex;
     });
