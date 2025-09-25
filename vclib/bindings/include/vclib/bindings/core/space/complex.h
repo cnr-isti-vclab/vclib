@@ -24,6 +24,7 @@
 #define VCL_BINDINGS_CORE_SPACE_COMPLEX_H
 
 #include "complex/mesh_info.h"
+#include "complex/tri_poly_index_bimap.h"
 
 #include <pybind11/pybind11.h>
 
@@ -37,6 +38,7 @@ inline void initComplex(pybind11::module& m)
     // Structures");
 
     initMeshInfo(m);
+    initTriPolyIndexBimap(m);
 }
 
 } // namespace vcl::bind

@@ -98,10 +98,9 @@ def mesh_creation():
 
     # 3. Sphere with PolyMesh (quad faces)
     print("Creating sphere (PolyMesh - quads)...")
-    sphere_center = vcl.Point3(0, 0, 0)
-    sphere_radius = 1.0
+    sphere = vcl.Sphere([0, 0, 0], 1.0)
     mode = vcl.SPHERIFIED_CUBE
-    sphere_quads = vcl.create_sphere_poly_mesh(sphere_center, sphere_radius, mode, divisions=20)
+    sphere_quads = vcl.create_sphere_poly_mesh(sphere, mode, divisions=20)
     print(f"  Sphere (quads) - Vertices: {sphere_quads.vertex_number()}, Faces: {sphere_quads.face_number()}")
     sphere_quads.set_name("Sphere (PolyMesh)")
 

@@ -30,6 +30,7 @@
 #include "core/matrix.h"
 #include "core/point.h"
 #include "core/principal_curvature.h"
+#include "core/sphere.h"
 #include "core/tex_coord.h"
 #include "core/tex_coord_indexed.h"
 #include "core/texture.h"
@@ -51,6 +52,7 @@ inline void initCore(pybind11::module& m)
     initImage(m);
     initMatrix(m);
     initPrincipalCurvature(m);
+    initSphere(m);
     initTexCoord(m);
     initTexCoordIndexed(m);
     initTexture(m);

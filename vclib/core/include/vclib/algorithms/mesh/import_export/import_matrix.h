@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
 
+#include "import_buffer.h"
+
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
@@ -34,168 +36,15 @@
  * @brief List Import Mesh from Matrix algorithms.
  *
  * They allow to import mesh data from matrices.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
  */
 
 namespace vcl {
 
-namespace detail {
-
-template<MatrixConcept FMatrix>
-std::vector<uint> faceVertIndices(const FMatrix& faces, uint f)
-{
-    std::vector<uint> fVerts;
-
-    uint j = 0;
-    while (j < faces.cols() && faces(f, j) != -1 && faces(f, j) != UINT_NULL)
-        fVerts.push_back(faces(f, j));
-
-    return fVerts;
-}
-
-template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
-void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
-{
-    // The type of the normal of the element
-    using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
-
-    if (normals.cols() != 3)
-        throw WrongSizeException(
-            "The input " + elementEnumString<ELEM_ID>() +
-            " normal matrix must have 3 columns");
-
-    // matrix rows must be equal to the number of elements of the given type
-    if (normals.rows() != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input normal matrix must have the same number of rows "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
-
-    uint i = 0;
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
-        e.normal() = NormalType(normals(i, 0), normals(i, 1), normals(i, 2));
-        i++;
-    }
-}
-
-template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
-void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
-{
-    using MatrixScalar = CMatrix::Scalar;
-
-    if (colors.cols() != 3 && colors.cols() != 4)
-        throw WrongSizeException(
-            "The input " + elementEnumString<ELEM_ID>() +
-            " color matrix must have 3 or 4 columns");
-
-    // matrix rows must be equal to the number of elements of the given type
-    if (colors.rows() != mesh.template number<ELEM_ID>())
-        throw WrongSizeException(
-            "The input color matrix must have the same number of rows "
-            "as the number of " +
-            elementEnumString<ELEM_ID>() + " element in the mesh");
-
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
-
-    uint i = 0;
-    for (auto& e : mesh.template elements<ELEM_ID>()) {
-        // Matrix has colors in range 0-255
-        if constexpr (std::integral<MatrixScalar>) {
-            if (colors.cols() == 3) {
-                e.color() = Color(colors(i, 0), colors(i, 1), colors(i, 2));
-            }
-            else {
-                e.color() = Color(
-                    colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
-            }
-        }
-        else { // Matrix has colors in range 0-1
-            if (colors.cols() == 3) {
-                e.color() = Color(
-                    colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
-            }
-            else {
-                e.color() = Color(
-                    colors(i, 0) * 255,
-                    colors(i, 1) * 255,
-                    colors(i, 2) * 255,
-                    colors(i, 3) * 255);
-            }
-        }
-
-        i++;
-    }
-}
-
-} // namespace detail
-
 /**
- * @brief Creates and returns a new point cloud mesh from the input vertex
- * matrix and the other matrices that are given as arguments.
+ * @brief Creates and returns a new mesh from the input matrices that are given
+ * as arguments.
  *
- * The function accepts several input matrices/vectors, that are used only if
- * their number of rows is different from zero. It tries to fill all the data
- * contained in the non-empty input matrices into the Mesh:
- * - if a Mesh is not able to store same data, the relative input matrix is
- * ignored. For example, if the Mesh has no per Vertex Normals, the function
- * will ignore the input vertex normals matrix, also if that is not empty.
- * - if a Mesh is able to store some data and the relative input matrix is not
- * empty, the data will be stored in the Mesh. If the matrix has not the
- * expected size, an exception is thrown.
- *
- * @note All the disabled optional components will be enabled if their
- * corresponding input matrix is not empty.
- *
- * @throws vcl::WrongSizeException if the sizes of the non-empty input matrices
- * have not the expected sizes.
- *
- * @tparam MeshType: the type of the mesh to be created. It must satisfy the
- * MeshConcept.
- * @tparam VMatrix: the type of the input vertex matrix. It must satisfy the
- * MatrixConcept.
- * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
- * the MatrixConcept.
- *
- * @param[in] vertices: a \#V*3 matrix containing the positions of the
- * vertices of the mesh.
- * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
- * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function will not add vertex normals to the mesh.
- *
- * @return a new point cloud mesh containing the data passed as argument.
- */
-template<
-    MeshConcept   MeshType,
-    MatrixConcept VMatrix,
-    MatrixConcept VNMatrix = Eigen::MatrixX3d>
-MeshType pointCloudMeshFromMatrices(
-    const VMatrix&  vertices,
-    const VNMatrix& vertexNormals = VNMatrix())
-{
-    MeshType mesh;
-
-    importMeshFromMatrices(
-        mesh,
-        vertices,
-        Eigen::MatrixX3i(),
-        Eigen::MatrixX2i(),
-        vertexNormals,
-        Eigen::MatrixX3d());
-
-    return mesh;
-}
-
-/**
- * @brief Creates and returns a new mesh from the input vertex and face (if any)
- * matrices, and the other matrices that are given as arguments.
- *
- * The function accepts several input matrices/vectors, that are used only if
+ * The function accepts several input matrices, that are used only if
  * their number of rows is different from zero. It tries to fill all the data
  * contained in the non-empty input matrices into the Mesh:
  * - if a Mesh is not able to store same data, the relative input matrix is
@@ -204,9 +53,6 @@ MeshType pointCloudMeshFromMatrices(
  * - if a Mesh is able to store some data and the relative input matrix is not
  * empty, the data will be stored in the Mesh. If the matrix has not the
  * expected size, an exception is thrown.
- *
- * @note All the disabled optional components will be enabled if their
- * corresponding input matrix is not empty.
  *
  * @throws vcl::WrongSizeException if the sizes of the non-empty input matrices
  * have not the expected sizes.
@@ -217,50 +63,47 @@ MeshType pointCloudMeshFromMatrices(
  * MatrixConcept.
  * @tparam FMatrix: the type of the input face matrix. It must satisfy the
  * MatrixConcept.
- * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
- * the MatrixConcept.
- * @tparam FNMatrix: the type of the input face normal matrix. It must satisfy
- * the MatrixConcept.
+ * @tparam EMatrix: the type of the input edge matrix. It must satisfy the
+ * MatrixConcept.
  *
  * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
- * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
- * the faces of the mesh. If the number of rows of this matrix is zero, the
- * function will not add faces to the mesh.
- * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
- * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function will not add vertex normals to the mesh.
- * @param[in] faceNormals: a \#F*3 matrix containing the normals of the faces of
- * the mesh. If the number of rows of this matrix is zero, the function will not
- * add face normals to the mesh.
+ * @param[in] faces: a \#F*K matrix containing the indices of the vertices of
+ * the faces of the mesh. If the MeshType has no faces, the function will ignore
+ * this matrix. If the mesh is not a polygonal mesh (e.g. a triangle mesh), K
+ * must be equal to the number of vertices of each face of the mesh (e.g. 3 for
+ * triangle meshes, 4 for quad meshes, etc.). If this condition is not
+ * satisfied, an exception is thrown.
+ * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
+ * the edges of the mesh. If the MeshType has no edges, the function will ignore
+ * this matrix.
  *
  * @return a new mesh containing the data passed as argument.
+ *
+ * @ingroup import_matrix
  */
 template<
     MeshConcept   MeshType,
     MatrixConcept VMatrix,
-    MatrixConcept FMatrix  = Eigen::MatrixX3i,
-    MatrixConcept VNMatrix = Eigen::MatrixX3d,
-    MatrixConcept FNMatrix = Eigen::MatrixX3d>
+    MatrixConcept FMatrix = Eigen::MatrixX3i,
+    MatrixConcept EMatrix = Eigen::MatrixX2i>
 MeshType meshFromMatrices(
-    const VMatrix&  vertices,
-    const FMatrix&  faces         = FMatrix(),
-    const VNMatrix& vertexNormals = VNMatrix(),
-    const FNMatrix& faceNormals   = FNMatrix())
+    const VMatrix& vertices,
+    const FMatrix& faces = FMatrix(),
+    const EMatrix& edges = EMatrix())
 {
     MeshType mesh;
 
-    importMeshFromMatrices(
-        mesh, vertices, faces, Eigen::MatrixX2i(), vertexNormals, faceNormals);
+    meshFromMatrices(mesh, vertices, faces, edges);
 
     return mesh;
 }
 
 /**
- * @brief Sets the given input `mesh` from the input vertex matrix, and the
- * other matrices that are given as arguments.
+ * @brief Sets the given input `mesh` from the input matrices that are given as
+ * arguments.
  *
- * The function accepts several input matrices/vectors, that are used only if
+ * The function accepts several input matrices, that are used only if
  * their number of rows is different from zero. It tries to fill all the data
  * contained in the non-empty input matrices into the Mesh:
  * - if a Mesh is not able to store same data, the relative input matrix is
@@ -277,10 +120,6 @@ MeshType meshFromMatrices(
  * will be ignored. For example, if the Mesh has no faces, the function will
  * ignore the input face matrix, also if that is not empty.
  *
- * @note Only the optional components having their corresponding input matrix
- * not empty will be enabled and filled. All the other optional components will
- * be left disabled.
- *
  * @throws vcl::WrongSizeException if the sizes of the non-empty input matrices
  * have not the expected sizes.
  *
@@ -292,92 +131,72 @@ MeshType meshFromMatrices(
  * MatrixConcept.
  * @tparam EMatrix: the type of the input edge matrix. It must satisfy the
  * MatrixConcept.
- * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
- * the MatrixConcept.
- * @tparam FNMatrix: the type of the input face normal matrix. It must satisfy
- * the MatrixConcept.
  *
- * @param[in] mesh: the mesh on which import all the input data from the
+ * @param[in/out] mesh: the mesh on which import all the input data from the
  * matrices.
  * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
- * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
- * the faces of the mesh. If the number of rows of this matrix is zero, the
- * function will not add faces to the mesh.
+ * @param[in] faces: a \#F*K matrix containing the indices of the vertices of
+ * the faces of the mesh. If the MeshType has no faces, the function will ignore
+ * this matrix. If the mesh is not a polygonal mesh (e.g. a triangle mesh), K
+ * must be equal to the number of vertices of each face of the mesh (e.g. 3 for
+ * triangle meshes, 4 for quad meshes, etc.). If this condition is not
+ * satisfied, an exception is thrown.
  * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
- * the edges of the mesh. If the number of rows of this matrix is zero, the
- * function will not add edges to the mesh.
- * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
- * vertices of the mesh. If the number of rows of this matrix is zero, the
- * function will not add vertex normals to the mesh.
- * @param[in] faceNormals: a \#F*3 matrix containing the normals of the faces of
- * the mesh. If the number of rows of this matrix is zero, the function will not
- * add face normals to the mesh.
+ * the edges of the mesh. If the MeshType has no edges, the function will ignore
+ * this matrix.
+ *
+ * @ingroup import_matrix
  */
 template<
     MeshConcept   MeshType,
     MatrixConcept VMatrix,
-    MatrixConcept FMatrix  = Eigen::MatrixX3i,
-    MatrixConcept EMatrix  = Eigen::MatrixX2i,
-    MatrixConcept VNMatrix = Eigen::MatrixX3d,
-    MatrixConcept FNMatrix = Eigen::MatrixX3d>
-void importMeshFromMatrices(
-    MeshType&       mesh,
-    const VMatrix&  vertices,
-    const FMatrix&  faces         = FMatrix(),
-    const EMatrix&  edges         = EMatrix(),
-    const VNMatrix& vertexNormals = VNMatrix(),
-    const FNMatrix& faceNormals   = FNMatrix())
+    MatrixConcept FMatrix = Eigen::MatrixX3i,
+    MatrixConcept EMatrix = Eigen::MatrixX2i>
+void meshFromMatrices(
+    MeshType&      mesh,
+    const VMatrix& vertices,
+    const FMatrix& faces = FMatrix(),
+    const EMatrix& edges = EMatrix())
 {
     mesh.clear();
     mesh.disableAllOptionalComponents();
 
-    importVerticesFromMatrix(mesh, vertices);
-
-    if constexpr (HasPerVertexNormal<MeshType>) {
-        if (vertexNormals.rows() > 0) {
-            importVertexNormalsFromMatrix(mesh, vertexNormals);
-        }
-    }
+    vertexPositionsFromMatrix(mesh, vertices);
 
     if constexpr (HasFaces<MeshType>) {
         if (faces.rows() > 0)
-            importFacesFromMatrix(mesh, faces);
-
-        if constexpr (HasPerFaceNormal<MeshType>) {
-            if (faceNormals.rows() > 0) {
-                importFaceNormalsFromMatrix(mesh, faceNormals);
-            }
-        }
+            faceIndicesFromMatrix(mesh, faces);
     }
 
     if constexpr (HasEdges<MeshType>) {
         if (edges.rows() > 0)
-            importEdgesFromMatrix(mesh, edges);
+            edgeIndicesFromMatrix(mesh, edges);
     }
 }
 
 /**
- * @brief Sets the vertices of the given input `mesh` from the input vertex
- * matrix.
+ * @brief Sets the vertex positions of the given input `mesh` from the input
+ * vertex matrix.
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
- * container of the mesh and then adds a number of vertices that depends on the
- * number of rows of the input vertex matrix. In this scenario, all the other
- * components of the vertices stored in the mesh before calling this function
- * are lost.
+ * clears the vertex container of the mesh and then adds a number of vertices
+ * that depends on the number of rows of the input vertex matrix. In this
+ * scenario, all the old vertices with their components stored in the mesh
+ * before calling this function are lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
  * the number of rows of the input vertex matrix is equal to the number of
  * vertices of the mesh. If this is not the case, an exception is thrown.
  * Then, the function sets the positions of the vertices of the mesh from the
- * input vertex matrix. In this scenario, all the other components of the
- * vertices stored in the mesh before calling this function are preserved.
+ * input vertex matrix. In this scenario, all the components (except the
+ * positions) of the vertices stored in the mesh before calling this function
+ * are preserved.
  *
- * All the other containers of the mesh and the optional components of vertices
- * are left as they are. Pointers to vertices stored in the mesh are still
- * valid (if the number of vertices and their index in the container is not
- * changed).
+ * All the other containers of the mesh are left as they are. Pointers to
+ * vertices stored in the other containers of the mesh are still valid only if
+ * the number of vertices is not changed (same allocation policy of the
+ * std::vector).
  *
  * @throws vcl::WrongSizeException if the sizes of the input matrix are not
  * valid (e.g. columns != 3 or rows != mesh.vertexNumber()).
@@ -387,126 +206,130 @@ void importMeshFromMatrices(
  * @tparam VMatrix: the type of the input vertex matrix. It must satisfy the
  * MatrixConcept.
  *
- * @param[in] mesh: the mesh on which import the input vertices.
+ * @param[in/out] mesh: the mesh on which import the input vertices.
  * @param[in] vertices: a \#V*3 matrix containing the positions of the
  * vertices of the mesh.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the vertices of the mesh before adding the vertices from the input matrix.
  * If `false`, the function sets the positions in the input matrix to the
  * vertices of the mesh, leaving all the other components untouched.
+ *
+ * @ingroup import_matrix
  */
 template<MeshConcept MeshType, MatrixConcept VMatrix>
-void importVerticesFromMatrix(
+void vertexPositionsFromMatrix(
     MeshType&      mesh,
     const VMatrix& vertices,
     bool           clearBeforeSet = true)
 {
-    using PositionType = MeshType::VertexType::PositionType;
-
     if (vertices.cols() != 3)
         throw WrongSizeException("The input vertex matrix must have 3 columns");
 
-    if (clearBeforeSet) {
-        mesh.clearVertices();
-        mesh.resizeVertices(vertices.rows());
-    }
-    else {
-        if (vertices.rows() != mesh.vertexNumber()) {
-            throw WrongSizeException(
-                "The input vertex matrix has a different number of rows than "
-                "the number of vertices of the mesh");
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<VMatrix>();
 
-    uint i = 0;
-    for (auto& v : mesh.vertices()) {
-        v.position() =
-            PositionType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
-        i++;
-    }
+    vertexPositionsFromBuffer(
+        mesh, vertices.data(), vertices.rows(), clearBeforeSet, stg);
 }
 
+/**
+ * @brief Sets the face indices of the given input `mesh` from the input face
+ * matrix.
+ *
+ * If the MeshType is not a polygonal mesh (e.g. a triangle mesh), the number of
+ * columns of the input face matrix must be equal to the number of vertices of
+ * each face of the mesh (e.g. 3 for triangle meshes, 4 for quad meshes, etc.).
+ * If this condition is not satisfied, an exception is thrown.
+ *
+ * If the MeshType is a polygonal mesh, the size of each polygonal face is
+ * determined by counting the number of valid vertex indices in each row of the
+ * input face matrix. Valid vertex indices are non-negative and not equal to
+ * UINT_NULL.
+ *
+ * If the argument `clearBeforeSet` is set to `true` (default), the function
+ * clears the face container of the mesh and then adds a number of faces
+ * that depends on the number of rows of the input face matrix. In this
+ * scenario, all the old faces with their components stored in the mesh
+ * before calling this function are lost.
+ *
+ * If the argument `clearBeforeSet` is set to `false`, the function checks that
+ * the number of rows of the input face matrix is equal to the number of
+ * faces of the mesh. If this is not the case, an exception is thrown.
+ * Then, the function sets the indices of the faces of the mesh from the
+ * input face matrix. In this scenario, all the components (except the
+ * indices) of the faces stored in the mesh before calling this function
+ * are preserved.
+ *
+ * All the other containers of the mesh are left as they are. Pointers to faces
+ * stored in the other containers of the mesh are still valid only if the number
+ * of faces is not changed (same allocation policy of the std::vector).
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam FMatrix: the type of the input face matrix. It must satisfy the
+ * MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input faces.
+ * @param[in] faces: a \#F*K matrix containing the indices of the vertices of
+ * the faces of the mesh. If the mesh is not a polygonal mesh (e.g. a
+ * triangle mesh), K must be equal to the number of vertices of each face of
+ * the mesh (e.g. 3 for triangle meshes, 4 for quad meshes, etc.). If this
+ * condition is not satisfied, an exception is thrown.
+ * @param[in] clearBeforeSet: if `true`, the function clears the container of
+ * the faces of the mesh before adding the faces from the input matrix.
+ * If `false`, the function sets the indices from the input matrix to the
+ * faces of the mesh, leaving all the other components untouched.
+ *
+ * @ingroup import_matrix
+ */
 template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
-void importFacesFromMatrix(
+void faceIndicesFromMatrix(
     MeshType&      mesh,
     const FMatrix& faces,
     bool           clearBeforeSet = true)
 {
-    if (clearBeforeSet) {
-        mesh.clearFaces();
-        mesh.resizeFaces(faces.rows());
-    }
-    else {
-        if (faces.rows() != mesh.faceNumber()) {
-            throw WrongSizeException(
-                "The input face matrix has a different number of rows "
-                "than the number of faces of the mesh.");
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<FMatrix>();
 
-    if constexpr (HasPolygons<MeshType>) {
-        uint i = 0;
-        for (auto& f : mesh.faces()) {
-            uint vertexNumber = 0;
-
-            // count the number of vertices of the face
-            while (vertexNumber < faces.cols() &&
-                   faces(i, vertexNumber) != -1 &&
-                   faces(i, vertexNumber) != UINT_NULL)
-                vertexNumber++;
-
-            f.resizeVertices(vertexNumber);
-
-            for (uint j = 0; j < vertexNumber; ++j)
-                f.setVertex(j, faces(i, j));
-            ++i;
-        }
-    }
-    else { // the vertex number of mesh faces is fixed
-        using FaceType = MeshType::FaceType;
-
-        constexpr int VN = FaceType::VERTEX_NUMBER;
-        if (faces.cols() == VN) { // faces of matrix and mesh have same size
-            uint i = 0;
-            for (auto& f : mesh.faces()) {
-                for (uint j = 0; j < VN; ++j)
-                    f.setVertex(j, faces(i, j));
-                ++i;
-            }
-        }
-        else { // faces of matrix and mesh have different sizes
-            // matrix cols is higher than 3 (polygons), but we have a triangle
-            // mesh and we can triangulate the faces
-            if constexpr (VN == 3) {
-                if (!clearBeforeSet) {
-                    throw WrongSizeException(
-                        "Cannot import the input face matrix into the mesh "
-                        "without clearing the face container first "
-                        "(need to perform a triangulation to import polygons "
-                        "in a triangle mesh, and this operation that does not "
-                        "guarantee a predefined number of faces is required).");
-                }
-                mesh.reserveFaces(faces.rows());
-                for (uint i = 0; i < faces.rows(); ++i) {
-                    std::vector<uint> fVertIndices =
-                        detail::faceVertIndices(faces, i);
-
-                    addTriangleFacesFromPolygon(mesh, fVertIndices);
-                }
-            }
-            else {
-                // no triangulation available because VN != 3, we don't
-                // know how to import the faces and we throw an exception
-                throw WrongSizeException(
-                    "The input face matrix has a different number of columns "
-                    "than the number of vertices of the mesh faces.");
-            }
-        }
-    }
+    faceIndicesFromBuffer(
+        mesh, faces.data(), faces.rows(), faces.cols(), clearBeforeSet, stg);
 }
 
+/**
+ * @brief Sets the edge indices of the given input `mesh` from the input edge
+ * matrix.
+ *
+ * If the argument `clearBeforeSet` is set to `true` (default), the function
+ * clears the edge container of the mesh and then adds a number of edges
+ * that depends on the number of rows of the input edge matrix. In this
+ * scenario, all the old edges with their components stored in the mesh
+ * before calling this function are lost.
+ *
+ * If the argument `clearBeforeSet` is set to `false`, the function checks that
+ * the number of rows of the input edge matrix is equal to the number of
+ * edges of the mesh. If this is not the case, an exception is thrown.
+ * Then, the function sets the indices of the edges of the mesh from the
+ * input edge matrix. In this scenario, all the components (except the
+ * indices) of the edges stored in the mesh before calling this function
+ * are preserved.
+ *
+ * All the other containers of the mesh are left as they are. Pointers to edges
+ * stored in the other containers of the mesh are still valid only if the number
+ * of edges is not changed (same allocation policy of the std::vector).
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam EMatrix: the type of the input edge matrix. It must satisfy the
+ * MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input edges.
+ * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
+ * the edges of the mesh.
+ * @param[in] clearBeforeSet: if `true`, the function clears the container of
+ * the edges of the mesh before adding the edges from the input matrix.
+ * If `false`, the function sets the indices in the input matrix to the
+ * edges of the mesh, leaving all the other components untouched.
+ *
+ * @ingroup import_matrix
+ */
 template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
-void importEdgesFromMatrix(
+void edgeIndicesFromMatrix(
     MeshType&      mesh,
     const EMatrix& edges,
     bool           clearBeforeSet = true)
@@ -514,56 +337,785 @@ void importEdgesFromMatrix(
     if (edges.cols() != 2)
         throw WrongSizeException("The input edge matrix must have 2 columns");
 
-    if (clearBeforeSet) {
-        mesh.clearEdges();
-        mesh.resizeEdges(edges.rows());
-    }
-    else {
-        if (edges.rows() != mesh.edgeNumber()) {
-            throw WrongSizeException(
-                "The input edge matrix has a different number of rows than "
-                "the number of edges of the mesh");
-        }
-    }
+    MatrixStorageType stg = matrixStorageType<EMatrix>();
 
-    uint i = 0;
-    for (auto& e : mesh.edges()) {
-        e.setVertex(0, edges(i, 0));
-        e.setVertex(1, edges(i, 1));
-        i++;
+    edgeIndicesFromBuffer(
+        mesh, edges.data(), edges.rows(), clearBeforeSet, stg);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` selection of the given input
+ * `mesh` from the input selection range (that could be anything that satisfies
+ * the Range concept: e.g. std::vector<bool>, std::array<bool, N>,
+ * Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input element selection.
+ * @param[in] selection: the input element selection range.
+ *
+ * @ingroup import_matrix
+ */
+template<uint ELEM_ID, MeshConcept MeshType, Range R>
+void elementSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    if (std::ranges::size(selection) != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input selection range must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    auto s = selection.begin();
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.selected() = *s;
+        ++s;
     }
 }
 
+/**
+ * @brief Sets the vertex selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex selection.
+ * @param[in] selection: the input vertex selection range.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, Range R>
+void vertexSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    elementSelectionFromRange<ElemId::VERTEX>(mesh, selection);
+}
+
+/**
+ * @brief Sets the face selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face selection.
+ * @param[in] selection: the input face selection range.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, Range R>
+void faceSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    elementSelectionFromRange<ElemId::FACE>(mesh, selection);
+}
+
+/**
+ * @brief Sets the edge selection of the given input `mesh` from the input
+ * selection range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<bool>, std::array<bool, N>, Eigen::VectorXi, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input edge selection.
+ * @param[in] selection: the input edge selection range.
+ *
+ * @ingroup import_matrix
+ */
+template<EdgeMeshConcept MeshType, Range R>
+void edgeSelectionFromRange(MeshType& mesh, R&& selection)
+{
+    elementSelectionFromRange<ElemId::EDGE>(mesh, selection);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` normals of the given input
+ * `mesh` from the input normals matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam NMatrix: the type of the input normals matrix. It must satisfy the
+ * MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input element normals.
+ * @param[in] normals: a \#E*3 matrix containing the normals of the elements
+ * of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
+void elementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
+{
+    MatrixStorageType stg = matrixStorageType<NMatrix>();
+
+    if (normals.cols() != 3)
+        throw WrongSizeException(
+            "The input " + elementEnumString<ELEM_ID>() +
+            " normal matrix must have 3 columns");
+
+    if (normals.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input normal matrix must have the same number of rows as the "
+            "number of " +
+            elementEnumString<ELEM_ID>() + " elements in the mesh");
+
+    elementNormalsFromBuffer<ELEM_ID>(mesh, normals.data(), stg);
+}
+
+/**
+ * @brief Sets the vertex normals of the given input `mesh` from the input
+ * vertex normals matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam VNMatrix: the type of the input vertex normals matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex normals.
+ * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
+ * vertices of the mesh.
+ *
+ * @ingroup import_matrix
+ */
 template<MeshConcept MeshType, MatrixConcept VNMatrix>
-void importVertexNormalsFromMatrix(
-    MeshType&       mesh,
-    const VNMatrix& vertexNormals)
+void vertexNormalsFromMatrix(MeshType& mesh, const VNMatrix& vertexNormals)
 {
-    detail::importElementNormalsFromMatrix<ElemId::VERTEX>(mesh, vertexNormals);
+    elementNormalsFromMatrix<ElemId::VERTEX>(mesh, vertexNormals);
 }
 
+/**
+ * @brief Sets the face normals of the given input `mesh` from the input
+ * face normals matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of faces
+ * of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam FNMatrix: the type of the input face normals matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input face normals.
+ * @param[in] faceNormals: a \#F*3 matrix containing the normals of the
+ * faces of the mesh.
+ *
+ * @ingroup import_matrix
+ */
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
-void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
+void faceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
-    detail::importElementNormalsFromMatrix<ElemId::FACE>(mesh, faceNormals);
+    elementNormalsFromMatrix<ElemId::FACE>(mesh, faceNormals);
 }
 
+/**
+ * @brief Sets the edge normals of the given input `mesh` from the input
+ * edge normals matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of edges
+ * of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge normal component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam ENMatrix: the type of the input edge normals matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input edge normals.
+ * @param[in] edgeNormals: a \#E*3 matrix containing the normals of the
+ * edges of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<EdgeMeshConcept MeshType, MatrixConcept ENMatrix>
+void edgeNormalsFromMatrix(MeshType& mesh, const ENMatrix& edgeNormals)
+{
+    elementNormalsFromMatrix<ElemId::EDGE>(mesh, edgeNormals);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` colors of the given input
+ * `mesh` from the input colors matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * elements of the mesh, otherwise an exception is thrown.
+ *
+ * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
+ * channel is set to 255 (1.0f).
+ *
+ * The input matrix can have integral or floating point scalar type. If it has
+ * integral scalar type, the color components are expected to be in range
+ * [0, 255]. If it has floating point scalar type, the color components are
+ * expected to be in range [0.0f, 1.0f].
+ *
+ * The function enables the per-element color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam CMatrix: the type of the input colors matrix. It must satisfy the
+ * MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input colors.
+ * @param[in] colors: a \#V*3 or \#V*4 matrix containing the colors of the
+ * elements of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
+void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
+{
+    using MatrixScalar = CMatrix::Scalar;
+
+    Color::Representation repr = std::integral<MatrixScalar> ?
+                                     Color::Representation::INT_0_255 :
+                                     Color::Representation::FLOAT_0_1;
+
+    if (colors.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input colors matrix must have the same number of rows as the "
+            "number of " +
+            elementEnumString<ELEM_ID>() + " elements in the mesh");
+
+    elementColorsFromBuffer<ELEM_ID>(
+        mesh, colors.data(), colors.cols(), matrixStorageType<CMatrix>(), repr);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` colors of the given input
+ * `mesh` from the input color range (that could be anything that satisfies
+ * the Range concept: e.g. std::vector<double>, std::array<double, N>,
+ * Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input element color.
+ * @param[in] colors: the input element color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<uint ELEM_ID, MeshConcept MeshType, Range R>
+void elementColorsFromRange(
+    MeshType&     mesh,
+    R&&           colors,
+    Color::Format colorFormat)
+{
+    if (std::ranges::size(colors) != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input color range must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    auto c = colors.begin();
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.color() = Color(*c, colorFormat);
+        ++c;
+    }
+}
+
+/**
+ * @brief Sets the vertex colors of the given input `mesh` from the input
+ * vertex colors matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
+ * channel is set to 255 (1.0f).
+ *
+ * The input matrix can have integral or floating point scalar type. If it has
+ * integral scalar type, the color components are expected to be in range
+ * [0, 255]. If it has floating point scalar type, the color components are
+ * expected to be in range [0.0f, 1.0f].
+ *
+ * The function enables the per-vertex color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam VCMatrix: the type of the input vertex colors matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex colors.
+ * @param[in] vertexColors: a \#V*3 or \#V*4 matrix containing the colors of the
+ * vertices of the mesh.
+ *
+ * @ingroup import_matrix
+ */
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
-void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
+void vertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 {
-    detail::importElementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
+    elementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
 }
 
+/**
+ * @brief Sets the vertex colors of the given input `mesh` from the input color
+ * range (that could be anything that satisfies the Range concept: e.g.
+ * std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex color.
+ * @param[in] colors: the input vertex color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, Range R>
+void vertexColorsFromRange(
+    MeshType&     mesh,
+    R&&           colors,
+    Color::Format colorFormat)
+{
+    elementColorsFromRange<ElemId::VERTEX>(mesh, colors, colorFormat);
+}
+
+/**
+ * @brief Sets the face colors of the given input `mesh` from the input
+ * face colors matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of faces
+ * of the mesh, otherwise an exception is thrown.
+ *
+ * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
+ * channel is set to 255 (1.0f).
+ *
+ * The input matrix can have integral or floating point scalar type. If it has
+ * integral scalar type, the color components are expected to be in range
+ * [0, 255]. If it has floating point scalar type, the color components are
+ * expected to be in range [0.0f, 1.0f].
+ *
+ * The function enables the per-face color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam FCMatrix: the type of the input face colors matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input face colors.
+ * @param[in] faceColors: a \#F*3 or \#F*4 matrix containing the colors of the
+ * faces of the mesh.
+ *
+ * @ingroup import_matrix
+ */
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
-void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
+void faceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 {
-    detail::importElementColorsFromMatrix<ElemId::FACE>(mesh, faceColors);
+    elementColorsFromMatrix<ElemId::FACE>(mesh, faceColors);
 }
 
-template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
-void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
+/**
+ * @brief Sets the face colors of the given input `mesh` from the input color
+ * range (that could be anything that satisfies the Range concept: e.g.
+ * std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face color.
+ * @param[in] colors: the input face color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, Range R>
+void faceColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
 {
-    detail::importElementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
+    elementColorsFromRange<ElemId::FACE>(mesh, colors, colorFormat);
+}
+
+/**
+ * @brief Sets the edge colors of the given input `mesh` from the input
+ * edge colors matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of edges
+ * of the mesh, otherwise an exception is thrown.
+ *
+ * The input matrix can have 3 or 4 columns. If it has 3 columns, the alpha
+ * channel is set to 255 (1.0f).
+ *
+ * The input matrix can have integral or floating point scalar type. If it has
+ * integral scalar type, the color components are expected to be in range
+ * [0, 255]. If it has floating point scalar type, the color components are
+ * expected to be in range [0.0f, 1.0f].
+ *
+ * The function enables the per-face color component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam ECMatrix: the type of the input edge colors matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input edge colors.
+ * @param[in] edgeColors: a \#E*3 or \#E*4 matrix containing the colors of the
+ * edges of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
+void edgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
+{
+    elementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
+}
+
+/**
+ * @brief Sets the edge colors of the given input `mesh` from the input color
+ * range (that could be anything that satisfies the Range concept: e.g.
+ * std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * Each color of the input range is interpeted as a packed 32-bit unsigned
+ * integer in the given `colorFormat`.
+ *
+ * The number of elements of the input range must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input edge color.
+ * @param[in] colors: the input edge color range.
+ * @param[in] colorFormat: the format used to pack the color in a single 32 bit
+ * value.
+ *
+ * @ingroup import_matrix
+ */
+template<EdgeMeshConcept MeshType, Range R>
+void edgeColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
+{
+    elementColorsFromRange<ElemId::EDGE>(mesh, colors, colorFormat);
+}
+
+/**
+ * @brief Sets the element identified by `ELEM_ID` quality of the given input
+ * `mesh` from the input quality range (that could be anything that satisfies
+ * the Range concept: e.g. std::vector<double>, std::array<double, N>,
+ * Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * ELEM_ID elements of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-element quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input element quality.
+ * @param[in] quality: the input element quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<uint ELEM_ID, MeshConcept MeshType, Range R>
+void elementQualityFromRange(MeshType& mesh, R&& quality)
+{
+    if (std::ranges::size(quality) != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input quality range must have the same number of elements "
+            "as the number of " +
+            elementEnumString<ELEM_ID>() + " element in the mesh");
+
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::QUALITY>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
+
+    auto q = quality.begin();
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.quality() = *q;
+        ++q;
+    }
+}
+
+/**
+ * @brief Sets the vertex quality of the given input `mesh` from the input
+ * quality range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex quality.
+ * @param[in] quality: the input vertex quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, Range R>
+void vertexQualityFromRange(MeshType& mesh, R&& quality)
+{
+    elementQualityFromRange<ElemId::VERTEX>(mesh, quality);
+}
+
+/**
+ * @brief Sets the face quality of the given input `mesh` from the input
+ * quality range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face quality.
+ * @param[in] quality: the input face quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, Range R>
+void faceQualityFromRange(MeshType& mesh, R&& quality)
+{
+    elementQualityFromRange<ElemId::FACE>(mesh, quality);
+}
+
+/**
+ * @brief Sets the edge quality of the given input `mesh` from the input
+ * quality range (that could be anything that satisfies the Range concept:
+ * e.g. std::vector<double>, std::array<double, N>, Eigen::VectorXd, etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * edges of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-edge quality component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * EdgeMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input edge quality.
+ * @param[in] quality: the input edge quality range.
+ *
+ * @ingroup import_matrix
+ */
+template<EdgeMeshConcept MeshType, Range R>
+void edgeQualityFromRange(MeshType& mesh, R&& quality)
+{
+    elementQualityFromRange<ElemId::EDGE>(mesh, quality);
+}
+
+/**
+ * @brief Sets the vertex texcoords of the given input `mesh` from the input
+ * vertex texcoords matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex texcoords component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam VTMatrix: the type of the input vertex texcoords matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input vertex texcoords.
+ * @param[in] vertexTexCoords: a \#V*2 matrix containing the texcoords of the
+ * vertices of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, MatrixConcept VTMatrix>
+void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
+{
+    MatrixStorageType stg = matrixStorageType<VTMatrix>();
+
+    if (vertexTexCoords.cols() != 2)
+        throw WrongSizeException(
+            "The input vertex texcoords matrix must have 2 columns");
+
+    if (vertexTexCoords.rows() != mesh.vertexNumber())
+        throw WrongSizeException(
+            "The input vertex texcoords must have the same number of rows as "
+            "the number of vertices in the mesh");
+
+    vertexTexCoordsFromBuffer(mesh, vertexTexCoords.data(), stg);
+}
+
+/**
+ * @brief Sets the vertex texcoord indices of the given input `mesh` from the
+ * input texcoord indices range (that could be anything that satisfies the Range
+ * concept: e.g. std::vector<uint>, std::array<uint, N>, Eigen::VectorXi,
+ * etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * vertices of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-vertex texcoord component if it is not already
+ * enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * MeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input vertex texcoord
+ * indices.
+ * @param[in] texCoordIndices: the input vertex texcoord indices range.
+ *
+ * @ingroup import_matrix
+ */
+template<MeshConcept MeshType, Range R>
+void vertexTexCoordIndicesFromRange(MeshType& mesh, R&& texCoordIndices)
+{
+    if (std::ranges::size(texCoordIndices) != mesh.vertexNumber())
+        throw WrongSizeException(
+            "The input quality range must have the same number of elements "
+            "as the number of vertices in the mesh");
+
+    enableIfPerVertexTexCoordOptional(mesh);
+    requirePerVertexTexCoord(mesh);
+
+    auto tt = texCoordIndices.begin();
+    for (auto& t : mesh.vertices() | views::texCoords) {
+        t.index() = *tt;
+        ++tt;
+    }
+}
+
+/**
+ * @brief Sets the face wedge texcoords of the given input `mesh` from the input
+ * face wedge texcoords matrix.
+ *
+ * The number of rows of the input matrix must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The number of columns is expected to be equal to 2 * K, where K is the
+ * number of vertices of the largest face of the mesh. If the mesh has fixed
+ * face size (e.g. triangle mesh, quad mesh, etc.), K is equal to the number
+ * of vertices of each face of the mesh.
+ *
+ * The function enables the per-face wedge texcoords component if it is not
+ * already enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam FTMatrix: the type of the input face wedge texcoords matrix. It must
+ * satisfy the MatrixConcept.
+ * @param[in/out] mesh: the mesh on which import the input face wedge texcoords.
+ * @param[in] faceWedgeTexCoords: a \#F*(K*2) matrix containing the wedge
+ * texcoords of the faces of the mesh.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, MatrixConcept FTMatrix>
+void faceWedgeTexCoordsFromMatrix(
+    MeshType&       mesh,
+    const FTMatrix& faceWedgeTexCoords)
+{
+    MatrixStorageType stg = matrixStorageType<FTMatrix>();
+
+    if (faceWedgeTexCoords.rows() != mesh.faceNumber())
+        throw WrongSizeException(
+            "The input face wedge texcoords must have the same number of rows "
+            "as the number of faces in the mesh");
+
+    faceWedgeTexCoordsFromBuffer(
+        mesh, faceWedgeTexCoords.data(), faceWedgeTexCoords.cols() / 2, stg);
+}
+
+/**
+ * @brief Sets the face wedge texcoord indices of the given input `mesh` from
+ * the input texcoord indices range (that could be anything that satisfies the
+ * Range concept: e.g. std::vector<uint>, std::array<uint, N>, Eigen::VectorXi,
+ * etc.).
+ *
+ * The number of elements of the input range must be equal to the number of
+ * faces of the mesh, otherwise an exception is thrown.
+ *
+ * The function enables the per-face wedge texcoord component if it is not
+ * already enabled.
+ *
+ * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam R: the type of the input range. It must satisfy the Range concept.
+ * @param[in/out] mesh: the mesh on which import the input face wedge texcoord
+ * indices.
+ * @param[in] texCoordIndices: the input face wedge texcoord indices range.
+ *
+ * @ingroup import_matrix
+ */
+template<FaceMeshConcept MeshType, Range R>
+void faceWedgeTexCoordIndicesFromRange(MeshType& mesh, R&& texCoordIndices)
+{
+    if (std::ranges::size(texCoordIndices) != mesh.faceNumber())
+        throw WrongSizeException(
+            "The input quality range must have the same number of elements "
+            "as the number of faces in the mesh");
+
+    enableIfPerFaceWedgeTexCoordsOptional(mesh);
+    requirePerFaceWedgeTexCoords(mesh);
+
+    auto tt = texCoordIndices.begin();
+    for (auto& f : mesh.faces()) {
+        f.textureIndex() = *tt;
+        ++tt;
+    }
 }
 
 } // namespace vcl
