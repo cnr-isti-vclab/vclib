@@ -30,6 +30,9 @@
 
 namespace vcl::bind {
 
+template<typename T>
+concept FaceEdgeMeshConcept = FaceMeshConcept<T> && EdgeMeshConcept<T>;
+
 void initImportExportAlgorithms(pybind11::module& m)
 {
     using EigenMatrixX4ui8 = Eigen::Matrix<std::uint8_t, Eigen::Dynamic, 4>;
@@ -125,6 +128,13 @@ void initImportExportAlgorithms(pybind11::module& m)
             "vertex_tex_coord_indices_list",
             [](const MeshType& m) {
                 return vcl::vertexTexCoordIndicesVector<std::vector<uint>>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_adjacent_vertices_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexAdjacentVerticesMatrix<Eigen::MatrixXi>(m);
             },
             "mesh"_a);
 
@@ -301,41 +311,11 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "face_indices_array",
-            [](const MeshType& m) {
-                return vcl::faceIndicesVector<Eigen::VectorXi>(m);
-            },
-            "mesh"_a);
-
-        m.def(
-            "face_indices_list",
-            [](const MeshType& m) {
-                return vcl::faceIndicesVector<std::vector<uint>>(m);
-            },
-            "mesh"_a);
-
-        m.def(
             "face_indices_matrix",
             [](const MeshType& m) {
                 return vcl::faceIndicesMatrix<Eigen::MatrixXi>(m);
             },
             "mesh"_a);
-
-        m.def(
-            "triangulated_face_indices_matrix",
-            [](const MeshType& m) {
-                return vcl::triangulatedFaceIndicesMatrix<Eigen::MatrixXi>(m);
-            },
-            "mesh"_a);
-
-        m.def(
-            "triangulated_face_indices_matrix",
-            [](const MeshType& m, TriPolyIndexBiMap& indexMap) {
-                return vcl::triangulatedFaceIndicesMatrix<Eigen::MatrixX3i>(
-                    m, indexMap);
-            },
-            "mesh"_a,
-            "index_map"_a = TriPolyIndexBiMap());
 
         m.def(
             "face_selection_array",
@@ -412,7 +392,22 @@ void initImportExportAlgorithms(pybind11::module& m)
         m.def(
             "face_wedge_tex_coord_indices_list",
             [](const MeshType& m) {
-                return vcl::faceWedgeTexCoordIndicesVector<std::vector<uint>>(m);
+                return vcl::faceWedgeTexCoordIndicesVector<std::vector<uint>>(
+                    m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "vertex_adjacent_faces_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexAdjacentFacesMatrix<Eigen::MatrixXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "face_adjacent_faces_matrix",
+            [](const MeshType& m) {
+                return vcl::faceAdjacentFacesMatrix<Eigen::MatrixXi>(m);
             },
             "mesh"_a);
 
@@ -609,6 +604,20 @@ void initImportExportAlgorithms(pybind11::module& m)
             },
             "mesh"_a);
 
+        m.def(
+            "vertex_adjacent_edges_matrix",
+            [](const MeshType& m) {
+                return vcl::vertexAdjacentEdgesMatrix<Eigen::MatrixXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "edge_adjacent_edges_matrix",
+            [](const MeshType& m) {
+                return vcl::edgeAdjacentEdgesMatrix<Eigen::MatrixXi>(m);
+            },
+            "mesh"_a);
+
         // import_matrix.h
 
         m.def(
@@ -710,6 +719,25 @@ void initImportExportAlgorithms(pybind11::module& m)
     };
 
     defForAllMeshTypes(m, fEdgeMeshes);
+
+    auto fFaceEdgeMeshes = []<FaceEdgeMeshConcept MeshType>(
+                               pybind11::module& m, MeshType = MeshType()) {
+        m.def(
+            "face_adjacent_edges_matrix",
+            [](const MeshType& m) {
+                return vcl::faceAdjacentEdgesMatrix<Eigen::MatrixXi>(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "edge_adjacent_faces_matrix",
+            [](const MeshType& m) {
+                return vcl::edgeAdjacentFacesMatrix<Eigen::MatrixXi>(m);
+            },
+            "mesh"_a);
+    };
+
+    defForAllMeshTypes(m, fFaceEdgeMeshes);
 }
 
 } // namespace vcl::bind

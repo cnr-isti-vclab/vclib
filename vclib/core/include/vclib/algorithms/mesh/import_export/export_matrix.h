@@ -170,8 +170,9 @@ Vect faceIndicesVector(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#F*max(size(F)) Matrix of integers containing the vertex
- * indices for each face of a Mesh.
+ * @brief Get a \#F*LFS Matrix of integers containing the vertex indices for
+ * each face of a Mesh. LFS is the largest face size of the mesh (this number is
+ * variable only for polygonal meshes).
  *
  * If the mesh is polygonal, the matrix will have a number of rows equal to the
  * greatest polygon of the mesh, and unused values will be set to -1.
@@ -198,7 +199,7 @@ Vect faceIndicesVector(const MeshType& mesh)
  * FaceMeshConcept.
  *
  * @param[in] mesh: input mesh
- * @return \#F*max(size(F)) matrix of vertex indices
+ * @return \#F*LFS matrix of vertex indices
  *
  * @ingroup export_matrix
  */
@@ -1130,6 +1131,862 @@ Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
     faceWedgeTexCoordIndicesToBuffer(mesh, fTCI.data());
 
     return fTCI;
+}
+
+/**
+ * @brief Get a \#V Container of Containers of integers (T) containing the
+ * adjacent vertex indices for each vertex of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::vertexAdjacentVerticesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-vertex AdjacentVertices component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent vertices available.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent vertex indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    MeshConcept MeshType>
+Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
+{
+    requireVertexContainerCompactness(mesh);
+    requirePerVertexAdjacentVertices(mesh);
+
+    Container<Container<T>> vv(mesh.vertexNumber());
+
+    auto vvIt = vv.begin();
+    for (const auto& v : mesh.vertices()) {
+        auto& vec = *vvIt;
+
+        vec.resize(v.adjVerticesNumber());
+        auto vecIt = vec.begin();
+        for (const auto* ve : v.adjVertices()) {
+            uint idx = ve ? ve->index() : UINT_NULL;
+            *vecIt   = T(idx);
+            ++vecIt;
+        }
+
+        ++vvIt;
+    }
+
+    return vv;
+}
+
+/**
+ * @brief Get a \#V*LVA Matrix of integers containing the adjacent vertex
+ * indices for each vertex of a Mesh. LVA is the largest vertex adjacency size
+ * of the mesh. The unused values will be set to -1 (@ref vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi VA =
+ *     vcl::vertexAdjacentVerticesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent vertices available.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * MeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V*LVA matrix of adjacent vertex indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
+{
+    uint lva = vcl::largestPerVertexAdjacentVerticesNumber(mesh);
+
+    Matrix vAVM(mesh.vertexNumber(), lva);
+
+    MatrixStorageType stg = matrixStorageType<Matrix>();
+
+    vertexAdjacentVerticesToBuffer(mesh, vAVM.data(), lva, stg);
+
+    return vAVM;
+}
+
+/**
+ * @brief Get a \#E Container of Containers of integers (T) containing the
+ * adjacent face indices for each ELEM_ID element of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::elementAdjacentFacesVectors<
+ *         ElemID::VERTEX, std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-element AdjacentFaces component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element ELEM_ID indices of the mesh. This scenario is
+ * possible when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the ELEM_ID element container before calling this
+ * function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    uint ELEM_ID,
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    FaceMeshConcept MeshType>
+Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
+{
+    requireFaceContainerCompactness(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
+
+    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+
+    auto vvIt = vv.begin();
+    for (const auto& v : mesh.template elements<ELEM_ID>()) {
+        auto& vec = *vvIt;
+
+        vec.resize(v.adjFacesNumber());
+        auto vecIt = vec.begin();
+        for (const auto* fe : v.adjFaces()) {
+            uint idx = fe ? fe->index() : UINT_NULL;
+            *vecIt   = T(idx);
+            ++vecIt;
+        }
+
+        ++vvIt;
+    }
+
+    return vv;
+}
+
+/**
+ * @brief Get a \#E*LFA Matrix of integers containing the adjacent face
+ * indices for each ELEM_ID element of a Mesh. LFA is the largest face
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi FA =
+ *     vcl::elementAdjacentFacesMatrix<ElemId::VERTEX, Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element ELEM_ID indices of the mesh. This scenario is
+ * possible when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the ELEM_ID element container before calling this
+ * function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E*LFA matrix of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<uint ELEM_ID, MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
+{
+    uint lfa = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(mesh);
+
+    Matrix eAFM(mesh.template number<ELEM_ID>(), lfa);
+
+    MatrixStorageType stg = matrixStorageType<Matrix>();
+
+    elementAdjacentFacesToBuffer<ELEM_ID>(mesh, eAFM.data(), lfa, stg);
+
+    return eAFM;
+}
+
+/**
+ * @brief Get a \#V Container of Containers of integers (T) containing the
+ * adjacent face indices for each vertex of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::vertexAdjacentFacesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-vertex AdjacentFaces component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    FaceMeshConcept MeshType>
+Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)
+{
+    return elementAdjacentFacesVectors<ElemId::VERTEX, Container, T>(mesh);
+}
+
+/**
+ * @brief Get a \#V*LFA Matrix of integers containing the adjacent face
+ * indices for each vertex of a Mesh. LFA is the largest face
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi FA =
+ *     vcl::vertexAdjacentFacesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V*LFA matrix of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix vertexAdjacentFacesMatrix(const MeshType& mesh)
+{
+    return elementAdjacentFacesMatrix<ElemId::VERTEX, Matrix>(mesh);
+}
+
+/**
+ * @brief Get a \#F Container of Containers of integers (T) containing the
+ * adjacent face indices for each face of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::faceAdjacentFacesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-face AdjacentFaces component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * adjacent faces available.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    FaceMeshConcept MeshType>
+Container<Container<T>> faceAdjacentFacesVectors(const MeshType& mesh)
+{
+    return elementAdjacentFacesVectors<ElemId::FACE, Container, T>(mesh);
+}
+
+/**
+ * @brief Get a \#F*LFA Matrix of integers containing the adjacent face
+ * indices for each face of a Mesh. LFA is the largest face
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi FA =
+ *     vcl::faceAdjacentFacesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * adjacent faces available.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#F*LFA matrix of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceAdjacentFacesMatrix(const MeshType& mesh)
+{
+    return elementAdjacentFacesMatrix<ElemId::FACE, Matrix>(mesh);
+}
+
+/**
+ * @brief Get a \#E Container of Containers of integers (T) containing the
+ * adjacent face indices for each edge of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::edgeAdjacentFacesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-edge AdjacentFaces component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept and EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    FaceMeshConcept MeshType>
+Container<Container<T>> edgeAdjacentFacesVectors(const MeshType& mesh)
+    requires EdgeMeshConcept<MeshType>
+{
+    return elementAdjacentFacesVectors<ElemId::EDGE, Container, T>(mesh);
+}
+
+/**
+ * @brief Get a \#E*LFA Matrix of integers containing the adjacent face
+ * indices for each edge of a Mesh. LFA is the largest face
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi FA =
+ *     vcl::edgeAdjacentFacesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the face container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * adjacent faces available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept and EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E*LFA matrix of adjacent face indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix edgeAdjacentFacesMatrix(const MeshType& mesh)
+    requires EdgeMeshConcept<MeshType>
+{
+    return elementAdjacentFacesMatrix<ElemId::EDGE, Matrix>(mesh);
+}
+
+/**
+ * @brief Get a \#E Container of Containers of integers (T) containing the
+ * adjacent edge indices for each ELEM_ID element of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::elementAdjacentEdgesVectors<
+ *         ElemID::VERTEX, std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-element AdjacentEdges component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent edges available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element ELEM_ID indices of the mesh. This scenario is
+ * possible when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the ELEM_ID element container before calling this
+ * function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    uint ELEM_ID,
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    EdgeMeshConcept MeshType>
+Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
+{
+    requireEdgeContainerCompactness(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
+
+    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+
+    auto vvIt = vv.begin();
+    for (const auto& v : mesh.template elements<ELEM_ID>()) {
+        auto& vec = *vvIt;
+
+        vec.resize(v.adjEdgesNumber());
+        auto vecIt = vec.begin();
+        for (const auto* fe : v.adjEdges()) {
+            uint idx = fe ? fe->index() : UINT_NULL;
+            *vecIt   = T(idx);
+            ++vecIt;
+        }
+
+        ++vvIt;
+    }
+
+    return vv;
+}
+
+/**
+ * @brief Get a \#E*LEA Matrix of integers containing the adjacent edge
+ * indices for each ELEM_ID element of a Mesh. LEA is the largest edge
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi EA =
+ *     vcl::elementAdjacentEdgesMatrix<ElemId::VERTEX, Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * adjacent edges available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element ELEM_ID indices of the mesh. This scenario is
+ * possible when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the ELEM_ID element container before calling this
+ * function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E*LEA matrix of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<uint ELEM_ID, MatrixConcept Matrix, EdgeMeshConcept MeshType>
+Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
+{
+    uint lea = vcl::largestPerElementAdjacentEdgesNumber<ELEM_ID>(mesh);
+
+    Matrix eAEM(mesh.template number<ELEM_ID>(), lea);
+
+    MatrixStorageType stg = matrixStorageType<Matrix>();
+
+    elementAdjacentEdgesToBuffer<ELEM_ID>(mesh, eAEM.data(), lea, stg);
+
+    return eAEM;
+}
+
+/**
+ * @brief Get a \#V Container of Containers of integers (T) containing the
+ * adjacent edge indices for each vertex of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::vertexAdjacentEdgesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-vertex AdjacentEdges component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent edges available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    EdgeMeshConcept MeshType>
+Container<Container<T>> vertexAdjacentEdgesVectors(const MeshType& mesh)
+{
+    return elementAdjacentEdgesVectors<ElemId::VERTEX, Container, T>(mesh);
+}
+
+/**
+ * @brief Get a \#V*LEA Matrix of integers containing the adjacent edge
+ * indices for each vertex of a Mesh. LEA is the largest edge
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi EA =
+ *     vcl::vertexAdjacentEdgesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * adjacent edges available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#V*LEA matrix of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
+Matrix vertexAdjacentEdgesMatrix(const MeshType& mesh)
+{
+    return elementAdjacentEdgesMatrix<ElemId::VERTEX, Matrix>(mesh);
+}
+
+/**
+ * @brief Get a \#F Container of Containers of integers (T) containing the
+ * adjacent edge indices for each face of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::faceAdjacentEdgesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-face AdjacentEdges component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * adjacent edges available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept and EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    EdgeMeshConcept MeshType>
+Container<Container<T>> faceAdjacentEdgesVectors(const MeshType& mesh)
+    requires FaceMeshConcept<MeshType>
+{
+    return elementAdjacentEdgesVectors<ElemId::FACE, Container, T>(mesh);
+}
+
+/**
+ * @brief Get a \#F*LEA Matrix of integers containing the adjacent edge
+ * indices for each face of a Mesh. LEA is the largest edge
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi EA =
+ *     vcl::faceAdjacentEdgesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * adjacent edges available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept and EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#F*LEA matrix of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
+Matrix faceAdjacentEdgesMatrix(const MeshType& mesh)
+    requires FaceMeshConcept<MeshType>
+{
+    return elementAdjacentEdgesMatrix<ElemId::FACE, Matrix>(mesh);
+}
+
+/**
+ * @brief Get a \#E Container of Containers of integers (T) containing the
+ * adjacent edge indices for each edge of a Mesh.
+ *
+ * This function works with every Container type that is iterable and has a
+ * resize member function.
+ *
+ * Usage example with std::vector:
+ *
+ * @code{.cpp}
+ * std::vector<std::vector<vcl::uint>> =
+ *     vcl::edgeAdjacentEdgesVectors<std::vector, vcl::uint>(myMesh);
+ * @endif
+ *
+ * @note The per-edge AdjacentEdges component must be computed before
+ * calling this function.
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * adjacent edges available.
+ *
+ * @tparam Container: type of the container to be returned.
+ * @tparam T: type of the integers to be stored in the containers.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return Container<Container<T>> of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<
+    template<typename, typename...>
+    typename Container,
+    typename T,
+    EdgeMeshConcept MeshType>
+Container<Container<T>> edgeAdjacentEdgesVectors(const MeshType& mesh)
+{
+    return elementAdjacentEdgesVectors<ElemId::EDGE, Container, T>(mesh);
+}
+
+/**
+ * @brief Get a \#E*LEA Matrix of integers containing the adjacent edge
+ * indices for each edge of a Mesh. LEA is the largest edge
+ * adjacency size of the mesh. The unused values will be set to -1 (@ref
+ * vcl::UINT_NULL).
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi EA =
+ *     vcl::edgeAdjacentEdgesMatrix<Eigen::MatrixXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the edge container is not
+ * compact.
+ * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * adjacent edges available.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return \#E*LEA matrix of adjacent edge indices
+ *
+ * @ingroup export_matrix
+ */
+template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
+Matrix edgeAdjacentEdgesMatrix(const MeshType& mesh)
+{
+    return elementAdjacentEdgesMatrix<ElemId::EDGE, Matrix>(mesh);
 }
 
 } // namespace vcl
