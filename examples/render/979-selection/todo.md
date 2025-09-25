@@ -1,5 +1,5 @@
 ## TODO
-- Face selection (Possibly by just using the vertex selection buffer?) (Selecting faces should also select vertices; but not the other way around)
+- Face selection (Requires a separate buffer) (Selecting faces should also select vertices; but not the other way around)
 - Edge selection (This may not be possible yet because @bigmat is still working on a proper edge implementation)
 - Maybe change code so that the selection box uniform is already in NDC space?
 - Non penetrating selection, possible ways:
