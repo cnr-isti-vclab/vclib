@@ -1,8 +1,6 @@
 ## TODO
-- Face selection (Possibly by just using the vertex selection buffer?)
+- Face selection (Possibly by just using the vertex selection buffer?) (Selecting faces should also select vertices; but not the other way around)
 - Edge selection (This may not be possible yet because @bigmat is still working on a proper edge implementation)
-- Figure out a proper implementation location in the c++ code (Sort of found, need explanations on where to put the Uniforms still)
-- Actual way to "start selecting" (Found, look at message on Telegram)
 - Maybe change code so that the selection box uniform is already in NDC space?
 - Non penetrating selection, possible ways:
     1. Depth buffer interpolation (AWFUL, DO NOT DO THIS)
