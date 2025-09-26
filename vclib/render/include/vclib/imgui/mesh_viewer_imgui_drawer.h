@@ -690,6 +690,22 @@ private:
             ImGuiColorEditFlags_NoInputs);
         ImGui::EndDisabled();
 
+        // edge size
+        ImGui::Text("Size:");
+        // set the width of the window minus the width of the label
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(-10);
+        ImGui::SliderFloat(
+            "##EdgeSize",
+            [&] {
+                return settings.edgesWidth();
+            },
+            [&](float v) {
+                settings.setEdgesWidth(v);
+            },
+            1.0f,
+            32.0f);
+
         ImGui::EndDisabled();
     }
 
