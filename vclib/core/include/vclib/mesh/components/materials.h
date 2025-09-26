@@ -73,7 +73,7 @@ public:
     /**
      * @brief Returns the number of materials of the mesh.
      */
-    uint materialNumber() const { return mats().size(); }
+    uint materialsNumber() const { return mats().size(); }
 
     /**
      * @brief Returns the mesh base path.

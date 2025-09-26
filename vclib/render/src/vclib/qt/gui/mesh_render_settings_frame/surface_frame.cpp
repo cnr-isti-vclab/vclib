@@ -147,6 +147,21 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
+    item = model->item(SC_VERT_MAT);
+    if (mMRS.canSurface(COLOR_VERTEX_MATERIAL)) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+    // TODO
+    item = model->item(SC_WEDG_MAT);
+    // if (mMRS.canSurface(COLOR_WEDGE_MATERIAL)) {
+    //     item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    // }
+    // else {
+         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    // }
 
     if (mMRS.isSurface(COLOR_VERTEX))
         mUI->colorComboBox->setCurrentIndex(SC_VERT);
@@ -158,6 +173,10 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
         mUI->colorComboBox->setCurrentIndex(SC_VERT_TEX);
     if (mMRS.isSurface(COLOR_WEDGE_TEX))
         mUI->colorComboBox->setCurrentIndex(SC_WEDG_TEX);
+    if (mMRS.isSurface(COLOR_VERTEX_MATERIAL))
+        mUI->colorComboBox->setCurrentIndex(SC_VERT_MAT);
+    if (mMRS.isSurface(COLOR_WEDGE_MATERIAL))
+        mUI->colorComboBox->setCurrentIndex(SC_WEDG_MAT);
     if (mMRS.isSurface(COLOR_USER))
         mUI->colorComboBox->setCurrentIndex(SC_USER);
     mUI->userColorFrame->setEnabled(mMRS.isSurface(COLOR_USER));
@@ -204,6 +223,8 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
     case SC_MESH: mMRS.setSurface(COLOR_MESH); break;
     case SC_VERT_TEX: mMRS.setSurface(COLOR_VERTEX_TEX); break;
     case SC_WEDG_TEX: mMRS.setSurface(COLOR_WEDGE_TEX); break;
+    case SC_VERT_MAT: mMRS.setSurface(COLOR_VERTEX_MATERIAL); break;
+    case SC_WEDG_MAT: mMRS.setSurface(COLOR_WEDGE_MATERIAL); break;
     case SC_USER: mMRS.setSurface(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == SC_USER);
