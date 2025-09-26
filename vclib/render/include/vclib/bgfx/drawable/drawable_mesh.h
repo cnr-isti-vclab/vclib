@@ -84,7 +84,7 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
-        mMRB.update(*this);
+        updateBuffers();
     }
 
     DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh) { swap(drawableMesh); }
