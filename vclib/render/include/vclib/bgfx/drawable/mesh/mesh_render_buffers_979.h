@@ -149,6 +149,7 @@ public:
         swap(
             mVertexSelectionWorkgroupSize, other.mVertexSelectionWorkgroupSize);
         swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
+        swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
     }
 
     friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b)
@@ -201,60 +202,28 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    // TODO: submit both vertex selection and face selection of the corresponding type when doing
-    // face selection
+    // TODO: submit both vertex selection and face selection of the
+    // corresponding type when doing face selection
     void calculateSelection(
         const bgfx::ViewId viewId,
         SelectionBox       box,
         SelectionMode      mode) const
     {
-        // If one of the box's point is not set and we are not in one of the atomic modes
-        // (which ignore the box entirely) we return
+        // If one of the box's point is not set and we are not in one of the
+        // atomic modes (which ignore the box entirely) we return
         if (box.anyNull() && !mode.isAtomicMode()) {
             return;
         }
 
         auto&               pm = Context::instance().programManager();
-        bgfx::ProgramHandle selectionProgram;
-        switch (SelectionMode::Enum(mode)) {
-        case SelectionMode::VERTEX_REGULAR:
-            selectionProgram =
-                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
-            break;
-        case SelectionMode::VERTEX_ADD:
-            selectionProgram =
-                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ADD>();
-            break;
-        case SelectionMode::VERTEX_SUBTRACT:
-            selectionProgram = pm.getComputeProgram<
-                ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
-            break;
-        case SelectionMode::VERTEX_ALL:
-            selectionProgram =
-                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ALL>();
-            break;
-        case SelectionMode::VERTEX_NONE:
-            selectionProgram =
-                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
-            break;
-        case SelectionMode::VERTEX_INVERT:
-            selectionProgram =
-                pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
-            break;
-        case SelectionMode::FACE_REGULAR:
-            selectionProgram =
-                pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
-            break;
-        default: return;
-        }
+        bgfx::ProgramHandle selectionProgram =
+            getComputeProgramFromSelectionMode(pm, mode);
 
         // If one of them does not have a value then we are clearly in an atomic
         // mode and the values inside are arbitrary
         SelectionBox minMaxBox = box.toMinAndMax();
         Point2d      minPt     = minMaxBox.get1().value_or(Point2d(0.0, 0.0));
         Point2d      maxPt     = minMaxBox.get2().value_or(Point2d(0.0, 0.0));
-        mVertexPositionsBuffer.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
 
         float temp[] = {
@@ -267,21 +236,15 @@ public:
         std::array<float, 4> temp2;
 
         if (mode.isVertexSelection()) {
+            mVertexPositionsBuffer.bindCompute(
+                VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
             temp2 = {
                 vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[0]),
                 vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[1]),
                 vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[2]),
                 vcl::Uniform::uintBitsToFloat(Base::numVerts())};
-        }
-        if (mode.isFaceSelection()) {
-            temp2 = {
-                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
-                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
-                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
-                vcl::Uniform::uintBitsToFloat(Base::numVerts())};
-        }
-        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind((void*) temp2.data());
-        if (mode.isVertexSelection()) {
+            mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
+                (void*) temp2.data());
             bgfx::dispatch(
                 viewId,
                 selectionProgram,
@@ -289,13 +252,35 @@ public:
                 mVertexSelectionWorkgroupSize[1],
                 mVertexSelectionWorkgroupSize[2]);
         }
+
+        // The face selection program calculates which faces(triangles) are
+        // selected. Since it uses the vertex selection buffer to do so, it
+        // requires a vertex selection beforehand. The way the vertex selection
+        // buffer is interpreted depends exclusively on the Face Selection
+        // Program. After calling the face selection program, the vertex
+        // selection buffer is zeroed
         if (mode.isFaceSelection()) {
+            if (!mSelectedFacesBuffer.has_value()) {
+                return;
+            }
+            calculateSelection(viewId, box, SelectionMode::VERTEX_REGULAR);
+            temp2 = {
+                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
+                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
+                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
+                vcl::Uniform::uintBitsToFloat(Base::numTris() * 3)};
+            mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
+            mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite),
+                mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+            mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
+                (void*) temp2.data());
             bgfx::dispatch(
                 viewId,
                 selectionProgram,
                 mFaceSelectionWorkgroupSize[0],
                 mFaceSelectionWorkgroupSize[1],
                 mFaceSelectionWorkgroupSize[2]);
+            calculateSelection(viewId, box, SelectionMode::VERTEX_NONE);
         }
     }
 
@@ -354,6 +339,33 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
+    bgfx::ProgramHandle getComputeProgramFromSelectionMode(
+        ProgramManager& pm,
+        SelectionMode   mode) const
+    {
+        switch (SelectionMode::Enum(mode)) {
+        case SelectionMode::VERTEX_REGULAR:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
+        case SelectionMode::VERTEX_ADD:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ADD>();
+        case SelectionMode::VERTEX_SUBTRACT:
+            return pm
+                .getComputeProgram<ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
+        case SelectionMode::VERTEX_ALL:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ALL>();
+        case SelectionMode::VERTEX_NONE:
+            return pm
+                .getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
+        case SelectionMode::VERTEX_INVERT:
+            return pm
+                .getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
+        case SelectionMode::FACE_REGULAR:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
+        default:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
+        }
+    }
+
     // Possibly replace with an algorithm (maybe a compute shader) that
     // calculates the closest shape to a cube for the three dimensions (to
     // reduce the number of eccess computations), since currently if there are
@@ -378,22 +390,23 @@ private:
 
     void calculateFaceSelectionWorkgroupSize()
     {
-        if constexpr (MeshType::has_faces) {
-            mFaceSelectionWorkgroupSize[0] =
-                std::min(Base::numFaces(), MAX_COMPUTE_WORKGROUP_SIZE);
-            mFaceSelectionWorkgroupSize[1] = std::min(
-                uint(
-                    std::ceil(
-                        double(Base::numFaces()) /
-                        double(mFaceSelectionWorkgroupSize[0]))),
-                MAX_COMPUTE_WORKGROUP_SIZE);
-            mFaceSelectionWorkgroupSize[2] = uint(
-                std::ceil(
-                    double(Base::numFaces()) /
-                    double(
-                        mFaceSelectionWorkgroupSize[0] *
-                        mFaceSelectionWorkgroupSize[1])));
+        if (Base::numTris() == 0) {
+            mFaceSelectionWorkgroupSize = {0, 0, 0};
+            return;
         }
+        mFaceSelectionWorkgroupSize[0] =
+            std::min(Base::numTris(), MAX_COMPUTE_WORKGROUP_SIZE);
+        mFaceSelectionWorkgroupSize[1] = std::min(
+            uint(
+                std::ceil(
+                    double(Base::numTris()) /
+                    double(mFaceSelectionWorkgroupSize[0]))),
+            MAX_COMPUTE_WORKGROUP_SIZE);
+        mFaceSelectionWorkgroupSize[2] = uint(
+            std::ceil(
+                double(Base::numTris()) / double(
+                                              mFaceSelectionWorkgroupSize[0] *
+                                              mFaceSelectionWorkgroupSize[1])));
     }
 
     void setVertexPositionsBuffer(const MeshType& mesh) // override
@@ -439,6 +452,9 @@ private:
 
             // create the vertex selection buffer
             setVertexSelectionBuffer(mesh);
+
+            // create the face selection buffer
+            setFaceSelectionBuffer(mesh);
         }
     }
 
@@ -494,21 +510,21 @@ private:
 
     void setFaceSelectionBuffer(const MeshType& mesh)
     {
-        if (Base::numFaces() == 0) {
+        if (Base::numTris() == 0) {
             mSelectedFacesBuffer        = std::nullopt;
             mFaceSelectionWorkgroupSize = {0, 0, 0};
             return;
         }
 
         const uint selectionBufferSize =
-            uint(ceil(double(Base::numFaces()) / 32.0));
+            uint(ceil(double(Base::numTris()) / 32.0));
         auto [buffer, releaseFn] =
             getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
         for (uint i = 0; i < selectionBufferSize; i++) {
             buffer[i] = 0;
         }
 
-        mSelectedFacesBuffer = IndexBuffer();
+        mSelectedFacesBuffer = std::make_optional(IndexBuffer());
         mSelectedFacesBuffer->createForCompute(
             buffer,
             selectionBufferSize,

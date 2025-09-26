@@ -95,6 +95,10 @@ class SelectionTrackBallEventDrawerT :
             {{Key::R, {KeyModifier::NO_MODIFIER}}, [&]() {
                  setPrevModIfNonAtomic();
                  mCurrentSelectionMode = SelectionMode::VERTEX_REGULAR;
+             }},
+             {{Key::R, {KeyModifier::CONTROL}}, [&]() {
+                setPrevModIfNonAtomic();
+                mCurrentSelectionMode = SelectionMode::FACE_REGULAR;
              }}
     };
 

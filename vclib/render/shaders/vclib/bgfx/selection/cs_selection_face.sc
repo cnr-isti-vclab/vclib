@@ -28,7 +28,7 @@ BUFFER_RO(indices, uint, 5);
 BUFFER_RW(face_selected, uint, 6); // is face selected? 1 bit per face...
 
 uniform vec4 u_selectionBox; // screen space
-uniform vec4 u_workgroupSizeAndVertexCount;
+uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contain the index count (i.e. numTris * 3)
 
 // THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
 // Possibility: uniform containing selection box passed already in NDC space? It's probably doable

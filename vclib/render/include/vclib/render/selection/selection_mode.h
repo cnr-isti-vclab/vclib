@@ -62,6 +62,8 @@ public:
 
     constexpr operator bool() const = delete;
 
+    // I could cast to int and then do a range check and then re-cast to Enum,
+    // but this is more comprehensible
     constexpr bool isAtomicMode()
     {
         switch (mEnum) {
@@ -75,6 +77,8 @@ public:
         }
     }
 
+    // I could cast to int and then do a range check and then re-cast to Enum,
+    // but this is more comprehensible
     constexpr bool isVertexSelection()
     {
         switch (mEnum) {
@@ -88,6 +92,8 @@ public:
         }
     }
 
+    // I could cast to int and then do a range check and then re-cast to Enum,
+    // but this is more comprehensible
     constexpr bool isFaceSelection()
     {
         switch (mEnum) {
@@ -98,6 +104,34 @@ public:
         case FACE_NONE:
         case FACE_INVERT: return true;
         default: return false;
+        }
+    }
+
+    // I could cast to int and then do an arithmetic operation and then re-cast to Enum,
+    // but this is more comprehensible
+    constexpr SelectionMode correspondingVertexMode() {
+        switch (mEnum) {
+            case FACE_REGULAR: return SelectionMode(VERTEX_REGULAR);
+            case FACE_ADD: return SelectionMode(VERTEX_ADD);
+            case FACE_SUBTRACT: return SelectionMode(VERTEX_SUBTRACT);
+            case FACE_ALL: return SelectionMode(VERTEX_ALL);
+            case FACE_NONE: return SelectionMode(VERTEX_NONE);
+            case FACE_INVERT: return SelectionMode(VERTEX_INVERT);
+            default: return *this;
+        }
+    }
+
+    // I could cast to int and then do an arithmetic operation and then re-cast to Enum,
+    // but this is more comprehensible
+    constexpr SelectionMode correspondingFaceMode() {
+        switch (mEnum) {
+            case VERTEX_REGULAR: return SelectionMode(FACE_REGULAR);
+            case VERTEX_ADD: return SelectionMode(FACE_ADD);
+            case VERTEX_SUBTRACT: return SelectionMode(FACE_SUBTRACT);
+            case VERTEX_ALL: return SelectionMode(FACE_ALL);
+            case VERTEX_NONE: return SelectionMode(FACE_NONE);
+            case VERTEX_INVERT: return SelectionMode(FACE_INVERT);
+            default: return *this;
         }
     }
 
