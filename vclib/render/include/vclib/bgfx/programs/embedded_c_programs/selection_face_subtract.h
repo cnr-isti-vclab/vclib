@@ -20,13 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_SUBTRACT_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_SUBTRACT_H
+
+#include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
-enum class ComputeProgram { DRAWABLE_MESH_POINTS, SELECTION_VERTEX, SELECTION_VERTEX_ADD, SELECTION_VERTEX_SUBTRACT, SELECTION_VERTEX_ALL, SELECTION_VERTEX_NONE, SELECTION_VERTEX_INVERT, SELECTION_FACE, SELECTION_FACE_ADD, SELECTION_FACE_SUBTRACT, COUNT };
+template<>
+struct ComputeLoader<ComputeProgram::SELECTION_FACE_SUBTRACT>
+{
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
+};
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_SUBTRACT_H

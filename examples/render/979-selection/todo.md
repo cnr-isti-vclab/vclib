@@ -1,7 +1,7 @@
 ## TODO
 - Face selection (Requires a separate buffer) (Selecting faces should also select vertices; but not the other way around)
+    - Rethink current approach: using the vertex selection to calculate face selection is incorrect: just think about the case in which you have one gigantic triangle and none of the vertices are in the selection box: that triangle should be selected regardless...
 - Generalize invert, all and none selection programs: they do the same thing regardless of if it is face or vertex (that is, different modes but same compute shader)
-- Function in SelectionMode that returns the corresponding ComputeProgram enum?
 - Edge selection (This may not be possible yet because @bigmat is still working on a proper edge implementation)
 - Maybe change code so that the selection box uniform is already in NDC space?
 - Non penetrating selection, possible ways:

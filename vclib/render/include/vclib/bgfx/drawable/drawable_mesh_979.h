@@ -251,7 +251,7 @@ public:
         bindUniforms();
         mMRB.bindSelectedVerticesBuffer();
 
-        bgfx::setState(state);
+        bgfx::setState(state | BGFX_STATE_PT_POINTS | BGFX_STATE_POINT_SIZE(15));
         bgfx::setTransform(model.data());
 
         bgfx::submit(viewId, selDrawProg);

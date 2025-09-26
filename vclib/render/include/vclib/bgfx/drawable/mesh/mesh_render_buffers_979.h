@@ -203,8 +203,6 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    // TODO: submit both vertex selection and face selection of the
-    // corresponding type when doing face selection
     void calculateSelection(
         const bgfx::ViewId viewId,
         SelectionBox       box,
@@ -258,8 +256,7 @@ public:
         // selected. Since it uses the vertex selection buffer to do so, it
         // requires a vertex selection beforehand. The way the vertex selection
         // buffer is interpreted depends exclusively on the Face Selection
-        // Program. After calling the face selection program, the vertex
-        // selection buffer is zeroed
+        // Program.
         if (mode.isFaceSelection()) {
             if (!mSelectedFacesBuffer.has_value()) {
                 return;
@@ -362,6 +359,10 @@ private:
                 .getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
         case SelectionMode::FACE_REGULAR:
             return pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
+        case SelectionMode::FACE_ADD:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_ADD>();
+        case SelectionMode::FACE_SUBTRACT:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_SUBTRACT>();
         default:
             return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
         }
