@@ -33,8 +33,25 @@ template<typename TexCoordType>
 void populateTexCoord(pybind11::class_<TexCoordType>& c)
 {
     namespace py = pybind11;
+    using namespace py::literals;
+    using Scalar = TexCoordType::ScalarType;
 
     c.def(py::init<>());
+
+    c.def(py::init<Scalar, Scalar>(), "u"_a, "v"_a);
+
+    c.def(py::init([](const py::list& v) {
+        if (v.size() != 2) {
+            throw std::invalid_argument(
+                "Input list must have 2 elements for type vclib.TexCoord");
+        }
+        TexCoordType p;
+        for (uint i = 0; const auto& d : v) {
+            p(i++) = d.cast<double>();
+        }
+        return p;
+    }));
+    py::implicitly_convertible<py::list, TexCoordType>();
 
     defCopy(c);
 

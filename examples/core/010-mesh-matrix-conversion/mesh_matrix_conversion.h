@@ -34,11 +34,11 @@
 // 3. Working with different matrix types (Eigen, VCLib Array2)
 // 4. Creating meshes from matrices
 
-vcl::Color randomColor()
+inline vcl::Color randomColor()
 {
     // generate random color using std::mt19937
 
-    static std::mt19937                         gen;
+    std::mt19937                                gen(std::random_device {}());
     std::uniform_int_distribution<unsigned int> dist(0, 255);
     return vcl::Color(dist(gen), dist(gen), dist(gen), dist(gen));
 }
@@ -101,9 +101,9 @@ auto meshMatrixConversion()
     importedMesh.name() = "Imported Mesh";
 
     // Import additional components separately
-    vcl::importVertexNormalsFromMatrix(importedMesh, vertexNormals);
-    vcl::importVertexColorsFromMatrix(importedMesh, vertexColors);
-    vcl::importFaceColorsFromMatrix(importedMesh, faceColors);
+    vcl::vertexNormalsFromMatrix(importedMesh, vertexNormals);
+    vcl::vertexColorsFromMatrix(importedMesh, vertexColors);
+    vcl::faceColorsFromMatrix(importedMesh, faceColors);
 
     std::cout << "Imported mesh: " << importedMesh.vertexNumber()
               << " vertices, " << importedMesh.faceNumber() << " faces"

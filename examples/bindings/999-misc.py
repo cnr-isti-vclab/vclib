@@ -20,36 +20,52 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-core-tests)
+# This example assumes that vclib is installed and available in the PYTHONPATH.
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+import vclib as vcl
+import os
+import numpy as np
 
-add_subdirectory(000-static-asserts)
-add_subdirectory(001-trimesh-base)
-add_subdirectory(002-mesh-topology)
-add_subdirectory(003-mesh-conversions)
-add_subdirectory(004-mesh-custom-components)
-add_subdirectory(005-mesh-new-user-component)
-add_subdirectory(006-load-save-mesh-obj)
-add_subdirectory(007-load-save-mesh-off)
-add_subdirectory(008-load-save-mesh-ply)
-add_subdirectory(009-load-save-mesh-stl)
-add_subdirectory(010-mesh-clean)
-add_subdirectory(011-mesh-filter)
-add_subdirectory(012-kd-tree)
-add_subdirectory(013-mesh-update-normal)
-add_subdirectory(014-polymesh-base)
-add_subdirectory(015-mesh-copy-and-append)
-add_subdirectory(016-mesh-crease-edges)
-add_subdirectory(017-serialization)
-add_subdirectory(018-polygon)
-add_subdirectory(019-export-matrix)
-add_subdirectory(020-import-matrix)
-add_subdirectory(021-append-buffer)
-add_subdirectory(022-grid-query)
-add_subdirectory(024-space-core)
+current_file_path = os.path.abspath(__file__)
+current_file_path = os.path.dirname(current_file_path)
 
-if (TARGET vclib-3rd-tinygltf)
-    add_subdirectory(023-load-mesh-gltf)
-endif()
+VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
+VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+
+if __name__ == "__main__":
+    print("=== VCLib Example 999: Miscellaneous ===\n")
+
+    t = vcl.TriMesh()
+
+    t.add_vertices(3)
+
+    # create a numpy array of 3x4 floats between 0 and 1
+    colors_1 = np.random.rand(3, 4).astype(np.float64)
+
+    print(colors_1)
+
+    vcl.vertex_colors_from_matrix(t, colors_1)
+
+    for v in t.vertices():
+        print(f"Vertex {v.index()} color: {v.color()}")
+
+    # create a numpy array of 3x4 integers between 0 and 255
+    colors_2 = np.random.randint(0, 256, (3, 4), dtype=np.uint8)
+
+    print(colors_2)
+
+    vcl.vertex_colors_from_matrix(t, colors_2)
+
+    for v in t.vertices():
+        print(f"Vertex {v.index()} color: {v.color()}")
+
+    t.add_faces(4)
+
+    t.enable_per_face_adjacent_faces()
+
+    for f in t.faces():
+        for af in f.adj_face_indices():
+            if af != vcl.UINT_NULL:
+                print(f"Face {f.index()} adjacent face: {af}")
+            else:
+                print(f"Face {f.index()} adjacent face: border")
