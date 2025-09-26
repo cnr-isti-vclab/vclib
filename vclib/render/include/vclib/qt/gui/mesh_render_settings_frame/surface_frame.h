@@ -56,6 +56,8 @@ private:
         SC_MESH,
         SC_VERT_TEX,
         SC_WEDG_TEX,
+        SC_VERT_MAT,
+        SC_WEDG_MAT,
         SC_USER
     };
 
