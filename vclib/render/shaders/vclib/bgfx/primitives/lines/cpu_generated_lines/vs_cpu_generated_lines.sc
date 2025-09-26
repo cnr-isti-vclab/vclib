@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1, a_color2
+$input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1, a_color2, a_texcoord2
 $output v_color, v_normal
 
 #include <bgfx_shader.sh>

@@ -115,7 +115,7 @@ void CPUGeneratedLines::setPoints(
         uint bufferVertCoordsSize  = (nPoints / 2) * 4 * 6;
         uint bufferVertColorsSize  = (nPoints / 2) * 4 * 2;
         uint bufferVertNormalsSize = (nPoints / 2) * 4 * 6;
-        uint bufferLineColorsSize  = (nPoints / 2) * 4 * 1;
+        uint bufferLineColorsSize  = (nPoints / 2) * 4 * 2;
 
         uint bufferIndsSize = (nPoints / 2) * 6;
 
@@ -175,6 +175,7 @@ void CPUGeneratedLines::setPoints(
                     if (setLineColors) {
                         lColors[viLineColors++] =
                             std::bit_cast<float>(lineColors[i / 2]);
+                        lColors[viLineColors++] = 0.0f;
                     }
                 }
             }
@@ -238,6 +239,7 @@ void CPUGeneratedLines::setPoints(
             bgfx::VertexLayout layout;
             layout.begin()
                 .add(bgfx::Attrib::Color2, 4, bgfx::AttribType::Uint8, true)
+                .add(bgfx::Attrib::TexCoord2, 1, bgfx::AttribType::Float)
                 .end();
 
             mLineColors.create(
