@@ -149,6 +149,7 @@ public:
         swap(
             mVertexSelectionWorkgroupSize, other.mVertexSelectionWorkgroupSize);
         swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
+        swap(mFaceSelectionWorkgroupSize, other.mFaceSelectionWorkgroupSize);
         swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
     }
 
