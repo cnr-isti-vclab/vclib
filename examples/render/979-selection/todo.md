@@ -4,6 +4,7 @@
 - Generalize invert, all and none selection programs: they do the same thing regardless of if it is face or vertex (that is, different modes but same compute shader)
 - Edge selection (This may not be possible yet because @bigmat is still working on a proper edge implementation)
 - Maybe change code so that the selection box uniform is already in NDC space?
+- Some way to manage the copying of buffers to texture given buffers that exceed textureMaxSize*textureMaxSize. (multiple textures? same texture blitted multiple times (each time requires 2 frames though)? who knows.)
 - Non penetrating selection, possible ways:
     1. Depth buffer interpolation (AWFUL, DO NOT DO THIS)
         1. Calculate Depth Buffer (framebuffer)

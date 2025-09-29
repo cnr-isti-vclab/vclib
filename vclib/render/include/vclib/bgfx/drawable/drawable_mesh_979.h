@@ -61,6 +61,12 @@ private:
 
     bgfx::ProgramHandle selDrawProg = vcl::loadProgram("shaders/vs_selection", "shaders/fs_selection");
 
+    uint mBufToTexRemainingFrames = 0;
+    std::array<uint, 2> mBufToTexTextureSize = {0, 0};
+    bgfx::TextureHandle mBufToTexGPUTexture = BGFX_INVALID_HANDLE;
+    bgfx::TextureHandle mBufToTexCPUTexture = BGFX_INVALID_HANDLE;
+    std::vector<uint8_t> mBufToTexVec;
+
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
 
@@ -113,12 +119,35 @@ public:
         swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+        swap(mBufToTexCPUTexture, other.mBufToTexCPUTexture);
+        swap(mBufToTexGPUTexture, other.mBufToTexGPUTexture);
+        swap(mBufToTexVec, other.mBufToTexVec);
+        swap(mBufToTexTextureSize, other.mBufToTexTextureSize);
+        swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
     }
 
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
 
     void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode) override {
+        uint count;
+        if (mode.isVertexSelection()) {
+            count = MeshType::vertexNumber();
+        }
+        if (mode.isFaceSelection()) {
+            count = MeshType::faceNumber();
+        }
+        const uint32_t maxTexSize = bgfx::getCaps()->limits.maxTextureSize;
+        uint16_t texXSize = std::min(uint16_t(maxTexSize), uint16_t(count));
+        uint16_t texYSize = uint16_t(maxTexSize) / texXSize;
+
+        mBufToTexTextureSize = {texXSize, texYSize};
+        
         mMRB.calculateSelection(viewId, box, mode);
+        if (mBufToTexRemainingFrames != 0) {
+            mBufToTexRemainingFrames--;
+            return;
+        }
+        mBufToTexRemainingFrames = mMRB.selectionBufToTexture(viewId, mBufToTexCPUTexture, mBufToTexGPUTexture, mBufToTexTextureSize, mBufToTexVec, mode);
     }
 
     // TODO: to be removed after shader benchmarks
@@ -179,6 +208,13 @@ public:
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
+
+        uint16_t maxTexSize = uint16_t(bgfx::getCaps()->limits.maxTextureSize);
+
+        // Size of vector: area of texture * byte size per texture unit
+        mBufToTexVec = std::vector<uint8_t>(uint(maxTexSize) * uint(maxTexSize) * 4);
+        mBufToTexCPUTexture = bgfx::createTexture2D(maxTexSize, maxTexSize, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
+        mBufToTexGPUTexture = bgfx::createTexture2D(maxTexSize, maxTexSize, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_COMPUTE_WRITE);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
@@ -246,16 +282,6 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        mMRB.bindVertexBuffers(mMRS);
-        mMRB.bindIndexBuffers(mMRS);
-        bindUniforms();
-        mMRB.bindSelectedVerticesBuffer();
-
-        bgfx::setState(state | BGFX_STATE_PT_POINTS | BGFX_STATE_POINT_SIZE(15));
-        bgfx::setTransform(model.data());
-
-        bgfx::submit(viewId, selDrawProg);
-
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
@@ -316,6 +342,16 @@ public:
                     viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
+
+        mMRB.bindVertexBuffers(mMRS);
+        mMRB.bindIndexBuffers(mMRS);
+        bindUniforms();
+        mMRB.bindSelectedVerticesBuffer();
+
+        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL);
+        bgfx::setTransform(model.data());
+
+        bgfx::submit(viewId, selDrawProg);
     }
 
     const Box3d& getBbox() const {

@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_ADD_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_ADD_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_BUFFER_TO_TEX_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_BUFFER_TO_TEX_H
 
 #include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
 template<>
-struct ComputeLoader<ComputeProgram::SELECTION_FACE_ADD>
+struct ComputeLoader<ComputeProgram::BUFFER_TO_TEX>
 {
     static bgfx::EmbeddedShader::Data computeShader(
         bgfx::RendererType::Enum type);
@@ -36,4 +36,4 @@ struct ComputeLoader<ComputeProgram::SELECTION_FACE_ADD>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_ADD_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_BUFFER_TO_TEX_H

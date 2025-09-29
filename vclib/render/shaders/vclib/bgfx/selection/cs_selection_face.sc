@@ -23,7 +23,7 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
+BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 BUFFER_RO(indices, uint, 5);
 BUFFER_RW(face_selected, uint, 6); // is face selected? 1 bit per face...
 
@@ -45,12 +45,53 @@ void main()
         return;
     }
 
+    float minX = u_selectionBox[0];
+    float minY = u_selectionBox[1];
+    float maxX = u_selectionBox[2];
+    float maxY = u_selectionBox[3];
+
+    vec3 maxNDC = vec3(
+        (maxX - u_viewRect.x) / u_viewRect.z * 2 - 1,
+        1 - ((minY - u_viewRect.y) / u_viewRect.w * 2),
+        1
+    );
+    vec3 minNDC = vec3(
+        (minX - u_viewRect.x) / u_viewRect.z * 2 - 1,
+        1 - ((maxY - u_viewRect.y) / u_viewRect.w * 2),
+        0
+    );
+
+    mat3 triVertPositions;
+
+    uint indexx = idcs[0]*3;
+    uint indexy = indexx+1;
+    uint indexz = indexx+2;
+
+    triVertPositions[0].x = positions[indexx/4][indexx%4];
+    triVertPositions[0].y = positions[indexy/4][indexy%4];
+    triVertPositions[0].z = positions[indexz/4][indexz%4];
+
+    indexx = idcs[1]*3;
+    indexy = indexx+1;
+    indexz = indexx+2;
+
+    triVertPositions[1].x = positions[indexx/4][indexx%4];
+    triVertPositions[1].y = positions[indexy/4][indexy%4];
+    triVertPositions[1].z = positions[indexz/4][indexz%4];
+
+    indexx = idcs[2]*3;
+    indexy = indexx+1;
+    indexz = indexx+2;
+
+    triVertPositions[2].x = positions[indexx/4][indexx%4];
+    triVertPositions[2].y = positions[indexy/4][indexy%4];
+    triVertPositions[2].z = positions[indexz/4][indexz%4];
+
     uint slctd = 1;
-    for (uint i = 0; i < 3; i ++) {
-        uint bufferIndex = idcs[i]/32;
-        uint bitOffset = 31-(idcs[i]%32);
-        uint bitMask = 0x1 << bitOffset;
-        if((vertex_selected[bufferIndex] & bitMask) == uint(0)) {
+    for (uint i = 0; i < 3; i++) {
+        vec4 pNDC = mul(u_modelViewProj, vec4(triVertPositions[i][0], triVertPositions[i][1], triVertPositions[i][2], 1));
+        pNDC = pNDC / pNDC.w;
+        if (!(pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y && pNDC.z >= minNDC.z && pNDC.z <= maxNDC.z)) {
             slctd = 0;
             break;
         }
@@ -61,8 +102,8 @@ void main()
     uint fBitMask = 0x1 << fBitOffset;
     uint _useless;
     if (slctd == 1) {
-        atomicFetchAndOr(vertex_selected[fBufferIndex], fBitMask, _useless);
+        atomicFetchAndOr(face_selected[fBufferIndex], fBitMask, _useless);
     } else {
-        atomicFetchAndAnd(vertex_selected[fBufferIndex], ~fBitMask, _useless);
+        atomicFetchAndAnd(face_selected[fBufferIndex], ~fBitMask, _useless);
     }
 }

@@ -64,7 +64,7 @@ public:
 
     // I could cast to int and then do a range check and then re-cast to Enum,
     // but this is more comprehensible
-    constexpr bool isAtomicMode()
+    constexpr bool isAtomicMode() const
     {
         switch (mEnum) {
         case VERTEX_ALL:
@@ -79,7 +79,7 @@ public:
 
     // I could cast to int and then do a range check and then re-cast to Enum,
     // but this is more comprehensible
-    constexpr bool isVertexSelection()
+    constexpr bool isVertexSelection() const
     {
         switch (mEnum) {
         case VERTEX_REGULAR:
@@ -94,7 +94,7 @@ public:
 
     // I could cast to int and then do a range check and then re-cast to Enum,
     // but this is more comprehensible
-    constexpr bool isFaceSelection()
+    constexpr bool isFaceSelection() const
     {
         switch (mEnum) {
         case FACE_REGULAR:
@@ -109,7 +109,7 @@ public:
 
     // I could cast to int and then do an arithmetic operation and then re-cast to Enum,
     // but this is more comprehensible
-    constexpr SelectionMode correspondingVertexMode() {
+    constexpr SelectionMode correspondingVertexMode() const {
         switch (mEnum) {
             case FACE_REGULAR: return SelectionMode(VERTEX_REGULAR);
             case FACE_ADD: return SelectionMode(VERTEX_ADD);
@@ -123,7 +123,7 @@ public:
 
     // I could cast to int and then do an arithmetic operation and then re-cast to Enum,
     // but this is more comprehensible
-    constexpr SelectionMode correspondingFaceMode() {
+    constexpr SelectionMode correspondingFaceMode() const {
         switch (mEnum) {
             case VERTEX_REGULAR: return SelectionMode(FACE_REGULAR);
             case VERTEX_ADD: return SelectionMode(FACE_ADD);

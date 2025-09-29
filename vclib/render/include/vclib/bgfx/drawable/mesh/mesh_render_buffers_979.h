@@ -261,15 +261,14 @@ public:
             if (!mSelectedFacesBuffer.has_value()) {
                 return;
             }
-            calculateSelection(viewId, box, SelectionMode::VERTEX_REGULAR);
             temp2 = {
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
                 vcl::Uniform::uintBitsToFloat(Base::numTris() * 3)};
             mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
-            mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite),
-                mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+            mVertexPositionsBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
+            mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
             mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
                 (void*) temp2.data());
             bgfx::dispatch(
@@ -278,8 +277,65 @@ public:
                 mFaceSelectionWorkgroupSize[0],
                 mFaceSelectionWorkgroupSize[1],
                 mFaceSelectionWorkgroupSize[2]);
-            calculateSelection(viewId, box, SelectionMode::VERTEX_NONE);
+            calculateSelection(viewId, box, SelectionMode::VERTEX_REGULAR);
         }
+    }
+
+    uint selectionBufToTexture(
+        const bgfx::ViewId&        viewId,
+        const bgfx::TextureHandle& texCPUHandle,
+        const bgfx::TextureHandle& texGPUHandle,
+        const std::array<uint, 2>& texSize,
+        std::vector<uint8_t>&      texReadLoc,
+        const SelectionMode&       mode)
+    {
+        auto&               pm = vcl::Context::instance().programManager();
+        std::array<uint, 3> actualWorkgroupSize = {
+            mVertexSelectionWorkgroupSize[0],
+            mVertexSelectionWorkgroupSize[1],
+            mVertexSelectionWorkgroupSize[2]};
+        std::array<float, 4> temp = {
+            0,
+            0,
+            vcl::Uniform::uintBitsToFloat(texSize[0]),
+            vcl::Uniform::uintBitsToFloat(Base::numVerts())};
+        if (mode.isFaceSelection()) {
+            actualWorkgroupSize = {
+                mFaceSelectionWorkgroupSize[0],
+                mFaceSelectionWorkgroupSize[1],
+                mFaceSelectionWorkgroupSize[2]};
+            temp[3] = vcl::Uniform::uintBitsToFloat(Base::numTris());
+            mSelectedFacesBuffer.value().bind(5, bgfx::Access::Read);
+        }
+        if (mode.isVertexSelection()) {
+            mSelectedVerticesBuffer.bind(5, bgfx::Access::Read);
+        }
+        temp[0] = vcl::Uniform::uintBitsToFloat(actualWorkgroupSize[0]);
+        temp[1] = vcl::Uniform::uintBitsToFloat(actualWorkgroupSize[1]);
+        bgfx::setImage(
+            4,
+            texGPUHandle,
+            0,
+            bgfx::Access::Write,
+            bgfx::TextureFormat::RGBA8);
+        bgfx::dispatch(
+            viewId,
+            pm.getComputeProgram<vcl::ComputeProgram::BUFFER_TO_TEX>(),
+            actualWorkgroupSize[0],
+            actualWorkgroupSize[1],
+            actualWorkgroupSize[2]);
+        bgfx::blit(
+            viewId,
+            texCPUHandle,
+            0,
+            0,
+            texGPUHandle,
+            0,
+            0,
+            texSize[0],
+            texSize[1]);
+        bgfx::readTexture(texCPUHandle, texReadLoc.data());
+        return 2;
     }
 
     void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
@@ -359,10 +415,6 @@ private:
                 .getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
         case SelectionMode::FACE_REGULAR:
             return pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
-        case SelectionMode::FACE_ADD:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_ADD>();
-        case SelectionMode::FACE_SUBTRACT:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_SUBTRACT>();
         default:
             return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
         }

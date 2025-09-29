@@ -36,8 +36,8 @@ void main() {
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
     if ((vertex_selected[bufferIndex] & bitMask) == 0) {
-        v_color = a_color0;
+        v_color = uintABGRToVec4Color(uint(0x00000000));
     } else {
-        v_color = uintABGRToVec4Color(uint(0xFF0000FF));
+        v_color = uintABGRToVec4Color(uint(0x330000FF));
     }
 }
