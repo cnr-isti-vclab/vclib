@@ -66,3 +66,4 @@
   - [ ] completely rethink trackball event handling
   - [ ] on DrawableMesh, manage right click event (draw id) for wireframe and edges
   - [ ] add shading per-line on Lines and their implementations
+  - [ ] add wireframe and edge size for imgui interface
