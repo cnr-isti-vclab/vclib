@@ -38,7 +38,8 @@ void main()
 {
     uint indexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
     uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
-    uint indicesBaseIndex = 3 * (gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z);
+    uint faceIndex = (gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z);
+    uint indicesBaseIndex = 3 * faceIndex;
     uvec3 idcs = uvec3(indices[indicesBaseIndex], indices[indicesBaseIndex + 1], indices[indicesBaseIndex + 2]);
 
     if(indicesBaseIndex >= indexCount) {
@@ -51,19 +52,19 @@ void main()
     float maxY = u_selectionBox[3];
 
     vec3 maxNDC = vec3(
-        (maxX - u_viewRect.x) / u_viewRect.z * 2 - 1,
-        1 - ((minY - u_viewRect.y) / u_viewRect.w * 2),
+        (maxX - u_viewRect.x) / max(1, u_viewRect.z) * 2 - 1,
+        1 - ((minY - u_viewRect.y) / max(1, u_viewRect.w) * 2),
         1
     );
     vec3 minNDC = vec3(
-        (minX - u_viewRect.x) / u_viewRect.z * 2 - 1,
-        1 - ((maxY - u_viewRect.y) / u_viewRect.w * 2),
+        (minX - u_viewRect.x) / max(1, u_viewRect.z) * 2 - 1,
+        1 - ((maxY - u_viewRect.y) / max(1, u_viewRect.w) * 2),
         0
     );
 
     mat3 triVertPositions;
 
-    uint indexx = idcs[0]*3;
+    uint indexx = idcs[indicesBaseIndex]*3;
     uint indexy = indexx+1;
     uint indexz = indexx+2;
 
@@ -71,7 +72,7 @@ void main()
     triVertPositions[0].y = positions[indexy/4][indexy%4];
     triVertPositions[0].z = positions[indexz/4][indexz%4];
 
-    indexx = idcs[1]*3;
+    indexx = idcs[indicesBaseIndex + 1]*3;
     indexy = indexx+1;
     indexz = indexx+2;
 
@@ -79,7 +80,7 @@ void main()
     triVertPositions[1].y = positions[indexy/4][indexy%4];
     triVertPositions[1].z = positions[indexz/4][indexz%4];
 
-    indexx = idcs[2]*3;
+    indexx = idcs[indicesBaseIndex + 2]*3;
     indexy = indexx+1;
     indexz = indexx+2;
 
@@ -97,8 +98,8 @@ void main()
         }
     }
 
-    uint fBufferIndex = (indicesBaseIndex/3)/32;
-    uint fBitOffset = 31-((indicesBaseIndex/3)%32);
+    uint fBufferIndex = faceIndex/32;
+    uint fBitOffset = 31-(faceIndex%32);
     uint fBitMask = 0x1 << fBitOffset;
     uint _useless;
     if (slctd == 1) {

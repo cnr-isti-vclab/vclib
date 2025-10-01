@@ -35,6 +35,9 @@ set(SHADERS
     shaders/vs_selection.sc
     shaders/fs_selection.sc
     shaders/varying.def.sc
+    shaders_face/vs_selection.sc
+    shaders_face/fs_selection.sc
+    shaders_face/varying.def.sc
 )
 
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'

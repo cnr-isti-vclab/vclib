@@ -277,7 +277,6 @@ public:
                 mFaceSelectionWorkgroupSize[0],
                 mFaceSelectionWorkgroupSize[1],
                 mFaceSelectionWorkgroupSize[2]);
-            calculateSelection(viewId, box, SelectionMode::VERTEX_REGULAR);
         }
     }
 
@@ -339,6 +338,8 @@ public:
     }
 
     void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
+
+    void bindSelectedFacesBuffer() const { mSelectedFacesBuffer.value().bind(6); }
 
     // to draw splats
     void bindVertexQuadBuffer() const

@@ -60,8 +60,9 @@ private:
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
     bgfx::ProgramHandle selDrawProg = vcl::loadProgram("shaders/vs_selection", "shaders/fs_selection");
+    bgfx::ProgramHandle faceSelDrawProg = vcl::loadProgram("shaders_face/vs_selection", "shaders_face/fs_selection");
 
-    uint mBufToTexRemainingFrames = 0;
+    mutable uint mBufToTexRemainingFrames = 255;
     std::array<uint, 2> mBufToTexTextureSize = {0, 0};
     bgfx::TextureHandle mBufToTexGPUTexture = BGFX_INVALID_HANDLE;
     bgfx::TextureHandle mBufToTexCPUTexture = BGFX_INVALID_HANDLE;
@@ -95,6 +96,7 @@ public:
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
         mMRB.update(*this);
+        updateBuffers();
     }
 
     DrawableMeshBGFX979(DrawableMeshBGFX979&& drawableMesh) { swap(drawableMesh); }
@@ -143,8 +145,7 @@ public:
         mBufToTexTextureSize = {texXSize, texYSize};
         
         mMRB.calculateSelection(viewId, box, mode);
-        if (mBufToTexRemainingFrames != 0) {
-            mBufToTexRemainingFrames--;
+        if (mBufToTexRemainingFrames != 255) {
             return;
         }
         mBufToTexRemainingFrames = mMRB.selectionBufToTexture(viewId, mBufToTexCPUTexture, mBufToTexGPUTexture, mBufToTexTextureSize, mBufToTexVec, mode);
@@ -282,6 +283,31 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
+        if constexpr (HasFaces<MeshType>) {
+            switch (mBufToTexRemainingFrames) {
+                case 0:
+                    mBufToTexRemainingFrames = 255;
+                    for (size_t index = 0; index < this->faceNumber(); index++) {
+                        auto* non_const_this = const_cast<DrawableMeshBGFX979<MeshType>*>(this);
+                        auto& face = non_const_this->face(index);
+                        size_t bufToVecIndex = index/8;
+                        uint8_t bufToVecBitMask = uint8_t(1) << uint8_t(7-(index%8));
+                        // TODO: remove when figured out why it does not work
+                        if (index % 8 == 0) {
+                            std::cout << (uint)mBufToTexVec[bufToVecIndex] << std::endl;
+                        }
+                        if(mBufToTexVec[bufToVecIndex] & bufToVecBitMask) {
+                            face.color() = vcl::Color(200, 20, 20, 255);
+                        }
+                    }
+                    break;
+                case 255:
+                    break;
+                default:
+                    mBufToTexRemainingFrames--;
+            }
+        }
+
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
@@ -343,15 +369,25 @@ public:
             }
         }
 
+        // mMRB.bindVertexBuffers(mMRS);
+        // mMRB.bindIndexBuffers(mMRS);
+        // bindUniforms();
+        // mMRB.bindSelectedVerticesBuffer();
+// 
+        // bgfx::setState(state | BGFX_STATE_BLEND_NORMAL);
+        // bgfx::setTransform(model.data());
+// 
+        // bgfx::submit(viewId, selDrawProg);
+
         mMRB.bindVertexBuffers(mMRS);
         mMRB.bindIndexBuffers(mMRS);
         bindUniforms();
-        mMRB.bindSelectedVerticesBuffer();
+        mMRB.bindSelectedFacesBuffer();
 
         bgfx::setState(state | BGFX_STATE_BLEND_NORMAL);
         bgfx::setTransform(model.data());
 
-        bgfx::submit(viewId, selDrawProg);
+        bgfx::submit(viewId, faceSelDrawProg);
     }
 
     const Box3d& getBbox() const {
