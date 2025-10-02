@@ -93,4 +93,251 @@ vec3 computeSpecular(
         vPos, cameraEyePos, lightDir, lightColor, normal, 0.3);
 }
 
+const float PI = 3.14159265359;
+const float ONE_OVER_PI = 0.318309;
+const float EPSILON = 0.00001; // small constant
+
+// precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
+
+const int LIGHT_COUNT = 2;
+
+const vec3 lightKeyDir = vec3(
+    0.5000000108991332,
+    -0.7071067857071073,
+    -0.49999999460696354
+);
+
+const vec3 lightFillDir = vec3(
+    -0.4999998538661192,
+    0.7071068849655084,
+    0.500000052966632
+);
+
+/**
+ * @brief BRDF diffuse part (Lambertian).
+ * @param[in] color: The fragment color.
+ * @return The diffuse light.
+ */
+vec3 pbrDiffuse(vec3 color)
+{
+    return color / PI;
+}
+
+/**
+ * @brief GGX version of the NDF (Normal Distribution Function) which determines the odds for a microfacet normal 
+ * to be aligned with the halfway vector H (in other words to reflect light directly).
+ * @param[in] N: The fragment normal, must be normalized.
+ * @param[in] H: The halfway vector, must be normalized.
+ * @param[in] alpha: The material's roughness squared.
+ * @return the odds for a microfacet normal to be aligned with the halfway vector H (in other words to reflect light directly).
+ */
+float D_GGX(
+    vec3 N, 
+    vec3 H, 
+    float alpha)
+{
+    float alpha2 = alpha * alpha;
+    float NoH = max(dot(N, H), 0.0);
+    float NoH2 = NoH * NoH;
+    float denom = NoH2 * (alpha2 - 1) + 1;
+    return alpha2 / (PI * denom * denom);
+}
+
+/**
+ * @brief GGX version of Smith's G component.
+ * Smith breaks G into two components: light and view, and uses the same equation for both.
+ * Many versions of the equation exist.
+ * @param[in] N: The fragment normal, must be normalized.
+ * @param[in] V: Here V as just Vector, it's either the incoming light direction or view direction, must be normalized.
+ * @param[in] alpha: The material's roughness squared.
+ * @return The light or view component.
+ */
+float G1_GGX(
+    vec3 N,
+    vec3 V,
+    float alpha)
+{
+    float alpha2 = alpha * alpha;
+    float NoV = max(dot(N, V), 0.0);
+    float NoV2 = NoV * NoV;
+    float num = 2 * NoV;
+    float denom = NoV + sqrt(alpha2 + (1 - alpha2) * NoV2);
+    return num / denom;
+}
+
+/**
+ * @brief Geometry function by Smith.
+ * Smith breaks G into two components: light and view, and uses the same equation for both.
+ * Many versions of the equation exist.
+ * The Light component accounts for the occlusion of the light by other microfacets (geometry shadowing).
+ * The View component accounts for the occlusion of the view by other microfacets (geometry obstruction).
+ * @param[in] N: The fragment normal, must be normalized.
+ * @param[in] L: The incoming light direction, must be normalized.
+ * @param[in] V: The view direction, must be normalized.
+ * @param[in] alpha: The material's roughness squared.
+ * @return The odds for a microfacet of not being occluded by some other microfacet.
+ */
+float G_Smith(
+    vec3 N,
+    vec3 L,
+    vec3 V,
+    float alpha)
+{
+    return 
+    G1_GGX(N, L, alpha) * // light
+    G1_GGX(N, V, alpha);  // view
+}
+
+/**
+ * @brief Computes the Fresnel factor which tells the amount of light that gets reflected
+ * with the Schlick approximation.
+ * @param[in] F0: The material's base reflectivity.
+ * @param[in] HoV: Cosine of the angle between the halfway vector H and the view direction V.
+ * @return The Fresnel factor.
+ */
+vec3 F_Schlick(
+    vec3 F0,
+    float HoV)
+{
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - HoV, 0.0, 1.0), 5.0);
+}
+
+/**
+ * @brief Computes the Fresnel factor which tells the amount of light that gets reflected.
+ * Here just some preparation is done before the actual calculation in the return statement
+ * in order to use the same function for both dielectric and metallic surfaces.
+ * @param[in] H: The halfway vector, must be normalized.
+ * @param[in] V: The view direction, must be normalized.
+ * @param[in] color: The fragment color or albedo (RGB).
+ * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal).
+ * @return The Fresnel factor.
+ */
+vec3 F(
+    vec3 H,
+    vec3 V,
+    vec3 color,
+    float metallic)
+{
+    // F0 is the surface's response at normal incidence (aka base reflectivity)
+    // The amount of light reflected when looking at a surface with a 0 degree angle (right above)
+    // 0.04 is an approximation averaged around many dielectric materials
+    vec3 F0 = vec3(0.04);
+
+    // Metals have the surface color as base reflectivity since no light gets absorbed
+    // The interpolation is needed as we consider the metallic value as ranged instead of binary
+    F0 = mix(F0, color, metallic);
+
+    float HoV = max(dot(H, V), 0.0);
+    return F_Schlick(F0, HoV);
+}
+
+/**
+ * @brief BRDF specular part.
+ * It consists of two major components of which many versions exist:
+ *  - The NDF (Normal Distribution Function) or just D determines the odds for a microfacet normal 
+ *  to be aligned with the halfway vector H.
+ *  - The Geometry function or just G determines the odds for a microfacet of not being occluded by some other
+ *  microfacet; together with the denominator (here denom) they are known as the Visibility function.
+ * @param[in] V: The view direction, must be normalized.
+ * @param[in] H: The halfway vector, must be normalized.
+ * @param[in] N: The fragment normal, must be normalized.
+ * @param[in] L: The incoming light direction, must be normalized.
+ * @param[in] roughness: The roughness of the fragment's material, 
+ * ranges from 0 (optically flat) to 1 (very irregular surface that will make reflections more blurry).
+ * @return The specular light.
+ */
+float pbrSpecular(
+    vec3 V,
+    vec3 H,
+    vec3 N,
+    vec3 L,
+    float roughness)
+{
+    // Many versions of D and G remap the roughness parameter.
+    // This is done for better looks and/or to make the parameter more easily editable by artists.
+    float alpha = roughness * roughness;
+
+    float NoV = max(dot(N, V), 0.0);
+    float NoL = max(dot(N, L), 0.0);
+    float num = D_GGX(N, H, alpha) * G_Smith(N, L, V, alpha);
+    float denom = 4 * NoV * NoL + EPSILON; // EPSILON prevents divisions by 0.
+    return num / denom;
+}
+
+/**
+ * @brief Color computed for Physically Based Rendering (PBR).
+ * The incoming light colors are altered by:
+ *  the Cook-Torrance BRDF (Bidirectional Reflective Distribution Function)
+ *  which depends on the material properties of the lit fragment (right now see params: color, metallic, roughness).
+ * and
+ *  the cosine of the angle between the fragment's normal and the light's direction;
+ *  the cosine is given as the dot product of the two.
+ *
+ * The Cook-Torrance BRDF consists of two parts a diffuse and a specular one:
+ *  Specular: light that gets reflected immediately after contact with the surface.
+ *  Diffuse: escaped light that got refracted.
+ * the Fresnel factor ks tells how much of the incoming light gets reflected so it can work as a weight
+ * for the two parts with kd = 1 - ks (so that kd + ks = 1) for energy conservation.
+ *
+ * @param[in] vPos: The fragment position.
+ * @param[in] cameraEyePos: The camera position.
+ * @param[in] lightDirs: The incoming light directions, must be normalized.
+ * @param[in] lightColors: The incoming light colors (RGB) (their radiance approximated).
+ * @param[in] lightIntensities: The incoming light intensities (scalars).
+ * @param[in] color: The fragment color or albedo (RGB).
+ * @param[in] normal: The fragment normal, must be normalized.
+ * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
+ * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
+ * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
+ */
+vec3 pbrColor(
+    vec3 vPos,
+    vec3 cameraEyePos,
+    vec3 lightDirs[LIGHT_COUNT],
+    vec3 lightColors[LIGHT_COUNT],
+    float lightIntensities[LIGHT_COUNT],
+    vec3 color,
+    vec3 normal,
+    float metallic,
+    float roughness)
+{
+    // view direction
+    vec3 V = normalize(cameraEyePos - vPos);
+    vec3 finalColor = vec3(0.0);
+
+    for(int i = 0; i < LIGHT_COUNT; ++i)
+    {
+        // incoming light direction
+        vec3 lightDir = normalize(-lightDirs[i]);
+        vec3 lightColor = lightColors[i];
+        float lightIntensity = lightIntensities[i];
+
+        // halfway vector, same angle with both view direction and incoming light direction
+        // corresponds to the normal that one microfacet must have to directly reflect the light into the eye
+        vec3 H = normalize(V + lightDir);
+        
+        vec3 ks = F(H, V, color, metallic);
+        vec3 kd = vec3(1.0) - ks;
+
+        // metals do not refract light, they just absorb it (or reflect it immediately),
+        // so there should not be any diffuse light in case of a metal
+        kd *= 1 - metallic;
+
+        float NoL = max(dot(normal, lightDir), 0.0);
+
+        finalColor += (
+            kd * pbrDiffuse(color) +
+            ks * pbrSpecular(V, H, normal, lightDir, roughness)
+            ) *
+            lightColor *
+            NoL *
+            lightIntensity; // modulate the light by its intensity
+    }
+
+    // tone mapping - Reinhard operator
+    finalColor = finalColor / (finalColor + vec3(1.0));
+
+    // gamma correction
+    return pow(finalColor, vec3(1.0/2.2));
+}
 #endif // VCL_EXT_BGFX_SHADERS_COMMON_SH

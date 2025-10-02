@@ -32,6 +32,14 @@ class DrawableMeshUniforms
 {
     float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
 
+    float mMaterialColor[4] = {1.0, 1.0, 1.0, 1.0};
+
+    float mMetallicRoughness[4] = {
+        0.0, // metallic
+        0.5, // roughness
+        0.0, 
+        0.0};
+
     float mModelMatrix[16] = { // identity matrix
         1.0,
         0.0,
@@ -52,6 +60,10 @@ class DrawableMeshUniforms
 
     Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
 
+    Uniform mMaterialColorUniform = Uniform("u_materialColor", bgfx::UniformType::Vec4);
+
+    Uniform mMetallicRoughnessUniform = Uniform("u_metallicRoughness", bgfx::UniformType::Vec4);
+
     // ShaderUniform modelUH =
     //     ShaderUniform("u_model", bgfx::UniformType::Mat4);
 
@@ -59,6 +71,10 @@ public:
     DrawableMeshUniforms() = default;
 
     const float* currentMeshColor() const { return mMeshColor; }
+
+    const float* currentMaterialColor() const { return mMaterialColor; }
+
+    const float* currentMetallicRoughness() const { return mMetallicRoughness; }
 
     const float* currentModelMatrix() const { return mModelMatrix; }
 
@@ -71,11 +87,23 @@ public:
             mMeshColor[2] = m.color().blueF();
             mMeshColor[3] = m.color().alphaF();
         }
+
+        if constexpr (HasMaterials<MeshType>) {
+            mMaterialColor[0] = m.materials()[0].baseColor().redF();
+            mMaterialColor[1] = m.materials()[0].baseColor().greenF();
+            mMaterialColor[2] = m.materials()[0].baseColor().blueF();
+            mMaterialColor[3] = m.materials()[0].baseColor().alphaF();
+
+            mMetallicRoughness[0] = m.materials()[0].metallic();
+            mMetallicRoughness[1] = m.materials()[0].roughness();
+        }
     }
 
     void bind() const
     {
         mMeshColorUniform.bind(mMeshColor);
+        mMaterialColorUniform.bind(mMaterialColor);
+        mMetallicRoughnessUniform.bind(mMetallicRoughness);
         // modelUH.bind(mModelMatrix);
     }
 };

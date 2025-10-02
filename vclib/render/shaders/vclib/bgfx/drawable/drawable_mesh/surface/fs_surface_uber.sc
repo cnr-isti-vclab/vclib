@@ -110,7 +110,30 @@ void main()
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
     }
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERT_MAT))) {
 
-    gl_FragColor = light * color + vec4(specular, 0);
+        vec3 lightDirections[2] = {lightKeyDir, lightFillDir};
+        vec3 lightColors[2] = {vec3(1.0), vec3(1.0)};
+        float lightIntensities[2] = {1.0, 0.5};
+
+        color = vec4(pbrColor(
+                v_position,
+                vec3(0.0), // camera position
+                lightDirections,
+                lightColors,
+                lightIntensities,
+                u_materialColor,
+                normal,
+                u_metallicRoughness.r, // metallic
+                u_metallicRoughness.g  // roughness
+            )
+        , 1.0);
+        
+        gl_FragColor = color;
+    }
+    else {
+        gl_FragColor = light * color + vec4(specular, 0);
+    }
+
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
