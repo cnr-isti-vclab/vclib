@@ -126,7 +126,7 @@ void main()
                 normal,
                 u_metallicRoughness.r, // metallic
                 u_metallicRoughness.g  // roughness
-            )
+            ).xyz
         , 1.0);
         
         gl_FragColor = color;
