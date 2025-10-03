@@ -116,7 +116,7 @@ void main()
         vec3 lightColors[2] = {vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0)};
         float lightIntensities[2] = {1.0, 0.5};
 
-        color = vec4(pbrColor(
+        vec3 c = pbrColor(
                 v_position,
                 vec3(0.0, 0.0, 0.0), // camera position
                 lightDirections,
@@ -126,10 +126,9 @@ void main()
                 normal,
                 u_metallicRoughness.r, // metallic
                 u_metallicRoughness.g  // roughness
-            ).xyz
-        , 1.0);
+            );
         
-        gl_FragColor = color;
+        gl_FragColor = vec4(c.x, c.y, c.z, 1.0);
     }
     else {
         gl_FragColor = light * color + vec4(specular, 0);
