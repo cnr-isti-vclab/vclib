@@ -290,7 +290,7 @@ float pbrSpecular(
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
  */
-vec3 pbrColor(
+vec4 pbrColor(
     vec3 vPos,
     vec3 cameraEyePos,
     vec3 lightDirs[LIGHT_COUNT],
@@ -338,6 +338,8 @@ vec3 pbrColor(
     //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));
 
     // gamma correction
-    return pow(finalColor, vec3(1.0/2.2, 1.0/2.2, 1.0/2.2));
+    finalColor = pow(finalColor, vec3(1.0/2.2, 1.0/2.2, 1.0/2.2));
+    
+    return vec4(finalColor.x, finalColor.y, finalColor.z, 1.0);
 }
 #endif // VCL_EXT_BGFX_SHADERS_COMMON_SH
