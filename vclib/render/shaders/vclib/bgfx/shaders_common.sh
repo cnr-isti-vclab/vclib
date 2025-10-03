@@ -31,6 +31,8 @@
 #define u_normalMatrix mtxFromCols( \
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
 
+#define LIGHT_COUNT 2
+
 /**
  * @brief Convert an uint color in ABGR format to a vec4 float color.
  * @param[in] color: The input color.
@@ -98,8 +100,6 @@ const float ONE_OVER_PI = 0.318309;
 const float EPSILON = 0.00001; // small constant
 
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
-
-const int LIGHT_COUNT = 2;
 
 const vec3 lightKeyDir = vec3(
     0.5000000108991332,
