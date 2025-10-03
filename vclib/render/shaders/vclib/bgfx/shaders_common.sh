@@ -221,7 +221,7 @@ vec3 F(
     // F0 is the surface's response at normal incidence (aka base reflectivity)
     // The amount of light reflected when looking at a surface with a 0 degree angle (right above)
     // 0.04 is an approximation averaged around many dielectric materials
-    vec3 F0 = vec3(0.04);
+    vec3 F0 = vec3(0.04, 0.04, 0.04);
 
     // Metals have the surface color as base reflectivity since no light gets absorbed
     // The interpolation is needed as we consider the metallic value as ranged instead of binary
@@ -303,7 +303,7 @@ vec3 pbrColor(
 {
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
-    vec3 finalColor = vec3(0.0);
+    vec3 finalColor = vec3(0.0,0.0,0.0);
 
     for(int i = 0; i < LIGHT_COUNT; ++i)
     {
@@ -317,7 +317,7 @@ vec3 pbrColor(
         vec3 H = normalize(V + lightDir);
         
         vec3 ks = F(H, V, color, metallic);
-        vec3 kd = vec3(1.0) - ks;
+        vec3 kd = vec3(1.0, 1.0, 1.0) - ks;
 
         // metals do not refract light, they just absorb it (or reflect it immediately),
         // so there should not be any diffuse light in case of a metal
@@ -335,9 +335,9 @@ vec3 pbrColor(
     }
 
     // tone mapping - Reinhard operator
-    finalColor = finalColor / (finalColor + vec3(1.0));
+    //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));
 
     // gamma correction
-    return pow(finalColor, vec3(1.0/2.2));
+    return pow(finalColor, vec3(1.0/2.2, 1.0/2.2, 1.0/2.2));
 }
 #endif // VCL_EXT_BGFX_SHADERS_COMMON_SH

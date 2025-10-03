@@ -113,12 +113,12 @@ void main()
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERT_MAT))) {
 
         vec3 lightDirections[2] = {lightKeyDir, lightFillDir};
-        vec3 lightColors[2] = {vec3(1.0), vec3(1.0)};
+        vec3 lightColors[2] = {vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0)};
         float lightIntensities[2] = {1.0, 0.5};
 
         color = vec4(pbrColor(
                 v_position,
-                vec3(0.0), // camera position
+                vec3(0.0, 0.0, 0.0), // camera position
                 lightDirections,
                 lightColors,
                 lightIntensities,
