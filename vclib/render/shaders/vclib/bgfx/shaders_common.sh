@@ -338,8 +338,9 @@ vec4 pbrColor(
     //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));
 
     // gamma correction
-    finalColor = pow(finalColor, vec3(1.0/2.2, 1.0/2.2, 1.0/2.2));
-    
+    float oneOverGamma = 1.0 / 2.2;
+    finalColor = pow(abs(finalColor), vec3(oneOverGamma, oneOverGamma, oneOverGamma));
+
     return vec4(finalColor.x, finalColor.y, finalColor.z, 1.0);
 }
 #endif // VCL_EXT_BGFX_SHADERS_COMMON_SH
