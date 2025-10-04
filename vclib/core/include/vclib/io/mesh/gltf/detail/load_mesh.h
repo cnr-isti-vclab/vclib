@@ -36,6 +36,11 @@
 
 namespace vcl::detail {
 
+// Default values for glTF PBR material properties according to glTF 2.0 specification
+static const vcl::Color kGltfDefaultBaseColor = vcl::Color(255, 255, 255, 255);
+static const double kGltfDefaultMetallic = 1.0;
+static const double kGltfDefaultRoughness = 1.0;
+
 enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES };
 inline const std::array<std::string, 4> GLTF_ATTR_STR {
     "POSITION",
@@ -64,6 +69,9 @@ int loadGltfPrimitiveMaterial(
                 for (uint i = 0; i < 4; i++)
                     color[i] = vc[i] * 255.0;
         }
+        else {
+            color = kGltfDefaultBaseColor;
+        }
 
         // baseColorTexture
         it = mat.values.find("baseColorTexture");
@@ -77,12 +85,12 @@ int loadGltfPrimitiveMaterial(
         // metallicFactor
         it = mat.values.find("metallicFactor");
         metallic = it != mat.values.end() && it->second.has_number_value?
-            it->second.number_value : 0.;
+            it->second.number_value : kGltfDefaultMetallic;
 
         // roughnessFactor
         it = mat.values.find("roughnessFactor");
         roughness = it != mat.values.end() && it->second.has_number_value?
-            it->second.number_value : 0.5;
+            it->second.number_value : kGltfDefaultRoughness;
 
         /* Put the data in the mesh */
 
