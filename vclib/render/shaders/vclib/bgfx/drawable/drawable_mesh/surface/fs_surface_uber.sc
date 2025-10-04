@@ -117,12 +117,12 @@ void main()
         float lightIntensities[2] = {1.0, 0.5};
 
         gl_FragColor = pbrColor(
-            v_position,
+            v_position.xyz,
             vec3(0.0, 0.0, 0.0), // camera position
             lightDirections,
             lightColors,
             lightIntensities,
-            u_materialColor,
+            u_materialColor.rgb,
             normal,
             u_metallicRoughness.r, // metallic
             u_metallicRoughness.g  // roughness
