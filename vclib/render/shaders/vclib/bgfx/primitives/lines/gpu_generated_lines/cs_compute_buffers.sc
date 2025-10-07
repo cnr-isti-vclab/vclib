@@ -31,8 +31,8 @@ BUFFER_RO(vertNormals,       vec4,  2);
 BUFFER_RO(vertColors,        uvec4, 3);
 BUFFER_RO(lineColor,         uvec4, 4);
 
-BUFFER_WO(vertexBuffer,      vec4,  5);
-BUFFER_WO(indexBuffer,       uvec4, 6); 
+BUFFER_WO(vertexBuffer,      float, 5);
+BUFFER_WO(indexBuffer,       uint,  6); 
 
 uniform vec4 u_ActiveBuffers; // x = line indices, y = normals, z = colors, w = line colors
 
@@ -58,7 +58,7 @@ uniform vec4 u_ActiveBuffers; // x = line indices, y = normals, z = colors, w = 
 
 NUM_THREADS(2, 2, 1)
 void main() {
-    uint baseIndex = (gl_WorkGroupID.x * 16) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 4);
+    uint baseIndex = (gl_WorkGroupID.x * 60) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 15);
     uint index0 = (gl_WorkGroupID.x * 2);
     uint index1 = (gl_WorkGroupID.x * 2) + 1;
 
@@ -89,19 +89,36 @@ void main() {
         lineC  = lineColor(gl_WorkGroupID.x);
     }
 
-    vertexBuffer[baseIndex] = vec4(p0.x, p0.y, p0.z, p1.x);
-    vertexBuffer[baseIndex + 1] = vec4(p1.y, p1.z, uintBitsToFloat(color0), uintBitsToFloat(color1));
-    vertexBuffer[baseIndex + 2] = vec4(normal0.x, normal0.y, normal0.z, normal1.x);
-    vertexBuffer[baseIndex + 3] = vec4(normal1.y, normal1.z, uintBitsToFloat(lineC), 0.0);
+    vertexBuffer[baseIndex]      = p0.x;
+    vertexBuffer[baseIndex + 1]  = p0.y;
+    vertexBuffer[baseIndex + 2]  = p0.z;
+
+    vertexBuffer[baseIndex + 3]  = p1.x;
+    vertexBuffer[baseIndex + 4]  = p1.y;
+    vertexBuffer[baseIndex + 5]  = p1.z;
+
+    vertexBuffer[baseIndex + 6]  = uintBitsToFloat(color0);
+    vertexBuffer[baseIndex + 7]  = uintBitsToFloat(color1);
+
+    vertexBuffer[baseIndex + 8]  = normal0.x;
+    vertexBuffer[baseIndex + 9]  = normal0.y;
+    vertexBuffer[baseIndex + 10] = normal0.z;
+
+    vertexBuffer[baseIndex + 11] = normal1.x;
+    vertexBuffer[baseIndex + 12] = normal1.y;
+    vertexBuffer[baseIndex + 13] = normal1.z;
+
+    vertexBuffer[baseIndex + 14] = uintBitsToFloat(lineC);
+
 
     if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {
-        indexBuffer[uint((6 * gl_WorkGroupID.x) + 0) / 4][uint((6 * gl_WorkGroupID.x) + 0) % 4] = (gl_WorkGroupID.x * 4);
-        indexBuffer[uint((6 * gl_WorkGroupID.x) + 1) / 4][uint((6 * gl_WorkGroupID.x) + 1) % 4] = (gl_WorkGroupID.x * 4) + 3;
-        indexBuffer[uint((6 * gl_WorkGroupID.x) + 2) / 4][uint((6 * gl_WorkGroupID.x) + 2) % 4] = (gl_WorkGroupID.x * 4) + 1;
+        indexBuffer[(6 * gl_WorkGroupID.x) + 0] = (gl_WorkGroupID.x * 4);
+        indexBuffer[(6 * gl_WorkGroupID.x) + 1] = (gl_WorkGroupID.x * 4) + 3;
+        indexBuffer[(6 * gl_WorkGroupID.x) + 2] = (gl_WorkGroupID.x * 4) + 1;
 
-        indexBuffer[uint((6 * gl_WorkGroupID.x) + 3) / 4][uint((6 * gl_WorkGroupID.x) + 3) % 4] = (gl_WorkGroupID.x * 4);
-        indexBuffer[uint((6 * gl_WorkGroupID.x) + 4) / 4][uint((6 * gl_WorkGroupID.x) + 4) % 4] = (gl_WorkGroupID.x * 4) + 2;
-        indexBuffer[uint((6 * gl_WorkGroupID.x) + 5) / 4][uint((6 * gl_WorkGroupID.x) + 5) % 4] = (gl_WorkGroupID.x * 4) + 3;
+        indexBuffer[(6 * gl_WorkGroupID.x) + 3] = (gl_WorkGroupID.x * 4);
+        indexBuffer[(6 * gl_WorkGroupID.x) + 4] = (gl_WorkGroupID.x * 4) + 2;
+        indexBuffer[(6 * gl_WorkGroupID.x) + 5] = (gl_WorkGroupID.x * 4) + 3;
     }
 
 }
