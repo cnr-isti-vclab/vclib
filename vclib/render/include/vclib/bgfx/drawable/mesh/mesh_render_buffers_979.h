@@ -223,7 +223,6 @@ public:
         SelectionBox minMaxBox = box.toMinAndMax();
         Point2d      minPt     = minMaxBox.get1().value_or(Point2d(0.0, 0.0));
         Point2d      maxPt     = minMaxBox.get2().value_or(Point2d(0.0, 0.0));
-        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
 
         float temp[] = {
             float(minPt.x()),
@@ -235,6 +234,7 @@ public:
         std::array<float, 4> temp2;
 
         if (mode.isVertexSelection()) {
+            mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
             mVertexPositionsBuffer.bindCompute(
                 VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
             temp2 = {
@@ -252,11 +252,6 @@ public:
                 mVertexSelectionWorkgroupSize[2]);
         }
 
-        // The face selection program calculates which faces(triangles) are
-        // selected. Since it uses the vertex selection buffer to do so, it
-        // requires a vertex selection beforehand. The way the vertex selection
-        // buffer is interpreted depends exclusively on the Face Selection
-        // Program.
         if (mode.isFaceSelection()) {
             if (!mSelectedFacesBuffer.has_value()) {
                 return;
@@ -265,9 +260,9 @@ public:
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
-                vcl::Uniform::uintBitsToFloat(Base::numTris() * 3)};
+                vcl::Uniform::uintBitsToFloat(Base::numTris())};
+            mVertexPositionsBuffer.bindCompute(VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
             mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
-            mVertexPositionsBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
             mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
             mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
                 (void*) temp2.data());
@@ -675,7 +670,9 @@ private:
 
         Base::fillTriangleIndices(mesh, buffer);
 
-        mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
+        //Triangle index buffer required in a compute
+        //mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
+        mTriangleIndexBuffer.createForCompute(buffer, nt * 3, vcl::PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override

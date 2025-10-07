@@ -30,7 +30,7 @@ void main() {
 
     uint bufferIndex = uint(gl_PrimitiveID) / 32;
     uint bitMask = 0x1 << (31 - (uint(gl_PrimitiveID) % 32));
-    if(face_selected[bufferIndex] & bitMask != 0) {
+    if((face_selected[bufferIndex] & bitMask) != 0) {
         gl_FragColor = uintABGRToVec4Color(uint(0x330000FF));
     } else {
         gl_FragColor = uintABGRToVec4Color(uint(0x00000000));

@@ -34,6 +34,8 @@
 
 #include <bgfx/bgfx.h>
 
+#include <bitset>
+
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -290,14 +292,13 @@ public:
                     for (size_t index = 0; index < this->faceNumber(); index++) {
                         auto* non_const_this = const_cast<DrawableMeshBGFX979<MeshType>*>(this);
                         auto& face = non_const_this->face(index);
-                        size_t bufToVecIndex = index/8;
-                        uint8_t bufToVecBitMask = uint8_t(1) << uint8_t(7-(index%8));
+                        size_t uint32Idx = size_t(index/32);
                         // TODO: remove when figured out why it does not work
-                        if (index % 8 == 0) {
-                            std::cout << (uint)mBufToTexVec[bufToVecIndex] << std::endl;
-                        }
-                        if(mBufToTexVec[bufToVecIndex] & bufToVecBitMask) {
-                            face.color() = vcl::Color(200, 20, 20, 255);
+                        if (index % 32 == 0) {
+                            std::cout << std::bitset<8>(mBufToTexVec[uint32Idx * 4]) << " " 
+                            << std::bitset<8>(mBufToTexVec[uint32Idx * 4 + 1]) << " "
+                            << std::bitset<8>(mBufToTexVec[uint32Idx * 4 + 2]) << " "
+                            << std::bitset<8>(mBufToTexVec[uint32Idx * 4 + 3]) << std::endl;
                         }
                     }
                     break;
@@ -374,7 +375,7 @@ public:
         // bindUniforms();
         // mMRB.bindSelectedVerticesBuffer();
 // 
-        // bgfx::setState(state | BGFX_STATE_BLEND_NORMAL);
+        // bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS);
         // bgfx::setTransform(model.data());
 // 
         // bgfx::submit(viewId, selDrawProg);

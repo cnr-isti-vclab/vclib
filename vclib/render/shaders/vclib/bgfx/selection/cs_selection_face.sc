@@ -28,7 +28,7 @@ BUFFER_RO(indices, uint, 5);
 BUFFER_RW(face_selected, uint, 6); // is face selected? 1 bit per face...
 
 uniform vec4 u_selectionBox; // screen space
-uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contain the index count (i.e. numTris * 3)
+uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contain the face count (i.e. numTris)
 
 // THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
 // Possibility: uniform containing selection box passed already in NDC space? It's probably doable
@@ -36,13 +36,13 @@ uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contai
 NUM_THREADS(1, 1, 1) // 1 'thread' per face, or 1 'thread' per 3 indices
 void main()
 {
-    uint indexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
+    uint faceCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
     uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
     uint faceIndex = (gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z);
     uint indicesBaseIndex = 3 * faceIndex;
     uvec3 idcs = uvec3(indices[indicesBaseIndex], indices[indicesBaseIndex + 1], indices[indicesBaseIndex + 2]);
 
-    if(indicesBaseIndex >= indexCount) {
+    if(faceIndex >= faceCount) {
         return;
     }
 
@@ -53,7 +53,7 @@ void main()
 
     vec3 maxNDC = vec3(
         (maxX - u_viewRect.x) / max(1, u_viewRect.z) * 2 - 1,
-        1 - ((minY - u_viewRect.y) / max(1, u_viewRect.w) * 2),
+        1 - ((minY - u_viewRect.y) / max(1, u_viewRect.w)) * 2,
         1
     );
     vec3 minNDC = vec3(
@@ -62,36 +62,16 @@ void main()
         0
     );
 
-    mat3 triVertPositions;
-
-    uint indexx = idcs[indicesBaseIndex]*3;
-    uint indexy = indexx+1;
-    uint indexz = indexx+2;
-
-    triVertPositions[0].x = positions[indexx/4][indexx%4];
-    triVertPositions[0].y = positions[indexy/4][indexy%4];
-    triVertPositions[0].z = positions[indexz/4][indexz%4];
-
-    indexx = idcs[indicesBaseIndex + 1]*3;
-    indexy = indexx+1;
-    indexz = indexx+2;
-
-    triVertPositions[1].x = positions[indexx/4][indexx%4];
-    triVertPositions[1].y = positions[indexy/4][indexy%4];
-    triVertPositions[1].z = positions[indexz/4][indexz%4];
-
-    indexx = idcs[indicesBaseIndex + 2]*3;
-    indexy = indexx+1;
-    indexz = indexx+2;
-
-    triVertPositions[2].x = positions[indexx/4][indexx%4];
-    triVertPositions[2].y = positions[indexy/4][indexy%4];
-    triVertPositions[2].z = positions[indexz/4][indexz%4];
+    mat3 poss = mat3(
+        positions[(idcs[0] * 3) / 4][(idcs[0] * 3) % 4], positions[(idcs[0] * 3 + 1) / 4][(idcs[0] * 3 + 1) % 4], positions[(idcs[0] * 3 + 2) / 4][(idcs[0] * 3 + 2) % 4],
+        positions[(idcs[1] * 3) / 4][(idcs[1] * 3) % 4], positions[(idcs[1] * 3 + 1) / 4][(idcs[1] * 3 + 1) % 4], positions[(idcs[1] * 3 + 2) / 4][(idcs[1] * 3 + 2) % 4],
+        positions[(idcs[2] * 3) / 4][(idcs[2] * 3) % 4], positions[(idcs[2] * 3 + 1) / 4][(idcs[2] * 3 + 1) % 4], positions[(idcs[2] * 3 + 2) / 4][(idcs[2] * 3 + 2) % 4]
+    );
 
     uint slctd = 1;
     for (uint i = 0; i < 3; i++) {
-        vec4 pNDC = mul(u_modelViewProj, vec4(triVertPositions[i][0], triVertPositions[i][1], triVertPositions[i][2], 1));
-        pNDC = pNDC / pNDC.w;
+        vec4 pNDC = mul(u_modelViewProj, vec4(poss[i].xyz, 1));
+        pNDC = pNDC / (pNDC.w == 0? 1 : pNDC.w);
         if (!(pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y && pNDC.z >= minNDC.z && pNDC.z <= maxNDC.z)) {
             slctd = 0;
             break;
