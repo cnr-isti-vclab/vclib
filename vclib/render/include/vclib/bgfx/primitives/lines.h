@@ -439,16 +439,6 @@ public:
     /**
      * @brief Returns the thickness of the lines (in pixels).
      * @return The thickness of the lines (in pixels).
-            break;
-        default: break;
-        }
-        updateShadingCapability(vertNormals);
-        updateColorCapability(vertColors, lineColors);
-    }
-
-    /**
-     * @brief Returns the thickness of the lines (in pixels).
-     * @return The thickness of the lines (in pixels).
      */
     float thickness() const { return mThickness; }
 
