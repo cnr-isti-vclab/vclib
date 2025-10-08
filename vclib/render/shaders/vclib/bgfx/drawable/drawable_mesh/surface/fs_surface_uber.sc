@@ -122,7 +122,7 @@ void main()
             lightDirections,
             lightColors,
             lightIntensities,
-            u_materialColor.rgb,
+            u_materialColor.rgb * v_color.rgb, // multiply vertex color with material base color
             normal,
             u_metallicRoughness.r, // metallic
             u_metallicRoughness.g  // roughness
