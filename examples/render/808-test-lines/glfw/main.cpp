@@ -84,6 +84,7 @@ public:
         ImGui::Begin("Settings");
         bool indexed = mIndexed;
         ImGui::Checkbox("Indexed", &indexed);
+
         if (indexed != mIndexed) {
             auto t   = mLines->thickness();
             auto c   = mLines->colorToUse();
@@ -98,10 +99,6 @@ public:
         }
 
         ImGui::SliderFloat("Thickness", &mLines->thickness(), 1.0f, 100.0f);
-
-        bool shadingPerVertex = mLines->shadingPerVertex();
-        ImGui::Checkbox("Shading per Vertex", &shadingPerVertex);
-        mLines->setShading(shadingPerVertex);
 
         const char* colorToUseItems[] = {"Per Vertex", "Per Edge", "General"};
         int         colorToUse        = vcl::toUnderlying(mLines->colorToUse());

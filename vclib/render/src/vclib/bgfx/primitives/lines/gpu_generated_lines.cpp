@@ -105,9 +105,9 @@ void GPUGeneratedLines::setPoints(
     const std::vector<uint>&  vertColors,
     const std::vector<uint>&  lineColors)
 {
-    std::vector<uint> lineIndices;
+    std::vector<uint> emptyIndices;
     setPoints(
-        false, vertCoords, lineIndices, vertNormals, vertColors, lineColors);
+        false, vertCoords, emptyIndices, vertNormals, vertColors, lineColors);
 }
 
 void GPUGeneratedLines::setPoints(

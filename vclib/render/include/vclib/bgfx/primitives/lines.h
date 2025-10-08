@@ -216,6 +216,41 @@ public:
         setColorToUse(colorToUse);
     }
 
+    Lines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals,
+        const VertexBuffer& vertexColors ,
+        const VertexBuffer& lineColors, 
+        float                     thickness        = 5.0f,
+        bool                      shadingPerVertex = false,
+        ColorToUse                colorToUse       = ColorToUse::GENERAL,
+        ImplementationType        type = ImplementationType::COUNT) :
+            mThickness(thickness)
+    {
+        setPoints(pointsSize, vertexCoords, vertexNormals, vertexColors, lineColors, type);
+        setShading(shadingPerVertex);
+        setColorToUse(colorToUse);
+    }
+
+    Lines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals,
+        const VertexBuffer& vertexColors,
+        const VertexBuffer& lineColors, 
+        float                     thickness        = 5.0f,
+        bool                      shadingPerVertex = false,
+        ColorToUse                colorToUse       = ColorToUse::GENERAL,
+        ImplementationType        type = ImplementationType::COUNT) :
+            mThickness(thickness)
+    {
+        setPoints(pointsSize, vertexCoords, lineIndices, vertexNormals, vertexColors, lineColors, type);
+        setShading(shadingPerVertex);
+        setColorToUse(colorToUse);
+    }
+
     /**
      * @brief Sets the points of the lines.
      *
@@ -342,6 +377,68 @@ public:
                     vertNormals,
                     vertColors,
                     lineColors);
+            break;
+        default: break;
+        }
+        updateShadingCapability(vertNormals);
+        updateColorCapability(vertColors, lineColors);
+    }
+
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer(),
+        ImplementationType  type          = ImplementationType::COUNT)
+    {
+        IndexBuffer emptyIndices;
+        setPoints(
+            pointsSize,
+            vertexCoords,
+            emptyIndices,
+            vertexNormals,
+            vertexColors,
+            lineColors,
+            type);
+    }
+
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const VertexBuffer& lineColors    = VertexBuffer(),
+        ImplementationType  type          = ImplementationType::COUNT)
+    {
+        using enum ImplementationType;
+        using namespace detail;
+
+        if (type == COUNT)
+            type = ImplementationType::GPU_GENERATED;
+        setImplementationType(type);
+
+        switch (mType) {
+        case GPU_GENERATED:
+            std::get<detail::GPUGeneratedLines>(mLinesImplementation)
+                .setPoints(
+                    pointsSize,
+                    vertexCoords,
+                    lineIndices,
+                    vertexNormals,
+                    vertexColors,
+                    lineColors);
+            break;
+        default: break;
+        }
+        updateShadingCapability(vertexNormals);
+        updateColorCapability(vertexColors, lineColors);
+    }
+
+    /**
+     * @brief Returns the thickness of the lines (in pixels).
+     * @return The thickness of the lines (in pixels).
             break;
         default: break;
         }
@@ -522,6 +619,26 @@ private:
 
         mColorCapability[toUnderlying(PER_VERTEX)] = !vertColors.empty();
         mColorCapability[toUnderlying(PER_EDGE)]   = !lineColors.empty();
+
+        if (!mColorCapability[toUnderlying(mColorToUse)])
+            mColorToUse = GENERAL;
+    }
+
+    void updateShadingCapability(const VertexBuffer& vertexNormals)
+    {
+        mShadingPerVertexCapability = vertexNormals.isValid();
+        if (!mShadingPerVertexCapability)
+            mShadingPerVertex = false;
+    }
+
+    void updateColorCapability(
+        const VertexBuffer& vertexColors,
+        const VertexBuffer& lineColors)
+    {
+        using enum ColorToUse;
+
+        mColorCapability[toUnderlying(PER_VERTEX)] = vertexColors.isValid();
+        mColorCapability[toUnderlying(PER_EDGE)]   = lineColors.isValid();
 
         if (!mColorCapability[toUnderlying(mColorToUse)])
             mColorToUse = GENERAL;
