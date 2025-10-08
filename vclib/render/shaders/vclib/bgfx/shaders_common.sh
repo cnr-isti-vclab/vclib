@@ -144,48 +144,31 @@ float D_GGX(
 }
 
 /**
- * @brief GGX version of Smith's G component.
- * Smith breaks G into two components: light and view, and uses the same equation for both.
- * Many versions of the equation exist.
+ * @brief GGX version of the Visibility function.
+ * The Visibility function or just V determines the odds for a microfacet of not being occluded by some other
+ * microfacet. It accounts for both masking and shadowing of microfacets.
  * @param[in] N: The fragment normal, must be normalized.
- * @param[in] V: Here V as just Vector, it's either the incoming light direction or view direction, must be normalized.
+ * @param[in] V: The view direction, must be normalized.
+ * @param[in] L: The incoming light direction, must be normalized.
  * @param[in] alpha: The material's roughness squared.
- * @return The light or view component.
+ * @return .
  */
-float G1_GGX(
+float V_GGX(
     vec3 N,
     vec3 V,
+    vec3 L,
     float alpha)
 {
     float alpha2 = alpha * alpha;
     float NoV = max(dot(N, V), 0.0);
-    float NoV2 = NoV * NoV;
-    float num = 2 * NoV;
-    float denom = NoV + sqrt(alpha2 + (1 - alpha2) * NoV2);
-    return num / denom;
-}
-
-/**
- * @brief Geometry function by Smith.
- * Smith breaks G into two components: light and view, and uses the same equation for both.
- * Many versions of the equation exist.
- * The Light component accounts for the occlusion of the light by other microfacets (geometry shadowing).
- * The View component accounts for the occlusion of the view by other microfacets (geometry obstruction).
- * @param[in] N: The fragment normal, must be normalized.
- * @param[in] L: The incoming light direction, must be normalized.
- * @param[in] V: The view direction, must be normalized.
- * @param[in] alpha: The material's roughness squared.
- * @return The odds for a microfacet of not being occluded by some other microfacet.
- */
-float G_Smith(
-    vec3 N,
-    vec3 L,
-    vec3 V,
-    float alpha)
-{
-    return 
-    G1_GGX(N, L, alpha) * // light
-    G1_GGX(N, V, alpha);  // view
+    float NoL = max(dot(N, L), 0.0);
+    float GGXV = NoL * sqrt(NoV * NoV * (1.0 - alpha) + alpha);
+    float GGXL = NoV * sqrt(NoL * NoL * (1.0 - alpha) + alpha);
+    float GGX = GGXV + GGXL;
+    if(GGX > 0.0)
+        return 0.5 / GGX;
+    else
+        return 0.0;
 }
 
 /**
@@ -236,8 +219,8 @@ vec3 F(
  * It consists of two major components of which many versions exist:
  *  - The NDF (Normal Distribution Function) or just D determines the odds for a microfacet normal 
  *  to be aligned with the halfway vector H.
- *  - The Geometry function or just G determines the odds for a microfacet of not being occluded by some other
- *  microfacet; together with the denominator (here denom) they are known as the Visibility function.
+ *  - The Visibility function or just V determines the odds for a microfacet of not being occluded by some other
+ *  microfacet.
  * @param[in] V: The view direction, must be normalized.
  * @param[in] H: The halfway vector, must be normalized.
  * @param[in] N: The fragment normal, must be normalized.
@@ -253,15 +236,10 @@ float pbrSpecular(
     vec3 L,
     float roughness)
 {
-    // Many versions of D and G remap the roughness parameter.
+    // Many versions of D and V remap the roughness parameter.
     // This is done for better looks and/or to make the parameter more easily editable by artists.
     float alpha = roughness * roughness;
-
-    float NoV = max(dot(N, V), 0.0);
-    float NoL = max(dot(N, L), 0.0);
-    float num = D_GGX(N, H, alpha) * G_Smith(N, L, V, alpha);
-    float denom = 4 * NoV * NoL + EPSILON; // EPSILON prevents divisions by 0.
-    return num / denom;
+    return D_GGX(N, H, alpha) * V_GGX(N, L, V, alpha);
 }
 
 /**
