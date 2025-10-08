@@ -95,7 +95,7 @@ vec3 computeSpecular(
         vPos, cameraEyePos, lightDir, lightColor, normal, 0.3);
 }
 
-const float PI = 3.14159265359;
+const float PI = 3.141592653589793;
 const float ONE_OVER_PI = 0.318309;
 const float EPSILON = 0.00001; // small constant
 
