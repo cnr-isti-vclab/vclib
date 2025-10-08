@@ -318,8 +318,12 @@ public:
             actualWorkgroupSize[0],
             actualWorkgroupSize[1],
             actualWorkgroupSize[2]);
+        
+        // If you don't use a "later" view to do the blitting you'll get the correct result on the next frame
+        // ISSUE: first 2 reads are just 0s regardless of what you actually select
+        bgfx::ViewId blitViewId = vcl::Context::instance().requestViewId();
         bgfx::blit(
-            viewId,
+            blitViewId,
             texCPUHandle,
             0,
             0,
@@ -328,6 +332,7 @@ public:
             0,
             texSize[0],
             texSize[1]);
+        vcl::Context::instance().releaseViewId(blitViewId);
         bgfx::readTexture(texCPUHandle, texReadLoc.data());
         return 2;
     }
