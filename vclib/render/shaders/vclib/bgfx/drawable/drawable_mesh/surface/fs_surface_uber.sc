@@ -25,6 +25,8 @@ $input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+#define PBR_VERTEX_COLOR_AVAILABLE 0
+
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 BUFFER_RO(triTextureIds, uint, VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);  // wedge ids of each face
@@ -116,13 +118,17 @@ void main()
         vec3 lightColors[2] = {vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0)};
         float lightIntensities[2] = {1.0, 0.5};
 
+        vec3 vertexColor; 
+        if(bool(((int) u_settings.x) & posToBitFlag(PBR_VERTEX_COLOR_AVAILABLE))) vertexColor = v_color.rgb; // per-vertex color available
+        else vertexColor = vec3(1.0, 1.0, 1.0); // no per-vertex color available, use white
+
         gl_FragColor = pbrColor(
             v_position.xyz,
             vec3(0.0, 0.0, 0.0), // camera position
             lightDirections,
             lightColors,
             lightIntensities,
-            u_materialColor.rgb * v_color.rgb, // multiply vertex color with material base color
+            u_materialColor.rgb * vertexColor, // multiply vertex color with material base color
             normal,
             u_metallicRoughness.r, // metallic
             u_metallicRoughness.g  // roughness

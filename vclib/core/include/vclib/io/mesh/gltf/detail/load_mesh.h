@@ -231,13 +231,6 @@ bool populateGltfVColors(
             enableIfPerVertexColorOptional(m);
 
         if (isPerVertexColorAvailable(m)) {
-            if(colorArray == nullptr) {
-                // colorArray is empty
-                // vertices must exist since populateGltfVertices has been called
-                for(auto& v : m.vertices())
-                    v.color() = vcl::Color::White; // set white color
-                return true;
-            }
             for (unsigned int i = 0; i < vertNumber * nElemns; i += nElemns) {
                 const Scalar* colorBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(colorArray) +
@@ -405,8 +398,7 @@ bool populateGltfAttr(
  * vector ivp. For all the other parameters, ivp is a const input.
  *
  * If the primitive does not contain the attribute attr, nothing is done.
- * However, if the attribute is POSITION, then a MLException will be thrown,
- * and if the attribute is COLOR_0, the vertex color will be set to white.
+ * However, if the attribute is POSITION, then a MLException will be thrown.
  *
  *
  * @param m
@@ -555,19 +547,6 @@ bool loadGltfAttribute(
                 accessor->count,
                 textID);
         }
-    }
-    // if accessor not found and attribute is color, set white color
-    // by passing nullptr as data
-    else if (attr == COLOR_0) {
-        return populateGltfAttr<unsigned char>(
-            attr,
-            m,
-            startingVertex,
-            enableOptionalComponents,
-            nullptr,
-            0,
-            0,
-            4);
     }
     // if accessor not found and attribute is indices, it means that
     // the mesh is not indexed, and triplets of contiguous vertices

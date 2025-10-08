@@ -40,6 +40,8 @@ class DrawableMeshUniforms
         0.0, 
         0.0};
 
+    float mSettings[4] = {0.0, 0.0, 0.0, 0.0};
+
     float mModelMatrix[16] = { // identity matrix
         1.0,
         0.0,
@@ -64,6 +66,8 @@ class DrawableMeshUniforms
 
     Uniform mMetallicRoughnessUniform = Uniform("u_metallicRoughness", bgfx::UniformType::Vec4);
 
+    Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
+
     // ShaderUniform modelUH =
     //     ShaderUniform("u_model", bgfx::UniformType::Mat4);
 
@@ -75,6 +79,8 @@ public:
     const float* currentMaterialColor() const { return mMaterialColor; }
 
     const float* currentMetallicRoughness() const { return mMetallicRoughness; }
+
+    const float* currentSettings() const { return mSettings; }
 
     const float* currentModelMatrix() const { return mModelMatrix; }
 
@@ -96,6 +102,9 @@ public:
 
             mMetallicRoughness[0] = m.materials()[0].metallic();
             mMetallicRoughness[1] = m.materials()[0].roughness();
+
+            if(isPerVertexColorAvailable(m)) mSettings[0] = float(1 << 0); // per-vertex color available
+            else mSettings[0] = float(0);
         }
     }
 
@@ -104,6 +113,7 @@ public:
         mMeshColorUniform.bind(mMeshColor);
         mMaterialColorUniform.bind(mMaterialColor);
         mMetallicRoughnessUniform.bind(mMetallicRoughness);
+        mSettingsUniform.bind(mSettings);
         // modelUH.bind(mModelMatrix);
     }
 };
