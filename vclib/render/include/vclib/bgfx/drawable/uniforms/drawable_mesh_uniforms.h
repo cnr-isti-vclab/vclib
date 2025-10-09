@@ -95,16 +95,21 @@ public:
         }
 
         if constexpr (HasMaterials<MeshType>) {
-            mMaterialColor[0] = m.materials()[0].baseColor().redF();
-            mMaterialColor[1] = m.materials()[0].baseColor().greenF();
-            mMaterialColor[2] = m.materials()[0].baseColor().blueF();
-            mMaterialColor[3] = m.materials()[0].baseColor().alphaF();
 
-            mMetallicRoughness[0] = m.materials()[0].metallic();
-            mMetallicRoughness[1] = m.materials()[0].roughness();
+            int settings = 0;
+            if(isPerVertexColorAvailable(m)) settings |= 1 << 0; // per-vertex color available
+            if(isMaterialAvailable(m)) settings |= 1 << 1; // material available
+            mSettings[0] = float(settings);
 
-            if(isPerVertexColorAvailable(m)) mSettings[0] = float(1 << 0); // per-vertex color available
-            else mSettings[0] = float(0);
+            if(settings & 1 << 1) { // material available
+                mMaterialColor[0] = m.materials()[0].baseColor().redF();
+                mMaterialColor[1] = m.materials()[0].baseColor().greenF();
+                mMaterialColor[2] = m.materials()[0].baseColor().blueF();
+                mMaterialColor[3] = m.materials()[0].baseColor().alphaF();
+
+                mMetallicRoughness[0] = m.materials()[0].metallic();
+                mMetallicRoughness[1] = m.materials()[0].roughness();
+            }
         }
     }
 

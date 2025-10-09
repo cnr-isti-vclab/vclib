@@ -145,20 +145,6 @@ int loadGltfPrimitiveMaterial(
             }
         }
     }
-    else { // TODO: check if this makes sense
-        if constexpr (HasMaterials<MeshType>) {
-            m.pushMaterial(Material()); // why?
-            idx = m.materialsNumber() - 1; // index of the added material
-        }
-        if constexpr (HasTexturePaths<MeshType>) {
-            if (idx != -1) { // if the material has been loaded in the mesh
-                // the number of textures in the mesh must be the same as
-                // the number of materials (even if the material has no
-                // texture)
-                m.pushTexturePath("");
-            }
-        }
-    }
 
     return idx;
 }
