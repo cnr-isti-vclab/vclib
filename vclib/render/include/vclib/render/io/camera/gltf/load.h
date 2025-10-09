@@ -30,15 +30,14 @@
 
 #include <tiny_gltf.h>
 
-#include <fstream>
 #include <string>
 
 namespace vcl {
 
-namespace gltf {
-
 template<CameraConcept CameraType = Camera<float>>
-inline CameraType loadCamera(const std::string& filename, uint cameraIdx = 0)
+inline CameraType loadCameraGltf(
+    const std::string& filename,
+    uint               cameraIdx = 0)
 {
     CameraType camera;
     using Scalar = CameraType::ScalarType;
@@ -77,10 +76,10 @@ inline CameraType loadCamera(const std::string& filename, uint cameraIdx = 0)
     // Set projection mode and intrinsic parameters
     if (gltfCamera.type == "perspective") {
         camera.projectionMode() = CameraType::ProjectionMode::PERSPECTIVE;
-        camera.fieldOfView()     = gltfCamera.perspective.yfov * 180.0 / M_PI;
-        camera.aspectRatio()     = gltfCamera.perspective.aspectRatio;
-        camera.nearPlane()       = gltfCamera.perspective.znear;
-        camera.farPlane()        = gltfCamera.perspective.zfar;
+        camera.fieldOfView()    = gltfCamera.perspective.yfov * 180.0 / M_PI;
+        camera.aspectRatio()    = gltfCamera.perspective.aspectRatio;
+        camera.nearPlane()      = gltfCamera.perspective.znear;
+        camera.farPlane()       = gltfCamera.perspective.zfar;
     }
     else if (gltfCamera.type == "orthographic") {
         camera.projectionMode() = CameraType::ProjectionMode::ORTHO;
@@ -109,7 +108,8 @@ inline CameraType loadCamera(const std::string& filename, uint cameraIdx = 0)
                 forward = forward.normalized();
 
                 // Extract up direction (Y axis in camera space)
-                typename CameraType::PointType up(matrix[4], matrix[5], matrix[6]);
+                typename CameraType::PointType up(
+                    matrix[4], matrix[5], matrix[6]);
                 camera.up() = up.normalized();
 
                 // Calculate center (eye + forward * distance)
@@ -123,8 +123,6 @@ inline CameraType loadCamera(const std::string& filename, uint cameraIdx = 0)
 
     return camera;
 }
-
-} // namespace gltf
 
 } // namespace vcl
 

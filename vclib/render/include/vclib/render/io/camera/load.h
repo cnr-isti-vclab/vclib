@@ -54,6 +54,22 @@ inline std::set<FileFormat> loadCameraFormats()
     return ff;
 }
 
+template<CameraConcept CameraType = Camera<float>>
+inline CameraType loadCamera(const std::string& filename)
+{
+    FileFormat ff = FileInfo::fileFormat(filename);
+
+#ifdef VCLIB_WITH_TINYGLTF
+    if (ff == gltfFileFormat()) {
+        return loadCameraGltf(filename);
+    }
+    else
+#endif
+    {
+        throw UnknownFileFormatException(ff.extensions().front());
+    }
+}
+
 } // namespace vcl
 
 #endif // VCL_RENDER_IO_CAMERA_LOAD_H

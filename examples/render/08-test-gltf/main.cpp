@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <vclib/render/io/camera.h>
+#include <vclib/render/viewer/camera.h>
 
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>
@@ -44,6 +45,18 @@ int main(int argc, char** argv)
         getDrawableMesh<vcl::TriMesh>("gltf/DamagedHelmet/DamagedHelmet.gltf");
     showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
 
+    vcl::Camera<float> c = vcl::loadCamera<>(
+        VCLIB_EXAMPLE_MESHES_PATH
+        "/gltf/camera.gltf");
+
+    std::cerr << "Camera loaded from gltf file:\n";
+    std::cerr << "  Eye: " << c.eye().transpose() << "\n";
+    std::cerr << "  Center: " << c.center().transpose() << "\n";
+    std::cerr << "  Up: " << c.up().transpose() << "\n";
+    std::cerr << "  FOV: " << c.fieldOfView() << "\n";
+    std::cerr << "  Aspect: " << c.aspectRatio() << "\n";
+    std::cerr << "  Near: " << c.nearPlane() << "\n";
+    std::cerr << "  Far: " << c.farPlane() << "\n";
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
