@@ -98,7 +98,7 @@ public:
 
             int settings = 0;
             if(isPerVertexColorAvailable(m)) settings |= 1 << 0; // per-vertex color available
-            if(isMaterialAvailable(m)) settings |= 1 << 1; // material available
+            if(m.materialsNumber() > 0) settings |= 1 << 1; // material available
             mSettings[0] = float(settings);
 
             if(settings & 1 << 1) { // material available

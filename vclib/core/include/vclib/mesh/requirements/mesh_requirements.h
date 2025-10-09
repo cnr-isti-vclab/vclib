@@ -214,24 +214,6 @@ bool isCompact(const MeshType& m)
     return m.isCompact();
 }
 
-/**
- * @brief Checks if a Mesh has at least one Material.
- *
- * @return `true` if the mesh has at least one material, `false` otherwise.
- *
- * @ingroup mesh_requirements
- */
-template<MeshConcept MeshType>
-bool isMaterialAvailable(const MeshType& m)
-{
-    if constexpr (HasMaterials<MeshType>) {
-        return m.materialsNumber() > 0;
-    }
-    else {
-        return false;
-    }
-}
-
 /*********************
  * require functions *
  *********************/
