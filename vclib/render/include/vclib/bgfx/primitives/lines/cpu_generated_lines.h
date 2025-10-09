@@ -40,8 +40,8 @@ class CPUGeneratedLines
     VertexBuffer mVertexCoords;
     VertexBuffer mVertexNormals;
     VertexBuffer mVertexColors;
-    VertexBuffer mLineColors;
-
+    IndexBuffer mLineColors;
+    
     IndexBuffer mIndices;
 
 public:
