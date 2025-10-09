@@ -233,7 +233,30 @@ void PrimitiveLines::setPoints(
     assert(!setNormals || vertCoords.size() == vertNormals.size());
     assert(!setLineColors || vertColors.size() == lineColors.size() * 2);
 
+
     if (numElements > 1) {
+        auto [vNormals, vNormalsReleaseFn] =
+            linesGetAllocatedBufferAndReleaseFn<float>(vertCoords.size());
+
+        auto [vColors, vColorsReleaseFn] =
+            linesGetAllocatedBufferAndReleaseFn<uint>(numVertices);
+
+        if (!setNormals) {
+            for (uint i = 0; i < vertCoords.size(); i ++)
+                vNormals[i] = 0.0f;
+        } else {
+            std::copy(
+                vertNormals.begin(), vertNormals.end(), vNormals);
+        }
+
+        if (!setColors) {
+            for (uint i = 0; i < numVertices; ++i) 
+                vColors[i] = 0xffffffff;
+        } else {
+            std::copy(
+                vertColors.begin(), vertColors.end(), vColors);
+        }
+
         {
             bgfx::VertexLayout layout;
             layout.begin()
@@ -247,14 +270,7 @@ void PrimitiveLines::setPoints(
                     layout);
         }
 
-        if (setLineIndices) {
-            std::get<OWNED>(mIndices).create(
-                bgfx::makeRef(
-                    lineIndices.data(), sizeof(uint32_t) * lineIndices.size()),
-                BGFX_BUFFER_INDEX32);
-        }
-
-        if (setNormals) {
+        {
             bgfx::VertexLayout layout;
             layout.begin()
                 .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float, true)
@@ -263,11 +279,13 @@ void PrimitiveLines::setPoints(
             std::get<OWNED>(mVertexNormals)
                 .create(
                     bgfx::makeRef(
-                        vertNormals.data(), sizeof(float) * vertNormals.size()),
+                        vNormals, 
+                        sizeof(float) * vertCoords.size(), 
+                        vNormalsReleaseFn),
                     layout);
         }
 
-        if (setColors) {
+        {
             bgfx::VertexLayout layout;
             layout.begin()
                 .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
@@ -276,9 +294,17 @@ void PrimitiveLines::setPoints(
             std::get<OWNED>(mVertexColors)
                 .create(
                     bgfx::makeRef(
-                        vertColors.data(),
-                        sizeof(uint32_t) * vertColors.size()),
+                        vColors,
+                        sizeof(uint32_t) * numVertices,
+                        vColorsReleaseFn),
                     layout);
+        }
+
+        if (setLineIndices) {
+            std::get<OWNED>(mIndices).create(
+                bgfx::makeRef(
+                    lineIndices.data(), sizeof(uint32_t) * lineIndices.size()),
+                BGFX_BUFFER_INDEX32);
         }
 
         if (setLineColors) { 
