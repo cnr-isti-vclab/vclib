@@ -162,8 +162,8 @@ float V_GGX(
     float alpha2 = alpha * alpha;
     float NoV = max(dot(N, V), 0.0);
     float NoL = max(dot(N, L), 0.0);
-    float GGXV = NoL * sqrt(NoV * NoV * (1.0 - alpha) + alpha);
-    float GGXL = NoV * sqrt(NoL * NoL * (1.0 - alpha) + alpha);
+    float GGXV = NoL * sqrt(NoV * NoV * (1.0 - alpha2) + alpha2);
+    float GGXL = NoV * sqrt(NoL * NoL * (1.0 - alpha2) + alpha2);
     float GGX = GGXV + GGXL;
     if(GGX > 0.0)
         return 0.5 / GGX;
