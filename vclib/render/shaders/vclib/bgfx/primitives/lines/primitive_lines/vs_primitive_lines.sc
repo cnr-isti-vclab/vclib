@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal, a_color0, a_color1
+$input a_position, a_normal, a_color0
 $output v_color, v_normal
 
 #include <bgfx_shader.sh>
@@ -28,24 +28,12 @@ $output v_color, v_normal
 
 #include <vclib/bgfx/shaders_common.sh> 
 
-uniform vec4 u_settings;
-
-#define colorToUse            u_settings.y
-#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
-
 #define p                     a_position
 #define color                 a_color0
 #define normal                a_normal
-#define lineColor             a_color1
 
 void main() {
-    if (colorToUse == 0)
-        v_color = color;
-    else if (colorToUse == 1) 
-        v_color = lineColor;
-    else
-        v_color = generalColor;
-
+    v_color = color;
     v_normal = normalize(mul(u_normalMatrix, normal));
     gl_Position = mul(u_modelViewProj, vec4(p, 1.0));
 }
