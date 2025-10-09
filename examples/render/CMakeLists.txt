@@ -47,6 +47,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(05-two-window-viewers)
     add_subdirectory(06-viewer-imgui)
     add_subdirectory(07-test-texcoords)
+    add_subdirectory(08-test-gltf)
 
     add_subdirectory(801-camera-viewer)
     add_subdirectory(808-test-lines)
