@@ -35,8 +35,8 @@ class DrawableMeshUniforms
     float mMaterialColor[4] = {1.0, 1.0, 1.0, 1.0};
 
     float mMetallicRoughness[4] = {
-        0.0, // metallic
-        0.5, // roughness
+        1.0, // metallic
+        1.0, // roughness
         0.0, 
         0.0};
 
@@ -104,10 +104,9 @@ public:
 
             int settings = 0;
             if(isPerVertexColorAvailable(m)) settings |= 1 << 0; // per-vertex color available
-            if(m.materialsNumber() > 0) settings |= 1 << 1; // material available
             mSettings[0] = float(settings);
 
-            if(settings & 1 << 1) { // material available
+            if(m.materialsNumber() > 0) { // material available
                 mMaterialColor[0] = m.materials()[0].baseColor().redF();
                 mMaterialColor[1] = m.materials()[0].baseColor().greenF();
                 mMaterialColor[2] = m.materials()[0].baseColor().blueF();
