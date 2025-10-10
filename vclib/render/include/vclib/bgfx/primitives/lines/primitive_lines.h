@@ -73,7 +73,7 @@ public:
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
         const VertexBuffer& vertexColors  = VertexBuffer(),
-        const IndexBuffer& lineColors    = IndexBuffer());
+        const IndexBuffer&  lineColors    = IndexBuffer());
 
     PrimitiveLines(
         const uint          pointsSize,

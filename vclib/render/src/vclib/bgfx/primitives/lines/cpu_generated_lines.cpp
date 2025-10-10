@@ -130,9 +130,9 @@ void CPUGeneratedLines::setPoints(
         auto [indices, iReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
 
-        uint viCoords     = 0;
-        uint viColors     = 0;
-        uint viNormals    = 0;
+        uint viCoords  = 0;
+        uint viColors  = 0;
+        uint viNormals = 0;
 
         uint ii = 0;
         for (uint i = 0; i < nPoints - 1; i += 2) {
