@@ -33,14 +33,16 @@ int main(int argc, char** argv)
     std::string e1 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/OrientationTest/OrientationTest.gltf";
     std::string e2 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
     std::string e3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/metallic_roughness_grid.glb";
+    std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e1);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e2);
 
     for(auto& mesh : meshes) {
         for (auto& mat : mesh.materials()) {
-            std::cout << mat.baseColor() << std::endl;
-            std::cout << mat.metallic() << std::endl;
-            std::cout << mat.roughness() << std::endl << std::endl;
+            std::cout << "baseColorFactor: " << mat.baseColor() << std::endl;
+            std::cout << "metallicFactor: " << mat.metallic() << std::endl;
+            std::cout << "roughnessFactor: " << mat.roughness() << std::endl;
+            std::cout << "emissiveFactor: " << mat.emissiveColor() << std::endl << std::endl;
         }
     }
 

@@ -36,23 +36,33 @@ namespace vcl {
 // TODO - Add support for textures, normal maps, and other PBR properties.
 class Material
 {
+    // essential PBR properties
     vcl::Color mBaseColor;
 
     float mMetallic;
     float mRoughness;
 
+    // optional PBR properties
+    vcl::Color mEmissiveColor;
+
 public:
     Material() :
-            mBaseColor(vcl::Color(1.0f, 1.0f, 1.0f)), mMetallic(0.0f),
-            mRoughness(0.5f)
+            mBaseColor(vcl::Color(1.0f, 1.0f, 1.0f)), 
+            mMetallic(0.0f),
+            mRoughness(0.5f),
+            mEmissiveColor(vcl::Color(0.0f, 0.0f, 0.0f))
     {
     }
 
     Material(
         const vcl::Color& baseColor,
         float             metallic  = 0.0f,
-        float             roughness = 0.5f) :
-            mBaseColor(baseColor), mMetallic(metallic), mRoughness(roughness)
+        float             roughness = 0.5f,
+        const vcl::Color& emissiveColor = vcl::Color(0.0f, 0.0f, 0.0f)) :
+            mBaseColor(baseColor), 
+            mMetallic(metallic), 
+            mRoughness(roughness), 
+            mEmissiveColor(emissiveColor)
     {
     }
 
@@ -64,6 +74,9 @@ public:
 
     float roughness() const { return mRoughness; }
     float& roughness() { return mRoughness; }
+
+    const vcl::Color& emissiveColor() const { return mEmissiveColor; }
+    vcl::Color& emissiveColor() { return mEmissiveColor; }
 
     void serialize(std::ostream& os) const
     {

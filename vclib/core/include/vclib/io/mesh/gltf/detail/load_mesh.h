@@ -40,6 +40,7 @@ namespace vcl::detail {
 static const vcl::Color kGltfDefaultBaseColor = vcl::Color(255, 255, 255, 255);
 static const double kGltfDefaultMetallic = 1.0;
 static const double kGltfDefaultRoughness = 1.0;
+static const vcl::Color kGltfDefaultEmissiveColor = vcl::Color(0, 0, 0, 255);
 
 enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES };
 inline const std::array<std::string, 4> GLTF_ATTR_STR {
@@ -57,7 +58,7 @@ int loadGltfPrimitiveMaterial(
     int idx = -1;
 
     if(p.material >= 0) {
-        vcl::Color color;
+        vcl::Color baseColor, emissiveColor;
         double metallic, roughness;
         int textureImg = -1;
         const tinygltf::Material& mat = model.materials[p.material];
@@ -67,10 +68,10 @@ int loadGltfPrimitiveMaterial(
         if(it != mat.values.end()) {
             const std::vector<double>& vc = it->second.number_array;
                 for (uint i = 0; i < 4; i++)
-                    color[i] = vc[i] * 255.0;
+                    baseColor[i] = vc[i] * 255.0;
         }
         else {
-            color = kGltfDefaultBaseColor;
+            baseColor = kGltfDefaultBaseColor;
         }
 
         // baseColorTexture
@@ -92,17 +93,22 @@ int loadGltfPrimitiveMaterial(
         roughness = it != mat.values.end() && it->second.has_number_value?
             it->second.number_value : kGltfDefaultRoughness;
 
+        // emissiveFactor
+        const std::vector<double>& emissiveFactor = mat.emissiveFactor;
+        for (uint i = 0; i < 3; i++)
+            emissiveColor[i] = emissiveFactor[i] * 255.0;
+
         /* Put the data in the mesh */
 
         if constexpr (HasMaterials<MeshType>) {
-            m.pushMaterial(Material(color, metallic, roughness));
+            m.pushMaterial(Material(baseColor, metallic, roughness, emissiveColor));
             idx = m.materialsNumber() - 1; // index of the added material
         }
         // TODO: uncomment else here
         /*else*/ if constexpr (HasColor<MeshType>) {
             // base color is set to the mesh color only if the mesh has no
             // materials
-            m.color() = color;
+            m.color() = baseColor;
         }
 
         // texture is added even if the mesh has materials
