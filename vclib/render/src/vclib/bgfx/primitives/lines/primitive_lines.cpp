@@ -160,7 +160,7 @@ void PrimitiveLines::draw(uint viewId) const
         if (vcolors.isValid())
             vcolors.bind(2);
         if (lcolors.isValid())
-            lcolors.bind(3);
+            lcolors.bind(0);
         if (inds.isValid())
             inds.bind();
     }
@@ -225,8 +225,6 @@ void PrimitiveLines::setPoints(
     const bool setLineColors = lineColors.size() != 0;
 
     const uint numVertices = vertCoords.size() / 3;
-    const uint numLines =
-        setLineIndices ? lineIndices.size() / 2 : numVertices / 2;
     const uint numElements = setLineIndices ? lineIndices.size() : numVertices;
 
     assert(!setColors || vertCoords.size() == vertColors.size() * 3);
@@ -309,11 +307,11 @@ void PrimitiveLines::setPoints(
 
         if (setLineColors) { 
             std::get<OWNED>(mLineColors)
-                .create(
-                    bgfx::makeRef(
-                        lineColors.data(),
-                        sizeof(uint32_t) * lineColors.size()),
-                    BGFX_BUFFER_INDEX32);
+                .createForCompute(
+                    lineColors.data(),
+                    lineColors.size(),
+                    PrimitiveType::UINT,
+                    bgfx::Access::Read);
         }
     }
     else {

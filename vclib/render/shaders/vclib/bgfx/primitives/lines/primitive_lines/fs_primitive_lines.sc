@@ -28,7 +28,7 @@ $input v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-BUFFER_RO(edgesColors, uint, 3);
+BUFFER_RO(edgesColors, uint, 0);
 
 uniform vec4 u_settings;
 
