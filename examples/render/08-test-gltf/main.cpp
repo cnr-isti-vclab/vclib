@@ -45,9 +45,8 @@ int main(int argc, char** argv)
         getDrawableMesh<vcl::TriMesh>("gltf/DamagedHelmet/DamagedHelmet.gltf");
     showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
 
-    vcl::Camera<float> c = vcl::loadCamera<>(
-        VCLIB_EXAMPLE_MESHES_PATH
-        "/gltf/camera.gltf");
+    vcl::Camera<float> c =
+        vcl::loadCamera<>(VCLIB_EXAMPLE_MESHES_PATH "/gltf/camera.gltf");
 
     std::cerr << "Camera loaded from gltf file:\n";
     std::cerr << "  Eye: " << c.eye().transpose() << "\n";
