@@ -31,6 +31,7 @@
 #define u_normalMatrix mtxFromCols( \
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
 
+#define USE_LIGHTS
 #define LIGHT_COUNT 2
 
 /**
@@ -248,13 +249,16 @@ vec4 pbrColor(
     vec3 color,
     vec3 normal,
     float metallic,
-    float roughness)
+    float roughness,
+    vec3 emissive)
 {
+    vec3 finalColor = vec3(0.0,0.0,0.0);
+
+    #ifdef USE_LIGHTS
+
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
     float NoV = clampedDot(normal, V);
-
-    vec3 finalColor = vec3(0.0,0.0,0.0);
 
     for(int i = 0; i < LIGHT_COUNT; ++i)
     {
@@ -295,6 +299,10 @@ vec4 pbrColor(
 
         finalColor += l_color;
     }
+    #endif // USE_LIGHTS
+
+    // add emissive component
+    finalColor += emissive;
 
     // tone mapping - Reinhard operator
     //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));

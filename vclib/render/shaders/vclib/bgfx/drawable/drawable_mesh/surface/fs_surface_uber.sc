@@ -147,7 +147,8 @@ void main()
             materialColor * vertexColor, // multiply vertex color with material base color
             normal,
             metallic,
-            roughness
+            roughness,
+            vec3(u_emissiveColor.x, u_emissiveColor.y, u_emissiveColor.z) // emissive
         );
     }
     else {
