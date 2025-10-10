@@ -141,6 +141,20 @@ public:
         mTransform.translate(-center);
     }
 
+
+    Camera<Scalar> camera() const
+    {
+        // TODO: return the camera containing the current view point of
+        // the trackball (it is not mCamera).
+        return Camera<Scalar>();
+    }
+
+    void setCamera(const Camera<Scalar>& cam)
+    {
+        // TODO: set the trackball view point using the given camera
+        // parameters (position, target, up).
+    }
+
     void resetDirectionalLight()
     {
         mDirectionalLightTransform = Quaternion<Scalar>();

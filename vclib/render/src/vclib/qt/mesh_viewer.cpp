@@ -165,6 +165,16 @@ void MeshViewer::setDrawVectorIconFunction(
     mUI->drawVectorTree->setIconFunction(f);
 }
 
+Camera<float> MeshViewer::camera() const
+{
+    return mUI->viewer->camera();
+}
+
+void MeshViewer::setCamera(const Camera<float>& c)
+{
+    mUI->viewer->setCamera(c);
+}
+
 void MeshViewer::keyPressEvent(QKeyEvent* event)
 {
     // show screenshot dialog on CTRL + S
