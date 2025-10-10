@@ -20,33 +20,56 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color, v_normal
+#ifndef VCL_RENDER_IO_CAMERA_LOAD_H
+#define VCL_RENDER_IO_CAMERA_LOAD_H
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh> 
+#ifdef VCLIB_WITH_TINYGLTF
+#include "gltf/load.h"
+#endif
 
-#include <bgfx_shader.sh>
-#include <bgfx_compute.sh>
+#include <vclib/io/file_format.h>
+#include <vclib/io/mesh/gltf/capability.h>
 
-BUFFER_RO(edgesColors, uint, 0);
+#include <set>
+#include <string>
 
-uniform vec4 u_settings;
+namespace vcl {
 
-#define colorToUse            u_settings.y
-#define u_shadingPerVertex    bool(u_settings.w)
+/**
+ * @brief Returns the set of camera formats supported for loading.
+ *
+ * The set contains all the camera formats that can be loaded using all the
+ * external libraries compiled with VCLib.
+ *
+ * @return A set of camera formats supported for loading.
+ */
+inline std::set<FileFormat> loadCameraFormats()
+{
+    std::set<FileFormat> ff;
 
-#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
-#define edgeColor             uintABGRToVec4Color(edgesColors[gl_PrimitiveID / 2])
-#define vertexColor           v_color
+#ifdef VCLIB_WITH_TINYGLTF
+    ff.insert(gltfFileFormat());
+#endif
 
-void main() {
-    vec4 color;
-    if (colorToUse == 0)        color = vertexColor;
-    else if (colorToUse == 1)   color = edgeColor;
-    else                        color = generalColor;    
-    
-    if (u_shadingPerVertex) {
-        color *= computeLight(u_lightDir, u_lightColor, v_normal);
-    }
-    gl_FragColor = color;
+    return ff;
 }
+
+template<CameraConcept CameraType = Camera<float>>
+inline CameraType loadCamera(const std::string& filename)
+{
+    FileFormat ff = FileInfo::fileFormat(filename);
+
+#ifdef VCLIB_WITH_TINYGLTF
+    if (ff == gltfFileFormat()) {
+        return loadCameraGltf(filename);
+    }
+    else
+#endif
+    {
+        throw UnknownFileFormatException(ff.extensions().front());
+    }
+}
+
+} // namespace vcl
+
+#endif // VCL_RENDER_IO_CAMERA_LOAD_H

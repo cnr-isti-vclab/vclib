@@ -20,33 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color, v_normal
+#ifndef VCL_RENDER_IO_CAMERA_H
+#define VCL_RENDER_IO_CAMERA_H
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh> 
+#include "camera/load.h"
 
-#include <bgfx_shader.sh>
-#include <bgfx_compute.sh>
-
-BUFFER_RO(edgesColors, uint, 0);
-
-uniform vec4 u_settings;
-
-#define colorToUse            u_settings.y
-#define u_shadingPerVertex    bool(u_settings.w)
-
-#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
-#define edgeColor             uintABGRToVec4Color(edgesColors[gl_PrimitiveID / 2])
-#define vertexColor           v_color
-
-void main() {
-    vec4 color;
-    if (colorToUse == 0)        color = vertexColor;
-    else if (colorToUse == 1)   color = edgeColor;
-    else                        color = generalColor;    
-    
-    if (u_shadingPerVertex) {
-        color *= computeLight(u_lightDir, u_lightColor, v_normal);
-    }
-    gl_FragColor = color;
-}
+#endif // VCL_RENDER_IO_CAMERA_H
