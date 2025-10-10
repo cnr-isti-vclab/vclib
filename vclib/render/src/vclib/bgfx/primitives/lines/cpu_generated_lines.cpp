@@ -83,7 +83,7 @@ void CPUGeneratedLines::draw(uint viewId) const
     mVertexCoords.bind(0);
     mVertexColors.bind(1);
     mVertexNormals.bind(2);
-    mLineColors.bind(3);
+    mLineColors.bind(0);
     mIndices.bind();
     bgfx::setState(linesDrawState());
     bgfx::submit(viewId, mLinesPH);
@@ -225,11 +225,11 @@ void CPUGeneratedLines::setPoints(
         }
 
         if (setLineColors) {
-            mLineColors.create(
-                bgfx::makeRef(
-                    lineColors.data(),
-                    sizeof(uint32_t) * lineColors.size()),
-                BGFX_BUFFER_INDEX32);
+            mLineColors.createForCompute(
+                lineColors.data(),
+                lineColors.size(),
+                PrimitiveType::UINT,
+                bgfx::Access::Read);
         }
 
         mIndices.create(
