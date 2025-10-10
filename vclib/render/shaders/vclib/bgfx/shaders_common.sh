@@ -138,7 +138,7 @@ vec3 pbrDiffuse(vec3 color)
  * @brief GGX version of the NDF (Normal Distribution Function) which determines the odds for a microfacet normal 
  * to be aligned with the halfway vector H (in other words to reflect light directly).
  * @param[in] NoH: Cosine of the angle between the fragment normal and the halfway vector.
- * @param[in] alpha: The material's roughness squared.
+ * @param[in] alpha2: The alpha squared.
  * @return the odds for a microfacet normal to be aligned with the halfway vector H (in other words to reflect light directly).
  */
 float D_GGX(
@@ -156,7 +156,7 @@ float D_GGX(
  * microfacet. It accounts for both masking and shadowing of microfacets.
  * @param[in] NoV: Cosine of the angle between the fragment normal and the view direction.
  * @param[in] NoL: Cosine of the angle between the fragment normal and the incoming light direction.
- * @param[in] alpha: The material's roughness squared.
+ * @param[in] alpha2: The alpha squared.
  * @return .
  */
 float V_GGX(
@@ -238,6 +238,7 @@ float pbrSpecular(
  * @param[in] normal: The fragment normal, must be normalized.
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
+ * @param[in] emissive: The emissive color (RGB) of the fragment's material.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
  */
 vec4 pbrColor(
