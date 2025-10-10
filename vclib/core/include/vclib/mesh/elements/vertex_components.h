@@ -35,6 +35,7 @@
 #include "../components/position.h"
 #include "../components/principal_curvature.h"
 #include "../components/quality.h"
+#include "../components/tangent.h"
 #include "../components/tex_coord.h"
 
 /**
@@ -101,6 +102,10 @@ template<typename T>
 concept HasQuality = comp::HasQuality<T>;
 template<typename T>
 concept HasOptionalQuality = comp::HasOptionalQuality<T>;
+template<typename T>
+concept HasTangent = comp::HasTangent<T>;
+template<typename T>
+concept HasOptionalTangent = comp::HasOptionalTangent<T>;
 template<typename T>
 concept HasTexCoord = comp::HasTexCoord<T>;
 template<typename T>
@@ -365,6 +370,41 @@ using OptionalQualityf = comp::Quality<float, ParentVertexType, true>;
 template<typename ParentVertexType>
 using OptionalQualityd = comp::Quality<double, ParentVertexType, true>;
 
+/* Port Tangent classes into vert namespace */
+template<typename ScalarType, int N>
+using Tangent = comp::Tangent<Point<ScalarType, N>>;
+
+template<typename ScalarType>
+using Tangent3 = comp::Tangent3<ScalarType>;
+
+using Tangent3f = comp::Tangent3f<>;
+using Tangent3d = comp::Tangent3d<>;
+
+template<typename ScalarType, int N, typename ParentVertexType>
+using VerticalTangent = comp::Tangent<Point<ScalarType, N>, ParentVertexType>;
+
+template<typename ScalarType, typename ParentVertexType>
+using VerticalTangent3 = comp::Tangent3<ScalarType, ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalTangent3f = comp::Tangent3f<ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalTangent3d = comp::Tangent3d<ParentVertexType>;
+
+template<typename ScalarType, int N, typename ParentVertexType>
+using OptionalTangent =
+    comp::Tangent<Point<ScalarType, N>, ParentVertexType, true>;
+
+template<typename ScalarType, typename ParentVertexType>
+using OptionalTangent3 = comp::Tangent3<ScalarType, ParentVertexType, true>;
+
+template<typename ParentVertexType>
+using OptionalTangent3f = comp::Tangent3f<ParentVertexType, true>;
+
+template<typename ParentVertexType>
+using OptionalTangent3d = comp::Tangent3d<ParentVertexType, true>;
+
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>
 using TexCoord = comp::TexCoord<ScalarType>;
@@ -390,7 +430,7 @@ using OptionalTexCoordf = comp::TexCoord<float, ParentVertexType, true>;
 template<typename ParentVertexType>
 using OptionalTexCoordd = comp::TexCoord<double, ParentVertexType, true>;
 
-/** @} */ // end of edge_components group
+/** @} */ // end of vert_components group
 
 } // namespace vcl::vert
 
