@@ -173,6 +173,21 @@ concept HasPerVertexQuality =
     vert::HasQuality<typename RemoveRef<MeshType>::VertexType>;
 
 /**
+ * @brief Concept that checks if a Mesh has the per Vertex Tangent component.
+ *
+ * Evaluates to true if Tangent is part of the Vertex element, whether it is
+ * horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup vertex_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerVertexTangent =
+    HasVertices<MeshType> &&
+    vert::HasTangent<typename RemoveRef<MeshType>::VertexType>;
+
+/**
  * @brief Concept that checks if a Mesh has the per Vertex TexCoord component.
  *
  * Evaluates to true if TexCoord is part of the Vertex element, whether it is
@@ -321,6 +336,19 @@ bool enableIfPerVertexQualityOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
+bool isPerVertexTangentAvailable(const MeshType& m)
+{
+    return isPerElementComponentAvailable<ElemId::VERTEX, CompId::TANGENT>(m);
+}
+
+template<MeshConcept MeshType>
+bool enableIfPerVertexTangentOptional(MeshType& m)
+{
+    return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::TANGENT>(
+        m);
+}
+
+template<MeshConcept MeshType>
 bool isPerVertexTexCoordAvailable(const MeshType& m)
 {
     return isPerElementComponentAvailable<ElemId::VERTEX, CompId::TEX_COORD>(m);
@@ -390,6 +418,13 @@ void requirePerVertexQuality(const MeshType& m)
     requires HasPerVertexQuality<MeshType>
 {
     requirePerElementComponent<ElemId::VERTEX, CompId::QUALITY>(m);
+}
+
+template<typename MeshType>
+void requirePerVertexTangent(const MeshType& m)
+    requires HasPerVertexTangent<MeshType>
+{
+    requirePerElementComponent<ElemId::VERTEX, CompId::TANGENT>(m);
 }
 
 template<typename MeshType>

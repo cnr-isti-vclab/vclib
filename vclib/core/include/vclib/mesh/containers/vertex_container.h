@@ -887,6 +887,43 @@ public:
         Base::template disableOptionalComponente<typename T::Quality>();
     }
 
+    // Tangent
+
+    /**
+     * @brief Checks if the vertex Optional Tangent is enabled.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalTangent Component.
+     *
+     * @return true if the Optional Tangent is enabled, false otherwise.
+     */
+    bool isPerVertexTangentEnabled() const requires vert::HasOptionalTangent<T>
+    {
+        return Base::template isOptionalComponentEnabled<typename T::Tangent>();
+    }
+
+    /**
+     * @brief Enables the Optional Tangent of the vertex.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalTangent Component.
+     */
+    void enablePerVertexTangent() requires vert::HasOptionalTangent<T>
+    {
+        Base::template enableOptionalComponent<typename T::Tangent>();
+    }
+
+    /**
+     * @brief Checks if the vertex Optional PrincipalCurvature is enabled.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalPrincipalCurvature Component.
+     */
+    void disablePerVertexTangent() requires vert::HasOptionalTangent<T>
+    {
+        Base::template disableOptionalComponent<typename T::Tangent>();
+    }
+
     // TexCoord
 
     /**

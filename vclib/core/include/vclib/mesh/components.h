@@ -38,6 +38,7 @@
 #include "components/position.h"
 #include "components/principal_curvature.h"
 #include "components/quality.h"
+#include "components/tangent.h"
 #include "components/tex_coord.h"
 #include "components/texture_images.h"
 #include "components/texture_paths.h"
