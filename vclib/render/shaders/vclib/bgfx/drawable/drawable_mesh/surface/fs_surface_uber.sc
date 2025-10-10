@@ -132,8 +132,8 @@ void main()
             lightIntensities,
             u_materialColor.rgb * vertexColor, // multiply vertex color with material base color
             normal,
-            u_metallicRoughness.r,
-            u_metallicRoughness.g,
+            u_metallicRoughness.r, // metallic
+            u_metallicRoughness.g, // roughness
             vec3(u_emissiveColor.x, u_emissiveColor.y, u_emissiveColor.z) // emissive
         );
     }

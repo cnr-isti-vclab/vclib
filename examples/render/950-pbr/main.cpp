@@ -34,8 +34,9 @@ int main(int argc, char** argv)
     std::string e2 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
     std::string e3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/metallic_roughness_grid.glb";
     std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
+    std::string e5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e4);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e5);
 
     for(auto& mesh : meshes) {
         for (auto& mat : mesh.materials()) {

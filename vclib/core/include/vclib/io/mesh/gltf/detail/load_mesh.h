@@ -40,7 +40,7 @@ namespace vcl::detail {
 static const vcl::Color kGltfDefaultBaseColor = vcl::Color(255, 255, 255, 255);
 static const double kGltfDefaultMetallic = 1.0;
 static const double kGltfDefaultRoughness = 1.0;
-static const vcl::Color kGltfDefaultEmissiveColor = vcl::Color(0, 0, 0, 255);
+static const vcl::Color kGltfDefaultEmissiveColor = vcl::Color(0, 0, 0);
 
 enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES };
 inline const std::array<std::string, 4> GLTF_ATTR_STR {
@@ -58,8 +58,10 @@ int loadGltfPrimitiveMaterial(
     int idx = -1;
 
     if(p.material >= 0) {
-        vcl::Color baseColor, emissiveColor;
-        double metallic, roughness;
+        vcl::Color baseColor = kGltfDefaultBaseColor;
+        vcl::Color emissiveColor = kGltfDefaultEmissiveColor;
+        double metallic = kGltfDefaultMetallic;
+        double roughness = kGltfDefaultRoughness;
         int textureImg = -1;
         const tinygltf::Material& mat = model.materials[p.material];
 
@@ -69,9 +71,6 @@ int loadGltfPrimitiveMaterial(
             const std::vector<double>& vc = it->second.number_array;
                 for (uint i = 0; i < 4; i++)
                     baseColor[i] = vc[i] * 255.0;
-        }
-        else {
-            baseColor = kGltfDefaultBaseColor;
         }
 
         // baseColorTexture
@@ -85,18 +84,18 @@ int loadGltfPrimitiveMaterial(
 
         // metallicFactor
         it = mat.values.find("metallicFactor");
-        metallic = it != mat.values.end() && it->second.has_number_value?
-            it->second.number_value : kGltfDefaultMetallic;
+        if(it != mat.values.end() && it->second.has_number_value)
+            metallic = it->second.number_value;
 
         // roughnessFactor
         it = mat.values.find("roughnessFactor");
-        roughness = it != mat.values.end() && it->second.has_number_value?
-            it->second.number_value : kGltfDefaultRoughness;
+        if(it != mat.values.end() && it->second.has_number_value)
+            roughness = it->second.number_value;
 
         // emissiveFactor
-        const std::vector<double>& emissiveFactor = mat.emissiveFactor;
-        for (uint i = 0; i < 3; i++)
-            emissiveColor[i] = emissiveFactor[i] * 255.0;
+        const std::vector<double>& emissiveFactor = mat.emissiveFactor; // has default value
+            for (uint i = 0; i < 3; i++) 
+                emissiveColor[i] = emissiveFactor[i] * 255.0;
 
         /* Put the data in the mesh */
 
