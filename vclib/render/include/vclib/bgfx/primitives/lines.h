@@ -221,7 +221,7 @@ public:
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals,
         const VertexBuffer& vertexColors ,
-        const VertexBuffer& lineColors, 
+        const IndexBuffer&  lineColors,
         float                     thickness        = 5.0f,
         bool                      shadingPerVertex = false,
         ColorToUse                colorToUse       = ColorToUse::GENERAL,
@@ -239,7 +239,7 @@ public:
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals,
         const VertexBuffer& vertexColors,
-        const VertexBuffer& lineColors, 
+        const IndexBuffer&  lineColors,
         float                     thickness        = 5.0f,
         bool                      shadingPerVertex = false,
         ColorToUse                colorToUse       = ColorToUse::GENERAL,
@@ -389,7 +389,7 @@ public:
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
         const VertexBuffer& vertexColors  = VertexBuffer(),
-        const VertexBuffer& lineColors    = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer(),
         ImplementationType  type          = ImplementationType::COUNT)
     {
         IndexBuffer emptyIndices;
@@ -409,7 +409,7 @@ public:
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals = VertexBuffer(),
         const VertexBuffer& vertexColors  = VertexBuffer(),
-        const VertexBuffer& lineColors    = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer(),
         ImplementationType  type          = ImplementationType::COUNT)
     {
         using enum ImplementationType;
@@ -623,7 +623,7 @@ private:
 
     void updateColorCapability(
         const VertexBuffer& vertexColors,
-        const VertexBuffer& lineColors)
+        const IndexBuffer&  lineColors)
     {
         using enum ColorToUse;
 

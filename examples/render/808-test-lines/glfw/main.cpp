@@ -37,7 +37,7 @@ class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
 {
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
     // lines
-    const vcl::uint                     N_LINES = 100;
+    const vcl::uint                     N_LINES = 1;
     std::shared_ptr<vcl::DrawableLines> mLines;
     int                                 mSelected = 0;
 
@@ -59,7 +59,7 @@ public:
         mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
     }
 
-    virtual void onDraw(uint viewId) override
+    virtual void onDraw(vcl::uint viewId) override
     {
         using enum vcl::Lines::ImplementationType;
 
