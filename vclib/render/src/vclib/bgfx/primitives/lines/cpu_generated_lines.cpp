@@ -83,7 +83,7 @@ void CPUGeneratedLines::draw(uint viewId) const
     mVertexCoords.bind(0);
     mVertexColors.bind(1);
     mVertexNormals.bind(2);
-    mLineColors.bind(3);
+    mLineColors.bind(0);
     mIndices.bind();
     bgfx::setState(linesDrawState());
     bgfx::submit(viewId, mLinesPH);
@@ -115,7 +115,6 @@ void CPUGeneratedLines::setPoints(
         uint bufferVertCoordsSize  = (nPoints / 2) * 4 * 6;
         uint bufferVertColorsSize  = (nPoints / 2) * 4 * 2;
         uint bufferVertNormalsSize = (nPoints / 2) * 4 * 6;
-        uint bufferLineColorsSize  = (nPoints / 2) * 4 * 1;
 
         uint bufferIndsSize = (nPoints / 2) * 6;
 
@@ -128,16 +127,12 @@ void CPUGeneratedLines::setPoints(
         auto [vNormals, vNormalsReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<float>(bufferVertNormalsSize);
 
-        auto [lColors, lColorsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(bufferLineColorsSize);
-
         auto [indices, iReleaseFn] =
             linesGetAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
 
-        uint viCoords     = 0;
-        uint viColors     = 0;
-        uint viNormals    = 0;
-        uint viLineColors = 0;
+        uint viCoords  = 0;
+        uint viColors  = 0;
+        uint viNormals = 0;
 
         uint ii = 0;
         for (uint i = 0; i < nPoints - 1; i += 2) {
@@ -170,11 +165,6 @@ void CPUGeneratedLines::setPoints(
                         vNormals[viNormals++] = vertNormals[(index1 * 3)];
                         vNormals[viNormals++] = vertNormals[(index1 * 3) + 1];
                         vNormals[viNormals++] = vertNormals[(index1 * 3) + 2];
-                    }
-
-                    if (setLineColors) {
-                        lColors[viLineColors++] =
-                            std::bit_cast<float>(lineColors[i / 2]);
                     }
                 }
             }
@@ -235,17 +225,11 @@ void CPUGeneratedLines::setPoints(
         }
 
         if (setLineColors) {
-            bgfx::VertexLayout layout;
-            layout.begin()
-                .add(bgfx::Attrib::Color2, 4, bgfx::AttribType::Uint8, true)
-                .end();
-
-            mLineColors.create(
-                bgfx::makeRef(
-                    lColors,
-                    sizeof(float) * bufferLineColorsSize,
-                    lColorsReleaseFn),
-                layout);
+            mLineColors.createForCompute(
+                lineColors.data(),
+                lineColors.size(),
+                PrimitiveType::UINT,
+                bgfx::Access::Read);
         }
 
         mIndices.create(
