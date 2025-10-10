@@ -83,8 +83,6 @@ class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
 {
     using MRI = MeshRenderInfo;
 
-    Box3d mBoundingBox;
-
     MeshRenderVectors<MeshType> mMRD;
 
     std::vector<uint> mTextID;
@@ -113,7 +111,6 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
         swap(mMRD, other.mMRD);
         swap(mTextID, other.mTextID);
     }
@@ -122,6 +119,8 @@ public:
     {
         a.swap(b);
     }
+
+    using AbstractDrawableMesh::boundingBox;
 
     // AbstractDrawableMesh implementation
 
@@ -132,20 +131,7 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
-            if (this->MeshType::boundingBox().isNull()) {
-                bbToInitialize = true;
-            }
-            else {
-                mBoundingBox =
-                    this->MeshType::boundingBox().template cast<double>();
-            }
-        }
-
-        if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(*this);
-        }
+        AbstractDrawableMesh::computeBoundingBox(static_cast<MeshType>(*this));
 
         unbindTextures();
         mMRD.update(*this, buffersToUpdate);
@@ -268,8 +254,6 @@ public:
             }
         }
     }
-
-    Box3d boundingBox() const override { return mBoundingBox; }
 
     std::shared_ptr<DrawableObject> clone() const& override
     {

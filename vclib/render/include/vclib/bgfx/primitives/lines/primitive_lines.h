@@ -48,8 +48,7 @@ class PrimitiveLines
     std::variant<VertexBuffer, const VertexBuffer*> mVertexCoords;
     std::variant<VertexBuffer, const VertexBuffer*> mVertexNormals;
     std::variant<VertexBuffer, const VertexBuffer*> mVertexColors;
-    std::variant<VertexBuffer, const VertexBuffer*>
-        mLineColors; // TODO: change this to IndexBuffer
+    std::variant<IndexBuffer, const IndexBuffer*>   mLineColors;
 
     std::variant<IndexBuffer, const IndexBuffer*> mIndices;
 
@@ -74,7 +73,7 @@ public:
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
         const VertexBuffer& vertexColors  = VertexBuffer(),
-        const VertexBuffer& lineColors    = VertexBuffer());
+        const IndexBuffer&  lineColors    = IndexBuffer());
 
     PrimitiveLines(
         const uint          pointsSize,
@@ -82,7 +81,7 @@ public:
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals = VertexBuffer(),
         const VertexBuffer& vertexColors  = VertexBuffer(),
-        const VertexBuffer& lineColors    = VertexBuffer());
+        const IndexBuffer&  lineColors    = IndexBuffer());
 
     void swap(PrimitiveLines& other);
 
@@ -106,7 +105,7 @@ public:
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexNormals = VertexBuffer(),
         const VertexBuffer& vertexColors  = VertexBuffer(),
-        const VertexBuffer& lineColors    = VertexBuffer());
+        const IndexBuffer&  lineColors    = IndexBuffer());
 
     void setPoints(
         const uint          pointsSize,
@@ -114,7 +113,7 @@ public:
         const IndexBuffer&  lineIndices,
         const VertexBuffer& vertexNormals = VertexBuffer(),
         const VertexBuffer& vertexColors  = VertexBuffer(),
-        const VertexBuffer& lineColors    = VertexBuffer());
+        const IndexBuffer&  lineColors    = IndexBuffer());
 
     void draw(uint viewId) const;
 

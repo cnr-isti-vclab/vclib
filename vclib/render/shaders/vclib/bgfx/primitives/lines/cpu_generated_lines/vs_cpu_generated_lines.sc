@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1, a_color2
+$input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1
 $output v_color, v_normal
 
 #include <bgfx_shader.sh>
@@ -34,8 +34,6 @@ uniform vec4 u_settings;
 #define LENGTH_EPSILON 0.0001
 
 #define thickness             u_settings.x
-#define colorToUse            u_settings.y
-#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
 
 #define p0                    a_position
 #define p1                    a_texcoord0
@@ -45,8 +43,6 @@ uniform vec4 u_settings;
 
 #define normal0               a_normal
 #define normal1               a_texcoord1
-
-#define lineColor             a_color2
 
 #define screenWidth           u_viewRect.z
 #define screenHeight          u_viewRect.w
@@ -113,13 +109,7 @@ void main() {
         p.xy = p.xy + (offsetNDC * p.w);
     }
 
-    if (colorToUse == 0)
-        v_color = color;
-    else if (colorToUse == 1) 
-        v_color = lineColor;
-    else
-        v_color = generalColor;
-
+    v_color = color;
     v_normal = normal;
     gl_Position = p;
 }

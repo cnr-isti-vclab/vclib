@@ -133,6 +133,17 @@ auto meshCreaseEdges()
               << icosaCreaseMesh.vertexNumber() << " vertices, "
               << icosaCreaseMesh.edgeNumber() << " edges" << std::endl;
 
+    // color edges of cylinderCreaseMesh
+
+    cylinderCreaseMesh.enablePerEdgeColor();
+
+    for (auto& e : cylinderCreaseMesh.edges()) {
+        if (e.vertex(0)->position().y() > 0)
+            e.color() = vcl::Color::Red;
+        else
+            e.color() = vcl::Color::Blue;
+    }
+
     /****** Method 4: Custom Filtering ******/
 
     std::cout << "\n=== Method 4: Custom Filtering ===" << std::endl;

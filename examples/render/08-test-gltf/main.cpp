@@ -20,33 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color, v_normal
+#include <vclib/render/io/camera.h>
+#include <vclib/render/viewer/camera.h>
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh> 
+#include <default_viewer.h>
+#include <get_drawable_mesh.h>
 
-#include <bgfx_shader.sh>
-#include <bgfx_compute.sh>
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+#include <QApplication>
+#endif
 
-BUFFER_RO(edgesColors, uint, 0);
+int main(int argc, char** argv)
+{
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    QApplication application(argc, argv);
+#endif
 
-uniform vec4 u_settings;
+    auto viewer = defaultViewer();
 
-#define colorToUse            u_settings.y
-#define u_shadingPerVertex    bool(u_settings.w)
+    const bool TEXCOORDS_PER_VERTEX = false;
+    const bool USE_BUNNY            = true;
 
-#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
-#define edgeColor             uintABGRToVec4Color(edgesColors[gl_PrimitiveID / 2])
-#define vertexColor           v_color
+    vcl::DrawableMesh<vcl::TriMesh> drawable =
+        getDrawableMesh<vcl::TriMesh>("gltf/DamagedHelmet/DamagedHelmet.gltf");
+    showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
 
-void main() {
-    vec4 color;
-    if (colorToUse == 0)        color = vertexColor;
-    else if (colorToUse == 1)   color = edgeColor;
-    else                        color = generalColor;    
-    
-    if (u_shadingPerVertex) {
-        color *= computeLight(u_lightDir, u_lightColor, v_normal);
-    }
-    gl_FragColor = color;
+    vcl::Camera<float> c =
+        vcl::loadCamera<>(VCLIB_EXAMPLE_MESHES_PATH "/gltf/camera.gltf");
+
+    std::cerr << "Camera loaded from gltf file:\n";
+    std::cerr << "  Eye: " << c.eye().transpose() << "\n";
+    std::cerr << "  Center: " << c.center().transpose() << "\n";
+    std::cerr << "  Up: " << c.up().transpose() << "\n";
+    std::cerr << "  FOV: " << c.fieldOfView() << "\n";
+    std::cerr << "  Aspect: " << c.aspectRatio() << "\n";
+    std::cerr << "  Near: " << c.nearPlane() << "\n";
+    std::cerr << "  Far: " << c.farPlane() << "\n";
+
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    viewer.showMaximized();
+    return application.exec();
+#else
+    (void) argc; // unused
+    (void) argv;
+    return 0;
+#endif
 }

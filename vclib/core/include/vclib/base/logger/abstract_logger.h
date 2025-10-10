@@ -50,6 +50,7 @@ public:
     };
 
     AbstractLogger() = default;
+    virtual ~AbstractLogger() = default;
 
     virtual void enableIndentation() = 0;
 
