@@ -430,7 +430,7 @@ using OptionalTexCoordf = comp::TexCoord<float, ParentVertexType, true>;
 template<typename ParentVertexType>
 using OptionalTexCoordd = comp::TexCoord<double, ParentVertexType, true>;
 
-/** @} */ // end of edge_components group
+/** @} */ // end of vert_components group
 
 } // namespace vcl::vert
 
