@@ -212,8 +212,6 @@ public:
         resizeViewer(width, height);
     }
 
-    const Camera<Scalar>& camera() const { return mTrackball.camera(); }
-
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
 
     Matrix44<Scalar> projectionMatrix() const
