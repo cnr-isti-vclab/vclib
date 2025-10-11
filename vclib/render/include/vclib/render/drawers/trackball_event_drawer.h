@@ -240,10 +240,7 @@ public:
 
     Camera<Scalar> camera() const { return mTrackball.camera(); }
 
-    void setCamera(const Camera<Scalar>& cam)
-    {
-        mTrackball.setCamera(cam);
-    }
+    void setCamera(const Camera<Scalar>& cam) { mTrackball.setCamera(cam); }
 
     DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 

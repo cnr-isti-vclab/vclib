@@ -141,7 +141,6 @@ public:
         mTransform.translate(-center);
     }
 
-
     Camera<Scalar> camera() const
     {
         // TODO: return the camera containing the current view point of
