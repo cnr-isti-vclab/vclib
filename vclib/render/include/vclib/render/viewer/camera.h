@@ -27,6 +27,9 @@
 
 namespace vcl {
 
+/**
+ * @brief A Pinhole camera model.
+ */
 template<typename Scalar>
 class Camera
 {
