@@ -48,8 +48,6 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
-    Box3d mBoundingBox;
-
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
     Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
@@ -77,7 +75,7 @@ public:
 
     DrawableMeshBGFX(const DrawableMeshBGFX& drawableMesh) :
             AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
-            MeshType(drawableMesh), mBoundingBox(drawableMesh.mBoundingBox),
+            MeshType(drawableMesh),
             mMeshRenderSettingsUniforms(
                 drawableMesh.mMeshRenderSettingsUniforms)
     {
@@ -102,12 +100,13 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
     }
 
     friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
+
+    using AbstractDrawableMesh::boundingBox;
 
     // TODO: to be removed after shader benchmarks
     void setSurfaceProgramType(SurfaceProgramsType type)
@@ -134,27 +133,7 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
-            if (this->MeshType::boundingBox().isNull()) {
-                bbToInitialize = true;
-            }
-            else {
-                mBoundingBox =
-                    this->MeshType::boundingBox().template cast<double>();
-            }
-        }
-
-        if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(*this);
-        }
-
-        if constexpr (HasTransformMatrix<MeshType>) {
-            mBoundingBox.min() *=
-                MeshType::transformMatrix().template cast<double>();
-            mBoundingBox.max() *=
-                MeshType::transformMatrix().template cast<double>();
-        }
+        AbstractDrawableMesh::computeBoundingBox(static_cast<MeshType>(*this));
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
@@ -364,8 +343,6 @@ public:
             }
         }
     }
-
-    Box3d boundingBox() const override { return mBoundingBox; }
 
     std::shared_ptr<DrawableObject> clone() const& override
     {

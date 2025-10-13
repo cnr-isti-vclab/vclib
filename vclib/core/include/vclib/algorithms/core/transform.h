@@ -358,6 +358,32 @@ void multiplyNormalsByMatrix(
     multiplyNormalsByMatrix(normals, m33, removeScalingFromMatrix);
 }
 
+/**
+ * @brief Transforms a 3D box by applying a 4x4 transformation matrix to all its
+ * 8 vertices, and returns the axis-aligned bounding box that contains the
+ * transformed vertices.
+ *
+ * @param[in] box: The input 3D box to be transformed.
+ * @param[in] mat: The 4x4 transformation matrix to be applied to the box.
+ * @return The axis-aligned bounding box that contains the transformed vertices.
+ */
+template<Box3Concept BoxType, Matrix44Concept MatrixType>
+BoxType transformBox(const BoxType& box, const MatrixType& mat)
+{
+    using PointType  = typename BoxType::PointType;
+    using ScalarType = typename PointType::ScalarType;
+
+    Matrix44<ScalarType> m44 = mat.template cast<ScalarType>();
+
+    BoxType result;
+    for (uint i = 0; i < 8; ++i) {
+        PointType corner = boxVertex(box, i);
+        corner *= m44;
+        result.add(corner);
+    }
+    return result;
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_CORE_TRANSFORM_H

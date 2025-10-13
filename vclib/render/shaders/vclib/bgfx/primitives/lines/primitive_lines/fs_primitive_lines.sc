@@ -28,11 +28,23 @@ $input v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+BUFFER_RO(edgesColors, uint, 0);
+
 uniform vec4 u_settings;
-#define u_shadingPerVertex bool(u_settings.w)
+
+#define colorToUse            u_settings.y
+#define u_shadingPerVertex    bool(u_settings.w)
+
+#define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
+#define edgeColor             uintABGRToVec4Color(edgesColors[gl_PrimitiveID])
+#define vertexColor           v_color
 
 void main() {
-    vec4 color = v_color;
+    vec4 color;
+    if (colorToUse == 0)        color = vertexColor;
+    else if (colorToUse == 1)   color = edgeColor;
+    else                        color = generalColor;
+
     if (u_shadingPerVertex) {
         color *= computeLight(u_lightDir, u_lightColor, v_normal);
     }

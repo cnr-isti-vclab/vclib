@@ -42,6 +42,8 @@ class AbstractDrawableMesh : public vcl::DrawableObject
 protected:
     MeshRenderSettings mMRS;
 
+    Box3d mBoundingBox;
+
 public:
     AbstractDrawableMesh() = default;
 
@@ -75,9 +77,11 @@ public:
 
     // DrawableObject implementation
 
-    inline bool isVisible() const { return mMRS.isVisible(); }
+    Box3d boundingBox() const override { return mBoundingBox; }
 
-    inline void setVisibility(bool vis) { mMRS.setVisibility(vis); }
+    inline bool isVisible() const override { return mMRS.isVisible(); }
+
+    inline void setVisibility(bool vis) override { mMRS.setVisibility(vis); }
 
 protected:
     void swap(AbstractDrawableMesh& other)
@@ -85,6 +89,34 @@ protected:
         using std::swap;
         vcl::DrawableObject::swap(other);
         swap(mMRS, other.mMRS);
+        swap(mBoundingBox, other.mBoundingBox);
+    }
+
+    // if the mesh does not have a bounding box, or if it has it but it is
+    // null, compute it from the vertex positions. If the mesh has a
+    // transformation matrix, apply it to the bounding box.
+    // The DrawableMesh must return the *transformed* bounding box.
+    template<MeshConcept MeshType>
+    void computeBoundingBox(const MeshType& m)
+    {
+        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
+        if constexpr (vcl::HasBoundingBox<MeshType>) {
+            if (m.boundingBox().isNull()) {
+                bbToInitialize = true;
+            }
+            else {
+                mBoundingBox =
+                    m.MeshType::boundingBox().template cast<double>();
+            }
+        }
+
+        if (bbToInitialize) {
+            mBoundingBox = vcl::boundingBox(m);
+        }
+
+        if constexpr (HasTransformMatrix<MeshType>) {
+            mBoundingBox = transformBox(mBoundingBox, m.transformMatrix());
+        }
     }
 };
 
