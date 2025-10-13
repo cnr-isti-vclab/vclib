@@ -47,13 +47,19 @@ class Material
 
     bool mDoubleSided = false;
 
+    std::string mAlphaMode = "OPAQUE"; // OPAQUE, MASK, BLEND
+
+    float mAlphaCutoff = 0.5f;         // only used when mAlphaMode is MASK
+
 public:
     Material() :
             mBaseColor(), 
             mMetallic(),
             mRoughness(),
             mEmissiveColor(), 
-            mDoubleSided()
+            mDoubleSided(),
+            mAlphaMode(),
+            mAlphaCutoff()
     {
     }
 
@@ -62,12 +68,17 @@ public:
         float             metallic,
         float             roughness,
         const vcl::Color& emissiveColor,
-        bool doubleSided) :
+        bool doubleSided,
+        const std::string& alphaMode,
+        float             alphaCutoff
+    ) :
             mBaseColor(baseColor), 
             mMetallic(metallic), 
             mRoughness(roughness), 
             mEmissiveColor(emissiveColor),
-            mDoubleSided(doubleSided)
+            mDoubleSided(doubleSided),
+            mAlphaMode(alphaMode),
+            mAlphaCutoff(alphaCutoff)
     {
     }
 
@@ -85,6 +96,12 @@ public:
 
     bool doubleSided() const { return mDoubleSided; }
     bool& doubleSided() { return mDoubleSided; }
+
+    std::string alphaMode() const { return mAlphaMode; }
+    std::string& alphaMode() { return mAlphaMode; }
+
+    float alphaCutoff() const { return mAlphaCutoff; }
+    float& alphaCutoff() { return mAlphaCutoff; }
 
     void serialize(std::ostream& os) const
     {

@@ -44,7 +44,10 @@ int main(int argc, char** argv)
             std::cout << "metallicFactor: " << mat.metallic() << std::endl;
             std::cout << "roughnessFactor: " << mat.roughness() << std::endl;
             std::cout << "emissiveFactor: " << mat.emissiveColor() << std::endl;
-            std::cout << "doubleSided: " << mat.doubleSided() << std::endl << std::endl;
+            std::cout << "doubleSided: " << mat.doubleSided() << std::endl;
+            std::cout << "alphaMode: " << mat.alphaMode() << std::endl;
+            std::cout << "alphaCutoff: " << mat.alphaCutoff() << std::endl;
+            std::cout << "------------------------" << std::endl;
         }
     }
 

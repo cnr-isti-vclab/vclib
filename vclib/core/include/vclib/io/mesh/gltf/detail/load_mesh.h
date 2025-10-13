@@ -53,7 +53,8 @@ int loadGltfPrimitiveMaterial(
 
     if(p.material >= 0) {
         vcl::Color baseColor, emissiveColor;
-        double metallic, roughness;
+        std::string alphaMode;
+        double metallic, roughness, alphaCutoff;
         bool doubleSided;
         int textureImg;
         const tinygltf::Material& mat = model.materials[p.material];
@@ -80,10 +81,16 @@ int loadGltfPrimitiveMaterial(
         // doubleSided
         doubleSided = mat.doubleSided; // has default value
 
+        // alphaMode
+        alphaMode = mat.alphaMode; // has default value
+
+        // alphaCutoff
+        alphaCutoff = mat.alphaCutoff; // has default value
+
         /* Put the data in the mesh */
 
         if constexpr (HasMaterials<MeshType>) {
-            m.pushMaterial(Material(baseColor, metallic, roughness, emissiveColor, doubleSided));
+            m.pushMaterial(Material(baseColor, metallic, roughness, emissiveColor, doubleSided, alphaMode, alphaCutoff));
             idx = m.materialsNumber() - 1; // index of the added material
         }
         // TODO: uncomment else here
