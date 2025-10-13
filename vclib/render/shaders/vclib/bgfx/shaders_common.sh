@@ -121,7 +121,7 @@ const vec3 lightFillDir = vec3(
 */
 float clampedDot(vec3 a, vec3 b)
 {
-    return max(dot(a, b), 0.0);
+    return clamp(dot(a, b), 0.0, 1.0);
 }
 
 /**
@@ -183,9 +183,10 @@ float V_GGX(
  */
 vec3 F_Schlick(
     vec3 F0,
+    vec3 F90,
     float HoV)
 {
-    return F0 + (1.0 - F0) * pow(clamp(1.0 - HoV, 0.0, 1.0), 5.0);
+    return F0 + (F90 - F0) * pow(clamp(1.0 - HoV, 0.0, 1.0), 5.0);
 }
 
 /**
@@ -254,11 +255,17 @@ vec4 pbrColor(
     vec3 emissive)
 {
     vec3 finalColor = vec3(0.0,0.0,0.0);
+    vec3 f0_dielectric = vec3(0.04, 0.04, 0.04);
+    vec3 f90 = vec3(1.0, 1.0, 1.0);
 
     #ifdef USE_LIGHTS
 
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
+
+    if (dot(normal, V) < 0.0) 
+        normal = -normal;
+    
     float NoV = clampedDot(normal, V);
 
     for(int i = 0; i < LIGHT_COUNT; ++i)
@@ -277,9 +284,9 @@ vec4 pbrColor(
 
         // Fresnel factors for both dielectric and metallic surfaces
         // 0.04 is an approximation of F0 averaged around many dielectric materials
-        vec3 dielectric_fresnel = F_Schlick(vec3(0.04, 0.04, 0.04), HoV);
+        vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, HoV);
         // Metals have the surface color as base reflectivity since no light gets absorbed
-        vec3 metal_fresnel = F_Schlick(color, HoV);
+        vec3 metal_fresnel = F_Schlick(color, f90, HoV);
 
         // diffuse component
         vec3 l_diffuse = lightIntensity * pbrDiffuse(color);
