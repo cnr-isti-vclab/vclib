@@ -36,13 +36,6 @@
 
 namespace vcl::detail {
 
-// Default values for glTF PBR material properties according to glTF 2.0 specification
-static const vcl::Color kGltfDefaultBaseColor = vcl::Color(255, 255, 255, 255);
-static const double kGltfDefaultMetallic = 1.0;
-static const double kGltfDefaultRoughness = 1.0;
-static const vcl::Color kGltfDefaultEmissiveColor = vcl::Color(0, 0, 0);
-static const bool kGltfDefaultDoubleSided = false;
-
 enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES };
 inline const std::array<std::string, 4> GLTF_ATTR_STR {
     "POSITION",
@@ -59,40 +52,25 @@ int loadGltfPrimitiveMaterial(
     int idx = -1;
 
     if(p.material >= 0) {
-        vcl::Color baseColor = kGltfDefaultBaseColor;
-        vcl::Color emissiveColor = kGltfDefaultEmissiveColor;
-        double metallic = kGltfDefaultMetallic;
-        double roughness = kGltfDefaultRoughness;
-        bool doubleSided = kGltfDefaultDoubleSided;
-        int textureImg = -1;
+        vcl::Color baseColor, emissiveColor;
+        double metallic, roughness;
+        bool doubleSided;
+        int textureImg;
         const tinygltf::Material& mat = model.materials[p.material];
 
         // baseColorFactor
-        auto it = mat.values.find("baseColorFactor");
-        if(it != mat.values.end()) {
-            const std::vector<double>& vc = it->second.number_array;
-                for (uint i = 0; i < 4; i++)
-                    baseColor[i] = vc[i] * 255.0;
-        }
+        const std::vector<double>& vc = mat.pbrMetallicRoughness.baseColorFactor; // has default value
+            for (uint i = 0; i < 4; i++)
+                baseColor[i] = vc[i] * 255.0;
 
         // baseColorTexture
-        it = mat.values.find("baseColorTexture");
-        if(it != mat.values.end()) { // the material is a texture
-            auto it2 = it->second.json_double_value.find("index");
-            if (it2 != it->second.json_double_value.end()) {
-                textureImg = it2->second; // get the id of the texture
-            }
-        }
+        textureImg = mat.pbrMetallicRoughness.baseColorTexture.index; // get the id of the texture, -1 if not present
 
         // metallicFactor
-        it = mat.values.find("metallicFactor");
-        if(it != mat.values.end() && it->second.has_number_value)
-            metallic = it->second.number_value;
+        metallic = mat.pbrMetallicRoughness.metallicFactor; // has default value
 
         // roughnessFactor
-        it = mat.values.find("roughnessFactor");
-        if(it != mat.values.end() && it->second.has_number_value)
-            roughness = it->second.number_value;
+        roughness = mat.pbrMetallicRoughness.roughnessFactor; // has default value
 
         // emissiveFactor
         const std::vector<double>& emissiveFactor = mat.emissiveFactor; // has default value
