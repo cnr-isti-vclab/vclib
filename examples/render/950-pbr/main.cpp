@@ -36,14 +36,15 @@ int main(int argc, char** argv)
     std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
     std::string e5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e5);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e1);
 
     for(auto& mesh : meshes) {
         for (auto& mat : mesh.materials()) {
             std::cout << "baseColorFactor: " << mat.baseColor() << std::endl;
             std::cout << "metallicFactor: " << mat.metallic() << std::endl;
             std::cout << "roughnessFactor: " << mat.roughness() << std::endl;
-            std::cout << "emissiveFactor: " << mat.emissiveColor() << std::endl << std::endl;
+            std::cout << "emissiveFactor: " << mat.emissiveColor() << std::endl;
+            std::cout << "doubleSided: " << mat.doubleSided() << std::endl << std::endl;
         }
     }
 

@@ -41,6 +41,7 @@ static const vcl::Color kGltfDefaultBaseColor = vcl::Color(255, 255, 255, 255);
 static const double kGltfDefaultMetallic = 1.0;
 static const double kGltfDefaultRoughness = 1.0;
 static const vcl::Color kGltfDefaultEmissiveColor = vcl::Color(0, 0, 0);
+static const bool kGltfDefaultDoubleSided = false;
 
 enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES };
 inline const std::array<std::string, 4> GLTF_ATTR_STR {
@@ -62,6 +63,7 @@ int loadGltfPrimitiveMaterial(
         vcl::Color emissiveColor = kGltfDefaultEmissiveColor;
         double metallic = kGltfDefaultMetallic;
         double roughness = kGltfDefaultRoughness;
+        bool doubleSided = kGltfDefaultDoubleSided;
         int textureImg = -1;
         const tinygltf::Material& mat = model.materials[p.material];
 
@@ -97,10 +99,13 @@ int loadGltfPrimitiveMaterial(
             for (uint i = 0; i < 3; i++) 
                 emissiveColor[i] = emissiveFactor[i] * 255.0;
 
+        // doubleSided
+        doubleSided = mat.doubleSided; // has default value
+
         /* Put the data in the mesh */
 
         if constexpr (HasMaterials<MeshType>) {
-            m.pushMaterial(Material(baseColor, metallic, roughness, emissiveColor));
+            m.pushMaterial(Material(baseColor, metallic, roughness, emissiveColor, doubleSided));
             idx = m.materialsNumber() - 1; // index of the added material
         }
         // TODO: uncomment else here

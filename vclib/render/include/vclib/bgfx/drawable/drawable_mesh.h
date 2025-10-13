@@ -208,12 +208,22 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
+            uint64_t surfaceState = state;
+            if constexpr (HasMaterials<MeshType>) {
+                if(mMRS.isSurface(MRI::Surface::COLOR_VERTEX_MATERIAL)) {
+                    if(MeshType::materialsNumber() > 0) {
+                        if(!MeshType::material(0).doubleSided()) {
+                            surfaceState |= BGFX_STATE_CULL_CW; // backface culling
+                        }
+                    }
+                }
+            }
             mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             bindUniforms();
 
-            bgfx::setState(state);
+            bgfx::setState(surfaceState);
             bgfx::setTransform(model.data());
 
             bgfx::submit(viewId, surfaceProgramSelector());

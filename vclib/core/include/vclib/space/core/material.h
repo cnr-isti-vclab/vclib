@@ -37,32 +37,37 @@ namespace vcl {
 class Material
 {
     // essential PBR properties
-    vcl::Color mBaseColor;
+    vcl::Color mBaseColor = vcl::Color(1.0f, 1.0f, 1.0f);
 
-    float mMetallic;
-    float mRoughness;
+    float mMetallic = 1.0f;
+    float mRoughness = 1.0f;
 
     // optional PBR properties
-    vcl::Color mEmissiveColor;
+    vcl::Color mEmissiveColor = vcl::Color(0.0f, 0.0f, 0.0f);
+
+    bool mDoubleSided = false;
 
 public:
     Material() :
-            mBaseColor(vcl::Color(1.0f, 1.0f, 1.0f)), 
-            mMetallic(0.0f),
-            mRoughness(0.5f),
-            mEmissiveColor(vcl::Color(0.0f, 0.0f, 0.0f))
+            mBaseColor(), 
+            mMetallic(),
+            mRoughness(),
+            mEmissiveColor(), 
+            mDoubleSided()
     {
     }
 
     Material(
         const vcl::Color& baseColor,
-        float             metallic  = 0.0f,
-        float             roughness = 0.5f,
-        const vcl::Color& emissiveColor = vcl::Color(0.0f, 0.0f, 0.0f)) :
+        float             metallic,
+        float             roughness,
+        const vcl::Color& emissiveColor,
+        bool doubleSided) :
             mBaseColor(baseColor), 
             mMetallic(metallic), 
             mRoughness(roughness), 
-            mEmissiveColor(emissiveColor)
+            mEmissiveColor(emissiveColor),
+            mDoubleSided(doubleSided)
     {
     }
 
@@ -77,6 +82,9 @@ public:
 
     const vcl::Color& emissiveColor() const { return mEmissiveColor; }
     vcl::Color& emissiveColor() { return mEmissiveColor; }
+
+    bool doubleSided() const { return mDoubleSided; }
+    bool& doubleSided() { return mDoubleSided; }
 
     void serialize(std::ostream& os) const
     {
