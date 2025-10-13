@@ -148,8 +148,8 @@ void appendDuplicateVertexPositionsToBuffer(
  * uint lfs = vcl::largestFaceSize(mesh);
  *
  * std::vector<uint> buffer(mesh.faceNumber() * lfs);
- * faceIndicesToBuffer(mesh, buffer.data(), lfs);
- * replaceFaceIndicesByVertexDuplicationToBuffer(mesh, vertsToDuplicate,
+ * faceVertexIndicesToBuffer(mesh, buffer.data(), lfs);
+ * replaceFaceVertexIndicesByVertexDuplicationToBuffer(mesh, vertsToDuplicate,
  *    faceToReassign, buffer.data(), lfs);
  * @endcode
  *
@@ -170,7 +170,7 @@ void appendDuplicateVertexPositionsToBuffer(
  * @ingroup append_replace_to_buffer
  */
 template<FaceMeshConcept MeshType>
-void replaceFaceIndicesByVertexDuplicationToBuffer(
+void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
     const MeshType&                                    mesh,
     const std::list<uint>&                             vertsToDuplicate,
     const std::list<std::list<std::pair<uint, uint>>>& facesToReassign,
@@ -226,8 +226,8 @@ void replaceFaceIndicesByVertexDuplicationToBuffer(
  * uint numTris = vcl::countTriangulatedTriangles(myMesh);
  *
  * std::vector<uint> buffer(mesh.faceNumber() * numTris);
- * triangulatedFaceIndicesToBuffer(mesh, buffer.data(), indexMap);
- * replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(mesh,
+ * triangulatedFaceVertexIndicesToBuffer(mesh, buffer.data(), indexMap);
+ * replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(mesh,
  *    vertsToDuplicate, faceToReassign, indexMap, buffer.data());
  * @endcode
  *
@@ -247,7 +247,7 @@ void replaceFaceIndicesByVertexDuplicationToBuffer(
  * @ingroup append_replace_to_buffer
  */
 template<FaceMeshConcept MeshType>
-void replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
+void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
     const MeshType&                                    mesh,
     const std::list<uint>&                             vertsToDuplicate,
     const std::list<std::list<std::pair<uint, uint>>>& facesToReassign,
