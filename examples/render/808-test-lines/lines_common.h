@@ -62,6 +62,7 @@ void pushRandomLine(
         static_cast<uint8_t>(disColor(gen)),
         static_cast<uint8_t>(disColor(gen)),
         static_cast<uint8_t>(disColor(gen)));
+
     lineColors.emplace_back(lineColor.abgr());
 }
 

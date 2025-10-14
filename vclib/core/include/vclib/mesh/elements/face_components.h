@@ -534,7 +534,7 @@ template<typename ParentFaceType>
 using OptionalTriangleWedgeTexCoordsd =
     comp::WedgeTexCoords<double, 3, ParentFaceType, true>;
 
-/** @} */ // end of edge_components group
+/** @} */ // end of face_components group
 
 } // namespace vcl::face
 

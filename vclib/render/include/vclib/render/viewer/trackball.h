@@ -33,9 +33,10 @@
 namespace vcl {
 
 /**
- * @brief The TrackBall class implements a trackball camera.
+ * @brief The TrackBall class implements a trackball (a camera combined with
+ * model transformation).
  *
- * The trackball class stores a camera and provides a set motions that allow the
+ * The trackball class stores a view and provides a set motions that allow the
  * user to manipulate it.
  *
  * There are two main types of motions:
@@ -140,6 +141,19 @@ public:
         mTransform.translate(-center);
     }
 
+    Camera<Scalar> camera() const
+    {
+        // TODO: return the camera containing the current view point of
+        // the trackball (it is not mCamera).
+        return Camera<Scalar>();
+    }
+
+    void setCamera(const Camera<Scalar>& cam)
+    {
+        // TODO: set the trackball view point using the given camera
+        // parameters (position, target, up).
+    }
+
     void resetDirectionalLight()
     {
         mDirectionalLightTransform = Quaternion<Scalar>();
@@ -241,8 +255,6 @@ public:
         mDirectionalLightTransform = Quaternion<Scalar>::FromTwoVectors(
             Point3<Scalar>(0, 0, 1), direction);
     }
-
-    const vcl::Camera<Scalar>& camera() const { return mCamera; }
 
     Matrix44<Scalar> viewMatrix() const
     {

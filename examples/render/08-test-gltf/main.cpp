@@ -20,54 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BASE_COMPACTNESS_H
-#define VCL_BASE_COMPACTNESS_H
+#include <vclib/render/io/camera.h>
+#include <vclib/render/viewer/camera.h>
 
-#include <vclib/base/base.h>
+#include <default_viewer.h>
+#include <get_drawable_mesh.h>
 
-#include <vector>
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+#include <QApplication>
+#endif
 
-namespace vcl {
-
-/**
- * @brief It will take care of compacting the vector vec, depending on the
- * content of the vector newIndices.
- *
- * Given the vector newIndices having the following features:
- * - has the same size of vec
- * - for each position i:
- *   - newIndices[i] contains the new position of the element vec[i] after the
- *     compactness
- *   - newIndices[i] contains the value UINT_NULL if the element vec[i] must be
- *     deleted
- *
- * Non-null elements of newIndices must be unique, and their value must be less
- * than the new size of vec after the compactness. The new size of vec will be
- * the number of non-null elements of newIndices.
- *
- * @param vec
- * @param newIndices
- */
-template<typename T, typename... Args>
-void compactVector(
-    std::vector<T, Args...>& vec,
-    const std::vector<uint>& newIndices)
+int main(int argc, char** argv)
 {
-    assert(vec.size() == newIndices.size());
-    uint newSize = 0;
-    for (uint i = 0; i < newIndices.size(); ++i) {
-        if (newIndices[i] != UINT_NULL) {
-            ++newSize;
-            if (newIndices[i] != i) {
-                // must move the element from position i to position
-                // newIndices[i]
-                vec[newIndices[i]] = std::move(vec[i]);
-            }
-        }
-    }
-    vec.resize(newSize);
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    QApplication application(argc, argv);
+#endif
+
+    auto viewer = defaultViewer();
+
+    const bool TEXCOORDS_PER_VERTEX = false;
+    const bool USE_BUNNY            = true;
+
+    vcl::DrawableMesh<vcl::TriMesh> drawable =
+        getDrawableMesh<vcl::TriMesh>("gltf/DamagedHelmet/DamagedHelmet.gltf");
+    showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
+
+    vcl::Camera<float> c =
+        vcl::loadCamera<>(VCLIB_EXAMPLE_MESHES_PATH "/gltf/camera.gltf");
+
+    std::cerr << "Camera loaded from gltf file:\n";
+    std::cerr << "  Eye: " << c.eye().transpose() << "\n";
+    std::cerr << "  Center: " << c.center().transpose() << "\n";
+    std::cerr << "  Up: " << c.up().transpose() << "\n";
+    std::cerr << "  FOV: " << c.fieldOfView() << "\n";
+    std::cerr << "  Aspect: " << c.aspectRatio() << "\n";
+    std::cerr << "  Near: " << c.nearPlane() << "\n";
+    std::cerr << "  Far: " << c.farPlane() << "\n";
+
+    viewer.setCamera(c);
+
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
+    viewer.showMaximized();
+    return application.exec();
+#else
+    (void) argc; // unused
+    (void) argv;
+    return 0;
+#endif
 }
-
-} // namespace vcl
-
-#endif // VCL_BASE_COMPACTNESS_H

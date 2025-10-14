@@ -20,45 +20,56 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BASE_H
-#define VCL_BASE_H
+#ifndef VCL_RENDER_IO_CAMERA_LOAD_H
+#define VCL_RENDER_IO_CAMERA_LOAD_H
 
-#include "base/comparators.h"
-#include "base/concepts.h"
-#include "base/const_correctness.h"
-#include "base/exceptions.h"
-#include "base/filter_types.h"
-#include "base/hash.h"
-#include "base/inheritance.h"
-#include "base/iterators.h"
-#include "base/logger.h"
-#include "base/math.h"
-#include "base/min_max.h"
-#include "base/nested_initializer_lists.h"
-#include "base/pair.h"
-#include "base/parallel.h"
-#include "base/permute.h"
-#include "base/pointers.h"
-#include "base/random.h"
-#include "base/serialization.h"
-#include "base/string.h"
-#include "base/templated_type_wrapper.h"
-#include "base/timer.h"
-#include "base/tokenizer.h"
-#include "base/type_wrapper.h"
-#include "base/variadic_templates.h"
-#include "base/views.h"
+#ifdef VCLIB_WITH_TINYGLTF
+#include "gltf/load.h"
+#endif
+
+#include <vclib/io/file_format.h>
+#include <vclib/io/mesh/gltf/capability.h>
+
+#include <set>
+#include <string>
+
+namespace vcl {
 
 /**
- * @defgroup base Base
+ * @brief Returns the set of camera formats supported for loading.
  *
- * @brief The Base module defines all the utility definitions, types, classes
- * and type traits that are common in the library.
+ * The set contains all the camera formats that can be loaded using all the
+ * external libraries compiled with VCLib.
  *
- * This module does not depend on any other module of the library, and it is
- * used by all the other modules.
- *
- * You can access to the module by including `#include <vclib/base.h>`
+ * @return A set of camera formats supported for loading.
  */
+inline std::set<FileFormat> loadCameraFormats()
+{
+    std::set<FileFormat> ff;
 
-#endif // VCL_BASE_H
+#ifdef VCLIB_WITH_TINYGLTF
+    ff.insert(gltfFileFormat());
+#endif
+
+    return ff;
+}
+
+template<CameraConcept CameraType = Camera<float>>
+inline CameraType loadCamera(const std::string& filename)
+{
+    FileFormat ff = FileInfo::fileFormat(filename);
+
+#ifdef VCLIB_WITH_TINYGLTF
+    if (ff == gltfFileFormat()) {
+        return loadCameraGltf(filename);
+    }
+    else
+#endif
+    {
+        throw UnknownFileFormatException(ff.extensions().front());
+    }
+}
+
+} // namespace vcl
+
+#endif // VCL_RENDER_IO_CAMERA_LOAD_H

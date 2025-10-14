@@ -34,6 +34,14 @@ public:
      * their empty constructor is called only when they become available).
      */
     %EL_UC%() = default;
+
+    /**
+     * @brief Swap function that delegates to the base Element swap.
+     *
+     * This friend function enables ADL (Argument Dependent Lookup) to find
+     * the correct swap function when swapping %EL_UC% objects.
+     */
+    friend void swap(%EL_UC%& a, %EL_UC%& b) { a.swap(b); }
 };
 
 template<typename MeshType, typename... Comps>
