@@ -183,7 +183,7 @@ uint removeUnreferencedVertices(MeshType& m)
         // update the vertex indices of the mesh, setting to null the indices of
         // the unreferenced vertices (it may happen on adjacent vertices of some
         // container).
-        m.updateVertexIndices(refVertIndices);
+        m.updateVertexReferences(refVertIndices);
     }
 
     return n;
@@ -259,7 +259,7 @@ uint removeDuplicatedVertices(MeshType& m)
 
     // update the vertex pointers to point to the correct vertices, in every
     // container of the mesh
-    m.updateVertexIndices(newVertexIndices);
+    m.updateVertexReferences(newVertexIndices);
 
     // todo:
     // - add a flag that removes degenerate elements after

@@ -70,7 +70,7 @@ auto meshMatrixConversion()
     // Export basic geometry
     Eigen::MatrixXd vertices =
         vcl::vertexPositionsMatrix<Eigen::MatrixXd>(mesh);
-    Eigen::MatrixXi faces = vcl::faceIndicesMatrix<Eigen::MatrixXi>(mesh);
+    Eigen::MatrixXi faces = vcl::faceVertexIndicesMatrix<Eigen::MatrixXi>(mesh);
 
     // Export additional components
     Eigen::MatrixXd vertexNormals =
@@ -129,7 +129,7 @@ auto meshMatrixConversion()
     vcl::Array2<double> polyVertices =
         vcl::vertexPositionsMatrix<vcl::Array2<double>>(polyMesh);
     vcl::Array2<int> polyFaces =
-        vcl::faceIndicesMatrix<vcl::Array2<int>>(polyMesh);
+        vcl::faceVertexIndicesMatrix<vcl::Array2<int>>(polyMesh);
 
     std::cout << "Polygon mesh with VCLib Array2:" << std::endl;
     std::cout << "- Vertices: " << polyVertices.rows() << "x"
