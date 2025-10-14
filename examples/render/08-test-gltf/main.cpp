@@ -57,6 +57,8 @@ int main(int argc, char** argv)
     std::cerr << "  Near: " << c.nearPlane() << "\n";
     std::cerr << "  Far: " << c.farPlane() << "\n";
 
+    viewer.setCamera(c);
+
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
     return application.exec();

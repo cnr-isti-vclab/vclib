@@ -25,6 +25,8 @@
 
 #include "detail.h"
 
+#include <vclib/algorithms/mesh/utility.h>
+
 #include <vclib/algorithms/core.h>
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
@@ -42,42 +44,6 @@
 namespace vcl {
 
 namespace detail {
-
-// returns a non-empty vector if the ELEM_ID container is not compact and the
-// user wants compact indices
-template<uint ELEM_ID>
-std::vector<uint> vertCompactIndices(const auto& mesh, bool wantCompact)
-{
-    std::vector<uint> elemCompIndices;
-
-    bool isCompact = mesh.template number<ELEM_ID>() ==
-                     mesh.template containerSize<ELEM_ID>();
-
-    if (wantCompact && !isCompact)
-        elemCompIndices = mesh.template compactIndices<ELEM_ID>();
-    return elemCompIndices;
-}
-
-// returns a non-empty vector if the vertex container is not compact and the
-// user wants compact indices
-std::vector<uint> vertCompactIndices(const auto& mesh, bool wantCompact)
-{
-    return vertCompactIndices<ElemId::VERTEX>(mesh, wantCompact);
-}
-
-// lambda to get the vertex index of a face (considering compact vertex indices)
-auto vIndexLambda(const auto& mesh, const std::vector<uint>& vertCompIndices)
-{
-    // lambda to get the vertex index of a face (considering compact indices)
-    auto vIndex = [&vertCompIndices](const auto& f, uint i) {
-        if (vertCompIndices.size() > 0)
-            return vertCompIndices[f.vertexIndex(i)];
-        else
-            return f.vertexIndex(i);
-    };
-
-    return vIndex;
-}
 
 inline TriPolyIndexBiMap indexMap;
 
@@ -222,7 +188,7 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
  * std::vector<uint> faceSizes(myMesh.faceNumber());
  * uint sum = vcl::faceSizesToBuffer(myMesh, sizes.data());
  * std::vector<uint> faceIndices(sum);
- * vcl::faceIndicesToBuffer(myMesh, faceIndices.data());
+ * vcl::faceVertexIndicesToBuffer(myMesh, faceIndices.data());
  *
  * // read indices for each face
  * uint offset = 0;
@@ -257,7 +223,7 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void faceIndicesToBuffer(
+void faceVertexIndicesToBuffer(
     const MeshType& mesh,
     auto*           buffer,
     bool            getIndicesAsIfContainerCompact = true)
@@ -294,7 +260,7 @@ void faceIndicesToBuffer(
  * @code{.cpp}
  * uint lfs = vcl::largestFaceSize(myMesh);
  * Eigen::MatrixXi faceIndices(myMesh.faceNumber(), lfs);
- * vcl::faceIndicesToBuffer(
+ * vcl::faceVertexIndicesToBuffer(
  *     myMesh, faceIndices.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
  *
@@ -323,7 +289,7 @@ void faceIndicesToBuffer(
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void faceIndicesToBuffer(
+void faceVertexIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     uint              largestFaceSize,
@@ -366,7 +332,7 @@ void faceIndicesToBuffer(
  * uint numTris = vcl::countTriangulatedTriangles(myMesh);
  * Eigen::MatrixXi triIndices(numTris, 3);
  * vcl::TriPolyIndexBiMap indexMap;
- * vcl::triangulatedFaceIndicesToBuffer(
+ * vcl::triangulatedFaceVertexIndicesToBuffer(
  *     myMesh, triIndices.data(), indexMap, MatrixStorageType::COLUMN_MAJOR,
  *     numTris);
  * @endcode
@@ -397,7 +363,7 @@ void faceIndicesToBuffer(
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void triangulatedFaceIndicesToBuffer(
+void triangulatedFaceVertexIndicesToBuffer(
     const MeshType&    mesh,
     auto*              buffer,
     TriPolyIndexBiMap& indexMap     = detail::indexMap,
@@ -425,7 +391,7 @@ void triangulatedFaceIndicesToBuffer(
             ++t;
         }
 
-        return faceIndicesToBuffer(
+        return faceVertexIndicesToBuffer(
             mesh, buffer, 3, storage, getIndicesAsIfContainerCompact);
     }
     else {
@@ -487,7 +453,7 @@ void triangulatedFaceIndicesToBuffer(
  * @ingroup export_buffer
  */
 template<EdgeMeshConcept MeshType>
-void edgeIndicesToBuffer(
+void edgeVertexIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
@@ -542,7 +508,7 @@ void edgeIndicesToBuffer(
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void wireframeIndicesToBuffer(
+void wireframeVertexIndicesToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
     MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,

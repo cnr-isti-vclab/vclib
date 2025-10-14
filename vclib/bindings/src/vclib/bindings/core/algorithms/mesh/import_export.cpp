@@ -311,9 +311,9 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "face_indices_matrix",
+            "face_vertex_indices_matrix",
             [](const MeshType& m) {
-                return vcl::faceIndicesMatrix<Eigen::MatrixXi>(m);
+                return vcl::faceVertexIndicesMatrix<Eigen::MatrixXi>(m);
             },
             "mesh"_a);
 
@@ -547,9 +547,9 @@ void initImportExportAlgorithms(pybind11::module& m)
         // export_matrix.h
 
         m.def(
-            "edge_indices_matrix",
+            "edge_vertex_indices_matrix",
             [](const MeshType& m) {
-                return vcl::edgeIndicesMatrix<Eigen::MatrixX2i>(m);
+                return vcl::edgeVertexIndicesMatrix<Eigen::MatrixX2i>(m);
             },
             "mesh"_a);
 

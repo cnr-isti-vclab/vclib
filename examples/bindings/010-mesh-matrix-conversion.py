@@ -73,7 +73,7 @@ def mesh_matrix_conversion():
 
     # Export basic geometry
     vertices = vcl.vertex_positions_matrix(mesh)
-    faces = vcl.face_indices_matrix(mesh)
+    faces = vcl.face_vertex_indices_matrix(mesh)
 
     # Export additional components
     vertex_normals = vcl.vertex_normals_matrix(mesh)
@@ -116,7 +116,7 @@ def mesh_matrix_conversion():
     poly_mesh = vcl.load_poly_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_poly.ply")
 
     poly_vertices = vcl.vertex_positions_matrix(poly_mesh)
-    poly_faces = vcl.face_indices_matrix(poly_mesh)
+    poly_faces = vcl.face_vertex_indices_matrix(poly_mesh)
 
     print("Polygon mesh:")
     print(f"- Vertices: {poly_vertices.shape[0]}x{poly_vertices.shape[1]}")
