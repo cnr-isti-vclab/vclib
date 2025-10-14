@@ -31,6 +31,7 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
+#include <vclib/bgfx/index_buffer_to_cpu_handler.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
@@ -42,8 +43,7 @@
 #include <bgfx/bgfx.h>
 
 // This allows selection for a maximum of 1024^3 = 1_073_741_824 vertices per
-// mesh. Still likely enough. It is set to this because i seem to understand
-// that Metal has a cap of 1024 (maybe?)
+// mesh. Still likely enough.
 #define MAX_COMPUTE_WORKGROUP_SIZE uint(1024)
 
 namespace vcl {
@@ -75,6 +75,9 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     // we use an optional
     std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
     std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
+
+    // Handler used to copy selection buffers to CPU
+    IndexBufferToCpuHandler mSelectionToCPUBufferHandler;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -151,6 +154,7 @@ public:
         swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
         swap(mFaceSelectionWorkgroupSize, other.mFaceSelectionWorkgroupSize);
         swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
+        swap(mSelectionToCPUBufferHandler, other.mSelectionToCPUBufferHandler);
     }
 
     friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b)
@@ -261,7 +265,8 @@ public:
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
                 vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
                 vcl::Uniform::uintBitsToFloat(Base::numTris())};
-            mVertexPositionsBuffer.bindCompute(VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+            mVertexPositionsBuffer.bindCompute(
+                VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
             mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
             mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
             mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
@@ -275,71 +280,33 @@ public:
         }
     }
 
-    uint selectionBufToTexture(
-        const bgfx::ViewId&        viewId,
-        const bgfx::TextureHandle& texCPUHandle,
-        const bgfx::TextureHandle& texGPUHandle,
-        const std::array<uint, 2>& texSize,
-        std::vector<uint8_t>&      texReadLoc,
-        const SelectionMode&       mode)
+    uint requestCPUCopyOfSelectionBuffer(const SelectionMode& mode)
     {
-        auto&               pm = vcl::Context::instance().programManager();
-        std::array<uint, 3> actualWorkgroupSize = {
-            mVertexSelectionWorkgroupSize[0],
-            mVertexSelectionWorkgroupSize[1],
-            mVertexSelectionWorkgroupSize[2]};
-        std::array<float, 4> temp = {
-            0,
-            0,
-            vcl::Uniform::uintBitsToFloat(texSize[0]),
-            vcl::Uniform::uintBitsToFloat(Base::numVerts())};
+        uint elementBitSize = 1;
+        uint elementCount;
+        IndexBuffer *idxBuf;
         if (mode.isFaceSelection()) {
-            actualWorkgroupSize = {
-                mFaceSelectionWorkgroupSize[0],
-                mFaceSelectionWorkgroupSize[1],
-                mFaceSelectionWorkgroupSize[2]};
-            temp[3] = vcl::Uniform::uintBitsToFloat(Base::numTris());
-            mSelectedFacesBuffer.value().bind(5, bgfx::Access::Read);
+            idxBuf = &(mSelectedFacesBuffer.value());
+            elementCount = Base::numTris();
         }
         if (mode.isVertexSelection()) {
-            mSelectedVerticesBuffer.bind(5, bgfx::Access::Read);
+            idxBuf = &mSelectedVerticesBuffer;
+            elementCount =  Base::numVerts();
         }
-        temp[0] = vcl::Uniform::uintBitsToFloat(actualWorkgroupSize[0]);
-        temp[1] = vcl::Uniform::uintBitsToFloat(actualWorkgroupSize[1]);
-        bgfx::setImage(
-            4,
-            texGPUHandle,
-            0,
-            bgfx::Access::Write,
-            bgfx::TextureFormat::RGBA8);
-        bgfx::dispatch(
-            viewId,
-            pm.getComputeProgram<vcl::ComputeProgram::BUFFER_TO_TEX>(),
-            actualWorkgroupSize[0],
-            actualWorkgroupSize[1],
-            actualWorkgroupSize[2]);
-        
-        // If you don't use a "later" view to do the blitting you'll get the correct result on the next frame
-        // ISSUE: first 2 reads are just 0s regardless of what you actually select
-        bgfx::ViewId blitViewId = vcl::Context::instance().requestViewId();
-        bgfx::blit(
-            blitViewId,
-            texCPUHandle,
-            0,
-            0,
-            texGPUHandle,
-            0,
-            0,
-            texSize[0],
-            texSize[1]);
-        vcl::Context::instance().releaseViewId(blitViewId);
-        bgfx::readTexture(texCPUHandle, texReadLoc.data());
+        mSelectionToCPUBufferHandler.copyFromGPU(*idxBuf, elementCount, elementBitSize); 
         return 2;
+    }
+
+    std::vector<uint8_t> getSelectionBufferCopy() const {
+        return std::move(mSelectionToCPUBufferHandler.getResultsCopy());
     }
 
     void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
 
-    void bindSelectedFacesBuffer() const { mSelectedFacesBuffer.value().bind(6); }
+    void bindSelectedFacesBuffer() const
+    {
+        mSelectedFacesBuffer.value().bind(6);
+    }
 
     // to draw splats
     void bindVertexQuadBuffer() const
@@ -392,6 +359,8 @@ public:
     }
 
     void bindUniforms() const { mMeshUniforms.bind(); }
+
+    uint triangleNumber() const { return Base::numTris(); }
 
 private:
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
@@ -511,6 +480,11 @@ private:
             // create the face selection buffer
             setFaceSelectionBuffer(mesh);
         }
+
+        mSelectionToCPUBufferHandler =
+            std::move(IndexBufferToCpuHandler(uint(ceil(
+                max(double(Base::numVerts()), double(Base::numTris())) /
+                8.0))));
     }
 
     /**
@@ -675,9 +649,13 @@ private:
 
         Base::fillTriangleIndices(mesh, buffer);
 
-        //Triangle index buffer required in a compute
-        //mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
-        mTriangleIndexBuffer.createForCompute(buffer, nt * 3, vcl::PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
+        // Triangle index buffer required in the face selection compute
+        mTriangleIndexBuffer.createForCompute(
+            buffer,
+            nt * 3,
+            vcl::PrimitiveType::UINT,
+            bgfx::Access::Read,
+            releaseFn);
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override

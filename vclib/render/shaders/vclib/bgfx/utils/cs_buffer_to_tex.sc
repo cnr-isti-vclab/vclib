@@ -46,7 +46,12 @@ void main()
 {
     uvec2 wGroupSize = uvec2(floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.x), floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.y));
     uint texXSize = floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.z);
-    uint bufferIndex = gl_WorkGroupID.x + gl_WorkGroupID.y * wGroupSize.x + gl_WorkGroupID.z * wGroupSize.y * wGroupSize.x;
-    ivec2 txCoord = ivec2(bufferIndex/texXSize, bufferIndex%texXSize);
+    uint bufferIndex = gl_WorkGroupID.x + (gl_WorkGroupID.y * wGroupSize.x) + (gl_WorkGroupID.z * wGroupSize.y * wGroupSize.x);
+
+    if (bufferIndex >= floatBitsToUint(u_workGroupSizeXYTexSizeXAndBufSize.w)) {
+        return;
+    }
+
+    ivec2 txCoord = ivec2((int)bufferIndex%texXSize, (int)(bufferIndex/texXSize));
     imageStore(s_tex, txCoord, uintRGBAToVec4Color(buf[bufferIndex]));
 }

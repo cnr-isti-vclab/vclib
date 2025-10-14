@@ -29,13 +29,24 @@
 
 #include <bgfx/bgfx.h>
 
+// Again, i was not really able to figure out what the max size for compute workgroup size is
+// except for D3D which i remeber being close to 2^14 per axis (x, y, z) (this may be device dependend though)
+// Vulkan has a function that tells you how high it is
+// No clue for Metal
+//
+// In any case, 1024^3 = 1_073_741_824 which is likely enough for these purposes
 #define IDXBUF_MAX_COMPUTE_WGP_SIZE uint(1024)
 
 namespace vcl {
+
+// May be worth templating this to allow its use with vertex buffers as well.
+// The only difference would be in the used compute shader, since (at least D3D, don't know about the other backends)
+// complains in debug mode if you attempt to interpret a float buffer as an uint buffer 
+// in the shader (even though it shouldn't matter at all since memory is just memory)
 class IndexBufferToCpuHandler
 {
     vcl::Uniform mBufferToTexUnif = vcl::Uniform(
-        "u_workGroupSizeXYTexSizeAndBufSize",
+        "u_workGroupSizeXYTexSizeXAndBufSize",
         bgfx::UniformType::Vec4);
 
     bgfx::TextureHandle  mGPUTexHandle = BGFX_INVALID_HANDLE;
@@ -117,7 +128,7 @@ public:
         }
         mLastCopyByteSize        = uint(ceil(double(bufferElementCount) * double(elementBitSize) / 8.0));
         vcl::Context& ctx        = vcl::Context::instance();
-        bgfx::ViewId  copyViewId = ctx.requestViewId();
+        bgfx::ViewId copyViewId = ctx.requestViewId();
         bgfx::ViewId  blitViewId = ctx.requestViewId();
         uint          uintBufferElementCount = uint(
             ceil((double(bufferElementCount) * double(elementBitSize)) / 32.0));
@@ -136,14 +147,14 @@ public:
             Uniform::uintBitsToFloat(mTextureSize[0]),
             Uniform::uintBitsToFloat(uintBufferElementCount)};
         auto& pm = vcl::Context::instance().programManager();
-        mBufferToTexUnif.bind(temp.data());
-        buf.bind(5, bgfx::Access::Read);
         bgfx::setImage(
             4,
             mGPUTexHandle,
             0,
             bgfx::Access::Write,
             bgfx::TextureFormat::RGBA8);
+        mBufferToTexUnif.bind((void*) &(temp[0]));
+        buf.bind(5, bgfx::Access::Read);
         bgfx::dispatch(
             copyViewId,
             pm.getComputeProgram<vcl::ComputeProgram::BUFFER_TO_TEX>(),
@@ -160,8 +171,8 @@ public:
             0,
             mTextureSize[0],
             mTextureSize[1]);
-        ctx.releaseViewId(copyViewId);
         ctx.releaseViewId(blitViewId);
+        ctx.releaseViewId(copyViewId);
         bgfx::readTexture(mCPUTexHandle, mReadResults.data());
         return 2;
     }

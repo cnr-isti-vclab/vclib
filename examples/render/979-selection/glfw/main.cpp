@@ -79,17 +79,7 @@ int main(void)
     
     RA tw("Selection", 1024, 768);
 
-    vcl::TriMesh msh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
-    msh.enablePerFaceColor();
-    vcl::setPerFaceColor(msh, vcl::Color::Green);
-    vcl::MeshRenderSettings settings(msh);
-    settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, true);
-    settings.setSurface(vcl::MeshRenderInfo::Surface::COLOR_FACE);
-    settings.setSurface(vcl::MeshRenderInfo::Surface::SHADING_SMOOTH);
-    vcl::DrawableMeshBGFX979<vcl::TriMesh> mesh(msh);
-    mesh.setRenderSettings(settings);
-
-    tw.pushDrawableObject(mesh);
+    tw.pushDrawableObject(getDrawableMesh979<vcl::TriMesh>());
 
     tw.fitScene();
 

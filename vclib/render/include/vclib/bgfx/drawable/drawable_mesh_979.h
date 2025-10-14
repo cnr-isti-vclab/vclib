@@ -65,10 +65,6 @@ private:
     bgfx::ProgramHandle faceSelDrawProg = vcl::loadProgram("shaders_face/vs_selection", "shaders_face/fs_selection");
 
     mutable uint mBufToTexRemainingFrames = 255;
-    std::array<uint, 2> mBufToTexTextureSize = {0, 0};
-    bgfx::TextureHandle mBufToTexGPUTexture = BGFX_INVALID_HANDLE;
-    bgfx::TextureHandle mBufToTexCPUTexture = BGFX_INVALID_HANDLE;
-    std::vector<uint8_t> mBufToTexVec;
 
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
@@ -123,10 +119,6 @@ public:
         swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
-        swap(mBufToTexCPUTexture, other.mBufToTexCPUTexture);
-        swap(mBufToTexGPUTexture, other.mBufToTexGPUTexture);
-        swap(mBufToTexVec, other.mBufToTexVec);
-        swap(mBufToTexTextureSize, other.mBufToTexTextureSize);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
     }
 
@@ -138,19 +130,14 @@ public:
             count = MeshType::vertexNumber();
         }
         if (mode.isFaceSelection()) {
-            count = MeshType::faceNumber();
+            count = mMRB.triangleNumber();
         }
-        const uint32_t maxTexSize = bgfx::getCaps()->limits.maxTextureSize;
-        uint16_t texXSize = std::min(uint16_t(maxTexSize), uint16_t(count));
-        uint16_t texYSize = uint16_t(maxTexSize) / texXSize;
-
-        mBufToTexTextureSize = {texXSize, texYSize};
         
         mMRB.calculateSelection(viewId, box, mode);
         if (mBufToTexRemainingFrames != 255) {
             return;
         }
-        mBufToTexRemainingFrames = mMRB.selectionBufToTexture(viewId, mBufToTexCPUTexture, mBufToTexGPUTexture, mBufToTexTextureSize, mBufToTexVec, mode);
+        mBufToTexRemainingFrames = mMRB.requestCPUCopyOfSelectionBuffer(mode);
     }
 
     // TODO: to be removed after shader benchmarks
@@ -211,13 +198,6 @@ public:
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
-
-        uint16_t maxTexSize = uint16_t(bgfx::getCaps()->limits.maxTextureSize);
-
-        // Size of vector: area of texture * byte size per texture unit
-        mBufToTexVec = std::vector<uint8_t>(uint(maxTexSize) * uint(maxTexSize) * 4);
-        mBufToTexCPUTexture = bgfx::createTexture2D(maxTexSize, maxTexSize, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
-        mBufToTexGPUTexture = bgfx::createTexture2D(maxTexSize, maxTexSize, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_COMPUTE_WRITE);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
@@ -286,20 +266,13 @@ public:
         }
 
         if constexpr (HasFaces<MeshType>) {
+            std::vector<uint8_t> vec;
             switch (mBufToTexRemainingFrames) {
                 case 0:
                     mBufToTexRemainingFrames = 255;
-                    for (size_t index = 0; index < this->faceNumber(); index++) {
-                        auto* non_const_this = const_cast<DrawableMeshBGFX979<MeshType>*>(this);
-                        auto& face = non_const_this->face(index);
-                        size_t uint32Idx = size_t(index/32);
-                        // TODO: remove when figured out why it does not work
-                        if (index % 32 == 0) {
-                            std::cout << std::bitset<8>(mBufToTexVec[uint32Idx * 4]) << " " 
-                            << std::bitset<8>(mBufToTexVec[uint32Idx * 4 + 1]) << " "
-                            << std::bitset<8>(mBufToTexVec[uint32Idx * 4 + 2]) << " "
-                            << std::bitset<8>(mBufToTexVec[uint32Idx * 4 + 3]) << std::endl;
-                        }
+                    vec = mMRB.getSelectionBufferCopy();
+                    for (size_t index = 0; index < vec.size(); index++) {
+                        std::cout << std::bitset<8>(vec[index]) << ((((index+1) % 4 == 0) || index == vec.size() - 1) ? "\n" : " ");
                     }
                     break;
                 case 255:
@@ -370,15 +343,15 @@ public:
             }
         }
 
-        // mMRB.bindVertexBuffers(mMRS);
-        // mMRB.bindIndexBuffers(mMRS);
-        // bindUniforms();
-        // mMRB.bindSelectedVerticesBuffer();
-// 
-        // bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS);
-        // bgfx::setTransform(model.data());
-// 
-        // bgfx::submit(viewId, selDrawProg);
+        mMRB.bindVertexBuffers(mMRS);
+        mMRB.bindIndexBuffers(mMRS);
+        bindUniforms();
+        mMRB.bindSelectedVerticesBuffer();
+
+        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS);
+        bgfx::setTransform(model.data());
+
+        bgfx::submit(viewId, selDrawProg);
 
         mMRB.bindVertexBuffers(mMRS);
         mMRB.bindIndexBuffers(mMRS);
