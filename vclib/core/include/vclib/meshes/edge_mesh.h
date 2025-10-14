@@ -75,6 +75,8 @@ class Vertex :
             vert::OptionalMark<Vertex<Scalar, I>>,
             vert::CustomComponents<Vertex<Scalar, I>>>
 {
+public:
+    friend void swap(Vertex& a, Vertex& b) { a.swap(b); }
 };
 
 /**
@@ -108,6 +110,8 @@ class Edge :
             edge::OptionalMark<Edge<Scalar, I>>,
             edge::CustomComponents<Edge<Scalar, I>>>
 {
+public:
+    friend void swap(Edge& a, Edge& b) { a.swap(b); }
 };
 
 } // namespace vcl::edgemesh

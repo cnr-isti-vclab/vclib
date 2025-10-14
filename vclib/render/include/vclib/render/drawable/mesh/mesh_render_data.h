@@ -392,9 +392,9 @@ protected:
      */
     void fillTriangleIndices(const FaceMeshConcept auto& mesh, auto* buffer)
     {
-        triangulatedFaceIndicesToBuffer(
+        triangulatedFaceVertexIndicesToBuffer(
             mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
-        replaceTriangulatedFaceIndicesByVertexDuplicationToBuffer(
+        replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
             mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
     }
 
@@ -476,7 +476,7 @@ protected:
      */
     void fillEdgeIndices(const EdgeMeshConcept auto& mesh, auto* buffer)
     {
-        edgeIndicesToBuffer(mesh, buffer);
+        edgeVertexIndicesToBuffer(mesh, buffer);
     }
 
     /**
@@ -522,7 +522,7 @@ protected:
      */
     void fillWireframeIndices(const FaceMeshConcept auto& mesh, auto* buffer)
     {
-        wireframeIndicesToBuffer(mesh, buffer);
+        wireframeVertexIndicesToBuffer(mesh, buffer);
     }
 
     // functions that must be may implemented by the derived classes to set
