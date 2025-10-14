@@ -62,6 +62,14 @@ public:
     Edge() = default;
 
     /**
+     * @brief Swap function that delegates to the base Element swap.
+     *
+     * This friend function enables ADL (Argument Dependent Lookup) to find
+     * the correct swap function when swapping Edge objects.
+     */
+    friend void swap(Edge& a, Edge& b) { a.swap(b); }
+
+    /**
      * @brief Sets the vertices of the edge.
      *
      * @param [in] v0: the first vertex of the edge.

@@ -111,6 +111,8 @@ void permuteInPlace(
     std::vector<T, Args...>& vec,
     const std::vector<uint>& newIndices)
 {
+    using std::swap;
+
     assert(vec.size() == newIndices.size());
 
     std::vector<bool> visited(vec.size(), false);
@@ -126,7 +128,7 @@ void permuteInPlace(
         while (!visited[current]) {
             visited[current] = true;
             int next = newIndices[current];
-            std::swap(temp, vec[next]);
+            swap(temp, vec[next]);
             current = next;
         }
     }

@@ -118,6 +118,11 @@ public:
         (setComponentEnabledIfOptional<Comp, false>(), ...);
     }
 
+    void swapComponents(uint i, uint j)
+    {
+        (swapComponent<Comp>(i, j), ...);
+    }
+
     template<typename C>
     bool isComponentEnabled() const
     {
@@ -160,6 +165,16 @@ public:
     {
         using C = comp::ComponentOfType<COMP_ID, Comp...>;
         disableComponent<C>();
+    }
+
+    template<typename C>
+    void swapComponent(uint i, uint j)
+    {
+        constexpr uint ind = indexOfType<C>();
+        if (mVecEnabled[ind]) {
+            auto& vec = std::get<ind>(mVecTuple);
+            std::swap(vec[i], vec[j]);
+        }
     }
 
 private:

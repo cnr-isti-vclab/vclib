@@ -1015,6 +1015,13 @@ protected:
         }
     }
 
+    void swapVerticalComponents(uint e1, uint e2)
+    {
+        mVerticalCompVecTuple.swapComponents(e1, e2);
+        if constexpr (comp::HasCustomComponents<T>)
+            mCustomCompVecMap.swapCustomComponents(e1, e2);
+    }
+
 private:
     template<typename ElPtr, typename... Comps>
     void updateReferencesOnComponents(
