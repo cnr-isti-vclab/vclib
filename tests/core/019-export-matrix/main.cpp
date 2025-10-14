@@ -192,7 +192,8 @@ template<typename MatrixType>
 void testTriangulatedFaceMatrix(const auto& pm)
 {
     vcl::TriPolyIndexBiMap indexMap;
-    auto tris = vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm, indexMap);
+    auto                   tris =
+        vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm, indexMap);
 
     vcl::uint tNumber = countTriangulatedTriangles(pm);
 
