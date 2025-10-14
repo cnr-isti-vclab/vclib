@@ -388,9 +388,9 @@ public:
      * (setting `nullptr` to the pointers), the value of the vector must be
      * UINT_NULL.
      */
-    void updateVertexIndices(const std::vector<uint>& newIndices)
+    void updateVertexReferences(const std::vector<uint>& newIndices)
     {
-        Base::updateElementIndices(newIndices);
+        Base::updateElementReferences(newIndices);
     }
 
     /**

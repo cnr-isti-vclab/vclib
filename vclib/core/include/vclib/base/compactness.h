@@ -40,6 +40,8 @@ namespace vcl {
  *     compactness
  *   - newIndices[i] contains the value UINT_NULL if the element vec[i] must be
  *     deleted
+ * - the non-null elements of newIndices are unique and sorted in ascending
+ *   order
  *
  * Non-null elements of newIndices must be unique, and their value must be less
  * than the new size of vec after the compactness. The new size of vec will be
