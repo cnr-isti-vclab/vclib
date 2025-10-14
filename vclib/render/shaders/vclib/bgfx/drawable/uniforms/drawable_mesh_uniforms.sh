@@ -27,6 +27,7 @@ uniform vec4 u_meshColor;
 uniform vec4 u_materialColor;
 uniform vec4 u_metallicRoughness;
 uniform vec4 u_emissiveColor;
-uniform vec4 u_settings; // x: per-vertex color presence mask
+uniform vec4 u_alphaCutoff;
+uniform vec4 u_settings;
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH

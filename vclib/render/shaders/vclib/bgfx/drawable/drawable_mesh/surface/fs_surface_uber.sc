@@ -26,6 +26,7 @@ $input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 #define PBR_VERTEX_COLOR_AVAILABLE 0
+#define PBR_ALPHA_MODE_MASK 1
 
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
@@ -118,11 +119,13 @@ void main()
         vec3 lightColors[2] = {vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0)};
         float lightIntensities[2] = {1.0, 0.5};
 
-        vec3 vertexColor;
+        vec4 vertexColor, actualColor;
 
          // per-vertex color 
-        if(bool(((int) u_settings.x) & posToBitFlag(PBR_VERTEX_COLOR_AVAILABLE))) vertexColor = v_color.rgb; // per-vertex color available
-        else vertexColor = vec3(1.0, 1.0, 1.0); // no per-vertex color available, use white
+        if(bool(((int) u_settings.x) & posToBitFlag(PBR_VERTEX_COLOR_AVAILABLE))) vertexColor = v_color; // per-vertex color available
+        else vertexColor = vec4(1.0, 1.0, 1.0, 1.0); // no per-vertex color available, use white
+
+        actualColor = u_materialColor * vertexColor; // multiply vertex color with material base color
 
         gl_FragColor = pbrColor(
             v_position.xyz,
@@ -130,12 +133,17 @@ void main()
             lightDirections,
             lightColors,
             lightIntensities,
-            u_materialColor.rgb * vertexColor, // multiply vertex color with material base color
+            actualColor,
             normal,
             u_metallicRoughness.r, // metallic
             u_metallicRoughness.g, // roughness
             vec3(u_emissiveColor.x, u_emissiveColor.y, u_emissiveColor.z) // emissive
         );
+
+        // alpha mode MASK
+        if(bool(((int) u_settings.x) & posToBitFlag(PBR_ALPHA_MODE_MASK))) {
+            if(actualColor.a < u_alphaCutoff.x) discard; // discard fragment
+        }
     }
     else {
         gl_FragColor = light * color + vec4(specular, 0);

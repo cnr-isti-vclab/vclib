@@ -42,6 +42,8 @@ class DrawableMeshUniforms
 
     float mEmissiveColor[4] = {0.0, 0.0, 0.0, 1.0};
 
+    float mAlphaCutoff[4] = {0.5, 0.0, 0.0, 0.0};
+
     float mSettings[4] = {0.0, 0.0, 0.0, 0.0};
 
     float mModelMatrix[16] = { // identity matrix
@@ -70,6 +72,8 @@ class DrawableMeshUniforms
 
     Uniform mEmissiveColorUniform = Uniform("u_emissiveColor", bgfx::UniformType::Vec4);
 
+    Uniform mAlphaCutoffUniform = Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
+
     Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
 
     // ShaderUniform modelUH =
@@ -85,6 +89,8 @@ public:
     const float* currentMetallicRoughness() const { return mMetallicRoughness; }
 
     const float* currentEmissiveColor() const { return mEmissiveColor; }
+
+    const float* currentAlphaCutoff() const { return mAlphaCutoff; }
 
     const float* currentSettings() const { return mSettings; }
 
@@ -103,10 +109,16 @@ public:
         if constexpr (HasMaterials<MeshType>) {
 
             int settings = 0;
-            if(isPerVertexColorAvailable(m)) settings |= 1 << 0; // per-vertex color available
-            mSettings[0] = float(settings);
+            if(isPerVertexColorAvailable(m)) // per-vertex color available
+                settings |= 1 << 0; 
 
             if(m.materialsNumber() > 0) { // material available
+
+                if(m.materials()[0].alphaMode() == "MASK") { // alpha mode is MASK
+                    settings |= 1 << 1;
+                    mAlphaCutoff[0] = m.materials()[0].alphaCutoff();
+                }
+
                 mMaterialColor[0] = m.materials()[0].baseColor().redF();
                 mMaterialColor[1] = m.materials()[0].baseColor().greenF();
                 mMaterialColor[2] = m.materials()[0].baseColor().blueF();
@@ -120,6 +132,8 @@ public:
                 mEmissiveColor[2] = m.materials()[0].emissiveColor().blueF();
                 mEmissiveColor[3] = m.materials()[0].emissiveColor().alphaF();
             }
+
+            mSettings[0] = float(settings);
         }
     }
 
@@ -129,6 +143,7 @@ public:
         mMaterialColorUniform.bind(mMaterialColor);
         mMetallicRoughnessUniform.bind(mMetallicRoughness);
         mEmissiveColorUniform.bind(mEmissiveColor);
+        mAlphaCutoffUniform.bind(mAlphaCutoff);
         mSettingsUniform.bind(mSettings);
         // modelUH.bind(mModelMatrix);
     }

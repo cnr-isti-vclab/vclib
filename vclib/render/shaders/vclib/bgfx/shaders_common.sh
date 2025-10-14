@@ -248,7 +248,7 @@ vec4 pbrColor(
     vec3 lightDirs[LIGHT_COUNT],
     vec3 lightColors[LIGHT_COUNT],
     float lightIntensities[LIGHT_COUNT],
-    vec3 color,
+    vec4 color,
     vec3 normal,
     float metallic,
     float roughness,
@@ -286,10 +286,10 @@ vec4 pbrColor(
         // 0.04 is an approximation of F0 averaged around many dielectric materials
         vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, HoV);
         // Metals have the surface color as base reflectivity since no light gets absorbed
-        vec3 metal_fresnel = F_Schlick(color, f90, HoV);
+        vec3 metal_fresnel = F_Schlick(color.rgb, f90, HoV);
 
         // diffuse component
-        vec3 l_diffuse = lightIntensity * pbrDiffuse(color);
+        vec3 l_diffuse = lightIntensity * pbrDiffuse(color.rgb);
 
         // specular component for both metallic and dielectric surfaces
         vec3 l_specular_metal = lightIntensity * pbrSpecular(NoV, NoH, NoL, roughness);
@@ -319,6 +319,6 @@ vec4 pbrColor(
     float oneOverGamma = 1.0 / 2.2;
     finalColor = pow(abs(finalColor), vec3(oneOverGamma, oneOverGamma, oneOverGamma));
 
-    return vec4(finalColor.x, finalColor.y, finalColor.z, 1.0);
+    return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
 }
 #endif // VCL_EXT_BGFX_SHADERS_COMMON_SH
