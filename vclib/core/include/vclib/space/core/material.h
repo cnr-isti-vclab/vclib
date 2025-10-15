@@ -105,7 +105,7 @@ public:
     bool& doubleSided() { return mDoubleSided; }
 
     AlphaMode alphaMode() const { return mAlphaMode; }
-    AlphaMode alphaMode() { return mAlphaMode; }
+    AlphaMode& alphaMode() { return mAlphaMode; }
 
     float alphaCutoff() const { return mAlphaCutoff; }
     float& alphaCutoff() { return mAlphaCutoff; }
