@@ -84,6 +84,8 @@ private:
 
     static constexpr Scalar DEFAULT_FOV_DEG = 54.0;
 
+    // the camera used by the trackball (in front of the model centered in
+    // the origin)
     Camera<Scalar> mCamera;
 
     // Similarity holding the manipulator transformation.
@@ -95,6 +97,7 @@ private:
 
     Quaternion<Scalar> mDirectionalLightTransform;
 
+    // screen size in 'pixels' (or generic units for high-DPI screens)
     Point2<Scalar> mScreenSize = {-1, -1};
 
     // trackball radius in camera space
@@ -144,14 +147,46 @@ public:
     Camera<Scalar> camera() const
     {
         // TODO: return the camera containing the current view point of
-        // the trackball (it is not mCamera).
+        // the trackball (not mCamera).
         return Camera<Scalar>();
     }
 
     void setCamera(const Camera<Scalar>& cam)
     {
-        // TODO: set the trackball view point using the given camera
-        // parameters (position, target, up).
+        // TODO: implement orthographic camera
+        this->reset();
+        mCamera.projectionMode() = cam.projectionMode();
+        if (mCamera.projectionMode() ==
+            Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
+            mCamera.setFieldOfViewAdaptingEyeDistance(cam.fieldOfView());
+        }
+        const Point3<Scalar> camTrackballTransl =
+            mCamera.eye() - mCamera.center();
+        // no aspect ratio, it maybe different
+        mCamera.nearPlane() = cam.nearPlane();
+        mCamera.farPlane()  = cam.farPlane();
+        // generate a transformation that will place the model
+        // in front of the camera as if view from the the provided camera
+        const Point3<Scalar> y = cam.up();
+        const Point3<Scalar> z = (cam.eye() - cam.center()).normalized();
+        const Point3<Scalar> x = y.cross(z).normalized();
+
+        // set the transformation of the trackball such that the frame of the
+        // model is aligned with the inverse of the computed camera frame
+        mTransform.linear().col(0) = x;
+        mTransform.linear().col(1) = y;
+        mTransform.linear().col(2) = z;
+
+        // set the translation of the transformation such that the center
+        // of the camera is mapped to the origin
+        mTransform.pretranslate(cam.eye());
+        
+        // invert the transformation
+        mTransform = mTransform.inverse();
+
+        // correct the translation to account for the position of the
+        // trackball camera (mCamera)
+        mTransform.pretranslate(camTrackballTransl);
     }
 
     void resetDirectionalLight()
