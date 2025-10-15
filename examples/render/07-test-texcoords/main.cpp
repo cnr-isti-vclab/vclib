@@ -58,8 +58,8 @@ int main(int argc, char** argv)
         showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
     }
     else if constexpr (USE_QUAD_OBJ){
-        vcl::DrawableMesh<vcl::TriMesh> drawable =
-            getDrawableMesh<vcl::TriMesh>("TextureDoubleQuad.obj");
+        vcl::DrawableMesh<vcl::PolyMesh> drawable =
+            getDrawableMesh<vcl::PolyMesh>("TextureDoubleQuad.obj");
         auto mrs = drawable.renderSettings();
         mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
