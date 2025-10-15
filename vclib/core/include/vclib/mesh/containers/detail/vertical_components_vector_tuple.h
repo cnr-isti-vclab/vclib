@@ -118,10 +118,7 @@ public:
         (setComponentEnabledIfOptional<Comp, false>(), ...);
     }
 
-    void swapComponents(uint i, uint j)
-    {
-        (swapComponent<Comp>(i, j), ...);
-    }
+    void swapComponents(uint i, uint j) { (swapComponent<Comp>(i, j), ...); }
 
     template<typename C>
     bool isComponentEnabled() const
