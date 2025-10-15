@@ -88,7 +88,6 @@ int loadGltfPrimitiveMaterial(
             alphaMode = Material::AlphaMode::BLEND;
         else 
             alphaMode = Material::AlphaMode::OPAQUE; // has default value
-        
 
         // alphaCutoff
         alphaCutoff = mat.alphaCutoff; // has default value
