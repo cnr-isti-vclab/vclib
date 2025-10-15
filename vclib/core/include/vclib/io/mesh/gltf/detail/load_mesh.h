@@ -53,7 +53,7 @@ int loadGltfPrimitiveMaterial(
 
     if(p.material >= 0) {
         vcl::Color baseColor, emissiveColor;
-        std::string alphaMode;
+        Material::AlphaMode alphaMode;
         double metallic, roughness, alphaCutoff;
         bool doubleSided;
         int textureImg;
@@ -82,7 +82,13 @@ int loadGltfPrimitiveMaterial(
         doubleSided = mat.doubleSided; // has default value
 
         // alphaMode
-        alphaMode = mat.alphaMode; // has default value
+        if(mat.alphaMode == "MASK")
+            alphaMode = Material::AlphaMode::MASK;
+        else if(mat.alphaMode == "BLEND")
+            alphaMode = Material::AlphaMode::BLEND;
+        else 
+            alphaMode = Material::AlphaMode::OPAQUE; // has default value
+        
 
         // alphaCutoff
         alphaCutoff = mat.alphaCutoff; // has default value

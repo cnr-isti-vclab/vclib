@@ -36,6 +36,13 @@ namespace vcl {
 // TODO - Add support for textures, normal maps, and other PBR properties.
 class Material
 {
+
+    public:
+
+    enum class AlphaMode { OPAQUE, MASK, BLEND };
+
+    private:
+
     // essential PBR properties
     vcl::Color mBaseColor = vcl::Color(1.0f, 1.0f, 1.0f);
 
@@ -47,7 +54,7 @@ class Material
 
     bool mDoubleSided = false;
 
-    std::string mAlphaMode = "OPAQUE"; // OPAQUE, MASK, BLEND
+    AlphaMode mAlphaMode = AlphaMode::OPAQUE;
 
     float mAlphaCutoff = 0.5f;         // only used when mAlphaMode is MASK
 
@@ -68,8 +75,8 @@ public:
         float             metallic,
         float             roughness,
         const vcl::Color& emissiveColor,
-        bool doubleSided,
-        const std::string& alphaMode,
+        bool              doubleSided,
+        AlphaMode         alphaMode,
         float             alphaCutoff
     ) :
             mBaseColor(baseColor), 
@@ -97,8 +104,8 @@ public:
     bool doubleSided() const { return mDoubleSided; }
     bool& doubleSided() { return mDoubleSided; }
 
-    std::string alphaMode() const { return mAlphaMode; }
-    std::string& alphaMode() { return mAlphaMode; }
+    AlphaMode alphaMode() const { return mAlphaMode; }
+    AlphaMode alphaMode() { return mAlphaMode; }
 
     float alphaCutoff() const { return mAlphaCutoff; }
     float& alphaCutoff() { return mAlphaCutoff; }

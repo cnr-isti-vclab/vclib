@@ -114,7 +114,7 @@ public:
 
             if(m.materialsNumber() > 0) { // material available
 
-                if(m.materials()[0].alphaMode() == "MASK") { // alpha mode is MASK
+                if(m.materials()[0].alphaMode() == Material::AlphaMode::MASK) { // alpha mode is MASK
                     settings |= 1 << 1;
                     mAlphaCutoff[0] = m.materials()[0].alphaCutoff();
                 }

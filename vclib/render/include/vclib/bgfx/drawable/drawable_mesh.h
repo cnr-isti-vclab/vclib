@@ -215,7 +215,7 @@ public:
                         if(!MeshType::material(0).doubleSided()) {
                             surfaceState |= BGFX_STATE_CULL_CW; // backface culling
                         }
-                        if(MeshType::material(0).alphaMode() == "BLEND") {
+                        if(MeshType::material(0).alphaMode() == Material::AlphaMode::BLEND) {
                             surfaceState |= BGFX_STATE_BLEND_ALPHA;
                         }
                     }

@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
     std::string e5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e1);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e2);
 
     for(auto& mesh : meshes) {
         for (auto& mat : mesh.materials()) {
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
             std::cout << "roughnessFactor: " << mat.roughness() << std::endl;
             std::cout << "emissiveFactor: " << mat.emissiveColor() << std::endl;
             std::cout << "doubleSided: " << mat.doubleSided() << std::endl;
-            std::cout << "alphaMode: " << mat.alphaMode() << std::endl;
+            std::cout << "alphaMode: " << int(mat.alphaMode()) << std::endl;
             std::cout << "alphaCutoff: " << mat.alphaCutoff() << std::endl;
             std::cout << "------------------------" << std::endl;
         }
