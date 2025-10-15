@@ -131,14 +131,11 @@ std::vector<uint> sortElemIndicesByFunction(
     indices.resize(mesh.template number<ELEM_ID>());
     std::iota(indices.begin(), indices.end(), 0u);
 
-    std::sort(
-        indices.begin(),
-        indices.end(),
-        [&](uint a, uint b) {
-            return func(
-                mesh.template element<ELEM_ID>(a),
-                mesh.template element<ELEM_ID>(b));
-        });
+    std::sort(indices.begin(), indices.end(), [&](uint a, uint b) {
+        return func(
+            mesh.template element<ELEM_ID>(a),
+            mesh.template element<ELEM_ID>(b));
+    });
 
     if (!compactIndices.empty()) {
         for (auto& idx : indices) {
@@ -205,7 +202,7 @@ std::vector<uint> sortVertexIndicesByFunction(
  */
 template<FaceMeshConcept MeshType>
 std::vector<uint> sortFaceIndicesByFunction(
-    const MeshType&                             mesh,
+    const MeshType&                           mesh,
     const std::function<bool(
         const typename MeshType::FaceType&,
         const typename MeshType::FaceType&)>& func,
@@ -238,7 +235,7 @@ std::vector<uint> sortFaceIndicesByFunction(
  */
 template<EdgeMeshConcept MeshType>
 std::vector<uint> sortEdgeIndicesByFunction(
-    const MeshType&                             mesh,
+    const MeshType&                           mesh,
     const std::function<bool(
         const typename MeshType::EdgeType&,
         const typename MeshType::EdgeType&)>& func,
