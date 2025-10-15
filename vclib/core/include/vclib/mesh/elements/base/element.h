@@ -123,7 +123,7 @@ public:
 
         assert(PM::parentMesh() == other.parentMesh());
         using std::swap;
-        (swap((Comps&)*this, (Comps&)other), ...);
+        (swap((Comps&) *this, (Comps&) other), ...);
         if (PM::parentMesh()) {
             PM::parentMesh()->swapVerticalComponents(*this, other);
         }
