@@ -281,7 +281,6 @@ public:
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             mIdUniform.bind(&idFloat);
