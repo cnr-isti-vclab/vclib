@@ -25,6 +25,8 @@ $input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+#define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
+
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 BUFFER_RO(triTextureIds, uint, VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);  // wedge ids of each face
@@ -71,9 +73,9 @@ void main()
     // if flat shading, compute normal of face
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_FLAT))) {
         normal = vec3(
-            primitiveNormals[gl_PrimitiveID * 3],
-            primitiveNormals[gl_PrimitiveID * 3 + 1],
-            primitiveNormals[gl_PrimitiveID * 3 + 2]);
+            primitiveNormals[primitiveID * 3],
+            primitiveNormals[primitiveID * 3 + 1],
+            primitiveNormals[primitiveID * 3 + 2]);
         normal = normalize(mul(u_normalMatrix, normal));
     }
 
@@ -102,13 +104,13 @@ void main()
         color = u_meshColor;
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
-        color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
+        color = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
-        color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord0);
+        color = getColorFromTexture(0, v_texcoord0);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
-        color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
+        color = getColorFromTexture(0, v_texcoord1);
     }
 
     gl_FragColor = light * color + vec4(specular, 0);
