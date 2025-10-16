@@ -57,7 +57,7 @@ int main(int argc, char** argv)
         drawable.setRenderSettings(mrs);
         showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
     }
-    else if constexpr (USE_QUAD_OBJ){
+    else if constexpr (USE_QUAD_OBJ) {
         vcl::DrawableMesh<vcl::PolyMesh> drawable =
             getDrawableMesh<vcl::PolyMesh>("TextureDoubleQuad.obj");
         auto mrs = drawable.renderSettings();

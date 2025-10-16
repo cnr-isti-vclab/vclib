@@ -180,7 +180,7 @@ public:
         // set the translation of the transformation such that the center
         // of the camera is mapped to the origin
         mTransform.pretranslate(cam.eye());
-        
+
         // invert the transformation
         mTransform = mTransform.inverse();
 

@@ -111,8 +111,9 @@ public:
     {
         mFovDeg               = fovDeg;
         PointType targetToEye = (mEye - mCenter).normalized();
-        mEye = mCenter + targetToEye * ((mVerticalHeight / 2.0) /
-                                        std::tan((fovDeg / 2.0) / 180.0 * M_PI));
+        mEye =
+            mCenter + targetToEye * ((mVerticalHeight / 2.0) /
+                                     std::tan((fovDeg / 2.0) / 180.0 * M_PI));
     }
 
     ProjectionMode& projectionMode() { return mProjectionMode; }
