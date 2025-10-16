@@ -33,6 +33,51 @@ uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contai
 // THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
 // Possibility: uniform containing selection box passed already in NDC space? It's probably doable
 
+// returns the equation of a plane given 3 points.
+// the returned vec4 is [a, b, c, d] where those variables are the ones in
+// ax + by + cz + d = 0
+vec4 planeEqFromPoints(vec3 p0, vec3 p1, vec3 p2) {
+    vec3 v = p1 - p0;
+    vec3 w = p2 - p0;
+    vec3 n = normalize(cross(v, w));
+    float d = -(mul(n, p0));
+    return vec4(n.x, n.y, n.z, d);
+}
+
+// returns a matrix to convert from the "input space" to the "triangle space"
+// (or rather, a space where we can ignore the z coordinate of the triangle)
+    //mat4 triangleCoordinateSpaceMtx(vec4 plane, vec3 p0, vec3 p1) {
+    //    vec4 zAx = vec4(plane.x, plane.y, plane.z, 0);
+    //    vec4 xAx = vec4(normalize(p1 - p0), 0);
+    //    vec4 yAx = vec4(normalize(cross(zAx, xAx)), 0);
+    //    return inverse(mtxFromCols(xAx, yAx, zAx, vec4(p0, 1)));
+    //}
+
+// requires all the points to be in "triangle space"
+    //vec3 barycentricCoords(vec2 p0, vec2 p1, vec2 p2, vec2 p) {
+    //    mat3 Tinv = inverse(mat2(
+    //        p0.x - p2.x, p1.x - p2.x,
+    //        p0.y - p2.y, p1.y - p2.y
+    //    ));
+    //    vec2 lam12 = mul(Tinv, p - p2);
+    //    return vec3(lam12, 1 - lam12[0] - lam12[1]);
+    //}
+
+// point and triangle need to be coplanar and in the same space
+    //bool isCoplanarPointInsideTriangle(mat4 triSpace, mat3 triangle, vec3 p) {
+    //    // since the point is coplanar to the triangle we can discard the z-axis
+    //    vec2 pointTriSpace = mul(triSpace, vec4(p, 1.0)).xy;
+    //    vec2 p0 = mul(triSpace, vec4(triangle[0], 1.0)).xy;
+    //    vec2 p1 = mul(triSpace, vec4(triangle[1], 1.0)).xy;
+    //    vec2 p2 = mul(triSpace, vec4(triangle[2], 1.0)).xy;
+    //    vec3 baryCoords = barycentricCoords(p0, p1, p2, pointTriSpace);
+    //    bool isInside = true;
+    //    for(uint i = 0; i < 3; i++) {
+    //        isInside = isInside && baryCoords[i] >= 0 && baryCoords[i] <= 1;
+    //    }
+    //    return isInside;
+    //}
+
 NUM_THREADS(1, 1, 1) // 1 'thread' per face, or 1 'thread' per 3 indices
 void main()
 {
