@@ -23,12 +23,11 @@
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 
-#include <vclib/algorithms/mesh/import_export/append_replace_to_buffer.h>
-#include <vclib/algorithms/mesh/import_export/export_buffer.h>
-#include <vclib/algorithms/mesh/stat/topology.h>
-#include <vclib/mesh/requirements.h>
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
-#include <vclib/space/complex/tri_poly_index_bimap.h>
+
+#include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
 
 namespace vcl {
 
