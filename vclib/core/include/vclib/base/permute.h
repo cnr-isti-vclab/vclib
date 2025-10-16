@@ -127,7 +127,7 @@ void permuteInPlace(
 
         while (!visited[current]) {
             visited[current] = true;
-            int next = newIndices[current];
+            int next         = newIndices[current];
             swap(temp, vec[next]);
             current = next;
         }

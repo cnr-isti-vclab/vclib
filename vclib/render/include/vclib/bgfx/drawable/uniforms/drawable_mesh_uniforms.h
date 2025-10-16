@@ -32,35 +32,12 @@ class DrawableMeshUniforms
 {
     float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
 
-    float mModelMatrix[16] = { // identity matrix
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0};
-
     Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
-
-    // ShaderUniform modelUH =
-    //     ShaderUniform("u_model", bgfx::UniformType::Mat4);
 
 public:
     DrawableMeshUniforms() = default;
 
     const float* currentMeshColor() const { return mMeshColor; }
-
-    const float* currentModelMatrix() const { return mModelMatrix; }
 
     template<MeshConcept MeshType>
     void update(const MeshType& m)
@@ -76,7 +53,6 @@ public:
     void bind() const
     {
         mMeshColorUniform.bind(mMeshColor);
-        // modelUH.bind(mModelMatrix);
     }
 };
 

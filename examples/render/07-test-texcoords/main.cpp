@@ -36,7 +36,9 @@ int main(int argc, char** argv)
     auto viewer = defaultViewer();
 
     const bool TEXCOORDS_PER_VERTEX = false;
-    const bool USE_BUNNY            = true;
+    const bool USE_BUNNY            = false;
+    const bool USE_QUAD_OBJ         = true;
+    // if all false, use TextureDouble.obj
 
     if constexpr (TEXCOORDS_PER_VERTEX) {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
@@ -51,6 +53,15 @@ int main(int argc, char** argv)
         vcl::DrawableMesh<vcl::TriMesh> drawable =
             getDrawableMesh<vcl::TriMesh>("bunny_textured.ply");
         auto mrs = drawable.renderSettings();
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
+        drawable.setRenderSettings(mrs);
+        showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
+    }
+    else if constexpr (USE_QUAD_OBJ) {
+        vcl::DrawableMesh<vcl::PolyMesh> drawable =
+            getDrawableMesh<vcl::PolyMesh>("TextureDoubleQuad.obj");
+        auto mrs = drawable.renderSettings();
+        mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
         drawable.setRenderSettings(mrs);
         showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
