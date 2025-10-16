@@ -144,13 +144,50 @@ public:
         mTransform.translate(-center);
     }
 
+    /**
+     *  @brief return the camera containing the current view point of
+     *  the trackball.
+     * 
+     *  @return the camera matching the current view of the trackball
+    */ 
     Camera<Scalar> camera() const
     {
-        // TODO: return the camera containing the current view point of
-        // the trackball (not mCamera).
-        return Camera<Scalar>();
+        Camera<Scalar> cam = mCamera;
+        
+        // TODO: implement orthographic camera
+        if (cam.projectionMode() ==
+            Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
+            // compute the camera properties from the trackball
+            // camera and model transformation
+
+            const Point3<Scalar> camTrackballTransl =
+                cam.eye() - cam.center();
+
+            const Affine3<Scalar> modelToCamera = mTransform.inverse();
+
+            Point3<Scalar> x = modelToCamera.linear().col(0);
+            Point3<Scalar> y = modelToCamera.linear().col(1);
+            Point3<Scalar> z = modelToCamera.linear().col(2);
+
+            Point3<Scalar> translation = modelToCamera.translation();
+
+            cam.up() = y.normalized();
+            cam.eye() = translation + z.normalized() * camTrackballTransl.norm();
+            cam.center() = cam.eye() - z.normalized();
+        }
+
+        return cam;
     }
 
+    /**
+     * @brief Set the camera of the trackball.
+     *
+     * The function sets the trackball to match the provided camera.
+     * The function does not change the aspect ratio of the trackball camera,
+     * as it may be different from the provided camera.
+     *
+     * @param[in] cam: The camera to set.
+     */
     void setCamera(const Camera<Scalar>& cam)
     {
         // TODO: implement orthographic camera

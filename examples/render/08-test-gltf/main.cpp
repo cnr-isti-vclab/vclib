@@ -59,6 +59,9 @@ int main(int argc, char** argv)
 
     viewer.setCamera(c);
 
+    // get and set the camera to confirm the operation is correct
+    viewer.setCamera(viewer.camera());
+
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
     return application.exec();
