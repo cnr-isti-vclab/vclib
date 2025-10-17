@@ -20,65 +20,56 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
-#define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#ifndef VCL_AUTOMATION_ACTION_ALIASES_H
+#define VCL_AUTOMATION_ACTION_ALIASES_H
 
-#include "event_drawer.h"
-
-#include <vclib/render/viewer/camera.h>
-#include <vclib/render/viewer/lights.h>
+#include "actions.h"
 
 namespace vcl {
-template<typename Scalar, typename DerivedRenderApp>
-class CameraDrawerT : public vcl::EventDrawer<DerivedRenderApp>
-{
-public:
-    using ScalarType = Scalar;
-    using CameraType = vcl::Camera<Scalar>;
-    using PointType  = CameraType::PointType;
-    using MatrixType = CameraType::MatrixType;
-    using LightType  = vcl::DirectionalLight<Scalar>;
 
-protected:
-    CameraType mCamera;
+template<typename T>
+using ScaleAdditiveAA = ChangeScaleAdditiveAutomationAction;
 
-public:
-    using Base = vcl::EventDrawer<DerivedRenderApp>;
+template<typename T>
+using ScaleMultiplicativeAA = ChangeScaleMultiplicativeAutomationAction;
 
-    CameraDrawerT(uint width = 100, uint height = 768) : Base(width, height)
-    {
-        onResize(width, height);
-    }
+template<typename T>
+using PFScaleAdditiveAA = PerFrameChangeScaleAdditiveAutomationAction;
 
-    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
+template<typename T>
+using PFScaleMultiplicativeAA =
+    PerFrameChangeScaleMultiplicativeAutomationAction;
 
-    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
+template<typename T>
+using PFRotationAA = PerFrameRotataionAutomationAction;
 
-    const CameraType& camera() const { return mCamera; }
+template<typename T>
+using RotationAA = RotationAutomationAction;
 
-    LightType light() const { return LightType(); }
+template<typename T>
+using SequentialAAs = SequentialAutomationActions;
 
-    void reset() { mCamera.reset(); }
+template<typename T>
+using SimultaneousAAs = SimultaneousAutomationActions;
 
-    void focus(const PointType& p) { mCamera.center() = p; }
+template<typename T>
+using FDelayAA = FrameDelayAutomationAction;
 
-    void fitScene(const PointType& p, Scalar s)
-    {
-        mCamera.center()         = p;
-        mCamera.eye()            = p + PointType(0, 0, 1);
-        mCamera.verticalHeight() = s;
-        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
-    }
+template<typename T>
+using FLimitedAA = FrameLimitedAutomationAction;
 
-    void onResize(uint width, uint height) override
-    {
-        mCamera.aspectRatio() = Scalar(double(width) / height);
-    }
-};
+template<typename T>
+using SCDelayAA = StartCountDelayAutomationAction;
 
-template<typename DerivedRenderApp>
-using CameraDrawer = CameraDrawerT<float, DerivedRenderApp>;
+template<typename T>
+using SCLimitedAA = StartCountLimitedAutomationAction;
+
+template<typename T>
+using TDelayAA = TimeDelayAutomationAction;
+
+template<typename T>
+using TLimitedAA = TimeLimitedAutomationAction;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#endif

@@ -20,65 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
-#define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#ifndef VCL_NULL_BENCHMARK_PRINTER_H
+#define VCL_NULL_BENCHMARK_PRINTER_H
 
-#include "event_drawer.h"
-
-#include <vclib/render/viewer/camera.h>
-#include <vclib/render/viewer/lights.h>
+#include <vclib/render/automation/printers/benchmark_printer.h>
 
 namespace vcl {
-template<typename Scalar, typename DerivedRenderApp>
-class CameraDrawerT : public vcl::EventDrawer<DerivedRenderApp>
+
+/**
+ * The NullBenchmarkPrinter class is a BenchmarkPrinter that writes nothing
+ * nowhere
+ */
+class NullBenchmarkPrinter : public BenchmarkPrinter
 {
 public:
-    using ScalarType = Scalar;
-    using CameraType = vcl::Camera<Scalar>;
-    using PointType  = CameraType::PointType;
-    using MatrixType = CameraType::MatrixType;
-    using LightType  = vcl::DirectionalLight<Scalar>;
+    void print(const BenchmarkMetric& metric, const std::string& description)
+        override {};
 
-protected:
-    CameraType mCamera;
+    void onBenchmarkLoop() override {};
 
-public:
-    using Base = vcl::EventDrawer<DerivedRenderApp>;
+    void finish() override {};
 
-    CameraDrawerT(uint width = 100, uint height = 768) : Base(width, height)
+    bool isNull() override { return true; }
+
+    std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
-        onResize(width, height);
-    }
+        return std::make_shared<NullBenchmarkPrinter>(*this);
+    };
 
-    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
-
-    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
-
-    const CameraType& camera() const { return mCamera; }
-
-    LightType light() const { return LightType(); }
-
-    void reset() { mCamera.reset(); }
-
-    void focus(const PointType& p) { mCamera.center() = p; }
-
-    void fitScene(const PointType& p, Scalar s)
+    std::shared_ptr<BenchmarkPrinter> clone() && override
     {
-        mCamera.center()         = p;
-        mCamera.eye()            = p + PointType(0, 0, 1);
-        mCamera.verticalHeight() = s;
-        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
-    }
-
-    void onResize(uint width, uint height) override
-    {
-        mCamera.aspectRatio() = Scalar(double(width) / height);
-    }
+        return std::make_shared<NullBenchmarkPrinter>(std::move(*this));
+    };
 };
-
-template<typename DerivedRenderApp>
-using CameraDrawer = CameraDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#endif
