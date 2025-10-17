@@ -37,7 +37,7 @@ namespace vcl {
 class Material
 {
 public:
-    enum class AlphaMode { OPAQUE, ALPHA_MASK, BLEND };
+    enum class AlphaMode { ALPHA_OPAQUE, ALPHA_MASK, ALPHA_BLEND };
 
 private:
     // essential PBR properties
@@ -51,7 +51,7 @@ private:
 
     bool mDoubleSided = false;
 
-    AlphaMode mAlphaMode = AlphaMode::OPAQUE;
+    AlphaMode mAlphaMode = AlphaMode::ALPHA_OPAQUE;
 
     float mAlphaCutoff = 0.5f;         // only used when mAlphaMode is MASK
 

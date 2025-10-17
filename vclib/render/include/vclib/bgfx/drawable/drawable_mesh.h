@@ -217,7 +217,7 @@ public:
                                 BGFX_STATE_CULL_CW; // backface culling
                         }
                         if (MeshType::material(0).alphaMode() ==
-                            Material::AlphaMode::BLEND) {
+                            Material::AlphaMode::ALPHA_BLEND) {
                             surfaceState |= BGFX_STATE_BLEND_ALPHA;
                         }
                     }
