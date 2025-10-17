@@ -78,6 +78,7 @@ namespace vcl {
 template<typename MeshRenderDerived>
 class MeshRenderData
 {
+private:
     using MRI = MeshRenderInfo;
 
     // Auxiliary data that can be used by the derived class to properly allocate
@@ -114,6 +115,17 @@ class MeshRenderData
     // at construction time). It may differ from the value passed to the update
     // function, since the user may want to update only a subset of the buffers
     MRI::BuffersBitSet mBuffersToFill = MRI::BUFFERS_ALL;
+
+protected:
+    struct TriangleMaterialChunk
+    {
+        uint startIndex = 0; // start index in the triangle index buffer
+        uint indexCount = 0; // num indices in the triangle index buffer
+        uint vertMaterialId = 0; // material id associated to the vertices
+        uint wedgeMaterialId = 0; // material id associated to the wedges
+    };
+
+    std::vector<TriangleMaterialChunk> mMaterialChunks;
 
 public:
     /**
@@ -168,6 +180,7 @@ protected:
         swap(mFacesToReassign, other.mFacesToReassign);
         swap(mIndexMap, other.mIndexMap);
         swap(mBuffersToFill, other.mBuffersToFill);
+        swap(mMaterialChunks, other.mMaterialChunks);
     }
 
     /**
@@ -391,10 +404,55 @@ protected:
      */
     void fillTriangleIndices(const FaceMeshConcept auto& mesh, auto* buffer)
     {
+        using MeshType = std::decay_t<decltype(mesh)>;
+        using FaceType = MeshType::FaceType;
+
+        // comparator of faces
+        // ordering first by per-vertex texcoord index (if available),
+        // then by per-face wedge texcoord index (if available)
+        auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
+            if constexpr (HasPerVertexTexCoord<MeshType>) {
+                if (isPerVertexTexCoordAvailable(mesh)) {
+                    uint id1 = f1.vertex(0)->texCoord().index();
+                    uint id2 = f2.vertex(0)->texCoord().index();
+                    if (id1 != id2) { // do not return true if equal
+                        return id1 < id2;
+                    }
+                }
+            }
+            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+                    uint id1 = f1.textureIndex();
+                    uint id2 = f2.textureIndex();
+                    if (id1 != id2) { // do not return true if equal
+                        return id1 < id2;
+                    }
+                }
+            }
+
+            // if both per-vertex and per-face texcoords are equal, sort by
+            // face index to have a stable sorting
+            return f1.index() < f2.index();
+        };
+
+        // get the list of face indices sorted by material ID and
+        // using the face comparator defined above
+        std::vector<uint> faceIndicesSortedByMaterialID =
+            sortFaceIndicesByFunction(mesh, faceComp, true);
+
         triangulatedFaceVertexIndicesToBuffer(
             mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
         replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
             mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
+
+        // permute the triangulated face vertex indices according to the face
+        // sorting by material ID (the function also edits the index map from
+        // polygonal faces (which still refers to the mesh ones) to the
+        // triangulated faces (which refers to the sorted triangles))
+        permuteTriangulatedFaceVertexIndices(
+            buffer, mIndexMap, faceIndicesSortedByMaterialID);
+
+        fillChuncks(mesh);
     }
 
     /**
@@ -1021,12 +1079,120 @@ private:
         using MeshType = MeshRenderDerived::MeshType;
         using enum MRI::Buffers;
 
-        if constexpr (vcl::HasTexturePaths<MeshType>) {
+        if constexpr (
+            vcl::HasTexturePaths<MeshType> || vcl::HasMaterials<MeshType>) {
             if (btu[toUnderlying(TEXTURES)]) {
                 // textures
                 derived().setTextureUnits(mesh);
             }
         }
+    }
+
+    static void permuteTriangulatedFaceVertexIndices(
+        auto*                    buffer,
+        TriPolyIndexBiMap&       indexMap,
+        const std::vector<uint>& newFaceIndices)
+    {
+        // newFaceIndices tells for each face, which is its new position
+        // we need the inverse mapping: for each new position, which is the old
+        // face index
+        std::vector<uint> oldFaceIndices(newFaceIndices.size());
+        for (uint i = 0; i < newFaceIndices.size(); ++i) {
+            oldFaceIndices[newFaceIndices[i]] = static_cast<uint>(i);
+        }
+
+        // temporary copy of the buffer
+        std::vector<uint> bufferCopy(indexMap.triangleNumber() * 3);
+
+        // temporary bimbap
+        TriPolyIndexBiMap indexMapCopy;
+        indexMapCopy.reserve(
+            indexMap.triangleNumber(), indexMap.polygonNumber());
+
+        uint copiedTriangles = 0;
+
+        for (uint i = 0; i < oldFaceIndices.size(); ++i) {
+            // need to place the k triangles associated to the i-th face
+            // of oldFaceIndices
+            uint polyIndex = oldFaceIndices[i];
+            uint firstTri = indexMap.triangleBegin(polyIndex);
+            uint nTris = indexMap.triangleNumber(polyIndex);
+
+            std::copy(
+                buffer + firstTri * 3,
+                buffer + (firstTri + nTris) * 3,
+                bufferCopy.data() + copiedTriangles * 3);
+
+            for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
+                indexMapCopy.insert(t, polyIndex);
+            }
+
+            copiedTriangles += nTris;
+        }
+
+        // copy back
+        std::copy(
+            bufferCopy.begin(),
+            bufferCopy.begin() + copiedTriangles * 3,
+            buffer);
+        indexMap = std::move(indexMapCopy);
+    }
+
+    void fillChuncks(const FaceMeshConcept auto& mesh)
+    {
+        using MeshType = std::decay_t<decltype(mesh)>;
+
+        mMaterialChunks.clear();
+
+        uint first = 0;
+        uint n = 0;
+
+        uint currentVertMatID = UINT_NULL;
+        uint currentWedgeMatID = UINT_NULL;
+
+        for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
+            uint fIndex = mIndexMap.polygon(i);
+
+            if constexpr (HasPerVertexTexCoord<MeshType>) {
+                if (isPerVertexTexCoordAvailable(mesh)) {
+                    uint mId = mesh.face(fIndex).vertex(0)->texCoord().index();
+                    if (mId != currentVertMatID && n != 0) {
+                        if (currentVertMatID != UINT_NULL) {
+                            mMaterialChunks.push_back(
+                                {first,
+                                 n,
+                                 currentVertMatID,
+                                 currentWedgeMatID});
+                            first += n;
+                            n = 0;
+                        }
+                        currentVertMatID = mId;
+                    }
+                }
+            }
+            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+                    uint mId = mesh.face(fIndex).textureIndex();
+                    if (mId != currentWedgeMatID && n != 0) {
+                        if (currentWedgeMatID != UINT_NULL) {
+                            mMaterialChunks.push_back(
+                                {first,
+                                 n,
+                                 currentVertMatID,
+                                 currentWedgeMatID});
+                            first += n;
+                            n = 0;
+                        }
+                        currentWedgeMatID = mId;
+                    }
+                }
+            }
+
+            n++;
+        }
+
+        mMaterialChunks.push_back(
+            {first, n, currentVertMatID, currentWedgeMatID});
     }
 };
 

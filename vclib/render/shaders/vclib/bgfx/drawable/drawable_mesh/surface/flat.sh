@@ -3,11 +3,13 @@
 
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
+#define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
+
 #define SHADING float depthOffset = 0.0;\
 vec3 normal = vec3(\
-        primitiveNormals[gl_PrimitiveID * 3],\
-        primitiveNormals[gl_PrimitiveID * 3 + 1],\
-        primitiveNormals[gl_PrimitiveID * 3 + 2]);\
+        primitiveNormals[primitiveID * 3],\
+        primitiveNormals[primitiveID * 3 + 1],\
+        primitiveNormals[primitiveID * 3 + 2]);\
 normal = normalize(mul(u_normalMatrix, normal));\
 vec4 light = computeLight(u_lightDir, u_lightColor, normal);\
 vec3 specular = computeSpecular(\

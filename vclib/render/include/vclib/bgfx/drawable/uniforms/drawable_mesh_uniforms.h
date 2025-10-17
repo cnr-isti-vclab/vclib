@@ -32,12 +32,18 @@ class DrawableMeshUniforms
 {
     float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
 
+    float mMeshData[4] = {
+        0.0, // as uint: first chunk primitive id drawn
+        0.0,
+        0.0,
+        0.0};
+
     float mMaterialColor[4] = {1.0, 1.0, 1.0, 1.0};
 
     float mMetallicRoughness[4] = {
         1.0, // metallic
         1.0, // roughness
-        0.0, 
+        0.0,
         0.0};
 
     float mEmissiveColor[4] = {0.0, 0.0, 0.0, 1.0};
@@ -46,38 +52,22 @@ class DrawableMeshUniforms
 
     float mSettings[4] = {0.0, 0.0, 0.0, 0.0};
 
-    float mModelMatrix[16] = { // identity matrix
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0};
-
     Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
+    Uniform mMeshDataUniform  = Uniform("u_meshData", bgfx::UniformType::Vec4);
 
-    Uniform mMaterialColorUniform = Uniform("u_materialColor", bgfx::UniformType::Vec4);
+    Uniform mMaterialColorUniform =
+        Uniform("u_materialColor", bgfx::UniformType::Vec4);
 
-    Uniform mMetallicRoughnessUniform = Uniform("u_metallicRoughness", bgfx::UniformType::Vec4);
+    Uniform mMetallicRoughnessUniform =
+        Uniform("u_metallicRoughness", bgfx::UniformType::Vec4);
 
-    Uniform mEmissiveColorUniform = Uniform("u_emissiveColor", bgfx::UniformType::Vec4);
+    Uniform mEmissiveColorUniform =
+        Uniform("u_emissiveColor", bgfx::UniformType::Vec4);
 
-    Uniform mAlphaCutoffUniform = Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
+    Uniform mAlphaCutoffUniform =
+        Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
 
     Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
-
-    // ShaderUniform modelUH =
-    //     ShaderUniform("u_model", bgfx::UniformType::Mat4);
 
 public:
     DrawableMeshUniforms() = default;
@@ -94,8 +84,6 @@ public:
 
     const float* currentSettings() const { return mSettings; }
 
-    const float* currentModelMatrix() const { return mModelMatrix; }
-
     template<MeshConcept MeshType>
     void update(const MeshType& m)
     {
@@ -107,14 +95,14 @@ public:
         }
 
         if constexpr (HasMaterials<MeshType>) {
-
             int settings = 0;
-            if(isPerVertexColorAvailable(m)) // per-vertex color available
-                settings |= 1 << 0; 
+            if (isPerVertexColorAvailable(m)) // per-vertex color available
+                settings |= 1 << 0;
 
-            if(m.materialsNumber() > 0) { // material available
+            if (m.materialsNumber() > 0) { // material available
 
-                if(m.materials()[0].alphaMode() == Material::AlphaMode::MASK) { // alpha mode is MASK
+                if (m.materials()[0].alphaMode() ==
+                    Material::AlphaMode::MASK) { // alpha mode is MASK
                     settings |= 1 << 1;
                     mAlphaCutoff[0] = m.materials()[0].alphaCutoff();
                 }
@@ -137,15 +125,21 @@ public:
         }
     }
 
+    void updateFirstChunkIndex(uint firstChunkIndex)
+    {
+        mMeshData[0] = Uniform::uintBitsToFloat(firstChunkIndex);
+    }
+
     void bind() const
     {
         mMeshColorUniform.bind(mMeshColor);
+        mMeshDataUniform.bind(mMeshData);
+
         mMaterialColorUniform.bind(mMaterialColor);
         mMetallicRoughnessUniform.bind(mMetallicRoughness);
         mEmissiveColorUniform.bind(mEmissiveColor);
         mAlphaCutoffUniform.bind(mAlphaCutoff);
         mSettingsUniform.bind(mSettings);
-        // modelUH.bind(mModelMatrix);
     }
 };
 

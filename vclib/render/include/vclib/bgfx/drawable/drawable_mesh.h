@@ -208,7 +208,7 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            uint64_t surfaceState = state;
+        	uint64_t surfaceState = state;
             if constexpr (HasMaterials<MeshType>) {
                 if(mMRS.isSurface(MRI::Surface::COLOR_VERTEX_MATERIAL)) {
                     if(MeshType::materialsNumber() > 0) {
@@ -221,15 +221,30 @@ public:
                     }
                 }
             }
-            mMRB.bindTextures(); // Bind textures before vertex buffers!!
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS);
-            bindUniforms();
+            if (mMRB.mustDrawUsingChunks(mMRS)) {
+                for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
+                    // Bind textures before vertex buffers!!
+                    mMRB.bindTextures(mMRS, i);
+                    mMRB.bindVertexBuffers(mMRS);
+                    mMRB.bindIndexBuffers(mMRS, i);
+                    bindUniforms();
 
-            bgfx::setState(surfaceState);
-            bgfx::setTransform(model.data());
+                    bgfx::setState(surfaceState);
+                    bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, surfaceProgramSelector());
+                    bgfx::submit(viewId, surfaceProgramSelector());
+                }
+            }
+            else {
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS);
+                bindUniforms();
+
+                bgfx::setState(surfaceState);
+                bgfx::setTransform(model.data());
+
+                bgfx::submit(viewId, surfaceProgramSelector());
+            }
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
@@ -294,7 +309,6 @@ public:
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             mIdUniform.bind(&idFloat);

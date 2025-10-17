@@ -25,12 +25,13 @@ $input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+#define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
+
 #define PBR_VERTEX_COLOR_AVAILABLE 0
 #define PBR_ALPHA_MODE_MASK 1
 
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
-BUFFER_RO(triTextureIds, uint, VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);  // wedge ids of each face
 
 // textures
 SAMPLER2D(s_tex0, VCL_MRB_TEXTURE0);
@@ -44,14 +45,14 @@ SAMPLER2D(s_tex7, VCL_MRB_TEXTURE7);
 
 vec4 getColorFromTexture(uint texId, vec2 uv) {
     switch (texId) {
-        case 0: return texture2D(s_tex0, uv);
-        case 1: return texture2D(s_tex1, uv);
-        case 2: return texture2D(s_tex2, uv);
-        case 3: return texture2D(s_tex3, uv);
-        case 4: return texture2D(s_tex4, uv);
-        case 5: return texture2D(s_tex5, uv);
-        case 6: return texture2D(s_tex6, uv);
-        case 7: return texture2D(s_tex7, uv);
+        case 0u: return texture2D(s_tex0, uv);
+        case 1u: return texture2D(s_tex1, uv);
+        case 2u: return texture2D(s_tex2, uv);
+        case 3u: return texture2D(s_tex3, uv);
+        case 4u: return texture2D(s_tex4, uv);
+        case 5u: return texture2D(s_tex5, uv);
+        case 6u: return texture2D(s_tex6, uv);
+        case 7u: return texture2D(s_tex7, uv);
         default: return vec4(0.0, 0.0, 0.0, 1.0);
     }
 }
@@ -74,9 +75,9 @@ void main()
     // if flat shading, compute normal of face
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_FLAT))) {
         normal = vec3(
-            primitiveNormals[gl_PrimitiveID * 3],
-            primitiveNormals[gl_PrimitiveID * 3 + 1],
-            primitiveNormals[gl_PrimitiveID * 3 + 2]);
+            primitiveNormals[primitiveID * 3],
+            primitiveNormals[primitiveID * 3 + 1],
+            primitiveNormals[primitiveID * 3 + 2]);
         normal = normalize(mul(u_normalMatrix, normal));
     }
 
@@ -105,13 +106,13 @@ void main()
         color = u_meshColor;
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
-        color = uintABGRToVec4Color(primitiveColors[gl_PrimitiveID]);
+        color = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
-        color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord0);
+        color = getColorFromTexture(0u, v_texcoord0);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
-        color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
+        color = getColorFromTexture(0u, v_texcoord1);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERT_MAT))) {
 
