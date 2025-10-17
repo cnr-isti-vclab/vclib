@@ -462,26 +462,8 @@ private:
 
     void setTextureUnits(const MeshType& mesh) // override
     {
-        mTextureUnits.clear();
-        mTextureUnits.reserve(mesh.textureNumber());
-        for (uint i = 0; i < mesh.textureNumber(); ++i) {
-            vcl::Image txt;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
-                if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + mesh.texturePath(i));
-                }
-                else {
-                    txt = mesh.texture(i).image();
-                }
-            }
-            else {
-                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-            }
-            if (txt.isNull()) {
-                txt = vcl::createCheckBoardImage(512);
-            }
-
+        // lambda that pushes a texture unit
+        auto pushTextureUnit = [&](vcl::Image& txt, uint i) {
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -503,6 +485,29 @@ private:
                 releaseFn);
 
             mTextureUnits.push_back(std::move(tu));
+        };
+
+        mTextureUnits.clear();
+        mTextureUnits.reserve(mesh.textureNumber());
+        for (uint i = 0; i < mesh.textureNumber(); ++i) {
+            vcl::Image txt;
+            if constexpr (vcl::HasTextureImages<MeshType>) {
+                if (mesh.texture(i).image().isNull()) {
+                    txt = vcl::loadImage(
+                        mesh.meshBasePath() + mesh.texturePath(i));
+                }
+                else {
+                    txt = mesh.texture(i).image();
+                }
+            }
+            else {
+                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
+            }
+            if (txt.isNull()) {
+                txt = vcl::createCheckBoardImage(512);
+            }
+
+            pushTextureUnit(txt, 0);
         }
     }
 
