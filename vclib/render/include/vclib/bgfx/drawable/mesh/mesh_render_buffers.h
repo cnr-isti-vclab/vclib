@@ -64,9 +64,6 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     IndexBuffer mTriangleNormalBuffer;
     IndexBuffer mTriangleColorBuffer;
 
-    IndexBuffer mVertexTextureIndexBuffer;
-    IndexBuffer mWedgeTextureIndexBuffer;
-
     Lines mEdgeLines;
 
     Lines mWireframeLines;
@@ -114,8 +111,6 @@ public:
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
-        swap(mVertexTextureIndexBuffer, other.mVertexTextureIndexBuffer);
-        swap(mWedgeTextureIndexBuffer, other.mWedgeTextureIndexBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mTextureUnits, other.mTextureUnits);
@@ -207,15 +202,6 @@ public:
         mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
         mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
-
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            mVertexTextureIndexBuffer.bind(
-                VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
-        }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mWedgeTextureIndexBuffer.bind(
-                VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
-        }
     }
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
@@ -461,30 +447,6 @@ private:
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
         mTriangleColorBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
-    }
-
-    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
-    {
-        uint nt = Base::numTris();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
-
-        Base::fillVertexTextureIndices(mesh, buffer);
-
-        mVertexTextureIndexBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
-    }
-
-    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
-    {
-        uint nt = Base::numTris();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
-
-        Base::fillWedgeTextureIndices(mesh, buffer);
-
-        mWedgeTextureIndexBuffer.createForCompute(
             buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
