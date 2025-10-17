@@ -50,10 +50,7 @@ public:
         }
     }
 
-    void bind() const
-    {
-        mMeshColorUniform.bind(mMeshColor);
-    }
+    void bind() const { mMeshColorUniform.bind(mMeshColor); }
 };
 
 } // namespace vcl
