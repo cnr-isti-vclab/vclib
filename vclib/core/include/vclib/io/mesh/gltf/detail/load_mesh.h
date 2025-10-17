@@ -83,7 +83,7 @@ int loadGltfPrimitiveMaterial(
 
         // alphaMode
         if(mat.alphaMode == "MASK")
-            alphaMode = Material::AlphaMode::MASK;
+            alphaMode = Material::AlphaMode::ALPHA_MASK;
         else if(mat.alphaMode == "BLEND")
             alphaMode = Material::AlphaMode::BLEND;
         else 

@@ -36,13 +36,10 @@ namespace vcl {
 // TODO - Add support for textures, normal maps, and other PBR properties.
 class Material
 {
+public:
+    enum class AlphaMode { OPAQUE, ALPHA_MASK, BLEND };
 
-    public:
-
-    enum class AlphaMode { OPAQUE, MASK, BLEND };
-
-    private:
-
+private:
     // essential PBR properties
     vcl::Color mBaseColor = vcl::Color(1.0f, 1.0f, 1.0f);
 

@@ -208,14 +208,16 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-        	uint64_t surfaceState = state;
+            uint64_t surfaceState = state;
             if constexpr (HasMaterials<MeshType>) {
-                if(mMRS.isSurface(MRI::Surface::COLOR_VERTEX_MATERIAL)) {
-                    if(MeshType::materialsNumber() > 0) {
-                        if(!MeshType::material(0).doubleSided()) {
-                            surfaceState |= BGFX_STATE_CULL_CW; // backface culling
+                if (mMRS.isSurface(MRI::Surface::COLOR_VERTEX_MATERIAL)) {
+                    if (MeshType::materialsNumber() > 0) {
+                        if (!MeshType::material(0).doubleSided()) {
+                            surfaceState |=
+                                BGFX_STATE_CULL_CW; // backface culling
                         }
-                        if(MeshType::material(0).alphaMode() == Material::AlphaMode::BLEND) {
+                        if (MeshType::material(0).alphaMode() ==
+                            Material::AlphaMode::BLEND) {
                             surfaceState |= BGFX_STATE_BLEND_ALPHA;
                         }
                     }
