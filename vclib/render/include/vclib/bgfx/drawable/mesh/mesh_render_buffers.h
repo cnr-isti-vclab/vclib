@@ -64,9 +64,6 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     IndexBuffer mTriangleNormalBuffer;
     IndexBuffer mTriangleColorBuffer;
 
-    IndexBuffer mVertexTextureIndexBuffer;
-    IndexBuffer mWedgeTextureIndexBuffer;
-
     Lines mEdgeLines;
 
     Lines mWireframeLines;
@@ -74,7 +71,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
-    DrawableMeshUniforms mMeshUniforms;
+    mutable DrawableMeshUniforms mMeshUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -114,8 +111,6 @@ public:
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
-        swap(mVertexTextureIndexBuffer, other.mVertexTextureIndexBuffer);
-        swap(mWedgeTextureIndexBuffer, other.mWedgeTextureIndexBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mTextureUnits, other.mTextureUnits);
@@ -123,6 +118,17 @@ public:
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
+
+    bool mustDrawUsingChunks(const MeshRenderSettings& mrs) const
+    {
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
+            mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+            return Base::mMaterialChunks.size() > 1;
+        }
+        return false;
+    }
+
+    uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }
 
     // to generate splats
     void computeQuadVertexBuffers(
@@ -178,39 +184,41 @@ public:
 
     void bindIndexBuffers(
         const MeshRenderSettings& mrs,
-        MRI::Buffers indexBufferToBind = MRI::Buffers::TRIANGLES) const
+        uint                      chunkToBind = UINT_NULL) const
     {
         using enum MRI::Buffers;
 
-        if (indexBufferToBind == TRIANGLES) {
+        if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
-
-            mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
-
-            mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
-
-            if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-                mVertexTextureIndexBuffer.bind(
-                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
-            }
-            else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-                mWedgeTextureIndexBuffer.bind(
-                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
-            }
+            mMeshUniforms.updateFirstChunkIndex(0);
         }
+        else {
+            const auto& chunk = Base::mMaterialChunks[chunkToBind];
+            mMeshUniforms.updateFirstChunkIndex(chunk.startIndex);
+            mTriangleIndexBuffer.bind(
+                chunk.startIndex * 3, chunk.indexCount * 3);
+        }
+
+        mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+
+        mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
     }
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
-    void bindTextures() const
+    void bindTextures(const MeshRenderSettings& mrs, uint chunkNumber) const
     {
-        uint i = VCL_MRB_TEXTURE0; // first slot available is VCL_MRB_TEXTURE0
-        for (const auto& ptr : mTextureUnits) {
-            ptr->bind(i);
-            i++;
+        uint textureId = 0;
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+            textureId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
         }
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+            textureId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
+        }
+
+        mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -442,30 +450,6 @@ private:
             buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
-    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
-    {
-        uint nt = Base::numTris();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
-
-        Base::fillVertexTextureIndices(mesh, buffer);
-
-        mVertexTextureIndexBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
-    }
-
-    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
-    {
-        uint nt = Base::numTris();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
-
-        Base::fillWedgeTextureIndices(mesh, buffer);
-
-        mWedgeTextureIndexBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
-    }
-
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
         computeEdgeLines(mesh);
@@ -478,26 +462,8 @@ private:
 
     void setTextureUnits(const MeshType& mesh) // override
     {
-        mTextureUnits.clear();
-        mTextureUnits.reserve(mesh.textureNumber());
-        for (uint i = 0; i < mesh.textureNumber(); ++i) {
-            vcl::Image txt;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
-                if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + mesh.texturePath(i));
-                }
-                else {
-                    txt = mesh.texture(i).image();
-                }
-            }
-            else {
-                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-            }
-            if (txt.isNull()) {
-                txt = vcl::createCheckBoardImage(512);
-            }
-
+        // lambda that pushes a texture unit
+        auto pushTextureUnit = [&](vcl::Image& txt, uint i) {
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -519,6 +485,29 @@ private:
                 releaseFn);
 
             mTextureUnits.push_back(std::move(tu));
+        };
+
+        mTextureUnits.clear();
+        mTextureUnits.reserve(mesh.textureNumber());
+        for (uint i = 0; i < mesh.textureNumber(); ++i) {
+            vcl::Image txt;
+            if constexpr (vcl::HasTextureImages<MeshType>) {
+                if (mesh.texture(i).image().isNull()) {
+                    txt = vcl::loadImage(
+                        mesh.meshBasePath() + mesh.texturePath(i));
+                }
+                else {
+                    txt = mesh.texture(i).image();
+                }
+            }
+            else {
+                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
+            }
+            if (txt.isNull()) {
+                txt = vcl::createCheckBoardImage(512);
+            }
+
+            pushTextureUnit(txt, 0);
         }
     }
 
