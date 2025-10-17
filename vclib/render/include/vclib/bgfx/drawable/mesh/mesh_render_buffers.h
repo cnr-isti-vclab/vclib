@@ -211,14 +211,23 @@ public:
     void bindTextures(const MeshRenderSettings& mrs, uint chunkNumber) const
     {
         uint textureId = 0;
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
+            mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL)) {
             textureId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX) ||
+                 mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
             textureId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
         }
 
-        mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
+            mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+            mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
+        }
+        else {
+            // TODO: bind texture materials here...
+        }
+
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -488,26 +497,32 @@ private:
         };
 
         mTextureUnits.clear();
-        mTextureUnits.reserve(mesh.textureNumber());
-        for (uint i = 0; i < mesh.textureNumber(); ++i) {
-            vcl::Image txt;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
-                if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + mesh.texturePath(i));
+
+        if constexpr (vcl::HasTextureImages<MeshType>) {
+            mTextureUnits.reserve(mesh.textureNumber());
+            for (uint i = 0; i < mesh.textureNumber(); ++i) {
+                vcl::Image txt;
+                if constexpr (vcl::HasTextureImages<MeshType>) {
+                    if (mesh.texture(i).image().isNull()) {
+                        txt = vcl::loadImage(
+                            mesh.meshBasePath() + mesh.texturePath(i));
+                    }
+                    else {
+                        txt = mesh.texture(i).image();
+                    }
                 }
                 else {
-                    txt = mesh.texture(i).image();
+                    txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
                 }
-            }
-            else {
-                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-            }
-            if (txt.isNull()) {
-                txt = vcl::createCheckBoardImage(512);
-            }
+                if (txt.isNull()) {
+                    txt = vcl::createCheckBoardImage(512);
+                }
 
-            pushTextureUnit(txt, 0);
+                pushTextureUnit(txt, 0);
+            }
+        }
+        if constexpr (vcl::HasMaterials<MeshType>) {
+            // TODO: materials
         }
     }
 

@@ -1079,7 +1079,8 @@ private:
         using MeshType = MeshRenderDerived::MeshType;
         using enum MRI::Buffers;
 
-        if constexpr (vcl::HasTexturePaths<MeshType>) {
+        if constexpr (
+            vcl::HasTexturePaths<MeshType> || vcl::HasMaterials<MeshType>) {
             if (btu[toUnderlying(TEXTURES)]) {
                 // textures
                 derived().setTextureUnits(mesh);
