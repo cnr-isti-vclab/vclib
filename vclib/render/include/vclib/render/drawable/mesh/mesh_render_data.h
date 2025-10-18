@@ -119,9 +119,9 @@ private:
 protected:
     struct TriangleMaterialChunk
     {
-        uint startIndex = 0; // start index in the triangle index buffer
-        uint indexCount = 0; // num indices in the triangle index buffer
-        uint vertMaterialId = 0; // material id associated to the vertices
+        uint startIndex      = 0; // start index in the triangle index buffer
+        uint indexCount      = 0; // num indices in the triangle index buffer
+        uint vertMaterialId  = 0; // material id associated to the vertices
         uint wedgeMaterialId = 0; // material id associated to the wedges
     };
 
@@ -1114,8 +1114,8 @@ private:
             // need to place the k triangles associated to the i-th face
             // of oldFaceIndices
             uint polyIndex = oldFaceIndices[i];
-            uint firstTri = indexMap.triangleBegin(polyIndex);
-            uint nTris = indexMap.triangleNumber(polyIndex);
+            uint firstTri  = indexMap.triangleBegin(polyIndex);
+            uint nTris     = indexMap.triangleNumber(polyIndex);
 
             std::copy(
                 buffer + firstTri * 3,
@@ -1144,9 +1144,9 @@ private:
         mMaterialChunks.clear();
 
         uint first = 0;
-        uint n = 0;
+        uint n     = 0;
 
-        uint currentVertMatID = UINT_NULL;
+        uint currentVertMatID  = UINT_NULL;
         uint currentWedgeMatID = UINT_NULL;
 
         for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
