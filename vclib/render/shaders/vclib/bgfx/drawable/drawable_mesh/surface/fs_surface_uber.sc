@@ -116,7 +116,8 @@ void main()
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERT_MAT))) {
 
-        vec3 lightDirections[2] = {lightKeyDir, lightFillDir};
+        // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
+        vec3 lightDirections[2] = {LIGHT_KEY_DIR, LIGHT_FILL_DIR};
         vec3 lightColors[2] = {vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0)};
         float lightIntensities[2] = {1.0, 0.5};
 

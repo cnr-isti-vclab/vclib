@@ -33,6 +33,10 @@
 
 #define USE_LIGHTS
 #define LIGHT_COUNT 2
+#define PI 3.141592653589793
+// precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
+#define LIGHT_KEY_DIR vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
+#define LIGHT_FILL_DIR vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
 
 /**
  * @brief Convert an uint color in ABGR format to a vec4 float color.
@@ -96,21 +100,6 @@ vec3 computeSpecular(
         vPos, cameraEyePos, lightDir, lightColor, normal, 0.3);
 }
 
-const float PI = 3.141592653589793;
-
-// precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
-
-const vec3 lightKeyDir = vec3(
-    0.5000000108991332,
-    -0.7071067857071073,
-    -0.49999999460696354
-);
-
-const vec3 lightFillDir = vec3(
-    -0.4999998538661192,
-    0.7071068849655084,
-    0.500000052966632
-);
 
 /**
  * @brief Computes the dot product of two vectors and clamps it to be >= 0.

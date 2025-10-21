@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     std::string e7 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/mask_grid.glb";
     std::string e8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/blend_grid.glb";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e6);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e1);
 
     for(auto& mesh : meshes) {
         for (auto& mat : mesh.materials()) {
