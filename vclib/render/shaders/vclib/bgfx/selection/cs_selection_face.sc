@@ -82,6 +82,32 @@ bool triangleIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, mat3 trngl) {
     return false;
 }
 
+vec4 planeFromTriangle(mat3 tri) {
+    vec3 n = mul(tri[1] - tri[0], tri[2] - tri[0]);
+    float d = -mul(n, tri[0]);
+    return vec4(n.x, n.y, n.z, d);
+}
+
+vec3 projectOntoPlane(vec3 p, vec4 plane) {
+    vec3 n = plane.xyz;
+    float d = plane.w;
+    float dist = mul(n, p) + d;
+    return p - (n * dist);
+}
+
+vec3 barycentricCoords(mat3 tri, vec2 p) {
+    vec3 newP = vec3(1, p.x, p.y);
+    float mult = 1.0/(tri[0].x*(tri[1].y-tri[2].y) + tri[1].x*(try[2].y-tri[0].y) + tri[2].x*(tri[0].y-tri[1].y));
+    mat3 mt = mat3(
+        tri[1].x*tri[2].y-tri[2].x*tri[1].y, tri[1].y-tri[2].y, tri[2].x-tri[1].x,
+        tri[2].x*tri[0].y-tri[0].x*tri[2].y, tri[2].y-tri[0].y, tri[0].x-tri[2].x,
+        tri[0].x*tri[1].y-tri[1].x*tri[0].y, tri[0].y-tri[1].y, tri[1].x-tri[0].x
+    );
+    return mult*mul(mt, newP);
+}
+
+// FUNCTION TO CONVERT COORDINATES TO 2D
+
 NUM_THREADS(1, 1, 1) // 1 'thread' per face, or 1 'thread' per 3 indices
 void main()
 {
