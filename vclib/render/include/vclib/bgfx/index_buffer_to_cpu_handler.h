@@ -58,8 +58,7 @@ class IndexBufferToCpuHandler
 public:
     IndexBufferToCpuHandler() = default;
 
-    IndexBufferToCpuHandler(uint requiredByteSize) :
-            mReadResults(requiredByteSize, 0)
+    IndexBufferToCpuHandler(uint requiredByteSize)
     {
         uint requiredTexArea = uint(ceil(double(requiredByteSize) / 4.0));
         uint maxTexSize      = bgfx::getCaps()->limits.maxTextureSize;
@@ -80,6 +79,7 @@ public:
             1,
             bgfx::TextureFormat::RGBA8,
             BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
+        mReadResults = std::vector<uint8_t>(mTextureSize[0] * mTextureSize[1] * 4, 0);
     }
 
     // Copy not allowed.

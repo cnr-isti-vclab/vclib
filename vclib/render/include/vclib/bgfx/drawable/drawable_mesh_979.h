@@ -267,13 +267,15 @@ public:
 
         if constexpr (HasFaces<MeshType>) {
             std::vector<uint8_t> vec;
+            uint count;
             switch (mBufToTexRemainingFrames) {
                 case 0:
                     mBufToTexRemainingFrames = 255;
                     vec = mMRB.getSelectionBufferCopy();
                     for (size_t index = 0; index < vec.size(); index++) {
-                        std::cout << std::bitset<8>(vec[index]) << ((((index+1) % 4 == 0) || index == vec.size() - 1) ? "\n" : " ");
+                        count += std::bitset<8>(vec[index]).count();
                     }
+                    std::cout << "Selected count: " << count << std::endl;
                     break;
                 case 255:
                     break;
