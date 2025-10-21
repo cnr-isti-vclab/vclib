@@ -160,19 +160,13 @@ public:
             // compute the camera properties from the trackball
             // camera and model transformation
 
-            const Point3<Scalar> camTrackballTransl =
-                cam.eye() - cam.center();
-
             const Affine3<Scalar> modelToCamera = mTransform.inverse();
 
-            Point3<Scalar> x = modelToCamera.linear().col(0);
             Point3<Scalar> y = modelToCamera.linear().col(1);
             Point3<Scalar> z = modelToCamera.linear().col(2);
 
-            Point3<Scalar> translation = modelToCamera.translation();
-
             cam.up() = y.normalized();
-            cam.eye() = translation + z.normalized() * camTrackballTransl.norm();
+            cam.eye() =  modelToCamera * cam.eye();
             cam.center() = cam.eye() - z.normalized();
         }
 
@@ -224,6 +218,38 @@ public:
         // correct the translation to account for the position of the
         // trackball camera (mCamera)
         mTransform.pretranslate(camTrackballTransl);
+    }
+
+    /**
+     * @brief Adapt the current view to a given center.
+     * The function adapts the trackball transformation in order to manipulate
+     * the scene with a pivot point close to the given center.
+     * This is done without affecting the current view.
+     *
+     * @param[in] center: The center of the scene.
+     * @note This function does nothing if the provided center is behind the
+     * camera.
+     */
+    void adaptCurrentViewToCenter(const Point3<Scalar>& center) 
+    {
+        if (mCamera.projectionMode() ==
+            Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
+            Point3<Scalar> transformedCenter = mTransform * center;
+            Point3<Scalar> toCenter = transformedCenter - mCamera.eye();
+            Point3<Scalar> eyeToCenter = (mCamera.center() - mCamera.eye());
+            Scalar scaleRatio = 
+                toCenter.dot(eyeToCenter.normalized())/ eyeToCenter.norm();
+            if (scaleRatio < 0)
+                return; // center is behind the camera
+
+            std::cout << "adapting view to center " << transformedCenter.transpose()
+                      << " scaleRatio: " << scaleRatio << std::endl <<
+                      " eyeToCenter: " << eyeToCenter.transpose() << std::endl <<
+                      " toCenter: " << toCenter.transpose() << std::endl;
+            mTransform.pretranslate(eyeToCenter);
+            mTransform.prescale(1.0 / scaleRatio);
+            mTransform.pretranslate(-eyeToCenter);
+        }
     }
 
     void resetDirectionalLight()
