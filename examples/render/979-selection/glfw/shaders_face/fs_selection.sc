@@ -7,7 +7,7 @@
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
- *                                                                           *
+*                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
  * it under the terms of the Mozilla Public License Version 2.0 as published *
  * by the Mozilla Foundation; either version 2 of the License, or            *
@@ -26,8 +26,7 @@
 BUFFER_RO(face_selected, uint, 6);
 
 void main() {
-    gl_FragDepth = gl_FragCoord.z - 0.001;
-
+    gl_FragDepth = gl_FragCoord.z - 0.005;
     uint bufferIndex = uint(gl_PrimitiveID) / 32;
     uint bitMask = 0x1 << (31 - (uint(gl_PrimitiveID) % 32));
     if((face_selected[bufferIndex] & bitMask) != 0) {
