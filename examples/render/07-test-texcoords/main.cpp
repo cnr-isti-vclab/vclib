@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     const bool USE_QUAD_OBJ         = false;
     // if all false, use TextureDouble.obj
 
-    if constexpr(USE_SPONZA) {
+    if constexpr (USE_SPONZA) {
         vcl::DrawableMesh<vcl::TriMesh> drawable =
             getDrawableMesh<vcl::TriMesh>("sponza/sponza.obj");
         auto mrs = drawable.renderSettings();
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
     }
     else if constexpr (USE_QUAD_OBJ) {
         vcl::DrawableMesh<vcl::PolyMesh> drawable =
-           getDrawableMesh<vcl::PolyMesh>("TextureDoubleQuad.obj");
+            getDrawableMesh<vcl::PolyMesh>("TextureDoubleQuad.obj");
         auto mrs = drawable.renderSettings();
         mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
         mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
