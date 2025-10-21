@@ -32,7 +32,14 @@ class DrawableMeshUniforms
 {
     float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
 
+    float mMeshData[4] = {
+        0.0, // as uint: first chunk primitive id drawn
+        0.0,
+        0.0,
+        0.0};
+
     Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
+    Uniform mMeshDataUniform  = Uniform("u_meshData", bgfx::UniformType::Vec4);
 
 public:
     DrawableMeshUniforms() = default;
@@ -50,9 +57,15 @@ public:
         }
     }
 
+    void updateFirstChunkIndex(uint firstChunkIndex)
+    {
+        mMeshData[0] = Uniform::uintBitsToFloat(firstChunkIndex);
+    }
+
     void bind() const
     {
         mMeshColorUniform.bind(mMeshColor);
+        mMeshDataUniform.bind(mMeshData);
     }
 };
 
