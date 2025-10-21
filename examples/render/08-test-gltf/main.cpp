@@ -57,10 +57,18 @@ int main(int argc, char** argv)
     std::cerr << "  Near: " << c.nearPlane() << "\n";
     std::cerr << "  Far: " << c.farPlane() << "\n";
 
+    
+    viewer.fitScene();
     viewer.setCamera(c);
 
+    // fit view to use the trackball decently
+    viewer.fitView();
+    
     // get and set the camera to confirm the operation is correct
     viewer.setCamera(viewer.camera());
+
+    // fit view to use the trackball decently
+    viewer.fitView();
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();

@@ -53,6 +53,7 @@ void DrawableObjectVector::drawId(uint viewId, uint id) const
     }
 }
 
+// TODO: distinguish the box of the visible objects VS the box of all objects
 Box3d DrawableObjectVector::boundingBox() const
 {
     Box3d bb;
@@ -66,6 +67,14 @@ Box3d DrawableObjectVector::boundingBox() const
         }
     }
     return bb;
+}
+
+Point3d DrawableObjectVector::center() const
+{
+    Box3d bb = boundingBox();
+    if (bb.isNull())
+        return Point3d(0, 0, 0);
+    return bb.center();
 }
 
 std::shared_ptr<DrawableObject> DrawableObjectVector::clone() const&
