@@ -88,20 +88,14 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
     IndexBuffer mTriangleNormalBuffer;
     IndexBuffer mTriangleColorBuffer;
 
-    IndexBuffer mVertexTextureIndexBuffer;
-    IndexBuffer mWedgeTextureIndexBuffer;
+    Lines mEdgeLines;
 
-    // TODO: manage wireframe with proper lines
-    IndexBuffer mEdgeIndexBuffer;
-    IndexBuffer mEdgeNormalBuffer;
-    IndexBuffer mEdgeColorBuffer;
-
-    // TODO: manage wireframe with proper lines
-    IndexBuffer mWireframeIndexBuffer;
+    Lines mWireframeLines;
+    Color mMeshColor; // todo: find better way to store mesh color
 
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
-    DrawableMeshUniforms mMeshUniforms;
+    mutable DrawableMeshUniforms mMeshUniforms;
 
 public:
     MeshRenderBuffers979() = default;
@@ -141,12 +135,8 @@ public:
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
-        swap(mVertexTextureIndexBuffer, other.mVertexTextureIndexBuffer);
-        swap(mWedgeTextureIndexBuffer, other.mWedgeTextureIndexBuffer);
-        swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
-        swap(mEdgeNormalBuffer, other.mEdgeNormalBuffer);
-        swap(mEdgeColorBuffer, other.mEdgeColorBuffer);
-        swap(mWireframeIndexBuffer, other.mWireframeIndexBuffer);
+        swap(mEdgeLines, other.mEdgeLines);
+        swap(mWireframeLines, other.mWireframeLines);
         swap(mTextureUnits, other.mTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
         swap(
@@ -157,25 +147,18 @@ public:
         swap(mSelectionToCPUBufferHandler, other.mSelectionToCPUBufferHandler);
     }
 
-    friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b)
+    friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b) { a.swap(b); }
+
+    bool mustDrawUsingChunks(const MeshRenderSettings& mrs) const
     {
-        a.swap(b);
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
+            mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+            return Base::mMaterialChunks.size() > 1;
+        }
+        return false;
     }
 
-    void bindVertexBuffers(const MeshRenderSettings& mrs) const
-    {
-        // bgfx allows a maximum number of 4 vertex streams...
-        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
-        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
-        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
-
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
-        }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
-        }
-    }
+    uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }
 
     // to generate splats
     void computeQuadVertexBuffers(
@@ -308,6 +291,21 @@ public:
         mSelectedFacesBuffer.value().bind(6);
     }
 
+    void bindVertexBuffers(const MeshRenderSettings& mrs) const
+    {
+        // bgfx allows a maximum number of 4 vertex streams...
+        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
+        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
+
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+        }
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+        }
+    }
+
     // to draw splats
     void bindVertexQuadBuffer() const
     {
@@ -317,50 +315,89 @@ public:
 
     void bindIndexBuffers(
         const MeshRenderSettings& mrs,
-        MRI::Buffers indexBufferToBind = MRI::Buffers::TRIANGLES) const
+        uint                      chunkToBind = UINT_NULL) const
     {
         using enum MRI::Buffers;
 
-        if (indexBufferToBind == TRIANGLES) {
+        if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
-
-            mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
-
-            mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
-
-            if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-                mVertexTextureIndexBuffer.bind(
-                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
-            }
-            else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-                mWedgeTextureIndexBuffer.bind(
-                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);
-            }
+            mMeshUniforms.updateFirstChunkIndex(0);
         }
-        else if (indexBufferToBind == EDGES) {
-            mEdgeIndexBuffer.bind();
-
-            mEdgeNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
-
-            mEdgeColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+        else {
+            const auto& chunk = Base::mMaterialChunks[chunkToBind];
+            mMeshUniforms.updateFirstChunkIndex(chunk.startIndex);
+            mTriangleIndexBuffer.bind(
+                chunk.startIndex * 3, chunk.indexCount * 3);
         }
-        else if (indexBufferToBind == WIREFRAME) {
-            mWireframeIndexBuffer.bind();
+
+        mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+
+        mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+    }
+
+    void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
+
+    void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
+
+    void bindTextures(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        uint textureId = 0;
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+            textureId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
+        }
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+            textureId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
+        }
+
+        mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
+    }
+
+    void updateEdgeSettings(const MeshRenderSettings& mrs)
+    {
+        using enum MeshRenderInfo::Edges;
+        using enum Lines::ColorToUse;
+
+        mEdgeLines.thickness() = mrs.edgesWidth();
+        mEdgeLines.setShading(mrs.isEdges(SHADING_SMOOTH));
+
+        if (mrs.isEdges(COLOR_USER)) {
+            mEdgeLines.generalColor() = mrs.edgesUserColor();
+            mEdgeLines.setColorToUse(GENERAL);
+        }
+        else if (mrs.isEdges(COLOR_MESH)) {
+            mEdgeLines.generalColor() = mMeshColor;
+            mEdgeLines.setColorToUse(GENERAL);
+        }
+        else if (mrs.isEdges(COLOR_VERTEX)) {
+            mEdgeLines.setColorToUse(PER_VERTEX);
+        }
+        else if (mrs.isEdges(COLOR_EDGE)) {
+            mEdgeLines.setColorToUse(PER_EDGE);
         }
     }
 
-    void bindTextures() const
+    void updateWireframeSettings(const MeshRenderSettings& mrs)
     {
-        uint i = VCL_MRB_TEXTURE0; // first slot available is VCL_MRB_TEXTURE0
-        for (const auto& ptr : mTextureUnits) {
-            ptr->bind(i);
-            i++;
+        using enum MeshRenderInfo::Wireframe;
+        using enum Lines::ColorToUse;
+
+        mWireframeLines.thickness() = mrs.wireframeWidth();
+        mWireframeLines.setShading(mrs.isWireframe(SHADING_VERT));
+
+        if (mrs.isWireframe(COLOR_USER)) {
+            mWireframeLines.generalColor() = mrs.wireframeUserColor();
+            mWireframeLines.setColorToUse(GENERAL);
+        }
+        else if (mrs.isWireframe(COLOR_MESH)) {
+            mWireframeLines.generalColor() = mMeshColor;
+            mWireframeLines.setColorToUse(GENERAL);
+        }
+        else if (mrs.isWireframe(COLOR_VERTEX)) {
+            mWireframeLines.setColorToUse(PER_VERTEX);
         }
     }
 
     void bindUniforms() const { mMeshUniforms.bind(); }
-
-    uint triangleNumber() const { return Base::numTris(); }
 
 private:
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
@@ -599,7 +636,7 @@ private:
             4,
             PrimitiveType::UCHAR,
             true,
-            bgfx::Access::ReadWrite,
+            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -687,103 +724,20 @@ private:
             buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
     }
 
-    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
-    {
-        uint nt = Base::numTris();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
-
-        Base::fillVertexTextureIndices(mesh, buffer);
-
-        mVertexTextureIndexBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
-    }
-
-    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
-    {
-        uint nt = Base::numTris();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
-
-        Base::fillWedgeTextureIndices(mesh, buffer);
-
-        mWedgeTextureIndexBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
-    }
-
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
-        uint ne = Base::numEdges();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(ne * 2);
-
-        Base::fillEdgeIndices(mesh, buffer);
-
-        mEdgeIndexBuffer.create(buffer, ne * 2);
-    }
-
-    void setEdgeNormalsBuffer(const MeshType& mesh) // override
-    {
-        uint ne = Base::numEdges();
-
-        auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(ne * 3);
-
-        Base::fillEdgeNormals(mesh, buffer);
-
-        mEdgeNormalBuffer.createForCompute(
-            buffer,
-            ne * 3,
-            PrimitiveType::FLOAT,
-            bgfx::Access::Read,
-            releaseFn);
-    }
-
-    void setEdgeColorsBuffer(const MeshType& mesh) // override
-    {
-        uint ne = Base::numEdges();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(ne);
-
-        Base::fillEdgeColors(mesh, buffer, Color::Format::ABGR);
-
-        mEdgeColorBuffer.createForCompute(
-            buffer, ne, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
+        computeEdgeLines(mesh);
     }
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
-        const uint nw = Base::numWireframeLines();
-
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nw * 2);
-
-        Base::fillWireframeIndices(mesh, buffer);
-
-        mWireframeIndexBuffer.create(buffer, nw * 2, true, releaseFn);
+        computeWireframeLines(mesh);
     }
 
     void setTextureUnits(const MeshType& mesh) // override
     {
-        mTextureUnits.clear();
-        mTextureUnits.reserve(mesh.textureNumber());
-        for (uint i = 0; i < mesh.textureNumber(); ++i) {
-            vcl::Image txt;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
-                if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + mesh.texturePath(i));
-                }
-                else {
-                    txt = mesh.texture(i).image();
-                }
-            }
-            else {
-                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-            }
-            if (txt.isNull()) {
-                txt = vcl::createCheckBoardImage(512);
-            }
-
+        // lambda that pushes a texture unit
+        auto pushTextureUnit = [&](vcl::Image& txt, uint i) {
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -805,12 +759,118 @@ private:
                 releaseFn);
 
             mTextureUnits.push_back(std::move(tu));
+        };
+
+        mTextureUnits.clear();
+        mTextureUnits.reserve(mesh.textureNumber());
+        for (uint i = 0; i < mesh.textureNumber(); ++i) {
+            vcl::Image txt;
+            if constexpr (vcl::HasTextureImages<MeshType>) {
+                if (mesh.texture(i).image().isNull()) {
+                    txt = vcl::loadImage(
+                        mesh.meshBasePath() + mesh.texturePath(i));
+                }
+                else {
+                    txt = mesh.texture(i).image();
+                }
+            }
+            else {
+                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
+            }
+            if (txt.isNull()) {
+                txt = vcl::createCheckBoardImage(512);
+            }
+
+            pushTextureUnit(txt, 0);
         }
     }
 
     void setMeshUniforms(const MeshType& mesh) // override
     {
         mMeshUniforms.update(mesh);
+        if constexpr (HasColor<MeshType>) {
+            mMeshColor = mesh.color();
+        }
+    }
+
+    void computeEdgeLines(const MeshType& mesh)
+    {
+        // if cpu lines, do this...
+
+        // positions
+        const uint         nv = Base::numVerts();
+        std::vector<float> positions(nv * 3);
+        Base::fillVertexPositions(mesh, positions.data());
+
+        // indices
+        const uint        ne = Base::numEdges();
+        std::vector<uint> indices(ne * 2);
+        Base::fillEdgeIndices(mesh, indices.data());
+
+        // v normals
+        std::vector<float> normals;
+        if (mVertexNormalsBuffer.isValid()) {
+            normals.resize(nv * 3);
+            Base::fillVertexNormals(mesh, normals.data());
+        }
+
+        // todo - edge normals
+
+        // vcolors
+        std::vector<uint> vcolors;
+        if (mVertexColorsBuffer.isValid()) {
+            vcolors.resize(nv);
+            Base::fillVertexColors(mesh, vcolors.data(), Color::Format::ABGR);
+        }
+
+        std::vector<uint> ecolors;
+        if constexpr (vcl::HasPerEdgeColor<MeshType>) {
+            if (vcl::isPerEdgeColorAvailable(mesh)) {
+                // if (btu[toUnderlying(EDGE_COLORS)]) {
+                //  edge color buffer
+                ecolors.resize(ne);
+                Base::fillEdgeColors(mesh, ecolors.data(), Color::Format::ABGR);
+                //}
+            }
+        }
+
+        mEdgeLines.setPoints(positions, indices, normals, vcolors, ecolors);
+
+        // otherwise, already computed buffers should do the job
+    }
+
+    // to generate wireframe lines
+    void computeWireframeLines(const MeshType& mesh)
+    {
+        // if cpu lines, do this...
+
+        // positions
+        const uint         nv = Base::numVerts();
+        std::vector<float> positions(nv * 3);
+        Base::fillVertexPositions(mesh, positions.data());
+
+        // indices
+        const uint        nw = Base::numWireframeLines();
+        std::vector<uint> indices(nw * 2);
+        Base::fillWireframeIndices(mesh, indices.data());
+
+        // v normals
+        std::vector<float> normals;
+        if (mVertexNormalsBuffer.isValid()) {
+            normals.resize(nv * 3);
+            Base::fillVertexNormals(mesh, normals.data());
+        }
+
+        // vcolors
+        std::vector<uint> vcolors;
+        if (mVertexColorsBuffer.isValid()) {
+            vcolors.resize(nv);
+            Base::fillVertexColors(mesh, vcolors.data(), Color::Format::ABGR);
+        }
+
+        mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
+
+        // otherwise, already computed buffers should do the job
     }
 
     template<typename T>

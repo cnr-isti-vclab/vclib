@@ -52,8 +52,6 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
-    Box3d mBoundingBox;
-
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
     Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
@@ -86,24 +84,19 @@ public:
 
     DrawableMeshBGFX979(const DrawableMeshBGFX979& drawableMesh) :
             AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
-            MeshType(drawableMesh), mBoundingBox(drawableMesh.mBoundingBox),
+            MeshType(drawableMesh),
             mMeshRenderSettingsUniforms(
                 drawableMesh.mMeshRenderSettingsUniforms)
     {
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
-        mMRB.update(*this);
         updateBuffers();
     }
 
     DrawableMeshBGFX979(DrawableMeshBGFX979&& drawableMesh) { swap(drawableMesh); }
 
     ~DrawableMeshBGFX979() = default;
-
-    const MeshRenderBuffers979<MeshType>& getMRB() const {
-        return mMRB;
-    }
 
     DrawableMeshBGFX979& operator=(DrawableMeshBGFX979 drawableMesh)
     {
@@ -116,7 +109,6 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mBoundingBox, other.mBoundingBox);
         swap(mMRB, other.mMRB);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
@@ -130,7 +122,7 @@ public:
             count = MeshType::vertexNumber();
         }
         if (mode.isFaceSelection()) {
-            count = mMRB.triangleNumber();
+            count = mMRB.triangleChunksNumber();
         }
         
         mMRB.calculateSelection(viewId, box, mode);
@@ -156,14 +148,6 @@ public:
         }
     }
 
-    void setTransform() const {
-        vcl::Matrix44f model = vcl::Matrix44f::Identity();
-        if constexpr (HasTransformMatrix<MeshType>) {
-            model = MeshType::transformMatrix().template cast<float>();
-        }
-        bgfx::setTransform(model.data());
-    }
-
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
@@ -173,37 +157,19 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
-            if (this->MeshType::boundingBox().isNull()) {
-                bbToInitialize = true;
-            }
-            else {
-                mBoundingBox =
-                    this->MeshType::boundingBox().template cast<double>();
-            }
-        }
-
-        if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(*this);
-        }
-
-        if constexpr (HasTransformMatrix<MeshType>) {
-            mBoundingBox.min() *=
-                MeshType::transformMatrix().template cast<double>();
-            mBoundingBox.max() *=
-                MeshType::transformMatrix().template cast<double>();
-        }
+        AbstractDrawableMesh::computeBoundingBox(static_cast<MeshType>(*this));
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
+        setRenderSettings(mMRS);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
         mMeshRenderSettingsUniforms.updateSettings(rs);
+        mMRB.updateEdgeSettings(rs);
+        mMRB.updateWireframeSettings(rs);
     }
 
     uint vertexNumber() const override { return MeshType::vertexNumber(); }
@@ -267,13 +233,13 @@ public:
 
         if constexpr (HasFaces<MeshType>) {
             std::vector<uint8_t> vec;
-            uint count;
+            uint count = 0;
             switch (mBufToTexRemainingFrames) {
                 case 0:
                     mBufToTexRemainingFrames = 255;
                     vec = mMRB.getSelectionBufferCopy();
                     for (size_t index = 0; index < vec.size(); index++) {
-                        count += std::bitset<8>(vec[index]).count();
+                        count += uint(std::bitset<8>(vec[index]).count());
                     }
                     std::cout << "Selected count: " << count << std::endl;
                     break;
@@ -285,37 +251,42 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            mMRB.bindTextures(); // Bind textures before vertex buffers!!
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS);
-            bindUniforms();
+            if (mMRB.mustDrawUsingChunks(mMRS)) {
+                for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
+                    // Bind textures before vertex buffers!!
+                    mMRB.bindTextures(mMRS, i);
+                    mMRB.bindVertexBuffers(mMRS);
+                    mMRB.bindIndexBuffers(mMRS, i);
+                    bindUniforms();
 
-            bgfx::setState(state);
-            bgfx::setTransform(model.data());
+                    bgfx::setState(state);
+                    bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, surfaceProgramSelector());
+                    bgfx::submit(viewId, surfaceProgramSelector());
+                }
+            }
+            else {
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS);
+                bindUniforms();
+
+                bgfx::setState(state);
+                bgfx::setTransform(model.data());
+
+                bgfx::submit(viewId, surfaceProgramSelector());
+            }
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-            bindUniforms();
-
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
             bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME>());
+            mMRB.drawWireframeLines(viewId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
-            bindUniforms();
-
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
             bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES>());
+            mMRB.drawEdgeLines(viewId);
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
@@ -366,10 +337,6 @@ public:
         bgfx::submit(viewId, faceSelDrawProg);
     }
 
-    const Box3d& getBbox() const {
-        return mBoundingBox;
-    }
-
     void drawId(uint viewId, uint id) const override
     {
         using enum VertFragProgram;
@@ -392,7 +359,6 @@ public:
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             mIdUniform.bind(&idFloat);
@@ -403,27 +369,28 @@ public:
             bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-            mIdUniform.bind(&idFloat);
+        // if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
+        //     mMRB.bindVertexBuffers(mMRS);
+        //     mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
+        //     mIdUniform.bind(&idFloat);
 
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
-            bgfx::setTransform(model.data());
+        //     bgfx::setState(state | BGFX_STATE_PT_LINES);
+        //     bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
-        }
+        //     bgfx::submit(viewId,
+        //     pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
+        // }
 
-        if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
-            mIdUniform.bind(&idFloat);
+        // if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
+        //     mMRB.bindVertexBuffers(mMRS);
+        //     mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
+        //     mIdUniform.bind(&idFloat);
 
-            bgfx::setState(state | BGFX_STATE_PT_LINES);
-            bgfx::setTransform(model.data());
+        //     bgfx::setState(state | BGFX_STATE_PT_LINES);
+        //     bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
-        }
+        //     bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
+        // }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             if (!Context::instance().supportsCompute()) {
@@ -453,8 +420,6 @@ public:
             }
         }
     }
-
-    Box3d boundingBox() const override { return mBoundingBox; }
 
     std::shared_ptr<DrawableObject> clone() const& override
     {
