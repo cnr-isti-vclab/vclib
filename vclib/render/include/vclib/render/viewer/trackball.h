@@ -147,13 +147,13 @@ public:
     /**
      *  @brief return the camera containing the current view point of
      *  the trackball.
-     * 
+     *
      *  @return the camera matching the current view of the trackball
-    */ 
+     */
     Camera<Scalar> camera() const
     {
         Camera<Scalar> cam = mCamera;
-        
+
         // TODO: implement orthographic camera
         if (cam.projectionMode() ==
             Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
@@ -165,8 +165,8 @@ public:
             Point3<Scalar> y = modelToCamera.linear().col(1);
             Point3<Scalar> z = modelToCamera.linear().col(2);
 
-            cam.up() = y.normalized();
-            cam.eye() =  modelToCamera * cam.eye();
+            cam.up()     = y.normalized();
+            cam.eye()    = modelToCamera * cam.eye();
             cam.center() = cam.eye() - z.normalized();
         }
 
@@ -230,22 +230,24 @@ public:
      * @note This function does nothing if the provided center is behind the
      * camera.
      */
-    void adaptCurrentViewToCenter(const Point3<Scalar>& center) 
+    void adaptCurrentViewToCenter(const Point3<Scalar>& center)
     {
         if (mCamera.projectionMode() ==
             Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
             Point3<Scalar> transformedCenter = mTransform * center;
-            Point3<Scalar> toCenter = transformedCenter - mCamera.eye();
+            Point3<Scalar> toCenter    = transformedCenter - mCamera.eye();
             Point3<Scalar> eyeToCenter = (mCamera.center() - mCamera.eye());
-            Scalar scaleRatio = 
-                toCenter.dot(eyeToCenter.normalized())/ eyeToCenter.norm();
+            Scalar         scaleRatio =
+                toCenter.dot(eyeToCenter.normalized()) / eyeToCenter.norm();
             if (scaleRatio < 0)
                 return; // center is behind the camera
 
-            std::cout << "adapting view to center " << transformedCenter.transpose()
-                      << " scaleRatio: " << scaleRatio << std::endl <<
-                      " eyeToCenter: " << eyeToCenter.transpose() << std::endl <<
-                      " toCenter: " << toCenter.transpose() << std::endl;
+            std::cout << "adapting view to center "
+                      << transformedCenter.transpose()
+                      << " scaleRatio: " << scaleRatio << std::endl
+                      << " eyeToCenter: " << eyeToCenter.transpose()
+                      << std::endl
+                      << " toCenter: " << toCenter.transpose() << std::endl;
             mTransform.pretranslate(eyeToCenter);
             mTransform.prescale(1.0 / scaleRatio);
             mTransform.pretranslate(-eyeToCenter);
