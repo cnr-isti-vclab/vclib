@@ -122,7 +122,9 @@ public:
     bool mustDrawUsingChunks(const MeshRenderSettings& mrs) const
     {
         return mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-            mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
+               mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX) ||
+               mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL) ||
+               mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL);
     }
 
     uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }

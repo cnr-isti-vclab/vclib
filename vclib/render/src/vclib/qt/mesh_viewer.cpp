@@ -268,6 +268,12 @@ void MeshViewer::fitScene()
     mUI->viewer->update();
 }
 
+void MeshViewer::fitView()
+{
+    mUI->viewer->fitView();
+    mUI->viewer->update();
+}
+
 void MeshViewer::updateGUI()
 {
     mUI->drawVectorTree->update();
