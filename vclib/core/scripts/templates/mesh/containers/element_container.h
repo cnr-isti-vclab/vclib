@@ -316,9 +316,9 @@ public:
      * unreferenced (setting `nullptr` to the pointers), the value of the vector
      * must be UINT_NULL.
      */
-    void update%EL_UC%Indices(const std::vector<uint>& newIndices)
+    void update%EL_UC%References(const std::vector<uint>& newIndices)
     {
-        Base::updateElementIndices(newIndices);
+        Base::updateElementReferences(newIndices);
     }
 
     /**

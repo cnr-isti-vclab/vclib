@@ -208,15 +208,30 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            mMRB.bindTextures(); // Bind textures before vertex buffers!!
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS);
-            bindUniforms();
+            if (mMRB.mustDrawUsingChunks(mMRS)) {
+                for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
+                    // Bind textures before vertex buffers!!
+                    mMRB.bindTextures(mMRS, i);
+                    mMRB.bindVertexBuffers(mMRS);
+                    mMRB.bindIndexBuffers(mMRS, i);
+                    bindUniforms();
 
-            bgfx::setState(state);
-            bgfx::setTransform(model.data());
+                    bgfx::setState(state);
+                    bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, surfaceProgramSelector());
+                    bgfx::submit(viewId, surfaceProgramSelector());
+                }
+            }
+            else {
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS);
+                bindUniforms();
+
+                bgfx::setState(state);
+                bgfx::setTransform(model.data());
+
+                bgfx::submit(viewId, surfaceProgramSelector());
+            }
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
@@ -281,7 +296,6 @@ public:
             Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            mMRB.bindTextures(); // Bind textures before vertex buffers!!
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             mIdUniform.bind(&idFloat);

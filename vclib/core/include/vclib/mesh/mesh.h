@@ -1973,6 +1973,17 @@ private:
         }
     }
 
+    // swap two elements
+    template<typename ElementType>
+    void swapVerticalComponents(ElementType& e1, ElementType& e2)
+    {
+        using Cont = ContainerOf<ElementType>::type;
+
+        Cont::swapVerticalComponents(e1.index(), e2.index());
+    }
+
+    // private append functions
+
     template<
         typename Cont,
         typename ArrayS,

@@ -137,7 +137,7 @@ Vect faceSizesVector(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::VectorXi FSizes = vcl::faceSizesVector<Eigen::VectorXi>(myMesh);
- * Eigen::VectorXi F = vcl::faceIndicesVector<Eigen::VectorXi>(myMesh);
+ * Eigen::VectorXi F = vcl::faceVertexIndicesVector<Eigen::VectorXi>(myMesh);
  * // read indices for each face
  * uint offset = 0;
  * for (uint i = 0; i < FSizes.size(); ++i) {
@@ -156,7 +156,7 @@ Vect faceSizesVector(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<typename Vect, FaceMeshConcept MeshType>
-Vect faceIndicesVector(const MeshType& mesh)
+Vect faceVertexIndicesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
@@ -164,7 +164,7 @@ Vect faceIndicesVector(const MeshType& mesh)
 
     Vect fV(nIndices);
 
-    faceIndicesToBuffer(mesh, fV.data());
+    faceVertexIndicesToBuffer(mesh, fV.data());
 
     return fV;
 }
@@ -182,7 +182,7 @@ Vect faceIndicesVector(const MeshType& mesh)
  * Usage example with Eigen Matrix:
  *
  * @code{.cpp}
- * Eigen::MatrixXi F = vcl::faceMatrix<Eigen::MatrixXi>(myMesh);
+ * Eigen::MatrixXi F = vcl::faceVertexIndicesMatrix<Eigen::MatrixXi>(myMesh);
  * @endif
  *
  * @throws vcl::MissingCompactnessException if the vertex container is not
@@ -204,7 +204,7 @@ Vect faceIndicesVector(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix faceIndicesMatrix(const MeshType& mesh)
+Matrix faceVertexIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
@@ -214,7 +214,7 @@ Matrix faceIndicesMatrix(const MeshType& mesh)
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
-    faceIndicesToBuffer(mesh, fM.data(), fMaxSize, stg);
+    faceVertexIndicesToBuffer(mesh, fM.data(), fMaxSize, stg);
 
     return fM;
 }
@@ -228,7 +228,8 @@ Matrix faceIndicesMatrix(const MeshType& mesh)
  * Usage example with Eigen Matrix:
  *
  * @code{.cpp}
- * Eigen::MatrixXi F = vcl::triangulatedFacesMatrix<Eigen::MatrixXi>(myMesh);
+ * Eigen::MatrixXi F =
+ *     vcl::triangulatedFaceVertexIndicesMatrix<Eigen::MatrixXi>(myMesh);
  * @endif
  *
  * @throws vcl::MissingCompactnessException if the vertex container is not
@@ -246,7 +247,7 @@ Matrix faceIndicesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix triangulatedFaceIndicesMatrix(
+Matrix triangulatedFaceVertexIndicesMatrix(
     const MeshType&    mesh,
     TriPolyIndexBiMap& indexMap = detail::indexMap)
 {
@@ -258,7 +259,8 @@ Matrix triangulatedFaceIndicesMatrix(
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
-    triangulatedFaceIndicesToBuffer(mesh, tM.data(), indexMap, stg, tNumber);
+    triangulatedFaceVertexIndicesToBuffer(
+        mesh, tM.data(), indexMap, stg, tNumber);
 
     return tM;
 }
@@ -272,7 +274,7 @@ Matrix triangulatedFaceIndicesMatrix(
  * Usage example with Eigen Matrix:
  *
  * @code{.cpp}
- * Eigen::MatrixXi E = vcl::edgeMatrix<Eigen::MatrixXi>(myMesh);
+ * Eigen::MatrixXi E = vcl::edgeVertexIndicesMatrix<Eigen::MatrixXi>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingCompactnessException if the vertex container is not
@@ -294,7 +296,7 @@ Matrix triangulatedFaceIndicesMatrix(
  * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
-Matrix edgeIndicesMatrix(const MeshType& mesh)
+Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
@@ -302,7 +304,7 @@ Matrix edgeIndicesMatrix(const MeshType& mesh)
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
-    edgeIndicesToBuffer(mesh, eM.data(), stg);
+    edgeVertexIndicesToBuffer(mesh, eM.data(), stg);
 
     return eM;
 }

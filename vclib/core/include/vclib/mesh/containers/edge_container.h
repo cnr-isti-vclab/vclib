@@ -355,9 +355,9 @@ public:
      * (setting `nullptr` to the pointers), the value of the vector must be
      * UINT_NULL.
      */
-    void updateEdgeIndices(const std::vector<uint>& newIndices)
+    void updateEdgeReferences(const std::vector<uint>& newIndices)
     {
-        Base::updateElementIndices(newIndices);
+        Base::updateElementReferences(newIndices);
     }
 
     /**

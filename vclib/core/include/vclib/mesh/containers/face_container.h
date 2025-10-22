@@ -374,9 +374,9 @@ public:
      * new Face index. If the old Face must be left as unreferenced (setting
      * `nullptr` to the pointers), the value of the vector must be UINT_NULL.
      */
-    void updateFaceIndices(const std::vector<uint>& newIndices)
+    void updateFaceReferences(const std::vector<uint>& newIndices)
     {
-        Base::updateElementIndices(newIndices);
+        Base::updateElementReferences(newIndices);
     }
 
     /**

@@ -93,6 +93,8 @@ public slots:
 
     void fitScene();
 
+    void fitView();
+
     void updateGUI();
 };
 

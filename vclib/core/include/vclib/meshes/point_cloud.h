@@ -68,6 +68,8 @@ class Vertex :
             vert::OptionalMark<Vertex<Scalar>>,
             vert::CustomComponents<Vertex<Scalar>>>
 {
+public:
+    friend void swap(Vertex& a, Vertex& b) { a.swap(b); }
 };
 
 } // namespace vcl::pointcloud

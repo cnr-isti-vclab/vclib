@@ -117,6 +117,20 @@ public:
         (importComponent<Comps>(v, importRefs), ...);
     }
 
+    void swap(Element& other)
+    {
+        using PM = comp::ParentMeshPointer<MeshType>;
+
+        assert(PM::parentMesh() == other.parentMesh());
+        using std::swap;
+        (swap((Comps&) *this, (Comps&) other), ...);
+        if (PM::parentMesh()) {
+            PM::parentMesh()->swapVerticalComponents(*this, other);
+        }
+    }
+
+    friend void swap(Element& a, Element& b) { a.swap(b); }
+
     void serialize(std::ostream& out) const
     {
         // we need to call serialize for each component of the Element,

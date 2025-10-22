@@ -77,6 +77,8 @@ class Vertex :
             vert::OptionalMark<Vertex<Scalar, I>>,
             vert::CustomComponents<Vertex<Scalar, I>>>
 {
+public:
+    friend void swap(Vertex& a, Vertex& b) { a.swap(b); }
 };
 
 /**
@@ -112,6 +114,8 @@ class Face :
             face::OptionalMark<Face<Scalar, I>>,
             face::CustomComponents<Face<Scalar, I>>>
 {
+public:
+    friend void swap(Face& a, Face& b) { a.swap(b); }
 };
 
 } // namespace vcl::trimesh
