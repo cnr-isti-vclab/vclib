@@ -38,8 +38,14 @@ int main(int argc, char** argv)
     std::string e6 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/opaque_grid.glb";
     std::string e7 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/mask_grid.glb";
     std::string e8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/blend_grid.glb";
+    std::string e9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveTest/emissive_grid.glb";
+    std::string e10 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/VertexColorTest/vertex_color_grid.glb";
+    std::string e11 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/DoubleSidedTest/OrientationTest.gltf";
+    std::string e12 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/opaque_grid.glb";
+    std::string e13 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/mask_grid.glb";
+    std::string e14 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/blend_grid.glb";    
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e1);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e14);
 
     for(auto& mesh : meshes) {
         for (auto& mat : mesh.materials()) {
