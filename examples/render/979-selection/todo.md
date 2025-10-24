@@ -37,4 +37,4 @@
         1. Get the "poly triangle grouping buffer" indices from the "poly grouping indexing buffer"
         2. Use said indices to get all the triangle indices in the "poly triangle grouping buffer"
         3. Set the bits of the triangles corresponding to the indices in the triangle selection buffer to 1
-    - Every time you do a regular selection you have to first set the triangle selection buffer to 0s first
+    - Every time you do a regular selection you have to first set the triangle selection buffer to 0s first (so basically you replace the "regular selection" with an "add selection")
