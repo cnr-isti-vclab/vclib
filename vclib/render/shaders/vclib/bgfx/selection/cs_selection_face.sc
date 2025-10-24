@@ -71,21 +71,19 @@ bool segmentIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, vec3 p0, vec3 p1)
     return false;
 }
 
-bool triangleIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, mat3 trngl) {
+bool triangleSegmentsIntersectAABB(vec3 minBoxPoint, vec3 maxBoxPoint, mat3 trngl) {
     for (uint i = 0; i < 3; i++) {
-        uint minIndex = min(i, (i+1)%3);
-        uint maxIndex = max(i, (i+1)%3);
-        if (segmentIntersectsAABB(minBoxPoint, maxBoxPoint, trngl[minIndex], trngl[maxIndex])) {
+        if (segmentIntersectsAABB(minBoxPoint, maxBoxPoint, trngl[i], trngl[(i+1)%3])) {
             return true;
         }
     }
     return false;
 }
 
-vec4 planeFromTriangle(mat3 tri) {
+mat4 planeFromTriangle(mat3 tri) {
     vec3 n = mul(tri[1] - tri[0], tri[2] - tri[0]);
     float d = -mul(n, tri[0]);
-    return vec4(n.x, n.y, n.z, d);
+    return mat4(vec4(tri[0], 1), vec4(n.x, n.y, n.z, d), vec4_splat(0), vec4_splat(0));
 }
 
 vec3 projectOntoPlane(vec3 p, vec4 plane) {
@@ -97,7 +95,7 @@ vec3 projectOntoPlane(vec3 p, vec4 plane) {
 
 vec3 barycentricCoords(mat3 tri, vec2 p) {
     vec3 newP = vec3(1, p.x, p.y);
-    float mult = 1.0/(tri[0].x*(tri[1].y-tri[2].y) + tri[1].x*(try[2].y-tri[0].y) + tri[2].x*(tri[0].y-tri[1].y));
+    float mult = 1.0/(tri[0].x*(tri[1].y-tri[2].y) + tri[1].x*(tri[2].y-tri[0].y) + tri[2].x*(tri[0].y-tri[1].y));
     mat3 mt = mat3(
         tri[1].x*tri[2].y-tri[2].x*tri[1].y, tri[1].y-tri[2].y, tri[2].x-tri[1].x,
         tri[2].x*tri[0].y-tri[0].x*tri[2].y, tri[2].y-tri[0].y, tri[0].x-tri[2].x,
@@ -106,8 +104,33 @@ vec3 barycentricCoords(mat3 tri, vec2 p) {
     return mult*mul(mt, newP);
 }
 
-// FUNCTION TO CONVERT COORDINATES TO 2D
+mat3 mat3Inv(mat3 A) {
+    vec3 A1crossA2 = cross(A[1], A[2]);
+    float det = mul(A[0], A1crossA2);
+    return (1/(det == 0 ? 1 : det)) * mtxFromRows(A1crossA2, cross(A[2], A[0]), cross(A[0], A[1]));
+}
 
+// FUNCTION TO CONVERT COORDINATES TO 2D
+vec2 cooplanarCoordsTo2D(vec3 p, mat3 uvo) {
+    return mul(mat3Inv(uvo), p).xy;
+}
+
+// FUNCTION THAT COMPUTES SEGMENT-PLANE INTERSECTION (OR RATHER, RAY-PLANE INTERSECTION WITH THE CONSTRAINT 0<=t<=1)
+//     returns a vec4 in which the W coordinate is either 1 if the intersection was calculated or 0 if there is no intersection
+
+// FUNCTION THAT CHECKS IF AT LEAST ONE OF THE INTERSECTIONS BETWEEN AN EDGE OF THE BOX AND THE TRIANGLE'S PLANE IS INSIDE THE TRIANGLE:
+//     calculate triangle's plane;
+//     for each of the box's edges:
+//         calculate intersection between edge and plane;
+//         if no intersection proceed to next edge;
+//         convert intersection point coordinates to 2d;
+//         calculate barycentric coordinates;
+//         if all barycentric coordinates in [0, 1] (point inside triangle) return true;
+//     return false;
+
+// A triangle intersects the selection box if either:
+//     1. At least one of its edges intersects the selection box (easier to calculate, the selection box is an AABB in NDC) or
+//     2. The intersection of at least one of the selection box's edges with the triangle's plane lies inside the triangle
 NUM_THREADS(1, 1, 1) // 1 'thread' per face, or 1 'thread' per 3 indices
 void main()
 {
@@ -152,7 +175,7 @@ void main()
     vec4 p2NDC = mul(u_modelViewProj, vec4(poss[2].xyz, 1));
     p2NDC = p2NDC / (p2NDC.w == 0? 1 : p2NDC.w);
 
-    bool selected = triangleIntersectsAABB(minNDC, maxNDC, mtxFromRows(p0NDC.xyz, p1NDC.xyz, p2NDC.xyz));
+    bool selected = triangleSegmentsIntersectAABB(minNDC, maxNDC, mtxFromRows(p0NDC.xyz, p1NDC.xyz, p2NDC.xyz));
 
     uint fBufferIndex = faceIndex/32;
     uint fBitOffset = 31-(faceIndex%32);
