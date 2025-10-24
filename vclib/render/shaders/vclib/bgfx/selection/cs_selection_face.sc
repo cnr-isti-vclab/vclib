@@ -120,6 +120,7 @@ vec2 cooplanarCoordsTo2D(vec3 p, mat3 uvo) {
 
 // FUNCTION THAT CHECKS IF AT LEAST ONE OF THE INTERSECTIONS BETWEEN AN EDGE OF THE BOX AND THE TRIANGLE'S PLANE IS INSIDE THE TRIANGLE:
 //     calculate triangle's plane;
+//     calculate u (subtraction of two of the triangle's points), v (cross(u, plane_normal)), and o (any of the triangle's points) for 3d to 2d coordinate conversion;
 //     for each of the box's edges:
 //         calculate intersection between edge and plane;
 //         if no intersection proceed to next edge;
