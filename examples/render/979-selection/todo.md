@@ -27,3 +27,14 @@
     4. Space subdivision tree-like bitmap (basically Binary Space Partitioning):
         VARIANT of point 2: use more than 1 bit per cube (either fixed or a variable amount, but a variable amount would remove the constant access time). The first bit indicates if the entire cube contains something, all
         the others indicate if recursively smaller cubes inside that cube contain something
+
+- Selection per poly for poly meshes:
+    - Requires 3 buffers:
+        1. The triangle selection buffer (the same used for regular face selection)
+        2. The "poly grouping indexing buffer" (parallel to the previous one), 2 values (start, end) used to index the next buffer
+        3. The "poly triangle grouping buffer", that contains triangle indices grouped by poly (indices of triangles that belong to the same poly are contiguous)
+    - Whenever a triangle is INSIDE the selection:
+        1. Get the "poly triangle grouping buffer" indices from the "poly grouping indexing buffer"
+        2. Use said indices to get all the triangle indices in the "poly triangle grouping buffer"
+        3. Set the bits of the triangles corresponding to the indices in the triangle selection buffer to 1
+    - Every time you do a regular selection you have to first set the triangle selection buffer to 0s first
