@@ -47,46 +47,50 @@ template<MeshConcept MeshType>
 int loadGltfPrimitiveMaterial(
     MeshType&                  m,
     const tinygltf::Model&     model,
-    const tinygltf::Primitive& p) 
+    const tinygltf::Primitive& p)
 {
     int idx = -1;
 
-    if(p.material >= 0) {
-        vcl::Color baseColor, emissiveColor;
-        Material::AlphaMode alphaMode;
-        double metallic, roughness, alphaCutoff;
-        bool doubleSided;
-        int textureImg;
+    if (p.material >= 0) {
+        vcl::Color                baseColor, emissiveColor;
+        Material::AlphaMode       alphaMode;
+        double                    metallic, roughness, alphaCutoff;
+        bool                      doubleSided;
+        int                       textureImg;
         const tinygltf::Material& mat = model.materials[p.material];
 
         // baseColorFactor
-        const std::vector<double>& vc = mat.pbrMetallicRoughness.baseColorFactor; // has default value
-            for (uint i = 0; i < 4; i++)
-                baseColor[i] = vc[i] * 255.0;
+        const std::vector<double>& vc =
+            mat.pbrMetallicRoughness.baseColorFactor; // has default value
+        for (uint i = 0; i < 4; i++)
+            baseColor[i] = vc[i] * 255.0;
 
         // baseColorTexture
-        textureImg = mat.pbrMetallicRoughness.baseColorTexture.index; // get the id of the texture, -1 if not present
+        textureImg = mat.pbrMetallicRoughness.baseColorTexture
+                         .index; // get the id of the texture, -1 if not present
 
         // metallicFactor
         metallic = mat.pbrMetallicRoughness.metallicFactor; // has default value
 
         // roughnessFactor
-        roughness = mat.pbrMetallicRoughness.roughnessFactor; // has default value
+        roughness =
+            mat.pbrMetallicRoughness.roughnessFactor; // has default value
 
         // emissiveFactor
-        const std::vector<double>& emissiveFactor = mat.emissiveFactor; // has default value
-            for (uint i = 0; i < 3; i++) 
-                emissiveColor[i] = emissiveFactor[i] * 255.0;
+        const std::vector<double>& emissiveFactor =
+            mat.emissiveFactor; // has default value
+        for (uint i = 0; i < 3; i++)
+            emissiveColor[i] = emissiveFactor[i] * 255.0;
 
         // doubleSided
         doubleSided = mat.doubleSided; // has default value
 
         // alphaMode
-        if(mat.alphaMode == "MASK")
+        if (mat.alphaMode == "MASK")
             alphaMode = Material::AlphaMode::ALPHA_MASK;
-        else if(mat.alphaMode == "BLEND")
+        else if (mat.alphaMode == "BLEND")
             alphaMode = Material::AlphaMode::ALPHA_BLEND;
-        else 
+        else
             alphaMode = Material::AlphaMode::ALPHA_OPAQUE; // has default value
 
         // alphaCutoff
@@ -95,11 +99,18 @@ int loadGltfPrimitiveMaterial(
         /* Put the data in the mesh */
 
         if constexpr (HasMaterials<MeshType>) {
-            m.pushMaterial(Material(baseColor, metallic, roughness, emissiveColor, doubleSided, alphaMode, alphaCutoff));
+            Material mat(
+                baseColor,
+                metallic,
+                roughness,
+                emissiveColor,
+                alphaMode,
+                alphaCutoff,
+                doubleSided);
+            m.pushMaterial(mat);
             idx = m.materialsNumber() - 1; // index of the added material
         }
-        // TODO: uncomment else here
-        /*else*/ if constexpr (HasColor<MeshType>) {
+        else if constexpr (HasColor<MeshType>) {
             // base color is set to the mesh color only if the mesh has no
             // materials
             m.color() = baseColor;

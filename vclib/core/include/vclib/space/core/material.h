@@ -43,80 +43,77 @@ private:
     // essential PBR properties
     vcl::Color mBaseColor = vcl::Color(1.0f, 1.0f, 1.0f);
 
-    float mMetallic = 1.0f;
+    float mMetallic  = 1.0f;
     float mRoughness = 1.0f;
 
     // optional PBR properties
     vcl::Color mEmissiveColor = vcl::Color(0.0f, 0.0f, 0.0f);
 
-    bool mDoubleSided = false;
-
     AlphaMode mAlphaMode = AlphaMode::ALPHA_OPAQUE;
 
-    float mAlphaCutoff = 0.5f;         // only used when mAlphaMode is MASK
+    float mAlphaCutoff = 0.5f; // only used when mAlphaMode is MASK
+
+    bool mDoubleSided = false;
 
 public:
-    Material() :
-            mBaseColor(), 
-            mMetallic(),
-            mRoughness(),
-            mEmissiveColor(), 
-            mDoubleSided(),
-            mAlphaMode(),
-            mAlphaCutoff()
-    {
-    }
+    Material() {}
 
     Material(
         const vcl::Color& baseColor,
         float             metallic,
         float             roughness,
         const vcl::Color& emissiveColor,
-        bool              doubleSided,
         AlphaMode         alphaMode,
-        float             alphaCutoff
-    ) :
-            mBaseColor(baseColor), 
-            mMetallic(metallic), 
-            mRoughness(roughness), 
-            mEmissiveColor(emissiveColor),
-            mDoubleSided(doubleSided),
-            mAlphaMode(alphaMode),
-            mAlphaCutoff(alphaCutoff)
+        float             alphaCutoff,
+        bool              doubleSided) :
+            mBaseColor(baseColor), mMetallic(metallic), mRoughness(roughness),
+            mEmissiveColor(emissiveColor), mAlphaMode(alphaMode),
+            mAlphaCutoff(alphaCutoff), mDoubleSided(doubleSided)
     {
     }
 
     const vcl::Color& baseColor() const { return mBaseColor; }
+
     vcl::Color& baseColor() { return mBaseColor; }
 
     float metallic() const { return mMetallic; }
+
     float& metallic() { return mMetallic; }
 
     float roughness() const { return mRoughness; }
+
     float& roughness() { return mRoughness; }
 
     const vcl::Color& emissiveColor() const { return mEmissiveColor; }
+
     vcl::Color& emissiveColor() { return mEmissiveColor; }
 
     bool doubleSided() const { return mDoubleSided; }
+
     bool& doubleSided() { return mDoubleSided; }
 
     AlphaMode alphaMode() const { return mAlphaMode; }
+
     AlphaMode& alphaMode() { return mAlphaMode; }
 
     float alphaCutoff() const { return mAlphaCutoff; }
+
     float& alphaCutoff() { return mAlphaCutoff; }
 
     void serialize(std::ostream& os) const
     {
         mBaseColor.serialize(os);
         vcl::serialize(os, mMetallic, mRoughness);
+        mEmissiveColor.serialize(os);
+        vcl::serialize(os, mAlphaMode, mAlphaCutoff, mDoubleSided);
     }
 
     void deserialize(std::istream& is)
     {
         mBaseColor.deserialize(is);
         vcl::deserialize(is, mMetallic, mRoughness);
+        mEmissiveColor.deserialize(is);
+        vcl::deserialize(is, mAlphaMode, mAlphaCutoff, mDoubleSided);
     }
 };
 
