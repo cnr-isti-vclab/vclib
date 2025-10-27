@@ -68,8 +68,8 @@ int main(int argc, char** argv)
 
     std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(t1);
 
-    for(auto& mesh : meshes) {
-        for (auto& mat : mesh.materials()) {
+    for(const auto& mesh : meshes) {
+        for(const auto& mat : mesh.materials()) {
             std::cout << "baseColorFactor: " << mat.baseColor() << std::endl;
             std::cout << "metallicFactor: " << mat.metallic() << std::endl;
             std::cout << "roughnessFactor: " << mat.roughness() << std::endl;
