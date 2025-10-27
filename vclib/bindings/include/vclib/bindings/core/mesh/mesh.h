@@ -44,6 +44,7 @@ void initMesh(pybind11::module& m, const std::string& name)
     pybind11::class_<MeshType> c(m, name.c_str());
 
     c.def(py::init<>());
+    c.def(py::init<MeshType>());
 
     defCopy(c);
 
@@ -61,7 +62,6 @@ void initMesh(pybind11::module& m, const std::string& name)
 
     initComponents(c);
 
-    // TODO: add all the members of the mesh
     c.def("is_compact", &MeshType::isCompact);
     c.def("clear", &MeshType::clear);
     c.def("compact", &MeshType::compact);
