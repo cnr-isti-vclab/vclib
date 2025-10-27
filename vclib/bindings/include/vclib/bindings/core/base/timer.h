@@ -20,26 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_BASE_H
-#define VCL_BINDINGS_CORE_BASE_H
-
-#include "base/base.h"
-#include "base/exceptions.h"
-#include "base/logger.h"
-#include "base/timer.h"
+#ifndef VCL_BINDINGS_CORE_BASE_TIMER_H
+#define VCL_BINDINGS_CORE_BASE_TIMER_H
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-inline void initBase(pybind11::module& m)
-{
-    initBaseBase(m);
-    initBaseExceptions(m);
-    initLogger(m);
-    initBaseTimer(m);
-}
+void initBaseTimer(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_BASE_H
+#endif // VCL_BINDINGS_CORE_BASE_TIMER_H
