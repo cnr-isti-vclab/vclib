@@ -146,7 +146,7 @@ float D_GGX(
  * @param[in] NoV: Cosine of the angle between the fragment normal and the view direction.
  * @param[in] NoL: Cosine of the angle between the fragment normal and the incoming light direction.
  * @param[in] alpha2: The alpha squared.
- * @return .
+ * @return The probability that a microfacet is not occluded, accounting for both masking and shadowing effects.
  */
 float V_GGX(
     float NoV,
