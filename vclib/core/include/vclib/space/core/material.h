@@ -41,13 +41,13 @@ public:
 
 private:
     // essential PBR properties
-    vcl::Color mBaseColor = vcl::Color(255.0f, 255.0f, 255.0f);
+    vcl::Color mBaseColor = vcl::Color::White;
 
     float mMetallic  = 1.0f;
     float mRoughness = 1.0f;
 
     // optional PBR properties
-    vcl::Color mEmissiveColor = vcl::Color(0.0f, 0.0f, 0.0f);
+    vcl::Color mEmissiveColor = vcl::Color::Black;
 
     AlphaMode mAlphaMode = AlphaMode::ALPHA_OPAQUE;
 
