@@ -41,7 +41,7 @@ public:
 
 private:
     // essential PBR properties
-    vcl::Color mBaseColor = vcl::Color(1.0f, 1.0f, 1.0f);
+    vcl::Color mBaseColor = vcl::Color(255.0f, 255.0f, 255.0f);
 
     float mMetallic  = 1.0f;
     float mRoughness = 1.0f;

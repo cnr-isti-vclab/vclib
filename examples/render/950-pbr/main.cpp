@@ -32,12 +32,8 @@ int main(int argc, char** argv)
     // Example meshes with materials
     std::string e1 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/OrientationTest/OrientationTest.gltf";
     std::string e2 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
-    std::string e3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/metallic_roughness_grid.glb";
-    std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
-    std::string e5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
-    std::string e6 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/opaque_grid.glb";
-    std::string e7 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/mask_grid.glb";
-    std::string e8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/blend_grid.glb";
+    std::string e3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
+    std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
 
     // Examples to test
 
@@ -68,7 +64,7 @@ int main(int argc, char** argv)
     std::string t7 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/blend_grid.glb"; 
 
     // Similar to the previous one, but with varying metallic and roughness
-    std::string t8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sphere/blend_grid.glb"; 
+    std::string t8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/metal_rough_blend_grid.glb"; 
 
     std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(t1);
 
