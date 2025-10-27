@@ -62,7 +62,26 @@ void initMesh(pybind11::module& m, const std::string& name)
     initComponents(c);
 
     // TODO: add all the members of the mesh
+    c.def("is_compact", &MeshType::isCompact);
     c.def("clear", &MeshType::clear);
+    c.def("compact", &MeshType::compact);
+    c.def(
+        "enable_all_optional_components",
+        &MeshType::enableAllOptionalComponents);
+    c.def(
+        "disable_all_optional_components",
+        &MeshType::disableAllOptionalComponents);
+
+    auto enableSameOptionalComponentsOfFun =
+        []<MeshConcept OtherMeshType>(
+            pybind11::class_<MeshType>& c, OtherMeshType = OtherMeshType()) {
+            c.def(
+                "enable_same_optional_components_of",
+                [](MeshType& m, const OtherMeshType& o) {
+                    m.enableSameOptionalComponentsOf(o);
+                });
+        };
+    defForAllMeshTypes(c, enableSameOptionalComponentsOfFun);
 
     c.def(
         "append",
