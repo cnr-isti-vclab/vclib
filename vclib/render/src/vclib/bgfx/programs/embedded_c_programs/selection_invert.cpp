@@ -20,20 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_ALL_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_ALL_H
+#include <vclib/bgfx/programs/embedded_c_programs/selection_invert.h>
 
-#include <vclib/bgfx/programs/compute_loader.h>
+#include <vclib/shaders/selection/cs_selection_invert.sc.400.bin.h>
+
+#include <vclib/shaders/selection/cs_selection_invert.sc.essl.bin.h>
+
+#include <vclib/shaders/selection/cs_selection_invert.sc.spv.bin.h>
+
+#ifdef _WIN32
+#include <vclib/shaders/selection/cs_selection_invert.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/selection/cs_selection_invert.sc.mtl.bin.h>
+#endif // __APPLE__
 
 namespace vcl {
 
-template<>
-struct ComputeLoader<ComputeProgram::SELECTION_VERTEX_ALL>
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_INVERT>::
+    computeShader(bgfx::RendererType::Enum type)
 {
-    static bgfx::EmbeddedShader::Data computeShader(
-        bgfx::RendererType::Enum type);
-};
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_selection_invert_essl, sizeof(cs_selection_invert_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_selection_invert_400, sizeof(cs_selection_invert_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_selection_invert_spv, sizeof(cs_selection_invert_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_selection_invert_dx11, sizeof(cs_selection_invert_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_selection_invert_mtl, sizeof(cs_selection_invert_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
+}
 
 } // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_ALL_H

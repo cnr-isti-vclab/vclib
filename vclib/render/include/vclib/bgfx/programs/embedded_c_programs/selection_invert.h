@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_NONE_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_NONE_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_INVERT_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_INVERT_H
 
 #include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
 template<>
-struct ComputeLoader<ComputeProgram::SELECTION_VERTEX_NONE>
+struct ComputeLoader<ComputeProgram::SELECTION_INVERT>
 {
     static bgfx::EmbeddedShader::Data computeShader(
         bgfx::RendererType::Enum type);
@@ -36,4 +36,4 @@ struct ComputeLoader<ComputeProgram::SELECTION_VERTEX_NONE>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_VERTEX_NONE_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_INVERT_H

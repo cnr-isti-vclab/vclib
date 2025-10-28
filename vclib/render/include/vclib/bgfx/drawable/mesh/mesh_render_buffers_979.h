@@ -412,16 +412,21 @@ private:
         case SelectionMode::VERTEX_SUBTRACT:
             return pm
                 .getComputeProgram<ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
-        case SelectionMode::VERTEX_ALL:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ALL>();
-        case SelectionMode::VERTEX_NONE:
-            return pm
-                .getComputeProgram<ComputeProgram::SELECTION_VERTEX_NONE>();
-        case SelectionMode::VERTEX_INVERT:
-            return pm
-                .getComputeProgram<ComputeProgram::SELECTION_VERTEX_INVERT>();
         case SelectionMode::FACE_REGULAR:
             return pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
+        case SelectionMode::FACE_ADD:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_ADD>();
+        case SelectionMode::FACE_SUBTRACT:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_SUBTRACT>();
+        case SelectionMode::VERTEX_ALL:
+        case SelectionMode::FACE_ALL:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_ALL>();
+        case SelectionMode::VERTEX_NONE:
+        case SelectionMode::FACE_NONE:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_NONE>();
+        case SelectionMode::VERTEX_INVERT:
+        case SelectionMode::FACE_INVERT:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_INVERT>();
         default:
             return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
         }
