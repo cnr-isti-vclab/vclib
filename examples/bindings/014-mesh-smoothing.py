@@ -97,7 +97,7 @@ def mesh_smoothing():
     elapsed_time = time.time() - start_time
     print(f"Taubin smoothing took: {elapsed_time*1000:.2f} ms")
 
-    print("Taubin smoothing (50 iterations, λ=0.5, μ=-0.53) completed.")
+    print("Taubin smoothing (50 iterations, lambda=0.5, mu=-0.53) completed.")
 
     vcl.update_per_vertex_and_face_normals(taubin_mesh)
 
