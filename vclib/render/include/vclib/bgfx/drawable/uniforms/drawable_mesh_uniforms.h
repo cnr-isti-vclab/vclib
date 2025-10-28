@@ -38,6 +38,8 @@ class DrawableMeshUniforms
         0.0,
         0.0};
 
+    uint mMaterialId = 0;
+
     float mMaterialColor[4] = {1.0, 1.0, 1.0, 1.0};
 
     float mMetallicRoughness[4] = {
@@ -101,24 +103,24 @@ public:
 
             if (m.materialsNumber() > 0) { // material available
 
-                if (m.materials()[0].alphaMode() ==
+                if (m.materials()[mMaterialId].alphaMode() ==
                     Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
                     settings |= 1 << 1;
-                    mAlphaCutoff[0] = m.materials()[0].alphaCutoff();
+                    mAlphaCutoff[0] = m.materials()[mMaterialId].alphaCutoff();
                 }
 
-                mMaterialColor[0] = m.materials()[0].baseColor().redF();
-                mMaterialColor[1] = m.materials()[0].baseColor().greenF();
-                mMaterialColor[2] = m.materials()[0].baseColor().blueF();
-                mMaterialColor[3] = m.materials()[0].baseColor().alphaF();
+                mMaterialColor[0] = m.materials()[mMaterialId].baseColor().redF();
+                mMaterialColor[1] = m.materials()[mMaterialId].baseColor().greenF();
+                mMaterialColor[2] = m.materials()[mMaterialId].baseColor().blueF();
+                mMaterialColor[3] = m.materials()[mMaterialId].baseColor().alphaF();
 
-                mMetallicRoughness[0] = m.materials()[0].metallic();
-                mMetallicRoughness[1] = m.materials()[0].roughness();
+                mMetallicRoughness[0] = m.materials()[mMaterialId].metallic();
+                mMetallicRoughness[1] = m.materials()[mMaterialId].roughness();
 
-                mEmissiveColor[0] = m.materials()[0].emissiveColor().redF();
-                mEmissiveColor[1] = m.materials()[0].emissiveColor().greenF();
-                mEmissiveColor[2] = m.materials()[0].emissiveColor().blueF();
-                mEmissiveColor[3] = m.materials()[0].emissiveColor().alphaF();
+                mEmissiveColor[0] = m.materials()[mMaterialId].emissiveColor().redF();
+                mEmissiveColor[1] = m.materials()[mMaterialId].emissiveColor().greenF();
+                mEmissiveColor[2] = m.materials()[mMaterialId].emissiveColor().blueF();
+                mEmissiveColor[3] = m.materials()[mMaterialId].emissiveColor().alphaF();
             }
 
             mSettings[0] = float(settings);
@@ -128,6 +130,11 @@ public:
     void updateFirstChunkIndex(uint firstChunkIndex)
     {
         mMeshData[0] = Uniform::uintBitsToFloat(firstChunkIndex);
+    }
+
+    void updateMaterialId(uint materialId)
+    {
+        mMaterialId = materialId;
     }
 
     void bind() const

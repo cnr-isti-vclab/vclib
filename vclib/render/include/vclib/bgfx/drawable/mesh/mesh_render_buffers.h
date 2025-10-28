@@ -274,7 +274,13 @@ public:
         }
     }
 
-    void bindUniforms() const { mMeshUniforms.bind(); }
+    void bindUniforms(const MeshType& m, uint materialId) const { 
+        if(materialId != UINT_NULL) {
+            mMeshUniforms.updateMaterialId(materialId);
+            mMeshUniforms.update(m);
+        }
+        mMeshUniforms.bind(); 
+    }
 
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
