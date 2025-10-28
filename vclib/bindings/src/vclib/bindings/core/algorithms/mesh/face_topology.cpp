@@ -20,32 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#include <vclib/bindings/core/algorithms/mesh/face_topology.h>
+#include <vclib/bindings/utils.h>
 
-#include "algorithms/mesh/clean.h"
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/face_topology.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/smooth.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
+#include <vclib/algorithms/mesh.h>
 
-#include <pybind11/pybind11.h>
+#include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 namespace vcl::bind {
 
-inline void initAlgorithms(pybind11::module& m)
+void initFaceTopologyAlgorithms(pybind11::module& m)
 {
-    initCleanAlgorithms(m);
-    initCreateAlgorithms(m);
-    initFaceTopologyAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initSmoothAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+    namespace py = pybind11;
+    using namespace py::literals;
+
+    auto fAllFaces =
+        []<FaceConcept FaceType>(pybind11::module& m, FaceType = FaceType()) {
+            m.def(
+                "is_face_manifold_on_edge",
+                [](const FaceType& f, uint edge) -> bool {
+                    return isFaceManifoldOnEdge(f, edge);
+                },
+                "face"_a,
+                "edge"_a);
+
+            m.def(
+                "is_face_edge_on_border",
+                [](const FaceType& f, uint edge) -> bool {
+                    return isFaceEdgeOnBorder(f, edge);
+                },
+                "face"_a,
+                "edge"_a);
+
+            // TODO: add other functions from face_topology.h
+
+            m.def(
+                "flood_face_patch",
+                [](const FaceType&                       seed,
+                   std::function<bool(const FaceType&)>& selector) {
+                    return floodFacePatch(seed, selector);
+                },
+                "seed"_a,
+                "face_selector"_a,
+                py::return_value_policy::reference);
+        };
+
+    defForAllFaceTypes(m, fAllFaces);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H

@@ -223,7 +223,7 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
             "Face has no Adjacent Faces component.");
     }
 
-    return f->adjFace(edge) == nullptr;
+    return f.adjFace(edge) == nullptr;
 }
 
 /**
