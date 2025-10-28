@@ -389,13 +389,24 @@ void initUpdateAlgorithms(pybind11::module& m)
         m.def(
             "update_per_vertex_principal_curvature",
             [](MeshType&                   m,
-               PrincipalCurvatureAlgorithm alg =
-                   PrincipalCurvatureAlgorithm::TAUBIN95,
-               AbstractLogger& log = nullLogger) {
-                return vcl::updatePrincipalCurvature(m, alg, log);
+               PrincipalCurvatureAlgorithm alg,
+               double                      radius,
+               bool                        montecarloSampling,
+               AbstractLogger&             log) {
+                using enum PrincipalCurvatureAlgorithm;
+                switch (alg) {
+                case TAUBIN95: updatePrincipalCurvatureTaubin95(m, log); break;
+                case PCA:
+                    if (radius <= 0)
+                        radius = boundingBox(m).diagonal() * 0.1;
+                    updatePrincipalCurvaturePCA(
+                        m, radius, montecarloSampling, log);
+                }
             },
             "mesh"_a,
             "algorithm"_a = PrincipalCurvatureAlgorithm::TAUBIN95,
+            "radius"_a    = -1.0,
+            "montecarlo_sampling"_a = true,
             "log"_a       = py::cast(vcl::nullLogger));
 
         // normal.h
