@@ -209,20 +209,6 @@ public:
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             uint64_t surfaceState = state;
-            // if constexpr (HasMaterials<MeshType>) {
-            //     if (mMRS.isSurface(MRI::Surface::COLOR_VERTEX_MATERIAL)) {
-            //         if (MeshType::materialsNumber() > 0) {
-            //             if (!MeshType::material(0).doubleSided()) {
-            //                 surfaceState |=
-            //                     BGFX_STATE_CULL_CW; // backface culling
-            //             }
-            //             if (MeshType::material(0).alphaMode() ==
-            //                 Material::AlphaMode::ALPHA_BLEND) {
-            //                 surfaceState |= BGFX_STATE_BLEND_ALPHA;
-            //             }
-            //         }
-            //     }
-            // }
             if (mMRB.mustDrawUsingChunks(mMRS)) {
                 for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                     // Bind textures before vertex buffers!!
