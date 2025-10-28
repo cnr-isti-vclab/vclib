@@ -81,7 +81,7 @@ bool triangleSegmentsIntersectAABB(vec3 minBoxPoint, vec3 maxBoxPoint, mat3 trng
 }
 
 mat4 planeFromTriangle(mat3 tri) {
-    vec3 n = mul(tri[1] - tri[0], tri[2] - tri[0]);
+    vec3 n = cross(tri[1] - tri[0], tri[2] - tri[0]);
     float d = -mul(n, tri[0]);
     return mat4(vec4(tri[0], 1), vec4(n.x, n.y, n.z, d), vec4_splat(0), vec4_splat(0));
 }
@@ -117,6 +117,21 @@ vec2 cooplanarCoordsTo2D(vec3 p, mat3 uvo) {
 
 // FUNCTION THAT COMPUTES SEGMENT-PLANE INTERSECTION (OR RATHER, RAY-PLANE INTERSECTION WITH THE CONSTRAINT 0<=t<=1)
 //     returns a vec4 in which the W coordinate is either 1 if the intersection was calculated or 0 if there is no intersection
+vec4 segmentPlaneIntersection(mat4 plane, vec3 p0, vec3 p1) {
+    vec3 o = p0;
+    vec3 d = p1-p0;
+    vec3 n = plane[1].xyz;
+    float den = mul(n, d);
+    if (abs(den) <= 0.00001f) {
+        return vec4(0, 0, 0, 0);
+    }
+    float t = mul((plane[0].xyz - o), n) / den;
+    if (t < 0 || t > 1) {
+        return vec4(0, 0, 0, 0);
+    }
+    vec3 intersXYZ = o + d*t;
+    return vec4(intersXYZ.x, intersXYZ.y, intersXYZ.z, 1);
+}
 
 // FUNCTION THAT CHECKS IF AT LEAST ONE OF THE INTERSECTIONS BETWEEN AN EDGE OF THE BOX AND THE TRIANGLE'S PLANE IS INSIDE THE TRIANGLE:
 //     calculate triangle's plane;
@@ -128,6 +143,82 @@ vec2 cooplanarCoordsTo2D(vec3 p, mat3 uvo) {
 //         calculate barycentric coordinates;
 //         if all barycentric coordinates in [0, 1] (point inside triangle) return true;
 //     return false;
+bool AABBEdgesIntersectTriangle(mat3 tri, vec3 minBoxPoint, vec3 maxBoxPoint) {
+    mat4 plane = planeFromTriangle(tri);
+    vec3 u = tri[1] - tri[0];
+    vec3 v = cross(u, plane[1].xyz);
+    vec3 o = plane[0].xyz;
+    mat3 uvo = mtxFromCols(u,v,o);
+    mat3 tri2D = mat3(vec3(cooplanarCoordsTo2D(tri[0], uvo), 0), vec3(cooplanarCoordsTo2D(tri[1], uvo), 0), vec3(cooplanarCoordsTo2D(tri[2], uvo), 0));
+    for (uint i = 0; i < 3; i++) {
+        uint varCoordIdx1 = (i+1)%3;
+        uint varCoordIdx2 = (i+2)%3;
+        vec2 coord1 = vec2(minBoxPoint[varCoordIdx1], maxBoxPoint[varCoordIdx1]);
+        vec2 coord2 = vec2(minBoxPoint[varCoordIdx2], maxBoxPoint[varCoordIdx2]);
+        for (uint j = 0; j < 2; j++) {
+            for (uint k = 0; k < 2; k++) {
+                vec3 p0 = vec3(0,0,0);
+                vec3 p1 = vec3(0,0,0);
+                switch (i) {
+                    case 0:
+                        p0.x = minBoxPoint[i];
+                        p1.x = maxBoxPoint[i];
+                        break;
+                    case 1:
+                        p0.y = minBoxPoint[i];
+                        p1.y = maxBoxPoint[i];
+                        break;
+                    case 2:
+                        p0.z = minBoxPoint[i];
+                        p1.z = maxBoxPoint[i];
+                        break;
+                }
+                switch (varCoordIdx1) {
+                    case 0:
+                        p0.x = coord1[j];
+                        p1.x = coord1[j];
+                        break;
+                    case 1:
+                        p0.y = coord1[j];
+                        p1.y = coord1[j];
+                        break;
+                    case 2:
+                        p0.z = coord1[j];
+                        p1.z = coord1[j];
+                        break;
+                }
+                switch (varCoordIdx2) {
+                    case 0:
+                        p0.x = coord2[k];
+                        p1.x = coord2[k];
+                        break;
+                    case 1:
+                        p0.y = coord2[k];
+                        p1.y = coord2[k];
+                        break;
+                    case 2:
+                        p0.z = coord2[k];
+                        p1.z = coord2[k];
+                        break;
+                }
+                vec4 inters = segmentPlaneIntersection(plane, p0, p1);
+                if (inters[3] == 0) {
+                    continue;
+                }
+                vec2 inters2D = cooplanarCoordsTo2D(inters.xyz, uvo);
+                vec3 baryCoords = barycentricCoords(tri2D, inters2D);
+                if (
+                    baryCoords[0] >= 0 && baryCoords[0] <= 1
+                    && baryCoords[1] >= 0 && baryCoords[1] <= 1
+                    && baryCoords[2] >= 0 && baryCoords[2] <= 1
+                ) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 
 // A triangle intersects the selection box if either:
 //     1. At least one of its edges intersects the selection box (easier to calculate, the selection box is an AABB in NDC) or
@@ -176,7 +267,11 @@ void main()
     vec4 p2NDC = mul(u_modelViewProj, vec4(poss[2].xyz, 1));
     p2NDC = p2NDC / (p2NDC.w == 0? 1 : p2NDC.w);
 
-    bool selected = triangleSegmentsIntersectAABB(minNDC, maxNDC, mtxFromRows(p0NDC.xyz, p1NDC.xyz, p2NDC.xyz));
+    mat3 tri = mtxFromRows(p0NDC.xyz, p1NDC.xyz, p2NDC.xyz);
+    bool selected = triangleSegmentsIntersectAABB(minNDC, maxNDC, tri);
+    if (!selected) {
+        selected = AABBEdgesIntersectTriangle(tri, minNDC, maxNDC);
+    }
 
     uint fBufferIndex = faceIndex/32;
     uint fBitOffset = 31-(faceIndex%32);
