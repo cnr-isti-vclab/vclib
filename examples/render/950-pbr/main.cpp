@@ -34,6 +34,7 @@ int main(int argc, char** argv)
     std::string e2 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
     std::string e3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
     std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
+    std::string e5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf";
 
     // Examples to test
 
@@ -66,19 +67,25 @@ int main(int argc, char** argv)
     // Similar to the previous one, but with varying metallic and roughness
     std::string t8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/metal_rough_blend_grid.glb"; 
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(t1);
+    // Multiple materials per mesh - the upper part is a double sided red metal,
+    // the lower part a semitransparent blue matte
+    std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
+
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(t8);
 
     for(const auto& mesh : meshes) {
+        std::cout << "Mesh: " << mesh.name() << std::endl;
         for(const auto& mat : mesh.materials()) {
-            std::cout << "baseColorFactor: " << mat.baseColor() << std::endl;
-            std::cout << "metallicFactor: " << mat.metallic() << std::endl;
-            std::cout << "roughnessFactor: " << mat.roughness() << std::endl;
-            std::cout << "emissiveFactor: " << mat.emissiveColor() << std::endl;
-            std::cout << "doubleSided: " << mat.doubleSided() << std::endl;
-            std::cout << "alphaMode: " << int(mat.alphaMode()) << std::endl;
-            std::cout << "alphaCutoff: " << mat.alphaCutoff() << std::endl;
+            std::cout << "  baseColorFactor: " << mat.baseColor() << std::endl;
+            std::cout << "  metallicFactor: " << mat.metallic() << std::endl;
+            std::cout << "  roughnessFactor: " << mat.roughness() << std::endl;
+            std::cout << "  emissiveFactor: " << mat.emissiveColor() << std::endl;
+            std::cout << "  doubleSided: " << mat.doubleSided() << std::endl;
+            std::cout << "  alphaMode: " << int(mat.alphaMode()) << std::endl;
+            std::cout << "  alphaCutoff: " << mat.alphaCutoff() << std::endl;
             std::cout << "------------------------" << std::endl;
         }
+        std::cout << "------------------------" << std::endl;
     }
 
     return showMeshesOnDefaultViewer(argc, argv, std::move(meshes));
