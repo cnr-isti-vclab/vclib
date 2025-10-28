@@ -26,6 +26,7 @@
 #include "base/base.h"
 #include "base/exceptions.h"
 #include "base/logger.h"
+#include "base/timer.h"
 
 #include <pybind11/pybind11.h>
 
@@ -36,6 +37,7 @@ inline void initBase(pybind11::module& m)
     initBaseBase(m);
     initBaseExceptions(m);
     initLogger(m);
+    initBaseTimer(m);
 }
 
 } // namespace vcl::bind

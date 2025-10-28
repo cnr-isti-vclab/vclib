@@ -46,6 +46,7 @@ public:
     void                            draw(uint viewId) const;
     void                            drawId(uint viewId, uint id) const;
     Box3d                           boundingBox() const;
+    Point3d                         center() const;
     std::shared_ptr<DrawableObject> clone() const&;
     std::shared_ptr<DrawableObject> clone() &&;
     bool                            isVisible() const;

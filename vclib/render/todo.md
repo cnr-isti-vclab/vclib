@@ -67,4 +67,5 @@
   - [ ] on DrawableMesh, manage right click event (draw id) for wireframe and edges
   - [ ] add shading per-line on Lines and their implementations
   - [X] add wireframe and edge size for imgui interface
-  - [ ] add possibility to set and get camera from the trackball (and viewer)
+  - [X] add possibility to set and get camera from the trackball (and viewer)
+  - [ ] implement and test orthographic camera set and get from the trackball
