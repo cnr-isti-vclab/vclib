@@ -124,8 +124,8 @@ def main():
         # Create results directory if it doesn't exist
         os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(mesh, f"{VCLIB_RESULTS_PATH}/012_cleaned_brain.ply")
-        vcl.save_mesh(test_mesh, f"{VCLIB_RESULTS_PATH}/012_test_clean.ply")
+        vcl.save_mesh(mesh, f"{VCLIB_RESULTS_PATH}/013_cleaned_brain.ply")
+        vcl.save_mesh(test_mesh, f"{VCLIB_RESULTS_PATH}/013_test_clean.ply")
 
         print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}")
 

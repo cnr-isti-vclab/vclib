@@ -133,10 +133,10 @@ def main():
         # Create results directory if it doesn't exist
         os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(laplacian_mesh, f"{VCLIB_RESULTS_PATH}/013_laplacian_smoothed.ply")
-        vcl.save_mesh(cotangent_mesh, f"{VCLIB_RESULTS_PATH}/013_cotangent_smoothed.ply")
-        vcl.save_mesh(taubin_mesh, f"{VCLIB_RESULTS_PATH}/013_taubin_smoothed.ply")
-        vcl.save_mesh(normal_mesh, f"{VCLIB_RESULTS_PATH}/013_normal_smoothed.ply")
+        vcl.save_mesh(laplacian_mesh, f"{VCLIB_RESULTS_PATH}/014_laplacian_smoothed.ply")
+        vcl.save_mesh(cotangent_mesh, f"{VCLIB_RESULTS_PATH}/014_cotangent_smoothed.ply")
+        vcl.save_mesh(taubin_mesh, f"{VCLIB_RESULTS_PATH}/014_taubin_smoothed.ply")
+        vcl.save_mesh(normal_mesh, f"{VCLIB_RESULTS_PATH}/014_normal_smoothed.ply")
 
         print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}")
 
