@@ -216,20 +216,20 @@ public:
                     mMRB.bindVertexBuffers(mMRS);
                     mMRB.bindIndexBuffers(mMRS, i);
                     if constexpr (HasMaterials<MeshType>) {
+                        uint materialId = mMRB.bindMaterials(mMRS, i, *this);
                         if (mMRS.isSurface(MRI::Surface::COLOR_VERTEX_MATERIAL)) {
                             if (MeshType::materialsNumber() > 0) {
-                                if (!MeshType::material(i).doubleSided()) {
+                                if (!MeshType::material(materialId).doubleSided()) {
                                     surfaceState |= BGFX_STATE_CULL_CW; // backface culling
                                 }
-                                if (MeshType::material(i).alphaMode() ==
+                                if (MeshType::material(materialId).alphaMode() ==
                                 Material::AlphaMode::ALPHA_BLEND) {
                                     surfaceState |= BGFX_STATE_BLEND_ALPHA;
                                 }
                             }
                         }
-                        bindUniforms(i);
                     }
-                    else bindUniforms();
+                    bindUniforms();
 
                     bgfx::setState(surfaceState);
                     bgfx::setTransform(model.data());
@@ -394,10 +394,10 @@ public:
     const std::string& name() const override { return MeshType::name(); }
 
 protected:
-    void bindUniforms(uint materialId = UINT_NULL) const
+    void bindUniforms() const
     {
         mMeshRenderSettingsUniforms.bind();
-        mMRB.bindUniforms(*this, materialId);
+        mMRB.bindUniforms();
     }
 
     // TODO: change this function implementation after shader benchmarks

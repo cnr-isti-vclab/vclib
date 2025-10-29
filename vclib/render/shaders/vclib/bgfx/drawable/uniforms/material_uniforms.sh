@@ -20,12 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
+#ifndef VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
+#define VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
 
-uniform vec4 u_meshColor;
-uniform vec4 u_meshData; // x: first chunk index
+uniform vec4 u_materialColor;
+uniform vec4 u_metallicRoughness;
+uniform vec4 u_emissiveColor;
+uniform vec4 u_alphaCutoff;
+uniform vec4 u_settings;
 
-#define u_firstChunkPrimitiveID floatBitsToUint(u_meshData.x)
-
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
+#endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH

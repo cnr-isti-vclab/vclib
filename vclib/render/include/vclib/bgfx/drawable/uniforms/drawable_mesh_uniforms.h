@@ -38,53 +38,13 @@ class DrawableMeshUniforms
         0.0,
         0.0};
 
-    uint mMaterialId = 0;
-
-    float mMaterialColor[4] = {1.0, 1.0, 1.0, 1.0};
-
-    float mMetallicRoughness[4] = {
-        1.0, // metallic
-        1.0, // roughness
-        0.0,
-        0.0};
-
-    float mEmissiveColor[4] = {0.0, 0.0, 0.0, 1.0};
-
-    float mAlphaCutoff[4] = {0.5, 0.0, 0.0, 0.0};
-
-    float mSettings[4] = {0.0, 0.0, 0.0, 0.0};
-
     Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
     Uniform mMeshDataUniform  = Uniform("u_meshData", bgfx::UniformType::Vec4);
-
-    Uniform mMaterialColorUniform =
-        Uniform("u_materialColor", bgfx::UniformType::Vec4);
-
-    Uniform mMetallicRoughnessUniform =
-        Uniform("u_metallicRoughness", bgfx::UniformType::Vec4);
-
-    Uniform mEmissiveColorUniform =
-        Uniform("u_emissiveColor", bgfx::UniformType::Vec4);
-
-    Uniform mAlphaCutoffUniform =
-        Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
-
-    Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
 
 public:
     DrawableMeshUniforms() = default;
 
     const float* currentMeshColor() const { return mMeshColor; }
-
-    const float* currentMaterialColor() const { return mMaterialColor; }
-
-    const float* currentMetallicRoughness() const { return mMetallicRoughness; }
-
-    const float* currentEmissiveColor() const { return mEmissiveColor; }
-
-    const float* currentAlphaCutoff() const { return mAlphaCutoff; }
-
-    const float* currentSettings() const { return mSettings; }
 
     template<MeshConcept MeshType>
     void update(const MeshType& m)
@@ -95,36 +55,6 @@ public:
             mMeshColor[2] = m.color().blueF();
             mMeshColor[3] = m.color().alphaF();
         }
-
-        if constexpr (HasMaterials<MeshType>) {
-            int settings = 0;
-            if (isPerVertexColorAvailable(m)) // per-vertex color available
-                settings |= 1 << 0;
-
-            if (m.materialsNumber() > 0) { // material available
-
-                if (m.materials()[mMaterialId].alphaMode() ==
-                    Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-                    settings |= 1 << 1;
-                    mAlphaCutoff[0] = m.materials()[mMaterialId].alphaCutoff();
-                }
-
-                mMaterialColor[0] = m.materials()[mMaterialId].baseColor().redF();
-                mMaterialColor[1] = m.materials()[mMaterialId].baseColor().greenF();
-                mMaterialColor[2] = m.materials()[mMaterialId].baseColor().blueF();
-                mMaterialColor[3] = m.materials()[mMaterialId].baseColor().alphaF();
-
-                mMetallicRoughness[0] = m.materials()[mMaterialId].metallic();
-                mMetallicRoughness[1] = m.materials()[mMaterialId].roughness();
-
-                mEmissiveColor[0] = m.materials()[mMaterialId].emissiveColor().redF();
-                mEmissiveColor[1] = m.materials()[mMaterialId].emissiveColor().greenF();
-                mEmissiveColor[2] = m.materials()[mMaterialId].emissiveColor().blueF();
-                mEmissiveColor[3] = m.materials()[mMaterialId].emissiveColor().alphaF();
-            }
-
-            mSettings[0] = float(settings);
-        }
     }
 
     void updateFirstChunkIndex(uint firstChunkIndex)
@@ -132,21 +62,10 @@ public:
         mMeshData[0] = Uniform::uintBitsToFloat(firstChunkIndex);
     }
 
-    void updateMaterialId(uint materialId)
-    {
-        mMaterialId = materialId;
-    }
-
     void bind() const
     {
         mMeshColorUniform.bind(mMeshColor);
         mMeshDataUniform.bind(mMeshData);
-
-        mMaterialColorUniform.bind(mMaterialColor);
-        mMetallicRoughnessUniform.bind(mMetallicRoughness);
-        mEmissiveColorUniform.bind(mEmissiveColor);
-        mAlphaCutoffUniform.bind(mAlphaCutoff);
-        mSettingsUniform.bind(mSettings);
     }
 };
 
