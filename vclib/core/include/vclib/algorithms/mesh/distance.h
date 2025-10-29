@@ -262,10 +262,17 @@ HausdorffDistResult hausdorffDistance(
         return HausdorffDistResult();
     }
     case HAUSDORFF_MONTECARLO: {
-        PointSampler<typename MeshType2::VertexType::PositionType> sampler;
+        if constexpr (FaceMeshConcept<MeshType2>) {
+            PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
-        return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
-            m1, m2, nSamples, seed, sampler, birth, log);
+            return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
+                m1, m2, nSamples, seed, sampler, birth, log);
+        }
+        else {
+            throw std::runtime_error(
+                "Monte Carlo sampling requires a FaceMeshConcept for the "
+                "second mesh.");
+        }
     }
     default: assert(0); return HausdorffDistResult();
     }
