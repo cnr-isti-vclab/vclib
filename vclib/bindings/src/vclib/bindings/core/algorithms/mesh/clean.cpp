@@ -20,32 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#include <vclib/bindings/core/algorithms/mesh/clean.h>
+#include <vclib/bindings/utils.h>
 
-#include "algorithms/mesh/clean.h"
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/face_topology.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/smooth.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
-
-#include <pybind11/pybind11.h>
+#include <vclib/algorithms/mesh.h>
 
 namespace vcl::bind {
 
-inline void initAlgorithms(pybind11::module& m)
+void initCleanAlgorithms(pybind11::module& m)
 {
-    initCleanAlgorithms(m);
-    initCreateAlgorithms(m);
-    initFaceTopologyAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initSmoothAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+    namespace py = pybind11;
+    using namespace py::literals;
+
+    auto fAllMeshes =
+        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            m.def(
+                "remove_unreferenced_vertices",
+                [](MeshType& m) -> uint {
+                    return removeUnreferencedVertices(m);
+                },
+                "mesh"_a);
+
+            m.def(
+                "remove_duplicate_vertices",
+                [](MeshType& m) -> uint {
+                    return removeDuplicateVertices(m);
+                },
+                "mesh"_a);
+
+            m.def(
+                "remove_degenerate_vertices",
+                [](MeshType& m, bool deleteAlsoFaces) -> uint {
+                    return removeDegenerateVertices(m, deleteAlsoFaces);
+                },
+                "mesh"_a,
+                "delete_also_faces"_a);
+        };
+
+    defForAllMeshTypes(m, fAllMeshes);
+
+    auto fFaceMeshes = []<FaceMeshConcept MeshType>(
+                           pybind11::module& m, MeshType = MeshType()) {
+        m.def(
+            "remove_duplicate_faces",
+            [](MeshType& m) -> uint {
+                return removeDuplicateFaces(m);
+            },
+            "mesh"_a);
+
+        m.def(
+            "remove_degenerate_faces",
+            [](MeshType& m) -> uint {
+                return removeDegenerateFaces(m);
+            },
+            "mesh"_a);
+    };
+
+    defForAllMeshTypes(m, fFaceMeshes);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H

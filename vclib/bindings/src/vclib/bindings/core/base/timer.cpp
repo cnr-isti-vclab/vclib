@@ -20,32 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#include <vclib/bindings/core/base/timer.h>
+#include <vclib/bindings/utils.h>
 
-#include "algorithms/mesh/clean.h"
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/face_topology.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/smooth.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
-
-#include <pybind11/pybind11.h>
+#include <vclib/base.h>
 
 namespace vcl::bind {
 
-inline void initAlgorithms(pybind11::module& m)
+void initBaseTimer(pybind11::module& m)
 {
-    initCleanAlgorithms(m);
-    initCreateAlgorithms(m);
-    initFaceTopologyAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initSmoothAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+    namespace py = pybind11;
+    using namespace py::literals;
+
+    py::class_<Timer> c(m, "Timer");
+    c.def(py::init<bool>(), "start"_a = true);
+    c.def(py::init<std::string, bool>(), "caption"_a, "start"_a = true);
+
+    c.def("start", &Timer::start);
+    c.def("stop", &Timer::stop);
+    c.def("stop_and_print", &Timer::stopAndPrint);
+    c.def("print", &Timer::print);
+    c.def("delay", &Timer::delay);
+    c.def("set_caption", &Timer::setCaption, "caption"_a);
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H

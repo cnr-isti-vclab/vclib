@@ -208,7 +208,7 @@ uint removeUnreferencedVertices(MeshType& m)
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDuplicatedVertices(MeshType& m)
+uint removeDuplicateVertices(MeshType& m)
 {
     using VertexType    = MeshType::VertexType;
     using VertexPointer = MeshType::VertexType*;
@@ -293,7 +293,7 @@ uint removeDuplicatedVertices(MeshType& m)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint removeDuplicatedFaces(MeshType& m)
+uint removeDuplicateFaces(MeshType& m)
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
@@ -348,7 +348,7 @@ uint removeDuplicatedFaces(MeshType& m)
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
+uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
 {
     using VertexType = MeshType::VertexType;
 
