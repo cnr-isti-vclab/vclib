@@ -49,7 +49,7 @@ namespace detail {
 
 template<
     MeshConcept    MeshType,
-    SamplerConcept SamplerType,
+    PointSamplerConcept SamplerType,
     typename GridType,
     LoggerConcept LogType>
 HausdorffDistResult hausdorffDist(
@@ -115,7 +115,7 @@ HausdorffDistResult hausdorffDist(
 
 template<
     MeshConcept    MeshType,
-    SamplerConcept SamplerType,
+    PointSamplerConcept SamplerType,
     LoggerConcept  LogType>
 HausdorffDistResult samplerMeshHausdorff(
     const MeshType&    m,
@@ -141,7 +141,7 @@ HausdorffDistResult samplerMeshHausdorff(
 
 template<
     FaceMeshConcept MeshType,
-    SamplerConcept  SamplerType,
+    PointSamplerConcept  SamplerType,
     LoggerConcept   LogType>
 HausdorffDistResult samplerMeshHausdorff(
     const MeshType&    m,
@@ -184,7 +184,7 @@ template<
     uint           METHOD,
     MeshConcept    MeshType1,
     MeshConcept    MeshType2,
-    SamplerConcept SamplerType,
+    PointSamplerConcept SamplerType,
     LoggerConcept  LogType>
 HausdorffDistResult hausdorffDistance(
     const MeshType1&    m1,
@@ -253,7 +253,7 @@ HausdorffDistResult hausdorffDistance(
 
     switch (sampMethod) {
     case HAUSDORFF_VERTEX_UNIFORM: {
-        ConstVertexSampler<typename MeshType2::VertexType> sampler;
+        PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
         return detail::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
             m1, m2, nSamples, seed, sampler, birth, log);

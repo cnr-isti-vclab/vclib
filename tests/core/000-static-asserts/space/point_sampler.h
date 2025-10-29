@@ -20,13 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_COMPLEX_SAMPLER_H
-#define VCL_SPACE_COMPLEX_SAMPLER_H
+#ifndef POINT_SAMPLER_H
+#define POINT_SAMPLER_H
 
-#include "sampler/sampler_concept.h"
+#include <vclib/mesh.h>
+#include <vclib/space.h>
 
-#include "sampler/mesh_sampler.h"
-#include "sampler/point_sampler.h"
-#include "sampler/vertex_sampler.h"
+void pointSamplerStaticAsserts()
+{
+    using namespace vcl;
 
-#endif // VCL_SPACE_COMPLEX_SAMPLER_H
+    using PointSamplerType  = PointSampler<>;
+
+    // point sampler
+    static_assert(
+        PointSamplerConcept<PointSamplerType>,
+        "PointSampler does not satisfy the PointSamplerConcept");
+    static_assert(
+        PointSamplerConcept<const PointSamplerType>,
+        "const PointSampler does not satisfy the PointSamplerConcept");
+    static_assert(
+        PointSamplerConcept<PointSamplerType&>,
+        "PointSampler& does not satisfy the PointSamplerConcept");
+    static_assert(
+        PointSamplerConcept<const PointSamplerType&>,
+        "const PointSampler& does not satisfy the PointSamplerConcept");
+    static_assert(
+        PointSamplerConcept<PointSamplerType&&>,
+        "PointSampler&& does not satisfy the PointSamplerConcept");
+}
+
+#endif // POINT_SAMPLER_H

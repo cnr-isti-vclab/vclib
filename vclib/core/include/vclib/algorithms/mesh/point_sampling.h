@@ -70,7 +70,7 @@ namespace vcl {
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, MeshConcept MeshType>
+template<PointSamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesPointSampling(
     const MeshType&    m,
     std::vector<uint>& birthVertices,
@@ -118,7 +118,7 @@ SamplerType allVerticesPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, MeshConcept MeshType>
+template<PointSamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesPointSampling(
     const MeshType& m,
     bool            onlySelected = false)
@@ -153,7 +153,7 @@ SamplerType allVerticesPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(
     const MeshType&    m,
     std::vector<uint>& birthFaces,
@@ -203,7 +203,7 @@ SamplerType allFacesPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected = false)
 {
     std::vector<uint> v;
@@ -230,7 +230,7 @@ SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected = false)
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, MeshConcept MeshType>
+template<PointSamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexUniformPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -291,7 +291,7 @@ SamplerType vertexUniformPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, MeshConcept MeshType>
+template<PointSamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexUniformPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -328,7 +328,7 @@ SamplerType vertexUniformPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -392,7 +392,7 @@ SamplerType faceUniformPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -429,7 +429,7 @@ SamplerType faceUniformPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
+template<PointSamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
 SamplerType vertexWeightedPointSampling(
     const MeshType&                m,
     const std::vector<ScalarType>& weights,
@@ -489,7 +489,7 @@ SamplerType vertexWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
+template<PointSamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
 SamplerType vertexWeightedPointSampling(
     const MeshType&                m,
     const std::vector<ScalarType>& weights,
@@ -530,7 +530,7 @@ SamplerType vertexWeightedPointSampling(
  * @ingroup point_sampling
  */
 template<
-    SamplerConcept  SamplerType,
+    PointSamplerConcept  SamplerType,
     FaceMeshConcept MeshType,
     typename ScalarType>
 SamplerType faceWeightedPointSampling(
@@ -597,7 +597,7 @@ SamplerType faceWeightedPointSampling(
  * @ingroup point_sampling
  */
 template<
-    SamplerConcept  SamplerType,
+    PointSamplerConcept  SamplerType,
     FaceMeshConcept MeshType,
     typename ScalarType>
 SamplerType faceWeightedPointSampling(
@@ -624,7 +624,7 @@ SamplerType faceWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, MeshConcept MeshType>
+template<PointSamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexQualityWeightedPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -657,7 +657,7 @@ SamplerType vertexQualityWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceQualityWeightedPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -690,7 +690,7 @@ SamplerType faceQualityWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType vertexAreaWeightedPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -735,7 +735,7 @@ SamplerType vertexAreaWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceAreaWeightedPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -772,7 +772,7 @@ SamplerType faceAreaWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -845,7 +845,7 @@ SamplerType montecarloPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -855,7 +855,7 @@ SamplerType montecarloPointSampling(
     return montecarloPointSampling<SamplerType>(m, nSamples, birthFaces, seed);
 }
 
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType stratifiedMontecarloPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -913,7 +913,7 @@ SamplerType stratifiedMontecarloPointSampling(
  *
  * @ingroup point_sampling
  */
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPoissonPointSampling(
     const MeshType&     m,
     uint                nSamples,
@@ -945,7 +945,7 @@ SamplerType montecarloPoissonPointSampling(
 }
 
 template<
-    SamplerConcept  SamplerType,
+    PointSamplerConcept  SamplerType,
     FaceMeshConcept MeshType,
     typename ScalarType>
 SamplerType vertexWeightedMontecarloPointSampling(
@@ -1002,7 +1002,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
     return ps;
 }
 
-template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<PointSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType vertexQualityWeightedMontecarloPointSampling(
     const MeshType&     m,
     uint                nSamples,
