@@ -76,11 +76,10 @@ void initSmoothAlgorithms(pybind11::module& m)
             "step"_a,
             "lambda"_a,
             "mu"_a,
-            "smooth_selected"_a  = false);
+            "smooth_selected"_a = false);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
-
 }
 
 } // namespace vcl::bind

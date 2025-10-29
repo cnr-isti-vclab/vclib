@@ -404,10 +404,10 @@ void initUpdateAlgorithms(pybind11::module& m)
                 }
             },
             "mesh"_a,
-            "algorithm"_a = PrincipalCurvatureAlgorithm::TAUBIN95,
-            "radius"_a    = -1.0,
+            "algorithm"_a           = PrincipalCurvatureAlgorithm::TAUBIN95,
+            "radius"_a              = -1.0,
             "montecarlo_sampling"_a = true,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "log"_a                 = py::cast(vcl::nullLogger));
 
         // normal.h
 
