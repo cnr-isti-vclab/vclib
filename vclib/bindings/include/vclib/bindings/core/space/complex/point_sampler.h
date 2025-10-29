@@ -20,29 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_H
-#define VCL_BINDINGS_CORE_SPACE_COMPLEX_H
-
-#include "complex/mesh_info.h"
-#include "complex/point_sampler.h"
-#include "complex/tri_poly_index_bimap.h"
+#ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_POINT_SAMPLER_H
+#define VCL_BINDINGS_CORE_SPACE_COMPLEX_POINT_SAMPLER_H
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-inline void initComplex(pybind11::module& m)
-{
-    namespace py = pybind11;
-
-    // py::module_ sm = m.def_submodule("complex", "Complex Spatial Data
-    // Structures");
-
-    initMeshInfo(m);
-    initPointSampler(m);
-    initTriPolyIndexBimap(m);
-}
+void initPointSampler(pybind11::module& m);
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_SPACE_COMPLEX_H
+#endif // VCL_BINDINGS_CORE_SPACE_COMPLEX_POINT_SAMPLER_H

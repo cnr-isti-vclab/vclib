@@ -20,29 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_SPACE_COMPLEX_H
-#define VCL_BINDINGS_CORE_SPACE_COMPLEX_H
+#include <vclib/bindings/core/space/complex/point_sampler.h>
+#include <vclib/bindings/utils.h>
 
-#include "complex/mesh_info.h"
-#include "complex/point_sampler.h"
-#include "complex/tri_poly_index_bimap.h"
+#include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
 
-#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace vcl::bind {
 
-inline void initComplex(pybind11::module& m)
+void initPointSampler(pybind11::module& m)
 {
     namespace py = pybind11;
+    using namespace py::literals;
 
-    // py::module_ sm = m.def_submodule("complex", "Complex Spatial Data
-    // Structures");
+    using PS = PointSampler<>;
+    using PT = PS::PointType;
 
-    initMeshInfo(m);
-    initPointSampler(m);
-    initTriPolyIndexBimap(m);
+    py::class_<PS> c(m, "PointSampler");
+    c.def(py::init<>());
+
+    c.def(
+        "samples",
+        &PS::samples,
+        py::return_value_policy::reference);
+    c.def("sample", &PointSampler<>::sample, "i"_a);
+
+    c.def("size", &PS::size);
+
+    auto toMeshFun = []<MeshConcept MeshType>(
+                         pybind11::class_<PS>& c, MeshType = MeshType()) {
+        std::string name =
+            "to_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
+
+        c.def(name.c_str(), [](const PS& p) -> MeshType {
+            return p.toMesh<MeshType>();
+        });
+    };
+    defForAllMeshTypes(c, toMeshFun);
+
+    c.def(
+        "__iter__",
+        [](const PS& s) {
+            return py::make_iterator(s.begin(), s.end());
+        },
+        py::keep_alive<0, 1>());
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_SPACE_COMPLEX_H
