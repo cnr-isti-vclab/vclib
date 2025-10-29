@@ -240,10 +240,16 @@ public:
         else if(mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
             materialId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
         }
-        std::cout << "materialId = " << materialId
-          << ", materialsNumber = " << m.materialsNumber() << std::endl;
+
+        // TODO: manage this case! -> needs refactor mesh
+        if (materialId == UINT_NULL && m.materialsNumber() > 0) {
+            materialId = 0;
+        }
+
+        assert (materialId >= 0 && materialId < m.materialsNumber());
         mMaterialUniforms.update(m.material(materialId), isPerVertexColorAvailable(m));
         mMaterialUniforms.bind();
+
         return materialId;
     }
 
