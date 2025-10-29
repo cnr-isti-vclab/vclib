@@ -57,9 +57,7 @@ auto meshPointSampling()
     std::cout << "\n=== All Vertices Sampling ===" << std::endl;
 
     // Sample all vertices of the mesh
-    auto allVerticesSampler =
-        vcl::allVerticesPointSampling<vcl::PointSampler<>>(
-            originalMesh);
+    auto allVerticesSampler     = vcl::allVerticesPointSampling(originalMesh);
     vcl::PointCloud allVertices = allVerticesSampler.toMesh<vcl::PointCloud>();
     allVertices.name()          = "All Vertices Sampling";
 
@@ -73,8 +71,7 @@ auto meshPointSampling()
     // Sample 500 points uniformly from face centers
     vcl::uint numSamples = 500;
     auto      uniformSampler =
-        vcl::faceUniformPointSampling<vcl::PointSampler<>>(
-            originalMesh, numSamples);
+        vcl::faceUniformPointSampling(originalMesh, numSamples);
     vcl::PointCloud uniform = uniformSampler.toMesh<vcl::PointCloud>();
     uniform.name()          = "Uniform Face Sampling";
 
@@ -88,8 +85,7 @@ auto meshPointSampling()
     // Sample 750 points using montecarlo method
     numSamples = 750;
     auto montecarloSampler =
-        vcl::montecarloPointSampling<vcl::PointSampler<>>(
-            originalMesh, numSamples);
+        vcl::montecarloPointSampling(originalMesh, numSamples);
     vcl::PointCloud montecarlo = montecarloSampler.toMesh<vcl::PointCloud>();
 
     std::cout << "Sampled " << montecarlo.vertexNumber()
@@ -103,8 +99,7 @@ auto meshPointSampling()
     // Sample using poisson distribution (approximate number of samples)
     double samplePerAreaUnit = 1000.0;
     auto   poissonSampler =
-        vcl::montecarloPoissonPointSampling<vcl::PointSampler<>>(
-            originalMesh, samplePerAreaUnit);
+        vcl::montecarloPoissonPointSampling(originalMesh, samplePerAreaUnit);
     vcl::PointCloud poisson = poissonSampler.toMesh<vcl::PointCloud>();
     poisson.name()          = "Poisson Sampling";
 
