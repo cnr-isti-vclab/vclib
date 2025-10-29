@@ -20,34 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BINDINGS_CORE_ALGORITHMS_H
-#define VCL_BINDINGS_CORE_ALGORITHMS_H
+#include <vclib/bindings/core/algorithms/mesh/convex_hull.h>
+#include <vclib/bindings/utils.h>
 
-#include "algorithms/mesh/clean.h"
-#include "algorithms/mesh/convex_hull.h"
-#include "algorithms/mesh/create.h"
-#include "algorithms/mesh/face_topology.h"
-#include "algorithms/mesh/import_export.h"
-#include "algorithms/mesh/smooth.h"
-#include "algorithms/mesh/stat.h"
-#include "algorithms/mesh/update.h"
+#include <vclib/algorithms/mesh.h>
 
-#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace vcl::bind {
 
-inline void initAlgorithms(pybind11::module& m)
+void initConvexHullAlgorithms(pybind11::module& m)
 {
-    initCleanAlgorithms(m);
-    initConvexHullAlgorithms(m);
-    initCreateAlgorithms(m);
-    initFaceTopologyAlgorithms(m);
-    initImportExportAlgorithms(m);
-    initSmoothAlgorithms(m);
-    initStatAlgorithms(m);
-    initUpdateAlgorithms(m);
+    namespace py = pybind11;
+    using namespace py::literals;
+
+    auto fFaceMeshes = []<FaceMeshConcept MeshType>(
+                           pybind11::module& m, MeshType = MeshType()) {
+
+        std::string meshName = camelCaseToSnakeCase(meshTypeName<MeshType>());
+
+        m.def(
+            ("convex_hull_" + meshName).c_str(),
+            [](const std::vector<Point3d>& points, std::optional<uint> seed) {
+                return vcl::convexHull<MeshType>(points, seed);
+            },
+            "points"_a,
+            "seed"_a = py::none());
+    };
+
+    defForAllMeshTypes(m, fFaceMeshes);
+
 }
 
 } // namespace vcl::bind
-
-#endif // VCL_BINDINGS_CORE_ALGORITHMS_H
