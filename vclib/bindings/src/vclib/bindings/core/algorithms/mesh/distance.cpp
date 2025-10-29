@@ -57,29 +57,23 @@ void initDistanceAlgorithms(pybind11::module& m)
 
     auto fAllMeshes =
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
+            // TODO: bind between different types of meshes
 
-            // bind hausdorff_distance between MeshType and MeshType2
-            auto fInnerAllMeshes = []<MeshConcept MeshType2>(
-                                       pybind11::module& m,
-                                       MeshType2 = MeshType2()) {
-                m.def(
-                    "hausdorff_distance",
-                    [](const MeshType&         m1,
-                       const MeshType2&        m2,
-                       HausdorffSamplingMethod sampMethod,
-                       uint                    nSamples,
-                       std::optional<uint>     seed) -> HausdorffDistResult {
-                        return hausdorffDistance(
-                            m1, m2, nullLogger, sampMethod, nSamples, seed);
-                    },
-                    "mesh1"_a,
-                    "mesh2"_a,
-                    "samp_method"_a = HAUSDORFF_VERTEX_UNIFORM,
-                    "n_samples"_a   = 0,
-                    "seed"_a        = py::none());
-            };
-
-            defForAllMeshTypes(m, fInnerAllMeshes);
+            m.def(
+                "hausdorff_distance",
+                [](const MeshType&         m1,
+                   const MeshType&        m2,
+                   HausdorffSamplingMethod sampMethod,
+                   uint                    nSamples,
+                   std::optional<uint>     seed) -> HausdorffDistResult {
+                    return hausdorffDistance(
+                        m1, m2, nullLogger, sampMethod, nSamples, seed);
+                },
+                "mesh1"_a,
+                "mesh2"_a,
+                "samp_method"_a = HAUSDORFF_VERTEX_UNIFORM,
+                "n_samples"_a   = 0,
+                "seed"_a        = py::none());
         };
 
     defForAllMeshTypes(m, fAllMeshes);
