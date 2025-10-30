@@ -48,6 +48,18 @@ using ushort = uint16_t;
 constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
 
 /**
+ * @brief The USHORT_NULL value represent a null value of ushort that is the
+ * maximum value that can be represented with unsigned short.
+ *
+ * Allows to fully use all the possible values (except one) that can be
+ * represented in an unsigned short, but with the possibility to flag whether
+ * the value is not initialized or is set to null.
+ *
+ * @ingroup base
+ */
+constexpr uint USHORT_NULL = std::numeric_limits<ushort>::max();
+
+/**
  * @brief A simple type that enumerates the main primitive types.
  *
  * It is used mostly for I/O operations, but can be useful in any context where
