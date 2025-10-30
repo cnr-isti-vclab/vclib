@@ -20,17 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_COMPLEX_H
-#define VCL_SPACE_COMPLEX_H
+#include <vclib/bindings/core/algorithms/mesh/convex_hull.h>
+#include <vclib/bindings/utils.h>
 
-#include "complex/graph.h"
-#include "complex/grid.h"
-#include "complex/kd_tree.h"
-#include "complex/mesh_edge_util.h"
-#include "complex/mesh_inertia.h"
-#include "complex/mesh_info.h"
-#include "complex/mesh_pos.h"
-#include "complex/point_sampler.h"
-#include "complex/tri_poly_index_bimap.h"
+#include <vclib/algorithms/mesh.h>
 
-#endif // VCL_SPACE_COMPLEX_H
+#include <pybind11/stl.h>
+
+namespace vcl::bind {
+
+void initConvexHullAlgorithms(pybind11::module& m)
+{
+    namespace py = pybind11;
+    using namespace py::literals;
+
+    auto fFaceMeshes = []<FaceMeshConcept MeshType>(
+                           pybind11::module& m, MeshType = MeshType()) {
+        std::string meshName = camelCaseToSnakeCase(meshTypeName<MeshType>());
+
+        m.def(
+            ("convex_hull_" + meshName).c_str(),
+            [](const std::vector<Point3d>& points, std::optional<uint> seed) {
+                return vcl::convexHull<MeshType>(points, seed);
+            },
+            "points"_a,
+            "seed"_a = py::none());
+    };
+
+    defForAllMeshTypes(m, fFaceMeshes);
+}
+
+} // namespace vcl::bind
