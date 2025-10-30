@@ -36,7 +36,6 @@ void initConvexHullAlgorithms(pybind11::module& m)
 
     auto fFaceMeshes = []<FaceMeshConcept MeshType>(
                            pybind11::module& m, MeshType = MeshType()) {
-
         std::string meshName = camelCaseToSnakeCase(meshTypeName<MeshType>());
 
         m.def(
@@ -49,7 +48,6 @@ void initConvexHullAlgorithms(pybind11::module& m)
     };
 
     defForAllMeshTypes(m, fFaceMeshes);
-
 }
 
 } // namespace vcl::bind

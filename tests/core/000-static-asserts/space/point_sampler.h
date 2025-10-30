@@ -30,7 +30,7 @@ void pointSamplerStaticAsserts()
 {
     using namespace vcl;
 
-    using PointSamplerType  = PointSampler<>;
+    using PointSamplerType = PointSampler<>;
 
     // point sampler
     static_assert(

@@ -62,7 +62,7 @@ void initDistanceAlgorithms(pybind11::module& m)
             m.def(
                 "hausdorff_distance",
                 [](const MeshType&         m1,
-                   const MeshType&        m2,
+                   const MeshType&         m2,
                    HausdorffSamplingMethod sampMethod,
                    uint                    nSamples,
                    std::optional<uint>     seed) -> HausdorffDistResult {

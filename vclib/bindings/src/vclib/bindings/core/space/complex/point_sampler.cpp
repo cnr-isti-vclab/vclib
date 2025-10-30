@@ -42,10 +42,7 @@ void initPointSampler(pybind11::module& m)
     py::class_<PS> c(m, "PointSampler");
     c.def(py::init<>());
 
-    c.def(
-        "samples",
-        &PS::samples,
-        py::return_value_policy::reference);
+    c.def("samples", &PS::samples, py::return_value_policy::reference);
     c.def("sample", &PointSampler<>::sample, "i"_a);
 
     c.def("size", &PS::size);
