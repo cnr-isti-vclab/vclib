@@ -25,9 +25,15 @@
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
 #define PBR_VERTEX_COLOR_AVAILABLE 0
 #define PBR_ALPHA_MODE_MASK 1
+
+#define checkSetting(settings, setting) bool(int(settings) & posToBitFlag(setting))
+
+#define isPerVertexColorAvailable(settings) checkSetting(settings, PBR_VERTEX_COLOR_AVAILABLE)
+#define isAlphaModeMask(settings) checkSetting(settings, PBR_ALPHA_MODE_MASK)
 
 #define USE_LIGHTS
 #define LIGHT_COUNT 2

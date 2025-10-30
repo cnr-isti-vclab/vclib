@@ -121,7 +121,7 @@ void main()
         vec4 vertexColor, actualColor;
 
          // per-vertex color 
-        if(bool(((int) u_settings.x) & posToBitFlag(PBR_VERTEX_COLOR_AVAILABLE))) vertexColor = v_color; // per-vertex color available
+        if(isPerVertexColorAvailable(u_settings.x)) vertexColor = v_color; // per-vertex color available
         else vertexColor = vec4(1.0, 1.0, 1.0, 1.0); // no per-vertex color available, use white
 
         actualColor = u_materialColor * vertexColor; // multiply vertex color with material base color
@@ -140,7 +140,7 @@ void main()
         );
 
         // alpha mode MASK
-        if(bool(((int) u_settings.x) & posToBitFlag(PBR_ALPHA_MODE_MASK))) {
+        if(isAlphaModeMask(u_settings.x)) {
             if(actualColor.a < u_alphaCutoff.x) discard; // discard fragment
         }
     }
