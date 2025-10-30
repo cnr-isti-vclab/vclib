@@ -30,19 +30,20 @@ namespace vcl {
 
 class MaterialUniforms
 {
-    float mMaterialColor[4] = {1.0, 1.0, 1.0, 1.0};
+    
+    std::array<float, 4> mMaterialColor = {1.0, 1.0, 1.0, 1.0};
 
-    float mMetallicRoughness[4] = {
+    std::array<float, 4> mMetallicRoughness = {
         1.0, // metallic
         1.0, // roughness
         0.0,
         0.0};
 
-    float mEmissiveColor[4] = {0.0, 0.0, 0.0, 1.0};
+    std::array<float, 4> mEmissiveColor = {0.0, 0.0, 0.0, 1.0};
 
-    float mAlphaCutoff[4] = {0.5, 0.0, 0.0, 0.0};
+    std::array<float, 4> mAlphaCutoff = {0.5, 0.0, 0.0, 0.0};
 
-    float mSettings[4] = {0.0, 0.0, 0.0, 0.0};
+    std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
     Uniform mMaterialColorUniform =
         Uniform("u_materialColor", bgfx::UniformType::Vec4);
@@ -61,13 +62,15 @@ class MaterialUniforms
 public:
     MaterialUniforms() = default;
 
-    const float* currentMetallicRoughness() const { return mMetallicRoughness; }
+    const std::array<float, 4>& currentMaterialColor() const { return mMaterialColor; }
 
-    const float* currentEmissiveColor() const { return mEmissiveColor; }
+    const std::array<float, 4>& currentMetallicRoughness() const { return mMetallicRoughness; }
 
-    const float* currentAlphaCutoff() const { return mAlphaCutoff; }
+    const std::array<float, 4>& currentEmissiveColor() const { return mEmissiveColor; }
 
-    const float* currentSettings() const { return mSettings; }
+    const std::array<float, 4>& currentAlphaCutoff() const { return mAlphaCutoff; }
+
+    const std::array<float, 4>& currentSettings() const { return mSettings; }
 
     void update(const Material& m, bool vertexColorAvailable)
     {
@@ -99,11 +102,11 @@ public:
 
     void bind() const
     {
-        mMaterialColorUniform.bind(mMaterialColor);
-        mMetallicRoughnessUniform.bind(mMetallicRoughness);
-        mEmissiveColorUniform.bind(mEmissiveColor);
-        mAlphaCutoffUniform.bind(mAlphaCutoff);
-        mSettingsUniform.bind(mSettings);
+        mMaterialColorUniform.bind(&mMaterialColor);
+        mMetallicRoughnessUniform.bind(&mMetallicRoughness);
+        mEmissiveColorUniform.bind(&mEmissiveColor);
+        mAlphaCutoffUniform.bind(&mAlphaCutoff);
+        mSettingsUniform.bind(&mSettings);
     }
 };
 
