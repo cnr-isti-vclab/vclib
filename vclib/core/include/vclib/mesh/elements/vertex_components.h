@@ -30,6 +30,7 @@
 #include "../components/color.h"
 #include "../components/custom_components.h"
 #include "../components/mark.h"
+#include "../components/material_index.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/position.h"
@@ -90,6 +91,10 @@ template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
+template<typename T>
+concept HasMaterialIndex = comp::HasMaterialIndex<T>;
+template<typename T>
+concept HasOptionalMaterialIndex = comp::HasOptionalMaterialIndex<T>;
 template<typename T>
 concept HasNormal = comp::HasNormal<T>;
 template<typename T>
@@ -256,6 +261,15 @@ using VerticalMark = comp::Mark<ParentVertexType>;
 
 template<typename ParentVertexType>
 using OptionalMark = comp::Mark<ParentVertexType, true>;
+
+/* Port MaterialIndex class into vert namespace */
+using MaterialIndex = comp::MaterialIndex<>;
+
+template<typename ParentVertexType>
+using VerticalMaterialIndex = comp::MaterialIndex<ParentVertexType>;
+
+template<typename ParentVertexType>
+using OptionalMaterialIndex = comp::MaterialIndex<ParentVertexType, true>;
 
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>

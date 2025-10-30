@@ -127,6 +127,22 @@ concept HasPerVertexMark =
     vert::HasMark<typename RemoveRef<MeshType>::VertexType>;
 
 /**
+ * @brief Concept that checks if a Mesh has the per Vertex MaterialIndex
+ * component.
+ *
+ * Evaluates to true if MaterialIndex is part of the Vertex element, whether it
+ * is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup vertex_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerVertexMaterialIndex =
+    HasVertices<MeshType> &&
+    vert::HasMaterialIndex<typename RemoveRef<MeshType>::VertexType>;
+
+/**
  * @brief Concept that checks if a Mesh has the per Vertex Normal component.
  *
  * Evaluates to true if Normal is part of the Vertex element, whether it is
@@ -294,6 +310,22 @@ bool enableIfPerVertexMarkOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
+bool isPerVertexMaterialIndexAvailable(const MeshType& m)
+{
+    return isPerElementComponentAvailable<
+        ElemId::VERTEX,
+        CompId::MATERIAL_INDEX>(m);
+}
+
+template<MeshConcept MeshType>
+bool enableIfPerVertexMaterialIndexOptional(MeshType& m)
+{
+    return enableIfPerElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::MATERIAL_INDEX>(m);
+}
+
+template<MeshConcept MeshType>
 bool isPerVertexNormalAvailable(const MeshType& m)
 {
     return isPerElementComponentAvailable<ElemId::VERTEX, CompId::NORMAL>(m);
@@ -397,6 +429,13 @@ template<typename MeshType>
 void requirePerVertexMark(const MeshType& m) requires HasPerVertexMark<MeshType>
 {
     requirePerElementComponent<ElemId::VERTEX, CompId::MARK>(m);
+}
+
+template<typename MeshType>
+void requirePerVertexMaterialIndex(const MeshType& m)
+    requires HasPerVertexMaterialIndex<MeshType>
+{
+    requirePerElementComponent<ElemId::VERTEX, CompId::MATERIAL_INDEX>(m);
 }
 
 template<typename MeshType>

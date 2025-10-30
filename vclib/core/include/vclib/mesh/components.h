@@ -31,6 +31,7 @@
 #include "components/color.h"
 #include "components/custom_components.h"
 #include "components/mark.h"
+#include "components/material_index.h"
 #include "components/materials.h"
 #include "components/name.h"
 #include "components/normal.h"
