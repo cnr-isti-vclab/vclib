@@ -27,9 +27,6 @@ $input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
-#define PBR_VERTEX_COLOR_AVAILABLE 0
-#define PBR_ALPHA_MODE_MASK 1
-
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 
