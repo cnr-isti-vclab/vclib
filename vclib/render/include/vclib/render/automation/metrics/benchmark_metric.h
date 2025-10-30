@@ -20,65 +20,58 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
-#define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#ifndef VCL_BENCHMARK_METRIC_H
+#define VCL_BENCHMARK_METRIC_H
 
-#include "event_drawer.h"
-
-#include <vclib/render/viewer/camera.h>
-#include <vclib/render/viewer/lights.h>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace vcl {
-template<typename Scalar, typename DerivedRenderApp>
-class CameraDrawerT : public vcl::EventDrawer<DerivedRenderApp>
+
+/**
+ * The BenchmarkMetric class is an Abstract class that represents a way of
+ * measuring the performance of an Automation.
+ */
+class BenchmarkMetric
 {
 public:
-    using ScalarType = Scalar;
-    using CameraType = vcl::Camera<Scalar>;
-    using PointType  = CameraType::PointType;
-    using MatrixType = CameraType::MatrixType;
-    using LightType  = vcl::DirectionalLight<Scalar>;
+    /**
+     * @brief Called when the automation is started
+     */
+    virtual void start() = 0;
 
-protected:
-    CameraType mCamera;
+    /**
+     * @brief Called each frame
+     */
+    virtual void measure() = 0;
 
-public:
-    using Base = vcl::EventDrawer<DerivedRenderApp>;
+    /**
+     * @return A vector of string representations of the measurement(s) taken
+     */
+    virtual std::vector<std::string> getMeasureStrings() const = 0;
 
-    CameraDrawerT(uint width = 100, uint height = 768) : Base(width, height)
-    {
-        onResize(width, height);
-    }
+    /**
+     * @return The symbol that represents the unit of measure
+     */
+    virtual std::string getUnitOfMeasure() const = 0;
 
-    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
+    /**
+     * @return The full name of the unit of measure
+     */
+    virtual std::string getFullLengthUnitOfMeasure() const = 0;
 
-    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
+    /**
+     * @brief Called when the automation finishes
+     */
+    virtual void end() = 0;
 
-    const CameraType& camera() const { return mCamera; }
+    virtual bool isNull() const { return false; };
 
-    LightType light() const { return LightType(); }
-
-    void reset() { mCamera.reset(); }
-
-    void focus(const PointType& p) { mCamera.center() = p; }
-
-    void fitScene(const PointType& p, Scalar s)
-    {
-        mCamera.center()         = p;
-        mCamera.eye()            = p + PointType(0, 0, 1);
-        mCamera.verticalHeight() = s;
-        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
-    }
-
-    void onResize(uint width, uint height) override
-    {
-        mCamera.aspectRatio() = Scalar(double(width) / height);
-    }
+    virtual std::shared_ptr<BenchmarkMetric> clone() const& = 0;
+    virtual std::shared_ptr<BenchmarkMetric> clone() &&     = 0;
 };
-
-template<typename DerivedRenderApp>
-using CameraDrawer = CameraDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#endif
