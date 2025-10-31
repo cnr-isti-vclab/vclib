@@ -99,6 +99,14 @@ void initComponents(pybind11::class_<ElementType>& c)
             v.position() = p;
         });
     }
+    if constexpr (comp::HasMaterialIndex<ElementType>) {
+        c.def(
+            "material_index",
+            py::overload_cast<>(&ElementType::materialIndex));
+        c.def("set_material_index", [](ElementType& v, ushort mi) {
+            v.materialIndex() = mi;
+        });
+    }
     if constexpr (comp::HasName<ElementType>) {
         c.def("name", py::overload_cast<>(&ElementType::name));
         c.def("set_name", [](ElementType& v, const std::string& n) {

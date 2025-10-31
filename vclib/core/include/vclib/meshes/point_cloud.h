@@ -47,6 +47,7 @@ class Vertex;
  * @extends vert::OptionalQuality
  * @extends vert::OptionalAdjacentVertexPointers
  * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMaterialIndex
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
  *
@@ -65,6 +66,7 @@ class Vertex :
             vert::OptionalQuality<Scalar, Vertex<Scalar>>,
             vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vert::OptionalMaterialIndex<Vertex<Scalar>>,
             vert::OptionalMark<Vertex<Scalar>>,
             vert::CustomComponents<Vertex<Scalar>>>
 {

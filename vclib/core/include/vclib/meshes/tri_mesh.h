@@ -52,6 +52,7 @@ class Face;
  * @extends vert::OptionalAdjacentVertices
  * @extends vert::OptionalPrincipalCurvature
  * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMaterialIndex
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
  *
@@ -74,6 +75,7 @@ class Vertex :
             vert::OptionalAdjacentVertices<I, Vertex<Scalar, I>>,
             vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalMaterialIndex<Vertex<Scalar, I>>,
             vert::OptionalMark<Vertex<Scalar, I>>,
             vert::CustomComponents<Vertex<Scalar, I>>>
 {
