@@ -39,32 +39,6 @@ namespace vcl {
 
 namespace detail {
 
-template<VertexConcept VertexType, MeshConcept MeshType>
-ObjMaterial objMaterialFromVertex(
-    const VertexType& v,
-    const MeshType&   m,
-    const MeshInfo&   fi)
-{
-    ObjMaterial mat;
-    if constexpr (HasPerVertexColor<MeshType>) {
-        if (fi.hasPerVertexColor()) {
-            mat.hasColor = true;
-            mat.Kd.x()   = v.color().redF();
-            mat.Kd.y()   = v.color().greenF();
-            mat.Kd.z()   = v.color().blueF();
-        }
-    }
-    if constexpr (HasPerVertexTexCoord<MeshType>) {
-        if (fi.hasPerVertexTexCoord()) {
-            mat.hasTexture = true;
-            if constexpr (HasTexturePaths<MeshType>) {
-                mat.map_Kd = m.texturePath(v.texCoord().index());
-            }
-        }
-    }
-    return mat;
-}
-
 template<FaceConcept FaceType, MeshConcept MeshType>
 ObjMaterial objMaterialFromFace(
     const FaceType& f,
@@ -91,27 +65,12 @@ ObjMaterial objMaterialFromFace(
     return mat;
 }
 
-template<EdgeConcept EdgeType, MeshConcept MeshType>
-ObjMaterial objMaterialFromEdge(const EdgeType& e, const MeshInfo& fi)
-{
-    ObjMaterial mat;
-    if constexpr (HasPerEdgeColor<MeshType>) {
-        if (fi.hasPerEdgeColor()) {
-            mat.hasColor = true;
-            mat.Kd.x()   = e.color().redF();
-            mat.Kd.y()   = e.color().greenF();
-            mat.Kd.z()   = e.color().blueF();
-        }
-    }
-    return mat;
-}
-
 template<
-    ElementConcept ElementType,
-    MeshConcept    MeshType,
-    LoggerConcept  LogType = NullLogger>
-void writeElementObjMaterial(
-    const ElementType&                  e,
+    FaceConcept   FaceType,
+    MeshConcept   MeshType,
+    LoggerConcept LogType = NullLogger>
+void writeFaceObjMaterial(
+    const FaceType&                     f,
     const MeshType&                     m,
     const MeshInfo&                     fi,
     ObjMaterial&                        lastMaterial,
@@ -122,20 +81,9 @@ void writeElementObjMaterial(
     LogType&                            log = nullLogger)
 {
     ObjMaterial    mat;
-    constexpr bool EL_IS_VERTEX = ElementType::ELEMENT_ID == ElemId::VERTEX;
-    constexpr bool EL_IS_FACE   = ElementType::ELEMENT_ID == ElemId::FACE;
-    constexpr bool EL_IS_EDGE   = ElementType::ELEMENT_ID == ElemId::EDGE;
 
-    if constexpr (EL_IS_VERTEX) {
-        mat = objMaterialFromVertex<typename MeshType::VertexType, MeshType>(
-            e, m, fi);
-    }
-    if constexpr (EL_IS_FACE) {
-        mat = objMaterialFromFace(e, m, fi);
-    }
-    if constexpr (EL_IS_EDGE) {
-        mat = objMaterialFromEdge<typename MeshType::EdgeType, MeshType>(e, fi);
-    }
+    mat = objMaterialFromFace(f, m, fi);
+
     if (!mat.isEmpty()) {
         static const std::string MATERIAL_PREFIX = "MATERIAL_";
         std::string              mname; // name of the material of the vertex
@@ -152,10 +100,7 @@ void writeElementObjMaterial(
                     // we need to save the texture image
                     // first, get the index of the texture: 0 if vertex,
                     // textureIndex if face
-                    uint textureIndex = 0;
-                    if constexpr (EL_IS_FACE) {
-                        textureIndex = e.textureIndex();
-                    }
+                    uint textureIndex = f.textureIndex();
                     const Texture& t = m.texture(textureIndex);
                     try {
                         saveImage(t.image(), m.meshBasePath() + mat.map_Kd);
@@ -209,7 +154,7 @@ void saveObj(
     std::map<detail::ObjMaterial, std::string> materialMap;
 
     bool useMtl =
-        meshInfo.hasPerVertexColor() || meshInfo.hasPerFaceColor() ||
+        meshInfo.hasPerFaceColor() ||
         (meshInfo.hasTextures() && (meshInfo.hasPerVertexTexCoord() ||
                                     meshInfo.hasPerFaceWedgeTexCoords()));
     if (useMtl) {
@@ -236,22 +181,17 @@ void saveObj(
     fp << std::endl << "# Vertices" << std::endl;
 
     for (const VertexType& v : m.vertices()) {
-        if (useMtl) { // mtl management
-            detail::writeElementObjMaterial<VertexType, MeshType>(
-                v,
-                m,
-                meshInfo,
-                lastMaterial,
-                materialMap,
-                fp,
-                *mtlfp,
-                settings,
-                log);
-        }
         fp << "v ";
         io::writeDouble(fp, v.position().x(), false);
         io::writeDouble(fp, v.position().y(), false);
         io::writeDouble(fp, v.position().z(), false);
+        if constexpr(HasPerVertexColor<MeshType>) {
+            if (meshInfo.hasPerVertexColor()) {
+                io::writeFloat(fp, v.color().redF(), false);
+                io::writeFloat(fp, v.color().greenF(), false);
+                io::writeFloat(fp, v.color().blueF(), false);
+            }
+        }
         fp << std::endl;
 
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -287,7 +227,7 @@ void saveObj(
             uint wedgeTexCoord = 1;
             for (const FaceType& f : m.faces()) {
                 if (useMtl) { // mtl management
-                    detail::writeElementObjMaterial(
+                    detail::writeFaceObjMaterial(
                         f,
                         m,
                         meshInfo,
@@ -346,18 +286,6 @@ void saveObj(
             std::vector<uint> vIndices = m.vertexCompactIndices();
 
             for (const EdgeType& e : m.edges()) {
-                if (useMtl) { // mtl management
-                    detail::writeElementObjMaterial(
-                        e,
-                        m,
-                        meshInfo,
-                        lastMaterial,
-                        materialMap,
-                        fp,
-                        *mtlfp,
-                        settings,
-                        log);
-                }
                 fp << "l ";
                 fp << vIndices[m.index(e.vertex(0))] + 1 << " ";
                 fp << vIndices[m.index(e.vertex(1))] + 1 << std::endl;

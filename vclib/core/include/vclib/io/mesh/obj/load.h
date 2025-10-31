@@ -256,12 +256,12 @@ void readObjVertexNormal(
 
 template<FaceMeshConcept MeshType>
 void readObjFace(
-    MeshType&                            m,
-    MeshInfo&                            loadedInfo,
-    const Tokenizer&                     tokens,
-    const std::vector<TexCoordIndexedd>& wedgeTexCoords,
-    const ObjMaterial&                   currentMaterial,
-    const LoadSettings&                  settings)
+    MeshType&                     m,
+    MeshInfo&                     loadedInfo,
+    const Tokenizer&              tokens,
+    const std::vector<TexCoordd>& wedgeTexCoords,
+    const ObjMaterial&            currentMaterial,
+    const LoadSettings&           settings)
 {
     using FaceType = MeshType::FaceType;
 
@@ -376,7 +376,7 @@ void readObjFace(
                                 std::to_string(fid));
                         }
                         f.wedgeTexCoord(i) =
-                            ((vcl::TexCoordd) wedgeTexCoords[wids[i]])
+                            wedgeTexCoords[wids[i]]
                                 .cast<typename FaceType::WedgeTexCoordType::
                                           ScalarType>();
                         if (currentMaterial.hasTexture) {
@@ -405,7 +405,7 @@ void readObjFace(
                             // set the wedge texcoord in the same position of
                             // the vertex
                             f.wedgeTexCoord(i) =
-                                ((vcl::TexCoordd) wedgeTexCoords[wids[pos]])
+                                wedgeTexCoords[wids[pos]]
                                     .cast<typename FaceType::WedgeTexCoordType::
                                               ScalarType>();
                             if (currentMaterial.hasTexture) {
@@ -503,7 +503,7 @@ void loadObj(
     uint                            vn = 0; // number of vertex normals read
     // save array of texcoords, that are stored later (into wedges when loading
     // faces or into vertices as a fallback)
-    std::vector<TexCoordIndexedd> texCoords;
+    std::vector<TexCoordd> texCoords;
 
     // map of materials loaded
     std::map<std::string, detail::ObjMaterial> materialMap;
@@ -587,12 +587,9 @@ void loadObj(
                 HasPerFaceWedgeTexCoords<MeshType>) {
                 if (header == "vt") {
                     // save the texcoord for later
-                    TexCoordIndexedd tf;
+                    TexCoordd tf;
                     for (uint i = 0; i < 2; ++i) {
                         tf[i] = io::readDouble<double>(token);
-                    }
-                    if (currentMaterial.hasTexture) {
-                        tf.index() = currentMaterial.mapId;
                     }
                     texCoords.push_back(tf);
                 }
@@ -632,32 +629,6 @@ void loadObj(
         for (const auto& p : mapNormalsCache) {
             if (p.first < m.vertexNumber()) {
                 m.vertex(p.first).normal() = p.second;
-            }
-        }
-    }
-    if constexpr (HasPerVertexTexCoord<MeshType>) {
-        using VertexType = MeshType::VertexType;
-        if (!loadedInfo.hasPerFaceWedgeTexCoords()) {
-            // we can set the loaded texCoords to vertices, also if they are not
-            // supported in obj
-            if (texCoords.size() == m.vertexNumber()) {
-                if (settings.enableOptionalComponents) {
-                    enableIfPerVertexTexCoordOptional(m);
-                    loadedInfo.setPerVertexTexCoord();
-                }
-                else {
-                    if (isPerVertexTexCoordAvailable(m))
-                        loadedInfo.setPerVertexTexCoord();
-                }
-                if (loadedInfo.hasPerVertexTexCoord()) {
-                    uint i = 0;
-                    for (VertexType& v : m.vertices()) {
-                        v.texCoord() =
-                            texCoords[i++]
-                                .cast<typename VertexType::TexCoordType::
-                                          ScalarType>();
-                    }
-                }
             }
         }
     }

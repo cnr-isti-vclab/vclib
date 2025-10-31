@@ -50,7 +50,7 @@ inline MeshInfo gltfFormatCapability()
     info.setPerVertexNormal();
     info.setPerVertexColor();
     info.setPerVertexTexCoord();
-    info.setPerFaceMaterialIndex();
+    info.setPerVertexMaterialIndex();
 
     info.setPerFaceVertexReferences();
 
