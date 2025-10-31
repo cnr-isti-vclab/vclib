@@ -464,7 +464,7 @@ public:
             }
 
             if (nTextures > 0 || mapping.size() > 0) {
-                (updateTextureIndicesOfContainerTypeAfterAppend<Args>(
+                (updateMaterialIndicesOfContainerTypeAfterAppend<Args>(
                      *this, sizes, mapping),
                  ...);
             }
@@ -2028,7 +2028,7 @@ private:
     }
 
     template<typename Cont, typename ArrayS, typename... A>
-    static void updateTextureIndicesOfContainerTypeAfterAppend(
+    static void updateMaterialIndicesOfContainerTypeAfterAppend(
         Mesh<A...>&              m,
         const ArrayS&            sizes,
         const std::vector<uint>& mapping)
@@ -2049,14 +2049,12 @@ private:
 
             if constexpr (hasPerElementComponent<
                               ELEM_ID,
-                              CompId::TEX_COORD>()) {
+                              CompId::MATERIAL_INDEX>()) {
                 if (m.Cont::template isComponentAvailable<
-                        CompId::TEX_COORD>()) {
-                    auto tcview =
-                        m.template elements<ELEM_ID>((uint) sizes[I]) |
-                        vcl::views::texCoords;
-                    for (auto& tc : tcview) {
-                        tc.index() = mapping[tc.index()];
+                        CompId::MATERIAL_INDEX>()) {
+                    auto elems = m.template elements<ELEM_ID>((uint) sizes[I]);
+                    for (auto& e : elems) {
+                        e.materialIndex() = mapping[e.materialIndex()];
                     }
                 }
             }
@@ -2068,6 +2066,7 @@ private:
                         CompId::WEDGE_TEX_COORDS>()) {
                     auto elview = m.template elements<ELEM_ID>((uint) sizes[I]);
                     for (auto& e : elview) {
+                        // TODO
                         e.textureIndex() = mapping[e.textureIndex()];
                     }
                 }
