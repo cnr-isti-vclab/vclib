@@ -490,18 +490,18 @@ protected:
 
     /**
      * @brief Given the mesh and a pointer to a buffer, fills the buffer with
-     * the vertex texture indices of the mesh.
+     * the vertex material indices of the mesh.
      *
-     * Although the vertex texcoords are associated to the vertices in the vclib
-     * meshes, for rendering purposes the index of each vertex texcoord is
-     * associated to the triangles (that must be triangulated accordingly).
+     * Although the materials are associated to the vertices, for rendering
+     * purposes the index of each vertex material is associated to the triangles
+     * (that must be triangulated accordingly).
      *
      * The buffer must be preallocated with the correct size: `numTris()`.
      *
      * @param[in] mesh: the input mesh
      * @param[out] buffer: the buffer to fill
      */
-    void fillVertexTextureIndices(
+    void fillVertexMaterialIndices(
         const FaceMeshConcept auto& mesh,
         auto*                       buffer)
     {
