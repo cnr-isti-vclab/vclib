@@ -221,8 +221,9 @@ bool populateGltfVColors(
     const Scalar* colorArray,
     unsigned int  stride,
     unsigned int  vertNumber,
-    int           nElemns)
+    bool          colorWithAlpha)
 {
+    unsigned int nElemns = colorWithAlpha ? 4 : 3;
     if constexpr (HasPerVertexColor<MeshType>) {
         if (enableOptionalComponents)
             enableIfPerVertexColorOptional(m);
@@ -267,8 +268,7 @@ bool populateGltfVTextCoords(
     bool          enableOptionalComponents,
     const Scalar* textCoordArray,
     unsigned int  stride,
-    unsigned int  vertNumber,
-    int           textID)
+    unsigned int  vertNumber)
 {
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         using TexCoordType = typename MeshType::VertexType::TexCoordType;
@@ -281,8 +281,8 @@ bool populateGltfVTextCoords(
                 const Scalar* textCoordBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(textCoordArray) + i * stride);
 
-                m.vertex(firstVertex + i).texCoord() = TexCoordType(
-                    textCoordBase[0], 1 - textCoordBase[1], textID);
+                m.vertex(firstVertex + i).texCoord() =
+                    TexCoordType(textCoordBase[0], 1 - textCoordBase[1]);
             }
             return true;
         }
@@ -343,9 +343,7 @@ bool populateGltfTriangles(
  *     number of bytes between consecutive elements in the vector
  *     (only applies to vertex attributes; indices are always tightly packed)
  * @param number: number of elements contained in the data
- * @param textID:
- *     if attr is texcoord, it is the texture id
- *     if attr is color, tells if color has 3 or 4 components
+ * @param colorWithAlpha: if attr is color, tells if color has 3 or 4 components
  */
 template<typename Scalar, MeshConcept MeshType>
 bool populateGltfAttr(
@@ -356,7 +354,7 @@ bool populateGltfAttr(
     const Scalar* array,
     unsigned int  stride,
     unsigned int  number,
-    int           textID = -1)
+    bool          colorWithAlpha = true)
 {
     using enum GltfAttrType;
 
@@ -373,7 +371,7 @@ bool populateGltfAttr(
             array,
             stride,
             number,
-            textID);
+            colorWithAlpha);
     case TEXCOORD_0:
         return populateGltfVTextCoords(
             m,
@@ -381,8 +379,7 @@ bool populateGltfAttr(
             enableOptionalComponents,
             array,
             stride,
-            number,
-            textID);
+            number);
     case INDICES:
         return populateGltfTriangles(m, firstVertex, array, number / 3);
     default: return false;
@@ -412,8 +409,7 @@ bool loadGltfAttribute(
     bool                       enableOptionalComponents,
     const tinygltf::Model&     model,
     const tinygltf::Primitive& p,
-    GltfAttrType               attr,
-    int                        textID)
+    GltfAttrType               attr)
 {
     using enum GltfAttrType;
 
@@ -455,11 +451,10 @@ bool loadGltfAttribute(
         // hack:
         // if the attribute is a color, textid is used to tell the size of the
         // color (3 or 4 components)
+        bool colorWithAlpha = true;
         if (attr == COLOR_0) {
             if (accessor->type == TINYGLTF_TYPE_VEC3)
-                textID = 3;
-            else if (accessor->type == TINYGLTF_TYPE_VEC4)
-                textID = 4;
+                colorWithAlpha = false;
         }
 
         const uint elementSize =
@@ -480,7 +475,7 @@ bool loadGltfAttribute(
                 posArray,
                 stride,
                 accessor->count,
-                textID);
+                colorWithAlpha);
         }
         // if data is double
         else if (accessor->componentType == TINYGLTF_COMPONENT_TYPE_DOUBLE) {
@@ -495,7 +490,7 @@ bool loadGltfAttribute(
                 posArray,
                 stride,
                 accessor->count,
-                textID);
+                colorWithAlpha);
         }
         // if data is ubyte
         else if (
@@ -511,7 +506,7 @@ bool loadGltfAttribute(
                 triArray,
                 stride,
                 accessor->count,
-                textID);
+                colorWithAlpha);
         }
         // if data is ushort
         else if (
@@ -527,7 +522,7 @@ bool loadGltfAttribute(
                 triArray,
                 stride,
                 accessor->count,
-                textID);
+                colorWithAlpha);
         }
         // if data is uint
         else if (
@@ -542,7 +537,7 @@ bool loadGltfAttribute(
                 triArray,
                 stride,
                 accessor->count,
-                textID);
+                colorWithAlpha);
         }
     }
     // if accessor not found and attribute is indices, it means that
@@ -595,8 +590,7 @@ void loadGltfMeshPrimitive(
         settings.enableOptionalComponents,
         model,
         p,
-        GltfAttrType::POSITION,
-        materialId);
+        GltfAttrType::POSITION);
     info.setVertices();
 
     bool lvn = loadGltfAttribute(
@@ -605,8 +599,7 @@ void loadGltfMeshPrimitive(
         settings.enableOptionalComponents,
         model,
         p,
-        GltfAttrType::NORMAL,
-        materialId);
+        GltfAttrType::NORMAL);
     info.setPerVertexNormal(lvn);
 
     bool lvc = loadGltfAttribute(
@@ -615,8 +608,7 @@ void loadGltfMeshPrimitive(
         settings.enableOptionalComponents,
         model,
         p,
-        GltfAttrType::COLOR_0,
-        materialId);
+        GltfAttrType::COLOR_0);
     if (lvc) {
         info.setPerVertexColor();
     }
@@ -627,24 +619,51 @@ void loadGltfMeshPrimitive(
         settings.enableOptionalComponents,
         model,
         p,
-        GltfAttrType::TEXCOORD_0,
-        materialId);
+        GltfAttrType::TEXCOORD_0);
     if (lvt) {
         info.setPerVertexTexCoord();
     }
 
-    bool lti = loadGltfAttribute(
-        m,
-        firstVertex,
-        settings.enableOptionalComponents,
-        model,
-        p,
-        GltfAttrType::INDICES,
-        materialId);
-    if (lti) {
-        info.setTriangleMesh();
-        info.setFaces();
-        info.setPerFaceVertexReferences();
+    if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+        if (settings.enableOptionalComponents) {
+            enableIfPerVertexMaterialIndexOptional(m);
+        }
+        if (isPerVertexMaterialIndexAvailable(m)) {
+            uint vnum = m.vertexNumber();
+            for (uint v = firstVertex; v < vnum; ++v) {
+                m.vertex(v).materialIndex() = materialId;
+            }
+            info.setPerVertexMaterialIndex();
+        }
+    }
+
+    if constexpr (HasFaces<MeshType>) {
+        uint firstFace = m.faceNumber();
+        bool lti = loadGltfAttribute(
+            m,
+            firstVertex,
+            settings.enableOptionalComponents,
+            model,
+            p,
+            GltfAttrType::INDICES);
+        if (lti) {
+            info.setTriangleMesh();
+            info.setFaces();
+            info.setPerFaceVertexReferences();
+
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if (settings.enableOptionalComponents) {
+                    enableIfPerFaceMaterialIndexOptional(m);
+                }
+                if (isPerFaceMaterialIndexAvailable(m)) {
+                    uint fnum = m.faceNumber();
+                    for (uint f = firstFace; f < fnum; ++f) {
+                        m.face(f).materialIndex() = materialId;
+                    }
+                    info.setPerFaceMaterialIndex();
+                }
+            }
+        }
     }
 
     if (HasTransformMatrix<MeshType>) {
