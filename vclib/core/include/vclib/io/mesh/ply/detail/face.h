@@ -145,6 +145,7 @@ void readPlyFaceProperty(
         setPlyFaceIndices(f, mesh, vids);
     }
     if (p.name == ply::texcoord) { // loading wedge texcoords
+        // TODO
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
             if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;
@@ -337,6 +338,7 @@ void writePlyFaces(
                 }
             }
             if (p.name == ply::texnumber) {
+                // TODO
                 if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                     io::writeProperty(file, f.textureIndex(), p.type, format);
                     hasBeenWritten = true;

@@ -163,9 +163,10 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.faceNumber() == 4);
         REQUIRE(tm.textureNumber() == 2);
         REQUIRE(tm.isPerVertexTexCoordEnabled());
+        REQUIRE(tm.isPerVertexMaterialIndexEnabled());
         for (const auto& v : tm.vertices()) {
             // first four vertices have index 0, the other four have index 1
-            REQUIRE(v.texCoord().index() == v.index() / 4);
+            REQUIRE(v.materialIndex() == v.index() / 4);
         }
     }
 
@@ -177,6 +178,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.faceNumber() == 4);
         REQUIRE(tm.textureNumber() == 2);
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
+        // TODO
         for (const auto& f : tm.faces()) {
             // first two faces have texture index 0, the other two have index 1
             REQUIRE(f.textureIndex() == f.index() / 2);

@@ -204,6 +204,7 @@ public:
                 case ply::alpha: mod.setPerVertexColor(); break;
                 case ply::quality: mod.setPerVertexQuality(); break;
                 case ply::texture_u: mod.setPerVertexTexCoord(); break;
+                case ply::texnumber: mod.setPerVertexMaterialIndex(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
                         mod.addPerVertexCustomComponent(
@@ -228,6 +229,7 @@ public:
                 case ply::blue:
                 case ply::alpha: mod.setPerFaceColor(); break;
                 case ply::quality: mod.setPerFaceQuality(); break;
+                // TODO
                 case ply::texcoord: mod.setPerFaceWedgeTexCoords(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
@@ -433,15 +435,18 @@ public:
                 vElem.properties.push_back(vs);
             }
             if (info.hasPerVertexTexCoord()) {
-                PlyProperty tcu, tcv, tcn;
+                PlyProperty tcu, tcv;
                 tcu.name = ply::texture_u;
                 tcu.type = info.perVertexTexCoordType();
                 tcv.name = ply::texture_v;
                 tcv.type = info.perVertexTexCoordType();
-                tcn.name = ply::texnumber;
-                tcn.type = PrimitiveType::USHORT;
                 vElem.properties.push_back(tcu);
                 vElem.properties.push_back(tcv);
+            }
+            if (info.hasPerVertexMaterialIndex()) {
+                PlyProperty tcn;
+                tcn.name = ply::texnumber;
+                tcn.type = info.perVertexMaterialIndexType();
                 vElem.properties.push_back(tcn);
             }
             if (info.hasPerVertexCustomComponents()) {
@@ -499,18 +504,21 @@ public:
             if (info.hasPerFaceQuality()) {
                 PlyProperty fs;
                 fs.name = ply::quality;
-                fs.type = (ply::PropertyType) info.perFaceQualityType();
+                fs.type = info.perFaceQualityType();
                 fElem.properties.push_back(fs);
             }
             if (info.hasPerFaceWedgeTexCoords()) {
-                PlyProperty tc, tn;
+                PlyProperty tc;
                 tc.list         = true;
                 tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
-                tc.type = (ply::PropertyType) info.perFaceWedgeTexCoordsType();
-                tn.name = ply::texnumber;
-                tn.type = PrimitiveType::USHORT;
+                tc.type = info.perFaceWedgeTexCoordsType();
                 fElem.properties.push_back(tc);
+            }
+            if (info.hasPerFaceMaterialIndex()) {
+                PlyProperty tn;
+                tn.name = ply::texnumber;
+                tn.type = info.perFaceMaterialIndexType();
                 fElem.properties.push_back(tn);
             }
             if (info.hasPerFaceCustomComponents()) {
@@ -519,7 +527,7 @@ public:
                         PlyProperty pp;
                         pp.name                = ply::unknown;
                         pp.unknownPropertyName = cc.name;
-                        pp.type                = (ply::PropertyType) cc.type;
+                        pp.type                = cc.type;
                         fElem.properties.push_back(pp);
                     }
                 }
