@@ -67,8 +67,12 @@ auto meshTextureAndTexCoords()
              ++i) {
             auto& texCoord = meshVertexTexCoords.vertex(i).texCoord();
             std::cout << "     Vertex " << i << ": (" << texCoord.u() << ", "
-                      << texCoord.v() << ") tex_id " << texCoord.index()
-                      << std::endl;
+                      << texCoord.v() << ") ";
+            if (meshVertexTexCoords.isPerVertexMaterialIndexEnabled()) {
+                std::cout << "tex_id "
+                          << meshVertexTexCoords.vertex(i).materialIndex();
+            }
+            std::cout << std::endl;
         }
     }
     else {

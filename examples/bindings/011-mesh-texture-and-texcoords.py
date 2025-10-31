@@ -65,7 +65,9 @@ def mesh_texture_and_texcoords():
         print("   First 3 vertex texture coordinates:")
         for i in range(min(3, mesh_vertex_texcoords.vertex_number())):
             tex_coord = mesh_vertex_texcoords.vertex(i).tex_coord()
-            print(f"     Vertex {i}: ({tex_coord.u()}, {tex_coord.v()}) tex_id {tex_coord.index()}")
+            print(f"     Vertex {i}: ({tex_coord.u()}, {tex_coord.v()})")
+            if mesh_vertex_texcoords.is_per_vertex_material_index_enabled():
+                print(f"        tex_id {mesh_vertex_texcoords.vertex(i).material_index()}")
     else:
         print("   - Mesh does not have vertex texture coordinates")
 
