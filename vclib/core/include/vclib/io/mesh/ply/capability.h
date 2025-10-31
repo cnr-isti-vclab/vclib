@@ -51,6 +51,7 @@ inline MeshInfo plyFormatCapability()
     info.setPerVertexColor();
     info.setPerVertexQuality();
     info.setPerVertexTexCoord();
+    info.setPerVertexMaterialIndex();
     info.setPerVertexCustomComponents();
 
     info.setPerFaceVertexReferences();
@@ -58,6 +59,7 @@ inline MeshInfo plyFormatCapability()
     info.setPerFaceNormal();
     info.setPerFaceQuality();
     info.setPerFaceWedgeTexCoords();
+    info.setPerFaceMaterialIndex();
     info.setPerFaceCustomComponents();
 
     info.setPerEdgeVertexReferences();

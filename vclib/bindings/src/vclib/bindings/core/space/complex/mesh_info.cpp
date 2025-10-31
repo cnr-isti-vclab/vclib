@@ -68,6 +68,7 @@ void initMeshInfo(pybind11::module& m)
     cpt.value("COLOR", COLOR);
     cpt.value("QUALITY", QUALITY);
     cpt.value("TEXCOORD", TEXCOORD);
+    cpt.value("MATERIAL_INDEX", MATERIAL_INDEX);
     cpt.value("WEDGE_TEXCOORDS", WEDGE_TEXCOORDS);
     cpt.value("CUSTOM_COMPONENTS", CUSTOM_COMPONENTS);
     cpt.value("TEXTURES", TEXTURES);
@@ -109,6 +110,8 @@ void initMeshInfo(pybind11::module& m)
     c.def("has_per_vertex_quality", &MeshInfo::hasPerVertexQuality);
     c.def("has_per_vertex_tex_coord", &MeshInfo::hasPerVertexTexCoord);
     c.def(
+        "has_per_vertex_material_index", &MeshInfo::hasPerVertexMaterialIndex);
+    c.def(
         "has_per_vertex_custom_components",
         &MeshInfo::hasPerVertexCustomComponents);
     c.def("has_faces", &MeshInfo::hasFaces);
@@ -119,6 +122,7 @@ void initMeshInfo(pybind11::module& m)
     c.def("has_per_face_color", &MeshInfo::hasPerFaceColor);
     c.def("has_per_face_quality", &MeshInfo::hasPerFaceQuality);
     c.def("has_per_face_wedge_tex_coords", &MeshInfo::hasPerFaceWedgeTexCoords);
+    c.def("has_per_face_material_index", &MeshInfo::hasPerFaceMaterialIndex);
     c.def(
         "has_per_face_custom_components",
         &MeshInfo::hasPerFaceCustomComponents);
@@ -170,6 +174,11 @@ void initMeshInfo(pybind11::module& m)
         "b"_a = true,
         "t"_a = FLOAT);
     c.def(
+        "set_per_vertex_material_index",
+        &MeshInfo::setPerVertexMaterialIndex,
+        "b"_a = true,
+        "t"_a = USHORT);
+    c.def(
         "set_per_vertex_custom_components",
         &MeshInfo::setPerVertexCustomComponents,
         "b"_a = true);
@@ -198,6 +207,11 @@ void initMeshInfo(pybind11::module& m)
         &MeshInfo::setPerFaceWedgeTexCoords,
         "b"_a = true,
         "t"_a = FLOAT);
+    c.def(
+        "set_per_face_material_index",
+        &MeshInfo::setPerFaceMaterialIndex,
+        "b"_a = true,
+        "t"_a = USHORT);
     c.def(
         "set_per_face_custom_components",
         &MeshInfo::setPerFaceCustomComponents,
@@ -257,11 +271,15 @@ void initMeshInfo(pybind11::module& m)
     c.def("per_vertex_color_type", &MeshInfo::perVertexColorType);
     c.def("per_vertex_quality_type", &MeshInfo::perVertexQualityType);
     c.def("per_vertex_tex_coord_type", &MeshInfo::perVertexTexCoordType);
+    c.def(
+        "per_vertex_material_index_type",
+        &MeshInfo::perVertexMaterialIndexType);
     c.def("per_face_normal_type", &MeshInfo::perFaceNormalType);
     c.def("per_face_color_type", &MeshInfo::perFaceColorType);
     c.def("per_face_quality_type", &MeshInfo::perFaceQualityType);
     c.def(
         "per_face_wedge_tex_coords_type", &MeshInfo::perFaceWedgeTexCoordsType);
+    c.def("per_face_material_index_type", &MeshInfo::perFaceMaterialIndexType);
     c.def("per_edge_normal_type", &MeshInfo::perEdgeNormalType);
     c.def("per_edge_color_type", &MeshInfo::perEdgeColorType);
     c.def("per_edge_quality_type", &MeshInfo::perEdgeQualityType);

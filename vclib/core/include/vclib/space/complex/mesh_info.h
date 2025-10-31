@@ -101,6 +101,7 @@ public:
         COLOR,
         QUALITY,
         TEXCOORD,
+        MATERIAL_INDEX,
         WEDGE_TEXCOORDS,
         CUSTOM_COMPONENTS,
         TEXTURES,
@@ -195,6 +196,11 @@ public:
                         typename Mesh::VertexType::TexCoordType::ScalarType>());
             }
         }
+        if constexpr (HasPerVertexMaterialIndex<Mesh>) {
+            if (isPerVertexMaterialIndexAvailable(m)) {
+                setPerVertexMaterialIndex(true, PrimitiveType::USHORT);
+            }
+        }
         if constexpr (HasPerVertexCustomComponents<Mesh>) {
             auto names = m.perVertexCustomComponentNames();
             for (auto& name : names) {
@@ -242,6 +248,11 @@ public:
                         true,
                         getType<typename Mesh::FaceType::WedgeTexCoordType::
                                     ScalarType>());
+                }
+            }
+            if constexpr (HasPerFaceMaterialIndex<Mesh>) {
+                if (isPerFaceMaterialIndexAvailable(m)) {
+                    setPerFaceMaterialIndex(true, PrimitiveType::USHORT);
                 }
             }
             if constexpr (HasPerFaceCustomComponents<Mesh>) {
@@ -385,6 +396,15 @@ public:
     }
 
     /**
+     * @brief Returns true if the current object has Vertex Material Index.
+     * @return true if the current object has Vertex Material Index.
+     */
+    bool hasPerVertexMaterialIndex() const
+    {
+        return hasPerElementComponent(VERTEX, MATERIAL_INDEX);
+    }
+
+    /**
      * @brief Returns true if the current object has Vertex Custom Components.
      * @return true if the current object has Vertex Custom Components.
      */
@@ -423,6 +443,15 @@ public:
     bool hasPerFaceWedgeTexCoords() const
     {
         return hasPerElementComponent(FACE, WEDGE_TEXCOORDS);
+    }
+
+    /**
+     * @brief Returns true if the current object has Face Material Index.
+     * @return true if the current object has Face Material Index.
+     */
+    bool hasPerFaceMaterialIndex() const
+    {
+        return hasPerElementComponent(FACE, MATERIAL_INDEX);
     }
 
     bool hasPerFaceCustomComponents() const
@@ -532,6 +561,13 @@ public:
         setPerElementComponent(VERTEX, TEXCOORD, b, t);
     }
 
+    void setPerVertexMaterialIndex(
+        bool     b = true,
+        DataType t = PrimitiveType::USHORT)
+    {
+        setPerElementComponent(VERTEX, MATERIAL_INDEX, b, t);
+    }
+
     void setPerVertexCustomComponents(bool b = true)
     {
         setPerElementComponent(
@@ -565,6 +601,13 @@ public:
         DataType t = PrimitiveType::FLOAT)
     {
         setPerElementComponent(FACE, WEDGE_TEXCOORDS, b, t);
+    }
+
+    void setPerFaceMaterialIndex(
+        bool     b = true,
+        DataType t = PrimitiveType::USHORT)
+    {
+        setPerElementComponent(FACE, MATERIAL_INDEX, b, t);
     }
 
     void setPerFaceCustomComponents(bool b = true)
@@ -686,6 +729,11 @@ public:
         return perElementComponentType(VERTEX, TEXCOORD);
     }
 
+    DataType perVertexMaterialIndexType() const
+    {
+        return perElementComponentType(VERTEX, MATERIAL_INDEX);
+    }
+
     DataType perFaceNormalType() const
     {
         return perElementComponentType(FACE, NORMAL);
@@ -704,6 +752,11 @@ public:
     DataType perFaceWedgeTexCoordsType() const
     {
         return perElementComponentType(FACE, WEDGE_TEXCOORDS);
+    }
+
+    DataType perFaceMaterialIndexType() const
+    {
+        return perElementComponentType(FACE, MATERIAL_INDEX);
     }
 
     DataType perEdgeNormalType() const
@@ -927,6 +980,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
                 info.setPerVertexTexCoord(false);
             }
         }
+        if (info.hasPerVertexMaterialIndex()) {
+            if (!enableIfPerVertexMaterialIndexOptional(m)) {
+                info.setPerVertexMaterialIndex(false);
+            }
+        }
         if (info.hasPerVertexCustomComponents()) {
             if constexpr (HasPerVertexCustomComponents<MeshType>) {
                 for (const auto& cc : info.perVertexCustomComponents()) {
@@ -962,6 +1020,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
             if (info.hasPerFaceWedgeTexCoords()) {
                 if (!enableIfPerFaceWedgeTexCoordsOptional(m)) {
                     info.setPerFaceWedgeTexCoords(false);
+                }
+            }
+            if (info.hasPerFaceMaterialIndex()) {
+                if (!enableIfPerFaceMaterialIndexOptional(m)) {
+                    info.setPerFaceMaterialIndex(false);
                 }
             }
             if (info.hasPerFaceCustomComponents()) {
