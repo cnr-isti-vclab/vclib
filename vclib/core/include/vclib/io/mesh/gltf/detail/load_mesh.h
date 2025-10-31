@@ -43,31 +43,121 @@ inline const std::array<std::string, 4> GLTF_ATTR_STR {
     "COLOR_0",
     "TEXCOORD_0"};
 
-inline void checkGltfPrimitiveMaterial(
+template<MeshConcept MeshType>
+int loadGltfPrimitiveMaterial(
+    MeshType&                  m,
     const tinygltf::Model&     model,
-    const tinygltf::Primitive& p,
-    int&                       textureImg,
-    bool&                      hasColor,
-    vcl::Color&                color)
+    const tinygltf::Primitive& p)
 {
-    if (p.material >= 0) { // if the primitive has a material
+    int idx = -1;
+
+    if (p.material >= 0) {
+        vcl::Color                baseColor, emissiveColor;
+        Material::AlphaMode       alphaMode;
+        double                    metallic, roughness, alphaCutoff;
+        bool                      doubleSided;
+        int                       textureImg;
         const tinygltf::Material& mat = model.materials[p.material];
-        auto                      it  = mat.values.find("baseColorTexture");
-        if (it != mat.values.end()) { // the material is a texture
-            auto it2 = it->second.json_double_value.find("index");
-            if (it2 != it->second.json_double_value.end()) {
-                textureImg = it2->second; // get the id of the texture
+
+        // baseColorFactor
+        const std::vector<double>& vc =
+            mat.pbrMetallicRoughness.baseColorFactor; // has default value
+        for (uint i = 0; i < 4; i++)
+            baseColor[i] = vc[i] * 255.0;
+
+        // baseColorTexture
+        textureImg = mat.pbrMetallicRoughness.baseColorTexture
+                         .index; // get the id of the texture, -1 if not present
+
+        // metallicFactor
+        metallic = mat.pbrMetallicRoughness.metallicFactor; // has default value
+
+        // roughnessFactor
+        roughness =
+            mat.pbrMetallicRoughness.roughnessFactor; // has default value
+
+        // emissiveFactor
+        const std::vector<double>& emissiveFactor =
+            mat.emissiveFactor; // has default value
+        for (uint i = 0; i < 3; i++)
+            emissiveColor[i] = emissiveFactor[i] * 255.0;
+
+        // doubleSided
+        doubleSided = mat.doubleSided; // has default value
+
+        // alphaMode
+        if (mat.alphaMode == "MASK")
+            alphaMode = Material::AlphaMode::ALPHA_MASK;
+        else if (mat.alphaMode == "BLEND")
+            alphaMode = Material::AlphaMode::ALPHA_BLEND;
+        else
+            alphaMode = Material::AlphaMode::ALPHA_OPAQUE; // has default value
+
+        // alphaCutoff
+        alphaCutoff = mat.alphaCutoff; // has default value
+
+        /* Put the data in the mesh */
+
+        if constexpr (HasMaterials<MeshType>) {
+            Material mat(
+                baseColor,
+                metallic,
+                roughness,
+                emissiveColor,
+                alphaMode,
+                alphaCutoff,
+                doubleSided);
+            m.pushMaterial(mat);
+            idx = m.materialsNumber() - 1; // index of the added material
+        }
+        else if constexpr (HasColor<MeshType>) {
+            // base color is set to the mesh color only if the mesh has no
+            // materials
+            m.color() = baseColor;
+        }
+
+        // texture is added even if the mesh has materials
+        if constexpr (HasTexturePaths<MeshType>) {
+            if (textureImg != -1) { // if we found a texture
+                const tinygltf::Image& img =
+                    model.images[model.textures[textureImg].source];
+                // add the path of the texture to the mesh
+                std::string uri = img.uri;
+                uri = std::regex_replace(uri, std::regex("\\%20"), " ");
+
+                bool textureAdded = false;
+                if constexpr (HasTextureImages<MeshType>) {
+                    if (img.image.size() > 0) {
+                        if (img.bits == 8 || img.component == 4) {
+                            if (uri.empty()) {
+                                uri = "texture_" + std::to_string(textureImg);
+                            }
+                            vcl::Texture txt(
+                                Image(img.image.data(), img.width, img.height),
+                                uri);
+                            m.pushTexture(txt);
+                            textureAdded = true;
+                        }
+                    }
+                }
+                if (!textureAdded) {
+                    // if the image is not valid, just add the path
+                    m.pushTexturePath(uri);
+                }
+                idx = m.textureNumber() - 1; // index of the added texture
+            }
+            else {
+                if (idx != -1) { // if the material has been loaded in the mesh
+                    // the number of textures in the mesh must be the same as
+                    // the number of materials (even if the material has no
+                    // texture)
+                    m.pushTexturePath("");
+                }
             }
         }
-        it = mat.values.find("baseColorFactor");
-        if (it !=
-            mat.values.end()) { // vertex base color, the same for a primitive
-            hasColor                      = true;
-            const std::vector<double>& vc = it->second.number_array;
-            for (uint i = 0; i < 4; i++)
-                color[i] = vc[i] * 255.0;
-        }
     }
+
+    return idx;
 }
 
 template<MeshConcept MeshType, typename Scalar>
@@ -338,7 +428,7 @@ bool loadGltfAttribute(
         }
         else if (attr == POSITION) { // if we were looking for POSITION and
                                      // didn't find any
-            throw MalformedFileException("File has not 'Position' attribute");
+            throw std::runtime_error("File has not 'Position' attribute");
         }
     }
     else { // if the attribute is triangle indices
@@ -494,44 +584,7 @@ void loadGltfMeshPrimitive(
     const LoadSettings&        settings,
     LogType&                   log)
 {
-    int  textureImg = -1;    // id of the texture associated to the material
-    bool vTex       = false; // used if a material has a texture
-    bool vCol =
-        false;      // used if a material has a base color for all the primitive
-    vcl::Color col; // the base color, to be set to all the vertices
-    checkGltfPrimitiveMaterial(model, p, textureImg, vCol, col);
-
-    if constexpr (HasTexturePaths<MeshType>) {
-        if (textureImg != -1) { // if we found a texture
-            vTex = true;
-            const tinygltf::Image& img =
-                model.images[model.textures[textureImg].source];
-            // add the path of the texture to the mesh
-            std::string uri = img.uri;
-            uri             = std::regex_replace(uri, std::regex("\\%20"), " ");
-
-            bool textureAdded = false;
-            if constexpr (HasTextureImages<MeshType>) {
-                if (img.image.size() > 0) {
-                    if (img.bits == 8 || img.component == 4) {
-                        if (uri.empty()) {
-                            uri = "texture_" + std::to_string(textureImg);
-                        }
-                        vcl::Texture txt(
-                            Image(img.image.data(), img.width, img.height),
-                            uri);
-                        m.pushTexture(txt);
-                        textureAdded = true;
-                    }
-                }
-            }
-            if (!textureAdded) {
-                // if the image is not valid, just add the path
-                m.pushTexturePath(uri);
-            }
-            textureImg = m.textureNumber() - 1; // update the texture id
-        }
-    }
+    int materialId = loadGltfPrimitiveMaterial(m, model, p);
 
     uint firstVertex = m.vertexNumber();
 
@@ -543,7 +596,7 @@ void loadGltfMeshPrimitive(
         model,
         p,
         GltfAttrType::POSITION,
-        textureImg);
+        materialId);
     info.setVertices();
 
     bool lvn = loadGltfAttribute(
@@ -553,21 +606,8 @@ void loadGltfMeshPrimitive(
         model,
         p,
         GltfAttrType::NORMAL,
-        textureImg);
+        materialId);
     info.setPerVertexNormal(lvn);
-
-    if (vCol) {
-        if constexpr (HasPerVertexColor<MeshType>) {
-            if (settings.enableOptionalComponents) {
-                enableIfPerVertexColorOptional(m);
-            }
-            if (isPerVertexColorAvailable(m)) {
-                for (auto& v : m.vertices())
-                    v.color() = col;
-                info.setPerVertexColor();
-            }
-        }
-    }
 
     bool lvc = loadGltfAttribute(
         m,
@@ -576,7 +616,7 @@ void loadGltfMeshPrimitive(
         model,
         p,
         GltfAttrType::COLOR_0,
-        textureImg);
+        materialId);
     if (lvc) {
         info.setPerVertexColor();
     }
@@ -588,7 +628,7 @@ void loadGltfMeshPrimitive(
         model,
         p,
         GltfAttrType::TEXCOORD_0,
-        textureImg);
+        materialId);
     if (lvt) {
         info.setPerVertexTexCoord();
     }
@@ -600,7 +640,7 @@ void loadGltfMeshPrimitive(
         model,
         p,
         GltfAttrType::INDICES,
-        textureImg);
+        materialId);
     if (lti) {
         info.setTriangleMesh();
         info.setFaces();

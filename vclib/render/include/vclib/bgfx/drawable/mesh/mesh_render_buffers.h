@@ -29,6 +29,7 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
+#include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture_unit.h>
 #include <vclib/io/image/load.h>
@@ -72,6 +73,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
+    mutable MaterialUniforms mMaterialUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -227,6 +229,28 @@ public:
             // TODO: bind texture materials here...
         }
 
+    }
+
+    uint bindMaterials(const MeshRenderSettings& mrs, uint chunkNumber, const MeshType& m) const
+    {
+        uint materialId = 0;
+        if(mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL)) {
+            materialId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
+        }
+        else if(mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
+            materialId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
+        }
+
+        // TODO: manage this case! -> needs refactor mesh
+        if (materialId == UINT_NULL && m.materialsNumber() > 0) {
+            materialId = 0;
+        }
+
+        assert (materialId >= 0 && materialId < m.materialsNumber());
+        mMaterialUniforms.update(m.material(materialId), isPerVertexColorAvailable(m));
+        mMaterialUniforms.bind();
+
+        return materialId;
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)

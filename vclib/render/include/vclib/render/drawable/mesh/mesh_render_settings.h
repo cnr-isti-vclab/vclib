@@ -839,7 +839,13 @@ private:
                 setSurface(SHADING_NONE);
             }
             // color
-            if (canSurface(COLOR_WEDGE_TEX)) {
+            if (canSurface(COLOR_WEDGE_MATERIAL)) {
+                setSurface(COLOR_WEDGE_MATERIAL);
+            }
+            else if (canSurface(COLOR_VERTEX_MATERIAL)) {
+                setSurface(COLOR_VERTEX_MATERIAL);
+            }
+            else if (canSurface(COLOR_WEDGE_TEX)) {
                 setSurface(COLOR_WEDGE_TEX);
             }
             else if (canSurface(COLOR_VERTEX_TEX)) {

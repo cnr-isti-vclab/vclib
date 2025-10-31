@@ -208,15 +208,30 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
+            uint64_t surfaceState = state;
             if (mMRB.mustDrawUsingChunks(mMRS)) {
                 for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                     // Bind textures before vertex buffers!!
                     mMRB.bindTextures(mMRS, i);
                     mMRB.bindVertexBuffers(mMRS);
                     mMRB.bindIndexBuffers(mMRS, i);
+                    if constexpr (HasMaterials<MeshType>) {
+                        uint materialId = mMRB.bindMaterials(mMRS, i, *this);
+                        if (mMRS.isSurface(MRI::Surface::COLOR_VERTEX_MATERIAL)) {
+                            if (MeshType::materialsNumber() > 0) {
+                                if (!MeshType::material(materialId).doubleSided()) {
+                                    surfaceState |= BGFX_STATE_CULL_CW; // backface culling
+                                }
+                                if (MeshType::material(materialId).alphaMode() ==
+                                Material::AlphaMode::ALPHA_BLEND) {
+                                    surfaceState |= BGFX_STATE_BLEND_ALPHA;
+                                }
+                            }
+                        }
+                    }
                     bindUniforms();
 
-                    bgfx::setState(state);
+                    bgfx::setState(surfaceState);
                     bgfx::setTransform(model.data());
 
                     bgfx::submit(viewId, surfaceProgramSelector());
@@ -227,7 +242,7 @@ public:
                 mMRB.bindIndexBuffers(mMRS);
                 bindUniforms();
 
-                bgfx::setState(state);
+                bgfx::setState(surfaceState);
                 bgfx::setTransform(model.data());
 
                 bgfx::submit(viewId, surfaceProgramSelector());
