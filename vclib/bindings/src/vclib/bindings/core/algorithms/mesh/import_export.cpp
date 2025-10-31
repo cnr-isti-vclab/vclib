@@ -118,16 +118,16 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "vertex_tex_coord_indices_array",
+            "vertex_material_indices_array",
             [](const MeshType& m) {
-                return vcl::vertexTexCoordIndicesVector<Eigen::VectorXi>(m);
+                return vcl::vertexMaterialIndicesVector<Eigen::VectorXi>(m);
             },
             "mesh"_a);
 
         m.def(
-            "vertex_tex_coord_indices_list",
+            "vertex_material_indices_list",
             [](const MeshType& m) {
-                return vcl::vertexTexCoordIndicesVector<std::vector<uint>>(m);
+                return vcl::vertexMaterialIndicesVector<std::vector<uint>>(m);
             },
             "mesh"_a);
 
@@ -272,22 +272,22 @@ void initImportExportAlgorithms(pybind11::module& m)
             "vertex_tex_coords"_a);
 
         m.def(
-            "vertex_tex_coords_indices_from_array",
-            [](MeshType& mesh, const Eigen::VectorXi& vertexTexCoordIndices) {
-                return vcl::vertexTexCoordIndicesFromRange(
-                    mesh, vertexTexCoordIndices);
+            "vertex_material_indices_from_array",
+            [](MeshType& mesh, const Eigen::VectorXi& vertexMaterialIndices) {
+                return vcl::vertexMaterialIndicesFromRange(
+                    mesh, vertexMaterialIndices);
             },
             "mesh"_a,
-            "vertex_tex_coord_indices"_a);
+            "vertex_material_indices"_a);
 
         m.def(
-            "vertex_tex_coords_indices_from_list",
-            [](MeshType& mesh, const std::vector<int>& vertexTexCoordIndices) {
-                return vcl::vertexTexCoordIndicesFromRange(
-                    mesh, vertexTexCoordIndices);
+            "vertex_material_indices_from_list",
+            [](MeshType& mesh, const std::vector<int>& vertexMaterialIndices) {
+                return vcl::vertexMaterialIndicesFromRange(
+                    mesh, vertexMaterialIndices);
             },
             "mesh"_a,
-            "vertex_tex_coord_indices"_a);
+            "vertex_material_indices"_a);
     };
 
     defForAllMeshTypes(m, fAllMeshes);

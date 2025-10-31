@@ -505,7 +505,7 @@ protected:
         const FaceMeshConcept auto& mesh,
         auto*                       buffer)
     {
-        vertexTexCoordIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
+        vertexMaterialIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
             mesh, buffer, mIndexMap);
     }
 
@@ -733,26 +733,26 @@ protected:
     void setTriangleColorsBuffer(const FaceMeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the content of vertex texture indices buffer
+     * @brief Function that sets the content of vertex material indices buffer
      * and sends the data to the GPU.
      *
-     * Although the vertex texcoords are associated to the vertices in the vclib
-     * meshes, for rendering purposes the index of each vertex texcoord is
-     * associated to the triangles (that must be triangulated accordingly).
+     * Although the materials are associated to the vertices, for rendering
+     * purposes the index of each material is associated to the triangles
+     * (that must be triangulated accordingly).
      *
      * The function should allocate and fill a cpu buffer to store the vertex
-     * texcoord indices using the `numTris()` and `fillVertexTextureIndices()`
+     * material indices using the `numTris()` and `fillVertexMaterialIndices()`
      * functions, and then send the data to the GPU using the rendering backend.
      *
      * There is no need to check whether the Mesh can provide per-vertex
-     * texcoords since the function is called only if the mesh has them.
+     * material indices since the function is called only if the mesh has them.
      *
      * See the @ref MeshRenderData class documentation for an example of
      * implementation.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexTextureIndicesBuffer(const FaceMeshConcept auto&) {}
+    void setVertexMaterialIndicesBuffer(const FaceMeshConcept auto&) {}
 
     /**
      * @brief Function that sets the content of wedge texture indices buffer and
@@ -1001,13 +1001,13 @@ private:
                 }
             }
 
-            // texture indices are stored per face (each face has its own
-            // texture index)
-            if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-                if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+            // material indices are stored per face (each face has its own
+            // material index)
+            if constexpr (vcl::HasPerVertexMaterialIndex<MeshType>) {
+                if (vcl::isPerVertexMaterialIndexAvailable(mesh)) {
                     if (btu[toUnderlying(VERT_TEXCOORDS)]) {
-                        // triangle vertex texture indices buffer
-                        derived().setVertexTextureIndicesBuffer(mesh);
+                        // triangle vertex material indices buffer
+                        derived().setVertexMaterialIndicesBuffer(mesh);
                     }
                 }
             }

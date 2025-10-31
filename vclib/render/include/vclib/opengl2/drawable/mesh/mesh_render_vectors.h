@@ -300,14 +300,14 @@ private:
         Base::fillTriangleColors(mesh, mTColors.data(), Color::Format::ABGR);
     }
 
-    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
+    void setVertexMaterialIndicesBuffer(const MeshType& mesh) // override
     {
-        if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+        if (vcl::isPerVertexMaterialIndexAvailable(mesh)) {
             uint nt = Base::numTris();
 
             mVTexIds.resize(nt);
 
-            Base::fillVertexTextureIndices(mesh, mVTexIds.data());
+            Base::fillVertexMaterialIndices(mesh, mVTexIds.data());
         }
     }
 

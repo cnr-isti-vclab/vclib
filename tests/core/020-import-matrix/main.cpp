@@ -487,25 +487,26 @@ void testVertexTexCoords()
     vcl::vertexTexCoordsFromMatrix(mesh, texCoords);
 
     // Create texture coordinate indices vector
-    std::vector<vcl::uint> texCoordIndices = {10, 20, 30};
+    std::vector<vcl::uint> materialIndices = {10, 20, 30};
 
-    // Test vertexTexCoordIndicesFromRange
-    vcl::vertexTexCoordIndicesFromRange(mesh, texCoordIndices);
+    // Test vertexMaterialIndicesFromRange
+    vcl::vertexMaterialIndicesFromRange(mesh, materialIndices);
 
     // Verify texture coordinate and indices
     vcl::uint c = 0;
     REQUIRE(mesh.isPerVertexTexCoordEnabled());
+    REQUIRE(mesh.isPerVertexMaterialIndexEnabled());
     REQUIRE(mesh.vertex(0).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(0).texCoord().v() == texCoords(c, 1));
-    REQUIRE(mesh.vertex(0).texCoord().index() == texCoordIndices[c]);
+    REQUIRE(mesh.vertex(0).materialIndex() == materialIndices[c]);
     c++;
     REQUIRE(mesh.vertex(1).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(1).texCoord().v() == texCoords(c, 1));
-    REQUIRE(mesh.vertex(1).texCoord().index() == texCoordIndices[c]);
+    REQUIRE(mesh.vertex(1).materialIndex() == materialIndices[c]);
     c++;
     REQUIRE(mesh.vertex(3).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(3).texCoord().v() == texCoords(c, 1));
-    REQUIRE(mesh.vertex(3).texCoord().index() == texCoordIndices[c]);
+    REQUIRE(mesh.vertex(3).materialIndex() == materialIndices[c]);
 }
 
 template<typename MeshType, typename TMatrix>
@@ -993,11 +994,11 @@ TEST_CASE("Import mesh - error handling")
     SECTION("Wrong texture coordinate indices range size")
     {
         mesh.addVertices(3);
-        std::vector<vcl::uint> wrongTexCoordIndices = {
+        std::vector<vcl::uint> wrongMaterialIndices = {
             0, 1}; // size 2, should be 3
 
         REQUIRE_THROWS_AS(
-            vcl::vertexTexCoordIndicesFromRange(mesh, wrongTexCoordIndices),
+            vcl::vertexMaterialIndicesFromRange(mesh, wrongMaterialIndices),
             vcl::WrongSizeException);
     }
 

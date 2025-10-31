@@ -669,16 +669,15 @@ void appendDuplicateVertexTexCoordsToBuffer(
 }
 
 /**
- * @brief Append the texture coordinate indices of the duplicated vertices to
- * the given buffer.
+ * @brief Append the material indices of the duplicated vertices to the given
+ * buffer.
  *
  * Given the list of vertices to duplicate, this function appends to the given
- * buffer the vertex texture coordinate indices of the vertices listed in the
- * input list.
+ * buffer the vertex material indices of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
  * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
- * vertexTexCoordIndicesToBuffer function:
+ * vertexMaterialIndicesToBuffer function:
  *
  * @code{.cpp}
  *
@@ -690,8 +689,8 @@ void appendDuplicateVertexTexCoordsToBuffer(
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
- * vertexTexCoordIndicesToBuffer(mesh, buffer.data());
- * appendDuplicateVertexTexCoordIndicesToBuffer(mesh, vertsToDuplicate,
+ * vertexMaterialIndicesToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexMaterialIndicesToBuffer(mesh, vertsToDuplicate,
  *     buffer.data());
  * @endcode
  *
@@ -700,17 +699,16 @@ void appendDuplicateVertexTexCoordsToBuffer(
  *
  * @tparam MeshType: The type of the mesh.
  *
- * @param[in] mesh: The mesh from which take the vertex texture coordinate
- * indices.
+ * @param[in] mesh: The mesh from which take the vertex material indices.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
- * @param[out] buffer: The buffer where to append the duplicated vertex texture
- * coordinate indices.
+ * @param[out] buffer: The buffer where to append the duplicated vertex material
+ * indices.
  *
  * @ingroup append_replace_to_buffer
  */
 template<MeshConcept MeshType>
-void appendDuplicateVertexTexCoordIndicesToBuffer(
+void appendDuplicateVertexMaterialIndicesToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer)
@@ -719,10 +717,10 @@ void appendDuplicateVertexTexCoordIndicesToBuffer(
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        buffer[i] = mesh.vertex(v).texCoord().index();
+        buffer[i] = mesh.vertex(v).materialIndex();
         ++i;
     }
 }

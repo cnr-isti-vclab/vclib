@@ -1396,9 +1396,9 @@ void vertexTexCoordsToBuffer(
 }
 
 /**
- * @brief Export the vertex texcoord indices of a mesh to a buffer.
+ * @brief Export the vertex material indices of a mesh to a buffer.
  *
- * This function exports the vertex texcoord indices of a mesh to a buffer.
+ * This function exports the vertex material indices of a mesh to a buffer.
  * Indices are stored in the buffer following the order the vertices appear in
  * the mesh. The buffer must be preallocated with the correct size (number of
  * vertices).
@@ -1414,27 +1414,27 @@ void vertexTexCoordsToBuffer(
  * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
-void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
+void vertexMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
-    for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
-        buffer[i] = t.index();
+    for (uint i = 0; const auto& v : mesh.vertices()) {
+        buffer[i] = v.materialIndex();
         ++i;
     }
 }
 
 /**
- * @brief Export the vertex texture indices of a mesh into a buffer that has
- * a texture index for each face of the mesh (as if the indices were wedge
- * texcoord indices).
+ * @brief Export the vertex material indices of a mesh into a buffer that has
+ * a material index for each face of the mesh (as if the indices were face
+ * material indices).
  *
- * This function exports the vertex texture indices of a mesh to a buffer. The
+ * This function exports the vertex material indices of a mesh to a buffer. The
  * indices are stored in the buffer following the order the faces appear in the
  * mesh. The buffer must be preallocated with the correct size (number of
  * faces).
  *
- * For each face, the function takes the texture index of the first vertex of
+ * For each face, the function takes the material index of the first vertex of
  * the face and stores it in the buffer.
  *
  * @note This function does not guarantee that the rows of the buffer
@@ -1448,31 +1448,31 @@ void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void vertexTexCoordIndicesAsFaceTexCoordIndicesToBuffer(
+void vertexMaterialIndicesAsFaceTexCoordIndicesToBuffer(
     const MeshType& mesh,
     auto*           buffer)
 {
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
     for (uint i = 0; const auto& f : mesh.faces()) {
-        ushort ti = f.vertex(0)->texCoord()->index();
+        ushort ti = f.vertex(0)->materialIndex();
         buffer[i] = ti;
         ++i;
     }
 }
 
 /**
- * @brief Export the vertex texture indices of a mesh into a buffer that has
- * a texture index for each triangle of the mesh (as if the indices were wedge
- * texcoord indices).
+ * @brief Export the vertex material indices of a mesh into a buffer that has
+ * a material index for each triangle of the mesh (as if the indices were face
+ * material indices).
  *
- * This function exports the vertex texture indices of a mesh to a buffer. The
+ * This function exports the vertex material indices of a mesh to a buffer. The
  * indices are stored in the buffer following the order the faces appear in the
  * mesh. The buffer must be preallocated with the correct size (number of
  * triangles).
  *
  * For each triangle computed from the triangulation of a face, the function
- * takes the texture index of the first vertex of the face that contains the
+ * takes the material index of the first vertex of the face that contains the
  * triangle and stores it in the buffer.
  *
  * The function requires an already computed index map, which maps each triangle
@@ -1486,15 +1486,15 @@ void vertexTexCoordIndicesAsFaceTexCoordIndicesToBuffer(
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void vertexTexCoordIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
+void vertexMaterialIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap)
 {
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
     for (const auto& f : mesh.faces()) {
-        ushort ti    = f.vertex(0)->texCoord().index();
+        ushort ti    = f.vertex(0)->materialIndex();
         uint   first = indexMap.triangleBegin(f.index());
         uint   last  = first + indexMap.triangleNumber(f.index());
         for (uint t = first; t < last; ++t) {

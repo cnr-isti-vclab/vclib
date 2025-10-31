@@ -1113,33 +1113,33 @@ void vertexTexCoordsFromBuffer(
 }
 
 /**
- * @brief Sets the vertex texcoord indices of the given input `mesh` from the
- * input texcoord indices buffer, that is expected to be a contiguous array of
- * #V scalars, where each value contains the texcoord index of a vertex.
+ * @brief Sets the vertex material indices of the given input `mesh` from the
+ * input material indices buffer, that is expected to be a contiguous array of
+ * #V scalars, where each value contains the material index of a vertex.
  *
- * If not specified, the number of texcoord indices values in the input buffer
+ * If not specified, the number of material indices values in the input buffer
  * is assumed to be at least the number of vertices of the mesh. The extra
- * texcoord indices values are ignored.
+ * material indices values are ignored.
  *
- * The function enables the per-vertex texcoords component if it is not already
- * enabled.
+ * The function enables the per-vertex material index component if it is not
+ * already enabled.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex texcoord
+ * @param[in/out] mesh: the mesh on which import the input vertex material
  * indices.
- * @param[in] buffer: the input vertex texcoord indices buffer.
+ * @param[in] buffer: the input vertex material indices buffer.
  *
  * @ingroup import_buffer
  */
 template<MeshConcept MeshType>
-void vertexTexCoordIndicesFromBuffer(MeshType& mesh, const auto* buffer)
+void vertexMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    enableIfPerVertexTexCoordOptional(mesh);
-    requirePerVertexTexCoord(mesh);
+    enableIfPerVertexMaterialIndexOptional(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
-    for (uint i = 0; auto& t : mesh.vertices() | views::texCoords) {
-        t.index() = buffer[i];
+    for (uint i = 0; auto& v : mesh.vertices()) {
+        v.materialIndex() = buffer[i];
         ++i;
     }
 }
