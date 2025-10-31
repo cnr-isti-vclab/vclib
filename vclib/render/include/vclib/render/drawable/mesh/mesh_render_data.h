@@ -408,19 +408,20 @@ protected:
         using FaceType = MeshType::FaceType;
 
         // comparator of faces
-        // ordering first by per-vertex texcoord index (if available),
+        // ordering first by per-vertex material index (if available),
         // then by per-face wedge texcoord index (if available)
         auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
-            if constexpr (HasPerVertexTexCoord<MeshType>) {
-                if (isPerVertexTexCoordAvailable(mesh)) {
-                    uint id1 = f1.vertex(0)->texCoord().index();
-                    uint id2 = f2.vertex(0)->texCoord().index();
+            if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if (isPerVertexMaterialIndexAvailable(mesh)) {
+                    uint id1 = f1.vertex(0)->materialIndex();
+                    uint id2 = f2.vertex(0)->materialIndex();
                     if (id1 != id2) { // do not return true if equal
                         return id1 < id2;
                     }
                 }
             }
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+                // TODO
                 if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                     uint id1 = f1.textureIndex();
                     uint id2 = f2.textureIndex();
@@ -1153,9 +1154,9 @@ private:
         for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
             uint fIndex = mIndexMap.polygon(i);
 
-            if constexpr (HasPerVertexTexCoord<MeshType>) {
-                if (isPerVertexTexCoordAvailable(mesh)) {
-                    uint mId = mesh.face(fIndex).vertex(0)->texCoord().index();
+            if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if (isPerVertexMaterialIndexAvailable(mesh)) {
+                    uint mId = mesh.face(fIndex).vertex(0)->materialIndex();
                     if (mId != currentVertMatID && n != 0) {
                         if (currentVertMatID != UINT_NULL) {
                             mMaterialChunks.push_back(
@@ -1171,6 +1172,7 @@ private:
                 }
             }
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+                // TODO
                 if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                     uint mId = mesh.face(fIndex).textureIndex();
                     if (mId != currentWedgeMatID && n != 0) {
