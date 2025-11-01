@@ -241,11 +241,6 @@ public:
             materialId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
         }
 
-        // TODO: manage this case! -> needs refactor mesh
-        if (materialId == UINT_NULL && m.materialsNumber() > 0) {
-            materialId = 0;
-        }
-
         assert (materialId >= 0 && materialId < m.materialsNumber());
         mMaterialUniforms.update(m.material(materialId), isPerVertexColorAvailable(m));
         mMaterialUniforms.bind();

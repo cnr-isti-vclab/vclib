@@ -52,6 +52,7 @@ class Vertex :
             vcl::vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
             vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
             vcl::vert::OptionalTangent3<Scalar, Vertex<Scalar>>, // key addition
+            vcl::vert::OptionalMaterialIndex<Vertex<Scalar>>,
             vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
             vcl::vert::OptionalMark<Vertex<Scalar>>,
             vcl::vert::CustomComponents<Vertex<Scalar>>>
