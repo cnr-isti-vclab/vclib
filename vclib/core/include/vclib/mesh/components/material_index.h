@@ -33,7 +33,7 @@ class MaterialIndex :
         public Component<
             MaterialIndex<ParentElemType, OPT>,
             CompId::MATERIAL_INDEX,
-            ushort,
+            uint,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -41,7 +41,7 @@ class MaterialIndex :
     using Base = Component<
         MaterialIndex<ParentElemType, OPT>,
         CompId::MATERIAL_INDEX,
-        ushort,
+        uint,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
@@ -50,7 +50,7 @@ public:
     /* Constructors */
 
     /**
-     * @brief Constructor that initializes the material index to USHORT_NULL.
+     * @brief Constructor that initializes the material index to UINT_NULL.
      */
     MaterialIndex()
     {
@@ -61,7 +61,7 @@ public:
 
     /**
      * @private
-     * @brief Initializes the material index to USHORT_NULL.
+     * @brief Initializes the material index to UINT_NULL.
      *
      * It is made in the init function since the component could be not
      * available during construction (e.g. if the component is optional and not
@@ -69,7 +69,7 @@ public:
      *
      * This member function is hidden by the element that inherits this class.
      */
-    void init() { materialIndex() = USHORT_NULL; }
+    void init() { materialIndex() = UINT_NULL; }
 
     /* Member functions */
 
@@ -77,13 +77,13 @@ public:
      * @brief Returns a reference to the material index.
      * @return a reference to the material index.
      */
-    ushort& materialIndex() { return Base::data(); }
+    uint& materialIndex() { return Base::data(); }
 
     /**
      * @brief Returns the value of the material index.
      * @return the value of the material index.
      */
-    ushort materialIndex() const { return Base::data(); }
+    uint materialIndex() const { return Base::data(); }
 
     /**
      * @brief Returns a reference to the material index.
@@ -92,7 +92,7 @@ public:
      *
      * @return a reference to the material index.
      */
-    ushort& textureIndex() { return Base::data(); }
+    uint& textureIndex() { return Base::data(); }
 
     /**
      * @brief Returns the value of the material index.
@@ -101,7 +101,7 @@ public:
      *
      * @return the value of the material index.
      */
-    ushort textureIndex() const { return Base::data(); }
+    uint textureIndex() const { return Base::data(); }
 
 protected:
     // Component interface function
