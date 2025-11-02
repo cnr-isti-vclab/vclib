@@ -31,6 +31,9 @@ void trimeshStaticAsserts()
     static_assert(!HasQuads<TriMesh>, "");
     static_assert(!HasPolygons<TriMesh>, "");
 
+    // TODO
+    // static_assert(HasMaterials<TriMesh>, "The TriMesh has no materials.");
+    // TODO: remove
     static_assert(
         HasTextureImages<TriMesh>, "The TriMesh has no texture images.");
     static_assert(

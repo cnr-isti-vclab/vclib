@@ -50,6 +50,7 @@ set(HEADERS
     mesh/components/component.h
     mesh/components/custom_components.h
     mesh/components/mark.h
+    mesh/components/materials.h
     mesh/components/name.h
     mesh/components/normal.h
     mesh/components/position.h

@@ -25,6 +25,7 @@
 
 #include <vclib/meshes.h>
 
+// TODO: remove
 void texturesComponentStaticAsserts()
 {
     using namespace vcl;

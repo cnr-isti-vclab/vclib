@@ -31,6 +31,9 @@ void polymeshStaticAsserts()
     static_assert(!HasQuads<PolyMesh>, "");
     static_assert(HasPolygons<PolyMesh>, "");
 
+    // TODO
+    // static_assert(HasMaterials<PolyMesh>, "The PolyMesh has no materials.");
+    // TODO: remove
     static_assert(
         HasTextureImages<PolyMesh>, "The PolyMesh has no texture images.");
     static_assert(
