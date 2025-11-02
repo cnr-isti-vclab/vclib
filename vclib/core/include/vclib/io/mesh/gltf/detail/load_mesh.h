@@ -99,14 +99,14 @@ int loadGltfPrimitiveMaterial(
         /* Put the data in the mesh */
 
         if constexpr (HasMaterials<MeshType>) {
-            Material mat(
-                baseColor,
-                metallic,
-                roughness,
-                emissiveColor,
-                alphaMode,
-                alphaCutoff,
-                doubleSided);
+            Material mat;
+            mat.baseColor() = baseColor;
+            mat.metallic() = metallic;
+            mat.roughness() = roughness;
+            mat.emissiveColor() = emissiveColor;
+            mat.alphaMode() = alphaMode;
+            mat.alphaCutoff() = alphaCutoff;
+            mat.doubleSided() = doubleSided;
             m.pushMaterial(mat);
             idx = m.materialsNumber() - 1; // index of the added material
         }

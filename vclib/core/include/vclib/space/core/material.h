@@ -24,6 +24,7 @@
 #define VCL_SPACE_CORE_MATERIAL_H
 
 #include "color.h"
+#include "image.h"
 
 #include <vclib/base.h>
 
@@ -41,40 +42,30 @@ public:
 
 private:
     // essential PBR properties
-    vcl::Color mBaseColor = vcl::Color::White;
+    Color mBaseColor = Color::White;
 
     float mMetallic  = 1.0f;
     float mRoughness = 1.0f;
 
     // optional PBR properties
-    vcl::Color mEmissiveColor = vcl::Color::Black;
+    Color mEmissiveColor = Color::Black;
 
     AlphaMode mAlphaMode = AlphaMode::ALPHA_OPAQUE;
 
     float mAlphaCutoff = 0.5f; // only used when mAlphaMode is MASK
+
+    Image mBaseColorTexture;
+
+    std::string mBaseColorTexturePath;
 
     bool mDoubleSided = false;
 
 public:
     Material() {}
 
-    Material(
-        const vcl::Color& baseColor,
-        float             metallic,
-        float             roughness,
-        const vcl::Color& emissiveColor,
-        AlphaMode         alphaMode,
-        float             alphaCutoff,
-        bool              doubleSided) :
-            mBaseColor(baseColor), mMetallic(metallic), mRoughness(roughness),
-            mEmissiveColor(emissiveColor), mAlphaMode(alphaMode),
-            mAlphaCutoff(alphaCutoff), mDoubleSided(doubleSided)
-    {
-    }
+    const Color& baseColor() const { return mBaseColor; }
 
-    const vcl::Color& baseColor() const { return mBaseColor; }
-
-    vcl::Color& baseColor() { return mBaseColor; }
+    Color& baseColor() { return mBaseColor; }
 
     float metallic() const { return mMetallic; }
 
@@ -84,13 +75,9 @@ public:
 
     float& roughness() { return mRoughness; }
 
-    const vcl::Color& emissiveColor() const { return mEmissiveColor; }
+    const Color& emissiveColor() const { return mEmissiveColor; }
 
-    vcl::Color& emissiveColor() { return mEmissiveColor; }
-
-    bool doubleSided() const { return mDoubleSided; }
-
-    bool& doubleSided() { return mDoubleSided; }
+    Color& emissiveColor() { return mEmissiveColor; }
 
     AlphaMode alphaMode() const { return mAlphaMode; }
 
@@ -100,12 +87,30 @@ public:
 
     float& alphaCutoff() { return mAlphaCutoff; }
 
+    const Image& baseColorTexture() const { return mBaseColorTexture; }
+
+    Image& baseColorTexture() { return mBaseColorTexture; }
+
+    const std::string& baseColorTexturePath() const
+    {
+        return mBaseColorTexturePath;
+    }
+
+    std::string& baseColorTexturePath() { return mBaseColorTexturePath; }
+
+    bool doubleSided() const { return mDoubleSided; }
+
+    bool& doubleSided() { return mDoubleSided; }
+
     void serialize(std::ostream& os) const
     {
         mBaseColor.serialize(os);
         vcl::serialize(os, mMetallic, mRoughness);
         mEmissiveColor.serialize(os);
-        vcl::serialize(os, mAlphaMode, mAlphaCutoff, mDoubleSided);
+        vcl::serialize(os, mAlphaMode, mAlphaCutoff);
+        mBaseColorTexture.serialize(os);
+        vcl::serialize(os, mBaseColorTexturePath);
+        vcl::serialize(os, mDoubleSided);
     }
 
     void deserialize(std::istream& is)
@@ -113,7 +118,10 @@ public:
         mBaseColor.deserialize(is);
         vcl::deserialize(is, mMetallic, mRoughness);
         mEmissiveColor.deserialize(is);
-        vcl::deserialize(is, mAlphaMode, mAlphaCutoff, mDoubleSided);
+        vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
+        mBaseColorTexture.deserialize(is);
+        vcl::deserialize(is, mBaseColorTexturePath);
+        vcl::deserialize(is, mDoubleSided);
     }
 };
 
