@@ -24,7 +24,7 @@
 #define VCL_SPACE_CORE_MATERIAL_H
 
 #include "color.h"
-#include "image.h"
+#include "texture.h"
 
 #include <vclib/base.h>
 
@@ -54,9 +54,7 @@ private:
 
     float mAlphaCutoff = 0.5f; // only used when mAlphaMode is MASK
 
-    Image mBaseColorTexture;
-
-    std::string mBaseColorTexturePath;
+    Texture mBaseColorTexture;
 
     bool mDoubleSided = false;
 
@@ -87,16 +85,9 @@ public:
 
     float& alphaCutoff() { return mAlphaCutoff; }
 
-    const Image& baseColorTexture() const { return mBaseColorTexture; }
+    const Texture& baseColorTexture() const { return mBaseColorTexture; }
 
-    Image& baseColorTexture() { return mBaseColorTexture; }
-
-    const std::string& baseColorTexturePath() const
-    {
-        return mBaseColorTexturePath;
-    }
-
-    std::string& baseColorTexturePath() { return mBaseColorTexturePath; }
+    Texture& baseColorTexture() { return mBaseColorTexture; }
 
     bool doubleSided() const { return mDoubleSided; }
 
@@ -109,7 +100,6 @@ public:
         mEmissiveColor.serialize(os);
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
         mBaseColorTexture.serialize(os);
-        vcl::serialize(os, mBaseColorTexturePath);
         vcl::serialize(os, mDoubleSided);
     }
 
@@ -120,7 +110,6 @@ public:
         mEmissiveColor.deserialize(is);
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
         mBaseColorTexture.deserialize(is);
-        vcl::deserialize(is, mBaseColorTexturePath);
         vcl::deserialize(is, mDoubleSided);
     }
 };
