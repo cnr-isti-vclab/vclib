@@ -35,6 +35,8 @@ void initTexture(pybind11::module& m)
     py::class_<Texture> c(m, "Texture");
     c.def(py::init<>());
 
+    c.def("is_null", &Texture::isNull);
+
     c.def("path", py::overload_cast<>(&Texture::path, py::const_));
     c.def("set_path", [](Texture& t, const std::string& p) {
         t.path() = p;

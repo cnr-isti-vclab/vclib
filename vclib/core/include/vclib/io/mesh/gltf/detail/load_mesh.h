@@ -56,7 +56,7 @@ int loadGltfPrimitiveMaterial(
         Material::AlphaMode       alphaMode;
         double                    metallic, roughness, alphaCutoff;
         bool                      doubleSided;
-        int                       textureImg;
+        int                       baseColorTextureId;
         const tinygltf::Material& mat = model.materials[p.material];
 
         // baseColorFactor
@@ -66,7 +66,7 @@ int loadGltfPrimitiveMaterial(
             baseColor[i] = vc[i] * 255.0;
 
         // baseColorTexture
-        textureImg = mat.pbrMetallicRoughness.baseColorTexture
+        baseColorTextureId = mat.pbrMetallicRoughness.baseColorTexture
                          .index; // get the id of the texture, -1 if not present
 
         // metallicFactor
@@ -107,6 +107,28 @@ int loadGltfPrimitiveMaterial(
             mat.alphaMode() = alphaMode;
             mat.alphaCutoff() = alphaCutoff;
             mat.doubleSided() = doubleSided;
+            if (baseColorTextureId != -1) {
+                const tinygltf::Image& img =
+                    model.images[model.textures[baseColorTextureId].source];
+                // add the path of the texture to the mesh
+                std::string uri = img.uri;
+                uri = std::regex_replace(uri, std::regex("\\%20"), " ");
+                if (uri.empty()) {
+                    uri = "texture_" + std::to_string(baseColorTextureId);
+                }
+                if (img.image.size() > 0 &&
+                    (img.bits == 8 || img.component == 4)) {
+
+                    vcl::Texture txt(
+                        Image(img.image.data(), img.width, img.height), uri);
+
+                    mat.baseColorTexture() = std::move(txt);
+                }
+                else {
+                    // if the image is not valid, just set the path
+                    mat.baseColorTexture().path() = uri;
+                }
+            }
             m.pushMaterial(mat);
             idx = m.materialsNumber() - 1; // index of the added material
         }
@@ -118,9 +140,9 @@ int loadGltfPrimitiveMaterial(
 
         // texture is added even if the mesh has materials
         if constexpr (HasTexturePaths<MeshType>) {
-            if (textureImg != -1) { // if we found a texture
+            if (baseColorTextureId != -1) { // if we found a texture
                 const tinygltf::Image& img =
-                    model.images[model.textures[textureImg].source];
+                    model.images[model.textures[baseColorTextureId].source];
                 // add the path of the texture to the mesh
                 std::string uri = img.uri;
                 uri = std::regex_replace(uri, std::regex("\\%20"), " ");
@@ -130,7 +152,7 @@ int loadGltfPrimitiveMaterial(
                     if (img.image.size() > 0) {
                         if (img.bits == 8 || img.component == 4) {
                             if (uri.empty()) {
-                                uri = "texture_" + std::to_string(textureImg);
+                                uri = "texture_" + std::to_string(baseColorTextureId);
                             }
                             vcl::Texture txt(
                                 Image(img.image.data(), img.width, img.height),

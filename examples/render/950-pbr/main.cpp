@@ -83,7 +83,17 @@ int main(int argc, char** argv)
             std::cout << "  doubleSided: " << mat.doubleSided() << std::endl;
             std::cout << "  alphaMode: " << int(mat.alphaMode()) << std::endl;
             std::cout << "  alphaCutoff: " << mat.alphaCutoff() << std::endl;
-            std::cout << "------------------------" << std::endl;
+            std::cout << "  baseColorTexture: ";
+            if (!mat.baseColorTexture().isNull()) {
+                std::cout << mat.baseColorTexture().path() << std::endl;
+                std::cout << "    image size: "
+                          << mat.baseColorTexture().image().width() << " x "
+                          << mat.baseColorTexture().image().height()
+                          << std::endl;
+            }
+            else {
+                std::cout << "null" << std::endl;
+            }
         }
         std::cout << "------------------------" << std::endl;
     }

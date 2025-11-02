@@ -66,6 +66,13 @@ public:
     }
 
     /**
+     * @brief Checks whether the texture is null (no image and no path).
+     *
+     * @return true if the texture is null, false otherwise.
+     */
+    bool isNull() const { return mImg.isNull() && mPath.empty(); }
+
+    /**
      * @brief Get the path of the texture.
      *
      * @return the path of the texture.
