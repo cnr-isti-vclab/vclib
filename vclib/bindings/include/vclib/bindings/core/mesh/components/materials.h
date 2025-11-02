@@ -34,7 +34,39 @@ void initMaterials(pybind11::class_<MeshType>& c)
 {
     namespace py = pybind11;
 
-    // TODO
+    c.def("materials_number", &MeshType::materialsNumber);
+
+    c.def(
+        "mesh_base_path",
+        py::overload_cast<>(&MeshType::meshBasePath, py::const_));
+    c.def("set_mesh_base_path", [](MeshType& t, const std::string& p) {
+        t.meshBasePath() = p;
+    });
+    c.def(
+        "material",
+        py::overload_cast<uint>(&MeshType::material, py::const_));
+    c.def("set_material", [](MeshType& t, uint i, const Material& m) {
+        t.material(i) = m;
+    });
+
+    c.def("clear_materials", &MeshType::clearMaterials);
+    c.def("push_material", &MeshType::pushMaterial);
+
+    using MaterialView = decltype(MeshType().materials());
+
+    if (!registeredTypes.contains(typeid(MaterialView))) {
+        // inner class that allows to iterate over textures
+        pybind11::class_<MaterialView> v(c, "_MaterialRange");
+        v.def(
+            "__iter__",
+            [](MaterialView& v) {
+                return py::make_iterator(v.begin(), v.end());
+            },
+            py::keep_alive<0, 1>());
+        registeredTypes.insert(typeid(MaterialView));
+    }
+
+    c.def("materials", py::overload_cast<>(&MeshType::materials));
 }
 
 } // namespace vcl::bind
