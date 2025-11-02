@@ -785,7 +785,8 @@ protected:
                     e.C::init();
                 }
             }
-            // then resize the component containers with tied size to vertex number
+            // then resize the component containers with tied size to vertex
+            // number
             if constexpr (comp::IsTiedToVertexNumber<C>) {
                 static const int N = T::VERTEX_NUMBER;
                 if constexpr (N < 0) {
