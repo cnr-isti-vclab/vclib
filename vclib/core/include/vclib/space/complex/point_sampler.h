@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H
-#define VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H
+#ifndef VCL_SPACE_COMPLEX_POINT_SAMPLER_H
+#define VCL_SPACE_COMPLEX_POINT_SAMPLER_H
 
 #include <vclib/algorithms/core.h>
 #include <vclib/mesh.h>
@@ -147,11 +147,37 @@ public:
         mSamples[i] = p;
     }
 
+    template<MeshConcept MeshType>
+    MeshType toMesh() const
+    {
+        MeshType mesh;
+        mesh.reserveVertices(this->size());
+        for (const auto& p : mSamples) {
+            mesh.addVertex(p);
+        }
+        return mesh;
+    }
+
     ConstIterator begin() const { return mSamples.begin(); }
 
     ConstIterator end() const { return mSamples.end(); }
 };
 
+/**
+ * @brief A concept representing a generic PointSampler.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a PointSampler class having any Point type.
+ *
+ * @tparam T: The type to be tested for conformity to the PointSamplerConcept.
+ *
+ * @ingroup space_complex
+ */
+template<typename T>
+concept PointSamplerConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    PointSampler<typename RemoveRef<T>::PointType>>;
+
 } // namespace vcl
 
-#endif // VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H
+#endif // VCL_SPACE_COMPLEX_POINT_SAMPLER_H
