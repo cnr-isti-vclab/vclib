@@ -441,6 +441,7 @@ public:
             }
         }
 
+        // todo
         if constexpr (mesh::HasTexturePaths<Mesh<Args...>>) {
             uint nTextures = this->textureNumber();
 
@@ -464,6 +465,30 @@ public:
             }
 
             if (nTextures > 0 || mapping.size() > 0) {
+                (updateMaterialIndicesOfContainerTypeAfterAppend<Args>(
+                     *this, sizes, mapping),
+                 ...);
+            }
+        }
+        else if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
+            uint nMaterials = this->materialNumber();
+
+            std::vector<uint> mapping(m.materialNumber());
+
+            for (uint i = 0; i < m.materialNumber(); ++i) {
+                auto it = std::find(
+                    this->materialBegin(), this->materialEnd(), m.material(i));
+
+                if (it == this->materialEnd()) {
+                    this->pushMaterial(m.material(i));
+                    mapping[i] = nMaterials++;
+                }
+                else {
+                    mapping[i] = std::distance(this->materialBegin(), it);
+                }
+            }
+
+            if (nMaterials > 0 || mapping.size() > 0) {
                 (updateMaterialIndicesOfContainerTypeAfterAppend<Args>(
                      *this, sizes, mapping),
                  ...);
