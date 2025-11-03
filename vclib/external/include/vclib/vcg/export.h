@@ -157,6 +157,12 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
             fi++;
         }
     }
+
+    if constexpr (HasMaterials<MeshType>) {
+        for (const Material& m : mesh.materials()) {
+            vcgMesh.textures.push_back(m.baseColorTexture().path());
+        }
+    }
 }
 
 } // namespace vcl::vc

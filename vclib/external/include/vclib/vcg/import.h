@@ -373,9 +373,17 @@ void importMeshFromVCGMesh(
             vcgMesh.bbox.max.X(), vcgMesh.bbox.max.Y(), vcgMesh.bbox.max.Z());
     }
 
+    // todo
     if constexpr (HasTexturePaths<MeshType>) {
         for (const auto& s : vcgMesh.textures) {
             mesh.pushTexturePath(s);
+        }
+    }
+    else if constexpr (HasMaterials<MeshType>) {
+        for (const auto& s : vcgMesh.textures) {
+            Material m;
+            m.baseColorTexture().path() = s;
+            mesh.pushMaterial(m);
         }
     }
 
