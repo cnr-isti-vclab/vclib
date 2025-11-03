@@ -280,6 +280,11 @@ public:
                 setTextures(true);
             }
         }
+        if constexpr (HasMaterials<Mesh>) {
+            if (m.materialNumber() > 0) {
+                setMaterials(true);
+            }
+        }
     }
 
     /**
