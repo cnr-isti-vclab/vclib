@@ -59,6 +59,8 @@ int loadGltfPrimitiveMaterial(
         int                       baseColorTextureId;
         const tinygltf::Material& mat = model.materials[p.material];
 
+        std::string matName = mat.name;
+
         // baseColorFactor
         const std::vector<double>& vc =
             mat.pbrMetallicRoughness.baseColorFactor; // has default value
@@ -100,6 +102,7 @@ int loadGltfPrimitiveMaterial(
 
         if constexpr (HasMaterials<MeshType>) {
             Material mat;
+            mat.name() = matName;
             mat.baseColor() = baseColor;
             mat.metallic() = metallic;
             mat.roughness() = roughness;

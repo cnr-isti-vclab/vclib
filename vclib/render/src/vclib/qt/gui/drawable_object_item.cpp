@@ -150,8 +150,11 @@ void DrawableObjectItem::addMaterialsItem(const AbstractDrawableMesh& mesh)
         for (const auto& material : mesh.materials()) {
             auto materialItem = new QTreeWidgetItem(materialsItem);
             materialItem->setText(0, QString::number(i));
-            materialItem->setText(
-                1, QString::fromStdString("material_" + std::to_string(i)));
+            std::string name = material.name();
+            if (name.empty()) {
+                name = "material_" + std::to_string(i);
+            }
+            materialItem->setText(1, QString::fromStdString(name));
             makeItemNotSelectable(materialItem);
 
             addMaterialData(material, materialItem);
