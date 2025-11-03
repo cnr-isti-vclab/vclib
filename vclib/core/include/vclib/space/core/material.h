@@ -41,6 +41,8 @@ public:
     enum class AlphaMode { ALPHA_OPAQUE, ALPHA_MASK, ALPHA_BLEND };
 
 private:
+    std::string mName;
+
     // essential PBR properties
     Color mBaseColor = Color::White;
 
@@ -60,6 +62,10 @@ private:
 
 public:
     Material() {}
+
+    const std::string& name() const { return mName; }
+
+    std::string& name() { return mName; }
 
     const Color& baseColor() const { return mBaseColor; }
 
@@ -95,6 +101,7 @@ public:
 
     void serialize(std::ostream& os) const
     {
+        vcl::serialize(os, mName);
         mBaseColor.serialize(os);
         vcl::serialize(os, mMetallic, mRoughness);
         mEmissiveColor.serialize(os);
@@ -105,6 +112,7 @@ public:
 
     void deserialize(std::istream& is)
     {
+        vcl::deserialize(is, mName);
         mBaseColor.deserialize(is);
         vcl::deserialize(is, mMetallic, mRoughness);
         mEmissiveColor.deserialize(is);
