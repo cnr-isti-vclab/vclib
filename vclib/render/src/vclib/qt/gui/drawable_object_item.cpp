@@ -65,6 +65,7 @@ void DrawableObjectItem::addMeshItem()
         addMeshInfoItem(*mesh);
         addTransformMatrixItem(*mesh);
         addTexturesItem(*mesh);
+        addMaterialsItem(*mesh);
     }
 }
 
@@ -135,6 +136,125 @@ void DrawableObjectItem::addTexturesItem(const AbstractDrawableMesh& mesh)
             textureItem->setText(1, QString::fromStdString(texture));
             makeItemNotSelectable(textureItem);
         }
+    }
+}
+
+void DrawableObjectItem::addMaterialsItem(const AbstractDrawableMesh& mesh)
+{
+    if (mesh.materials().size() > 0) {
+        auto materialsItem = new QTreeWidgetItem(this);
+        materialsItem->setText(0, "Materials");
+        makeItemNotSelectable(materialsItem);
+
+        uint i = 0;
+        for (const auto& material : mesh.materials()) {
+            auto materialItem = new QTreeWidgetItem(materialsItem);
+            materialItem->setText(0, QString::number(i));
+            materialItem->setText(
+                1, QString::fromStdString("material_" + std::to_string(i)));
+            makeItemNotSelectable(materialItem);
+
+            addMaterialData(material, materialItem);
+
+            i++;
+        }
+    }
+}
+
+void DrawableObjectItem::addMaterialData(
+    const Material&  material,
+    QTreeWidgetItem* parent)
+{
+    // base color
+    auto baseColorItem = new QTreeWidgetItem(parent);
+    baseColorItem->setText(0, "Base Color");
+    baseColorItem->setText(
+        1,
+        QString::fromStdString(
+            "(" + std::to_string(material.baseColor().red()) + ", " +
+            std::to_string(material.baseColor().green()) + ", " +
+            std::to_string(material.baseColor().blue()) + ", " +
+            std::to_string(material.baseColor().alpha()) + ")"));
+    makeItemNotSelectable(baseColorItem);
+
+    // metallic
+    auto metallicItem = new QTreeWidgetItem(parent);
+    metallicItem->setText(0, "Metallic");
+    metallicItem->setText(
+        1, QString::number(material.metallic(), 'f', 3));
+    makeItemNotSelectable(metallicItem);
+
+    // roughness
+    auto roughnessItem = new QTreeWidgetItem(parent);
+    roughnessItem->setText(0, "Roughness");
+    roughnessItem->setText(
+        1, QString::number(material.roughness(), 'f', 3));
+    makeItemNotSelectable(roughnessItem);
+
+    // emissive color
+    if (material.emissiveColor() != Color::Black) {
+        auto emissiveColorItem = new QTreeWidgetItem(parent);
+        emissiveColorItem->setText(0, "Emissive Color");
+        emissiveColorItem->setText(
+            1,
+            QString::fromStdString(
+                "(" + std::to_string(material.emissiveColor().red()) + ", " +
+                std::to_string(material.emissiveColor().green()) + ", " +
+                std::to_string(material.emissiveColor().blue()) + ")"));
+        makeItemNotSelectable(emissiveColorItem);
+    }
+
+    // alpha mode
+    if (material.alphaMode() != Material::AlphaMode::ALPHA_OPAQUE) {
+        auto alphaModeItem = new QTreeWidgetItem(parent);
+        alphaModeItem->setText(0, "Alpha Mode");
+        QString alphaModeStr;
+        switch (material.alphaMode()) {
+            case Material::AlphaMode::ALPHA_OPAQUE:
+                alphaModeStr = "OPAQUE";
+                break;
+            case Material::AlphaMode::ALPHA_MASK:
+                alphaModeStr = "MASK";
+                break;
+            case Material::AlphaMode::ALPHA_BLEND:
+                alphaModeStr = "BLEND";
+                break;
+        }
+        alphaModeItem->setText(1, alphaModeStr);
+        makeItemNotSelectable(alphaModeItem);
+    }
+    // alpha cutoff
+    if (material.alphaMode() == Material::AlphaMode::ALPHA_MASK) {
+        auto alphaCutoffItem = new QTreeWidgetItem(parent);
+        alphaCutoffItem->setText(0, "Alpha Cutoff");
+        alphaCutoffItem->setText(
+            1, QString::number(material.alphaCutoff(), 'f', 3));
+        makeItemNotSelectable(alphaCutoffItem);
+    }
+    // base color Texture
+    if (!material.baseColorTexture().isNull()) {
+        auto baseColorTextureItem = new QTreeWidgetItem(parent);
+        baseColorTextureItem->setText(0, "Base Color Texture");
+
+        QString text =
+            QString::fromStdString(material.baseColorTexture().path());
+
+        const auto& image = material.baseColorTexture().image();
+
+        text += " (";
+        text += image.isNull() ? "not loaded" :
+                                 QString::number(image.width()) + " x " +
+                                     QString::number(image.height());
+        text += ")";
+
+        baseColorTextureItem->setText(1, text);
+    }
+    // double sided
+    if (material.doubleSided()) {
+        auto doubleSidedItem = new QTreeWidgetItem(parent);
+        doubleSidedItem->setText(0, "Double Sided");
+        doubleSidedItem->setText(1, "True");
+        makeItemNotSelectable(doubleSidedItem);
     }
 }
 

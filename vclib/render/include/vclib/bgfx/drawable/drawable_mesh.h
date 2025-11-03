@@ -188,6 +188,16 @@ public:
         return txs;
     }
 
+    View<MatIt> materials() const override
+    {
+        if constexpr (HasMaterials<MeshType>) {
+            return MeshType::materials();
+        }
+        else {
+            return View<MatIt>();
+        }
+    }
+
     // DrawableObject implementation
 
     void init() override {}

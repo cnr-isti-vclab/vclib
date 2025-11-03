@@ -45,6 +45,8 @@ protected:
     Box3d mBoundingBox;
 
 public:
+    using MatIt = std::vector<Material>::const_iterator;
+
     AbstractDrawableMesh() = default;
 
     AbstractDrawableMesh(const AbstractDrawableMesh& other) = default;
@@ -73,6 +75,11 @@ public:
     virtual std::vector<std::string> textures() const
     {
         return std::vector<std::string>();
+    }
+
+    virtual View<MatIt> materials() const
+    {
+        return View<MatIt>();
     }
 
     // DrawableObject implementation
