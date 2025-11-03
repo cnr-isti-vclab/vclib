@@ -97,7 +97,30 @@ class SelectionTrackBallEventDrawerT :
              {{Key::R, {KeyModifier::CONTROL}}, [&]() {
                 setPrevModIfNonAtomic();
                 mCurrentSelectionMode = SelectionMode::FACE_REGULAR;
-             }}
+             }},
+             {{Key::A, {KeyModifier::CONTROL}}, [&]{
+                setPrevModIfNonAtomic();
+                mCurrentSelectionMode = SelectionMode::FACE_ADD;
+             }},
+             {{Key::A, {KeyModifier::CONTROL, KeyModifier::SHIFT}}, [&]{
+                setPrevModIfNonAtomic();
+                mSelectionCalcRequired = true;
+                mCurrentSelectionMode = SelectionMode::FACE_ALL;
+             }},
+             {{Key::D, {KeyModifier::CONTROL}}, [&]{
+                setPrevModIfNonAtomic();
+                mSelectionCalcRequired = true;
+                mCurrentSelectionMode = SelectionMode::FACE_NONE;
+             }},
+             {{Key::S, {KeyModifier::CONTROL}}, [&]{
+                setPrevModIfNonAtomic();
+                mCurrentSelectionMode = SelectionMode::FACE_SUBTRACT;
+             }},
+             {{Key::I, {KeyModifier::CONTROL}}, [&]{
+                setPrevModIfNonAtomic();
+                mSelectionCalcRequired = true;
+                mCurrentSelectionMode = SelectionMode::FACE_INVERT;
+             }},
     };
 
     std::map<std::pair<Key::Enum, KeyModifiers>, bool> mPressActionExecuted =

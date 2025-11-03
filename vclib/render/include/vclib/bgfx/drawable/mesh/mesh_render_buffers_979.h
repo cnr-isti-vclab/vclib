@@ -251,7 +251,7 @@ public:
             mVertexPositionsBuffer.bindCompute(
                 VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
             mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
-            mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+            mSelectedFacesBuffer.value().bind(mode.isAtomicMode() ? 4 : 6, bgfx::Access::ReadWrite);
             mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
                 (void*) temp2.data());
             bgfx::dispatch(
