@@ -41,6 +41,7 @@ void readPlyTextures(
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
+    // todo
     if constexpr (HasTexturePaths<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
             mesh.pushTexturePath(str);
@@ -57,6 +58,21 @@ void readPlyTextures(
             }
         }
     }
+    else if constexpr (HasMaterials<MeshType>) {
+        for (const std::string& str : header.textureFileNames()) {
+            Material mat;
+            mat.baseColorTexture().path() = str;
+            if (settings.loadTextureImages) {
+                mat.baseColorTexture().image() =
+                    loadImage(mesh.meshBasePath() + str);
+                if (mat.baseColorTexture().image().isNull()) {
+                    log.log(
+                        "Cannot load texture " + str, LogType::WARNING_LOG);
+                }
+            }
+            mesh.pushMaterial(mat);
+        }
+    }
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
@@ -67,6 +83,7 @@ void writePlyTextures(
     LogType&            log,
     const SaveSettings& settings)
 {
+    // todo
     if constexpr (HasTexturePaths<MeshType>) {
         for (uint k = 0; const std::string& str : mesh.texturePaths()) {
             header.pushTextureFileName(str);
@@ -78,6 +95,22 @@ void writePlyTextures(
                     catch (const std::runtime_error& e) {
                         log.log(e.what(), LogType::WARNING_LOG);
                     }
+                }
+            }
+            ++k;
+        }
+    }
+    else if constexpr (HasMaterials<MeshType>) {
+        for (uint k = 0; const Material& mat : mesh.materials()) {
+            header.pushTextureFileName(mat.baseColorTexture().path());
+            if (settings.saveTextureImages) {
+                try {
+                    saveImage(
+                        mat.baseColorTexture().image(),
+                        basePath + mat.baseColorTexture().path());
+                }
+                catch (const std::runtime_error& e) {
+                    log.log(e.what(), LogType::WARNING_LOG);
                 }
             }
             ++k;

@@ -516,7 +516,11 @@ void loadObj(
     // the current material, set by 'usemtl'
     detail::ObjMaterial currentMaterial;
 
+    // todo
     if constexpr (HasTexturePaths<MeshType>) {
+        m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
+    }
+    if constexpr (HasMaterials<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
 
