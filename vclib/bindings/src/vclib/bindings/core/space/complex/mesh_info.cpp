@@ -71,7 +71,8 @@ void initMeshInfo(pybind11::module& m)
     cpt.value("MATERIAL_INDEX", MATERIAL_INDEX);
     cpt.value("WEDGE_TEXCOORDS", WEDGE_TEXCOORDS);
     cpt.value("CUSTOM_COMPONENTS", CUSTOM_COMPONENTS);
-    cpt.value("TEXTURES", TEXTURES);
+    cpt.value("TEXTURES", TEXTURES); // todo
+    cpt.value("MATERIALS", MATERIALS);
     cpt.export_values();
 
     py::enum_<MeshInfo::DataType> dt(c, "DataType");
@@ -136,7 +137,8 @@ void initMeshInfo(pybind11::module& m)
     c.def(
         "has_per_edge_custom_components",
         &MeshInfo::hasPerEdgeCustomComponents);
-    c.def("has_textures", &MeshInfo::hasTextures);
+    c.def("has_textures", &MeshInfo::hasTextures); // todo
+    c.def("has_materials", &MeshInfo::hasMaterials);
 
     c.def("update_mesh_type", &MeshInfo::updateMeshType);
 
@@ -240,7 +242,8 @@ void initMeshInfo(pybind11::module& m)
         "set_per_edge_custom_components",
         &MeshInfo::setPerEdgeCustomComponents,
         "b"_a = true);
-    c.def("set_textures", &MeshInfo::setTextures, "b"_a = true);
+    c.def("set_textures", &MeshInfo::setTextures, "b"_a = true); // todo
+    c.def("set_materials", &MeshInfo::setMaterials, "b"_a = true);
 
     c.def(
         "add_per_element_custom_component",

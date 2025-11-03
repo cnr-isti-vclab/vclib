@@ -105,6 +105,7 @@ public:
         WEDGE_TEXCOORDS,
         CUSTOM_COMPONENTS,
         TEXTURES,
+        MATERIALS,
         NUM_COMPONENTS
     };
 
@@ -489,6 +490,11 @@ public:
 
     bool hasTextures() const { return hasPerElementComponent(MESH, TEXTURES); }
 
+    bool hasMaterials() const
+    {
+        return hasPerElementComponent(MESH, MATERIALS);
+    }
+
     /*
      * Setter functions: they are used by the load functions to tell which
      * Elements/Components are loaded from a file, and they can be used by the
@@ -645,6 +651,11 @@ public:
     void setTextures(bool b = true)
     {
         setPerElementComponent(MESH, TEXTURES, b, PrimitiveType::NONE);
+    }
+
+    void setMaterials(bool b = true)
+    {
+        setPerElementComponent(MESH, MATERIALS, b, PrimitiveType::NONE);
     }
 
     void addPerElementCustomComponent(
