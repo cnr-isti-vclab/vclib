@@ -40,7 +40,7 @@ class SelectionTrackBallEventDrawerT :
         public TrackBallEventDrawerT<Scalar, DerivedRenderApp>
 {
     using Base = TrackBallEventDrawerT<Scalar, DerivedRenderApp>;
-    
+
     SelectionBox  mSelectionBox;
     ToolSets      mCurrentToolset       = ToolSets::DEFAULT;
     SelectionMode mCurrentSelectionMode = SelectionMode::VERTEX_REGULAR;
@@ -146,11 +146,8 @@ public:
     // area (dragging the mouse with LMB held down)
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (mLMBHeld) {
-            return;
-        }
         if (key == Key::S && modifiers[KeyModifier::ALT] && !mRMBHeld &&
-            !mMMBHeld && !mSelectionCalcRequired) {
+            !mMMBHeld && !mLMBHeld && !mSelectionCalcRequired) {
             mCurrentToolset =
                 (mCurrentToolset == ToolSets::DEFAULT ? ToolSets::SELECTION :
                                                         ToolSets::DEFAULT);
@@ -162,6 +159,9 @@ public:
         }
         if (mCurrentToolset == ToolSets::DEFAULT) {
             Base::onKeyPress(key, modifiers);
+            return;
+        }
+        if (mLMBHeld) {
             return;
         }
         auto pair  = std::make_pair(key, modifiers);
