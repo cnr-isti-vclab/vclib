@@ -25,4 +25,9 @@
         2. Use said indices to get all the triangle indices in the "poly triangle grouping buffer"
         3. Set the bits of the triangles corresponding to the indices in the triangle selection buffer to 1
     - Every time you do a regular selection you have to first set the triangle selection buffer to 0s first (so basically you replace the "regular selection" with an "add selection")
-- Selezione "on the fly" (mentre stai ancora mettendo il box mostra cosa e' dentro esso)
+- When you init a view you have to:
+    - Set the framebuffer
+    - Set the viewRect
+    - Set all the transforms
+    - Touch the view
+    - FOR MORE INFORMATION SEE context.cpp
