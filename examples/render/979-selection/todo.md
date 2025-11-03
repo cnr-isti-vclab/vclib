@@ -15,6 +15,11 @@
         (If possible ignore values equal to one (unless the others are near it), because there's likely nothing there)
         4. If point depth (NDC) is within an epsilon of said depth, it is visible; otherwise it isn't
         5. Select the points that are visible and that are within the selection box
+    2. Depth buffer interpolation new version:
+        1. Calculate depth buffer (depth le)
+        2. while doing the pass, write in a "TrianglePassedDepthTest" buffer
+        3. Calculate regular selection
+        4. Use compute that ANDs the Selection buffer and the "TrianglePassedDepthTest" buffer
 - Selection per poly for poly meshes:
     - Requires 3 buffers:
         1. The triangle selection buffer (the same used for regular face selection)
