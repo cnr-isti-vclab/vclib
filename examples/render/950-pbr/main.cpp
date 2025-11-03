@@ -35,6 +35,7 @@ int main(int argc, char** argv)
     std::string e3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
     std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
     std::string e5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf";
+    std::string e6 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxTextured/BoxTextured.gltf";
 
     // Examples to test
 
@@ -71,11 +72,12 @@ int main(int argc, char** argv)
     // the lower part a semitransparent blue matte
     std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(t6);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e6);
 
     for(const auto& mesh : meshes) {
         std::cout << "Mesh: " << mesh.name() << std::endl;
         for(const auto& mat : mesh.materials()) {
+            std::cout << " Material: " << mat.name() << std::endl;
             std::cout << "  baseColorFactor: " << mat.baseColor() << std::endl;
             std::cout << "  metallicFactor: " << mat.metallic() << std::endl;
             std::cout << "  roughnessFactor: " << mat.roughness() << std::endl;
@@ -94,6 +96,7 @@ int main(int argc, char** argv)
             else {
                 std::cout << "null" << std::endl;
             }
+            std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;
     }
