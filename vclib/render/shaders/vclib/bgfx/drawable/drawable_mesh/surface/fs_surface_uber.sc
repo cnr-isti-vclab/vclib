@@ -124,7 +124,7 @@ void main()
         if(isPerVertexColorAvailable(u_settings.x)) vertexColor = v_color; // per-vertex color available
         else vertexColor = vec4(1.0, 1.0, 1.0, 1.0); // no per-vertex color available, use white
 
-        actualColor = u_materialColor * vertexColor; // multiply vertex color with material base color
+        actualColor = u_materialColor * vertexColor * getColorFromTexture(0u, v_texcoord0); // multiply vertex color with material base color
 
         gl_FragColor = pbrColor(
             v_position.xyz,

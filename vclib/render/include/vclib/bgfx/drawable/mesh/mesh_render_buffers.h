@@ -227,6 +227,9 @@ public:
         }
         else {
             // TODO: bind texture materials here...
+            for(uint i = 0; i < mTextureUnits.size(); ++i) {
+                mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0 + i);
+            }
         }
 
     }
@@ -541,6 +544,15 @@ private:
         }
         if constexpr (vcl::HasMaterials<MeshType>) {
             // TODO: materials
+            mTextureUnits.reserve(mesh.materialsNumber());
+            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+                vcl::Image txt = mesh.material(i).baseColorTexture().image();
+                if(txt.isNull()) {
+                    txt = vcl::createCheckBoardImage(512);
+                }
+
+                pushTextureUnit(txt, i);
+            }
         }
     }
 
