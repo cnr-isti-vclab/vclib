@@ -31,7 +31,7 @@ namespace vcl {
 class Selectable
 {
 public:
-    virtual void calculateSelection(uint viewId, SelectionBox box, SelectionMode mode) = 0;
+    virtual void calculateSelection(uint viewId, SelectionBox box, SelectionMode mode, bool isTemporary) = 0;
 };
 
 } // namespace vcl

@@ -96,7 +96,9 @@ public:
                     p->calculateSelection(
                         viewId,
                         ParentViewer::selectionBox().toMinAndMax(),
-                        ParentViewer::selectionMode());
+                        ParentViewer::selectionMode(),
+                        ParentViewer::isSelectionTemporary()
+                    );
                 }
             }
             ParentViewer::selectionCalculated();

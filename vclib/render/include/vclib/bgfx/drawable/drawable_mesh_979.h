@@ -116,7 +116,7 @@ public:
 
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
 
-    void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode) override {
+    void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode, bool isTemporary) override {
         uint count;
         if (mode.isVertexSelection()) {
             count = MeshType::vertexNumber();
@@ -126,7 +126,7 @@ public:
         }
         
         mMRB.calculateSelection(viewId, box, mode);
-        if (mBufToTexRemainingFrames != 255) {
+        if (mBufToTexRemainingFrames != 255 || isTemporary) {
             return;
         }
         mBufToTexRemainingFrames = mMRB.requestCPUCopyOfSelectionBuffer(mode);

@@ -40,9 +40,7 @@ class SelectionTrackBallEventDrawerT :
         public TrackBallEventDrawerT<Scalar, DerivedRenderApp>
 {
     using Base = TrackBallEventDrawerT<Scalar, DerivedRenderApp>;
-
-    // Comparison does not work properly...
-    SelectionBox  mPrevSelectionBox;
+    
     SelectionBox  mSelectionBox;
     ToolSets      mCurrentToolset       = ToolSets::DEFAULT;
     SelectionMode mCurrentSelectionMode = SelectionMode::VERTEX_REGULAR;
@@ -112,18 +110,26 @@ protected:
         // We cannot assume that if the selection box is the same then the
         // selection is the same: The view matrix, projection matrix or existing
         // meshes may have changed since the last time
-        return (mSelectionCalcRequired && !mLMBHeld);
+        return mSelectionCalcRequired;
     }
 
     // To signal to this class that the selection has been calculated
+    // If the selection was calculated while the selection box was still being chosen (= while the LMB was still held down)
+    // then we only NULL the second point
     void selectionCalculated()
     {
         mSelectionCalcRequired = false;
-        mSelectionBox.nullAll();
+        if (mLMBHeld) {
+            mSelectionBox.null2();
+        } else {
+            mSelectionBox.nullAll();
+        }
         if (mCurrentSelectionMode.isAtomicMode()) {
             mCurrentSelectionMode = mPreviousNonAtomicSelectionMode;
         }
     }
+
+    bool isSelectionTemporary() { return mSelectionCalcRequired && mLMBHeld; }
 
     SelectionMode selectionMode() { return mCurrentSelectionMode; }
 
@@ -220,6 +226,7 @@ public:
         }
         if (mLMBHeld) {
             mSelectionBox.set2({x, y});
+            mSelectionCalcRequired = true;
         }
     }
 
