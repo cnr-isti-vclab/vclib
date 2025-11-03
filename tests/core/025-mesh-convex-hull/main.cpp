@@ -58,7 +58,7 @@ TEMPLATE_TEST_CASE(
 
         // Generate a random seed
         std::random_device rd;
-        uint               seed = rd();
+        vcl::uint          seed = rd();
 
         // Print the seed before computing the convex hull
         // This way, if the convex hull crashes, the seed will be printed
@@ -92,7 +92,7 @@ TEMPLATE_TEST_CASE(
         // Verify that all original boundary points are present in the hull
         // (the 8 corners of the cube)
         int cornersFound = 0;
-        for (uint i = 0; i < 8; ++i) {
+        for (vcl::uint i = 0; i < 8; ++i) {
             for (const auto& v : hull.vertices()) {
                 if ((v.position() - points[i]).norm() < 1e-6) {
                     cornersFound++;
@@ -115,7 +115,7 @@ TEMPLATE_TEST_CASE(
 
         // Generate a random seed
         std::random_device rd;
-        uint               seed = rd();
+        vcl::uint          seed = rd();
 
         // Print the seed before computing the convex hull
         std::cout << "Using seed: " << seed << std::endl;
