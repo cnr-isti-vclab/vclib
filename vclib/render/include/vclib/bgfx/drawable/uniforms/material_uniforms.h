@@ -84,6 +84,10 @@ public:
             mAlphaCutoff[0] = m.alphaCutoff();
         }
 
+        if(!m.baseColorTexture().image().isNull()) {
+            settings |= 1 << 2; // base color texture available
+        }
+
         mSettings[0] = float(settings);
 
         mMaterialColor[0] = m.baseColor().redF();

@@ -549,7 +549,7 @@ private:
             mTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 vcl::Image txt = mesh.material(i).baseColorTexture().image();
-                if(txt.isNull()) {
+                if (txt.isNull()) {
                     txt = vcl::createCheckBoardImage(512);
                 }
 
