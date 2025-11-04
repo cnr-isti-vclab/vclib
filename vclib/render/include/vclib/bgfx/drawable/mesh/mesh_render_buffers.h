@@ -168,10 +168,12 @@ public:
         mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
         mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
 
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
+            mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL)) {
             mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX) ||
+                 mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
             mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
         }
     }
@@ -551,7 +553,7 @@ private:
                     txt = vcl::createCheckBoardImage(512);
                 }
 
-                pushTextureUnit(txt, i);
+                pushTextureUnit(txt, 0);
             }
         }
     }
