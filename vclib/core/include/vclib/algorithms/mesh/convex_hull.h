@@ -107,7 +107,7 @@ void shufflePoints(R&& points, std::optional<uint> seed = std::nullopt)
     auto itP1 = std::next(itP0);
     std::iter_swap(itP, itP1);
 
-    itP  = std::next(itP);
+    itP = std::next(itP);
 
     // make sure that the first three points are not collinear
     while (itP != std::ranges::end(points) &&
@@ -120,7 +120,7 @@ void shufflePoints(R&& points, std::optional<uint> seed = std::nullopt)
     auto itP2 = std::next(itP1);
     std::iter_swap(itP, itP2);
 
-    itP  = std::next(itP);
+    itP = std::next(itP);
 
     auto rEnd = std::ranges::end(points);
 
