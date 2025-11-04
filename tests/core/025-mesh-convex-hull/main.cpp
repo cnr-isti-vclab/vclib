@@ -45,15 +45,15 @@ TEMPLATE_TEST_CASE(
     {
         // Define the 8 corners of a unit cube plus an internal point
         std::vector<Point> points = {
-            {0,   0,   0  },  // vertex 0
-            {1,   0,   0  },  // vertex 1
-            {0,   1,   0  },  // vertex 2
-            {0,   0,   1  },  // vertex 3
-            {1,   1,   0  },  // vertex 4
-            {1,   0,   1  },  // vertex 5
-            {0,   1,   1  },  // vertex 6
-            {1,   1,   1  },  // vertex 7
-            {0.5, 0.5, 0.5}   // internal point (should not be in hull)
+            {0,   0,   0  }, // vertex 0
+            {1,   0,   0  }, // vertex 1
+            {0,   1,   0  }, // vertex 2
+            {0,   0,   1  }, // vertex 3
+            {1,   1,   0  }, // vertex 4
+            {1,   0,   1  }, // vertex 5
+            {0,   1,   1  }, // vertex 6
+            {1,   1,   1  }, // vertex 7
+            {0.5, 0.5, 0.5}  // internal point (should not be in hull)
         };
 
         // Generate a random seed
