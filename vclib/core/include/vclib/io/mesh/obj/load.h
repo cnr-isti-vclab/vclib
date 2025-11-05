@@ -156,21 +156,31 @@ void loadObjMaterials(
 {
     loadObjMaterials(materialMap, stream);
 
-    uint nt = 0;
-
-    if constexpr (HasTexturePaths<MeshType>) {
-        nt = mesh.textureNumber();
-    }
-
     for (auto& [matName, mat] : materialMap) {
-        if (mat.hasTexture) {
-            if constexpr (HasTexturePaths<MeshType>) {
-                loadedInfo.setTextures();
-                mat.mapId = mesh.textureNumber();
-                mesh.pushTexturePath(mat.map_Kd);
+        if (!mat.justFaceColor()) {
+            if constexpr (HasMaterials<MeshType>) {
+                Material m;
+                m.name() = matName;
+                m.baseColor() = vcl::Color(
+                    mat.Kd.x() * 255, mat.Kd.y() * 255, mat.Kd.z() * 255, 255);
+                if (mat.hasTexture) {
+                    m.baseColorTexture().path() = mat.map_Kd;
+                }
+                m.roughness() = std::sqrt(1.0 / (mat.Ns + 2.0)); // todo: check
+
+                if (mat.d < 1.0)
+                    m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
+
+                mat.mapId = mesh.materialsNumber();
+                mesh.pushMaterial(m);
             }
-            else {
-                mat.mapId = nt++;
+            // todo
+            if constexpr (HasTexturePaths<MeshType>) {
+                if (mat.hasTexture) {
+                    loadedInfo.setTextures();
+                    mat.mapId = mesh.textureNumber();
+                    mesh.pushTexturePath(mat.map_Kd);
+                }
             }
         }
     }
@@ -655,6 +665,7 @@ void loadObj(
         }
     }
 
+    // todo
     if constexpr (HasTextureImages<MeshType>) {
         if (settings.loadTextureImages) {
             for (Texture& texture : m.textures()) {
@@ -663,6 +674,22 @@ void loadObj(
                     log.log(
                         "Cannot load texture " + texture.path(),
                         LogType::WARNING_LOG);
+                }
+            }
+        }
+    }
+    if constexpr (HasMaterials<MeshType>) {
+        if (settings.loadTextureImages) {
+            for (Material& mat : m.materials()) {
+                Texture& bct = mat.baseColorTexture();
+                if (!bct.path().empty()) {
+                    bct.image() = loadImage(
+                        m.meshBasePath() + mat.baseColorTexture().path());
+                    if (bct.image().isNull()) {
+                        log.log(
+                            "Cannot load texture " + bct.path(),
+                            LogType::WARNING_LOG);
+                    }
                 }
             }
         }

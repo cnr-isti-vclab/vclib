@@ -167,7 +167,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(info.isTriangleMesh());
 
         REQUIRE(info.hasPerFaceWedgeTexCoords());
-        REQUIRE(info.hasTextures());
+        REQUIRE(info.hasTextures()); // todo
     }
 
     SECTION("PolyMesh - PolyCube")

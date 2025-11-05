@@ -54,11 +54,29 @@ ObjMaterial objMaterialFromFace(
             mat.Kd.z()   = f.color().blueF();
         }
     }
+    // todo
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
         if (fi.hasPerFaceWedgeTexCoords()) {
-            mat.hasTexture = true;
+            // todo
             if constexpr (HasTexturePaths<MeshType>) {
+                mat.hasTexture = true;
                 mat.map_Kd = m.texturePath(f.textureIndex());
+            }
+            if constexpr (HasMaterials<MeshType>) {
+                const Material& matFace = m.material(f.textureIndex()); // todo
+                if (matFace.baseColor() != Color::White) {
+                    mat.hasColor = true;
+                    mat.Kd.x()   = matFace.baseColor().redF();
+                    mat.Kd.y()   = matFace.baseColor().greenF();
+                    mat.Kd.z()   = matFace.baseColor().blueF();
+                }
+                if (!matFace.baseColorTexture().path().empty()) {
+                    mat.hasTexture = true;
+                    mat.map_Kd = matFace.baseColorTexture().path();
+                    mat.mapId = f.textureIndex(); // todo
+                }
+                mat.Ns = (1.0f / (matFace.roughness() * matFace.roughness())) -
+                         2.0f; // check
             }
         }
     }
@@ -90,6 +108,8 @@ void writeFaceObjMaterial(
         auto                     it = materialMap.find(mat);
         if (it == materialMap.end()) { // if it is a new material
             // add the new material to the map
+
+            // TODO: try to preserve original material names
             mname = MATERIAL_PREFIX + std::to_string(materialMap.size());
             materialMap[mat] = mname;
             // save the material in the mtl file
