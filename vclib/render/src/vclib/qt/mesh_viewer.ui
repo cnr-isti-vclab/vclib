@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Mesh Viewer</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
