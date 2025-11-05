@@ -216,6 +216,7 @@ public:
             bgfx::destroy(mHandle);
 
         mHandle  = bgfx::createVertexBuffer(data, layout, flags);
+        assert(bgfx::isValid(mHandle));
         mCompute = compute;
     }
 

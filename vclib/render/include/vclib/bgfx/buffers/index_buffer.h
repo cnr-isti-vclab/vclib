@@ -177,6 +177,7 @@ public:
         bool                compute = false)
     {
         mHandle  = bgfx::createIndexBuffer(indices, flags);
+        assert(bgfx::isValid(mHandle));
         mCompute = compute;
     }
 
