@@ -114,8 +114,8 @@ public:
         const vcl::Point2i& sizes,
         const std::string&  samplerName,
         bool                hasMips   = false,
-        bgfx::ReleaseFn     releaseFn = nullptr,
-        uint64_t                flags = BGFX_TEXTURE_NONE)
+        uint64_t            flags     = BGFX_TEXTURE_NONE,
+        bgfx::ReleaseFn     releaseFn = nullptr)
     {
         set(bgfx::makeRef(data, sizes.x() * sizes.y() * 4, releaseFn),
             sizes,

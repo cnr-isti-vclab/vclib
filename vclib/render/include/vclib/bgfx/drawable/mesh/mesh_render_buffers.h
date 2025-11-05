@@ -524,8 +524,8 @@ private:
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
                 false,
-                releaseFn,
-                sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE);
+                sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE,
+                releaseFn);
 
             mTextureUnits.push_back(std::move(tu));
         };
