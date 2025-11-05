@@ -47,13 +47,9 @@ using ObjNormalsMap = std::conditional_t<
     std::map<uint, typename MeshType::VertexType::NormalType>,
     std::map<uint, Point3d>>;
 
-template<MeshConcept MeshType>
-void loadObjMaterials(
+inline void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
-    MeshType&                           mesh,
-    std::istream&                       stream,
-    MeshInfo&                           loadedInfo,
-    const LoadSettings&                 settings)
+    std::istream&                       stream)
 {
     std::string matName;
     ObjMaterial mat;
@@ -143,19 +139,41 @@ void loadObjMaterials(
                 // replace backslashes with slashes - windows compatibility
                 std::ranges::replace(mat.map_Kd, '\\', '/');
                 mat.hasTexture = true;
-                if constexpr (HasTexturePaths<MeshType>) {
-                    loadedInfo.setTextures();
-                    mat.mapId = mesh.textureNumber();
-                    mesh.pushTexturePath(mat.map_Kd);
-                }
-                else {
-                    mat.mapId = nt++;
-                }
             }
         }
     } while (stream);
     if (!matName.empty())
         materialMap[matName] = mat;
+}
+
+template<MeshConcept MeshType>
+void loadObjMaterials(
+    std::map<std::string, ObjMaterial>& materialMap,
+    MeshType&                           mesh,
+    std::istream&                       stream,
+    MeshInfo&                           loadedInfo,
+    const LoadSettings&                 settings)
+{
+    loadObjMaterials(materialMap, stream);
+
+    uint nt = 0;
+
+    if constexpr (HasTexturePaths<MeshType>) {
+        nt = mesh.textureNumber();
+    }
+
+    for (auto& [matName, mat] : materialMap) {
+        if (mat.hasTexture) {
+            if constexpr (HasTexturePaths<MeshType>) {
+                loadedInfo.setTextures();
+                mat.mapId = mesh.textureNumber();
+                mesh.pushTexturePath(mat.map_Kd);
+            }
+            else {
+                mat.mapId = nt++;
+            }
+        }
+    }
 }
 
 template<MeshConcept MeshType>
