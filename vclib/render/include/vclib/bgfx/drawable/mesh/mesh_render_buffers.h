@@ -564,7 +564,7 @@ private:
                     txt = vcl::createCheckBoardImage(512);
                 }
 
-                pushTextureUnit(txt, 0, true);
+                pushTextureUnit(txt, 0, Material::isSRGBTexture(Material::TextureType::BASE_COLOR));
             }
         }
     }

@@ -47,6 +47,11 @@ public:
         EMISSIVE
     };
 
+    static bool isSRGBTexture(TextureType type)
+    {
+        return type == TextureType::BASE_COLOR || type == TextureType::EMISSIVE;
+    }
+
 private:
     std::string mName;
 
