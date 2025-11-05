@@ -98,13 +98,6 @@ int loadGltfPrimitiveMaterial(
         // alphaCutoff
         alphaCutoff = mat.alphaCutoff; // has default value
 
-        /* Function to convert sRGB texture data to linear space */
-        auto sRGBToLinear = [&](std::vector<unsigned char>& data) {
-            for (std::size_t i = 0; i < data.size(); ++i) {
-                data[i] = (unsigned char)(std::pow(float(data[i]) / 255.0f, 2.2f) * 255.0f);
-            }
-        };
-
         /* Put the data in the mesh */
 
         if constexpr (HasMaterials<MeshType>) {
@@ -128,8 +121,6 @@ int loadGltfPrimitiveMaterial(
                 }
                 if (img.image.size() > 0 &&
                     (img.bits == 8 || img.component == 4)) {
-                    
-                    sRGBToLinear(img.image); // base color texture is in sRGB space
 
                     vcl::Texture txt(
                         Image(img.image.data(), img.width, img.height), uri);

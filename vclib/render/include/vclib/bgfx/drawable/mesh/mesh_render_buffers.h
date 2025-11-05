@@ -507,7 +507,7 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that pushes a texture unit
-        auto pushTextureUnit = [&](vcl::Image& txt, uint i) {
+        auto pushTextureUnit = [&](vcl::Image& txt, uint i, bool sRGB = false) {
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -526,7 +526,8 @@ private:
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
                 false,
-                releaseFn);
+                releaseFn,
+                sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE);
 
             mTextureUnits.push_back(std::move(tu));
         };
@@ -565,7 +566,7 @@ private:
                     txt = vcl::createCheckBoardImage(512);
                 }
 
-                pushTextureUnit(txt, 0);
+                pushTextureUnit(txt, 0, true);
             }
         }
     }
