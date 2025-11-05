@@ -111,7 +111,7 @@ int loadGltfPrimitiveMaterial(
             mat.alphaCutoff() = alphaCutoff;
             mat.doubleSided() = doubleSided;
             if (baseColorTextureId != -1) {
-                tinygltf::Image img =
+                const tinygltf::Image& img =
                     model.images[model.textures[baseColorTextureId].source];
                 // add the path of the texture to the mesh
                 std::string uri = img.uri;
