@@ -241,9 +241,7 @@ public:
         }
         else {
             // TODO: bind texture materials here...
-            for(uint i = 0; i < mTextureUnits.size(); ++i) {
-                mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0 + i);
-            }
+            mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
         }
 
     }
