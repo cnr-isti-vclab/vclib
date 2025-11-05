@@ -559,7 +559,7 @@ private:
             // TODO: materials
             mTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                vcl::Image txt = mesh.material(i).baseColorTexture().image();
+                vcl::Image txt = mesh.material(i).texture(Material::TextureType::BASE_COLOR).image();
                 if (txt.isNull()) {
                     txt = vcl::createCheckBoardImage(512);
                 }

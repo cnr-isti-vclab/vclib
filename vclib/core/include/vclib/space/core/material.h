@@ -39,6 +39,13 @@ class Material
 {
 public:
     enum class AlphaMode { ALPHA_OPAQUE, ALPHA_MASK, ALPHA_BLEND };
+    enum class TextureType {
+        BASE_COLOR,
+        METALLIC_ROUGHNESS,
+        NORMAL,
+        OCCLUSION,
+        EMISSIVE
+    };
 
 private:
     std::string mName;
@@ -47,6 +54,7 @@ private:
     Color mBaseColor = Color::White;
 
     float mMetallic  = 1.0f;
+
     float mRoughness = 1.0f;
 
     // optional PBR properties
@@ -56,9 +64,17 @@ private:
 
     float mAlphaCutoff = 0.5f; // only used when mAlphaMode is MASK
 
+    bool mDoubleSided = false;
+
     Texture mBaseColorTexture;
 
-    bool mDoubleSided = false;
+    Texture mMetallicRoughnessTexture;
+
+    Texture mNormalTexture;
+
+    Texture mOcclusionTexture;
+
+    Texture mEmissiveTexture;
 
 public:
     Material() {}
@@ -91,13 +107,55 @@ public:
 
     float& alphaCutoff() { return mAlphaCutoff; }
 
-    const Texture& baseColorTexture() const { return mBaseColorTexture; }
-
-    Texture& baseColorTexture() { return mBaseColorTexture; }
-
     bool doubleSided() const { return mDoubleSided; }
 
     bool& doubleSided() { return mDoubleSided; }
+
+    // const Texture& baseColorTexture() const { return mBaseColorTexture; }
+
+    // Texture& baseColorTexture() { return mBaseColorTexture; }
+
+    // const Texture& metallicRoughnessTexture() const { return mMetallicRoughnessTexture; }
+
+    // Texture& metallicRoughnessTexture() { return mMetallicRoughnessTexture; }
+
+    // const Texture& normalTexture() const { return mNormalTexture; }
+
+    // Texture& normalTexture() { return mNormalTexture; }
+
+    // const Texture& occlusionTexture() const { return mOcclusionTexture; }
+
+    // Texture& occlusionTexture() { return mOcclusionTexture; }
+
+    // const Texture& emissiveTexture() const { return mEmissiveTexture; }
+
+    // Texture& emissiveTexture() { return mEmissiveTexture; }
+
+    const Texture& texture(TextureType type) const
+    {
+        switch(type)
+        {
+            case TextureType::BASE_COLOR: return mBaseColorTexture;
+            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
+            case TextureType::NORMAL: return mNormalTexture;
+            case TextureType::OCCLUSION: return mOcclusionTexture;
+            case TextureType::EMISSIVE: return mEmissiveTexture;
+            default: throw std::runtime_error("Invalid texture type");
+        }
+    }
+
+    Texture& texture(TextureType type)
+    {
+        switch(type)
+        {
+            case TextureType::BASE_COLOR: return mBaseColorTexture;
+            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
+            case TextureType::NORMAL: return mNormalTexture;
+            case TextureType::OCCLUSION: return mOcclusionTexture;
+            case TextureType::EMISSIVE: return mEmissiveTexture;
+            default: throw std::runtime_error("Invalid texture type");
+        }
+    }
 
     void serialize(std::ostream& os) const
     {
@@ -108,6 +166,10 @@ public:
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
         mBaseColorTexture.serialize(os);
         vcl::serialize(os, mDoubleSided);
+        mMetallicRoughnessTexture.serialize(os);
+        mNormalTexture.serialize(os);
+        mOcclusionTexture.serialize(os);
+        mEmissiveTexture.serialize(os);
     }
 
     void deserialize(std::istream& is)
@@ -119,6 +181,10 @@ public:
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
         mBaseColorTexture.deserialize(is);
         vcl::deserialize(is, mDoubleSided);
+        mMetallicRoughnessTexture.deserialize(is);
+        mNormalTexture.deserialize(is);
+        mOcclusionTexture.deserialize(is);
+        mEmissiveTexture.deserialize(is);
     }
 };
 
