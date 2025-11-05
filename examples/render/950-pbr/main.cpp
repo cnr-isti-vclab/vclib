@@ -73,7 +73,33 @@ int main(int argc, char** argv)
     // the lower part a semitransparent blue matte
     std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e6);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e7);
+
+    auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
+        const vcl::Texture& texture = mat.texture(type);
+        std::string typeName = "baseColor";
+        if(type == Material::TextureType::METALLIC_ROUGHNESS) {
+            typeName = "metallicRoughness";
+        } else if(type == Material::TextureType::NORMAL) {
+            typeName = "normal";
+        } else if(type == Material::TextureType::OCCLUSION) {
+            typeName = "occlusion";
+        } else if(type == Material::TextureType::EMISSIVE) {
+            typeName = "emissive";
+        }
+
+        std::cout << "  " << typeName << "Texture: ";
+        if (!texture.isNull()) {
+            std::cout << texture.path() << std::endl;
+            std::cout << "    image size: "
+                      << texture.image().width() << " x "
+                      << texture.image().height()
+                      << std::endl;
+        }
+        else {
+            std::cout << "null" << std::endl;
+        }
+    };
 
     for(const auto& mesh : meshes) {
         std::cout << "Mesh: " << mesh.name() << std::endl;
@@ -86,17 +112,11 @@ int main(int argc, char** argv)
             std::cout << "  doubleSided: " << mat.doubleSided() << std::endl;
             std::cout << "  alphaMode: " << int(mat.alphaMode()) << std::endl;
             std::cout << "  alphaCutoff: " << mat.alphaCutoff() << std::endl;
-            std::cout << "  baseColorTexture: ";
-            if (!mat.baseColorTexture().isNull()) {
-                std::cout << mat.baseColorTexture().path() << std::endl;
-                std::cout << "    image size: "
-                          << mat.baseColorTexture().image().width() << " x "
-                          << mat.baseColorTexture().image().height()
-                          << std::endl;
-            }
-            else {
-                std::cout << "null" << std::endl;
-            }
+            printTextureInfo(mat, Material::TextureType::BASE_COLOR);
+            printTextureInfo(mat, Material::TextureType::METALLIC_ROUGHNESS);
+            printTextureInfo(mat, Material::TextureType::NORMAL);
+            printTextureInfo(mat, Material::TextureType::OCCLUSION);
+            printTextureInfo(mat, Material::TextureType::EMISSIVE);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;
