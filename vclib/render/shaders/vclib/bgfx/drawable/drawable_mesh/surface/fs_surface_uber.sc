@@ -121,13 +121,22 @@ void main()
         vec4 vertexColor, textureBaseColor, actualColor;
 
          // per-vertex color 
-        if(isPerVertexColorAvailable(u_settings.x)) vertexColor = v_color; // per-vertex color available
-        else vertexColor = vec4_splat(1.0); // no per-vertex color available, use white
+        if(isPerVertexColorAvailable(u_settings.x))
+            vertexColor = v_color; // per-vertex color available
+        else
+            vertexColor = vec4_splat(1.0); // no per-vertex color available, use white
 
-        if(isBaseColorTextureAvailable(u_settings.x)) textureBaseColor = getColorFromTexture(0u, v_texcoord0); // base color texture available
-        else textureBaseColor = vec4_splat(1.0); // no base color texture available, use white
+        if(isBaseColorTextureAvailable(u_settings.x))
+            textureBaseColor = getColorFromTexture(0u, v_texcoord0); // base color texture available
+        else
+            textureBaseColor = vec4_splat(1.0); // no base color texture available, use white
 
         actualColor = u_materialColor * textureBaseColor * vertexColor; // multiply vertex color with material base color
+
+        // alpha mode MASK
+        if(isAlphaModeMask(u_settings.x))
+            if(actualColor.a < u_alphaCutoff.x)
+                discard; // discard fragment
 
         gl_FragColor = pbrColor(
             v_position.xyz,
@@ -141,11 +150,6 @@ void main()
             u_metallicRoughness.g, // roughness
             u_emissiveColor.rgb
         );
-
-        // alpha mode MASK
-        if(isAlphaModeMask(u_settings.x)) {
-            if(actualColor.a < u_alphaCutoff.x) discard; // discard fragment
-        }
     }
     else {
         gl_FragColor = light * color + vec4(specular, 0);
