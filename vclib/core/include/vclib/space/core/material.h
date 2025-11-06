@@ -39,17 +39,20 @@ class Material
 {
 public:
     enum class AlphaMode { ALPHA_OPAQUE, ALPHA_MASK, ALPHA_BLEND };
-    enum class TextureType {
-        BASE_COLOR,
+    enum class Textures {
+        BASE_COLOR = 0,
         METALLIC_ROUGHNESS,
         NORMAL,
         OCCLUSION,
-        EMISSIVE
+        EMISSIVE,
+        COUNT
     };
 
-    static bool isSRGBTexture(TextureType type)
+    static bool isSRGBTexture(int type)
     {
-        return type == TextureType::BASE_COLOR || type == TextureType::EMISSIVE;
+        return 
+            type == toUnderlying(Textures::BASE_COLOR) || 
+            type == toUnderlying(Textures::EMISSIVE);
     }
 
 private:
@@ -136,28 +139,28 @@ public:
 
     // Texture& emissiveTexture() { return mEmissiveTexture; }
 
-    const Texture& texture(TextureType type) const
+    const Texture& texture(Textures type) const
     {
         switch(type)
         {
-            case TextureType::BASE_COLOR: return mBaseColorTexture;
-            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
-            case TextureType::NORMAL: return mNormalTexture;
-            case TextureType::OCCLUSION: return mOcclusionTexture;
-            case TextureType::EMISSIVE: return mEmissiveTexture;
+            case Textures::BASE_COLOR: return mBaseColorTexture;
+            case Textures::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
+            case Textures::NORMAL: return mNormalTexture;
+            case Textures::OCCLUSION: return mOcclusionTexture;
+            case Textures::EMISSIVE: return mEmissiveTexture;
             default: throw std::runtime_error("Invalid texture type");
         }
     }
 
-    Texture& texture(TextureType type)
+    Texture& texture(Textures type)
     {
         switch(type)
         {
-            case TextureType::BASE_COLOR: return mBaseColorTexture;
-            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
-            case TextureType::NORMAL: return mNormalTexture;
-            case TextureType::OCCLUSION: return mOcclusionTexture;
-            case TextureType::EMISSIVE: return mEmissiveTexture;
+            case Textures::BASE_COLOR: return mBaseColorTexture;
+            case Textures::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
+            case Textures::NORMAL: return mNormalTexture;
+            case Textures::OCCLUSION: return mOcclusionTexture;
+            case Textures::EMISSIVE: return mEmissiveTexture;
             default: throw std::runtime_error("Invalid texture type");
         }
     }

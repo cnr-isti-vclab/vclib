@@ -84,7 +84,7 @@ public:
             mAlphaCutoff[0] = m.alphaCutoff();
         }
 
-        if(!m.texture(Material::TextureType::BASE_COLOR).image().isNull()) {
+        if(!m.texture(Material::Textures::BASE_COLOR).image().isNull()) {
             settings |= 1 << 2; // base color texture available
         }
 

@@ -44,14 +44,6 @@ namespace vcl {
 template<MeshConcept Mesh>
 class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 {
-    enum class MaterialTextures {
-        BASE_COLOR = 0,
-        NORMAL_MAP,
-        METALLIC_ROUGHNESS,
-        OCCLUSION,
-        EMISSIVE,
-        COUNT
-    };
 
     using MeshType = Mesh;
     using Base     = MeshRenderData<MeshRenderBuffers<MeshType>>;
@@ -83,7 +75,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each material, an array of `MaterialTextures::COUNT` texture units
     std::vector<std::array<
         std::unique_ptr<TextureUnit>,
-        toUnderlying(MaterialTextures::COUNT)>>
+        toUnderlying(Material::Textures::COUNT)>>
         mMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
@@ -260,7 +252,7 @@ public:
             }
         }
         else {
-            for (uint j = 0; j < toUnderlying(MaterialTextures::COUNT); ++j) {
+            for (uint j = 0; j < toUnderlying(Material::Textures::COUNT); ++j) {
                 if (mMaterialTextureUnits[textureId][j]) {
                     mMaterialTextureUnits[textureId][j]->bind(
                         VCL_MRB_TEXTURE0 + j);
@@ -588,13 +580,15 @@ private:
             // TODO: materials
             mMaterialTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                vcl::Image txt = mesh.material(i).baseColorTexture().image();
+                vcl::Image txt = mesh.material(i).texture(Material::Textures::BASE_COLOR).image();
                 if (txt.isNull()) {
                     txt = vcl::createCheckBoardImage(512);
                 }
 
+
+                int textureType = toUnderlying(Material::Textures::BASE_COLOR);
                 setTextureUnit(
-                    txt, i, toUnderlying(MaterialTextures::BASE_COLOR), true);
+                    txt, i, textureType, Material::isSRGBTexture(textureType));
             }
         }
     }
