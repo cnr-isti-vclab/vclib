@@ -176,7 +176,7 @@ public:
         uint64_t            flags   = BGFX_BUFFER_NONE,
         bool                compute = false)
     {
-        mHandle  = bgfx::createIndexBuffer(indices, flags);
+        mHandle = bgfx::createIndexBuffer(indices, flags);
         assert(bgfx::isValid(mHandle));
         mCompute = compute;
     }
