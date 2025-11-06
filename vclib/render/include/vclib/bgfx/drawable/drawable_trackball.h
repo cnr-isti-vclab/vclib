@@ -77,7 +77,7 @@ public:
 
     // DrawableObject interface
 
-    void draw(uint viewId) const override;
+    void draw(const DrawObjectSettings& settings) const override;
 
     Box3d boundingBox() const override;
 

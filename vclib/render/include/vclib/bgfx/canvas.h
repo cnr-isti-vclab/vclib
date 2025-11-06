@@ -38,34 +38,8 @@ namespace vcl {
 
 /**
  * @brief The Canvas class describes a canvas on which bgfx can draw.
- *
- * Its usage requires to have a window object that can be used to initialize
- * the canvas. The window object is not managed by the Canvas class, and can be
- * managed by any of the windowing systems or libraries that allow to retrieve
- * the native window handle (e.g. Qt, GLFW...).
- *
- * You can create your custom bgfx canvas class by inheriting from this class
- * and passing to the constructor the native window handle and the window size.
- * Alternatively to the constructor, you can also use the init() method to
- * initialize the canvas (if the required parameters are not available at
- * construction time).
- *
- * This class does not provide a render loop, that must be implemented in one of
- * the derived classes. The render loop must call the frame() member function at
- * the end of each frame, after all the bgfx rendering commands have been
- * issued.
- *
- * The bgfx rendering code should be implemented in the virtual member function
- * draw(uint viewId), that must be reimplemented in the derived classes. This
- * method is called by the frame() method (that must be called in the render
- * loop), and its argument is the bgfx view ID.
- *
- * The class provides two important member functions:
- * - frame(): this function must be called by the derived classes at the end of
- * each frame, after all the bgfx rendering commands have been issued;
- * - onResize(width, height): this function must be called by the derived
- * classes whenever the window is resized.
  */
+// TODO: write documentation here
 template<typename DerivedRenderApp>
 class CanvasBGFX
 {

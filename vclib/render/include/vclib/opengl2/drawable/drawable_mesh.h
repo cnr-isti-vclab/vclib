@@ -183,7 +183,7 @@ public:
 
     void init() override { bindTextures(); }
 
-    void draw(uint) const override
+    void draw(const DrawObjectSettings& settings = {}) const override
     {
         if (mMRS.isVisible()) {
             if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {

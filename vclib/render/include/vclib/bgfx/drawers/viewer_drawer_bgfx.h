@@ -58,6 +58,8 @@ public:
 
     void onDrawContent(uint viewId) override
     {
+        DrawObjectSettings settings(viewId, 0);
+
         bgfx::setViewTransform(
             viewId,
             ParentViewer::viewMatrix().data(),
@@ -66,17 +68,19 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        ParentViewer::drawableObjectVector().draw(viewId);
+        ParentViewer::drawableObjectVector().draw(settings);
     }
 
     void onDrawId(uint viewId) override
     {
+        DrawObjectSettings settings(viewId, ParentViewer::id());
+
         bgfx::setViewTransform(
             viewId,
             ParentViewer::viewMatrix().data(),
             ParentViewer::projectionMatrix().data());
 
-        ParentViewer::drawableObjectVector().drawId(viewId, ParentViewer::id());
+        ParentViewer::drawableObjectVector().drawId(settings);
     }
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
