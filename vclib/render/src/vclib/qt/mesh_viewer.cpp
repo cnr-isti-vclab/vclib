@@ -175,15 +175,35 @@ void MeshViewer::setCamera(const Camera<float>& c)
     mUI->viewer->setCamera(c);
 }
 
+bool MeshViewer::isPBREnabled() const
+{
+    return mUI->viewer->isPBREnabled();
+}
+
+void MeshViewer::setPBR(bool enable)
+{
+    mUI->viewer->setPBR(enable);
+}
+
+void MeshViewer::enablePBR()
+{
+    mUI->viewer->enablePBR();
+}
+
+void MeshViewer::disablePBR()
+{
+    mUI->viewer->disablePBR();
+}
+
 void MeshViewer::keyPressEvent(QKeyEvent* event)
 {
     // show screenshot dialog on CTRL + S
     if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
         vcl::qt::ScreenShotDialog dialog(this);
         if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+            auto sf = dialog.selectedFiles();
             mUI->viewer->screenshot(
-                dialog.selectedFiles()[0].toStdString(),
-                dialog.screenMultiplierValue());
+                sf[0].toStdString(), dialog.screenMultiplierValue());
         }
     }
     else {
