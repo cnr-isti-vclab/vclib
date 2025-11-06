@@ -176,12 +176,14 @@ public:
             mVertexColorsBuffer.bindVertex(stream++);
         }
 
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
+        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
+            mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL)) {
             if (mVertexUVBuffer.isValid()) {
                 mVertexUVBuffer.bind(stream++);
             }
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
+        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX) ||
+                 mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
             if (mVertexWedgeUVBuffer.isValid()) {
                 mVertexWedgeUVBuffer.bind(stream++);
             }
@@ -239,6 +241,7 @@ public:
         }
         else {
             // TODO: bind texture materials here...
+            mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
         }
 
     }
@@ -502,7 +505,7 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that pushes a texture unit
-        auto pushTextureUnit = [&](vcl::Image& txt, uint i) {
+        auto pushTextureUnit = [&](vcl::Image& txt, uint i, bool sRGB = false) {
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -521,6 +524,7 @@ private:
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
                 false,
+                sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE,
                 releaseFn);
 
             mTextureUnits.push_back(std::move(tu));
@@ -553,6 +557,15 @@ private:
         }
         if constexpr (vcl::HasMaterials<MeshType>) {
             // TODO: materials
+            mTextureUnits.reserve(mesh.materialsNumber());
+            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+                vcl::Image txt = mesh.material(i).baseColorTexture().image();
+                if (txt.isNull()) {
+                    txt = vcl::createCheckBoardImage(512);
+                }
+
+                pushTextureUnit(txt, 0, true);
+            }
         }
     }
 

@@ -115,20 +115,32 @@ void main()
 
         // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
         vec3 lightDirections[2] = {LIGHT_KEY_DIR, LIGHT_FILL_DIR};
-        vec3 lightColors[2] = {vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0)};
+        vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
         float lightIntensities[2] = {1.0, 0.5};
 
-        vec4 vertexColor, actualColor;
+        vec4 vertexColor, textureBaseColor, actualColor;
 
          // per-vertex color 
-        if(isPerVertexColorAvailable(u_settings.x)) vertexColor = v_color; // per-vertex color available
-        else vertexColor = vec4(1.0, 1.0, 1.0, 1.0); // no per-vertex color available, use white
+        if(isPerVertexColorAvailable(u_settings.x))
+            vertexColor = v_color; // per-vertex color available
+        else
+            vertexColor = vec4_splat(1.0); // no per-vertex color available, use white
 
-        actualColor = u_materialColor * vertexColor; // multiply vertex color with material base color
+        if(isBaseColorTextureAvailable(u_settings.x))
+            textureBaseColor = getColorFromTexture(0u, v_texcoord0); // base color texture available
+        else
+            textureBaseColor = vec4_splat(1.0); // no base color texture available, use white
+
+        actualColor = u_materialColor * textureBaseColor * vertexColor; // multiply vertex color with material base color
+
+        // alpha mode MASK
+        if(isAlphaModeMask(u_settings.x))
+            if(actualColor.a < u_alphaCutoff.x)
+                discard; // discard fragment
 
         gl_FragColor = pbrColor(
             v_position.xyz,
-            vec3(0.0, 0.0, 0.0), // camera position
+            vec3_splat(0.0), // camera position
             lightDirections,
             lightColors,
             lightIntensities,
@@ -136,13 +148,8 @@ void main()
             normal,
             u_metallicRoughness.r, // metallic
             u_metallicRoughness.g, // roughness
-            vec3(u_emissiveColor.x, u_emissiveColor.y, u_emissiveColor.z) // emissive
+            u_emissiveColor.rgb
         );
-
-        // alpha mode MASK
-        if(isAlphaModeMask(u_settings.x)) {
-            if(actualColor.a < u_alphaCutoff.x) discard; // discard fragment
-        }
     }
     else {
         gl_FragColor = light * color + vec4(specular, 0);
