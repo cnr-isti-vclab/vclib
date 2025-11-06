@@ -71,6 +71,8 @@ struct ObjMaterial
 
     bool isEmpty() const { return !hasColor && !hasTexture; }
 
+    bool justFaceColor() const { return hasColor && !hasTexture; }
+
     Color color() const
     {
         return Color(Kd.x() * 255, Kd.y() * 255, Kd.z() * 255, d * 255);
