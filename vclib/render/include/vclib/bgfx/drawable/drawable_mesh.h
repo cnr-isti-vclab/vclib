@@ -244,7 +244,16 @@ public:
                     bgfx::setState(surfaceState);
                     bgfx::setTransform(model.data());
 
-                    bgfx::submit(settings.viewId, surfaceProgramSelector());
+                    if (settings.pbrMode) {
+                        ProgramManager& pm = Context::instance().programManager();
+
+                        bgfx::submit(
+                            settings.viewId,
+                            pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());
+                    }
+                    else {
+                        bgfx::submit(settings.viewId, surfaceProgramSelector());
+                    }
                 }
             }
             else {
@@ -254,8 +263,16 @@ public:
 
                 bgfx::setState(surfaceState);
                 bgfx::setTransform(model.data());
+                if (settings.pbrMode) {
+                    ProgramManager& pm = Context::instance().programManager();
 
-                bgfx::submit(settings.viewId, surfaceProgramSelector());
+                    bgfx::submit(
+                        settings.viewId,
+                        pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());
+                }
+                else {
+                    bgfx::submit(settings.viewId, surfaceProgramSelector());
+                }
             }
         }
 
