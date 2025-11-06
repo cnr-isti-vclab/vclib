@@ -111,61 +111,8 @@ void main()
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         color = getColorFromTexture(0u, v_texcoord1);
     }
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERT_MAT))) {
-
-        // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
-        vec3 lightDirections[2] = {LIGHT_KEY_DIR, LIGHT_FILL_DIR};
-        vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
-        float lightIntensities[2] = {1.0, 0.5};
-
-        vec4 vertexBaseColor, textureBaseColor, baseColor;
-
-         // per-vertex color 
-        if(isPerVertexColorAvailable(u_settings.x))
-            vertexBaseColor = v_color; // per-vertex color available
-        else
-            vertexBaseColor = vec4_splat(1.0); // no per-vertex color available, use white
-
-        if(isBaseColorTextureAvailable(u_settings.x))
-            textureBaseColor = getColorFromTexture(0u, v_texcoord0); // base color texture available
-        else
-            textureBaseColor = vec4_splat(1.0); // no base color texture available, use white
-
-        baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor; // multiply vertex color with material base color
-
-        // alpha mode MASK
-        if(isAlphaModeMask(u_settings.x))
-            if(baseColor.a < u_alphaCutoff.x)
-                discard; // discard fragment
-
-
-        vec4 metallicRoughnessTexture;
-        float metallic, roughness;
-
-        if(isMetallicRoughnessTextureAvailable(u_settings.x))
-            metallicRoughnessTexture = getColorFromTexture(1u, v_texcoord0); // metallic-roughness texture available
-        else
-            metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
-
-        metallic = u_metallicRoughnessFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
-        roughness = u_metallicRoughnessFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
-
-        gl_FragColor = pbrColor(
-            v_position.xyz,
-            vec3_splat(0.0), // camera position
-            lightDirections,
-            lightColors,
-            lightIntensities,
-            baseColor,
-            normal,
-            metallic,
-            roughness,
-            u_emissiveColorFactor.rgb
-        );
-    }
-    else {
-        gl_FragColor = light * color + vec4(specular, 0);
-    }
+    
+    gl_FragColor = light * color + vec4(specular, 0);
 
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
