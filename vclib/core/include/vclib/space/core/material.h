@@ -119,25 +119,9 @@ public:
 
     bool& doubleSided() { return mDoubleSided; }
 
-    // const Texture& baseColorTexture() const { return mBaseColorTexture; }
+    const Texture& baseColorTexture() const { return mBaseColorTexture; }
 
-    // Texture& baseColorTexture() { return mBaseColorTexture; }
-
-    // const Texture& metallicRoughnessTexture() const { return mMetallicRoughnessTexture; }
-
-    // Texture& metallicRoughnessTexture() { return mMetallicRoughnessTexture; }
-
-    // const Texture& normalTexture() const { return mNormalTexture; }
-
-    // Texture& normalTexture() { return mNormalTexture; }
-
-    // const Texture& occlusionTexture() const { return mOcclusionTexture; }
-
-    // Texture& occlusionTexture() { return mOcclusionTexture; }
-
-    // const Texture& emissiveTexture() const { return mEmissiveTexture; }
-
-    // Texture& emissiveTexture() { return mEmissiveTexture; }
+    Texture& baseColorTexture() { return mBaseColorTexture; }
 
     const Texture& texture(Textures type) const
     {

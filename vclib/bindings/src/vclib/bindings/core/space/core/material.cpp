@@ -63,9 +63,9 @@ void initMaterial(pybind11::module& m)
         m.alphaCutoff() = v;
     });
     c.def("base_color_texture",
-          py::overload_cast<>(&Material::texture(Material::Textures::BASE_COLOR), py::const_));
+          py::overload_cast<>(&Material::baseColorTexture, py::const_));
     c.def("set_base_color_texture", [](Material& m, const Texture& t) {
-        m.texture(Material::Textures::BASE_COLOR) = t;
+        m.baseColorTexture() = t;
     });
     c.def("double_sided", py::overload_cast<>(&Material::doubleSided,
                                            py::const_));
