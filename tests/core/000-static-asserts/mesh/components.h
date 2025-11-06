@@ -39,7 +39,6 @@
 #include "components/principal_curvature.h"
 #include "components/quality.h"
 #include "components/tex_coord.h"
-#include "components/textures.h" // todo: remove
 #include "components/transform_matrix.h"
 #include "components/vertex_references.h"
 #include "components/wedge_colors.h"
@@ -64,7 +63,6 @@ void componentsStaticAsserts()
     positionComponentStaticAsserts();
     qualityComponentStaticAsserts();
     texCoordComponentStaticAsserts();
-    texturesComponentStaticAsserts(); // todo: remove
     transformMatrixComponentStaticAsserts();
     vertexReferencesComponentStaticAsserts();
     wedgeColorsComponentStaticAsserts();

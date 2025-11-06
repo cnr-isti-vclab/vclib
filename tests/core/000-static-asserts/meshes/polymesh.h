@@ -33,11 +33,6 @@ void polymeshStaticAsserts()
 
     // TODO
     // static_assert(HasMaterials<PolyMesh>, "The PolyMesh has no materials.");
-    // TODO: remove
-    static_assert(
-        HasTextureImages<PolyMesh>, "The PolyMesh has no texture images.");
-    static_assert(
-        HasTexturePaths<PolyMesh>, "The PolyMesh has no texture paths.");
 
     static_assert(
         comp::IsTiedToVertexNumber<PolyMesh::Face::AdjacentFaces>, "");
