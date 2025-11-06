@@ -25,19 +25,21 @@
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
 #define PBR_VERTEX_COLOR_AVAILABLE 0
 #define PBR_ALPHA_MODE_MASK 1
+#define PBR_BASE_COLOR_TEXTURE_AVAILABLE 2
 
 #define checkSetting(settings, setting) bool(int(settings) & posToBitFlag(setting))
 
 #define isPerVertexColorAvailable(settings) checkSetting(settings, PBR_VERTEX_COLOR_AVAILABLE)
 #define isAlphaModeMask(settings) checkSetting(settings, PBR_ALPHA_MODE_MASK)
+#define isBaseColorTextureAvailable(settings) checkSetting(settings, PBR_BASE_COLOR_TEXTURE_AVAILABLE)
 
 #define USE_LIGHTS
 #define LIGHT_COUNT 2
 #define PI 3.141592653589793
+#define GAMMA 2.2
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
 #define LIGHT_KEY_DIR vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
 #define LIGHT_FILL_DIR vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
@@ -184,9 +186,9 @@ vec4 pbrColor(
     float roughness,
     vec3 emissive)
 {
-    vec3 finalColor = vec3(0.0,0.0,0.0);
-    vec3 f0_dielectric = vec3(0.04, 0.04, 0.04);
-    vec3 f90 = vec3(1.0, 1.0, 1.0);
+    vec3 finalColor = vec3_splat(0.0);
+    vec3 f0_dielectric = vec3_splat(0.04);
+    vec3 f90 = vec3_splat(1.0);
 
     #ifdef USE_LIGHTS
 
@@ -246,8 +248,8 @@ vec4 pbrColor(
     //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));
 
     // gamma correction
-    float oneOverGamma = 1.0 / 2.2;
-    finalColor = pow(abs(finalColor), vec3(oneOverGamma, oneOverGamma, oneOverGamma));
+    float oneOverGamma = 1.0 / GAMMA;
+    finalColor = pow(abs(finalColor), vec3_splat(oneOverGamma));
 
     return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
 }

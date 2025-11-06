@@ -114,13 +114,16 @@ public:
         const vcl::Point2i& sizes,
         const std::string&  samplerName,
         bool                hasMips   = false,
+        uint64_t            flags     = BGFX_TEXTURE_NONE,
         bgfx::ReleaseFn     releaseFn = nullptr)
     {
         set(bgfx::makeRef(data, sizes.x() * sizes.y() * 4, releaseFn),
             sizes,
             samplerName,
             hasMips,
-            1);
+            1,
+            bgfx::TextureFormat::RGBA8,
+            flags);
     }
 
     void set(
@@ -130,7 +133,7 @@ public:
         bool                      hasMips,
         uint                      nLayers,
         bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
-        uint                      flags  = BGFX_TEXTURE_NONE)
+        uint64_t                  flags  = BGFX_TEXTURE_NONE)
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
