@@ -20,32 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
-#define VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_UBER_PBR_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_UBER_PBR_H
 
-#include <vclib/render/drawable/draw_object_settings.h>
-#include <vclib/space/core.h>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
-template<typename T>
-concept DrawableObjectConcept = requires (T&& obj, uint u, DrawObjectSettings s) {
-    { obj.draw(s) } -> std::same_as<void>;
-    { obj.boundingBox() } -> Box3Concept;
-    obj.clone();
-    { obj.isVisible() } -> std::same_as<bool>;
-    { obj.name() } -> std::convertible_to<std::string>;
-    { obj.info() } -> std::convertible_to<std::string>;
+template<>
+struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_UBER_PBR>
+{
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.init() } -> std::same_as<void>;
-        { obj.setVisibility(bool()) } -> std::same_as<void>;
-        { obj.name() } -> std::same_as<std::string&>;
-        { obj.info() } -> std::same_as<std::string&>;
-    };
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_UBER_PBR_H

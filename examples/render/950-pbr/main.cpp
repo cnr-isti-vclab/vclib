@@ -123,5 +123,5 @@ int main(int argc, char** argv)
         std::cout << "------------------------" << std::endl;
     }
 
-    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes));
+    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes)/*, true*/);
 }

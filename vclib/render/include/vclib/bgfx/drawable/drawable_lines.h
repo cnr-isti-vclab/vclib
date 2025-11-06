@@ -147,7 +147,10 @@ public:
 
     // DrawableObject interface
 
-    void draw(uint viewId) const override { Lines::draw(viewId); }
+    void draw(const DrawObjectSettings& settings) const override
+    {
+        Lines::draw(settings.viewId);
+    }
 
     vcl::Box3d boundingBox() const override
     {

@@ -56,6 +56,8 @@ public:
 
     void onDraw(uint viewId) override
     {
+        DrawObjectSettings settings(viewId, 0);
+
         ParentViewer::onDraw(viewId);
 
         setDirectionalLightVisibility(
@@ -63,15 +65,15 @@ public:
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
 
         if (mAxis.isVisible()) {
-            mAxis.draw(viewId);
+            mAxis.draw(settings);
         }
 
         if (mDrawTrackBall.isVisible()) {
-            mDrawTrackBall.draw(viewId);
+            mDrawTrackBall.draw(settings);
         }
 
         if (mDrawableDirectionalLight.isVisible()) {
-            mDrawableDirectionalLight.draw(viewId);
+            mDrawableDirectionalLight.draw(settings);
         }
     }
 

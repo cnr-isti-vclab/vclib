@@ -100,7 +100,8 @@ void showMeshesOnViewer(
     int                      argc,
     char**                   argv,
     auto&                    viewer,
-    std::vector<MeshTypes>&& meshes)
+    std::vector<MeshTypes>&& meshes,
+    bool                     pbrMode = false)
 {
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
@@ -109,6 +110,8 @@ void showMeshesOnViewer(
         (pushMeshOnVector(vector, std::move(mesh)));
 
     viewer.setDrawableObjectVector(vector);
+
+    viewer.setPBR(pbrMode);
 
 #if VCLIB_RENDER_EXAMPLES_WITH_GLFW
     viewer.fitScene();
@@ -142,7 +145,8 @@ template<vcl::MeshConcept MeshTypes>
 int showMeshesOnDefaultViewer(
     int                      argc,
     char**                   argv,
-    std::vector<MeshTypes>&& meshes)
+    std::vector<MeshTypes>&& meshes,
+    bool                     pbrMode = false)
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     QApplication application(argc, argv);
@@ -150,7 +154,7 @@ int showMeshesOnDefaultViewer(
 
     auto viewer = defaultViewer();
 
-    showMeshesOnViewer(argc, argv, viewer, std::move(meshes));
+    showMeshesOnViewer(argc, argv, viewer, std::move(meshes), pbrMode);
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
