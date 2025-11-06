@@ -84,6 +84,14 @@ public:
 
     void setCamera(const Camera<float>& c);
 
+    bool isPBREnabled() const;
+
+    void setPBR(bool enable);
+
+    void enablePBR();
+
+    void disablePBR();
+
 public slots:
     void visibilityDrawableObjectChanged();
 

@@ -38,9 +38,11 @@ struct DrawObjectSettings
     /**< @brief The object ID to assign to the object. */
     uint objectId = 0;
 
-    DrawObjectSettings() = default;
+    /**< @brief Option that tells whether the object must be drawn in PBR mode.
+     */
+    bool pbrMode = false;
 
-    //DrawObjectSettings(uint vid) : viewId(vid) {}
+    DrawObjectSettings() = default;
 
     DrawObjectSettings(uint vId, uint oId) : viewId(vId), objectId(oId) {}
 };
