@@ -235,14 +235,14 @@ void DrawableObjectItem::addMaterialData(
         makeItemNotSelectable(alphaCutoffItem);
     }
     // base color Texture
-    if (!material.baseColorTexture().isNull()) {
+    if (!material.texture(Material::Textures::BASE_COLOR).isNull()) {
         auto baseColorTextureItem = new QTreeWidgetItem(parent);
         baseColorTextureItem->setText(0, "Base Color Texture");
 
         QString text =
-            QString::fromStdString(material.baseColorTexture().path());
+            QString::fromStdString(material.texture(Material::Textures::BASE_COLOR).path());
 
-        const auto& image = material.baseColorTexture().image();
+        const auto& image = material.texture(Material::Textures::BASE_COLOR).image();
 
         text += " (";
         text += image.isNull() ? "not loaded" :
