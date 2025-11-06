@@ -38,7 +38,7 @@ void DrawableAxis::setSize(double size)
     updateMatrices(size);
 }
 
-void DrawableAxis::draw(uint viewId) const
+void DrawableAxis::draw(const DrawObjectSettings& settings) const
 {
     using enum VertFragProgram;
 
@@ -61,7 +61,7 @@ void DrawableAxis::draw(uint viewId) const
 
                 bgfx::setTransform(mMatrices[i].data());
 
-                bgfx::submit(viewId, pm.getProgram<DRAWABLE_AXIS>());
+                bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_AXIS>());
             }
         }
     }
