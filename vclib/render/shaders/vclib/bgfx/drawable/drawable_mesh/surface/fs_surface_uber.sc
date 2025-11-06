@@ -118,25 +118,37 @@ void main()
         vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
         float lightIntensities[2] = {1.0, 0.5};
 
-        vec4 vertexColor, textureBaseColor, actualColor;
+        vec4 vertexBaseColor, textureBaseColor, baseColor;
 
          // per-vertex color 
         if(isPerVertexColorAvailable(u_settings.x))
-            vertexColor = v_color; // per-vertex color available
+            vertexBaseColor = v_color; // per-vertex color available
         else
-            vertexColor = vec4_splat(1.0); // no per-vertex color available, use white
+            vertexBaseColor = vec4_splat(1.0); // no per-vertex color available, use white
 
         if(isBaseColorTextureAvailable(u_settings.x))
             textureBaseColor = getColorFromTexture(0u, v_texcoord0); // base color texture available
         else
             textureBaseColor = vec4_splat(1.0); // no base color texture available, use white
 
-        actualColor = u_materialColor * textureBaseColor * vertexColor; // multiply vertex color with material base color
+        baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor; // multiply vertex color with material base color
 
         // alpha mode MASK
         if(isAlphaModeMask(u_settings.x))
-            if(actualColor.a < u_alphaCutoff.x)
+            if(baseColor.a < u_alphaCutoff.x)
                 discard; // discard fragment
+
+
+        vec4 metallicRoughnessTexture;
+        float metallic, roughness;
+
+        if(isMetallicRoughnessTextureAvailable(u_settings.x))
+            metallicRoughnessTexture = getColorFromTexture(1u, v_texcoord0); // metallic-roughness texture available
+        else
+            metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
+
+        metallic = u_metallicRoughnessFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
+        roughness = u_metallicRoughnessFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
 
         gl_FragColor = pbrColor(
             v_position.xyz,
@@ -144,11 +156,11 @@ void main()
             lightDirections,
             lightColors,
             lightIntensities,
-            actualColor,
+            baseColor,
             normal,
-            u_metallicRoughness.r, // metallic
-            u_metallicRoughness.g, // roughness
-            u_emissiveColor.rgb
+            metallic,
+            roughness,
+            u_emissiveColorFactor.rgb
         );
     }
     else {

@@ -26,23 +26,34 @@
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-#define PBR_VERTEX_COLOR_AVAILABLE 0
-#define PBR_ALPHA_MODE_MASK 1
-#define PBR_BASE_COLOR_TEXTURE_AVAILABLE 2
+#define PBR_VERTEX_COLOR_AVAILABLE                    0
+#define PBR_ALPHA_MODE_MASK                           1
+#define PBR_BASE_COLOR_TEXTURE_AVAILABLE              2
+#define PBR_METALLIC_ROUGHNESS_TEXTURE_AVAILABLE      3
+#define PBR_NORMAL_TEXTURE_AVAILABLE                  4
+#define PBR_OCCLUSION_TEXTURE_AVAILABLE               5
+#define PBR_EMISSIVE_TEXTURE_AVAILABLE                6
 
-#define checkSetting(settings, setting) bool(int(settings) & posToBitFlag(setting))
 
-#define isPerVertexColorAvailable(settings) checkSetting(settings, PBR_VERTEX_COLOR_AVAILABLE)
-#define isAlphaModeMask(settings) checkSetting(settings, PBR_ALPHA_MODE_MASK)
-#define isBaseColorTextureAvailable(settings) checkSetting(settings, PBR_BASE_COLOR_TEXTURE_AVAILABLE)
+#define checkSetting(settings, setting)               bool(int(settings) & posToBitFlag(setting))
+
+#define isPerVertexColorAvailable(settings)           checkSetting(settings, PBR_VERTEX_COLOR_AVAILABLE)
+#define isAlphaModeMask(settings)                     checkSetting(settings, PBR_ALPHA_MODE_MASK)
+#define isBaseColorTextureAvailable(settings)         checkSetting(settings, PBR_BASE_COLOR_TEXTURE_AVAILABLE)
+#define isMetallicRoughnessTextureAvailable(settings) checkSetting(settings, PBR_METALLIC_ROUGHNESS_TEXTURE_AVAILABLE)
+#define isNormalTextureAvailable(settings)            checkSetting(settings, PBR_NORMAL_TEXTURE_AVAILABLE)
+#define isOcclusionTextureAvailable(settings)         checkSetting(settings, PBR_OCCLUSION_TEXTURE_AVAILABLE)
+#define isEmissiveTextureAvailable(settings)          checkSetting(settings, PBR_EMISSIVE_TEXTURE_AVAILABLE)
 
 #define USE_LIGHTS
-#define LIGHT_COUNT 2
-#define PI 3.141592653589793
-#define GAMMA 2.2
+#define LIGHT_COUNT                                   2
+#define PI                                            3.141592653589793
+#define GAMMA                                         2.2
+
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
-#define LIGHT_KEY_DIR vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
-#define LIGHT_FILL_DIR vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
+
+#define LIGHT_KEY_DIR                                 vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
+#define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
 
 /**
  * @brief Computes the dot product of two vectors and clamps it to be >= 0.

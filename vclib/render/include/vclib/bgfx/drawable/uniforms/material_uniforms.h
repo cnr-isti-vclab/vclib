@@ -31,12 +31,13 @@ namespace vcl {
 class MaterialUniforms
 {
     
-    std::array<float, 4> mMaterialColor = {1.0, 1.0, 1.0, 1.0};
+    std::array<float, 4> mBaseColor = {1.0, 1.0, 1.0, 1.0};
 
+    // metallic and roughness are stored in the B and G channels respectively for consistency with textures
     std::array<float, 4> mMetallicRoughness = {
-        1.0, // metallic
-        1.0, // roughness
         0.0,
+        1.0, // roughness
+        1.0, // metallic
         0.0};
 
     std::array<float, 4> mEmissiveColor = {0.0, 0.0, 0.0, 1.0};
@@ -45,14 +46,14 @@ class MaterialUniforms
 
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
-    Uniform mMaterialColorUniform =
-        Uniform("u_materialColor", bgfx::UniformType::Vec4);
+    Uniform mBaseColorUniform =
+        Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
 
     Uniform mMetallicRoughnessUniform =
-        Uniform("u_metallicRoughness", bgfx::UniformType::Vec4);
+        Uniform("u_metallicRoughnessFactors", bgfx::UniformType::Vec4);
 
     Uniform mEmissiveColorUniform =
-        Uniform("u_emissiveColor", bgfx::UniformType::Vec4);
+        Uniform("u_emissiveColorFactor", bgfx::UniformType::Vec4);
 
     Uniform mAlphaCutoffUniform =
         Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
@@ -62,7 +63,7 @@ class MaterialUniforms
 public:
     MaterialUniforms() = default;
 
-    const std::array<float, 4>& currentMaterialColor() const { return mMaterialColor; }
+    const std::array<float, 4>& currentBaseColor() const { return mBaseColor; }
 
     const std::array<float, 4>& currentMetallicRoughness() const { return mMetallicRoughness; }
 
@@ -84,19 +85,22 @@ public:
             mAlphaCutoff[0] = m.alphaCutoff();
         }
 
-        if(!m.texture(Material::Textures::BASE_COLOR).image().isNull()) {
-            settings |= 1 << 2; // base color texture available
+        for(int i = 0; i < toUnderlying(Material::Textures::COUNT); ++i) {
+            if(!m.texture(static_cast<Material::Textures>(i)).image().isNull()) {
+                settings |= 1 << (2 + i); // texture available, uses settings from 2 to 6
+            }
         }
 
         mSettings[0] = float(settings);
 
-        mMaterialColor[0] = m.baseColor().redF();
-        mMaterialColor[1] = m.baseColor().greenF();
-        mMaterialColor[2] = m.baseColor().blueF();
-        mMaterialColor[3] = m.baseColor().alphaF();
+        mBaseColor[0] = m.baseColor().redF();
+        mBaseColor[1] = m.baseColor().greenF();
+        mBaseColor[2] = m.baseColor().blueF();
+        mBaseColor[3] = m.baseColor().alphaF();
 
-        mMetallicRoughness[0] = m.metallic();
+        // metallic and roughness are stored in the B and G channels respectively for consistency with textures
         mMetallicRoughness[1] = m.roughness();
+        mMetallicRoughness[2] = m.metallic();
 
         mEmissiveColor[0] = m.emissiveColor().redF();
         mEmissiveColor[1] = m.emissiveColor().greenF();
@@ -106,7 +110,7 @@ public:
 
     void bind() const
     {
-        mMaterialColorUniform.bind(&mMaterialColor);
+        mBaseColorUniform.bind(&mBaseColor);
         mMetallicRoughnessUniform.bind(&mMetallicRoughness);
         mEmissiveColorUniform.bind(&mEmissiveColor);
         mAlphaCutoffUniform.bind(&mAlphaCutoff);

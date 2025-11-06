@@ -580,15 +580,19 @@ private:
             // TODO: materials
             mMaterialTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                vcl::Image txt = mesh.material(i).texture(Material::Textures::BASE_COLOR).image();
-                if (txt.isNull()) {
-                    txt = vcl::createCheckBoardImage(512);
+                for(uint j = 0; j < toUnderlying(Material::Textures::COUNT); ++j) {
+                    vcl::Image txt = mesh.material(i).texture(static_cast<Material::Textures>(j)).image();
+                    if (txt.isNull()) {
+                        txt = vcl::createCheckBoardImage(512);
+                    }
+
+                    setTextureUnit(
+                        txt,
+                        i,
+                        j,
+                        Material::isSRGBTexture(j)
+                    );
                 }
-
-
-                int textureType = toUnderlying(Material::Textures::BASE_COLOR);
-                setTextureUnit(
-                    txt, i, textureType, Material::isSRGBTexture(textureType));
             }
         }
     }
