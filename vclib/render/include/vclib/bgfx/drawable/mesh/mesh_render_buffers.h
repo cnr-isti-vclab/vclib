@@ -44,6 +44,15 @@ namespace vcl {
 template<MeshConcept Mesh>
 class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 {
+    enum class MaterialTextures {
+        BASE_COLOR = 0,
+        NORMAL_MAP,
+        METALLIC_ROUGHNESS,
+        OCCLUSION,
+        EMISSIVE,
+        COUNT
+    };
+
     using MeshType = Mesh;
     using Base     = MeshRenderData<MeshRenderBuffers<MeshType>>;
     using MRI      = MeshRenderInfo;
@@ -70,7 +79,12 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Lines mWireframeLines;
     Color mMeshColor; // todo: find better way to store mesh color
 
-    std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
+    // vector of materials of textures
+    // for each material, an array of `MaterialTextures::COUNT` texture units
+    std::vector<std::array<
+        std::unique_ptr<TextureUnit>,
+        toUnderlying(MaterialTextures::COUNT)>>
+        mMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
@@ -115,7 +129,7 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
-        swap(mTextureUnits, other.mTextureUnits);
+        swap(mMaterialTextureUnits, other.mMaterialTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
     }
 
@@ -225,25 +239,34 @@ public:
 
     void bindTextures(const MeshRenderSettings& mrs, uint chunkNumber) const
     {
-        uint textureId = 0;
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-            mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL)) {
+        using enum MeshRenderInfo::Surface;
+
+        uint textureId = UINT_NULL;
+        if (mrs.isSurface(COLOR_VERTEX_TEX) ||
+            mrs.isSurface(COLOR_VERTEX_MATERIAL)) {
             textureId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX) ||
-                 mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
+        else if (
+            mrs.isSurface(COLOR_WEDGE_TEX) ||
+            mrs.isSurface(COLOR_WEDGE_MATERIAL)) {
             textureId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
         }
+        assert(
+            textureId != UINT_NULL && textureId < mMaterialTextureUnits.size());
 
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-            mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
+        if (mrs.isSurface(COLOR_VERTEX_TEX) || mrs.isSurface(COLOR_WEDGE_TEX)) {
+            if (mMaterialTextureUnits[textureId][0]) {
+                mMaterialTextureUnits[textureId][0]->bind(VCL_MRB_TEXTURE0);
+            }
         }
         else {
-            // TODO: bind texture materials here...
-            mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
+            for (uint j = 0; j < toUnderlying(MaterialTextures::COUNT); ++j) {
+                if (mMaterialTextureUnits[textureId][j]) {
+                    mMaterialTextureUnits[textureId][j]->bind(
+                        VCL_MRB_TEXTURE0 + j);
+                }
+            }
         }
-
     }
 
     uint bindMaterials(const MeshRenderSettings& mrs, uint chunkNumber, const MeshType& m) const
@@ -504,8 +527,11 @@ private:
 
     void setTextureUnits(const MeshType& mesh) // override
     {
-        // lambda that pushes a texture unit
-        auto pushTextureUnit = [&](vcl::Image& txt, uint i, bool sRGB = false) {
+        // lambda that sets a texture unit
+        auto setTextureUnit = [&](vcl::Image& txt,
+                                  uint        i, // i-th material
+                                  uint        j, // j-th texture
+                                  bool        sRGB = false) {
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -527,13 +553,16 @@ private:
                 sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE,
                 releaseFn);
 
-            mTextureUnits.push_back(std::move(tu));
+            if (mMaterialTextureUnits.size() <= i) {
+                mMaterialTextureUnits.resize(i + 1);
+            }
+            mMaterialTextureUnits[i][j] = std::move(tu);
         };
 
-        mTextureUnits.clear();
+        mMaterialTextureUnits.clear();
 
         if constexpr (vcl::HasTextureImages<MeshType>) {
-            mTextureUnits.reserve(mesh.textureNumber());
+            mMaterialTextureUnits.reserve(mesh.textureNumber());
             for (uint i = 0; i < mesh.textureNumber(); ++i) {
                 vcl::Image txt;
                 if constexpr (vcl::HasTextureImages<MeshType>) {
@@ -552,19 +581,20 @@ private:
                     txt = vcl::createCheckBoardImage(512);
                 }
 
-                pushTextureUnit(txt, 0);
+                setTextureUnit(txt, i, 0);
             }
         }
         if constexpr (vcl::HasMaterials<MeshType>) {
             // TODO: materials
-            mTextureUnits.reserve(mesh.materialsNumber());
+            mMaterialTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 vcl::Image txt = mesh.material(i).baseColorTexture().image();
                 if (txt.isNull()) {
                     txt = vcl::createCheckBoardImage(512);
                 }
 
-                pushTextureUnit(txt, 0, true);
+                setTextureUnit(
+                    txt, i, toUnderlying(MaterialTextures::BASE_COLOR), true);
             }
         }
     }
