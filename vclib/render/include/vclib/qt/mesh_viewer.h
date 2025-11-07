@@ -49,6 +49,8 @@ class MeshViewer : public QWidget
 {
     Q_OBJECT
 
+    enum class RenderMode { CLASSIC = 0, PBR = 1 };
+
     Ui::MeshViewer* mUI;
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
@@ -104,6 +106,9 @@ public slots:
     void fitView();
 
     void updateGUI();
+
+private slots:
+    void renderModeComboBoxCurrentIndexChanged(int index);
 };
 
 } // namespace vcl::qt
