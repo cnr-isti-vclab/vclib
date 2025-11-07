@@ -75,7 +75,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each material, an array of `MaterialTextures::COUNT` texture units
     std::vector<std::array<
         std::unique_ptr<TextureUnit>,
-        toUnderlying(Material::Textures::COUNT)>>
+        toUnderlying(Material::TextureType::COUNT)>>
         mMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
@@ -252,7 +252,7 @@ public:
             }
         }
         else {
-            for (uint j = 0; j < toUnderlying(Material::Textures::COUNT); ++j) {
+            for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
                 if (mMaterialTextureUnits[textureId][j]) {
                     mMaterialTextureUnits[textureId][j]->bind(
                         VCL_MRB_TEXTURE0 + j);
@@ -580,8 +580,8 @@ private:
             // TODO: materials
             mMaterialTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                for(uint j = 0; j < toUnderlying(Material::Textures::COUNT); ++j) {
-                    vcl::Image txt = mesh.material(i).texture(static_cast<Material::Textures>(j)).image();
+                for(uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
+                    vcl::Image txt = mesh.material(i).texture(static_cast<Material::TextureType>(j)).image();
                     if (txt.isNull()) {
                         txt = vcl::createCheckBoardImage(512);
                     }

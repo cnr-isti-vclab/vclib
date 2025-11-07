@@ -77,16 +77,16 @@ int main(int argc, char** argv)
 
     std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e9);
 
-    auto printTextureInfo = [&](const Material& mat, Material::Textures type) {
+    auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
         const vcl::Texture& texture = mat.texture(type);
         std::string typeName = "baseColor";
-        if(type == Material::Textures::METALLIC_ROUGHNESS) {
+        if(type == Material::TextureType::METALLIC_ROUGHNESS) {
             typeName = "metallicRoughness";
-        } else if(type == Material::Textures::NORMAL) {
+        } else if(type == Material::TextureType::NORMAL) {
             typeName = "normal";
-        } else if(type == Material::Textures::OCCLUSION) {
+        } else if(type == Material::TextureType::OCCLUSION) {
             typeName = "occlusion";
-        } else if(type == Material::Textures::EMISSIVE) {
+        } else if(type == Material::TextureType::EMISSIVE) {
             typeName = "emissive";
         }
 
@@ -114,11 +114,11 @@ int main(int argc, char** argv)
             std::cout << "  doubleSided: " << mat.doubleSided() << std::endl;
             std::cout << "  alphaMode: " << int(mat.alphaMode()) << std::endl;
             std::cout << "  alphaCutoff: " << mat.alphaCutoff() << std::endl;
-            printTextureInfo(mat, Material::Textures::BASE_COLOR);
-            printTextureInfo(mat, Material::Textures::METALLIC_ROUGHNESS);
-            printTextureInfo(mat, Material::Textures::NORMAL);
-            printTextureInfo(mat, Material::Textures::OCCLUSION);
-            printTextureInfo(mat, Material::Textures::EMISSIVE);
+            printTextureInfo(mat, Material::TextureType::BASE_COLOR);
+            printTextureInfo(mat, Material::TextureType::METALLIC_ROUGHNESS);
+            printTextureInfo(mat, Material::TextureType::NORMAL);
+            printTextureInfo(mat, Material::TextureType::OCCLUSION);
+            printTextureInfo(mat, Material::TextureType::EMISSIVE);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;

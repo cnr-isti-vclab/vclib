@@ -85,8 +85,8 @@ public:
             mAlphaCutoff[0] = m.alphaCutoff();
         }
 
-        for(int i = 0; i < toUnderlying(Material::Textures::COUNT); ++i) {
-            if(!m.texture(static_cast<Material::Textures>(i)).image().isNull()) {
+        for(int i = 0; i < toUnderlying(Material::TextureType::COUNT); ++i) {
+            if(!m.texture(static_cast<Material::TextureType>(i)).image().isNull()) {
                 settings |= 1 << (2 + i); // texture available, uses settings from 2 to 6
             }
         }

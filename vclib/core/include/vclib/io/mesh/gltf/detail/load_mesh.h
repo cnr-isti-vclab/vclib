@@ -117,7 +117,7 @@ int loadGltfPrimitiveMaterial(
 
         // function to load a texture in a material
         auto loadTextureInMaterial = [&](Material& mat, int textureId,
-                                          Material::Textures type) {
+                                          Material::TextureType type) {
             if (textureId != -1) {
 
                 const tinygltf::Image& img =
@@ -160,15 +160,15 @@ int loadGltfPrimitiveMaterial(
             mat.alphaCutoff() = alphaCutoff;
             mat.doubleSided() = doubleSided;
             loadTextureInMaterial(mat, baseColorTextureId,
-                                     Material::Textures::BASE_COLOR);
+                                     Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(mat, metallicRoughnessTextureId,
-                                     Material::Textures::METALLIC_ROUGHNESS);
+                                     Material::TextureType::METALLIC_ROUGHNESS);
             loadTextureInMaterial(mat, normalTextureId,
-                                     Material::Textures::NORMAL);
+                                     Material::TextureType::NORMAL);
             loadTextureInMaterial(mat, occlusionTextureId,
-                                     Material::Textures::OCCLUSION);
+                                     Material::TextureType::OCCLUSION);
             loadTextureInMaterial(mat, emissiveTextureId,
-                                     Material::Textures::EMISSIVE);
+                                     Material::TextureType::EMISSIVE);
             m.pushMaterial(mat);
             idx = m.materialsNumber() - 1; // index of the added material
         }
