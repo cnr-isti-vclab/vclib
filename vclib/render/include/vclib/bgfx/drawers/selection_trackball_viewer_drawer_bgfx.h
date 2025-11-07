@@ -27,6 +27,7 @@
 
 // #include "../../examples/render/979-selection/drawable_mesh_979.h"
 
+#include <bx/math.h>
 #include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 #include <vclib/bgfx/drawable/drawable_mesh_979.h>
@@ -42,7 +43,12 @@ class SelectionTrackBallViewerDrawerBGFX :
 {
     using ParentViewer =
         ViewerDrawerBGFX<SelectionTrackBallEventDrawer<DerivedRenderApp>>;
+    
+    using TED = TrackBallEventDrawer<DerivedRenderApp>;
 
+    bgfx::TextureHandle      mPrimitiveIdTex;
+    bgfx::TextureHandle      mMeshIdTex;
+    bgfx::ViewId             mVisibleSelectionViewId;
     bgfx::VertexLayout       mVertexLayout;
     VertexBuffer             mPosBuffer;
     IndexBuffer              mTriIndexBuf;
@@ -76,9 +82,48 @@ public:
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
+        mVisibleSelectionViewId = Context::instance().requestViewId();
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
+    }
+
+    void visibleTrisSelectionPass() {
+        using Camera<float>::ProjectionMode;
+        SelectionBox box = ParentViewer::selectionBox().toMinAndMax();
+
+        uint win_w = DerivedRenderApp::width();
+        uint win_h = DerivedRenderApp::height();
+        Point4f minNDC = Point3d(
+            float(box.get1().x()) / float(win_w) * 2.f - 1.f,
+            float(box.get1().y()) / float(win_h) * 2.f - 1.f,
+            0.f,
+            1.f
+        );
+        Point4f maxNDC = Point3d(
+            float(box.get2().x()) / float(win_w) * 2.f - 1.f,
+            float(box.get2().y()) / float(win_h) * 2.f - 1.f,
+            1.f,
+            1.f
+        );
+        Matrix44f invProj = TED::projectionMatrix().inverse();
+        Point4f minViewSpace = invProj * minNDC;
+        Point4f maxViewSpace = invProj * maxNDC;
+        minViewSpace /= minViewSpace.w;
+        maxViewSpace /= maxViewSpace.w;
+        float l = min(minViewSpace.x(), maxViewSpace.x());
+        float r = max(minViewSpace.x(), maxViewSpace.x());
+        float b = max(minViewSpace.y(), maxViewSpace.y());
+        float t = min(minViewSpace.y(), maxViewSpace.y());
+        float n = min(minViewSpace.z(), maxViewSpace.z());
+        float f = max(minViewSpace.z(), maxViewSpace.z());
+        float proj[16];
+        if (TED::camera().projectionMode() == ProjectionMode::ORTHO) {
+            bx::mtxOrtho(proj, l, r, b, t, n, f, 0.f, false);
+        } else {
+            bx::mtxProj(proj, t, b, l, r, n, f, false);
+        }
+        float* view = TED::viewMatrix().data();
     }
 
     void onDraw(uint viewId) override
@@ -105,15 +150,15 @@ public:
         }
 
         if (mAxis.isVisible()) {
-            mAxis.draw(viewId);
+            mAxis.draw(DrawObjectSettings(viewId, 0));
         }
 
         if (mDrawTrackBall.isVisible()) {
-            mDrawTrackBall.draw(viewId);
+            mDrawTrackBall.draw(DrawObjectSettings(viewId, 0));
         }
 
         if (mDrawableDirectionalLight.isVisible()) {
-            mDrawableDirectionalLight.draw(viewId);
+            mDrawableDirectionalLight.draw(DrawObjectSettings(viewId, 0));
         }
 
         if (ParentViewer::selectionBox().allValue()) {
