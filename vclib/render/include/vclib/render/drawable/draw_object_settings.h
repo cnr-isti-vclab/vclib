@@ -20,33 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
-#define VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
+#ifndef VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
+#define VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
 
-#include <vclib/render/drawable/draw_object_settings.h>
-#include <vclib/space/core.h>
+#include <vclib/base.h>
 
 namespace vcl {
 
-template<typename T>
-concept DrawableObjectConcept =
-    requires (T&& obj, uint u, DrawObjectSettings s) {
-        { obj.draw(s) } -> std::same_as<void>;
-        { obj.boundingBox() } -> Box3Concept;
-        obj.clone();
-        { obj.isVisible() } -> std::same_as<bool>;
-        { obj.name() } -> std::convertible_to<std::string>;
-        { obj.info() } -> std::convertible_to<std::string>;
+/**
+ * @brief A simple struct containing the settings to draw a drawable object.
+ */
+struct DrawObjectSettings
+{
+    /**< @brief The view ID on which to draw the object. */
+    uint viewId = 0;
 
-        // non const requirements
-        requires IsConst<T> || requires {
-            { obj.init() } -> std::same_as<void>;
-            { obj.setVisibility(bool()) } -> std::same_as<void>;
-            { obj.name() } -> std::same_as<std::string&>;
-            { obj.info() } -> std::same_as<std::string&>;
-        };
-    };
+    /**< @brief The object ID to assign to the object. */
+    uint objectId = 0;
+
+    DrawObjectSettings() = default;
+
+    // DrawObjectSettings(uint vid) : viewId(vid) {}
+
+    DrawObjectSettings(uint vId, uint oId) : viewId(vId), objectId(oId) {}
+};
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
+#endif // VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H

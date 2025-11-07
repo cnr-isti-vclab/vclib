@@ -192,7 +192,7 @@ public:
 
     void init() override {}
 
-    void draw(uint viewId) const override
+    void draw(const DrawObjectSettings& settings) const override
     {
         using enum VertFragProgram;
 
@@ -219,7 +219,7 @@ public:
                     bgfx::setState(state);
                     bgfx::setTransform(model.data());
 
-                    bgfx::submit(viewId, surfaceProgramSelector());
+                    bgfx::submit(settings.viewId, surfaceProgramSelector());
                 }
             }
             else {
@@ -230,20 +230,20 @@ public:
                 bgfx::setState(state);
                 bgfx::setTransform(model.data());
 
-                bgfx::submit(viewId, surfaceProgramSelector());
+                bgfx::submit(settings.viewId, surfaceProgramSelector());
             }
         }
 
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             bgfx::setTransform(model.data());
 
-            mMRB.drawWireframeLines(viewId);
+            mMRB.drawWireframeLines(settings.viewId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             bgfx::setTransform(model.data());
 
-            mMRB.drawEdgeLines(viewId);
+            mMRB.drawEdgeLines(settings.viewId);
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
@@ -255,11 +255,12 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::setTransform(model.data());
 
-                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+                bgfx::submit(
+                    settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
             }
             else {
                 // generate splats (quads) lazy
-                mMRB.computeQuadVertexBuffers(*this, viewId);
+                mMRB.computeQuadVertexBuffers(*this, settings.viewId);
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
@@ -269,12 +270,13 @@ public:
                 bgfx::setTransform(model.data());
 
                 bgfx::submit(
-                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+                    settings.viewId,
+                    pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
     }
 
-    void drawId(uint viewId, uint id) const override
+    void drawId(const DrawObjectSettings& settings) const override
     {
         using enum VertFragProgram;
 
@@ -293,7 +295,7 @@ public:
         }
 
         const std::array<float, 4> idFloat = {
-            Uniform::uintBitsToFloat(id), 0.0f, 0.0f, 0.0f};
+            Uniform::uintBitsToFloat(settings.objectId), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
@@ -303,7 +305,8 @@ public:
             bgfx::setState(state);
             bgfx::setTransform(model.data());
 
-            bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
+            bgfx::submit(
+                settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
         // if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
@@ -338,11 +341,12 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::setTransform(model.data());
 
-                bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
+                bgfx::submit(
+                    settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
             }
             else {
                 // generate splats (quads) lazy
-                mMRB.computeQuadVertexBuffers(*this, viewId);
+                mMRB.computeQuadVertexBuffers(*this, settings.viewId);
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
@@ -353,7 +357,8 @@ public:
                 bgfx::setTransform(model.data());
 
                 bgfx::submit(
-                    viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
+                    settings.viewId,
+                    pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
             }
         }
     }
