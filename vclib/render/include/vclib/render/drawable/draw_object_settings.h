@@ -33,14 +33,14 @@ namespace vcl {
 struct DrawObjectSettings
 {
     /**< @brief The view ID on which to draw the object. */
-    uint viewId   = 0;
+    uint viewId = 0;
 
     /**< @brief The object ID to assign to the object. */
     uint objectId = 0;
 
     DrawObjectSettings() = default;
 
-    //DrawObjectSettings(uint vid) : viewId(vid) {}
+    // DrawObjectSettings(uint vid) : viewId(vid) {}
 
     DrawObjectSettings(uint vId, uint oId) : viewId(vId), objectId(oId) {}
 };
