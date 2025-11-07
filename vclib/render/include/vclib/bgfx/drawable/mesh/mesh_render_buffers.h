@@ -520,14 +520,16 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](vcl::Image& txt,
-                                  uint        i, // i-th material
-                                  uint        j, // j-th texture
-                                  bool        sRGB = false,
-                                  Texture::MinificationFilter minFilter = Texture::MinificationFilter::NONE,
-                                  Texture::MagnificationFilter magFilter = Texture::MagnificationFilter::NONE,
-                                  Texture::WrapMode wrapU = Texture::WrapMode::REPEAT,
-                                  Texture::WrapMode wrapV = Texture::WrapMode::REPEAT) {
+        auto setTextureUnit = [&](vcl::Image&         txt,
+                                  uint                i, // i-th material
+                                  uint                j, // j-th texture
+                                  const vcl::Texture& tex = vcl::Texture()) {
+
+            vcl::Texture::MinificationFilter minFilter = tex.minFilter();
+            vcl::Texture::MagnificationFilter magFilter = tex.magFilter();
+            vcl::Texture::WrapMode wrapU = tex.wrapU();
+            vcl::Texture::WrapMode wrapV = tex.wrapV();
+
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -546,7 +548,7 @@ private:
             
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if(sRGB) 
+            if(Material::isSRGBTexture(j)) 
                 flags |= BGFX_TEXTURE_SRGB;
             
             // set minification filter
@@ -621,22 +623,12 @@ private:
                 for(uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
 
                     const vcl::Texture& tex = mesh.material(i).texture(static_cast<Material::TextureType>(j));
-                    
                     vcl::Image txt = tex.image();
-                    if (txt.isNull()) {
-                        txt = vcl::createCheckBoardImage(512);
-                    }
 
-                    setTextureUnit(
-                        txt,
-                        i,
-                        j,
-                        Material::isSRGBTexture(j),
-                        tex.minFilter(),
-                        tex.magFilter(),
-                        tex.wrapU(),
-                        tex.wrapV()
-                    );
+                    if (txt.isNull())
+                        txt = vcl::createCheckBoardImage(512);
+
+                    setTextureUnit(txt, i, j, tex);
                 }
             }
         }
