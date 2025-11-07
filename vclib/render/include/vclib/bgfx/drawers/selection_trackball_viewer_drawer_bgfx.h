@@ -46,8 +46,7 @@ class SelectionTrackBallViewerDrawerBGFX :
     
     using TED = TrackBallEventDrawer<DerivedRenderApp>;
 
-    bgfx::TextureHandle      mPrimitiveIdTex;
-    bgfx::TextureHandle      mMeshIdTex;
+    bgfx::FrameBufferHandle  mVisibleSelectionFrameBuffer;
     bgfx::ViewId             mVisibleSelectionViewId;
     bgfx::VertexLayout       mVertexLayout;
     VertexBuffer             mPosBuffer;
@@ -55,6 +54,7 @@ class SelectionTrackBallViewerDrawerBGFX :
     DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
     DrawableDirectionalLight mDrawableDirectionalLight;
+    SelectionBox             mBoxToDraw;
 
 public:
     using ParentViewer::ParentViewer;
@@ -67,8 +67,7 @@ public:
             .end();
         float temp[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
         mPosBuffer.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
-        uint temp2[6] = {2, 3, 0, 3, 1, 0};
-        mTriIndexBuf.create(bgfx::copy(temp2, 6 * sizeof(uint)));
+        mTriIndexBuf.create(bgfx::copy(SelectionBox::triangleIndices().data(), 6 * sizeof(uint)));
     }
 
     SelectionTrackBallViewerDrawerBGFX(
@@ -83,6 +82,7 @@ public:
     {
         ParentViewer::onInit(viewId);
         mVisibleSelectionViewId = Context::instance().requestViewId();
+        mVisibleSelectionFrameBuffer = Context::instance().createOffscreenFramebufferAndInitView(mVisibleSelectionViewId, ((DerivedRenderApp*)this)->width(), ((DerivedRenderApp*)this)->height(), false, 255U, 1.0f, (uint8_t)0U, bgfx::TextureFormat::Enum::RGBA16);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
@@ -92,6 +92,7 @@ public:
         using Camera<float>::ProjectionMode;
         SelectionBox box = ParentViewer::selectionBox().toMinAndMax();
 
+        // We limit the projection to the selection box so that the pass itself does the selection for us
         uint win_w = DerivedRenderApp::width();
         uint win_h = DerivedRenderApp::height();
         Point4f minNDC = Point3d(
@@ -124,6 +125,8 @@ public:
             bx::mtxProj(proj, t, b, l, r, n, f, false);
         }
         float* view = TED::viewMatrix().data();
+        bgfx::setViewFrameBuffer(mVisibleSelectionViewId, mVisibleSelectionFrameBuffer);
+        bgfx::setViewTransform(mVisibleSelectionViewId, view, proj);
     }
 
     void onDraw(uint viewId) override
@@ -135,6 +138,9 @@ public:
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
 
         if (ParentViewer::selectionCalculationRequired()) {
+            if (ParentViewer::selectionBox().allValue()) {
+                mBoxToDraw = ParentViewer::selectionBox();
+            }
             for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                 auto el = ParentViewer::mDrawList->at(i);
                 if (auto p = dynamic_cast<Selectable*>(el.get())) {
@@ -161,9 +167,9 @@ public:
             mDrawableDirectionalLight.draw(DrawObjectSettings(viewId, 0));
         }
 
-        if (ParentViewer::selectionBox().allValue()) {
+        if (mBoxToDraw.allValue()) {
             std::array<float, 8> temp =
-                ParentViewer::selectionBox().vertexPositions();
+                mBoxToDraw.vertexPositions();
             bgfx::setState(
                 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
                 BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
@@ -176,6 +182,10 @@ public:
                 Context::instance()
                     .programManager()
                     .getProgram<VertFragProgram::DRAWABLE_SELECTION_BOX>());
+        }
+
+        if (!ParentViewer::isSelectionTemporary()) {
+            mBoxToDraw.nullAll();
         }
     }
 

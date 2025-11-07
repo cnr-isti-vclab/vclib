@@ -127,6 +127,10 @@ public:
         arr[7] = pts.mPoints[1].value().y(); // ymax
         return arr;
     }
+
+    static std::array<uint, 6> triangleIndices() {
+        return std::array<uint, 6>{2, 3, 0, 3, 1, 0};
+    }
 };
 } // namespace vcl
 

@@ -152,7 +152,7 @@ protected:
         }
     }
 
-    bool isSelectionTemporary() { return mSelectionCalcRequired && mLMBHeld; }
+    bool isSelectionTemporary() { return mLMBHeld; }
 
     SelectionMode selectionMode() { return mCurrentSelectionMode; }
 
