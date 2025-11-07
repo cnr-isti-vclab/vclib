@@ -97,6 +97,10 @@ int main(int argc, char** argv)
                       << texture.image().width() << " x "
                       << texture.image().height()
                       << std::endl;
+            std::cout << "    minFilter: " << int(texture.minFilter()) << std::endl;
+            std::cout << "    magFilter: " << int(texture.magFilter()) << std::endl;
+            std::cout << "    wrapU: " << int(texture.wrapU()) << std::endl;
+            std::cout << "    wrapV: " << int(texture.wrapV()) << std::endl;
         }
         else {
             std::cout << "null" << std::endl;

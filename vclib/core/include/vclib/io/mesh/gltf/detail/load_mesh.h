@@ -138,6 +138,16 @@ int loadGltfPrimitiveMaterial(
                         Image(img.image.data(), img.width, img.height), uri);
 
                     texture = std::move(txt);
+
+                    // set sampler parameters
+                    int samplerId = model.textures[textureId].sampler;
+                    if(samplerId >= 0) {
+                        const tinygltf::Sampler& sampler = model.samplers[samplerId];
+                        texture.minFilter() = static_cast<Texture::MinificationFilter>(sampler.minFilter);
+                        texture.magFilter() = static_cast<Texture::MagnificationFilter>(sampler.magFilter);
+                        texture.wrapU() = static_cast<Texture::WrapMode>(sampler.wrapS);
+                        texture.wrapV() = static_cast<Texture::WrapMode>(sampler.wrapT);
+                    }
                 }
                 else {
                     // if the image is not valid, just set the path

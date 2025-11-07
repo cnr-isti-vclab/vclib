@@ -523,7 +523,11 @@ private:
         auto setTextureUnit = [&](vcl::Image& txt,
                                   uint        i, // i-th material
                                   uint        j, // j-th texture
-                                  bool        sRGB = false) {
+                                  bool        sRGB = false,
+                                  Texture::MinificationFilter minFilter = Texture::MinificationFilter::NONE,
+                                  Texture::MagnificationFilter magFilter = Texture::MagnificationFilter::NONE,
+                                  Texture::WrapMode wrapU = Texture::WrapMode::REPEAT,
+                                  Texture::WrapMode wrapV = Texture::WrapMode::REPEAT) {
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -536,13 +540,47 @@ private:
 
             std::copy(tdata, tdata + size, buffer);
 
+            //bool hasMips = 
+            //    toUnderlying(minFilter) >= 
+            //    toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST);
+            
+            uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
+
+            if(sRGB) 
+                flags |= BGFX_TEXTURE_SRGB;
+            
+            // set minification filter
+            if(minFilter == Texture::MinificationFilter::NEAREST || 
+               minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_LINEAR ||
+               minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST)
+                flags |= BGFX_SAMPLER_MIN_POINT;
+
+            if(minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST ||
+               minFilter == Texture::MinificationFilter::LINEAR_MIPMAP_NEAREST)
+                flags |= BGFX_SAMPLER_MIP_POINT;
+                
+            // set magnification filter
+            if(magFilter == Texture::MagnificationFilter::NEAREST)
+                flags |= BGFX_SAMPLER_MAG_POINT;
+
+            // set wrap modes
+            if(wrapU == Texture::WrapMode::CLAMP_TO_EDGE)
+                flags |= BGFX_SAMPLER_U_CLAMP;
+            else if(wrapU == Texture::WrapMode::MIRRORED_REPEAT)
+                flags |= BGFX_SAMPLER_U_MIRROR;
+    
+            if(wrapV == Texture::WrapMode::CLAMP_TO_EDGE)
+                flags |= BGFX_SAMPLER_V_CLAMP;
+            else if(wrapV == Texture::WrapMode::MIRRORED_REPEAT)
+                flags |= BGFX_SAMPLER_V_MIRROR;
+
             auto tu = std::make_unique<TextureUnit>();
             tu->set(
                 buffer,
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
-                false,
-                sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE,
+                false,//hasMips,
+                flags,
                 releaseFn);
 
             if (mMaterialTextureUnits.size() <= i) {
@@ -581,7 +619,10 @@ private:
             mMaterialTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for(uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
-                    vcl::Image txt = mesh.material(i).texture(static_cast<Material::TextureType>(j)).image();
+
+                    const vcl::Texture& tex = mesh.material(i).texture(static_cast<Material::TextureType>(j));
+                    
+                    vcl::Image txt = tex.image();
                     if (txt.isNull()) {
                         txt = vcl::createCheckBoardImage(512);
                     }
@@ -590,7 +631,11 @@ private:
                         txt,
                         i,
                         j,
-                        Material::isSRGBTexture(j)
+                        Material::isSRGBTexture(j),
+                        tex.minFilter(),
+                        tex.magFilter(),
+                        tex.wrapU(),
+                        tex.wrapV()
                     );
                 }
             }
