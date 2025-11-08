@@ -178,6 +178,22 @@ public:
         mEmissiveTexture.deserialize(is);
         vcl::deserialize(is, mDoubleSided);
     }
+
+    bool operator==(const Material& other) const
+    {
+        return mName == other.mName && mBaseColor == other.mBaseColor &&
+               mMetallic == other.mMetallic && mRoughness == other.mRoughness &&
+               mEmissiveColor == other.mEmissiveColor &&
+               mAlphaMode == other.mAlphaMode &&
+               mAlphaCutoff == other.mAlphaCutoff &&
+               mBaseColorTexture.path() == other.mBaseColorTexture.path() &&
+               mMetallicRoughnessTexture.path() ==
+                   other.mMetallicRoughnessTexture.path() &&
+               mNormalTexture.path() == other.mNormalTexture.path() &&
+               mOcclusionTexture.path() == other.mOcclusionTexture.path() &&
+               mEmissiveTexture.path() == other.mEmissiveTexture.path() &&
+               mDoubleSided == other.mDoubleSided;
+    };
 };
 
 /* Concepts */
