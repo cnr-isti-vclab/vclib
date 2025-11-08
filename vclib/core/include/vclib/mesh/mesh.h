@@ -471,11 +471,11 @@ public:
             }
         }
         else if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
-            uint nMaterials = this->materialNumber();
+            uint nMaterials = this->materialsNumber();
 
-            std::vector<uint> mapping(m.materialNumber());
+            std::vector<uint> mapping(m.materialsNumber());
 
-            for (uint i = 0; i < m.materialNumber(); ++i) {
+            for (uint i = 0; i < m.materialsNumber(); ++i) {
                 auto it = std::find(
                     this->materialBegin(), this->materialEnd(), m.material(i));
 
