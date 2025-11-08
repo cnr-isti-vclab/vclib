@@ -22,6 +22,11 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
+bool pointInAABB(vec3 p, vec3 minBoxPoint, vec3 maxBoxPoint) {
+    return p.x >= minBoxPoint.x && p.x <= maxBoxPoint.x && p.y >= minBoxPoint.y && p.y <= maxBoxPoint.y && p.z >= minBoxPoint.z && p.z <= maxBoxPoint.z;
+}
+
+
 // Slab method with extra restrictions on the possible values of tclose and tfar
 // (Since we calculate the ray such that it identifies the segment in the range 0<=t<=1)
 bool segmentIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, vec3 p0, vec3 p1) {
@@ -55,7 +60,9 @@ bool segmentIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, vec3 p0, vec3 p1)
         || (tclose >= 0 && tclose <= 1)
         || (tfar >= 0 && tfar <= 1)
     ) {
-        return true;
+        vec3 pclose = p0+tclose*dir;
+        vec3 pfar = p0+tfar*dir;
+        return pointInAABB(pclose, minBoxPoint, maxBoxPoint) || pointInAABB(pfar, minBoxPoint, maxBoxPoint);
     }
     return false;
 }
