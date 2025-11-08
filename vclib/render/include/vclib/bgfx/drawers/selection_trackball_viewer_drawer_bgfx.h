@@ -89,29 +89,29 @@ public:
     }
 
     void visibleTrisSelectionPass() {
-        using Camera<float>::ProjectionMode;
+        using PM = Camera<float>::ProjectionMode;
         SelectionBox box = ParentViewer::selectionBox().toMinAndMax();
 
         // We limit the projection to the selection box so that the pass itself does the selection for us
         uint win_w = DerivedRenderApp::width();
         uint win_h = DerivedRenderApp::height();
         Point4f minNDC = Point3d(
-            float(box.get1().x()) / float(win_w) * 2.f - 1.f,
-            float(box.get1().y()) / float(win_h) * 2.f - 1.f,
+            float(box.get1().value().x()) / float(win_w) * 2.f - 1.f,
+            float(box.get1().value().y()) / float(win_h) * 2.f - 1.f,
             0.f,
             1.f
         );
         Point4f maxNDC = Point3d(
-            float(box.get2().x()) / float(win_w) * 2.f - 1.f,
-            float(box.get2().y()) / float(win_h) * 2.f - 1.f,
+            float(box.get2().value().x()) / float(win_w) * 2.f - 1.f,
+            float(box.get2().value().y()) / float(win_h) * 2.f - 1.f,
             1.f,
             1.f
         );
         Matrix44f invProj = TED::projectionMatrix().inverse();
         Point4f minViewSpace = invProj * minNDC;
         Point4f maxViewSpace = invProj * maxNDC;
-        minViewSpace /= minViewSpace.w;
-        maxViewSpace /= maxViewSpace.w;
+        minViewSpace = minViewSpace / minViewSpace.w;
+        maxViewSpace = maxViewSpace / maxViewSpace.w;
         float l = min(minViewSpace.x(), maxViewSpace.x());
         float r = max(minViewSpace.x(), maxViewSpace.x());
         float b = max(minViewSpace.y(), maxViewSpace.y());
@@ -119,7 +119,7 @@ public:
         float n = min(minViewSpace.z(), maxViewSpace.z());
         float f = max(minViewSpace.z(), maxViewSpace.z());
         float proj[16];
-        if (TED::camera().projectionMode() == ProjectionMode::ORTHO) {
+        if (TED::camera().projectionMode() == PM::ORTHO) {
             bx::mtxOrtho(proj, l, r, b, t, n, f, 0.f, false);
         } else {
             bx::mtxProj(proj, t, b, l, r, n, f, false);
