@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     // the lower part a semitransparent blue matte
     std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e6);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e2);
 
     for(const auto& mesh : meshes) {
         std::cout << "Mesh: " << mesh.name() << std::endl;
@@ -102,5 +102,5 @@ int main(int argc, char** argv)
         std::cout << "------------------------" << std::endl;
     }
 
-    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes)/*, true*/);
+    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes), true);
 }

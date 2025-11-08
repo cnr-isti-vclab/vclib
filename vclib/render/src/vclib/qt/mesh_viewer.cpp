@@ -118,6 +118,9 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
+
+    connect(mUI->renderModeComboBox, SIGNAL(currentIndexChanged(int)), this,
+        SLOT(renderModeComboBoxCurrentIndexChanged(int)));
 }
 
 MeshViewer::~MeshViewer()
@@ -182,17 +185,20 @@ bool MeshViewer::isPBREnabled() const
 
 void MeshViewer::setPBR(bool enable)
 {
-    mUI->viewer->setPBR(enable);
+    using enum RenderMode;
+    mUI->renderModeComboBox->setCurrentIndex(
+        enable ?  toUnderlying(PBR) : toUnderlying(CLASSIC));
+    updateGUI();
 }
 
 void MeshViewer::enablePBR()
 {
-    mUI->viewer->enablePBR();
+    setPBR(true);
 }
 
 void MeshViewer::disablePBR()
 {
-    mUI->viewer->disablePBR();
+    setPBR(false);
 }
 
 void MeshViewer::keyPressEvent(QKeyEvent* event)
@@ -314,6 +320,17 @@ void MeshViewer::updateGUI()
     }
     else {
         mUI->renderSettingsFrame->setEnabled(false);
+    }
+    mUI->viewer->update();
+}
+
+void MeshViewer::renderModeComboBoxCurrentIndexChanged(int index)
+{
+    if (index == toUnderlying(RenderMode::PBR)) {
+        mUI->viewer->enablePBR();
+    }
+    else {
+        mUI->viewer->disablePBR();
     }
     mUI->viewer->update();
 }

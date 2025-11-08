@@ -124,9 +124,9 @@ public:
 
     void setPBR(bool enable) { mPBRMode = enable; }
 
-    void enablePBR() { mPBRMode = true; }
+    void enablePBR() { setPBR(true); }
 
-    void disablePBR() { mPBRMode = false; }
+    void disablePBR() { setPBR(false); }
 
     void fitView()
     {
