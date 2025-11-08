@@ -227,7 +227,7 @@ void Materials::importFrom(const Element& e, bool)
     if constexpr (HasMaterials<Element>) {
         mats().clear();
         for (const auto& mat : e.materials()) {
-            mats().push_back(mat.path());
+            mats().push_back(mat);
         }
         meshBasePath() = e.meshBasePath();
     }
