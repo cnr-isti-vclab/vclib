@@ -520,15 +520,16 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](vcl::Image&         txt,
-                                  uint                i, // i-th material
-                                  uint                j, // j-th texture
-                                  const vcl::Texture& tex = vcl::Texture()) {
+        auto setTextureUnit = [&](vcl::Image&    txt,
+                                  uint           i, // i-th material
+                                  uint           j, // j-th texture
+                                  bool           sRGB = false,
+                                  const Texture& tex = Texture()) {
 
-            vcl::Texture::MinificationFilter minFilter = tex.minFilter();
-            vcl::Texture::MagnificationFilter magFilter = tex.magFilter();
-            vcl::Texture::WrapMode wrapU = tex.wrapU();
-            vcl::Texture::WrapMode wrapV = tex.wrapV();
+            Texture::MinificationFilter minFilter = tex.minFilter();
+            Texture::MagnificationFilter magFilter = tex.magFilter();
+            Texture::WrapMode wrapU = tex.wrapU();
+            Texture::WrapMode wrapV = tex.wrapV();
 
             txt.mirror();
 
@@ -548,7 +549,7 @@ private:
             
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if(Material::isSRGBTexture(j)) 
+            if(sRGB) 
                 flags |= BGFX_TEXTURE_SRGB;
             
             // set minification filter
@@ -628,7 +629,9 @@ private:
                     if (txt.isNull())
                         txt = vcl::createCheckBoardImage(512);
 
-                    setTextureUnit(txt, i, j, tex);
+                    bool sRGB = Material::isSRGBTexture(j);
+
+                    setTextureUnit(txt, i, j, sRGB, tex);
                 }
             }
         }
