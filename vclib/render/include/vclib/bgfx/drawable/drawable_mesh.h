@@ -219,7 +219,7 @@ public:
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             uint64_t surfaceState = state;
-            if (mMRB.mustDrawUsingChunks(mMRS)) {
+            if (mustDrawUsingChunks()) {
                 for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                     // Bind textures before vertex buffers!!
                     mMRB.bindTextures(mMRS, i);
@@ -521,6 +521,15 @@ protected:
         }
 
         return pm.getProgram<DRAWABLE_MESH_SURFACE_UBER>();
+    }
+
+private:
+    bool mustDrawUsingChunks() const
+    {
+        return mMRS.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
+               mMRS.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)  ||
+               mMRS.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL) ||
+               mMRS.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL);
     }
 };
 
