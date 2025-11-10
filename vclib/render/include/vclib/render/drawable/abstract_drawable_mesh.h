@@ -72,11 +72,6 @@ public:
 
     virtual vcl::Matrix44d transformMatrix() const = 0;
 
-    virtual std::vector<std::string> textures() const
-    {
-        return std::vector<std::string>();
-    }
-
     virtual View<MatIt> materials() const
     {
         return View<MatIt>();

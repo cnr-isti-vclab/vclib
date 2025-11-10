@@ -104,7 +104,6 @@ public:
         MATERIAL_INDEX,
         WEDGE_TEXCOORDS,
         CUSTOM_COMPONENTS,
-        TEXTURES,
         MATERIALS,
         NUM_COMPONENTS
     };
@@ -275,13 +274,8 @@ public:
             //         setEdgeColors(true, UCHAR);
         }
 
-        if constexpr (HasTexturePaths<Mesh>) {
-            if (m.textureNumber() > 0) {
-                setTextures(true);
-            }
-        }
         if constexpr (HasMaterials<Mesh>) {
-            if (m.materialNumber() > 0) {
+            if (m.materialsNumber() > 0) {
                 setMaterials(true);
             }
         }
@@ -493,8 +487,6 @@ public:
         return hasPerElementComponent(EDGE, CUSTOM_COMPONENTS);
     }
 
-    bool hasTextures() const { return hasPerElementComponent(MESH, TEXTURES); }
-
     bool hasMaterials() const
     {
         return hasPerElementComponent(MESH, MATERIALS);
@@ -651,11 +643,6 @@ public:
     void setPerEdgeCustomComponents(bool b = true)
     {
         setPerElementComponent(EDGE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
-    }
-
-    void setTextures(bool b = true)
-    {
-        setPerElementComponent(MESH, TEXTURES, b, PrimitiveType::NONE);
     }
 
     void setMaterials(bool b = true)

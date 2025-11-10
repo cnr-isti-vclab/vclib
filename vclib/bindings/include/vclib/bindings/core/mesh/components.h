@@ -29,8 +29,6 @@
 #include "components/bit_flags.h"
 #include "components/materials.h"
 #include "components/polygon_bit_flags.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
 #include "components/triangle_bit_flags.h"
 #include "components/vertex_references.h"
 #include "components/wedge_colors.h"
@@ -148,15 +146,7 @@ void initComponents(pybind11::class_<ElementType>& c)
         });
     }
 
-    // TODO: remove
-    if constexpr (comp::HasTextureImages<ElementType>) {
-        initTextureImages(c);
-    }
-    else if constexpr (comp::HasTexturePaths<ElementType>) {
-        initTexturePaths(c);
-    }
-    else
-        if constexpr (comp::HasMaterials<ElementType>) {
+    if constexpr (comp::HasMaterials<ElementType>) {
         initMaterials(c);
     }
 

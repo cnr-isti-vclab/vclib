@@ -176,19 +176,6 @@ public:
         }
     }
 
-    // todo
-    std::vector<std::string> textures() const override
-    {
-        std::vector<std::string> txs;
-        if constexpr (HasTexturePaths<MeshType>) {
-            txs.reserve(MeshType::textureNumber());
-            for (const auto& tpath : MeshType::texturePaths()) {
-                txs.push_back(tpath);
-            }
-        }
-        return txs;
-    }
-
     View<MatIt> materials() const override
     {
         if constexpr (HasMaterials<MeshType>) {
@@ -227,8 +214,8 @@ public:
                     mMRB.bindVertexBuffers(mMRS);
                     mMRB.bindIndexBuffers(mMRS, i);
                     if constexpr (HasMaterials<MeshType>) {
-                        uint materialId = mMRB.bindMaterials(mMRS, i, *this);
                         if (settings.pbrMode) {
+                            uint materialId = mMRB.bindMaterials(mMRS, i, *this);
                             if (!MeshType::material(materialId).doubleSided()) {
                                 surfaceState |=
                                     BGFX_STATE_CULL_CW; // backface culling

@@ -159,6 +159,7 @@ void loadObjMaterials(
     for (auto& [matName, mat] : materialMap) {
         if (!mat.justFaceColor()) {
             if constexpr (HasMaterials<MeshType>) {
+                loadedInfo.setMaterials();
                 Material m;
                 m.name() = matName;
                 m.baseColor() = vcl::Color(
@@ -173,14 +174,6 @@ void loadObjMaterials(
 
                 mat.mapId = mesh.materialsNumber();
                 mesh.pushMaterial(m);
-            }
-            // todo
-            if constexpr (HasTexturePaths<MeshType>) {
-                if (mat.hasTexture) {
-                    loadedInfo.setTextures();
-                    mat.mapId = mesh.textureNumber();
-                    mesh.pushTexturePath(mat.map_Kd);
-                }
             }
         }
     }
@@ -544,10 +537,6 @@ void loadObj(
     // the current material, set by 'usemtl'
     detail::ObjMaterial currentMaterial;
 
-    // todo
-    if constexpr (HasTexturePaths<MeshType>) {
-        m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
-    }
     if constexpr (HasMaterials<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
@@ -665,19 +654,6 @@ void loadObj(
         }
     }
 
-    // todo
-    if constexpr (HasTextureImages<MeshType>) {
-        if (settings.loadTextureImages) {
-            for (Texture& texture : m.textures()) {
-                texture.image() = loadImage(m.meshBasePath() + texture.path());
-                if (texture.image().isNull()) {
-                    log.log(
-                        "Cannot load texture " + texture.path(),
-                        LogType::WARNING_LOG);
-                }
-            }
-        }
-    }
     if constexpr (HasMaterials<MeshType>) {
         if (settings.loadTextureImages) {
             for (Material& mat : m.materials()) {

@@ -360,40 +360,24 @@ private:
     {
         mTextures.clear();
 
-        // todo
-        if constexpr (vcl::HasTexturePaths<MeshType>) {
-            mTextures.reserve(mesh.textureNumber());
-            for (uint i = 0; i < mesh.textureNumber(); ++i) {
-                vcl::Image txt;
-                if constexpr (vcl::HasTextureImages<MeshType>) {
-                    if (mesh.texture(i).image().isNull()) {
-                        txt = vcl::loadImage(
-                            mesh.meshBasePath() + mesh.texturePath(i));
-                    }
-                    else {
-                        txt = mesh.texture(i).image();
-                    }
-                }
-                else if constexpr (vcl::HasTexturePaths<MeshType>){
-                    txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-                }
-                if (txt.isNull()) {
-                    txt = vcl::createCheckBoardImage(512);
-                }
-                txt.mirror();
-                mTextures.push_back(txt);
-            }
-        }
-        else if constexpr (vcl::HasMaterials<MeshType>) {
-            mTextures.reserve(mesh.materialNumber());
-            for (uint i = 0; i < mesh.materialNumber(); ++i) {
+        if constexpr (vcl::HasMaterials<MeshType>) {
+            mTextures.reserve(mesh.materialsNumber());
+            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 vcl::Image txt;
 
                 const auto& texture = mesh.material(i).baseColorTexture();
 
                 if (texture.image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + texture.path());
+                    if (!texture.path().empty()) {
+                        try {
+                            txt = vcl::loadImage(
+                                mesh.meshBasePath() + texture.path());
+                        }
+                        catch(...) {
+                            // do nothing
+                        }
+                    }
+
                 }
                 else {
                     txt = texture.image();

@@ -640,12 +640,6 @@ public:
                 setPointsCapability(MRI::Points::COLOR_MESH);
             }
 
-            if constexpr (vcl::HasMaterials<MeshType>) {
-                if (m.materialsNumber() > 0) {
-                    setSurfaceCapability(MRI::Surface::COLOR_VERTEX_MATERIAL);
-                }
-            }
-
             // -- Surface and Wireframe --
             if constexpr (vcl::HasFaces<MeshType>) {
                 if (m.faceNumber() > 0) {
@@ -688,26 +682,19 @@ public:
                         }
                     }
 
-                    if constexpr (vcl::HasTexturePaths<MeshType>) {
+                    if constexpr (vcl::HasMaterials<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m) &&
-                                m.textureNumber() > 0)
+                                m.materialsNumber() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
-                                m.textureNumber() > 0) {
+                                m.materialsNumber() > 0) {
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
-
-                                if constexpr (vcl::HasMaterials<MeshType>) {
-                                    if (m.materialsNumber() > 0) {
-                                        setSurfaceCapability(
-                                            MRI::Surface::COLOR_WEDGE_MATERIAL);
-                                    }
-                                }
                             }
                         }
                     }

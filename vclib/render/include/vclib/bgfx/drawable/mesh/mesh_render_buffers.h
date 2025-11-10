@@ -545,48 +545,42 @@ private:
 
         mMaterialTextureUnits.clear();
 
-        if constexpr (vcl::HasTextureImages<MeshType>) {
-            mMaterialTextureUnits.reserve(mesh.textureNumber());
-            for (uint i = 0; i < mesh.textureNumber(); ++i) {
-                vcl::Image txt;
-                if constexpr (vcl::HasTextureImages<MeshType>) {
-                    if (mesh.texture(i).image().isNull()) {
-                        txt = vcl::loadImage(
-                            mesh.meshBasePath() + mesh.texturePath(i));
-                    }
-                    else {
-                        txt = mesh.texture(i).image();
-                    }
-                }
-                else {
-                    txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-                }
-                if (txt.isNull()) {
-                    txt = vcl::createCheckBoardImage(512);
-                }
-
-                setTextureUnit(txt, i, 0);
-            }
-        }
         if constexpr (vcl::HasMaterials<MeshType>) {
-            // TODO: materials
             mMaterialTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                for(uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
-                    const Texture& tex = mesh.material(i).texture(static_cast<Material::TextureType>(j));
+                for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT);
+                     ++j) {
+                    const vcl::Texture& tex = mesh.material(i).texture(
+                        static_cast<Material::TextureType>(j));
+
                     vcl::Image txt = tex.image();
-                    if (txt.isNull()) {
-                        txt = vcl::createCheckBoardImage(512);
+                    if (txt.isNull()) { // try to load it just for rendering
+                        const std::string& path =
+                            mesh.material(i)
+                                .texture(static_cast<Material::TextureType>(j))
+                                .path();
+                        if (!path.empty()) {
+                            try {
+                                txt =
+                                    vcl::loadImage(mesh.meshBasePath() + path);
+                            }
+                            catch (...) {
+                                // do nothing
+                            }
+                            if (txt.isNull()) {
+                                // still null, use a dummy texture
+                                txt = createCheckBoardImage(512);
+                            }
+                        }
                     }
 
-                    bool sRGB = tex.colorSpace() == Texture::ColorSpace::SRGB;
+                    // if loading succeeded (or dummy texture has been created)
+                    if (!txt.isNull()) {
+                        bool sRGB =
+                            tex.colorSpace() == Texture::ColorSpace::SRGB;
 
-                    setTextureUnit(
-                        txt,
-                        i,
-                        j,
-                        sRGB
-                    );
+                        setTextureUnit(txt, i, j, sRGB);
+                    }
                 }
             }
         }
