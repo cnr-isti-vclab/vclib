@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
 #define VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
 
-uniform vec4 u_materialColor;
-uniform vec4 u_metallicRoughness;
-uniform vec4 u_emissiveColor;
+uniform vec4 u_baseColorFactor;
+uniform vec4 u_metallicRoughnessFactors;
+uniform vec4 u_emissiveColorFactor;
 uniform vec4 u_alphaCutoff;
 uniform vec4 u_settings;
 
