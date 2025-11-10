@@ -138,6 +138,10 @@ int loadGltfPrimitiveMaterial(
                         Image(img.image.data(), img.width, img.height), uri);
 
                     texture = std::move(txt);
+                    texture.colorSpace() =
+                        Material::isSRGBTexture(toUnderlying(type))?
+                            Texture::ColorSpace::SRGB :
+                            Texture::ColorSpace::LINEAR;
                 }
                 else {
                     // if the image is not valid, just set the path
