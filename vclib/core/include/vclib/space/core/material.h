@@ -39,6 +39,21 @@ class Material
 {
 public:
     enum class AlphaMode { ALPHA_OPAQUE, ALPHA_MASK, ALPHA_BLEND };
+    enum class TextureType {
+        BASE_COLOR = 0,
+        METALLIC_ROUGHNESS,
+        NORMAL,
+        OCCLUSION,
+        EMISSIVE,
+        COUNT
+    };
+
+    static bool isSRGBTexture(int type)
+    {
+        return 
+            type == toUnderlying(TextureType::BASE_COLOR) || 
+            type == toUnderlying(TextureType::EMISSIVE);
+    }
 
 private:
     std::string mName;
@@ -47,6 +62,7 @@ private:
     Color mBaseColor = Color::White;
 
     float mMetallic  = 1.0f;
+
     float mRoughness = 1.0f;
 
     // optional PBR properties
@@ -55,11 +71,19 @@ private:
     AlphaMode mAlphaMode = AlphaMode::ALPHA_OPAQUE;
 
     float mAlphaCutoff = 0.5f; // only used when mAlphaMode is MASK
-
+    
     Texture mBaseColorTexture;
-
+    
+    Texture mMetallicRoughnessTexture;
+    
+    Texture mNormalTexture;
+    
+    Texture mOcclusionTexture;
+    
+    Texture mEmissiveTexture;
+    
     bool mDoubleSided = false;
-
+    
 public:
     Material() {}
 
@@ -91,13 +115,39 @@ public:
 
     float& alphaCutoff() { return mAlphaCutoff; }
 
+    bool doubleSided() const { return mDoubleSided; }
+
+    bool& doubleSided() { return mDoubleSided; }
+
     const Texture& baseColorTexture() const { return mBaseColorTexture; }
 
     Texture& baseColorTexture() { return mBaseColorTexture; }
 
-    bool doubleSided() const { return mDoubleSided; }
+    const Texture& texture(TextureType type) const
+    {
+        switch(type)
+        {
+            case TextureType::BASE_COLOR: return mBaseColorTexture;
+            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
+            case TextureType::NORMAL: return mNormalTexture;
+            case TextureType::OCCLUSION: return mOcclusionTexture;
+            case TextureType::EMISSIVE: return mEmissiveTexture;
+            default: throw std::runtime_error("Invalid texture type");
+        }
+    }
 
-    bool& doubleSided() { return mDoubleSided; }
+    Texture& texture(TextureType type)
+    {
+        switch(type)
+        {
+            case TextureType::BASE_COLOR: return mBaseColorTexture;
+            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
+            case TextureType::NORMAL: return mNormalTexture;
+            case TextureType::OCCLUSION: return mOcclusionTexture;
+            case TextureType::EMISSIVE: return mEmissiveTexture;
+            default: throw std::runtime_error("Invalid texture type");
+        }
+    }
 
     void serialize(std::ostream& os) const
     {
@@ -107,6 +157,10 @@ public:
         mEmissiveColor.serialize(os);
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
         mBaseColorTexture.serialize(os);
+        mMetallicRoughnessTexture.serialize(os);
+        mNormalTexture.serialize(os);
+        mOcclusionTexture.serialize(os);
+        mEmissiveTexture.serialize(os);
         vcl::serialize(os, mDoubleSided);
     }
 
@@ -118,8 +172,28 @@ public:
         mEmissiveColor.deserialize(is);
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
         mBaseColorTexture.deserialize(is);
+        mMetallicRoughnessTexture.deserialize(is);
+        mNormalTexture.deserialize(is);
+        mOcclusionTexture.deserialize(is);
+        mEmissiveTexture.deserialize(is);
         vcl::deserialize(is, mDoubleSided);
     }
+
+    bool operator==(const Material& other) const
+    {
+        return mName == other.mName && mBaseColor == other.mBaseColor &&
+               mMetallic == other.mMetallic && mRoughness == other.mRoughness &&
+               mEmissiveColor == other.mEmissiveColor &&
+               mAlphaMode == other.mAlphaMode &&
+               mAlphaCutoff == other.mAlphaCutoff &&
+               mBaseColorTexture.path() == other.mBaseColorTexture.path() &&
+               mMetallicRoughnessTexture.path() ==
+                   other.mMetallicRoughnessTexture.path() &&
+               mNormalTexture.path() == other.mNormalTexture.path() &&
+               mOcclusionTexture.path() == other.mOcclusionTexture.path() &&
+               mEmissiveTexture.path() == other.mEmissiveTexture.path() &&
+               mDoubleSided == other.mDoubleSided;
+    };
 };
 
 /* Concepts */

@@ -31,8 +31,19 @@ namespace vcl {
 
 class Texture
 {
+public:
+
+    enum class ColorSpace {
+        UNKNOWN,
+        LINEAR,
+        SRGB
+    };
+
+private:
+
     Image       mImg;
     std::string mPath;
+    ColorSpace mColorSpace = ColorSpace::UNKNOWN;
 
 public:
     Texture() {}
@@ -100,16 +111,32 @@ public:
      */
     Image& image() { return mImg; }
 
+    /**
+     * @brief Get the color space of the texture.
+     *
+     * @return the color space of the texture.
+     */
+    ColorSpace colorSpace() const { return mColorSpace; }
+
+    /**
+     * @brief Get the color space of the texture.
+     *
+     * @return the color space of the texture.
+     */
+    ColorSpace& colorSpace() { return mColorSpace; }
+
     void serialize(std::ostream& os) const
     {
         vcl::serialize(os, mPath);
         mImg.serialize(os);
+        vcl::serialize(os, mColorSpace);
     }
 
     void deserialize(std::istream& is)
     {
         vcl::deserialize(is, mPath);
         mImg.deserialize(is);
+        vcl::deserialize(is, mColorSpace);
     }
 };
 
