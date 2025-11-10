@@ -139,6 +139,11 @@ int loadGltfPrimitiveMaterial(
 
                     texture = std::move(txt);
 
+                    texture.colorSpace() =
+                        Material::isSRGBTexture(toUnderlying(type))?
+                            Texture::ColorSpace::SRGB :
+                            Texture::ColorSpace::LINEAR;
+
                     // set sampler parameters
                     int samplerId = model.textures[textureId].sampler;
                     if(samplerId >= 0) {

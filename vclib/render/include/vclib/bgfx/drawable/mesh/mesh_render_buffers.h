@@ -614,14 +614,13 @@ private:
             mMaterialTextureUnits.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for(uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
-
-                    const vcl::Texture& tex = mesh.material(i).texture(static_cast<Material::TextureType>(j));
+                    const Texture& tex = mesh.material(i).texture(static_cast<Material::TextureType>(j));
                     vcl::Image txt = tex.image();
-
-                    if (txt.isNull())
+                    if (txt.isNull()) {
                         txt = vcl::createCheckBoardImage(512);
+                    }
 
-                    bool sRGB = Material::isSRGBTexture(j);
+                    bool sRGB = tex.colorSpace() == Texture::ColorSpace::SRGB;
 
                     setTextureUnit(txt, i, j, sRGB, tex);
                 }
