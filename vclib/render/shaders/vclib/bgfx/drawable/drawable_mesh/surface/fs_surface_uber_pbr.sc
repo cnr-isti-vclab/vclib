@@ -98,6 +98,17 @@ void main()
     // normal
     vec3 normal = normalize(v_normal);
 
+    // emissive
+    vec4 emissiveTexture;
+    vec3 emissiveColor;
+
+    if(isEmissiveTextureAvailable(u_settings.x))
+        emissiveTexture = getColorFromTexture(4u, v_texcoord0); // emissive texture available
+    else
+        emissiveTexture = vec4_splat(1.0); // no emissive texture available, use white
+
+    emissiveColor = u_emissiveColorFactor.rgb * emissiveTexture.rgb;
+
     gl_FragColor = pbrColor(
         v_position.xyz,
         vec3_splat(0.0), // camera position
@@ -108,7 +119,7 @@ void main()
         normal,
         metallic,
         roughness,
-        u_emissiveColorFactor.rgb
+        emissiveColor
     );
 
     // depth offset - avoid z-fighting
