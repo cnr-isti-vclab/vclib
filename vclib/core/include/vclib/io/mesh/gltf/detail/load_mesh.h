@@ -54,7 +54,9 @@ int loadGltfPrimitiveMaterial(
     if (p.material >= 0) {
         vcl::Color                baseColor, emissiveColor;
         Material::AlphaMode       alphaMode;
-        double                    metallic, roughness, alphaCutoff;
+        double                    metallic, roughness, 
+                                  alphaCutoff, 
+                                  occlusionStrength;
         bool                      doubleSided;
         int                       baseColorTextureId,
                                   metallicRoughnessTextureId,
@@ -114,6 +116,9 @@ int loadGltfPrimitiveMaterial(
 
         // alphaCutoff
         alphaCutoff = mat.alphaCutoff; // has default value
+
+        if (mat.occlusionTexture.index != -1) 
+            occlusionStrength = mat.occlusionTexture.strength;
 
         // function to load a texture in a material
         auto loadTextureInMaterial = [&](Material& mat, int textureId,
@@ -182,6 +187,8 @@ int loadGltfPrimitiveMaterial(
                                      Material::TextureType::NORMAL);
             loadTextureInMaterial(mat, occlusionTextureId,
                                      Material::TextureType::OCCLUSION);
+            if(!mat.texture(Material::TextureType::OCCLUSION).isNull())
+                mat.occlusionStrength() = occlusionStrength;
             loadTextureInMaterial(mat, emissiveTextureId,
                                      Material::TextureType::EMISSIVE);
             m.pushMaterial(mat);

@@ -76,7 +76,7 @@ int main(int argc, char** argv)
     // the lower part a semitransparent blue matte
     std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
 
-    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e10);
+    std::vector<MaterialTriMesh> meshes = vcl::loadMeshes<MaterialTriMesh>(e7);
 
     auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
         const vcl::Texture& texture = mat.texture(type);
@@ -123,6 +123,8 @@ int main(int argc, char** argv)
             printTextureInfo(mat, Material::TextureType::METALLIC_ROUGHNESS);
             printTextureInfo(mat, Material::TextureType::NORMAL);
             printTextureInfo(mat, Material::TextureType::OCCLUSION);
+            if(!mat.texture(Material::TextureType::OCCLUSION).isNull())
+                std::cout << "    occlusionStrength: " << mat.occlusionStrength() << std::endl;
             printTextureInfo(mat, Material::TextureType::EMISSIVE);
             std::cout << "  ------------------------" << std::endl;
         }

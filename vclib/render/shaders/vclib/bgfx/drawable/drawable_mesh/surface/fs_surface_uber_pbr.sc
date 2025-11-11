@@ -92,8 +92,8 @@ void main()
     else
         metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
 
-    metallic = u_metallicRoughnessFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
-    roughness = u_metallicRoughnessFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
+    metallic = u_metallicRoughnessOcclusionFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
+    roughness = u_metallicRoughnessOcclusionFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // normal
     vec3 normal = normalize(v_normal);
