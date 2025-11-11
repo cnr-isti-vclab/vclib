@@ -32,6 +32,67 @@
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
 
 /**
+ * @brief Checks for equality (a == b) with epsilon checking
+ * @param[in] a: Floating point number
+ * @param[in] b: Floating point number
+ * @param[in] eps: Epsilon
+ */
+bool fEQ(float a, float b, float eps) {
+    return abs(a - b) < eps;
+}
+
+/**
+ * @brief Checks for inequality (a != b) with epsilon checking
+ * @param[in] a: Floating point number
+ * @param[in] b: Floating point number
+ * @param[in] eps: Epsilon
+ */
+bool fNE(float a, float b, float eps) {
+    return !fEQ(a, b, eps);
+}
+
+/**
+ * @brief Checks for 'greater or equal' (a >= b) with epsilon checking
+ * @param[in] a: Floating point number
+ * @param[in] b: Floating point number
+ * @param[in] eps: Epsilon
+ */
+bool fGE(float a, float b, float eps) {
+    return a > b || fEQ(a, b, eps);
+}
+
+/**
+ * @brief Checks for 'less or equal' (a <= b) with epsilon checking
+ * @param[in] a: Floating point number
+ * @param[in] b: Floating point number
+ * @param[in] eps: Epsilon
+ */
+bool fLE(float a, float b, float eps) {
+    return a < b || fEQ(a, b, eps);
+}
+
+/**
+ * @brief Checks for 'greater' (a > b) with epsilon checking
+ * @param[in] a: Floating point number
+ * @param[in] b: Floating point number
+ * @param[in] eps: Epsilon
+ */
+bool fGT(float a, float b, float eps) {
+    return !fLE(a, b, eps);
+}
+
+/**
+ * @brief Checks for 'less' (a < b) with epsilon checking
+ * @param[in] a: Floating point number
+ * @param[in] b: Floating point number
+ * @param[in] eps: Epsilon
+ */
+bool fLT(float a, float b, float eps) {
+    return !fGE(a, b, eps);
+}
+
+
+/**
  * @brief Convert an uint color in ABGR format to a vec4 float color.
  * @param[in] color: The input color.
  * @return The output color.
