@@ -119,12 +119,10 @@ int loadGltfPrimitiveMaterial(
         alphaCutoff = mat.alphaCutoff; // has default value
 
         // normalScale
-        if (mat.normalTexture.index != -1)
-            normalScale = mat.normalTexture.scale;
+        normalScale = mat.normalTexture.scale;
 
-        // occlusionStrength    
-        if (mat.occlusionTexture.index != -1) 
-            occlusionStrength = mat.occlusionTexture.strength;
+        // occlusionStrength     
+        occlusionStrength = mat.occlusionTexture.strength;
 
         // function to load a texture in a material
         auto loadTextureInMaterial = [&](Material& mat, int textureId,
@@ -185,18 +183,16 @@ int loadGltfPrimitiveMaterial(
             mat.alphaMode() = alphaMode;
             mat.alphaCutoff() = alphaCutoff;
             mat.doubleSided() = doubleSided;
+            mat.normalScale() = normalScale;
+            mat.occlusionStrength() = occlusionStrength;
             loadTextureInMaterial(mat, baseColorTextureId,
                                      Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(mat, metallicRoughnessTextureId,
                                      Material::TextureType::METALLIC_ROUGHNESS);
             loadTextureInMaterial(mat, normalTextureId,
                                      Material::TextureType::NORMAL);
-            if(!mat.texture(Material::TextureType::NORMAL).isNull())
-                mat.normalScale() = normalScale;
             loadTextureInMaterial(mat, occlusionTextureId,
                                      Material::TextureType::OCCLUSION);
-            if(!mat.texture(Material::TextureType::OCCLUSION).isNull())
-                mat.occlusionStrength() = occlusionStrength;
             loadTextureInMaterial(mat, emissiveTextureId,
                                      Material::TextureType::EMISSIVE);
             m.pushMaterial(mat);
