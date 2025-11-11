@@ -43,7 +43,7 @@ class SelectionTrackBallViewerDrawerBGFX :
 {
     using ParentViewer =
         ViewerDrawerBGFX<SelectionTrackBallEventDrawer<DerivedRenderApp>>;
-    
+
     using TED = TrackBallEventDrawer<DerivedRenderApp>;
 
     bgfx::FrameBufferHandle  mVisibleSelectionFrameBuffer;
@@ -67,7 +67,9 @@ public:
             .end();
         float temp[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
         mPosBuffer.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
-        mTriIndexBuf.create(bgfx::copy(SelectionBox::triangleIndices().data(), 6 * sizeof(uint)));
+        mTriIndexBuf.create(
+            bgfx::copy(
+                SelectionBox::triangleIndices().data(), 6 * sizeof(uint)));
     }
 
     SelectionTrackBallViewerDrawerBGFX(
@@ -82,51 +84,70 @@ public:
     {
         ParentViewer::onInit(viewId);
         mVisibleSelectionViewId = Context::instance().requestViewId();
-        mVisibleSelectionFrameBuffer = Context::instance().createOffscreenFramebufferAndInitView(mVisibleSelectionViewId, ((DerivedRenderApp*)this)->width(), ((DerivedRenderApp*)this)->height(), false, 255U, 1.0f, (uint8_t)0U, bgfx::TextureFormat::Enum::RGBA16);
+        mVisibleSelectionFrameBuffer =
+            Context::instance().createOffscreenFramebufferAndInitView(
+                mVisibleSelectionViewId,
+                ((DerivedRenderApp*) this)->width(),
+                ((DerivedRenderApp*) this)->height(),
+                false,
+                255U,
+                1.0f,
+                (uint8_t) 0U,
+                bgfx::TextureFormat::Enum::RGBA16);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
     }
 
-    void visibleTrisSelectionPass() {
-        using PM = Camera<float>::ProjectionMode;
+
+    // IMPORTANT: Figure out how big the framebuffer should be
+    // Same as SelectionBox?
+    // Variable? Constant?
+    // Same as visible view FrameBuffer?
+    // You need to strike a balance between being accurate (big framebuffer)
+    // And having the compute shader which has size equal to the framebuffer execute quickly
+    void visibleTrisSelectionPass()
+    {
+        using PM         = Camera<float>::ProjectionMode;
         SelectionBox box = ParentViewer::selectionBox().toMinAndMax();
 
-        // We limit the projection to the selection box so that the pass itself does the selection for us
-        uint win_w = DerivedRenderApp::width();
-        uint win_h = DerivedRenderApp::height();
+        // We limit the projection to the selection box so that the pass itself
+        // does the selection for us
+        uint    win_w  = DerivedRenderApp::width();
+        uint    win_h  = DerivedRenderApp::height();
         Point4f minNDC = Point3d(
             float(box.get1().value().x()) / float(win_w) * 2.f - 1.f,
             float(box.get1().value().y()) / float(win_h) * 2.f - 1.f,
             0.f,
-            1.f
-        );
+            1.f);
         Point4f maxNDC = Point3d(
             float(box.get2().value().x()) / float(win_w) * 2.f - 1.f,
             float(box.get2().value().y()) / float(win_h) * 2.f - 1.f,
             1.f,
-            1.f
-        );
-        Matrix44f invProj = TED::projectionMatrix().inverse();
-        Point4f minViewSpace = invProj * minNDC;
-        Point4f maxViewSpace = invProj * maxNDC;
-        minViewSpace = minViewSpace / minViewSpace.w;
-        maxViewSpace = maxViewSpace / maxViewSpace.w;
-        float l = min(minViewSpace.x(), maxViewSpace.x());
-        float r = max(minViewSpace.x(), maxViewSpace.x());
-        float b = max(minViewSpace.y(), maxViewSpace.y());
-        float t = min(minViewSpace.y(), maxViewSpace.y());
-        float n = min(minViewSpace.z(), maxViewSpace.z());
-        float f = max(minViewSpace.z(), maxViewSpace.z());
+            1.f);
+        Matrix44f invProj      = TED::projectionMatrix().inverse();
+        Point4f   minViewSpace = invProj * minNDC;
+        Point4f   maxViewSpace = invProj * maxNDC;
+        minViewSpace           = minViewSpace / minViewSpace.w;
+        maxViewSpace           = maxViewSpace / maxViewSpace.w;
+        float l                = min(minViewSpace.x(), maxViewSpace.x());
+        float r                = max(minViewSpace.x(), maxViewSpace.x());
+        float b                = max(minViewSpace.y(), maxViewSpace.y());
+        float t                = min(minViewSpace.y(), maxViewSpace.y());
+        float n                = min(minViewSpace.z(), maxViewSpace.z());
+        float f                = max(minViewSpace.z(), maxViewSpace.z());
         float proj[16];
         if (TED::camera().projectionMode() == PM::ORTHO) {
             bx::mtxOrtho(proj, l, r, b, t, n, f, 0.f, false);
-        } else {
+        }
+        else {
             bx::mtxProj(proj, t, b, l, r, n, f, false);
         }
         float* view = TED::viewMatrix().data();
-        bgfx::setViewFrameBuffer(mVisibleSelectionViewId, mVisibleSelectionFrameBuffer);
         bgfx::setViewTransform(mVisibleSelectionViewId, view, proj);
+
+        // Here you then call submitForVisibleFacesSelection(...) on each DrawableObject which can be cast to
+        // Selectable. Somebody else will then call the corresponding calculateSelection which will then complete the selection
     }
 
     void onDraw(uint viewId) override
@@ -148,8 +169,7 @@ public:
                         viewId,
                         ParentViewer::selectionBox().toMinAndMax(),
                         ParentViewer::selectionMode(),
-                        ParentViewer::isSelectionTemporary()
-                    );
+                        ParentViewer::isSelectionTemporary());
                 }
             }
             ParentViewer::selectionCalculated();
@@ -168,8 +188,7 @@ public:
         }
 
         if (mBoxToDraw.allValue()) {
-            std::array<float, 8> temp =
-                mBoxToDraw.vertexPositions();
+            std::array<float, 8> temp = mBoxToDraw.vertexPositions();
             bgfx::setState(
                 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
                 BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);

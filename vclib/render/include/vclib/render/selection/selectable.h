@@ -25,6 +25,7 @@
 
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
+#include <vclib/render/drawable/draw_object_settings.h>
 
 namespace vcl {
 
@@ -32,6 +33,7 @@ class Selectable
 {
 public:
     virtual void calculateSelection(uint viewId, SelectionBox box, SelectionMode mode, bool isTemporary) = 0;
+    virtual void submitForVisibleFacesSelection(const DrawObjectSettings& settings) = 0;
 };
 
 } // namespace vcl

@@ -117,19 +117,18 @@ public:
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
 
     void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode, bool isTemporary) override {
-        uint count;
-        if (mode.isVertexSelection()) {
-            count = MeshType::vertexNumber();
-        }
-        if (mode.isFaceSelection()) {
-            count = mMRB.triangleChunksNumber();
-        }
-        
         mMRB.calculateSelection(viewId, box, mode);
         if (mBufToTexRemainingFrames != 255 || isTemporary) {
             return;
         }
         mBufToTexRemainingFrames = mMRB.requestCPUCopyOfSelectionBuffer(mode);
+    }
+
+    void submitForVisibleFacesSelection(const DrawObjectSettings& settings) {
+        // Here you bind the MeshID (DrawableID) and submit the VertFrag program that writes
+        // MeshID and PrimitiveID to the color attachment of the framebuffer
+
+        // This function needs to do NOTHING if the mesh has no faces
     }
 
     // TODO: to be removed after shader benchmarks
