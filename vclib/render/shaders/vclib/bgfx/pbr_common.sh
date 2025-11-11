@@ -121,6 +121,8 @@ float V_GGX(
  * with the Schlick approximation.
  * @param[in] F0: the surface's response at normal incidence (aka base reflectivity),
  *  the amount of light reflected when looking at a surface with a 0 degree angle (right above).
+ * @param[in] F90: the surface's response at grazing angles (90 degrees),
+ *  the amount of light reflected when looking at a surface with a 90 degree angle (from the side).
  * @param[in] HoV: Cosine of the angle between the halfway vector H and the view direction V.
  * @return The Fresnel factor.
  */
@@ -162,7 +164,7 @@ float pbrSpecular(
  * @brief Color computed for Physically Based Rendering (PBR).
  * The incoming light colors are altered by:
  *  the Cook-Torrance BRDF (Bidirectional Reflective Distribution Function)
- *  which depends on the material properties of the lit fragment (right now see params: color, metallic, roughness).
+ *  which depends on the material properties of the lit fragment.
  * and
  *  the cosine of the angle between the fragment's normal and the light's direction;
  *  the cosine is given as the dot product of the two.
@@ -170,8 +172,6 @@ float pbrSpecular(
  * The Cook-Torrance BRDF consists of two parts a diffuse and a specular one:
  *  Specular: light that gets reflected immediately after contact with the surface.
  *  Diffuse: escaped light that got refracted.
- * the Fresnel factor ks tells how much of the incoming light gets reflected so it can work as a weight
- * for the two parts with kd = 1 - ks (so that kd + ks = 1) for energy conservation.
  *
  * @param[in] vPos: The fragment position.
  * @param[in] cameraEyePos: The camera position.
