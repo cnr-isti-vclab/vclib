@@ -55,6 +55,55 @@
 #define LIGHT_KEY_DIR                                 vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
 #define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
 
+#define NEW
+
+#if BGFX_SHADER_TYPE_FRAGMENT
+
+mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal)
+{
+    return mat3(
+        normalize(tangent),
+        normalize(bitangent),
+        normalize(normal)
+    );
+}
+
+mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV)
+{
+    vec2 uv_dx = dFdx(UV);
+    vec2 uv_dy = dFdy(UV);
+
+    if (length(uv_dx) <= 1e-2)
+        uv_dx = vec2(1.0, 0.0);
+
+    if (length(uv_dy) <= 1e-2)
+        uv_dy = vec2(0.0, 1.0);
+
+    vec3 t_ =
+        (uv_dy.y * dFdx(position) - uv_dx.y * dFdy(position)) /
+        (uv_dx.x * uv_dy.y - uv_dy.x * uv_dx.y);
+
+    vec3 n = normalize(normal);
+    vec3 t = normalize(t_ - n * dot(n, t_));
+    vec3 b = cross(n, t);
+
+    #ifdef NEW
+    // assuming camera = (0,0,0)
+    if(dot(n, normalize(-position)) < 0.0)
+        return -mat3(t, b, n);
+
+    #endif
+    return mat3(t, b, n);
+}
+
+mat3 tangentFrame(vec3 position, vec2 UV)
+{
+    vec3 normal = cross(dFdx(position), dFdy(position));
+    return tangentFrame(normal, position, UV);
+}
+
+#endif
+
 /**
  * @brief Computes the dot product of two vectors and clamps it to be >= 0.
  * This is useful for light computations where negative values don't make sense.
@@ -206,8 +255,12 @@ vec4 pbrColor(
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
 
-    if (dot(normal, V) < 0.0) 
+#ifndef NEW
+
+    if(dot(normal, V) < 0.0)
         normal = -normal;
+
+#endif
     
     float NoV = clampedDot(normal, V);
 

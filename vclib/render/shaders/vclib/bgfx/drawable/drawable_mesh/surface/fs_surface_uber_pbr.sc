@@ -98,6 +98,21 @@ void main()
     // normal
     vec3 normal = normalize(v_normal);
 
+    if(isNormalTextureAvailable(u_settings.x))
+    {
+        vec3 normalTexture = getColorFromTexture(2u, v_texcoord0).xyz;
+        normalTexture *= 2.0;
+        normalTexture -= 1.0;
+        normalTexture *= vec3(u_normalScale.x, u_normalScale.x, 1.0);
+        normalTexture = normalize(normalTexture);
+        normal = mul(normalTexture, tangentFrame(v_normal, v_position, v_texcoord0));
+        normal = normalize(normal);
+    }
+    #ifdef NEW
+    else if(dot(normal, normalize(-v_position)) < 0.0)
+        normal = -normal;
+    #endif
+
     // emissive
     vec4 emissiveTexture;
     vec3 emissiveColor;

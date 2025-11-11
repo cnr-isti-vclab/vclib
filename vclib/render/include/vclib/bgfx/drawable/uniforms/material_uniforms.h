@@ -45,6 +45,8 @@ class MaterialUniforms
 
     std::array<float, 4> mAlphaCutoff = {0.5, 0.0, 0.0, 0.0};
 
+    std::array<float, 4> mNormalScale = {1.0, 0.0, 0.0, 0.0};
+
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
     Uniform mBaseColorUniform =
@@ -59,6 +61,9 @@ class MaterialUniforms
     Uniform mAlphaCutoffUniform =
         Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
 
+    Uniform mNormalScaleUniform =
+        Uniform("u_normalScale", bgfx::UniformType::Vec4);
+
     Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
 
 public:
@@ -71,6 +76,8 @@ public:
     const std::array<float, 4>& currentEmissiveColor() const { return mEmissiveColor; }
 
     const std::array<float, 4>& currentAlphaCutoff() const { return mAlphaCutoff; }
+
+    const std::array<float, 4>& currentNormalScale() const { return mNormalScale; }
 
     const std::array<float, 4>& currentSettings() const { return mSettings; }
 
@@ -109,6 +116,8 @@ public:
         mEmissiveColor[1] = m.emissiveColor().greenF();
         mEmissiveColor[2] = m.emissiveColor().blueF();
         mEmissiveColor[3] = m.emissiveColor().alphaF();
+
+        mNormalScale[0] = m.normalScale();
     }
 
     void bind() const
@@ -117,6 +126,7 @@ public:
         mMetallicRoughnessOcclusionUniform.bind(&mMetallicRoughnessOcclusion);
         mEmissiveColorUniform.bind(&mEmissiveColor);
         mAlphaCutoffUniform.bind(&mAlphaCutoff);
+        mNormalScaleUniform.bind(&mNormalScale);
         mSettingsUniform.bind(&mSettings);
     }
 };

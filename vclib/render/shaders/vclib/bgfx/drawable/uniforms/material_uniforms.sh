@@ -27,6 +27,7 @@ uniform vec4 u_baseColorFactor;
 uniform vec4 u_metallicRoughnessOcclusionFactors;
 uniform vec4 u_emissiveColorFactor;
 uniform vec4 u_alphaCutoff;
+uniform vec4 u_normalScale;
 uniform vec4 u_settings;
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
