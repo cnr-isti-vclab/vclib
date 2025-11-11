@@ -135,7 +135,7 @@ vec4 segmentPlaneIntersection(mat4 plane, vec3 p0, vec3 p1) {
     vec3 d = p1-p0;
     vec3 n = plane[1].xyz;
     float den = mul(n, d);
-    if (abs(den) <= 0.00001f) {
+    if (fEQ(den, 0, EPSILON)) {
         return vec4(0, 0, 0, 0);
     }
     float t = mul((plane[0].xyz - o), n) / den;
@@ -221,9 +221,9 @@ bool AABBEdgesIntersectTriangle(mat3 tri, vec3 minBoxPoint, vec3 maxBoxPoint) {
                 vec2 inters2D = cooplanarCoordsTo2D(inters.xyz, uvo);
                 vec3 baryCoords = barycentricCoords(tri2D, inters2D);
                 if (
-                    baryCoords[0] >= 0 && baryCoords[0] <= 1
-                    && baryCoords[1] >= 0 && baryCoords[1] <= 1
-                    && baryCoords[2] >= 0 && baryCoords[2] <= 1
+                    fGE(baryCoords[0], 0, EPSILON) && fLE(baryCoords[0], 1, EPSILON)
+                    && fGE(baryCoords[1], 0, EPSILON) && fLE(baryCoords[1], 1, EPSILON)
+                    && fGE(baryCoords[2], 0, EPSILON) && fLE(baryCoords[2], 1, EPSILON)
                 ) {
                     return true;
                 }
