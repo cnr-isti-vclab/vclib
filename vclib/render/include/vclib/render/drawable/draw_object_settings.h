@@ -40,8 +40,6 @@ struct DrawObjectSettings
 
     DrawObjectSettings() = default;
 
-    // DrawObjectSettings(uint vid) : viewId(vid) {}
-
     DrawObjectSettings(uint vId, uint oId) : viewId(vId), objectId(oId) {}
 };
 
