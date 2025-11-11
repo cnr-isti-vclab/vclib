@@ -77,6 +77,8 @@ private:
     Texture mMetallicRoughnessTexture;
     
     Texture mNormalTexture;
+
+    float mNormalScale = 1.0f;
     
     Texture mOcclusionTexture;
 
@@ -120,6 +122,10 @@ public:
     bool doubleSided() const { return mDoubleSided; }
 
     bool& doubleSided() { return mDoubleSided; }
+
+    float normalScale() const { return mNormalScale; }
+
+    float& normalScale() { return mNormalScale; }
 
     float occlusionStrength() const { return mOcclusionStrength; }
 
@@ -165,6 +171,7 @@ public:
         mBaseColorTexture.serialize(os);
         mMetallicRoughnessTexture.serialize(os);
         mNormalTexture.serialize(os);
+        vcl::serialize(os, mNormalScale);
         mOcclusionTexture.serialize(os);
         vcl::serialize(os, mOcclusionStrength);
         mEmissiveTexture.serialize(os);
@@ -181,6 +188,7 @@ public:
         mBaseColorTexture.deserialize(is);
         mMetallicRoughnessTexture.deserialize(is);
         mNormalTexture.deserialize(is);
+        vcl::deserialize(is, mNormalScale);
         mOcclusionTexture.deserialize(is);
         vcl::deserialize(is, mOcclusionStrength);
         mEmissiveTexture.deserialize(is);
@@ -198,6 +206,7 @@ public:
                mMetallicRoughnessTexture.path() ==
                    other.mMetallicRoughnessTexture.path() &&
                mNormalTexture.path() == other.mNormalTexture.path() &&
+               mNormalScale == other.mNormalScale &&
                mOcclusionTexture.path() == other.mOcclusionTexture.path() &&
                mOcclusionStrength == other.mOcclusionStrength &&
                mEmissiveTexture.path() == other.mEmissiveTexture.path() &&

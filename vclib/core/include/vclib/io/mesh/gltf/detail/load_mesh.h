@@ -56,6 +56,7 @@ int loadGltfPrimitiveMaterial(
         Material::AlphaMode       alphaMode;
         double                    metallic, roughness, 
                                   alphaCutoff, 
+                                  normalScale,
                                   occlusionStrength;
         bool                      doubleSided;
         int                       baseColorTextureId,
@@ -117,6 +118,11 @@ int loadGltfPrimitiveMaterial(
         // alphaCutoff
         alphaCutoff = mat.alphaCutoff; // has default value
 
+        // normalScale
+        if (mat.normalTexture.index != -1)
+            normalScale = mat.normalTexture.scale;
+
+        // occlusionStrength    
         if (mat.occlusionTexture.index != -1) 
             occlusionStrength = mat.occlusionTexture.strength;
 
@@ -185,6 +191,8 @@ int loadGltfPrimitiveMaterial(
                                      Material::TextureType::METALLIC_ROUGHNESS);
             loadTextureInMaterial(mat, normalTextureId,
                                      Material::TextureType::NORMAL);
+            if(!mat.texture(Material::TextureType::NORMAL).isNull())
+                mat.normalScale() = normalScale;
             loadTextureInMaterial(mat, occlusionTextureId,
                                      Material::TextureType::OCCLUSION);
             if(!mat.texture(Material::TextureType::OCCLUSION).isNull())

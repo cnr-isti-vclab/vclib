@@ -122,6 +122,8 @@ int main(int argc, char** argv)
             printTextureInfo(mat, Material::TextureType::BASE_COLOR);
             printTextureInfo(mat, Material::TextureType::METALLIC_ROUGHNESS);
             printTextureInfo(mat, Material::TextureType::NORMAL);
+            if(!mat.texture(Material::TextureType::NORMAL).isNull())
+                std::cout << "    normalScale: " << mat.normalScale() << std::endl;
             printTextureInfo(mat, Material::TextureType::OCCLUSION);
             if(!mat.texture(Material::TextureType::OCCLUSION).isNull())
                 std::cout << "    occlusionStrength: " << mat.occlusionStrength() << std::endl;
