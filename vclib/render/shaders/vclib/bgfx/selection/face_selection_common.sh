@@ -22,32 +22,15 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-#define EPSILON 0.0001f
-
-bool fEQ(float a, float b, float eps) {
-    return abs(a - b) <= eps;
-}
-
-bool fNE(float a, float b, float eps) {
-    return !fEQ(a, b, eps);
-}
-
-bool fGE(float a, float b, float eps) {
-    return a > b || fEQ(a, b, eps);
-}
-
-bool fLE(float a, float b, float eps) {
-    return a < b || fEQ(a, b, eps);
-}
+#define EPSILON 0.00001f
 
 bool pointInAABB(vec3 p, vec3 minBoxPoint, vec3 maxBoxPoint) {
-    return 
-           fGE(p.x, minBoxPoint.x, EPSILON) 
-        && fLE(p.x, maxBoxPoint.x, EPSILON) 
-        && fGE(p.y, minBoxPoint.y, EPSILON) 
-        && fLE(p.y, maxBoxPoint.y, EPSILON) 
-        && fGE(p.z, minBoxPoint.z, EPSILON) 
-        && fLE(p.z, maxBoxPoint.z, EPSILON);
+    return p.x >= minBoxPoint.x
+        && p.x <= maxBoxPoint.x
+        && p.y >= minBoxPoint.y
+        && p.y <= maxBoxPoint.y
+        && p.z >= minBoxPoint.z
+        && p.z <= maxBoxPoint.z;
 }
 
 
@@ -55,7 +38,7 @@ bool pointInAABB(vec3 p, vec3 minBoxPoint, vec3 maxBoxPoint) {
 // (Since we calculate the ray such that it identifies the segment in the range 0<=t<=1)
 bool segmentIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, vec3 p0, vec3 p1) {
     vec3 dir = p1 - p0;
-    bvec3 considerAxis = bvec3(fNE(dir.x, 0, EPSILON), fNE(dir.y, 0, EPSILON), fNE(dir.z, 0, EPSILON));
+    bvec3 considerAxis = bvec3(dir.x != 0, dir.y != 0, dir.z != 0);
     bool didInit = false;
     float tclose = 0;
     float tfar = 0;
@@ -80,18 +63,24 @@ bool segmentIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, vec3 p0, vec3 p1)
         return false;
     }
     if (
-        (fLE(tclose, 0, EPSILON) && fGE(tfar, 1, EPSILON)) 
-        || (fGE(tclose, 0, EPSILON) && fLE(tclose, 1, EPSILON))
-        || (fGE(tfar, 0, EPSILON) && fLE(tfar, 1, EPSILON))
+        (tclose <= 0 && tfar >= 1) 
+        || (tclose >= 0 && tclose <= 1)
+        || (tfar >= 0 && tfar <= 1)
     ) {
-        vec3 pclose = p0+tclose*dir;
-        vec3 pfar = p0+tfar*dir;
-        return pointInAABB(pclose, minBoxPoint, maxBoxPoint) || pointInAABB(pfar, minBoxPoint, maxBoxPoint);
+        float tmid = 0.5f*tclose + 0.5f*tfar;
+        vec3 pmid = (1.f - tmid) * p0 + tmid * p1;
+        return pointInAABB(pmid, minBoxPoint, maxBoxPoint);
     }
     return false;
 }
 
 bool triangleSegmentsIntersectAABB(vec3 minBoxPoint, vec3 maxBoxPoint, mat3 trngl) {
+    for (uint j = 0; j < 3; j++) {
+        if (pointInAABB(trngl[j], minBoxPoint, maxBoxPoint)) {
+            return true;
+        }
+    }
+    // This may not be required...but i think if this passes it is faster than the "box segments intersect triangle" check
     for (uint i = 0; i < 3; i++) {
         if (segmentIntersectsAABB(minBoxPoint, maxBoxPoint, trngl[i], trngl[(i+1)%3])) {
             return true;
@@ -135,7 +124,7 @@ vec4 segmentPlaneIntersection(mat4 plane, vec3 p0, vec3 p1) {
     vec3 d = p1-p0;
     vec3 n = plane[1].xyz;
     float den = mul(n, d);
-    if (fEQ(den, 0, EPSILON)) {
+    if (den <= EPSILON) {
         return vec4(0, 0, 0, 0);
     }
     float t = mul((plane[0].xyz - o), n) / den;
@@ -221,9 +210,9 @@ bool AABBEdgesIntersectTriangle(mat3 tri, vec3 minBoxPoint, vec3 maxBoxPoint) {
                 vec2 inters2D = cooplanarCoordsTo2D(inters.xyz, uvo);
                 vec3 baryCoords = barycentricCoords(tri2D, inters2D);
                 if (
-                    fGE(baryCoords[0], 0, EPSILON) && fLE(baryCoords[0], 1, EPSILON)
-                    && fGE(baryCoords[1], 0, EPSILON) && fLE(baryCoords[1], 1, EPSILON)
-                    && fGE(baryCoords[2], 0, EPSILON) && fLE(baryCoords[2], 1, EPSILON)
+                    baryCoords[0] >= 0 && baryCoords[1] <= 1
+                    && baryCoords[1] >= 0 && baryCoords[1] <= 1
+                    && baryCoords[2] >= 0 && baryCoords[2] <= 1
                 ) {
                     return true;
                 }
