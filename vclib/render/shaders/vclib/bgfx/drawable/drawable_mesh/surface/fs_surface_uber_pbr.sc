@@ -108,10 +108,8 @@ void main()
         normal = mul(normalTexture, tangentFrame(v_normal, v_position, v_texcoord0));
         normal = normalize(normal);
     }
-    #ifdef NEW
-    else if(dot(normal, normalize(-v_position)) < 0.0)
+    else if(dot(normal, normalize(-v_position)) < 0.0) // assuming camera = (0,0,0)
         normal = -normal;
-    #endif
 
     // emissive
     vec4 emissiveTexture;

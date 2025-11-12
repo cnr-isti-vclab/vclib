@@ -55,10 +55,15 @@
 #define LIGHT_KEY_DIR                                 vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
 #define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
 
-#define NEW
-
 #if BGFX_SHADER_TYPE_FRAGMENT
 
+/**
+ * @brief Computes the tangent frame (Tangent, Bitangent, Normal) matrix given its vectors.
+ * @param[in] tangent: The fragment tangent vector.
+ * @param[in] bitangent: The fragment bitangent vector.
+ * @param[in] normal: The fragment normal vector.
+ * @return The tangent frame matrix.
+ */
 mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal)
 {
     return mat3(
@@ -68,6 +73,14 @@ mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal)
     );
 }
 
+/**
+ * @brief Computes the tangent frame (Tangent, Bitangent, Normal) matrix given the normal, position and UV.
+ * The tangent and bitangent vectors are computed using the derivatives of position and UV.
+ * @param[in] normal: The fragment normal vector.
+ * @param[in] position: The fragment position.
+ * @param[in] UV: The fragment UV coordinates.
+ * @return The tangent frame matrix.
+ */
 mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV)
 {
     vec2 uv_dx = dFdx(UV);
@@ -87,15 +100,20 @@ mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV)
     vec3 t = normalize(t_ - n * dot(n, t_));
     vec3 b = cross(n, t);
 
-    #ifdef NEW
     // assuming camera = (0,0,0)
     if(dot(n, normalize(-position)) < 0.0)
         return -mat3(t, b, n);
 
-    #endif
     return mat3(t, b, n);
 }
 
+/**
+ * @brief Computes the tangent frame (Tangent, Bitangent, Normal) matrix given the position and UV.
+ * The normal, tangent and bitangent vectors are computed using the derivatives of position and UV.
+ * @param[in] position: The fragment position.
+ * @param[in] UV: The fragment UV coordinates.
+ * @return The tangent frame matrix.
+ */
 mat3 tangentFrame(vec3 position, vec2 UV)
 {
     vec3 normal = cross(dFdx(position), dFdy(position));
@@ -254,13 +272,6 @@ vec4 pbrColor(
 
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
-
-#ifndef NEW
-
-    if(dot(normal, V) < 0.0)
-        normal = -normal;
-
-#endif
     
     float NoV = clampedDot(normal, V);
 
