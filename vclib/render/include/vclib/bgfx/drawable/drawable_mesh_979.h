@@ -117,6 +117,9 @@ public:
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
 
     void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode, bool isTemporary) override {
+        if (!HasFaces<MeshType> && mode.isFaceSelection()) {
+            return;
+        }
         mMRB.calculateSelection(viewId, box, mode);
         if (mBufToTexRemainingFrames != 255 || isTemporary) {
             return;
@@ -125,10 +128,21 @@ public:
     }
 
     void submitForVisibleFacesSelection(const DrawObjectSettings& settings) {
-        // Here you bind the MeshID (DrawableID) and submit the VertFrag program that writes
-        // MeshID and PrimitiveID to the color attachment of the framebuffer
-
-        // This function needs to do NOTHING if the mesh has no faces
+        if constexpr (!HasFaces<MeshType>) {
+            return;
+        }
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
+        bgfx::ProgramHandle prog = Context::instance().programManager().getProgram<VertFragProgram::VISIBLE_FACE_SELECTION>();
+        float temp[4] = {
+            Uniform::uintBitsToFloat(settings.objectId),
+            0.f,
+            0.f,
+            0.f
+        };
+        mIdUniform.bind((void*)temp);
+        mMRB.bindVertexBuffers(mMRS);
+        bgfx::setState(state);
+        bgfx::submit(settings.viewId, prog);
     }
 
     // TODO: to be removed after shader benchmarks

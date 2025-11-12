@@ -80,6 +80,12 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
+    // IMPORTANT: Figure out how big the framebuffer should be
+    // Same as SelectionBox?
+    // Variable? Constant?
+    // Same as visible view FrameBuffer?
+    // You need to strike a balance between being accurate (big framebuffer)
+    // And having the compute shader which has size equal to the framebuffer execute quickly
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
@@ -99,17 +105,8 @@ public:
         mDrawableDirectionalLight.init();
     }
 
-
-    // IMPORTANT: Figure out how big the framebuffer should be
-    // Same as SelectionBox?
-    // Variable? Constant?
-    // Same as visible view FrameBuffer?
-    // You need to strike a balance between being accurate (big framebuffer)
-    // And having the compute shader which has size equal to the framebuffer execute quickly
-    void visibleTrisSelectionPass()
-    {
+    void setVisibleTrisSelectionProjViewMatrix(SelectionBox box) {
         using PM         = Camera<float>::ProjectionMode;
-        SelectionBox box = ParentViewer::selectionBox().toMinAndMax();
 
         // We limit the projection to the selection box so that the pass itself
         // does the selection for us
@@ -145,9 +142,6 @@ public:
         }
         float* view = TED::viewMatrix().data();
         bgfx::setViewTransform(mVisibleSelectionViewId, view, proj);
-
-        // Here you then call submitForVisibleFacesSelection(...) on each DrawableObject which can be cast to
-        // Selectable. Somebody else will then call the corresponding calculateSelection which will then complete the selection
     }
 
     void onDraw(uint viewId) override
