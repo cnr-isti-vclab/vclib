@@ -99,7 +99,7 @@ public:
                 255U,
                 1.0f,
                 (uint8_t) 0U,
-                bgfx::TextureFormat::Enum::RGBA16);
+                bgfx::TextureFormat::Enum::RGBA16F);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
@@ -110,14 +110,14 @@ public:
 
         // We limit the projection to the selection box so that the pass itself
         // does the selection for us
-        uint    win_w  = DerivedRenderApp::width();
-        uint    win_h  = DerivedRenderApp::height();
-        Point4f minNDC = Point3d(
+        uint    win_w  = ((DerivedRenderApp*) this)->width();
+        uint    win_h  = ((DerivedRenderApp*) this)->height();
+        Point4f minNDC = Point4f(
             float(box.get1().value().x()) / float(win_w) * 2.f - 1.f,
             float(box.get1().value().y()) / float(win_h) * 2.f - 1.f,
             0.f,
             1.f);
-        Point4f maxNDC = Point3d(
+        Point4f maxNDC = Point4f(
             float(box.get2().value().x()) / float(win_w) * 2.f - 1.f,
             float(box.get2().value().y()) / float(win_h) * 2.f - 1.f,
             1.f,
@@ -125,8 +125,8 @@ public:
         Matrix44f invProj      = TED::projectionMatrix().inverse();
         Point4f   minViewSpace = invProj * minNDC;
         Point4f   maxViewSpace = invProj * maxNDC;
-        minViewSpace           = minViewSpace / minViewSpace.w;
-        maxViewSpace           = maxViewSpace / maxViewSpace.w;
+        minViewSpace           /= minViewSpace.w();
+        maxViewSpace           /= maxViewSpace.w();
         float l                = min(minViewSpace.x(), maxViewSpace.x());
         float r                = max(minViewSpace.x(), maxViewSpace.x());
         float b                = max(minViewSpace.y(), maxViewSpace.y());
@@ -155,6 +155,18 @@ public:
         if (ParentViewer::selectionCalculationRequired()) {
             if (ParentViewer::selectionBox().allValue()) {
                 mBoxToDraw = ParentViewer::selectionBox();
+            }
+            if (ParentViewer::selectionMode().isVisibleSelection() && ParentViewer::selectionMode().isFaceSelection()) {
+                setVisibleTrisSelectionProjViewMatrix(ParentViewer::selectionBox().toMinAndMax());
+                for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+                    auto el = ParentViewer::mDrawList->at(i);
+                    if (auto p = dynamic_cast<Selectable*>(el.get())) {
+                        if (ParentViewer::selectionMode() == SelectionMode::FACE_VISIBLE_REGULAR) {
+                            p->calculateSelection(mVisibleSelectionViewId, SelectionBox({std::nullopt, std::nullopt}), SelectionMode::FACE_NONE, true);
+                        }
+                        p->submitForVisibleFacesSelection(DrawObjectSettings(mVisibleSelectionViewId, i + 1));
+                    }
+                }
             }
             for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                 auto el = ParentViewer::mDrawList->at(i);
