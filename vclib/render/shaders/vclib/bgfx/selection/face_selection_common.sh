@@ -25,7 +25,7 @@
 #define EPSILON 0.0001f
 
 bool fEQ(float a, float b, float eps) {
-    return abs(a - b) < eps;
+    return abs(a - b) <= eps;
 }
 
 bool fNE(float a, float b, float eps) {
