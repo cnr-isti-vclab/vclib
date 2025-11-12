@@ -73,18 +73,22 @@ void main()
     );
 
     vec4 p0NDC = mul(u_modelViewProj, vec4(poss[0].xyz, 1));
-    p0NDC = p0NDC / (p0NDC.w == 0? 1 : p0NDC.w);
-
     vec4 p1NDC = mul(u_modelViewProj, vec4(poss[1].xyz, 1));
+    vec4 p2NDC = mul(u_modelViewProj, vec4(poss[2].xyz, 1));
+
+    bool allNotInClipSpace = !(pointInClipSpace(p0NDC) || pointInClipSpace(p1NDC) || pointInClipSpace(p2NDC));
+    p2NDC = p2NDC / (p2NDC.w == 0? 1 : p2NDC.w);
+    p0NDC = p0NDC / (p0NDC.w == 0? 1 : p0NDC.w);
     p1NDC = p1NDC / (p1NDC.w == 0? 1 : p1NDC.w);
 
-    vec4 p2NDC = mul(u_modelViewProj, vec4(poss[2].xyz, 1));
-    p2NDC = p2NDC / (p2NDC.w == 0? 1 : p2NDC.w);
+    bool selected = false;
 
-    mat3 tri = mtxFromRows(p0NDC.xyz, p1NDC.xyz, p2NDC.xyz);
-    bool selected = triangleSegmentsIntersectAABB(minNDC, maxNDC, tri);
-    if (!selected) {
-        selected = AABBEdgesIntersectTriangle(tri, minNDC, maxNDC);
+    if(!allNotInClipSpace) {
+        mat3 tri = mtxFromRows(p0NDC.xyz, p1NDC.xyz, p2NDC.xyz);
+        selected = triangleSegmentsIntersectAABB(minNDC, maxNDC, tri);
+        if (!selected) {
+            selected = AABBEdgesIntersectTriangle(tri, minNDC, maxNDC);
+        }
     }
 
     uint fBufferIndex = faceIndex/32;

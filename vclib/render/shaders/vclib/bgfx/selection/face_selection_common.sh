@@ -24,6 +24,10 @@
 
 #define EPSILON 0.00001f
 
+bool pointInClipSpace(vec4 p) {
+    return -p.w <= p.x && p.x <= p.w && -p.w <= p.y && p.y <= p.w && 0 <= p.z && p.z <= p.w;
+}
+
 bool pointInAABB(vec3 p, vec3 minBoxPoint, vec3 maxBoxPoint) {
     return p.x >= minBoxPoint.x
         && p.x <= maxBoxPoint.x
