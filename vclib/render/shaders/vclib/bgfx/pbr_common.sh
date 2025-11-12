@@ -100,10 +100,6 @@ mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV)
     vec3 t = normalize(t_ - n * dot(n, t_));
     vec3 b = cross(n, t);
 
-    // assuming camera = (0,0,0)
-    if(dot(n, normalize(-position)) < 0.0)
-        return -mat3(t, b, n);
-
     return mat3(t, b, n);
 }
 
@@ -156,7 +152,7 @@ float D_GGX(
     float alpha2)
 {
     float NoH2 = NoH * NoH;
-    float denom = NoH2 * (alpha2 - 1) + 1;
+    float denom = NoH2 * (alpha2 - 1.0) + 1.0;
     return alpha2 / (PI * denom * denom);
 }
 
@@ -190,15 +186,15 @@ float V_GGX(
  *  the amount of light reflected when looking at a surface with a 0 degree angle (right above).
  * @param[in] F90: the surface's response at grazing angles (90 degrees),
  *  the amount of light reflected when looking at a surface with a 90 degree angle (from the side).
- * @param[in] HoV: Cosine of the angle between the halfway vector H and the view direction V.
+ * @param[in] VoH: Cosine of the angle between the halfway vector H and the view direction V.
  * @return The Fresnel factor.
  */
 vec3 F_Schlick(
     vec3 F0,
     vec3 F90,
-    float HoV)
+    float VoH)
 {
-    return F0 + (F90 - F0) * pow(clamp(1.0 - HoV, 0.0, 1.0), 5.0);
+    return F0 + (F90 - F0) * pow(clamp(1.0 - VoH, 0.0, 1.0), 5.0);
 }
 
 /**
@@ -287,13 +283,13 @@ vec4 pbrColor(
         vec3 H = normalize(V + lightDir);
         // related dot products
         float NoH = clampedDot(normal, H);
-        float HoV = clampedDot(H, V);
+        float VoH = clampedDot(V, H);
 
         // Fresnel factors for both dielectric and metallic surfaces
         // 0.04 is an approximation of F0 averaged around many dielectric materials
-        vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, HoV);
+        vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, abs(VoH));
         // Metals have the surface color as base reflectivity since no light gets absorbed
-        vec3 metal_fresnel = F_Schlick(color.rgb, f90, HoV);
+        vec3 metal_fresnel = F_Schlick(color.rgb, f90, abs(VoH));
 
         // diffuse component
         vec3 l_diffuse = lightIntensity * pbrDiffuse(color.rgb);
