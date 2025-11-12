@@ -20,20 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/bgfx/programs/embedded_c_programs/selection_face_visible.h>
 
-#include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/selection_face_visible.h"
-#include "embedded_c_programs/selection_face_subtract.h"
-#include "embedded_c_programs/selection_face_add.h"
-#include "embedded_c_programs/buffer_to_tex.h"
-#include "embedded_c_programs/selection_face.h"
-#include "embedded_c_programs/selection_invert.h"
-#include "embedded_c_programs/selection_none.h"
-#include "embedded_c_programs/selection_all.h"
-#include "embedded_c_programs/selection_vertex_subtract.h"
-#include "embedded_c_programs/selection_vertex_add.h"
-#include "embedded_c_programs/selection_vertex.h"
+#include <vclib/shaders/selection/face_visible/cs_selection_visible_face.sc.400.bin.h>
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/shaders/selection/face_visible/cs_selection_visible_face.sc.essl.bin.h>
+
+#include <vclib/shaders/selection/face_visible/cs_selection_visible_face.sc.spv.bin.h>
+
+#ifdef _WIN32
+#include <vclib/shaders/selection/face_visible/cs_selection_visible_face.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/selection/face_visible/cs_selection_visible_face.sc.mtl.bin.h>
+#endif // __APPLE__
+
+namespace vcl {
+
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_FACE_VISIBLE>::
+    computeShader(bgfx::RendererType::Enum type)
+{
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_selection_visible_face_essl, sizeof(cs_selection_visible_face_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_selection_visible_face_400, sizeof(cs_selection_visible_face_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_selection_visible_face_spv, sizeof(cs_selection_visible_face_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_selection_visible_face_dx11, sizeof(cs_selection_visible_face_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_selection_visible_face_mtl, sizeof(cs_selection_visible_face_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
+}
+
+} // namespace vcl
