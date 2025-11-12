@@ -64,16 +64,6 @@
        </item>
        <item>
         <property name="text">
-         <string>Vertex Materials</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Wedge Materials</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>User</string>
         </property>
        </item>

@@ -379,8 +379,6 @@ private:
             settings.isSurface(COLOR_MESH),
             settings.isSurface(COLOR_VERTEX_TEX),
             settings.isSurface(COLOR_WEDGE_TEX),
-            settings.isSurface(COLOR_VERTEX_MATERIAL),
-            settings.isSurface(COLOR_WEDGE_MATERIAL),
             settings.isSurface(COLOR_USER)};
         assert(
             std::accumulate(
@@ -428,19 +426,6 @@ private:
                     ImGui::EndDisabled();
                     break;
                 case 5:
-                    ImGui::BeginDisabled(
-                        !settings.canSurface(COLOR_VERTEX_MATERIAL));
-                    if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurface(COLOR_VERTEX_MATERIAL);
-                    ImGui::EndDisabled();
-                    break;
-                case 6:
-                    ImGui::BeginDisabled(!settings.canSurface(COLOR_WEDGE_MATERIAL));
-                    if (ImGui::Selectable(surfColorNames[n], selected))
-                        settings.setSurface(COLOR_WEDGE_MATERIAL);
-                    ImGui::EndDisabled();
-                    break;
-                case 7:
                     if (ImGui::Selectable(surfColorNames[n], selected))
                         settings.setSurface(COLOR_USER);
                     break;

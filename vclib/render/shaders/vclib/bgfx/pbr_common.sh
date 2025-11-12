@@ -206,7 +206,7 @@ vec4 pbrColor(
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
 
-    if (dot(normal, V) < 0.0) 
+    if (dot(normal, V) < 0.0)
         normal = -normal;
     
     float NoV = clampedDot(normal, V);
