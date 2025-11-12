@@ -38,7 +38,7 @@
  * @param[in] eps: Epsilon
  */
 bool fEQ(float a, float b, float eps) {
-    return abs(a - b) < eps;
+    return abs(a - b) <= eps;
 }
 
 /**
@@ -78,7 +78,7 @@ bool fLE(float a, float b, float eps) {
  * @param[in] eps: Epsilon
  */
 bool fGT(float a, float b, float eps) {
-    return !fLE(a, b, eps);
+    return abs(a - b) > eps;
 }
 
 /**
@@ -88,7 +88,7 @@ bool fGT(float a, float b, float eps) {
  * @param[in] eps: Epsilon
  */
 bool fLT(float a, float b, float eps) {
-    return !fGE(a, b, eps);
+    return abs(b - a) > eps;
 }
 
 
