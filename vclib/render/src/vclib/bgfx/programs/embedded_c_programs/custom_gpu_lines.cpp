@@ -20,10 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/bgfx/programs/embedded_c_programs/custom_gpu_lines.h>
 
-#include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/custom_gpu_lines.h"
+#include <vclib/shaders/primitives/lines/gpu_generated_lines/cs_compute_buffers.sc.400.bin.h>
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/shaders/primitives/lines/gpu_generated_lines/cs_compute_buffers.sc.essl.bin.h>
+
+#include <vclib/shaders/primitives/lines/gpu_generated_lines/cs_compute_buffers.sc.spv.bin.h>
+
+#ifdef _WIN32
+#include <vclib/shaders/primitives/lines/gpu_generated_lines/cs_compute_buffers.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/primitives/lines/gpu_generated_lines/cs_compute_buffers.sc.mtl.bin.h>
+#endif // __APPLE__
+
+namespace vcl {
+
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::CUSTOM_GPU_LINES>::
+    computeShader(bgfx::RendererType::Enum type)
+{
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_compute_buffers_essl, sizeof(cs_compute_buffers_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_compute_buffers_400, sizeof(cs_compute_buffers_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_compute_buffers_spv, sizeof(cs_compute_buffers_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_compute_buffers_dx11, sizeof(cs_compute_buffers_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_compute_buffers_mtl, sizeof(cs_compute_buffers_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
+}
+
+} // namespace vcl

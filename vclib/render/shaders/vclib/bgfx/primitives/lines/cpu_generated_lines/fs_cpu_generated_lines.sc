@@ -28,7 +28,7 @@ $input v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-BUFFER_RO(edgesColors, uint, 0);
+BUFFER_RO(edgesColors, uvec4, 0);
 
 uniform vec4 u_settings;
 
@@ -36,7 +36,7 @@ uniform vec4 u_settings;
 #define u_shadingPerVertex    bool(u_settings.w)
 
 #define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
-#define edgeColor             uintABGRToVec4Color(edgesColors[gl_PrimitiveID / 2])
+#define edgeColor             uintABGRToVec4Color(edgesColors[(gl_PrimitiveID / 2) / 4][(gl_PrimitiveID / 2) % 4])
 #define vertexColor           v_color
 
 void main() {

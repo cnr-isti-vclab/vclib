@@ -38,24 +38,24 @@ void pushRandomLine(
     std::uniform_real_distribution<float> disPoint(-2.0f, 2.0f);
     std::uniform_real_distribution<float> disColor(0, 255);
 
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(0.0);
+    vertCoords.emplace_back(1.0);
+    vertCoords.emplace_back(0.0);
 
     vcl::Color c0 = vcl::Color(
-        static_cast<uint8_t>(disColor(gen)),
-        static_cast<uint8_t>(disColor(gen)),
-        static_cast<uint8_t>(disColor(gen)));
+        static_cast<uint8_t>(0),
+        static_cast<uint8_t>(0),
+        static_cast<uint8_t>(255));
     vertColors.emplace_back(c0.abgr());
 
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
-    vertCoords.emplace_back(disPoint(gen));
+    vertCoords.emplace_back(1.0);
+    vertCoords.emplace_back(1.0);
+    vertCoords.emplace_back(0.0);
 
     vcl::Color c1 = vcl::Color(
-        static_cast<uint8_t>(disColor(gen)),
-        static_cast<uint8_t>(disColor(gen)),
-        static_cast<uint8_t>(disColor(gen)));
+        static_cast<uint8_t>(255),
+        static_cast<uint8_t>(0),
+        static_cast<uint8_t>(255));
     vertColors.emplace_back(c1.abgr());
 
     vcl::Color lineColor = vcl::Color(
