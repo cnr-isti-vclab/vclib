@@ -47,13 +47,15 @@ class GPUGeneratedLines
     Uniform mCustomIndicesUH =
         Uniform("u_ActiveBuffers", bgfx::UniformType::Vec4);
 
+    VertexBuffer mComputeCoords;
+    VertexBuffer mComputeNormals;
+    VertexBuffer mComputeColors;
+    IndexBuffer  mComputeLineIndices;
+
     VertexBuffer mVertexCoords;
     VertexBuffer mVertexNormals;
     VertexBuffer mVertexColors;
     IndexBuffer  mLineColors;
-    IndexBuffer  mLineIndices;
-
-    VertexBuffer mVertices;
     IndexBuffer  mIndices;
 
 public:

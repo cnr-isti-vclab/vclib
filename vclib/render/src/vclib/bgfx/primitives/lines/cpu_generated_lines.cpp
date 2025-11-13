@@ -114,7 +114,7 @@ void CPUGeneratedLines::setPoints(
     if (nPoints > 1) {
         uint bufferVertCoordsSize  = (nPoints / 2) * 4 * 6;
         uint bufferVertColorsSize  = (nPoints / 2) * 4 * 2;
-        uint bufferVertNormalsSize = (nPoints / 2) * 4 * 8;
+        uint bufferVertNormalsSize = (nPoints / 2) * 4 * 6;
 
         uint bufferIndsSize = (nPoints / 2) * 6;
 
@@ -165,9 +165,6 @@ void CPUGeneratedLines::setPoints(
                         vNormals[viNormals++] = vertNormals[(index1 * 3)];
                         vNormals[viNormals++] = vertNormals[(index1 * 3) + 1];
                         vNormals[viNormals++] = vertNormals[(index1 * 3) + 2];
-
-                        vNormals[viNormals++] = 0.0f; // padding
-                        vNormals[viNormals++] = 0.0f; // padding
                     }
                 }
             }
@@ -217,7 +214,6 @@ void CPUGeneratedLines::setPoints(
             layout.begin()
                 .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
                 .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::TexCoord2, 2, bgfx::AttribType::Float) // padding
                 .end();
 
             mVertexNormals.create(

@@ -25,85 +25,87 @@
 
 #include <vclib/bgfx/shaders_common.sh> 
 
-BUFFER_RO(vertCoords,        vec4,  0);
+BUFFER_RO(coords,            vec4,  0);
 BUFFER_RO(lineIndex,         uvec4, 1);
-BUFFER_RO(vertNormals,       vec4,  2);
-BUFFER_RO(vertColors,        uvec4, 3);
+BUFFER_RO(normals,           vec4,  2);
+BUFFER_RO(colors,            uvec4, 3);
 
-BUFFER_WO(vertexBuffer,      vec4,  4);
-BUFFER_WO(indexBuffer,       uint,  5);
+BUFFER_WO(vertexCoords,      vec4,  4);
+BUFFER_WO(vertexNormals,     vec4,  5);
+BUFFER_WO(vertexColors,      vec4,  6);
+BUFFER_WO(indexBuffer,       uint,  7);
 
-uniform vec4 u_ActiveBuffers; // x = line indices, y = normals, z = colors, w = line colors
+uniform vec4 u_ActiveBuffers; // x = line indices, y = normals, z = colors, w = num segments
+
+#define numThreadsPerGroup 512
 
 #define setIndices          (u_ActiveBuffers.x == 1)
 #define setNormals          (u_ActiveBuffers.y == 1)
 #define setColors           (u_ActiveBuffers.z == 1)
+#define numSegments         (uint(u_ActiveBuffers.w))
 
 #define get_float_from_vec4(pos, Buffer) Buffer[uint(pos) / 4][uint(pos) % 4]
 
-#define p(pos)             vec3(get_float_from_vec4(((pos) * 3) + 0, vertCoords), \
-                                get_float_from_vec4(((pos) * 3) + 1, vertCoords), \
-                                get_float_from_vec4(((pos) * 3) + 2, vertCoords))
+#define p(pos)             vec3(get_float_from_vec4(((pos) * 3) + 0, coords), \
+                                get_float_from_vec4(((pos) * 3) + 1, coords), \
+                                get_float_from_vec4(((pos) * 3) + 2, coords))
 
-#define normal(pos)        vec3(get_float_from_vec4(((pos) * 3) + 0, vertNormals), \
-                                get_float_from_vec4(((pos) * 3) + 1, vertNormals), \
-                                get_float_from_vec4(((pos) * 3) + 2, vertNormals))     
+#define normal(pos)        vec3(get_float_from_vec4(((pos) * 3) + 0, normals), \
+                                get_float_from_vec4(((pos) * 3) + 1, normals), \
+                                get_float_from_vec4(((pos) * 3) + 2, normals))     
 
-#define color(pos)         get_float_from_vec4(pos, vertColors)
+#define color(pos)         get_float_from_vec4(pos, colors)
 #define index(pos)         get_float_from_vec4(pos, lineIndex)
 
-NUM_THREADS(2, 2, 1)
+NUM_THREADS(numThreadsPerGroup, 1, 1)
 void main() {
-    uint baseIndex = (gl_WorkGroupID.x * 16) + ((gl_LocalInvocationID.y + (gl_LocalInvocationID.x * 2)) * 4);
-    uint index0 = (gl_WorkGroupID.x * 2);
-    uint index1 = (gl_WorkGroupID.x * 2) + 1;
-
-    if(setIndices) {
-        index0 = index((gl_WorkGroupID.x * 2));
-        index1 = index((gl_WorkGroupID.x * 2) + 1);
+    uint baseIndex = (gl_WorkGroupID.x * numThreadsPerGroup) + gl_LocalInvocationID.x;
+    if (baseIndex >= numSegments) {
+        return;
     }
 
-    vec3 p0 = vec3(vertCoords[0][0],
-                   vertCoords[0][1],
-                   vertCoords[0][2]);
-
-    vec3 p1 = vec3(vertCoords[0][3],
-                   vertCoords[0][3],
-                   vertCoords[1][1]);
-
-    // p0 = p(index0);
-    // p1 = p(index1);
-
-    // p0 = vec3(0.0, 1.0, 0.0);
-    // p1 = vec3(1.0, 1.0, 0.0);             
-
-    uint color0 = 0xff0000ff;
-    uint color1 = 0xff0000ff;
+    uint index0 = (baseIndex * 2);
+    uint index1 = (baseIndex * 2) + 1;
+    if(setIndices) {
+        index0 = index((baseIndex * 2));
+        index1 = index((baseIndex * 2) + 1);
+    }  
+    
+    float color0 = uintBitsToFloat(0xffffffff);
+    float color1 = uintBitsToFloat(0xffffffff);
     if(setColors) {
-        color0 = color(index0);
-        color1 = color(index1);
+        color0 = uintBitsToFloat(0xff0000ff);
+        color1 = uintBitsToFloat(0xff0000ff);
     }
 
     vec3 normal0 = vec3(0.0, 0.0, 1.0);
     vec3 normal1 = vec3(0.0, 0.0, 1.0);
-    if(setNormals) {
+    if(setNormals) {    
         normal0 = normal(index0);
         normal1 = normal(index1);
     }
 
-    vertexBuffer[baseIndex]     = vec4(p0.x, p0.y, p0.z, p1.x);
-    vertexBuffer[baseIndex + 1] = vec4(p1.y, p1.z, uintBitsToFloat(color0), uintBitsToFloat(color1));
-    vertexBuffer[baseIndex + 2] = vec4(normal0.x, normal0.y, normal0.z, normal1.x);
-    vertexBuffer[baseIndex + 3] = vec4(normal1.y, normal1.z, 0, 0);
+    vec3 p0 = p(index0);
+    vec3 p1 = p(index1);     
 
-    if(gl_LocalInvocationID.x == 0 && gl_LocalInvocationID.y == 0) {
-        indexBuffer[(6 * gl_WorkGroupID.x) + 0] = (gl_WorkGroupID.x * 4);
-        indexBuffer[(6 * gl_WorkGroupID.x) + 1] = (gl_WorkGroupID.x * 4) + 3;
-        indexBuffer[(6 * gl_WorkGroupID.x) + 2] = (gl_WorkGroupID.x * 4) + 1;
+    UNROLL
+    for (int i = 0; i < 2; ++i) {   
+        vertexCoords[(baseIndex * 6) + (i * 3)]      = vec4(p0.x, p0.y, p0.z, p1.x);
+        vertexCoords[(baseIndex * 6) + (i * 3) + 1]  = vec4(p1.y, p1.z, p0.x, p0.y);
+        vertexCoords[(baseIndex * 6) + (i * 3) + 2]  = vec4(p0.z, p1.x, p1.y, p1.z);
 
-        indexBuffer[(6 * gl_WorkGroupID.x) + 3] = (gl_WorkGroupID.x * 4);
-        indexBuffer[(6 * gl_WorkGroupID.x) + 4] = (gl_WorkGroupID.x * 4) + 2;
-        indexBuffer[(6 * gl_WorkGroupID.x) + 5] = (gl_WorkGroupID.x * 4) + 3;
+        vertexNormals[(baseIndex * 6) + (i * 3)]     = vec4(normal0.x, normal0.y, normal0.z, normal1.x);
+        vertexNormals[(baseIndex * 6) + (i * 3) + 1] = vec4(normal1.y, normal1.z, normal0.x, normal0.y);
+        vertexNormals[(baseIndex * 6) + (i * 3) + 2] = vec4(normal0.z, normal1.x, normal1.y, normal1.z);
+
+        vertexColors[(baseIndex * 2) + (i * 1)]      = vec4(color0, color1, color0, color1);
     }
 
+    indexBuffer[(6 * baseIndex) + 0] = (baseIndex * 4);
+    indexBuffer[(6 * baseIndex) + 1] = (baseIndex * 4) + 3;
+    indexBuffer[(6 * baseIndex) + 2] = (baseIndex * 4) + 1;
+
+    indexBuffer[(6 * baseIndex) + 3] = (baseIndex * 4);
+    indexBuffer[(6 * baseIndex) + 4] = (baseIndex * 4) + 2;
+    indexBuffer[(6 * baseIndex) + 5] = (baseIndex * 4) + 3;
 }
