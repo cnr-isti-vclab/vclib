@@ -62,10 +62,19 @@
  * @param[in] tangent: The fragment tangent vector.
  * @param[in] bitangent: The fragment bitangent vector.
  * @param[in] normal: The fragment normal vector.
+ * @param[in] frontFacing: Tells if the fragment is facing the front of the camera.
+ *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal)
+mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
 {
+    if(!frontFacing)
+    {
+        tangent *= -1.0;
+        bitangent *= -1.0;
+        normal *= -1.0;
+    }
+
     return mat3(
         normalize(tangent),
         normalize(bitangent),
@@ -79,12 +88,22 @@ mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal)
  * @param[in] normal: The fragment normal vector.
  * @param[in] position: The fragment position.
  * @param[in] UV: The fragment UV coordinates.
+ * @param[in] frontFacing: Tells if the fragment is facing the front of the camera.
+ *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
 mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
 {
     vec2 uv_dx = dFdx(UV);
     vec2 uv_dy = dFdy(UV);
+
+/* Present in gltf sample renderer but may be detrimental depending on how the UV derivatives are computed.
+    if (length(uv_dx) <= 1e-2)
+        uv_dx = vec2(1.0, 0.0);
+
+    if (length(uv_dy) <= 1e-2)
+        uv_dy = vec2(0.0, 1.0);
+*/
 
     vec3 t_ =
         (uv_dy.y * dFdx(position) - uv_dx.y * dFdy(position)) /
@@ -109,6 +128,8 @@ mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
  * The normal, tangent and bitangent vectors are computed using the derivatives of position and UV.
  * @param[in] position: The fragment position.
  * @param[in] UV: The fragment UV coordinates.
+ * @param[in] frontFacing: Tells if the fragment is facing the front of the camera.
+ *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
 mat3 tangentFrame(vec3 position, vec2 UV, bool frontFacing)

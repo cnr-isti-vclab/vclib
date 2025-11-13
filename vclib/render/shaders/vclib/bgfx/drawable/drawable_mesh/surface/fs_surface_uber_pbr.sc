@@ -61,15 +61,15 @@ void main()
     vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
     float lightIntensities[2] = {1.0, 0.5};
 
-    vec4 vertexBaseColor, textureBaseColor, baseColor;
-
     // texcoord to use
     vec2 texcoord = v_texcoord0; // per vertex
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         texcoord = v_texcoord1; // per wedge
     }
 
-    // base color 
+    // base color
+    vec4 vertexBaseColor, textureBaseColor, baseColor;
+
     if(isPerVertexColorAvailable(u_settings.x))
         vertexBaseColor = v_color; // per-vertex color available
     else
@@ -108,12 +108,12 @@ void main()
 
     if(isNormalTextureAvailable(u_settings.x))
     {
-        vec3 normalTexture = getColorFromTexture(2u, v_texcoord0).xyz;
+        vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
         normalTexture *= 2.0;
         normalTexture -= 1.0;
         normalTexture *= vec3(u_normalScale.x, u_normalScale.x, 1.0);
 
-        mat3 TF = tangentFrame(v_normal, v_position, v_texcoord0, vcl_FrontFacing);
+        mat3 TF = tangentFrame(v_normal, v_position, texcoord, vcl_FrontFacing);
 
         normal = mul(normalTexture, TF);
 
@@ -126,13 +126,12 @@ void main()
     } 
 
     // emissive
-    vec4 emissiveTexture;
-    vec3 emissiveColor;
+    vec3 emissiveTexture, emissiveColor;
 
     if(isEmissiveTextureAvailable(u_settings.x))
-        emissiveTexture = getColorFromTexture(4u, v_texcoord0); // emissive texture available
+        emissiveTexture = getColorFromTexture(4u, texcoord).rgb; // emissive texture available
     else
-        emissiveTexture = vec4_splat(1.0); // no emissive texture available, use white
+        emissiveTexture = vec3_splat(1.0); // no emissive texture available, use white
 
     emissiveColor = u_emissiveColorFactor.rgb * emissiveTexture.rgb;
 
