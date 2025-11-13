@@ -252,16 +252,21 @@ public:
         const MeshType&           m) const
     {
         static const Material DEFAULT_MATERIAL;
+        static const uint     N_TEXURES =
+            toUnderlying(Material::TextureType::COUNT);
 
         uint64_t state = BGFX_STATE_NONE;
+
+        std::array<bool, N_TEXURES> textureAvailable = {false};
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
             mMaterialUniforms.update(
-                DEFAULT_MATERIAL, isPerVertexColorAvailable(m));
+                DEFAULT_MATERIAL,
+                isPerVertexColorAvailable(m),
+                textureAvailable);
         }
         else {
-            using enum MeshRenderInfo::Surface;
             using enum Material::AlphaMode;
 
             uint materialId = Base::materialIndex(mrs, chunkNumber);
@@ -269,12 +274,24 @@ public:
             if (materialId == UINT_NULL) {
                 // fallback to default material
                 mMaterialUniforms.update(
-                    DEFAULT_MATERIAL, isPerVertexColorAvailable(m));
+                    DEFAULT_MATERIAL,
+                    isPerVertexColorAvailable(m),
+                    textureAvailable);
             }
             else {
                 assert(materialId < m.materialsNumber());
+
+                for (int i = 0; i < N_TEXURES; ++i) {
+                    if (mMaterialTextureUnits[materialId][i] != nullptr) {
+                        textureAvailable[i] =
+                            mMaterialTextureUnits[materialId][i]->isValid();
+                    }
+                }
+
                 mMaterialUniforms.update(
-                    m.material(materialId), isPerVertexColorAvailable(m));
+                    m.material(materialId),
+                    isPerVertexColorAvailable(m),
+                    textureAvailable);
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {
