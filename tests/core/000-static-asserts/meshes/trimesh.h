@@ -31,8 +31,7 @@ void trimeshStaticAsserts()
     static_assert(!HasQuads<TriMesh>, "");
     static_assert(!HasPolygons<TriMesh>, "");
 
-    // TODO
-    // static_assert(HasMaterials<TriMesh>, "The TriMesh has no materials.");
+    static_assert(HasMaterials<TriMesh>, "The TriMesh has no materials.");
 
     static_assert(comp::IsTiedToVertexNumber<TriMesh::Face::AdjacentFaces>, "");
     static_assert(

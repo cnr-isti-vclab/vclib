@@ -31,8 +31,7 @@ void polymeshStaticAsserts()
     static_assert(!HasQuads<PolyMesh>, "");
     static_assert(HasPolygons<PolyMesh>, "");
 
-    // TODO
-    // static_assert(HasMaterials<PolyMesh>, "The PolyMesh has no materials.");
+    static_assert(HasMaterials<PolyMesh>, "The PolyMesh has no materials.");
 
     static_assert(
         comp::IsTiedToVertexNumber<PolyMesh::Face::AdjacentFaces>, "");
