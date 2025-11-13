@@ -206,10 +206,9 @@ void readObjVertex(
     }
     if constexpr (HasPerVertexColor<MeshType>) {
         if (vid == 0) {
-            // if the current material has a valid color, or the file stores the
-            // vertex color in the non-standard way (color values after the
-            // positions)
-            if (currentMaterial.hasColor || tokens.size() > 6) {
+            // if the file stores the vertex color in the non-standard way
+            // (color values after the positions)
+            if (tokens.size() > 6) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexColorOptional(m);
                     loadedInfo.setPerVertexColor();
@@ -227,9 +226,6 @@ void readObjVertex(
                 m.vertex(vid).color().setRedF(io::readFloat<float>(token));
                 m.vertex(vid).color().setGreenF(io::readFloat<float>(token));
                 m.vertex(vid).color().setBlueF(io::readFloat<float>(token));
-            }
-            else if (currentMaterial.hasColor) {
-                m.vertex(vid).color() = currentMaterial.color();
             }
         }
     }
