@@ -163,7 +163,7 @@ public:
     {
         uint stream = 0;
 
-        // bgfx allows a maximum number of 4 vertex streams...
+        // streams MUST be consecutive starting from 0
         mVertexPositionsBuffer.bindVertex(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
@@ -174,15 +174,12 @@ public:
             mVertexColorsBuffer.bindVertex(stream++);
         }
 
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            if (mVertexUVBuffer.isValid()) {
-                mVertexUVBuffer.bind(stream++);
-            }
+        if (mVertexUVBuffer.isValid()) {
+            mVertexUVBuffer.bind(stream++);
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            if (mVertexWedgeUVBuffer.isValid()) {
-                mVertexWedgeUVBuffer.bind(stream++);
-            }
+
+        if (mVertexWedgeUVBuffer.isValid()) {
+            mVertexWedgeUVBuffer.bind(stream++);
         }
     }
 
