@@ -96,7 +96,7 @@ void main()
     roughness = u_metallicRoughnessOcclusionFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // normal
-    vec3 normal = normalize(v_normal);
+    vec3 normal;
 
     if(isNormalTextureAvailable(u_settings.x))
     {
@@ -118,8 +118,11 @@ void main()
 
         normal = normalize(normal);
     }
-    else if(!vcl_FrontFacing)
-        normal = -normal;
+    else {
+        normal = normalize(v_normal);
+        if(!vcl_FrontFacing)
+            normal *= -1.0;
+    } 
 
     // emissive
     vec4 emissiveTexture;
