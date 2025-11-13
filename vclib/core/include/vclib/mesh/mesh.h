@@ -441,36 +441,7 @@ public:
             }
         }
 
-        // todo
-        if constexpr (mesh::HasTexturePaths<Mesh<Args...>>) {
-            uint nTextures = this->textureNumber();
-
-            std::vector<uint> mapping(m.textureNumber());
-
-            for (uint i = 0; i < m.textureNumber(); ++i) {
-                uint tpi = this->indexOfTexturePath(m.texturePath(i));
-
-                if (tpi == UINT_NULL) {
-                    if constexpr (mesh::HasTextureImages<Mesh<Args...>>) {
-                        this->pushTexture(m.texture(i));
-                    }
-                    else {
-                        this->pushTexturePath(m.texturePath(i));
-                    }
-                    mapping[i] = nTextures++;
-                }
-                else {
-                    mapping[i] = tpi;
-                }
-            }
-
-            if (nTextures > 0 || mapping.size() > 0) {
-                (updateMaterialIndicesOfContainerTypeAfterAppend<Args>(
-                     *this, sizes, mapping),
-                 ...);
-            }
-        }
-        else if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
+        if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
             uint nMaterials = this->materialsNumber();
 
             std::vector<uint> mapping(m.materialsNumber());

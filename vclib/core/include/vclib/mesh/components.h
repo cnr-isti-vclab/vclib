@@ -41,8 +41,6 @@
 #include "components/quality.h"
 #include "components/tangent.h"
 #include "components/tex_coord.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
 #include "components/transform_matrix.h"
 #include "components/triangle_bit_flags.h"
 #include "components/vertex_references.h"
