@@ -281,7 +281,7 @@ public:
             }
         }
         if (mTextureFiles.size() > 0) {
-            mod.setTextures(true);
+            mod.setMaterials();
         }
         return mod;
     }

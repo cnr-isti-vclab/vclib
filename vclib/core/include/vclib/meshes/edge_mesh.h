@@ -139,8 +139,8 @@ namespace vcl {
  * @extends mesh::BoundingBox3
  * @extends mesh::Color
  * @extends mesh::Mark
+ * @extends mesh::Materials
  * @extends mesh::Name
- * @extends mesh::TextureImages
  * @extends mesh::TransformMatrix
  * @extends mesh::CustomComponents
  *
@@ -153,8 +153,8 @@ class EdgeMeshT :
             mesh::EdgeContainer<edgemesh::Edge<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Mark,
+            mesh::Materials,
             mesh::Name,
-            mesh::TextureImages,
             mesh::TransformMatrix<Scalar>,
             mesh::CustomComponents>
 {

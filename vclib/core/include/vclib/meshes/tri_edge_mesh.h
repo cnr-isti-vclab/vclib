@@ -186,8 +186,8 @@ namespace vcl {
  * @extends mesh::BoundingBox3
  * @extends mesh::Color
  * @extends mesh::Mark
+ * @extends mesh::Materials
  * @extends mesh::Name
- * @extends mesh::TextureImages
  * @extends mesh::TransformMatrix
  * @extends mesh::CustomComponents
  *
@@ -202,8 +202,8 @@ class TriEdgeMeshT :
             mesh::BoundingBox3<Scalar>,
             mesh::Color,
             mesh::Mark,
+            mesh::Materials,
             mesh::Name,
-            mesh::TextureImages,
             mesh::TransformMatrix<Scalar>,
             mesh::CustomComponents>
 {

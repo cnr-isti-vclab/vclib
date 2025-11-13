@@ -96,24 +96,6 @@ template<typename MeshType>
 concept HasName = MeshConcept<MeshType> && mesh::HasName<MeshType>;
 
 /**
- * @brief Concept that checks if a Mesh has the TextureImages component.
- *
- * @ingroup mesh_concepts
- */
-template<typename MeshType>
-concept HasTextureImages =
-    MeshConcept<MeshType> && mesh::HasTextureImages<MeshType>;
-
-/**
- * @brief Concept that checks if a Mesh has the TexturePaths component.
- *
- * @ingroup mesh_concepts
- */
-template<typename MeshType>
-concept HasTexturePaths =
-    MeshConcept<MeshType> && mesh::HasTexturePaths<MeshType>;
-
-/**
  * @brief Concept that checks if a Mesh has the TransformMatrix component.
  *
  * @ingroup mesh_concepts

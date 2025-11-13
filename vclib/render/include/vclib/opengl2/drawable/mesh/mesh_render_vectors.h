@@ -359,26 +359,36 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         mTextures.clear();
-        mTextures.reserve(mesh.textureNumber());
-        for (uint i = 0; i < mesh.textureNumber(); ++i) {
-            vcl::Image txt;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
-                if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + mesh.texturePath(i));
+
+        if constexpr (vcl::HasMaterials<MeshType>) {
+            mTextures.reserve(mesh.materialsNumber());
+            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+                vcl::Image txt;
+
+                const auto& texture = mesh.material(i).baseColorTexture();
+
+                if (texture.image().isNull()) {
+                    if (!texture.path().empty()) {
+                        try {
+                            txt = vcl::loadImage(
+                                mesh.meshBasePath() + texture.path());
+                        }
+                        catch(...) {
+                            // do nothing
+                        }
+                    }
+
                 }
                 else {
-                    txt = mesh.texture(i).image();
+                    txt = texture.image();
                 }
+
+                if (txt.isNull()) {
+                    txt = vcl::createCheckBoardImage(512);
+                }
+                txt.mirror();
+                mTextures.push_back(txt);
             }
-            else {
-                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-            }
-            if (txt.isNull()) {
-                txt = vcl::createCheckBoardImage(512);
-            }
-            txt.mirror();
-            mTextures.push_back(txt);
         }
     }
 

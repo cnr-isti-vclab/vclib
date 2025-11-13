@@ -24,6 +24,7 @@
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/mesh.h>
@@ -291,6 +292,24 @@ protected:
      * mesh.
      */
     uint numWireframeLines() const { return nWireframeLines; }
+
+    /**
+     * @brief Returns the material index for the given triangle chunk,
+     * according to the current render settings.
+     *
+     * @param[in] mrs: the mesh render settings
+     * @param[in] chunkNumber: the triangle chunk number
+     * @return the material index for the given triangle chunk
+     */
+    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        using enum MeshRenderInfo::Surface;
+
+        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
+            return mMaterialChunks[chunkNumber].wedgeMaterialId;
+        else
+            return mMaterialChunks[chunkNumber].vertMaterialId;
+    }
 
     // utility functions to fill the buffers
 
@@ -1080,8 +1099,7 @@ private:
         using MeshType = MeshRenderDerived::MeshType;
         using enum MRI::Buffers;
 
-        if constexpr (
-            vcl::HasTexturePaths<MeshType> || vcl::HasMaterials<MeshType>) {
+        if constexpr (vcl::HasMaterials<MeshType>) {
             if (btu[toUnderlying(TEXTURES)]) {
                 // textures
                 derived().setTextureUnits(mesh);

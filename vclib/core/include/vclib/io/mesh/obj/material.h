@@ -41,7 +41,7 @@ struct ObjMaterial
     std::string map_Kd; // filename texture
 
     // id of the texture in the mesh, used when loading materials
-    uint mapId;
+    uint mapId = UINT_NULL;
 
     bool hasColor   = false;
     bool hasTexture = false;

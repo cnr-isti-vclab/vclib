@@ -54,11 +54,24 @@ ObjMaterial objMaterialFromFace(
             mat.Kd.z()   = f.color().blueF();
         }
     }
+    // todo
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
         if (fi.hasPerFaceWedgeTexCoords()) {
-            mat.hasTexture = true;
-            if constexpr (HasTexturePaths<MeshType>) {
-                mat.map_Kd = m.texturePath(f.textureIndex());
+            if constexpr (HasMaterials<MeshType>) {
+                const Material& matFace = m.material(f.textureIndex()); // todo
+                if (matFace.baseColor() != Color::White) {
+                    mat.hasColor = true;
+                    mat.Kd.x()   = matFace.baseColor().redF();
+                    mat.Kd.y()   = matFace.baseColor().greenF();
+                    mat.Kd.z()   = matFace.baseColor().blueF();
+                }
+                if (!matFace.baseColorTexture().path().empty()) {
+                    mat.hasTexture = true;
+                    mat.map_Kd = matFace.baseColorTexture().path();
+                    mat.mapId = f.textureIndex(); // todo
+                }
+                mat.Ns = (1.0f / (matFace.roughness() * matFace.roughness())) -
+                         2.0f; // check
             }
         }
     }
@@ -90,18 +103,18 @@ void writeFaceObjMaterial(
         auto                     it = materialMap.find(mat);
         if (it == materialMap.end()) { // if it is a new material
             // add the new material to the map
+
+            // TODO: try to preserve original material names
             mname = MATERIAL_PREFIX + std::to_string(materialMap.size());
             materialMap[mat] = mname;
             // save the material in the mtl file
             mtlfp << "newmtl " << mname << std::endl;
             mtlfp << mat << std::endl;
-            if constexpr (HasTextureImages<MeshType>) {
+            if constexpr (HasMaterials<MeshType>) {
                 if (settings.saveTextureImages && mat.hasTexture) {
                     // we need to save the texture image
-                    // first, get the index of the texture: 0 if vertex,
-                    // textureIndex if face
-                    uint textureIndex = f.textureIndex();
-                    const Texture& t = m.texture(textureIndex);
+                    uint ti = f.textureIndex(); // todo
+                    const Texture& t = m.material(ti).baseColorTexture();;
                     try {
                         saveImage(t.image(), m.meshBasePath() + mat.map_Kd);
                     }
@@ -153,10 +166,7 @@ void saveObj(
     std::ofstream                              mtlftmp;
     std::map<detail::ObjMaterial, std::string> materialMap;
 
-    bool useMtl =
-        meshInfo.hasPerFaceColor() ||
-        (meshInfo.hasTextures() && (meshInfo.hasPerVertexTexCoord() ||
-                                    meshInfo.hasPerFaceWedgeTexCoords()));
+    bool useMtl = meshInfo.hasPerFaceColor() || meshInfo.hasMaterials();
     if (useMtl) {
         if (saveMtlFile) {
             std::string mtlFileName =

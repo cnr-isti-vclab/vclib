@@ -48,11 +48,9 @@ public:
         COUNT
     };
 
-    static bool isSRGBTexture(int type)
+    static bool isSRGBTexture(TextureType type)
     {
-        return 
-            type == toUnderlying(TextureType::BASE_COLOR) || 
-            type == toUnderlying(TextureType::EMISSIVE);
+        return type == TextureType::BASE_COLOR || type == TextureType::EMISSIVE;
     }
 
 private:

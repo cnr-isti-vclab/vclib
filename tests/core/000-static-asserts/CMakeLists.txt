@@ -56,7 +56,6 @@ set(HEADERS
     mesh/components/position.h
     mesh/components/quality.h
     mesh/components/tex_coord.h
-    mesh/components/textures.h
     mesh/components/transform_matrix.h
     mesh/components/vertex_references.h
     mesh/components/wedge_colors.h

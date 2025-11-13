@@ -118,13 +118,13 @@ auto meshTextureAndTexCoords()
 
     // Example 3: Working with texture images
     std::cout << "\n3. Working with texture images..." << std::endl;
-    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.textureNumber()
-              << " textures" << std::endl;
+    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialsNumber()
+              << " materials" << std::endl;
 
-    for (vcl::uint i = 0; i < meshWedgeTexCoords.textureNumber(); ++i) {
+    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialsNumber(); ++i) {
         // if the images are not loaded, the texture paths will be available
         // and the image will be empty (width and height will be 0)
-        const auto& texture = meshWedgeTexCoords.texture(i);
+        const auto& texture = meshWedgeTexCoords.material(i).baseColorTexture();
         std::cout << "     Texture " << i << ": " << texture.path()
                   << std::endl;
         std::cout << "       Size: " << texture.image().width() << "x"
@@ -163,11 +163,11 @@ auto meshTextureAndTexCoords()
     customMesh.face(1).wedgeTexCoord(1) = vcl::Point2d(1, 1);
     customMesh.face(1).wedgeTexCoord(2) = vcl::Point2d(0, 1);
 
-    customMesh.pushTexture(meshWedgeTexCoords.texture(0));
+    customMesh.pushMaterial(meshWedgeTexCoords.material(0));
 
     // change the path of the texture to a custom one (will be relative to the
     // mesh file path when saving)
-    customMesh.texture(0).path() =
+    customMesh.material(0).baseColorTexture().path() =
         "custom_texture_path.png"; // just an example path
 
     std::cout << "   Created custom mesh with " << customMesh.vertexNumber()

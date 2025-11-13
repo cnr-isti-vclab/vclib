@@ -23,9 +23,12 @@
 #ifndef VCL_BINDINGS_CORE_MESH_COMPONENTS_MATERIALS_H
 #define VCL_BINDINGS_CORE_MESH_COMPONENTS_MATERIALS_H
 
-#include "texture_paths.h"
+#include <vclib/bindings/utils.h>
 
+#include <vclib/mesh.h>
 #include <vclib/space/core/texture.h>
+
+#include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 

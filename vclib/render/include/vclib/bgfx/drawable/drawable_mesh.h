@@ -176,18 +176,6 @@ public:
         }
     }
 
-    std::vector<std::string> textures() const override
-    {
-        std::vector<std::string> txs;
-        if constexpr (HasTexturePaths<MeshType>) {
-            txs.reserve(MeshType::textureNumber());
-            for (const auto& tpath : MeshType::texturePaths()) {
-                txs.push_back(tpath);
-            }
-        }
-        return txs;
-    }
-
     View<MatIt> materials() const override
     {
         if constexpr (HasMaterials<MeshType>) {
@@ -218,50 +206,22 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            uint64_t surfaceState = state;
-            if (mustDrawUsingChunks()) {
-                for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
-                    // Bind textures before vertex buffers!!
-                    mMRB.bindTextures(mMRS, i);
-                    mMRB.bindVertexBuffers(mMRS);
-                    mMRB.bindIndexBuffers(mMRS, i);
-                    if constexpr (HasMaterials<MeshType>) {
-                        uint materialId = mMRB.bindMaterials(mMRS, i, *this);
-                        if (settings.pbrMode) {
-                            if (!MeshType::material(materialId).doubleSided()) {
-                                surfaceState |=
-                                    BGFX_STATE_CULL_CW; // backface culling
-                            }
-                            if (MeshType::material(materialId).alphaMode() ==
-                                Material::AlphaMode::ALPHA_BLEND) {
-                                surfaceState |= BGFX_STATE_BLEND_ALPHA;
-                            }
-                        }
-                    }
-                    bindUniforms();
-
-                    bgfx::setState(surfaceState);
-                    bgfx::setTransform(model.data());
-
-                    if (settings.pbrMode) {
-                        ProgramManager& pm = Context::instance().programManager();
-
-                        bgfx::submit(
-                            settings.viewId,
-                            pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());
-                    }
-                    else {
-                        bgfx::submit(settings.viewId, surfaceProgramSelector());
-                    }
-                }
-            }
-            else {
+            for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
+                uint64_t surfaceState = state;
+                // Bind textures before vertex buffers!!
+                mMRB.bindTextures(mMRS, i);
                 mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS, i);
+                uint64_t materialState = mMRB.bindMaterials(mMRS, i, *this);
                 bindUniforms();
+
+                if (settings.pbrMode) {
+                    surfaceState |= materialState;
+                }
 
                 bgfx::setState(surfaceState);
                 bgfx::setTransform(model.data());
+
                 if (settings.pbrMode) {
                     ProgramManager& pm = Context::instance().programManager();
 
@@ -520,15 +480,6 @@ protected:
         }
 
         return pm.getProgram<DRAWABLE_MESH_SURFACE_UBER>();
-    }
-
-private:
-    bool mustDrawUsingChunks() const
-    {
-        return mMRS.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-               mMRS.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)  ||
-               mMRS.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL) ||
-               mMRS.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL);
     }
 };
 
