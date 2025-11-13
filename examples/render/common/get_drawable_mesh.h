@@ -42,12 +42,6 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     MeshType m = vcl::loadMesh<MeshType>(filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
-    // enable the vertex color of the mesh and set it to gray
-    if (!m.isPerVertexColorEnabled()) {
-        m.enablePerVertexColor();
-        vcl::setPerVertexColor(m, vcl::Color::Gray);
-    }
-
     // create a MeshRenderSettings object, that allows to set the rendering
     // options of the mesh
     // default is what we want: color per vertex, smooth shading, no wireframe
