@@ -41,6 +41,8 @@ int main(int argc, char** argv)
     std::string e9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/TextureSettingsTest/TextureSettingsTest.gltf";
     std::string e10 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf";
     std::string e11 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareNormal/CompareNormal.gltf";
+    std::string e12 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentTest/NormalTangentTest.gltf";
+
 
     // Examples to test
 

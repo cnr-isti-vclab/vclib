@@ -81,16 +81,10 @@ mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal)
  * @param[in] UV: The fragment UV coordinates.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV)
+mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
 {
     vec2 uv_dx = dFdx(UV);
     vec2 uv_dy = dFdy(UV);
-
-    if (length(uv_dx) <= 1e-2)
-        uv_dx = vec2(1.0, 0.0);
-
-    if (length(uv_dy) <= 1e-2)
-        uv_dy = vec2(0.0, 1.0);
 
     vec3 t_ =
         (uv_dy.y * dFdx(position) - uv_dx.y * dFdy(position)) /
@@ -99,6 +93,13 @@ mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV)
     vec3 n = normalize(normal);
     vec3 t = normalize(t_ - n * dot(n, t_));
     vec3 b = cross(n, t);
+
+    if(!frontFacing)
+    {
+        t *= -1.0;
+        b *= -1.0;
+        n *= -1.0;
+    }
 
     return mat3(t, b, n);
 }
@@ -110,10 +111,10 @@ mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV)
  * @param[in] UV: The fragment UV coordinates.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 position, vec2 UV)
+mat3 tangentFrame(vec3 position, vec2 UV, bool frontFacing)
 {
     vec3 normal = cross(dFdx(position), dFdy(position));
-    return tangentFrame(normal, position, UV);
+    return tangentFrame(normal, position, UV, frontFacing);
 }
 
 #endif

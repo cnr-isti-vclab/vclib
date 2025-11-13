@@ -104,15 +104,8 @@ void main()
         normalTexture *= 2.0;
         normalTexture -= 1.0;
         normalTexture *= vec3(u_normalScale.x, u_normalScale.x, 1.0);
-        normalTexture = normalize(normalTexture);
 
-        mat3 TF = tangentFrame(v_normal, v_position, v_texcoord0);
-        if(!vcl_FrontFacing)
-        {
-            TF[0] *= -1.0;
-            TF[1] *= -1.0;
-            TF[2] *= -1.0;
-        }
+        mat3 TF = tangentFrame(v_normal, v_position, v_texcoord0, vcl_FrontFacing);
 
         normal = mul(normalTexture, TF);
 
