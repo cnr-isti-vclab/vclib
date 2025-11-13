@@ -156,21 +156,28 @@ void loadObjMaterials(
 {
     loadObjMaterials(materialMap, stream);
 
-    uint nt = 0;
-
-    if constexpr (HasTexturePaths<MeshType>) {
-        nt = mesh.textureNumber();
-    }
-
     for (auto& [matName, mat] : materialMap) {
-        if (mat.hasTexture) {
-            if constexpr (HasTexturePaths<MeshType>) {
-                loadedInfo.setTextures();
-                mat.mapId = mesh.textureNumber();
-                mesh.pushTexturePath(mat.map_Kd);
-            }
-            else {
-                mat.mapId = nt++;
+        if (!mat.justFaceColor()) {
+            if constexpr (HasMaterials<MeshType>) {
+                loadedInfo.setMaterials();
+                Material m;
+                m.name() = matName;
+                m.baseColor() = vcl::Color(
+                    mat.Kd.x() * 255, mat.Kd.y() * 255, mat.Kd.z() * 255, 255);
+                if (mat.hasTexture) {
+                    m.baseColorTexture().path() = mat.map_Kd;
+                }
+
+                float ns = std::clamp(mat.Ns, 0.f, 1000.f);
+                m.roughness() = std::sqrt(2.0 / (ns + 2.0)); // todo: check
+
+                if (mat.d < 1.0)
+                    m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
+
+                m.metallic() = 0.0;
+
+                mat.mapId = mesh.materialsNumber();
+                mesh.pushMaterial(m);
             }
         }
     }
@@ -203,10 +210,9 @@ void readObjVertex(
     }
     if constexpr (HasPerVertexColor<MeshType>) {
         if (vid == 0) {
-            // if the current material has a valid color, or the file stores the
-            // vertex color in the non-standard way (color values after the
-            // positions)
-            if (currentMaterial.hasColor || tokens.size() > 6) {
+            // if the file stores the vertex color in the non-standard way
+            // (color values after the positions)
+            if (tokens.size() > 6) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexColorOptional(m);
                     loadedInfo.setPerVertexColor();
@@ -224,9 +230,6 @@ void readObjVertex(
                 m.vertex(vid).color().setRedF(io::readFloat<float>(token));
                 m.vertex(vid).color().setGreenF(io::readFloat<float>(token));
                 m.vertex(vid).color().setBlueF(io::readFloat<float>(token));
-            }
-            else if (currentMaterial.hasColor) {
-                m.vertex(vid).color() = currentMaterial.color();
             }
         }
     }
@@ -534,7 +537,7 @@ void loadObj(
     // the current material, set by 'usemtl'
     detail::ObjMaterial currentMaterial;
 
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
 
@@ -651,14 +654,18 @@ void loadObj(
         }
     }
 
-    if constexpr (HasTextureImages<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         if (settings.loadTextureImages) {
-            for (Texture& texture : m.textures()) {
-                texture.image() = loadImage(m.meshBasePath() + texture.path());
-                if (texture.image().isNull()) {
-                    log.log(
-                        "Cannot load texture " + texture.path(),
-                        LogType::WARNING_LOG);
+            for (Material& mat : m.materials()) {
+                Texture& bct = mat.baseColorTexture();
+                if (!bct.path().empty()) {
+                    bct.image() = loadImage(
+                        m.meshBasePath() + mat.baseColorTexture().path());
+                    if (bct.image().isNull()) {
+                        log.log(
+                            "Cannot load texture " + bct.path(),
+                            LogType::WARNING_LOG);
+                    }
                 }
             }
         }

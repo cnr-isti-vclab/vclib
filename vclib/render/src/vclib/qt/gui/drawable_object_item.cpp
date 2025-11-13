@@ -64,7 +64,6 @@ void DrawableObjectItem::addMeshItem()
     if (mesh) {
         addMeshInfoItem(*mesh);
         addTransformMatrixItem(*mesh);
-        addTexturesItem(*mesh);
         addMaterialsItem(*mesh);
     }
 }
@@ -120,22 +119,6 @@ void DrawableObjectItem::addTransformMatrixItem(
         }
         rowItem->setText(1, rowLabel);
         makeItemNotSelectable(rowItem);
-    }
-}
-
-void DrawableObjectItem::addTexturesItem(const AbstractDrawableMesh& mesh)
-{
-    if (mesh.textures().size() > 0) {
-        auto texturesItem = new QTreeWidgetItem(this);
-        texturesItem->setText(0, "Textures");
-        makeItemNotSelectable(texturesItem);
-
-        for (uint i = 0; const auto& texture : mesh.textures()) {
-            auto textureItem = new QTreeWidgetItem(texturesItem);
-            textureItem->setText(0, QString::number(i++));
-            textureItem->setText(1, QString::fromStdString(texture));
-            makeItemNotSelectable(textureItem);
-        }
     }
 }
 

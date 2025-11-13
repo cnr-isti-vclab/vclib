@@ -163,7 +163,7 @@ public:
     {
         uint stream = 0;
 
-        // bgfx allows a maximum number of 4 vertex streams...
+        // streams MUST be consecutive starting from 0
         mVertexPositionsBuffer.bindVertex(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
@@ -174,17 +174,12 @@ public:
             mVertexColorsBuffer.bindVertex(stream++);
         }
 
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-            mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL)) {
-            if (mVertexUVBuffer.isValid()) {
-                mVertexUVBuffer.bind(stream++);
-            }
+        if (mVertexUVBuffer.isValid()) {
+            mVertexUVBuffer.bind(stream++);
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX) ||
-                 mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
-            if (mVertexWedgeUVBuffer.isValid()) {
-                mVertexWedgeUVBuffer.bind(stream++);
-            }
+
+        if (mVertexWedgeUVBuffer.isValid()) {
+            mVertexWedgeUVBuffer.bind(stream++);
         }
     }
 
@@ -225,25 +220,10 @@ public:
     {
         using enum MeshRenderInfo::Surface;
 
-        uint textureId = UINT_NULL;
-        if (mrs.isSurface(COLOR_VERTEX_TEX) ||
-            mrs.isSurface(COLOR_VERTEX_MATERIAL)) {
-            textureId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
-        }
-        else if (
-            mrs.isSurface(COLOR_WEDGE_TEX) ||
-            mrs.isSurface(COLOR_WEDGE_MATERIAL)) {
-            textureId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
-        }
-        assert(
-            textureId != UINT_NULL && textureId < mMaterialTextureUnits.size());
+        uint textureId = Base::materialIndex(mrs, chunkNumber);
+        assert(mMaterialTextureUnits.size() > 0 || textureId == UINT_NULL);
 
-        if (mrs.isSurface(COLOR_VERTEX_TEX) || mrs.isSurface(COLOR_WEDGE_TEX)) {
-            if (mMaterialTextureUnits[textureId][0]) {
-                mMaterialTextureUnits[textureId][0]->bind(VCL_MRB_TEXTURE0);
-            }
-        }
-        else {
+        if (textureId != UINT_NULL) {
             for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
                 if (mMaterialTextureUnits[textureId][j]) {
                     mMaterialTextureUnits[textureId][j]->bind(
@@ -253,21 +233,76 @@ public:
         }
     }
 
-    uint bindMaterials(const MeshRenderSettings& mrs, uint chunkNumber, const MeshType& m) const
+    /**
+     * @brief Sets and binds the material uniforms for the given triangle chunk,
+     * and returns the render state associated to the material that must be set
+     * for the draw call.
+     *
+     * @param mrs
+     * @param chunkNumber
+     * @param m
+     * @return the render state associated to the material
+     */
+    uint bindMaterials(
+        const MeshRenderSettings& mrs,
+        uint                      chunkNumber,
+        const MeshType&           m) const
     {
-        uint materialId = 0;
-        if(mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_MATERIAL)) {
-            materialId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
+        static const Material DEFAULT_MATERIAL;
+        static const uint     N_TEXURES =
+            toUnderlying(Material::TextureType::COUNT);
+
+        uint64_t state = BGFX_STATE_NONE;
+
+        std::array<bool, N_TEXURES> textureAvailable = {false};
+
+        if constexpr (!HasMaterials<MeshType>) {
+            // fallback to default material
+            mMaterialUniforms.update(
+                DEFAULT_MATERIAL,
+                isPerVertexColorAvailable(m),
+                textureAvailable);
         }
-        else if(mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_MATERIAL)) {
-            materialId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
+        else {
+            using enum Material::AlphaMode;
+
+            uint materialId = Base::materialIndex(mrs, chunkNumber);
+
+            if (materialId == UINT_NULL) {
+                // fallback to default material
+                mMaterialUniforms.update(
+                    DEFAULT_MATERIAL,
+                    isPerVertexColorAvailable(m),
+                    textureAvailable);
+            }
+            else {
+                assert(materialId < m.materialsNumber());
+
+                for (int i = 0; i < N_TEXURES; ++i) {
+                    if (mMaterialTextureUnits[materialId][i] != nullptr) {
+                        textureAvailable[i] =
+                            mMaterialTextureUnits[materialId][i]->isValid();
+                    }
+                }
+
+                mMaterialUniforms.update(
+                    m.material(materialId),
+                    isPerVertexColorAvailable(m),
+                    textureAvailable);
+
+                // set the state according to the material
+                if (!m.material(materialId).doubleSided()) {
+                    // backface culling
+                    state |= BGFX_STATE_CULL_CW;
+                }
+                if (m.material(materialId).alphaMode() == ALPHA_BLEND) {
+                    state |= BGFX_STATE_BLEND_ALPHA;
+                }
+            }
         }
 
-        assert (materialId >= 0 && materialId < m.materialsNumber());
-        mMaterialUniforms.update(m.material(materialId), isPerVertexColorAvailable(m));
         mMaterialUniforms.bind();
-
-        return materialId;
+        return state;
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -537,56 +572,47 @@ private:
                 sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE,
                 releaseFn);
 
-            if (mMaterialTextureUnits.size() <= i) {
-                mMaterialTextureUnits.resize(i + 1);
-            }
             mMaterialTextureUnits[i][j] = std::move(tu);
         };
 
         mMaterialTextureUnits.clear();
 
-        if constexpr (vcl::HasTextureImages<MeshType>) {
-            mMaterialTextureUnits.reserve(mesh.textureNumber());
-            for (uint i = 0; i < mesh.textureNumber(); ++i) {
-                vcl::Image txt;
-                if constexpr (vcl::HasTextureImages<MeshType>) {
-                    if (mesh.texture(i).image().isNull()) {
-                        txt = vcl::loadImage(
-                            mesh.meshBasePath() + mesh.texturePath(i));
-                    }
-                    else {
-                        txt = mesh.texture(i).image();
-                    }
-                }
-                else {
-                    txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-                }
-                if (txt.isNull()) {
-                    txt = vcl::createCheckBoardImage(512);
-                }
-
-                setTextureUnit(txt, i, 0);
-            }
-        }
         if constexpr (vcl::HasMaterials<MeshType>) {
-            // TODO: materials
-            mMaterialTextureUnits.reserve(mesh.materialsNumber());
+            mMaterialTextureUnits.resize(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                for(uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
-                    const Texture& tex = mesh.material(i).texture(static_cast<Material::TextureType>(j));
+                for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT);
+                     ++j) {
+                    const vcl::Texture& tex = mesh.material(i).texture(
+                        static_cast<Material::TextureType>(j));
+
                     vcl::Image txt = tex.image();
-                    if (txt.isNull()) {
-                        txt = vcl::createCheckBoardImage(512);
+                    if (txt.isNull()) { // try to load it just for rendering
+                        const std::string& path =
+                            mesh.material(i)
+                                .texture(static_cast<Material::TextureType>(j))
+                                .path();
+                        if (!path.empty()) {
+                            try {
+                                txt =
+                                    vcl::loadImage(mesh.meshBasePath() + path);
+                            }
+                            catch (...) {
+                                // do nothing
+                            }
+                            if (txt.isNull()) {
+                                // still null, use a dummy texture
+                                txt = createCheckBoardImage(512);
+                            }
+                        }
                     }
 
-                    bool sRGB = tex.colorSpace() == Texture::ColorSpace::SRGB;
+                    // if loading succeeded (or dummy texture has been created)
+                    if (!txt.isNull()) {
+                        bool sRGB =
+                            tex.colorSpace() == Texture::ColorSpace::SRGB;
 
-                    setTextureUnit(
-                        txt,
-                        i,
-                        j,
-                        sRGB
-                    );
+                        setTextureUnit(txt, i, j, sRGB);
+                    }
                 }
             }
         }

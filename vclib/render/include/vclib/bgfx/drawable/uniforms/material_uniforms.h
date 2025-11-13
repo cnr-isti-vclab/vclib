@@ -30,7 +30,8 @@ namespace vcl {
 
 class MaterialUniforms
 {
-    
+    static const uint N_TEXURES = toUnderlying(Material::TextureType::COUNT);
+
     std::array<float, 4> mBaseColor = {1.0, 1.0, 1.0, 1.0};
 
     // metallic and roughness are stored in the B and G channels respectively for consistency with textures
@@ -73,7 +74,10 @@ public:
 
     const std::array<float, 4>& currentSettings() const { return mSettings; }
 
-    void update(const Material& m, bool vertexColorAvailable)
+    void update(
+        const Material&                    m,
+        bool                               vertexColorAvailable,
+        const std::array<bool, N_TEXURES>& textureAvailable)
     {
         int settings = 0;
         if (vertexColorAvailable) // per-vertex color available
@@ -85,9 +89,11 @@ public:
             mAlphaCutoff[0] = m.alphaCutoff();
         }
 
-        for(int i = 0; i < toUnderlying(Material::TextureType::COUNT); ++i) {
-            if(!m.texture(static_cast<Material::TextureType>(i)).image().isNull()) {
-                settings |= 1 << (2 + i); // texture available, uses settings from 2 to 6
+        for (int i = 0; i < N_TEXURES; ++i) {
+            if (textureAvailable[i]) {
+                settings |=
+                    1
+                    << (2 + i); // texture available, uses settings from 2 to 6
             }
         }
 
@@ -98,7 +104,8 @@ public:
         mBaseColor[2] = m.baseColor().blueF();
         mBaseColor[3] = m.baseColor().alphaF();
 
-        // metallic and roughness are stored in the B and G channels respectively for consistency with textures
+        // metallic and roughness are stored in the B and G channels
+        // respectively for consistency with textures
         mMetallicRoughness[1] = m.roughness();
         mMetallicRoughness[2] = m.metallic();
 

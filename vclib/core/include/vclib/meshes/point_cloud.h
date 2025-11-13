@@ -88,8 +88,8 @@ namespace vcl {
  * @extends mesh::VertexContainer
  * @extends mesh::BoundingBox3
  * @extends mesh::Mark
+ * @extends mesh::Materials
  * @extends mesh::Name
- * @extends mesh::TextureImages
  * @extends mesh::TransformMatrix
  * @extends mesh::CustomComponents
  *
@@ -101,8 +101,8 @@ class PointCloudT :
             mesh::VertexContainer<pointcloud::Vertex<Scalar>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Mark,
+            mesh::Materials,
             mesh::Name,
-            mesh::TextureImages,
             mesh::TransformMatrix<Scalar>,
             mesh::CustomComponents>
 {

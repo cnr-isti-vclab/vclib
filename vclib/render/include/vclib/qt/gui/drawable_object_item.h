@@ -45,7 +45,6 @@ private:
 
     void addMeshInfoItem(const AbstractDrawableMesh& mesh);
     void addTransformMatrixItem(const AbstractDrawableMesh& mesh);
-    void addTexturesItem(const AbstractDrawableMesh& mesh);
     void addMaterialsItem(const AbstractDrawableMesh& mesh);
     void addMaterialData(const Material& material, QTreeWidgetItem* parent);
 

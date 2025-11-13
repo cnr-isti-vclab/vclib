@@ -44,7 +44,7 @@ inline MeshInfo plyFormatCapability()
     info.setFaces();
     info.setEdges();
 
-    info.setTextures();
+    info.setMaterials();
 
     info.setPerVertexPosition();
     info.setPerVertexNormal();

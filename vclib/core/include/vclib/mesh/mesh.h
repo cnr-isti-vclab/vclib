@@ -441,29 +441,25 @@ public:
             }
         }
 
-        if constexpr (mesh::HasTexturePaths<Mesh<Args...>>) {
-            uint nTextures = this->textureNumber();
+        if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
+            uint nMaterials = this->materialsNumber();
 
-            std::vector<uint> mapping(m.textureNumber());
+            std::vector<uint> mapping(m.materialsNumber());
 
-            for (uint i = 0; i < m.textureNumber(); ++i) {
-                uint tpi = this->indexOfTexturePath(m.texturePath(i));
+            for (uint i = 0; i < m.materialsNumber(); ++i) {
+                auto it = std::find(
+                    this->materialBegin(), this->materialEnd(), m.material(i));
 
-                if (tpi == UINT_NULL) {
-                    if constexpr (mesh::HasTextureImages<Mesh<Args...>>) {
-                        this->pushTexture(m.texture(i));
-                    }
-                    else {
-                        this->pushTexturePath(m.texturePath(i));
-                    }
-                    mapping[i] = nTextures++;
+                if (it == this->materialEnd()) {
+                    this->pushMaterial(m.material(i));
+                    mapping[i] = nMaterials++;
                 }
                 else {
-                    mapping[i] = tpi;
+                    mapping[i] = std::distance(this->materialBegin(), it);
                 }
             }
 
-            if (nTextures > 0 || mapping.size() > 0) {
+            if (nMaterials > 0 || mapping.size() > 0) {
                 (updateMaterialIndicesOfContainerTypeAfterAppend<Args>(
                      *this, sizes, mapping),
                  ...);

@@ -47,8 +47,6 @@
 #define VCL_MRS_SURF_COLOR_FACE      5  // face color for surface
 #define VCL_MRS_SURF_TEX_VERTEX      6  // per vertex texcoords
 #define VCL_MRS_SURF_TEX_WEDGE       7  // per wedge texcoords
-#define VCL_MRS_SURF_COLOR_VERT_MAT  8  // per vertex material
-#define VCL_MRS_SURF_COLOR_WEDGE_MAT 9  // per wedge material
 #define VCL_MRS_SURF_COLOR_MESH      10 // mesh color for surface
 #define VCL_MRS_SURF_COLOR_USER      11 // user color for surface
 

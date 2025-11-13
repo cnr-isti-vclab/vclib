@@ -41,20 +41,20 @@ void readPlyTextures(
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
-            mesh.pushTexturePath(str);
-            if constexpr (HasTextureImages<MeshType>) {
-                uint k = mesh.textureNumber() - 1;
-                if (settings.loadTextureImages) {
-                    mesh.texture(k).image() =
-                        loadImage(mesh.meshBasePath() + str);
-                    if (mesh.texture(k).image().isNull()) {
-                        log.log(
-                            "Cannot load texture " + str, LogType::WARNING_LOG);
-                    }
+            Material mat;
+            mat.name() = FileInfo::fileNameWithExtension(str);
+            mat.baseColorTexture().path() = str;
+            if (settings.loadTextureImages) {
+                mat.baseColorTexture().image() =
+                    loadImage(mesh.meshBasePath() + str);
+                if (mat.baseColorTexture().image().isNull()) {
+                    log.log(
+                        "Cannot load texture " + str, LogType::WARNING_LOG);
                 }
             }
+            mesh.pushMaterial(mat);
         }
     }
 }
@@ -67,17 +67,17 @@ void writePlyTextures(
     LogType&            log,
     const SaveSettings& settings)
 {
-    if constexpr (HasTexturePaths<MeshType>) {
-        for (uint k = 0; const std::string& str : mesh.texturePaths()) {
-            header.pushTextureFileName(str);
-            if constexpr (HasTextureImages<MeshType>) {
-                if (settings.saveTextureImages) {
-                    try {
-                        saveImage(mesh.texture(k).image(), basePath + str);
-                    }
-                    catch (const std::runtime_error& e) {
-                        log.log(e.what(), LogType::WARNING_LOG);
-                    }
+    if constexpr (HasMaterials<MeshType>) {
+        for (uint k = 0; const Material& mat : mesh.materials()) {
+            header.pushTextureFileName(mat.baseColorTexture().path());
+            if (settings.saveTextureImages) {
+                try {
+                    saveImage(
+                        mat.baseColorTexture().image(),
+                        basePath + mat.baseColorTexture().path());
+                }
+                catch (const std::runtime_error& e) {
+                    log.log(e.what(), LogType::WARNING_LOG);
                 }
             }
             ++k;

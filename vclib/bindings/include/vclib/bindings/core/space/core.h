@@ -27,6 +27,7 @@
 #include "core/color.h"
 #include "core/histogram.h"
 #include "core/image.h"
+#include "core/material.h"
 #include "core/matrix.h"
 #include "core/point.h"
 #include "core/principal_curvature.h"
@@ -50,6 +51,7 @@ inline void initCore(pybind11::module& m)
     initColor(m);
     initHistogram(m);
     initImage(m);
+    initMaterial(m);
     initMatrix(m);
     initPrincipalCurvature(m);
     initSphere(m);

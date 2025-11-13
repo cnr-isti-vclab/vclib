@@ -54,8 +54,6 @@ vec4 getColorFromTexture(uint texId, vec2 uv) {
     }
 }
 
-// TODO
-
 void main()
 {
     // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
@@ -65,16 +63,26 @@ void main()
 
     vec4 vertexBaseColor, textureBaseColor, baseColor;
 
+    // texcoord to use
+    vec2 texcoord = v_texcoord0; // per vertex
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
+        texcoord = v_texcoord1; // per wedge
+    }
+
     // base color 
     if(isPerVertexColorAvailable(u_settings.x))
         vertexBaseColor = v_color; // per-vertex color available
     else
         vertexBaseColor = vec4_splat(1.0); // no per-vertex color available, use white
 
-    if(isBaseColorTextureAvailable(u_settings.x))
-        textureBaseColor = getColorFromTexture(0u, v_texcoord0); // base color texture available
-    else
-        textureBaseColor = vec4_splat(1.0); // no base color texture available, use white
+    if(isBaseColorTextureAvailable(u_settings.x)) {
+        // base color texture available
+        textureBaseColor = getColorFromTexture(0u, texcoord);
+    }
+    else {
+        // no base color texture available, use white
+        textureBaseColor = vec4_splat(1.0);
+    }
 
     baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor; // multiply vertex color with material base color
 
@@ -88,7 +96,7 @@ void main()
     float metallic, roughness;
 
     if(isMetallicRoughnessTextureAvailable(u_settings.x))
-        metallicRoughnessTexture = getColorFromTexture(1u, v_texcoord0); // metallic-roughness texture available
+        metallicRoughnessTexture = getColorFromTexture(1u, texcoord); // metallic-roughness texture available
     else
         metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
 
@@ -110,9 +118,4 @@ void main()
         roughness,
         u_emissiveColorFactor.rgb
     );
-
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
-
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

@@ -153,7 +153,7 @@ TEMPLATE_TEST_CASE(
         vcl::loadObj(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj", info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.textureNumber() == 2);
+        REQUIRE(tm.materialsNumber() == 2);
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         for (const auto& f : tm.faces()) {
             // first two faces have texture index 0, the other two have index 1
@@ -167,7 +167,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(info.isTriangleMesh());
 
         REQUIRE(info.hasPerFaceWedgeTexCoords());
-        REQUIRE(info.hasTextures());
+        REQUIRE(info.hasMaterials());
     }
 
     SECTION("PolyMesh - PolyCube")
