@@ -167,10 +167,14 @@ void loadObjMaterials(
                 if (mat.hasTexture) {
                     m.baseColorTexture().path() = mat.map_Kd;
                 }
-                m.roughness() = std::sqrt(1.0 / (mat.Ns + 2.0)); // todo: check
+
+                float ns = std::clamp(mat.Ns, 0.f, 1000.f);
+                m.roughness() = std::sqrt(2.0 / (ns + 2.0)); // todo: check
 
                 if (mat.d < 1.0)
                     m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
+
+                m.metallic() = 0.0;
 
                 mat.mapId = mesh.materialsNumber();
                 mesh.pushMaterial(m);

@@ -139,7 +139,7 @@ int loadGltfPrimitiveMaterial(
 
                     texture = std::move(txt);
                     texture.colorSpace() =
-                        Material::isSRGBTexture(toUnderlying(type))?
+                        Material::isSRGBTexture(type)?
                             Texture::ColorSpace::SRGB :
                             Texture::ColorSpace::LINEAR;
                 }
