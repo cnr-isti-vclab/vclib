@@ -149,15 +149,6 @@ public:
 
     friend void swap(MeshRenderBuffers979& a, MeshRenderBuffers979& b) { a.swap(b); }
 
-    bool mustDrawUsingChunks(const MeshRenderSettings& mrs) const
-    {
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-            mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            return Base::mMaterialChunks.size() > 1;
-        }
-        return false;
-    }
-
     uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }
 
     // to generate splats
