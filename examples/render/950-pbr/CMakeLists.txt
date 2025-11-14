@@ -29,7 +29,6 @@ project(vclib-render-example-${EXAMPLE_NAME})
 set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
-    material_tri_mesh.h
     main.cpp)
 
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
