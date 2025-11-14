@@ -571,8 +571,9 @@ private:
 
             std::copy(tdata, tdata + size, buffer);
 
-            //bool hasMips = 
-            //    toUnderlying(minFilter) >= 
+            // TODO: add support to MipMaps
+            //bool hasMips =
+            //    toUnderlying(minFilter) >=
             //    toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST);
             
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
@@ -610,7 +611,7 @@ private:
                 buffer,
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
-                false,//hasMips,
+                false, // hasMips, // TODO: manage mipmaps
                 flags,
                 releaseFn);
 
@@ -624,6 +625,8 @@ private:
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT);
                      ++j) {
+                    // copy the texture because the image could be not loaded,
+                    // and at the end it needs to be mirrored.
                     vcl::Texture tex = mesh.material(i).texture(
                         static_cast<Material::TextureType>(j));
 
