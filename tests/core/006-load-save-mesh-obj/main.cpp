@@ -154,10 +154,11 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 4);
         REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         for (const auto& f : tm.faces()) {
-            // first two faces have texture index 0, the other two have index 1
-            REQUIRE(f.textureIndex() == f.index() / 2);
+            // first two faces have material index 0, the other two have index 1
+            REQUIRE(f.materialIndex() == f.index() / 2);
         }
 
         REQUIRE(info.hasVertices());

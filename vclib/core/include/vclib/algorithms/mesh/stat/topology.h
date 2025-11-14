@@ -80,7 +80,7 @@ template<typename WedgeTexCoordType>
 struct WedgeTexCoordsInfo
 {
     WedgeTexCoordType texCoord;
-    ushort            texCoordIndex;
+    uint              texCoordIndex;
 
     bool operator<(const WedgeTexCoordsInfo& other) const
     {
@@ -476,6 +476,7 @@ uint countVerticesToDuplicateByWedgeTexCoords(
     std::list<std::list<std::pair<uint, uint>>>& facesToReassign =
         detail::dummyListOfLists)
 {
+    vcl::requirePerFaceMaterialIndex(mesh);
     vcl::requirePerFaceWedgeTexCoords(mesh);
 
     using WedgeTexCoordType  = MeshType::FaceType::WedgeTexCoordType;
@@ -503,7 +504,7 @@ uint countVerticesToDuplicateByWedgeTexCoords(
             uint vi = f.vertexIndex(i);
 
             // check if the i-th wedge texcoord of the face already exists
-            WedgeTexCoordsInfo wi = {f.wedgeTexCoord(i), f.textureIndex()};
+            WedgeTexCoordsInfo wi = {f.wedgeTexCoord(i), f.materialIndex()};
             auto               it = wedges[vi].find(wi);
             if (it == wedges[vi].end()) { // if it doesn't exist, add it
                 // if there was already a texcoord for the vertex, it means that

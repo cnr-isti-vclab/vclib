@@ -337,7 +337,16 @@ void importMeshFromVCGMesh(
                             vcl::enableIfPerFaceWedgeTexCoordsOptional(mesh);
                         }
                         if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                            face.textureIndex() = vcgMesh.face[i].WT(0).N();
+                            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                                if (enableOptionalComponents) {
+                                    vcl::enableIfPerFaceMaterialIndexOptional(
+                                        mesh);
+                                }
+                                if (isPerFaceMaterialIndexAvailable(mesh)) {
+                                    face.materialIndex() =
+                                        vcgMesh.face[i].WT(0).N();
+                                }
+                            }
                             for (uint j = 0; j < 3; ++j) {
                                 face.wedgeTexCoord(j) = WTType(
                                     vcgMesh.face[i].WT(j).U(),
