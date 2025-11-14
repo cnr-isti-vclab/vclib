@@ -119,6 +119,46 @@ void readPlyUnknownElement(
     log.endProgress();
 }
 
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void readPlyMaterialIndexPostProcessing(
+    MeshType&           mesh,
+    MeshInfo&           loadedInfo,
+    const LoadSettings& settings)
+{
+    if constexpr (HasMaterials<MeshType>) {
+        if (mesh.materialsNumber() > 0) {
+            if (loadedInfo.hasPerVertexTexCoord() &&
+                !loadedInfo.hasPerVertexMaterialIndex()) {
+                if constexpr(HasPerVertexMaterialIndex<MeshType>) {
+                    if (settings.enableOptionalComponents) {
+                        enableIfPerVertexMaterialIndexOptional(mesh);
+                        loadedInfo.setPerVertexMaterialIndex();
+                    }
+                    if (loadedInfo.hasPerVertexMaterialIndex()) {
+                        for (auto& v : mesh.vertices()) {
+                            v.materialIndex() = 0;
+                        }
+                    }
+                }
+            }
+            if (loadedInfo.hasPerFaceWedgeTexCoords() &&
+                !loadedInfo.hasPerFaceMaterialIndex()) {
+                if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                    if (settings.enableOptionalComponents) {
+                        enableIfPerFaceMaterialIndexOptional(mesh);
+                        loadedInfo.setPerFaceMaterialIndex();
+                    }
+                    if (loadedInfo.hasPerFaceMaterialIndex()) {
+                        for (auto& f : mesh.faces()) {
+                            f.materialIndex() = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 } // namespace vcl::detail
 
 #endif // VCL_IO_MESH_PLY_DETAIL_EXTRA_H

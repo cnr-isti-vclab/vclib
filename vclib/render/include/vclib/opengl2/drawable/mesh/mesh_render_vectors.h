@@ -311,13 +311,13 @@ private:
         }
     }
 
-    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
+    void setFaceMaterialIndicesBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
         mWTexIds.resize(nt);
 
-        Base::fillWedgeTextureIndices(mesh, mWTexIds.data());
+        Base::fillFaceMaterialIndices(mesh, mWTexIds.data());
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override

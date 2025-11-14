@@ -122,6 +122,7 @@ void loadPly(
             ++i;
         }
         readPlyTextures(header, m, log, settings);
+        readPlyMaterialIndexPostProcessing(m, loadedInfo, settings);
     }
     catch (const std::runtime_error& err) {
         m.clear();

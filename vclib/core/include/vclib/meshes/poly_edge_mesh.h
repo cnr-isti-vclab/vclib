@@ -99,6 +99,7 @@ public:
  * @extends face::OptionalAdjacentPolygons
  * @extends face::OptionalAdjacentEdges
  * @extends face::OptionalPolygonWedgeTexCoords
+ * @extends face::OptionalMaterialIndex
  * @extends face::OptionalMark
  * @extends face::CustomComponents
  *
@@ -120,6 +121,7 @@ class Face :
             face::OptionalAdjacentPolygons<I, Face<Scalar, I>>,
             face::OptionalAdjacentEdges<I, Edge<Scalar, I>, Face<Scalar, I>>,
             face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar, I>>,
+            face::OptionalMaterialIndex<Face<Scalar, I>>,
             face::OptionalMark<Face<Scalar, I>>,
             face::CustomComponents<Face<Scalar, I>>>
 {
