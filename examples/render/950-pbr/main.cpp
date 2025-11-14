@@ -38,6 +38,10 @@ int main(int argc, char** argv)
     std::string e7 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf";
     std::string e8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf";
     std::string e9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/TextureSettingsTest/TextureSettingsTest.gltf";
+    std::string e10 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf";
+    std::string e11 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareNormal/CompareNormal.gltf";
+    std::string e12 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentTest/NormalTangentTest.gltf";
+
 
     // Examples to test
 
@@ -74,7 +78,7 @@ int main(int argc, char** argv)
     // the lower part a semitransparent blue matte
     std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
 
-    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(e6);
+    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(e7);
 
     auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
         const vcl::Texture& texture = mat.texture(type);
@@ -96,6 +100,10 @@ int main(int argc, char** argv)
                       << texture.image().width() << " x "
                       << texture.image().height()
                       << std::endl;
+            std::cout << "    minFilter: " << int(texture.minFilter()) << std::endl;
+            std::cout << "    magFilter: " << int(texture.magFilter()) << std::endl;
+            std::cout << "    wrapU: " << int(texture.wrapU()) << std::endl;
+            std::cout << "    wrapV: " << int(texture.wrapV()) << std::endl;
         }
         else {
             std::cout << "null" << std::endl;
@@ -113,6 +121,8 @@ int main(int argc, char** argv)
             std::cout << "  doubleSided: " << mat.doubleSided() << std::endl;
             std::cout << "  alphaMode: " << int(mat.alphaMode()) << std::endl;
             std::cout << "  alphaCutoff: " << mat.alphaCutoff() << std::endl;
+            std::cout << "  normalScale: " << mat.normalScale() << std::endl;
+            std::cout << "  occlusionStrength: " << mat.occlusionStrength() << std::endl;
             printTextureInfo(mat, Material::TextureType::BASE_COLOR);
             printTextureInfo(mat, Material::TextureType::METALLIC_ROUGHNESS);
             printTextureInfo(mat, Material::TextureType::NORMAL);

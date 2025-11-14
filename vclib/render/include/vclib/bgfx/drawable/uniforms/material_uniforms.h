@@ -34,9 +34,10 @@ class MaterialUniforms
 
     std::array<float, 4> mBaseColor = {1.0, 1.0, 1.0, 1.0};
 
-    // metallic and roughness are stored in the B and G channels respectively for consistency with textures
-    std::array<float, 4> mMetallicRoughness = {
-        0.0,
+    // metallic, roughness and occlusion are stored in the B, G and R channels 
+    // respectively for consistency with textures
+    std::array<float, 4> mMetallicRoughnessOcclusion = {
+        1.0, // occlusion strength
         1.0, // roughness
         1.0, // metallic
         0.0};
@@ -45,19 +46,24 @@ class MaterialUniforms
 
     std::array<float, 4> mAlphaCutoff = {0.5, 0.0, 0.0, 0.0};
 
+    std::array<float, 4> mNormalScale = {1.0, 0.0, 0.0, 0.0};
+
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
     Uniform mBaseColorUniform =
         Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
 
-    Uniform mMetallicRoughnessUniform =
-        Uniform("u_metallicRoughnessFactors", bgfx::UniformType::Vec4);
+    Uniform mMetallicRoughnessOcclusionUniform =
+        Uniform("u_metallicRoughnessOcclusionFactors", bgfx::UniformType::Vec4);
 
     Uniform mEmissiveColorUniform =
         Uniform("u_emissiveColorFactor", bgfx::UniformType::Vec4);
 
     Uniform mAlphaCutoffUniform =
         Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
+
+    Uniform mNormalScaleUniform =
+        Uniform("u_normalScale", bgfx::UniformType::Vec4);
 
     Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
 
@@ -66,11 +72,13 @@ public:
 
     const std::array<float, 4>& currentBaseColor() const { return mBaseColor; }
 
-    const std::array<float, 4>& currentMetallicRoughness() const { return mMetallicRoughness; }
+    const std::array<float, 4>& currentMetallicRoughnessOcclusion() const { return mMetallicRoughnessOcclusion; }
 
     const std::array<float, 4>& currentEmissiveColor() const { return mEmissiveColor; }
 
     const std::array<float, 4>& currentAlphaCutoff() const { return mAlphaCutoff; }
+
+    const std::array<float, 4>& currentNormalScale() const { return mNormalScale; }
 
     const std::array<float, 4>& currentSettings() const { return mSettings; }
 
@@ -104,23 +112,27 @@ public:
         mBaseColor[2] = m.baseColor().blueF();
         mBaseColor[3] = m.baseColor().alphaF();
 
-        // metallic and roughness are stored in the B and G channels
-        // respectively for consistency with textures
-        mMetallicRoughness[1] = m.roughness();
-        mMetallicRoughness[2] = m.metallic();
+        // metallic, roughness and occlusion are stored in the B, G and R
+        // channels respectively for consistency with textures
+        mMetallicRoughnessOcclusion[0] = m.occlusionStrength();
+        mMetallicRoughnessOcclusion[1] = m.roughness();
+        mMetallicRoughnessOcclusion[2] = m.metallic();
 
         mEmissiveColor[0] = m.emissiveColor().redF();
         mEmissiveColor[1] = m.emissiveColor().greenF();
         mEmissiveColor[2] = m.emissiveColor().blueF();
         mEmissiveColor[3] = m.emissiveColor().alphaF();
+
+        mNormalScale[0] = m.normalScale();
     }
 
     void bind() const
     {
         mBaseColorUniform.bind(&mBaseColor);
-        mMetallicRoughnessUniform.bind(&mMetallicRoughness);
+        mMetallicRoughnessOcclusionUniform.bind(&mMetallicRoughnessOcclusion);
         mEmissiveColorUniform.bind(&mEmissiveColor);
         mAlphaCutoffUniform.bind(&mAlphaCutoff);
+        mNormalScaleUniform.bind(&mNormalScale);
         mSettingsUniform.bind(&mSettings);
     }
 };

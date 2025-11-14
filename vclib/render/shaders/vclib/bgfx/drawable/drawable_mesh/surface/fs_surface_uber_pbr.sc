@@ -61,15 +61,15 @@ void main()
     vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
     float lightIntensities[2] = {1.0, 0.5};
 
-    vec4 vertexBaseColor, textureBaseColor, baseColor;
-
     // texcoord to use
     vec2 texcoord = v_texcoord0; // per vertex
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         texcoord = v_texcoord1; // per wedge
     }
 
-    // base color 
+    // base color
+    vec4 vertexBaseColor, textureBaseColor, baseColor;
+
     if(isPerVertexColorAvailable(u_settings.x))
         vertexBaseColor = v_color; // per-vertex color available
     else
@@ -100,11 +100,40 @@ void main()
     else
         metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
 
-    metallic = u_metallicRoughnessFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
-    roughness = u_metallicRoughnessFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
+    metallic = u_metallicRoughnessOcclusionFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
+    roughness = u_metallicRoughnessOcclusionFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // normal
-    vec3 normal = normalize(v_normal);
+    vec3 normal;
+
+    if(isNormalTextureAvailable(u_settings.x))
+    {
+        vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
+        normalTexture *= 2.0;
+        normalTexture -= 1.0;
+        normalTexture *= vec3(u_normalScale.x, u_normalScale.x, 1.0);
+
+        mat3 TF = tangentFrame(v_normal, v_position, texcoord, vcl_FrontFacing);
+
+        normal = mul(normalTexture, TF);
+
+        normal = normalize(normal);
+    }
+    else {
+        normal = normalize(v_normal);
+        if(!vcl_FrontFacing)
+            normal *= -1.0;
+    } 
+
+    // emissive
+    vec3 emissiveTexture, emissiveColor;
+
+    if(isEmissiveTextureAvailable(u_settings.x))
+        emissiveTexture = getColorFromTexture(4u, texcoord).rgb; // emissive texture available
+    else
+        emissiveTexture = vec3_splat(1.0); // no emissive texture available, use white
+
+    emissiveColor = u_emissiveColorFactor.rgb * emissiveTexture.rgb;
 
     gl_FragColor = pbrColor(
         v_position.xyz,
@@ -116,6 +145,6 @@ void main()
         normal,
         metallic,
         roughness,
-        u_emissiveColorFactor.rgb
+        emissiveColor
     );
 }
