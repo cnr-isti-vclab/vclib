@@ -159,7 +159,7 @@ public:
                 mBoxToDraw = ParentViewer::selectionBox();
             }
             if (ParentViewer::selectionMode().isVisibleSelection() && ParentViewer::selectionMode().isFaceSelection()) {
-                setVisibleTrisSelectionProjViewMatrix(ParentViewer::selectionBox().toMinAndMax());
+                setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
                 for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                     uint oid = i+1;
                     auto el = ParentViewer::mDrawList->at(i);

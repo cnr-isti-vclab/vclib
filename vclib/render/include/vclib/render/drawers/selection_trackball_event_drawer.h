@@ -121,6 +121,10 @@ class SelectionTrackBallEventDrawerT :
                 mSelectionCalcRequired = true;
                 mCurrentSelectionMode = SelectionMode::FACE_INVERT;
              }},
+             {{Key::P, {KeyModifier::CONTROL}}, [&]{
+                setPrevModIfNonAtomic();
+                mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_REGULAR;
+             }}
     };
 
     std::map<std::pair<Key::Enum, KeyModifiers>, bool> mPressActionExecuted =
