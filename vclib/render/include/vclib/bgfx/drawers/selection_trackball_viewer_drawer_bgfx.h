@@ -176,7 +176,7 @@ public:
                 auto el = ParentViewer::mDrawList->at(i);
                 if (auto p = dynamic_cast<Selectable*>(el.get())) {
                     if (ParentViewer::selectionMode().isVisibleSelection() && ParentViewer::selectionMode().isFaceSelection()) {
-                        bgfx::TextureHandle tex = bgfx::getTexture(mVisibleSelectionFrameBuffer, 1);
+                        bgfx::TextureHandle tex = bgfx::getTexture(mVisibleSelectionFrameBuffer, 0);
                         bgfx::setImage(4, tex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA16F);
                     }
                     p->calculateSelection(
