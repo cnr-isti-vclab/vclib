@@ -38,6 +38,7 @@
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
+#include <bimg/bimg.h>
 
 namespace vcl {
 
@@ -557,6 +558,10 @@ private:
             Texture::WrapMode wrapU = tex.wrapU();
             Texture::WrapMode wrapV = tex.wrapV();
 
+            bool hasMips =
+                toUnderlying(minFilter) >=
+                toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST);
+
             Image& txt = tex.image();
 
             txt.mirror();
@@ -564,17 +569,54 @@ private:
             const uint size = txt.width() * txt.height();
             assert(size > 0);
 
+            uint sizeWithMips = bimg::imageGetSize(
+                NULL, 
+                txt.width(), 
+                txt.height(), 
+                1, 
+                false, 
+                hasMips, 
+                1, 
+                bimg::TextureFormat::RGBA8
+            ) * 4; // in uints
+            uint numMips = 1;
+            if(hasMips)
+                numMips = bimg::imageGetNumMips(
+                    bimg::TextureFormat::RGBA8, 
+                    txt.width(), 
+                    txt.height()
+                );
+
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(size);
+                getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
 
             const uint* tdata = reinterpret_cast<const uint*>(txt.data());
 
-            std::copy(tdata, tdata + size, buffer);
+            std::copy(tdata, tdata + size, buffer); // mip level 0
 
-            // TODO: add support to MipMaps
-            //bool hasMips =
-            //    toUnderlying(minFilter) >=
-            //    toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST);
+            if(numMips > 1) {
+                uint *source = buffer;
+                uint offset = size;
+                for(uint mip = 1; mip < numMips; ++mip) {
+                    uint mipSize = (txt.width() >> mip) * (txt.height() >> mip);
+                    std::cout << "Generating mip level " << mip << " for texture "
+                              << tex.path() << " with size " << mipSize << std::endl;
+                    bimg::imageRgba8Downsample2x2(
+                        source + offset,
+                        txt.width() >> (mip - 1),
+                        txt.height() >> (mip - 1),
+                        1,
+                        (txt.width() >> (mip - 1)) * 4,
+                        (txt.width() >> mip) * 4,
+                        source
+                    );
+                    source += offset;
+                    offset += mipSize;
+                }
+            }
+
+            // TODO: add support to MipMaps, put them in buffer
+            
             
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
@@ -611,7 +653,7 @@ private:
                 buffer,
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
-                false, // hasMips, // TODO: manage mipmaps
+                hasMips, // TODO: manage mipmaps
                 flags,
                 releaseFn);
 

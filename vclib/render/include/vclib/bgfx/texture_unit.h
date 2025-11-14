@@ -27,6 +27,7 @@
 #include <vclib/space/core/point.h>
 
 #include <bgfx/bgfx.h>
+#include <bimg/bimg.h>
 
 namespace vcl {
 
@@ -117,7 +118,17 @@ public:
         uint64_t            flags     = BGFX_TEXTURE_NONE,
         bgfx::ReleaseFn     releaseFn = nullptr)
     {
-        set(bgfx::makeRef(data, sizes.x() * sizes.y() * 4, releaseFn),
+        uint32_t size = bimg::imageGetSize(
+            NULL, 
+            sizes.x(), 
+            sizes.y(), 
+            1, 
+            false, 
+            hasMips, 
+            1, 
+            bimg::TextureFormat::RGBA8
+        );
+        set(bgfx::makeRef(data, size, releaseFn),
             sizes,
             samplerName,
             hasMips,
