@@ -44,3 +44,5 @@
     - Given a mesh's bounding box, i want to find a sub-projection that includes "perfectly" said bounding box (this means
     that i have to project the box in screen space and build the new projection from there)
     - +1 if you intersect the selection box with the sub-projection and only render the resulting sub-sub-box
+
+- BUG: currently the visible selection does NOT work because the final render pass is on viewId 0 and the render pass i do for visible selection is on a viewId after that (by default bgfx uses the viewIds in increasing order)
