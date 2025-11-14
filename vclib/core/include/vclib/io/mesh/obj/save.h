@@ -54,11 +54,14 @@ ObjMaterial objMaterialFromFace(
             mat.Kd.z()   = f.color().blueF();
         }
     }
-    // todo
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
         if (fi.hasPerFaceWedgeTexCoords()) {
             if constexpr (HasMaterials<MeshType>) {
-                const Material& matFace = m.material(f.textureIndex()); // todo
+                uint ti = 0;
+                if (fi.hasPerFaceMaterialIndex()) {
+                    ti = f.materialIndex();
+                }
+                const Material& matFace = m.material(ti);
                 if (matFace.baseColor() != Color::White) {
                     mat.hasColor = true;
                     mat.Kd.x()   = matFace.baseColor().redF();
@@ -68,7 +71,7 @@ ObjMaterial objMaterialFromFace(
                 if (!matFace.baseColorTexture().path().empty()) {
                     mat.hasTexture = true;
                     mat.map_Kd = matFace.baseColorTexture().path();
-                    mat.mapId = f.textureIndex(); // todo
+                    mat.mapId = ti;
                 }
                 mat.Ns = (1.0f / (matFace.roughness() * matFace.roughness())) -
                          2.0f; // check
@@ -113,7 +116,10 @@ void writeFaceObjMaterial(
             if constexpr (HasMaterials<MeshType>) {
                 if (settings.saveTextureImages && mat.hasTexture) {
                     // we need to save the texture image
-                    uint ti = f.textureIndex(); // todo
+                    uint ti = 0;
+                    if (fi.hasPerFaceMaterialIndex()) {
+                        ti = f.materialIndex();
+                    }
                     const Texture& t = m.material(ti).baseColorTexture();;
                     try {
                         saveImage(t.image(), m.meshBasePath() + mat.map_Kd);

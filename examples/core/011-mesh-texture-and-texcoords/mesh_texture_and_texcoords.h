@@ -106,8 +106,12 @@ auto meshTextureAndTexCoords()
             for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
                 auto& texCoord = face.wedgeTexCoord(i);
                 std::cout << "     Wedge " << i << ": (" << texCoord.u() << ", "
-                          << texCoord.v() << ") tex_id " << face.textureIndex()
-                          << std::endl;
+                          << texCoord.v() << ") ";
+                if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
+                    std::cout << "tex_id "
+                              << meshWedgeTexCoords.face(i).materialIndex();
+                }
+                std::cout << std::endl;
             }
         }
     }

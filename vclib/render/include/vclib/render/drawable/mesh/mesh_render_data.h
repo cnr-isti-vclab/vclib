@@ -120,10 +120,10 @@ private:
 protected:
     struct TriangleMaterialChunk
     {
-        uint startIndex      = 0; // start index in the triangle index buffer
-        uint indexCount      = 0; // num indices in the triangle index buffer
-        uint vertMaterialId  = 0; // material id associated to the vertices
-        uint wedgeMaterialId = 0; // material id associated to the wedges
+        uint startIndex     = 0; // start index in the triangle index buffer
+        uint indexCount     = 0; // num indices in the triangle index buffer
+        uint vertMaterialId = 0; // material id associated to the vertices
+        uint faceMaterialId = 0; // material id associated to the faces
     };
 
     std::vector<TriangleMaterialChunk> mMaterialChunks;
@@ -306,7 +306,7 @@ protected:
         using enum MeshRenderInfo::Surface;
 
         if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
-            return mMaterialChunks[chunkNumber].wedgeMaterialId;
+            return mMaterialChunks[chunkNumber].faceMaterialId;
         else
             return mMaterialChunks[chunkNumber].vertMaterialId;
     }
@@ -428,7 +428,7 @@ protected:
 
         // comparator of faces
         // ordering first by per-vertex material index (if available),
-        // then by per-face wedge texcoord index (if available)
+        // then by per-face material index (if available)
         auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
             if constexpr (HasPerVertexMaterialIndex<MeshType>) {
                 if (isPerVertexMaterialIndexAvailable(mesh)) {
@@ -439,19 +439,18 @@ protected:
                     }
                 }
             }
-            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                // TODO
-                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                    uint id1 = f1.textureIndex();
-                    uint id2 = f2.textureIndex();
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if (isPerFaceMaterialIndexAvailable(mesh)) {
+                    uint id1 = f1.materialIndex();
+                    uint id2 = f2.materialIndex();
                     if (id1 != id2) { // do not return true if equal
                         return id1 < id2;
                     }
                 }
             }
 
-            // if both per-vertex and per-face texcoords are equal, sort by
-            // face index to have a stable sorting
+            // if both per-vertex and per-face material indices are equal, sort
+            // by face index to have a stable sorting
             return f1.index() < f2.index();
         };
 
@@ -537,9 +536,9 @@ protected:
      * @param[in] mesh: the input mesh
      * @param[out] buffer: the buffer to fill
      */
-    void fillWedgeTextureIndices(const FaceMeshConcept auto& mesh, auto* buffer)
+    void fillFaceMaterialIndices(const FaceMeshConcept auto& mesh, auto* buffer)
     {
-        triangulatedFaceWedgeTexCoordIndicesToBuffer(mesh, buffer, mIndexMap);
+        triangulatedFaceMaterialIndicesToBuffer(mesh, buffer, mIndexMap);
     }
 
     /**
@@ -774,22 +773,22 @@ protected:
     void setVertexMaterialIndicesBuffer(const FaceMeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the content of wedge texture indices buffer and
+     * @brief Function that sets the content of face material indices buffer and
      * sends the data to the GPU.
      *
-     * The function should allocate and fill a cpu buffer to store the wedge
-     * texcoord indices using the `numTris()` and `fillWedgeTextureIndices()`
+     * The function should allocate and fill a cpu buffer to store the face
+     * material indices using the `numTris()` and `fillFaceMaterialIndices()`
      * functions, and then send the data to the GPU using the rendering backend.
      *
-     * There is no need to check whether the Mesh can provide per-face wedge
-     * texcoords since the function is called only if the mesh has them.
+     * There is no need to check whether the Mesh can provide per-face material
+     * indices since the function is called only if the mesh has them.
      *
      * See the @ref MeshRenderData class documentation for an example of
      * implementation.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setWedgeTextureIndicesBuffer(const FaceMeshConcept auto&) {}
+    void setFaceMaterialIndicesBuffer(const FaceMeshConcept auto&) {}
 
     /**
      * @brief Function that sets the content of wireframe indices buffer and
@@ -1031,11 +1030,11 @@ private:
                 }
             }
 
-            if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+            if constexpr (vcl::HasPerFaceMaterialIndex<MeshType>) {
+                if (isPerFaceMaterialIndexAvailable(mesh)) {
                     if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
-                        // triangle wedge texture indices buffer
-                        derived().setWedgeTextureIndicesBuffer(mesh);
+                        // triangle material indices buffer
+                        derived().setFaceMaterialIndicesBuffer(mesh);
                     }
                 }
             }
@@ -1167,7 +1166,7 @@ private:
         uint n     = 0;
 
         uint currentVertMatID  = UINT_NULL;
-        uint currentWedgeMatID = UINT_NULL;
+        uint currentFaceMatID = UINT_NULL;
 
         for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
             uint fIndex = mIndexMap.polygon(i);
@@ -1181,7 +1180,7 @@ private:
                                 {first,
                                  n,
                                  currentVertMatID,
-                                 currentWedgeMatID});
+                                 currentFaceMatID});
                             first += n;
                             n = 0;
                         }
@@ -1189,21 +1188,20 @@ private:
                     }
                 }
             }
-            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                // TODO
-                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                    uint mId = mesh.face(fIndex).textureIndex();
-                    if (mId != currentWedgeMatID && n != 0) {
-                        if (currentWedgeMatID != UINT_NULL) {
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if (isPerFaceMaterialIndexAvailable(mesh)) {
+                    uint mId = mesh.face(fIndex).materialIndex();
+                    if (mId != currentFaceMatID && n != 0) {
+                        if (currentFaceMatID != UINT_NULL) {
                             mMaterialChunks.push_back(
                                 {first,
                                  n,
                                  currentVertMatID,
-                                 currentWedgeMatID});
+                                 currentFaceMatID});
                             first += n;
                             n = 0;
                         }
-                        currentWedgeMatID = mId;
+                        currentFaceMatID = mId;
                     }
                 }
             }
@@ -1212,7 +1210,7 @@ private:
         }
 
         mMaterialChunks.push_back(
-            {first, n, currentVertMatID, currentWedgeMatID});
+            {first, n, currentVertMatID, currentFaceMatID});
     }
 };
 

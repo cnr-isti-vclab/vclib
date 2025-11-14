@@ -383,16 +383,16 @@ void initImportExportAlgorithms(pybind11::module& m)
             "mesh"_a);
 
         m.def(
-            "face_wedge_tex_coord_indices_array",
+            "face_wedge_material_indices_array",
             [](const MeshType& m) {
-                return vcl::faceWedgeTexCoordIndicesVector<Eigen::VectorXi>(m);
+                return vcl::faceMaterialIndicesVector<Eigen::VectorXi>(m);
             },
             "mesh"_a);
 
         m.def(
-            "face_wedge_tex_coord_indices_list",
+            "face_wedge_material_indices_list",
             [](const MeshType& m) {
-                return vcl::faceWedgeTexCoordIndicesVector<std::vector<uint>>(
+                return vcl::faceMaterialIndicesVector<std::vector<uint>>(
                     m);
             },
             "mesh"_a);
@@ -520,24 +520,24 @@ void initImportExportAlgorithms(pybind11::module& m)
             "face_wedge_tex_coords"_a);
 
         m.def(
-            "face_wedge_tex_coords_indices_from_array",
+            "face_material_indices_from_array",
             [](MeshType&              mesh,
-               const Eigen::VectorXi& faceWedgeTexCoordIndices) {
-                return vcl::faceWedgeTexCoordIndicesFromRange(
-                    mesh, faceWedgeTexCoordIndices);
+               const Eigen::VectorXi& faceMaterialIndices) {
+                return vcl::faceMaterialIndicesFromRange(
+                    mesh, faceMaterialIndices);
             },
             "mesh"_a,
-            "face_wedge_tex_coord_indices"_a);
+            "face_materail_indices"_a);
 
         m.def(
-            "face_wedge_tex_coords_indices_from_list",
+            "face_material_indices_from_list",
             [](MeshType&               mesh,
-               const std::vector<int>& faceWedgeTexCoordIndices) {
-                return vcl::faceWedgeTexCoordIndicesFromRange(
-                    mesh, faceWedgeTexCoordIndices);
+               const std::vector<int>& faceMaterialIndices) {
+                return vcl::faceMaterialIndicesFromRange(
+                    mesh, faceMaterialIndices);
             },
             "mesh"_a,
-            "face_wedge_tex_coord_indices"_a);
+            "face_materail_indices"_a);
     };
 
     defForAllMeshTypes(m, fFaceMeshes);

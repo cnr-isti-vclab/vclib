@@ -376,12 +376,18 @@ void readObjFace(
             // assume that we can load wedge texcoords
             if (wids.size() == vids.size()) {
                 if (settings.enableOptionalComponents) {
+                    enableIfPerFaceMaterialIndexOptional(m);
                     enableIfPerFaceWedgeTexCoordsOptional(m);
+                    loadedInfo.setPerFaceMaterialIndex();
                     loadedInfo.setPerFaceWedgeTexCoords();
                 }
                 else {
-                    if (isPerFaceWedgeTexCoordsAvailable(m))
+                    if (isPerFaceMaterialIndexAvailable(m)) {
+                        loadedInfo.setPerFaceMaterialIndex();
+                    }
+                    if (isPerFaceWedgeTexCoordsAvailable(m)){
                         loadedInfo.setPerFaceWedgeTexCoords();
+                    }
                 }
             }
         }
@@ -400,8 +406,10 @@ void readObjFace(
                             wedgeTexCoords[wids[i]]
                                 .cast<typename FaceType::WedgeTexCoordType::
                                           ScalarType>();
-                        if (currentMaterial.hasTexture) {
-                            f.textureIndex() = currentMaterial.mapId;
+                        if (isPerFaceMaterialIndexAvailable(m)) {
+                            if (currentMaterial.hasTexture) {
+                                f.materialIndex() = currentMaterial.mapId;
+                            }
                         }
                     }
                 }
@@ -429,8 +437,10 @@ void readObjFace(
                                 wedgeTexCoords[wids[pos]]
                                     .cast<typename FaceType::WedgeTexCoordType::
                                               ScalarType>();
-                            if (currentMaterial.hasTexture) {
-                                f.textureIndex() = currentMaterial.mapId;
+                            if (isPerFaceMaterialIndexAvailable(m)) {
+                                if (currentMaterial.hasTexture) {
+                                    f.materialIndex() = currentMaterial.mapId;
+                                }
                             }
                         }
                     }

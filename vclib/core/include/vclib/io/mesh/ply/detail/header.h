@@ -229,7 +229,7 @@ public:
                 case ply::blue:
                 case ply::alpha: mod.setPerFaceColor(); break;
                 case ply::quality: mod.setPerFaceQuality(); break;
-                // TODO
+                case ply::texnumber: mod.setPerFaceMaterialIndex(); break;
                 case ply::texcoord: mod.setPerFaceWedgeTexCoords(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
