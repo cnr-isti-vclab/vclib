@@ -90,7 +90,9 @@ def mesh_texture_and_texcoords():
             face = mesh_wedge_texcoords.face(0)
             for i in range(face.vertex_number()):
                 tex_coord = face.wedge_tex_coord(i)
-                print(f"     Wedge {i}: ({tex_coord.u()}, {tex_coord.v()}) tex_id {face.texture_index()}")
+                print(f"     Wedge {i}: ({tex_coord.u()}, {tex_coord.v()})")
+                if mesh_wedge_texcoords.is_per_face_material_index_enabled():
+                    print(f"        tex_id {mesh_wedge_texcoords.face(i).material_index()}")
     else:
         print("   - Mesh does not have wedge texture coordinates")
 

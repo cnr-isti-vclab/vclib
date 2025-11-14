@@ -2054,19 +2054,6 @@ private:
                     }
                 }
             }
-
-            if constexpr (hasPerElementComponent<
-                              ELEM_ID,
-                              CompId::WEDGE_TEX_COORDS>()) {
-                if (m.Cont::template isComponentAvailable<
-                        CompId::WEDGE_TEX_COORDS>()) {
-                    auto elview = m.template elements<ELEM_ID>((uint) sizes[I]);
-                    for (auto& e : elview) {
-                        // TODO
-                        e.textureIndex() = mapping[e.textureIndex()];
-                    }
-                }
-            }
         }
     }
 
