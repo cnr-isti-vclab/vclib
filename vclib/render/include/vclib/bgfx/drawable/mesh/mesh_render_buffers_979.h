@@ -73,6 +73,7 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     // face selection: Since we do not know whether this mesh has faces or not,
     // we use an optional
+    Uniform mVisibleFacesUniform = Uniform("u_dispatchXYSizeAndMeshID", bgfx::UniformType::Vec4);
     std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
     std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
 
@@ -182,7 +183,7 @@ public:
     }
 
     void calculateSelection(
-        const bgfx::ViewId viewId,
+        const DrawObjectSettings& settings,
         SelectionBox       box,
         SelectionMode      mode) const
     {
@@ -195,6 +196,26 @@ public:
         auto&               pm = Context::instance().programManager();
         bgfx::ProgramHandle selectionProgram =
             getComputeProgramFromSelectionMode(pm, mode);
+
+        if (mode.isFaceSelection() && mode.isVisibleSelection()) {
+            static const std::array<uint, 3> dispSz = workGroupSizesFrom1DSize(4096 * 4096);
+            float temp[4] = {
+                Uniform::uintBitsToFloat(dispSz[0]),
+                Uniform::uintBitsToFloat(dispSz[1]),
+                Uniform::uintBitsToFloat(settings.objectId), // change
+                0.f
+            };
+            mVisibleFacesUniform.bind((void*)temp);
+            mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+            bgfx::dispatch(
+                settings.viewId,
+                selectionProgram,
+                dispSz[0],
+                dispSz[1],
+                dispSz[2]
+            );
+            return;
+        }
 
         // If one of them does not have a value then we are clearly in an atomic
         // mode and the values inside are arbitrary
@@ -223,11 +244,12 @@ public:
             mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
                 (void*) temp2.data());
             bgfx::dispatch(
-                viewId,
+                settings.viewId,
                 selectionProgram,
                 mVertexSelectionWorkgroupSize[0],
                 mVertexSelectionWorkgroupSize[1],
                 mVertexSelectionWorkgroupSize[2]);
+            return;
         }
 
         if (mode.isFaceSelection()) {
@@ -246,11 +268,12 @@ public:
             mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
                 (void*) temp2.data());
             bgfx::dispatch(
-                viewId,
+                settings.viewId,
                 selectionProgram,
                 mFaceSelectionWorkgroupSize[0],
                 mFaceSelectionWorkgroupSize[1],
                 mFaceSelectionWorkgroupSize[2]);
+            return;
         }
     }
 
@@ -418,9 +441,30 @@ private:
         case SelectionMode::VERTEX_INVERT:
         case SelectionMode::FACE_INVERT:
             return pm.getComputeProgram<ComputeProgram::SELECTION_INVERT>();
+        case SelectionMode::FACE_VISIBLE_REGULAR:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_VISIBLE>();
         default:
             return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
         }
+    }
+
+    static std::array<uint, 3> workGroupSizesFrom1DSize(uint size) {
+        std::array<uint, 3> sizes;
+        sizes[0] =
+            std::min(size, MAX_COMPUTE_WORKGROUP_SIZE);
+        sizes[1] = std::min(
+        uint(
+            std::ceil(
+                double(size) /
+                double(sizes[0]))),
+        MAX_COMPUTE_WORKGROUP_SIZE);
+        sizes[2] = uint(
+            std::ceil(
+                double(size) /
+                double(
+                    sizes[0] *
+                    sizes[1])));
+        return sizes;
     }
 
     // Possibly replace with an algorithm (maybe a compute shader) that
@@ -429,20 +473,7 @@ private:
     // 1025 vertices you use 1024*2*1 = 2048 workgroups.
     void calculateVertexSelectionWorkgroupSize()
     {
-        mVertexSelectionWorkgroupSize[0] =
-            std::min(Base::numVerts(), MAX_COMPUTE_WORKGROUP_SIZE);
-        mVertexSelectionWorkgroupSize[1] = std::min(
-            uint(
-                std::ceil(
-                    double(Base::numVerts()) /
-                    double(mVertexSelectionWorkgroupSize[0]))),
-            MAX_COMPUTE_WORKGROUP_SIZE);
-        mVertexSelectionWorkgroupSize[2] = uint(
-            std::ceil(
-                double(Base::numVerts()) /
-                double(
-                    mVertexSelectionWorkgroupSize[0] *
-                    mVertexSelectionWorkgroupSize[1])));
+        mVertexSelectionWorkgroupSize = workGroupSizesFrom1DSize(Base::numVerts());
     }
 
     void calculateFaceSelectionWorkgroupSize()
@@ -451,19 +482,7 @@ private:
             mFaceSelectionWorkgroupSize = {0, 0, 0};
             return;
         }
-        mFaceSelectionWorkgroupSize[0] =
-            std::min(Base::numTris(), MAX_COMPUTE_WORKGROUP_SIZE);
-        mFaceSelectionWorkgroupSize[1] = std::min(
-            uint(
-                std::ceil(
-                    double(Base::numTris()) /
-                    double(mFaceSelectionWorkgroupSize[0]))),
-            MAX_COMPUTE_WORKGROUP_SIZE);
-        mFaceSelectionWorkgroupSize[2] = uint(
-            std::ceil(
-                double(Base::numTris()) / double(
-                                              mFaceSelectionWorkgroupSize[0] *
-                                              mFaceSelectionWorkgroupSize[1])));
+        mFaceSelectionWorkgroupSize = workGroupSizesFrom1DSize(Base::numTris());
     }
 
     void setVertexPositionsBuffer(const MeshType& mesh) // override

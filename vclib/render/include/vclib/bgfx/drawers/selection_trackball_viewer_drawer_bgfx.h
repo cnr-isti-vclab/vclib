@@ -93,10 +93,10 @@ public:
         mVisibleSelectionFrameBuffer =
             Context::instance().createOffscreenFramebufferAndInitView(
                 mVisibleSelectionViewId,
-                ((DerivedRenderApp*) this)->width(),
-                ((DerivedRenderApp*) this)->height(),
+                4096,
+                4096,
                 false,
-                255U,
+                0u,
                 1.0f,
                 (uint8_t) 0U,
                 bgfx::TextureFormat::Enum::RGBA16F);
@@ -105,6 +105,8 @@ public:
         mDrawableDirectionalLight.init();
     }
 
+    // Box is a parameter so that if we want to subdivide the selection
+    // and do multiple passes for it we can do so
     void setVisibleTrisSelectionProjViewMatrix(SelectionBox box) {
         using PM         = Camera<float>::ProjectionMode;
 
@@ -159,20 +161,26 @@ public:
             if (ParentViewer::selectionMode().isVisibleSelection() && ParentViewer::selectionMode().isFaceSelection()) {
                 setVisibleTrisSelectionProjViewMatrix(ParentViewer::selectionBox().toMinAndMax());
                 for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+                    uint oid = i+1;
                     auto el = ParentViewer::mDrawList->at(i);
                     if (auto p = dynamic_cast<Selectable*>(el.get())) {
+                        DrawObjectSettings settings(mVisibleSelectionViewId, oid);
                         if (ParentViewer::selectionMode() == SelectionMode::FACE_VISIBLE_REGULAR) {
-                            p->calculateSelection(mVisibleSelectionViewId, SelectionBox({std::nullopt, std::nullopt}), SelectionMode::FACE_NONE, true);
+                            p->calculateSelection(settings, SelectionBox({std::nullopt, std::nullopt}), SelectionMode::FACE_NONE, true);
                         }
-                        p->submitForVisibleFacesSelection(DrawObjectSettings(mVisibleSelectionViewId, i + 1));
+                        p->submitForVisibleFacesSelection(settings);
                     }
                 }
             }
             for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                 auto el = ParentViewer::mDrawList->at(i);
                 if (auto p = dynamic_cast<Selectable*>(el.get())) {
+                    if (ParentViewer::selectionMode().isVisibleSelection() && ParentViewer::selectionMode().isFaceSelection()) {
+                        bgfx::TextureHandle tex = bgfx::getTexture(mVisibleSelectionFrameBuffer, 1);
+                        bgfx::setImage(4, tex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA16F);
+                    }
                     p->calculateSelection(
-                        viewId,
+                        DrawObjectSettings(viewId, i+1),
                         ParentViewer::selectionBox().toMinAndMax(),
                         ParentViewer::selectionMode(),
                         ParentViewer::isSelectionTemporary());

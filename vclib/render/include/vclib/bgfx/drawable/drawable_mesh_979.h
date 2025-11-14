@@ -116,11 +116,11 @@ public:
 
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
 
-    void calculateSelection(vcl::uint viewId, SelectionBox box, SelectionMode mode, bool isTemporary) override {
+    void calculateSelection(const DrawObjectSettings& settings, SelectionBox box, SelectionMode mode, bool isTemporary) override {
         if (!HasFaces<MeshType> && mode.isFaceSelection()) {
             return;
         }
-        mMRB.calculateSelection(viewId, box, mode);
+        mMRB.calculateSelection(settings, box, mode);
         if (mBufToTexRemainingFrames != 255 || isTemporary) {
             return;
         }

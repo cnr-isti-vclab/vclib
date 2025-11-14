@@ -32,7 +32,7 @@ namespace vcl {
 class Selectable
 {
 public:
-    virtual void calculateSelection(uint viewId, SelectionBox box, SelectionMode mode, bool isTemporary) = 0;
+    virtual void calculateSelection(const DrawObjectSettings& settings, SelectionBox box, SelectionMode mode, bool isTemporary) = 0;
     virtual void submitForVisibleFacesSelection(const DrawObjectSettings& settings) = 0;
 };
 
