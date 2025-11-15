@@ -48,7 +48,7 @@ ObjMaterial objMaterialFromFace(
     ObjMaterial mat;
     if constexpr (HasPerFaceColor<MeshType>) {
         if (fi.hasPerFaceColor()) {
-            mat.hasColor = true;
+            //mat.hasColor = true;
             mat.Kd.x()   = f.color().redF();
             mat.Kd.y()   = f.color().greenF();
             mat.Kd.z()   = f.color().blueF();
@@ -63,13 +63,12 @@ ObjMaterial objMaterialFromFace(
                 }
                 const Material& matFace = m.material(ti);
                 if (matFace.baseColor() != Color::White) {
-                    mat.hasColor = true;
+                    //mat.hasColor = true;
                     mat.Kd.x()   = matFace.baseColor().redF();
                     mat.Kd.y()   = matFace.baseColor().greenF();
                     mat.Kd.z()   = matFace.baseColor().blueF();
                 }
                 if (!matFace.baseColorTexture().path().empty()) {
-                    mat.hasTexture = true;
                     mat.map_Kd = matFace.baseColorTexture().path();
                     mat.mapId = ti;
                 }
@@ -100,7 +99,7 @@ void writeFaceObjMaterial(
 
     mat = objMaterialFromFace(f, m, fi);
 
-    if (!mat.isEmpty()) {
+    if (mat.isValid()) {
         static const std::string MATERIAL_PREFIX = "MATERIAL_";
         std::string              mname; // name of the material of the vertex
         auto                     it = materialMap.find(mat);
@@ -114,7 +113,7 @@ void writeFaceObjMaterial(
             mtlfp << "newmtl " << mname << std::endl;
             mtlfp << mat << std::endl;
             if constexpr (HasMaterials<MeshType>) {
-                if (settings.saveTextureImages && mat.hasTexture) {
+                if (settings.saveTextureImages && !mat.map_Kd.empty()) {
                     // we need to save the texture image
                     uint ti = 0;
                     if (fi.hasPerFaceMaterialIndex()) {

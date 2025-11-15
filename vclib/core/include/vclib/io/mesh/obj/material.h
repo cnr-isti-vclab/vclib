@@ -29,6 +29,9 @@ namespace vcl::detail {
 
 struct ObjMaterial
 {
+    // id of the material in the mesh, used when loading materials
+    uint mapId = UINT_NULL;
+
     Point3f Ka = Point3f(0.2f, 0.2f, 0.2f); // ambient
     Point3f Kd = Point3f(1.0f, 1.0f, 1.0f); // diffuse
     Point3f Ks = Point3f(1.0f, 1.0f, 1.0f); // specular
@@ -40,15 +43,9 @@ struct ObjMaterial
 
     std::string map_Kd; // filename texture
 
-    // id of the texture in the mesh, used when loading materials
-    uint mapId = UINT_NULL;
-
-    bool hasColor   = false;
-    bool hasTexture = false;
-
     ObjMaterial() = default;
 
-    ObjMaterial(const Color& c) : hasColor(true)
+    ObjMaterial(const Color& c)
     {
         Kd.x() = c.redF();
         Kd.y() = c.greenF();
@@ -56,12 +53,11 @@ struct ObjMaterial
         d      = c.alphaF();
     }
 
-    ObjMaterial(const std::string& txtName) : map_Kd(txtName), hasTexture(true)
+    ObjMaterial(const std::string& txtName) : map_Kd(txtName)
     {
     }
 
-    ObjMaterial(const Color& c, const std::string& txtName) :
-            map_Kd(txtName), hasColor(true), hasTexture(true)
+    ObjMaterial(const Color& c, const std::string& txtName) : map_Kd(txtName)
     {
         Kd.x() = c.redF();
         Kd.y() = c.greenF();
@@ -69,9 +65,15 @@ struct ObjMaterial
         d      = c.alphaF();
     }
 
-    bool isEmpty() const { return !hasColor && !hasTexture; }
+    bool isValid() const { return mapId != UINT_NULL; }
 
-    bool justFaceColor() const { return hasColor && !hasTexture; }
+    // returns true if all the material components except the color
+    // are default
+    bool justFaceColor() const {
+        ObjMaterial tmp = *this;
+        tmp.Kd = Point3f(1.0f, 1.0f, 1.0f);
+        return tmp == ObjMaterial();
+    }
 
     Color color() const
     {
@@ -82,42 +84,33 @@ struct ObjMaterial
 
     uint textureId() const { return mapId; }
 
-    /**
-     * @brief Operator that allows to sort materials
-     * first we sort trough color
-     * - if a material has no color, is < than one that has a color
-     * - if both materials have color, order by color: if same, check texture
-     *   sort trough texture
-     * - if a material has no texture, is < than one that has texture
-     * - if both materials have texture, order by texture name
-     */
-    bool operator<(const ObjMaterial& m) const
+    auto operator<=>(const ObjMaterial& m) const
     {
-        if (hasColor) {
-            if (!m.hasColor) // color > no color
-                return false;
-            if (Kd != m.Kd)
-                return Kd < m.Kd;
-            if (d != m.d)
-                return d < m.d;
-        }
-        else if (m.hasColor) { // no color < color
-            return true;
-        }
-        // will arrive here only if:
-        // - this Material and m have both no color
-        // - this Material has the same color of m
-        if (hasTexture) {
-            if (!m.hasTexture) // texture > no texture
-                return false;
-            return map_Kd < m.map_Kd;
-        }
-        else if (m.hasTexture) { // no texture < texture
-            return true;
-        }
-        else { // no color and texture in both materials
-            return false;
-        }
+        std::partial_ordering res = mapId <=> m.mapId;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        res = Ka <=> m.Ka;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        res = Kd <=> m.Kd;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        res = Ks <=> m.Ks;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        res = d <=> m.d;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        res = illum <=> m.illum;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        res = Ns <=> m.Ns;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        res = map_Kd <=> m.map_Kd;
+        if (res != std::partial_ordering::equivalent)
+            return res;
+        return std::partial_ordering::equivalent;
     }
 
     bool operator==(const ObjMaterial& m) const
@@ -130,12 +123,10 @@ struct ObjMaterial
 
 inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
 {
-    if (m.hasColor) {
-        out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z()
-            << std::endl;
-        out << "d " << m.d << std::endl;
-    }
-    if (m.hasTexture) {
+    out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z()
+        << std::endl;
+    out << "d " << m.d << std::endl;
+    if (!m.map_Kd.empty()) {
         out << "map_Kd " << m.map_Kd << std::endl;
     }
     return out;
