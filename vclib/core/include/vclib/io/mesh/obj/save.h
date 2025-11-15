@@ -70,7 +70,7 @@ ObjMaterial objMaterialFromFace(
                 }
                 if (!matFace.baseColorTexture().path().empty()) {
                     mat.map_Kd = matFace.baseColorTexture().path();
-                    mat.mapId = ti;
+                    mat.matId = ti;
                 }
                 mat.Ns = (1.0f / (matFace.roughness() * matFace.roughness())) -
                          2.0f; // check
@@ -139,6 +139,39 @@ void writeFaceObjMaterial(
             fp << "usemtl " << mname << std::endl;
         }
     }
+}
+
+// TODO: use this function instead of the writeFaceObjMaterial one
+template<MeshConcept MeshType>
+std::vector<ObjMaterial> saveObjMaterials(
+    const MeshType& m,
+    std::ostream&   mtlfp)
+{
+    std::vector<ObjMaterial> materials;
+    materials.reserve(m.materialsNumber());
+    for (uint i = 0; i < m.materialsNumber(); ++i) {
+        const Material& mat = m.material(i);
+        ObjMaterial    omat;
+        std::string matName = mat.name();
+        if (matName.empty()) {
+            matName = "MATERIAL_" + std::to_string(i);
+        }
+        omat.matId = i;
+        omat.matName = matName;
+        omat.Kd.x() = mat.baseColor().redF();
+        omat.Kd.y() = mat.baseColor().greenF();
+        omat.Kd.z() = mat.baseColor().blueF();
+        omat.Ns     = (1.0f / (mat.roughness() * mat.roughness())) - 2.0f;
+        if (mat.alphaMode() == Material::AlphaMode::ALPHA_BLEND) {
+            omat.d = 0.5f; // not accurate, but ok
+        }
+        omat.map_Kd = mat.baseColorTexture().path();
+
+        mtlfp << "newmtl " << matName << std::endl;
+        mtlfp << omat << std::endl;
+        materials.push_back(omat);
+    }
+    return materials;
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

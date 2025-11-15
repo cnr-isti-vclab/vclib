@@ -30,7 +30,8 @@ namespace vcl::detail {
 struct ObjMaterial
 {
     // id of the material in the mesh, used when loading materials
-    uint mapId = UINT_NULL;
+    uint matId = UINT_NULL;
+    std::string matName;
 
     Point3f Ka = Point3f(0.2f, 0.2f, 0.2f); // ambient
     Point3f Kd = Point3f(1.0f, 1.0f, 1.0f); // diffuse
@@ -65,7 +66,7 @@ struct ObjMaterial
         d      = c.alphaF();
     }
 
-    bool isValid() const { return mapId != UINT_NULL; }
+    bool isValid() const { return matId != UINT_NULL; }
 
     // returns true if all the material components except the color
     // are default
@@ -82,11 +83,11 @@ struct ObjMaterial
 
     const std::string& texture() const { return map_Kd; }
 
-    uint textureId() const { return mapId; }
+    uint textureId() const { return matId; }
 
     auto operator<=>(const ObjMaterial& m) const
     {
-        std::partial_ordering res = mapId <=> m.mapId;
+        std::partial_ordering res = matId <=> m.matId;
         if (res != std::partial_ordering::equivalent)
             return res;
         res = Ka <=> m.Ka;

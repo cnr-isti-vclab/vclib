@@ -166,7 +166,7 @@ void loadObjMaterials(
 
                 m.metallic() = 0.0;
 
-                mat.mapId = mesh.materialsNumber();
+                mat.matId = mesh.materialsNumber();
                 mesh.pushMaterial(m);
             }
         }
@@ -291,7 +291,7 @@ void readObjFace(
 
     // material
     if constexpr (HasPerFaceMaterialIndex<MeshType>) {
-        if (fid == 0 && currentMaterial.mapId != UINT_NULL) {
+        if (fid == 0 && currentMaterial.matId != UINT_NULL) {
             if (settings.enableOptionalComponents) {
                 enableIfPerFaceMaterialIndexOptional(m);
                 loadedInfo.setPerFaceMaterialIndex();
@@ -304,12 +304,12 @@ void readObjFace(
         }
         if (loadedInfo.hasPerFaceMaterialIndex()) {
             if (!splitFace) {
-                f.materialIndex() = currentMaterial.mapId;
+                f.materialIndex() = currentMaterial.matId;
             }
             else {
                 for (uint ff = fid; ff < m.faceNumber(); ++ff) {
                     FaceType& f = m.face(ff);
-                    f.materialIndex() = currentMaterial.mapId;
+                    f.materialIndex() = currentMaterial.matId;
                 }
             }
         }
