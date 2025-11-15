@@ -73,9 +73,9 @@ inline void loadObjMaterials(
             if (header == "Kd") {
                 if (tokens.size() >= 4) {
                     if (*token != "spectral" && *token != "xyz") {
-                        mat.Kd.x()   = io::readFloat<float>(token);
-                        mat.Kd.y()   = io::readFloat<float>(token);
-                        mat.Kd.z()   = io::readFloat<float>(token);
+                        mat.Kd.x() = io::readFloat<float>(token);
+                        mat.Kd.y() = io::readFloat<float>(token);
+                        mat.Kd.z() = io::readFloat<float>(token);
                     }
                 }
             }
@@ -149,26 +149,24 @@ void loadObjMaterials(
     loadObjMaterials(materialMap, stream);
 
     for (auto& [matName, mat] : materialMap) {
-        if (!mat.justFaceColor()) {
-            if constexpr (HasMaterials<MeshType>) {
-                loadedInfo.setMaterials();
-                Material m;
-                m.name() = matName;
-                m.baseColor() = vcl::Color(
-                    mat.Kd.x() * 255, mat.Kd.y() * 255, mat.Kd.z() * 255, 255);
-                m.baseColorTexture().path() = mat.map_Kd;
+        if constexpr (HasMaterials<MeshType>) {
+            loadedInfo.setMaterials();
+            Material m;
+            m.name()      = matName;
+            m.baseColor() = vcl::Color(
+                mat.Kd.x() * 255, mat.Kd.y() * 255, mat.Kd.z() * 255, 255);
+            m.baseColorTexture().path() = mat.map_Kd;
 
-                float ns = std::clamp(mat.Ns, 0.f, 1000.f);
-                m.roughness() = std::sqrt(2.0 / (ns + 2.0)); // todo: check
+            float ns      = std::clamp(mat.Ns, 0.f, 1000.f);
+            m.roughness() = std::sqrt(2.0 / (ns + 2.0)); // todo: check
 
-                if (mat.d < 1.0)
-                    m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
+            if (mat.d < 1.0)
+                m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
 
-                m.metallic() = 0.0;
+            m.metallic() = 0.0;
 
-                mat.matId = mesh.materialsNumber();
-                mesh.pushMaterial(m);
-            }
+            mat.matId = mesh.materialsNumber();
+            mesh.pushMaterial(m);
         }
     }
 }
@@ -308,7 +306,7 @@ void readObjFace(
             }
             else {
                 for (uint ff = fid; ff < m.faceNumber(); ++ff) {
-                    FaceType& f = m.face(ff);
+                    FaceType& f       = m.face(ff);
                     f.materialIndex() = currentMaterial.matId;
                 }
             }
@@ -327,7 +325,7 @@ void readObjFace(
                     loadedInfo.setPerFaceWedgeTexCoords();
                 }
                 else {
-                    if (isPerFaceWedgeTexCoordsAvailable(m)){
+                    if (isPerFaceWedgeTexCoordsAvailable(m)) {
                         loadedInfo.setPerFaceWedgeTexCoords();
                     }
                 }
@@ -583,7 +581,7 @@ void loadObj(
 
     if constexpr (HasPerVertexNormal<MeshType>) {
         using NormalType = typename MeshType::VertexType::NormalType;
-        using NST = typename NormalType::ScalarType;
+        using NST        = typename NormalType::ScalarType;
         if (settings.enableOptionalComponents) {
             enableIfPerVertexNormalOptional(m);
             loadedInfo.setPerVertexNormal();
@@ -592,7 +590,6 @@ void loadObj(
             if (isPerVertexNormalAvailable(m))
                 loadedInfo.setPerVertexNormal();
         }
-
 
         if (loadedInfo.hasPerVertexNormal()) {
             for (uint i = 0; const auto& n : normals) {

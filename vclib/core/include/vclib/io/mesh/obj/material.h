@@ -30,7 +30,7 @@ namespace vcl::detail {
 struct ObjMaterial
 {
     // id of the material in the mesh, used when loading materials
-    uint matId = UINT_NULL;
+    uint        matId = UINT_NULL;
     std::string matName;
 
     Point3f Ka = Point3f(0.2f, 0.2f, 0.2f); // ambient
@@ -46,35 +46,23 @@ struct ObjMaterial
 
     ObjMaterial() = default;
 
-    ObjMaterial(const Color& c)
+    ObjMaterial(const Material& mat, uint id)
     {
-        Kd.x() = c.redF();
-        Kd.y() = c.greenF();
-        Kd.z() = c.blueF();
-        d      = c.alphaF();
-    }
+        matId   = id;
+        matName = mat.name();
 
-    ObjMaterial(const std::string& txtName) : map_Kd(txtName)
-    {
-    }
+        Kd.x() = mat.baseColor().redF();
+        Kd.y() = mat.baseColor().greenF();
+        Kd.z() = mat.baseColor().blueF();
+        Ns     = (1.0f / (mat.roughness() * mat.roughness())) - 2.0f;
+        if (mat.alphaMode() == Material::AlphaMode::ALPHA_BLEND) {
+            d = 0.5f; // not accurate, but ok
+        }
 
-    ObjMaterial(const Color& c, const std::string& txtName) : map_Kd(txtName)
-    {
-        Kd.x() = c.redF();
-        Kd.y() = c.greenF();
-        Kd.z() = c.blueF();
-        d      = c.alphaF();
+        map_Kd = mat.baseColorTexture().path();
     }
 
     bool isValid() const { return matId != UINT_NULL; }
-
-    // returns true if all the material components except the color
-    // are default
-    bool justFaceColor() const {
-        ObjMaterial tmp = *this;
-        tmp.Kd = Point3f(1.0f, 1.0f, 1.0f);
-        return tmp == ObjMaterial();
-    }
 
     Color color() const
     {
@@ -85,47 +73,12 @@ struct ObjMaterial
 
     uint textureId() const { return matId; }
 
-    auto operator<=>(const ObjMaterial& m) const
-    {
-        std::partial_ordering res = matId <=> m.matId;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        res = Ka <=> m.Ka;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        res = Kd <=> m.Kd;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        res = Ks <=> m.Ks;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        res = d <=> m.d;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        res = illum <=> m.illum;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        res = Ns <=> m.Ns;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        res = map_Kd <=> m.map_Kd;
-        if (res != std::partial_ordering::equivalent)
-            return res;
-        return std::partial_ordering::equivalent;
-    }
-
-    bool operator==(const ObjMaterial& m) const
-    {
-        return !(*this < m) && !(m < *this);
-    }
-
-    bool operator!=(const ObjMaterial& m) const { return !(*this == m); }
+    bool operator==(const ObjMaterial& m) const = default;
 };
 
 inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
 {
-    out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z()
-        << std::endl;
+    out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z() << std::endl;
     out << "d " << m.d << std::endl;
     if (!m.map_Kd.empty()) {
         out << "map_Kd " << m.map_Kd << std::endl;
