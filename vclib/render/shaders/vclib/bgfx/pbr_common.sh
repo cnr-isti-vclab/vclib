@@ -66,7 +66,7 @@
  *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
+mat3 tangentFrameFromGivenVectors(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
 {
     if(!frontFacing)
     {
@@ -92,7 +92,7 @@ mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
  *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
+mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
 {
     vec2 uv_dx = dFdx(UV);
     vec2 uv_dy = dFdy(UV);
@@ -132,10 +132,10 @@ mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
  *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 position, vec2 UV, bool frontFacing)
+mat3 tangentFrameFromPosition(vec3 position, vec2 UV, bool frontFacing)
 {
     vec3 normal = cross(dFdx(position), dFdy(position));
-    return tangentFrame(normal, position, UV, frontFacing);
+    return tangentFrameFromNormal(normal, position, UV, frontFacing);
 }
 
 #endif
