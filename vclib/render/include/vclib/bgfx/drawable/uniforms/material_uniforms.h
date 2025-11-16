@@ -30,40 +30,33 @@ namespace vcl {
 
 class MaterialUniforms
 {
-    static const uint N_TEXURES = toUnderlying(Material::TextureType::COUNT);
+    static const uint N_TEXTURES = toUnderlying(Material::TextureType::COUNT);
 
     std::array<float, 4> mBaseColor = {1.0, 1.0, 1.0, 1.0};
 
     // metallic, roughness and occlusion are stored in the B, G and R channels 
     // respectively for consistency with textures
-    std::array<float, 4> mMetallicRoughnessOcclusion = {
+    std::array<float, 4> mFactorsPack = {
         1.0, // occlusion strength
         1.0, // roughness
         1.0, // metallic
-        0.0};
+        1.0  // normal scale
+    };
 
-    std::array<float, 4> mEmissiveColor = {0.0, 0.0, 0.0, 1.0};
-
-    std::array<float, 4> mAlphaCutoff = {0.5, 0.0, 0.0, 0.0};
-
-    std::array<float, 4> mNormalScale = {1.0, 0.0, 0.0, 0.0};
+    // emissive color factor stored in RGB channels, alpha channel is unused so it can be
+    // used to store the alpha cutoff when needed
+    std::array<float, 4> mEmissiveAlphaCutoffPack = {0.0, 0.0, 0.0, 0.5};
 
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
     Uniform mBaseColorUniform =
         Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
 
-    Uniform mMetallicRoughnessOcclusionUniform =
-        Uniform("u_metallicRoughnessOcclusionFactors", bgfx::UniformType::Vec4);
+    Uniform mFactorsPackUniform =
+        Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
 
-    Uniform mEmissiveColorUniform =
-        Uniform("u_emissiveColorFactor", bgfx::UniformType::Vec4);
-
-    Uniform mAlphaCutoffUniform =
-        Uniform("u_alphaCutoff", bgfx::UniformType::Vec4);
-
-    Uniform mNormalScaleUniform =
-        Uniform("u_normalScale", bgfx::UniformType::Vec4);
+    Uniform mEmissiveAlphaCutoffPackUniform =
+        Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
 
     Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
 
@@ -72,20 +65,16 @@ public:
 
     const std::array<float, 4>& currentBaseColor() const { return mBaseColor; }
 
-    const std::array<float, 4>& currentMetallicRoughnessOcclusion() const { return mMetallicRoughnessOcclusion; }
+    const std::array<float, 4>& currentFactorsPack() const { return mFactorsPack; }
 
-    const std::array<float, 4>& currentEmissiveColor() const { return mEmissiveColor; }
-
-    const std::array<float, 4>& currentAlphaCutoff() const { return mAlphaCutoff; }
-
-    const std::array<float, 4>& currentNormalScale() const { return mNormalScale; }
+    const std::array<float, 4>& currentEmissiveAlphaCutoffPack() const { return mEmissiveAlphaCutoffPack; }
 
     const std::array<float, 4>& currentSettings() const { return mSettings; }
 
     void update(
         const Material&                    m,
         bool                               vertexColorAvailable,
-        const std::array<bool, N_TEXURES>& textureAvailable)
+        const std::array<bool, N_TEXTURES>& textureAvailable)
     {
         int settings = 0;
         if (vertexColorAvailable) // per-vertex color available
@@ -94,10 +83,10 @@ public:
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
             settings |= 1 << 1;
-            mAlphaCutoff[0] = m.alphaCutoff();
+            mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
-        for (int i = 0; i < N_TEXURES; ++i) {
+        for (int i = 0; i < N_TEXTURES; ++i) {
             if (textureAvailable[i]) {
                 settings |=
                     1
@@ -114,25 +103,21 @@ public:
 
         // metallic, roughness and occlusion are stored in the B, G and R
         // channels respectively for consistency with textures
-        mMetallicRoughnessOcclusion[0] = m.occlusionStrength();
-        mMetallicRoughnessOcclusion[1] = m.roughness();
-        mMetallicRoughnessOcclusion[2] = m.metallic();
+        mFactorsPack[0] = m.occlusionStrength();
+        mFactorsPack[1] = m.roughness();
+        mFactorsPack[2] = m.metallic();
+        mFactorsPack[3] = m.normalScale();
 
-        mEmissiveColor[0] = m.emissiveColor().redF();
-        mEmissiveColor[1] = m.emissiveColor().greenF();
-        mEmissiveColor[2] = m.emissiveColor().blueF();
-        mEmissiveColor[3] = m.emissiveColor().alphaF();
-
-        mNormalScale[0] = m.normalScale();
+        mEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
+        mEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
+        mEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
     }
 
     void bind() const
     {
         mBaseColorUniform.bind(&mBaseColor);
-        mMetallicRoughnessOcclusionUniform.bind(&mMetallicRoughnessOcclusion);
-        mEmissiveColorUniform.bind(&mEmissiveColor);
-        mAlphaCutoffUniform.bind(&mAlphaCutoff);
-        mNormalScaleUniform.bind(&mNormalScale);
+        mFactorsPackUniform.bind(&mFactorsPack);
+        mEmissiveAlphaCutoffPackUniform.bind(&mEmissiveAlphaCutoffPack);
         mSettingsUniform.bind(&mSettings);
     }
 };

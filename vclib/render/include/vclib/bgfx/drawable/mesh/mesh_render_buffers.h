@@ -249,12 +249,12 @@ public:
         const MeshType&           m) const
     {
         static const Material DEFAULT_MATERIAL;
-        static const uint     N_TEXURES =
+        static const uint     N_TEXTURES =
             toUnderlying(Material::TextureType::COUNT);
 
         uint64_t state = BGFX_STATE_NONE;
 
-        std::array<bool, N_TEXURES> textureAvailable = {false};
+        std::array<bool, N_TEXTURES> textureAvailable = {false};
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
@@ -278,7 +278,7 @@ public:
             else {
                 assert(materialId < m.materialsNumber());
 
-                for (int i = 0; i < N_TEXURES; ++i) {
+                for (int i = 0; i < N_TEXTURES; ++i) {
                     if (mMaterialTextureUnits[materialId][i] != nullptr) {
                         textureAvailable[i] =
                             mMaterialTextureUnits[materialId][i]->isValid();
