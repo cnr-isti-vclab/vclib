@@ -60,6 +60,7 @@ inline void loadObjMaterials(
                     materialMap[matName] = mat;
                 mat     = ObjMaterial();
                 matName = *token;
+                mat.matName = matName;
             }
             if (header == "Ka") {
                 if (tokens.size() >= 4) {
@@ -151,20 +152,7 @@ void loadObjMaterials(
     for (auto& [matName, mat] : materialMap) {
         if constexpr (HasMaterials<MeshType>) {
             loadedInfo.setMaterials();
-            Material m;
-            m.name()      = matName;
-            m.baseColor() = vcl::Color(
-                mat.Kd.x() * 255, mat.Kd.y() * 255, mat.Kd.z() * 255, 255);
-            m.baseColorTexture().path() = mat.map_Kd;
-
-            float ns      = std::clamp(mat.Ns, 0.f, 1000.f);
-            m.roughness() = std::sqrt(2.0 / (ns + 2.0)); // todo: check
-
-            if (mat.d < 1.0)
-                m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
-
-            m.metallic() = 0.0;
-
+            Material m = mat.toMaterial();
             mat.matId = mesh.materialsNumber();
             mesh.pushMaterial(m);
         }
@@ -400,24 +388,6 @@ void readObjEdge(
     uint vid1 = io::readUInt<uint>(token) - 1;
     uint vid2 = io::readUInt<uint>(token) - 1;
     e.setVertices(vid1, vid2);
-
-    // material
-    // if constexpr (HasPerEdgeMaterialIndex<MeshType>) {
-    //     if (eid == 0 && currentMaterial.mapId != UINT_NULL) {
-    //         if (settings.enableOptionalComponents) {
-    //             enableIfPerEdgeMaterialIndexOptional(m);
-    //             loadedInfo.setPerEdgeMaterialIndex();
-    //         }
-    //         else {
-    //             if (isPerEdgeMaterialIndexAvailable(m)) {
-    //                 loadedInfo.setPerEdgeMaterialIndex();
-    //             }
-    //         }
-    //     }
-    //     if (loadedInfo.hasPerEdgeMaterialIndex()) {
-    //         e.materialIndex() = currentMaterial.mapId;
-    //     }
-    // }
 }
 
 /**
@@ -597,6 +567,51 @@ void loadObj(
                     m.vertex(i).normal() = n.template cast<NST>();
                 }
                 ++i;
+            }
+        }
+    }
+
+    if constexpr (HasPerVertexTexCoord<MeshType>) {
+        if (!loadedInfo.hasPerFaceWedgeTexCoords()) {
+            if (texCoords.size() == m.vertexNumber()) {
+                // load texcoords into vertices only if there are no wedge
+                if (settings.enableOptionalComponents) {
+                    enableIfPerVertexTexCoordOptional(m);
+                    loadedInfo.setPerVertexTexCoord();
+                }
+                else {
+                    if (isPerVertexTexCoordAvailable(m))
+                        loadedInfo.setPerVertexTexCoord();
+                }
+                if (loadedInfo.hasPerVertexTexCoord()) {
+                    using TexCoordType =
+                        typename MeshType::VertexType::TexCoordType;
+                    using TCT         = typename TexCoordType::ScalarType;
+                    for (uint i = 0; i < m.vertexNumber(); ++i) {
+                        m.vertex(i).texCoord() =
+                            texCoords[i].template cast<TCT>();
+                    }
+                }
+
+                // material index
+                if constexpr (HasMaterials<MeshType>) {
+                    if (m.materialsNumber() > 0) {
+                        if (settings.enableOptionalComponents) {
+                            enableIfPerVertexMaterialIndexOptional(m);
+                            loadedInfo.setPerVertexMaterialIndex();
+                        }
+                        else {
+                            if (isPerVertexMaterialIndexAvailable(m))
+                                loadedInfo.setPerVertexMaterialIndex();
+                        }
+                        if (loadedInfo.hasPerVertexMaterialIndex()) {
+                            for (uint i = 0; i < m.vertexNumber(); ++i) {
+                                // assign the first material to all vertices
+                                m.vertex(i).materialIndex() = 0;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
