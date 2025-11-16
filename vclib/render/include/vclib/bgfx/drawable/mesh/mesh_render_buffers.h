@@ -560,7 +560,9 @@ private:
 
             bool hasMips =
                 toUnderlying(minFilter) >=
-                toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST);
+                toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST) ||
+                toUnderlying(minFilter) == 
+                toUnderlying(Texture::MinificationFilter::NONE); // default LINEAR_MIPMAP_LINEAR
 
             Image& txt = tex.image();
 
@@ -578,7 +580,7 @@ private:
                 hasMips, 
                 1, 
                 bimg::TextureFormat::RGBA8
-            ) * 4; // in uints
+            ) / 4; // in uints
             uint numMips = 1;
             if(hasMips)
                 numMips = bimg::imageGetNumMips(
@@ -596,27 +598,26 @@ private:
 
             if(numMips > 1) {
                 uint *source = buffer;
+                uint *dest;
                 uint offset = size;
-                for(uint mip = 1; mip < numMips; ++mip) {
+                for(uint mip = 1; mip < numMips; mip++) {
+                    dest = source + offset;
                     uint mipSize = (txt.width() >> mip) * (txt.height() >> mip);
                     std::cout << "Generating mip level " << mip << " for texture "
                               << tex.path() << " with size " << mipSize << std::endl;
                     bimg::imageRgba8Downsample2x2(
-                        source + offset,
-                        txt.width() >> (mip - 1),
-                        txt.height() >> (mip - 1),
-                        1,
-                        (txt.width() >> (mip - 1)) * 4,
-                        (txt.width() >> mip) * 4,
-                        source
+                        dest,                           // output location
+                        txt.width() >> (mip - 1),       // input width
+                        txt.height() >> (mip - 1),      // input height
+                        1,                              // depth, always 1 for 2D textures
+                        (txt.width() >> (mip - 1)) * 4, // input pitch
+                        (txt.width() >> mip) * 4,       // output pitch
+                        source                          // input location
                     );
-                    source += offset;
-                    offset += mipSize;
+                    source = dest;
+                    offset = mipSize;
                 }
             }
-
-            // TODO: add support to MipMaps, put them in buffer
-            
             
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
