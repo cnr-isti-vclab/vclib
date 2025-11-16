@@ -151,6 +151,8 @@ void DrawableObjectItem::addMaterialData(
     const Material&  material,
     QTreeWidgetItem* parent)
 {
+    using enum Material::TextureType;
+
     // base color
     auto baseColorItem = new QTreeWidgetItem(parent);
     baseColorItem->setText(0, "Base Color");
@@ -209,6 +211,7 @@ void DrawableObjectItem::addMaterialData(
         alphaModeItem->setText(1, alphaModeStr);
         makeItemNotSelectable(alphaModeItem);
     }
+
     // alpha cutoff
     if (material.alphaMode() == Material::AlphaMode::ALPHA_MASK) {
         auto alphaCutoffItem = new QTreeWidgetItem(parent);
@@ -217,24 +220,47 @@ void DrawableObjectItem::addMaterialData(
             1, QString::number(material.alphaCutoff(), 'f', 3));
         makeItemNotSelectable(alphaCutoffItem);
     }
+
+    auto addTxtItem = [&](const Texture& txt, const QString& txtName) {
+        if (!txt.isNull()) {
+            auto textureItem = new QTreeWidgetItem(parent);
+            textureItem->setText(0, txtName);
+
+            QString text = QString::fromStdString(txt.path());
+
+            const auto& image = txt.image();
+
+            text += " (";
+            text += image.isNull() ? "not loaded" :
+                                     QString::number(image.width()) + " x " +
+                                         QString::number(image.height());
+            text += ")";
+
+            textureItem->setText(1, text);
+            makeItemNotSelectable(textureItem);
+        }
+    };
+
     // base color Texture
-    if (!material.baseColorTexture().isNull()) {
-        auto baseColorTextureItem = new QTreeWidgetItem(parent);
-        baseColorTextureItem->setText(0, "Base Color Texture");
+    const Texture& bcTxt = material.texture(BASE_COLOR);
+    addTxtItem(bcTxt, "Base Color Texture");
 
-        QString text =
-            QString::fromStdString(material.baseColorTexture().path());
+    // metalling roughness Texture
+    const Texture& mrTxt = material.texture(METALLIC_ROUGHNESS);
+    addTxtItem(mrTxt, "Metallic Roughness Texture");
 
-        const auto& image = material.baseColorTexture().image();
+    // normal Texture
+    const Texture& nTxt = material.texture(NORMAL);
+    addTxtItem(nTxt, "Normal Texture");
 
-        text += " (";
-        text += image.isNull() ? "not loaded" :
-                                 QString::number(image.width()) + " x " +
-                                     QString::number(image.height());
-        text += ")";
+    // occlusion Texture
+    const Texture& oTxt = material.texture(OCCLUSION);
+    addTxtItem(oTxt, "Occlusion Texture");
 
-        baseColorTextureItem->setText(1, text);
-    }
+    // emissive Texture
+    const Texture& eTxt = material.texture(EMISSIVE);
+    addTxtItem(eTxt, "Emissive Texture");
+
     // double sided
     if (material.doubleSided()) {
         auto doubleSidedItem = new QTreeWidgetItem(parent);
