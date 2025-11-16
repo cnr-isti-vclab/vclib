@@ -581,21 +581,22 @@ private:
             if(sRGB) 
                 flags |= BGFX_TEXTURE_SRGB;
             
-            // set minification filter
+            // set minification filter - bgfx default is linear
             if(minFilter == Texture::MinificationFilter::NEAREST || 
                minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_LINEAR ||
                minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST)
                 flags |= BGFX_SAMPLER_MIN_POINT;
 
+            // set mipmap filter - bgfx default is linear
             if(minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST ||
                minFilter == Texture::MinificationFilter::LINEAR_MIPMAP_NEAREST)
                 flags |= BGFX_SAMPLER_MIP_POINT;
                 
-            // set magnification filter
+            // set magnification filter - bgfx default is linear
             if(magFilter == Texture::MagnificationFilter::NEAREST)
                 flags |= BGFX_SAMPLER_MAG_POINT;
 
-            // set wrap modes
+            // set wrap modes - bgfx default is repeat
             if(wrapU == Texture::WrapMode::CLAMP_TO_EDGE)
                 flags |= BGFX_SAMPLER_U_CLAMP;
             else if(wrapU == Texture::WrapMode::MIRRORED_REPEAT)
