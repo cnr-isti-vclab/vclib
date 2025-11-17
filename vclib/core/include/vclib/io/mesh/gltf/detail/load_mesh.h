@@ -162,6 +162,13 @@ int loadGltfPrimitiveMaterial(
                         texture.wrapU() = static_cast<Texture::WrapMode>(sampler.wrapS);
                         texture.wrapV() = static_cast<Texture::WrapMode>(sampler.wrapT);
                     }
+                    else {
+                        assert(samplerId == -1);
+                        assert(texture.minFilter() == Texture::MinificationFilter::NONE);
+                        assert(texture.magFilter() == Texture::MagnificationFilter::NONE);
+                        assert(texture.wrapU() == Texture::WrapMode::REPEAT);
+                        assert(texture.wrapV() == Texture::WrapMode::REPEAT);
+                    }
                 }
                 else {
                     // if the image is not valid, just set the path
