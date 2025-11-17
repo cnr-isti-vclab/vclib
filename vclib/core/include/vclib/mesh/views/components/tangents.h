@@ -20,19 +20,62 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_H
-#define VCL_MESH_VIEWS_COMPONENTS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
+#define VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
 
-#include "components/adj_edges.h"
-#include "components/adj_faces.h"
-#include "components/adj_vertices.h"
-#include "components/colors.h"
-#include "components/normals.h"
-#include "components/positions.h"
-#include "components/principal_curvatures.h"
-#include "components/quality.h"
-#include "components/selection.h"
-#include "components/tangents.h"
-#include "components/tex_coords.h"
+#include <vclib/mesh/components/tangent.h>
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_H
+#include <vclib/base.h>
+
+#include <ranges>
+
+namespace vcl::views {
+
+namespace detail {
+
+inline constexpr auto tangent = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->tangent();
+    else
+        return p.tangent();
+};
+
+inline constexpr auto bitangent = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->bitangent();
+    else
+        return p.bitangent();
+};
+
+struct TangentView
+{
+    constexpr TangentView() = default;
+
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, TangentView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        return std::forward<R>(r) | std::views::transform(tangent);
+    }
+};
+
+struct BitangentView
+{
+    constexpr BitangentView() = default;
+
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, BitangentView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        return std::forward<R>(r) | std::views::transform(bitangent);
+    }
+};
+
+} // namespace detail
+
+inline constexpr detail::TangentView tangents;
+inline constexpr detail::BitangentView bitangents;
+
+} // namespace vcl::views
+
+#endif // VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
