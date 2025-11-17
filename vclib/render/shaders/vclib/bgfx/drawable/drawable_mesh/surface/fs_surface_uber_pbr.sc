@@ -113,7 +113,7 @@ void main()
         normalTexture -= 1.0;
         normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
 
-        mat3 TF = tangentFrame(v_normal, v_position, texcoord, vcl_FrontFacing);
+        mat3 TF = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
 
         normal = mul(normalTexture, TF);
 
