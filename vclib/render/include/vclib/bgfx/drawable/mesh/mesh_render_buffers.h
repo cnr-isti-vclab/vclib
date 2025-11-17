@@ -548,10 +548,12 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](Texture& tex,
-                                  uint     i, // i-th material
-                                  uint     j, // j-th texture
-                                  bool     sRGB = false) {
+        auto setTextureUnit = [&](
+            Texture& tex,
+            uint     i, // i-th material
+            uint     j  // j-th texture
+        ) 
+        {
 
             Texture::MinificationFilter minFilter = tex.minFilter();
             Texture::MagnificationFilter magFilter = tex.magFilter();
@@ -561,8 +563,7 @@ private:
             bool hasMips =
                 toUnderlying(minFilter) >=
                 toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST) ||
-                toUnderlying(minFilter) == 
-                toUnderlying(Texture::MinificationFilter::NONE); // default LINEAR_MIPMAP_LINEAR
+                minFilter == Texture::MinificationFilter::NONE; // default LINEAR_MIPMAP_LINEAR
 
             Image& txt = tex.image();
 
@@ -621,7 +622,7 @@ private:
             
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if(sRGB) 
+            if(tex.colorSpace() == Texture::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
             
             // set minification filter - bgfx default is linear
@@ -697,10 +698,7 @@ private:
 
                     // if loading succeeded (or dummy texture has been created)
                     if (!txt.isNull()) {
-                        bool sRGB =
-                            tex.colorSpace() == Texture::ColorSpace::SRGB;
-
-                        setTextureUnit(tex, i, j, sRGB);
+                        setTextureUnit(tex, i, j);
                     }
                 }
             }
