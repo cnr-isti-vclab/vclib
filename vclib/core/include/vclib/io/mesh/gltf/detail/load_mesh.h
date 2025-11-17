@@ -54,7 +54,10 @@ int loadGltfPrimitiveMaterial(
     if (p.material >= 0) {
         vcl::Color                baseColor, emissiveColor;
         Material::AlphaMode       alphaMode;
-        double                    metallic, roughness, alphaCutoff;
+        double                    metallic, roughness, 
+                                  alphaCutoff, 
+                                  normalScale,
+                                  occlusionStrength;
         bool                      doubleSided;
         int                       baseColorTextureId,
                                   metallicRoughnessTextureId,
@@ -115,6 +118,12 @@ int loadGltfPrimitiveMaterial(
         // alphaCutoff
         alphaCutoff = mat.alphaCutoff; // has default value
 
+        // normalScale
+        normalScale = mat.normalTexture.scale;
+
+        // occlusionStrength     
+        occlusionStrength = mat.occlusionTexture.strength;
+
         // function to load a texture in a material
         auto loadTextureInMaterial = [&](Material& mat, int textureId,
                                           Material::TextureType type) {
@@ -138,10 +147,28 @@ int loadGltfPrimitiveMaterial(
                         Image(img.image.data(), img.width, img.height), uri);
 
                     texture = std::move(txt);
+
                     texture.colorSpace() =
                         Material::isSRGBTexture(type)?
                             Texture::ColorSpace::SRGB :
                             Texture::ColorSpace::LINEAR;
+
+                    // set sampler parameters
+                    int samplerId = model.textures[textureId].sampler;
+                    if(samplerId >= 0) {
+                        const tinygltf::Sampler& sampler = model.samplers[samplerId];
+                        texture.minFilter() = static_cast<Texture::MinificationFilter>(sampler.minFilter);
+                        texture.magFilter() = static_cast<Texture::MagnificationFilter>(sampler.magFilter);
+                        texture.wrapU() = static_cast<Texture::WrapMode>(sampler.wrapS);
+                        texture.wrapV() = static_cast<Texture::WrapMode>(sampler.wrapT);
+                    }
+                    else {
+                        assert(samplerId == -1);
+                        assert(texture.minFilter() == Texture::MinificationFilter::NONE);
+                        assert(texture.magFilter() == Texture::MagnificationFilter::NONE);
+                        assert(texture.wrapU() == Texture::WrapMode::REPEAT);
+                        assert(texture.wrapV() == Texture::WrapMode::REPEAT);
+                    }
                 }
                 else {
                     // if the image is not valid, just set the path
@@ -163,6 +190,8 @@ int loadGltfPrimitiveMaterial(
             mat.alphaMode() = alphaMode;
             mat.alphaCutoff() = alphaCutoff;
             mat.doubleSided() = doubleSided;
+            mat.normalScale() = normalScale;
+            mat.occlusionStrength() = occlusionStrength;
             loadTextureInMaterial(mat, baseColorTextureId,
                                      Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(mat, metallicRoughnessTextureId,

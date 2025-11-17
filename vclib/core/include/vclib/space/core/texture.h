@@ -39,11 +39,40 @@ public:
         SRGB
     };
 
+    /*Enums defined following gltf 2.0 specification*/
+
+    enum class MinificationFilter {
+        NONE = -1,
+        NEAREST = 9728,
+        LINEAR,
+        NEAREST_MIPMAP_NEAREST = 9984,
+        LINEAR_MIPMAP_NEAREST,
+        NEAREST_MIPMAP_LINEAR,
+        LINEAR_MIPMAP_LINEAR
+    };
+
+    enum class MagnificationFilter {
+        NONE = -1,
+        NEAREST = 9728,
+        LINEAR
+    };
+
+    enum class WrapMode {
+        REPEAT = 10497,
+        CLAMP_TO_EDGE = 33071,
+        MIRRORED_REPEAT = 33648
+    };
+
+
 private:
 
     Image       mImg;
     std::string mPath;
     ColorSpace mColorSpace = ColorSpace::UNKNOWN;
+    MinificationFilter mMinFilter = MinificationFilter::NONE;
+    MagnificationFilter mMagFilter = MagnificationFilter::NONE;
+    WrapMode mWrapU = WrapMode::REPEAT;
+    WrapMode mWrapV = WrapMode::REPEAT;
 
 public:
     Texture() {}
@@ -112,6 +141,62 @@ public:
     Image& image() { return mImg; }
 
     /**
+     * @brief Get the minification filter of the texture.
+     *
+     * @return the minification filter of the texture.
+     */
+    MinificationFilter minFilter() const { return mMinFilter; }
+
+    /**
+     * @brief Get the minification filter of the texture.
+     *
+     * @return the minification filter of the texture.
+     */
+    MinificationFilter& minFilter() { return mMinFilter; }
+
+    /**
+     * @brief Get the magnification filter of the texture.
+     *
+     * @return the magnification filter of the texture.
+     */
+    MagnificationFilter magFilter() const { return mMagFilter; }
+
+    /**
+     * @brief Get the magnification filter of the texture.
+     *
+     * @return the magnification filter of the texture.
+     */
+    MagnificationFilter& magFilter() { return mMagFilter; }
+
+    /**
+     * @brief Get the U wrap mode of the texture.
+     *
+     * @return the U wrap mode of the texture.
+     */
+    WrapMode wrapU() const { return mWrapU; }
+
+    /**
+     * @brief Get the U wrap mode of the texture.
+     *
+     * @return the U wrap mode of the texture.
+     */
+    WrapMode& wrapU() { return mWrapU; }
+
+    /**
+     * @brief Get the V wrap mode of the texture.
+     *
+     * @return the V wrap mode of the texture.
+     */
+    WrapMode wrapV() const { return mWrapV; }
+
+    /**
+     * @brief Get the V wrap mode of the texture.
+     *
+     * @return the V wrap mode of the texture.
+     */
+    WrapMode& wrapV() { return mWrapV; }
+
+    /**
      * @brief Get the color space of the texture.
      *
      * @return the color space of the texture.
@@ -125,11 +210,14 @@ public:
      */
     ColorSpace& colorSpace() { return mColorSpace; }
 
+
     void serialize(std::ostream& os) const
     {
         vcl::serialize(os, mPath);
         mImg.serialize(os);
         vcl::serialize(os, mColorSpace);
+        vcl::serialize(os, mMinFilter, mMagFilter, mWrapU, mWrapV);
+
     }
 
     void deserialize(std::istream& is)
@@ -137,6 +225,7 @@ public:
         vcl::deserialize(is, mPath);
         mImg.deserialize(is);
         vcl::deserialize(is, mColorSpace);
+        vcl::deserialize(is, mMinFilter, mMagFilter, mWrapU, mWrapV);
     }
 };
 

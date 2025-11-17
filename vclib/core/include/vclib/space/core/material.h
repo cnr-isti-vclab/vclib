@@ -75,8 +75,12 @@ private:
     Texture mMetallicRoughnessTexture;
     
     Texture mNormalTexture;
+
+    float mNormalScale = 1.0f;
     
     Texture mOcclusionTexture;
+
+    float mOcclusionStrength = 1.0f;
     
     Texture mEmissiveTexture;
     
@@ -116,6 +120,14 @@ public:
     bool doubleSided() const { return mDoubleSided; }
 
     bool& doubleSided() { return mDoubleSided; }
+
+    float normalScale() const { return mNormalScale; }
+
+    float& normalScale() { return mNormalScale; }
+
+    float occlusionStrength() const { return mOcclusionStrength; }
+
+    float& occlusionStrength() { return mOcclusionStrength; }
 
     const Texture& baseColorTexture() const { return mBaseColorTexture; }
 
@@ -157,7 +169,9 @@ public:
         mBaseColorTexture.serialize(os);
         mMetallicRoughnessTexture.serialize(os);
         mNormalTexture.serialize(os);
+        vcl::serialize(os, mNormalScale);
         mOcclusionTexture.serialize(os);
+        vcl::serialize(os, mOcclusionStrength);
         mEmissiveTexture.serialize(os);
         vcl::serialize(os, mDoubleSided);
     }
@@ -172,7 +186,9 @@ public:
         mBaseColorTexture.deserialize(is);
         mMetallicRoughnessTexture.deserialize(is);
         mNormalTexture.deserialize(is);
+        vcl::deserialize(is, mNormalScale);
         mOcclusionTexture.deserialize(is);
+        vcl::deserialize(is, mOcclusionStrength);
         mEmissiveTexture.deserialize(is);
         vcl::deserialize(is, mDoubleSided);
     }
@@ -188,7 +204,9 @@ public:
                mMetallicRoughnessTexture.path() ==
                    other.mMetallicRoughnessTexture.path() &&
                mNormalTexture.path() == other.mNormalTexture.path() &&
+               mNormalScale == other.mNormalScale &&
                mOcclusionTexture.path() == other.mOcclusionTexture.path() &&
+               mOcclusionStrength == other.mOcclusionStrength &&
                mEmissiveTexture.path() == other.mEmissiveTexture.path() &&
                mDoubleSided == other.mDoubleSided;
     };

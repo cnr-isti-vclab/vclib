@@ -61,15 +61,15 @@ void main()
     vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
     float lightIntensities[2] = {1.0, 0.5};
 
-    vec4 vertexBaseColor, textureBaseColor, baseColor;
-
     // texcoord to use
     vec2 texcoord = v_texcoord0; // per vertex
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         texcoord = v_texcoord1; // per wedge
     }
 
-    // base color 
+    // base color
+    vec4 vertexBaseColor, textureBaseColor, baseColor;
+
     if(isPerVertexColorAvailable(u_settings.x))
         vertexBaseColor = v_color; // per-vertex color available
     else
@@ -88,7 +88,7 @@ void main()
 
     // alpha mode MASK
     if(isAlphaModeMask(u_settings.x))
-        if(baseColor.a < u_alphaCutoff.x)
+        if(baseColor.a < u_alphaCutoff)
             discard; // discard fragment
 
     // metallic-roughness
@@ -100,11 +100,49 @@ void main()
     else
         metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
 
-    metallic = u_metallicRoughnessFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
-    roughness = u_metallicRoughnessFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
+    metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
+    roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // normal
-    vec3 normal = normalize(v_normal);
+    vec3 normal;
+
+    if(isNormalTextureAvailable(u_settings.x))
+    {
+        vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
+
+        // remapping normals
+        // from [0,1] to [-1,1] for x and y (red and green)
+        // from (0.5,1] to (0,1] for z (blue)
+        normalTexture *= 2.0;
+        normalTexture -= 1.0;
+
+        // scale normal's x and y as requested by gltf 2.0 specification
+        normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
+
+        // construct tangent frame using vertex normals
+        mat3 tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+
+        // change the basis of the normal provided by the texture
+        // from tangent space to the space used for computations
+        normal = mul(normalTexture, tangentFrame);
+
+        normal = normalize(normal);
+    }
+    else {
+        normal = normalize(v_normal);
+        if(!vcl_FrontFacing)
+            normal *= -1.0;
+    } 
+
+    // emissive
+    vec3 emissiveTexture, emissiveColor;
+
+    if(isEmissiveTextureAvailable(u_settings.x))
+        emissiveTexture = getColorFromTexture(4u, texcoord).rgb; // emissive texture available
+    else
+        emissiveTexture = vec3_splat(1.0); // no emissive texture available, use white
+
+    emissiveColor = u_emissiveFactor * emissiveTexture;
 
     gl_FragColor = pbrColor(
         v_position.xyz,
@@ -116,6 +154,6 @@ void main()
         normal,
         metallic,
         roughness,
-        u_emissiveColorFactor.rgb
+        emissiveColor
     );
 }

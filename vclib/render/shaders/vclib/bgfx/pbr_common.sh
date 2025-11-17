@@ -55,6 +55,105 @@
 #define LIGHT_KEY_DIR                                 vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
 #define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
 
+#if BGFX_SHADER_TYPE_FRAGMENT
+
+/**
+ * @brief Computes the tangent frame (Tangent, Bitangent, Normal) matrix given its vectors.
+ * @param[in] tangent: The fragment tangent vector.
+ * @param[in] bitangent: The fragment bitangent vector.
+ * @param[in] normal: The fragment normal vector.
+ * @param[in] frontFacing: Tells if the fragment is facing the front of the camera.
+ *  In case the fragment is not front facing, the frame vectors will be negated.
+ * @return The tangent frame matrix.
+ */
+mat3 tangentFrameFromGivenVectors(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
+{
+    if(!frontFacing)
+    {
+        tangent *= -1.0;
+        bitangent *= -1.0;
+        normal *= -1.0;
+    }
+
+    return mat3(
+        normalize(tangent),
+        normalize(bitangent),
+        normalize(normal)
+    );
+}
+
+/**
+ * @brief Computes the tangent frame (Tangent, Bitangent, Normal) matrix given the normal, position and UV.
+ * The tangent and bitangent vectors are computed using the derivatives of position and UV.
+ * @param[in] normal: The fragment normal vector.
+ * @param[in] position: The fragment position.
+ * @param[in] UV: The fragment UV coordinates.
+ * @param[in] frontFacing: Tells if the fragment is facing the front of the camera.
+ *  In case the fragment is not front facing, the frame vectors will be negated.
+ * @return The tangent frame matrix.
+ */
+mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
+{
+    // see https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+
+    // get UV derivatives
+    vec2 uv_dx = dFdx(UV); // = vec2(du1, dv1)
+    vec2 uv_dy = dFdy(UV); // = vec2(du2, dv2)
+
+    /* Present in gltf sample renderer but may be detrimental depending on how the UV derivatives are computed.
+        if (length(uv_dx) <= 1e-2)
+            uv_dx = vec2(1.0, 0.0);
+
+        if (length(uv_dy) <= 1e-2)
+            uv_dy = vec2(0.0, 1.0);
+    */
+
+    // compute tangent based on the fact that the edges of the triangle can be expressed as:
+    // e1 = du1 * t + dv1 * b
+    // e2 = du2 * t + dv2 * b
+    // and can be actually computed as:
+    // e1 = dFdx(position)
+    // e2 = dFdy(position)
+    // we can solve the linear system to find just t:
+    vec3 t_ =
+        (uv_dy.y * dFdx(position) - uv_dx.y * dFdy(position)) /
+        (uv_dx.x * uv_dy.y - uv_dy.x * uv_dx.y);
+
+    vec3 n = normalize(normal);
+    // computed tangent t_ may not be orthogonal to normal, make it so
+    vec3 t = normalize(t_ - n * dot(n, t_));
+    // compute bitangent as cross product (orthongonal to both normal and tangent)
+    vec3 b = cross(n, t);
+
+    if(!frontFacing)
+    {
+        t *= -1.0;
+        b *= -1.0;
+        n *= -1.0;
+    }
+
+    return mat3(t, b, n);
+}
+
+/**
+ * @brief Computes the tangent frame (Tangent, Bitangent, Normal) matrix given the position and UV.
+ * The normal, tangent and bitangent vectors are computed using the derivatives of position and UV.
+ * @param[in] position: The fragment position.
+ * @param[in] UV: The fragment UV coordinates.
+ * @param[in] frontFacing: Tells if the fragment is facing the front of the camera.
+ *  In case the fragment is not front facing, the frame vectors will be negated.
+ * @return The tangent frame matrix.
+ */
+mat3 tangentFrameFromPosition(vec3 position, vec2 UV, bool frontFacing)
+{
+    // if even the normal is not provided
+    // compute it as orthogonal to the surface defined by position derivatives (two triangle edges)
+    vec3 normal = cross(dFdx(position), dFdy(position));
+    return tangentFrameFromNormal(normal, position, UV, frontFacing); // will normalize the normal
+}
+
+#endif
+
 /**
  * @brief Computes the dot product of two vectors and clamps it to be >= 0.
  * This is useful for light computations where negative values don't make sense.
@@ -89,7 +188,7 @@ float D_GGX(
     float alpha2)
 {
     float NoH2 = NoH * NoH;
-    float denom = NoH2 * (alpha2 - 1) + 1;
+    float denom = NoH2 * (alpha2 - 1.0) + 1.0;
     return alpha2 / (PI * denom * denom);
 }
 
@@ -121,15 +220,17 @@ float V_GGX(
  * with the Schlick approximation.
  * @param[in] F0: the surface's response at normal incidence (aka base reflectivity),
  *  the amount of light reflected when looking at a surface with a 0 degree angle (right above).
- * @param[in] HoV: Cosine of the angle between the halfway vector H and the view direction V.
+ * @param[in] F90: the surface's response at grazing angles (90 degrees),
+ *  the amount of light reflected when looking at a surface with a 90 degree angle (from the side).
+ * @param[in] VoH: Cosine of the angle between the halfway vector H and the view direction V.
  * @return The Fresnel factor.
  */
 vec3 F_Schlick(
     vec3 F0,
     vec3 F90,
-    float HoV)
+    float VoH)
 {
-    return F0 + (F90 - F0) * pow(clamp(1.0 - HoV, 0.0, 1.0), 5.0);
+    return F0 + (F90 - F0) * pow(clamp(1.0 - VoH, 0.0, 1.0), 5.0);
 }
 
 /**
@@ -162,7 +263,7 @@ float pbrSpecular(
  * @brief Color computed for Physically Based Rendering (PBR).
  * The incoming light colors are altered by:
  *  the Cook-Torrance BRDF (Bidirectional Reflective Distribution Function)
- *  which depends on the material properties of the lit fragment (right now see params: color, metallic, roughness).
+ *  which depends on the material properties of the lit fragment.
  * and
  *  the cosine of the angle between the fragment's normal and the light's direction;
  *  the cosine is given as the dot product of the two.
@@ -170,8 +271,6 @@ float pbrSpecular(
  * The Cook-Torrance BRDF consists of two parts a diffuse and a specular one:
  *  Specular: light that gets reflected immediately after contact with the surface.
  *  Diffuse: escaped light that got refracted.
- * the Fresnel factor ks tells how much of the incoming light gets reflected so it can work as a weight
- * for the two parts with kd = 1 - ks (so that kd + ks = 1) for energy conservation.
  *
  * @param[in] vPos: The fragment position.
  * @param[in] cameraEyePos: The camera position.
@@ -205,9 +304,6 @@ vec4 pbrColor(
 
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
-
-    if (dot(normal, V) < 0.0)
-        normal = -normal;
     
     float NoV = clampedDot(normal, V);
 
@@ -223,13 +319,13 @@ vec4 pbrColor(
         vec3 H = normalize(V + lightDir);
         // related dot products
         float NoH = clampedDot(normal, H);
-        float HoV = clampedDot(H, V);
+        float VoH = clampedDot(V, H);
 
         // Fresnel factors for both dielectric and metallic surfaces
         // 0.04 is an approximation of F0 averaged around many dielectric materials
-        vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, HoV);
+        vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, abs(VoH));
         // Metals have the surface color as base reflectivity since no light gets absorbed
-        vec3 metal_fresnel = F_Schlick(color.rgb, f90, HoV);
+        vec3 metal_fresnel = F_Schlick(color.rgb, f90, abs(VoH));
 
         // diffuse component
         vec3 l_diffuse = lightIntensity * pbrDiffuse(color.rgb);

@@ -243,18 +243,18 @@ public:
      * @param m
      * @return the render state associated to the material
      */
-    uint bindMaterials(
+    uint64_t bindMaterials(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m) const
     {
         static const Material DEFAULT_MATERIAL;
-        static const uint     N_TEXURES =
+        static const uint     N_TEXTURES =
             toUnderlying(Material::TextureType::COUNT);
 
         uint64_t state = BGFX_STATE_NONE;
 
-        std::array<bool, N_TEXURES> textureAvailable = {false};
+        std::array<bool, N_TEXTURES> textureAvailable = {false};
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
@@ -278,7 +278,7 @@ public:
             else {
                 assert(materialId < m.materialsNumber());
 
-                for (int i = 0; i < N_TEXURES; ++i) {
+                for (int i = 0; i < N_TEXTURES; ++i) {
                     if (mMaterialTextureUnits[materialId][i] != nullptr) {
                         textureAvailable[i] =
                             mMaterialTextureUnits[materialId][i]->isValid();
@@ -547,10 +547,18 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](vcl::Image& txt,
-                                  uint        i, // i-th material
-                                  uint        j, // j-th texture
-                                  bool        sRGB = false) {
+        auto setTextureUnit = [&](Texture& tex,
+                                  uint     i, // i-th material
+                                  uint     j, // j-th texture
+                                  bool     sRGB = false) {
+
+            Texture::MinificationFilter minFilter = tex.minFilter();
+            Texture::MagnificationFilter magFilter = tex.magFilter();
+            Texture::WrapMode wrapU = tex.wrapU();
+            Texture::WrapMode wrapV = tex.wrapV();
+
+            Image& txt = tex.image();
+
             txt.mirror();
 
             const uint size = txt.width() * txt.height();
@@ -563,13 +571,49 @@ private:
 
             std::copy(tdata, tdata + size, buffer);
 
+            // TODO: add support to MipMaps
+            //bool hasMips =
+            //    toUnderlying(minFilter) >=
+            //    toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST);
+            
+            uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
+
+            if(sRGB) 
+                flags |= BGFX_TEXTURE_SRGB;
+            
+            // set minification filter - bgfx default is linear
+            if(minFilter == Texture::MinificationFilter::NEAREST || 
+               minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_LINEAR ||
+               minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST)
+                flags |= BGFX_SAMPLER_MIN_POINT;
+
+            // set mipmap filter - bgfx default is linear
+            if(minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST ||
+               minFilter == Texture::MinificationFilter::LINEAR_MIPMAP_NEAREST)
+                flags |= BGFX_SAMPLER_MIP_POINT;
+                
+            // set magnification filter - bgfx default is linear
+            if(magFilter == Texture::MagnificationFilter::NEAREST)
+                flags |= BGFX_SAMPLER_MAG_POINT;
+
+            // set wrap modes - bgfx default is repeat
+            if(wrapU == Texture::WrapMode::CLAMP_TO_EDGE)
+                flags |= BGFX_SAMPLER_U_CLAMP;
+            else if(wrapU == Texture::WrapMode::MIRRORED_REPEAT)
+                flags |= BGFX_SAMPLER_U_MIRROR;
+    
+            if(wrapV == Texture::WrapMode::CLAMP_TO_EDGE)
+                flags |= BGFX_SAMPLER_V_CLAMP;
+            else if(wrapV == Texture::WrapMode::MIRRORED_REPEAT)
+                flags |= BGFX_SAMPLER_V_MIRROR;
+
             auto tu = std::make_unique<TextureUnit>();
             tu->set(
                 buffer,
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
-                false,
-                sRGB? BGFX_TEXTURE_SRGB : BGFX_TEXTURE_NONE,
+                false, // hasMips, // TODO: manage mipmaps
+                flags,
                 releaseFn);
 
             mMaterialTextureUnits[i][j] = std::move(tu);
@@ -582,10 +626,12 @@ private:
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT);
                      ++j) {
-                    const vcl::Texture& tex = mesh.material(i).texture(
+                    // copy the texture because the image could be not loaded,
+                    // and at the end it needs to be mirrored.
+                    vcl::Texture tex = mesh.material(i).texture(
                         static_cast<Material::TextureType>(j));
 
-                    vcl::Image txt = tex.image();
+                    vcl::Image& txt = tex.image();
                     if (txt.isNull()) { // try to load it just for rendering
                         const std::string& path =
                             mesh.material(i)
@@ -611,7 +657,7 @@ private:
                         bool sRGB =
                             tex.colorSpace() == Texture::ColorSpace::SRGB;
 
-                        setTextureUnit(txt, i, j, sRGB);
+                        setTextureUnit(tex, i, j, sRGB);
                     }
                 }
             }
