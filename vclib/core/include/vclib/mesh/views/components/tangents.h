@@ -20,20 +20,62 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
+#ifndef VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
+#define VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
 
-uniform vec4 u_baseColorFactor;
-uniform vec4 u_FactorsPack;
-uniform vec4 u_emissiveAlphaCutoffPack;
-uniform vec4 u_settings;
+#include <vclib/mesh/components/tangent.h>
 
-#define u_occlusionStrength u_FactorsPack.r
-#define u_roughnessFactor u_FactorsPack.g
-#define u_metallicFactor u_FactorsPack.b
-#define u_normalScale u_FactorsPack.a
+#include <vclib/base.h>
 
-#define u_emissiveFactor u_emissiveAlphaCutoffPack.rgb
-#define u_alphaCutoff u_emissiveAlphaCutoffPack.a
+#include <ranges>
 
-#endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
+namespace vcl::views {
+
+namespace detail {
+
+inline constexpr auto tangent = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->tangent();
+    else
+        return p.tangent();
+};
+
+inline constexpr auto bitangent = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->bitangent();
+    else
+        return p.bitangent();
+};
+
+struct TangentView
+{
+    constexpr TangentView() = default;
+
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, TangentView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        return std::forward<R>(r) | std::views::transform(tangent);
+    }
+};
+
+struct BitangentView
+{
+    constexpr BitangentView() = default;
+
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, BitangentView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        return std::forward<R>(r) | std::views::transform(bitangent);
+    }
+};
+
+} // namespace detail
+
+inline constexpr detail::TangentView tangents;
+inline constexpr detail::BitangentView bitangents;
+
+} // namespace vcl::views
+
+#endif // VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H

@@ -394,6 +394,36 @@ protected:
 
     /**
      * @brief Given the mesh and a pointer to a buffer, fills the buffer with
+     * the vertex tangent of the mesh.
+     *
+     * The buffer must be preallocated with the correct size: `numVerts() * 3`.
+     *
+     * @param[in] mesh: the input mesh
+     * @param[out] buffer: the buffer to fill
+     */
+    void fillVertexTangent(const MeshConcept auto& mesh, auto* buffer)
+    {
+        vertexTangentToBuffer(mesh, buffer);
+        appendDuplicateVertexTangentToBuffer(mesh, mVertsToDuplicate, buffer);
+    }
+
+    /**
+     * @brief Given the mesh and a pointer to a buffer, fills the buffer with
+     * the vertex bitangent of the mesh.
+     *
+     * The buffer must be preallocated with the correct size: `numVerts() * 3`.
+     *
+     * @param[in] mesh: the input mesh
+     * @param[out] buffer: the buffer to fill
+     */
+    void fillVertexBitangent(const MeshConcept auto& mesh, auto* buffer)
+    {
+        vertexBitangentToBuffer(mesh, buffer);
+        appendDuplicateVertexBitangentToBuffer(mesh, mVertsToDuplicate, buffer);
+    }
+
+    /**
+     * @brief Given the mesh and a pointer to a buffer, fills the buffer with
      * the wedge texcoors of the mesh.
      *
      * Although the wedge texcoords are associated to the faces in the vclib
@@ -674,6 +704,42 @@ protected:
     void setVertexTexCoordsBuffer(const MeshConcept auto&) {}
 
     /**
+     * @brief Function that sets the content of vertex tangent buffer and sends
+     * the data to the GPU.
+     *
+     * The function should allocate and fill a cpu buffer to store the vertex
+     * tangent using the `numVerts() * 3` and `fillVertexTangent()` functions,
+     * and then send the data to the GPU using the rendering backend.
+     *
+     * There is no need to check whether the Mesh can provide per-vertex
+     * tangent since the function is called only if the mesh has them.
+     *
+     * See the @ref MeshRenderData class documentation for an example of
+     * implementation.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexTangentBuffer(const MeshConcept auto&) {}
+
+    /**
+     * @brief Function that sets the content of vertex bitangent buffer and
+     * sends the data to the GPU.
+     *
+     * The function should allocate and fill a cpu buffer to store the vertex
+     * bitangent using the `numVerts() * 3` and `fillVertexBitangent()`
+     * functions, and then send the data to the GPU using the rendering backend.
+     *
+     * There is no need to check whether the Mesh can provide per-vertex
+     * bitangent since the function is called only if the mesh has them.
+     *
+     * See the @ref MeshRenderData class documentation for an example of
+     * implementation.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexBitangentBuffer(const MeshConcept auto&) {}
+
+    /**
      * @brief Function that sets the content of wedge texture coordinates buffer
      * and sends the data to the GPU.
      *
@@ -951,8 +1017,8 @@ private:
             derived().setVertexPositionsBuffer(mesh);
         }
 
-        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-            if (vcl::isPerVertexNormalAvailable(mesh)) {
+        if constexpr (HasPerVertexNormal<MeshType>) {
+            if (isPerVertexNormalAvailable(mesh)) {
                 if (btu[toUnderlying(VERT_NORMALS)]) {
                     // vertex buffer (normals)
                     derived().setVertexNormalsBuffer(mesh);
@@ -960,8 +1026,8 @@ private:
             }
         }
 
-        if constexpr (vcl::HasPerVertexColor<MeshType>) {
-            if (vcl::isPerVertexColorAvailable(mesh)) {
+        if constexpr (HasPerVertexColor<MeshType>) {
+            if (isPerVertexColorAvailable(mesh)) {
                 if (btu[toUnderlying(VERT_COLORS)]) {
                     // vertex buffer (colors)
                     derived().setVertexColorsBuffer(mesh);
@@ -969,11 +1035,24 @@ private:
             }
         }
 
-        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+        if constexpr (HasPerVertexTexCoord<MeshType>) {
+            if (isPerVertexTexCoordAvailable(mesh)) {
                 if (btu[toUnderlying(VERT_TEXCOORDS)]) {
                     // vertex buffer (UVs)
                     derived().setVertexTexCoordsBuffer(mesh);
+                }
+            }
+        }
+
+        if constexpr (HasPerVertexTangent<MeshType>) {
+            if (isPerVertexTangentAvailable(mesh)) {
+                if (btu[toUnderlying(VERT_TANGENT)]) {
+                    // vertex buffer (tangent)
+                    derived().setVertexTangentBuffer(mesh);
+                }
+                if (btu[toUnderlying(VERT_BITANGENT)]) {
+                    // vertex buffer (bitangent)
+                    derived().setVertexBitangentBuffer(mesh);
                 }
             }
         }

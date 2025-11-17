@@ -212,7 +212,7 @@ public:
                 mMRB.bindTextures(mMRS, i);
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
-                uint materialState = mMRB.bindMaterials(mMRS, i, *this);
+                uint64_t materialState = mMRB.bindMaterials(mMRS, i, *this);
                 bindUniforms();
 
                 if (settings.pbrMode) {
