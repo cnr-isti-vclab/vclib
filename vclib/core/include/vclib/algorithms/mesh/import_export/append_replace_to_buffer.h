@@ -669,6 +669,137 @@ void appendDuplicateVertexTexCoordsToBuffer(
 }
 
 /**
+ * @brief Append the tangent of the duplicated vertices to the given buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the vertex tangent of the vertices listed in the input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexTangentToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
+ * vertexTangentToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexTangentToBuffer(mesh, vertsToDuplicate,
+ *     buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices times 3).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the vertex tangent.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex tangent.
+ * @param[in] storage: The storage type of the matrix (row or column major).
+ *
+ * @ingroup append_replace_to_buffer
+ */
+template<MeshConcept MeshType>
+void appendDuplicateVertexTangentToBuffer(
+    const MeshType&        mesh,
+    const std::list<uint>& vertsToDuplicate,
+    auto*                  buffer,
+    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+{
+    using namespace detail;
+
+    // no vertices to duplicate, do nothing
+    if (vertsToDuplicate.empty())
+        return;
+
+    requirePerVertexTangent(mesh);
+
+    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+
+    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+        const auto& t                         = mesh.vertex(v).tangent();
+        at(buffer, i, 0, ROW_NUM, 3, storage) = t.x();
+        at(buffer, i, 1, ROW_NUM, 3, storage) = t.y();
+        at(buffer, i, 2, ROW_NUM, 3, storage) = t.z();
+
+        ++i;
+    }
+}
+
+/**
+ * @brief Append the bitangent of the duplicated vertices to the given buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the vertex bitangent of the vertices listed in the input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexBitangentToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
+ * vertexBitangentToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexBitangentToBuffer(mesh, vertsToDuplicate,
+ *     buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices times 3).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the vertex bitangent.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex
+ * bitangent.
+ * @param[in] storage: The storage type of the matrix (row or column major).
+ *
+ * @ingroup append_replace_to_buffer
+ */
+template<MeshConcept MeshType>
+void appendDuplicateVertexBitangentToBuffer(
+    const MeshType&        mesh,
+    const std::list<uint>& vertsToDuplicate,
+    auto*                  buffer,
+    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+{
+    using namespace detail;
+
+    // no vertices to duplicate, do nothing
+    if (vertsToDuplicate.empty())
+        return;
+
+    requirePerVertexTangent(mesh);
+
+    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+
+    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+        const auto& bt                        = mesh.vertex(v).bitangent();
+        at(buffer, i, 0, ROW_NUM, 3, storage) = bt.x();
+        at(buffer, i, 1, ROW_NUM, 3, storage) = bt.y();
+        at(buffer, i, 2, ROW_NUM, 3, storage) = bt.z();
+
+        ++i;
+    }
+}
+
+/**
  * @brief Append the material indices of the duplicated vertices to the given
  * buffer.
  *
