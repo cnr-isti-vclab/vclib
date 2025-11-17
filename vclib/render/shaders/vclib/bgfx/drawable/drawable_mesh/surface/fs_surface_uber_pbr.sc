@@ -109,13 +109,22 @@ void main()
     if(isNormalTextureAvailable(u_settings.x))
     {
         vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
+
+        // remapping normals
+        // from [0,1] to [-1,1] for x and y (red and green)
+        // from (0.5,1] to (0,1] for z (blue)
         normalTexture *= 2.0;
         normalTexture -= 1.0;
+
+        // scale normal's x and y as requested by gltf 2.0 specification
         normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
 
-        mat3 TF = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+        // construct tangent frame using vertex normals
+        mat3 tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
 
-        normal = mul(normalTexture, TF);
+        // change the basis of the normal provided by the texture
+        // from tangent space to the space used for computations
+        normal = mul(normalTexture, tangentFrame);
 
         normal = normalize(normal);
     }
