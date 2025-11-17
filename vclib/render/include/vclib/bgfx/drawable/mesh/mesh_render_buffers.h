@@ -38,6 +38,7 @@
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
+#include <bimg/bimg.h>
 
 namespace vcl {
 
@@ -595,15 +596,22 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](Texture& tex,
-                                  uint     i, // i-th material
-                                  uint     j, // j-th texture
-                                  bool     sRGB = false) {
+        auto setTextureUnit = [&](
+            Texture& tex,
+            uint     i, // i-th material
+            uint     j  // j-th texture
+        ) 
+        {
 
             Texture::MinificationFilter minFilter = tex.minFilter();
             Texture::MagnificationFilter magFilter = tex.magFilter();
             Texture::WrapMode wrapU = tex.wrapU();
             Texture::WrapMode wrapV = tex.wrapV();
+
+            bool hasMips =
+                toUnderlying(minFilter) >=
+                toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST) ||
+                minFilter == Texture::MinificationFilter::NONE; // default LINEAR_MIPMAP_LINEAR
 
             Image& txt = tex.image();
 
@@ -612,21 +620,57 @@ private:
             const uint size = txt.width() * txt.height();
             assert(size > 0);
 
+            uint sizeWithMips = bimg::imageGetSize(
+                NULL, 
+                txt.width(), 
+                txt.height(), 
+                1, 
+                false, 
+                hasMips, 
+                1, 
+                bimg::TextureFormat::RGBA8
+            ) / 4; // in uints
+            uint numMips = 1;
+            if(hasMips)
+                numMips = bimg::imageGetNumMips(
+                    bimg::TextureFormat::RGBA8, 
+                    txt.width(), 
+                    txt.height()
+                );
+
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(size);
+                getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
 
             const uint* tdata = reinterpret_cast<const uint*>(txt.data());
 
-            std::copy(tdata, tdata + size, buffer);
+            std::copy(tdata, tdata + size, buffer); // mip level 0
 
-            // TODO: add support to MipMaps
-            //bool hasMips =
-            //    toUnderlying(minFilter) >=
-            //    toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST);
+            if(numMips > 1) {
+                uint *source = buffer;
+                uint *dest;
+                uint offset = size;
+                for(uint mip = 1; mip < numMips; mip++) {
+                    dest = source + offset;
+                    uint mipSize = (txt.width() >> mip) * (txt.height() >> mip);
+                    std::cout << "Generating mip level " << mip << " for texture "
+                              << tex.path() << " with size " << mipSize << std::endl;
+                    bimg::imageRgba8Downsample2x2(
+                        dest,                           // output location
+                        txt.width() >> (mip - 1),       // input width
+                        txt.height() >> (mip - 1),      // input height
+                        1,                              // depth, always 1 for 2D textures
+                        (txt.width() >> (mip - 1)) * 4, // input pitch
+                        (txt.width() >> mip) * 4,       // output pitch
+                        source                          // input location
+                    );
+                    source = dest;
+                    offset = mipSize;
+                }
+            }
             
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if(sRGB) 
+            if(tex.colorSpace() == Texture::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
             
             // set minification filter - bgfx default is linear
@@ -660,7 +704,7 @@ private:
                 buffer,
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
-                false, // hasMips, // TODO: manage mipmaps
+                hasMips, // TODO: manage mipmaps
                 flags,
                 releaseFn);
 
@@ -702,10 +746,7 @@ private:
 
                     // if loading succeeded (or dummy texture has been created)
                     if (!txt.isNull()) {
-                        bool sRGB =
-                            tex.colorSpace() == Texture::ColorSpace::SRGB;
-
-                        setTextureUnit(tex, i, j, sRGB);
+                        setTextureUnit(tex, i, j);
                     }
                 }
             }
