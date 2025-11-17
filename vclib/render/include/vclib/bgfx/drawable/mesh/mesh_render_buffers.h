@@ -56,6 +56,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mVertexColorsBuffer;
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
+    VertexBuffer mVertexTangentsBuffer;
+    VertexBuffer mVertexBitangentsBuffer;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -180,6 +182,14 @@ public:
 
         if (mVertexWedgeUVBuffer.isValid()) {
             mVertexWedgeUVBuffer.bind(stream++);
+        }
+
+        if (mVertexTangentsBuffer.isValid()) {
+            mVertexTangentsBuffer.bind(stream++);
+        }
+
+        if (mVertexBitangentsBuffer.isValid()) {
+            mVertexBitangentsBuffer.bind(stream++);
         }
     }
 
@@ -470,6 +480,44 @@ private:
             nv,
             bgfx::Attrib::TexCoord0,
             2,
+            PrimitiveType::FLOAT,
+            false,
+            releaseFn);
+    }
+
+    void setVertexTangentBuffer(const MeshType& mesh) // override
+    {
+        uint nv = Base::numVerts();
+
+        auto [buffer, releaseFn] =
+            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+
+        Base::fillVertexTangents(mesh, buffer);
+
+        mVertexTangentsBuffer.create(
+            buffer,
+            nv,
+            bgfx::Attrib::Tangent,
+            3,
+            PrimitiveType::FLOAT,
+            false,
+            releaseFn);
+    }
+
+    void setVertexBitangentBuffer(const MeshType& mesh) // override
+    {
+        uint nv = Base::numVerts();
+
+        auto [buffer, releaseFn] =
+            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+
+        Base::fillVertexBitangents(mesh, buffer);
+
+        mVertexBitangentsBuffer.create(
+            buffer,
+            nv,
+            bgfx::Attrib::Bitangent,
+            3,
             PrimitiveType::FLOAT,
             false,
             releaseFn);
