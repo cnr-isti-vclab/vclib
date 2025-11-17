@@ -66,7 +66,7 @@
  *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
+mat3 tangentFrameFromGivenVectors(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
 {
     if(!frontFacing)
     {
@@ -92,25 +92,37 @@ mat3 tangentFrame(vec3 tangent, vec3 bitangent, vec3 normal, bool frontFacing)
  *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
+mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
 {
-    vec2 uv_dx = dFdx(UV);
-    vec2 uv_dy = dFdy(UV);
+    // see https://learnopengl.com/Advanced-Lighting/Normal-Mapping
 
-/* Present in gltf sample renderer but may be detrimental depending on how the UV derivatives are computed.
-    if (length(uv_dx) <= 1e-2)
-        uv_dx = vec2(1.0, 0.0);
+    // get UV derivatives
+    vec2 uv_dx = dFdx(UV); // = vec2(du1, dv1)
+    vec2 uv_dy = dFdy(UV); // = vec2(du2, dv2)
 
-    if (length(uv_dy) <= 1e-2)
-        uv_dy = vec2(0.0, 1.0);
-*/
+    /* Present in gltf sample renderer but may be detrimental depending on how the UV derivatives are computed.
+        if (length(uv_dx) <= 1e-2)
+            uv_dx = vec2(1.0, 0.0);
 
+        if (length(uv_dy) <= 1e-2)
+            uv_dy = vec2(0.0, 1.0);
+    */
+
+    // compute tangent based on the fact that the edges of the triangle can be expressed as:
+    // e1 = du1 * t + dv1 * b
+    // e2 = du2 * t + dv2 * b
+    // and can be actually computed as:
+    // e1 = dFdx(position)
+    // e2 = dFdy(position)
+    // we can solve the linear system to find just t:
     vec3 t_ =
         (uv_dy.y * dFdx(position) - uv_dx.y * dFdy(position)) /
         (uv_dx.x * uv_dy.y - uv_dy.x * uv_dx.y);
 
     vec3 n = normalize(normal);
+    // computed tangent t_ may not be orthogonal to normal, make it so
     vec3 t = normalize(t_ - n * dot(n, t_));
+    // compute bitangent as cross product (orthongonal to both normal and tangent)
     vec3 b = cross(n, t);
 
     if(!frontFacing)
@@ -132,10 +144,12 @@ mat3 tangentFrame(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
  *  In case the fragment is not front facing, the frame vectors will be negated.
  * @return The tangent frame matrix.
  */
-mat3 tangentFrame(vec3 position, vec2 UV, bool frontFacing)
+mat3 tangentFrameFromPosition(vec3 position, vec2 UV, bool frontFacing)
 {
+    // if even the normal is not provided
+    // compute it as orthogonal to the surface defined by position derivatives (two triangle edges)
     vec3 normal = cross(dFdx(position), dFdy(position));
-    return tangentFrame(normal, position, UV, frontFacing);
+    return tangentFrameFromNormal(normal, position, UV, frontFacing); // will normalize the normal
 }
 
 #endif

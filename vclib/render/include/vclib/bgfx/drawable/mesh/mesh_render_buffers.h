@@ -250,12 +250,12 @@ public:
         const MeshType&           m) const
     {
         static const Material DEFAULT_MATERIAL;
-        static const uint     N_TEXURES =
+        static const uint     N_TEXTURES =
             toUnderlying(Material::TextureType::COUNT);
 
         uint64_t state = BGFX_STATE_NONE;
 
-        std::array<bool, N_TEXURES> textureAvailable = {false};
+        std::array<bool, N_TEXTURES> textureAvailable = {false};
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
@@ -279,7 +279,7 @@ public:
             else {
                 assert(materialId < m.materialsNumber());
 
-                for (int i = 0; i < N_TEXURES; ++i) {
+                for (int i = 0; i < N_TEXTURES; ++i) {
                     if (mMaterialTextureUnits[materialId][i] != nullptr) {
                         textureAvailable[i] =
                             mMaterialTextureUnits[materialId][i]->isValid();
@@ -624,21 +624,22 @@ private:
             if(sRGB) 
                 flags |= BGFX_TEXTURE_SRGB;
             
-            // set minification filter
+            // set minification filter - bgfx default is linear
             if(minFilter == Texture::MinificationFilter::NEAREST || 
                minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_LINEAR ||
                minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST)
                 flags |= BGFX_SAMPLER_MIN_POINT;
 
+            // set mipmap filter - bgfx default is linear
             if(minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST ||
                minFilter == Texture::MinificationFilter::LINEAR_MIPMAP_NEAREST)
                 flags |= BGFX_SAMPLER_MIP_POINT;
                 
-            // set magnification filter
+            // set magnification filter - bgfx default is linear
             if(magFilter == Texture::MagnificationFilter::NEAREST)
                 flags |= BGFX_SAMPLER_MAG_POINT;
 
-            // set wrap modes
+            // set wrap modes - bgfx default is repeat
             if(wrapU == Texture::WrapMode::CLAMP_TO_EDGE)
                 flags |= BGFX_SAMPLER_U_CLAMP;
             else if(wrapU == Texture::WrapMode::MIRRORED_REPEAT)

@@ -88,7 +88,7 @@ void main()
 
     // alpha mode MASK
     if(isAlphaModeMask(u_settings.x))
-        if(baseColor.a < u_alphaCutoff.x)
+        if(baseColor.a < u_alphaCutoff)
             discard; // discard fragment
 
     // metallic-roughness
@@ -100,8 +100,8 @@ void main()
     else
         metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
 
-    metallic = u_metallicRoughnessOcclusionFactors.b * metallicRoughnessTexture.b; // metallic is stored in B channel
-    roughness = u_metallicRoughnessOcclusionFactors.g * metallicRoughnessTexture.g; // roughness is stored in G channel
+    metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
+    roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // normal
     vec3 normal;
@@ -111,9 +111,9 @@ void main()
         vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
         normalTexture *= 2.0;
         normalTexture -= 1.0;
-        normalTexture *= vec3(u_normalScale.x, u_normalScale.x, 1.0);
+        normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
 
-        mat3 TF = tangentFrame(v_normal, v_position, texcoord, vcl_FrontFacing);
+        mat3 TF = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
 
         normal = mul(normalTexture, TF);
 
@@ -133,7 +133,7 @@ void main()
     else
         emissiveTexture = vec3_splat(1.0); // no emissive texture available, use white
 
-    emissiveColor = u_emissiveColorFactor.rgb * emissiveTexture.rgb;
+    emissiveColor = u_emissiveFactor * emissiveTexture;
 
     gl_FragColor = pbrColor(
         v_position.xyz,
