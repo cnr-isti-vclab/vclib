@@ -86,6 +86,8 @@ public:
 
     void setCamera(const Camera<float>& c);
 
+    void showRenderModeSelector(bool show);
+
     bool isPBREnabled() const;
 
     void setPBR(bool enable);

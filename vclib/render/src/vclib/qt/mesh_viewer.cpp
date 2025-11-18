@@ -178,6 +178,12 @@ void MeshViewer::setCamera(const Camera<float>& c)
     mUI->viewer->setCamera(c);
 }
 
+void MeshViewer::showRenderModeSelector(bool show)
+{
+    mUI->renderModeComboBox->setVisible(show);
+    mUI->renderModeLabel->setVisible(show);
+}
+
 bool MeshViewer::isPBREnabled() const
 {
     return mUI->viewer->isPBREnabled();
