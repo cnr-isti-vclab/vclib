@@ -711,52 +711,58 @@ private:
                 buffer,
                 vcl::Point2i(txt.width(), txt.height()),
                 "s_tex" + std::to_string(i),
-                hasMips, // TODO: manage mipmaps
+                hasMips,
                 flags,
                 releaseFn);
 
             mMaterialTextureUnits[i][j] = std::move(tu);
         };
 
+        auto loadTextureAndSetUnit = [&](uint texture)
+        {
+            uint texturesPerMaterial = toUnderlying(Material::TextureType::COUNT);
+            uint i = texture / texturesPerMaterial; // i-th material
+            uint j = texture % texturesPerMaterial; // j-th texture
+
+            // copy the texture because the image could be not loaded,
+            // and at the end it needs to be mirrored.
+            vcl::Texture tex = mesh.material(i).texture(
+                static_cast<Material::TextureType>(j));
+
+            vcl::Image& txt = tex.image();
+            if (txt.isNull()) { // try to load it just for rendering
+                const std::string& path =
+                    mesh.material(i)
+                        .texture(static_cast<Material::TextureType>(j))
+                        .path();
+                if (!path.empty()) {
+                    try {
+                        txt =
+                            vcl::loadImage(mesh.meshBasePath() + path);
+                    }
+                    catch (...) {
+                        // do nothing
+                    }
+                    if (txt.isNull()) {
+                        // still null, use a dummy texture
+                        txt = createCheckBoardImage(512);
+                    }
+                }
+            }
+
+                   // if loading succeeded (or dummy texture has been created)
+            if (!txt.isNull()) {
+                setTextureUnit(tex, i, j);
+            }
+        };
+
         mMaterialTextureUnits.clear();
 
         if constexpr (vcl::HasMaterials<MeshType>) {
             mMaterialTextureUnits.resize(mesh.materialsNumber());
-            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT);
-                     ++j) {
-                    // copy the texture because the image could be not loaded,
-                    // and at the end it needs to be mirrored.
-                    vcl::Texture tex = mesh.material(i).texture(
-                        static_cast<Material::TextureType>(j));
-
-                    vcl::Image& txt = tex.image();
-                    if (txt.isNull()) { // try to load it just for rendering
-                        const std::string& path =
-                            mesh.material(i)
-                                .texture(static_cast<Material::TextureType>(j))
-                                .path();
-                        if (!path.empty()) {
-                            try {
-                                txt =
-                                    vcl::loadImage(mesh.meshBasePath() + path);
-                            }
-                            catch (...) {
-                                // do nothing
-                            }
-                            if (txt.isNull()) {
-                                // still null, use a dummy texture
-                                txt = createCheckBoardImage(512);
-                            }
-                        }
-                    }
-
-                    // if loading succeeded (or dummy texture has been created)
-                    if (!txt.isNull()) {
-                        setTextureUnit(tex, i, j);
-                    }
-                }
-            }
+            std::vector<int> v(mesh.materialsNumber() * toUnderlying(Material::TextureType::COUNT));
+            std::iota(v.begin(), v.end(), 0);
+            parallelFor(v.begin(),v.end(), loadTextureAndSetUnit);
         }
     }
 
