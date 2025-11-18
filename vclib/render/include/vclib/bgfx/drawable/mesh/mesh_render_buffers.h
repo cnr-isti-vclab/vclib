@@ -760,9 +760,11 @@ private:
 
         if constexpr (vcl::HasMaterials<MeshType>) {
             mMaterialTextureUnits.resize(mesh.materialsNumber());
-            std::vector<int> v(mesh.materialsNumber() * toUnderlying(Material::TextureType::COUNT));
-            std::iota(v.begin(), v.end(), 0);
-            parallelFor(v.begin(),v.end(), loadTextureAndSetUnit);
+
+            std::vector<int> textures(mesh.materialsNumber() * toUnderlying(Material::TextureType::COUNT));
+            std::iota(textures.begin(), textures.end(), 0);
+
+            parallelFor(textures.begin(),textures.end(), loadTextureAndSetUnit);
         }
     }
 
