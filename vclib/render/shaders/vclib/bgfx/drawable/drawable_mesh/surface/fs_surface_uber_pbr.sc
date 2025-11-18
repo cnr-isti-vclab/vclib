@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color, v_texcoord0, v_texcoord1, v_tangent
+$input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal, a_color0, a_texcoord0, a_texcoord1, a_tangent
-$output v_position, v_normal, v_color, v_texcoord0, v_texcoord1, v_tangent
+$input a_position, a_normal, a_tangent, a_color0, a_texcoord0, a_texcoord1
+$output v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
