@@ -52,7 +52,6 @@ inline MeshInfo objFormatCapability()
     info.setPerVertexTexCoord();
 
     info.setPerFaceVertexReferences();
-    info.setPerFaceColor();
     info.setPerFaceWedgeTexCoords();
     info.setPerFaceMaterialIndex();
 
