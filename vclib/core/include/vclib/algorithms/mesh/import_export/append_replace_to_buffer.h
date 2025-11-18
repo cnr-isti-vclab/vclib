@@ -725,9 +725,10 @@ void appendDuplicateVertexTangentToBuffer(
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& t                         = mesh.vertex(v).tangent();
-        at(buffer, i, 0, ROW_NUM, 3, storage) = t.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = t.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = t.z();
+        at(buffer, i, 0, ROW_NUM, 4, storage) = t.x();
+        at(buffer, i, 1, ROW_NUM, 4, storage) = t.y();
+        at(buffer, i, 2, ROW_NUM, 4, storage) = t.z();
+        at(buffer, i, 3, ROW_NUM, 4, storage) = t.w();
 
         ++i;
     }

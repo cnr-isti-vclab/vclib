@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
+$input v_position, v_normal, v_color, v_texcoord0, v_texcoord1, v_tangent
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
@@ -119,8 +119,18 @@ void main()
         // scale normal's x and y as requested by gltf 2.0 specification
         normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
 
-        // construct tangent frame using vertex normals
-        mat3 tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+        mat3 tangentFrame;
+
+        if(isPerVertexTangentAvailable(u_settings.x))
+        {
+            vec3 bitangent = cross(v_normal, v_tangent.xyz) * v_tangent.w;
+            tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
+        }
+        else
+        {
+            // construct tangent frame using vertex normals
+            tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+        }
 
         // change the basis of the normal provided by the texture
         // from tangent space to the space used for computations

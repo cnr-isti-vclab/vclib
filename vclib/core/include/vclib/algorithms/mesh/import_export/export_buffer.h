@@ -1388,9 +1388,10 @@ void vertexTangentToBuffer(
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
 
     for (uint i = 0; const auto& t : mesh.vertices() | views::tangents) {
-        at(buffer, i, 0, ROW_NUM, 3, storage) = t.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = t.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = t.z();
+        at(buffer, i, 0, ROW_NUM, 4, storage) = t.x();
+        at(buffer, i, 1, ROW_NUM, 4, storage) = t.y();
+        at(buffer, i, 2, ROW_NUM, 4, storage) = t.z();
+        at(buffer, i, 3, ROW_NUM, 4, storage) = t.w();
 
         ++i;
     }

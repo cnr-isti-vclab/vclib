@@ -69,6 +69,7 @@ class Vertex :
             vert::BitFlags,
             vert::Position3<Scalar>,
             vert::Normal3<Scalar>,
+            vert::OptionalTangent<Scalar, 4, Vertex<Scalar, I>>,
             vert::OptionalColor<Vertex<Scalar, I>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
             vert::OptionalAdjacentFaces<I, Face<Scalar, I>, Vertex<Scalar, I>>,

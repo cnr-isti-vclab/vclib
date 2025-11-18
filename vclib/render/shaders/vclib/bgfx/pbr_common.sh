@@ -33,6 +33,7 @@
 #define PBR_NORMAL_TEXTURE_AVAILABLE                  4
 #define PBR_OCCLUSION_TEXTURE_AVAILABLE               5
 #define PBR_EMISSIVE_TEXTURE_AVAILABLE                6
+#define PBR_VERTEX_TANGENT_AVAILABLE                  7
 
 
 #define checkSetting(settings, setting)               bool(int(settings) & posToBitFlag(setting))
@@ -44,6 +45,7 @@
 #define isNormalTextureAvailable(settings)            checkSetting(settings, PBR_NORMAL_TEXTURE_AVAILABLE)
 #define isOcclusionTextureAvailable(settings)         checkSetting(settings, PBR_OCCLUSION_TEXTURE_AVAILABLE)
 #define isEmissiveTextureAvailable(settings)          checkSetting(settings, PBR_EMISSIVE_TEXTURE_AVAILABLE)
+#define isPerVertexTangentAvailable(settings)         checkSetting(settings, PBR_VERTEX_TANGENT_AVAILABLE)
 
 #define USE_LIGHTS
 #define LIGHT_COUNT                                   2

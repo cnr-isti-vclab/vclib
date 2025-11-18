@@ -116,6 +116,7 @@ public:
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
+        swap(mVertexTangentsBuffer, other.mVertexTangentsBuffer);
         swap(mVertexQuadIndexBuffer, other.mVertexQuadIndexBuffer);
         swap(mVertexQuadBuffer, other.mVertexQuadBuffer);
         swap(mVertexQuadBufferGenerated, other.mVertexQuadBufferGenerated);
@@ -272,7 +273,9 @@ public:
             mMaterialUniforms.update(
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(m),
-                textureAvailable);
+                textureAvailable,
+                isPerVertexTangentAvailable(m)
+            );
         }
         else {
             using enum Material::AlphaMode;
@@ -284,7 +287,9 @@ public:
                 mMaterialUniforms.update(
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(m),
-                    textureAvailable);
+                    textureAvailable,
+                    isPerVertexTangentAvailable(m)
+                );
             }
             else {
                 assert(materialId < m.materialsNumber());
@@ -299,7 +304,9 @@ public:
                 mMaterialUniforms.update(
                     m.material(materialId),
                     isPerVertexColorAvailable(m),
-                    textureAvailable);
+                    textureAvailable,
+                    isPerVertexTangentAvailable(m)
+                );
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {
@@ -491,15 +498,15 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            getAllocatedBufferAndReleaseFn<float>(nv * 4);
 
-        Base::fillVertexTangents(mesh, buffer);
+        Base::fillVertexTangent(mesh, buffer);
 
         mVertexTangentsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Tangent,
-            3,
+            4,
             PrimitiveType::FLOAT,
             false,
             releaseFn);

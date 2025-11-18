@@ -1052,7 +1052,7 @@ private:
                 }
                 if (btu[toUnderlying(VERT_BITANGENT)]) {
                     // vertex buffer (bitangent)
-                    derived().setVertexBitangentBuffer(mesh);
+                    //derived().setVertexBitangentBuffer(mesh);
                 }
             }
         }
