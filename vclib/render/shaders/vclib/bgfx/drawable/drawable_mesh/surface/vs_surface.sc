@@ -32,7 +32,8 @@ void main()
     v_normal = normalize(mul(u_normalMatrix, a_normal));
     v_texcoord0 = a_texcoord0;
     v_texcoord1 = a_texcoord1;
-    v_tangent = a_tangent;
+    vec3 tangent = normalize(mul(u_normalMatrix, a_tangent.xyz));
+    v_tangent = vec4(tangent.x, tangent.y, tangent.z, a_tangent.w);
 
     // default case - color is taken from buffer
     v_color = a_color0;

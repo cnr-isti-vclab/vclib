@@ -123,7 +123,7 @@ void main()
 
         if(isPerVertexTangentAvailable(u_settings.x))
         {
-            vec3 bitangent = cross(v_normal, v_tangent.xyz) * v_tangent.w;
+            vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
             tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
         }
         else
