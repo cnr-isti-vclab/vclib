@@ -39,6 +39,7 @@ class ObjMaterial
     inline static const Point3f Ka_DEFAULT = {0.2f, 0.2f, 0.2f}; // ambient;
     inline static const Point3f Kd_DEFAULT = {1.0f, 1.0f, 1.0f}; // diffuse;
     inline static const Point3f Ks_DEFAULT = {1.0f, 1.0f, 1.0f}; // specular;
+    inline static const Point3f Ke_DEFAULT = {0.0f, 0.0f, 0.0f}; // emissive;
 
     inline static const float d_DEFAULT     = 1.0f; // alpha
     inline static const int   illum_DEFAULT = 2; // specular illumination
@@ -52,6 +53,7 @@ public:
     Point3f Ka = Ka_DEFAULT; // ambient
     Point3f Kd = Kd_DEFAULT; // diffuse
     Point3f Ks = Ks_DEFAULT; // specular
+    Point3f Ke = Ke_DEFAULT; // emissive
 
     float d = d_DEFAULT; // alpha
 
@@ -59,26 +61,36 @@ public:
     float Ns    = Ns_DEFAULT;
 
     std::string map_Kd; // filename texture
+    std::string map_Ke; // filename emissive map
+    std::string map_bump; // filename bump map
 
     ObjMaterial() = default;
 
     ObjMaterial(const Material& mat, uint id)
     {
+        using enum Material::TextureType;
+
         matId   = id;
         matName = mat.name();
 
         Kd.x() = mat.baseColor().redF();
         Kd.y() = mat.baseColor().greenF();
         Kd.z() = mat.baseColor().blueF();
-        Ns     = (1.0f / (mat.roughness() * mat.roughness())) - 2.0f;
+        Ns     = std::pow(1.0f - mat.roughness(), 2) * 1000.f;
         if (mat.alphaMode() == Material::AlphaMode::ALPHA_BLEND) {
-            d = 0.5f; // not accurate, but ok
+            d = mat.baseColor().alphaF();
         }
 
+        Ke.x() = mat.emissiveColor().redF();
+        Ke.y() = mat.emissiveColor().greenF();
+        Ke.z() = mat.emissiveColor().blueF();
+
         map_Kd = mat.baseColorTexture().path();
+        map_Ke = mat.texture(EMISSIVE).path();
+        map_bump = mat.texture(NORMAL).path();
     }
 
-/**
+    /**
      * @brief Converts the OBJ material to a vcl::Material object.
      *
      * This function creates a vcl::Material from the OBJ material data,
@@ -89,19 +101,39 @@ public:
      */
     Material toMaterial()
     {
+        using enum Material::TextureType;
+
         Material m;
         m.name() = matName;
         m.baseColor() =
             vcl::Color(Kd.x() * 255, Kd.y() * 255, Kd.z() * 255, 255);
-        m.baseColorTexture().path() = map_Kd;
 
         float ns      = std::clamp(Ns, 0.f, 1000.f);
-        m.roughness() = std::sqrt(2.0 / (ns + 2.0)); // todo: check
+        m.roughness() = 1.0f - std::sqrt(ns) / std::sqrt(1000.f);
 
-        if (d < 1.0)
+        if (d < 1.0) {
+            m.baseColor().alpha() = d * 255;
             m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
+        }
 
-        m.metallic() = 0.0;
+        m.metallic() = 0.0f; // obj materials are non-metallic;
+
+        m.emissiveColor() = vcl::Color(
+            Ke.x() * 255, Ke.y() * 255, Ke.z() * 255, 255);
+
+        if (!map_Kd.empty()) {
+            m.baseColorTexture().path() = map_Kd;
+            m.baseColorTexture().colorSpace() = Texture::ColorSpace::SRGB;
+        }
+        if (!map_Ke.empty()) {
+            m.texture(EMISSIVE).path() = map_Ke;
+            m.texture(EMISSIVE).colorSpace() = Texture::ColorSpace::SRGB;
+        }
+        if (!map_bump.empty()) {
+            m.texture(NORMAL).path() = map_bump;
+            m.texture(NORMAL).colorSpace() = Texture::ColorSpace::LINEAR;
+        }
+
         return m;
     }
 
@@ -135,6 +167,10 @@ inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
 
     if (m.Ks != m.Ks_DEFAULT)
         out << "Ks " << m.Ks.x() << " " << m.Ks.y() << " " << m.Ks.z()
+            << std::endl;
+
+    if (m.Ke != m.Ke_DEFAULT)
+        out << "Ke " << m.Ke.x() << " " << m.Ke.y() << " " << m.Ke.z()
             << std::endl;
 
     if (m.d != m.d_DEFAULT)

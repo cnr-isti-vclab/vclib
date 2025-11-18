@@ -48,6 +48,30 @@ inline void loadObjMaterials(
     std::string matName;
     ObjMaterial mat;
 
+    auto manageMaterialArgsFn = [&](auto& token) {
+        while ((*token)[0] == '-') {
+            if (*token == "-o" || *token == "-s" || *token == "-t") {
+                // ignore the argument and the three values
+                ++token;
+                ++token;
+                ++token;
+                ++token;
+            }
+            if (*token == "-mm") {
+                // ignore the argument and the two values
+                ++token;
+                ++token;
+                ++token;
+            }
+            if (*token == "-blendu" || *token == "-blendv" || *token == "-cc" ||
+                *token == "-clamp" || *token == "-texres") {
+                // ignore the argument and the value
+                ++token;
+                ++token;
+            }
+        }
+    };
+
     do {
         Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(stream);
         if (stream) {
@@ -89,6 +113,15 @@ inline void loadObjMaterials(
                     }
                 }
             }
+            if (header == "Ke") {
+                if (tokens.size() >= 4) {
+                    if (*token != "spectral" && *token != "xyz") {
+                        mat.Ke.x() = io::readFloat<float>(token);
+                        mat.Ke.y() = io::readFloat<float>(token);
+                        mat.Ke.z() = io::readFloat<float>(token);
+                    }
+                }
+            }
             if (header == "d") {
                 if ((*token)[0] == '-')
                     token++;
@@ -107,31 +140,24 @@ inline void loadObjMaterials(
             }
             if (header == "map_Kd") {
                 // need to manage args
-                while ((*token)[0] == '-') {
-                    if (*token == "-o" || *token == "-s" || *token == "-t") {
-                        // ignore the argument and the three values
-                        ++token;
-                        ++token;
-                        ++token;
-                        ++token;
-                    }
-                    if (*token == "-mm") {
-                        // ignore the argument and the two values
-                        ++token;
-                        ++token;
-                        ++token;
-                    }
-                    if (*token == "-blendu" || *token == "-blendv" ||
-                        *token == "-cc" || *token == "-clamp" ||
-                        *token == "-texres") {
-                        // ignore the argument and the value
-                        ++token;
-                        ++token;
-                    }
-                }
+                manageMaterialArgsFn(token);
                 mat.map_Kd = *token;
                 // replace backslashes with slashes - windows compatibility
                 std::ranges::replace(mat.map_Kd, '\\', '/');
+            }
+            if (header == "map_Ke") {
+                // need to manage args
+                manageMaterialArgsFn(token);
+                mat.map_Ke = *token;
+                // replace backslashes with slashes - windows compatibility
+                std::ranges::replace(mat.map_Ke, '\\', '/');
+            }
+            if (header == "map_bump" || header == "bump") {
+                // need to manage args
+                manageMaterialArgsFn(token);
+                mat.map_bump = *token;
+                // replace backslashes with slashes - windows compatibility
+                std::ranges::replace(mat.map_bump, '\\', '/');
             }
         }
     } while (stream);
