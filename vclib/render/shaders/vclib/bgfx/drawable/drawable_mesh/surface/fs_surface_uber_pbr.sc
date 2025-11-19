@@ -57,7 +57,7 @@ vec4 getColorFromTexture(uint texId, vec2 uv) {
 void main()
 {
     // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
-    vec3 lightDirections[2] = {LIGHT_KEY_DIR, LIGHT_FILL_DIR};
+    vec3 lightDirections[2] = {LIGHT_KEY_DIR_VIEW, LIGHT_FILL_DIR_VIEW};
     vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
     float lightIntensities[2] = {1.0, 0.5};
 
