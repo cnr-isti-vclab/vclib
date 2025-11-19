@@ -40,13 +40,6 @@ inline constexpr auto tangent = [](auto&& p) -> decltype(auto) {
         return p.tangent();
 };
 
-inline constexpr auto bitangent = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->bitangent();
-    else
-        return p.bitangent();
-};
-
 struct TangentView
 {
     constexpr TangentView() = default;
@@ -59,22 +52,9 @@ struct TangentView
     }
 };
 
-struct BitangentView
-{
-    constexpr BitangentView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, BitangentView)
-    {
-        using ElemType = std::ranges::range_value_t<R>;
-        return std::forward<R>(r) | std::views::transform(bitangent);
-    }
-};
-
 } // namespace detail
 
 inline constexpr detail::TangentView tangents;
-inline constexpr detail::BitangentView bitangents;
 
 } // namespace vcl::views
 

@@ -31,22 +31,21 @@
 namespace vcl::comp {
 
 /**
- * @brief The Tangent class represents a N-Dimensional tangent and bitangent
- * vectors that will be part of an Element (e.g. Vertex, Face...).
+ * @brief The Tangent class represents a N-Dimensional tangent vector that will
+ * be part of an Element (e.g. Vertex, Face...).
  *
- * Allows to get and set objects that represent a tangent and bitangent . The
- * type of these objects must satisfy the PointConcept.
+ * Allows to get and set objects that represent a tangent. The type of these
+ * object must satisfy the PointConcept.
  *
  * For example, if you have a Vertex Element `v` with the Tangent component,
  * you'll be able to access to this component member functions from `v`:
  *
  * @code{.cpp}
  * auto tn = v.tangent();
- * auto btn = v.bitangent();
  * @endcode
  *
- * @tparam P: The type of the tangent/bitangent. This template argument must be
- * a type that satisfies the PointConcept.
+ * @tparam P: The type of the tangent. This template argument must be a type
+ * that satisfies the PointConcept.
  * @tparam ParentElemType: This template argument must be `void` if the
  * component needs to be stored horizontally, or the type of the parent element
  * that will contain this component if the component needs to be stored
@@ -101,18 +100,6 @@ public:
      */
     P& tangent() { return Base::data().first; }
 
-    /**
-     * @brief Returns a const reference of the bitangent of the element.
-     * @return a const reference of the bitangent of the element.
-     */
-    const P& bitangent() const { return Base::data().second; }
-
-    /**
-     * @brief Returns a reference of the bitangent of the element.
-     * @return a reference of the bitangent of the element.
-     */
-    P& bitangent() { return Base::data().second; }
-
 protected:
     // Component interface functions
     template<typename Element>
@@ -121,13 +108,11 @@ protected:
     void serialize(std::ostream& os) const
     {
         tangent().serialize(os);
-        bitangent().serialize(os);
     }
 
     void deserialize(std::istream& is)
     {
         tangent().deserialize(is);
-        bitangent().deserialize(is);
     }
 };
 
@@ -177,7 +162,6 @@ void Tangent<P, ParentElemType, OPT>::importFrom(const Element& e, bool)
     if constexpr (HasTangent<Element>) {
         if (isTangentAvailableOn(e)) {
             tangent() = e.tangent().template cast<ScalarType>();
-            bitangent() = e.bitangent().template cast<ScalarType>();
         }
     }
 }
