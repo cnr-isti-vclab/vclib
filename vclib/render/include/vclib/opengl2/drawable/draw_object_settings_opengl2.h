@@ -20,46 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_OBJ_CAPABILITY_H
-#define VCL_IO_MESH_OBJ_CAPABILITY_H
+#ifndef VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
+#define VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
 
-#include <vclib/io/file_format.h>
-
-#include <vclib/space/complex.h>
+#include <vclib/base.h>
 
 namespace vcl {
 
-constexpr FileFormat objFileFormat()
+/**
+ * @brief A simple struct containing the settings to draw a drawable object
+ * in a opengl2 canvas.
+ */
+struct DrawObjectSettingsOpenGL2
 {
-    return FileFormat("obj", "OBJ Wavefront .obj");
-}
-
-inline MeshInfo objFormatCapability()
-{
-    MeshInfo info;
-
-    info.setPolygonMesh();
-
-    info.setVertices();
-    info.setFaces();
-    info.setEdges();
-
-    info.setMaterials();
-
-    info.setPerVertexPosition();
-    info.setPerVertexNormal();
-    info.setPerVertexColor();
-    info.setPerVertexTexCoord();
-
-    info.setPerFaceVertexReferences();
-    info.setPerFaceWedgeTexCoords();
-    info.setPerFaceMaterialIndex();
-
-    info.setPerEdgeVertexReferences();
-
-    return info;
-}
+    /**< @brief The object ID to assign to the object. */
+    uint objectId = 0;
+};
 
 } // namespace vcl
 
-#endif // VCL_IO_MESH_OBJ_CAPABILITY_H
+#endif // VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H

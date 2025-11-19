@@ -33,113 +33,46 @@
 #include <vclib/space/complex.h>
 #include <vclib/space/core.h>
 
-#include <map>
-
 namespace vcl {
 
 namespace detail {
 
-template<FaceConcept FaceType, MeshConcept MeshType>
-ObjMaterial objMaterialFromFace(
-    const FaceType& f,
-    const MeshType& m,
-    const MeshInfo& fi)
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+std::vector<std::string> saveObjMaterials(
+    const MeshType&     m,
+    std::ostream&       mtlfp,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
 {
-    ObjMaterial mat;
-    if constexpr (HasPerFaceColor<MeshType>) {
-        if (fi.hasPerFaceColor()) {
-            mat.hasColor = true;
-            mat.Kd.x()   = f.color().redF();
-            mat.Kd.y()   = f.color().greenF();
-            mat.Kd.z()   = f.color().blueF();
-        }
-    }
-    if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-        if (fi.hasPerFaceWedgeTexCoords()) {
-            if constexpr (HasMaterials<MeshType>) {
-                uint ti = 0;
-                if (fi.hasPerFaceMaterialIndex()) {
-                    ti = f.materialIndex();
+    std::vector<std::string> materials;
+    if constexpr (HasMaterials<MeshType>) {
+        materials.reserve(m.materialsNumber());
+        for (uint i = 0; i < m.materialsNumber(); ++i) {
+            const Material& mat = m.material(i);
+            ObjMaterial     omat(mat, i);
+            std::string     matName = mat.name();
+            if (matName.empty()) {
+                matName      = "MATERIAL_" + std::to_string(i);
+                omat.matName = matName;
+            }
+
+            mtlfp << "newmtl " << matName << std::endl;
+            mtlfp << omat << std::endl;
+            materials.push_back(matName);
+
+            if (settings.saveTextureImages) {
+                const Texture& t = mat.baseColorTexture();
+                ;
+                try {
+                    saveImage(t.image(), m.meshBasePath() + t.path());
                 }
-                const Material& matFace = m.material(ti);
-                if (matFace.baseColor() != Color::White) {
-                    mat.hasColor = true;
-                    mat.Kd.x()   = matFace.baseColor().redF();
-                    mat.Kd.y()   = matFace.baseColor().greenF();
-                    mat.Kd.z()   = matFace.baseColor().blueF();
+                catch (const std::runtime_error& e) {
+                    log.log(e.what(), LogType::WARNING_LOG);
                 }
-                if (!matFace.baseColorTexture().path().empty()) {
-                    mat.hasTexture = true;
-                    mat.map_Kd = matFace.baseColorTexture().path();
-                    mat.mapId = ti;
-                }
-                mat.Ns = (1.0f / (matFace.roughness() * matFace.roughness())) -
-                         2.0f; // check
             }
         }
     }
-    return mat;
-}
-
-template<
-    FaceConcept   FaceType,
-    MeshConcept   MeshType,
-    LoggerConcept LogType = NullLogger>
-void writeFaceObjMaterial(
-    const FaceType&                     f,
-    const MeshType&                     m,
-    const MeshInfo&                     fi,
-    ObjMaterial&                        lastMaterial,
-    std::map<ObjMaterial, std::string>& materialMap,
-    std::ostream&                       fp,
-    std::ostream&                       mtlfp,
-    const SaveSettings&                 settings,
-    LogType&                            log = nullLogger)
-{
-    ObjMaterial    mat;
-
-    mat = objMaterialFromFace(f, m, fi);
-
-    if (!mat.isEmpty()) {
-        static const std::string MATERIAL_PREFIX = "MATERIAL_";
-        std::string              mname; // name of the material of the vertex
-        auto                     it = materialMap.find(mat);
-        if (it == materialMap.end()) { // if it is a new material
-            // add the new material to the map
-
-            // TODO: try to preserve original material names
-            mname = MATERIAL_PREFIX + std::to_string(materialMap.size());
-            materialMap[mat] = mname;
-            // save the material in the mtl file
-            mtlfp << "newmtl " << mname << std::endl;
-            mtlfp << mat << std::endl;
-            if constexpr (HasMaterials<MeshType>) {
-                if (settings.saveTextureImages && mat.hasTexture) {
-                    // we need to save the texture image
-                    uint ti = 0;
-                    if (fi.hasPerFaceMaterialIndex()) {
-                        ti = f.materialIndex();
-                    }
-                    const Texture& t = m.material(ti).baseColorTexture();;
-                    try {
-                        saveImage(t.image(), m.meshBasePath() + mat.map_Kd);
-                    }
-                    catch (const std::runtime_error& e) {
-                        log.log(e.what(), LogType::WARNING_LOG);
-                    }
-                }
-            }
-        }
-        else { // get the name of the material
-            mname = it->second;
-        }
-        // if the material of the vertex is different from the last used, need
-        // to add usemtl
-        if (mat != lastMaterial) {
-            lastMaterial = mat;
-            fp << "usemtl " << mname << std::endl;
-        }
-    }
+    return materials;
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
@@ -169,10 +102,11 @@ void saveObj(
         meshInfo.setPerVertexTexCoord(false);
     }
 
-    std::ofstream                              mtlftmp;
-    std::map<detail::ObjMaterial, std::string> materialMap;
+    std::ofstream mtlftmp;
 
-    bool useMtl = meshInfo.hasPerFaceColor() || meshInfo.hasMaterials();
+    std::vector<std::string> materialNames;
+
+    bool useMtl = meshInfo.hasMaterials();
     if (useMtl) {
         if (saveMtlFile) {
             std::string mtlFileName =
@@ -189,7 +123,11 @@ void saveObj(
         }
     }
 
-    detail::ObjMaterial lastMaterial;
+    if (useMtl) {
+        materialNames = saveObjMaterials(m, *mtlfp, settings, log);
+    }
+
+    uint lastMaterial = UINT_NULL;
 
     // vertices
     using VertexType = MeshType::VertexType;
@@ -201,7 +139,7 @@ void saveObj(
         io::writeDouble(fp, v.position().x(), false);
         io::writeDouble(fp, v.position().y(), false);
         io::writeDouble(fp, v.position().z(), false);
-        if constexpr(HasPerVertexColor<MeshType>) {
+        if constexpr (HasPerVertexColor<MeshType>) {
             if (meshInfo.hasPerVertexColor()) {
                 io::writeFloat(fp, v.color().redF(), false);
                 io::writeFloat(fp, v.color().greenF(), false);
@@ -242,17 +180,14 @@ void saveObj(
 
             uint wedgeTexCoord = 1;
             for (const FaceType& f : m.faces()) {
-                if (useMtl) { // mtl management
-                    detail::writeFaceObjMaterial(
-                        f,
-                        m,
-                        meshInfo,
-                        lastMaterial,
-                        materialMap,
-                        fp,
-                        *mtlfp,
-                        settings,
-                        log);
+                if constexpr (HasMaterials<MeshType>) {
+                    if (useMtl) { // mtl management
+                        if (f.materialIndex() != lastMaterial) {
+                            lastMaterial = f.materialIndex();
+                            fp << "usemtl " << materialNames[lastMaterial]
+                               << std::endl;
+                        }
+                    }
                 }
                 if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                     if (meshInfo.hasPerFaceWedgeTexCoords()) {

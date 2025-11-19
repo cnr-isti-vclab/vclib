@@ -63,7 +63,6 @@ public:
         MIRRORED_REPEAT = 33648
     };
 
-
 private:
 
     Image       mImg;

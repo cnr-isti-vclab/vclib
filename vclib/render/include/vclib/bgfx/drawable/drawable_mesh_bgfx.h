@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
@@ -133,7 +133,8 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        AbstractDrawableMesh::computeBoundingBox(static_cast<MeshType>(*this));
+        AbstractDrawableMesh::computeBoundingBox(
+            static_cast<const MeshType&>(*this));
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
@@ -485,4 +486,4 @@ protected:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H

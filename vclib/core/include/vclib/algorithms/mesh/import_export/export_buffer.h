@@ -1398,50 +1398,6 @@ void vertexTangentToBuffer(
 }
 
 /**
- * @brief Export the vertex bitangent of a mesh to a buffer.
- *
- * This function exports the vertex bitangent of a mesh to a buffer. Bitangents
- * are stored in the buffer following the order the vertices appear in the mesh.
- * The buffer must be preallocated with the correct size (number of vertices
- * times 3).
- *
- * @note This function does not guarantee that the rows of the matrix
- * correspond to the vertex indices of the mesh. This scenario is possible
- * when the mesh has deleted vertices. To be sure to have a direct
- * correspondence, compact the vertex container before calling this function.
- *
- * @param[in] mesh: input mesh
- * @param[out] buffer: preallocated buffer
- * @param[in] storage: storage type of the matrix (row or column major)
- * @param[in] rowNumber: number of rows of the matrix (if different from the
- * number of vertices in the mesh) - used only when storage is column major
- *
- * @ingroup export_buffer
- */
-template<MeshConcept MeshType>
-void vertexBitangentToBuffer(
-    const MeshType&   mesh,
-    auto*             buffer,
-    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
-    uint              rowNumber = UINT_NULL)
-{
-    using namespace detail;
-
-    requirePerVertexTangent(mesh);
-
-    const uint ROW_NUM =
-        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
-
-    for (uint i = 0; const auto& bt : mesh.vertices() | views::bitangents) {
-        at(buffer, i, 0, ROW_NUM, 3, storage) = bt.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = bt.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = bt.z();
-
-        ++i;
-    }
-}
-
-/**
  * @brief Export the vertex texcoords of a mesh to a buffer.
  *
  * This function exports the vertex texcoords of a mesh to a buffer. Texcoords

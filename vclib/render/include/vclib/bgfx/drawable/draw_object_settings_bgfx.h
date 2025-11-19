@@ -20,46 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_OBJ_CAPABILITY_H
-#define VCL_IO_MESH_OBJ_CAPABILITY_H
+#ifndef VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#define VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
 
-#include <vclib/io/file_format.h>
-
-#include <vclib/space/complex.h>
+#include <vclib/base.h>
 
 namespace vcl {
 
-constexpr FileFormat objFileFormat()
+/**
+ * @brief A simple struct containing the settings to draw a drawable object
+ * in a bgfx canvas.
+ */
+struct DrawObjectSettingsBGFX
 {
-    return FileFormat("obj", "OBJ Wavefront .obj");
-}
+    /**< @brief The object ID to assign to the object. */
+    uint objectId = 0;
 
-inline MeshInfo objFormatCapability()
-{
-    MeshInfo info;
+    /**< @brief The view ID on which to draw the object. */
+    uint viewId = 0;
 
-    info.setPolygonMesh();
-
-    info.setVertices();
-    info.setFaces();
-    info.setEdges();
-
-    info.setMaterials();
-
-    info.setPerVertexPosition();
-    info.setPerVertexNormal();
-    info.setPerVertexColor();
-    info.setPerVertexTexCoord();
-
-    info.setPerFaceVertexReferences();
-    info.setPerFaceWedgeTexCoords();
-    info.setPerFaceMaterialIndex();
-
-    info.setPerEdgeVertexReferences();
-
-    return info;
-}
+    /**< @brief Option that tells whether the object must be drawn in PBR mode.
+     */
+    bool pbrMode = false;
+};
 
 } // namespace vcl
 
-#endif // VCL_IO_MESH_OBJ_CAPABILITY_H
+#endif // VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
