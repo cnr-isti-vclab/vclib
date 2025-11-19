@@ -20,29 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/programs/embedded_vf_programs/visible_face_selection.h>
+#include <vclib/bgfx/programs/embedded_vf_programs/visible_face_selection_p1.h>
 
-#include <vclib/shaders/selection/face_visible/fs_visible_face.sc.glsl.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_visible_face.sc.glsl.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/fs_visible_face.sc.glsl.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/vs_visible_face.sc.glsl.bin.h>
 
-#include <vclib/shaders/selection/face_visible/fs_visible_face.sc.essl.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_visible_face.sc.essl.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/fs_visible_face.sc.essl.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/vs_visible_face.sc.essl.bin.h>
 
-#include <vclib/shaders/selection/face_visible/fs_visible_face.sc.spv.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_visible_face.sc.spv.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/fs_visible_face.sc.spv.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/vs_visible_face.sc.spv.bin.h>
 #ifdef _WIN32
-#include <vclib/shaders/selection/face_visible/fs_visible_face.sc.dx11.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_visible_face.sc.dx11.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/fs_visible_face.sc.dx11.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/vs_visible_face.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/selection/face_visible/fs_visible_face.sc.mtl.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_visible_face.sc.mtl.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/fs_visible_face.sc.mtl.bin.h>
+#include <vclib/shaders/selection/face_visible/pass_1/vs_visible_face.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::VISIBLE_FACE_SELECTION>::vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::VISIBLE_FACE_SELECTION_P1>::vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -64,7 +64,7 @@ bgfx::EmbeddedShader::Data VertFragLoader<
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::VISIBLE_FACE_SELECTION>::
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::VISIBLE_FACE_SELECTION_P1>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {

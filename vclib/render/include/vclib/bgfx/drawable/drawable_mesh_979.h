@@ -132,7 +132,7 @@ public:
             return;
         }
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
-        bgfx::ProgramHandle prog = Context::instance().programManager().getProgram<VertFragProgram::VISIBLE_FACE_SELECTION>();
+        bgfx::ProgramHandle prog = Context::instance().programManager().getProgram<VertFragProgram::VISIBLE_FACE_SELECTION_P1>();
         float temp[4] = {
             Uniform::uintBitsToFloat(settings.objectId),
             0.f,

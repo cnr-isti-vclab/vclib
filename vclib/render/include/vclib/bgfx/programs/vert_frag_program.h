@@ -101,7 +101,7 @@ enum class VertFragProgram {
     PRIMITIVE_LINES,
     CUSTOM_CPU_LINES, // TODO: change this name to a more meaningful one
 
-    VISIBLE_FACE_SELECTION,
+    VISIBLE_FACE_SELECTION_P1,
 
     COUNT
 };

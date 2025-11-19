@@ -441,8 +441,6 @@ private:
         case SelectionMode::VERTEX_INVERT:
         case SelectionMode::FACE_INVERT:
             return pm.getComputeProgram<ComputeProgram::SELECTION_INVERT>();
-        case SelectionMode::FACE_VISIBLE_REGULAR:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_VISIBLE>();
         default:
             return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
         }

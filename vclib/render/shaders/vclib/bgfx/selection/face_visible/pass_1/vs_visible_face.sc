@@ -20,18 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
- #include <vclib/bgfx/shaders_common.sh>
+$input a_position
 
- uniform vec4 u_meshId;
+#include <vclib/bgfx/shaders_common.sh>
 
- void main()
- {
-    uint meshID = floatBitsToUint(u_meshId.x);
-    uint primID = uint(gl_PrimitiveID);
-    gl_FragColor = vec4(
-        uintBitsToFloat((meshID >> 16) & 0xFFFF),
-        uintBitsToFloat(meshID & 0xFFFF),
-        uintBitsToFloat((primID >> 16) & 0xFFFF),
-        uintBitsToFloat(primID & 0xFFFF)
-    );
- }
+void main()
+{
+   gl_Position = mul(u_modelViewProj, vec4(a_position, 1));
+}

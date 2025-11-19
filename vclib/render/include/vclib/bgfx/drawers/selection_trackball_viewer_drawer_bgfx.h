@@ -46,21 +46,21 @@ class SelectionTrackBallViewerDrawerBGFX :
 
     using TED = TrackBallEventDrawer<DerivedRenderApp>;
 
-    bgfx::FrameBufferHandle  mVisibleSelectionFrameBuffer;
-    bgfx::ViewId             mVisibleSelectionViewId;
-    bgfx::VertexLayout       mVertexLayout;
-    VertexBuffer             mPosBuffer;
-    IndexBuffer              mTriIndexBuf;
-    DrawableAxis             mAxis;
-    DrawableTrackBall        mDrawTrackBall;
-    DrawableDirectionalLight mDrawableDirectionalLight;
-    SelectionBox             mBoxToDraw;
+    bgfx::FrameBufferHandle     mVisibleSelectionFrameBuffer;
+    std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds;
+    bgfx::VertexLayout          mVertexLayout;
+    VertexBuffer                mPosBuffer;
+    IndexBuffer                 mTriIndexBuf;
+    DrawableAxis                mAxis;
+    DrawableTrackBall           mDrawTrackBall;
+    DrawableDirectionalLight    mDrawableDirectionalLight;
+    SelectionBox                mBoxToDraw;
 
 public:
     using ParentViewer::ParentViewer;
 
     SelectionTrackBallViewerDrawerBGFX(uint width = 1024, uint height = 768) :
-            ParentViewer(width, height)
+            ParentViewer(width, height), mVisibleSelectionViewIds()
     {
         mVertexLayout.begin()
             .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
@@ -85,21 +85,31 @@ public:
     // Variable? Constant?
     // Same as visible view FrameBuffer?
     // You need to strike a balance between being accurate (big framebuffer)
-    // And having the compute shader which has size equal to the framebuffer execute quickly
+    // And having the compute shader which has size equal to the framebuffer
+    // execute quickly
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
-        mVisibleSelectionViewId = Context::instance().requestViewId();
+        mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
+        mVisibleSelectionViewIds[1] = Context::instance().requestViewId();
         mVisibleSelectionFrameBuffer =
             Context::instance().createOffscreenFramebufferAndInitView(
-                mVisibleSelectionViewId,
+                mVisibleSelectionViewIds[0],
                 4096,
                 4096,
-                false,
+                true,
                 0u,
                 1.0f,
                 (uint8_t) 0U,
-                bgfx::TextureFormat::Enum::RGBA16F);
+                bgfx::TextureFormat::Enum::R8);
+        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mVisibleSelectionFrameBuffer);
+        bgfx::setViewClear(
+            mVisibleSelectionViewIds[1],
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            0u,
+            1.0f,
+            0u);
+        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 4096, 4096);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
@@ -107,8 +117,9 @@ public:
 
     // Box is a parameter so that if we want to subdivide the selection
     // and do multiple passes for it we can do so
-    void setVisibleTrisSelectionProjViewMatrix(SelectionBox box) {
-        using PM         = Camera<float>::ProjectionMode;
+    void setVisibleTrisSelectionProjViewMatrix(SelectionBox box)
+    {
+        using PM = Camera<float>::ProjectionMode;
 
         // We limit the projection to the selection box so that the pass itself
         // does the selection for us
@@ -127,14 +138,14 @@ public:
         Matrix44f invProj      = TED::projectionMatrix().inverse();
         Point4f   minViewSpace = invProj * minNDC;
         Point4f   maxViewSpace = invProj * maxNDC;
-        minViewSpace           /= minViewSpace.w();
-        maxViewSpace           /= maxViewSpace.w();
-        float l                = min(minViewSpace.x(), maxViewSpace.x());
-        float r                = max(minViewSpace.x(), maxViewSpace.x());
-        float b                = max(minViewSpace.y(), maxViewSpace.y());
-        float t                = min(minViewSpace.y(), maxViewSpace.y());
-        float n                = min(minViewSpace.z(), maxViewSpace.z());
-        float f                = max(minViewSpace.z(), maxViewSpace.z());
+        minViewSpace /= minViewSpace.w();
+        maxViewSpace /= maxViewSpace.w();
+        float l = min(minViewSpace.x(), maxViewSpace.x());
+        float r = max(minViewSpace.x(), maxViewSpace.x());
+        float b = max(minViewSpace.y(), maxViewSpace.y());
+        float t = min(minViewSpace.y(), maxViewSpace.y());
+        float n = min(minViewSpace.z(), maxViewSpace.z());
+        float f = max(minViewSpace.z(), maxViewSpace.z());
         float proj[16];
         if (TED::camera().projectionMode() == PM::ORTHO) {
             bx::mtxOrtho(proj, l, r, b, t, n, f, 0.f, false);
@@ -143,7 +154,8 @@ public:
             bx::mtxProj(proj, t, b, l, r, n, f, false);
         }
         float* view = TED::viewMatrix().data();
-        bgfx::setViewTransform(mVisibleSelectionViewId, view, proj);
+        bgfx::setViewTransform(mVisibleSelectionViewIds[0], view, proj);
+        bgfx::setViewTransform(mVisibleSelectionViewIds[1], view, proj);
     }
 
     void onDraw(uint viewId) override
@@ -158,17 +170,23 @@ public:
             if (ParentViewer::selectionBox().allValue()) {
                 mBoxToDraw = ParentViewer::selectionBox();
             }
-            if (ParentViewer::selectionMode().isVisibleSelection() && ParentViewer::selectionMode().isFaceSelection()) {
+            if (ParentViewer::selectionMode().isVisibleSelection() &&
+                ParentViewer::selectionMode().isFaceSelection()) {
                 setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
                 for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
-                    uint oid = i+1;
-                    auto el = ParentViewer::mDrawList->at(i);
+                    uint oid = i + 1;
+                    auto el  = ParentViewer::mDrawList->at(i);
                     if (auto p = dynamic_cast<Selectable*>(el.get())) {
                         DrawObjectSettings settings;
                         settings.objectId = oid;
-                        settings.viewId = viewId;
-                        if (ParentViewer::selectionMode() == SelectionMode::FACE_VISIBLE_REGULAR) {
-                            p->calculateSelection(settings, SelectionBox({std::nullopt, std::nullopt}), SelectionMode::FACE_NONE, true);
+                        settings.viewId   = viewId;
+                        if (ParentViewer::selectionMode() ==
+                            SelectionMode::FACE_VISIBLE_REGULAR) {
+                            p->calculateSelection(
+                                settings,
+                                SelectionBox({std::nullopt, std::nullopt}),
+                                SelectionMode::FACE_NONE,
+                                true);
                         }
                         p->submitForVisibleFacesSelection(settings);
                     }
@@ -177,13 +195,20 @@ public:
             for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                 auto el = ParentViewer::mDrawList->at(i);
                 if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                    if (ParentViewer::selectionMode().isVisibleSelection() && ParentViewer::selectionMode().isFaceSelection()) {
-                        bgfx::TextureHandle tex = bgfx::getTexture(mVisibleSelectionFrameBuffer, 0);
-                        bgfx::setImage(4, tex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA16F);
+                    if (ParentViewer::selectionMode().isVisibleSelection() &&
+                        ParentViewer::selectionMode().isFaceSelection()) {
+                        bgfx::TextureHandle tex =
+                            bgfx::getTexture(mVisibleSelectionFrameBuffer, 0);
+                        bgfx::setImage(
+                            4,
+                            tex,
+                            0,
+                            bgfx::Access::Read,
+                            bgfx::TextureFormat::RGBA16F);
                     }
                     DrawObjectSettings settings;
-                    settings.objectId = i+1;
-                    settings.viewId = viewId;
+                    settings.objectId = i + 1;
+                    settings.viewId   = viewId;
                     p->calculateSelection(
                         settings,
                         ParentViewer::selectionBox().toMinAndMax(),
@@ -197,7 +222,7 @@ public:
         {
             DrawObjectSettings settings;
             settings.objectId = 0;
-            settings.viewId = viewId;
+            settings.viewId   = viewId;
             if (mAxis.isVisible()) {
                 mAxis.draw(settings);
             }
