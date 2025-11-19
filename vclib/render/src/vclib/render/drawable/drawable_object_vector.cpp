@@ -43,13 +43,16 @@ void DrawableObjectVector::draw(const DrawObjectSettings& settings) const
 
 void DrawableObjectVector::drawId(const DrawObjectSettings& settings) const
 {
+    DrawObjectSettings sts = settings;
     if (isVisible()) {
         for (size_t idx = 0; idx < Base::size(); idx++) {
+            // TODO: combine idx with the content of settings.objectId
+            sts.objectId = idx;
+
             const auto& p = Base::at(idx);
 
             if (p->isVisible())
-                p->drawId(DrawObjectSettings(
-                    settings.viewId, settings.objectId + uint(idx)));
+                p->drawId(sts);
         }
     }
 }
