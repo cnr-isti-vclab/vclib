@@ -133,7 +133,8 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        AbstractDrawableMesh::computeBoundingBox(static_cast<MeshType>(*this));
+        AbstractDrawableMesh::computeBoundingBox(
+            static_cast<const MeshType&>(*this));
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
