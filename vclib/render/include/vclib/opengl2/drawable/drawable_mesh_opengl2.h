@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
+#ifndef VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_OPENGL2_H
+#define VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_OPENGL2_H
 
 #include "mesh/mesh_render_vectors.h"
 
@@ -566,4 +566,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_H
+#endif // VCL_OPENGL2_DRAWABLE_DRAWABLE_MESH_OPENGL2_H

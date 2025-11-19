@@ -23,25 +23,23 @@
 #ifndef VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
 #define VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
 
-#include <vclib/base.h>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/drawable/draw_object_settings_bgfx.h>
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <vclib/opengl2/drawable/draw_object_settings_opengl2.h>
+#endif
 
 namespace vcl {
 
-/**
- * @brief A simple struct containing the settings to draw a drawable object.
- */
-struct DrawObjectSettings
-{
-    /**< @brief The view ID on which to draw the object. */
-    uint viewId = 0;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+using DrawObjectSettings = DrawObjectSettingsBGFX;
+#endif
 
-    /**< @brief The object ID to assign to the object. */
-    uint objectId = 0;
-
-    DrawObjectSettings() = default;
-
-    DrawObjectSettings(uint vId, uint oId) : viewId(vId), objectId(oId) {}
-};
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+using DrawObjectSettings = DrawObjectSettingsOpenGL2;
+#endif
 
 } // namespace vcl
 

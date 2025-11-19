@@ -20,31 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#ifndef VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#define VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
 
-#include <vclib/render/config.h>
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/drawable_mesh_bgfx.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/drawable/drawable_mesh_opengl2.h>
-#endif
+#include <vclib/base.h>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshBGFX<MeshType>;
-#endif
+/**
+ * @brief A simple struct containing the settings to draw a drawable object
+ * in a bgfx canvas.
+ */
+struct DrawObjectSettingsBGFX
+{
+    /**< @brief The object ID to assign to the object. */
+    uint objectId = 0;
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<MeshConcept MeshType>
-using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
-#endif
+    /**< @brief The view ID on which to draw the object. */
+    uint viewId = 0;
+};
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#endif // VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
