@@ -58,7 +58,8 @@ public:
 
     void onDrawContent(uint viewId) override
     {
-        DrawObjectSettings settings(viewId, 0);
+        DrawObjectSettings settings;
+        settings.viewId = viewId;
 
         settings.pbrMode = ParentViewer::isPBREnabled();
 
@@ -75,7 +76,9 @@ public:
 
     void onDrawId(uint viewId) override
     {
-        DrawObjectSettings settings(viewId, ParentViewer::id());
+        DrawObjectSettings settings;
+        settings.objectId = ParentViewer::id();
+        settings.viewId   = viewId;
 
         bgfx::setViewTransform(
             viewId,
