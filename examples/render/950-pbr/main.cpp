@@ -44,6 +44,7 @@ int main(int argc, char** argv)
     std::string e13 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareAlphaCoverage/CompareAlphaCoverage.gltf";
     std::string e14 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaBlendModeTest/AlphaBlendModeTest.gltf";
     std::string e15 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf";
+    std::string e16 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sponza/Sponza.gltf";
 
 
     // Examples to test
@@ -81,7 +82,7 @@ int main(int argc, char** argv)
     // the lower part a semitransparent blue matte
     std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
 
-    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(e7);
+    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(e16);
 
     auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
         const vcl::Texture& texture = mat.texture(type);
