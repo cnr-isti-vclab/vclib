@@ -409,21 +409,6 @@ protected:
 
     /**
      * @brief Given the mesh and a pointer to a buffer, fills the buffer with
-     * the vertex bitangent of the mesh.
-     *
-     * The buffer must be preallocated with the correct size: `numVerts() * 3`.
-     *
-     * @param[in] mesh: the input mesh
-     * @param[out] buffer: the buffer to fill
-     */
-    void fillVertexBitangent(const MeshConcept auto& mesh, auto* buffer)
-    {
-        vertexBitangentToBuffer(mesh, buffer);
-        appendDuplicateVertexBitangentToBuffer(mesh, mVertsToDuplicate, buffer);
-    }
-
-    /**
-     * @brief Given the mesh and a pointer to a buffer, fills the buffer with
      * the wedge texcoors of the mesh.
      *
      * Although the wedge texcoords are associated to the faces in the vclib
@@ -720,24 +705,6 @@ protected:
      * @param[in] mesh: the input mesh from which to get the data
      */
     void setVertexTangentBuffer(const MeshConcept auto&) {}
-
-    /**
-     * @brief Function that sets the content of vertex bitangent buffer and
-     * sends the data to the GPU.
-     *
-     * The function should allocate and fill a cpu buffer to store the vertex
-     * bitangent using the `numVerts() * 3` and `fillVertexBitangent()`
-     * functions, and then send the data to the GPU using the rendering backend.
-     *
-     * There is no need to check whether the Mesh can provide per-vertex
-     * bitangent since the function is called only if the mesh has them.
-     *
-     * See the @ref MeshRenderData class documentation for an example of
-     * implementation.
-     *
-     * @param[in] mesh: the input mesh from which to get the data
-     */
-    void setVertexBitangentBuffer(const MeshConcept auto&) {}
 
     /**
      * @brief Function that sets the content of wedge texture coordinates buffer
@@ -1049,10 +1016,6 @@ private:
                 if (btu[toUnderlying(VERT_TANGENT)]) {
                     // vertex buffer (tangent)
                     derived().setVertexTangentBuffer(mesh);
-                }
-                if (btu[toUnderlying(VERT_BITANGENT)]) {
-                    // vertex buffer (bitangent)
-                    derived().setVertexBitangentBuffer(mesh);
                 }
             }
         }
