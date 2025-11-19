@@ -164,7 +164,9 @@ public:
                     uint oid = i+1;
                     auto el = ParentViewer::mDrawList->at(i);
                     if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                        DrawObjectSettings settings(mVisibleSelectionViewId, oid);
+                        DrawObjectSettings settings;
+                        settings.objectId = oid;
+                        settings.viewId = viewId;
                         if (ParentViewer::selectionMode() == SelectionMode::FACE_VISIBLE_REGULAR) {
                             p->calculateSelection(settings, SelectionBox({std::nullopt, std::nullopt}), SelectionMode::FACE_NONE, true);
                         }
@@ -179,8 +181,11 @@ public:
                         bgfx::TextureHandle tex = bgfx::getTexture(mVisibleSelectionFrameBuffer, 0);
                         bgfx::setImage(4, tex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA16F);
                     }
+                    DrawObjectSettings settings;
+                    settings.objectId = i+1;
+                    settings.viewId = viewId;
                     p->calculateSelection(
-                        DrawObjectSettings(viewId, i+1),
+                        settings,
                         ParentViewer::selectionBox().toMinAndMax(),
                         ParentViewer::selectionMode(),
                         ParentViewer::isSelectionTemporary());
@@ -189,16 +194,21 @@ public:
             ParentViewer::selectionCalculated();
         }
 
-        if (mAxis.isVisible()) {
-            mAxis.draw(DrawObjectSettings(viewId, 0));
-        }
+        {
+            DrawObjectSettings settings;
+            settings.objectId = 0;
+            settings.viewId = viewId;
+            if (mAxis.isVisible()) {
+                mAxis.draw(settings);
+            }
 
-        if (mDrawTrackBall.isVisible()) {
-            mDrawTrackBall.draw(DrawObjectSettings(viewId, 0));
-        }
+            if (mDrawTrackBall.isVisible()) {
+                mDrawTrackBall.draw(settings);
+            }
 
-        if (mDrawableDirectionalLight.isVisible()) {
-            mDrawableDirectionalLight.draw(DrawObjectSettings(viewId, 0));
+            if (mDrawableDirectionalLight.isVisible()) {
+                mDrawableDirectionalLight.draw(settings);
+            }
         }
 
         if (mBoxToDraw.allValue()) {
