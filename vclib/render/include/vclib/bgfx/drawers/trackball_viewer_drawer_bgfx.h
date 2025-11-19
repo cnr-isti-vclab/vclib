@@ -56,7 +56,8 @@ public:
 
     void onDraw(uint viewId) override
     {
-        DrawObjectSettings settings(viewId, 0);
+        DrawObjectSettings settings;
+        settings.viewId = viewId;
 
         ParentViewer::onDraw(viewId);
 
