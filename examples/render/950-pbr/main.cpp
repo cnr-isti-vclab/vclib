@@ -27,73 +27,62 @@
 int main(int argc, char** argv)
 {
     using namespace vcl;
-
-    // Example meshes with materials
-    std::string e1 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/OrientationTest/OrientationTest.gltf";
-    std::string e2 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
-    std::string e3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveStrengthTest/EmissiveStrengthTest.gltf";
-    std::string e4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
-    std::string e5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf";
-    std::string e6 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxTextured/BoxTextured.gltf";
-    std::string e7 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf";
-    std::string e8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf";
-    std::string e9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/TextureSettingsTest/TextureSettingsTest.gltf";
-    std::string e10 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf";
-    std::string e11 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareNormal/CompareNormal.gltf";
-    std::string e12 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentTest/NormalTangentTest.gltf";
-    std::string e13 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareAlphaCoverage/CompareAlphaCoverage.gltf";
-    std::string e14 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaBlendModeTest/AlphaBlendModeTest.gltf";
-    std::string e15 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf";
-    std::string e16 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sponza/Sponza.gltf";
-
-
+    
     // Examples to test
-
-    // Metallic-Roughness
-    std::string t1 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
-
-    // Emissive - to test also with lights off comment the #define USE_LIGHTS in vclib/render/shaders/vclib/bgfx/shaders_common.sh
-    std::string t2 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/EmissiveTest/emissive_grid.glb";
-
-    // Vertex Color - vertex color has the green channel growing on the y axis, 
-    // base color has the blue channel growing on the x axis
-    std::string t3 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/VertexColorTest/vertex_color_grid.glb";
-
-    // Double Sided - modified version of OrientationTest with double sided enabled on the cube material, not the arrows'
-    std::string t4 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/DoubleSidedTest/OrientationTest.gltf";
-
-    // Alpha Mode - opaque
-    std::string t5 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/opaque_grid.glb";
-
-    // Alpha Mode - mask, the alpha channel in the base color grows on the x axis
-    // while it's random between 0.5 and 1 in the vertex color
-    // the cutoff is set to 0.3 in the material hence the first 3 of the 10 columns should be basically invisible
-    // while the others are progressively more visible because of the increasing alpha in the base color
-    std::string t6 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/mask_grid.glb";
-
-    // Alpha Mode - blend, generated with the same criteria as t6
-    // the only change is the alpha mode set to BLEND
-    std::string t7 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/blend_grid.glb"; 
-
-    // Similar to the previous one, but with varying metallic and roughness
-    std::string t8 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaModeTest/metal_rough_blend_grid.glb"; 
-
+    
+    // Metallic-Roughness - just using factors
+    std::string t01 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
+    
     // Multiple materials per mesh - the upper part is a double sided red metal,
     // the lower part a semitransparent blue matte
-    std::string t9 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
+    std::string t02 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
 
-    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(e7);
+    // Vertex Colors - tests if vertex color are read and used correctly when present
+    std::string t03 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
+
+    // Base color texture
+    std::string t04 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxTextured/BoxTextured.gltf";
+
+    // Texture with non power of two dimensions
+    std::string t05 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxTexturedNonPowerOfTwo/BoxTexturedNonPowerOfTwo.gltf";
+
+    // Double sided, texture coordinate wrapping settings
+    std::string t06 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/TextureSettingsTest/TextureSettingsTest.gltf";
+
+    // Metallic-Roughness texture
+    std::string t07 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf";
+
+    // Normal texture
+    std::string t08 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareNormal/CompareNormal.gltf";
+    std::string t09 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentTest/NormalTangentTest.gltf";
+
+    // Normal texture, with provided tangent
+    std::string t10 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf";
+
+    // Alpha Modes
+    std::string t11 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaBlendModeTest/AlphaBlendModeTest.gltf";
+    std::string t12 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareAlphaCoverage/CompareAlphaCoverage.gltf";
+
+    // All textures
+    std::string t13 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf";
+
+    // Many textures, alpha mode, big model
+    std::string t14 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sponza/Sponza.gltf";
+
+    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(t01);
+
+    using enum Material::TextureType;
 
     auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
         const vcl::Texture& texture = mat.texture(type);
         std::string typeName = "baseColor";
-        if(type == Material::TextureType::METALLIC_ROUGHNESS) {
+        if(type == METALLIC_ROUGHNESS) {
             typeName = "metallicRoughness";
-        } else if(type == Material::TextureType::NORMAL) {
+        } else if(type == NORMAL) {
             typeName = "normal";
-        } else if(type == Material::TextureType::OCCLUSION) {
+        } else if(type == OCCLUSION) {
             typeName = "occlusion";
-        } else if(type == Material::TextureType::EMISSIVE) {
+        } else if(type == EMISSIVE) {
             typeName = "emissive";
         }
 
@@ -127,11 +116,11 @@ int main(int argc, char** argv)
             std::cout << "  alphaCutoff: " << mat.alphaCutoff() << std::endl;
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength() << std::endl;
-            printTextureInfo(mat, Material::TextureType::BASE_COLOR);
-            printTextureInfo(mat, Material::TextureType::METALLIC_ROUGHNESS);
-            printTextureInfo(mat, Material::TextureType::NORMAL);
-            printTextureInfo(mat, Material::TextureType::OCCLUSION);
-            printTextureInfo(mat, Material::TextureType::EMISSIVE);
+            printTextureInfo(mat, BASE_COLOR);
+            printTextureInfo(mat, METALLIC_ROUGHNESS);
+            printTextureInfo(mat, NORMAL);
+            printTextureInfo(mat, OCCLUSION);
+            printTextureInfo(mat, EMISSIVE);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;
