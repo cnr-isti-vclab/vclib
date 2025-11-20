@@ -675,8 +675,8 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * buffer the vertex tangent of the vertices listed in the input list.
  *
  * The number of components for each tangent stored in the buffer depends on
- * the `storeHandnessAsW` parameter: if true, 4 components are stored (xyz
- * and w for the handness: -1 if the bitangent is computed as cross product of
+ * the `storeHandednessAsW` parameter: if true, 4 components are stored (xyz
+ * and w for the handedness: -1 if the bitangent is computed as cross product of
  * normal and tangent, +1 otherwise); otherwise only the xyz components are
  * stored.
  *
@@ -700,7 +700,7 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * @endcode
  *
  * @note The buffer must be preallocated with the correct size (total number of
- * vertices times 3 or 4 depending on the `storeHandnessAsW` parameter).
+ * vertices times 3 or 4 depending on the `storeHandednessAsW` parameter).
  *
  * @tparam MeshType: The type of the mesh.
  *
@@ -708,7 +708,7 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
  * @param[out] buffer: The buffer where to append the duplicated vertex tangent.
- * @param[in] storeHandnessAsW: If true, the w component of the tangent
+ * @param[in] storeHandednessAsW: If true, the w component of the tangent
  * (quaternion) is stored in the buffer; otherwise only the xyz components are
  * stored.
  * @param[in] storage: The storage type of the matrix (row or column major).
@@ -720,8 +720,8 @@ void appendDuplicateVertexTangentsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
-    bool                   storeHandnessAsW = true,
-    MatrixStorageType      storage          = MatrixStorageType::ROW_MAJOR)
+    bool                   storeHandednessAsW = true,
+    MatrixStorageType      storage            = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
 
@@ -732,7 +732,7 @@ void appendDuplicateVertexTangentsToBuffer(
     requirePerVertexTangent(mesh);
 
     const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
-    const uint COL_NUM = storeHandnessAsW ? 4 : 3;
+    const uint COL_NUM = storeHandednessAsW ? 4 : 3;
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& t = mesh.vertex(v).tangent();
@@ -740,7 +740,7 @@ void appendDuplicateVertexTangentsToBuffer(
         at(buffer, i, 0, ROW_NUM, COL_NUM, storage) = t.x();
         at(buffer, i, 1, ROW_NUM, COL_NUM, storage) = t.y();
         at(buffer, i, 2, ROW_NUM, COL_NUM, storage) = t.z();
-        if (storeHandnessAsW) {
+        if (storeHandednessAsW) {
             at(buffer, i, 3, ROW_NUM, COL_NUM, storage) =
                 mesh.vertex(v).tangentRightHanded() ? 1.0 : -1.0;
         }
