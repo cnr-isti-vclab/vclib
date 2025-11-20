@@ -26,6 +26,10 @@
 #include "base/component.h"
 #include "base/predicates.h"
 
+#include <vclib/mesh/elements/base/base.h>
+#include <vclib/mesh/exceptions.h>
+
+#include <vclib/base.h>
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
@@ -60,7 +64,7 @@ class Tangent :
         public Component<
             Tangent<P, ParentElemType, OPT>,
             CompId::TANGENT,
-            std::pair<P, P>,
+            std::pair<P, bool>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -68,7 +72,7 @@ class Tangent :
     using Base = Component<
         Tangent<P, ParentElemType, OPT>,
         CompId::TANGENT,
-        std::pair<P, P>,
+        std::pair<P, bool>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
@@ -82,9 +86,26 @@ public:
     /* Constructors */
 
     /**
-     * @brief Initilizes the Tangent to (0, 0, 0).
+     * @brief Initilizes the Tangent to (0, 0, 0) right handed.
      */
-    Tangent() = default;
+    Tangent()
+    {
+        if constexpr (!Base::IS_VERTICAL) {
+            init();
+        }
+    }
+
+    /**
+     * @private
+     * @brief Initializes the tangent to (0, 0, 0) right handed.
+     *
+     * It is made in the init function since the component could be not
+     * available during construction (e.g. if the component is optional and not
+     * enabled).
+     *
+     * This member function is hidden by the element that inherits this class.
+     */
+    void init() { Base::data().second = true; }
 
     /* Member functions */
 
@@ -100,6 +121,55 @@ public:
      */
     P& tangent() { return Base::data().first; }
 
+    /**
+     * @brief Returns true if the tangent is right handed, false otherwise.
+     * @return true if the tangent is right handed, false otherwise.
+     */
+    bool tangentRightHanded() const { return Base::data().second; }
+
+    /**
+     * @brief Returns a reference to the boolean that indicates if the tangent
+     * is right handed.
+     * @return a reference to the boolean that indicates if the tangent is
+     * right handed.
+     */
+    bool& tangentRightHanded() { return Base::data().second; }
+
+    /**
+     * @brief Computes and returns the bitangent vector using the tangent and
+     * normal vectors.
+     *
+     * The bitangent is computed as the cross product between the tangent and
+     * the normal vectors. The direction of the bitangent depends on the
+     * handedness of the tangent.
+     *
+     * @throws vcl::MissingComponentException if the Normal component is not
+     * enabled on the parent element.
+     *
+     * @return The computed bitangent vector.
+     */
+    P bitangent() const
+    {
+        const ParentElemType& parent =
+            static_cast<const ParentElemType&>(*this);
+
+        if (isComponentAvailableOn<CompId::NORMAL>(parent)) {
+            // compute bitangent using the tangent and normal
+            // assuming that normal is available
+            const auto& n = static_cast<const ParentElemType&>(*this).normal();
+            return tangentRightHanded()
+                       ? n.cross(tangent())
+                       : tangent().cross(n);
+        }
+        else {
+            throw MissingComponentException(
+                "Per " +
+                std::string(elementEnumString<ParentElemType::ELEMENT_ID>()) +
+                " Normal Component is not enabled.");
+            return P();
+        }
+    }
+
 protected:
     // Component interface functions
     template<typename Element>
@@ -108,11 +178,13 @@ protected:
     void serialize(std::ostream& os) const
     {
         tangent().serialize(os);
+        vcl::serialize(os, tangentRightHanded());
     }
 
     void deserialize(std::istream& is)
     {
         tangent().deserialize(is);
+        vcl::deserialize(is, tangentRightHanded());
     }
 };
 

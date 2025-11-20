@@ -401,10 +401,10 @@ protected:
      * @param[in] mesh: the input mesh
      * @param[out] buffer: the buffer to fill
      */
-    void fillVertexTangent(const MeshConcept auto& mesh, auto* buffer)
+    void fillVertexTangents(const MeshConcept auto& mesh, auto* buffer)
     {
-        vertexTangentToBuffer(mesh, buffer);
-        appendDuplicateVertexTangentToBuffer(mesh, mVertsToDuplicate, buffer);
+        vertexTangentsToBuffer(mesh, buffer);
+        appendDuplicateVertexTangentsToBuffer(mesh, mVertsToDuplicate, buffer);
     }
 
     /**
@@ -693,7 +693,7 @@ protected:
      * the data to the GPU.
      *
      * The function should allocate and fill a cpu buffer to store the vertex
-     * tangent using the `numVerts() * 3` and `fillVertexTangent()` functions,
+     * tangent using the `numVerts() * 3` and `fillVertexTangents()` functions,
      * and then send the data to the GPU using the rendering backend.
      *
      * There is no need to check whether the Mesh can provide per-vertex
@@ -704,7 +704,7 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexTangentBuffer(const MeshConcept auto&) {}
+    void setVertexTangentsBuffer(const MeshConcept auto&) {}
 
     /**
      * @brief Function that sets the content of wedge texture coordinates buffer
@@ -1015,7 +1015,7 @@ private:
             if (isPerVertexTangentAvailable(mesh)) {
                 if (btu[toUnderlying(VERT_TANGENT)]) {
                     // vertex buffer (tangent)
-                    derived().setVertexTangentBuffer(mesh);
+                    derived().setVertexTangentsBuffer(mesh);
                 }
             }
         }

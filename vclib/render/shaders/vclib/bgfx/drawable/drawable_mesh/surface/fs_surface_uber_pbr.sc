@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
+$input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
@@ -56,10 +56,20 @@ vec4 getColorFromTexture(uint texId, vec2 uv) {
 
 void main()
 {
+    #ifndef VIEWER_LIGHTS
+
     // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
-    vec3 lightDirections[2] = {LIGHT_KEY_DIR, LIGHT_FILL_DIR};
+    vec3 lightDirections[2] = {LIGHT_KEY_DIR_VIEW, LIGHT_FILL_DIR_VIEW};
     vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
     float lightIntensities[2] = {1.0, 0.5};
+
+    #else
+
+    vec3 lightDirections[1] = {-u_lightDir};
+    vec3 lightColors[1] = {u_lightColor};
+    float lightIntensities[1] = {1.0};
+
+    #endif // VIEWER_LIGHTS
 
     // texcoord to use
     vec2 texcoord = v_texcoord0; // per vertex
@@ -119,8 +129,18 @@ void main()
         // scale normal's x and y as requested by gltf 2.0 specification
         normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
 
-        // construct tangent frame using vertex normals
-        mat3 tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+        mat3 tangentFrame;
+
+        if(isPerVertexTangentAvailable(u_settings.x))
+        {
+            vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
+            tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
+        }
+        else
+        {
+            // construct tangent frame using vertex normals
+            tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+        }
 
         // change the basis of the normal provided by the texture
         // from tangent space to the space used for computations

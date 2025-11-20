@@ -74,7 +74,8 @@ public:
     void update(
         const Material&                    m,
         bool                               vertexColorAvailable,
-        const std::array<bool, N_TEXTURES>& textureAvailable)
+        const std::array<bool, N_TEXTURES>& textureAvailable,
+        bool                               vertexTangentAvailable)
     {
         int settings = 0;
         if (vertexColorAvailable) // per-vertex color available
@@ -93,6 +94,9 @@ public:
                     << (2 + i); // texture available, uses settings from 2 to 6
             }
         }
+
+        if(vertexTangentAvailable) // per-vertex tangent available
+            settings |= 1 << 7;
 
         mSettings[0] = float(settings);
 

@@ -36,12 +36,13 @@
 
 namespace vcl::detail {
 
-enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, INDICES };
-inline const std::array<std::string, 4> GLTF_ATTR_STR {
+enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, TANGENT, INDICES };
+inline const std::array<std::string, 5> GLTF_ATTR_STR {
     "POSITION",
     "NORMAL",
     "COLOR_0",
-    "TEXCOORD_0"};
+    "TEXCOORD_0",
+    "TANGENT"};
 
 template<MeshConcept MeshType>
 int loadGltfPrimitiveMaterial(
@@ -269,6 +270,41 @@ bool populateGltfVNormals(
 }
 
 template<MeshConcept MeshType, typename Scalar>
+bool populateGltfVTangents(
+    MeshType&     m,
+    uint          firstVertex,
+    bool          enableOptionalComponents,
+    const Scalar* tangArray,
+    unsigned int  stride,
+    unsigned int  vertNumber)
+{
+    if constexpr (HasPerVertexTangent<MeshType>) {
+        using TangentType = typename MeshType::VertexType::TangentType;
+
+        if (enableOptionalComponents)
+            enableIfPerVertexTangentOptional(m);
+
+        if (isPerVertexTangentAvailable(m)) {
+            for (unsigned int i = 0; i < vertNumber; i++) {
+                const Scalar* tangBase = reinterpret_cast<const Scalar*>(
+                    reinterpret_cast<const char*>(tangArray) + i * stride);
+                m.vertex(firstVertex + i).tangent() =
+                    TangentType(tangBase[0], tangBase[1], tangBase[2]);
+                bool rh = tangBase[3] >= 0;
+                m.vertex(firstVertex + i).tangentRightHanded() = rh;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+}
+
+template<MeshConcept MeshType, typename Scalar>
 bool populateGltfVColors(
     MeshType&     m,
     uint          firstVertex,
@@ -434,6 +470,14 @@ bool populateGltfAttr(
             enableOptionalComponents,
             array,
             stride,
+            number);
+    case TANGENT:
+        return populateGltfVTangents(
+            m, 
+            firstVertex, 
+            enableOptionalComponents, 
+            array, 
+            stride, 
             number);
     case INDICES:
         return populateGltfTriangles(m, firstVertex, array, number / 3);
@@ -678,6 +722,14 @@ void loadGltfMeshPrimitive(
     if (lvt) {
         info.setPerVertexTexCoord();
     }
+
+    loadGltfAttribute(
+        m,
+        firstVertex,
+        settings.enableOptionalComponents,
+        model,
+        p,
+        GltfAttrType::TANGENT);
 
     if constexpr (HasPerVertexMaterialIndex<MeshType>) {
         if (settings.enableOptionalComponents) {

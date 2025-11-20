@@ -1357,8 +1357,13 @@ void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
  *
  * This function exports the vertex tangent of a mesh to a buffer. Tangents are
  * stored in the buffer following the order the vertices appear in the mesh. The
- * buffer must be preallocated with the correct size (number of vertices times
- * 3).
+ * buffer must be preallocated with the correct size.
+ *
+ * The number of components for each tangent stored in the buffer depends on
+ * the `storeHandednessAsW` parameter: if true, 4 components are stored (xyz
+ * and w for the handedness: -1 if the bitangent is computed as cross product of
+ * normal and tangent, +1 otherwise); otherwise only the xyz components are
+ * stored.
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -1374,11 +1379,12 @@ void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
  * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
-void vertexTangentToBuffer(
+void vertexTangentsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
-    uint              rowNumber = UINT_NULL)
+    bool              storeHandednessAsW = true,
+    MatrixStorageType storage            = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber          = UINT_NULL)
 {
     using namespace detail;
 
@@ -1386,11 +1392,16 @@ void vertexTangentToBuffer(
 
     const uint ROW_NUM =
         rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
+    const uint COL_NUM = storeHandednessAsW ? 4 : 3;
 
-    for (uint i = 0; const auto& t : mesh.vertices() | views::tangents) {
-        at(buffer, i, 0, ROW_NUM, 3, storage) = t.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = t.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = t.z();
+    for (uint i = 0; const auto& v : mesh.vertices()) {
+        at(buffer, i, 0, ROW_NUM, COL_NUM, storage) = v.tangent().x();
+        at(buffer, i, 1, ROW_NUM, COL_NUM, storage) = v.tangent().y();
+        at(buffer, i, 2, ROW_NUM, COL_NUM, storage) = v.tangent().z();
+        if (storeHandednessAsW) {
+            at(buffer, i, 3, ROW_NUM, COL_NUM, storage) =
+                v.tangentRightHanded() ? 1.0 : -1.0;
+        }
 
         ++i;
     }

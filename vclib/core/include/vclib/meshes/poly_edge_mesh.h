@@ -57,6 +57,7 @@ class Edge;
  * @extends vert::OptionalPrincipalCurvature
  * @extends vert::OptionalTexCoord
  * @extends vert::OptionalMaterialIndex
+ * @extends vert::OptionalTangent3
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
  *
@@ -81,6 +82,7 @@ class Vertex :
             vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
             vert::OptionalMaterialIndex<Vertex<Scalar, I>>,
+            vert::OptionalTangent3<Scalar, Vertex<Scalar, I>>,
             vert::OptionalMark<Vertex<Scalar, I>>,
             vert::CustomComponents<Vertex<Scalar, I>>>
 {
