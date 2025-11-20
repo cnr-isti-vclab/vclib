@@ -1,4 +1,4 @@
-$input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
+$input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include "flat.sh"
 #include "color_face.sh"
