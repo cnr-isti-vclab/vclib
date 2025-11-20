@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     // Many textures, alpha mode, big model
     std::string t14 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sponza/Sponza.gltf";
 
-    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(t01);
+    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(t10);
 
     using enum Material::TextureType;
 

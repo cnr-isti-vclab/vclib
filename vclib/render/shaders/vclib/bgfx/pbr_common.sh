@@ -48,9 +48,10 @@
 #define isPerVertexTangentAvailable(settings)         checkSetting(settings, PBR_VERTEX_TANGENT_AVAILABLE)
 
 #define USE_LIGHTS
-#define LIGHT_COUNT                                   2
+#define LIGHT_COUNT                                   1
 #define PI                                            3.141592653589793
 #define GAMMA                                         2.2
+#define VIEWER_LIGHTS
 
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
 
@@ -311,6 +312,7 @@ vec4 pbrColor(
     
     float NoV = clampedDot(normal, V);
 
+    UNROLL
     for(int i = 0; i < LIGHT_COUNT; ++i)
     {
         // incoming light direction and contribution
