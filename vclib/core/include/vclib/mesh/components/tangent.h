@@ -168,9 +168,6 @@ public:
                 " Normal Component is not enabled.");
             return P();
         }
-
-
-
     }
 
 protected:

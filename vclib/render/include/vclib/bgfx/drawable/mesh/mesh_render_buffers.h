@@ -635,8 +635,6 @@ private:
                 for(uint mip = 1; mip < numMips; mip++) {
                     dest = source + offset;
                     uint mipSize = (txt.width() >> mip) * (txt.height() >> mip);
-                    std::cout << "Generating mip level " << mip << " for texture "
-                              << tex.path() << " with size " << mipSize << std::endl;
                     bimg::imageRgba8Downsample2x2(
                         dest,                           // output location
                         txt.width() >> (mip - 1),       // input width

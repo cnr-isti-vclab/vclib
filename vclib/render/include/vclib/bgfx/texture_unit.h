@@ -119,7 +119,7 @@ public:
         bgfx::ReleaseFn     releaseFn = nullptr)
     {
         uint32_t size = bimg::imageGetSize(
-            NULL, 
+            nullptr,
             sizes.x(), 
             sizes.y(), 
             1, 
