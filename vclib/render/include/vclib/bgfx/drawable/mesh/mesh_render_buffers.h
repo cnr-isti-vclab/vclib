@@ -488,14 +488,14 @@ private:
             releaseFn);
     }
 
-    void setVertexTangentBuffer(const MeshType& mesh) // override
+    void setVertexTangentsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
             getAllocatedBufferAndReleaseFn<float>(nv * 4);
 
-        Base::fillVertexTangent(mesh, buffer);
+        Base::fillVertexTangents(mesh, buffer);
 
         mVertexTangentsBuffer.create(
             buffer,

@@ -53,6 +53,7 @@ class Face;
  * @extends vert::OptionalPrincipalCurvature
  * @extends vert::OptionalTexCoord
  * @extends vert::OptionalMaterialIndex
+ * @extends vert::OptionalTangent3
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
  *
@@ -69,7 +70,6 @@ class Vertex :
             vert::BitFlags,
             vert::Position3<Scalar>,
             vert::Normal3<Scalar>,
-            vert::OptionalTangent<Scalar, 4, Vertex<Scalar, I>>,
             vert::OptionalColor<Vertex<Scalar, I>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
             vert::OptionalAdjacentFaces<I, Face<Scalar, I>, Vertex<Scalar, I>>,
@@ -77,6 +77,7 @@ class Vertex :
             vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
             vert::OptionalMaterialIndex<Vertex<Scalar, I>>,
+            vert::OptionalTangent3<Scalar, Vertex<Scalar, I>>,
             vert::OptionalMark<Vertex<Scalar, I>>,
             vert::CustomComponents<Vertex<Scalar, I>>>
 {

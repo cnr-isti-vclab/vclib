@@ -289,7 +289,9 @@ bool populateGltfVTangents(
                 const Scalar* tangBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(tangArray) + i * stride);
                 m.vertex(firstVertex + i).tangent() =
-                    TangentType(tangBase[0], tangBase[1], tangBase[2], tangBase[3]);
+                    TangentType(tangBase[0], tangBase[1], tangBase[2]);
+                bool rh = tangBase[3] >= 0;
+                m.vertex(firstVertex + i).tangentRightHanded() = rh;
             }
             return true;
         }
