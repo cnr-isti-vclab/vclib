@@ -585,16 +585,16 @@ private:
             uint     j  // j-th texture
         ) 
         {
+            using enum Texture::MinificationFilter;
+            using enum Texture::WrapMode;
 
             Texture::MinificationFilter minFilter = tex.minFilter();
             Texture::MagnificationFilter magFilter = tex.magFilter();
             Texture::WrapMode wrapU = tex.wrapU();
             Texture::WrapMode wrapV = tex.wrapV();
 
-            bool hasMips =
-                toUnderlying(minFilter) >=
-                toUnderlying(Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST) ||
-                minFilter == Texture::MinificationFilter::NONE; // default LINEAR_MIPMAP_LINEAR
+            bool hasMips = minFilter >= NEAREST_MIPMAP_NEAREST ||
+                           minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
 
             Image& txt = tex.image();
 
@@ -604,7 +604,7 @@ private:
             assert(size > 0);
 
             uint sizeWithMips = bimg::imageGetSize(
-                NULL, 
+                nullptr,
                 txt.width(), 
                 txt.height(), 
                 1, 
@@ -653,31 +653,30 @@ private:
 
             if(tex.colorSpace() == Texture::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
-            
+
             // set minification filter - bgfx default is linear
-            if(minFilter == Texture::MinificationFilter::NEAREST || 
-               minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_LINEAR ||
-               minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST)
+            if (minFilter == NEAREST || minFilter == NEAREST_MIPMAP_LINEAR ||
+                minFilter == NEAREST_MIPMAP_NEAREST)
                 flags |= BGFX_SAMPLER_MIN_POINT;
 
             // set mipmap filter - bgfx default is linear
-            if(minFilter == Texture::MinificationFilter::NEAREST_MIPMAP_NEAREST ||
-               minFilter == Texture::MinificationFilter::LINEAR_MIPMAP_NEAREST)
+            if (minFilter == NEAREST_MIPMAP_NEAREST ||
+                minFilter == LINEAR_MIPMAP_NEAREST)
                 flags |= BGFX_SAMPLER_MIP_POINT;
-                
+
             // set magnification filter - bgfx default is linear
-            if(magFilter == Texture::MagnificationFilter::NEAREST)
+            if (magFilter == Texture::MagnificationFilter::NEAREST)
                 flags |= BGFX_SAMPLER_MAG_POINT;
 
             // set wrap modes - bgfx default is repeat
-            if(wrapU == Texture::WrapMode::CLAMP_TO_EDGE)
+            if (wrapU == CLAMP_TO_EDGE)
                 flags |= BGFX_SAMPLER_U_CLAMP;
-            else if(wrapU == Texture::WrapMode::MIRRORED_REPEAT)
+            else if (wrapU == MIRRORED_REPEAT)
                 flags |= BGFX_SAMPLER_U_MIRROR;
-    
-            if(wrapV == Texture::WrapMode::CLAMP_TO_EDGE)
+
+            if (wrapV == CLAMP_TO_EDGE)
                 flags |= BGFX_SAMPLER_V_CLAMP;
-            else if(wrapV == Texture::WrapMode::MIRRORED_REPEAT)
+            else if (wrapV == MIRRORED_REPEAT)
                 flags |= BGFX_SAMPLER_V_MIRROR;
 
             auto tu = std::make_unique<TextureUnit>();
@@ -692,9 +691,9 @@ private:
             mMaterialTextureUnits[i][j] = std::move(tu);
         };
 
-        auto loadTextureAndSetUnit = [&](uint texture)
-        {
-            uint texturesPerMaterial = toUnderlying(Material::TextureType::COUNT);
+        auto loadTextureAndSetUnit = [&](uint texture) {
+            uint texturesPerMaterial =
+                toUnderlying(Material::TextureType::COUNT);
             uint i = texture / texturesPerMaterial; // i-th material
             uint j = texture % texturesPerMaterial; // j-th texture
 
@@ -724,7 +723,7 @@ private:
                 }
             }
 
-                   // if loading succeeded (or dummy texture has been created)
+            // if loading succeeded (or dummy texture has been created)
             if (!txt.isNull()) {
                 setTextureUnit(tex, i, j);
             }
@@ -735,7 +734,9 @@ private:
         if constexpr (vcl::HasMaterials<MeshType>) {
             mMaterialTextureUnits.resize(mesh.materialsNumber());
 
-            std::vector<int> textures(mesh.materialsNumber() * toUnderlying(Material::TextureType::COUNT));
+            std::vector<int> textures(
+                mesh.materialsNumber() *
+                toUnderlying(Material::TextureType::COUNT));
             std::iota(textures.begin(), textures.end(), 0);
 
             parallelFor(textures.begin(),textures.end(), loadTextureAndSetUnit);
