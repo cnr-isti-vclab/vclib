@@ -21,7 +21,7 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-core-3rdparty)
+project(vclib-3rdparty)
 
 include(FetchContent)
 
@@ -63,10 +63,9 @@ if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     option(VCLIB_ALLOW_INSTALL_TINYGTLF "Allow install tinygltf source" ON)
 endif()
 
-
 # === Fetch dependencies === #
 
-set(VCLIB_CORE_3RDPARTY_LIBRARIES "")
+set(VCLIB_3RDPARTY_LIBRARIES "")
 
 ### Eigen
 include(eigen.cmake)
@@ -94,4 +93,4 @@ if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
 endif()
 
 
-set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_3RDPARTY_LIBRARIES ${VCLIB_3RDPARTY_LIBRARIES} PARENT_SCOPE)

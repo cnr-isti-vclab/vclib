@@ -20,8 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(Eigen3 QUIET)
-
 set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-5.0.1)
 
 if(VCLIB_ALLOW_SYSTEM_EIGEN AND TARGET Eigen3::Eigen)

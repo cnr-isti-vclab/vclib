@@ -23,14 +23,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-core)
 
-### Options
-option(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES
-    "Build the core module with 3rdparty I/O libraries" ON)
-
-# 3rdparty libraries
-message(STATUS "VCLib-Core: 3rdparty libraries")
-add_subdirectory(3rdparty)
-
 ### vclib-core target
 set(VCLIB_CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -44,7 +36,7 @@ target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_CORE_MODULE)
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VCLIB_CORE_INCLUDE_DIR ${VCLIB_CORE_INCLUDE_DIR})
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_3RDPARTY_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} INTERFACE ${VCLIB_3RDPARTY_LIBRARIES})
 
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 

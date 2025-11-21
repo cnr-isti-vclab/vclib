@@ -32,6 +32,9 @@ project(vclib VERSION ${VCLIB_VERSION})
 option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 
 # Optional modules build options
+option(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES
+    "Build the core module with 3rdparty I/O libraries" ON)
+
 option(VCLIB_BUILD_MODULE_EXTERNAL "Build the external module" OFF)
 option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
@@ -61,6 +64,9 @@ include(cmake/vclib_common_settings.cmake)
 
 ### Examples and Tests
 include(cmake/examples_and_tests.cmake)
+
+message(STATUS "VCLib: 3rdparty libraries")
+add_subdirectory(3rdparty)
 
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(vclib::vclib ALIAS ${PROJECT_NAME})
