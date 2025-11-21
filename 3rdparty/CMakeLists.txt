@@ -27,70 +27,52 @@ include(FetchContent)
 
 # === REQUIRED === #
 
+set(VCLIB_3RDPARTY_LIBRARIES "")
+
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+include(eigen.cmake)
 
 # MapBox earcut
 option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
     "Allow use of bundled Mapbox-Eaurcut source" ON)
 option(VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT
     "Allow install Mapbox-Eaurcut source" ON)
+include(mapbox.cmake)
+
+# poolSTL (not required if C++17 parallel algorithms are available) and TBB
+option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
+option(VCLIB_ALLOW_INSTALL_POOLSTL "Allow install poolSTL source" ON)
+option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
+include(poolstl_tbb.cmake)
 
 # Zip iterator
 option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
     "Allow use of bundled ZipViews source" ON)
 option(VCLIB_ALLOW_INSTALL_ZIP_VIEWS
     "Allow install ZipViews source" ON)
-
-# poolSTL
-option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
-option(VCLIB_ALLOW_INSTALL_POOLSTL "Allow install poolSTL source" ON)
+include(zip-views.cmake)
 
 # === OPTIONAL === #
-
-# TBB
-option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
 # IO - 3rd Party libraries
 if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     # Qt
     option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
+    include(qt.cmake)
 
     # tinygltf
     option(VCLIB_ALLOW_DOWNLOAD_TINYGTLF
         "Allow use of downloaded tinygltf source (brings stb and nlohmann-json)" ON)
     option(VCLIB_ALLOW_INSTALL_TINYGTLF "Allow install tinygltf source" ON)
+    include(tinygltf.cmake)
 endif()
 
-# === Fetch dependencies === #
-
-set(VCLIB_3RDPARTY_LIBRARIES "")
-
-### Eigen
-include(eigen.cmake)
-
-### Mapbox-Earcut
-include(mapbox.cmake)
-
-### Zip iterator
-include(zip-views.cmake)
-
-### TBB
-include(tbb.cmake) # leave this BEFORE poolSTL
-
-### poolSTL
-include(poolstl.cmake)
-
-### IO - 3rd Party libraries
-
-if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
-    # Qt
-    include(io/qt.cmake)
-
-    # tinygltf
-    include(io/tinygltf.cmake)
+if (VCLIB_BUILD_MODULE_BINDINGS)
+    # pybind11
+    option(VCLIB_ALLOW_DOWNLOAD_PYBIND "Allow use of downloaded pybind11 source" ON)
+    include(pybind.cmake)
 endif()
-
 
 set(VCLIB_3RDPARTY_LIBRARIES ${VCLIB_3RDPARTY_LIBRARIES} PARENT_SCOPE)

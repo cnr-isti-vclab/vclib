@@ -20,6 +20,25 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
+# Try to find TBB first
+if (UNIX)
+    find_package(Threads QUIET)
+    find_package(TBB QUIET)
+
+    if (VCLIB_ALLOW_SYSTEM_TBB)
+        if (TARGET TBB::tbb AND TARGET Threads::Threads)
+            message(STATUS "- TBB - using system-provided library")
+
+            add_library(vclib-3rd-tbb INTERFACE)
+            target_link_libraries(vclib-3rd-tbb INTERFACE TBB::tbb Threads::Threads)
+
+            list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tbb)
+        else()
+            message(STATUS "- TBB - not found, skipping")
+        endif()
+    endif()
+endif()
+
 set(POOLSTL_VERSION 0.3.5)
 set(VCLIB_POOLSTL_DIR ${CMAKE_CURRENT_LIST_DIR}/poolSTL-${POOLSTL_VERSION})
 
