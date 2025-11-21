@@ -38,7 +38,7 @@ add_library(vclib-3rd-mapbox-earcut INTERFACE)
 target_include_directories(vclib-3rd-mapbox-earcut
     INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
 
-list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-mapbox-earcut)
+list(APPEND VCLIB_3RDPARTY_LIBRARIES vclib-3rd-mapbox-earcut)
 
 # Install
 if (VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT)

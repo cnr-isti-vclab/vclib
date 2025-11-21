@@ -40,7 +40,7 @@ if (VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
     add_library(vclib-3rd-tinygltf INTERFACE)
     target_link_libraries(vclib-3rd-tinygltf INTERFACE tinygltf)
 
-    list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tinygltf)
+    list(APPEND VCLIB_3RDPARTY_LIBRARIES vclib-3rd-tinygltf)
 
     target_compile_definitions(vclib-3rd-tinygltf INTERFACE
         VCLIB_WITH_JSON VCLIB_WITH_STB VCLIB_WITH_TINYGLTF)

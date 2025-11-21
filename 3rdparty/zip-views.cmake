@@ -41,7 +41,7 @@ add_library(vclib-3rd-zip-views INTERFACE)
 
 target_link_libraries(vclib-3rd-zip-views INTERFACE zip-view)
 
-list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-zip-views)
+list(APPEND VCLIB_3RDPARTY_LIBRARIES vclib-3rd-zip-views)
 
 # Install
 if (VCLIB_ALLOW_INSTALL_ZIP_VIEWS)
