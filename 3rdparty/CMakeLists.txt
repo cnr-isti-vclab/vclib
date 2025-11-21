@@ -63,12 +63,15 @@ include(zip-views.cmake)
 
 # === OPTIONAL === #
 
-# IO - 3rd Party libraries
-if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
+# IO or RENDER 3rd Party libraries
+if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
     # Qt
     option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
     include(qt.cmake)
+endif()
 
+# IO - 3rd Party libraries
+if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     # tinygltf
     option(VCLIB_ALLOW_DOWNLOAD_TINYGTLF
         "Allow use of downloaded tinygltf source (brings stb and nlohmann-json)" ON)
@@ -81,6 +84,16 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
     option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
     include(vcg.cmake)
+endif()
+
+if (VCLIB_BUILD_MODULE_RENDER)
+    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+
+    endif()
+
+    if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+
+    endif()
 endif()
 
 if (VCLIB_BUILD_MODULE_BINDINGS)

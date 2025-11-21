@@ -38,9 +38,6 @@ option(VCLIB_ALLOW_DOWNLOAD_BGFX "Allow use of downloaded BGFX source" ON)
 # Wayland
 option(VCLIB_RENDER_WITH_WAYLAND "Linux only - build vclib-render for wayland" OFF)
 
-# Qt
-option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
-
 # GLFW
 option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
 option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
@@ -66,9 +63,6 @@ if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
 endif()
 
 # === OPTIONAL === #
-
-### Qt
-include(qt.cmake)
 
 ### GLFW
 include(glfw.cmake)
