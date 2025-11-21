@@ -25,6 +25,12 @@ project(vclib-3rdparty)
 
 include(FetchContent)
 
+# 3rdparty libraries may have warnings
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+
+# Add the cmake folder for find_package scripts
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 # === REQUIRED === #
 
 set(VCLIB_CORE_3RDPARTY_LIBRARIES "")
