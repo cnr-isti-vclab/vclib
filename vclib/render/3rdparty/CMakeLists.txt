@@ -32,8 +32,8 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
 # bgfx
-option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
 option(VCLIB_ALLOW_SYSTEM_BGFX "Allow use of system-provided bgfx" ON)
+option(VCLIB_ALLOW_DOWNLOAD_BGFX "Allow use of downloaded BGFX source" ON)
 
 # Wayland
 option(VCLIB_RENDER_WITH_WAYLAND "Linux only - build vclib-render for wayland" OFF)

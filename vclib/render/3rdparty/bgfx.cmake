@@ -67,10 +67,9 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 
-elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
-    set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
+elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
-    message(STATUS "- bgfx - using bundled source")
+    message(STATUS "- bgfx - using downloaded source")
 
     # leave the option to build bgfx examples, but set it to OFF by default
     option(BGFX_BUILD_EXAMPLES "Build bgfx examples" OFF)
@@ -83,7 +82,12 @@ elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 
     set(BGFX_WITH_WAYLAND ${VCLIB_RENDER_WITH_WAYLAND})
 
-    add_subdirectory(${VCLIB_BGFX_DIR} EXCLUDE_FROM_ALL)
+    FetchContent_Declare(bgfx
+        GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
+        GIT_TAG        v1.135.9046-500
+        EXCLUDE_FROM_ALL)
+
+    FetchContent_MakeAvailable(bgfx)
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
@@ -92,13 +96,13 @@ elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 
     target_link_libraries(vclib-3rd-bgfx INTERFACE bx bgfx bimg)
     target_include_directories(vclib-3rd-bgfx
-        INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
+        INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty)
 
     set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_CMAKE_SCRIPTS_PATH ${VCLIB_BGFX_DIR}/cmake)
+        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_SOURCE_DIR}/cmake)
 
     set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_SHADER_INCLUDE_PATH ${VCLIB_BGFX_DIR}/bgfx/src)
+        BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 else()
