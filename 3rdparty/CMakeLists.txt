@@ -35,6 +35,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(VCLIB_CORE_3RDPARTY_LIBRARIES "")
 set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES "")
+set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
 
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
@@ -74,7 +75,8 @@ endif()
 if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     # tinygltf
     option(VCLIB_ALLOW_DOWNLOAD_TINYGTLF
-        "Allow use of downloaded tinygltf source (brings stb and nlohmann-json)" ON)
+        "Allow use of downloaded tinygltf source
+        (brings stb and nlohmann-json)" ON)
     option(VCLIB_ALLOW_INSTALL_TINYGTLF "Allow install tinygltf source" ON)
     include(tinygltf.cmake)
 endif()
@@ -87,20 +89,46 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
 endif()
 
 if (VCLIB_BUILD_MODULE_RENDER)
+    ### bgfx
     if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+        # Wayland (optional)
+        option(VCLIB_RENDER_WITH_WAYLAND
+            "Linux only - build vclib-render for wayland" OFF)
+        include(wayland.cmake)
 
+        # bgfx
+        option(VCLIB_ALLOW_SYSTEM_BGFX
+            "Allow use of system-provided bgfx" ON)
+        option(VCLIB_ALLOW_DOWNLOAD_BGFX
+            "Allow use of downloaded BGFX source" ON)
+        include(bgfx.cmake)
     endif()
 
+    ### OpenGL
     if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
-
+        include(opengl.cmake)
     endif()
+
+    ### GLFW
+    option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
+    option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
+    include(glfw.cmake)
+
+    ### ImGui
+    option(VCLIB_ALLOW_DOWNLOAD_IMGUI "Allow use of downloaded ImGui source" ON)
+    include(imgui.cmake)
 endif()
 
 if (VCLIB_BUILD_MODULE_BINDINGS)
     # pybind11
-    option(VCLIB_ALLOW_DOWNLOAD_PYBIND "Allow use of downloaded pybind11 source" ON)
+    option(VCLIB_ALLOW_DOWNLOAD_PYBIND
+        "Allow use of downloaded pybind11 source" ON)
     include(pybind.cmake)
 endif()
 
-set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
-set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_CORE_3RDPARTY_LIBRARIES
+    ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES
+    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_RENDER_3RDPARTY_LIBRARIES
+    ${VCLIB_RENDER_3RDPARTY_LIBRARIES} PARENT_SCOPE)

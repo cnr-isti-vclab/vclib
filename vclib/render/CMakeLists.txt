@@ -23,10 +23,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-render)
 
-# external libraries
-message(STATUS "VCLib-Render: 3rdparty libraries")
-add_subdirectory(3rdparty)
-
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/render/*.h")
