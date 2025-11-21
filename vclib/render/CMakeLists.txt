@@ -23,10 +23,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-render)
 
-# Options
-set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")
-set_property(CACHE VCLIB_RENDER_BACKEND PROPERTY STRINGS bgfx opengl2 none)
-
 # external libraries
 message(STATUS "VCLib-Render: 3rdparty libraries")
 add_subdirectory(3rdparty)

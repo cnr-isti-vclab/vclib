@@ -40,12 +40,7 @@ option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
 option(VCLIB_BUILD_MODULE_BINDINGS "Build the python bindings module" OFF)
 
-# Install modules options
-option(VCLIB_INSTALL_MODULE_CORE "Install the core module" ON)
-option(VCLIB_INSTALL_MODULE_EXTERNAL "Install the external module" ON)
-option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
-option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
-
+# If true, examples and tests targets will be excluded from the build
 option(VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS
     "Exclude examples and tests targets from the build" ON)
 
@@ -57,7 +52,30 @@ option(VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY
 
 # If true, vclib will require Qt
 option(VCLIB_REQUIRES_QT
-    "If true, vclib will require Qt (if core with io or render modules enabled)" OFF)
+    "If true, vclib will require Qt
+    (if core with io or render modules enabled)" OFF)
+
+# Render specific options
+if (VCLIB_BUILD_MODULE_RENDER)
+    set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")
+    set_property(CACHE VCLIB_RENDER_BACKEND PROPERTY STRINGS bgfx opengl2 none)
+endif()
+
+# Install modules options
+option(VCLIB_INSTALL_MODULE_CORE "Install the core module" ON)
+
+if (VCLIB_BUILD_MODULE_EXTERNAL)
+    option(VCLIB_INSTALL_MODULE_EXTERNAL "Install the external module" ON)
+endif()
+
+if (VCLIB_BUILD_MODULE_RENDER)
+    option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
+endif()
+
+if (VCLIB_BUILD_MODULE_BINDINGS)
+    option(VCLIB_INSTALL_MODULE_BINDINGS
+        "Install the python bindings module" ON)
+endif()
 
 ### Common settings
 include(cmake/vclib_common_settings.cmake)
