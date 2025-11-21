@@ -48,7 +48,7 @@ if (VCLIB_ALLOW_SYSTEM_QT)
         target_link_libraries(vclib-3rd-qt INTERFACE
             Qt6::Core Qt6::Gui)
 
-        list(APPEND VCLIB_3RDPARTY_LIBRARIES vclib-3rd-qt)
+        list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-qt)
     else()
         message(STATUS "- Qt - not found, skipping")
     endif()

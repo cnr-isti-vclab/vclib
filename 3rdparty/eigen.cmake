@@ -36,4 +36,4 @@ else()
         "Eigen is required - at least one of VCLIB_ALLOW_SYSTEM_EIGEN or VCLIB_ALLOW_BUNDLED_EIGEN must be enabled and found.")
 endif()
 
-list(APPEND VCLIB_3RDPARTY_LIBRARIES vclib-3rd-eigen)
+list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-eigen)

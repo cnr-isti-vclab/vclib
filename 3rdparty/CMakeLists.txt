@@ -27,7 +27,8 @@ include(FetchContent)
 
 # === REQUIRED === #
 
-set(VCLIB_3RDPARTY_LIBRARIES "")
+set(VCLIB_CORE_3RDPARTY_LIBRARIES "")
+set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES "")
 
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
@@ -69,10 +70,18 @@ if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     include(tinygltf.cmake)
 endif()
 
+if (VCLIB_BUILD_MODULE_EXTERNAL)
+    #VCG
+    option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
+    option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
+    include(vcg.cmake)
+endif()
+
 if (VCLIB_BUILD_MODULE_BINDINGS)
     # pybind11
     option(VCLIB_ALLOW_DOWNLOAD_PYBIND "Allow use of downloaded pybind11 source" ON)
     include(pybind.cmake)
 endif()
 
-set(VCLIB_3RDPARTY_LIBRARIES ${VCLIB_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} PARENT_SCOPE)

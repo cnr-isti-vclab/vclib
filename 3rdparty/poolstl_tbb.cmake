@@ -32,7 +32,7 @@ if (UNIX)
             add_library(vclib-3rd-tbb INTERFACE)
             target_link_libraries(vclib-3rd-tbb INTERFACE TBB::tbb Threads::Threads)
 
-            list(APPEND VCLIB_3RDPARTY_LIBRARIES vclib-3rd-tbb)
+            list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tbb)
         else()
             message(STATUS "- TBB - not found, skipping")
         endif()
@@ -61,7 +61,7 @@ if (VCLIB_ALLOW_BUNDLED_POOLSTL AND
             -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE -DPOOLSTL_STD_SUPPLEMENT_FORCE)
     endif()
 
-    list(APPEND VCLIB_3RDPARTY_LIBRARIES vclib-3rd-poolstl)
+    list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-poolstl)
 
     # Install
     if (VCLIB_ALLOW_INSTALL_POOLSTL)
