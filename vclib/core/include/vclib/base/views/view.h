@@ -29,7 +29,7 @@
 #else
 // inclusion for usage of vclib without CMake - not ideal but necessary for
 // header only
-#include "../../../external/zip-views-1.0/zip_view.hpp"
+#include "../../../../../../3rdparty/zip-views-1.0/zip_view.hpp"
 #endif
 #undef ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
 
