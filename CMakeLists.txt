@@ -127,7 +127,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 add_subdirectory(${VCLIB_TESTS_DIR})
 
-
 # Install
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/LICENSE
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/licenses/vclib)
