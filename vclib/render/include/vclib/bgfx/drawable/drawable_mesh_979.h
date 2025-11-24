@@ -116,33 +116,20 @@ public:
 
     friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
 
-    void calculateSelection(const DrawObjectSettings& settings, SelectionBox box, SelectionMode mode, bool isTemporary) override {
-        if (!HasFaces<MeshType> && mode.isFaceSelection()) {
+    void calculateSelection(const SelectionParameters& params) override {
+        if (params.mode.isFaceSelection()) {
+            if (!(params.mode.isVisibleSelection() ? faceSelectionVisible(params) : faceSelection(params))) {
+                return;
+            }
+        } else if (params.mode.isVertexSelection()) {
+            if (!vertexSelection(params)) {
+                return;
+            }
+        }
+        if (mBufToTexRemainingFrames != 255 || params.isTemporary) {
             return;
         }
-        mMRB.calculateSelection(settings, box, mode);
-        if (mBufToTexRemainingFrames != 255 || isTemporary) {
-            return;
-        }
-        mBufToTexRemainingFrames = mMRB.requestCPUCopyOfSelectionBuffer(mode);
-    }
-
-    void submitForVisibleFacesSelection(const DrawObjectSettings& settings) override {
-        if constexpr (!HasFaces<MeshType>) {
-            return;
-        }
-        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
-        bgfx::ProgramHandle prog = Context::instance().programManager().getProgram<VertFragProgram::VISIBLE_FACE_SELECTION_P1>();
-        float temp[4] = {
-            Uniform::uintBitsToFloat(settings.objectId),
-            0.f,
-            0.f,
-            0.f
-        };
-        mIdUniform.bind((void*)temp);
-        mMRB.bindVertexBuffers(mMRS);
-        bgfx::setState(state);
-        bgfx::submit(settings.viewId, prog);
+        mBufToTexRemainingFrames = mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
     }
 
     // TODO: to be removed after shader benchmarks
@@ -458,6 +445,40 @@ public:
     const std::string& name() const override { return MeshType::name(); }
 
 protected:
+
+    bool vertexSelection(const SelectionParameters& params)
+    {
+        if constexpr (!HasVertices<MeshType>) {
+            return false;
+        }
+        return (params.mode.isAtomicMode() ? 
+            mMRB.vertexSelectionAtomic(params.drawViewId, params.mode) 
+            : 
+            mMRB.vertexSelection(params.drawViewId, params.mode, params.box)
+        );
+        return true;
+    }
+
+    bool faceSelection(const SelectionParameters& params)
+    {
+        if constexpr (!HasFaces<MeshType>) {
+            return false;
+        }
+        return (params.mode.isAtomicMode() ? 
+            mMRB.faceSelectionAtomic(params.drawViewId, params.mode) 
+            : 
+            mMRB.faceSelection(params.drawViewId, params.mode, params.box)
+        );
+    }
+
+    bool faceSelectionVisible(const SelectionParameters& params)
+    {
+        if constexpr (!HasFaces<MeshType>) {
+            return false;
+        }
+        return mMRB.faceSelectionVisible(params.pass1ViewId, params.pass2ViewId, params.mode);
+    }
+
     void bindUniforms() const
     {
         mMeshRenderSettingsUniforms.bind();

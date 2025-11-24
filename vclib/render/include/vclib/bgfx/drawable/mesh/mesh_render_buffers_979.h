@@ -182,99 +182,56 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    void calculateSelection(
-        const DrawObjectSettings& settings,
-        SelectionBox       box,
-        SelectionMode      mode) const
+    bool vertexSelection(const uint viewId, const SelectionMode& mode, const SelectionBox& box)
     {
-        // If one of the box's point is not set and we are not in one of the
-        // atomic modes (which ignore the box entirely) we return
-        if (box.anyNull() && !mode.isAtomicMode()) {
-            return;
+        if (box.anyNull()) {
+            return false;
         }
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
+        bindSelectionBox(box);
+        bindVertexWGroupSizeAndCount();
+        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+        mVertexPositionsBuffer.bindCompute(VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        dispatchVertexSelection(viewId, prog);
+        return true;
+    }
 
-        auto&               pm = Context::instance().programManager();
-        bgfx::ProgramHandle selectionProgram =
-            getComputeProgramFromSelectionMode(pm, mode);
+    bool vertexSelectionAtomic(const uint viewId, const SelectionMode& mode)
+    {
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
+        bindVertexWGroupSizeAndCount();
+        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+        dispatchVertexSelection(viewId, prog);
+        return true;
+    }
 
-        if (mode.isFaceSelection() && mode.isVisibleSelection()) {
-            static const std::array<uint, 3> dispSz = workGroupSizesFrom1DSize(4096 * 4096);
-            float temp[4] = {
-                Uniform::uintBitsToFloat(dispSz[0]),
-                Uniform::uintBitsToFloat(dispSz[1]),
-                Uniform::uintBitsToFloat(settings.objectId), // change
-                0.f
-            };
-            mVisibleFacesUniform.bind((void*)temp);
-            mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
-            bgfx::dispatch(
-                settings.viewId,
-                selectionProgram,
-                dispSz[0],
-                dispSz[1],
-                dispSz[2]
-            );
-            return;
+    bool faceSelection(const uint viewId, const SelectionMode& mode, const SelectionBox& box)
+    {
+        if (box.anyNull()) {
+            return false;
         }
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
+        bindSelectionBox(box);
+        bindFaceWGroupSizeAndCount();
+        mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        mVertexPositionsBuffer.bindCompute(VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
+        dispatchFaceSelection(viewId, prog);
+        return true;
+    }
 
-        // If one of them does not have a value then we are clearly in an atomic
-        // mode and the values inside are arbitrary
-        SelectionBox minMaxBox = box.toMinAndMax();
-        Point2d      minPt     = minMaxBox.get1().value_or(Point2d(0.0, 0.0));
-        Point2d      maxPt     = minMaxBox.get2().value_or(Point2d(0.0, 0.0));
+    bool faceSelectionAtomic(const uint viewId, const SelectionMode& mode)
+    {
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
+        bindFaceWGroupSizeAndCount();
+        mSelectedFacesBuffer.value().bind(4, bgfx::Access::ReadWrite);
+        dispatchFaceSelection(viewId, prog);
+        return true;
+    }
 
-        float temp[] = {
-            float(minPt.x()),
-            float(minPt.y()),
-            float(maxPt.x()),
-            float(maxPt.y())};
-        mSelectionBoxuniform.bind((void*) temp);
-
-        std::array<float, 4> temp2;
-
-        if (mode.isVertexSelection()) {
-            mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-            mVertexPositionsBuffer.bindCompute(
-                VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-            temp2 = {
-                vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[0]),
-                vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[1]),
-                vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[2]),
-                vcl::Uniform::uintBitsToFloat(Base::numVerts())};
-            mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
-                (void*) temp2.data());
-            bgfx::dispatch(
-                settings.viewId,
-                selectionProgram,
-                mVertexSelectionWorkgroupSize[0],
-                mVertexSelectionWorkgroupSize[1],
-                mVertexSelectionWorkgroupSize[2]);
-            return;
-        }
-
-        if (mode.isFaceSelection()) {
-            if (!mSelectedFacesBuffer.has_value()) {
-                return;
-            }
-            temp2 = {
-                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
-                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
-                vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
-                vcl::Uniform::uintBitsToFloat(Base::numTris())};
-            mVertexPositionsBuffer.bindCompute(
-                VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-            mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
-            mSelectedFacesBuffer.value().bind(mode.isAtomicMode() ? 4 : 6, bgfx::Access::ReadWrite);
-            mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
-                (void*) temp2.data());
-            bgfx::dispatch(
-                settings.viewId,
-                selectionProgram,
-                mFaceSelectionWorkgroupSize[0],
-                mFaceSelectionWorkgroupSize[1],
-                mFaceSelectionWorkgroupSize[2]);
-            return;
-        }
+    bool faceSelectionVisible(const uint pass1ViewId, const uint pass2ViewId, const SelectionMode& mode)
+    {
+        return true;
     }
 
     uint requestCPUCopyOfSelectionBuffer(const SelectionMode& mode)
@@ -414,6 +371,64 @@ public:
     void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
+    void bindSelectionBox(const SelectionBox& box)
+    {
+        Point2d minPt = box.get1().value();
+        Point2d maxPt = box.get2().value();
+        float temp[] = {
+            float(minPt.x()),
+            float(minPt.y()),
+            float(maxPt.x()),
+            float(maxPt.y())};
+        mSelectionBoxuniform.bind((void*) temp);
+    }
+
+    void bindVertexWGroupSizeAndCount()
+    {
+        std::array<float, 4> temp = {
+            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[0]),
+            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[1]),
+            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[2]),
+            vcl::Uniform::uintBitsToFloat(Base::numVerts())
+        };
+        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
+            (void*) temp.data());
+    }
+
+    void bindFaceWGroupSizeAndCount()
+    {
+        std::array<float, 4> temp = {
+            vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
+            vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
+            vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
+            vcl::Uniform::uintBitsToFloat(Base::numTris())
+        };
+        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
+            (void*) temp.data());
+    }
+
+    void dispatchVertexSelection(const uint viewId, const bgfx::ProgramHandle& handle)
+    {
+        bgfx::dispatch(
+            viewId,
+            handle,
+            mVertexSelectionWorkgroupSize[0],
+            mVertexSelectionWorkgroupSize[1],
+            mVertexSelectionWorkgroupSize[2]
+        );
+    }
+
+    void dispatchFaceSelection(const uint viewId, const bgfx::ProgramHandle& handle)
+    {
+        bgfx::dispatch(
+            viewId,
+            handle,
+            mFaceSelectionWorkgroupSize[0],
+            mFaceSelectionWorkgroupSize[1],
+            mFaceSelectionWorkgroupSize[2]
+        );
+    }
+
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
         ProgramManager& pm,
         SelectionMode   mode) const

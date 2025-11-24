@@ -24,6 +24,7 @@
 #define VCL_SELECTION_MODE_H
 
 namespace vcl {
+
 class SelectionMode
 {
 public:
@@ -70,12 +71,12 @@ public:
     constexpr bool isAtomicMode() const
     {
         switch (mEnum) {
-        case VERTEX_ALL:
-        case VERTEX_INVERT:
-        case VERTEX_NONE:
-        case FACE_ALL:
-        case FACE_INVERT:
-        case FACE_NONE: return true;
+        case Enum::VERTEX_ALL:
+        case Enum::VERTEX_INVERT:
+        case Enum::VERTEX_NONE:
+        case Enum::FACE_ALL:
+        case Enum::FACE_INVERT:
+        case Enum::FACE_NONE: return true;
         default: return false;
         }
     }
@@ -85,12 +86,12 @@ public:
     constexpr bool isVertexSelection() const
     {
         switch (mEnum) {
-        case VERTEX_REGULAR:
-        case VERTEX_ADD:
-        case VERTEX_SUBTRACT:
-        case VERTEX_ALL:
-        case VERTEX_NONE:
-        case VERTEX_INVERT: return true;
+        case Enum::VERTEX_REGULAR:
+        case Enum::VERTEX_ADD:
+        case Enum::VERTEX_SUBTRACT:
+        case Enum::VERTEX_ALL:
+        case Enum::VERTEX_NONE:
+        case Enum::VERTEX_INVERT: return true;
         default: return false;
         }
     }
@@ -100,25 +101,25 @@ public:
     constexpr bool isFaceSelection() const
     {
         switch (mEnum) {
-        case FACE_REGULAR:
-        case FACE_ADD:
-        case FACE_SUBTRACT:
-        case FACE_ALL:
-        case FACE_NONE:
-        case FACE_INVERT:
-        case FACE_VISIBLE_REGULAR:
-        case FACE_VISIBLE_ADD:
-        case FACE_VISIBLE_SUBTRACT: return true;
+        case Enum::FACE_REGULAR:
+        case Enum::FACE_ADD:
+        case Enum::FACE_SUBTRACT:
+        case Enum::FACE_ALL:
+        case Enum::FACE_NONE:
+        case Enum::FACE_INVERT:
+        case Enum::FACE_VISIBLE_REGULAR:
+        case Enum::FACE_VISIBLE_ADD:
+        case Enum::FACE_VISIBLE_SUBTRACT: return true;
         default: return false;
         }
     }
 
-    constexpr bool isVisibleSelection()
+    constexpr bool isVisibleSelection() const
     {
         switch (mEnum) {
-        case FACE_VISIBLE_REGULAR:
-        case FACE_VISIBLE_ADD:
-        case FACE_VISIBLE_SUBTRACT: return true;
+        case Enum::FACE_VISIBLE_REGULAR:
+        case Enum::FACE_VISIBLE_ADD:
+        case Enum::FACE_VISIBLE_SUBTRACT: return true;
         default: return false;
         }
     }
@@ -128,12 +129,12 @@ public:
     constexpr SelectionMode correspondingVertexMode() const
     {
         switch (mEnum) {
-        case FACE_REGULAR: return SelectionMode(VERTEX_REGULAR);
-        case FACE_ADD: return SelectionMode(VERTEX_ADD);
-        case FACE_SUBTRACT: return SelectionMode(VERTEX_SUBTRACT);
-        case FACE_ALL: return SelectionMode(VERTEX_ALL);
-        case FACE_NONE: return SelectionMode(VERTEX_NONE);
-        case FACE_INVERT: return SelectionMode(VERTEX_INVERT);
+        case Enum::FACE_REGULAR: return SelectionMode(Enum::VERTEX_REGULAR);
+        case Enum::FACE_ADD: return SelectionMode(Enum::VERTEX_ADD);
+        case Enum::FACE_SUBTRACT: return SelectionMode(Enum::VERTEX_SUBTRACT);
+        case Enum::FACE_ALL: return SelectionMode(Enum::VERTEX_ALL);
+        case Enum::FACE_NONE: return SelectionMode(Enum::VERTEX_NONE);
+        case Enum::FACE_INVERT: return SelectionMode(Enum::VERTEX_INVERT);
         default: return *this;
         }
     }
@@ -143,12 +144,12 @@ public:
     constexpr SelectionMode correspondingFaceMode() const
     {
         switch (mEnum) {
-        case VERTEX_REGULAR: return SelectionMode(FACE_REGULAR);
-        case VERTEX_ADD: return SelectionMode(FACE_ADD);
-        case VERTEX_SUBTRACT: return SelectionMode(FACE_SUBTRACT);
-        case VERTEX_ALL: return SelectionMode(FACE_ALL);
-        case VERTEX_NONE: return SelectionMode(FACE_NONE);
-        case VERTEX_INVERT: return SelectionMode(FACE_INVERT);
+        case Enum::VERTEX_REGULAR: return SelectionMode(Enum::FACE_REGULAR);
+        case Enum::VERTEX_ADD: return SelectionMode(Enum::FACE_ADD);
+        case Enum::VERTEX_SUBTRACT: return SelectionMode(Enum::FACE_SUBTRACT);
+        case Enum::VERTEX_ALL: return SelectionMode(Enum::FACE_ALL);
+        case Enum::VERTEX_NONE: return SelectionMode(Enum::FACE_NONE);
+        case Enum::VERTEX_INVERT: return SelectionMode(Enum::FACE_INVERT);
         default: return *this;
         }
     }

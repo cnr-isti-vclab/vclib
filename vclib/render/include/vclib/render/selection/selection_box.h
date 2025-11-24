@@ -40,7 +40,7 @@ public:
 
     SelectionBox(ArrayType arr) { mPoints = arr; }
 
-    SelectionBox toMinAndMax() {
+    SelectionBox toMinAndMax() const {
         if (!mPoints[0].has_value() || !mPoints[1].has_value()) {
             return *this;
         }
@@ -51,11 +51,11 @@ public:
         return SelectionBox(ArrayType{std::make_optional(newp1), std::make_optional(newp2)});
     }
 
-    std::optional<Point2d> get1() {
+    std::optional<Point2d> get1() const {
         return mPoints[0];
     }
 
-    std::optional<Point2d> get2() {
+    std::optional<Point2d> get2() const {
         return mPoints[1];
     }
 
@@ -80,23 +80,23 @@ public:
         null2();
     }
 
-    bool anyNull() {
+    bool anyNull() const {
         return !(mPoints[0].has_value() && mPoints[1].has_value());
     }
 
-    bool allNull() {
+    bool allNull() const {
         return !(mPoints[0].has_value() || mPoints[1].has_value());
     }
 
-    bool anyValue() {
+    bool anyValue() const {
         return !allNull();
     }
 
-    bool allValue() {
+    bool allValue() const {
         return !anyNull();
     }
 
-    std::array<float, 4> asFloatArray() {
+    std::array<float, 4> asFloatArray() const {
         std::array<float, 4> arr;
         arr[0] = float(get1().value().x());
         arr[1] = float(get1().value().y());
@@ -111,7 +111,7 @@ public:
     // |          |
     // |          |
     // 1----------3
-    std::array<float, 8> vertexPositions() {
+    std::array<float, 8> vertexPositions() const {
         SelectionBox pts = this->toMinAndMax(); 
         std::array<float, 8> arr;
         arr[0] = pts.mPoints[0].value().x(); // xmin
@@ -128,7 +128,7 @@ public:
         return arr;
     }
 
-    static std::array<uint, 6> triangleIndices() {
+    constexpr static std::array<uint, 6> triangleIndices() {
         return std::array<uint, 6>{2, 3, 0, 3, 1, 0};
     }
 };

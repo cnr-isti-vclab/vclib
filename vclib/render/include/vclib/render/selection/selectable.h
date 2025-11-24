@@ -29,11 +29,20 @@
 
 namespace vcl {
 
+struct SelectionParameters
+{
+    uint drawViewId;
+    uint pass1ViewId;
+    uint pass2ViewId;
+    SelectionBox box;
+    SelectionMode mode;
+    bool isTemporary;
+};
+
 class Selectable
 {
 public:
-    virtual void calculateSelection(const DrawObjectSettings& settings, SelectionBox box, SelectionMode mode, bool isTemporary) = 0;
-    virtual void submitForVisibleFacesSelection(const DrawObjectSettings& settings) = 0;
+    virtual void calculateSelection(const SelectionParameters& params) = 0;
 };
 
 } // namespace vcl

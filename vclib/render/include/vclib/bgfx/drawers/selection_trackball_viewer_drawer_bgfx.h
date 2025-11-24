@@ -170,50 +170,18 @@ public:
             if (ParentViewer::selectionBox().allValue()) {
                 mBoxToDraw = ParentViewer::selectionBox();
             }
-            if (ParentViewer::selectionMode().isVisibleSelection() &&
-                ParentViewer::selectionMode().isFaceSelection()) {
-                setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
-                for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
-                    uint oid = i + 1;
-                    auto el  = ParentViewer::mDrawList->at(i);
-                    if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                        DrawObjectSettings settings;
-                        settings.objectId = oid;
-                        settings.viewId   = viewId;
-                        if (ParentViewer::selectionMode() ==
-                            SelectionMode::FACE_VISIBLE_REGULAR) {
-                            p->calculateSelection(
-                                settings,
-                                SelectionBox({std::nullopt, std::nullopt}),
-                                SelectionMode::FACE_NONE,
-                                true);
-                        }
-                        p->submitForVisibleFacesSelection(settings);
-                    }
-                }
-            }
+            SelectionParameters params = SelectionParameters{
+                viewId,
+                mVisibleSelectionViewIds[0],
+                mVisibleSelectionViewIds[1],
+                ParentViewer::selectionBox().toMinAndMax(),
+                ParentViewer::selectionMode(),
+                ParentViewer::isSelectionTemporary()
+            };
             for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
                 auto el = ParentViewer::mDrawList->at(i);
                 if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                    if (ParentViewer::selectionMode().isVisibleSelection() &&
-                        ParentViewer::selectionMode().isFaceSelection()) {
-                        bgfx::TextureHandle tex =
-                            bgfx::getTexture(mVisibleSelectionFrameBuffer, 0);
-                        bgfx::setImage(
-                            4,
-                            tex,
-                            0,
-                            bgfx::Access::Read,
-                            bgfx::TextureFormat::RGBA16F);
-                    }
-                    DrawObjectSettings settings;
-                    settings.objectId = i + 1;
-                    settings.viewId   = viewId;
-                    p->calculateSelection(
-                        settings,
-                        ParentViewer::selectionBox().toMinAndMax(),
-                        ParentViewer::selectionMode(),
-                        ParentViewer::isSelectionTemporary());
+                    p->calculateSelection(params);
                 }
             }
             ParentViewer::selectionCalculated();
