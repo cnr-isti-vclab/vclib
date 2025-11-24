@@ -32,17 +32,15 @@ project(vclib VERSION ${VCLIB_VERSION})
 option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 
 # Optional modules build options
+option(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES
+    "Build the core module with 3rdparty I/O libraries" ON)
+
 option(VCLIB_BUILD_MODULE_EXTERNAL "Build the external module" OFF)
 option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
 option(VCLIB_BUILD_MODULE_BINDINGS "Build the python bindings module" OFF)
 
-# Install modules options
-option(VCLIB_INSTALL_MODULE_CORE "Install the core module" ON)
-option(VCLIB_INSTALL_MODULE_EXTERNAL "Install the external module" ON)
-option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
-option(VCLIB_INSTALL_MODULE_BINDINGS "Install the python bindings module" ON)
-
+# If true, examples and tests targets will be excluded from the build
 option(VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS
     "Exclude examples and tests targets from the build" ON)
 
@@ -54,13 +52,39 @@ option(VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY
 
 # If true, vclib will require Qt
 option(VCLIB_REQUIRES_QT
-    "If true, vclib will require Qt (if core with io or render modules enabled)" OFF)
+    "If true, vclib will require Qt
+    (if core with io or render modules enabled)" OFF)
+
+# Render specific options
+if (VCLIB_BUILD_MODULE_RENDER)
+    set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")
+    set_property(CACHE VCLIB_RENDER_BACKEND PROPERTY STRINGS bgfx opengl2 none)
+endif()
+
+# Install modules options
+option(VCLIB_INSTALL_MODULE_CORE "Install the core module" ON)
+
+if (VCLIB_BUILD_MODULE_EXTERNAL)
+    option(VCLIB_INSTALL_MODULE_EXTERNAL "Install the external module" ON)
+endif()
+
+if (VCLIB_BUILD_MODULE_RENDER)
+    option(VCLIB_INSTALL_MODULE_RENDER "Install the render module" ON)
+endif()
+
+if (VCLIB_BUILD_MODULE_BINDINGS)
+    option(VCLIB_INSTALL_MODULE_BINDINGS
+        "Install the python bindings module" ON)
+endif()
 
 ### Common settings
 include(cmake/vclib_common_settings.cmake)
 
 ### Examples and Tests
 include(cmake/examples_and_tests.cmake)
+
+message(STATUS "VCLib: 3rdparty libraries")
+add_subdirectory(3rdparty)
 
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(vclib::vclib ALIAS ${PROJECT_NAME})
@@ -102,7 +126,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VCLIB_TESTS_DIR ${VCLIB_TESTS_DIR})
 
 add_subdirectory(${VCLIB_TESTS_DIR})
-
 
 # Install
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/LICENSE
