@@ -26,6 +26,13 @@
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+// Constants
+
+#define PI                                            3.141592653589793
+#define GAMMA                                         2.2
+
+// Settings
+
 #define PBR_VERTEX_COLOR_AVAILABLE                    0
 #define PBR_ALPHA_MODE_MASK                           1
 #define PBR_BASE_COLOR_TEXTURE_AVAILABLE              2
@@ -47,10 +54,14 @@
 #define isEmissiveTextureAvailable(settings)          checkSetting(settings, PBR_EMISSIVE_TEXTURE_AVAILABLE)
 #define isPerVertexTangentAvailable(settings)         checkSetting(settings, PBR_VERTEX_TANGENT_AVAILABLE)
 
+// Lighting settings, may not be definitive
+
+// use directional lights
 #define USE_LIGHTS
+
 #define LIGHT_COUNT                                   1
-#define PI                                            3.141592653589793
-#define GAMMA                                         2.2
+
+// use the same lights as defined in other vclib rendering modes (see u_lightDir, u_lightColor)
 #define VIEWER_LIGHTS
 
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
