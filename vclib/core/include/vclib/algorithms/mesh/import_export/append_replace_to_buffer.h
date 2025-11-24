@@ -674,6 +674,12 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * Given the list of vertices to duplicate, this function appends to the given
  * buffer the vertex tangent of the vertices listed in the input list.
  *
+ * The number of components for each tangent stored in the buffer depends on
+ * the `storeHandednessAsW` parameter: if true, 4 components are stored (xyz
+ * and w for the handedness: -1 if the bitangent is computed as cross product of
+ * normal and tangent, +1 otherwise); otherwise only the xyz components are
+ * stored.
+ *
  * Typical usage of this function is after the @ref
  * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
  * vertexTangentToBuffer function:
@@ -687,14 +693,14 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
- * vertexTangentToBuffer(mesh, buffer.data());
- * appendDuplicateVertexTangentToBuffer(mesh, vertsToDuplicate,
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 4);
+ * vertexTangentsToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexTangentsToBuffer(mesh, vertsToDuplicate,
  *     buffer.data());
  * @endcode
  *
  * @note The buffer must be preallocated with the correct size (total number of
- * vertices times 3).
+ * vertices times 3 or 4 depending on the `storeHandednessAsW` parameter).
  *
  * @tparam MeshType: The type of the mesh.
  *
@@ -702,16 +708,20 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
  * @param[out] buffer: The buffer where to append the duplicated vertex tangent.
+ * @param[in] storeHandednessAsW: If true, the w component of the tangent
+ * (quaternion) is stored in the buffer; otherwise only the xyz components are
+ * stored.
  * @param[in] storage: The storage type of the matrix (row or column major).
  *
  * @ingroup append_replace_to_buffer
  */
 template<MeshConcept MeshType>
-void appendDuplicateVertexTangentToBuffer(
+void appendDuplicateVertexTangentsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
-    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+    bool                   storeHandednessAsW = true,
+    MatrixStorageType      storage            = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
 
@@ -722,12 +732,18 @@ void appendDuplicateVertexTangentToBuffer(
     requirePerVertexTangent(mesh);
 
     const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint COL_NUM = storeHandednessAsW ? 4 : 3;
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& t                         = mesh.vertex(v).tangent();
-        at(buffer, i, 0, ROW_NUM, 3, storage) = t.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = t.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = t.z();
+        const auto& t = mesh.vertex(v).tangent();
+
+        at(buffer, i, 0, ROW_NUM, COL_NUM, storage) = t.x();
+        at(buffer, i, 1, ROW_NUM, COL_NUM, storage) = t.y();
+        at(buffer, i, 2, ROW_NUM, COL_NUM, storage) = t.z();
+        if (storeHandednessAsW) {
+            at(buffer, i, 3, ROW_NUM, COL_NUM, storage) =
+                mesh.vertex(v).tangentRightHanded() ? 1.0 : -1.0;
+        }
 
         ++i;
     }

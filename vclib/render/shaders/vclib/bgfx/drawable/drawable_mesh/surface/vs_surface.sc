@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal, a_color0, a_texcoord0, a_texcoord1
-$output v_position, v_normal, v_color, v_texcoord0, v_texcoord1
+$input a_position, a_normal, a_tangent, a_color0, a_texcoord0, a_texcoord1
+$output v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
@@ -32,6 +32,8 @@ void main()
     v_normal = normalize(mul(u_normalMatrix, a_normal));
     v_texcoord0 = a_texcoord0;
     v_texcoord1 = a_texcoord1;
+    vec3 tangent = normalize(mul(u_normalMatrix, a_tangent.xyz));
+    v_tangent = vec4(tangent.x, tangent.y, tangent.z, a_tangent.w);
 
     // default case - color is taken from buffer
     v_color = a_color0;

@@ -26,6 +26,13 @@
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+// Constants
+
+#define PI                                            3.141592653589793
+#define GAMMA                                         2.2
+
+// Settings
+
 #define PBR_VERTEX_COLOR_AVAILABLE                    0
 #define PBR_ALPHA_MODE_MASK                           1
 #define PBR_BASE_COLOR_TEXTURE_AVAILABLE              2
@@ -33,6 +40,7 @@
 #define PBR_NORMAL_TEXTURE_AVAILABLE                  4
 #define PBR_OCCLUSION_TEXTURE_AVAILABLE               5
 #define PBR_EMISSIVE_TEXTURE_AVAILABLE                6
+#define PBR_VERTEX_TANGENT_AVAILABLE                  7
 
 
 #define checkSetting(settings, setting)               bool(int(settings) & posToBitFlag(setting))
@@ -44,16 +52,24 @@
 #define isNormalTextureAvailable(settings)            checkSetting(settings, PBR_NORMAL_TEXTURE_AVAILABLE)
 #define isOcclusionTextureAvailable(settings)         checkSetting(settings, PBR_OCCLUSION_TEXTURE_AVAILABLE)
 #define isEmissiveTextureAvailable(settings)          checkSetting(settings, PBR_EMISSIVE_TEXTURE_AVAILABLE)
+#define isPerVertexTangentAvailable(settings)         checkSetting(settings, PBR_VERTEX_TANGENT_AVAILABLE)
 
+// Lighting settings, may not be definitive
+
+// use directional lights
 #define USE_LIGHTS
-#define LIGHT_COUNT                                   2
-#define PI                                            3.141592653589793
-#define GAMMA                                         2.2
+
+#define LIGHT_COUNT                                   1
+
+// use the same lights as defined in other vclib rendering modes (see u_lightDir, u_lightColor)
+#define VIEWER_LIGHTS
 
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
 
 #define LIGHT_KEY_DIR                                 vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
 #define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
+#define LIGHT_KEY_DIR_VIEW                            mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
+#define LIGHT_FILL_DIR_VIEW                           mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
 
 #if BGFX_SHADER_TYPE_FRAGMENT
 
@@ -307,6 +323,7 @@ vec4 pbrColor(
     
     float NoV = clampedDot(normal, V);
 
+    UNROLL
     for(int i = 0; i < LIGHT_COUNT; ++i)
     {
         // incoming light direction and contribution

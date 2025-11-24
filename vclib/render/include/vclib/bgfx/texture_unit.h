@@ -27,6 +27,7 @@
 #include <vclib/space/core/point.h>
 
 #include <bgfx/bgfx.h>
+#include <bimg/bimg.h>
 
 namespace vcl {
 
@@ -111,14 +112,24 @@ public:
 
     void set(
         const void*         data,
-        const vcl::Point2i& sizes,
+        const vcl::Point2i& size,
         const std::string&  samplerName,
         bool                hasMips   = false,
         uint64_t            flags     = BGFX_TEXTURE_NONE,
         bgfx::ReleaseFn     releaseFn = nullptr)
     {
-        set(bgfx::makeRef(data, sizes.x() * sizes.y() * 4, releaseFn),
-            sizes,
+        uint32_t sz = bimg::imageGetSize(
+            nullptr,
+            size.x(),
+            size.y(),
+            1, 
+            false, 
+            hasMips, 
+            1, 
+            bimg::TextureFormat::RGBA8
+        );
+        set(bgfx::makeRef(data, sz, releaseFn),
+            size,
             samplerName,
             hasMips,
             1,
@@ -128,7 +139,7 @@ public:
 
     void set(
         const bgfx::Memory*       texture,
-        const vcl::Point2i&       sizes,
+        const vcl::Point2i&       size,
         const std::string&        samplerName,
         bool                      hasMips,
         uint                      nLayers,
@@ -141,7 +152,7 @@ public:
             bgfx::destroy(mUniformHandle);
 
         mTextureHandle = bgfx::createTexture2D(
-            sizes.x(), sizes.y(), hasMips, nLayers, format, flags, texture);
+            size.x(), size.y(), hasMips, nLayers, format, flags, texture);
         mUniformHandle = bgfx::createUniform(
             samplerName.c_str(), bgfx::UniformType::Sampler);
     }
