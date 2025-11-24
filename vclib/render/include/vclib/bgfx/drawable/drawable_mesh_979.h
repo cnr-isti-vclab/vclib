@@ -476,7 +476,7 @@ protected:
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }
-        return mMRB.faceSelectionVisible(params.pass1ViewId, params.pass2ViewId, params.mode);
+        return mMRB.faceSelectionVisible(params.drawViewId, params.pass1ViewId, params.pass2ViewId, params.mode);
     }
 
     void bindUniforms() const

@@ -229,7 +229,7 @@ public:
         return true;
     }
 
-    bool faceSelectionVisible(const uint pass1ViewId, const uint pass2ViewId, const SelectionMode& mode)
+    bool faceSelectionVisible(const uint drawViewId, const uint pass1ViewId, const uint pass2ViewId, const SelectionMode& mode)
     {
         return true;
     }
