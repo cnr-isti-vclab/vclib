@@ -683,7 +683,7 @@ private:
             tu->set(
                 buffer,
                 vcl::Point2i(txt.width(), txt.height()),
-                "s_tex" + std::to_string(i),
+                "s_tex" + std::to_string(j),
                 hasMips,
                 flags,
                 releaseFn);
