@@ -25,10 +25,6 @@ project(vclib-bindings)
 
 set(MODULE_NAME vclib_bindings)
 
-# 3rdparty libraries
-message(STATUS "VCLib-Bindings: 3rd party libraries")
-add_subdirectory(3rdparty)
-
 set(VCLIB_BINDINGS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(VCLIB_MODULE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/vclib)
