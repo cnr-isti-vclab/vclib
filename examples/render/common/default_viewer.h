@@ -39,6 +39,7 @@
 #endif
 
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/bgfx/drawable/drawable_background.h>
 
 #if defined(VCLIB_RENDER_EXAMPLES_WITH_GLFW) && defined(VCLIB_WITH_IMGUI)
 using ImguiMeshViewer = vcl::RenderApp<
@@ -105,6 +106,9 @@ void showMeshesOnViewer(
 {
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
+
+    
+    vector->pushBack(vcl::DrawableBackground());
 
     for (auto&& mesh : meshes)
         (pushMeshOnVector(vector, std::move(mesh)));
