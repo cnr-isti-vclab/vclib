@@ -41,10 +41,6 @@ void initTexture(pybind11::module& m)
     c.def("set_path", [](Texture& t, const std::string& p) {
         t.path() = p;
     });
-    c.def("image", py::overload_cast<>(&Texture::image, py::const_));
-    c.def("set_image", [](Texture& t, const Image& i) {
-        t.image() = i;
-    });
 }
 
 } // namespace vcl::bind

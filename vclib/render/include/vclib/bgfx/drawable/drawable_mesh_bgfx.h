@@ -187,6 +187,16 @@ public:
         }
     }
 
+    const Image& textureImage(const std::string& path) const override
+    {
+        if constexpr (HasMaterials<MeshType>) {
+            return MeshType::textureImage(path);
+        }
+        else {
+            return AbstractDrawableMesh::textureImage(path);
+        }
+    }
+
     // DrawableObject implementation
 
     void init() override {}

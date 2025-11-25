@@ -579,12 +579,11 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](
-            Texture& tex,
-            uint     i, // i-th material
-            uint     j  // j-th texture
-        ) 
-        {
+        auto setTextureUnit = [&](const Texture& tex,
+                                  const Image&   img,
+                                  uint           i, // i-th material
+                                  uint           j  // j-th texture
+                              ) {
             using enum Texture::MinificationFilter;
             using enum Texture::WrapMode;
 
@@ -596,17 +595,13 @@ private:
             bool hasMips = minFilter >= NEAREST_MIPMAP_NEAREST ||
                            minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
 
-            Image& txt = tex.image();
-
-            txt.mirror();
-
-            const uint size = txt.width() * txt.height();
+            const uint size = img.width() * img.height();
             assert(size > 0);
 
             uint sizeWithMips = bimg::imageGetSize(
                 nullptr,
-                txt.width(), 
-                txt.height(), 
+                img.width(),
+                img.height(),
                 1, 
                 false, 
                 hasMips, 
@@ -617,14 +612,14 @@ private:
             if(hasMips)
                 numMips = bimg::imageGetNumMips(
                     bimg::TextureFormat::RGBA8, 
-                    txt.width(), 
-                    txt.height()
+                    img.width(),
+                    img.height()
                 );
 
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
 
-            const uint* tdata = reinterpret_cast<const uint*>(txt.data());
+            const uint* tdata = reinterpret_cast<const uint*>(img.data());
 
             std::copy(tdata, tdata + size, buffer); // mip level 0
 
@@ -634,14 +629,14 @@ private:
                 uint offset = size;
                 for(uint mip = 1; mip < numMips; mip++) {
                     dest = source + offset;
-                    uint mipSize = (txt.width() >> mip) * (txt.height() >> mip);
+                    uint mipSize = (img.width() >> mip) * (img.height() >> mip);
                     bimg::imageRgba8Downsample2x2(
                         dest,                           // output location
-                        txt.width() >> (mip - 1),       // input width
-                        txt.height() >> (mip - 1),      // input height
+                        img.width() >> (mip - 1),       // input width
+                        img.height() >> (mip - 1),      // input height
                         1,                              // depth, always 1 for 2D textures
-                        (txt.width() >> (mip - 1)) * 4, // input pitch
-                        (txt.width() >> mip) * 4,       // output pitch
+                        (img.width() >> (mip - 1)) * 4, // input pitch
+                        (img.width() >> mip) * 4,       // output pitch
                         source                          // input location
                     );
                     source = dest;
@@ -682,7 +677,7 @@ private:
             auto tu = std::make_unique<TextureUnit>();
             tu->set(
                 buffer,
-                vcl::Point2i(txt.width(), txt.height()),
+                vcl::Point2i(img.width(), img.height()),
                 "s_tex" + std::to_string(j),
                 hasMips,
                 flags,
@@ -697,35 +692,33 @@ private:
             uint i = texture / texturesPerMaterial; // i-th material
             uint j = texture % texturesPerMaterial; // j-th texture
 
-            // copy the texture because the image could be not loaded,
-            // and at the end it needs to be mirrored.
-            vcl::Texture tex = mesh.material(i).texture(
+            const vcl::Texture& tex = mesh.material(i).texture(
                 static_cast<Material::TextureType>(j));
 
-            vcl::Image& txt = tex.image();
-            if (txt.isNull()) { // try to load it just for rendering
-                const std::string& path =
-                    mesh.material(i)
-                        .texture(static_cast<Material::TextureType>(j))
-                        .path();
+            // copy the image because it could be not loaded,
+            // and at the end it needs to be mirrored.
+            vcl::Image txtImg = mesh.textureImage(tex.path());
+            if (txtImg.isNull()) { // try to load it just for rendering
+                const std::string& path = tex.path();
                 if (!path.empty()) {
                     try {
-                        txt =
+                        txtImg =
                             vcl::loadImage(mesh.meshBasePath() + path);
                     }
                     catch (...) {
                         // do nothing
                     }
-                    if (txt.isNull()) {
+                    if (txtImg.isNull()) {
                         // still null, use a dummy texture
-                        txt = createCheckBoardImage(512);
+                        txtImg = createCheckBoardImage(512);
                     }
                 }
             }
 
             // if loading succeeded (or dummy texture has been created)
-            if (!txt.isNull()) {
-                setTextureUnit(tex, i, j);
+            if (!txtImg.isNull()) {
+                txtImg.mirror();
+                setTextureUnit(tex, txtImg, i, j);
             }
         };
 

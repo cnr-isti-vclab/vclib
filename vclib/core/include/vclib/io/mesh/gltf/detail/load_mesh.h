@@ -173,7 +173,7 @@ int loadGltfPrimitiveMaterial(
                         (img.bits == 8 || img.component == 4)) {
                         Image timg(img.image.data(), img.width, img.height);
 
-                        texture.image() = std::move(timg);
+                        m.pushTextureImage(uri, std::move(timg));
                     }
                 }
             };

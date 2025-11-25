@@ -658,7 +658,7 @@ void loadObj(
                                 LogType::WARNING_LOG);
                         }
                         else {
-                            t.image() = std::move(img);
+                            m.pushTextureImage(t.path(), std::move(img));
                         }
                     }
                 }

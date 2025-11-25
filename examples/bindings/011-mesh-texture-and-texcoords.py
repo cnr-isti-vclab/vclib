@@ -105,7 +105,8 @@ def mesh_texture_and_texcoords():
         # and the image will be empty (width and height will be 0)
         texture = mesh_wedge_texcoords.material(i).base_color_texture()
         print(f"     Texture {i}: {texture.path()}")
-        print(f"       Size: {texture.image().width()}x{texture.image().height()}")
+        image = mesh_wedge_texcoords.texture_image(texture.path())
+        print(f"       Size: {image.width()}x{image.height()}")
 
     # Example 4: Creating mesh with texture coordinates
     print("\n4. Creating mesh with texture coordinates...")

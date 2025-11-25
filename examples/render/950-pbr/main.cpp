@@ -89,10 +89,6 @@ int main(int argc, char** argv)
         std::cout << "  " << typeName << "Texture: ";
         if (!texture.isNull()) {
             std::cout << texture.path() << std::endl;
-            std::cout << "    image size: "
-                      << texture.image().width() << " x "
-                      << texture.image().height()
-                      << std::endl;
             std::cout << "    minFilter: " << int(texture.minFilter()) << std::endl;
             std::cout << "    magFilter: " << int(texture.magFilter()) << std::endl;
             std::cout << "    wrapU: " << int(texture.wrapU()) << std::endl;
