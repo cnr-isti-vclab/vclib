@@ -326,17 +326,17 @@ TEST_CASE("std map and unordered map serialization")
     umap1["c3"] = randomColor();
 
     // Serialize
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/maps.bin");
+    std::ofstream fo =
+        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/maps.bin");
     vcl::serialize(fo, map1);
     vcl::serialize(fo, umap1);
     fo.close();
 
     // Deserialize
-    std::map<std::string, vcl::Point3f>   map2;
+    std::map<std::string, vcl::Point3f>         map2;
     std::unordered_map<std::string, vcl::Color> umap2;
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/maps.bin");
+    std::ifstream                               fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/maps.bin");
     vcl::deserialize(fi, map2);
     vcl::deserialize(fi, umap2);
     fi.close();

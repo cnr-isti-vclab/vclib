@@ -93,7 +93,7 @@ void deserialize(std::istream& is, std::map<K, V>& m)
         else {
             deserialize(is, value);
         }
-        m.insert({ std::move(key), std::move(value) });
+        m.insert({std::move(key), std::move(value)});
     }
 }
 
@@ -123,7 +123,7 @@ void deserialize(std::istream& is, std::unordered_map<K, V>& m)
         else {
             deserialize(is, value);
         }
-        m.insert({ std::move(key), std::move(value) });
+        m.insert({std::move(key), std::move(value)});
     }
 }
 
