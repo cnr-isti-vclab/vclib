@@ -312,7 +312,7 @@ protected:
             if constexpr (comp::HasCustomComponents<T>)
                 mCustomCompVecMap.compact(newIndices);
 
-            updateElementIndices(newIndices);
+            updateElementReferences(newIndices);
         }
         return newIndices;
     }
@@ -777,19 +777,22 @@ protected:
     template<typename C>
     void enableOptionalComponent()
     {
-        mVerticalCompVecTuple.template enableComponent<C>();
-        // first call init on all the just enabled components
-        if constexpr (comp::HasInitMemberFunction<C>) {
-            for (auto& e : elements()) {
-                e.C::init();
-            }
-        }
-        // then resize the component containers with tied size to vertex number
-        if constexpr (comp::IsTiedToVertexNumber<C>) {
-            static const int N = T::VERTEX_NUMBER;
-            if constexpr (N < 0) {
+        if (!isOptionalComponentEnabled<C>()) {
+            mVerticalCompVecTuple.template enableComponent<C>();
+            // first call init on all the just enabled components
+            if constexpr (comp::HasInitMemberFunction<C>) {
                 for (auto& e : elements()) {
-                    e.C::resize(e.vertexNumber());
+                    e.C::init();
+                }
+            }
+            // then resize the component containers with tied size to vertex
+            // number
+            if constexpr (comp::IsTiedToVertexNumber<C>) {
+                static const int N = T::VERTEX_NUMBER;
+                if constexpr (N < 0) {
+                    for (auto& e : elements()) {
+                        e.C::resize(e.vertexNumber());
+                    }
                 }
             }
         }
@@ -949,9 +952,9 @@ protected:
      *
      * Supposing you deleted a set of vertices, you can give to this function
      * the vector telling, for each of the old vertex indices, the new vertex
-     * index (or UINT_NULL if you want to leave unreferences that vertices).
-     * This function will update all the pointers stored in the mesh containers
-     * accordingly.
+     * index (or UINT_NULL if you want to leave unreferenced that vertices).
+     * This function will update all the pointers and indices stored in the mesh
+     * containers accordingly.
      *
      * @note This function *does not change the position of the elements in this
      * container*. It just updates the indices/pointers of the elements stored
@@ -962,7 +965,7 @@ protected:
      * (setting `nullptr` to the pointers), the value of the vector must be
      * UINT_NULL.
      */
-    void updateElementIndices(const std::vector<uint>& newIndices)
+    void updateElementReferences(const std::vector<uint>& newIndices)
     {
         mParentMesh->template updateAllReferences<T>(newIndices);
     }
@@ -1013,6 +1016,13 @@ protected:
                 mCustomCompVecMap = c.mCustomCompVecMap;
             }
         }
+    }
+
+    void swapVerticalComponents(uint e1, uint e2)
+    {
+        mVerticalCompVecTuple.swapComponents(e1, e2);
+        if constexpr (comp::HasCustomComponents<T>)
+            mCustomCompVecMap.swapCustomComponents(e1, e2);
     }
 
 private:

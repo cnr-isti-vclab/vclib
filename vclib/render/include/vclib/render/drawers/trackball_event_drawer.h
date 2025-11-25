@@ -238,6 +238,15 @@ public:
         reset();
     }
 
+    void fitView(const Point3<Scalar>& center)
+    {
+        mTrackball.adaptCurrentViewToCenter(center);
+    }
+
+    Camera<Scalar> camera() const { return mTrackball.camera(); }
+
+    void setCamera(const Camera<Scalar>& cam) { mTrackball.setCamera(cam); }
+
     DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 
     Matrix44<Scalar> lightGizmoMatrix() const

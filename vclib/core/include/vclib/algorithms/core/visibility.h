@@ -74,6 +74,27 @@ auto halfSpaceDeterminant(const TriangleType& triangle, const PointType& point)
 }
 
 /**
+ * @brief Checks if 3 points are collinear.
+ *
+ * @tparam PointType: The type of the points.
+ * @param[in] p0: First point to test.
+ * @param[in] p1: Second point to test.
+ * @param[in] p2: Third point to test.
+ * @return True if the points are collinear, false otherwise.
+ *
+ * @ingroup algorithms_core
+ */
+template<Point3Concept PointType>
+bool arePointsCollinear(
+    const PointType& p0,
+    const PointType& p1,
+    const PointType& p2)
+{
+    PointType c = (p1 - p0).cross(p2 - p0);
+    return c.squaredNorm() == 0;
+}
+
+/**
  * @brief Checks if 4 points are coplanar.
  *
  * @tparam PointType: The type of the points.

@@ -151,8 +151,8 @@ void testTriangleMatrix(
 
     auto stg = vcl::matrixStorageType<MatrixType>();
 
-    auto tris = vcl::faceIndicesMatrix<MatrixType>(tm);
-    vcl::replaceFaceIndicesByVertexDuplicationToBuffer(
+    auto tris = vcl::faceVertexIndicesMatrix<MatrixType>(tm);
+    vcl::replaceFaceVertexIndicesByVertexDuplicationToBuffer(
         tm, vtd, ftr, tris.data(), 3, stg);
 
     REQUIRE(tris.rows() == tm.faceNumber());

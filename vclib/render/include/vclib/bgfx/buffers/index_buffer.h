@@ -176,7 +176,8 @@ public:
         uint64_t            flags   = BGFX_BUFFER_NONE,
         bool                compute = false)
     {
-        mHandle  = bgfx::createIndexBuffer(indices, flags);
+        mHandle = bgfx::createIndexBuffer(indices, flags);
+        assert(bgfx::isValid(mHandle));
         mCompute = compute;
     }
 
@@ -201,6 +202,22 @@ public:
             else {
                 bgfx::setBuffer(stage, mHandle, access);
             }
+        }
+    }
+
+    /**
+     * @brief Bind a portion of the index buffer to the rendering pipeline.
+     *
+     * The index buffer is bound to the rendering pipeline, starting from the
+     * firstIndex and using numIndices indices.
+     *
+     * @param[in] firstIndex: the first index to be used.
+     * @param[in] numIndices: the number of indices to be used.
+     */
+    void bind(uint firstIndex, uint numIndices) const
+    {
+        if (bgfx::isValid(mHandle)) {
+            bgfx::setIndexBuffer(mHandle, firstIndex, numIndices);
         }
     }
 };

@@ -119,6 +119,13 @@ public:
         Base::fitScene(sceneCenter, sceneRadius);
     }
 
+    void fitView()
+    {
+        Point3f sceneCenter = mDrawList->center().cast<float>();
+
+        Base::fitView(sceneCenter);
+    }
+
     // events
     void onInit(uint) override
     {

@@ -43,7 +43,7 @@ public:
 private:
     /* Extrinsics */
 
-    /// @brief Position where the camera is looking at
+    /// @brief Position where the camera is looking at (i.e. target point)
     PointType mCenter = PointType(0.0f, 0.0f, 0.0f);
 
     /// @brief Position of (eye of) the camera
@@ -63,6 +63,18 @@ private:
     /// @brief Height of the target in world space
     /// (used for ortho projection, and adapting the eye distance for
     /// perspective projection)
+    //      |\___
+    //      |     \___
+    //  h/2 |         \___
+    //      |             \__
+    //      |                \__
+    //--- target ---------------X- eye --
+    //      |              __/
+    //      |           __/
+    //  h/2 |        __/
+    //      |     __/
+    //      |  __/
+    //      | /
     Scalar mVerticalHeight = 2.0;
 
     /// @brief Aspect ratio
@@ -95,12 +107,13 @@ public:
 
     const Scalar& fieldOfView() const { return mFovDeg; }
 
-    void setFieldOfViewAdaptingEyeDistance(const Scalar& fov)
+    void setFieldOfViewAdaptingEyeDistance(const Scalar& fovDeg)
     {
-        mFovDeg               = fov;
+        mFovDeg               = fovDeg;
         PointType targetToEye = (mEye - mCenter).normalized();
-        mEye = mCenter + targetToEye * ((mVerticalHeight / 2.0) /
-                                        std::tan((fov / 2.0) / 180.0 * M_PI));
+        mEye =
+            mCenter + targetToEye * ((mVerticalHeight / 2.0) /
+                                     std::tan((fovDeg / 2.0) / 180.0 * M_PI));
     }
 
     ProjectionMode& projectionMode() { return mProjectionMode; }

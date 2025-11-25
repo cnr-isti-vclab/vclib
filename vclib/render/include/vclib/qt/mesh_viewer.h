@@ -80,6 +80,10 @@ public:
     void setDrawVectorIconFunction(
         const DrawableObjectVectorTree::IconFunction& f);
 
+    Camera<float> camera() const;
+
+    void setCamera(const Camera<float>& c);
+
 public slots:
     void visibilityDrawableObjectChanged();
 
@@ -88,6 +92,8 @@ public slots:
     void renderSettingsUpdated();
 
     void fitScene();
+
+    void fitView();
 
     void updateGUI();
 };

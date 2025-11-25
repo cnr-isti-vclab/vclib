@@ -106,7 +106,7 @@ protected:
             }
             else {
                 mBoundingBox =
-                    m. MeshType::boundingBox().template cast<double>();
+                    m.MeshType::boundingBox().template cast<double>();
             }
         }
 
@@ -115,8 +115,7 @@ protected:
         }
 
         if constexpr (HasTransformMatrix<MeshType>) {
-            mBoundingBox =
-                transformBox(mBoundingBox, m.transformMatrix());
+            mBoundingBox = transformBox(mBoundingBox, m.transformMatrix());
         }
     }
 };

@@ -183,7 +183,7 @@ uint removeUnreferencedVertices(MeshType& m)
         // update the vertex indices of the mesh, setting to null the indices of
         // the unreferenced vertices (it may happen on adjacent vertices of some
         // container).
-        m.updateVertexIndices(refVertIndices);
+        m.updateVertexReferences(refVertIndices);
     }
 
     return n;
@@ -208,7 +208,7 @@ uint removeUnreferencedVertices(MeshType& m)
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDuplicatedVertices(MeshType& m)
+uint removeDuplicateVertices(MeshType& m)
 {
     using VertexType    = MeshType::VertexType;
     using VertexPointer = MeshType::VertexType*;
@@ -259,7 +259,7 @@ uint removeDuplicatedVertices(MeshType& m)
 
     // update the vertex pointers to point to the correct vertices, in every
     // container of the mesh
-    m.updateVertexIndices(newVertexIndices);
+    m.updateVertexReferences(newVertexIndices);
 
     // todo:
     // - add a flag that removes degenerate elements after
@@ -293,7 +293,7 @@ uint removeDuplicatedVertices(MeshType& m)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint removeDuplicatedFaces(MeshType& m)
+uint removeDuplicateFaces(MeshType& m)
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
@@ -348,7 +348,7 @@ uint removeDuplicatedFaces(MeshType& m)
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
+uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
 {
     using VertexType = MeshType::VertexType;
 

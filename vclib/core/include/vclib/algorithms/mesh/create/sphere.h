@@ -402,7 +402,7 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
         }
     }
 
-    removeDuplicatedVertices(mesh);
+    removeDuplicateVertices(mesh);
 
     scale(mesh, sp.radius());
     translate(mesh, sp.center());

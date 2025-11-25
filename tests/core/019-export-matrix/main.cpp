@@ -125,7 +125,7 @@ void testPositionsMatrix(const auto& tm)
 template<typename MatrixType>
 void testTrianglesMatrix(const auto& tm)
 {
-    auto tris = vcl::faceIndicesMatrix<MatrixType>(tm);
+    auto tris = vcl::faceVertexIndicesMatrix<MatrixType>(tm);
 
     REQUIRE(tris.rows() == tm.faceNumber());
     REQUIRE(tris.cols() == 3);
@@ -154,7 +154,7 @@ void testFaceSizesVector(const auto& pm)
 template<typename VectorType>
 void testFaceVector(const auto& pm)
 {
-    auto faces = vcl::faceIndicesVector<VectorType>(pm);
+    auto faces = vcl::faceVertexIndicesVector<VectorType>(pm);
 
     vcl::uint nIndices = countPerFaceVertexReferences(pm);
     REQUIRE(faces.size() == nIndices);
@@ -170,7 +170,7 @@ void testFaceVector(const auto& pm)
 template<typename MatrixType>
 void testFaceMatrix(const auto& pm)
 {
-    auto faces = vcl::faceIndicesMatrix<MatrixType>(pm);
+    auto faces = vcl::faceVertexIndicesMatrix<MatrixType>(pm);
 
     REQUIRE(faces.rows() == pm.faceNumber());
     REQUIRE(faces.cols() == vcl::largestFaceSize(pm));
@@ -192,7 +192,8 @@ template<typename MatrixType>
 void testTriangulatedFaceMatrix(const auto& pm)
 {
     vcl::TriPolyIndexBiMap indexMap;
-    auto tris = vcl::triangulatedFaceIndicesMatrix<MatrixType>(pm, indexMap);
+    auto                   tris =
+        vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm, indexMap);
 
     vcl::uint tNumber = countTriangulatedTriangles(pm);
 

@@ -66,6 +66,14 @@ public:
     Face() = default;
 
     /**
+     * @brief Swap function that delegates to the base Element swap.
+     *
+     * This friend function enables ADL (Argument Dependent Lookup) to find
+     * the correct swap function when swapping Face objects.
+     */
+    friend void swap(Face& a, Face& b) { a.swap(b); }
+
+    /**
      * @brief Sets all the Vertices to the face.
      *
      * If the Face size is static, the number of vertices of the input range

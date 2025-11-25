@@ -27,12 +27,26 @@
 
 #include <any>
 #include <array>
+#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace vcl {
 
 /// STL Deserialize specializations ///
+
+/*
+ * std::string
+ */
+
+inline void deserialize(std::istream& is, std::string& s)
+{
+    std::size_t size;
+    deserialize(is, size);
+    s.resize(size);
+    deserializeN(is, s.data(), size);
+}
 
 /*
  * std::array
@@ -54,15 +68,63 @@ void deserialize(std::istream& is, std::array<T, N>& a)
 }
 
 /*
- * std::string
+ * map
  */
 
-inline void deserialize(std::istream& is, std::string& s)
+template<typename K, typename V>
+void deserialize(std::istream& is, std::map<K, V>& m)
 {
+    m.clear();
     std::size_t size;
     deserialize(is, size);
-    s.resize(size);
-    deserializeN(is, s.data(), size);
+    for (std::size_t i = 0; i < size; ++i) {
+        K key;
+        if constexpr (Serializable<K>) {
+            key.deserialize(is);
+        }
+        else {
+            deserialize(is, key);
+        }
+
+        V value;
+        if constexpr (Serializable<V>) {
+            value.deserialize(is);
+        }
+        else {
+            deserialize(is, value);
+        }
+        m.insert({std::move(key), std::move(value)});
+    }
+}
+
+/*
+ * unordered_map
+ */
+
+template<typename K, typename V>
+void deserialize(std::istream& is, std::unordered_map<K, V>& m)
+{
+    m.clear();
+    std::size_t size;
+    deserialize(is, size);
+    for (std::size_t i = 0; i < size; ++i) {
+        K key;
+        if constexpr (Serializable<K>) {
+            key.deserialize(is);
+        }
+        else {
+            deserialize(is, key);
+        }
+
+        V value;
+        if constexpr (Serializable<V>) {
+            value.deserialize(is);
+        }
+        else {
+            deserialize(is, value);
+        }
+        m.insert({std::move(key), std::move(value)});
+    }
 }
 
 /*

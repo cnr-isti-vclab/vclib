@@ -24,5 +24,8 @@
 #define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
 
 uniform vec4 u_meshColor;
+uniform vec4 u_meshData; // x: first chunk index
+
+#define u_firstChunkPrimitiveID floatBitsToUint(u_meshData.x)
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH

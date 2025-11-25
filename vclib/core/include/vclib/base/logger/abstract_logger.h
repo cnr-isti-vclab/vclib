@@ -49,7 +49,7 @@ public:
         DEBUG_LOG
     };
 
-    AbstractLogger() = default;
+    AbstractLogger()          = default;
     virtual ~AbstractLogger() = default;
 
     virtual void enableIndentation() = 0;

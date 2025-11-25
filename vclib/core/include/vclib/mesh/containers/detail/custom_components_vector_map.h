@@ -143,6 +143,13 @@ public:
         }
     }
 
+    void swapCustomComponents(uint i, uint j)
+    {
+        for (auto& p : mMap) {
+            std::swap(p.second[i], p.second[j]);
+        }
+    }
+
     /**
      * @brief Adds a new vector of custom components having the given size, the
      * given name and with the template argumet CompType.
