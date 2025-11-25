@@ -357,6 +357,195 @@ void defForAllMeshTypes(pybind11::class_<C>& pyclass, auto&& function)
     }
 }
 
+/**
+ * @brief calls a function for all Vertex types, if the function is callable for
+ * the specific Vertex type. The function takes as a first argument a
+ * pybind11::module_ object.
+ *
+ * The function should be defined in the following way:
+ *
+ * @code{.cpp}
+ * pybind11::module_ m;
+ *
+ * auto fun = []<VertexConcept VertexType>(
+ *                pybind11::module_& m, VertexType = VertexType()) {
+ *
+ *      // add the function that uses VertexType to the module object
+ * };
+ *
+ * defForAllVertexTypes(m, fun);
+ * @endcode
+ *
+ * The second VertexType argument is there to allow the compiler to deduce the
+ * type of the Vertex. It must not be used in the lambda body.
+ * You can decide for which type of mesh the function should be defined by
+ * constraining the VertexConcept concepts.
+ *
+ * @note If the function is defined in a different way, the compiler won't
+ * give any error. The function will just not be defined for the specific mesh
+ * type.
+ *
+ * @param pymod
+ * @param function
+ */
+void defForAllVertexTypes(pybind11::module_& pymod, auto&& function)
+{
+    using FType = decltype(function);
+
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::PointCloud::VertexType>) {
+        function.template operator()<vcl::PointCloud::VertexType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::EdgeMesh::VertexType>) {
+        function.template operator()<vcl::EdgeMesh::VertexType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::PolyMesh::VertexType>) {
+        function.template operator()<vcl::PolyMesh::VertexType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::PolyEdgeMesh::VertexType>) {
+        function.template operator()<vcl::PolyEdgeMesh::VertexType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::TriMesh::VertexType>) {
+        function.template operator()<vcl::TriMesh::VertexType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::TriEdgeMesh::VertexType>) {
+        function.template operator()<vcl::TriEdgeMesh::VertexType>(pymod);
+    }
+}
+
+/**
+ * @brief calls a function for all Face types, if the function is callable for
+ * the specific Face type. The function takes as a first argument a
+ * pybind11::module_ object.
+ *
+ * The function should be defined in the following way:
+ *
+ * @code{.cpp}
+ * pybind11::module_ m;
+ *
+ * auto fun = []<FaceConcept FaceType>(
+ *                pybind11::module_& m, FaceType = FaceType()) {
+ *
+ *      // add the function that uses FaceType to the module object
+ * };
+ *
+ * defForAllFaceTypes(m, fun);
+ * @endcode
+ *
+ * The second FaceType argument is there to allow the compiler to deduce the
+ * type of the Face. It must not be used in the lambda body.
+ * You can decide for which type of mesh the function should be defined by
+ * constraining the FaceConcept concepts.
+ *
+ * @note If the function is defined in a different way, the compiler won't
+ * give any error. The function will just not be defined for the specific mesh
+ * type.
+ *
+ * @param pymod
+ * @param function
+ */
+void defForAllFaceTypes(pybind11::module_& pymod, auto&& function)
+{
+    using FType = decltype(function);
+
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::PolyMesh::FaceType>) {
+        function.template operator()<vcl::PolyMesh::FaceType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::PolyEdgeMesh::FaceType>) {
+        function.template operator()<vcl::PolyEdgeMesh::FaceType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::TriMesh::FaceType>) {
+        function.template operator()<vcl::TriMesh::FaceType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::TriEdgeMesh::FaceType>) {
+        function.template operator()<vcl::TriEdgeMesh::FaceType>(pymod);
+    }
+}
+
+/**
+ * @brief calls a function for all Edge types, if the function is callable for
+ * the specific Edge type. The function takes as a first argument a
+ * pybind11::module_ object.
+ *
+ * The function should be defined in the following way:
+ *
+ * @code{.cpp}
+ * pybind11::module_ m;
+ *
+ * auto fun = []<EdgeConcept EdgeType>(
+ *                pybind11::module_& m, EdgeType = EdgeType()) {
+ *
+ *      // add the function that uses EdgeType to the module object
+ * };
+ *
+ * defForAllEdgeTypes(m, fun);
+ * @endcode
+ *
+ * The second EdgeType argument is there to allow the compiler to deduce the
+ * type of the Edge. It must not be used in the lambda body.
+ * You can decide for which type of mesh the function should be defined by
+ * constraining the EdgeConcept concepts.
+ *
+ * @note If the function is defined in a different way, the compiler won't
+ * give any error. The function will just not be defined for the specific mesh
+ * type.
+ *
+ * @param pymod
+ * @param function
+ */
+void defForAllEdgeTypes(pybind11::module_& pymod, auto&& function)
+{
+    using FType = decltype(function);
+
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::EdgeMesh::EdgeType>) {
+        function.template operator()<vcl::EdgeMesh::EdgeType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::PolyEdgeMesh::EdgeType>) {
+        function.template operator()<vcl::PolyEdgeMesh::EdgeType>(pymod);
+    }
+    if constexpr (std::invocable<
+                      FType,
+                      pybind11::module&,
+                      vcl::TriEdgeMesh::EdgeType>) {
+        function.template operator()<vcl::TriEdgeMesh::EdgeType>(pymod);
+    }
+}
+
 } // namespace vcl::bind
 
 #endif // VCL_BINDINGS_UTILS_H

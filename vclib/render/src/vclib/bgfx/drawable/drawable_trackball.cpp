@@ -151,7 +151,7 @@ DrawableTrackBall& DrawableTrackBall::operator=(DrawableTrackBall other)
     return *this;
 }
 
-void DrawableTrackBall::draw(uint viewId) const
+void DrawableTrackBall::draw(const DrawObjectSettings& settings) const
 {
     using enum VertFragProgram;
 
@@ -170,7 +170,7 @@ void DrawableTrackBall::draw(uint viewId) const
 
         mUniforms.bind();
 
-        bgfx::submit(viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
+        bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
     }
 }
 

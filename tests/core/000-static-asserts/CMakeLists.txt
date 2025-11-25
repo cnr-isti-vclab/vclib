@@ -83,7 +83,7 @@ set(HEADERS
     space/point.h
     space/polygon.h
     space/principal_curvature.h
-    space/sampler.h
+    space/point_sampler.h
     space/segment.h
     space/sphere.h
     space/tex_coord.h

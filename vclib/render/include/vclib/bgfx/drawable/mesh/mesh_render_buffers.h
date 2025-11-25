@@ -119,12 +119,6 @@ public:
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
 
-    bool mustDrawUsingChunks(const MeshRenderSettings& mrs) const
-    {
-        return mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-               mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
-    }
-
     uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }
 
     // to generate splats
@@ -159,16 +153,28 @@ public:
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
+        uint stream = 0;
+
         // bgfx allows a maximum number of 4 vertex streams...
-        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
-        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
-        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
+        mVertexPositionsBuffer.bindVertex(stream++);
+
+        if (mVertexNormalsBuffer.isValid()) {
+            mVertexNormalsBuffer.bindVertex(stream++);
+        }
+
+        if (mVertexColorsBuffer.isValid()) {
+            mVertexColorsBuffer.bindVertex(stream++);
+        }
 
         if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+            if (mVertexUVBuffer.isValid()) {
+                mVertexUVBuffer.bind(stream++);
+            }
         }
         else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+            if (mVertexWedgeUVBuffer.isValid()) {
+                mVertexWedgeUVBuffer.bind(stream++);
+            }
         }
     }
 

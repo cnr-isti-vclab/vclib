@@ -23,27 +23,29 @@
 #ifndef VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
 #define VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
 
+#include <vclib/render/drawable/draw_object_settings.h>
 #include <vclib/space/core.h>
 
 namespace vcl {
 
 template<typename T>
-concept DrawableObjectConcept = requires (T&& obj, uint u) {
-    { obj.draw(u) } -> std::same_as<void>;
-    { obj.boundingBox() } -> Box3Concept;
-    obj.clone();
-    { obj.isVisible() } -> std::same_as<bool>;
-    { obj.name() } -> std::convertible_to<std::string>;
-    { obj.info() } -> std::convertible_to<std::string>;
+concept DrawableObjectConcept =
+    requires (T&& obj, uint u, DrawObjectSettings s) {
+        { obj.draw(s) } -> std::same_as<void>;
+        { obj.boundingBox() } -> Box3Concept;
+        obj.clone();
+        { obj.isVisible() } -> std::same_as<bool>;
+        { obj.name() } -> std::convertible_to<std::string>;
+        { obj.info() } -> std::convertible_to<std::string>;
 
-    // non const requirements
-    requires IsConst<T> || requires {
-        { obj.init() } -> std::same_as<void>;
-        { obj.setVisibility(bool()) } -> std::same_as<void>;
-        { obj.name() } -> std::same_as<std::string&>;
-        { obj.info() } -> std::same_as<std::string&>;
+        // non const requirements
+        requires IsConst<T> || requires {
+            { obj.init() } -> std::same_as<void>;
+            { obj.setVisibility(bool()) } -> std::same_as<void>;
+            { obj.name() } -> std::same_as<std::string&>;
+            { obj.info() } -> std::same_as<std::string&>;
+        };
     };
-};
 
 } // namespace vcl
 

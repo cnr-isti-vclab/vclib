@@ -107,7 +107,7 @@ void DrawableDirectionalLight::setLinesColor(const Color& c)
     mUniform.setColor(mColor);
 }
 
-void DrawableDirectionalLight::draw(uint viewId) const
+void DrawableDirectionalLight::draw(const DrawObjectSettings& settings) const
 {
     using enum VertFragProgram;
 
@@ -124,7 +124,8 @@ void DrawableDirectionalLight::draw(uint viewId) const
 
         mVertexPosBuffer.bind(0);
 
-        bgfx::submit(viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
+        bgfx::submit(
+            settings.viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
     }
 }
 
