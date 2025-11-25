@@ -53,18 +53,12 @@ int loadGltfPrimitiveMaterial(
     int idx = -1;
 
     if (p.material >= 0) {
-        vcl::Color                baseColor, emissiveColor;
-        Material::AlphaMode       alphaMode;
-        double                    metallic, roughness, 
-                                  alphaCutoff, 
-                                  normalScale,
-                                  occlusionStrength;
-        bool                      doubleSided;
-        int                       baseColorTextureId,
-                                  metallicRoughnessTextureId,
-                                  normalTextureId,
-                                  occlusionTextureId, 
-                                  emissiveTextureId;
+        vcl::Color          baseColor, emissiveColor;
+        Material::AlphaMode alphaMode;
+        double metallic, roughness, alphaCutoff, normalScale, occlusionStrength;
+        bool   doubleSided;
+        int    baseColorTextureId, metallicRoughnessTextureId, normalTextureId,
+            occlusionTextureId, emissiveTextureId;
         const tinygltf::Material& mat = model.materials[p.material];
 
         std::string matName = mat.name;
@@ -76,8 +70,9 @@ int loadGltfPrimitiveMaterial(
             baseColor[i] = vc[i] * 255.0;
 
         // baseColorTexture
-        baseColorTextureId = mat.pbrMetallicRoughness.baseColorTexture
-                         .index; // get the id of the texture, -1 if not present
+        baseColorTextureId =
+            mat.pbrMetallicRoughness.baseColorTexture
+                .index; // get the id of the texture, -1 if not present
 
         // metallicFactor
         metallic = mat.pbrMetallicRoughness.metallicFactor; // has default value
@@ -86,9 +81,8 @@ int loadGltfPrimitiveMaterial(
         roughness =
             mat.pbrMetallicRoughness.roughnessFactor; // has default value
 
-        metallicRoughnessTextureId = mat.pbrMetallicRoughness
-                                        .metallicRoughnessTexture
-                                        .index;
+        metallicRoughnessTextureId =
+            mat.pbrMetallicRoughness.metallicRoughnessTexture.index;
 
         // emissiveFactor
         const std::vector<double>& emissiveFactor =
@@ -122,87 +116,94 @@ int loadGltfPrimitiveMaterial(
         // normalScale
         normalScale = mat.normalTexture.scale;
 
-        // occlusionStrength     
+        // occlusionStrength
         occlusionStrength = mat.occlusionTexture.strength;
 
         // function to load a texture in a material
-        auto loadTextureInMaterial = [&](Material& mat, int textureId,
-                                          Material::TextureType type) {
-            if (textureId != -1) {
+        auto loadTextureInMaterial =
+            [&](Material& mat, int textureId, Material::TextureType type) {
+                if (textureId != -1) {
+                    const tinygltf::Image& img =
+                        model.images[model.textures[textureId].source];
+                    // add the path of the texture to the mesh
+                    std::string uri = img.uri;
+                    uri = std::regex_replace(uri, std::regex("\\%20"), " ");
+                    if (uri.empty()) {
+                        uri = "texture_" + std::to_string(textureId);
+                    }
 
-                const tinygltf::Image& img =
-                    model.images[model.textures[textureId].source];
-                // add the path of the texture to the mesh
-                std::string uri = img.uri;
-                uri = std::regex_replace(uri, std::regex("\\%20"), " ");
-                if (uri.empty()) {
-                    uri = "texture_" + std::to_string(textureId);
-                }
+                    vcl::Texture& texture = mat.texture(type);
 
-                vcl::Texture& texture = mat.texture(type);
-                
-                if (img.image.size() > 0 &&
-                    (img.bits == 8 || img.component == 4)) {
+                    texture.path() = uri;
 
-                    vcl::Texture txt(
-                        Image(img.image.data(), img.width, img.height), uri);
-
-                    texture = std::move(txt);
-
-                    texture.colorSpace() =
-                        Material::isSRGBTexture(type)?
-                            Texture::ColorSpace::SRGB :
-                            Texture::ColorSpace::LINEAR;
+                    texture.colorSpace() = Material::isSRGBTexture(type) ?
+                                               Texture::ColorSpace::SRGB :
+                                               Texture::ColorSpace::LINEAR;
 
                     // set sampler parameters
                     int samplerId = model.textures[textureId].sampler;
-                    if(samplerId >= 0) {
-                        const tinygltf::Sampler& sampler = model.samplers[samplerId];
-                        texture.minFilter() = static_cast<Texture::MinificationFilter>(sampler.minFilter);
-                        texture.magFilter() = static_cast<Texture::MagnificationFilter>(sampler.magFilter);
-                        texture.wrapU() = static_cast<Texture::WrapMode>(sampler.wrapS);
-                        texture.wrapV() = static_cast<Texture::WrapMode>(sampler.wrapT);
+                    if (samplerId >= 0) {
+                        const tinygltf::Sampler& sampler =
+                            model.samplers[samplerId];
+                        texture.minFilter() =
+                            static_cast<Texture::MinificationFilter>(
+                                sampler.minFilter);
+                        texture.magFilter() =
+                            static_cast<Texture::MagnificationFilter>(
+                                sampler.magFilter);
+                        texture.wrapU() =
+                            static_cast<Texture::WrapMode>(sampler.wrapS);
+                        texture.wrapV() =
+                            static_cast<Texture::WrapMode>(sampler.wrapT);
                     }
                     else {
                         assert(samplerId == -1);
-                        assert(texture.minFilter() == Texture::MinificationFilter::NONE);
-                        assert(texture.magFilter() == Texture::MagnificationFilter::NONE);
+                        assert(
+                            texture.minFilter() ==
+                            Texture::MinificationFilter::NONE);
+                        assert(
+                            texture.magFilter() ==
+                            Texture::MagnificationFilter::NONE);
                         assert(texture.wrapU() == Texture::WrapMode::REPEAT);
                         assert(texture.wrapV() == Texture::WrapMode::REPEAT);
                     }
-                }
-                else {
-                    // if the image is not valid, just set the path
-                    texture.path() = uri;
-                }
 
-            }
-        };
+                    // if the image is valid, load it to the texture
+                    if (img.image.size() > 0 &&
+                        (img.bits == 8 || img.component == 4)) {
+                        Image timg(img.image.data(), img.width, img.height);
+
+                        texture.image() = std::move(timg);
+                    }
+                }
+            };
 
         /* Put the data in the mesh */
 
         if constexpr (HasMaterials<MeshType>) {
             Material mat;
-            mat.name() = matName;
-            mat.baseColor() = baseColor;
-            mat.metallic() = metallic;
-            mat.roughness() = roughness;
-            mat.emissiveColor() = emissiveColor;
-            mat.alphaMode() = alphaMode;
-            mat.alphaCutoff() = alphaCutoff;
-            mat.doubleSided() = doubleSided;
-            mat.normalScale() = normalScale;
+            mat.name()              = matName;
+            mat.baseColor()         = baseColor;
+            mat.metallic()          = metallic;
+            mat.roughness()         = roughness;
+            mat.emissiveColor()     = emissiveColor;
+            mat.alphaMode()         = alphaMode;
+            mat.alphaCutoff()       = alphaCutoff;
+            mat.doubleSided()       = doubleSided;
+            mat.normalScale()       = normalScale;
             mat.occlusionStrength() = occlusionStrength;
-            loadTextureInMaterial(mat, baseColorTextureId,
-                                     Material::TextureType::BASE_COLOR);
-            loadTextureInMaterial(mat, metallicRoughnessTextureId,
-                                     Material::TextureType::METALLIC_ROUGHNESS);
-            loadTextureInMaterial(mat, normalTextureId,
-                                     Material::TextureType::NORMAL);
-            loadTextureInMaterial(mat, occlusionTextureId,
-                                     Material::TextureType::OCCLUSION);
-            loadTextureInMaterial(mat, emissiveTextureId,
-                                     Material::TextureType::EMISSIVE);
+            loadTextureInMaterial(
+                mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
+            loadTextureInMaterial(
+                mat,
+                metallicRoughnessTextureId,
+                Material::TextureType::METALLIC_ROUGHNESS);
+            loadTextureInMaterial(
+                mat, normalTextureId, Material::TextureType::NORMAL);
+            loadTextureInMaterial(
+                mat, occlusionTextureId, Material::TextureType::OCCLUSION);
+            loadTextureInMaterial(
+                mat, emissiveTextureId, Material::TextureType::EMISSIVE);
             m.pushMaterial(mat);
             idx = m.materialsNumber() - 1; // index of the added material
         }
