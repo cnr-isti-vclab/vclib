@@ -32,6 +32,7 @@
 namespace vcl {
 
 /**
+ * // TODO: rename this class
  * @class TextureUnit
  * @brief Manages a BGFX texture and its associated sampler uniform.
  *
@@ -43,8 +44,8 @@ namespace vcl {
  */
 class TextureUnit
 {
-    bgfx::TextureHandle mTextureHandle = BGFX_INVALID_HANDLE;
-    bgfx::UniformHandle mUniformHandle = BGFX_INVALID_HANDLE;
+    bgfx::TextureHandle         mTextureHandle = BGFX_INVALID_HANDLE;
+    mutable bgfx::UniformHandle mUniformHandle = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -130,15 +131,11 @@ public:
     friend void swap(TextureUnit& a, TextureUnit& b) { a.swap(b); }
 
     /**
-     * @brief Checks if the TextureUnit holds valid BGFX handles.
+     * @brief Checks if the TextureUnit holds valid BGFX texture handle.
      *
-     * @return true if both the texture and uniform handles are valid, false
-     * otherwise.
+     * @return true if the texture handle is valid, false otherwise.
      */
-    bool isValid() const
-    {
-        return bgfx::isValid(mTextureHandle) && bgfx::isValid(mUniformHandle);
-    }
+    bool isValid() const { return bgfx::isValid(mTextureHandle); }
 
     /**
      * @brief Creates a 2D texture from raw pixel data.
@@ -148,18 +145,16 @@ public:
      *
      * @param[in] data: Pointer to the raw texture data.
      * @param[in] size: The width and height of the texture.
-     * @param[in] samplerName: The name of the sampler uniform in the shader.
      * @param[in] hasMips: Indicates if the provided data includes mipmaps.
      * @param[in] flags: BGFX texture and sampler creation flags.
-     * @param[in] releaseFn: Optional callback function to release the data pointer
-     *                      when BGFX is finished with it.
+     * @param[in] releaseFn: Optional callback function to release the data
+     * pointer when BGFX is finished with it.
      */
     void set(
         const void*         data,
         const vcl::Point2i& size,
-        const std::string&  samplerName,
         bool                hasMips   = false,
-        uint64_t            flags     = BGFX_TEXTURE_NONE|BGFX_SAMPLER_NONE,
+        uint64_t            flags     = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
         bgfx::ReleaseFn     releaseFn = nullptr)
     {
         uint32_t sz = bimg::imageGetSize(
@@ -170,11 +165,9 @@ public:
             false,
             hasMips,
             1,
-            bimg::TextureFormat::RGBA8
-        );
+            bimg::TextureFormat::RGBA8);
         set(bgfx::makeRef(data, sz, releaseFn),
             size,
-            samplerName,
             hasMips,
             1,
             bgfx::TextureFormat::RGBA8,
@@ -188,32 +181,28 @@ public:
      * over format, layers, and mipmaps. Any existing texture data in this
      * object will be destroyed.
      *
-     * @param[in] texture: Pointer to a bgfx::Memory object containing the texture data.
+     * @param[in] texture: Pointer to a bgfx::Memory object containing the
+     * texture data.
      * @param[in] size: The width and height of the texture.
-     * @param[in] samplerName: The name of the sampler uniform in the shader.
      * @param[in] hasMips: Indicates if the provided data includes mipmaps.
-     * @param[in] nLayers: The number of layers for a texture array. Use 1 for a standard 2D texture.
+     * @param[in] nLayers: The number of layers for a texture array. Use 1 for a
+     * standard 2D texture.
      * @param[in] format: The format of the texture data.
      * @param[in] flags: BGFX texture and sampler creation flags.
      */
     void set(
         const bgfx::Memory*       texture,
         const vcl::Point2i&       size,
-        const std::string&        samplerName,
         bool                      hasMips,
         uint                      nLayers,
         bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
-        uint64_t                  flags  = BGFX_TEXTURE_NONE|BGFX_SAMPLER_NONE)
+        uint64_t                  flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE)
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
-        if (bgfx::isValid(mUniformHandle))
-            bgfx::destroy(mUniformHandle);
 
         mTextureHandle = bgfx::createTexture2D(
             size.x(), size.y(), hasMips, nLayers, format, flags, texture);
-        mUniformHandle = bgfx::createUniform(
-            samplerName.c_str(), bgfx::UniformType::Sampler);
     }
 
     /**
@@ -223,15 +212,56 @@ public:
      * a draw call that uses this texture.
      *
      * @param[in] stage: The texture stage (sampler index) to bind to.
+     * @param[in] samplerName: The name of the sampler uniform in the shader.
      * @param[in] samplerFlags: Optional BGFX sampler flags to override the
-     *                         flags set during creation. If set to UINT32_MAX,
-     *                         the creation flags are used.
+     * flags set during creation. If set to UINT32_MAX, the creation flags are
+     * used.
      */
-    void bind(uint stage, uint samplerFlags = UINT32_MAX) const
+    void bind(
+        uint               stage,
+        const std::string& samplerName,
+        uint               samplerFlags = UINT32_MAX) const
     {
-        if (bgfx::isValid(mTextureHandle) && bgfx::isValid(mUniformHandle)) {
+        if (bgfx::isValid(mTextureHandle)) {
+            bool setUniform = true;
+            if (bgfx::isValid(mUniformHandle)) {
+                bgfx::UniformInfo info;
+                bgfx::getUniformInfo(mUniformHandle, info);
+                if (samplerName == std::string(info.name)) {
+                    setUniform = false;
+                }
+            }
+            if (setUniform) {
+                if (bgfx::isValid(mUniformHandle))
+                    bgfx::destroy(mUniformHandle);
+                mUniformHandle = bgfx::createUniform(
+                    samplerName.c_str(), bgfx::UniformType::Sampler);
+            }
+
+            bind(stage, mUniformHandle, samplerFlags);
+        }
+    }
+
+    /**
+     * @brief Binds the texture to a texture stage for rendering.
+     *
+     * This method should be called within the rendering loop before submitting
+     * a draw call that uses this texture.
+     *
+     * @param[in] stage: The texture stage (sampler index) to bind to.
+     * @param[in] samplerHandle: The sampler uniform handle in the shader.
+     * @param[in] samplerFlags: Optional BGFX sampler flags to override the
+     * flags set during creation. If set to UINT32_MAX, the creation flags are
+     * used.
+     */
+    void bind(
+        uint                stage,
+        bgfx::UniformHandle samplerHandle,
+        uint                samplerFlags = UINT32_MAX) const
+    {
+        if (bgfx::isValid(mTextureHandle) && bgfx::isValid(samplerHandle)) {
             bgfx::setTexture(
-                stage, mUniformHandle, mTextureHandle, samplerFlags);
+                stage, samplerHandle, mTextureHandle, samplerFlags);
         }
     }
 
@@ -249,34 +279,30 @@ public:
 
         uint flags = BGFX_SAMPLER_NONE;
 
-        Texture::MinificationFilter minFilter = tex.minFilter();
-        Texture::MagnificationFilter magFilter = tex.magFilter();
-        Texture::WrapMode wrapU = tex.wrapU();
-        Texture::WrapMode wrapV = tex.wrapV();
-
         // set minification filter - bgfx default is linear
-        if (minFilter == NEAREST || minFilter == NEAREST_MIPMAP_LINEAR ||
-            minFilter == NEAREST_MIPMAP_NEAREST)
+        if (tex.minFilter() == NEAREST ||
+            tex.minFilter() == NEAREST_MIPMAP_LINEAR ||
+            tex.minFilter() == NEAREST_MIPMAP_NEAREST)
             flags |= BGFX_SAMPLER_MIN_POINT;
 
         // set mipmap filter - bgfx default is linear
-        if (minFilter == NEAREST_MIPMAP_NEAREST ||
-            minFilter == LINEAR_MIPMAP_NEAREST)
+        if (tex.minFilter() == NEAREST_MIPMAP_NEAREST ||
+            tex.minFilter() == LINEAR_MIPMAP_NEAREST)
             flags |= BGFX_SAMPLER_MIP_POINT;
 
         // set magnification filter - bgfx default is linear
-        if (magFilter == Texture::MagnificationFilter::NEAREST)
+        if (tex.magFilter() == Texture::MagnificationFilter::NEAREST)
             flags |= BGFX_SAMPLER_MAG_POINT;
 
         // set wrap modes - bgfx default is repeat
-        if (wrapU == CLAMP_TO_EDGE)
+        if (tex.wrapU() == CLAMP_TO_EDGE)
             flags |= BGFX_SAMPLER_U_CLAMP;
-        else if (wrapU == MIRRORED_REPEAT)
+        else if (tex.wrapU() == MIRRORED_REPEAT)
             flags |= BGFX_SAMPLER_U_MIRROR;
 
-        if (wrapV == CLAMP_TO_EDGE)
+        if (tex.wrapV() == CLAMP_TO_EDGE)
             flags |= BGFX_SAMPLER_V_CLAMP;
-        else if (wrapV == MIRRORED_REPEAT)
+        else if (tex.wrapV() == MIRRORED_REPEAT)
             flags |= BGFX_SAMPLER_V_MIRROR;
 
         return flags;

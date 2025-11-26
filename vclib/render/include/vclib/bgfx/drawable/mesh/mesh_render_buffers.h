@@ -240,7 +240,9 @@ public:
                         static_cast<Material::TextureType>(j));
                     uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
                     mMaterialTextureUnits[materialId][j]->bind(
-                        VCL_MRB_TEXTURE0 + j, flags);
+                        VCL_MRB_TEXTURE0 + j,
+                        "s_tex" + std::to_string(j),
+                        flags);
                 }
             }
         }
@@ -644,7 +646,6 @@ private:
             tu->set(
                 buffer,
                 vcl::Point2i(img.width(), img.height()),
-                "s_tex" + std::to_string(j),
                 generateMips,
                 flags,
                 releaseFn);
