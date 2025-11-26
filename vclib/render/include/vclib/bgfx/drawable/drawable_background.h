@@ -37,6 +37,9 @@ class DrawableBackground : public vcl::DrawableObject
     vcl::VertexBuffer mVertexBuffer;
     vcl::IndexBuffer mIndexBuffer;
 
+    static const uint vertexNumber = 8;
+    static const uint indexNumber = 36;
+
 public:
     DrawableBackground() = default;
 
@@ -62,7 +65,7 @@ public:
         using enum bgfx::Attrib::Enum;
         using enum vcl::PrimitiveType;
 
-        float vertices[24] = {
+        float verts[vertexNumber * 3] = {
             -1, -1, -1,
             1, -1, -1,
             1,  1, -1,
@@ -72,15 +75,23 @@ public:
             1,  1,  1,
             -1,  1,  1,
         };
+
+        auto [vertices, releaseFnVert] =
+            getAllocatedBufferAndReleaseFn<float>(vertexNumber * 3);
+
+        std::copy(verts, verts + vertexNumber * 3, vertices);
+
         mVertexBuffer.create(
             vertices, 
-            8,           // number of vertices
+            vertexNumber,
             Position,
             3,           // attributes per vertex
-            FLOAT
+            FLOAT,
+            false,       // data is normalized
+            releaseFnVert
         );
 
-        uint32_t indices[36] = {
+        uint32_t idxs[indexNumber] = {
             1, 2, 0,
             2, 3, 0,
             6, 2, 1,
@@ -94,7 +105,18 @@ public:
             5, 1, 0,
             4, 5, 0
         };
-        mIndexBuffer.create(indices, 36);
+
+        auto [indices, releaseFnIdx] =
+            getAllocatedBufferAndReleaseFn<uint32_t>(indexNumber);
+
+        std::copy(idxs, idxs + indexNumber, indices);
+
+        mIndexBuffer.create(
+            indices, 
+            indexNumber,
+            true,          // data is 32 bit
+            releaseFnIdx
+        );
     }
 
     void swap(DrawableBackground& other)
@@ -125,7 +147,7 @@ public:
         vcl::Matrix44f model = vcl::Matrix44f::Identity();
 
         mVertexBuffer.bindVertex(0);
-        mIndexBuffer.bind(0, 36);
+        mIndexBuffer.bind(0, indexNumber);
 
         bgfx::setState(state);
         bgfx::setTransform(model.data());
@@ -151,6 +173,18 @@ public:
     bool isVisible() const override { return mVisible; }
 
     void setVisibility(bool vis) override { mVisible = vis; }
+
+    private:
+
+    template<typename T>
+    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
+    {
+        T* buffer = new T[size];
+
+        return std::make_pair(buffer, [](void* ptr, void*) {
+            delete[] static_cast<T*>(ptr);
+        });
+    }
 };
 
 } // namespace vcl
