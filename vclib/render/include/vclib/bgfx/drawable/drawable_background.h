@@ -59,7 +59,24 @@ public:
         return *this;
     }
 
-    void init()
+    void swap(DrawableBackground& other)
+    {
+        using std::swap;
+        DrawableObject::swap(other);
+
+        swap(mVisible, other.mVisible);
+        mVertexBuffer.swap(other.mVertexBuffer);
+        mIndexBuffer.swap(other.mIndexBuffer);
+    }
+
+    friend void swap(DrawableBackground& first, DrawableBackground& second)
+    {
+        first.swap(second);
+    }
+
+    // DrawableObject interface
+
+    void init() override
     {
         name() = "Background";
         using enum bgfx::Attrib::Enum;
@@ -118,23 +135,6 @@ public:
             releaseFnIdx
         );
     }
-
-    void swap(DrawableBackground& other)
-    {
-        using std::swap;
-        DrawableObject::swap(other);
-
-        swap(mVisible, other.mVisible);
-        mVertexBuffer.swap(other.mVertexBuffer);
-        mIndexBuffer.swap(other.mIndexBuffer);
-    }
-
-    friend void swap(DrawableBackground& first, DrawableBackground& second)
-    {
-        first.swap(second);
-    }
-
-    // DrawableObject interface
 
     void draw(const DrawObjectSettings& settings) const override
     {
