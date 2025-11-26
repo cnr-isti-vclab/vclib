@@ -111,29 +111,33 @@ public:
     }
 
     void set(
-        const void*         data,
-        const vcl::Point2i& size,
-        const std::string&  samplerName,
-        bool                hasMips   = false,
-        uint64_t            flags     = BGFX_TEXTURE_NONE,
-        bgfx::ReleaseFn     releaseFn = nullptr)
+        const void*               data,
+        const vcl::Point2i&       size,
+        const std::string&        samplerName,
+        bool                      hasMips   = false,
+        uint64_t                  flags     = BGFX_TEXTURE_NONE,
+        bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
+        bool                      isCubemap = false,
+        bgfx::ReleaseFn           releaseFn = nullptr)
     {
         uint32_t sz = bimg::imageGetSize(
             nullptr,
             size.x(),
             size.y(),
             1, 
-            false, 
+            isCubemap, 
             hasMips, 
             1, 
-            bimg::TextureFormat::RGBA8
+            // there is correspondance between bimg and bgfx texture formats
+            static_cast<bimg::TextureFormat::Enum>(toUnderlying(format))
         );
         set(bgfx::makeRef(data, sz, releaseFn),
             size,
             samplerName,
             hasMips,
             1,
-            bgfx::TextureFormat::RGBA8,
+            format,
+            isCubemap,
             flags);
     }
 
@@ -144,6 +148,7 @@ public:
         bool                      hasMips,
         uint                      nLayers,
         bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
+        bool                      isCubemap = false,
         uint64_t                  flags  = BGFX_TEXTURE_NONE)
     {
         if (bgfx::isValid(mTextureHandle))
@@ -151,8 +156,14 @@ public:
         if (bgfx::isValid(mUniformHandle))
             bgfx::destroy(mUniformHandle);
 
-        mTextureHandle = bgfx::createTexture2D(
-            size.x(), size.y(), hasMips, nLayers, format, flags, texture);
+        if(isCubemap)
+            mTextureHandle = bgfx::createTextureCube(
+                size.x(), hasMips, nLayers, format, flags, texture);
+        else 
+            mTextureHandle = bgfx::createTexture2D(
+                size.x(), size.y(), hasMips, nLayers, format, flags, texture);
+
+        
         mUniformHandle = bgfx::createUniform(
             samplerName.c_str(), bgfx::UniformType::Sampler);
     }

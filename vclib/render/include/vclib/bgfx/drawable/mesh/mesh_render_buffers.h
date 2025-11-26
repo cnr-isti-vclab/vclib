@@ -686,6 +686,8 @@ private:
                 "s_tex" + std::to_string(j),
                 hasMips,
                 flags,
+                bgfx::TextureFormat::RGBA8,
+                false,
                 releaseFn);
 
             mMaterialTextureUnits[i][j] = std::move(tu);

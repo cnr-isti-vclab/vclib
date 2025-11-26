@@ -29,7 +29,7 @@ void main()
 {
     v_texcoord0 = a_position; // TODO: add u_EnvRotation
     mat4 mat = u_modelViewProj;
-    mat[3] = vec4(0.0, 0.0, 0.0, 0.001);
+    mat[3] = vec4(0.0, 0.0, 0.0, 0.1);
     vec4 pos = mul(mat, vec4(a_position, 1.0));
     gl_Position = pos.xyww;
 }

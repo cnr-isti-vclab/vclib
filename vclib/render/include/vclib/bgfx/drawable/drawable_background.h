@@ -70,6 +70,7 @@ public:
         swap(mVisible, other.mVisible);
         mVertexBuffer.swap(other.mVertexBuffer);
         mIndexBuffer.swap(other.mIndexBuffer);
+        swap(mTextureUnit, other.mTextureUnit);
     }
 
     friend void swap(DrawableBackground& first, DrawableBackground& second)
@@ -139,13 +140,35 @@ public:
         );
 
         bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_EXAMPLE_MESHES_PATH "/pisa.hdr"); // TODO: use another path
+        std::string samplerName = "s_tex0";
+
+        uint cubemapSize = bimg::imageGetSize(
+            nullptr,
+            cubemap->m_width,
+            cubemap->m_height,
+            1,
+            true,
+            false,
+            1,
+            bimg::TextureFormat::RGBA32F
+        ) / 4; // in uints
+
+        auto [buffer, releaseFn] =
+            getAllocatedBufferAndReleaseFn<uint>(cubemapSize);
+
+        std::copy((uint*)(cubemap->m_data), ((uint*)(cubemap->m_data)) + cubemapSize, buffer);
 
         auto tu = std::make_unique<TextureUnit>();
         tu->set(
-            cubemap->m_data,
+            buffer,
             Point2i(cubemap->m_width, cubemap->m_height),
-            "s_tex0"
-        ); // TODO: add mips when and WHERE needed
+            samplerName,
+            false, // TODO: add mips when and WHERE needed
+            BGFX_TEXTURE_NONE,
+            bgfx::TextureFormat::RGBA32F,
+            true,
+            releaseFn
+        );
         mTextureUnit = std::move(tu);
     }
 
@@ -155,11 +178,11 @@ public:
 
         ProgramManager& pm = Context::instance().programManager();
 
-        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z;
+        uint64_t state = BGFX_STATE_WRITE_MASK;
 
         vcl::Matrix44f model = vcl::Matrix44f::Identity();
 
-        mTextureUnit->bind(0);
+        mTextureUnit->bind(8);
 
         mVertexBuffer.bindVertex(0);
         mIndexBuffer.bind(0, indexNumber);
