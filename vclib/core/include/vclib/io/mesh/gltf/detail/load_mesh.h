@@ -136,10 +136,6 @@ int loadGltfPrimitiveMaterial(
 
                     texture.path() = uri;
 
-                    texture.colorSpace() = Material::isSRGBTexture(type) ?
-                                               Texture::ColorSpace::SRGB :
-                                               Texture::ColorSpace::LINEAR;
-
                     // set sampler parameters
                     int samplerId = model.textures[textureId].sampler;
                     if (samplerId >= 0) {
@@ -172,6 +168,8 @@ int loadGltfPrimitiveMaterial(
                     if (img.image.size() > 0 &&
                         (img.bits == 8 || img.component == 4)) {
                         Image timg(img.image.data(), img.width, img.height);
+                        timg.colorSpace() =
+                            Material::textureTypeToColorSpace(type);
 
                         m.pushTextureImage(uri, std::move(timg));
                     }

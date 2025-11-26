@@ -30,8 +30,6 @@ namespace vcl {
 class Texture
 {
 public:
-    enum class ColorSpace { UNKNOWN, LINEAR, SRGB };
-
     /*Enums defined following gltf 2.0 specification*/
 
     enum class MinificationFilter {
@@ -54,7 +52,6 @@ public:
 
 private:
     std::string         mPath;
-    ColorSpace          mColorSpace = ColorSpace::UNKNOWN;
     MinificationFilter  mMinFilter  = MinificationFilter::NONE;
     MagnificationFilter mMagFilter  = MagnificationFilter::NONE;
     WrapMode            mWrapU      = WrapMode::REPEAT;
@@ -147,31 +144,15 @@ public:
      */
     WrapMode& wrapV() { return mWrapV; }
 
-    /**
-     * @brief Get the color space of the texture.
-     *
-     * @return the color space of the texture.
-     */
-    ColorSpace colorSpace() const { return mColorSpace; }
-
-    /**
-     * @brief Get the color space of the texture.
-     *
-     * @return the color space of the texture.
-     */
-    ColorSpace& colorSpace() { return mColorSpace; }
-
     void serialize(std::ostream& os) const
     {
         vcl::serialize(os, mPath);
-        vcl::serialize(os, mColorSpace);
         vcl::serialize(os, mMinFilter, mMagFilter, mWrapU, mWrapV);
     }
 
     void deserialize(std::istream& is)
     {
         vcl::deserialize(is, mPath);
-        vcl::deserialize(is, mColorSpace);
         vcl::deserialize(is, mMinFilter, mMagFilter, mWrapU, mWrapV);
     }
 };

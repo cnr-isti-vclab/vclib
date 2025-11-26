@@ -647,18 +647,20 @@ void loadObj(
             using enum Material::TextureType;
             for (Material& mat : m.materials()) {
                 for (uint i = 0; i < toUnderlying(COUNT); ++i) {
-                    Texture& t =
-                        mat.texture(static_cast<Material::TextureType>(i));
-                    if (!t.path().empty()) {
+                    auto texType = static_cast<Material::TextureType>(i);
+                    const Texture& tex = mat.texture(texType);
+                    if (!tex.path().empty()) {
                         Image img = loadImage(
                             m.meshBasePath() + mat.baseColorTexture().path());
                         if (img.isNull()) {
                             log.log(
-                                "Cannot load texture " + t.path(),
+                                "Cannot load texture " + tex.path(),
                                 LogType::WARNING_LOG);
                         }
                         else {
-                            m.pushTextureImage(t.path(), std::move(img));
+                            img.colorSpace() =
+                                Material::textureTypeToColorSpace(texType);
+                            m.pushTextureImage(tex.path(), std::move(img));
                         }
                     }
                 }

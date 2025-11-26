@@ -28,8 +28,6 @@
 
 #include <vclib/base.h>
 
-#include <string>
-
 namespace vcl {
 
 /**
@@ -42,7 +40,13 @@ namespace vcl {
  */
 class Image
 {
+public:
+    enum class ColorSpace { UNKNOWN, LINEAR, SRGB };
+
+private:
     Array2<uint> mImg;
+
+    ColorSpace mColorSpace = ColorSpace::UNKNOWN;
 
 public:
     Image() {}
@@ -101,6 +105,20 @@ public:
 
     std::size_t sizeInBytes() const { return mImg.rows() * mImg.cols() * 4; }
 
+    /**
+     * @brief Get the color space of the image.
+     *
+     * @return the color space of the image.
+     */
+    ColorSpace colorSpace() const { return mColorSpace; }
+
+    /**
+     * @brief Get the color space of the image.
+     *
+     * @return the color space of the image.
+     */
+    ColorSpace& colorSpace() { return mColorSpace; }
+
     Color pixel(uint i, uint j) const
     {
         return Color(static_cast<Color::ColorABGR>(mImg(i, j)));
@@ -127,9 +145,17 @@ public:
         }
     }
 
-    void serialize(std::ostream& os) const { mImg.serialize(os); }
+    void serialize(std::ostream& os) const
+    {
+        mImg.serialize(os);
+        vcl::serialize(os, mColorSpace);
+    }
 
-    void deserialize(std::istream& is) { mImg.deserialize(is); }
+    void deserialize(std::istream& is)
+    {
+        mImg.deserialize(is);
+        vcl::deserialize(is, mColorSpace);
+    }
 };
 
 /* Concepts */

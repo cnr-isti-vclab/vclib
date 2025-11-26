@@ -24,6 +24,7 @@
 #define VCL_SPACE_CORE_MATERIAL_H
 
 #include "color.h"
+#include "image.h"
 #include "texture.h"
 
 #include <vclib/base.h>
@@ -47,11 +48,6 @@ public:
         EMISSIVE,
         COUNT
     };
-
-    static bool isSRGBTexture(TextureType type)
-    {
-        return type == TextureType::BASE_COLOR || type == TextureType::EMISSIVE;
-    }
 
 private:
     std::string mName;
@@ -210,6 +206,20 @@ public:
                mEmissiveTexture.path() == other.mEmissiveTexture.path() &&
                mDoubleSided == other.mDoubleSided;
     };
+
+    static Image::ColorSpace textureTypeToColorSpace(TextureType type)
+    {
+        switch (type) {
+        case TextureType::BASE_COLOR:
+        case TextureType::EMISSIVE:
+            return Image::ColorSpace::SRGB;
+        case TextureType::METALLIC_ROUGHNESS:
+        case TextureType::NORMAL:
+        case TextureType::OCCLUSION:
+        default:
+            return Image::ColorSpace::LINEAR;
+        }
+    }
 };
 
 /* Concepts */

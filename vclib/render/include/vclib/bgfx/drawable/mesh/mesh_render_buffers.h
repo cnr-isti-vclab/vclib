@@ -588,9 +588,7 @@ private:
         auto setTextureUnit = [&](const Image&        img,
                                   uint                i, // i-th material
                                   uint                j, // j-th texture
-                                  bool                generateMips,
-                                  Texture::ColorSpace colorSpace =
-                                      Texture::ColorSpace::SRGB) {
+                                  bool                generateMips) {
             const uint size = img.width() * img.height();
             assert(size > 0);
 
@@ -639,7 +637,7 @@ private:
 
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if (colorSpace == Texture::ColorSpace::SRGB)
+            if (img.colorSpace() == Image::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
 
             auto tu = std::make_unique<TextureUnit>();
@@ -671,6 +669,9 @@ private:
                 if (!path.empty()) {
                     try {
                         txtImg = vcl::loadImage(mesh.meshBasePath() + path);
+                        txtImg.colorSpace() =
+                            Material::textureTypeToColorSpace(
+                                static_cast<Material::TextureType>(j));
                     }
                     catch (...) {
                         // do nothing
@@ -693,7 +694,7 @@ private:
                     minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
 
                 txtImg.mirror();
-                setTextureUnit(txtImg, i, j, hasMips, tex.colorSpace());
+                setTextureUnit(txtImg, i, j, hasMips);
             }
         };
 
