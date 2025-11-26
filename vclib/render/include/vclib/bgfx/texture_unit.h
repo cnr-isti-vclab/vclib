@@ -24,7 +24,7 @@
 #define VCL_BGFX_TEXTURE_UNIT_H
 
 #include <vclib/base.h>
-#include <vclib/space/core/point.h>
+#include <vclib/space/core.h>
 
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
@@ -69,7 +69,7 @@ public:
      * Transfers ownership of the texture resources from another TextureUnit.
      * The other TextureUnit is left in an invalid state.
      *
-     * @param[in] other The TextureUnit object to move from.
+     * @param[in] other: The TextureUnit object to move from.
      */
     TextureUnit(TextureUnit&& other) noexcept { swap(other); }
 
@@ -101,7 +101,7 @@ public:
      * Transfers ownership of the texture resources from another TextureUnit.
      * The other TextureUnit is left in an invalid state.
      *
-     * @param[in] other The TextureUnit object to move from.
+     * @param[in] other: The TextureUnit object to move from.
      * @return A reference to this object.
      */
     TextureUnit& operator=(TextureUnit&& other) noexcept
@@ -113,7 +113,7 @@ public:
     /**
      * @brief Swaps the content of this object with another TextureUnit.
      *
-     * @param[in] other The other TextureUnit object to swap with.
+     * @param[in] other: The other TextureUnit object to swap with.
      */
     void swap(TextureUnit& other)
     {
@@ -124,8 +124,8 @@ public:
 
     /**
      * @brief Swaps two TextureUnit objects.
-     * @param[in] a The first TextureUnit.
-     * @param[in] b The second TextureUnit.
+     * @param[in] a: The first TextureUnit.
+     * @param[in] b: The second TextureUnit.
      */
     friend void swap(TextureUnit& a, TextureUnit& b) { a.swap(b); }
 
@@ -146,12 +146,12 @@ public:
      * This is a convenience method that creates a standard 2D RGBA8 texture.
      * Any existing texture data in this object will be destroyed.
      *
-     * @param[in] data Pointer to the raw texture data.
-     * @param[in] size The width and height of the texture.
-     * @param[in] samplerName The name of the sampler uniform in the shader.
-     * @param[in] hasMips Indicates if the provided data includes mipmaps.
-     * @param[in] flags BGFX texture and sampler creation flags.
-     * @param[in] releaseFn Optional callback function to release the data pointer
+     * @param[in] data: Pointer to the raw texture data.
+     * @param[in] size: The width and height of the texture.
+     * @param[in] samplerName: The name of the sampler uniform in the shader.
+     * @param[in] hasMips: Indicates if the provided data includes mipmaps.
+     * @param[in] flags: BGFX texture and sampler creation flags.
+     * @param[in] releaseFn: Optional callback function to release the data pointer
      *                      when BGFX is finished with it.
      */
     void set(
@@ -188,13 +188,13 @@ public:
      * over format, layers, and mipmaps. Any existing texture data in this
      * object will be destroyed.
      *
-     * @param[in] texture Pointer to a bgfx::Memory object containing the texture data.
-     * @param[in] size The width and height of the texture.
-     * @param[in] samplerName The name of the sampler uniform in the shader.
-     * @param[in] hasMips Indicates if the provided data includes mipmaps.
-     * @param[in] nLayers The number of layers for a texture array. Use 1 for a standard 2D texture.
-     * @param[in] format The format of the texture data.
-     * @param[in] flags BGFX texture and sampler creation flags.
+     * @param[in] texture: Pointer to a bgfx::Memory object containing the texture data.
+     * @param[in] size: The width and height of the texture.
+     * @param[in] samplerName: The name of the sampler uniform in the shader.
+     * @param[in] hasMips: Indicates if the provided data includes mipmaps.
+     * @param[in] nLayers: The number of layers for a texture array. Use 1 for a standard 2D texture.
+     * @param[in] format: The format of the texture data.
+     * @param[in] flags: BGFX texture and sampler creation flags.
      */
     void set(
         const bgfx::Memory*       texture,
@@ -222,8 +222,8 @@ public:
      * This method should be called within the rendering loop before submitting
      * a draw call that uses this texture.
      *
-     * @param[in] stage The texture stage (sampler index) to bind to.
-     * @param[in] samplerFlags Optional BGFX sampler flags to override the
+     * @param[in] stage: The texture stage (sampler index) to bind to.
+     * @param[in] samplerFlags: Optional BGFX sampler flags to override the
      *                         flags set during creation. If set to UINT32_MAX,
      *                         the creation flags are used.
      */
@@ -233,6 +233,53 @@ public:
             bgfx::setTexture(
                 stage, mUniformHandle, mTextureHandle, samplerFlags);
         }
+    }
+
+    /**
+     * @brief Generates BGFX sampler flags based on the texture's filtering
+     * and wrapping modes.
+     *
+     * @param[in] tex: The Texture object to derive sampler flags from.
+     * @return The generated BGFX sampler flags.
+     */
+    static uint samplerFlagsFromTextrue(const Texture& tex)
+    {
+        using enum Texture::MinificationFilter;
+        using enum Texture::WrapMode;
+
+        uint flags = BGFX_SAMPLER_NONE;
+
+        Texture::MinificationFilter minFilter = tex.minFilter();
+        Texture::MagnificationFilter magFilter = tex.magFilter();
+        Texture::WrapMode wrapU = tex.wrapU();
+        Texture::WrapMode wrapV = tex.wrapV();
+
+        // set minification filter - bgfx default is linear
+        if (minFilter == NEAREST || minFilter == NEAREST_MIPMAP_LINEAR ||
+            minFilter == NEAREST_MIPMAP_NEAREST)
+            flags |= BGFX_SAMPLER_MIN_POINT;
+
+        // set mipmap filter - bgfx default is linear
+        if (minFilter == NEAREST_MIPMAP_NEAREST ||
+            minFilter == LINEAR_MIPMAP_NEAREST)
+            flags |= BGFX_SAMPLER_MIP_POINT;
+
+        // set magnification filter - bgfx default is linear
+        if (magFilter == Texture::MagnificationFilter::NEAREST)
+            flags |= BGFX_SAMPLER_MAG_POINT;
+
+        // set wrap modes - bgfx default is repeat
+        if (wrapU == CLAMP_TO_EDGE)
+            flags |= BGFX_SAMPLER_U_CLAMP;
+        else if (wrapU == MIRRORED_REPEAT)
+            flags |= BGFX_SAMPLER_U_MIRROR;
+
+        if (wrapV == CLAMP_TO_EDGE)
+            flags |= BGFX_SAMPLER_V_CLAMP;
+        else if (wrapV == MIRRORED_REPEAT)
+            flags |= BGFX_SAMPLER_V_MIRROR;
+
+        return flags;
     }
 };
 
