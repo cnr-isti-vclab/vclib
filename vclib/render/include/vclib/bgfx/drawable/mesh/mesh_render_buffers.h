@@ -588,9 +588,6 @@ private:
             using enum Texture::WrapMode;
 
             Texture::MinificationFilter minFilter = tex.minFilter();
-            Texture::MagnificationFilter magFilter = tex.magFilter();
-            Texture::WrapMode wrapU = tex.wrapU();
-            Texture::WrapMode wrapV = tex.wrapV();
 
             bool hasMips = minFilter >= NEAREST_MIPMAP_NEAREST ||
                            minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
@@ -599,22 +596,19 @@ private:
             assert(size > 0);
 
             uint sizeWithMips = bimg::imageGetSize(
-                nullptr,
-                img.width(),
-                img.height(),
-                1, 
-                false, 
-                hasMips, 
-                1, 
-                bimg::TextureFormat::RGBA8
-            ) / 4; // in uints
+                                    nullptr,
+                                    img.width(),
+                                    img.height(),
+                                    1,
+                                    false,
+                                    hasMips,
+                                    1,
+                                    bimg::TextureFormat::RGBA8) /
+                                4; // in uints
             uint numMips = 1;
-            if(hasMips)
+            if (hasMips)
                 numMips = bimg::imageGetNumMips(
-                    bimg::TextureFormat::RGBA8, 
-                    img.width(),
-                    img.height()
-                );
+                    bimg::TextureFormat::RGBA8, img.width(), img.height());
 
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
@@ -623,18 +617,18 @@ private:
 
             std::copy(tdata, tdata + size, buffer); // mip level 0
 
-            if(numMips > 1) {
-                uint *source = buffer;
-                uint *dest;
-                uint offset = size;
-                for(uint mip = 1; mip < numMips; mip++) {
-                    dest = source + offset;
+            if (numMips > 1) {
+                uint* source = buffer;
+                uint* dest;
+                uint  offset = size;
+                for (uint mip = 1; mip < numMips; mip++) {
+                    dest         = source + offset;
                     uint mipSize = (img.width() >> mip) * (img.height() >> mip);
                     bimg::imageRgba8Downsample2x2(
-                        dest,                           // output location
-                        img.width() >> (mip - 1),       // input width
-                        img.height() >> (mip - 1),      // input height
-                        1,                              // depth, always 1 for 2D textures
+                        dest,                      // output location
+                        img.width() >> (mip - 1),  // input width
+                        img.height() >> (mip - 1), // input height
+                        1, // depth, always 1 for 2D textures
                         (img.width() >> (mip - 1)) * 4, // input pitch
                         (img.width() >> mip) * 4,       // output pitch
                         source                          // input location
@@ -643,36 +637,13 @@ private:
                     offset = mipSize;
                 }
             }
-            
+
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if(tex.colorSpace() == Texture::ColorSpace::SRGB)
+            if (tex.colorSpace() == Texture::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
 
-            // set minification filter - bgfx default is linear
-            if (minFilter == NEAREST || minFilter == NEAREST_MIPMAP_LINEAR ||
-                minFilter == NEAREST_MIPMAP_NEAREST)
-                flags |= BGFX_SAMPLER_MIN_POINT;
-
-            // set mipmap filter - bgfx default is linear
-            if (minFilter == NEAREST_MIPMAP_NEAREST ||
-                minFilter == LINEAR_MIPMAP_NEAREST)
-                flags |= BGFX_SAMPLER_MIP_POINT;
-
-            // set magnification filter - bgfx default is linear
-            if (magFilter == Texture::MagnificationFilter::NEAREST)
-                flags |= BGFX_SAMPLER_MAG_POINT;
-
-            // set wrap modes - bgfx default is repeat
-            if (wrapU == CLAMP_TO_EDGE)
-                flags |= BGFX_SAMPLER_U_CLAMP;
-            else if (wrapU == MIRRORED_REPEAT)
-                flags |= BGFX_SAMPLER_U_MIRROR;
-
-            if (wrapV == CLAMP_TO_EDGE)
-                flags |= BGFX_SAMPLER_V_CLAMP;
-            else if (wrapV == MIRRORED_REPEAT)
-                flags |= BGFX_SAMPLER_V_MIRROR;
+            flags |= TextureUnit::samplerFlagsFromTextrue(tex);
 
             auto tu = std::make_unique<TextureUnit>();
             tu->set(
@@ -692,8 +663,8 @@ private:
             uint i = texture / texturesPerMaterial; // i-th material
             uint j = texture % texturesPerMaterial; // j-th texture
 
-            const vcl::Texture& tex = mesh.material(i).texture(
-                static_cast<Material::TextureType>(j));
+            const vcl::Texture& tex =
+                mesh.material(i).texture(static_cast<Material::TextureType>(j));
 
             // copy the image because it could be not loaded,
             // and at the end it needs to be mirrored.
@@ -702,8 +673,7 @@ private:
                 const std::string& path = tex.path();
                 if (!path.empty()) {
                     try {
-                        txtImg =
-                            vcl::loadImage(mesh.meshBasePath() + path);
+                        txtImg = vcl::loadImage(mesh.meshBasePath() + path);
                     }
                     catch (...) {
                         // do nothing
@@ -732,7 +702,8 @@ private:
                 toUnderlying(Material::TextureType::COUNT));
             std::iota(textures.begin(), textures.end(), 0);
 
-            parallelFor(textures.begin(),textures.end(), loadTextureAndSetUnit);
+            parallelFor(
+                textures.begin(), textures.end(), loadTextureAndSetUnit);
         }
     }
 
