@@ -585,19 +585,12 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](const Texture& tex,
-                                  const Image&   img,
-                                  uint           i, // i-th material
-                                  uint           j  // j-th texture
-                              ) {
-            using enum Texture::MinificationFilter;
-            using enum Texture::WrapMode;
-
-            Texture::MinificationFilter minFilter = tex.minFilter();
-
-            bool hasMips = minFilter >= NEAREST_MIPMAP_NEAREST ||
-                           minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
-
+        auto setTextureUnit = [&](const Image&        img,
+                                  uint                i, // i-th material
+                                  uint                j, // j-th texture
+                                  bool                generateMips,
+                                  Texture::ColorSpace colorSpace =
+                                      Texture::ColorSpace::SRGB) {
             const uint size = img.width() * img.height();
             assert(size > 0);
 
@@ -607,12 +600,12 @@ private:
                                     img.height(),
                                     1,
                                     false,
-                                    hasMips,
+                                    generateMips,
                                     1,
                                     bimg::TextureFormat::RGBA8) /
                                 4; // in uints
             uint numMips = 1;
-            if (hasMips)
+            if (generateMips)
                 numMips = bimg::imageGetNumMips(
                     bimg::TextureFormat::RGBA8, img.width(), img.height());
 
@@ -646,7 +639,7 @@ private:
 
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if (tex.colorSpace() == Texture::ColorSpace::SRGB)
+            if (colorSpace == Texture::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
 
             auto tu = std::make_unique<TextureUnit>();
@@ -654,7 +647,7 @@ private:
                 buffer,
                 vcl::Point2i(img.width(), img.height()),
                 "s_tex" + std::to_string(j),
-                hasMips,
+                generateMips,
                 flags,
                 releaseFn);
 
@@ -691,8 +684,16 @@ private:
 
             // if loading succeeded (or dummy texture has been created)
             if (!txtImg.isNull()) {
+                using enum Texture::MinificationFilter;
+
+                Texture::MinificationFilter minFilter = tex.minFilter();
+
+                bool hasMips =
+                    minFilter >= NEAREST_MIPMAP_NEAREST ||
+                    minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
+
                 txtImg.mirror();
-                setTextureUnit(tex, txtImg, i, j);
+                setTextureUnit(txtImg, i, j, hasMips, tex.colorSpace());
             }
         };
 
