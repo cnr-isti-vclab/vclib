@@ -115,7 +115,7 @@ public:
         const vcl::Point2i& size,
         const std::string&  samplerName,
         bool                hasMips   = false,
-        uint64_t            flags     = BGFX_TEXTURE_NONE,
+        uint64_t            flags     = BGFX_TEXTURE_NONE|BGFX_SAMPLER_NONE,
         bgfx::ReleaseFn     releaseFn = nullptr)
     {
         uint32_t sz = bimg::imageGetSize(
@@ -144,7 +144,7 @@ public:
         bool                      hasMips,
         uint                      nLayers,
         bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
-        uint64_t                  flags  = BGFX_TEXTURE_NONE)
+        uint64_t                  flags  = BGFX_TEXTURE_NONE|BGFX_SAMPLER_NONE)
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
@@ -157,10 +157,11 @@ public:
             samplerName.c_str(), bgfx::UniformType::Sampler);
     }
 
-    void bind(uint stage) const
+    void bind(uint stage, uint samplerFlags = UINT32_MAX) const
     {
         if (bgfx::isValid(mTextureHandle) && bgfx::isValid(mUniformHandle)) {
-            bgfx::setTexture(stage, mUniformHandle, mTextureHandle);
+            bgfx::setTexture(
+                stage, mUniformHandle, mTextureHandle, samplerFlags);
         }
     }
 };
