@@ -25,6 +25,7 @@
 
 #include <vclib/bgfx/context.h>
 #include <vclib/render/drawable/drawable_object.h>
+#include <vclib/io/image/hdr/load.h>
 
 #include <bgfx/bgfx.h>
 
@@ -36,6 +37,8 @@ class DrawableBackground : public vcl::DrawableObject
 
     vcl::VertexBuffer mVertexBuffer;
     vcl::IndexBuffer mIndexBuffer;
+
+    std::unique_ptr<TextureUnit> mTextureUnit;
 
     static const uint vertexNumber = 8;
     static const uint indexNumber = 36;
@@ -134,6 +137,16 @@ public:
             true,          // data is 32 bit
             releaseFnIdx
         );
+
+        bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_EXAMPLE_MESHES_PATH "/pisa.hdr"); // TODO: use another path
+
+        auto tu = std::make_unique<TextureUnit>();
+        tu->set(
+            cubemap->m_data,
+            Point2i(cubemap->m_width, cubemap->m_height),
+            "s_tex0"
+        ); // TODO: add mips when and WHERE needed
+        mTextureUnit = std::move(tu);
     }
 
     void draw(const DrawObjectSettings& settings) const override
@@ -145,6 +158,8 @@ public:
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z;
 
         vcl::Matrix44f model = vcl::Matrix44f::Identity();
+
+        mTextureUnit->bind(0);
 
         mVertexBuffer.bindVertex(0);
         mIndexBuffer.bind(0, indexNumber);
