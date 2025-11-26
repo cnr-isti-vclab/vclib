@@ -223,18 +223,24 @@ public:
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
-    void bindTextures(const MeshRenderSettings& mrs, uint chunkNumber) const
+    void bindTextures(
+        const MeshRenderSettings& mrs,
+        uint                      chunkNumber,
+        const MeshType&           m) const
     {
-        using enum MeshRenderInfo::Surface;
+        using enum Material::TextureType;
 
-        uint textureId = Base::materialIndex(mrs, chunkNumber);
-        assert(mMaterialTextureUnits.size() > 0 || textureId == UINT_NULL);
+        uint materialId = Base::materialIndex(mrs, chunkNumber);
+        assert(mMaterialTextureUnits.size() > 0 || materialId == UINT_NULL);
 
-        if (textureId != UINT_NULL) {
-            for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
-                if (mMaterialTextureUnits[textureId][j]) {
-                    mMaterialTextureUnits[textureId][j]->bind(
-                        VCL_MRB_TEXTURE0 + j);
+        if (materialId != UINT_NULL) {
+            for (uint j = 0; j < toUnderlying(COUNT); ++j) {
+                if (mMaterialTextureUnits[materialId][j]) {
+                    const auto& tex = m.material(materialId).texture(
+                        static_cast<Material::TextureType>(j));
+                    uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
+                    mMaterialTextureUnits[materialId][j]->bind(
+                        VCL_MRB_TEXTURE0 + j, flags);
                 }
             }
         }
@@ -642,8 +648,6 @@ private:
 
             if (tex.colorSpace() == Texture::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
-
-            flags |= TextureUnit::samplerFlagsFromTextrue(tex);
 
             auto tu = std::make_unique<TextureUnit>();
             tu->set(
