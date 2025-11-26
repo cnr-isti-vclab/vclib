@@ -31,10 +31,16 @@
 namespace vcl {
 
 /**
- * @brief The Image class stores an Image in 4 bytes RGBA format.
+ * @brief A class for representing and manipulating 2D images.
  *
- * Each pixel is stored as 4 bytes, with the first byte representing RGBA in
- * a `uint32_t`.
+ * The Image class stores pixel data in a 2D array of 32-bit unsigned integers.
+ * Each pixel is internally stored in ABGR (Alpha, Blue, Green, Red) format,
+ * with 8 bits per channel.
+ *
+ * The class provides constructors to load images from raw data buffers with
+ * various pixel formats, automatically converting them to the internal ABGR
+ * representation. It also includes functionalities for color space management,
+ * transformations like mirroring, and serialization.
  *
  * @ingroup space_core
  */
@@ -49,18 +55,26 @@ private:
     ColorSpace mColorSpace = ColorSpace::UNKNOWN;
 
 public:
+    /**
+     * @brief Default constructor. Creates an empty, null image.
+     */
     Image() {}
 
     /**
-     * @brief Construct an Image from a raw buffer, which is assumed to be in
-     * the given format (default: ABGR).
+     * @brief Constructs an Image from a raw pixel buffer.
      *
-     * @param[in] data: the raw buffer.
-     * @param[in] w: the width of the image.
-     * @param[in] h: the height of the image.
-     * @param[in] yFlip: if true, the image is flipped along the y axis.
-     * @param[in] format: the format of the buffer, that is the way each pixel
-     * (4 bytes) is stored.
+     * This constructor initializes the image with data from a provided buffer.
+     * It can handle various input pixel formats and optionally flip the image
+     * vertically.
+     *
+     * @param[in] data: A pointer to the raw pixel data.
+     * @param[in] w: The width of the image in pixels.
+     * @param[in] h: The height of the image in pixels.
+     * @param[in] yFlip: If true, the image is flipped vertically after loading.
+     * This is often needed for compatibility with graphics APIs like OpenGL
+     * where the origin is at the bottom-left.
+     * @param[in] format: The pixel format of the input `data` buffer. The data
+     * will be converted from this format to the internal ABGR format.
      */
     Image(
         const void*   data,
@@ -93,42 +107,85 @@ public:
         }
     }
 
+    /**
+     * @brief Constructs an Image by copying an existing Array2 of pixels.
+     * @param[in] img: The Array2 containing pixel data in ABGR format.
+     */
     Image(const Array2<uint>& img) : mImg(img) {}
 
+    /**
+     * @brief Constructs an Image by moving an existing Array2 of pixels.
+     * @param[in] img: The Array2 to move, containing pixel data in ABGR format.
+     */
     Image(Array2<uint>&& img) : mImg(std::move(img)) {}
 
+    /**
+     * @brief Checks if the image is null or empty.
+     * @return True if the image has no pixels (width or height is zero), false
+     * otherwise.
+     */
     bool isNull() const { return mImg.empty(); }
 
+    /**
+     * @brief Gets the height of the image in pixels.
+     * @return The image height.
+     */
     int height() const { return mImg.rows(); }
 
+    /**
+     * @brief Gets the width of the image in pixels.
+     * @return The image width.
+     */
     int width() const { return mImg.cols(); }
 
+    /**
+     * @brief Calculates the total size of the image data in bytes.
+     * @return The size in bytes (width * height * 4).
+     */
     std::size_t sizeInBytes() const { return mImg.rows() * mImg.cols() * 4; }
 
     /**
-     * @brief Get the color space of the image.
-     *
-     * @return the color space of the image.
+     * @brief Gets the color space of the image.
+     * @return The color space of the image.
      */
     ColorSpace colorSpace() const { return mColorSpace; }
 
     /**
-     * @brief Get the color space of the image.
-     *
-     * @return the color space of the image.
+     * @brief Gets a reference to the image's color space property.
+     * @return A writable reference to the color space, allowing modification.
      */
     ColorSpace& colorSpace() { return mColorSpace; }
 
+    /**
+     * @brief Retrieves the color of a specific pixel.
+     * @param[in] i: The row index (Y-coordinate) of the pixel.
+     * @param[in] j: The column index (X-coordinate) of the pixel.
+     * @return A vcl::Color object representing the pixel at the specified
+     * coordinates.
+     */
     Color pixel(uint i, uint j) const
     {
         return Color(static_cast<Color::ColorABGR>(mImg(i, j)));
     }
 
+    /**
+     * @brief Provides direct, read-only access to the raw pixel data.
+     * @return A const pointer to the beginning of the pixel buffer.
+     * @note The data is a contiguous block of memory where each pixel is a
+     * 32-bit integer in ABGR format.
+     */
     const unsigned char* data() const
     {
         return reinterpret_cast<const unsigned char*>(mImg.data());
     }
 
+    /**
+     * @brief Flips the image horizontally and/or vertically in-place.
+     * @param[in] horizontal: If true, flips the image along the vertical axis
+     * (mirror).
+     * @param[in] vertical: If true, flips the image along the horizontal axis
+     * (upside-down). Defaults to true.
+     */
     void mirror(bool horizontal = false, bool vertical = true)
     {
         if (horizontal) {
@@ -145,12 +202,20 @@ public:
         }
     }
 
+    /**
+     * @brief Serializes the image data to an output stream.
+     * @param[in] os: The output stream to write to.
+     */
     void serialize(std::ostream& os) const
     {
         mImg.serialize(os);
         vcl::serialize(os, mColorSpace);
     }
 
+    /**
+     * @brief Deserializes image data from an input stream.
+     * @param[in] is: The input stream to read from.
+     */
     void deserialize(std::istream& is)
     {
         mImg.deserialize(is);
@@ -161,13 +226,9 @@ public:
 /* Concepts */
 
 /**
- * @brief A concept representing an Image.
- *
- * The concept is satisfied when `T` is a class that instantiates or derives
- * from an Image class.
+ * @brief A concept that is satisfied if a type T is or derives from vcl::Image.
  *
  * @tparam T: The type to be tested for conformity to the ImageConcept.
- *
  * @ingroup space_core
  */
 template<typename T>
