@@ -30,9 +30,9 @@
 
 #include <tiny_gltf.h>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <stdexcept>
 
 namespace vcl {
 
@@ -42,10 +42,10 @@ inline tinygltf::Model loadTinyGltfCameraModel(const std::string& filename)
 {
     tinygltf::TinyGLTF loader;
     tinygltf::Model    model;
-    std::string err, warn;
+    std::string        err, warn;
 
     std::string ext = toLower(FileInfo::extension(filename));
-    bool ret = false;
+    bool        ret = false;
     if (ext == ".gltf")
         ret = loader.LoadASCIIFromFile(&model, &err, &warn, filename);
     else if (ext == ".glb")
@@ -54,8 +54,9 @@ inline tinygltf::Model loadTinyGltfCameraModel(const std::string& filename)
         throw UnknownFileFormatException(ext);
 
     if (!ret)
-        throw std::runtime_error("Failed to load glTF cameras: " + err +
-                                 (warn.empty() ? "" : " " + warn));
+        throw std::runtime_error(
+            "Failed to load glTF cameras: " + err +
+            (warn.empty() ? "" : " " + warn));
     return model;
 }
 } // namespace detail
@@ -64,7 +65,7 @@ inline tinygltf::Model loadTinyGltfCameraModel(const std::string& filename)
 template<CameraConcept CameraType = Camera<float>>
 inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
 {
-    using Scalar = typename CameraType::ScalarType;
+    using Scalar          = typename CameraType::ScalarType;
     tinygltf::Model model = detail::loadTinyGltfCameraModel(filename);
 
     std::vector<CameraType> cams;
@@ -72,14 +73,14 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
 
     for (size_t cameraIdx = 0; cameraIdx < model.cameras.size(); ++cameraIdx) {
         const tinygltf::Camera& gltfCamera = model.cameras[cameraIdx];
-        CameraType camera;
+        CameraType              camera;
 
         if (gltfCamera.type == "perspective") {
             camera.projectionMode() = CameraType::ProjectionMode::PERSPECTIVE;
-            camera.fieldOfView()    = gltfCamera.perspective.yfov * 180.0 / M_PI;
-            camera.aspectRatio()    = gltfCamera.perspective.aspectRatio;
-            camera.nearPlane()      = gltfCamera.perspective.znear;
-            camera.farPlane()       = gltfCamera.perspective.zfar;
+            camera.fieldOfView() = gltfCamera.perspective.yfov * 180.0 / M_PI;
+            camera.aspectRatio() = gltfCamera.perspective.aspectRatio;
+            camera.nearPlane()   = gltfCamera.perspective.znear;
+            camera.farPlane()    = gltfCamera.perspective.zfar;
         }
         else if (gltfCamera.type == "orthographic") {
             camera.projectionMode() = CameraType::ProjectionMode::ORTHO;
@@ -131,14 +132,15 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
 
 // Single camera loader now delegates to the vector version.
 template<CameraConcept CameraType = Camera<float>>
-inline CameraType loadCameraGltf(const std::string& filename, uint cameraIdx = 0)
+inline CameraType loadCameraGltf(
+    const std::string& filename,
+    uint               cameraIdx = 0)
 {
     auto cams = loadCamerasGltf<CameraType>(filename);
     if (cameraIdx >= cams.size())
         throw std::out_of_range(
             "Camera index " + std::to_string(cameraIdx) +
-            " is out of range. Total cameras: " +
-            std::to_string(cams.size()));
+            " is out of range. Total cameras: " + std::to_string(cams.size()));
     return cams[cameraIdx];
 }
 
