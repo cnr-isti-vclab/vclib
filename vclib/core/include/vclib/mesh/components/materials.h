@@ -107,6 +107,12 @@ public:
     uint materialsNumber() const { return mats().size(); }
 
     /**
+     * @brief Returns the number of texture images stored in the component.
+     * @return The total number of texture images.
+     */
+    uint textureImagesNumber() const { return txtImgs().size(); }
+
+    /**
      * @brief Returns the mesh base path.
      *
      * This path is typically used to resolve relative paths of texture files.

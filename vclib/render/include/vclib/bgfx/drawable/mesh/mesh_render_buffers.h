@@ -45,12 +45,14 @@ namespace vcl {
 template<MeshConcept Mesh>
 class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 {
-
     using MeshType = Mesh;
     using Base     = MeshRenderData<MeshRenderBuffers<MeshType>>;
     using MRI      = MeshRenderInfo;
 
     friend Base;
+
+    inline static const uint N_TEXTURE_TYPES =
+        toUnderlying(Material::TextureType::COUNT);
 
     VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
@@ -74,17 +76,16 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Color mMeshColor; // todo: find better way to store mesh color
 
     // vector of materials of textures
-    // for each material, an array of `MaterialTextures::COUNT` texture units
-    std::vector<std::array<
-        std::unique_ptr<TextureUnit>,
-        toUnderlying(Material::TextureType::COUNT)>>
+    // for each material, an array of `N_TEXTURE_TYPES` texture units
+    std::vector<std::array<std::unique_ptr<TextureUnit>, N_TEXTURE_TYPES>>
         mMaterialTextureUnits;
 
-    std::array<Uniform, toUnderlying(Material::TextureType::COUNT)>
-        mTextureSamplerUniforms;
+    std::map<std::string, std::unique_ptr<TextureUnit>>
+        mNewMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
+    std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -128,9 +129,10 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextureUnits, other.mMaterialTextureUnits);
-        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
+        swap(mNewMaterialTextureUnits, other.mNewMaterialTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMaterialUniforms, other.mMaterialUniforms);
+        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -233,13 +235,11 @@ public:
         uint                      chunkNumber,
         const MeshType&           m) const
     {
-        using enum Material::TextureType;
-
         uint materialId = Base::materialIndex(mrs, chunkNumber);
         assert(mMaterialTextureUnits.size() > 0 || materialId == UINT_NULL);
 
         if (materialId != UINT_NULL) {
-            for (uint j = 0; j < toUnderlying(COUNT); ++j) {
+            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
                 if (mMaterialTextureUnits[materialId][j]) {
                     const auto& tex = m.material(materialId).texture(
                         static_cast<Material::TextureType>(j));
@@ -269,12 +269,10 @@ public:
         const MeshType&           m) const
     {
         static const Material DEFAULT_MATERIAL;
-        static const uint     N_TEXTURES =
-            toUnderlying(Material::TextureType::COUNT);
 
         uint64_t state = BGFX_STATE_NONE;
 
-        std::array<bool, N_TEXTURES> textureAvailable = {false};
+        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
@@ -302,7 +300,7 @@ public:
             else {
                 assert(materialId < m.materialsNumber());
 
-                for (int i = 0; i < N_TEXTURES; ++i) {
+                for (int i = 0; i < N_TEXTURE_TYPES; ++i) {
                     if (mMaterialTextureUnits[materialId][i] != nullptr) {
                         textureAvailable[i] =
                             mMaterialTextureUnits[materialId][i]->isValid();
@@ -659,10 +657,8 @@ private:
         };
 
         auto loadTextureAndSetUnit = [&](uint texture) {
-            uint texturesPerMaterial =
-                toUnderlying(Material::TextureType::COUNT);
-            uint i = texture / texturesPerMaterial; // i-th material
-            uint j = texture % texturesPerMaterial; // j-th texture
+            uint i = texture / N_TEXTURE_TYPES; // i-th material
+            uint j = texture % N_TEXTURE_TYPES; // j-th texture
 
             const vcl::Texture& tex =
                 mesh.material(i).texture(static_cast<Material::TextureType>(j));
@@ -705,17 +701,15 @@ private:
         };
 
         mMaterialTextureUnits.clear();
+        mNewMaterialTextureUnits.clear();
 
         if constexpr (vcl::HasMaterials<MeshType>) {
             mMaterialTextureUnits.resize(mesh.materialsNumber());
 
-            std::vector<int> textures(
-                mesh.materialsNumber() *
-                toUnderlying(Material::TextureType::COUNT));
+            std::vector<int> textures(mesh.materialsNumber() * N_TEXTURE_TYPES);
             std::iota(textures.begin(), textures.end(), 0);
 
-            parallelFor(
-                textures.begin(), textures.end(), loadTextureAndSetUnit);
+            parallelFor(textures, loadTextureAndSetUnit);
 
             createTextureSamplerUniforms();
         }
