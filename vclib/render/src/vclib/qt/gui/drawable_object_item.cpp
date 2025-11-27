@@ -140,7 +140,7 @@ void DrawableObjectItem::addMaterialsItem(const AbstractDrawableMesh& mesh)
             materialItem->setText(1, QString::fromStdString(name));
             makeItemNotSelectable(materialItem);
 
-            addMaterialData(material, materialItem);
+            addMaterialData(mesh, material, materialItem);
 
             i++;
         }
@@ -148,6 +148,7 @@ void DrawableObjectItem::addMaterialsItem(const AbstractDrawableMesh& mesh)
 }
 
 void DrawableObjectItem::addMaterialData(
+    const AbstractDrawableMesh& mesh,
     const Material&  material,
     QTreeWidgetItem* parent)
 {
@@ -228,7 +229,7 @@ void DrawableObjectItem::addMaterialData(
 
             QString text = QString::fromStdString(txt.path());
 
-            const auto& image = txt.image();
+            const auto& image = mesh.textureImage(txt.path());
 
             text += " (";
             text += image.isNull() ? "not loaded" :

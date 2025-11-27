@@ -23,9 +23,16 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_BACKGROUND_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_BACKGROUND_H
 
+#include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/texture_unit.h>
+#include <vclib/bgfx/uniform.h>
+
 #include <vclib/render/drawable/drawable_object.h>
-#include <vclib/io/image/hdr/load.h>
+
+#include <vclib/io.h>
+
+#include <vclib/io/image/hdr/load.h> // TODO: add hdr load to io/image/load.h
 
 #include <bgfx/bgfx.h>
 
@@ -36,7 +43,10 @@ class DrawableBackground : public vcl::DrawableObject
     bool mVisible        = true;
 
     vcl::VertexBuffer mVertexBuffer;
-    vcl::IndexBuffer mIndexBuffer;
+    vcl::IndexBuffer  mIndexBuffer;
+    vcl::Uniform      mTexSamplerUniform =
+        Uniform("s_tex0", bgfx::UniformType::Sampler);
+    ;
 
     std::unique_ptr<TextureUnit> mTextureUnit;
 
@@ -71,6 +81,7 @@ public:
         mVertexBuffer.swap(other.mVertexBuffer);
         mIndexBuffer.swap(other.mIndexBuffer);
         swap(mTextureUnit, other.mTextureUnit);
+        swap(mTexSamplerUniform, other.mTexSamplerUniform);
     }
 
     friend void swap(DrawableBackground& first, DrawableBackground& second)
@@ -140,7 +151,6 @@ public:
         );
 
         bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
-        std::string samplerName = "s_tex0";
 
         uint cubemapSize = bimg::imageGetSize(
             nullptr,
@@ -162,7 +172,6 @@ public:
         tu->set(
             buffer,
             Point2i(cubemap->m_width, cubemap->m_height),
-            samplerName,
             false, // TODO: add mips when and WHERE needed
             BGFX_SAMPLER_UVW_CLAMP,
             bgfx::TextureFormat::RGBA32F,
@@ -182,7 +191,7 @@ public:
 
         vcl::Matrix44f model = vcl::Matrix44f::Identity();
 
-        mTextureUnit->bind(8);
+        mTextureUnit->bind(8, mTexSamplerUniform.handle());
 
         mVertexBuffer.bindVertex(0);
         mIndexBuffer.bind(0, indexNumber);

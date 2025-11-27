@@ -45,12 +45,14 @@ namespace vcl {
 template<MeshConcept Mesh>
 class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 {
-
     using MeshType = Mesh;
     using Base     = MeshRenderData<MeshRenderBuffers<MeshType>>;
     using MRI      = MeshRenderInfo;
 
     friend Base;
+
+    inline static const uint N_TEXTURE_TYPES =
+        toUnderlying(Material::TextureType::COUNT);
 
     VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
@@ -73,15 +75,13 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Lines mWireframeLines;
     Color mMeshColor; // todo: find better way to store mesh color
 
-    // vector of materials of textures
-    // for each material, an array of `MaterialTextures::COUNT` texture units
-    std::vector<std::array<
-        std::unique_ptr<TextureUnit>,
-        toUnderlying(Material::TextureType::COUNT)>>
-        mMaterialTextureUnits;
+    // map of textures
+    // for each texture path of each material, store its texture unit
+    std::map<std::string, std::unique_ptr<TextureUnit>> mMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
+    std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -126,6 +126,8 @@ public:
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextureUnits, other.mMaterialTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
+        swap(mMaterialUniforms, other.mMaterialUniforms);
+        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -223,18 +225,27 @@ public:
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
-    void bindTextures(const MeshRenderSettings& mrs, uint chunkNumber) const
+    void bindTextures(
+        const MeshRenderSettings& mrs,
+        uint                      chunkNumber,
+        const MeshType&           m) const
     {
-        using enum MeshRenderInfo::Surface;
+        uint materialId = Base::materialIndex(mrs, chunkNumber);
+        assert(mMaterialTextureUnits.size() > 0 || materialId == UINT_NULL);
 
-        uint textureId = Base::materialIndex(mrs, chunkNumber);
-        assert(mMaterialTextureUnits.size() > 0 || textureId == UINT_NULL);
-
-        if (textureId != UINT_NULL) {
-            for (uint j = 0; j < toUnderlying(Material::TextureType::COUNT); ++j) {
-                if (mMaterialTextureUnits[textureId][j]) {
-                    mMaterialTextureUnits[textureId][j]->bind(
-                        VCL_MRB_TEXTURE0 + j);
+        if (materialId != UINT_NULL) {
+            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                const auto&        tex  = m.material(materialId).texture(j);
+                const std::string& path = tex.path();
+                if (!path.empty()) {
+                    const auto& tu = mMaterialTextureUnits.at(path);
+                    if (tu) {
+                        uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
+                        tu->bind(
+                            VCL_MRB_TEXTURE0 + j,
+                            mTextureSamplerUniforms[j].handle(),
+                            flags);
+                    }
                 }
             }
         }
@@ -256,12 +267,10 @@ public:
         const MeshType&           m) const
     {
         static const Material DEFAULT_MATERIAL;
-        static const uint     N_TEXTURES =
-            toUnderlying(Material::TextureType::COUNT);
 
         uint64_t state = BGFX_STATE_NONE;
 
-        std::array<bool, N_TEXTURES> textureAvailable = {false};
+        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
@@ -288,11 +297,16 @@ public:
             }
             else {
                 assert(materialId < m.materialsNumber());
+                const Material& mat = m.material(materialId);
 
-                for (int i = 0; i < N_TEXTURES; ++i) {
-                    if (mMaterialTextureUnits[materialId][i] != nullptr) {
-                        textureAvailable[i] =
-                            mMaterialTextureUnits[materialId][i]->isValid();
+                for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                    const auto& tex = m.material(materialId).texture(j);
+                    const std::string& path = tex.path();
+                    if (!path.empty()) {
+                        const auto& tu = mMaterialTextureUnits.at(path);
+                        if (tu != nullptr) {
+                            textureAvailable[j] = tu->isValid();
+                        }
                     }
                 }
 
@@ -579,169 +593,148 @@ private:
     void setTextureUnits(const MeshType& mesh) // override
     {
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](
-            Texture& tex,
-            uint     i, // i-th material
-            uint     j  // j-th texture
-        ) 
-        {
-            using enum Texture::MinificationFilter;
-            using enum Texture::WrapMode;
-
-            Texture::MinificationFilter minFilter = tex.minFilter();
-            Texture::MagnificationFilter magFilter = tex.magFilter();
-            Texture::WrapMode wrapU = tex.wrapU();
-            Texture::WrapMode wrapV = tex.wrapV();
-
-            bool hasMips = minFilter >= NEAREST_MIPMAP_NEAREST ||
-                           minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
-
-            Image& txt = tex.image();
-
-            txt.mirror();
-
-            const uint size = txt.width() * txt.height();
+        auto setTextureUnit = [&](const Image&       img,
+                                  const std::string& path,
+                                  bool               generateMips) {
+            const uint size = img.width() * img.height();
             assert(size > 0);
 
             uint sizeWithMips = bimg::imageGetSize(
-                nullptr,
-                txt.width(), 
-                txt.height(), 
-                1, 
-                false, 
-                hasMips, 
-                1, 
-                bimg::TextureFormat::RGBA8
-            ) / 4; // in uints
+                                    nullptr,
+                                    img.width(),
+                                    img.height(),
+                                    1,
+                                    false,
+                                    generateMips,
+                                    1,
+                                    bimg::TextureFormat::RGBA8) /
+                                4; // in uints
             uint numMips = 1;
-            if(hasMips)
+            if (generateMips)
                 numMips = bimg::imageGetNumMips(
-                    bimg::TextureFormat::RGBA8, 
-                    txt.width(), 
-                    txt.height()
-                );
+                    bimg::TextureFormat::RGBA8, img.width(), img.height());
 
             auto [buffer, releaseFn] =
                 getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
 
-            const uint* tdata = reinterpret_cast<const uint*>(txt.data());
+            const uint* tdata = reinterpret_cast<const uint*>(img.data());
 
             std::copy(tdata, tdata + size, buffer); // mip level 0
 
-            if(numMips > 1) {
-                uint *source = buffer;
-                uint *dest;
-                uint offset = size;
-                for(uint mip = 1; mip < numMips; mip++) {
-                    dest = source + offset;
-                    uint mipSize = (txt.width() >> mip) * (txt.height() >> mip);
+            if (numMips > 1) {
+                uint* source = buffer;
+                uint* dest;
+                uint  offset = size;
+                for (uint mip = 1; mip < numMips; mip++) {
+                    dest         = source + offset;
+                    uint mipSize = (img.width() >> mip) * (img.height() >> mip);
                     bimg::imageRgba8Downsample2x2(
-                        dest,                           // output location
-                        txt.width() >> (mip - 1),       // input width
-                        txt.height() >> (mip - 1),      // input height
-                        1,                              // depth, always 1 for 2D textures
-                        (txt.width() >> (mip - 1)) * 4, // input pitch
-                        (txt.width() >> mip) * 4,       // output pitch
+                        dest,                      // output location
+                        img.width() >> (mip - 1),  // input width
+                        img.height() >> (mip - 1), // input height
+                        1, // depth, always 1 for 2D textures
+                        (img.width() >> (mip - 1)) * 4, // input pitch
+                        (img.width() >> mip) * 4,       // output pitch
                         source                          // input location
                     );
                     source = dest;
                     offset = mipSize;
                 }
             }
-            
+
             uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
 
-            if(tex.colorSpace() == Texture::ColorSpace::SRGB)
+            if (img.colorSpace() == Image::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
-
-            // set minification filter - bgfx default is linear
-            if (minFilter == NEAREST || minFilter == NEAREST_MIPMAP_LINEAR ||
-                minFilter == NEAREST_MIPMAP_NEAREST)
-                flags |= BGFX_SAMPLER_MIN_POINT;
-
-            // set mipmap filter - bgfx default is linear
-            if (minFilter == NEAREST_MIPMAP_NEAREST ||
-                minFilter == LINEAR_MIPMAP_NEAREST)
-                flags |= BGFX_SAMPLER_MIP_POINT;
-
-            // set magnification filter - bgfx default is linear
-            if (magFilter == Texture::MagnificationFilter::NEAREST)
-                flags |= BGFX_SAMPLER_MAG_POINT;
-
-            // set wrap modes - bgfx default is repeat
-            if (wrapU == CLAMP_TO_EDGE)
-                flags |= BGFX_SAMPLER_U_CLAMP;
-            else if (wrapU == MIRRORED_REPEAT)
-                flags |= BGFX_SAMPLER_U_MIRROR;
-
-            if (wrapV == CLAMP_TO_EDGE)
-                flags |= BGFX_SAMPLER_V_CLAMP;
-            else if (wrapV == MIRRORED_REPEAT)
-                flags |= BGFX_SAMPLER_V_MIRROR;
 
             auto tu = std::make_unique<TextureUnit>();
             tu->set(
                 buffer,
-                vcl::Point2i(txt.width(), txt.height()),
-                "s_tex" + std::to_string(j),
-                hasMips,
+                vcl::Point2i(img.width(), img.height()),
+                generateMips,
                 flags,
                 bgfx::TextureFormat::RGBA8,
                 false,
                 releaseFn);
 
-            mMaterialTextureUnits[i][j] = std::move(tu);
+            // at() does not insert if already present, thus safe in parallel
+            mMaterialTextureUnits.at(path) = std::move(tu);
         };
 
-        auto loadTextureAndSetUnit = [&](uint texture) {
-            uint texturesPerMaterial =
-                toUnderlying(Material::TextureType::COUNT);
-            uint i = texture / texturesPerMaterial; // i-th material
-            uint j = texture % texturesPerMaterial; // j-th texture
+        auto loadTextureAndSetUnit =
+            [&](const std::pair<std::string, uint>& pathPair) {
+                const std::string& path        = pathPair.first;
 
-            // copy the texture because the image could be not loaded,
-            // and at the end it needs to be mirrored.
-            vcl::Texture tex = mesh.material(i).texture(
-                static_cast<Material::TextureType>(j));
-
-            vcl::Image& txt = tex.image();
-            if (txt.isNull()) { // try to load it just for rendering
-                const std::string& path =
-                    mesh.material(i)
-                        .texture(static_cast<Material::TextureType>(j))
-                        .path();
-                if (!path.empty()) {
+                uint materialId  = pathPair.second / N_TEXTURE_TYPES;
+                uint textureType = pathPair.second % N_TEXTURE_TYPES;
+                // copy the image because it could be not loaded,
+                // and at the end it needs to be mirrored.
+                vcl::Image txtImg = mesh.textureImage(path);
+                if (txtImg.isNull()) { // try to load it just for rendering
                     try {
-                        txt =
-                            vcl::loadImage(mesh.meshBasePath() + path);
+                        txtImg = vcl::loadImage(mesh.meshBasePath() + path);
+                        txtImg.colorSpace() = Material::textureTypeToColorSpace(
+                            static_cast<Material::TextureType>(textureType));
                     }
                     catch (...) {
                         // do nothing
                     }
-                    if (txt.isNull()) {
+                    if (txtImg.isNull()) {
                         // still null, use a dummy texture
-                        txt = createCheckBoardImage(512);
+                        txtImg = createCheckBoardImage(512);
                     }
                 }
-            }
 
-            // if loading succeeded (or dummy texture has been created)
-            if (!txt.isNull()) {
-                setTextureUnit(tex, i, j);
-            }
-        };
+                // if loading succeeded (or dummy texture has been created)
+                if (!txtImg.isNull()) {
+                    const Texture& tex =
+                        mesh.material(materialId).texture(textureType);
+                    using enum Texture::MinificationFilter;
+
+                    Texture::MinificationFilter minFilter = tex.minFilter();
+
+                    bool hasMips =
+                        minFilter >= NEAREST_MIPMAP_NEAREST ||
+                        minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
+
+                    txtImg.mirror();
+                    setTextureUnit(txtImg, path, hasMips);
+                }
+            };
 
         mMaterialTextureUnits.clear();
 
         if constexpr (vcl::HasMaterials<MeshType>) {
-            mMaterialTextureUnits.resize(mesh.materialsNumber());
+            // textures could be missing from the textureImages of the mesh
+            // setting the texture paths in a map - key is the path and value is
+            // an uint where materialIndex and textureType are encoded
+            // map is used to avoid duplicates, then is moved to a vector for
+            // parallel processing
+            std::map<std::string, uint> texturePaths;
+            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+                for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                    const vcl::Texture& tex = mesh.material(i).texture(j);
+                    if (!tex.path().empty()) {
+                        texturePaths[tex.path()] = i * N_TEXTURE_TYPES + j;
 
-            std::vector<int> textures(
-                mesh.materialsNumber() *
-                toUnderlying(Material::TextureType::COUNT));
-            std::iota(textures.begin(), textures.end(), 0);
+                        // create a null texture unit for now in the map
+                        // this is crucial to avoid insertions during the
+                        // actual creation, that is done in parallel
+                        mMaterialTextureUnits[tex.path()] = nullptr;
+                    }
+                }
+            }
 
-            parallelFor(textures.begin(),textures.end(), loadTextureAndSetUnit);
+            // move to vector for parallel processing
+            std::vector<std::pair<std::string, uint>> texturePathVec;
+            texturePathVec.reserve(texturePaths.size());
+            for (const auto& tp : texturePaths) {
+                texturePathVec.push_back(tp);
+            }
+
+            parallelFor(texturePathVec, loadTextureAndSetUnit);
+
+            createTextureSamplerUniforms();
         }
     }
 
@@ -831,6 +824,15 @@ private:
         mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
 
         // otherwise, already computed buffers should do the job
+    }
+
+    void createTextureSamplerUniforms()
+    {
+        for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
+            mTextureSamplerUniforms[i] = Uniform(
+                ("s_tex" + std::to_string(i)).c_str(),
+                bgfx::UniformType::Sampler);
+        }
     }
 
     template<typename T>

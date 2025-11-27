@@ -39,6 +39,8 @@ namespace vcl {
  */
 class AbstractDrawableMesh : public vcl::DrawableObject
 {
+    inline static const Image EMPTY_IMAGE;
+
 protected:
     MeshRenderSettings mMRS;
 
@@ -75,6 +77,11 @@ public:
     virtual View<MatIt> materials() const
     {
         return View<MatIt>();
+    }
+
+    virtual const Image& textureImage(const std::string& path) const
+    {
+        return EMPTY_IMAGE;
     }
 
     // DrawableObject implementation

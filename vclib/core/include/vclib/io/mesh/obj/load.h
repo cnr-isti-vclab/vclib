@@ -644,17 +644,27 @@ void loadObj(
 
     if constexpr (HasMaterials<MeshType>) {
         if (settings.loadTextureImages) {
+            using enum Material::TextureType;
             for (Material& mat : m.materials()) {
-                Texture& bct = mat.baseColorTexture();
-                if (!bct.path().empty()) {
-                    bct.image() = loadImage(
-                        m.meshBasePath() + mat.baseColorTexture().path());
-                    if (bct.image().isNull()) {
-                        log.log(
-                            "Cannot load texture " + bct.path(),
-                            LogType::WARNING_LOG);
+                for (uint i = 0; i < toUnderlying(COUNT); ++i) {
+                    auto texType = static_cast<Material::TextureType>(i);
+                    const Texture& tex = mat.texture(texType);
+                    if (!tex.path().empty()) {
+                        Image img = loadImage(
+                            m.meshBasePath() + mat.baseColorTexture().path());
+                        if (img.isNull()) {
+                            log.log(
+                                "Cannot load texture " + tex.path(),
+                                LogType::WARNING_LOG);
+                        }
+                        else {
+                            img.colorSpace() =
+                                Material::textureTypeToColorSpace(texType);
+                            m.pushTextureImage(tex.path(), std::move(img));
+                        }
                     }
                 }
+
             }
         }
     }

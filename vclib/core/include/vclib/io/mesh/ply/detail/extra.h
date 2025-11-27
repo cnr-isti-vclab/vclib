@@ -47,11 +47,13 @@ void readPlyTextures(
             mat.name() = FileInfo::fileNameWithExtension(str);
             mat.baseColorTexture().path() = str;
             if (settings.loadTextureImages) {
-                mat.baseColorTexture().image() =
-                    loadImage(mesh.meshBasePath() + str);
-                if (mat.baseColorTexture().image().isNull()) {
+                Image img = loadImage(mesh.meshBasePath() + str);
+                if (img.isNull()) {
                     log.log(
                         "Cannot load texture " + str, LogType::WARNING_LOG);
+                }
+                else {
+                    mesh.pushTextureImage(str, std::move(img));
                 }
             }
             mesh.pushMaterial(mat);
@@ -71,13 +73,23 @@ void writePlyTextures(
         for (uint k = 0; const Material& mat : mesh.materials()) {
             header.pushTextureFileName(mat.baseColorTexture().path());
             if (settings.saveTextureImages) {
-                try {
-                    saveImage(
-                        mat.baseColorTexture().image(),
-                        basePath + mat.baseColorTexture().path());
+                const Image& img =
+                    mesh.textureImage(mat.baseColorTexture().path());
+                if (img.isNull()) {
+                    log.log(
+                        "Cannot save empty texture " +
+                            mat.baseColorTexture().path(),
+                        LogType::WARNING_LOG);
                 }
-                catch (const std::runtime_error& e) {
-                    log.log(e.what(), LogType::WARNING_LOG);
+                else {
+                    try {
+                        saveImage(
+                            img,
+                            basePath + mat.baseColorTexture().path());
+                    }
+                    catch (const std::runtime_error& e) {
+                        log.log(e.what(), LogType::WARNING_LOG);
+                    }
                 }
             }
             ++k;

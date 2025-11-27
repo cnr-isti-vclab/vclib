@@ -23,8 +23,6 @@
 #ifndef VCL_SPACE_CORE_TEXTURE_H
 #define VCL_SPACE_CORE_TEXTURE_H
 
-#include "image.h"
-
 #include <vclib/base.h>
 
 namespace vcl {
@@ -32,17 +30,10 @@ namespace vcl {
 class Texture
 {
 public:
-
-    enum class ColorSpace {
-        UNKNOWN,
-        LINEAR,
-        SRGB
-    };
-
     /*Enums defined following gltf 2.0 specification*/
 
     enum class MinificationFilter {
-        NONE = -1,
+        NONE    = -1,
         NEAREST = 9728,
         LINEAR,
         NEAREST_MIPMAP_NEAREST = 9984,
@@ -51,27 +42,20 @@ public:
         LINEAR_MIPMAP_LINEAR
     };
 
-    enum class MagnificationFilter {
-        NONE = -1,
-        NEAREST = 9728,
-        LINEAR
-    };
+    enum class MagnificationFilter { NONE = -1, NEAREST = 9728, LINEAR };
 
     enum class WrapMode {
-        REPEAT = 10497,
-        CLAMP_TO_EDGE = 33071,
+        REPEAT          = 10497,
+        CLAMP_TO_EDGE   = 33071,
         MIRRORED_REPEAT = 33648
     };
 
 private:
-
-    Image       mImg;
-    std::string mPath;
-    ColorSpace mColorSpace = ColorSpace::UNKNOWN;
-    MinificationFilter mMinFilter = MinificationFilter::NONE;
-    MagnificationFilter mMagFilter = MagnificationFilter::NONE;
-    WrapMode mWrapU = WrapMode::REPEAT;
-    WrapMode mWrapV = WrapMode::REPEAT;
+    std::string         mPath;
+    MinificationFilter  mMinFilter  = MinificationFilter::NONE;
+    MagnificationFilter mMagFilter  = MagnificationFilter::NONE;
+    WrapMode            mWrapU      = WrapMode::REPEAT;
+    WrapMode            mWrapV      = WrapMode::REPEAT;
 
 public:
     Texture() {}
@@ -84,32 +68,11 @@ public:
     Texture(const std::string& path) : mPath(path) {}
 
     /**
-     * @brief Creates a Texture object, with the given image and its path.
-     *
-     * @param[in] img: the image.
-     * @param[in] path: the path of the texture file.
-     */
-    Texture(const Image& img, const std::string& path) : mImg(img), mPath(path)
-    {
-    }
-
-    /**
-     * @brief Creates a Texture object, with the given image and its path.
-     *
-     * @param[in] img: the image.
-     * @param[in] path: the path of the texture file.
-     */
-    Texture(Image&& img, const std::string& path) :
-            mImg(std::move(img)), mPath(path)
-    {
-    }
-
-    /**
-     * @brief Checks whether the texture is null (no image and no path).
+     * @brief Checks whether the texture is null (no path).
      *
      * @return true if the texture is null, false otherwise.
      */
-    bool isNull() const { return mImg.isNull() && mPath.empty(); }
+    bool isNull() const { return mPath.empty(); }
 
     /**
      * @brief Get the path of the texture.
@@ -124,20 +87,6 @@ public:
      * @return the path of the texture.
      */
     std::string& path() { return mPath; }
-
-    /**
-     * @brief Get the image of the texture.
-     *
-     * @return the image of the texture.
-     */
-    const Image& image() const { return mImg; }
-
-    /**
-     * @brief Get the image of the texture.
-     *
-     * @return the image of the texture.
-     */
-    Image& image() { return mImg; }
 
     /**
      * @brief Get the minification filter of the texture.
@@ -195,35 +144,15 @@ public:
      */
     WrapMode& wrapV() { return mWrapV; }
 
-    /**
-     * @brief Get the color space of the texture.
-     *
-     * @return the color space of the texture.
-     */
-    ColorSpace colorSpace() const { return mColorSpace; }
-
-    /**
-     * @brief Get the color space of the texture.
-     *
-     * @return the color space of the texture.
-     */
-    ColorSpace& colorSpace() { return mColorSpace; }
-
-
     void serialize(std::ostream& os) const
     {
         vcl::serialize(os, mPath);
-        mImg.serialize(os);
-        vcl::serialize(os, mColorSpace);
         vcl::serialize(os, mMinFilter, mMagFilter, mWrapU, mWrapV);
-
     }
 
     void deserialize(std::istream& is)
     {
         vcl::deserialize(is, mPath);
-        mImg.deserialize(is);
-        vcl::deserialize(is, mColorSpace);
         vcl::deserialize(is, mMinFilter, mMagFilter, mWrapU, mWrapV);
     }
 };

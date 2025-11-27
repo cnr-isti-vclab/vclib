@@ -131,8 +131,9 @@ auto meshTextureAndTexCoords()
         const auto& texture = meshWedgeTexCoords.material(i).baseColorTexture();
         std::cout << "     Texture " << i << ": " << texture.path()
                   << std::endl;
-        std::cout << "       Size: " << texture.image().width() << "x"
-                  << texture.image().height() << std::endl;
+        const auto& image = meshWedgeTexCoords.textureImage(texture.path());
+        std::cout << "       Size: " << image.width() << "x"
+                  << image.height() << std::endl;
     }
 
     // Example 4: Creating mesh with texture coordinates

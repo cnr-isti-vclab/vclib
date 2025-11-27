@@ -56,18 +56,26 @@ std::vector<std::string> saveObjMaterials(
                 omat.matName = matName;
             }
 
+            // TODO: save all the supported textures
             mtlfp << "newmtl " << matName << std::endl;
             mtlfp << omat << std::endl;
             materials.push_back(matName);
 
             if (settings.saveTextureImages) {
                 const Texture& t = mat.baseColorTexture();
-                ;
-                try {
-                    saveImage(t.image(), m.meshBasePath() + t.path());
+                const Image& img = m.textureImage(t.path());
+                if (t.isNull()) {
+                    log.log(
+                        "Cannot save empty texture " + t.path(),
+                        LogType::WARNING_LOG);
                 }
-                catch (const std::runtime_error& e) {
-                    log.log(e.what(), LogType::WARNING_LOG);
+                else {
+                    try {
+                        saveImage(img, m.meshBasePath() + t.path());
+                    }
+                    catch (const std::runtime_error& e) {
+                        log.log(e.what(), LogType::WARNING_LOG);
+                    }
                 }
             }
         }

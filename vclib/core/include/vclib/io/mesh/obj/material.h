@@ -87,7 +87,7 @@ public:
 
         map_Kd = mat.baseColorTexture().path();
         map_Ke = mat.texture(EMISSIVE).path();
-        map_bump = mat.texture(NORMAL).path();
+        //map_bump = mat.texture(NORMAL).path();
     }
 
     /**
@@ -123,16 +123,13 @@ public:
 
         if (!map_Kd.empty()) {
             m.baseColorTexture().path() = map_Kd;
-            m.baseColorTexture().colorSpace() = Texture::ColorSpace::SRGB;
         }
         if (!map_Ke.empty()) {
             m.texture(EMISSIVE).path() = map_Ke;
-            m.texture(EMISSIVE).colorSpace() = Texture::ColorSpace::SRGB;
         }
-        if (!map_bump.empty()) {
-            m.texture(NORMAL).path() = map_bump;
-            m.texture(NORMAL).colorSpace() = Texture::ColorSpace::LINEAR;
-        }
+        // if (!map_bump.empty()) {
+        //     m.texture(NORMAL).path() = map_bump;
+        // }
 
         return m;
     }

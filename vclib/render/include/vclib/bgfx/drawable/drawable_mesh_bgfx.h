@@ -187,6 +187,16 @@ public:
         }
     }
 
+    const Image& textureImage(const std::string& path) const override
+    {
+        if constexpr (HasMaterials<MeshType>) {
+            return MeshType::textureImage(path);
+        }
+        else {
+            return AbstractDrawableMesh::textureImage(path);
+        }
+    }
+
     // DrawableObject implementation
 
     void init() override {}
@@ -210,7 +220,7 @@ public:
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState = state;
                 // Bind textures before vertex buffers!!
-                mMRB.bindTextures(mMRS, i);
+                mMRB.bindTextures(mMRS, i, *this);
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
                 uint64_t materialState = mMRB.bindMaterials(mMRS, i, *this);
