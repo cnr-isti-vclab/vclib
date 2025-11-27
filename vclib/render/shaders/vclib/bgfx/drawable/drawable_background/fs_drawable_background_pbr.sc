@@ -29,7 +29,7 @@ SAMPLERCUBE(s_tex0, 8);
 
 void main()
 {
-    vec4 color = textureCube(s_tex0, normalize(v_texcoord0));
+    vec4 color = textureCube(s_tex0, v_texcoord0);
     //color.rgb *= u_EnvIntensity;
     color.a = 1.0;
     gl_FragColor = color;

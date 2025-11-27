@@ -27,9 +27,11 @@ $output v_texcoord0
 
 void main()
 {
-    v_texcoord0 = a_position; // TODO: add u_EnvRotation
-    mat4 mat = u_modelViewProj;
-    mat[3] = vec4(0.0, 0.0, 0.0, 0.1);
-    vec4 pos = mul(mat, vec4(a_position, 1.0));
+    v_texcoord0 = a_position;
+    v_texcoord0.x *= -1.0;
+    mat4 mat = u_view;
+    mat[3] = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 pos = mul(vec4(a_position, 1.0), mat);
+    pos = mul(u_proj, pos);
     gl_Position = pos.xyww;
 }

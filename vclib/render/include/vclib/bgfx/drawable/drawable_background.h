@@ -164,7 +164,7 @@ public:
             Point2i(cubemap->m_width, cubemap->m_height),
             samplerName,
             false, // TODO: add mips when and WHERE needed
-            BGFX_TEXTURE_NONE,
+            BGFX_SAMPLER_UVW_CLAMP,
             bgfx::TextureFormat::RGBA32F,
             true,
             releaseFn
