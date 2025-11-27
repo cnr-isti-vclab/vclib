@@ -142,6 +142,11 @@ public:
         }
     }
 
+    const Texture& texture(uint type) const
+    {
+        return texture(static_cast<TextureType>(type));
+    }
+
     Texture& texture(TextureType type)
     {
         switch(type)
@@ -153,6 +158,11 @@ public:
             case TextureType::EMISSIVE: return mEmissiveTexture;
             default: throw std::runtime_error("Invalid texture type");
         }
+    }
+
+    Texture& texture(uint type)
+    {
+        return texture(static_cast<TextureType>(type));
     }
 
     void serialize(std::ostream& os) const

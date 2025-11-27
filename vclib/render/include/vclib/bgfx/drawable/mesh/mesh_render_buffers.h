@@ -241,8 +241,7 @@ public:
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
                 if (mMaterialTextureUnits[materialId][j]) {
-                    const auto& tex = m.material(materialId).texture(
-                        static_cast<Material::TextureType>(j));
+                    const auto& tex = m.material(materialId).texture(j);
                     uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
                     mMaterialTextureUnits[materialId][j]->bind(
                         VCL_MRB_TEXTURE0 + j,
@@ -660,8 +659,7 @@ private:
             uint i = texture / N_TEXTURE_TYPES; // i-th material
             uint j = texture % N_TEXTURE_TYPES; // j-th texture
 
-            const vcl::Texture& tex =
-                mesh.material(i).texture(static_cast<Material::TextureType>(j));
+            const vcl::Texture& tex = mesh.material(i).texture(j);
 
             // copy the image because it could be not loaded,
             // and at the end it needs to be mirrored.
