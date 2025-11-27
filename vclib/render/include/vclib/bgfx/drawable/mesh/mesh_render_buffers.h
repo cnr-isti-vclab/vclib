@@ -592,8 +592,6 @@ private:
 
     void setTextureUnits(const MeshType& mesh) // override
     {
-        std::mutex mtx;
-
         // lambda that sets a texture unit
         auto setTextureUnit = [&](const Image&       img,
                                   const std::string& path,
@@ -657,9 +655,8 @@ private:
                 flags,
                 releaseFn);
 
-            // Locks the mutex for the duration of this scope
-            std::lock_guard<std::mutex> lock(mtx);
-            mMaterialTextureUnits[path] = std::move(tu);
+            // at() does not insert if already present, thus safe in parallel
+            mMaterialTextureUnits.at(path) = std::move(tu);
         };
 
         auto loadTextureAndSetUnit =
@@ -709,17 +706,31 @@ private:
             // textures could be missing from the textureImages of the mesh
             // setting the texture paths in a map - key is the path and value is
             // an uint where materialIndex and textureType are encoded
+            // map is used to avoid duplicates, then is moved to a vector for
+            // parallel processing
             std::map<std::string, uint> texturePaths;
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
                     const vcl::Texture& tex = mesh.material(i).texture(j);
                     if (!tex.path().empty()) {
                         texturePaths[tex.path()] = i * N_TEXTURE_TYPES + j;
+
+                        // create a null texture unit for now in the map
+                        // this is crucial to avoid insertions during the
+                        // actual creation, that is done in parallel
+                        mMaterialTextureUnits[tex.path()] = nullptr;
                     }
                 }
             }
 
-            parallelFor(texturePaths, loadTextureAndSetUnit);
+            // move to vector for parallel processing
+            std::vector<std::pair<std::string, uint>> texturePathVec;
+            texturePathVec.reserve(texturePaths.size());
+            for (const auto& tp : texturePaths) {
+                texturePathVec.push_back(tp);
+            }
+
+            parallelFor(texturePathVec, loadTextureAndSetUnit);
 
             createTextureSamplerUniforms();
         }
