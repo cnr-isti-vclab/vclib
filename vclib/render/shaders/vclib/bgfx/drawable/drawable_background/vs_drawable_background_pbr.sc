@@ -29,9 +29,7 @@ void main()
 {
     v_texcoord0 = a_position;
     v_texcoord0.x *= -1.0;
-    mat4 mat = u_view;
-    mat[3] = vec4(0.0, 0.0, 0.0, 1.0);
-    vec4 pos = mul(vec4(a_position, 1.0), mat);
+    vec4 pos = vec4(mul(u_normalMatrix, a_position), 1.0);
     pos = mul(u_proj, pos);
     gl_Position = pos.xyww;
 }

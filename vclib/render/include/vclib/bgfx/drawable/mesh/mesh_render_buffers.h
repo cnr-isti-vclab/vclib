@@ -835,6 +835,8 @@ private:
         }
     }
 
+    // TODO move the function to a common place and use it also for
+    // drawable background
     template<typename T>
     std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
     {

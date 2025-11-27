@@ -124,17 +124,17 @@ public:
         );
 
         uint32_t idxs[indexNumber] = {
-            1, 2, 0,
+            1, 2, 0, // back
             2, 3, 0,
-            6, 2, 1,
+            6, 2, 1, // right
             1, 5, 6,
-            6, 5, 4,
+            6, 5, 4, // front
             4, 7, 6,
-            6, 3, 2,
+            6, 3, 2, // top
             7, 3, 6,
-            3, 7, 0,
+            3, 7, 0, // left
             7, 4, 0,
-            5, 1, 0,
+            5, 1, 0, // bottom
             4, 5, 0
         };
 
@@ -152,7 +152,7 @@ public:
 
         bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
 
-        uint cubemapSize = bimg::imageGetSize(
+        const uint32_t cubemapSize = bimg::imageGetSize(
             nullptr,
             cubemap->m_width,
             cubemap->m_height,
@@ -161,12 +161,12 @@ public:
             false,
             1,
             bimg::TextureFormat::RGBA32F
-        ) / 4; // in uints
+        );
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(cubemapSize);
+            getAllocatedBufferAndReleaseFn<uint8_t>(cubemapSize);
 
-        std::copy((uint*)(cubemap->m_data), ((uint*)(cubemap->m_data)) + cubemapSize, buffer);
+        std::copy((uint8_t*)(cubemap->m_data), ((uint8_t*)(cubemap->m_data)) + cubemapSize, buffer);
 
         auto tu = std::make_unique<TextureUnit>();
         tu->set(
@@ -178,7 +178,7 @@ public:
             true,
             releaseFn
         );
-        mTextureUnit = std::move(tu);
+        mTextureUnit = std::move(tu); // FIXME? why?
     }
 
     void draw(const DrawObjectSettings& settings) const override
@@ -191,7 +191,7 @@ public:
 
         vcl::Matrix44f model = vcl::Matrix44f::Identity();
 
-        mTextureUnit->bind(8, mTexSamplerUniform.handle());
+        mTextureUnit->bind(0, mTexSamplerUniform.handle());
 
         mVertexBuffer.bindVertex(0);
         mIndexBuffer.bind(0, indexNumber);
