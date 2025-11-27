@@ -75,13 +75,9 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Lines mWireframeLines;
     Color mMeshColor; // todo: find better way to store mesh color
 
-    // vector of materials of textures
-    // for each material, an array of `N_TEXTURE_TYPES` texture units
-    std::vector<std::array<std::unique_ptr<TextureUnit>, N_TEXTURE_TYPES>>
-        mMaterialTextureUnits;
-
-    std::map<std::string, std::unique_ptr<TextureUnit>>
-        mNewMaterialTextureUnits;
+    // map of textures
+    // for each texture path of each material, store its texture unit
+    std::map<std::string, std::unique_ptr<TextureUnit>> mMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
@@ -129,7 +125,6 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextureUnits, other.mMaterialTextureUnits);
-        swap(mNewMaterialTextureUnits, other.mNewMaterialTextureUnits);
         swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMaterialUniforms, other.mMaterialUniforms);
         swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
@@ -240,13 +235,17 @@ public:
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                if (mMaterialTextureUnits[materialId][j]) {
-                    const auto& tex = m.material(materialId).texture(j);
-                    uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
-                    mMaterialTextureUnits[materialId][j]->bind(
-                        VCL_MRB_TEXTURE0 + j,
-                        mTextureSamplerUniforms[j].handle(),
-                        flags);
+                const auto&        tex  = m.material(materialId).texture(j);
+                const std::string& path = tex.path();
+                if (!path.empty()) {
+                    const auto& tu = mMaterialTextureUnits.at(path);
+                    if (tu) {
+                        uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
+                        tu->bind(
+                            VCL_MRB_TEXTURE0 + j,
+                            mTextureSamplerUniforms[j].handle(),
+                            flags);
+                    }
                 }
             }
         }
@@ -298,11 +297,16 @@ public:
             }
             else {
                 assert(materialId < m.materialsNumber());
+                const Material& mat = m.material(materialId);
 
-                for (int i = 0; i < N_TEXTURE_TYPES; ++i) {
-                    if (mMaterialTextureUnits[materialId][i] != nullptr) {
-                        textureAvailable[i] =
-                            mMaterialTextureUnits[materialId][i]->isValid();
+                for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                    const auto& tex = m.material(materialId).texture(j);
+                    const std::string& path = tex.path();
+                    if (!path.empty()) {
+                        const auto& tu = mMaterialTextureUnits.at(path);
+                        if (tu != nullptr) {
+                            textureAvailable[j] = tu->isValid();
+                        }
                     }
                 }
 
@@ -588,11 +592,12 @@ private:
 
     void setTextureUnits(const MeshType& mesh) // override
     {
+        std::mutex mtx;
+
         // lambda that sets a texture unit
-        auto setTextureUnit = [&](const Image&        img,
-                                  uint                i, // i-th material
-                                  uint                j, // j-th texture
-                                  bool                generateMips) {
+        auto setTextureUnit = [&](const Image&       img,
+                                  const std::string& path,
+                                  bool               generateMips) {
             const uint size = img.width() * img.height();
             assert(size > 0);
 
@@ -652,26 +657,25 @@ private:
                 flags,
                 releaseFn);
 
-            mMaterialTextureUnits[i][j] = std::move(tu);
+            // Locks the mutex for the duration of this scope
+            std::lock_guard<std::mutex> lock(mtx);
+            mMaterialTextureUnits[path] = std::move(tu);
         };
 
-        auto loadTextureAndSetUnit = [&](uint texture) {
-            uint i = texture / N_TEXTURE_TYPES; // i-th material
-            uint j = texture % N_TEXTURE_TYPES; // j-th texture
+        auto loadTextureAndSetUnit =
+            [&](const std::pair<std::string, uint>& pathPair) {
+                const std::string& path        = pathPair.first;
 
-            const vcl::Texture& tex = mesh.material(i).texture(j);
-
-            // copy the image because it could be not loaded,
-            // and at the end it needs to be mirrored.
-            vcl::Image txtImg = mesh.textureImage(tex.path());
-            if (txtImg.isNull()) { // try to load it just for rendering
-                const std::string& path = tex.path();
-                if (!path.empty()) {
+                uint materialId  = pathPair.second / N_TEXTURE_TYPES;
+                uint textureType = pathPair.second % N_TEXTURE_TYPES;
+                // copy the image because it could be not loaded,
+                // and at the end it needs to be mirrored.
+                vcl::Image txtImg = mesh.textureImage(path);
+                if (txtImg.isNull()) { // try to load it just for rendering
                     try {
                         txtImg = vcl::loadImage(mesh.meshBasePath() + path);
-                        txtImg.colorSpace() =
-                            Material::textureTypeToColorSpace(
-                                static_cast<Material::TextureType>(j));
+                        txtImg.colorSpace() = Material::textureTypeToColorSpace(
+                            static_cast<Material::TextureType>(textureType));
                     }
                     catch (...) {
                         // do nothing
@@ -681,33 +685,41 @@ private:
                         txtImg = createCheckBoardImage(512);
                     }
                 }
-            }
 
-            // if loading succeeded (or dummy texture has been created)
-            if (!txtImg.isNull()) {
-                using enum Texture::MinificationFilter;
+                // if loading succeeded (or dummy texture has been created)
+                if (!txtImg.isNull()) {
+                    const Texture& tex =
+                        mesh.material(materialId).texture(textureType);
+                    using enum Texture::MinificationFilter;
 
-                Texture::MinificationFilter minFilter = tex.minFilter();
+                    Texture::MinificationFilter minFilter = tex.minFilter();
 
-                bool hasMips =
-                    minFilter >= NEAREST_MIPMAP_NEAREST ||
-                    minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
+                    bool hasMips =
+                        minFilter >= NEAREST_MIPMAP_NEAREST ||
+                        minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
 
-                txtImg.mirror();
-                setTextureUnit(txtImg, i, j, hasMips);
-            }
-        };
+                    txtImg.mirror();
+                    setTextureUnit(txtImg, path, hasMips);
+                }
+            };
 
         mMaterialTextureUnits.clear();
-        mNewMaterialTextureUnits.clear();
 
         if constexpr (vcl::HasMaterials<MeshType>) {
-            mMaterialTextureUnits.resize(mesh.materialsNumber());
+            // textures could be missing from the textureImages of the mesh
+            // setting the texture paths in a map - key is the path and value is
+            // an uint where materialIndex and textureType are encoded
+            std::map<std::string, uint> texturePaths;
+            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+                for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                    const vcl::Texture& tex = mesh.material(i).texture(j);
+                    if (!tex.path().empty()) {
+                        texturePaths[tex.path()] = i * N_TEXTURE_TYPES + j;
+                    }
+                }
+            }
 
-            std::vector<int> textures(mesh.materialsNumber() * N_TEXTURE_TYPES);
-            std::iota(textures.begin(), textures.end(), 0);
-
-            parallelFor(textures, loadTextureAndSetUnit);
+            parallelFor(texturePaths, loadTextureAndSetUnit);
 
             createTextureSamplerUniforms();
         }
