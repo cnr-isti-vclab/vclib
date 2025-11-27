@@ -29,7 +29,7 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
-    target_link_libraries(vclib-3rd-bgfx INTERFACE bgfx::bx bgfx::bgfx bgfx::bimg)
+    target_link_libraries(vclib-3rd-bgfx INTERFACE bgfx::bx bgfx::bgfx bgfx::bimg bgfx::bimg_decode bgfx::bimg_encode)
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include)
     target_include_directories(vclib-3rd-bgfx
