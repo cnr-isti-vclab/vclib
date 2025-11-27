@@ -80,6 +80,9 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
         toUnderlying(Material::TextureType::COUNT)>>
         mMaterialTextureUnits;
 
+    std::array<Uniform, toUnderlying(Material::TextureType::COUNT)>
+        mTextureSamplerUniforms;
+
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
 
@@ -125,7 +128,9 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextureUnits, other.mMaterialTextureUnits);
+        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
         swap(mMeshUniforms, other.mMeshUniforms);
+        swap(mMaterialUniforms, other.mMaterialUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -241,7 +246,7 @@ public:
                     uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
                     mMaterialTextureUnits[materialId][j]->bind(
                         VCL_MRB_TEXTURE0 + j,
-                        "s_tex" + std::to_string(j),
+                        mTextureSamplerUniforms[j].handle(),
                         flags);
                 }
             }
@@ -711,6 +716,8 @@ private:
 
             parallelFor(
                 textures.begin(), textures.end(), loadTextureAndSetUnit);
+
+            createTextureSamplerUniforms();
         }
     }
 
@@ -800,6 +807,15 @@ private:
         mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
 
         // otherwise, already computed buffers should do the job
+    }
+
+    void createTextureSamplerUniforms()
+    {
+        for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
+            mTextureSamplerUniforms[i] = Uniform(
+                ("s_tex" + std::to_string(i)).c_str(),
+                bgfx::UniformType::Sampler);
+        }
     }
 
     template<typename T>
