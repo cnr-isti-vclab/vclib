@@ -34,18 +34,16 @@ namespace vcl {
 /**
  * // TODO: rename this class
  * @class TextureUnit
- * @brief Manages a BGFX texture and its associated sampler uniform.
+ * @brief Manages a BGFX texture.
  *
- * This class is a RAII wrapper for a bgfx::TextureHandle and a
- * bgfx::UniformHandle. It handles the creation, destruction, and binding of
- * a texture to a shader sampler unit.
+ * This class is a RAII wrapper for a bgfx::TextureHandle. It handles the
+ * creation, destruction, and binding of a texture.
  *
  * This class is move-only, as it represents a unique GPU resource.
  */
 class TextureUnit
 {
-    bgfx::TextureHandle         mTextureHandle = BGFX_INVALID_HANDLE;
-    mutable bgfx::UniformHandle mUniformHandle = BGFX_INVALID_HANDLE;
+    bgfx::TextureHandle mTextureHandle = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -77,15 +75,13 @@ public:
     /**
      * @brief Destructor.
      *
-     * Destroys the managed BGFX texture and uniform handles if they are valid,
-     * releasing the associated GPU resources.
+     * Destroys the managed BGFX texture if it is valid, releasing the
+     * associated GPU resource.
      */
     ~TextureUnit()
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
-        if (bgfx::isValid(mUniformHandle))
-            bgfx::destroy(mUniformHandle);
     }
 
     /**
@@ -120,7 +116,6 @@ public:
     {
         using std::swap;
         swap(mTextureHandle, other.mTextureHandle);
-        swap(mUniformHandle, other.mUniformHandle);
     }
 
     /**
@@ -203,43 +198,6 @@ public:
 
         mTextureHandle = bgfx::createTexture2D(
             size.x(), size.y(), hasMips, nLayers, format, flags, texture);
-    }
-
-    /**
-     * @brief Binds the texture to a texture stage for rendering.
-     *
-     * This method should be called within the rendering loop before submitting
-     * a draw call that uses this texture.
-     *
-     * @param[in] stage: The texture stage (sampler index) to bind to.
-     * @param[in] samplerName: The name of the sampler uniform in the shader.
-     * @param[in] samplerFlags: Optional BGFX sampler flags to override the
-     * flags set during creation. If set to UINT32_MAX, the creation flags are
-     * used.
-     */
-    void bind(
-        uint               stage,
-        const std::string& samplerName,
-        uint               samplerFlags = UINT32_MAX) const
-    {
-        if (bgfx::isValid(mTextureHandle)) {
-            bool setUniform = true;
-            if (bgfx::isValid(mUniformHandle)) {
-                bgfx::UniformInfo info;
-                bgfx::getUniformInfo(mUniformHandle, info);
-                if (samplerName == std::string(info.name)) {
-                    setUniform = false;
-                }
-            }
-            if (setUniform) {
-                if (bgfx::isValid(mUniformHandle))
-                    bgfx::destroy(mUniformHandle);
-                mUniformHandle = bgfx::createUniform(
-                    samplerName.c_str(), bgfx::UniformType::Sampler);
-            }
-
-            bind(stage, mUniformHandle, samplerFlags);
-        }
     }
 
     /**
