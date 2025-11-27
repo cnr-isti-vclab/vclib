@@ -32,6 +32,7 @@
 
 #include <set>
 #include <string>
+#include <vector>
 
 namespace vcl {
 
@@ -55,19 +56,24 @@ inline std::set<FileFormat> loadCameraFormats()
 }
 
 template<CameraConcept CameraType = Camera<float>>
-inline CameraType loadCamera(const std::string& filename)
+inline std::vector<CameraType> loadCameras(const std::string& filename)
 {
     FileFormat ff = FileInfo::fileFormat(filename);
-
 #ifdef VCLIB_WITH_TINYGLTF
-    if (ff == gltfFileFormat()) {
-        return loadCameraGltf(filename);
-    }
+    if (ff == gltfFileFormat())
+        return loadCamerasGltf<CameraType>(filename);
     else
 #endif
-    {
         throw UnknownFileFormatException(ff.extensions().front());
-    }
+}
+
+template<CameraConcept CameraType = Camera<float>>
+inline CameraType loadCamera(const std::string& filename)
+{
+    auto cams = loadCameras<CameraType>(filename);
+    if (cams.empty())
+        throw std::runtime_error("No cameras in file: " + filename);
+    return cams.front();
 }
 
 } // namespace vcl
