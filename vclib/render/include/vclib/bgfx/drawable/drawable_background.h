@@ -139,7 +139,7 @@ public:
             releaseFnIdx
         );
 
-        bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_EXAMPLE_MESHES_PATH "/pisa.hdr"); // TODO: use another path
+        bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
         std::string samplerName = "s_tex0";
 
         uint cubemapSize = bimg::imageGetSize(
