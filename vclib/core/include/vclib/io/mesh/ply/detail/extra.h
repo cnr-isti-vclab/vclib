@@ -45,7 +45,7 @@ void readPlyTextures(
         for (const std::string& str : header.textureFileNames()) {
             Material mat;
             mat.name() = FileInfo::fileNameWithExtension(str);
-            mat.baseColorTexture().path() = str;
+            mat.baseColorTextureDescriptor().path() = str;
             if (settings.loadTextureImages) {
                 Image img = loadImage(mesh.meshBasePath() + str);
                 if (img.isNull()) {
@@ -71,21 +71,21 @@ void writePlyTextures(
 {
     if constexpr (HasMaterials<MeshType>) {
         for (uint k = 0; const Material& mat : mesh.materials()) {
-            header.pushTextureFileName(mat.baseColorTexture().path());
+            header.pushTextureFileName(mat.baseColorTextureDescriptor().path());
             if (settings.saveTextureImages) {
                 const Image& img =
-                    mesh.textureImage(mat.baseColorTexture().path());
+                    mesh.textureImage(mat.baseColorTextureDescriptor().path());
                 if (img.isNull()) {
                     log.log(
                         "Cannot save empty texture " +
-                            mat.baseColorTexture().path(),
+                            mat.baseColorTextureDescriptor().path(),
                         LogType::WARNING_LOG);
                 }
                 else {
                     try {
                         saveImage(
                             img,
-                            basePath + mat.baseColorTexture().path());
+                            basePath + mat.baseColorTextureDescriptor().path());
                     }
                     catch (const std::runtime_error& e) {
                         log.log(e.what(), LogType::WARNING_LOG);

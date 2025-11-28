@@ -227,13 +227,13 @@ public:
      * @brief Generates BGFX sampler flags based on the texture's filtering
      * and wrapping modes.
      *
-     * @param[in] tex: The Texture object to derive sampler flags from.
+     * @param[in] tex: The TextureDescriptor object to derive sampler flags from.
      * @return The generated BGFX sampler flags.
      */
-    static uint samplerFlagsFromTextrue(const Texture& tex)
+    static uint samplerFlagsFromTextrue(const TextureDescriptor& tex)
     {
-        using enum Texture::MinificationFilter;
-        using enum Texture::WrapMode;
+        using enum TextureDescriptor::MinificationFilter;
+        using enum TextureDescriptor::WrapMode;
 
         uint flags = BGFX_SAMPLER_NONE;
 
@@ -249,7 +249,7 @@ public:
             flags |= BGFX_SAMPLER_MIP_POINT;
 
         // set magnification filter - bgfx default is linear
-        if (tex.magFilter() == Texture::MagnificationFilter::NEAREST)
+        if (tex.magFilter() == TextureDescriptor::MagnificationFilter::NEAREST)
             flags |= BGFX_SAMPLER_MAG_POINT;
 
         // set wrap modes - bgfx default is repeat

@@ -20,27 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bindings/core/space/core/texture.h>
+#ifndef TEXTURE_DESCRIPTOR_H
+#define TEXTURE_DESCRIPTOR_H
 
-#include <vclib/space/core.h>
+#include <vclib/space.h>
 
-#include <pybind11/stl.h>
-
-namespace vcl::bind {
-
-void initTexture(pybind11::module& m)
+void textureDescriptorStaticAsserts()
 {
-    namespace py = pybind11;
+    using namespace vcl;
 
-    py::class_<Texture> c(m, "Texture");
-    c.def(py::init<>());
+    // texture descriptor
+    static_assert(
+        TextureDescriptorConcept<TextureDescriptor>,
+        "TextureDescriptor does not satisfy the TextureConcept");
+    static_assert(
+        TextureDescriptorConcept<const TextureDescriptor>,
+        "const TextureDescriptor does not satisfy the TextureConcept");
+    static_assert(
+        TextureDescriptorConcept<TextureDescriptor&>,
+        "TextureDescriptor& does not satisfy the TextureConcept");
+    static_assert(
+        TextureDescriptorConcept<const TextureDescriptor&>,
+        "const TextureDescriptor& does not satisfy the TextureConcept");
+    static_assert(
+        TextureDescriptorConcept<TextureDescriptor&&>,
+        "TextureDescriptor&& does not satisfy the TextureConcept");
 
-    c.def("is_null", &Texture::isNull);
-
-    c.def("path", py::overload_cast<>(&Texture::path, py::const_));
-    c.def("set_path", [](Texture& t, const std::string& p) {
-        t.path() = p;
-    });
+    static_assert(
+        Serializable<TextureDescriptor>,
+        "TextureDescriptor is not serializable");
 }
 
-} // namespace vcl::bind
+#endif // TEXTURE_DESCRIPTOR_H

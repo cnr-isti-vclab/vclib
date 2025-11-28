@@ -20,14 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_CORE_TEXTURE_H
-#define VCL_SPACE_CORE_TEXTURE_H
+#ifndef VCL_SPACE_CORE_TEXTURE_DESCRIPTOR_H
+#define VCL_SPACE_CORE_TEXTURE_DESCRIPTOR_H
 
 #include <vclib/base.h>
 
 namespace vcl {
 
-class Texture
+class TextureDescriptor
 {
 public:
     /*Enums defined following gltf 2.0 specification*/
@@ -58,14 +58,14 @@ private:
     WrapMode            mWrapV      = WrapMode::REPEAT;
 
 public:
-    Texture() {}
+    TextureDescriptor() {}
 
     /**
      * @brief Load a texture from a file.
      *
      * @param[in] path: the path of the texture file.
      */
-    Texture(const std::string& path) : mPath(path) {}
+    TextureDescriptor(const std::string& path) : mPath(path) {}
 
     /**
      * @brief Checks whether the texture is null (no path).
@@ -160,18 +160,19 @@ public:
 /* Concepts */
 
 /**
- * @brief A concept representing a Texture.
+ * @brief A concept representing a TextureDescriptor.
  *
  * The concept is satisfied when `T` is a class that instantiates or derives
- * from a Texture class.
+ * from a TextureDescriptor class.
  *
  * @tparam T: The type to be tested for conformity to the TextureConcept.
  *
  * @ingroup space_core
  */
 template<typename T>
-concept TextureConcept = std::derived_from<std::remove_cvref_t<T>, Texture>;
+concept TextureDescriptorConcept =
+    std::derived_from<std::remove_cvref_t<T>, TextureDescriptor>;
 
 } // namespace vcl
 
-#endif // VCL_SPACE_CORE_TEXTURE_H
+#endif // VCL_SPACE_CORE_TEXTURE_DESCRIPTOR_H

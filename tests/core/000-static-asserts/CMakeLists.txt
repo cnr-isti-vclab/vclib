@@ -88,7 +88,7 @@ set(HEADERS
     space/segment.h
     space/sphere.h
     space/tex_coord.h
-    space/texture.h
+    space/texture_descriptor.h
     space/triangle.h
 )
 

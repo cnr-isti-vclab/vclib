@@ -234,7 +234,7 @@ public:
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto&        tex  = m.material(materialId).texture(j);
+                const auto& tex = m.material(materialId).textureDescriptor(j);
                 const std::string& path = tex.path();
                 if (!path.empty()) {
                     const auto& tu = mMaterialTextureUnits.at(path);
@@ -299,7 +299,8 @@ public:
                 const Material& mat = m.material(materialId);
 
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                    const auto& tex = m.material(materialId).texture(j);
+                    const auto& tex =
+                        m.material(materialId).textureDescriptor(j);
                     const std::string& path = tex.path();
                     if (!path.empty()) {
                         const auto& tu = mMaterialTextureUnits.at(path);
@@ -684,11 +685,12 @@ private:
 
                 // if loading succeeded (or dummy texture has been created)
                 if (!txtImg.isNull()) {
-                    const Texture& tex =
-                        mesh.material(materialId).texture(textureType);
-                    using enum Texture::MinificationFilter;
+                    const TextureDescriptor& tex =
+                        mesh.material(materialId)
+                            .textureDescriptor(textureType);
+                    using enum TextureDescriptor::MinificationFilter;
 
-                    Texture::MinificationFilter minFilter = tex.minFilter();
+                    TextureDescriptor::MinificationFilter minFilter = tex.minFilter();
 
                     bool hasMips =
                         minFilter >= NEAREST_MIPMAP_NEAREST ||
@@ -710,7 +712,8 @@ private:
             std::map<std::string, uint> texturePaths;
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                    const vcl::Texture& tex = mesh.material(i).texture(j);
+                    const vcl::TextureDescriptor& tex =
+                        mesh.material(i).textureDescriptor(j);
                     if (!tex.path().empty()) {
                         texturePaths[tex.path()] = i * N_TEXTURE_TYPES + j;
 

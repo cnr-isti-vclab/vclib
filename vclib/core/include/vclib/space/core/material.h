@@ -25,7 +25,7 @@
 
 #include "color.h"
 #include "image.h"
-#include "texture.h"
+#include "texture_descriptor.h"
 
 #include <vclib/base.h>
 
@@ -35,7 +35,6 @@ namespace vcl {
  * @brief Material class represents a material with properties needed for
  * rendering (PBR).
  */
-// TODO - Add support for textures, normal maps, and other PBR properties.
 class Material
 {
 public:
@@ -66,19 +65,19 @@ private:
 
     float mAlphaCutoff = 0.5f; // only used when mAlphaMode is MASK
     
-    Texture mBaseColorTexture;
+    TextureDescriptor mBaseColorTexture;
     
-    Texture mMetallicRoughnessTexture;
+    TextureDescriptor mMetallicRoughnessTexture;
     
-    Texture mNormalTexture;
+    TextureDescriptor mNormalTexture;
 
     float mNormalScale = 1.0f;
     
-    Texture mOcclusionTexture;
+    TextureDescriptor mOcclusionTexture;
 
     float mOcclusionStrength = 1.0f;
     
-    Texture mEmissiveTexture;
+    TextureDescriptor mEmissiveTexture;
     
     bool mDoubleSided = false;
     
@@ -125,11 +124,17 @@ public:
 
     float& occlusionStrength() { return mOcclusionStrength; }
 
-    const Texture& baseColorTexture() const { return mBaseColorTexture; }
+    const TextureDescriptor& baseColorTextureDescriptor() const
+    {
+        return mBaseColorTexture;
+    }
 
-    Texture& baseColorTexture() { return mBaseColorTexture; }
+    TextureDescriptor& baseColorTextureDescriptor()
+    {
+        return mBaseColorTexture;
+    }
 
-    const Texture& texture(TextureType type) const
+    const TextureDescriptor& textureDescriptor(TextureType type) const
     {
         switch(type)
         {
@@ -142,12 +147,12 @@ public:
         }
     }
 
-    const Texture& texture(uint type) const
+    const TextureDescriptor& textureDescriptor(uint type) const
     {
-        return texture(static_cast<TextureType>(type));
+        return textureDescriptor(static_cast<TextureType>(type));
     }
 
-    Texture& texture(TextureType type)
+    TextureDescriptor& textureDescriptor(TextureType type)
     {
         switch(type)
         {
@@ -160,9 +165,9 @@ public:
         }
     }
 
-    Texture& texture(uint type)
+    TextureDescriptor& textureDescriptor(uint type)
     {
-        return texture(static_cast<TextureType>(type));
+        return textureDescriptor(static_cast<TextureType>(type));
     }
 
     void serialize(std::ostream& os) const

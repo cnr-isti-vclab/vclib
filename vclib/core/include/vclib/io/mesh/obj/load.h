@@ -648,10 +648,12 @@ void loadObj(
             for (Material& mat : m.materials()) {
                 for (uint i = 0; i < toUnderlying(COUNT); ++i) {
                     auto texType = static_cast<Material::TextureType>(i);
-                    const Texture& tex = mat.texture(texType);
+                    const TextureDescriptor& tex =
+                        mat.textureDescriptor(texType);
                     if (!tex.path().empty()) {
                         Image img = loadImage(
-                            m.meshBasePath() + mat.baseColorTexture().path());
+                            m.meshBasePath() +
+                            mat.baseColorTextureDescriptor().path());
                         if (img.isNull()) {
                             log.log(
                                 "Cannot load texture " + tex.path(),

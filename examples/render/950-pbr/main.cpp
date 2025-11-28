@@ -74,7 +74,7 @@ int main(int argc, char** argv)
     using enum Material::TextureType;
 
     auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
-        const vcl::Texture& texture = mat.texture(type);
+        const vcl::TextureDescriptor& texture = mat.textureDescriptor(type);
         std::string typeName = "baseColor";
         if(type == METALLIC_ROUGHNESS) {
             typeName = "metallicRoughness";

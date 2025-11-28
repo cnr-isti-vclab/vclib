@@ -222,7 +222,7 @@ void DrawableObjectItem::addMaterialData(
         makeItemNotSelectable(alphaCutoffItem);
     }
 
-    auto addTxtItem = [&](const Texture& txt, const QString& txtName) {
+    auto addTxtItem = [&](const TextureDescriptor& txt, const QString& txtName) {
         if (!txt.isNull()) {
             auto textureItem = new QTreeWidgetItem(parent);
             textureItem->setText(0, txtName);
@@ -242,24 +242,24 @@ void DrawableObjectItem::addMaterialData(
         }
     };
 
-    // base color Texture
-    const Texture& bcTxt = material.texture(BASE_COLOR);
+    // base color TextureDescriptor
+    const TextureDescriptor& bcTxt = material.textureDescriptor(BASE_COLOR);
     addTxtItem(bcTxt, "Base Color Texture");
 
-    // metalling roughness Texture
-    const Texture& mrTxt = material.texture(METALLIC_ROUGHNESS);
+    // metalling roughness TextureDescriptor
+    const TextureDescriptor& mrTxt = material.textureDescriptor(METALLIC_ROUGHNESS);
     addTxtItem(mrTxt, "Metallic Roughness Texture");
 
-    // normal Texture
-    const Texture& nTxt = material.texture(NORMAL);
+    // normal TextureDescriptor
+    const TextureDescriptor& nTxt = material.textureDescriptor(NORMAL);
     addTxtItem(nTxt, "Normal Texture");
 
-    // occlusion Texture
-    const Texture& oTxt = material.texture(OCCLUSION);
+    // occlusion TextureDescriptor
+    const TextureDescriptor& oTxt = material.textureDescriptor(OCCLUSION);
     addTxtItem(oTxt, "Occlusion Texture");
 
-    // emissive Texture
-    const Texture& eTxt = material.texture(EMISSIVE);
+    // emissive TextureDescriptor
+    const TextureDescriptor& eTxt = material.textureDescriptor(EMISSIVE);
     addTxtItem(eTxt, "Emissive Texture");
 
     // double sided

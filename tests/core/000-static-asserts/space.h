@@ -39,7 +39,7 @@
 #include "space/sphere.h"
 #include "space/tex_coord.h"
 #include "space/tex_coord_indexed.h"
-#include "space/texture.h"
+#include "space/texture_descriptor.h"
 
 void spaceStaticAsserts()
 {
@@ -59,7 +59,7 @@ void spaceStaticAsserts()
     sphereStaticAsserts();
     texCoordStaticAsserts();
     texCoordIndexedStaticAsserts();
-    textureStaticAsserts();
+    textureDescriptorStaticAsserts();
 
     using namespace vcl;
 

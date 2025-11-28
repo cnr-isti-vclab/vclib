@@ -103,7 +103,7 @@ def mesh_texture_and_texcoords():
     for i in range(mesh_wedge_texcoords.materials_number()):
         # if the images are not loaded, the texture paths will be available
         # and the image will be empty (width and height will be 0)
-        texture = mesh_wedge_texcoords.material(i).base_color_texture()
+        texture = mesh_wedge_texcoords.material(i).base_color_texture_descriptor()
         print(f"     Texture {i}: {texture.path()}")
         image = mesh_wedge_texcoords.texture_image(texture.path())
         print(f"       Size: {image.width()}x{image.height()}")
@@ -144,7 +144,7 @@ def mesh_texture_and_texcoords():
 
     # change the path of the texture to a custom one (will be relative to the
     # mesh file path when saving)
-    custom_mesh.material(0).base_color_texture().set_path("custom_texture_path.png")  # just an example path
+    custom_mesh.material(0).base_color_texture_descriptor().set_path("custom_texture_path.png")  # just an example path
 
     print(f"   Created custom mesh with {custom_mesh.vertex_number()} vertices "
           f"and {custom_mesh.face_number()} faces")
