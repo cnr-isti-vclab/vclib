@@ -112,8 +112,7 @@ DrawableTrackBall::DrawableTrackBall()
 }
 
 DrawableTrackBall::DrawableTrackBall(const DrawableTrackBall& other) :
-        mVisible(other.mVisible), mUniforms(other.mUniforms),
-        mTransform(other.mTransform)
+        mVisible(other.mVisible), mTransform(other.mTransform)
 {
     // copy all the members that can be copied, and then re-create the
     // buffers
