@@ -231,7 +231,6 @@ public:
         const MeshType&           m) const
     {
         uint materialId = Base::materialIndex(mrs, chunkNumber);
-        assert(mMaterialTextureUnits.size() > 0 || materialId == UINT_NULL);
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
