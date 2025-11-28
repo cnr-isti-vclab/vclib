@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_TEXTURE_UNIT_H
-#define VCL_BGFX_TEXTURE_UNIT_H
+#ifndef VCL_BGFX_TEXTURE_H
+#define VCL_BGFX_TEXTURE_H
 
 #include <vclib/base.h>
 #include <vclib/space/core.h>
@@ -32,8 +32,6 @@
 namespace vcl {
 
 /**
- * // TODO: rename this class
- * @class TextureUnit
  * @brief Manages a BGFX texture.
  *
  * This class is a RAII wrapper for a bgfx::TextureHandle. It handles the
@@ -41,7 +39,7 @@ namespace vcl {
  *
  * This class is move-only, as it represents a unique GPU resource.
  */
-class TextureUnit
+class Texture
 {
     bgfx::TextureHandle mTextureHandle = BGFX_INVALID_HANDLE;
 
@@ -49,28 +47,28 @@ public:
     /**
      * @brief Default constructor.
      *
-     * Creates an empty and invalid TextureUnit object.
+     * Creates an empty and invalid Texture object.
      * A call to set() is required before the object can be used.
      */
-    TextureUnit() = default;
+    Texture() = default;
 
     /**
      * @brief Deleted copy constructor.
      *
-     * Copying a TextureUnit is disallowed to prevent duplicate ownership of a
+     * Copying a Texture is disallowed to prevent duplicate ownership of a
      * single GPU resource.
      */
-    TextureUnit(const TextureUnit& other) = delete;
+    Texture(const Texture& other) = delete;
 
     /**
      * @brief Move constructor.
      *
-     * Transfers ownership of the texture resources from another TextureUnit.
-     * The other TextureUnit is left in an invalid state.
+     * Transfers ownership of the texture resources from another Texture.
+     * The other Texture is left in an invalid state.
      *
-     * @param[in] other: The TextureUnit object to move from.
+     * @param[in] other: The Texture object to move from.
      */
-    TextureUnit(TextureUnit&& other) noexcept { swap(other); }
+    Texture(Texture&& other) noexcept { swap(other); }
 
     /**
      * @brief Destructor.
@@ -78,7 +76,7 @@ public:
      * Destroys the managed BGFX texture if it is valid, releasing the
      * associated GPU resource.
      */
-    ~TextureUnit()
+    ~Texture()
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
@@ -87,46 +85,46 @@ public:
     /**
      * @brief Deleted copy assignment operator.
      *
-     * Copy-assigning a TextureUnit is disallowed to prevent duplicate
+     * Copy-assigning a Texture is disallowed to prevent duplicate
      * ownership of a single GPU resource.
      */
-    TextureUnit& operator=(const TextureUnit& other) = delete;
+    Texture& operator=(const Texture& other) = delete;
 
     /**
      * @brief Move assignment operator.
      *
-     * Transfers ownership of the texture resources from another TextureUnit.
-     * The other TextureUnit is left in an invalid state.
+     * Transfers ownership of the texture resources from another Texture.
+     * The other Texture is left in an invalid state.
      *
-     * @param[in] other: The TextureUnit object to move from.
+     * @param[in] other: The Texture object to move from.
      * @return A reference to this object.
      */
-    TextureUnit& operator=(TextureUnit&& other) noexcept
+    Texture& operator=(Texture&& other) noexcept
     {
         swap(other);
         return *this;
     }
 
     /**
-     * @brief Swaps the content of this object with another TextureUnit.
+     * @brief Swaps the content of this object with another Texture.
      *
-     * @param[in] other: The other TextureUnit object to swap with.
+     * @param[in] other: The other Texture object to swap with.
      */
-    void swap(TextureUnit& other)
+    void swap(Texture& other)
     {
         using std::swap;
         swap(mTextureHandle, other.mTextureHandle);
     }
 
     /**
-     * @brief Swaps two TextureUnit objects.
-     * @param[in] a: The first TextureUnit.
-     * @param[in] b: The second TextureUnit.
+     * @brief Swaps two Texture objects.
+     * @param[in] a: The first Texture.
+     * @param[in] b: The second Texture.
      */
-    friend void swap(TextureUnit& a, TextureUnit& b) { a.swap(b); }
+    friend void swap(Texture& a, Texture& b) { a.swap(b); }
 
     /**
-     * @brief Checks if the TextureUnit holds valid BGFX texture handle.
+     * @brief Checks if the Texture holds valid BGFX texture handle.
      *
      * @return true if the texture handle is valid, false otherwise.
      */
@@ -230,7 +228,7 @@ public:
      * @param[in] tex: The TextureDescriptor object to derive sampler flags from.
      * @return The generated BGFX sampler flags.
      */
-    static uint samplerFlagsFromTextrue(const TextureDescriptor& tex)
+    static uint samplerFlagsFromTexture(const TextureDescriptor& tex)
     {
         using enum TextureDescriptor::MinificationFilter;
         using enum TextureDescriptor::WrapMode;
@@ -269,4 +267,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_TEXTURE_UNIT_H
+#endif // VCL_BGFX_TEXTURE_H

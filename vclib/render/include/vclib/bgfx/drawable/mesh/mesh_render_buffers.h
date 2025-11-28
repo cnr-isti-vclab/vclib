@@ -31,7 +31,7 @@
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
-#include <vclib/bgfx/texture_unit.h>
+#include <vclib/bgfx/texture.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
@@ -76,8 +76,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Color mMeshColor; // todo: find better way to store mesh color
 
     // map of textures
-    // for each texture path of each material, store its texture unit
-    std::map<std::string, std::unique_ptr<TextureUnit>> mMaterialTextureUnits;
+    // for each texture path of each material, store its texture
+    std::map<std::string, std::unique_ptr<Texture>> mMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
@@ -239,7 +239,7 @@ public:
                 if (!path.empty()) {
                     const auto& tu = mMaterialTextureUnits.at(path);
                     if (tu) {
-                        uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
+                        uint flags = Texture::samplerFlagsFromTexture(tex);
                         tu->bind(
                             VCL_MRB_TEXTURE0 + j,
                             mTextureSamplerUniforms[j].handle(),
@@ -647,7 +647,7 @@ private:
             if (img.colorSpace() == Image::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
 
-            auto tu = std::make_unique<TextureUnit>();
+            auto tu = std::make_unique<Texture>();
             tu->set(
                 buffer,
                 vcl::Point2i(img.width(), img.height()),
