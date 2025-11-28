@@ -83,6 +83,7 @@ void CPUGeneratedLines::draw(uint viewId) const
     mVertexCoords.bind(0);
     mVertexColors.bind(1);
     mVertexNormals.bind(2);
+    
     mLineColors.bind(0);
     mIndices.bind();
     bgfx::setState(linesDrawState());

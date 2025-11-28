@@ -24,6 +24,5 @@
 #define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
 #include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/custom_gpu_lines.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H

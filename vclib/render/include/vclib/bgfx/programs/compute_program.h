@@ -25,7 +25,7 @@
 
 namespace vcl {
 
-enum class ComputeProgram { DRAWABLE_MESH_POINTS, CUSTOM_GPU_LINES, COUNT };
+enum class ComputeProgram { DRAWABLE_MESH_POINTS, COUNT };
 
 } // namespace vcl
 

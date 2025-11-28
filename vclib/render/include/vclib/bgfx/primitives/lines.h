@@ -24,7 +24,7 @@
 #define VCL_BGFX_PRIMITIVES_LINES_H
 
 #include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
-#include <vclib/bgfx/primitives/lines/gpu_generated_lines.h>
+#include <vclib/bgfx/primitives/lines/gpu_instancing_lines.h>
 #include <vclib/bgfx/primitives/lines/primitive_lines.h>
 
 #include <vclib/bgfx/uniform.h>
@@ -64,9 +64,10 @@ public:
     };
 
     enum class ImplementationType {
-        PRIMITIVE     = 0, // Use bgfx primitive lines (not implemented)
-        CPU_GENERATED = 1, // Buffers pre-generated in CPU
-        GPU_GENERATED = 2, // Buffers pre-generated in GPU with computes
+        PRIMITIVE      = 0, // Use bgfx primitive lines (not implemented)
+        CPU_GENERATED  = 1, // Buffers pre-generated in CPU
+        GPU_INSTANCING = 2, // Using Instancing with buffer generated in GPU
+                            // computes
 
         // TODO: uncomment when they will be implemented
         // CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
@@ -82,7 +83,7 @@ private:
     using LinesImplementation = std::variant<
         detail::PrimitiveLines,
         detail::CPUGeneratedLines,
-        detail::GPUGeneratedLines>;
+        detail::GPUInstancingLines>;
 
     float mThickness = 5.0f;
 
@@ -299,8 +300,8 @@ public:
                 .setPoints(vertCoords, vertNormals, vertColors, lineColors);
             break;
 
-        case GPU_GENERATED:
-            std::get<detail::GPUGeneratedLines>(mLinesImplementation)
+        case GPU_INSTANCING:
+            std::get<detail::GPUInstancingLines>(mLinesImplementation)
                 .setPoints(vertCoords, vertNormals, vertColors, lineColors);
             break;
         default: break;
@@ -369,8 +370,8 @@ public:
                     lineColors);
             break;
 
-        case GPU_GENERATED:
-            std::get<detail::GPUGeneratedLines>(mLinesImplementation)
+        case GPU_INSTANCING:
+            std::get<detail::GPUInstancingLines>(mLinesImplementation)
                 .setPoints(
                     vertCoords,
                     lineIndices,
@@ -416,12 +417,12 @@ public:
         using namespace detail;
 
         if (type == COUNT)
-            type = ImplementationType::GPU_GENERATED;
+            type = ImplementationType::GPU_INSTANCING;
         setImplementationType(type);
 
         switch (mType) {
-        case GPU_GENERATED:
-            std::get<detail::GPUGeneratedLines>(mLinesImplementation)
+        case GPU_INSTANCING:
+            std::get<detail::GPUInstancingLines>(mLinesImplementation)
                 .setPoints(
                     pointsSize,
                     vertexCoords,
@@ -544,8 +545,8 @@ public:
         if (mType == CPU_GENERATED)
             std::get<CPUGeneratedLines>(mLinesImplementation).draw(viewId);
 
-        if (mType == GPU_GENERATED)
-            std::get<GPUGeneratedLines>(mLinesImplementation).draw(viewId);
+        if (mType == GPU_INSTANCING)
+            std::get<GPUInstancingLines>(mLinesImplementation).draw(viewId);
     }
 
 private:
@@ -585,8 +586,8 @@ private:
             mType                = type;
             return true;
 
-        case GPU_GENERATED:
-            mLinesImplementation = detail::GPUGeneratedLines();
+        case GPU_INSTANCING:
+            mLinesImplementation = detail::GPUInstancingLines();
             mType                = type;
             return true;
 
