@@ -70,4 +70,4 @@
   - [X] add possibility to set and get camera from the trackball (and viewer)
   - [ ] implement and test orthographic camera set and get from the trackball
   - [ ] rename TextureUnit class
-  - [ ] Uniform class should not be copy-constructible - just move-able like the other GPU resources.
+  - [x] Uniform class should not be copy-constructible - just move-able like the other GPU resources.
