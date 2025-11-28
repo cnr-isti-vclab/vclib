@@ -68,6 +68,10 @@ namespace vcl {
 
 bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
 {
+
+    if(fileName.find(".hdr", fileName.length() - 4) == std::string::npos)
+        throw std::runtime_error("File format is not hdr");
+
     // Code from bimg texturec
 
     // load the file
@@ -131,80 +135,16 @@ bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
         if(!err.isOk())
             return nullptr;
 
-        input = bimg::imageConvert(&allocator, inputFormat, *dst);
+        output = bimg::imageConvert(&allocator, inputFormat, *dst);
 		bimg::imageFree(dst);
 
-        output = bimg::imageAlloc(
-			  &allocator
-			, outputFormat
-			, uint16_t(input->m_width)
-			, uint16_t(input->m_height)
-			, uint16_t(input->m_depth)
-			, input->m_numLayers
-			, input->m_cubeMap
-			, false      // mips 
-		);
+		// const uint8_t  numMips  = bimg get num mips;
+		// const uint16_t numSides = 6;
 
-		const uint8_t  numMips  = output->m_numMips;
-		const uint16_t numSides = output->m_numLayers * (output->m_cubeMap ? 6 : 1);
-
-		for (uint16_t side = 0; side < numSides && err.isOk(); ++side)
-		{
-			bimg::ImageMip mip;
-			if (bimg::imageGetRawData(*input, side, 0, input->m_data, input->m_size, mip))
-			{
-				bimg::ImageMip dstMip;
-				bimg::imageGetRawData(*output, side, 0, output->m_data, output->m_size, dstMip);
-                uint8_t* dstData = const_cast<uint8_t*>(dstMip.m_data);
-
-                void* temp = nullptr;
-
-                uint32_t size = bimg::imageGetSize(
-                      nullptr
-                    , uint16_t(dstMip.m_width)
-                    , uint16_t(dstMip.m_height)
-                    , uint16_t(dstMip.m_depth)
-                    , false
-                    , false
-                    , 1
-                    , bimg::TextureFormat::RGBA32F
-                );
-
-                temp = bx::alloc(&allocator, size);
-                float* rgba32f = (float*)temp;
-                float* rgbaDst = (float*)bx::alloc(&allocator, size);
-
-                bimg::imageDecodeToRgba32f(
-                      &allocator
-                    , rgba32f
-                    , mip.m_data
-                    , mip.m_width
-                    , mip.m_height
-                    , mip.m_depth
-                    , dstMip.m_width*16
-                    , mip.m_format
-                );
-
-                bimg::imageEncodeFromRgba32f(
-                      &allocator
-                    , dstData
-                    , rgba32f
-                    , dstMip.m_width
-                    , dstMip.m_height
-                    , dstMip.m_depth
-                    , outputFormat
-                    , bimg::Quality::Highest
-                    , &err
-                );
-
-                // TODO: add mips when needed, see texturec.cpp line 379 and 558
-
-                bx::free(&allocator, rgbaDst);
-                bx::free(&allocator, temp);
-			}
-		}
-
-        bimg::imageFree(input);
+		// for (uint16_t side = 0; side < numSides && err.isOk(); ++side)
+		// {
+		//   TODO: readapt the for loop to make just mipmaps
+		// }
     }
 
     if(!err.isOk() && output != nullptr) {
