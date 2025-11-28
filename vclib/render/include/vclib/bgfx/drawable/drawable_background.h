@@ -36,6 +36,7 @@ class DrawableBackground : public vcl::DrawableObject
     bool mVisible        = true;
 
     vcl::VertexBuffer mVertexBuffer;
+    vcl::VertexBuffer mUVBuffer;
     vcl::IndexBuffer  mIndexBuffer;
 
     static const uint vertexNumber = 8;
@@ -67,7 +68,8 @@ public:
 
         swap(mVisible, other.mVisible);
         mVertexBuffer.swap(other.mVertexBuffer);
-        mIndexBuffer.swap(other.mIndexBuffer);
+        mUVBuffer.swap(other.mUVBuffer);
+        //mIndexBuffer.swap(other.mIndexBuffer);
     }
 
     friend void swap(DrawableBackground& first, DrawableBackground& second)
@@ -83,25 +85,73 @@ public:
         using enum bgfx::Attrib::Enum;
         using enum vcl::PrimitiveType;
 
-        float verts[vertexNumber * 3] = {
-            -1, -1, -1,
-            1, -1, -1,
-            1,  1, -1,
-            -1,  1, -1,
-            -1, -1,  1,
-            1, -1,  1,
-            1,  1,  1,
-            -1,  1,  1,
+        // float verts[vertexNumber * 3] = {
+        //     -1, -1, -1,
+        //     1, -1, -1,
+        //     1,  1, -1,
+        //     -1,  1, -1,
+        //     -1, -1,  1,
+        //     1, -1,  1,
+        //     1,  1,  1,
+        //     -1,  1,  1,
+        // };
+
+        // auto [vertices, releaseFnVert] =
+        //     getAllocatedBufferAndReleaseFn<float>(vertexNumber * 3);
+
+        // std::copy(verts, verts + vertexNumber * 3, vertices);
+
+        // mVertexBuffer.create(
+        //     vertices, 
+        //     vertexNumber,
+        //     Position,
+        //     3,           // attributes per vertex
+        //     FLOAT,
+        //     false,       // data is normalized
+        //     releaseFnVert
+        // );
+
+        // uint32_t idxs[indexNumber] = {
+        //     1, 2, 0, // back
+        //     2, 3, 0,
+        //     6, 2, 1, // right
+        //     1, 5, 6,
+        //     6, 5, 4, // front
+        //     4, 7, 6,
+        //     6, 3, 2, // top
+        //     7, 3, 6,
+        //     3, 7, 0, // left
+        //     7, 4, 0,
+        //     5, 1, 0, // bottom
+        //     4, 5, 0
+        // };
+
+        // auto [indices, releaseFnIdx] =
+        //     getAllocatedBufferAndReleaseFn<uint32_t>(indexNumber);
+
+        // std::copy(idxs, idxs + indexNumber, indices);
+
+        // mIndexBuffer.create(
+        //     indices, 
+        //     indexNumber,
+        //     true,          // data is 32 bit
+        //     releaseFnIdx
+        // );
+
+        float verts[9] {
+            -3, -1, 0,
+             1, -1, 0,
+             1, 3, 0
         };
 
         auto [vertices, releaseFnVert] =
-            getAllocatedBufferAndReleaseFn<float>(vertexNumber * 3);
+            getAllocatedBufferAndReleaseFn<float>(9);
 
-        std::copy(verts, verts + vertexNumber * 3, vertices);
+        std::copy(verts, verts + 9, vertices);
 
         mVertexBuffer.create(
             vertices, 
-            vertexNumber,
+            3,
             Position,
             3,           // attributes per vertex
             FLOAT,
@@ -109,32 +159,27 @@ public:
             releaseFnVert
         );
 
-        uint32_t idxs[indexNumber] = {
-            1, 2, 0, // back
-            2, 3, 0,
-            6, 2, 1, // right
-            1, 5, 6,
-            6, 5, 4, // front
-            4, 7, 6,
-            6, 3, 2, // top
-            7, 3, 6,
-            3, 7, 0, // left
-            7, 4, 0,
-            5, 1, 0, // bottom
-            4, 5, 0
+        float texcoord[6] {
+            -1, 0,
+             1, 0,
+             1, 2
         };
 
-        auto [indices, releaseFnIdx] =
-            getAllocatedBufferAndReleaseFn<uint32_t>(indexNumber);
+        auto [coords, releaseFnUV] =
+            getAllocatedBufferAndReleaseFn<float>(6);
 
-        std::copy(idxs, idxs + indexNumber, indices);
+        std::copy(texcoord, texcoord + 6, coords);
 
-        mIndexBuffer.create(
-            indices, 
-            indexNumber,
-            true,          // data is 32 bit
-            releaseFnIdx
+        mUVBuffer.create(
+            coords,
+            3,
+            TexCoord0,
+            2,
+            FLOAT,
+            false,
+            releaseFnUV
         );
+
     }
 
     void draw(const DrawObjectSettings& settings) const override
@@ -146,7 +191,8 @@ public:
         uint64_t state = BGFX_STATE_WRITE_MASK;
 
         mVertexBuffer.bindVertex(0);
-        mIndexBuffer.bind(0, indexNumber);
+        mUVBuffer.bind(1);
+        //mIndexBuffer.bind(0, indexNumber);
 
         bgfx::setState(state);
 

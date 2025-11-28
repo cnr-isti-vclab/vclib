@@ -20,16 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position
+$input a_position, a_texcoord0
 $output v_texcoord0
 
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
 void main()
 {
-    v_texcoord0 = a_position;
-    v_texcoord0.x *= -1.0;
-    vec4 pos = vec4(mul(u_normalMatrix, a_position), 1.0);
-    pos = mul(u_proj, pos);
-    gl_Position = pos.xyww;
+    // v_texcoord0 = a_position;
+    // v_texcoord0.x *= -1.0;
+    // vec4 pos = vec4(mul(u_normalMatrix, a_position), 1.0);
+    // pos = mul(u_proj, pos);
+    // gl_Position = pos.xyww;
+    gl_Position = vec4(a_position, 1.0);
+	v_texcoord0 = a_texcoord0;
 }
