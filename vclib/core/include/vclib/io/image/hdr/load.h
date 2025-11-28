@@ -126,17 +126,11 @@ bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
 			throw std::runtime_error("Input image format is not equirectangular projection (expected aspect ratio is 2:1).");
 		}
 
-        bimg::ImageContainer* src = bimg::imageConvert(&allocator, RGBA32F, *input);
+		output = bimg::imageCubemapFromLatLongRgba32F(&allocator, *input, true, &err);
 		bimg::imageFree(input);
-
-		bimg::ImageContainer* dst = bimg::imageCubemapFromLatLongRgba32F(&allocator, *src, true, &err);
-		bimg::imageFree(src);
 
         if(!err.isOk())
             return nullptr;
-
-        output = bimg::imageConvert(&allocator, inputFormat, *dst);
-		bimg::imageFree(dst);
 
 		// const uint8_t  numMips  = bimg get num mips;
 		// const uint16_t numSides = 6;
