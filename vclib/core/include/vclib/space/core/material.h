@@ -49,6 +49,9 @@ public:
     };
 
 private:
+    inline static const uint N_TEXTURE_TYPE =
+        static_cast<uint>(TextureType::COUNT);
+
     std::string mName;
 
     // essential PBR properties
@@ -64,20 +67,12 @@ private:
     AlphaMode mAlphaMode = AlphaMode::ALPHA_OPAQUE;
 
     float mAlphaCutoff = 0.5f; // only used when mAlphaMode is MASK
-    
-    TextureDescriptor mBaseColorTexture;
-    
-    TextureDescriptor mMetallicRoughnessTexture;
-    
-    TextureDescriptor mNormalTexture;
 
     float mNormalScale = 1.0f;
-    
-    TextureDescriptor mOcclusionTexture;
 
     float mOcclusionStrength = 1.0f;
-    
-    TextureDescriptor mEmissiveTexture;
+
+    std::array<TextureDescriptor, N_TEXTURE_TYPE> mTextureDescriptors;
     
     bool mDoubleSided = false;
     
@@ -126,48 +121,36 @@ public:
 
     const TextureDescriptor& baseColorTextureDescriptor() const
     {
-        return mBaseColorTexture;
+        using enum TextureType;
+        return mTextureDescriptors[toUnderlying(BASE_COLOR)];
     }
 
     TextureDescriptor& baseColorTextureDescriptor()
     {
-        return mBaseColorTexture;
-    }
-
-    const TextureDescriptor& textureDescriptor(TextureType type) const
-    {
-        switch(type)
-        {
-            case TextureType::BASE_COLOR: return mBaseColorTexture;
-            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
-            case TextureType::NORMAL: return mNormalTexture;
-            case TextureType::OCCLUSION: return mOcclusionTexture;
-            case TextureType::EMISSIVE: return mEmissiveTexture;
-            default: throw std::runtime_error("Invalid texture type");
-        }
+        using enum TextureType;
+        return mTextureDescriptors[toUnderlying(BASE_COLOR)];
     }
 
     const TextureDescriptor& textureDescriptor(uint type) const
     {
-        return textureDescriptor(static_cast<TextureType>(type));
+        assert(type < N_TEXTURE_TYPE);
+        return mTextureDescriptors[type];
     }
 
-    TextureDescriptor& textureDescriptor(TextureType type)
+    const TextureDescriptor& textureDescriptor(TextureType type) const
     {
-        switch(type)
-        {
-            case TextureType::BASE_COLOR: return mBaseColorTexture;
-            case TextureType::METALLIC_ROUGHNESS: return mMetallicRoughnessTexture;
-            case TextureType::NORMAL: return mNormalTexture;
-            case TextureType::OCCLUSION: return mOcclusionTexture;
-            case TextureType::EMISSIVE: return mEmissiveTexture;
-            default: throw std::runtime_error("Invalid texture type");
-        }
+        return textureDescriptor(toUnderlying(type));
     }
 
     TextureDescriptor& textureDescriptor(uint type)
     {
-        return textureDescriptor(static_cast<TextureType>(type));
+        assert(type < N_TEXTURE_TYPE);
+        return mTextureDescriptors[type];
+    }
+
+    TextureDescriptor& textureDescriptor(TextureType type)
+    {
+        return textureDescriptor(toUnderlying(type));
     }
 
     void serialize(std::ostream& os) const
@@ -177,13 +160,9 @@ public:
         vcl::serialize(os, mMetallic, mRoughness);
         mEmissiveColor.serialize(os);
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
-        mBaseColorTexture.serialize(os);
-        mMetallicRoughnessTexture.serialize(os);
-        mNormalTexture.serialize(os);
         vcl::serialize(os, mNormalScale);
-        mOcclusionTexture.serialize(os);
         vcl::serialize(os, mOcclusionStrength);
-        mEmissiveTexture.serialize(os);
+        vcl::serialize(os, mTextureDescriptors);
         vcl::serialize(os, mDoubleSided);
     }
 
@@ -194,33 +173,13 @@ public:
         vcl::deserialize(is, mMetallic, mRoughness);
         mEmissiveColor.deserialize(is);
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
-        mBaseColorTexture.deserialize(is);
-        mMetallicRoughnessTexture.deserialize(is);
-        mNormalTexture.deserialize(is);
         vcl::deserialize(is, mNormalScale);
-        mOcclusionTexture.deserialize(is);
         vcl::deserialize(is, mOcclusionStrength);
-        mEmissiveTexture.deserialize(is);
+        vcl::deserialize(is, mTextureDescriptors);
         vcl::deserialize(is, mDoubleSided);
     }
 
-    bool operator==(const Material& other) const
-    {
-        return mName == other.mName && mBaseColor == other.mBaseColor &&
-               mMetallic == other.mMetallic && mRoughness == other.mRoughness &&
-               mEmissiveColor == other.mEmissiveColor &&
-               mAlphaMode == other.mAlphaMode &&
-               mAlphaCutoff == other.mAlphaCutoff &&
-               mBaseColorTexture.path() == other.mBaseColorTexture.path() &&
-               mMetallicRoughnessTexture.path() ==
-                   other.mMetallicRoughnessTexture.path() &&
-               mNormalTexture.path() == other.mNormalTexture.path() &&
-               mNormalScale == other.mNormalScale &&
-               mOcclusionTexture.path() == other.mOcclusionTexture.path() &&
-               mOcclusionStrength == other.mOcclusionStrength &&
-               mEmissiveTexture.path() == other.mEmissiveTexture.path() &&
-               mDoubleSided == other.mDoubleSided;
-    };
+    bool operator==(const Material& other) const = default;
 
     static Image::ColorSpace textureTypeToColorSpace(TextureType type)
     {

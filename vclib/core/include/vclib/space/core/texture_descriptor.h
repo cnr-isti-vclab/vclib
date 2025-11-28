@@ -155,6 +155,8 @@ public:
         vcl::deserialize(is, mPath);
         vcl::deserialize(is, mMinFilter, mMagFilter, mWrapU, mWrapV);
     }
+
+    bool operator==(const TextureDescriptor& other) const = default;
 };
 
 /* Concepts */
