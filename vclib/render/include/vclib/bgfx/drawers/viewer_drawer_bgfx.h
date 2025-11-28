@@ -29,6 +29,13 @@
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
+#include <vclib/bgfx/texture_unit.h>
+#include <vclib/bgfx/uniform.h>
+
+#include <vclib/io.h>
+
+#include <vclib/io/image/hdr/load.h> // TODO: add hdr load to io/image/load.h
+
 namespace vcl {
 
 template<typename ViewProjEventDrawer>
@@ -38,6 +45,12 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     DirectionalLightUniforms mDirectionalLightUniforms;
 
+    vcl::Uniform      mTexSamplerUniform =
+        Uniform("s_env0", bgfx::UniformType::Sampler);
+    ;
+
+    std::unique_ptr<TextureUnit> mTextureUnit;
+
     // flags
     bool mStatsEnabled = false;
 
@@ -46,6 +59,7 @@ public:
             ParentViewer(width, height)
     {
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
+        loadEnvironmentTextures();
     }
 
     ViewerDrawerBGFX(
@@ -70,6 +84,8 @@ public:
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
+
+        mTextureUnit->bind(0, mTexSamplerUniform.handle());
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
@@ -117,6 +133,24 @@ public:
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+    }
+
+    private:
+
+    void loadEnvironmentTextures()
+    {
+        bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
+
+        auto tu = std::make_unique<TextureUnit>();
+        tu->set(
+            cubemap->m_data,
+            Point2i(cubemap->m_width, cubemap->m_height),
+            false, // TODO: add mips when and WHERE needed
+            BGFX_SAMPLER_UVW_CLAMP,
+            bgfx::TextureFormat::RGBA32F,
+            true
+        );
+        mTextureUnit = std::move(tu); // FIXME? why?
     }
 };
 

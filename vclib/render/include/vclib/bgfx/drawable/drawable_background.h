@@ -25,16 +25,9 @@
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/texture_unit.h>
 #include <vclib/bgfx/uniform.h>
 
 #include <vclib/render/drawable/drawable_object.h>
-
-#include <vclib/io.h>
-
-#include <vclib/io/image/hdr/load.h> // TODO: add hdr load to io/image/load.h
-
-#include <bgfx/bgfx.h>
 
 namespace vcl {
 
@@ -44,11 +37,6 @@ class DrawableBackground : public vcl::DrawableObject
 
     vcl::VertexBuffer mVertexBuffer;
     vcl::IndexBuffer  mIndexBuffer;
-    vcl::Uniform      mTexSamplerUniform =
-        Uniform("s_tex0", bgfx::UniformType::Sampler);
-    ;
-
-    std::unique_ptr<TextureUnit> mTextureUnit;
 
     static const uint vertexNumber = 8;
     static const uint indexNumber = 36;
@@ -80,8 +68,6 @@ public:
         swap(mVisible, other.mVisible);
         mVertexBuffer.swap(other.mVertexBuffer);
         mIndexBuffer.swap(other.mIndexBuffer);
-        swap(mTextureUnit, other.mTextureUnit);
-        swap(mTexSamplerUniform, other.mTexSamplerUniform);
     }
 
     friend void swap(DrawableBackground& first, DrawableBackground& second)
@@ -149,36 +135,6 @@ public:
             true,          // data is 32 bit
             releaseFnIdx
         );
-
-        bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
-
-        const uint32_t cubemapSize = bimg::imageGetSize(
-            nullptr,
-            cubemap->m_width,
-            cubemap->m_height,
-            1,
-            true,
-            false,
-            1,
-            bimg::TextureFormat::RGBA32F
-        );
-
-        auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint8_t>(cubemapSize);
-
-        std::copy((uint8_t*)(cubemap->m_data), ((uint8_t*)(cubemap->m_data)) + cubemapSize, buffer);
-
-        auto tu = std::make_unique<TextureUnit>();
-        tu->set(
-            buffer,
-            Point2i(cubemap->m_width, cubemap->m_height),
-            false, // TODO: add mips when and WHERE needed
-            BGFX_SAMPLER_UVW_CLAMP,
-            bgfx::TextureFormat::RGBA32F,
-            true,
-            releaseFn
-        );
-        mTextureUnit = std::move(tu); // FIXME? why?
     }
 
     void draw(const DrawObjectSettings& settings) const override
@@ -189,15 +145,10 @@ public:
 
         uint64_t state = BGFX_STATE_WRITE_MASK;
 
-        vcl::Matrix44f model = vcl::Matrix44f::Identity();
-
-        mTextureUnit->bind(0, mTexSamplerUniform.handle());
-
         mVertexBuffer.bindVertex(0);
         mIndexBuffer.bind(0, indexNumber);
 
         bgfx::setState(state);
-        bgfx::setTransform(model.data());
 
         bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_BACKGROUND_PBR>());
     }

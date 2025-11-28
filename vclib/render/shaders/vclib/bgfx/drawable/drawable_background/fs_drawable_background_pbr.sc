@@ -25,13 +25,11 @@ $input v_texcoord0
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
 // textures
-SAMPLERCUBE(s_tex0, 0);
+SAMPLERCUBE(s_env0, 0);
 
 void main()
 {
-    vec4 color = textureCube(s_tex0, v_texcoord0);
-    //color.rgb *= u_EnvIntensity;
+    vec4 color = textureCube(s_env0, v_texcoord0);
     color.a = 1.0;
     gl_FragColor = color;
-    //gl_FragColor = vec4(normalize(v_texcoord0) * 0.5 + 0.5, 1.0);  // Visualize directions
 }
