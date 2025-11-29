@@ -42,11 +42,11 @@ int main(int argc, char** argv)
     const bool USE_BUNNY            = true;
 
     vcl::DrawableMesh<vcl::TriMesh> drawable =
-        getDrawableMesh<vcl::TriMesh>("gltf/DamagedHelmet/DamagedHelmet.gltf");
+        getDrawableMesh<vcl::TriMesh>("gltf/Cameras/Cameras.gltf");
     showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
 
-    vcl::Camera<float> c =
-        vcl::loadCamera<>(VCLIB_EXAMPLE_MESHES_PATH "/gltf/camera.gltf");
+    vcl::Camera<float> c = vcl::loadCameras<>(VCLIB_EXAMPLE_MESHES_PATH
+                                              "/gltf/Cameras/Cameras.gltf")[1];
 
     std::cerr << "Camera loaded from gltf file:\n";
     std::cerr << "  Eye: " << c.eye().transpose() << "\n";

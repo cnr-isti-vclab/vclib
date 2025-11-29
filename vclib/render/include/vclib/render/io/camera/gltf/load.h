@@ -78,6 +78,7 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
         if (gltfCamera.type == "perspective") {
             camera.projectionMode() = CameraType::ProjectionMode::PERSPECTIVE;
             camera.fieldOfView() = gltfCamera.perspective.yfov * 180.0 / M_PI;
+            // TODO check what to do with the aspect ratio
             camera.aspectRatio() = gltfCamera.perspective.aspectRatio;
             camera.nearPlane()   = gltfCamera.perspective.znear;
             camera.farPlane()    = gltfCamera.perspective.zfar;
@@ -85,6 +86,7 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
         else if (gltfCamera.type == "orthographic") {
             camera.projectionMode() = CameraType::ProjectionMode::ORTHO;
             camera.verticalHeight() = gltfCamera.orthographic.ymag * 2.0;
+            // TODO check what to do with the aspect ratio
             camera.aspectRatio() =
                 gltfCamera.orthographic.xmag / gltfCamera.orthographic.ymag;
             camera.nearPlane() = gltfCamera.orthographic.znear;
@@ -94,39 +96,73 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
         bool foundNode = false;
         for (const auto& node : model.nodes) {
             if (node.camera == static_cast<int>(cameraIdx)) {
+                // create a vcl matrix44 of double, not typededuced
+                vcl::Matrix44d mat = vcl::Matrix44d::Identity();
                 if (node.matrix.size() == 16) {
-                    typename CameraType::PointType eye(
-                        node.matrix[12], node.matrix[13], node.matrix[14]);
-                    camera.eye() = eye;
-
-                    typename CameraType::PointType forward(
-                        -node.matrix[8], -node.matrix[9], -node.matrix[10]);
-                    forward = forward.normalized();
-
-                    typename CameraType::PointType up(
-                        node.matrix[4], node.matrix[5], node.matrix[6]);
-                    camera.up() = up.normalized();
-
-                    Scalar distance = 1.0;
-                    camera.center() = eye + forward * distance;
+                    // copy node matrix to vcl matrix
+                    mat = vcl::Matrix44d(node.matrix.data());
                 }
-                foundNode = true;
+                else {
+                    // construct matrix from TRS
+                    vcl::Point3d     translation(0, 0, 0);
+                    vcl::Quaterniond rotation = vcl::Quaterniond::Identity();
+                    vcl::Point3d     scale(1, 1, 1);
+                    if (node.translation.size() == 3) {
+                        translation = vcl::Point3d(
+                            node.translation[0],
+                            node.translation[1],
+                            node.translation[2]);
+                    }
+                    if (node.rotation.size() == 4) {
+                        rotation = vcl::Quaterniond(
+                            node.rotation[0],
+                            node.rotation[1],
+                            node.rotation[2],
+                            node.rotation[3]);
+                    }
+                    if (node.scale.size() == 3) {
+                        scale = vcl::Point3d(
+                            node.scale[0], node.scale[1], node.scale[2]);
+                    }
+                    // robut contruction from TRS use affine type then convert
+                    // to matrix44
+                    vcl::Affine3d affine = vcl::Affine3d::Identity();
+                    affine.translate(translation);
+                    affine.rotate(rotation);
+                    affine.scale(scale);
+                    mat = affine.matrix();
+                }
+                // Use mat instead of node.matrix
+                typename CameraType::PointType eye(
+                    mat(0, 3), mat(1, 3), mat(2, 3));
+                camera.eye() = eye;
+
+                typename CameraType::PointType forward(
+                    -mat(0, 2), -mat(1, 2), -mat(2, 2));
+                forward = forward.normalized();
+
+                typename CameraType::PointType up(
+                    mat(0, 1), mat(1, 1), mat(2, 1));
+                camera.up() = up.normalized();
+
+                Scalar distance = 1.0;
+                camera.center() = eye + forward * distance;
+                foundNode       = true;
                 break;
             }
         }
 
         if (!foundNode) {
-            typename CameraType::PointType eye(0, 0, 0);
-            typename CameraType::PointType forward(0, 0, -1);
-            typename CameraType::PointType up(0, 1, 0);
-            camera.eye()    = eye;
-            camera.up()     = up;
-            camera.center() = eye + forward * Scalar(1);
+            // Invalid gltf camera: no node references it.
+            throw std::runtime_error(
+                "Invalid glTF camera: no node references camera index " +
+                std::to_string(cameraIdx));
         }
 
         cams.push_back(camera);
     }
 
+    assert(cams.size() == model.cameras.size());
     return cams;
 }
 
