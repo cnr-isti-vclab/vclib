@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
+$input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
@@ -111,7 +111,8 @@ void main()
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         color = getColorFromTexture(0u, v_texcoord1);
     }
-
+    
     gl_FragColor = light * color + vec4(specular, 0);
+
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

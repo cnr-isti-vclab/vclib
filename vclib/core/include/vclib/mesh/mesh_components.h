@@ -27,9 +27,8 @@
 #include "components/color.h"
 #include "components/custom_components.h"
 #include "components/mark.h"
+#include "components/materials.h"
 #include "components/name.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
 #include "components/transform_matrix.h"
 
 /**
@@ -53,11 +52,9 @@ concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
+concept HasMaterials = comp::HasMaterials<T>;
+template<typename T>
 concept HasName = comp::HasName<T>;
-template<typename T>
-concept HasTextureImages = comp::HasTextureImages<T>;
-template<typename T>
-concept HasTexturePaths = comp::HasTexturePaths<T>;
 template<typename T>
 concept HasTransformMatrix = comp::HasTransformMatrix<T>;
 
@@ -85,19 +82,11 @@ using CustomComponents = comp::CustomComponents<>;
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark<>;
 
+/** Port Materials class into mesh namespace **/
+using Materials = comp::Materials;
+
 /** Port Name class into mesh namespace **/
 using Name = comp::Name<>;
-
-/** Port TextureImages class into mesh namespace **/
-using TextureImages = comp::TextureImages;
-
-/** Port TexturePaths class into mesh namespace **/
-using TexturePaths = comp::TexturePaths;
-
-/** Port Textures class into mesh namespace **/
-template<bool STORE_TEXTURE_IMAGES>
-using Textures =
-    std::conditional_t<STORE_TEXTURE_IMAGES, TextureImages, TexturePaths>;
 
 /** Port TransformMatrix class into mesh namespace **/
 template<typename Scalar>

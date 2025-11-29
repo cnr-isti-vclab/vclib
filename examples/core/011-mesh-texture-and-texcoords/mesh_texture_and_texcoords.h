@@ -67,8 +67,12 @@ auto meshTextureAndTexCoords()
              ++i) {
             auto& texCoord = meshVertexTexCoords.vertex(i).texCoord();
             std::cout << "     Vertex " << i << ": (" << texCoord.u() << ", "
-                      << texCoord.v() << ") tex_id " << texCoord.index()
-                      << std::endl;
+                      << texCoord.v() << ") ";
+            if (meshVertexTexCoords.isPerVertexMaterialIndexEnabled()) {
+                std::cout << "tex_id "
+                          << meshVertexTexCoords.vertex(i).materialIndex();
+            }
+            std::cout << std::endl;
         }
     }
     else {
@@ -102,8 +106,12 @@ auto meshTextureAndTexCoords()
             for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
                 auto& texCoord = face.wedgeTexCoord(i);
                 std::cout << "     Wedge " << i << ": (" << texCoord.u() << ", "
-                          << texCoord.v() << ") tex_id " << face.textureIndex()
-                          << std::endl;
+                          << texCoord.v() << ") ";
+                if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
+                    std::cout << "tex_id "
+                              << meshWedgeTexCoords.face(i).materialIndex();
+                }
+                std::cout << std::endl;
             }
         }
     }
@@ -114,17 +122,18 @@ auto meshTextureAndTexCoords()
 
     // Example 3: Working with texture images
     std::cout << "\n3. Working with texture images..." << std::endl;
-    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.textureNumber()
-              << " textures" << std::endl;
+    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialsNumber()
+              << " materials" << std::endl;
 
-    for (vcl::uint i = 0; i < meshWedgeTexCoords.textureNumber(); ++i) {
+    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialsNumber(); ++i) {
         // if the images are not loaded, the texture paths will be available
         // and the image will be empty (width and height will be 0)
-        const auto& texture = meshWedgeTexCoords.texture(i);
+        const auto& texture = meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
         std::cout << "     Texture " << i << ": " << texture.path()
                   << std::endl;
-        std::cout << "       Size: " << texture.image().width() << "x"
-                  << texture.image().height() << std::endl;
+        const auto& image = meshWedgeTexCoords.textureImage(texture.path());
+        std::cout << "       Size: " << image.width() << "x"
+                  << image.height() << std::endl;
     }
 
     // Example 4: Creating mesh with texture coordinates
@@ -159,11 +168,11 @@ auto meshTextureAndTexCoords()
     customMesh.face(1).wedgeTexCoord(1) = vcl::Point2d(1, 1);
     customMesh.face(1).wedgeTexCoord(2) = vcl::Point2d(0, 1);
 
-    customMesh.pushTexture(meshWedgeTexCoords.texture(0));
+    customMesh.pushMaterial(meshWedgeTexCoords.material(0));
 
     // change the path of the texture to a custom one (will be relative to the
     // mesh file path when saving)
-    customMesh.texture(0).path() =
+    customMesh.material(0).baseColorTextureDescriptor().path() =
         "custom_texture_path.png"; // just an example path
 
     std::cout << "   Created custom mesh with " << customMesh.vertexNumber()

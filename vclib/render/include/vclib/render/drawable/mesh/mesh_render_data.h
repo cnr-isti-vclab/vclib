@@ -24,6 +24,7 @@
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/mesh.h>
@@ -119,10 +120,10 @@ private:
 protected:
     struct TriangleMaterialChunk
     {
-        uint startIndex      = 0; // start index in the triangle index buffer
-        uint indexCount      = 0; // num indices in the triangle index buffer
-        uint vertMaterialId  = 0; // material id associated to the vertices
-        uint wedgeMaterialId = 0; // material id associated to the wedges
+        uint startIndex     = 0; // start index in the triangle index buffer
+        uint indexCount     = 0; // num indices in the triangle index buffer
+        uint vertMaterialId = 0; // material id associated to the vertices
+        uint faceMaterialId = 0; // material id associated to the faces
     };
 
     std::vector<TriangleMaterialChunk> mMaterialChunks;
@@ -292,6 +293,24 @@ protected:
      */
     uint numWireframeLines() const { return nWireframeLines; }
 
+    /**
+     * @brief Returns the material index for the given triangle chunk,
+     * according to the current render settings.
+     *
+     * @param[in] mrs: the mesh render settings
+     * @param[in] chunkNumber: the triangle chunk number
+     * @return the material index for the given triangle chunk
+     */
+    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        using enum MeshRenderInfo::Surface;
+
+        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
+            return mMaterialChunks[chunkNumber].faceMaterialId;
+        else
+            return mMaterialChunks[chunkNumber].vertMaterialId;
+    }
+
     // utility functions to fill the buffers
 
     /**
@@ -375,6 +394,21 @@ protected:
 
     /**
      * @brief Given the mesh and a pointer to a buffer, fills the buffer with
+     * the vertex tangent of the mesh.
+     *
+     * The buffer must be preallocated with the correct size: `numVerts() * 3`.
+     *
+     * @param[in] mesh: the input mesh
+     * @param[out] buffer: the buffer to fill
+     */
+    void fillVertexTangents(const MeshConcept auto& mesh, auto* buffer)
+    {
+        vertexTangentsToBuffer(mesh, buffer);
+        appendDuplicateVertexTangentsToBuffer(mesh, mVertsToDuplicate, buffer);
+    }
+
+    /**
+     * @brief Given the mesh and a pointer to a buffer, fills the buffer with
      * the wedge texcoors of the mesh.
      *
      * Although the wedge texcoords are associated to the faces in the vclib
@@ -408,30 +442,30 @@ protected:
         using FaceType = MeshType::FaceType;
 
         // comparator of faces
-        // ordering first by per-vertex texcoord index (if available),
-        // then by per-face wedge texcoord index (if available)
+        // ordering first by per-vertex material index (if available),
+        // then by per-face material index (if available)
         auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
-            if constexpr (HasPerVertexTexCoord<MeshType>) {
-                if (isPerVertexTexCoordAvailable(mesh)) {
-                    uint id1 = f1.vertex(0)->texCoord().index();
-                    uint id2 = f2.vertex(0)->texCoord().index();
+            if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if (isPerVertexMaterialIndexAvailable(mesh)) {
+                    uint id1 = f1.vertex(0)->materialIndex();
+                    uint id2 = f2.vertex(0)->materialIndex();
                     if (id1 != id2) { // do not return true if equal
                         return id1 < id2;
                     }
                 }
             }
-            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                    uint id1 = f1.textureIndex();
-                    uint id2 = f2.textureIndex();
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if (isPerFaceMaterialIndexAvailable(mesh)) {
+                    uint id1 = f1.materialIndex();
+                    uint id2 = f2.materialIndex();
                     if (id1 != id2) { // do not return true if equal
                         return id1 < id2;
                     }
                 }
             }
 
-            // if both per-vertex and per-face texcoords are equal, sort by
-            // face index to have a stable sorting
+            // if both per-vertex and per-face material indices are equal, sort
+            // by face index to have a stable sorting
             return f1.index() < f2.index();
         };
 
@@ -489,22 +523,22 @@ protected:
 
     /**
      * @brief Given the mesh and a pointer to a buffer, fills the buffer with
-     * the vertex texture indices of the mesh.
+     * the vertex material indices of the mesh.
      *
-     * Although the vertex texcoords are associated to the vertices in the vclib
-     * meshes, for rendering purposes the index of each vertex texcoord is
-     * associated to the triangles (that must be triangulated accordingly).
+     * Although the materials are associated to the vertices, for rendering
+     * purposes the index of each vertex material is associated to the triangles
+     * (that must be triangulated accordingly).
      *
      * The buffer must be preallocated with the correct size: `numTris()`.
      *
      * @param[in] mesh: the input mesh
      * @param[out] buffer: the buffer to fill
      */
-    void fillVertexTextureIndices(
+    void fillVertexMaterialIndices(
         const FaceMeshConcept auto& mesh,
         auto*                       buffer)
     {
-        vertexTexCoordIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
+        vertexMaterialIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
             mesh, buffer, mIndexMap);
     }
 
@@ -517,9 +551,9 @@ protected:
      * @param[in] mesh: the input mesh
      * @param[out] buffer: the buffer to fill
      */
-    void fillWedgeTextureIndices(const FaceMeshConcept auto& mesh, auto* buffer)
+    void fillFaceMaterialIndices(const FaceMeshConcept auto& mesh, auto* buffer)
     {
-        triangulatedFaceWedgeTexCoordIndicesToBuffer(mesh, buffer, mIndexMap);
+        triangulatedFaceMaterialIndicesToBuffer(mesh, buffer, mIndexMap);
     }
 
     /**
@@ -655,6 +689,24 @@ protected:
     void setVertexTexCoordsBuffer(const MeshConcept auto&) {}
 
     /**
+     * @brief Function that sets the content of vertex tangent buffer and sends
+     * the data to the GPU.
+     *
+     * The function should allocate and fill a cpu buffer to store the vertex
+     * tangent using the `numVerts() * 3` and `fillVertexTangents()` functions,
+     * and then send the data to the GPU using the rendering backend.
+     *
+     * There is no need to check whether the Mesh can provide per-vertex
+     * tangent since the function is called only if the mesh has them.
+     *
+     * See the @ref MeshRenderData class documentation for an example of
+     * implementation.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexTangentsBuffer(const MeshConcept auto&) {}
+
+    /**
      * @brief Function that sets the content of wedge texture coordinates buffer
      * and sends the data to the GPU.
      *
@@ -732,44 +784,44 @@ protected:
     void setTriangleColorsBuffer(const FaceMeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the content of vertex texture indices buffer
+     * @brief Function that sets the content of vertex material indices buffer
      * and sends the data to the GPU.
      *
-     * Although the vertex texcoords are associated to the vertices in the vclib
-     * meshes, for rendering purposes the index of each vertex texcoord is
-     * associated to the triangles (that must be triangulated accordingly).
+     * Although the materials are associated to the vertices, for rendering
+     * purposes the index of each material is associated to the triangles
+     * (that must be triangulated accordingly).
      *
      * The function should allocate and fill a cpu buffer to store the vertex
-     * texcoord indices using the `numTris()` and `fillVertexTextureIndices()`
+     * material indices using the `numTris()` and `fillVertexMaterialIndices()`
      * functions, and then send the data to the GPU using the rendering backend.
      *
      * There is no need to check whether the Mesh can provide per-vertex
-     * texcoords since the function is called only if the mesh has them.
+     * material indices since the function is called only if the mesh has them.
      *
      * See the @ref MeshRenderData class documentation for an example of
      * implementation.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexTextureIndicesBuffer(const FaceMeshConcept auto&) {}
+    void setVertexMaterialIndicesBuffer(const FaceMeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the content of wedge texture indices buffer and
+     * @brief Function that sets the content of face material indices buffer and
      * sends the data to the GPU.
      *
-     * The function should allocate and fill a cpu buffer to store the wedge
-     * texcoord indices using the `numTris()` and `fillWedgeTextureIndices()`
+     * The function should allocate and fill a cpu buffer to store the face
+     * material indices using the `numTris()` and `fillFaceMaterialIndices()`
      * functions, and then send the data to the GPU using the rendering backend.
      *
-     * There is no need to check whether the Mesh can provide per-face wedge
-     * texcoords since the function is called only if the mesh has them.
+     * There is no need to check whether the Mesh can provide per-face material
+     * indices since the function is called only if the mesh has them.
      *
      * See the @ref MeshRenderData class documentation for an example of
      * implementation.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setWedgeTextureIndicesBuffer(const FaceMeshConcept auto&) {}
+    void setFaceMaterialIndicesBuffer(const FaceMeshConcept auto&) {}
 
     /**
      * @brief Function that sets the content of wireframe indices buffer and
@@ -932,8 +984,8 @@ private:
             derived().setVertexPositionsBuffer(mesh);
         }
 
-        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-            if (vcl::isPerVertexNormalAvailable(mesh)) {
+        if constexpr (HasPerVertexNormal<MeshType>) {
+            if (isPerVertexNormalAvailable(mesh)) {
                 if (btu[toUnderlying(VERT_NORMALS)]) {
                     // vertex buffer (normals)
                     derived().setVertexNormalsBuffer(mesh);
@@ -941,8 +993,8 @@ private:
             }
         }
 
-        if constexpr (vcl::HasPerVertexColor<MeshType>) {
-            if (vcl::isPerVertexColorAvailable(mesh)) {
+        if constexpr (HasPerVertexColor<MeshType>) {
+            if (isPerVertexColorAvailable(mesh)) {
                 if (btu[toUnderlying(VERT_COLORS)]) {
                     // vertex buffer (colors)
                     derived().setVertexColorsBuffer(mesh);
@@ -950,11 +1002,20 @@ private:
             }
         }
 
-        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+        if constexpr (HasPerVertexTexCoord<MeshType>) {
+            if (isPerVertexTexCoordAvailable(mesh)) {
                 if (btu[toUnderlying(VERT_TEXCOORDS)]) {
                     // vertex buffer (UVs)
                     derived().setVertexTexCoordsBuffer(mesh);
+                }
+            }
+        }
+
+        if constexpr (HasPerVertexTangent<MeshType>) {
+            if (isPerVertexTangentAvailable(mesh)) {
+                if (btu[toUnderlying(VERT_TANGENT)]) {
+                    // vertex buffer (tangent)
+                    derived().setVertexTangentsBuffer(mesh);
                 }
             }
         }
@@ -1000,22 +1061,22 @@ private:
                 }
             }
 
-            // texture indices are stored per face (each face has its own
-            // texture index)
-            if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-                if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+            // material indices are stored per face (each face has its own
+            // material index)
+            if constexpr (vcl::HasPerVertexMaterialIndex<MeshType>) {
+                if (vcl::isPerVertexMaterialIndexAvailable(mesh)) {
                     if (btu[toUnderlying(VERT_TEXCOORDS)]) {
-                        // triangle vertex texture indices buffer
-                        derived().setVertexTextureIndicesBuffer(mesh);
+                        // triangle vertex material indices buffer
+                        derived().setVertexMaterialIndicesBuffer(mesh);
                     }
                 }
             }
 
-            if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+            if constexpr (vcl::HasPerFaceMaterialIndex<MeshType>) {
+                if (isPerFaceMaterialIndexAvailable(mesh)) {
                     if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
-                        // triangle wedge texture indices buffer
-                        derived().setWedgeTextureIndicesBuffer(mesh);
+                        // triangle material indices buffer
+                        derived().setFaceMaterialIndicesBuffer(mesh);
                     }
                 }
             }
@@ -1079,7 +1140,7 @@ private:
         using MeshType = MeshRenderDerived::MeshType;
         using enum MRI::Buffers;
 
-        if constexpr (vcl::HasTexturePaths<MeshType>) {
+        if constexpr (vcl::HasMaterials<MeshType>) {
             if (btu[toUnderlying(TEXTURES)]) {
                 // textures
                 derived().setTextureUnits(mesh);
@@ -1147,21 +1208,21 @@ private:
         uint n     = 0;
 
         uint currentVertMatID  = UINT_NULL;
-        uint currentWedgeMatID = UINT_NULL;
+        uint currentFaceMatID = UINT_NULL;
 
         for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
             uint fIndex = mIndexMap.polygon(i);
 
-            if constexpr (HasPerVertexTexCoord<MeshType>) {
-                if (isPerVertexTexCoordAvailable(mesh)) {
-                    uint mId = mesh.face(fIndex).vertex(0)->texCoord().index();
+            if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if (isPerVertexMaterialIndexAvailable(mesh)) {
+                    uint mId = mesh.face(fIndex).vertex(0)->materialIndex();
                     if (mId != currentVertMatID && n != 0) {
                         if (currentVertMatID != UINT_NULL) {
                             mMaterialChunks.push_back(
                                 {first,
                                  n,
                                  currentVertMatID,
-                                 currentWedgeMatID});
+                                 currentFaceMatID});
                             first += n;
                             n = 0;
                         }
@@ -1169,20 +1230,20 @@ private:
                     }
                 }
             }
-            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                    uint mId = mesh.face(fIndex).textureIndex();
-                    if (mId != currentWedgeMatID && n != 0) {
-                        if (currentWedgeMatID != UINT_NULL) {
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if (isPerFaceMaterialIndexAvailable(mesh)) {
+                    uint mId = mesh.face(fIndex).materialIndex();
+                    if (mId != currentFaceMatID && n != 0) {
+                        if (currentFaceMatID != UINT_NULL) {
                             mMaterialChunks.push_back(
                                 {first,
                                  n,
                                  currentVertMatID,
-                                 currentWedgeMatID});
+                                 currentFaceMatID});
                             first += n;
                             n = 0;
                         }
-                        currentWedgeMatID = mId;
+                        currentFaceMatID = mId;
                     }
                 }
             }
@@ -1191,7 +1252,7 @@ private:
         }
 
         mMaterialChunks.push_back(
-            {first, n, currentVertMatID, currentWedgeMatID});
+            {first, n, currentVertMatID, currentFaceMatID});
     }
 };
 

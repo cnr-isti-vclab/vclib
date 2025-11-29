@@ -67,13 +67,6 @@ void initWedgeTexCoords(pybind11::class_<ElementType>& c)
             e.setWedgeTexCoords(v);
         });
 
-    c.def(
-        "texture_index",
-        py::overload_cast<>(&ElementType::textureIndex, py::const_));
-    c.def("set_texture_index", [](ElementType& e, uint i) {
-        e.textureIndex() = i;
-    });
-
     using WedgeTexCoordsView = decltype(ElementType().wedgeTexCoords());
 
     if (!registeredTypes.contains(typeid(WedgeTexCoordsView))) {

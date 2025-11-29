@@ -1018,22 +1018,22 @@ Matrix vertexTexCoordsMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#V vector of scalars containing the texcoord indices of the
+ * @brief Get a \#V vector of scalars containing the material indices of the
  * vertices of a Mesh. The function is templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
  * size_t argument and an operator[uint], and requires that the mesh has
- * per-vertex texcoords.
+ * per-vertex material indices.
  *
  * Usage example with Eigen Vector:
  *
  * @code{.cpp}
  * Eigen::VectorXd VTI =
- *     vcl::vertexTexCoordIndicesVector<Eigen::VectorXd>(myMesh);
+ *     vcl::vertexMaterialIndicesVector<Eigen::VectorXd>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
- * texcoords available.
+ * material indices available.
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -1041,16 +1041,16 @@ Matrix vertexTexCoordsMatrix(const MeshType& mesh)
  * correspondence, compact the vertex container before calling this function.
  *
  * @param[in] mesh: input mesh
- * @return \#V vector of scalars (vertex texcoord indices)
+ * @return \#V vector of scalars (vertex material indices)
  *
  * @ingroup export_matrix
  */
 template<typename Vect, MeshConcept MeshType>
-Vect vertexTexCoordIndicesVector(const MeshType& mesh)
+Vect vertexMaterialIndicesVector(const MeshType& mesh)
 {
     Vect vTCI(mesh.vertexNumber());
 
-    vertexTexCoordIndicesToBuffer(mesh, vTCI.data());
+    vertexMaterialIndicesToBuffer(mesh, vTCI.data());
 
     return vTCI;
 }
@@ -1098,22 +1098,22 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#F vector of scalars containing the wedge texcoord indices of
+ * @brief Get a \#F vector of scalars containing the material indices of
  * the faces of a Mesh. The function is templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
  * size_t argument and an operator[uint], and requires that the mesh has
- * per-face texcoords.
+ * per-face material indices.
  *
  * Usage example with Eigen Vector:
  *
  * @code{.cpp}
  * Eigen::VectorXd VTI =
- *     vcl::faceWedgeTexCoordIndicesVector<Eigen::VectorXd>(myMesh);
+ *     vcl::faceWedgeMaterialIndicesVector<Eigen::VectorXd>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
- * wedge texcoords available.
+ * material indices available.
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the face indices of the mesh. This scenario is possible
@@ -1121,16 +1121,16 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
  * correspondence, compact the vertex container before calling this function.
  *
  * @param[in] mesh: input mesh
- * @return \#F vector of scalars (face wedge texcoord indices)
+ * @return \#F vector of scalars (face material indices)
  *
  * @ingroup export_matrix
  */
 template<typename Vect, FaceMeshConcept MeshType>
-Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
+Vect faceMaterialIndicesVector(const MeshType& mesh)
 {
     Vect fTCI(mesh.faceNumber());
 
-    faceWedgeTexCoordIndicesToBuffer(mesh, fTCI.data());
+    faceMaterialIndicesToBuffer(mesh, fTCI.data());
 
     return fTCI;
 }

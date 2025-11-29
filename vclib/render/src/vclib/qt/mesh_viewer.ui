@@ -93,6 +93,11 @@
              <string>Classic</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>PBR</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>

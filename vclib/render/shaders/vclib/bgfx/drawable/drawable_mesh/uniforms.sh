@@ -24,9 +24,11 @@
 #define VCL_EXT_BGFX_DRAWABLE_MESH_UNIFORMS_SH
 
 #include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/pbr_common.sh>
 
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/material_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.sh>
 
 #include <vclib/render/drawable/mesh/mesh_render_info_macros.h>

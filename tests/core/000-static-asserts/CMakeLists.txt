@@ -50,12 +50,12 @@ set(HEADERS
     mesh/components/component.h
     mesh/components/custom_components.h
     mesh/components/mark.h
+    mesh/components/materials.h
     mesh/components/name.h
     mesh/components/normal.h
     mesh/components/position.h
     mesh/components/quality.h
     mesh/components/tex_coord.h
-    mesh/components/textures.h
     mesh/components/transform_matrix.h
     mesh/components/vertex_references.h
     mesh/components/wedge_colors.h
@@ -78,6 +78,7 @@ set(HEADERS
     space/box.h
     space/color.h
     space/image.h
+    space/material.h
     space/matrix.h
     space/plane.h
     space/point.h
@@ -87,7 +88,7 @@ set(HEADERS
     space/segment.h
     space/sphere.h
     space/tex_coord.h
-    space/texture.h
+    space/texture_descriptor.h
     space/triangle.h
 )
 

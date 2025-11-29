@@ -27,13 +27,14 @@
 #include "core/color.h"
 #include "core/histogram.h"
 #include "core/image.h"
+#include "core/material.h"
 #include "core/matrix.h"
 #include "core/point.h"
 #include "core/principal_curvature.h"
 #include "core/sphere.h"
 #include "core/tex_coord.h"
 #include "core/tex_coord_indexed.h"
-#include "core/texture.h"
+#include "core/texture_descriptor.h"
 
 #include <pybind11/pybind11.h>
 
@@ -50,12 +51,13 @@ inline void initCore(pybind11::module& m)
     initColor(m);
     initHistogram(m);
     initImage(m);
+    initMaterial(m);
     initMatrix(m);
     initPrincipalCurvature(m);
     initSphere(m);
     initTexCoord(m);
     initTexCoordIndexed(m);
-    initTexture(m);
+    initTextureDescriptor(m);
 }
 
 } // namespace vcl::bind

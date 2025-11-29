@@ -358,11 +358,22 @@ private:
             });
 
         // color
+        const uint CS_COUNT =
+            toUnderlying(COUNT) - 4; // exclude shading options
+
         ImGui::Text("Color:");
         ImGui::SameLine();
-        const char* surfColorNames[] = {
-            "Vertex", "Face", "Mesh", "PerVertexTex", "PerWedgeTex", "User"};
-        const std::array<bool, 6> colorSelected = {
+        const char* surfColorNames[CS_COUNT] = {
+            "Vertex",
+            "Face",
+            "Mesh",
+            "PerVertexTex",
+            "PerWedgeTex",
+            "PerVertexMaterials",
+            "PerWedgeMaterials",
+            "User"};
+
+        const std::array<bool, CS_COUNT> colorSelected = {
             settings.isSurface(COLOR_VERTEX),
             settings.isSurface(COLOR_FACE),
             settings.isSurface(COLOR_MESH),
@@ -376,10 +387,10 @@ private:
             std::begin(colorSelected),
             std::find(
                 std::begin(colorSelected), std::end(colorSelected), true));
-        assert(idx >= 0 && idx < 6);
+        assert(idx >= 0 && idx < CS_COUNT);
         ImGui::SetNextItemWidth(-40);
         if (ImGui::BeginCombo("##ComboSurfColor", surfColorNames[idx])) {
-            for (int n = 0; n < IM_ARRAYSIZE(surfColorNames); n++) {
+            for (int n = 0; n < CS_COUNT; n++) {
                 const bool selected = (n == idx);
 
                 switch (n) {

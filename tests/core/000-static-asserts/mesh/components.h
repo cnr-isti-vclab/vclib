@@ -32,13 +32,13 @@
 #include "components/component.h"
 #include "components/custom_components.h"
 #include "components/mark.h"
+#include "components/materials.h"
 #include "components/name.h"
 #include "components/normal.h"
 #include "components/position.h"
 #include "components/principal_curvature.h"
 #include "components/quality.h"
 #include "components/tex_coord.h"
-#include "components/textures.h"
 #include "components/transform_matrix.h"
 #include "components/vertex_references.h"
 #include "components/wedge_colors.h"
@@ -56,13 +56,13 @@ void componentsStaticAsserts()
     colorComponentStaticAsserts();
     customComponentsComponentStaticAsserts();
     markComponentStaticAsserts();
+    materialsComponentStaticAsserts();
     nameComponentStaticAsserts();
     normalComponentStaticAsserts();
     principalCurvatureComponentStaticAsserts();
     positionComponentStaticAsserts();
     qualityComponentStaticAsserts();
     texCoordComponentStaticAsserts();
-    texturesComponentStaticAsserts();
     transformMatrixComponentStaticAsserts();
     vertexReferencesComponentStaticAsserts();
     wedgeColorsComponentStaticAsserts();
