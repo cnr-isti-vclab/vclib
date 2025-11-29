@@ -28,6 +28,7 @@ $output v_color, v_normal
 
 #include <vclib/bgfx/shaders_common.sh> 
 
+// read buffers must be read as vec4 arrays to ensure proper alignment on directx
 BUFFER_RO(vertCoords,           vec4,  0);
 BUFFER_RO(vertNormals,          vec4,  1);
 BUFFER_RO(vertColors,           vec4,  2);

@@ -281,6 +281,7 @@ void GPUInstancingLines::allocateVertexColors(
 
     std::copy(vertColors.begin(), vertColors.end(), buffer);
 
+    // on directx, also the colors must be sent as FLOAT
     mVertexColors.createForCompute(
         buffer,
         vertColors.size(),
