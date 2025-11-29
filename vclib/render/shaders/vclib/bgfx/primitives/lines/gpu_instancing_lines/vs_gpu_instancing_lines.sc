@@ -30,7 +30,7 @@ $output v_color, v_normal
 
 BUFFER_RO(vertCoords,           vec4,  0);
 BUFFER_RO(vertNormals,          vec4,  1);
-BUFFER_RO(vertColors,           float, 2);
+BUFFER_RO(vertColors,           vec4,  2);
 BUFFER_RO(lineIndex,            uvec4, 3);
 
 uniform vec4 u_settings;
@@ -80,8 +80,8 @@ void main() {
     vec4 color0 = vec4_splat(1.0);
     vec4 color1 = vec4_splat(1.0);
     if(setVertexColors) {
-        color0 = uintABGRToVec4Color(floatBitsToUint(vertColors[index0]));
-        color1 = uintABGRToVec4Color(floatBitsToUint(vertColors[index1]));
+        color0 = uintABGRToVec4Color(floatBitsToUint(color(index0)));
+        color1 = uintABGRToVec4Color(floatBitsToUint(color(index1)));
     }
 
     vec3 normal0 = vec3(0.0, 0.0, 1.0);

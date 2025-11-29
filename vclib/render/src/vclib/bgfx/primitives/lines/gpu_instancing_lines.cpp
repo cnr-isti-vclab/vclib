@@ -283,9 +283,9 @@ void GPUInstancingLines::allocateVertexColors(
 
     mVertexColors.createForCompute(
         buffer,
-        vertColors.size() / 4,
+        vertColors.size(),
         bgfx::Attrib::Color0,
-        4,
+        1,
         PrimitiveType::FLOAT,
         true,
         bgfx::Access::Read,
