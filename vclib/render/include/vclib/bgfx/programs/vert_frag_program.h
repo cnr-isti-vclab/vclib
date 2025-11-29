@@ -98,6 +98,7 @@ enum class VertFragProgram {
 
     PRIMITIVE_LINES,
     CUSTOM_CPU_LINES, // TODO: change this name to a more meaningful one
+    CUSTOM_GPU_LINES, // TODO: change this name to a more meaningful one
 
     COUNT
 };
