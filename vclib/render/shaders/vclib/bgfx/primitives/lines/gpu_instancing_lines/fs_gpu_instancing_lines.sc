@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color, v_normal
+$input v_color, v_normal, v_instanceID
 
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
@@ -28,13 +28,7 @@ $input v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-BUFFER_RO(edgesColors, uvec4, 4);
-
-uniform vec4 u_ActiveBuffers; // x = line indices, y = vertex normals, z = vertex colors, w = line colors
-#define setIndices          (u_ActiveBuffers.x == 1)
-#define setVertexNormals    (u_ActiveBuffers.y == 1)
-#define setVertexColors     (u_ActiveBuffers.z == 1)
-#define setLineColors       (u_ActiveBuffers.w == 1)
+BUFFER_RO(edgesColors, uint, 4);
 
 uniform vec4 u_settings;
 
@@ -42,7 +36,7 @@ uniform vec4 u_settings;
 #define u_shadingPerVertex    bool(u_settings.w)
 
 #define generalColor          uintABGRToVec4Color(floatBitsToUint(u_settings.z))
-#define edgeColor             uintABGRToVec4Color(edgesColors[(gl_PrimitiveID / 2) / 4][(gl_PrimitiveID / 2) % 4])
+#define edgeColor             uintABGRToVec4Color(edgesColors[v_instanceID])
 #define vertexColor           v_color
 
 void main() {

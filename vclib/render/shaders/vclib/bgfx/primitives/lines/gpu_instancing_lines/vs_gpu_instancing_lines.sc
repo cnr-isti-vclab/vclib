@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 $input a_position
-$output v_color, v_normal
+$output v_color, v_normal, v_instanceID
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
@@ -32,7 +32,7 @@ $output v_color, v_normal
 BUFFER_RO(vertCoords,           vec4,  0);
 BUFFER_RO(vertNormals,          vec4,  1);
 BUFFER_RO(vertColors,           vec4,  2);
-BUFFER_RO(lineIndex,            uvec4, 3);
+BUFFER_RO(lineIndex,            uint,  3);
 
 uniform vec4 u_settings;
 
@@ -71,8 +71,8 @@ void main() {
     uint index0 = (gl_InstanceID * 2);
     uint index1 = (gl_InstanceID * 2) + 1;
     if(setIndices) {
-        index0 = index((gl_InstanceID * 2));
-        index1 = index((gl_InstanceID * 2) + 1);
+        index0 = lineIndex[(gl_InstanceID * 2)];
+        index1 = lineIndex[(gl_InstanceID * 2) + 1];
     }
 
     vec3 p0 = p(index0);
@@ -150,6 +150,7 @@ void main() {
         p.xy = p.xy + (offsetNDC * p.w);
     }
 
+    v_instanceID = gl_InstanceID;
     v_color = color;
     v_normal = normal;
     gl_Position = p;
