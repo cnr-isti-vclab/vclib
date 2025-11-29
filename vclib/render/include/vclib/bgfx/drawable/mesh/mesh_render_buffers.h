@@ -31,7 +31,7 @@
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
-#include <vclib/bgfx/texture_unit.h>
+#include <vclib/bgfx/texture.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
@@ -76,8 +76,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Color mMeshColor; // todo: find better way to store mesh color
 
     // map of textures
-    // for each texture path of each material, store its texture unit
-    std::map<std::string, std::unique_ptr<TextureUnit>> mMaterialTextureUnits;
+    // for each texture path of each material, store its texture
+    std::map<std::string, std::unique_ptr<Texture>> mMaterialTextureUnits;
 
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
@@ -234,12 +234,12 @@ public:
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto&        tex  = m.material(materialId).texture(j);
+                const auto& tex = m.material(materialId).textureDescriptor(j);
                 const std::string& path = tex.path();
                 if (!path.empty()) {
                     const auto& tu = mMaterialTextureUnits.at(path);
                     if (tu) {
-                        uint flags = TextureUnit::samplerFlagsFromTextrue(tex);
+                        uint flags = Texture::samplerFlagsFromTexture(tex);
                         tu->bind(
                             VCL_MRB_TEXTURE0 + j,
                             mTextureSamplerUniforms[j].handle(),
@@ -299,7 +299,8 @@ public:
                 const Material& mat = m.material(materialId);
 
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                    const auto& tex = m.material(materialId).texture(j);
+                    const auto& tex =
+                        m.material(materialId).textureDescriptor(j);
                     const std::string& path = tex.path();
                     if (!path.empty()) {
                         const auto& tu = mMaterialTextureUnits.at(path);
@@ -646,7 +647,7 @@ private:
             if (img.colorSpace() == Image::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
 
-            auto tu = std::make_unique<TextureUnit>();
+            auto tu = std::make_unique<Texture>();
             tu->set(
                 buffer,
                 vcl::Point2i(img.width(), img.height()),
@@ -686,11 +687,12 @@ private:
 
                 // if loading succeeded (or dummy texture has been created)
                 if (!txtImg.isNull()) {
-                    const Texture& tex =
-                        mesh.material(materialId).texture(textureType);
-                    using enum Texture::MinificationFilter;
+                    const TextureDescriptor& tex =
+                        mesh.material(materialId)
+                            .textureDescriptor(textureType);
+                    using enum TextureDescriptor::MinificationFilter;
 
-                    Texture::MinificationFilter minFilter = tex.minFilter();
+                    TextureDescriptor::MinificationFilter minFilter = tex.minFilter();
 
                     bool hasMips =
                         minFilter >= NEAREST_MIPMAP_NEAREST ||
@@ -712,7 +714,8 @@ private:
             std::map<std::string, uint> texturePaths;
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                    const vcl::Texture& tex = mesh.material(i).texture(j);
+                    const vcl::TextureDescriptor& tex =
+                        mesh.material(i).textureDescriptor(j);
                     if (!tex.path().empty()) {
                         texturePaths[tex.path()] = i * N_TEXTURE_TYPES + j;
 

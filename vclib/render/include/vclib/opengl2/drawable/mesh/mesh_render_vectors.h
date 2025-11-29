@@ -363,7 +363,8 @@ private:
         if constexpr (vcl::HasMaterials<MeshType>) {
             mTextures.reserve(mesh.materialsNumber());
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
-                const auto& texture = mesh.material(i).baseColorTexture();
+                const auto& texture =
+                    mesh.material(i).baseColorTextureDescriptor();
 
                 vcl::Image txt = mesh.textureImage(texture.path());
 

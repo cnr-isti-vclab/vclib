@@ -132,7 +132,7 @@ int loadGltfPrimitiveMaterial(
                         uri = "texture_" + std::to_string(textureId);
                     }
 
-                    vcl::Texture& texture = mat.texture(type);
+                    vcl::TextureDescriptor& texture = mat.textureDescriptor(type);
 
                     texture.path() = uri;
 
@@ -142,26 +142,26 @@ int loadGltfPrimitiveMaterial(
                         const tinygltf::Sampler& sampler =
                             model.samplers[samplerId];
                         texture.minFilter() =
-                            static_cast<Texture::MinificationFilter>(
+                            static_cast<TextureDescriptor::MinificationFilter>(
                                 sampler.minFilter);
                         texture.magFilter() =
-                            static_cast<Texture::MagnificationFilter>(
+                            static_cast<TextureDescriptor::MagnificationFilter>(
                                 sampler.magFilter);
                         texture.wrapU() =
-                            static_cast<Texture::WrapMode>(sampler.wrapS);
+                            static_cast<TextureDescriptor::WrapMode>(sampler.wrapS);
                         texture.wrapV() =
-                            static_cast<Texture::WrapMode>(sampler.wrapT);
+                            static_cast<TextureDescriptor::WrapMode>(sampler.wrapT);
                     }
                     else {
                         assert(samplerId == -1);
                         assert(
                             texture.minFilter() ==
-                            Texture::MinificationFilter::NONE);
+                            TextureDescriptor::MinificationFilter::NONE);
                         assert(
                             texture.magFilter() ==
-                            Texture::MagnificationFilter::NONE);
-                        assert(texture.wrapU() == Texture::WrapMode::REPEAT);
-                        assert(texture.wrapV() == Texture::WrapMode::REPEAT);
+                            TextureDescriptor::MagnificationFilter::NONE);
+                        assert(texture.wrapU() == TextureDescriptor::WrapMode::REPEAT);
+                        assert(texture.wrapV() == TextureDescriptor::WrapMode::REPEAT);
                     }
 
                     // if the image is valid, load it to the texture

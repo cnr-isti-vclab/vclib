@@ -15,7 +15,7 @@
       "camera" : 0
     },
     {
-      "translation" : [ 0.5, 0.5, 3.0 ],
+      "translation" : [ 0.1, 0.5, 3.0 ],
       "camera" : 1
     }
   ],
@@ -33,8 +33,8 @@
     {
       "type": "orthographic",
       "orthographic": {
-        "xmag": 1.0,
-        "ymag": 1.0,
+        "xmag": 2.0,
+        "ymag": 2.0,
         "zfar": 100,
         "znear": 0.01
       }

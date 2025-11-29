@@ -32,49 +32,22 @@ int main(int argc, char** argv)
     
     // Metallic-Roughness - just using factors
     std::string t01 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
-    
-    // Multiple materials per mesh - the upper part is a double sided red metal,
-    // the lower part a semitransparent blue matte
-    std::string t02 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MultipleMaterialsTest/MultipleMaterialsTest.gltf";
-
-    // Vertex Colors - tests if vertex color are read and used correctly when present
-    std::string t03 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxVertexColors/BoxVertexColors.gltf";
-
-    // Base color texture
-    std::string t04 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxTextured/BoxTextured.gltf";
-
-    // Texture with non power of two dimensions
-    std::string t05 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/BoxTexturedNonPowerOfTwo/BoxTexturedNonPowerOfTwo.gltf";
-
-    // Double sided, texture coordinate wrapping settings
-    std::string t06 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/TextureSettingsTest/TextureSettingsTest.gltf";
 
     // Metallic-Roughness texture
     std::string t07 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf";
 
-    // Normal texture
-    std::string t08 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareNormal/CompareNormal.gltf";
-    std::string t09 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentTest/NormalTangentTest.gltf";
-
     // Normal texture, with provided tangent
     std::string t10 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf";
-
-    // Alpha Modes
-    std::string t11 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/AlphaBlendModeTest/AlphaBlendModeTest.gltf";
-    std::string t12 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/CompareAlphaCoverage/CompareAlphaCoverage.gltf";
 
     // All textures
     std::string t13 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf";
 
-    // Many textures, alpha mode, big model
-    std::string t14 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/Sponza/Sponza.gltf";
-
-    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(t13);
+    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(t10);
 
     using enum Material::TextureType;
 
     auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
-        const vcl::Texture& texture = mat.texture(type);
+        const vcl::TextureDescriptor& texture = mat.textureDescriptor(type);
         std::string typeName = "baseColor";
         if(type == METALLIC_ROUGHNESS) {
             typeName = "metallicRoughness";

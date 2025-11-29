@@ -62,11 +62,14 @@ void initMaterial(pybind11::module& m)
     c.def("set_alpha_cutoff", [](Material& m, float v) {
         m.alphaCutoff() = v;
     });
-    c.def("base_color_texture",
-          py::overload_cast<>(&Material::baseColorTexture, py::const_));
-    c.def("set_base_color_texture", [](Material& m, const Texture& t) {
-        m.baseColorTexture() = t;
-    });
+    c.def(
+        "base_color_texture_descriptor",
+        py::overload_cast<>(&Material::baseColorTextureDescriptor, py::const_));
+    c.def(
+        "set_base_color_texture_descriptor",
+        [](Material& m, const TextureDescriptor& t) {
+            m.baseColorTextureDescriptor() = t;
+        });
     c.def("double_sided", py::overload_cast<>(&Material::doubleSided,
                                            py::const_));
     c.def("set_double_sided", [](Material& m, bool v) {

@@ -34,7 +34,7 @@
 #include "core/sphere.h"
 #include "core/tex_coord.h"
 #include "core/tex_coord_indexed.h"
-#include "core/texture.h"
+#include "core/texture_descriptor.h"
 
 #include <pybind11/pybind11.h>
 
@@ -57,7 +57,7 @@ inline void initCore(pybind11::module& m)
     initSphere(m);
     initTexCoord(m);
     initTexCoordIndexed(m);
-    initTexture(m);
+    initTextureDescriptor(m);
 }
 
 } // namespace vcl::bind

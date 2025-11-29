@@ -385,7 +385,7 @@ void importMeshFromVCGMesh(
     if constexpr (HasMaterials<MeshType>) {
         for (const auto& s : vcgMesh.textures) {
             Material m;
-            m.baseColorTexture().path() = s;
+            m.baseColorTextureDescriptor().path() = s;
             mesh.pushMaterial(m);
         }
     }

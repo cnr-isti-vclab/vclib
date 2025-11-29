@@ -167,7 +167,7 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
 
     if constexpr (HasMaterials<MeshType>) {
         for (const Material& m : mesh.materials()) {
-            vcgMesh.textures.push_back(m.baseColorTexture().path());
+            vcgMesh.textures.push_back(m.baseColorTextureDescriptor().path());
         }
     }
 }

@@ -85,8 +85,8 @@ public:
         Ke.y() = mat.emissiveColor().greenF();
         Ke.z() = mat.emissiveColor().blueF();
 
-        map_Kd = mat.baseColorTexture().path();
-        map_Ke = mat.texture(EMISSIVE).path();
+        map_Kd = mat.baseColorTextureDescriptor().path();
+        map_Ke = mat.textureDescriptor(EMISSIVE).path();
         //map_bump = mat.texture(NORMAL).path();
     }
 
@@ -122,13 +122,13 @@ public:
             Ke.x() * 255, Ke.y() * 255, Ke.z() * 255, 255);
 
         if (!map_Kd.empty()) {
-            m.baseColorTexture().path() = map_Kd;
+            m.baseColorTextureDescriptor().path() = map_Kd;
         }
         if (!map_Ke.empty()) {
-            m.texture(EMISSIVE).path() = map_Ke;
+            m.textureDescriptor(EMISSIVE).path() = map_Ke;
         }
         // if (!map_bump.empty()) {
-        //     m.texture(NORMAL).path() = map_bump;
+        //     m.textureDescriptor(NORMAL).path() = map_bump;
         // }
 
         return m;

@@ -42,7 +42,7 @@
 #include "core/sphere.h"
 #include "core/tex_coord.h"
 #include "core/tex_coord_indexed.h"
-#include "core/texture.h"
+#include "core/texture_descriptor.h"
 #include "core/triangle_wrapper.h"
 #include "core/vector.h"
 

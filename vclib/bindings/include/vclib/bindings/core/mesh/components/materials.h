@@ -26,7 +26,7 @@
 #include <vclib/bindings/utils.h>
 
 #include <vclib/mesh.h>
-#include <vclib/space/core/texture.h>
+#include <vclib/space/core.h>
 
 #include <pybind11/pybind11.h>
 

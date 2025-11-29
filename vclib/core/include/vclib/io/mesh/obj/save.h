@@ -62,7 +62,7 @@ std::vector<std::string> saveObjMaterials(
             materials.push_back(matName);
 
             if (settings.saveTextureImages) {
-                const Texture& t = mat.baseColorTexture();
+                const TextureDescriptor& t = mat.baseColorTextureDescriptor();
                 const Image& img = m.textureImage(t.path());
                 if (t.isNull()) {
                     log.log(
