@@ -36,11 +36,8 @@ class DrawableBackground : public vcl::DrawableObject
     bool mVisible        = true;
 
     vcl::VertexBuffer mVertexBuffer;
-    vcl::VertexBuffer mUVBuffer;
-    vcl::IndexBuffer  mIndexBuffer;
 
-    static const uint vertexNumber = 8;
-    static const uint indexNumber = 36;
+    static const uint mVertexNumber = 3;
 
 public:
     DrawableBackground() = default;
@@ -68,8 +65,6 @@ public:
 
         swap(mVisible, other.mVisible);
         mVertexBuffer.swap(other.mVertexBuffer);
-        mUVBuffer.swap(other.mUVBuffer);
-        //mIndexBuffer.swap(other.mIndexBuffer);
     }
 
     friend void swap(DrawableBackground& first, DrawableBackground& second)
@@ -85,99 +80,25 @@ public:
         using enum bgfx::Attrib::Enum;
         using enum vcl::PrimitiveType;
 
-        // float verts[vertexNumber * 3] = {
-        //     -1, -1, -1,
-        //     1, -1, -1,
-        //     1,  1, -1,
-        //     -1,  1, -1,
-        //     -1, -1,  1,
-        //     1, -1,  1,
-        //     1,  1,  1,
-        //     -1,  1,  1,
-        // };
-
-        // auto [vertices, releaseFnVert] =
-        //     getAllocatedBufferAndReleaseFn<float>(vertexNumber * 3);
-
-        // std::copy(verts, verts + vertexNumber * 3, vertices);
-
-        // mVertexBuffer.create(
-        //     vertices, 
-        //     vertexNumber,
-        //     Position,
-        //     3,           // attributes per vertex
-        //     FLOAT,
-        //     false,       // data is normalized
-        //     releaseFnVert
-        // );
-
-        // uint32_t idxs[indexNumber] = {
-        //     1, 2, 0, // back
-        //     2, 3, 0,
-        //     6, 2, 1, // right
-        //     1, 5, 6,
-        //     6, 5, 4, // front
-        //     4, 7, 6,
-        //     6, 3, 2, // top
-        //     7, 3, 6,
-        //     3, 7, 0, // left
-        //     7, 4, 0,
-        //     5, 1, 0, // bottom
-        //     4, 5, 0
-        // };
-
-        // auto [indices, releaseFnIdx] =
-        //     getAllocatedBufferAndReleaseFn<uint32_t>(indexNumber);
-
-        // std::copy(idxs, idxs + indexNumber, indices);
-
-        // mIndexBuffer.create(
-        //     indices, 
-        //     indexNumber,
-        //     true,          // data is 32 bit
-        //     releaseFnIdx
-        // );
-
-        float verts[9] {
+        float verts[mVertexNumber * 3] {
             -3, -1, 0,
              1, -1, 0,
              1, 3, 0
         };
 
-        auto [vertices, releaseFnVert] =
-            getAllocatedBufferAndReleaseFn<float>(9);
+        auto [vertices, releaseFn] =
+            getAllocatedBufferAndReleaseFn<float>(mVertexNumber * 3);
 
-        std::copy(verts, verts + 9, vertices);
+        std::copy(verts, verts + mVertexNumber * 3, vertices);
 
         mVertexBuffer.create(
             vertices, 
-            3,
+            mVertexNumber,
             Position,
             3,           // attributes per vertex
             FLOAT,
             false,       // data is normalized
-            releaseFnVert
-        );
-
-        float texcoord[6] {
-            -1, 0,
-             1, 0,
-             1, 2
-        };
-
-        auto [coords, releaseFnUV] =
-            getAllocatedBufferAndReleaseFn<float>(6);
-
-        std::copy(texcoord, texcoord + 6, coords);
-
-        mUVBuffer.create(
-            coords,
-            3,
-            TexCoord0,
-            2,
-            FLOAT,
-            false,
-            releaseFnUV
+            releaseFn
         );
 
     }
@@ -188,13 +109,9 @@ public:
 
         ProgramManager& pm = Context::instance().programManager();
 
-        uint64_t state = BGFX_STATE_WRITE_MASK;
-
         mVertexBuffer.bindVertex(0);
-        mUVBuffer.bind(1);
-        //mIndexBuffer.bind(0, indexNumber);
 
-        bgfx::setState(state);
+        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
 
         bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_BACKGROUND_PBR>());
     }

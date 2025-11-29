@@ -29,13 +29,12 @@ SAMPLERCUBE(s_env0, 0);
 
 void main()
 {
-    // vec4 color = textureCube(s_env0, v_texcoord0);
-    // color.a = 1.0;
-    // gl_FragColor = color;
+    // bring the interpolated fragment positions
+    // back to world space
+    vec4 clip = vec4(v_texcoord0, 1.0, 1.0);
+    vec3 worldDir = normalize(mul(u_invViewProj, clip).xyz);
 
-    vec3 dir = vec3(v_texcoord0 * 2.0 - 1.0, 1.0);
-    dir = normalize(mul(u_normalMatrix, dir));
-    dir.x *= -1.0;
-    dir.z *= -1.0;
-    gl_FragColor = textureCube(s_env0, dir);
+    worldDir.x *= -1.0; // necessary now but why??
+
+    gl_FragColor = textureCube(s_env0, worldDir);
 }
