@@ -45,11 +45,11 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     DirectionalLightUniforms mDirectionalLightUniforms;
 
-    vcl::Uniform      mTexSamplerUniform =
-        Uniform("s_env0", bgfx::UniformType::Sampler);
-    ;
+    vcl::Uniform 
+        mHdrSamplerUniform     = Uniform("s_hdr", bgfx::UniformType::Sampler),
+        mEnvCubeSamplerUniform = Uniform("s_env0", bgfx::UniformType::Sampler);
 
-    std::unique_ptr<Texture> mTexture;
+    std::unique_ptr<Texture> mCubeMapTexture, mHdrTexture;
 
     // flags
     bool mStatsEnabled = false;
@@ -85,7 +85,7 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        mTexture->bind(0, mTexSamplerUniform.handle());
+        mCubeMapTexture->bind(0, mEnvCubeSamplerUniform.handle());
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
@@ -139,18 +139,31 @@ public:
 
     void loadEnvironmentTextures()
     {
-        bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
+        //bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
+        bimg::ImageContainer *hdr = loadHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
 
-        auto tex = std::make_unique<Texture>();
-        tex->set(
-            cubemap->m_data,
-            Point2i(cubemap->m_width, cubemap->m_height),
-            false, // TODO: add mips when and WHERE needed
-            BGFX_SAMPLER_UVW_CLAMP,
-            bgfx::TextureFormat::RGBA32F,
-            true
+        auto hdrTexture = std::make_unique<Texture>();
+        hdrTexture->set(
+            hdr->m_data,
+            Point2i(hdr->m_width, hdr->m_height),
+            false,
+            BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+            bgfx::TextureFormat::RGBA32F
         );
-        mTexture = std::move(tex); // FIXME? why?
+        mHdrTexture = std::move(hdrTexture);
+
+        auto cubemapTexture = std::make_unique<Texture>();
+        cubemapTexture->set(
+            nullptr,
+            Point2i(1024, 1024),
+            false, // TODO: add mips when and WHERE needed
+            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_UVW_CLAMP,
+            bgfx::TextureFormat::RGBA32F,
+            true // is cubemap
+        );
+        mCubeMapTexture = std::move(cubemapTexture); // FIXME? why?
+
+        
     }
 };
 
