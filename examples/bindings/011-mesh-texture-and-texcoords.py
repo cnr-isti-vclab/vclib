@@ -67,7 +67,7 @@ def mesh_texture_and_texcoords():
             tex_coord = mesh_vertex_texcoords.vertex(i).tex_coord()
             print(f"     Vertex {i}: ({tex_coord.u()}, {tex_coord.v()})")
             if mesh_vertex_texcoords.is_per_vertex_material_index_enabled():
-                print(f"        tex_id {mesh_vertex_texcoords.vertex(i).material_index()}")
+                print(f"        material_id {mesh_vertex_texcoords.vertex(i).material_index()}")
     else:
         print("   - Mesh does not have vertex texture coordinates")
 
@@ -88,23 +88,25 @@ def mesh_texture_and_texcoords():
         print("   First face wedge texture coordinates:")
         if mesh_wedge_texcoords.face_number() > 0:
             face = mesh_wedge_texcoords.face(0)
+            if mesh_wedge_texcoords.is_per_face_material_index_enabled():
+                print(f"     material_id: {face.material_index()}")
             for i in range(face.vertex_number()):
                 tex_coord = face.wedge_tex_coord(i)
                 print(f"     Wedge {i}: ({tex_coord.u()}, {tex_coord.v()})")
-                if mesh_wedge_texcoords.is_per_face_material_index_enabled():
-                    print(f"        tex_id {mesh_wedge_texcoords.face(i).material_index()}")
+
     else:
         print("   - Mesh does not have wedge texture coordinates")
 
-    # Example 3: Working with texture images
-    print("\n3. Working with texture images...")
-    print(f"   - Mesh has {mesh_wedge_texcoords.materials_number()} textures")
+    # Example 3: Working with materials and texture images
+    print("\n3. Working with materials and texture images...")
+    print(f"   - Mesh has {mesh_wedge_texcoords.materials_number()} materials")
 
     for i in range(mesh_wedge_texcoords.materials_number()):
-        # if the images are not loaded, the texture paths will be available
-        # and the image will be empty (width and height will be 0)
+        # access to the base_color texture descriptor
         texture = mesh_wedge_texcoords.material(i).base_color_texture_descriptor()
-        print(f"     Texture {i}: {texture.path()}")
+        print(f"     Base Color Texture {i}: {texture.path()}")
+        # if the images are not loaded, they will be empty
+        # (width and height will be 0)
         image = mesh_wedge_texcoords.texture_image(texture.path())
         print(f"       Size: {image.width()}x{image.height()}")
 
@@ -140,6 +142,7 @@ def mesh_texture_and_texcoords():
     custom_mesh.face(1).set_wedge_tex_coord(1, [1.0, 1.0])
     custom_mesh.face(1).set_wedge_tex_coord(2, [0.0, 1.0])
 
+    # Add material from the previously loaded mesh
     custom_mesh.push_material(mesh_wedge_texcoords.material(0))
 
     # change the path of the texture to a custom one (will be relative to the
