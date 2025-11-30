@@ -486,13 +486,13 @@ void testVertexTexCoords()
     // Test vertexTexCoordsFromMatrix
     vcl::vertexTexCoordsFromMatrix(mesh, texCoords);
 
-    // Create texture coordinate indices vector
+    // Create material indices vector
     std::vector<vcl::uint> materialIndices = {10, 20, 30};
 
     // Test vertexMaterialIndicesFromRange
     vcl::vertexMaterialIndicesFromRange(mesh, materialIndices);
 
-    // Verify texture coordinate and indices
+    // Verify texture coordinate and material indices
     vcl::uint c = 0;
     REQUIRE(mesh.isPerVertexTexCoordEnabled());
     REQUIRE(mesh.isPerVertexMaterialIndexEnabled());
@@ -531,14 +531,14 @@ void testFaceWedgeTexCoords()
         // Test faceWedgeTexCoordsFromMatrix
         vcl::faceWedgeTexCoordsFromMatrix(mesh, wedgeTexCoords);
 
-        // Create wedge texture coordinate indices
+        // Create face material indices
         // For triangle meshes: 2 faces = 2 indices
         std::vector<vcl::uint> faceMaterialIndices = {0, 1};
 
         // Test faceMaterialIndicesFromRange
         vcl::faceMaterialIndicesFromRange(mesh, faceMaterialIndices);
 
-        // Verify wedge texture coordinates and indices
+        // Verify wedge texture coordinates and face material indices
         REQUIRE(mesh.isPerFaceMaterialIndexEnabled());
         REQUIRE(mesh.isPerFaceWedgeTexCoordsEnabled());
 
@@ -993,7 +993,7 @@ TEST_CASE("Import mesh - error handling")
             vcl::WrongSizeException);
     }
 
-    SECTION("Wrong texture coordinate indices range size")
+    SECTION("Wrong vertex material indices range size")
     {
         mesh.addVertices(3);
         std::vector<vcl::uint> wrongMaterialIndices = {
