@@ -51,6 +51,8 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     std::unique_ptr<Texture> mCubeMapTexture, mHdrTexture;
 
+    uint mViewId = 0; // TODO: manage this better
+
     // flags
     bool mStatsEnabled = false;
 
@@ -73,7 +75,7 @@ public:
     void onDrawContent(uint viewId) override
     {
         DrawObjectSettings settings;
-        settings.viewId = viewId;
+        settings.viewId = viewId; 
 
         settings.pbrMode = ParentViewer::isPBREnabled();
 
@@ -85,7 +87,11 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        mCubeMapTexture->bind(0, mEnvCubeSamplerUniform.handle());
+        mCubeMapTexture->bind(
+            0, 
+            mEnvCubeSamplerUniform.handle(),
+            BGFX_SAMPLER_UVW_CLAMP
+        );
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
@@ -139,6 +145,9 @@ public:
 
     void loadEnvironmentTextures()
     {
+        ProgramManager& pm = Context::instance().programManager();
+        using enum ComputeProgram;
+
         //bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
         bimg::ImageContainer *hdr = loadHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
 
@@ -147,22 +156,42 @@ public:
             hdr->m_data,
             Point2i(hdr->m_width, hdr->m_height),
             false,
-            BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+            BGFX_TEXTURE_NONE,
             bgfx::TextureFormat::RGBA32F
         );
         mHdrTexture = std::move(hdrTexture);
 
+        uint32_t cubeSide = hdr->m_width / 4;
+
+        bgfx::setViewName(mViewId, "compute");
+        bgfx::setViewRect(mViewId, 0, 0, cubeSide, cubeSide);
+
         auto cubemapTexture = std::make_unique<Texture>();
         cubemapTexture->set(
             nullptr,
-            Point2i(1024, 1024),
+            Point2i(cubeSide, cubeSide),
             false, // TODO: add mips when and WHERE needed
-            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_UVW_CLAMP,
+            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
             bgfx::TextureFormat::RGBA32F,
             true // is cubemap
         );
         mCubeMapTexture = std::move(cubemapTexture); // FIXME? why?
 
+        mHdrTexture->bind(0, mHdrSamplerUniform.handle());
+        mCubeMapTexture->bindForCompute(
+            1, 
+            0, 
+            bgfx::Access::Write, 
+            bgfx::TextureFormat::RGBA32F
+        );
+
+        bgfx::dispatch(
+            mViewId++, 
+            pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
+            cubeSide/8,
+            cubeSide/8,
+            6
+        );
         
     }
 };
