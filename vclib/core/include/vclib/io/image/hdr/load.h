@@ -64,51 +64,71 @@ public:
 	size_t m_minAlignment;
 };
 
+// Allocator references are stored in image containers
+// so they have to remain visible somehow.
+// TODO: find a better way to do so.
+static bx::DefaultAllocator bxDefaultAllocator;
+static AlignedAllocator bxAlignedAllocator(&bxDefaultAllocator, 16);
+
 namespace vcl {
 
-bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
+bimg::ImageContainer* loadHdr(std::string fileName)
 {
+	// check the format
 
-    if(fileName.find(".hdr", fileName.length() - 4) == std::string::npos)
+	if(fileName.find(".hdr", fileName.length() - 4) == std::string::npos)
         throw std::runtime_error("File format is not hdr");
 
-    // Code from bimg texturec
+    /* Code from bimg texturec */
 
-    // load the file
-    bx::Error err;
+	bx::Error err;
     bx::FileReader reader;
+
+	// open the file
 
     if(!bx::open(&reader, fileName.c_str(), &err))
         throw std::runtime_error("Failed to open input file");
+
+	// read file size and allocate memory
 
     uint32_t inputSize = (uint32_t)bx::getSize(&reader);
 
     if(inputSize == 0)
 		throw std::runtime_error("Failed to open input file");
 
-    bx::DefaultAllocator defaultAllocator;
-	AlignedAllocator allocator(&defaultAllocator, 16);
+	uint8_t* inputData = (uint8_t*)bx::alloc(&bxAlignedAllocator, inputSize);
 
-	uint8_t* inputData = (uint8_t*)bx::alloc(&allocator, inputSize);
+	// read the file and put it raw in inputData
 
 	bx::read(&reader, inputData, inputSize, &err);
 	bx::close(&reader);
 
-    // convert it
+	// copy the data in the final container reading its characteristics
 
     using enum bimg::TextureFormat::Enum;
 
-    bimg::ImageContainer* output = nullptr;
-	bimg::ImageContainer* input  = bimg::imageParse(&allocator, inputData, inputSize, Count, &err); 
+	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, Count, &err); 
+
+	bx::free(&bxAlignedAllocator, inputData);
 
     if(!err.isOk())
         return nullptr;
-    
-    if(input != nullptr)
+
+	return output;
+}
+
+bimg::ImageContainer* hdrToCubemap(bimg::ImageContainer* hdr)
+{
+	bx::Error err;
+	bimg::ImageContainer* output = nullptr;
+
+	if(hdr != nullptr)
     {
 
-        bimg::TextureFormat::Enum inputFormat  = input->m_format;
-		bimg::TextureFormat::Enum outputFormat = input->m_format;
+        bimg::TextureFormat::Enum inputFormat  = hdr->m_format;
+		bimg::TextureFormat::Enum outputFormat = hdr->m_format;
+
+		// check if the input is an equirectangular projection
 
         const bimg::ImageBlockInfo&  inputBlockInfo  = bimg::getBlockInfo(inputFormat);
 		const bimg::ImageBlockInfo&  outputBlockInfo = bimg::getBlockInfo(outputFormat);
@@ -116,18 +136,16 @@ bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
 		const uint32_t blockHeight = outputBlockInfo.blockHeight;
 		const uint32_t minBlockX   = outputBlockInfo.minBlockX;
 		const uint32_t minBlockY   = outputBlockInfo.minBlockY;
-		uint32_t outputWidth  = bx::max(blockWidth  * minBlockX, ( (input->m_width  + blockWidth  - 1) / blockWidth )*blockWidth);
-		uint32_t outputHeight = bx::max(blockHeight * minBlockY, ( (input->m_height + blockHeight - 1) / blockHeight)*blockHeight);
-		uint32_t outputDepth  = input->m_depth;
+		uint32_t outputWidth  = bx::max(blockWidth  * minBlockX, ( (hdr->m_width  + blockWidth  - 1) / blockWidth )*blockWidth);
+		uint32_t outputHeight = bx::max(blockHeight * minBlockY, ( (hdr->m_height + blockHeight - 1) / blockHeight)*blockHeight);
+		uint32_t outputDepth  = hdr->m_depth;
 
         if (outputDepth != 1 || outputWidth/2 != outputHeight)
-		{
-			bimg::imageFree(input);
 			throw std::runtime_error("Input image format is not equirectangular projection (expected aspect ratio is 2:1).");
-		}
 
-		output = bimg::imageCubemapFromLatLongRgba32F(&allocator, *input, true, &err);
-		bimg::imageFree(input);
+		// convert it to cubemap
+
+		output = bimg::imageCubemapFromLatLongRgba32F(&bxAlignedAllocator, *hdr, true, &err);
 
         if(!err.isOk())
             return nullptr;
@@ -146,12 +164,20 @@ bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
 		output = nullptr;
     }
 
-    bx::free(&allocator, inputData);
-
-    if(output == nullptr)
-        throw std::runtime_error("Failed to create output.");
+    if(output == nullptr) {
+		bimg::imageFree(hdr);
+		throw std::runtime_error("Failed to create output.");
+	}  
 
     return output;
+}
+
+bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
+{
+	bimg::ImageContainer* hdr = loadHdr(fileName);
+	bimg::ImageContainer* cubemap = hdrToCubemap(hdr);
+	bimg::imageFree(hdr);
+	return cubemap;
 }
 
 } // namespace vcl
