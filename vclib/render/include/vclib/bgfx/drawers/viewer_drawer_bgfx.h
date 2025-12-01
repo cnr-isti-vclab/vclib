@@ -177,7 +177,13 @@ public:
         );
         mCubeMapTexture = std::move(cubemapTexture); // FIXME? why?
 
-        mHdrTexture->bind(0, mHdrSamplerUniform.handle());
+        mHdrTexture->bindForCompute(
+            0, 
+            0, 
+            bgfx::Access::Read, 
+            bgfx::TextureFormat::RGBA32F
+        );
+        
         mCubeMapTexture->bindForCompute(
             1, 
             0, 

@@ -22,8 +22,8 @@
 
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
-IMAGE2D_RO(s_hdr, r32f, 0);     // bound with setTexture()
-IMAGE3D_RW(u_cubemap, r32f, 1); // bound with setImage() as RW
+IMAGE2D_RO(s_hdr, rgba32f, 0);     // bound with setTexture()
+IMAGE3D_RW(u_cubemap, rgba32f, 1); // bound with setImage() as RW
 
 // Cubemap face directions
 vec3 faceDirection(uint face, vec2 uv)
