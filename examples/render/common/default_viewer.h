@@ -117,6 +117,8 @@ void showMeshesOnViewer(
 
     viewer.setPBR(pbrMode);
 
+    viewer.setPanorama(VCLIB_ASSETS_PATH "/pisa.hdr");
+
 #if VCLIB_RENDER_EXAMPLES_WITH_GLFW
     viewer.fitScene();
 #endif

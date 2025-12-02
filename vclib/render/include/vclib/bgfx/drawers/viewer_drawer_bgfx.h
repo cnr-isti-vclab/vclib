@@ -53,6 +53,8 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     uint mViewId = 0; // TODO: manage this better
 
+    std::string mPanorama;
+
     // flags
     bool mStatsEnabled = false;
 
@@ -61,7 +63,7 @@ public:
             ParentViewer(width, height)
     {
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
-        loadEnvironmentTextures();
+        //loadEnvironmentTextures();
     }
 
     ViewerDrawerBGFX(
@@ -141,6 +143,12 @@ public:
         }
     }
 
+    void setPanorama(const std::string& panorama)
+    {
+        mPanorama = panorama;
+        loadEnvironmentTextures();
+    }
+
     private:
 
     void loadEnvironmentTextures()
@@ -148,8 +156,7 @@ public:
         ProgramManager& pm = Context::instance().programManager();
         using enum ComputeProgram;
 
-        //bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
-        bimg::ImageContainer *hdr = loadHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
+        bimg::ImageContainer *hdr = loadHdr(mPanorama);
 
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
