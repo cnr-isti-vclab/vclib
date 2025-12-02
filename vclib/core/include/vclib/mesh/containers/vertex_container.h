@@ -956,10 +956,10 @@ public:
     }
 
     /**
-     * @brief Checks if the vertex Optional PrincipalCurvature is enabled.
+     * @brief Checks if the vertex Optional Tangent is enabled.
      *
      * @note This function is available only if the Vertex Element has the
-     * OptionalPrincipalCurvature Component.
+     * OptionalTangent Component.
      */
     void disablePerVertexTangent() requires vert::HasOptionalTangent<T>
     {
