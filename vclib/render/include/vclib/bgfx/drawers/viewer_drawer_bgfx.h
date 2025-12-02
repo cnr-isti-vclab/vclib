@@ -89,11 +89,12 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        mCubeMapTexture->bind(
-            0, 
-            mEnvCubeSamplerUniform.handle(),
-            BGFX_SAMPLER_UVW_CLAMP
-        );
+        if(!mPanorama.empty())
+            mCubeMapTexture->bind(
+                0,
+                mEnvCubeSamplerUniform.handle(),
+                BGFX_SAMPLER_UVW_CLAMP
+            );
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
