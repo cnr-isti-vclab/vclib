@@ -95,8 +95,8 @@ public:
         mVisibleSelectionFrameBuffer =
             Context::instance().createOffscreenFramebufferAndInitView(
                 mVisibleSelectionViewIds[0],
-                4096,
-                4096,
+                1024,
+                1024,
                 true,
                 0u,
                 1.0f,
@@ -170,11 +170,15 @@ public:
             if (ParentViewer::selectionBox().allValue()) {
                 mBoxToDraw = ParentViewer::selectionBox();
             }
+            SelectionBox minMaxBox = ParentViewer::selectionBox().toMinAndMax();
+            if (ParentViewer::selectionMode().isVisibleSelection()) {
+                setVisibleTrisSelectionProjViewMatrix(minMaxBox);
+            }
             SelectionParameters params = SelectionParameters{
                 viewId,
                 mVisibleSelectionViewIds[0],
                 mVisibleSelectionViewIds[1],
-                ParentViewer::selectionBox().toMinAndMax(),
+                minMaxBox,
                 ParentViewer::selectionMode(),
                 ParentViewer::isSelectionTemporary()
             };

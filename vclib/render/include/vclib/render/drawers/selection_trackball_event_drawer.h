@@ -146,9 +146,7 @@ protected:
     void selectionCalculated()
     {
         mSelectionCalcRequired = false;
-        if (mLMBHeld) {
-            mSelectionBox.null2();
-        } else {
+        if (!isSelectionTemporary()) {
             mSelectionBox.nullAll();
         }
         if (mCurrentSelectionMode.isAtomicMode()) {
@@ -242,6 +240,7 @@ public:
         }
         if (mLMBHeld && !mLMBPressPositionTaken) {
             mSelectionBox.set1({x, y});
+            mSelectionBox.set2({x, y});
             mLMBPressPositionTaken = true;
         }
     }
