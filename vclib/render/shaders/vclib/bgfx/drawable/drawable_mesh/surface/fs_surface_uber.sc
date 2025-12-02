@@ -92,7 +92,7 @@ void main()
             u_lightColor,
             normal);
     }
-    
+
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
@@ -111,8 +111,7 @@ void main()
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         color = getColorFromTexture(0u, v_texcoord1);
     }
-    
-    gl_FragColor = light * color + vec4(specular, 0);
 
+    gl_FragColor = light * color + vec4(specular, 0);
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
