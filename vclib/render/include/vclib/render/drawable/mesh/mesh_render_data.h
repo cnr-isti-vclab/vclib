@@ -538,7 +538,7 @@ protected:
         const FaceMeshConcept auto& mesh,
         auto*                       buffer)
     {
-        vertexMaterialIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
+        vertexMaterialIndicesAsTriangulatedFaceMaterialIndicesToBuffer(
             mesh, buffer, mIndexMap);
     }
 
