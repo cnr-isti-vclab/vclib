@@ -84,13 +84,12 @@ public:
 
     DrawableMeshBGFX979(const DrawableMeshBGFX979& drawableMesh) :
             AbstractDrawableMesh((const AbstractDrawableMesh&) drawableMesh),
-            MeshType(drawableMesh),
-            mMeshRenderSettingsUniforms(
-                drawableMesh.mMeshRenderSettingsUniforms)
+            MeshType(drawableMesh)
     {
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
+        mMeshRenderSettingsUniforms.updateSettings(mMRS);
         updateBuffers();
     }
 
