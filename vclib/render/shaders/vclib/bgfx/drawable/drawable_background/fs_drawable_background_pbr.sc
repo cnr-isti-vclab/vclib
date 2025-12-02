@@ -29,12 +29,16 @@ SAMPLERCUBE(s_env0, 0);
 
 void main()
 {
-    // bring the interpolated fragment positions
+    // bring the interpolated fragment and camera positions
     // back to world space
-    vec4 clip = vec4(v_texcoord0, 1.0, 1.0);
-    vec3 worldDir = normalize(mul(u_invViewProj, clip).xyz);
+    vec4 clipFragPos = vec4(v_texcoord0, 1.0, 1.0);
+    vec3 worldFragPos = mul(u_invViewProj, clipFragPos).xyz;
+    vec3 worldCameraPos = mul(u_invView, vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 
-    worldDir.x *= -1.0; // necessary now but why??
+    // use the view direction in world space to sample the cubemap
+    vec3 worldViewDir = normalize(worldFragPos - worldCameraPos);
 
-    gl_FragColor = textureCube(s_env0, worldDir);
+    //worldViewDir.x *= -1.0; // necessary now but why??
+
+    gl_FragColor = textureCube(s_env0, worldViewDir);
 }

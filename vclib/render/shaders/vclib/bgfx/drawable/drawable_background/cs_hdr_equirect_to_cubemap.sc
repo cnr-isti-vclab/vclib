@@ -84,6 +84,17 @@ void main()
     // Sample HDR
     vec4 hdrColor = imageLoad(s_hdr, equiUV);
 
+    // debug: solid color per face
+    switch(face) {
+        case 0: hdrColor = vec4(1.0, 0.0, 0.0, 1.0); break; // +X red
+        case 1: hdrColor = vec4(0.0, 1.0, 0.0, 1.0); break; // -X green
+        case 2: hdrColor = vec4(0.0, 0.0, 1.0, 1.0); break; // +Y blue
+        case 3: hdrColor = vec4(1.0, 1.0, 0.0, 1.0); break; // -Y yellow
+        case 4: hdrColor = vec4(1.0, 0.0, 1.0, 1.0); break; // +Z magenta
+        case 5: hdrColor = vec4(0.0, 1.0, 1.0, 1.0); break; // -Z cyan
+        default: hdrColor = vec4(0.0, 0.0, 0.0, 1.0); break;
+    }
+
     // Write to cubemap layer
     imageStore(u_cubemap, ivec3(pixel, face), hdrColor);
 }
