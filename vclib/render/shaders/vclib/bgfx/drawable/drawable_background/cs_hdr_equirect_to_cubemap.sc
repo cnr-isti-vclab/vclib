@@ -23,7 +23,7 @@
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
 IMAGE2D_RO(s_hdr, rgba32f, 0);     // bound with setTexture()
-IMAGE3D_RW(u_cubemap, rgba32f, 1); // bound with setImage() as RW
+IMAGE2D_ARRAY_WO(u_cubemap, rgba32f, 1); // bound with setImage() as RW
 
 // Cubemap face directions
 vec3 faceDirection(uint face, vec2 uv)
@@ -94,6 +94,9 @@ void main()
         case 5: hdrColor = vec4(0.0, 1.0, 1.0, 1.0); break; // -Z cyan
         default: hdrColor = vec4(0.0, 0.0, 0.0, 1.0); break;
     }
+
+    if(pixel.x == pixel.y)
+        hdrColor = vec4_splat(1.0);
 
     // Write to cubemap layer
     imageStore(u_cubemap, ivec3(pixel, face), hdrColor);

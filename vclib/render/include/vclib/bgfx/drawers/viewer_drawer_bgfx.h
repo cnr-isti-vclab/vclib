@@ -51,8 +51,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     std::unique_ptr<Texture> mCubeMapTexture, mHdrTexture;
 
-    uint mViewId = 0; // TODO: manage this better
-
     std::string mPanorama;
 
     // flags
@@ -169,10 +167,9 @@ public:
         );
         mHdrTexture = std::move(hdrTexture);
 
-        uint32_t cubeSide = hdr->m_width / 4;
+        const uint32_t cubeSide = hdr->m_width / 4;
 
-        bgfx::setViewName(mViewId, "compute");
-        bgfx::setViewRect(mViewId, 0, 0, cubeSide, cubeSide);
+        const bgfx::ViewId viewId = Context::instance().requestViewId();
 
         auto cubemapTexture = std::make_unique<Texture>();
         cubemapTexture->set(
@@ -200,12 +197,14 @@ public:
         );
 
         bgfx::dispatch(
-            mViewId++, 
+            viewId,
             pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
             cubeSide/8,
             cubeSide/8,
             6
         );
+
+        Context::instance().releaseViewId(viewId);
         
     }
 };
