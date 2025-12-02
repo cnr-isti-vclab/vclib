@@ -180,6 +180,8 @@ bool populateGltfVTextCoords(
     unsigned int  vertNumber,
     int           textID)
 {
+    if (textID < 0)
+        return false;
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         using TexCoordType = typename MeshType::VertexType::TexCoordType;
 
