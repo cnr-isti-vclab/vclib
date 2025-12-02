@@ -256,12 +256,6 @@ public:
             if (scaleRatio < 0)
                 return; // center is behind the camera
 
-            std::cout << "adapting view to center "
-                      << transformedCenter.transpose()
-                      << " scaleRatio: " << scaleRatio << std::endl
-                      << " eyeToCenter: " << eyeToCenter.transpose()
-                      << std::endl
-                      << " toCenter: " << toCenter.transpose() << std::endl;
             mTransform.pretranslate(eyeToCenter);
             mTransform.prescale(1.0 / scaleRatio);
             mTransform.pretranslate(-eyeToCenter);
