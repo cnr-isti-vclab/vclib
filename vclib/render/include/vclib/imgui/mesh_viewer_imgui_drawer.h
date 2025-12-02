@@ -369,8 +369,6 @@ private:
             "Mesh",
             "PerVertexTex",
             "PerWedgeTex",
-            "PerVertexMaterials",
-            "PerWedgeMaterials",
             "User"};
 
         const std::array<bool, CS_COUNT> colorSelected = {
