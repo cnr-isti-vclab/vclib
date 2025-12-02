@@ -154,20 +154,23 @@ public:
     {
         Camera<Scalar> cam = mCamera;
 
-        // TODO: implement orthographic camera
-        if (cam.projectionMode() ==
-            Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
-            // compute the camera properties from the trackball
-            // camera and model transformation
+        // compute the camera properties from the trackball camere and
+        // the model transformation
+        const Affine3<Scalar> modelToCamera = mTransform.inverse();
 
-            const Affine3<Scalar> modelToCamera = mTransform.inverse();
+        Point3<Scalar> y = modelToCamera.linear().col(1);
+        Point3<Scalar> z = modelToCamera.linear().col(2);
 
-            Point3<Scalar> y = modelToCamera.linear().col(1);
-            Point3<Scalar> z = modelToCamera.linear().col(2);
+        cam.up()     = y.normalized();
+        cam.eye()    = modelToCamera * cam.eye();
+        cam.center() = cam.eye() - z.normalized();
 
-            cam.up()     = y.normalized();
-            cam.eye()    = modelToCamera * cam.eye();
-            cam.center() = cam.eye() - z.normalized();
+        if (cam.projectionMode() == Camera<Scalar>::ProjectionMode::ORTHO) {
+            // ortho camera always uses the vertical height = 2.0
+            // correct it using a scale factor when the model is scaled
+            // (assume uniform scale)
+            Scalar scale = mTransform.linear().col(0).norm();
+            cam.verticalHeight() /= scale;
         }
 
         return cam;
@@ -184,16 +187,24 @@ public:
      */
     void setCamera(const Camera<Scalar>& cam)
     {
-        // TODO: implement orthographic camera
+        // FIXME? check what to do with the aspect ratio (if != 1.0)
         this->reset();
-        mCamera.projectionMode() = cam.projectionMode();
+        mCamera.projectionMode()     = cam.projectionMode();
+        Scalar correctiveScaleFactor = 1.0;
         if (mCamera.projectionMode() ==
             Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
             mCamera.setFieldOfViewAdaptingEyeDistance(cam.fieldOfView());
         }
+        else {
+            // ortho camera always uses the vertical height = 2.0
+            // correct it using a scale factor
+            correctiveScaleFactor =
+                mCamera.verticalHeight() / cam.verticalHeight();
+        }
         const Point3<Scalar> camTrackballTransl =
             mCamera.eye() - mCamera.center();
-        // no aspect ratio, it maybe different
+
+        // FIXME? near and far planes should be corrected too but we don't care
         mCamera.nearPlane() = cam.nearPlane();
         mCamera.farPlane()  = cam.farPlane();
         // generate a transformation that will place the model
@@ -214,6 +225,9 @@ public:
 
         // invert the transformation
         mTransform = mTransform.inverse();
+
+        // apply the corrective scale factor
+        mTransform.prescale(correctiveScaleFactor);
 
         // correct the translation to account for the position of the
         // trackball camera (mCamera)
@@ -251,6 +265,19 @@ public:
             mTransform.pretranslate(eyeToCenter);
             mTransform.prescale(1.0 / scaleRatio);
             mTransform.pretranslate(-eyeToCenter);
+        }
+        else {
+            assert(
+                mCamera.projectionMode() ==
+                Camera<Scalar>::ProjectionMode::ORTHO);
+            // for ortho camera just translate the model along camera view
+            // direction
+            Point3<Scalar> transformedCenter = mTransform * center;
+            Point3<Scalar> toCenter = transformedCenter - mCamera.center();
+            Point3<Scalar> viewDir =
+                (mCamera.center() - mCamera.eye()).normalized();
+            Scalar distance = toCenter.dot(viewDir);
+            mTransform.pretranslate(-viewDir * distance);
         }
     }
 

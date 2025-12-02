@@ -63,9 +63,10 @@ DrawableDirectionalLight::DrawableDirectionalLight(
     const DrawableDirectionalLight& other) :
         DrawableObject(other), mVisible(other.mVisible),
         mTransform(other.mTransform), mVertices(other.mVertices),
-        mColor(other.mColor), mUniform(other.mUniform)
+        mColor(other.mColor)
 {
     createVertexBuffer();
+    mUniform.setColor(mColor);
 }
 
 DrawableDirectionalLight::DrawableDirectionalLight(
