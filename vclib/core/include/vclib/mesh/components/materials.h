@@ -409,8 +409,12 @@ void Materials::importFrom(const Element& e, bool)
 {
     if constexpr (HasMaterials<Element>) {
         mats().clear();
+        txtImgs().clear();
         for (const auto& mat : e.materials()) {
             mats().push_back(mat);
+        }
+        for (const auto& [path, img] : e.textureImages()) {
+            txtImgs()[path] = img;
         }
         meshBasePath() = e.meshBasePath();
     }
