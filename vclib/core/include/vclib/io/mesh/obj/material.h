@@ -182,6 +182,15 @@ inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
     if (!m.map_Kd.empty()) {
         out << "map_Kd " << m.map_Kd << std::endl;
     }
+
+    if (m.map_Ke.empty()) {
+        out << "map_Ke " << m.map_Ke << std::endl;
+    }
+
+    // if (m.map_bump.empty()) {
+    //     out << "map_bump " << m.map_bump << std::endl;
+    // }
+
     return out;
 }
 
