@@ -80,7 +80,7 @@ private:
     // essential PBR properties
     Color mBaseColor = Color::White;
 
-    float mMetallic = 1.0f;
+    float mMetallic = 0.0f;
 
     float mRoughness = 1.0f;
 
@@ -104,7 +104,18 @@ public:
      * @brief Default constructor.
      *
      * Creates a default material.
-     * TODO: define the properties of the default material.
+     * The default material has:
+     * - Name: empty string
+     * - Base Color: White
+     * - Metallic: 0.0
+     * - Roughness: 1.0
+     * - Emissive Color: Black
+     * - Alpha Mode: ALPHA_OPAQUE
+     * - Alpha Cutoff: 0.5
+     * - Double Sided: false
+     * - Normal Scale: 1.0
+     * - Occlusion Strength: 1.0
+     * - No textures assigned.
      */
     Material() {}
 
