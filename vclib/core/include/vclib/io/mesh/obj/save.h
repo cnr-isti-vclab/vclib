@@ -67,7 +67,6 @@ std::vector<std::string> saveObjMaterials(
                     // supported textures to save
                     if (i == toUnderlying(BASE_COLOR) ||
                         i == toUnderlying(EMISSIVE)) {
-
                         const TextureDescriptor& t   = mat.textureDescriptor(i);
                         const Image&             img = m.textureImage(t.path());
                         if (t.isNull()) {
