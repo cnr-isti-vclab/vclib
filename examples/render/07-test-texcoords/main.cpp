@@ -49,8 +49,7 @@ int main(int argc, char** argv)
         "VertTextureDouble.ply",
         "bunny_textured.ply",
         "TextureDoubleQuad.obj",
-        "TextureDouble.obj"
-    };
+        "TextureDouble.obj"};
 
     uint selectedExample = SPONZA;
 
