@@ -24,6 +24,8 @@
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
 #include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/drawable/mesh/pbr_macros.h>
+
 #include <vclib/mesh.h>
 
 namespace vcl {
@@ -47,6 +49,9 @@ class MaterialUniforms
     // used to store the alpha cutoff when needed
     std::array<float, 4> mEmissiveAlphaCutoffPack = {0.0, 0.0, 0.0, 0.5};
 
+    // settings packed in a vec4
+    // .x : pbr settings
+    // .y : texture settings
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
     Uniform mBaseColorUniform =
@@ -77,28 +82,32 @@ public:
         const std::array<bool, N_TEXTURES>& textureAvailable,
         bool                               vertexTangentAvailable)
     {
-        int settings = 0;
+        uint pbrSettings = 0;
+
         if (vertexColorAvailable) // per-vertex color available
-            settings |= 1 << 0;
+            pbrSettings |= 1 << VCL_PBR_VERTEX_COLOR;
+
+        if(vertexTangentAvailable) // per-vertex tangent available
+            pbrSettings |= 1 << VCL_PBR_VERTEX_TANGENT;
 
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-            settings |= 1 << 1;
+            pbrSettings |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
             mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
+        mSettings[0] = Uniform::uintBitsToFloat(pbrSettings);
+
+        uint textureSettings = 0;
+
         for (int i = 0; i < N_TEXTURES; ++i) {
             if (textureAvailable[i]) {
-                settings |=
-                    1
-                    << (2 + i); // texture available, uses settings from 2 to 6
+                // texture available, uses settings from 0 to N_TEXTURES
+                textureSettings |= 1 << (VCL_PBR_TEXTURE_BASE_COLOR + i);
             }
         }
 
-        if(vertexTangentAvailable) // per-vertex tangent available
-            settings |= 1 << 7;
-
-        mSettings[0] = float(settings);
+        mSettings[1] = Uniform::uintBitsToFloat(textureSettings);
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();

@@ -23,6 +23,8 @@
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/pbr_common.sh>
+
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
@@ -80,12 +82,12 @@ void main()
     // base color
     vec4 vertexBaseColor, textureBaseColor, baseColor;
 
-    if(isPerVertexColorAvailable(u_settings.x))
+    if (isPerVertexColorAvailable(u_pbr_settings))
         vertexBaseColor = v_color; // per-vertex color available
     else
         vertexBaseColor = vec4_splat(1.0); // no per-vertex color available, use white
 
-    if(isBaseColorTextureAvailable(u_settings.x)) {
+    if (isBaseColorTextureAvailable(u_pbr_texture_settings)) {
         // base color texture available
         textureBaseColor = getColorFromTexture(0u, texcoord);
     }
@@ -97,15 +99,15 @@ void main()
     baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor; // multiply vertex color with material base color
 
     // alpha mode MASK
-    if(isAlphaModeMask(u_settings.x))
-        if(baseColor.a < u_alphaCutoff)
+    if (isAlphaModeMask(u_pbr_settings))
+        if (baseColor.a < u_alphaCutoff)
             discard; // discard fragment
 
     // metallic-roughness
     vec4 metallicRoughnessTexture;
     float metallic, roughness;
 
-    if(isMetallicRoughnessTextureAvailable(u_settings.x))
+    if (isMetallicRoughnessTextureAvailable(u_pbr_texture_settings))
         metallicRoughnessTexture = getColorFromTexture(1u, texcoord); // metallic-roughness texture available
     else
         metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
@@ -116,8 +118,7 @@ void main()
     // normal
     vec3 normal;
 
-    if(isNormalTextureAvailable(u_settings.x))
-    {
+    if (isNormalTextureAvailable(u_pbr_texture_settings)) {
         vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
 
         // remapping normals
@@ -131,13 +132,11 @@ void main()
 
         mat3 tangentFrame;
 
-        if(isPerVertexTangentAvailable(u_settings.x))
-        {
+        if (isPerVertexTangentAvailable(u_pbr_settings)) {
             vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
             tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
         }
-        else
-        {
+        else {
             // construct tangent frame using vertex normals
             tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
         }
@@ -150,14 +149,14 @@ void main()
     }
     else {
         normal = normalize(v_normal);
-        if(!vcl_FrontFacing)
+        if (!vcl_FrontFacing)
             normal *= -1.0;
     } 
 
     // emissive
     vec3 emissiveTexture, emissiveColor;
 
-    if(isEmissiveTextureAvailable(u_settings.x))
+    if (isEmissiveTextureAvailable(u_pbr_texture_settings))
         emissiveTexture = getColorFromTexture(4u, texcoord).rgb; // emissive texture available
     else
         emissiveTexture = vec3_splat(1.0); // no emissive texture available, use white
