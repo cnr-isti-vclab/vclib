@@ -896,21 +896,19 @@ protected:
     void setEdgeColorsBuffer(const EdgeMeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the texture units from the mesh and sends
-     * the data to the GPU.
+     * @brief Function that sets the textures from the mesh and sends the data
+     * to the GPU.
      *
-     * The function should take the texture from the mesh (loading them if
+     * The function should take the texture image from the mesh (loading them if
      * they are not available in the mesh) and send them to the GPU using the
      * rendering backend.
      *
-     * There is no need to check whether the Mesh can provide texture paths,
-     * since the function is called only if the mesh has them. However, it is
-     * necessary to check whether the mesh has texture images and, in that case,
-     * check whether the texture is already loaded.
+     * There is no need to check whether the Mesh can provide materials, since
+     * the function is called only if the mesh has them.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setTextureUnits(const MeshConcept auto&) {}
+    void setTextures(const MeshConcept auto&) {}
 
     /**
      * @brief Function that sets the mesh uniforms from the mesh.
@@ -1143,7 +1141,7 @@ private:
         if constexpr (vcl::HasMaterials<MeshType>) {
             if (btu[toUnderlying(TEXTURES)]) {
                 // textures
-                derived().setTextureUnits(mesh);
+                derived().setTextures(mesh);
             }
         }
     }
