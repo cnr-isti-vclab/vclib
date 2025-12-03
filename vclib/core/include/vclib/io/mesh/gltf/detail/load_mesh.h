@@ -204,6 +204,10 @@ int loadGltfPrimitiveMaterial(
                 mat, emissiveTextureId, Material::TextureType::EMISSIVE);
             m.pushMaterial(mat);
             idx = m.materialsNumber() - 1; // index of the added material
+            if constexpr (HasColor<MeshType>) {
+                // set mesh color to white when materials are used
+                m.color() = Color::White;
+            }
         }
         else if constexpr (HasColor<MeshType>) {
             // base color is set to the mesh color only if the mesh has no

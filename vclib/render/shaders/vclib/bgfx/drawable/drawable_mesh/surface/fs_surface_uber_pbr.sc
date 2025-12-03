@@ -74,29 +74,42 @@ void main()
     #endif // VIEWER_LIGHTS
 
     // texcoord to use
+    bool useTexture =
+        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)) ||
+        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE));
+
     vec2 texcoord = v_texcoord0; // per vertex
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         texcoord = v_texcoord1; // per wedge
     }
 
     // base color
-    vec4 vertexBaseColor, textureBaseColor, baseColor;
+    vec4 vertexBaseColor  = vec4_splat(1.0);
+    vec4 textureBaseColor = vec4_splat(1.0);
 
-    if (isPerVertexColorAvailable(u_pbr_settings))
-        vertexBaseColor = v_color; // per-vertex color available
-    else
-        vertexBaseColor = vec4_splat(1.0); // no per-vertex color available, use white
+    // color to use per vertex
+    // if the user selected per face, per mesh or per user, override
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
+        vertexBaseColor = uintABGRToVec4Color(primitiveColors[primitiveID]);
+    }
+    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
+        vertexBaseColor = u_meshColor;
+    }
+    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_USER))) {
+        vertexBaseColor = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
+    }
+    else {
+        if (isPerVertexColorAvailable(u_pbr_settings))
+            vertexBaseColor = v_color; // per-vertex color available
+    }
 
-    if (isBaseColorTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isBaseColorTextureAvailable(u_pbr_texture_settings)) {
         // base color texture available
         textureBaseColor = getColorFromTexture(0u, texcoord);
     }
-    else {
-        // no base color texture available, use white
-        textureBaseColor = vec4_splat(1.0);
-    }
 
-    baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor; // multiply vertex color with material base color
+    // multiply vertex color with material base color
+    vec4 baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor;
 
     // alpha mode MASK
     if (isAlphaModeMask(u_pbr_settings))
@@ -104,21 +117,20 @@ void main()
             discard; // discard fragment
 
     // metallic-roughness
-    vec4 metallicRoughnessTexture;
-    float metallic, roughness;
+    vec4 metallicRoughnessTexture = vec4_splat(1.0);
 
-    if (isMetallicRoughnessTextureAvailable(u_pbr_texture_settings))
-        metallicRoughnessTexture = getColorFromTexture(1u, texcoord); // metallic-roughness texture available
-    else
-        metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
+    if (useTexture && isMetallicRoughnessTextureAvailable(u_pbr_texture_settings)) {
+        // metallic-roughness texture available
+        metallicRoughnessTexture = getColorFromTexture(1u, texcoord);
+    }
 
-    metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
-    roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
+    float metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
+    float roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // normal
     vec3 normal;
 
-    if (isNormalTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isNormalTextureAvailable(u_pbr_texture_settings)) {
         vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
 
         // remapping normals
@@ -151,17 +163,17 @@ void main()
         normal = normalize(v_normal);
         if (!vcl_FrontFacing)
             normal *= -1.0;
-    } 
+    }
 
     // emissive
-    vec3 emissiveTexture, emissiveColor;
+    vec3 emissiveTexture = vec3_splat(1.0);
 
-    if (isEmissiveTextureAvailable(u_pbr_texture_settings))
-        emissiveTexture = getColorFromTexture(4u, texcoord).rgb; // emissive texture available
-    else
-        emissiveTexture = vec3_splat(1.0); // no emissive texture available, use white
+    if (useTexture && isEmissiveTextureAvailable(u_pbr_texture_settings)) {
+        // emissive texture available
+        emissiveTexture = getColorFromTexture(4u, texcoord).rgb;
+    }
 
-    emissiveColor = u_emissiveFactor * emissiveTexture;
+    vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
 
     gl_FragColor = pbrColor(
         v_position.xyz,
