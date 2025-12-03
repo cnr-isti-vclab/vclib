@@ -26,34 +26,34 @@ IMAGE2D_RO(s_hdr, rgba32f, 0);     // bound with setTexture()
 IMAGE2D_ARRAY_WO(u_cubemap, rgba32f, 1); // bound with setImage() as RW
 
 // Cubemap face directions
-vec3 faceDirection(uint face, vec2 uv)
-{
-    // uv in range [-1,1]
-    switch (face)
-    {
-        case 0: return normalize(vec3( 1.0,    uv.y, -uv.x )); // +X
-        case 1: return normalize(vec3(-1.0,    uv.y,  uv.x )); // -X
-        case 2: return normalize(vec3( uv.x,  1.0,   -uv.y));  // +Y
-        case 3: return normalize(vec3( uv.x, -1.0,    uv.y));  // -Y
-        case 4: return normalize(vec3( uv.x,  uv.y,   1.0 ));  // +Z
-        case 5: return normalize(vec3( uv.x,  uv.y,  -1.0 ));  // -Z
-        default: return vec3_splat(0.0);
-    }
-}
+//vec3 faceDirection(uint face, vec2 uv)
+//{
+//    // uv in range [-1,1]
+//    switch (face)
+//    {
+//        case 0: return normalize(vec3( 1.0,    uv.y, -uv.x )); // +X
+//        case 1: return normalize(vec3(-1.0,    uv.y,  uv.x )); // -X
+//        case 2: return normalize(vec3( uv.x,  1.0,   -uv.y));  // +Y
+//        case 3: return normalize(vec3( uv.x, -1.0,    uv.y));  // -Y
+//        case 4: return normalize(vec3( uv.x,  uv.y,   1.0 ));  // +Z
+//        case 5: return normalize(vec3( uv.x,  uv.y,  -1.0 ));  // -Z
+//        default: return vec3_splat(0.0);
+//    }
+//}
 
 // Converts direction -> equirectangular UV
-vec2 dirToEquirectUV(vec3 dir)
-{
-    float phi   = atan2(dir.z, dir.x);        // [-pi..pi]
-    float theta = asin(dir.y);               // [-pi/2..pi/2]
+//vec2 dirToEquirectUV(vec3 dir)
+//{
+//    float phi   = atan2(dir.z, dir.x);        // [-pi..pi]
+//    float theta = asin(dir.y);               // [-pi/2..pi/2]
+//
+//    float u = (phi   / (2.0*PI)) + 0.5;
+//    float v = (theta / PI) + 0.5;
+//
+//    return vec2(u, v);
+//}
 
-    float u = (phi   / (2.0*PI)) + 0.5;
-    float v = (theta / PI) + 0.5;
-
-    return vec2(u, v);
-}
-
-NUM_THREADS(8, 8, 1) // 8x8 threads per threadgroup
+NUM_THREADS(1, 1, 1) // 8x8 threads per threadgroup
 void main()
 {
     ivec3 gid = ivec3(gl_GlobalInvocationID.xyz);
@@ -72,17 +72,18 @@ void main()
         return;
 
     // Pixel center to UV in [-1,1]
-    vec2 uv = (vec2(pixel) + 0.5) / float(size);
-    uv = uv * 2.0 - 1.0;
+    //vec2 uv = (vec2(pixel) + 0.5) / float(size);
+    //uv = uv * 2.0 - 1.0;
 
     // Get direction corresponding to cubemap face pixel
-    vec3 dir = faceDirection(uint(face), uv);
+    //vec3 dir = faceDirection(uint(face), uv);
 
     // Convert to lat-long UV
-    vec2 equiUV = dirToEquirectUV(dir);
+    //vec2 equiUV = dirToEquirectUV(dir);
 
     // Sample HDR
-    vec4 hdrColor = imageLoad(s_hdr, equiUV);
+    //vec4 hdrColor = imageLoad(s_hdr, equiUV);
+    vec4 hdrColor;
 
     float asd = float(pixel.x)/size;
 
@@ -101,5 +102,5 @@ void main()
         hdrColor = vec4_splat(1.0);
 
     // Write to cubemap layer
-    imageStore(u_cubemap, ivec3(pixel, face), hdrColor);
+    imageStore(u_cubemap, ivec3(pixel.x, pixel.y, face), hdrColor);
 }

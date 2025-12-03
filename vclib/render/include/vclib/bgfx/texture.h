@@ -165,13 +165,22 @@ public:
             // there is correspondance between bimg and bgfx texture formats
             static_cast<bimg::TextureFormat::Enum>(toUnderlying(format))
         );
-        set(bgfx::makeRef(data, sz, releaseFn),
+        if(data != nullptr)
+            set(bgfx::makeRef(data, sz, releaseFn),
             size,
             hasMips,
             1,
             format,
             isCubemap,
             flags);
+        else
+            set(nullptr,
+                size,
+                hasMips,
+                1,
+                format,
+                isCubemap,
+                flags);
     }
 
     /**
@@ -251,6 +260,37 @@ public:
     {
         if(bgfx::isValid(mTextureHandle))
             bgfx::setImage(stage, mTextureHandle, mip, access, format);
+    }
+
+    void update(
+        uint8_t _side
+        , uint8_t _mip
+        , uint16_t _x
+        , uint16_t _y
+        , uint16_t _width
+        , uint16_t _height
+        , const void* data
+        , bool isCubemap = false
+        , bgfx::ReleaseFn releaseFn = nullptr
+    )
+    {
+        if(bgfx::isValid(mTextureHandle))
+        {
+            if(isCubemap)
+                bgfx::updateTextureCube(
+                    mTextureHandle,
+                    0,
+                    _side,
+                    _mip,
+                    _x,
+                    _y,
+                    _width,
+                    _height,
+                    bgfx::makeRef(data, (uint)_width * (uint)_height, releaseFn)
+                    );
+            //else
+                //bgfx::updateTexture2D()
+        }
     }
 
     /**

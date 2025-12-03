@@ -40,5 +40,7 @@ void main()
 
     //worldViewDir.x *= -1.0; // necessary now but why??
 
+    //vec3 dir = normalize(vec3(-2.001,0.0,-1.0));
+
     gl_FragColor = textureCube(s_env0, worldViewDir);
 }

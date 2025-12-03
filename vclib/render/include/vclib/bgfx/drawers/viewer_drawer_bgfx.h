@@ -157,6 +157,57 @@ public:
 
         bimg::ImageContainer *hdr = loadHdr(mPanorama);
 
+        Image img = loadImage("C:/vclib/assets/texture-cubemap-test.png");
+
+        //auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint8_t>(size);
+
+        //std::copy(img.data(), img.data() + size, buffer);
+
+        auto testCubemapTexture = std::make_unique<Texture>();
+                testCubemapTexture->set(
+                nullptr,
+                vcl::Point2i(img.height(), img.height()),
+                false,
+                BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+                bgfx::TextureFormat::RGBA8,
+                true
+            );
+        mCubeMapTexture = std::move(testCubemapTexture);
+
+        std::size_t size = img.sizeInBytes();
+        int side = img.height();                  // keeps your meaning: one cubemap face
+        int bpp  = 4;                              // RGBA8
+        int faceSize = side * side * bpp;
+
+        for (uint z = 0; z < 6; z++)
+        {
+            auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint8_t>(faceSize);
+
+            for (int y = 0; y < side; y++)
+            {
+                const uint8_t* src =
+                    img.data() + (y * side * 6 + z * side) * bpp;
+
+                uint8_t* dst = buffer + y * side * bpp;
+
+                memcpy(dst, src, side * bpp);
+            }
+
+            mCubeMapTexture->update(
+                BGFX_CUBE_MAP_POSITIVE_X + z,
+                0,
+                0,
+                0,
+                (uint16_t)side,
+                (uint16_t)side,
+                buffer,
+                true,
+                releaseFn
+            );
+        }
+
+
+
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
             hdr->m_data,
@@ -171,41 +222,51 @@ public:
 
         const bgfx::ViewId viewId = Context::instance().requestViewId();
 
-        auto cubemapTexture = std::make_unique<Texture>();
-        cubemapTexture->set(
-            nullptr,
-            Point2i(cubeSide, cubeSide),
-            false, // TODO: add mips when and WHERE needed
-            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
-            bgfx::TextureFormat::RGBA32F,
-            true // is cubemap
-        );
-        mCubeMapTexture = std::move(cubemapTexture); // FIXME? why?
+        // auto cubemapTexture = std::make_unique<Texture>();
+        // cubemapTexture->set(
+        //     nullptr,
+        //     Point2i(cubeSide, cubeSide),
+        //     false, // TODO: add mips when and WHERE needed
+        //     BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
+        //     bgfx::TextureFormat::RGBA32F,
+        //     true // is cubemap
+        // );
+        //mCubeMapTexture = std::move(cubemapTexture); // FIXME? why?
 
-        mHdrTexture->bindForCompute(
-            0, 
-            0, 
-            bgfx::Access::Read, 
-            bgfx::TextureFormat::RGBA32F
-        );
+        // mHdrTexture->bindForCompute(
+        //     0,
+        //     0,
+        //     bgfx::Access::Read,
+        //     bgfx::TextureFormat::RGBA32F
+        // );
         
-        mCubeMapTexture->bindForCompute(
-            1, 
-            0, 
-            bgfx::Access::Write, 
-            bgfx::TextureFormat::RGBA32F
-        );
+        // mCubeMapTexture->bindForCompute(
+        //     1,
+        //     0,
+        //     bgfx::Access::Read,
+        //     bgfx::TextureFormat::RGBA32F
+        // );
 
-        bgfx::dispatch(
-            viewId,
-            pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
-            cubeSide/8,
-            cubeSide/8,
-            6
-        );
+        // bgfx::dispatch(
+        //     viewId,
+        //     pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
+        //     cubeSide,
+        //     cubeSide,
+        //     6
+        // );
 
         Context::instance().releaseViewId(viewId);
         
+    }
+
+    template<typename T>
+    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
+    {
+        T* buffer = new T[size];
+
+        return std::make_pair(buffer, [](void* ptr, void*) {
+            delete[] static_cast<T*>(ptr);
+        });
     }
 };
 
