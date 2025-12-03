@@ -32,5 +32,5 @@ void main()
 	v_texcoord0 = a_position.xy;
 
     // draw the triangle in screen space
-    gl_Position = vec4(a_position.xy, 1.0, 1.0);
+    gl_Position = vec4(a_position.x, a_position.y, a_position.z, 1.0);
 }
