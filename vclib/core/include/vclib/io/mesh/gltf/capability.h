@@ -53,7 +53,6 @@ inline MeshInfo gltfFormatCapability()
     info.setPerVertexMaterialIndex();
 
     info.setPerFaceVertexReferences();
-    info.setPerFaceMaterialIndex();
 
     return info;
 }

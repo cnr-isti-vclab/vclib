@@ -756,19 +756,6 @@ void loadGltfMeshPrimitive(
             info.setTriangleMesh();
             info.setFaces();
             info.setPerFaceVertexReferences();
-
-            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
-                if (settings.enableOptionalComponents) {
-                    enableIfPerFaceMaterialIndexOptional(m);
-                }
-                if (isPerFaceMaterialIndexAvailable(m)) {
-                    uint fnum = m.faceNumber();
-                    for (uint f = firstFace; f < fnum; ++f) {
-                        m.face(f).materialIndex() = materialId;
-                    }
-                    info.setPerFaceMaterialIndex();
-                }
-            }
         }
     }
 
