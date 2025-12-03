@@ -89,10 +89,10 @@ void main()
 
     // color to use per vertex
     // if the user selected per face, per mesh or per user, override
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
+    /*if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
         vertexBaseColor = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
-    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
+    else*/ if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
         vertexBaseColor = u_meshColor;
     }
     else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_USER))) {
