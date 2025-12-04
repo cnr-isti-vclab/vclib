@@ -72,10 +72,7 @@ void main()
 
     // in case of an out of bounds thread
     if (pixel.x >= size || pixel.y >= size || face >= 6)
-        return;
-
-    // Flip Y to have origin at bottom-left
-    pixel.y = size - pixel.y - 1; 
+        return; 
 
     // Pixel center to UV in [-1,1]
     vec2 uv = (vec2(pixel) + 0.5) / float(size);
