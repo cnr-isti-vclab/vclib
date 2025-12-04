@@ -84,7 +84,8 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     FetchContent_Declare(bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
-        GIT_TAG        v1.135.9046-500
+        # TODO: restore tag when a new release will be out
+        #GIT_TAG        v1.135.9046-500
         EXCLUDE_FROM_ALL)
 
     FetchContent_MakeAvailable(bgfx)

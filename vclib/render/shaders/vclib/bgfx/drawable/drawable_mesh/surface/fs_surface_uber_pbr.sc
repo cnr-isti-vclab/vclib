@@ -72,16 +72,10 @@ void main()
 
     // color to use per vertex
     // if the user selected per face, per mesh or per user, override
-
-    // TODO: uncomment per face color when
-    // https://github.com/bkaradzic/bgfx.cmake/pull/3 is merged and bgfx.cmake
-    // dependency updated
-    // original bug was here: https://github.com/bkaradzic/bgfx/issues/3509
-
-    /*if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
         vertexBaseColor = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
-    else*/ if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
+    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
         vertexBaseColor = u_meshColor;
     }
     else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_USER))) {
