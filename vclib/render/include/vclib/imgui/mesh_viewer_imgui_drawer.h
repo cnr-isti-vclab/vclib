@@ -69,6 +69,27 @@ public:
             ImGui::EndChild();
         }
 
+        // combo box for pbr mode
+        ImGui::Separator();
+        ImGui::Text("Render Mode:");
+        ImGui::SameLine();
+        const char* renderModeNames[] = {"Classic", "PBR"};
+        bool        pbrMode           = Base::isPBREnabled();
+        ImGui::SetNextItemWidth(80);
+        if (ImGui::BeginCombo(
+                "##ComboRenderMode",
+                pbrMode ? renderModeNames[1] : renderModeNames[0])) {
+            for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
+                bool isSelected = (pbrMode && n == 1) || (!pbrMode && n == 0);
+                if (ImGui::Selectable(renderModeNames[n], isSelected)) {
+                    Base::setPBR(n == 1);
+                }
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
         // drawable mesh info and settings for selected mesh
         if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
             auto drawable =
@@ -358,11 +379,15 @@ private:
             });
 
         // color
+        const uint CS_COUNT =
+            toUnderlying(COUNT) - 4; // exclude shading options
+
         ImGui::Text("Color:");
         ImGui::SameLine();
-        const char* surfColorNames[] = {
+        const char* surfColorNames[CS_COUNT] = {
             "Vertex", "Face", "Mesh", "PerVertexTex", "PerWedgeTex", "User"};
-        const std::array<bool, 6> colorSelected = {
+
+        const std::array<bool, CS_COUNT> colorSelected = {
             settings.isSurface(COLOR_VERTEX),
             settings.isSurface(COLOR_FACE),
             settings.isSurface(COLOR_MESH),
@@ -376,10 +401,10 @@ private:
             std::begin(colorSelected),
             std::find(
                 std::begin(colorSelected), std::end(colorSelected), true));
-        assert(idx >= 0 && idx < 6);
+        assert(idx >= 0 && idx < CS_COUNT);
         ImGui::SetNextItemWidth(-40);
         if (ImGui::BeginCombo("##ComboSurfColor", surfColorNames[idx])) {
-            for (int n = 0; n < IM_ARRAYSIZE(surfColorNames); n++) {
+            for (int n = 0; n < CS_COUNT; n++) {
                 const bool selected = (n == idx);
 
                 switch (n) {

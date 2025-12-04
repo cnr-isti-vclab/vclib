@@ -682,19 +682,20 @@ public:
                         }
                     }
 
-                    if constexpr (vcl::HasTexturePaths<MeshType>) {
+                    if constexpr (vcl::HasMaterials<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m) &&
-                                m.textureNumber() > 0)
+                                m.materialsNumber() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
-                                m.textureNumber() > 0)
+                                m.materialsNumber() > 0) {
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
+                            }
                         }
                     }
                 }

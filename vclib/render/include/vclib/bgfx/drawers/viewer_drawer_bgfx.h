@@ -61,6 +61,8 @@ public:
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
+        settings.pbrMode = ParentViewer::isPBREnabled();
+
         bgfx::setViewTransform(
             viewId,
             ParentViewer::viewMatrix().data(),

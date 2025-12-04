@@ -60,7 +60,7 @@ void loadPly(
     if constexpr (HasName<MeshType>) {
         m.name() = FileInfo::fileNameWithoutExtension(filename);
     }
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
 
@@ -122,6 +122,7 @@ void loadPly(
             ++i;
         }
         readPlyTextures(header, m, log, settings);
+        readPlyMaterialIndexPostProcessing(m, loadedInfo, settings);
     }
     catch (const std::runtime_error& err) {
         m.clear();

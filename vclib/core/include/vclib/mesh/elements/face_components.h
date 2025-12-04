@@ -29,6 +29,7 @@
 #include "../components/color.h"
 #include "../components/custom_components.h"
 #include "../components/mark.h"
+#include "../components/material_index.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/polygon_bit_flags.h"
@@ -86,6 +87,10 @@ template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
+template<typename T>
+concept HasMaterialIndex = comp::HasMaterialIndex<T>;
+template<typename T>
+concept HasOptionalMaterialIndex = comp::HasOptionalMaterialIndex<T>;
 template<typename T>
 concept HasNormal = comp::HasNormal<T>;
 template<typename T>
@@ -332,6 +337,15 @@ using VerticalMark = comp::Mark<ParentFaceType>;
 
 template<typename ParentFaceType>
 using OptionalMark = comp::Mark<ParentFaceType, true>;
+
+/* Port MaterialIndex class into face namespace */
+using MaterialIndex = comp::MaterialIndex<>;
+
+template<typename ParentFaceType>
+using VerticalMaterialIndex = comp::MaterialIndex<ParentFaceType>;
+
+template<typename ParentFaceType>
+using OptionalMaterialIndex = comp::MaterialIndex<ParentFaceType, true>;
 
 /* Port Normal classes into face namespace */
 template<typename ScalarType, int N>

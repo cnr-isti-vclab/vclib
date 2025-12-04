@@ -151,6 +151,9 @@ void initContainer(
     detail::addOptionalComponentFunctions<ELEM_ID, CompId::COLOR>(
         c, name, "color");
 
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::MATERIAL_INDEX>(
+        c, name, "material_index");
+
     detail::addOptionalComponentFunctions<ELEM_ID, CompId::NORMAL>(
         c, name, "normal");
 

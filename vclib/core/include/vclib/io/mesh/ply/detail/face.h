@@ -165,14 +165,14 @@ void readPlyFaceProperty(
     }
     // loading texture id associated to ALL the wedges
     if (p.name == ply::texnumber) {
-        if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-            if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+        if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+            if (isPerFaceMaterialIndexAvailable(mesh)) {
                 uint n      = io::readPrimitiveType<uint>(file, p.type, end);
                 hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
                 for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
-                    mesh.face(ff).textureIndex() = n;
+                    mesh.face(ff).materialIndex() = n;
                 }
             }
         }
@@ -337,8 +337,8 @@ void writePlyFaces(
                 }
             }
             if (p.name == ply::texnumber) {
-                if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                    io::writeProperty(file, f.textureIndex(), p.type, format);
+                if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                    io::writeProperty(file, f.materialIndex(), p.type, format);
                     hasBeenWritten = true;
                 }
             }

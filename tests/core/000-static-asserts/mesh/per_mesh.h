@@ -70,6 +70,19 @@ void perMeshStaticAsserts()
         HasCustomComponents<TriMesh&&>,
         "TriMesh&& does not satisfy the HasCustomComponents");
 
+    static_assert(
+        HasMaterials<TriMesh>, "TriMesh does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<const TriMesh>,
+        "const TriMesh does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<TriMesh&>, "TriMesh& does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasMaterials");
+    static_assert(
+        HasMaterials<TriMesh&&>, "TriMesh&& does not satisfy the HasMaterials");
+
     static_assert(HasMark<TriMesh>, "TriMesh does not satisfy the HasMark");
     static_assert(
         HasMark<const TriMesh>, "const TriMesh does not satisfy the HasMark");
@@ -85,38 +98,6 @@ void perMeshStaticAsserts()
     static_assert(
         HasName<const TriMesh&>, "const TriMesh& does not satisfy the HasName");
     static_assert(HasName<TriMesh&&>, "TriMesh&& does not satisfy the HasName");
-
-    static_assert(
-        HasTextureImages<TriMesh>,
-        "TriMesh does not satisfy the HasTextureImages");
-    static_assert(
-        HasTextureImages<const TriMesh>,
-        "const TriMesh does not satisfy the HasTextureImages");
-    static_assert(
-        HasTextureImages<TriMesh&>,
-        "TriMesh& does not satisfy the HasTextureImages");
-    static_assert(
-        HasTextureImages<const TriMesh&>,
-        "const TriMesh& does not satisfy the HasTextureImages");
-    static_assert(
-        HasTextureImages<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasTextureImages");
-
-    static_assert(
-        HasTexturePaths<TriMesh>,
-        "TriMesh does not satisfy the HasTexturePaths");
-    static_assert(
-        HasTexturePaths<const TriMesh>,
-        "const TriMesh does not satisfy the HasTexturePaths");
-    static_assert(
-        HasTexturePaths<TriMesh&>,
-        "TriMesh& does not satisfy the HasTexturePaths");
-    static_assert(
-        HasTexturePaths<const TriMesh&>,
-        "const TriMesh& does not satisfy the HasTexturePaths");
-    static_assert(
-        HasTexturePaths<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasTexturePaths");
 
     static_assert(
         HasTransformMatrix<TriMesh>,

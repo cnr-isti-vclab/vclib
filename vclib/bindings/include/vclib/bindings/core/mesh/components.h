@@ -27,9 +27,8 @@
 #include "components/adjacent_faces.h"
 #include "components/adjacent_vertices.h"
 #include "components/bit_flags.h"
+#include "components/materials.h"
 #include "components/polygon_bit_flags.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
 #include "components/triangle_bit_flags.h"
 #include "components/vertex_references.h"
 #include "components/wedge_colors.h"
@@ -99,6 +98,14 @@ void initComponents(pybind11::class_<ElementType>& c)
             v.position() = p;
         });
     }
+    if constexpr (comp::HasMaterialIndex<ElementType>) {
+        c.def(
+            "material_index",
+            py::overload_cast<>(&ElementType::materialIndex));
+        c.def("set_material_index", [](ElementType& v, ushort mi) {
+            v.materialIndex() = mi;
+        });
+    }
     if constexpr (comp::HasName<ElementType>) {
         c.def("name", py::overload_cast<>(&ElementType::name));
         c.def("set_name", [](ElementType& v, const std::string& n) {
@@ -139,11 +146,8 @@ void initComponents(pybind11::class_<ElementType>& c)
         });
     }
 
-    if constexpr (comp::HasTextureImages<ElementType>) {
-        initTextureImages(c);
-    }
-    else if constexpr (comp::HasTexturePaths<ElementType>) {
-        initTexturePaths(c);
+    if constexpr (comp::HasMaterials<ElementType>) {
+        initMaterials(c);
     }
 
     if constexpr (comp::HasTransformMatrix<ElementType>) {

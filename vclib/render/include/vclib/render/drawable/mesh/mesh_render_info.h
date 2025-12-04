@@ -65,6 +65,7 @@ public:
         VERT_NORMALS,
         VERT_COLORS,
         VERT_TEXCOORDS,
+        VERT_TANGENT,
 
         TRIANGLES,
         TRI_NORMALS,

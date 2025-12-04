@@ -441,30 +441,35 @@ public:
             }
         }
 
-        if constexpr (mesh::HasTexturePaths<Mesh<Args...>>) {
-            uint nTextures = this->textureNumber();
+        if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
+            uint nMaterials = this->materialsNumber();
 
-            std::vector<uint> mapping(m.textureNumber());
+            // mapping from material indices of m to material indices of this
+            std::vector<uint> mapping(m.materialsNumber());
 
-            for (uint i = 0; i < m.textureNumber(); ++i) {
-                uint tpi = this->indexOfTexturePath(m.texturePath(i));
+            // for each material of the other mesh, add it to this mesh
+            // if it does not exist yet
+            for (uint i = 0; i < m.materialsNumber(); ++i) {
+                auto it = std::find(
+                    this->materialBegin(), this->materialEnd(), m.material(i));
 
-                if (tpi == UINT_NULL) {
-                    if constexpr (mesh::HasTextureImages<Mesh<Args...>>) {
-                        this->pushTexture(m.texture(i));
-                    }
-                    else {
-                        this->pushTexturePath(m.texturePath(i));
-                    }
-                    mapping[i] = nTextures++;
+                if (it == this->materialEnd()) {
+                    this->pushMaterial(m.material(i));
+                    mapping[i] = nMaterials++;
                 }
                 else {
-                    mapping[i] = tpi;
+                    mapping[i] = std::distance(this->materialBegin(), it);
                 }
             }
 
-            if (nTextures > 0 || mapping.size() > 0) {
-                (updateTextureIndicesOfContainerTypeAfterAppend<Args>(
+            // update all the material indices in this mesh and add the texture
+            // images
+            if (nMaterials > 0 || mapping.size() > 0) {
+                for (const auto& p : m.textureImages()) {
+                    this->pushTextureImage(p.first, p.second);
+                }
+
+                (updateMaterialIndicesOfContainerTypeAfterAppend<Args>(
                      *this, sizes, mapping),
                  ...);
             }
@@ -2028,7 +2033,7 @@ private:
     }
 
     template<typename Cont, typename ArrayS, typename... A>
-    static void updateTextureIndicesOfContainerTypeAfterAppend(
+    static void updateMaterialIndicesOfContainerTypeAfterAppend(
         Mesh<A...>&              m,
         const ArrayS&            sizes,
         const std::vector<uint>& mapping)
@@ -2049,26 +2054,12 @@ private:
 
             if constexpr (hasPerElementComponent<
                               ELEM_ID,
-                              CompId::TEX_COORD>()) {
+                              CompId::MATERIAL_INDEX>()) {
                 if (m.Cont::template isComponentAvailable<
-                        CompId::TEX_COORD>()) {
-                    auto tcview =
-                        m.template elements<ELEM_ID>((uint) sizes[I]) |
-                        vcl::views::texCoords;
-                    for (auto& tc : tcview) {
-                        tc.index() = mapping[tc.index()];
-                    }
-                }
-            }
-
-            if constexpr (hasPerElementComponent<
-                              ELEM_ID,
-                              CompId::WEDGE_TEX_COORDS>()) {
-                if (m.Cont::template isComponentAvailable<
-                        CompId::WEDGE_TEX_COORDS>()) {
-                    auto elview = m.template elements<ELEM_ID>((uint) sizes[I]);
-                    for (auto& e : elview) {
-                        e.textureIndex() = mapping[e.textureIndex()];
+                        CompId::MATERIAL_INDEX>()) {
+                    auto elems = m.template elements<ELEM_ID>((uint) sizes[I]);
+                    for (auto& e : elems) {
+                        e.materialIndex() = mapping[e.materialIndex()];
                     }
                 }
             }
