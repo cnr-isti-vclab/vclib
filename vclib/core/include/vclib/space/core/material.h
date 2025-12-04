@@ -71,6 +71,15 @@ public:
         COUNT      ///< Utility value to get the number of texture types.
     };
 
+    inline static const std::
+        array<std::string, toUnderlying(TextureType::COUNT)>
+            TEXTURE_TYPE_NAMES = {
+                "baseColorTex",
+                "metallicRoughnessTex",
+                "normalTex",
+                "occlusionTex",
+                "emissiveTex"};
+
 private:
     inline static const uint N_TEXTURE_TYPE =
         static_cast<uint>(TextureType::COUNT);
