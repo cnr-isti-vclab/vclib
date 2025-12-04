@@ -58,7 +58,23 @@ typedef enum {
     vertex_indices,
     texcoord,
     vertex1,
-    vertex2
+    vertex2,
+    // material properties (base color is red, green, blue, alpha)
+    metallic,
+    roughness,
+    emissive_red,
+    emissive_green,
+    emissive_blue,
+    alpha_mode,
+    alpha_cutoff,
+    normal_scale,
+    occlusion_strength,
+    double_sided,
+    base_color_texture,
+    metallic_roughness_texture,
+    normal_texture,
+    occlusion_texture,
+    emissive_texture
 } PropertyName;
 
 using PropertyType = PrimitiveType;

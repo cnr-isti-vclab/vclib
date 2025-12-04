@@ -96,6 +96,15 @@ struct SaveSettings
     bool magicsMode = false;
 
     /**
+     * @brief Applied only to Ply files. If true, only baseColor texture from
+     * the material will be saved, and the path will be stored in the Ply header
+     * as a comment (following the Meshlab convention). If false, all the
+     * material properties including the textures will be saved in the Ply file
+     * using a new element called "material".
+     */
+    bool meshlabCompatibility = false;
+
+    /**
      * @brief Data structure that tells the saving functions which components of
      * the mesh should be saved. Only the components that can be saved in the
      * file format will be saved.

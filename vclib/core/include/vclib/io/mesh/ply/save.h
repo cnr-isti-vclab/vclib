@@ -70,7 +70,7 @@ void savePly(
     if (!header.isValid())
         throw std::runtime_error("Ply Header not valid.");
 
-    fp << header.toString();
+    fp << header.toString(settings);
 
     writePlyVertices(fp, header, m);
 
