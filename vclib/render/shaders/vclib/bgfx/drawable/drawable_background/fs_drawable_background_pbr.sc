@@ -29,11 +29,9 @@ SAMPLERCUBE(s_env0, 0);
 
 void main()
 {
-    // bring the interpolated fragment and camera positions
-    // back to world space ignoring any translation component in the view matrix
+    // get the outward view direction in world space back from clip space fragment position
     vec4 clipFragPos = vec4(v_texcoord0, 1.0, 1.0);
-    // outward view direction in world space
-    vec3 worldDir = normalize(mul(u_invView, mul(u_invProj, clipFragPos)).xyz);
+    vec3 worldDir = normalize(mul(u_invViewProj, clipFragPos).xyz);
 
     gl_FragColor = textureCube(s_env0, worldDir);
 }
