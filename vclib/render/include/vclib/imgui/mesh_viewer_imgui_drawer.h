@@ -69,6 +69,27 @@ public:
             ImGui::EndChild();
         }
 
+        // combo box for pbr mode
+        ImGui::Separator();
+        ImGui::Text("Render Mode:");
+        ImGui::SameLine();
+        const char* renderModeNames[] = {"Classic", "PBR"};
+        bool        pbrMode           = Base::isPBREnabled();
+        ImGui::SetNextItemWidth(80);
+        if (ImGui::BeginCombo(
+                "##ComboRenderMode",
+                pbrMode ? renderModeNames[1] : renderModeNames[0])) {
+            for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
+                bool isSelected = (pbrMode && n == 1) || (!pbrMode && n == 0);
+                if (ImGui::Selectable(renderModeNames[n], isSelected)) {
+                    Base::setPBR(n == 1);
+                }
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
         // drawable mesh info and settings for selected mesh
         if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
             auto drawable =
@@ -364,12 +385,7 @@ private:
         ImGui::Text("Color:");
         ImGui::SameLine();
         const char* surfColorNames[CS_COUNT] = {
-            "Vertex",
-            "Face",
-            "Mesh",
-            "PerVertexTex",
-            "PerWedgeTex",
-            "User"};
+            "Vertex", "Face", "Mesh", "PerVertexTex", "PerWedgeTex", "User"};
 
         const std::array<bool, CS_COUNT> colorSelected = {
             settings.isSurface(COLOR_VERTEX),
