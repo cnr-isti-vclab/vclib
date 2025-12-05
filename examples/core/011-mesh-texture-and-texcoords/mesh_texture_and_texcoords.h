@@ -69,7 +69,7 @@ auto meshTextureAndTexCoords()
             std::cout << "     Vertex " << i << ": (" << texCoord.u() << ", "
                       << texCoord.v() << ") ";
             if (meshVertexTexCoords.isPerVertexMaterialIndexEnabled()) {
-                std::cout << "tex_id "
+                std::cout << "material_id "
                           << meshVertexTexCoords.vertex(i).materialIndex();
             }
             std::cout << std::endl;
@@ -103,14 +103,13 @@ auto meshTextureAndTexCoords()
         std::cout << "   First face wedge texture coordinates:" << std::endl;
         if (meshWedgeTexCoords.faceNumber() > 0) {
             auto& face = meshWedgeTexCoords.face(0);
+            if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
+                std::cout << "     material_id " << face.materialIndex();
+            }
             for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
                 auto& texCoord = face.wedgeTexCoord(i);
                 std::cout << "     Wedge " << i << ": (" << texCoord.u() << ", "
                           << texCoord.v() << ") ";
-                if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
-                    std::cout << "tex_id "
-                              << meshWedgeTexCoords.face(i).materialIndex();
-                }
                 std::cout << std::endl;
             }
         }
@@ -120,17 +119,18 @@ auto meshTextureAndTexCoords()
                   << std::endl;
     }
 
-    // Example 3: Working with texture images
-    std::cout << "\n3. Working with texture images..." << std::endl;
+    // Example 3: Working with materials and texture images
+    std::cout << "\n3. Working with materials and texture images..." << std::endl;
     std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialsNumber()
               << " materials" << std::endl;
 
     for (vcl::uint i = 0; i < meshWedgeTexCoords.materialsNumber(); ++i) {
-        // if the images are not loaded, the texture paths will be available
-        // and the image will be empty (width and height will be 0)
+        // access to the baseColor texture descriptor
         const auto& texture = meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
-        std::cout << "     Texture " << i << ": " << texture.path()
+        std::cout << "     Base Color Texture " << i << ": " << texture.path()
                   << std::endl;
+        // if the images are not loaded, they will be empty
+        // (width and height will be 0)
         const auto& image = meshWedgeTexCoords.textureImage(texture.path());
         std::cout << "       Size: " << image.width() << "x"
                   << image.height() << std::endl;
@@ -168,6 +168,7 @@ auto meshTextureAndTexCoords()
     customMesh.face(1).wedgeTexCoord(1) = vcl::Point2d(1, 1);
     customMesh.face(1).wedgeTexCoord(2) = vcl::Point2d(0, 1);
 
+    // Add material from the previously loaded mesh
     customMesh.pushMaterial(meshWedgeTexCoords.material(0));
 
     // change the path of the texture to a custom one (will be relative to the

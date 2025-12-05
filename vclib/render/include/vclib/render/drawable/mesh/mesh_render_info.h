@@ -146,16 +146,16 @@ public:
      * @brief List of possible settings for the surface primitive.
      */
     enum class Surface {
-        VISIBLE               = VCL_MRS_DRAW_SURF,
-        SHADING_NONE          = VCL_MRS_SURF_SHADING_NONE,
-        SHADING_FLAT          = VCL_MRS_SURF_SHADING_FLAT,
-        SHADING_SMOOTH        = VCL_MRS_SURF_SHADING_SMOOTH,
-        COLOR_VERTEX          = VCL_MRS_SURF_COLOR_VERTEX,
-        COLOR_FACE            = VCL_MRS_SURF_COLOR_FACE,
-        COLOR_VERTEX_TEX      = VCL_MRS_SURF_TEX_VERTEX,
-        COLOR_WEDGE_TEX       = VCL_MRS_SURF_TEX_WEDGE,
-        COLOR_MESH            = VCL_MRS_SURF_COLOR_MESH,
-        COLOR_USER            = VCL_MRS_SURF_COLOR_USER,
+        VISIBLE          = VCL_MRS_DRAW_SURF,
+        SHADING_NONE     = VCL_MRS_SURF_SHADING_NONE,
+        SHADING_FLAT     = VCL_MRS_SURF_SHADING_FLAT,
+        SHADING_SMOOTH   = VCL_MRS_SURF_SHADING_SMOOTH,
+        COLOR_VERTEX     = VCL_MRS_SURF_COLOR_VERTEX,
+        COLOR_FACE       = VCL_MRS_SURF_COLOR_FACE,
+        COLOR_VERTEX_TEX = VCL_MRS_SURF_TEX_VERTEX,
+        COLOR_WEDGE_TEX  = VCL_MRS_SURF_TEX_WEDGE,
+        COLOR_MESH       = VCL_MRS_SURF_COLOR_MESH,
+        COLOR_USER       = VCL_MRS_SURF_COLOR_USER,
 
         COUNT
     };

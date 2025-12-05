@@ -82,8 +82,8 @@ inline void loadObjMaterials(
             if (header == "newmtl") {
                 if (!matName.empty())
                     materialMap[matName] = mat;
-                mat     = ObjMaterial();
-                matName = *token;
+                mat         = ObjMaterial();
+                matName     = *token;
                 mat.matName = matName;
             }
             if (header == "Ka") {
@@ -179,7 +179,7 @@ void loadObjMaterials(
         if constexpr (HasMaterials<MeshType>) {
             loadedInfo.setMaterials();
             Material m = mat.toMaterial();
-            mat.matId = mesh.materialsNumber();
+            mat.matId  = mesh.materialsNumber();
             mesh.pushMaterial(m);
         }
     }
@@ -612,7 +612,7 @@ void loadObj(
                 if (loadedInfo.hasPerVertexTexCoord()) {
                     using TexCoordType =
                         typename MeshType::VertexType::TexCoordType;
-                    using TCT         = typename TexCoordType::ScalarType;
+                    using TCT = typename TexCoordType::ScalarType;
                     for (uint i = 0; i < m.vertexNumber(); ++i) {
                         m.vertex(i).texCoord() =
                             texCoords[i].template cast<TCT>();
@@ -666,7 +666,6 @@ void loadObj(
                         }
                     }
                 }
-
             }
         }
     }

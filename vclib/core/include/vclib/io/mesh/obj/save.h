@@ -56,25 +56,32 @@ std::vector<std::string> saveObjMaterials(
                 omat.matName = matName;
             }
 
-            // TODO: save all the supported textures
             mtlfp << "newmtl " << matName << std::endl;
             mtlfp << omat << std::endl;
             materials.push_back(matName);
 
             if (settings.saveTextureImages) {
-                const TextureDescriptor& t = mat.baseColorTextureDescriptor();
-                const Image& img = m.textureImage(t.path());
-                if (t.isNull()) {
-                    log.log(
-                        "Cannot save empty texture " + t.path(),
-                        LogType::WARNING_LOG);
-                }
-                else {
-                    try {
-                        saveImage(img, m.meshBasePath() + t.path());
-                    }
-                    catch (const std::runtime_error& e) {
-                        log.log(e.what(), LogType::WARNING_LOG);
+                using enum Material::TextureType;
+                const uint N_TEXTURE_TYPES = toUnderlying(COUNT);
+                for (uint i = 0; i < N_TEXTURE_TYPES; ++i) {
+                    // supported textures to save
+                    if (i == toUnderlying(BASE_COLOR) ||
+                        i == toUnderlying(EMISSIVE)) {
+                        const TextureDescriptor& t   = mat.textureDescriptor(i);
+                        const Image&             img = m.textureImage(t.path());
+                        if (t.isNull()) {
+                            log.log(
+                                "Cannot save empty texture " + t.path(),
+                                LogType::WARNING_LOG);
+                        }
+                        else {
+                            try {
+                                saveImage(img, m.meshBasePath() + t.path());
+                            }
+                            catch (const std::runtime_error& e) {
+                                log.log(e.what(), LogType::WARNING_LOG);
+                            }
+                        }
                     }
                 }
             }

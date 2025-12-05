@@ -77,7 +77,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     // map of textures
     // for each texture path of each material, store its texture
-    std::map<std::string, std::unique_ptr<Texture>> mMaterialTextureUnits;
+    std::map<std::string, Texture> mMaterialTextures;
 
     mutable DrawableMeshUniforms mMeshUniforms;
     mutable MaterialUniforms mMaterialUniforms;
@@ -124,7 +124,7 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
-        swap(mMaterialTextureUnits, other.mMaterialTextureUnits);
+        swap(mMaterialTextures, other.mMaterialTextures);
         swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMaterialUniforms, other.mMaterialUniforms);
         swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
@@ -234,13 +234,13 @@ public:
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto& tex = m.material(materialId).textureDescriptor(j);
-                const std::string& path = tex.path();
+                const auto& td = m.material(materialId).textureDescriptor(j);
+                const std::string& path = td.path();
                 if (!path.empty()) {
-                    const auto& tu = mMaterialTextureUnits.at(path);
-                    if (tu) {
-                        uint flags = Texture::samplerFlagsFromTexture(tex);
-                        tu->bind(
+                    const Texture& tex = mMaterialTextures.at(path);
+                    if (tex.isValid()) {
+                        uint flags = Texture::samplerFlagsFromTexture(td);
+                        tex.bind(
                             VCL_MRB_TEXTURE0 + j,
                             mTextureSamplerUniforms[j].handle(),
                             flags);
@@ -299,14 +299,12 @@ public:
                 const Material& mat = m.material(materialId);
 
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                    const auto& tex =
+                    const auto& td =
                         m.material(materialId).textureDescriptor(j);
-                    const std::string& path = tex.path();
+                    const std::string& path = td.path();
                     if (!path.empty()) {
-                        const auto& tu = mMaterialTextureUnits.at(path);
-                        if (tu != nullptr) {
-                            textureAvailable[j] = tu->isValid();
-                        }
+                        const Texture& tex = mMaterialTextures.at(path);
+                        textureAvailable[j] = tex.isValid();
                     }
                 }
 
@@ -590,12 +588,12 @@ private:
         computeWireframeLines(mesh);
     }
 
-    void setTextureUnits(const MeshType& mesh) // override
+    void setTextures(const MeshType& mesh) // override
     {
-        // lambda that sets a texture unit
-        auto setTextureUnit = [&](const Image&       img,
-                                  const std::string& path,
-                                  bool               generateMips) {
+        // lambda that sets a texture
+        auto setTexture = [&](const Image&       img,
+                              const std::string& path,
+                              bool               generateMips) {
             const uint size = img.width() * img.height();
             assert(size > 0);
 
@@ -647,8 +645,8 @@ private:
             if (img.colorSpace() == Image::ColorSpace::SRGB)
                 flags |= BGFX_TEXTURE_SRGB;
 
-            auto tu = std::make_unique<Texture>();
-            tu->set(
+            Texture tex;
+            tex.set(
                 buffer,
                 vcl::Point2i(img.width(), img.height()),
                 generateMips,
@@ -658,10 +656,10 @@ private:
                 releaseFn);
 
             // at() does not insert if already present, thus safe in parallel
-            mMaterialTextureUnits.at(path) = std::move(tu);
+            mMaterialTextures.at(path) = std::move(tex);
         };
 
-        auto loadTextureAndSetUnit =
+        auto loadImageAndSetTexture =
             [&](const std::pair<std::string, uint>& pathPair) {
                 const std::string& path        = pathPair.first;
 
@@ -699,11 +697,11 @@ private:
                         minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
 
                     txtImg.mirror();
-                    setTextureUnit(txtImg, path, hasMips);
+                    setTexture(txtImg, path, hasMips);
                 }
             };
 
-        mMaterialTextureUnits.clear();
+        mMaterialTextures.clear();
 
         if constexpr (vcl::HasMaterials<MeshType>) {
             // textures could be missing from the textureImages of the mesh
@@ -714,15 +712,15 @@ private:
             std::map<std::string, uint> texturePaths;
             for (uint i = 0; i < mesh.materialsNumber(); ++i) {
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                    const vcl::TextureDescriptor& tex =
+                    const vcl::TextureDescriptor& td =
                         mesh.material(i).textureDescriptor(j);
-                    if (!tex.path().empty()) {
-                        texturePaths[tex.path()] = i * N_TEXTURE_TYPES + j;
+                    if (!td.path().empty()) {
+                        texturePaths[td.path()] = i * N_TEXTURE_TYPES + j;
 
-                        // create a null texture unit for now in the map
+                        // create a null texture in the map
                         // this is crucial to avoid insertions during the
                         // actual creation, that is done in parallel
-                        mMaterialTextureUnits[tex.path()] = nullptr;
+                        mMaterialTextures[td.path()] = Texture();
                     }
                 }
             }
@@ -734,7 +732,7 @@ private:
                 texturePathVec.push_back(tp);
             }
 
-            parallelFor(texturePathVec, loadTextureAndSetUnit);
+            parallelFor(texturePathVec, loadImageAndSetTexture);
 
             createTextureSamplerUniforms();
         }
@@ -832,7 +830,7 @@ private:
     {
         for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
             mTextureSamplerUniforms[i] = Uniform(
-                ("s_tex" + std::to_string(i)).c_str(),
+                Material::TEXTURE_TYPE_NAMES[i].c_str(),
                 bgfx::UniformType::Sampler);
         }
     }

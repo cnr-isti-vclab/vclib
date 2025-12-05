@@ -234,6 +234,7 @@ void Tangent<P, ParentElemType, OPT>::importFrom(const Element& e, bool)
     if constexpr (HasTangent<Element>) {
         if (isTangentAvailableOn(e)) {
             tangent() = e.tangent().template cast<ScalarType>();
+            tangentRightHanded() = e.tangentRightHanded();
         }
     }
 }

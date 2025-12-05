@@ -77,11 +77,11 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
 
         if (gltfCamera.type == "perspective") {
             camera.projectionMode() = CameraType::ProjectionMode::PERSPECTIVE;
-            camera.fieldOfView()    = gltfCamera.perspective.yfov * 180.0/M_PI;
+            camera.fieldOfView() = gltfCamera.perspective.yfov * 180.0 / M_PI;
             // TODO check what to do with the aspect ratio
-            camera.aspectRatio()    = gltfCamera.perspective.aspectRatio;
-            camera.nearPlane()      = gltfCamera.perspective.znear;
-            camera.farPlane()       = gltfCamera.perspective.zfar;
+            camera.aspectRatio() = gltfCamera.perspective.aspectRatio;
+            camera.nearPlane()   = gltfCamera.perspective.znear;
+            camera.farPlane()    = gltfCamera.perspective.zfar;
         }
         else if (gltfCamera.type == "orthographic") {
             camera.projectionMode() = CameraType::ProjectionMode::ORTHO;
@@ -102,21 +102,23 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
                     // copy node matrix to vcl matrix
                     mat = vcl::Matrix44d(node.matrix.data());
                 }
-                else
-                {
+                else {
                     // construct matrix from TRS
-                    vcl::Point3d translation(0, 0, 0);
+                    vcl::Point3d     translation(0, 0, 0);
                     vcl::Quaterniond rotation = vcl::Quaterniond::Identity();
-                    vcl::Point3d scale(1, 1, 1);
+                    vcl::Point3d     scale(1, 1, 1);
                     if (node.translation.size() == 3) {
                         translation = vcl::Point3d(
-                            node.translation[0], node.translation[1],
+                            node.translation[0],
+                            node.translation[1],
                             node.translation[2]);
                     }
                     if (node.rotation.size() == 4) {
                         rotation = vcl::Quaterniond(
-                            node.rotation[0], node.rotation[1],
-                            node.rotation[2], node.rotation[3]);
+                            node.rotation[0],
+                            node.rotation[1],
+                            node.rotation[2],
+                            node.rotation[3]);
                     }
                     if (node.scale.size() == 3) {
                         scale = vcl::Point3d(
@@ -145,7 +147,7 @@ inline std::vector<CameraType> loadCamerasGltf(const std::string& filename)
 
                 Scalar distance = 1.0;
                 camera.center() = eye + forward * distance;
-                foundNode = true;
+                foundNode       = true;
                 break;
             }
         }

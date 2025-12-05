@@ -145,7 +145,6 @@ void readPlyFaceProperty(
         setPlyFaceIndices(f, mesh, vids);
     }
     if (p.name == ply::texcoord) { // loading wedge texcoords
-        // TODO
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
             if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;

@@ -444,8 +444,11 @@ public:
         if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
             uint nMaterials = this->materialsNumber();
 
+            // mapping from material indices of m to material indices of this
             std::vector<uint> mapping(m.materialsNumber());
 
+            // for each material of the other mesh, add it to this mesh
+            // if it does not exist yet
             for (uint i = 0; i < m.materialsNumber(); ++i) {
                 auto it = std::find(
                     this->materialBegin(), this->materialEnd(), m.material(i));
@@ -459,7 +462,13 @@ public:
                 }
             }
 
+            // update all the material indices in this mesh and add the texture
+            // images
             if (nMaterials > 0 || mapping.size() > 0) {
+                for (const auto& p : m.textureImages()) {
+                    this->pushTextureImage(p.first, p.second);
+                }
+
                 (updateMaterialIndicesOfContainerTypeAfterAppend<Args>(
                      *this, sizes, mapping),
                  ...);

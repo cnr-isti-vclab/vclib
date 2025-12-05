@@ -153,8 +153,8 @@ public:
     Camera<Scalar> camera() const
     {
         Camera<Scalar> cam = mCamera;
-        
-        // compute the camera properties from the trackball camere and 
+
+        // compute the camera properties from the trackball camere and
         // the model transformation
         const Affine3<Scalar> modelToCamera = mTransform.inverse();
 
@@ -164,9 +164,8 @@ public:
         cam.up()     = y.normalized();
         cam.eye()    = modelToCamera * cam.eye();
         cam.center() = cam.eye() - z.normalized();
-        
-        if (cam.projectionMode() ==
-            Camera<Scalar>::ProjectionMode::ORTHO) {
+
+        if (cam.projectionMode() == Camera<Scalar>::ProjectionMode::ORTHO) {
             // ortho camera always uses the vertical height = 2.0
             // correct it using a scale factor when the model is scaled
             // (assume uniform scale)
@@ -190,7 +189,7 @@ public:
     {
         // FIXME? check what to do with the aspect ratio (if != 1.0)
         this->reset();
-        mCamera.projectionMode() = cam.projectionMode();
+        mCamera.projectionMode()     = cam.projectionMode();
         Scalar correctiveScaleFactor = 1.0;
         if (mCamera.projectionMode() ==
             Camera<Scalar>::ProjectionMode::PERSPECTIVE) {
@@ -204,7 +203,7 @@ public:
         }
         const Point3<Scalar> camTrackballTransl =
             mCamera.eye() - mCamera.center();
-        
+
         // FIXME? near and far planes should be corrected too but we don't care
         mCamera.nearPlane() = cam.nearPlane();
         mCamera.farPlane()  = cam.farPlane();
@@ -257,24 +256,18 @@ public:
             if (scaleRatio < 0)
                 return; // center is behind the camera
 
-            std::cout << "adapting view to center "
-                      << transformedCenter.transpose()
-                      << " scaleRatio: " << scaleRatio << std::endl
-                      << " eyeToCenter: " << eyeToCenter.transpose()
-                      << std::endl
-                      << " toCenter: " << toCenter.transpose() << std::endl;
             mTransform.pretranslate(eyeToCenter);
             mTransform.prescale(1.0 / scaleRatio);
             mTransform.pretranslate(-eyeToCenter);
         }
         else {
-            assert(mCamera.projectionMode() ==
-                   Camera<Scalar>::ProjectionMode::ORTHO);
+            assert(
+                mCamera.projectionMode() ==
+                Camera<Scalar>::ProjectionMode::ORTHO);
             // for ortho camera just translate the model along camera view
             // direction
             Point3<Scalar> transformedCenter = mTransform * center;
-            Point3<Scalar> toCenter =
-                transformedCenter - mCamera.center();
+            Point3<Scalar> toCenter = transformedCenter - mCamera.center();
             Point3<Scalar> viewDir =
                 (mCamera.center() - mCamera.eye()).normalized();
             Scalar distance = toCenter.dot(viewDir);
