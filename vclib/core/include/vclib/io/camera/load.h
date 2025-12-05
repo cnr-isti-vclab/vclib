@@ -33,6 +33,8 @@
 #include <vclib/io/mesh/gltf/capability.h>
 #endif
 
+#include <vclib/space/core.h>
+
 #include <set>
 #include <string>
 #include <vector>

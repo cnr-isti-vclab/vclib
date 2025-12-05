@@ -376,6 +376,14 @@ PointType unprojectScreenPosition(
     return p.template head<3>() / p.w();
 }
 
+/**
+ * @brief Computes the view matrix from a camera
+ *
+ * @param[in] c: The camera
+ * @return The view matrix
+ *
+ * @ingroup algorithms_core
+ */
 template<CameraConcept CameraType>
 auto viewMatrix(const CameraType& c)
 {
@@ -385,6 +393,14 @@ auto viewMatrix(const CameraType& c)
     return lookAtMatrix<MT>(c.eye(), c.center(), c.up());
 }
 
+/**
+ * @brief Computes the projection matrix from a camera
+ *
+ * @param[in] c: The camera
+ * @return The projection matrix
+ *
+ * @ingroup algorithms_core
+ */
 template<CameraConcept CameraType>
 auto projectionMatrix(const CameraType& c)
 {
