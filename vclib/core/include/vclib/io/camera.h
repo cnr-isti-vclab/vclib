@@ -20,9 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_IO_CAMERA_H
-#define VCL_RENDER_IO_CAMERA_H
+#ifndef VCL_IO_CAMERA_H
+#define VCL_IO_CAMERA_H
 
 #include "camera/load.h"
 
-#endif // VCL_RENDER_IO_CAMERA_H
+#endif // VCL_IO_CAMERA_H

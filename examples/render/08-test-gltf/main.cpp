@@ -22,7 +22,7 @@
 
 #include <vclib/render/drawable/drawable_mesh.h>
 
-#include <vclib/render/io/camera.h>
+#include <vclib/io.h>
 
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>

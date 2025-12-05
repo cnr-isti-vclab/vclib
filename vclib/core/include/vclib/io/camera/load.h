@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_IO_CAMERA_LOAD_H
-#define VCL_RENDER_IO_CAMERA_LOAD_H
+#ifndef VCL_IO_CAMERA_LOAD_H
+#define VCL_IO_CAMERA_LOAD_H
 
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/load.h"
@@ -78,4 +78,4 @@ inline CameraType loadCamera(const std::string& filename)
 
 } // namespace vcl
 
-#endif // VCL_RENDER_IO_CAMERA_LOAD_H
+#endif // VCL_IO_CAMERA_LOAD_H
