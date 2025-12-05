@@ -26,6 +26,8 @@
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#include <vclib/bgfx/drawable/mesh/pbr_macros.h>
+
 // Constants
 
 #define PI                                            3.141592653589793
@@ -33,26 +35,17 @@
 
 // Settings
 
-#define PBR_VERTEX_COLOR_AVAILABLE                    0
-#define PBR_ALPHA_MODE_MASK                           1
-#define PBR_BASE_COLOR_TEXTURE_AVAILABLE              2
-#define PBR_METALLIC_ROUGHNESS_TEXTURE_AVAILABLE      3
-#define PBR_NORMAL_TEXTURE_AVAILABLE                  4
-#define PBR_OCCLUSION_TEXTURE_AVAILABLE               5
-#define PBR_EMISSIVE_TEXTURE_AVAILABLE                6
-#define PBR_VERTEX_TANGENT_AVAILABLE                  7
+#define checkSetting(settings, setting) bool(settings & posToBitFlag(setting))
 
+#define isPerVertexColorAvailable(settings)   checkSetting(settings, VCL_PBR_VERTEX_COLOR)
+#define isPerVertexTangentAvailable(settings) checkSetting(settings, VCL_PBR_VERTEX_TANGENT)
+#define isAlphaModeMask(settings)             checkSetting(settings, VCL_PBR_IS_ALPHA_MODE_MASK)
 
-#define checkSetting(settings, setting)               bool(int(settings) & posToBitFlag(setting))
-
-#define isPerVertexColorAvailable(settings)           checkSetting(settings, PBR_VERTEX_COLOR_AVAILABLE)
-#define isAlphaModeMask(settings)                     checkSetting(settings, PBR_ALPHA_MODE_MASK)
-#define isBaseColorTextureAvailable(settings)         checkSetting(settings, PBR_BASE_COLOR_TEXTURE_AVAILABLE)
-#define isMetallicRoughnessTextureAvailable(settings) checkSetting(settings, PBR_METALLIC_ROUGHNESS_TEXTURE_AVAILABLE)
-#define isNormalTextureAvailable(settings)            checkSetting(settings, PBR_NORMAL_TEXTURE_AVAILABLE)
-#define isOcclusionTextureAvailable(settings)         checkSetting(settings, PBR_OCCLUSION_TEXTURE_AVAILABLE)
-#define isEmissiveTextureAvailable(settings)          checkSetting(settings, PBR_EMISSIVE_TEXTURE_AVAILABLE)
-#define isPerVertexTangentAvailable(settings)         checkSetting(settings, PBR_VERTEX_TANGENT_AVAILABLE)
+#define isBaseColorTextureAvailable(settings)         checkSetting(settings, VCL_PBR_TEXTURE_BASE_COLOR)
+#define isMetallicRoughnessTextureAvailable(settings) checkSetting(settings, VCL_PBR_TEXTURE_METALLIC_ROUGHNESS)
+#define isNormalTextureAvailable(settings)            checkSetting(settings, VCL_PBR_TEXTURE_NORMAL)
+#define isOcclusionTextureAvailable(settings)         checkSetting(settings, VCL_PBR_TEXTURE_OCCLUSION)
+#define isEmissiveTextureAvailable(settings)          checkSetting(settings, VCL_PBR_TEXTURE_EMISSIVE)
 
 // Lighting settings, may not be definitive
 

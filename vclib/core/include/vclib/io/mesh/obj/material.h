@@ -42,7 +42,7 @@ class ObjMaterial
     inline static const Point3f Ke_DEFAULT = {0.0f, 0.0f, 0.0f}; // emissive;
 
     inline static const float d_DEFAULT     = 1.0f; // alpha
-    inline static const int   illum_DEFAULT = 2; // specular illumination
+    inline static const int   illum_DEFAULT = 2;    // specular illumination
     inline static const float Ns_DEFAULT    = 0.f;
 
 public:
@@ -60,8 +60,8 @@ public:
     int   illum = illum_DEFAULT; // specular illumination
     float Ns    = Ns_DEFAULT;
 
-    std::string map_Kd; // filename texture
-    std::string map_Ke; // filename emissive map
+    std::string map_Kd;   // filename texture
+    std::string map_Ke;   // filename emissive map
     std::string map_bump; // filename bump map
 
     ObjMaterial() = default;
@@ -87,7 +87,7 @@ public:
 
         map_Kd = mat.baseColorTextureDescriptor().path();
         map_Ke = mat.textureDescriptor(EMISSIVE).path();
-        //map_bump = mat.texture(NORMAL).path();
+        // map_bump = mat.textureDescriptor(NORMAL).path();
     }
 
     /**
@@ -113,13 +113,13 @@ public:
 
         if (d < 1.0) {
             m.baseColor().alpha() = d * 255;
-            m.alphaMode() = Material::AlphaMode::ALPHA_BLEND;
+            m.alphaMode()         = Material::AlphaMode::ALPHA_BLEND;
         }
 
         m.metallic() = 0.0f; // obj materials are non-metallic;
 
-        m.emissiveColor() = vcl::Color(
-            Ke.x() * 255, Ke.y() * 255, Ke.z() * 255, 255);
+        m.emissiveColor() =
+            vcl::Color(Ke.x() * 255, Ke.y() * 255, Ke.z() * 255, 255);
 
         if (!map_Kd.empty()) {
             m.baseColorTextureDescriptor().path() = map_Kd;
@@ -174,7 +174,7 @@ inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
         out << "d " << m.d << std::endl;
 
     if (m.illum != m.illum_DEFAULT)
-        out << "illum " << m.illum <<  std::endl;
+        out << "illum " << m.illum << std::endl;
 
     if (m.Ns != m.Ns_DEFAULT)
         out << "Ns " << m.Ns << std::endl;
@@ -182,6 +182,15 @@ inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
     if (!m.map_Kd.empty()) {
         out << "map_Kd " << m.map_Kd << std::endl;
     }
+
+    if (m.map_Ke.empty()) {
+        out << "map_Ke " << m.map_Ke << std::endl;
+    }
+
+    // if (m.map_bump.empty()) {
+    //     out << "map_bump " << m.map_bump << std::endl;
+    // }
+
     return out;
 }
 

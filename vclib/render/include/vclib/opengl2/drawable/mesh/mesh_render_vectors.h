@@ -356,7 +356,7 @@ private:
         Base::fillWireframeIndices(mesh, mWireframe.data());
     }
 
-    void setTextureUnits(const MeshType& mesh) // override
+    void setTextures(const MeshType& mesh) // override
     {
         mTextures.clear();
 

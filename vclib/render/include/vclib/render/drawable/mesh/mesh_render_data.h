@@ -538,7 +538,7 @@ protected:
         const FaceMeshConcept auto& mesh,
         auto*                       buffer)
     {
-        vertexMaterialIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
+        vertexMaterialIndicesAsTriangulatedFaceMaterialIndicesToBuffer(
             mesh, buffer, mIndexMap);
     }
 
@@ -896,21 +896,19 @@ protected:
     void setEdgeColorsBuffer(const EdgeMeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the texture units from the mesh and sends
-     * the data to the GPU.
+     * @brief Function that sets the textures from the mesh and sends the data
+     * to the GPU.
      *
-     * The function should take the texture from the mesh (loading them if
+     * The function should take the texture image from the mesh (loading them if
      * they are not available in the mesh) and send them to the GPU using the
      * rendering backend.
      *
-     * There is no need to check whether the Mesh can provide texture paths,
-     * since the function is called only if the mesh has them. However, it is
-     * necessary to check whether the mesh has texture images and, in that case,
-     * check whether the texture is already loaded.
+     * There is no need to check whether the Mesh can provide materials, since
+     * the function is called only if the mesh has them.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setTextureUnits(const MeshConcept auto&) {}
+    void setTextures(const MeshConcept auto&) {}
 
     /**
      * @brief Function that sets the mesh uniforms from the mesh.
@@ -1028,13 +1026,13 @@ private:
         using MeshType = MeshRenderDerived::MeshType;
         using enum MRI::Buffers;
 
-        if constexpr (vcl::HasFaces<MeshType>) {
+        if constexpr (HasFaces<MeshType>) {
             if (btu[toUnderlying(TRIANGLES)]) {
                 // triangle index buffer
                 derived().setTriangleIndicesBuffer(mesh);
             }
 
-            if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                 if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                     if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
                         // vertex wedges buffer (duplicated vertices)
@@ -1043,8 +1041,8 @@ private:
                 }
             }
 
-            if constexpr (vcl::HasPerFaceNormal<MeshType>) {
-                if (vcl::isPerFaceNormalAvailable(mesh)) {
+            if constexpr (HasPerFaceNormal<MeshType>) {
+                if (isPerFaceNormalAvailable(mesh)) {
                     if (btu[toUnderlying(TRI_NORMALS)]) {
                         // triangle normal buffer
                         derived().setTriangleNormalsBuffer(mesh);
@@ -1052,8 +1050,8 @@ private:
                 }
             }
 
-            if constexpr (vcl::HasPerFaceColor<MeshType>) {
-                if (vcl::isPerFaceColorAvailable(mesh)) {
+            if constexpr (HasPerFaceColor<MeshType>) {
+                if (isPerFaceColorAvailable(mesh)) {
                     if (btu[toUnderlying(TRI_COLORS)]) {
                         // triangle color buffer
                         derived().setTriangleColorsBuffer(mesh);
@@ -1063,8 +1061,8 @@ private:
 
             // material indices are stored per face (each face has its own
             // material index)
-            if constexpr (vcl::HasPerVertexMaterialIndex<MeshType>) {
-                if (vcl::isPerVertexMaterialIndexAvailable(mesh)) {
+            if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if (isPerVertexMaterialIndexAvailable(mesh)) {
                     if (btu[toUnderlying(VERT_TEXCOORDS)]) {
                         // triangle vertex material indices buffer
                         derived().setVertexMaterialIndicesBuffer(mesh);
@@ -1072,7 +1070,7 @@ private:
                 }
             }
 
-            if constexpr (vcl::HasPerFaceMaterialIndex<MeshType>) {
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
                 if (isPerFaceMaterialIndexAvailable(mesh)) {
                     if (btu[toUnderlying(WEDGE_TEXCOORDS)]) {
                         // triangle material indices buffer
@@ -1095,14 +1093,14 @@ private:
         using MeshType = MeshRenderDerived::MeshType;
         using enum MRI::Buffers;
 
-        if constexpr (vcl::HasEdges<MeshType>) {
+        if constexpr (HasEdges<MeshType>) {
             if (btu[toUnderlying(EDGES)]) {
                 // edge index buffer
                 derived().setEdgeIndicesBuffer(mesh);
             }
 
-            if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
-                if (vcl::isPerEdgeNormalAvailable(mesh)) {
+            if constexpr (HasPerEdgeNormal<MeshType>) {
+                if (isPerEdgeNormalAvailable(mesh)) {
                     if (btu[toUnderlying(EDGE_NORMALS)]) {
                         // edge normal buffer
                         derived().setEdgeNormalsBuffer(mesh);
@@ -1110,8 +1108,8 @@ private:
                 }
             }
 
-            if constexpr (vcl::HasPerEdgeColor<MeshType>) {
-                if (vcl::isPerEdgeColorAvailable(mesh)) {
+            if constexpr (HasPerEdgeColor<MeshType>) {
+                if (isPerEdgeColorAvailable(mesh)) {
                     if (btu[toUnderlying(EDGE_COLORS)]) {
                         // edge color buffer
                         derived().setEdgeColorsBuffer(mesh);
@@ -1140,10 +1138,10 @@ private:
         using MeshType = MeshRenderDerived::MeshType;
         using enum MRI::Buffers;
 
-        if constexpr (vcl::HasMaterials<MeshType>) {
+        if constexpr (HasMaterials<MeshType>) {
             if (btu[toUnderlying(TEXTURES)]) {
                 // textures
-                derived().setTextureUnits(mesh);
+                derived().setTextures(mesh);
             }
         }
     }
@@ -1207,7 +1205,7 @@ private:
         uint first = 0;
         uint n     = 0;
 
-        uint currentVertMatID  = UINT_NULL;
+        uint currentVertMatID = UINT_NULL;
         uint currentFaceMatID = UINT_NULL;
 
         for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
@@ -1219,10 +1217,7 @@ private:
                     if (mId != currentVertMatID && n != 0) {
                         if (currentVertMatID != UINT_NULL) {
                             mMaterialChunks.push_back(
-                                {first,
-                                 n,
-                                 currentVertMatID,
-                                 currentFaceMatID});
+                                {first, n, currentVertMatID, currentFaceMatID});
                             first += n;
                             n = 0;
                         }
@@ -1236,10 +1231,7 @@ private:
                     if (mId != currentFaceMatID && n != 0) {
                         if (currentFaceMatID != UINT_NULL) {
                             mMaterialChunks.push_back(
-                                {first,
-                                 n,
-                                 currentVertMatID,
-                                 currentFaceMatID});
+                                {first, n, currentVertMatID, currentFaceMatID});
                             first += n;
                             n = 0;
                         }

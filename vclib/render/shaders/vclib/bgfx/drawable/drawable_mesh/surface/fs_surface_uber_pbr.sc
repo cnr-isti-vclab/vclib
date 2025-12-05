@@ -23,6 +23,8 @@
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/pbr_common.sh>
+
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
@@ -31,28 +33,11 @@ BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 
 // textures
-SAMPLER2D(s_tex0, VCL_MRB_TEXTURE0);
-SAMPLER2D(s_tex1, VCL_MRB_TEXTURE1);
-SAMPLER2D(s_tex2, VCL_MRB_TEXTURE2);
-SAMPLER2D(s_tex3, VCL_MRB_TEXTURE3);
-SAMPLER2D(s_tex4, VCL_MRB_TEXTURE4);
-SAMPLER2D(s_tex5, VCL_MRB_TEXTURE5);
-SAMPLER2D(s_tex6, VCL_MRB_TEXTURE6);
-SAMPLER2D(s_tex7, VCL_MRB_TEXTURE7);
-
-vec4 getColorFromTexture(uint texId, vec2 uv) {
-    switch (texId) {
-        case 0u: return texture2D(s_tex0, uv);
-        case 1u: return texture2D(s_tex1, uv);
-        case 2u: return texture2D(s_tex2, uv);
-        case 3u: return texture2D(s_tex3, uv);
-        case 4u: return texture2D(s_tex4, uv);
-        case 5u: return texture2D(s_tex5, uv);
-        case 6u: return texture2D(s_tex6, uv);
-        case 7u: return texture2D(s_tex7, uv);
-        default: return vec4(0.0, 0.0, 0.0, 1.0);
-    }
-}
+SAMPLER2D(baseColorTex, VCL_MRB_TEXTURE0);
+SAMPLER2D(metallicRoughnessTex, VCL_MRB_TEXTURE1);
+SAMPLER2D(normalTex, VCL_MRB_TEXTURE2);
+SAMPLER2D(occlusionTex, VCL_MRB_TEXTURE3);
+SAMPLER2D(emissiveTex, VCL_MRB_TEXTURE4);
 
 void main()
 {
@@ -72,53 +57,64 @@ void main()
     #endif // VIEWER_LIGHTS
 
     // texcoord to use
+    bool useTexture =
+        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)) ||
+        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE));
+
     vec2 texcoord = v_texcoord0; // per vertex
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
         texcoord = v_texcoord1; // per wedge
     }
 
     // base color
-    vec4 vertexBaseColor, textureBaseColor, baseColor;
+    vec4 vertexBaseColor  = vec4_splat(1.0);
+    vec4 textureBaseColor = vec4_splat(1.0);
 
-    if(isPerVertexColorAvailable(u_settings.x))
-        vertexBaseColor = v_color; // per-vertex color available
-    else
-        vertexBaseColor = vec4_splat(1.0); // no per-vertex color available, use white
-
-    if(isBaseColorTextureAvailable(u_settings.x)) {
-        // base color texture available
-        textureBaseColor = getColorFromTexture(0u, texcoord);
+    // color to use per vertex
+    // if the user selected per face, per mesh or per user, override
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
+        vertexBaseColor = uintABGRToVec4Color(primitiveColors[primitiveID]);
+    }
+    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
+        vertexBaseColor = u_meshColor;
+    }
+    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_USER))) {
+        vertexBaseColor = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
     }
     else {
-        // no base color texture available, use white
-        textureBaseColor = vec4_splat(1.0);
+        if (isPerVertexColorAvailable(u_pbr_settings))
+            vertexBaseColor = v_color; // per-vertex color available
     }
 
-    baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor; // multiply vertex color with material base color
+    if (useTexture && isBaseColorTextureAvailable(u_pbr_texture_settings)) {
+        // base color texture available
+        textureBaseColor = texture2D(baseColorTex, texcoord);
+    }
+
+    // multiply vertex color with material base color
+    vec4 baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor;
 
     // alpha mode MASK
-    if(isAlphaModeMask(u_settings.x))
-        if(baseColor.a < u_alphaCutoff)
+    if (isAlphaModeMask(u_pbr_settings))
+        if (baseColor.a < u_alphaCutoff)
             discard; // discard fragment
 
     // metallic-roughness
-    vec4 metallicRoughnessTexture;
-    float metallic, roughness;
+    vec4 metallicRoughnessTexture = vec4_splat(1.0);
 
-    if(isMetallicRoughnessTextureAvailable(u_settings.x))
-        metallicRoughnessTexture = getColorFromTexture(1u, texcoord); // metallic-roughness texture available
-    else
-        metallicRoughnessTexture = vec4_splat(1.0); // no metallic-roughness texture available, use default value
+    if (useTexture && isMetallicRoughnessTextureAvailable(u_pbr_texture_settings)) {
+        // metallic-roughness texture available
+        metallicRoughnessTexture = texture2D(metallicRoughnessTex, texcoord);
+    }
 
-    metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
-    roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
+    float metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
+    float roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // normal
     vec3 normal;
 
-    if(isNormalTextureAvailable(u_settings.x))
-    {
-        vec3 normalTexture = getColorFromTexture(2u, texcoord).xyz;
+    if (useTexture && isNormalTextureAvailable(u_pbr_texture_settings)) {
+        vec3 normalTexture = texture2D(normalTex, texcoord).xyz;
 
         // remapping normals
         // from [0,1] to [-1,1] for x and y (red and green)
@@ -131,13 +127,11 @@ void main()
 
         mat3 tangentFrame;
 
-        if(isPerVertexTangentAvailable(u_settings.x))
-        {
+        if (isPerVertexTangentAvailable(u_pbr_settings)) {
             vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
             tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
         }
-        else
-        {
+        else {
             // construct tangent frame using vertex normals
             tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
         }
@@ -150,19 +144,19 @@ void main()
     }
     else {
         normal = normalize(v_normal);
-        if(!vcl_FrontFacing)
+        if (!vcl_FrontFacing)
             normal *= -1.0;
-    } 
+    }
 
     // emissive
-    vec3 emissiveTexture, emissiveColor;
+    vec3 emissiveTexture = vec3_splat(1.0);
 
-    if(isEmissiveTextureAvailable(u_settings.x))
-        emissiveTexture = getColorFromTexture(4u, texcoord).rgb; // emissive texture available
-    else
-        emissiveTexture = vec3_splat(1.0); // no emissive texture available, use white
+    if (useTexture && isEmissiveTextureAvailable(u_pbr_texture_settings)) {
+        // emissive texture available
+        emissiveTexture = texture2D(emissiveTex, texcoord).rgb;
+    }
 
-    emissiveColor = u_emissiveFactor * emissiveTexture;
+    vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
 
     gl_FragColor = pbrColor(
         v_position.xyz,

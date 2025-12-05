@@ -20,23 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_MESH_PBR_MACROS_H
+#define VCL_BGFX_DRAWABLE_MESH_PBR_MACROS_H
 
-uniform vec4 u_baseColorFactor;
-uniform vec4 u_FactorsPack;
-uniform vec4 u_emissiveAlphaCutoffPack;
-uniform vec4 u_settings;
+/**
+ * These macros are used both on the library and on the shader side.
+ */
 
-#define u_occlusionStrength u_FactorsPack.r
-#define u_roughnessFactor u_FactorsPack.g
-#define u_metallicFactor u_FactorsPack.b
-#define u_normalScale u_FactorsPack.a
+#define VCL_PBR_VERTEX_COLOR       0
+#define VCL_PBR_VERTEX_TANGENT     1
+#define VCL_PBR_IS_ALPHA_MODE_MASK 2
 
-#define u_emissiveFactor u_emissiveAlphaCutoffPack.rgb
-#define u_alphaCutoff u_emissiveAlphaCutoffPack.a
+#define VCL_PBR_TEXTURE_BASE_COLOR         0
+#define VCL_PBR_TEXTURE_METALLIC_ROUGHNESS 1
+#define VCL_PBR_TEXTURE_NORMAL             2
+#define VCL_PBR_TEXTURE_OCCLUSION          3
+#define VCL_PBR_TEXTURE_EMISSIVE           4
 
-#define u_pbr_settings floatBitsToUint(u_settings.x)
-#define u_pbr_texture_settings floatBitsToUint(u_settings.y)
-
-#endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_MESH_PBR_MACROS_H

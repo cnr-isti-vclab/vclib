@@ -27,43 +27,53 @@
 int main(int argc, char** argv)
 {
     using namespace vcl;
-    
+
     // Examples to test
-    
-    // Metallic-Roughness - just using factors
-    std::string t01 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf";
 
-    // Metallic-Roughness texture
-    std::string t02 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf";
+    enum GLTFExamples {
+        METAL_ROUGH_SPHERES_NO_TEXTURES = 0,
+        METAL_ROUGH_SPHERES,
+        NORMAL_TENGENT_MIRROR_TEST,
+        DAMAGED_HELMET,
+        COUNT
+    };
 
-    // Normal texture, with provided tangent
-    std::string t03 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf";
+    static const std::string GLTFExampleFilenames[COUNT] = {
+        "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf",
+        "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf",
+        "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
+        "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
 
-    // All textures
-    std::string t04 = VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf";
+    uint selectedExample = NORMAL_TENGENT_MIRROR_TEST;
 
-    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(t04);
+    std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH + GLTFExampleFilenames[selectedExample]);
 
-    using enum Material::TextureType;
-
-    auto printTextureInfo = [&](const Material& mat, Material::TextureType type) {
-        const vcl::TextureDescriptor& texture = mat.textureDescriptor(type);
-        std::string typeName = "baseColor";
-        if(type == METALLIC_ROUGHNESS) {
+    auto printTextureInfo = [&](const Material&       mat,
+                                Material::TextureType type) {
+        using enum Material::TextureType;
+        const vcl::TextureDescriptor& texture  = mat.textureDescriptor(type);
+        std::string                   typeName = "baseColor";
+        if (type == METALLIC_ROUGHNESS) {
             typeName = "metallicRoughness";
-        } else if(type == NORMAL) {
+        }
+        else if (type == NORMAL) {
             typeName = "normal";
-        } else if(type == OCCLUSION) {
+        }
+        else if (type == OCCLUSION) {
             typeName = "occlusion";
-        } else if(type == EMISSIVE) {
+        }
+        else if (type == EMISSIVE) {
             typeName = "emissive";
         }
 
         std::cout << "  " << typeName << "Texture: ";
         if (!texture.isNull()) {
             std::cout << texture.path() << std::endl;
-            std::cout << "    minFilter: " << int(texture.minFilter()) << std::endl;
-            std::cout << "    magFilter: " << int(texture.magFilter()) << std::endl;
+            std::cout << "    minFilter: " << int(texture.minFilter())
+                      << std::endl;
+            std::cout << "    magFilter: " << int(texture.magFilter())
+                      << std::endl;
             std::cout << "    wrapU: " << int(texture.wrapU()) << std::endl;
             std::cout << "    wrapV: " << int(texture.wrapV()) << std::endl;
         }
@@ -72,19 +82,22 @@ int main(int argc, char** argv)
         }
     };
 
-    for(const auto& mesh : meshes) {
+    for (const auto& mesh : meshes) {
+        using enum Material::TextureType;
         std::cout << "Mesh: " << mesh.name() << std::endl;
-        for(const auto& mat : mesh.materials()) {
+        for (const auto& mat : mesh.materials()) {
             std::cout << " Material: " << mat.name() << std::endl;
             std::cout << "  baseColorFactor: " << mat.baseColor() << std::endl;
             std::cout << "  metallicFactor: " << mat.metallic() << std::endl;
             std::cout << "  roughnessFactor: " << mat.roughness() << std::endl;
-            std::cout << "  emissiveFactor: " << mat.emissiveColor() << std::endl;
+            std::cout << "  emissiveFactor: " << mat.emissiveColor()
+                      << std::endl;
             std::cout << "  doubleSided: " << mat.doubleSided() << std::endl;
             std::cout << "  alphaMode: " << int(mat.alphaMode()) << std::endl;
             std::cout << "  alphaCutoff: " << mat.alphaCutoff() << std::endl;
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
-            std::cout << "  occlusionStrength: " << mat.occlusionStrength() << std::endl;
+            std::cout << "  occlusionStrength: " << mat.occlusionStrength()
+                      << std::endl;
             printTextureInfo(mat, BASE_COLOR);
             printTextureInfo(mat, METALLIC_ROUGHNESS);
             printTextureInfo(mat, NORMAL);

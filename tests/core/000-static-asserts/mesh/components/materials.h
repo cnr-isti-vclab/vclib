@@ -58,22 +58,21 @@ void materialsComponentStaticAsserts()
         "mesh::Materials&& does not satisfy the HasMaterials concept");
 
     // trimesh
-    // TODO
-    // static_assert(
-    //     comp::HasMaterials<TriMesh>,
-    //     "TriMesh does not satisfy the HasMaterials concept");
-    // static_assert(
-    //     comp::HasMaterials<const TriMesh>,
-    //     "const TriMesh does not satisfy the HasMaterials concept");
-    // static_assert(
-    //     comp::HasMaterials<TriMesh&>,
-    //     "TriMesh& does not satisfy the HasMaterials concept");
-    // static_assert(
-    //     comp::HasMaterials<const TriMesh&>,
-    //     "const TriMesh& does not satisfy the HasMaterials concept");
-    // static_assert(
-    //     comp::HasMaterials<TriMesh&&>,
-    //     "TriMesh&& does not satisfy the HasMaterials concept");
+    static_assert(
+        comp::HasMaterials<TriMesh>,
+        "TriMesh does not satisfy the HasMaterials concept");
+    static_assert(
+        comp::HasMaterials<const TriMesh>,
+        "const TriMesh does not satisfy the HasMaterials concept");
+    static_assert(
+        comp::HasMaterials<TriMesh&>,
+        "TriMesh& does not satisfy the HasMaterials concept");
+    static_assert(
+        comp::HasMaterials<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasMaterials concept");
+    static_assert(
+        comp::HasMaterials<TriMesh&&>,
+        "TriMesh&& does not satisfy the HasMaterials concept");
 
     // no materials mesh
     static_assert(
