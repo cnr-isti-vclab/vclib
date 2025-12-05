@@ -27,6 +27,7 @@
 
 #include <vclib/render/viewer/lights.h>
 
+#include <vclib/algorithms/core.h>
 #include <vclib/space/core.h>
 
 namespace vcl {
@@ -51,11 +52,11 @@ public:
         onResize(width, height);
     }
 
-    MatrixType viewMatrix() const { return viewMatrix<MatrixType>(mCamera); }
+    MatrixType viewMatrix() const { return vcl::viewMatrix(mCamera); }
 
     MatrixType projectionMatrix() const
     {
-        return projectionMatrix<MatrixType>(mCamera);
+        return vcl::projectionMatrix(mCamera);
     }
 
     const CameraType& camera() const { return mCamera; }

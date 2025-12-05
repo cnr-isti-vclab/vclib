@@ -25,8 +25,7 @@
 
 #include <vclib/io/file_info.h>
 
-#include <vclib/render/concepts/camera.h>
-#include <vclib/render/viewer/camera.h>
+#include <vclib/space/core.h>
 
 #include <tiny_gltf.h>
 

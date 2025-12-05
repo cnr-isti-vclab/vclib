@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/render/drawable/drawable_mesh.h>
+
 #include <vclib/render/io/camera.h>
-#include <vclib/render/viewer/camera.h>
 
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>
