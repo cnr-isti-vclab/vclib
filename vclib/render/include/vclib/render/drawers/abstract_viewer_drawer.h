@@ -182,7 +182,7 @@ protected:
             // unproject the point
             const Point3f p2d(p.x(), vp[3] - p.y(), depth);
             auto          unproj =
-                unproject(p2d, MatrixType(proj * view), vp, homogeneousNDC);
+                unprojectScreenPosition(p2d, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();

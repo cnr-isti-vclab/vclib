@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_VIEWER_CAMERA_H
 #define VCL_RENDER_VIEWER_CAMERA_H
 
-#include "matrix.h"
+#include <vclib/algorithms/core.h>
 
 namespace vcl {
 

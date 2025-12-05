@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_MATRIX_H
-#define VCL_RENDER_VIEWER_MATRIX_H
+#ifndef VCL_ALGORITHMS_CORE_MATRIX_CAMERA_H
+#define VCL_ALGORITHMS_CORE_MATRIX_CAMERA_H
 
 #include <vclib/space/core/matrix.h>
 #include <vclib/space/core/point.h>
@@ -77,6 +77,8 @@ void projectionMatrixXYWH(
  * @param[in] handedness: The handedness of the coordinate system
  *
  * @requires PointType::DIM == 3
+ *
+ * @ingroup algorithms_core
  */
 template<Point3Concept PointType>
 void lookAtMatrix(
@@ -137,6 +139,8 @@ void lookAtMatrix(
  * @return The look at matrix
  *
  * @requires PointType::DIM == 3
+ *
+ * @ingroup algorithms_core
  */
 template<MatrixConcept Matrix44, Point3Concept PointType>
 Matrix44 lookAtMatrix(
@@ -162,6 +166,8 @@ Matrix44 lookAtMatrix(
  * @param[in] up: The up vector of the camera
  *
  * @requires PointType::DIM == 3
+ *
+ * @ingroup algorithms_core
  */
 template<Point3Concept PointType>
 void lookAtMatrixLeftHanded(
@@ -184,6 +190,8 @@ void lookAtMatrixLeftHanded(
  * @return The look at matrix
  *
  * @requires PointType::DIM == 3
+ *
+ * @ingroup algorithms_core
  */
 template<MatrixConcept Matrix44, Point3Concept PointType>
 Matrix44 lookAtMatrixLeftHanded(
@@ -345,9 +353,11 @@ Matrix44 orthoProjectionMatrix(
  * @param[in] homogeneousNDC: Flag to indicate if the NDC coordinates are
  * homogeneous (i.e., z is in [-1,1] if true, or [0,1] otherwise)
  * @return The unprojected 3D point
+ *
+ * @ingroup algorithms_core
  */
 template<MatrixConcept Matrix44, Point3Concept PointType>
-PointType unproject(
+PointType unprojectScreenPosition(
     const PointType&                         screenPos,
     const Matrix44&                          modelViewProjection,
     const Point4<typename Matrix44::Scalar>& viewport,
@@ -369,4 +379,4 @@ PointType unproject(
 
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_MATRIX_H
+#endif // VCL_ALGORITHMS_CORE_MATRIX_CAMERA_H
