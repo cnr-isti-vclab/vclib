@@ -23,8 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_MATRIX_CAMERA_H
 #define VCL_ALGORITHMS_CORE_MATRIX_CAMERA_H
 
-#include <vclib/space/core/matrix.h>
-#include <vclib/space/core/point.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 
@@ -375,6 +374,35 @@ PointType unprojectScreenPosition(
         throw std::runtime_error("unproject: division by zero");
     }
     return p.template head<3>() / p.w();
+}
+
+template<MatrixConcept Matrix44, typename Scalar>
+Matrix44 viewMatrix(const Camera<Scalar>& c)
+{
+    return lookAtMatrix<Matrix44>(c.eye(), c.center(), c.up());
+}
+
+template<MatrixConcept Matrix44, typename Scalar>
+Matrix44 projectionMatrix(const Camera<Scalar>& c)
+{
+    using C = Camera<Scalar>;
+    switch (c.projectionMode()) {
+    case C::ProjectionMode::ORTHO: {
+        const Scalar h = c.verticalHeight() / 2.0;
+        const Scalar w = h * c.aspectRatio();
+        return orthoProjectionMatrix<Matrix44>(
+            -w, w, h, -h, c.nearPlane(), c.farPlane(), false);
+    }
+    case C::ProjectionMode::PERSPECTIVE: {
+        return vcl::projectionMatrix<Matrix44>(
+            c.fieldOfView(),
+            c.aspectRatio(),
+            c.nearPlane(),
+            c.farPlane(),
+            false);
+    }
+    default: assert(false); return Matrix44::Identity();
+    }
 }
 
 } // namespace vcl

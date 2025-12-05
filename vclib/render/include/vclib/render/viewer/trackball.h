@@ -23,10 +23,10 @@
 #ifndef VCL_RENDER_VIEWER_TRACKBALL_H
 #define VCL_RENDER_VIEWER_TRACKBALL_H
 
-#include "camera.h"
 #include "lights/directional_light.h"
 
-#include <vclib/space/core/quaternion.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/space/core.h>
 
 #include <variant>
 
@@ -379,26 +379,26 @@ public:
 
     Matrix44<Scalar> viewMatrix() const
     {
-        return mCamera.viewMatrix() * mTransform.matrix();
+        return vcl::viewMatrix<Matrix44<Scalar>>(mCamera) * mTransform.matrix();
     }
 
     Matrix44<Scalar> projectionMatrix() const
     {
-        return mCamera.projectionMatrix();
+        return vcl::projectionMatrix<Matrix44<Scalar>>(mCamera);
     }
 
     Matrix44<Scalar> gizmoMatrix() const
     {
         Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
         rot_radius.rotate(mTransform.rotation()).scale(mRadius);
-        return mCamera.viewMatrix() * rot_radius.matrix();
+        return vcl::viewMatrix<Matrix44<Scalar>>(mCamera) * rot_radius.matrix();
     }
 
     Matrix44<Scalar> lightGizmoMatrix() const
     {
         Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
         rot_radius.rotate(mDirectionalLightTransform).scale(mRadius);
-        return mCamera.viewMatrix() * rot_radius.matrix();
+        return vcl::viewMatrix<Matrix44<Scalar>>(mCamera) * rot_radius.matrix();
     }
 
     bool isDragging() const { return mDragging; }

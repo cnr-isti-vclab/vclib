@@ -20,10 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_CAMERA_H
-#define VCL_RENDER_VIEWER_CAMERA_H
+#ifndef VCL_SPACE_CORE_CAMERA_H
+#define VCL_SPACE_CORE_CAMERA_H
 
-#include <vclib/algorithms/core.h>
+#include "matrix.h"
+#include "point.h"
 
 namespace vcl {
 
@@ -135,30 +136,8 @@ public:
     Scalar& farPlane() { return mFar; }
 
     const Scalar& farPlane() const { return mFar; }
-
-    MatrixType viewMatrix() const
-    {
-        return lookAtMatrix<MatrixType>(mEye, mCenter, mUp);
-    }
-
-    MatrixType projectionMatrix() const
-    {
-        switch (mProjectionMode) {
-        case ProjectionMode::ORTHO: {
-            const Scalar h = mVerticalHeight / 2.0;
-            const Scalar w = h * mAspect;
-            return orthoProjectionMatrix<MatrixType>(
-                -w, w, h, -h, mNear, mFar, false);
-        }
-        case ProjectionMode::PERSPECTIVE: {
-            return vcl::projectionMatrix<MatrixType>(
-                mFovDeg, mAspect, mNear, mFar, false);
-        }
-        default: assert(false); return MatrixType::Identity();
-        }
-    }
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_CAMERA_H
+#endif // VCL_SPACE_CORE_CAMERA_H
