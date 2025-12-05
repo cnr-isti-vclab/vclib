@@ -26,6 +26,7 @@
 #include "core/array.h"
 #include "core/bit_set.h"
 #include "core/box.h"
+#include "core/camera.h"
 #include "core/color.h"
 #include "core/distribution.h"
 #include "core/histogram.h"

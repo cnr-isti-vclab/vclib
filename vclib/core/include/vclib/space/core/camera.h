@@ -20,15 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_CAMERA_H
-#define VCL_RENDER_VIEWER_CAMERA_H
+#ifndef VCL_SPACE_CORE_CAMERA_H
+#define VCL_SPACE_CORE_CAMERA_H
 
 #include "matrix.h"
+#include "point.h"
 
 namespace vcl {
 
 /**
  * @brief A Pinhole camera model.
+ *
+ * @ingroup space_core
  */
 template<typename Scalar>
 class Camera
@@ -135,30 +138,28 @@ public:
     Scalar& farPlane() { return mFar; }
 
     const Scalar& farPlane() const { return mFar; }
-
-    MatrixType viewMatrix() const
-    {
-        return lookAtMatrix<MatrixType>(mEye, mCenter, mUp);
-    }
-
-    MatrixType projectionMatrix() const
-    {
-        switch (mProjectionMode) {
-        case ProjectionMode::ORTHO: {
-            const Scalar h = mVerticalHeight / 2.0;
-            const Scalar w = h * mAspect;
-            return orthoProjectionMatrix<MatrixType>(
-                -w, w, h, -h, mNear, mFar, false);
-        }
-        case ProjectionMode::PERSPECTIVE: {
-            return vcl::projectionMatrix<MatrixType>(
-                mFovDeg, mAspect, mNear, mFar, false);
-        }
-        default: assert(false); return MatrixType::Identity();
-        }
-    }
 };
+
+/* Specialization Aliases */
+using Cameraf = Camera<float>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a Camera.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Camera class having any scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the CameraConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept CameraConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Camera<typename RemoveRef<T>::ScalarType>>;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_CAMERA_H
+#endif // VCL_SPACE_CORE_CAMERA_H

@@ -20,9 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_IO_CAMERA_H
-#define VCL_RENDER_IO_CAMERA_H
+#ifndef CAMERA_H
+#define CAMERA_H
 
-#include "camera/load.h"
+#include <vclib/space/core.h>
 
-#endif // VCL_RENDER_IO_CAMERA_H
+void cameraStaticAsserts()
+{
+    using namespace vcl;
+
+    using Camerad = Camera<double>;
+
+    static_assert(
+        CameraConcept<Camerad>, "Camera does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad>,
+        "const Camera does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&>, "Camera& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad&>,
+        "const Camera& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&&>,
+        "Camera&& does not satisfy the CameraConcept");
+}
+
+#endif // CAMERA_H
