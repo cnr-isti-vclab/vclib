@@ -29,9 +29,5 @@ SAMPLERCUBE(s_env0, 0);
 
 void main()
 {
-    // get the outward view direction in world space back from clip space fragment position
-    vec4 clipFragPos = vec4(v_texcoord0, 1.0, 1.0);
-    vec3 worldDir = normalize(mul(u_invViewProj, clipFragPos).xyz);
-
-    gl_FragColor = textureCube(s_env0, worldDir);
+    gl_FragColor = textureCube(s_env0, normalize(v_texcoord0));
 }
