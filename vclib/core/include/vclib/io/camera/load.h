@@ -28,7 +28,10 @@
 #endif
 
 #include <vclib/io/file_format.h>
+
+#ifdef VCLIB_WITH_TINYGLTF
 #include <vclib/io/mesh/gltf/capability.h>
+#endif
 
 #include <set>
 #include <string>
@@ -56,7 +59,7 @@ inline std::set<FileFormat> loadCameraFormats()
 }
 
 template<CameraConcept CameraType = Camera<float>>
-inline std::vector<CameraType> loadCameras(const std::string& filename)
+std::vector<CameraType> loadCameras(const std::string& filename)
 {
     FileFormat ff = FileInfo::fileFormat(filename);
 #ifdef VCLIB_WITH_TINYGLTF
@@ -68,7 +71,7 @@ inline std::vector<CameraType> loadCameras(const std::string& filename)
 }
 
 template<CameraConcept CameraType = Camera<float>>
-inline CameraType loadCamera(const std::string& filename)
+CameraType loadCamera(const std::string& filename)
 {
     auto cams = loadCameras<CameraType>(filename);
     if (cams.empty())

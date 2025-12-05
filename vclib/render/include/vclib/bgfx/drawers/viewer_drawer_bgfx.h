@@ -61,10 +61,7 @@ public:
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
@@ -78,10 +75,7 @@ public:
         settings.objectId = ParentViewer::id();
         settings.viewId   = viewId;
 
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        setViewTransform(viewId);
 
         ParentViewer::drawableObjectVector().drawId(settings);
     }
@@ -115,6 +109,20 @@ public:
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+    }
+
+private:
+    void setViewTransform(uint viewId)
+    {
+        // need to store the matrices
+        // parent viewer returns by value
+        Matrix44f vm = ParentViewer::viewMatrix();
+        Matrix44f pm = ParentViewer::projectionMatrix();
+
+        bgfx::setViewTransform(
+            viewId,
+            vm.data(),
+            pm.data());
     }
 };
 
