@@ -26,7 +26,6 @@ get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-test-${TEST_NAME})
 
 set(HEADERS
-    camera.h
     canvas.h
     directional_light.h
     drawable_object.h

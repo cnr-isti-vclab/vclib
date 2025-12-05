@@ -376,32 +376,37 @@ PointType unprojectScreenPosition(
     return p.template head<3>() / p.w();
 }
 
-template<MatrixConcept Matrix44, typename Scalar>
-Matrix44 viewMatrix(const Camera<Scalar>& c)
+template<CameraConcept CameraType>
+auto viewMatrix(const CameraType& c)
 {
-    return lookAtMatrix<Matrix44>(c.eye(), c.center(), c.up());
+    using Scalar = CameraType::ScalarType;
+    using MT = Matrix44<Scalar>;
+
+    return lookAtMatrix<MT>(c.eye(), c.center(), c.up());
 }
 
-template<MatrixConcept Matrix44, typename Scalar>
-Matrix44 projectionMatrix(const Camera<Scalar>& c)
+template<CameraConcept CameraType>
+auto projectionMatrix(const CameraType& c)
 {
-    using C = Camera<Scalar>;
+    using Scalar = CameraType::ScalarType;
+    using MT = Matrix44<Scalar>;
+
     switch (c.projectionMode()) {
-    case C::ProjectionMode::ORTHO: {
+    case CameraType::ProjectionMode::ORTHO: {
         const Scalar h = c.verticalHeight() / 2.0;
         const Scalar w = h * c.aspectRatio();
-        return orthoProjectionMatrix<Matrix44>(
+        return orthoProjectionMatrix<MT>(
             -w, w, h, -h, c.nearPlane(), c.farPlane(), false);
     }
-    case C::ProjectionMode::PERSPECTIVE: {
-        return vcl::projectionMatrix<Matrix44>(
+    case CameraType::ProjectionMode::PERSPECTIVE: {
+        return vcl::projectionMatrix<MT>(
             c.fieldOfView(),
             c.aspectRatio(),
             c.nearPlane(),
             c.farPlane(),
             false);
     }
-    default: assert(false); return Matrix44::Identity();
+    default: assert(false); return static_cast<MT>(MT::Identity());
     }
 }
 

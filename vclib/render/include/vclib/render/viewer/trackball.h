@@ -379,26 +379,26 @@ public:
 
     Matrix44<Scalar> viewMatrix() const
     {
-        return vcl::viewMatrix<Matrix44<Scalar>>(mCamera) * mTransform.matrix();
+        return vcl::viewMatrix(mCamera) * mTransform.matrix();
     }
 
     Matrix44<Scalar> projectionMatrix() const
     {
-        return vcl::projectionMatrix<Matrix44<Scalar>>(mCamera);
+        return vcl::projectionMatrix(mCamera);
     }
 
     Matrix44<Scalar> gizmoMatrix() const
     {
         Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
         rot_radius.rotate(mTransform.rotation()).scale(mRadius);
-        return vcl::viewMatrix<Matrix44<Scalar>>(mCamera) * rot_radius.matrix();
+        return vcl::viewMatrix(mCamera) * rot_radius.matrix();
     }
 
     Matrix44<Scalar> lightGizmoMatrix() const
     {
         Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
         rot_radius.rotate(mDirectionalLightTransform).scale(mRadius);
-        return vcl::viewMatrix<Matrix44<Scalar>>(mCamera) * rot_radius.matrix();
+        return vcl::viewMatrix(mCamera) * rot_radius.matrix();
     }
 
     bool isDragging() const { return mDragging; }

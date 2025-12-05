@@ -30,6 +30,8 @@ namespace vcl {
 
 /**
  * @brief A Pinhole camera model.
+ *
+ * @ingroup space_core
  */
 template<typename Scalar>
 class Camera
@@ -137,6 +139,26 @@ public:
 
     const Scalar& farPlane() const { return mFar; }
 };
+
+/* Specialization Aliases */
+using Cameraf = Camera<float>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a Camera.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Camera class having any scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the CameraConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept CameraConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Camera<typename RemoveRef<T>::ScalarType>>;
 
 } // namespace vcl
 

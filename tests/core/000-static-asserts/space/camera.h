@@ -23,8 +23,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <vclib/render/concepts/camera.h>
-#include <vclib/render/viewer/camera.h>
+#include <vclib/space/core.h>
 
 void cameraStaticAsserts()
 {
