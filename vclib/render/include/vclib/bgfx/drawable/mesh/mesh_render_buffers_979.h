@@ -229,18 +229,20 @@ public:
         return true;
     }
 
-    bool faceSelectionVisible(const uint drawViewId, const uint pass1ViewId, const uint pass2ViewId, const SelectionMode& mode)
+    bool faceSelectionVisible(const uint pass1ViewId, const uint pass2ViewId, const SelectionMode& mode, const Matrix44f& model)
     {
         faceSelectionAtomic(pass1ViewId, SelectionMode::FACE_NONE);
         ProgramManager& pm = Context::instance().programManager();
         bgfx::ProgramHandle p1h = pm.getProgram<VertFragProgram::VISIBLE_FACE_SELECTION_ADD_P1>();
         bgfx::ProgramHandle p2h = pm.getProgram<VertFragProgram::VISIBLE_FACE_SELECTION_ADD_P2>();
         bgfx::setState(0 | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
+        bgfx::setTransform(model.data());
         mSelectedFacesBuffer.value().bind(6);
         mVertexPositionsBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
         mTriangleIndexBuffer.bind();
         bgfx::submit(pass1ViewId, p1h);
         bgfx::setState(0 | BGFX_STATE_DEPTH_TEST_LEQUAL);
+        bgfx::setTransform(model.data());
         mSelectedFacesBuffer.value().bind(6);
         mVertexPositionsBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
         mTriangleIndexBuffer.bind();

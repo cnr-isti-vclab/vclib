@@ -475,7 +475,11 @@ protected:
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }
-        return mMRB.faceSelectionVisible(params.drawViewId, params.pass1ViewId, params.pass2ViewId, params.mode);
+        Matrix44f model = Matrix44f::Identity();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        return mMRB.faceSelectionVisible(params.pass1ViewId, params.pass2ViewId, params.mode, model);
     }
 
     void bindUniforms() const
