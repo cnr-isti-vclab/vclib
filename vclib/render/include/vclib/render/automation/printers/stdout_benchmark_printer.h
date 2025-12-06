@@ -20,65 +20,67 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
-#define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#ifndef VCL_STDOUT_BENCHMARK_PRINTER_H
+#define VCL_STDOUT_BENCHMARK_PRINTER_H
 
-#include "event_drawer.h"
+#include <vclib/render/automation/printers/benchmark_printer.h>
 
-#include <vclib/render/viewer/camera.h>
-#include <vclib/render/viewer/lights.h>
+#include <sstream>
 
 namespace vcl {
-template<typename Scalar, typename DerivedRenderApp>
-class CameraDrawerT : public vcl::EventDrawer<DerivedRenderApp>
+
+/**
+ * The StdoutBenchmarkPrinter class is a BenchmarkPrinter that writes the
+ * results of a BenchmarkMetric to standard output
+ */
+class StdoutBenchmarkPrinter : public BenchmarkPrinter
 {
-public:
-    using ScalarType = Scalar;
-    using CameraType = vcl::Camera<Scalar>;
-    using PointType  = CameraType::PointType;
-    using MatrixType = CameraType::MatrixType;
-    using LightType  = vcl::DirectionalLight<Scalar>;
-
-protected:
-    CameraType mCamera;
+    uint mAutomationIndex = 0;
+    uint mLoopCounter     = 0;
+    bool mPrintDescription = true;
 
 public:
-    using Base = vcl::EventDrawer<DerivedRenderApp>;
-
-    CameraDrawerT(uint width = 100, uint height = 768) : Base(width, height)
+    void print(const BenchmarkMetric& metric, const std::string& description)
+        override
     {
-        onResize(width, height);
-    }
+        std::ostringstream temp;
+        temp << "[";
+        bool isFirst = true;
+        for (const auto& meas : metric.getMeasureStrings()) {
+            if (!isFirst) {
+                temp << ", ";
+            }
+            else {
+                isFirst = false;
+            }
+            temp << meas + metric.getUnitOfMeasure();
+        }
+        temp << "]";
+        if(mPrintDescription) {
+            std::cout << description << " -> ";
+        }
+        std::cout << temp.str() << std::endl;
 
-    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
+        mAutomationIndex++;
+    };
 
-    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
+    void useDescription(bool b = true) { mPrintDescription = b; }
 
-    const CameraType& camera() const { return mCamera; }
+    void onBenchmarkLoop() override { mLoopCounter++; }
 
-    LightType light() const { return LightType(); }
+    void finish() override {};
 
-    void reset() { mCamera.reset(); }
-
-    void focus(const PointType& p) { mCamera.center() = p; }
-
-    void fitScene(const PointType& p, Scalar s)
+    std::shared_ptr<BenchmarkPrinter> clone() const& override
     {
-        mCamera.center()         = p;
-        mCamera.eye()            = p + PointType(0, 0, 1);
-        mCamera.verticalHeight() = s;
-        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
-    }
+        return std::make_shared<StdoutBenchmarkPrinter>(*this);
+    };
 
-    void onResize(uint width, uint height) override
+    std::shared_ptr<BenchmarkPrinter> clone() && override
     {
-        mCamera.aspectRatio() = Scalar(double(width) / height);
-    }
+        return std::make_shared<StdoutBenchmarkPrinter>(std::move(*this));
+    };
 };
-
-template<typename DerivedRenderApp>
-using CameraDrawer = CameraDrawerT<float, DerivedRenderApp>;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
+#endif
