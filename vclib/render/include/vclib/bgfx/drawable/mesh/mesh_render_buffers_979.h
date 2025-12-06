@@ -232,7 +232,7 @@ public:
     bool faceSelectionVisible(const uint drawViewId, const uint pass1ViewId, const uint pass2ViewId, const SelectionMode& mode)
     {
         faceSelectionAtomic(pass1ViewId, SelectionMode::FACE_NONE);
-        auto pm = Context::instance().programManager();
+        ProgramManager& pm = Context::instance().programManager();
         bgfx::ProgramHandle p1h = pm.getProgram<VertFragProgram::VISIBLE_FACE_SELECTION_ADD_P1>();
         bgfx::ProgramHandle p2h = pm.getProgram<VertFragProgram::VISIBLE_FACE_SELECTION_ADD_P2>();
         bgfx::setState(0 | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
