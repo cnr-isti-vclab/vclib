@@ -61,8 +61,7 @@ class DrawableAxis : public DrawableObject
 public:
     DrawableAxis(double size = 1);
 
-    DrawableAxis(const DrawableAxis& other) :
-            mVisible(other.mVisible), mUniforms(other.mUniforms)
+    DrawableAxis(const DrawableAxis& other) : mVisible(other.mVisible)
     {
         for (uint i = 0; i < 3; i++) {
             mMatrices[i] = other.mMatrices[i];
