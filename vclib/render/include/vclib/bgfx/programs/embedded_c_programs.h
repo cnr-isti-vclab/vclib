@@ -25,5 +25,6 @@
 
 #include "embedded_c_programs/drawable_mesh_points.h"
 #include "embedded_c_programs/hdr_equirect_to_cubemap.h"
+#include "embedded_c_programs/cubemap_to_irradiance.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H

@@ -47,9 +47,10 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     vcl::Uniform 
         mHdrSamplerUniform     = Uniform("s_hdr", bgfx::UniformType::Sampler),
-        mEnvCubeSamplerUniform = Uniform("s_env0", bgfx::UniformType::Sampler);
+        mEnvCubeSamplerUniform = Uniform("s_env0", bgfx::UniformType::Sampler),
+        mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler);
 
-    std::unique_ptr<Texture> mCubeMapTexture, mHdrTexture;
+    std::unique_ptr<Texture> mHdrTexture, mCubeMapTexture, mIrradianceTexture;
 
     std::string mPanorama;
 
@@ -88,7 +89,7 @@ public:
         mDirectionalLightUniforms.bind();
 
         if(!mPanorama.empty())
-            mCubeMapTexture->bind(
+            mIrradianceTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
@@ -155,7 +156,11 @@ public:
         ProgramManager& pm = Context::instance().programManager();
         using enum ComputeProgram;
 
+        // load hdr panorama
+
         bimg::ImageContainer *hdr = loadHdr(mPanorama);
+
+        // convert hdr equirectangular to cubemap
 
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
@@ -169,7 +174,7 @@ public:
 
         const uint32_t cubeSide = hdr->m_width / 4;
 
-        const bgfx::ViewId viewId = Context::instance().requestViewId();
+        bgfx::ViewId viewId = Context::instance().requestViewId();
 
         auto cubemapTexture = std::make_unique<Texture>();
         cubemapTexture->set(
@@ -199,6 +204,46 @@ public:
             pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
             cubeSide,
             cubeSide,
+            6
+        );
+
+        Context::instance().releaseViewId(viewId);
+
+        // create irradiance map from cubemap
+
+        const uint irradianceCubeSide = 256;
+
+        auto irradianceTexture = std::make_unique<Texture>();
+        irradianceTexture->set(
+            nullptr,
+            Point2i(irradianceCubeSide, irradianceCubeSide),
+            false,
+            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
+            bgfx::TextureFormat::RGBA32F,
+            true // is cubemap
+        );
+        mIrradianceTexture = std::move(irradianceTexture);
+
+        viewId = Context::instance().requestViewId();
+
+        mCubeMapTexture->bind(
+            0,
+            mEnvCubeSamplerUniform.handle(),
+            BGFX_SAMPLER_UVW_CLAMP
+        );
+
+        mIrradianceTexture->bindForCompute(
+            1,
+            0,
+            bgfx::Access::Write,
+            bgfx::TextureFormat::RGBA32F
+        );
+
+        bgfx::dispatch(
+            viewId,
+            pm.getComputeProgram<CUBEMAP_TO_IRRADIANCE>(),
+            irradianceCubeSide,
+            irradianceCubeSide,
             6
         );
 

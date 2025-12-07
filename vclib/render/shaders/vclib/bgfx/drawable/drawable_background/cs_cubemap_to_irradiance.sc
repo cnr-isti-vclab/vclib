@@ -22,10 +22,10 @@
 
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
-SAMPLER2D(s_hdr, 0);                     // bound with setTexture()
-IMAGE2D_ARRAY_WO(u_cubemap, rgba32f, 1); // bound with setImage() as RW
+SAMPLERCUBE(s_env0, 0);
+IMAGE2D_ARRAY_WO(u_irradiance, rgba32f, 1);
 
-NUM_THREADS(1, 1, 1) // 8x8 threads per threadgroup
+NUM_THREADS(1, 1, 1)
 void main()
 {
     ivec3 gid = ivec3(gl_GlobalInvocationID.xyz);
@@ -36,7 +36,7 @@ void main()
     ivec2 pixel = gid.xy;
     int face    = gid.z;
 
-    ivec3 dims  = imageSize(u_cubemap);
+    ivec3 dims  = imageSize(u_irradiance);
     int size    = dims.x;  // cube is size×size×6
 
     // in case of an out of bounds thread
@@ -48,14 +48,45 @@ void main()
     uv = uv * 2.0 - 1.0;
 
     // Get direction corresponding to cubemap face pixel
-    vec3 dir = faceDirection(uint(face), uv, false);
+    vec3 dir = faceDirection(uint(face), uv, true);
 
-    // Convert to lat-long UV
-    vec2 equiUV = dirToEquirectUV(dir);
+    vec3 normal = normalize(dir);
+    vec3 up     = vec3(0.0, 1.0, 0.0);
+    vec3 right  = normalize(cross(up, normal));
+    up          = normalize(cross(normal, right));
 
-    // Sample HDR
-    vec4 hdrColor = texture2DLod(s_hdr, equiUV, 0); // texture2D not supported in compute shaders
+    // Irradiance integration
+    const float sampleDelta = 0.025;
+    vec3 irradiance = vec3_splat(0.0);
+    uint nrSamples = 0;
+    for (float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta)
+    {
+        for (float theta = 0.0; theta < 0.5 * PI; theta += sampleDelta)
+        {
+            // Spherical to cartesian (in tangent space)
+            vec3 tangentSample;
+            tangentSample.x = sin(theta) * cos(phi);
+            tangentSample.y = sin(theta) * sin(phi);
+            tangentSample.z = cos(theta);
 
-    // Write to cubemap layer
-    imageStore(u_cubemap, ivec3(pixel.x, pixel.y, face), hdrColor);
+            // Tangent space to world
+            vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
+
+            // Sample the environment's radiance
+            vec3 envColor = textureCubeLod(s_env0, sampleVec, 0).rgb;
+
+            // Weight by cosine of theta
+            // sin(theta) compensates for smaller area covered by samples closer to the pole
+            irradiance += envColor * cos(theta) * sin(theta);
+
+            nrSamples++;
+        }
+    }
+    // (1.0 / float(nrSamples)) take the average of the samples
+    // PI = PI^2 / PI where:
+    //    PI^2 is the intergration interval to normalize the average (get the actual integral)
+    //    1 / PI lambertian BRDF factor
+    irradiance = PI * irradiance * (1.0 / float(nrSamples));
+
+    imageStore(u_irradiance, ivec3(pixel.x, pixel.y, face), vec4(irradiance, 1.0));
 }

@@ -64,6 +64,50 @@
 #define LIGHT_KEY_DIR_VIEW                            mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
 #define LIGHT_FILL_DIR_VIEW                           mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
 
+// Cubemap face directions
+// handles handedness internally (cubemaps are left-handed)
+// as opposed to our right-handed coordinate system:
+// https://wikis.khronos.org/opengl/Cubemap_Texture
+vec3 faceDirection(int face, vec2 uv, bool originTopLeft)
+{
+
+    if(originTopLeft)
+    {
+        // to flip y we need to always invert v
+        // but also swap faces 2 and 3 (+Y and -Y)
+        uv.y = -uv.y;
+        if(face == 2)
+            face = 3;
+        else if(face == 3)
+            face = 2;
+    }
+        
+
+   // uv in range [-1,1]
+   switch (face)
+   {
+       case 0: return normalize(vec3(  1.0, uv.y, -uv.x));  // +X
+       case 1: return normalize(vec3( -1.0, uv.y,  uv.x));  // -X
+       case 2: return normalize(vec3( uv.x, -1.0,  uv.y));  // +Y
+       case 3: return normalize(vec3( uv.x,  1.0, -uv.y));  // -Y
+       case 4: return normalize(vec3( uv.x, uv.y,   1.0));  // +Z
+       case 5: return normalize(vec3(-uv.x, uv.y,  -1.0));  // -Z
+       default: return vec3_splat(0.0);
+   }
+}
+
+// Converts direction -> equirectangular UV
+vec2 dirToEquirectUV(vec3 dir)
+{
+   float phi   = atan2(dir.z, dir.x);       // [-pi..pi]
+   float theta = asin(dir.y);               // [-pi/2..pi/2]
+
+   float u = (phi   / (2.0*PI)) + 0.5;
+   float v = (theta / PI) + 0.5;
+
+   return vec2(u, v);
+}
+
 #if BGFX_SHADER_TYPE_FRAGMENT
 
 /**
