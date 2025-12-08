@@ -188,7 +188,7 @@ public:
         cubemapTexture->set(
             nullptr,
             Point2i(cubeSide, cubeSide),
-            false, // TODO: add mips when and WHERE needed
+            true,
             BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
             bgfx::TextureFormat::RGBA32F,
             true // is cubemap
@@ -216,6 +216,45 @@ public:
         );
 
         Context::instance().releaseViewId(viewId);
+
+        // generate mipmaps for cubemap
+
+        const uint8_t cubeMips = bimg::imageGetNumMips(
+            bimg::TextureFormat::RGBA32F,
+            cubeSide,
+            cubeSide
+        );
+
+        for(uint8_t mip = 1; mip < cubeMips; mip++)
+        {
+            const uint32_t mipSize = cubeSide >> mip;
+
+            mCubeMapTexture->bindForCompute(
+                0,
+                mip - 1,
+                bgfx::Access::Read,
+                bgfx::TextureFormat::RGBA32F
+            );
+
+            mCubeMapTexture->bindForCompute(
+                0,
+                mip,
+                bgfx::Access::Write,
+                bgfx::TextureFormat::RGBA32F
+            );
+
+            viewId = Context::instance().requestViewId();
+
+            bgfx::dispatch(
+                viewId,
+                pm.getComputeProgram<CUBEMAP_MIPMAP_GEN>(),
+                mipSize,
+                mipSize,
+                6
+            );
+
+            Context::instance().releaseViewId(viewId);
+        }
 
         // create irradiance map from cubemap
 

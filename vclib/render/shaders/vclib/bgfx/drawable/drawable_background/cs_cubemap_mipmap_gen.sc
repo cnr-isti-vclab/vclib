@@ -18,15 +18,37 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
-#include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/hdr_equirect_to_cubemap.h"
-#include "embedded_c_programs/cubemap_mipmap_gen.h"
-#include "embedded_c_programs/cubemap_to_irradiance.h"
-#include "embedded_c_programs/cubemap_to_specular.h"
+IMAGE2D_ARRAY_RO(u_prevMip, rgba32f, 0);
+IMAGE2D_ARRAY_WO(u_nextMip, rgba32f, 1);
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+NUM_THREADS(1, 1, 1)
+void main()
+{
+    ivec3 gid = ivec3(gl_GlobalInvocationID.xyz);
+
+    // gid.x,y = pixel
+    // gid.z   = cubemap face index [0..5]
+
+    ivec2 pixel = gid.xy;
+    int face    = gid.z;
+
+    ivec3 dims  = imageSize(u_nextMip);
+    int size    = dims.x;  // cube is size×size×6
+
+    // in case of an out of bounds thread
+    if (pixel.x >= size || pixel.y >= size || face >= 6)
+        return; 
+
+    vec4 newColor = 
+        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y,     face)) *
+        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y,     face)) *
+        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y + 1, face)) *
+        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y + 1, face)) *
+        vec4_splat(0.25);
+
+    imageStore(u_nextMip, ivec3(pixel.x, pixel.y, face), newColor);
+}
