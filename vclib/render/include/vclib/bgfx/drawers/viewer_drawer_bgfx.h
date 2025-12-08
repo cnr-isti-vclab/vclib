@@ -45,12 +45,20 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     DirectionalLightUniforms mDirectionalLightUniforms;
 
-    vcl::Uniform 
-        mHdrSamplerUniform     = Uniform("s_hdr", bgfx::UniformType::Sampler),
-        mEnvCubeSamplerUniform = Uniform("s_env0", bgfx::UniformType::Sampler),
-        mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler);
+    std::array<float, 4> mRoughnessData = {0.0f, 0.0f, 0.0f, 0.0f};
 
-    std::unique_ptr<Texture> mHdrTexture, mCubeMapTexture, mIrradianceTexture;
+    vcl::Uniform 
+        mHdrSamplerUniform            = Uniform("s_hdr", bgfx::UniformType::Sampler),
+        mEnvCubeSamplerUniform        = Uniform("s_env0", bgfx::UniformType::Sampler),
+        mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler),
+        mSpecularCubeSamplerUniform   = Uniform("s_specular", bgfx::UniformType::Sampler),
+        mRoughnessUniform             = Uniform("u_roughness", bgfx::UniformType::Vec4);
+
+    std::unique_ptr<Texture> 
+        mHdrTexture, 
+        mCubeMapTexture, 
+        mIrradianceTexture,
+        mSpecularTexture;
 
     std::string mPanorama;
 
@@ -89,7 +97,7 @@ public:
         mDirectionalLightUniforms.bind();
 
         if(!mPanorama.empty())
-            mIrradianceTexture->bind(
+            mSpecularTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
@@ -211,7 +219,7 @@ public:
 
         // create irradiance map from cubemap
 
-        const uint irradianceCubeSide = 256;
+        const uint irradianceCubeSide = cubeSide / 4;
 
         auto irradianceTexture = std::make_unique<Texture>();
         irradianceTexture->set(
@@ -248,7 +256,60 @@ public:
         );
 
         Context::instance().releaseViewId(viewId);
-        
+
+        // create specular map from cubemap
+
+        const uint specularCubeSide = cubeSide / 4;
+        const uint8_t numMips = bimg::imageGetNumMips(
+            bimg::TextureFormat::RGBA32F,
+            specularCubeSide,
+            specularCubeSide
+        );
+
+        auto specularTexture = std::make_unique<Texture>();
+        specularTexture->set(
+            nullptr,
+            Point2i(specularCubeSide, specularCubeSide),
+            true, // generate mips
+            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
+            bgfx::TextureFormat::RGBA32F,
+            true // is cubemap
+        );
+        mSpecularTexture = std::move(specularTexture);
+
+        for(uint8_t mip = 0; mip < numMips; ++mip) 
+        {
+            const uint32_t mipSize = specularCubeSide >> mip;
+            const float roughness = static_cast<float>(mip) / static_cast<float>(numMips - 1);
+
+            viewId = Context::instance().requestViewId();
+
+            mCubeMapTexture->bind(
+                0,
+                mEnvCubeSamplerUniform.handle(),
+                BGFX_SAMPLER_UVW_CLAMP
+            );
+
+            mSpecularTexture->bindForCompute(
+                1,
+                mip,
+                bgfx::Access::Write,
+                bgfx::TextureFormat::RGBA32F
+            );
+
+            mRoughnessData[0] = roughness;
+            mRoughnessUniform.bind(&mRoughnessData);
+
+            bgfx::dispatch(
+                viewId,
+                pm.getComputeProgram<CUBEMAP_TO_SPECULAR>(),
+                mipSize,
+                mipSize,
+                6
+            );
+
+            Context::instance().releaseViewId(viewId);
+        }
     }
 };
 

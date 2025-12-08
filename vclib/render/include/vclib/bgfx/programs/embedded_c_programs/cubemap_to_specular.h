@@ -20,12 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_CUBEMAP_TO_SPECULAR_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_CUBEMAP_TO_SPECULAR_H
+#include <vclib/bgfx/programs/compute_loader.h>
 
-#include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/hdr_equirect_to_cubemap.h"
-#include "embedded_c_programs/cubemap_to_irradiance.h"
-#include "embedded_c_programs/cubemap_to_specular.h"
+namespace vcl {
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+template<>
+struct ComputeLoader<ComputeProgram::CUBEMAP_TO_SPECULAR>
+{
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_CUBEMAP_TO_SPECULAR_H
