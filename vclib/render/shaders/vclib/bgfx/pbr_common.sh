@@ -103,9 +103,6 @@ vec2 hammersley(uint i, uint N)
 }  
 
 // Cubemap face directions
-// handles handedness internally (cubemaps are left-handed)
-// as opposed to our right-handed coordinate system:
-// https://wikis.khronos.org/opengl/Cubemap_Texture
 vec3 faceDirection(int face, vec2 uv, bool originTopLeft)
 {
 
