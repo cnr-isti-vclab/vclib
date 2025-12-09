@@ -40,8 +40,8 @@ namespace detail {
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 std::vector<std::string> saveObjMaterials(
     const MeshType&     m,
+    const std::string&  meshBasePath,
     std::ostream&       mtlfp,
-    const SaveSettings& settings,
     LogType&            log = nullLogger)
 {
     std::vector<std::string> materials;
@@ -59,32 +59,6 @@ std::vector<std::string> saveObjMaterials(
             mtlfp << "newmtl " << matName << std::endl;
             mtlfp << omat << std::endl;
             materials.push_back(matName);
-
-            if (settings.saveTextureImages) {
-                using enum Material::TextureType;
-                const uint N_TEXTURE_TYPES = toUnderlying(COUNT);
-                for (uint i = 0; i < N_TEXTURE_TYPES; ++i) {
-                    // supported textures to save
-                    if (i == toUnderlying(BASE_COLOR) ||
-                        i == toUnderlying(EMISSIVE)) {
-                        const TextureDescriptor& t   = mat.textureDescriptor(i);
-                        const Image&             img = m.textureImage(t.path());
-                        if (t.isNull()) {
-                            log.log(
-                                "Cannot save empty texture " + t.path(),
-                                LogType::WARNING_LOG);
-                        }
-                        else {
-                            try {
-                                saveImage(img, m.meshBasePath() + t.path());
-                            }
-                            catch (const std::runtime_error& e) {
-                                log.log(e.what(), LogType::WARNING_LOG);
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
     return materials;
@@ -101,6 +75,10 @@ void saveObj(
     LogType&            log      = nullLogger)
 {
     MeshInfo meshInfo(m);
+
+    // base path for the mesh and material textures
+    std::string meshBasePath =
+        FileInfo::pathWithoutFileName(filename);
 
     // make sure that the given info contains only components that are actually
     // available in the mesh. meshInfo will contain the intersection between the
@@ -139,7 +117,8 @@ void saveObj(
     }
 
     if (useMtl) {
-        materialNames = saveObjMaterials(m, *mtlfp, settings, log);
+        materialNames =
+            saveObjMaterials(m, meshBasePath, *mtlfp, log);
     }
 
     uint lastMaterial = UINT_NULL;
@@ -256,6 +235,13 @@ void saveObj(
                 fp << vIndices[m.index(e.vertex(0))] + 1 << " ";
                 fp << vIndices[m.index(e.vertex(1))] + 1 << std::endl;
             }
+        }
+    }
+
+    if constexpr (HasMaterials<MeshType>) {
+        if (useMtl && settings.saveTextureImages) {
+            using enum Material::TextureType;
+            saveTextureImages(m, meshBasePath, {BASE_COLOR, EMISSIVE}, log);
         }
     }
 }
