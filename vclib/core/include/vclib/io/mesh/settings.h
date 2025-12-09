@@ -102,7 +102,7 @@ struct SaveSettings
      * material properties including the textures will be saved in the Ply file
      * using a new element called "material".
      */
-    bool meshlabCompatibility = false;
+    bool meshlabCompatibility = true;
 
     /**
      * @brief Data structure that tells the saving functions which components of

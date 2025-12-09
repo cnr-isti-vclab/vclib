@@ -64,7 +64,10 @@ void savePly(
             header.setNumberEdges(m.edgeNumber());
         }
     }
-    writePlyTextures(header, m, fileBasePath, log, settings);
+
+    if (settings.meshlabCompatibility) {
+        addTexturesToHeader(header, m);
+    }
 
     // this should never happen
     if (!header.isValid())
@@ -83,6 +86,13 @@ void savePly(
     if constexpr (HasEdges<MeshType>) {
         if (header.hasEdges()) {
             writePlyEdges(fp, header, m);
+        }
+    }
+
+    if constexpr (HasMaterials<MeshType>) {
+        if (settings.saveTextureImages) {
+            using enum Material::TextureType;
+            saveTextureImages(m, fileBasePath, {BASE_COLOR}, log);
         }
     }
 }

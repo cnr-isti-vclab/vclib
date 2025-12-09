@@ -121,8 +121,15 @@ void loadPly(
             currElems += eln[i];
             ++i;
         }
-        readPlyTextures(header, m, log, settings);
+
+        addMaterialsFromHeaderTextures(header, m, log);
         readPlyMaterialIndexPostProcessing(m, loadedInfo, settings);
+
+        if constexpr (HasMaterials<MeshType>) {
+            if (settings.loadTextureImages) {
+                loadTextureImages(m, "", BitSet8::ALL(), log);
+            }
+        }
     }
     catch (const std::runtime_error& err) {
         m.clear();
