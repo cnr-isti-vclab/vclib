@@ -40,6 +40,7 @@ namespace detail {
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 std::vector<std::string> saveObjMaterials(
     const MeshType&     m,
+    const std::string&  meshBasePath,
     std::ostream&       mtlfp,
     const SaveSettings& settings,
     LogType&            log = nullLogger)
@@ -76,7 +77,7 @@ std::vector<std::string> saveObjMaterials(
                         }
                         else {
                             try {
-                                saveImage(img, m.meshBasePath() + t.path());
+                                saveImage(img, meshBasePath + t.path());
                             }
                             catch (const std::runtime_error& e) {
                                 log.log(e.what(), LogType::WARNING_LOG);
@@ -101,6 +102,10 @@ void saveObj(
     LogType&            log      = nullLogger)
 {
     MeshInfo meshInfo(m);
+
+    // base path for the mesh and material textures
+    std::string meshBasePath =
+        FileInfo::pathWithoutFileName(filename);
 
     // make sure that the given info contains only components that are actually
     // available in the mesh. meshInfo will contain the intersection between the
@@ -139,7 +144,8 @@ void saveObj(
     }
 
     if (useMtl) {
-        materialNames = saveObjMaterials(m, *mtlfp, settings, log);
+        materialNames =
+            saveObjMaterials(m, meshBasePath, *mtlfp, settings, log);
     }
 
     uint lastMaterial = UINT_NULL;
