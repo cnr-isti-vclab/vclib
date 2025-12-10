@@ -103,32 +103,33 @@ vec2 hammersley(uint i, uint N)
 }  
 
 // Cubemap face directions
-vec3 faceDirection(int face, vec2 uv, bool originTopLeft)
+// uv in range [-1,1]
+vec3 faceDirection(int face, vec2 uv, bool secondWrite)
 {
 
-    if(originTopLeft)
+    if(secondWrite)
     {
-        // to flip y we need to always invert v
-        // but also swap faces 2 and 3 (+Y and -Y)
-        uv.y = -uv.y;
-        if(face == 2)
-            face = 3;
-        else if(face == 3)
-            face = 2;
+        switch(face)
+        {
+            case 0: return normalize(vec3(  1.0, -uv.y, -uv.x));  // +X
+            case 1: return normalize(vec3( -1.0, -uv.y,  uv.x));  // -X
+            case 2: return normalize(vec3( uv.x,   1.0,  uv.y));  // +Y
+            case 3: return normalize(vec3( uv.x,  -1.0, -uv.y));  // -Y
+            case 4: return normalize(vec3( uv.x, -uv.y,   1.0));  // +Z
+            case 5: return normalize(vec3(-uv.x, -uv.y,  -1.0));  // -Z
+            default: return vec3_splat(0.0);
+        }
     }
-        
-
-   // uv in range [-1,1]
-   switch (face)
-   {
-       case 0: return normalize(vec3(  1.0, uv.y, -uv.x));  // +X
-       case 1: return normalize(vec3( -1.0, uv.y,  uv.x));  // -X
-       case 2: return normalize(vec3( uv.x, -1.0,  uv.y));  // +Y
-       case 3: return normalize(vec3( uv.x,  1.0, -uv.y));  // -Y
-       case 4: return normalize(vec3( uv.x, uv.y,   1.0));  // +Z
-       case 5: return normalize(vec3(-uv.x, uv.y,  -1.0));  // -Z
-       default: return vec3_splat(0.0);
-   }
+    else switch(face)
+    {
+        case 0: return normalize(vec3(-uv.x, uv.y,   1.0));  // +Z
+        case 1: return normalize(vec3( uv.x, uv.y,  -1.0));  // -Z
+        case 2: return normalize(vec3( uv.y, -1.0,  uv.x));  // +Y
+        case 3: return normalize(vec3(-uv.y,  1.0,  uv.x));  // -Y
+        case 4: return normalize(vec3(  1.0, uv.y,  uv.x));  // +X
+        case 5: return normalize(vec3( -1.0, uv.y, -uv.x));  // -X
+        default: return vec3_splat(0.0);
+    }
 }
 
 // Converts direction -> equirectangular UV

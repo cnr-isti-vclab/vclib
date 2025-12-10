@@ -43,12 +43,12 @@ void main()
     if (pixel.x >= size || pixel.y >= size || face >= 6)
         return; 
 
-    vec4 newColor = 
-        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y,     face)) *
-        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y,     face)) *
-        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y + 1, face)) *
-        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y + 1, face)) *
-        vec4_splat(0.25);
+    vec4 newColor = (
+        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y,     face)) +
+        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y,     face)) +
+        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y + 1, face)) +
+        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y + 1, face))
+    ) * vec4_splat(0.25);
 
     imageStore(u_nextMip, ivec3(pixel.x, pixel.y, face), newColor);
 }

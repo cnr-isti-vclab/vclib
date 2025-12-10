@@ -97,7 +97,7 @@ public:
         mDirectionalLightUniforms.bind();
 
         if(!mPanorama.empty())
-            mSpecularTexture->bind(
+            mCubeMapTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
@@ -237,7 +237,7 @@ public:
             );
 
             mCubeMapTexture->bindForCompute(
-                0,
+                1,
                 mip,
                 bgfx::Access::Write,
                 bgfx::TextureFormat::RGBA32F
