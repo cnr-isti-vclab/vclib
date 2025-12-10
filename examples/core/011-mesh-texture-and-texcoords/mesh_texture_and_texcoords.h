@@ -176,6 +176,14 @@ auto meshTextureAndTexCoords()
     customMesh.material(0).baseColorTextureDescriptor().path() =
         "custom_texture_path.png"; // just an example path
 
+    // add also the image of the texture to the mesh
+    const auto& image = meshWedgeTexCoords.textureImage(
+        meshWedgeTexCoords.material(0)
+            .baseColorTextureDescriptor()
+            .path());
+
+    customMesh.pushTextureImage("custom_texture_path.png", image);
+
     std::cout << "   Created custom mesh with " << customMesh.vertexNumber()
               << " vertices and " << customMesh.faceNumber() << " faces"
               << std::endl;

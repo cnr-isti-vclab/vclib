@@ -129,8 +129,8 @@ void saveTextureImages(
             if (textureTypesToSave[i]) {
                 const TextureDescriptor& t   = mat.textureDescriptor(i);
                 if (!savedImages.contains(t.path())) {
-                    const Image&             img = mesh.textureImage(t.path());
-                    if (t.isNull()) {
+                    const Image& img = mesh.textureImage(t.path());
+                    if (img.isNull() || t.isNull()) {
                         log.log(
                             "Cannot save empty texture " + t.path(),
                             LogType::WARNING_LOG);
