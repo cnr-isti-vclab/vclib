@@ -290,7 +290,7 @@ public:
         // create specular map from cubemap
 
         const uint specularCubeSide = cubeSide / 4;
-        const uint8_t numMips = bimg::imageGetNumMips(
+        const uint8_t specularMips = bimg::imageGetNumMips(
             bimg::TextureFormat::RGBA32F,
             specularCubeSide,
             specularCubeSide
@@ -307,10 +307,10 @@ public:
         );
         mSpecularTexture = std::move(specularTexture);
 
-        for(uint8_t mip = 0; mip < numMips; ++mip) 
+        for(uint8_t mip = 0; mip < specularMips; ++mip) 
         {
             const uint32_t mipSize = specularCubeSide >> mip;
-            const float roughness = static_cast<float>(mip) / static_cast<float>(numMips - 1);
+            const float roughness = static_cast<float>(mip) / static_cast<float>(specularMips - 1);
 
             mCubeMapTexture->bind(
                 0,
