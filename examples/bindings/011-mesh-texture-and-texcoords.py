@@ -149,6 +149,12 @@ def mesh_texture_and_texcoords():
     # mesh file path when saving)
     custom_mesh.material(0).base_color_texture_descriptor().set_path("custom_texture_path.png")  # just an example path
 
+    # add also the image of the texture to the mesh
+    image = mesh_wedge_texcoords.texture_image(
+        mesh_wedge_texcoords.material(0).base_color_texture_descriptor().path()
+    )
+    custom_mesh.push_texture_image("custom_texture_path.png", image)
+
     print(f"   Created custom mesh with {custom_mesh.vertex_number()} vertices "
           f"and {custom_mesh.face_number()} faces")
     print(f"   - Has vertex texture coordinates: {custom_mesh.is_per_vertex_tex_coord_enabled()}")
