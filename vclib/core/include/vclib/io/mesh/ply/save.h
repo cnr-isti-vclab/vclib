@@ -26,6 +26,7 @@
 #include "detail/edge.h"
 #include "detail/extra.h"
 #include "detail/face.h"
+#include "detail/material.h"
 #include "detail/vertex.h"
 
 #include <vclib/io/mesh/settings.h>
@@ -64,6 +65,11 @@ void savePly(
             header.setNumberEdges(m.edgeNumber());
         }
     }
+    if constexpr (HasMaterials<MeshType>) {
+        if (header.hasMaterials()) {
+            header.setNumberMaterials(m.materialsNumber());
+        }
+    }
 
     if (settings.meshlabCompatibility) {
         addTexturesToHeader(header, m);
@@ -90,9 +96,12 @@ void savePly(
     }
 
     if constexpr (HasMaterials<MeshType>) {
+        if (header.hasMaterials()) {
+            writePlyMaterials(fp, header, m);
+        }
         if (settings.saveTextureImages) {
             using enum Material::TextureType;
-            saveTextureImages(m, fileBasePath, {BASE_COLOR}, log);
+            saveTextureImages(m, fileBasePath, BitSet8::ALL(), log);
         }
     }
 }

@@ -203,7 +203,9 @@ public:
                 case ply::alpha: mod.setPerVertexColor(); break;
                 case ply::quality: mod.setPerVertexQuality(); break;
                 case ply::texture_u: mod.setPerVertexTexCoord(); break;
-                case ply::texnumber: mod.setPerVertexMaterialIndex(); break;
+                case ply::material_index:
+                    mod.setPerVertexMaterialIndex();
+                    break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
                         mod.addPerVertexCustomComponent(
@@ -228,7 +230,7 @@ public:
                 case ply::blue:
                 case ply::alpha: mod.setPerFaceColor(); break;
                 case ply::quality: mod.setPerFaceQuality(); break;
-                case ply::texnumber: mod.setPerFaceMaterialIndex(); break;
+                case ply::material_index: mod.setPerFaceMaterialIndex(); break;
                 case ply::texcoord: mod.setPerFaceWedgeTexCoords(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
@@ -394,12 +396,12 @@ public:
     }
 
     void setInfo(
-        const MeshInfo&          info,
-        ply::Format              format           = ply::BINARY_LITTLE_ENDIAN)
+        const MeshInfo& info,
+        ply::Format     format = ply::BINARY_LITTLE_ENDIAN)
     {
         clear();
-        mFormat       = format;
-        mValid        = true;
+        mFormat = format;
+        mValid  = true;
         if (info.hasVertices()) {
             mVertElemPos = mElements.size();
             PlyElement vElem;
@@ -460,7 +462,7 @@ public:
             }
             if (info.hasPerVertexMaterialIndex()) {
                 PlyProperty tcn;
-                tcn.name = ply::texnumber;
+                tcn.name = ply::material_index;
                 tcn.type = info.perVertexMaterialIndexType();
                 vElem.properties.push_back(tcn);
             }
@@ -527,12 +529,12 @@ public:
                 tc.list         = true;
                 tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
-                tc.type = info.perFaceWedgeTexCoordsType();
+                tc.type         = info.perFaceWedgeTexCoordsType();
                 fElem.properties.push_back(tc);
             }
             if (info.hasPerFaceMaterialIndex()) {
                 PlyProperty tn;
-                tn.name = ply::texnumber;
+                tn.name = ply::material_index;
                 tn.type = info.perFaceMaterialIndexType();
                 fElem.properties.push_back(tn);
             }
@@ -569,6 +571,73 @@ public:
             mMaterialElemPos = mElements.size();
             PlyElement matElem;
             matElem.type = ply::MATERIAL;
+            // base color
+            PlyProperty bcr, bcg, bcb, bca;
+            bcr.name = ply::red;
+            bcr.type = PrimitiveType::UCHAR;
+            bcg.name = ply::green;
+            bcg.type = PrimitiveType::UCHAR;
+            bcb.name = ply::blue;
+            bcb.type = PrimitiveType::UCHAR;
+            bca.name = ply::alpha;
+            bca.type = PrimitiveType::UCHAR;
+            matElem.properties.push_back(bcr);
+            matElem.properties.push_back(bcg);
+            matElem.properties.push_back(bcb);
+            matElem.properties.push_back(bca);
+            // metallic, roughness
+            PlyProperty pm, pr;
+            pm.name = ply::metallic;
+            pm.type = PrimitiveType::FLOAT;
+            pr.name = ply::roughness;
+            pr.type = PrimitiveType::FLOAT;
+            matElem.properties.push_back(pm);
+            matElem.properties.push_back(pr);
+            // emissive color
+            PlyProperty ecr, ecg, ecb;
+            ecr.name = ply::emissive_red;
+            ecr.type = PrimitiveType::UCHAR;
+            ecg.name = ply::emissive_green;
+            ecg.type = PrimitiveType::UCHAR;
+            ecb.name = ply::emissive_blue;
+            ecb.type = PrimitiveType::UCHAR;
+            matElem.properties.push_back(ecr);
+            matElem.properties.push_back(ecg);
+            matElem.properties.push_back(ecb);
+            // alpha mode, alpha cutoff
+            PlyProperty pam, pac;
+            pam.name = ply::alpha_mode;
+            pam.type = PrimitiveType::UINT;
+            pac.name = ply::alpha_cutoff;
+            pac.type = PrimitiveType::FLOAT;
+            matElem.properties.push_back(pam);
+            matElem.properties.push_back(pac);
+            // normal scale, occlusion strength
+            PlyProperty pns, pos;
+            pns.name = ply::normal_scale;
+            pns.type = PrimitiveType::FLOAT;
+            pos.name = ply::occlusion_strength;
+            pos.type = PrimitiveType::FLOAT;
+            matElem.properties.push_back(pns);
+            matElem.properties.push_back(pos);
+            // double sided
+            PlyProperty pds;
+            pds.name = ply::double_sided;
+            pds.type = PrimitiveType::UINT;
+            matElem.properties.push_back(pds);
+            // textures
+            PlyProperty pt;
+            pt.name         = ply::base_color_texture;
+            pt.list         = true;
+            pt.listSizeType = PrimitiveType::UCHAR; // meshlab compatibility
+            pt.type         = PrimitiveType::CHAR;
+            matElem.properties.push_back(pt);
+            pt.name = ply::metallic_roughness_texture;
+            matElem.properties.push_back(pt);
+            pt.name = ply::normal_texture;
+            matElem.properties.push_back(pt);
+            pt.name = ply::occlusion_texture;
+            matElem.properties.push_back(pt);
             mElements.push_back(matElem);
         }
     }
@@ -624,7 +693,8 @@ public:
                 if (p.name == ply::unknown)
                     s += p.unknownPropertyName + "\n";
                 else
-                    s += nameToString(p.name) + "\n";
+                    s += nameToString(p.name, settings.meshlabCompatibility) +
+                         "\n";
             }
         }
         s += "end_header\n";
@@ -639,7 +709,7 @@ public:
     iterator end() const { return mElements.end(); }
 
 private:
-    PlyElement readElement(const Tokenizer& lineTokenizer) const
+    static PlyElement readElement(const Tokenizer& lineTokenizer)
     {
         PlyElement          e;
         Tokenizer::iterator token = lineTokenizer.begin();
@@ -668,7 +738,7 @@ private:
         return e;
     }
 
-    PlyProperty readProperty(const Tokenizer& lineTokenizer) const
+    static PlyProperty readProperty(const Tokenizer& lineTokenizer)
     {
         PlyProperty         p;
         Tokenizer::iterator token = lineTokenizer.begin();
@@ -696,7 +766,7 @@ private:
         return p;
     }
 
-    ply::PropertyName stringToName(const std::string& name) const
+    static ply::PropertyName stringToName(const std::string& name)
     {
         ply::PropertyName pn = ply::unknown;
         if (name == "x")
@@ -725,8 +795,8 @@ private:
             pn = ply::texture_u;
         if (name == "texture_v" || name == "t" || name == "v")
             pn = ply::texture_v;
-        if (name == "texnumber")
-            pn = ply::texnumber;
+        if (name == "material_index" || name == "texnumber")
+            pn = ply::material_index;
         if (name == "vertex_indices")
             pn = ply::vertex_indices;
         if (name == "texcoord")
@@ -735,11 +805,39 @@ private:
             pn = ply::vertex1;
         if (name == "vertex2")
             pn = ply::vertex2;
+        if (name == "metallic")
+            pn = ply::metallic;
+        if (name == "roughness")
+            pn = ply::roughness;
+        if (name == "emissive_red")
+            pn = ply::emissive_red;
+        if (name == "emissive_green")
+            pn = ply::emissive_green;
+        if (name == "emissive_blue")
+            pn = ply::emissive_blue;
+        if (name == "alpha_mode")
+            pn = ply::alpha_mode;
+        if (name == "alpha_cutoff")
+            pn = ply::alpha_cutoff;
+        if (name == "normal_scale")
+            pn = ply::normal_scale;
+        if (name == "occlusion_strength")
+            pn = ply::occlusion_strength;
+        if (name == "double_sided")
+            pn = ply::double_sided;
+        if (name == "base_color_texture")
+            pn = ply::base_color_texture;
+        if (name == "metallic_roughness_texture")
+            pn = ply::metallic_roughness_texture;
+        if (name == "normal_texture")
+            pn = ply::normal_texture;
+        if (name == "occlusion_texture")
+            pn = ply::occlusion_texture;
 
         return pn;
     }
 
-    ply::PropertyType stringToType(const std::string& type) const
+    static ply::PropertyType stringToType(const std::string& type)
     {
         ply::PropertyType pt = ply::PropertyType::UCHAR;
         if (type == "char")
@@ -761,7 +859,9 @@ private:
         return pt;
     }
 
-    std::string nameToString(ply::PropertyName n) const
+    static std::string nameToString(
+        ply::PropertyName n,
+        bool              meshlabCompatibility = false)
     {
         switch (n) {
         case ply::x: return "x";
@@ -777,16 +877,32 @@ private:
         case ply::quality: return "quality";
         case ply::texture_u: return "texture_u";
         case ply::texture_v: return "texture_v";
-        case ply::texnumber: return "texnumber";
+        case ply::material_index:
+            return meshlabCompatibility ? "texnumber" : "material_index";
         case ply::vertex_indices: return "vertex_indices";
         case ply::texcoord: return "texcoord";
         case ply::vertex1: return "vertex1";
         case ply::vertex2: return "vertex2";
+        case ply::metallic: return "metallic";
+        case ply::roughness: return "roughness";
+        case ply::emissive_red: return "emissive_red";
+        case ply::emissive_green: return "emissive_green";
+        case ply::emissive_blue: return "emissive_blue";
+        case ply::alpha_mode: return "alpha_mode";
+        case ply::alpha_cutoff: return "alpha_cutoff";
+        case ply::normal_scale: return "normal_scale";
+        case ply::occlusion_strength: return "occlusion_strength";
+        case ply::double_sided: return "double_sided";
+        case ply::base_color_texture: return "base_color_texture";
+        case ply::metallic_roughness_texture:
+            return "metallic_roughness_texture";
+        case ply::normal_texture: return "normal_texture";
+        case ply::occlusion_texture: return "occlusion_texture";
         default: return "unknown";
         }
     }
 
-    std::string typeToString(ply::PropertyType t) const
+    static std::string typeToString(ply::PropertyType t)
     {
         switch (t) {
         case ply::PropertyType::CHAR: return "char";

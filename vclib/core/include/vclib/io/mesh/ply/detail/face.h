@@ -164,7 +164,7 @@ void readPlyFaceProperty(
         }
     }
     // loading texture id associated to ALL the wedges
-    if (p.name == ply::texnumber) {
+    if (p.name == ply::material_index) {
         if constexpr (HasPerFaceMaterialIndex<MeshType>) {
             if (isPerFaceMaterialIndexAvailable(mesh)) {
                 uint n      = io::readPrimitiveType<uint>(file, p.type, end);
@@ -336,7 +336,7 @@ void writePlyFaces(
                     hasBeenWritten = true;
                 }
             }
-            if (p.name == ply::texnumber) {
+            if (p.name == ply::material_index) {
                 if constexpr (HasPerFaceMaterialIndex<MeshType>) {
                     io::writeProperty(file, f.materialIndex(), p.type, format);
                     hasBeenWritten = true;

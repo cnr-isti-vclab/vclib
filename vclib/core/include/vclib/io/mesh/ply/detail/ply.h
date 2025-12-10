@@ -54,7 +54,7 @@ typedef enum {
     quality,
     texture_u,
     texture_v,
-    texnumber,
+    material_index,
     vertex_indices,
     texcoord,
     vertex1,

@@ -89,7 +89,7 @@ void readPlyVertexProperty(
             }
         }
     }
-    if (p.name == ply::texnumber) {
+    if (p.name == ply::material_index) {
         if constexpr (HasPerVertexMaterialIndex<MeshType>) {
             if (isPerVertexMaterialIndexAvailable(mesh)) {
                 v.materialIndex() =
@@ -200,7 +200,7 @@ void writePlyVertices(
                     hasBeenWritten = true;
                 }
             }
-            if (p.name == ply::texnumber) {
+            if (p.name == ply::material_index) {
                 if constexpr (HasPerVertexMaterialIndex<MeshType>) {
                     io::writeProperty(
                         file, v.materialIndex(), p.type, format);
