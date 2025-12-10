@@ -182,7 +182,7 @@ public:
 
         const uint32_t cubeSide = hdr->m_width / 4;
 
-        bgfx::ViewId viewId = Context::instance().requestViewId();
+        const bgfx::ViewId viewId = Context::instance().requestViewId();
 
         auto cubemapTexture = std::make_unique<Texture>();
         cubemapTexture->set(
@@ -215,8 +215,6 @@ public:
             6
         );
 
-        Context::instance().releaseViewId(viewId);
-
         // generate mipmaps for cubemap
 
         const uint8_t cubeMips = bimg::imageGetNumMips(
@@ -232,18 +230,16 @@ public:
             mCubeMapTexture->bindForCompute(
                 0,
                 mip - 1,
-                bgfx::Access::Read,
+                bgfx::Access::ReadWrite,
                 bgfx::TextureFormat::RGBA32F
             );
 
             mCubeMapTexture->bindForCompute(
                 1,
                 mip,
-                bgfx::Access::Write,
+                bgfx::Access::ReadWrite,
                 bgfx::TextureFormat::RGBA32F
             );
-
-            viewId = Context::instance().requestViewId();
 
             bgfx::dispatch(
                 viewId,
@@ -253,7 +249,6 @@ public:
                 6
             );
 
-            Context::instance().releaseViewId(viewId);
         }
 
         // create irradiance map from cubemap
@@ -270,8 +265,6 @@ public:
             true // is cubemap
         );
         mIrradianceTexture = std::move(irradianceTexture);
-
-        viewId = Context::instance().requestViewId();
 
         mCubeMapTexture->bind(
             0,
@@ -293,8 +286,6 @@ public:
             irradianceCubeSide,
             6
         );
-
-        Context::instance().releaseViewId(viewId);
 
         // create specular map from cubemap
 
@@ -321,8 +312,6 @@ public:
             const uint32_t mipSize = specularCubeSide >> mip;
             const float roughness = static_cast<float>(mip) / static_cast<float>(numMips - 1);
 
-            viewId = Context::instance().requestViewId();
-
             mCubeMapTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
@@ -347,8 +336,9 @@ public:
                 6
             );
 
-            Context::instance().releaseViewId(viewId);
         }
+
+        Context::instance().releaseViewId(viewId);
     }
 };
 

@@ -22,8 +22,8 @@
 
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
-IMAGE2D_ARRAY_RO(u_prevMip, rgba32f, 0);
-IMAGE2D_ARRAY_WO(u_nextMip, rgba32f, 1);
+IMAGE2D_ARRAY_RW(u_prevMip, rgba32f, 0);
+IMAGE2D_ARRAY_RW(u_nextMip, rgba32f, 1);
 
 NUM_THREADS(1, 1, 1)
 void main()
@@ -43,11 +43,13 @@ void main()
     if (pixel.x >= size || pixel.y >= size || face >= 6)
         return; 
 
+    ivec2 prevCoord = pixel * 2;
+
     vec4 newColor = (
-        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y,     face)) +
-        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y,     face)) +
-        imageLoad(u_prevMip, ivec3(2 * pixel.x,     2 * pixel.y + 1, face)) +
-        imageLoad(u_prevMip, ivec3(2 * pixel.x + 1, 2 * pixel.y + 1, face))
+        imageLoad(u_prevMip, ivec3(prevCoord.x,     prevCoord.y,     face)) +
+        imageLoad(u_prevMip, ivec3(prevCoord.x + 1, prevCoord.y,     face)) +
+        imageLoad(u_prevMip, ivec3(prevCoord.x,     prevCoord.y + 1, face)) +
+        imageLoad(u_prevMip, ivec3(prevCoord.x + 1, prevCoord.y + 1, face))
     ) * vec4_splat(0.25);
 
     imageStore(u_nextMip, ivec3(pixel.x, pixel.y, face), newColor);
