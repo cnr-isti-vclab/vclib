@@ -52,7 +52,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
         mEnvCubeSamplerUniform        = Uniform("s_env0", bgfx::UniformType::Sampler),
         mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler),
         mSpecularCubeSamplerUniform   = Uniform("s_specular", bgfx::UniformType::Sampler),
-        mDataUniform             = Uniform("u_dataPack", bgfx::UniformType::Vec4);
+        mDataUniform                  = Uniform("u_dataPack", bgfx::UniformType::Vec4);
 
     std::unique_ptr<Texture> 
         mHdrTexture, 
@@ -61,6 +61,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
         mSpecularTexture;
 
     std::string mPanorama;
+    bool mComputeEnvironmentTextures = false;
 
     // flags
     bool mStatsEnabled = false;
@@ -96,6 +97,13 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
+        if(mComputeEnvironmentTextures)
+        {
+            computeEnvironmentTextures(viewId);
+            mComputeEnvironmentTextures = false;
+        }
+
+        // when panorama is set, bind environment textures
         if(!mPanorama.empty())
             mSpecularTexture->bind(
                 0,
@@ -154,46 +162,82 @@ public:
     void setPanorama(const std::string& panorama)
     {
         mPanorama = panorama;
-        loadEnvironmentTextures();
+        mComputeEnvironmentTextures = true;
     }
 
     private:
 
-    void loadEnvironmentTextures()
+    void computeEnvironmentTextures(const uint viewId)
     {
         ProgramManager& pm = Context::instance().programManager();
         using enum ComputeProgram;
 
-        // load hdr panorama
+        // load hdr panorama - TODO: adapt to loading both hdr or cubemaps directly
 
         bimg::ImageContainer *hdr = loadHdr(mPanorama);
 
-        // convert hdr equirectangular to cubemap
+        const uint32_t cubeSide = hdr->m_width / 4;
+        const uint8_t cubeMips = bimg::imageGetNumMips(
+            bimg::TextureFormat::RGBA32F,
+            cubeSide,
+            cubeSide
+        );
+
+        const uint32_t irradianceCubeSide = cubeSide / 4;
+
+        const uint32_t specularCubeSide = cubeSide / 4;
+        const uint8_t specularMips = bimg::imageGetNumMips(
+            bimg::TextureFormat::RGBA32F,
+            specularCubeSide,
+            specularCubeSide
+        );
+
+        // create textures
 
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
             hdr->m_data,
             Point2i(hdr->m_width, hdr->m_height),
-            false,
+            false, // has mips
             BGFX_TEXTURE_NONE,
             bgfx::TextureFormat::RGBA32F
         );
         mHdrTexture = std::move(hdrTexture);
 
-        const uint32_t cubeSide = hdr->m_width / 4;
-
-        const bgfx::ViewId viewId = Context::instance().requestViewId();
-
         auto cubemapTexture = std::make_unique<Texture>();
         cubemapTexture->set(
             nullptr,
             Point2i(cubeSide, cubeSide),
-            true,
+            true, // has mips
             BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
             bgfx::TextureFormat::RGBA32F,
             true // is cubemap
         );
         mCubeMapTexture = std::move(cubemapTexture); // FIXME? why?
+
+        auto irradianceTexture = std::make_unique<Texture>();
+        irradianceTexture->set(
+            nullptr,
+            Point2i(irradianceCubeSide, irradianceCubeSide),
+            false, // has mips
+            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
+            bgfx::TextureFormat::RGBA32F,
+            true // is cubemap
+        );
+        mIrradianceTexture = std::move(irradianceTexture);
+
+        auto specularTexture = std::make_unique<Texture>();
+        specularTexture->set(
+            nullptr,
+            Point2i(specularCubeSide, specularCubeSide),
+            true, // has mips
+            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
+            bgfx::TextureFormat::RGBA32F,
+            true // is cubemap
+        );
+        mSpecularTexture = std::move(specularTexture);
+
+        // convert hdr equirectangular to cubemap
 
         mHdrTexture->bind(
             0,
@@ -216,12 +260,6 @@ public:
         );
 
         // generate mipmaps for cubemap
-
-        const uint8_t cubeMips = bimg::imageGetNumMips(
-            bimg::TextureFormat::RGBA32F,
-            cubeSide,
-            cubeSide
-        );
 
         for(uint8_t mip = 1; mip < cubeMips; mip++)
         {
@@ -253,19 +291,6 @@ public:
 
         // create irradiance map from cubemap
 
-        const uint irradianceCubeSide = cubeSide / 4;
-
-        auto irradianceTexture = std::make_unique<Texture>();
-        irradianceTexture->set(
-            nullptr,
-            Point2i(irradianceCubeSide, irradianceCubeSide),
-            false,
-            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
-            bgfx::TextureFormat::RGBA32F,
-            true // is cubemap
-        );
-        mIrradianceTexture = std::move(irradianceTexture);
-
         mCubeMapTexture->bind(
             0,
             mEnvCubeSamplerUniform.handle(),
@@ -288,24 +313,6 @@ public:
         );
 
         // create specular map from cubemap
-
-        const uint specularCubeSide = cubeSide / 4;
-        const uint8_t specularMips = bimg::imageGetNumMips(
-            bimg::TextureFormat::RGBA32F,
-            specularCubeSide,
-            specularCubeSide
-        );
-
-        auto specularTexture = std::make_unique<Texture>();
-        specularTexture->set(
-            nullptr,
-            Point2i(specularCubeSide, specularCubeSide),
-            true, // generate mips
-            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
-            bgfx::TextureFormat::RGBA32F,
-            true // is cubemap
-        );
-        mSpecularTexture = std::move(specularTexture);
 
         for(uint8_t mip = 0; mip < specularMips; ++mip) 
         {
@@ -338,8 +345,6 @@ public:
             );
 
         }
-
-        Context::instance().releaseViewId(viewId);
     }
 };
 
