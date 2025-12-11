@@ -45,14 +45,14 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     DirectionalLightUniforms mDirectionalLightUniforms;
 
-    std::array<float, 4> mRoughnessData = {0.0f, 0.0f, 0.0f, 0.0f};
+    std::array<float, 4> mUniformData = {0.0f, 0.0f, 0.0f, 0.0f};
 
     vcl::Uniform 
         mHdrSamplerUniform            = Uniform("s_hdr", bgfx::UniformType::Sampler),
         mEnvCubeSamplerUniform        = Uniform("s_env0", bgfx::UniformType::Sampler),
         mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler),
         mSpecularCubeSamplerUniform   = Uniform("s_specular", bgfx::UniformType::Sampler),
-        mRoughnessUniform             = Uniform("u_roughness", bgfx::UniformType::Vec4);
+        mDataUniform             = Uniform("u_dataPack", bgfx::UniformType::Vec4);
 
     std::unique_ptr<Texture> 
         mHdrTexture, 
@@ -97,7 +97,7 @@ public:
         mDirectionalLightUniforms.bind();
 
         if(!mPanorama.empty())
-            mCubeMapTexture->bind(
+            mSpecularTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
@@ -325,8 +325,9 @@ public:
                 bgfx::TextureFormat::RGBA32F
             );
 
-            mRoughnessData[0] = roughness;
-            mRoughnessUniform.bind(&mRoughnessData);
+            mUniformData[0] = roughness;
+            mUniformData[1] = float(cubeSide);
+            mDataUniform.bind(&mUniformData);
 
             bgfx::dispatch(
                 viewId,

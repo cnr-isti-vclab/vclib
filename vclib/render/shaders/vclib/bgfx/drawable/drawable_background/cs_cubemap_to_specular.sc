@@ -25,8 +25,9 @@
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(u_specular, rgba32f, 1);
 
-uniform vec4 u_roughness;
-#define roughness u_roughness.x
+uniform vec4 u_dataPack;
+#define roughness u_dataPack.x
+#define sourceResolution u_dataPack.y
 
 NUM_THREADS(1, 1, 1)
 void main()
@@ -60,18 +61,27 @@ void main()
     const uint SAMPLE_COUNT = 1024u;
     float totalWeight = 0.0;
     vec3 prefilteredColor = vec3_splat(0.0);
+    float alpha2 = roughness * roughness * roughness * roughness;
 
     for (uint i = 0u; i < SAMPLE_COUNT; ++i)
     {
         // Hammersley point on hemisphere
         vec2 Xi = hammersley(i, SAMPLE_COUNT);
         vec3 H  = importanceSampleGGX(Xi, N, roughness);
+
+        // determine mip level to sample based on pdf
+        float NdotH = max(dot(N, H), 0.0);
+        float pdf = D_GGX(NdotH, alpha2) / 4.0; // actually D * NdotH / (4.0 * HdotV) but remember N = V = R
+        float saTexel  = 4.0 * PI / (6.0 * sourceResolution * sourceResolution);
+        float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf);
+        float mipLevel = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);
+
         vec3 L  = normalize(2.0 * dot(V, H) * H - V);
 
         float NdotL = max(dot(N, L), 0.0);
         if (NdotL > 0.0)
         {
-            prefilteredColor += textureCubeLod(s_env0, L, 0).rgb * NdotL; // TODO: understand which LOD is best here
+            prefilteredColor += textureCubeLod(s_env0, L, mipLevel).rgb * NdotL;
             totalWeight      += NdotL;
         }
     }
