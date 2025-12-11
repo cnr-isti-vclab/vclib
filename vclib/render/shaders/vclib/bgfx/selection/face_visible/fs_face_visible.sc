@@ -20,21 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+uniform vec4 u_meshId;
 
-#include "embedded_c_programs/drawable_mesh_points.h"
-#include "embedded_c_programs/selection_face_visible_subtract.h"
-#include "embedded_c_programs/selection_face_visible_add.h"
-#include "embedded_c_programs/selection_face_subtract.h"
-#include "embedded_c_programs/selection_face_add.h"
-#include "embedded_c_programs/buffer_to_tex.h"
-#include "embedded_c_programs/selection_face.h"
-#include "embedded_c_programs/selection_invert.h"
-#include "embedded_c_programs/selection_none.h"
-#include "embedded_c_programs/selection_all.h"
-#include "embedded_c_programs/selection_vertex_subtract.h"
-#include "embedded_c_programs/selection_vertex_add.h"
-#include "embedded_c_programs/selection_vertex.h"
-
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
+void main() {
+    uint meshId = floatBitsToUint(u_meshId.x);
+    // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)
+    if(meshId == uint(0)) {
+        discard;
+    }
+    uint priId = uint(gl_PrimitiveID);
+    uint shft = uint(16);
+    uint mask = uint(0xFFFF);
+    gl_FragColor = vec4(
+        uintBitsToFloat((meshId >> shft) & mask),
+        uintBitsToFloat(meshId & mask),
+        uintBitsToFloat((priId >> shft) & mask),
+        uintBitsToFloat(priId & mask)
+    );
+}

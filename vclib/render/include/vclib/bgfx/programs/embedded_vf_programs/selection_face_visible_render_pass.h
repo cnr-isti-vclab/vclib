@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_VISIBLE_FACE_SELECTION_ADD_P2_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_VISIBLE_FACE_SELECTION_ADD_P2_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_SELECTION_FACE_VISIBLE_RENDER_PASS_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_SELECTION_FACE_VISIBLE_RENDER_PASS_H
 
 #include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
 template<>
-struct VertFragLoader<VertFragProgram::VISIBLE_FACE_SELECTION_ADD_P2>
+struct VertFragLoader<VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>
 {
     static bgfx::EmbeddedShader::Data vertexShader(
         bgfx::RendererType::Enum type);
@@ -39,4 +39,4 @@ struct VertFragLoader<VertFragProgram::VISIBLE_FACE_SELECTION_ADD_P2>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_VISIBLE_FACE_SELECTION_ADD_P2_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_SELECTION_FACE_VISIBLE_RENDER_PASS_H

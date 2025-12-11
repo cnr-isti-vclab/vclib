@@ -21,16 +21,35 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+IMAGE2D_RO(s_ids, rgba16u, 0);
 BUFFER_RW(face_selected, uint, 6);
 
-void main()
-{
-   uint priId = uint(gl_PrimitiveID);
-   uint bufferIndex = priId/32;
-   uint bitOffset = 31-(priId%32);
-   uint bitMask = 0x1 << bitOffset;
-   uint _useless;
-   atomicFetchAndOr(face_selected[bufferIndex], bitMask, _useless);
-   gl_FragColor = vec4(0,0,0,0);
+uniform vec4 u_meshIdAndDispatchSizeXY;
+
+void main() {
+    uint meshId = floatBitsToUint(u_meshIdAndDispatchSizeXY.x);
+    // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)
+    if(meshId == 0) {
+        return;
+    }
+    uvec2 dispatchSize = uvec2(floatBitsToUint(u_meshIdAndDispatchSizeXY.y), floatBitsToUint(u_meshIdAndDispatchSizeXY.z));
+    uint tex1DCoord = 
+          uint(gl_WorkGroupID.x) 
+        + uint(gl_WorkGroupID.y) * dispatchSize.x 
+        + uint(gl_WorkGroupID.z) * dispatchSize.x * dispatchSize.y;
+    uvec2 imSz = imageSize(s_ids).xy;
+    ivec2 tex2DCoord = ivec2(int(tex1DCoord) % imSz.x, int(tex1DCoord) / imSz.x);
+    uvec4 pixel = imageLoad(s_ids, tex2DCoord);
+    uint texMeshId = (pixel.x << uint(16)) | pixel.y;
+    uint texPrimId = (pixel.z << uint(16)) | pixel.w;
+    if(texMeshId != meshId) {
+        return;
+    }
+    uint bufferIndex = texPrimId/32;
+    uint bitOffset = 31-(texPrimId%32);
+    uint bitMask = 0x1 << bitOffset;
+    uint _useless;
+    atomicFetchAndAnd(face_selected[bufferIndex], ~bitMask, _useless);
 }

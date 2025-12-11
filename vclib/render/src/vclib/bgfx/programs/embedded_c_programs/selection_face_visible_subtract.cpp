@@ -20,23 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_VISIBLE_FACE_SELECTION_ADD_P1_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_VISIBLE_FACE_SELECTION_ADD_P1_H
+#include <vclib/bgfx/programs/embedded_c_programs/selection_face_visible_subtract.h>
 
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_subtract.sc.400.bin.h>
+
+#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_subtract.sc.essl.bin.h>
+
+#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_subtract.sc.spv.bin.h>
+
+#ifdef _WIN32
+#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_subtract.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_subtract.sc.mtl.bin.h>
+#endif // __APPLE__
 
 namespace vcl {
 
-template<>
-struct VertFragLoader<VertFragProgram::VISIBLE_FACE_SELECTION_ADD_P1>
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_FACE_VISIBLE_SUBTRACT>::
+    computeShader(bgfx::RendererType::Enum type)
 {
-    static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
-
-    static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
-};
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_selection_face_visible_subtract_essl, sizeof(cs_selection_face_visible_subtract_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_selection_face_visible_subtract_400, sizeof(cs_selection_face_visible_subtract_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_selection_face_visible_subtract_spv, sizeof(cs_selection_face_visible_subtract_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_selection_face_visible_subtract_dx11, sizeof(cs_selection_face_visible_subtract_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_selection_face_visible_subtract_mtl, sizeof(cs_selection_face_visible_subtract_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
+}
 
 } // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_VISIBLE_FACE_SELECTION_ADD_P1_H

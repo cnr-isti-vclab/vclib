@@ -20,11 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_SUBTRACT_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_SUBTRACT_H
 
-#include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/programs/compute_loader.h>
 
-void main()
+namespace vcl {
+
+template<>
+struct ComputeLoader<ComputeProgram::SELECTION_FACE_VISIBLE_SUBTRACT>
 {
-   gl_Position = mul(u_modelViewProj, vec4(a_position, 1));
-}
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_SUBTRACT_H
