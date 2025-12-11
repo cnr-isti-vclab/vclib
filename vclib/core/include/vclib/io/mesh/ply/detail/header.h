@@ -137,6 +137,8 @@ public:
                                 mEdgeElemPos = mElements.size();
                             if (element.type == ply::TRISTRIP)
                                 mTriStripElemPos = mElements.size();
+                            if (element.type == ply::MATERIAL)
+                                mMaterialElemPos = mElements.size();
                             mElements.push_back(element);
                             element = PlyElement();
                         }
@@ -157,6 +159,8 @@ public:
                             mEdgeElemPos = mElements.size();
                         if (element.type == ply::TRISTRIP)
                             mTriStripElemPos = mElements.size();
+                        if (element.type == ply::MATERIAL)
+                            mMaterialElemPos = mElements.size();
                         mElements.push_back(element);
                     }
                 }
@@ -728,6 +732,10 @@ private:
         }
         else if (s == "tristrips") {
             e.type           = ply::TRISTRIP;
+            e.numberElements = std::stoi(*(++token));
+        }
+        else if (s == "material") {
+            e.type           = ply::MATERIAL;
             e.numberElements = std::stoi(*(++token));
         }
         else {
