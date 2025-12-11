@@ -29,7 +29,7 @@ uniform vec4 u_dataPack;
 #define roughness u_dataPack.x
 #define sourceResolution u_dataPack.y
 
-NUM_THREADS(1, 1, 1)
+NUM_THREADS(8, 8, 1)
 void main()
 {
     ivec3 gid = ivec3(gl_GlobalInvocationID.xyz);

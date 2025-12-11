@@ -25,7 +25,7 @@
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(u_irradiance, rgba32f, 1);
 
-NUM_THREADS(1, 1, 1)
+NUM_THREADS(8, 8, 1)
 void main()
 {
     ivec3 gid = ivec3(gl_GlobalInvocationID.xyz);

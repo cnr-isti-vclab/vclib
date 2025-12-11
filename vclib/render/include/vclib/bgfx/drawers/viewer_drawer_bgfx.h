@@ -254,8 +254,8 @@ public:
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
-            cubeSide,
-            cubeSide,
+            cubeSide / 8,
+            cubeSide / 8,
             6
         );
 
@@ -264,6 +264,11 @@ public:
         for(uint8_t mip = 1; mip < cubeMips; mip++)
         {
             const uint32_t mipSize = cubeSide >> mip;
+
+            // ensure at least 1 threadgroup is dispatched for small mips
+            // assuming the compute shader uses 8x8 threads per group
+            // and checks for out-of-bounds internally
+            const uint32_t threadGroups = (mipSize < 8) ? 1 : (mipSize / 8); 
 
             mCubeMapTexture->bindForCompute(
                 0,
@@ -282,8 +287,8 @@ public:
             bgfx::dispatch(
                 viewId,
                 pm.getComputeProgram<CUBEMAP_MIPMAP_GEN>(),
-                mipSize,
-                mipSize,
+                threadGroups,
+                threadGroups,
                 6
             );
 
@@ -307,8 +312,8 @@ public:
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<CUBEMAP_TO_IRRADIANCE>(),
-            irradianceCubeSide,
-            irradianceCubeSide,
+            irradianceCubeSide / 8,
+            irradianceCubeSide / 8,
             6
         );
 
@@ -318,6 +323,11 @@ public:
         {
             const uint32_t mipSize = specularCubeSide >> mip;
             const float roughness = static_cast<float>(mip) / static_cast<float>(specularMips - 1);
+
+            // ensure at least 1 threadgroup is dispatched for small mips
+            // assuming the compute shader uses 8x8 threads per group
+            // and checks for out-of-bounds internally
+            const uint32_t threadGroups = (mipSize < 8) ? 1 : (mipSize / 8);
 
             mCubeMapTexture->bind(
                 0,
@@ -339,8 +349,8 @@ public:
             bgfx::dispatch(
                 viewId,
                 pm.getComputeProgram<CUBEMAP_TO_SPECULAR>(),
-                mipSize,
-                mipSize,
+                threadGroups,
+                threadGroups,
                 6
             );
 

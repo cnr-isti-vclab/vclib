@@ -25,7 +25,7 @@
 SAMPLER2D(s_hdr, 0);                     // bound with setTexture()
 IMAGE2D_ARRAY_WO(u_cubemap, rgba32f, 1); // bound with setImage() as RW
 
-NUM_THREADS(1, 1, 1) // 8x8 threads per threadgroup
+NUM_THREADS(8, 8, 1) // 8x8 threads per threadgroup
 void main()
 {
     ivec3 gid = ivec3(gl_GlobalInvocationID.xyz);
