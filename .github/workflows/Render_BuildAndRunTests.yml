@@ -36,7 +36,7 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
-        choco upgrade ccache ninja
+        winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
