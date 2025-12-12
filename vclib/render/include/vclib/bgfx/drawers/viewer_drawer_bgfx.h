@@ -105,7 +105,7 @@ public:
 
         // when panorama is set, bind environment textures
         if(!mPanorama.empty())
-            mSpecularTexture->bind(
+            mIrradianceTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP

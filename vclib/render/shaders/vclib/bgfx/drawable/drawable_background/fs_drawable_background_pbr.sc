@@ -29,5 +29,5 @@ SAMPLERCUBE(s_env0, 0);
 
 void main()
 {
-    gl_FragColor = textureCubeLod(s_env0, normalize(v_texcoord0), 2);
+    gl_FragColor = textureCubeLod(s_env0, normalize(v_texcoord0), 0);
 }

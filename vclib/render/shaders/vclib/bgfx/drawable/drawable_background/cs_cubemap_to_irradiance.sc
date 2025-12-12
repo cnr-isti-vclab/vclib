@@ -56,18 +56,22 @@ void main()
     up          = normalize(cross(normal, right));
 
     // Irradiance integration
-    const float sampleDelta = 0.025;
+    const float sampleDelta = 0.075;
     vec3 irradiance = vec3_splat(0.0);
     uint nrSamples = 0;
     for (float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta)
     {
+        float sinPhi = sin(phi);
+        float cosPhi = cos(phi);
         for (float theta = 0.0; theta < 0.5 * PI; theta += sampleDelta)
         {
+            float sinTheta = sin(theta);
+            float cosTheta = cos(theta);
             // Spherical to cartesian (in tangent space)
             vec3 tangentSample;
-            tangentSample.x = sin(theta) * cos(phi);
-            tangentSample.y = sin(theta) * sin(phi);
-            tangentSample.z = cos(theta);
+            tangentSample.x = sinTheta * cosPhi;
+            tangentSample.y = sinTheta * sinPhi;
+            tangentSample.z = cosTheta;
 
             // Tangent space to world
             vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
@@ -77,7 +81,7 @@ void main()
 
             // Weight by cosine of theta
             // sin(theta) compensates for smaller area covered by samples closer to the pole
-            irradiance += envColor * cos(theta) * sin(theta);
+            irradiance += envColor * cosTheta * sinTheta;
 
             nrSamples++;
         }
