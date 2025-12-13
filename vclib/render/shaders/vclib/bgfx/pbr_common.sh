@@ -64,6 +64,105 @@
 #define LIGHT_KEY_DIR_VIEW                            mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
 #define LIGHT_FILL_DIR_VIEW                           mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
 
+#define DISTRIBUTION_LAMBERTIAN                     0u
+#define DISTRIBUTION_GGX                            1u
+
+float radicalInverse_VdC(uint bits) 
+{
+    bits = (bits << 16u) | (bits >> 16u);
+    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+    return float(bits) * 2.3283064365386963e-10; // / 0x100000000
+}
+
+vec2 hammersley(uint i, uint N)
+{
+    return vec2(float(i)/float(N), radicalInverse_VdC(i));
+}  
+
+// TBN generates a tangent bitangent normal coordinate frame from the normal
+// (the normal must be normalized)
+mat3 generateTBN(vec3 normal)
+{
+    vec3 bitangent = vec3(0.0, 1.0, 0.0);
+    vec3 tangent = normalize(cross(bitangent, normal));
+    bitangent = cross(normal, tangent);
+
+    return mat3(tangent, bitangent, normal);
+}
+
+struct MicrofacetDistributionSample
+{
+    float pdf;
+    float cosTheta;
+    float sinTheta;
+    float phi;
+};
+
+MicrofacetDistributionSample Lambertian(vec2 xi)
+{
+    MicrofacetDistributionSample lambertian;
+
+    // Cosine weighted hemisphere sampling
+    // http://www.pbr-book.org/3ed-2018/Monte_Carlo_Integration/2D_Sampling_with_Multidimensional_Transformations.html#Cosine-WeightedHemisphereSampling
+    lambertian.cosTheta = sqrt(1.0 - xi.y);
+    lambertian.sinTheta = sqrt(xi.y);
+    lambertian.phi = 2.0 * PI * xi.x;
+
+    // evaluation for solid angle, therefore drop the sinTheta
+    lambertian.pdf = lambertian.cosTheta / PI;
+
+    return lambertian;
+}
+
+vec4 getImportanceSample(uint sampleIndex, uint sampleCount, vec3 N, uint distributionType, float roughness)
+{
+    vec2 Xi = hammersley(sampleIndex, sampleCount);
+    MicrofacetDistributionSample sample;
+
+    if(distributionType == DISTRIBUTION_LAMBERTIAN)
+    {
+        sample = Lambertian(Xi);
+    }
+
+    // from spherical coordinates to cartesian coordinates
+    vec3 H = normalize(vec3(
+        cos(sample.phi) * sample.sinTheta,
+        sin(sample.phi) * sample.sinTheta,
+        sample.cosTheta
+    ));
+
+    // from tangent-space vector to world-space sample vector
+    mat3 TBN = generateTBN(N);
+    vec3 sampleVec = mul(H, TBN);
+
+    return vec4(sampleVec.x, sampleVec.y, sampleVec.z, sample.pdf);
+}
+
+float computeLod(float pdf, float width, float sampleCount)
+{
+    // Mipmap Filtered Samples
+    // https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling
+    // https://cgg.mff.cuni.cz/~jaroslav/papers/2007-sketch-fis/Final_sap_0073.pdf
+
+    // Solid angle of current sample -- bigger for less likely samples
+
+    // float omegaS = 1.0 / (sampleCount * pdf);
+
+    // Solid angle of texel
+
+    // float omegaP = 1.0 / (6.0 * float(u_width) * float(u_width));
+
+    // Mip level is determined by the ratio of our sample's solid angle to a texel's solid angle 
+    // note that 0.5 * log2 is equivalent to log4
+
+    // float lod = 0.5 * log2(omegaS / omegaP);
+
+    return 0.5 * log2( (6.0 * width * width) / (sampleCount * pdf));
+}
+
 vec3 importanceSampleGGX(vec2 Xi, vec3 N, float roughness)
 {
     float a = roughness*roughness;
@@ -85,21 +184,6 @@ vec3 importanceSampleGGX(vec2 Xi, vec3 N, float roughness)
 	
     vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
     return normalize(sampleVec);
-}  
-
-float radicalInverse_VdC(uint bits) 
-{
-    bits = (bits << 16u) | (bits >> 16u);
-    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
-    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
-    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
-    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
-    return float(bits) * 2.3283064365386963e-10; // / 0x100000000
-}
-
-vec2 hammersley(uint i, uint N)
-{
-    return vec2(float(i)/float(N), radicalInverse_VdC(i));
 }  
 
 // Cubemap face directions

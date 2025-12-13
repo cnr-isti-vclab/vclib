@@ -309,6 +309,9 @@ public:
             bgfx::TextureFormat::RGBA32F
         );
 
+        mUniformData[0] = float(cubeSide);
+        mDataUniform.bind(&mUniformData);
+
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<CUBEMAP_TO_IRRADIANCE>(),

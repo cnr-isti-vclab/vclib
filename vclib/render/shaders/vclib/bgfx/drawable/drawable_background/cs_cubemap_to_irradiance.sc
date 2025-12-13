@@ -25,6 +25,9 @@
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(u_irradiance, rgba32f, 1);
 
+uniform vec4 u_dataPack;
+#define sourceResolution u_dataPack.x
+
 NUM_THREADS(8, 8, 1)
 void main()
 {
@@ -51,46 +54,34 @@ void main()
     vec3 dir = faceDirection(uint(face), uv, true);
 
     vec3 normal = normalize(dir);
-    vec3 up     = vec3(0.0, 1.0, 0.0);
-    vec3 right  = normalize(cross(up, normal));
-    up          = normalize(cross(normal, right));
 
-    // Irradiance integration
-    const float sampleDelta = 0.075;
     vec3 irradiance = vec3_splat(0.0);
-    uint nrSamples = 0;
-    for (float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta)
+    const uint SAMPLE_COUNT = 1024u;
+    for (uint i = 0u; i < SAMPLE_COUNT; ++i)
     {
-        float sinPhi = sin(phi);
-        float cosPhi = cos(phi);
-        for (float theta = 0.0; theta < 0.5 * PI; theta += sampleDelta)
-        {
-            float sinTheta = sin(theta);
-            float cosTheta = cos(theta);
-            // Spherical to cartesian (in tangent space)
-            vec3 tangentSample;
-            tangentSample.x = sinTheta * cosPhi;
-            tangentSample.y = sinTheta * sinPhi;
-            tangentSample.z = cosTheta;
+        vec4 sample = getImportanceSample(
+            i,                              // current sample index
+            SAMPLE_COUNT, 
+            normal, 
+            DISTRIBUTION_LAMBERTIAN, 
+            -1.0                            // roughness (not needed for irradiance)
+        );
 
-            // Tangent space to world
-            vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
+        vec3 H = sample.xyz;
+        float pdf = sample.w;
 
-            // Sample the environment's radiance
-            vec3 envColor = textureCubeLod(s_env0, sampleVec, 0).rgb;
+        float mipLevel = computeLod(pdf, sourceResolution, float(SAMPLE_COUNT)); //TODO: see if a bias is needed
 
-            // Weight by cosine of theta
-            // sin(theta) compensates for smaller area covered by samples closer to the pole
-            irradiance += envColor * cosTheta * sinTheta;
+        vec3 lambertian = textureCubeLod(s_env0, H, mipLevel).rgb;
 
-            nrSamples++;
-        }
+        // the below operations cancel each other out
+        // lambertian *= NdotH; // lamberts law
+        // lambertian /= pdf; // invert bias from importance sampling
+        // lambertian /= MATH_PI; // convert irradiance to radiance https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
+
+        irradiance += lambertian;
     }
-    // (1.0 / float(nrSamples)) take the average of the samples
-    // PI = PI^2 / PI where:
-    //    PI^2 is the intergration interval to normalize the average (get the actual integral)
-    //    1 / PI lambertian BRDF factor
-    irradiance = PI * irradiance * (1.0 / float(nrSamples));
+    irradiance /= float(SAMPLE_COUNT);
 
     imageStore(u_irradiance, ivec3(pixel.x, pixel.y, face), vec4(irradiance, 1.0));
 }
