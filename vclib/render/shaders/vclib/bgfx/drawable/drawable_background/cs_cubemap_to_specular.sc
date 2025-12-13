@@ -55,34 +55,34 @@ void main()
     vec3 dir = faceDirection(uint(face), uv, true);
 
     vec3 N = normalize(dir);
-    vec3 R = N;
-    vec3 V = R;
+    vec3 V = N;
 
     const uint SAMPLE_COUNT = 1024u;
     float totalWeight = 0.0;
     vec3 prefilteredColor = vec3_splat(0.0);
-    float alpha2 = roughness * roughness * roughness * roughness;
-
     for (uint i = 0u; i < SAMPLE_COUNT; ++i)
     {
-        // Hammersley point on hemisphere
-        vec2 Xi = hammersley(i, SAMPLE_COUNT);
-        vec3 H  = importanceSampleGGX(Xi, N, roughness);
+        vec4 sample = getImportanceSample(
+            i,                              // current sample index
+            SAMPLE_COUNT, 
+            N, 
+            DISTRIBUTION_GGX,
+            roughness
+        );
 
-        // determine mip level to sample based on pdf
-        float NdotH = max(dot(N, H), 0.0);
-        float pdf = D_GGX(NdotH, alpha2) / 4.0; // actually D * NdotH / (4.0 * HdotV) but remember N = V = R
-        float saTexel  = 4.0 * PI / (6.0 * sourceResolution * sourceResolution);
-        float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf);
-        float mipLevel = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);
+        vec3 H = sample.xyz;
+        float pdf = sample.w;
 
-        vec3 L  = normalize(2.0 * dot(V, H) * H - V);
+        float mipLevel = computeLod(pdf, sourceResolution, float(SAMPLE_COUNT)); //TODO: see if a bias is needed
 
-        float NdotL = max(dot(N, L), 0.0);
-        if (NdotL > 0.0)
+        vec3 L = normalize(reflect(-V, H));
+        float NoL = dot(N, L);
+
+        if(NoL > 0.0)
         {
-            prefilteredColor += textureCubeLod(s_env0, L, mipLevel).rgb * NdotL;
-            totalWeight      += NdotL;
+            vec3 sampleColor = textureCubeLod(s_env0, L, mipLevel).rgb;
+            prefilteredColor += sampleColor * NoL;
+            totalWeight += NoL;
         }
     }
     prefilteredColor /= totalWeight;

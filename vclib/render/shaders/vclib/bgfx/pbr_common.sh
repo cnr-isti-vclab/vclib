@@ -67,6 +67,22 @@
 #define DISTRIBUTION_LAMBERTIAN                     0u
 #define DISTRIBUTION_GGX                            1u
 
+/**
+ * @brief GGX version of the NDF (Normal Distribution Function) which determines the odds for a microfacet normal 
+ * to be aligned with the halfway vector H (in other words to reflect light directly).
+ * @param[in] NoH: Cosine of the angle between the fragment normal and the halfway vector.
+ * @param[in] alpha2: The alpha squared.
+ * @return the odds for a microfacet normal to be aligned with the halfway vector H (in other words to reflect light directly).
+ */
+float D_GGX(
+    float NoH,
+    float alpha2)
+{
+    float NoH2 = NoH * NoH;
+    float denom = NoH2 * (alpha2 - 1.0) + 1.0;
+    return alpha2 / (PI * denom * denom);
+}
+
 float radicalInverse_VdC(uint bits) 
 {
     bits = (bits << 16u) | (bits >> 16u);
@@ -117,6 +133,32 @@ MicrofacetDistributionSample Lambertian(vec2 xi)
     return lambertian;
 }
 
+MicrofacetDistributionSample GGX(vec2 xi, float roughness)
+{
+    MicrofacetDistributionSample ggx;
+
+    // GGX microfacet distribution
+    // https://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.html
+    // This implementation is based on https://bruop.github.io/ibl/,
+    //  https://www.tobias-franke.eu/log/2014/03/30/notes_on_importance_sampling.html
+    // and https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch20.html
+
+    // evaluate sampling equations
+    float alpha = roughness * roughness;
+    ggx.cosTheta = saturate(sqrt((1.0 - xi.y) / (1.0 + (alpha * alpha - 1.0) * xi.y)));
+    ggx.sinTheta = sqrt(1.0 - ggx.cosTheta * ggx.cosTheta);
+    ggx.phi = 2.0 * PI * xi.x;
+
+    // evaluate GGX pdf (for half vector)
+    // Apply the Jacobian to obtain a pdf that is parameterized by l
+    // Typically you'd have the following:
+    // float pdf = D_GGX(NoH, roughness) * NoH / (4.0 * VoH);
+    // but since V = N => VoH == NoH
+    ggx.pdf = D_GGX(ggx.cosTheta, alpha * alpha) / 4.0;
+
+    return ggx;
+}
+
 vec4 getImportanceSample(uint sampleIndex, uint sampleCount, vec3 N, uint distributionType, float roughness)
 {
     vec2 Xi = hammersley(sampleIndex, sampleCount);
@@ -125,6 +167,10 @@ vec4 getImportanceSample(uint sampleIndex, uint sampleCount, vec3 N, uint distri
     if(distributionType == DISTRIBUTION_LAMBERTIAN)
     {
         sample = Lambertian(Xi);
+    }
+    else // if(distributionType == DISTRIBUTION_GGX)
+    {
+        sample = GGX(Xi, roughness);
     }
 
     // from spherical coordinates to cartesian coordinates
@@ -347,22 +393,6 @@ float clampedDot(vec3 a, vec3 b)
 vec3 pbrDiffuse(vec3 color)
 {
     return color / PI;
-}
-
-/**
- * @brief GGX version of the NDF (Normal Distribution Function) which determines the odds for a microfacet normal 
- * to be aligned with the halfway vector H (in other words to reflect light directly).
- * @param[in] NoH: Cosine of the angle between the fragment normal and the halfway vector.
- * @param[in] alpha2: The alpha squared.
- * @return the odds for a microfacet normal to be aligned with the halfway vector H (in other words to reflect light directly).
- */
-float D_GGX(
-    float NoH,
-    float alpha2)
-{
-    float NoH2 = NoH * NoH;
-    float denom = NoH2 * (alpha2 - 1.0) + 1.0;
-    return alpha2 / (PI * denom * denom);
 }
 
 /**
