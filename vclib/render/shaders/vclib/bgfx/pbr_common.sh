@@ -49,9 +49,6 @@
 
 // Lighting settings, may not be definitive
 
-// use directional lights
-#define USE_LIGHTS
-
 #define LIGHT_COUNT                                   1
 
 // use the same lights as defined in other vclib rendering modes (see u_lightDir, u_lightColor)
@@ -462,6 +459,23 @@ float pbrSpecular(
     return V_GGX(NoV, NoL, alpha2) * D_GGX(NoH, alpha2);
 }
 
+vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
+{
+    float specularWeight = 1.0; // related to some extension, for now use a neutral value
+    // see https://bruop.github.io/ibl/#single_scattering_results at Single Scattering Results
+    // Roughness dependent fresnel, from Fdez-Aguera
+    vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
+    vec3 k_S = F0 + Fr * pow(1.0 - NoV, 5.0);
+    vec3 FssEss = specularWeight * (k_S * brdf.x + brdf.y);
+
+    // Multiple scattering, from Fdez-Aguera
+    float Ems = (1.0 - (brdf.x + brdf.y));
+    vec3 F_avg = specularWeight * (F0 + (1.0 - F0) / 21.0);
+    vec3 FmsEms = Ems * FssEss * F_avg / (1.0 - F_avg * Ems);
+
+    return FssEss + FmsEms;
+}
+
 /**
  * @brief Color computed for Physically Based Rendering (PBR).
  * The incoming light colors are altered by:
@@ -487,7 +501,7 @@ float pbrSpecular(
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
  */
-vec4 pbrColor(
+vec4 pbrColorLights(
     vec3 vPos,
     vec3 cameraEyePos,
     vec3 lightDirs[LIGHT_COUNT],
@@ -502,8 +516,6 @@ vec4 pbrColor(
     vec3 finalColor = vec3_splat(0.0);
     vec3 f0_dielectric = vec3_splat(0.04);
     vec3 f90 = vec3_splat(1.0);
-
-    #ifdef USE_LIGHTS
 
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
@@ -550,7 +562,6 @@ vec4 pbrColor(
 
         finalColor += l_color;
     }
-    #endif // USE_LIGHTS
 
     // add emissive component
     finalColor += emissive;
@@ -564,4 +575,36 @@ vec4 pbrColor(
 
     return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
 }
+
+vec4 pbrColorIbl(
+    vec3 diffuseLight,
+    vec4 color,
+    vec3 radiance,
+    vec3 metalFresnel,
+    vec3 dielectricFresnel,
+    float metallic,
+    float occlusion,
+    vec3 emissive)
+{
+    vec3 finalColor = vec3_splat(0.0);
+
+    vec3 f_diffuse = diffuseLight * color.rgb;
+
+    vec3 f_specular_metal = radiance;
+    vec3 f_specular_dielectric = f_specular_metal;
+
+    vec3 f_metal_brdf_ibl = metalFresnel * f_specular_metal;
+ 
+    vec3 f_dielectric_brdf_ibl = mix(f_diffuse, f_specular_dielectric, dielectricFresnel);
+
+    finalColor = mix(f_dielectric_brdf_ibl, f_metal_brdf_ibl, metallic);
+
+    finalColor *= occlusion;
+
+    finalColor += emissive;
+
+    return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
+}
+
+
 #endif // VCL_EXT_BGFX_PBR_COMMON_SH

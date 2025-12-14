@@ -46,6 +46,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
     DirectionalLightUniforms mDirectionalLightUniforms;
 
     std::array<float, 4> mUniformData = {0.0f, 0.0f, 0.0f, 0.0f};
+    uint8_t mSpecularMips = 0;
 
     vcl::Uniform 
         mHdrSamplerUniform            = Uniform("s_hdr", bgfx::UniformType::Sampler),
@@ -105,13 +106,36 @@ public:
             mComputeEnvironmentTextures = false;
         }
 
-        // when panorama is set, bind environment textures
+        // when panorama is set, bind environment textures - TODO: find a better way to define stages
         if(!mPanorama.empty())
+        {
             mCubeMapTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
             );
+
+            mIrradianceTexture->bind(
+                1,
+                mIrradianceCubeSamplerUniform.handle(),
+                BGFX_SAMPLER_UVW_CLAMP
+            );
+
+            mSpecularTexture->bind(
+                2,
+                mSpecularCubeSamplerUniform.handle(),
+                BGFX_SAMPLER_UVW_CLAMP
+            );
+
+            mBrdfLuTexture->bind(
+                15,         // not cubemap, just 2d texture
+                mBrdfLutSamplerUniform.handle(),
+                BGFX_SAMPLER_UVW_CLAMP
+            );
+
+            mUniformData[0] = float(mSpecularMips);
+            mDataUniform.bind(&mUniformData);
+        }
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
@@ -193,6 +217,10 @@ public:
             specularCubeSide,
             specularCubeSide
         );
+
+        // remember specular mips to sample them appropriately
+        // when drawing meshes
+        mSpecularMips = specularMips;
 
         const uint32_t brdfLutSize = 1024;
 
