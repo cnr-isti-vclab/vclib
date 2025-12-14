@@ -113,7 +113,12 @@ public:
 
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL);
 
-        bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_BACKGROUND_PBR>());
+        bgfx::submit(
+            settings.viewId, 
+            pm.getProgram<DRAWABLE_BACKGROUND_PBR>(),
+            0,
+            BGFX_DISCARD_NONE
+        );
     }
 
     vcl::Box3d boundingBox() const override

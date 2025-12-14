@@ -188,7 +188,7 @@ public:
     void setPanorama(const std::string& panorama)
     {
         mPanorama = panorama;
-        mComputeEnvironmentTextures = true;
+        mComputeEnvironmentTextures = !mPanorama.empty();
     }
 
     private:
