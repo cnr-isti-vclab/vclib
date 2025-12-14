@@ -52,13 +52,15 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
         mEnvCubeSamplerUniform        = Uniform("s_env0", bgfx::UniformType::Sampler),
         mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler),
         mSpecularCubeSamplerUniform   = Uniform("s_specular", bgfx::UniformType::Sampler),
+        mBrdfLutSamplerUniform        = Uniform("s_brdf_lut", bgfx::UniformType::Sampler),
         mDataUniform                  = Uniform("u_dataPack", bgfx::UniformType::Vec4);
 
     std::unique_ptr<Texture> 
         mHdrTexture, 
         mCubeMapTexture, 
         mIrradianceTexture,
-        mSpecularTexture;
+        mSpecularTexture,
+        mBrdfLuTexture;
 
     std::string mPanorama;
     bool mComputeEnvironmentTextures = false;
@@ -105,7 +107,7 @@ public:
 
         // when panorama is set, bind environment textures
         if(!mPanorama.empty())
-            mSpecularTexture->bind(
+            mCubeMapTexture->bind(
                 0,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
@@ -192,6 +194,8 @@ public:
             specularCubeSide
         );
 
+        const uint32_t brdfLutSize = 1024;
+
         // create textures
 
         auto hdrTexture = std::make_unique<Texture>();
@@ -236,6 +240,16 @@ public:
             true // is cubemap
         );
         mSpecularTexture = std::move(specularTexture);
+
+        auto brdfLuTexture = std::make_unique<Texture>();
+        brdfLuTexture->set(
+            nullptr,
+            Point2i(brdfLutSize, brdfLutSize),
+            false,
+            BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
+            bgfx::TextureFormat::RGBA32F
+        );
+        mBrdfLuTexture = std::move(brdfLuTexture);
 
         // convert hdr equirectangular to cubemap
 
@@ -358,6 +372,23 @@ public:
             );
 
         }
+
+        // generate BRDF lookup texture
+
+        mBrdfLuTexture->bindForCompute(
+            0,
+            0,
+            bgfx::Access::Write,
+            bgfx::TextureFormat::RGBA32F
+        );
+
+        bgfx::dispatch(
+            viewId,
+            pm.getComputeProgram<IBL_LOOKUP_TEXTURE_GEN>(),
+            brdfLutSize / 8,
+            brdfLutSize / 8
+        );
+
     }
 };
 

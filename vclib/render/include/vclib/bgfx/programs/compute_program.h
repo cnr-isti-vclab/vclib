@@ -31,6 +31,7 @@ enum class ComputeProgram {
     CUBEMAP_MIPMAP_GEN,
     CUBEMAP_TO_IRRADIANCE,
     CUBEMAP_TO_SPECULAR,
+    IBL_LOOKUP_TEXTURE_GEN,
     COUNT 
 };
 

@@ -28,5 +28,6 @@
 #include "embedded_c_programs/cubemap_mipmap_gen.h"
 #include "embedded_c_programs/cubemap_to_irradiance.h"
 #include "embedded_c_programs/cubemap_to_specular.h"
+#include "embedded_c_programs/ibl_lookup_texture_gen.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H

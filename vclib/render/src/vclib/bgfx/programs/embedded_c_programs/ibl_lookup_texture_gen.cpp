@@ -20,14 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_texcoord0
+#include <vclib/bgfx/programs/embedded_c_programs/ibl_lookup_texture_gen.h>
 
-#include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
+#include <vclib/shaders/drawable/drawable_background/cs_ibl_lookup_texture_gen.sc.400.bin.h>
 
-// textures
-SAMPLERCUBE(s_env0, 0);
+#include <vclib/shaders/drawable/drawable_background/cs_ibl_lookup_texture_gen.sc.essl.bin.h>
 
-void main()
+#include <vclib/shaders/drawable/drawable_background/cs_ibl_lookup_texture_gen.sc.spv.bin.h>
+#ifdef _WIN32
+#include <vclib/shaders/drawable/drawable_background/cs_ibl_lookup_texture_gen.sc.dx11.bin.h>
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/drawable/drawable_background/cs_ibl_lookup_texture_gen.sc.mtl.bin.h>
+#endif // __APPLE__
+
+namespace vcl {
+
+bgfx::EmbeddedShader::Data ComputeLoader<ComputeProgram::IBL_LOOKUP_TEXTURE_GEN>::
+    computeShader(bgfx::RendererType::Enum type)
 {
-    gl_FragColor = textureCube(s_env0, normalize(v_texcoord0));
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_ibl_lookup_texture_gen_essl, sizeof(cs_ibl_lookup_texture_gen_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_ibl_lookup_texture_gen_400, sizeof(cs_ibl_lookup_texture_gen_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_ibl_lookup_texture_gen_spv, sizeof(cs_ibl_lookup_texture_gen_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_ibl_lookup_texture_gen_dx11, sizeof(cs_ibl_lookup_texture_gen_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_ibl_lookup_texture_gen_mtl, sizeof(cs_ibl_lookup_texture_gen_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
 }
+
+} // namespace vcl

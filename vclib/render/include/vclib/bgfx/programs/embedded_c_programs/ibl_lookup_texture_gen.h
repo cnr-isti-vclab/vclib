@@ -20,14 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_texcoord0
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_IBL_LOOKUP_TEXTURE_GEN_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_IBL_LOOKUP_TEXTURE_GEN_H
+#include <vclib/bgfx/programs/compute_loader.h>
 
-#include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
+namespace vcl {
 
-// textures
-SAMPLERCUBE(s_env0, 0);
-
-void main()
+template<>
+struct ComputeLoader<ComputeProgram::IBL_LOOKUP_TEXTURE_GEN>
 {
-    gl_FragColor = textureCube(s_env0, normalize(v_texcoord0));
-}
+    static bgfx::EmbeddedShader::Data computeShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_IBL_LOOKUP_TEXTURE_GEN_H
