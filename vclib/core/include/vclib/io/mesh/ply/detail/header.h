@@ -642,6 +642,8 @@ public:
             matElem.properties.push_back(pt);
             pt.name = ply::occlusion_texture;
             matElem.properties.push_back(pt);
+            pt.name = ply::emissive_texture;
+            matElem.properties.push_back(pt);
             mElements.push_back(matElem);
         }
     }
@@ -841,6 +843,8 @@ private:
             pn = ply::normal_texture;
         if (name == "occlusion_texture")
             pn = ply::occlusion_texture;
+        if (name == "emissive_texture")
+            pn = ply::emissive_texture;
 
         return pn;
     }
@@ -906,6 +910,7 @@ private:
             return "metallic_roughness_texture";
         case ply::normal_texture: return "normal_texture";
         case ply::occlusion_texture: return "occlusion_texture";
+        case ply::emissive_texture: return "emissive_texture";
         default: return "unknown";
         }
     }

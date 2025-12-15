@@ -129,6 +129,15 @@ void writePlyMaterials(
                 }
                 hasBeenWritten = true;
             }
+            if (p.name == ply::emissive_texture) {
+                const std::string& path =
+                    m.textureDescriptor(EMISSIVE).path();
+                io::writeProperty(file, path.size(), p.listSizeType, format);
+                for (const char& c : path) {
+                    io::writeProperty(file, c, p.type, format);
+                }
+                hasBeenWritten = true;
+            }
 
             if (!hasBeenWritten) {
                 // be sure to write something if the header declares some
