@@ -20,21 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SELECTABLE_H
-#define VCL_SELECTABLE_H
+#ifndef VCLIB_SELECTION_PARAMETERS_H
+#define VCLIB_SELECTION_PARAMETERS_H
 
-#include <vclib/render/selection/selection_box.h>
-#include <vclib/render/selection/selection_mode.h>
-#include <vclib/render/drawable/draw_object_settings.h>
-#include "selection_parameters.h"
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/selection/selection_parameters_bgfx.h>
+#endif
 
-namespace vcl {
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+//NOT IMPLEMENTED
+#endif
 
-class Selectable
-{
-public:
-    virtual void calculateSelection(const SelectionParameters& params) = 0;
-};
-
-} // namespace vcl
 #endif

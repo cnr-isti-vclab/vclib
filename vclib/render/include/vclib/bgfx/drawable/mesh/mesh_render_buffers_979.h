@@ -38,13 +38,14 @@
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
+#include <vclib/render/selection/selection_parameters.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
 
-// This allows selection for a maximum of 1024^3 = 1_073_741_824 vertices per
+// This allows selection for a maximum of 1024^3 = 134_217_728 vertices/faces per
 // mesh. Still likely enough.
-#define MAX_COMPUTE_WORKGROUP_SIZE uint(1024)
+#define MAX_COMPUTE_WORKGROUP_SIZE uint(512)
 
 namespace vcl {
 
@@ -73,7 +74,8 @@ class MeshRenderBuffers979 : public MeshRenderData<MeshRenderBuffers979<Mesh>>
 
     // face selection: Since we do not know whether this mesh has faces or not,
     // we use an optional
-    Uniform mVisibleFacesUniform = Uniform("u_dispatchXYSizeAndMeshID", bgfx::UniformType::Vec4);
+    Uniform mVisibleFacesComputeUniform = Uniform("u_meshIdAndDispatchSizeXY", bgfx::UniformType::Vec4);
+    Uniform mVisibleFacesVertFragUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
     std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
     std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
 
@@ -182,57 +184,78 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
-    bool vertexSelection(const uint viewId, const SelectionMode& mode, const SelectionBox& box)
+    bool vertexSelection(const SelectionParameters& params)
     {
-        if (box.anyNull()) {
+        if (params.box.anyNull()) {
             return false;
         }
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
-        bindSelectionBox(box);
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), params.mode);
+        bindSelectionBox(params.box);
         bindVertexWGroupSizeAndCount();
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         mVertexPositionsBuffer.bindCompute(VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        dispatchVertexSelection(viewId, prog);
+        dispatchVertexSelection(params.drawViewId, prog);
         return true;
     }
 
-    bool vertexSelectionAtomic(const uint viewId, const SelectionMode& mode)
+    bool vertexSelectionAtomic(const SelectionParameters& params)
     {
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), params.mode);
         bindVertexWGroupSizeAndCount();
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-        dispatchVertexSelection(viewId, prog);
+        dispatchVertexSelection(params.drawViewId, prog);
         return true;
     }
 
-    bool faceSelection(const uint viewId, const SelectionMode& mode, const SelectionBox& box)
+    bool faceSelection(const SelectionParameters& params)
     {
-        if (box.anyNull()) {
+        if (params.box.anyNull()) {
             return false;
         }
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
-        bindSelectionBox(box);
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), params.mode);
+        bindSelectionBox(params.box);
         bindFaceWGroupSizeAndCount();
         mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
         mVertexPositionsBuffer.bindCompute(VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
-        dispatchFaceSelection(viewId, prog);
+        dispatchFaceSelection(params.drawViewId, prog);
         return true;
     }
 
-    bool faceSelectionAtomic(const uint viewId, const SelectionMode& mode)
+    bool faceSelectionAtomic(const SelectionParameters& params)
     {
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), mode);
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(Context::instance().programManager(), params.mode);
         bindFaceWGroupSizeAndCount();
         mSelectedFacesBuffer.value().bind(4, bgfx::Access::ReadWrite);
-        dispatchFaceSelection(viewId, prog);
+        dispatchFaceSelection(params.drawViewId, prog);
         return true;
     }
 
-    bool faceSelectionVisible(const uint pass1ViewId, const uint pass2ViewId, const SelectionMode& mode, const Matrix44f& model)
+    bool faceSelectionVisible(const SelectionParameters& params, const Matrix44f& model)
     {
-        faceSelectionAtomic(pass1ViewId, SelectionMode::FACE_NONE);
+        if(params.mode == SelectionMode::FACE_VISIBLE_REGULAR) {
+            SelectionParameters params2(params);
+            params2.mode = SelectionMode::FACE_NONE;
+            faceSelectionAtomic(params2);
+        }
         ProgramManager& pm = Context::instance().programManager();
+        bgfx::ProgramHandle passProgram = pm.getProgram<VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>();
+        bgfx::ProgramHandle computeProg = getComputeProgramFromSelectionMode(pm, params.mode);
+        std::array<uint, 3> workGroupSize = workGroupSizesFrom1DSize(params.colorAttachmentSize[0] * params.colorAttachmentSize[1]);
+        float temp[4] = {
+            Uniform::uintBitsToFloat(params.meshId),
+            Uniform::uintBitsToFloat(workGroupSize[0]),
+            Uniform::uintBitsToFloat(workGroupSize[1]),
+            0.f
+        };
+        mVisibleFacesVertFragUniform.bind(temp);
+        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        mTriangleIndexBuffer.bind();
+        bgfx::submit(params.pass1ViewId, passProgram);
+        mVisibleFacesComputeUniform.bind(temp);
+        bgfx::setImage(0, params.colorAttachmentTex, 0, bgfx::Access::Read);
+        mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        bgfx::dispatch(params.pass2ViewId, computeProg, workGroupSize[0], workGroupSize[1], workGroupSize[2]);
         return true;
     }
 
@@ -458,6 +481,11 @@ private:
         case SelectionMode::VERTEX_INVERT:
         case SelectionMode::FACE_INVERT:
             return pm.getComputeProgram<ComputeProgram::SELECTION_INVERT>();
+        case SelectionMode::FACE_VISIBLE_REGULAR:
+        case SelectionMode::FACE_VISIBLE_ADD:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_VISIBLE_ADD>();
+        case SelectionMode::FACE_VISIBLE_SUBTRACT:
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_VISIBLE_SUBTRACT>();
         default:
             return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
         }

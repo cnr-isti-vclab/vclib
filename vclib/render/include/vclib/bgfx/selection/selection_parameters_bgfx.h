@@ -20,21 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SELECTABLE_H
-#define VCL_SELECTABLE_H
+#ifndef VCL_SELECTION_PARAMETERS_BGFX_H
+#define VCL_SELECTION_PARAMETERS_BGFX_H
 
+#include <bgfx/bgfx.h>
+#include <vclib/render/drawable/draw_object_settings.h>
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
-#include <vclib/render/drawable/draw_object_settings.h>
-#include "selection_parameters.h"
+
+#include <array>
 
 namespace vcl {
-
-class Selectable
+struct SelectionParameters
 {
-public:
-    virtual void calculateSelection(const SelectionParameters& params) = 0;
+    uint                drawViewId;
+    uint                pass1ViewId;
+    uint                pass2ViewId;
+    SelectionBox        box;
+    SelectionMode       mode;
+    bool                isTemporary;
+    bgfx::TextureHandle colorAttachmentTex;
+    std::array<uint, 2> colorAttachmentSize;
+    uint                meshId;
 };
-
 } // namespace vcl
+
 #endif

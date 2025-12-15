@@ -55,6 +55,7 @@ class SelectionTrackBallViewerDrawerBGFX :
     DrawableTrackBall           mDrawTrackBall;
     DrawableDirectionalLight    mDrawableDirectionalLight;
     SelectionBox                mBoxToDraw;
+    static const uint           sVisibleFaceFramebufferSize = 4096u;
 
 public:
     using ParentViewer::ParentViewer;
@@ -95,13 +96,13 @@ public:
         mVisibleSelectionFrameBuffer =
             Context::instance().createOffscreenFramebufferAndInitView(
                 mVisibleSelectionViewIds[0],
-                1024,
-                1024,
+                uint16_t(sVisibleFaceFramebufferSize),
+                uint16_t(sVisibleFaceFramebufferSize),
                 true,
                 0u,
                 1.0f,
                 (uint8_t) 0U,
-                bgfx::TextureFormat::Enum::R8);
+                bgfx::TextureFormat::Enum::RGBA16);
         bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mVisibleSelectionFrameBuffer);
         bgfx::setViewClear(
             mVisibleSelectionViewIds[1],
@@ -180,9 +181,13 @@ public:
                 mVisibleSelectionViewIds[1],
                 minMaxBox,
                 ParentViewer::selectionMode(),
-                ParentViewer::isSelectionTemporary()
+                ParentViewer::isSelectionTemporary(),
+                bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
+                std::array<uint, 2>{sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+                0
             };
             for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+                params.meshId = uint(i+1);
                 auto el = ParentViewer::mDrawList->at(i);
                 if (auto p = dynamic_cast<Selectable*>(el.get())) {
                     p->calculateSelection(params);

@@ -451,9 +451,9 @@ protected:
             return false;
         }
         return (params.mode.isAtomicMode() ? 
-            mMRB.vertexSelectionAtomic(params.drawViewId, params.mode) 
+            mMRB.vertexSelectionAtomic(params) 
             : 
-            mMRB.vertexSelection(params.drawViewId, params.mode, params.box)
+            mMRB.vertexSelection(params)
         );
         return true;
     }
@@ -464,9 +464,9 @@ protected:
             return false;
         }
         return (params.mode.isAtomicMode() ? 
-            mMRB.faceSelectionAtomic(params.drawViewId, params.mode) 
+            mMRB.faceSelectionAtomic(params) 
             : 
-            mMRB.faceSelection(params.drawViewId, params.mode, params.box)
+            mMRB.faceSelection(params)
         );
     }
 
@@ -479,7 +479,7 @@ protected:
         if constexpr (HasTransformMatrix<MeshType>) {
             model = MeshType::transformMatrix().template cast<float>();
         }
-        return mMRB.faceSelectionVisible(params.pass1ViewId, params.pass2ViewId, params.mode, model);
+        return mMRB.faceSelectionVisible(params, model);
     }
 
     void bindUniforms() const
