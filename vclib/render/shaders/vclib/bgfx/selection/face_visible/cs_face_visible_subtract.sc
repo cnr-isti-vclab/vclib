@@ -23,11 +23,12 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-IMAGE2D_RO(s_ids, rgba16u, 0);
+UIMAGE2D_RO(s_ids, rgba16, 0);
 BUFFER_RW(face_selected, uint, 6);
 
 uniform vec4 u_meshIdAndDispatchSizeXY;
 
+NUM_THREADS(1, 1, 1)
 void main() {
     uint meshId = floatBitsToUint(u_meshIdAndDispatchSizeXY.x);
     // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)

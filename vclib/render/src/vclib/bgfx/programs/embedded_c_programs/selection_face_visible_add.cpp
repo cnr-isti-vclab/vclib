@@ -22,18 +22,18 @@
 
 #include <vclib/bgfx/programs/embedded_c_programs/selection_face_visible_add.h>
 
-#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_add.sc.400.bin.h>
+#include <vclib/shaders/selection/face_visible/cs_face_visible_add.sc.400.bin.h>
 
-#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_add.sc.essl.bin.h>
+#include <vclib/shaders/selection/face_visible/cs_face_visible_add.sc.essl.bin.h>
 
-#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_add.sc.spv.bin.h>
+#include <vclib/shaders/selection/face_visible/cs_face_visible_add.sc.spv.bin.h>
 
 #ifdef _WIN32
-#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_add.sc.dx11.bin.h>
+#include <vclib/shaders/selection/face_visible/cs_face_visible_add.sc.dx11.bin.h>
 
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/selection/face_visible/cs_selection_face_visible_add.sc.mtl.bin.h>
+#include <vclib/shaders/selection/face_visible/cs_face_visible_add.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {
@@ -43,19 +43,19 @@ bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_FACE_VIS
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, cs_selection_face_visible_add_essl, sizeof(cs_selection_face_visible_add_essl)};
+        return {type, cs_face_visible_add_essl, sizeof(cs_face_visible_add_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, cs_selection_face_visible_add_400, sizeof(cs_selection_face_visible_add_400)};
+        return {type, cs_face_visible_add_400, sizeof(cs_face_visible_add_400)};
     case bgfx::RendererType::Vulkan:
-        return {type, cs_selection_face_visible_add_spv, sizeof(cs_selection_face_visible_add_spv)};
+        return {type, cs_face_visible_add_spv, sizeof(cs_face_visible_add_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, cs_selection_face_visible_add_dx11, sizeof(cs_selection_face_visible_add_dx11)};
+        return {type, cs_face_visible_add_dx11, sizeof(cs_face_visible_add_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, cs_selection_face_visible_add_mtl, sizeof(cs_selection_face_visible_add_mtl)};
+        return {type, cs_face_visible_add_mtl, sizeof(cs_face_visible_add_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
