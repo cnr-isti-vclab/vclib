@@ -44,10 +44,11 @@ SAMPLER2D(metallicRoughnessTex, VCL_MRB_TEXTURE1);
 SAMPLER2D(normalTex, VCL_MRB_TEXTURE2);
 SAMPLER2D(occlusionTex, VCL_MRB_TEXTURE3);
 SAMPLER2D(emissiveTex, VCL_MRB_TEXTURE4);
+SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
 
-SAMPLERCUBE(s_irradiance, 1);
-SAMPLERCUBE(s_specular, 2);
-SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE7);
+SAMPLERCUBE(s_irradiance, 3);
+SAMPLERCUBE(s_specular, 4);
+
 
 uniform vec4 u_dataPack;
 #define specularMipCount u_dataPack.x

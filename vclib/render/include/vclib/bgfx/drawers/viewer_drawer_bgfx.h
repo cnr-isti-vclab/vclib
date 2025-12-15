@@ -28,6 +28,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 #include <vclib/bgfx/texture.h>
 #include <vclib/bgfx/uniform.h>
@@ -110,25 +111,25 @@ public:
         if(!mPanorama.empty())
         {
             mCubeMapTexture->bind(
-                0,
+                2,
                 mEnvCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
             );
 
             mIrradianceTexture->bind(
-                1,
+                3,
                 mIrradianceCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
             );
 
             mSpecularTexture->bind(
-                2,
+                4,
                 mSpecularCubeSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
             );
 
             mBrdfLuTexture->bind(
-                15,         // not cubemap, just 2d texture
+                VCL_MRB_TEXTURE5,         // not cubemap, just 2d texture
                 mBrdfLutSamplerUniform.handle(),
                 BGFX_SAMPLER_UVW_CLAMP
             );

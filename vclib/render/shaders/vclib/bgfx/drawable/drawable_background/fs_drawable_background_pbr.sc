@@ -25,7 +25,7 @@ $input v_texcoord0
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
 // textures
-SAMPLERCUBE(s_env0, 0);
+SAMPLERCUBE(s_env0, 2);
 
 void main()
 {
