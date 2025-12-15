@@ -32,6 +32,151 @@
 
 namespace vcl::detail {
 
+template<typename Stream>
+void readPlyMaterialProperty(
+    Stream&     file,
+    Material&   mat,
+    PlyProperty p,
+    std::endian end = std::endian::little)
+{
+    bool hasBeenRead = false;
+    using enum Material::TextureType;
+    if (p.name >= ply::red && p.name <= ply::alpha) {
+        uint idx = p.name - ply::red;
+        mat.baseColor()[idx] =
+            io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::metallic) {
+        mat.metallic() = io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::roughness) {
+        mat.roughness() = io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead = true;
+    }
+    if (p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
+        uint idx = p.name - ply::emissive_red;
+        mat.emissiveColor()[idx] =
+            io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::alpha_mode) {
+        mat.alphaMode() =
+            static_cast<Material::AlphaMode>(
+                io::readPrimitiveType<uint>(file, p.type, end));
+        hasBeenRead = true;
+    }
+    if (p.name == ply::alpha_cutoff) {
+        mat.alphaCutoff() = io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::normal_scale) {
+        mat.normalScale() = io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::occlusion_strength) {
+        mat.occlusionStrength() =
+            io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::double_sided) {
+        mat.doubleSided() =
+            static_cast<bool>(
+                io::readPrimitiveType<uint>(file, p.type, end));
+        hasBeenRead = true;
+    }
+    if (p.name == ply::base_color_texture) {
+        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
+        std::string path;
+        path.resize(size);
+        for (uint i = 0; i < size; ++i) {
+            path[i] = io::readPrimitiveType<char>(file, p.type, end);
+        }
+        mat.textureDescriptor(BASE_COLOR) = TextureDescriptor(path);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::metallic_roughness_texture) {
+        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
+        std::string path;
+        path.resize(size);
+        for (uint i = 0; i < size; ++i) {
+            path[i] = io::readPrimitiveType<char>(file, p.type, end);
+        }
+        mat.textureDescriptor(METALLIC_ROUGHNESS) = TextureDescriptor(path);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::normal_texture) {
+        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
+        std::string path;
+        path.resize(size);
+        for (uint i = 0; i < size; ++i) {
+            path[i] = io::readPrimitiveType<char>(file, p.type, end);
+        }
+        mat.textureDescriptor(NORMAL) = TextureDescriptor(path);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::occlusion_texture) {
+        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
+        std::string path;
+        path.resize(size);
+        for (uint i = 0; i < size; ++i) {
+            path[i] = io::readPrimitiveType<char>(file, p.type, end);
+        }
+        mat.textureDescriptor(OCCLUSION) = TextureDescriptor(path);
+        hasBeenRead = true;
+    }
+    if (p.name == ply::emissive_texture) {
+        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
+        std::string path;
+        path.resize(size);
+        for (uint i = 0; i < size; ++i) {
+            path[i] = io::readPrimitiveType<char>(file, p.type, end);
+        }
+        mat.textureDescriptor(EMISSIVE) = TextureDescriptor(path);
+        hasBeenRead = true;
+    }
+
+    // if nothing has been read, it means that there is some data we don't know
+    // we still need to read and discard what we read
+    if (!hasBeenRead) {
+        if (p.list) {
+            uint s = io::readPrimitiveType<int>(file, p.listSizeType, end);
+            for (uint i = 0; i < s; ++i)
+                io::readPrimitiveType<int>(file, p.type, end);
+        }
+        else {
+            io::readPrimitiveType<int>(file, p.type, end);
+        }
+    }
+}
+
+inline void readPlyMaterialTxt(
+    std::istream&                 file,
+    Material&                     mat,
+    const std::list<PlyProperty>& matProperties)
+{
+    Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
+    Tokenizer::iterator token          = spaceTokenizer.begin();
+    for (const PlyProperty& p : matProperties) {
+        if (token == spaceTokenizer.end()) {
+            throw MalformedFileException("Unexpected end of line.");
+        }
+        readPlyMaterialProperty(token, mat, p);
+    }
+}
+
+inline void readPlyMaterialBin(
+    std::istream&                 file,
+    Material&                     mat,
+    const std::list<PlyProperty>& matProperties,
+    std::endian                   end)
+{
+    for (const PlyProperty& p : matProperties) {
+        readPlyMaterialProperty(file, mat, p, end);
+    }
+}
+
 template<MeshConcept MeshType>
 void writePlyMaterials(
     std::ostream&    file,
@@ -148,6 +293,36 @@ void writePlyMaterials(
         if (!format.isBinary)
             file << std::endl;
     }
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType>
+void readPlyMaterials(
+    std::istream&    file,
+    const PlyHeader& header,
+    MeshType&        mesh,
+    LogType&         log)
+{
+    log.startProgress("Reading materials", header.numberMaterials());
+
+    for (uint mid = 0; mid < header.numberMaterials(); ++mid) {
+        Material mat;
+        if (header.format() == ply::ASCII) {
+            detail::readPlyMaterialTxt(
+                file, mat, header.materialProperties());
+        }
+        else {
+            std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
+                                  std::endian::big :
+                                  std::endian::little;
+            detail::readPlyMaterialBin(
+                file, mat, header.materialProperties(), end);
+        }
+        mesh.pushMaterial(mat);
+
+        log.progress(mid);
+    }
+
+    log.endProgress();
 }
 
 } // namespace vcl::detail
