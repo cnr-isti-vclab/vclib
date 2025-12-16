@@ -34,15 +34,172 @@
 
 namespace vcl {
 
-Environment::Environment(const std::string& imagePath)
+void Environment::drawBackground(const uint viewId)
+{
+    prepareBackground(viewId);
+
+    if(!mCanDraw)
+        return;
+
+    using enum VertFragProgram;
+    ProgramManager& pm = Context::instance().programManager();
+
+    using enum TextureType;
+    bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
+
+    mVertexBuffer.bindVertex(0);
+
+    bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
+
+    bgfx::submit(
+        viewId, 
+        pm.getProgram<DRAWABLE_BACKGROUND_PBR>()
+    );
+}
+
+void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags) const
+{
+    using enum TextureType;
+    switch(type)
+    {
+        case RAW_CUBE:
+        {
+            mCubeMapTexture->bind(
+                stage,
+                mEnvCubeSamplerUniform.handle(),
+                samplerFlags
+            );
+            break;
+        }
+        case IRRADIANCE:
+        {
+            mIrradianceTexture->bind(
+                stage,
+                mIrradianceCubeSamplerUniform.handle(),
+                samplerFlags
+            );
+            break;
+        }
+        case SPECULAR:
+        {
+            mSpecularTexture->bind(
+                stage,
+                mSpecularCubeSamplerUniform.handle(),
+                samplerFlags
+            );
+            break;
+        }    
+        case BRDF_LUT:
+        {
+            mBrdfLuTexture->bind(
+                stage,
+                mBrdfLutSamplerUniform.handle(),
+                samplerFlags
+            );
+            break;
+        }
+    }
+}
+
+void Environment::bindDataUniform(const float d0, const float d1, const float d2, const float d3) const
+{
+    std::array<float, 4> data = {d0, d1, d2, d3};
+    mDataUniform.bind(&data);
+}
+
+void Environment::prepareBackground(const uint viewId)
+{
+    if(mBackgroundReady) 
+        return;
+
+    mImage = loadImage(mImagePath);
+    if(mImage == nullptr)
+    {
+        mBackgroundReady = true;
+        mCanDraw = false;
+        return;
+    }
+
+    setTextures();
+
+    generateTextures(viewId);
+
+    fullScreenTriangle();
+    
+    mBackgroundReady = true;
+    mCanDraw = true;
+}
+
+Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)
 {
     using enum Environment::FileFormat;
-    mSourceFormat = getFileFormat(imagePath);
+    if(imagePath.find(".hdr", imagePath.length() - 4) != std::string::npos)
+        return HDR;
+    if(imagePath.find(".exr", imagePath.length() - 4) != std::string::npos)
+        return EXR;
+    if(imagePath.find(".ktx", imagePath.length() - 4) != std::string::npos)
+        return KTX;
+    return UNKNOWN;
+}
 
-    if(mSourceFormat == UNKNOWN) return;
+bimg::ImageContainer* Environment::loadImage(std::string imagePath)
+{
+    /* Code from bimg texturec */
 
-    mImage = Environment::loadImage(imagePath);
+    using enum Environment::FileFormat;
+    mSourceFormat = getFileFormat(mImagePath);
 
+    if(mSourceFormat == UNKNOWN) 
+        return nullptr;
+
+	bx::Error err;
+    bx::FileReader reader;
+
+	// open the file
+
+    if(!bx::open(&reader, imagePath.c_str(), &err))
+        return nullptr;
+
+	// read file size and allocate memory
+
+    uint32_t inputSize = (uint32_t)bx::getSize(&reader);
+
+    if(inputSize == 0)
+		return nullptr;
+
+	uint8_t* inputData = (uint8_t*)bx::alloc(&bxAlignedAllocator, inputSize);
+
+	// read the file and put it raw in inputData
+
+	bx::read(&reader, inputData, inputSize, &err);
+	bx::close(&reader);
+
+	// copy the data in the final container reading its characteristics
+
+    using enum bimg::TextureFormat::Enum;
+
+	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, Count, &err); 
+
+	bx::free(&bxAlignedAllocator, inputData);
+
+    if(
+        !err.isOk() || 
+        (
+            !output->m_cubeMap   &&
+            mSourceFormat != HDR && 
+            mSourceFormat != EXR
+        )
+    ) // file is neither a cubemap nor an equirectangular map
+    {
+        bimg::imageFree(output);
+        return nullptr;
+    }
+
+	return output;
+}
+
+void Environment::setTextures()
+{
     // if it's not a cubemap it's equirectangular
     mCubeSide = mImage->m_cubeMap? mImage->m_width : mImage->m_width / 4;
     mCubeMips = bimg::imageGetNumMips(
@@ -126,31 +283,9 @@ Environment::Environment(const std::string& imagePath)
         bgfx::TextureFormat::RGBA32F
     );
     mBrdfLuTexture = std::move(brdfLuTexture);
-    
 }
 
-void Environment::drawBackground(const DrawObjectSettings& settings)
-{
-    using enum Environment::FileFormat;
-    if(mSourceFormat == UNKNOWN) return;
-
-    if(!mBackgroundReady)
-        prepareBackground();
-
-    using enum VertFragProgram;
-    ProgramManager& pm = Context::instance().programManager();
-
-    mVertexBuffer.bindVertex(0);
-
-    bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
-
-    bgfx::submit(
-        settings.viewId, 
-        pm.getProgram<DRAWABLE_BACKGROUND_PBR>()
-    );
-}
-
-void Environment::prepareBackground()
+void Environment::fullScreenTriangle()
 {
     auto [vertices, releaseFn] =
         getAllocatedBufferAndReleaseFn<float>(mVertexNumber * 3);
@@ -166,60 +301,156 @@ void Environment::prepareBackground()
         false,       // data is normalized
         releaseFn
     );
-
-    mBackgroundReady = true;
 }
 
-Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)
+void Environment::generateTextures(const uint viewId)
 {
-    using enum Environment::FileFormat;
-    if(imagePath.find(".hdr", imagePath.length() - 4) != std::string::npos)
-        return HDR;
-    if(imagePath.find(".exr", imagePath.length() - 4) != std::string::npos)
-        return EXR;
-    if(imagePath.find(".ktx", imagePath.length() - 4) != std::string::npos)
-        return KTX;
-    return UNKNOWN;
-}
+    using enum ComputeProgram;
+    ProgramManager& pm = Context::instance().programManager();
 
-bimg::ImageContainer* Environment::loadImage(std::string imagePath)
-{
-    /* Code from bimg texturec */
+    if(!mImage->m_cubeMap)
+    {
+        // convert hdr equirectangular to cubemap
 
-	bx::Error err;
-    bx::FileReader reader;
+        mHdrTexture->bind(
+            0,
+            mHdrSamplerUniform.handle()
+        );
+        
+        mCubeMapTexture->bindForCompute(
+            1,
+            0,
+            bgfx::Access::Write,
+            bgfx::TextureFormat::RGBA32F
+        );
 
-	// open the file
+        bgfx::dispatch(
+            viewId,
+            pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
+            mCubeSide / 8,
+            mCubeSide / 8,
+            6
+        );
+    }
 
-    if(!bx::open(&reader, imagePath.c_str(), &err))
-        return nullptr;
+    const bool generateCubeMips = 
+        !mImage->m_cubeMap ||
+        (mImage->m_cubeMap && mImage->m_numMips > 1);
 
-	// read file size and allocate memory
+    if(generateCubeMips)
+    {
+        // generate mipmaps for cubemap
 
-    uint32_t inputSize = (uint32_t)bx::getSize(&reader);
+        for(uint8_t mip = 1; mip < mCubeMips; mip++)
+        {
+            const uint32_t mipSize = mCubeSide >> mip;
 
-    if(inputSize == 0)
-		return nullptr;
+            // ensure at least 1 threadgroup is dispatched for small mips
+            // assuming the compute shader uses 8x8 threads per group
+            // and checks for out-of-bounds internally
+            const uint32_t threadGroups = (mipSize < 8) ? 1 : (mipSize / 8); 
 
-	uint8_t* inputData = (uint8_t*)bx::alloc(&bxAlignedAllocator, inputSize);
+            mCubeMapTexture->bindForCompute(
+                0,
+                mip - 1,
+                bgfx::Access::ReadWrite,
+                bgfx::TextureFormat::RGBA32F
+            );
 
-	// read the file and put it raw in inputData
+            mCubeMapTexture->bindForCompute(
+                1,
+                mip,
+                bgfx::Access::ReadWrite,
+                bgfx::TextureFormat::RGBA32F
+            );
 
-	bx::read(&reader, inputData, inputSize, &err);
-	bx::close(&reader);
+            bgfx::dispatch(
+                viewId,
+                pm.getComputeProgram<CUBEMAP_MIPMAP_GEN>(),
+                threadGroups,
+                threadGroups,
+                6
+            );
+        }
+    }
 
-	// copy the data in the final container reading its characteristics
+    // create irradiance map from cubemap
 
-    using enum bimg::TextureFormat::Enum;
+    mCubeMapTexture->bind(
+        0,
+        mEnvCubeSamplerUniform.handle(),
+        BGFX_SAMPLER_UVW_CLAMP
+    );
 
-	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, Count, &err); 
+    mIrradianceTexture->bindForCompute(
+        1,
+        0,
+        bgfx::Access::Write,
+        bgfx::TextureFormat::RGBA32F
+    );
 
-	bx::free(&bxAlignedAllocator, inputData);
+    bindDataUniform(float(mCubeSide));
 
-    if(!err.isOk())
-        return nullptr;
+    bgfx::dispatch(
+        viewId,
+        pm.getComputeProgram<CUBEMAP_TO_IRRADIANCE>(),
+        mIrradianceCubeSide / 8,
+        mIrradianceCubeSide / 8,
+        6
+    );
 
-	return output;
+    // create specular map from cubemap
+
+    for(uint8_t mip = 0; mip < mSpecularMips; ++mip) 
+    {
+        const uint32_t mipSize = mSpecularCubeSide >> mip;
+        const float roughness = static_cast<float>(mip) / static_cast<float>(mSpecularMips - 1);
+
+        // ensure at least 1 threadgroup is dispatched for small mips
+        // assuming the compute shader uses 8x8 threads per group
+        // and checks for out-of-bounds internally
+        const uint32_t threadGroups = (mipSize < 8) ? 1 : (mipSize / 8);
+
+        mCubeMapTexture->bind(
+            0,
+            mEnvCubeSamplerUniform.handle(),
+            BGFX_SAMPLER_UVW_CLAMP
+        );
+
+        mSpecularTexture->bindForCompute(
+            1,
+            mip,
+            bgfx::Access::Write,
+            bgfx::TextureFormat::RGBA32F
+        );
+
+        bindDataUniform(roughness, float(mCubeSide));
+
+        bgfx::dispatch(
+            viewId,
+            pm.getComputeProgram<CUBEMAP_TO_SPECULAR>(),
+            threadGroups,
+            threadGroups,
+            6
+        );
+
+    }
+
+    // generate BRDF lookup texture
+
+    mBrdfLuTexture->bindForCompute(
+        0,
+        0,
+        bgfx::Access::Write,
+        bgfx::TextureFormat::RGBA32F
+    );
+
+    bgfx::dispatch(
+        viewId,
+        pm.getComputeProgram<IBL_LOOKUP_TEXTURE_GEN>(),
+        mBrdfLutSize / 8,
+        mBrdfLutSize / 8
+    );
 }
 
 } // namespace vcl

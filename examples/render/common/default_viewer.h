@@ -39,7 +39,6 @@
 #endif
 
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/bgfx/drawable/drawable_background.h>
 
 #if defined(VCLIB_RENDER_EXAMPLES_WITH_GLFW) && defined(VCLIB_WITH_IMGUI)
 using ImguiMeshViewer = vcl::RenderApp<
@@ -109,7 +108,6 @@ void showMeshesOnViewer(
         std::make_shared<vcl::DrawableObjectVector>();
 
     if(!panorama.empty()) {
-        vector->pushBack(vcl::DrawableBackground());
         viewer.setPanorama(panorama);
     }
 

@@ -46,8 +46,8 @@ SAMPLER2D(occlusionTex, VCL_MRB_TEXTURE3);
 SAMPLER2D(emissiveTex, VCL_MRB_TEXTURE4);
 SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
 
-SAMPLERCUBE(s_irradiance, 3);
-SAMPLERCUBE(s_specular, 4);
+SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
+SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 
 
 uniform vec4 u_dataPack;

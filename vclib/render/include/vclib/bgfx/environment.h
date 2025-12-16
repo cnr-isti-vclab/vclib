@@ -29,12 +29,14 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/uniform.h>
 #include <vclib/bgfx/texture.h>
-#include <vclib/render/drawable/draw_object_settings.h>
 
 namespace vcl {
 
 class Environment
 {
+
+    std::string mImagePath;
+
     vcl::VertexBuffer mVertexBuffer;
     static const uint mVertexNumber = 3;
     inline static const float mVertices[mVertexNumber * 3] {
@@ -43,9 +45,9 @@ class Environment
          1,  3,  1
     };
 
-    bool mBackgroundReady = false;
-
-    std::array<float, 4> mUniformData = {0.0f, 0.0f, 0.0f, 0.0f};
+    bool 
+        mBackgroundReady = false,
+        mCanDraw         = false;
 
     uint32_t 
         mCubeSide           = 0,
@@ -109,8 +111,8 @@ class Environment
     // Allocator references are stored in image containers
     // so they have to remain visible somehow.
     // TODO: find a better way to do so.
-    bx::DefaultAllocator bxDefaultAllocator;
-    AlignedAllocator bxAlignedAllocator = AlignedAllocator(&bxDefaultAllocator, 16);
+    inline static bx::DefaultAllocator bxDefaultAllocator;
+    inline static AlignedAllocator bxAlignedAllocator = AlignedAllocator(&bxDefaultAllocator, 16);
 
     bimg::ImageContainer* mImage = nullptr;
 
@@ -118,7 +120,9 @@ class Environment
 
     Environment() = default;
 
-    Environment(const std::string& imagePath);
+    Environment(const std::string& imagePath):
+        mImagePath(imagePath)
+    {}
 
     Environment(const Environment& other) = default;
 
@@ -135,8 +139,22 @@ class Environment
     void swap(Environment& other)
     {
         using std::swap;
-        Environment::swap(other);
-
+        swap(mBackgroundReady, other.mBackgroundReady);
+        swap(mCanDraw, other.mCanDraw);
+        swap(mCubeSide, other.mCubeSide);
+        swap(mIrradianceCubeSide, other.mIrradianceCubeSide);
+        swap(mSpecularCubeSide, other.mSpecularCubeSide);
+        swap(mBrdfLutSize, other.mBrdfLutSize);
+        swap(mCubeMips, other.mCubeMips);
+        swap(mSpecularMips, other.mSpecularMips);
+        swap(mSourceFormat, other.mSourceFormat);
+        swap(mImage, other.mImage);
+        swap(mHdrTexture, other.mHdrTexture);
+        swap(mCubeMapTexture, other.mCubeMapTexture);
+        swap(mIrradianceTexture, other.mIrradianceTexture);
+        swap(mSpecularTexture, other.mSpecularTexture);
+        swap(mBrdfLuTexture, other.mBrdfLuTexture);
+        mImagePath.swap(other.mImagePath);
         mVertexBuffer.swap(other.mVertexBuffer);
     }
 
@@ -145,15 +163,35 @@ class Environment
         first.swap(second);
     }
 
-    void drawBackground(const DrawObjectSettings& settings);
+    enum class TextureType
+    {
+        RAW_CUBE,
+        IRRADIANCE,
+        SPECULAR,
+        BRDF_LUT
+    };
+
+    void drawBackground(const uint viewId);
+
+    void bindTexture(TextureType type, uint stage, uint samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
+
+    void bindDataUniform(const float d0 = 0.0f, const float d1 = 0.0f, const float d2 = 0.0f, const float d3 = 0.0f) const;
+
+    uint8_t specularMips() const { return mSpecularMips; }
 
     private:
 
-    void prepareBackground();
+    void prepareBackground(const uint viewId);
 
     FileFormat getFileFormat(const std::string& imagePath);
 
     bimg::ImageContainer* loadImage(std::string imagePath);
+
+    void setTextures();
+
+    void fullScreenTriangle();
+
+    void generateTextures(const uint viewId);
 
     template<typename T>
     std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)

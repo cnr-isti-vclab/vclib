@@ -23,9 +23,10 @@
 $input v_texcoord0
 
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 // textures
-SAMPLERCUBE(s_env0, 2);
+SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
 
 void main()
 {
