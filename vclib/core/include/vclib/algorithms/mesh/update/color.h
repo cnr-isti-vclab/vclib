@@ -84,8 +84,9 @@ void setPerVertexColorFromElemColor(MeshType& m)
 template<uint ELEM_ID, MeshConcept MeshType>
 void setPerElemColorFromMaterial(MeshType& m)
 {
-    static_assert(HasMaterials<MeshType>,
-                  "The input Mesh must have the Materials component.");
+    static_assert(
+        HasMaterials<MeshType>,
+        "The input Mesh must have the Materials component.");
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
     requirePerElementComponent<ELEM_ID, CompId::MATERIAL_INDEX>(m);
 

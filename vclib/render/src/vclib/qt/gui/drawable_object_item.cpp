@@ -149,8 +149,8 @@ void DrawableObjectItem::addMaterialsItem(const AbstractDrawableMesh& mesh)
 
 void DrawableObjectItem::addMaterialData(
     const AbstractDrawableMesh& mesh,
-    const Material&  material,
-    QTreeWidgetItem* parent)
+    const Material&             material,
+    QTreeWidgetItem*            parent)
 {
     using enum Material::TextureType;
 
@@ -169,15 +169,13 @@ void DrawableObjectItem::addMaterialData(
     // metallic
     auto metallicItem = new QTreeWidgetItem(parent);
     metallicItem->setText(0, "Metallic");
-    metallicItem->setText(
-        1, QString::number(material.metallic(), 'f', 3));
+    metallicItem->setText(1, QString::number(material.metallic(), 'f', 3));
     makeItemNotSelectable(metallicItem);
 
     // roughness
     auto roughnessItem = new QTreeWidgetItem(parent);
     roughnessItem->setText(0, "Roughness");
-    roughnessItem->setText(
-        1, QString::number(material.roughness(), 'f', 3));
+    roughnessItem->setText(1, QString::number(material.roughness(), 'f', 3));
     makeItemNotSelectable(roughnessItem);
 
     // emissive color
@@ -199,15 +197,9 @@ void DrawableObjectItem::addMaterialData(
         alphaModeItem->setText(0, "Alpha Mode");
         QString alphaModeStr;
         switch (material.alphaMode()) {
-            case Material::AlphaMode::ALPHA_OPAQUE:
-                alphaModeStr = "OPAQUE";
-                break;
-            case Material::AlphaMode::ALPHA_MASK:
-                alphaModeStr = "MASK";
-                break;
-            case Material::AlphaMode::ALPHA_BLEND:
-                alphaModeStr = "BLEND";
-                break;
+        case Material::AlphaMode::ALPHA_OPAQUE: alphaModeStr = "OPAQUE"; break;
+        case Material::AlphaMode::ALPHA_MASK: alphaModeStr = "MASK"; break;
+        case Material::AlphaMode::ALPHA_BLEND: alphaModeStr = "BLEND"; break;
         }
         alphaModeItem->setText(1, alphaModeStr);
         makeItemNotSelectable(alphaModeItem);
@@ -222,7 +214,8 @@ void DrawableObjectItem::addMaterialData(
         makeItemNotSelectable(alphaCutoffItem);
     }
 
-    auto addTxtItem = [&](const TextureDescriptor& txt, const QString& txtName) {
+    auto addTxtItem = [&](const TextureDescriptor& txt,
+                          const QString&           txtName) {
         if (!txt.isNull()) {
             auto textureItem = new QTreeWidgetItem(parent);
             textureItem->setText(0, txtName);
@@ -247,7 +240,8 @@ void DrawableObjectItem::addMaterialData(
     addTxtItem(bcTxt, "Base Color Texture");
 
     // metalling roughness TextureDescriptor
-    const TextureDescriptor& mrTxt = material.textureDescriptor(METALLIC_ROUGHNESS);
+    const TextureDescriptor& mrTxt =
+        material.textureDescriptor(METALLIC_ROUGHNESS);
     addTxtItem(mrTxt, "Metallic Roughness Texture");
 
     // normal TextureDescriptor

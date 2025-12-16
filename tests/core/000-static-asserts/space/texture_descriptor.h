@@ -35,13 +35,15 @@ void textureDescriptorStaticAsserts()
         "TextureDescriptor does not satisfy the TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<const TextureDescriptor>,
-        "const TextureDescriptor does not satisfy the TextureDescriptorConcept");
+        "const TextureDescriptor does not satisfy the "
+        "TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<TextureDescriptor&>,
         "TextureDescriptor& does not satisfy the TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<const TextureDescriptor&>,
-        "const TextureDescriptor& does not satisfy the TextureDescriptorConcept");
+        "const TextureDescriptor& does not satisfy the "
+        "TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<TextureDescriptor&&>,
         "TextureDescriptor&& does not satisfy the TextureDescriptorConcept");

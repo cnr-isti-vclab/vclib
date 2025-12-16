@@ -157,9 +157,8 @@ public:
             // compute bitangent using the tangent and normal
             // assuming that normal is available
             const auto& n = static_cast<const ParentElemType&>(*this).normal();
-            return tangentRightHanded()
-                       ? n.cross(tangent())
-                       : tangent().cross(n);
+            return tangentRightHanded() ? n.cross(tangent()) :
+                                          tangent().cross(n);
         }
         else {
             throw MissingComponentException(
@@ -233,7 +232,7 @@ void Tangent<P, ParentElemType, OPT>::importFrom(const Element& e, bool)
     using ScalarType = TangentType::ScalarType;
     if constexpr (HasTangent<Element>) {
         if (isTangentAvailableOn(e)) {
-            tangent() = e.tangent().template cast<ScalarType>();
+            tangent()            = e.tangent().template cast<ScalarType>();
             tangentRightHanded() = e.tangentRightHanded();
         }
     }

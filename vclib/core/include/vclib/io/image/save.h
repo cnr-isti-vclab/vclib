@@ -127,7 +127,7 @@ void saveTextureImages(
         for (uint i = 0; i < N_TEXTURE_TYPES; ++i) {
             // supported textures to save
             if (textureTypesToSave[i]) {
-                const TextureDescriptor& t   = mat.textureDescriptor(i);
+                const TextureDescriptor& t = mat.textureDescriptor(i);
                 if (!savedImages.contains(t.path())) {
                     const Image& img = mesh.textureImage(t.path());
                     if (img.isNull() || t.isNull()) {

@@ -202,8 +202,7 @@ void writePlyVertices(
             }
             if (p.name == ply::material_index) {
                 if constexpr (HasPerVertexMaterialIndex<MeshType>) {
-                    io::writeProperty(
-                        file, v.materialIndex(), p.type, format);
+                    io::writeProperty(file, v.materialIndex(), p.type, format);
                     hasBeenWritten = true;
                 }
             }

@@ -106,7 +106,7 @@ void readPlyMaterialIndexPostProcessing(
         if (mesh.materialsNumber() > 0) {
             if (loadedInfo.hasPerVertexTexCoord() &&
                 !loadedInfo.hasPerVertexMaterialIndex()) {
-                if constexpr(HasPerVertexMaterialIndex<MeshType>) {
+                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
                     if (settings.enableOptionalComponents) {
                         enableIfPerVertexMaterialIndexOptional(mesh);
                         loadedInfo.setPerVertexMaterialIndex();

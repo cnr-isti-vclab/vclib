@@ -607,7 +607,8 @@ bool enableIfPerFaceMarkOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceMaterialIndexAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::FACE, CompId::MATERIAL_INDEX>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, CompId::MATERIAL_INDEX>(
+        m);
 }
 
 /**

@@ -1026,8 +1026,7 @@ TEST_CASE("Import mesh - error handling")
             0, 1}; // size 2, should be 1
 
         REQUIRE_THROWS_AS(
-            vcl::faceMaterialIndicesFromRange(
-                mesh, wrongFaceMaterialIndices),
+            vcl::faceMaterialIndicesFromRange(mesh, wrongFaceMaterialIndices),
             vcl::WrongSizeException);
     }
 
