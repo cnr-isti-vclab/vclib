@@ -30,6 +30,7 @@
 #include "core/distribution.h"
 #include "core/histogram.h"
 #include "core/image.h"
+#include "core/material.h"
 #include "core/matrix.h"
 #include "core/parallel_vector_tuple.h"
 #include "core/plane.h"
@@ -41,7 +42,7 @@
 #include "core/sphere.h"
 #include "core/tex_coord.h"
 #include "core/tex_coord_indexed.h"
-#include "core/texture.h"
+#include "core/texture_descriptor.h"
 #include "core/triangle_wrapper.h"
 #include "core/vector.h"
 

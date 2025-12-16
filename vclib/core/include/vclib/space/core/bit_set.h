@@ -359,6 +359,17 @@ public:
     template<typename U>
     friend std::ostream& operator<<(std::ostream& os, const BitSet<U>& bs);
 
+    /**
+     * @brief Returns a BitSet with all the bits set to true.
+     * @return a BitSet with all the bits set to true.
+     */
+    constexpr static BitSet<T> ALL()
+    {
+        BitSet<T> bs;
+        bs.set();
+        return bs;
+    }
+
 private:
     // constructor to initialize the BitSet with a given integral value
     BitSet(T bits) : mBits(bits) {}

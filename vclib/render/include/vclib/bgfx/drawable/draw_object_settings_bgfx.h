@@ -38,6 +38,10 @@ struct DrawObjectSettingsBGFX
 
     /**< @brief The view ID on which to draw the object. */
     uint viewId = 0;
+
+    /**< @brief Option that tells whether the object must be drawn in PBR mode.
+     */
+    bool pbrMode = false;
 };
 
 } // namespace vcl

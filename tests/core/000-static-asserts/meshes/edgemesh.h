@@ -31,6 +31,8 @@ void edgemeshStaticAsserts()
     static_assert(!HasQuads<EdgeMesh>, "");
     static_assert(!HasPolygons<EdgeMesh>, "");
 
+    static_assert(HasMaterials<EdgeMesh>, "The EdgeMesh has no materials.");
+
     // mesh views
     meshViewsStaticAsserts<EdgeMesh>();
 }

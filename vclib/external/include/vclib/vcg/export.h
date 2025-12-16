@@ -139,15 +139,22 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                 if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                     if (vcg::tri::HasPerWedgeTexCoord(vcgMesh)) {
+                        uint ti = 0;
+                        if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                            if (isPerFaceMaterialIndexAvailable(mesh)) {
+                                ti = f.materialIndex();
+                            }
+                        }
+
                         vcgMesh.face[fi].WT(0).U() = f.wedgeTexCoord(0).u();
                         vcgMesh.face[fi].WT(0).V() = f.wedgeTexCoord(0).v();
-                        vcgMesh.face[fi].WT(0).N() = f.textureIndex();
+                        vcgMesh.face[fi].WT(0).N() = ti;
                         vcgMesh.face[fi].WT(1).U() = f.wedgeTexCoord(1).u();
                         vcgMesh.face[fi].WT(1).V() = f.wedgeTexCoord(1).v();
-                        vcgMesh.face[fi].WT(1).N() = f.textureIndex();
+                        vcgMesh.face[fi].WT(1).N() = ti;
                         vcgMesh.face[fi].WT(2).U() = f.wedgeTexCoord(2).u();
                         vcgMesh.face[fi].WT(2).V() = f.wedgeTexCoord(2).v();
-                        vcgMesh.face[fi].WT(2).N() = f.textureIndex();
+                        vcgMesh.face[fi].WT(2).N() = ti;
                     }
                 }
             }
@@ -155,6 +162,12 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
             // todo - custom components
 
             fi++;
+        }
+    }
+
+    if constexpr (HasMaterials<MeshType>) {
+        for (const Material& m : mesh.materials()) {
+            vcgMesh.textures.push_back(m.baseColorTextureDescriptor().path());
         }
     }
 }

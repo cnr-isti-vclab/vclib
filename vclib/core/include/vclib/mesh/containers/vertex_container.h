@@ -769,6 +769,48 @@ public:
         Base::template disableOptionalComponent<typename T::Mark>();
     }
 
+    // MaterialIndex
+
+    /**
+     * @brief Checks if the vertex Optional MaterialIndex is enabled.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalMaterialIndex Component.
+     *
+     * @return true if the Optional MaterialIndex is enabled, false otherwise.
+     */
+    bool isPerVertexMaterialIndexEnabled() const
+        requires vert::HasOptionalMaterialIndex<T>
+    {
+        return Base::template isOptionalComponentEnabled<
+            typename T::MaterialIndex>();
+    }
+
+    /**
+     * @brief Enables the Optional MaterialIndex of the vertex.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalMaterialIndex Component.
+     */
+    void enablePerVertexMaterialIndex()
+        requires vert::HasOptionalMaterialIndex<T>
+    {
+        Base::template enableOptionalComponent<typename T::MaterialIndex>();
+    }
+
+    /**
+     * @brief Container::disableVertexMaterialIndex disables the Optional
+     * MaterialIndex of the vertex.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalMaterialIndex Component.
+     */
+    void disablePerVertexMaterialIndex()
+        requires vert::HasOptionalMaterialIndex<T>
+    {
+        Base::template disableOptionalComponent<typename T::MaterialIndex>();
+    }
+
     // Normal
 
     /**
@@ -885,6 +927,43 @@ public:
     void disablePerVertexQuality() requires vert::HasOptionalQuality<T>
     {
         Base::template disableOptionalComponente<typename T::Quality>();
+    }
+
+    // Tangent
+
+    /**
+     * @brief Checks if the vertex Optional Tangent is enabled.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalTangent Component.
+     *
+     * @return true if the Optional Tangent is enabled, false otherwise.
+     */
+    bool isPerVertexTangentEnabled() const requires vert::HasOptionalTangent<T>
+    {
+        return Base::template isOptionalComponentEnabled<typename T::Tangent>();
+    }
+
+    /**
+     * @brief Enables the Optional Tangent of the vertex.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalTangent Component.
+     */
+    void enablePerVertexTangent() requires vert::HasOptionalTangent<T>
+    {
+        Base::template enableOptionalComponent<typename T::Tangent>();
+    }
+
+    /**
+     * @brief Checks if the vertex Optional Tangent is enabled.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalTangent Component.
+     */
+    void disablePerVertexTangent() requires vert::HasOptionalTangent<T>
+    {
+        Base::template disableOptionalComponent<typename T::Tangent>();
     }
 
     // TexCoord
