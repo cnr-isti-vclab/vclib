@@ -24,6 +24,7 @@
 #define VCL_BGFX_ENVIRONMENT_H
 
 #include <bgfx/bgfx.h>
+#include <bx/allocator.h>
 #include <vclib/base.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/uniform.h>
@@ -45,7 +46,16 @@ class Environment
     bool mBackgroundReady = false;
 
     std::array<float, 4> mUniformData = {0.0f, 0.0f, 0.0f, 0.0f};
-    uint8_t mSpecularMips = 0;
+
+    uint32_t 
+        mCubeSide           = 0,
+        mIrradianceCubeSide = 0,
+        mSpecularCubeSide   = 0,
+        mBrdfLutSize        = 1024;
+
+    uint8_t 
+        mCubeMips     = 0,
+        mSpecularMips = 0;
 
     vcl::Uniform 
         mHdrSamplerUniform            = Uniform("s_hdr", bgfx::UniformType::Sampler),
@@ -62,9 +72,53 @@ class Environment
         mSpecularTexture,
         mBrdfLuTexture;
 
+    enum class FileFormat
+    {
+        UNKNOWN,
+        HDR,
+        EXR,
+        KTX //, DDS?
+    };
+
+    FileFormat mSourceFormat = FileFormat::UNKNOWN;
+
+    class AlignedAllocator : public bx::AllocatorI
+    {
+    public:
+    	AlignedAllocator(bx::AllocatorI* _allocator, size_t _minAlignment)
+    		: m_allocator(_allocator)
+    		, m_minAlignment(_minAlignment)
+    	{
+    	}
+
+    	virtual void* realloc(
+    			void* _ptr
+    		, size_t _size
+    		, size_t _align
+    		, const char* _file
+    		, uint32_t _line
+    		)
+    	{
+    		return m_allocator->realloc(_ptr, _size, bx::max(_align, m_minAlignment), _file, _line);
+    	}
+
+    	bx::AllocatorI* m_allocator;
+    	size_t m_minAlignment;
+    };
+
+    // Allocator references are stored in image containers
+    // so they have to remain visible somehow.
+    // TODO: find a better way to do so.
+    bx::DefaultAllocator bxDefaultAllocator;
+    AlignedAllocator bxAlignedAllocator = AlignedAllocator(&bxDefaultAllocator, 16);
+
+    bimg::ImageContainer* mImage = nullptr;
+
     public:
 
     Environment() = default;
+
+    Environment(const std::string& imagePath);
 
     Environment(const Environment& other) = default;
 
@@ -96,6 +150,10 @@ class Environment
     private:
 
     void prepareBackground();
+
+    FileFormat getFileFormat(const std::string& imagePath);
+
+    bimg::ImageContainer* loadImage(std::string imagePath);
 
     template<typename T>
     std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
