@@ -49,9 +49,7 @@ void initMaterials(pybind11::class_<MeshType>& c)
             t.meshBasePath() = p;
         },
         "path"_a);
-    c.def(
-        "material",
-        py::overload_cast<uint>(&MeshType::material, py::const_));
+    c.def("material", py::overload_cast<uint>(&MeshType::material, py::const_));
     c.def(
         "set_material",
         [](MeshType& t, uint i, const Material& m) {

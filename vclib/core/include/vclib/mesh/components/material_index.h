@@ -92,7 +92,7 @@ public:
      *
      * @return a reference to the material index.
      */
-    //uint& textureIndex() { return Base::data(); }
+    // uint& textureIndex() { return Base::data(); }
 
     /**
      * @brief Returns the value of the material index.
@@ -101,7 +101,7 @@ public:
      *
      * @return the value of the material index.
      */
-    //uint textureIndex() const { return Base::data(); }
+    // uint textureIndex() const { return Base::data(); }
 
 protected:
     // Component interface function

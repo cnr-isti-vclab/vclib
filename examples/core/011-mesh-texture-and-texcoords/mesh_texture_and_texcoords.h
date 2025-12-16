@@ -120,20 +120,22 @@ auto meshTextureAndTexCoords()
     }
 
     // Example 3: Working with materials and texture images
-    std::cout << "\n3. Working with materials and texture images..." << std::endl;
+    std::cout << "\n3. Working with materials and texture images..."
+              << std::endl;
     std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialsNumber()
               << " materials" << std::endl;
 
     for (vcl::uint i = 0; i < meshWedgeTexCoords.materialsNumber(); ++i) {
         // access to the baseColor texture descriptor
-        const auto& texture = meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
+        const auto& texture =
+            meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
         std::cout << "     Base Color Texture " << i << ": " << texture.path()
                   << std::endl;
         // if the images are not loaded, they will be empty
         // (width and height will be 0)
         const auto& image = meshWedgeTexCoords.textureImage(texture.path());
-        std::cout << "       Size: " << image.width() << "x"
-                  << image.height() << std::endl;
+        std::cout << "       Size: " << image.width() << "x" << image.height()
+                  << std::endl;
     }
 
     // Example 4: Creating mesh with texture coordinates
@@ -178,9 +180,7 @@ auto meshTextureAndTexCoords()
 
     // add also the image of the texture to the mesh
     const auto& image = meshWedgeTexCoords.textureImage(
-        meshWedgeTexCoords.material(0)
-            .baseColorTextureDescriptor()
-            .path());
+        meshWedgeTexCoords.material(0).baseColorTextureDescriptor().path());
 
     customMesh.pushTextureImage("custom_texture_path.png", image);
 

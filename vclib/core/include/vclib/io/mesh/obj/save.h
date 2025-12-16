@@ -39,10 +39,10 @@ namespace detail {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 std::vector<std::string> saveObjMaterials(
-    const MeshType&     m,
-    const std::string&  meshBasePath,
-    std::ostream&       mtlfp,
-    LogType&            log = nullLogger)
+    const MeshType&    m,
+    const std::string& meshBasePath,
+    std::ostream&      mtlfp,
+    LogType&           log = nullLogger)
 {
     std::vector<std::string> materials;
     if constexpr (HasMaterials<MeshType>) {
@@ -77,8 +77,7 @@ void saveObj(
     MeshInfo meshInfo(m);
 
     // base path for the mesh and material textures
-    std::string meshBasePath =
-        FileInfo::pathWithoutFileName(filename);
+    std::string meshBasePath = FileInfo::pathWithoutFileName(filename);
 
     // make sure that the given info contains only components that are actually
     // available in the mesh. meshInfo will contain the intersection between the
@@ -117,8 +116,7 @@ void saveObj(
     }
 
     if (useMtl) {
-        materialNames =
-            saveObjMaterials(m, meshBasePath, *mtlfp, log);
+        materialNames = saveObjMaterials(m, meshBasePath, *mtlfp, log);
     }
 
     uint lastMaterial = UINT_NULL;

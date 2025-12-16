@@ -374,11 +374,10 @@ private:
                             txt = vcl::loadImage(
                                 mesh.meshBasePath() + texture.path());
                         }
-                        catch(...) {
+                        catch (...) {
                             // do nothing
                         }
                     }
-
                 }
 
                 if (txt.isNull()) {

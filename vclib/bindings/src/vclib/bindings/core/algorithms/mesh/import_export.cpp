@@ -392,8 +392,7 @@ void initImportExportAlgorithms(pybind11::module& m)
         m.def(
             "face_wedge_material_indices_list",
             [](const MeshType& m) {
-                return vcl::faceMaterialIndicesVector<std::vector<uint>>(
-                    m);
+                return vcl::faceMaterialIndicesVector<std::vector<uint>>(m);
             },
             "mesh"_a);
 
@@ -521,8 +520,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "face_material_indices_from_array",
-            [](MeshType&              mesh,
-               const Eigen::VectorXi& faceMaterialIndices) {
+            [](MeshType& mesh, const Eigen::VectorXi& faceMaterialIndices) {
                 return vcl::faceMaterialIndicesFromRange(
                     mesh, faceMaterialIndices);
             },
@@ -531,8 +529,7 @@ void initImportExportAlgorithms(pybind11::module& m)
 
         m.def(
             "face_material_indices_from_list",
-            [](MeshType&               mesh,
-               const std::vector<int>& faceMaterialIndices) {
+            [](MeshType& mesh, const std::vector<int>& faceMaterialIndices) {
                 return vcl::faceMaterialIndicesFromRange(
                     mesh, faceMaterialIndices);
             },

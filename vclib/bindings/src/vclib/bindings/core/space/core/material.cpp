@@ -148,7 +148,8 @@ void initMaterial(pybind11::module& m)
         "texture_descriptor"_a);
     c.def(
         "texture_descriptor",
-        py::overload_cast<Material::TextureType>(&Material::textureDescriptor, py::const_));
+        py::overload_cast<Material::TextureType>(
+            &Material::textureDescriptor, py::const_));
     c.def(
         "set_texture_descriptor",
         [](Material&                m,

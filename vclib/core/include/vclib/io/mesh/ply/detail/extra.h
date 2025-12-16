@@ -49,8 +49,7 @@ void readPlyTextures(
             if (settings.loadTextureImages) {
                 Image img = loadImage(mesh.meshBasePath() + str);
                 if (img.isNull()) {
-                    log.log(
-                        "Cannot load texture " + str, LogType::WARNING_LOG);
+                    log.log("Cannot load texture " + str, LogType::WARNING_LOG);
                 }
                 else {
                     mesh.pushTextureImage(str, std::move(img));
@@ -141,7 +140,7 @@ void readPlyMaterialIndexPostProcessing(
         if (mesh.materialsNumber() > 0) {
             if (loadedInfo.hasPerVertexTexCoord() &&
                 !loadedInfo.hasPerVertexMaterialIndex()) {
-                if constexpr(HasPerVertexMaterialIndex<MeshType>) {
+                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
                     if (settings.enableOptionalComponents) {
                         enableIfPerVertexMaterialIndexOptional(mesh);
                         loadedInfo.setPerVertexMaterialIndex();

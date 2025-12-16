@@ -225,7 +225,8 @@ public:
      * @brief Generates BGFX sampler flags based on the texture's filtering
      * and wrapping modes.
      *
-     * @param[in] tex: The TextureDescriptor object to derive sampler flags from.
+     * @param[in] tex: The TextureDescriptor object to derive sampler flags
+     * from.
      * @return The generated BGFX sampler flags.
      */
     static uint samplerFlagsFromTexture(const TextureDescriptor& tex)

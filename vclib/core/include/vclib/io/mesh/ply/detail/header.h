@@ -512,7 +512,7 @@ public:
                 tc.list         = true;
                 tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
-                tc.type = info.perFaceWedgeTexCoordsType();
+                tc.type         = info.perFaceWedgeTexCoordsType();
                 fElem.properties.push_back(tc);
             }
             if (info.hasPerFaceMaterialIndex()) {

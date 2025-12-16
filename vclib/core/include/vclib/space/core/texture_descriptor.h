@@ -86,9 +86,9 @@ public:
     };
 
 private:
-    std::string         mPath;      ///< The file path to the texture source.
-    MinificationFilter  mMinFilter =
-        MinificationFilter::NONE;   ///< The minification filter mode.
+    std::string        mPath; ///< The file path to the texture source.
+    MinificationFilter mMinFilter =
+        MinificationFilter::NONE; ///< The minification filter mode.
     MagnificationFilter mMagFilter =
         MagnificationFilter::NONE; ///< The magnification filter mode.
     WrapMode mWrapU =
