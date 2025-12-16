@@ -61,6 +61,8 @@ public:
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
+        settings.pbrMode = ParentViewer::isPBREnabled();
+
         setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());

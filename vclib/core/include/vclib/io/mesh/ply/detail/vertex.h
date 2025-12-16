@@ -90,9 +90,9 @@ void readPlyVertexProperty(
         }
     }
     if (p.name == ply::texnumber) {
-        if constexpr (HasPerVertexTexCoord<MeshType>) {
-            if (isPerVertexTexCoordAvailable(mesh)) {
-                v.texCoord().index() =
+        if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+            if (isPerVertexMaterialIndexAvailable(mesh)) {
+                v.materialIndex() =
                     io::readPrimitiveType<ushort>(file, p.type, end);
                 hasBeenRead = true;
             }
@@ -201,9 +201,8 @@ void writePlyVertices(
                 }
             }
             if (p.name == ply::texnumber) {
-                if constexpr (HasPerVertexTexCoord<MeshType>) {
-                    io::writeProperty(
-                        file, v.texCoord().index(), p.type, format);
+                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                    io::writeProperty(file, v.materialIndex(), p.type, format);
                     hasBeenWritten = true;
                 }
             }

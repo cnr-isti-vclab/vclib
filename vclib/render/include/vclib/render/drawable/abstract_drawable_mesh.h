@@ -39,12 +39,16 @@ namespace vcl {
  */
 class AbstractDrawableMesh : public vcl::DrawableObject
 {
+    inline static const Image EMPTY_IMAGE;
+
 protected:
     MeshRenderSettings mMRS;
 
     Box3d mBoundingBox;
 
 public:
+    using MatIt = std::vector<Material>::const_iterator;
+
     AbstractDrawableMesh() = default;
 
     AbstractDrawableMesh(const AbstractDrawableMesh& other) = default;
@@ -70,9 +74,11 @@ public:
 
     virtual vcl::Matrix44d transformMatrix() const = 0;
 
-    virtual std::vector<std::string> textures() const
+    virtual View<MatIt> materials() const { return View<MatIt>(); }
+
+    virtual const Image& textureImage(const std::string& path) const
     {
-        return std::vector<std::string>();
+        return EMPTY_IMAGE;
     }
 
     // DrawableObject implementation

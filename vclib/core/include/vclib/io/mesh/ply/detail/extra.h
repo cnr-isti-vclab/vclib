@@ -41,20 +41,21 @@ void readPlyTextures(
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
-            mesh.pushTexturePath(str);
-            if constexpr (HasTextureImages<MeshType>) {
-                uint k = mesh.textureNumber() - 1;
-                if (settings.loadTextureImages) {
-                    mesh.texture(k).image() =
-                        loadImage(mesh.meshBasePath() + str);
-                    if (mesh.texture(k).image().isNull()) {
-                        log.log(
-                            "Cannot load texture " + str, LogType::WARNING_LOG);
-                    }
+            Material mat;
+            mat.name() = FileInfo::fileNameWithExtension(str);
+            mat.baseColorTextureDescriptor().path() = str;
+            if (settings.loadTextureImages) {
+                Image img = loadImage(mesh.meshBasePath() + str);
+                if (img.isNull()) {
+                    log.log("Cannot load texture " + str, LogType::WARNING_LOG);
+                }
+                else {
+                    mesh.pushTextureImage(str, std::move(img));
                 }
             }
+            mesh.pushMaterial(mat);
         }
     }
 }
@@ -67,13 +68,23 @@ void writePlyTextures(
     LogType&            log,
     const SaveSettings& settings)
 {
-    if constexpr (HasTexturePaths<MeshType>) {
-        for (uint k = 0; const std::string& str : mesh.texturePaths()) {
-            header.pushTextureFileName(str);
-            if constexpr (HasTextureImages<MeshType>) {
-                if (settings.saveTextureImages) {
+    if constexpr (HasMaterials<MeshType>) {
+        for (uint k = 0; const Material& mat : mesh.materials()) {
+            header.pushTextureFileName(mat.baseColorTextureDescriptor().path());
+            if (settings.saveTextureImages) {
+                const Image& img =
+                    mesh.textureImage(mat.baseColorTextureDescriptor().path());
+                if (img.isNull()) {
+                    log.log(
+                        "Cannot save empty texture " +
+                            mat.baseColorTextureDescriptor().path(),
+                        LogType::WARNING_LOG);
+                }
+                else {
                     try {
-                        saveImage(mesh.texture(k).image(), basePath + str);
+                        saveImage(
+                            img,
+                            basePath + mat.baseColorTextureDescriptor().path());
                     }
                     catch (const std::runtime_error& e) {
                         log.log(e.what(), LogType::WARNING_LOG);
@@ -117,6 +128,46 @@ void readPlyUnknownElement(
     }
 
     log.endProgress();
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void readPlyMaterialIndexPostProcessing(
+    MeshType&           mesh,
+    MeshInfo&           loadedInfo,
+    const LoadSettings& settings)
+{
+    if constexpr (HasMaterials<MeshType>) {
+        if (mesh.materialsNumber() > 0) {
+            if (loadedInfo.hasPerVertexTexCoord() &&
+                !loadedInfo.hasPerVertexMaterialIndex()) {
+                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                    if (settings.enableOptionalComponents) {
+                        enableIfPerVertexMaterialIndexOptional(mesh);
+                        loadedInfo.setPerVertexMaterialIndex();
+                    }
+                    if (loadedInfo.hasPerVertexMaterialIndex()) {
+                        for (auto& v : mesh.vertices()) {
+                            v.materialIndex() = 0;
+                        }
+                    }
+                }
+            }
+            if (loadedInfo.hasPerFaceWedgeTexCoords() &&
+                !loadedInfo.hasPerFaceMaterialIndex()) {
+                if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                    if (settings.enableOptionalComponents) {
+                        enableIfPerFaceMaterialIndexOptional(mesh);
+                        loadedInfo.setPerFaceMaterialIndex();
+                    }
+                    if (loadedInfo.hasPerFaceMaterialIndex()) {
+                        for (auto& f : mesh.faces()) {
+                            f.materialIndex() = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 } // namespace vcl::detail

@@ -29,6 +29,7 @@
 #include "space/camera.h"
 #include "space/color.h"
 #include "space/image.h"
+#include "space/material.h"
 #include "space/matrix.h"
 #include "space/plane.h"
 #include "space/point.h"
@@ -39,7 +40,7 @@
 #include "space/sphere.h"
 #include "space/tex_coord.h"
 #include "space/tex_coord_indexed.h"
-#include "space/texture.h"
+#include "space/texture_descriptor.h"
 
 void spaceStaticAsserts()
 {
@@ -49,6 +50,7 @@ void spaceStaticAsserts()
     cameraStaticAsserts();
     colorStaticAsserts();
     imageStaticAsserts();
+    materialStaticAsserts();
     matrixStaticAsserts();
     planeStaticAsserts();
     pointStaticAsserts();
@@ -59,7 +61,7 @@ void spaceStaticAsserts()
     sphereStaticAsserts();
     texCoordStaticAsserts();
     texCoordIndexedStaticAsserts();
-    textureStaticAsserts();
+    textureDescriptorStaticAsserts();
 
     using namespace vcl;
 
