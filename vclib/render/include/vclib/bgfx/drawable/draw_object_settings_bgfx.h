@@ -24,6 +24,7 @@
 #define VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
 
 #include <vclib/base.h>
+#include <vclib/bgfx/environment.h>
 
 namespace vcl {
 
@@ -42,6 +43,8 @@ struct DrawObjectSettingsBGFX
     /**< @brief Option that tells whether the object must be drawn in PBR mode.
      */
     bool pbrMode = false;
+
+    const Environment* environment = nullptr;
 };
 
 } // namespace vcl

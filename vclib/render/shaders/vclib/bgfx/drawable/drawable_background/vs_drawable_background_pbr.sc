@@ -27,10 +27,15 @@ $output v_texcoord0
 
 void main()
 {
-    // pass texture coordinates as vetrices' 
-    // coordinates in clip space
-	v_texcoord0 = a_position.xy;
+    vec4 position = vec4(a_position.x, a_position.y, a_position.z, 1.0);
+    
+    // get the outward view direction in world space back from clip space
+    vec3 worldViewDir = mul(u_invViewProj, position).xyz;
+
+    // cubemaps are left-handed, so invert the Z coordinate 
+    // to adapt to our right-handed system
+    v_texcoord0 = vec3(worldViewDir.x, worldViewDir.y, -worldViewDir.z);
 
     // draw the triangle in screen space
-    gl_Position = vec4(a_position, 1.0);
+    gl_Position = position;
 }

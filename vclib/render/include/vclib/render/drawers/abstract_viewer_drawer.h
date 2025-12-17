@@ -135,6 +135,11 @@ public:
         Base::fitView(sceneCenter);
     }
 
+    void setPanorama(const std::string& panorama)
+    {
+        // to be implemented by derived classes if needed
+    }
+
     // events
     void onInit(uint) override
     {

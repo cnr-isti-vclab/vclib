@@ -44,7 +44,7 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
 
-    uint selectedExample = NORMAL_TENGENT_MIRROR_TEST;
+    uint selectedExample = 3;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + GLTFExampleFilenames[selectedExample]);
@@ -108,5 +108,5 @@ int main(int argc, char** argv)
         std::cout << "------------------------" << std::endl;
     }
 
-    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes), true);
+    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes), true, VCLIB_ASSETS_PATH "/pisa.hdr");
 }

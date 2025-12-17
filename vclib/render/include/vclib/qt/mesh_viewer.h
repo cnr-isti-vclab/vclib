@@ -96,6 +96,8 @@ public:
 
     void disablePBR();
 
+    void setPanorama(const std::string& panorama);
+
 public slots:
     void visibilityDrawableObjectChanged();
 

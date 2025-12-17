@@ -171,7 +171,8 @@ public:
             1,
             format,
             isCubemap,
-            flags);
+            flags
+        );
     }
 
     /**
@@ -232,6 +233,25 @@ public:
             bgfx::setTexture(
                 stage, samplerHandle, mTextureHandle, samplerFlags);
         }
+    }
+
+    /**
+     * @brief Binds the texture to a texture stage for compute shaders.
+     * @param[in] stage: The texture stage (sampler index) to bind to.
+     * @param[in] mip: Mip level to bind.
+     * @param[in] access: The type of access to the texture the compute 
+     * shader should have.
+     * @param[in] format: The format of the texture.
+     */
+    void bindForCompute(
+        uint stage,
+        uint mip,
+        bgfx::Access::Enum access,
+        bgfx::TextureFormat::Enum format = bgfx::TextureFormat::Count
+    ) const
+    {
+        if(bgfx::isValid(mTextureHandle))
+            bgfx::setImage(stage, mTextureHandle, mip, access, format);
     }
 
     /**

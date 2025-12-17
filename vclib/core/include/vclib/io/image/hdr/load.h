@@ -72,7 +72,7 @@ static AlignedAllocator bxAlignedAllocator(&bxDefaultAllocator, 16);
 
 namespace vcl {
 
-bimg::ImageContainer* loadHdr(std::string fileName)
+inline bimg::ImageContainer* loadHdr(std::string fileName)
 {
 	// check the format
 
@@ -117,7 +117,7 @@ bimg::ImageContainer* loadHdr(std::string fileName)
 	return output;
 }
 
-bimg::ImageContainer* hdrToCubemap(bimg::ImageContainer* hdr)
+inline bimg::ImageContainer* hdrToCubemap(bimg::ImageContainer* hdr)
 {
 	bx::Error err;
 	bimg::ImageContainer* output = nullptr;
@@ -172,7 +172,7 @@ bimg::ImageContainer* hdrToCubemap(bimg::ImageContainer* hdr)
     return output;
 }
 
-bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
+inline bimg::ImageContainer* loadCubemapFromHdr(std::string fileName)
 {
 	bimg::ImageContainer* hdr = loadHdr(fileName);
 	bimg::ImageContainer* cubemap = hdrToCubemap(hdr);

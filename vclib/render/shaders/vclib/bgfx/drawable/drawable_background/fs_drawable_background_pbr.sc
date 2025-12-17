@@ -23,18 +23,14 @@
 $input v_texcoord0
 
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 // textures
-SAMPLERCUBE(s_env0, 0);
+SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
 
 void main()
 {
-    // bring the interpolated fragment positions
-    // back to world space
-    vec4 clip = vec4(v_texcoord0, 1.0, 1.0);
-    vec3 worldDir = normalize(mul(u_invViewProj, clip).xyz);
-
-    worldDir.x *= -1.0; // necessary now but why??
-
-    gl_FragColor = textureCube(s_env0, worldDir);
+    vec3 color = textureCube(s_env0, normalize(v_texcoord0)).rgb;
+    color = gammaCorrect(color);
+    gl_FragColor = vec4(color.r, color.g, color.b, 1.0);
 }

@@ -25,16 +25,8 @@
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
-#include <vclib/bgfx/context.h>
+#include <vclib/bgfx/environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
-#include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
-
-#include <vclib/bgfx/texture.h>
-#include <vclib/bgfx/uniform.h>
-
-#include <vclib/io.h>
-
-#include <vclib/io/image/hdr/load.h> // TODO: add hdr load to io/image/load.h
 
 namespace vcl {
 
@@ -45,11 +37,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     DirectionalLightUniforms mDirectionalLightUniforms;
 
-    vcl::Uniform      mTexSamplerUniform =
-        Uniform("s_env0", bgfx::UniformType::Sampler);
-    ;
-
-    std::unique_ptr<Texture> mTexture;
+    Environment mPanorama = Environment("");
 
     // flags
     bool mStatsEnabled = false;
@@ -59,7 +47,6 @@ public:
             ParentViewer(width, height)
     {
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
-        loadEnvironmentTextures();
     }
 
     ViewerDrawerBGFX(
@@ -73,9 +60,11 @@ public:
     void onDrawContent(uint viewId) override
     {
         DrawObjectSettings settings;
-        settings.viewId = viewId;
+        settings.viewId = viewId; 
 
         settings.pbrMode = ParentViewer::isPBREnabled();
+
+        settings.environment = &mPanorama;
 
         bgfx::setViewTransform(
             viewId,
@@ -85,7 +74,8 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        mTexture->bind(0, mTexSamplerUniform.handle());
+        if(settings.pbrMode)
+            mPanorama.drawBackground(settings.viewId);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
@@ -135,22 +125,9 @@ public:
         }
     }
 
-    private:
-
-    void loadEnvironmentTextures()
+    void setPanorama(const std::string& panorama)
     {
-        bimg::ImageContainer *cubemap = loadCubemapFromHdr(VCLIB_ASSETS_PATH "/pisa.hdr");
-
-        auto tex = std::make_unique<Texture>();
-        tex->set(
-            cubemap->m_data,
-            Point2i(cubemap->m_width, cubemap->m_height),
-            false, // TODO: add mips when and WHERE needed
-            BGFX_SAMPLER_UVW_CLAMP,
-            bgfx::TextureFormat::RGBA32F,
-            true
-        );
-        mTexture = std::move(tex); // FIXME? why?
+        mPanorama = Environment(panorama);
     }
 };
 

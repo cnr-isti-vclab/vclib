@@ -49,9 +49,6 @@
 
 // Lighting settings, may not be definitive
 
-// use directional lights
-#define USE_LIGHTS
-
 #define LIGHT_COUNT                                   1
 
 // use the same lights as defined in other vclib rendering modes (see u_lightDir, u_lightColor)
@@ -63,6 +60,232 @@
 #define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
 #define LIGHT_KEY_DIR_VIEW                            mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
 #define LIGHT_FILL_DIR_VIEW                           mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
+
+#define DISTRIBUTION_LAMBERTIAN                     0u
+#define DISTRIBUTION_GGX                            1u
+
+/**
+ * @brief GGX version of the NDF (Normal Distribution Function) which determines the odds for a microfacet normal 
+ * to be aligned with the halfway vector H (in other words to reflect light directly).
+ * @param[in] NoH: Cosine of the angle between the fragment normal and the halfway vector.
+ * @param[in] alpha2: The alpha squared.
+ * @return the odds for a microfacet normal to be aligned with the halfway vector H (in other words to reflect light directly).
+ */
+float D_GGX(
+    float NoH,
+    float alpha2)
+{
+    float NoH2 = NoH * NoH;
+    float denom = NoH2 * (alpha2 - 1.0) + 1.0;
+    return alpha2 / (PI * denom * denom);
+}
+
+float radicalInverse_VdC(uint bits) 
+{
+    bits = (bits << 16u) | (bits >> 16u);
+    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+    return float(bits) * 2.3283064365386963e-10; // / 0x100000000
+}
+
+vec2 hammersley(uint i, uint N)
+{
+    return vec2(float(i)/float(N), radicalInverse_VdC(i));
+}  
+
+// TBN generates a tangent bitangent normal coordinate frame from the normal
+// (the normal must be normalized)
+mat3 generateTBN(vec3 normal)
+{
+    vec3 bitangent = vec3(0.0, 1.0, 0.0);
+
+    float NdotUp = dot(normal, vec3(0.0, 1.0, 0.0));
+    float epsilon = 0.0000001;
+    if (1.0 - abs(NdotUp) <= epsilon)
+    {
+        // Sampling +Y or -Y, so we need a more robust bitangent.
+        if (NdotUp > 0.0)
+        {
+            bitangent = vec3(0.0, 0.0, 1.0);
+        }
+        else
+        {
+            bitangent = vec3(0.0, 0.0, -1.0);
+        }
+    }
+
+    vec3 tangent = normalize(cross(bitangent, normal));
+    bitangent = cross(normal, tangent);
+
+    return mat3(tangent, bitangent, normal);
+}
+
+struct MicrofacetDistributionSample
+{
+    float pdf;
+    float cosTheta;
+    float sinTheta;
+    float phi;
+};
+
+MicrofacetDistributionSample Lambertian(vec2 xi)
+{
+    MicrofacetDistributionSample lambertian;
+
+    // Cosine weighted hemisphere sampling
+    // http://www.pbr-book.org/3ed-2018/Monte_Carlo_Integration/2D_Sampling_with_Multidimensional_Transformations.html#Cosine-WeightedHemisphereSampling
+    lambertian.cosTheta = sqrt(1.0 - xi.y);
+    lambertian.sinTheta = sqrt(xi.y);
+    lambertian.phi = 2.0 * PI * xi.x;
+
+    // evaluation for solid angle, therefore drop the sinTheta
+    lambertian.pdf = lambertian.cosTheta / PI;
+
+    return lambertian;
+}
+
+MicrofacetDistributionSample GGX(vec2 xi, float roughness)
+{
+    MicrofacetDistributionSample ggx;
+
+    // GGX microfacet distribution
+    // https://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.html
+    // This implementation is based on https://bruop.github.io/ibl/,
+    //  https://www.tobias-franke.eu/log/2014/03/30/notes_on_importance_sampling.html
+    // and https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch20.html
+
+    // evaluate sampling equations
+    float alpha = roughness * roughness;
+    ggx.cosTheta = saturate(sqrt((1.0 - xi.y) / (1.0 + (alpha * alpha - 1.0) * xi.y)));
+    ggx.sinTheta = sqrt(1.0 - ggx.cosTheta * ggx.cosTheta);
+    ggx.phi = 2.0 * PI * xi.x;
+
+    // evaluate GGX pdf (for half vector)
+    // Apply the Jacobian to obtain a pdf that is parameterized by l
+    // Typically you'd have the following:
+    // float pdf = D_GGX(NoH, roughness) * NoH / (4.0 * VoH);
+    // but since V = N => VoH == NoH
+    ggx.pdf = D_GGX(ggx.cosTheta, alpha * alpha) / 4.0;
+
+    return ggx;
+}
+
+vec4 getImportanceSample(uint sampleIndex, uint sampleCount, vec3 N, uint distributionType, float roughness)
+{
+    vec2 Xi = hammersley(sampleIndex, sampleCount);
+    MicrofacetDistributionSample sample;
+
+    if(distributionType == DISTRIBUTION_LAMBERTIAN)
+    {
+        sample = Lambertian(Xi);
+    }
+    else // if(distributionType == DISTRIBUTION_GGX)
+    {
+        sample = GGX(Xi, roughness);
+    }
+
+    // from spherical coordinates to cartesian coordinates
+    vec3 H = normalize(vec3(
+        cos(sample.phi) * sample.sinTheta,
+        sin(sample.phi) * sample.sinTheta,
+        sample.cosTheta
+    ));
+
+    // from tangent-space vector to world-space sample vector
+    mat3 TBN = generateTBN(N);
+    vec3 sampleVec = mul(H, TBN);
+
+    return vec4(sampleVec.x, sampleVec.y, sampleVec.z, sample.pdf);
+}
+
+float computeLod(float pdf, float width, float sampleCount)
+{
+    // Mipmap Filtered Samples
+    // https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling
+    // https://cgg.mff.cuni.cz/~jaroslav/papers/2007-sketch-fis/Final_sap_0073.pdf
+
+    // Solid angle of current sample -- bigger for less likely samples
+
+    // float omegaS = 1.0 / (sampleCount * pdf);
+
+    // Solid angle of texel
+
+    // float omegaP = 1.0 / (6.0 * float(u_width) * float(u_width));
+
+    // Mip level is determined by the ratio of our sample's solid angle to a texel's solid angle 
+    // note that 0.5 * log2 is equivalent to log4
+
+    // float lod = 0.5 * log2(omegaS / omegaP);
+
+    return 0.5 * log2( (6.0 * width * width) / (sampleCount * pdf));
+}
+
+vec3 importanceSampleGGX(vec2 Xi, vec3 N, float roughness)
+{
+    float a = roughness*roughness;
+	
+    float phi = 2.0 * PI * Xi.x;
+    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
+    float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+	
+    // from spherical coordinates to cartesian coordinates
+    vec3 H;
+    H.x = cos(phi) * sinTheta;
+    H.y = sin(phi) * sinTheta;
+    H.z = cosTheta;
+	
+    // from tangent-space vector to world-space sample vector
+    vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+    vec3 tangent   = normalize(cross(up, N));
+    vec3 bitangent = cross(N, tangent);
+	
+    vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
+    return normalize(sampleVec);
+}  
+
+// Cubemap face directions
+// uv in range [-1,1]
+vec3 faceDirection(int face, vec2 uv, bool secondWrite)
+{
+
+    if(secondWrite)
+    {
+        switch(face)
+        {
+            case 0: return normalize(vec3(  1.0, -uv.y,  uv.x));  // +X
+            case 1: return normalize(vec3( -1.0, -uv.y, -uv.x));  // -X
+            case 2: return normalize(vec3( uv.x,   1.0, -uv.y));  // +Y
+            case 3: return normalize(vec3( uv.x,  -1.0,  uv.y));  // -Y
+            case 4: return normalize(vec3( uv.x, -uv.y,  -1.0));  // -Z
+            case 5: return normalize(vec3(-uv.x, -uv.y,   1.0));  // +Z
+            default: return vec3_splat(0.0);
+        }
+    }
+    else switch(face)
+    {
+        case 0: return normalize(vec3(-uv.x, uv.y,   1.0));  // +Z
+        case 1: return normalize(vec3( uv.x, uv.y,  -1.0));  // -Z
+        case 2: return normalize(vec3( uv.y, -1.0,  uv.x));  // +Y
+        case 3: return normalize(vec3(-uv.y,  1.0,  uv.x));  // -Y
+        case 4: return normalize(vec3(  1.0, uv.y,  uv.x));  // +X
+        case 5: return normalize(vec3( -1.0, uv.y, -uv.x));  // -X
+        default: return vec3_splat(0.0);
+    }
+}
+
+// Converts direction -> equirectangular UV
+vec2 dirToEquirectUV(vec3 dir)
+{
+   float phi   = atan2(dir.z, dir.x);       // [-pi..pi]
+   float theta = asin(dir.y);               // [-pi/2..pi/2]
+
+   float u = (phi   / (2.0*PI)) + 0.5;
+   float v = (theta / PI) + 0.5;
+
+   return vec2(u, v);
+}
 
 #if BGFX_SHADER_TYPE_FRAGMENT
 
@@ -186,22 +409,6 @@ vec3 pbrDiffuse(vec3 color)
 }
 
 /**
- * @brief GGX version of the NDF (Normal Distribution Function) which determines the odds for a microfacet normal 
- * to be aligned with the halfway vector H (in other words to reflect light directly).
- * @param[in] NoH: Cosine of the angle between the fragment normal and the halfway vector.
- * @param[in] alpha2: The alpha squared.
- * @return the odds for a microfacet normal to be aligned with the halfway vector H (in other words to reflect light directly).
- */
-float D_GGX(
-    float NoH,
-    float alpha2)
-{
-    float NoH2 = NoH * NoH;
-    float denom = NoH2 * (alpha2 - 1.0) + 1.0;
-    return alpha2 / (PI * denom * denom);
-}
-
-/**
  * @brief GGX version of the Visibility function.
  * The Visibility function or just V determines the odds for a microfacet of not being occluded by some other
  * microfacet. It accounts for both masking and shadowing of microfacets.
@@ -268,6 +475,29 @@ float pbrSpecular(
     return V_GGX(NoV, NoL, alpha2) * D_GGX(NoH, alpha2);
 }
 
+vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
+{
+    float specularWeight = 1.0; // related to some extension, for now use a neutral value
+    // see https://bruop.github.io/ibl/#single_scattering_results at Single Scattering Results
+    // Roughness dependent fresnel, from Fdez-Aguera
+    vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
+    vec3 k_S = F0 + Fr * pow(1.0 - NoV, 5.0);
+    vec3 FssEss = specularWeight * (k_S * brdf.x + brdf.y);
+
+    // Multiple scattering, from Fdez-Aguera
+    float Ems = (1.0 - (brdf.x + brdf.y));
+    vec3 F_avg = specularWeight * (F0 + (1.0 - F0) / 21.0);
+    vec3 FmsEms = Ems * FssEss * F_avg / (1.0 - F_avg * Ems);
+
+    return FssEss + FmsEms;
+}
+
+vec3 gammaCorrect(vec3 color)
+{
+    float oneOverGamma = 1.0 / GAMMA;
+    return pow(abs(color), vec3_splat(oneOverGamma));
+}
+
 /**
  * @brief Color computed for Physically Based Rendering (PBR).
  * The incoming light colors are altered by:
@@ -293,7 +523,7 @@ float pbrSpecular(
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
  */
-vec4 pbrColor(
+vec4 pbrColorLights(
     vec3 vPos,
     vec3 cameraEyePos,
     vec3 lightDirs[LIGHT_COUNT],
@@ -308,8 +538,6 @@ vec4 pbrColor(
     vec3 finalColor = vec3_splat(0.0);
     vec3 f0_dielectric = vec3_splat(0.04);
     vec3 f90 = vec3_splat(1.0);
-
-    #ifdef USE_LIGHTS
 
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
@@ -356,7 +584,6 @@ vec4 pbrColor(
 
         finalColor += l_color;
     }
-    #endif // USE_LIGHTS
 
     // add emissive component
     finalColor += emissive;
@@ -365,9 +592,42 @@ vec4 pbrColor(
     //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));
 
     // gamma correction
-    float oneOverGamma = 1.0 / GAMMA;
-    finalColor = pow(abs(finalColor), vec3_splat(oneOverGamma));
+    finalColor = gammaCorrect(finalColor);
 
     return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
 }
+
+vec4 pbrColorIbl(
+    vec3 diffuseLight,
+    vec4 color,
+    vec3 radiance,
+    vec3 metalFresnel,
+    vec3 dielectricFresnel,
+    float metallic,
+    float occlusion,
+    vec3 emissive)
+{
+    vec3 finalColor = vec3_splat(0.0);
+
+    vec3 f_diffuse = diffuseLight * color.rgb;
+
+    vec3 f_specular_metal = radiance;
+    vec3 f_specular_dielectric = f_specular_metal;
+
+    vec3 f_metal_brdf_ibl = metalFresnel * f_specular_metal;
+ 
+    vec3 f_dielectric_brdf_ibl = mix(f_diffuse, f_specular_dielectric, dielectricFresnel);
+
+    finalColor = mix(f_dielectric_brdf_ibl, f_metal_brdf_ibl, metallic);
+
+    finalColor *= occlusion;
+
+    finalColor += emissive;
+
+    finalColor = gammaCorrect(finalColor);
+
+    return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
+}
+
+
 #endif // VCL_EXT_BGFX_PBR_COMMON_SH

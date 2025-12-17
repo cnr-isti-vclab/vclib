@@ -27,6 +27,12 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+// use directional lights
+//#define USE_LIGHTS
+
+// use image based lighting
+#define IBL
+
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
@@ -38,6 +44,14 @@ SAMPLER2D(metallicRoughnessTex, VCL_MRB_TEXTURE1);
 SAMPLER2D(normalTex, VCL_MRB_TEXTURE2);
 SAMPLER2D(occlusionTex, VCL_MRB_TEXTURE3);
 SAMPLER2D(emissiveTex, VCL_MRB_TEXTURE4);
+SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
+
+SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
+SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
+
+
+uniform vec4 u_dataPack;
+#define specularMipCount u_dataPack.x
 
 void main()
 {
@@ -158,7 +172,9 @@ void main()
 
     vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
 
-    gl_FragColor = pbrColor(
+    #ifdef USE_LIGHTS
+
+    gl_FragColor = pbrColorLights(
         v_position.xyz,
         vec3_splat(0.0), // camera position
         lightDirections,
@@ -170,4 +186,57 @@ void main()
         roughness,
         emissiveColor
     );
+
+    #endif // USE_LIGHTS
+
+    #ifdef IBL
+
+
+    // view direction
+    vec3 V = normalize(-v_position); // camera is at the origin
+
+    // convert from camera to world space
+    normal = normalize(mul(u_invView, vec4(normal, 0.0)).xyz);
+    V = normalize(mul(u_invView, vec4(V, 0.0)).xyz);
+
+    float NoV = clampedDot(normal, V);
+
+    vec3 f0_dielectric = vec3_splat(0.04);
+    vec3 f90 = vec3_splat(1.0);
+
+    // diffuse light
+    vec3 diffuseLight = textureCube(s_irradiance, normal).rgb;
+
+    // specular light    
+    float specularMipLevel = roughness * (specularMipCount - 1.0);
+    vec3 reflection = normalize(reflect(-V, normal));
+    vec3 specularLight = textureCubeLod(s_specular, reflection, specularMipLevel).rgb;
+
+    // Fresnel
+    vec2 brdf = texture2D(s_brdf_lut, vec2(NoV, roughness)).rg;
+    vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb);
+    vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric);
+    
+    // occlusion
+    float occlusion = 1.0;
+    if(useTexture && isOcclusionTextureAvailable(u_pbr_texture_settings))
+    {
+        occlusion = texture2D(occlusionTex, texcoord).r;
+    }
+    occlusion = 1.0 + u_occlusionStrength * (occlusion - 1.0);
+
+    gl_FragColor = pbrColorIbl(
+        diffuseLight,
+        baseColor,
+        specularLight,
+        metalFresnel,
+        dielectricFresnel,
+        metallic,
+        occlusion,
+        emissiveColor
+    );
+
+    //gl_FragColor = vec4_splat(specularMipLevel / 8.0);
+
+    #endif // IBL
 }
