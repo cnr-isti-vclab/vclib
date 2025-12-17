@@ -34,6 +34,7 @@ int main(int argc, char** argv)
         METAL_ROUGH_SPHERES_NO_TEXTURES = 0,
         METAL_ROUGH_SPHERES,
         NORMAL_TENGENT_MIRROR_TEST,
+        COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
         COUNT
     };
@@ -42,9 +43,10 @@ int main(int argc, char** argv)
         "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf",
         "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf",
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
+        "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
 
-    uint selectedExample = 3;
+    uint selectedExample = DAMAGED_HELMET;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + GLTFExampleFilenames[selectedExample]);
