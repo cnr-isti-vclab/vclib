@@ -254,12 +254,12 @@ vec3 faceDirection(int face, vec2 uv, bool secondWrite)
     {
         switch(face)
         {
-            case 0: return normalize(vec3(  1.0, -uv.y, -uv.x));  // +X
-            case 1: return normalize(vec3( -1.0, -uv.y,  uv.x));  // -X
-            case 2: return normalize(vec3( uv.x,   1.0,  uv.y));  // +Y
-            case 3: return normalize(vec3( uv.x,  -1.0, -uv.y));  // -Y
-            case 4: return normalize(vec3( uv.x, -uv.y,   1.0));  // +Z
-            case 5: return normalize(vec3(-uv.x, -uv.y,  -1.0));  // -Z
+            case 0: return normalize(vec3(  1.0, -uv.y,  uv.x));  // +X
+            case 1: return normalize(vec3( -1.0, -uv.y, -uv.x));  // -X
+            case 2: return normalize(vec3( uv.x,   1.0, -uv.y));  // +Y
+            case 3: return normalize(vec3( uv.x,  -1.0,  uv.y));  // -Y
+            case 4: return normalize(vec3( uv.x, -uv.y,  -1.0));  // -Z
+            case 5: return normalize(vec3(-uv.x, -uv.y,   1.0));  // +Z
             default: return vec3_splat(0.0);
         }
     }

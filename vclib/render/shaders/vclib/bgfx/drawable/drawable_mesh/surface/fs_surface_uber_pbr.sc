@@ -191,8 +191,14 @@ void main()
 
     #ifdef IBL
 
+
     // view direction
-    vec3 V = normalize(-v_position.xyz); // camera is at the origin
+    vec3 V = normalize(-v_position); // camera is at the origin
+
+    // convert from camera to world space
+    normal = normalize(mul(u_invView, vec4(normal, 0.0)).xyz);
+    V = normalize(mul(u_invView, vec4(V, 0.0)).xyz);
+
     float NoV = clampedDot(normal, V);
 
     vec3 f0_dielectric = vec3_splat(0.04);
