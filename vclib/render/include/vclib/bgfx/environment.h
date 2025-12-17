@@ -124,13 +124,13 @@ class Environment
         mImagePath(imagePath)
     {}
 
-    Environment(const Environment& other) = default;
+    Environment(const Environment& other) = delete;
 
     Environment(Environment&& other) { swap(other); }
 
     ~Environment() = default;
 
-    Environment& operator=(Environment other)
+    Environment& operator=(Environment&& other)
     {
         swap(other);
         return *this;
