@@ -476,6 +476,12 @@ vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
     return FssEss + FmsEms;
 }
 
+vec3 gammaCorrect(vec3 color)
+{
+    float oneOverGamma = 1.0 / GAMMA;
+    return pow(abs(color), vec3_splat(oneOverGamma));
+}
+
 /**
  * @brief Color computed for Physically Based Rendering (PBR).
  * The incoming light colors are altered by:
@@ -570,8 +576,7 @@ vec4 pbrColorLights(
     //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));
 
     // gamma correction
-    float oneOverGamma = 1.0 / GAMMA;
-    finalColor = pow(abs(finalColor), vec3_splat(oneOverGamma));
+    finalColor = gammaCorrect(finalColor);
 
     return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
 }
@@ -602,6 +607,8 @@ vec4 pbrColorIbl(
     finalColor *= occlusion;
 
     finalColor += emissive;
+
+    finalColor = gammaCorrect(finalColor);
 
     return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
 }

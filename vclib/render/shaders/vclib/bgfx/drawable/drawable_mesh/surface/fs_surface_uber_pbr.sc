@@ -230,5 +230,7 @@ void main()
         emissiveColor
     );
 
+    //gl_FragColor = vec4_splat(specularMipLevel / 8.0);
+
     #endif // IBL
 }

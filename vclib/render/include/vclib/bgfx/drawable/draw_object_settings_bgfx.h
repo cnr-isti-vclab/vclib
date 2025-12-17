@@ -44,7 +44,7 @@ struct DrawObjectSettingsBGFX
      */
     bool pbrMode = false;
 
-    Environment* environment = nullptr;
+    const Environment* environment = nullptr;
 };
 
 } // namespace vcl
