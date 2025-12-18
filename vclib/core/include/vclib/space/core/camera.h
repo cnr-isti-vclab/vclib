@@ -165,6 +165,44 @@ public:
         }
         return res;
     }
+
+    /**
+     * @brief Serializes the camera to the given output stream.
+     * @param[in] os: The output stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        mCenter.serialize(os);
+        mEye.serialize(os);
+        mUp.serialize(os);
+        vcl::serialize(
+            os,
+            mFovDeg,
+            mProjectionMode,
+            mVerticalHeight,
+            mAspect,
+            mNear,
+            mFar);
+    }
+
+    /**
+     * @brief Deserializes the camera from the given input stream.
+     * @param[in] is: The input stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        mCenter.deserialize(is);
+        mEye.deserialize(is);
+        mUp.deserialize(is);
+        vcl::deserialize(
+            is,
+            mFovDeg,
+            mProjectionMode,
+            mVerticalHeight,
+            mAspect,
+            mNear,
+            mFar);
+    }
 };
 
 /* Specialization Aliases */

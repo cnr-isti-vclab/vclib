@@ -92,6 +92,9 @@ void cameraStaticAsserts()
     static_assert(
         CameraConcept<Camerad&&>,
         "Camera<double>&& does not satisfy the CameraConcept");
+
+    static_assert(Serializable<Cameraf>, "Camera is not serializable");
+    static_assert(Serializable<Camerad>, "Camera<double> is not serializable");
 }
 
 #endif // CAMERA_H
