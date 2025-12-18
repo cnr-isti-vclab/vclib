@@ -27,42 +27,6 @@
 
 namespace vcl {
 
-enum Handedness { LEFT_HAND, RIGHT_HAND };
-
-namespace detail {
-
-template<typename Scalar>
-void projectionMatrixXYWH(
-    auto*      res,
-    Scalar     x,
-    Scalar     y,
-    Scalar     width,
-    Scalar     height,
-    Scalar     nearPlane,
-    Scalar     farPlane,
-    bool       homogeneousNDC,
-    Handedness handedness = RIGHT_HAND)
-{
-    // note: don't use 'near' and 'far' variable names, as they are already
-    // defined in windows.h headers
-    Scalar diff = farPlane - nearPlane;
-    Scalar a = homogeneousNDC ? (farPlane + nearPlane) / diff : farPlane / diff;
-    Scalar b =
-        homogeneousNDC ? (2.0 * farPlane * nearPlane) / diff : nearPlane * a;
-
-    std::fill(res, res + 16, 0);
-
-    res[0]  = width;
-    res[5]  = height;
-    res[8]  = handedness == RIGHT_HAND ? x : -x;
-    res[9]  = handedness == RIGHT_HAND ? y : -y;
-    res[10] = handedness == RIGHT_HAND ? -a : a;
-    res[11] = handedness == RIGHT_HAND ? -1.0 : 1.0;
-    res[14] = -b;
-}
-
-} // namespace detail
-
 /**
  * @brief Creates a look at matrix
  *
@@ -87,43 +51,7 @@ void lookAtMatrix(
     const PointType& up,
     Handedness       handedness = RIGHT_HAND)
 {
-    if (center != eye) {
-        PointType zaxis = handedness == RIGHT_HAND ?
-                              (eye - center).normalized() :
-                              (center - eye).normalized();
-
-        PointType xaxis = up.cross(zaxis);
-
-        if (xaxis.dot(xaxis) == 0) {
-            xaxis = handedness == RIGHT_HAND ? PointType(1, 0, 0) :
-                                               PointType(-1, 0, 0);
-        }
-        else {
-            xaxis = xaxis.normalized();
-        }
-
-        PointType yaxis = zaxis.cross(xaxis);
-
-        res[0] = xaxis.x();
-        res[1] = yaxis.x();
-        res[2] = zaxis.x();
-        res[3] = 0.0f;
-
-        res[4] = xaxis.y();
-        res[5] = yaxis.y();
-        res[6] = zaxis.y();
-        res[7] = 0.0f;
-
-        res[8]  = xaxis.z();
-        res[9]  = yaxis.z();
-        res[10] = zaxis.z();
-        res[11] = 0.0f;
-
-        res[12] = -xaxis.dot(eye);
-        res[13] = -yaxis.dot(eye);
-        res[14] = -zaxis.dot(eye);
-        res[15] = 1.0f;
-    }
+    detail::lookAtMatrix(res, eye, center, up, handedness);
 }
 
 /**
@@ -213,14 +141,10 @@ void projectionMatrix(
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
-    Scalar h = 1.0 / std::tan(vcl::toRad(fov) * 0.5);
-    Scalar w = h * 1.0 / aspect;
-    detail::projectionMatrixXYWH(
+    detail::projectionMatrix(
         res,
-        (Scalar) 0,
-        (Scalar) 0,
-        w,
-        h,
+        fov,
+        aspect,
         nearPlane,
         farPlane,
         homogeneousNDC,
@@ -295,22 +219,16 @@ void orthoProjectionMatrix(
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
-    // note: don't use 'near' and 'far' variable names, as they are already
-    // defined in windows.h headers
-    Scalar c = homogeneousNDC ? 2.0 / (farPlane - nearPlane) :
-                                1.0 / (farPlane - nearPlane);
-    Scalar f = homogeneousNDC ?
-                   (farPlane + nearPlane) / (nearPlane - farPlane) :
-                   nearPlane / (nearPlane - farPlane);
-
-    std::fill(res, res + 16, 0);
-    res[0]  = 2.0 / (right - left);
-    res[5]  = 2.0 / (top - bottom);
-    res[10] = RIGHT_HAND ? -c : c;
-    res[12] = (right + left) / (left - right);
-    res[13] = (bottom + top) / (bottom - top);
-    res[14] = f;
-    res[15] = 1.0;
+    detail::orthoProjectionMatrix(
+        res,
+        left,
+        right,
+        top,
+        bottom,
+        nearPlane,
+        farPlane,
+        homogeneousNDC,
+        handedness);
 }
 
 template<MatrixConcept Matrix44, typename Scalar>
@@ -374,56 +292,6 @@ PointType unprojectScreenPosition(
         throw std::runtime_error("unproject: division by zero");
     }
     return p.template head<3>() / p.w();
-}
-
-/**
- * @brief Computes the view matrix from a camera
- *
- * @param[in] c: The camera
- * @return The view matrix
- *
- * @ingroup algorithms_core
- */
-template<CameraConcept CameraType>
-auto viewMatrix(const CameraType& c)
-{
-    using Scalar = CameraType::ScalarType;
-    using MT = Matrix44<Scalar>;
-
-    return lookAtMatrix<MT>(c.eye(), c.center(), c.up());
-}
-
-/**
- * @brief Computes the projection matrix from a camera
- *
- * @param[in] c: The camera
- * @return The projection matrix
- *
- * @ingroup algorithms_core
- */
-template<CameraConcept CameraType>
-auto projectionMatrix(const CameraType& c)
-{
-    using Scalar = CameraType::ScalarType;
-    using MT = Matrix44<Scalar>;
-
-    switch (c.projectionMode()) {
-    case CameraType::ProjectionMode::ORTHO: {
-        const Scalar h = c.verticalHeight() / 2.0;
-        const Scalar w = h * c.aspectRatio();
-        return orthoProjectionMatrix<MT>(
-            -w, w, h, -h, c.nearPlane(), c.farPlane(), false);
-    }
-    case CameraType::ProjectionMode::PERSPECTIVE: {
-        return vcl::projectionMatrix<MT>(
-            c.fieldOfView(),
-            c.aspectRatio(),
-            c.nearPlane(),
-            c.farPlane(),
-            false);
-    }
-    default: assert(false); return static_cast<MT>(MT::Identity());
-    }
 }
 
 } // namespace vcl

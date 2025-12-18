@@ -32,18 +32,66 @@ void cameraStaticAsserts()
     using Camerad = Camera<double>;
 
     static_assert(
-        CameraConcept<Camerad>, "Camera does not satisfy the CameraConcept");
+        GenericCameraConcept<Cameraf>,
+        "Camera does not satisfy the GenericCameraConcept");
     static_assert(
-        CameraConcept<const Camerad>,
+        GenericCameraConcept<const Cameraf>,
+        "const Camera does not satisfy the GenericCameraConcept");
+    static_assert(
+        GenericCameraConcept<Cameraf&>,
+        "Camera& does not satisfy the GenericCameraConcept");
+    static_assert(
+        GenericCameraConcept<const Cameraf&>,
+        "const Camera& does not satisfy the GenericCameraConcept");
+    static_assert(
+        GenericCameraConcept<Cameraf&&>,
+        "Camera&& does not satisfy the GenericCameraConcept");
+
+    static_assert(
+        GenericCameraConcept<Camerad>,
+        "Camera<double> does not satisfy the GenericCameraConcept");
+    static_assert(
+        GenericCameraConcept<const Camerad>,
+        "const Camera<double> does not satisfy the GenericCameraConcept");
+    static_assert(
+        GenericCameraConcept<Camerad&>,
+        "Camera<double>& does not satisfy the GenericCameraConcept");
+    static_assert(
+        GenericCameraConcept<const Camerad&>,
+        "const Camera<double>& does not satisfy the GenericCameraConcept");
+    static_assert(
+        GenericCameraConcept<Camerad&&>,
+        "Camera<double>&& does not satisfy the GenericCameraConcept");
+
+    static_assert(
+        CameraConcept<Cameraf>, "Camera does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Cameraf>,
         "const Camera does not satisfy the CameraConcept");
     static_assert(
-        CameraConcept<Camerad&>, "Camera& does not satisfy the CameraConcept");
+        CameraConcept<Cameraf&>, "Camera& does not satisfy the CameraConcept");
     static_assert(
-        CameraConcept<const Camerad&>,
+        CameraConcept<const Cameraf&>,
         "const Camera& does not satisfy the CameraConcept");
     static_assert(
-        CameraConcept<Camerad&&>,
+        CameraConcept<Cameraf&&>,
         "Camera&& does not satisfy the CameraConcept");
+
+    static_assert(
+        CameraConcept<Camerad>,
+        "Camera<double> does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad>,
+        "const Camera<double> does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&>,
+        "Camera<double>& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<const Camerad&>,
+        "const Camera<double>& does not satisfy the CameraConcept");
+    static_assert(
+        CameraConcept<Camerad&&>,
+        "Camera<double>&& does not satisfy the CameraConcept");
 }
 
 #endif // CAMERA_H

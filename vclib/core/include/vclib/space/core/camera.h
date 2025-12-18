@@ -23,8 +23,7 @@
 #ifndef VCL_SPACE_CORE_CAMERA_H
 #define VCL_SPACE_CORE_CAMERA_H
 
-#include "matrix.h"
-#include "point.h"
+#include "camera/matrix.h"
 
 namespace vcl {
 
@@ -138,12 +137,56 @@ public:
     Scalar& farPlane() { return mFar; }
 
     const Scalar& farPlane() const { return mFar; }
+
+    MatrixType viewMatrix() const
+    {
+        MatrixType res;
+        detail::lookAtMatrix(res.data(), mEye, mCenter, mUp);
+        return res;
+    }
+
+    MatrixType projectionMatrix() const
+    {
+        MatrixType res;
+        switch (mProjectionMode) {
+        case ProjectionMode::ORTHO: {
+            const Scalar h = mVerticalHeight / 2.0;
+            const Scalar w = h * mAspect;
+            detail::orthoProjectionMatrix(
+                res.data(), -w, w, h, -h, mNear, mFar, false);
+            break;
+        }
+        case ProjectionMode::PERSPECTIVE: {
+            detail::projectionMatrix(
+                res.data(), mFovDeg, mAspect, mNear, mFar, false);
+            break;
+        }
+        default: assert(false); return MatrixType::Identity();
+        }
+        return res;
+    }
 };
 
 /* Specialization Aliases */
 using Cameraf = Camera<float>;
 
 /* Concepts */
+
+/**
+ * @brief A concept representing a generic Camera.
+ *
+ * The concept is satisfied when `T` is a class that implements the methods
+ * `viewMatrix()` and `projectionMatrix()`, returning 4x4 matrices.
+ *
+ * @tparam T: The type to be tested for conformity to the GenericCameraConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept GenericCameraConcept = requires(T&& c) {
+    { c.viewMatrix() } -> Matrix44Concept;
+    { c.projectionMatrix() } -> Matrix44Concept;
+};
 
 /**
  * @brief A concept representing a Camera.

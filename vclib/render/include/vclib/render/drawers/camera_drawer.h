@@ -52,11 +52,11 @@ public:
         onResize(width, height);
     }
 
-    MatrixType viewMatrix() const { return vcl::viewMatrix(mCamera); }
+    MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
 
     MatrixType projectionMatrix() const
     {
-        return vcl::projectionMatrix(mCamera);
+        return mCamera.projectionMatrix();
     }
 
     const CameraType& camera() const { return mCamera; }
