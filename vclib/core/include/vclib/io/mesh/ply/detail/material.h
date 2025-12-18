@@ -41,6 +41,16 @@ void readPlyMaterialProperty(
 {
     bool hasBeenRead = false;
     using enum Material::TextureType;
+    if (p.name == ply::name) {
+        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
+        std::string name;
+        name.resize(size);
+        for (uint i = 0; i < size; ++i) {
+            name[i] = io::readPrimitiveType<char>(file, p.type, end);
+        }
+        mat.name() = name;
+        hasBeenRead = true;
+    }
     if (p.name >= ply::red && p.name <= ply::alpha) {
         uint idx = p.name - ply::red;
         mat.baseColor()[idx] =
@@ -192,9 +202,17 @@ void writePlyMaterials(
     }
 
     for (const Material& m : mesh.materials()) {
+        using enum Material::TextureType;
         for (const PlyProperty& p : header.materialProperties()) {
-            using enum Material::TextureType;
             bool hasBeenWritten = false;
+            if (p.name == ply::name) {
+                const std::string& path = m.name();
+                io::writeProperty(file, path.size(), p.listSizeType, format);
+                for (const char& c : path) {
+                    io::writeProperty(file, c, p.type, format);
+                }
+                hasBeenWritten = true;
+            }
             if (p.name >= ply::red && p.name <= ply::alpha) {
                 io::writeProperty(
                     file, m.baseColor()[p.name - ply::red], p.type, format);

@@ -644,6 +644,10 @@ public:
             matElem.properties.push_back(pt);
             pt.name = ply::emissive_texture;
             matElem.properties.push_back(pt);
+            // material name
+            pt.name = ply::name;
+            matElem.properties.push_back(pt);
+
             mElements.push_back(matElem);
         }
     }
@@ -815,6 +819,8 @@ private:
             pn = ply::vertex1;
         if (name == "vertex2")
             pn = ply::vertex2;
+        if (name == "name")
+            pn = ply::name;
         if (name == "metallic")
             pn = ply::metallic;
         if (name == "roughness")
@@ -895,6 +901,7 @@ private:
         case ply::texcoord: return "texcoord";
         case ply::vertex1: return "vertex1";
         case ply::vertex2: return "vertex2";
+        case ply::name: return "name";
         case ply::metallic: return "metallic";
         case ply::roughness: return "roughness";
         case ply::emissive_red: return "emissive_red";

@@ -60,6 +60,7 @@ typedef enum {
     vertex1,
     vertex2,
     // material properties (base color is red, green, blue, alpha)
+    name,
     metallic,
     roughness,
     emissive_red,
