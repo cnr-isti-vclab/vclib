@@ -40,6 +40,7 @@
 #define isPerVertexColorAvailable(settings)   checkSetting(settings, VCL_PBR_VERTEX_COLOR)
 #define isPerVertexTangentAvailable(settings) checkSetting(settings, VCL_PBR_VERTEX_TANGENT)
 #define isAlphaModeMask(settings)             checkSetting(settings, VCL_PBR_IS_ALPHA_MODE_MASK)
+#define useImageBasedLighting(settings)       checkSetting(settings, VCL_PBR_IMAGE_BASED_LIGHTING)
 
 #define isBaseColorTextureAvailable(settings)         checkSetting(settings, VCL_PBR_TEXTURE_BASE_COLOR)
 #define isMetallicRoughnessTextureAvailable(settings) checkSetting(settings, VCL_PBR_TEXTURE_METALLIC_ROUGHNESS)
