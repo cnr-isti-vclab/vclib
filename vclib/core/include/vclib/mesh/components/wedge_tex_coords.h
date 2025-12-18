@@ -37,8 +37,7 @@ namespace vcl::comp {
  *
  * The component is composed of a static or dynamic size container, depending on
  * the value of the template argument N (a negative value indicates a dynamic
- * size), plus a texture index that represents the index of the texture used
- * by all the texture coordinates stored in the container.
+ * size).
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component, altough it is usually used (and it
@@ -50,7 +49,6 @@ namespace vcl::comp {
  *
  * @code{.cpp}
  * auto t = f.wedgeTexCoord(0);
- * ushort tid = f.textureIndex();
  * @endcode
  *
  * @note This component is *Tied To Vertex Number*: it means that the size of
@@ -83,7 +81,7 @@ class WedgeTexCoords :
             CompId::WEDGE_TEX_COORDS,
             vcl::TexCoord<Scalar>,
             N,
-            ushort,
+            void,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT,
@@ -94,7 +92,7 @@ class WedgeTexCoords :
         CompId::WEDGE_TEX_COORDS,
         vcl::TexCoord<Scalar>,
         N,
-        ushort,
+        void,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT,
@@ -217,22 +215,6 @@ public:
         texCoords().set(r);
     }
 
-    /**
-     * @brief Returns a reference to the texture index used to identify the
-     * texture on which the wedge texture coordinates are mapped.
-     *
-     * @return A reference to the texture index.
-     */
-    ushort& textureIndex() { return Base::additionalData(); }
-
-    /**
-     * @brief Returns the texture index used to identify the texture on which
-     * the wedge texture coordinates are mapped.
-     *
-     * @return The texture index.
-     */
-    ushort textureIndex() const { return Base::additionalData(); }
-
     /* Iterator Member functions */
 
     /**
@@ -325,17 +307,9 @@ protected:
     template<typename Element>
     void importFrom(const Element& e, bool = true);
 
-    void serialize(std::ostream& os) const
-    {
-        texCoords().serialize(os);
-        vcl::serialize(os, textureIndex());
-    }
+    void serialize(std::ostream& os) const { texCoords().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        texCoords().deserialize(is);
-        vcl::deserialize(is, textureIndex());
-    }
+    void deserialize(std::istream& is) { texCoords().deserialize(is); }
 
     // ContainerComponent interface functions
     void resize(uint n) requires (N < 0) { texCoords().resize(n); }
@@ -365,7 +339,6 @@ private:
         for (uint i = 0; i < e.vertexNumber(); ++i) {
             wedgeTexCoord(i) = e.wedgeTexCoord(i).template cast<Scalar>();
         }
-        textureIndex() = e.textureIndex();
     }
 
     Vector<vcl::TexCoord<Scalar>, N>& texCoords() { return Base::container(); }

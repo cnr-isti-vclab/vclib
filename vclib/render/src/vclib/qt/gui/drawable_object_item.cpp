@@ -64,7 +64,7 @@ void DrawableObjectItem::addMeshItem()
     if (mesh) {
         addMeshInfoItem(*mesh);
         addTransformMatrixItem(*mesh);
-        addTexturesItem(*mesh);
+        addMaterialsItem(*mesh);
     }
 }
 
@@ -122,19 +122,146 @@ void DrawableObjectItem::addTransformMatrixItem(
     }
 }
 
-void DrawableObjectItem::addTexturesItem(const AbstractDrawableMesh& mesh)
+void DrawableObjectItem::addMaterialsItem(const AbstractDrawableMesh& mesh)
 {
-    if (mesh.textures().size() > 0) {
-        auto texturesItem = new QTreeWidgetItem(this);
-        texturesItem->setText(0, "Textures");
-        makeItemNotSelectable(texturesItem);
+    if (mesh.materials().size() > 0) {
+        auto materialsItem = new QTreeWidgetItem(this);
+        materialsItem->setText(0, "Materials");
+        makeItemNotSelectable(materialsItem);
 
-        for (uint i = 0; const auto& texture : mesh.textures()) {
-            auto textureItem = new QTreeWidgetItem(texturesItem);
-            textureItem->setText(0, QString::number(i++));
-            textureItem->setText(1, QString::fromStdString(texture));
+        uint i = 0;
+        for (const auto& material : mesh.materials()) {
+            auto materialItem = new QTreeWidgetItem(materialsItem);
+            materialItem->setText(0, QString::number(i));
+            std::string name = material.name();
+            if (name.empty()) {
+                name = "material_" + std::to_string(i);
+            }
+            materialItem->setText(1, QString::fromStdString(name));
+            makeItemNotSelectable(materialItem);
+
+            addMaterialData(mesh, material, materialItem);
+
+            i++;
+        }
+    }
+}
+
+void DrawableObjectItem::addMaterialData(
+    const AbstractDrawableMesh& mesh,
+    const Material&             material,
+    QTreeWidgetItem*            parent)
+{
+    using enum Material::TextureType;
+
+    // base color
+    auto baseColorItem = new QTreeWidgetItem(parent);
+    baseColorItem->setText(0, "Base Color");
+    baseColorItem->setText(
+        1,
+        QString::fromStdString(
+            "(" + std::to_string(material.baseColor().red()) + ", " +
+            std::to_string(material.baseColor().green()) + ", " +
+            std::to_string(material.baseColor().blue()) + ", " +
+            std::to_string(material.baseColor().alpha()) + ")"));
+    makeItemNotSelectable(baseColorItem);
+
+    // metallic
+    auto metallicItem = new QTreeWidgetItem(parent);
+    metallicItem->setText(0, "Metallic");
+    metallicItem->setText(1, QString::number(material.metallic(), 'f', 3));
+    makeItemNotSelectable(metallicItem);
+
+    // roughness
+    auto roughnessItem = new QTreeWidgetItem(parent);
+    roughnessItem->setText(0, "Roughness");
+    roughnessItem->setText(1, QString::number(material.roughness(), 'f', 3));
+    makeItemNotSelectable(roughnessItem);
+
+    // emissive color
+    if (material.emissiveColor() != Color::Black) {
+        auto emissiveColorItem = new QTreeWidgetItem(parent);
+        emissiveColorItem->setText(0, "Emissive Color");
+        emissiveColorItem->setText(
+            1,
+            QString::fromStdString(
+                "(" + std::to_string(material.emissiveColor().red()) + ", " +
+                std::to_string(material.emissiveColor().green()) + ", " +
+                std::to_string(material.emissiveColor().blue()) + ")"));
+        makeItemNotSelectable(emissiveColorItem);
+    }
+
+    // alpha mode
+    if (material.alphaMode() != Material::AlphaMode::ALPHA_OPAQUE) {
+        auto alphaModeItem = new QTreeWidgetItem(parent);
+        alphaModeItem->setText(0, "Alpha Mode");
+        QString alphaModeStr;
+        switch (material.alphaMode()) {
+        case Material::AlphaMode::ALPHA_OPAQUE: alphaModeStr = "OPAQUE"; break;
+        case Material::AlphaMode::ALPHA_MASK: alphaModeStr = "MASK"; break;
+        case Material::AlphaMode::ALPHA_BLEND: alphaModeStr = "BLEND"; break;
+        }
+        alphaModeItem->setText(1, alphaModeStr);
+        makeItemNotSelectable(alphaModeItem);
+    }
+
+    // alpha cutoff
+    if (material.alphaMode() == Material::AlphaMode::ALPHA_MASK) {
+        auto alphaCutoffItem = new QTreeWidgetItem(parent);
+        alphaCutoffItem->setText(0, "Alpha Cutoff");
+        alphaCutoffItem->setText(
+            1, QString::number(material.alphaCutoff(), 'f', 3));
+        makeItemNotSelectable(alphaCutoffItem);
+    }
+
+    auto addTxtItem = [&](const TextureDescriptor& txt,
+                          const QString&           txtName) {
+        if (!txt.isNull()) {
+            auto textureItem = new QTreeWidgetItem(parent);
+            textureItem->setText(0, txtName);
+
+            QString text = QString::fromStdString(txt.path());
+
+            const auto& image = mesh.textureImage(txt.path());
+
+            text += " (";
+            text += image.isNull() ? "not loaded" :
+                                     QString::number(image.width()) + " x " +
+                                         QString::number(image.height());
+            text += ")";
+
+            textureItem->setText(1, text);
             makeItemNotSelectable(textureItem);
         }
+    };
+
+    // base color TextureDescriptor
+    const TextureDescriptor& bcTxt = material.textureDescriptor(BASE_COLOR);
+    addTxtItem(bcTxt, "Base Color Texture");
+
+    // metalling roughness TextureDescriptor
+    const TextureDescriptor& mrTxt =
+        material.textureDescriptor(METALLIC_ROUGHNESS);
+    addTxtItem(mrTxt, "Metallic Roughness Texture");
+
+    // normal TextureDescriptor
+    const TextureDescriptor& nTxt = material.textureDescriptor(NORMAL);
+    addTxtItem(nTxt, "Normal Texture");
+
+    // occlusion TextureDescriptor
+    const TextureDescriptor& oTxt = material.textureDescriptor(OCCLUSION);
+    addTxtItem(oTxt, "Occlusion Texture");
+
+    // emissive TextureDescriptor
+    const TextureDescriptor& eTxt = material.textureDescriptor(EMISSIVE);
+    addTxtItem(eTxt, "Emissive Texture");
+
+    // double sided
+    if (material.doubleSided()) {
+        auto doubleSidedItem = new QTreeWidgetItem(parent);
+        doubleSidedItem->setText(0, "Double Sided");
+        doubleSidedItem->setText(1, "True");
+        makeItemNotSelectable(doubleSidedItem);
     }
 }
 

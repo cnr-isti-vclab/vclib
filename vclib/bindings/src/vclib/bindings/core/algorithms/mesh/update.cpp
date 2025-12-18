@@ -70,6 +70,13 @@ void initUpdateAlgorithms(pybind11::module& m)
                 "max_quality"_a = 0);
 
             m.def(
+                "set_per_vertex_color_from_material",
+                [](MeshType& m) {
+                    return setPerVertexColorFromMaterial(m);
+                },
+                "mesh"_a);
+
+            m.def(
                 "set_per_vertex_color_perlin_noise",
                 [](MeshType& m,
                    Point3d&  period,
@@ -342,6 +349,13 @@ void initUpdateAlgorithms(pybind11::module& m)
             "color_map"_a   = Color::ColorMap::RedBlue,
             "min_quality"_a = 0,
             "max_quality"_a = 0);
+
+        m.def(
+            "set_per_face_color_from_material",
+            [](MeshType& m) {
+                return setPerFaceColorFromMaterial(m);
+            },
+            "mesh"_a);
 
         m.def(
             "set_per_vertex_color_from_face_border_flag",

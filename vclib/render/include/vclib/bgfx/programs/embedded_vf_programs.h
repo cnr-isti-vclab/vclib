@@ -76,6 +76,7 @@
 #include "embedded_vf_programs/drawable_mesh_surface_smooth_tex_wedge.h"
 #include "embedded_vf_programs/drawable_mesh_surface_smooth_tex_wedge_si.h"
 #include "embedded_vf_programs/drawable_mesh_surface_uber.h"
+#include "embedded_vf_programs/drawable_mesh_surface_uber_pbr.h"
 
 #include "embedded_vf_programs/drawable_trackball.h"
 #include "embedded_vf_programs/font_basic.h"

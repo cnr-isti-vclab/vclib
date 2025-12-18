@@ -81,6 +81,23 @@ void setPerVertexColorFromElemColor(MeshType& m)
     }
 }
 
+template<uint ELEM_ID, MeshConcept MeshType>
+void setPerElemColorFromMaterial(MeshType& m)
+{
+    static_assert(
+        HasMaterials<MeshType>,
+        "The input Mesh must have the Materials component.");
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
+    requirePerElementComponent<ELEM_ID, CompId::MATERIAL_INDEX>(m);
+
+    for (auto& e : m.template elements<ELEM_ID>()) {
+        uint matIndex = e.materialIndex();
+        if (matIndex < m.materialsNumber()) {
+            e.color() = m.materials()[matIndex].baseColor();
+        }
+    }
+}
+
 } // namespace detail
 
 /**
@@ -345,6 +362,50 @@ void setPerFaceColorFromQuality(
         f.color() =
             colorFromInterval(minQuality, maxQuality, f.quality(), colorMap);
     }
+}
+
+/**
+ * @brief Sets the per-vertex color of a mesh according to a material assigned
+ * to each vertex.
+ *
+ * This function assigns a color to each vertex based on the material associated
+ * with it. The color is derived from the base color of the material.
+ *
+ * @note The base color of the material is applied only if the material index
+ * is valid (i.e., less than the number of materials in the mesh).
+ *
+ * @tparam MeshType The type of the mesh, which must satisfy the MeshConcept.
+ *
+ * @param[in] m: The mesh whose vertices will have their colors set.
+ *
+ * @ingroup update
+ */
+template<MeshConcept MeshType>
+void setPerVertexColorFromMaterial(MeshType& m)
+{
+    detail::setPerElemColorFromMaterial<ElemId::VERTEX>(m);
+}
+
+/**
+ * @brief Sets the per-face color of a mesh according to a material assigned to
+ * each face.
+ *
+ * This function assigns a color to each face based on the material associated
+ * with it. The color is derived from the base color of the material.
+ *
+ * @note The base color of the material is applied only if the material index
+ * is valid (i.e., less than the number of materials in the mesh).
+ *
+ * @tparam MeshType The type of the mesh, which must satisfy the MeshConcept.
+ *
+ * @param[in] m: The mesh whose faces will have their colors set.
+ *
+ * @ingroup update
+ */
+template<FaceMeshConcept MeshType>
+void setPerFaceColorFromMaterial(MeshType& m)
+{
+    detail::setPerElemColorFromMaterial<ElemId::FACE>(m);
 }
 
 /**

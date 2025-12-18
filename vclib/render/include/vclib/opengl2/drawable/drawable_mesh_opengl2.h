@@ -167,16 +167,14 @@ public:
         }
     }
 
-    std::vector<std::string> textures() const override
+    View<MatIt> materials() const override
     {
-        std::vector<std::string> txs;
-        if constexpr (HasTexturePaths<MeshType>) {
-            txs.reserve(MeshType::textureNumber());
-            for (const auto& tpath : MeshType::texturePaths()) {
-                txs.push_back(tpath);
-            }
+        if constexpr (HasMaterials<MeshType>) {
+            return MeshType::materials();
         }
-        return txs;
+        else {
+            return View<MatIt>();
+        }
     }
 
     // DrawableObject implementation

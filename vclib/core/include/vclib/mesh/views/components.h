@@ -32,6 +32,7 @@
 #include "components/principal_curvatures.h"
 #include "components/quality.h"
 #include "components/selection.h"
+#include "components/tangents.h"
 #include "components/tex_coords.h"
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_H
