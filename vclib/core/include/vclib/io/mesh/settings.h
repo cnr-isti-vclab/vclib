@@ -96,11 +96,11 @@ struct SaveSettings
     bool magicsMode = false;
 
     /**
-     * @brief Applied only to Ply files. If true, only baseColor texture from
-     * the material will be saved, and the path will be stored in the Ply header
-     * as a comment (following the Meshlab convention). If false, all the
-     * material properties including the textures will be saved in the Ply file
-     * using a new element called "material".
+     * @brief Applied only to Ply files. If true, the property "material_index"
+     * is saved as "texnumber" to be compatible with Meshlab. Moreover, the path
+     * of the baseColor texture will be saved also as a comment in the header of
+     * the Ply file (following the Meshlab convention). Materials will be saved
+     * anyway if the mesh has the Materials component.
      */
     bool meshlabCompatibility = true;
 
