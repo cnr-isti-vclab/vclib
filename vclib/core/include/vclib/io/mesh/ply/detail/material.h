@@ -41,6 +41,19 @@ void readPlyMaterialProperty(
 {
     bool hasBeenRead = false;
     using enum Material::TextureType;
+
+    // lambda to load texture path
+    auto readTexturePath = [&](Material::TextureType textureType) {
+        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
+        std::string path;
+        path.resize(size);
+        for (uint i = 0; i < size; ++i) {
+            path[i] = io::readPrimitiveType<char>(file, p.type, end);
+        }
+        mat.textureDescriptor(textureType) = TextureDescriptor(path);
+        hasBeenRead = true;
+    };
+
     if (p.name == ply::name) {
         uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
         std::string name;
@@ -97,54 +110,19 @@ void readPlyMaterialProperty(
         hasBeenRead = true;
     }
     if (p.name == ply::base_color_texture) {
-        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
-        std::string path;
-        path.resize(size);
-        for (uint i = 0; i < size; ++i) {
-            path[i] = io::readPrimitiveType<char>(file, p.type, end);
-        }
-        mat.textureDescriptor(BASE_COLOR) = TextureDescriptor(path);
-        hasBeenRead = true;
+        readTexturePath(BASE_COLOR);
     }
     if (p.name == ply::metallic_roughness_texture) {
-        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
-        std::string path;
-        path.resize(size);
-        for (uint i = 0; i < size; ++i) {
-            path[i] = io::readPrimitiveType<char>(file, p.type, end);
-        }
-        mat.textureDescriptor(METALLIC_ROUGHNESS) = TextureDescriptor(path);
-        hasBeenRead = true;
+        readTexturePath(METALLIC_ROUGHNESS);
     }
     if (p.name == ply::normal_texture) {
-        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
-        std::string path;
-        path.resize(size);
-        for (uint i = 0; i < size; ++i) {
-            path[i] = io::readPrimitiveType<char>(file, p.type, end);
-        }
-        mat.textureDescriptor(NORMAL) = TextureDescriptor(path);
-        hasBeenRead = true;
+        readTexturePath(NORMAL);
     }
     if (p.name == ply::occlusion_texture) {
-        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
-        std::string path;
-        path.resize(size);
-        for (uint i = 0; i < size; ++i) {
-            path[i] = io::readPrimitiveType<char>(file, p.type, end);
-        }
-        mat.textureDescriptor(OCCLUSION) = TextureDescriptor(path);
-        hasBeenRead = true;
+        readTexturePath(OCCLUSION);
     }
     if (p.name == ply::emissive_texture) {
-        uint size = io::readPrimitiveType<uint>(file, p.listSizeType, end);
-        std::string path;
-        path.resize(size);
-        for (uint i = 0; i < size; ++i) {
-            path[i] = io::readPrimitiveType<char>(file, p.type, end);
-        }
-        mat.textureDescriptor(EMISSIVE) = TextureDescriptor(path);
-        hasBeenRead = true;
+        readTexturePath(EMISSIVE);
     }
 
     // if nothing has been read, it means that there is some data we don't know
@@ -201,12 +179,24 @@ void writePlyMaterials(
         format.endian = std::endian::big;
     }
 
-    for (const Material& m : mesh.materials()) {
+    for (const Material& mat : mesh.materials()) {
         using enum Material::TextureType;
         for (const PlyProperty& p : header.materialProperties()) {
             bool hasBeenWritten = false;
+
+            // lambda to write texture path
+            auto writeTexturePath = [&](Material::TextureType textureType) {
+                const std::string& path =
+                    mat.textureDescriptor(textureType).path();
+                io::writeProperty(file, path.size(), p.listSizeType, format);
+                for (const char& c : path) {
+                    io::writeProperty(file, c, p.type, format);
+                }
+                hasBeenWritten = true;
+            };
+
             if (p.name == ply::name) {
-                const std::string& path = m.name();
+                const std::string& path = mat.name();
                 io::writeProperty(file, path.size(), p.listSizeType, format);
                 for (const char& c : path) {
                     io::writeProperty(file, c, p.type, format);
@@ -215,91 +205,61 @@ void writePlyMaterials(
             }
             if (p.name >= ply::red && p.name <= ply::alpha) {
                 io::writeProperty(
-                    file, m.baseColor()[p.name - ply::red], p.type, format);
+                    file, mat.baseColor()[p.name - ply::red], p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::metallic) {
-                io::writeProperty(file, m.metallic(), p.type, format);
+                io::writeProperty(file, mat.metallic(), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::roughness) {
-                io::writeProperty(file, m.roughness(), p.type, format);
+                io::writeProperty(file, mat.roughness(), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
                 io::writeProperty(
                     file,
-                    m.emissiveColor()[p.name - ply::emissive_red],
+                    mat.emissiveColor()[p.name - ply::emissive_red],
                     p.type,
                     format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::alpha_mode) {
                 io::writeProperty(
-                    file, toUnderlying(m.alphaMode()), p.type, format);
+                    file, toUnderlying(mat.alphaMode()), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::alpha_cutoff) {
-                io::writeProperty(file, m.alphaCutoff(), p.type, format);
+                io::writeProperty(file, mat.alphaCutoff(), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::normal_scale) {
-                io::writeProperty(file, m.normalScale(), p.type, format);
+                io::writeProperty(file, mat.normalScale(), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::occlusion_strength) {
-                io::writeProperty(file, m.occlusionStrength(), p.type, format);
+                io::writeProperty(file, mat.occlusionStrength(), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::double_sided) {
                 io::writeProperty(
-                    file, static_cast<uint>(m.doubleSided()), p.type, format);
+                    file, static_cast<uint>(mat.doubleSided()), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::base_color_texture) {
-                const std::string& path =
-                    m.textureDescriptor(BASE_COLOR).path();
-                io::writeProperty(file, path.size(), p.listSizeType, format);
-                for (const char& c : path) {
-                    io::writeProperty(file, c, p.type, format);
-                }
-                hasBeenWritten = true;
+                writeTexturePath(BASE_COLOR);
             }
             if (p.name == ply::metallic_roughness_texture) {
-                const std::string& path =
-                    m.textureDescriptor(METALLIC_ROUGHNESS).path();
-                io::writeProperty(file, path.size(), p.listSizeType, format);
-                for (const char& c : path) {
-                    io::writeProperty(file, c, p.type, format);
-                }
-                hasBeenWritten = true;
+                writeTexturePath(METALLIC_ROUGHNESS);
             }
             if (p.name == ply::normal_texture) {
-                const std::string& path =
-                    m.textureDescriptor(NORMAL).path();
-                io::writeProperty(file, path.size(), p.listSizeType, format);
-                for (const char& c : path) {
-                    io::writeProperty(file, c, p.type, format);
-                }
-                hasBeenWritten = true;
+                writeTexturePath(NORMAL);
             }
             if (p.name == ply::occlusion_texture) {
-                const std::string& path =
-                    m.textureDescriptor(OCCLUSION).path();
-                io::writeProperty(file, path.size(), p.listSizeType, format);
-                for (const char& c : path) {
-                    io::writeProperty(file, c, p.type, format);
-                }
-                hasBeenWritten = true;
+                writeTexturePath(OCCLUSION);
             }
             if (p.name == ply::emissive_texture) {
-                const std::string& path =
-                    m.textureDescriptor(EMISSIVE).path();
-                io::writeProperty(file, path.size(), p.listSizeType, format);
-                for (const char& c : path) {
-                    io::writeProperty(file, c, p.type, format);
-                }
-                hasBeenWritten = true;
+                writeTexturePath(EMISSIVE);
             }
 
             if (!hasBeenWritten) {

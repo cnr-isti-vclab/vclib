@@ -131,7 +131,7 @@ void loadPly(
             ++i;
         }
 
-        if (HasMaterials<MeshType>) {
+        if constexpr (HasMaterials<MeshType>) {
             if (!header.hasMaterials()) {
                 addMaterialsFromHeaderTextures(header, m, log);
                 readPlyMaterialIndexPostProcessing(m, loadedInfo, settings);
