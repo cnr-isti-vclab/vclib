@@ -27,9 +27,10 @@
  * These macros are used both on the library and on the shader side.
  */
 
-#define VCL_PBR_VERTEX_COLOR       0
-#define VCL_PBR_VERTEX_TANGENT     1
-#define VCL_PBR_IS_ALPHA_MODE_MASK 2
+#define VCL_PBR_VERTEX_COLOR         0
+#define VCL_PBR_VERTEX_TANGENT       1
+#define VCL_PBR_IS_ALPHA_MODE_MASK   2
+#define VCL_PBR_IMAGE_BASED_LIGHTING 3
 
 #define VCL_PBR_TEXTURE_BASE_COLOR         0
 #define VCL_PBR_TEXTURE_METALLIC_ROUGHNESS 1

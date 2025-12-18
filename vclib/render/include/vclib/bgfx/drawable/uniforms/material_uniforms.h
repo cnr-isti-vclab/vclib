@@ -80,7 +80,8 @@ public:
         const Material&                    m,
         bool                               vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
-        bool                               vertexTangentAvailable)
+        bool                               vertexTangentAvailable,
+        bool                               ibl)
     {
         uint pbrSettings = 0;
 
@@ -95,6 +96,9 @@ public:
             pbrSettings |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
             mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
+
+        if(ibl)
+            pbrSettings |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
 
         mSettings[0] = Uniform::uintBitsToFloat(pbrSettings);
 

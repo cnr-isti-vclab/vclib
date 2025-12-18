@@ -263,7 +263,8 @@ public:
     uint64_t bindMaterials(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
-        const MeshType&           m) const
+        const MeshType&           m,
+        bool                      ibl = false) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -277,7 +278,8 @@ public:
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(m),
                 textureAvailable,
-                isPerVertexTangentAvailable(m)
+                isPerVertexTangentAvailable(m),
+                ibl
             );
         }
         else {
@@ -291,7 +293,8 @@ public:
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(m),
                     textureAvailable,
-                    isPerVertexTangentAvailable(m)
+                    isPerVertexTangentAvailable(m),
+                    ibl
                 );
             }
             else {
@@ -312,7 +315,8 @@ public:
                     m.material(materialId),
                     isPerVertexColorAvailable(m),
                     textureAvailable,
-                    isPerVertexTangentAvailable(m)
+                    isPerVertexTangentAvailable(m),
+                    ibl
                 );
 
                 // set the state according to the material

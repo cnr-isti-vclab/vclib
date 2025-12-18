@@ -177,6 +177,8 @@ class Environment
 
     void bindDataUniform(const float d0 = 0.0f, const float d1 = 0.0f, const float d2 = 0.0f, const float d3 = 0.0f) const;
 
+    bool canDraw() const { return mCanDraw; }
+
     uint8_t specularMips() const { return mSpecularMips; }
 
     private:
