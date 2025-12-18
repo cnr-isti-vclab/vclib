@@ -51,7 +51,7 @@ void readPlyMaterialProperty(
             path[i] = io::readPrimitiveType<char>(file, p.type, end);
         }
         mat.textureDescriptor(textureType) = TextureDescriptor(path);
-        hasBeenRead = true;
+        hasBeenRead                        = true;
     };
 
     if (p.name == ply::name) {
@@ -61,22 +61,21 @@ void readPlyMaterialProperty(
         for (uint i = 0; i < size; ++i) {
             name[i] = io::readPrimitiveType<char>(file, p.type, end);
         }
-        mat.name() = name;
+        mat.name()  = name;
         hasBeenRead = true;
     }
     if (p.name >= ply::red && p.name <= ply::alpha) {
-        uint idx = p.name - ply::red;
-        mat.baseColor()[idx] =
-            io::readPrimitiveType<float>(file, p.type, end);
-        hasBeenRead = true;
+        uint idx             = p.name - ply::red;
+        mat.baseColor()[idx] = io::readPrimitiveType<float>(file, p.type, end);
+        hasBeenRead          = true;
     }
     if (p.name == ply::metallic) {
         mat.metallic() = io::readPrimitiveType<float>(file, p.type, end);
-        hasBeenRead = true;
+        hasBeenRead    = true;
     }
     if (p.name == ply::roughness) {
         mat.roughness() = io::readPrimitiveType<float>(file, p.type, end);
-        hasBeenRead = true;
+        hasBeenRead     = true;
     }
     if (p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
         uint idx = p.name - ply::emissive_red;
@@ -85,18 +84,17 @@ void readPlyMaterialProperty(
         hasBeenRead = true;
     }
     if (p.name == ply::alpha_mode) {
-        mat.alphaMode() =
-            static_cast<Material::AlphaMode>(
-                io::readPrimitiveType<uint>(file, p.type, end));
+        mat.alphaMode() = static_cast<Material::AlphaMode>(
+            io::readPrimitiveType<uint>(file, p.type, end));
         hasBeenRead = true;
     }
     if (p.name == ply::alpha_cutoff) {
         mat.alphaCutoff() = io::readPrimitiveType<float>(file, p.type, end);
-        hasBeenRead = true;
+        hasBeenRead       = true;
     }
     if (p.name == ply::normal_scale) {
         mat.normalScale() = io::readPrimitiveType<float>(file, p.type, end);
-        hasBeenRead = true;
+        hasBeenRead       = true;
     }
     if (p.name == ply::occlusion_strength) {
         mat.occlusionStrength() =
@@ -105,8 +103,7 @@ void readPlyMaterialProperty(
     }
     if (p.name == ply::double_sided) {
         mat.doubleSided() =
-            static_cast<bool>(
-                io::readPrimitiveType<uint>(file, p.type, end));
+            static_cast<bool>(io::readPrimitiveType<uint>(file, p.type, end));
         hasBeenRead = true;
     }
     if (p.name == ply::base_color_texture) {
@@ -238,7 +235,8 @@ void writePlyMaterials(
                 hasBeenWritten = true;
             }
             if (p.name == ply::occlusion_strength) {
-                io::writeProperty(file, mat.occlusionStrength(), p.type, format);
+                io::writeProperty(
+                    file, mat.occlusionStrength(), p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::double_sided) {
@@ -285,8 +283,7 @@ void readPlyMaterials(
     for (uint mid = 0; mid < header.numberMaterials(); ++mid) {
         Material mat;
         if (header.format() == ply::ASCII) {
-            detail::readPlyMaterialTxt(
-                file, mat, header.materialProperties());
+            detail::readPlyMaterialTxt(file, mat, header.materialProperties());
         }
         else {
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?

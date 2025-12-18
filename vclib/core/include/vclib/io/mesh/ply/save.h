@@ -100,7 +100,6 @@ void savePly(
             writePlyMaterials(fp, header, m);
         }
         if (settings.saveTextureImages) {
-            using enum Material::TextureType;
             saveTextureImages(m, fileBasePath, BitSet8::ALL(), log);
         }
     }
