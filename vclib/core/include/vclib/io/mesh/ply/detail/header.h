@@ -633,7 +633,7 @@ public:
             PlyProperty pt;
             pt.name         = ply::base_color_texture;
             pt.list         = true;
-            pt.listSizeType = PrimitiveType::UCHAR; // meshlab compatibility
+            pt.listSizeType = PrimitiveType::UCHAR; // keep list-size as UCHAR because MeshLab expects an 8-bit length for char/string lists in PLY; using a wider type (e.g. UINT) causes MeshLab to misinterpret these texture filename properties
             pt.type         = PrimitiveType::CHAR;
             matElem.properties.push_back(pt);
             pt.name = ply::metallic_roughness_texture;
