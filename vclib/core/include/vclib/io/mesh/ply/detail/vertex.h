@@ -109,7 +109,7 @@ void readPlyVertexProperty(
     }
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::readPrimitiveType<int>(file, p.listSizeType);
+            uint s = io::readPrimitiveType<uint>(file, p.listSizeType);
             for (uint i = 0; i < s; ++i)
                 io::readPrimitiveType<int>(file, p.type, end);
         }

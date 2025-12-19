@@ -92,7 +92,7 @@ void readPlyTriStripsTxt(
             }
             if (!hasBeenRead) {
                 if (p.list) {
-                    uint s = io::readPrimitiveType<int>(token, p.listSizeType);
+                    uint s = io::readPrimitiveType<uint>(token, p.listSizeType);
                     for (uint i = 0; i < s; ++i) {
                         ++token;
                     }
@@ -131,7 +131,7 @@ void readPlyTriStripsBin(
             if (!hasBeenRead) {
                 if (p.list) {
                     uint s =
-                        io::readPrimitiveType<int>(file, p.listSizeType, end);
+                        io::readPrimitiveType<uint>(file, p.listSizeType, end);
                     for (uint i = 0; i < s; ++i)
                         io::readPrimitiveType<int>(file, p.type, end);
                 }

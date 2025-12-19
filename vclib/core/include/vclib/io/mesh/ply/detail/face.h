@@ -237,7 +237,7 @@ void readPlyFaceProperty(
     // we still need to read and discard what we read
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::readPrimitiveType<int>(file, p.listSizeType, end);
+            uint s = io::readPrimitiveType<uint>(file, p.listSizeType, end);
             for (uint i = 0; i < s; ++i)
                 io::readPrimitiveType<int>(file, p.type, end);
         }

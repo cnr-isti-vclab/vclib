@@ -66,7 +66,8 @@ void readPlyMaterialProperty(
     }
     else if (p.name >= ply::red && p.name <= ply::alpha) {
         uint idx             = p.name - ply::red;
-        mat.baseColor()[idx] = io::readPrimitiveType<float>(file, p.type, end);
+        mat.baseColor()[idx] =
+            io::readPrimitiveType<unsigned char>(file, p.type, end);
         hasBeenRead          = true;
     }
     else if (p.name == ply::metallic) {
@@ -80,7 +81,7 @@ void readPlyMaterialProperty(
     else if (p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
         uint idx = p.name - ply::emissive_red;
         mat.emissiveColor()[idx] =
-            io::readPrimitiveType<float>(file, p.type, end);
+            io::readPrimitiveType<unsigned char>(file, p.type, end);
         hasBeenRead = true;
     }
     else if (p.name == ply::alpha_mode) {
@@ -126,7 +127,7 @@ void readPlyMaterialProperty(
     // we still need to read and discard what we read
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::readPrimitiveType<int>(file, p.listSizeType, end);
+            uint s = io::readPrimitiveType<uint>(file, p.listSizeType, end);
             for (uint i = 0; i < s; ++i)
                 io::readPrimitiveType<int>(file, p.type, end);
         }
