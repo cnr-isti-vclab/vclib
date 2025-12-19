@@ -645,7 +645,7 @@ void loadObj(
     if constexpr (HasMaterials<MeshType>) {
         if (settings.loadTextureImages) {
             using enum Material::TextureType;
-            loadTextureImages(m, "", {BASE_COLOR, EMISSIVE}, log);
+            loadTextureImages(m, m.meshBasePath(), {BASE_COLOR, EMISSIVE}, log);
         }
     }
 

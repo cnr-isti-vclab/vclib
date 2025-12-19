@@ -96,6 +96,17 @@ struct SaveSettings
     bool magicsMode = false;
 
     /**
+     * @brief Applied only to Ply files. If true, the property "material_index"
+     * is saved as "texnumber" to be compatible with Meshlab. Moreover, the path
+     * of the baseColor texture will be saved also as a comment in the header of
+     * the Ply file (following the Meshlab convention). This flag only controls
+     * these additional legacy Meshlab-compatible outputs; materials are saved
+     * according to the mesh components and MeshInfo settings regardless of this
+     * flag.
+     */
+    bool meshlabCompatibility = true;
+
+    /**
      * @brief Data structure that tells the saving functions which components of
      * the mesh should be saved. Only the components that can be saved in the
      * file format will be saved.

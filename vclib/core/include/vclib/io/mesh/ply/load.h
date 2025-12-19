@@ -26,6 +26,7 @@
 #include "detail/edge.h"
 #include "detail/extra.h"
 #include "detail/face.h"
+#include "detail/material.h"
 #include "detail/tristrip.h"
 #include "detail/vertex.h"
 
@@ -111,6 +112,14 @@ void loadPly(
                     readPlyUnknownElement(file, header, el, log);
                 log.endTask("Reading edges");
                 break;
+            case ply::MATERIAL:
+                log.startNewTask(beginPerc, endPerc, "Reading materials");
+                if constexpr (HasMaterials<MeshType>)
+                    readPlyMaterials(file, header, m, log);
+                else
+                    readPlyUnknownElement(file, header, el, log);
+                log.endTask("Reading materials");
+                break;
             default:
                 log.startNewTask(
                     beginPerc, endPerc, "Reading unknown elements");
@@ -121,8 +130,16 @@ void loadPly(
             currElems += eln[i];
             ++i;
         }
-        readPlyTextures(header, m, log, settings);
-        readPlyMaterialIndexPostProcessing(m, loadedInfo, settings);
+
+        if constexpr (HasMaterials<MeshType>) {
+            if (!header.hasMaterials()) {
+                addMaterialsFromHeaderTextures(header, m, log);
+                readPlyMaterialIndexPostProcessing(m, loadedInfo, settings);
+            }
+            if (settings.loadTextureImages) {
+                loadTextureImages(m, m.meshBasePath(), BitSet8::ALL(), log);
+            }
+        }
     }
     catch (const std::runtime_error& err) {
         m.clear();
