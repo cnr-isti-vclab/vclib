@@ -46,7 +46,7 @@ int main(int argc, char** argv)
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
 
-    uint selectedExample = DAMAGED_HELMET;
+    uint selectedExample = METAL_ROUGH_SPHERES;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + GLTFExampleFilenames[selectedExample]);

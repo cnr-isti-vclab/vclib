@@ -31,6 +31,7 @@ SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
 void main()
 {
     vec3 color = textureCube(s_env0, normalize(v_texcoord0)).rgb;
+    color = toneMap(color, TONEMAP_ACES_HILL);
     color = gammaCorrect(color);
     gl_FragColor = vec4(color.r, color.g, color.b, 1.0);
 }
