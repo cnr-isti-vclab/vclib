@@ -137,7 +137,7 @@ void loadPly(
                 readPlyMaterialIndexPostProcessing(m, loadedInfo, settings);
             }
             if (settings.loadTextureImages) {
-                loadTextureImages(m, "", BitSet8::ALL(), log);
+                loadTextureImages(m, m.meshBasePath(), BitSet8::ALL(), log);
             }
         }
     }

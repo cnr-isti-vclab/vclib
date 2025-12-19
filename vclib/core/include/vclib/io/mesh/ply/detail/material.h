@@ -64,61 +64,61 @@ void readPlyMaterialProperty(
         mat.name()  = name;
         hasBeenRead = true;
     }
-    if (p.name >= ply::red && p.name <= ply::alpha) {
+    else if (p.name >= ply::red && p.name <= ply::alpha) {
         uint idx             = p.name - ply::red;
         mat.baseColor()[idx] = io::readPrimitiveType<float>(file, p.type, end);
         hasBeenRead          = true;
     }
-    if (p.name == ply::metallic) {
+    else if (p.name == ply::metallic) {
         mat.metallic() = io::readPrimitiveType<float>(file, p.type, end);
         hasBeenRead    = true;
     }
-    if (p.name == ply::roughness) {
+    else if (p.name == ply::roughness) {
         mat.roughness() = io::readPrimitiveType<float>(file, p.type, end);
         hasBeenRead     = true;
     }
-    if (p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
+    else if (p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
         uint idx = p.name - ply::emissive_red;
         mat.emissiveColor()[idx] =
             io::readPrimitiveType<float>(file, p.type, end);
         hasBeenRead = true;
     }
-    if (p.name == ply::alpha_mode) {
+    else if (p.name == ply::alpha_mode) {
         mat.alphaMode() = static_cast<Material::AlphaMode>(
             io::readPrimitiveType<uint>(file, p.type, end));
         hasBeenRead = true;
     }
-    if (p.name == ply::alpha_cutoff) {
+    else if (p.name == ply::alpha_cutoff) {
         mat.alphaCutoff() = io::readPrimitiveType<float>(file, p.type, end);
         hasBeenRead       = true;
     }
-    if (p.name == ply::normal_scale) {
+    else if (p.name == ply::normal_scale) {
         mat.normalScale() = io::readPrimitiveType<float>(file, p.type, end);
         hasBeenRead       = true;
     }
-    if (p.name == ply::occlusion_strength) {
+    else if (p.name == ply::occlusion_strength) {
         mat.occlusionStrength() =
             io::readPrimitiveType<float>(file, p.type, end);
         hasBeenRead = true;
     }
-    if (p.name == ply::double_sided) {
+    else if (p.name == ply::double_sided) {
         mat.doubleSided() =
             static_cast<bool>(io::readPrimitiveType<uint>(file, p.type, end));
         hasBeenRead = true;
     }
-    if (p.name == ply::base_color_texture) {
+    else if (p.name == ply::base_color_texture) {
         readTexturePath(BASE_COLOR);
     }
-    if (p.name == ply::metallic_roughness_texture) {
+    else if (p.name == ply::metallic_roughness_texture) {
         readTexturePath(METALLIC_ROUGHNESS);
     }
-    if (p.name == ply::normal_texture) {
+    else if (p.name == ply::normal_texture) {
         readTexturePath(NORMAL);
     }
-    if (p.name == ply::occlusion_texture) {
+    else if (p.name == ply::occlusion_texture) {
         readTexturePath(OCCLUSION);
     }
-    if (p.name == ply::emissive_texture) {
+    else if (p.name == ply::emissive_texture) {
         readTexturePath(EMISSIVE);
     }
 
@@ -193,27 +193,28 @@ void writePlyMaterials(
             };
 
             if (p.name == ply::name) {
-                const std::string& path = mat.name();
-                io::writeProperty(file, path.size(), p.listSizeType, format);
-                for (const char& c : path) {
+                const std::string& name = mat.name();
+                io::writeProperty(file, name.size(), p.listSizeType, format);
+                for (const char& c : name) {
                     io::writeProperty(file, c, p.type, format);
                 }
                 hasBeenWritten = true;
             }
-            if (p.name >= ply::red && p.name <= ply::alpha) {
+            else if (p.name >= ply::red && p.name <= ply::alpha) {
                 io::writeProperty(
                     file, mat.baseColor()[p.name - ply::red], p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::metallic) {
+            else if (p.name == ply::metallic) {
                 io::writeProperty(file, mat.metallic(), p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::roughness) {
+            else if (p.name == ply::roughness) {
                 io::writeProperty(file, mat.roughness(), p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
+            else if (
+                p.name >= ply::emissive_red && p.name <= ply::emissive_blue) {
                 io::writeProperty(
                     file,
                     mat.emissiveColor()[p.name - ply::emissive_red],
@@ -221,42 +222,42 @@ void writePlyMaterials(
                     format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::alpha_mode) {
+            else if (p.name == ply::alpha_mode) {
                 io::writeProperty(
                     file, toUnderlying(mat.alphaMode()), p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::alpha_cutoff) {
+            else if (p.name == ply::alpha_cutoff) {
                 io::writeProperty(file, mat.alphaCutoff(), p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::normal_scale) {
+            else if (p.name == ply::normal_scale) {
                 io::writeProperty(file, mat.normalScale(), p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::occlusion_strength) {
+            else if (p.name == ply::occlusion_strength) {
                 io::writeProperty(
                     file, mat.occlusionStrength(), p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::double_sided) {
+            else if (p.name == ply::double_sided) {
                 io::writeProperty(
                     file, static_cast<uint>(mat.doubleSided()), p.type, format);
                 hasBeenWritten = true;
             }
-            if (p.name == ply::base_color_texture) {
+            else if (p.name == ply::base_color_texture) {
                 writeTexturePath(BASE_COLOR);
             }
-            if (p.name == ply::metallic_roughness_texture) {
+            else if (p.name == ply::metallic_roughness_texture) {
                 writeTexturePath(METALLIC_ROUGHNESS);
             }
-            if (p.name == ply::normal_texture) {
+            else if (p.name == ply::normal_texture) {
                 writeTexturePath(NORMAL);
             }
-            if (p.name == ply::occlusion_texture) {
+            else if (p.name == ply::occlusion_texture) {
                 writeTexturePath(OCCLUSION);
             }
-            if (p.name == ply::emissive_texture) {
+            else if (p.name == ply::emissive_texture) {
                 writeTexturePath(EMISSIVE);
             }
 

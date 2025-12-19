@@ -71,6 +71,10 @@ void savePly(
         }
     }
 
+    // When meshlabCompatibility is enabled, we intentionally add legacy texture
+    // information to the header (via addTexturesToHeader) in addition to the
+    // newer material element written later. This redundancy maximizes
+    // compatibility with tools that only understand one of the two formats.
     if (settings.meshlabCompatibility) {
         addTexturesToHeader(header, m);
     }
