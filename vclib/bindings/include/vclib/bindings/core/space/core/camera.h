@@ -20,31 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef VCL_BINDINGS_CORE_SPACE_CORE_CAMERA_H
+#define VCL_BINDINGS_CORE_SPACE_CORE_CAMERA_H
 
-#include <vclib/render/concepts/camera.h>
-#include <vclib/render/viewer/camera.h>
+#include <pybind11/pybind11.h>
 
-void cameraStaticAsserts()
-{
-    using namespace vcl;
+namespace vcl::bind {
 
-    using Camerad = Camera<double>;
+void initCamera(pybind11::module& m);
 
-    static_assert(
-        CameraConcept<Camerad>, "Camera does not satisfy the CameraConcept");
-    static_assert(
-        CameraConcept<const Camerad>,
-        "const Camera does not satisfy the CameraConcept");
-    static_assert(
-        CameraConcept<Camerad&>, "Camera& does not satisfy the CameraConcept");
-    static_assert(
-        CameraConcept<const Camerad&>,
-        "const Camera& does not satisfy the CameraConcept");
-    static_assert(
-        CameraConcept<Camerad&&>,
-        "Camera&& does not satisfy the CameraConcept");
-}
+} // namespace vcl::bind
 
-#endif // CAMERA_H
+#endif // VCL_BINDINGS_CORE_SPACE_CORE_CAMERA_H

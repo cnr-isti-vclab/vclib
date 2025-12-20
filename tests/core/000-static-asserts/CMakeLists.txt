@@ -76,6 +76,7 @@ set(HEADERS
     space/array.h
     space/bit_set.h
     space/box.h
+    space/camera.h
     space/color.h
     space/image.h
     space/material.h

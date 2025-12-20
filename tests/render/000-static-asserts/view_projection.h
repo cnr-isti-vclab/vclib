@@ -27,7 +27,6 @@
 #include <vclib/render/concepts/view_projection.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
 #include <vclib/render/render_app.h>
-#include <vclib/render/viewer/camera.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/widget_manager.h>

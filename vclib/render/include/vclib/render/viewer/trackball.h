@@ -23,10 +23,10 @@
 #ifndef VCL_RENDER_VIEWER_TRACKBALL_H
 #define VCL_RENDER_VIEWER_TRACKBALL_H
 
-#include "camera.h"
 #include "lights/directional_light.h"
 
-#include <vclib/space/core/quaternion.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/space/core.h>
 
 #include <variant>
 
