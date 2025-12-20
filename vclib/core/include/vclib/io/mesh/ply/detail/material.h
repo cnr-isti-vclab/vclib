@@ -65,10 +65,10 @@ void readPlyMaterialProperty(
         hasBeenRead = true;
     }
     else if (p.name >= ply::red && p.name <= ply::alpha) {
-        uint idx             = p.name - ply::red;
+        uint idx = p.name - ply::red;
         mat.baseColor()[idx] =
             io::readPrimitiveType<unsigned char>(file, p.type, end);
-        hasBeenRead          = true;
+        hasBeenRead = true;
     }
     else if (p.name == ply::metallic) {
         mat.metallic() = io::readPrimitiveType<float>(file, p.type, end);

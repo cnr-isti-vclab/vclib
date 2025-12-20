@@ -36,9 +36,9 @@ namespace vcl::detail {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void addMaterialsFromHeaderTextures(
-    const PlyHeader&    header,
-    MeshType&           mesh,
-    LogType&            log      = nullLogger)
+    const PlyHeader& header,
+    MeshType&        mesh,
+    LogType&         log = nullLogger)
 {
     if constexpr (HasMaterials<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
@@ -51,9 +51,7 @@ void addMaterialsFromHeaderTextures(
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void addTexturesToHeader(
-    PlyHeader&          header,
-    const MeshType&     mesh)
+void addTexturesToHeader(PlyHeader& header, const MeshType& mesh)
 {
     if constexpr (HasMaterials<MeshType>) {
         for (const Material& mat : mesh.materials()) {
