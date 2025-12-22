@@ -62,10 +62,6 @@ void Environment::drawBackground(const uint viewId)
 
 void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags) const
 {
-    if(!mCanDraw)
-        return;
-
-
     using enum TextureType;
     switch(type)
     {
@@ -110,9 +106,6 @@ void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags) c
 
 void Environment::bindDataUniform(const float d0, const float d1, const float d2, const float d3) const
 {
-    if(!mCanDraw)
-        return;
-
     std::array<float, 4> data = {d0, d1, d2, d3};
     mDataUniform.bind(&data);
 }
