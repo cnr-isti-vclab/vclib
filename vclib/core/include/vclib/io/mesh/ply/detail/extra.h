@@ -35,63 +35,27 @@
 namespace vcl::detail {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void readPlyTextures(
-    const PlyHeader&    header,
-    MeshType&           mesh,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+void addMaterialsFromHeaderTextures(
+    const PlyHeader& header,
+    MeshType&        mesh,
+    LogType&         log = nullLogger)
 {
     if constexpr (HasMaterials<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
             Material mat;
             mat.name() = FileInfo::fileNameWithExtension(str);
             mat.baseColorTextureDescriptor().path() = str;
-            if (settings.loadTextureImages) {
-                Image img = loadImage(mesh.meshBasePath() + str);
-                if (img.isNull()) {
-                    log.log("Cannot load texture " + str, LogType::WARNING_LOG);
-                }
-                else {
-                    mesh.pushTextureImage(str, std::move(img));
-                }
-            }
             mesh.pushMaterial(mat);
         }
     }
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void writePlyTextures(
-    PlyHeader&          header,
-    const MeshType&     mesh,
-    const std::string&  basePath,
-    LogType&            log,
-    const SaveSettings& settings)
+void addTexturesToHeader(PlyHeader& header, const MeshType& mesh)
 {
     if constexpr (HasMaterials<MeshType>) {
-        for (uint k = 0; const Material& mat : mesh.materials()) {
+        for (const Material& mat : mesh.materials()) {
             header.pushTextureFileName(mat.baseColorTextureDescriptor().path());
-            if (settings.saveTextureImages) {
-                const Image& img =
-                    mesh.textureImage(mat.baseColorTextureDescriptor().path());
-                if (img.isNull()) {
-                    log.log(
-                        "Cannot save empty texture " +
-                            mat.baseColorTextureDescriptor().path(),
-                        LogType::WARNING_LOG);
-                }
-                else {
-                    try {
-                        saveImage(
-                            img,
-                            basePath + mat.baseColorTextureDescriptor().path());
-                    }
-                    catch (const std::runtime_error& e) {
-                        log.log(e.what(), LogType::WARNING_LOG);
-                    }
-                }
-            }
-            ++k;
         }
     }
 }

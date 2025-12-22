@@ -26,6 +26,7 @@
 #include "detail/edge.h"
 #include "detail/extra.h"
 #include "detail/face.h"
+#include "detail/material.h"
 #include "detail/vertex.h"
 
 #include <vclib/io/mesh/settings.h>
@@ -64,13 +65,25 @@ void savePly(
             header.setNumberEdges(m.edgeNumber());
         }
     }
-    writePlyTextures(header, m, fileBasePath, log, settings);
+    if constexpr (HasMaterials<MeshType>) {
+        if (header.hasMaterials()) {
+            header.setNumberMaterials(m.materialsNumber());
+        }
+    }
+
+    // When meshlabCompatibility is enabled, we intentionally add legacy texture
+    // information to the header (via addTexturesToHeader) in addition to the
+    // newer material element written later. This redundancy maximizes
+    // compatibility with tools that only understand one of the two formats.
+    if (settings.meshlabCompatibility) {
+        addTexturesToHeader(header, m);
+    }
 
     // this should never happen
     if (!header.isValid())
         throw std::runtime_error("Ply Header not valid.");
 
-    fp << header.toString();
+    fp << header.toString(settings);
 
     writePlyVertices(fp, header, m);
 
@@ -83,6 +96,15 @@ void savePly(
     if constexpr (HasEdges<MeshType>) {
         if (header.hasEdges()) {
             writePlyEdges(fp, header, m);
+        }
+    }
+
+    if constexpr (HasMaterials<MeshType>) {
+        if (header.hasMaterials()) {
+            writePlyMaterials(fp, header, m);
+        }
+        if (settings.saveTextureImages) {
+            saveTextureImages(m, fileBasePath, BitSet8::ALL(), log);
         }
     }
 }
