@@ -181,7 +181,7 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 
     using enum bimg::TextureFormat::Enum;
 
-	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, Count, &err); 
+	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, RGBA32F, &err); 
 
 	bx::free(&bxAlignedAllocator, inputData);
 
@@ -338,7 +338,7 @@ void Environment::generateTextures(const uint viewId)
 
     const bool generateCubeMips = 
         !mImage->m_cubeMap ||
-        (mImage->m_cubeMap && mImage->m_numMips > 1);
+        (mImage->m_cubeMap && mImage->m_numMips <= 1);
 
     if(generateCubeMips)
     {
