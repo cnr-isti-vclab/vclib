@@ -70,22 +70,6 @@
 #define TONEMAP_ACES_HILL           2u
 #define TONEMAP_KHRONOS_PBR_NEUTRAL 3u
 
-// sRGB => XYZ => D65_2_D60 => AP1 => RRT_SAT
-const mat3 ACESInputMat = mat3
-(
-    0.59719, 0.07600, 0.02840,
-    0.35458, 0.90834, 0.13383,
-    0.04823, 0.01566, 0.83777
-);
-
-// ODT_SAT => XYZ => D60_2_D65 => sRGB
-const mat3 ACESOutputMat = mat3
-(
-    1.60475, -0.10208, -0.00327,
-    -0.53108,  1.10813, -0.07276,
-    -0.07367, -0.00605,  1.07602
-);
-
 // ACES tone map (faster approximation)
 // see: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
 vec3 toneMapACES_Narkowicz(vec3 color)
@@ -109,6 +93,23 @@ vec3 RRTAndODTFit(vec3 color)
 // see https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
 vec3 toneMapACES_Hill(vec3 color)
 {
+
+    // sRGB => XYZ => D65_2_D60 => AP1 => RRT_SAT
+    const mat3 ACESInputMat = mat3
+    (
+        0.59719, 0.07600, 0.02840,
+        0.35458, 0.90834, 0.13383,
+        0.04823, 0.01566, 0.83777
+    );
+
+    // ODT_SAT => XYZ => D60_2_D65 => sRGB
+    const mat3 ACESOutputMat = mat3
+    (
+        1.60475, -0.10208, -0.00327,
+        -0.53108,  1.10813, -0.07276,
+        -0.07367, -0.00605,  1.07602
+    );
+
     color = mul(color, ACESInputMat);
 
     // Apply RRT and ODT
