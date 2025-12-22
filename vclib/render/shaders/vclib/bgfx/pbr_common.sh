@@ -684,8 +684,8 @@ vec4 pbrColorLights(
     // add emissive component
     finalColor += emissive;
 
-    // tone mapping - Reinhard operator
-    //finalColor = finalColor / (finalColor + vec3(1.0, 1.0, 1.0));
+    // tone mapping 
+    finalColor = toneMap(finalColor, TONEMAP_ACES_HILL);
 
     // gamma correction
     finalColor = gammaCorrect(finalColor);
