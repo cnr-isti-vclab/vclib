@@ -110,5 +110,5 @@ int main(int argc, char** argv)
         std::cout << "------------------------" << std::endl;
     }
 
-    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes), true, VCLIB_ASSETS_PATH "/uffizi.hdr");
+    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes), true, VCLIB_ASSETS_PATH "/uffizi.exr");
 }

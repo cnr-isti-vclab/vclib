@@ -181,7 +181,7 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 
     using enum bimg::TextureFormat::Enum;
 
-	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, RGBA32F, &err); 
+	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, Count, &err); 
 
 	bx::free(&bxAlignedAllocator, inputData);
 
@@ -224,11 +224,9 @@ void Environment::setTextures()
     {
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
-            mImage->m_data,
-            Point2i(mImage->m_width, mImage->m_height),
+            mImage,
             false,
-            BGFX_TEXTURE_NONE,
-            bgfx::TextureFormat::RGBA32F
+            BGFX_TEXTURE_NONE
         );
         mHdrTexture = std::move(hdrTexture);
     }
@@ -245,14 +243,20 @@ void Environment::setTextures()
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT;
 
     auto cubemapTexture = std::make_unique<Texture>();
-    cubemapTexture->set(
-        mImage->m_cubeMap? mImage->m_data : nullptr,
-        Point2i(mCubeSide, mCubeSide),
-        true,   // has mips
-        cubemapTextureFlags,
-        bgfx::TextureFormat::RGBA32F,
-        true    // is cubemap
-    );
+    mImage->m_cubeMap? 
+        cubemapTexture->set(
+            mImage,
+            true,   // has mips
+            cubemapTextureFlags
+        ):
+        cubemapTexture->set(
+            nullptr,
+            Point2i(mCubeSide, mCubeSide),
+            true,
+            cubemapTextureFlags,
+            bgfx::TextureFormat::RGBA32F,
+            true // is cubemap
+        );
     mCubeMapTexture = std::move(cubemapTexture);
 
     auto irradianceTexture = std::make_unique<Texture>();

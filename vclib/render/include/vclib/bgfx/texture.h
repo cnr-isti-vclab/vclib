@@ -130,6 +130,70 @@ public:
      */
     bool isValid() const { return bgfx::isValid(mTextureHandle); }
 
+
+    void set(
+        bimg::ImageContainer *image,
+        bool                  generateMips,
+        uint64_t              flags)
+    {
+
+        const bool imageHasMips = image->m_numMips > 1;
+        const bool hasMips = generateMips || imageHasMips;
+
+        const uint32_t size = bimg::imageGetSize(
+            nullptr,
+            image->m_width,
+            image->m_height,
+            image->m_depth,
+            image->m_cubeMap,
+            hasMips,
+            image->m_numLayers,
+            image->m_format
+        );
+
+        auto [buffer, rf] =
+            getAllocatedBufferAndReleaseFn<uint8_t>(size);
+
+        const uint32_t bytesToCopy = 
+            !generateMips || imageHasMips?
+            image->m_size:
+            size;
+
+        const uint8_t* imageData = (uint8_t*) image->m_data;
+        
+        std::copy(imageData, imageData + bytesToCopy, buffer);
+
+        const bgfx::Memory *data = bgfx::makeRef(
+            buffer,
+            size,
+            rf,
+            image
+        );
+
+        if (bgfx::isValid(mTextureHandle))
+            bgfx::destroy(mTextureHandle);
+
+        if(image->m_cubeMap)
+            mTextureHandle = bgfx::createTextureCube(
+                image->m_width,
+                hasMips,
+                image->m_numLayers,
+                bgfx::TextureFormat::Enum(image->m_format),
+                flags,
+                data
+            );
+        else // assume no 3d textures
+            mTextureHandle = bgfx::createTexture2D(
+                image->m_width,
+                image->m_height,
+                hasMips,
+                image->m_numLayers,
+                bgfx::TextureFormat::Enum(image->m_format),
+                flags,
+                data
+            );
+    }
+
     /**
      * @brief Creates a 2D texture from raw pixel data.
      *
@@ -295,6 +359,18 @@ public:
             flags |= BGFX_SAMPLER_V_MIRROR;
 
         return flags;
+    }
+
+    private:
+
+    template<typename T>
+    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
+    {
+        T* buffer = new T[size];
+
+        return std::make_pair(buffer, [](void* ptr, void*) {
+            delete[] static_cast<T*>(ptr);
+        });
     }
 };
 
