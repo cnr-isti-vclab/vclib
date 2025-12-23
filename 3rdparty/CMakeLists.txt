@@ -82,7 +82,12 @@ if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
 endif()
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
-    #VCG
+    # embree
+    option(VCLIB_ALLOW_SYSTEM_EMBREE
+        "Allow use of system-provided Embree" ON)
+    include(embree.cmake)
+
+    # VCG
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
     option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
     include(vcg.cmake)
