@@ -194,7 +194,6 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
         )
     ) // file is neither a cubemap nor an equirectangular map
     {
-        bimg::imageFree(output);
         return nullptr;
     }
 
@@ -225,7 +224,7 @@ void Environment::setTextures()
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
             mImage,
-            false,
+            false,      // has mips
             BGFX_TEXTURE_NONE
         );
         mHdrTexture = std::move(hdrTexture);
@@ -252,10 +251,10 @@ void Environment::setTextures()
         cubemapTexture->set(
             nullptr,
             Point2i(mCubeSide, mCubeSide),
-            true,
+            true,   // has mips
             cubemapTextureFlags,
             bgfx::TextureFormat::RGBA32F,
-            true // is cubemap
+            true    // is cubemap
         );
     mCubeMapTexture = std::move(cubemapTexture);
 
