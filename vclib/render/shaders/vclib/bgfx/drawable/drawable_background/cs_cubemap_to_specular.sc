@@ -73,13 +73,14 @@ void main()
         vec3 H = sample.xyz;
         float pdf = sample.w;
 
-        float mipLevel = computeLod(pdf, sourceResolution, float(SAMPLE_COUNT)); //TODO: see if a bias is needed
+        float mipLevel = computeLod(pdf, sourceResolution, float(SAMPLE_COUNT));
 
         vec3 L = normalize(reflect(-V, H));
         float NoL = dot(N, L);
 
         if(NoL > 0.0)
         {
+            if(roughness == 0.0) mipLevel = 0.6; // mip level 0 is too high
             vec3 sampleColor = textureCubeLod(s_env0, L, mipLevel).rgb;
             prefilteredColor += sampleColor * NoL;
             totalWeight += NoL;
