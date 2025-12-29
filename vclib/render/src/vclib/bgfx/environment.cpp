@@ -142,6 +142,8 @@ Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)
         return EXR;
     if(imagePath.find(".ktx", imagePath.length() - 4) != std::string::npos)
         return KTX;
+    if(imagePath.find(".dds", imagePath.length() - 4) != std::string::npos)
+        return DDS;
     return UNKNOWN;
 }
 
@@ -181,7 +183,7 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 
     using enum bimg::TextureFormat::Enum;
 
-	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, Count, &err); 
+	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, RGBA32F, &err); 
 
 	bx::free(&bxAlignedAllocator, inputData);
 

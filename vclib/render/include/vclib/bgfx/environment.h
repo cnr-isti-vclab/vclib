@@ -79,7 +79,8 @@ class Environment
         UNKNOWN,
         HDR,
         EXR,
-        KTX //, DDS?
+        KTX,
+        DDS
     };
 
     FileFormat mSourceFormat = FileFormat::UNKNOWN;
