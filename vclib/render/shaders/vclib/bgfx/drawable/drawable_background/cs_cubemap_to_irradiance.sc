@@ -51,7 +51,7 @@ void main()
     uv = uv * 2.0 - 1.0;
 
     // Get direction corresponding to cubemap face pixel
-    vec3 dir = faceDirection(uint(face), uv, true);
+    vec3 dir = faceDirection(uint(face), uv, false);
 
     vec3 normal = normalize(dir);
 
@@ -72,7 +72,7 @@ void main()
 
         float mipLevel = computeLod(pdf, sourceResolution, float(SAMPLE_COUNT)); //TODO: see if a bias is needed
 
-        vec3 lambertian = textureCubeLod(s_env0, H, mipLevel).rgb;
+        vec3 lambertian = textureCubeLod(s_env0, leftHand(H), mipLevel).rgb;
 
         // the below operations cancel each other out
         // lambertian *= NdotH; // lamberts law

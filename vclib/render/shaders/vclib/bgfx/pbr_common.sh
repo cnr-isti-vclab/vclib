@@ -70,6 +70,24 @@
 #define TONEMAP_ACES_HILL           2u
 #define TONEMAP_KHRONOS_PBR_NEUTRAL 3u
 
+float solidAngle00ToUv(vec2 uv)
+{
+    return atan2(uv.x * uv.y, sqrt(uv.x * uv.x + uv.y * uv.y + 1.0));
+}
+
+float solidAngle(vec2 uv, float invSize)
+{
+    vec2 A = vec2(uv.x,           uv.y + invSize);
+    vec2 B = vec2(uv.x + invSize, uv.y + invSize);
+    vec2 C = vec2(uv.x + invSize, uv.y          );
+    vec2 D = vec2(uv.x          , uv.y          );
+    return 
+        solidAngle00ToUv(A) -
+        solidAngle00ToUv(B) +
+        solidAngle00ToUv(C) -
+        solidAngle00ToUv(D);
+}
+
 // ACES tone map (faster approximation)
 // see: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
 vec3 toneMapACES_Narkowicz(vec3 color)
@@ -342,32 +360,36 @@ vec3 importanceSampleGGX(vec2 Xi, vec3 N, float roughness)
     return normalize(sampleVec);
 }  
 
+vec3 leftHand(vec3 rightHand)
+{
+    return vec3(rightHand.x, rightHand.y, -rightHand.z);
+}
+
 // Cubemap face directions
 // uv in range [-1,1]
-vec3 faceDirection(int face, vec2 uv, bool secondWrite)
+vec3 faceDirection(int face, vec2 uv, bool fromHdr)
 {
-
-    if(secondWrite)
+    if(fromHdr) // flip Y
     {
         switch(face)
         {
-            case 0: return normalize(vec3(  1.0, -uv.y,  uv.x));  // +X
-            case 1: return normalize(vec3( -1.0, -uv.y, -uv.x));  // -X
-            case 2: return normalize(vec3( uv.x,   1.0, -uv.y));  // +Y
-            case 3: return normalize(vec3( uv.x,  -1.0,  uv.y));  // -Y
-            case 4: return normalize(vec3( uv.x, -uv.y,  -1.0));  // -Z
-            case 5: return normalize(vec3(-uv.x, -uv.y,   1.0));  // +Z
+            case 0: return normalize(vec3(-uv.x, uv.y,   1.0));  // +Z
+            case 1: return normalize(vec3( uv.x, uv.y,  -1.0));  // -Z
+            case 2: return normalize(vec3( uv.y, -1.0,  uv.x));  // +Y
+            case 3: return normalize(vec3(-uv.y,  1.0,  uv.x));  // -Y
+            case 4: return normalize(vec3(  1.0, uv.y,  uv.x));  // +X
+            case 5: return normalize(vec3( -1.0, uv.y, -uv.x));  // -X
             default: return vec3_splat(0.0);
         }
     }
     else switch(face)
     {
-        case 0: return normalize(vec3(-uv.x, uv.y,   1.0));  // +Z
-        case 1: return normalize(vec3( uv.x, uv.y,  -1.0));  // -Z
-        case 2: return normalize(vec3( uv.y, -1.0,  uv.x));  // +Y
-        case 3: return normalize(vec3(-uv.y,  1.0,  uv.x));  // -Y
-        case 4: return normalize(vec3(  1.0, uv.y,  uv.x));  // +X
-        case 5: return normalize(vec3( -1.0, uv.y, -uv.x));  // -X
+        case 0: return normalize(vec3(  1.0, -uv.y,  uv.x));  // +X
+        case 1: return normalize(vec3( -1.0, -uv.y, -uv.x));  // -X
+        case 2: return normalize(vec3( uv.x,   1.0, -uv.y));  // +Y
+        case 3: return normalize(vec3( uv.x,  -1.0,  uv.y));  // -Y
+        case 4: return normalize(vec3( uv.x, -uv.y,  -1.0));  // +Z
+        case 5: return normalize(vec3(-uv.x, -uv.y,   1.0));  // -Z
         default: return vec3_splat(0.0);
     }
 }

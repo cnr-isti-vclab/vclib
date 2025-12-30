@@ -165,12 +165,12 @@ void main()
         vec3 f90 = vec3_splat(1.0);
 
         // diffuse light
-        vec3 diffuseLight = textureCube(s_irradiance, normal).rgb;
+        vec3 diffuseLight = textureCube(s_irradiance, leftHand(normal)).rgb;
 
         // specular light
         float specularMipLevel = roughness * (specularMipCount - 1.0);
         vec3 reflection = normalize(reflect(-V, normal));
-        vec3 specularLight = textureCubeLod(s_specular, reflection, specularMipLevel).rgb;
+        vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
 
         // Fresnel
         vec2 brdf = texture2D(s_brdf_lut, vec2(NoV, roughness)).rg;

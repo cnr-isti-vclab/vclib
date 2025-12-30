@@ -34,7 +34,7 @@ void main()
 
     // cubemaps are left-handed, so invert the Z coordinate 
     // to adapt to our right-handed system
-    v_texcoord0 = vec3(worldViewDir.x, worldViewDir.y, -worldViewDir.z);
+    v_texcoord0 = leftHand(worldViewDir);
 
     // draw the triangle in screen space
     gl_Position = position;

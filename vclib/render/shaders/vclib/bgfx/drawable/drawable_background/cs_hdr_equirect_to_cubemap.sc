@@ -48,7 +48,7 @@ void main()
     uv = uv * 2.0 - 1.0;
 
     // Get direction corresponding to cubemap face pixel
-    vec3 dir = faceDirection(uint(face), uv, false);
+    vec3 dir = faceDirection(uint(face), uv, true);
 
     // Convert to lat-long UV
     vec2 equiUV = dirToEquirectUV(dir);
