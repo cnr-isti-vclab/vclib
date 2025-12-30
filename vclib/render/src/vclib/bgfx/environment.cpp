@@ -219,7 +219,7 @@ void Environment::setTextures()
         bimg::TextureFormat::RGBA32F,
         mSpecularCubeSide,
         mSpecularCubeSide
-    );
+    ) / 2; // ignore too low mips
 
     if(!mImage->m_cubeMap) // equirect
     {
