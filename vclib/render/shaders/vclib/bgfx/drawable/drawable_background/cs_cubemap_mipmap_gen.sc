@@ -50,42 +50,28 @@ void main()
 
     float invPrevSize = 1.0 / (size * 2.0);
 
-    ivec3 prev0 = ivec3(prevCoord.x,     prevCoord.y,     face);
-    ivec3 prev1 = ivec3(prevCoord.x + 1, prevCoord.y,     face);
-    ivec3 prev2 = ivec3(prevCoord.x,     prevCoord.y + 1, face);
-    ivec3 prev3 = ivec3(prevCoord.x + 1, prevCoord.y + 1, face);
+    vec4 newColor = vec4_splat(0.0);
 
-    vec2 uv0 = prev0.xy * invPrevSize * 2.0 - 1.0;
-    vec2 uv1 = prev1.xy * invPrevSize * 2.0 - 1.0;
-    vec2 uv2 = prev2.xy * invPrevSize * 2.0 - 1.0;
-    vec2 uv3 = prev3.xy * invPrevSize * 2.0 - 1.0;
+    float totalWeight = 0.0;
 
-    vec2 uvCenter0 = (prev0.xy + 0.5) * invPrevSize * 2.0 - 1.0;
-    vec2 uvCenter1 = (prev1.xy + 0.5) * invPrevSize * 2.0 - 1.0;
-    vec2 uvCenter2 = (prev2.xy + 0.5) * invPrevSize * 2.0 - 1.0;
-    vec2 uvCenter3 = (prev3.xy + 0.5) * invPrevSize * 2.0 - 1.0;    
-    
-    float weight0 = solidAngle(uv0, invPrevSize * 2.0);
-    float weight1 = solidAngle(uv1, invPrevSize * 2.0);
-    float weight2 = solidAngle(uv2, invPrevSize * 2.0);
-    float weight3 = solidAngle(uv3, invPrevSize * 2.0);
+    for(uint i = 0; i < 4; i++)
+    {
+        ivec3 prev = ivec3(prevCoord.x + (i % 2), prevCoord.y + int(i > 1), face);
 
-    vec3 dir0 = faceDirection(face, uvCenter0, false);    
-    vec3 dir1 = faceDirection(face, uvCenter1, false);    
-    vec3 dir2 = faceDirection(face, uvCenter2, false);
-    vec3 dir3 = faceDirection(face, uvCenter3, false);
+        vec2 uv = vec2(prev.xy) * vec2_splat(invPrevSize) * vec2(2.0, 2.0) - vec2(1.0, 1.0);
 
-    vec4 newColor = (
-        textureCubeLod(s_env0, leftHand(dir0), prevMip) * weight0 +
-        textureCubeLod(s_env0, leftHand(dir1), prevMip) * weight1 +
-        textureCubeLod(s_env0, leftHand(dir2), prevMip) * weight2 +
-        textureCubeLod(s_env0, leftHand(dir3), prevMip) * weight3
-    ) / (
-        weight0 +
-        weight1 +
-        weight2 +
-        weight3
-    );
+        vec2 uvCenter = (vec2(prev.xy) + vec2(0.5, 0.5)) * vec2_splat(invPrevSize) * vec2(2.0, 2.0) - vec2(1.0, 1.0);
+
+        float weight = solidAngle(uv, invPrevSize * 2.0);
+
+        vec3 dir = faceDirection(face, uvCenter, false);
+
+        newColor += textureCubeLod(s_env0, leftHand(dir), prevMip) * vec4_splat(weight);
+
+        totalWeight += weight;
+    }
+
+    newColor /= vec4_splat(totalWeight);
 
     imageStore(u_nextMip, ivec3(pixel.x, pixel.y, face), newColor);
 }
