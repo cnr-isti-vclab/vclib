@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -144,7 +144,7 @@ void readPlyFaceProperty(
         // will manage the case of loading a polygon in a triangle mesh
         setPlyFaceIndices(f, mesh, vids);
     }
-    if (p.name == ply::texcoord) { // loading wedge texcoords
+    else if (p.name == ply::texcoord) { // loading wedge texcoords
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
             if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;
@@ -164,7 +164,7 @@ void readPlyFaceProperty(
         }
     }
     // loading texture id associated to ALL the wedges
-    if (p.name == ply::texnumber) {
+    else if (p.name == ply::material_index) {
         if constexpr (HasPerFaceMaterialIndex<MeshType>) {
             if (isPerFaceMaterialIndexAvailable(mesh)) {
                 uint n      = io::readPrimitiveType<uint>(file, p.type, end);
@@ -178,7 +178,7 @@ void readPlyFaceProperty(
         }
     }
     // loading one of the normal components
-    if (p.name >= ply::nx && p.name <= ply::nz) {
+    else if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (HasPerFaceNormal<MeshType>) {
             if (isPerFaceNormalAvailable(mesh)) {
                 using Scalar = FaceType::NormalType::ScalarType;
@@ -194,7 +194,7 @@ void readPlyFaceProperty(
         }
     }
     // loading one of the color components
-    if (p.name >= ply::red && p.name <= ply::alpha) {
+    else if (p.name >= ply::red && p.name <= ply::alpha) {
         if constexpr (HasPerFaceColor<MeshType>) {
             if (isPerFaceColorAvailable(mesh)) {
                 int           a = p.name - ply::red;
@@ -209,7 +209,7 @@ void readPlyFaceProperty(
             }
         }
     }
-    if (p.name == ply::quality) { // loading the quality component
+    else if (p.name == ply::quality) { // loading the quality component
         if constexpr (HasPerFaceQuality<MeshType>) {
             using QualityType = FaceType::QualityType;
             if (isPerFaceQualityAvailable(mesh)) {
@@ -224,7 +224,7 @@ void readPlyFaceProperty(
             }
         }
     }
-    if (p.name == ply::unknown) {
+    else if (p.name == ply::unknown) {
         if constexpr (HasPerFaceCustomComponents<MeshType>) {
             if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)) {
                 io::readCustomComponent(
@@ -237,7 +237,7 @@ void readPlyFaceProperty(
     // we still need to read and discard what we read
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::readPrimitiveType<int>(file, p.listSizeType, end);
+            uint s = io::readPrimitiveType<uint>(file, p.listSizeType, end);
             for (uint i = 0; i < s; ++i)
                 io::readPrimitiveType<int>(file, p.type, end);
         }
@@ -305,27 +305,27 @@ void writePlyFaces(
                 detail::writePlyFaceIndices(file, p, mesh, vIndices, f, format);
                 hasBeenWritten = true;
             }
-            if (p.name >= ply::nx && p.name <= ply::nz) {
+            else if (p.name >= ply::nx && p.name <= ply::nz) {
                 if constexpr (HasPerFaceNormal<MeshType>) {
                     io::writeProperty(
                         file, f.normal()[p.name - ply::nx], p.type, format);
                     hasBeenWritten = true;
                 }
             }
-            if (p.name >= ply::red && p.name <= ply::alpha) {
+            else if (p.name >= ply::red && p.name <= ply::alpha) {
                 if constexpr (HasPerFaceColor<MeshType>) {
                     io::writeProperty(
                         file, f.color()[p.name - ply::red], p.type, format);
                     hasBeenWritten = true;
                 }
             }
-            if (p.name == ply::quality) {
+            else if (p.name == ply::quality) {
                 if constexpr (HasPerFaceQuality<MeshType>) {
                     io::writeProperty(file, f.quality(), p.type, format);
                     hasBeenWritten = true;
                 }
             }
-            if (p.name == ply::texcoord) {
+            else if (p.name == ply::texcoord) {
                 if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                     io::writeProperty(
                         file, f.vertexNumber() * 2, p.listSizeType, format);
@@ -336,13 +336,13 @@ void writePlyFaces(
                     hasBeenWritten = true;
                 }
             }
-            if (p.name == ply::texnumber) {
+            else if (p.name == ply::material_index) {
                 if constexpr (HasPerFaceMaterialIndex<MeshType>) {
                     io::writeProperty(file, f.materialIndex(), p.type, format);
                     hasBeenWritten = true;
                 }
             }
-            if (p.name == ply::unknown) {
+            else if (p.name == ply::unknown) {
                 if constexpr (HasPerFaceCustomComponents<MeshType>) {
                     if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)) {
                         io::writeCustomComponent(

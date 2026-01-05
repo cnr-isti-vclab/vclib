@@ -89,13 +89,9 @@ class CustomBDistWheel(bdist_wheel):
 
 inst_req = [
     "numpy>=2.0",
-    "pyqt6==6.8"
+    "pyqt6==6.8",
+    "msvc-runtime ; platform_system == 'Windows'",
 ]
-
-# if on windows, add msvc-runtime as dependency
-osused = platform.system()
-if osused == 'Windows':
-    inst_req.append('msvc-runtime')
 
 setup(
     name="vclib",
