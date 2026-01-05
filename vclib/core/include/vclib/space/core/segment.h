@@ -110,9 +110,12 @@ public:
         return (mPoint1 - mPoint0).normalize();
     }
 
-    ScalarType length() const { (mPoint0 - mPoint1).norm(); }
+    ScalarType length() const { return (mPoint0 - mPoint1).norm(); }
 
-    ScalarType squaredLength() const { (mPoint0 - mPoint1).squaredNorm(); }
+    ScalarType squaredLength() const
+    {
+        return (mPoint0 - mPoint1).squaredNorm();
+    }
 
     void flip() { std::swap(mPoint0, mPoint1); }
 
