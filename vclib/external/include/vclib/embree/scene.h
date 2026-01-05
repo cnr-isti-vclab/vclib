@@ -1,0 +1,159 @@
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2026                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
+#ifndef VCL_EMBREE_SCENE_H
+#define VCL_EMBREE_SCENE_H
+
+#include <embree4/rtcore.h>
+
+#include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
+#include <vclib/space/complex.h>
+
+namespace vcl::embree {
+
+class Scene
+{
+    RTCDevice mDevice = rtcNewDevice(nullptr);
+    RTCScene  mScene  = rtcNewScene(mDevice);
+
+    TriPolyIndexBiMap mIndexMap;
+
+public:
+
+    Scene() = default;
+
+    ~Scene()
+    {
+        rtcReleaseScene(mScene);
+        rtcReleaseDevice(mDevice);
+    }
+
+    template<FaceMeshConcept MeshType>
+    Scene(const MeshType& m)
+    {
+        // TODO: manage RAII here
+
+        RTCGeometry geometry =
+            rtcNewGeometry(mDevice, RTC_GEOMETRY_TYPE_TRIANGLE);
+
+        float* vb = (float*) rtcSetNewGeometryBuffer(
+            geometry,
+            RTC_BUFFER_TYPE_VERTEX,
+            0,
+            RTC_FORMAT_FLOAT3,
+            3 * sizeof(float),
+            m.vertexNumber());
+
+        vertexPositionsToBuffer(m, vb);
+
+        uint numTris = vcl::countTriangulatedTriangles(m);
+
+        uint* ib = (uint*) rtcSetNewGeometryBuffer(
+            geometry,
+            RTC_BUFFER_TYPE_INDEX,
+            0,
+            RTC_FORMAT_UINT3,
+            3 * sizeof(unsigned),
+            numTris);
+
+        triangulatedFaceVertexIndicesToBuffer(
+            m, ib, mIndexMap, MatrixStorageType::ROW_MAJOR, numTris);
+
+        rtcCommitGeometry(geometry);
+        rtcAttachGeometry(mScene, geometry);
+        rtcCommitScene(mScene);
+
+        rtcReleaseGeometry(geometry);
+    }
+
+    // delete copy constructor and copy assignment operator
+    Scene(const Scene&) = delete;
+    Scene& operator=(const Scene&) = delete;
+
+    // move constructor
+    Scene(Scene&& other) noexcept
+    {
+        swap(other);
+    }
+
+    // move assignment operator
+    Scene& operator=(Scene&& other) noexcept
+    {
+        swap(other);
+        return *this;
+    }
+
+    void swap(Scene& other)
+    {
+        using std::swap;
+        swap(mDevice, other.mDevice);
+        swap(mScene, other.mScene);
+    }
+
+    friend void swap(Scene& a, Scene& b) { a.swap(b); }
+
+    template<Point3Concept PointType>
+    uint firstFaceIntersectedBySegment(
+        const Segment<PointType>& segment) const
+    {
+        RTCRayHit rayhit = initRayHitValues(
+            segment.p0(), segment.direction(), 0.f, segment.length());
+
+        rtcIntersect1(mScene, &rayhit);
+
+        if (rayhit.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
+            return mIndexMap.polygon(rayhit.hit.primID);
+        }
+        else {
+            return UINT_NULL;
+        }
+    }
+
+private:
+    template<Point3Concept PointType>
+    static inline RTCRayHit initRayHitValues(
+        const PointType& origin,
+        const PointType& direction,
+        float            tnear = 0.f,
+        float            tfar = std::numeric_limits<float>::infinity())
+    {
+        RTCRayHit rayhit;
+        rayhit.ray.org_x = origin.x();
+        rayhit.ray.org_y = origin.y();
+        rayhit.ray.org_z = origin.z();
+        rayhit.ray.dir_x = direction.x();
+        rayhit.ray.dir_y = direction.y();
+        rayhit.ray.dir_z = direction.z();
+        rayhit.ray.tnear = tnear;
+        rayhit.ray.tfar  = tfar;
+        rayhit.ray.mask   = -1;
+        rayhit.ray.flags = 0;
+        rayhit.hit.geomID = RTC_INVALID_GEOMETRY_ID;
+        rayhit.hit.instID[0] = RTC_INVALID_GEOMETRY_ID;
+        return rayhit;
+    }
+};
+
+} // namespace vcl::embree
+
+#endif // VCL_EMBREE_SCENE_H
