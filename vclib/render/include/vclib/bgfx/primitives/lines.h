@@ -24,7 +24,9 @@
 #define VCL_BGFX_PRIMITIVES_LINES_H
 
 #include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
+#include <vclib/bgfx/primitives/lines/gpu_instancing_lines.h>
 #include <vclib/bgfx/primitives/lines/primitive_lines.h>
+
 #include <vclib/bgfx/uniform.h>
 
 #include <vclib/base.h>
@@ -62,11 +64,12 @@ public:
     };
 
     enum class ImplementationType {
-        PRIMITIVE     = 0, // Use bgfx primitive lines (not implemented)
-        CPU_GENERATED = 1, // Buffers pre-generated in CPU
+        PRIMITIVE      = 0, // Use bgfx primitive lines (not implemented)
+        CPU_GENERATED  = 1, // Buffers pre-generated in CPU
+        GPU_INSTANCING = 2, // Using Instancing with buffer generated in GPU
+                            // computes
 
         // TODO: uncomment when they will be implemented
-        // GPU_GENERATED,     // Buffers pre-generated in GPU with computes
         // CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
         // GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
         //                    // computes
@@ -77,6 +80,11 @@ public:
     };
 
 private:
+    using LinesImplementation = std::variant<
+        detail::PrimitiveLines,
+        detail::CPUGeneratedLines,
+        detail::GPUInstancingLines>;
+
     float mThickness = 5.0f;
 
     // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
@@ -92,8 +100,7 @@ private:
     ImplementationType mType = ImplementationType::COUNT;
 
     Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
-    std::variant<detail::PrimitiveLines, detail::CPUGeneratedLines>
-        mLinesImplementation;
+    LinesImplementation mLinesImplementation;
 
 public:
     /**
@@ -210,6 +217,41 @@ public:
         setColorToUse(colorToUse);
     }
 
+    Lines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals,
+        const VertexBuffer& vertexColors ,
+        const IndexBuffer&  lineColors,
+        float                     thickness        = 5.0f,
+        bool                      shadingPerVertex = false,
+        ColorToUse                colorToUse       = ColorToUse::GENERAL,
+        ImplementationType        type = ImplementationType::COUNT) :
+            mThickness(thickness)
+    {
+        setPoints(pointsSize, vertexCoords, vertexNormals, vertexColors, lineColors, type);
+        setShading(shadingPerVertex);
+        setColorToUse(colorToUse);
+    }
+
+    Lines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals,
+        const VertexBuffer& vertexColors,
+        const IndexBuffer&  lineColors,
+        float                     thickness        = 5.0f,
+        bool                      shadingPerVertex = false,
+        ColorToUse                colorToUse       = ColorToUse::GENERAL,
+        ImplementationType        type = ImplementationType::COUNT) :
+            mThickness(thickness)
+    {
+        setPoints(pointsSize, vertexCoords, lineIndices, vertexNormals, vertexColors, lineColors, type);
+        setShading(shadingPerVertex);
+        setColorToUse(colorToUse);
+    }
+
     /**
      * @brief Sets the points of the lines.
      *
@@ -255,6 +297,11 @@ public:
 
         case CPU_GENERATED: // always supported
             std::get<CPUGeneratedLines>(mLinesImplementation)
+                .setPoints(vertCoords, vertNormals, vertColors, lineColors);
+            break;
+
+        case GPU_INSTANCING:
+            std::get<detail::GPUInstancingLines>(mLinesImplementation)
                 .setPoints(vertCoords, vertNormals, vertColors, lineColors);
             break;
         default: break;
@@ -322,10 +369,72 @@ public:
                     vertColors,
                     lineColors);
             break;
+
+        case GPU_INSTANCING:
+            std::get<detail::GPUInstancingLines>(mLinesImplementation)
+                .setPoints(
+                    vertCoords,
+                    lineIndices,
+                    vertNormals,
+                    vertColors,
+                    lineColors);
+            break;
         default: break;
         }
         updateShadingCapability(vertNormals);
         updateColorCapability(vertColors, lineColors);
+    }
+
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer(),
+        ImplementationType  type          = ImplementationType::COUNT)
+    {
+        IndexBuffer emptyIndices;
+        setPoints(
+            pointsSize,
+            vertexCoords,
+            emptyIndices,
+            vertexNormals,
+            vertexColors,
+            lineColors,
+            type);
+    }
+
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer(),
+        ImplementationType  type          = ImplementationType::COUNT)
+    {
+        using enum ImplementationType;
+        using namespace detail;
+
+        if (type == COUNT)
+            type = ImplementationType::GPU_INSTANCING;
+        setImplementationType(type);
+
+        switch (mType) {
+        case GPU_INSTANCING:
+            std::get<detail::GPUInstancingLines>(mLinesImplementation)
+                .setPoints(
+                    pointsSize,
+                    vertexCoords,
+                    lineIndices,
+                    vertexNormals,
+                    vertexColors,
+                    lineColors);
+            break;
+        default: break;
+        }
+        updateShadingCapability(vertexNormals);
+        updateColorCapability(vertexColors, lineColors);
     }
 
     /**
@@ -435,6 +544,9 @@ public:
 
         if (mType == CPU_GENERATED)
             std::get<CPUGeneratedLines>(mLinesImplementation).draw(viewId);
+
+        if (mType == GPU_INSTANCING)
+            std::get<GPUInstancingLines>(mLinesImplementation).draw(viewId);
     }
 
 private:
@@ -463,8 +575,6 @@ private:
         if (mType == type)
             return false; // no change
 
-        // TODO: check whether caps allow the new implementation type
-        // then set the implementation and the type
         switch (type) {
         case PRIMITIVE: // always supported
             mLinesImplementation = detail::PrimitiveLines();
@@ -473,6 +583,11 @@ private:
 
         case CPU_GENERATED: // always supported
             mLinesImplementation = detail::CPUGeneratedLines();
+            mType                = type;
+            return true;
+
+        case GPU_INSTANCING:
+            mLinesImplementation = detail::GPUInstancingLines();
             mType                = type;
             return true;
 
@@ -495,6 +610,26 @@ private:
 
         mColorCapability[toUnderlying(PER_VERTEX)] = !vertColors.empty();
         mColorCapability[toUnderlying(PER_EDGE)]   = !lineColors.empty();
+
+        if (!mColorCapability[toUnderlying(mColorToUse)])
+            mColorToUse = GENERAL;
+    }
+
+    void updateShadingCapability(const VertexBuffer& vertexNormals)
+    {
+        mShadingPerVertexCapability = vertexNormals.isValid();
+        if (!mShadingPerVertexCapability)
+            mShadingPerVertex = false;
+    }
+
+    void updateColorCapability(
+        const VertexBuffer& vertexColors,
+        const IndexBuffer&  lineColors)
+    {
+        using enum ColorToUse;
+
+        mColorCapability[toUnderlying(PER_VERTEX)] = vertexColors.isValid();
+        mColorCapability[toUnderlying(PER_EDGE)]   = lineColors.isValid();
 
         if (!mColorCapability[toUnderlying(mColorToUse)])
             mColorToUse = GENERAL;
