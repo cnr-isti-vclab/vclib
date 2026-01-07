@@ -38,6 +38,7 @@
 #include "core/polygon.h"
 #include "core/principal_curvature.h"
 #include "core/quaternion.h"
+#include "core/ray.h"
 #include "core/segment.h"
 #include "core/sphere.h"
 #include "core/tex_coord.h"
