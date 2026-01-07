@@ -20,13 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_IO_CAMERA_GLTF_LOAD_H
-#define VCL_RENDER_IO_CAMERA_GLTF_LOAD_H
+#ifndef VCL_IO_CAMERA_GLTF_LOAD_H
+#define VCL_IO_CAMERA_GLTF_LOAD_H
 
 #include <vclib/io/file_info.h>
 
-#include <vclib/render/concepts/camera.h>
-#include <vclib/render/viewer/camera.h>
+#include <vclib/space/core.h>
 
 #include <tiny_gltf.h>
 
@@ -182,4 +181,4 @@ inline CameraType loadCameraGltf(
 
 } // namespace vcl
 
-#endif // VCL_RENDER_IO_CAMERA_GLTF_LOAD_H
+#endif // VCL_IO_CAMERA_GLTF_LOAD_H

@@ -24,6 +24,7 @@
 #define VCL_BINDINGS_CORE_SPACE_CORE_H
 
 #include "core/box.h"
+#include "core/camera.h"
 #include "core/color.h"
 #include "core/histogram.h"
 #include "core/image.h"
@@ -48,6 +49,7 @@ inline void initCore(pybind11::module& m)
     initPoint(m);
 
     initBox(m);
+    initCamera(m);
     initColor(m);
     initHistogram(m);
     initImage(m);
