@@ -112,12 +112,14 @@ public:
 
     friend void swap(Scene& a, Scene& b) { a.swap(b); }
 
-    template<Point3Concept PointType>
-    uint firstFaceIntersectedBySegment(
-        const Segment<PointType>& segment) const
+    template<typename ScalarType>
+    uint firstFaceIntersectedByRay(
+        const Point3<ScalarType>& origin,
+        const Point3<ScalarType>& direction,
+        float near = 0.f,
+        float far = std::numeric_limits<float>::infinity()) const
     {
-        RTCRayHit rayhit = initRayHitValues(
-            segment.p0(), segment.direction(), 0.f, segment.length());
+        RTCRayHit rayhit = initRayHitValues(origin, direction, near, far);
 
         rtcIntersect1(mScene, &rayhit);
 
@@ -127,6 +129,24 @@ public:
         else {
             return UINT_NULL;
         }
+    }
+
+    template<typename ScalarType>
+    uint firstFaceIntersectedByRay(
+        const Ray3<ScalarType>& ray,
+        float near = 0.f,
+        float far = std::numeric_limits<float>::infinity()) const
+    {
+        return firstFaceIntersectedByRay(
+            ray.origin(), ray.direction(), near, far);
+    }
+
+    template<typename ScalarType>
+    uint firstFaceIntersectedBySegment(
+        const Segment3<ScalarType>& segment) const
+    {
+        return firstFaceIntersectedByRay(
+            segment.p0(), segment.direction(), 0.f, segment.length());
     }
 
 private:
