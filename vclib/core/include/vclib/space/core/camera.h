@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,15 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_CAMERA_H
-#define VCL_RENDER_VIEWER_CAMERA_H
+#ifndef VCL_SPACE_CORE_CAMERA_H
+#define VCL_SPACE_CORE_CAMERA_H
 
-#include "matrix.h"
+#include "camera/matrix.h"
 
 namespace vcl {
 
 /**
  * @brief A Pinhole camera model.
+ *
+ * @ingroup space_core
  */
 template<typename Scalar>
 class Camera
@@ -138,27 +140,107 @@ public:
 
     MatrixType viewMatrix() const
     {
-        return lookAtMatrix<MatrixType>(mEye, mCenter, mUp);
+        MatrixType res;
+        detail::lookAtMatrix(res.data(), mEye, mCenter, mUp);
+        return res;
     }
 
     MatrixType projectionMatrix() const
     {
+        MatrixType res;
         switch (mProjectionMode) {
         case ProjectionMode::ORTHO: {
             const Scalar h = mVerticalHeight / 2.0;
             const Scalar w = h * mAspect;
-            return orthoProjectionMatrix<MatrixType>(
-                -w, w, h, -h, mNear, mFar, false);
+            detail::orthoProjectionMatrix(
+                res.data(), -w, w, h, -h, mNear, mFar, false);
+            break;
         }
         case ProjectionMode::PERSPECTIVE: {
-            return vcl::projectionMatrix<MatrixType>(
-                mFovDeg, mAspect, mNear, mFar, false);
+            detail::projectionMatrix(
+                res.data(), mFovDeg, mAspect, mNear, mFar, false);
+            break;
         }
         default: assert(false); return MatrixType::Identity();
         }
+        return res;
+    }
+
+    /**
+     * @brief Serializes the camera to the given output stream.
+     * @param[in] os: The output stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        mCenter.serialize(os);
+        mEye.serialize(os);
+        mUp.serialize(os);
+        vcl::serialize(
+            os,
+            mFovDeg,
+            mProjectionMode,
+            mVerticalHeight,
+            mAspect,
+            mNear,
+            mFar);
+    }
+
+    /**
+     * @brief Deserializes the camera from the given input stream.
+     * @param[in] is: The input stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        mCenter.deserialize(is);
+        mEye.deserialize(is);
+        mUp.deserialize(is);
+        vcl::deserialize(
+            is,
+            mFovDeg,
+            mProjectionMode,
+            mVerticalHeight,
+            mAspect,
+            mNear,
+            mFar);
     }
 };
 
+/* Specialization Aliases */
+using Cameraf = Camera<float>;
+
+/* Concepts */
+
+/**
+ * @brief A concept representing a generic Camera.
+ *
+ * The concept is satisfied when `T` is a class that implements the methods
+ * `viewMatrix()` and `projectionMatrix()`, returning 4x4 matrices.
+ *
+ * @tparam T: The type to be tested for conformity to the GenericCameraConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept GenericCameraConcept = requires(T&& c) {
+    { c.viewMatrix() } -> Matrix44Concept;
+    { c.projectionMatrix() } -> Matrix44Concept;
+};
+
+/**
+ * @brief A concept representing a Camera.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a Camera class having any scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the CameraConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept CameraConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    Camera<typename RemoveRef<T>::ScalarType>>;
+
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_CAMERA_H
+#endif // VCL_SPACE_CORE_CAMERA_H
