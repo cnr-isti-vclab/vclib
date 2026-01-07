@@ -30,13 +30,38 @@ int main()
 
     PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
-    Segment<Point3d> s({0, 0.1, 0}, {2, 0.1, 0});
+    Segment<Point3d> s({0, -0.1, 0}, {2, -0.1, 0});
 
     embree::Scene scene(m);
 
-    uint faceId = scene.firstFaceIntersectedBySegment(s);
+    auto [faceId, barCoords, tId] = scene.firstFaceIntersectedBySegment(s);
 
     std::cout << "First face intersected by segment: " << faceId << "\n";
+
+    std::cout << "Barycentric coordinates of the intersection point: "
+              << barCoords << "\n";
+
+    std::cout << "Triangle ID within the face: " << tId << "\n";
+
+    std::vector<uint> triangulation = earCut(m.face(faceId));
+
+    std::cout << "Vertices of the hit triangle:\n";
+
+    uint base = tId * 3;
+    const auto& v0 = *m.face(faceId).vertex(triangulation[base + 0]);
+    const auto& v1 = *m.face(faceId).vertex(triangulation[base + 1]);
+    const auto& v2 = *m.face(faceId).vertex(triangulation[base + 2]);
+
+    std::cout << " - Vertex " << v0.index() << ": " << v0.position() << "\n";
+    std::cout << " - Vertex " << v1.index() << ": " << v1.position() << "\n";
+    std::cout << " - Vertex " << v2.index() << ": " << v2.position() << "\n";
+
+    Point3d hitPos =
+        v0.position() * barCoords.x()
+        + v1.position() * barCoords.y()
+        + v2.position() * barCoords.z();
+
+    std::cout << "Hit point position: " << hitPos << "\n";
 
     return 0;
 }
