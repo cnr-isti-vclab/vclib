@@ -110,7 +110,8 @@ public:
             0u,
             1.0f,
             0u);
-        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 4096, 4096);
+        bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, 1024, 768);
+        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1024, 768);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
@@ -118,7 +119,7 @@ public:
 
     // Box is a parameter so that if we want to subdivide the selection
     // and do multiple passes for it we can do so
-    void setVisibleTrisSelectionProjViewMatrix(SelectionBox box)
+    void setVisibleTrisSelectionProjViewMatrix(const SelectionBox& box)
     {
         using PM = Camera<float>::ProjectionMode;
 
@@ -128,25 +129,25 @@ public:
         uint    win_h  = ((DerivedRenderApp*) this)->height();
         Point4f minNDC = Point4f(
             float(box.get1().value().x()) / float(win_w) * 2.f - 1.f,
-            float(box.get1().value().y()) / float(win_h) * 2.f - 1.f,
+            1.f - float(box.get2().value().y()) / float(win_h) * 2.f,
             0.f,
             1.f);
         Point4f maxNDC = Point4f(
             float(box.get2().value().x()) / float(win_w) * 2.f - 1.f,
-            float(box.get2().value().y()) / float(win_h) * 2.f - 1.f,
-            1.f,
+            1.f - float(box.get1().value().y()) / float(win_h) * 2.f,
+            0.f,
             1.f);
         Matrix44f invProj      = TED::projectionMatrix().inverse();
         Point4f   minViewSpace = invProj * minNDC;
         Point4f   maxViewSpace = invProj * maxNDC;
         minViewSpace /= minViewSpace.w();
         maxViewSpace /= maxViewSpace.w();
-        float l = min(minViewSpace.x(), maxViewSpace.x());
-        float r = max(minViewSpace.x(), maxViewSpace.x());
-        float b = max(minViewSpace.y(), maxViewSpace.y());
-        float t = min(minViewSpace.y(), maxViewSpace.y());
-        float n = min(minViewSpace.z(), maxViewSpace.z());
-        float f = max(minViewSpace.z(), maxViewSpace.z());
+        float l = minViewSpace.x();
+        float r = maxViewSpace.x();
+        float b = minViewSpace.y();
+        float t = maxViewSpace.y();
+        float n = TED::camera().nearPlane();
+        float f = TED::camera().farPlane();
         float proj[16];
         if (TED::camera().projectionMode() == PM::ORTHO) {
             bx::mtxOrtho(proj, l, r, b, t, n, f, 0.f, false);
@@ -173,7 +174,7 @@ public:
             }
             SelectionBox minMaxBox = ParentViewer::selectionBox().toMinAndMax();
             if (ParentViewer::selectionMode().isVisibleSelection()) {
-                setVisibleTrisSelectionProjViewMatrix(minMaxBox);
+                setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
             }
             SelectionParameters params = SelectionParameters{
                 viewId,
