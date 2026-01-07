@@ -23,6 +23,11 @@
 #ifndef VCL_IO_H
 #define VCL_IO_H
 
+#include "io/camera.h"
+#include "io/file_format.h"
+#include "io/file_info.h"
+#include "io/file_type.h"
+#include "io/image.h"
 #include "io/mesh.h"
 
 /**

@@ -22,7 +22,6 @@
 
 #include "drawers.h"
 
-#include "camera.h"
 #include "canvas.h"
 #include "directional_light.h"
 #include "drawable_object.h"
@@ -32,7 +31,6 @@
 
 int main()
 {
-    cameraStaticAsserts();
     canvasStaticAsserts();
     directionalLightStaticAsserts();
     drawableObjectStaticAsserts();

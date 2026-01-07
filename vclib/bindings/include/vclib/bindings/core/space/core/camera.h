@@ -20,62 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_IO_CAMERA_LOAD_H
-#define VCL_RENDER_IO_CAMERA_LOAD_H
+#ifndef VCL_BINDINGS_CORE_SPACE_CORE_CAMERA_H
+#define VCL_BINDINGS_CORE_SPACE_CORE_CAMERA_H
 
-#ifdef VCLIB_WITH_TINYGLTF
-#include "gltf/load.h"
-#endif
+#include <pybind11/pybind11.h>
 
-#include <vclib/io/file_format.h>
-#include <vclib/io/mesh/gltf/capability.h>
+namespace vcl::bind {
 
-#include <set>
-#include <string>
-#include <vector>
+void initCamera(pybind11::module& m);
 
-namespace vcl {
+} // namespace vcl::bind
 
-/**
- * @brief Returns the set of camera formats supported for loading.
- *
- * The set contains all the camera formats that can be loaded using all the
- * external libraries compiled with VCLib.
- *
- * @return A set of camera formats supported for loading.
- */
-inline std::set<FileFormat> loadCameraFormats()
-{
-    std::set<FileFormat> ff;
-
-#ifdef VCLIB_WITH_TINYGLTF
-    ff.insert(gltfFileFormat());
-#endif
-
-    return ff;
-}
-
-template<CameraConcept CameraType = Camera<float>>
-inline std::vector<CameraType> loadCameras(const std::string& filename)
-{
-    FileFormat ff = FileInfo::fileFormat(filename);
-#ifdef VCLIB_WITH_TINYGLTF
-    if (ff == gltfFileFormat())
-        return loadCamerasGltf<CameraType>(filename);
-    else
-#endif
-        throw UnknownFileFormatException(ff.extensions().front());
-}
-
-template<CameraConcept CameraType = Camera<float>>
-inline CameraType loadCamera(const std::string& filename)
-{
-    auto cams = loadCameras<CameraType>(filename);
-    if (cams.empty())
-        throw std::runtime_error("No cameras in file: " + filename);
-    return cams.front();
-}
-
-} // namespace vcl
-
-#endif // VCL_RENDER_IO_CAMERA_LOAD_H
+#endif // VCL_BINDINGS_CORE_SPACE_CORE_CAMERA_H

@@ -24,8 +24,11 @@
 #define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
 
 #include "event_drawer.h"
-#include <vclib/render/viewer/camera.h>
+
 #include <vclib/render/viewer/lights.h>
+
+#include <vclib/algorithms/core.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 template<typename Scalar, typename DerivedRenderApp>
@@ -51,7 +54,10 @@ public:
 
     MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
 
-    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
+    MatrixType projectionMatrix() const
+    {
+        return mCamera.projectionMatrix();
+    }
 
     const CameraType& camera() const { return mCamera; }
 
