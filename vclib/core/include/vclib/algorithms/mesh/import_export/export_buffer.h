@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -1353,6 +1353,61 @@ void edgeQualityToBuffer(const MeshType& mesh, auto* buffer)
 }
 
 /**
+ * @brief Export the vertex tangent of a mesh to a buffer.
+ *
+ * This function exports the vertex tangent of a mesh to a buffer. Tangents are
+ * stored in the buffer following the order the vertices appear in the mesh. The
+ * buffer must be preallocated with the correct size.
+ *
+ * The number of components for each tangent stored in the buffer depends on
+ * the `storeHandednessAsW` parameter: if true, 4 components are stored (xyz
+ * and w for the handedness: -1 if the bitangent is computed as cross product of
+ * normal and tangent, +1 otherwise); otherwise only the xyz components are
+ * stored.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @param[out] buffer: preallocated buffer
+ * @param[in] storage: storage type of the matrix (row or column major)
+ * @param[in] rowNumber: number of rows of the matrix (if different from the
+ * number of vertices in the mesh) - used only when storage is column major
+ *
+ * @ingroup export_buffer
+ */
+template<MeshConcept MeshType>
+void vertexTangentsToBuffer(
+    const MeshType&   mesh,
+    auto*             buffer,
+    bool              storeHandednessAsW = true,
+    MatrixStorageType storage            = MatrixStorageType::ROW_MAJOR,
+    uint              rowNumber          = UINT_NULL)
+{
+    using namespace detail;
+
+    requirePerVertexTangent(mesh);
+
+    const uint ROW_NUM =
+        rowNumber == UINT_NULL ? mesh.vertexNumber() : rowNumber;
+    const uint COL_NUM = storeHandednessAsW ? 4 : 3;
+
+    for (uint i = 0; const auto& v : mesh.vertices()) {
+        at(buffer, i, 0, ROW_NUM, COL_NUM, storage) = v.tangent().x();
+        at(buffer, i, 1, ROW_NUM, COL_NUM, storage) = v.tangent().y();
+        at(buffer, i, 2, ROW_NUM, COL_NUM, storage) = v.tangent().z();
+        if (storeHandednessAsW) {
+            at(buffer, i, 3, ROW_NUM, COL_NUM, storage) =
+                v.tangentRightHanded() ? 1.0 : -1.0;
+        }
+
+        ++i;
+    }
+}
+
+/**
  * @brief Export the vertex texcoords of a mesh to a buffer.
  *
  * This function exports the vertex texcoords of a mesh to a buffer. Texcoords
@@ -1396,9 +1451,9 @@ void vertexTexCoordsToBuffer(
 }
 
 /**
- * @brief Export the vertex texcoord indices of a mesh to a buffer.
+ * @brief Export the vertex material indices of a mesh to a buffer.
  *
- * This function exports the vertex texcoord indices of a mesh to a buffer.
+ * This function exports the vertex material indices of a mesh to a buffer.
  * Indices are stored in the buffer following the order the vertices appear in
  * the mesh. The buffer must be preallocated with the correct size (number of
  * vertices).
@@ -1414,27 +1469,27 @@ void vertexTexCoordsToBuffer(
  * @ingroup export_buffer
  */
 template<MeshConcept MeshType>
-void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
+void vertexMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
-    for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
-        buffer[i] = t.index();
+    for (uint i = 0; const auto& v : mesh.vertices()) {
+        buffer[i] = v.materialIndex();
         ++i;
     }
 }
 
 /**
- * @brief Export the vertex texture indices of a mesh into a buffer that has
- * a texture index for each face of the mesh (as if the indices were wedge
- * texcoord indices).
+ * @brief Export the vertex material indices of a mesh into a buffer that has
+ * a material index for each face of the mesh (as if the indices were face
+ * material indices).
  *
- * This function exports the vertex texture indices of a mesh to a buffer. The
+ * This function exports the vertex material indices of a mesh to a buffer. The
  * indices are stored in the buffer following the order the faces appear in the
  * mesh. The buffer must be preallocated with the correct size (number of
  * faces).
  *
- * For each face, the function takes the texture index of the first vertex of
+ * For each face, the function takes the material index of the first vertex of
  * the face and stores it in the buffer.
  *
  * @note This function does not guarantee that the rows of the buffer
@@ -1448,31 +1503,31 @@ void vertexTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void vertexTexCoordIndicesAsFaceTexCoordIndicesToBuffer(
+void vertexMaterialIndicesAsFaceMaterialIndicesToBuffer(
     const MeshType& mesh,
     auto*           buffer)
 {
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
     for (uint i = 0; const auto& f : mesh.faces()) {
-        ushort ti = f.vertex(0)->texCoord()->index();
+        ushort ti = f.vertex(0)->materialIndex();
         buffer[i] = ti;
         ++i;
     }
 }
 
 /**
- * @brief Export the vertex texture indices of a mesh into a buffer that has
- * a texture index for each triangle of the mesh (as if the indices were wedge
- * texcoord indices).
+ * @brief Export the vertex material indices of a mesh into a buffer that has
+ * a material index for each triangle of the mesh (as if the indices were face
+ * material indices).
  *
- * This function exports the vertex texture indices of a mesh to a buffer. The
+ * This function exports the vertex material indices of a mesh to a buffer. The
  * indices are stored in the buffer following the order the faces appear in the
  * mesh. The buffer must be preallocated with the correct size (number of
  * triangles).
  *
  * For each triangle computed from the triangulation of a face, the function
- * takes the texture index of the first vertex of the face that contains the
+ * takes the material index of the first vertex of the face that contains the
  * triangle and stores it in the buffer.
  *
  * The function requires an already computed index map, which maps each triangle
@@ -1486,15 +1541,15 @@ void vertexTexCoordIndicesAsFaceTexCoordIndicesToBuffer(
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void vertexTexCoordIndicesAsTriangulatedFaceTexCoordIndicesToBuffer(
+void vertexMaterialIndicesAsTriangulatedFaceMaterialIndicesToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap)
 {
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
     for (const auto& f : mesh.faces()) {
-        ushort ti    = f.vertex(0)->texCoord().index();
+        ushort ti    = f.vertex(0)->materialIndex();
         uint   first = indexMap.triangleBegin(f.index());
         uint   last  = first + indexMap.triangleNumber(f.index());
         for (uint t = first; t < last; ++t) {
@@ -1574,12 +1629,12 @@ void faceWedgeTexCoordsToBuffer(
 }
 
 /**
- * @brief Export into a buffer the per face wedge texture indices of a mesh.
+ * @brief Export into a buffer the per face material indices of a mesh.
  *
- * This function exports the per face wedge texture coordinate indices of a mesh
- * to a buffer. Texture coordinate indices are stored in the buffer following
- * the order the faces appear in the mesh. The buffer must be preallocated with
- * the correct size (number of faces).
+ * This function exports the per face material indices of a mesh to a buffer.
+ * Material indices are stored in the buffer following the order the faces
+ * appear in the mesh. The buffer must be preallocated with the correct size
+ * (number of faces).
  *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the face indices of the mesh. This scenario is possible when
@@ -1592,24 +1647,24 @@ void faceWedgeTexCoordsToBuffer(
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void faceWedgeTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
+void faceMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
-    requirePerFaceWedgeTexCoords(mesh);
+    requirePerFaceMaterialIndex(mesh);
 
     for (uint i = 0; const auto& f : mesh.faces()) {
-        buffer[i] = f.textureIndex();
+        buffer[i] = f.materialIndex();
         ++i;
     }
 }
 
 /**
- * @brief Export into a buffer the per triangle wedge texture indices of a mesh.
+ * @brief Export into a buffer the per triangle material indices of a mesh.
  * Triangles are computed by triangulating the faces of the mesh.
  *
- * This function exports the per triangle wedge texture coordinate indices of a
- * mesh to a buffer. Texture coordinate indices are stored in the buffer
- * following the order the faces appear in the mesh. The buffer must be
- * preallocated with the correct size (number of triangles).
+ * This function exports the per triangle material indices of a mesh to a
+ * buffer. Material indices are stored in the buffer following the order the
+ * faces appear in the mesh. The buffer must be preallocated with the correct
+ * size (number of triangles).
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
@@ -1624,18 +1679,18 @@ void faceWedgeTexCoordIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * @ingroup export_buffer
  */
 template<FaceMeshConcept MeshType>
-void triangulatedFaceWedgeTexCoordIndicesToBuffer(
+void triangulatedFaceMaterialIndicesToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap)
 {
-    requirePerFaceWedgeTexCoords(mesh);
+    requirePerFaceMaterialIndex(mesh);
 
     for (const auto& f : mesh.faces()) {
         uint first = indexMap.triangleBegin(f.index());
         uint last  = first + indexMap.triangleNumber(f.index());
         for (uint t = first; t < last; ++t) {
-            buffer[t] = f.textureIndex();
+            buffer[t] = f.materialIndex();
         }
     }
 }
@@ -1735,12 +1790,12 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
 }
 
 /**
- * @brief Export wedge texture coordinate indices to a buffer of the duplicated
- * vertex texture coordinate indices.
+ * @brief Export face material indices to a buffer of the duplicated vertex
+ * material indices.
  *
  * Given the list of vertices to duplicate, this function exports to the given
- * buffer the wedge texture indices as if they were vertex texture
- * indices, and appending only the texture indices of the vertices to
+ * buffer the face material indices as if they were vertex material
+ * indices, and appending only the material indices of the vertices to
  * duplicate.
  *
  * Typical usage of this function is after the @ref
@@ -1756,7 +1811,7 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
- * wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(mesh,
+ * faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(mesh,
  *     vertWedgeMap, facesToReassign, buffer.data());
  * @endcode
  *
@@ -1765,49 +1820,47 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
  *
  * @tparam MeshType: The type of the mesh.
  *
- * @param[in] mesh: The mesh from which take the wedge texture coordinate
- * indices.
+ * @param[in] mesh: The mesh from which take the face material indices.
  * @param[in] vertWedgeMap: The map from non-duplicated vertex index to face
  * index and wedge index in the face.
  * @param[in] facesToReassign: The list of lists of pairs face/vertex index in
  * the face that must be reassigned to the duplicated vertices. Each list of
  * pairs is the list of faces that must be reassigned to the corresponding
  * duplicated vertex.
- * @param[out] buffer: The buffer where to export the vertex wedge texture
- * coordinate indices.
+ * @param[out] buffer: The buffer where to export the vertex material indices.
  *
  * @ingroup append_replace_to_buffer
  */
 template<FaceMeshConcept MeshType>
-void wedgeTexCoordIndicesAsDuplicatedVertexTexCoordIndicesToBuffer(
+void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
     const MeshType&                                     mesh,
     const std::vector<std::pair<vcl::uint, vcl::uint>>& vertWedgeMap,
     const std::list<std::list<std::pair<vcl::uint, vcl::uint>>>&
           facesToReassign,
     auto* buffer)
 {
-    requirePerFaceWedgeTexCoords(mesh);
+    requirePerFaceMaterialIndex(mesh);
 
     const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
 
-    // first export the tex indices of the non-duplicated vertices, using the
-    // vertWedgeMap to get the texcoord index in the face
+    // first export the material indices of the non-duplicated vertices, using
+    // the vertWedgeMap to get the material index in the face
     uint vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
         uint   fInd = vertWedgeMap[vi].first;
-        ushort ti   = mesh.face(fInd).textureIndex();
+        ushort ti   = mesh.face(fInd).materialIndex();
         buffer[vi]  = ti;
         ++vi;
     }
 
-    // then append the tex indices of the duplicated vertices, that can be found
-    // by looking into the any of the facesToReassign element lists
+    // then append the material indices of the duplicated vertices, that can be
+    // found by looking into the any of the facesToReassign element lists
     for (const auto& list : facesToReassign) {
         assert(list.begin() != list.end());
         const auto& p    = list.front();
         uint        fInd = p.first;
 
-        ushort ti  = mesh.face(fInd).textureIndex();
+        ushort ti  = mesh.face(fInd).materialIndex();
         buffer[vi] = ti;
         ++vi;
     }

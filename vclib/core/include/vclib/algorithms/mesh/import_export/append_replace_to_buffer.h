@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -669,16 +669,96 @@ void appendDuplicateVertexTexCoordsToBuffer(
 }
 
 /**
- * @brief Append the texture coordinate indices of the duplicated vertices to
- * the given buffer.
+ * @brief Append the tangent of the duplicated vertices to the given buffer.
  *
  * Given the list of vertices to duplicate, this function appends to the given
- * buffer the vertex texture coordinate indices of the vertices listed in the
- * input list.
+ * buffer the vertex tangent of the vertices listed in the input list.
+ *
+ * The number of components for each tangent stored in the buffer depends on
+ * the `storeHandednessAsW` parameter: if true, 4 components are stored (xyz
+ * and w for the handedness: -1 if the bitangent is computed as cross product of
+ * normal and tangent, +1 otherwise); otherwise only the xyz components are
+ * stored.
  *
  * Typical usage of this function is after the @ref
  * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
- * vertexTexCoordIndicesToBuffer function:
+ * vertexTangentToBuffer function:
+ *
+ * @code{.cpp}
+ *
+ * std::vector<std::pair<uint, uint>> vertWedgeMap;
+ * std::list<uint> vertsToDuplicate;
+ * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+ *
+ * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ *     vertsToDuplicate, facesToReassign);
+ *
+ * std::vector<double> buffer((mesh.vertexNumber() + nV) * 4);
+ * vertexTangentsToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexTangentsToBuffer(mesh, vertsToDuplicate,
+ *     buffer.data());
+ * @endcode
+ *
+ * @note The buffer must be preallocated with the correct size (total number of
+ * vertices times 3 or 4 depending on the `storeHandednessAsW` parameter).
+ *
+ * @tparam MeshType: The type of the mesh.
+ *
+ * @param[in] mesh: The mesh from which take the vertex tangent.
+ * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
+ * is the index of a vertex in the mesh, that must be appended to the buffer.
+ * @param[out] buffer: The buffer where to append the duplicated vertex tangent.
+ * @param[in] storeHandednessAsW: If true, the w component of the tangent
+ * (quaternion) is stored in the buffer; otherwise only the xyz components are
+ * stored.
+ * @param[in] storage: The storage type of the matrix (row or column major).
+ *
+ * @ingroup append_replace_to_buffer
+ */
+template<MeshConcept MeshType>
+void appendDuplicateVertexTangentsToBuffer(
+    const MeshType&        mesh,
+    const std::list<uint>& vertsToDuplicate,
+    auto*                  buffer,
+    bool                   storeHandednessAsW = true,
+    MatrixStorageType      storage            = MatrixStorageType::ROW_MAJOR)
+{
+    using namespace detail;
+
+    // no vertices to duplicate, do nothing
+    if (vertsToDuplicate.empty())
+        return;
+
+    requirePerVertexTangent(mesh);
+
+    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint COL_NUM = storeHandednessAsW ? 4 : 3;
+
+    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+        const auto& t = mesh.vertex(v).tangent();
+
+        at(buffer, i, 0, ROW_NUM, COL_NUM, storage) = t.x();
+        at(buffer, i, 1, ROW_NUM, COL_NUM, storage) = t.y();
+        at(buffer, i, 2, ROW_NUM, COL_NUM, storage) = t.z();
+        if (storeHandednessAsW) {
+            at(buffer, i, 3, ROW_NUM, COL_NUM, storage) =
+                mesh.vertex(v).tangentRightHanded() ? 1.0 : -1.0;
+        }
+
+        ++i;
+    }
+}
+
+/**
+ * @brief Append the material indices of the duplicated vertices to the given
+ * buffer.
+ *
+ * Given the list of vertices to duplicate, this function appends to the given
+ * buffer the vertex material indices of the vertices listed in the input list.
+ *
+ * Typical usage of this function is after the @ref
+ * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * vertexMaterialIndicesToBuffer function:
  *
  * @code{.cpp}
  *
@@ -690,8 +770,8 @@ void appendDuplicateVertexTexCoordsToBuffer(
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
- * vertexTexCoordIndicesToBuffer(mesh, buffer.data());
- * appendDuplicateVertexTexCoordIndicesToBuffer(mesh, vertsToDuplicate,
+ * vertexMaterialIndicesToBuffer(mesh, buffer.data());
+ * appendDuplicateVertexMaterialIndicesToBuffer(mesh, vertsToDuplicate,
  *     buffer.data());
  * @endcode
  *
@@ -700,17 +780,16 @@ void appendDuplicateVertexTexCoordsToBuffer(
  *
  * @tparam MeshType: The type of the mesh.
  *
- * @param[in] mesh: The mesh from which take the vertex texture coordinate
- * indices.
+ * @param[in] mesh: The mesh from which take the vertex material indices.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
- * @param[out] buffer: The buffer where to append the duplicated vertex texture
- * coordinate indices.
+ * @param[out] buffer: The buffer where to append the duplicated vertex material
+ * indices.
  *
  * @ingroup append_replace_to_buffer
  */
 template<MeshConcept MeshType>
-void appendDuplicateVertexTexCoordIndicesToBuffer(
+void appendDuplicateVertexMaterialIndicesToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer)
@@ -719,10 +798,10 @@ void appendDuplicateVertexTexCoordIndicesToBuffer(
     if (vertsToDuplicate.empty())
         return;
 
-    requirePerVertexTexCoord(mesh);
+    requirePerVertexMaterialIndex(mesh);
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        buffer[i] = mesh.vertex(v).texCoord().index();
+        buffer[i] = mesh.vertex(v).materialIndex();
         ++i;
     }
 }

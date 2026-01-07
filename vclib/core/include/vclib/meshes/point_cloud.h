@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -47,6 +47,7 @@ class Vertex;
  * @extends vert::OptionalQuality
  * @extends vert::OptionalAdjacentVertexPointers
  * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMaterialIndex
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
  *
@@ -65,6 +66,7 @@ class Vertex :
             vert::OptionalQuality<Scalar, Vertex<Scalar>>,
             vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vert::OptionalMaterialIndex<Vertex<Scalar>>,
             vert::OptionalMark<Vertex<Scalar>>,
             vert::CustomComponents<Vertex<Scalar>>>
 {
@@ -86,8 +88,8 @@ namespace vcl {
  * @extends mesh::VertexContainer
  * @extends mesh::BoundingBox3
  * @extends mesh::Mark
+ * @extends mesh::Materials
  * @extends mesh::Name
- * @extends mesh::TextureImages
  * @extends mesh::TransformMatrix
  * @extends mesh::CustomComponents
  *
@@ -99,8 +101,8 @@ class PointCloudT :
             mesh::VertexContainer<pointcloud::Vertex<Scalar>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Mark,
+            mesh::Materials,
             mesh::Name,
-            mesh::TextureImages,
             mesh::TransformMatrix<Scalar>,
             mesh::CustomComponents>
 {

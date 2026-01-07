@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -35,52 +35,27 @@
 namespace vcl::detail {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void readPlyTextures(
-    const PlyHeader&    header,
-    MeshType&           mesh,
-    LogType&            log      = nullLogger,
-    const LoadSettings& settings = LoadSettings())
+void addMaterialsFromHeaderTextures(
+    const PlyHeader& header,
+    MeshType&        mesh,
+    LogType&         log = nullLogger)
 {
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
-            mesh.pushTexturePath(str);
-            if constexpr (HasTextureImages<MeshType>) {
-                uint k = mesh.textureNumber() - 1;
-                if (settings.loadTextureImages) {
-                    mesh.texture(k).image() =
-                        loadImage(mesh.meshBasePath() + str);
-                    if (mesh.texture(k).image().isNull()) {
-                        log.log(
-                            "Cannot load texture " + str, LogType::WARNING_LOG);
-                    }
-                }
-            }
+            Material mat;
+            mat.name() = FileInfo::fileNameWithExtension(str);
+            mat.baseColorTextureDescriptor().path() = str;
+            mesh.pushMaterial(mat);
         }
     }
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void writePlyTextures(
-    PlyHeader&          header,
-    const MeshType&     mesh,
-    const std::string&  basePath,
-    LogType&            log,
-    const SaveSettings& settings)
+void addTexturesToHeader(PlyHeader& header, const MeshType& mesh)
 {
-    if constexpr (HasTexturePaths<MeshType>) {
-        for (uint k = 0; const std::string& str : mesh.texturePaths()) {
-            header.pushTextureFileName(str);
-            if constexpr (HasTextureImages<MeshType>) {
-                if (settings.saveTextureImages) {
-                    try {
-                        saveImage(mesh.texture(k).image(), basePath + str);
-                    }
-                    catch (const std::runtime_error& e) {
-                        log.log(e.what(), LogType::WARNING_LOG);
-                    }
-                }
-            }
-            ++k;
+    if constexpr (HasMaterials<MeshType>) {
+        for (const Material& mat : mesh.materials()) {
+            header.pushTextureFileName(mat.baseColorTextureDescriptor().path());
         }
     }
 }
@@ -117,6 +92,46 @@ void readPlyUnknownElement(
     }
 
     log.endProgress();
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void readPlyMaterialIndexPostProcessing(
+    MeshType&           mesh,
+    MeshInfo&           loadedInfo,
+    const LoadSettings& settings)
+{
+    if constexpr (HasMaterials<MeshType>) {
+        if (mesh.materialsNumber() > 0) {
+            if (loadedInfo.hasPerVertexTexCoord() &&
+                !loadedInfo.hasPerVertexMaterialIndex()) {
+                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                    if (settings.enableOptionalComponents) {
+                        enableIfPerVertexMaterialIndexOptional(mesh);
+                        loadedInfo.setPerVertexMaterialIndex();
+                    }
+                    if (loadedInfo.hasPerVertexMaterialIndex()) {
+                        for (auto& v : mesh.vertices()) {
+                            v.materialIndex() = 0;
+                        }
+                    }
+                }
+            }
+            if (loadedInfo.hasPerFaceWedgeTexCoords() &&
+                !loadedInfo.hasPerFaceMaterialIndex()) {
+                if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                    if (settings.enableOptionalComponents) {
+                        enableIfPerFaceMaterialIndexOptional(mesh);
+                        loadedInfo.setPerFaceMaterialIndex();
+                    }
+                    if (loadedInfo.hasPerFaceMaterialIndex()) {
+                        for (auto& f : mesh.faces()) {
+                            f.materialIndex() = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 } // namespace vcl::detail

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/io/camera.h>
-#include <vclib/render/viewer/camera.h>
+#include <vclib/render/drawable/drawable_mesh.h>
+
+#include <vclib/io.h>
 
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>

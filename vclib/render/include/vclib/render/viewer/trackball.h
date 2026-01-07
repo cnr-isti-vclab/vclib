@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,10 +23,10 @@
 #ifndef VCL_RENDER_VIEWER_TRACKBALL_H
 #define VCL_RENDER_VIEWER_TRACKBALL_H
 
-#include "camera.h"
 #include "lights/directional_light.h"
 
-#include <vclib/space/core/quaternion.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/space/core.h>
 
 #include <variant>
 

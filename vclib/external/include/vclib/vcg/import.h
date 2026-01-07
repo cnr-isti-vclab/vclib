@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -337,7 +337,16 @@ void importMeshFromVCGMesh(
                             vcl::enableIfPerFaceWedgeTexCoordsOptional(mesh);
                         }
                         if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                            face.textureIndex() = vcgMesh.face[i].WT(0).N();
+                            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                                if (enableOptionalComponents) {
+                                    vcl::enableIfPerFaceMaterialIndexOptional(
+                                        mesh);
+                                }
+                                if (isPerFaceMaterialIndexAvailable(mesh)) {
+                                    face.materialIndex() =
+                                        vcgMesh.face[i].WT(0).N();
+                                }
+                            }
                             for (uint j = 0; j < 3; ++j) {
                                 face.wedgeTexCoord(j) = WTType(
                                     vcgMesh.face[i].WT(j).U(),
@@ -373,9 +382,11 @@ void importMeshFromVCGMesh(
             vcgMesh.bbox.max.X(), vcgMesh.bbox.max.Y(), vcgMesh.bbox.max.Z());
     }
 
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         for (const auto& s : vcgMesh.textures) {
-            mesh.pushTexturePath(s);
+            Material m;
+            m.baseColorTextureDescriptor().path() = s;
+            mesh.pushMaterial(m);
         }
     }
 

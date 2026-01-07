@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -34,6 +34,7 @@ enum class VertFragProgram {
     DRAWABLE_MESH_POINTS_INSTANCE,
 
     DRAWABLE_MESH_SURFACE_UBER,
+    DRAWABLE_MESH_SURFACE_UBER_PBR,
     // SURFACE_NONE
     DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX,
     DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH,

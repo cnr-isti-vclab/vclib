@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -30,6 +30,7 @@
 #include "core/fibonacci.h"
 #include "core/fitting.h"
 #include "core/intersection.h"
+#include "core/matrix_camera.h"
 #include "core/perlin_noise.h"
 #include "core/polygon.h"
 #include "core/random.h"

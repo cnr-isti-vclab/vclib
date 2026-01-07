@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -45,7 +45,11 @@ private:
 
     void addMeshInfoItem(const AbstractDrawableMesh& mesh);
     void addTransformMatrixItem(const AbstractDrawableMesh& mesh);
-    void addTexturesItem(const AbstractDrawableMesh& mesh);
+    void addMaterialsItem(const AbstractDrawableMesh& mesh);
+    void addMaterialData(
+        const AbstractDrawableMesh& mesh,
+        const Material&             material,
+        QTreeWidgetItem*            parent);
 
     static void makeItemNotSelectable(QTreeWidgetItem* item);
 };

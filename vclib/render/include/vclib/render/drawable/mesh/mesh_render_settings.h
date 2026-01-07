@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -682,19 +682,20 @@ public:
                         }
                     }
 
-                    if constexpr (vcl::HasTexturePaths<MeshType>) {
+                    if constexpr (vcl::HasMaterials<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m) &&
-                                m.textureNumber() > 0)
+                                m.materialsNumber() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
-                                m.textureNumber() > 0)
+                                m.materialsNumber() > 0) {
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
+                            }
                         }
                     }
                 }

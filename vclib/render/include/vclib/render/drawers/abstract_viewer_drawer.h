@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -48,6 +48,7 @@ class AbstractViewerDrawer : public ViewProjEventDrawer
     using DRA  = ViewProjEventDrawer::DRA;
 
     bool mReadRequested = false;
+    bool mPBRMode       = false;
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
@@ -119,6 +120,14 @@ public:
         Base::fitScene(sceneCenter, sceneRadius);
     }
 
+    bool isPBREnabled() const { return mPBRMode; }
+
+    void setPBR(bool enable) { mPBRMode = enable; }
+
+    void enablePBR() { setPBR(true); }
+
+    void disablePBR() { setPBR(false); }
+
     void fitView()
     {
         Point3f sceneCenter = mDrawList->center().cast<float>();
@@ -182,7 +191,7 @@ protected:
             // unproject the point
             const Point3f p2d(p.x(), vp[3] - p.y(), depth);
             auto          unproj =
-                unproject(p2d, MatrixType(proj * view), vp, homogeneousNDC);
+                unprojectScreenPosition(p2d, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();

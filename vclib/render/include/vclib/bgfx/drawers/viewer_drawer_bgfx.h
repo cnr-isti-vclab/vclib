@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -61,10 +61,9 @@ public:
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        settings.pbrMode = ParentViewer::isPBREnabled();
+
+        setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
@@ -78,10 +77,7 @@ public:
         settings.objectId = ParentViewer::id();
         settings.viewId   = viewId;
 
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        setViewTransform(viewId);
 
         ParentViewer::drawableObjectVector().drawId(settings);
     }
@@ -115,6 +111,20 @@ public:
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+    }
+
+private:
+    void setViewTransform(uint viewId)
+    {
+        // need to store the matrices
+        // parent viewer returns by value
+        Matrix44f vm = ParentViewer::viewMatrix();
+        Matrix44f pm = ParentViewer::projectionMatrix();
+
+        bgfx::setViewTransform(
+            viewId,
+            vm.data(),
+            pm.data());
     }
 };
 

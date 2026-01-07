@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -161,11 +161,12 @@ TEMPLATE_TEST_CASE(
             tm, VCLIB_EXAMPLE_MESHES_PATH "/VertTextureDouble.ply", info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.textureNumber() == 2);
+        REQUIRE(tm.materialsNumber() == 2);
         REQUIRE(tm.isPerVertexTexCoordEnabled());
+        REQUIRE(tm.isPerVertexMaterialIndexEnabled());
         for (const auto& v : tm.vertices()) {
             // first four vertices have index 0, the other four have index 1
-            REQUIRE(v.texCoord().index() == v.index() / 4);
+            REQUIRE(v.materialIndex() == v.index() / 4);
         }
     }
 
@@ -175,11 +176,13 @@ TEMPLATE_TEST_CASE(
         vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", info);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.textureNumber() == 2);
+        REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
+        // TODO
         for (const auto& f : tm.faces()) {
-            // first two faces have texture index 0, the other two have index 1
-            REQUIRE(f.textureIndex() == f.index() / 2);
+            // first two faces have material index 0, the other two have index 1
+            REQUIRE(f.materialIndex() == f.index() / 2);
         }
     }
 
